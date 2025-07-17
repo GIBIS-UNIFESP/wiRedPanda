@@ -48,7 +48,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="48"/>
         <source>toolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barre d&apos;outils</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="92"/>
@@ -63,12 +63,12 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="112"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="130"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Affichage</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="152"/>
@@ -83,7 +83,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="164"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="167"/>
@@ -93,7 +93,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="176"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Quitter</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="179"/>
@@ -114,7 +114,7 @@
         <location filename="../../bewaveddolphin.ui" line="200"/>
         <location filename="../../bewaveddolphin.cpp" line="1301"/>
         <source>Export to PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter en PDF</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="203"/>
@@ -124,7 +124,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="212"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="215"/>
@@ -134,17 +134,17 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="224"/>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer sous…</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="227"/>
         <source>Ctrl+Shift+S</source>
-        <translation>Ctrl+Shift+S</translation>
+        <translation>Ctrl+Maj+S</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="236"/>
         <source>Copy</source>
-        <translation>Copie</translation>
+        <translation>Copier</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="239"/>
@@ -154,7 +154,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="248"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Coller</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="251"/>
@@ -164,7 +164,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="260"/>
         <source>Set to 0</source>
-        <translation type="unfinished"></translation>
+        <translation>Définir à 0</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="263"/>
@@ -185,7 +185,7 @@
         <location filename="../../bewaveddolphin.ui" line="387"/>
         <location filename="../../bewaveddolphin.ui" line="390"/>
         <source>Fit to screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Adapter à l&apos;écran</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="434"/>
@@ -195,18 +195,18 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="439"/>
         <source>Show Waveforms</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les ondes</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="272"/>
         <source>Set to 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Définir à 1</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="284"/>
         <location filename="../../bewaveddolphin.ui" line="287"/>
         <source>Set clock frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Définir la fréquence de l&apos;horloge</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="290"/>
@@ -216,32 +216,32 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="299"/>
         <source>Invert</source>
-        <translation>Inverse</translation>
+        <translation>Inverser</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="310"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Fusionner</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="318"/>
         <source>Split</source>
-        <translation type="unfinished"></translation>
+        <translation>Séparer</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="327"/>
         <source>Export to PNG</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter en PNG</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="330"/>
         <source>Ctrl+Shift+P</source>
-        <translation>Ctrl+Shift+P</translation>
+        <translation>Ctrl+Maj+P</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="339"/>
         <source>Set Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Définir la longueur</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="342"/>
@@ -256,12 +256,12 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="354"/>
         <source>Ctrl+Shift+H</source>
-        <translation>Ctrl+Shift+H</translation>
+        <translation>Ctrl+Maj+H</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="363"/>
         <source>Zoom In</source>
-        <translation>Zoom</translation>
+        <translation>Zoom avant</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="366"/>
@@ -271,7 +271,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="375"/>
         <source>Zoom Out</source>
-        <translation>Zoom</translation>
+        <translation>Zoom arrière</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="378"/>
@@ -281,22 +281,22 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="393"/>
         <source>Ctrl+Shift+R</source>
-        <translation>Ctrl+Shift+R</translation>
+        <translation>Ctrl+Maj+R</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="402"/>
         <source>Reset Zoom</source>
-        <translation>Zoom</translation>
+        <translation>Réinitialiser le zoom</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="405"/>
         <source>Ctrl+Home</source>
-        <translation>Ctrl+Home</translation>
+        <translation>Ctrl+Accueil</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="414"/>
         <source>Clear</source>
-        <translation>Clear</translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="417"/>
@@ -306,7 +306,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="426"/>
         <source>Cut</source>
-        <translation>Coupe</translation>
+        <translation>Couper</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="429"/>
@@ -319,55 +319,55 @@
         <location filename="../../bewaveddolphin.cpp" line="1024"/>
         <location filename="../../bewaveddolphin.cpp" line="1177"/>
         <source>beWavedDolphin Simulator</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulateur beWavedDolphin</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="467"/>
         <location filename="../../bewaveddolphin.cpp" line="1091"/>
         <source>wiRedPanda - beWavedDolphin</source>
-        <translation type="unfinished"></translation>
+        <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="468"/>
         <source>Save simulation before closing?</source>
-        <translation>Sauver la simulation avant de fermer&#x202f;?</translation>
+        <translation>Enregistrer la simulation avant de fermer&#x202f;?</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1092"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
-        <translation>Voulez-vous lier ce fichier beWavedDolphin à votre fichier wiRedPanda actuel et l&apos;enregistrer?</translation>
+        <translation>Voulez-vous lier ce fichier beWavedDolphin à votre fichier wiRedPanda actuel et l&apos;enregistrer&#x202f;?</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="991"/>
         <source>Save File as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer le fichier sous…</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="994"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers CSV (*.csv);;Fichiers Dolphin (*.dolphin);;Tous les fichiers supportés (*.dolphin *.csv)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="995"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers Dolphin (*.dolphin);;Fichiers CSV (*.csv);;Tous les fichiers supportés (*.dolphin *.csv)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="982"/>
         <location filename="../../bewaveddolphin.cpp" line="1025"/>
         <source>Saved file successfully.</source>
-        <translation>Fichier sauvegardé avec succès.</translation>
+        <translation>Le fichier a bien été enregistré.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="224"/>
         <location filename="../../bewaveddolphin.cpp" line="251"/>
         <source>Could not load enough elements for the simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger suffisamment d&apos;éléments pour la simulation.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="440"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les formes d&apos;onde seraient trop grandes&#x202f;! Réinitialisation du zoom.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="707"/>
@@ -377,12 +377,12 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1034"/>
         <source>Error opening file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur d&apos;ouverture du fichier&#xa0;: </translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1048"/>
         <source>Error saving file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur d&apos;enregistrement du fichier&#xa0;: </translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1119"/>
@@ -392,22 +392,22 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1121"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
-        <translation>Tous les fichiers supportés (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</translation>
+        <translation>Tous les fichiers supportés (*.dolphin *.csv);;Fichiers Dolphin (*.dolphin);;Fichiers CSV (*.csv)</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1137"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier a bien été chargé.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1152"/>
         <source>Could not open file in ReadOnly mode: </source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le fichier en mode lecture seule&#xa0;: </translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1171"/>
         <source>Format not supported. Could not open file: </source>
-        <translation>Format non supporté. Impossible d&apos;ouvrir le dossier&#xa0;: </translation>
+        <translation>Format non pris en charge. Impossible d&apos;ouvrir le fichier&#xa0;: </translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1185"/>
@@ -418,12 +418,12 @@
         <location filename="../../bewaveddolphin.cpp" line="1196"/>
         <location filename="../../bewaveddolphin.cpp" line="1224"/>
         <source>Invalid number of columns.</source>
-        <translation>Nombre invalide de colonnes.</translation>
+        <translation>Nombre de colonnes invalide.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1277"/>
         <source>Export to Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter en image</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1277"/>
@@ -438,7 +438,7 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1320"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;imprimer ce circuit en PDF.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1331"/>
@@ -449,12 +449,18 @@
         <location filename="../../bewaveddolphin.cpp" line="146"/>
         <location filename="../../bewaveddolphin.cpp" line="1145"/>
         <source>File &quot;%1&quot; does not exist!</source>
-        <translation>Le fichier &quot;%1&quot; n&apos;existe pas&#x202f;!</translation>
+        <translation>Le fichier «&#xa0;%1&#xa0;» n&apos;existe pas&#x202f;!</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="455"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.ui" line="449"/>
+        <location filename="../../bewaveddolphin.ui" line="452"/>
+        <source>AutoCrop</source>
+        <translation>Rogner automatiquement</translation>
     </message>
 </context>
 <context>
@@ -496,7 +502,7 @@
     <message>
         <location filename="../../element/clock.cpp" line="19"/>
         <source>CLOCK SIGNAL</source>
-        <translation type="unfinished"></translation>
+        <translation>SIGNAL D&apos;HORLOGE</translation>
     </message>
 </context>
 <context>
@@ -504,7 +510,7 @@
     <message>
         <location filename="../../clockdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Boîte de dialogue</translation>
     </message>
     <message>
         <location filename="../../clockdialog.ui" line="80"/>
@@ -514,7 +520,7 @@
     <message>
         <location filename="../../clockdialog.ui" line="63"/>
         <source>Clock Frequency</source>
-        <translation>Fréquence de l &apos; horloge</translation>
+        <translation>Fréquence de l&apos;horloge</translation>
     </message>
     <message>
         <location filename="../../clockdialog.ui" line="70"/>
@@ -537,7 +543,7 @@
     <message>
         <location filename="../../arduino/codegenerator.cpp" line="423"/>
         <source>Element type not supported: </source>
-        <translation>Type d&apos;élément non supporté: </translation>
+        <translation>Type d&apos;élément non pris en charge&#xa0;: </translation>
     </message>
 </context>
 <context>
@@ -584,7 +590,7 @@
     <message>
         <location filename="../../element/demux.cpp" line="15"/>
         <source>DEMULTIPLEXER</source>
-        <translation type="unfinished"></translation>
+        <translation>DÉMULTIPLEXEUR</translation>
     </message>
 </context>
 <context>
@@ -592,12 +598,12 @@
     <message>
         <location filename="../../element/display_14.cpp" line="18"/>
         <source>14-SEGMENT DISPLAY</source>
-        <translation type="unfinished"></translation>
+        <translation>AFFICHAGE 14 SEGMENTS</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="18"/>
         <source>14-Segment Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Affichage 14 segments</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="92"/>
@@ -680,12 +686,12 @@
     <message>
         <location filename="../../element/display_7.cpp" line="19"/>
         <source>7-SEGMENT DISPLAY</source>
-        <translation type="unfinished"></translation>
+        <translation>AFFICHAGE 7 SEGMENTS</translation>
     </message>
     <message>
         <location filename="../../element/display_7.cpp" line="19"/>
         <source>7-Segment Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Affichage 7 segments</translation>
     </message>
     <message>
         <location filename="../../element/display_7.cpp" line="103"/>
@@ -743,33 +749,33 @@
     <message>
         <location filename="../../elementeditor.ui" line="56"/>
         <source>Inputs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Champs&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="76"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="143"/>
         <location filename="../../elementeditor.ui" line="194"/>
         <source>Audio:</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="222"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="231"/>
         <source>Trigger:</source>
-        <translation type="unfinished"></translation>
+        <translation>Déclencheur&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="66"/>
         <source>Outputs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sorties&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="100"/>
@@ -784,7 +790,7 @@
     <message>
         <location filename="../../elementeditor.ui" line="129"/>
         <source>Color:</source>
-        <translation>Couleur:</translation>
+        <translation>Couleur&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="266"/>
@@ -855,17 +861,17 @@
     <message>
         <location filename="../../elementeditor.ui" line="241"/>
         <source>Priority:</source>
-        <translation>Priorité:</translation>
+        <translation>Priorité&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="90"/>
         <source>Change color to...</source>
-        <translation>Changer de couleur pour...</translation>
+        <translation>Modifier la couleur pour...</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="91"/>
         <source>Change frequency</source>
-        <translation>Fréquence de changement</translation>
+        <translation>Modifier la fréquence</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="92"/>
@@ -895,7 +901,7 @@
     <message>
         <location filename="../../elementeditor.cpp" line="98"/>
         <source>Change trigger</source>
-        <translation>Déclencheur de changement</translation>
+        <translation>Déclencheur du changement</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="93"/>
@@ -911,13 +917,13 @@
         <location filename="../../elementeditor.cpp" line="213"/>
         <location filename="../../elementeditor.cpp" line="286"/>
         <source>Copy</source>
-        <translation>Copie</translation>
+        <translation>Copier</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="214"/>
         <location filename="../../elementeditor.cpp" line="286"/>
         <source>Cut</source>
-        <translation>Coupe</translation>
+        <translation>Couper</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="220"/>
@@ -928,7 +934,7 @@
     <message>
         <location filename="../../elementeditor.cpp" line="290"/>
         <source>Unknown context menu option.</source>
-        <translation>Option de menu contextuel inconnu.</translation>
+        <translation>Option de menu contextuel inconnue.</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="314"/>
@@ -953,7 +959,7 @@
     <message>
         <location filename="../../elementeditor.cpp" line="361"/>
         <source>Purple</source>
-        <translation type="unfinished"></translation>
+        <translation>Violet</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="946"/>
@@ -978,12 +984,12 @@
     <message>
         <location filename="../../elementeditor.h" line="61"/>
         <source>&lt;Many sounds&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Plusieurs sons&gt;</translation>
     </message>
     <message>
         <location filename="../../elementeditor.h" line="62"/>
         <source>&lt;Many colors&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Plusieurs couleurs&gt;</translation>
     </message>
     <message>
         <location filename="../../elementeditor.h" line="63"/>
@@ -991,27 +997,27 @@
         <location filename="../../elementeditor.h" line="66"/>
         <location filename="../../elementeditor.h" line="67"/>
         <source>&lt;Many values&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Plusieurs valeurs&gt;</translation>
     </message>
     <message>
         <location filename="../../elementeditor.h" line="65"/>
         <source>&lt;Many labels&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Plusieurs étiquettes&gt;</translation>
     </message>
     <message>
         <location filename="../../elementeditor.h" line="68"/>
         <source>&lt;Many priorities&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Plusieurs priorités&gt;</translation>
     </message>
     <message>
         <location filename="../../elementeditor.h" line="69"/>
         <source>&lt;Many triggers&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Plusieurs déclencheurs&gt;</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="308"/>
         <source>Delay:</source>
-        <translation>Retard&#xa0;:</translation>
+        <translation>Délai&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="321"/>
@@ -1024,7 +1030,7 @@
     <message>
         <location filename="../../elementfactory.cpp" line="54"/>
         <source>MULTIPLE TYPES</source>
-        <translation type="unfinished"></translation>
+        <translation>PLUSIEURS TYPES</translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="63"/>
@@ -1036,22 +1042,22 @@
         <location filename="../../elementfactory.cpp" line="90"/>
         <location filename="../../elementfactory.cpp" line="98"/>
         <source>Unknown type: </source>
-        <translation>Type inconnu: </translation>
+        <translation>Type inconnu&#xa0;: </translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="191"/>
         <source>Not implemented yet: </source>
-        <translation type="unfinished"></translation>
+        <translation>Pas encore implémenté&#xa0;: </translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="84"/>
         <source>Unknown type 1: </source>
-        <translation>Type inconnu 1: </translation>
+        <translation>Type inconnu 1&#xa0;: </translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="99"/>
         <source>Unknown type 2: </source>
-        <translation>Type inconnu 2: </translation>
+        <translation>Type inconnu 2&#xa0;: </translation>
     </message>
 </context>
 <context>
@@ -1059,7 +1065,7 @@
     <message>
         <location filename="../../commands.cpp" line="635"/>
         <source>Flip %1 elements in axis %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Retourner %1 éléments dans l&apos;axe %2</translation>
     </message>
 </context>
 <context>
@@ -1074,7 +1080,7 @@
         <location filename="../../graphicelement.cpp" line="511"/>
         <location filename="../../graphicelement.cpp" line="547"/>
         <source>Corrupted DataStream!</source>
-        <translation type="unfinished"></translation>
+        <translation>Flux de données corrompu&#x202f;!</translation>
     </message>
     <message>
         <location filename="../../graphicelement.cpp" line="543"/>
@@ -1107,18 +1113,18 @@
     <message>
         <location filename="../../ic.cpp" line="25"/>
         <source>INTEGRATED CIRCUIT</source>
-        <translation>CIRCUIT INTÉGRÉE</translation>
+        <translation>CIRCUIT INTÉGRÉ</translation>
     </message>
     <message>
         <location filename="../../ic.cpp" line="93"/>
         <location filename="../../ic.cpp" line="409"/>
         <source>Error copying file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de copie du fichier&#xa0;: </translation>
     </message>
     <message>
         <location filename="../../ic.cpp" line="144"/>
         <source> not found.</source>
-        <translation> pas trouvé.</translation>
+        <translation> non trouvé.</translation>
     </message>
 </context>
 <context>
@@ -1126,12 +1132,12 @@
     <message>
         <location filename="../../element/inputbutton.cpp" line="17"/>
         <source>PUSH BUTTON</source>
-        <translation type="unfinished"></translation>
+        <translation>BOUTON POUSSOIR</translation>
     </message>
     <message>
         <location filename="../../element/inputbutton.cpp" line="17"/>
         <source>Push Button</source>
-        <translation type="unfinished"></translation>
+        <translation>Bouton poussoir</translation>
     </message>
 </context>
 <context>
@@ -1144,7 +1150,7 @@
     <message>
         <location filename="../../element/inputgnd.cpp" line="14"/>
         <source>GROUND</source>
-        <translation type="unfinished"></translation>
+        <translation>TERRE</translation>
     </message>
 </context>
 <context>
@@ -1157,7 +1163,7 @@
     <message>
         <location filename="../../element/inputrotary.cpp" line="18"/>
         <source>ROTARY SWITCH</source>
-        <translation type="unfinished"></translation>
+        <translation>INTERRUPTEUR ROTATIF</translation>
     </message>
 </context>
 <context>
@@ -1165,12 +1171,12 @@
     <message>
         <location filename="../../element/inputswitch.cpp" line="17"/>
         <source>Input Switch</source>
-        <translation>Interrupteur d &apos; entrée</translation>
+        <translation>Interrupteur d&apos;entrée</translation>
     </message>
     <message>
         <location filename="../../element/inputswitch.cpp" line="17"/>
         <source>INPUT SWITCH</source>
-        <translation type="unfinished"></translation>
+        <translation>INTERRUPTEUR D&apos;ENTRÉE</translation>
     </message>
 </context>
 <context>
@@ -1199,7 +1205,7 @@
     <message>
         <location filename="../../element/led.cpp" line="17"/>
         <source>LED</source>
-        <translation>LED</translation>
+        <translation>DEL</translation>
     </message>
 </context>
 <context>
@@ -1207,7 +1213,7 @@
     <message>
         <location filename="../../lengthdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Boîte de dialogue</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.ui" line="43"/>
@@ -1217,7 +1223,7 @@
     <message>
         <location filename="../../lengthdialog.ui" line="53"/>
         <source>Simulation Length</source>
-        <translation>Longueur de simulation</translation>
+        <translation>Longueur de la simulation</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.ui" line="60"/>
@@ -1227,7 +1233,7 @@
     <message>
         <location filename="../../lengthdialog.cpp" line="15"/>
         <source>Simulation Length Selection</source>
-        <translation>Sélection de longueur de simulation</translation>
+        <translation>Sélection de la longueur de la simulation</translation>
     </message>
 </context>
 <context>
@@ -1240,7 +1246,7 @@
     <message>
         <location filename="../../element/line.cpp" line="14"/>
         <source>LINE</source>
-        <translation type="unfinished"></translation>
+        <translation>LIGNE</translation>
     </message>
 </context>
 <context>
@@ -1288,62 +1294,62 @@
     <message>
         <location filename="../../mainwindow.ui" line="531"/>
         <source>Search:</source>
-        <translation>Recherche:</translation>
+        <translation>Rechercher&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="626"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fichier</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="636"/>
         <source>&amp;Recent files:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fichiers récents&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="661"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Modifier</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="682"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Aide</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="691"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Affichage</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="695"/>
         <source>&amp;Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Thème</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="715"/>
         <source>&amp;Language</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Langue</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="723"/>
         <source>Sim&amp;ulation</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Simulation</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="732"/>
         <source>Examples</source>
-        <translation type="unfinished"></translation>
+        <translation>Exemples</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="749"/>
         <source>&amp;Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ouvrir…</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="752"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="755"/>
@@ -1353,27 +1359,27 @@
     <message>
         <location filename="../../mainwindow.ui" line="764"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Enregistrer</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="767"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="776"/>
         <source>Save &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Enregistrer sous…</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="779"/>
         <source>Ctrl+Shift+S</source>
-        <translation>Ctrl+Shift+S</translation>
+        <translation>Ctrl+Maj+S</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="788"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Couper</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="791"/>
@@ -1383,7 +1389,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="800"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Copier</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="803"/>
@@ -1393,7 +1399,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="812"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Coller</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="815"/>
@@ -1403,7 +1409,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="825"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Supprimer</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="828"/>
@@ -1413,7 +1419,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="837"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nouveau</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="840"/>
@@ -1423,7 +1429,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="849"/>
         <source>Zoom &amp;in</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zoom avant</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="852"/>
@@ -1433,7 +1439,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="861"/>
         <source>Zoom &amp;out</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zoom arrière</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="864"/>
@@ -1443,7 +1449,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="879"/>
         <source>&amp;Wires</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Câbles</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="882"/>
@@ -1473,7 +1479,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="921"/>
         <source>&amp;Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Quitter</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="924"/>
@@ -1483,7 +1489,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="933"/>
         <source>R&amp;otate right</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tourner à droite</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="936"/>
@@ -1493,22 +1499,22 @@
     <message>
         <location filename="../../mainwindow.ui" line="945"/>
         <source>Rotate &amp;left</source>
-        <translation>Tourner à gauche</translation>
+        <translation>&amp;Tourner à gauche</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="948"/>
         <source>Ctrl+Shift+R</source>
-        <translation>Ctrl+Shift+R</translation>
+        <translation>Ctrl+Maj+R</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="957"/>
         <source>About &amp;Qt</source>
-        <translation>À propos de &amp; Qt</translation>
+        <translation>À propos de &amp;Qt</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="966"/>
         <source>&amp;Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tout sélectionner</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="969"/>
@@ -1528,7 +1534,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="990"/>
         <source>E&amp;xport to Arduino</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exporter en Arduino</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="993"/>
@@ -1538,7 +1544,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1002"/>
         <source>&amp;Reset Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Réinitialiser le niveau de zoom</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1005"/>
@@ -1548,32 +1554,32 @@
     <message>
         <location filename="../../mainwindow.ui" line="1014"/>
         <source>Export to &amp;PDF</source>
-        <translation>Exporter en PDF</translation>
+        <translation>&amp;Exporter en PDF</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1017"/>
         <source>Ctrl+Shift+P</source>
-        <translation>Ctrl+Shift+P</translation>
+        <translation>Ctrl+Maj+P</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1026"/>
         <source>&amp;English</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Anglais</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1035"/>
         <source>&amp;Portuguese</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Portugais</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1048"/>
         <source>&amp;Play/Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lecture/Pause</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1051"/>
         <source>Play or Pause simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lire ou mettre en pause la simulation.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1054"/>
@@ -1583,7 +1589,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1063"/>
         <source>&amp;Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Renommer</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1066"/>
@@ -1593,7 +1599,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1075"/>
         <source>Cha&amp;nge Trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Modifier le déclencheur</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1078"/>
@@ -1603,17 +1609,17 @@
     <message>
         <location filename="../../mainwindow.ui" line="1087"/>
         <source>Cl&amp;ear selection</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Effacer la sélection</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1090"/>
         <source>Esc</source>
-        <translation>Esc</translation>
+        <translation>Échap</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1102"/>
         <source>&amp;Fast Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mode rapide</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1113"/>
@@ -1628,7 +1634,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1130"/>
         <source>&amp;Waveform</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Forme d&apos;onde</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1133"/>
@@ -1638,7 +1644,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1142"/>
         <source>Export to &amp;Image</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exporter en image</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1145"/>
@@ -1648,7 +1654,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1150"/>
         <source>&amp;Flip horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Retourner horizontalement</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1153"/>
@@ -1658,12 +1664,12 @@
     <message>
         <location filename="../../mainwindow.ui" line="1158"/>
         <source>Flip &amp;vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Retourner verticalement</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1163"/>
         <source>F&amp;ullscreen</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Plein écran</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1166"/>
@@ -1674,12 +1680,12 @@
         <location filename="../../mainwindow.ui" line="1179"/>
         <location filename="../../mainwindow.cpp" line="1358"/>
         <source>Mute</source>
-        <translation>Mute</translation>
+        <translation>Muet</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1182"/>
         <source>Mutes and unmutes circuit buzzers</source>
-        <translation type="unfinished"></translation>
+        <translation>Active/Désactive le son des buzzers du circuit</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1185"/>
@@ -1689,22 +1695,22 @@
     <message>
         <location filename="../../mainwindow.ui" line="1193"/>
         <source>Labels under icons</source>
-        <translation>Étiquettes sous icônes</translation>
+        <translation>Étiquettes sous les icônes</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1198"/>
         <source>About this version</source>
-        <translation>A propos de cette version</translation>
+        <translation>À propos de cette version</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1207"/>
         <source>&amp;Restart</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Relancer</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1210"/>
         <source>Restart simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Relancer la simulation.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1219"/>
@@ -1733,29 +1739,29 @@
     <message>
         <location filename="../../mainwindow.cpp" line="295"/>
         <source>File saved successfully.</source>
-        <translation>Fichier enregistré avec succès.</translation>
+        <translation>Le fichier a bien été enregistré.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="314"/>
         <source>Don&apos;t show this again.</source>
-        <translation>Ne montre pas ça.</translation>
+        <translation>Ne plus afficher.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="355"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier non enregistré. Fermer l&apos;onglet quand-même&#x202f;?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="374"/>
         <source> has been modified. 
 Do you want to save your changes?</source>
         <translation> a été modifié.
-Tu veux sauver tes changements&#x202f;?</translation>
+Voulez-vous enregistrer vos modifications&#x202f;?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="412"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier a bien été chargé.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="431"/>
@@ -1774,17 +1780,17 @@ Tu veux sauver tes changements&#x202f;?</translation>
         <location filename="../../mainwindow.cpp" line="448"/>
         <location filename="../../mainwindow.cpp" line="470"/>
         <source>Save File as ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer le fichier sous…</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="554"/>
         <source>Exit </source>
-        <translation type="unfinished"></translation>
+        <translation>Quitter </translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="555"/>
         <source>Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Voulez-vous continuer&#x202f;?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="703"/>
@@ -1813,7 +1819,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
         <location filename="../../mainwindow.cpp" line="895"/>
         <location filename="../../mainwindow.cpp" line="922"/>
         <source>Missing file name.</source>
-        <translation>Nom manquant.</translation>
+        <translation>Nom du fichier manquant.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="901"/>
@@ -1823,12 +1829,12 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../mainwindow.cpp" line="914"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le code Arduino a bien été généré.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="949"/>
         <source>Generate Arduino Code</source>
-        <translation>Générer le Code Arduino</translation>
+        <translation>Générer le code Arduino</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="949"/>
@@ -1838,7 +1844,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../mainwindow.cpp" line="1051"/>
         <source>Export to PDF</source>
-        <translation>Exportation au PDF</translation>
+        <translation>Exporter en PDF</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1051"/>
@@ -1848,18 +1854,18 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../mainwindow.cpp" line="1069"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;imprimer ce circuit en PDF.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1076"/>
         <location filename="../../mainwindow.cpp" line="1114"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier a bien été exporté.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1095"/>
         <source>Export to Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter en image</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1095"/>
@@ -1869,22 +1875,22 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../mainwindow.cpp" line="1190"/>
         <source>Error loading wiRedPanda translation!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors du chargement de la traduction de wiRedPanda&#x202f;!</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1198"/>
         <source>Error loading Qt translation!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors du chargement de Qt&#x202f;!</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1358"/>
         <source>Unmute</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer le son</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1395"/>
         <source>Save file first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer le fichier en premier.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1401"/>
@@ -1910,7 +1916,12 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../mainwindow.cpp" line="1447"/>
         <source>Error removing file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de suppression du fichier&#xa0;: </translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1223"/>
+        <source>Background Simulation</source>
+        <translation>Simulation en arrière-plan</translation>
     </message>
 </context>
 <context>
@@ -1918,7 +1929,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../commands.cpp" line="529"/>
         <source>Morph %1 elements to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformer %1 éléments en %2</translation>
     </message>
 </context>
 <context>
@@ -1939,7 +1950,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../element/mux.cpp" line="15"/>
         <source>MULTIPLEXER</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTIPLEXEUR</translation>
     </message>
 </context>
 <context>
@@ -1960,12 +1971,12 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../element/node.cpp" line="15"/>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Nœud</translation>
     </message>
     <message>
         <location filename="../../element/node.cpp" line="15"/>
         <source>NODE</source>
-        <translation type="unfinished"></translation>
+        <translation>NŒUD</translation>
     </message>
 </context>
 <context>
@@ -2017,12 +2028,12 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../commands.cpp" line="109"/>
         <source>One or more items was not found on the scene.</source>
-        <translation>Un ou plusieurs articles n&apos;ont pas été trouvés sur la scène.</translation>
+        <translation>Un ou plusieurs éléments n&apos;ont pas été trouvés sur la scène.</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="127"/>
         <source>One or more elements was not found on the scene.</source>
-        <translation>Un ou plusieurs éléments n&apos;ont pas été trouvés sur les lieux.</translation>
+        <translation>Un ou plusieurs éléments n&apos;ont pas été trouvés sur la scène.</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="190"/>
@@ -2033,7 +2044,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
         <location filename="../../ic.cpp" line="156"/>
         <location filename="../../ic.cpp" line="415"/>
         <source>Error opening file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de l&apos;ouverture du fichier&#xa0;: </translation>
     </message>
 </context>
 <context>
@@ -2041,7 +2052,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../commands.cpp" line="272"/>
         <source>Rotate %1 degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>Pivoter de %s degrés</translation>
     </message>
 </context>
 <context>
@@ -2062,17 +2073,17 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../scene.cpp" line="34"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Annuler</translation>
     </message>
     <message>
         <location filename="../../scene.cpp" line="38"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rétablir</translation>
     </message>
     <message>
         <location filename="../../scene.cpp" line="765"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Coller</translation>
     </message>
 </context>
 <context>
@@ -2103,12 +2114,12 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../commands.cpp" line="470"/>
         <source>Error trying to redo </source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors du rétablissement de </translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="500"/>
         <source>Error trying to undo </source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de l&apos;annulation de </translation>
     </message>
 </context>
 <context>
@@ -2134,7 +2145,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../element/text.cpp" line="14"/>
         <source>TEXT</source>
-        <translation type="unfinished"></translation>
+        <translation>TEXTE</translation>
     </message>
 </context>
 <context>
@@ -2150,7 +2161,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../trashbutton.cpp" line="28"/>
         <source>File will be deleted. Are you sure?</source>
-        <translation>Le fichier sera supprimé. Tu es sûr&#x202f;?</translation>
+        <translation>Le fichier sera supprimé. Voulez-vous continuer&#x202f;?</translation>
     </message>
 </context>
 <context>
@@ -2171,7 +2182,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../commands.cpp" line="385"/>
         <source>Update %1 elements</source>
-        <translation>Mise à jour des éléments %1</translation>
+        <translation>Mettre à jour %1 éléments</translation>
     </message>
 </context>
 <context>
@@ -2179,7 +2190,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../workspace.cpp" line="71"/>
         <source>Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer le fichier</translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="71"/>
@@ -2189,17 +2200,17 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../workspace.cpp" line="89"/>
         <source>Error opening file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur d&apos;ouverture du fichier&#xa0;: </translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="99"/>
         <source>Could not save file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;enregistrer le fichier </translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="134"/>
         <source>This file does not exist: </source>
-        <translation>Ce fichier n&apos;existe pas: </translation>
+        <translation>Ce fichier n&apos;existe pas&#xa0;: </translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="144"/>
@@ -2216,12 +2227,12 @@ Please check for updates if the file does not load correctly.</source>
     <message>
         <location filename="../../workspace.cpp" line="170"/>
         <source>Newer version file.</source>
-        <translation>Nouveau fichier de version.</translation>
+        <translation>Fichier de la nouvelle version.</translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="174"/>
         <source>Old version file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier de l&apos;ancienne version.</translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="172"/>
@@ -2231,7 +2242,7 @@ Please check for updates if the file does not load correctly.</source>
     <message>
         <location filename="../../workspace.cpp" line="269"/>
         <source>Error opening autosave file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur d&apos;ouverture du fichier de sauvegarde automatique&#xa0;: </translation>
     </message>
 </context>
 <context>
@@ -2270,7 +2281,7 @@ Please check for updates if the file does not load correctly.</source>
     <message>
         <location filename="../../main.cpp" line="49"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
-        <translation>Verbosity niveau 0 à 5, désactivé par défaut.</translation>
+        <translation>Niveau de verbosité de 0 à 5, désactivé par défaut.</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="50"/>
@@ -2300,7 +2311,30 @@ Please check for updates if the file does not load correctly.</source>
     <message>
         <location filename="../../main.cpp" line="62"/>
         <source>waveform input text file</source>
-        <translation type="unfinished"></translation>
+        <translation>fichier texte de formes d&apos;onde</translation>
+    </message>
+    <message>
+        <location filename="../../main.cpp" line="90"/>
+        <source>Exports circuit to waveform text file, reading input from terminal.</source>
+        <translation>Exporte le circuit vers un fichier texte de formes d&apos;onde, en lisant la sortie du terminal.</translation>
+    </message>
+    <message>
+        <location filename="../../main.cpp" line="84"/>
+        <source>Exports circuit to waveform text file.</source>
+        <translation>Exporte le circuit vers un fichier texte de formes d&apos;onde.</translation>
+    </message>
+</context>
+<context>
+    <name>Display16</name>
+    <message>
+        <location filename="../../element/display_16.cpp" line="13"/>
+        <source>16-SEGMENT DISPLAY</source>
+        <translation>AFFICHAGE 16 SEGMENTS</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="13"/>
+        <source>16-Segment Display</source>
+        <translation>Affichage 16 segments</translation>
     </message>
 </context>
 </TS>
