@@ -1503,7 +1503,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="957"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>À propos de &amp; Qt</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="966"/>
