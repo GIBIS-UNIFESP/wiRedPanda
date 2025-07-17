@@ -900,7 +900,7 @@
     <message>
         <location filename="../../elementeditor.cpp" line="93"/>
         <source>Change priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Priorité du changement</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="46"/>
@@ -911,7 +911,7 @@
         <location filename="../../elementeditor.cpp" line="213"/>
         <location filename="../../elementeditor.cpp" line="286"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Copie</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="214"/>
