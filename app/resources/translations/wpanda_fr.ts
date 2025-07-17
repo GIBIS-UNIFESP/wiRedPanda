@@ -1709,18 +1709,18 @@
     <message>
         <location filename="../../mainwindow.ui" line="1219"/>
         <source>Spanish</source>
-        <translation type="unfinished"></translation>
+        <translation>Espagnol</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1227"/>
         <location filename="../../mainwindow.cpp" line="507"/>
         <source>Shortcuts and Tips</source>
-        <translation type="unfinished"></translation>
+        <translation>Raccourcis et conseils</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="224"/>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur&#x202f;!</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="249"/>
@@ -1728,12 +1728,12 @@
         <location filename="../../mainwindow.cpp" line="623"/>
         <location filename="../../mainwindow.cpp" line="1135"/>
         <source>New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau projet</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="295"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier enregistré avec succès.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="314"/>
