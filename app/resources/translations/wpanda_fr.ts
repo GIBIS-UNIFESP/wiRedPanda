@@ -1694,7 +1694,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1198"/>
         <source>About this version</source>
-        <translation type="unfinished"></translation>
+        <translation>A propos de cette version</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1207"/>
