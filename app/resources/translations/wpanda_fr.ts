@@ -845,17 +845,17 @@
     <message>
         <location filename="../../elementeditor.ui" line="286"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Par défaut</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="86"/>
         <source>Locked:</source>
-        <translation type="unfinished"></translation>
+        <translation>Verrouillé&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="241"/>
         <source>Priority:</source>
-        <translation type="unfinished"></translation>
+        <translation>Priorité:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="90"/>
