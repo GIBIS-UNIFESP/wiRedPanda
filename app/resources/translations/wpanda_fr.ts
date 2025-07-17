@@ -1235,7 +1235,7 @@
     <message>
         <location filename="../../element/line.cpp" line="14"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Ligne</translation>
     </message>
     <message>
         <location filename="../../element/line.cpp" line="14"/>
@@ -1248,7 +1248,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="134"/>
         <source>Inputs/Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrées/sorties</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="183"/>
@@ -1263,12 +1263,12 @@
     <message>
         <location filename="../../mainwindow.ui" line="287"/>
         <source>Memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Mémoire</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="336"/>
         <source>Integrated Circuits</source>
-        <translation type="unfinished"></translation>
+        <translation>Circuits intégrés</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="379"/>
@@ -1283,12 +1283,12 @@
     <message>
         <location filename="../../mainwindow.ui" line="413"/>
         <source>Miscellaneous</source>
-        <translation type="unfinished"></translation>
+        <translation>Divers</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="531"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Recherche:</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="626"/>
