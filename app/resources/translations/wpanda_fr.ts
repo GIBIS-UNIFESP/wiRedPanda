@@ -1578,7 +1578,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1054"/>
         <source>F5</source>
-        <translation type="unfinished"></translation>
+        <translation>F5</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1063"/>
@@ -1588,7 +1588,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1066"/>
         <source>F2</source>
-        <translation type="unfinished"></translation>
+        <translation>F2</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1075"/>
@@ -1598,7 +1598,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1078"/>
         <source>F3</source>
-        <translation type="unfinished"></translation>
+        <translation>F3</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1087"/>
@@ -1608,7 +1608,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="1090"/>
         <source>Esc</source>
-        <translation type="unfinished"></translation>
+        <translation>Esc</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1102"/>
