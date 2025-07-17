@@ -1212,12 +1212,12 @@
     <message>
         <location filename="../../lengthdialog.ui" line="43"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.ui" line="53"/>
         <source>Simulation Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Longueur de simulation</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.ui" line="60"/>
