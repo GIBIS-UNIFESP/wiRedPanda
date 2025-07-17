@@ -418,7 +418,7 @@
         <location filename="../../bewaveddolphin.cpp" line="1196"/>
         <location filename="../../bewaveddolphin.cpp" line="1224"/>
         <source>Invalid number of columns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre invalide de colonnes.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1277"/>
