@@ -860,7 +860,7 @@
     <message>
         <location filename="../../elementeditor.cpp" line="90"/>
         <source>Change color to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer de couleur pour...</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="91"/>
