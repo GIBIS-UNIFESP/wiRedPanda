@@ -1378,7 +1378,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="791"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="800"/>
@@ -1388,7 +1388,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="803"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="812"/>
@@ -1398,7 +1398,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="815"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="825"/>
@@ -1418,7 +1418,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="840"/>
         <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="849"/>
@@ -1428,7 +1428,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="852"/>
         <source>Ctrl+=</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+=</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="861"/>
@@ -1438,7 +1438,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="864"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="879"/>
@@ -1448,7 +1448,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="882"/>
         <source>Ctrl+1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+1</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="897"/>
@@ -1458,17 +1458,17 @@
     <message>
         <location filename="../../mainwindow.ui" line="900"/>
         <source>Ctrl+2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+2</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="909"/>
         <source>&amp;About</source>
-        <translation type="unfinished"></translation>
+        <translation>À propos</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="912"/>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation>F1</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="921"/>
@@ -1478,7 +1478,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="924"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="933"/>
@@ -1488,12 +1488,12 @@
     <message>
         <location filename="../../mainwindow.ui" line="936"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="945"/>
         <source>Rotate &amp;left</source>
-        <translation type="unfinished"></translation>
+        <translation>Tourner à gauche</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="948"/>
