@@ -2184,7 +2184,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../workspace.cpp" line="71"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="89"/>
@@ -2199,7 +2199,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../workspace.cpp" line="134"/>
         <source>This file does not exist: </source>
-        <translation type="unfinished"></translation>
+        <translation>Ce fichier n&apos;existe pas: </translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="144"/>
