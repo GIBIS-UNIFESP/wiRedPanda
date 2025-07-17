@@ -335,7 +335,7 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1092"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Voulez-vous lier ce fichier beWavedDolphin à votre fichier wiRedPanda actuel et l&apos;enregistrer?</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="991"/>
@@ -2275,7 +2275,7 @@ Please check for updates if the file does not load correctly.</source>
     <message>
         <location filename="../../main.cpp" line="50"/>
         <source>verbosity level</source>
-        <translation type="unfinished"></translation>
+        <translation>niveau de verbosité</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="55"/>
@@ -2295,7 +2295,7 @@ Please check for updates if the file does not load correctly.</source>
     <message>
         <location filename="../../main.cpp" line="56"/>
         <source>arduino file</source>
-        <translation type="unfinished"></translation>
+        <translation>fichier arduino</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="62"/>
