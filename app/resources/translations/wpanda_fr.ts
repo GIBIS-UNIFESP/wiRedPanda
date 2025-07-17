@@ -865,7 +865,7 @@
     <message>
         <location filename="../../elementeditor.cpp" line="91"/>
         <source>Change frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Fréquence de changement</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="92"/>
