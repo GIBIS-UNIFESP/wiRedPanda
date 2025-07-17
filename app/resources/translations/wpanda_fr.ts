@@ -291,7 +291,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="405"/>
         <source>Ctrl+Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Home</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="414"/>
