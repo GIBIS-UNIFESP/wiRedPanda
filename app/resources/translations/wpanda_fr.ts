@@ -266,12 +266,12 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="366"/>
         <source>Ctrl+=</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+=</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="375"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="378"/>
