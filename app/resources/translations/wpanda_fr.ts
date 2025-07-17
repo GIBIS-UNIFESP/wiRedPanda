@@ -1152,7 +1152,7 @@
     <message>
         <location filename="../../element/inputrotary.cpp" line="18"/>
         <source>Rotary Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Interrupteur rotatif</translation>
     </message>
     <message>
         <location filename="../../element/inputrotary.cpp" line="18"/>
@@ -1165,7 +1165,7 @@
     <message>
         <location filename="../../element/inputswitch.cpp" line="17"/>
         <source>Input Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Interrupteur d &apos; entrée</translation>
     </message>
     <message>
         <location filename="../../element/inputswitch.cpp" line="17"/>
