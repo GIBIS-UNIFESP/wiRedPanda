@@ -1513,7 +1513,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="969"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="978"/>
@@ -1523,7 +1523,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="981"/>
         <source>Ctrl+F5</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+F5</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="990"/>
@@ -1533,7 +1533,7 @@
     <message>
         <location filename="../../mainwindow.ui" line="993"/>
         <source>Ctrl+Alt+I</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+I</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1002"/>
@@ -1543,12 +1543,12 @@
     <message>
         <location filename="../../mainwindow.ui" line="1005"/>
         <source>Ctrl+0</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+0</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1014"/>
         <source>Export to &amp;PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter en PDF</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1017"/>
