@@ -462,12 +462,12 @@
     <message>
         <location filename="../../element/buzzer.cpp" line="24"/>
         <source>Buzzer</source>
-        <translation type="unfinished"></translation>
+        <translation>Buzzer</translation>
     </message>
     <message>
         <location filename="../../element/buzzer.cpp" line="24"/>
         <source>BUZZER</source>
-        <translation type="unfinished"></translation>
+        <translation>BUZZER</translation>
     </message>
 </context>
 <context>
@@ -491,7 +491,7 @@
     <message>
         <location filename="../../element/clock.cpp" line="19"/>
         <source>Clock</source>
-        <translation type="unfinished"></translation>
+        <translation>Horloge</translation>
     </message>
     <message>
         <location filename="../../element/clock.cpp" line="19"/>
@@ -509,12 +509,12 @@
     <message>
         <location filename="../../clockdialog.ui" line="80"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../../clockdialog.ui" line="63"/>
         <source>Clock Frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Fréquence de l &apos; horloge</translation>
     </message>
     <message>
         <location filename="../../clockdialog.ui" line="70"/>
