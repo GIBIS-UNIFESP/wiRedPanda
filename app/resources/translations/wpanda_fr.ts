@@ -1081,6 +1081,21 @@
         <source>Loading pixmap skin names.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../../graphicelement.cpp" line="100"/>
+        <source>File does not exist</source>
+        <translation>Le fichier n&apos;existe pas</translation>
+    </message>
+    <message>
+        <location filename="../../graphicelement.cpp" line="102"/>
+        <source>File is not readable</source>
+        <translation>Le fichier n&apos;est pas lisible</translation>
+    </message>
+    <message>
+        <location filename="../../graphicelement.cpp" line="103"/>
+        <source>Unknown reason</source>
+        <translation>Cause inconnue</translation>
+    </message>
 </context>
 <context>
     <name>IC</name>
@@ -1092,7 +1107,7 @@
     <message>
         <location filename="../../ic.cpp" line="25"/>
         <source>INTEGRATED CIRCUIT</source>
-        <translation type="unfinished"></translation>
+        <translation>CIRCUIT INTÉGRÉE</translation>
     </message>
     <message>
         <location filename="../../ic.cpp" line="93"/>
