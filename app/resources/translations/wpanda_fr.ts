@@ -571,7 +571,7 @@
     <message>
         <location filename="../../commands.cpp" line="246"/>
         <source>Delete %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer %1 éléments</translation>
     </message>
 </context>
 <context>
@@ -579,7 +579,7 @@
     <message>
         <location filename="../../element/demux.cpp" line="15"/>
         <source>Demux</source>
-        <translation type="unfinished"></translation>
+        <translation>Demux</translation>
     </message>
     <message>
         <location filename="../../element/demux.cpp" line="15"/>
@@ -733,12 +733,12 @@
     <message>
         <location filename="../../elementeditor.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="40"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Titre</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="56"/>
@@ -774,17 +774,17 @@
     <message>
         <location filename="../../elementeditor.ui" line="100"/>
         <source>Frequency:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fréquence&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="46"/>
         <source>Label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Étiquette&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="129"/>
         <source>Color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="266"/>
