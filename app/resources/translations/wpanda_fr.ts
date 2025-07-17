@@ -407,7 +407,7 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1171"/>
         <source>Format not supported. Could not open file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Format non supporté. Impossible d&apos;ouvrir le dossier&#xa0;: </translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1185"/>
