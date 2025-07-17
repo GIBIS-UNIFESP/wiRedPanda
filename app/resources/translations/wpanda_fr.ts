@@ -1684,12 +1684,12 @@
     <message>
         <location filename="../../mainwindow.ui" line="1185"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1193"/>
         <source>Labels under icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Étiquettes sous icônes</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1198"/>
