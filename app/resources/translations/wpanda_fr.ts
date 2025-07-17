@@ -296,7 +296,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="414"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Clear</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="417"/>
