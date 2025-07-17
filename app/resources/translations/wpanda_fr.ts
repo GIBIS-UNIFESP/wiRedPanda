@@ -276,12 +276,12 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="378"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="393"/>
         <source>Ctrl+Shift+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="402"/>
