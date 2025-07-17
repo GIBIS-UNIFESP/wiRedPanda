@@ -2171,7 +2171,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../commands.cpp" line="385"/>
         <source>Update %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Mise à jour des éléments %1</translation>
     </message>
 </context>
 <context>
