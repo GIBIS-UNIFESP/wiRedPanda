@@ -1761,14 +1761,14 @@ Tu veux sauver tes changements&#x202f;?</translation>
         <location filename="../../mainwindow.cpp" line="431"/>
         <location filename="../../mainwindow.cpp" line="1399"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir le fichier</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="431"/>
         <location filename="../../mainwindow.cpp" line="448"/>
         <location filename="../../mainwindow.cpp" line="470"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="448"/>
@@ -1789,7 +1789,7 @@ Tu veux sauver tes changements&#x202f;?</translation>
     <message>
         <location filename="../../mainwindow.cpp" line="703"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="322"/>
@@ -1813,7 +1813,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
         <location filename="../../mainwindow.cpp" line="895"/>
         <location filename="../../mainwindow.cpp" line="922"/>
         <source>Missing file name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom manquant.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="901"/>
