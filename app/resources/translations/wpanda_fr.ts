@@ -519,12 +519,12 @@
     <message>
         <location filename="../../clockdialog.ui" line="70"/>
         <source>1024</source>
-        <translation type="unfinished"></translation>
+        <translation>1024</translation>
     </message>
     <message>
         <location filename="../../clockdialog.cpp" line="15"/>
         <source>Clock Frequency Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Choix de la fréquence d&apos;horloge</translation>
     </message>
 </context>
 <context>
@@ -537,7 +537,7 @@
     <message>
         <location filename="../../arduino/codegenerator.cpp" line="423"/>
         <source>Element type not supported: </source>
-        <translation type="unfinished"></translation>
+        <translation>Type d&apos;élément non supporté: </translation>
     </message>
 </context>
 <context>
