@@ -301,12 +301,12 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="417"/>
         <source>Alt+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+X</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="426"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Coupe</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="429"/>
