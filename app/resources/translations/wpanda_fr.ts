@@ -246,17 +246,17 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="342"/>
         <source>Alt+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+L</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="351"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>À propos de Qt</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="354"/>
         <source>Ctrl+Shift+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="363"/>
