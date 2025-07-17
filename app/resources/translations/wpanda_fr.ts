@@ -875,7 +875,7 @@
     <message>
         <location filename="../../elementeditor.cpp" line="94"/>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Renommer</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="95"/>
@@ -885,17 +885,17 @@
     <message>
         <location filename="../../elementeditor.cpp" line="96"/>
         <source>Rotate left</source>
-        <translation type="unfinished"></translation>
+        <translation>Tourner à gauche</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="97"/>
         <source>Rotate right</source>
-        <translation type="unfinished"></translation>
+        <translation>Tourner à droite</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="98"/>
         <source>Change trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Déclencheur de changement</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="93"/>
