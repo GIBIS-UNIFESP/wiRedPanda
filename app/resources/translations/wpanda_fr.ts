@@ -261,7 +261,7 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="363"/>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="366"/>
