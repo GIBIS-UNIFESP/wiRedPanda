@@ -917,7 +917,7 @@
         <location filename="../../elementeditor.cpp" line="214"/>
         <location filename="../../elementeditor.cpp" line="286"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Coupe</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="220"/>
