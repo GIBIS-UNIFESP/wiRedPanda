@@ -2265,12 +2265,12 @@ Please check for updates if the file does not load correctly.</source>
     <message>
         <location filename="../../main.cpp" line="45"/>
         <source>Circuit file to open.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier de circuit à ouvrir.</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="49"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbosity niveau 0 à 5, désactivé par défaut.</translation>
     </message>
     <message>
         <location filename="../../main.cpp" line="50"/>
