@@ -12,6 +12,7 @@
 #include "scene.h"
 #include "serialization.h"
 
+#include <QDir>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -136,7 +137,13 @@ void IC::loadFile(const QString &fileName)
     // ----------------------------------------------
 
     QFileInfo fileInfo;
-    fileInfo.setFile(GlobalProperties::currentDir, QFileInfo(fileName).fileName());
+    
+    // Fix for double path concatenation bug: check if fileName is already absolute
+    if (QFileInfo(fileName).isAbsolute()) {
+        fileInfo.setFile(fileName);  // Use as-is if absolute path
+    } else {
+        fileInfo.setFile(QDir(GlobalProperties::currentDir), fileName);  // Combine if relative path
+    }
 
     if (!fileInfo.exists() || !fileInfo.isFile()) {
         throw PANDACEPTION("%1 not found.", fileInfo.absoluteFilePath());
