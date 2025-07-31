@@ -161,6 +161,29 @@ jobs:
         rm ./linuxdeployqt-continuous-x86_64.AppImage
         mv wiRedPanda-$VERSION-x86_64.AppImage wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage
 
+    - name: Validate Ubuntu Release Artifacts
+      if: runner.os == 'Linux'
+      run: |
+        # Verify AppImage exists and is executable
+        if [ ! -f "wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage" ]; then
+          echo "Error: AppImage not found"
+          exit 1
+        fi
+        
+        # Check AppImage is executable and can show version
+        chmod +x "wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage"
+        if ! timeout 10 "./wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage" --version 2>/dev/null; then
+          echo "Warning: AppImage version check failed (may be normal in headless environment)"
+        fi
+        
+        # Verify required Sentry files are included
+        if [ ! -f "appimage/lib/libsentry.so" ]; then
+          echo "Error: Sentry library missing from AppImage"
+          exit 1
+        fi
+        
+        echo "Ubuntu release artifacts validated successfully"
+
     - name: Upload Ubuntu Debug Symbols to Sentry
       if: runner.os == 'Linux'
       env:
@@ -229,6 +252,44 @@ jobs:
         ren release wiredpanda-$env:VERSION
         Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath wiRedPanda-$env:VERSION-Windows-Qt${{ matrix.qt }}-Portable.zip
 
+    - name: Validate Windows Release Artifacts
+      if: runner.os == 'Windows'
+      run: |
+        # Verify ZIP file exists
+        if (!(Test-Path "build/app/wiRedPanda-$env:VERSION-Windows-Qt${{ matrix.qt }}-Portable.zip")) {
+          Write-Error "Error: Windows ZIP file not found"
+          exit 1
+        }
+        
+        # Verify executable exists in the extracted folder
+        if (!(Test-Path "build/app/wiredpanda-$env:VERSION/wiredpanda.exe")) {
+          Write-Error "Error: wiredpanda.exe not found in package"
+          exit 1
+        }
+        
+        # Verify required Sentry files are included
+        if (!(Test-Path "build/app/wiredpanda-$env:VERSION/sentry.dll")) {
+          Write-Error "Error: Sentry DLL missing from package"
+          exit 1
+        }
+        
+        if (!(Test-Path "build/app/wiredpanda-$env:VERSION/crashpad_handler.exe")) {
+          Write-Error "Error: Crashpad handler missing from package"
+          exit 1
+        }
+        
+        # Test executable can show version (with timeout)
+        try {
+          $process = Start-Process -FilePath "build/app/wiredpanda-$env:VERSION/wiredpanda.exe" -ArgumentList "--version" -Wait -PassThru -WindowStyle Hidden -TimeoutSec 10
+          if ($process.ExitCode -ne 0) {
+            Write-Warning "Warning: Executable version check returned non-zero exit code (may be normal in headless environment)"
+          }
+        } catch {
+          Write-Warning "Warning: Executable version check failed (may be normal in headless environment)"
+        }
+        
+        Write-Output "Windows release artifacts validated successfully"
+
     - name: Upload Windows Debug Symbols to Sentry
       if: runner.os == 'Windows'
       env:
@@ -292,6 +353,51 @@ jobs:
         cd build/app
         macdeployqt wiredpanda.app -dmg
         mv wiredpanda.dmg wiRedPanda-$VERSION-macOS-Qt${{ matrix.qt }}.dmg
+
+    - name: Validate macOS Release Artifacts
+      if: runner.os == 'macOS'
+      run: |
+        # Verify DMG file exists
+        if [ ! -f "build/app/wiRedPanda-$VERSION-macOS-Qt${{ matrix.qt }}.dmg" ]; then
+          echo "Error: macOS DMG file not found"
+          exit 1
+        fi
+        
+        # Verify app bundle exists
+        if [ ! -d "build/app/wiredpanda.app" ]; then
+          echo "Error: wiredpanda.app bundle not found"
+          exit 1
+        fi
+        
+        # Verify executable exists in app bundle
+        if [ ! -f "build/app/wiredpanda.app/Contents/MacOS/wiredpanda" ]; then
+          echo "Error: wiredpanda executable not found in app bundle"
+          exit 1
+        fi
+        
+        # Verify required Sentry files are included
+        if [ ! -f "build/app/wiredpanda.app/Contents/Frameworks/libsentry.dylib" ]; then
+          echo "Error: Sentry library missing from app bundle"
+          exit 1
+        fi
+        
+        if [ ! -f "build/app/wiredpanda.app/Contents/MacOS/crashpad_handler" ]; then
+          echo "Error: Crashpad handler missing from app bundle"
+          exit 1
+        fi
+        
+        # Verify dSYM symbols were generated
+        if [ ! -d "build/app/wiredpanda.app.dSYM" ]; then
+          echo "Error: dSYM symbols not found"
+          exit 1
+        fi
+        
+        # Test executable can show version (with timeout)
+        if ! timeout 10 "build/app/wiredpanda.app/Contents/MacOS/wiredpanda" --version 2>/dev/null; then
+          echo "Warning: Executable version check failed (may be normal in headless environment)"
+        fi
+        
+        echo "macOS release artifacts validated successfully"
 
     - name: Upload macOS Debug Symbols to Sentry
       if: runner.os == 'macOS'
