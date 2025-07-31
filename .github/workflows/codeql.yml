@@ -50,7 +50,7 @@ jobs:
 
     - name: Test
       run: |
-        ./build/test/WPanda-test -platform offscreen
+        ./build/test/wiredpanda-test -platform offscreen
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

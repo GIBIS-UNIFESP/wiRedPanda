@@ -144,7 +144,7 @@ jobs:
     - name: Test Ubuntu
       if: runner.os == 'Linux'
       run: |
-        ./build/test/WPanda-test -platform offscreen
+        ./build/test/wiredpanda-test -platform offscreen
 
     - name: linuxdeployqt
       if: runner.os == 'Linux'
@@ -270,9 +270,9 @@ jobs:
         mkdir -p app/wiredpanda.app/Contents/Frameworks
         cp ../thirdparty/sentry/bin/crashpad_handler app/wiredpanda.app/Contents/MacOS/
         cp ../thirdparty/sentry/lib/libsentry.dylib app/wiredpanda.app/Contents/Frameworks/
-        mkdir -p test/WPanda-test.app/Contents/MacOS
-        mkdir -p test/WPanda-test.app/Contents/Frameworks
-        cp ../thirdparty/sentry/lib/libsentry.dylib test/WPanda-test.app/Contents/Frameworks/
+        mkdir -p test/wiredpanda-test.app/Contents/MacOS
+        mkdir -p test/wiredpanda-test.app/Contents/Frameworks
+        cp ../thirdparty/sentry/lib/libsentry.dylib test/wiredpanda-test.app/Contents/Frameworks/
 
     - name: Generate macOS dSYM Symbols
       if: runner.os == 'macOS'
