@@ -4,7 +4,7 @@ QT += testlib
 
 CONFIG += testcase
 
-TARGET = WPanda-test
+TARGET = wiredpanda-test
 
 DEFINES += CURRENTDIR=\"$$_PRO_FILE_PWD_\"
 

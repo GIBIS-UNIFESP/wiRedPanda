@@ -39,7 +39,7 @@ jobs:
         
     - name: Test
       run: |
-        ./build/test/WPanda-test -platform offscreen
+        ./build/test/wiredpanda-test -platform offscreen
         
     - name: Upload coverage data
       run: |

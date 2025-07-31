@@ -42,7 +42,7 @@ linux {
 }
 
 linux-g++ {
-    contains(CONFIG, coverage) {
+    !isEmpty(COVERAGE) {
         QMAKE_CXXFLAGS += --coverage
         QMAKE_LFLAGS += --coverage
     }
