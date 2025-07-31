@@ -159,6 +159,11 @@ The simulation accurately represents **ideal digital logic behavior** while deli
 - **Usage**: Open project in VS Code and select "Reopen in Container"
 - **Testing**: Supports headless test execution
 
+## CI/CD & Release System
+- **Unified Build Workflow**: Single `build_unified.yml` consolidating CMake and qmake testing
+- **Build Matrix**: Tests Qt 5.15.2, 6.2.4, 6.5.3, 6.9.0 across Ubuntu/Windows with both build systems
+- **Parallel Builds**: Optimized for faster PR feedback with reduced job count
+
 ## Analysis & Fix Documentation Protocol
 - **IMPORTANT**: Whenever analyzing or fixing issues, create/update markdown documentation for progress tracking
 - **Documentation Location**: Store all analysis markdowns in `.claude/` directory to avoid root bloat

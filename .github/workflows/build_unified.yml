@@ -1,0 +1,148 @@
+# Copyright 2015 - 2025, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Build Unified
+
+on:
+  push:
+    branches-ignore:
+      - master
+      - wasm
+
+  pull_request:
+    branches:
+      - master
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        qt: [5.15.2, 6.2.4, 6.5.3, 6.9.0]
+        build_system: [cmake, qmake]
+
+# =================================
+
+    runs-on: ${{ matrix.os }}
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install Ninja on Ubuntu
+      if: runner.os == 'Linux' && matrix.build_system == 'cmake'
+      run: sudo apt-get update && sudo apt-get install -y ninja-build
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: ${{ matrix.qt }}
+        cache: true
+        aqtversion: ==3.2.*
+        modules: ${{ startsWith(matrix.qt, '6') && 'qtmultimedia qtimageformats' || '' }}
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: ${{ matrix.os }}-${{ matrix.qt }}-${{ matrix.build_system }}
+
+# =================================
+# UBUNTU BUILDS
+# =================================
+
+    - name: Build Ubuntu (CMake)
+      if: runner.os == 'Linux' && matrix.build_system == 'cmake'
+      run: |
+        cmake -S . -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+        cmake --build build --parallel $(nproc)
+
+    - name: Build Ubuntu (qmake)
+      if: runner.os == 'Linux' && matrix.build_system == 'qmake'
+      run: |
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j$(nproc)
+
+    - name: Test Ubuntu (CMake)
+      if: runner.os == 'Linux' && matrix.build_system == 'cmake'
+      run: |
+        QT_QPA_PLATFORM=offscreen ./build/wiredpanda-test
+
+    - name: Test Ubuntu (qmake)
+      if: runner.os == 'Linux' && matrix.build_system == 'qmake'
+      run: |
+        QT_QPA_PLATFORM=offscreen ./build/test/wiredpanda-test
+
+# =================================
+# WINDOWS BUILDS
+# =================================
+
+    - name: Setup Windows MSVC Toolchain
+      if: runner.os == 'Windows'
+      uses: pbeast/gha-setup-vsdevenv@master
+
+    - name: Build Windows (CMake)
+      if: runner.os == 'Windows' && matrix.build_system == 'cmake'
+      run: |
+        cmake -S . -B build -G Ninja `
+          -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+        cmake --build build --parallel $env:NUMBER_OF_PROCESSORS
+
+    - name: Build Windows (qmake)
+      if: runner.os == 'Windows' && matrix.build_system == 'qmake'
+      run: |
+        choco install jom
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        jom
+
+    - name: Test Windows (CMake)
+      if: runner.os == 'Windows' && matrix.build_system == 'cmake'
+      run: |
+        ./build/wiredpanda-test.exe
+
+    - name: Test Windows (qmake)
+      if: runner.os == 'Windows' && matrix.build_system == 'qmake'
+      run: |
+        cd build
+        jom check
+
+# =================================
+# MACOS BUILDS
+# =================================
+
+    - name: Build macOS (CMake)
+      if: runner.os == 'macOS' && matrix.build_system == 'cmake'
+      run: |
+        cmake -S . -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+        cmake --build build --parallel $(sysctl -n hw.ncpu)
+
+    - name: Build macOS (qmake)
+      if: runner.os == 'macOS' && matrix.build_system == 'qmake'
+      run: |
+        mkdir build
+        cd build
+        qmake ../WPanda.pro
+        make -j$(sysctl -n hw.ncpu)
+
+    - name: Test macOS (CMake)
+      if: runner.os == 'macOS' && matrix.build_system == 'cmake'
+      run: |
+        ./build/wiredpanda-test
+
+    - name: Test macOS (qmake)
+      if: runner.os == 'macOS' && matrix.build_system == 'qmake'
+      run: |
+        cd build
+        make check
