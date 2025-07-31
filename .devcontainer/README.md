@@ -79,7 +79,7 @@ make -j$(nproc)
 wptest
 
 # Run specific test class
-./build/test/WPanda-test TestBasicGates
+./build/test/wiredpanda-test TestBasicGates
 
 # Generate coverage report
 wpcoverage

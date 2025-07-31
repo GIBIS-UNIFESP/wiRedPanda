@@ -47,6 +47,49 @@ if(MOLD_BIN)
     add_link_options("-fuse-ld=mold")
 endif()
 
+# Coverage support (matching qmake config.pri)
+if(ENABLE_COVERAGE)
+    add_compile_options(--coverage)
+    add_link_options(--coverage)
+    message(STATUS "Coverage enabled")
+endif()
+
+# Sanitizer support (matching qmake config.pri)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    if(ENABLE_MEMORY_SANITIZER)
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+            add_compile_options(-fsanitize=memory -fPIE)
+            add_link_options(-fsanitize=memory -fPIE)
+            message(STATUS "Memory Sanitizer enabled")
+        else()
+            message(WARNING "Memory Sanitizer only supported with Clang")
+        endif()
+    endif()
+    
+    if(ENABLE_ADDRESS_SANITIZER)
+        add_compile_options(-fsanitize=address)
+        add_link_options(-fsanitize=address)
+        message(STATUS "Address Sanitizer enabled")
+    endif()
+    
+    if(ENABLE_THREAD_SANITIZER)
+        add_compile_options(-fsanitize=thread)
+        add_link_options(-fsanitize=thread)
+        message(STATUS "Thread Sanitizer enabled")
+    endif()
+    
+    if(ENABLE_UB_SANITIZER)
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+            add_compile_options(-fsanitize=undefined,implicit-integer-truncation,implicit-integer-arithmetic-value-change,implicit-conversion,integer,nullability)
+            add_link_options(-fsanitize=undefined,implicit-integer-truncation,implicit-integer-arithmetic-value-change,implicit-conversion,integer,nullability)
+        else()
+            add_compile_options(-fsanitize=undefined)
+            add_link_options(-fsanitize=undefined)
+        endif()
+        message(STATUS "Undefined Behavior Sanitizer enabled")
+    endif()
+endif()
+
 if(NOT MSVC)
     find_program(CCACHE_BIN ccache)
     if(CCACHE_BIN)
@@ -206,7 +249,15 @@ if(WIN32)
 
     set_target_properties(wiredpanda PROPERTIES
         WIN32_EXECUTABLE ON
-        RUNTIME_OUTPUT_NAME "${WINDOWS_APP_NAME}"
+        RUNTIME_OUTPUT_NAME "wiredpanda"
+        # Enhanced Windows metadata (matching qmake app.pro)
+        VERSION "${PROJECT_VERSION}"
+        DESCRIPTION "wiRedPanda - Logic Circuit Simulator"
+        COMPANY_NAME "GIBIS-UNIFESP"
+        FILE_DESCRIPTION "wiRedPanda - Logic Circuit Simulator"
+        LEGAL_COPYRIGHT "GIBIS-UNIFESP and the wiRedPanda contributors"
+        ORIGINAL_FILENAME "wiredpanda.exe"
+        PRODUCT_NAME "wiRedPanda - Logic Circuit Simulator"
     )
 
     if(EXISTS ${RC_FILE})
@@ -219,15 +270,15 @@ endif()
 file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
 file(GLOB_RECURSE TEST_HEADERS "test/*.h")
 
-add_executable(test ${TEST_SOURCES} ${TEST_HEADERS} ${RESOURCES_RCC})
-target_link_libraries(test PRIVATE wiredpanda_lib)
+add_executable(wiredpanda-test ${TEST_SOURCES} ${TEST_HEADERS} ${RESOURCES_RCC})
+target_link_libraries(wiredpanda-test PRIVATE wiredpanda_lib)
 
 # Ensure translations are compiled before building the test executable
 if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
-    add_dependencies(test lrelease)
+    add_dependencies(wiredpanda-test lrelease)
 endif()
-target_compile_definitions(test PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/test)
+target_compile_definitions(wiredpanda-test PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/test)
 
 if(NOT CCACHE_BIN)
-    target_precompile_headers(test PRIVATE pch.h)
+    target_precompile_headers(wiredpanda-test PRIVATE pch.h)
 endif()

@@ -17,22 +17,35 @@
   ```
 - **Build commands**: 
   - Main app: `cmake --build build --config Release --target wiredpanda`
-  - Tests: `cmake --build build --config Release --target test`
+  - Tests: `cmake --build build --config Release --target wiredpanda-test`
 - **mold linker**: Modern fast linker installed (`sudo apt install mold`) - automatically used by CMake when available
 - **qmake**: Available via `WPanda.pro` - subdirs project app and test
 - **Visual Studio BuildTools**: `"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"`
+
+### Development Features
+Both build systems support advanced development features:
+
+**Coverage Analysis**:
+- CMake: `cmake -B build -DENABLE_COVERAGE=ON` (sets `--coverage` flags for GCC/Clang)
+- qmake: `qmake WPanda.pro COVERAGE=1` (sets `--coverage` flags for GCC/Clang)
+
+**Sanitizers (CMake only)**:
+- Address Sanitizer: `cmake -B build -DENABLE_ADDRESS_SANITIZER=ON`
+- Thread Sanitizer: `cmake -B build -DENABLE_THREAD_SANITIZER=ON`  
+- Memory Sanitizer: `cmake -B build -DENABLE_MEMORY_SANITIZER=ON` (Clang only)
+- UB Sanitizer: `cmake -B build -DENABLE_UB_SANITIZER=ON`
+
+**Windows Metadata**: Both systems include comprehensive application properties for professional deployment
 
 ### Testing
 - Project uses Qt Test framework
 - **Test execution (Linux/DevContainer)**: Always run in headless mode:
   ```bash
-  QT_QPA_PLATFORM=offscreen ./test          # CMake build
-  QT_QPA_PLATFORM=offscreen ./WPanda-test   # qmake build
+  QT_QPA_PLATFORM=offscreen ./wiredpanda-test
   ```
 - **Test execution (Windows after windeployqt)**: From `build/Release` directory:
   ```powershell
-  powershell -Command "Start-Process -FilePath 'test.exe' -Wait -NoNewWindow"        # CMake build
-  powershell -Command "Start-Process -FilePath 'WPanda-test.exe' -Wait -NoNewWindow" # qmake build
+  powershell -Command "Start-Process -FilePath 'wiredpanda-test.exe' -Wait -NoNewWindow"
   ```
 - **Note**: Direct bash execution fails, cmd causes segfaults. PowerShell is the reliable method on Windows.
 
@@ -40,7 +53,7 @@
 - Main project file: `WPanda.pro` (template = subdirs)
 - App code: `app/` directory
 - Tests: `test/` directory with comprehensive test suite
-- Test executable: `test` (CMake) or `WPanda-test` (qmake)
+- Test executable: `wiredpanda-test`
 
 ## Digital Logic Simulation
 

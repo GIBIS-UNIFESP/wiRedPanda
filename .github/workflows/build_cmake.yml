@@ -85,7 +85,7 @@ jobs:
     - name: Test Windows
       if: runner.os == 'Windows'
       run: |
-        ./build/test.exe
+        ./build/wiredpanda-test.exe
 
 # =================================
 

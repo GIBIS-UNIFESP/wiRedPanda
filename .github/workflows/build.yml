@@ -59,7 +59,7 @@ jobs:
     - name: Test Ubuntu
       if: runner.os == 'Linux'
       run: |
-        ./build/test/WPanda-test -platform offscreen
+        ./build/test/wiredpanda-test -platform offscreen
 
 # =================================
 
