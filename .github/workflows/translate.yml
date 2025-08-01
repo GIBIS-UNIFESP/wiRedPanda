@@ -1,18 +1,47 @@
-name: Update Qt Translations
+name: Translation Management
 
 on:
+  # Trigger on source code changes to update .ts files
+  push:
+    branches: [master, translations]
+    paths:
+      - 'app/**/*.cpp'
+      - 'app/**/*.h'
+      - 'app/**/*.ui'
+      - 'app/app.pro'
+      - 'config.pri'
+  
+  # Trigger on translation file changes (typically from Weblate)
   pull_request:
-    branches:
-      - master
+    branches: [master]
+    paths:
+      - 'app/resources/translations/*.ts'
     types: [opened, synchronize, reopened]
+  
+  # Manual trigger
+  workflow_dispatch:
+    inputs:
+      update_sources:
+        description: 'Update source strings (lupdate)'
+        type: boolean
+        default: false
+      compile_only:
+        description: 'Only compile translations (lrelease)'
+        type: boolean
+        default: true
 
 jobs:
-  update-translations:
+  update-sources:
+    name: Update Translation Sources
     runs-on: ubuntu-latest
-
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/master') || (github.event_name == 'workflow_dispatch' && github.event.inputs.update_sources == 'true')
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
@@ -22,23 +51,434 @@ jobs:
           aqtversion: ==3.2.*
           modules: qtmultimedia
 
-      - name: Run lupdate
+      - name: Install GitHub CLI
         run: |
-          lupdate WPanda.pro
-          lrelease WPanda.pro
+          sudo apt-get update
+          sudo apt-get install -y gh
 
-      - name: Commit and push if translation files changed
-        if: github.event.pull_request.head.repo.full_name == github.repository
+      - name: Update .pro file with all translation files
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          cd app/resources/translations
+          python3 << 'EOF'
+          import glob
+          import os
+          
+          # Find all .ts files
+          ts_files = sorted(glob.glob("wpanda_*.ts"))
+          
+          # Read current .pro file
+          with open("../../app.pro", "r") as f:
+              content = f.read()
+          
+          # Generate TRANSLATIONS section
+          translations_section = "TRANSLATIONS += \\\n"
+          for i, ts_file in enumerate(ts_files):
+              separator = " \\" if i < len(ts_files) - 1 else ""
+              translations_section += f"    resources/translations/{ts_file}{separator}\n"
+          
+          # Replace TRANSLATIONS section
+          import re
+          pattern = r'TRANSLATIONS \+= \\[\s\S]*?(?=\n\n|\n[A-Z]|\Z)'
+          new_content = re.sub(pattern, translations_section.rstrip(), content)
+          
+          # Write back to .pro file
+          with open("../../app.pro", "w") as f:
+              f.write(new_content)
+          print(f"Updated app.pro with {len(ts_files)} translation files")
+          EOF
 
+      - name: Run lupdate to extract strings (qmake)
+        run: |
+          cd app
+          lupdate app.pro
+
+      - name: Run lupdate to extract strings (CMake)
+        run: |
+          cmake -S . -B build_translations -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+          cmake --build build_translations --target lupdate
+
+      - name: Compile translations (qmake)
+        run: |
+          cd app
+          lrelease app.pro
+
+      - name: Compile translations (CMake)
+        run: |
+          cmake --build build_translations --target lrelease
+          cmake --build build_translations --target generate_translations_qrc
+
+      - name: Generate translations.qrc
+        run: |
+          cd app/resources/translations
+          python3 compile_all_translations.py --qrc-only
+
+      - name: Create PR for translation updates
+        run: |
+          git config user.name "Translation Bot"
+          git config user.email "translation-bot@users.noreply.github.com"
+          
+          # Check if there are any changes
           if ! git diff --quiet; then
-            git add app/resources/translations/*
-            git commit -m "Update translation files via lupdate/lrelease"
-            git fetch origin ${{ github.head_ref }}
-            git rebase origin/${{ github.head_ref }}
-            git push origin HEAD:${{ github.head_ref }}
+            # Create a new branch for the PR
+            branch_name="translation-update-$(date +%Y%m%d-%H%M%S)"
+            git checkout -b "$branch_name"
+            
+            git add app/resources/translations/
+            git add app/app.pro
+            
+            # Create commit message
+            changed_files=$(git diff --cached --name-only | wc -l)
+            echo "Translation update: Updated $changed_files files"
+            
+            git commit -m "Update translation sources and compiled files
+
+            - Updated source strings with lupdate
+            - Compiled .ts files to .qm files with lrelease  
+            - Regenerated translations.qrc
+            - Updated app.pro with all translation files
+            
+            🤖 Automated translation update"
+            
+            git push origin "$branch_name"
+            
+            # Create PR using GitHub CLI
+            gh pr create \
+              --title "🤖 Automated translation update" \
+              --body "## Summary
+            Automated update of translation files triggered by source code changes.
+            
+            ## Changes
+            - Updated source strings with \`lupdate\`
+            - Compiled .ts files to .qm files with \`lrelease\`
+            - Regenerated \`translations.qrc\`
+            - Updated \`app.pro\` with all translation files
+            
+            ## Files Changed
+            \$(git diff --name-only HEAD~1)
+            
+            🤖 This PR was automatically created by the translation workflow."
           else
             echo "No translation updates needed"
           fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  compile-translations:
+    name: Compile Translations
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.compile_only == 'true')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+          # For PRs, checkout the PR branch
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: 6.9.0
+          cache: true
+          aqtversion: ==3.2.*
+          modules: qtmultimedia
+
+      - name: Install XML tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxml2-utils
+
+      - name: Validate translation files
+        run: |
+          cd app/resources/translations
+          echo "Validating .ts files..."
+          for ts_file in wpanda_*.ts; do
+            if [[ -f "$ts_file" ]]; then
+              # Check if file is valid XML
+              error_output=$(xmllint --noout "$ts_file" 2>&1)
+              if [ $? -ne 0 ]; then
+                echo "❌ Invalid XML in $ts_file"
+                echo "Error details: $error_output"
+                exit 1
+              fi
+              echo "✅ $ts_file is valid"
+            fi
+          done
+
+      - name: Update .pro file with all translation files
+        run: |
+          cd app/resources/translations
+          python3 << 'EOF'
+          import glob
+          import os
+          
+          # Find all .ts files
+          ts_files = sorted(glob.glob("wpanda_*.ts"))
+          
+          # Read current .pro file
+          with open("../../app.pro", "r") as f:
+              content = f.read()
+          
+          # Generate TRANSLATIONS section
+          translations_section = "TRANSLATIONS += \\\n"
+          for i, ts_file in enumerate(ts_files):
+              separator = " \\" if i < len(ts_files) - 1 else ""
+              translations_section += f"    resources/translations/{ts_file}{separator}\n"
+          
+          # Replace TRANSLATIONS section
+          import re
+          pattern = r'TRANSLATIONS \+= \\[\s\S]*?(?=\n\n|\n[A-Z]|\Z)'
+          new_content = re.sub(pattern, translations_section.rstrip(), content)
+          
+          # Write back to .pro file
+          with open("../../app.pro", "w") as f:
+              f.write(new_content)
+          print(f"Updated app.pro with {len(ts_files)} translation files")
+          EOF
+
+      - name: Compile translations (qmake)
+        run: |
+          cd app
+          lrelease app.pro
+
+      - name: Compile translations (CMake)
+        run: |
+          cmake -S . -B build_translations -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+          cmake --build build_translations --target lrelease
+          cmake --build build_translations --target generate_translations_qrc
+
+      - name: Generate translations.qrc
+        run: |
+          cd app/resources/translations
+          python3 compile_all_translations.py --qrc-only
+
+      - name: Check translation completeness
+        run: |
+          cd app/resources/translations
+          echo "Translation completeness report:"
+          echo "=================================="
+          for ts_file in wpanda_*.ts; do
+            if [[ -f "$ts_file" ]]; then
+              lang=$(basename "$ts_file" .ts | sed 's/wpanda_//')
+              total=$(grep -c '<message>' "$ts_file" 2>/dev/null | head -1)
+              unfinished=$(grep -c 'type="unfinished"' "$ts_file" 2>/dev/null | head -1)
+              
+              # Ensure numeric values
+              total=${total:-0}
+              unfinished=${unfinished:-0}
+              
+              if [[ $total -gt 0 ]]; then
+                finished=$((total - unfinished))
+                percentage=$((finished * 100 / total))
+                echo "$lang: $finished/$total ($percentage%)"
+              else
+                echo "$lang: No messages found"
+              fi
+            fi
+          done
+
+      - name: Commit compiled translations (for PRs)
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          git config user.name "Translation Bot"
+          git config user.email "translation-bot@users.noreply.github.com"
+          
+          # Check if there are any changes to compiled files
+          if ! git diff --quiet app/resources/translations/; then
+            git add app/resources/translations/*.qm
+            git add app/resources/translations/translations.qrc
+            git add app/app.pro
+            
+            git commit -m "Compile translation files
+
+            - Compiled .ts files to .qm files with lrelease
+            - Regenerated translations.qrc  
+            - Updated app.pro with all translation files
+            
+            🤖 Automated by translation workflow"
+            
+            git push origin HEAD:${{ github.head_ref }}
+            echo "✅ Compiled translations committed to PR"
+          else
+            echo "ℹ️ No compiled translation updates needed"
+          fi
+
+  weblate-pr-handler:
+    name: Handle Weblate PR
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.title, 'Weblate') || contains(github.event.pull_request.user.login, 'weblate')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: 6.9.0
+          cache: true
+          aqtversion: ==3.2.*
+          modules: qtmultimedia
+
+      - name: Install XML tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxml2-utils
+
+      - name: Process Weblate changes
+        run: |
+          cd app/resources/translations
+          
+          # Remove backup files that Weblate might have created
+          find . -name "*.ts.backup" -delete
+          
+          # Check for any issues with .ts files
+          echo "Checking Weblate translation files..."
+          for ts_file in wpanda_*.ts; do
+            if [[ -f "$ts_file" ]]; then
+              # Validate XML
+              error_output=$(xmllint --noout "$ts_file" 2>&1)
+              if [ $? -ne 0 ]; then
+                echo "❌ XML validation failed for $ts_file"
+                echo "Error details: $error_output"
+                exit 1
+              fi
+              
+              # Check for incomplete translations that might need attention
+              unfinished=$(grep -c 'type="unfinished"' "$ts_file" 2>/dev/null || echo "0")
+              if [[ $unfinished -gt 0 ]]; then
+                echo "ℹ️ $ts_file has $unfinished unfinished translations"
+              fi
+            fi
+          done
+
+      - name: Update .pro file with all translation files
+        run: |
+          cd app/resources/translations
+          python3 << 'EOF'
+          import glob
+          import os
+          
+          # Find all .ts files
+          ts_files = sorted(glob.glob("wpanda_*.ts"))
+          
+          # Read current .pro file
+          with open("../../app.pro", "r") as f:
+              content = f.read()
+          
+          # Generate TRANSLATIONS section
+          translations_section = "TRANSLATIONS += \\\n"
+          for i, ts_file in enumerate(ts_files):
+              separator = " \\" if i < len(ts_files) - 1 else ""
+              translations_section += f"    resources/translations/{ts_file}{separator}\n"
+          
+          # Replace TRANSLATIONS section
+          import re
+          pattern = r'TRANSLATIONS \+= \\[\s\S]*?(?=\n\n|\n[A-Z]|\Z)'
+          new_content = re.sub(pattern, translations_section.rstrip(), content)
+          
+          # Write back to .pro file
+          with open("../../app.pro", "w") as f:
+              f.write(new_content)
+          print(f"Updated app.pro with {len(ts_files)} translation files")
+          EOF
+
+      - name: Compile translations (qmake)
+        run: |
+          cd app
+          lrelease app.pro
+
+      - name: Compile translations (CMake)
+        run: |
+          cmake -S . -B build_translations -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+          cmake --build build_translations --target lrelease
+          cmake --build build_translations --target generate_translations_qrc
+
+      - name: Generate translations.qrc
+        run: |
+          cd app/resources/translations
+          python3 compile_all_translations.py --qrc-only
+
+      - name: Commit compiled files
+        run: |
+          git config user.name "Weblate Integration"
+          git config user.email "weblate-integration@users.noreply.github.com"
+          
+          # Remove any backup files
+          find app/resources/translations -name "*.backup" -delete
+          
+          # Add all translation-related changes
+          git add app/resources/translations/
+          git add app/app.pro
+          
+          # Check if there are changes to commit
+          if ! git diff --cached --quiet; then
+            # Get list of modified languages
+            modified_langs=$(git diff --cached --name-only | grep '\.ts$' | sed 's/.*wpanda_//' | sed 's/\.ts$//' | sort | tr '\n' ' ')
+            
+            git commit -m "Process Weblate translation updates
+
+            Languages updated: $modified_langs
+            
+            - Processed translation updates from Weblate
+            - Compiled .ts files to .qm files  
+            - Regenerated translations.qrc
+            - Updated app.pro with all translation files
+            - Cleaned up backup files
+            
+            🌐 Weblate integration update"
+            
+            git push origin HEAD:${{ github.head_ref }}
+            echo "✅ Weblate changes processed and compiled"
+          else
+            echo "ℹ️ No changes to commit from Weblate PR"
+          fi
+
+      - name: Add PR comment with translation status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Get translation completeness
+            const translationsDir = 'app/resources/translations';
+            const tsFiles = fs.readdirSync(translationsDir).filter(f => f.startsWith('wpanda_') && f.endsWith('.ts'));
+            
+            let report = '## 🌐 Translation Status\n\n';
+            report += '| Language | Completion | Status |\n';
+            report += '|----------|------------|--------|\n';
+            
+            for (const tsFile of tsFiles) {
+              const lang = tsFile.replace('wpanda_', '').replace('.ts', '');
+              const content = fs.readFileSync(path.join(translationsDir, tsFile), 'utf8');
+              
+              const totalMatches = content.match(/<message>/g);
+              const finishedMatches = content.match(/type="finished"/g);
+              
+              const total = totalMatches ? totalMatches.length : 0;
+              const finished = finishedMatches ? finishedMatches.length : 0;
+              const percentage = total > 0 ? Math.round((finished / total) * 100) : 0;
+              
+              let status = '🔴 Low';
+              if (percentage >= 90) status = '🟢 Excellent';
+              else if (percentage >= 70) status = '🟡 Good';
+              else if (percentage >= 50) status = '🟠 Fair';
+              
+              report += `| ${lang} | ${percentage}% (${finished}/${total}) | ${status} |\n`;
+            }
+            
+            report += '\n✅ Translation files have been compiled and are ready for merge.';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: report
+            });
