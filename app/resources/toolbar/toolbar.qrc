@@ -1,18 +1,29 @@
 <RCC>
     <qresource prefix="/toolbar">
+        <file>arabic.svg</file>
         <file>arduino.svg</file>
         <file>brasil.svg</file>
+        <file>chinese.svg</file>
         <file>clearSelection.svg</file>
         <file>copy.svg</file>
         <file>cut.svg</file>
         <file>default.svg</file>
         <file>delete.svg</file>
         <file>dolphin_icon.svg</file>
+        <file>dutch.svg</file>
+        <file>english.svg</file>
         <file>exit.svg</file>
         <file>fast.svg</file>
         <file>folder.svg</file>
+        <file>french.svg</file>
+        <file>german.svg</file>
         <file>help.svg</file>
         <file>helpQt.svg</file>
+        <file>hindi.svg</file>
+        <file>indonesian.svg</file>
+        <file>italian.svg</file>
+        <file>japanese.svg</file>
+        <file>korean.svg</file>
         <file>mute.svg</file>
         <file>new.svg</file>
         <file>panelBox.svg</file>
@@ -21,20 +32,26 @@
         <file>pdf.svg</file>
         <file>play.svg</file>
         <file>png.svg</file>
+        <file>polish.svg</file>
         <file>recentFiles.svg</file>
         <file>redo.svg</file>
         <file>reloadFile.svg</file>
         <file>rename.svg</file>
         <file>reset.svg</file>
+        <file>romanian.svg</file>
         <file>rotateL.svg</file>
         <file>rotateR.svg</file>
+        <file>russian.svg</file>
         <file>save.svg</file>
         <file>selectAll.svg</file>
         <file>spanish.svg</file>
         <file>stop.svg</file>
         <file>trashcan.svg</file>
+        <file>turkish.svg</file>
+        <file>ukrainian.svg</file>
         <file>undo.svg</file>
         <file>usa.svg</file>
+        <file>vietnamese.svg</file>
         <file>wavyIcon.svg</file>
         <file>wires.svg</file>
         <file>wpanda.svg</file>

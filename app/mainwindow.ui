@@ -714,9 +714,6 @@ QTabWidget::pane {
     <property name="title">
      <string>&amp;Language</string>
     </property>
-    <addaction name="actionEnglish"/>
-    <addaction name="actionPortuguese"/>
-    <addaction name="actionSpanish"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="title">
@@ -1019,24 +1016,6 @@ QTabWidget::pane {
     <string>Ctrl+Shift+P</string>
    </property>
   </action>
-  <action name="actionEnglish">
-   <property name="icon">
-    <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/usa.svg</normaloff>:/toolbar/usa.svg</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;English</string>
-   </property>
-  </action>
-  <action name="actionPortuguese">
-   <property name="icon">
-    <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/brasil.svg</normaloff>:/toolbar/brasil.svg</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Portuguese</string>
-   </property>
-  </action>
   <action name="actionPlay">
    <property name="checkable">
     <bool>true</bool>
@@ -1221,15 +1200,6 @@ QTabWidget::pane {
    </property>
    <property name="text">
     <string>Background Simulation</string>
-   </property>
-  </action>
-  <action name="actionSpanish">
-   <property name="icon">
-    <iconset resource="resources/toolbar/toolbar.qrc">
-     <normaloff>:/toolbar/spanish.svg</normaloff>:/toolbar/spanish.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Spanish</string>
    </property>
   </action>
   <action name="actionShortcutsAndTips">

@@ -30,10 +30,12 @@
 #include <QMessageBox>
 #include <QPdfWriter>
 #include <QPrinter>
+#include <QResource>
 #include <QSaveFile>
 #include <QShortcut>
 #include <QTemporaryFile>
 #include <QTranslator>
+#include <QLocale>
 
 #include <QSvgRenderer>
 
@@ -60,6 +62,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     qCDebug(zero) << "Settings fileName: " << Settings::fileName();
     loadTranslation(Settings::value("language").toString());
+    populateLanguageMenu();
 
     connect(m_ui->tab, &QTabWidget::currentChanged,    this, &MainWindow::tabChanged);
     connect(m_ui->tab, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
@@ -166,7 +169,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionAboutThisVersion, &QAction::triggered,        this,                &MainWindow::aboutThisVersion);
     connect(m_ui->actionChangeTrigger,    &QAction::triggered,        m_ui->elementEditor, &ElementEditor::changeTriggerAction);
     connect(m_ui->actionDarkTheme,        &QAction::triggered,        this,                &MainWindow::on_actionDarkTheme_triggered);
-    connect(m_ui->actionEnglish,          &QAction::triggered,        this,                &MainWindow::on_actionEnglish_triggered);
     connect(m_ui->actionExit,             &QAction::triggered,        this,                &MainWindow::on_actionExit_triggered);
     connect(m_ui->actionExportToArduino,  &QAction::triggered,        this,                &MainWindow::on_actionExportToArduino_triggered);
     connect(m_ui->actionExportToImage,    &QAction::triggered,        this,                &MainWindow::on_actionExportToImage_triggered);
@@ -182,7 +184,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionNew,              &QAction::triggered,        this,                &MainWindow::on_actionNew_triggered);
     connect(m_ui->actionOpen,             &QAction::triggered,        this,                &MainWindow::on_actionOpen_triggered);
     connect(m_ui->actionPlay,             &QAction::toggled,          this,                &MainWindow::on_actionPlay_toggled);
-    connect(m_ui->actionPortuguese,       &QAction::triggered,        this,                &MainWindow::on_actionPortuguese_triggered);
     connect(m_ui->actionReloadFile,       &QAction::triggered,        this,                &MainWindow::on_actionReloadFile_triggered);
     connect(m_ui->actionRename,           &QAction::triggered,        m_ui->elementEditor, &ElementEditor::renameAction);
     connect(m_ui->actionResetZoom,        &QAction::triggered,        this,                &MainWindow::on_actionResetZoom_triggered);
@@ -193,7 +194,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionSaveAs,           &QAction::triggered,        this,                &MainWindow::on_actionSaveAs_triggered);
     connect(m_ui->actionSelectAll,        &QAction::triggered,        this,                &MainWindow::on_actionSelectAll_triggered);
     connect(m_ui->actionShortcutsAndTips, &QAction::triggered,        this,                &MainWindow::on_actionShortcuts_and_Tips_triggered);
-    connect(m_ui->actionSpanish,          &QAction::triggered,        this,                &MainWindow::on_actionSpanish_triggered);
     connect(m_ui->actionWaveform,         &QAction::triggered,        this,                &MainWindow::on_actionWaveform_triggered);
     connect(m_ui->actionWires,            &QAction::triggered,        this,                &MainWindow::on_actionWires_triggered);
     connect(m_ui->actionZoomIn,           &QAction::triggered,        this,                &MainWindow::on_actionZoomIn_triggered);
@@ -1138,6 +1138,7 @@ void MainWindow::retranslateUi()
     ElementFactory::clearCache();
     m_ui->retranslateUi(this);
     m_ui->elementEditor->retranslateUi();
+    populateLanguageMenu();
 
     const auto items = m_ui->tabElements->findChildren<ElementLabel *>();
 
@@ -1188,51 +1189,278 @@ void MainWindow::loadTranslation(const QString &language)
 
     // ---------------------------------------------
 
-    QString pandaFile;
-    QString qtFile;
+    // Dynamic translation loading based on available files
+    QString pandaFile = QString(":/translations/wpanda_%1.qm").arg(language);
+    QString qtFile = QString(":/translations/qt_%1.qm").arg(language);
 
-    if (language == "pt_BR") {
-        pandaFile = ":/translations/wpanda_pt_BR.qm";
-        qtFile = ":/translations/qt_pt_BR.qm";
-    }
-
-    if (language == "es") {
-        pandaFile = ":/translations/wpanda_es.qm";
-        qtFile = ":/translations/qt_es.qm";
-    }
-
-    if (!pandaFile.isEmpty()) {
+    // Check if wiRedPanda translation exists
+    QResource pandaResource(pandaFile);
+    if (pandaResource.isValid()) {
         m_pandaTranslator = new QTranslator(this);
 
         if (!m_pandaTranslator->load(pandaFile) || !qApp->installTranslator(m_pandaTranslator)) {
-            throw Pandaception(tr("Error loading wiRedPanda translation!"));
+            qCWarning(zero) << "Failed to load wiRedPanda translation for" << language << ", falling back to English";
+            delete m_pandaTranslator;
+            m_pandaTranslator = nullptr;
+            // Fallback to English
+            if (language != "en") {
+                loadTranslation("en");
+                return;
+            }
         }
     }
 
-    if (!qtFile.isEmpty()) {
+    // Check if Qt translation exists
+    QResource qtResource(qtFile);
+    if (qtResource.isValid()) {
         m_qtTranslator = new QTranslator(this);
 
         if (!m_qtTranslator->load(qtFile) || !qApp->installTranslator(m_qtTranslator)) {
-            throw Pandaception(tr("Error loading Qt translation!"));
+            qCWarning(zero) << "Failed to load Qt translation for" << language << ", continuing without Qt translation";
+            delete m_qtTranslator;
+            m_qtTranslator = nullptr;
         }
     }
 
     retranslateUi();
 }
 
-void MainWindow::on_actionEnglish_triggered()
+QStringList MainWindow::getAvailableLanguages() const
 {
-    loadTranslation("en");
+    QStringList languages;
+    
+    // Always include English as it's the default
+    languages << "en";
+    
+    // Dynamically discover all available wpanda translation files
+    // Get all resources in the translations directory
+    QDir translationsDir(":/translations");
+    if (translationsDir.exists()) {
+        QStringList qmFiles = translationsDir.entryList({"wpanda_*.qm"}, QDir::Files);
+        
+        for (const QString &file : qmFiles) {
+            // Extract language code from filename (e.g., "wpanda_fr.qm" -> "fr")
+            QString langCode = file;
+            langCode.remove("wpanda_");
+            langCode.remove(".qm");
+            
+            // Verify the resource actually exists and is valid
+            QString resourcePath = QString(":/translations/%1").arg(file);
+            QResource resource(resourcePath);
+            
+            if (resource.isValid() && !langCode.isEmpty()) {
+                languages << langCode;
+            }
+        }
+    } else {
+        // Fallback: Try all possible language patterns if directory listing fails
+        // This covers edge cases where QDir doesn't work with Qt resources
+        const QStringList languagePatterns = {
+            "ar", "bg", "bn", "cs", "da", "de", "el", "es", "et", "fa", "fi", "fr", 
+            "he", "hi", "hr", "hu", "id", "it", "ja", "ko", "lt", "lv", "ms", "nb", 
+            "nl", "pl", "pt", "pt_BR", "ro", "ru", "sk", "sv", "th", "tr", "uk", 
+            "vi", "zh_Hans", "zh_Hant"
+        };
+        
+        for (const QString &langCode : languagePatterns) {
+            QString resourcePath = QString(":/translations/wpanda_%1.qm").arg(langCode);
+            QResource resource(resourcePath);
+            
+            if (resource.isValid()) {
+                languages << langCode;
+            }
+        }
+    }
+    
+    // Remove duplicates and sort
+    languages.removeDuplicates();
+    languages.sort();
+    return languages;
 }
 
-void MainWindow::on_actionPortuguese_triggered()
+void MainWindow::populateLanguageMenu()
 {
-    loadTranslation("pt_BR");
+    // Clear existing actions from the UI menu
+    m_ui->menuLanguage->clear();
+    
+    const auto availableLanguages = getAvailableLanguages();
+    auto *languageGroup = new QActionGroup(this);
+    languageGroup->setExclusive(true);
+    
+    for (const QString &langCode : availableLanguages) {
+        auto *action = new QAction(getLanguageDisplayName(langCode), this);
+        action->setCheckable(true);
+        action->setData(langCode);
+        
+        // Set the flag icon for the language
+        action->setIcon(QIcon(getLanguageFlagIcon(langCode)));
+        
+        // Check if this is the current language
+        if (langCode == Settings::value("language").toString() || 
+           (langCode == "en" && Settings::value("language").toString().isEmpty())) {
+            action->setChecked(true);
+        }
+        
+        languageGroup->addAction(action);
+        m_ui->menuLanguage->addAction(action);
+        
+        connect(action, &QAction::triggered, this, [this, langCode]() {
+            loadTranslation(langCode);
+        });
+    }
 }
 
-void MainWindow::on_actionSpanish_triggered()
+QString MainWindow::getLanguageDisplayName(const QString &langCode) const
 {
-    loadTranslation("es");
+    // Use Qt's built-in locale system to get native language names
+    QLocale locale(langCode);
+    
+    // Special handling for some language codes that need specific locales
+    if (langCode == "pt_BR") {
+        locale = QLocale(QLocale::Portuguese, QLocale::Brazil);
+    } else if (langCode == "zh_Hans") {
+        locale = QLocale(QLocale::Chinese, QLocale::SimplifiedHanScript, QLocale::China);
+    } else if (langCode == "zh_Hant") {
+        locale = QLocale(QLocale::Chinese, QLocale::TraditionalHanScript, QLocale::Taiwan);
+    } else if (langCode == "nb") {
+        locale = QLocale(QLocale::NorwegianBokmal, QLocale::Norway);
+    }
+    
+    // Get the native language name (e.g., "Deutsch" for German)
+    QString nativeName = locale.nativeLanguageName();
+    
+    // If we have a country-specific variant, add the country name
+    if (langCode.contains('_') || langCode == "pt_BR") {
+        QString nativeCountryName = locale.nativeCountryName();
+        if (!nativeCountryName.isEmpty() && nativeCountryName != nativeName) {
+            nativeName += QString(" (%1)").arg(nativeCountryName);
+        }
+    }
+    
+    // Fallback to language code if Qt doesn't have the name
+    if (nativeName.isEmpty()) {
+        // Manual fallbacks for languages Qt might not fully support
+        static const QMap<QString, QString> fallbackNames = {
+            {"bn", "বাংলা"},
+            {"fa", "فارسی"},
+            {"he", "עברית"},
+            {"th", "ไทย"}
+        };
+        nativeName = fallbackNames.value(langCode, langCode);
+    }
+    
+    return nativeName;
+}
+
+QString MainWindow::getLanguageFlagIcon(const QString &langCode) const
+{
+    // Use Qt's locale system to determine the appropriate country flag
+    QLocale locale(langCode);
+    
+    // Special handling for specific language variants
+    if (langCode == "pt_BR") {
+        locale = QLocale(QLocale::Portuguese, QLocale::Brazil);
+    } else if (langCode == "zh_Hans") {
+        locale = QLocale(QLocale::Chinese, QLocale::SimplifiedHanScript, QLocale::China);
+    } else if (langCode == "zh_Hant") {
+        locale = QLocale(QLocale::Chinese, QLocale::TraditionalHanScript, QLocale::Taiwan);
+    } else if (langCode == "nb") {
+        locale = QLocale(QLocale::NorwegianBokmal, QLocale::Norway);
+    }
+    
+    // Map Qt country codes to our flag resource names
+    static const QMap<QLocale::Country, QString> countryToFlag = {
+        {QLocale::SaudiArabia, ":/toolbar/arabic.svg"},          // Arabic
+        {QLocale::Bulgaria, ":/toolbar/bulgarian.svg"},          // Bulgarian
+        {QLocale::Bangladesh, ":/toolbar/bangladesh.svg"},       // Bengali
+        {QLocale::CzechRepublic, ":/toolbar/czech.svg"},        // Czech
+        {QLocale::Denmark, ":/toolbar/danish.svg"},             // Danish
+        {QLocale::Germany, ":/toolbar/german.svg"},             // German
+        {QLocale::Greece, ":/toolbar/greek.svg"},               // Greek
+        {QLocale::UnitedStates, ":/toolbar/usa.svg"},           // English
+        {QLocale::Spain, ":/toolbar/spanish.svg"},              // Spanish
+        {QLocale::Estonia, ":/toolbar/estonian.svg"},           // Estonian
+        {QLocale::Iran, ":/toolbar/iranian.svg"},               // Persian/Farsi
+        {QLocale::Finland, ":/toolbar/finnish.svg"},            // Finnish
+        {QLocale::France, ":/toolbar/french.svg"},              // French
+        {QLocale::Israel, ":/toolbar/hebrew.svg"},              // Hebrew
+        {QLocale::India, ":/toolbar/hindi.svg"},                // Hindi
+        {QLocale::Croatia, ":/toolbar/croatian.svg"},           // Croatian
+        {QLocale::Hungary, ":/toolbar/hungarian.svg"},          // Hungarian
+        {QLocale::Indonesia, ":/toolbar/indonesian.svg"},       // Indonesian
+        {QLocale::Italy, ":/toolbar/italian.svg"},              // Italian
+        {QLocale::Japan, ":/toolbar/japanese.svg"},             // Japanese
+        {QLocale::SouthKorea, ":/toolbar/korean.svg"},          // Korean
+        {QLocale::Lithuania, ":/toolbar/lithuanian.svg"},       // Lithuanian
+        {QLocale::Latvia, ":/toolbar/latvian.svg"},             // Latvian
+        {QLocale::Malaysia, ":/toolbar/malaysian.svg"},         // Malay
+        {QLocale::Norway, ":/toolbar/norwegian.svg"},           // Norwegian
+        {QLocale::Netherlands, ":/toolbar/dutch.svg"},          // Dutch
+        {QLocale::Poland, ":/toolbar/polish.svg"},              // Polish
+        {QLocale::Portugal, ":/toolbar/portuguese.svg"},        // Portuguese
+        {QLocale::Brazil, ":/toolbar/brasil.svg"},              // Portuguese (Brazil)
+        {QLocale::Romania, ":/toolbar/romanian.svg"},           // Romanian
+        {QLocale::Russia, ":/toolbar/russian.svg"},             // Russian
+        {QLocale::Slovakia, ":/toolbar/slovak.svg"},            // Slovak
+        {QLocale::Sweden, ":/toolbar/swedish.svg"},             // Swedish
+        {QLocale::Thailand, ":/toolbar/thai.svg"},              // Thai
+        {QLocale::Turkey, ":/toolbar/turkish.svg"},             // Turkish
+        {QLocale::Ukraine, ":/toolbar/ukrainian.svg"},          // Ukrainian
+        {QLocale::Vietnam, ":/toolbar/vietnamese.svg"},         // Vietnamese
+        {QLocale::China, ":/toolbar/chinese.svg"},              // Chinese Simplified
+        {QLocale::Taiwan, ":/toolbar/chinese_traditional.svg"}  // Chinese Traditional
+    };
+    
+    // Get the flag for the locale's country
+    QString flagIcon = countryToFlag.value(locale.country(), ":/toolbar/default.svg");
+    
+    // Fallback for languages where Qt might not detect the country correctly
+    if (flagIcon == ":/toolbar/default.svg") {
+        static const QMap<QString, QString> languageFallbacks = {
+            {"ar", ":/toolbar/arabic.svg"},
+            {"bg", ":/toolbar/bulgarian.svg"},
+            {"bn", ":/toolbar/bangladesh.svg"},
+            {"cs", ":/toolbar/czech.svg"},
+            {"da", ":/toolbar/danish.svg"},
+            {"de", ":/toolbar/german.svg"},
+            {"el", ":/toolbar/greek.svg"},
+            {"en", ":/toolbar/usa.svg"},
+            {"es", ":/toolbar/spanish.svg"},
+            {"et", ":/toolbar/estonian.svg"},
+            {"fa", ":/toolbar/iranian.svg"},
+            {"fi", ":/toolbar/finnish.svg"},
+            {"fr", ":/toolbar/french.svg"},
+            {"he", ":/toolbar/hebrew.svg"},
+            {"hi", ":/toolbar/hindi.svg"},
+            {"hr", ":/toolbar/croatian.svg"},
+            {"hu", ":/toolbar/hungarian.svg"},
+            {"id", ":/toolbar/indonesian.svg"},
+            {"it", ":/toolbar/italian.svg"},
+            {"ja", ":/toolbar/japanese.svg"},
+            {"ko", ":/toolbar/korean.svg"},
+            {"lt", ":/toolbar/lithuanian.svg"},
+            {"lv", ":/toolbar/latvian.svg"},
+            {"ms", ":/toolbar/malaysian.svg"},
+            {"nb", ":/toolbar/norwegian.svg"},
+            {"nl", ":/toolbar/dutch.svg"},
+            {"pl", ":/toolbar/polish.svg"},
+            {"pt", ":/toolbar/portuguese.svg"},
+            {"pt_BR", ":/toolbar/brasil.svg"},
+            {"ro", ":/toolbar/romanian.svg"},
+            {"ru", ":/toolbar/russian.svg"},
+            {"sk", ":/toolbar/slovak.svg"},
+            {"sv", ":/toolbar/swedish.svg"},
+            {"th", ":/toolbar/thai.svg"},
+            {"tr", ":/toolbar/turkish.svg"},
+            {"uk", ":/toolbar/ukrainian.svg"},
+            {"vi", ":/toolbar/vietnamese.svg"},
+            {"zh_Hans", ":/toolbar/chinese.svg"},
+            {"zh_Hant", ":/toolbar/chinese_traditional.svg"}
+        };
+        flagIcon = languageFallbacks.value(langCode, ":/toolbar/default.svg");
+    }
+    
+    return flagIcon;
 }
 
 void MainWindow::on_actionPlay_toggled(const bool checked)

@@ -58,9 +58,48 @@ endif()
 
 include(CMakeSources.cmake)
 
+# Find available translation files
+file(GLOB_RECURSE TS_FILES "app/resources/translations/wpanda_*.ts")
+
+# Initialize QM_FILES list
+set(QM_FILES "")
+
+# Create QM files in source directory so QRC can find them
 if(QT_VERSION_MAJOR EQUAL 5)
+    find_package(Qt5LinguistTools QUIET)
+    if(Qt5LinguistTools_FOUND)
+        foreach(ts_file ${TS_FILES})
+            get_filename_component(qm_file ${ts_file} NAME_WE)
+            get_filename_component(ts_dir ${ts_file} DIRECTORY)
+            set(qm_path "${ts_dir}/${qm_file}.qm")
+            add_custom_command(
+                OUTPUT ${qm_path}
+                COMMAND ${Qt5_LRELEASE_EXECUTABLE} ${ts_file} -qm ${qm_path}
+                DEPENDS ${ts_file}
+                COMMENT "Compiling ${qm_file}.qm"
+                VERBATIM
+            )
+            list(APPEND QM_FILES ${qm_path})
+        endforeach()
+    endif()
     qt5_add_resources(RESOURCES_RCC ${RESOURCES})
 else()
+    find_package(Qt6LinguistTools QUIET)
+    if(Qt6LinguistTools_FOUND)
+        foreach(ts_file ${TS_FILES})
+            get_filename_component(qm_file ${ts_file} NAME_WE)
+            get_filename_component(ts_dir ${ts_file} DIRECTORY)
+            set(qm_path "${ts_dir}/${qm_file}.qm")
+            add_custom_command(
+                OUTPUT ${qm_path}
+                COMMAND Qt6::lrelease ${ts_file} -qm ${qm_path}
+                DEPENDS ${ts_file}
+                COMMENT "Compiling ${qm_file}.qm"
+                VERBATIM
+            )  
+            list(APPEND QM_FILES ${qm_path})
+        endforeach()
+    endif()
     qt6_add_resources(RESOURCES_RCC ${RESOURCES})
 endif()
 
@@ -72,6 +111,55 @@ include_directories(
     app/logicelement
     app/nodes
 )
+
+# ========= TRANSLATIONS ===========================
+
+# Find available translation files
+file(GLOB_RECURSE TS_FILES "app/resources/translations/wpanda_*.ts")
+
+# Custom targets for translation management 
+if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
+    # Custom target to update translation source files
+    if(QT_VERSION_MAJOR EQUAL 5)
+        add_custom_target(lupdate
+            COMMAND Qt5::lupdate ${CMAKE_SOURCE_DIR}/app -ts ${TS_FILES}
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            COMMENT "Updating translation source files"
+        )
+    else()
+        add_custom_target(lupdate
+            COMMAND Qt6::lupdate ${CMAKE_SOURCE_DIR}/app -ts ${TS_FILES}
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            COMMENT "Updating translation source files"
+        )
+    endif()
+    
+    # Custom target to compile translation files
+    add_custom_target(lrelease
+        DEPENDS ${QM_FILES}
+        COMMENT "Compiling translation files"
+    )
+    
+    # Make sure resources depend on QM files
+    add_custom_target(compile_translations ALL DEPENDS ${QM_FILES})
+endif()
+
+# Custom target to regenerate translations.qrc
+add_custom_target(generate_translations_qrc
+    COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_SOURCE_DIR}/app/resources/translations
+            python3 compile_all_translations.py --qrc-only
+    COMMENT "Regenerating translations.qrc"
+    DEPENDS lrelease
+)
+
+# Print translation information
+list(LENGTH TS_FILES TS_FILES_COUNT)
+message(STATUS "Found ${TS_FILES_COUNT} translation files:")
+foreach(ts_file ${TS_FILES})
+    get_filename_component(lang ${ts_file} NAME_WE)
+    string(REPLACE "wpanda_" "" lang ${lang})
+    message(STATUS "  - ${lang}")
+endforeach()
 
 # ========= LIB ===================================
 
@@ -98,6 +186,11 @@ endif()
 add_executable(wiredpanda app/main.cpp ${RESOURCES_RCC})
 target_link_libraries(wiredpanda PRIVATE wiredpanda_lib)
 
+# Ensure translations are compiled before building the main executable
+if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
+    add_dependencies(wiredpanda lrelease)
+endif()
+
 if(NOT CCACHE_BIN)
     target_precompile_headers(wiredpanda PRIVATE pch.h)
 endif()
@@ -123,6 +216,11 @@ file(GLOB_RECURSE TEST_HEADERS "test/*.h")
 
 add_executable(test ${TEST_SOURCES} ${TEST_HEADERS} ${RESOURCES_RCC})
 target_link_libraries(test PRIVATE wiredpanda_lib)
+
+# Ensure translations are compiled before building the test executable
+if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
+    add_dependencies(test lrelease)
+endif()
 target_compile_definitions(test PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/test)
 
 if(NOT CCACHE_BIN)

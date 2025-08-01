@@ -57,11 +57,15 @@ public:
     int confirmSave(const bool multiple = true);
 
     QString dolphinFileName();
+    QString getLanguageDisplayName(const QString &langCode) const;
+    QString getLanguageFlagIcon(const QString &langCode) const;
+    QStringList getAvailableLanguages() const;
     WorkSpace *currentTab() const;
     bool closeFiles();
     bool event(QEvent *event) override;
     void exportToWaveFormTerminal();
     void loadTranslation(const QString &language);
+    void populateLanguageMenu();
     void populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout);
     void retranslateUi();
     void setDolphinFileName(const QString &fileName);
@@ -88,7 +92,6 @@ private:
     void loadAutosaveFiles();
     void on_actionAboutQt_triggered();
     void on_actionAbout_triggered();
-    void on_actionEnglish_triggered();
     void on_actionExit_triggered();
     void on_actionExportToArduino_triggered();
     void on_actionExportToImage_triggered();
@@ -103,7 +106,6 @@ private:
     void on_actionNew_triggered();
     void on_actionOpen_triggered();
     void on_actionPlay_toggled(const bool checked);
-    void on_actionPortuguese_triggered();
     void on_actionReloadFile_triggered();
     void on_actionResetZoom_triggered() const;
     void on_actionRestart_triggered();
@@ -113,7 +115,6 @@ private:
     void on_actionSave_triggered();
     void on_actionSelectAll_triggered();
     void on_actionShortcuts_and_Tips_triggered();
-    void on_actionSpanish_triggered();
     void on_actionWaveform_triggered();
     void on_actionWires_triggered(const bool checked);
     void on_actionZoomIn_triggered() const;
