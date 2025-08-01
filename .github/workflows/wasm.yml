@@ -46,8 +46,9 @@ jobs:
         source ./emsdk/emsdk_env.sh
         mkdir build
         cd build
-        qmake ../app/app.pro
+        qmake ../WPanda.pro
         make -j4
+        cd app
         rm -rf ./build_files
         cp wiredpanda.html index.html
         wget https://github.com/gzuidhof/coi-serviceworker/raw/master/coi-serviceworker.min.js
@@ -65,7 +66,7 @@ jobs:
 
         # Copy the built files to the public folder
         mkdir -p ./public/wasm
-        cp -r ./build/* ./public/wasm/
+        cp -r ./build/app/* ./public/wasm/
 
         # Stage and commit the changes
         git add ./public/wasm/

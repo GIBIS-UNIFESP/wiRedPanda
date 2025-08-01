@@ -38,6 +38,17 @@ int main(int argc, char *argv[])
 
     registerTypes();
 
+    // Initialize resources from static library
+    Q_INIT_RESOURCE(basic);
+    Q_INIT_RESOURCE(dolphin);
+    Q_INIT_RESOURCE(input);
+    Q_INIT_RESOURCE(memory_dark);
+    Q_INIT_RESOURCE(memory_light);
+    Q_INIT_RESOURCE(misc);
+    Q_INIT_RESOURCE(output);
+    Q_INIT_RESOURCE(toolbar);
+    Q_INIT_RESOURCE(translations);
+
     Comment::setVerbosity(-1);
 
 #ifdef Q_OS_WIN

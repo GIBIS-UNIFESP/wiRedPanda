@@ -2,6 +2,11 @@ TARGET = wiredpanda
 
 TEMPLATE = app
 
+# Ensure this project is built through the main WPanda.pro subdirs project
+!exists($$OUT_PWD/../lib) {
+    error("This project must be built through WPanda.pro, not directly. The static library dependency is missing.")
+}
+
 # Compile translations to QM files
 CONFIG += lrelease
 
@@ -12,6 +17,9 @@ QMAKE_EXTRA_TARGETS += lupdate
 
 include(../config.pri)
 include(install.pri)
+
+# Link with the static library instead of including sources
+LIBS += -L$$OUT_PWD/../lib -lwiredpanda_lib
 
 win32 {
     QMAKE_TARGET_COMPANY = GIBIS-UNIFESP

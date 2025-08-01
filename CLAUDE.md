@@ -54,6 +54,22 @@ Both build systems support advanced development features:
 - App code: `app/` directory
 - Tests: `test/` directory with comprehensive test suite
 - Test executable: `wiredpanda-test`
+- **Static Library Architecture**: Both build systems use static library (`wiredpanda_lib`) to eliminate duplicate compilation
+
+### Build Output Locations
+- **CMake**: 
+  - App: `build/wiredpanda[.exe]`
+  - Test: `build/wiredpanda-test[.exe]`
+  - Library: `build/libwiredpanda_lib.a` (Linux) / `build/wiredpanda_lib.lib` (Windows)
+- **qmake**:
+  - App: `build/app/wiredpanda[.exe]`
+  - Test: `build/test/wiredpanda-test[.exe]`
+  - Library: `build/lib/libwiredpanda.a` (Linux) / `build/lib/wiredpanda.lib` (Windows)
+
+### Resource Loading
+- **Resources**: Compiled into static library (both CMake and qmake)
+- **Initialization**: Requires explicit `Q_INIT_RESOURCE()` calls in both `main.cpp` and `testmain.cpp`
+- **Location**: All .qrc files in `app/resources/` (basic, dolphin, input, memory, misc, output, toolbar, translations)
 
 ## Digital Logic Simulation
 

@@ -211,7 +211,7 @@ endforeach()
 
 # ========= LIB ===================================
 
-add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS} ${FORMS})
+add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS} ${FORMS} ${RESOURCES_RCC})
 target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS})
 
 if(NOT CCACHE_BIN)
@@ -231,7 +231,7 @@ endif()
 
 # ========= APP ===================================
 
-add_executable(wiredpanda app/main.cpp ${RESOURCES_RCC})
+add_executable(wiredpanda app/main.cpp)
 target_link_libraries(wiredpanda PRIVATE wiredpanda_lib)
 
 # Ensure translations are compiled before building the main executable
@@ -270,7 +270,7 @@ endif()
 file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
 file(GLOB_RECURSE TEST_HEADERS "test/*.h")
 
-add_executable(wiredpanda-test ${TEST_SOURCES} ${TEST_HEADERS} ${RESOURCES_RCC})
+add_executable(wiredpanda-test ${TEST_SOURCES} ${TEST_HEADERS})
 target_link_libraries(wiredpanda-test PRIVATE wiredpanda_lib)
 
 # Ensure translations are compiled before building the test executable
