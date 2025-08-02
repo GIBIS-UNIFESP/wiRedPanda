@@ -3,7 +3,9 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QLoggingCategory>
+#include <QObject>
 #include <stdexcept>
 
 Q_DECLARE_LOGGING_CATEGORY(zero)
@@ -32,11 +34,21 @@ public:
 class Pandaception : public std::runtime_error
 {
 public:
-    explicit Pandaception(const QString &message);
+    explicit Pandaception(const QString &translatedMessage, const QString &englishMessage);
+    
+    QString englishMessage() const;
 
 private:
-    Q_DISABLE_COPY(Pandaception)
+    QString m_englishMessage;
 };
+
+// Main macro for class contexts that can use tr() - uses __VA_OPT__ for optional arguments
+#define PANDACEPTION(msg, ...) \
+    Pandaception(tr(msg) __VA_OPT__(.arg(__VA_ARGS__)), QString(msg) __VA_OPT__(.arg(__VA_ARGS__)))
+
+// Special macro for non-class contexts - uses __VA_OPT__ for optional arguments
+#define PANDACEPTION_WITH_CONTEXT(context, msg, ...) \
+    Pandaception(QCoreApplication::translate(context, msg) __VA_OPT__(.arg(__VA_ARGS__)), QString(msg) __VA_OPT__(.arg(__VA_ARGS__)))
 
 class GraphicElement;
 

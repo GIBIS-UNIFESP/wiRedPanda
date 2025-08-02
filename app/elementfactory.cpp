@@ -81,14 +81,14 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
     qCDebug(four) << type;
 
     if (type == ElementType::Unknown) {
-        throw Pandaception(tr("Unknown type 1: ") + typeToText(type));
+        throw PANDACEPTION("Unknown type 1: %1", typeToText(type));
     }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     const int id = QMetaType::type(typeToText(type).toLatin1());
 
     if (id == QMetaType::UnknownType) {
-        throw Pandaception(tr("Unknown type: ") + typeToText(type));
+        throw PANDACEPTION("Unknown type: %1", typeToText(type));
     }
 
     auto *elm = static_cast<GraphicElement *>(QMetaType::create(id));
@@ -96,7 +96,7 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
     const auto metaType = QMetaType::fromName(typeToText(type).toLatin1());
 
     if (!metaType.isValid() || (metaType.id() == QMetaType::UnknownType)) {
-        throw Pandaception(tr("Unknown type 2: ") + typeToText(type));
+        throw PANDACEPTION("Unknown type 2: %1", typeToText(type));
     }
 
     auto *elm = static_cast<GraphicElement *>(metaType.create());
@@ -183,7 +183,7 @@ std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *
     case ElementType::Line:
     case ElementType::Text:        return std::make_shared<LogicNone>();
 
-    default:                       throw Pandaception(tr("Not implemented yet: ") + elm->objectName());
+    default:                       throw PANDACEPTION("Not implemented yet: %1", elm->objectName());
     }
 }
 

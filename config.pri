@@ -1,5 +1,5 @@
-equals(QT_MAJOR_VERSION, 5) : lessThan(QT_MINOR_VERSION, 12) {
-    error("Use Qt 5.12 or newer")
+equals(QT_MAJOR_VERSION, 5) : lessThan(QT_MINOR_VERSION, 15) {
+    error("Use Qt 5.15 or newer")
 }
 
 equals(QT_MAJOR_VERSION, 6) : !versionAtLeast(QT_VERSION, 6.2.0) {
@@ -15,7 +15,7 @@ DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
 QT += core gui printsupport multimedia widgets svg
 
-CONFIG += c++17 warn_on strict_c strict_c++
+CONFIG += warn_on strict_c strict_c++
 
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
@@ -90,14 +90,17 @@ isEmpty(CCACHE_BIN) {
     QMAKE_CXX = ccache $$QMAKE_CXX
 }
 
+CXX_STANDARD = c++20
+
 msvc {
     QMAKE_CXXFLAGS_WARN_ON ~= s/-W3/-W4
-    QMAKE_CXXFLAGS += /permissive- /external:I $$[QT_INSTALL_PREFIX] /external:W0
+    QMAKE_CXXFLAGS += /external:I $$[QT_INSTALL_PREFIX] /external:W0
+    QMAKE_CXXFLAGS += /permissive- /Zc:preprocessor /std:$$CXX_STANDARD
     QMAKE_CXXFLAGS_DEBUG += /Ob1
     QMAKE_CXXFLAGS_RELEASE += /GL /Zi
     QMAKE_LFLAGS_RELEASE += /LTCG /DEBUG
 } else {
-    QMAKE_CXXFLAGS += -Wall -Wextra -Wpedantic
+    QMAKE_CXXFLAGS += -Wall -Wextra -Wpedantic -std=$$CXX_STANDARD
 }
 
 linux | mac | win32-g++ {
@@ -107,6 +110,11 @@ linux | mac | win32-g++ {
 
 mac {
     CONFIG += sdk_no_version_check
+
+    # Override Qt's mkspecs -std=c++11 flag with C++20
+    # Qt 5.15.2 mkspecs inject -std=c++11 after config.pri processing
+    # Use QMAKE_CXXFLAGS_WARN_ON which gets processed late to override it
+    QMAKE_CXXFLAGS_WARN_ON += -std=c++20
 
     QMAKE_CXXFLAGS_RELEASE += -g
     QMAKE_LFLAGS_RELEASE += -Wl,-dead_strip_dylibs -g

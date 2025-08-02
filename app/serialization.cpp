@@ -44,7 +44,7 @@ QVersionNumber Serialization::readPandaHeader(QDataStream &stream)
             stream >> center;
 
             if (center.isNull()) {
-                throw Pandaception(tr("Invalid file format."));
+                throw PANDACEPTION("Invalid file format.");
             }
 
             stream.device()->seek(originalPos);
@@ -53,7 +53,7 @@ QVersionNumber Serialization::readPandaHeader(QDataStream &stream)
             QStringList split = appName.split(" ");
             version = QVersionNumber::fromString(split.at(1));
         } else {
-            throw Pandaception(tr("Invalid file format."));
+            throw PANDACEPTION("Invalid file format.");
         }
     }
 
@@ -85,7 +85,7 @@ void Serialization::readDolphinHeader(QDataStream &stream)
         stream >> appName;
 
         if (!appName.startsWith("beWavedDolphin")) {
-            throw Pandaception(tr("Invalid file format."));
+            throw PANDACEPTION("Invalid file format.");
         }
     }
 }
@@ -136,7 +136,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
         }
 
         default:
-            throw Pandaception(tr("Invalid type. Data is possibly corrupted."));
+            throw PANDACEPTION("Invalid type. Data is possibly corrupted.");
         }
     }
 

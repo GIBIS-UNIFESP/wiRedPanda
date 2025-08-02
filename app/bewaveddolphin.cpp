@@ -242,7 +242,7 @@ void BewavedDolphin::loadFromTerminal()
     const auto wordList(str.split(','));
 
     if (wordList.size() < 2) {
-        throw Pandaception("");
+        throw PANDACEPTION("");
     }
 
     int rows = wordList.at(0).toInt();
@@ -253,7 +253,7 @@ void BewavedDolphin::loadFromTerminal()
     }
 
     if ((cols < 2) || (cols > 2048)) {
-        throw Pandaception("");
+        throw PANDACEPTION("");
     }
 
     setLength(cols, false);
@@ -263,7 +263,7 @@ void BewavedDolphin::loadFromTerminal()
         const auto wordList2(str.split(','));
 
         if (wordList2.size() < cols) {
-            throw Pandaception("");
+            throw PANDACEPTION("");
         }
 
         for (int col = 0; col < cols; ++col) {
@@ -296,7 +296,7 @@ void BewavedDolphin::loadElements()
     const auto elements = Common::sortGraphicElements(m_externalScene->elements());
 
     if (elements.isEmpty()) {
-        throw Pandaception(tr("Could not load enough elements for the simulation."));
+        throw PANDACEPTION("Could not load enough elements for the simulation.");
     }
 
     for (auto *elm : elements) {
@@ -323,7 +323,7 @@ void BewavedDolphin::loadElements()
     });
 
     if (m_inputs.isEmpty() || m_outputs.isEmpty()) {
-        throw Pandaception(tr("Could not load enough elements for the simulation."));
+        throw PANDACEPTION("Could not load enough elements for the simulation.");
     }
 }
 
@@ -512,7 +512,7 @@ void BewavedDolphin::resizeScene()
 
     if (newWidth > 4000 or newHeight > 4000) {
         on_actionResetZoom_triggered();
-        throw Pandaception(tr("Waveform would be too big! Resetting zoom."));
+        throw PANDACEPTION("Waveform would be too big! Resetting zoom.");
     }
 
     m_signalTableView->resize(newWidth / (m_scale * 0.8),
@@ -779,7 +779,7 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
     const auto ranges = m_signalTableView->selectionModel()->selection();
 
     if (ranges.isEmpty()) {
-        throw Pandaception(tr("No cells selected."));
+        throw PANDACEPTION("No cells selected.");
     }
 
     const int firstCol = sectionFirstColumn(ranges);
@@ -1131,7 +1131,7 @@ void BewavedDolphin::save(const QString &fileName)
     QSaveFile file(fileName);
 
     if (!file.open(QIODevice::WriteOnly)) {
-        throw Pandaception(tr("Error opening file: ") + file.errorString());
+        throw PANDACEPTION("Error opening file: %1", file.errorString());
     }
 
     if (fileName.endsWith(".dolphin")) {
@@ -1145,7 +1145,7 @@ void BewavedDolphin::save(const QString &fileName)
     }
 
     if (!file.commit()) {
-        throw Pandaception(tr("Error saving file: ") + file.errorString());
+        throw PANDACEPTION("Error saving file: %1", file.errorString());
     }
 }
 
@@ -1241,14 +1241,14 @@ void BewavedDolphin::load(const QString &fileName)
     QFile file(fileName);
 
     if (!file.exists()) {
-        throw Pandaception(tr("File \"%1\" does not exist!").arg(fileName));
+        throw PANDACEPTION("File \"%1\" does not exist!", fileName);
     }
 
     qCDebug(zero) << "File exists.";
 
     if (!file.open(QIODevice::ReadOnly)) {
         qCDebug(zero) << "Could not open file in ReadOnly mode: " << file.errorString();
-        throw Pandaception(tr("Could not open file in ReadOnly mode: ") + file.errorString() + ".");
+        throw PANDACEPTION("Could not open file in ReadOnly mode: %1", file.errorString());
     }
 
     if (fileName.endsWith(".dolphin")) {
@@ -1267,7 +1267,7 @@ void BewavedDolphin::load(const QString &fileName)
         m_currentFile = QFileInfo(fileName);
     } else {
         qCDebug(zero) << "Format not supported. Could not open file: " << fileName;
-        throw Pandaception(tr("Format not supported. Could not open file: ") + fileName);
+        throw PANDACEPTION("Format not supported. Could not open file: %1", fileName);
     }
 
     qCDebug(zero) << "Closing file.";
@@ -1286,7 +1286,7 @@ void BewavedDolphin::load(QDataStream &stream)
     }
 
     if ((cols < 2) || (cols > 2048)) {
-        throw Pandaception(tr("Invalid number of columns."));
+        throw PANDACEPTION("Invalid number of columns.");
     }
 
     setLength(static_cast<int>(cols), false);
@@ -1314,7 +1314,7 @@ void BewavedDolphin::load(QFile &file)
     }
 
     if ((cols < 2) || (cols > 2048)) {
-        throw Pandaception(tr("Invalid number of columns."));
+        throw PANDACEPTION("Invalid number of columns.");
     }
 
     setLength(cols, false);
@@ -1410,7 +1410,7 @@ void BewavedDolphin::on_actionExportToPdf_triggered()
     QPainter painter;
 
     if (!painter.begin(&printer)) {
-        throw Pandaception(tr("Could not print this circuit to PDF."));
+        throw PANDACEPTION("Could not print this circuit to PDF.");
     }
 
     m_scene->render(&painter, QRectF(), m_scene->sceneRect().adjusted(-64, -64, 64, 64));

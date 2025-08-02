@@ -32,9 +32,15 @@ void Comment::setVerbosity(const int verbosity)
     qSetMessagePattern("%{if-debug}%{line}: %{function} => %{endif}%{message}");
 }
 
-Pandaception::Pandaception(const QString &message)
-    : std::runtime_error(message.toStdString())
+Pandaception::Pandaception(const QString &translatedMessage, const QString &englishMessage)
+    : std::runtime_error(translatedMessage.toStdString())
+    , m_englishMessage(englishMessage)
 {
+}
+
+QString Pandaception::englishMessage() const
+{
+    return m_englishMessage;
 }
 
 QVector<GraphicElement *> Common::sortGraphicElements(QVector<GraphicElement *> elements)

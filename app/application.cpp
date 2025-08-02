@@ -1,4 +1,5 @@
 #include "application.h"
+#include "common.h"
 
 #include <QMessageBox>
 
@@ -21,7 +22,16 @@ bool Application::notify(QObject *receiver, QEvent *event)
         QMessageBox::critical(mainWindow(), tr("Error!"), e.what());
 #ifdef HAVE_SENTRY
         sentry_value_t event_ = sentry_value_new_event();
-        sentry_value_t exc = sentry_value_new_exception("Exception", e.what());
+        
+        // Try to cast to Pandaception to get English message for Sentry
+        QString sentryMessage;
+        if (const auto *pandaEx = dynamic_cast<const Pandaception*>(&e)) {
+            sentryMessage = pandaEx->englishMessage();
+        } else {
+            sentryMessage = QString::fromStdString(e.what());
+        }
+        
+        sentry_value_t exc = sentry_value_new_exception("Exception", sentryMessage.toStdString().c_str());
         sentry_value_set_stacktrace(exc, NULL, 0);
         sentry_event_add_exception(event_, exc);
         sentry_capture_event(event_);

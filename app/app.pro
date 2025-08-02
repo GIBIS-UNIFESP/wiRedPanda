@@ -5,6 +5,11 @@ TEMPLATE = app
 # Compile translations to QM files
 CONFIG += lrelease
 
+# Custom lupdate target with PANDACEPTION alias to match CMake functionality
+lupdate.target = lupdate
+lupdate.commands = lupdate -tr-function-alias tr+=PANDACEPTION $$PWD/../app.pro
+QMAKE_EXTRA_TARGETS += lupdate
+
 include(../config.pri)
 include(install.pri)
 

@@ -292,7 +292,7 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
         return;
     }
 
-    throw Pandaception(tr("Unknown context menu option."));
+    throw PANDACEPTION("Unknown context menu option.");
 }
 
 void ElementEditor::renameAction()
