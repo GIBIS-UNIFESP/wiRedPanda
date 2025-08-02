@@ -121,7 +121,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     qCDebug(zero) << "Disabling Arduino export.";
     m_ui->actionExportToArduino->setEnabled(false);
 
-    QPixmapCache::setCacheLimit(100'000);
+    QPixmapCache::setCacheLimit(100000);
 
     qCDebug(zero) << "Adding examples to menu";
     QDir examplesDir("examples");
@@ -167,6 +167,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,          &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
     connect(m_ui->actionAboutThisVersion, &QAction::triggered,        this,                &MainWindow::aboutThisVersion);
+    connect(m_ui->actionReportTranslationError, &QAction::triggered,  this,                &MainWindow::on_actionReportTranslationError_triggered);
     connect(m_ui->actionChangeTrigger,    &QAction::triggered,        m_ui->elementEditor, &ElementEditor::changeTriggerAction);
     connect(m_ui->actionDarkTheme,        &QAction::triggered,        this,                &MainWindow::on_actionDarkTheme_triggered);
     connect(m_ui->actionExit,             &QAction::triggered,        this,                &MainWindow::on_actionExit_triggered);
@@ -505,7 +506,7 @@ void MainWindow::on_actionAbout_triggered()
            "<li> Rodrigo Torres </li>"
            "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
            "</ul>"
-           "<p> wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.</p>"
+           "<p> wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.</p>"
            "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
            "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
             .arg(QApplication::applicationVersion()));
@@ -542,6 +543,11 @@ void MainWindow::on_actionShortcuts_and_Tips_triggered()
 void MainWindow::on_actionAboutQt_triggered()
 {
     QMessageBox::aboutQt(this);
+}
+
+void MainWindow::on_actionReportTranslationError_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://hosted.weblate.org/projects/wiredpanda/wiredpanda"));
 }
 
 bool MainWindow::closeFiles()
@@ -1138,7 +1144,6 @@ void MainWindow::retranslateUi()
     ElementFactory::clearCache();
     m_ui->retranslateUi(this);
     m_ui->elementEditor->retranslateUi();
-    populateLanguageMenu();
 
     const auto items = m_ui->tabElements->findChildren<ElementLabel *>();
 
@@ -1318,12 +1323,6 @@ QString MainWindow::getLanguageDisplayName(const QString &langCode) const
     // Special handling for some language codes that need specific locales
     if (langCode == "pt_BR") {
         locale = QLocale(QLocale::Portuguese, QLocale::Brazil);
-    } else if (langCode == "zh_Hans") {
-        locale = QLocale(QLocale::Chinese, QLocale::SimplifiedHanScript, QLocale::China);
-    } else if (langCode == "zh_Hant") {
-        locale = QLocale(QLocale::Chinese, QLocale::TraditionalHanScript, QLocale::Taiwan);
-    } else if (langCode == "nb") {
-        locale = QLocale(QLocale::NorwegianBokmal, QLocale::Norway);
     }
     
     // Get the native language name (e.g., "Deutsch" for German)
@@ -1349,6 +1348,11 @@ QString MainWindow::getLanguageDisplayName(const QString &langCode) const
         nativeName = fallbackNames.value(langCode, langCode);
     }
     
+    // Ensure proper capitalization for the first letter
+    if (!nativeName.isEmpty() && nativeName.at(0).isLetter()) {
+        nativeName[0] = nativeName.at(0).toUpper();
+    }
+    
     return nativeName;
 }
 
@@ -1358,14 +1362,8 @@ QString MainWindow::getLanguageFlagIcon(const QString &langCode) const
     QLocale locale(langCode);
     
     // Special handling for specific language variants
-    if (langCode == "pt_BR") {
-        locale = QLocale(QLocale::Portuguese, QLocale::Brazil);
-    } else if (langCode == "zh_Hans") {
-        locale = QLocale(QLocale::Chinese, QLocale::SimplifiedHanScript, QLocale::China);
-    } else if (langCode == "zh_Hant") {
-        locale = QLocale(QLocale::Chinese, QLocale::TraditionalHanScript, QLocale::Taiwan);
-    } else if (langCode == "nb") {
-        locale = QLocale(QLocale::NorwegianBokmal, QLocale::Norway);
+    if (langCode == "pt") {
+        locale = QLocale(QLocale::Portuguese, QLocale::Portugal);
     }
     
     // Map Qt country codes to our flag resource names

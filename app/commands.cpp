@@ -782,7 +782,7 @@ ChangeOutputSizeCommand::ChangeOutputSizeCommand(const QList<GraphicElement *> &
         m_ids.append(elm->id());
     }
 
-    setText(tr("Change input size to %1").arg(newOutputSize));
+    setText(tr("Change output size to %1").arg(newOutputSize));
 }
 
 void ChangeOutputSizeCommand::redo()

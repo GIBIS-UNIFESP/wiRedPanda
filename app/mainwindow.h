@@ -107,6 +107,7 @@ private:
     void on_actionOpen_triggered();
     void on_actionPlay_toggled(const bool checked);
     void on_actionReloadFile_triggered();
+    void on_actionReportTranslationError_triggered();
     void on_actionResetZoom_triggered() const;
     void on_actionRestart_triggered();
     void on_actionRotateLeft_triggered();

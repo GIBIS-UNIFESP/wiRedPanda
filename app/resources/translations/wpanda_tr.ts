@@ -4,38 +4,38 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="219"/>
+        <location filename="../../commands.cpp" line="221"/>
         <source>Add %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 öğe ekle</translation>
     </message>
 </context>
 <context>
     <name>And</name>
     <message>
-        <location filename="../../element/and.cpp" line="14"/>
+        <location filename="../../element/and.cpp" line="9"/>
         <source>And</source>
-        <translation type="unfinished"></translation>
+        <translation>Ve</translation>
     </message>
     <message>
-        <location filename="../../element/and.cpp" line="14"/>
+        <location filename="../../element/and.cpp" line="9"/>
         <source>AND</source>
-        <translation type="unfinished"></translation>
+        <translation>VE</translation>
     </message>
 </context>
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../application.cpp" line="17"/>
+        <location filename="../../application.cpp" line="22"/>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hata!</translation>
     </message>
 </context>
 <context>
     <name>AudioBox</name>
     <message>
-        <location filename="../../element/audiobox.cpp" line="22"/>
+        <location filename="../../element/audiobox.cpp" line="17"/>
         <source>Audio Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Ses Kutusu</translation>
     </message>
 </context>
 <context>
@@ -43,455 +43,468 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="14"/>
         <source>MainWindow</source>
-        <translation type="unfinished"></translation>
+        <translation>Ana Pencere</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="48"/>
         <source>toolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>araç çubuğu</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="92"/>
+        <location filename="../../bewaveddolphin.ui" line="93"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="105"/>
+        <location filename="../../bewaveddolphin.ui" line="106"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Yardım</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="112"/>
+        <location filename="../../bewaveddolphin.ui" line="113"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzenle</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="130"/>
+        <location filename="../../bewaveddolphin.ui" line="131"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Görünüm</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="152"/>
+        <location filename="../../bewaveddolphin.ui" line="153"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>Hakkında</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="155"/>
+        <location filename="../../bewaveddolphin.ui" line="156"/>
         <source>Ctrl+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="164"/>
+        <location filename="../../bewaveddolphin.ui" line="165"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Yükle</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="167"/>
+        <location filename="../../bewaveddolphin.ui" line="168"/>
         <source>Ctrl+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="176"/>
+        <location filename="../../bewaveddolphin.ui" line="177"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Çıkış</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="179"/>
+        <location filename="../../bewaveddolphin.ui" line="180"/>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="188"/>
+        <location filename="../../bewaveddolphin.ui" line="189"/>
         <source>Combinational</source>
-        <translation type="unfinished"></translation>
+        <translation>Kombinasyonel</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="191"/>
+        <location filename="../../bewaveddolphin.ui" line="192"/>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="200"/>
-        <location filename="../../bewaveddolphin.cpp" line="1301"/>
+        <location filename="../../bewaveddolphin.ui" line="201"/>
+        <location filename="../../bewaveddolphin.cpp" line="1394"/>
         <source>Export to PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF&apos;ye Aktar</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="203"/>
+        <location filename="../../bewaveddolphin.ui" line="204"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="212"/>
+        <location filename="../../bewaveddolphin.ui" line="213"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaydet</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="215"/>
+        <location filename="../../bewaveddolphin.ui" line="216"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="224"/>
+        <location filename="../../bewaveddolphin.ui" line="225"/>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Farklı Kaydet...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="227"/>
+        <location filename="../../bewaveddolphin.ui" line="228"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="236"/>
+        <location filename="../../bewaveddolphin.ui" line="237"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopyala</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="239"/>
+        <location filename="../../bewaveddolphin.ui" line="240"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="248"/>
+        <location filename="../../bewaveddolphin.ui" line="249"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Yapıştır</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="251"/>
+        <location filename="../../bewaveddolphin.ui" line="252"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="260"/>
+        <location filename="../../bewaveddolphin.ui" line="261"/>
         <source>Set to 0</source>
-        <translation type="unfinished"></translation>
+        <translation>0&apos;a ayarla</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="263"/>
+        <location filename="../../bewaveddolphin.ui" line="264"/>
         <source>0</source>
-        <translation type="unfinished"></translation>
+        <translation>0</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="275"/>
+        <location filename="../../bewaveddolphin.ui" line="276"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="302"/>
+        <location filename="../../bewaveddolphin.ui" line="303"/>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Boşluk</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="387"/>
-        <location filename="../../bewaveddolphin.ui" line="390"/>
+        <location filename="../../bewaveddolphin.ui" line="388"/>
+        <location filename="../../bewaveddolphin.ui" line="391"/>
         <source>Fit to screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekrana sığdır</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="434"/>
+        <location filename="../../bewaveddolphin.ui" line="435"/>
         <source>Show Numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Sayıları Göster</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="439"/>
+        <location filename="../../bewaveddolphin.ui" line="440"/>
         <source>Show Waveforms</source>
-        <translation type="unfinished"></translation>
+        <translation>Dalga Formlarını Göster</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="272"/>
+        <location filename="../../bewaveddolphin.ui" line="449"/>
+        <location filename="../../bewaveddolphin.ui" line="452"/>
+        <source>AutoCrop</source>
+        <translation>OtoKırp</translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.ui" line="455"/>
+        <source>Ctrl+A</source>
+        <translation>Ctrl+A</translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.ui" line="273"/>
         <source>Set to 1</source>
-        <translation type="unfinished"></translation>
+        <translation>1&apos;e ayarla</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="284"/>
-        <location filename="../../bewaveddolphin.ui" line="287"/>
+        <location filename="../../bewaveddolphin.ui" line="285"/>
+        <location filename="../../bewaveddolphin.ui" line="288"/>
         <source>Set clock frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Saat frekansını ayarla</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="290"/>
+        <location filename="../../bewaveddolphin.ui" line="291"/>
         <source>Alt+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+W</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="299"/>
+        <location filename="../../bewaveddolphin.ui" line="300"/>
         <source>Invert</source>
-        <translation type="unfinished"></translation>
+        <translation>Tersine çevir</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="310"/>
+        <location filename="../../bewaveddolphin.ui" line="311"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Birleştir</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="318"/>
+        <location filename="../../bewaveddolphin.ui" line="319"/>
         <source>Split</source>
-        <translation type="unfinished"></translation>
+        <translation>Böl</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="327"/>
+        <location filename="../../bewaveddolphin.ui" line="328"/>
         <source>Export to PNG</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG&apos;ye Aktar</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="330"/>
+        <location filename="../../bewaveddolphin.ui" line="331"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="339"/>
+        <location filename="../../bewaveddolphin.ui" line="340"/>
         <source>Set Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzunluk Ayarla</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="342"/>
+        <location filename="../../bewaveddolphin.ui" line="343"/>
         <source>Alt+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+L</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="351"/>
+        <location filename="../../bewaveddolphin.ui" line="352"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt Hakkında</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="354"/>
+        <location filename="../../bewaveddolphin.ui" line="355"/>
         <source>Ctrl+Shift+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="363"/>
+        <location filename="../../bewaveddolphin.ui" line="364"/>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>Yakınlaştır</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="366"/>
+        <location filename="../../bewaveddolphin.ui" line="367"/>
         <source>Ctrl+=</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="375"/>
+        <location filename="../../bewaveddolphin.ui" line="376"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzaklaştır</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="378"/>
+        <location filename="../../bewaveddolphin.ui" line="379"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="393"/>
+        <location filename="../../bewaveddolphin.ui" line="394"/>
         <source>Ctrl+Shift+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="402"/>
+        <location filename="../../bewaveddolphin.ui" line="403"/>
         <source>Reset Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Yaklaştırmayı Sıfırla</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="405"/>
+        <location filename="../../bewaveddolphin.ui" line="406"/>
         <source>Ctrl+Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Home</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="414"/>
+        <location filename="../../bewaveddolphin.ui" line="415"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Temizle</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="417"/>
+        <location filename="../../bewaveddolphin.ui" line="418"/>
         <source>Alt+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+X</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="426"/>
+        <location filename="../../bewaveddolphin.ui" line="427"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Kes</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="429"/>
+        <location filename="../../bewaveddolphin.ui" line="430"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="68"/>
-        <location filename="../../bewaveddolphin.cpp" line="140"/>
-        <location filename="../../bewaveddolphin.cpp" line="1024"/>
-        <location filename="../../bewaveddolphin.cpp" line="1177"/>
+        <location filename="../../bewaveddolphin.cpp" line="142"/>
+        <location filename="../../bewaveddolphin.cpp" line="215"/>
+        <location filename="../../bewaveddolphin.cpp" line="1124"/>
+        <location filename="../../bewaveddolphin.cpp" line="1276"/>
         <source>beWavedDolphin Simulator</source>
-        <translation type="unfinished"></translation>
+        <translation>beWavedDolphin Simülötürü</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="467"/>
-        <location filename="../../bewaveddolphin.cpp" line="1091"/>
+        <location filename="../../bewaveddolphin.cpp" line="542"/>
+        <location filename="../../bewaveddolphin.cpp" line="1190"/>
         <source>wiRedPanda - beWavedDolphin</source>
-        <translation type="unfinished"></translation>
+        <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="468"/>
+        <location filename="../../bewaveddolphin.cpp" line="543"/>
         <source>Save simulation before closing?</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapatmadan önce simülasyon kaydedilsin mi?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1092"/>
+        <location filename="../../bewaveddolphin.cpp" line="1191"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Bu beWavedDolphin dosyasını mevcut wiRedPanda dosyanıza bağlayıp kaydetmek istiyor musunuz?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="991"/>
+        <location filename="../../bewaveddolphin.cpp" line="1091"/>
         <source>Save File as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosyayı Farklı Kaydet...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="994"/>
+        <location filename="../../bewaveddolphin.cpp" line="1094"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV dosyaları (*.csv);;Dolphin dosyaları (*.dolphin);;Tüm desteklenen dosyalar (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="995"/>
+        <location filename="../../bewaveddolphin.cpp" line="1095"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dolphin dosyaları (*.dolphin);;CSV dosyaları (*.csv);;Tüm desteklenen dosyalar (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="982"/>
-        <location filename="../../bewaveddolphin.cpp" line="1025"/>
+        <location filename="../../bewaveddolphin.cpp" line="1082"/>
+        <location filename="../../bewaveddolphin.cpp" line="1125"/>
         <source>Saved file successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya başarıyla kaydedildi.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="224"/>
-        <location filename="../../bewaveddolphin.cpp" line="251"/>
+        <location filename="../../bewaveddolphin.cpp" line="245"/>
+        <location filename="../../bewaveddolphin.cpp" line="256"/>
+        <location filename="../../bewaveddolphin.cpp" line="266"/>
+        <source></source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.cpp" line="299"/>
+        <location filename="../../bewaveddolphin.cpp" line="326"/>
         <source>Could not load enough elements for the simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Simülasyon için yeterli öğe yüklenemedi.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="440"/>
+        <location filename="../../bewaveddolphin.cpp" line="515"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dalga formu çok büyük olacak! Yakınlaştırma sıfırlanıyor.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="707"/>
+        <location filename="../../bewaveddolphin.cpp" line="782"/>
         <source>No cells selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiçbir hücre seçilmedi.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1034"/>
-        <source>Error opening file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../bewaveddolphin.cpp" line="1134"/>
+        <source>Error opening file: %1</source>
+        <translation>Dosya açılırken hata: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1048"/>
-        <source>Error saving file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../bewaveddolphin.cpp" line="1148"/>
+        <source>Error saving file: %1</source>
+        <translation>Dosya kaydedilirken hata: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1119"/>
+        <location filename="../../bewaveddolphin.cpp" line="1218"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya Aç</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1121"/>
+        <location filename="../../bewaveddolphin.cpp" line="1220"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tüm desteklenen dosyalar (*.dolphin *.csv);;Dolphin dosyaları (*.dolphin);;CSV dosyaları (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1137"/>
+        <location filename="../../bewaveddolphin.cpp" line="1236"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya başarıyla yüklendi.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1152"/>
-        <source>Could not open file in ReadOnly mode: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../bewaveddolphin.cpp" line="1251"/>
+        <source>Could not open file in ReadOnly mode: %1</source>
+        <translation>Dosya Salt Okunur modunda açılamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1171"/>
-        <source>Format not supported. Could not open file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../bewaveddolphin.cpp" line="1270"/>
+        <source>Format not supported. Could not open file: %1</source>
+        <translation>Format desteklenmiyor. Dosya açılamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1185"/>
-        <source>Invalid file format. Starts with: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="1196"/>
-        <location filename="../../bewaveddolphin.cpp" line="1224"/>
+        <location filename="../../bewaveddolphin.cpp" line="1289"/>
+        <location filename="../../bewaveddolphin.cpp" line="1317"/>
         <source>Invalid number of columns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçersiz sütun sayısı.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1277"/>
+        <location filename="../../bewaveddolphin.cpp" line="1370"/>
         <source>Export to Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Resme Aktar</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1277"/>
+        <location filename="../../bewaveddolphin.cpp" line="1370"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG dosyaları (*.png)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1301"/>
+        <location filename="../../bewaveddolphin.cpp" line="1394"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF dosyaları (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1320"/>
+        <location filename="../../bewaveddolphin.cpp" line="1413"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bu devre PDF olarak yazdırılamadı.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1331"/>
+        <location filename="../../bewaveddolphin.cpp" line="1424"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;beWavedDolphin, São Paulo Federal Üniversitesi tarafından geliştirilen wiRedPanda yazılımı için bir dalga formu simülatörüdür. Bu proje, öğrencilerin mantık devreleri hakkında öğrenmelerine yardımcı olmak amacıyla oluşturulmuştur.&lt;/p&gt;&lt;p&gt;Yazılım versiyonu: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Geliştiriciler:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Dr. Fábio Cappabianco &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin şu anda Prof. Dr. Fábio Cappabianco ve öğrencileri tarafından sürdürülmektedir&lt;/p&gt;&lt;p&gt; Hatalar bulunursa veya yeni bir işlevselliğin uygulanmasını istiyorsanız lütfen GitHub sayfamızda bir rapor oluşturun.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Web sitemizi ziyaret edin!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="146"/>
-        <location filename="../../bewaveddolphin.cpp" line="1145"/>
+        <location filename="../../bewaveddolphin.cpp" line="221"/>
+        <location filename="../../bewaveddolphin.cpp" line="1244"/>
         <source>File &quot;%1&quot; does not exist!</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; dosyası mevcut değil!</translation>
     </message>
 </context>
 <context>
     <name>Buzzer</name>
     <message>
-        <location filename="../../element/buzzer.cpp" line="24"/>
+        <location filename="../../element/buzzer.cpp" line="19"/>
         <source>Buzzer</source>
-        <translation type="unfinished"></translation>
+        <translation>Zırıltı</translation>
     </message>
     <message>
-        <location filename="../../element/buzzer.cpp" line="24"/>
+        <location filename="../../element/buzzer.cpp" line="19"/>
         <source>BUZZER</source>
-        <translation type="unfinished"></translation>
+        <translation>ZIRILTI</translation>
     </message>
 </context>
 <context>
     <name>ChangeInputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="692"/>
+        <location filename="../../commands.cpp" line="694"/>
         <source>Change input size to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Giriş boyutunu %1&apos;e değiştir</translation>
     </message>
 </context>
 <context>
     <name>ChangeOutputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="782"/>
-        <source>Change input size to %1</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../commands.cpp" line="785"/>
+        <source>Change output size to %1</source>
+        <translation>Çıkış boyutunu %1&apos;e değiştir</translation>
     </message>
 </context>
 <context>
     <name>Clock</name>
     <message>
-        <location filename="../../element/clock.cpp" line="19"/>
+        <location filename="../../element/clock.cpp" line="14"/>
         <source>Clock</source>
-        <translation type="unfinished"></translation>
+        <translation>Saat</translation>
     </message>
     <message>
-        <location filename="../../element/clock.cpp" line="19"/>
+        <location filename="../../element/clock.cpp" line="14"/>
         <source>CLOCK SIGNAL</source>
-        <translation type="unfinished"></translation>
+        <translation>SAAT SİNYALİ</translation>
     </message>
 </context>
 <context>
@@ -499,228 +512,322 @@
     <message>
         <location filename="../../clockdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Diyalog</translation>
     </message>
     <message>
         <location filename="../../clockdialog.ui" line="80"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../../clockdialog.ui" line="63"/>
         <source>Clock Frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Saat Frekansı</translation>
     </message>
     <message>
         <location filename="../../clockdialog.ui" line="70"/>
         <source>1024</source>
-        <translation type="unfinished"></translation>
+        <translation>1024</translation>
     </message>
     <message>
         <location filename="../../clockdialog.cpp" line="15"/>
         <source>Clock Frequency Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Saat Frekansı Seçimi</translation>
     </message>
 </context>
 <context>
     <name>CodeGenerator</name>
     <message>
         <location filename="../../arduino/codegenerator.cpp" line="261"/>
-        <source>IC element not supported: </source>
-        <translation type="unfinished"></translation>
+        <source>IC element not supported: %1</source>
+        <translation>IC öğesi desteklenmiyor: %1</translation>
     </message>
     <message>
         <location filename="../../arduino/codegenerator.cpp" line="423"/>
-        <source>Element type not supported: </source>
-        <translation type="unfinished"></translation>
+        <source>Element type not supported: %1</source>
+        <translation>Öğe türü desteklenmiyor: %1</translation>
     </message>
 </context>
 <context>
     <name>DFlipFlop</name>
     <message>
-        <location filename="../../element/dflipflop.cpp" line="15"/>
+        <location filename="../../element/dflipflop.cpp" line="10"/>
         <source>D-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>D-FLIP-FLOP</translation>
     </message>
     <message>
-        <location filename="../../element/dflipflop.cpp" line="15"/>
+        <location filename="../../element/dflipflop.cpp" line="10"/>
         <source>D-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>D-Flip-Flop</translation>
     </message>
 </context>
 <context>
     <name>DLatch</name>
     <message>
-        <location filename="../../element/dlatch.cpp" line="15"/>
+        <location filename="../../element/dlatch.cpp" line="10"/>
         <source>D-Latch</source>
-        <translation type="unfinished"></translation>
+        <translation>D-Mandal</translation>
     </message>
     <message>
-        <location filename="../../element/dlatch.cpp" line="15"/>
+        <location filename="../../element/dlatch.cpp" line="10"/>
         <source>D-LATCH</source>
-        <translation type="unfinished"></translation>
+        <translation>D-MANDAL</translation>
     </message>
 </context>
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="246"/>
+        <location filename="../../commands.cpp" line="248"/>
         <source>Delete %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 öğeyi sil</translation>
     </message>
 </context>
 <context>
     <name>Demux</name>
     <message>
-        <location filename="../../element/demux.cpp" line="15"/>
+        <location filename="../../element/demux.cpp" line="10"/>
         <source>Demux</source>
-        <translation type="unfinished"></translation>
+        <translation>Demux</translation>
     </message>
     <message>
-        <location filename="../../element/demux.cpp" line="15"/>
+        <location filename="../../element/demux.cpp" line="10"/>
         <source>DEMULTIPLEXER</source>
-        <translation type="unfinished"></translation>
+        <translation>DEMULTİPLEKSER</translation>
     </message>
 </context>
 <context>
     <name>Display14</name>
     <message>
-        <location filename="../../element/display_14.cpp" line="18"/>
+        <location filename="../../element/display_14.cpp" line="13"/>
         <source>14-SEGMENT DISPLAY</source>
-        <translation type="unfinished"></translation>
+        <translation>14-SEGMENT GÖSTERGE</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="18"/>
+        <location filename="../../element/display_14.cpp" line="13"/>
         <source>14-Segment Display</source>
-        <translation type="unfinished"></translation>
+        <translation>14-Segment Gösterge</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="87"/>
+        <source>middle left horizontal</source>
+        <translation>orta sol yatay</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="88"/>
+        <source>upper left vertical</source>
+        <translation>üst sol dikey</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="89"/>
+        <source>lower left vertical</source>
+        <translation>alt sol dikey</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="92"/>
-        <source>middle left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_14.cpp" line="93"/>
-        <source>upper left</source>
-        <translation type="unfinished"></translation>
+        <source>upper right vertical</source>
+        <translation>üst sağ dikey</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="94"/>
-        <source>lower left</source>
-        <translation type="unfinished"></translation>
+        <source>lower right vertical</source>
+        <translation>alt sağ dikey</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="95"/>
-        <source>bottom</source>
-        <translation type="unfinished"></translation>
+        <source>middle right horizontal</source>
+        <translation>orta sağ yatay</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="96"/>
-        <source>top</source>
-        <translation type="unfinished"></translation>
+        <source>upper left diagonal</source>
+        <translation>üst sol çapraz</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="97"/>
-        <source>upper right</source>
-        <translation type="unfinished"></translation>
+        <source>upper center vertical</source>
+        <translation>üst merkez dikey</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="98"/>
-        <source>dot</source>
-        <translation type="unfinished"></translation>
+        <source>upper right diagonal</source>
+        <translation>üst sağ çapraz</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="99"/>
-        <source>lower right</source>
-        <translation type="unfinished"></translation>
+        <source>lower right diagonal</source>
+        <translation>alt sağ çapraz</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="100"/>
-        <source>middle right</source>
-        <translation type="unfinished"></translation>
+        <source>lower center vertical</source>
+        <translation>alt merkez dikey</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="101"/>
-        <source>middle upper left</source>
-        <translation type="unfinished"></translation>
+        <source>lower left diagonal</source>
+        <translation>alt sol çapraz</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="102"/>
-        <source>middle top</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../element/display_14.cpp" line="90"/>
+        <source>bottom</source>
+        <translation>alt</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="103"/>
-        <source>middle upper right</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../element/display_14.cpp" line="91"/>
+        <source>top</source>
+        <translation>üst</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="104"/>
-        <source>middle lower right</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../element/display_14.cpp" line="93"/>
+        <source>dot</source>
+        <translation>nokta</translation>
+    </message>
+</context>
+<context>
+    <name>Display16</name>
+    <message>
+        <location filename="../../element/display_16.cpp" line="13"/>
+        <source>16-SEGMENT DISPLAY</source>
+        <translation>16-SEGMENT GÖSTERGE</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="105"/>
-        <source>middle bottom</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../element/display_16.cpp" line="13"/>
+        <source>16-Segment Display</source>
+        <translation>16-Segment Gösterge</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="106"/>
-        <source>middle lower left</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../element/display_16.cpp" line="93"/>
+        <source>middle left horizontal</source>
+        <translation>orta sol yatay</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="94"/>
+        <source>upper left vertical</source>
+        <translation>üst sol dikey</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="95"/>
+        <location filename="../../element/display_16.cpp" line="109"/>
+        <source>lower left vertical</source>
+        <translation>alt sol dikey</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="96"/>
+        <source>bottom left horizontal</source>
+        <translation>alt sol yatay</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="97"/>
+        <source>bottom right horizontal</source>
+        <translation>alt sağ yatay</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="98"/>
+        <source>top left horizontal</source>
+        <translation>üst sol yatay</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="99"/>
+        <source>top right horizontal</source>
+        <translation>üst sağ yatay</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="100"/>
+        <source>upper right vertical</source>
+        <translation>üst sağ dikey</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="101"/>
+        <source>dot</source>
+        <translation>nokta</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="102"/>
+        <source>lower right vertical</source>
+        <translation>alt sağ dikey</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="103"/>
+        <source>middle right horizontal</source>
+        <translation>orta sağ yatay</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="104"/>
+        <source>upper left diagonal</source>
+        <translation>üst sol çapraz</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="105"/>
+        <source>upper center vertical</source>
+        <translation>üst merkez dikey</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="106"/>
+        <source>upper right diagonal</source>
+        <translation>üst sağ çapraz</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="107"/>
+        <source>lower right diagonal</source>
+        <translation>alt sağ çapraz</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="108"/>
+        <source>lower center vertical</source>
+        <translation>alt merkez dikey</translation>
     </message>
 </context>
 <context>
     <name>Display7</name>
     <message>
-        <location filename="../../element/display_7.cpp" line="19"/>
+        <location filename="../../element/display_7.cpp" line="14"/>
         <source>7-SEGMENT DISPLAY</source>
-        <translation type="unfinished"></translation>
+        <translation>7-SEGMENT GÖSTERGE</translation>
     </message>
     <message>
-        <location filename="../../element/display_7.cpp" line="19"/>
+        <location filename="../../element/display_7.cpp" line="14"/>
         <source>7-Segment Display</source>
-        <translation type="unfinished"></translation>
+        <translation>7-Segment Gösterge</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_7.cpp" line="98"/>
+        <source>middle</source>
+        <translation>orta</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_7.cpp" line="99"/>
+        <source>upper left</source>
+        <translation>üst sol</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_7.cpp" line="100"/>
+        <source>lower left</source>
+        <translation>alt sol</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_7.cpp" line="101"/>
+        <source>bottom</source>
+        <translation>alt</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_7.cpp" line="102"/>
+        <source>top</source>
+        <translation>üst</translation>
     </message>
     <message>
         <location filename="../../element/display_7.cpp" line="103"/>
-        <source>middle</source>
-        <translation type="unfinished"></translation>
+        <source>upper right</source>
+        <translation>üst sağ</translation>
     </message>
     <message>
         <location filename="../../element/display_7.cpp" line="104"/>
-        <source>upper left</source>
-        <translation type="unfinished"></translation>
+        <source>dot</source>
+        <translation>nokta</translation>
     </message>
     <message>
         <location filename="../../element/display_7.cpp" line="105"/>
-        <source>lower left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_7.cpp" line="106"/>
-        <source>bottom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_7.cpp" line="107"/>
-        <source>top</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_7.cpp" line="108"/>
-        <source>upper right</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_7.cpp" line="109"/>
-        <source>dot</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_7.cpp" line="110"/>
         <source>lower right</source>
-        <translation type="unfinished"></translation>
+        <translation>alt sağ</translation>
     </message>
 </context>
 <context>
@@ -728,438 +835,474 @@
     <message>
         <location filename="../../elementeditor.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Form</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="40"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Başlık</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="56"/>
+        <location filename="../../elementeditor.ui" line="246"/>
         <source>Inputs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Girişler:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="76"/>
+        <location filename="../../elementeditor.ui" line="167"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Değer:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="143"/>
-        <location filename="../../elementeditor.ui" line="194"/>
+        <location filename="../../elementeditor.ui" line="260"/>
+        <location filename="../../elementeditor.ui" line="301"/>
         <source>Audio:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ses:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="222"/>
+        <location filename="../../elementeditor.ui" line="234"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="231"/>
+        <location filename="../../elementeditor.ui" line="104"/>
         <source>Trigger:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tetik:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="66"/>
+        <location filename="../../elementeditor.ui" line="287"/>
         <source>Outputs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Çıkışlar:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="100"/>
+        <location filename="../../elementeditor.ui" line="199"/>
         <source>Frequency:</source>
-        <translation type="unfinished"></translation>
+        <translation>Frekans:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="46"/>
+        <location filename="../../elementeditor.ui" line="97"/>
         <source>Label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiket:</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="206"/>
+        <source>Color:</source>
+        <translation>Renk:</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="122"/>
+        <source>TruthTable</source>
+        <translation>Doğruluk Tablosu</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="47"/>
+        <source>C6</source>
+        <translation>C6</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="52"/>
+        <source>D6</source>
+        <translation>D6</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="57"/>
+        <source>E6</source>
+        <translation>E6</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="62"/>
+        <source>F6</source>
+        <translation>F6</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="67"/>
+        <source>G6</source>
+        <translation>G6</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="72"/>
+        <source>A7</source>
+        <translation>A7</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="77"/>
+        <source>B7</source>
+        <translation>B7</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="82"/>
+        <source>C7</source>
+        <translation>C7</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="177"/>
+        <location filename="../../elementeditor.ui" line="315"/>
+        <source> Hz</source>
+        <translation> Hz</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="308"/>
+        <source>Delay:</source>
+        <translation>Gecikme:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="129"/>
-        <source>Color:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="266"/>
-        <source>TruthTable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="151"/>
-        <source>C6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="156"/>
-        <source>D6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="161"/>
-        <source>E6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="166"/>
-        <source>F6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="171"/>
-        <source>G6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="176"/>
-        <source>A7</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="181"/>
-        <source>B7</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="186"/>
-        <source>C7</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="110"/>
-        <source> Hz</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="273"/>
-        <location filename="../../elementeditor.cpp" line="89"/>
+        <location filename="../../elementeditor.cpp" line="93"/>
         <source>Change skin to ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kabuğunu şuna değiştir ...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="286"/>
+        <location filename="../../elementeditor.ui" line="142"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılan</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="86"/>
+        <location filename="../../elementeditor.ui" line="294"/>
         <source>Locked:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kilitli:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="241"/>
+        <location filename="../../elementeditor.ui" line="267"/>
         <source>Priority:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="90"/>
-        <source>Change color to...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="91"/>
-        <source>Change frequency</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="92"/>
-        <source>Morph to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Öncelik:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="94"/>
-        <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <source>Change color to...</source>
+        <translation>Rengi şuna değiştir...</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="95"/>
-        <source>Set skin to default</source>
-        <translation type="unfinished"></translation>
+        <source>Change frequency</source>
+        <translation>Frekansı değiştir</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="96"/>
-        <source>Rotate left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="97"/>
-        <source>Rotate right</source>
-        <translation type="unfinished"></translation>
+        <source>Morph to...</source>
+        <translation>Şuna dönüştür...</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="98"/>
+        <source>Rename</source>
+        <translation>Yeniden adlandır</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="99"/>
+        <source>Set skin to default</source>
+        <translation>Kabuğunu varsayılana ayarla</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="100"/>
+        <source>Rotate left</source>
+        <translation>Sola döndür</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="101"/>
+        <source>Rotate right</source>
+        <translation>Sağa döndür</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="102"/>
         <source>Change trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Tetikleyiciyi değiştir</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="93"/>
+        <location filename="../../elementeditor.cpp" line="97"/>
         <source>Change priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Önceliği değiştir</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="46"/>
+        <location filename="../../elementeditor.cpp" line="49"/>
         <source>Truth Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Doğruluk Tablosu</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="213"/>
-        <location filename="../../elementeditor.cpp" line="286"/>
+        <location filename="../../elementeditor.cpp" line="218"/>
+        <location filename="../../elementeditor.cpp" line="291"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopyala</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="214"/>
-        <location filename="../../elementeditor.cpp" line="286"/>
+        <location filename="../../elementeditor.cpp" line="219"/>
+        <location filename="../../elementeditor.cpp" line="291"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Kes</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="220"/>
-        <location filename="../../elementeditor.cpp" line="286"/>
+        <location filename="../../elementeditor.cpp" line="225"/>
+        <location filename="../../elementeditor.cpp" line="291"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Sil</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="290"/>
+        <location filename="../../elementeditor.cpp" line="295"/>
         <source>Unknown context menu option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilinmeyen bağlam menüsü seçeneği.</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="314"/>
+        <location filename="../../elementeditor.cpp" line="319"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya Aç</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="316"/>
-        <source>Images (*.png *.gif *.jpg *.jpeg)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="359"/>
+        <location filename="../../elementeditor.cpp" line="364"/>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeşil</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="360"/>
+        <location filename="../../elementeditor.cpp" line="365"/>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation>Mavi</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="361"/>
+        <location filename="../../elementeditor.cpp" line="366"/>
         <source>Purple</source>
-        <translation type="unfinished"></translation>
+        <translation>Mor</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="946"/>
+        <location filename="../../elementeditor.cpp" line="973"/>
         <source>Select any audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Herhangi bir ses seçin</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="947"/>
+        <location filename="../../elementeditor.cpp" line="974"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ses (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="358"/>
+        <location filename="../../elementeditor.cpp" line="363"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation>Kırmızı</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="357"/>
+        <location filename="../../elementeditor.cpp" line="321"/>
+        <source>Images</source>
+        <translation>Resimler</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="362"/>
         <source>White</source>
-        <translation type="unfinished"></translation>
+        <translation>Beyaz</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="61"/>
+        <location filename="../../elementeditor.h" line="71"/>
         <source>&lt;Many sounds&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Çok ses&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="62"/>
+        <location filename="../../elementeditor.h" line="72"/>
         <source>&lt;Many colors&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Çok renk&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="63"/>
-        <location filename="../../elementeditor.h" line="64"/>
-        <location filename="../../elementeditor.h" line="66"/>
-        <location filename="../../elementeditor.h" line="67"/>
+        <location filename="../../elementeditor.h" line="73"/>
+        <location filename="../../elementeditor.h" line="74"/>
+        <location filename="../../elementeditor.h" line="75"/>
+        <location filename="../../elementeditor.h" line="77"/>
+        <location filename="../../elementeditor.h" line="78"/>
         <source>&lt;Many values&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Çok değer&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="65"/>
+        <location filename="../../elementeditor.h" line="76"/>
         <source>&lt;Many labels&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Çok etiket&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="68"/>
+        <location filename="../../elementeditor.h" line="79"/>
         <source>&lt;Many priorities&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Çok öncelik&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="69"/>
+        <location filename="../../elementeditor.h" line="80"/>
         <source>&lt;Many triggers&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Çok tetikleyici&gt;</translation>
     </message>
 </context>
 <context>
     <name>ElementFactory</name>
     <message>
-        <location filename="../../elementfactory.cpp" line="54"/>
+        <location filename="../../elementfactory.cpp" line="55"/>
         <source>MULTIPLE TYPES</source>
-        <translation type="unfinished"></translation>
+        <translation>ÇOKLU TİPLER</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="63"/>
+        <location filename="../../elementfactory.cpp" line="64"/>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilinmeyen</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="83"/>
-        <location filename="../../elementfactory.cpp" line="90"/>
-        <location filename="../../elementfactory.cpp" line="98"/>
-        <source>Unknown type: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../elementfactory.cpp" line="84"/>
+        <source>Unknown type 1: %1</source>
+        <translation>Bilinmeyen tür 1: %1</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="191"/>
-        <source>Not implemented yet: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../elementfactory.cpp" line="91"/>
+        <source>Unknown type: %1</source>
+        <translation>Bilinmeyen tür: %1</translation>
+    </message>
+    <message>
+        <location filename="../../elementfactory.cpp" line="99"/>
+        <source>Unknown type 2: %1</source>
+        <translation>Bilinmeyen tür 2: %1</translation>
+    </message>
+    <message>
+        <location filename="../../elementfactory.cpp" line="186"/>
+        <source>Not implemented yet: %1</source>
+        <translation>Henüz uygulanmadı: %1</translation>
     </message>
 </context>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="635"/>
+        <location filename="../../commands.cpp" line="637"/>
         <source>Flip %1 elements in axis %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 öğeyi %2 ekseninde çevir</translation>
     </message>
 </context>
 <context>
     <name>GraphicElement</name>
     <message>
         <location filename="../../graphicelement.cpp" line="100"/>
-        <source>Couldn&apos;t load pixmap.</source>
-        <translation type="unfinished"></translation>
+        <source>File does not exist</source>
+        <translation>Dosya mevcut değil</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="435"/>
-        <location filename="../../graphicelement.cpp" line="511"/>
-        <location filename="../../graphicelement.cpp" line="547"/>
+        <location filename="../../graphicelement.cpp" line="102"/>
+        <source>File is not readable</source>
+        <translation>Dosya okunamaz</translation>
+    </message>
+    <message>
+        <location filename="../../graphicelement.cpp" line="103"/>
+        <source>Unknown reason</source>
+        <translation>Bilinmeyen neden</translation>
+    </message>
+    <message>
+        <location filename="../../graphicelement.cpp" line="107"/>
+        <source>Couldn&apos;t load pixmap: %1 (%2)</source>
+        <translation>Piksel haritası yüklenemedi: %1 (%2)</translation>
+    </message>
+    <message>
+        <location filename="../../graphicelement.cpp" line="440"/>
+        <location filename="../../graphicelement.cpp" line="516"/>
+        <location filename="../../graphicelement.cpp" line="552"/>
         <source>Corrupted DataStream!</source>
-        <translation type="unfinished"></translation>
+        <translation>Bozuk Veri Akışı!</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="543"/>
+        <location filename="../../graphicelement.cpp" line="548"/>
         <source>Loading pixmap skin names.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pixmap kabuğu adları yükleniyor.</translation>
     </message>
 </context>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../ic.cpp" line="25"/>
+        <location filename="../../ic.cpp" line="20"/>
         <source>IC</source>
-        <translation type="unfinished"></translation>
+        <translation>IC</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="25"/>
+        <location filename="../../ic.cpp" line="20"/>
         <source>INTEGRATED CIRCUIT</source>
-        <translation type="unfinished"></translation>
+        <translation>ENTEGRE DEVRE</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="93"/>
-        <location filename="../../ic.cpp" line="409"/>
-        <source>Error copying file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../ic.cpp" line="91"/>
+        <location filename="../../ic.cpp" line="404"/>
+        <source>Error copying file: %1</source>
+        <translation>Dosya kopyalanırken hata: %1</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="144"/>
-        <source> not found.</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../ic.cpp" line="142"/>
+        <source>%1 not found.</source>
+        <translation>%1 bulunamadı.</translation>
+    </message>
+    <message>
+        <location filename="../../ic.cpp" line="154"/>
+        <location filename="../../ic.cpp" line="410"/>
+        <source>Error opening file: %1</source>
+        <translation>Dosya açılırken hata: %1</translation>
     </message>
 </context>
 <context>
     <name>InputButton</name>
     <message>
-        <location filename="../../element/inputbutton.cpp" line="17"/>
+        <location filename="../../element/inputbutton.cpp" line="12"/>
         <source>PUSH BUTTON</source>
-        <translation type="unfinished"></translation>
+        <translation>BASAR DÜĞME</translation>
     </message>
     <message>
-        <location filename="../../element/inputbutton.cpp" line="17"/>
+        <location filename="../../element/inputbutton.cpp" line="12"/>
         <source>Push Button</source>
-        <translation type="unfinished"></translation>
+        <translation>Basar Düğme</translation>
     </message>
 </context>
 <context>
     <name>InputGnd</name>
     <message>
-        <location filename="../../element/inputgnd.cpp" line="14"/>
+        <location filename="../../element/inputgnd.cpp" line="9"/>
         <source>GND</source>
-        <translation type="unfinished"></translation>
+        <translation>GND</translation>
     </message>
     <message>
-        <location filename="../../element/inputgnd.cpp" line="14"/>
+        <location filename="../../element/inputgnd.cpp" line="9"/>
         <source>GROUND</source>
-        <translation type="unfinished"></translation>
+        <translation>TOPRAK</translation>
     </message>
 </context>
 <context>
     <name>InputRotary</name>
     <message>
-        <location filename="../../element/inputrotary.cpp" line="18"/>
+        <location filename="../../element/inputrotary.cpp" line="13"/>
         <source>Rotary Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Dönür Anahtar</translation>
     </message>
     <message>
-        <location filename="../../element/inputrotary.cpp" line="18"/>
+        <location filename="../../element/inputrotary.cpp" line="13"/>
         <source>ROTARY SWITCH</source>
-        <translation type="unfinished"></translation>
+        <translation>DÖNÜR ANAHTAR</translation>
     </message>
 </context>
 <context>
     <name>InputSwitch</name>
     <message>
-        <location filename="../../element/inputswitch.cpp" line="17"/>
+        <location filename="../../element/inputswitch.cpp" line="12"/>
         <source>Input Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Giriş Anahtarı</translation>
     </message>
     <message>
-        <location filename="../../element/inputswitch.cpp" line="17"/>
+        <location filename="../../element/inputswitch.cpp" line="12"/>
         <source>INPUT SWITCH</source>
-        <translation type="unfinished"></translation>
+        <translation>GİRİŞ ANAHTARI</translation>
     </message>
 </context>
 <context>
     <name>InputVcc</name>
     <message>
-        <location filename="../../element/inputvcc.cpp" line="15"/>
+        <location filename="../../element/inputvcc.cpp" line="10"/>
         <source>VCC</source>
-        <translation type="unfinished"></translation>
+        <translation>VCC</translation>
     </message>
 </context>
 <context>
     <name>JKFlipFlop</name>
     <message>
-        <location filename="../../element/jkflipflop.cpp" line="15"/>
+        <location filename="../../element/jkflipflop.cpp" line="10"/>
         <source>JK-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>JK-FLIP-FLOP</translation>
     </message>
     <message>
-        <location filename="../../element/jkflipflop.cpp" line="15"/>
+        <location filename="../../element/jkflipflop.cpp" line="10"/>
         <source>JK-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>JK-Flip-Flop</translation>
     </message>
 </context>
 <context>
     <name>Led</name>
     <message>
-        <location filename="../../element/led.cpp" line="17"/>
+        <location filename="../../element/led.cpp" line="12"/>
         <source>LED</source>
-        <translation type="unfinished"></translation>
+        <translation>LED</translation>
     </message>
 </context>
 <context>
@@ -1167,40 +1310,40 @@
     <message>
         <location filename="../../lengthdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Diyalog</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.ui" line="43"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.ui" line="53"/>
         <source>Simulation Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Simülasyon Uzunluğu</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.ui" line="60"/>
         <source>2048</source>
-        <translation type="unfinished"></translation>
+        <translation>2048</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.cpp" line="15"/>
         <source>Simulation Length Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Simülasyon Uzunluğu Seçimi</translation>
     </message>
 </context>
 <context>
     <name>Line</name>
     <message>
-        <location filename="../../element/line.cpp" line="14"/>
+        <location filename="../../element/line.cpp" line="9"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi</translation>
     </message>
     <message>
-        <location filename="../../element/line.cpp" line="14"/>
+        <location filename="../../element/line.cpp" line="9"/>
         <source>LINE</source>
-        <translation type="unfinished"></translation>
+        <translation>ÇİZGİ</translation>
     </message>
 </context>
 <context>
@@ -1208,812 +1351,801 @@
     <message>
         <location filename="../../mainwindow.ui" line="134"/>
         <source>Inputs/Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Girişler/Çıkışlar</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="183"/>
         <source>Gates</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapılar</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="232"/>
         <source>Combinational</source>
-        <translation type="unfinished"></translation>
+        <translation>Kombinasyonel</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="287"/>
         <source>Memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Bellek</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="336"/>
         <source>Integrated Circuits</source>
-        <translation type="unfinished"></translation>
+        <translation>Entegre Devreler</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="379"/>
         <source>Add IC files</source>
-        <translation type="unfinished"></translation>
+        <translation>IC dosyaları ekle</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="392"/>
         <source>Remove IC</source>
-        <translation type="unfinished"></translation>
+        <translation>IC&apos;yi kaldır</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="413"/>
         <source>Miscellaneous</source>
-        <translation type="unfinished"></translation>
+        <translation>Çeşitli</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="531"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ara:</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="626"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dosya</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="636"/>
         <source>&amp;Recent files:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Son dosyalar:</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="661"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Düzenle</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="682"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Yardım</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="691"/>
+        <location filename="../../mainwindow.ui" line="697"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Görünüm</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="695"/>
+        <location filename="../../mainwindow.ui" line="701"/>
         <source>&amp;Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tema</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="715"/>
+        <location filename="../../mainwindow.ui" line="721"/>
         <source>&amp;Language</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dil</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="723"/>
+        <location filename="../../mainwindow.ui" line="726"/>
         <source>Sim&amp;ulation</source>
-        <translation type="unfinished"></translation>
+        <translation>Sim&amp;ülasyon</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="732"/>
+        <location filename="../../mainwindow.ui" line="737"/>
         <source>Examples</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="749"/>
-        <source>&amp;Open...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="752"/>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Örnekler</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="755"/>
+        <source>&amp;Open...</source>
+        <translation>&amp;Aç...</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="758"/>
+        <source>Open</source>
+        <translation>Aç</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="761"/>
         <source>Ctrl+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="764"/>
+        <location filename="../../mainwindow.ui" line="770"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kaydet</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="767"/>
+        <location filename="../../mainwindow.ui" line="773"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="776"/>
+        <location filename="../../mainwindow.ui" line="782"/>
         <source>Save &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Farklı &amp;Kaydet...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="779"/>
+        <location filename="../../mainwindow.ui" line="785"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="788"/>
+        <location filename="../../mainwindow.ui" line="794"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>Ke&amp;s</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="791"/>
+        <location filename="../../mainwindow.ui" line="797"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="800"/>
+        <location filename="../../mainwindow.ui" line="806"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kopyala</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="803"/>
+        <location filename="../../mainwindow.ui" line="809"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="812"/>
+        <location filename="../../mainwindow.ui" line="818"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Yapıştır</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="815"/>
+        <location filename="../../mainwindow.ui" line="821"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="825"/>
+        <location filename="../../mainwindow.ui" line="831"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sil</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="828"/>
+        <location filename="../../mainwindow.ui" line="834"/>
         <source>Del</source>
-        <translation type="unfinished"></translation>
+        <translation>Sil</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="837"/>
+        <location filename="../../mainwindow.ui" line="843"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Yeni</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="840"/>
+        <location filename="../../mainwindow.ui" line="846"/>
         <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="849"/>
+        <location filename="../../mainwindow.ui" line="855"/>
         <source>Zoom &amp;in</source>
-        <translation type="unfinished"></translation>
+        <translation>Yaklaşt&amp;ır</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="852"/>
+        <location filename="../../mainwindow.ui" line="858"/>
         <source>Ctrl+=</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="861"/>
+        <location filename="../../mainwindow.ui" line="867"/>
         <source>Zoom &amp;out</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzaklaş&amp;tır</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="864"/>
+        <location filename="../../mainwindow.ui" line="870"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="879"/>
+        <location filename="../../mainwindow.ui" line="885"/>
         <source>&amp;Wires</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kablolar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="882"/>
+        <location filename="../../mainwindow.ui" line="888"/>
         <source>Ctrl+1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="897"/>
+        <location filename="../../mainwindow.ui" line="903"/>
         <source>&amp;Gates</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kapılar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="900"/>
+        <location filename="../../mainwindow.ui" line="906"/>
         <source>Ctrl+2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+2</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="909"/>
+        <location filename="../../mainwindow.ui" line="915"/>
         <source>&amp;About</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hakkında</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="912"/>
+        <location filename="../../mainwindow.ui" line="918"/>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation>F1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="921"/>
+        <location filename="../../mainwindow.ui" line="927"/>
         <source>&amp;Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Çıkış</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="924"/>
+        <location filename="../../mainwindow.ui" line="930"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="933"/>
+        <location filename="../../mainwindow.ui" line="939"/>
         <source>R&amp;otate right</source>
-        <translation type="unfinished"></translation>
+        <translation>Sağa &amp;döndür</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="936"/>
+        <location filename="../../mainwindow.ui" line="942"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="945"/>
+        <location filename="../../mainwindow.ui" line="951"/>
         <source>Rotate &amp;left</source>
-        <translation type="unfinished"></translation>
+        <translation>Sola &amp;döndür</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="948"/>
+        <location filename="../../mainwindow.ui" line="954"/>
         <source>Ctrl+Shift+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="957"/>
+        <location filename="../../mainwindow.ui" line="963"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Qt Hakkında</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="966"/>
+        <location filename="../../mainwindow.ui" line="972"/>
         <source>&amp;Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tümünü seç</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="969"/>
+        <location filename="../../mainwindow.ui" line="975"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="978"/>
+        <location filename="../../mainwindow.ui" line="984"/>
         <source>Re&amp;load File</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosyayı ye&amp;niden yükle</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="981"/>
+        <location filename="../../mainwindow.ui" line="987"/>
         <source>Ctrl+F5</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+F5</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="990"/>
+        <location filename="../../mainwindow.ui" line="996"/>
         <source>E&amp;xport to Arduino</source>
-        <translation type="unfinished"></translation>
+        <translation>Arduino&apos;ya a&amp;ktar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="993"/>
+        <location filename="../../mainwindow.ui" line="999"/>
         <source>Ctrl+Alt+I</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+I</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1002"/>
+        <location filename="../../mainwindow.ui" line="1008"/>
         <source>&amp;Reset Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Yaklaştırmayı &amp;Sıfırla</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1005"/>
+        <location filename="../../mainwindow.ui" line="1011"/>
         <source>Ctrl+0</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1014"/>
+        <location filename="../../mainwindow.ui" line="1020"/>
         <source>Export to &amp;PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;PDF&apos;ye Aktar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1017"/>
+        <location filename="../../mainwindow.ui" line="1023"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1026"/>
-        <source>&amp;English</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../mainwindow.ui" line="1209"/>
+        <source>Background Simulation</source>
+        <translation>Arka Plan Simülasyonu</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1035"/>
-        <source>&amp;Portuguese</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../mainwindow.ui" line="1226"/>
+        <source>Report Translation Error</source>
+        <translation>Çeviri hatası bildir</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1048"/>
+        <location filename="../../mainwindow.ui" line="1229"/>
+        <source>Report translation errors or help improve translations on Weblate</source>
+        <translation>Çeviri hatalarını bildirin veya Weblate&apos;te çevirileri geliştirmeye yardımcı olun</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1036"/>
         <source>&amp;Play/Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Oynat/Duraklat</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="691"/>
+        <source>&amp;Help Translate</source>
+        <translation>&amp;Çeviriye Yardım</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1039"/>
+        <source>Play or Pause simulation.</source>
+        <translation>Simülasyonu oynat veya duraklat.</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1042"/>
+        <source>F5</source>
+        <translation>F5</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1051"/>
-        <source>Play or Pause simulation.</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Rename</source>
+        <translation>&amp;Yeniden adlandır</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1054"/>
-        <source>F5</source>
-        <translation type="unfinished"></translation>
+        <source>F2</source>
+        <translation>F2</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1063"/>
-        <source>&amp;Rename</source>
-        <translation type="unfinished"></translation>
+        <source>Cha&amp;nge Trigger</source>
+        <translation>Tetikleyiciyi &amp;Değiştir</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1066"/>
-        <source>F2</source>
-        <translation type="unfinished"></translation>
+        <source>F3</source>
+        <translation>F3</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1075"/>
-        <source>Cha&amp;nge Trigger</source>
-        <translation type="unfinished"></translation>
+        <source>Cl&amp;ear selection</source>
+        <translation>Seçimi te&amp;mizle</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1078"/>
-        <source>F3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1087"/>
-        <source>Cl&amp;ear selection</source>
-        <translation type="unfinished"></translation>
+        <source>Esc</source>
+        <translation>Esc</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1090"/>
-        <source>Esc</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1102"/>
         <source>&amp;Fast Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hızlı Mod</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1113"/>
+        <location filename="../../mainwindow.ui" line="1101"/>
         <source>&amp;Panda Light</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Panda Açık</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1109"/>
+        <source>Panda &amp;Dark</source>
+        <translation>Panda &amp;Koyu</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1118"/>
+        <source>&amp;Waveform</source>
+        <translation>&amp;Dalga Formu</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1121"/>
-        <source>Panda &amp;Dark</source>
-        <translation type="unfinished"></translation>
+        <source>Ctrl+W</source>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1130"/>
-        <source>&amp;Waveform</source>
-        <translation type="unfinished"></translation>
+        <source>Export to &amp;Image</source>
+        <translation>&amp;Resme Aktar</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1133"/>
-        <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1142"/>
-        <source>Export to &amp;Image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1145"/>
         <source>Ctrl+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+E</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1150"/>
+        <location filename="../../mainwindow.ui" line="1138"/>
         <source>&amp;Flip horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Yatay çevir</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1153"/>
+        <location filename="../../mainwindow.ui" line="1141"/>
         <source>Ctrl+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1158"/>
+        <location filename="../../mainwindow.ui" line="1146"/>
         <source>Flip &amp;vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dikey çevir</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1163"/>
+        <location filename="../../mainwindow.ui" line="1151"/>
         <source>F&amp;ullscreen</source>
-        <translation type="unfinished"></translation>
+        <translation>T&amp;am ekran</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1166"/>
+        <location filename="../../mainwindow.ui" line="1154"/>
         <source>F11</source>
-        <translation type="unfinished"></translation>
+        <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1179"/>
-        <location filename="../../mainwindow.cpp" line="1358"/>
+        <location filename="../../mainwindow.ui" line="1167"/>
+        <location filename="../../mainwindow.cpp" line="1602"/>
         <source>Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Sessiz</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1182"/>
+        <location filename="../../mainwindow.ui" line="1170"/>
         <source>Mutes and unmutes circuit buzzers</source>
-        <translation type="unfinished"></translation>
+        <translation>Devre zırıltılarını sessize alır ve açar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1185"/>
+        <location filename="../../mainwindow.ui" line="1173"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1193"/>
+        <location filename="../../mainwindow.ui" line="1181"/>
         <source>Labels under icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Simgelerin altında etiketler</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1186"/>
+        <source>About this version</source>
+        <translation>Bu sürüm hakkında</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1195"/>
+        <source>&amp;Restart</source>
+        <translation>&amp;Yeniden başlat</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1198"/>
-        <source>About this version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1207"/>
-        <source>&amp;Restart</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1210"/>
         <source>Restart simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Simülasyonu yeniden başlat.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1219"/>
-        <source>Spanish</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1227"/>
-        <location filename="../../mainwindow.cpp" line="507"/>
+        <location filename="../../mainwindow.ui" line="1217"/>
+        <location filename="../../mainwindow.cpp" line="518"/>
         <source>Shortcuts and Tips</source>
-        <translation type="unfinished"></translation>
+        <translation>Kısayollar ve İpuçları</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="224"/>
+        <location filename="../../mainwindow.cpp" line="232"/>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hata!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="249"/>
-        <location filename="../../mainwindow.cpp" line="372"/>
-        <location filename="../../mainwindow.cpp" line="623"/>
-        <location filename="../../mainwindow.cpp" line="1135"/>
+        <location filename="../../mainwindow.cpp" line="257"/>
+        <location filename="../../mainwindow.cpp" line="379"/>
+        <location filename="../../mainwindow.cpp" line="640"/>
+        <location filename="../../mainwindow.cpp" line="1159"/>
         <source>New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni Proje</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="295"/>
+        <location filename="../../mainwindow.cpp" line="303"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="314"/>
-        <source>Don&apos;t show this again.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="355"/>
-        <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="374"/>
-        <source> has been modified. 
-Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="412"/>
-        <source>File loaded successfully.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="431"/>
-        <location filename="../../mainwindow.cpp" line="1399"/>
-        <source>Open File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="431"/>
-        <location filename="../../mainwindow.cpp" line="448"/>
-        <location filename="../../mainwindow.cpp" line="470"/>
-        <source>Panda files (*.panda)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="448"/>
-        <location filename="../../mainwindow.cpp" line="470"/>
-        <source>Save File as ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="554"/>
-        <source>Exit </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="555"/>
-        <source>Are you sure?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="703"/>
-        <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya başarıyla kaydedildi.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="322"/>
+        <source>Don&apos;t show this again.</source>
+        <translation>Bunu bir daha gösterme.</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="362"/>
+        <source>File not saved. Close tab anyway?</source>
+        <translation>Dosya kaydedilmedi. Sekmeyi yine de kapat?</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="381"/>
+        <source> has been modified. 
+Do you want to save your changes?</source>
+        <translation> değiştirildi. 
+Değişikliklerinizi kaydetmek istiyor musunuz?</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="419"/>
+        <source>File loaded successfully.</source>
+        <translation>Dosya başarıyla yüklendi.</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="438"/>
+        <location filename="../../mainwindow.cpp" line="1645"/>
+        <source>Open File</source>
+        <translation>Dosya Aç</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="438"/>
+        <location filename="../../mainwindow.cpp" line="459"/>
+        <location filename="../../mainwindow.cpp" line="479"/>
+        <source>Panda files (*.panda)</source>
+        <translation>Panda dosyaları (*.panda)</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="459"/>
+        <location filename="../../mainwindow.cpp" line="479"/>
+        <source>Save File as ...</source>
+        <translation>Dosyayı Farklı Kaydet ...</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="499"/>
+        <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;wiRedPanda, São Paulo Federal Üniversitesi öğrencileri tarafından geliştirilen bir yazılımdır. Bu proje, öğrencilerin mantık devreleri hakkında öğrenmelerine yardımcı olmak için oluşturulmuştur.&lt;/p&gt;&lt;p&gt;Yazılım sürümü: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Geliştiriciler:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda şu anda Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves ve Maycon A. Santana tarafından sürdürülmektedir.&lt;/p&gt;&lt;p&gt; Hatalar bulunursa veya yeni bir işlevselliğin uygulanmasını istiyorsanız lütfen GitHub sayfamızda bir rapor gönderin.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Web sitemizi ziyaret edin!&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="571"/>
+        <source>Exit </source>
+        <translation>Çıkış </translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="572"/>
+        <source>Are you sure?</source>
+        <translation>Emin misiniz?</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="721"/>
+        <source>Error</source>
+        <translation>Hata</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="330"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
 You have to save new projects before accessing ICs and skins, or running beWavedDolphin simulations.</source>
-        <translation type="unfinished"></translation>
+        <translation>wiRedPanda %1, mevcut projenin aynı dizininde bulunan diğer tüm .panda dosyalarını editör sekmesinde IC olarak otomatik olarak listeleyecektir.
+IC&apos;lere ve kabulara erişmeden veya beWavedDolphin simülasyonlarını çalıştırmadan önce yeni projeleri kaydetmeniz gerekir.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="488"/>
-        <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="508"/>
+        <location filename="../../mainwindow.cpp" line="519"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h1&gt;Tuval Kısayolları&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Yakınlaştır &lt;/li&gt;&lt;li&gt; Ctrl+- : Uzaklaştır &lt;/li&gt;&lt;li&gt; Ctrl+1 : Kabloları gizle/göster &lt;/li&gt;&lt;li&gt; Ctrl+2 : Kapıları gizle/göster &lt;/li&gt;&lt;li&gt; Ctrl+F : Öğeleri ara &lt;/li&gt;&lt;li&gt; Ctrl+W : beWaveDolphin&apos;i aç &lt;/li&gt;&lt;li&gt; Ctrl+S : Projeyi kaydet &lt;/li&gt;&lt;li&gt; Ctrl+Q : wiRedPanda&apos;dan çık &lt;/li&gt;&lt;li&gt; F5 : Simülasyonu başlat/duraklat &lt;/li&gt;&lt;li&gt; [ : Önceki birincil öğe özelliği &lt;/li&gt;&lt;li&gt; ] : Sonraki birincil öğe özelliği &lt;/li&gt;&lt;li&gt; { : Önceki ikincil öğe özelliği &lt;/li&gt;&lt;li&gt; } : Sonraki ikincil öğe özelliği &lt;/li&gt;&lt;li&gt; &amp;lt; : Önceki öğeye dönüştür &lt;/li&gt;&lt;li&gt; &amp;gt; : Sonraki öğeye dönüştür &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Genel İpuçları&lt;/h1&gt;&lt;p&gt;Bir düğüm oluşturmak için kabloyu çift tıklayın&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="895"/>
-        <location filename="../../mainwindow.cpp" line="922"/>
+        <location filename="../../mainwindow.cpp" line="918"/>
+        <location filename="../../mainwindow.cpp" line="945"/>
         <source>Missing file name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksik dosya adı.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="901"/>
+        <location filename="../../mainwindow.cpp" line="924"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>.panda dosyası boş.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="914"/>
+        <location filename="../../mainwindow.cpp" line="937"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Arduino kodu başarıyla oluşturuldu.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="949"/>
+        <location filename="../../mainwindow.cpp" line="972"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Arduino Kodu Oluştur</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="949"/>
+        <location filename="../../mainwindow.cpp" line="972"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arduino dosyası (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1051"/>
+        <location filename="../../mainwindow.cpp" line="1074"/>
         <source>Export to PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF&apos;ye Aktar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1051"/>
+        <location filename="../../mainwindow.cpp" line="1074"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF dosyaları (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1069"/>
+        <location filename="../../mainwindow.cpp" line="1092"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bu devre PDF olarak yazdırılamadı.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1076"/>
-        <location filename="../../mainwindow.cpp" line="1114"/>
+        <location filename="../../mainwindow.cpp" line="1099"/>
+        <location filename="../../mainwindow.cpp" line="1137"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya başarıyla aktarıldı.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1095"/>
+        <location filename="../../mainwindow.cpp" line="1118"/>
         <source>Export to Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Resme Aktar</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1095"/>
+        <location filename="../../mainwindow.cpp" line="1118"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG dosyaları (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1190"/>
-        <source>Error loading wiRedPanda translation!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="1198"/>
-        <source>Error loading Qt translation!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="1358"/>
+        <location filename="../../mainwindow.cpp" line="1602"/>
         <source>Unmute</source>
-        <translation type="unfinished"></translation>
+        <translation>Sesi aç</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1395"/>
+        <location filename="../../mainwindow.cpp" line="1641"/>
         <source>Save file first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Önce dosyayı kaydedin.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1401"/>
+        <location filename="../../mainwindow.cpp" line="1647"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished"></translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1413"/>
-        <location filename="../../mainwindow.cpp" line="1424"/>
+        <location filename="../../mainwindow.cpp" line="1659"/>
+        <location filename="../../mainwindow.cpp" line="1671"/>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilgi</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1413"/>
+        <location filename="../../mainwindow.cpp" line="1659"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen dosyalar (ve bağımlılıkları) mevcut dosya klasörüne kopyalanacak.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1424"/>
+        <location filename="../../mainwindow.cpp" line="1671"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaldırmak için buraya sürükleyin.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1447"/>
-        <source>Error removing file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../mainwindow.cpp" line="1694"/>
+        <source>Error removing file: %1</source>
+        <translation>Dosya silinirken hata: %1</translation>
     </message>
 </context>
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="529"/>
+        <location filename="../../commands.cpp" line="531"/>
         <source>Morph %1 elements to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 öğeyi %2&apos;ye dönüştür</translation>
     </message>
 </context>
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="344"/>
+        <location filename="../../commands.cpp" line="346"/>
         <source>Move elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Öğeleri taşı</translation>
     </message>
 </context>
 <context>
     <name>Mux</name>
     <message>
-        <location filename="../../element/mux.cpp" line="15"/>
+        <location filename="../../element/mux.cpp" line="10"/>
         <source>Mux</source>
-        <translation type="unfinished"></translation>
+        <translation>Mux</translation>
     </message>
     <message>
-        <location filename="../../element/mux.cpp" line="15"/>
+        <location filename="../../element/mux.cpp" line="10"/>
         <source>MULTIPLEXER</source>
-        <translation type="unfinished"></translation>
+        <translation>ÇOKLAYICI</translation>
     </message>
 </context>
 <context>
     <name>Nand</name>
     <message>
-        <location filename="../../element/nand.cpp" line="14"/>
+        <location filename="../../element/nand.cpp" line="9"/>
         <source>Nand</source>
-        <translation type="unfinished"></translation>
+        <translation>Ve-Değil</translation>
     </message>
     <message>
-        <location filename="../../element/nand.cpp" line="14"/>
+        <location filename="../../element/nand.cpp" line="9"/>
         <source>NAND</source>
-        <translation type="unfinished"></translation>
+        <translation>VE-DEĞİL</translation>
     </message>
 </context>
 <context>
     <name>Node</name>
     <message>
-        <location filename="../../element/node.cpp" line="15"/>
+        <location filename="../../element/node.cpp" line="10"/>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Düğüm</translation>
     </message>
     <message>
-        <location filename="../../element/node.cpp" line="15"/>
+        <location filename="../../element/node.cpp" line="10"/>
         <source>NODE</source>
-        <translation type="unfinished"></translation>
+        <translation>DÜĞÜM</translation>
     </message>
 </context>
 <context>
     <name>Nor</name>
     <message>
-        <location filename="../../element/nor.cpp" line="14"/>
+        <location filename="../../element/nor.cpp" line="9"/>
         <source>Nor</source>
-        <translation type="unfinished"></translation>
+        <translation>veya-Değil</translation>
     </message>
     <message>
-        <location filename="../../element/nor.cpp" line="14"/>
+        <location filename="../../element/nor.cpp" line="9"/>
         <source>NOR</source>
-        <translation type="unfinished"></translation>
+        <translation>VEYA-DEĞİL</translation>
     </message>
 </context>
 <context>
     <name>Not</name>
     <message>
-        <location filename="../../element/not.cpp" line="14"/>
+        <location filename="../../element/not.cpp" line="9"/>
         <source>Not</source>
-        <translation type="unfinished"></translation>
+        <translation>Değil</translation>
     </message>
     <message>
-        <location filename="../../element/not.cpp" line="14"/>
+        <location filename="../../element/not.cpp" line="9"/>
         <source>NOT</source>
-        <translation type="unfinished"></translation>
+        <translation>DEĞİL</translation>
     </message>
 </context>
 <context>
     <name>Or</name>
     <message>
-        <location filename="../../element/or.cpp" line="14"/>
+        <location filename="../../element/or.cpp" line="9"/>
         <source>Or</source>
-        <translation type="unfinished"></translation>
+        <translation>Veya</translation>
     </message>
     <message>
-        <location filename="../../element/or.cpp" line="14"/>
+        <location filename="../../element/or.cpp" line="9"/>
         <source>OR</source>
-        <translation type="unfinished"></translation>
+        <translation>VEYA</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../main.cpp" line="117"/>
+        <location filename="../../main.cpp" line="163"/>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../commands.cpp" line="109"/>
-        <source>One or more items was not found on the scene.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../commands.cpp" line="127"/>
-        <source>One or more elements was not found on the scene.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../commands.cpp" line="190"/>
-        <source>One or more elements were not found on scene. Expected %1, found %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../ic.cpp" line="156"/>
-        <location filename="../../ic.cpp" line="415"/>
-        <source>Error opening file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Hata!</translation>
     </message>
 </context>
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="272"/>
+        <location filename="../../commands.cpp" line="274"/>
         <source>Rotate %1 degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 derece döndür</translation>
     </message>
 </context>
 <context>
     <name>SRFlipFlop</name>
     <message>
-        <location filename="../../element/srflipflop.cpp" line="15"/>
+        <location filename="../../element/srflipflop.cpp" line="10"/>
         <source>SR-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>SR-FLIP-FLOP</translation>
     </message>
     <message>
-        <location filename="../../element/srflipflop.cpp" line="15"/>
+        <location filename="../../element/srflipflop.cpp" line="10"/>
         <source>SR-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>SR-Flip-Flop</translation>
+    </message>
+</context>
+<context>
+    <name>SRLatch</name>
+    <message>
+        <location filename="../../element/srlatch.cpp" line="10"/>
+        <source>SR-LATCH</source>
+        <translation>SR-MANDAL</translation>
+    </message>
+    <message>
+        <location filename="../../element/srlatch.cpp" line="10"/>
+        <source>SR-Latch</source>
+        <translation>SR-Mandal</translation>
     </message>
 </context>
 <context>
@@ -2021,245 +2153,259 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../scene.cpp" line="34"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Geri al</translation>
     </message>
     <message>
         <location filename="../../scene.cpp" line="38"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Yinele</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="765"/>
+        <location filename="../../scene.cpp" line="764"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Yapıştır</translation>
     </message>
 </context>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../serialization.cpp" line="67"/>
-        <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../serialization.cpp" line="82"/>
+        <location filename="../../serialization.cpp" line="47"/>
+        <location filename="../../serialization.cpp" line="56"/>
+        <location filename="../../serialization.cpp" line="88"/>
         <source>Invalid file format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçersiz dosya formatı.</translation>
     </message>
     <message>
-        <location filename="../../serialization.cpp" line="91"/>
-        <source>Invalid version number.</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../serialization.cpp" line="139"/>
+        <source>Invalid type. Data is possibly corrupted.</source>
+        <translation>Geçersiz tür. Veri muhtemelen bozuk.</translation>
     </message>
 </context>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="447"/>
+        <location filename="../../commands.cpp" line="449"/>
         <source>Wire split</source>
-        <translation type="unfinished"></translation>
+        <translation>Kablo bölme</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="470"/>
-        <source>Error trying to redo </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../commands.cpp" line="472"/>
+        <source>Error trying to redo %1</source>
+        <translation>%1 yeniden yapılırken hata</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="500"/>
-        <source>Error trying to undo </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../commands.cpp" line="502"/>
+        <source>Error trying to undo %1</source>
+        <translation>%1 geri alınırken hata</translation>
     </message>
 </context>
 <context>
     <name>TFlipFlop</name>
     <message>
-        <location filename="../../element/tflipflop.cpp" line="15"/>
+        <location filename="../../element/tflipflop.cpp" line="10"/>
         <source>T-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>T-FLIP-FLOP</translation>
     </message>
     <message>
-        <location filename="../../element/tflipflop.cpp" line="15"/>
+        <location filename="../../element/tflipflop.cpp" line="10"/>
         <source>T-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>T-Flip-Flop</translation>
     </message>
 </context>
 <context>
     <name>Text</name>
     <message>
-        <location filename="../../element/text.cpp" line="14"/>
+        <location filename="../../element/text.cpp" line="9"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Metin</translation>
     </message>
     <message>
-        <location filename="../../element/text.cpp" line="14"/>
+        <location filename="../../element/text.cpp" line="9"/>
         <source>TEXT</source>
-        <translation type="unfinished"></translation>
+        <translation>METİN</translation>
     </message>
 </context>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="869"/>
+        <location filename="../../commands.cpp" line="873"/>
         <source>Toggle TruthTable Output at position: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 pozisyonunda Doğruluk Tablosu Çıkışını değiştir</translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="882"/>
+        <location filename="../../commands.cpp" line="896"/>
+        <source>Could not find truthtable element!</source>
+        <translation>Doğruluk tablosu öğesi bulunamadı!</translation>
     </message>
 </context>
 <context>
     <name>TrashButton</name>
     <message>
-        <location filename="../../trashbutton.cpp" line="28"/>
+        <location filename="../../trashbutton.cpp" line="32"/>
         <source>File will be deleted. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya silinecek. Emin misiniz?</translation>
     </message>
 </context>
 <context>
     <name>TruthTable</name>
     <message>
-        <location filename="../../element/truth_table.cpp" line="18"/>
+        <location filename="../../element/truth_table.cpp" line="13"/>
         <source>TRUTH TABLE</source>
-        <translation type="unfinished"></translation>
+        <translation>DOĞRULUK TABLOSU</translation>
     </message>
     <message>
-        <location filename="../../element/truth_table.cpp" line="18"/>
+        <location filename="../../element/truth_table.cpp" line="13"/>
         <source>Truth Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Doğruluk Tablosu</translation>
     </message>
 </context>
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="385"/>
+        <location filename="../../commands.cpp" line="387"/>
         <source>Update %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 öğeyi güncelle</translation>
     </message>
 </context>
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../workspace.cpp" line="71"/>
+        <location filename="../../workspace.cpp" line="72"/>
         <source>Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya Kaydet</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="71"/>
+        <location filename="../../workspace.cpp" line="72"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished"></translation>
+        <translation>Panda dosyaları (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="89"/>
-        <source>Error opening file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../workspace.cpp" line="90"/>
+        <source>Error opening file: %1</source>
+        <translation>Dosya açılırken hata: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="99"/>
-        <source>Could not save file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../workspace.cpp" line="100"/>
+        <source>Could not save file: %1</source>
+        <translation>Dosya kaydedilemedi: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="134"/>
-        <source>This file does not exist: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../workspace.cpp" line="136"/>
+        <source>This file does not exist: %1</source>
+        <translation>Bu dosya mevcut değil: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="144"/>
-        <source>Could not open file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../workspace.cpp" line="146"/>
+        <source>Could not open file: %1</source>
+        <translation>Dosya açılamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="166"/>
+        <location filename="../../workspace.cpp" line="167"/>
         <source>Warning! Your wiRedPanda (Version: %1) is possibly out of date.
 The file you are opening was saved with version (%2).
 Please check for updates if the file does not load correctly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Açtığınız dosya (%2) sürümüyle kaydedilmiş.
+Dosya doğru yüklenmiyorsa lütfen güncellemeleri kontrol edin.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="170"/>
+        <location filename="../../workspace.cpp" line="171"/>
         <source>Newer version file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni sürüm dosyası.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="174"/>
+        <location filename="../../workspace.cpp" line="175"/>
         <source>Old version file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eski sürüm dosyası.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="172"/>
+        <location filename="../../workspace.cpp" line="270"/>
+        <source>Error opening autosave file: %1</source>
+        <translation>Otomatik kaydetme dosyası açılırken hata: %1</translation>
+    </message>
+    <message>
+        <location filename="../../workspace.cpp" line="173"/>
         <source>Warning! This is an old version wiRedPanda project file (version &lt; 4.0). To open it correctly, save all the ICs and skins in the main project directory.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../workspace.cpp" line="269"/>
-        <source>Error opening autosave file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Uyarı! Bu eski bir wiRedPanda proje dosyası (sürüm &lt; 4.0). Doğru açmak için tüm IC&apos;leri ve kabulakları ana proje dizinine kaydedin.</translation>
     </message>
 </context>
 <context>
     <name>Xnor</name>
     <message>
-        <location filename="../../element/xnor.cpp" line="14"/>
+        <location filename="../../element/xnor.cpp" line="9"/>
         <source>Xnor</source>
-        <translation type="unfinished"></translation>
+        <translation>Xnor</translation>
     </message>
     <message>
-        <location filename="../../element/xnor.cpp" line="14"/>
+        <location filename="../../element/xnor.cpp" line="9"/>
         <source>XNOR</source>
-        <translation type="unfinished"></translation>
+        <translation>XNOR</translation>
     </message>
 </context>
 <context>
     <name>Xor</name>
     <message>
-        <location filename="../../element/xor.cpp" line="14"/>
+        <location filename="../../element/xor.cpp" line="9"/>
         <source>Xor</source>
-        <translation type="unfinished"></translation>
+        <translation>Xor</translation>
     </message>
     <message>
-        <location filename="../../element/xor.cpp" line="14"/>
+        <location filename="../../element/xor.cpp" line="9"/>
         <source>XOR</source>
-        <translation type="unfinished"></translation>
+        <translation>XOR</translation>
     </message>
 </context>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../main.cpp" line="45"/>
+        <location filename="../../main.cpp" line="68"/>
         <source>Circuit file to open.</source>
-        <translation type="unfinished"></translation>
+        <translation>Açılacak devre dosyası.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="49"/>
+        <location filename="../../main.cpp" line="72"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ayrıntı seviyesi 0 ile 5 arası, varsayılan olarak devre dışı.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="50"/>
+        <location filename="../../main.cpp" line="73"/>
         <source>verbosity level</source>
-        <translation type="unfinished"></translation>
+        <translation>ayrıntı seviyesi</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="55"/>
-        <source>Exports circuit to &lt;arduino-file&gt;</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../main.cpp" line="78"/>
+        <source>Exports circuit to &lt;arduino-file&gt;.</source>
+        <translation>Devreyi &lt;arduino-dosyası&gt;na aktarır.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="61"/>
-        <source>Exports circuit to waveform text file</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../main.cpp" line="90"/>
+        <source>Exports circuit to waveform text file, reading input from terminal.</source>
+        <translation>Devreyi dalga formu metin dosyasına aktarır, girdiyi terminalden okur.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="67"/>
-        <source>Exports circuit to waveform text file, reading input from terminal</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../main.cpp" line="95"/>
+        <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
+        <translation>-c/--terminal ile kullanıldığında, devre Doğruluk Tabloları içeriyorsa çalıştırmayı engeller.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="56"/>
+        <location filename="../../main.cpp" line="144"/>
+        <source>Error: Circuit contains Truth Table elements.</source>
+        <translation>Hata: Devre Doğruluk Tablosu elemanları içeriyor.</translation>
+    </message>
+    <message>
+        <location filename="../../main.cpp" line="79"/>
         <source>arduino file</source>
-        <translation type="unfinished"></translation>
+        <translation>arduino dosyası</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="62"/>
+        <location filename="../../main.cpp" line="84"/>
+        <source>Exports circuit to waveform text file.</source>
+        <translation>Devreyi dalga formu metin dosyasına aktarır.</translation>
+    </message>
+    <message>
+        <location filename="../../main.cpp" line="85"/>
         <source>waveform input text file</source>
-        <translation type="unfinished"></translation>
+        <translation>dalga formu giriş metin dosyası</translation>
     </message>
 </context>
 </TS>
