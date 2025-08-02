@@ -88,7 +88,7 @@ void IC::copyFile()
     QFile destFile;
 
     if (!QFile::exists(destPath) && !destFile.copy(srcPath, destPath)) {
-        throw Pandaception(tr("Error copying file: ") + destFile.errorString());
+        throw PANDACEPTION("Error copying file: %1", destFile.errorString());
     }
 }
 
@@ -139,7 +139,7 @@ void IC::loadFile(const QString &fileName)
     fileInfo.setFile(GlobalProperties::currentDir, QFileInfo(fileName).fileName());
 
     if (!fileInfo.exists() || !fileInfo.isFile()) {
-        throw Pandaception(fileInfo.absoluteFilePath() + tr(" not found."));
+        throw PANDACEPTION("%1 not found.", fileInfo.absoluteFilePath());
     }
 
     m_fileWatcher.addPath(fileInfo.absoluteFilePath());
@@ -151,7 +151,7 @@ void IC::loadFile(const QString &fileName)
     QFile file(fileInfo.absoluteFilePath());
 
     if (!file.open(QIODevice::ReadOnly)) {
-        throw Pandaception(QObject::tr("Error opening file: ") + file.errorString());
+        throw PANDACEPTION("Error opening file: %1", file.errorString());
     }
 
     QDataStream stream(&file);
@@ -401,13 +401,13 @@ void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
     QFile destFile;
 
     if (!QFile::exists(destPath.absoluteFilePath()) && !destFile.copy(srcPath.absoluteFilePath(), destPath.absoluteFilePath())) {
-        throw Pandaception(tr("Error copying file: ") + destFile.errorString());
+        throw PANDACEPTION("Error copying file: %1", destFile.errorString());
     }
 
     destFile.setFileName(destPath.absoluteFilePath());
 
     if (!destFile.open(QIODevice::ReadOnly)) {
-        throw Pandaception(QObject::tr("Error opening file: ") + destFile.errorString());
+        throw PANDACEPTION("Error opening file: %1", destFile.errorString());
     }
 
     QDataStream stream(&destFile);

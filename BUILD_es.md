@@ -15,9 +15,9 @@ Luego abra WPanda.pro en Qt Creator y presione Ctrl+R para compilar y ejecutar.
 
 #### Dependencias
 
-Se necesita Qt 5.12.0+ o 6.2.0+ y el módulo QtMultimedia para compilar.
+Se necesita Qt 5.15.0+ o 6.2.0+ y el módulo QtMultimedia para compilar.
 
-En distribuciones como Arch Linux, Gentoo, Manjaro, Debian, etc., Qt 5.12+ se puede instalar desde los repositorios estándar.
+En distribuciones como Arch Linux, Gentoo, Manjaro, Debian, etc., Qt 5.15+ se puede instalar desde los repositorios estándar.
 
 * Debian/Ubuntu
 

@@ -909,13 +909,13 @@ void MainWindow::exportToArduino(QString fileName)
     }
 
     if (fileName.isEmpty()) {
-        throw Pandaception(tr("Missing file name."));
+        throw PANDACEPTION("Missing file name.");
     }
 
     auto elements = m_currentTab->scene()->elements();
 
     if (elements.isEmpty()) {
-        throw Pandaception(tr("The .panda file is empty."));
+        throw PANDACEPTION("The .panda file is empty.");
     }
 
     SimulationBlocker simulationBlocker(m_currentTab->simulation());
@@ -936,7 +936,7 @@ void MainWindow::exportToArduino(QString fileName)
 void MainWindow::exportToWaveFormFile(const QString &fileName)
 {
     if (fileName.isEmpty()) {
-        throw Pandaception(tr("Missing file name."));
+        throw PANDACEPTION("Missing file name.");
     }
 
     auto *bewavedDolphin = new BewavedDolphin(m_currentTab->scene(), false, this);
@@ -1083,7 +1083,7 @@ void MainWindow::on_actionExportToPdf_triggered()
     QPainter painter;
 
     if (!painter.begin(&printer)) {
-        throw Pandaception(tr("Could not print this circuit to PDF."));
+        throw PANDACEPTION("Could not print this circuit to PDF.");
     }
 
     auto *scene = m_currentTab->scene();
@@ -1640,7 +1640,7 @@ void MainWindow::on_pushButtonAddIC_clicked()
     }
 
     if (!m_currentTab->fileInfo().isReadable()) {
-        throw Pandaception(tr("Save file first."));
+        throw PANDACEPTION("Save file first.");
     }
 
     QFileDialog fileDialog;
@@ -1693,7 +1693,7 @@ void MainWindow::removeICFile(const QString &icFileName)
     QFile file(GlobalProperties::currentDir + "/" + icFileName);
 
     if (!file.remove()) {
-        throw Pandaception(tr("Error removing file: ") + file.errorString());
+        throw PANDACEPTION("Error removing file: %1", file.errorString());
     }
 
     updateICList();

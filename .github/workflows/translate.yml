@@ -90,7 +90,7 @@ jobs:
       - name: Run lupdate to extract strings (qmake)
         run: |
           cd app
-          lupdate app.pro
+          lupdate -tr-function-alias tr+=PANDACEPTION app.pro
 
       - name: Run lupdate to extract strings (CMake)
         run: |

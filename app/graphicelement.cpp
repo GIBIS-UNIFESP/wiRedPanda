@@ -104,7 +104,7 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
 
         m_pixmap.load(m_defaultSkins.constFirst());
         qCDebug(zero) << "Problem loading pixmapPath: " << path;
-        throw Pandaception(tr("Couldn't load pixmap: %1 (%2)").arg(path, reason));
+        throw PANDACEPTION("Couldn't load pixmap: %1 (%2)", path, reason);
     }
 
     setTransformOriginPoint(pixmapCenter());
@@ -437,7 +437,7 @@ void GraphicElement::loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *
     quint64 inputSize; stream >> inputSize;
 
     if (inputSize > maximumValidInputSize) {
-        throw Pandaception(tr("Corrupted DataStream!"));
+        throw PANDACEPTION("Corrupted DataStream!");
     }
 
     for (size_t port = 0; port < inputSize; ++port) {
@@ -513,7 +513,7 @@ void GraphicElement::loadOutputPorts(QDataStream &stream, QMap<quint64, QNEPort 
     quint64 outputSize; stream >> outputSize;
 
     if (outputSize > maximumValidInputSize) {
-        throw Pandaception(tr("Corrupted DataStream!"));
+        throw PANDACEPTION("Corrupted DataStream!");
     }
 
     for (size_t port = 0; port < outputSize; ++port) {
@@ -549,7 +549,7 @@ void GraphicElement::loadPixmapSkinNames(QDataStream &stream, const QVersionNumb
         quint64 outputSize; stream >> outputSize;
 
         if (outputSize > maximumValidInputSize) {
-            throw Pandaception(tr("Corrupted DataStream!"));
+            throw PANDACEPTION("Corrupted DataStream!");
         }
 
         for (size_t skin = 0; skin < outputSize; ++skin) {

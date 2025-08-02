@@ -1,9 +1,14 @@
 cmake_minimum_required(VERSION 3.16)
 project(wiredpanda VERSION 4.2.6 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Enable conforming preprocessor for MSVC to support __VA_OPT__
+if(MSVC)
+    add_compile_options(/Zc:preprocessor)
+endif()
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -14,14 +19,14 @@ if(Qt6_FOUND)
     set(QT_VERSION_MAJOR 6)
     set(QT_LIBS Qt6::Core Qt6::Gui Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
 else()
-    find_package(Qt5 5.12 REQUIRED COMPONENTS Core Gui PrintSupport Multimedia Widgets Svg Test)
+    find_package(Qt5 5.15 REQUIRED COMPONENTS Core Gui PrintSupport Multimedia Widgets Svg Test)
     set(QT_VERSION_MAJOR 5)
     set(QT_LIBS Qt5::Core Qt5::Gui Qt5::PrintSupport Qt5::Multimedia Qt5::Widgets Qt5::Svg Qt5::Test)
 endif()
 
-if((QT_VERSION_MAJOR EQUAL 5 AND Qt5_VERSION VERSION_LESS 5.12) OR
+if((QT_VERSION_MAJOR EQUAL 5 AND Qt5_VERSION VERSION_LESS 5.15) OR
    (QT_VERSION_MAJOR EQUAL 6 AND Qt6_VERSION VERSION_LESS 6.2))
-    message(FATAL_ERROR "Minimum required Qt version is 5.12 for Qt5 or 6.2 for Qt6.")
+    message(FATAL_ERROR "Minimum required Qt version is 5.15 for Qt5 or 6.2 for Qt6.")
 endif()
 
 add_compile_definitions(
@@ -122,13 +127,13 @@ if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
     # Custom target to update translation source files
     if(QT_VERSION_MAJOR EQUAL 5)
         add_custom_target(lupdate
-            COMMAND Qt5::lupdate ${CMAKE_SOURCE_DIR}/app -ts ${TS_FILES}
+            COMMAND Qt5::lupdate -tr-function-alias tr+=PANDACEPTION ${CMAKE_SOURCE_DIR}/app -ts ${TS_FILES}
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
             COMMENT "Updating translation source files"
         )
     else()
         add_custom_target(lupdate
-            COMMAND Qt6::lupdate ${CMAKE_SOURCE_DIR}/app -ts ${TS_FILES}
+            COMMAND Qt6::lupdate -tr-function-alias tr+=PANDACEPTION ${CMAKE_SOURCE_DIR}/app -ts ${TS_FILES}
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
             COMMENT "Updating translation source files"
         )

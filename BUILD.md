@@ -15,9 +15,9 @@ Then open WPanda.pro in Qt Creator and press Ctrl+R to build and run.
 
 #### Dependencies 
 
-Qt 5.12.0+ or 6.2.0+ and the QtMultimedia module is needed for building.
+Qt 5.15.0+ or 6.2.0+ and the QtMultimedia module is needed for building.
 
-On distros such as Arch Linux, Gentoo, Manjaro, Debian, etc., Qt 5.12+ can be installed from the standard repos.
+On distros such as Arch Linux, Gentoo, Manjaro, Debian, etc., Qt 5.15+ can be installed from the standard repos.
 
 * Debian/Ubuntu
 

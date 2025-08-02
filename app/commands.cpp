@@ -15,6 +15,7 @@
 #include "simulationblocker.h"
 #include "truth_table.h"
 
+#include <QCoreApplication>
 #include <QIODevice>
 #include <cmath>
 
@@ -106,7 +107,7 @@ const QList<QGraphicsItem *> findItems(const QList<int> &ids)
     }
 
     if (items.size() != ids.size()) {
-        throw Pandaception(QObject::tr("One or more items was not found on the scene."));
+        throw PANDACEPTION_WITH_CONTEXT("commands", "One or more items was not found on the scene.");
     }
 
     return items;
@@ -124,7 +125,7 @@ const QList<GraphicElement *> findElements(const QList<int> &ids)
     }
 
     if (items.size() != ids.size()) {
-        throw Pandaception(QObject::tr("One or more elements was not found on the scene."));
+        throw PANDACEPTION_WITH_CONTEXT("commands", "One or more elements was not found on the scene.");
     }
 
     return items;
@@ -188,7 +189,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     const auto items = Serialization::deserialize(stream, portMap, version);
 
     if (items.size() != ids.size()) {
-        throw Pandaception(QObject::tr("One or more elements were not found on scene. Expected %1, found %2.").arg(ids.size(), items.size()));
+        throw PANDACEPTION_WITH_CONTEXT("commands", "One or more elements were not found on scene. Expected %1, found %2.", ids.size(), items.size());
     }
 
     for (int i = 0; i < items.size(); ++i) {
@@ -468,7 +469,7 @@ void SplitCommand::redo()
     }
 
     if (!conn1 || !conn2 || !elm1 || !elm2 || !node) {
-        throw Pandaception(tr("Error trying to redo ") + text());
+        throw PANDACEPTION("Error trying to redo %1", text());
     }
 
     node->setPos(m_nodePos);
@@ -498,7 +499,7 @@ void SplitCommand::undo()
     auto *elm2 = findElm(m_elm2Id);
 
     if (!conn1 || !conn2 || !elm1 || !elm2 || !node) {
-        throw Pandaception(tr("Error trying to undo ") + text());
+        throw PANDACEPTION("Error trying to undo %1", text());
     }
 
     conn1->setEndPort(conn2->endPort());
@@ -878,7 +879,7 @@ void ToggleTruthTableOutputCommand::redo()
 
     auto *truthtable = dynamic_cast<TruthTable *>(findElm(m_id));
 
-    if (!truthtable) throw Pandaception("Could not find truthtable element!");
+    if (!truthtable) throw PANDACEPTION("Could not find truthtable element!");
 
     truthtable->key().toggleBit(m_pos);
 
@@ -892,7 +893,7 @@ void ToggleTruthTableOutputCommand::undo()
 
     auto *truthtable = dynamic_cast<TruthTable *>(findElm(m_id));
 
-    if (!truthtable) throw Pandaception("Could not find truthtable element!");
+    if (!truthtable) throw PANDACEPTION("Could not find truthtable element!");
 
     truthtable->key().toggleBit(m_pos);
 

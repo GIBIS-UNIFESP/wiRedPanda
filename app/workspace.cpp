@@ -87,7 +87,7 @@ void WorkSpace::save(const QString &fileName)
     QSaveFile saveFile(fileName_);
 
     if (!saveFile.open(QIODevice::WriteOnly)) {
-        throw Pandaception(tr("Error opening file: ") + saveFile.errorString());
+        throw PANDACEPTION("Error opening file: %1", saveFile.errorString());
     }
 
     m_scene.setSceneRect(m_scene.itemsBoundingRect());
@@ -97,7 +97,7 @@ void WorkSpace::save(const QString &fileName)
     save(stream);
 
     if (!saveFile.commit()) {
-        throw Pandaception(tr("Could not save file: ") + saveFile.errorString());
+        throw PANDACEPTION("Could not save file: %1", saveFile.errorString());
     }
 
     m_scene.undoStack()->setClean();
@@ -133,7 +133,7 @@ void WorkSpace::load(const QString &fileName)
 
     if (!file.exists()) {
         qCDebug(zero) << "This file does not exist: " << fileName;
-        throw Pandaception(tr("This file does not exist: ") + fileName);
+        throw PANDACEPTION("This file does not exist: %1", fileName);
     }
 
     GlobalProperties::currentDir = QFileInfo(fileName).absolutePath();
@@ -143,7 +143,7 @@ void WorkSpace::load(const QString &fileName)
 
     if (!file.open(QIODevice::ReadOnly)) {
         qCDebug(zero) << "Could not open file: " << file.errorString();
-        throw Pandaception(tr("Could not open file: ") + file.errorString());
+        throw PANDACEPTION("Could not open file: %1", file.errorString());
     }
 
     QDataStream stream(&file);
@@ -267,7 +267,7 @@ void WorkSpace::autosave()
     }
 
     if (!m_autosaveFile.open()) {
-        throw Pandaception(tr("Error opening autosave file: ") + m_autosaveFile.errorString());
+        throw PANDACEPTION("Error opening autosave file: %1", m_autosaveFile.errorString());
     }
 
     QString autosaveFileName = m_autosaveFile.fileName();

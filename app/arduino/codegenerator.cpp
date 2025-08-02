@@ -258,7 +258,7 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
 {
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
-            throw Pandaception(tr("IC element not supported: ") + elm->objectName());
+            throw PANDACEPTION("IC element not supported: %1", elm->objectName());
             // TODO: CodeGenerator::assignVariablesRec for IC Element
             //      IC *ic = qgraphicsitem_cast<IC *>(elm);
             //      out << "    // " << ic->getLabel() << endl;
@@ -420,7 +420,7 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
         case ElementType::Xnor:
         case ElementType::Not:
         case ElementType::Node: assignLogicOperator(elm); break;
-        default:                throw Pandaception(tr("Element type not supported: ") + elm->objectName());
+        default:                throw PANDACEPTION("Element type not supported: %1", elm->objectName());
         }
     }
 }
