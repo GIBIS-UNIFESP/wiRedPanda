@@ -686,6 +686,12 @@ QTabWidget::pane {
     <addaction name="actionAboutThisVersion"/>
     <addaction name="actionShortcutsAndTips"/>
    </widget>
+   <widget class="QMenu" name="menuTranslation">
+    <property name="title">
+     <string>&amp;Help Translate</string>
+    </property>
+    <addaction name="actionReportTranslationError"/>
+   </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
      <string>&amp;View</string>
@@ -737,6 +743,7 @@ QTabWidget::pane {
    <addaction name="menuSimulation"/>
    <addaction name="menuExamples"/>
    <addaction name="menuLanguage"/>
+   <addaction name="menuTranslation"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpen">
@@ -1208,6 +1215,18 @@ QTabWidget::pane {
    </property>
    <property name="text">
     <string>Shortcuts and Tips</string>
+   </property>
+  </action>
+  <action name="actionReportTranslationError">
+   <property name="icon">
+    <iconset resource="resources/toolbar/toolbar.qrc">
+     <normaloff>:/toolbar/help.svg</normaloff>:/toolbar/help.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Report Translation Error</string>
+   </property>
+   <property name="toolTip">
+    <string>Report translation errors or help improve translations on Weblate</string>
    </property>
   </action>
  </widget>

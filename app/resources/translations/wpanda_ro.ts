@@ -4,38 +4,38 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="219"/>
+        <location filename="../../commands.cpp" line="221"/>
         <source>Add %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaugă %1 elemente</translation>
     </message>
 </context>
 <context>
     <name>And</name>
     <message>
-        <location filename="../../element/and.cpp" line="14"/>
+        <location filename="../../element/and.cpp" line="9"/>
         <source>And</source>
-        <translation type="unfinished"></translation>
+        <translation>Și</translation>
     </message>
     <message>
-        <location filename="../../element/and.cpp" line="14"/>
+        <location filename="../../element/and.cpp" line="9"/>
         <source>AND</source>
-        <translation type="unfinished"></translation>
+        <translation>ȘI</translation>
     </message>
 </context>
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../application.cpp" line="17"/>
+        <location filename="../../application.cpp" line="22"/>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare!</translation>
     </message>
 </context>
 <context>
     <name>AudioBox</name>
     <message>
-        <location filename="../../element/audiobox.cpp" line="22"/>
+        <location filename="../../element/audiobox.cpp" line="17"/>
         <source>Audio Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Cutie Audio</translation>
     </message>
 </context>
 <context>
@@ -43,455 +43,468 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="14"/>
         <source>MainWindow</source>
-        <translation type="unfinished"></translation>
+        <translation>Fereastra Principală</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="48"/>
         <source>toolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>bara de instrumente</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="92"/>
+        <location filename="../../bewaveddolphin.ui" line="93"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișier</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="105"/>
+        <location filename="../../bewaveddolphin.ui" line="106"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajutor</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="112"/>
+        <location filename="../../bewaveddolphin.ui" line="113"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Editare</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="130"/>
+        <location filename="../../bewaveddolphin.ui" line="131"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vizualizare</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="152"/>
+        <location filename="../../bewaveddolphin.ui" line="153"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>Despre</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="155"/>
+        <location filename="../../bewaveddolphin.ui" line="156"/>
         <source>Ctrl+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="164"/>
+        <location filename="../../bewaveddolphin.ui" line="165"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Încarcă</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="167"/>
+        <location filename="../../bewaveddolphin.ui" line="168"/>
         <source>Ctrl+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="176"/>
+        <location filename="../../bewaveddolphin.ui" line="177"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Ieșire</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="179"/>
+        <location filename="../../bewaveddolphin.ui" line="180"/>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="188"/>
+        <location filename="../../bewaveddolphin.ui" line="189"/>
         <source>Combinational</source>
-        <translation type="unfinished"></translation>
+        <translation>Combinațional</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="191"/>
+        <location filename="../../bewaveddolphin.ui" line="192"/>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="200"/>
-        <location filename="../../bewaveddolphin.cpp" line="1301"/>
+        <location filename="../../bewaveddolphin.ui" line="201"/>
+        <location filename="../../bewaveddolphin.cpp" line="1394"/>
         <source>Export to PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportă în PDF</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="203"/>
+        <location filename="../../bewaveddolphin.ui" line="204"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="212"/>
+        <location filename="../../bewaveddolphin.ui" line="213"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvează</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="215"/>
+        <location filename="../../bewaveddolphin.ui" line="216"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="224"/>
+        <location filename="../../bewaveddolphin.ui" line="225"/>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvează ca...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="227"/>
+        <location filename="../../bewaveddolphin.ui" line="228"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="236"/>
+        <location filename="../../bewaveddolphin.ui" line="237"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiază</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="239"/>
+        <location filename="../../bewaveddolphin.ui" line="240"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="248"/>
+        <location filename="../../bewaveddolphin.ui" line="249"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Lipește</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="251"/>
+        <location filename="../../bewaveddolphin.ui" line="252"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="260"/>
+        <location filename="../../bewaveddolphin.ui" line="261"/>
         <source>Set to 0</source>
-        <translation type="unfinished"></translation>
+        <translation>Setează pe 0</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="263"/>
+        <location filename="../../bewaveddolphin.ui" line="264"/>
         <source>0</source>
-        <translation type="unfinished"></translation>
+        <translation>0</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="275"/>
+        <location filename="../../bewaveddolphin.ui" line="276"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="302"/>
+        <location filename="../../bewaveddolphin.ui" line="303"/>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Spațiu</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="387"/>
-        <location filename="../../bewaveddolphin.ui" line="390"/>
+        <location filename="../../bewaveddolphin.ui" line="388"/>
+        <location filename="../../bewaveddolphin.ui" line="391"/>
         <source>Fit to screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Potrivește pe ecran</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="434"/>
+        <location filename="../../bewaveddolphin.ui" line="435"/>
         <source>Show Numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Afișează numerele</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="439"/>
+        <location filename="../../bewaveddolphin.ui" line="440"/>
         <source>Show Waveforms</source>
-        <translation type="unfinished"></translation>
+        <translation>Afișează forme de undă</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="272"/>
+        <location filename="../../bewaveddolphin.ui" line="449"/>
+        <location filename="../../bewaveddolphin.ui" line="452"/>
+        <source>AutoCrop</source>
+        <translation>DecoparăAutomatică</translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.ui" line="455"/>
+        <source>Ctrl+A</source>
+        <translation>Ctrl+A</translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.ui" line="273"/>
         <source>Set to 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Setează pe 1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="284"/>
-        <location filename="../../bewaveddolphin.ui" line="287"/>
+        <location filename="../../bewaveddolphin.ui" line="285"/>
+        <location filename="../../bewaveddolphin.ui" line="288"/>
         <source>Set clock frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Setează frecvența ceasului</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="290"/>
+        <location filename="../../bewaveddolphin.ui" line="291"/>
         <source>Alt+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+W</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="299"/>
+        <location filename="../../bewaveddolphin.ui" line="300"/>
         <source>Invert</source>
-        <translation type="unfinished"></translation>
+        <translation>Inversează</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="310"/>
+        <location filename="../../bewaveddolphin.ui" line="311"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Unește</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="318"/>
+        <location filename="../../bewaveddolphin.ui" line="319"/>
         <source>Split</source>
-        <translation type="unfinished"></translation>
+        <translation>Desparte</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="327"/>
+        <location filename="../../bewaveddolphin.ui" line="328"/>
         <source>Export to PNG</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportă în PNG</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="330"/>
+        <location filename="../../bewaveddolphin.ui" line="331"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="339"/>
+        <location filename="../../bewaveddolphin.ui" line="340"/>
         <source>Set Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Setează lungimea</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="342"/>
+        <location filename="../../bewaveddolphin.ui" line="343"/>
         <source>Alt+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+L</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="351"/>
+        <location filename="../../bewaveddolphin.ui" line="352"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Despre Qt</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="354"/>
+        <location filename="../../bewaveddolphin.ui" line="355"/>
         <source>Ctrl+Shift+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="363"/>
+        <location filename="../../bewaveddolphin.ui" line="364"/>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>Mărește</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="366"/>
+        <location filename="../../bewaveddolphin.ui" line="367"/>
         <source>Ctrl+=</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="375"/>
+        <location filename="../../bewaveddolphin.ui" line="376"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Micșorează</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="378"/>
+        <location filename="../../bewaveddolphin.ui" line="379"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="393"/>
+        <location filename="../../bewaveddolphin.ui" line="394"/>
         <source>Ctrl+Shift+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="402"/>
+        <location filename="../../bewaveddolphin.ui" line="403"/>
         <source>Reset Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Reseteză zoom</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="405"/>
+        <location filename="../../bewaveddolphin.ui" line="406"/>
         <source>Ctrl+Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Home</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="414"/>
+        <location filename="../../bewaveddolphin.ui" line="415"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Șterge</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="417"/>
+        <location filename="../../bewaveddolphin.ui" line="418"/>
         <source>Alt+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+X</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="426"/>
+        <location filename="../../bewaveddolphin.ui" line="427"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Taie</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="429"/>
+        <location filename="../../bewaveddolphin.ui" line="430"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="68"/>
-        <location filename="../../bewaveddolphin.cpp" line="140"/>
-        <location filename="../../bewaveddolphin.cpp" line="1024"/>
-        <location filename="../../bewaveddolphin.cpp" line="1177"/>
+        <location filename="../../bewaveddolphin.cpp" line="142"/>
+        <location filename="../../bewaveddolphin.cpp" line="215"/>
+        <location filename="../../bewaveddolphin.cpp" line="1124"/>
+        <location filename="../../bewaveddolphin.cpp" line="1276"/>
         <source>beWavedDolphin Simulator</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulator beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="467"/>
-        <location filename="../../bewaveddolphin.cpp" line="1091"/>
+        <location filename="../../bewaveddolphin.cpp" line="542"/>
+        <location filename="../../bewaveddolphin.cpp" line="1190"/>
         <source>wiRedPanda - beWavedDolphin</source>
-        <translation type="unfinished"></translation>
+        <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="468"/>
+        <location filename="../../bewaveddolphin.cpp" line="543"/>
         <source>Save simulation before closing?</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvează simulația înainte de închidere?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1092"/>
+        <location filename="../../bewaveddolphin.cpp" line="1191"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrei să asociezi acest fișier beWavedDolphin cu fișierul tău curent wiRedPanda și să-l salvezi?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="991"/>
+        <location filename="../../bewaveddolphin.cpp" line="1091"/>
         <source>Save File as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvează fișierul ca...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="994"/>
+        <location filename="../../bewaveddolphin.cpp" line="1094"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișiere CSV (*.csv);;Fișiere Dolphin (*.dolphin);;Toate fișierele suportate (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="995"/>
+        <location filename="../../bewaveddolphin.cpp" line="1095"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișiere Dolphin (*.dolphin);;Fișiere CSV (*.csv);;Toate fișierele suportate (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="982"/>
-        <location filename="../../bewaveddolphin.cpp" line="1025"/>
+        <location filename="../../bewaveddolphin.cpp" line="1082"/>
+        <location filename="../../bewaveddolphin.cpp" line="1125"/>
         <source>Saved file successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișier salvat cu succes.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="224"/>
-        <location filename="../../bewaveddolphin.cpp" line="251"/>
+        <location filename="../../bewaveddolphin.cpp" line="245"/>
+        <location filename="../../bewaveddolphin.cpp" line="256"/>
+        <location filename="../../bewaveddolphin.cpp" line="266"/>
+        <source></source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.cpp" line="299"/>
+        <location filename="../../bewaveddolphin.cpp" line="326"/>
         <source>Could not load enough elements for the simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu s-au putut încărca suficiente elemente pentru simulare.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="440"/>
+        <location filename="../../bewaveddolphin.cpp" line="515"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="unfinished"></translation>
+        <translation>Forma de undă ar fi prea mare! Se resetează zoom-ul.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="707"/>
+        <location filename="../../bewaveddolphin.cpp" line="782"/>
         <source>No cells selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicio celulă selectată.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1034"/>
-        <source>Error opening file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../bewaveddolphin.cpp" line="1134"/>
+        <source>Error opening file: %1</source>
+        <translation>Eroare la deschiderea fișierului: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1048"/>
-        <source>Error saving file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../bewaveddolphin.cpp" line="1148"/>
+        <source>Error saving file: %1</source>
+        <translation>Eroare la salvarea fișierului: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1119"/>
+        <location filename="../../bewaveddolphin.cpp" line="1218"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Deschide fișier</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1121"/>
+        <location filename="../../bewaveddolphin.cpp" line="1220"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toate fișierele suportate (*.dolphin *.csv);;Fișiere Dolphin (*.dolphin);;Fișiere CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1137"/>
+        <location filename="../../bewaveddolphin.cpp" line="1236"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișier încărcat cu succes.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1152"/>
-        <source>Could not open file in ReadOnly mode: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../bewaveddolphin.cpp" line="1251"/>
+        <source>Could not open file in ReadOnly mode: %1</source>
+        <translation>Nu s-a putut deschide fișierul în modul numai citire: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1171"/>
-        <source>Format not supported. Could not open file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../bewaveddolphin.cpp" line="1270"/>
+        <source>Format not supported. Could not open file: %1</source>
+        <translation>Format nesuportat. Nu s-a putut deschide fișierul: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1185"/>
-        <source>Invalid file format. Starts with: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="1196"/>
-        <location filename="../../bewaveddolphin.cpp" line="1224"/>
+        <location filename="../../bewaveddolphin.cpp" line="1289"/>
+        <location filename="../../bewaveddolphin.cpp" line="1317"/>
         <source>Invalid number of columns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Număr invalid de coloane.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1277"/>
+        <location filename="../../bewaveddolphin.cpp" line="1370"/>
         <source>Export to Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportă în imagine</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1277"/>
+        <location filename="../../bewaveddolphin.cpp" line="1370"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișiere PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1301"/>
+        <location filename="../../bewaveddolphin.cpp" line="1394"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișiere PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1320"/>
+        <location filename="../../bewaveddolphin.cpp" line="1413"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu s-a putut imprima acest circuit în PDF.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1331"/>
+        <location filename="../../bewaveddolphin.cpp" line="1424"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;beWavedDolphin este un simulator de forme de undă pentru software-ul wiRedPanda dezvoltat de Universitatea Federală din São Paulo. Acest proiect a fost creat pentru a ajuta studenții să învețe despre circuitele logice.&lt;/p&gt;&lt;p&gt;Versiunea software-ului: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creatori:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin este întreținut în prezent de Prof. Fábio Cappabianco, Ph.D. și studenții săi&lt;/p&gt;&lt;p&gt; Vă rugăm să raportați pe pagina noastră GitHub dacă găsiți bug-uri sau dacă doriți ca o nouă funcționalitate să fie implementată.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Vizitați site-ul nostru!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="146"/>
-        <location filename="../../bewaveddolphin.cpp" line="1145"/>
+        <location filename="../../bewaveddolphin.cpp" line="221"/>
+        <location filename="../../bewaveddolphin.cpp" line="1244"/>
         <source>File &quot;%1&quot; does not exist!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișierul &quot;%1&quot; nu există!</translation>
     </message>
 </context>
 <context>
     <name>Buzzer</name>
     <message>
-        <location filename="../../element/buzzer.cpp" line="24"/>
+        <location filename="../../element/buzzer.cpp" line="19"/>
         <source>Buzzer</source>
-        <translation type="unfinished"></translation>
+        <translation>Sonerie</translation>
     </message>
     <message>
-        <location filename="../../element/buzzer.cpp" line="24"/>
+        <location filename="../../element/buzzer.cpp" line="19"/>
         <source>BUZZER</source>
-        <translation type="unfinished"></translation>
+        <translation>SONERIE</translation>
     </message>
 </context>
 <context>
     <name>ChangeInputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="692"/>
+        <location filename="../../commands.cpp" line="694"/>
         <source>Change input size to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Schimbă dimensiunea intrării la %1</translation>
     </message>
 </context>
 <context>
     <name>ChangeOutputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="782"/>
-        <source>Change input size to %1</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../commands.cpp" line="785"/>
+        <source>Change output size to %1</source>
+        <translation>Schimbă dimensiunea ieșirii la %1</translation>
     </message>
 </context>
 <context>
     <name>Clock</name>
     <message>
-        <location filename="../../element/clock.cpp" line="19"/>
+        <location filename="../../element/clock.cpp" line="14"/>
         <source>Clock</source>
-        <translation type="unfinished"></translation>
+        <translation>Ceas</translation>
     </message>
     <message>
-        <location filename="../../element/clock.cpp" line="19"/>
+        <location filename="../../element/clock.cpp" line="14"/>
         <source>CLOCK SIGNAL</source>
-        <translation type="unfinished"></translation>
+        <translation>SEMNAL DE CEAS</translation>
     </message>
 </context>
 <context>
@@ -499,228 +512,322 @@
     <message>
         <location filename="../../clockdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Casetă de dialog</translation>
     </message>
     <message>
         <location filename="../../clockdialog.ui" line="80"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../../clockdialog.ui" line="63"/>
         <source>Clock Frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Frecvența ceasului</translation>
     </message>
     <message>
         <location filename="../../clockdialog.ui" line="70"/>
         <source>1024</source>
-        <translation type="unfinished"></translation>
+        <translation>1024</translation>
     </message>
     <message>
         <location filename="../../clockdialog.cpp" line="15"/>
         <source>Clock Frequency Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectarea frecvenței ceasului</translation>
     </message>
 </context>
 <context>
     <name>CodeGenerator</name>
     <message>
         <location filename="../../arduino/codegenerator.cpp" line="261"/>
-        <source>IC element not supported: </source>
-        <translation type="unfinished"></translation>
+        <source>IC element not supported: %1</source>
+        <translation>Element IC nesuportat: %1</translation>
     </message>
     <message>
         <location filename="../../arduino/codegenerator.cpp" line="423"/>
-        <source>Element type not supported: </source>
-        <translation type="unfinished"></translation>
+        <source>Element type not supported: %1</source>
+        <translation>Tip de element nesuportat: %1</translation>
     </message>
 </context>
 <context>
     <name>DFlipFlop</name>
     <message>
-        <location filename="../../element/dflipflop.cpp" line="15"/>
+        <location filename="../../element/dflipflop.cpp" line="10"/>
         <source>D-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>D-BISTABIL</translation>
     </message>
     <message>
-        <location filename="../../element/dflipflop.cpp" line="15"/>
+        <location filename="../../element/dflipflop.cpp" line="10"/>
         <source>D-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>D-Bistabil</translation>
     </message>
 </context>
 <context>
     <name>DLatch</name>
     <message>
-        <location filename="../../element/dlatch.cpp" line="15"/>
+        <location filename="../../element/dlatch.cpp" line="10"/>
         <source>D-Latch</source>
-        <translation type="unfinished"></translation>
+        <translation>D-Latch</translation>
     </message>
     <message>
-        <location filename="../../element/dlatch.cpp" line="15"/>
+        <location filename="../../element/dlatch.cpp" line="10"/>
         <source>D-LATCH</source>
-        <translation type="unfinished"></translation>
+        <translation>D-LATCH</translation>
     </message>
 </context>
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="246"/>
+        <location filename="../../commands.cpp" line="248"/>
         <source>Delete %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Șterge %1 elemente</translation>
     </message>
 </context>
 <context>
     <name>Demux</name>
     <message>
-        <location filename="../../element/demux.cpp" line="15"/>
+        <location filename="../../element/demux.cpp" line="10"/>
         <source>Demux</source>
-        <translation type="unfinished"></translation>
+        <translation>Demux</translation>
     </message>
     <message>
-        <location filename="../../element/demux.cpp" line="15"/>
+        <location filename="../../element/demux.cpp" line="10"/>
         <source>DEMULTIPLEXER</source>
-        <translation type="unfinished"></translation>
+        <translation>DEMULTIPLEXOR</translation>
     </message>
 </context>
 <context>
     <name>Display14</name>
     <message>
-        <location filename="../../element/display_14.cpp" line="18"/>
+        <location filename="../../element/display_14.cpp" line="13"/>
         <source>14-SEGMENT DISPLAY</source>
-        <translation type="unfinished"></translation>
+        <translation>AFISAJ 14-SEGMENTE</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="18"/>
+        <location filename="../../element/display_14.cpp" line="13"/>
         <source>14-Segment Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Afișaj 14-Segmente</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="87"/>
+        <source>middle left horizontal</source>
+        <translation>mijloc stânga orizontal</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="88"/>
+        <source>upper left vertical</source>
+        <translation>sus stânga vertical</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="89"/>
+        <source>lower left vertical</source>
+        <translation>jos stânga vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="92"/>
-        <source>middle left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_14.cpp" line="93"/>
-        <source>upper left</source>
-        <translation type="unfinished"></translation>
+        <source>upper right vertical</source>
+        <translation>sus dreapta vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="94"/>
-        <source>lower left</source>
-        <translation type="unfinished"></translation>
+        <source>lower right vertical</source>
+        <translation>jos dreapta vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="95"/>
-        <source>bottom</source>
-        <translation type="unfinished"></translation>
+        <source>middle right horizontal</source>
+        <translation>mijloc dreapta orizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="96"/>
-        <source>top</source>
-        <translation type="unfinished"></translation>
+        <source>upper left diagonal</source>
+        <translation>sus stânga diagonal</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="97"/>
-        <source>upper right</source>
-        <translation type="unfinished"></translation>
+        <source>upper center vertical</source>
+        <translation>sus centru vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="98"/>
-        <source>dot</source>
-        <translation type="unfinished"></translation>
+        <source>upper right diagonal</source>
+        <translation>sus dreapta diagonal</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="99"/>
-        <source>lower right</source>
-        <translation type="unfinished"></translation>
+        <source>lower right diagonal</source>
+        <translation>jos dreapta diagonal</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="100"/>
-        <source>middle right</source>
-        <translation type="unfinished"></translation>
+        <source>lower center vertical</source>
+        <translation>jos centru vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="101"/>
-        <source>middle upper left</source>
-        <translation type="unfinished"></translation>
+        <source>lower left diagonal</source>
+        <translation>jos stânga diagonal</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="102"/>
-        <source>middle top</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../element/display_14.cpp" line="90"/>
+        <source>bottom</source>
+        <translation>jos</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="103"/>
-        <source>middle upper right</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../element/display_14.cpp" line="91"/>
+        <source>top</source>
+        <translation>sus</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="104"/>
-        <source>middle lower right</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../element/display_14.cpp" line="93"/>
+        <source>dot</source>
+        <translation>punct</translation>
+    </message>
+</context>
+<context>
+    <name>Display16</name>
+    <message>
+        <location filename="../../element/display_16.cpp" line="13"/>
+        <source>16-SEGMENT DISPLAY</source>
+        <translation>AFIȘAJ 16-SEGMENTE</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="105"/>
-        <source>middle bottom</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../element/display_16.cpp" line="13"/>
+        <source>16-Segment Display</source>
+        <translation>Afișaj 16-Segmente</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="106"/>
-        <source>middle lower left</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../element/display_16.cpp" line="93"/>
+        <source>middle left horizontal</source>
+        <translation>mijloc stânga orizontal</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="94"/>
+        <source>upper left vertical</source>
+        <translation>sus stânga vertical</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="95"/>
+        <location filename="../../element/display_16.cpp" line="109"/>
+        <source>lower left vertical</source>
+        <translation>jos stânga vertical</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="96"/>
+        <source>bottom left horizontal</source>
+        <translation>jos stânga orizontal</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="97"/>
+        <source>bottom right horizontal</source>
+        <translation>jos dreapta orizontal</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="98"/>
+        <source>top left horizontal</source>
+        <translation>sus stânga orizontal</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="99"/>
+        <source>top right horizontal</source>
+        <translation>sus dreapta orizontal</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="100"/>
+        <source>upper right vertical</source>
+        <translation>sus dreapta vertical</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="101"/>
+        <source>dot</source>
+        <translation>punct</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="102"/>
+        <source>lower right vertical</source>
+        <translation>jos dreapta vertical</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="103"/>
+        <source>middle right horizontal</source>
+        <translation>mijloc dreapta orizontal</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="104"/>
+        <source>upper left diagonal</source>
+        <translation>sus stânga diagonal</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="105"/>
+        <source>upper center vertical</source>
+        <translation>sus centru vertical</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="106"/>
+        <source>upper right diagonal</source>
+        <translation>sus dreapta diagonal</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="107"/>
+        <source>lower right diagonal</source>
+        <translation>jos dreapta diagonal</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="108"/>
+        <source>lower center vertical</source>
+        <translation>jos centru vertical</translation>
     </message>
 </context>
 <context>
     <name>Display7</name>
     <message>
-        <location filename="../../element/display_7.cpp" line="19"/>
+        <location filename="../../element/display_7.cpp" line="14"/>
         <source>7-SEGMENT DISPLAY</source>
-        <translation type="unfinished"></translation>
+        <translation>AFISAJ 7-SEGMENTE</translation>
     </message>
     <message>
-        <location filename="../../element/display_7.cpp" line="19"/>
+        <location filename="../../element/display_7.cpp" line="14"/>
         <source>7-Segment Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Afișaj 7-Segmente</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_7.cpp" line="98"/>
+        <source>middle</source>
+        <translation>mijloc</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_7.cpp" line="99"/>
+        <source>upper left</source>
+        <translation>stânga sus</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_7.cpp" line="100"/>
+        <source>lower left</source>
+        <translation>stânga jos</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_7.cpp" line="101"/>
+        <source>bottom</source>
+        <translation>jos</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_7.cpp" line="102"/>
+        <source>top</source>
+        <translation>sus</translation>
     </message>
     <message>
         <location filename="../../element/display_7.cpp" line="103"/>
-        <source>middle</source>
-        <translation type="unfinished"></translation>
+        <source>upper right</source>
+        <translation>dreapta sus</translation>
     </message>
     <message>
         <location filename="../../element/display_7.cpp" line="104"/>
-        <source>upper left</source>
-        <translation type="unfinished"></translation>
+        <source>dot</source>
+        <translation>punct</translation>
     </message>
     <message>
         <location filename="../../element/display_7.cpp" line="105"/>
-        <source>lower left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_7.cpp" line="106"/>
-        <source>bottom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_7.cpp" line="107"/>
-        <source>top</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_7.cpp" line="108"/>
-        <source>upper right</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_7.cpp" line="109"/>
-        <source>dot</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_7.cpp" line="110"/>
         <source>lower right</source>
-        <translation type="unfinished"></translation>
+        <translation>dreapta jos</translation>
     </message>
 </context>
 <context>
@@ -728,438 +835,474 @@
     <message>
         <location filename="../../elementeditor.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formular</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="40"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Titlu</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="56"/>
+        <location filename="../../elementeditor.ui" line="246"/>
         <source>Inputs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Intrări:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="76"/>
+        <location filename="../../elementeditor.ui" line="167"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Valoare:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="143"/>
-        <location filename="../../elementeditor.ui" line="194"/>
+        <location filename="../../elementeditor.ui" line="260"/>
+        <location filename="../../elementeditor.ui" line="301"/>
         <source>Audio:</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="222"/>
+        <location filename="../../elementeditor.ui" line="234"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="231"/>
+        <location filename="../../elementeditor.ui" line="104"/>
         <source>Trigger:</source>
-        <translation type="unfinished"></translation>
+        <translation>Declanșator:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="66"/>
+        <location filename="../../elementeditor.ui" line="287"/>
         <source>Outputs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ieșiri:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="100"/>
+        <location filename="../../elementeditor.ui" line="199"/>
         <source>Frequency:</source>
-        <translation type="unfinished"></translation>
+        <translation>Frecvență:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="46"/>
+        <location filename="../../elementeditor.ui" line="97"/>
         <source>Label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Etichetă:</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="206"/>
+        <source>Color:</source>
+        <translation>Culoare:</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="122"/>
+        <source>TruthTable</source>
+        <translation>Tabel de adevăr</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="47"/>
+        <source>C6</source>
+        <translation>C6</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="52"/>
+        <source>D6</source>
+        <translation>D6</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="57"/>
+        <source>E6</source>
+        <translation>E6</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="62"/>
+        <source>F6</source>
+        <translation>F6</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="67"/>
+        <source>G6</source>
+        <translation>G6</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="72"/>
+        <source>A7</source>
+        <translation>A7</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="77"/>
+        <source>B7</source>
+        <translation>B7</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="82"/>
+        <source>C7</source>
+        <translation>C7</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="177"/>
+        <location filename="../../elementeditor.ui" line="315"/>
+        <source> Hz</source>
+        <translation> Hz</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="308"/>
+        <source>Delay:</source>
+        <translation>Întârziere:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="129"/>
-        <source>Color:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="266"/>
-        <source>TruthTable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="151"/>
-        <source>C6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="156"/>
-        <source>D6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="161"/>
-        <source>E6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="166"/>
-        <source>F6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="171"/>
-        <source>G6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="176"/>
-        <source>A7</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="181"/>
-        <source>B7</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="186"/>
-        <source>C7</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="110"/>
-        <source> Hz</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="273"/>
-        <location filename="../../elementeditor.cpp" line="89"/>
+        <location filename="../../elementeditor.cpp" line="93"/>
         <source>Change skin to ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Schimbă tema la ...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="286"/>
+        <location filename="../../elementeditor.ui" line="142"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Implicit</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="86"/>
+        <location filename="../../elementeditor.ui" line="294"/>
         <source>Locked:</source>
-        <translation type="unfinished"></translation>
+        <translation>Blocat:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="241"/>
+        <location filename="../../elementeditor.ui" line="267"/>
         <source>Priority:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="90"/>
-        <source>Change color to...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="91"/>
-        <source>Change frequency</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="92"/>
-        <source>Morph to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Prioritate:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="94"/>
-        <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <source>Change color to...</source>
+        <translation>Schimbă culoarea la...</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="95"/>
-        <source>Set skin to default</source>
-        <translation type="unfinished"></translation>
+        <source>Change frequency</source>
+        <translation>Schimbă frecvența</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="96"/>
-        <source>Rotate left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="97"/>
-        <source>Rotate right</source>
-        <translation type="unfinished"></translation>
+        <source>Morph to...</source>
+        <translation>Transformă în...</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="98"/>
+        <source>Rename</source>
+        <translation>Redenumește</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="99"/>
+        <source>Set skin to default</source>
+        <translation>Setează tema implicită</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="100"/>
+        <source>Rotate left</source>
+        <translation>Rotește stânga</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="101"/>
+        <source>Rotate right</source>
+        <translation>Rotește dreapta</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="102"/>
         <source>Change trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Schimbă declanșatorul</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="93"/>
+        <location filename="../../elementeditor.cpp" line="97"/>
         <source>Change priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Schimbă prioritatea</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="46"/>
+        <location filename="../../elementeditor.cpp" line="49"/>
         <source>Truth Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel de adevăr</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="213"/>
-        <location filename="../../elementeditor.cpp" line="286"/>
+        <location filename="../../elementeditor.cpp" line="218"/>
+        <location filename="../../elementeditor.cpp" line="291"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiază</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="214"/>
-        <location filename="../../elementeditor.cpp" line="286"/>
+        <location filename="../../elementeditor.cpp" line="219"/>
+        <location filename="../../elementeditor.cpp" line="291"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Taie</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="220"/>
-        <location filename="../../elementeditor.cpp" line="286"/>
+        <location filename="../../elementeditor.cpp" line="225"/>
+        <location filename="../../elementeditor.cpp" line="291"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Șterge</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="290"/>
+        <location filename="../../elementeditor.cpp" line="295"/>
         <source>Unknown context menu option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Opțiune necunoscută din meniul contextual.</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="314"/>
+        <location filename="../../elementeditor.cpp" line="319"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Deschide fișier</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="316"/>
-        <source>Images (*.png *.gif *.jpg *.jpeg)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="359"/>
+        <location filename="../../elementeditor.cpp" line="364"/>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation>Verde</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="360"/>
+        <location filename="../../elementeditor.cpp" line="365"/>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation>Albastru</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="361"/>
+        <location filename="../../elementeditor.cpp" line="366"/>
         <source>Purple</source>
-        <translation type="unfinished"></translation>
+        <translation>Mov</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="946"/>
+        <location filename="../../elementeditor.cpp" line="973"/>
         <source>Select any audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectează orice audio</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="947"/>
+        <location filename="../../elementeditor.cpp" line="974"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="358"/>
+        <location filename="../../elementeditor.cpp" line="363"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation>Roșu</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="357"/>
+        <location filename="../../elementeditor.cpp" line="321"/>
+        <source>Images</source>
+        <translation>Imagini</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="362"/>
         <source>White</source>
-        <translation type="unfinished"></translation>
+        <translation>Alb</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="61"/>
+        <location filename="../../elementeditor.h" line="71"/>
         <source>&lt;Many sounds&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Multe sunete&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="62"/>
+        <location filename="../../elementeditor.h" line="72"/>
         <source>&lt;Many colors&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Multe culori&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="63"/>
-        <location filename="../../elementeditor.h" line="64"/>
-        <location filename="../../elementeditor.h" line="66"/>
-        <location filename="../../elementeditor.h" line="67"/>
+        <location filename="../../elementeditor.h" line="73"/>
+        <location filename="../../elementeditor.h" line="74"/>
+        <location filename="../../elementeditor.h" line="75"/>
+        <location filename="../../elementeditor.h" line="77"/>
+        <location filename="../../elementeditor.h" line="78"/>
         <source>&lt;Many values&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Multe valori&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="65"/>
+        <location filename="../../elementeditor.h" line="76"/>
         <source>&lt;Many labels&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Multe etichete&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="68"/>
+        <location filename="../../elementeditor.h" line="79"/>
         <source>&lt;Many priorities&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Multe priorități&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="69"/>
+        <location filename="../../elementeditor.h" line="80"/>
         <source>&lt;Many triggers&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Mulți declanșatori&gt;</translation>
     </message>
 </context>
 <context>
     <name>ElementFactory</name>
     <message>
-        <location filename="../../elementfactory.cpp" line="54"/>
+        <location filename="../../elementfactory.cpp" line="55"/>
         <source>MULTIPLE TYPES</source>
-        <translation type="unfinished"></translation>
+        <translation>TIPURI MULTIPLE</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="63"/>
+        <location filename="../../elementfactory.cpp" line="64"/>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Necunoscut</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="83"/>
-        <location filename="../../elementfactory.cpp" line="90"/>
-        <location filename="../../elementfactory.cpp" line="98"/>
-        <source>Unknown type: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../elementfactory.cpp" line="84"/>
+        <source>Unknown type 1: %1</source>
+        <translation>Tip necunoscut 1: %1</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="191"/>
-        <source>Not implemented yet: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../elementfactory.cpp" line="91"/>
+        <source>Unknown type: %1</source>
+        <translation>Tip necunoscut: %1</translation>
+    </message>
+    <message>
+        <location filename="../../elementfactory.cpp" line="99"/>
+        <source>Unknown type 2: %1</source>
+        <translation>Tip necunoscut 2: %1</translation>
+    </message>
+    <message>
+        <location filename="../../elementfactory.cpp" line="186"/>
+        <source>Not implemented yet: %1</source>
+        <translation>Nu este încă implementat: %1</translation>
     </message>
 </context>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="635"/>
+        <location filename="../../commands.cpp" line="637"/>
         <source>Flip %1 elements in axis %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Întorce %1 elemente în axa %2</translation>
     </message>
 </context>
 <context>
     <name>GraphicElement</name>
     <message>
         <location filename="../../graphicelement.cpp" line="100"/>
-        <source>Couldn&apos;t load pixmap.</source>
-        <translation type="unfinished"></translation>
+        <source>File does not exist</source>
+        <translation>Fișierul nu există</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="435"/>
-        <location filename="../../graphicelement.cpp" line="511"/>
-        <location filename="../../graphicelement.cpp" line="547"/>
+        <location filename="../../graphicelement.cpp" line="102"/>
+        <source>File is not readable</source>
+        <translation>Fișierul nu poate fi citit</translation>
+    </message>
+    <message>
+        <location filename="../../graphicelement.cpp" line="103"/>
+        <source>Unknown reason</source>
+        <translation>Motiv necunoscut</translation>
+    </message>
+    <message>
+        <location filename="../../graphicelement.cpp" line="107"/>
+        <source>Couldn&apos;t load pixmap: %1 (%2)</source>
+        <translation>Nu s-a putut încărca pixmap-ul: %1 (%2)</translation>
+    </message>
+    <message>
+        <location filename="../../graphicelement.cpp" line="440"/>
+        <location filename="../../graphicelement.cpp" line="516"/>
+        <location filename="../../graphicelement.cpp" line="552"/>
         <source>Corrupted DataStream!</source>
-        <translation type="unfinished"></translation>
+        <translation>Flux de date corupt!</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="543"/>
+        <location filename="../../graphicelement.cpp" line="548"/>
         <source>Loading pixmap skin names.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se încarcă numele temelor pixmap.</translation>
     </message>
 </context>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../ic.cpp" line="25"/>
+        <location filename="../../ic.cpp" line="20"/>
         <source>IC</source>
-        <translation type="unfinished"></translation>
+        <translation>CI</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="25"/>
+        <location filename="../../ic.cpp" line="20"/>
         <source>INTEGRATED CIRCUIT</source>
-        <translation type="unfinished"></translation>
+        <translation>CIRCUIT INTEGRAT</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="93"/>
-        <location filename="../../ic.cpp" line="409"/>
-        <source>Error copying file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../ic.cpp" line="91"/>
+        <location filename="../../ic.cpp" line="404"/>
+        <source>Error copying file: %1</source>
+        <translation>Eroare la copierea fișierului: %1</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="144"/>
-        <source> not found.</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../ic.cpp" line="142"/>
+        <source>%1 not found.</source>
+        <translation>%1 nu a fost găsit.</translation>
+    </message>
+    <message>
+        <location filename="../../ic.cpp" line="154"/>
+        <location filename="../../ic.cpp" line="410"/>
+        <source>Error opening file: %1</source>
+        <translation>Eroare la deschiderea fișierului: %1</translation>
     </message>
 </context>
 <context>
     <name>InputButton</name>
     <message>
-        <location filename="../../element/inputbutton.cpp" line="17"/>
+        <location filename="../../element/inputbutton.cpp" line="12"/>
         <source>PUSH BUTTON</source>
-        <translation type="unfinished"></translation>
+        <translation>BUTON DE APASARE</translation>
     </message>
     <message>
-        <location filename="../../element/inputbutton.cpp" line="17"/>
+        <location filename="../../element/inputbutton.cpp" line="12"/>
         <source>Push Button</source>
-        <translation type="unfinished"></translation>
+        <translation>Buton de apăsare</translation>
     </message>
 </context>
 <context>
     <name>InputGnd</name>
     <message>
-        <location filename="../../element/inputgnd.cpp" line="14"/>
+        <location filename="../../element/inputgnd.cpp" line="9"/>
         <source>GND</source>
-        <translation type="unfinished"></translation>
+        <translation>GND</translation>
     </message>
     <message>
-        <location filename="../../element/inputgnd.cpp" line="14"/>
+        <location filename="../../element/inputgnd.cpp" line="9"/>
         <source>GROUND</source>
-        <translation type="unfinished"></translation>
+        <translation>MASĂ</translation>
     </message>
 </context>
 <context>
     <name>InputRotary</name>
     <message>
-        <location filename="../../element/inputrotary.cpp" line="18"/>
+        <location filename="../../element/inputrotary.cpp" line="13"/>
         <source>Rotary Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Comutator rotativ</translation>
     </message>
     <message>
-        <location filename="../../element/inputrotary.cpp" line="18"/>
+        <location filename="../../element/inputrotary.cpp" line="13"/>
         <source>ROTARY SWITCH</source>
-        <translation type="unfinished"></translation>
+        <translation>COMUTATOR ROTATIV</translation>
     </message>
 </context>
 <context>
     <name>InputSwitch</name>
     <message>
-        <location filename="../../element/inputswitch.cpp" line="17"/>
+        <location filename="../../element/inputswitch.cpp" line="12"/>
         <source>Input Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Comutator de intrare</translation>
     </message>
     <message>
-        <location filename="../../element/inputswitch.cpp" line="17"/>
+        <location filename="../../element/inputswitch.cpp" line="12"/>
         <source>INPUT SWITCH</source>
-        <translation type="unfinished"></translation>
+        <translation>COMUTATOR DE INTRARE</translation>
     </message>
 </context>
 <context>
     <name>InputVcc</name>
     <message>
-        <location filename="../../element/inputvcc.cpp" line="15"/>
+        <location filename="../../element/inputvcc.cpp" line="10"/>
         <source>VCC</source>
-        <translation type="unfinished"></translation>
+        <translation>VCC</translation>
     </message>
 </context>
 <context>
     <name>JKFlipFlop</name>
     <message>
-        <location filename="../../element/jkflipflop.cpp" line="15"/>
+        <location filename="../../element/jkflipflop.cpp" line="10"/>
         <source>JK-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>JK-BISTABIL</translation>
     </message>
     <message>
-        <location filename="../../element/jkflipflop.cpp" line="15"/>
+        <location filename="../../element/jkflipflop.cpp" line="10"/>
         <source>JK-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>JK-Bistabil</translation>
     </message>
 </context>
 <context>
     <name>Led</name>
     <message>
-        <location filename="../../element/led.cpp" line="17"/>
+        <location filename="../../element/led.cpp" line="12"/>
         <source>LED</source>
-        <translation type="unfinished"></translation>
+        <translation>LED</translation>
     </message>
 </context>
 <context>
@@ -1167,40 +1310,40 @@
     <message>
         <location filename="../../lengthdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Casetă de dialog</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.ui" line="43"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.ui" line="53"/>
         <source>Simulation Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Lungimea simulației</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.ui" line="60"/>
         <source>2048</source>
-        <translation type="unfinished"></translation>
+        <translation>2048</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.cpp" line="15"/>
         <source>Simulation Length Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectarea lungimii simulației</translation>
     </message>
 </context>
 <context>
     <name>Line</name>
     <message>
-        <location filename="../../element/line.cpp" line="14"/>
+        <location filename="../../element/line.cpp" line="9"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie</translation>
     </message>
     <message>
-        <location filename="../../element/line.cpp" line="14"/>
+        <location filename="../../element/line.cpp" line="9"/>
         <source>LINE</source>
-        <translation type="unfinished"></translation>
+        <translation>LINIE</translation>
     </message>
 </context>
 <context>
@@ -1208,812 +1351,801 @@
     <message>
         <location filename="../../mainwindow.ui" line="134"/>
         <source>Inputs/Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Intrări/Ieșiri</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="183"/>
         <source>Gates</source>
-        <translation type="unfinished"></translation>
+        <translation>Porți</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="232"/>
         <source>Combinational</source>
-        <translation type="unfinished"></translation>
+        <translation>Combinațional</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="287"/>
         <source>Memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Memorie</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="336"/>
         <source>Integrated Circuits</source>
-        <translation type="unfinished"></translation>
+        <translation>Circuite integrate</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="379"/>
         <source>Add IC files</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaugă fișiere CI</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="392"/>
         <source>Remove IC</source>
-        <translation type="unfinished"></translation>
+        <translation>Înlătură CI</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="413"/>
         <source>Miscellaneous</source>
-        <translation type="unfinished"></translation>
+        <translation>Diverse</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="531"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Căutare:</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="626"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fișier</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="636"/>
         <source>&amp;Recent files:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișiere &amp;recente:</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="661"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Editare</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="682"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ajutor</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="691"/>
+        <location filename="../../mainwindow.ui" line="697"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vizualizare</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="695"/>
+        <location filename="../../mainwindow.ui" line="701"/>
         <source>&amp;Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Temă</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="715"/>
+        <location filename="../../mainwindow.ui" line="721"/>
         <source>&amp;Language</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Limbă</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="723"/>
+        <location filename="../../mainwindow.ui" line="726"/>
         <source>Sim&amp;ulation</source>
-        <translation type="unfinished"></translation>
+        <translation>Sim&amp;ulație</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="732"/>
+        <location filename="../../mainwindow.ui" line="737"/>
         <source>Examples</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="749"/>
-        <source>&amp;Open...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="752"/>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Exemple</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="755"/>
+        <source>&amp;Open...</source>
+        <translation>&amp;Deschide...</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="758"/>
+        <source>Open</source>
+        <translation>Deschide</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="761"/>
         <source>Ctrl+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="764"/>
+        <location filename="../../mainwindow.ui" line="770"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Salvează</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="767"/>
+        <location filename="../../mainwindow.ui" line="773"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="776"/>
+        <location filename="../../mainwindow.ui" line="782"/>
         <source>Save &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvează c&amp;a...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="779"/>
+        <location filename="../../mainwindow.ui" line="785"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="788"/>
+        <location filename="../../mainwindow.ui" line="794"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Taie</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="791"/>
+        <location filename="../../mainwindow.ui" line="797"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="800"/>
+        <location filename="../../mainwindow.ui" line="806"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Copiază</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="803"/>
+        <location filename="../../mainwindow.ui" line="809"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="812"/>
+        <location filename="../../mainwindow.ui" line="818"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lipește</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="815"/>
+        <location filename="../../mainwindow.ui" line="821"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="825"/>
+        <location filename="../../mainwindow.ui" line="831"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Șterge</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="828"/>
+        <location filename="../../mainwindow.ui" line="834"/>
         <source>Del</source>
-        <translation type="unfinished"></translation>
+        <translation>Șterge</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="837"/>
+        <location filename="../../mainwindow.ui" line="843"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nou</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="840"/>
+        <location filename="../../mainwindow.ui" line="846"/>
         <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="849"/>
+        <location filename="../../mainwindow.ui" line="855"/>
         <source>Zoom &amp;in</source>
-        <translation type="unfinished"></translation>
+        <translation>Măre&amp;ște</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="852"/>
+        <location filename="../../mainwindow.ui" line="858"/>
         <source>Ctrl+=</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="861"/>
+        <location filename="../../mainwindow.ui" line="867"/>
         <source>Zoom &amp;out</source>
-        <translation type="unfinished"></translation>
+        <translation>Micș&amp;orează</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="864"/>
+        <location filename="../../mainwindow.ui" line="870"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="879"/>
+        <location filename="../../mainwindow.ui" line="885"/>
         <source>&amp;Wires</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fire</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="882"/>
+        <location filename="../../mainwindow.ui" line="888"/>
         <source>Ctrl+1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="897"/>
+        <location filename="../../mainwindow.ui" line="903"/>
         <source>&amp;Gates</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Porți</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="900"/>
+        <location filename="../../mainwindow.ui" line="906"/>
         <source>Ctrl+2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+2</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="909"/>
+        <location filename="../../mainwindow.ui" line="915"/>
         <source>&amp;About</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Despre</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="912"/>
+        <location filename="../../mainwindow.ui" line="918"/>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation>F1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="921"/>
+        <location filename="../../mainwindow.ui" line="927"/>
         <source>&amp;Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ieșire</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="924"/>
+        <location filename="../../mainwindow.ui" line="930"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="933"/>
+        <location filename="../../mainwindow.ui" line="939"/>
         <source>R&amp;otate right</source>
-        <translation type="unfinished"></translation>
+        <translation>R&amp;otește dreapta</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="936"/>
+        <location filename="../../mainwindow.ui" line="942"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="945"/>
+        <location filename="../../mainwindow.ui" line="951"/>
         <source>Rotate &amp;left</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotește &amp;stânga</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="948"/>
+        <location filename="../../mainwindow.ui" line="954"/>
         <source>Ctrl+Shift+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="957"/>
+        <location filename="../../mainwindow.ui" line="963"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Despre &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="966"/>
+        <location filename="../../mainwindow.ui" line="972"/>
         <source>&amp;Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Selectează tot</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="969"/>
+        <location filename="../../mainwindow.ui" line="975"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="978"/>
+        <location filename="../../mainwindow.ui" line="984"/>
         <source>Re&amp;load File</source>
-        <translation type="unfinished"></translation>
+        <translation>Re&amp;încarcă fișierul</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="981"/>
+        <location filename="../../mainwindow.ui" line="987"/>
         <source>Ctrl+F5</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+F5</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="990"/>
+        <location filename="../../mainwindow.ui" line="996"/>
         <source>E&amp;xport to Arduino</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;xportă în Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="993"/>
+        <location filename="../../mainwindow.ui" line="999"/>
         <source>Ctrl+Alt+I</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+I</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1002"/>
+        <location filename="../../mainwindow.ui" line="1008"/>
         <source>&amp;Reset Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Reseteză zoom</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1005"/>
+        <location filename="../../mainwindow.ui" line="1011"/>
         <source>Ctrl+0</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1014"/>
+        <location filename="../../mainwindow.ui" line="1020"/>
         <source>Export to &amp;PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportă în &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1017"/>
+        <location filename="../../mainwindow.ui" line="1023"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1026"/>
-        <source>&amp;English</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../mainwindow.ui" line="1209"/>
+        <source>Background Simulation</source>
+        <translation>Simulare în Fundal</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1035"/>
-        <source>&amp;Portuguese</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../mainwindow.ui" line="1226"/>
+        <source>Report Translation Error</source>
+        <translation>Raportează eroare de traducere</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1048"/>
+        <location filename="../../mainwindow.ui" line="1229"/>
+        <source>Report translation errors or help improve translations on Weblate</source>
+        <translation>Raportează erori de traducere sau ajută la îmbunătățirea traducerilor pe Weblate</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1036"/>
         <source>&amp;Play/Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Redare/Pauză</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="691"/>
+        <source>&amp;Help Translate</source>
+        <translation>&amp;Ajută la Traducere</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1039"/>
+        <source>Play or Pause simulation.</source>
+        <translation>Redare sau pauză a simulației.</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1042"/>
+        <source>F5</source>
+        <translation>F5</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1051"/>
-        <source>Play or Pause simulation.</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Rename</source>
+        <translation>&amp;Redenumește</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1054"/>
-        <source>F5</source>
-        <translation type="unfinished"></translation>
+        <source>F2</source>
+        <translation>F2</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1063"/>
-        <source>&amp;Rename</source>
-        <translation type="unfinished"></translation>
+        <source>Cha&amp;nge Trigger</source>
+        <translation>Schi&amp;mbă declanșatorul</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1066"/>
-        <source>F2</source>
-        <translation type="unfinished"></translation>
+        <source>F3</source>
+        <translation>F3</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1075"/>
-        <source>Cha&amp;nge Trigger</source>
-        <translation type="unfinished"></translation>
+        <source>Cl&amp;ear selection</source>
+        <translation>G&amp;olește selecția</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1078"/>
-        <source>F3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1087"/>
-        <source>Cl&amp;ear selection</source>
-        <translation type="unfinished"></translation>
+        <source>Esc</source>
+        <translation>Esc</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1090"/>
-        <source>Esc</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1102"/>
         <source>&amp;Fast Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mod &amp;rapid</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1113"/>
+        <location filename="../../mainwindow.ui" line="1101"/>
         <source>&amp;Panda Light</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Panda Luminos</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1109"/>
+        <source>Panda &amp;Dark</source>
+        <translation>Panda &amp;Întunecat</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1118"/>
+        <source>&amp;Waveform</source>
+        <translation>&amp;Formă de undă</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1121"/>
-        <source>Panda &amp;Dark</source>
-        <translation type="unfinished"></translation>
+        <source>Ctrl+W</source>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1130"/>
-        <source>&amp;Waveform</source>
-        <translation type="unfinished"></translation>
+        <source>Export to &amp;Image</source>
+        <translation>Exportă în &amp;imagine</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1133"/>
-        <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1142"/>
-        <source>Export to &amp;Image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1145"/>
         <source>Ctrl+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+E</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1150"/>
+        <location filename="../../mainwindow.ui" line="1138"/>
         <source>&amp;Flip horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Întorce orizontal</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1153"/>
+        <location filename="../../mainwindow.ui" line="1141"/>
         <source>Ctrl+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1158"/>
+        <location filename="../../mainwindow.ui" line="1146"/>
         <source>Flip &amp;vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>Întorce &amp;vertical</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1163"/>
+        <location filename="../../mainwindow.ui" line="1151"/>
         <source>F&amp;ullscreen</source>
-        <translation type="unfinished"></translation>
+        <translation>Ecran &amp;complet</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1166"/>
+        <location filename="../../mainwindow.ui" line="1154"/>
         <source>F11</source>
-        <translation type="unfinished"></translation>
+        <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1179"/>
-        <location filename="../../mainwindow.cpp" line="1358"/>
+        <location filename="../../mainwindow.ui" line="1167"/>
+        <location filename="../../mainwindow.cpp" line="1602"/>
         <source>Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Mută</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1182"/>
+        <location filename="../../mainwindow.ui" line="1170"/>
         <source>Mutes and unmutes circuit buzzers</source>
-        <translation type="unfinished"></translation>
+        <translation>Mută și demută buzzer-ele circuitului</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1185"/>
+        <location filename="../../mainwindow.ui" line="1173"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1193"/>
+        <location filename="../../mainwindow.ui" line="1181"/>
         <source>Labels under icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Etichete sub icoane</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1186"/>
+        <source>About this version</source>
+        <translation>Despre această versiune</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1195"/>
+        <source>&amp;Restart</source>
+        <translation>&amp;Repornește</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1198"/>
-        <source>About this version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1207"/>
-        <source>&amp;Restart</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1210"/>
         <source>Restart simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Repornește simulația.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1219"/>
-        <source>Spanish</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1227"/>
-        <location filename="../../mainwindow.cpp" line="507"/>
+        <location filename="../../mainwindow.ui" line="1217"/>
+        <location filename="../../mainwindow.cpp" line="518"/>
         <source>Shortcuts and Tips</source>
-        <translation type="unfinished"></translation>
+        <translation>Scurtături și sfaturi</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="224"/>
+        <location filename="../../mainwindow.cpp" line="232"/>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="249"/>
-        <location filename="../../mainwindow.cpp" line="372"/>
-        <location filename="../../mainwindow.cpp" line="623"/>
-        <location filename="../../mainwindow.cpp" line="1135"/>
+        <location filename="../../mainwindow.cpp" line="257"/>
+        <location filename="../../mainwindow.cpp" line="379"/>
+        <location filename="../../mainwindow.cpp" line="640"/>
+        <location filename="../../mainwindow.cpp" line="1159"/>
         <source>New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Proiect nou</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="295"/>
+        <location filename="../../mainwindow.cpp" line="303"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="314"/>
-        <source>Don&apos;t show this again.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="355"/>
-        <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="374"/>
-        <source> has been modified. 
-Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="412"/>
-        <source>File loaded successfully.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="431"/>
-        <location filename="../../mainwindow.cpp" line="1399"/>
-        <source>Open File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="431"/>
-        <location filename="../../mainwindow.cpp" line="448"/>
-        <location filename="../../mainwindow.cpp" line="470"/>
-        <source>Panda files (*.panda)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="448"/>
-        <location filename="../../mainwindow.cpp" line="470"/>
-        <source>Save File as ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="554"/>
-        <source>Exit </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="555"/>
-        <source>Are you sure?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="703"/>
-        <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișier salvat cu succes.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="322"/>
+        <source>Don&apos;t show this again.</source>
+        <translation>Nu mai afișa din nou.</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="362"/>
+        <source>File not saved. Close tab anyway?</source>
+        <translation>Fișier nesalvat. Închide tab oricum?</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="381"/>
+        <source> has been modified. 
+Do you want to save your changes?</source>
+        <translation> a fost modificat. 
+Vrei să salvezi modificările?</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="419"/>
+        <source>File loaded successfully.</source>
+        <translation>Fișier încărcat cu succes.</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="438"/>
+        <location filename="../../mainwindow.cpp" line="1645"/>
+        <source>Open File</source>
+        <translation>Deschide fișier</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="438"/>
+        <location filename="../../mainwindow.cpp" line="459"/>
+        <location filename="../../mainwindow.cpp" line="479"/>
+        <source>Panda files (*.panda)</source>
+        <translation>Fișiere Panda (*.panda)</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="459"/>
+        <location filename="../../mainwindow.cpp" line="479"/>
+        <source>Save File as ...</source>
+        <translation>Salvează fișierul ca ...</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="499"/>
+        <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;wiRedPanda este un software dezvoltat de studenții Universității Federale din São Paulo. Acest proiect a fost creat pentru a ajuta studenții să învețe despre circuitele logice.&lt;/p&gt;&lt;p&gt;Versiunea software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creatori:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda este întreținut în prezent de Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves și Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Vă rugăm să raportați erorile pe pagina noastră GitHub dacă sunt găsite erori sau dacă doriți ca o nouă funcționalitate să fie implementată.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Vizitați site-ul nostru!&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="571"/>
+        <source>Exit </source>
+        <translation>Ieșire </translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="572"/>
+        <source>Are you sure?</source>
+        <translation>Ești sigur?</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="721"/>
+        <source>Error</source>
+        <translation>Eroare</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="330"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
 You have to save new projects before accessing ICs and skins, or running beWavedDolphin simulations.</source>
-        <translation type="unfinished"></translation>
+        <translation>wiRedPanda %1 va lista automat toate celelalte fișiere .panda situate în același director cu proiectul curent ca IC-uri în fila editorului.
+Trebuie să salvezi proiectele noi înainte de a accesa IC-urile și skinurile, sau de a rula simulări beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="488"/>
-        <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="508"/>
+        <location filename="../../mainwindow.cpp" line="519"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h1&gt;Scurtături Canvas&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom în &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom afară &lt;/li&gt;&lt;li&gt; Ctrl+1 : Ascunde/Arată fire &lt;/li&gt;&lt;li&gt; Ctrl+2 : Ascunde/Arată porți &lt;/li&gt;&lt;li&gt; Ctrl+F : Caută elemente &lt;/li&gt;&lt;li&gt; Ctrl+W : Deschide beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Salvează proiectul &lt;/li&gt;&lt;li&gt; Ctrl+Q : Ieși din wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Pornește/Pauzează simularea &lt;/li&gt;&lt;li&gt; [ : Proprietatea anterioară a elementului primar &lt;/li&gt;&lt;li&gt; ] : Următoarea proprietate a elementului primar &lt;/li&gt;&lt;li&gt; { : Proprietatea anterioară a elementului secundar &lt;/li&gt;&lt;li&gt; } : Următoarea proprietate a elementului secundar &lt;/li&gt;&lt;li&gt; &amp;lt; : Transformă în elementul anterior &lt;/li&gt;&lt;li&gt; &amp;gt; : Transformă în următorul element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Sfaturi Generale&lt;/h1&gt;&lt;p&gt;Dublu-clic pe un fir pentru a crea un nod&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="895"/>
-        <location filename="../../mainwindow.cpp" line="922"/>
+        <location filename="../../mainwindow.cpp" line="918"/>
+        <location filename="../../mainwindow.cpp" line="945"/>
         <source>Missing file name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lipsește numele fișierului.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="901"/>
+        <location filename="../../mainwindow.cpp" line="924"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișierul .panda este gol.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="914"/>
+        <location filename="../../mainwindow.cpp" line="937"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Codul Arduino a fost generat cu succes.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="949"/>
+        <location filename="../../mainwindow.cpp" line="972"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Generează Cod Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="949"/>
+        <location filename="../../mainwindow.cpp" line="972"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișier Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1051"/>
+        <location filename="../../mainwindow.cpp" line="1074"/>
         <source>Export to PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportă în PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1051"/>
+        <location filename="../../mainwindow.cpp" line="1074"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișiere PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1069"/>
+        <location filename="../../mainwindow.cpp" line="1092"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu s-a putut imprima acest circuit în PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1076"/>
-        <location filename="../../mainwindow.cpp" line="1114"/>
+        <location filename="../../mainwindow.cpp" line="1099"/>
+        <location filename="../../mainwindow.cpp" line="1137"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișierul a fost exportat cu succes.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1095"/>
+        <location filename="../../mainwindow.cpp" line="1118"/>
         <source>Export to Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportă în imagine</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1095"/>
+        <location filename="../../mainwindow.cpp" line="1118"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișiere PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1190"/>
-        <source>Error loading wiRedPanda translation!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="1198"/>
-        <source>Error loading Qt translation!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="1358"/>
+        <location filename="../../mainwindow.cpp" line="1602"/>
         <source>Unmute</source>
-        <translation type="unfinished"></translation>
+        <translation>Activează sunetul</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1395"/>
+        <location filename="../../mainwindow.cpp" line="1641"/>
         <source>Save file first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvează mai întâi fișierul.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1401"/>
+        <location filename="../../mainwindow.cpp" line="1647"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished"></translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1413"/>
-        <location filename="../../mainwindow.cpp" line="1424"/>
+        <location filename="../../mainwindow.cpp" line="1659"/>
+        <location filename="../../mainwindow.cpp" line="1671"/>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informații</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1413"/>
+        <location filename="../../mainwindow.cpp" line="1659"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișierele selectate (și dependențele lor) vor fi copiate în dosarul fișierului curent.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1424"/>
+        <location filename="../../mainwindow.cpp" line="1671"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished"></translation>
+        <translation>Trage aici pentru a elimina.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1447"/>
-        <source>Error removing file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../mainwindow.cpp" line="1694"/>
+        <source>Error removing file: %1</source>
+        <translation>Eroare la ștergerea fișierului: %1</translation>
     </message>
 </context>
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="529"/>
+        <location filename="../../commands.cpp" line="531"/>
         <source>Morph %1 elements to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformă %1 elemente în %2</translation>
     </message>
 </context>
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="344"/>
+        <location filename="../../commands.cpp" line="346"/>
         <source>Move elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Mută elementele</translation>
     </message>
 </context>
 <context>
     <name>Mux</name>
     <message>
-        <location filename="../../element/mux.cpp" line="15"/>
+        <location filename="../../element/mux.cpp" line="10"/>
         <source>Mux</source>
-        <translation type="unfinished"></translation>
+        <translation>Mux</translation>
     </message>
     <message>
-        <location filename="../../element/mux.cpp" line="15"/>
+        <location filename="../../element/mux.cpp" line="10"/>
         <source>MULTIPLEXER</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTIPLEXOR</translation>
     </message>
 </context>
 <context>
     <name>Nand</name>
     <message>
-        <location filename="../../element/nand.cpp" line="14"/>
+        <location filename="../../element/nand.cpp" line="9"/>
         <source>Nand</source>
-        <translation type="unfinished"></translation>
+        <translation>Nand</translation>
     </message>
     <message>
-        <location filename="../../element/nand.cpp" line="14"/>
+        <location filename="../../element/nand.cpp" line="9"/>
         <source>NAND</source>
-        <translation type="unfinished"></translation>
+        <translation>NAND</translation>
     </message>
 </context>
 <context>
     <name>Node</name>
     <message>
-        <location filename="../../element/node.cpp" line="15"/>
+        <location filename="../../element/node.cpp" line="10"/>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Nod</translation>
     </message>
     <message>
-        <location filename="../../element/node.cpp" line="15"/>
+        <location filename="../../element/node.cpp" line="10"/>
         <source>NODE</source>
-        <translation type="unfinished"></translation>
+        <translation>NOD</translation>
     </message>
 </context>
 <context>
     <name>Nor</name>
     <message>
-        <location filename="../../element/nor.cpp" line="14"/>
+        <location filename="../../element/nor.cpp" line="9"/>
         <source>Nor</source>
-        <translation type="unfinished"></translation>
+        <translation>Nor</translation>
     </message>
     <message>
-        <location filename="../../element/nor.cpp" line="14"/>
+        <location filename="../../element/nor.cpp" line="9"/>
         <source>NOR</source>
-        <translation type="unfinished"></translation>
+        <translation>NOR</translation>
     </message>
 </context>
 <context>
     <name>Not</name>
     <message>
-        <location filename="../../element/not.cpp" line="14"/>
+        <location filename="../../element/not.cpp" line="9"/>
         <source>Not</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu</translation>
     </message>
     <message>
-        <location filename="../../element/not.cpp" line="14"/>
+        <location filename="../../element/not.cpp" line="9"/>
         <source>NOT</source>
-        <translation type="unfinished"></translation>
+        <translation>NU</translation>
     </message>
 </context>
 <context>
     <name>Or</name>
     <message>
-        <location filename="../../element/or.cpp" line="14"/>
+        <location filename="../../element/or.cpp" line="9"/>
         <source>Or</source>
-        <translation type="unfinished"></translation>
+        <translation>Sau</translation>
     </message>
     <message>
-        <location filename="../../element/or.cpp" line="14"/>
+        <location filename="../../element/or.cpp" line="9"/>
         <source>OR</source>
-        <translation type="unfinished"></translation>
+        <translation>SAU</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../main.cpp" line="117"/>
+        <location filename="../../main.cpp" line="163"/>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../commands.cpp" line="109"/>
-        <source>One or more items was not found on the scene.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../commands.cpp" line="127"/>
-        <source>One or more elements was not found on the scene.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../commands.cpp" line="190"/>
-        <source>One or more elements were not found on scene. Expected %1, found %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../ic.cpp" line="156"/>
-        <location filename="../../ic.cpp" line="415"/>
-        <source>Error opening file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare!</translation>
     </message>
 </context>
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="272"/>
+        <location filename="../../commands.cpp" line="274"/>
         <source>Rotate %1 degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotește %1 grade</translation>
     </message>
 </context>
 <context>
     <name>SRFlipFlop</name>
     <message>
-        <location filename="../../element/srflipflop.cpp" line="15"/>
+        <location filename="../../element/srflipflop.cpp" line="10"/>
         <source>SR-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>SR-BISTABIL</translation>
     </message>
     <message>
-        <location filename="../../element/srflipflop.cpp" line="15"/>
+        <location filename="../../element/srflipflop.cpp" line="10"/>
         <source>SR-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>SR-Bistabil</translation>
+    </message>
+</context>
+<context>
+    <name>SRLatch</name>
+    <message>
+        <location filename="../../element/srlatch.cpp" line="10"/>
+        <source>SR-LATCH</source>
+        <translation>SR-LATCH</translation>
+    </message>
+    <message>
+        <location filename="../../element/srlatch.cpp" line="10"/>
+        <source>SR-Latch</source>
+        <translation>SR-Latch</translation>
     </message>
 </context>
 <context>
@@ -2021,245 +2153,258 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../scene.cpp" line="34"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Anulează</translation>
     </message>
     <message>
         <location filename="../../scene.cpp" line="38"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Refacă</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="765"/>
+        <location filename="../../scene.cpp" line="764"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Lipește</translation>
     </message>
 </context>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../serialization.cpp" line="67"/>
-        <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../serialization.cpp" line="82"/>
+        <location filename="../../serialization.cpp" line="47"/>
+        <location filename="../../serialization.cpp" line="56"/>
+        <location filename="../../serialization.cpp" line="88"/>
         <source>Invalid file format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Format de fișier invalid.</translation>
     </message>
     <message>
-        <location filename="../../serialization.cpp" line="91"/>
-        <source>Invalid version number.</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../serialization.cpp" line="139"/>
+        <source>Invalid type. Data is possibly corrupted.</source>
+        <translation>Tip invalid. Datele sunt posibil corupte.</translation>
     </message>
 </context>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="447"/>
+        <location filename="../../commands.cpp" line="449"/>
         <source>Wire split</source>
-        <translation type="unfinished"></translation>
+        <translation>Împărțirea firului</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="470"/>
-        <source>Error trying to redo </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../commands.cpp" line="472"/>
+        <source>Error trying to redo %1</source>
+        <translation>Eroare la încercarea de a reface %1</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="500"/>
-        <source>Error trying to undo </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../commands.cpp" line="502"/>
+        <source>Error trying to undo %1</source>
+        <translation>Eroare la încercarea de a anula %1</translation>
     </message>
 </context>
 <context>
     <name>TFlipFlop</name>
     <message>
-        <location filename="../../element/tflipflop.cpp" line="15"/>
+        <location filename="../../element/tflipflop.cpp" line="10"/>
         <source>T-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>T-FLIP-FLOP</translation>
     </message>
     <message>
-        <location filename="../../element/tflipflop.cpp" line="15"/>
+        <location filename="../../element/tflipflop.cpp" line="10"/>
         <source>T-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>T-Flip-Flop</translation>
     </message>
 </context>
 <context>
     <name>Text</name>
     <message>
-        <location filename="../../element/text.cpp" line="14"/>
+        <location filename="../../element/text.cpp" line="9"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Text</translation>
     </message>
     <message>
-        <location filename="../../element/text.cpp" line="14"/>
+        <location filename="../../element/text.cpp" line="9"/>
         <source>TEXT</source>
-        <translation type="unfinished"></translation>
+        <translation>TEXT</translation>
     </message>
 </context>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="869"/>
+        <location filename="../../commands.cpp" line="873"/>
         <source>Toggle TruthTable Output at position: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Comută ieșirea TabeluluiAdevăr la poziția: %1</translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="882"/>
+        <location filename="../../commands.cpp" line="896"/>
+        <source>Could not find truthtable element!</source>
+        <translation>Nu s-a putut găsi elementul tabelul de adevăr!</translation>
     </message>
 </context>
 <context>
     <name>TrashButton</name>
     <message>
-        <location filename="../../trashbutton.cpp" line="28"/>
+        <location filename="../../trashbutton.cpp" line="32"/>
         <source>File will be deleted. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișierul va fi șters. Ești sigur?</translation>
     </message>
 </context>
 <context>
     <name>TruthTable</name>
     <message>
-        <location filename="../../element/truth_table.cpp" line="18"/>
+        <location filename="../../element/truth_table.cpp" line="13"/>
         <source>TRUTH TABLE</source>
-        <translation type="unfinished"></translation>
+        <translation>TABELUL ADEVĂRULUI</translation>
     </message>
     <message>
-        <location filename="../../element/truth_table.cpp" line="18"/>
+        <location filename="../../element/truth_table.cpp" line="13"/>
         <source>Truth Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel de adevăr</translation>
     </message>
 </context>
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="385"/>
+        <location filename="../../commands.cpp" line="387"/>
         <source>Update %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizează %1 elemente</translation>
     </message>
 </context>
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../workspace.cpp" line="71"/>
+        <location filename="../../workspace.cpp" line="72"/>
         <source>Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvează Fișierul</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="71"/>
+        <location filename="../../workspace.cpp" line="72"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișiere Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="89"/>
-        <source>Error opening file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../workspace.cpp" line="90"/>
+        <source>Error opening file: %1</source>
+        <translation>Eroare la deschiderea fișierului: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="99"/>
-        <source>Could not save file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../workspace.cpp" line="100"/>
+        <source>Could not save file: %1</source>
+        <translation>Nu s-a putut salva fișierul: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="134"/>
-        <source>This file does not exist: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../workspace.cpp" line="136"/>
+        <source>This file does not exist: %1</source>
+        <translation>Acest fișier nu există: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="144"/>
-        <source>Could not open file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../workspace.cpp" line="146"/>
+        <source>Could not open file: %1</source>
+        <translation>Nu s-a putut deschide fișierul: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="166"/>
+        <location filename="../../workspace.cpp" line="167"/>
         <source>Warning! Your wiRedPanda (Version: %1) is possibly out of date.
 The file you are opening was saved with version (%2).
 Please check for updates if the file does not load correctly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vă rugăm să verificați actualizările dacă fișierul nu se încarcă corect.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="170"/>
+        <location filename="../../workspace.cpp" line="171"/>
         <source>Newer version file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișier de versiune mai nouă.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="174"/>
+        <location filename="../../workspace.cpp" line="175"/>
         <source>Old version file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișier de versiune veche.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="172"/>
+        <location filename="../../workspace.cpp" line="270"/>
+        <source>Error opening autosave file: %1</source>
+        <translation>Eroare la deschiderea fișierului de salvare automată: %1</translation>
+    </message>
+    <message>
+        <location filename="../../workspace.cpp" line="173"/>
         <source>Warning! This is an old version wiRedPanda project file (version &lt; 4.0). To open it correctly, save all the ICs and skins in the main project directory.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../workspace.cpp" line="269"/>
-        <source>Error opening autosave file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Atenție! Acesta este un fișier de proiect wiRedPanda de versiune veche (versiunea &lt; 4.0). Pentru a-l deschide corect, salvați toate IC-urile și skinurile în directorul principal al proiectului.</translation>
     </message>
 </context>
 <context>
     <name>Xnor</name>
     <message>
-        <location filename="../../element/xnor.cpp" line="14"/>
+        <location filename="../../element/xnor.cpp" line="9"/>
         <source>Xnor</source>
-        <translation type="unfinished"></translation>
+        <translation>Xnor</translation>
     </message>
     <message>
-        <location filename="../../element/xnor.cpp" line="14"/>
+        <location filename="../../element/xnor.cpp" line="9"/>
         <source>XNOR</source>
-        <translation type="unfinished"></translation>
+        <translation>XNOR</translation>
     </message>
 </context>
 <context>
     <name>Xor</name>
     <message>
-        <location filename="../../element/xor.cpp" line="14"/>
+        <location filename="../../element/xor.cpp" line="9"/>
         <source>Xor</source>
-        <translation type="unfinished"></translation>
+        <translation>Xor</translation>
     </message>
     <message>
-        <location filename="../../element/xor.cpp" line="14"/>
+        <location filename="../../element/xor.cpp" line="9"/>
         <source>XOR</source>
-        <translation type="unfinished"></translation>
+        <translation>XOR</translation>
     </message>
 </context>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../main.cpp" line="45"/>
+        <location filename="../../main.cpp" line="68"/>
         <source>Circuit file to open.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișierul circuitului de deschis.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="49"/>
+        <location filename="../../main.cpp" line="72"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nivelul de verbozitate de la 0 la 5, dezactivat implicit.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="50"/>
+        <location filename="../../main.cpp" line="73"/>
         <source>verbosity level</source>
-        <translation type="unfinished"></translation>
+        <translation>nivelul de verbozitate</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="55"/>
-        <source>Exports circuit to &lt;arduino-file&gt;</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../main.cpp" line="78"/>
+        <source>Exports circuit to &lt;arduino-file&gt;.</source>
+        <translation>Exportă circuitul în &lt;arduino-file&gt;.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="61"/>
-        <source>Exports circuit to waveform text file</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../main.cpp" line="90"/>
+        <source>Exports circuit to waveform text file, reading input from terminal.</source>
+        <translation>Exportă circuitul în fișier text de formă de undă, citind input din terminal.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="67"/>
-        <source>Exports circuit to waveform text file, reading input from terminal</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../main.cpp" line="95"/>
+        <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
+        <translation>Când se folosește cu -c/--terminal, blochează execuția dacă circuitul conține Tabele de Adevăr.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="56"/>
+        <location filename="../../main.cpp" line="144"/>
+        <source>Error: Circuit contains Truth Table elements.</source>
+        <translation>Eroare: Circuitul conține elemente de Tabel de Adevăr.</translation>
+    </message>
+    <message>
+        <location filename="../../main.cpp" line="79"/>
         <source>arduino file</source>
-        <translation type="unfinished"></translation>
+        <translation>fișier arduino</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="62"/>
+        <location filename="../../main.cpp" line="84"/>
+        <source>Exports circuit to waveform text file.</source>
+        <translation>Exportă circuitul în fișier text de formă de undă.</translation>
+    </message>
+    <message>
+        <location filename="../../main.cpp" line="85"/>
         <source>waveform input text file</source>
-        <translation type="unfinished"></translation>
+        <translation>fișierul text de intrare pentru forma de undă</translation>
     </message>
 </context>
 </TS>

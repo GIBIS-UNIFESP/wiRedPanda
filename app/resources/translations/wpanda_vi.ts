@@ -4,38 +4,38 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="219"/>
+        <location filename="../../commands.cpp" line="221"/>
         <source>Add %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm %1 phần tử</translation>
     </message>
 </context>
 <context>
     <name>And</name>
     <message>
-        <location filename="../../element/and.cpp" line="14"/>
+        <location filename="../../element/and.cpp" line="9"/>
         <source>And</source>
-        <translation type="unfinished"></translation>
+        <translation>Và</translation>
     </message>
     <message>
-        <location filename="../../element/and.cpp" line="14"/>
+        <location filename="../../element/and.cpp" line="9"/>
         <source>AND</source>
-        <translation type="unfinished"></translation>
+        <translation>VÀ</translation>
     </message>
 </context>
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../application.cpp" line="17"/>
+        <location filename="../../application.cpp" line="22"/>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi!</translation>
     </message>
 </context>
 <context>
     <name>AudioBox</name>
     <message>
-        <location filename="../../element/audiobox.cpp" line="22"/>
+        <location filename="../../element/audiobox.cpp" line="17"/>
         <source>Audio Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Hộp Âm thanh</translation>
     </message>
 </context>
 <context>
@@ -43,455 +43,468 @@
     <message>
         <location filename="../../bewaveddolphin.ui" line="14"/>
         <source>MainWindow</source>
-        <translation type="unfinished"></translation>
+        <translation>Cửa sổ Chính</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="48"/>
         <source>toolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>thanh công cụ</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="92"/>
+        <location filename="../../bewaveddolphin.ui" line="93"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="105"/>
+        <location filename="../../bewaveddolphin.ui" line="106"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Trợ giúp</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="112"/>
+        <location filename="../../bewaveddolphin.ui" line="113"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉnh sửa</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="130"/>
+        <location filename="../../bewaveddolphin.ui" line="131"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Xem</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="152"/>
+        <location filename="../../bewaveddolphin.ui" line="153"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>Giới thiệu</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="155"/>
+        <location filename="../../bewaveddolphin.ui" line="156"/>
         <source>Ctrl+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="164"/>
+        <location filename="../../bewaveddolphin.ui" line="165"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="167"/>
+        <location filename="../../bewaveddolphin.ui" line="168"/>
         <source>Ctrl+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="176"/>
+        <location filename="../../bewaveddolphin.ui" line="177"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Thoát</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="179"/>
+        <location filename="../../bewaveddolphin.ui" line="180"/>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="188"/>
+        <location filename="../../bewaveddolphin.ui" line="189"/>
         <source>Combinational</source>
-        <translation type="unfinished"></translation>
+        <translation>Tổ hợp</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="191"/>
+        <location filename="../../bewaveddolphin.ui" line="192"/>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="200"/>
-        <location filename="../../bewaveddolphin.cpp" line="1301"/>
+        <location filename="../../bewaveddolphin.ui" line="201"/>
+        <location filename="../../bewaveddolphin.cpp" line="1394"/>
         <source>Export to PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Xuất ra PDF</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="203"/>
+        <location filename="../../bewaveddolphin.ui" line="204"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="212"/>
+        <location filename="../../bewaveddolphin.ui" line="213"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="215"/>
+        <location filename="../../bewaveddolphin.ui" line="216"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="224"/>
+        <location filename="../../bewaveddolphin.ui" line="225"/>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu thành...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="227"/>
+        <location filename="../../bewaveddolphin.ui" line="228"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="236"/>
+        <location filename="../../bewaveddolphin.ui" line="237"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Sao chép</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="239"/>
+        <location filename="../../bewaveddolphin.ui" line="240"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="248"/>
+        <location filename="../../bewaveddolphin.ui" line="249"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Dán</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="251"/>
+        <location filename="../../bewaveddolphin.ui" line="252"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="260"/>
+        <location filename="../../bewaveddolphin.ui" line="261"/>
         <source>Set to 0</source>
-        <translation type="unfinished"></translation>
+        <translation>Đặt thành 0</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="263"/>
+        <location filename="../../bewaveddolphin.ui" line="264"/>
         <source>0</source>
-        <translation type="unfinished"></translation>
+        <translation>0</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="275"/>
+        <location filename="../../bewaveddolphin.ui" line="276"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="302"/>
+        <location filename="../../bewaveddolphin.ui" line="303"/>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Dấu cách</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="387"/>
-        <location filename="../../bewaveddolphin.ui" line="390"/>
+        <location filename="../../bewaveddolphin.ui" line="388"/>
+        <location filename="../../bewaveddolphin.ui" line="391"/>
         <source>Fit to screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Vừa màn hình</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="434"/>
+        <location filename="../../bewaveddolphin.ui" line="435"/>
         <source>Show Numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiện thị số</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="439"/>
+        <location filename="../../bewaveddolphin.ui" line="440"/>
         <source>Show Waveforms</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiện thị dạng sóng</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="272"/>
+        <location filename="../../bewaveddolphin.ui" line="449"/>
+        <location filename="../../bewaveddolphin.ui" line="452"/>
+        <source>AutoCrop</source>
+        <translation>Tự động cắt</translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.ui" line="455"/>
+        <source>Ctrl+A</source>
+        <translation>Ctrl+A</translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.ui" line="273"/>
         <source>Set to 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Đặt thành 1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="284"/>
-        <location filename="../../bewaveddolphin.ui" line="287"/>
+        <location filename="../../bewaveddolphin.ui" line="285"/>
+        <location filename="../../bewaveddolphin.ui" line="288"/>
         <source>Set clock frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Đặt tần số xung nhịp</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="290"/>
+        <location filename="../../bewaveddolphin.ui" line="291"/>
         <source>Alt+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+W</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="299"/>
+        <location filename="../../bewaveddolphin.ui" line="300"/>
         <source>Invert</source>
-        <translation type="unfinished"></translation>
+        <translation>Đảo ngược</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="310"/>
+        <location filename="../../bewaveddolphin.ui" line="311"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Gộp</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="318"/>
+        <location filename="../../bewaveddolphin.ui" line="319"/>
         <source>Split</source>
-        <translation type="unfinished"></translation>
+        <translation>Tách</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="327"/>
+        <location filename="../../bewaveddolphin.ui" line="328"/>
         <source>Export to PNG</source>
-        <translation type="unfinished"></translation>
+        <translation>Xuất ra PNG</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="330"/>
+        <location filename="../../bewaveddolphin.ui" line="331"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="339"/>
+        <location filename="../../bewaveddolphin.ui" line="340"/>
         <source>Set Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Đặt độ dài</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="342"/>
+        <location filename="../../bewaveddolphin.ui" line="343"/>
         <source>Alt+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+L</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="351"/>
+        <location filename="../../bewaveddolphin.ui" line="352"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Giới thiệu Qt</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="354"/>
+        <location filename="../../bewaveddolphin.ui" line="355"/>
         <source>Ctrl+Shift+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="363"/>
+        <location filename="../../bewaveddolphin.ui" line="364"/>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>Phóng to</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="366"/>
+        <location filename="../../bewaveddolphin.ui" line="367"/>
         <source>Ctrl+=</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="375"/>
+        <location filename="../../bewaveddolphin.ui" line="376"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Thu nhỏ</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="378"/>
+        <location filename="../../bewaveddolphin.ui" line="379"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="393"/>
+        <location filename="../../bewaveddolphin.ui" line="394"/>
         <source>Ctrl+Shift+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="402"/>
+        <location filename="../../bewaveddolphin.ui" line="403"/>
         <source>Reset Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Đặt lại thu phóng</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="405"/>
+        <location filename="../../bewaveddolphin.ui" line="406"/>
         <source>Ctrl+Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Home</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="414"/>
+        <location filename="../../bewaveddolphin.ui" line="415"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Xóa</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="417"/>
+        <location filename="../../bewaveddolphin.ui" line="418"/>
         <source>Alt+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+X</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="426"/>
+        <location filename="../../bewaveddolphin.ui" line="427"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Cắt</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="429"/>
+        <location filename="../../bewaveddolphin.ui" line="430"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="68"/>
-        <location filename="../../bewaveddolphin.cpp" line="140"/>
-        <location filename="../../bewaveddolphin.cpp" line="1024"/>
-        <location filename="../../bewaveddolphin.cpp" line="1177"/>
+        <location filename="../../bewaveddolphin.cpp" line="142"/>
+        <location filename="../../bewaveddolphin.cpp" line="215"/>
+        <location filename="../../bewaveddolphin.cpp" line="1124"/>
+        <location filename="../../bewaveddolphin.cpp" line="1276"/>
         <source>beWavedDolphin Simulator</source>
-        <translation type="unfinished"></translation>
+        <translation>Bộ mô phỏng beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="467"/>
-        <location filename="../../bewaveddolphin.cpp" line="1091"/>
+        <location filename="../../bewaveddolphin.cpp" line="542"/>
+        <location filename="../../bewaveddolphin.cpp" line="1190"/>
         <source>wiRedPanda - beWavedDolphin</source>
-        <translation type="unfinished"></translation>
+        <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="468"/>
+        <location filename="../../bewaveddolphin.cpp" line="543"/>
         <source>Save simulation before closing?</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu mô phỏng trước khi đóng?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1092"/>
+        <location filename="../../bewaveddolphin.cpp" line="1191"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Bạn có muốn liên kết tệp beWavedDolphin này với tệp wiRedPanda hiện tại và lưu nó không?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="991"/>
+        <location filename="../../bewaveddolphin.cpp" line="1091"/>
         <source>Save File as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu tệp thành...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="994"/>
+        <location filename="../../bewaveddolphin.cpp" line="1094"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp CSV (*.csv);;Tệp Dolphin (*.dolphin);;Tất cả tệp được hỗ trợ (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="995"/>
+        <location filename="../../bewaveddolphin.cpp" line="1095"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp Dolphin (*.dolphin);;Tệp CSV (*.csv);;Tất cả tệp được hỗ trợ (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="982"/>
-        <location filename="../../bewaveddolphin.cpp" line="1025"/>
+        <location filename="../../bewaveddolphin.cpp" line="1082"/>
+        <location filename="../../bewaveddolphin.cpp" line="1125"/>
         <source>Saved file successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu tệp thành công.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="224"/>
-        <location filename="../../bewaveddolphin.cpp" line="251"/>
+        <location filename="../../bewaveddolphin.cpp" line="245"/>
+        <location filename="../../bewaveddolphin.cpp" line="256"/>
+        <location filename="../../bewaveddolphin.cpp" line="266"/>
+        <source></source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.cpp" line="299"/>
+        <location filename="../../bewaveddolphin.cpp" line="326"/>
         <source>Could not load enough elements for the simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể tải đủ phần tử cho mô phỏng.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="440"/>
+        <location filename="../../bewaveddolphin.cpp" line="515"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dạng sóng sẽ quá lớn! Đang đặt lại mức phóng to.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="707"/>
+        <location filename="../../bewaveddolphin.cpp" line="782"/>
         <source>No cells selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không có ô nào được chọn.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1034"/>
-        <source>Error opening file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../bewaveddolphin.cpp" line="1134"/>
+        <source>Error opening file: %1</source>
+        <translation>Lỗi khi mở tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1048"/>
-        <source>Error saving file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../bewaveddolphin.cpp" line="1148"/>
+        <source>Error saving file: %1</source>
+        <translation>Lỗi khi lưu tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1119"/>
+        <location filename="../../bewaveddolphin.cpp" line="1218"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Mở tệp</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1121"/>
+        <location filename="../../bewaveddolphin.cpp" line="1220"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tất cả tệp được hỗ trợ (*.dolphin *.csv);;Tệp Dolphin (*.dolphin);;Tệp CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1137"/>
+        <location filename="../../bewaveddolphin.cpp" line="1236"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải tệp thành công.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1152"/>
-        <source>Could not open file in ReadOnly mode: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../bewaveddolphin.cpp" line="1251"/>
+        <source>Could not open file in ReadOnly mode: %1</source>
+        <translation>Không thể mở tệp ở chế độ Chỉ đọc: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1171"/>
-        <source>Format not supported. Could not open file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../bewaveddolphin.cpp" line="1270"/>
+        <source>Format not supported. Could not open file: %1</source>
+        <translation>Định dạng không được hỗ trợ. Không thể mở tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1185"/>
-        <source>Invalid file format. Starts with: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="1196"/>
-        <location filename="../../bewaveddolphin.cpp" line="1224"/>
+        <location filename="../../bewaveddolphin.cpp" line="1289"/>
+        <location filename="../../bewaveddolphin.cpp" line="1317"/>
         <source>Invalid number of columns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Số cột không hợp lệ.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1277"/>
+        <location filename="../../bewaveddolphin.cpp" line="1370"/>
         <source>Export to Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Xuất ra hình ảnh</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1277"/>
+        <location filename="../../bewaveddolphin.cpp" line="1370"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1301"/>
+        <location filename="../../bewaveddolphin.cpp" line="1394"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1320"/>
+        <location filename="../../bewaveddolphin.cpp" line="1413"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể in mạch này thành PDF.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1331"/>
+        <location filename="../../bewaveddolphin.cpp" line="1424"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;beWavedDolphin là bộ mô phỏng dạng sóng cho phần mềm wiRedPanda được phát triển bởi Đại học Liên bang São Paulo. Dự án này được tạo ra để giúp sinh viên học về mạch logic.&lt;/p&gt;&lt;p&gt;Phiên bản phần mềm: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Người tạo:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin hiện được duy trì bởi Prof. Fábio Cappabianco, Ph.D. và các sinh viên của ông&lt;/p&gt;&lt;p&gt; Vui lòng báo cáo tại trang GitHub của chúng tôi nếu phát hiện lỗi hoặc muốn triển khai tính năng mới.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Truy cập trang web của chúng tôi!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="146"/>
-        <location filename="../../bewaveddolphin.cpp" line="1145"/>
+        <location filename="../../bewaveddolphin.cpp" line="221"/>
+        <location filename="../../bewaveddolphin.cpp" line="1244"/>
         <source>File &quot;%1&quot; does not exist!</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp &quot;%1&quot; không tồn tại!</translation>
     </message>
 </context>
 <context>
     <name>Buzzer</name>
     <message>
-        <location filename="../../element/buzzer.cpp" line="24"/>
+        <location filename="../../element/buzzer.cpp" line="19"/>
         <source>Buzzer</source>
-        <translation type="unfinished"></translation>
+        <translation>Chuông Báo</translation>
     </message>
     <message>
-        <location filename="../../element/buzzer.cpp" line="24"/>
+        <location filename="../../element/buzzer.cpp" line="19"/>
         <source>BUZZER</source>
-        <translation type="unfinished"></translation>
+        <translation>CHUÔNG BÁO</translation>
     </message>
 </context>
 <context>
     <name>ChangeInputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="692"/>
+        <location filename="../../commands.cpp" line="694"/>
         <source>Change input size to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Thay đổi kích thước đầu vào thành %1</translation>
     </message>
 </context>
 <context>
     <name>ChangeOutputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="782"/>
-        <source>Change input size to %1</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../commands.cpp" line="785"/>
+        <source>Change output size to %1</source>
+        <translation>Thay đổi kích thước đầu ra thành %1</translation>
     </message>
 </context>
 <context>
     <name>Clock</name>
     <message>
-        <location filename="../../element/clock.cpp" line="19"/>
+        <location filename="../../element/clock.cpp" line="14"/>
         <source>Clock</source>
-        <translation type="unfinished"></translation>
+        <translation>Đồng Hồ</translation>
     </message>
     <message>
-        <location filename="../../element/clock.cpp" line="19"/>
+        <location filename="../../element/clock.cpp" line="14"/>
         <source>CLOCK SIGNAL</source>
-        <translation type="unfinished"></translation>
+        <translation>TÍN HIỆU ĐỒNG HỒ</translation>
     </message>
 </context>
 <context>
@@ -499,228 +512,322 @@
     <message>
         <location filename="../../clockdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Hộp Thoại</translation>
     </message>
     <message>
         <location filename="../../clockdialog.ui" line="80"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../../clockdialog.ui" line="63"/>
         <source>Clock Frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Tần Số Đồng Hồ</translation>
     </message>
     <message>
         <location filename="../../clockdialog.ui" line="70"/>
         <source>1024</source>
-        <translation type="unfinished"></translation>
+        <translation>1024</translation>
     </message>
     <message>
         <location filename="../../clockdialog.cpp" line="15"/>
         <source>Clock Frequency Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn Tần Số Đồng Hồ</translation>
     </message>
 </context>
 <context>
     <name>CodeGenerator</name>
     <message>
         <location filename="../../arduino/codegenerator.cpp" line="261"/>
-        <source>IC element not supported: </source>
-        <translation type="unfinished"></translation>
+        <source>IC element not supported: %1</source>
+        <translation>Phần tử IC không được hỗ trợ: %1</translation>
     </message>
     <message>
         <location filename="../../arduino/codegenerator.cpp" line="423"/>
-        <source>Element type not supported: </source>
-        <translation type="unfinished"></translation>
+        <source>Element type not supported: %1</source>
+        <translation>Loại phần tử không được hỗ trợ: %1</translation>
     </message>
 </context>
 <context>
     <name>DFlipFlop</name>
     <message>
-        <location filename="../../element/dflipflop.cpp" line="15"/>
+        <location filename="../../element/dflipflop.cpp" line="10"/>
         <source>D-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>D-FLIP-FLOP</translation>
     </message>
     <message>
-        <location filename="../../element/dflipflop.cpp" line="15"/>
+        <location filename="../../element/dflipflop.cpp" line="10"/>
         <source>D-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>D-Flip-Flop</translation>
     </message>
 </context>
 <context>
     <name>DLatch</name>
     <message>
-        <location filename="../../element/dlatch.cpp" line="15"/>
+        <location filename="../../element/dlatch.cpp" line="10"/>
         <source>D-Latch</source>
-        <translation type="unfinished"></translation>
+        <translation>D-Latch</translation>
     </message>
     <message>
-        <location filename="../../element/dlatch.cpp" line="15"/>
+        <location filename="../../element/dlatch.cpp" line="10"/>
         <source>D-LATCH</source>
-        <translation type="unfinished"></translation>
+        <translation>D-LATCH</translation>
     </message>
 </context>
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="246"/>
+        <location filename="../../commands.cpp" line="248"/>
         <source>Delete %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Xóa %1 phần tử</translation>
     </message>
 </context>
 <context>
     <name>Demux</name>
     <message>
-        <location filename="../../element/demux.cpp" line="15"/>
+        <location filename="../../element/demux.cpp" line="10"/>
         <source>Demux</source>
-        <translation type="unfinished"></translation>
+        <translation>Demux</translation>
     </message>
     <message>
-        <location filename="../../element/demux.cpp" line="15"/>
+        <location filename="../../element/demux.cpp" line="10"/>
         <source>DEMULTIPLEXER</source>
-        <translation type="unfinished"></translation>
+        <translation>BỘ DEMULTIPLEXER</translation>
     </message>
 </context>
 <context>
     <name>Display14</name>
     <message>
-        <location filename="../../element/display_14.cpp" line="18"/>
+        <location filename="../../element/display_14.cpp" line="13"/>
         <source>14-SEGMENT DISPLAY</source>
-        <translation type="unfinished"></translation>
+        <translation>MÀN HÌNH 14 ĐOẠN</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="18"/>
+        <location filename="../../element/display_14.cpp" line="13"/>
         <source>14-Segment Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Màn Hình 14 Đoạn</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="87"/>
+        <source>middle left horizontal</source>
+        <translation>ngang giữa trái</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="88"/>
+        <source>upper left vertical</source>
+        <translation>dọc trên trái</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_14.cpp" line="89"/>
+        <source>lower left vertical</source>
+        <translation>dọc dưới trái</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="92"/>
-        <source>middle left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_14.cpp" line="93"/>
-        <source>upper left</source>
-        <translation type="unfinished"></translation>
+        <source>upper right vertical</source>
+        <translation>dọc trên phải</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="94"/>
-        <source>lower left</source>
-        <translation type="unfinished"></translation>
+        <source>lower right vertical</source>
+        <translation>dọc dưới phải</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="95"/>
-        <source>bottom</source>
-        <translation type="unfinished"></translation>
+        <source>middle right horizontal</source>
+        <translation>ngang giữa phải</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="96"/>
-        <source>top</source>
-        <translation type="unfinished"></translation>
+        <source>upper left diagonal</source>
+        <translation>chéo trên trái</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="97"/>
-        <source>upper right</source>
-        <translation type="unfinished"></translation>
+        <source>upper center vertical</source>
+        <translation>dọc trên giữa</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="98"/>
-        <source>dot</source>
-        <translation type="unfinished"></translation>
+        <source>upper right diagonal</source>
+        <translation>chéo trên phải</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="99"/>
-        <source>lower right</source>
-        <translation type="unfinished"></translation>
+        <source>lower right diagonal</source>
+        <translation>chéo dưới phải</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="100"/>
-        <source>middle right</source>
-        <translation type="unfinished"></translation>
+        <source>lower center vertical</source>
+        <translation>dọc dưới giữa</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="101"/>
-        <source>middle upper left</source>
-        <translation type="unfinished"></translation>
+        <source>lower left diagonal</source>
+        <translation>chéo dưới trái</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="102"/>
-        <source>middle top</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../element/display_14.cpp" line="90"/>
+        <source>bottom</source>
+        <translation>dưới</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="103"/>
-        <source>middle upper right</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../element/display_14.cpp" line="91"/>
+        <source>top</source>
+        <translation>trên</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="104"/>
-        <source>middle lower right</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../element/display_14.cpp" line="93"/>
+        <source>dot</source>
+        <translation>chấm</translation>
+    </message>
+</context>
+<context>
+    <name>Display16</name>
+    <message>
+        <location filename="../../element/display_16.cpp" line="13"/>
+        <source>16-SEGMENT DISPLAY</source>
+        <translation>MÀN HÌNH 16 ĐOẠN</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="105"/>
-        <source>middle bottom</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../element/display_16.cpp" line="13"/>
+        <source>16-Segment Display</source>
+        <translation>Màn Hình 16 Đoạn</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="106"/>
-        <source>middle lower left</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../element/display_16.cpp" line="93"/>
+        <source>middle left horizontal</source>
+        <translation>ngang giữa trái</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="94"/>
+        <source>upper left vertical</source>
+        <translation>dọc trên trái</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="95"/>
+        <location filename="../../element/display_16.cpp" line="109"/>
+        <source>lower left vertical</source>
+        <translation>dọc dưới trái</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="96"/>
+        <source>bottom left horizontal</source>
+        <translation>ngang dưới trái</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="97"/>
+        <source>bottom right horizontal</source>
+        <translation>ngang dưới phải</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="98"/>
+        <source>top left horizontal</source>
+        <translation>ngang trên trái</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="99"/>
+        <source>top right horizontal</source>
+        <translation>ngang trên phải</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="100"/>
+        <source>upper right vertical</source>
+        <translation>dọc trên phải</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="101"/>
+        <source>dot</source>
+        <translation>chấm</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="102"/>
+        <source>lower right vertical</source>
+        <translation>dọc dưới phải</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="103"/>
+        <source>middle right horizontal</source>
+        <translation>ngang giữa phải</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="104"/>
+        <source>upper left diagonal</source>
+        <translation>chéo trên trái</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="105"/>
+        <source>upper center vertical</source>
+        <translation>dọc trên giữa</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="106"/>
+        <source>upper right diagonal</source>
+        <translation>chéo trên phải</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="107"/>
+        <source>lower right diagonal</source>
+        <translation>chéo dưới phải</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_16.cpp" line="108"/>
+        <source>lower center vertical</source>
+        <translation>dọc dưới giữa</translation>
     </message>
 </context>
 <context>
     <name>Display7</name>
     <message>
-        <location filename="../../element/display_7.cpp" line="19"/>
+        <location filename="../../element/display_7.cpp" line="14"/>
         <source>7-SEGMENT DISPLAY</source>
-        <translation type="unfinished"></translation>
+        <translation>MÀN HÌNH 7 ĐOẠN</translation>
     </message>
     <message>
-        <location filename="../../element/display_7.cpp" line="19"/>
+        <location filename="../../element/display_7.cpp" line="14"/>
         <source>7-Segment Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Màn Hình 7 Đoạn</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_7.cpp" line="98"/>
+        <source>middle</source>
+        <translation>giữa</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_7.cpp" line="99"/>
+        <source>upper left</source>
+        <translation>trên trái</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_7.cpp" line="100"/>
+        <source>lower left</source>
+        <translation>dưới trái</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_7.cpp" line="101"/>
+        <source>bottom</source>
+        <translation>dưới</translation>
+    </message>
+    <message>
+        <location filename="../../element/display_7.cpp" line="102"/>
+        <source>top</source>
+        <translation>trên</translation>
     </message>
     <message>
         <location filename="../../element/display_7.cpp" line="103"/>
-        <source>middle</source>
-        <translation type="unfinished"></translation>
+        <source>upper right</source>
+        <translation>trên phải</translation>
     </message>
     <message>
         <location filename="../../element/display_7.cpp" line="104"/>
-        <source>upper left</source>
-        <translation type="unfinished"></translation>
+        <source>dot</source>
+        <translation>chấm</translation>
     </message>
     <message>
         <location filename="../../element/display_7.cpp" line="105"/>
-        <source>lower left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_7.cpp" line="106"/>
-        <source>bottom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_7.cpp" line="107"/>
-        <source>top</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_7.cpp" line="108"/>
-        <source>upper right</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_7.cpp" line="109"/>
-        <source>dot</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../element/display_7.cpp" line="110"/>
         <source>lower right</source>
-        <translation type="unfinished"></translation>
+        <translation>dưới phải</translation>
     </message>
 </context>
 <context>
@@ -728,438 +835,474 @@
     <message>
         <location filename="../../elementeditor.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Biểu Mẫu</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="40"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiêu Đề</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="56"/>
+        <location filename="../../elementeditor.ui" line="246"/>
         <source>Inputs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Đầu Vào:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="76"/>
+        <location filename="../../elementeditor.ui" line="167"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Giá Trị:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="143"/>
-        <location filename="../../elementeditor.ui" line="194"/>
+        <location filename="../../elementeditor.ui" line="260"/>
+        <location filename="../../elementeditor.ui" line="301"/>
         <source>Audio:</source>
-        <translation type="unfinished"></translation>
+        <translation>Âm Thanh:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="222"/>
+        <location filename="../../elementeditor.ui" line="234"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="231"/>
+        <location filename="../../elementeditor.ui" line="104"/>
         <source>Trigger:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kích Hoạt:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="66"/>
+        <location filename="../../elementeditor.ui" line="287"/>
         <source>Outputs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Đầu Ra:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="100"/>
+        <location filename="../../elementeditor.ui" line="199"/>
         <source>Frequency:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tần Số:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="46"/>
+        <location filename="../../elementeditor.ui" line="97"/>
         <source>Label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhãn:</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="206"/>
+        <source>Color:</source>
+        <translation>Màu Sắc:</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="122"/>
+        <source>TruthTable</source>
+        <translation>Bảng Sự Thật</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="47"/>
+        <source>C6</source>
+        <translation>C6</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="52"/>
+        <source>D6</source>
+        <translation>D6</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="57"/>
+        <source>E6</source>
+        <translation>E6</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="62"/>
+        <source>F6</source>
+        <translation>F6</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="67"/>
+        <source>G6</source>
+        <translation>G6</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="72"/>
+        <source>A7</source>
+        <translation>A7</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="77"/>
+        <source>B7</source>
+        <translation>B7</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="82"/>
+        <source>C7</source>
+        <translation>C7</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="177"/>
+        <location filename="../../elementeditor.ui" line="315"/>
+        <source> Hz</source>
+        <translation> Hz</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.ui" line="308"/>
+        <source>Delay:</source>
+        <translation>Trễ:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.ui" line="129"/>
-        <source>Color:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="266"/>
-        <source>TruthTable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="151"/>
-        <source>C6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="156"/>
-        <source>D6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="161"/>
-        <source>E6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="166"/>
-        <source>F6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="171"/>
-        <source>G6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="176"/>
-        <source>A7</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="181"/>
-        <source>B7</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="186"/>
-        <source>C7</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="110"/>
-        <source> Hz</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.ui" line="273"/>
-        <location filename="../../elementeditor.cpp" line="89"/>
+        <location filename="../../elementeditor.cpp" line="93"/>
         <source>Change skin to ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Thay đổi giao diện thành ...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="286"/>
+        <location filename="../../elementeditor.ui" line="142"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Mặc Định</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="86"/>
+        <location filename="../../elementeditor.ui" line="294"/>
         <source>Locked:</source>
-        <translation type="unfinished"></translation>
+        <translation>Khóa:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.ui" line="241"/>
+        <location filename="../../elementeditor.ui" line="267"/>
         <source>Priority:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="90"/>
-        <source>Change color to...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="91"/>
-        <source>Change frequency</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="92"/>
-        <source>Morph to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ưu Tiên:</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="94"/>
-        <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <source>Change color to...</source>
+        <translation>Thay đổi màu sắc thành...</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="95"/>
-        <source>Set skin to default</source>
-        <translation type="unfinished"></translation>
+        <source>Change frequency</source>
+        <translation>Thay đổi tần số</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="96"/>
-        <source>Rotate left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="97"/>
-        <source>Rotate right</source>
-        <translation type="unfinished"></translation>
+        <source>Morph to...</source>
+        <translation>Biến đổi thành...</translation>
     </message>
     <message>
         <location filename="../../elementeditor.cpp" line="98"/>
+        <source>Rename</source>
+        <translation>Đổi Tên</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="99"/>
+        <source>Set skin to default</source>
+        <translation>Đặt giao diện về mặc định</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="100"/>
+        <source>Rotate left</source>
+        <translation>Xoay trái</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="101"/>
+        <source>Rotate right</source>
+        <translation>Xoay phải</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="102"/>
         <source>Change trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Thay đổi kích hoạt</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="93"/>
+        <location filename="../../elementeditor.cpp" line="97"/>
         <source>Change priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Thay đổi ưu tiên</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="46"/>
+        <location filename="../../elementeditor.cpp" line="49"/>
         <source>Truth Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Bảng Sự Thật</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="213"/>
-        <location filename="../../elementeditor.cpp" line="286"/>
+        <location filename="../../elementeditor.cpp" line="218"/>
+        <location filename="../../elementeditor.cpp" line="291"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Sao chép</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="214"/>
-        <location filename="../../elementeditor.cpp" line="286"/>
+        <location filename="../../elementeditor.cpp" line="219"/>
+        <location filename="../../elementeditor.cpp" line="291"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Cắt</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="220"/>
-        <location filename="../../elementeditor.cpp" line="286"/>
+        <location filename="../../elementeditor.cpp" line="225"/>
+        <location filename="../../elementeditor.cpp" line="291"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Xóa</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="290"/>
+        <location filename="../../elementeditor.cpp" line="295"/>
         <source>Unknown context menu option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tùy chọn menu ngữ cảnh không xác định.</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="314"/>
+        <location filename="../../elementeditor.cpp" line="319"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Mở tệp</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="316"/>
-        <source>Images (*.png *.gif *.jpg *.jpeg)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="359"/>
+        <location filename="../../elementeditor.cpp" line="364"/>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation>Xanh Lá</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="360"/>
+        <location filename="../../elementeditor.cpp" line="365"/>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation>Xanh Dương</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="361"/>
+        <location filename="../../elementeditor.cpp" line="366"/>
         <source>Purple</source>
-        <translation type="unfinished"></translation>
+        <translation>Tím</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="946"/>
+        <location filename="../../elementeditor.cpp" line="973"/>
         <source>Select any audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn âm thanh bất kì</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="947"/>
+        <location filename="../../elementeditor.cpp" line="974"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Âm thanh (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="358"/>
+        <location filename="../../elementeditor.cpp" line="363"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation>Đỏ</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="357"/>
+        <location filename="../../elementeditor.cpp" line="321"/>
+        <source>Images</source>
+        <translation>Hình ảnh</translation>
+    </message>
+    <message>
+        <location filename="../../elementeditor.cpp" line="362"/>
         <source>White</source>
-        <translation type="unfinished"></translation>
+        <translation>Trắng</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="61"/>
+        <location filename="../../elementeditor.h" line="71"/>
         <source>&lt;Many sounds&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Nhiều âm thanh&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="62"/>
+        <location filename="../../elementeditor.h" line="72"/>
         <source>&lt;Many colors&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Nhiều màu sắc&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="63"/>
-        <location filename="../../elementeditor.h" line="64"/>
-        <location filename="../../elementeditor.h" line="66"/>
-        <location filename="../../elementeditor.h" line="67"/>
+        <location filename="../../elementeditor.h" line="73"/>
+        <location filename="../../elementeditor.h" line="74"/>
+        <location filename="../../elementeditor.h" line="75"/>
+        <location filename="../../elementeditor.h" line="77"/>
+        <location filename="../../elementeditor.h" line="78"/>
         <source>&lt;Many values&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Nhiều giá trị&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="65"/>
+        <location filename="../../elementeditor.h" line="76"/>
         <source>&lt;Many labels&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Nhiều nhãn&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="68"/>
+        <location filename="../../elementeditor.h" line="79"/>
         <source>&lt;Many priorities&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Nhiều ưu tiên&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="69"/>
+        <location filename="../../elementeditor.h" line="80"/>
         <source>&lt;Many triggers&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Nhiều kích hoạt&gt;</translation>
     </message>
 </context>
 <context>
     <name>ElementFactory</name>
     <message>
-        <location filename="../../elementfactory.cpp" line="54"/>
+        <location filename="../../elementfactory.cpp" line="55"/>
         <source>MULTIPLE TYPES</source>
-        <translation type="unfinished"></translation>
+        <translation>NHIỀU LOẠI</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="63"/>
+        <location filename="../../elementfactory.cpp" line="64"/>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Không xác định</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="83"/>
-        <location filename="../../elementfactory.cpp" line="90"/>
-        <location filename="../../elementfactory.cpp" line="98"/>
-        <source>Unknown type: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../elementfactory.cpp" line="84"/>
+        <source>Unknown type 1: %1</source>
+        <translation>Loại không xác định 1: %1</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="191"/>
-        <source>Not implemented yet: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../elementfactory.cpp" line="91"/>
+        <source>Unknown type: %1</source>
+        <translation>Loại không xác định: %1</translation>
+    </message>
+    <message>
+        <location filename="../../elementfactory.cpp" line="99"/>
+        <source>Unknown type 2: %1</source>
+        <translation>Loại không xác định 2: %1</translation>
+    </message>
+    <message>
+        <location filename="../../elementfactory.cpp" line="186"/>
+        <source>Not implemented yet: %1</source>
+        <translation>Chưa được triển khai: %1</translation>
     </message>
 </context>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="635"/>
+        <location filename="../../commands.cpp" line="637"/>
         <source>Flip %1 elements in axis %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Lật %1 phần tử theo trục %2</translation>
     </message>
 </context>
 <context>
     <name>GraphicElement</name>
     <message>
         <location filename="../../graphicelement.cpp" line="100"/>
-        <source>Couldn&apos;t load pixmap.</source>
-        <translation type="unfinished"></translation>
+        <source>File does not exist</source>
+        <translation>Tập tin không tồn tại</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="435"/>
-        <location filename="../../graphicelement.cpp" line="511"/>
-        <location filename="../../graphicelement.cpp" line="547"/>
+        <location filename="../../graphicelement.cpp" line="102"/>
+        <source>File is not readable</source>
+        <translation>Tập tin không thể đọc</translation>
+    </message>
+    <message>
+        <location filename="../../graphicelement.cpp" line="103"/>
+        <source>Unknown reason</source>
+        <translation>Lý do không xác định</translation>
+    </message>
+    <message>
+        <location filename="../../graphicelement.cpp" line="107"/>
+        <source>Couldn&apos;t load pixmap: %1 (%2)</source>
+        <translation>Không thể tải pixmap: %1 (%2)</translation>
+    </message>
+    <message>
+        <location filename="../../graphicelement.cpp" line="440"/>
+        <location filename="../../graphicelement.cpp" line="516"/>
+        <location filename="../../graphicelement.cpp" line="552"/>
         <source>Corrupted DataStream!</source>
-        <translation type="unfinished"></translation>
+        <translation>DataStream bị hỏng!</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="543"/>
+        <location filename="../../graphicelement.cpp" line="548"/>
         <source>Loading pixmap skin names.</source>
-        <translation type="unfinished"></translation>
+        <translation>Đang tải tên giao diện pixmap.</translation>
     </message>
 </context>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../ic.cpp" line="25"/>
+        <location filename="../../ic.cpp" line="20"/>
         <source>IC</source>
-        <translation type="unfinished"></translation>
+        <translation>IC</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="25"/>
+        <location filename="../../ic.cpp" line="20"/>
         <source>INTEGRATED CIRCUIT</source>
-        <translation type="unfinished"></translation>
+        <translation>MẠCH TÍCH HỢP</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="93"/>
-        <location filename="../../ic.cpp" line="409"/>
-        <source>Error copying file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../ic.cpp" line="91"/>
+        <location filename="../../ic.cpp" line="404"/>
+        <source>Error copying file: %1</source>
+        <translation>Lỗi khi sao chép tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="144"/>
-        <source> not found.</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../ic.cpp" line="142"/>
+        <source>%1 not found.</source>
+        <translation>Không tìm thấy %1.</translation>
+    </message>
+    <message>
+        <location filename="../../ic.cpp" line="154"/>
+        <location filename="../../ic.cpp" line="410"/>
+        <source>Error opening file: %1</source>
+        <translation>Lỗi khi mở tệp: %1</translation>
     </message>
 </context>
 <context>
     <name>InputButton</name>
     <message>
-        <location filename="../../element/inputbutton.cpp" line="17"/>
+        <location filename="../../element/inputbutton.cpp" line="12"/>
         <source>PUSH BUTTON</source>
-        <translation type="unfinished"></translation>
+        <translation>NÚT NHẤN</translation>
     </message>
     <message>
-        <location filename="../../element/inputbutton.cpp" line="17"/>
+        <location filename="../../element/inputbutton.cpp" line="12"/>
         <source>Push Button</source>
-        <translation type="unfinished"></translation>
+        <translation>Nút Nhấn</translation>
     </message>
 </context>
 <context>
     <name>InputGnd</name>
     <message>
-        <location filename="../../element/inputgnd.cpp" line="14"/>
+        <location filename="../../element/inputgnd.cpp" line="9"/>
         <source>GND</source>
-        <translation type="unfinished"></translation>
+        <translation>GND</translation>
     </message>
     <message>
-        <location filename="../../element/inputgnd.cpp" line="14"/>
+        <location filename="../../element/inputgnd.cpp" line="9"/>
         <source>GROUND</source>
-        <translation type="unfinished"></translation>
+        <translation>TIẾP ĐẤT</translation>
     </message>
 </context>
 <context>
     <name>InputRotary</name>
     <message>
-        <location filename="../../element/inputrotary.cpp" line="18"/>
+        <location filename="../../element/inputrotary.cpp" line="13"/>
         <source>Rotary Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Công Tắc Xoay</translation>
     </message>
     <message>
-        <location filename="../../element/inputrotary.cpp" line="18"/>
+        <location filename="../../element/inputrotary.cpp" line="13"/>
         <source>ROTARY SWITCH</source>
-        <translation type="unfinished"></translation>
+        <translation>CÔNG TẮC XOAY</translation>
     </message>
 </context>
 <context>
     <name>InputSwitch</name>
     <message>
-        <location filename="../../element/inputswitch.cpp" line="17"/>
+        <location filename="../../element/inputswitch.cpp" line="12"/>
         <source>Input Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Công Tắc Đầu Vào</translation>
     </message>
     <message>
-        <location filename="../../element/inputswitch.cpp" line="17"/>
+        <location filename="../../element/inputswitch.cpp" line="12"/>
         <source>INPUT SWITCH</source>
-        <translation type="unfinished"></translation>
+        <translation>CÔNG TẮC ĐẦU VÀO</translation>
     </message>
 </context>
 <context>
     <name>InputVcc</name>
     <message>
-        <location filename="../../element/inputvcc.cpp" line="15"/>
+        <location filename="../../element/inputvcc.cpp" line="10"/>
         <source>VCC</source>
-        <translation type="unfinished"></translation>
+        <translation>VCC</translation>
     </message>
 </context>
 <context>
     <name>JKFlipFlop</name>
     <message>
-        <location filename="../../element/jkflipflop.cpp" line="15"/>
+        <location filename="../../element/jkflipflop.cpp" line="10"/>
         <source>JK-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>JK-FLIP-FLOP</translation>
     </message>
     <message>
-        <location filename="../../element/jkflipflop.cpp" line="15"/>
+        <location filename="../../element/jkflipflop.cpp" line="10"/>
         <source>JK-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>JK-Flip-Flop</translation>
     </message>
 </context>
 <context>
     <name>Led</name>
     <message>
-        <location filename="../../element/led.cpp" line="17"/>
+        <location filename="../../element/led.cpp" line="12"/>
         <source>LED</source>
-        <translation type="unfinished"></translation>
+        <translation>LED</translation>
     </message>
 </context>
 <context>
@@ -1167,40 +1310,40 @@
     <message>
         <location filename="../../lengthdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Hộp Thoại</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.ui" line="43"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.ui" line="53"/>
         <source>Simulation Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Độ Dài Mô Phỏng</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.ui" line="60"/>
         <source>2048</source>
-        <translation type="unfinished"></translation>
+        <translation>2048</translation>
     </message>
     <message>
         <location filename="../../lengthdialog.cpp" line="15"/>
         <source>Simulation Length Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn Độ Dài Mô Phỏng</translation>
     </message>
 </context>
 <context>
     <name>Line</name>
     <message>
-        <location filename="../../element/line.cpp" line="14"/>
+        <location filename="../../element/line.cpp" line="9"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Đường</translation>
     </message>
     <message>
-        <location filename="../../element/line.cpp" line="14"/>
+        <location filename="../../element/line.cpp" line="9"/>
         <source>LINE</source>
-        <translation type="unfinished"></translation>
+        <translation>ĐƯỜNG</translation>
     </message>
 </context>
 <context>
@@ -1208,812 +1351,802 @@
     <message>
         <location filename="../../mainwindow.ui" line="134"/>
         <source>Inputs/Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Đầu Vào/Đầu Ra</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="183"/>
         <source>Gates</source>
-        <translation type="unfinished"></translation>
+        <translation>Cổng Logic</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="232"/>
         <source>Combinational</source>
-        <translation type="unfinished"></translation>
+        <translation>Tổ hợp</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="287"/>
         <source>Memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Bộ Nhớ</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="336"/>
         <source>Integrated Circuits</source>
-        <translation type="unfinished"></translation>
+        <translation>Mạch Tích Hợp</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="379"/>
         <source>Add IC files</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm tệp IC</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="392"/>
         <source>Remove IC</source>
-        <translation type="unfinished"></translation>
+        <translation>Gỡ IC</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="413"/>
         <source>Miscellaneous</source>
-        <translation type="unfinished"></translation>
+        <translation>Khác</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="531"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tìm Kiếm:</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="626"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tệp</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="636"/>
         <source>&amp;Recent files:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tệp gần đây:</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="661"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Chỉnh Sửa</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="682"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Trợ Giúp</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="691"/>
+        <location filename="../../mainwindow.ui" line="697"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Xem</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="695"/>
+        <location filename="../../mainwindow.ui" line="701"/>
         <source>&amp;Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Giao Diện</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="715"/>
+        <location filename="../../mainwindow.ui" line="721"/>
         <source>&amp;Language</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ngôn Ngữ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="723"/>
+        <location filename="../../mainwindow.ui" line="726"/>
         <source>Sim&amp;ulation</source>
-        <translation type="unfinished"></translation>
+        <translation>M&amp;ô Phỏng</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="732"/>
+        <location filename="../../mainwindow.ui" line="737"/>
         <source>Examples</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="749"/>
-        <source>&amp;Open...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="752"/>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Ví Dụ</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="755"/>
+        <source>&amp;Open...</source>
+        <translation>&amp;Mở...</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="758"/>
+        <source>Open</source>
+        <translation>Mở</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="761"/>
         <source>Ctrl+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="764"/>
+        <location filename="../../mainwindow.ui" line="770"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lưu</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="767"/>
+        <location filename="../../mainwindow.ui" line="773"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="776"/>
+        <location filename="../../mainwindow.ui" line="782"/>
         <source>Save &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu &amp;Thành...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="779"/>
+        <location filename="../../mainwindow.ui" line="785"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="788"/>
+        <location filename="../../mainwindow.ui" line="794"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>C&amp;ắt</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="791"/>
+        <location filename="../../mainwindow.ui" line="797"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="800"/>
+        <location filename="../../mainwindow.ui" line="806"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sao Chép</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="803"/>
+        <location filename="../../mainwindow.ui" line="809"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="812"/>
+        <location filename="../../mainwindow.ui" line="818"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dán</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="815"/>
+        <location filename="../../mainwindow.ui" line="821"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="825"/>
+        <location filename="../../mainwindow.ui" line="831"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Xóa</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="828"/>
+        <location filename="../../mainwindow.ui" line="834"/>
         <source>Del</source>
-        <translation type="unfinished"></translation>
+        <translation>Xóa</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="837"/>
+        <location filename="../../mainwindow.ui" line="843"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mới</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="840"/>
+        <location filename="../../mainwindow.ui" line="846"/>
         <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="849"/>
+        <location filename="../../mainwindow.ui" line="855"/>
         <source>Zoom &amp;in</source>
-        <translation type="unfinished"></translation>
+        <translation>Ph&amp;óng To</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="852"/>
+        <location filename="../../mainwindow.ui" line="858"/>
         <source>Ctrl+=</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="861"/>
+        <location filename="../../mainwindow.ui" line="867"/>
         <source>Zoom &amp;out</source>
-        <translation type="unfinished"></translation>
+        <translation>Thu &amp;Nhỏ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="864"/>
+        <location filename="../../mainwindow.ui" line="870"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="879"/>
+        <location filename="../../mainwindow.ui" line="885"/>
         <source>&amp;Wires</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dây Dẫn</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="882"/>
+        <location filename="../../mainwindow.ui" line="888"/>
         <source>Ctrl+1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="897"/>
+        <location filename="../../mainwindow.ui" line="903"/>
         <source>&amp;Gates</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cổng Logic</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="900"/>
+        <location filename="../../mainwindow.ui" line="906"/>
         <source>Ctrl+2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+2</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="909"/>
+        <location filename="../../mainwindow.ui" line="915"/>
         <source>&amp;About</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Giới Thiệu</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="912"/>
+        <location filename="../../mainwindow.ui" line="918"/>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation>F1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="921"/>
+        <location filename="../../mainwindow.ui" line="927"/>
         <source>&amp;Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Thoát</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="924"/>
+        <location filename="../../mainwindow.ui" line="930"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="933"/>
+        <location filename="../../mainwindow.ui" line="939"/>
         <source>R&amp;otate right</source>
-        <translation type="unfinished"></translation>
+        <translation>X&amp;oay phải</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="936"/>
+        <location filename="../../mainwindow.ui" line="942"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="945"/>
+        <location filename="../../mainwindow.ui" line="951"/>
         <source>Rotate &amp;left</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoay &amp;trái</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="948"/>
+        <location filename="../../mainwindow.ui" line="954"/>
         <source>Ctrl+Shift+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="957"/>
+        <location filename="../../mainwindow.ui" line="963"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Giới thiệu &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="966"/>
+        <location filename="../../mainwindow.ui" line="972"/>
         <source>&amp;Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Chọn tất cả</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="969"/>
+        <location filename="../../mainwindow.ui" line="975"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="978"/>
+        <location filename="../../mainwindow.ui" line="984"/>
         <source>Re&amp;load File</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải &amp;lại tệp</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="981"/>
+        <location filename="../../mainwindow.ui" line="987"/>
         <source>Ctrl+F5</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+F5</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="990"/>
+        <location filename="../../mainwindow.ui" line="996"/>
         <source>E&amp;xport to Arduino</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Xuất ra Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="993"/>
+        <location filename="../../mainwindow.ui" line="999"/>
         <source>Ctrl+Alt+I</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+I</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1002"/>
+        <location filename="../../mainwindow.ui" line="1008"/>
         <source>&amp;Reset Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Đặt lại zoom</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1005"/>
+        <location filename="../../mainwindow.ui" line="1011"/>
         <source>Ctrl+0</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1014"/>
+        <location filename="../../mainwindow.ui" line="1020"/>
         <source>Export to &amp;PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Xuất ra &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1017"/>
+        <location filename="../../mainwindow.ui" line="1023"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1026"/>
-        <source>&amp;English</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../mainwindow.ui" line="1209"/>
+        <source>Background Simulation</source>
+        <translation>Mô phỏng nền</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1035"/>
-        <source>&amp;Portuguese</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../mainwindow.ui" line="1226"/>
+        <source>Report Translation Error</source>
+        <translation>Báo cáo lỗi dịch thuật</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1048"/>
+        <location filename="../../mainwindow.ui" line="1229"/>
+        <source>Report translation errors or help improve translations on Weblate</source>
+        <translation>Báo cáo lỗi dịch thuật hoặc giúp cải thiện bản dịch trên Weblate</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1036"/>
         <source>&amp;Play/Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Chạy/Tạm dừng</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="691"/>
+        <source>&amp;Help Translate</source>
+        <translation>&amp;Giúp Dịch</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1039"/>
+        <source>Play or Pause simulation.</source>
+        <translation>Chạy hoặc tạm dừng mô phỏng.</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1042"/>
+        <source>F5</source>
+        <translation>F5</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1051"/>
-        <source>Play or Pause simulation.</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Rename</source>
+        <translation>&amp;Đổi tên</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1054"/>
-        <source>F5</source>
-        <translation type="unfinished"></translation>
+        <source>F2</source>
+        <translation>F2</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1063"/>
-        <source>&amp;Rename</source>
-        <translation type="unfinished"></translation>
+        <source>Cha&amp;nge Trigger</source>
+        <translation>Thay đổi &amp;kích hoạt</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1066"/>
-        <source>F2</source>
-        <translation type="unfinished"></translation>
+        <source>F3</source>
+        <translation>F3</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1075"/>
-        <source>Cha&amp;nge Trigger</source>
-        <translation type="unfinished"></translation>
+        <source>Cl&amp;ear selection</source>
+        <translation>Xó&amp;a lựa chọn</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1078"/>
-        <source>F3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1087"/>
-        <source>Cl&amp;ear selection</source>
-        <translation type="unfinished"></translation>
+        <source>Esc</source>
+        <translation>Esc</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1090"/>
-        <source>Esc</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1102"/>
         <source>&amp;Fast Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Chế độ &amp;nhanh</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1113"/>
+        <location filename="../../mainwindow.ui" line="1101"/>
         <source>&amp;Panda Light</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Panda Sáng</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1109"/>
+        <source>Panda &amp;Dark</source>
+        <translation>Panda &amp;Tối</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1118"/>
+        <source>&amp;Waveform</source>
+        <translation>&amp;Dạng sóng</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1121"/>
-        <source>Panda &amp;Dark</source>
-        <translation type="unfinished"></translation>
+        <source>Ctrl+W</source>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1130"/>
-        <source>&amp;Waveform</source>
-        <translation type="unfinished"></translation>
+        <source>Export to &amp;Image</source>
+        <translation>Xuất ra &amp;hình ảnh</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1133"/>
-        <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1142"/>
-        <source>Export to &amp;Image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1145"/>
         <source>Ctrl+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+E</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1150"/>
+        <location filename="../../mainwindow.ui" line="1138"/>
         <source>&amp;Flip horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lật ngang</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1153"/>
+        <location filename="../../mainwindow.ui" line="1141"/>
         <source>Ctrl+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1158"/>
+        <location filename="../../mainwindow.ui" line="1146"/>
         <source>Flip &amp;vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>Lật &amp;dọc</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1163"/>
+        <location filename="../../mainwindow.ui" line="1151"/>
         <source>F&amp;ullscreen</source>
-        <translation type="unfinished"></translation>
+        <translation>To&amp;àn màn hình</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1166"/>
+        <location filename="../../mainwindow.ui" line="1154"/>
         <source>F11</source>
-        <translation type="unfinished"></translation>
+        <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1179"/>
-        <location filename="../../mainwindow.cpp" line="1358"/>
+        <location filename="../../mainwindow.ui" line="1167"/>
+        <location filename="../../mainwindow.cpp" line="1602"/>
         <source>Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Tắt tiếng</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1182"/>
+        <location filename="../../mainwindow.ui" line="1170"/>
         <source>Mutes and unmutes circuit buzzers</source>
-        <translation type="unfinished"></translation>
+        <translation>Tắt và bật tiếng chuông báo mạch</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1185"/>
+        <location filename="../../mainwindow.ui" line="1173"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1193"/>
+        <location filename="../../mainwindow.ui" line="1181"/>
         <source>Labels under icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhãn dưới biểu tượng</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1186"/>
+        <source>About this version</source>
+        <translation>Giới thiệu phiên bản này</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1195"/>
+        <source>&amp;Restart</source>
+        <translation>&amp;Khởi động lại</translation>
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1198"/>
-        <source>About this version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1207"/>
-        <source>&amp;Restart</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1210"/>
         <source>Restart simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Khởi động lại mô phỏng.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1219"/>
-        <source>Spanish</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1227"/>
-        <location filename="../../mainwindow.cpp" line="507"/>
+        <location filename="../../mainwindow.ui" line="1217"/>
+        <location filename="../../mainwindow.cpp" line="518"/>
         <source>Shortcuts and Tips</source>
-        <translation type="unfinished"></translation>
+        <translation>Phím tắt và mẹo</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="224"/>
+        <location filename="../../mainwindow.cpp" line="232"/>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="249"/>
-        <location filename="../../mainwindow.cpp" line="372"/>
-        <location filename="../../mainwindow.cpp" line="623"/>
-        <location filename="../../mainwindow.cpp" line="1135"/>
+        <location filename="../../mainwindow.cpp" line="257"/>
+        <location filename="../../mainwindow.cpp" line="379"/>
+        <location filename="../../mainwindow.cpp" line="640"/>
+        <location filename="../../mainwindow.cpp" line="1159"/>
         <source>New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Dự án mới</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="295"/>
+        <location filename="../../mainwindow.cpp" line="303"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="314"/>
-        <source>Don&apos;t show this again.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="355"/>
-        <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="374"/>
-        <source> has been modified. 
-Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="412"/>
-        <source>File loaded successfully.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="431"/>
-        <location filename="../../mainwindow.cpp" line="1399"/>
-        <source>Open File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="431"/>
-        <location filename="../../mainwindow.cpp" line="448"/>
-        <location filename="../../mainwindow.cpp" line="470"/>
-        <source>Panda files (*.panda)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="448"/>
-        <location filename="../../mainwindow.cpp" line="470"/>
-        <source>Save File as ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="554"/>
-        <source>Exit </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="555"/>
-        <source>Are you sure?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="703"/>
-        <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp đã được lưu thành công.</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="322"/>
+        <source>Don&apos;t show this again.</source>
+        <translation>Không hiện thị lại.</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="362"/>
+        <source>File not saved. Close tab anyway?</source>
+        <translation>Tệp chưa được lưu. Vẫn đóng tab?</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="381"/>
+        <source> has been modified. 
+Do you want to save your changes?</source>
+        <translation> đã bị thay đổi. 
+Bạn có muốn lưu thay đổi không?</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="419"/>
+        <source>File loaded successfully.</source>
+        <translation>Tải tệp thành công.</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="438"/>
+        <location filename="../../mainwindow.cpp" line="1645"/>
+        <source>Open File</source>
+        <translation>Mở tệp</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="438"/>
+        <location filename="../../mainwindow.cpp" line="459"/>
+        <location filename="../../mainwindow.cpp" line="479"/>
+        <source>Panda files (*.panda)</source>
+        <translation>Tệp Panda (*.panda)</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="459"/>
+        <location filename="../../mainwindow.cpp" line="479"/>
+        <source>Save File as ...</source>
+        <translation>Lưu tệp thành ...</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="499"/>
+        <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;wiRedPanda là một phần mềm được phát triển bởi các sinh viên của Đại học Liên bang São Paulo. Dự án này được tạo ra để giúp sinh viên học về mạch logic.&lt;/p&gt;&lt;p&gt;Phiên bản phần mềm: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Người tạo:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda hiện đang được duy trì bởi Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves và Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Vui lòng báo cáo lỗi trên trang GitHub của chúng tôi nếu phát hiện lỗi hoặc nếu bạn muốn một tính năng mới được triển khai.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Ghé thăm trang web của chúng tôi!&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="571"/>
+        <source>Exit </source>
+        <translation>Thoát </translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="572"/>
+        <source>Are you sure?</source>
+        <translation>Bạn có chắc chắn?</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="721"/>
+        <source>Error</source>
+        <translation>Lỗi</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="330"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
 You have to save new projects before accessing ICs and skins, or running beWavedDolphin simulations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Để mở các dự án phiên bản cũ chứa IC (hoặc hộp), giao diện và/hoặc mô phỏng beWavedDolphin, các tệp của chúng phải được chuyển đến cùng thư mục với tệp dự án chính.
+wiRedPanda %1 sẽ tự động liệt kê tất cả các tệp .panda khác nằm trong cùng thư mục của dự án hiện tại như IC trong tab chỉnh sửa.
+Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện, hoặc chạy mô phỏng beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="488"/>
-        <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="508"/>
+        <location filename="../../mainwindow.cpp" line="519"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h1&gt;Phím Tắt Canvas&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Phóng to &lt;/li&gt;&lt;li&gt; Ctrl+- : Thu nhỏ &lt;/li&gt;&lt;li&gt; Ctrl+1 : Ẩn/Hiện dây dẫn &lt;/li&gt;&lt;li&gt; Ctrl+2 : Ẩn/Hiện cổng logic &lt;/li&gt;&lt;li&gt; Ctrl+F : Tìm kiếm phần tử &lt;/li&gt;&lt;li&gt; Ctrl+W : Mở beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Lưu dự án &lt;/li&gt;&lt;li&gt; Ctrl+Q : Thoát wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Bắt đầu/Tạm dừng mô phỏng &lt;/li&gt;&lt;li&gt; [ : Thuộc tính phần tử chính trước &lt;/li&gt;&lt;li&gt; ] : Thuộc tính phần tử chính tiếp theo &lt;/li&gt;&lt;li&gt; { : Thuộc tính phần tử phụ trước &lt;/li&gt;&lt;li&gt; } : Thuộc tính phần tử phụ tiếp theo &lt;/li&gt;&lt;li&gt; &amp;lt; : Biến đổi thành phần tử trước &lt;/li&gt;&lt;li&gt; &amp;gt; : Biến đổi thành phần tử tiếp theo &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Mẹo Chung&lt;/h1&gt;&lt;p&gt;Nhấp đúp vào dây dẫn để tạo nút&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="895"/>
-        <location filename="../../mainwindow.cpp" line="922"/>
+        <location filename="../../mainwindow.cpp" line="918"/>
+        <location filename="../../mainwindow.cpp" line="945"/>
         <source>Missing file name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Thiếu tên tệp.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="901"/>
+        <location filename="../../mainwindow.cpp" line="924"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp .panda trống.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="914"/>
+        <location filename="../../mainwindow.cpp" line="937"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mã Arduino đã được tạo thành công.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="949"/>
+        <location filename="../../mainwindow.cpp" line="972"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Tạo mã Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="949"/>
+        <location filename="../../mainwindow.cpp" line="972"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1051"/>
+        <location filename="../../mainwindow.cpp" line="1074"/>
         <source>Export to PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Xuất ra PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1051"/>
+        <location filename="../../mainwindow.cpp" line="1074"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1069"/>
+        <location filename="../../mainwindow.cpp" line="1092"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể in mạch này thành PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1076"/>
-        <location filename="../../mainwindow.cpp" line="1114"/>
+        <location filename="../../mainwindow.cpp" line="1099"/>
+        <location filename="../../mainwindow.cpp" line="1137"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Xuất tệp thành công.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1095"/>
+        <location filename="../../mainwindow.cpp" line="1118"/>
         <source>Export to Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Xuất ra hình ảnh</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1095"/>
+        <location filename="../../mainwindow.cpp" line="1118"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1190"/>
-        <source>Error loading wiRedPanda translation!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="1198"/>
-        <source>Error loading Qt translation!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="1358"/>
+        <location filename="../../mainwindow.cpp" line="1602"/>
         <source>Unmute</source>
-        <translation type="unfinished"></translation>
+        <translation>Bật tiếng</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1395"/>
+        <location filename="../../mainwindow.cpp" line="1641"/>
         <source>Save file first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu tệp trước.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1401"/>
+        <location filename="../../mainwindow.cpp" line="1647"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished"></translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1413"/>
-        <location filename="../../mainwindow.cpp" line="1424"/>
+        <location filename="../../mainwindow.cpp" line="1659"/>
+        <location filename="../../mainwindow.cpp" line="1671"/>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Thông tin</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1413"/>
+        <location filename="../../mainwindow.cpp" line="1659"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Các tệp đã chọn (và các phụ thuộc của chúng) sẽ được sao chép vào thư mục tệp hiện tại.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1424"/>
+        <location filename="../../mainwindow.cpp" line="1671"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kéo vào đây để xóa.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1447"/>
-        <source>Error removing file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../mainwindow.cpp" line="1694"/>
+        <source>Error removing file: %1</source>
+        <translation>Lỗi khi xóa tệp: %1</translation>
     </message>
 </context>
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="529"/>
+        <location filename="../../commands.cpp" line="531"/>
         <source>Morph %1 elements to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Biến đổi %1 phần tử thành %2</translation>
     </message>
 </context>
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="344"/>
+        <location filename="../../commands.cpp" line="346"/>
         <source>Move elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Di chuyển phần tử</translation>
     </message>
 </context>
 <context>
     <name>Mux</name>
     <message>
-        <location filename="../../element/mux.cpp" line="15"/>
+        <location filename="../../element/mux.cpp" line="10"/>
         <source>Mux</source>
-        <translation type="unfinished"></translation>
+        <translation>Mux</translation>
     </message>
     <message>
-        <location filename="../../element/mux.cpp" line="15"/>
+        <location filename="../../element/mux.cpp" line="10"/>
         <source>MULTIPLEXER</source>
-        <translation type="unfinished"></translation>
+        <translation>BỘ MULTIPLEXER</translation>
     </message>
 </context>
 <context>
     <name>Nand</name>
     <message>
-        <location filename="../../element/nand.cpp" line="14"/>
+        <location filename="../../element/nand.cpp" line="9"/>
         <source>Nand</source>
-        <translation type="unfinished"></translation>
+        <translation>Nand</translation>
     </message>
     <message>
-        <location filename="../../element/nand.cpp" line="14"/>
+        <location filename="../../element/nand.cpp" line="9"/>
         <source>NAND</source>
-        <translation type="unfinished"></translation>
+        <translation>NAND</translation>
     </message>
 </context>
 <context>
     <name>Node</name>
     <message>
-        <location filename="../../element/node.cpp" line="15"/>
+        <location filename="../../element/node.cpp" line="10"/>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Nút</translation>
     </message>
     <message>
-        <location filename="../../element/node.cpp" line="15"/>
+        <location filename="../../element/node.cpp" line="10"/>
         <source>NODE</source>
-        <translation type="unfinished"></translation>
+        <translation>NÚT</translation>
     </message>
 </context>
 <context>
     <name>Nor</name>
     <message>
-        <location filename="../../element/nor.cpp" line="14"/>
+        <location filename="../../element/nor.cpp" line="9"/>
         <source>Nor</source>
-        <translation type="unfinished"></translation>
+        <translation>Nor</translation>
     </message>
     <message>
-        <location filename="../../element/nor.cpp" line="14"/>
+        <location filename="../../element/nor.cpp" line="9"/>
         <source>NOR</source>
-        <translation type="unfinished"></translation>
+        <translation>NOR</translation>
     </message>
 </context>
 <context>
     <name>Not</name>
     <message>
-        <location filename="../../element/not.cpp" line="14"/>
+        <location filename="../../element/not.cpp" line="9"/>
         <source>Not</source>
-        <translation type="unfinished"></translation>
+        <translation>Not</translation>
     </message>
     <message>
-        <location filename="../../element/not.cpp" line="14"/>
+        <location filename="../../element/not.cpp" line="9"/>
         <source>NOT</source>
-        <translation type="unfinished"></translation>
+        <translation>NOT</translation>
     </message>
 </context>
 <context>
     <name>Or</name>
     <message>
-        <location filename="../../element/or.cpp" line="14"/>
+        <location filename="../../element/or.cpp" line="9"/>
         <source>Or</source>
-        <translation type="unfinished"></translation>
+        <translation>Or</translation>
     </message>
     <message>
-        <location filename="../../element/or.cpp" line="14"/>
+        <location filename="../../element/or.cpp" line="9"/>
         <source>OR</source>
-        <translation type="unfinished"></translation>
+        <translation>OR</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../main.cpp" line="117"/>
+        <location filename="../../main.cpp" line="163"/>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../commands.cpp" line="109"/>
-        <source>One or more items was not found on the scene.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../commands.cpp" line="127"/>
-        <source>One or more elements was not found on the scene.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../commands.cpp" line="190"/>
-        <source>One or more elements were not found on scene. Expected %1, found %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../ic.cpp" line="156"/>
-        <location filename="../../ic.cpp" line="415"/>
-        <source>Error opening file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi!</translation>
     </message>
 </context>
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="272"/>
+        <location filename="../../commands.cpp" line="274"/>
         <source>Rotate %1 degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoay %1 độ</translation>
     </message>
 </context>
 <context>
     <name>SRFlipFlop</name>
     <message>
-        <location filename="../../element/srflipflop.cpp" line="15"/>
+        <location filename="../../element/srflipflop.cpp" line="10"/>
         <source>SR-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>SR-FLIP-FLOP</translation>
     </message>
     <message>
-        <location filename="../../element/srflipflop.cpp" line="15"/>
+        <location filename="../../element/srflipflop.cpp" line="10"/>
         <source>SR-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>SR-Flip-Flop</translation>
+    </message>
+</context>
+<context>
+    <name>SRLatch</name>
+    <message>
+        <location filename="../../element/srlatch.cpp" line="10"/>
+        <source>SR-LATCH</source>
+        <translation>KHAI-SR</translation>
+    </message>
+    <message>
+        <location filename="../../element/srlatch.cpp" line="10"/>
+        <source>SR-Latch</source>
+        <translation>Khai SR</translation>
     </message>
 </context>
 <context>
@@ -2021,245 +2154,258 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     <message>
         <location filename="../../scene.cpp" line="34"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hoàn tác</translation>
     </message>
     <message>
         <location filename="../../scene.cpp" line="38"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Làm lại</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="765"/>
+        <location filename="../../scene.cpp" line="764"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Dán</translation>
     </message>
 </context>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../serialization.cpp" line="67"/>
-        <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../serialization.cpp" line="82"/>
+        <location filename="../../serialization.cpp" line="47"/>
+        <location filename="../../serialization.cpp" line="56"/>
+        <location filename="../../serialization.cpp" line="88"/>
         <source>Invalid file format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Định dạng tệp không hợp lệ.</translation>
     </message>
     <message>
-        <location filename="../../serialization.cpp" line="91"/>
-        <source>Invalid version number.</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../serialization.cpp" line="139"/>
+        <source>Invalid type. Data is possibly corrupted.</source>
+        <translation>Loại không hợp lệ. Dữ liệu có thể bị hỏng.</translation>
     </message>
 </context>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="447"/>
+        <location filename="../../commands.cpp" line="449"/>
         <source>Wire split</source>
-        <translation type="unfinished"></translation>
+        <translation>Tách dây dẫn</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="470"/>
-        <source>Error trying to redo </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../commands.cpp" line="472"/>
+        <source>Error trying to redo %1</source>
+        <translation>Lỗi khi thử làm lại %1</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="500"/>
-        <source>Error trying to undo </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../commands.cpp" line="502"/>
+        <source>Error trying to undo %1</source>
+        <translation>Lỗi khi thử hoàn tác %1</translation>
     </message>
 </context>
 <context>
     <name>TFlipFlop</name>
     <message>
-        <location filename="../../element/tflipflop.cpp" line="15"/>
+        <location filename="../../element/tflipflop.cpp" line="10"/>
         <source>T-FLIP-FLOP</source>
-        <translation type="unfinished"></translation>
+        <translation>T-FLIP-FLOP</translation>
     </message>
     <message>
-        <location filename="../../element/tflipflop.cpp" line="15"/>
+        <location filename="../../element/tflipflop.cpp" line="10"/>
         <source>T-Flip-Flop</source>
-        <translation type="unfinished"></translation>
+        <translation>T-Flip-Flop</translation>
     </message>
 </context>
 <context>
     <name>Text</name>
     <message>
-        <location filename="../../element/text.cpp" line="14"/>
+        <location filename="../../element/text.cpp" line="9"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Văn bản</translation>
     </message>
     <message>
-        <location filename="../../element/text.cpp" line="14"/>
+        <location filename="../../element/text.cpp" line="9"/>
         <source>TEXT</source>
-        <translation type="unfinished"></translation>
+        <translation>VĂN BẢN</translation>
     </message>
 </context>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="869"/>
+        <location filename="../../commands.cpp" line="873"/>
         <source>Toggle TruthTable Output at position: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Chuyển đổi đầu ra Bảng chân lý tại vị trí: %1</translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="882"/>
+        <location filename="../../commands.cpp" line="896"/>
+        <source>Could not find truthtable element!</source>
+        <translation>Không tìm thấy phần tử bảng chân lý!</translation>
     </message>
 </context>
 <context>
     <name>TrashButton</name>
     <message>
-        <location filename="../../trashbutton.cpp" line="28"/>
+        <location filename="../../trashbutton.cpp" line="32"/>
         <source>File will be deleted. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp sẽ bị xóa. Bạn có chắc chắn không?</translation>
     </message>
 </context>
 <context>
     <name>TruthTable</name>
     <message>
-        <location filename="../../element/truth_table.cpp" line="18"/>
+        <location filename="../../element/truth_table.cpp" line="13"/>
         <source>TRUTH TABLE</source>
-        <translation type="unfinished"></translation>
+        <translation>BẢNG CHÂN LÝ</translation>
     </message>
     <message>
-        <location filename="../../element/truth_table.cpp" line="18"/>
+        <location filename="../../element/truth_table.cpp" line="13"/>
         <source>Truth Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Bảng Sự Thật</translation>
     </message>
 </context>
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="385"/>
+        <location filename="../../commands.cpp" line="387"/>
         <source>Update %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Cập nhật %1 phần tử</translation>
     </message>
 </context>
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../workspace.cpp" line="71"/>
+        <location filename="../../workspace.cpp" line="72"/>
         <source>Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu tệp</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="71"/>
+        <location filename="../../workspace.cpp" line="72"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="89"/>
-        <source>Error opening file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../workspace.cpp" line="90"/>
+        <source>Error opening file: %1</source>
+        <translation>Lỗi khi mở tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="99"/>
-        <source>Could not save file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../workspace.cpp" line="100"/>
+        <source>Could not save file: %1</source>
+        <translation>Không thể lưu tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="134"/>
-        <source>This file does not exist: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../workspace.cpp" line="136"/>
+        <source>This file does not exist: %1</source>
+        <translation>Tệp này không tồn tại: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="144"/>
-        <source>Could not open file: </source>
-        <translation type="unfinished"></translation>
+        <location filename="../../workspace.cpp" line="146"/>
+        <source>Could not open file: %1</source>
+        <translation>Không thể mở tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="166"/>
+        <location filename="../../workspace.cpp" line="167"/>
         <source>Warning! Your wiRedPanda (Version: %1) is possibly out of date.
 The file you are opening was saved with version (%2).
 Please check for updates if the file does not load correctly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vui lòng kiểm tra cập nhật nếu tệp không tải đúng cách.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="170"/>
+        <location filename="../../workspace.cpp" line="171"/>
         <source>Newer version file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp phiên bản mới hơn.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="174"/>
+        <location filename="../../workspace.cpp" line="175"/>
         <source>Old version file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp phiên bản cũ.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="172"/>
+        <location filename="../../workspace.cpp" line="270"/>
+        <source>Error opening autosave file: %1</source>
+        <translation>Lỗi khi mở tệp tự động lưu: %1</translation>
+    </message>
+    <message>
+        <location filename="../../workspace.cpp" line="173"/>
         <source>Warning! This is an old version wiRedPanda project file (version &lt; 4.0). To open it correctly, save all the ICs and skins in the main project directory.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../workspace.cpp" line="269"/>
-        <source>Error opening autosave file: </source>
-        <translation type="unfinished"></translation>
+        <translation>Cảnh báo! Đây là tệp dự án wiRedPanda phiên bản cũ (phiên bản &lt; 4.0). Để mở đúng cách, hãy lưu tất cả các IC và giao diện trong thư mục dự án chính.</translation>
     </message>
 </context>
 <context>
     <name>Xnor</name>
     <message>
-        <location filename="../../element/xnor.cpp" line="14"/>
+        <location filename="../../element/xnor.cpp" line="9"/>
         <source>Xnor</source>
-        <translation type="unfinished"></translation>
+        <translation>Xnor</translation>
     </message>
     <message>
-        <location filename="../../element/xnor.cpp" line="14"/>
+        <location filename="../../element/xnor.cpp" line="9"/>
         <source>XNOR</source>
-        <translation type="unfinished"></translation>
+        <translation>XNOR</translation>
     </message>
 </context>
 <context>
     <name>Xor</name>
     <message>
-        <location filename="../../element/xor.cpp" line="14"/>
+        <location filename="../../element/xor.cpp" line="9"/>
         <source>Xor</source>
-        <translation type="unfinished"></translation>
+        <translation>Xor</translation>
     </message>
     <message>
-        <location filename="../../element/xor.cpp" line="14"/>
+        <location filename="../../element/xor.cpp" line="9"/>
         <source>XOR</source>
-        <translation type="unfinished"></translation>
+        <translation>XOR</translation>
     </message>
 </context>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../main.cpp" line="45"/>
+        <location filename="../../main.cpp" line="68"/>
         <source>Circuit file to open.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tệp mạch cần mở.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="49"/>
+        <location filename="../../main.cpp" line="72"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mức độ chi tiết từ 0 đến 5, mặc định được tắt.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="50"/>
+        <location filename="../../main.cpp" line="73"/>
         <source>verbosity level</source>
-        <translation type="unfinished"></translation>
+        <translation>mức độ chi tiết</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="55"/>
-        <source>Exports circuit to &lt;arduino-file&gt;</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../main.cpp" line="78"/>
+        <source>Exports circuit to &lt;arduino-file&gt;.</source>
+        <translation>Xuất mạch ra &lt;arduino-file&gt;.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="61"/>
-        <source>Exports circuit to waveform text file</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../main.cpp" line="90"/>
+        <source>Exports circuit to waveform text file, reading input from terminal.</source>
+        <translation>Xuất mạch ra tập tin văn bản dạng sóng, đọc đầu vào từ terminal.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="67"/>
-        <source>Exports circuit to waveform text file, reading input from terminal</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../main.cpp" line="95"/>
+        <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
+        <translation>Khi sử dụng với -c/--terminal, chặn thực thi nếu mạch chứa Bảng chân lý.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="56"/>
+        <location filename="../../main.cpp" line="144"/>
+        <source>Error: Circuit contains Truth Table elements.</source>
+        <translation>Lỗi: Mạch chứa các phần tử Bảng chân lý.</translation>
+    </message>
+    <message>
+        <location filename="../../main.cpp" line="79"/>
         <source>arduino file</source>
-        <translation type="unfinished"></translation>
+        <translation>tệp arduino</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="62"/>
+        <location filename="../../main.cpp" line="84"/>
+        <source>Exports circuit to waveform text file.</source>
+        <translation>Xuất mạch ra tập tin văn bản dạng sóng.</translation>
+    </message>
+    <message>
+        <location filename="../../main.cpp" line="85"/>
         <source>waveform input text file</source>
-        <translation type="unfinished"></translation>
+        <translation>tệp văn bản đầu vào dạng sóng</translation>
     </message>
 </context>
 </TS>

@@ -4,7 +4,7 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="220"/>
+        <location filename="../../commands.cpp" line="221"/>
         <source>Add %1 elements</source>
         <translation>Add %1 elements</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../application.cpp" line="21"/>
+        <location filename="../../application.cpp" line="22"/>
         <source>Error!</source>
         <translation>Error!</translation>
     </message>
@@ -370,6 +370,13 @@
         <translation>Saved file successfully.</translation>
     </message>
     <message>
+        <location filename="../../bewaveddolphin.cpp" line="245"/>
+        <location filename="../../bewaveddolphin.cpp" line="256"/>
+        <location filename="../../bewaveddolphin.cpp" line="266"/>
+        <source></source>
+        <translation></translation>
+    </message>
+    <message>
         <location filename="../../bewaveddolphin.cpp" line="299"/>
         <location filename="../../bewaveddolphin.cpp" line="326"/>
         <source>Could not load enough elements for the simulation.</source>
@@ -387,13 +394,13 @@
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1134"/>
-        <source>Error opening file: </source>
-        <translation>Error opening file: </translation>
+        <source>Error opening file: %1</source>
+        <translation>Error opening file: %1</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1148"/>
-        <source>Error saving file: </source>
-        <translation>Error saving file: </translation>
+        <source>Error saving file: %1</source>
+        <translation>Error saving file: %1</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1218"/>
@@ -412,13 +419,13 @@
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1251"/>
-        <source>Could not open file in ReadOnly mode: </source>
-        <translation>Could not open file in ReadOnly mode: </translation>
+        <source>Could not open file in ReadOnly mode: %1</source>
+        <translation>Could not open file in ReadOnly mode: %1</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1270"/>
-        <source>Format not supported. Could not open file: </source>
-        <translation>Format not supported. Could not open file: </translation>
+        <source>Format not supported. Could not open file: %1</source>
+        <translation>Format not supported. Could not open file: %1</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1289"/>
@@ -474,7 +481,7 @@
 <context>
     <name>ChangeInputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="693"/>
+        <location filename="../../commands.cpp" line="694"/>
         <source>Change input size to %1</source>
         <translation>Change input size to %1</translation>
     </message>
@@ -482,9 +489,9 @@
 <context>
     <name>ChangeOutputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="784"/>
-        <source>Change input size to %1</source>
-        <translation>Change input size to %1</translation>
+        <location filename="../../commands.cpp" line="785"/>
+        <source>Change output size to %1</source>
+        <translation>Change output size to %1</translation>
     </message>
 </context>
 <context>
@@ -532,13 +539,13 @@
     <name>CodeGenerator</name>
     <message>
         <location filename="../../arduino/codegenerator.cpp" line="261"/>
-        <source>IC element not supported: </source>
-        <translation>IC element not supported: </translation>
+        <source>IC element not supported: %1</source>
+        <translation>IC element not supported: %1</translation>
     </message>
     <message>
         <location filename="../../arduino/codegenerator.cpp" line="423"/>
-        <source>Element type not supported: </source>
-        <translation>Element type not supported: </translation>
+        <source>Element type not supported: %1</source>
+        <translation>Element type not supported: %1</translation>
     </message>
 </context>
 <context>
@@ -570,7 +577,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="247"/>
+        <location filename="../../commands.cpp" line="248"/>
         <source>Delete %1 elements</source>
         <translation>Delete %1 elements</translation>
     </message>
@@ -603,62 +610,62 @@
     <message>
         <location filename="../../element/display_14.cpp" line="87"/>
         <source>middle left horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>middle left horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="88"/>
         <source>upper left vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>upper left vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="89"/>
         <source>lower left vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>lower left vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="92"/>
         <source>upper right vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>upper right vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="94"/>
         <source>lower right vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>lower right vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="95"/>
         <source>middle right horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>middle right horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="96"/>
         <source>upper left diagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>upper left diagonal</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="97"/>
         <source>upper center vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>upper center vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="98"/>
         <source>upper right diagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>upper right diagonal</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="99"/>
         <source>lower right diagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>lower right diagonal</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="100"/>
         <source>lower center vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>lower center vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="101"/>
         <source>lower left diagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>lower left diagonal</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="90"/>
@@ -691,78 +698,78 @@
     <message>
         <location filename="../../element/display_16.cpp" line="93"/>
         <source>middle left horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>middle left horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="94"/>
         <source>upper left vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>upper left vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="95"/>
         <location filename="../../element/display_16.cpp" line="109"/>
         <source>lower left vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>lower left vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="96"/>
         <source>bottom left horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>bottom left horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="97"/>
         <source>bottom right horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>bottom right horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="98"/>
         <source>top left horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>top left horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="99"/>
         <source>top right horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>top right horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="100"/>
         <source>upper right vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>upper right vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="102"/>
         <source>lower right vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>lower right vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="103"/>
         <source>middle right horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>middle right horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="104"/>
         <source>upper left diagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>upper left diagonal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="105"/>
         <source>upper center vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>upper center vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="106"/>
         <source>upper right diagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>upper right diagonal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="107"/>
         <source>lower right diagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>lower right diagonal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="108"/>
         <source>lower center vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>lower center vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="101"/>
@@ -1125,29 +1132,29 @@
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="84"/>
-        <source>Unknown type 1: </source>
-        <translation>Unknown type 1: </translation>
+        <source>Unknown type 1: %1</source>
+        <translation>Unknown type 1: %1</translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="91"/>
-        <source>Unknown type: </source>
-        <translation>Unknown type: </translation>
+        <source>Unknown type: %1</source>
+        <translation>Unknown type: %1</translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="99"/>
-        <source>Unknown type 2: </source>
-        <translation>Unknown type 2: </translation>
+        <source>Unknown type 2: %1</source>
+        <translation>Unknown type 2: %1</translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="186"/>
-        <source>Not implemented yet: </source>
-        <translation>Not implemented yet: </translation>
+        <source>Not implemented yet: %1</source>
+        <translation>Not implemented yet: %1</translation>
     </message>
 </context>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="636"/>
+        <location filename="../../commands.cpp" line="637"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Flip %1 elements in axis %2</translation>
     </message>
@@ -1202,13 +1209,19 @@
     <message>
         <location filename="../../ic.cpp" line="91"/>
         <location filename="../../ic.cpp" line="404"/>
-        <source>Error copying file: </source>
-        <translation>Error copying file: </translation>
+        <source>Error copying file: %1</source>
+        <translation>Error copying file: %1</translation>
     </message>
     <message>
         <location filename="../../ic.cpp" line="142"/>
-        <source> not found.</source>
-        <translation> not found.</translation>
+        <source>%1 not found.</source>
+        <translation>%1 not found.</translation>
+    </message>
+    <message>
+        <location filename="../../ic.cpp" line="154"/>
+        <location filename="../../ic.cpp" line="410"/>
+        <source>Error opening file: %1</source>
+        <translation>Error opening file: %1</translation>
     </message>
 </context>
 <context>
@@ -1402,616 +1415,609 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="691"/>
+        <source>&amp;Help Translate</source>
+        <translation>&amp;Help Translate</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="697"/>
         <source>&amp;View</source>
         <translation>&amp;View</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="695"/>
+        <location filename="../../mainwindow.ui" line="701"/>
         <source>&amp;Theme</source>
         <translation>&amp;Theme</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="715"/>
+        <location filename="../../mainwindow.ui" line="721"/>
         <source>&amp;Language</source>
         <translation>&amp;Language</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="723"/>
+        <location filename="../../mainwindow.ui" line="726"/>
         <source>Sim&amp;ulation</source>
         <translation>Sim&amp;ulation</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="734"/>
+        <location filename="../../mainwindow.ui" line="737"/>
         <source>Examples</source>
         <translation>Examples</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="751"/>
+        <location filename="../../mainwindow.ui" line="755"/>
         <source>&amp;Open...</source>
         <translation>&amp;Open...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="754"/>
+        <location filename="../../mainwindow.ui" line="758"/>
         <source>Open</source>
         <translation>Open</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="757"/>
+        <location filename="../../mainwindow.ui" line="761"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="766"/>
+        <location filename="../../mainwindow.ui" line="770"/>
         <source>&amp;Save</source>
         <translation>&amp;Save</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="769"/>
+        <location filename="../../mainwindow.ui" line="773"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="778"/>
+        <location filename="../../mainwindow.ui" line="782"/>
         <source>Save &amp;As...</source>
         <translation>Save &amp;As...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="781"/>
+        <location filename="../../mainwindow.ui" line="785"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="790"/>
+        <location filename="../../mainwindow.ui" line="794"/>
         <source>Cu&amp;t</source>
         <translation>Cu&amp;t</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="793"/>
+        <location filename="../../mainwindow.ui" line="797"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="802"/>
+        <location filename="../../mainwindow.ui" line="806"/>
         <source>&amp;Copy</source>
         <translation>&amp;Copy</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="805"/>
+        <location filename="../../mainwindow.ui" line="809"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="814"/>
+        <location filename="../../mainwindow.ui" line="818"/>
         <source>&amp;Paste</source>
         <translation>&amp;Paste</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="817"/>
+        <location filename="../../mainwindow.ui" line="821"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="827"/>
+        <location filename="../../mainwindow.ui" line="831"/>
         <source>&amp;Delete</source>
         <translation>&amp;Delete</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="830"/>
+        <location filename="../../mainwindow.ui" line="834"/>
         <source>Del</source>
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="839"/>
+        <location filename="../../mainwindow.ui" line="843"/>
         <source>&amp;New</source>
         <translation>&amp;New</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="842"/>
+        <location filename="../../mainwindow.ui" line="846"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="851"/>
+        <location filename="../../mainwindow.ui" line="855"/>
         <source>Zoom &amp;in</source>
         <translation>Zoom &amp;in</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="854"/>
+        <location filename="../../mainwindow.ui" line="858"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="863"/>
+        <location filename="../../mainwindow.ui" line="867"/>
         <source>Zoom &amp;out</source>
         <translation>Zoom &amp;out</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="866"/>
+        <location filename="../../mainwindow.ui" line="870"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="881"/>
+        <location filename="../../mainwindow.ui" line="885"/>
         <source>&amp;Wires</source>
         <translation>&amp;Wires</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="884"/>
+        <location filename="../../mainwindow.ui" line="888"/>
         <source>Ctrl+1</source>
         <translation>Ctrl+1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="899"/>
+        <location filename="../../mainwindow.ui" line="903"/>
         <source>&amp;Gates</source>
         <translation>&amp;Gates</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="902"/>
+        <location filename="../../mainwindow.ui" line="906"/>
         <source>Ctrl+2</source>
         <translation>Ctrl+2</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="911"/>
+        <location filename="../../mainwindow.ui" line="915"/>
         <source>&amp;About</source>
         <translation>&amp;About</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="914"/>
+        <location filename="../../mainwindow.ui" line="918"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="923"/>
+        <location filename="../../mainwindow.ui" line="927"/>
         <source>&amp;Exit</source>
         <translation>&amp;Exit</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="926"/>
+        <location filename="../../mainwindow.ui" line="930"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="935"/>
+        <location filename="../../mainwindow.ui" line="939"/>
         <source>R&amp;otate right</source>
         <translation>R&amp;otate right</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="938"/>
+        <location filename="../../mainwindow.ui" line="942"/>
         <source>Ctrl+R</source>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="947"/>
+        <location filename="../../mainwindow.ui" line="951"/>
         <source>Rotate &amp;left</source>
         <translation>Rotate &amp;left</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="950"/>
+        <location filename="../../mainwindow.ui" line="954"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="959"/>
+        <location filename="../../mainwindow.ui" line="963"/>
         <source>About &amp;Qt</source>
         <translation>About &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="968"/>
+        <location filename="../../mainwindow.ui" line="972"/>
         <source>&amp;Select all</source>
         <translation>&amp;Select all</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="971"/>
+        <location filename="../../mainwindow.ui" line="975"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="980"/>
+        <location filename="../../mainwindow.ui" line="984"/>
         <source>Re&amp;load File</source>
         <translation>Re&amp;load File</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="983"/>
+        <location filename="../../mainwindow.ui" line="987"/>
         <source>Ctrl+F5</source>
         <translation>Ctrl+F5</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="992"/>
+        <location filename="../../mainwindow.ui" line="996"/>
         <source>E&amp;xport to Arduino</source>
         <translation>E&amp;xport to Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="995"/>
+        <location filename="../../mainwindow.ui" line="999"/>
         <source>Ctrl+Alt+I</source>
         <translation>Ctrl+Alt+I</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1004"/>
+        <location filename="../../mainwindow.ui" line="1008"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;Reset Zoom</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1007"/>
+        <location filename="../../mainwindow.ui" line="1011"/>
         <source>Ctrl+0</source>
         <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1016"/>
+        <location filename="../../mainwindow.ui" line="1020"/>
         <source>Export to &amp;PDF</source>
         <translation>Export to &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1019"/>
+        <location filename="../../mainwindow.ui" line="1023"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1028"/>
-        <source>&amp;English</source>
-        <translation>&amp;English</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1037"/>
-        <source>&amp;Portuguese</source>
-        <translation>&amp;Portuguese</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1050"/>
+        <location filename="../../mainwindow.ui" line="1036"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;Play/Pause</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1053"/>
+        <location filename="../../mainwindow.ui" line="1039"/>
         <source>Play or Pause simulation.</source>
         <translation>Play or Pause simulation.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1056"/>
+        <location filename="../../mainwindow.ui" line="1042"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1065"/>
+        <location filename="../../mainwindow.ui" line="1051"/>
         <source>&amp;Rename</source>
         <translation>&amp;Rename</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1068"/>
+        <location filename="../../mainwindow.ui" line="1054"/>
         <source>F2</source>
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1077"/>
+        <location filename="../../mainwindow.ui" line="1063"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>Cha&amp;nge Trigger</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1080"/>
+        <location filename="../../mainwindow.ui" line="1066"/>
         <source>F3</source>
         <translation>F3</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1089"/>
+        <location filename="../../mainwindow.ui" line="1075"/>
         <source>Cl&amp;ear selection</source>
         <translation>Cl&amp;ear selection</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1092"/>
+        <location filename="../../mainwindow.ui" line="1078"/>
         <source>Esc</source>
         <translation>Esc</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1104"/>
+        <location filename="../../mainwindow.ui" line="1090"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;Fast Mode</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1115"/>
+        <location filename="../../mainwindow.ui" line="1101"/>
         <source>&amp;Panda Light</source>
         <translation>&amp;Panda Light</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1123"/>
+        <location filename="../../mainwindow.ui" line="1109"/>
         <source>Panda &amp;Dark</source>
         <translation>Panda &amp;Dark</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1132"/>
+        <location filename="../../mainwindow.ui" line="1118"/>
         <source>&amp;Waveform</source>
         <translation>&amp;Waveform</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1135"/>
+        <location filename="../../mainwindow.ui" line="1121"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1144"/>
+        <location filename="../../mainwindow.ui" line="1130"/>
         <source>Export to &amp;Image</source>
         <translation>Export to &amp;Image</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1147"/>
+        <location filename="../../mainwindow.ui" line="1133"/>
         <source>Ctrl+E</source>
         <translation>Ctrl+E</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1152"/>
+        <location filename="../../mainwindow.ui" line="1138"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;Flip horizontally</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1155"/>
+        <location filename="../../mainwindow.ui" line="1141"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1160"/>
+        <location filename="../../mainwindow.ui" line="1146"/>
         <source>Flip &amp;vertically</source>
         <translation>Flip &amp;vertically</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1165"/>
+        <location filename="../../mainwindow.ui" line="1151"/>
         <source>F&amp;ullscreen</source>
         <translation>F&amp;ullscreen</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1168"/>
+        <location filename="../../mainwindow.ui" line="1154"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1181"/>
-        <location filename="../../mainwindow.cpp" line="1376"/>
+        <location filename="../../mainwindow.ui" line="1167"/>
+        <location filename="../../mainwindow.cpp" line="1602"/>
         <source>Mute</source>
         <translation>Mute</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1184"/>
+        <location filename="../../mainwindow.ui" line="1170"/>
         <source>Mutes and unmutes circuit buzzers</source>
         <translation>Mutes and unmutes circuit buzzers</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1187"/>
+        <location filename="../../mainwindow.ui" line="1173"/>
         <source>Ctrl+M</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1195"/>
+        <location filename="../../mainwindow.ui" line="1181"/>
         <source>Labels under icons</source>
         <translation>Labels under icons</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1200"/>
+        <location filename="../../mainwindow.ui" line="1186"/>
         <source>About this version</source>
         <translation>About this version</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1209"/>
+        <location filename="../../mainwindow.ui" line="1195"/>
         <source>&amp;Restart</source>
         <translation>&amp;Restart</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1212"/>
+        <location filename="../../mainwindow.ui" line="1198"/>
         <source>Restart simulation.</source>
         <translation>Restart simulation.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1223"/>
+        <location filename="../../mainwindow.ui" line="1209"/>
         <source>Background Simulation</source>
         <translation>Background Simulation</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1232"/>
-        <source>Spanish</source>
-        <translation>Spanish</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.ui" line="1240"/>
-        <location filename="../../mainwindow.cpp" line="517"/>
+        <location filename="../../mainwindow.ui" line="1217"/>
+        <location filename="../../mainwindow.cpp" line="518"/>
         <source>Shortcuts and Tips</source>
         <translation>Shortcuts and Tips</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="231"/>
+        <location filename="../../mainwindow.ui" line="1226"/>
+        <source>Report Translation Error</source>
+        <translation>Report Translation Error</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.ui" line="1229"/>
+        <source>Report translation errors or help improve translations on Weblate</source>
+        <translation>Report translation errors or help improve translations on Weblate</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="232"/>
         <source>Error!</source>
         <translation>Error!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="256"/>
-        <location filename="../../mainwindow.cpp" line="378"/>
-        <location filename="../../mainwindow.cpp" line="634"/>
-        <location filename="../../mainwindow.cpp" line="1153"/>
+        <location filename="../../mainwindow.cpp" line="257"/>
+        <location filename="../../mainwindow.cpp" line="379"/>
+        <location filename="../../mainwindow.cpp" line="640"/>
+        <location filename="../../mainwindow.cpp" line="1159"/>
         <source>New Project</source>
         <translation>New Project</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="302"/>
+        <location filename="../../mainwindow.cpp" line="303"/>
         <source>File saved successfully.</source>
         <translation>File saved successfully.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="321"/>
+        <location filename="../../mainwindow.cpp" line="322"/>
         <source>Don&apos;t show this again.</source>
         <translation>Don&apos;t show this again.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="361"/>
+        <location filename="../../mainwindow.cpp" line="362"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>File not saved. Close tab anyway?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="380"/>
+        <location filename="../../mainwindow.cpp" line="381"/>
         <source> has been modified. 
 Do you want to save your changes?</source>
         <translation> has been modified. 
 Do you want to save your changes?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="418"/>
+        <location filename="../../mainwindow.cpp" line="419"/>
         <source>File loaded successfully.</source>
         <translation>File loaded successfully.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="437"/>
-        <location filename="../../mainwindow.cpp" line="1419"/>
+        <location filename="../../mainwindow.cpp" line="438"/>
+        <location filename="../../mainwindow.cpp" line="1645"/>
         <source>Open File</source>
         <translation>Open File</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="437"/>
-        <location filename="../../mainwindow.cpp" line="458"/>
-        <location filename="../../mainwindow.cpp" line="478"/>
+        <location filename="../../mainwindow.cpp" line="438"/>
+        <location filename="../../mainwindow.cpp" line="459"/>
+        <location filename="../../mainwindow.cpp" line="479"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda files (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="458"/>
-        <location filename="../../mainwindow.cpp" line="478"/>
+        <location filename="../../mainwindow.cpp" line="459"/>
+        <location filename="../../mainwindow.cpp" line="479"/>
         <source>Save File as ...</source>
         <translation>Save File as ...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="565"/>
+        <location filename="../../mainwindow.cpp" line="571"/>
         <source>Exit </source>
         <translation>Exit </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="566"/>
+        <location filename="../../mainwindow.cpp" line="572"/>
         <source>Are you sure?</source>
         <translation>Are you sure?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="715"/>
+        <location filename="../../mainwindow.cpp" line="721"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="498"/>
-        <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="329"/>
+        <location filename="../../mainwindow.cpp" line="330"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
 You have to save new projects before accessing ICs and skins, or running beWavedDolphin simulations.</source>
-        <translation type="unfinished"></translation>
+        <translation>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
+To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
+wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
+You have to save new projects before accessing ICs and skins, or running beWavedDolphin simulations.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="518"/>
+        <location filename="../../mainwindow.cpp" line="499"/>
+        <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="519"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="912"/>
-        <location filename="../../mainwindow.cpp" line="939"/>
+        <location filename="../../mainwindow.cpp" line="918"/>
+        <location filename="../../mainwindow.cpp" line="945"/>
         <source>Missing file name.</source>
         <translation>Missing file name.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="918"/>
+        <location filename="../../mainwindow.cpp" line="924"/>
         <source>The .panda file is empty.</source>
         <translation>The .panda file is empty.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="931"/>
+        <location filename="../../mainwindow.cpp" line="937"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino code successfully generated.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="966"/>
+        <location filename="../../mainwindow.cpp" line="972"/>
         <source>Generate Arduino Code</source>
         <translation>Generate Arduino Code</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="966"/>
+        <location filename="../../mainwindow.cpp" line="972"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino file (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1068"/>
+        <location filename="../../mainwindow.cpp" line="1074"/>
         <source>Export to PDF</source>
         <translation>Export to PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1068"/>
+        <location filename="../../mainwindow.cpp" line="1074"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF files (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1086"/>
+        <location filename="../../mainwindow.cpp" line="1092"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Could not print this circuit to PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1093"/>
-        <location filename="../../mainwindow.cpp" line="1131"/>
+        <location filename="../../mainwindow.cpp" line="1099"/>
+        <location filename="../../mainwindow.cpp" line="1137"/>
         <source>Exported file successfully.</source>
         <translation>Exported file successfully.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1112"/>
+        <location filename="../../mainwindow.cpp" line="1118"/>
         <source>Export to Image</source>
         <translation>Export to Image</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1112"/>
+        <location filename="../../mainwindow.cpp" line="1118"/>
         <source>PNG files (*.png)</source>
         <translation>PNG files (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1208"/>
-        <source>Error loading wiRedPanda translation!</source>
-        <translation>Error loading wiRedPanda translation!</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="1216"/>
-        <source>Error loading Qt translation!</source>
-        <translation>Error loading Qt translation!</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="1376"/>
+        <location filename="../../mainwindow.cpp" line="1602"/>
         <source>Unmute</source>
         <translation>Unmute</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1415"/>
+        <location filename="../../mainwindow.cpp" line="1641"/>
         <source>Save file first.</source>
         <translation>Save file first.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1421"/>
+        <location filename="../../mainwindow.cpp" line="1647"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1433"/>
-        <location filename="../../mainwindow.cpp" line="1445"/>
+        <location filename="../../mainwindow.cpp" line="1659"/>
+        <location filename="../../mainwindow.cpp" line="1671"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1433"/>
+        <location filename="../../mainwindow.cpp" line="1659"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Selected files (and their dependencies) will be copied to current file folder.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1445"/>
+        <location filename="../../mainwindow.cpp" line="1671"/>
         <source>Drag here to remove.</source>
         <translation>Drag here to remove.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1468"/>
-        <source>Error removing file: </source>
-        <translation>Error removing file: </translation>
+        <location filename="../../mainwindow.cpp" line="1694"/>
+        <source>Error removing file: %1</source>
+        <translation>Error removing file: %1</translation>
     </message>
 </context>
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="530"/>
+        <location filename="../../commands.cpp" line="531"/>
         <source>Morph %1 elements to %2</source>
         <translation>Morph %1 elements to %2</translation>
     </message>
@@ -2019,7 +2025,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="345"/>
+        <location filename="../../commands.cpp" line="346"/>
         <source>Move elements</source>
         <translation>Move elements</translation>
     </message>
@@ -2109,32 +2115,11 @@ You have to save new projects before accessing ICs and skins, or running beWaved
         <source>Error!</source>
         <translation>Error!</translation>
     </message>
-    <message>
-        <location filename="../../commands.cpp" line="109"/>
-        <source>One or more items was not found on the scene.</source>
-        <translation>One or more items was not found on the scene.</translation>
-    </message>
-    <message>
-        <location filename="../../commands.cpp" line="127"/>
-        <source>One or more elements was not found on the scene.</source>
-        <translation>One or more elements was not found on the scene.</translation>
-    </message>
-    <message>
-        <location filename="../../commands.cpp" line="191"/>
-        <source>One or more elements were not found on scene. Expected %1, found %2.</source>
-        <translation>One or more elements were not found on scene. Expected %1, found %2.</translation>
-    </message>
-    <message>
-        <location filename="../../ic.cpp" line="154"/>
-        <location filename="../../ic.cpp" line="410"/>
-        <source>Error opening file: </source>
-        <translation>Error opening file: </translation>
-    </message>
 </context>
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="273"/>
+        <location filename="../../commands.cpp" line="274"/>
         <source>Rotate %1 degrees</source>
         <translation>Rotate %1 degrees</translation>
     </message>
@@ -2186,34 +2171,34 @@ You have to save new projects before accessing ICs and skins, or running beWaved
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../serialization.cpp" line="139"/>
-        <source>Invalid type. Data is possibly corrupted.</source>
-        <translation>Invalid type. Data is possibly corrupted.</translation>
-    </message>
-    <message>
         <location filename="../../serialization.cpp" line="47"/>
         <location filename="../../serialization.cpp" line="56"/>
         <location filename="../../serialization.cpp" line="88"/>
         <source>Invalid file format.</source>
         <translation>Invalid file format.</translation>
     </message>
+    <message>
+        <location filename="../../serialization.cpp" line="139"/>
+        <source>Invalid type. Data is possibly corrupted.</source>
+        <translation>Invalid type. Data is possibly corrupted.</translation>
+    </message>
 </context>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="448"/>
+        <location filename="../../commands.cpp" line="449"/>
         <source>Wire split</source>
         <translation>Wire split</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="471"/>
-        <source>Error trying to redo </source>
-        <translation>Error trying to redo </translation>
+        <location filename="../../commands.cpp" line="472"/>
+        <source>Error trying to redo %1</source>
+        <translation>Error trying to redo %1</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="501"/>
-        <source>Error trying to undo </source>
-        <translation>Error trying to undo </translation>
+        <location filename="../../commands.cpp" line="502"/>
+        <source>Error trying to undo %1</source>
+        <translation>Error trying to undo %1</translation>
     </message>
 </context>
 <context>
@@ -2245,9 +2230,15 @@ You have to save new projects before accessing ICs and skins, or running beWaved
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="872"/>
+        <location filename="../../commands.cpp" line="873"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Toggle TruthTable Output at position: %1</translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="882"/>
+        <location filename="../../commands.cpp" line="896"/>
+        <source>Could not find truthtable element!</source>
+        <translation>Could not find truthtable element!</translation>
     </message>
 </context>
 <context>
@@ -2274,7 +2265,7 @@ You have to save new projects before accessing ICs and skins, or running beWaved
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="386"/>
+        <location filename="../../commands.cpp" line="387"/>
         <source>Update %1 elements</source>
         <translation>Update %1 elements</translation>
     </message>
@@ -2293,23 +2284,23 @@ You have to save new projects before accessing ICs and skins, or running beWaved
     </message>
     <message>
         <location filename="../../workspace.cpp" line="90"/>
-        <source>Error opening file: </source>
-        <translation>Error opening file: </translation>
+        <source>Error opening file: %1</source>
+        <translation>Error opening file: %1</translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="100"/>
-        <source>Could not save file: </source>
-        <translation>Could not save file: </translation>
+        <source>Could not save file: %1</source>
+        <translation>Could not save file: %1</translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="136"/>
-        <source>This file does not exist: </source>
-        <translation>This file does not exist: </translation>
+        <source>This file does not exist: %1</source>
+        <translation>This file does not exist: %1</translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="146"/>
-        <source>Could not open file: </source>
-        <translation>Could not open file: </translation>
+        <source>Could not open file: %1</source>
+        <translation>Could not open file: %1</translation>
     </message>
     <message>
         <location filename="../../workspace.cpp" line="167"/>
@@ -2331,14 +2322,14 @@ Please check for updates if the file does not load correctly.</translation>
         <translation>Old version file.</translation>
     </message>
     <message>
+        <location filename="../../workspace.cpp" line="270"/>
+        <source>Error opening autosave file: %1</source>
+        <translation>Error opening autosave file: %1</translation>
+    </message>
+    <message>
         <location filename="../../workspace.cpp" line="173"/>
         <source>Warning! This is an old version wiRedPanda project file (version &lt; 4.0). To open it correctly, save all the ICs and skins in the main project directory.</source>
         <translation>Warning! This is an old version wiRedPanda project file (version &lt; 4.0). To open it correctly, save all the ICs and skins in the main project directory.</translation>
-    </message>
-    <message>
-        <location filename="../../workspace.cpp" line="270"/>
-        <source>Error opening autosave file: </source>
-        <translation>Error opening autosave file: </translation>
     </message>
 </context>
 <context>

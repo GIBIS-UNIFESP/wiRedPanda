@@ -828,8 +828,8 @@ void BewavedDolphin::on_actionCombinational_triggered()
             createElement(row, col, value);
         }
 
-        halfClockPeriod = std::min(clockPeriod, 524'288);
-        clockPeriod = std::min(2 * clockPeriod, 1'048'576);
+        halfClockPeriod = std::min(clockPeriod, 524288);
+        clockPeriod = std::min(2 * clockPeriod, 1048576);
     }
 
     m_edited = true;
