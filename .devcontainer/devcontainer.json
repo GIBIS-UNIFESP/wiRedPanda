@@ -1,0 +1,88 @@
+{
+    "name": "wiRedPanda Development Environment",
+    "dockerFile": "Dockerfile",
+    "context": "..",
+    
+    // Configure tool-specific properties
+    "customizations": {
+        "vscode": {
+            // Set *default* container specific settings.json values on container create
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "cmake.configureOnOpen": true,
+                "cmake.buildDirectory": "${workspaceFolder}/build",
+                "cmake.generator": "Unix Makefiles",
+                "files.associations": {
+                    "*.pro": "qmake",
+                    "*.pri": "qmake"
+                },
+                "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+                "C_Cpp.default.compilerPath": "/usr/bin/g++",
+                "C_Cpp.default.cStandard": "c17",
+                "C_Cpp.default.cppStandard": "c++17"
+            },
+            
+            // Add the IDs of extensions you want installed when the container is created
+            "extensions": [
+                "ms-vscode.cpptools",
+                "ms-vscode.cpptools-extension-pack",
+                "ms-vscode.cmake-tools",
+                "twxs.cmake",
+                "ms-vscode.cpptools-themes",
+                "ms-python.python",
+                "ms-vscode.vscode-json",
+                "redhat.vscode-xml",
+                "aaron-bond.better-comments",
+                "streetsidesoftware.code-spell-checker",
+                "ms-vscode.hexeditor"
+            ]
+        }
+    },
+
+    // Use 'forwardPorts' to make a list of ports inside the container available locally
+    "forwardPorts": [],
+
+    // Use 'postCreateCommand' to run commands after the container is created
+    "postCreateCommand": "bash .devcontainer/setup.sh",
+
+    // Configure container user
+    "remoteUser": "developer",
+    
+    // Enable X11 forwarding for GUI applications
+    "runArgs": [
+        "--env=DISPLAY=:0",
+        "--volume=/tmp/.X11-unix:/tmp/.X11-unix:rw",
+        "--volume=/etc/timezone:/etc/timezone:ro",
+        "--volume=/etc/localtime:/etc/localtime:ro"
+    ],
+    
+    // Container environment variables
+    "containerEnv": {
+        "QT_QPA_PLATFORM": "xcb",
+        "DISPLAY": ":0"
+    },
+
+    // Features to add to the dev container
+    "features": {
+        "ghcr.io/devcontainers/features/git:1": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": true,
+            "configureZshAsDefaultShell": true,
+            "installOhMyZsh": true,
+            "upgradePackages": true,
+            "username": "developer",
+            "userUid": "1000",
+            "userGid": "1000"
+        }
+    },
+
+    // Lifecycle scripts
+    "initializeCommand": "echo 'Initializing wiRedPanda development container...'",
+    "onCreateCommand": "echo 'Container created successfully'",
+    "updateContentCommand": "echo 'Content updated'",
+    
+    // Set the default path that VS Code should open when connecting to the container
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+    "workspaceFolder": "/workspace"
+}
