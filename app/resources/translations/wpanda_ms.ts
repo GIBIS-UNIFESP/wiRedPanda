@@ -1770,7 +1770,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1602"/>
+        <location filename="../../mainwindow.cpp" line="1633"/>
         <source>Mute</source>
         <translation>Bisu</translation>
     </message>
@@ -1811,7 +1811,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1217"/>
-        <location filename="../../mainwindow.cpp" line="518"/>
+        <location filename="../../mainwindow.cpp" line="549"/>
         <source>Shortcuts and Tips</source>
         <translation>Pintasan dan Petua</translation>
     </message>
@@ -1826,81 +1826,81 @@
         <translation>Laporkan ralat terjemahan atau bantu menambah baik terjemahan di Weblate</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="232"/>
+        <location filename="../../mainwindow.cpp" line="263"/>
         <source>Error!</source>
         <translation>Ralat!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="257"/>
-        <location filename="../../mainwindow.cpp" line="379"/>
-        <location filename="../../mainwindow.cpp" line="640"/>
-        <location filename="../../mainwindow.cpp" line="1159"/>
+        <location filename="../../mainwindow.cpp" line="288"/>
+        <location filename="../../mainwindow.cpp" line="410"/>
+        <location filename="../../mainwindow.cpp" line="671"/>
+        <location filename="../../mainwindow.cpp" line="1190"/>
         <source>New Project</source>
         <translation>Projek Baru</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="303"/>
+        <location filename="../../mainwindow.cpp" line="334"/>
         <source>File saved successfully.</source>
         <translation>Fail berjaya disimpan.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="322"/>
+        <location filename="../../mainwindow.cpp" line="353"/>
         <source>Don&apos;t show this again.</source>
         <translation>Jangan tunjuk ini lagi.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="362"/>
+        <location filename="../../mainwindow.cpp" line="393"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Fail tidak disimpan. Tutup tab juga?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="381"/>
+        <location filename="../../mainwindow.cpp" line="412"/>
         <source> has been modified. 
 Do you want to save your changes?</source>
         <translation> telah diubah suai. 
 Adakah anda ingin menyimpan perubahan?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="419"/>
+        <location filename="../../mainwindow.cpp" line="450"/>
         <source>File loaded successfully.</source>
         <translation>Fail berjaya dimuatkan.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="438"/>
-        <location filename="../../mainwindow.cpp" line="1645"/>
+        <location filename="../../mainwindow.cpp" line="469"/>
+        <location filename="../../mainwindow.cpp" line="1676"/>
         <source>Open File</source>
         <translation>Buka Fail</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="438"/>
-        <location filename="../../mainwindow.cpp" line="459"/>
-        <location filename="../../mainwindow.cpp" line="479"/>
+        <location filename="../../mainwindow.cpp" line="469"/>
+        <location filename="../../mainwindow.cpp" line="490"/>
+        <location filename="../../mainwindow.cpp" line="510"/>
         <source>Panda files (*.panda)</source>
         <translation>Fail Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="459"/>
-        <location filename="../../mainwindow.cpp" line="479"/>
+        <location filename="../../mainwindow.cpp" line="490"/>
+        <location filename="../../mainwindow.cpp" line="510"/>
         <source>Save File as ...</source>
         <translation>Simpan Fail sebagai ...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="571"/>
+        <location filename="../../mainwindow.cpp" line="602"/>
         <source>Exit </source>
         <translation>Keluar </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="572"/>
+        <location filename="../../mainwindow.cpp" line="603"/>
         <source>Are you sure?</source>
         <translation>Adakah anda pasti?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="721"/>
+        <location filename="../../mainwindow.cpp" line="752"/>
         <source>Error</source>
         <translation>Ralat</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="330"/>
+        <location filename="../../mainwindow.cpp" line="361"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
@@ -1911,105 +1911,105 @@ wiRedPanda %1 akan menyenaraikan secara automatik semua fail .panda lain yang te
 Anda perlu menyimpan projek baru sebelum mengakses IC dan kulit, atau menjalankan simulasi beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="499"/>
+        <location filename="../../mainwindow.cpp" line="530"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda ialah perisian yang dibangunkan oleh pelajar Universiti Persekutuan São Paulo. Projek ini dicipta untuk membantu pelajar belajar tentang litar logik.&lt;/p&gt;&lt;p&gt;Versi perisian: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Pencipta:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda kini diselenggara oleh Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves dan Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Sila failkan laporan di halaman GitHub kami jika pepijat dijumpai atau jika anda ingin fungsi baru dilaksanakan.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Lawati laman web kami!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="519"/>
+        <location filename="../../mainwindow.cpp" line="550"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Pintasan Kanvas&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zum masuk &lt;/li&gt;&lt;li&gt; Ctrl+- : Zum keluar &lt;/li&gt;&lt;li&gt; Ctrl+1 : Sembunyi/Tunjuk wayar &lt;/li&gt;&lt;li&gt; Ctrl+2 : Sembunyi/Tunjuk gerbang &lt;/li&gt;&lt;li&gt; Ctrl+F : Cari elemen &lt;/li&gt;&lt;li&gt; Ctrl+W : Buka beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Simpan projek &lt;/li&gt;&lt;li&gt; Ctrl+Q : Keluar wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Mula/Jeda simulasi &lt;/li&gt;&lt;li&gt; [ : Sifat elemen utama sebelumnya &lt;/li&gt;&lt;li&gt; ] : Sifat elemen utama seterusnya &lt;/li&gt;&lt;li&gt; { : Sifat elemen sekunder sebelumnya &lt;/li&gt;&lt;li&gt; } : Sifat elemen sekunder seterusnya &lt;/li&gt;&lt;li&gt; &amp;lt; : Ubah bentuk ke elemen sebelumnya &lt;/li&gt;&lt;li&gt; &amp;gt; : Ubah bentuk ke elemen seterusnya &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Petua Umum&lt;/h1&gt;&lt;p&gt;Klik dua kali pada wayar untuk mencipta nod&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="918"/>
-        <location filename="../../mainwindow.cpp" line="945"/>
+        <location filename="../../mainwindow.cpp" line="949"/>
+        <location filename="../../mainwindow.cpp" line="976"/>
         <source>Missing file name.</source>
         <translation>Nama fail hilang.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="924"/>
+        <location filename="../../mainwindow.cpp" line="955"/>
         <source>The .panda file is empty.</source>
         <translation>Fail .panda kosong.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="937"/>
+        <location filename="../../mainwindow.cpp" line="968"/>
         <source>Arduino code successfully generated.</source>
         <translation>Kod Arduino berjaya dijana.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="972"/>
+        <location filename="../../mainwindow.cpp" line="1003"/>
         <source>Generate Arduino Code</source>
         <translation>Jana Kod Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="972"/>
+        <location filename="../../mainwindow.cpp" line="1003"/>
         <source>Arduino file (*.ino)</source>
         <translation>Fail Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1074"/>
+        <location filename="../../mainwindow.cpp" line="1105"/>
         <source>Export to PDF</source>
         <translation>Eksport ke PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1074"/>
+        <location filename="../../mainwindow.cpp" line="1105"/>
         <source>PDF files (*.pdf)</source>
         <translation>Fail PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1092"/>
+        <location filename="../../mainwindow.cpp" line="1123"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Tidak dapat mencetak litar ini ke PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1099"/>
-        <location filename="../../mainwindow.cpp" line="1137"/>
+        <location filename="../../mainwindow.cpp" line="1130"/>
+        <location filename="../../mainwindow.cpp" line="1168"/>
         <source>Exported file successfully.</source>
         <translation>Fail berjaya dieksport.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1118"/>
+        <location filename="../../mainwindow.cpp" line="1149"/>
         <source>Export to Image</source>
         <translation>Eksport ke Imej</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1118"/>
+        <location filename="../../mainwindow.cpp" line="1149"/>
         <source>PNG files (*.png)</source>
         <translation>Fail PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1602"/>
+        <location filename="../../mainwindow.cpp" line="1633"/>
         <source>Unmute</source>
         <translation>Nyahbisu</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1641"/>
+        <location filename="../../mainwindow.cpp" line="1672"/>
         <source>Save file first.</source>
         <translation>Simpan fail terlebih dahulu.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1678"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1659"/>
-        <location filename="../../mainwindow.cpp" line="1671"/>
+        <location filename="../../mainwindow.cpp" line="1690"/>
+        <location filename="../../mainwindow.cpp" line="1702"/>
         <source>Info</source>
         <translation>Maklumat</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1659"/>
+        <location filename="../../mainwindow.cpp" line="1690"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Fail yang dipilih (dan pergantungannya) akan disalin ke folder fail semasa.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1671"/>
+        <location filename="../../mainwindow.cpp" line="1702"/>
         <source>Drag here to remove.</source>
         <translation>Seret ke sini untuk buang.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1694"/>
+        <location filename="../../mainwindow.cpp" line="1725"/>
         <source>Error removing file: %1</source>
         <translation>Ralat membuang fail: %1</translation>
     </message>

@@ -1770,7 +1770,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1602"/>
+        <location filename="../../mainwindow.cpp" line="1633"/>
         <source>Mute</source>
         <translation>بی‌صدا</translation>
     </message>
@@ -1811,7 +1811,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1217"/>
-        <location filename="../../mainwindow.cpp" line="518"/>
+        <location filename="../../mainwindow.cpp" line="549"/>
         <source>Shortcuts and Tips</source>
         <translation>میانبرها و نکات</translation>
     </message>
@@ -1826,81 +1826,81 @@
         <translation>خطاهای ترجمه را گزارش دهید یا در بهبود ترجمه‌ها در Weblate کمک کنید</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="232"/>
+        <location filename="../../mainwindow.cpp" line="263"/>
         <source>Error!</source>
         <translation>خطا!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="257"/>
-        <location filename="../../mainwindow.cpp" line="379"/>
-        <location filename="../../mainwindow.cpp" line="640"/>
-        <location filename="../../mainwindow.cpp" line="1159"/>
+        <location filename="../../mainwindow.cpp" line="288"/>
+        <location filename="../../mainwindow.cpp" line="410"/>
+        <location filename="../../mainwindow.cpp" line="671"/>
+        <location filename="../../mainwindow.cpp" line="1190"/>
         <source>New Project</source>
         <translation>پروژه جدید</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="303"/>
+        <location filename="../../mainwindow.cpp" line="334"/>
         <source>File saved successfully.</source>
         <translation>فایل با موفقیت ذخیره شد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="322"/>
+        <location filename="../../mainwindow.cpp" line="353"/>
         <source>Don&apos;t show this again.</source>
         <translation>دیگر نشان نده.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="362"/>
+        <location filename="../../mainwindow.cpp" line="393"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>فایل ذخیره نشد. با وجود این زبانه بسته شود؟</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="381"/>
+        <location filename="../../mainwindow.cpp" line="412"/>
         <source> has been modified. 
 Do you want to save your changes?</source>
         <translation> تغییر کرده است. 
 آیا می‌خواهید تغییرات را ذخیره کنید؟</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="419"/>
+        <location filename="../../mainwindow.cpp" line="450"/>
         <source>File loaded successfully.</source>
         <translation>فایل با موفقیت بارگذاری شد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="438"/>
-        <location filename="../../mainwindow.cpp" line="1645"/>
+        <location filename="../../mainwindow.cpp" line="469"/>
+        <location filename="../../mainwindow.cpp" line="1676"/>
         <source>Open File</source>
         <translation>باز کردن فایل</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="438"/>
-        <location filename="../../mainwindow.cpp" line="459"/>
-        <location filename="../../mainwindow.cpp" line="479"/>
+        <location filename="../../mainwindow.cpp" line="469"/>
+        <location filename="../../mainwindow.cpp" line="490"/>
+        <location filename="../../mainwindow.cpp" line="510"/>
         <source>Panda files (*.panda)</source>
         <translation>فایل‌های Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="459"/>
-        <location filename="../../mainwindow.cpp" line="479"/>
+        <location filename="../../mainwindow.cpp" line="490"/>
+        <location filename="../../mainwindow.cpp" line="510"/>
         <source>Save File as ...</source>
         <translation>ذخیره فایل به نام ...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="571"/>
+        <location filename="../../mainwindow.cpp" line="602"/>
         <source>Exit </source>
         <translation>خروج </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="572"/>
+        <location filename="../../mainwindow.cpp" line="603"/>
         <source>Are you sure?</source>
         <translation>آیا مطمئن هستید؟</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="721"/>
+        <location filename="../../mainwindow.cpp" line="752"/>
         <source>Error</source>
         <translation>خطا</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="330"/>
+        <location filename="../../mainwindow.cpp" line="361"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
@@ -1911,105 +1911,105 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 قبل از دسترسی به IC ها و پوسته‌ها، یا اجرای شبیه‌سازی‌های beWavedDolphin، باید پروژه‌های جدید را ذخیره کنید.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="499"/>
+        <location filename="../../mainwindow.cpp" line="530"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda نرم‌افزاری است که توسط دانشجویان دانشگاه فدرال سائوپائولو توسعه یافته است. این پروژه برای کمک به دانشجویان در یادگیری مدارهای منطقی ایجاد شده است.&lt;/p&gt;&lt;p&gt;نسخه نرم‌افزار: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;سازندگان:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda در حال حاضر توسط Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves و Maycon A. Santana نگهداری می‌شود.&lt;/p&gt;&lt;p&gt; لطفاً در صفحه GitHub ما گزارشی ارسال کنید اگر اشکالی یافت شود یا اگر می‌خواهید عملکرد جدیدی پیاده‌سازی شود.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;از وب‌سایت ما دیدن کنید!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="519"/>
+        <location filename="../../mainwindow.cpp" line="550"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;میانبرهای بوم&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : بزرگنمایی &lt;/li&gt;&lt;li&gt; Ctrl+- : کوچکنمایی &lt;/li&gt;&lt;li&gt; Ctrl+1 : مخفی/نمایش سیم‌ها &lt;/li&gt;&lt;li&gt; Ctrl+2 : مخفی/نمایش دروازه‌ها &lt;/li&gt;&lt;li&gt; Ctrl+F : جستجوی المان‌ها &lt;/li&gt;&lt;li&gt; Ctrl+W : باز کردن beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : ذخیره پروژه &lt;/li&gt;&lt;li&gt; Ctrl+Q : خروج از wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : شروع/توقف شبیه‌سازی &lt;/li&gt;&lt;li&gt; [ : خاصیت اولیه قبلی المان &lt;/li&gt;&lt;li&gt; ] : خاصیت اولیه بعدی المان &lt;/li&gt;&lt;li&gt; { : خاصیت ثانویه قبلی المان &lt;/li&gt;&lt;li&gt; } : خاصیت ثانویه بعدی المان &lt;/li&gt;&lt;li&gt; &amp;lt; : تبدیل به المان قبلی &lt;/li&gt;&lt;li&gt; &amp;gt; : تبدیل به المان بعدی &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;نکات عمومی&lt;/h1&gt;&lt;p&gt;برای ایجاد گره روی سیم دوبار کلیک کنید&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="918"/>
-        <location filename="../../mainwindow.cpp" line="945"/>
+        <location filename="../../mainwindow.cpp" line="949"/>
+        <location filename="../../mainwindow.cpp" line="976"/>
         <source>Missing file name.</source>
         <translation>نام فایل موجود نیست.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="924"/>
+        <location filename="../../mainwindow.cpp" line="955"/>
         <source>The .panda file is empty.</source>
         <translation>فایل .panda خالی است.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="937"/>
+        <location filename="../../mainwindow.cpp" line="968"/>
         <source>Arduino code successfully generated.</source>
         <translation>کد Arduino با موفقیت تولید شد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="972"/>
+        <location filename="../../mainwindow.cpp" line="1003"/>
         <source>Generate Arduino Code</source>
         <translation>تولید کد Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="972"/>
+        <location filename="../../mainwindow.cpp" line="1003"/>
         <source>Arduino file (*.ino)</source>
         <translation>فایل Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1074"/>
+        <location filename="../../mainwindow.cpp" line="1105"/>
         <source>Export to PDF</source>
         <translation>صادرات به PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1074"/>
+        <location filename="../../mainwindow.cpp" line="1105"/>
         <source>PDF files (*.pdf)</source>
         <translation>فایل‌های PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1092"/>
+        <location filename="../../mainwindow.cpp" line="1123"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>امکان چاپ این مدار به PDF وجود ندارد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1099"/>
-        <location filename="../../mainwindow.cpp" line="1137"/>
+        <location filename="../../mainwindow.cpp" line="1130"/>
+        <location filename="../../mainwindow.cpp" line="1168"/>
         <source>Exported file successfully.</source>
         <translation>فایل با موفقیت صادر شد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1118"/>
+        <location filename="../../mainwindow.cpp" line="1149"/>
         <source>Export to Image</source>
         <translation>صادرات به تصویر</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1118"/>
+        <location filename="../../mainwindow.cpp" line="1149"/>
         <source>PNG files (*.png)</source>
         <translation>فایل‌های PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1602"/>
+        <location filename="../../mainwindow.cpp" line="1633"/>
         <source>Unmute</source>
         <translation>برگرداندن صدا</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1641"/>
+        <location filename="../../mainwindow.cpp" line="1672"/>
         <source>Save file first.</source>
         <translation>ابتدا فایل را ذخیره کنید.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1678"/>
         <source>Panda (*.panda)</source>
         <translation>پاندا (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1659"/>
-        <location filename="../../mainwindow.cpp" line="1671"/>
+        <location filename="../../mainwindow.cpp" line="1690"/>
+        <location filename="../../mainwindow.cpp" line="1702"/>
         <source>Info</source>
         <translation>اطلاعات</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1659"/>
+        <location filename="../../mainwindow.cpp" line="1690"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>فایل‌های انتخاب شده (و وابستگی‌هایشان) به پوشه فایل فعلی کپی خواهند شد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1671"/>
+        <location filename="../../mainwindow.cpp" line="1702"/>
         <source>Drag here to remove.</source>
         <translation>برای حذف به اینجا بکشید.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1694"/>
+        <location filename="../../mainwindow.cpp" line="1725"/>
         <source>Error removing file: %1</source>
         <translation>خطا در حذف فایل: %1</translation>
     </message>

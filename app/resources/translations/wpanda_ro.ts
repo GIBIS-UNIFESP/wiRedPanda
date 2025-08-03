@@ -1785,7 +1785,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1602"/>
+        <location filename="../../mainwindow.cpp" line="1633"/>
         <source>Mute</source>
         <translation>Mută</translation>
     </message>
@@ -1821,91 +1821,91 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1217"/>
-        <location filename="../../mainwindow.cpp" line="518"/>
+        <location filename="../../mainwindow.cpp" line="549"/>
         <source>Shortcuts and Tips</source>
         <translation>Scurtături și sfaturi</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="232"/>
+        <location filename="../../mainwindow.cpp" line="263"/>
         <source>Error!</source>
         <translation>Eroare!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="257"/>
-        <location filename="../../mainwindow.cpp" line="379"/>
-        <location filename="../../mainwindow.cpp" line="640"/>
-        <location filename="../../mainwindow.cpp" line="1159"/>
+        <location filename="../../mainwindow.cpp" line="288"/>
+        <location filename="../../mainwindow.cpp" line="410"/>
+        <location filename="../../mainwindow.cpp" line="671"/>
+        <location filename="../../mainwindow.cpp" line="1190"/>
         <source>New Project</source>
         <translation>Proiect nou</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="303"/>
+        <location filename="../../mainwindow.cpp" line="334"/>
         <source>File saved successfully.</source>
         <translation>Fișier salvat cu succes.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="322"/>
+        <location filename="../../mainwindow.cpp" line="353"/>
         <source>Don&apos;t show this again.</source>
         <translation>Nu mai afișa din nou.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="362"/>
+        <location filename="../../mainwindow.cpp" line="393"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Fișier nesalvat. Închide tab oricum?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="381"/>
+        <location filename="../../mainwindow.cpp" line="412"/>
         <source> has been modified. 
 Do you want to save your changes?</source>
         <translation> a fost modificat. 
 Vrei să salvezi modificările?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="419"/>
+        <location filename="../../mainwindow.cpp" line="450"/>
         <source>File loaded successfully.</source>
         <translation>Fișier încărcat cu succes.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="438"/>
-        <location filename="../../mainwindow.cpp" line="1645"/>
+        <location filename="../../mainwindow.cpp" line="469"/>
+        <location filename="../../mainwindow.cpp" line="1676"/>
         <source>Open File</source>
         <translation>Deschide fișier</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="438"/>
-        <location filename="../../mainwindow.cpp" line="459"/>
-        <location filename="../../mainwindow.cpp" line="479"/>
+        <location filename="../../mainwindow.cpp" line="469"/>
+        <location filename="../../mainwindow.cpp" line="490"/>
+        <location filename="../../mainwindow.cpp" line="510"/>
         <source>Panda files (*.panda)</source>
         <translation>Fișiere Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="459"/>
-        <location filename="../../mainwindow.cpp" line="479"/>
+        <location filename="../../mainwindow.cpp" line="490"/>
+        <location filename="../../mainwindow.cpp" line="510"/>
         <source>Save File as ...</source>
         <translation>Salvează fișierul ca ...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="499"/>
+        <location filename="../../mainwindow.cpp" line="530"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda este un software dezvoltat de studenții Universității Federale din São Paulo. Acest proiect a fost creat pentru a ajuta studenții să învețe despre circuitele logice.&lt;/p&gt;&lt;p&gt;Versiunea software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creatori:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda este întreținut în prezent de Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves și Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Vă rugăm să raportați erorile pe pagina noastră GitHub dacă sunt găsite erori sau dacă doriți ca o nouă funcționalitate să fie implementată.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Vizitați site-ul nostru!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="571"/>
+        <location filename="../../mainwindow.cpp" line="602"/>
         <source>Exit </source>
         <translation>Ieșire </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="572"/>
+        <location filename="../../mainwindow.cpp" line="603"/>
         <source>Are you sure?</source>
         <translation>Ești sigur?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="721"/>
+        <location filename="../../mainwindow.cpp" line="752"/>
         <source>Error</source>
         <translation>Eroare</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="330"/>
+        <location filename="../../mainwindow.cpp" line="361"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
@@ -1914,100 +1914,100 @@ You have to save new projects before accessing ICs and skins, or running beWaved
 Trebuie să salvezi proiectele noi înainte de a accesa IC-urile și skinurile, sau de a rula simulări beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="519"/>
+        <location filename="../../mainwindow.cpp" line="550"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Scurtături Canvas&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom în &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom afară &lt;/li&gt;&lt;li&gt; Ctrl+1 : Ascunde/Arată fire &lt;/li&gt;&lt;li&gt; Ctrl+2 : Ascunde/Arată porți &lt;/li&gt;&lt;li&gt; Ctrl+F : Caută elemente &lt;/li&gt;&lt;li&gt; Ctrl+W : Deschide beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Salvează proiectul &lt;/li&gt;&lt;li&gt; Ctrl+Q : Ieși din wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Pornește/Pauzează simularea &lt;/li&gt;&lt;li&gt; [ : Proprietatea anterioară a elementului primar &lt;/li&gt;&lt;li&gt; ] : Următoarea proprietate a elementului primar &lt;/li&gt;&lt;li&gt; { : Proprietatea anterioară a elementului secundar &lt;/li&gt;&lt;li&gt; } : Următoarea proprietate a elementului secundar &lt;/li&gt;&lt;li&gt; &amp;lt; : Transformă în elementul anterior &lt;/li&gt;&lt;li&gt; &amp;gt; : Transformă în următorul element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Sfaturi Generale&lt;/h1&gt;&lt;p&gt;Dublu-clic pe un fir pentru a crea un nod&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="918"/>
-        <location filename="../../mainwindow.cpp" line="945"/>
+        <location filename="../../mainwindow.cpp" line="949"/>
+        <location filename="../../mainwindow.cpp" line="976"/>
         <source>Missing file name.</source>
         <translation>Lipsește numele fișierului.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="924"/>
+        <location filename="../../mainwindow.cpp" line="955"/>
         <source>The .panda file is empty.</source>
         <translation>Fișierul .panda este gol.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="937"/>
+        <location filename="../../mainwindow.cpp" line="968"/>
         <source>Arduino code successfully generated.</source>
         <translation>Codul Arduino a fost generat cu succes.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="972"/>
+        <location filename="../../mainwindow.cpp" line="1003"/>
         <source>Generate Arduino Code</source>
         <translation>Generează Cod Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="972"/>
+        <location filename="../../mainwindow.cpp" line="1003"/>
         <source>Arduino file (*.ino)</source>
         <translation>Fișier Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1074"/>
+        <location filename="../../mainwindow.cpp" line="1105"/>
         <source>Export to PDF</source>
         <translation>Exportă în PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1074"/>
+        <location filename="../../mainwindow.cpp" line="1105"/>
         <source>PDF files (*.pdf)</source>
         <translation>Fișiere PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1092"/>
+        <location filename="../../mainwindow.cpp" line="1123"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Nu s-a putut imprima acest circuit în PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1099"/>
-        <location filename="../../mainwindow.cpp" line="1137"/>
+        <location filename="../../mainwindow.cpp" line="1130"/>
+        <location filename="../../mainwindow.cpp" line="1168"/>
         <source>Exported file successfully.</source>
         <translation>Fișierul a fost exportat cu succes.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1118"/>
+        <location filename="../../mainwindow.cpp" line="1149"/>
         <source>Export to Image</source>
         <translation>Exportă în imagine</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1118"/>
+        <location filename="../../mainwindow.cpp" line="1149"/>
         <source>PNG files (*.png)</source>
         <translation>Fișiere PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1602"/>
+        <location filename="../../mainwindow.cpp" line="1633"/>
         <source>Unmute</source>
         <translation>Activează sunetul</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1641"/>
+        <location filename="../../mainwindow.cpp" line="1672"/>
         <source>Save file first.</source>
         <translation>Salvează mai întâi fișierul.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1678"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1659"/>
-        <location filename="../../mainwindow.cpp" line="1671"/>
+        <location filename="../../mainwindow.cpp" line="1690"/>
+        <location filename="../../mainwindow.cpp" line="1702"/>
         <source>Info</source>
         <translation>Informații</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1659"/>
+        <location filename="../../mainwindow.cpp" line="1690"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Fișierele selectate (și dependențele lor) vor fi copiate în dosarul fișierului curent.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1671"/>
+        <location filename="../../mainwindow.cpp" line="1702"/>
         <source>Drag here to remove.</source>
         <translation>Trage aici pentru a elimina.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1694"/>
+        <location filename="../../mainwindow.cpp" line="1725"/>
         <source>Error removing file: %1</source>
         <translation>Eroare la ștergerea fișierului: %1</translation>
     </message>

@@ -1770,7 +1770,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1602"/>
+        <location filename="../../mainwindow.cpp" line="1633"/>
         <source>Mute</source>
         <translation>Bez skaņas</translation>
     </message>
@@ -1811,7 +1811,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1217"/>
-        <location filename="../../mainwindow.cpp" line="518"/>
+        <location filename="../../mainwindow.cpp" line="549"/>
         <source>Shortcuts and Tips</source>
         <translation>Saīsnes un padomi</translation>
     </message>
@@ -1826,81 +1826,81 @@
         <translation>Ziņojiet par tulkojuma kļūdām vai palīdziet uzlabot tulkojumus Weblate</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="232"/>
+        <location filename="../../mainwindow.cpp" line="263"/>
         <source>Error!</source>
         <translation>Kļūda!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="257"/>
-        <location filename="../../mainwindow.cpp" line="379"/>
-        <location filename="../../mainwindow.cpp" line="640"/>
-        <location filename="../../mainwindow.cpp" line="1159"/>
+        <location filename="../../mainwindow.cpp" line="288"/>
+        <location filename="../../mainwindow.cpp" line="410"/>
+        <location filename="../../mainwindow.cpp" line="671"/>
+        <location filename="../../mainwindow.cpp" line="1190"/>
         <source>New Project</source>
         <translation>Jauns projekts</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="303"/>
+        <location filename="../../mainwindow.cpp" line="334"/>
         <source>File saved successfully.</source>
         <translation>Fails veiksmīgi saglabāts.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="322"/>
+        <location filename="../../mainwindow.cpp" line="353"/>
         <source>Don&apos;t show this again.</source>
         <translation>Turpmāk nerādīt.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="362"/>
+        <location filename="../../mainwindow.cpp" line="393"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Fails nav saglabāts. Vai tomēr aizvērt cilni?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="381"/>
+        <location filename="../../mainwindow.cpp" line="412"/>
         <source> has been modified. 
 Do you want to save your changes?</source>
         <translation> ir mainīts.
 Vai vēlaties saglabāt izmaiņas?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="419"/>
+        <location filename="../../mainwindow.cpp" line="450"/>
         <source>File loaded successfully.</source>
         <translation>Fails ielādēts veiksmīgi.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="438"/>
-        <location filename="../../mainwindow.cpp" line="1645"/>
+        <location filename="../../mainwindow.cpp" line="469"/>
+        <location filename="../../mainwindow.cpp" line="1676"/>
         <source>Open File</source>
         <translation>Atvērt failu</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="438"/>
-        <location filename="../../mainwindow.cpp" line="459"/>
-        <location filename="../../mainwindow.cpp" line="479"/>
+        <location filename="../../mainwindow.cpp" line="469"/>
+        <location filename="../../mainwindow.cpp" line="490"/>
+        <location filename="../../mainwindow.cpp" line="510"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda faili (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="459"/>
-        <location filename="../../mainwindow.cpp" line="479"/>
+        <location filename="../../mainwindow.cpp" line="490"/>
+        <location filename="../../mainwindow.cpp" line="510"/>
         <source>Save File as ...</source>
         <translation>Saglabāt failu kā ...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="571"/>
+        <location filename="../../mainwindow.cpp" line="602"/>
         <source>Exit </source>
         <translation>Iziet </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="572"/>
+        <location filename="../../mainwindow.cpp" line="603"/>
         <source>Are you sure?</source>
         <translation>Vai esat pārliecināts?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="721"/>
+        <location filename="../../mainwindow.cpp" line="752"/>
         <source>Error</source>
         <translation>Kļūda</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="330"/>
+        <location filename="../../mainwindow.cpp" line="361"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
@@ -1911,105 +1911,105 @@ wiRedPanda %1 automātiski uzskaitīs visus citus .panda failus, kas atrodas tā
 Jums ir jāsaglabā jaunie projekti pirms IK un apvalku piekļ uves vai beWavedDolphin simulāciju palaišanas.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="499"/>
+        <location filename="../../mainwindow.cpp" line="530"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda ir programmatūra, ko izstrādājuši Sanpaulu Federālās universitātes studenti. Šis projekts tika izveidots, lai palīdzētu studentiem apgūt loģiskās shēmas.&lt;/p&gt;&lt;p&gt;Programmatūras versija: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Radītāji:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda pašlaik uztur Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves un Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Lūdzu, iesniedziet ziņojumu mūsu GitHub lapā, ja tiek atrastas kļūdas vai ja vēlaties, lai tiktu ieviesta jauna funkcionalitāte.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Apmeklējiet mūsu tīmekļa vietni!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="519"/>
+        <location filename="../../mainwindow.cpp" line="550"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Audekla īsinājumtaustiņi&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Tuvināt &lt;/li&gt;&lt;li&gt; Ctrl+- : Tālināt &lt;/li&gt;&lt;li&gt; Ctrl+1 : Slēpt/Rādīt vadus &lt;/li&gt;&lt;li&gt; Ctrl+2 : Slēpt/Rādīt vārtus &lt;/li&gt;&lt;li&gt; Ctrl+F : Meklēt elementus &lt;/li&gt;&lt;li&gt; Ctrl+W : Atvērt beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Saglabāt projektu &lt;/li&gt;&lt;li&gt; Ctrl+Q : Iziet no wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Sākt/Pauzēt simulāciju &lt;/li&gt;&lt;li&gt; [ : Iepriekšējais primārā elementa īpašība &lt;/li&gt;&lt;li&gt; ] : Nākamais primārā elementa īpašība &lt;/li&gt;&lt;li&gt; { : Iepriekšējais sekundārā elementa īpašība &lt;/li&gt;&lt;li&gt; } : Nākamais sekundārā elementa īpašība &lt;/li&gt;&lt;li&gt; &amp;lt; : Pārvērst uz iepriekšējo elementu &lt;/li&gt;&lt;li&gt; &amp;gt; : Pārvērst uz nākamo elementu &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Vispārīgi padomi&lt;/h1&gt;&lt;p&gt;Divreiz noklikšķiniet uz vada, lai izveidotu mezglu&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="918"/>
-        <location filename="../../mainwindow.cpp" line="945"/>
+        <location filename="../../mainwindow.cpp" line="949"/>
+        <location filename="../../mainwindow.cpp" line="976"/>
         <source>Missing file name.</source>
         <translation>Trūkst faila nosaukuma.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="924"/>
+        <location filename="../../mainwindow.cpp" line="955"/>
         <source>The .panda file is empty.</source>
         <translation>.panda fails ir tukšs.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="937"/>
+        <location filename="../../mainwindow.cpp" line="968"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino kods veiksmīgi ģenerēts.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="972"/>
+        <location filename="../../mainwindow.cpp" line="1003"/>
         <source>Generate Arduino Code</source>
         <translation>Ģenerēt Arduino kodu</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="972"/>
+        <location filename="../../mainwindow.cpp" line="1003"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino fails (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1074"/>
+        <location filename="../../mainwindow.cpp" line="1105"/>
         <source>Export to PDF</source>
         <translation>Eksportēt uz PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1074"/>
+        <location filename="../../mainwindow.cpp" line="1105"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF faili (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1092"/>
+        <location filename="../../mainwindow.cpp" line="1123"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Neizdevās drukāt šo shēmu PDF formātā.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1099"/>
-        <location filename="../../mainwindow.cpp" line="1137"/>
+        <location filename="../../mainwindow.cpp" line="1130"/>
+        <location filename="../../mainwindow.cpp" line="1168"/>
         <source>Exported file successfully.</source>
         <translation>Fails veiksmīgi eksportēts.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1118"/>
+        <location filename="../../mainwindow.cpp" line="1149"/>
         <source>Export to Image</source>
         <translation>Eksportēt uz attēlu</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1118"/>
+        <location filename="../../mainwindow.cpp" line="1149"/>
         <source>PNG files (*.png)</source>
         <translation>PNG faili (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1602"/>
+        <location filename="../../mainwindow.cpp" line="1633"/>
         <source>Unmute</source>
         <translation>Ar skaņu</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1641"/>
+        <location filename="../../mainwindow.cpp" line="1672"/>
         <source>Save file first.</source>
         <translation>Vispirms saglabājiet failu.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1678"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1659"/>
-        <location filename="../../mainwindow.cpp" line="1671"/>
+        <location filename="../../mainwindow.cpp" line="1690"/>
+        <location filename="../../mainwindow.cpp" line="1702"/>
         <source>Info</source>
         <translation>Informācija</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1659"/>
+        <location filename="../../mainwindow.cpp" line="1690"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Atlasītie faili (un to atkarības) tiks kopēti uz pašreizējā faila mapi.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1671"/>
+        <location filename="../../mainwindow.cpp" line="1702"/>
         <source>Drag here to remove.</source>
         <translation>Velc šeit, lai noņemtu.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1694"/>
+        <location filename="../../mainwindow.cpp" line="1725"/>
         <source>Error removing file: %1</source>
         <translation>Kļūda, dzēšot failu: %1</translation>
     </message>
