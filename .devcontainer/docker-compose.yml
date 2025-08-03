@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  wirepanda-dev:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - wirepanda-vscode-extensions:/home/developer/.vscode-server/extensions
+      - wirepanda-vscode-extensions-insiders:/home/developer/.vscode-server-insiders/extensions
+      # X11 forwarding for GUI applications
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - QT_QPA_PLATFORM=xcb
+    network_mode: host
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    stdin_open: true
+    tty: true
+    working_dir: /workspace
+    command: sleep infinity
+
+volumes:
+  wirepanda-vscode-extensions:
+  wirepanda-vscode-extensions-insiders:

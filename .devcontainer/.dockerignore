@@ -1,0 +1,41 @@
+# Ignore build artifacts
+build/
+build_*/
+**/build/
+**/build_*/
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.code-workspace
+
+# Ignore git
+.git/
+.gitignore
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# Ignore coverage reports
+coverage_reports/
+coverage_html/
+*.gcda
+*.gcno
+*.info
+
+# Ignore logs
+*.log
+
+# Ignore temporary files
+*~
+*.swp
+*.swo
+
+# Ignore Windows specific
+OpenCppCoverageSetup*.exe
+
+# Keep devcontainer files
+!.devcontainer/
