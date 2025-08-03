@@ -61,7 +61,38 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->setupUi(this);
 
     qCDebug(zero) << "Settings fileName: " << Settings::fileName();
-    loadTranslation(Settings::value("language").toString());
+    
+    // Get language from settings, or auto-detect from system if not set
+    QString language = Settings::value("language").toString();
+    if (language.isEmpty()) {
+        // Auto-detect system language
+        QLocale systemLocale = QLocale::system();
+        QString systemLanguage = systemLocale.name(); // e.g., "en_US", "pt_BR"
+        QString baseLanguage = systemLanguage.split('_').first(); // e.g., "en", "pt"
+        
+        qCDebug(zero) << "Auto-detected system locale:" << systemLanguage;
+        
+        // Check if we have translation for this language
+        const auto availableLanguages = getAvailableLanguages();
+        
+        // First try the full locale (e.g., "pt_BR")
+        if (availableLanguages.contains(systemLanguage)) {
+            language = systemLanguage;
+        }
+        // Then try the base language (e.g., "pt")
+        else if (availableLanguages.contains(baseLanguage)) {
+            language = baseLanguage;
+        }
+        // Fall back to English
+        else {
+            qCDebug(zero) << "No translation available for" << systemLanguage << "or" << baseLanguage << ", falling back to English";
+            language = "en";
+        }
+        
+        qCDebug(zero) << "Selected language:" << language;
+    }
+    
+    loadTranslation(language);
     populateLanguageMenu();
 
     connect(m_ui->tab, &QTabWidget::currentChanged,    this, &MainWindow::tabChanged);
