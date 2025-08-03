@@ -81,6 +81,10 @@ jobs:
           pattern = r'TRANSLATIONS \+= \\[\s\S]*?(?=\n\n|\n[A-Z]|\Z)'
           new_content = re.sub(pattern, translations_section.rstrip(), content)
           
+          # Ensure file ends with newline
+          if not new_content.endswith('\n'):
+              new_content += '\n'
+          
           # Write back to .pro file
           with open("../../app.pro", "w") as f:
               f.write(new_content)
@@ -154,7 +158,7 @@ jobs:
             - Updated \`app.pro\` with all translation files
             
             ## Files Changed
-            \$(git diff --name-only HEAD~1)
+            $(git diff --name-only HEAD~1)
             
             🤖 This PR was automatically created by the translation workflow."
           else
@@ -231,6 +235,10 @@ jobs:
           import re
           pattern = r'TRANSLATIONS \+= \\[\s\S]*?(?=\n\n|\n[A-Z]|\Z)'
           new_content = re.sub(pattern, translations_section.rstrip(), content)
+          
+          # Ensure file ends with newline
+          if not new_content.endswith('\n'):
+              new_content += '\n'
           
           # Write back to .pro file
           with open("../../app.pro", "w") as f:
@@ -382,6 +390,10 @@ jobs:
           import re
           pattern = r'TRANSLATIONS \+= \\[\s\S]*?(?=\n\n|\n[A-Z]|\Z)'
           new_content = re.sub(pattern, translations_section.rstrip(), content)
+          
+          # Ensure file ends with newline
+          if not new_content.endswith('\n'):
+              new_content += '\n'
           
           # Write back to .pro file
           with open("../../app.pro", "w") as f:
