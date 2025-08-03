@@ -610,62 +610,62 @@
     <message>
         <location filename="../../element/display_14.cpp" line="87"/>
         <source>middle left horizontal</source>
-        <translation>centro izquierdo horizontal</translation>
+        <translation type="unfinished">centro izquierdo horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="88"/>
         <source>upper left vertical</source>
-        <translation>vertical superior izquierda</translation>
+        <translation type="unfinished">vertical superior izquierda</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="89"/>
         <source>lower left vertical</source>
-        <translation>vertical inferior izquierda</translation>
+        <translation type="unfinished">vertical inferior izquierda</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="92"/>
         <source>upper right vertical</source>
-        <translation>vertical superior derecha</translation>
+        <translation type="unfinished">vertical superior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="94"/>
         <source>lower right vertical</source>
-        <translation>vertical inferior derecha</translation>
+        <translation type="unfinished">vertical inferior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="95"/>
         <source>middle right horizontal</source>
-        <translation>centro derecho horizontal</translation>
+        <translation type="unfinished">centro derecho horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="96"/>
         <source>upper left diagonal</source>
-        <translation>diagonal superior izquierda</translation>
+        <translation type="unfinished">diagonal superior izquierda</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="97"/>
         <source>upper center vertical</source>
-        <translation>vertical central superior</translation>
+        <translation type="unfinished">vertical central superior</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="98"/>
         <source>upper right diagonal</source>
-        <translation>diagonal superior derecha</translation>
+        <translation type="unfinished">diagonal superior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="99"/>
         <source>lower right diagonal</source>
-        <translation>diagonal inferior derecha</translation>
+        <translation type="unfinished">diagonal inferior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="100"/>
         <source>lower center vertical</source>
-        <translation>centro inferior vertical</translation>
+        <translation type="unfinished">centro inferior vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="101"/>
         <source>lower left diagonal</source>
-        <translation>diagonal inferior izquierda</translation>
+        <translation type="unfinished">diagonal inferior izquierda</translation>
     </message>
     <message>
         <location filename="../../element/display_14.cpp" line="90"/>
@@ -698,78 +698,78 @@
     <message>
         <location filename="../../element/display_16.cpp" line="93"/>
         <source>middle left horizontal</source>
-        <translation>centro izquierdo horizontal</translation>
+        <translation type="unfinished">centro izquierdo horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="94"/>
         <source>upper left vertical</source>
-        <translation>vertical superior izquierda</translation>
+        <translation type="unfinished">vertical superior izquierda</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="95"/>
         <location filename="../../element/display_16.cpp" line="109"/>
         <source>lower left vertical</source>
-        <translation>vertical inferior izquierda</translation>
+        <translation type="unfinished">vertical inferior izquierda</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="96"/>
         <source>bottom left horizontal</source>
-        <translation>Abajo a la izquierda horizontal</translation>
+        <translation type="unfinished">Abajo a la izquierda horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="97"/>
         <source>bottom right horizontal</source>
-        <translation>Abajo a la derecha horizontal</translation>
+        <translation type="unfinished">Abajo a la derecha horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="98"/>
         <source>top left horizontal</source>
-        <translation>arriba a la izquierda horizontal</translation>
+        <translation type="unfinished">arriba a la izquierda horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="99"/>
         <source>top right horizontal</source>
-        <translation>arriba a la derecha horizontal</translation>
+        <translation type="unfinished">arriba a la derecha horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="100"/>
         <source>upper right vertical</source>
-        <translation>vertical superior derecha</translation>
+        <translation type="unfinished">vertical superior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="102"/>
         <source>lower right vertical</source>
-        <translation>vertical inferior derecha</translation>
+        <translation type="unfinished">vertical inferior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="103"/>
         <source>middle right horizontal</source>
-        <translation>centro derecho horizontal</translation>
+        <translation type="unfinished">centro derecho horizontal</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="104"/>
         <source>upper left diagonal</source>
-        <translation>diagonal superior izquierda</translation>
+        <translation type="unfinished">diagonal superior izquierda</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="105"/>
         <source>upper center vertical</source>
-        <translation>vertical central superior</translation>
+        <translation type="unfinished">vertical central superior</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="106"/>
         <source>upper right diagonal</source>
-        <translation>diagonal superior derecha</translation>
+        <translation type="unfinished">diagonal superior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="107"/>
         <source>lower right diagonal</source>
-        <translation>diagonal inferior derecha</translation>
+        <translation type="unfinished">diagonal inferior derecha</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="108"/>
         <source>lower center vertical</source>
-        <translation>centro inferior vertical</translation>
+        <translation type="unfinished">centro inferior vertical</translation>
     </message>
     <message>
         <location filename="../../element/display_16.cpp" line="101"/>
@@ -1909,7 +1909,7 @@ Do you want to save your changes?</source>
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
 You have to save new projects before accessing ICs and skins, or running beWavedDolphin simulations.</source>
-        <translation>La versión de wiRedPanda &gt;= 4.0 no es 100% compatible con versiones anteriores.
+        <translation type="unfinished">La versión de wiRedPanda &gt;= 4.0 no es 100% compatible con versiones anteriores.
 Para abrir proyectos de versiones anteriores que contengan circuitos integrados (o cajas), máscaras y/o simulaciones de beWavedDolphin, sus archivos deben moverse al mismo directorio que el archivo del proyecto principal.
 wiRedPanda %1 mostrará automáticamente todos los demás archivos .panda ubicados en el mismo directorio del proyecto actual como circuitos integrados en la pestaña del editor.
 Debe guardar los proyectos nuevos antes de acceder a circuitos integrados y máscaras, o ejecutar simulaciones de beWavedDolphin.</translation>
