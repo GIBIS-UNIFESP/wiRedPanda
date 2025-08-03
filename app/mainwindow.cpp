@@ -144,7 +144,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     }
 
     // Shortcuts
-    auto *searchShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_F), this);
+    auto *searchShortcut = new QShortcut(QKeySequence("Ctrl+F"), this);
     auto *prevMainPropShortcut = new QShortcut(QKeySequence("["), this);
     auto *nextMainPropShortcut = new QShortcut(QKeySequence("]"), this);
     auto *prevSecndPropShortcut = new QShortcut(QKeySequence("{"), this);
