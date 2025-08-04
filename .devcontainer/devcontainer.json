@@ -36,7 +36,14 @@
         "--volume=/etc/timezone:/etc/timezone:ro",
         "--volume=/etc/localtime:/etc/localtime:ro",
         "--cap-add=SYS_PTRACE",
+        "--security-opt=seccomp:unconfined",
+        "--cap-add=SYS_PTRACE",
         "--security-opt=seccomp:unconfined"
+    ],
+    
+    // Mount directories for persistent data
+    "mounts": [
+        "source=claude-config,target=/home/developer/.config/claude-code,type=volume"
     ],
     
     // Container environment variables
