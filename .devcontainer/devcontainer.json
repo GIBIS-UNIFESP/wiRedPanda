@@ -1,4 +1,5 @@
 {
+    "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
     "name": "wiRedPanda Development Environment",
     "dockerFile": "Dockerfile",
     "context": "..",
@@ -8,60 +9,45 @@
         "vscode": {
             // Set *default* container specific settings.json values on container create
             "settings": {
-                "terminal.integrated.defaultProfile.linux": "bash",
+                "terminal.integrated.defaultProfile.linux": "zsh",
                 "cmake.configureOnOpen": true,
                 "cmake.buildDirectory": "${workspaceFolder}/build",
-                "cmake.generator": "Unix Makefiles",
+                "cmake.generator": "Ninja",
                 "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
                 "C_Cpp.default.compilerPath": "/usr/bin/g++",
                 "C_Cpp.default.cStandard": "c17",
-                "C_Cpp.default.cppStandard": "c++17"
+                "C_Cpp.default.cppStandard": "c++20"
             },
             
             // Add the IDs of extensions you want installed when the container is created
             "extensions": [
-                "ms-vscode.cpptools",
                 "ms-vscode.cpptools-extension-pack",
                 "ms-vscode.cmake-tools",
-                "twxs.cmake",
-                "ms-vscode.cpptools-themes",
-                "ms-python.python",
-                "ms-vscode.vscode-json",
-                "redhat.vscode-xml",
-                "aaron-bond.better-comments",
-                "streetsidesoftware.code-spell-checker",
-                "ms-vscode.hexeditor"
+                "Anthropic.claude-code"
             ]
         }
     },
 
-    // Use 'forwardPorts' to make a list of ports inside the container available locally
-    "forwardPorts": [],
-
-    // Use 'postCreateCommand' to run commands after the container is created
-    "postCreateCommand": "bash .devcontainer/setup.sh",
-
     // Configure container user
     "remoteUser": "developer",
     
-    // Enable X11 forwarding for GUI applications
+    // Enable debugging capabilities
     "runArgs": [
-        "--env=DISPLAY=:0",
-        "--volume=/tmp/.X11-unix:/tmp/.X11-unix:rw",
         "--volume=/etc/timezone:/etc/timezone:ro",
-        "--volume=/etc/localtime:/etc/localtime:ro"
+        "--volume=/etc/localtime:/etc/localtime:ro",
+        "--cap-add=SYS_PTRACE",
+        "--security-opt=seccomp:unconfined"
     ],
     
     // Container environment variables
     "containerEnv": {
-        "QT_QPA_PLATFORM": "xcb",
-        "DISPLAY": ":0"
+        "QT_QPA_PLATFORM": "offscreen",
+        "QTDIR": "/usr/lib/qt5",
+        "QT_PLUGIN_PATH": "/usr/lib/x86_64-linux-gnu/qt5/plugins"
     },
 
     // Features to add to the dev container
     "features": {
-        "ghcr.io/devcontainers/features/git:1": {},
-        "ghcr.io/devcontainers/features/github-cli:1": {},
         "ghcr.io/devcontainers/features/common-utils:2": {
             "installZsh": true,
             "configureZshAsDefaultShell": true,
