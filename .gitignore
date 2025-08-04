@@ -73,7 +73,6 @@ _deps/
 !cmake/*.cmake
 
 # IDE and editors
-.vscode/
 .idea/
 *.swp
 *.swo
