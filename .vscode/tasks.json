@@ -1,0 +1,51 @@
+{
+    "$schema": "vscode://schemas/tasks",
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Configure Debug",
+            "type": "shell",
+            "command": "cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+            "group": "build",
+            "problemMatcher": ["$gcc"],
+            "detail": "Configure CMake for debug build"
+        },
+        {
+            "label": "Configure Release", 
+            "type": "shell",
+            "command": "cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+            "group": "build",
+            "problemMatcher": ["$gcc"],
+            "detail": "Configure CMake for release build"
+        },
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "cmake --build build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": "Configure Debug",
+            "problemMatcher": ["$gcc"],
+            "detail": "Build the project with Ninja"
+        },
+        {
+            "label": "Clean Build",
+            "type": "shell",
+            "command": "find build -mindepth 1 -delete && cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && cmake --build build",
+            "group": "build",
+            "problemMatcher": ["$gcc"],
+            "detail": "Clean and rebuild from scratch"
+        },
+        {
+            "label": "Run Tests",
+            "type": "shell",
+            "command": "./build/test",
+            "group": "test",
+            "dependsOn": "Build",
+            "problemMatcher": [],
+            "detail": "Run wiRedPanda test suite"
+        }
+    ]
+}

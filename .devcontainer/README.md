@@ -1,6 +1,6 @@
 # wiRedPanda Development Container
 
-This directory contains the configuration for a containerized development environment for wiRedPanda using Ubuntu 22.04 LTS.
+This directory contains the configuration for a streamlined containerized development environment for wiRedPanda using Ubuntu 22.04 LTS.
 
 ## 🚀 Quick Start
 
@@ -19,25 +19,22 @@ This directory contains the configuration for a containerized development enviro
 ## 🛠️ What's Included
 
 ### Development Tools
-- **Build System**: CMake 3.22+ and make
-- **Compiler**: GCC 11+ with C++17 support
-- **Qt Framework**: Qt 5.15 with all necessary modules
-- **Testing**: Qt Test framework with coverage tools (lcov, gcovr)
-- **Debugging**: GDB and Valgrind for memory debugging
+- **Build System**: CMake 3.22+ with Ninja generator
+- **Compiler**: GCC 11+ with C++20 support
+- **Qt Framework**: Qt 5.15 with core, widgets, multimedia, SVG modules
+- **Performance**: Mold linker and ccache for faster builds
+- **Shell**: Zsh with Oh My Zsh for enhanced terminal experience
+- **AI Assistant**: Claude Code CLI for AI-powered development assistance
 
 ### VS Code Extensions
-- C/C++ IntelliSense and debugging
-- CMake Tools for build management
-- Qt syntax highlighting
-- Code spell checker
-- Better comments
-- Hex editor
+- C/C++ extension pack (IntelliSense, debugging, themes)
+- CMake Tools for build management and configuration
 
-### Utilities
-- Git with configuration template
-- Pre-commit hooks support
-- Python 3 with development packages
-- Network and system utilities
+### Core Utilities
+- **Version Control**: Git and GitHub CLI
+- **Languages**: Python 3, Node.js 20.x
+- **Testing**: lcov for coverage analysis
+- **Package Management**: pip3 and npm
 
 ## 📁 Container Structure
 
@@ -51,45 +48,44 @@ This directory contains the configuration for a containerized development enviro
 
 ## 🔧 Build Commands
 
-The setup script creates several useful aliases:
-
-- `wpbuild` - Build the project using make
-- `wptest` - Run the test suite
-- `wprun` - Run the wiRedPanda application
-- `wpcoverage` - Generate code coverage reports
-- `wpclean` - Clean and recreate build directory
+### VS Code Tasks (Recommended)
+Use **Ctrl+Shift+P** → "Tasks: Run Task":
+- **Build** - Build the project (default: Ctrl+Shift+B)
+- **Configure Debug** - Configure CMake for debug build
+- **Configure Release** - Configure CMake for release build
+- **Clean Build** - Clean and rebuild from scratch
+- **Run Tests** - Run the test suite
 
 ### Manual Build Process
 
 ```bash
-# Build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Debug
-make -j$(nproc)
+# Configure and build with CMake/Ninja
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
+cmake --build build
 ```
+
 
 ## 🧪 Testing
 
 ```bash
-# Run all tests
-wptest
+# Run all tests (automatic via VS Code task)
+# Ctrl+Shift+P → "Tasks: Run Task" → "Run Tests"
+
+# Manual test execution
+./build/test/wiredpanda-test
 
 # Run specific test class
 ./build/test/wiredpanda-test TestBasicGates
-
-# Generate coverage report
-wpcoverage
 ```
 
-## 🎨 GUI Applications
+## 🖥️ Display Mode
 
-The container supports GUI applications through X11 forwarding:
+The container is configured to run in **offscreen mode** by default (`QT_QPA_PLATFORM=offscreen`), making it compatible with all host operating systems without requiring X11 setup. This is ideal for:
 
-- **Linux Host**: GUI applications should work automatically
-- **Windows Host**: Requires X server (e.g., VcXsrv, Xming)
-- **macOS Host**: Requires XQuartz
-
-For headless testing, applications can run with `-platform offscreen`.
+- Running automated tests
+- CI/CD pipelines
+- Development on Windows/macOS hosts
+- Headless server environments
 
 ## 🐛 Troubleshooting
 
@@ -98,15 +94,10 @@ For headless testing, applications can run with `-platform offscreen`.
 - Check Docker has enough resources allocated
 - Try rebuilding: "Dev Containers: Rebuild Container"
 
-### GUI Applications Don't Display
-- **Linux**: Run `xhost +local:docker` on host
-- **Windows**: Start X server and set DISPLAY environment variable
-- **macOS**: Install and configure XQuartz
-
 ### Build Failures
 - Check Qt installation: `qt5-qmake --version`
 - Verify CMake configuration: `cd build && cmake ..`
-- Clean build: `wpclean` then rebuild
+- Clean build: `rm -rf build && mkdir build`
 
 ### Permission Issues
 - The container user (developer) should have UID 1000
@@ -133,23 +124,24 @@ Add environment variables in the `containerEnv` section of `devcontainer.json`.
 ## 🤝 Development Workflow
 
 1. **Code**: Write code using VS Code with full IntelliSense support
-2. **Build**: Use `wpbuild` or CMake commands
-3. **Test**: Run `wptest` to verify functionality
+2. **Build**: Use cmake and ninja commands
+3. **Test**: Run test binaries to verify functionality
 4. **Debug**: Use VS Code's integrated debugger
-5. **Coverage**: Generate reports with `wpcoverage`
+5. **AI Assist**: Use Claude Code CLI for code assistance
 6. **Commit**: Git is pre-configured for version control
 
 ## 🔒 Security Notes
 
 - Container runs as non-root user `developer`
-- SYS_PTRACE capability enabled for debugging
-- X11 forwarding requires trust considerations on multi-user systems
+- Minimal package installation for reduced attack surface
+- No X11 forwarding required (offscreen mode)
 
 ## 📚 Additional Resources
 
 - [Dev Containers Documentation](https://code.visualstudio.com/docs/devcontainers/containers)
 - [Qt Documentation](https://doc.qt.io/)
 - [CMake Documentation](https://cmake.org/documentation/)
+- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
 - [wiRedPanda Project README](../README.md)
 
 ## 🐛 Reporting Issues
