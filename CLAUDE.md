@@ -1,0 +1,145 @@
+# Claude Memory - wiRedPanda Project
+
+## Development Environment
+
+### Build Tools
+- **Build Systems**: Both CMake and qmake are supported
+- **CRITICAL**: Always build in `build/` directory to prevent accidental commits
+- **Build Timeout**: Always use at least 5-10 minute timeout for compilation commands (2 minutes is insufficient)
+- **ccache**: Compiler cache installed for faster builds - automatically used via PATH in devcontainer
+- **Linux/DevContainer**: Always use Ninja generator + ccache for fastest builds (mold linker auto-detected)
+  ```bash
+  cmake -B build -G Ninja
+  ```
+- **CMake configure (Windows command line)**: 
+  ```bash
+  cmake -B build -G "Visual Studio 17 2022" -A x64 -DCMAKE_PREFIX_PATH="C:/Qt/5.15.2/msvc2019_64"
+  ```
+- **Build commands**: 
+  - Main app: `cmake --build build --config Release --target wiredpanda`
+  - Tests: `cmake --build build --config Release --target test`
+- **mold linker**: Modern fast linker installed (`sudo apt install mold`) - automatically used by CMake when available
+- **qmake**: Available via `WPanda.pro` - subdirs project app and test
+- **Visual Studio BuildTools**: `"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"`
+
+### Testing
+- Project uses Qt Test framework
+- **Test execution (Linux/DevContainer)**: Always run in headless mode:
+  ```bash
+  QT_QPA_PLATFORM=offscreen ./test          # CMake build
+  QT_QPA_PLATFORM=offscreen ./WPanda-test   # qmake build
+  ```
+- **Test execution (Windows after windeployqt)**: From `build/Release` directory:
+  ```powershell
+  powershell -Command "Start-Process -FilePath 'test.exe' -Wait -NoNewWindow"        # CMake build
+  powershell -Command "Start-Process -FilePath 'WPanda-test.exe' -Wait -NoNewWindow" # qmake build
+  ```
+- **Note**: Direct bash execution fails, cmd causes segfaults. PowerShell is the reliable method on Windows.
+
+## Project Structure
+- Main project file: `WPanda.pro` (template = subdirs)
+- App code: `app/` directory
+- Tests: `test/` directory with comprehensive test suite
+- Test executable: `test` (CMake) or `WPanda-test` (qmake)
+
+## Digital Logic Simulation
+
+### Simulation Type: Hybrid Synchronous Cycle-Based with Event-Driven Clocks
+- **Primary Model**: Synchronous cycle-based simulation with fixed 1ms update intervals
+- **Secondary Model**: Event-driven clock elements with real-time timing
+- **Design Goal**: Educational simplicity prioritizing correctness over timing accuracy
+
+### Core Architecture (`app/simulation.cpp`)
+- **Fixed Update Cycle**: 1ms intervals via QTimer for consistent simulation steps
+- **Sequential Update Phases** per cycle:
+  1. Update input elements (`updateOutputs()`)
+  2. Update all logic elements (`updateLogic()`)
+  3. Update connections (`updatePort()`)
+  4. Update output elements
+- **Topological Sorting**: Elements ordered by dependency depth for correct propagation
+
+### Logic Element Behavior
+- **Combinational Logic**: Zero-delay immediate updates (AND, OR, NOT, etc.)
+- **Sequential Logic**: Synchronous state changes on clock edges (flip-flops, latches)
+- **No Propagation Delays**: Logic gates update instantaneously
+
+### Timing Characteristics
+- **Clock Elements**: Only true event-driven components with configurable frequencies
+- **Logic Gates**: Immediate response, no timing simulation
+- **Sequential Elements**: Edge-triggered state changes without setup/hold timing
+- **Update Order**: Priority-based topological sorting prevents race conditions
+
+### Code Evidence
+```cpp
+// Fixed 1ms simulation cycle
+m_timer.setInterval(1ms);
+
+// Immediate combinational logic (LogicAnd)
+const auto result = std::accumulate(inputs, true, std::bit_and<>());
+setOutputValue(result);  // Zero delay
+
+// Real-time clock timing
+if (elapsed > m_interval) {
+    setOn(!m_isOn);  // Toggle based on frequency
+}
+```
+
+### Implementation Classification
+- **Abstraction Level**: Functional simulation (no timing details)
+- **Update Model**: Synchronous with topological ordering
+- **Delay Model**: Zero-delay for logic, real-time for clocks
+- **Target Audience**: Educational/demonstration use
+- **IMPORTANT**: Always prefer fixing code logic over changing tests to conform to incorrect behavior
+
+### Conceptual Correctness Assessment
+
+#### ✅ **Educationally Sound Design**
+- **Boolean Logic**: Correctly implements all fundamental logic operations
+- **Combinational Circuits**: Proper dependency ordering via topological sorting
+- **Sequential Logic**: Accurate edge-triggered state machine behavior
+- **Circuit Topology**: Correct signal flow and causality relationships
+- **Functional Verification**: Reliable testing of digital logic concepts
+
+#### ✅ **Correct Abstractions for Learning**
+- **Zero-delay model** eliminates timing complexity for beginners
+- **Immediate feedback** enhances educational interaction
+- **Race condition prevention** via priority-based update ordering
+
+#### ⚠️ **Deliberate Real-World Omissions**
+- **No propagation delays**: Real gates have nanosecond delays
+- **No setup/hold constraints**: Real flip-flops need timing margins  
+- **No hazards/glitches**: Real circuits can have temporary incorrect outputs
+- **No clock domain issues**: Real systems have multiple clocks and skew
+- **No physical limitations**: Missing fan-out, drive strength, power concerns
+
+#### 🎯 **Educational Target Alignment**
+- **Perfect for**: Boolean algebra, combinational design, sequential concepts
+- **Not intended for**: Timing analysis, synchronization, physical implementation
+- **Design Philosophy**: Teach logic functionality before implementation complexity
+
+#### **Verdict: Conceptually Correct for Educational Purpose**
+The simulation accurately represents **ideal digital logic behavior** while deliberately abstracting **physical implementation details**. This approach is pedagogically sound - students learn fundamental concepts correctly without being overwhelmed by timing complexities that would obscure the core logic principles.
+
+## Development Container
+- **Ubuntu 22.04 LTS** based development environment
+- **Location**: `.devcontainer/` directory with full configuration
+- **Features**:
+  - Qt 5.15 development environment
+  - CMake and build tools pre-configured
+  - VS Code extensions for C++/Qt development
+- **Usage**: Open project in VS Code and select "Reopen in Container"
+- **Testing**: Supports headless test execution
+
+## Analysis & Fix Documentation Protocol
+- **IMPORTANT**: Whenever analyzing or fixing issues, create/update markdown documentation for progress tracking
+- **Documentation Location**: Store all analysis markdowns in `.claude/` directory to avoid root bloat
+- **Sentry Integration**: Connected to wiredpanda project (see `.github/workflows/deploy.yml`)
+  - Debug symbols uploaded automatically on release
+  - Supports Ubuntu, Windows, and macOS crash reporting
+- **GitHub Project Integration**: GIBIS-UNIFESP organization project #1 "wiRedPanda" (public)
+  - **Project URL**: https://github.com/orgs/GIBIS-UNIFESP/projects/1
+  - **Access**: Available via `gh project` commands with authentication
+  - **Fields**: Status, Priority, Size, Assignees, Labels, Milestones, etc.
+- **Analysis Reports**: Store comprehensive crash analysis in dedicated markdown files (e.g., `.claude/SENTRY_CRASH_ANALYSIS.md`)
+- **Fix Tracking**: Document root causes, code locations, and implemented solutions for future reference
+- **Issue Reference**: Always include Sentry issue IDs (e.g., WIREDPANDA-J) in commit messages to auto-close issues
