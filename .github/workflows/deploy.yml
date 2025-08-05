@@ -145,6 +145,8 @@ jobs:
         mkdir -p build/lib
         cp thirdparty/sentry/bin/crashpad_handler build/
         cp thirdparty/sentry/lib/libsentry.so build/lib/
+        # Ensure crashpad_handler is executable
+        chmod +x build/crashpad_handler
 
     - name: Test Ubuntu
       if: runner.os == 'Linux'
@@ -158,6 +160,7 @@ jobs:
         cp app/resources/wpanda.desktop appimage/wpanda.desktop
         cp app/resources/wpanda.svg appimage/wpanda_icon.svg
         cp build/wiredpanda appimage
+        cp build/crashpad_handler appimage/
         cp thirdparty/sentry/lib/libsentry.so appimage/lib/
         wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
         chmod +x ./linuxdeployqt-continuous-x86_64.AppImage
@@ -230,6 +233,17 @@ jobs:
           echo "Error: Sentry library missing from AppImage"
           exit 1
         fi
+        
+        if [ ! -f "appimage/crashpad_handler" ]; then
+          echo "Error: Crashpad handler missing from AppImage"
+          exit 1
+        fi
+        
+        # Log Sentry configuration for debugging
+        echo "Sentry configuration check:"
+        echo "  - libsentry.so: $(ls -la appimage/lib/libsentry.so)"
+        echo "  - crashpad_handler: $(ls -la appimage/crashpad_handler)"
+        echo "  - RPATH settings: $(objdump -p appimage/wiredpanda | grep RPATH || echo 'No RPATH found')"
         
         echo "Ubuntu release artifacts validated successfully"
 
@@ -408,7 +422,7 @@ jobs:
         git clone --recursive https://github.com/getsentry/sentry-native.git
         mkdir -p sentry-native/build
         cd sentry-native/build
-        cmake .. -B build -D SENTRY_BACKEND=crashpad -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_OSX_ARCHITECTURES="x86_64;arm64" -G Ninja
+        cmake .. -B build -D SENTRY_BACKEND=breakpad -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_OSX_ARCHITECTURES="x86_64;arm64" -G Ninja
         cmake --build build
         cmake --install build --prefix ../../thirdparty/sentry
 
@@ -421,7 +435,7 @@ jobs:
         mkdir -p build/wiredpanda.app/Contents/Frameworks
         # Copy the main executable to the app bundle
         cp build/wiredpanda build/wiredpanda.app/Contents/MacOS/
-        cp thirdparty/sentry/bin/crashpad_handler build/wiredpanda.app/Contents/MacOS/
+        # Note: breakpad backend doesn't generate crashpad_handler (in-process crash handling)
         cp thirdparty/sentry/lib/libsentry.dylib build/wiredpanda.app/Contents/Frameworks/
 
     - name: Generate macOS dSYM Symbols
@@ -533,14 +547,9 @@ jobs:
           exit 1
         fi
         
-        # Verify required Sentry files are included
+        # Verify required Sentry files are included (breakpad backend)
         if [ ! -f "build/wiredpanda.app/Contents/Frameworks/libsentry.dylib" ]; then
           echo "Error: Sentry library missing from app bundle"
-          exit 1
-        fi
-        
-        if [ ! -f "build/wiredpanda.app/Contents/MacOS/crashpad_handler" ]; then
-          echo "Error: Crashpad handler missing from app bundle"
           exit 1
         fi
         
@@ -656,6 +665,12 @@ jobs:
         echo "✓ Code signing status: $CODESIGN_STATUS"
         
         echo "macOS build quality validation completed successfully"
+        
+        # Log Sentry configuration for debugging (breakpad backend)
+        echo "Sentry configuration check:"
+        echo "  - libsentry.dylib: $(ls -la build/wiredpanda.app/Contents/Frameworks/libsentry.dylib)"
+        echo "  - Backend: breakpad (in-process, no separate handler required)"
+        echo "  - dylib dependencies: $(otool -L build/wiredpanda.app/Contents/MacOS/wiredpanda | grep sentry || echo 'No sentry dylib dependency found')"
         
         echo "macOS release artifacts validated successfully"
 
