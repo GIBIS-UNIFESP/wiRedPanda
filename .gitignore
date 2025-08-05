@@ -1,57 +1,178 @@
-# C++ objects and libs
+# Build outputs
+/build*/
+/out/
+/cmake-build-*/
+/release/
+/debug/
+/Release/
+/Debug/
+/.ninja_deps
+/.ninja_log
 
-*.slo
-*.lo
+# AppImage build artifacts
+/AppDir/
+/appimage-build/
+/squashfs-root*/
+/appimagetool-squashfs-root/
+appimagetool-x86_64.AppImage
+linuxdeploy-x86_64.AppImage
+linuxdeploy-plugin-qt-x86_64.AppImage
+
+# C++ compilation
 *.o
+*.obj
 *.a
-*.la
-*.lai
+*.lib
 *.so
+*.so.*
 *.dll
 *.dylib
+*.exe
+*.out
+*.app
+*.pdb
+*.ilk
+*.exp
+*.gch
+*.pch
+*.d
 
-# Qt-es
-
-/.qmake.cache
-/.qmake.stash
+# Qt-related files
+.qmake.cache
+.qmake.stash
 *.pro.user
 *.pro.user.*
+*.qbs.user
+*.qbs.user.*
 *.moc
 moc_*.cpp
+moc_*.h
 qrc_*.cpp
 ui_*.h
-Makefile*
-*-build-*
-CMakeLists.txt.user
-
-# QtCreator
-
+*.qmlc
+*.jsc
 *.autosave
+*.qm
+*.qt_cache
+Makefile*
+!Makefile.am
+*build-*
+!*build-*.txt
 
-# QtCtreator Qml
-*.qmlproject.user
-*.qmlproject.user.*
-/.project
-*.db
+# CMake
+CMakeLists.txt.user*
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+*.cmake
+!cmake/*.cmake
 
-.sass-cache
-_site
-
-/build*
-.vscode
-
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
 *~
-*#
+*.bak
+*.tmp
+.project
+.cproject
+.settings/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Dependencies
+node_modules/
+vendor/
+.sass-cache/
+bower_components/
+
+# Testing and coverage
+*.gcda
+*.gcno
+*.gcov
+lcov.info
+coverage/
+htmlcov/
+.coverage
+*.cover
+.hypothesis/
+.pytest_cache/
+test-results/
+
+# Documentation
+/docs/_build/
+/docs/html/
+/dist/
+/_site/
+/.astro/
+*.pdf
+!docs/**/*.pdf
+
+# Logs and databases
+*.log
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.db-wal
+
+# OS generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Package files
 *.deb
 *.rpm
-*.exe
+*.dmg
+*.pkg
+*.msi
 *.tar.gz
+*.tar.bz2
+*.tar.xz
+*.zip
+*.7z
+*.rar
+*.AppImage
+*.zsync
+
+# Security and credentials
+*.pem
+*.key
+*.crt
+*.p12
+.env
+.env.local
+.env.*.local
+secrets/
+
+# Deployment
+Deploy/
+*.info
 *.lintian
 
-Deploy/*
-*.info
+# Temporary files
+*.pid
+*.seed
+*.pid.lock
+*.orig
+*.rej
+*.patch
 
-# GH Pages
-/.astro
-/dist
-/node_modules
+# wiRedPanda specific
+/examples/output/
+/app/resources/output/
+*.panda
+!examples/**/*.panda
+!test/files/**/*.panda
