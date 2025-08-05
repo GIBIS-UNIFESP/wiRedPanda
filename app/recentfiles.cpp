@@ -18,7 +18,7 @@ RecentFiles::RecentFiles(QObject *parent)
         m_files = Settings::value("recentFileList").toStringList();
     }
 
-    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](const QString &filePath) {
+    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, [this](const QString &filePath) {
         if (!QFile::exists(filePath)) {
             m_files.removeAll(filePath);
             emit recentFilesUpdated();
