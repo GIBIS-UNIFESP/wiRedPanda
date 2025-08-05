@@ -163,13 +163,20 @@ The simulation accurately represents **ideal digital logic behavior** while deli
 - **Unified Build Workflow**: Single `build_unified.yml` consolidating CMake and qmake testing
 - **Build Matrix**: Tests Qt 5.15.2, 6.2.4, 6.5.3, 6.9.0 across Ubuntu/Windows with both build systems
 - **Parallel Builds**: Optimized for faster PR feedback with reduced job count
+- **Sentry Integration**: Comprehensive crash reporting with platform-specific backends
+  - **Ubuntu/Windows**: Crashpad backend with handler process
+  - **macOS**: Breakpad backend (in-process, sandbox-compatible)
+  - **SDK Caching**: Reduces build time by ~80% on cache hits
+  - **Artifact Validation**: Automatic verification of release packages and required libraries
+- **Release Artifacts**: AppImage (Ubuntu), ZIP (Windows), DMG (macOS) with embedded crash reporting
 
 ## Analysis & Fix Documentation Protocol
 - **IMPORTANT**: Whenever analyzing or fixing issues, create/update markdown documentation for progress tracking
 - **Documentation Location**: Store all analysis markdowns in `.claude/` directory to avoid root bloat
 - **Sentry Integration**: Connected to wiredpanda project (see `.github/workflows/deploy.yml`)
   - Debug symbols uploaded automatically on release
-  - Supports Ubuntu, Windows, and macOS crash reporting
+  - Platform-specific backends for optimal crash reporting
+  - Comprehensive artifact validation before release
 - **GitHub Project Integration**: GIBIS-UNIFESP organization project #1 "wiRedPanda" (public)
   - **Project URL**: https://github.com/orgs/GIBIS-UNIFESP/projects/1
   - **Access**: Available via `gh project` commands with authentication
