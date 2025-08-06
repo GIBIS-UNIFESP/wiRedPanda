@@ -21,6 +21,19 @@ include(install.pri)
 # Link with the static library instead of including sources
 LIBS += -L$$OUT_PWD/../lib -lwiredpanda_lib
 
+# WASM-specific linking flags
+wasm {
+    QMAKE_LFLAGS += -sASYNCIFY -Os
+}
+
+# Unix RPATH for app executable
+unix: QMAKE_RPATHDIR += ${ORIGIN}/lib
+
+# macOS app-specific settings
+mac {
+    greaterThan(QT_MAJOR_VERSION, 5): QMAKE_APPLE_DEVICE_ARCHS = x86_64 arm64
+}
+
 # Sentry configuration (app only, not tests)
 exists(../thirdparty/sentry/include/sentry.h) {
     message("Sentry found: Enabling HAVE_SENTRY")

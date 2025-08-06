@@ -22,10 +22,6 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 DEFINES += QT_MESSAGELOGCONTEXT
 
 
-wasm {
-    QMAKE_LFLAGS += -sASYNCIFY -Os
-}
-
 linux {
     MOLD_BIN = $$system(which mold)
 
@@ -62,8 +58,6 @@ linux-clang {
         QMAKE_LFLAGS += -fsanitize=thread
     }
 }
-
-unix: QMAKE_RPATHDIR += ${ORIGIN}/lib
 
 linux | mac {
     CCACHE_BIN = $$system(which ccache)
@@ -111,8 +105,6 @@ mac {
 
     QMAKE_CXXFLAGS_RELEASE += -g
     QMAKE_LFLAGS_RELEASE += -Wl,-dead_strip_dylibs -g
-
-    greaterThan(QT_MAJOR_VERSION, 5): QMAKE_APPLE_DEVICE_ARCHS = x86_64 arm64
 }
 
 MOC_DIR        = build_files/moc
