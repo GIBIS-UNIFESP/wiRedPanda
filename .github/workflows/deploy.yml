@@ -308,11 +308,23 @@ jobs:
     - name: windeployqt
       if: runner.os == 'Windows'
       run : |
-        cp -r examples build/Release
-        cd build/Release
+        # Create clean distribution directory
+        cd build
+        mkdir wiredpanda-$env:VERSION
+        
+        # Copy only essential files to clean directory
+        cp Release/wiredpanda.exe wiredpanda-$env:VERSION/
+        cp Release/crashpad_handler.exe wiredpanda-$env:VERSION/
+        cp Release/sentry.dll wiredpanda-$env:VERSION/
+        cp Release/crashpad_wer.dll wiredpanda-$env:VERSION/
+        cp -r ../examples wiredpanda-$env:VERSION/
+        
+        # Run windeployqt in the clean directory
+        cd wiredpanda-$env:VERSION
         windeployqt --compiler-runtime wiredpanda.exe
+        
+        # Create the ZIP from the clean directory
         cd ..
-        ren Release wiredpanda-$env:VERSION
         Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath wiRedPanda-$env:VERSION-Windows-Qt${{ matrix.qt }}-Portable.zip
 
     - name: Validate Windows Release Artifacts
