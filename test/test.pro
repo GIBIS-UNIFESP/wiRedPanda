@@ -8,6 +8,11 @@ include(../config.pri)
 # Link with the static library instead of including sources  
 LIBS += -L$$OUT_PWD/../lib -lwiredpanda_lib
 
+# macOS test-specific settings
+mac {
+    greaterThan(QT_MAJOR_VERSION, 5): QMAKE_APPLE_DEVICE_ARCHS = x86_64 arm64
+}
+
 QT += testlib
 
 CONFIG += testcase
