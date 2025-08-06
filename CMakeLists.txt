@@ -218,21 +218,21 @@ if(NOT CCACHE_BIN)
     target_precompile_headers(wiredpanda_lib PRIVATE pch.h)
 endif()
 
-find_path(SENTRY_INCLUDE_DIR NAMES sentry.h PATHS thirdparty/sentry/include)
-
-if (SENTRY_INCLUDE_DIR)
-    message(STATUS "Sentry found: Enabling HAVE_SENTRY")
-    add_definitions(-DHAVE_SENTRY)
-
-    include_directories(${SENTRY_INCLUDE_DIR})
-    link_directories(thirdparty/sentry/lib)
-    target_link_libraries(wiredpanda_lib PUBLIC sentry)
-endif()
-
 # ========= APP ===================================
 
 add_executable(wiredpanda app/main.cpp)
 target_link_libraries(wiredpanda PRIVATE wiredpanda_lib)
+
+# Sentry configuration
+find_path(SENTRY_INCLUDE_DIR NAMES sentry.h PATHS thirdparty/sentry/include)
+
+if (SENTRY_INCLUDE_DIR)
+    message(STATUS "Sentry found: Enabling HAVE_SENTRY")
+    target_compile_definitions(wiredpanda PRIVATE HAVE_SENTRY)
+    target_include_directories(wiredpanda PRIVATE ${SENTRY_INCLUDE_DIR})
+    target_link_directories(wiredpanda PRIVATE thirdparty/sentry/lib)
+    target_link_libraries(wiredpanda PRIVATE sentry)
+endif()
 
 # Ensure translations are compiled before building the main executable
 if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)

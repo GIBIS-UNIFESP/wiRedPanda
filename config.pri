@@ -21,13 +21,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 DEFINES += QT_MESSAGELOGCONTEXT
 
-exists(thirdparty/sentry/include/sentry.h) {
-    message("Sentry found: Enabling HAVE_SENTRY")
-    DEFINES += HAVE_SENTRY
-
-    INCLUDEPATH += $$PWD/thirdparty/sentry/include
-    LIBS += -L$$PWD/thirdparty/sentry/lib -lsentry
-}
 
 wasm {
     QMAKE_LFLAGS += -sASYNCIFY -Os

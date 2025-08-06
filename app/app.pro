@@ -21,6 +21,15 @@ include(install.pri)
 # Link with the static library instead of including sources
 LIBS += -L$$OUT_PWD/../lib -lwiredpanda_lib
 
+# Sentry configuration (app only, not tests)
+exists(../thirdparty/sentry/include/sentry.h) {
+    message("Sentry found: Enabling HAVE_SENTRY")
+    DEFINES += HAVE_SENTRY
+
+    INCLUDEPATH += $$PWD/../thirdparty/sentry/include
+    LIBS += -L$$PWD/../thirdparty/sentry/lib -lsentry
+}
+
 win32 {
     QMAKE_TARGET_COMPANY = GIBIS-UNIFESP
     QMAKE_TARGET_PRODUCT = wiRedPanda - Logic Circuit Simulator
