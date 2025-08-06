@@ -17,6 +17,15 @@ QT += core gui printsupport multimedia widgets svg
 
 CONFIG += warn_on strict_c strict_c++
 
+# Set C++ standard in CONFIG for Qt versions that support it
+# This prevents Qt from injecting its own default standard flags
+equals(QT_MAJOR_VERSION, 5) {
+    # Qt 5.15.2 doesn't know about c++20, use manual flags
+} else {
+    # Qt 6.x supports c++20 in CONFIG
+    CONFIG += c++20
+}
+
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 DEFINES += QT_MESSAGELOGCONTEXT
@@ -77,17 +86,27 @@ isEmpty(CCACHE_BIN) {
     QMAKE_CXX = ccache $$QMAKE_CXX
 }
 
-CXX_STANDARD = c++20
+# Manual C++ standard flags only needed for Qt 5.x
+# Qt 6.x uses CONFIG += c++20 set above
+equals(QT_MAJOR_VERSION, 5) {
+    CXX_STANDARD = c++20
+    
+    msvc {
+        QMAKE_CXXFLAGS += /std:$$CXX_STANDARD
+    } else {
+        QMAKE_CXXFLAGS += -std=$$CXX_STANDARD
+    }
+}
 
 msvc {
     QMAKE_CXXFLAGS_WARN_ON ~= s/-W3/-W4
     QMAKE_CXXFLAGS += /external:I $$[QT_INSTALL_PREFIX] /external:W0
-    QMAKE_CXXFLAGS += /permissive- /Zc:preprocessor /std:$$CXX_STANDARD
+    QMAKE_CXXFLAGS += /permissive- /Zc:preprocessor
     QMAKE_CXXFLAGS_DEBUG += /Ob1
     QMAKE_CXXFLAGS_RELEASE += /GL /Zi
     QMAKE_LFLAGS_RELEASE += /LTCG /DEBUG
 } else {
-    QMAKE_CXXFLAGS += -Wall -Wextra -Wpedantic -std=$$CXX_STANDARD
+    QMAKE_CXXFLAGS += -Wall -Wextra -Wpedantic
 }
 
 linux | mac | win32-g++ {
@@ -98,10 +117,13 @@ linux | mac | win32-g++ {
 mac {
     CONFIG += sdk_no_version_check
 
-    # Override Qt's mkspecs -std=c++11 flag with C++20
-    # Qt 5.15.2 mkspecs inject -std=c++11 after config.pri processing
-    # Use QMAKE_CXXFLAGS_WARN_ON which gets processed late to override it
-    QMAKE_CXXFLAGS_WARN_ON += -std=c++20
+    # Only override C++ standard manually for Qt 5.x
+    # Qt 6.x uses CONFIG += c++20 set above
+    equals(QT_MAJOR_VERSION, 5) {
+        # Override Qt 5.15.2 mkspecs -std=c++11 flag with C++20
+        # Use QMAKE_CXXFLAGS_WARN_ON which gets processed late to override it
+        QMAKE_CXXFLAGS_WARN_ON += -std=c++20
+    }
 
     QMAKE_CXXFLAGS_RELEASE += -g
     QMAKE_LFLAGS_RELEASE += -Wl,-dead_strip_dylibs -g
