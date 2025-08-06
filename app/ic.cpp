@@ -27,7 +27,7 @@ IC::IC(QGraphicsItem *parent)
 
     setHasLabel(true);
 
-    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, [=](const QString &filePath) {
+    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, [this](const QString &filePath) {
         loadFile(filePath);
 
         if (auto *scene_ = qobject_cast<Scene *>(scene())) {
