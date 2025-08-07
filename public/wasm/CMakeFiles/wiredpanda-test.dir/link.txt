@@ -1,1 +1,0 @@
-/home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -s MAX_WEBGL_VERSION=2 -s WASM_BIGINT=1 -s STACK_SIZE=5MB -pthread -s ALLOW_MEMORY_GROWTH -sERROR_ON_UNDEFINED_SYMBOLS=1 -sFETCH @CMakeFiles/wiredpanda-test.dir/objects1.rsp -o wiredpanda-test.js @CMakeFiles/wiredpanda-test.dir/linkLibs.rsp
