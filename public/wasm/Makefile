@@ -14,9 +14,9 @@ EQ            = =
 
 CC            = emcc
 CXX           = em++
-DEFINES       = -DAPP_VERSION=\"4.2.2\" -DQT_DEPRECATED_WARNINGS -DQT_DISABLE_DEPRECATED_BEFORE=0x060000 -DQT_MESSAGELOGCONTEXT -DDATADIR=\"/usr/local/share\" -DPKGDATADIR=\"\" -DQT_NO_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_MULTIMEDIA_LIB -DQT_SVG_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
+DEFINES       = -DAPP_VERSION=\"4.2.6\" -DQT_DEPRECATED_WARNINGS -DQT_DISABLE_DEPRECATED_BEFORE=0x060000 -DQT_MESSAGELOGCONTEXT -DDATADIR=\"/usr/local/share\" -DPKGDATADIR=\"\" -DQT_NO_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_MULTIMEDIA_LIB -DQT_SVG_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -Wall -Wextra -pthread $(DEFINES)
-CXXFLAGS      = -pipe -Wall -Wextra -Wpedantic -O2 -std=c++1z -Wall -Wextra -pthread $(DEFINES)
+CXXFLAGS      = -pipe -Wall -Wextra -Wpedantic -std=c++20 -O2 -Wall -Wextra -pthread $(DEFINES)
 INCPATH       = -I../app -I. -I../app -I../app/arduino -I../app/element -I../app/logicelement -I../app/nodes -I../../Qt/6.9.0/wasm_multithread/include -I../../Qt/6.9.0/wasm_multithread/include/QtPrintSupport -I../../Qt/6.9.0/wasm_multithread/include/QtWidgets -I../../Qt/6.9.0/wasm_multithread/include/QtMultimedia -I../../Qt/6.9.0/wasm_multithread/include/QtSvg -I../../Qt/6.9.0/wasm_multithread/include/QtGui -I../../Qt/6.9.0/wasm_multithread/include/QtNetwork -I../../Qt/6.9.0/wasm_multithread/include/QtCore -Ibuild_files/moc -Ibuild_files/ui -I/home/runner/.emscripten_ports/openssl/include -I../../Qt/6.9.0/wasm_multithread/mkspecs/wasm-emscripten
 QMAKE         = /home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/qmake6
 DEL_FILE      = rm -f
@@ -36,8 +36,8 @@ DEL_DIR       = rmdir
 MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
-DISTNAME      = wiredpanda.js4.2.2
-DISTDIR = /home/runner/work/wiRedPanda/wiRedPanda/build/build_files/obj/wiredpanda.js4.2.2
+DISTNAME      = wiredpanda.js4.2.6
+DISTDIR = /home/runner/work/wiRedPanda/wiRedPanda/build/build_files/obj/wiredpanda.js4.2.6
 LINK          = em++
 LFLAGS        = -s WASM=1 -s MAX_WEBGL_VERSION=2 -s ERROR_ON_UNDEFINED_SYMBOLS=1 --bind -s FETCH=1 -s MODULARIZE=1 -s WASM_BIGINT=1 -s STACK_SIZE=5MB -sASYNCIFY -Os -O2 -s EXPORTED_RUNTIME_METHODS=UTF16ToString,stringToUTF16,JSEvents,specialHTMLTargets,FS,callMain -s EXPORT_NAME=wiredpanda_entry -pthread -s PTHREAD_POOL_SIZE=4 -sALLOW_MEMORY_GROWTH -s INITIAL_MEMORY=50MB -s MAXIMUM_MEMORY=4GB /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6BundledFreetype.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6BundledLibpng.a
 LIBS          = $(SUBLIBS) /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/objects-Release/Multimedia_resources_1/.qt/rcc/qrc_qtmultimedia_shaders_init.cpp.o /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/objects-Release/Multimedia_resources_2/.qt/rcc/qrc_qtmultimedia_shaders_linear_init.cpp.o /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/objects-Release/Multimedia_resources_3/.qt/rcc/qrc_qtmultimedia_shaders_gl_macos_init.cpp.o /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/objects-Release/Multimedia_resources_4/.qt/rcc/qrc_qtmultimedia_shaders_gl_macos_linear_init.cpp.o /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/plugins/multimedia/libwasmmediaplugin.a -lembind /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/objects-Release/QWasmIntegrationPlugin_resources_1/.qt/rcc/qrc_wasmfonts_init.cpp.o /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/objects-Release/QWasmIntegrationPlugin_resources_2/.qt/rcc/qrc_wasmwindow_init.cpp.o /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/objects-Release/Gui_resources_1/.qt/rcc/qrc_qpdf_init.cpp.o /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/objects-Release/Gui_resources_2/.qt/rcc/qrc_gui_shaders_init.cpp.o /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/plugins/platforms/libqwasm.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6OpenGL.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/plugins/iconengines/libqsvgicon.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/plugins/imageformats/libqgif.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/plugins/imageformats/libqicns.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/plugins/imageformats/libqico.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/plugins/imageformats/libqjpeg.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6BundledLibjpeg.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/plugins/imageformats/libqsvg.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/plugins/imageformats/libqtga.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/plugins/imageformats/libqtiff.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/plugins/imageformats/libqwbmp.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/plugins/imageformats/libqwebp.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/plugins/tls/libqcertonlybackend.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/objects-Release/PrintSupport_resources_1/.qt/rcc/qrc_qprintdialog_init.cpp.o /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/objects-Release/PrintSupport_resources_2/.qt/rcc/qrc_qprintdialog1_init.cpp.o /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/objects-Release/Widgets_resources_1/.qt/rcc/qrc_qstyle_init.cpp.o /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/objects-Release/Widgets_resources_2/.qt/rcc/qrc_qstyle1_init.cpp.o /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/objects-Release/Widgets_resources_3/.qt/rcc/qrc_qstyle_fusion_init.cpp.o /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/objects-Release/Widgets_resources_4/.qt/rcc/qrc_qmessagebox_init.cpp.o /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6PrintSupport.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Widgets.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Multimedia.a -lopenal /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Svg.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Gui.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6BundledHarfbuzz.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6BundledFreetype.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6BundledLibpng.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Network.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Core.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6BundledZLIB.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6BundledPcre2.a   
@@ -535,6 +535,7 @@ DIST          = ../app/resources/postinst \
 		../../Qt/6.9.0/wasm_multithread/mkspecs/features/default_post.prf \
 		../../Qt/6.9.0/wasm_multithread/mkspecs/features/precompile_header.prf \
 		../../Qt/6.9.0/wasm_multithread/mkspecs/features/warn_on.prf \
+		../../Qt/6.9.0/wasm_multithread/mkspecs/features/lrelease.prf \
 		../../Qt/6.9.0/wasm_multithread/mkspecs/features/wasm/wasm.prf \
 		../../Qt/6.9.0/wasm_multithread/mkspecs/features/permissions.prf \
 		../../Qt/6.9.0/wasm_multithread/mkspecs/features/qt.prf \
@@ -719,7 +720,7 @@ TARGET        = ./wiredpanda.js
 first: all
 ####### Build rules
 
-./wiredpanda.js: /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6PrintSupport.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Widgets.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Multimedia.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Svg.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Gui.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Network.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Core.a build_files/ui/ui_bewaveddolphin.h build_files/ui/ui_clockdialog.h build_files/ui/ui_elementeditor.h build_files/ui/ui_lengthdialog.h build_files/ui/ui_mainwindow.h $(OBJECTS)  apphtml appjs appsvg
+./wiredpanda.js: /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6PrintSupport.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Widgets.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Multimedia.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Svg.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Gui.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Network.a /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/libQt6Core.a .qm/wpanda_ar.qm .qm/wpanda_bg.qm .qm/wpanda_bn.qm .qm/wpanda_cs.qm .qm/wpanda_da.qm .qm/wpanda_de.qm .qm/wpanda_el.qm .qm/wpanda_en.qm .qm/wpanda_es.qm .qm/wpanda_et.qm .qm/wpanda_fa.qm .qm/wpanda_fi.qm .qm/wpanda_fr.qm .qm/wpanda_he.qm .qm/wpanda_hi.qm .qm/wpanda_hr.qm .qm/wpanda_hu.qm .qm/wpanda_id.qm .qm/wpanda_it.qm .qm/wpanda_ja.qm .qm/wpanda_ko.qm .qm/wpanda_lt.qm .qm/wpanda_lv.qm .qm/wpanda_ms.qm .qm/wpanda_nb.qm .qm/wpanda_nl.qm .qm/wpanda_pl.qm .qm/wpanda_pt.qm .qm/wpanda_pt_BR.qm .qm/wpanda_ro.qm .qm/wpanda_ru.qm .qm/wpanda_sk.qm .qm/wpanda_sv.qm .qm/wpanda_th.qm .qm/wpanda_tr.qm .qm/wpanda_uk.qm .qm/wpanda_vi.qm .qm/wpanda_zh_Hans.qm .qm/wpanda_zh_Hant.qm build_files/ui/ui_bewaveddolphin.h build_files/ui/ui_clockdialog.h build_files/ui/ui_elementeditor.h build_files/ui/ui_lengthdialog.h build_files/ui/ui_mainwindow.h $(OBJECTS)  apphtml appjs appsvg
 	@test -d ./ || mkdir -p ./
 	$(LINK) $(LFLAGS) -o $(TARGET)  $(OBJECTS) $(OBJCOMP) $(LIBS)
 
@@ -926,6 +927,7 @@ Makefile: ../app/app.pro ../../Qt/6.9.0/wasm_multithread/mkspecs/wasm-emscripten
 		../../Qt/6.9.0/wasm_multithread/mkspecs/features/default_post.prf \
 		../../Qt/6.9.0/wasm_multithread/mkspecs/features/precompile_header.prf \
 		../../Qt/6.9.0/wasm_multithread/mkspecs/features/warn_on.prf \
+		../../Qt/6.9.0/wasm_multithread/mkspecs/features/lrelease.prf \
 		../../Qt/6.9.0/wasm_multithread/mkspecs/features/wasm/wasm.prf \
 		../../Qt/6.9.0/wasm_multithread/mkspecs/features/permissions.prf \
 		../../Qt/6.9.0/wasm_multithread/mkspecs/features/qt.prf \
@@ -1175,6 +1177,7 @@ Makefile: ../app/app.pro ../../Qt/6.9.0/wasm_multithread/mkspecs/wasm-emscripten
 ../../Qt/6.9.0/wasm_multithread/mkspecs/features/default_post.prf:
 ../../Qt/6.9.0/wasm_multithread/mkspecs/features/precompile_header.prf:
 ../../Qt/6.9.0/wasm_multithread/mkspecs/features/warn_on.prf:
+../../Qt/6.9.0/wasm_multithread/mkspecs/features/lrelease.prf:
 ../../Qt/6.9.0/wasm_multithread/mkspecs/features/wasm/wasm.prf:
 ../../Qt/6.9.0/wasm_multithread/mkspecs/features/permissions.prf:
 ../../Qt/6.9.0/wasm_multithread/mkspecs/features/qt.prf:
@@ -1234,12 +1237,13 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
+	$(COPY_FILE) --parents ../app/resources/translations/wpanda_ar.ts ../app/resources/translations/wpanda_bg.ts ../app/resources/translations/wpanda_bn.ts ../app/resources/translations/wpanda_cs.ts ../app/resources/translations/wpanda_da.ts ../app/resources/translations/wpanda_de.ts ../app/resources/translations/wpanda_el.ts ../app/resources/translations/wpanda_en.ts ../app/resources/translations/wpanda_es.ts ../app/resources/translations/wpanda_et.ts ../app/resources/translations/wpanda_fa.ts ../app/resources/translations/wpanda_fi.ts ../app/resources/translations/wpanda_fr.ts ../app/resources/translations/wpanda_he.ts ../app/resources/translations/wpanda_hi.ts ../app/resources/translations/wpanda_hr.ts ../app/resources/translations/wpanda_hu.ts ../app/resources/translations/wpanda_id.ts ../app/resources/translations/wpanda_it.ts ../app/resources/translations/wpanda_ja.ts ../app/resources/translations/wpanda_ko.ts ../app/resources/translations/wpanda_lt.ts ../app/resources/translations/wpanda_lv.ts ../app/resources/translations/wpanda_ms.ts ../app/resources/translations/wpanda_nb.ts ../app/resources/translations/wpanda_nl.ts ../app/resources/translations/wpanda_pl.ts ../app/resources/translations/wpanda_pt.ts ../app/resources/translations/wpanda_pt_BR.ts ../app/resources/translations/wpanda_ro.ts ../app/resources/translations/wpanda_ru.ts ../app/resources/translations/wpanda_sk.ts ../app/resources/translations/wpanda_sv.ts ../app/resources/translations/wpanda_th.ts ../app/resources/translations/wpanda_tr.ts ../app/resources/translations/wpanda_uk.ts ../app/resources/translations/wpanda_vi.ts ../app/resources/translations/wpanda_zh_Hans.ts ../app/resources/translations/wpanda_zh_Hant.ts $(DISTDIR)/
 	$(COPY_FILE) --parents ../app/resources/basic/basic.qrc ../app/resources/dolphin/dolphin.qrc ../app/resources/input/input.qrc ../app/resources/memory/dark/memory_dark.qrc ../app/resources/memory/light/memory_light.qrc ../app/resources/misc/misc.qrc ../app/resources/output/output.qrc ../app/resources/toolbar/toolbar.qrc ../app/resources/translations/translations.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents ../../Qt/6.9.0/wasm_multithread/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../app/element/and.h ../app/element/audiobox.h ../app/element/buzzer.h ../app/element/clock.h ../app/element/demux.h ../app/element/dflipflop.h ../app/element/display_14.h ../app/element/display_16.h ../app/element/display_7.h ../app/element/dlatch.h ../app/element/inputbutton.h ../app/element/inputgnd.h ../app/element/inputrotary.h ../app/element/inputswitch.h ../app/element/inputvcc.h ../app/element/jkflipflop.h ../app/element/led.h ../app/element/line.h ../app/element/mux.h ../app/element/nand.h ../app/element/node.h ../app/element/nor.h ../app/element/not.h ../app/element/or.h ../app/element/srflipflop.h ../app/element/srlatch.h ../app/element/text.h ../app/element/tflipflop.h ../app/element/truth_table.h ../app/element/xnor.h ../app/element/xor.h ../app/logicelement/logicand.h ../app/logicelement/logicdemux.h ../app/logicelement/logicdflipflop.h ../app/logicelement/logicdlatch.h ../app/logicelement/logicinput.h ../app/logicelement/logicjkflipflop.h ../app/logicelement/logicmux.h ../app/logicelement/logicnand.h ../app/logicelement/logicnode.h ../app/logicelement/logicnone.h ../app/logicelement/logicnor.h ../app/logicelement/logicnot.h ../app/logicelement/logicor.h ../app/logicelement/logicoutput.h ../app/logicelement/logicsrflipflop.h ../app/logicelement/logicsrlatch.h ../app/logicelement/logictflipflop.h ../app/logicelement/logictruthtable.h ../app/logicelement/logicxnor.h ../app/logicelement/logicxor.h ../app/application.h ../app/arduino/codegenerator.h ../app/bewaveddolphin.h ../app/clockdialog.h ../app/commands.h ../app/common.h ../app/elementeditor.h ../app/elementfactory.h ../app/elementlabel.h ../app/elementmapping.h ../app/enums.h ../app/globalproperties.h ../app/graphicelement.h ../app/graphicelementinput.h ../app/graphicsview.h ../app/ic.h ../app/itemwithid.h ../app/lengthdialog.h ../app/logicelement.h ../app/mainwindow.h ../app/nodes/qneconnection.h ../app/nodes/qneport.h ../app/recentfiles.h ../app/scene.h ../app/serialization.h ../app/settings.h ../app/simulation.h ../app/simulationblocker.h ../app/thememanager.h ../app/trashbutton.h ../app/workspace.h $(DISTDIR)/
 	$(COPY_FILE) --parents ../app/element/and.cpp ../app/element/audiobox.cpp ../app/element/buzzer.cpp ../app/element/clock.cpp ../app/element/demux.cpp ../app/element/dflipflop.cpp ../app/element/display_14.cpp ../app/element/display_16.cpp ../app/element/display_7.cpp ../app/element/dlatch.cpp ../app/element/inputbutton.cpp ../app/element/inputgnd.cpp ../app/element/inputrotary.cpp ../app/element/inputswitch.cpp ../app/element/inputvcc.cpp ../app/element/jkflipflop.cpp ../app/element/led.cpp ../app/element/line.cpp ../app/element/mux.cpp ../app/element/nand.cpp ../app/element/node.cpp ../app/element/nor.cpp ../app/element/not.cpp ../app/element/or.cpp ../app/element/srflipflop.cpp ../app/element/srlatch.cpp ../app/element/text.cpp ../app/element/tflipflop.cpp ../app/element/truth_table.cpp ../app/element/xnor.cpp ../app/element/xor.cpp ../app/logicelement/logicand.cpp ../app/logicelement/logicdemux.cpp ../app/logicelement/logicdflipflop.cpp ../app/logicelement/logicdlatch.cpp ../app/logicelement/logicinput.cpp ../app/logicelement/logicjkflipflop.cpp ../app/logicelement/logicmux.cpp ../app/logicelement/logicnand.cpp ../app/logicelement/logicnode.cpp ../app/logicelement/logicnor.cpp ../app/logicelement/logicnot.cpp ../app/logicelement/logicor.cpp ../app/logicelement/logicoutput.cpp ../app/logicelement/logicsrflipflop.cpp ../app/logicelement/logicsrlatch.cpp ../app/logicelement/logictflipflop.cpp ../app/logicelement/logictruthtable.cpp ../app/logicelement/logicxnor.cpp ../app/logicelement/logicxor.cpp ../app/application.cpp ../app/arduino/codegenerator.cpp ../app/bewaveddolphin.cpp ../app/clockdialog.cpp ../app/commands.cpp ../app/common.cpp ../app/elementeditor.cpp ../app/elementfactory.cpp ../app/elementlabel.cpp ../app/elementmapping.cpp ../app/enums.cpp ../app/graphicelement.cpp ../app/graphicsview.cpp ../app/ic.cpp ../app/itemwithid.cpp ../app/lengthdialog.cpp ../app/logicelement.cpp ../app/mainwindow.cpp ../app/nodes/qneconnection.cpp ../app/nodes/qneport.cpp ../app/recentfiles.cpp ../app/scene.cpp ../app/serialization.cpp ../app/settings.cpp ../app/simulation.cpp ../app/simulationblocker.cpp ../app/thememanager.cpp ../app/trashbutton.cpp ../app/workspace.cpp ../app/main.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../app/bewaveddolphin.ui ../app/clockdialog.ui ../app/elementeditor.ui ../app/lengthdialog.ui ../app/mainwindow.ui $(DISTDIR)/
-	$(COPY_FILE) --parents resources/translations/wpanda_en.ts resources/translations/wpanda_pt_BR.ts resources/translations/wpanda_es.ts $(DISTDIR)/
+	$(COPY_FILE) --parents ../app/resources/translations/wpanda_ar.ts ../app/resources/translations/wpanda_bg.ts ../app/resources/translations/wpanda_bn.ts ../app/resources/translations/wpanda_cs.ts ../app/resources/translations/wpanda_da.ts ../app/resources/translations/wpanda_de.ts ../app/resources/translations/wpanda_el.ts ../app/resources/translations/wpanda_en.ts ../app/resources/translations/wpanda_es.ts ../app/resources/translations/wpanda_et.ts ../app/resources/translations/wpanda_fa.ts ../app/resources/translations/wpanda_fi.ts ../app/resources/translations/wpanda_fr.ts ../app/resources/translations/wpanda_he.ts ../app/resources/translations/wpanda_hi.ts ../app/resources/translations/wpanda_hr.ts ../app/resources/translations/wpanda_hu.ts ../app/resources/translations/wpanda_id.ts ../app/resources/translations/wpanda_it.ts ../app/resources/translations/wpanda_ja.ts ../app/resources/translations/wpanda_ko.ts ../app/resources/translations/wpanda_lt.ts ../app/resources/translations/wpanda_lv.ts ../app/resources/translations/wpanda_ms.ts ../app/resources/translations/wpanda_nb.ts ../app/resources/translations/wpanda_nl.ts ../app/resources/translations/wpanda_pl.ts ../app/resources/translations/wpanda_pt.ts ../app/resources/translations/wpanda_pt_BR.ts ../app/resources/translations/wpanda_ro.ts ../app/resources/translations/wpanda_ru.ts ../app/resources/translations/wpanda_sk.ts ../app/resources/translations/wpanda_sv.ts ../app/resources/translations/wpanda_th.ts ../app/resources/translations/wpanda_tr.ts ../app/resources/translations/wpanda_uk.ts ../app/resources/translations/wpanda_vi.ts ../app/resources/translations/wpanda_zh_Hans.ts ../app/resources/translations/wpanda_zh_Hant.ts $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -1875,6 +1879,9 @@ build_files/obj/wiredpanda.js.pch/c++.pch: ../pch.h ../../Qt/6.9.0/wasm_multithr
 	@test -d build_files/obj/wiredpanda.js.pch/ || mkdir -p build_files/obj/wiredpanda.js.pch/
 	$(CXX) $(CXXFLAGS) $(INCPATH) -x c++-header -c ../pch.h -o build_files/obj/wiredpanda.js.pch/c++.pch
 
+lupdate:
+	lupdate -tr-function-alias tr+=PANDACEPTION /home/runner/work/wiRedPanda/wiRedPanda/app/../app.pro
+
 apphtml: /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/plugins/platforms/wasm_shell.html
 	sed -e s/@APPNAME@/wiredpanda/g -e s/@APPEXPORTNAME@/wiredpanda_entry/g -e s/@PRELOAD@//g /home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/plugins/platforms/wasm_shell.html > /home/runner/work/wiRedPanda/wiRedPanda/build/wiredpanda.html
 
@@ -1896,6 +1903,124 @@ benchmark: first
 
 compiler_no_pch_compiler_make_all:
 compiler_no_pch_compiler_clean:
+compiler_lrelease_make_all: .qm/wpanda_ar.qm .qm/wpanda_bg.qm .qm/wpanda_bn.qm .qm/wpanda_cs.qm .qm/wpanda_da.qm .qm/wpanda_de.qm .qm/wpanda_el.qm .qm/wpanda_en.qm .qm/wpanda_es.qm .qm/wpanda_et.qm .qm/wpanda_fa.qm .qm/wpanda_fi.qm .qm/wpanda_fr.qm .qm/wpanda_he.qm .qm/wpanda_hi.qm .qm/wpanda_hr.qm .qm/wpanda_hu.qm .qm/wpanda_id.qm .qm/wpanda_it.qm .qm/wpanda_ja.qm .qm/wpanda_ko.qm .qm/wpanda_lt.qm .qm/wpanda_lv.qm .qm/wpanda_ms.qm .qm/wpanda_nb.qm .qm/wpanda_nl.qm .qm/wpanda_pl.qm .qm/wpanda_pt.qm .qm/wpanda_pt_BR.qm .qm/wpanda_ro.qm .qm/wpanda_ru.qm .qm/wpanda_sk.qm .qm/wpanda_sv.qm .qm/wpanda_th.qm .qm/wpanda_tr.qm .qm/wpanda_uk.qm .qm/wpanda_vi.qm .qm/wpanda_zh_Hans.qm .qm/wpanda_zh_Hant.qm
+.qm/wpanda_ar.qm: ../app/resources/translations/wpanda_ar.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_ar.ts -qm .qm/wpanda_ar.qm
+
+.qm/wpanda_bg.qm: ../app/resources/translations/wpanda_bg.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_bg.ts -qm .qm/wpanda_bg.qm
+
+.qm/wpanda_bn.qm: ../app/resources/translations/wpanda_bn.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_bn.ts -qm .qm/wpanda_bn.qm
+
+.qm/wpanda_cs.qm: ../app/resources/translations/wpanda_cs.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_cs.ts -qm .qm/wpanda_cs.qm
+
+.qm/wpanda_da.qm: ../app/resources/translations/wpanda_da.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_da.ts -qm .qm/wpanda_da.qm
+
+.qm/wpanda_de.qm: ../app/resources/translations/wpanda_de.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_de.ts -qm .qm/wpanda_de.qm
+
+.qm/wpanda_el.qm: ../app/resources/translations/wpanda_el.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_el.ts -qm .qm/wpanda_el.qm
+
+.qm/wpanda_en.qm: ../app/resources/translations/wpanda_en.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_en.ts -qm .qm/wpanda_en.qm
+
+.qm/wpanda_es.qm: ../app/resources/translations/wpanda_es.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_es.ts -qm .qm/wpanda_es.qm
+
+.qm/wpanda_et.qm: ../app/resources/translations/wpanda_et.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_et.ts -qm .qm/wpanda_et.qm
+
+.qm/wpanda_fa.qm: ../app/resources/translations/wpanda_fa.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_fa.ts -qm .qm/wpanda_fa.qm
+
+.qm/wpanda_fi.qm: ../app/resources/translations/wpanda_fi.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_fi.ts -qm .qm/wpanda_fi.qm
+
+.qm/wpanda_fr.qm: ../app/resources/translations/wpanda_fr.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_fr.ts -qm .qm/wpanda_fr.qm
+
+.qm/wpanda_he.qm: ../app/resources/translations/wpanda_he.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_he.ts -qm .qm/wpanda_he.qm
+
+.qm/wpanda_hi.qm: ../app/resources/translations/wpanda_hi.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_hi.ts -qm .qm/wpanda_hi.qm
+
+.qm/wpanda_hr.qm: ../app/resources/translations/wpanda_hr.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_hr.ts -qm .qm/wpanda_hr.qm
+
+.qm/wpanda_hu.qm: ../app/resources/translations/wpanda_hu.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_hu.ts -qm .qm/wpanda_hu.qm
+
+.qm/wpanda_id.qm: ../app/resources/translations/wpanda_id.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_id.ts -qm .qm/wpanda_id.qm
+
+.qm/wpanda_it.qm: ../app/resources/translations/wpanda_it.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_it.ts -qm .qm/wpanda_it.qm
+
+.qm/wpanda_ja.qm: ../app/resources/translations/wpanda_ja.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_ja.ts -qm .qm/wpanda_ja.qm
+
+.qm/wpanda_ko.qm: ../app/resources/translations/wpanda_ko.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_ko.ts -qm .qm/wpanda_ko.qm
+
+.qm/wpanda_lt.qm: ../app/resources/translations/wpanda_lt.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_lt.ts -qm .qm/wpanda_lt.qm
+
+.qm/wpanda_lv.qm: ../app/resources/translations/wpanda_lv.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_lv.ts -qm .qm/wpanda_lv.qm
+
+.qm/wpanda_ms.qm: ../app/resources/translations/wpanda_ms.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_ms.ts -qm .qm/wpanda_ms.qm
+
+.qm/wpanda_nb.qm: ../app/resources/translations/wpanda_nb.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_nb.ts -qm .qm/wpanda_nb.qm
+
+.qm/wpanda_nl.qm: ../app/resources/translations/wpanda_nl.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_nl.ts -qm .qm/wpanda_nl.qm
+
+.qm/wpanda_pl.qm: ../app/resources/translations/wpanda_pl.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_pl.ts -qm .qm/wpanda_pl.qm
+
+.qm/wpanda_pt.qm: ../app/resources/translations/wpanda_pt.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_pt.ts -qm .qm/wpanda_pt.qm
+
+.qm/wpanda_pt_BR.qm: ../app/resources/translations/wpanda_pt_BR.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_pt_BR.ts -qm .qm/wpanda_pt_BR.qm
+
+.qm/wpanda_ro.qm: ../app/resources/translations/wpanda_ro.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_ro.ts -qm .qm/wpanda_ro.qm
+
+.qm/wpanda_ru.qm: ../app/resources/translations/wpanda_ru.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_ru.ts -qm .qm/wpanda_ru.qm
+
+.qm/wpanda_sk.qm: ../app/resources/translations/wpanda_sk.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_sk.ts -qm .qm/wpanda_sk.qm
+
+.qm/wpanda_sv.qm: ../app/resources/translations/wpanda_sv.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_sv.ts -qm .qm/wpanda_sv.qm
+
+.qm/wpanda_th.qm: ../app/resources/translations/wpanda_th.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_th.ts -qm .qm/wpanda_th.qm
+
+.qm/wpanda_tr.qm: ../app/resources/translations/wpanda_tr.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_tr.ts -qm .qm/wpanda_tr.qm
+
+.qm/wpanda_uk.qm: ../app/resources/translations/wpanda_uk.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_uk.ts -qm .qm/wpanda_uk.qm
+
+.qm/wpanda_vi.qm: ../app/resources/translations/wpanda_vi.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_vi.ts -qm .qm/wpanda_vi.qm
+
+.qm/wpanda_zh_Hans.qm: ../app/resources/translations/wpanda_zh_Hans.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_zh_Hans.ts -qm .qm/wpanda_zh_Hans.qm
+
+.qm/wpanda_zh_Hant.qm: ../app/resources/translations/wpanda_zh_Hant.ts
+	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/bin/lrelease ../app/resources/translations/wpanda_zh_Hant.ts -qm .qm/wpanda_zh_Hant.qm
+
 compiler_apphtml_make_all:
 compiler_apphtml_clean:
 	-$(DEL_FILE) wiredpanda.html
@@ -2071,55 +2196,128 @@ build_files/rcc/qrc_output.cpp: ../app/resources/output/output.qrc \
 
 build_files/rcc/qrc_toolbar.cpp: ../app/resources/toolbar/toolbar.qrc \
 		../../Qt/6.9.0/gcc_64/libexec/rcc \
+		../app/resources/toolbar/danish.svg \
+		../app/resources/toolbar/undo.svg \
+		../app/resources/toolbar/play.svg \
+		../app/resources/toolbar/wpanda.svg \
+		../app/resources/toolbar/new.svg \
+		../app/resources/toolbar/malaysian.svg \
+		../app/resources/toolbar/rotateR.svg \
+		../app/resources/toolbar/bangladesh.svg \
+		../app/resources/toolbar/german.svg \
+		../app/resources/toolbar/swedish.svg \
+		../app/resources/toolbar/greek.svg \
+		../app/resources/toolbar/pause.svg \
+		../app/resources/toolbar/delete.svg \
+		../app/resources/toolbar/croatian.svg \
+		../app/resources/toolbar/hungarian.svg \
+		../app/resources/toolbar/reloadFile.svg \
+		../app/resources/toolbar/zoomIn.svg \
+		../app/resources/toolbar/portuguese.svg \
+		../app/resources/toolbar/dutch.svg \
+		../app/resources/toolbar/thai.svg \
+		../app/resources/toolbar/reset.svg \
+		../app/resources/toolbar/default.svg \
+		../app/resources/toolbar/copy.svg \
+		../app/resources/toolbar/brasil.svg \
+		../app/resources/toolbar/iranian.svg \
+		../app/resources/toolbar/rename.svg \
+		../app/resources/toolbar/zoomOut.svg \
+		../app/resources/toolbar/japanese.svg \
+		../app/resources/toolbar/zoomReset.svg \
+		../app/resources/toolbar/turkish.svg \
+		../app/resources/toolbar/indonesian.svg \
+		../app/resources/toolbar/stop.svg \
+		../app/resources/toolbar/wavyIcon.svg \
+		../app/resources/toolbar/finnish.svg \
+		../app/resources/toolbar/hindi.svg \
+		../app/resources/toolbar/selectAll.svg \
+		../app/resources/toolbar/ukrainian.svg \
 		../app/resources/toolbar/trashcan.svg \
 		../app/resources/toolbar/png.svg \
-		../app/resources/toolbar/undo.svg \
 		../app/resources/toolbar/cut.svg \
+		../app/resources/toolbar/slovak.svg \
 		../app/resources/toolbar/fast.svg \
 		../app/resources/toolbar/wires.svg \
 		../app/resources/toolbar/redo.svg \
 		../app/resources/toolbar/spanish.svg \
-		../app/resources/toolbar/play.svg \
+		../app/resources/toolbar/arabic.svg \
 		../app/resources/toolbar/usa.svg \
-		../app/resources/toolbar/wpanda.svg \
-		../app/resources/toolbar/new.svg \
 		../app/resources/toolbar/help.svg \
 		../app/resources/toolbar/folder.svg \
-		../app/resources/toolbar/rotateR.svg \
-		../app/resources/toolbar/pause.svg \
-		../app/resources/toolbar/delete.svg \
+		../app/resources/toolbar/polish.svg \
+		../app/resources/toolbar/vietnamese.svg \
+		../app/resources/toolbar/czech.svg \
+		../app/resources/toolbar/hebrew.svg \
 		../app/resources/toolbar/arduino.svg \
-		../app/resources/toolbar/reloadFile.svg \
-		../app/resources/toolbar/zoomIn.svg \
+		../app/resources/toolbar/korean.svg \
 		../app/resources/toolbar/exit.svg \
 		../app/resources/toolbar/clearSelection.svg \
 		../app/resources/toolbar/panelBox.svg \
-		../app/resources/toolbar/reset.svg \
-		../app/resources/toolbar/default.svg \
+		../app/resources/toolbar/russian.svg \
+		../app/resources/toolbar/bulgarian.svg \
 		../app/resources/toolbar/dolphin_icon.svg \
-		../app/resources/toolbar/copy.svg \
+		../app/resources/toolbar/norwegian.svg \
+		../app/resources/toolbar/estonian.svg \
+		../app/resources/toolbar/chinese_traditional.svg \
+		../app/resources/toolbar/latvian.svg \
 		../app/resources/toolbar/paste.svg \
 		../app/resources/toolbar/pdf.svg \
-		../app/resources/toolbar/brasil.svg \
-		../app/resources/toolbar/rename.svg \
-		../app/resources/toolbar/zoomOut.svg \
+		../app/resources/toolbar/romanian.svg \
+		../app/resources/toolbar/french.svg \
+		../app/resources/toolbar/italian.svg \
+		../app/resources/toolbar/chinese.svg \
 		../app/resources/toolbar/helpQt.svg \
-		../app/resources/toolbar/zoomReset.svg \
 		../app/resources/toolbar/recentFiles.svg \
+		../app/resources/toolbar/english.svg \
+		../app/resources/toolbar/lithuanian.svg \
 		../app/resources/toolbar/mute.svg \
-		../app/resources/toolbar/stop.svg \
-		../app/resources/toolbar/wavyIcon.svg \
-		../app/resources/toolbar/selectAll.svg \
 		../app/resources/toolbar/save.svg \
 		../app/resources/toolbar/rotateL.svg
 	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/libexec/rcc -name toolbar --no-zstd ../app/resources/toolbar/toolbar.qrc -o build_files/rcc/qrc_toolbar.cpp
 
 build_files/rcc/qrc_translations.cpp: ../app/resources/translations/translations.qrc \
 		../../Qt/6.9.0/gcc_64/libexec/rcc \
+		../app/resources/translations/wpanda_nb.qm \
+		../app/resources/translations/wpanda_da.qm \
+		../app/resources/translations/wpanda_ms.qm \
+		../app/resources/translations/wpanda_bn.qm \
+		../app/resources/translations/wpanda_pt.qm \
+		../app/resources/translations/wpanda_it.qm \
+		../app/resources/translations/wpanda_hu.qm \
+		../app/resources/translations/wpanda_ko.qm \
 		../app/resources/translations/wpanda_pt_BR.qm \
 		../app/resources/translations/wpanda_es.qm \
-		../app/resources/translations/qt_es.qm \
-		../app/resources/translations/qt_pt_BR.qm
+		../app/resources/translations/wpanda_hr.qm \
+		../app/resources/translations/wpanda_hi.qm \
+		../app/resources/translations/wpanda_et.qm \
+		../app/resources/translations/wpanda_nl.qm \
+		../app/resources/translations/wpanda_tr.qm \
+		../app/resources/translations/wpanda_fr.qm \
+		../app/resources/translations/wpanda_sk.qm \
+		../app/resources/translations/wpanda_vi.qm \
+		../app/resources/translations/wpanda_fa.qm \
+		../app/resources/translations/wpanda_de.qm \
+		../app/resources/translations/wpanda_id.qm \
+		../app/resources/translations/wpanda_el.qm \
+		../app/resources/translations/wpanda_lt.qm \
+		../app/resources/translations/wpanda_ar.qm \
+		../app/resources/translations/wpanda_fi.qm \
+		../app/resources/translations/wpanda_bg.qm \
+		../app/resources/translations/wpanda_zh_Hant.qm \
+		../app/resources/translations/wpanda_en.qm \
+		../app/resources/translations/wpanda_lv.qm \
+		../app/resources/translations/wpanda_zh_Hans.qm \
+		../app/resources/translations/wpanda_th.qm \
+		../app/resources/translations/wpanda_sv.qm \
+		../app/resources/translations/wpanda_pl.qm \
+		../app/resources/translations/wpanda_ru.qm \
+		../app/resources/translations/wpanda_he.qm \
+		../app/resources/translations/wpanda_ro.qm \
+		../app/resources/translations/wpanda_uk.qm \
+		../app/resources/translations/qt_pt_BR.qm \
+		../app/resources/translations/wpanda_ja.qm \
+		../app/resources/translations/wpanda_cs.qm
 	/home/runner/work/wiRedPanda/Qt/6.9.0/gcc_64/libexec/rcc -name translations --no-zstd ../app/resources/translations/translations.qrc -o build_files/rcc/qrc_translations.cpp
 
 compiler_moc_predefs_make_all: build_files/moc/moc_predefs.h
@@ -2127,7 +2325,7 @@ compiler_moc_predefs_clean:
 	-$(DEL_FILE) build_files/moc/moc_predefs.h
 build_files/moc/moc_predefs.h: ../../Qt/6.9.0/wasm_multithread/mkspecs/features/data/dummy.cpp \
 		build_files/obj/wiredpanda.js.pch/c++.pch
-	em++ -pipe -Wall -Wextra -Wpedantic -O2 -std=c++1z -Wall -Wextra -pthread -dM -E -o build_files/moc/moc_predefs.h ../../Qt/6.9.0/wasm_multithread/mkspecs/features/data/dummy.cpp
+	em++ -pipe -Wall -Wextra -Wpedantic -std=c++20 -O2 -Wall -Wextra -pthread -dM -E -o build_files/moc/moc_predefs.h ../../Qt/6.9.0/wasm_multithread/mkspecs/features/data/dummy.cpp
 
 compiler_moc_header_make_all: build_files/moc/moc_and.cpp build_files/moc/moc_audiobox.cpp build_files/moc/moc_buzzer.cpp build_files/moc/moc_clock.cpp build_files/moc/moc_demux.cpp build_files/moc/moc_dflipflop.cpp build_files/moc/moc_display_14.cpp build_files/moc/moc_display_16.cpp build_files/moc/moc_display_7.cpp build_files/moc/moc_dlatch.cpp build_files/moc/moc_inputbutton.cpp build_files/moc/moc_inputgnd.cpp build_files/moc/moc_inputrotary.cpp build_files/moc/moc_inputswitch.cpp build_files/moc/moc_inputvcc.cpp build_files/moc/moc_jkflipflop.cpp build_files/moc/moc_led.cpp build_files/moc/moc_line.cpp build_files/moc/moc_mux.cpp build_files/moc/moc_nand.cpp build_files/moc/moc_node.cpp build_files/moc/moc_nor.cpp build_files/moc/moc_not.cpp build_files/moc/moc_or.cpp build_files/moc/moc_srflipflop.cpp build_files/moc/moc_srlatch.cpp build_files/moc/moc_text.cpp build_files/moc/moc_tflipflop.cpp build_files/moc/moc_truth_table.cpp build_files/moc/moc_xnor.cpp build_files/moc/moc_xor.cpp build_files/moc/moc_application.cpp build_files/moc/moc_bewaveddolphin.cpp build_files/moc/moc_clockdialog.cpp build_files/moc/moc_elementeditor.cpp build_files/moc/moc_elementfactory.cpp build_files/moc/moc_elementlabel.cpp build_files/moc/moc_enums.cpp build_files/moc/moc_graphicelement.cpp build_files/moc/moc_graphicelementinput.cpp build_files/moc/moc_graphicsview.cpp build_files/moc/moc_ic.cpp build_files/moc/moc_lengthdialog.cpp build_files/moc/moc_mainwindow.cpp build_files/moc/moc_recentfiles.cpp build_files/moc/moc_scene.cpp build_files/moc/moc_simulation.cpp build_files/moc/moc_thememanager.cpp build_files/moc/moc_trashbutton.cpp build_files/moc/moc_workspace.cpp
 compiler_moc_header_clean:
@@ -13859,6 +14057,21 @@ build_files/obj/display_7.o: ../app/element/display_7.cpp ../app/element/display
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qversionnumber.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtyperevision.h \
 		../app/common.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QCoreApplication \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qnativeinterface.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication_platform.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfuture.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfutureinterface.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmutex.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtsan_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qresultstore.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfuture_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthreadpool.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthread.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qrunnable.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qexception.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qpromise.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLoggingCategory \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qloggingcategory.h \
 		../app/globalproperties.h \
@@ -17742,6 +17955,21 @@ build_files/obj/truth_table.o: ../app/element/truth_table.cpp ../app/element/tru
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qversionnumber.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtyperevision.h \
 		../app/common.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QCoreApplication \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qnativeinterface.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication_platform.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfuture.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfutureinterface.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmutex.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtsan_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qresultstore.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfuture_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthreadpool.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthread.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qrunnable.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qexception.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qpromise.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLoggingCategory \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qloggingcategory.h \
 		../app/globalproperties.h \
@@ -20073,6 +20301,10 @@ build_files/obj/application.o: ../app/application.cpp ../app/application.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtranslator.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/QApplication \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qapplication.h \
+		../app/common.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QCoreApplication \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLoggingCategory \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qloggingcategory.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/QMessageBox \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qmessagebox.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qdialog.h \
@@ -21084,8 +21316,8 @@ build_files/obj/commands.o: ../app/commands.cpp ../app/commands.h \
 	$(CXX) -c -Xclang -include-pch -Xclang build_files/obj/wiredpanda.js.pch/c++.pch $(CXXFLAGS) $(INCPATH) -o build_files/obj/commands.o ../app/commands.cpp
 
 build_files/obj/common.o: ../app/common.cpp ../app/common.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLoggingCategory \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qloggingcategory.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QCoreApplication \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qglobal.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtcoreglobal.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtversionchecks.h \
@@ -21132,15 +21364,12 @@ build_files/obj/common.o: ../app/common.cpp ../app/common.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtresource.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qttranslation.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qversiontagging.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qdebug.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qstring.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qchar.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcompare.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qstdlibdetection.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcomparehelpers.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/q20type_traits.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfloat16.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qhashfunctions.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qstring.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qchar.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qstringview.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qbytearray.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qrefcount.h \
@@ -21167,48 +21396,69 @@ build_files/obj/common.o: ../app/common.cpp ../app/common.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qstringbuilder.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qstringconverter.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qstringconverter_base.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmath.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreevent.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qbasictimer.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qabstracteventdispatcher.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qobject.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qobjectdefs.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qobjectdefs_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfunctionaltools_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qlist.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qhashfunctions.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qiterator.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qbytearraylist.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qstringlist.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qalgorithms.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtformat_impl.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtextstream.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qiodevicebase.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcontiguouscache.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qsharedpointer.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qshareddata.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qstringmatcher.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qscopedpointer.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmetatype.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qdatastream.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qscopedpointer.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qiodevicebase.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfloat16.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmath.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtformat_impl.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qiterable.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmetacontainer.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcontainerinfo.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtaggedpointer.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qobjectdefs.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qobjectdefs_impl.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfunctionaltools_impl.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qscopeguard.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qlist.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qiterator.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qbytearraylist.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qstringlist.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qstringmatcher.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmap.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qshareddata_impl.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qset.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qhash.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qvarlengtharray.h \
-		../app/graphicelement.h \
-		../app/enums.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/QObject \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qobject.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreevent.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qbasictimer.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qabstracteventdispatcher.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qobject_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qbindingstorage.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qeventloop.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qdeadlinetimer.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qelapsedtimer.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qobject_impl.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qbindingstorage.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qnativeinterface.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication_platform.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfuture.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfutureinterface.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmutex.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtsan_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qresultstore.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmap.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qshareddata.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qshareddata_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfuture_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthreadpool.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthread.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qrunnable.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qexception.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qpromise.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qvariant.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qdebug.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtextstream.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcontiguouscache.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qsharedpointer.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qset.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qhash.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qvarlengtharray.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/q23utility.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/q20utility.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLoggingCategory \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qloggingcategory.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QObject \
+		../app/graphicelement.h \
+		../app/enums.h \
 		../app/itemwithid.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QtGlobal \
 		../app/logicelement.h \
@@ -21224,9 +21474,6 @@ build_files/obj/common.o: ../app/common.cpp ../app/common.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtGui/qtguiexports.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qtwidgets-config.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qtwidgetsexports.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qvariant.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/q23utility.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/q20utility.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qrect.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmargins.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qsize.h \
@@ -21254,21 +21501,6 @@ build_files/obj/common.o: ../app/common.cpp ../app/common.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qversionnumber.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtyperevision.h \
 		../app/nodes/qneconnection.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/QCoreApplication \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qnativeinterface.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication_platform.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfuture.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfutureinterface.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmutex.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtsan_impl.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qresultstore.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfuture_impl.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthreadpool.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthread.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qrunnable.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qexception.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qpromise.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/QGraphicsPathItem \
 		../app/nodes/qneport.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtGui/QBrush \
@@ -21755,6 +21987,21 @@ build_files/obj/elementfactory.o: ../app/elementfactory.cpp ../app/elementfactor
 		../../Qt/6.9.0/wasm_multithread/include/QtGui/qimage.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtGui/qpixelformat.h \
 		../app/common.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QCoreApplication \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qnativeinterface.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication_platform.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfuture.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfutureinterface.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmutex.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtsan_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qresultstore.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfuture_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthreadpool.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthread.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qrunnable.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qexception.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qpromise.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLoggingCategory \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qloggingcategory.h \
 		../app/globalproperties.h \
@@ -22181,9 +22428,9 @@ build_files/obj/elementmapping.o: ../app/elementmapping.cpp ../app/elementmappin
 		../app/common.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLoggingCategory \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qloggingcategory.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QObject \
 		../app/elementfactory.h \
 		../app/enums.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/QObject \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/QGraphicsItem \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qgraphicsitem.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qtwidgetsglobal.h \
@@ -22526,12 +22773,6 @@ build_files/obj/graphicelement.o: ../app/graphicelement.cpp ../app/graphicelemen
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qversionnumber.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtyperevision.h \
 		../app/common.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLoggingCategory \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qloggingcategory.h \
-		../app/elementfactory.h \
-		../app/globalproperties.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/QString \
-		../app/nodes/qneconnection.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QCoreApplication \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qnativeinterface.h \
@@ -22547,6 +22788,12 @@ build_files/obj/graphicelement.o: ../app/graphicelement.cpp ../app/graphicelemen
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qrunnable.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qexception.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qpromise.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLoggingCategory \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qloggingcategory.h \
+		../app/elementfactory.h \
+		../app/globalproperties.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QString \
+		../app/nodes/qneconnection.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/QGraphicsPathItem \
 		../app/nodes/qneport.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtGui/QBrush \
@@ -23927,10 +24174,18 @@ build_files/obj/mainwindow.o: ../app/mainwindow.cpp ../app/mainwindow.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtPrintSupport/qtprintsupportglobal.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtPrintSupport/qtprintsupport-config.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtPrintSupport/qtprintsupportexports.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QResource \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qresource.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QSaveFile \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qsavefile.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtGui/QShortcut \
 		../../Qt/6.9.0/wasm_multithread/include/QtGui/qshortcut.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLocale \
+		../../Qt/6.9.0/wasm_multithread/include/QtSvg/QSvgRenderer \
+		../../Qt/6.9.0/wasm_multithread/include/QtSvg/qsvgrenderer.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qxmlstream.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtSvg/qtsvgglobal.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtSvg/qtsvgexports.h \
 		build_files/obj/wiredpanda.js.pch/c++.pch
 	$(CXX) -c -Xclang -include-pch -Xclang build_files/obj/wiredpanda.js.pch/c++.pch $(CXXFLAGS) $(INCPATH) -o build_files/obj/mainwindow.o ../app/mainwindow.cpp
 
@@ -24555,19 +24810,37 @@ build_files/obj/recentfiles.o: ../app/recentfiles.cpp ../app/recentfiles.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qbindingstorage.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QObject \
 		../app/common.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLoggingCategory \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qloggingcategory.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QCoreApplication \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qnativeinterface.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication_platform.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfuture.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfutureinterface.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmutex.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtsan_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qresultstore.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmap.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qshareddata.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qshareddata_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfuture_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthreadpool.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthread.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qrunnable.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qexception.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qpromise.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qvariant.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qdebug.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtextstream.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcontiguouscache.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qsharedpointer.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qshareddata.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qsharedpointer_impl.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmap.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qshareddata_impl.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qset.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qhash.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qvarlengtharray.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/q23utility.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/q20utility.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLoggingCategory \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qloggingcategory.h \
 		../app/globalproperties.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QString \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QVersionNumber \
@@ -24578,9 +24851,6 @@ build_files/obj/recentfiles.o: ../app/recentfiles.cpp ../app/recentfiles.h \
 		../app/settings.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QSettings \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qsettings.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qvariant.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/q23utility.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/q20utility.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/QApplication \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qapplication.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qtwidgetsglobal.h \
@@ -24589,20 +24859,6 @@ build_files/obj/recentfiles.o: ../app/recentfiles.cpp ../app/recentfiles.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtGui/qtguiexports.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qtwidgets-config.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qtwidgetsexports.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qnativeinterface.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication_platform.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfuture.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfutureinterface.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmutex.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtsan_impl.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qresultstore.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfuture_impl.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthreadpool.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthread.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qrunnable.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qexception.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qpromise.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtGui/qwindowdefs.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qpoint.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qsize.h \
@@ -25105,9 +25361,9 @@ build_files/obj/serialization.o: ../app/serialization.cpp ../app/serialization.h
 		../app/common.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLoggingCategory \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qloggingcategory.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QObject \
 		../app/elementfactory.h \
 		../app/enums.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/QObject \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/QGraphicsItem \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qgraphicsitem.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qtwidgetsglobal.h \
@@ -25660,25 +25916,6 @@ build_files/obj/simulationblocker.o: ../app/simulationblocker.cpp ../app/simulat
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qobject_impl.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qbindingstorage.h \
 		../app/common.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLoggingCategory \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qloggingcategory.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qdebug.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtextstream.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcontiguouscache.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qsharedpointer.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qshareddata.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qsharedpointer_impl.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmap.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qshareddata_impl.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qset.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qhash.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qvarlengtharray.h \
-		../app/simulation.h \
-		../app/elementmapping.h \
-		../app/logicelement/logicinput.h \
-		../app/logicelement.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/QVector \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/qvector.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QCoreApplication \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcoreapplication.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qnativeinterface.h \
@@ -25688,6 +25925,9 @@ build_files/obj/simulationblocker.o: ../app/simulationblocker.cpp ../app/simulat
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmutex.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtsan_impl.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qresultstore.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qmap.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qshareddata.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qshareddata_impl.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfuture_impl.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthreadpool.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qthread.h \
@@ -25695,8 +25935,24 @@ build_files/obj/simulationblocker.o: ../app/simulationblocker.cpp ../app/simulat
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qexception.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qpromise.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qvariant.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qdebug.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qtextstream.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qcontiguouscache.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qsharedpointer.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qset.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qhash.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qvarlengtharray.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/q23utility.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/q20utility.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLoggingCategory \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qloggingcategory.h \
+		../app/simulation.h \
+		../app/elementmapping.h \
+		../app/logicelement/logicinput.h \
+		../app/logicelement.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QVector \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qvector.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/QGraphicsItem \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qgraphicsitem.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qtwidgetsglobal.h \
@@ -26440,6 +26696,8 @@ build_files/obj/workspace.o: ../app/workspace.cpp ../app/workspace.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qdialogbuttonbox.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QSaveFile \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qsavefile.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QStandardPaths \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/qstandardpaths.h \
 		build_files/obj/wiredpanda.js.pch/c++.pch
 	$(CXX) -c -Xclang -include-pch -Xclang build_files/obj/wiredpanda.js.pch/c++.pch $(CXXFLAGS) $(INCPATH) -o build_files/obj/workspace.o ../app/workspace.cpp
 
@@ -26659,6 +26917,7 @@ build_files/obj/main.o: ../app/main.cpp ../app/application.h \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/QApplication \
 		../../Qt/6.9.0/wasm_multithread/include/QtWidgets/qapplication.h \
 		../app/common.h \
+		../../Qt/6.9.0/wasm_multithread/include/QtCore/QCoreApplication \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QLoggingCategory \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qloggingcategory.h \
 		../app/globalproperties.h \
@@ -26711,7 +26970,6 @@ build_files/obj/main.o: ../app/main.cpp ../app/application.h \
 		../app/ic.h \
 		../app/elementmapping.h \
 		../app/logicelement/logicinput.h \
-		../../Qt/6.9.0/wasm_multithread/include/QtCore/QCoreApplication \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/QFileSystemWatcher \
 		../../Qt/6.9.0/wasm_multithread/include/QtCore/qfilesystemwatcher.h \
 		../app/element/inputbutton.h \
