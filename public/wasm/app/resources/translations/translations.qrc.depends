@@ -1,0 +1,44 @@
+<RCC>
+    <qresource prefix="/translations">
+        <file>qt_pt_BR.qm</file>
+        <file>wpanda_ar.qm</file>
+        <file>wpanda_bg.qm</file>
+        <file>wpanda_bn.qm</file>
+        <file>wpanda_cs.qm</file>
+        <file>wpanda_da.qm</file>
+        <file>wpanda_de.qm</file>
+        <file>wpanda_el.qm</file>
+        <file>wpanda_en.qm</file>
+        <file>wpanda_es.qm</file>
+        <file>wpanda_et.qm</file>
+        <file>wpanda_fa.qm</file>
+        <file>wpanda_fi.qm</file>
+        <file>wpanda_fr.qm</file>
+        <file>wpanda_he.qm</file>
+        <file>wpanda_hi.qm</file>
+        <file>wpanda_hr.qm</file>
+        <file>wpanda_hu.qm</file>
+        <file>wpanda_id.qm</file>
+        <file>wpanda_it.qm</file>
+        <file>wpanda_ja.qm</file>
+        <file>wpanda_ko.qm</file>
+        <file>wpanda_lt.qm</file>
+        <file>wpanda_lv.qm</file>
+        <file>wpanda_ms.qm</file>
+        <file>wpanda_nb.qm</file>
+        <file>wpanda_nl.qm</file>
+        <file>wpanda_pl.qm</file>
+        <file>wpanda_pt.qm</file>
+        <file>wpanda_pt_BR.qm</file>
+        <file>wpanda_ro.qm</file>
+        <file>wpanda_ru.qm</file>
+        <file>wpanda_sk.qm</file>
+        <file>wpanda_sv.qm</file>
+        <file>wpanda_th.qm</file>
+        <file>wpanda_tr.qm</file>
+        <file>wpanda_uk.qm</file>
+        <file>wpanda_vi.qm</file>
+        <file>wpanda_zh_Hans.qm</file>
+        <file>wpanda_zh_Hant.qm</file>
+    </qresource>
+</RCC>

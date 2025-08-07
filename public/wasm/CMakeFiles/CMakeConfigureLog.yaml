@@ -1,0 +1,213 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/local/share/cmake-3.31/Modules/CMakeDetermineSystem.cmake:200 (message)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      The target system is: Emscripten - 1 - x86
+      The host system is: Linux - 6.11.0-1018-azure - x86_64
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/local/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/local/share/cmake-3.31/Modules/CheckCXXSourceCompiles.cmake:58 (cmake_check_source_compiles)"
+      - "/usr/local/share/cmake-3.31/Modules/FindThreads.cmake:99 (CHECK_CXX_SOURCE_COMPILES)"
+      - "/usr/local/share/cmake-3.31/Modules/FindThreads.cmake:163 (_threads_check_libc)"
+      - "/usr/local/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/QtPublicDependencyHelpers.cmake:36 (find_dependency)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/Qt6Dependencies.cmake:34 (_qt_internal_find_third_party_dependencies)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/Qt6Config.cmake:162 (include)"
+      - "CMakeLists.txt:17 (find_package)"
+    directories:
+      source: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-jDPPQE"
+      binary: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-jDPPQE"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/cmake/Modules;/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6;/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules;/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/3rdparty/kwin"
+    buildResult:
+      variable: "CMAKE_HAVE_LIBC_PTHREAD"
+      cached: true
+      stdout: |
+        Change Dir: '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-jDPPQE'
+        
+        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_65d43/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_65d43.dir/build.make CMakeFiles/cmTC_65d43.dir/build
+        gmake[1]: Entering directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-jDPPQE'
+        Building CXX object CMakeFiles/cmTC_65d43.dir/src.cxx.o
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -DCMAKE_HAVE_LIBC_PTHREAD  -std=c++20 -MD -MT CMakeFiles/cmTC_65d43.dir/src.cxx.o -MF CMakeFiles/cmTC_65d43.dir/src.cxx.o.d -o CMakeFiles/cmTC_65d43.dir/src.cxx.o -c /home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-jDPPQE/src.cxx
+        shared:INFO: (Emscripten: Running sanity checks)
+        Linking CXX executable cmTC_65d43.js
+        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_65d43.dir/link.txt --verbose=1
+        cache:INFO: generating system asset: symbol_lists/dae99d994d603fb13aa7edd6245a890f9752f2c4.json... (this will be cached in "/home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/cache/symbol_lists/dae99d994d603fb13aa7edd6245a890f9752f2c4.json" for subsequent builds)
+        cache:INFO:  - ok
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ @CMakeFiles/cmTC_65d43.dir/objects1.rsp -o cmTC_65d43.js
+        gmake[1]: Leaving directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-jDPPQE'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/local/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/local/share/cmake-3.31/Modules/CheckCXXSourceCompiles.cmake:58 (cmake_check_source_compiles)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/FindWrapAtomic.cmake:36 (check_cxx_source_compiles)"
+      - "/usr/local/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/QtPublicDependencyHelpers.cmake:36 (find_dependency)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6Core/Qt6CoreDependencies.cmake:38 (_qt_internal_find_third_party_dependencies)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6Core/Qt6CoreConfig.cmake:45 (include)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/Qt6Config.cmake:212 (find_package)"
+      - "CMakeLists.txt:17 (find_package)"
+    checks:
+      - "Performing Test HAVE_STDATOMIC"
+    directories:
+      source: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PAxmZr"
+      binary: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PAxmZr"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/cmake/Modules;/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6;/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules;/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/3rdparty/kwin"
+    buildResult:
+      variable: "HAVE_STDATOMIC"
+      cached: true
+      stdout: |
+        Change Dir: '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PAxmZr'
+        
+        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_4c63b/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_4c63b.dir/build.make CMakeFiles/cmTC_4c63b.dir/build
+        gmake[1]: Entering directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PAxmZr'
+        Building CXX object CMakeFiles/cmTC_4c63b.dir/src.cxx.o
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -DHAVE_STDATOMIC  -std=c++20 -MD -MT CMakeFiles/cmTC_4c63b.dir/src.cxx.o -MF CMakeFiles/cmTC_4c63b.dir/src.cxx.o.d -o CMakeFiles/cmTC_4c63b.dir/src.cxx.o -c /home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PAxmZr/src.cxx
+        Linking CXX executable cmTC_4c63b.js
+        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4c63b.dir/link.txt --verbose=1
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ @CMakeFiles/cmTC_4c63b.dir/objects1.rsp -o cmTC_4c63b.js
+        gmake[1]: Leaving directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PAxmZr'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/local/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/local/share/cmake-3.31/Modules/CheckCXXSourceCompiles.cmake:58 (cmake_check_source_compiles)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/FindWrapRt.cmake:23 (check_cxx_source_compiles)"
+      - "/usr/local/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/QtPublicDependencyHelpers.cmake:36 (find_dependency)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6Core/Qt6CoreDependencies.cmake:38 (_qt_internal_find_third_party_dependencies)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6Core/Qt6CoreConfig.cmake:45 (include)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/Qt6Config.cmake:212 (find_package)"
+      - "CMakeLists.txt:17 (find_package)"
+    checks:
+      - "Performing Test HAVE_GETTIME"
+    directories:
+      source: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-RYq8CO"
+      binary: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-RYq8CO"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/cmake/Modules;/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6;/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules;/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/3rdparty/kwin"
+    buildResult:
+      variable: "HAVE_GETTIME"
+      cached: true
+      stdout: |
+        Change Dir: '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-RYq8CO'
+        
+        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_0d1d2/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_0d1d2.dir/build.make CMakeFiles/cmTC_0d1d2.dir/build
+        gmake[1]: Entering directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-RYq8CO'
+        Building CXX object CMakeFiles/cmTC_0d1d2.dir/src.cxx.o
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -DHAVE_GETTIME  -std=c++20 -MD -MT CMakeFiles/cmTC_0d1d2.dir/src.cxx.o -MF CMakeFiles/cmTC_0d1d2.dir/src.cxx.o.d -o CMakeFiles/cmTC_0d1d2.dir/src.cxx.o -c /home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-RYq8CO/src.cxx
+        Linking CXX executable cmTC_0d1d2.js
+        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0d1d2.dir/link.txt --verbose=1
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ @CMakeFiles/cmTC_0d1d2.dir/objects1.rsp -o cmTC_0d1d2.js
+        gmake[1]: Leaving directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-RYq8CO'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/local/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/local/share/cmake-3.31/Modules/CheckCXXSourceCompiles.cmake:58 (cmake_check_source_compiles)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/FindWrapRt.cmake:34 (check_cxx_source_compiles)"
+      - "/usr/local/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/QtPublicDependencyHelpers.cmake:36 (find_dependency)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6Core/Qt6CoreDependencies.cmake:38 (_qt_internal_find_third_party_dependencies)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6Core/Qt6CoreConfig.cmake:45 (include)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/Qt6Config.cmake:212 (find_package)"
+      - "CMakeLists.txt:17 (find_package)"
+    checks:
+      - "Performing Test HAVE_SHM_OPEN_SHM_UNLINK"
+    directories:
+      source: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PjxCTI"
+      binary: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PjxCTI"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/cmake/Modules;/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6;/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules;/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/3rdparty/kwin"
+    buildResult:
+      variable: "HAVE_SHM_OPEN_SHM_UNLINK"
+      cached: true
+      stdout: |
+        Change Dir: '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PjxCTI'
+        
+        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_3c14e/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_3c14e.dir/build.make CMakeFiles/cmTC_3c14e.dir/build
+        gmake[1]: Entering directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PjxCTI'
+        Building CXX object CMakeFiles/cmTC_3c14e.dir/src.cxx.o
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -DHAVE_SHM_OPEN_SHM_UNLINK  -std=c++20 -MD -MT CMakeFiles/cmTC_3c14e.dir/src.cxx.o -MF CMakeFiles/cmTC_3c14e.dir/src.cxx.o.d -o CMakeFiles/cmTC_3c14e.dir/src.cxx.o -c /home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PjxCTI/src.cxx
+        Linking CXX executable cmTC_3c14e.js
+        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3c14e.dir/link.txt --verbose=1
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ @CMakeFiles/cmTC_3c14e.dir/objects1.rsp -o cmTC_3c14e.js
+        gmake[1]: Leaving directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PjxCTI'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/local/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/local/share/cmake-3.31/Modules/CheckCXXSourceCompiles.cmake:58 (cmake_check_source_compiles)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules/FindEGL.cmake:128 (check_cxx_source_compiles)"
+      - "/usr/local/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/QtPublicDependencyHelpers.cmake:36 (find_dependency)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6Gui/Qt6GuiDependencies.cmake:39 (_qt_internal_find_third_party_dependencies)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6Gui/Qt6GuiConfig.cmake:43 (include)"
+      - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/Qt6Config.cmake:212 (find_package)"
+      - "CMakeLists.txt:17 (find_package)"
+    checks:
+      - "Performing Test HAVE_EGL"
+    directories:
+      source: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PMddDS"
+      binary: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PMddDS"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/cmake/Modules;/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6;/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules;/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/3rdparty/kwin"
+    buildResult:
+      variable: "HAVE_EGL"
+      cached: true
+      stdout: |
+        Change Dir: '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PMddDS'
+        
+        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_a0cc7/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_a0cc7.dir/build.make CMakeFiles/cmTC_a0cc7.dir/build
+        gmake[1]: Entering directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PMddDS'
+        Building CXX object CMakeFiles/cmTC_a0cc7.dir/src.cxx.o
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -DHAVE_EGL  -std=c++20 -MD -MT CMakeFiles/cmTC_a0cc7.dir/src.cxx.o -MF CMakeFiles/cmTC_a0cc7.dir/src.cxx.o.d -o CMakeFiles/cmTC_a0cc7.dir/src.cxx.o -c /home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PMddDS/src.cxx
+        Linking CXX executable cmTC_a0cc7.js
+        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a0cc7.dir/link.txt --verbose=1
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ @CMakeFiles/cmTC_a0cc7.dir/objects1.rsp -o cmTC_a0cc7.js
+        gmake[1]: Leaving directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-PMddDS'
+        
+      exitCode: 0
+...

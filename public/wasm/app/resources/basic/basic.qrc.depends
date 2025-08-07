@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/basic">
+        <file>and.svg</file>
+        <file>demux.svg</file>
+        <file>ic-panda.svg</file>
+        <file>ic-panda2.svg</file>
+        <file>ic.svg</file>
+        <file>mux.svg</file>
+        <file>nand.svg</file>
+        <file>node.svg</file>
+        <file>nor.svg</file>
+        <file>not.svg</file>
+        <file>or.svg</file>
+        <file>truthtable-rotated.svg</file>
+        <file>truthtable.svg</file>
+        <file>xnor.svg</file>
+        <file>xor.svg</file>
+    </qresource>
+</RCC>
