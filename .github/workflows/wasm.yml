@@ -65,9 +65,14 @@ jobs:
         # Checkout the site branch
         git checkout site
 
-        # Copy the built files to the public folder
+        # Copy only the necessary WASM files to the public folder
         mkdir -p ./public/wasm
-        cp -r ./build/* ./public/wasm/
+        cp ./build/wiredpanda.js ./public/wasm/
+        cp ./build/wiredpanda.wasm ./public/wasm/
+        cp ./build/index.html ./public/wasm/
+        cp ./build/coi-serviceworker.min.js ./public/wasm/
+        cp ./build/qtloader.js ./public/wasm/ 2>/dev/null || true
+        cp ./build/qtlogo.svg ./public/wasm/ 2>/dev/null || true
 
         # Stage and commit the changes
         git add ./public/wasm/
