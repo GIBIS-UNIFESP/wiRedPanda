@@ -22,8 +22,8 @@ events:
       - "/home/runner/work/wiRedPanda/Qt/6.9.0/wasm_multithread/lib/cmake/Qt6/Qt6Config.cmake:162 (include)"
       - "CMakeLists.txt:17 (find_package)"
     directories:
-      source: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-bG24Bx"
-      binary: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-bG24Bx"
+      source: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-hV5DcV"
+      binary: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-hV5DcV"
     cmakeVariables:
       CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
       CMAKE_CXX_FLAGS: ""
@@ -34,20 +34,20 @@ events:
       variable: "CMAKE_HAVE_LIBC_PTHREAD"
       cached: true
       stdout: |
-        Change Dir: '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-bG24Bx'
+        Change Dir: '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-hV5DcV'
         
-        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_4f3f3/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_4f3f3.dir/build.make CMakeFiles/cmTC_4f3f3.dir/build
-        gmake[1]: Entering directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-bG24Bx'
-        Building CXX object CMakeFiles/cmTC_4f3f3.dir/src.cxx.o
-        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -DCMAKE_HAVE_LIBC_PTHREAD  -std=c++20 -MD -MT CMakeFiles/cmTC_4f3f3.dir/src.cxx.o -MF CMakeFiles/cmTC_4f3f3.dir/src.cxx.o.d -o CMakeFiles/cmTC_4f3f3.dir/src.cxx.o -c /home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-bG24Bx/src.cxx
+        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_bf9dc/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_bf9dc.dir/build.make CMakeFiles/cmTC_bf9dc.dir/build
+        gmake[1]: Entering directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-hV5DcV'
+        Building CXX object CMakeFiles/cmTC_bf9dc.dir/src.cxx.o
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -DCMAKE_HAVE_LIBC_PTHREAD  -std=c++20 -MD -MT CMakeFiles/cmTC_bf9dc.dir/src.cxx.o -MF CMakeFiles/cmTC_bf9dc.dir/src.cxx.o.d -o CMakeFiles/cmTC_bf9dc.dir/src.cxx.o -c /home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-hV5DcV/src.cxx
         shared:INFO: (Emscripten: Running sanity checks)
-        Linking CXX executable cmTC_4f3f3.js
-        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4f3f3.dir/link.txt --verbose=1
+        Linking CXX executable cmTC_bf9dc.js
+        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bf9dc.dir/link.txt --verbose=1
         cache:INFO: generating system asset: symbol_lists/dae99d994d603fb13aa7edd6245a890f9752f2c4.json... (this will be cached in "/home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/cache/symbol_lists/dae99d994d603fb13aa7edd6245a890f9752f2c4.json" for subsequent builds)
         cache:INFO:  - ok
-        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ @CMakeFiles/cmTC_4f3f3.dir/objects1.rsp -o cmTC_4f3f3.js
-        gmake[1]: Leaving directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-bG24Bx'
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ @CMakeFiles/cmTC_bf9dc.dir/objects1.rsp -o cmTC_bf9dc.js
+        gmake[1]: Leaving directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-hV5DcV'
         
       exitCode: 0
   -
@@ -65,8 +65,8 @@ events:
     checks:
       - "Performing Test HAVE_STDATOMIC"
     directories:
-      source: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-vq6eNm"
-      binary: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-vq6eNm"
+      source: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-DdJPS1"
+      binary: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-DdJPS1"
     cmakeVariables:
       CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
       CMAKE_CXX_FLAGS: ""
@@ -77,17 +77,17 @@ events:
       variable: "HAVE_STDATOMIC"
       cached: true
       stdout: |
-        Change Dir: '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-vq6eNm'
+        Change Dir: '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-DdJPS1'
         
-        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_8614f/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_8614f.dir/build.make CMakeFiles/cmTC_8614f.dir/build
-        gmake[1]: Entering directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-vq6eNm'
-        Building CXX object CMakeFiles/cmTC_8614f.dir/src.cxx.o
-        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -DHAVE_STDATOMIC  -std=c++20 -MD -MT CMakeFiles/cmTC_8614f.dir/src.cxx.o -MF CMakeFiles/cmTC_8614f.dir/src.cxx.o.d -o CMakeFiles/cmTC_8614f.dir/src.cxx.o -c /home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-vq6eNm/src.cxx
-        Linking CXX executable cmTC_8614f.js
-        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8614f.dir/link.txt --verbose=1
-        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ @CMakeFiles/cmTC_8614f.dir/objects1.rsp -o cmTC_8614f.js
-        gmake[1]: Leaving directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-vq6eNm'
+        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_7df6c/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_7df6c.dir/build.make CMakeFiles/cmTC_7df6c.dir/build
+        gmake[1]: Entering directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-DdJPS1'
+        Building CXX object CMakeFiles/cmTC_7df6c.dir/src.cxx.o
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -DHAVE_STDATOMIC  -std=c++20 -MD -MT CMakeFiles/cmTC_7df6c.dir/src.cxx.o -MF CMakeFiles/cmTC_7df6c.dir/src.cxx.o.d -o CMakeFiles/cmTC_7df6c.dir/src.cxx.o -c /home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-DdJPS1/src.cxx
+        Linking CXX executable cmTC_7df6c.js
+        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7df6c.dir/link.txt --verbose=1
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ @CMakeFiles/cmTC_7df6c.dir/objects1.rsp -o cmTC_7df6c.js
+        gmake[1]: Leaving directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-DdJPS1'
         
       exitCode: 0
   -
@@ -105,8 +105,8 @@ events:
     checks:
       - "Performing Test HAVE_GETTIME"
     directories:
-      source: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-W0kgUx"
-      binary: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-W0kgUx"
+      source: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-pDooIh"
+      binary: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-pDooIh"
     cmakeVariables:
       CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
       CMAKE_CXX_FLAGS: ""
@@ -117,17 +117,17 @@ events:
       variable: "HAVE_GETTIME"
       cached: true
       stdout: |
-        Change Dir: '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-W0kgUx'
+        Change Dir: '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-pDooIh'
         
-        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_d69df/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_d69df.dir/build.make CMakeFiles/cmTC_d69df.dir/build
-        gmake[1]: Entering directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-W0kgUx'
-        Building CXX object CMakeFiles/cmTC_d69df.dir/src.cxx.o
-        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -DHAVE_GETTIME  -std=c++20 -MD -MT CMakeFiles/cmTC_d69df.dir/src.cxx.o -MF CMakeFiles/cmTC_d69df.dir/src.cxx.o.d -o CMakeFiles/cmTC_d69df.dir/src.cxx.o -c /home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-W0kgUx/src.cxx
-        Linking CXX executable cmTC_d69df.js
-        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d69df.dir/link.txt --verbose=1
-        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ @CMakeFiles/cmTC_d69df.dir/objects1.rsp -o cmTC_d69df.js
-        gmake[1]: Leaving directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-W0kgUx'
+        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_acef5/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_acef5.dir/build.make CMakeFiles/cmTC_acef5.dir/build
+        gmake[1]: Entering directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-pDooIh'
+        Building CXX object CMakeFiles/cmTC_acef5.dir/src.cxx.o
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -DHAVE_GETTIME  -std=c++20 -MD -MT CMakeFiles/cmTC_acef5.dir/src.cxx.o -MF CMakeFiles/cmTC_acef5.dir/src.cxx.o.d -o CMakeFiles/cmTC_acef5.dir/src.cxx.o -c /home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-pDooIh/src.cxx
+        Linking CXX executable cmTC_acef5.js
+        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_acef5.dir/link.txt --verbose=1
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ @CMakeFiles/cmTC_acef5.dir/objects1.rsp -o cmTC_acef5.js
+        gmake[1]: Leaving directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-pDooIh'
         
       exitCode: 0
   -
@@ -145,8 +145,8 @@ events:
     checks:
       - "Performing Test HAVE_SHM_OPEN_SHM_UNLINK"
     directories:
-      source: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-bKbbRD"
-      binary: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-bKbbRD"
+      source: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-wg0LeG"
+      binary: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-wg0LeG"
     cmakeVariables:
       CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
       CMAKE_CXX_FLAGS: ""
@@ -157,17 +157,17 @@ events:
       variable: "HAVE_SHM_OPEN_SHM_UNLINK"
       cached: true
       stdout: |
-        Change Dir: '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-bKbbRD'
+        Change Dir: '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-wg0LeG'
         
-        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_e2ae4/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_e2ae4.dir/build.make CMakeFiles/cmTC_e2ae4.dir/build
-        gmake[1]: Entering directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-bKbbRD'
-        Building CXX object CMakeFiles/cmTC_e2ae4.dir/src.cxx.o
-        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -DHAVE_SHM_OPEN_SHM_UNLINK  -std=c++20 -MD -MT CMakeFiles/cmTC_e2ae4.dir/src.cxx.o -MF CMakeFiles/cmTC_e2ae4.dir/src.cxx.o.d -o CMakeFiles/cmTC_e2ae4.dir/src.cxx.o -c /home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-bKbbRD/src.cxx
-        Linking CXX executable cmTC_e2ae4.js
-        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e2ae4.dir/link.txt --verbose=1
-        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ @CMakeFiles/cmTC_e2ae4.dir/objects1.rsp -o cmTC_e2ae4.js
-        gmake[1]: Leaving directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-bKbbRD'
+        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_7d93a/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_7d93a.dir/build.make CMakeFiles/cmTC_7d93a.dir/build
+        gmake[1]: Entering directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-wg0LeG'
+        Building CXX object CMakeFiles/cmTC_7d93a.dir/src.cxx.o
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -DHAVE_SHM_OPEN_SHM_UNLINK  -std=c++20 -MD -MT CMakeFiles/cmTC_7d93a.dir/src.cxx.o -MF CMakeFiles/cmTC_7d93a.dir/src.cxx.o.d -o CMakeFiles/cmTC_7d93a.dir/src.cxx.o -c /home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-wg0LeG/src.cxx
+        Linking CXX executable cmTC_7d93a.js
+        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7d93a.dir/link.txt --verbose=1
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ @CMakeFiles/cmTC_7d93a.dir/objects1.rsp -o cmTC_7d93a.js
+        gmake[1]: Leaving directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-wg0LeG'
         
       exitCode: 0
   -
@@ -185,8 +185,8 @@ events:
     checks:
       - "Performing Test HAVE_EGL"
     directories:
-      source: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-j6Nh6Y"
-      binary: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-j6Nh6Y"
+      source: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-8f7AWL"
+      binary: "/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-8f7AWL"
     cmakeVariables:
       CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
       CMAKE_CXX_FLAGS: ""
@@ -197,17 +197,17 @@ events:
       variable: "HAVE_EGL"
       cached: true
       stdout: |
-        Change Dir: '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-j6Nh6Y'
+        Change Dir: '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-8f7AWL'
         
-        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_86bbb/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_86bbb.dir/build.make CMakeFiles/cmTC_86bbb.dir/build
-        gmake[1]: Entering directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-j6Nh6Y'
-        Building CXX object CMakeFiles/cmTC_86bbb.dir/src.cxx.o
-        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -DHAVE_EGL  -std=c++20 -MD -MT CMakeFiles/cmTC_86bbb.dir/src.cxx.o -MF CMakeFiles/cmTC_86bbb.dir/src.cxx.o.d -o CMakeFiles/cmTC_86bbb.dir/src.cxx.o -c /home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-j6Nh6Y/src.cxx
-        Linking CXX executable cmTC_86bbb.js
-        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_86bbb.dir/link.txt --verbose=1
-        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ @CMakeFiles/cmTC_86bbb.dir/objects1.rsp -o cmTC_86bbb.js
-        gmake[1]: Leaving directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-j6Nh6Y'
+        Run Build Command(s): /usr/local/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_35f1f/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_35f1f.dir/build.make CMakeFiles/cmTC_35f1f.dir/build
+        gmake[1]: Entering directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-8f7AWL'
+        Building CXX object CMakeFiles/cmTC_35f1f.dir/src.cxx.o
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ -DHAVE_EGL  -std=c++20 -MD -MT CMakeFiles/cmTC_35f1f.dir/src.cxx.o -MF CMakeFiles/cmTC_35f1f.dir/src.cxx.o.d -o CMakeFiles/cmTC_35f1f.dir/src.cxx.o -c /home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-8f7AWL/src.cxx
+        Linking CXX executable cmTC_35f1f.js
+        /usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_35f1f.dir/link.txt --verbose=1
+        /home/runner/work/wiRedPanda/wiRedPanda/emsdk/upstream/emscripten/em++ @CMakeFiles/cmTC_35f1f.dir/objects1.rsp -o cmTC_35f1f.js
+        gmake[1]: Leaving directory '/home/runner/work/wiRedPanda/wiRedPanda/build/CMakeFiles/CMakeScratch/TryCompile-8f7AWL'
         
       exitCode: 0
 ...
