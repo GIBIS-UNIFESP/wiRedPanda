@@ -190,8 +190,7 @@ async function qtLoad(config)
     const originalLocateFile = config.locateFile;
     config.locateFile = filename => {
         const originalLocatedFilename = originalLocateFile ? originalLocateFile(filename) : filename;
-        if (originalLocatedFilename.startsWith(
-                    'libQt6')) // wasmqtdeploy rely on this behavior, update both in case of change
+        if (originalLocatedFilename.startsWith('libQt6'))
             return `${config.qt.qtdir}/lib/${originalLocatedFilename}`;
         return originalLocatedFilename;
     }
