@@ -1,89 +1,80 @@
-<!DOCTYPE html>
+<!--
+Copyright (C) 2024 The Qt Company Ltd.
+SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+-->
+
+<!doctype html>
 <html lang="en-us">
-<head>
+  <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>wiRedPanda - Digital Logic Simulator</title>
+
+    <!--Set visual viewport size for mobile devices to the device size,
+        witch results in a scale of 1 and a 1:1 mapping between CSS pixels
+        and Qt device independent pixels. -->
+    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=0"/>
+
+    <title>wiredpanda</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f5f5f5;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        #qt-container {
-            flex: 1;
-            position: relative;
-            background: white;
-            margin: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        #loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #666;
-        }
-        #progress-bar {
-            width: 300px;
-            height: 20px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 20px auto;
-        }
-        #progress {
-            height: 100%;
-            background: linear-gradient(90deg, #4CAF50, #45a049);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-        .hidden { display: none !important; }
+      /* Make the html body cover the entire (visual) viewport with no scroll bars. */
+      html, body { padding: 0; margin: 0; overflow: hidden; height: 100% }
+      #screen { width: 100%; height: 100%; }
     </style>
-</head>
-<body>
-    <!-- Load COI serviceworker first for SharedArrayBuffer support -->
-    <script src="coi-serviceworker.min.js"></script>
-    
-    <div id="loading">
-        <h2>Loading wiRedPanda...</h2>
-        <div id="progress-bar">
-            <div id="progress"></div>
-        </div>
-        <p id="status">Initializing...</p>
-    </div>
-    <div id="qt-container"></div>
-    
+  </head>
+  <body onload="init()">
+    <figure style="overflow:visible;" id="qtspinner">
+      <center style="margin-top:1.5em; line-height:150%">
+        <img src="qtlogo.svg" width="320" height="200" style="display:block"></img>
+        <strong>Qt for WebAssembly: wiredpanda</strong>
+        <div id="qtstatus"></div>
+        <noscript>JavaScript is disabled. Please enable JavaScript to use this application.</noscript>
+      </center>
+    </figure>
+    <div id="screen"></div>
+
     <script type="text/javascript">
-        // Configure Qt container
-        window.qtContainerElements = [document.getElementById("qt-container")];
-        
-        // Progress tracking functions
-        window.qtStatusChanged = function(status) {
-            const statusEl = document.getElementById('status');
-            if (statusEl) statusEl.textContent = status;
-        };
-        
-        window.qtProgressChanged = function(progress) {
-            const progressEl = document.getElementById('progress');
-            if (progressEl) {
-                progressEl.style.width = progress + '%';
-                if (progress >= 100) {
-                    setTimeout(() => {
-                        const loadingEl = document.getElementById('loading');
-                        if (loadingEl) loadingEl.classList.add('hidden');
-                    }, 500);
-                }
+        async function init()
+        {
+            const spinner = document.querySelector('#qtspinner');
+            const screen = document.querySelector('#screen');
+            const status = document.querySelector('#qtstatus');
+
+            const showUi = (ui) => {
+                [spinner, screen].forEach(element => element.style.display = 'none');
+                if (screen === ui)
+                    screen.style.position = 'default';
+                ui.style.display = 'block';
             }
-        };
+
+            try {
+                showUi(spinner);
+                status.innerHTML = 'Loading...';
+
+                const instance = await qtLoad({
+                    qt: {
+                        onLoaded: () => showUi(screen),
+                        onExit: exitData =>
+                        {
+                            status.innerHTML = 'Application exit';
+                            status.innerHTML +=
+                                exitData.code !== undefined ? ` with code ${exitData.code}` : '';
+                            status.innerHTML +=
+                                exitData.text !== undefined ? ` (${exitData.text})` : '';
+                            showUi(spinner);
+                        },
+                        entryFunction: window.wiredpanda_entry,
+                        containerElements: [screen],
+                        
+                    }
+                });
+            } catch (e) {
+                console.error(e);
+                console.error(e.stack);
+            }
+        }
     </script>
+    <script src="coi-serviceworker.min.js"></script>
     <script src="wiredpanda.js"></script>
-</body>
+    <script type="text/javascript" src="qtloader.js"></script>
+  </body>
 </html>
