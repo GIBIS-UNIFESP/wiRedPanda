@@ -14,14 +14,20 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 6.2 QUIET COMPONENTS Core Gui PrintSupport Multimedia Widgets Svg Test)
-if(Qt6_FOUND)
+if(EMSCRIPTEN)
+    find_package(Qt6 6.9 REQUIRED COMPONENTS Core Gui PrintSupport Multimedia Widgets Svg Test)
     set(QT_VERSION_MAJOR 6)
     set(QT_LIBS Qt6::Core Qt6::Gui Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
 else()
-    find_package(Qt5 5.15 REQUIRED COMPONENTS Core Gui PrintSupport Multimedia Widgets Svg Test)
-    set(QT_VERSION_MAJOR 5)
-    set(QT_LIBS Qt5::Core Qt5::Gui Qt5::PrintSupport Qt5::Multimedia Qt5::Widgets Qt5::Svg Qt5::Test)
+    find_package(Qt6 6.2 QUIET COMPONENTS Core Gui PrintSupport Multimedia Widgets Svg Test)
+    if(Qt6_FOUND)
+        set(QT_VERSION_MAJOR 6)
+        set(QT_LIBS Qt6::Core Qt6::Gui Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
+    else()
+        find_package(Qt5 5.15 REQUIRED COMPONENTS Core Gui PrintSupport Multimedia Widgets Svg Test)
+        set(QT_VERSION_MAJOR 5)
+        set(QT_LIBS Qt5::Core Qt5::Gui Qt5::PrintSupport Qt5::Multimedia Qt5::Widgets Qt5::Svg Qt5::Test)
+    endif()
 endif()
 
 if((QT_VERSION_MAJOR EQUAL 5 AND Qt5_VERSION VERSION_LESS 5.15) OR
@@ -108,6 +114,10 @@ endif()
 if(EMSCRIPTEN)
     # Essential WASM flags
     add_link_options(-sASYNCIFY -Os)
+
+    # Additional optimization flags recommended by Qt docs
+    add_compile_options(-Os -flto)
+    add_link_options(-flto)
 
     message(STATUS "WebAssembly build detected - Adding ASYNCIFY and optimization flags")
 endif()
