@@ -28,7 +28,6 @@ jobs:
         apt-get update
         apt-get install -y \
           build-essential \
-          cmake \
           git \
           jq \
           libasound2 \
@@ -62,6 +61,15 @@ jobs:
           ninja-build \
           sudo \
           wget
+
+    - name: Install Modern CMake
+      if: runner.os == 'Linux'
+      run: |
+        # Install CMake 3.25+ from Kitware's APT repository
+        wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+        echo 'deb https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null
+        apt-get update
+        apt-get install -y cmake
 
     - name: Install Ubuntu Python
       if: runner.os == 'Linux'
@@ -132,19 +140,16 @@ jobs:
     - name: Build Ubuntu
       if: runner.os == 'Linux'
       run: |
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j4
-        mkdir -p app/lib test/lib
-        cp ../thirdparty/sentry/bin/crashpad_handler app/
-        cp ../thirdparty/sentry/lib/libsentry.so app/lib/
-        cp ../thirdparty/sentry/lib/libsentry.so test/lib/
+        cmake -B build -G Ninja
+        cmake --build build --config Release
+        mkdir -p build/lib
+        cp thirdparty/sentry/bin/crashpad_handler build/
+        cp thirdparty/sentry/lib/libsentry.so build/lib/
 
     - name: Test Ubuntu
       if: runner.os == 'Linux'
       run: |
-        ./build/test/wiredpanda-test -platform offscreen
+        QT_QPA_PLATFORM=offscreen ./build/wiredpanda-test
 
     - name: linuxdeployqt
       if: runner.os == 'Linux'
@@ -152,7 +157,7 @@ jobs:
         mkdir -p appimage appimage/lib
         cp app/resources/wpanda.desktop appimage/wpanda.desktop
         cp app/resources/wpanda.svg appimage/wpanda_icon.svg
-        cp build/app/wiredpanda appimage
+        cp build/wiredpanda appimage
         cp thirdparty/sentry/lib/libsentry.so appimage/lib/
         wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
         chmod +x ./linuxdeployqt-continuous-x86_64.AppImage
@@ -169,7 +174,7 @@ jobs:
         git config --global --add safe.directory '*'
         sentry-cli login --auth-token "$SENTRY_AUTH_TOKEN"
         sentry-cli releases new "wiredpanda@$VERSION" -p wiredpanda
-        sentry-cli debug-files upload --include-sources -p wiredpanda build/app/
+        sentry-cli debug-files upload --include-sources -p wiredpanda build/
         sentry-cli debug-files upload --include-sources -p wiredpanda $QT_ROOT_DIR
         sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
 
@@ -201,32 +206,26 @@ jobs:
     - name: Build Windows
       if: runner.os == 'Windows'
       run: |
-        choco install jom
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        jom
-        cp ../thirdparty/sentry/bin/crashpad_handler.exe app/release/
-        cp ../thirdparty/sentry/bin/sentry.dll app/release/
-        cp ../thirdparty/sentry/bin/crashpad_wer.dll app/release/
-        cp ../thirdparty/sentry/bin/sentry.dll test/release/
+        cmake -B build -G "Visual Studio 17 2022" -A ${{ startsWith(matrix.qt, '5') && 'Win32' || 'x64' }}
+        cmake --build build --config Release
+        cp thirdparty/sentry/bin/crashpad_handler.exe build/Release/
+        cp thirdparty/sentry/bin/sentry.dll build/Release/
+        cp thirdparty/sentry/bin/crashpad_wer.dll build/Release/
 
     - name: Test Windows
       if: runner.os == 'Windows'
       run: |
-        cd build
-        jom check
+        cd build/Release
+        powershell -Command "Start-Process -FilePath 'wiredpanda-test.exe' -Wait -NoNewWindow"
 
     - name: windeployqt
       if: runner.os == 'Windows'
       run : |
-        cp -r examples build/app/release
-        cd build/app/release
+        cp -r examples build/Release
+        cd build/Release
         windeployqt --compiler-runtime wiredpanda.exe
-        rm wiredpanda_pch.obj
-        rm wiredpanda_pch.pch
         cd ..
-        ren release wiredpanda-$env:VERSION
+        ren Release wiredpanda-$env:VERSION
         Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath wiRedPanda-$env:VERSION-Windows-Qt${{ matrix.qt }}-Portable.zip
 
     - name: Upload Windows Debug Symbols to Sentry
@@ -236,7 +235,7 @@ jobs:
       run: |
         ./sentry-cli.exe login --auth-token $env:SENTRY_AUTH_TOKEN
         ./sentry-cli.exe releases new wiredpanda@$env:VERSION -p wiredpanda
-        ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda build/app/
+        ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda build/
         ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda D:/a/wiRedPanda/Qt/
         ./sentry-cli.exe releases set-commits --auto wiredpanda@$env:VERSION --log-level=debug
 
@@ -245,7 +244,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         fail_on_unmatched_files: true
-        files: 'build/app/*.zip'
+        files: 'build/*.zip'
 
 # =================================
 
@@ -262,34 +261,30 @@ jobs:
     - name: Build macOS
       if: runner.os == 'macOS'
       run: |
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j3
-        mkdir -p app/wiredpanda.app/Contents/MacOS
-        mkdir -p app/wiredpanda.app/Contents/Frameworks
-        cp ../thirdparty/sentry/bin/crashpad_handler app/wiredpanda.app/Contents/MacOS/
-        cp ../thirdparty/sentry/lib/libsentry.dylib app/wiredpanda.app/Contents/Frameworks/
-        mkdir -p test/wiredpanda-test.app/Contents/MacOS
-        mkdir -p test/wiredpanda-test.app/Contents/Frameworks
-        cp ../thirdparty/sentry/lib/libsentry.dylib test/wiredpanda-test.app/Contents/Frameworks/
+        cmake -B build
+        cmake --build build --config Release
+        mkdir -p build/wiredpanda.app/Contents/MacOS
+        mkdir -p build/wiredpanda.app/Contents/Frameworks
+        # Copy the main executable to the app bundle
+        cp build/wiredpanda build/wiredpanda.app/Contents/MacOS/
+        cp thirdparty/sentry/bin/crashpad_handler build/wiredpanda.app/Contents/MacOS/
+        cp thirdparty/sentry/lib/libsentry.dylib build/wiredpanda.app/Contents/Frameworks/
 
     - name: Generate macOS dSYM Symbols
       if: runner.os == 'macOS'
       run: |
-        cd build/app
+        cd build
         dsymutil wiredpanda.app/Contents/MacOS/wiredpanda -o wiredpanda.app.dSYM
 
     - name: Test macOS
       if: runner.os == 'macOS'
       run: |
-        cd build
-        make check
+        ./build/wiredpanda-test
 
     - name: macdeployqt
       if: runner.os == 'macOS'
       run: |
-        cd build/app
+        cd build
         macdeployqt wiredpanda.app -dmg
         mv wiredpanda.dmg wiRedPanda-$VERSION-macOS-Qt${{ matrix.qt }}.dmg
 
@@ -300,7 +295,7 @@ jobs:
       run: |
         sentry-cli login --auth-token "$SENTRY_AUTH_TOKEN"
         sentry-cli releases new "wiredpanda@$VERSION" -p wiredpanda
-        sentry-cli debug-files upload --include-sources -p wiredpanda build/app/
+        sentry-cli debug-files upload --include-sources -p wiredpanda build/
         sentry-cli debug-files upload --include-sources -p wiredpanda $QT_ROOT_DIR
         sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
 
@@ -309,4 +304,4 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         fail_on_unmatched_files: true
-        files: 'build/app/*.dmg'
+        files: 'build/*.dmg'

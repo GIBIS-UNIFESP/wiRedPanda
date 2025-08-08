@@ -43,14 +43,12 @@ jobs:
 
     - name: Build
       run: |
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j4
+        cmake -B build -G Ninja
+        cmake --build build --config Release
 
     - name: Test
       run: |
-        ./build/test/wiredpanda-test -platform offscreen
+        QT_QPA_PLATFORM=offscreen ./build/wiredpanda-test
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

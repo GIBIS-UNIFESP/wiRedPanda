@@ -35,13 +35,13 @@ QT_PLATFORMS_PATH="$QT_PATH/plugins/platforms/"
 export PATH=$QT_PATH/bin/:$PATH
 export LD_LIBRARY_PATH=$QT_PATH/lib:$LD_LIBRARY_PATH
 
-WPANDA_BIN="$BUILDDIR/wpanda";
+WPANDA_BIN="$BUILDDIR/wiredpanda";
 
 rm -rf $BUILDDIR
 mkdir -p $BUILDDIR
 pushd $BUILDDIR
 
-qmake -r config+=release ../app;
+cmake -B . -S .. -DCMAKE_BUILD_TYPE=Release;
 
 echo "Building wiRedPanda on $BUILDDIR ..."
 make clean;
@@ -115,6 +115,7 @@ mkdir -p ${DEBPKGFILES}/usr/share/xml/misc;
 mkdir -p ${DEBPKGFILES}/usr/share/doc;
 
 cp ${WPANDA_BIN} ${PROJECTPATH}/app/resources/wpanda.sh     ${DEBPKGFILES}/usr/bin/;
+cp ${WPANDA_BIN} ${DEBPKGFILES}/usr/bin/wiredpanda;
 cp ${PROJECTPATH}/app/resources/wpanda.desktop    ${DEBPKGFILES}/usr/share/applications/;
 cp ${PROJECTPATH}/app/resources/wpanda-mime.xml   ${DEBPKGFILES}/usr/share/xml/misc;
 chmod +x ${DEBPKGFILES}/usr/bin/*
@@ -154,7 +155,7 @@ echo "GENERATING PORTABLE PACKAGE"
 
 mkdir -p $DATADIR
 
-cp ${DEBPKGFILES}/usr/bin/wpanda $DATADIR
+cp ${DEBPKGFILES}/usr/bin/wiredpanda $DATADIR
 cp ${CURRENTDIR}/portable_files/install.sh       ${DATADIR}
 cp ${PROJECTPATH}/app/resources/wpanda.svg       ${DATADIR}
 cp ${PROJECTPATH}/app/resources/wpanda-mime.xml  ${DATADIR}

@@ -21,13 +21,12 @@ Los binarios compilados para Windows, Linux y macOS están disponibles [aquí](h
 
 ```bash
 git clone https://github.com/GIBIS-UNIFESP/wiredpanda.git
-mkdir wiredpanda/build
-cd wiredpanda/build
-qmake ../WPanda.pro
-make -j
+cd wiredpanda
+cmake -B build
+cmake --build build --config Release
 ```
 
-Este proceso podría llevar un tiempo. Una vez concluido, el binario se ubicará en `wiredpanda/build/app/wiredpanda`, en Linux, y en `wiredpanda/build/app/wiredpanda.app/Contents/MacOS/wiredpanda` en macOS.
+Este proceso podría llevar un tiempo. Una vez concluido, el binario se ubicará en `wiredpanda/build/wiredpanda`, en Linux, y en `wiredpanda/build/wiredpanda.app/Contents/MacOS/wiredpanda` en macOS.
 
 Para obtener instrucciones de compilación detalladas, consulte [BUILD.md](BUILD.md) o visite la [wiki](https://github.com/GIBIS-UNIFESP/wiRedPanda/wiki/How-to-setup-environment).
 

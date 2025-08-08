@@ -12,10 +12,6 @@
                 "cmake.configureOnOpen": true,
                 "cmake.buildDirectory": "${workspaceFolder}/build",
                 "cmake.generator": "Unix Makefiles",
-                "files.associations": {
-                    "*.pro": "qmake",
-                    "*.pri": "qmake"
-                },
                 "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
                 "C_Cpp.default.compilerPath": "/usr/bin/g++",
                 "C_Cpp.default.cStandard": "c17",

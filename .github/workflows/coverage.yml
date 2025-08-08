@@ -32,19 +32,17 @@ jobs:
 
     - name: Build
       run: |
-        mkdir build
-        cd build
-        qmake ../WPanda.pro CONFIG+=coverage
-        make -j4
+        cmake -B build -G Ninja -DENABLE_COVERAGE=ON
+        cmake --build build --config Release
         
     - name: Test
       run: |
-        ./build/test/wiredpanda-test -platform offscreen
+        QT_QPA_PLATFORM=offscreen ./build/wiredpanda-test
         
     - name: Upload coverage data
       run: |
-        cd build/test
-        gcov -abcfu build_files/obj/*.o
+        cd build
+        gcov -abcfu $(find . -name "*.gcno")
         curl -Os https://uploader.codecov.io/latest/linux/codecov
         chmod +x ./codecov
         ./codecov
