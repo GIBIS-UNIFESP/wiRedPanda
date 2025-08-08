@@ -8,7 +8,7 @@ For Qt5 select this:
 Or for Qt6 select these:
 ![qt6](https://github.com/user-attachments/assets/aedc8749-8b5c-4f4d-9c65-651b703dccea)
 
-Then open WPanda.pro in Qt Creator and press Ctrl+R to build and run.
+Then open CMakeLists.txt in Qt Creator and press Ctrl+R to build and run.
 
 
 ### On Linux & macOS
@@ -57,13 +57,12 @@ export PATH
 
 ```bash
 git clone https://github.com/GIBIS-UNIFESP/wiredpanda
-mkdir wiredpanda/build
-cd wiredpanda/build
-qmake ../WPanda.pro
-make -j
+cd wiredpanda
+cmake -B build
+cmake --build build --config Release
 ```
 
-This process could take a while. Once concluded, the binary will be located at `wiredpanda/build/app/wiredpanda`, on Linux, and at `wiredpanda/build/app/wiredpanda.app/Contents/MacOS/wiredpanda` on macOS.
+This process could take a while. Once concluded, the binary will be located at `wiredpanda/build/wiredpanda`, on Linux, and at `wiredpanda/build/wiredpanda.app/Contents/MacOS/wiredpanda` on macOS.
 
 ## Licensing
 

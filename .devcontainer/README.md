@@ -62,13 +62,9 @@ The setup script creates several useful aliases:
 ### Manual Build Process
 
 ```bash
-# CMake build (recommended)
+# Build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Debug
-make -j$(nproc)
-
-# qmake build (legacy)
-qmake WPanda.pro
 make -j$(nproc)
 ```
 
@@ -108,7 +104,7 @@ For headless testing, applications can run with `-platform offscreen`.
 - **macOS**: Install and configure XQuartz
 
 ### Build Failures
-- Check Qt installation: `qmake --version`
+- Check Qt installation: `qt5-qmake --version`
 - Verify CMake configuration: `cd build && cmake ..`
 - Clean build: `wpclean` then rebuild
 

@@ -8,8 +8,7 @@ on:
       - 'app/**/*.cpp'
       - 'app/**/*.h'
       - 'app/**/*.ui'
-      - 'app/app.pro'
-      - 'config.pri'
+      - 'CMakeLists.txt'
   
   # Trigger on translation file changes (typically from Weblate)
   pull_request:
@@ -56,57 +55,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gh
 
-      - name: Update .pro file with all translation files
-        run: |
-          cd app/resources/translations
-          python3 << 'EOF'
-          import glob
-          import os
-          
-          # Find all .ts files
-          ts_files = sorted(glob.glob("wpanda_*.ts"))
-          
-          # Read current .pro file
-          with open("../../app.pro", "r") as f:
-              content = f.read()
-          
-          # Generate TRANSLATIONS section
-          translations_section = "TRANSLATIONS += \\\n"
-          for i, ts_file in enumerate(ts_files):
-              separator = " \\" if i < len(ts_files) - 1 else ""
-              translations_section += f"    resources/translations/{ts_file}{separator}\n"
-          
-          # Replace TRANSLATIONS section
-          import re
-          pattern = r'TRANSLATIONS \+= \\[\s\S]*?(?=\n\n|\n[A-Z]|\Z)'
-          new_content = re.sub(pattern, translations_section.rstrip(), content)
-          
-          # Ensure file ends with newline
-          if not new_content.endswith('\n'):
-              new_content += '\n'
-          
-          # Write back to .pro file
-          with open("../../app.pro", "w") as f:
-              f.write(new_content)
-          print(f"Updated app.pro with {len(ts_files)} translation files")
-          EOF
-
-      - name: Run lupdate to extract strings (qmake)
-        run: |
-          cd app
-          lupdate -tr-function-alias tr+=PANDACEPTION app.pro
-
-      - name: Run lupdate to extract strings (CMake)
+      - name: Run lupdate to extract strings
         run: |
           cmake -S . -B build_translations -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
           cmake --build build_translations --target lupdate
 
-      - name: Compile translations (qmake)
-        run: |
-          cd app
-          lrelease app.pro
-
-      - name: Compile translations (CMake)
+      - name: Compile translations
         run: |
           cmake --build build_translations --target lrelease
           cmake --build build_translations --target generate_translations_qrc
@@ -128,7 +82,6 @@ jobs:
             git checkout -b "$branch_name"
             
             git add app/resources/translations/
-            git add app/app.pro
             
             # Create commit message
             changed_files=$(git diff --cached --name-only | wc -l)
@@ -139,7 +92,6 @@ jobs:
             - Updated source strings with lupdate
             - Compiled .ts files to .qm files with lrelease  
             - Regenerated translations.qrc
-            - Updated app.pro with all translation files
             
             🤖 Automated translation update"
             
@@ -155,7 +107,6 @@ jobs:
             - Updated source strings with \`lupdate\`
             - Compiled .ts files to .qm files with \`lrelease\`
             - Regenerated \`translations.qrc\`
-            - Updated \`app.pro\` with all translation files
             
             ## Files Changed
             $(git diff --name-only HEAD~1)
@@ -212,47 +163,7 @@ jobs:
             fi
           done
 
-      - name: Update .pro file with all translation files
-        run: |
-          cd app/resources/translations
-          python3 << 'EOF'
-          import glob
-          import os
-          
-          # Find all .ts files
-          ts_files = sorted(glob.glob("wpanda_*.ts"))
-          
-          # Read current .pro file
-          with open("../../app.pro", "r") as f:
-              content = f.read()
-          
-          # Generate TRANSLATIONS section
-          translations_section = "TRANSLATIONS += \\\n"
-          for i, ts_file in enumerate(ts_files):
-              separator = " \\" if i < len(ts_files) - 1 else ""
-              translations_section += f"    resources/translations/{ts_file}{separator}\n"
-          
-          # Replace TRANSLATIONS section
-          import re
-          pattern = r'TRANSLATIONS \+= \\[\s\S]*?(?=\n\n|\n[A-Z]|\Z)'
-          new_content = re.sub(pattern, translations_section.rstrip(), content)
-          
-          # Ensure file ends with newline
-          if not new_content.endswith('\n'):
-              new_content += '\n'
-          
-          # Write back to .pro file
-          with open("../../app.pro", "w") as f:
-              f.write(new_content)
-          print(f"Updated app.pro with {len(ts_files)} translation files")
-          EOF
-
-      - name: Compile translations (qmake)
-        run: |
-          cd app
-          lrelease app.pro
-
-      - name: Compile translations (CMake)
+      - name: Compile translations
         run: |
           cmake -S . -B build_translations -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
           cmake --build build_translations --target lrelease
@@ -298,13 +209,11 @@ jobs:
           if ! git diff --quiet app/resources/translations/; then
             git add app/resources/translations/*.qm
             git add app/resources/translations/translations.qrc
-            git add app/app.pro
             
             git commit -m "Compile translation files
 
             - Compiled .ts files to .qm files with lrelease
-            - Regenerated translations.qrc  
-            - Updated app.pro with all translation files
+            - Regenerated translations.qrc
             
             🤖 Automated by translation workflow"
             
@@ -369,47 +278,7 @@ jobs:
             fi
           done
 
-      - name: Update .pro file with all translation files
-        run: |
-          cd app/resources/translations
-          python3 << 'EOF'
-          import glob
-          import os
-          
-          # Find all .ts files
-          ts_files = sorted(glob.glob("wpanda_*.ts"))
-          
-          # Read current .pro file
-          with open("../../app.pro", "r") as f:
-              content = f.read()
-          
-          # Generate TRANSLATIONS section
-          translations_section = "TRANSLATIONS += \\\n"
-          for i, ts_file in enumerate(ts_files):
-              separator = " \\" if i < len(ts_files) - 1 else ""
-              translations_section += f"    resources/translations/{ts_file}{separator}\n"
-          
-          # Replace TRANSLATIONS section
-          import re
-          pattern = r'TRANSLATIONS \+= \\[\s\S]*?(?=\n\n|\n[A-Z]|\Z)'
-          new_content = re.sub(pattern, translations_section.rstrip(), content)
-          
-          # Ensure file ends with newline
-          if not new_content.endswith('\n'):
-              new_content += '\n'
-          
-          # Write back to .pro file
-          with open("../../app.pro", "w") as f:
-              f.write(new_content)
-          print(f"Updated app.pro with {len(ts_files)} translation files")
-          EOF
-
-      - name: Compile translations (qmake)
-        run: |
-          cd app
-          lrelease app.pro
-
-      - name: Compile translations (CMake)
+      - name: Compile translations
         run: |
           cmake -S . -B build_translations -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
           cmake --build build_translations --target lrelease
@@ -430,7 +299,6 @@ jobs:
           
           # Add all translation-related changes
           git add app/resources/translations/
-          git add app/app.pro
           
           # Check if there are changes to commit
           if ! git diff --cached --quiet; then
@@ -444,7 +312,6 @@ jobs:
             - Processed translation updates from Weblate
             - Compiled .ts files to .qm files  
             - Regenerated translations.qrc
-            - Updated app.pro with all translation files
             - Cleaned up backup files
             
             🌐 Weblate integration update"

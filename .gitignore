@@ -38,8 +38,6 @@ linuxdeploy-plugin-qt-x86_64.AppImage
 *.d
 
 # Qt-related files
-.qmake.cache
-.qmake.stash
 *.pro.user
 *.pro.user.*
 *.qbs.user

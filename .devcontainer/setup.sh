@@ -13,16 +13,16 @@ sudo apt-get update
 
 # Verify Qt installation
 echo "🔍 Verifying Qt installation..."
-qmake --version
-echo "Qt installation directory: $(which qmake)"
+qt5-qmake --version
+echo "Qt installation directory: $(which qt5-qmake)"
 
 # Set up build directory
 echo "📁 Setting up build directory..."
 mkdir -p build
 cd build
 
-# Configure CMake build with Ninja (prefer CMake over qmake as per project preferences)
-echo "⚙️  Configuring CMake build with Ninja..."
+# Configure build with Ninja
+echo "⚙️  Configuring build with Ninja..."
 if command -v cmake &> /dev/null; then
     cmake .. -G Ninja \
              -DCMAKE_BUILD_TYPE=Debug \
@@ -150,14 +150,14 @@ echo "🎉 Development environment setup complete!"
 echo ""
 echo "📋 Environment Information:"
 echo "   OS: $(lsb_release -d | cut -f2)"
-echo "   Qt Version: $(qmake -query QT_VERSION)"
+echo "   Qt Version: $(qt5-qmake -query QT_VERSION)"
 echo "   CMake Version: $(cmake --version | head -n1)"
 echo "   GCC Version: $(gcc --version | head -n1)"
 echo "   Working Directory: $(pwd)"
 echo ""
 echo "🔨 Build Commands:"
-echo "   CMake build: cd build && cmake .. && make -j\$(nproc)"
-echo "   qmake build: qmake WPanda.pro && make -j\$(nproc)"
+echo "   Build: cd build && cmake .. && make -j\$(nproc)"
+echo "   Fast build: cd build && cmake .. -G Ninja && ninja"
 echo ""
 echo "🧪 Test Commands:"
 echo "   Run tests: ./build/test/wiredpanda-test"

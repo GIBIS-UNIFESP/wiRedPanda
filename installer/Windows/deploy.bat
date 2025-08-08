@@ -3,11 +3,11 @@ del WiredPanda_*
 
 if not exist Build mkdir Build
 cd Build
-qmake.exe ..\..\..\app\
-mingw32-make.exe -j
+cmake -S ../../.. -B . -DCMAKE_BUILD_TYPE=Release
+cmake --build . --config Release
 cd ..
 
-windeployqt.exe "Build\release\wpanda.exe"
+windeployqt.exe "Build\Release\wiredpanda.exe"
 makensis.exe "wpanda.nsi"
 7z.exe x WiredPanda_*.exe -o"%cd%\wpanda_32"
 

@@ -3,7 +3,7 @@
 ## Development Environment
 
 ### Build Tools
-- **Build Systems**: Both CMake and qmake are supported
+- **Build System**: CMake
 - **CRITICAL**: Always build in `build/` directory to prevent accidental commits
 - **Build Timeout**: Always use at least 5-10 minute timeout for compilation commands (2 minutes is insufficient)
 - **ccache**: Compiler cache installed for faster builds - automatically used via PATH in devcontainer
@@ -19,23 +19,21 @@
   - Main app: `cmake --build build --config Release --target wiredpanda`
   - Tests: `cmake --build build --config Release --target wiredpanda-test`
 - **mold linker**: Modern fast linker installed (`sudo apt install mold`) - automatically used by CMake when available
-- **qmake**: Available via `WPanda.pro` - subdirs project app and test
 - **Visual Studio BuildTools**: `"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"`
 
 ### Development Features
-Both build systems support advanced development features:
+Advanced development features supported:
 
 **Coverage Analysis**:
-- CMake: `cmake -B build -DENABLE_COVERAGE=ON` (sets `--coverage` flags for GCC/Clang)
-- qmake: `qmake WPanda.pro COVERAGE=1` (sets `--coverage` flags for GCC/Clang)
+- `cmake -B build -DENABLE_COVERAGE=ON` (sets `--coverage` flags for GCC/Clang)
 
-**Sanitizers (CMake only)**:
+**Sanitizers**:
 - Address Sanitizer: `cmake -B build -DENABLE_ADDRESS_SANITIZER=ON`
 - Thread Sanitizer: `cmake -B build -DENABLE_THREAD_SANITIZER=ON`  
 - Memory Sanitizer: `cmake -B build -DENABLE_MEMORY_SANITIZER=ON` (Clang only)
 - UB Sanitizer: `cmake -B build -DENABLE_UB_SANITIZER=ON`
 
-**Windows Metadata**: Both systems include comprehensive application properties for professional deployment
+**Windows Metadata**: Comprehensive application properties for professional deployment
 
 ### Testing
 - Project uses Qt Test framework
@@ -50,7 +48,7 @@ Both build systems support advanced development features:
 - **Note**: Direct bash execution fails, cmd causes segfaults. PowerShell is the reliable method on Windows.
 
 ## Project Structure
-- Main project file: `WPanda.pro` (template = subdirs)
+- Main project file: `CMakeLists.txt`
 - App code: `app/` directory
 - Tests: `test/` directory with comprehensive test suite
 - Test executable: `wiredpanda-test`

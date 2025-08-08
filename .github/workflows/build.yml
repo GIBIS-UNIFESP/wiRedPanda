@@ -1,7 +1,7 @@
 # Copyright 2015 - 2025, GIBIS-Unifesp and the wiRedPanda contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-name: Build qmake
+name: Build
 
 on:
   push:
@@ -33,6 +33,14 @@ jobs:
         submodules: recursive
         fetch-depth: 0
 
+    - name: Install CUPS dependency for Qt 6.7.*
+      if: runner.os == 'Linux' && startsWith(matrix.qt, '6.7')
+      run: sudo apt-get update && sudo apt-get install -y libcups2-dev
+
+    - name: Install Ninja on Ubuntu
+      if: runner.os == 'Linux'
+      run: sudo apt-get update && sudo apt-get install -y ninja-build
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
@@ -51,15 +59,15 @@ jobs:
     - name: Build Ubuntu
       if: runner.os == 'Linux'
       run: |
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j4
+        cmake -S . -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+        cmake --build build
 
     - name: Test Ubuntu
       if: runner.os == 'Linux'
       run: |
-        ./build/test/wiredpanda-test -platform offscreen
+        QT_QPA_PLATFORM=offscreen ./build/wiredpanda-test
 
 # =================================
 
@@ -70,30 +78,26 @@ jobs:
     - name: Build Windows
       if: runner.os == 'Windows'
       run: |
-        choco install jom
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        jom
+        cmake -S . -B build -G Ninja `
+          -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+        cmake --build build
 
     - name: Test Windows
       if: runner.os == 'Windows'
       run: |
-        cd build
-        jom check
+        ./build/wiredpanda-test.exe
 
 # =================================
 
     - name: Build macOS
       if: runner.os == 'macOS'
       run: |
-        mkdir build
-        cd build
-        qmake ../WPanda.pro
-        make -j3
+        cmake -S . -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+        cmake --build build
 
     - name: Test macOS
       if: runner.os == 'macOS'
       run: |
-        cd build
-        make check
+        ./build/wiredpanda-test
