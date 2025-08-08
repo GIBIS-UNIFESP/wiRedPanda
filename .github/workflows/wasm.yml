@@ -52,8 +52,10 @@ jobs:
         qt-cmake .. -DCMAKE_BUILD_TYPE=Release -G Ninja
         ninja wiredpanda
         cp wiredpanda.html index.html
-        wget https://github.com/gzuidhof/coi-serviceworker/raw/master/coi-serviceworker.min.js
+        cp ../app/resources/wasm/coi-serviceworker.min.js .
+        cp ../app/resources/wasm/favicon.ico .
         sed -i '/<script src="wiredpanda.js"><\/script>/a <script src="coi-serviceworker.min.js"><\/script>' index.html
+        sed -i '/<title>/a <link rel="icon" type="image/x-icon" href="favicon.ico">' index.html
 
     - name: Commit to site branch
       if: success()
@@ -71,6 +73,7 @@ jobs:
         cp ./build/wiredpanda.wasm ./public/wasm/
         cp ./build/index.html ./public/wasm/
         cp ./build/coi-serviceworker.min.js ./public/wasm/
+        cp ./build/favicon.ico ./public/wasm/ 2>/dev/null || true
         cp ./build/qtloader.js ./public/wasm/ 2>/dev/null || true
         cp ./build/qtlogo.svg ./public/wasm/ 2>/dev/null || true
 
