@@ -1770,7 +1770,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1633"/>
+        <location filename="../../mainwindow.cpp" line="1641"/>
         <source>Mute</source>
         <translation>Nutildyti</translation>
     </message>
@@ -1867,7 +1867,7 @@ Ar norite išsaugoti pakeitimus?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="469"/>
-        <location filename="../../mainwindow.cpp" line="1676"/>
+        <location filename="../../mainwindow.cpp" line="1684"/>
         <source>Open File</source>
         <translation>Atidaryti failą</translation>
     </message>
@@ -1978,38 +1978,38 @@ Prieš prisijungiant prie IC ir odų arba paleidžiant beWavedDolphin simuliacij
         <translation>PNG failai (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1633"/>
+        <location filename="../../mainwindow.cpp" line="1641"/>
         <source>Unmute</source>
         <translation>Atitildyti</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1672"/>
+        <location filename="../../mainwindow.cpp" line="1680"/>
         <source>Save file first.</source>
         <translation>Pirmiausia išsaugokite failą.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1678"/>
+        <location filename="../../mainwindow.cpp" line="1686"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1690"/>
-        <location filename="../../mainwindow.cpp" line="1702"/>
+        <location filename="../../mainwindow.cpp" line="1698"/>
+        <location filename="../../mainwindow.cpp" line="1710"/>
         <source>Info</source>
         <translation>Informacija</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1690"/>
+        <location filename="../../mainwindow.cpp" line="1698"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Pasirinkti failai (ir jų priklausomybės) bus nukopijuoti į dabartinio failo aplanką.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1702"/>
+        <location filename="../../mainwindow.cpp" line="1710"/>
         <source>Drag here to remove.</source>
         <translation>Nuvilkite čia, kad pašalintumėte.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1725"/>
+        <location filename="../../mainwindow.cpp" line="1733"/>
         <source>Error removing file: %1</source>
         <translation>Klaida šalinant failą: %1</translation>
     </message>

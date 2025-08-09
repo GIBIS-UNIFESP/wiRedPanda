@@ -1785,7 +1785,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1633"/>
+        <location filename="../../mainwindow.cpp" line="1641"/>
         <source>Mute</source>
         <translation>Wycisz</translation>
     </message>
@@ -1867,7 +1867,7 @@ Czy chcesz zapisać zmiany?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="469"/>
-        <location filename="../../mainwindow.cpp" line="1676"/>
+        <location filename="../../mainwindow.cpp" line="1684"/>
         <source>Open File</source>
         <translation>Otwórz plik</translation>
     </message>
@@ -1978,38 +1978,38 @@ Musisz zapisać nowe projekty przed dostępem do IC i skórek, lub uruchomieniem
         <translation>Pliki PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1633"/>
+        <location filename="../../mainwindow.cpp" line="1641"/>
         <source>Unmute</source>
         <translation>Włącz dźwięk</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1672"/>
+        <location filename="../../mainwindow.cpp" line="1680"/>
         <source>Save file first.</source>
         <translation>Najpierw zapisz plik.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1678"/>
+        <location filename="../../mainwindow.cpp" line="1686"/>
         <source>Panda (*.panda)</source>
         <translation>Pliki Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1690"/>
-        <location filename="../../mainwindow.cpp" line="1702"/>
+        <location filename="../../mainwindow.cpp" line="1698"/>
+        <location filename="../../mainwindow.cpp" line="1710"/>
         <source>Info</source>
         <translation>Informacja</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1690"/>
+        <location filename="../../mainwindow.cpp" line="1698"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Wybrane pliki (i ich zależności) zostaną skopiowane do bieżącego folderu pliku.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1702"/>
+        <location filename="../../mainwindow.cpp" line="1710"/>
         <source>Drag here to remove.</source>
         <translation>Przeciągnij tutaj, aby usunąć.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1725"/>
+        <location filename="../../mainwindow.cpp" line="1733"/>
         <source>Error removing file: %1</source>
         <translation>Błąd podczas usuwania pliku: %1</translation>
     </message>

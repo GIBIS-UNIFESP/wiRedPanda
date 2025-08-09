@@ -1785,7 +1785,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1633"/>
+        <location filename="../../mainwindow.cpp" line="1641"/>
         <source>Mute</source>
         <translation>Dempen</translation>
     </message>
@@ -1867,7 +1867,7 @@ Wilt u uw wijzigingen opslaan?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="469"/>
-        <location filename="../../mainwindow.cpp" line="1676"/>
+        <location filename="../../mainwindow.cpp" line="1684"/>
         <source>Open File</source>
         <translation>Bestand openen</translation>
     </message>
@@ -1978,38 +1978,38 @@ U moet nieuwe projecten opslaan voordat u toegang krijgt tot IC&apos;s en skins,
         <translation>PNG bestanden (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1633"/>
+        <location filename="../../mainwindow.cpp" line="1641"/>
         <source>Unmute</source>
         <translation>Geluid aan</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1672"/>
+        <location filename="../../mainwindow.cpp" line="1680"/>
         <source>Save file first.</source>
         <translation>Sla eerst het bestand op.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1678"/>
+        <location filename="../../mainwindow.cpp" line="1686"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1690"/>
-        <location filename="../../mainwindow.cpp" line="1702"/>
+        <location filename="../../mainwindow.cpp" line="1698"/>
+        <location filename="../../mainwindow.cpp" line="1710"/>
         <source>Info</source>
         <translation>Informatie</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1690"/>
+        <location filename="../../mainwindow.cpp" line="1698"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Geselecteerde bestanden (en hun afhankelijkheden) worden gekopieerd naar de huidige bestandsmap.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1702"/>
+        <location filename="../../mainwindow.cpp" line="1710"/>
         <source>Drag here to remove.</source>
         <translation>Sleep hier naartoe om te verwijderen.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1725"/>
+        <location filename="../../mainwindow.cpp" line="1733"/>
         <source>Error removing file: %1</source>
         <translation>Fout bij verwijderen van bestand: %1</translation>
     </message>

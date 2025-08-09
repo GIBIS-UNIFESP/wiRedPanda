@@ -1785,7 +1785,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1633"/>
+        <location filename="../../mainwindow.cpp" line="1641"/>
         <source>Mute</source>
         <translation>Tắt tiếng</translation>
     </message>
@@ -1867,7 +1867,7 @@ Bạn có muốn lưu thay đổi không?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="469"/>
-        <location filename="../../mainwindow.cpp" line="1676"/>
+        <location filename="../../mainwindow.cpp" line="1684"/>
         <source>Open File</source>
         <translation>Mở tệp</translation>
     </message>
@@ -1977,38 +1977,38 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
         <translation>Tệp PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1633"/>
+        <location filename="../../mainwindow.cpp" line="1641"/>
         <source>Unmute</source>
         <translation>Bật tiếng</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1672"/>
+        <location filename="../../mainwindow.cpp" line="1680"/>
         <source>Save file first.</source>
         <translation>Lưu tệp trước.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1678"/>
+        <location filename="../../mainwindow.cpp" line="1686"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1690"/>
-        <location filename="../../mainwindow.cpp" line="1702"/>
+        <location filename="../../mainwindow.cpp" line="1698"/>
+        <location filename="../../mainwindow.cpp" line="1710"/>
         <source>Info</source>
         <translation>Thông tin</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1690"/>
+        <location filename="../../mainwindow.cpp" line="1698"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Các tệp đã chọn (và các phụ thuộc của chúng) sẽ được sao chép vào thư mục tệp hiện tại.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1702"/>
+        <location filename="../../mainwindow.cpp" line="1710"/>
         <source>Drag here to remove.</source>
         <translation>Kéo vào đây để xóa.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1725"/>
+        <location filename="../../mainwindow.cpp" line="1733"/>
         <source>Error removing file: %1</source>
         <translation>Lỗi khi xóa tệp: %1</translation>
     </message>
