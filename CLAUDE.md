@@ -161,3 +161,7 @@ The simulation accurately represents **ideal digital logic behavior** while deli
 - **Analysis Reports**: Store comprehensive crash analysis in dedicated markdown files (e.g., `.claude/SENTRY_CRASH_ANALYSIS.md`)
 - **Fix Tracking**: Document root causes, code locations, and implemented solutions for future reference
 - **Issue Reference**: Always include Sentry issue IDs (e.g., WIREDPANDA-J) in commit messages to auto-close issues
+
+## Code Style Standards
+- **Trailing Newlines**: All source files must end with a trailing newline character
+- **File Types**: Applies to all code files (.cpp, .h, .yml, .yaml, .cmake, CMakeLists.txt, etc.)
