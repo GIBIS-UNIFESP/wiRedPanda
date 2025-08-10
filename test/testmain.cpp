@@ -17,6 +17,7 @@
 #include "testscene.h"
 #include "testtrashbutton.h"
 #include "testrecentfiles.h"
+#include "testelementfactory.h"
 
 #include <QtTest>
 
@@ -47,6 +48,7 @@ int main(int argc, char **argv)
     TestScene testScene;
     TestTrashButton testTrashButton;
     TestRecentFiles testRecentFiles;
+    TestElementFactory testElementFactory;
     
     status |= QTest::qExec(&testCommands, argc, argv);
     status |= QTest::qExec(&testElements, argc, argv);
@@ -61,6 +63,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(&testScene, argc, argv);
     status |= QTest::qExec(&testTrashButton, argc, argv);
     status |= QTest::qExec(&testRecentFiles, argc, argv);
+    status |= QTest::qExec(&testElementFactory, argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 

@@ -15,4 +15,30 @@ private slots:
     void testDeleteItemsCommand();
     void testUndoRedoChain();
     void testCommandUtilityFunctions();
+    
+    // Test utility functions
+    void testStoreIds();
+    void testStoreOtherIds();
+    void testLoadList();
+    void testFindElm();
+    void testFindConn();
+    void testFindElements();
+    void testFindItems();
+    void testAddDeleteItems();
+    void testSaveLoadItems();
+    
+    // Test all command types
+    void testRotateCommand();
+    void testMoveCommand();
+    void testUpdateCommand();
+    void testSplitCommand();
+    void testMorphCommand();
+    void testChangeInputSizeCommand();
+    void testFlipCommand();
+    void testChangeOutputSizeCommand();
+    void testToggleTruthTableOutputCommand();
+    
+    // Integration tests
+    void testCommandChaining();
+    void testComplexCommandSequences();
 };
