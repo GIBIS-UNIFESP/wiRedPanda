@@ -11,4 +11,8 @@ class TestCommands : public QObject
 
 private slots:
     void testAddDeleteCommands();
+    void testAddItemsCommand();
+    void testDeleteItemsCommand();
+    void testUndoRedoChain();
+    void testCommandUtilityFunctions();
 };

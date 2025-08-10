@@ -11,6 +11,8 @@
 #include "testsimulation.h"
 #include "testwaveform.h"
 #include "testarduino.h"
+#include "testapplication.h"
+#include "testdialogs.h"
 
 #include <QtTest>
 
@@ -34,6 +36,8 @@ int main(int argc, char **argv)
     status |= QTest::qExec(new TestSimulation(), argc, argv);
     status |= QTest::qExec(new TestWaveForm(), argc, argv);
     status |= QTest::qExec(new TestArduino(), argc, argv);
+    status |= QTest::qExec(new TestApplication(), argc, argv);
+    status |= QTest::qExec(new TestDialogs(), argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
