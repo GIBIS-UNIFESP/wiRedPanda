@@ -11,11 +11,11 @@
   ```bash
   cmake -B build -G Ninja
   ```
-- **CMake configure (Windows command line)**: 
+- **CMake configure (Windows command line)**:
   ```bash
   cmake -B build -G "Visual Studio 17 2022" -A x64 -DCMAKE_PREFIX_PATH="C:/Qt/5.15.2/msvc2019_64"
   ```
-- **Build commands**: 
+- **Build commands**:
   - Main app: `cmake --build build --config Release --target wiredpanda`
   - Tests: `cmake --build build --config Release --target wiredpanda-test`
 - **mold linker**: Modern fast linker installed (`sudo apt install mold`) - automatically used by CMake when available
@@ -29,7 +29,7 @@ Advanced development features supported:
 
 **Sanitizers**:
 - Address Sanitizer: `cmake -B build -DENABLE_ADDRESS_SANITIZER=ON`
-- Thread Sanitizer: `cmake -B build -DENABLE_THREAD_SANITIZER=ON`  
+- Thread Sanitizer: `cmake -B build -DENABLE_THREAD_SANITIZER=ON`
 - Memory Sanitizer: `cmake -B build -DENABLE_MEMORY_SANITIZER=ON` (Clang only)
 - UB Sanitizer: `cmake -B build -DENABLE_UB_SANITIZER=ON`
 
@@ -119,7 +119,7 @@ if (elapsed > m_interval) {
 
 #### ⚠️ **Deliberate Real-World Omissions**
 - **No propagation delays**: Real gates have nanosecond delays
-- **No setup/hold constraints**: Real flip-flops need timing margins  
+- **No setup/hold constraints**: Real flip-flops need timing margins
 - **No hazards/glitches**: Real circuits can have temporary incorrect outputs
 - **No clock domain issues**: Real systems have multiple clocks and skew
 - **No physical limitations**: Missing fan-out, drive strength, power concerns
@@ -165,4 +165,5 @@ The simulation accurately represents **ideal digital logic behavior** while deli
 
 ## Code Style Standards
 - **Trailing Newlines**: All source files must end with a trailing newline character
-- **File Types**: Applies to all code files (.cpp, .h, .yml, .yaml, .cmake, CMakeLists.txt, etc.)
+- **Line Trimming**: All lines must have trailing whitespace trimmed (no spaces/tabs at line ends)
+- **File Types**: Applies to all code files (.cpp, .h, .yml, .yaml, .cmake, CMakeLists.txt, .sh, .py, .js, .ts, .md, etc.)

@@ -104,7 +104,7 @@ jobs:
           LATEST_VERSION=$(curl -s https://api.github.com/repos/getsentry/sentry-cli/releases/latest | jq -r .tag_name)
           curl -LO "https://github.com/getsentry/sentry-cli/releases/download/$LATEST_VERSION/sentry-cli-Windows-x86_64.exe"
           mv sentry-cli-Windows-x86_64.exe sentry-cli.exe
-          
+
           ACTUAL_VERSION=$(./sentry-cli.exe -V 2>&1 | tr -d '\r')
 
           if [[ ! "$ACTUAL_VERSION" =~ ^sentry-cli ]]; then
@@ -183,17 +183,17 @@ jobs:
           echo "Error: AppImage not found"
           exit 1
         fi
-        
+
         # Verify AppImage build quality and structure
         chmod +x "wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage"
         echo "Validating AppImage build quality..."
-        
+
         # Check AppImage file properties
         APPIMAGE_FILE="wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage"
         echo "AppImage file info:"
         ls -lh "$APPIMAGE_FILE"
         file "$APPIMAGE_FILE"
-        
+
         # Extract AppImage to verify internal structure
         echo "Extracting AppImage to verify contents..."
         "./$APPIMAGE_FILE" --appimage-extract >/dev/null 2>&1
@@ -201,18 +201,18 @@ jobs:
           echo "Error: AppImage extraction failed - corrupt AppImage"
           exit 1
         fi
-        
+
         echo "AppImage structure validation:"
-        
+
         # Verify main executable exists and is properly linked
         if [ ! -f "squashfs-root/wiredpanda" ]; then
           echo "Error: Main executable missing from AppImage"
           exit 1
         fi
-        
+
         echo "✓ Main executable: $(ls -lh squashfs-root/wiredpanda)"
         echo "✓ Executable type: $(file squashfs-root/wiredpanda)"
-        
+
         # Check Qt libraries are bundled
         QT_LIBS_COUNT=$(find squashfs-root -name "libQt*.so*" | wc -l)
         echo "✓ Qt libraries found: $QT_LIBS_COUNT"
@@ -220,37 +220,37 @@ jobs:
           echo "Warning: Few Qt libraries found, may cause runtime issues"
           find squashfs-root -name "libQt*.so*" | head -10
         fi
-        
+
         # Verify desktop integration files
         if [ -f "squashfs-root/wpanda.desktop" ]; then
           echo "✓ Desktop integration file present"
         else
           echo "Warning: Desktop integration file missing"
         fi
-        
+
         # Check dependencies are reasonable
         echo "✓ Executable dependencies (sample):"
         ldd squashfs-root/wiredpanda | head -10 | grep -v "not found" || echo "Some dependencies missing (may be normal)"
-        
+
         echo "AppImage build quality validation completed successfully"
-        
+
         # Verify required Sentry files are included
         if [ ! -f "appimage/lib/libsentry.so" ]; then
           echo "Error: Sentry library missing from AppImage"
           exit 1
         fi
-        
+
         if [ ! -f "appimage/crashpad_handler" ]; then
           echo "Error: Crashpad handler missing from AppImage"
           exit 1
         fi
-        
+
         # Log Sentry configuration for debugging
         echo "Sentry configuration check:"
         echo "  - libsentry.so: $(ls -la appimage/lib/libsentry.so)"
         echo "  - crashpad_handler: $(ls -la appimage/crashpad_handler)"
         echo "  - RPATH settings: $(objdump -p appimage/wiredpanda | grep RPATH || echo 'No RPATH found')"
-        
+
         echo "Ubuntu release artifacts validated successfully"
 
     - name: Upload Ubuntu Debug Symbols to Sentry
@@ -311,18 +311,18 @@ jobs:
         # Create clean distribution directory
         cd build
         mkdir wiredpanda-$env:VERSION
-        
+
         # Copy only essential files to clean directory
         cp Release/wiredpanda.exe wiredpanda-$env:VERSION/
         cp Release/crashpad_handler.exe wiredpanda-$env:VERSION/
         cp Release/sentry.dll wiredpanda-$env:VERSION/
         cp Release/crashpad_wer.dll wiredpanda-$env:VERSION/
         cp -r ../examples wiredpanda-$env:VERSION/
-        
+
         # Run windeployqt in the clean directory
         cd wiredpanda-$env:VERSION
         windeployqt --compiler-runtime wiredpanda.exe
-        
+
         # Create the ZIP from the clean directory
         cd ..
         Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath wiRedPanda-$env:VERSION-Windows-Qt${{ matrix.qt }}-Portable.zip
@@ -335,29 +335,29 @@ jobs:
           Write-Error "Error: Windows ZIP file not found"
           exit 1
         }
-        
+
         # Verify executable exists in the extracted folder
         if (!(Test-Path "build/wiredpanda-$env:VERSION/wiredpanda.exe")) {
           Write-Error "Error: wiredpanda.exe not found in package"
           exit 1
         }
-        
+
         # Verify required Sentry files are included
         if (!(Test-Path "build/wiredpanda-$env:VERSION/sentry.dll")) {
           Write-Error "Error: Sentry DLL missing from package"
           exit 1
         }
-        
+
         if (!(Test-Path "build/wiredpanda-$env:VERSION/crashpad_handler.exe")) {
           Write-Error "Error: Crashpad handler missing from package"
           exit 1
         }
-        
+
         # Validate Windows executable build quality
         Write-Output "Validating Windows executable build quality..."
-        
+
         $executablePath = "build/wiredpanda-$env:VERSION/wiredpanda.exe"
-        
+
         # Check executable file properties
         if (Test-Path $executablePath) {
           $fileInfo = Get-Item $executablePath
@@ -369,7 +369,7 @@ jobs:
           Write-Error "Error: Main executable not found"
           exit 1
         }
-        
+
         # Check if executable is a valid PE file
         try {
           $peHeader = [System.IO.File]::ReadAllBytes($executablePath)[0..1]
@@ -382,7 +382,7 @@ jobs:
         } catch {
           Write-Output "Warning: Could not verify PE format"
         }
-        
+
         # Check Qt DLLs are present
         $qtDlls = Get-ChildItem "build/wiredpanda-$env:VERSION" -Filter "Qt*.dll" | Measure-Object
         Write-Output "✓ Qt DLLs found: $($qtDlls.Count)"
@@ -390,7 +390,7 @@ jobs:
           Write-Output "Warning: Few Qt DLLs found, may cause runtime issues"
           Get-ChildItem "build/wiredpanda-$env:VERSION" -Filter "Qt*.dll" | Select-Object Name, Length
         }
-        
+
         # Check for required runtime libraries
         $requiredDlls = @("vcruntime*.dll", "msvcp*.dll")
         foreach ($pattern in $requiredDlls) {
@@ -401,7 +401,7 @@ jobs:
             Write-Output "Warning: Runtime libraries not found: $pattern (may be system-provided)"
           }
         }
-        
+
         # Verify examples directory
         if (Test-Path "build/wiredpanda-$env:VERSION/examples") {
           $exampleCount = (Get-ChildItem "build/wiredpanda-$env:VERSION/examples" -Recurse -File | Measure-Object).Count
@@ -409,9 +409,9 @@ jobs:
         } else {
           Write-Output "Warning: Examples directory missing"
         }
-        
+
         Write-Output "Windows build quality validation completed successfully"
-        
+
         Write-Output "Windows release artifacts validated successfully"
 
     - name: Upload Windows Debug Symbols to Sentry
@@ -471,17 +471,17 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         cd build
-        
+
         # Verify app bundle structure before deployment
         echo "Verifying app bundle structure..."
         if [ ! -d "wiredpanda.app/Contents/MacOS" ]; then
           echo "Error: App bundle MacOS directory missing"
           exit 1
         fi
-        
+
         # Ensure executable has proper permissions and is linked correctly
         chmod +x wiredpanda.app/Contents/MacOS/wiredpanda
-        
+
         # Create Info.plist if missing (helps macdeployqt identify the bundle)
         if [ ! -f "wiredpanda.app/Contents/Info.plist" ]; then
           echo "Creating missing Info.plist..."
@@ -504,22 +504,22 @@ jobs:
         </plist>
         INFOPLIST
         fi
-        
+
         # Show Qt installation path and verify it's accessible
         echo "Qt installation path: $QT_ROOT_DIR"
         echo "Qt binary path: $(which macdeployqt)"
-        
+
         # Check what frameworks the executable currently links to
         echo "Current framework dependencies:"
         otool -L wiredpanda.app/Contents/MacOS/wiredpanda | head -20
-        
+
         # Run macdeployqt with verbose output and additional options
         echo "Running macdeployqt with verbose output..."
         macdeployqt wiredpanda.app -verbose=2 -always-overwrite -dmg || {
           echo "macdeployqt failed, attempting with force option..."
           # If macdeployqt fails, try to manually copy Qt frameworks and try again
           mkdir -p wiredpanda.app/Contents/Frameworks
-          
+
           # Find and copy critical Qt libraries that might be missing
           for qtlib in QtCore QtGui QtWidgets; do
             if [ -f "$QT_ROOT_DIR/lib/lib${qtlib}.dylib" ]; then
@@ -530,18 +530,18 @@ jobs:
               cp -R "$QT_ROOT_DIR/lib/${qtlib}.framework" wiredpanda.app/Contents/Frameworks/ || true
             fi
           done
-          
+
           # Try macdeployqt again after manual framework copying
           macdeployqt wiredpanda.app -verbose=2 -dmg
         }
-        
+
         # Verify the DMG was created
         if [ ! -f "wiredpanda.dmg" ]; then
           echo "Error: DMG creation failed"
           ls -la
           exit 1
         fi
-        
+
         mv wiredpanda.dmg wiRedPanda-$VERSION-macOS-Qt${{ matrix.qt }}.dmg
 
     - name: Validate macOS Release Artifacts
@@ -552,37 +552,37 @@ jobs:
           echo "Error: macOS DMG file not found"
           exit 1
         fi
-        
+
         # Verify app bundle exists
         if [ ! -d "build/wiredpanda.app" ]; then
           echo "Error: wiredpanda.app bundle not found"
           exit 1
         fi
-        
+
         # Verify executable exists in app bundle
         if [ ! -f "build/wiredpanda.app/Contents/MacOS/wiredpanda" ]; then
           echo "Error: wiredpanda executable not found in app bundle"
           exit 1
         fi
-        
+
         # Verify required Sentry files are included (breakpad backend)
         if [ ! -f "build/wiredpanda.app/Contents/Frameworks/libsentry.dylib" ]; then
           echo "Error: Sentry library missing from app bundle"
           exit 1
         fi
-        
+
         # CRITICAL: Verify Qt frameworks are properly deployed
         echo "Checking Qt framework deployment..."
         FRAMEWORKS_DIR="build/wiredpanda.app/Contents/Frameworks"
         MISSING_FRAMEWORKS=()
-        
+
         # Check for essential Qt frameworks
         for framework in QtCore QtGui QtWidgets; do
           if [ ! -d "$FRAMEWORKS_DIR/${framework}.framework" ] && [ ! -f "$FRAMEWORKS_DIR/lib${framework}.dylib" ]; then
             MISSING_FRAMEWORKS+=("$framework")
           fi
         done
-        
+
         if [ ${#MISSING_FRAMEWORKS[@]} -gt 0 ]; then
           echo "Error: Missing Qt frameworks: ${MISSING_FRAMEWORKS[*]}"
           echo "Contents of Frameworks directory:"
@@ -591,7 +591,7 @@ jobs:
           otool -L "build/wiredpanda.app/Contents/MacOS/wiredpanda" | grep -E "(Qt|@rpath)" || echo "No Qt dependencies found"
           exit 1
         fi
-        
+
         # Verify frameworks are properly linked (no external Qt paths)
         echo "Verifying Qt framework linking..."
         EXTERNAL_QT_DEPS=$(otool -L "build/wiredpanda.app/Contents/MacOS/wiredpanda" | grep -E "/Users/.*/Qt|/usr/local.*/Qt" | wc -l)
@@ -599,24 +599,24 @@ jobs:
           echo "Warning: Found external Qt dependencies (may cause runtime issues):"
           otool -L "build/wiredpanda.app/Contents/MacOS/wiredpanda" | grep -E "/Users/.*/Qt|/usr/local.*/Qt"
         fi
-        
+
         # Verify DMG contents by mounting it temporarily
         echo "Verifying DMG contents..."
         hdiutil attach "build/wiRedPanda-$VERSION-macOS-Qt${{ matrix.qt }}.dmg" -mountpoint /tmp/wiredpanda_dmg -readonly || {
           echo "Error: Failed to mount DMG for verification"
           exit 1
         }
-        
+
         # Check if the app in DMG has Qt frameworks
         if [ ! -d "/tmp/wiredpanda_dmg/wiredpanda.app/Contents/Frameworks" ]; then
           echo "Error: DMG app bundle missing Frameworks directory"
           hdiutil detach /tmp/wiredpanda_dmg
           exit 1
         fi
-        
+
         DMG_FRAMEWORKS_COUNT=$(find "/tmp/wiredpanda_dmg/wiredpanda.app/Contents/Frameworks" -name "*.framework" -o -name "*.dylib" | wc -l)
         echo "Found $DMG_FRAMEWORKS_COUNT frameworks/libraries in DMG"
-        
+
         if [ "$DMG_FRAMEWORKS_COUNT" -lt 3 ]; then
           echo "Error: Insufficient frameworks in DMG (expected at least 3 Qt frameworks + Sentry)"
           echo "DMG Frameworks contents:"
@@ -624,29 +624,29 @@ jobs:
           hdiutil detach /tmp/wiredpanda_dmg
           exit 1
         fi
-        
+
         hdiutil detach /tmp/wiredpanda_dmg
-        
+
         # Verify dSYM symbols were generated
         if [ ! -d "build/wiredpanda.app.dSYM" ]; then
           echo "Error: dSYM symbols not found"
           exit 1
         fi
-        
+
         # Validate macOS app bundle build quality
         echo "Validating macOS app bundle build quality..."
-        
+
         # Check executable file properties
         EXECUTABLE_PATH="build/wiredpanda.app/Contents/MacOS/wiredpanda"
         if [ ! -f "$EXECUTABLE_PATH" ]; then
           echo "Error: Main executable missing from app bundle"
           exit 1
         fi
-        
+
         echo "✓ Executable file info:"
         ls -lh "$EXECUTABLE_PATH"
         echo "✓ Executable type: $(file "$EXECUTABLE_PATH")"
-        
+
         # Verify app bundle structure
         echo "✓ App bundle structure validation:"
         if [ -f "build/wiredpanda.app/Contents/Info.plist" ]; then
@@ -654,17 +654,17 @@ jobs:
         else
           echo "  Warning: Info.plist missing"
         fi
-        
+
         if [ -d "build/wiredpanda.app/Contents/Resources" ]; then
           echo "  ✓ Resources directory present"
         else
           echo "  Warning: Resources directory missing"
         fi
-        
+
         # Check framework dependencies and linking
         echo "✓ Framework dependencies (first 10):"
         otool -L "$EXECUTABLE_PATH" | head -10
-        
+
         # Verify Qt frameworks are bundled (not external)
         EXTERNAL_QT=$(otool -L "$EXECUTABLE_PATH" | grep -E "/Users/.*/Qt|/usr/local.*/Qt" | wc -l)
         if [ "$EXTERNAL_QT" -eq 0 ]; then
@@ -673,23 +673,23 @@ jobs:
           echo "Warning: Found $EXTERNAL_QT external Qt dependencies:"
           otool -L "$EXECUTABLE_PATH" | grep -E "/Users/.*/Qt|/usr/local.*/Qt"
         fi
-        
+
         # Check architecture
         ARCH_INFO=$(file "$EXECUTABLE_PATH" | grep -o "x86_64\|arm64\|universal")
         echo "✓ Architecture: $ARCH_INFO"
-        
+
         # Verify code signing (basic check)
         CODESIGN_STATUS=$(codesign -dv "$EXECUTABLE_PATH" 2>&1 | grep -o "adhoc\|signed" || echo "unsigned")
         echo "✓ Code signing status: $CODESIGN_STATUS"
-        
+
         echo "macOS build quality validation completed successfully"
-        
+
         # Log Sentry configuration for debugging (breakpad backend)
         echo "Sentry configuration check:"
         echo "  - libsentry.dylib: $(ls -la build/wiredpanda.app/Contents/Frameworks/libsentry.dylib)"
         echo "  - Backend: breakpad (in-process, no separate handler required)"
         echo "  - dylib dependencies: $(otool -L build/wiredpanda.app/Contents/MacOS/wiredpanda | grep sentry || echo 'No sentry dylib dependency found')"
-        
+
         echo "macOS release artifacts validated successfully"
 
     - name: Upload macOS Debug Symbols to Sentry

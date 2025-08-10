@@ -2009,7 +2009,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="411"/>
-        <source> has been modified. 
+        <source> has been modified.
 Do you want to save your changes?</source>
         <translation> ถูกแก้ไขแล้ว
 คุณต้องการบันทึกการเปลี่ยนแปลงหรือไม่?</translation>

@@ -2003,7 +2003,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="411"/>
-        <source> has been modified. 
+        <source> has been modified.
 Do you want to save your changes?</source>
         <translation> a été modifié.
 Voulez-vous enregistrer vos modifications&#x202f;?</translation>

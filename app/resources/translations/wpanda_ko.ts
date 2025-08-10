@@ -2009,9 +2009,9 @@
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="411"/>
-        <source> has been modified. 
+        <source> has been modified.
 Do you want to save your changes?</source>
-        <translation>이 수정되었습니다. 
+        <translation>이 수정되었습니다.
 변경사항을 저장하시겠습니까?</translation>
     </message>
     <message>

@@ -70,19 +70,19 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU
             message(WARNING "Memory Sanitizer only supported with Clang")
         endif()
     endif()
-    
+
     if(ENABLE_ADDRESS_SANITIZER)
         add_compile_options(-fsanitize=address)
         add_link_options(-fsanitize=address)
         message(STATUS "Address Sanitizer enabled")
     endif()
-    
+
     if(ENABLE_THREAD_SANITIZER)
         add_compile_options(-fsanitize=thread)
         add_link_options(-fsanitize=thread)
         message(STATUS "Thread Sanitizer enabled")
     endif()
-    
+
     if(ENABLE_UB_SANITIZER)
         if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
             add_compile_options(-fsanitize=undefined,implicit-integer-truncation,implicit-integer-arithmetic-value-change,implicit-conversion,integer,nullability)
@@ -161,7 +161,7 @@ else()
                 DEPENDS ${ts_file}
                 COMMENT "Compiling ${qm_file}.qm"
                 VERBATIM
-            )  
+            )
             list(APPEND QM_FILES ${qm_path})
         endforeach()
     endif()
@@ -182,7 +182,7 @@ include_directories(
 # Find available translation files
 file(GLOB_RECURSE TS_FILES "app/resources/translations/wpanda_*.ts")
 
-# Custom targets for translation management 
+# Custom targets for translation management
 if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
     # Custom target to update translation source files
     if(QT_VERSION_MAJOR EQUAL 5)
@@ -198,13 +198,13 @@ if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
             COMMENT "Updating translation source files"
         )
     endif()
-    
+
     # Custom target to compile translation files
     add_custom_target(lrelease
         DEPENDS ${QM_FILES}
         COMMENT "Compiling translation files"
     )
-    
+
     # Make sure resources depend on QM files
     add_custom_target(compile_translations ALL DEPENDS ${QM_FILES})
 endif()
