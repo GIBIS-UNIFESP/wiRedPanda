@@ -32,6 +32,7 @@ private slots:
     void testLogicXOR();
     void testLogicXNOR();
     void testLogicOutput();
+    void testLogicTruthTable();
 
 private:
     QVector<LogicInput *> switches{5};
