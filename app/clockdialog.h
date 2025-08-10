@@ -3,12 +3,11 @@
 
 #pragma once
 
-#include <QDialog>
+#include "clockdialog_ui.h"
 
-namespace Ui
-{
-class ClockDialog;
-}
+#include <QDialog>
+#include <memory>
+
 
 //!
 //! \brief The clockDialog class handles dialogs for setting the frequency at which a clock ticks
@@ -27,5 +26,5 @@ public:
 private:
     Q_DISABLE_COPY(ClockDialog)
 
-    Ui::ClockDialog *m_ui;
+    std::unique_ptr<ClockDialog_Ui> m_ui;
 };

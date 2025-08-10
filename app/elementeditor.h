@@ -3,17 +3,15 @@
 
 #pragma once
 
+#include "elementeditor_ui.h"
 #include "scene.h"
 
 #include <QDialog>
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <memory>
 
-namespace Ui
-{
-class ElementEditor;
-}
 
 /*!
  * @class ElementEditor
@@ -65,7 +63,7 @@ private:
     void triggerChanged(const QString &cmd);
     void updateSkins();
 
-    Ui::ElementEditor *m_ui;
+    std::unique_ptr<ElementEditor_Ui> m_ui;
     QDialog *m_tableBox = nullptr;
     QList<GraphicElement *> m_elements;
     QString m_manyAudios = tr("<Many sounds>");

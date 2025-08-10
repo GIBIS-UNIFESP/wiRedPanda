@@ -2,10 +2,13 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/app/application.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/arduino/codegenerator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/bewaveddolphin.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/bewaveddolphin_ui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/clockdialog.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/clockdialog_ui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/commands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/common.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/elementeditor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/elementeditor_ui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/elementfactory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/elementlabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/elementmapping.cpp
@@ -15,8 +18,10 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/app/ic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/itemwithid.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/lengthdialog.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/lengthdialog_ui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow_ui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneconnection.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneport.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/recentfiles.cpp
@@ -86,10 +91,13 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/app/application.h
     ${CMAKE_CURRENT_LIST_DIR}/app/arduino/codegenerator.h
     ${CMAKE_CURRENT_LIST_DIR}/app/bewaveddolphin.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/bewaveddolphin_ui.h
     ${CMAKE_CURRENT_LIST_DIR}/app/clockdialog.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/clockdialog_ui.h
     ${CMAKE_CURRENT_LIST_DIR}/app/commands.h
     ${CMAKE_CURRENT_LIST_DIR}/app/common.h
     ${CMAKE_CURRENT_LIST_DIR}/app/elementeditor.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/elementeditor_ui.h
     ${CMAKE_CURRENT_LIST_DIR}/app/elementfactory.h
     ${CMAKE_CURRENT_LIST_DIR}/app/elementlabel.h
     ${CMAKE_CURRENT_LIST_DIR}/app/elementmapping.h
@@ -101,8 +109,10 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/app/ic.h
     ${CMAKE_CURRENT_LIST_DIR}/app/itemwithid.h
     ${CMAKE_CURRENT_LIST_DIR}/app/lengthdialog.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/lengthdialog_ui.h
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement.h
     ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow_ui.h
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneconnection.h
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneport.h
     ${CMAKE_CURRENT_LIST_DIR}/app/recentfiles.h
@@ -168,14 +178,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logictruthtable.h
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicxnor.h
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicxor.h
-)
-
-set(FORMS
-    ${CMAKE_CURRENT_LIST_DIR}/app/bewaveddolphin.ui
-    ${CMAKE_CURRENT_LIST_DIR}/app/clockdialog.ui
-    ${CMAKE_CURRENT_LIST_DIR}/app/elementeditor.ui
-    ${CMAKE_CURRENT_LIST_DIR}/app/lengthdialog.ui
-    ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow.ui
 )
 
 set(RESOURCES

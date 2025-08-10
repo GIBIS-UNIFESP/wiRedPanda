@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "lengthdialog.h"
-#include "ui_lengthdialog.h"
+#include "lengthdialog_ui.h"
 
 LengthDialog::LengthDialog(const int currentLength, QWidget *parent)
     : QDialog(parent)
-    , m_ui(new Ui::LengthDialog)
+    , m_ui(std::make_unique<LengthDialog_Ui>())
 {
     m_ui->setupUi(this);
 
@@ -20,7 +20,6 @@ LengthDialog::LengthDialog(const int currentLength, QWidget *parent)
 
 LengthDialog::~LengthDialog()
 {
-    delete m_ui;
 }
 
 int LengthDialog::length()

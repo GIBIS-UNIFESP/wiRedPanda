@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "bewaveddolphin_ui.h"
 #include "graphicsview.h"
 #include "scene.h"
 
@@ -11,16 +12,13 @@
 #include <QMainWindow>
 #include <QStandardItemModel>
 #include <QTableView>
+#include <memory>
 
 class GraphicsView;
 class MainWindow;
 class QItemSelection;
 class QSaveFile;
 
-namespace Ui
-{
-class BewavedDolphin;
-}
 
 enum class PlotType { Number, Line };
 
@@ -171,7 +169,7 @@ private:
     void setLength(const int simLength, const bool runSimulation);
     void zoomChanged();
 
-    Ui::BewavedDolphin *m_ui;
+    std::unique_ptr<BewavedDolphin_Ui> m_ui;
     DolphinGraphicsView m_view;
     MainWindow *m_mainWindow = nullptr;
     PlotType m_type = PlotType::Line;

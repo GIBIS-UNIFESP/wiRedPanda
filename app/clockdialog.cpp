@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clockdialog.h"
-#include "ui_clockdialog.h"
+#include "clockdialog_ui.h"
 
 ClockDialog::ClockDialog(const int currentFrequency, QWidget *parent)
     : QDialog(parent)
-    , m_ui(new Ui::ClockDialog)
+    , m_ui(std::make_unique<ClockDialog_Ui>())
 {
     m_ui->setupUi(this);
 
@@ -20,7 +20,6 @@ ClockDialog::ClockDialog(const int currentFrequency, QWidget *parent)
 
 ClockDialog::~ClockDialog()
 {
-    delete m_ui;
 }
 
 int ClockDialog::frequency()

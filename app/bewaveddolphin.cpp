@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "bewaveddolphin.h"
-#include "ui_bewaveddolphin.h"
+#include "bewaveddolphin_ui.h"
 
 #include "clockdialog.h"
 #include "common.h"
@@ -129,7 +129,7 @@ void DolphinGraphicsView::wheelEvent(QWheelEvent *event)
 
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)
     : QMainWindow(parent)
-    , m_ui(new Ui::BewavedDolphin)
+    , m_ui(std::make_unique<BewavedDolphin_Ui>())
     , m_mainWindow(parent)
     , m_externalScene(scene)
     , m_askConnection(askConnection)
@@ -191,7 +191,6 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 BewavedDolphin::~BewavedDolphin()
 {
     Settings::setValue("beWavedDolphin/geometry", saveGeometry());
-    delete m_ui;
 }
 
 void BewavedDolphin::loadPixmaps()
