@@ -61,7 +61,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->setupUi(this);
 
     qCDebug(zero) << "Settings fileName: " << Settings::fileName();
-    
+
     // Get language from settings, or auto-detect from system if not set
     QString language = Settings::value("language").toString();
     if (language.isEmpty()) {
@@ -69,12 +69,12 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
         QLocale systemLocale = QLocale::system();
         QString systemLanguage = systemLocale.name(); // e.g., "en_US", "pt_BR"
         QString baseLanguage = systemLanguage.split('_').first(); // e.g., "en", "pt"
-        
+
         qCDebug(zero) << "Auto-detected system locale:" << systemLanguage;
-        
+
         // Check if we have translation for this language
         const auto availableLanguages = getAvailableLanguages();
-        
+
         // First try the full locale (e.g., "pt_BR")
         if (availableLanguages.contains(systemLanguage)) {
             language = systemLanguage;
@@ -88,10 +88,10 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
             qCDebug(zero) << "No translation available for" << systemLanguage << "or" << baseLanguage << ", falling back to English";
             language = "en";
         }
-        
+
         qCDebug(zero) << "Selected language:" << language;
     }
-    
+
     loadTranslation(language);
     populateLanguageMenu();
 
@@ -408,7 +408,7 @@ int MainWindow::confirmSave(const bool multiple)
 
     const QString fileName = m_currentFile.fileName().isEmpty() ? tr("New Project") : m_currentFile.fileName();
 
-    msgBox.setText(fileName + tr(" has been modified. \nDo you want to save your changes?"));
+    msgBox.setText(fileName + tr(" has been modified.\nDo you want to save your changes?"));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Yes);
     return msgBox.exec();
@@ -1263,26 +1263,26 @@ void MainWindow::loadTranslation(const QString &language)
 QStringList MainWindow::getAvailableLanguages() const
 {
     QStringList languages;
-    
+
     // Always include English as it's the default
     languages << "en";
-    
+
     // Dynamically discover all available wpanda translation files
     // Get all resources in the translations directory
     QDir translationsDir(":/translations");
     if (translationsDir.exists()) {
         QStringList qmFiles = translationsDir.entryList({"wpanda_*.qm"}, QDir::Files);
-        
+
         for (const QString &file : qmFiles) {
             // Extract language code from filename (e.g., "wpanda_fr.qm" -> "fr")
             QString langCode = file;
             langCode.remove("wpanda_");
             langCode.remove(".qm");
-            
+
             // Verify the resource actually exists and is valid
             QString resourcePath = QString(":/translations/%1").arg(file);
             QResource resource(resourcePath);
-            
+
             if (resource.isValid() && !langCode.isEmpty()) {
                 languages << langCode;
             }
@@ -1291,22 +1291,22 @@ QStringList MainWindow::getAvailableLanguages() const
         // Fallback: Try all possible language patterns if directory listing fails
         // This covers edge cases where QDir doesn't work with Qt resources
         const QStringList languagePatterns = {
-            "ar", "bg", "bn", "cs", "da", "de", "el", "es", "et", "fa", "fi", "fr", 
-            "he", "hi", "hr", "hu", "id", "it", "ja", "ko", "lt", "lv", "ms", "nb", 
-            "nl", "pl", "pt", "pt_BR", "ro", "ru", "sk", "sv", "th", "tr", "uk", 
+            "ar", "bg", "bn", "cs", "da", "de", "el", "es", "et", "fa", "fi", "fr",
+            "he", "hi", "hr", "hu", "id", "it", "ja", "ko", "lt", "lv", "ms", "nb",
+            "nl", "pl", "pt", "pt_BR", "ro", "ru", "sk", "sv", "th", "tr", "uk",
             "vi", "zh_Hans", "zh_Hant"
         };
-        
+
         for (const QString &langCode : languagePatterns) {
             QString resourcePath = QString(":/translations/wpanda_%1.qm").arg(langCode);
             QResource resource(resourcePath);
-            
+
             if (resource.isValid()) {
                 languages << langCode;
             }
         }
     }
-    
+
     // Remove duplicates and sort
     languages.removeDuplicates();
     languages.sort();
@@ -1317,28 +1317,28 @@ void MainWindow::populateLanguageMenu()
 {
     // Clear existing actions from the UI menu
     m_ui->menuLanguage->clear();
-    
+
     const auto availableLanguages = getAvailableLanguages();
     auto *languageGroup = new QActionGroup(this);
     languageGroup->setExclusive(true);
-    
+
     for (const QString &langCode : availableLanguages) {
         auto *action = new QAction(getLanguageDisplayName(langCode), this);
         action->setCheckable(true);
         action->setData(langCode);
-        
+
         // Set the flag icon for the language
         action->setIcon(QIcon(getLanguageFlagIcon(langCode)));
-        
+
         // Check if this is the current language
-        if (langCode == Settings::value("language").toString() || 
+        if (langCode == Settings::value("language").toString() ||
            (langCode == "en" && Settings::value("language").toString().isEmpty())) {
             action->setChecked(true);
         }
-        
+
         languageGroup->addAction(action);
         m_ui->menuLanguage->addAction(action);
-        
+
         connect(action, &QAction::triggered, this, [this, langCode]() {
             loadTranslation(langCode);
         });
@@ -1349,15 +1349,15 @@ QString MainWindow::getLanguageDisplayName(const QString &langCode) const
 {
     // Use Qt's built-in locale system to get native language names
     QLocale locale(langCode);
-    
+
     // Special handling for some language codes that need specific locales
     if (langCode == "pt_BR") {
         locale = QLocale(QLocale::Portuguese, QLocale::Brazil);
     }
-    
+
     // Get the native language name (e.g., "Deutsch" for German)
     QString nativeName = locale.nativeLanguageName();
-    
+
     // If we have a country-specific variant, add the country name
     if (langCode.contains('_') || langCode == "pt_BR") {
 #if QT_VERSION < QT_VERSION_CHECK(6, 2, 0)
@@ -1369,7 +1369,7 @@ QString MainWindow::getLanguageDisplayName(const QString &langCode) const
             nativeName += QString(" (%1)").arg(nativeCountryName);
         }
     }
-    
+
     // Fallback to language code if Qt doesn't have the name
     if (nativeName.isEmpty()) {
         // Manual fallbacks for languages Qt might not fully support
@@ -1381,12 +1381,12 @@ QString MainWindow::getLanguageDisplayName(const QString &langCode) const
         };
         nativeName = fallbackNames.value(langCode, langCode);
     }
-    
+
     // Ensure proper capitalization for the first letter
     if (!nativeName.isEmpty() && nativeName.at(0).isLetter()) {
         nativeName[0] = nativeName.at(0).toUpper();
     }
-    
+
     return nativeName;
 }
 
@@ -1394,12 +1394,12 @@ QString MainWindow::getLanguageFlagIcon(const QString &langCode) const
 {
     // Use Qt's locale system to determine the appropriate country flag
     QLocale locale(langCode);
-    
+
     // Special handling for specific language variants
     if (langCode == "pt") {
         locale = QLocale(QLocale::Portuguese, QLocale::Portugal);
     }
-    
+
     // Map Qt country codes to our flag resource names
     static const QMap<QLocale::Country, QString> countryToFlag = {
         {QLocale::SaudiArabia, ":/toolbar/arabic.svg"},          // Arabic
@@ -1442,14 +1442,14 @@ QString MainWindow::getLanguageFlagIcon(const QString &langCode) const
         {QLocale::China, ":/toolbar/chinese.svg"},              // Chinese Simplified
         {QLocale::Taiwan, ":/toolbar/chinese_traditional.svg"}  // Chinese Traditional
     };
-    
+
     // Get the flag for the locale's country
 #if QT_VERSION < QT_VERSION_CHECK(6, 2, 0)
     QString flagIcon = countryToFlag.value(locale.country(), ":/toolbar/default.svg");
 #else
     QString flagIcon = countryToFlag.value(locale.territory(), ":/toolbar/default.svg");
 #endif
-    
+
     // Fallback for languages where Qt might not detect the country correctly
     if (flagIcon == ":/toolbar/default.svg") {
         static const QMap<QString, QString> languageFallbacks = {
@@ -1495,7 +1495,7 @@ QString MainWindow::getLanguageFlagIcon(const QString &langCode) const
         };
         flagIcon = languageFallbacks.value(langCode, ":/toolbar/default.svg");
     }
-    
+
     return flagIcon;
 }
 

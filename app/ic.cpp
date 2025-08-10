@@ -137,7 +137,7 @@ void IC::loadFile(const QString &fileName)
     // ----------------------------------------------
 
     QFileInfo fileInfo;
-    
+
     // Fix for double path concatenation bug: check if fileName is already absolute
     if (QFileInfo(fileName).isAbsolute()) {
         fileInfo.setFile(fileName);  // Use as-is if absolute path

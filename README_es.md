@@ -44,11 +44,11 @@ Las traducciones se encuentran en el directorio [app/resources/translations](htt
 
 ## Estrellas
 
-<a href="https://www.star-history.com/#GIBIS-UNIFESP/wiRedPanda&Date"> 
-<imagen> 
-<source media="(prefiere-color-scheme: oscuro)" srcset="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date&theme=dark" /> 
-<fuente media="(prefiere-color-esquema: claro)" srcset="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date" /> 
-<img alt="Gráfico histórico de estrellas" src="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date" /> 
+<a href="https://www.star-history.com/#GIBIS-UNIFESP/wiRedPanda&Date">
+<imagen>
+<source media="(prefiere-color-scheme: oscuro)" srcset="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date&theme=dark" />
+<fuente media="(prefiere-color-esquema: claro)" srcset="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date" />
+<img alt="Gráfico histórico de estrellas" src="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date" />
 </imagen>
 </a>
 
@@ -59,18 +59,18 @@ Las traducciones se encuentran en el directorio [app/resources/translations](htt
 wiRedPanda tiene licencia bajo la [Licencia pública general de GNU, versión 3.0] (http://www.gnu.org/licenses/).
 
 Consulte [`LICENCIA`](LICENCIA) para obtener el texto completo de la licencia.
-  
+
     Copyright (C) 2025 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres y Vinícius Miguel.
-    
+
     Este programa es software libre: puedes redistribuirlo y/o modificar
     bajo los términos de la Licencia Pública General GNU publicada por
     la Free Software Foundation, ya sea la versión 3 de la Licencia, o
     (a su elección) cualquier versión posterior.
-    
+
     Este programa se distribuye con la esperanza de que sea útil,
     pero SIN NINGUNA GARANTIA; sin siquiera la garantía implícita de
     COMERCIABILIDAD o IDONEIDAD PARA UN FIN DETERMINADO. Ver el
     Licencia Pública General GNU para más detalles.
-    
+
     Debería haber recibido una copia de la Licencia Pública General GNU
     junto con este programa. Si no, consulte <http://www.gnu.org/licenses/>.

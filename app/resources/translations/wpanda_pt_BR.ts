@@ -1569,9 +1569,9 @@ Você precisa salvar novos projetos antes de acessar ICs e skins ou executar sim
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="411"/>
-        <source> has been modified. 
+        <source> has been modified.
 Do you want to save your changes?</source>
-        <translation> foi modificado. 
+        <translation> foi modificado.
 Você quer salvar suas alterações?</translation>
     </message>
     <message>

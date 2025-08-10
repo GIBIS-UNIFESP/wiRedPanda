@@ -13,7 +13,7 @@ Then open CMakeLists.txt in Qt Creator and press Ctrl+R to build and run.
 
 ### On Linux & macOS
 
-#### Dependencies 
+#### Dependencies
 
 Qt 5.15.0+ or 6.2.0+ and the QtMultimedia module is needed for building.
 
@@ -69,18 +69,18 @@ This process could take a while. Once concluded, the binary will be located at `
 wiRedPanda is licensed under the [GNU General Public License, Version 3.0](http://www.gnu.org/licenses/).
 
 See [`LICENSE`](LICENSE) for the full license text.
-  
+
     Copyright (C) 2025 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres and Vinícius Miguel.
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.

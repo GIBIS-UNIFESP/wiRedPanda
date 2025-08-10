@@ -2009,9 +2009,9 @@
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="411"/>
-        <source> has been modified. 
+        <source> has been modified.
 Do you want to save your changes?</source>
-        <translation> wurde geändert. 
+        <translation> wurde geändert.
 Möchten Sie Ihre Änderungen speichern?</translation>
     </message>
     <message>

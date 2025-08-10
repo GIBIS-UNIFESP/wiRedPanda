@@ -35,7 +35,7 @@ class Pandaception : public std::runtime_error
 {
 public:
     explicit Pandaception(const QString &translatedMessage, const QString &englishMessage);
-    
+
     QString englishMessage() const;
 
 private:
