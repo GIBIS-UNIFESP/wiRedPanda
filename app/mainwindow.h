@@ -3,19 +3,18 @@
 
 #pragma once
 
+#include "mainwindow_ui.h"
+
 #include <QDir>
 #include <QMainWindow>
 #include <QSpacerItem>
 #include <QTranslator>
+#include <memory>
 
 class ElementLabel;
 class RecentFiles;
 class WorkSpace;
 
-namespace Ui
-{
-class MainWindow;
-}
 
 class MainWindow : public QMainWindow
 {
@@ -146,7 +145,7 @@ private:
     //! Function called as a tab is selected. The tab is connected to the UI.
     void connectTab();
 
-    Ui::MainWindow *m_ui;
+    std::unique_ptr<MainWindow_Ui> m_ui;
 
     QTranslator *m_pandaTranslator = nullptr;
     QTranslator *m_qtTranslator = nullptr;

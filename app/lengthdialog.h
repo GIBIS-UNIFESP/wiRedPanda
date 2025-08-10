@@ -3,12 +3,11 @@
 
 #pragma once
 
-#include <QDialog>
+#include "lengthdialog_ui.h"
 
-namespace Ui
-{
-class LengthDialog;
-}
+#include <QDialog>
+#include <memory>
+
 
 /*!
  * @class LengthDialog
@@ -31,5 +30,5 @@ public:
 private:
     Q_DISABLE_COPY(LengthDialog)
 
-    Ui::LengthDialog *m_ui;
+    std::unique_ptr<LengthDialog_Ui> m_ui;
 };

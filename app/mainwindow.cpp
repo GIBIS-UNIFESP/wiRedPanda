@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "mainwindow_ui.h"
 
 #include "bewaveddolphin.h"
 #include "codegenerator.h"
@@ -55,7 +55,7 @@ void ensureSvgUsage() {
 
 MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     : QMainWindow(parent)
-    , m_ui(new Ui::MainWindow)
+    , m_ui(std::make_unique<MainWindow_Ui>())
 {
     qCDebug(zero) << "wiRedPanda Version = " APP_VERSION " OR " << GlobalProperties::version;
     m_ui->setupUi(this);
@@ -239,7 +239,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    delete m_ui;
 }
 
 void MainWindow::loadAutosaveFiles()
@@ -1173,7 +1172,7 @@ void MainWindow::on_actionExportToImage_triggered()
 void MainWindow::retranslateUi()
 {
     ElementFactory::clearCache();
-    m_ui->retranslateUi(this);
+    m_ui->retranslateUi();
     m_ui->elementEditor->retranslateUi();
 
     const auto items = m_ui->tabElements->findChildren<ElementLabel *>();
