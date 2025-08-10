@@ -514,8 +514,8 @@ void BewavedDolphin::resizeScene()
         throw PANDACEPTION("Waveform would be too big! Resetting zoom.");
     }
 
-    m_signalTableView->resize(newWidth / (m_scale * 0.8),
-                              newHeight / (m_scale * 0.8));
+    m_signalTableView->resize(static_cast<int>(newWidth / (m_scale * 0.8)),
+                              static_cast<int>(newHeight / (m_scale * 0.8)));
     m_scene->setSceneRect(m_scene->itemsBoundingRect());
 }
 
@@ -567,11 +567,11 @@ void BewavedDolphin::createZeroElement(const int row, const int col, const bool 
     m_model->setData(index, 0, Qt::DisplayRole);
 
     if (m_type == PlotType::Number) {
-        m_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
+        m_model->setData(index, static_cast<uint>(Qt::AlignCenter), Qt::TextAlignmentRole);
     }
 
     if (m_type == PlotType::Line) {
-        m_model->setData(index, Qt::AlignLeft, Qt::TextAlignmentRole);
+        m_model->setData(index, static_cast<uint>(Qt::AlignLeft), Qt::TextAlignmentRole);
 
         const auto previousIndex = index.siblingAtColumn(col - 1);
         const bool hasPreviousItem = previousIndex.isValid();
@@ -611,11 +611,11 @@ void BewavedDolphin::createOneElement(const int row, const int col, const bool i
     m_model->setData(index, 1, Qt::DisplayRole);
 
     if (m_type == PlotType::Number) {
-        m_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
+        m_model->setData(index, static_cast<uint>(Qt::AlignCenter), Qt::TextAlignmentRole);
     }
 
     if (m_type == PlotType::Line) {
-        m_model->setData(index, Qt::AlignLeft, Qt::TextAlignmentRole);
+        m_model->setData(index, static_cast<uint>(Qt::AlignLeft), Qt::TextAlignmentRole);
 
         const auto previousIndex = index.siblingAtColumn(col - 1);
         const bool hasPreviousItem = previousIndex.isValid();
@@ -669,7 +669,7 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
 {
     on_actionCombinational_triggered();
 
-    const int truthTableSize = std::pow(2, m_inputPorts);
+    const int truthTableSize = static_cast<int>(std::pow(2, m_inputPorts));
     setLength(truthTableSize, false);
 
     for (int row = 0; row < m_inputs.size(); ++row) {
@@ -811,7 +811,7 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
 
 void BewavedDolphin::on_actionCombinational_triggered()
 {
-    const int truthTableSize = std::min(2048., std::pow(2, m_inputPorts));
+    const int truthTableSize = static_cast<int>(std::min(2048., std::pow(2, m_inputPorts)));
 
     if (m_length < truthTableSize) {
         setLength(truthTableSize, false);
@@ -890,7 +890,7 @@ void BewavedDolphin::on_actionZoomOut_triggered()
     m_view.zoomOut();
 
     for (int col = 0; col < m_signalTableView->model()->columnCount(); ++col) {
-        m_signalTableView->setColumnWidth(col, m_signalTableView->columnWidth(col) / m_scale);
+        m_signalTableView->setColumnWidth(col, static_cast<int>(m_signalTableView->columnWidth(col) / m_scale));
     }
 
     resizeScene();
@@ -902,7 +902,7 @@ void BewavedDolphin::on_actionZoomIn_triggered()
     m_view.zoomIn();
 
     for (int col = 0; col < m_signalTableView->model()->columnCount(); ++col) {
-        m_signalTableView->setColumnWidth(col, m_signalTableView->columnWidth(col) * m_scale);
+        m_signalTableView->setColumnWidth(col, static_cast<int>(m_signalTableView->columnWidth(col) * m_scale));
     }
 
     resizeScene();
@@ -953,7 +953,7 @@ void BewavedDolphin::on_actionClear_triggered()
 
 void BewavedDolphin::on_actionAutoCrop_triggered()
 {
-    setLength(std::pow(2, m_inputs.length()), true);
+    setLength(static_cast<int>(std::pow(2, m_inputs.length())), true);
 }
 
 void BewavedDolphin::on_actionCopy_triggered()
@@ -1059,8 +1059,8 @@ void BewavedDolphin::paste(const QItemSelection &ranges, QDataStream &stream)
         quint64 row;  stream >> row;
         quint64 col;  stream >> col;
         quint64 data_; stream >> data_;
-        const int newRow = static_cast<int>(firstRow + row);
-        const int newCol = static_cast<int>(firstCol + col);
+        const int newRow = static_cast<int>(static_cast<quint64>(firstRow) + row);
+        const int newCol = static_cast<int>(static_cast<quint64>(firstCol) + col);
 
         if ((newRow < m_inputPorts) && (newCol < m_model->columnCount())) {
             createElement(newRow, newCol, static_cast<int>(data_));

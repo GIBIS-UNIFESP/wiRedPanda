@@ -46,7 +46,7 @@ void TruthTable::updatePortsProperties()
 
             y += step * 2;
 
-            port->setName(QChar::fromLatin1('A' + index));
+            port->setName(QChar::fromLatin1(static_cast<char>('A' + index)));
             ++index;
         }
     }

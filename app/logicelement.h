@@ -46,7 +46,6 @@ private:
     QVector<LogicElement *> m_successors;
     QVector<InputPair> m_inputPairs;
     QVector<bool> m_outputValues;
-    bool m_beingVisited = false;
     bool m_isValid = true;
     int m_priority = -1;
 };
