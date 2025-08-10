@@ -243,6 +243,11 @@ void QNEConnection::setStatus(const Status status)
     case Status::Invalid:  setPen(QPen(m_invalidColor,  5)); break;
     case Status::Inactive: setPen(QPen(m_inactiveColor, 3)); break;
     case Status::Active:   setPen(QPen(m_activeColor,   3)); break;
+    
+    default:
+        // Handle unexpected status values gracefully
+        setPen(QPen(m_invalidColor, 5));
+        break;
     }
 
     if (endPort()) {

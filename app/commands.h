@@ -11,6 +11,8 @@
 
 class QNEConnection;
 
+GraphicElement *findElm(const int id);
+QNEConnection *findConn(const int id);
 const QList<GraphicElement *> findElements(const QList<int> &ids);
 const QList<QGraphicsItem *> findItems(const QList<int> &ids);
 const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const QList<int> &ids, QList<int> &otherIds);

@@ -131,6 +131,15 @@ void InputRotary::updatePortsProperties()
         outputPort(15)->setPos(16,  0);   outputPort(15)->setName("F");
         break;
     }
+    
+    default:
+        // Handle unexpected output sizes gracefully
+        // For unhandled sizes, use a simple default positioning
+        for (int i = 0; i < outputSize(); ++i) {
+            outputPort(i)->setPos(32, i * 16);
+            outputPort(i)->setName(QString::number(i));
+        }
+        break;
     }
 
     InputRotary::refresh();

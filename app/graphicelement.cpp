@@ -28,10 +28,10 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     , m_translatedName(translatedName)
     , m_elementGroup(group)
     , m_elementType(type)
-    , m_maxInputSize(maxInputSize)
-    , m_maxOutputSize(maxOutputSize)
-    , m_minInputSize(minInputSize)
-    , m_minOutputSize(minOutputSize)
+    , m_maxInputSize(static_cast<quint64>(maxInputSize))
+    , m_maxOutputSize(static_cast<quint64>(maxOutputSize))
+    , m_minInputSize(static_cast<quint64>(minInputSize))
+    , m_minOutputSize(static_cast<quint64>(minOutputSize))
 {
     if (GlobalProperties::skipInit) {
         return;
@@ -283,7 +283,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     }
 
     if (map.contains("priority")) {
-        setPriority(map.value("priority").toULongLong());
+        setPriority(static_cast<int>(map.value("priority").toULongLong()));
     }
 
     // -------------------------------------------
@@ -310,7 +310,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         ++port;
     }
 
-    removeSurplusInputs(inputMap.size(), portMap);
+    removeSurplusInputs(static_cast<quint64>(inputMap.size()), portMap);
 
     // -------------------------------------------
 
@@ -336,7 +336,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         ++port;
     }
 
-    removeSurplusOutputs(outputMap.size(), portMap);
+    removeSurplusOutputs(static_cast<quint64>(outputMap.size()), portMap);
 
     // -------------------------------------------
 
@@ -427,7 +427,7 @@ void GraphicElement::loadPriority(QDataStream &stream, const QVersionNumber vers
 {
     if (version >= VERSION("4.01")) {
         quint64 priority; stream >> priority;
-        setPriority(priority);
+        setPriority(static_cast<int>(priority));
     }
 }
 
@@ -652,7 +652,7 @@ void GraphicElement::addPort(const QString &name, const bool isOutput, const int
     }
 
     port->setGraphicElement(this);
-    port->setPtr(ptr);
+    port->setPtr(static_cast<quint64>(ptr));
     port->setName(name);
     port->show();
 }
@@ -674,7 +674,7 @@ void GraphicElement::setPortName(const QString &name)
 
 void GraphicElement::setPriority(const int value)
 {
-    m_priority = value;
+    m_priority = static_cast<quint64>(value);
 }
 
 void GraphicElement::setRotation(const qreal angle)
@@ -1098,7 +1098,7 @@ int GraphicElement::outputSize() const
 
 int GraphicElement::priority() const
 {
-    return m_priority;
+    return static_cast<int>(m_priority);
 }
 
 void GraphicElement::setOutputSize(const int size)
@@ -1139,7 +1139,7 @@ void GraphicElement::setDelay(const float delay)
 
 void GraphicElement::setMinOutputSize(const int minOutputSize)
 {
-    m_minOutputSize = minOutputSize;
+    m_minOutputSize = static_cast<quint64>(minOutputSize);
 }
 
 int GraphicElement::minInputSize() const
@@ -1149,7 +1149,7 @@ int GraphicElement::minInputSize() const
 
 void GraphicElement::setMinInputSize(const int minInputSize)
 {
-    m_minInputSize = minInputSize;
+    m_minInputSize = static_cast<quint64>(minInputSize);
 }
 
 int GraphicElement::maxOutputSize() const
@@ -1159,7 +1159,7 @@ int GraphicElement::maxOutputSize() const
 
 void GraphicElement::setMaxOutputSize(const int maxOutputSize)
 {
-    m_maxOutputSize = maxOutputSize;
+    m_maxOutputSize = static_cast<quint64>(maxOutputSize);
 }
 
 int GraphicElement::maxInputSize() const
@@ -1169,7 +1169,7 @@ int GraphicElement::maxInputSize() const
 
 void GraphicElement::setMaxInputSize(const int maxInputSize)
 {
-    m_maxInputSize = maxInputSize;
+    m_maxInputSize = static_cast<quint64>(maxInputSize);
 }
 
 void GraphicElement::highlight(const bool isSelected)

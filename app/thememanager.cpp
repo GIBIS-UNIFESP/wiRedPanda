@@ -120,6 +120,11 @@ void ThemeAttributes::setTheme(const Theme theme)
 
         break;
     }
+    
+    default:
+        // Handle unexpected theme values gracefully - fallback to Light theme
+        setTheme(Theme::Light);
+        break;
     }
 
 #ifndef Q_OS_MAC

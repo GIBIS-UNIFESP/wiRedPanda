@@ -22,7 +22,7 @@ void LogicTruthTable::updateLogic()
                                              acc += (b == 1) ? '1' : '0';
                                              return acc;
                                          }).toUInt(nullptr, 2);
-        const bool result = m_proposition.at(256 * i + pos);
+        const bool result = m_proposition.at(static_cast<std::size_t>(256 * i) + static_cast<std::size_t>(pos));
         setOutputValue(i, result);
     }
 }

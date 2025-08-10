@@ -39,9 +39,11 @@
 
 #include <QSvgRenderer>
 
+#ifdef Q_OS_MAC
 void ensureSvgUsage() {
     QSvgRenderer dummy; // for macdeployqt to add libqsvg.dylib
 }
+#endif
 
 #ifdef Q_OS_WASM
 #include <emscripten/emscripten.h>
@@ -164,8 +166,8 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
             auto *action = new QAction(entry);
 
             connect(action, &QAction::triggered, this, [this] {
-                if (auto *action = qobject_cast<QAction *>(sender())) {
-                    loadPandaFile("examples/" + action->text());
+                if (auto *senderAction = qobject_cast<QAction *>(sender())) {
+                    loadPandaFile("examples/" + senderAction->text());
                 }
             });
 
@@ -1576,6 +1578,11 @@ void MainWindow::updateTheme()
     switch (ThemeManager::theme()) {
     case Theme::Dark:  m_ui->actionDarkTheme->setChecked(true); break;
     case Theme::Light: m_ui->actionLightTheme->setChecked(true); break;
+    
+    default:
+        // Handle unexpected theme values - fallback to Light theme
+        m_ui->actionLightTheme->setChecked(true);
+        break;
     }
 
     m_ui->tabElements->setTabIcon(2, QIcon(DFlipFlop::pixmapPath()));

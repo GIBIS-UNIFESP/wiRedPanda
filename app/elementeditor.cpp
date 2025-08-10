@@ -75,7 +75,7 @@ ElementEditor::~ElementEditor()
 {
 }
 
-QAction *addElementAction(QMenu *menu, GraphicElement *selectedElm, ElementType type, const bool hasSameType)
+static QAction *addElementAction(QMenu *menu, GraphicElement *selectedElm, ElementType type, const bool hasSameType)
 {
     if (hasSameType && (selectedElm->elementType() == type)) {
         return nullptr;
@@ -202,8 +202,12 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
 
         case ElementGroup::IC:      [[fallthrough]];
         case ElementGroup::Mux:     [[fallthrough]];
-        case ElementGroup::Other:   [[fallthrough]];
+        case ElementGroup::Other:
         case ElementGroup::Unknown: break;
+        
+        default:
+            // Handle any unexpected enum values gracefully
+            break;
         }
 
         if (submenuMorph->actions().empty()) {
@@ -892,10 +896,10 @@ void ElementEditor::truthTable()
 
     QStringList inputLabels;
     m_table->setColumnCount(nInputs + nOutputs);
-    m_table->setRowCount(std::pow(2, nInputs));
+    m_table->setRowCount(static_cast<int>(std::pow(2, nInputs)));
 
     for (int i = 0; i < nInputs; ++i) {
-        inputLabels.append(QChar::fromLatin1('A' + i));
+        inputLabels.append(QChar::fromLatin1(static_cast<char>('A' + i)));
     }
 
     for (int i = 0; i < truthtable->outputSize(); ++i) {
@@ -930,7 +934,7 @@ void ElementEditor::truthTable()
             const int output = bitArray.at(256 * z + i);
 
             if (m_table->item(i, nInputs + z) == nullptr) {
-                auto *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1('0' + output)));
+                auto *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1(static_cast<char>('0' + output))));
                 newOutItem->setTextAlignment(Qt::AlignCenter);
                 m_table->setItem(i, nInputs + z, newOutItem);
                 m_table->item(i, nInputs + z)->setFlags(Qt::ItemIsEnabled);
