@@ -31,6 +31,7 @@ void TestCommandsAdvanced::testCommandExecutionFailures()
     WorkSpace workspace;
     Scene* scene = workspace.scene();
     QUndoStack* undoStack = workspace.scene()->undoStack();
+    Q_UNUSED(undoStack)
     
     // Test command execution with invalid elements
     QList<QGraphicsItem*> emptyList;
@@ -949,6 +950,7 @@ void TestCommandsAdvanced::testCommandRollbackOnFailure()
     And* element = new And();
     scene->addItem(element);
     QPointF originalPos = element->pos();
+    Q_UNUSED(originalPos)
     
     // Create command that might fail
     auto* command = new MoveCommand({element}, {element->pos()}, scene);
@@ -994,6 +996,7 @@ void TestCommandsAdvanced::testStateConsistencyAfterFailure()
     scene->addItem(element);
     
     QPointF originalPos = element->pos();
+    Q_UNUSED(originalPos)
     
     auto* command = new MoveCommand({element}, {element->pos()}, scene);
     command->redo();

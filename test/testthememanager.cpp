@@ -56,11 +56,14 @@ void TestThemeManager::testSetTheme()
 {
     // Test theme setting
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Try to set a different theme
     QStringList themes = {"default", "light", "dark"};
     
     for (const QString& theme : themes) {
+        Q_UNUSED(theme)
+        Q_UNUSED(theme)
         // Note: ThemeManager only supports Light and Dark themes
         
         // Should not crash regardless of theme validity
@@ -105,6 +108,7 @@ void TestThemeManager::testThemeSwitch()
 {
     // Test theme switching
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Switch to different theme
     QString newTheme = "light";
@@ -120,6 +124,7 @@ void TestThemeManager::testThemeSwitchNotification()
 {
     // Test theme switch notifications
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Theme switches should trigger updates
     ThemeManager::setTheme(Theme::Dark);
@@ -132,6 +137,7 @@ void TestThemeManager::testThemeSwitchRollback()
 {
     // Test theme switch rollback on failure
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Try to set invalid theme
     // ThemeManager::setTheme only accepts Theme enum, not strings("invalid_theme_name");
@@ -147,11 +153,13 @@ void TestThemeManager::testInvalidThemeSwitch()
 {
     // Test invalid theme switching
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Try invalid themes
     QStringList invalidThemes = {"", "nonexistent", "invalid/path", nullptr};
     
     for (const QString& theme : invalidThemes) {
+        Q_UNUSED(theme)
         // Note: ThemeManager only supports Light and Dark themes
         
         // Should handle gracefully
@@ -166,11 +174,13 @@ void TestThemeManager::testRapidThemeSwitching()
 {
     // Test rapid theme switching
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     QStringList themes = {"default", "light", "dark", "default"};
     
     for (int i = 0; i < 10; ++i) {
         for (const QString& theme : themes) {
+        Q_UNUSED(theme)
             // Note: ThemeManager only supports Light and Dark themes
         }
     }
@@ -188,6 +198,7 @@ void TestThemeManager::testPixmapLoading()
     QString pixmapPath = ":/basic/and.svg";
     
     QString themePath = ThemeManager::themePath();
+        Q_UNUSED(themePath)
     
     // Should load valid pixmap or return empty pixmap
     QVERIFY(themePath == "light" || themePath == "dark");
@@ -233,14 +244,17 @@ void TestThemeManager::testPixmapThemes()
 {
     // Test pixmap theming
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     QString pixmapPath = ":/basic/and.svg";
     
     // Load pixmap with different themes
     QStringList themes = {"default", "light", "dark"};
     
     for (const QString& theme : themes) {
+        Q_UNUSED(theme)
         // Note: ThemeManager only supports Light and Dark themes
         QString themePath = ThemeManager::themePath();
+        Q_UNUSED(themePath)
         
         // Should load appropriate themed pixmap
         validateThemeManagerState();
@@ -346,6 +360,7 @@ void TestThemeManager::testThemeSettings()
 {
     // Test theme settings
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Theme settings should be accessible
     validateThemeManagerState();
@@ -408,7 +423,10 @@ void TestThemeManager::testResourcePaths()
     };
     
     for (const QString& path : testPaths) {
+        Q_UNUSED(path)
         QString themePath = ThemeManager::themePath(); // ThemeManager doesn't have currentPixmap method(path);
+        Q_UNUSED(themePath)
+        Q_UNUSED(themePath)
         
         // Should handle resource paths
         validateThemeManagerState();
@@ -419,11 +437,13 @@ void TestThemeManager::testThemeResourcePath()
 {
     // Test theme-specific resource paths
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Test with different themes
     QStringList themes = {"default", "light", "dark"};
     
     for (const QString& theme : themes) {
+        Q_UNUSED(theme)
         // Note: ThemeManager only supports Light and Dark themes
         
         // Should resolve theme-specific paths
@@ -439,6 +459,7 @@ void TestThemeManager::testPixmapResourcePath()
     QString pixmapPath = ":/basic/or.svg";
     
     QString themePath = ThemeManager::themePath();
+        Q_UNUSED(themePath)
     
     // Should resolve pixmap paths correctly
     validateThemeManagerState();
@@ -520,6 +541,7 @@ void TestThemeManager::testDynamicThemeUpdate()
 {
     // Test dynamic theme updates
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Change theme and verify updates
     ThemeManager::setTheme(Theme::Dark);
@@ -533,6 +555,7 @@ void TestThemeManager::testLiveThemeChange()
 {
     // Test live theme changes
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Should handle live theme changes
     for (int i = 0; i < 5; ++i) {
@@ -548,6 +571,7 @@ void TestThemeManager::testThemeUpdateNotifications()
 {
     // Test theme update notifications
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Theme updates should notify listeners
     ThemeManager::setTheme(Theme::Dark);
@@ -569,6 +593,7 @@ void TestThemeManager::testGlobalThemeUpdate()
 {
     // Test global theme updates
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Global updates should affect all elements
     ThemeManager::setTheme(Theme::Dark);
@@ -584,11 +609,13 @@ void TestThemeManager::testThemeValidation()
     QStringList invalidThemes = {"", "nonexistent", "invalid"};
     
     for (const QString& theme : validThemes) {
+        Q_UNUSED(theme)
         // Note: ThemeManager only supports Light and Dark themes
         validateThemeManagerState();
     }
     
     for (const QString& theme : invalidThemes) {
+        Q_UNUSED(theme)
         // Note: ThemeManager only supports Light and Dark themes
         validateThemeManagerState();
     }
@@ -598,6 +625,7 @@ void TestThemeManager::testInvalidThemes()
 {
     // Test invalid theme handling
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     QStringList invalidThemes = {
         "invalid_theme",
@@ -607,6 +635,7 @@ void TestThemeManager::testInvalidThemes()
     };
     
     for (const QString& theme : invalidThemes) {
+        Q_UNUSED(theme)
         // Note: ThemeManager only supports Light and Dark themes
         // Should handle gracefully
         validateThemeManagerState();
@@ -645,6 +674,7 @@ void TestThemeManager::testThemeErrorRecovery()
 {
     // Test theme error recovery
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Cause error and recover
     // ThemeManager::setTheme only accepts Theme enum, not strings("error_theme");
@@ -657,6 +687,7 @@ void TestThemeManager::testThemeLoadingPerformance()
 {
     // Test theme loading performance
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     QElapsedTimer timer;
     timer.start();
@@ -682,6 +713,7 @@ void TestThemeManager::testThemeCachingPerformance()
     
     for (int i = 0; i < 1000; ++i) {
         QString themePath = ThemeManager::themePath();
+        Q_UNUSED(themePath)
     }
     
     qint64 elapsed = timer.elapsed();
@@ -692,6 +724,7 @@ void TestThemeManager::testMemoryUsage()
 {
     // Test memory usage
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Load many pixmaps
     QStringList pixmapPaths = {
@@ -701,7 +734,9 @@ void TestThemeManager::testMemoryUsage()
     
     for (int i = 0; i < 100; ++i) {
         for (const QString& path : pixmapPaths) {
+        Q_UNUSED(path)
             QString themePath = ThemeManager::themePath(); // ThemeManager doesn't have currentPixmap method(path);
+        Q_UNUSED(themePath)
         }
     }
     
@@ -728,11 +763,13 @@ void TestThemeManager::testResourceCleanup()
 {
     // Test resource cleanup
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Use resources
     for (int i = 0; i < 100; ++i) {
         ThemeManager::setTheme(Theme::Dark);
         QString themePath = ThemeManager::themePath(); // ThemeManager doesn't have currentPixmap method(":/basic/and.svg");
+        Q_UNUSED(themePath)
         ThemeManager::setTheme(Theme::Light);
     }
     
@@ -763,6 +800,7 @@ void TestThemeManager::testElementThemeChange()
 {
     // Test element theme change handling
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Change theme and verify element updates
     ThemeManager::setTheme(Theme::Dark);
@@ -783,7 +821,9 @@ void TestThemeManager::testThemeConsistency()
     };
     
     for (const QString& path : pixmapPaths) {
+        Q_UNUSED(path)
         QString themePath = ThemeManager::themePath(); // ThemeManager doesn't have currentPixmap method(path);
+        Q_UNUSED(themePath)
         // Should be consistent with current theme
     }
     
@@ -794,6 +834,7 @@ void TestThemeManager::testThemeApplicationOrder()
 {
     // Test theme application order
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Theme should be applied in correct order
     ThemeManager::setTheme(Theme::Light);
@@ -824,6 +865,7 @@ void TestThemeManager::testUserThemePreferences()
 {
     // Test user theme preferences
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // User preferences should be respected
     validateThemeManagerState();
@@ -917,6 +959,7 @@ void TestThemeManager::testFrequentThemeSwitching()
 {
     // Test frequent theme switching
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     for (int i = 0; i < 1000; ++i) {
         ThemeManager::setTheme(Theme::Dark);
@@ -931,11 +974,13 @@ void TestThemeManager::testConcurrentThemeAccess()
 {
     // Test concurrent theme access
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Simulate concurrent access
     for (int i = 0; i < 10; ++i) {
         ThemeManager::setTheme(Theme::Dark);
         QString themePath = ThemeManager::themePath(); // ThemeManager doesn't have currentPixmap method(":/basic/and.svg");
+        Q_UNUSED(themePath)
         ThemeManager::setTheme(Theme::Light);
     }
     
@@ -947,6 +992,7 @@ void TestThemeManager::testThemeUnloading()
 {
     // Test theme unloading
     Theme originalTheme = ThemeManager::theme();
+    Q_UNUSED(originalTheme)
     
     // Load and unload themes
     ThemeManager::setTheme(Theme::Dark);
