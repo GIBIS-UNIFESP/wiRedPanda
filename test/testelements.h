@@ -31,6 +31,14 @@ private slots:
     void testSRFlipFlop();
     void testTFlipFlop();
     void testVCC();
+    void testNAND();
+    void testNOR();
+    void testNOT();
+    void testXOR();
+    void testXNOR();
+    void testLED();
+    void testInputButton();
+    void testSRLatch();
 
 private:
     void testICData(IC *ic);

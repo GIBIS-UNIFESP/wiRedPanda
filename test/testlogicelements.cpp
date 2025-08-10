@@ -14,6 +14,13 @@
 #include "logicor.h"
 #include "logicsrflipflop.h"
 #include "logictflipflop.h"
+#include "logicnand.h"
+#include "logicnor.h"
+#include "logicnot.h"
+#include "logicxor.h"
+#include "logicxnor.h"
+#include "logicoutput.h"
+#include "logicsrlatch.h"
 
 #include <QTest>
 
@@ -396,3 +403,130 @@ void TestLogicElements::testLogicTFlipFlop()
         QCOMPARE(elm.outputValue(1), test.at(6));
     }
 }
+
+void TestLogicElements::testLogicNAND()
+{
+    LogicNand elm(2);
+    elm.connectPredecessor(0, switches.at(0), 0);
+    elm.connectPredecessor(1, switches.at(1), 0);
+
+    const QVector<QVector<bool>> truthTable{
+        {false, false, true},
+        {false, true, true},
+        {true, false, true},
+        {true, true, false},
+    };
+
+    for (const auto &test : truthTable) {
+        switches.at(0)->setOutputValue(test.at(0));
+        switches.at(1)->setOutputValue(test.at(1));
+        
+        elm.updateLogic();
+        
+        QCOMPARE(elm.outputValue(), test.at(2));
+    }
+}
+
+void TestLogicElements::testLogicNOR()
+{
+    LogicNor elm(2);
+    elm.connectPredecessor(0, switches.at(0), 0);
+    elm.connectPredecessor(1, switches.at(1), 0);
+
+    const QVector<QVector<bool>> truthTable{
+        {false, false, true},
+        {false, true, false},
+        {true, false, false},
+        {true, true, false},
+    };
+
+    for (const auto &test : truthTable) {
+        switches.at(0)->setOutputValue(test.at(0));
+        switches.at(1)->setOutputValue(test.at(1));
+        
+        elm.updateLogic();
+        
+        QCOMPARE(elm.outputValue(), test.at(2));
+    }
+}
+
+void TestLogicElements::testLogicNOT()
+{
+    LogicNot elm;
+    elm.connectPredecessor(0, switches.at(0), 0);
+
+    const QVector<QVector<bool>> truthTable{
+        {false, true},
+        {true, false},
+    };
+
+    for (const auto &test : truthTable) {
+        switches.at(0)->setOutputValue(test.at(0));
+        
+        elm.updateLogic();
+        
+        QCOMPARE(elm.outputValue(), test.at(1));
+    }
+}
+
+void TestLogicElements::testLogicXOR()
+{
+    LogicXor elm(2);
+    elm.connectPredecessor(0, switches.at(0), 0);
+    elm.connectPredecessor(1, switches.at(1), 0);
+
+    const QVector<QVector<bool>> truthTable{
+        {false, false, false},
+        {false, true, true},
+        {true, false, true},
+        {true, true, false},
+    };
+
+    for (const auto &test : truthTable) {
+        switches.at(0)->setOutputValue(test.at(0));
+        switches.at(1)->setOutputValue(test.at(1));
+        
+        elm.updateLogic();
+        
+        QCOMPARE(elm.outputValue(), test.at(2));
+    }
+}
+
+void TestLogicElements::testLogicXNOR()
+{
+    LogicXnor elm(2);
+    elm.connectPredecessor(0, switches.at(0), 0);
+    elm.connectPredecessor(1, switches.at(1), 0);
+
+    const QVector<QVector<bool>> truthTable{
+        {false, false, true},
+        {false, true, false},
+        {true, false, false},
+        {true, true, true},
+    };
+
+    for (const auto &test : truthTable) {
+        switches.at(0)->setOutputValue(test.at(0));
+        switches.at(1)->setOutputValue(test.at(1));
+        
+        elm.updateLogic();
+        
+        QCOMPARE(elm.outputValue(), test.at(2));
+    }
+}
+
+void TestLogicElements::testLogicOutput()
+{
+    LogicOutput elm(1);
+    elm.connectPredecessor(0, switches.at(0), 0);
+
+    switches.at(0)->setOutputValue(false);
+    elm.updateLogic();
+    QCOMPARE(elm.outputValue(), false);
+
+    switches.at(0)->setOutputValue(true);
+    elm.updateLogic();
+    QCOMPARE(elm.outputValue(), true);
+}
+
+
