@@ -173,3 +173,7 @@ Deploy/
 !examples/**/*.panda
 !test/files/**/*.panda
 !fuzz/corpus/**/*.panda
+
+# Fuzzing artifacts
+fuzz/findings/
+fuzz/work_corpus/

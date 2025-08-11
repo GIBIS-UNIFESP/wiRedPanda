@@ -9,7 +9,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 BUILD_DIR="$PROJECT_ROOT/build"
 FUZZER_BIN="$BUILD_DIR/fuzz_serialization"
-CORPUS_DIR="$SCRIPT_DIR/corpus"
+SEED_CORPUS_DIR="$SCRIPT_DIR/corpus"          # Original hand-crafted seed files (committed)
+WORK_CORPUS_DIR="$SCRIPT_DIR/work_corpus"     # Generated corpus during fuzzing (not committed)
 FINDINGS_DIR="$SCRIPT_DIR/findings"
 DICT_FILE="$SCRIPT_DIR/serialization.dict"
 
@@ -70,19 +71,19 @@ OPTIONS:
     -m, --max-len BYTES    Maximum input length (default: 65536)
     -r, --rss-limit MB     RSS memory limit (default: 2048)
     --timeout SECONDS      Per-input timeout (default: 30)
-    --dict FILE           Custom dictionary file
-    --corpus DIR          Custom corpus directory
-    --findings DIR        Custom findings output directory
-    --debug               Enable debug output
-    --continuous          Run continuous fuzzing (ignore time limit)
+    --dict FILE            Custom dictionary file
+    --corpus DIR           Custom working corpus directory (default: work_corpus)
+    --findings DIR         Custom findings output directory
+    --debug                Enable debug output
+    --continuous           Run continuous fuzzing (ignore time limit)
 
 ENVIRONMENT VARIABLES:
     FUZZ_DURATION         Default fuzzing duration in seconds
-    FUZZ_JOBS            Default number of parallel jobs
-    FUZZ_WORKERS         Default number of worker processes
-    FUZZ_MAX_LEN         Default maximum input length
-    FUZZ_RSS_LIMIT       Default RSS memory limit in MB
-    FUZZ_TIMEOUT         Default per-input timeout
+    FUZZ_JOBS             Default number of parallel jobs
+    FUZZ_WORKERS          Default number of worker processes
+    FUZZ_MAX_LEN          Default maximum input length
+    FUZZ_RSS_LIMIT        Default RSS memory limit in MB
+    FUZZ_TIMEOUT          Default per-input timeout
 
 EXAMPLES:
     # Quick 5-minute fuzzing session
@@ -167,18 +168,18 @@ verify_setup() {
         return 1
     fi
     
-    # Check corpus directory
-    if [ ! -d "$CORPUS_DIR" ]; then
-        error "Corpus directory not found: $CORPUS_DIR"
+    # Check seed corpus directory
+    if [ ! -d "$SEED_CORPUS_DIR" ]; then
+        error "Seed corpus directory not found: $SEED_CORPUS_DIR"
         return 1
     fi
     
-    local corpus_count=$(find "$CORPUS_DIR" -name "*.panda" | wc -l)
-    log "Found $corpus_count corpus files"
+    local seed_count=$(find "$SEED_CORPUS_DIR" -name "*.panda" | wc -l)
+    log "Found $seed_count seed corpus files"
     
     # Test fuzzer with a single input
     log "Testing fuzzer with sample input..."
-    local test_file="$CORPUS_DIR/input.panda"
+    local test_file="$SEED_CORPUS_DIR/input.panda"
     if [ -f "$test_file" ]; then
         if timeout 10s "$FUZZER_BIN" "$test_file" &>/dev/null; then
             success "Fuzzer test passed"
@@ -197,8 +198,15 @@ verify_setup() {
 run_fuzzer() {
     log "Starting fuzzing session..."
     
-    # Create findings directory
+    # Create working directories
     mkdir -p "$FINDINGS_DIR"
+    mkdir -p "$WORK_CORPUS_DIR"
+    
+    # Copy seed corpus to working corpus if empty
+    if [ -z "$(ls -A "$WORK_CORPUS_DIR" 2>/dev/null)" ]; then
+        log "Initializing working corpus from seed corpus..."
+        cp "$SEED_CORPUS_DIR"/*.panda "$WORK_CORPUS_DIR/" 2>/dev/null || true
+    fi
     
     # Set Qt environment for headless operation
     export QT_QPA_PLATFORM=offscreen
@@ -206,7 +214,8 @@ run_fuzzer() {
     
     # Build fuzzer arguments
     local args=(
-        "$CORPUS_DIR"
+        "$WORK_CORPUS_DIR"          # Working corpus (will be modified)
+        "$SEED_CORPUS_DIR"           # Additional seed corpus (read-only)
         "-max_len=$MAX_LEN"
         "-timeout=$TIMEOUT"
         "-rss_limit_mb=$RSS_LIMIT"
@@ -238,7 +247,8 @@ run_fuzzer() {
     log "  Max length: $MAX_LEN bytes"
     log "  Timeout: ${TIMEOUT}s per input"
     log "  RSS limit: ${RSS_LIMIT}MB"
-    log "  Corpus: $CORPUS_DIR ($(find "$CORPUS_DIR" -name "*.panda" | wc -l) files)"
+    log "  Seed corpus: $SEED_CORPUS_DIR ($(find "$SEED_CORPUS_DIR" -name "*.panda" | wc -l) files)"
+    log "  Working corpus: $WORK_CORPUS_DIR ($(find "$WORK_CORPUS_DIR" -name "*.panda" 2>/dev/null | wc -l) files)"
     
     log "Starting fuzzer (Ctrl+C to stop)..."
     
@@ -368,9 +378,17 @@ generate_coverage() {
     
     cmake --build build-coverage --target fuzz_serialization
     
+    # Create temporary working corpus for coverage
+    local temp_corpus="/tmp/coverage_corpus"
+    mkdir -p "$temp_corpus"
+    cp "$SEED_CORPUS_DIR"/*.panda "$temp_corpus/" 2>/dev/null || true
+    
     # Run fuzzer briefly to generate coverage data
     export QT_QPA_PLATFORM=offscreen
-    "./build-coverage/fuzz_serialization" "$CORPUS_DIR" -runs=1000 || true
+    "./build-coverage/fuzz_serialization" "$temp_corpus" -runs=1000 || true
+    
+    # Clean up temporary corpus
+    rm -rf "$temp_corpus"
     
     # Generate coverage report
     if command -v lcov &> /dev/null; then
@@ -441,7 +459,7 @@ parse_args() {
                 shift 2
                 ;;
             --corpus)
-                CORPUS_DIR="$2"
+                WORK_CORPUS_DIR="$2"
                 shift 2
                 ;;
             --findings)
