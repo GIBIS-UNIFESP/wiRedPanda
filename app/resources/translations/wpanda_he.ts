@@ -1075,70 +1075,70 @@
         <translation>טבלת אמת</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="217"/>
-        <location filename="../../elementeditor.cpp" line="290"/>
+        <location filename="../../elementeditor.cpp" line="221"/>
+        <location filename="../../elementeditor.cpp" line="294"/>
         <source>Copy</source>
         <translation>העתק</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="218"/>
-        <location filename="../../elementeditor.cpp" line="290"/>
+        <location filename="../../elementeditor.cpp" line="222"/>
+        <location filename="../../elementeditor.cpp" line="294"/>
         <source>Cut</source>
         <translation>גזור</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="224"/>
-        <location filename="../../elementeditor.cpp" line="290"/>
+        <location filename="../../elementeditor.cpp" line="228"/>
+        <location filename="../../elementeditor.cpp" line="294"/>
         <source>Delete</source>
         <translation>מחק</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="294"/>
+        <location filename="../../elementeditor.cpp" line="298"/>
         <source>Unknown context menu option.</source>
         <translation>אפשרות תפריט הקשר לא ידועה.</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="318"/>
+        <location filename="../../elementeditor.cpp" line="322"/>
         <source>Open File</source>
         <translation>פתח קובץ</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="363"/>
+        <location filename="../../elementeditor.cpp" line="367"/>
         <source>Green</source>
         <translation>ירוק</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="364"/>
+        <location filename="../../elementeditor.cpp" line="368"/>
         <source>Blue</source>
         <translation>כחול</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="365"/>
+        <location filename="../../elementeditor.cpp" line="369"/>
         <source>Purple</source>
         <translation>סגול</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="972"/>
+        <location filename="../../elementeditor.cpp" line="976"/>
         <source>Select any audio</source>
         <translation>בחר קובץ שמע</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="973"/>
+        <location filename="../../elementeditor.cpp" line="977"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>קבצי שמע (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="362"/>
+        <location filename="../../elementeditor.cpp" line="366"/>
         <source>Red</source>
         <translation>אדום</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="320"/>
+        <location filename="../../elementeditor.cpp" line="324"/>
         <source>Images</source>
         <translation>תמונות</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="361"/>
+        <location filename="../../elementeditor.cpp" line="365"/>
         <source>White</source>
         <translation>לבן</translation>
     </message>
@@ -1256,29 +1256,29 @@
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../ic.cpp" line="20"/>
+        <location filename="../../ic.cpp" line="21"/>
         <source>IC</source>
         <translation>מעגל שלם</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="20"/>
+        <location filename="../../ic.cpp" line="21"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>מעגל משולב</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="91"/>
-        <location filename="../../ic.cpp" line="404"/>
+        <location filename="../../ic.cpp" line="92"/>
+        <location filename="../../ic.cpp" line="411"/>
         <source>Error copying file: %1</source>
         <translation>שגיאה בהעתקת קובץ: %1</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="142"/>
+        <location filename="../../ic.cpp" line="149"/>
         <source>%1 not found.</source>
         <translation>%1 לא נמצא.</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="154"/>
-        <location filename="../../ic.cpp" line="410"/>
+        <location filename="../../ic.cpp" line="161"/>
+        <location filename="../../ic.cpp" line="417"/>
         <source>Error opening file: %1</source>
         <translation>שגיאה בפתיחת קובץ: %1</translation>
     </message>
@@ -1913,7 +1913,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1640"/>
+        <location filename="../../mainwindow.cpp" line="1647"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>השתק</translation>
@@ -1962,7 +1962,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1217"/>
-        <location filename="../../mainwindow.cpp" line="548"/>
+        <location filename="../../mainwindow.cpp" line="550"/>
         <location filename="../../mainwindow_ui.cpp" line="677"/>
         <source>Shortcuts and Tips</source>
         <translation>קיצורי דרך וטיפים</translation>
@@ -1980,81 +1980,81 @@
         <translation>דווח על שגיאות תרגום או עזור לשפר תרגומים ב-Weblate</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="262"/>
+        <location filename="../../mainwindow.cpp" line="264"/>
         <source>Error!</source>
         <translation>שגיאה!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="287"/>
-        <location filename="../../mainwindow.cpp" line="409"/>
-        <location filename="../../mainwindow.cpp" line="670"/>
-        <location filename="../../mainwindow.cpp" line="1189"/>
+        <location filename="../../mainwindow.cpp" line="289"/>
+        <location filename="../../mainwindow.cpp" line="411"/>
+        <location filename="../../mainwindow.cpp" line="672"/>
+        <location filename="../../mainwindow.cpp" line="1191"/>
         <source>New Project</source>
         <translation>פרויקט חדש</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="333"/>
+        <location filename="../../mainwindow.cpp" line="335"/>
         <source>File saved successfully.</source>
         <translation>הקובץ נשמר בהצלחה.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="352"/>
+        <location filename="../../mainwindow.cpp" line="354"/>
         <source>Don&apos;t show this again.</source>
         <translation>אל תציג זאת שוב.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="392"/>
+        <location filename="../../mainwindow.cpp" line="394"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>הקובץ לא נשמר. לסגור טאב בכל זאת?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="411"/>
+        <location filename="../../mainwindow.cpp" line="413"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> השתנה.
 האם ברצונך לשמור את השינויים?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="449"/>
+        <location filename="../../mainwindow.cpp" line="451"/>
         <source>File loaded successfully.</source>
         <translation>הקובץ נטען בהצלחה.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="468"/>
-        <location filename="../../mainwindow.cpp" line="1683"/>
+        <location filename="../../mainwindow.cpp" line="470"/>
+        <location filename="../../mainwindow.cpp" line="1690"/>
         <source>Open File</source>
         <translation>פתח קובץ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="468"/>
-        <location filename="../../mainwindow.cpp" line="489"/>
-        <location filename="../../mainwindow.cpp" line="509"/>
+        <location filename="../../mainwindow.cpp" line="470"/>
+        <location filename="../../mainwindow.cpp" line="491"/>
+        <location filename="../../mainwindow.cpp" line="511"/>
         <source>Panda files (*.panda)</source>
         <translation>קבצי פנדה (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="489"/>
-        <location filename="../../mainwindow.cpp" line="509"/>
+        <location filename="../../mainwindow.cpp" line="491"/>
+        <location filename="../../mainwindow.cpp" line="511"/>
         <source>Save File as ...</source>
         <translation>שמור קובץ בשם...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="601"/>
+        <location filename="../../mainwindow.cpp" line="603"/>
         <source>Exit </source>
         <translation>יציאה </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="602"/>
+        <location filename="../../mainwindow.cpp" line="604"/>
         <source>Are you sure?</source>
         <translation>האם אתה בטוח?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="751"/>
+        <location filename="../../mainwindow.cpp" line="753"/>
         <source>Error</source>
         <translation>שגיאה</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="360"/>
+        <location filename="../../mainwindow.cpp" line="362"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
@@ -2065,105 +2065,105 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda הנוספ�
 עליך לשמור פרויקטים חדשים לפני הגישה למעגלים משולבים ומראות, או הפעלת סימולציות beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="529"/>
+        <location filename="../../mainwindow.cpp" line="531"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda היא תוכנה שפותחה על ידי סטודנטים של האוניברסיטה הפדרלית של סאו פאולו. פרויקט זה נוצר כדי לעזור לסטודנטים ללמוד על מעגלים לוגיים.&lt;/p&gt;&lt;p&gt;גרסת התוכנה: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;יוצרים:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda מתוחזק כיום על ידי Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves ו-Maycon A. Santana.&lt;/p&gt;&lt;p&gt; אנא הגישו דוח בעמוד ה-GitHub שלנו אם נמצאות באגים או אם אתם רוצים שיממש פונקציונליות חדשה.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;בקרו באתר שלנו!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="549"/>
+        <location filename="../../mainwindow.cpp" line="551"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;קיצורי דרך של הקנבס&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : הגדל תצוגה &lt;/li&gt;&lt;li&gt; Ctrl+- : הקטן תצוגה &lt;/li&gt;&lt;li&gt; Ctrl+1 : הסתר/הצג חוטים &lt;/li&gt;&lt;li&gt; Ctrl+2 : הסתר/הצג שערים &lt;/li&gt;&lt;li&gt; Ctrl+F : חפש רכיבים &lt;/li&gt;&lt;li&gt; Ctrl+W : פתח את beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : שמור פרויקט &lt;/li&gt;&lt;li&gt; Ctrl+Q : צא מ-wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : התחל/עצור סימולציה &lt;/li&gt;&lt;li&gt; [ : תכונה ראשונית קודמת של רכיב &lt;/li&gt;&lt;li&gt; ] : תכונה ראשונית הבאה של רכיב &lt;/li&gt;&lt;li&gt; { : תכונה משנית קודמת של רכיב &lt;/li&gt;&lt;li&gt; } : תכונה משנית הבאה של רכיב &lt;/li&gt;&lt;li&gt; &amp;lt; : הפוך לרכיב קודם &lt;/li&gt;&lt;li&gt; &amp;gt; : הפוך לרכיב הבא &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;טיפים כלליים&lt;/h1&gt;&lt;p&gt;לחץ כפול על חוט כדי ליצור צומת&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="948"/>
-        <location filename="../../mainwindow.cpp" line="975"/>
+        <location filename="../../mainwindow.cpp" line="950"/>
+        <location filename="../../mainwindow.cpp" line="977"/>
         <source>Missing file name.</source>
         <translation>חסר שם קובץ.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="954"/>
+        <location filename="../../mainwindow.cpp" line="956"/>
         <source>The .panda file is empty.</source>
         <translation>קובץ ה-.panda ריק.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="967"/>
+        <location filename="../../mainwindow.cpp" line="969"/>
         <source>Arduino code successfully generated.</source>
         <translation>קוד Arduino נוצר בהצלחה.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1002"/>
+        <location filename="../../mainwindow.cpp" line="1004"/>
         <source>Generate Arduino Code</source>
         <translation>צור קוד Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1002"/>
+        <location filename="../../mainwindow.cpp" line="1004"/>
         <source>Arduino file (*.ino)</source>
         <translation>קובץ Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1104"/>
+        <location filename="../../mainwindow.cpp" line="1106"/>
         <source>Export to PDF</source>
         <translation>יצא ל-PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1104"/>
+        <location filename="../../mainwindow.cpp" line="1106"/>
         <source>PDF files (*.pdf)</source>
         <translation>קבצי PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1122"/>
+        <location filename="../../mainwindow.cpp" line="1124"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>לא ניתן להדפיס את המעגל הזה ל-PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1129"/>
-        <location filename="../../mainwindow.cpp" line="1167"/>
+        <location filename="../../mainwindow.cpp" line="1131"/>
+        <location filename="../../mainwindow.cpp" line="1169"/>
         <source>Exported file successfully.</source>
         <translation>הקובץ יוצא בהצלחה.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1148"/>
+        <location filename="../../mainwindow.cpp" line="1150"/>
         <source>Export to Image</source>
         <translation>יצא לתמונה</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1148"/>
+        <location filename="../../mainwindow.cpp" line="1150"/>
         <source>PNG files (*.png)</source>
         <translation>קבצי PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1640"/>
+        <location filename="../../mainwindow.cpp" line="1647"/>
         <source>Unmute</source>
         <translation>בטל השתקה</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1679"/>
+        <location filename="../../mainwindow.cpp" line="1686"/>
         <source>Save file first.</source>
         <translation>שמור קובץ קודם.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1685"/>
+        <location filename="../../mainwindow.cpp" line="1692"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1697"/>
-        <location filename="../../mainwindow.cpp" line="1709"/>
+        <location filename="../../mainwindow.cpp" line="1704"/>
+        <location filename="../../mainwindow.cpp" line="1716"/>
         <source>Info</source>
         <translation>מידע</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1697"/>
+        <location filename="../../mainwindow.cpp" line="1704"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>הקבצים הנבחרים (והתלויות שלהם) יועתקו לתיקיית הקובץ הנוכחית.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1709"/>
+        <location filename="../../mainwindow.cpp" line="1716"/>
         <source>Drag here to remove.</source>
         <translation>גרור לכאן כדי להסיר.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1732"/>
+        <location filename="../../mainwindow.cpp" line="1739"/>
         <source>Error removing file: %1</source>
         <translation>שגיאה בהסרת קובץ: %1</translation>
     </message>

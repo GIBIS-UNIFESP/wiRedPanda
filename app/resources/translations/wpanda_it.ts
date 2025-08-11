@@ -1075,70 +1075,70 @@
         <translation>Tabella della Verità</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="217"/>
-        <location filename="../../elementeditor.cpp" line="290"/>
+        <location filename="../../elementeditor.cpp" line="221"/>
+        <location filename="../../elementeditor.cpp" line="294"/>
         <source>Copy</source>
         <translation>Copia</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="218"/>
-        <location filename="../../elementeditor.cpp" line="290"/>
+        <location filename="../../elementeditor.cpp" line="222"/>
+        <location filename="../../elementeditor.cpp" line="294"/>
         <source>Cut</source>
         <translation>Taglia</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="224"/>
-        <location filename="../../elementeditor.cpp" line="290"/>
+        <location filename="../../elementeditor.cpp" line="228"/>
+        <location filename="../../elementeditor.cpp" line="294"/>
         <source>Delete</source>
         <translation>Elimina</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="294"/>
+        <location filename="../../elementeditor.cpp" line="298"/>
         <source>Unknown context menu option.</source>
         <translation>Opzione del menu contestuale sconosciuta.</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="318"/>
+        <location filename="../../elementeditor.cpp" line="322"/>
         <source>Open File</source>
         <translation>Apri File</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="363"/>
+        <location filename="../../elementeditor.cpp" line="367"/>
         <source>Green</source>
         <translation>Verde</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="364"/>
+        <location filename="../../elementeditor.cpp" line="368"/>
         <source>Blue</source>
         <translation>Blu</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="365"/>
+        <location filename="../../elementeditor.cpp" line="369"/>
         <source>Purple</source>
         <translation>Viola</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="972"/>
+        <location filename="../../elementeditor.cpp" line="976"/>
         <source>Select any audio</source>
         <translation>Seleziona qualsiasi audio</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="973"/>
+        <location filename="../../elementeditor.cpp" line="977"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>Audio (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="362"/>
+        <location filename="../../elementeditor.cpp" line="366"/>
         <source>Red</source>
         <translation>Rosso</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="320"/>
+        <location filename="../../elementeditor.cpp" line="324"/>
         <source>Images</source>
         <translation>Immagini</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="361"/>
+        <location filename="../../elementeditor.cpp" line="365"/>
         <source>White</source>
         <translation>Bianco</translation>
     </message>
@@ -1256,29 +1256,29 @@
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../ic.cpp" line="20"/>
+        <location filename="../../ic.cpp" line="21"/>
         <source>IC</source>
         <translation>IC</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="20"/>
+        <location filename="../../ic.cpp" line="21"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>CIRCUITO INTEGRATO</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="91"/>
-        <location filename="../../ic.cpp" line="404"/>
+        <location filename="../../ic.cpp" line="92"/>
+        <location filename="../../ic.cpp" line="411"/>
         <source>Error copying file: %1</source>
         <translation>Errore nella copia del file: %1</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="142"/>
+        <location filename="../../ic.cpp" line="149"/>
         <source>%1 not found.</source>
         <translation>%1 non trovato.</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="154"/>
-        <location filename="../../ic.cpp" line="410"/>
+        <location filename="../../ic.cpp" line="161"/>
+        <location filename="../../ic.cpp" line="417"/>
         <source>Error opening file: %1</source>
         <translation>Errore nell&apos;apertura del file: %1</translation>
     </message>
@@ -1931,7 +1931,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1640"/>
+        <location filename="../../mainwindow.cpp" line="1647"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>Muto</translation>
@@ -1974,92 +1974,92 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1217"/>
-        <location filename="../../mainwindow.cpp" line="548"/>
+        <location filename="../../mainwindow.cpp" line="550"/>
         <location filename="../../mainwindow_ui.cpp" line="677"/>
         <source>Shortcuts and Tips</source>
         <translation>Scorciatoie e Suggerimenti</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="262"/>
+        <location filename="../../mainwindow.cpp" line="264"/>
         <source>Error!</source>
         <translation>Errore!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="287"/>
-        <location filename="../../mainwindow.cpp" line="409"/>
-        <location filename="../../mainwindow.cpp" line="670"/>
-        <location filename="../../mainwindow.cpp" line="1189"/>
+        <location filename="../../mainwindow.cpp" line="289"/>
+        <location filename="../../mainwindow.cpp" line="411"/>
+        <location filename="../../mainwindow.cpp" line="672"/>
+        <location filename="../../mainwindow.cpp" line="1191"/>
         <source>New Project</source>
         <translation>Nuovo Progetto</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="333"/>
+        <location filename="../../mainwindow.cpp" line="335"/>
         <source>File saved successfully.</source>
         <translation>File salvato con successo.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="352"/>
+        <location filename="../../mainwindow.cpp" line="354"/>
         <source>Don&apos;t show this again.</source>
         <translation>Non mostrare più questo messaggio.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="392"/>
+        <location filename="../../mainwindow.cpp" line="394"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>File non salvato. Chiudere comunque la scheda?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="411"/>
+        <location filename="../../mainwindow.cpp" line="413"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> è stato modificato.
 Vuoi salvare le modifiche?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="449"/>
+        <location filename="../../mainwindow.cpp" line="451"/>
         <source>File loaded successfully.</source>
         <translation>File caricato con successo.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="468"/>
-        <location filename="../../mainwindow.cpp" line="1683"/>
+        <location filename="../../mainwindow.cpp" line="470"/>
+        <location filename="../../mainwindow.cpp" line="1690"/>
         <source>Open File</source>
         <translation>Apri File</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="468"/>
-        <location filename="../../mainwindow.cpp" line="489"/>
-        <location filename="../../mainwindow.cpp" line="509"/>
+        <location filename="../../mainwindow.cpp" line="470"/>
+        <location filename="../../mainwindow.cpp" line="491"/>
+        <location filename="../../mainwindow.cpp" line="511"/>
         <source>Panda files (*.panda)</source>
         <translation>File Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="489"/>
-        <location filename="../../mainwindow.cpp" line="509"/>
+        <location filename="../../mainwindow.cpp" line="491"/>
+        <location filename="../../mainwindow.cpp" line="511"/>
         <source>Save File as ...</source>
         <translation>Salva file come...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="529"/>
+        <location filename="../../mainwindow.cpp" line="531"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda è un software sviluppato dagli studenti dell&apos;Università Federale di São Paulo. Questo progetto è stato creato per aiutare gli studenti ad apprendere i circuiti logici.&lt;/p&gt;&lt;p&gt;Versione software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creatori:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda è attualmente mantenuto da Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Segnala un problema sulla nostra pagina GitHub se vengono trovati errori o se si desidera che venga implementata una nuova funzionalità.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visita il nostro sito web!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="601"/>
+        <location filename="../../mainwindow.cpp" line="603"/>
         <source>Exit </source>
         <translation>Esci </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="602"/>
+        <location filename="../../mainwindow.cpp" line="604"/>
         <source>Are you sure?</source>
         <translation>Sei sicuro?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="751"/>
+        <location filename="../../mainwindow.cpp" line="753"/>
         <source>Error</source>
         <translation>Errore</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="360"/>
+        <location filename="../../mainwindow.cpp" line="362"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
@@ -2070,100 +2070,100 @@ wiRedPanda %1 elencherà automaticamente tutti gli altri file .panda situati nel
 Devi salvare i nuovi progetti prima di accedere agli IC e agli aspetti, o eseguire simulazioni beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="549"/>
+        <location filename="../../mainwindow.cpp" line="551"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Scorciatoie Canvas&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Ingrandisci &lt;/li&gt;&lt;li&gt; Ctrl+- : Riduci &lt;/li&gt;&lt;li&gt; Ctrl+1 : Nascondi/Mostra fili &lt;/li&gt;&lt;li&gt; Ctrl+2 : Nascondi/Mostra porte &lt;/li&gt;&lt;li&gt; Ctrl+F : Cerca elementi &lt;/li&gt;&lt;li&gt; Ctrl+W : Apri beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Salva progetto &lt;/li&gt;&lt;li&gt; Ctrl+Q : Esci da wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Avvia/Pausa simulazione &lt;/li&gt;&lt;li&gt; [ : Proprietà elemento primario precedente &lt;/li&gt;&lt;li&gt; ] : Proprietà elemento primario successivo &lt;/li&gt;&lt;li&gt; { : Proprietà elemento secondario precedente &lt;/li&gt;&lt;li&gt; } : Proprietà elemento secondario successivo &lt;/li&gt;&lt;li&gt; &amp;lt; : Trasforma nell&apos;elemento precedente &lt;/li&gt;&lt;li&gt; &amp;gt; : Trasforma nell&apos;elemento successivo &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Suggerimenti Generali&lt;/h1&gt;&lt;p&gt;Doppio clic su un filo per creare un nodo&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="948"/>
-        <location filename="../../mainwindow.cpp" line="975"/>
+        <location filename="../../mainwindow.cpp" line="950"/>
+        <location filename="../../mainwindow.cpp" line="977"/>
         <source>Missing file name.</source>
         <translation>Nome file mancante.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="954"/>
+        <location filename="../../mainwindow.cpp" line="956"/>
         <source>The .panda file is empty.</source>
         <translation>Il file .panda è vuoto.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="967"/>
+        <location filename="../../mainwindow.cpp" line="969"/>
         <source>Arduino code successfully generated.</source>
         <translation>Codice Arduino generato con successo.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1002"/>
+        <location filename="../../mainwindow.cpp" line="1004"/>
         <source>Generate Arduino Code</source>
         <translation>Genera Codice Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1002"/>
+        <location filename="../../mainwindow.cpp" line="1004"/>
         <source>Arduino file (*.ino)</source>
         <translation>File Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1104"/>
+        <location filename="../../mainwindow.cpp" line="1106"/>
         <source>Export to PDF</source>
         <translation>Esporta in PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1104"/>
+        <location filename="../../mainwindow.cpp" line="1106"/>
         <source>PDF files (*.pdf)</source>
         <translation>File PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1122"/>
+        <location filename="../../mainwindow.cpp" line="1124"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Impossibile stampare questo circuito in PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1129"/>
-        <location filename="../../mainwindow.cpp" line="1167"/>
+        <location filename="../../mainwindow.cpp" line="1131"/>
+        <location filename="../../mainwindow.cpp" line="1169"/>
         <source>Exported file successfully.</source>
         <translation>File esportato con successo.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1148"/>
+        <location filename="../../mainwindow.cpp" line="1150"/>
         <source>Export to Image</source>
         <translation>Esporta come Immagine</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1148"/>
+        <location filename="../../mainwindow.cpp" line="1150"/>
         <source>PNG files (*.png)</source>
         <translation>File PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1640"/>
+        <location filename="../../mainwindow.cpp" line="1647"/>
         <source>Unmute</source>
         <translation>Riattiva Audio</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1679"/>
+        <location filename="../../mainwindow.cpp" line="1686"/>
         <source>Save file first.</source>
         <translation>Salva prima il file.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1685"/>
+        <location filename="../../mainwindow.cpp" line="1692"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1697"/>
-        <location filename="../../mainwindow.cpp" line="1709"/>
+        <location filename="../../mainwindow.cpp" line="1704"/>
+        <location filename="../../mainwindow.cpp" line="1716"/>
         <source>Info</source>
         <translation>Informazioni</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1697"/>
+        <location filename="../../mainwindow.cpp" line="1704"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>I file selezionati (e le loro dipendenze) saranno copiati nella cartella del file corrente.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1709"/>
+        <location filename="../../mainwindow.cpp" line="1716"/>
         <source>Drag here to remove.</source>
         <translation>Trascina qui per rimuovere.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1732"/>
+        <location filename="../../mainwindow.cpp" line="1739"/>
         <source>Error removing file: %1</source>
         <translation>Errore nella rimozione del file: %1</translation>
     </message>

@@ -1075,70 +1075,70 @@
         <translation>সত্যতালিকা</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="217"/>
-        <location filename="../../elementeditor.cpp" line="290"/>
+        <location filename="../../elementeditor.cpp" line="221"/>
+        <location filename="../../elementeditor.cpp" line="294"/>
         <source>Copy</source>
         <translation>অনুলিপি</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="218"/>
-        <location filename="../../elementeditor.cpp" line="290"/>
+        <location filename="../../elementeditor.cpp" line="222"/>
+        <location filename="../../elementeditor.cpp" line="294"/>
         <source>Cut</source>
         <translation>কেটে নিন</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="224"/>
-        <location filename="../../elementeditor.cpp" line="290"/>
+        <location filename="../../elementeditor.cpp" line="228"/>
+        <location filename="../../elementeditor.cpp" line="294"/>
         <source>Delete</source>
         <translation>মুছে ফেলুন</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="294"/>
+        <location filename="../../elementeditor.cpp" line="298"/>
         <source>Unknown context menu option.</source>
         <translation>অজানা প্রসঙ্গ মেনু বিকল্প।</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="318"/>
+        <location filename="../../elementeditor.cpp" line="322"/>
         <source>Open File</source>
         <translation>ফাইল খুলুন</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="363"/>
+        <location filename="../../elementeditor.cpp" line="367"/>
         <source>Green</source>
         <translation>সবুজ</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="364"/>
+        <location filename="../../elementeditor.cpp" line="368"/>
         <source>Blue</source>
         <translation>নীল</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="365"/>
+        <location filename="../../elementeditor.cpp" line="369"/>
         <source>Purple</source>
         <translation>বেগুনী</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="972"/>
+        <location filename="../../elementeditor.cpp" line="976"/>
         <source>Select any audio</source>
         <translation>যেকোনো অডিও নির্বাচন করুন</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="973"/>
+        <location filename="../../elementeditor.cpp" line="977"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>অডিও (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="362"/>
+        <location filename="../../elementeditor.cpp" line="366"/>
         <source>Red</source>
         <translation>লাল</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="320"/>
+        <location filename="../../elementeditor.cpp" line="324"/>
         <source>Images</source>
         <translation>ছবিগুলি</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="361"/>
+        <location filename="../../elementeditor.cpp" line="365"/>
         <source>White</source>
         <translation>সাদা</translation>
     </message>
@@ -1256,29 +1256,29 @@
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../ic.cpp" line="20"/>
+        <location filename="../../ic.cpp" line="21"/>
         <source>IC</source>
         <translation>আইসি</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="20"/>
+        <location filename="../../ic.cpp" line="21"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>একীভূত সার্কিট</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="91"/>
-        <location filename="../../ic.cpp" line="404"/>
+        <location filename="../../ic.cpp" line="92"/>
+        <location filename="../../ic.cpp" line="411"/>
         <source>Error copying file: %1</source>
         <translation>ফাইল কপি করতে ত্রুটি: %1</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="142"/>
+        <location filename="../../ic.cpp" line="149"/>
         <source>%1 not found.</source>
         <translation>%1 পাওয়া যায়নি।</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="154"/>
-        <location filename="../../ic.cpp" line="410"/>
+        <location filename="../../ic.cpp" line="161"/>
+        <location filename="../../ic.cpp" line="417"/>
         <source>Error opening file: %1</source>
         <translation>ফাইল খোলতে ত্রুটি: %1</translation>
     </message>
@@ -1913,7 +1913,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1640"/>
+        <location filename="../../mainwindow.cpp" line="1647"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>নিরব</translation>
@@ -1962,7 +1962,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1217"/>
-        <location filename="../../mainwindow.cpp" line="548"/>
+        <location filename="../../mainwindow.cpp" line="550"/>
         <location filename="../../mainwindow_ui.cpp" line="677"/>
         <source>Shortcuts and Tips</source>
         <translation>শর্টকাট এবং টিপস</translation>
@@ -1980,81 +1980,81 @@
         <translation>অনুবাদ ত্রুটি রিপোর্ট করুন বা Weblate-এ অনুবাদ উন্নত করতে সাহায্য করুন</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="262"/>
+        <location filename="../../mainwindow.cpp" line="264"/>
         <source>Error!</source>
         <translation>ত্রুটি!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="287"/>
-        <location filename="../../mainwindow.cpp" line="409"/>
-        <location filename="../../mainwindow.cpp" line="670"/>
-        <location filename="../../mainwindow.cpp" line="1189"/>
+        <location filename="../../mainwindow.cpp" line="289"/>
+        <location filename="../../mainwindow.cpp" line="411"/>
+        <location filename="../../mainwindow.cpp" line="672"/>
+        <location filename="../../mainwindow.cpp" line="1191"/>
         <source>New Project</source>
         <translation>নতুন প্রকল্প</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="333"/>
+        <location filename="../../mainwindow.cpp" line="335"/>
         <source>File saved successfully.</source>
         <translation>ফাইল সফলভাবে সংরক্ষিত হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="352"/>
+        <location filename="../../mainwindow.cpp" line="354"/>
         <source>Don&apos;t show this again.</source>
         <translation>এটি আর দেখাবেন না।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="392"/>
+        <location filename="../../mainwindow.cpp" line="394"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>ফাইল সংরক্ষিত হয়নি। তবুও ট্যাব বন্ধ করবেন?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="411"/>
+        <location filename="../../mainwindow.cpp" line="413"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> পরিবর্তিত হয়েছে।
 আপনি কি আপনার পরিবর্তনগুলি সংরক্ষণ করতে চান?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="449"/>
+        <location filename="../../mainwindow.cpp" line="451"/>
         <source>File loaded successfully.</source>
         <translation>ফাইল সফলভাবে লোড হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="468"/>
-        <location filename="../../mainwindow.cpp" line="1683"/>
+        <location filename="../../mainwindow.cpp" line="470"/>
+        <location filename="../../mainwindow.cpp" line="1690"/>
         <source>Open File</source>
         <translation>ফাইল খুলুন</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="468"/>
-        <location filename="../../mainwindow.cpp" line="489"/>
-        <location filename="../../mainwindow.cpp" line="509"/>
+        <location filename="../../mainwindow.cpp" line="470"/>
+        <location filename="../../mainwindow.cpp" line="491"/>
+        <location filename="../../mainwindow.cpp" line="511"/>
         <source>Panda files (*.panda)</source>
         <translation>প্যান্ডা ফাইল (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="489"/>
-        <location filename="../../mainwindow.cpp" line="509"/>
+        <location filename="../../mainwindow.cpp" line="491"/>
+        <location filename="../../mainwindow.cpp" line="511"/>
         <source>Save File as ...</source>
         <translation>ফাইল নামে সংরক্ষণ করুন...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="601"/>
+        <location filename="../../mainwindow.cpp" line="603"/>
         <source>Exit </source>
         <translation>প্রস্থান </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="602"/>
+        <location filename="../../mainwindow.cpp" line="604"/>
         <source>Are you sure?</source>
         <translation>আপনি কি নিশ্চিত?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="751"/>
+        <location filename="../../mainwindow.cpp" line="753"/>
         <source>Error</source>
         <translation>ত্রুটি</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="360"/>
+        <location filename="../../mainwindow.cpp" line="362"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
@@ -2065,105 +2065,105 @@ wiRedPanda %1 স্বয়ংক্রিয়ভাবে বর্তম�
 IC এবং স্কিন অ্যাক্সেস করার আগে বা beWavedDolphin সিমুলেশন চালানোর আগে আপনাকে নতুন প্রকল্পগুলি সংরক্ষণ করতে হবে।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="529"/>
+        <location filename="../../mainwindow.cpp" line="531"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda হল সাও পাওলো ফেডারেল বিশ্ববিদ্যালয়ের ছাত্রদের দ্বারা তৈরি একটি সফটওয়্যার। এই প্রকল্পটি ছাত্রদের লজিক সার্কিট সম্পর্কে শিখতে সাহায্য করার জন্য তৈরি করা হয়েছিল।&lt;/p&gt;&lt;p&gt;সফটওয়্যার সংস্করণ: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;নির্মাতারা:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda বর্তমানে Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves এবং Maycon A. Santana দ্বারা রক্ষণাবেক্ষণ করা হচ্ছে।&lt;/p&gt;&lt;p&gt; যদি কোনো বাগ পাওয়া যায় বা নতুন কোনো কার্যকারিতা বাস্তবায়নের ইচ্ছা থাকে তাহলে দয়া করে আমাদের GitHub পৃষ্ঠায় একটি রিপোর্ট দাখিল করুন।&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;আমাদের ওয়েবসাইট দেখুন!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="549"/>
+        <location filename="../../mainwindow.cpp" line="551"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;ক্যানভাস শর্টকাট&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : জুম ইন &lt;/li&gt;&lt;li&gt; Ctrl+- : জুম আউট &lt;/li&gt;&lt;li&gt; Ctrl+1 : তার লুকান/দেখান &lt;/li&gt;&lt;li&gt; Ctrl+2 : গেট লুকান/দেখান &lt;/li&gt;&lt;li&gt; Ctrl+F : উপাদান খুঁজুন &lt;/li&gt;&lt;li&gt; Ctrl+W : beWaveDolphin খুলুন &lt;/li&gt;&lt;li&gt; Ctrl+S : প্রকল্প সংরক্ষণ করুন &lt;/li&gt;&lt;li&gt; Ctrl+Q : wiRedPanda থেকে বের হন &lt;/li&gt;&lt;li&gt; F5 : সিমুলেশন শুরু/বিরতি &lt;/li&gt;&lt;li&gt; [ : পূর্ববর্তী প্রাথমিক উপাদান বৈশিষ্ট্য &lt;/li&gt;&lt;li&gt; ] : পরবর্তী প্রাথমিক উপাদান বৈশিষ্ট্য &lt;/li&gt;&lt;li&gt; { : পূর্ববর্তী গৌণ উপাদান বৈশিষ্ট্য &lt;/li&gt;&lt;li&gt; } : পরবর্তী গৌণ উপাদান বৈশিষ্ট্য &lt;/li&gt;&lt;li&gt; &amp;lt; : পূর্ববর্তী উপাদানে রূপান্তর &lt;/li&gt;&lt;li&gt; &amp;gt; : পরবর্তী উপাদানে রূপান্তর &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;সাধারণ টিপস&lt;/h1&gt;&lt;p&gt;একটি নোড তৈরি করতে তারে ডাবল ক্লিক করুন&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="948"/>
-        <location filename="../../mainwindow.cpp" line="975"/>
+        <location filename="../../mainwindow.cpp" line="950"/>
+        <location filename="../../mainwindow.cpp" line="977"/>
         <source>Missing file name.</source>
         <translation>ফাইলের নাম নেই।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="954"/>
+        <location filename="../../mainwindow.cpp" line="956"/>
         <source>The .panda file is empty.</source>
         <translation>.panda ফাইলটি খালি।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="967"/>
+        <location filename="../../mainwindow.cpp" line="969"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino কোড সফলভাবে তৈরি হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1002"/>
+        <location filename="../../mainwindow.cpp" line="1004"/>
         <source>Generate Arduino Code</source>
         <translation>Arduino কোড তৈরি করুন</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1002"/>
+        <location filename="../../mainwindow.cpp" line="1004"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino ফাইল (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1104"/>
+        <location filename="../../mainwindow.cpp" line="1106"/>
         <source>Export to PDF</source>
         <translation>PDF এ রপ্তানি করুন</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1104"/>
+        <location filename="../../mainwindow.cpp" line="1106"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF ফাইল (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1122"/>
+        <location filename="../../mainwindow.cpp" line="1124"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>এই সার্কিটটি PDF-এ প্রিন্ট করা যায়নি।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1129"/>
-        <location filename="../../mainwindow.cpp" line="1167"/>
+        <location filename="../../mainwindow.cpp" line="1131"/>
+        <location filename="../../mainwindow.cpp" line="1169"/>
         <source>Exported file successfully.</source>
         <translation>ফাইল সফলভাবে রপ্তানি হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1148"/>
+        <location filename="../../mainwindow.cpp" line="1150"/>
         <source>Export to Image</source>
         <translation>ছবিতে রপ্তানি করুন</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1148"/>
+        <location filename="../../mainwindow.cpp" line="1150"/>
         <source>PNG files (*.png)</source>
         <translation>PNG ফাইল (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1640"/>
+        <location filename="../../mainwindow.cpp" line="1647"/>
         <source>Unmute</source>
         <translation>শব্দ চালু</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1679"/>
+        <location filename="../../mainwindow.cpp" line="1686"/>
         <source>Save file first.</source>
         <translation>প্রথমে ফাইল সংরক্ষণ করুন।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1685"/>
+        <location filename="../../mainwindow.cpp" line="1692"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1697"/>
-        <location filename="../../mainwindow.cpp" line="1709"/>
+        <location filename="../../mainwindow.cpp" line="1704"/>
+        <location filename="../../mainwindow.cpp" line="1716"/>
         <source>Info</source>
         <translation>তথ্য</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1697"/>
+        <location filename="../../mainwindow.cpp" line="1704"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>নির্বাচিত ফাইলগুলি (এবং তাদের নির্ভরতা) বর্তমান ফাইল ফোল্ডারে কপি করা হবে।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1709"/>
+        <location filename="../../mainwindow.cpp" line="1716"/>
         <source>Drag here to remove.</source>
         <translation>সরানোর জন্য এখানে টেনে আনুন।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1732"/>
+        <location filename="../../mainwindow.cpp" line="1739"/>
         <source>Error removing file: %1</source>
         <translation>ফাইল মুছে ফেলতে ত্রুটি: %1</translation>
     </message>
