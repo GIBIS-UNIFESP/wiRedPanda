@@ -54,7 +54,7 @@ static inline QString highLow(const Status val)
 
 QString CodeGenerator::removeForbiddenChars(const QString &input)
 {
-    return input.toLower().trimmed().replace(' ', '_').replace('-', '_').replace(QRegularExpression("\\W"), "");
+    return input.toLower().trimmed().replace(QRegularExpression("\\W"), "");
 }
 
 QString CodeGenerator::otherPortName(QNEPort *port)
@@ -167,7 +167,7 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
             //        }
             //      }
         } else {
-            QString varName = QString("aux_%1_%2").arg(removeForbiddenChars(elm->objectName()), m_globalCounter++);
+            QString varName = QString("aux_%1").arg(removeForbiddenChars(elm->objectName()));
             const auto outputs = elm->outputs();
 
             if (outputs.size() == 1) {
@@ -237,6 +237,16 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
 void CodeGenerator::declareAuxVariables()
 {
     m_stream << "/* ====== Aux. Variables ====== */" << endl;
+    
+    // Check if we have VCC/GND elements and include their constants
+    bool hasVcc = false, hasGnd = false;
+    for (auto *elm : m_elements) {
+        if (elm->elementType() == ElementType::InputVcc) hasVcc = true;
+        if (elm->elementType() == ElementType::InputGnd) hasGnd = true;
+    }
+    if (hasVcc) m_stream << "// VCC elements provide HIGH values" << endl;
+    if (hasGnd) m_stream << "// GND elements provide LOW values" << endl;
+    
     declareAuxVariablesRec(m_elements);
     m_stream << endl;
 }
@@ -476,13 +486,11 @@ void CodeGenerator::assignLogicOperator(GraphicElement *elm)
         if (parentheses && negate) {
             m_stream << "(";
         }
-        if (!inPort->connections().isEmpty()) {
+        m_stream << otherPortName(inPort);
+        for (int i = 1; i < elm->inputs().size(); ++i) {
+            inPort = elm->inputs().at(i);
+            m_stream << " " << logicOperator << " ";
             m_stream << otherPortName(inPort);
-            for (int i = 1; i < elm->inputs().size(); ++i) {
-                inPort = elm->inputs().at(i);
-                m_stream << " " << logicOperator << " ";
-                m_stream << otherPortName(inPort);
-            }
         }
         if (parentheses && negate) {
             m_stream << ")";
