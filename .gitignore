@@ -172,3 +172,4 @@ Deploy/
 *.panda
 !examples/**/*.panda
 !test/files/**/*.panda
+!fuzz/corpus/**/*.panda

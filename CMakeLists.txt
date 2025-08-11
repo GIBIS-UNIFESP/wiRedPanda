@@ -95,6 +95,16 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU
     endif()
 endif()
 
+# Fuzzing support
+if(ENABLE_FUZZING)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        add_compile_options(-fsanitize=fuzzer-no-link)
+        message(STATUS "Fuzzing enabled with libFuzzer")
+    else()
+        message(WARNING "Fuzzing requires Clang compiler")
+    endif()
+endif()
+
 if(NOT MSVC)
     find_program(CCACHE_BIN ccache)
     if(CCACHE_BIN)
@@ -303,4 +313,31 @@ target_compile_definitions(wiredpanda-test PRIVATE CURRENTDIR=${CMAKE_CURRENT_SO
 
 if(NOT CCACHE_BIN)
     target_precompile_headers(wiredpanda-test PRIVATE pch.h)
+endif()
+
+# ========= FUZZING ===================================
+
+if(ENABLE_FUZZING AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    # Serialization fuzzer
+    add_executable(fuzz_serialization fuzz/fuzz_serialization.cpp ${RESOURCES_RCC})
+    target_link_libraries(fuzz_serialization PRIVATE wiredpanda_lib)
+    
+    # Fuzzing compile options (combines fuzzer with sanitizers)
+    target_compile_options(fuzz_serialization PRIVATE 
+        -fsanitize=fuzzer,address,undefined
+        -g -O1 -fno-omit-frame-pointer
+    )
+    target_link_options(fuzz_serialization PRIVATE 
+        -fsanitize=fuzzer,address,undefined
+    )
+    
+    # Ensure translations are compiled before building fuzzer
+    if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
+        add_dependencies(fuzz_serialization lrelease)
+    endif()
+    
+    # Create corpus directory for fuzzing inputs
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/fuzz_corpus)
+    
+    message(STATUS "Fuzzing target 'fuzz_serialization' configured")
 endif()
