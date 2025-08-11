@@ -61,5 +61,4 @@ private:
     QVector<MappedPin> m_inputMap;
     QVector<MappedPin> m_outputMap;
     const QVector<GraphicElement *> m_elements;
-    int m_globalCounter = 1;
 };
