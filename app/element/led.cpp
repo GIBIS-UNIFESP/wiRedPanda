@@ -99,7 +99,7 @@ int Led::colorIndex()
     case 2: index2 = (index == 3) ? 25 : 18 + index; break;
     case 3: index2 = 18 + index;                     break;
     case 4: index2 = 10 + index;                     break;
-    
+
     default:
         // Handle unexpected input sizes gracefully
         index2 = index;  // Simple fallback

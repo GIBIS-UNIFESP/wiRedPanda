@@ -26,6 +26,7 @@
 #include <QDebug>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QLocale>
 #include <QLoggingCategory>
 #include <QMessageBox>
 #include <QPdfWriter>
@@ -35,7 +36,6 @@
 #include <QShortcut>
 #include <QTemporaryFile>
 #include <QTranslator>
-#include <QLocale>
 
 #include <QSvgRenderer>
 
@@ -1578,7 +1578,7 @@ void MainWindow::updateTheme()
     switch (ThemeManager::theme()) {
     case Theme::Dark:  m_ui->actionDarkTheme->setChecked(true); break;
     case Theme::Light: m_ui->actionLightTheme->setChecked(true); break;
-    
+
     default:
         // Handle unexpected theme values - fallback to Light theme
         m_ui->actionLightTheme->setChecked(true);

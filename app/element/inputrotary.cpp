@@ -131,7 +131,7 @@ void InputRotary::updatePortsProperties()
         outputPort(15)->setPos(16,  0);   outputPort(15)->setName("F");
         break;
     }
-    
+
     default:
         // Handle unexpected output sizes gracefully
         // For unhandled sizes, use a simple default positioning
