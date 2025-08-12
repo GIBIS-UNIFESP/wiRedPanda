@@ -27,6 +27,7 @@
 #include "testworkspace.h"
 #include "testcommon.h"
 #include "testsimulationblocker.h"
+#include "testsimulationtester.h"
 
 #include <QtTest>
 
@@ -66,6 +67,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(new TestWorkspace(), argc, argv);
     status |= QTest::qExec(new TestCommon(), argc, argv);
     status |= QTest::qExec(new TestSimulationBlocker(), argc, argv);
+    status |= QTest::qExec(new TestSimulationTester(), argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
