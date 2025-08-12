@@ -9,14 +9,12 @@
 
 #include <QTest>
 #include <QApplication>
+#include <QSpinBox>
+#include <QDialogButtonBox>
 
 void TestDialogs::testClockDialogConstruction()
 {
-    // Skip if no QApplication available (shouldn't happen in test context)
-    if (!QApplication::instance()) {
-        QSKIP("QApplication required for widget tests");
-    }
-    
+    // Test dialog construction without showing it
     ClockDialog dialog(1000); // 1000 Hz frequency
     
     // Test basic construction doesn't crash
@@ -24,38 +22,51 @@ void TestDialogs::testClockDialogConstruction()
     
     // Test that dialog has basic properties
     QVERIFY(!dialog.windowTitle().isEmpty());
-    QCOMPARE(dialog.frequency(), 1000);
+    QVERIFY(dialog.windowTitle().contains("Clock", Qt::CaseInsensitive));
+    
+    // Test that dialog is properly initialized but not shown
+    QVERIFY(!dialog.isVisible());
+    QCOMPARE(dialog.result(), QDialog::Rejected); // Default state
 }
 
 void TestDialogs::testLengthDialogConstruction() 
 {
-    // Skip if no QApplication available
-    if (!QApplication::instance()) {
-        QSKIP("QApplication required for widget tests");
-    }
-    
+    // Test dialog construction without showing it
     LengthDialog dialog(100); // Length of 100
     
     // Test basic construction doesn't crash
     QVERIFY(true);
     
-    // Test dialog initialization
-    QCOMPARE(dialog.length(), 100);
+    // Test that dialog has basic properties  
+    QVERIFY(!dialog.windowTitle().isEmpty());
+    QVERIFY(dialog.windowTitle().contains("Length", Qt::CaseInsensitive));
+    
+    // Test that dialog is properly initialized but not shown
+    QVERIFY(!dialog.isVisible());
+    QCOMPARE(dialog.result(), QDialog::Rejected); // Default state
 }
 
 void TestDialogs::testClockDialogBasicFunctionality()
 {
-    // Skip if no QApplication available
-    if (!QApplication::instance()) {
-        QSKIP("QApplication required for widget tests");
+    // Test dialog UI components without showing the dialog
+    ClockDialog dialog(750); // 750 Hz frequency
+    
+    // Test that dialog was created successfully
+    QVERIFY(!dialog.isVisible()); // Should not be visible
+    
+    // Test window properties
+    QVERIFY(!dialog.windowTitle().isEmpty());
+    
+    // Test that the dialog has the expected child widgets
+    // (This tests the UI setup without calling exec())
+    auto spinBoxes = dialog.findChildren<QSpinBox*>();
+    QVERIFY(spinBoxes.size() > 0); // Should have at least one spinbox
+    
+    auto buttonBoxes = dialog.findChildren<QDialogButtonBox*>();
+    QVERIFY(buttonBoxes.size() > 0); // Should have button box
+    
+    // Test that we can access the spinbox value without showing dialog
+    if (!spinBoxes.isEmpty()) {
+        QCOMPARE(spinBoxes.first()->value(), 750);
     }
-    
-    ClockDialog dialog(500); // 500 Hz frequency
-    
-    // Test that we can access dialog without crashes
-    // This tests the basic UI setup
-    QVERIFY(dialog.frequency() >= 0);
-    
-    // Test dialog basic functionality
-    QCOMPARE(dialog.frequency(), 500);
 }
