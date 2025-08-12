@@ -31,6 +31,7 @@
 #include "testelementmapping.h"
 #include "testqneconnection_safe.h"
 #include "testqneconnection_advanced.h"
+#include "testqneport_advanced.h"
 
 #include <QtTest>
 
@@ -74,6 +75,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(new TestElementMapping(), argc, argv);
     status |= QTest::qExec(new TestQNEConnectionSafe(), argc, argv);
     status |= QTest::qExec(new TestQNEConnectionAdvanced(), argc, argv);
+    status |= QTest::qExec(new TestQNEPortAdvanced(), argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
