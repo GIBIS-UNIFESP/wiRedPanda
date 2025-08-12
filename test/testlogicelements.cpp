@@ -21,8 +21,10 @@
 #include "logicxnor.h"
 #include "logicoutput.h"
 #include "logicsrlatch.h"
+#include "logictruthtable.h"
 
 #include <QTest>
+#include <QBitArray>
 
 void TestLogicElements::init()
 {
@@ -527,6 +529,86 @@ void TestLogicElements::testLogicOutput()
     switches.at(0)->setOutputValue(true);
     elm.updateLogic();
     QCOMPARE(elm.outputValue(), true);
+}
+
+void TestLogicElements::testLogicTruthTable()
+{
+    // Test basic 2-input, 1-output AND truth table
+    QBitArray andTruthTable(4); // 2^2 = 4 combinations for 2 inputs
+    andTruthTable[0] = false; // 00 -> 0
+    andTruthTable[1] = false; // 01 -> 0
+    andTruthTable[2] = false; // 10 -> 0
+    andTruthTable[3] = true;  // 11 -> 1
+    
+    LogicTruthTable andTable(2, 1, andTruthTable);
+    andTable.connectPredecessor(0, switches.at(0), 0);
+    andTable.connectPredecessor(1, switches.at(1), 0);
+    
+    // Test all combinations for AND operation
+    const QVector<QVector<bool>> testCases{
+        {false, false, false}, // 00 -> 0
+        {false, true, false},  // 01 -> 0
+        {true, false, false},  // 10 -> 0
+        {true, true, true}     // 11 -> 1
+    };
+    
+    for (const auto &testCase : testCases) {
+        switches.at(0)->setOutputValue(testCase[0]);
+        switches.at(1)->setOutputValue(testCase[1]);
+        andTable.updateLogic();
+        QCOMPARE(andTable.outputValue(), testCase[2]);
+    }
+    
+    // Test basic 1-input, 1-output NOT truth table
+    QBitArray notTruthTable(2); // 2^1 = 2 combinations for 1 input
+    notTruthTable[0] = true;  // 0 -> 1
+    notTruthTable[1] = false; // 1 -> 0
+    
+    LogicTruthTable notTable(1, 1, notTruthTable);
+    notTable.connectPredecessor(0, switches.at(0), 0);
+    
+    // Test NOT operation
+    switches.at(0)->setOutputValue(false);
+    notTable.updateLogic();
+    QCOMPARE(notTable.outputValue(), true);
+    
+    switches.at(0)->setOutputValue(true);
+    notTable.updateLogic();
+    QCOMPARE(notTable.outputValue(), false);
+    
+    // Test multi-output truth table (e.g., half adder: sum and carry)
+    QBitArray halfAdderTable(512); // 2 outputs * 256 entries per output
+    // For 2 inputs: sum = A XOR B, carry = A AND B
+    // Output 0 (sum): positions 0-3
+    halfAdderTable[0] = false; // 00 -> sum=0
+    halfAdderTable[1] = true;  // 01 -> sum=1
+    halfAdderTable[2] = true;  // 10 -> sum=1
+    halfAdderTable[3] = false; // 11 -> sum=0
+    // Output 1 (carry): positions 256-259
+    halfAdderTable[256] = false; // 00 -> carry=0
+    halfAdderTable[257] = false; // 01 -> carry=0
+    halfAdderTable[258] = false; // 10 -> carry=0
+    halfAdderTable[259] = true;  // 11 -> carry=1
+    
+    LogicTruthTable halfAdder(2, 2, halfAdderTable);
+    halfAdder.connectPredecessor(0, switches.at(0), 0);
+    halfAdder.connectPredecessor(1, switches.at(1), 0);
+    
+    // Test half adder functionality
+    const QVector<QVector<bool>> halfAdderCases{
+        {false, false, false, false}, // 00 -> sum=0, carry=0
+        {false, true, true, false},   // 01 -> sum=1, carry=0
+        {true, false, true, false},   // 10 -> sum=1, carry=0
+        {true, true, false, true}     // 11 -> sum=0, carry=1
+    };
+    
+    for (const auto &testCase : halfAdderCases) {
+        switches.at(0)->setOutputValue(testCase[0]);
+        switches.at(1)->setOutputValue(testCase[1]);
+        halfAdder.updateLogic();
+        QCOMPARE(halfAdder.outputValue(0), testCase[2]); // sum
+        QCOMPARE(halfAdder.outputValue(1), testCase[3]); // carry
+    }
 }
 
 
