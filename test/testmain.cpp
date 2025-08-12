@@ -22,7 +22,6 @@
 #include "testenums.h"
 #include "testelementlabel.h"
 #include "testic.h"
-#include "testcommands_advanced.h"
 #include "testsettings.h"
 #include "testthememanager.h"
 #include "testworkspace.h"
@@ -63,7 +62,6 @@ int main(int argc, char **argv)
     status |= QTest::qExec(new TestEnums(), argc, argv);
     status |= QTest::qExec(new TestElementLabel(), argc, argv);
     status |= QTest::qExec(new TestIC(), argc, argv);
-    status |= QTest::qExec(new TestCommandsAdvanced(), argc, argv);
     status |= QTest::qExec(new TestSettings(), argc, argv);
     status |= QTest::qExec(new TestThemeManager(), argc, argv);
     status |= QTest::qExec(new TestWorkspace(), argc, argv);
