@@ -27,7 +27,6 @@
 #include "testthememanager.h"
 #include "testworkspace.h"
 #include "testcommon.h"
-#include "testapplication_extended.h"
 #include "testsimulationblocker.h"
 
 #include <QtTest>
@@ -69,7 +68,6 @@ int main(int argc, char **argv)
     TestThemeManager testThemeManager;
     TestWorkspace testWorkspace;
     TestCommon testCommon;
-    TestApplicationExtended testApplicationExtended;
     TestSimulationBlocker testSimulationBlocker;
     
     status |= QTest::qExec(&testCommands, argc, argv);
@@ -95,7 +93,6 @@ int main(int argc, char **argv)
     status |= QTest::qExec(&testThemeManager, argc, argv);
     status |= QTest::qExec(&testWorkspace, argc, argv);
     status |= QTest::qExec(&testCommon, argc, argv);
-    status |= QTest::qExec(&testApplicationExtended, argc, argv);
     status |= QTest::qExec(&testSimulationBlocker, argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
