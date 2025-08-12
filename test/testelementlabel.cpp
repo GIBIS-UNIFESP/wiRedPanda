@@ -208,6 +208,7 @@ void TestElementLabel::testSetTextColor()
     };
     
     for (const QColor& color : colors) {
+        Q_UNUSED(color)
         // label->setDefaultTextColor(color); // ElementLabel doesn't have this method
         // QCOMPARE(label->palette().color(QPalette::WindowText), color); // ElementLabel color comparison
     }
@@ -252,6 +253,7 @@ void TestElementLabel::testLabelOpacity()
     
     // Test opacity settings - may not work without proper window system
     double initialOpacity = label->windowOpacity();
+    Q_UNUSED(initialOpacity)
     label->setWindowOpacity(0.5);
     // Opacity may not change in headless environment
     QVERIFY(label->windowOpacity() >= 0.0 && label->windowOpacity() <= 1.0);
@@ -332,6 +334,7 @@ void TestElementLabel::testAutoPositioning()
     
     // Test automatic positioning relative to parent
     QPointF initialPos = label->pos();
+    Q_UNUSED(initialPos)
     // label->setPlainText("Auto Position Test");
     
     // Position should be valid
@@ -466,6 +469,7 @@ void TestElementLabel::testLabelFollowsParent()
     
     // Test that label position is maintained
     QPointF initialPos = label->pos();
+    Q_UNUSED(initialPos)
     label->move(QPoint(50, 50));
     QCOMPARE(label->pos(), QPointF(50, 50));
 }
