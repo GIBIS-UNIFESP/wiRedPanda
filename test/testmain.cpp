@@ -40,6 +40,7 @@
 #include "testproperties.h"
 #include "testsceneadvanced.h"
 #include "testconnectionnetwork.h"
+#include "testerrorhandling.h"
 
 #include <QtTest>
 
@@ -92,6 +93,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(new TestProperties(), argc, argv);
     status |= QTest::qExec(new TestSceneAdvanced(), argc, argv);
     status |= QTest::qExec(new TestConnectionNetwork(), argc, argv);
+    status |= QTest::qExec(new TestErrorHandling(), argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
