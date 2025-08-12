@@ -19,6 +19,7 @@
 #include "testrecentfiles.h"
 #include "testelementfactory.h"
 #include "testserialization.h"
+#include "testgraphicelement.h"
 
 #include <QtTest>
 
@@ -51,6 +52,7 @@ int main(int argc, char **argv)
     TestRecentFiles testRecentFiles;
     TestElementFactory testElementFactory;
     TestSerialization testSerialization;
+    TestGraphicElement testGraphicElement;
     
     status |= QTest::qExec(&testCommands, argc, argv);
     status |= QTest::qExec(&testElements, argc, argv);
@@ -67,6 +69,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(&testRecentFiles, argc, argv);
     status |= QTest::qExec(&testElementFactory, argc, argv);
     status |= QTest::qExec(&testSerialization, argc, argv);
+    status |= QTest::qExec(&testGraphicElement, argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
