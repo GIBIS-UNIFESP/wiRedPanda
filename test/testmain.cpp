@@ -41,6 +41,7 @@
 #include "testproperties.h"
 #include "testsceneadvanced.h"
 #include "testconnectionnetwork.h"
+#include "testerrorhandling.h"
 
 #include <QtTest>
 
@@ -95,6 +96,7 @@ int main(int argc, char **argv)
     TestProperties testProperties;
     TestSceneAdvanced testSceneAdvanced;
     TestConnectionNetwork testConnectionNetwork;
+    TestErrorHandling testErrorHandling;
     
     status |= QTest::qExec(&testCommands, argc, argv);
     status |= QTest::qExec(&testElements, argc, argv);
@@ -133,6 +135,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(&testProperties, argc, argv);
     status |= QTest::qExec(&testSceneAdvanced, argc, argv);
     status |= QTest::qExec(&testConnectionNetwork, argc, argv);
+    status |= QTest::qExec(&testErrorHandling, argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
