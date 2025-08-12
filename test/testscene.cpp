@@ -355,6 +355,7 @@ void TestScene::testSceneMimeData()
         // Should not crash with valid MIME data handling
         QVERIFY(true);
     } catch (const std::exception &e) {
+        Q_UNUSED(e)
         // If an exception is thrown, that's expected for invalid MIME data
         QVERIFY(true); // Still pass the test as we expect this might fail
     }
