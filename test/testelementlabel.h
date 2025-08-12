@@ -39,11 +39,11 @@ private slots:
     void testShowHideLabel();
     void testLabelOpacity();
     
-    // Text editing and interaction
-    void testTextEditing();
-    void testTextSelection();
+    // Widget behavior and interaction
+    void testFocusHandling();
+    void testElementTypeDisplay();
     void testTextInputValidation();
-    void testSpecialCharacters();
+    void testElementNameConsistency();
     
     // Layout and positioning
     void testAutoPositioning();
