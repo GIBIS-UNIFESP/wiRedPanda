@@ -24,6 +24,7 @@
 #include "testelementlabel.h"
 #include "testic.h"
 #include "testcommands_advanced.h"
+#include "testsettings.h"
 
 #include <QtTest>
 
@@ -61,6 +62,7 @@ int main(int argc, char **argv)
     TestElementLabel testElementLabel;
     TestIC testIC;
     TestCommandsAdvanced testCommandsAdvanced;
+    TestSettings testSettings;
     
     status |= QTest::qExec(&testCommands, argc, argv);
     status |= QTest::qExec(&testElements, argc, argv);
@@ -82,6 +84,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(&testElementLabel, argc, argv);
     status |= QTest::qExec(&testIC, argc, argv);
     status |= QTest::qExec(&testCommandsAdvanced, argc, argv);
+    status |= QTest::qExec(&testSettings, argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
