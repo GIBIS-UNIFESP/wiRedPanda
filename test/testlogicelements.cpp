@@ -22,6 +22,7 @@
 #include "logicoutput.h"
 #include "logicsrlatch.h"
 #include "logictruthtable.h"
+#include "logicnone.h"
 
 #include <QTest>
 #include <QBitArray>
@@ -53,6 +54,14 @@ void TestLogicElements::testLogicNode()
 
         QCOMPARE(elm.outputValue(), test.at(1));
     }
+
+    // Test error path: invalid input connection
+    LogicNode invalidElm;
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
 }
 
 void TestLogicElements::testLogicAnd()
@@ -76,6 +85,14 @@ void TestLogicElements::testLogicAnd()
 
         QCOMPARE(elm.outputValue(), test.at(2));
     }
+
+    // Test error path: invalid input connection
+    LogicAnd invalidElm(2);
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
 }
 
 void TestLogicElements::testLogicOr()
@@ -99,16 +116,31 @@ void TestLogicElements::testLogicOr()
 
         QCOMPARE(elm.outputValue(), test.at(2));
     }
+
+    // Test error path: invalid input connection
+    LogicOr invalidElm(2);
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
 }
 
 void TestLogicElements::testLogicInput()
 {
+    // Test single output LogicInput (default)
     LogicInput elm;
     QCOMPARE(elm.outputValue(), false);
     elm.setOutputValue(true);
     QCOMPARE(elm.outputValue(), true);
     elm.setOutputValue(false);
     QCOMPARE(elm.outputValue(), false);
+    
+    // Test multi-output LogicInput to cover initialization loop
+    LogicInput multiOutput(true, 3);
+    QCOMPARE(multiOutput.outputValue(0), true);  // Default value
+    QCOMPARE(multiOutput.outputValue(1), false); // Additional outputs initialized to false
+    QCOMPARE(multiOutput.outputValue(2), false); // Additional outputs initialized to false
 }
 
 void TestLogicElements::testLogicMux()
@@ -138,6 +170,14 @@ void TestLogicElements::testLogicMux()
 
         QCOMPARE(elm.outputValue(), test.at(3));
     }
+
+    // Test error path: invalid input connection
+    LogicMux invalidElm;
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
 }
 
 void TestLogicElements::testLogicDemux()
@@ -163,6 +203,14 @@ void TestLogicElements::testLogicDemux()
         QCOMPARE(elm.outputValue(0), test.at(2));
         QCOMPARE(elm.outputValue(1), test.at(3));
     }
+
+    // Test error path: invalid input connection
+    LogicDemux invalidElm;
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
 }
 
 void TestLogicElements::testLogicDFlipFlop()
@@ -237,6 +285,14 @@ void TestLogicElements::testLogicDLatch()
         QCOMPARE(elm.outputValue(0), test.at(2));
         QCOMPARE(elm.outputValue(1), !test.at(2));
     }
+
+    // Test error path: invalid input connection
+    LogicDLatch invalidElm;
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
 }
 
 void TestLogicElements::testLogicJKFlipFlop()
@@ -288,6 +344,14 @@ void TestLogicElements::testLogicJKFlipFlop()
         QCOMPARE(elm.outputValue(0), test.at(6));
         QCOMPARE(elm.outputValue(1), test.at(7));
     }
+
+    // Test error path: invalid input connection
+    LogicJKFlipFlop invalidElm;
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
 }
 
 void TestLogicElements::testLogicSRFlipFlop()
@@ -352,6 +416,14 @@ void TestLogicElements::testLogicSRFlipFlop()
         QCOMPARE(elm.outputValue(0), test.at(6));
         QCOMPARE(elm.outputValue(1), test.at(7));
     }
+
+    // Test error path: invalid input connection
+    LogicSRFlipFlop invalidElm;
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
 }
 
 void TestLogicElements::testLogicTFlipFlop()
@@ -404,6 +476,14 @@ void TestLogicElements::testLogicTFlipFlop()
         QCOMPARE(elm.outputValue(0), test.at(5));
         QCOMPARE(elm.outputValue(1), test.at(6));
     }
+
+    // Test error path: invalid input connection
+    LogicTFlipFlop invalidElm;
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
 }
 
 void TestLogicElements::testLogicNAND()
@@ -427,6 +507,14 @@ void TestLogicElements::testLogicNAND()
         
         QCOMPARE(elm.outputValue(), test.at(2));
     }
+
+    // Test error path: invalid input connection
+    LogicNand invalidElm(1);
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
 }
 
 void TestLogicElements::testLogicNOR()
@@ -450,6 +538,14 @@ void TestLogicElements::testLogicNOR()
         
         QCOMPARE(elm.outputValue(), test.at(2));
     }
+
+    // Test error path: invalid input connection
+    LogicNor invalidElm(1);
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
 }
 
 void TestLogicElements::testLogicNOT()
@@ -469,6 +565,14 @@ void TestLogicElements::testLogicNOT()
         
         QCOMPARE(elm.outputValue(), test.at(1));
     }
+
+    // Test error path: invalid input connection
+    LogicNot invalidElm;
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
 }
 
 void TestLogicElements::testLogicXOR()
@@ -492,6 +596,14 @@ void TestLogicElements::testLogicXOR()
         
         QCOMPARE(elm.outputValue(), test.at(2));
     }
+
+    // Test error path: invalid input connection
+    LogicXor invalidElm(2);
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
 }
 
 void TestLogicElements::testLogicXNOR()
@@ -515,6 +627,14 @@ void TestLogicElements::testLogicXNOR()
         
         QCOMPARE(elm.outputValue(), test.at(2));
     }
+
+    // Test error path: invalid input connection
+    LogicXnor invalidElm(1);
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
 }
 
 void TestLogicElements::testLogicOutput()
@@ -529,6 +649,14 @@ void TestLogicElements::testLogicOutput()
     switches.at(0)->setOutputValue(true);
     elm.updateLogic();
     QCOMPARE(elm.outputValue(), true);
+
+    // Test error path: invalid input connection
+    LogicOutput invalidElm(1);
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
 }
 
 void TestLogicElements::testLogicTruthTable()
@@ -609,6 +737,74 @@ void TestLogicElements::testLogicTruthTable()
         QCOMPARE(halfAdder.outputValue(0), testCase[2]); // sum
         QCOMPARE(halfAdder.outputValue(1), testCase[3]); // carry
     }
+
+    // Test error path: invalid input connection
+    QBitArray emptyTable(4);
+    LogicTruthTable invalidElm(2, 1, emptyTable);
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
+}
+
+void TestLogicElements::testLogicSRLatch()
+{
+    LogicSRLatch elm;
+    elm.connectPredecessor(0, switches.at(0), 0); // S input
+    elm.connectPredecessor(1, switches.at(1), 0); // R input
+    
+    // Test initial state (Q=false, Q̄=true)
+    QCOMPARE(elm.outputValue(0), false); // Q
+    QCOMPARE(elm.outputValue(1), true);  // Q̄
+    
+    // Test SR latch truth table
+    // Format: {S, R, expectedQ, expectedQBar}
+    const QVector<QVector<bool>> truthTable{
+        {false, false, false, true},  // Hold initial state
+        {true, false, true, false},   // Set: S=1, R=0 -> Q=1, Q̄=0
+        {false, false, true, false},  // Hold set state
+        {false, true, false, true},   // Reset: S=0, R=1 -> Q=0, Q̄=1
+        {false, false, false, true},  // Hold reset state
+        {true, true, false, false},   // Forbidden: S=1, R=1 -> both outputs false
+    };
+    
+    for (const auto &test : truthTable) {
+        switches.at(0)->setOutputValue(test.at(0)); // S
+        switches.at(1)->setOutputValue(test.at(1)); // R
+        
+        elm.updateLogic();
+        
+        QCOMPARE(elm.outputValue(0), test.at(2)); // Q output
+        QCOMPARE(elm.outputValue(1), test.at(3)); // Q̄ output
+    }
+
+    // Test error path: invalid input connection
+    LogicSRLatch invalidElm;
+    // Don't connect predecessor - element will be invalid
+    invalidElm.validate();
+    QVERIFY(!invalidElm.isValid());
+    // This should trigger the error path return in updateLogic()
+    invalidElm.updateLogic();
+}
+
+void TestLogicElements::testLogicNone()
+{
+    // LogicNone is a placeholder logic element for non-logic elements (Text, Line)
+    LogicNone elm;
+    
+    // Test basic construction - should not crash
+    QVERIFY(true);
+    
+    // LogicNone should be valid by default (no dependencies)
+    QVERIFY(elm.isValid());
+    
+    // Should be able to validate without issues
+    elm.validate();
+    QVERIFY(elm.isValid());
+    
+    // Note: updateLogic() is private and cannot be tested directly
+    // The 50% coverage for LogicNone is expected as it's a placeholder element
 }
 
 
