@@ -25,6 +25,7 @@ private slots:
     void testLogicNode();
     void testLogicOr();
     void testLogicSRFlipFlop();
+    void testLogicSRLatch();
     void testLogicTFlipFlop();
     void testLogicNAND();
     void testLogicNOR();
@@ -33,6 +34,7 @@ private slots:
     void testLogicXNOR();
     void testLogicOutput();
     void testLogicTruthTable();
+    void testLogicNone();
 
 private:
     QVector<LogicInput *> switches{5};
