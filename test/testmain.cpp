@@ -20,6 +20,7 @@
 #include "testelementfactory.h"
 #include "testserialization.h"
 #include "testgraphicelement.h"
+#include "testenums.h"
 
 #include <QtTest>
 
@@ -53,6 +54,7 @@ int main(int argc, char **argv)
     TestElementFactory testElementFactory;
     TestSerialization testSerialization;
     TestGraphicElement testGraphicElement;
+    TestEnums testEnums;
     
     status |= QTest::qExec(&testCommands, argc, argv);
     status |= QTest::qExec(&testElements, argc, argv);
@@ -70,6 +72,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(&testElementFactory, argc, argv);
     status |= QTest::qExec(&testSerialization, argc, argv);
     status |= QTest::qExec(&testGraphicElement, argc, argv);
+    status |= QTest::qExec(&testEnums, argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
