@@ -22,6 +22,7 @@
 #include "testenums.h"
 #include "testelementlabel.h"
 #include "testic.h"
+#include "testcommands_advanced.h"
 
 #include <QtTest>
 
@@ -56,6 +57,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(new TestEnums(), argc, argv);
     status |= QTest::qExec(new TestElementLabel(), argc, argv);
     status |= QTest::qExec(new TestIC(), argc, argv);
+    status |= QTest::qExec(new TestCommandsAdvanced(), argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
