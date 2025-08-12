@@ -26,6 +26,7 @@
 #include "testcommands_advanced.h"
 #include "testsettings.h"
 #include "testthememanager.h"
+#include "testworkspace.h"
 
 #include <QtTest>
 
@@ -65,6 +66,7 @@ int main(int argc, char **argv)
     TestCommandsAdvanced testCommandsAdvanced;
     TestSettings testSettings;
     TestThemeManager testThemeManager;
+    TestWorkspace testWorkspace;
     
     status |= QTest::qExec(&testCommands, argc, argv);
     status |= QTest::qExec(&testElements, argc, argv);
@@ -88,6 +90,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(&testCommandsAdvanced, argc, argv);
     status |= QTest::qExec(&testSettings, argc, argv);
     status |= QTest::qExec(&testThemeManager, argc, argv);
+    status |= QTest::qExec(&testWorkspace, argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
