@@ -24,6 +24,7 @@
 #include "testic.h"
 #include "testcommands_advanced.h"
 #include "testsettings.h"
+#include "testthememanager.h"
 
 #include <QtTest>
 
@@ -60,6 +61,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(new TestIC(), argc, argv);
     status |= QTest::qExec(new TestCommandsAdvanced(), argc, argv);
     status |= QTest::qExec(new TestSettings(), argc, argv);
+    status |= QTest::qExec(new TestThemeManager(), argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
