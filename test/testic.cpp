@@ -456,6 +456,7 @@ void TestIC::testICFileVersionCompatibility()
     };
     
     for (const auto& version : versions) {
+        Q_UNUSED(version)
         try {
             // Test loading with different versions
             validateICState(ic);
@@ -643,6 +644,7 @@ void TestIC::testSetICFilePath()
         // IC doesn't have setFileName method, use loadFile instead
         ic->loadFile(testPath);
     } catch (const Pandaception& e) {
+        Q_UNUSED(e)
         // Loading non-existent file throws Pandaception - this is expected
         QVERIFY(true);
     } catch (...) {
@@ -666,6 +668,7 @@ void TestIC::testRelativeFilePaths()
         // IC doesn't have setFileName method, use loadFile instead
         ic->loadFile(relativePath);
     } catch (const Pandaception& e) {
+        Q_UNUSED(e)
         // Loading non-existent file throws Pandaception - this is expected
         QVERIFY(true);
     } catch (...) {
@@ -689,6 +692,7 @@ void TestIC::testAbsoluteFilePaths()
         // IC doesn't have setFileName method, use loadFile instead
         ic->loadFile(absolutePath);
     } catch (const Pandaception& e) {
+        Q_UNUSED(e)
         // Loading non-existent file throws Pandaception - this is expected
         QVERIFY(true);
     } catch (...) {
