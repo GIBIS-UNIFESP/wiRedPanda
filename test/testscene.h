@@ -18,4 +18,13 @@ private slots:
     void testConnections();
     void testThemeUpdate();
     void testSceneUtilities();
+    void testSceneActions();
+    void testSceneTransformations();
+    void testSceneKeyboardNavigation();
+    void testSceneDisplayOptions();
+    void testSceneItemQueries();
+    void testSceneSignals();
+    void testSceneMimeData();
+    void testSceneView();
+    void testSceneEventFiltering();
 };
