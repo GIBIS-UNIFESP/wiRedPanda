@@ -35,6 +35,7 @@
 #include "testelementeditor.h"
 #include "testgraphicsview.h"
 #include "testdragdrop.h"
+#include "testlengthdialog.h"
 
 #include <QtTest>
 
@@ -82,6 +83,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(new TestElementEditor(), argc, argv);
     status |= QTest::qExec(new TestGraphicsView(), argc, argv);
     status |= QTest::qExec(new TestDragDrop(), argc, argv);
+    status |= QTest::qExec(new TestLengthDialog(), argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
