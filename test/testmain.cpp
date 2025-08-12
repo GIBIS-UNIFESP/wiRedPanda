@@ -13,6 +13,7 @@
 #include "testarduino.h"
 #include "testapplication.h"
 #include "testdialogs.h"
+#include "testtrashbutton.h"
 
 #include <QtTest>
 
@@ -38,6 +39,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(new TestArduino(), argc, argv);
     status |= QTest::qExec(new TestApplication(), argc, argv);
     status |= QTest::qExec(new TestDialogs(), argc, argv);
+    status |= QTest::qExec(new TestTrashButton(), argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
