@@ -6,8 +6,10 @@
 #include "clock.h"
 #include "common.h"
 #include "graphicelement.h"
+#include "ic.h"
 #include "qneconnection.h"
 #include "qneport.h"
+#include "simulation.h"
 
 #include <QRegularExpression>
 
@@ -154,18 +156,17 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
 {
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
-            //      IC *ic = qgraphicsitem_cast<IC *>(elm);
+            IC *ic = qgraphicsitem_cast<IC *>(elm);
 
-            // FIXME: Get code generator to work again
-            //      if (ic) {
-            //        out << "// " << ic->getLabel() << endl;
-            //        declareAuxVariablesRec(ic->getElements(), true);
-            //        out << "// END of " << ic->getLabel() << endl;
-            //        for (int i = 0; i < ic->outputSize(); ++i) {
-            //          QNEPort *port = ic->outputMap.at(i);
-            //          varMap[ic->outputPort(i)] = otherPortName(port);
-            //        }
-            //      }
+            if (ic) {
+                m_stream << "// " << ic->label() << endl;
+                declareAuxVariablesRec(ic->getElements(), true);
+                m_stream << "// END of " << ic->label() << endl;
+                for (int i = 0; i < ic->outputSize(); ++i) {
+                    QNEPort *port = ic->outputMap().at(i);
+                    m_varMap[ic->outputPort(i)] = otherPortName(port);
+                }
+            }
         } else {
             QString varName = QString("aux_%1").arg(removeForbiddenChars(elm->objectName()));
             const auto outputs = elm->outputs();
@@ -268,26 +269,28 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
 {
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
-            throw PANDACEPTION("IC element not supported: %1", elm->objectName());
-            // TODO: CodeGenerator::assignVariablesRec for IC Element
-            //      IC *ic = qgraphicsitem_cast<IC *>(elm);
-            //      out << "    // " << ic->getLabel() << endl;
-            //      for (int i = 0; i < ic->inputSize(); ++i) {
-            //          QNEPort *port = ic->inputPort(i);
-            //          QNEPort *otherPort = port->connections().constFirst()->otherPort(port);
-            //          QString value = highLow(port->defaultValue());
-            //          if (!m_varMap.value(otherPort).isEmpty()) {
-            //              value = m_varMap.value(otherPort);
-            //          }
-            //          out << "    " << m_varMap.value(ic->inputMap.at(i)) << " = " << value << ";" << endl;
-            //      }
-            //      QVector<GraphicElement*> icElms = ic->getElements();
-            //      if (icElms.isEmpty()) {
-            //          continue;
-            //      }
-            //      icElms = Simulation::sortElements(icElms);
-            //      assignVariablesRec(icElms);
-            //      out << "    // End of " << ic->getLabel() << endl;
+            IC *ic = qgraphicsitem_cast<IC *>(elm);
+            if (ic) {
+                m_stream << "    // " << ic->label() << endl;
+                for (int i = 0; i < ic->inputSize(); ++i) {
+                    QNEPort *port = ic->inputPort(i);
+                    if (port && !port->connections().isEmpty()) {
+                        QNEPort *otherPort = port->connections().constFirst()->otherPort(port);
+                        QString value = highLow(port->defaultValue());
+                        if (otherPort && !m_varMap.value(otherPort).isEmpty()) {
+                            value = m_varMap.value(otherPort);
+                        }
+                        if (i < ic->inputMap().size()) {
+                            m_stream << "    " << m_varMap.value(ic->inputMap().at(i)) << " = " << value << ";" << endl;
+                        }
+                    }
+                }
+                const QVector<GraphicElement*> &icElms = ic->getElements();
+                if (!icElms.isEmpty()) {
+                    assignVariablesRec(icElms);
+                }
+                m_stream << "    // End of " << ic->label() << endl;
+            }
         }
         if (elm->inputs().isEmpty() || elm->outputs().isEmpty()) {
             continue;

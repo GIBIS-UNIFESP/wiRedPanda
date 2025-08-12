@@ -628,7 +628,7 @@ void TestArduino::testICElementSupport()
     
     QVector<GraphicElement *> elements;
     
-    // Test IC element (should throw exception as it's not currently supported)
+    // Test IC element (should now be supported)
     IC icElement;
     icElement.setObjectName("ic1");
     
@@ -641,18 +641,28 @@ void TestArduino::testICElementSupport()
     
     CodeGenerator generator(tempFile.fileName(), elements);
     
-    // IC elements should throw an exception during generation
-    // This test verifies that IC elements are properly detected and handled
-    // (even if not supported yet)
-    bool exceptionThrown = false;
+    // IC elements should now be supported and generate code successfully
+    // This test verifies that IC elements are properly handled
+    bool codeGenerated = false;
     try {
         generator.generate();
+        codeGenerated = true;
     } catch (...) {
-        exceptionThrown = true;
+        codeGenerated = false;
     }
     
-    // Should throw exception for unsupported IC element
-    QVERIFY(exceptionThrown);
+    // Should successfully generate code for IC element
+    QVERIFY(codeGenerated);
+    
+    // Verify that the generated code contains IC comments
+    QFile checkFile(tempFile.fileName());
+    QVERIFY(checkFile.open(QIODevice::ReadOnly));
+    QString content = checkFile.readAll();
+    checkFile.close();
+    
+    // Should contain IC element processing (empty IC generates empty comments)
+    // The IC element is processed but has no label or internal elements
+    QVERIFY(content.contains("// \n// END of"));
     
     // Test that non-IC elements still work fine when IC is removed
     QVector<GraphicElement *> elementsWithoutIC;
@@ -671,8 +681,8 @@ void TestArduino::testICElementSupport()
     QVERIFY(noExceptionThrown);
     
     tempFile.seek(0);
-    QString content = tempFile.readAll();
-    QVERIFY(content.contains("btn1"));
+    QString buttonContent = tempFile.readAll();
+    QVERIFY(buttonContent.contains("btn1"));
 }
 
 void TestArduino::testForbiddenCharacterRemoval()

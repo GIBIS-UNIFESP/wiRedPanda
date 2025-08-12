@@ -9,6 +9,9 @@
 #include <QFileInfo>
 #include <QFileSystemWatcher>
 
+class QNEInputPort;
+class QNEOutputPort;
+
 class IC : public GraphicElement
 {
     Q_OBJECT
@@ -25,6 +28,15 @@ public:
     const QVector<std::shared_ptr<LogicElement>> generateMap();
     LogicElement *inputLogic(const int index);
     LogicElement *outputLogic(const int index);
+    
+    // Arduino code generation support methods
+    const QVector<GraphicElement *> &getElements() const { return m_icElements; }
+    int inputSize() const { return m_icInputs.size(); }
+    int outputSize() const { return m_icOutputs.size(); }
+    QNEInputPort *internalInputPort(int index) const;
+    QNEOutputPort *internalOutputPort(int index) const;
+    const QVector<QNEPort *> &inputMap() const { return m_icInputs; }
+    const QVector<QNEPort *> &outputMap() const { return m_icOutputs; }
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
     void loadFile(const QString &fileName);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

@@ -351,6 +351,22 @@ LogicElement *IC::outputLogic(const int index)
     return m_icOutputs.at(index)->logic();
 }
 
+QNEInputPort *IC::internalInputPort(int index) const
+{
+    if (index >= 0 && index < m_icInputs.size()) {
+        return dynamic_cast<QNEInputPort*>(m_icInputs.at(index));
+    }
+    return nullptr;
+}
+
+QNEOutputPort *IC::internalOutputPort(int index) const
+{
+    if (index >= 0 && index < m_icOutputs.size()) {
+        return dynamic_cast<QNEOutputPort*>(m_icOutputs.at(index));
+    }
+    return nullptr;
+}
+
 void IC::loadInputsLabels()
 {
     for (int portIndex = 0; portIndex < m_icInputs.size(); ++portIndex) {
