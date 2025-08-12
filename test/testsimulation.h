@@ -11,4 +11,43 @@ class TestSimulation : public QObject
 
 private slots:
     void testCase1();
+    
+    // Core functionality tests
+    void testSimulationConstruction();
+    void testSimulationWithScene();
+    void testInitialize();
+    void testIsRunning();
+    void testStartStop();
+    void testRestart();
+    void testUpdate();
+    
+    // Timer and clock tests  
+    void testTimerBasicFunctionality();
+    void testClockElements();
+    void testTimerInterval();
+    
+    // Simulation state tests
+    void testInitializedState();
+    void testSimulationReset();
+    void testMultipleStartStop();
+    
+    // Circuit simulation tests
+    void testSimpleLogicCircuit();
+    void testComplexLogicCircuit();
+    void testSequentialLogicCircuit();
+    
+    // Element interaction tests
+    void testInputElementsUpdate();
+    void testOutputElementsUpdate();
+    void testConnectionsUpdate();
+    void testLogicElementsUpdate();
+    
+    // Integration tests
+    void testSimulationFlow();
+    void testSimulationWithClocks();
+    void testSimulationEdgeCases();
+    
+    // Performance and stability tests
+    void testSimulationPerformance();
+    void testSimulationStability();
 };
