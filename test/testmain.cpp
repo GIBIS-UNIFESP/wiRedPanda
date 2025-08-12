@@ -40,6 +40,7 @@
 #include "testclockdialog.h"
 #include "testproperties.h"
 #include "testsceneadvanced.h"
+#include "testconnectionnetwork.h"
 
 #include <QtTest>
 
@@ -93,6 +94,7 @@ int main(int argc, char **argv)
     TestClockDialog testClockDialog;
     TestProperties testProperties;
     TestSceneAdvanced testSceneAdvanced;
+    TestConnectionNetwork testConnectionNetwork;
     
     status |= QTest::qExec(&testCommands, argc, argv);
     status |= QTest::qExec(&testElements, argc, argv);
@@ -130,6 +132,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(&testClockDialog, argc, argv);
     status |= QTest::qExec(&testProperties, argc, argv);
     status |= QTest::qExec(&testSceneAdvanced, argc, argv);
+    status |= QTest::qExec(&testConnectionNetwork, argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
