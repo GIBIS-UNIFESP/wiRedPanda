@@ -13,6 +13,12 @@
 #include "inputgnd.h"
 #include "inputswitch.h"
 #include "inputvcc.h"
+#include "nand.h"
+#include "nor.h"
+#include "not.h"
+#include "xor.h"
+#include "xnor.h"
+#include "srlatch.h"
 #include "jkflipflop.h"
 #include "led.h"
 #include "mux.h"
@@ -306,4 +312,92 @@ void TestElements::testICs()
         IC ic;
         ic.loadFile(fileInfo.absoluteFilePath());
     }
+}
+
+void TestElements::testNAND()
+{
+    Nand elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 2);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 1);
+    QCOMPARE(elm.minInputSize(), 2);
+    QCOMPARE(elm.elementType(), ElementType::Nand);
+}
+
+void TestElements::testNOR()
+{
+    Nor elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 2);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 1);
+    QCOMPARE(elm.minInputSize(), 2);
+    QCOMPARE(elm.elementType(), ElementType::Nor);
+}
+
+void TestElements::testNOT()
+{
+    Not elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 1);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 1);
+    QCOMPARE(elm.minInputSize(), 1);
+    QCOMPARE(elm.elementType(), ElementType::Not);
+}
+
+void TestElements::testXOR()
+{
+    Xor elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 2);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 1);
+    QCOMPARE(elm.minInputSize(), 2);
+    QCOMPARE(elm.elementType(), ElementType::Xor);
+}
+
+void TestElements::testXNOR()
+{
+    Xnor elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 2);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 1);
+    QCOMPARE(elm.minInputSize(), 2);
+    QCOMPARE(elm.elementType(), ElementType::Xnor);
+}
+
+void TestElements::testLED()
+{
+    Led elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 1);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 0);
+    QCOMPARE(elm.minInputSize(), 1);
+    QCOMPARE(elm.elementType(), ElementType::Led);
+}
+
+void TestElements::testInputButton()
+{
+    InputButton elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 0);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 1);
+    QCOMPARE(elm.minInputSize(), 0);
+    QCOMPARE(elm.elementType(), ElementType::InputButton);
+}
+
+void TestElements::testSRLatch()
+{
+    SRLatch elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 2);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 2);
+    QCOMPARE(elm.minInputSize(), 2);
+    QCOMPARE(elm.elementType(), ElementType::SRLatch);
 }
