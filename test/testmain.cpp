@@ -33,6 +33,7 @@
 #include "testqneconnection_advanced.h"
 #include "testqneport_advanced.h"
 #include "testelementeditor.h"
+#include "testgraphicsview.h"
 
 #include <QtTest>
 
@@ -78,6 +79,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(new TestQNEConnectionAdvanced(), argc, argv);
     status |= QTest::qExec(new TestQNEPortAdvanced(), argc, argv);
     status |= QTest::qExec(new TestElementEditor(), argc, argv);
+    status |= QTest::qExec(new TestGraphicsView(), argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
