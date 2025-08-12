@@ -12,4 +12,18 @@ class TestArduino : public QObject
 private slots:
     void testMappedPin();
     void testCodeGeneratorConstruction();
+    void testGenerateEmptyCircuit();
+    void testFileHandling();
+    void testGenerateBasicElements();
+    void testGenerateLogicElements();
+    void testGenerateVccGndElements();
+    void testGenerateClockElements();
+    void testGenerateSequentialElements();
+    void testGenerateElementsWithLabels();
+    void testGenerateComplexCircuit();
+    void testPortConnectionsAndMapping();
+    void testMultiOutputElements();
+    void testEdgeCasesAndErrorHandling();
+    void testICElementSupport();
+    void testForbiddenCharacterRemoval();
 };
