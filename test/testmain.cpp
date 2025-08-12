@@ -1,6 +1,7 @@
 // Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "application.h"
 #include "common.h"
 #include "registertypes.h"
 #include "testcommands.h"
@@ -22,22 +23,35 @@ int main(int argc, char **argv)
 
     Comment::setVerbosity(-1);
 
-    QApplication app(argc, argv);
+    Application app(argc, argv);
     app.setOrganizationName("GIBIS-UNIFESP");
     app.setApplicationName("wiRedPanda");
     app.setApplicationVersion(APP_VERSION);
 
     int status = 0;
-    status |= QTest::qExec(new TestCommands(), argc, argv);
-    status |= QTest::qExec(new TestElements(), argc, argv);
-    status |= QTest::qExec(new TestFiles(), argc, argv);
-    status |= QTest::qExec(new TestIcons(), argc, argv);
-    status |= QTest::qExec(new TestLogicElements(), argc, argv);
-    status |= QTest::qExec(new TestSimulation(), argc, argv);
-    status |= QTest::qExec(new TestWaveForm(), argc, argv);
-    status |= QTest::qExec(new TestArduino(), argc, argv);
-    status |= QTest::qExec(new TestApplication(), argc, argv);
-    status |= QTest::qExec(new TestDialogs(), argc, argv);
+    
+    // Create test objects on the stack to ensure proper cleanup
+    TestCommands testCommands;
+    TestElements testElements;
+    TestFiles testFiles;
+    TestIcons testIcons;
+    TestLogicElements testLogicElements;
+    TestSimulation testSimulation;
+    TestWaveForm testWaveForm;
+    TestArduino testArduino;
+    TestApplication testApplication;
+    TestDialogs testDialogs;
+    
+    status |= QTest::qExec(&testCommands, argc, argv);
+    status |= QTest::qExec(&testElements, argc, argv);
+    status |= QTest::qExec(&testFiles, argc, argv);
+    status |= QTest::qExec(&testIcons, argc, argv);
+    status |= QTest::qExec(&testLogicElements, argc, argv);
+    status |= QTest::qExec(&testSimulation, argc, argv);
+    status |= QTest::qExec(&testWaveForm, argc, argv);
+    status |= QTest::qExec(&testArduino, argc, argv);
+    status |= QTest::qExec(&testApplication, argc, argv);
+    status |= QTest::qExec(&testDialogs, argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
