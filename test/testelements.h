@@ -39,6 +39,17 @@ private slots:
     void testLED();
     void testInputButton();
     void testSRLatch();
+    void testAudioBox();
+    void testBuzzer();
+    void testClock();
+    void testDisplay7();
+    void testDisplay14();
+    void testDisplay16();
+    void testInputRotary();
+    void testInputSwitch();
+    void testLine();
+    void testText();
+    void testTruthTable();
 
 private:
     void testICData(IC *ic);

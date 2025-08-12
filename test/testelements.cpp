@@ -4,32 +4,42 @@
 #include "testelements.h"
 
 #include "and.h"
+#include "audiobox.h"
+#include "buzzer.h"
+#include "clock.h"
 #include "demux.h"
 #include "dflipflop.h"
+#include "display_7.h"
+#include "display_14.h"
+#include "display_16.h"
 #include "dlatch.h"
 #include "globalproperties.h"
 #include "ic.h"
 #include "inputbutton.h"
 #include "inputgnd.h"
+#include "inputrotary.h"
 #include "inputswitch.h"
 #include "inputvcc.h"
-#include "nand.h"
-#include "nor.h"
-#include "not.h"
-#include "xor.h"
-#include "xnor.h"
-#include "srlatch.h"
 #include "jkflipflop.h"
 #include "led.h"
+#include "line.h"
 #include "mux.h"
+#include "nand.h"
 #include "node.h"
+#include "nor.h"
+#include "not.h"
 #include "or.h"
 #include "qneconnection.h"
 #include "qneport.h"
 #include "scene.h"
 #include "simulation.h"
 #include "srflipflop.h"
+#include "srlatch.h"
+#include "text.h"
 #include "tflipflop.h"
+#include "truth_table.h"
+#include "xnor.h"
+#include "xor.h"
 
 #include <QTest>
 
@@ -59,6 +69,14 @@ void TestElements::testNode()
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 1);
     QCOMPARE(elm.elementType(), ElementType::Node);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        Node skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::Node);
+    }
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testAnd()
@@ -70,6 +88,14 @@ void TestElements::testAnd()
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::And);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        And skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::And);
+    }
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testOr()
@@ -81,6 +107,12 @@ void TestElements::testOr()
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::Or);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    Or skipInitElm;
+    QCOMPARE(skipInitElm.elementType(), ElementType::Or);
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testVCC()
@@ -108,6 +140,14 @@ void TestElements::testMux()
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 3);
     QCOMPARE(elm.elementType(), ElementType::Mux);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        Mux skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::Mux);
+    }
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testDemux()
@@ -119,6 +159,14 @@ void TestElements::testDemux()
     QCOMPARE(elm.outputSize(), 2);
     QCOMPARE(elm.minInputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::Demux);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        Demux skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::Demux);
+    }
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testDFlipFlop()
@@ -133,6 +181,14 @@ void TestElements::testDFlipFlop()
     QCOMPARE(elm.minOutputSize(), 2);
     QCOMPARE(elm.maxOutputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::DFlipFlop);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        DFlipFlop skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::DFlipFlop);
+    }
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testDLatch()
@@ -147,6 +203,14 @@ void TestElements::testDLatch()
     QCOMPARE(elm.minOutputSize(), 2);
     QCOMPARE(elm.maxOutputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::DLatch);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        DLatch skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::DLatch);
+    }
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testJKFlipFlop()
@@ -161,6 +225,14 @@ void TestElements::testJKFlipFlop()
     QCOMPARE(elm.minOutputSize(), 2);
     QCOMPARE(elm.maxOutputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::JKFlipFlop);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        JKFlipFlop skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::JKFlipFlop);
+    }
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testSRFlipFlop()
@@ -175,6 +247,14 @@ void TestElements::testSRFlipFlop()
     QCOMPARE(elm.minOutputSize(), 2);
     QCOMPARE(elm.maxOutputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::SRFlipFlop);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        SRFlipFlop skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::SRFlipFlop);
+    }
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testTFlipFlop()
@@ -189,6 +269,14 @@ void TestElements::testTFlipFlop()
     QCOMPARE(elm.minOutputSize(), 2);
     QCOMPARE(elm.maxOutputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::TFlipFlop);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        TFlipFlop skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::TFlipFlop);
+    }
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testICData(IC *ic)
@@ -323,6 +411,14 @@ void TestElements::testNAND()
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::Nand);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        Nand skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::Nand);
+    }
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testNOR()
@@ -334,6 +430,12 @@ void TestElements::testNOR()
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::Nor);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    Nor skipInitElm;
+    QCOMPARE(skipInitElm.elementType(), ElementType::Nor);
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testNOT()
@@ -345,6 +447,12 @@ void TestElements::testNOT()
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 1);
     QCOMPARE(elm.elementType(), ElementType::Not);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    Not skipInitElm;
+    QCOMPARE(skipInitElm.elementType(), ElementType::Not);
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testXOR()
@@ -356,6 +464,12 @@ void TestElements::testXOR()
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::Xor);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    Xor skipInitElm;
+    QCOMPARE(skipInitElm.elementType(), ElementType::Xor);
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testXNOR()
@@ -367,6 +481,12 @@ void TestElements::testXNOR()
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::Xnor);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    Xnor skipInitElm;
+    QCOMPARE(skipInitElm.elementType(), ElementType::Xnor);
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testLED()
@@ -378,6 +498,14 @@ void TestElements::testLED()
     QCOMPARE(elm.outputSize(), 0);
     QCOMPARE(elm.minInputSize(), 1);
     QCOMPARE(elm.elementType(), ElementType::Led);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        Led skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::Led);
+    }
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testInputButton()
@@ -389,6 +517,14 @@ void TestElements::testInputButton()
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 0);
     QCOMPARE(elm.elementType(), ElementType::InputButton);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        InputButton skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::InputButton);
+    }
+    GlobalProperties::skipInit = false;
 }
 
 void TestElements::testSRLatch()
@@ -400,4 +536,221 @@ void TestElements::testSRLatch()
     QCOMPARE(elm.outputSize(), 2);
     QCOMPARE(elm.minInputSize(), 2);
     QCOMPARE(elm.elementType(), ElementType::SRLatch);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        SRLatch skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::SRLatch);
+    }
+    GlobalProperties::skipInit = false;
+}
+
+void TestElements::testAudioBox()
+{
+    AudioBox elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 1);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 0);
+    QCOMPARE(elm.minInputSize(), 1);
+    QCOMPARE(elm.elementType(), ElementType::AudioBox);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        AudioBox skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::AudioBox);
+    }
+    GlobalProperties::skipInit = false;
+}
+
+void TestElements::testBuzzer()
+{
+    Buzzer elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 1);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 0);
+    QCOMPARE(elm.minInputSize(), 1);
+    QCOMPARE(elm.elementType(), ElementType::Buzzer);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        Buzzer skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::Buzzer);
+    }
+    GlobalProperties::skipInit = false;
+}
+
+void TestElements::testClock()
+{
+    Clock elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 0);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 1);
+    QCOMPARE(elm.minInputSize(), 0);
+    QCOMPARE(elm.elementType(), ElementType::Clock);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        Clock skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::Clock);
+    }
+    GlobalProperties::skipInit = false;
+}
+
+void TestElements::testDisplay7()
+{
+    Display7 elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 8);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 0);
+    QCOMPARE(elm.minInputSize(), 8);
+    QCOMPARE(elm.elementType(), ElementType::Display7);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        Display7 skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::Display7);
+    }
+    GlobalProperties::skipInit = false;
+}
+
+void TestElements::testDisplay14()
+{
+    Display14 elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 15);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 0);
+    QCOMPARE(elm.minInputSize(), 15);
+    QCOMPARE(elm.elementType(), ElementType::Display14);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        Display14 skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::Display14);
+    }
+    GlobalProperties::skipInit = false;
+}
+
+void TestElements::testDisplay16()
+{
+    Display16 elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 17);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 0);
+    QCOMPARE(elm.minInputSize(), 17);
+    QCOMPARE(elm.elementType(), ElementType::Display16);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        Display16 skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::Display16);
+    }
+    GlobalProperties::skipInit = false;
+}
+
+void TestElements::testInputRotary()
+{
+    InputRotary elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 0);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 2);
+    QCOMPARE(elm.minInputSize(), 0);
+    QCOMPARE(elm.elementType(), ElementType::InputRotary);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        InputRotary skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::InputRotary);
+    }
+    GlobalProperties::skipInit = false;
+}
+
+void TestElements::testInputSwitch()
+{
+    InputSwitch elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 0);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 1);
+    QCOMPARE(elm.minInputSize(), 0);
+    QCOMPARE(elm.elementType(), ElementType::InputSwitch);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        InputSwitch skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::InputSwitch);
+    }
+    GlobalProperties::skipInit = false;
+}
+
+void TestElements::testLine()
+{
+    Line elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 0);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 0);
+    QCOMPARE(elm.minInputSize(), 0);
+    QCOMPARE(elm.elementType(), ElementType::Line);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        Line skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::Line);
+    }
+    GlobalProperties::skipInit = false;
+}
+
+void TestElements::testText()
+{
+    Text elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 0);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 0);
+    QCOMPARE(elm.minInputSize(), 0);
+    QCOMPARE(elm.elementType(), ElementType::Text);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        Text skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::Text);
+    }
+    GlobalProperties::skipInit = false;
+}
+
+void TestElements::testTruthTable()
+{
+    TruthTable elm;
+    QCOMPARE(elm.inputSize(), elm.inputs().size());
+    QCOMPARE(elm.inputSize(), 2);
+    QCOMPARE(elm.outputSize(), elm.outputs().size());
+    QCOMPARE(elm.outputSize(), 1);
+    QCOMPARE(elm.minInputSize(), 2);
+    QCOMPARE(elm.elementType(), ElementType::TruthTable);
+
+    // Test skipInit path for constructor coverage
+    GlobalProperties::skipInit = true;
+    {
+        TruthTable skipInitElm;
+        QCOMPARE(skipInitElm.elementType(), ElementType::TruthTable);
+    }
+    GlobalProperties::skipInit = false;
 }
