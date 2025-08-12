@@ -22,6 +22,7 @@
 #include "testgraphicelement.h"
 #include "testenums.h"
 #include "testelementlabel.h"
+#include "testic.h"
 
 #include <QtTest>
 
@@ -57,6 +58,7 @@ int main(int argc, char **argv)
     TestGraphicElement testGraphicElement;
     TestEnums testEnums;
     TestElementLabel testElementLabel;
+    TestIC testIC;
     
     status |= QTest::qExec(&testCommands, argc, argv);
     status |= QTest::qExec(&testElements, argc, argv);
@@ -76,6 +78,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(&testGraphicElement, argc, argv);
     status |= QTest::qExec(&testEnums, argc, argv);
     status |= QTest::qExec(&testElementLabel, argc, argv);
+    status |= QTest::qExec(&testIC, argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
 
