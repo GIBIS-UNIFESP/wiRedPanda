@@ -719,6 +719,8 @@ void TestCommandsAdvanced::testCommandHistoryLimits()
         
         QVERIFY(undoStack->count() <= limit);
         
+        // Clear undo stack before deleting element to avoid dangling references
+        undoStack->clear();
         scene->removeItem(element);
         delete element;
     }
