@@ -318,8 +318,8 @@ void TestLogicElements::testLogicSRFlipFlop()
 
         {0, 1, 1, 0, 1, 1, 1, 0, 0}, /* Q = 1 */
         {0, 1, 1, 0, 1, 1, 1, 0, 1}, /* Q = 1 */
-        {0, 1, 1, 1, 1, 1, 1, 1, 0}, /* Not permitted */
-        {0, 1, 1, 1, 1, 1, 1, 1, 1}, /* Not permitted */
+        {0, 1, 1, 1, 1, 1, 1, 0, 0}, /* S-dominant (S=1, R=1 -> Q=1, Q̄=0) */
+        {0, 1, 1, 1, 1, 1, 1, 0, 1}, /* S-dominant (S=1, R=1 -> Q=1, Q̄=0) */
     };
 
     elm.updateLogic();
