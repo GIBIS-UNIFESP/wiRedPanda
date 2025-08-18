@@ -7,6 +7,7 @@
 #include "testelements.h"
 #include "testfiles.h"
 #include "testicons.h"
+#include "testintegration.h"
 #include "testlogicelements.h"
 #include "testlogicelements_edgecases.h"
 #include "testsimulation.h"
@@ -30,6 +31,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(new TestElements(), argc, argv);
     status |= QTest::qExec(new TestFiles(), argc, argv);
     status |= QTest::qExec(new TestIcons(), argc, argv);
+    status |= QTest::qExec(new TestIntegration(), argc, argv);
     status |= QTest::qExec(new TestLogicElements(), argc, argv);
     status |= QTest::qExec(new TestLogicElementsEdgeCases(), argc, argv);
     status |= QTest::qExec(new TestSimulation(), argc, argv);

@@ -28,9 +28,19 @@ void LogicDFlipFlop::updateLogic()
         q1 = !m_lastValue;
     }
 
-    if (!prst || !clr) {
-        q0 = !prst;
-        q1 = !clr;
+    // Asynchronous preset/clear handling (active low inputs)
+    if (!prst && !clr) {
+        // Both preset and clear active: Clear has priority (reset-dominant)
+        q0 = false;  // Q = 0 (clear state)
+        q1 = true;   // Q̄ = 1 (complementary)
+    } else if (!prst) {
+        // Only preset active: Set Q=1, Q̄=0
+        q0 = true;   // Q = 1 (preset state)
+        q1 = false;  // Q̄ = 0 (complementary)
+    } else if (!clr) {
+        // Only clear active: Set Q=0, Q̄=1
+        q0 = false;  // Q = 0 (clear state)
+        q1 = true;   // Q̄ = 1 (complementary)
     }
 
     m_lastClk = clk;
