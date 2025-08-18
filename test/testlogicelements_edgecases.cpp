@@ -448,10 +448,10 @@ void TestLogicElementsEdgeCases::testLogicDFlipFlopEdgeCases()
         switches[3]->setOutputValue(false); // CLEAR = 0 (active)
         elm.updateLogic();
 
-        // When both are active, both outputs should be asserted
-        // This creates an invalid state but tests the implementation
-        QCOMPARE(elm.outputValue(0), true);  // Q = 1 (preset dominant)
-        QCOMPARE(elm.outputValue(1), true);  // Q̄ = 1 (clear dominant)
+        // When both preset and clear are active, clear has priority (standard behavior)
+        // This implements correct real-world behavior with complementary outputs
+        QCOMPARE(elm.outputValue(0), false); // Q = 0 (clear dominant)
+        QCOMPARE(elm.outputValue(1), true);  // Q̄ = 1 (complementary)
     }
 }
 

@@ -24,7 +24,21 @@ void LogicSRFlipFlop::updateLogic()
     const bool prst = m_inputValues.at(3);
     const bool clr = m_inputValues.at(4);
 
-    if (clk && !m_lastClk) {
+    // Asynchronous preset/clear handling (active low inputs) - handle first
+    if (!prst && !clr) {
+        // Both preset and clear active: Clear has priority (reset-dominant)
+        q0 = false;  // Q = 0 (clear state)
+        q1 = true;   // Q̄ = 1 (complementary)
+    } else if (!prst) {
+        // Only preset active: Set Q=1, Q̄=0
+        q0 = true;   // Q = 1 (preset state)
+        q1 = false;  // Q̄ = 0 (complementary)
+    } else if (!clr) {
+        // Only clear active: Set Q=0, Q̄=1
+        q0 = false;  // Q = 0 (clear state)
+        q1 = true;   // Q̄ = 1 (complementary)
+    } else if (clk && !m_lastClk) {
+        // Clock edge only when preset/clear are inactive
         if (s && r) {
             // Forbidden state S=R=1: In real hardware this is unpredictable.
             // For educational purposes, we implement S-dominant behavior
@@ -41,11 +55,6 @@ void LogicSRFlipFlop::updateLogic()
             q1 = true;
         }
         // Hold state: S=0, R=0 -> Q unchanged, Q̄ unchanged
-    }
-
-    if (!prst || !clr) {
-        q0 = !prst;
-        q1 = !clr;
     }
 
     m_lastClk = clk;

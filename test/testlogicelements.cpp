@@ -171,7 +171,7 @@ void TestLogicElements::testLogicDFlipFlop()
 
         {0, 0, 0, 0, 1, 1, 0}, /* Preset = false */
         {0, 0, 1, 1, 0, 0, 1}, /* Clear = false */
-        {0, 0, 1, 0, 0, 1, 1}, /* Clear and Preset = false */
+        {0, 0, 1, 0, 0, 0, 1}, /* Clear and Preset = false (clear dominant)*/
 
         {1, 0, 0, 1, 1, 1, 0}, /* Clk dwn and D = 0 (must maintain current state)*/
         {1, 1, 0, 1, 1, 1, 0}, /* Clk dwn and D = 1 (must maintain current state)*/
@@ -243,7 +243,7 @@ void TestLogicElements::testLogicJKFlipFlop()
       /* L  J  C  K  p  c  Q  Q  A */
         {0, 0, 0, 0, 0, 1, 1, 0, 0}, /* Preset = false */
         {0, 0, 0, 0, 1, 0, 0, 1, 0}, /* Clear = false */
-        {0, 0, 0, 1, 0, 0, 1, 1, 0}, /* Clear and Preset = false*/
+        {0, 0, 0, 1, 0, 0, 0, 1, 0}, /* Clear and Preset = false (clear dominant)*/
         {1, 1, 0, 0, 1, 1, 0, 1, 0}, /* Clk dwn and J = 0 (must maintain current state)*/
         {1, 1, 0, 0, 1, 1, 0, 1, 0}, /* Clk dwn and J = 1 (must maintain current state)*/
         {0, 1, 1, 1, 1, 1, 1, 0, 0}, /* Clk up J = 1 K = 1 (must swap Q and ~Q)*/
@@ -294,7 +294,7 @@ void TestLogicElements::testLogicSRFlipFlop()
       /* L  S  C  R  p  c  Q  Q  A */
         {0, 0, 0, 0, 0, 1, 1, 0, 0}, /* Preset = false */
         {0, 0, 0, 0, 1, 0, 0, 1, 1}, /* Clear = false*/
-        {0, 0, 0, 0, 0, 0, 1, 1, 1}, /* Preset || Clear = false*/
+        {0, 0, 0, 0, 0, 0, 0, 1, 1}, /* Preset and Clear = false (clear dominant)*/
 
         {0, 0, 0, 0, 1, 1, 0, 1, 0}, /* No change */
         {0, 0, 0, 0, 1, 1, 1, 0, 1}, /* No change */
@@ -368,7 +368,7 @@ void TestLogicElements::testLogicTFlipFlop()
 
         {1, 0, 1, 0, 1, 1, 0, 0}, /* Preset = false */
         {1, 0, 1, 1, 0, 0, 1, 1}, /* Clear = false */
-        {1, 0, 1, 0, 0, 1, 1, 1}, /* Clear and Preset = false */
+        {1, 0, 1, 0, 0, 0, 1, 1}, /* Clear and Preset = false (clear dominant)*/
 
         /* Test Prst and clr */
     };
