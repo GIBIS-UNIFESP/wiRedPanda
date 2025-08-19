@@ -104,6 +104,10 @@ void CodeGenerator::declareInputs()
         const auto type = elm->elementType();
 
         if ((type == ElementType::InputButton) || (type == ElementType::InputSwitch)) {
+            if (m_availablePins.isEmpty()) {
+                throw PANDACEPTION("Not enough available pins for input elements");
+            }
+
             QString varName = elm->objectName() + QString::number(counter);
             const QString label = elm->label();
 
@@ -131,6 +135,10 @@ void CodeGenerator::declareOutputs()
         if (elm->elementGroup() == ElementGroup::Output) {
             QString label = elm->label();
             for (int i = 0; i < elm->inputs().size(); ++i) {
+                if (m_availablePins.isEmpty()) {
+                    throw PANDACEPTION("Not enough available pins for output elements");
+                }
+
                 QString varName = elm->objectName() + QString::number(counter);
                 if (!label.isEmpty()) {
                     varName = QString("%1_%2").arg(varName, label);
