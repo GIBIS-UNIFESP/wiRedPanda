@@ -44,7 +44,8 @@ void TestSimulationWorkflow::verifySimulationOutput(const QString &testName, boo
 
 void TestSimulationWorkflow::runSimulationCycles(int cycles)
 {
-    QVERIFY(m_simulation != nullptr);
+    QVERIFY2(m_simulation != nullptr, "Simulation must exist before running cycles");
+    // Note: Simulation update() can be called directly after initialize()
 
     for (int i = 0; i < cycles; ++i) {
         m_simulation->update();
@@ -174,6 +175,13 @@ void TestSimulationWorkflow::testLoadAndSimulateExampleFiles()
                      qPrintable(QString("%1 has connection with null start port").arg(test.description)));
             QVERIFY2(connection->endPort() != nullptr,
                      qPrintable(QString("%1 has connection with null end port").arg(test.description)));
+
+            // Verify connection functionality
+            QVERIFY2(connection->startPort()->isOutput(),
+                     qPrintable(QString("%1: Start port should be an output").arg(test.description)));
+            QVERIFY2(connection->endPort()->isInput(),
+                     qPrintable(QString("%1: End port should be an input").arg(test.description)));
+            // Note: Connection validity is implied by having valid start/end ports
         }
 
         cleanupWorkspace();
@@ -436,9 +444,15 @@ void TestSimulationWorkflow::testTimingBehavior()
     dataInput->setOn(true);
 
     // Test 1: Basic timing behavior
-    // Verify initial states are valid
-    QVERIFY(clock->outputPort()->status() != Status::Invalid);
-    QVERIFY(qOutput->inputPort()->status() != Status::Invalid);
+    // Verify clock is functioning (should be either HIGH or LOW, not invalid)
+    Status initialClockStatus = clock->outputPort()->status();
+    QVERIFY2(initialClockStatus == Status::Active || initialClockStatus == Status::Inactive,
+             "Clock should have valid binary state");
+
+    // Verify flip-flop output is in valid binary state (D-FF starts with Q=0, Q̄=1)
+    Status initialFFStatus = qOutput->inputPort()->status();
+    QVERIFY2(initialFFStatus == Status::Active || initialFFStatus == Status::Inactive,
+             "Flip-flop output should have valid binary state");
 
 
     // Run simulation for several cycles to observe clock transitions
@@ -468,7 +482,9 @@ void TestSimulationWorkflow::testTimingBehavior()
     runSimulationCycles(5);
 
     flipFlopOutput = qOutput->inputPort()->status();
-    QVERIFY(flipFlopOutput != Status::Invalid);
+    // Flip-flop should maintain stable output after data change
+    QVERIFY2(flipFlopOutput == Status::Active || flipFlopOutput == Status::Inactive,
+             "Flip-flop should maintain valid binary state after edge triggering");
 
     // Test 3: Verify stable operation over extended time
     m_simulation->start();
@@ -483,9 +499,9 @@ void TestSimulationWorkflow::testTimingBehavior()
     dataInput->setOn(true);
     runSimulationCycles(5);
 
-    // Final state should be deterministic based on current inputs
+    // Final state should be deterministic: D=1 with clock edges should result in Q=1
     flipFlopOutput = qOutput->inputPort()->status();
-    QVERIFY(flipFlopOutput != Status::Invalid);
+    QCOMPARE(flipFlopOutput, Status::Active); // Should be HIGH after capturing Data=1
 
     // Test 4: Rapid state changes to test timing robustness
     for (int i = 0; i < 10; i++) {
@@ -496,7 +512,8 @@ void TestSimulationWorkflow::testTimingBehavior()
     dataInput->setOn(true);
     runSimulationCycles(3);
     flipFlopOutput = qOutput->inputPort()->status();
-    QVERIFY(flipFlopOutput != Status::Invalid);
+    // After rapid state changes, flip-flop should be stable with final Data=1
+    QCOMPARE(flipFlopOutput, Status::Active); // Should be HIGH (final data captured)
 
 
     m_simulation->stop();
@@ -684,9 +701,15 @@ void TestSimulationWorkflow::testErrorHandlingInSimulation()
     m_simulation->start();
     runSimulationCycles(3);
 
-    // Verify unconnected elements maintain valid states
-    QVERIFY(isolatedInput->outputPort()->status() != Status::Invalid);
-    QVERIFY(isolatedOutput->inputPort()->status() != Status::Invalid);
+    // Verify unconnected elements have expected default states
+    Status inputStatus = isolatedInput->outputPort()->status();
+    Status outputStatus = isolatedOutput->inputPort()->status();
+
+    // Input button defaults to OFF when not explicitly set
+    QCOMPARE(inputStatus, Status::Inactive);
+
+    // LED with no input connection should default to OFF (no signal = low)
+    QCOMPARE(outputStatus, Status::Inactive);
 
     m_simulation->stop();
 
@@ -718,16 +741,17 @@ void TestSimulationWorkflow::testErrorHandlingInSimulation()
     runSimulationCycles(3);
 
     // Check OR gate behavior with one connected input
-    Status outputStatus = partialOutput->inputPort()->status();
+    Status partialOutputStatus = partialOutput->inputPort()->status();
 
     partialInput->setOff();
     runSimulationCycles(3);
 
     // Check OR gate behavior with connected input off
-    outputStatus = partialOutput->inputPort()->status();
+    partialOutputStatus = partialOutput->inputPort()->status();
 
-    // Just verify it's a valid state - OR gate behavior with unconnected inputs may vary
-    QVERIFY(outputStatus == Status::Active || outputStatus == Status::Inactive);
+    // OR gate with one input connected (off) and one unconnected (defaults to GND)
+    // Expected: OR(false, false) = false
+    QCOMPARE(partialOutputStatus, Status::Inactive);
 
     m_simulation->stop();
     cleanupWorkspace();
@@ -810,7 +834,22 @@ void TestSimulationWorkflow::testMemoryManagement()
 
         // Check scene item count to verify elements were added correctly
         const auto items = m_scene->items();
-        QVERIFY(items.size() >= 30); // 10 inputs + 10 outputs + 10 connections
+        const int expectedMinItems = 30; // 10 inputs + 10 outputs + 10 connections
+        QVERIFY2(items.size() >= expectedMinItems,
+                 qPrintable(QString("Expected at least %1 items, got %2").arg(expectedMinItems).arg(items.size())));
+
+        // Memory management test: verify scene contains reasonable number of items
+        // Note: Exact counts may vary due to Qt graphics infrastructure and memory patterns
+        QVERIFY2(items.size() <= 500, // Sanity check to prevent memory leaks
+                 qPrintable(QString("Scene contains %1 items - possible memory leak").arg(items.size())));
+
+        // Verify scene contains core elements (at minimum threshold)
+        int elementCount = 0;
+        for (const auto *item : items) {
+            if (qgraphicsitem_cast<const GraphicElement*>(item)) elementCount++;
+        }
+        QVERIFY2(elementCount >= 5, // At least some elements should be present
+                 qPrintable(QString("Expected at least 5 elements, got %1").arg(elementCount)));
 
         cleanupWorkspace();
 
@@ -1087,11 +1126,18 @@ void TestSimulationWorkflow::testPriorityCalculation()
     auto gate3Logic = gate3->logic();
     auto outputLogic = output->logic();
 
-    QVERIFY(inputLogic != nullptr);
-    QVERIFY(gate1Logic != nullptr);
-    QVERIFY(gate2Logic != nullptr);
-    QVERIFY(gate3Logic != nullptr);
-    QVERIFY(outputLogic != nullptr);
+    QVERIFY2(inputLogic != nullptr, "Input logic element should exist");
+    QVERIFY2(gate1Logic != nullptr, "Gate1 logic element should exist");
+    QVERIFY2(gate2Logic != nullptr, "Gate2 logic element should exist");
+    QVERIFY2(gate3Logic != nullptr, "Gate3 logic element should exist");
+    QVERIFY2(outputLogic != nullptr, "Output logic element should exist");
+
+    // Verify logic elements are properly initialized and functional
+    QVERIFY2(inputLogic->isValid(), "Input logic should be in valid state");
+    QVERIFY2(gate1Logic->isValid(), "Gate1 logic should be in valid state");
+    QVERIFY2(gate2Logic->isValid(), "Gate2 logic should be in valid state");
+    QVERIFY2(gate3Logic->isValid(), "Gate3 logic should be in valid state");
+    QVERIFY2(outputLogic->isValid(), "Output logic should be in valid state");
 
     // Priority should increase along dependency chain
     // (Higher priority = processed first, so input should have highest priority)

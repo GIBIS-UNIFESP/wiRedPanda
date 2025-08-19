@@ -19,7 +19,17 @@ void TestFiles::testFiles()
 {
     const QDir examplesDir(QString(QUOTE(CURRENTDIR)) + "/../examples/");
     const auto files = examplesDir.entryInfoList(QStringList("*.panda"));
-    QVERIFY(!files.empty());
+    QVERIFY2(!files.empty(), "Examples directory should contain .panda files");
+
+    // Verify minimum expected examples exist
+    QVERIFY2(files.size() >= 5, "Should have at least 5 example files for comprehensive testing");
+
+    // Verify some specific essential examples exist
+    QStringList fileNames;
+    for (const auto& file : files) {
+        fileNames << file.baseName();
+    }
+    // Note: Specific file verification would go here if we knew exact expected files
 
     for (const auto &fileInfo : files) {
         // Set current directory for IC dependency loading
@@ -37,9 +47,14 @@ void TestFiles::testFiles()
 
         for (auto *item : items) {
             if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
-                QVERIFY(conn != nullptr);
-                QVERIFY(conn->startPort() != nullptr);
-                QVERIFY(conn->endPort() != nullptr);
+                QVERIFY2(conn != nullptr, "Connection should exist");
+                QVERIFY2(conn->startPort() != nullptr, "Connection should have valid start port");
+                QVERIFY2(conn->endPort() != nullptr, "Connection should have valid end port");
+
+                // Verify connection functionality
+                QVERIFY2(conn->startPort()->isOutput(), "Start port should be an output");
+                QVERIFY2(conn->endPort()->isInput(), "End port should be an input");
+                // Note: Connection validity is implied by having valid start/end ports
             }
         }
 

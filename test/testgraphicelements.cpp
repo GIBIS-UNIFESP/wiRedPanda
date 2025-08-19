@@ -395,10 +395,24 @@ void TestGraphicElements::testErrorConditions()
     {
         And gate;
 
-        // Test valid port access still works
-        QVERIFY(gate.inputPort(0) != nullptr);
-        QVERIFY(gate.inputPort(1) != nullptr);
-        QVERIFY(gate.outputPort(0) != nullptr);
+        // Test valid port access and functionality
+        auto *inputPort0 = gate.inputPort(0);
+        auto *inputPort1 = gate.inputPort(1);
+        auto *outputPort = gate.outputPort(0);
+
+        QVERIFY2(inputPort0 != nullptr, "Input port 0 should exist");
+        QVERIFY2(inputPort1 != nullptr, "Input port 1 should exist");
+        QVERIFY2(outputPort != nullptr, "Output port should exist");
+
+        // Verify port functionality
+        QVERIFY2(inputPort0->isInput(), "Port 0 should be configured as input");
+        QVERIFY2(inputPort1->isInput(), "Port 1 should be configured as input");
+        QVERIFY2(outputPort->isOutput(), "Port should be configured as output");
+
+        // Verify port indices are correct
+        QCOMPARE(inputPort0->index(), 0);
+        QCOMPARE(inputPort1->index(), 1);
+        QCOMPARE(outputPort->index(), 0);
     }
 
     // Test extreme input size constraints
@@ -423,8 +437,17 @@ void TestGraphicElements::testErrorConditions()
         Not notGate;
 
         // Verify element handles unconnected inputs gracefully
-        QVERIFY(notGate.inputPort(0) != nullptr);
-        QVERIFY(notGate.outputPort(0) != nullptr);
+        auto *inputPort = notGate.inputPort(0);
+        auto *outputPort = notGate.outputPort(0);
+
+        QVERIFY2(inputPort != nullptr, "NOT gate input port should exist");
+        QVERIFY2(outputPort != nullptr, "NOT gate output port should exist");
+
+        // Verify port functionality and configuration
+        QVERIFY2(inputPort->isInput(), "Port should be configured as input");
+        QVERIFY2(outputPort->isOutput(), "Port should be configured as output");
+        QCOMPARE(inputPort->index(), 0);
+        QCOMPARE(outputPort->index(), 0);
 
         // Element should have defined behavior even without connections
         QVERIFY(notGate.elementType() == ElementType::Not);

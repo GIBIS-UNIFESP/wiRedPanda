@@ -548,6 +548,9 @@ void TestLogicCore::testFlipFlopEdgeCases(LogicElement *element, const QString &
     // Outputs should remain complementary
     QVERIFY2(element->outputValue(0) != element->outputValue(1),
              qPrintable(QString("%1: Complementary outputs must be maintained").arg(type)));
+    // Verify logical complementarity: Q should be the inverse of Q̄
+    QVERIFY2(element->outputValue(0) == !element->outputValue(1),
+             qPrintable(QString("%1: Q should be logical inverse of Q̄").arg(type)));
 }
 
 void TestLogicCore::testLogicJKFlipFlop()
@@ -594,16 +597,23 @@ void TestLogicCore::testLogicDLatch()
     elm.connectPredecessor(0, switches[0], 0); // Data
     elm.connectPredecessor(1, switches[1], 0); // Enable
 
-    // Test transparent mode (Enable=1)
+    // Test transparent mode (Enable=1): Output should follow Data
     switches[0]->setOutputValue(true);  // Data = 1
     switches[1]->setOutputValue(true);  // Enable = 1
     elm.updateLogic();
-    QVERIFY(elm.outputValue(0) == true || elm.outputValue(0) == false);
+    QCOMPARE(elm.outputValue(0), true); // Should pass through Data=1 when enabled
 
-    // Test hold mode (Enable=0)
+    // Test data change while enabled
+    switches[0]->setOutputValue(false); // Data = 0
+    switches[1]->setOutputValue(true);  // Enable = 1 (still enabled)
+    elm.updateLogic();
+    QCOMPARE(elm.outputValue(0), false); // Should pass through Data=0 when enabled
+
+    // Test hold mode (Enable=0): Output should latch previous value
+    switches[0]->setOutputValue(true);  // Data = 1 (different from latched value)
     switches[1]->setOutputValue(false); // Enable = 0
     elm.updateLogic();
-    QVERIFY(elm.outputValue(0) == true || elm.outputValue(0) == false);
+    QCOMPARE(elm.outputValue(0), false); // Should hold previous value (0) when disabled
 }
 
 void TestLogicCore::testLogicSRLatch()
@@ -612,16 +622,26 @@ void TestLogicCore::testLogicSRLatch()
     elm.connectPredecessor(0, switches[0], 0); // S
     elm.connectPredecessor(1, switches[1], 0); // R
 
-    // Test basic SR latch functionality
+    // Test SET condition (S=1, R=0): Q should be 1
     switches[0]->setOutputValue(true);  // S = 1
     switches[1]->setOutputValue(false); // R = 0
     elm.updateLogic();
-    QVERIFY(elm.outputValue(0) == true || elm.outputValue(0) == false);
+    QCOMPARE(elm.outputValue(0), true);  // Q output should be HIGH after SET
+    QCOMPARE(elm.outputValue(1), false); // Q̄ output should be LOW after SET
 
+    // Test RESET condition (S=0, R=1): Q should be 0
     switches[0]->setOutputValue(false); // S = 0
     switches[1]->setOutputValue(true);  // R = 1
     elm.updateLogic();
-    QVERIFY(elm.outputValue(0) == true || elm.outputValue(0) == false);
+    QCOMPARE(elm.outputValue(0), false); // Q output should be LOW after RESET
+    QCOMPARE(elm.outputValue(1), true);  // Q̄ output should be HIGH after RESET
+
+    // Test HOLD condition (S=0, R=0): Should maintain previous state
+    switches[0]->setOutputValue(false); // S = 0
+    switches[1]->setOutputValue(false); // R = 0
+    elm.updateLogic();
+    QCOMPARE(elm.outputValue(0), false); // Should maintain RESET state
+    QCOMPARE(elm.outputValue(1), true);  // Q̄ should remain HIGH
 }
 
 // =============== COMPLEX LOGIC TESTS ===============
@@ -786,30 +806,33 @@ void TestLogicCore::testInvalidInputHandling()
     // Don't connect any predecessors
     elm.updateLogic();
 
-    // Should not crash, output should be defined
-    QVERIFY(elm.outputValue() == true || elm.outputValue() == false);
+    // AND gate with no inputs should default to FALSE (needs all inputs true)
+    QCOMPARE(elm.outputValue(), false);
 }
 
 void TestLogicCore::testUpdateWithoutInputs()
 {
-    // Test various element types with no inputs
+    // Test various element types with no inputs - verify default behaviors
     {
         LogicAnd elm(1);
         elm.updateLogic();
-        QVERIFY(elm.outputValue() == true || elm.outputValue() == false);
+        // AND gate with no connected inputs should default to FALSE (identity: AND needs all true)
+        QCOMPARE(elm.outputValue(), false);
     }
 
     {
         LogicOr elm(1);
         elm.updateLogic();
-        QVERIFY(elm.outputValue() == true || elm.outputValue() == false);
+        // OR gate with no connected inputs should default to FALSE (identity: OR(nothing) = false)
+        QCOMPARE(elm.outputValue(), false);
     }
 
     // Test LogicNode behavior (simple wire/junction)
     {
         LogicNode elm;
         elm.updateLogic();
-        QVERIFY(elm.outputValue() == true || elm.outputValue() == false);
+        // Node with no input should default to FALSE (no signal = low)
+        QCOMPARE(elm.outputValue(), false);
     }
 }
 
@@ -982,8 +1005,17 @@ void TestLogicCore::testPerformanceAndStress()
         LogicDFlipFlop dff;
         dff.connectPredecessor(0, switches[0], 0); // Data
         dff.connectPredecessor(1, switches[1], 0); // Clock
+        dff.connectPredecessor(2, switches[2], 0); // Preset (active low)
+        dff.connectPredecessor(3, switches[3], 0); // Clear (active low)
 
-        // Stress test with many clock cycles
+        // Set preset and clear to inactive (high) for normal operation
+        switches[2]->setOutputValue(true);  // Preset inactive
+        switches[3]->setOutputValue(true);  // Clear inactive
+
+        // Test edge-triggered behavior with predictable data pattern
+        bool lastClock = false;
+        bool expectedOutput = false; // DFF initial state: Q=0, Q̄=1
+
         for (int cycle = 0; cycle < STRESS_ITERATIONS; ++cycle) {
             bool dataValue = (cycle % 3) == 0;
             bool clockValue = (cycle % 2) == 0;
@@ -993,14 +1025,22 @@ void TestLogicCore::testPerformanceAndStress()
 
             dff.updateLogic();
 
-            // Output should change only on rising clock edge
-            bool currentOutput = dff.outputValue();
-
-            // Verify output stability (not changing randomly)
-            if (cycle > 0) {
-                // Output can only change, not become invalid
-                QVERIFY(currentOutput == true || currentOutput == false);
+            // Check for rising clock edge (low to high transition)
+            bool risingEdge = clockValue && !lastClock;
+            if (risingEdge) {
+                expectedOutput = dataValue; // Capture data on rising edge
             }
+
+            // Verify output matches expected value (skip first few cycles for settling)
+            if (cycle > 2) {
+                bool currentOutput = dff.outputValue();
+    QVERIFY2(currentOutput == expectedOutput,
+                         qPrintable(QString("Cycle %1: Expected %2, got %3 (data=%4, clock=%5, rising=%6)")
+                                   .arg(cycle).arg(expectedOutput).arg(currentOutput)
+                                   .arg(dataValue).arg(clockValue).arg(risingEdge)));
+            }
+
+            lastClock = clockValue;
         }
     }
 }
