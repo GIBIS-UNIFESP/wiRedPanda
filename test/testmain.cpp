@@ -3,14 +3,13 @@
 
 #include "common.h"
 #include "registertypes.h"
+#include "testcircuitintegration.h"
 #include "testcommands.h"
-#include "testelements.h"
 #include "testfiles.h"
+#include "testgraphicelements.h"
 #include "testicons.h"
-#include "testintegration.h"
-#include "testlogicelements.h"
-#include "testlogicelements_edgecases.h"
-#include "testsimulation.h"
+#include "testlogiccore.h"
+#include "testsimulationworkflow.h"
 #include "testwaveform.h"
 
 #include <QtTest>
@@ -27,14 +26,13 @@ int main(int argc, char **argv)
     app.setApplicationVersion(APP_VERSION);
 
     int status = 0;
+    status |= QTest::qExec(new TestLogicCore(), argc, argv);
+    status |= QTest::qExec(new TestGraphicElements(), argc, argv);
+    status |= QTest::qExec(new TestCircuitIntegration(), argc, argv);
+    status |= QTest::qExec(new TestSimulationWorkflow(), argc, argv);
     status |= QTest::qExec(new TestCommands(), argc, argv);
-    status |= QTest::qExec(new TestElements(), argc, argv);
     status |= QTest::qExec(new TestFiles(), argc, argv);
     status |= QTest::qExec(new TestIcons(), argc, argv);
-    status |= QTest::qExec(new TestIntegration(), argc, argv);
-    status |= QTest::qExec(new TestLogicElements(), argc, argv);
-    status |= QTest::qExec(new TestLogicElementsEdgeCases(), argc, argv);
-    status |= QTest::qExec(new TestSimulation(), argc, argv);
     status |= QTest::qExec(new TestWaveForm(), argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");

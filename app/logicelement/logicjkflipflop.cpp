@@ -39,15 +39,20 @@ void LogicJKFlipFlop::updateLogic()
         q1 = true;   // Q̄ = 1 (complementary)
     } else if (clk && !m_lastClk) {
         // Clock edge only when preset/clear are inactive
-        if (m_lastJ && m_lastK) {
+        // Sample CURRENT J,K inputs at clock edge (real hardware behavior)
+        if (j && k) {
+            // Toggle mode: J=K=1 -> Q toggles to opposite state
             std::swap(q0, q1);
-        } else if (m_lastJ) {
+        } else if (j && !k) {
+            // Set mode: J=1, K=0 -> Q=1, Q̄=0
             q0 = true;
             q1 = false;
-        } else if (m_lastK) {
+        } else if (!j && k) {
+            // Reset mode: J=0, K=1 -> Q=0, Q̄=1
             q0 = false;
             q1 = true;
         }
+        // Hold mode: J=0, K=0 -> Q unchanged, Q̄ unchanged (no action needed)
     }
 
     m_lastClk = clk;

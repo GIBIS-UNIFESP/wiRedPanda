@@ -462,17 +462,48 @@ void TestIntegration::testJKFlipFlopSequence()
     clockInput->setOff();
     runSimulationCycles(3);
 
-    // Clock rising edge - should set Q=1
+    // Clock rising edge - should set Q=1 (J=1, K=0)
     clockInput->setOn();
     runSimulationCycles(5);
 
     Status qStatus = qOutput->inputPort()->status();
     Status qNotStatus = qNotOutput->inputPort()->status();
 
+    // JK flip-flop with J=1, K=0 should set Q=1 on clock edge
+    QVERIFY2(qStatus == Status::Active, "Q should be active after J=1, K=0, clock edge");
+    QVERIFY2(qNotStatus == Status::Inactive, "Q̄ should be inactive when Q is active");
 
-    // For diagnostic purposes, just verify outputs are defined
-    QVERIFY(qStatus == Status::Active || qStatus == Status::Inactive);
-    QVERIFY(qNotStatus == Status::Active || qNotStatus == Status::Inactive);
+    // Test J=0, K=1 (reset condition)
+    clockInput->setOff();
+    jInput->setOff();   // J=0
+    kInput->setOn();    // K=1
+    runSimulationCycles(3);
+
+    // Clock rising edge - should reset Q=0
+    clockInput->setOn();
+    runSimulationCycles(5);
+
+    qStatus = qOutput->inputPort()->status();
+    qNotStatus = qNotOutput->inputPort()->status();
+
+    QVERIFY2(qStatus == Status::Inactive, "Q should be inactive after J=0, K=1, clock edge");
+    QVERIFY2(qNotStatus == Status::Active, "Q̄ should be active when Q is inactive");
+
+    // Test J=1, K=1 (toggle condition)
+    clockInput->setOff();
+    jInput->setOn();    // J=1
+    kInput->setOn();    // K=1
+    runSimulationCycles(3);
+
+    Status prevQ = qOutput->inputPort()->status();
+
+    // Clock rising edge - should toggle Q
+    clockInput->setOn();
+    runSimulationCycles(5);
+
+    Status newQ = qOutput->inputPort()->status();
+
+    QVERIFY2(newQ != prevQ, "Q should toggle when J=1, K=1 on clock edge");
 
     cleanupWorkspace();
 }
@@ -1598,21 +1629,37 @@ void TestIntegration::testLargeCircuitSimulation()
         // Run simulation with more cycles for large circuit
         runSimulationCycles(5);
 
-        // Verify at least some outputs are working (simplified verification)
-        // In a full adder, we'd check the complete sum, but this tests basic functionality
-        bool hasActiveOutput = false;
+        // Verify actual adder functionality (not just stability)
+        uint8_t actualSum = 0;
+        bool carryOut = false;
+
+        // Read sum outputs
         for (int bit = 0; bit < numBits; ++bit) {
             if (sumOutputs[bit]->inputPort()->status() == Status::Active) {
-                hasActiveOutput = true;
-                break;
+                actualSum |= (1 << bit);
             }
         }
 
-        Q_UNUSED(hasActiveOutput); // Used for simplified verification, exact validation not needed for stress test
+        // Read carry output if connected
+        if (!carryOutputs.isEmpty() && carryOutputs.last()->inputPort()->status() == Status::Active) {
+            carryOut = true;
+        }
 
-        // For this stress test, just verify the circuit doesn't crash
-        // The complex 8-bit adder logic may not be fully implemented correctly
-        // but the main goal is to test circuit stability with many elements
+        // Calculate expected sum with overflow handling
+        uint16_t expectedSum16 = testCase.a + testCase.b;
+        uint8_t expectedSum8 = expectedSum16 & 0xFF;
+        bool expectedCarry = (expectedSum16 > 0xFF);
+
+        // For 8-bit adder, verify the actual computation
+        if (testCase.a + testCase.b <= 0xFF) {
+            QCOMPARE(actualSum, expectedSum8);
+            if (!carryOutputs.isEmpty()) {
+                QCOMPARE(carryOut, expectedCarry);
+            }
+        } else {
+            // For overflow cases, at least verify circuit stability
+            QVERIFY2(actualSum != 0xFF || carryOut, "Circuit should handle overflow correctly");
+        }
     }
 
     // Verify scene contains all expected elements (stress test element counting)

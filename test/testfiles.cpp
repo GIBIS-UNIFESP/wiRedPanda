@@ -3,6 +3,7 @@
 
 #include "testfiles.h"
 
+#include "globalproperties.h"
 #include "qneconnection.h"
 #include "scene.h"
 #include "serialization.h"
@@ -21,6 +22,9 @@ void TestFiles::testFiles()
     QVERIFY(!files.empty());
 
     for (const auto &fileInfo : files) {
+        // Set current directory for IC dependency loading
+        GlobalProperties::currentDir = fileInfo.absolutePath();
+
         WorkSpace workspace;
         QVERIFY(fileInfo.exists());
         QFile pandaFile(fileInfo.absoluteFilePath());

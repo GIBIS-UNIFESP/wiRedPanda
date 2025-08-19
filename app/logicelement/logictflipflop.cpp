@@ -38,10 +38,13 @@ void LogicTFlipFlop::updateLogic()
         q1 = true;   // Q̄ = 1 (complementary)
     } else if (clk && !m_lastClk) {
         // Clock edge only when preset/clear are inactive
-        if (m_lastValue) {
+        // Sample CURRENT T input at clock edge (real hardware behavior)
+        if (T) {
+            // Toggle mode: T=1 -> Q toggles to opposite state
             q0 = !q0;
-            q1 = !q0;
+            q1 = !q1;  // Both outputs toggle independently to maintain complementary relationship
         }
+        // Hold mode: T=0 -> Q unchanged, Q̄ unchanged (no action needed)
     }
 
     m_lastClk = clk;
