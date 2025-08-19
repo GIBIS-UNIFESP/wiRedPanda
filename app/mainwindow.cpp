@@ -13,6 +13,7 @@
 #include "globalproperties.h"
 #include "graphicsview.h"
 #include "ic.h"
+#include "improvedcodegenerator.h"
 #include "recentfiles.h"
 #include "settings.h"
 #include "simulation.h"
@@ -964,9 +965,30 @@ void MainWindow::exportToArduino(QString fileName)
 
     elements = Common::sortGraphicElements(elements);
 
-    CodeGenerator arduino(QDir::home().absoluteFilePath(fileName), elements);
-    arduino.generate();
-    m_ui->statusBar->showMessage(tr("Arduino code successfully generated."), 4000);
+    // Try to use improved code generator first, fallback to legacy if needed
+    try {
+        ImprovedCodeGenerator improvedArduino(QDir::home().absoluteFilePath(fileName), elements);
+        
+        // Configure for optimal settings
+        improvedArduino.setTargetBoard("Arduino Uno");
+        improvedArduino.setOptimizationLevel(2);
+        improvedArduino.setEnableDebouncing(true);
+        improvedArduino.setEnableResourceWarnings(true);
+        
+        if (improvedArduino.generate()) {
+            m_ui->statusBar->showMessage(tr("Improved Arduino code successfully generated."), 4000);
+            qCDebug(zero) << "Improved Arduino code successfully generated.";
+        } else {
+            qCWarning(zero) << "Improved code generator failed, falling back to legacy generator.";
+            throw std::runtime_error("Improved generator failed");
+        }
+    } catch (...) {
+        // Fallback to legacy code generator
+        qCWarning(zero) << "Using legacy Arduino code generator as fallback.";
+        CodeGenerator arduino(QDir::home().absoluteFilePath(fileName), elements);
+        arduino.generate();
+        m_ui->statusBar->showMessage(tr("Arduino code generated (legacy mode)."), 4000);
+    }
 
     qCDebug(zero) << "Arduino code successfully generated.";
 }
