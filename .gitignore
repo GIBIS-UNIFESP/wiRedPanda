@@ -172,3 +172,4 @@ Deploy/
 *.panda
 !examples/**/*.panda
 !test/files/**/*.panda
+!test/legacy_files/**/*.panda
