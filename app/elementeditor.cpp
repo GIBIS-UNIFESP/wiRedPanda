@@ -888,6 +888,7 @@ void ElementEditor::truthTable()
     if (!m_hasTruthTable) return;
 
     auto *truthtable = dynamic_cast<TruthTable *>(m_elements[0]);
+    if (!truthtable) return;
 
     // Assuming only one element selected for now...
 
@@ -972,6 +973,7 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
 void ElementEditor::audioBox()
 {
     auto *audiobox = dynamic_cast<AudioBox *>(m_elements[0]);
+    if (!audiobox) return;
 
     const QString filePath = QFileDialog::getOpenFileName(this, tr("Select any audio"),
                                                     QString(), tr("Audio (*.mp3 *.mp4 *.wav *.ogg)"));

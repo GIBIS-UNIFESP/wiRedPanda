@@ -41,7 +41,9 @@ void ElementMapping::generateMap()
 void ElementMapping::generateLogic(GraphicElement *elm)
 {
     m_logicElms.append(ElementFactory::buildLogicElement(elm));
-    elm->setLogic(m_logicElms.last().get());
+    if (!m_logicElms.isEmpty()) {
+        elm->setLogic(m_logicElms.last().get());
+    }
 }
 
 void ElementMapping::connectElements()
@@ -77,8 +79,10 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEInputPort *inputPor
         if (auto *outputPort = connections.constFirst()->startPort()) {
             if (auto *predecessorElement = outputPort->graphicElement()) {
                 if (predecessorElement->elementType() == ElementType::IC) {
-                    auto *predecessorLogic = qobject_cast<IC *>(predecessorElement)->outputLogic(outputPort->index());
-                    currentLogic->connectPredecessor(inputIndex, predecessorLogic, 0);
+                    if (auto *ic = qobject_cast<IC *>(predecessorElement)) {
+                        auto *predecessorLogic = ic->outputLogic(outputPort->index());
+                        currentLogic->connectPredecessor(inputIndex, predecessorLogic, 0);
+                    }
                 } else {
                     currentLogic->connectPredecessor(inputIndex, predecessorElement->logic(), outputPort->index());
                 }

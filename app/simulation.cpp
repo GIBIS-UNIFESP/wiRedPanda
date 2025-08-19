@@ -65,8 +65,12 @@ void Simulation::updatePort(QNEOutputPort *port)
     auto *elm = port->graphicElement();
 
     if (elm->elementType() == ElementType::IC) {
-        auto *logic = qobject_cast<IC *>(elm)->outputLogic(port->index());
-        port->setStatus(logic->isValid() ? static_cast<Status>(logic->outputValue(0)) : Status::Invalid);
+        if (auto *ic = qobject_cast<IC *>(elm)) {
+            auto *logic = ic->outputLogic(port->index());
+            port->setStatus(logic->isValid() ? static_cast<Status>(logic->outputValue(0)) : Status::Invalid);
+        } else {
+            port->setStatus(Status::Invalid);
+        }
     } else {
         auto *logic = elm->logic();
         port->setStatus(logic->isValid() ? static_cast<Status>(logic->outputValue(port->index())) : Status::Invalid);

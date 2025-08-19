@@ -303,7 +303,9 @@ void Scene::makeConnection(QNEConnection *connection)
 
 void Scene::detachConnection(QNEInputPort *endPort)
 {
-    auto *connection = endPort->connections().last();
+    const auto connections = endPort->connections();
+    if (connections.isEmpty()) return;
+    auto *connection = connections.last();
 
     if (auto *startPort = connection->startPort()) {
         receiveCommand(new DeleteItemsCommand({connection}, this));
@@ -900,7 +902,9 @@ void Scene::mute(const bool mute)
 {
     for (auto *element : elements()) {
         if (element->elementType() == ElementType::Buzzer) {
-            qobject_cast<Buzzer *>(element)->mute(mute);
+            if (auto *buzzer = qobject_cast<Buzzer *>(element)) {
+                buzzer->mute(mute);
+            }
         }
     }
 }

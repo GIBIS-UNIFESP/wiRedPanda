@@ -841,6 +841,10 @@ void MainWindow::tabChanged(const int newTabIndex)
     }
 
     m_currentTab = qobject_cast<WorkSpace *>(m_ui->tab->currentWidget());
+    if (!m_currentTab) {
+        qCWarning(zero) << "Failed to cast current widget to WorkSpace";
+        return;
+    }
     qCDebug(zero) << "Selecting tab: " << newTabIndex;
     connectTab();
     qCDebug(zero) << "New tab selected. Dolphin fileName: " << m_currentTab->dolphinFileName();
@@ -1185,6 +1189,7 @@ void MainWindow::retranslateUi()
 
     for (int index = 0; index < m_ui->tab->count(); ++index) {
         auto *workspace = qobject_cast<WorkSpace *>(m_ui->tab->widget(index));
+        if (!workspace) continue;
         auto *undoStack = workspace->scene()->undoStack();
         auto fileInfo = workspace->fileInfo();
 
