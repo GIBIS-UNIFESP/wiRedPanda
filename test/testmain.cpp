@@ -11,6 +11,7 @@
 #include "testlogiccore.h"
 #include "testserializationregression.h"
 #include "testsimulationworkflow.h"
+#include "testuiinteraction.h"
 #include "testwaveform.h"
 
 #include <QtTest>
@@ -35,6 +36,7 @@ int main(int argc, char **argv)
     status |= QTest::qExec(new TestFiles(), argc, argv);
     status |= QTest::qExec(new TestIcons(), argc, argv);
     status |= QTest::qExec(new TestSerializationRegression(), argc, argv);
+    status |= QTest::qExec(new TestUIInteraction(), argc, argv);
     status |= QTest::qExec(new TestWaveForm(), argc, argv);
 
     qInfo() << (status != 0 ? "Some test failed!" : "All tests have passed!");
