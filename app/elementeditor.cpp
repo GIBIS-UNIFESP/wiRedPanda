@@ -392,6 +392,15 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     if (elements.isEmpty()) {
         hide();
         m_ui->lineEditElementLabel->setText("");
+        
+        // CRITICAL FIX: Explicitly hide wireless node UI when no elements selected
+        // This prevents UI persistence bugs when switching between different element types
+        m_ui->labelNode->setVisible(false);
+        m_ui->comboBoxNode->setVisible(false);
+        m_ui->comboBoxNode->setEnabled(false);
+        m_ui->comboBoxNode->clear();
+        
+        qCDebug(zero) << "Element selection cleared - hiding all node UI elements";
         return;
     }
 
@@ -576,15 +585,19 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         }
     }
 
+    // Initialize node-related variables
+    bool hasFoundConnection = false;
+    bool isSourceNode = false;
+    bool bNodeHasOutput = false;
+    bool bNodeHasInput = false;
+    
     if (m_hasNode) {
         m_ui->comboBoxNode->clear();
-        bool hasFoundConnection = false;
-        bool isSourceNode = m_scene->nodeMapping.contains(firstElement->id());
-        bool bNodeHasOutput = firstElement->outputPort()->connections().size() > 0;
-        bool bNodeHasInput = firstElement->inputPort()->connections().size() > 0;
+        isSourceNode = m_scene->nodeMapping.contains(firstElement->id());
+        bNodeHasOutput = firstElement->outputPort()->connections().size() > 0;
+        bNodeHasInput = firstElement->inputPort()->connections().size() > 0;
 
-
-        // Search if node is already wireless conected to source node.
+        // Search if node is already wireless connected to source node.
         // If so, set combobox text to source node label.
         // If it is a source node, don't show combobox.
 
@@ -610,16 +623,27 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
             }
         }
 
-        m_ui->labelNode->setVisible(m_hasNode && !isSourceNode && bNodeHasOutput);
-        m_ui->comboBoxNode->setVisible(m_hasNode && !isSourceNode && bNodeHasOutput);
-        m_ui->comboBoxNode->setEnabled(m_hasNode && !isSourceNode && bNodeHasOutput);
         m_ui->comboBoxNode->addItem(QString(""));
-        m_ui->lineEditElementLabel->setEnabled(!hasFoundConnection && bNodeHasInput && (isSourceNode || !bNodeHasOutput));
-
+        
         if (!hasFoundConnection) {
             m_ui->comboBoxNode->setCurrentText("");
         }
+        
+        // Enable label editing based on connection state
+        m_ui->lineEditElementLabel->setEnabled(!hasFoundConnection && bNodeHasInput && (isSourceNode || !bNodeHasOutput));
+    } else {
+        // Clear combobox when not a node to prevent stale data
+        m_ui->comboBoxNode->clear();
     }
+    
+    // CRITICAL FIX: Always set visibility for node UI elements, regardless of m_hasNode value
+    // This ensures elements are properly hidden when selecting non-node elements
+    const bool shouldShowNodeUI = m_hasNode && !isSourceNode && bNodeHasOutput;
+    m_ui->labelNode->setVisible(shouldShowNodeUI);
+    m_ui->comboBoxNode->setVisible(shouldShowNodeUI);
+    m_ui->comboBoxNode->setEnabled(shouldShowNodeUI);
+    
+    qCDebug(zero) << "Node UI visibility:" << shouldShowNodeUI << "(hasNode:" << m_hasNode << "isSource:" << isSourceNode << "hasOutput:" << bNodeHasOutput << ")";
 
     /* Output size */
     m_ui->comboBoxOutputSize->clear();
@@ -1251,15 +1275,25 @@ void ElementEditor::connectNode(const QString &label)
     }
 
     m_scene->nodeMapping.insert(nextSourceNodeId, nextNodeSet);
+    
+    // CRITICAL FIX: Ensure UI state is properly refreshed after making wireless connection
+    // This prevents UI elements from persisting when they shouldn't
     setCurrentElements({selectedNode});
+    
+    qCDebug(zero) << "Wireless connection completed for node" << selectedNode->id() << "with label:" << label;
 }
 
 void ElementEditor::refreshWirelessCombobox()
 {
-    if (!m_hasNode || !m_ui->comboBoxNode->isVisible()) {
+    if (!m_hasNode) {
+        qCDebug(zero) << "Skipping wireless combobox refresh - not a node element";
         return;
     }
 
+    // CRITICAL FIX: Always refresh the combobox content when needed, regardless of current visibility
+    // The visibility will be set correctly by setCurrentElements()
+    qCDebug(zero) << "Refreshing wireless combobox for node elements";
+    
     // Store current selection
     QString currentSelection = m_ui->comboBoxNode->currentText();
 
@@ -1267,19 +1301,26 @@ void ElementEditor::refreshWirelessCombobox()
     m_ui->comboBoxNode->clear();
     m_ui->comboBoxNode->addItem("");
 
+    int addedItems = 0;
     for (auto key : m_scene->nodeMapping.keys()) {
         auto *element = m_scene->element(key);
         if (element) {
             QString label = element->label();
             if (!label.isEmpty()) {
                 m_ui->comboBoxNode->addItem(label);
+                addedItems++;
             }
         }
     }
+    
+    qCDebug(zero) << "Added" << addedItems << "items to wireless combobox";
 
     // Restore selection if it still exists
     int index = m_ui->comboBoxNode->findText(currentSelection);
     if (index >= 0) {
         m_ui->comboBoxNode->setCurrentIndex(index);
+        qCDebug(zero) << "Restored combobox selection:" << currentSelection;
+    } else if (!currentSelection.isEmpty()) {
+        qCDebug(zero) << "Could not restore combobox selection:" << currentSelection;
     }
 }
