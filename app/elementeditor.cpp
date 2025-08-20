@@ -583,11 +583,6 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         bool bNodeHasOutput = firstElement->outputPort()->connections().size() > 0;
         bool bNodeHasInput = firstElement->inputPort()->connections().size() > 0;
 
-        qDebug() << "elm: " << firstElement;
-        qDebug() << "nodeMapping: " << m_scene->nodeMapping;
-        qDebug() << "firstElm id: " << firstElement->id();
-        qDebug() << "isSourceNode: " << isSourceNode;
-        qDebug() << "======================";
 
         // Search if node is already wireless conected to source node.
         // If so, set combobox text to source node label.
@@ -1070,9 +1065,14 @@ void ElementEditor::mapNode()
 
     auto *selectedNode = m_elements[0];
 
-    qDebug() << "mapNode selected: " << selectedNode;
+    if (!selectedNode) {
+        qDebug() << "Warning: Selected node is null in mapNode()";
+        return;
+    }
 
-    if (selectedNode->elementType() != ElementType::Node) { return; }
+    if (selectedNode->elementType() != ElementType::Node) { 
+        return; 
+    }
 
     // If source node already exists and the new label is different, remove and insert new.
     const QString label = m_ui->lineEditElementLabel->text();
@@ -1121,13 +1121,29 @@ void ElementEditor::mapNode()
     setCurrentElements({selectedNode});
 }
 
-void ElementEditor::connectNode(const QString label)
+void ElementEditor::connectNode(const QString &label)
 {
     if (m_elements.isEmpty() || !isEnabled()) {
         return;
     }
 
-    auto selectedNode = m_elements[0];
+    auto *selectedNode = m_elements[0];
+    
+    if (!selectedNode) {
+        qDebug() << "Warning: Selected node is null in connectNode()";
+        return;
+    }
+    
+    if (selectedNode->elementType() != ElementType::Node) {
+        qDebug() << "Warning: Selected element is not a Node in connectNode()";
+        return;
+    }
+    
+    // Validate label input
+    if (label.length() > 50) { // Reasonable max length
+        qDebug() << "Warning: Node label too long in connectNode()";
+        return;
+    }
 
     if (label != "" && selectedNode->label() == label) {
         setCurrentElements({selectedNode});
@@ -1176,7 +1192,6 @@ void ElementEditor::connectNode(const QString label)
     m_scene->nodeMapping.remove(nextSourceNodeId);
     nextNodeSet.insert(Destination{-1, selectedNode->id()});
 
-    qDebug() << "nextNodeSet: " << nextNodeSet;
 
     for (auto pair : nextNodeSet) {
         auto *sourceElement = m_scene->element(nextSourceNodeId);

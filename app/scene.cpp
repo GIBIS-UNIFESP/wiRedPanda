@@ -1361,8 +1361,19 @@ QSet<Destination> Scene::getNodeSet(const QString &nodeLabel, QList<int> exclude
     QSet<Destination> set;
 
     for (auto &sourceNodeId : nodeMapping.keys()) {
-        if (!excludeIds.contains(sourceNodeId) && element(sourceNodeId)->label() == nodeLabel) {
-            set = nodeMapping.value(sourceNodeId); // add break?
+        if (excludeIds.contains(sourceNodeId)) {
+            continue;
+        }
+        
+        auto *sourceElement = element(sourceNodeId);
+        if (!sourceElement) {
+            qDebug() << "Warning: Null element found in nodeMapping during getNodeSet with id:" << sourceNodeId;
+            continue;
+        }
+        
+        if (sourceElement->label() == nodeLabel) {
+            set = nodeMapping.value(sourceNodeId);
+            break; // Found the matching node, no need to continue
         }
     }
 
