@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "uitestframework.h"
+#include "testuitestframework.h"
 
 #include <QObject>
 #include <QTest>
@@ -87,7 +87,7 @@ private:
 
     // Error and edge case helpers
     void simulateInvalidUserActions();
-    void testUIRecoveryScenarios();
+    bool testUIRecoveryScenarios();
     void validateErrorMessageDisplay();
     bool verifyUIStateConsistency();
 

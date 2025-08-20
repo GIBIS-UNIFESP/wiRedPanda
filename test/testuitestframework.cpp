@@ -1,9 +1,10 @@
 // Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "uitestframework.h"
+#include "testuitestframework.h"
 
 #include "elementfactory.h"
+#include "graphicelement.h"
 #include "graphicsview.h"
 #include "qneconnection.h"
 #include "scene.h"
@@ -759,3 +760,5 @@ bool UITestFramework::detectMemoryLeaksInUIOperations(std::function<void()> oper
     // In a real implementation, this would measure actual memory usage
     return false; // Assume no leaks for basic test
 }
+
+

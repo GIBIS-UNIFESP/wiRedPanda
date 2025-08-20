@@ -428,7 +428,7 @@ void TestUIAccessibility::testARIAAttributes()
                                                       .arg(widget->metaObject()->className());
                 }
 
-                delete interface;
+                // Don't delete QAccessibleInterface directly - it's managed by Qt
             }
         }
 
@@ -449,7 +449,7 @@ void TestUIAccessibility::testAccessibleNames()
         if (menuInterface) {
             QString menuName = menuInterface->text(QAccessible::Name);
             QVERIFY2(!menuName.isEmpty() || true, "Menu bar should have accessible name");
-            delete menuInterface;
+            // Don't delete QAccessibleInterface directly - it's managed by Qt
         }
     }
 
@@ -458,7 +458,7 @@ void TestUIAccessibility::testAccessibleNames()
     if (viewInterface) {
         QString viewName = viewInterface->text(QAccessible::Name);
         QVERIFY2(!viewName.isEmpty() || true, "Graphics view should have accessible name");
-        delete viewInterface;
+        // Don't delete QAccessibleInterface directly - it's managed by Qt
     }
 
     m_complianceChecks["accessible_names"] = true;
@@ -809,7 +809,7 @@ void TestUIAccessibility::testAccessibilityTree(QWidget* widget)
         qDebug() << "Accessibility:" << widget->metaObject()->className()
                  << "Name:" << name << "Description:" << description;
 
-        delete interface;
+        // Don't delete QAccessibleInterface directly - it's managed by Qt
     }
 }
 
@@ -973,3 +973,4 @@ void TestUIAccessibility::simulateAssistiveTechnology()
     simulateScreenReaderUsage();
     simulateKeyboardOnlyUser();
 }
+

@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "uitestframework.h"
+#include "testuitestframework.h"
 
 #include <QObject>
 #include <QTest>
@@ -32,7 +32,6 @@ private slots:
     void testElementAdditionPerformance();
     void testConnectionCreationPerformance();
     void testLargeCircuitRenderingPerformance();
-    void testScrollingPerformance();
     void testZoomingPerformance();
 
     // Responsiveness testing
@@ -64,6 +63,21 @@ private slots:
     void testCircuitModificationWorkflowPerformance();
     void testSimulationStartStopPerformance();
     void testFileLoadSavePerformance();
+
+    // Enhanced performance tests
+    void testScrollingPerformance();
+    void testZoomPerformance();
+    void testDragDropPerformance();
+    void testSelectionPerformance();
+    void testRenderingPerformance();
+    void testUndoRedoPerformance();
+    void testSimulationPerformanceUnderLoad();
+    void testConcurrentOperationPerformance();
+    void testExtremeLimitPerformance();
+    void testMemoryUsageUnderLoad();
+    void testUIResponsivenessMetrics();
+    void benchmarkElementTypes();
+    void profileHotCodePaths();
 
 private:
     // Performance measurement helpers

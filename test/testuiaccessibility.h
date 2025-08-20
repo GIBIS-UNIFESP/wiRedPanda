@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "uitestframework.h"
+#include "testuitestframework.h"
 
 #include <QObject>
 #include <QTest>

@@ -103,15 +103,15 @@ public:
     static void measureMemoryUsageUnderUILoad(QWidget* widget);
     static bool detectMemoryLeaksInUIOperations(std::function<void()> operation);
 
-private:
-    static QElapsedTimer s_performanceTimer;
-    static QStringList s_capturedStates;
-    static int s_frameCounter;
-
-    // Helper methods
+    // Helper methods (public for test access)
     static void waitForUIUpdate(int timeoutMs = 100);
     static bool isWidgetResponsive(QWidget* widget);
     static QPoint findWidgetCenter(QWidget* widget);
     static void logPerformanceMetric(const QString &operation, qint64 timeMs);
     static QString captureWidgetState(QWidget* widget);
+
+private:
+    static QElapsedTimer s_performanceTimer;
+    static QStringList s_capturedStates;
+    static int s_frameCounter;
 };

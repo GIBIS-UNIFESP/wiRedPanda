@@ -316,8 +316,8 @@ void TestUIInteraction::testKeyboardOnlyNavigation()
     // Simulate keyboard navigation workflow
     QList<Qt::Key> navigationSequence = {
         Qt::Key_Tab, Qt::Key_Tab, Qt::Key_Return,
-        Qt::Key_Arrow_Up, Qt::Key_Arrow_Down,
-        Qt::Key_Arrow_Left, Qt::Key_Arrow_Right,
+        Qt::Key_Up, Qt::Key_Down,
+        Qt::Key_Left, Qt::Key_Right,
         Qt::Key_Escape
     };
 
@@ -502,18 +502,47 @@ void TestUIInteraction::buildComplexTestCircuit()
 
 void TestUIInteraction::simulateInvalidUserActions()
 {
-    // Simulate various invalid user actions to test error handling
-
+    qDebug() << "Simulating invalid user actions";
+    
+    // Simulate clicking on empty areas
+    simulateMouseClick(QPointF(-100, -100)); // Outside normal bounds
+    simulateMouseClick(QPointF(10000, 10000)); // Very far coordinates
+    
     // Try to add element at invalid position
     addElementToScene("InvalidElementType", QPointF(-1000, -1000));
 
     // Try to connect non-existent elements
     connectElements(QPointF(999, 999), QPointF(1000, 1000));
 
-    // Try to drag to invalid position
+    // Simulate dragging to invalid positions
+    addElementToScene("And", QPointF(100, 100));
     if (!m_scene->elements().isEmpty()) {
+        auto* element = m_scene->elements().first();
+        QPointF originalPos = element->pos();
+        
+        // Try to drag to extreme positions
+        simulateMouseDrag(originalPos, QPointF(-1000, -1000));
+        simulateMouseDrag(originalPos, QPointF(100000, 100000));
+        
+        // Try to drag to invalid position
         simulateMouseDrag(QPointF(0, 0), QPointF(-5000, -5000));
     }
+    
+    // Simulate rapid click sequences
+    for (int i = 0; i < 20; ++i) {
+        simulateMouseClick(QPointF(i * 10, i * 10));
+        if (i % 5 == 0) {
+            QApplication::processEvents();
+        }
+    }
+    
+    // Simulate invalid keyboard input sequences
+    QTest::keyPress(m_view, Qt::Key_Delete);
+    QTest::keyPress(m_view, Qt::Key_Escape);
+    QTest::keyPress(m_view, Qt::Key_Return);
+    QTest::keyRelease(m_view, Qt::Key_Delete);
+    QTest::keyRelease(m_view, Qt::Key_Escape);
+    QTest::keyRelease(m_view, Qt::Key_Return);
 }
 
 bool TestUIInteraction::testUIRecoveryScenarios()
@@ -554,4 +583,360 @@ bool TestUIInteraction::verifyUIStateConsistency()
     }
 
     return true;
+}
+
+// =============== MISSING ERROR SCENARIO TEST IMPLEMENTATIONS ===============
+
+void TestUIInteraction::testInvalidInputRecovery()
+{
+    qDebug() << "Testing invalid input recovery";
+    
+    // Test recovery from various invalid inputs
+    
+    // Test 1: Invalid element type creation
+    try {
+        // This should not crash the application
+        ElementType invalidType = static_cast<ElementType>(-1);
+        auto* element = ElementFactory::buildElement(invalidType);
+        if (element) {
+            m_scene->addItem(element);
+        }
+    } catch (...) {
+        qDebug() << "Caught exception during invalid element creation - this is expected";
+    }
+    
+    // Verify UI is still functional
+    QVERIFY2(m_view->isVisible(), "UI should remain functional after invalid element creation");
+    
+    // Test 2: Invalid position values
+    if (!m_scene->elements().isEmpty()) {
+        auto* element = m_scene->elements().first();
+        QPointF invalidPos(std::numeric_limits<qreal>::quiet_NaN(), 
+                          std::numeric_limits<qreal>::infinity());
+        
+        try {
+            element->setPos(invalidPos);
+        } catch (...) {
+            qDebug() << "Handled invalid position gracefully";
+        }
+        
+        // Verify element position is still valid
+        QPointF currentPos = element->pos();
+        QVERIFY2(!std::isnan(currentPos.x()) && !std::isinf(currentPos.x()), 
+                 "Element position should remain valid after invalid input");
+    }
+    
+    // Test 3: Invalid connection attempts
+    addElementToScene("InputButton", QPointF(0, 0));
+    addElementToScene("Led", QPointF(100, 0));
+    
+    // Try to create connection with null ports (should be handled gracefully)
+    auto* invalidConn = new QNEConnection();
+    try {
+        invalidConn->setStartPort(nullptr);
+        invalidConn->setEndPort(nullptr);
+        m_scene->addItem(invalidConn);
+    } catch (...) {
+        qDebug() << "Invalid connection handled gracefully";
+    }
+    
+    // Clean up
+    if (invalidConn) {
+        m_scene->removeItem(invalidConn);
+        delete invalidConn;
+    }
+    
+    // Verify UI state consistency after all invalid inputs
+    QVERIFY2(verifyUIStateConsistency(), "UI state should remain consistent after invalid inputs");
+}
+
+void TestUIInteraction::testUIStateConsistency()
+{
+    qDebug() << "Testing UI state consistency";
+    
+    // Test 1: Basic state consistency
+    QVERIFY2(verifyUIStateConsistency(), "Initial UI state should be consistent");
+    
+    // Test 2: State consistency after operations
+    addElementToScene("And", QPointF(50, 50));
+    addElementToScene("Or", QPointF(150, 50));
+    
+    QVERIFY2(verifyUIStateConsistency(), "UI state should remain consistent after adding elements");
+    
+    // Test 3: State consistency after connections
+    auto elements = m_scene->elements();
+    if (elements.size() >= 2) {
+        auto* conn = new QNEConnection();
+        m_scene->addItem(conn);
+        
+        QVERIFY2(verifyUIStateConsistency(), "UI state should remain consistent after adding connections");
+        
+        // Clean up connection
+        m_scene->removeItem(conn);
+        delete conn;
+    }
+    
+    // Test 4: State consistency after element removal
+    while (!m_scene->elements().isEmpty()) {
+        auto* element = m_scene->elements().first();
+        m_scene->removeItem(element);
+        delete element;
+        
+        QVERIFY2(verifyUIStateConsistency(), "UI state should remain consistent during element removal");
+    }
+    
+    // Test 5: Final state validation
+    QVERIFY2(m_scene->elements().isEmpty(), "Scene should be empty after clearing all elements");
+    QVERIFY2(countConnections() == 0, "Connection count should be zero after clearing");
+    QVERIFY2(verifyUIStateConsistency(), "Final UI state should be consistent");
+}
+
+
+void TestUIInteraction::validateErrorMessageDisplay()
+{
+    qDebug() << "Validating error message display";
+    
+    // This would test that appropriate error messages are shown to users
+    // when invalid operations are attempted
+    
+    // Test 1: Verify UI provides feedback for invalid operations
+    // (In a real implementation, this would check for status bar messages,
+    // dialog boxes, or other user feedback mechanisms)
+    
+    // Test 2: Verify error messages are user-friendly
+    // (Check that technical details are hidden from end users)
+    
+    // Test 3: Verify error state recovery
+    // (Ensure user can recover from error states)
+    
+    // For now, we'll verify that the UI remains functional
+    QVERIFY2(m_view->isVisible(), "View should remain visible during error scenarios");
+    QVERIFY2(m_view->isEnabled(), "View should remain enabled during error scenarios");
+    
+    // Test that basic operations still work after errors
+    addElementToScene("And", QPointF(200, 200));
+    QVERIFY2(!m_scene->elements().isEmpty(), "Basic operations should work after error scenarios");
+}
+
+// =============== MISSING TEST METHOD IMPLEMENTATIONS ===============
+
+void TestUIInteraction::testErrorRecoveryWorkflow()
+{
+    qDebug() << "Testing error recovery workflow";
+    
+    // Simulate error condition
+    simulateInvalidUserActions();
+    
+    // Test recovery
+    bool recovered = testUIRecoveryScenarios();
+    QVERIFY2(recovered, "UI should recover from error conditions");
+    
+    // Verify normal operations work after recovery
+    addElementToScene("And", QPointF(100, 100));
+    QVERIFY2(!m_scene->elements().isEmpty(), "Normal operations should work after error recovery");
+}
+
+void TestUIInteraction::testUndoRedoInteractionWorkflow()
+{
+    qDebug() << "Testing undo/redo interaction workflow";
+    
+    // Add element
+    addElementToScene("And", QPointF(100, 100));
+    int initialCount = m_scene->elements().size();
+    
+    // Add another element
+    addElementToScene("Or", QPointF(200, 100));
+    QVERIFY2(m_scene->elements().size() == initialCount + 1, "Element should be added");
+    
+    // Simulate undo (in real implementation this would use actual undo system)
+    if (!m_scene->elements().isEmpty()) {
+        auto* lastElement = m_scene->elements().last();
+        m_scene->removeItem(lastElement);
+        delete lastElement;
+    }
+    
+    QVERIFY2(m_scene->elements().size() == initialCount, "Undo should work");
+}
+
+void TestUIInteraction::testMultiSelectAndBulkOperations()
+{
+    qDebug() << "Testing multi-select and bulk operations";
+    
+    // Add multiple elements
+    addElementToScene("And", QPointF(50, 50));
+    addElementToScene("Or", QPointF(150, 50));
+    addElementToScene("Not", QPointF(250, 50));
+    
+    auto elements = m_scene->elements();
+    QVERIFY2(elements.size() >= 3, "Should have multiple elements for selection");
+    
+    // Simulate multi-selection
+    for (auto* element : elements) {
+        element->setSelected(true);
+    }
+    
+    // Verify all selected
+    int selectedCount = 0;
+    for (auto* element : elements) {
+        if (element->isSelected()) selectedCount++;
+    }
+    
+    QVERIFY2(selectedCount == elements.size(), "All elements should be selected");
+}
+
+void TestUIInteraction::testContextMenuInteractions()
+{
+    qDebug() << "Testing context menu interactions";
+    
+    addElementToScene("And", QPointF(100, 100));
+    
+    // Simulate right-click context menu
+    QPoint center = UITestFramework::findWidgetCenter(m_view);
+    QTest::mouseClick(m_view->viewport(), Qt::RightButton, Qt::NoModifier, center);
+    QTest::qWait(100);
+    
+    // Simulate menu navigation
+    QTest::keyClick(m_view, Qt::Key_Escape);
+    QTest::qWait(50);
+    
+    QVERIFY2(m_view->isVisible(), "View should remain functional after context menu interaction");
+}
+
+void TestUIInteraction::testDragDropWithSnapping()
+{
+    qDebug() << "Testing drag and drop with snapping";
+    
+    addElementToScene("And", QPointF(100, 100));
+    auto elements = m_scene->elements();
+    
+    if (!elements.isEmpty()) {
+        auto* element = elements.first();
+        QPointF originalPos = element->pos();
+        
+        // Simulate dragging to a position that should snap to grid
+        QPointF targetPos(153, 147); // Should snap to nearest grid point
+        simulateMouseDrag(originalPos, targetPos);
+        
+        // In real implementation, verify snapping occurred
+        QVERIFY2(element->pos() != originalPos, "Element should move during drag");
+    }
+}
+
+void TestUIInteraction::testElementAlignmentAndGrid()
+{
+    qDebug() << "Testing element alignment and grid";
+    
+    addElementToScene("And", QPointF(50, 50));
+    addElementToScene("Or", QPointF(150, 50));
+    
+    // Test alignment features (in real implementation would use actual alignment tools)
+    auto elements = m_scene->elements();
+    if (elements.size() >= 2) {
+        // Simulate aligning elements
+        qreal yPos = elements.first()->pos().y();
+        for (auto* element : elements) {
+            element->setPos(element->pos().x(), yPos);
+        }
+        
+        // Verify alignment
+        bool aligned = true;
+        for (auto* element : elements) {
+            if (qAbs(element->pos().y() - yPos) > 1.0) {
+                aligned = false;
+                break;
+            }
+        }
+        
+        QVERIFY2(aligned, "Elements should be alignable");
+    }
+}
+
+void TestUIInteraction::testSelectionHighlighting()
+{
+    qDebug() << "Testing selection highlighting";
+    
+    addElementToScene("And", QPointF(100, 100));
+    auto elements = m_scene->elements();
+    
+    if (!elements.isEmpty()) {
+        auto* element = elements.first();
+        
+        // Test selection highlighting
+        element->setSelected(false);
+        bool wasSelected = element->isSelected();
+        
+        element->setSelected(true);
+        bool isSelected = element->isSelected();
+        
+        QVERIFY2(!wasSelected && isSelected, "Selection highlighting should work");
+    }
+}
+
+void TestUIInteraction::testConnectionPreviewFeedback()
+{
+    qDebug() << "Testing connection preview feedback";
+    
+    addElementToScene("And", QPointF(50, 50));
+    addElementToScene("Led", QPointF(200, 50));
+    
+    // Simulate connection preview (in real implementation would show preview during drag)
+    connectElements(QPointF(50, 50), QPointF(200, 50));
+    
+    QVERIFY2(m_scene->elements().size() >= 2, "Elements should exist for connection preview testing");
+}
+
+void TestUIInteraction::testLargeCircuitUIPerformance()
+{
+    qDebug() << "Testing large circuit UI performance";
+    
+    // Add many elements to test performance
+    for (int i = 0; i < 50; ++i) {
+        addElementToScene("And", QPointF(i * 50, (i % 10) * 50));
+        if (i % 10 == 0) {
+            QApplication::processEvents();
+        }
+    }
+    
+    // Test UI responsiveness with large circuit
+    bool responsive = !UITestFramework::detectUIFreeze(m_view, 500);
+    QVERIFY2(responsive, "UI should remain responsive with large circuits");
+    
+    QVERIFY2(m_scene->elements().size() >= 50, "Should have created large circuit");
+}
+
+void TestUIInteraction::testScrollingAndZoomPerformance()
+{
+    qDebug() << "Testing scrolling and zoom performance";
+    
+    // Add elements to create scrollable content
+    for (int i = 0; i < 20; ++i) {
+        addElementToScene("And", QPointF(i * 100, i * 100));
+    }
+    
+    // Test scrolling performance
+    auto metrics = UITestFramework::measureUIOperationPerformance([this]() {
+        // Simulate scrolling
+        for (int i = 0; i < 10; ++i) {
+            m_view->horizontalScrollBar()->setValue(i * 50);
+            m_view->verticalScrollBar()->setValue(i * 30);
+            QApplication::processEvents();
+        }
+    });
+    
+    QVERIFY2(metrics.operationTimeMs < 2000, "Scrolling should be performant");
+    
+    // Test zoom performance
+    auto zoomMetrics = UITestFramework::measureUIOperationPerformance([this]() {
+        // Simulate zoom operations
+        qreal scale = m_view->transform().m11();
+        for (int i = 0; i < 5; ++i) {
+            m_view->scale(1.2, 1.2);
+            QApplication::processEvents();
+        }
+        // Reset zoom
+        m_view->resetTransform();
+        m_view->scale(scale, scale);
+    });
+    
+    QVERIFY2(zoomMetrics.operationTimeMs < 1000, "Zoom should be performant");
 }

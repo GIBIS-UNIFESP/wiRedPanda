@@ -8,6 +8,9 @@
 #include "graphicsview.h"
 #include "inputbutton.h"
 #include "led.h"
+
+#include <QScrollBar>
+#include <QtMath>
 #include "qneconnection.h"
 #include "scene.h"
 #include "simulation.h"
@@ -102,14 +105,14 @@ void TestUIPerformance::testConnectionCreationPerformance()
     auto* andGate = qgraphicsitem_cast<And*>(gate);
     auto* led = qgraphicsitem_cast<Led*>(output);
 
-    measureOperationPerformance("Single Connection Creation", [=]() {
+    measureOperationPerformance("Single Connection Creation", [this, inputButton, andGate]() {
         auto* conn = new QNEConnection();
         conn->setStartPort(inputButton->outputPort());
         conn->setEndPort(andGate->inputPort(0));
         m_scene->addItem(conn);
     });
 
-    measureOperationPerformance("Multiple Connection Creation", [=]() {
+    measureOperationPerformance("Multiple Connection Creation", [this, andGate, led]() {
         // Create second input for AND gate
         auto* input2 = ElementFactory::buildElement(ElementType::InputButton);
         input2->setPos(QPointF(0, 50));
@@ -696,3 +699,4 @@ void TestUIPerformance::validateMemoryCleanup()
     // Allow some reasonable memory growth (5MB)
     QVERIFY2(memoryGrowth < 5120, "Memory cleanup should be effective (< 5MB growth)");
 }
+
