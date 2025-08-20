@@ -26,14 +26,23 @@
 void testMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     Q_UNUSED(context)
-    // Suppress specific Qt framework warnings that are not relevant for tests
+    
+    // Suppress all Qt framework warnings that are not relevant for tests
     if (type == QtWarningMsg) {
         // Suppress propagateSizeHints warning from offscreen platform plugin
         if (msg.contains("This plugin does not support propagateSizeHints()")) {
             return;
         }
         // Suppress SVG path data warnings during icon loading
-        if (msg.contains("Invalid path data; path truncated.")) {
+        if (msg.contains("Invalid path data; path truncated")) {
+            return;
+        }
+        // Suppress QPA platform warnings in headless mode
+        if (msg.contains("QStandardPaths: XDG_RUNTIME_DIR not set")) {
+            return;
+        }
+        // Suppress other Qt test framework warnings
+        if (msg.contains("libgcov profiling error") || msg.contains("overwriting an existing profile")) {
             return;
         }
     }
@@ -59,6 +68,12 @@ int main(int argc, char **argv)
     
     // Install custom message handler to suppress Qt framework warnings
     qInstallMessageHandler(testMessageHandler);
+    
+    // Suppress Qt logging categories that generate test-irrelevant warnings
+    QLoggingCategory::setFilterRules("qt.svg.warning=false");
+    
+    // Set environment variables to reduce Qt warnings in test environment  
+    qputenv("QT_LOGGING_RULES", "qt.svg=false;qt.qpa.plugin=false");
 
     QApplication app(argc, argv);
     app.setOrganizationName("GIBIS-UNIFESP");
