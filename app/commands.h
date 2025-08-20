@@ -40,6 +40,29 @@ private:
     Scene *m_scene;
 };
 
+//! Enhanced version of AddItemsCommand that handles wireless node mappings
+class AddItemsCommandWithWireless : public QUndoCommand
+{
+    Q_DECLARE_TR_FUNCTIONS(AddItemsCommandWithWireless)
+
+public:
+    //! \param items   A list of items in the form of GraphicElements (an IO elem., a gate or an IC)
+    //! \param scene   The scene to which the command will be added
+    //! \param wirelessMappings The wireless node mappings to restore
+    explicit AddItemsCommandWithWireless(const QList<QGraphicsItem *> &items, Scene *scene, const QMap<int, QSet<Destination>> &wirelessMappings, QUndoCommand *parent = nullptr);
+
+    void redo() override;
+    void undo() override;
+
+private:
+    QByteArray m_itemData;
+    QList<int> m_ids;
+    QList<int> m_otherIds;
+    Scene *m_scene;
+    QMap<int, QSet<Destination>> m_wirelessMappings;
+    QMap<int, QSet<Destination>> m_oldMappings; // Backup of original mappings
+};
+
 //! Represents a single action of removing a list of elements on the editor
 class DeleteItemsCommand : public QUndoCommand
 {
@@ -57,6 +80,7 @@ private:
     QByteArray m_itemData;
     QList<int> m_ids;
     QList<int> m_otherIds;
+    QMap<int, QSet<Destination>> m_savedWirelessMappings; // Backup wireless mappings for undo
     Scene *m_scene;
 };
 

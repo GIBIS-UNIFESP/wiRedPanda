@@ -105,6 +105,11 @@ public:
     void showGates(const bool checked);
     void showWires(const bool checked);
     void updateTheme();
+    
+    // Wireless connection utilities
+    void cleanupWirelessMappings();
+    void validateWirelessMappings();
+    void removeNodeFromWirelessMappings(int nodeId);
 
 signals:
     void circuitHasChanged();
@@ -122,7 +127,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    static void copy(const QList<QGraphicsItem *> &items, QDataStream &stream);
+    static void copy(const QList<QGraphicsItem *> &items, QDataStream &stream, const QMap<int, QSet<Destination>> &nodeMapping = QMap<int, QSet<Destination>>());
 
     QGraphicsItem *itemAt(const QPointF pos);
     QList<QGraphicsItem *> itemsAt(const QPointF pos);
@@ -132,7 +137,7 @@ private:
     void checkUpdateRequest();
     void cloneDrag(const QPointF mousePos);
     void contextMenu(const QPoint screenPos);
-    void cut(const QList<QGraphicsItem *> &items, QDataStream &stream);
+    void cut(const QList<QGraphicsItem *> &items, QDataStream &stream, const QMap<int, QSet<Destination>> &nodeMapping = QMap<int, QSet<Destination>>());
     void detachConnection(QNEInputPort *endPort);
     void drawBackground(QPainter *painter, const QRectF &rect) override;
     void handleHoverPort();

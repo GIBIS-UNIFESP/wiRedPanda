@@ -556,6 +556,99 @@ void Scene::updateTheme()
     qCDebug(zero) << "Finished updating theme.";
 }
 
+void Scene::cleanupWirelessMappings()
+{
+    // Remove mappings for nodes that no longer exist
+    QSet<int> existingNodeIds;
+    for (auto *element : elements()) {
+        existingNodeIds.insert(element->id());
+    }
+    
+    // Clean up source nodes that don't exist
+    auto it = nodeMapping.begin();
+    while (it != nodeMapping.end()) {
+        if (!existingNodeIds.contains(it.key())) {
+            it = nodeMapping.erase(it);
+        } else {
+            // Clean up destination nodes that don't exist
+            QSet<Destination> validDestinations;
+            for (const auto &dest : it.value()) {
+                if (existingNodeIds.contains(dest.nodeId)) {
+                    validDestinations.insert(dest);
+                }
+            }
+            it.value() = validDestinations;
+            
+            // Remove empty mappings
+            if (it.value().isEmpty()) {
+                it = nodeMapping.erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
+}
+
+void Scene::validateWirelessMappings()
+{
+    cleanupWirelessMappings();
+    
+    // Additional validation: check for circular references and orphaned connections
+    for (auto it = nodeMapping.begin(); it != nodeMapping.end(); ++it) {
+        int sourceId = it.key();
+        auto *sourceElement = element(sourceId);
+        
+        if (!sourceElement) {
+            qCWarning(zero) << "Wireless mapping source node" << sourceId << "not found in scene";
+            continue;
+        }
+        
+        for (const auto &dest : it.value()) {
+            auto *destElement = element(dest.nodeId);
+            if (!destElement) {
+                qCWarning(zero) << "Wireless mapping destination node" << dest.nodeId << "not found in scene";
+                continue;
+            }
+            
+            // Check for circular reference
+            if (nodeMapping.contains(dest.nodeId)) {
+                for (const auto &subDest : nodeMapping[dest.nodeId]) {
+                    if (subDest.nodeId == sourceId) {
+                        qCWarning(zero) << "Circular wireless connection detected between nodes" << sourceId << "and" << dest.nodeId;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Scene::removeNodeFromWirelessMappings(int nodeId)
+{
+    // Remove as source node
+    nodeMapping.remove(nodeId);
+    
+    // Remove as destination node
+    for (auto it = nodeMapping.begin(); it != nodeMapping.end(); ++it) {
+        QSet<Destination> filteredDestinations;
+        for (const auto &dest : it.value()) {
+            if (dest.nodeId != nodeId) {
+                filteredDestinations.insert(dest);
+            }
+        }
+        it.value() = filteredDestinations;
+    }
+    
+    // Remove empty mappings
+    auto it = nodeMapping.begin();
+    while (it != nodeMapping.end()) {
+        if (it.value().isEmpty()) {
+            it = nodeMapping.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
+
 QList<QGraphicsItem *> Scene::items(Qt::SortOrder order) const
 {
     return QGraphicsScene::items(order);
@@ -661,7 +754,7 @@ void Scene::cloneDrag(const QPointF mousePos)
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
     stream << mousePos;
-    copy(selectedItems(), stream);
+    copy(selectedItems(), stream, nodeMapping);
 
     auto *mimeData = new QMimeData();
     mimeData->setData("application/x-wiredpanda-cloneDrag", itemData);
@@ -674,7 +767,7 @@ void Scene::cloneDrag(const QPointF mousePos)
     drag->exec(Qt::CopyAction, Qt::CopyAction);
 }
 
-void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream)
+void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream, const QMap<int, QSet<Destination>> &nodeMapping)
 {
     QPointF center(0.0, 0.0);
     int itemsQuantity = 0;
@@ -687,7 +780,11 @@ void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream)
     }
 
     stream << center / static_cast<qreal>(itemsQuantity);
-    Serialization::serialize(items, stream);
+    if (nodeMapping.isEmpty()) {
+        Serialization::serialize(items, stream);
+    } else {
+        Serialization::serializeWithWireless(items, stream, nodeMapping);
+    }
 }
 
 void Scene::handleHoverPort()
@@ -830,7 +927,7 @@ void Scene::copyAction()
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
-    copy(selectedItems(), stream);
+    copy(selectedItems(), stream, nodeMapping);
 
     auto *mimeData = new QMimeData();
     mimeData->setData("application/x-wiredpanda-clipboard", itemData);
@@ -848,7 +945,7 @@ void Scene::cutAction()
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
-    cut(selectedItems(), stream);
+    cut(selectedItems(), stream, nodeMapping);
 
     auto *mimeData = new QMimeData();
     mimeData->setData("application/x-wiredpanda-clipboard", itemData);
@@ -883,10 +980,11 @@ void Scene::paste(QDataStream &stream, QVersionNumber version)
 
     QPointF center; stream >> center;
 
-    const auto itemList = Serialization::deserialize(stream, {}, version);
+    QMap<int, QSet<Destination>> pastedMappings;
+    const auto itemList = Serialization::deserializeWithWireless(stream, {}, version, pastedMappings);
     const QPointF offset = m_mousePos - center - QPointF(32.0, 32.0);
 
-    receiveCommand(new AddItemsCommand(itemList, this));
+    receiveCommand(new AddItemsCommandWithWireless(itemList, this, pastedMappings));
 
     for (auto *item : itemList) {
         if (item->type() == GraphicElement::Type) {
@@ -897,9 +995,9 @@ void Scene::paste(QDataStream &stream, QVersionNumber version)
     resizeScene();
 }
 
-void Scene::cut(const QList<QGraphicsItem *> &items, QDataStream &stream)
+void Scene::cut(const QList<QGraphicsItem *> &items, QDataStream &stream, const QMap<int, QSet<Destination>> &nodeMapping)
 {
-    copy(items, stream);
+    copy(items, stream, nodeMapping);
     deleteAction();
 }
 

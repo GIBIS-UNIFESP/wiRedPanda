@@ -238,6 +238,90 @@ void AddItemsCommand::redo()
     m_scene->setCircuitUpdateRequired();
 }
 
+AddItemsCommandWithWireless::AddItemsCommandWithWireless(const QList<QGraphicsItem *> &items, Scene *scene, const QMap<int, QSet<Destination>> &wirelessMappings, QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , m_scene(scene)
+    , m_wirelessMappings(wirelessMappings)
+{
+    SimulationBlocker blocker(m_scene->simulation());
+    const auto items_ = loadList(items, m_ids, m_otherIds);
+    addItems(m_scene, items_);
+    setText(tr("Add %1 elements with wireless connections").arg(items_.size()));
+    
+    // Store the current scene mappings that might be affected
+    QList<int> allIds = m_ids;
+    for (const auto &mapping : m_wirelessMappings) {
+        for (const auto &dest : mapping) {
+            allIds.append(dest.nodeId);
+        }
+    }
+    m_oldMappings = Serialization::filterNodeMappings(m_scene->nodeMapping, allIds);
+}
+
+void AddItemsCommandWithWireless::undo()
+{
+    qCDebug(zero) << text();
+    SimulationBlocker blocker(m_scene->simulation());
+    const auto items = findItems(m_ids);
+    saveItems(m_itemData, items, m_otherIds);
+    
+    // Remove wireless mappings before deleting items
+    for (int i = 0; i < items.size(); ++i) {
+        if (auto *itemId = dynamic_cast<ItemWithId *>(items.at(i))) {
+            int currentId = itemId->id();
+            
+            // Remove mappings involving this node
+            m_scene->nodeMapping.remove(currentId);
+            
+            // Remove this node from other mappings
+            for (auto it = m_scene->nodeMapping.begin(); it != m_scene->nodeMapping.end(); ++it) {
+                QSet<Destination> filteredDest;
+                for (const auto &dest : it.value()) {
+                    if (dest.nodeId != currentId) {
+                        filteredDest.insert(dest);
+                    }
+                }
+                it.value() = filteredDest;
+            }
+        }
+    }
+    
+    deleteItems(m_scene, items);
+    
+    // Restore old mappings
+    for (auto it = m_oldMappings.begin(); it != m_oldMappings.end(); ++it) {
+        m_scene->nodeMapping[it.key()] = it.value();
+    }
+    
+    m_scene->setCircuitUpdateRequired();
+}
+
+void AddItemsCommandWithWireless::redo()
+{
+    qCDebug(zero) << text();
+    SimulationBlocker blocker(m_scene->simulation());
+    loadItems(m_scene, m_itemData, m_ids, m_otherIds);
+    
+    // Build ID translation map for wireless mappings
+    QMap<int, int> idTranslation;
+    const auto items = findItems(m_ids);
+    for (int i = 0; i < items.size() && i < m_ids.size(); ++i) {
+        if (auto *itemId = dynamic_cast<ItemWithId *>(items.at(i))) {
+            int oldId = m_ids.at(i);
+            int newId = itemId->id();
+            idTranslation[oldId] = newId;
+        }
+    }
+    
+    // Apply wireless mappings with ID translation
+    auto translatedMappings = Serialization::translateNodeMappings(m_wirelessMappings, idTranslation);
+    for (auto it = translatedMappings.begin(); it != translatedMappings.end(); ++it) {
+        m_scene->nodeMapping[it.key()] = it.value();
+    }
+    
+    m_scene->setCircuitUpdateRequired();
+}
+
 DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_scene(scene)
@@ -245,6 +329,17 @@ DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scen
     SimulationBlocker blocker(m_scene->simulation());
     const auto items_ = loadList(items, m_ids, m_otherIds);
     setText(tr("Delete %1 elements").arg(items_.size()));
+    
+    // Backup wireless mappings that will be affected by the deletion
+    QList<int> allIds = m_ids;
+    for (const auto &dest : qAsConst(m_scene->nodeMapping)) {
+        for (const auto &d : dest) {
+            if (m_ids.contains(d.nodeId)) {
+                allIds.append(d.nodeId);
+            }
+        }
+    }
+    m_savedWirelessMappings = Serialization::filterNodeMappings(m_scene->nodeMapping, allIds);
 }
 
 void DeleteItemsCommand::undo()
@@ -252,6 +347,12 @@ void DeleteItemsCommand::undo()
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
     loadItems(m_scene, m_itemData, m_ids, m_otherIds);
+    
+    // Restore wireless mappings
+    for (auto it = m_savedWirelessMappings.begin(); it != m_savedWirelessMappings.end(); ++it) {
+        m_scene->nodeMapping[it.key()] = it.value();
+    }
+    
     m_scene->setCircuitUpdateRequired();
 }
 
@@ -261,6 +362,24 @@ void DeleteItemsCommand::redo()
     SimulationBlocker blocker(m_scene->simulation());
     const auto items = findItems(m_ids);
     saveItems(m_itemData, items, m_otherIds);
+    
+    // Clean up wireless mappings before deleting items
+    for (int id : m_ids) {
+        // Remove source mappings
+        m_scene->nodeMapping.remove(id);
+        
+        // Remove this node from destination mappings
+        for (auto it = m_scene->nodeMapping.begin(); it != m_scene->nodeMapping.end(); ++it) {
+            QSet<Destination> filteredDest;
+            for (const auto &dest : it.value()) {
+                if (dest.nodeId != id) {
+                    filteredDest.insert(dest);
+                }
+            }
+            it.value() = filteredDest;
+        }
+    }
+    
     deleteItems(m_scene, items);
     m_scene->setCircuitUpdateRequired();
 }
