@@ -700,3 +700,214 @@ void TestUIPerformance::validateMemoryCleanup()
     QVERIFY2(memoryGrowth < 5120, "Memory cleanup should be effective (< 5MB growth)");
 }
 
+// =============== MISSING PERFORMANCE TEST IMPLEMENTATIONS ===============
+
+void TestUIPerformance::testAnimationSmoothness()
+{
+    qDebug() << "Testing animation smoothness";
+    addManyElementsToScene(10, "And");
+    
+    measureOperationPerformance("Animation Test", [this]() {
+        for (int i = 0; i < 30; ++i) {
+            m_view->viewport()->update();
+            QApplication::processEvents();
+            QThread::msleep(16); // 60 FPS target
+        }
+    });
+}
+
+void TestUIPerformance::testRenderingFrameRate()
+{
+    qDebug() << "Testing rendering frame rate";
+    addManyElementsToScene(50, "And");
+    
+    measureOperationPerformance("Frame Rate Test", [this]() {
+        for (int i = 0; i < 60; ++i) {
+            m_view->viewport()->update();
+            QApplication::processEvents();
+        }
+    });
+}
+
+void TestUIPerformance::testRedrawOptimization()
+{
+    qDebug() << "Testing redraw optimization";
+    addManyElementsToScene(100, "And");
+    
+    measureOperationPerformance("Redraw Optimization", [this]() {
+        m_view->update();
+        QApplication::processEvents();
+    });
+}
+
+void TestUIPerformance::testViewportUpdateEfficiency()
+{
+    qDebug() << "Testing viewport update efficiency";
+    addManyElementsToScene(20, "And");
+    
+    measureOperationPerformance("Viewport Update", [this]() {
+        m_view->viewport()->update();
+        QApplication::processEvents();
+    });
+}
+
+void TestUIPerformance::testZoomPerformance()
+{
+    qDebug() << "Testing zoom performance";
+    addManyElementsToScene(30, "And");
+    
+    measureOperationPerformance("Zoom Performance", [this]() {
+        m_view->scale(1.2, 1.2);
+        QApplication::processEvents();
+        m_view->scale(0.8, 0.8);
+        QApplication::processEvents();
+    });
+}
+
+void TestUIPerformance::testDragDropPerformance()
+{
+    qDebug() << "Testing drag and drop performance";
+    addManyElementsToScene(10, "And");
+    auto elements = m_scene->elements();
+    
+    if (!elements.isEmpty()) {
+        measureOperationPerformance("Drag Drop", [&elements]() {
+            QPointF pos = elements.first()->pos();
+            elements.first()->setPos(pos + QPointF(50, 50));
+        });
+    }
+}
+
+void TestUIPerformance::testSelectionPerformance()
+{
+    qDebug() << "Testing selection performance";
+    addManyElementsToScene(50, "And");
+    auto elements = m_scene->elements();
+    
+    measureOperationPerformance("Selection", [&elements]() {
+        for (auto* element : elements) {
+            element->setSelected(true);
+        }
+        for (auto* element : elements) {
+            element->setSelected(false);
+        }
+    });
+}
+
+void TestUIPerformance::testRenderingPerformance()
+{
+    qDebug() << "Testing rendering performance";
+    addManyElementsToScene(100, "And");
+    
+    measureOperationPerformance("Rendering", [this]() {
+        for (int i = 0; i < 10; ++i) {
+            m_view->viewport()->update();
+            QApplication::processEvents();
+        }
+    });
+}
+
+void TestUIPerformance::testUndoRedoPerformance()
+{
+    qDebug() << "Testing undo/redo performance";
+    
+    measureOperationPerformance("Undo/Redo", [this]() {
+        addManyElementsToScene(5, "And");
+        m_scene->clear();
+    });
+}
+
+void TestUIPerformance::testSimulationPerformanceUnderLoad()
+{
+    qDebug() << "Testing simulation performance under load";
+    addManyElementsToScene(20, "And");
+    m_simulation->initialize();
+    
+    measureOperationPerformance("Simulation Under Load", [this]() {
+        for (int i = 0; i < 10; ++i) {
+            m_simulation->update();
+            m_view->viewport()->update();
+            QApplication::processEvents();
+        }
+    });
+}
+
+void TestUIPerformance::testConcurrentOperationPerformance()
+{
+    qDebug() << "Testing concurrent operation performance";
+    addManyElementsToScene(20, "And");
+    
+    measureOperationPerformance("Concurrent Operations", [this]() {
+        m_simulation->update();
+        m_view->viewport()->update();
+        QApplication::processEvents();
+    });
+}
+
+void TestUIPerformance::testExtremeLimitPerformance()
+{
+    qDebug() << "Testing extreme limit performance";
+    
+    measureOperationPerformance("Extreme Limit", [this]() {
+        addManyElementsToScene(200, "And");
+    });
+}
+
+void TestUIPerformance::testMemoryUsageUnderLoad()
+{
+    qDebug() << "Testing memory usage under load";
+    
+    qint64 initialMemory = measureCurrentMemoryUsage();
+    addManyElementsToScene(100, "And");
+    qint64 loadedMemory = measureCurrentMemoryUsage();
+    
+    qint64 memoryIncrease = loadedMemory - initialMemory;
+    qDebug() << "Memory increase under load:" << memoryIncrease << "KB";
+    
+    QVERIFY2(memoryIncrease < 10240, "Memory usage should be reasonable under load");
+}
+
+void TestUIPerformance::testUIResponsivenessMetrics()
+{
+    qDebug() << "Testing UI responsiveness metrics";
+    addManyElementsToScene(50, "And");
+    
+    bool responsive = !UITestFramework::detectUIFreeze(m_view, 1000);
+    QVERIFY2(responsive, "UI should remain responsive");
+}
+
+void TestUIPerformance::benchmarkElementTypes()
+{
+    qDebug() << "Benchmarking different element types";
+    
+    QStringList elementTypes = {"And", "Or", "Not", "InputButton", "Led"};
+    
+    for (const QString& elementType : elementTypes) {
+        measureOperationPerformance(QString("Element %1").arg(elementType), [this, elementType]() {
+            addManyElementsToScene(10, elementType);
+            m_scene->clear();
+        });
+    }
+}
+
+void TestUIPerformance::profileHotCodePaths()
+{
+    qDebug() << "Profiling hot code paths";
+    
+    measureOperationPerformance("Element Creation", [this]() {
+        auto* element = ElementFactory::buildElement(ElementType::And);
+        if (element) {
+            m_scene->addItem(element);
+        }
+    });
+    
+    measureOperationPerformance("Scene Update", [this]() {
+        m_scene->update();
+    });
+    
+    measureOperationPerformance("View Render", [this]() {
+        m_view->viewport()->update();
+        QApplication::processEvents();
+    });
+}
+

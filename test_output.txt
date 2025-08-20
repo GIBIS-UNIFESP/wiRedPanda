@@ -1,0 +1,401 @@
+QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-developer'
+********* Start testing of TestLogicCore *********
+Config: Using QtTest library 5.15.3, Qt 5.15.3 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 11.3.0), ubuntu 22.04
+PASS   : TestLogicCore::initTestCase()
+PASS   : TestLogicCore::testLogicAnd()
+PASS   : TestLogicCore::testLogicOr()
+PASS   : TestLogicCore::testLogicNot()
+PASS   : TestLogicCore::testLogicNand()
+PASS   : TestLogicCore::testLogicNor()
+PASS   : TestLogicCore::testLogicXor()
+PASS   : TestLogicCore::testLogicXnor()
+PASS   : TestLogicCore::testLogicDFlipFlop()
+PASS   : TestLogicCore::testLogicJKFlipFlop()
+PASS   : TestLogicCore::testLogicSRFlipFlop()
+PASS   : TestLogicCore::testLogicTFlipFlop()
+PASS   : TestLogicCore::testLogicDLatch()
+PASS   : TestLogicCore::testLogicSRLatch()
+PASS   : TestLogicCore::testLogicMux()
+PASS   : TestLogicCore::testLogicDemux()
+PASS   : TestLogicCore::testLogicTruthTable()
+PASS   : TestLogicCore::testLogicInput()
+PASS   : TestLogicCore::testLogicOutput()
+PASS   : TestLogicCore::testLogicNode()
+PASS   : TestLogicCore::testMultiInputBoundaries()
+PASS   : TestLogicCore::testInvalidInputHandling()
+PASS   : TestLogicCore::testUpdateWithoutInputs()
+PASS   : TestLogicCore::testComplexBooleanExpressions()
+PASS   : TestLogicCore::testPerformanceAndStress()
+PASS   : TestLogicCore::testLogicProperties()
+PASS   : TestLogicCore::testJKFlipFlopModes()
+PASS   : TestLogicCore::testTFlipFlopToggling()
+PASS   : TestLogicCore::cleanupTestCase()
+Totals: 29 passed, 0 failed, 0 skipped, 0 blacklisted, 22ms
+********* Finished testing of TestLogicCore *********
+********* Start testing of TestGraphicElements *********
+Config: Using QtTest library 5.15.3, Qt 5.15.3 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 11.3.0), ubuntu 22.04
+PASS   : TestGraphicElements::initTestCase()
+PASS   : TestGraphicElements::testBasicGateStructure()
+PASS   : TestGraphicElements::testInputOutputElements()
+PASS   : TestGraphicElements::testSequentialElementStructure()
+PASS   : TestGraphicElements::testComplexElementStructure()
+PASS   : TestGraphicElements::testAndGateStructure()
+PASS   : TestGraphicElements::testOrGateStructure()
+PASS   : TestGraphicElements::testMuxDemuxStructure()
+PASS   : TestGraphicElements::testFlipFlopStructure()
+PASS   : TestGraphicElements::testLatchStructure()
+PASS   : TestGraphicElements::testNodeStructure()
+PASS   : TestGraphicElements::testVccGndStructure()
+PASS   : TestGraphicElements::testICStructure()
+PASS   : TestGraphicElements::testICData()
+PASS   : TestGraphicElements::testMultipleICs()
+PASS   : TestGraphicElements::testDisplayElements()
+PASS   : TestGraphicElements::testAudioElements()
+PASS   : TestGraphicElements::testAnnotationElements()
+PASS   : TestGraphicElements::testElementBoundaryConditions()
+PASS   : TestGraphicElements::testErrorConditions()
+PASS   : TestGraphicElements::cleanupTestCase()
+Totals: 21 passed, 0 failed, 0 skipped, 0 blacklisted, 491ms
+********* Finished testing of TestGraphicElements *********
+********* Start testing of TestCircuitIntegration *********
+Config: Using QtTest library 5.15.3, Qt 5.15.3 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 11.3.0), ubuntu 22.04
+PASS   : TestCircuitIntegration::initTestCase()
+PASS   : TestCircuitIntegration::testBasicAndGateCircuit()
+PASS   : TestCircuitIntegration::testBasicOrGateCircuit()
+PASS   : TestCircuitIntegration::testNotGateChain()
+PASS   : TestCircuitIntegration::testCombinationalLogicCircuit()
+PASS   : TestCircuitIntegration::testDFlipFlopWithClock()
+PASS   : TestCircuitIntegration::testJKFlipFlopSequence()
+PASS   : TestCircuitIntegration::testSRFlipFlopBehavior()
+PASS   : TestCircuitIntegration::testLatchCircuit()
+PASS   : TestCircuitIntegration::testBinaryCounter()
+PASS   : TestCircuitIntegration::testMultiplexerCircuit()
+PASS   : TestCircuitIntegration::testDecoderCircuit()
+PASS   : TestCircuitIntegration::testAdderCircuit()
+PASS   : TestCircuitIntegration::testShiftRegisterCircuit()
+PASS   : TestCircuitIntegration::testBinaryCounterWithFlipFlops()
+PASS   : TestCircuitIntegration::testCrossCoupledMemoryCircuits()
+PASS   : TestCircuitIntegration::testSRLatchBugFix()
+PASS   : TestCircuitIntegration::testDLatchTransparency()
+PASS   : TestCircuitIntegration::testDLatchEnableSignal()
+PASS   : TestCircuitIntegration::testMemoryCircuitEdgeCases()
+PASS   : TestCircuitIntegration::testLargeCircuitSimulation()
+PASS   : TestCircuitIntegration::testComplexConnectionPatterns()
+PASS   : TestCircuitIntegration::testSequentialTimingVerification()
+PASS   : TestCircuitIntegration::cleanupTestCase()
+Totals: 24 passed, 0 failed, 0 skipped, 0 blacklisted, 85ms
+********* Finished testing of TestCircuitIntegration *********
+********* Start testing of TestSimulationWorkflow *********
+Config: Using QtTest library 5.15.3, Qt 5.15.3 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 11.3.0), ubuntu 22.04
+PASS   : TestSimulationWorkflow::initTestCase()
+PASS   : TestSimulationWorkflow::testLoadAndSimulateExampleFiles()
+PASS   : TestSimulationWorkflow::testSpecificExampleSimulation()
+PASS   : TestSimulationWorkflow::testRoundTripFileSerialization()
+PASS   : TestSimulationWorkflow::testSimulationLifecycle()
+PASS   : TestSimulationWorkflow::testTimingBehavior()
+PASS   : TestSimulationWorkflow::testStateTransitions()
+PASS   : TestSimulationWorkflow::testErrorHandlingInSimulation()
+PASS   : TestSimulationWorkflow::testMemoryManagement()
+PASS   : TestSimulationWorkflow::testBasicSimulationWorkflow()
+PASS   : TestSimulationWorkflow::testElementMappingTopologicalSort()
+PASS   : TestSimulationWorkflow::testDependencyResolution()
+PASS   : TestSimulationWorkflow::testPriorityCalculation()
+PASS   : TestSimulationWorkflow::testSimulationConvergence()
+PASS   : TestSimulationWorkflow::testCombinationalLoopDetection()
+PASS   : TestSimulationWorkflow::cleanupTestCase()
+Totals: 16 passed, 0 failed, 0 skipped, 0 blacklisted, 306ms
+********* Finished testing of TestSimulationWorkflow *********
+********* Start testing of TestCommands *********
+Config: Using QtTest library 5.15.3, Qt 5.15.3 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 11.3.0), ubuntu 22.04
+PASS   : TestCommands::initTestCase()
+PASS   : TestCommands::testAddDeleteCommands()
+PASS   : TestCommands::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped, 0 blacklisted, 14ms
+********* Finished testing of TestCommands *********
+********* Start testing of TestFiles *********
+Config: Using QtTest library 5.15.3, Qt 5.15.3 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 11.3.0), ubuntu 22.04
+PASS   : TestFiles::initTestCase()
+PASS   : TestFiles::testFiles()
+PASS   : TestFiles::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped, 0 blacklisted, 3601ms
+********* Finished testing of TestFiles *********
+********* Start testing of TestIcons *********
+Config: Using QtTest library 5.15.3, Qt 5.15.3 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 11.3.0), ubuntu 22.04
+PASS   : TestIcons::initTestCase()
+PASS   : TestIcons::testIcons()
+PASS   : TestIcons::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped, 0 blacklisted, 5ms
+********* Finished testing of TestIcons *********
+********* Start testing of TestSerializationRegression *********
+Config: Using QtTest library 5.15.3, Qt 5.15.3 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 11.3.0), ubuntu 22.04
+PASS   : TestSerializationRegression::initTestCase()
+PASS   : TestSerializationRegression::testCurrentExampleFiles(counter.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(decoder.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(dflipflop-masterslave.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(dflipflop.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(dflipflop2.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(display-3bits-counter.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(display-3bits.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(display-4bits-counter.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(display-4bits.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(dlatch.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(ic.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(input.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(jkflipflop.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(notes.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(register.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(sequential.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(serialize.panda)
+PASS   : TestSerializationRegression::testCurrentExampleFiles(tflipflop.panda)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v1_8_beta_counter)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v1_8_beta_dflipflop)
+PASS   : TestSerializationRegression::testLegacyFileLoading(1_9_1_counter)
+PASS   : TestSerializationRegression::testLegacyFileLoading(1_9_1_dflipflop)
+PASS   : TestSerializationRegression::testLegacyFileLoading(2_1_counter)
+PASS   : TestSerializationRegression::testLegacyFileLoading(2_1_dflipflop)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v2_4_0_counter)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v2_4_0_dflipflop)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v2_4_0_decoder)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v2_7_0_counter)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v2_7_0_dflipflop)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v2_7_0_decoder)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v3_0_1_counter)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v3_0_1_dflipflop)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v3_0_1_decoder)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4_1_0_counter)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4_1_0_dflipflop)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4_1_0_decoder)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4_2_0_counter)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4_2_0_dflipflop)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4_2_0_decoder)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v1.1_counter)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v1.1_dflipflop)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v1.1_decoder)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4.0_counter)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4.0_dflipflop)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4.0_decoder)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4.0_jkflipflop)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4.1_counter)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4.1_dflipflop)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4.1_decoder)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4.1_jkflipflop)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4.2_counter)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4.2_dflipflop)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4.2_decoder)
+PASS   : TestSerializationRegression::testLegacyFileLoading(v4.2_jkflipflop)
+PASS   : TestSerializationRegression::testCorruptedFiles()
+PASS   : TestSerializationRegression::testUnsupportedVersions()
+PASS   : TestSerializationRegression::testSaveLoadRoundTrip()
+PASS   : TestSerializationRegression::testVersionUpgrade()
+PASS   : TestSerializationRegression::cleanupTestCase()
+Totals: 60 passed, 0 failed, 0 skipped, 0 blacklisted, 3082ms
+********* Finished testing of TestSerializationRegression *********
+********* Start testing of TestUIInteraction *********
+Config: Using QtTest library 5.15.3, Qt 5.15.3 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 11.3.0), ubuntu 22.04
+PASS   : TestUIInteraction::initTestCase()
+PASS   : TestUIInteraction::testBuildSimpleCircuitWithClicks()
+PASS   : TestUIInteraction::testDragAndDropElements()
+PASS   : TestUIInteraction::testConnectionCreation()
+QDEBUG : TestUIInteraction::testCompleteCircuitBuildingWorkflow() 254: TestUIInteraction::testCompleteCircuitBuildingWorkflow => Testing complete circuit building workflow
+QDEBUG : TestUIInteraction::testCompleteCircuitBuildingWorkflow() 266: UITestFramework::simulateCircuitBuildingWorkflow => Starting circuit building workflow simulation
+QDEBUG : TestUIInteraction::testCompleteCircuitBuildingWorkflow() 309: UITestFramework::simulateCircuitBuildingWorkflow => Circuit building workflow simulation completed
+QDEBUG : TestUIInteraction::testCompleteCircuitBuildingWorkflow() 366: UITestFramework::logPerformanceMetric => Performance: "UI Operation" took 0 ms
+QDEBUG : TestUIInteraction::testCompleteCircuitBuildingWorkflow() 278: TestUIInteraction::testCompleteCircuitBuildingWorkflow => Circuit building workflow completed successfully
+PASS   : TestUIInteraction::testCompleteCircuitBuildingWorkflow()
+QDEBUG : TestUIInteraction::testCircuitModificationWorkflow() 284: TestUIInteraction::testCircuitModificationWorkflow => Testing circuit modification workflow
+QDEBUG : TestUIInteraction::testCircuitModificationWorkflow() 417: TestUIInteraction::executeComplexUserWorkflow => Executing complex user workflow with 5 steps
+QDEBUG : TestUIInteraction::testCircuitModificationWorkflow() 420: TestUIInteraction::executeComplexUserWorkflow => Workflow step: "select_element"
+QDEBUG : TestUIInteraction::testCircuitModificationWorkflow() 420: TestUIInteraction::executeComplexUserWorkflow => Workflow step: "move_element"
+QDEBUG : TestUIInteraction::testCircuitModificationWorkflow() 420: TestUIInteraction::executeComplexUserWorkflow => Workflow step: "add_new_element"
+QDEBUG : TestUIInteraction::testCircuitModificationWorkflow() 420: TestUIInteraction::executeComplexUserWorkflow => Workflow step: "create_connection"
+QDEBUG : TestUIInteraction::testCircuitModificationWorkflow() 420: TestUIInteraction::executeComplexUserWorkflow => Workflow step: "test_circuit"
+FAIL!  : TestUIInteraction::testCircuitModificationWorkflow() '!UITestFramework::detectUIFreeze(m_view, 500)' returned FALSE. (UI should remain responsive during circuit modifications)
+   Loc: [/workspace/test/testuiinteraction.cpp(303)]
+QDEBUG : TestUIInteraction::testErrorRecoveryWorkflow() 737: TestUIInteraction::testErrorRecoveryWorkflow => Testing error recovery workflow
+QDEBUG : TestUIInteraction::testErrorRecoveryWorkflow() 505: TestUIInteraction::simulateInvalidUserActions => Simulating invalid user actions
+QDEBUG : TestUIInteraction::testErrorRecoveryWorkflow() 515: TestUIInteraction::simulateInvalidUserActions => Expected exception caught for invalid element type
+FAIL!  : TestUIInteraction::testErrorRecoveryWorkflow() 'recovered' returned FALSE. (UI should recover from error conditions)
+   Loc: [/workspace/test/testuiinteraction.cpp(744)]
+QDEBUG : TestUIInteraction::testUndoRedoInteractionWorkflow() 753: TestUIInteraction::testUndoRedoInteractionWorkflow => Testing undo/redo interaction workflow
+PASS   : TestUIInteraction::testUndoRedoInteractionWorkflow()
+QDEBUG : TestUIInteraction::testMultiSelectAndBulkOperations() 775: TestUIInteraction::testMultiSelectAndBulkOperations => Testing multi-select and bulk operations
+PASS   : TestUIInteraction::testMultiSelectAndBulkOperations()
+QDEBUG : TestUIInteraction::testContextMenuInteractions() 801: TestUIInteraction::testContextMenuInteractions => Testing context menu interactions
+
+=== Received signal at function time: 39ms, total time: 12383ms, dumping stack ===
+GNU gdb (Ubuntu 12.1-0ubuntu1~22.04.2) 12.1
+Copyright (C) 2022 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word".
+Attaching to process 26888
+[New LWP 26926]
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+0x00007fd669dc642f in __GI___wait4 (pid=26985, stat_loc=stat_loc@entry=0x7fd66a7f0478, options=options@entry=0, usage=usage@entry=0x0) at ../sysdeps/unix/sysv/linux/wait4.c:30
+(gdb) 
+Thread 2 (Thread 0x7fd66680e640 (LWP 26926) "QThread"):
+#0  __futex_abstimed_wait_common64 (private=124, cancel=true, abstime=0x7fd66680dca0, op=137, expected=0, futex_word=0x563bc0121470) at ./nptl/futex-internal.c:57
+        sc_cancel_oldtype = 0
+        sc_ret = <optimized out>
+        resultvar = <optimized out>
+        __arg6 = <optimized out>
+        __arg5 = <optimized out>
+        __arg4 = <optimized out>
+        __arg3 = <optimized out>
+        __arg2 = <optimized out>
+        __arg1 = <optimized out>
+        _a6 = <optimized out>
+        _a5 = <optimized out>
+        _a4 = <optimized out>
+        _a3 = <optimized out>
+        _a2 = <optimized out>
+        _a1 = <optimized out>
+#1  __futex_abstimed_wait_common (cancel=true, private=124, abstime=0x7fd66680dca0, clockid=0, expected=0, futex_word=0x563bc0121470) at ./nptl/futex-internal.c:87
+        err = <optimized out>
+        clockbit = 256
+        op = 137
+        err = <optimized out>
+        clockbit = <optimized out>
+        op = <optimized out>
+#2  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x563bc0121470, expected=expected@entry=0, clockid=clockid@entry=1, abstime=abstime@entry=0x7fd66680dca0, private=private@entry=0) at ./nptl/futex-internal.c:139
+No locals.
+#3  0x00007fd669d702dd in __pthread_cond_wait_common (abstime=0x7fd66680dca0, clockid=1, mutex=0x563bc0121420, cond=0x563bc0121448) at ./nptl/pthread_cond_wait.c:503
+        spin = 0
+        buffer = {__routine = 0x7fd669d6f720 <__condvar_cleanup_waiting>, __arg = 0x7fd66680dc00, __canceltype = 1610615664, __prev = 0x0}
+        cbuffer = {wseq = 20, cond = 0x563bc0121448, mutex = 0x563bc0121420, private = 0}
+        err = <optimized out>
+        g = 0
+        flags = <optimized out>
+        g1_start = <optimized out>
+        maxspin = 0
+        signals = <optimized out>
+        result = 0
+        wseq = 20
+        seq = 10
+        private = 0
+        maxspin = <optimized out>
+        err = <optimized out>
+        result = <optimized out>
+        wseq = <optimized out>
+        g = <optimized out>
+        seq = <optimized out>
+        flags = <optimized out>
+        private = <optimized out>
+        signals = <optimized out>
+        done = <optimized out>
+        g1_start = <optimized out>
+        spin = <optimized out>
+        buffer = <optimized out>
+        cbuffer = <optimized out>
+        s = <optimized out>
+#4  ___pthread_cond_clockwait64 (abstime=0x7fd66680dca0, clockid=1, mutex=0x563bc0121420, cond=0x563bc0121448) at ./nptl/pthread_cond_wait.c:691
+No locals.
+#5  ___pthread_cond_clockwait64 (cond=0x563bc0121448, mutex=0x563bc0121420, clockid=1, abstime=0x7fd66680dca0) at ./nptl/pthread_cond_wait.c:679
+No locals.
+#6  0x00007fd66a7b8204 in ?? () from /lib/x86_64-linux-gnu/libQt5Test.so.5
+No symbol table info available.
+#7  0x00007fd66a304ca1 in ?? () from /lib/x86_64-linux-gnu/libQt5Core.so.5
+No symbol table info available.
+#8  0x00007fd669d70ac3 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:442
+        ret = <optimized out>
+        pd = <optimized out>
+        out = <optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {140722886866640, 4479023077947294927, 140558819452480, 2, 140558875428816, 140722886866992, -4502365135270886193, -4502336923153382193}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x0, 0x0}, data = {prev = 0x0, cleanup = 0x0, canceltype = 0}}}
+        not_first_call = <optimized out>
+#9  0x00007fd669e02850 in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:81
+No locals.
+
+Thread 1 (Thread 0x7fd666bb1240 (LWP 26888) "wiredpanda-test"):
+#0  0x00007fd669dc642f in __GI___wait4 (pid=26985, stat_loc=stat_loc@entry=0x7fd66a7f0478, options=options@entry=0, usage=usage@entry=0x0) at ../sysdeps/unix/sysv/linux/wait4.c:30
+        sc_ret = -512
+        sc_cancel_oldtype = 0
+        sc_ret = <optimized out>
+#1  0x00007fd669dc63ab in __GI___waitpid (pid=<optimized out>, stat_loc=stat_loc@entry=0x7fd66a7f0478, options=options@entry=0) at ./posix/waitpid.c:38
+No locals.
+#2  0x00007fd669d2cbdb in do_system (line=<optimized out>) at ../sysdeps/posix/system.c:171
+        __result = <optimized out>
+        _cleanup_start_doit = true
+        _buffer = {__routine = 0x7fd669d2cc60 <cancel_handler>, __arg = 0x7fd66a7f0480, __canceltype = 0, __prev = 0x0}
+        _cleanup_routine = 0x7fd669d2cc60 <cancel_handler>
+        cancel_args = {quit = 0x7fd669ef87a0 <quit>, intr = 0x7fd669ef8840 <intr>, pid = 26985}
+        status = -1
+        ret = 0
+        pid = 26985
+        sa = {__sigaction_handler = {sa_handler = 0x1, sa_sigaction = 0x1}, sa_mask = {__val = {65536, 0, 0, 4396681129041929728, 3475935992322289200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18446744073709551615}}, sa_flags = 0, sa_restorer = 0x6e756c6f760a3009}
+        omask = {__val = {21711, 3472328296227670330, 3472328296227680304, 7440904711408594992, 3472328296225127028, 3832616266417385520, 5291836502725518128, 3472328295574038638, 3472328296227680304, 8097827316026060848, 3472328128895742544, 3472328296227680304, 7008456647201796144, 3472285459133384048, 3472328296227680304, 140558886438960}}
+        reset = {__val = {6, 4988928597175334254, 8388068008348098676, 7018141387275776032, 7307221376550330656, 751094489344402802, 8289566090349998704, 7523097586805273701, 140558886439471, 0, 0, 0, 0, 0, 0, 0}}
+        spawn_attr = {__flags = 12, __pgrp = 0, __sd = {__val = {6, 4988928597175334254, 8388068008348098676, 7018141387275776032, 7307221376550330656, 751094489344402802, 8289566090349998704, 7523097586805273701, 140558886439471, 0, 0, 0, 0, 0, 0, 0}}, __ss = {__val = {21711, 3472328296227670330, 3472328296227680304, 7440904711408594992, 3472328296225127028, 3832616266417385520, 5291836502725518128, 3472328295574038638, 3472328296227680304, 8097827316026060848, 3472328128895742544, 3472328296227680304, 7008456647201796144, 3472285459133384048, 3472328296227680304, 140558886438960}}, __sp = {sched_priority = 0}, __policy = 0, __pad = {0 <repeats 16 times>}}
+#3  0x00007fd66a7ad866 in ?? () from /lib/x86_64-linux-gnu/libQt5Test.so.5
+No symbol table info available.
+#4  0x00007fd66a7b73b6 in ?? () from /lib/x86_64-linux-gnu/libQt5Test.so.5
+No symbol table info available.
+#5  <signal handler called>
+No locals.
+#6  0x0000563b8e3c068a in Scene::contextMenu(QPoint) ()
+No symbol table info available.
+#7  0x0000563b8e3c8889 in Scene::mousePressEvent(QGraphicsSceneMouseEvent*) ()
+No symbol table info available.
+#8  0x00007fd66b38da91 in QGraphicsScene::event(QEvent*) () from /lib/x86_64-linux-gnu/libQt5Widgets.so.5
+No symbol table info available.
+#9  0x00007fd66b03b713 in QApplicationPrivate::notify_helper(QObject*, QEvent*) () from /lib/x86_64-linux-gnu/libQt5Widgets.so.5
+No symbol table info available.
+#10 0x00007fd66a4f1e3a in QCoreApplication::notifyInternal2(QObject*, QEvent*) () from /lib/x86_64-linux-gnu/libQt5Core.so.5
+No symbol table info available.
+#11 0x00007fd66b3ab585 in QGraphicsView::mousePressEvent(QMouseEvent*) () from /lib/x86_64-linux-gnu/libQt5Widgets.so.5
+No symbol table info available.
+#12 0x0000563b8e3421d4 in GraphicsView::mousePressEvent(QMouseEvent*) ()
+No symbol table info available.
+#13 0x00007fd66b07e4ee in QWidget::event(QEvent*) () from /lib/x86_64-linux-gnu/libQt5Widgets.so.5
+No symbol table info available.
+#14 0x00007fd66b12c422 in QFrame::event(QEvent*) () from /lib/x86_64-linux-gnu/libQt5Widgets.so.5
+No symbol table info available.
+#15 0x00007fd66a4f1b9a in QCoreApplicationPrivate::sendThroughObjectEventFilters(QObject*, QEvent*) () from /lib/x86_64-linux-gnu/libQt5Core.so.5
+No symbol table info available.
+#16 0x00007fd66b03b702 in QApplicationPrivate::notify_helper(QObject*, QEvent*) () from /lib/x86_64-linux-gnu/libQt5Widgets.so.5
+No symbol table info available.
+#17 0x00007fd66b043364 in QApplication::notify(QObject*, QEvent*) () from /lib/x86_64-linux-gnu/libQt5Widgets.so.5
+No symbol table info available.
+#18 0x0000563b8e1fe369 in QTest::mouseEvent(QTest::MouseAction, QWidget*, Qt::MouseButton, QFlags<Qt::KeyboardModifier>, QPoint, int) ()
+No symbol table info available.
+#19 0x0000563b8e1fda96 in QTest::mouseEvent(QTest::MouseAction, QWidget*, Qt::MouseButton, QFlags<Qt::KeyboardModifier>, QPoint, int) ()
+No symbol table info available.
+#20 0x0000563b8e2119c0 in QTest::mouseClick(QWidget*, Qt::MouseButton, QFlags<Qt::KeyboardModifier>, QPoint, int) ()
+No symbol table info available.
+#21 0x0000563b8e20c01e in TestUIInteraction::testContextMenuInteractions() ()
+No symbol table info available.
+#22 0x0000563b8e06cdea in TestUIInteraction::qt_static_metacall(QObject*, QMetaObject::Call, int, void**) ()
+No symbol table info available.
+#23 0x00007fd66a4fd25b in QMetaMethod::invoke(QObject*, Qt::ConnectionType, QGenericReturnArgument, QGenericArgument, QGenericArgument, QGenericArgument, QGenericArgument, QGenericArgument, QGenericArgument, QGenericArgument, QGenericArgument, QGenericArgument, QGenericArgument) const () from /lib/x86_64-linux-gnu/libQt5Core.so.5
+No symbol table info available.
+#24 0x00007fd66a7b5383 in ?? () from /lib/x86_64-linux-gnu/libQt5Test.so.5
+No symbol table info available.
+#25 0x00007fd66a7b5e1b in ?? () from /lib/x86_64-linux-gnu/libQt5Test.so.5
+No symbol table info available.
+#26 0x00007fd66a7b6379 in ?? () from /lib/x86_64-linux-gnu/libQt5Test.so.5
+No symbol table info available.
+#27 0x00007fd66a7b6864 in QTest::qRun() () from /lib/x86_64-linux-gnu/libQt5Test.so.5
+No symbol table info available.
+#28 0x00007fd66a7b6c40 in QTest::qExec(QObject*, int, char**) () from /lib/x86_64-linux-gnu/libQt5Test.so.5
+No symbol table info available.
+#29 0x0000563b8e15dc44 in main ()
+No symbol table info available.
+Detaching from program: /workspace/build/wiredpanda-test, process 26888
+[Inferior 1 (process 26888) detached]
+=== End of stack trace ===
+QFATAL : TestUIInteraction::testContextMenuInteractions() Received signal 11
+         Function time: 39ms Total time: 12383ms
+FAIL!  : TestUIInteraction::testContextMenuInteractions() Received a fatal error.
+   Loc: [Unknown file(0)]
+Totals: 7 passed, 3 failed, 0 skipped, 0 blacklisted, 13405ms
+********* Finished testing of TestUIInteraction *********
