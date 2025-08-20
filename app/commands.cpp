@@ -243,83 +243,316 @@ AddItemsCommandWithWireless::AddItemsCommandWithWireless(const QList<QGraphicsIt
     , m_scene(scene)
     , m_wirelessMappings(wirelessMappings)
 {
-    SimulationBlocker blocker(m_scene->simulation());
-    const auto items_ = loadList(items, m_ids, m_otherIds);
-    addItems(m_scene, items_);
-    setText(tr("Add %1 elements with wireless connections").arg(items_.size()));
-
-    // Store the current scene mappings that might be affected
-    QList<int> allIds = m_ids;
-    for (const auto &mapping : m_wirelessMappings) {
-        for (const auto &dest : mapping) {
-            allIds.append(dest.nodeId);
-        }
+    if (!scene) {
+        throw WirelessMemoryException("Scene pointer is null in AddItemsCommandWithWireless constructor");
     }
-    m_oldMappings = Serialization::filterNodeMappings(m_scene->nodeMapping, allIds);
+    
+    if (items.isEmpty()) {
+        throw WirelessValidationException("Cannot create AddItemsCommandWithWireless with empty items list");
+    }
+    
+    try {
+        SimulationBlocker blocker(m_scene->simulation());
+        const auto items_ = loadList(items, m_ids, m_otherIds);
+        
+        if (items_.size() != items.size()) {
+            throw WirelessValidationException(QString("Item count mismatch: expected %1, got %2")
+                .arg(items.size()).arg(items_.size()));
+        }
+        
+        addItems(m_scene, items_);
+        setText(tr("Add %1 elements with wireless connections").arg(items_.size()));
+
+        // Validate wireless mappings before storing
+        validateMappingIntegrity();
+        
+        // Store the current scene mappings that might be affected
+        QList<int> allIds = m_ids;
+        for (const auto &mapping : m_wirelessMappings) {
+            for (const auto &dest : mapping) {
+                allIds.append(dest.nodeId);
+            }
+        }
+        
+        {
+            QReadLocker locker(&m_scene->m_wirelessMappingLock);
+            m_oldMappings = Serialization::filterNodeMappings(m_scene->nodeMapping, allIds);
+        }
+        
+        qCDebug(zero) << "Created AddItemsCommandWithWireless for" << items_.size() 
+                      << "items with" << m_wirelessMappings.size() << "wireless mappings";
+                      
+    } catch (const std::exception &e) {
+        handleMappingError("constructor", -1, QString::fromStdString(e.what()));
+        throw;
+    }
 }
 
 void AddItemsCommandWithWireless::undo()
 {
     qCDebug(zero) << text();
-    SimulationBlocker blocker(m_scene->simulation());
-    const auto items = findItems(m_ids);
-    saveItems(m_itemData, items, m_otherIds);
+    
+    if (!m_scene) {
+        handleMappingError("undo", -1, "Scene pointer is null");
+        return;
+    }
+    
+    try {
+        SimulationBlocker blocker(m_scene->simulation());
+        const auto items = findItems(m_ids);
+        
+        if (items.size() != m_ids.size()) {
+            throw WirelessValidationException(QString("Item count mismatch during undo: expected %1, got %2")
+                .arg(m_ids.size()).arg(items.size()));
+        }
+        
+        saveItems(m_itemData, items, m_otherIds);
 
-    // Remove wireless mappings before deleting items
-    for (int i = 0; i < items.size(); ++i) {
-        if (auto *itemId = dynamic_cast<ItemWithId *>(items.at(i))) {
-            int currentId = itemId->id();
-
-            // Remove mappings involving this node
-            m_scene->nodeMapping.remove(currentId);
-
-            // Remove this node from other mappings
-            for (auto it = m_scene->nodeMapping.begin(); it != m_scene->nodeMapping.end(); ++it) {
-                QSet<Destination> filteredDest;
-                for (const auto &dest : it.value()) {
-                    if (dest.nodeId != currentId) {
-                        filteredDest.insert(dest);
-                    }
+        // Remove wireless mappings safely before deleting items
+        for (int i = 0; i < items.size(); ++i) {
+            if (auto *itemId = dynamic_cast<ItemWithId *>(items.at(i))) {
+                int currentId = itemId->id();
+                try {
+                    m_scene->removeNodeFromWirelessMappings(currentId);
+                } catch (const std::exception &e) {
+                    handleMappingError("undo-mapping-removal", currentId, QString::fromStdString(e.what()));
+                    // Continue with other items
                 }
-                it.value() = filteredDest;
             }
         }
+
+        deleteItems(m_scene, items);
+
+        // Restore old mappings safely
+        if (!safelyRestoreMappings()) {
+            qCCritical(zero) << "Failed to restore wireless mappings during undo";
+        }
+
+        m_scene->setCircuitUpdateRequired();
+        qCDebug(zero) << "Successfully completed undo operation";
+        
+    } catch (const std::exception &e) {
+        handleMappingError("undo", -1, QString::fromStdString(e.what()));
+        throw WirelessConnectionException(QString("Undo operation failed: %1").arg(e.what()));
     }
-
-    deleteItems(m_scene, items);
-
-    // Restore old mappings
-    for (auto it = m_oldMappings.begin(); it != m_oldMappings.end(); ++it) {
-        m_scene->nodeMapping[it.key()] = it.value();
-    }
-
-    m_scene->setCircuitUpdateRequired();
 }
 
 void AddItemsCommandWithWireless::redo()
 {
     qCDebug(zero) << text();
-    SimulationBlocker blocker(m_scene->simulation());
-    loadItems(m_scene, m_itemData, m_ids, m_otherIds);
+    
+    if (!m_scene) {
+        handleMappingError("redo", -1, "Scene pointer is null");
+        return;
+    }
+    
+    try {
+        SimulationBlocker blocker(m_scene->simulation());
+        loadItems(m_scene, m_itemData, m_ids, m_otherIds);
 
-    // Build ID translation map for wireless mappings
-    QMap<int, int> idTranslation;
-    const auto items = findItems(m_ids);
-    for (int i = 0; i < items.size() && i < m_ids.size(); ++i) {
-        if (auto *itemId = dynamic_cast<ItemWithId *>(items.at(i))) {
-            int oldId = m_ids.at(i);
-            int newId = itemId->id();
-            idTranslation[oldId] = newId;
+        // Build ID translation map for wireless mappings
+        QMap<int, int> idTranslation;
+        const auto items = findItems(m_ids);
+        
+        if (items.size() != m_ids.size()) {
+            throw WirelessValidationException(QString("Item count mismatch during redo: expected %1, got %2")
+                .arg(m_ids.size()).arg(items.size()));
+        }
+        
+        for (int i = 0; i < items.size() && i < m_ids.size(); ++i) {
+            if (auto *itemId = dynamic_cast<ItemWithId *>(items.at(i))) {
+                int oldId = m_ids.at(i);
+                int newId = itemId->id();
+                idTranslation[oldId] = newId;
+            } else {
+                qCWarning(zero) << "Item at index" << i << "is not ItemWithId during redo";
+            }
+        }
+
+        // Apply wireless mappings with ID translation atomically
+        {
+            QWriteLocker locker(&m_scene->m_wirelessMappingLock);
+            auto translatedMappings = Serialization::translateNodeMappings(m_wirelessMappings, idTranslation);
+            
+            // Validate translated mappings before applying
+            for (auto it = translatedMappings.cbegin(); it != translatedMappings.cend(); ++it) {
+                const int sourceId = it.key();
+                for (const auto &dest : it.value()) {
+                    if (!m_scene->element(sourceId)) {
+                        throw WirelessValidationException(QString("Source element %1 not found in scene").arg(sourceId));
+                    }
+                    if (!m_scene->element(dest.nodeId)) {
+                        throw WirelessValidationException(QString("Destination element %1 not found in scene").arg(dest.nodeId));
+                    }
+                }
+            }
+            
+            // Apply mappings
+            for (auto it = translatedMappings.begin(); it != translatedMappings.end(); ++it) {
+                m_scene->nodeMapping[it.key()] = it.value();
+            }
+            qCDebug(zero) << "Applied" << translatedMappings.size() << "translated wireless mappings";
+        }
+
+        m_scene->setCircuitUpdateRequired();
+        qCDebug(zero) << "Successfully completed redo operation";
+        
+    } catch (const std::exception &e) {
+        handleMappingError("redo", -1, QString::fromStdString(e.what()));
+        throw WirelessConnectionException(QString("Redo operation failed: %1").arg(e.what()));
+    }
+}
+
+bool AddItemsCommandWithWireless::validateWirelessMappings() const
+{
+    if (!m_scene) {
+        return false;
+    }
+    
+    try {
+        QReadLocker locker(&m_scene->m_wirelessMappingLock);
+        
+        for (auto it = m_wirelessMappings.cbegin(); it != m_wirelessMappings.cend(); ++it) {
+            const int sourceId = it.key();
+            
+            // Check if source node exists
+            if (!m_scene->element(sourceId)) {
+                qCWarning(zero) << "Wireless mapping source node" << sourceId << "not found";
+                return false;
+            }
+            
+            // Validate destinations
+            for (const auto &dest : it.value()) {
+                if (!m_scene->element(dest.nodeId)) {
+                    qCWarning(zero) << "Wireless mapping destination node" << dest.nodeId << "not found";
+                    return false;
+                }
+                
+                if (dest.connectionId != -1 && !m_scene->verifyConnectionExists(dest.connectionId)) {
+                    qCWarning(zero) << "Wireless mapping connection" << dest.connectionId << "not found";
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+        
+    } catch (const std::exception &e) {
+        qCCritical(zero) << "Exception during wireless mapping validation:" << e.what();
+        return false;
+    }
+}
+
+bool AddItemsCommandWithWireless::validateItemIntegrity() const
+{
+    try {
+        const auto items = findItems(m_ids);
+        
+        if (items.size() != m_ids.size()) {
+            qCWarning(zero) << "Item integrity check failed: size mismatch";
+            return false;
+        }
+        
+        // Verify all items are in scene
+        if (m_scene) {
+            const auto sceneItems = m_scene->items();
+            for (const auto *item : items) {
+                if (!sceneItems.contains(const_cast<QGraphicsItem*>(item))) {
+                    qCWarning(zero) << "Item not found in scene during integrity check";
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+        
+    } catch (const std::exception &e) {
+        qCCritical(zero) << "Exception during item integrity validation:" << e.what();
+        return false;
+    }
+}
+
+void AddItemsCommandWithWireless::handleMappingError(const QString &operation, int nodeId, const QString &details) const
+{
+    QString errorMsg = QString("Wireless mapping error during %1").arg(operation);
+    if (nodeId != -1) {
+        errorMsg += QString(" for node %1").arg(nodeId);
+    }
+    if (!details.isEmpty()) {
+        errorMsg += QString(": %1").arg(details);
+    }
+    
+    qCCritical(zero) << errorMsg;
+    
+    // Could implement error recovery strategies here
+    // For now, just log the error
+}
+
+bool AddItemsCommandWithWireless::safelyRestoreMappings()
+{
+    if (!m_scene || m_oldMappings.isEmpty()) {
+        return true; // Nothing to restore
+    }
+    
+    try {
+        QWriteLocker locker(&m_scene->m_wirelessMappingLock);
+        
+        // Validate mappings before restoring
+        for (auto it = m_oldMappings.cbegin(); it != m_oldMappings.cend(); ++it) {
+            const int sourceId = it.key();
+            if (!m_scene->element(sourceId)) {
+                qCWarning(zero) << "Cannot restore mapping for non-existent source node" << sourceId;
+                continue;
+            }
+            
+            for (const auto &dest : it.value()) {
+                if (!m_scene->element(dest.nodeId)) {
+                    qCWarning(zero) << "Cannot restore mapping for non-existent destination node" << dest.nodeId;
+                    continue;
+                }
+            }
+        }
+        
+        // Restore mappings
+        for (auto it = m_oldMappings.cbegin(); it != m_oldMappings.cend(); ++it) {
+            m_scene->nodeMapping[it.key()] = it.value();
+        }
+        
+        qCDebug(zero) << "Successfully restored" << m_oldMappings.size() << "wireless mappings";
+        return true;
+        
+    } catch (const std::exception &e) {
+        handleMappingError("mapping-restoration", -1, QString::fromStdString(e.what()));
+        return false;
+    }
+}
+
+void AddItemsCommandWithWireless::validateMappingIntegrity() const
+{
+    // Check for self-references
+    for (auto it = m_wirelessMappings.cbegin(); it != m_wirelessMappings.cend(); ++it) {
+        const int sourceId = it.key();
+        for (const auto &dest : it.value()) {
+            if (dest.nodeId == sourceId) {
+                throw WirelessValidationException(QString("Self-reference detected in wireless mapping for node %1").arg(sourceId));
+            }
         }
     }
-
-    // Apply wireless mappings with ID translation
-    auto translatedMappings = Serialization::translateNodeMappings(m_wirelessMappings, idTranslation);
-    for (auto it = translatedMappings.begin(); it != translatedMappings.end(); ++it) {
-        m_scene->nodeMapping[it.key()] = it.value();
+    
+    // Check for duplicate destinations
+    QSet<QPair<int, int>> allDestinations;
+    for (auto it = m_wirelessMappings.cbegin(); it != m_wirelessMappings.cend(); ++it) {
+        for (const auto &dest : it.value()) {
+            QPair<int, int> destPair(dest.connectionId, dest.nodeId);
+            if (allDestinations.contains(destPair)) {
+                throw WirelessValidationException(QString("Duplicate destination detected: connection %1, node %2")
+                    .arg(dest.connectionId).arg(dest.nodeId));
+            }
+            allDestinations.insert(destPair);
+        }
     }
-
-    m_scene->setCircuitUpdateRequired();
+    
+    qCDebug(zero) << "Wireless mapping integrity validation passed";
 }
 
 DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scene *scene, QUndoCommand *parent)
@@ -332,14 +565,18 @@ DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scen
 
     // Backup wireless mappings that will be affected by the deletion
     QList<int> allIds = m_ids;
-    for (const auto &dest : std::as_const(m_scene->nodeMapping)) {
-        for (const auto &destItem : dest) {
-            if (m_ids.contains(destItem.nodeId)) {
-                allIds.append(destItem.nodeId);
+    {
+        QReadLocker locker(&m_scene->m_wirelessMappingLock);
+        for (const auto &dest : std::as_const(m_scene->nodeMapping)) {
+            for (const auto &destItem : dest) {
+                if (m_ids.contains(destItem.nodeId)) {
+                    allIds.append(destItem.nodeId);
+                }
             }
         }
+        m_savedWirelessMappings = Serialization::filterNodeMappings(m_scene->nodeMapping, allIds);
+        qCDebug(zero) << "Backed up" << m_savedWirelessMappings.size() << "wireless mappings for deletion";
     }
-    m_savedWirelessMappings = Serialization::filterNodeMappings(m_scene->nodeMapping, allIds);
 }
 
 void DeleteItemsCommand::undo()
@@ -348,9 +585,13 @@ void DeleteItemsCommand::undo()
     SimulationBlocker blocker(m_scene->simulation());
     loadItems(m_scene, m_itemData, m_ids, m_otherIds);
 
-    // Restore wireless mappings
-    for (auto it = m_savedWirelessMappings.begin(); it != m_savedWirelessMappings.end(); ++it) {
-        m_scene->nodeMapping[it.key()] = it.value();
+    // Restore wireless mappings atomically
+    {
+        QWriteLocker locker(&m_scene->m_wirelessMappingLock);
+        for (auto it = m_savedWirelessMappings.begin(); it != m_savedWirelessMappings.end(); ++it) {
+            m_scene->nodeMapping[it.key()] = it.value();
+        }
+        qCDebug(zero) << "Restored" << m_savedWirelessMappings.size() << "wireless mappings after undo";
     }
 
     m_scene->setCircuitUpdateRequired();
@@ -363,21 +604,9 @@ void DeleteItemsCommand::redo()
     const auto items = findItems(m_ids);
     saveItems(m_itemData, items, m_otherIds);
 
-    // Clean up wireless mappings before deleting items
+    // Clean up wireless mappings safely before deleting items
     for (int id : m_ids) {
-        // Remove source mappings
-        m_scene->nodeMapping.remove(id);
-
-        // Remove this node from destination mappings
-        for (auto it = m_scene->nodeMapping.begin(); it != m_scene->nodeMapping.end(); ++it) {
-            QSet<Destination> filteredDest;
-            for (const auto &dest : it.value()) {
-                if (dest.nodeId != id) {
-                    filteredDest.insert(dest);
-                }
-            }
-            it.value() = filteredDest;
-        }
+        m_scene->removeNodeFromWirelessMappings(id);
     }
 
     deleteItems(m_scene, items);

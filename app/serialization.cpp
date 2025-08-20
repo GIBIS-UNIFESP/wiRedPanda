@@ -158,20 +158,35 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
 
 void Serialization::serializeWithWireless(const QList<QGraphicsItem *> &items, QDataStream &stream, const QMap<int, QSet<Destination>> &nodeMapping)
 {
+    if (items.isEmpty()) {
+        return;
+    }
+    
     // First serialize the items normally
     serialize(items, stream);
 
-    // Extract node IDs from the items
+    // Extract node IDs from the items efficiently
     QList<int> nodeIds;
-    for (auto *item : items) {
-        if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
-            nodeIds.append(element->id());
+    nodeIds.reserve(items.size());
+    
+    for (const auto *item : items) {
+        if (item && item->type() == GraphicElement::Type) {
+            if (const auto *element = qgraphicsitem_cast<const GraphicElement *>(item)) {
+                nodeIds.append(element->id());
+            }
         }
     }
 
     // Filter and save only the relevant wireless mappings
-    auto filteredMappings = filterNodeMappings(nodeMapping, nodeIds);
-    saveNodeMappings(filteredMappings, stream);
+    if (!nodeIds.isEmpty() && !nodeMapping.isEmpty()) {
+        auto filteredMappings = filterNodeMappings(nodeMapping, nodeIds);
+        saveNodeMappings(filteredMappings, stream);
+        qCDebug(zero) << "Serialized" << filteredMappings.size() << "wireless mappings with items";
+    } else {
+        // Save empty mappings to maintain stream format
+        QMap<int, QSet<Destination>> emptyMappings;
+        saveNodeMappings(emptyMappings, stream);
+    }
 }
 
 QList<QGraphicsItem *> Serialization::deserializeWithWireless(QDataStream &stream, QMap<quint64, QNEPort *> portMap, const QVersionNumber version, QMap<int, QSet<Destination>> &outNodeMapping)
@@ -189,14 +204,22 @@ QList<QGraphicsItem *> Serialization::deserializeWithWireless(QDataStream &strea
 
 QMap<int, QSet<Destination>> Serialization::translateNodeMappings(const QMap<int, QSet<Destination>> &mappings, const QMap<int, int> &idTranslation)
 {
+    if (mappings.isEmpty() || idTranslation.isEmpty()) {
+        return mappings;
+    }
+    
     QMap<int, QSet<Destination>> translatedMappings;
+    // Note: QMap doesn't have reserve() in Qt5, capacity grows automatically
 
-    for (auto it = mappings.begin(); it != mappings.end(); ++it) {
-        int oldSourceId = it.key();
-        int newSourceId = idTranslation.value(oldSourceId, oldSourceId);
+    for (auto it = mappings.cbegin(); it != mappings.cend(); ++it) {
+        const int oldSourceId = it.key();
+        const int newSourceId = idTranslation.value(oldSourceId, oldSourceId);
 
         QSet<Destination> translatedDestinations;
-        for (const auto &dest : it.value()) {
+        const auto &sourceDestinations = it.value();
+        translatedDestinations.reserve(sourceDestinations.size());
+        
+        for (const auto &dest : sourceDestinations) {
             Destination newDest;
             newDest.connectionId = dest.connectionId;
             newDest.nodeId = idTranslation.value(dest.nodeId, dest.nodeId);
@@ -204,38 +227,53 @@ QMap<int, QSet<Destination>> Serialization::translateNodeMappings(const QMap<int
         }
 
         if (!translatedDestinations.isEmpty()) {
-            translatedMappings[newSourceId] = translatedDestinations;
+            translatedMappings.insert(newSourceId, std::move(translatedDestinations));
         }
     }
 
+    qCDebug(zero) << "Translated" << mappings.size() << "mappings to" << translatedMappings.size() << "mappings";
     return translatedMappings;
 }
 
 QMap<int, QSet<Destination>> Serialization::filterNodeMappings(const QMap<int, QSet<Destination>> &mappings, const QList<int> &nodeIds)
 {
+    if (mappings.isEmpty() || nodeIds.isEmpty()) {
+        return QMap<int, QSet<Destination>>();
+    }
+    
+    // Convert to QSet for O(1) lookup performance
+    QSet<int> nodeIdSet;
+    nodeIdSet.reserve(nodeIds.size());
+    for (int nodeId : nodeIds) {
+        nodeIdSet.insert(nodeId);
+    }
+    
     QMap<int, QSet<Destination>> filteredMappings;
-    QSet<int> nodeIdSet(nodeIds.begin(), nodeIds.end());
+    // Note: QMap doesn't have reserve() in Qt5, capacity grows automatically
 
-    for (auto it = mappings.begin(); it != mappings.end(); ++it) {
-        int sourceId = it.key();
+    for (auto it = mappings.cbegin(); it != mappings.cend(); ++it) {
+        const int sourceId = it.key();
 
-        // Include mapping if source node is in the list
+        // Include mapping if source node is in the filter set
         if (nodeIdSet.contains(sourceId)) {
             QSet<Destination> filteredDestinations;
+            const auto &sourceDestinations = it.value();
+            filteredDestinations.reserve(sourceDestinations.size());
 
-            // Only include destinations that are also in the list
-            for (const auto &dest : it.value()) {
+            // Only include destinations that are also in the filter set
+            for (const auto &dest : sourceDestinations) {
                 if (nodeIdSet.contains(dest.nodeId)) {
                     filteredDestinations.insert(dest);
                 }
             }
 
             if (!filteredDestinations.isEmpty()) {
-                filteredMappings[sourceId] = filteredDestinations;
+                filteredMappings.insert(sourceId, std::move(filteredDestinations));
             }
         }
     }
 
+    qCDebug(zero) << "Filtered" << mappings.size() << "mappings to" << filteredMappings.size() << "mappings";
     return filteredMappings;
 }
 

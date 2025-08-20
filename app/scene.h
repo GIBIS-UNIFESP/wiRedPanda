@@ -11,6 +11,7 @@
 #include <QGraphicsScene>
 #include <QMimeData>
 #include <QMultiMap>
+#include <QReadWriteLock>
 #include <QSet>
 #include <QUndoCommand>
 #include <QVersionNumber>
@@ -110,6 +111,20 @@ public:
     void cleanupWirelessMappings();
     void validateWirelessMappings();
     void removeNodeFromWirelessMappings(int nodeId);
+    bool verifyConnectionExists(int connectionId) const;
+    void safeDeleteConnection(int connectionId);
+    
+    // Thread-safe wireless operations
+    QSet<Destination> getWirelessDestinations(int sourceId) const;
+    void setWirelessDestinations(int sourceId, const QSet<Destination> &destinations);
+    bool hasWirelessMapping(int sourceId) const;
+    void removeWirelessMapping(int sourceId);
+    
+    // Debugging and diagnostics
+    void dumpWirelessMappings() const;
+    QString getWirelessMappingStats() const;
+    bool checkWirelessIntegrity(bool logResults = true) const;
+    void logWirelessOperation(const QString &operation, int sourceId = -1, const QString &details = QString()) const;
 
 signals:
     void circuitHasChanged();
@@ -171,4 +186,20 @@ private:
     int m_editedConnectionId = 0;
     int m_hoverPortElmId = 0;
     int m_hoverPortNumber = 0;
+    
+public:
+    // Thread safety for wireless connections (public for command access)
+    mutable QReadWriteLock m_wirelessMappingLock;
+    
+private:
+    
+    // Performance optimization caches
+    mutable QHash<int, GraphicElement*> m_elementCache;
+    mutable QHash<QString, QSet<Destination>> m_labelCache;
+    mutable bool m_cacheValid = false;
+    
+    // Debugging and statistics
+    mutable QElapsedTimer m_operationTimer;
+    mutable QHash<QString, int> m_operationCounts;
+    mutable QHash<QString, qint64> m_operationTimes;
 };

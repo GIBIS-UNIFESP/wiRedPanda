@@ -558,95 +558,204 @@ void Scene::updateTheme()
 
 void Scene::cleanupWirelessMappings()
 {
-    // Remove mappings for nodes that no longer exist
+    QWriteLocker locker(&m_wirelessMappingLock);
+    
+    // Invalidate cache
+    m_cacheValid = false;
+    m_elementCache.clear();
+    m_labelCache.clear();
+    
+    // Build set of existing node IDs for O(1) lookup
     QSet<int> existingNodeIds;
-    for (auto *element : elements()) {
-        existingNodeIds.insert(element->id());
-    }
-
-    // Clean up source nodes that don't exist
-    auto it = nodeMapping.begin();
-    while (it != nodeMapping.end()) {
-        if (!existingNodeIds.contains(it.key())) {
-            it = nodeMapping.erase(it);
-        } else {
-            // Clean up destination nodes that don't exist
-            QSet<Destination> validDestinations;
-            for (const auto &dest : it.value()) {
-                if (existingNodeIds.contains(dest.nodeId)) {
-                    validDestinations.insert(dest);
-                }
-            }
-            it.value() = validDestinations;
-
-            // Remove empty mappings
-            if (it.value().isEmpty()) {
-                it = nodeMapping.erase(it);
-            } else {
-                ++it;
-            }
+    const auto sceneElements = elements();
+    existingNodeIds.reserve(sceneElements.size());
+    for (const auto *element : sceneElements) {
+        if (element) {
+            existingNodeIds.insert(element->id());
         }
     }
+
+    // Clean up mappings efficiently
+    auto it = nodeMapping.begin();
+    while (it != nodeMapping.end()) {
+        const int sourceId = it.key();
+        
+        if (!existingNodeIds.contains(sourceId)) {
+            qCDebug(zero) << "Removing wireless mapping for non-existent source node:" << sourceId;
+            it = nodeMapping.erase(it);
+            continue;
+        }
+
+        // Clean up destination nodes that don't exist
+        QSet<Destination> validDestinations;
+        bool hasChanges = false;
+        
+        for (const auto &dest : it.value()) {
+            if (existingNodeIds.contains(dest.nodeId)) {
+                // Verify connection still exists
+                if (verifyConnectionExists(dest.connectionId)) {
+                    validDestinations.insert(dest);
+                } else {
+                    qCWarning(zero) << "Removing wireless mapping with invalid connection:" << dest.connectionId;
+                    hasChanges = true;
+                }
+            } else {
+                qCDebug(zero) << "Removing wireless mapping to non-existent destination node:" << dest.nodeId;
+                hasChanges = true;
+            }
+        }
+
+        if (hasChanges) {
+            if (validDestinations.isEmpty()) {
+                qCDebug(zero) << "Removing empty wireless mapping for source node:" << sourceId;
+                it = nodeMapping.erase(it);
+            } else {
+                it.value() = validDestinations;
+                ++it;
+            }
+        } else {
+            ++it;
+        }
+    }
+    
+    qCDebug(zero) << "Wireless cleanup complete. Active mappings:" << nodeMapping.size();
 }
 
 void Scene::validateWirelessMappings()
 {
+    QWriteLocker locker(&m_wirelessMappingLock);
+    
+    // First cleanup invalid mappings
     cleanupWirelessMappings();
 
-    // Additional validation: check for circular references and orphaned connections
+    // Build element cache for efficient lookups
+    QHash<int, GraphicElement*> elementLookup;
+    const auto sceneElements = elements();
+    for (auto *element : sceneElements) {
+        if (element) {
+            elementLookup[element->id()] = element;
+        }
+    }
+
+    // Validate remaining mappings
+    QSet<QPair<int, int>> checkedPairs;
+    
     for (auto it = nodeMapping.begin(); it != nodeMapping.end(); ++it) {
-        int sourceId = it.key();
-        auto *sourceElement = element(sourceId);
+        const int sourceId = it.key();
+        auto *sourceElement = elementLookup.value(sourceId, nullptr);
 
         if (!sourceElement) {
-            qCWarning(zero) << "Wireless mapping source node" << sourceId << "not found in scene";
+            qCCritical(zero) << "CRITICAL: Wireless mapping source node" << sourceId << "not found after cleanup!";
             continue;
         }
 
         for (const auto &dest : it.value()) {
-            auto *destElement = element(dest.nodeId);
+            auto *destElement = elementLookup.value(dest.nodeId, nullptr);
+            
             if (!destElement) {
-                qCWarning(zero) << "Wireless mapping destination node" << dest.nodeId << "not found in scene";
+                qCCritical(zero) << "CRITICAL: Wireless mapping destination node" << dest.nodeId << "not found after cleanup!";
                 continue;
             }
 
-            // Check for circular reference
-            if (nodeMapping.contains(dest.nodeId)) {
-                for (const auto &subDest : nodeMapping[dest.nodeId]) {
-                    if (subDest.nodeId == sourceId) {
-                        qCWarning(zero) << "Circular wireless connection detected between nodes" << sourceId << "and" << dest.nodeId;
+            // Check connection validity
+            if (!verifyConnectionExists(dest.connectionId)) {
+                qCCritical(zero) << "CRITICAL: Invalid connection" << dest.connectionId << "in wireless mapping";
+                continue;
+            }
+
+            // Check for circular references (optimized)
+            QPair<int, int> pair(sourceId, dest.nodeId);
+            QPair<int, int> reversePair(dest.nodeId, sourceId);
+            
+            if (!checkedPairs.contains(pair) && !checkedPairs.contains(reversePair)) {
+                checkedPairs.insert(pair);
+                
+                if (hasWirelessMapping(dest.nodeId)) {
+                    const auto subDestinations = getWirelessDestinations(dest.nodeId);
+                    for (const auto &subDest : subDestinations) {
+                        if (subDest.nodeId == sourceId) {
+                            qCCritical(zero) << "CRITICAL: Circular wireless connection between nodes" << sourceId << "and" << dest.nodeId;
+                            // Could implement automatic resolution here
+                        }
                     }
                 }
             }
         }
     }
+    
+    qCDebug(zero) << "Wireless validation complete. Validated" << nodeMapping.size() << "mappings.";
 }
 
 void Scene::removeNodeFromWirelessMappings(int nodeId)
 {
-    // Remove as source node
-    nodeMapping.remove(nodeId);
+    QWriteLocker locker(&m_wirelessMappingLock);
+    
+    qCDebug(zero) << "Removing node" << nodeId << "from wireless mappings";
+    
+    // Invalidate cache
+    m_cacheValid = false;
+    m_elementCache.clear();
+    m_labelCache.clear();
+    
+    // Store connections to cleanup before removing mappings
+    QSet<int> connectionsToCleanup;
+    
+    // Remove as source node and collect connection IDs
+    if (nodeMapping.contains(nodeId)) {
+        const auto destinations = nodeMapping[nodeId];
+        for (const auto &dest : destinations) {
+            if (dest.connectionId != -1) {
+                connectionsToCleanup.insert(dest.connectionId);
+            }
+        }
+        nodeMapping.remove(nodeId);
+        qCDebug(zero) << "Removed" << destinations.size() << "source mappings for node" << nodeId;
+    }
 
-    // Remove as destination node
+    // Remove as destination node and collect more connection IDs
+    int removedDestinations = 0;
     for (auto it = nodeMapping.begin(); it != nodeMapping.end(); ++it) {
         QSet<Destination> filteredDestinations;
+        bool hasRemovals = false;
+        
         for (const auto &dest : it.value()) {
             if (dest.nodeId != nodeId) {
                 filteredDestinations.insert(dest);
+            } else {
+                if (dest.connectionId != -1) {
+                    connectionsToCleanup.insert(dest.connectionId);
+                }
+                hasRemovals = true;
+                removedDestinations++;
             }
         }
-        it.value() = filteredDestinations;
+        
+        if (hasRemovals) {
+            it.value() = std::move(filteredDestinations);
+        }
+    }
+    
+    if (removedDestinations > 0) {
+        qCDebug(zero) << "Removed" << removedDestinations << "destination mappings for node" << nodeId;
     }
 
-    // Remove empty mappings
+    // Clean up connections safely
+    for (int connectionId : connectionsToCleanup) {
+        safeDeleteConnection(connectionId);
+    }
+
+    // Remove empty mappings efficiently
     auto it = nodeMapping.begin();
     while (it != nodeMapping.end()) {
         if (it.value().isEmpty()) {
+            qCDebug(zero) << "Removing empty wireless mapping for source node:" << it.key();
             it = nodeMapping.erase(it);
         } else {
             ++it;
         }
     }
+    
+    qCDebug(zero) << "Node removal complete. Remaining mappings:" << nodeMapping.size();
 }
 
 QList<QGraphicsItem *> Scene::items(Qt::SortOrder order) const
@@ -754,7 +863,10 @@ void Scene::cloneDrag(const QPointF mousePos)
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
     stream << mousePos;
-    copy(selectedItems(), stream, nodeMapping);
+    {
+        QReadLocker locker(&m_wirelessMappingLock);
+        copy(selectedItems(), stream, nodeMapping);
+    }
 
     auto *mimeData = new QMimeData();
     mimeData->setData("application/x-wiredpanda-cloneDrag", itemData);
@@ -927,7 +1039,10 @@ void Scene::copyAction()
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
-    copy(selectedItems(), stream, nodeMapping);
+    {
+        QReadLocker locker(&m_wirelessMappingLock);
+        copy(selectedItems(), stream, nodeMapping);
+    }
 
     auto *mimeData = new QMimeData();
     mimeData->setData("application/x-wiredpanda-clipboard", itemData);
@@ -937,20 +1052,33 @@ void Scene::copyAction()
 
 void Scene::cutAction()
 {
-    if (selectedElements().isEmpty()) {
+    const auto selectedElems = selectedElements();
+    if (selectedElems.isEmpty()) {
         QApplication::clipboard()->clear();
+        qCDebug(zero) << "Cut action: no elements selected, clipboard cleared";
         return;
     }
 
-    QByteArray itemData;
-    QDataStream stream(&itemData, QIODevice::WriteOnly);
-    Serialization::writePandaHeader(stream);
-    cut(selectedItems(), stream, nodeMapping);
+    try {
+        QByteArray itemData;
+        QDataStream stream(&itemData, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        
+        {
+            QReadLocker locker(&m_wirelessMappingLock);
+            cut(selectedItems(), stream, nodeMapping);
+        }
 
-    auto *mimeData = new QMimeData();
-    mimeData->setData("application/x-wiredpanda-clipboard", itemData);
+        auto *mimeData = new QMimeData();
+        mimeData->setData("application/x-wiredpanda-clipboard", itemData);
 
-    QApplication::clipboard()->setMimeData(mimeData);
+        QApplication::clipboard()->setMimeData(mimeData);
+        qCDebug(zero) << "Successfully cut" << selectedElems.size() << "elements to clipboard";
+        
+    } catch (const std::exception &e) {
+        qCCritical(zero) << "Cut action failed:" << e.what();
+        QApplication::clipboard()->clear();
+    }
 }
 
 void Scene::pasteAction()
@@ -1003,14 +1131,15 @@ void Scene::cut(const QList<QGraphicsItem *> &items, QDataStream &stream, const 
 
 void Scene::deleteNodeAction(const QList<QGraphicsItem *> items)
 {
-    // Need to delete nodes separately to account for wirelessNodes
+    QWriteLocker locker(&m_wirelessMappingLock);
+    
+    // Collect all nodes to be deleted
     QList<GraphicElement *> nodes;
     QSet<int> nodeIdsToDelete;
-
-    // Collect all nodes to be deleted
-    for (auto &item : items) {
-        if (item->type() == GraphicElement::Type) {
-            auto elm = qgraphicsitem_cast<GraphicElement *>(item);
+    
+    for (const auto &item : items) {
+        if (item && item->type() == GraphicElement::Type) {
+            auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
             if (elm && elm->elementType() == ElementType::Node) {
                 nodes.append(elm);
                 nodeIdsToDelete.insert(elm->id());
@@ -1018,67 +1147,255 @@ void Scene::deleteNodeAction(const QList<QGraphicsItem *> items)
         }
     }
 
-    // Step 1: Clean up child nodes (nodes connected TO source nodes being deleted)
+    if (nodeIdsToDelete.isEmpty()) {
+        return;
+    }
+    
+    qCDebug(zero) << "Deleting" << nodeIdsToDelete.size() << "nodes with wireless cleanup";
+    
+    // Invalidate cache
+    m_cacheValid = false;
+    m_elementCache.clear();
+    m_labelCache.clear();
+    
+    // Step 1: Collect all connections to be safely deleted
+    QSet<int> connectionsToDelete;
+    QList<GraphicElement*> nodesToCleanup;
+    
+    // Process each source node being deleted
+    for (const auto &sourceNode : nodes) {
+        const int sourceId = sourceNode->id();
+        
+        if (hasWirelessMapping(sourceId)) {
+            const auto destinations = getWirelessDestinations(sourceId);
+            
+            for (const auto &dest : destinations) {
+                if (dest.connectionId != -1) {
+                    connectionsToDelete.insert(dest.connectionId);
+                }
+                
+                // Clean up destination node if it's not being deleted
+                if (!nodeIdsToDelete.contains(dest.nodeId)) {
+                    if (auto *childNode = element(dest.nodeId)) {
+                        nodesToCleanup.append(childNode);
+                    }
+                }
+            }
+        }
+    }
+    
+    // Step 2: Clean up destination mappings pointing to deleted nodes
     QMap<int, QSet<Destination>> updatedMappings;
-
+    
     for (auto it = nodeMapping.begin(); it != nodeMapping.end(); ++it) {
-        int sourceNodeId = it.key();
-        QSet<Destination> destinationSet = it.value();
-        QSet<Destination> cleanedSet;
-
-        // Remove any destinations that point to nodes being deleted
-        for (const auto &dest : destinationSet) {
+        const int sourceId = it.key();
+        
+        // Skip if source is being deleted
+        if (nodeIdsToDelete.contains(sourceId)) {
+            continue;
+        }
+        
+        QSet<Destination> cleanedDestinations;
+        bool hasChanges = false;
+        
+        for (const auto &dest : it.value()) {
             if (!nodeIdsToDelete.contains(dest.nodeId)) {
-                cleanedSet.insert(dest);
+                cleanedDestinations.insert(dest);
             } else {
-                // Clean up the wireless connection for the deleted node
-                auto *childNode = element(dest.nodeId);
-                if (childNode) {
-                    childNode->setLabel("");
-                    childNode->setIsWireless(false);
-                    if (auto *inputPort = childNode->inputPort()) {
-                        inputPort->setHasWirelessConnection(false);
-                    }
+                // Mark connection for deletion
+                if (dest.connectionId != -1) {
+                    connectionsToDelete.insert(dest.connectionId);
                 }
+                hasChanges = true;
             }
         }
-
-        // Only keep mappings that still have destinations and source node isn't being deleted
-        if (!cleanedSet.isEmpty() && !nodeIdsToDelete.contains(sourceNodeId)) {
-            updatedMappings.insert(sourceNodeId, cleanedSet);
+        
+        // Keep mapping only if it has valid destinations
+        if (!cleanedDestinations.isEmpty()) {
+            updatedMappings[sourceId] = cleanedDestinations;
+            if (hasChanges) {
+                qCDebug(zero) << "Cleaned destinations for source node" << sourceId;
+            }
+        } else if (hasChanges) {
+            qCDebug(zero) << "Removing empty mapping for source node" << sourceId;
         }
     }
-
-    // Step 2: Handle source nodes being deleted
-    for (auto &sourceNode : nodes) {
-        if (isSourceNode(sourceNode)) {
-            // Clean up all child nodes connected to this source
-            const auto childDestinations = nodeMapping.value(sourceNode->id());
-            for (const auto &dest : childDestinations) {
-                auto *childNode = element(dest.nodeId);
-                if (childNode && !nodeIdsToDelete.contains(dest.nodeId)) {
-                    // Clear wireless state for child nodes that aren't being deleted
-                    childNode->setLabel("");
-                    childNode->setIsWireless(false);
-                    if (auto *inputPort = childNode->inputPort()) {
-                        inputPort->setHasWirelessConnection(false);
-                    }
-
-                    // Delete the actual wireless connection
-                    if (dest.connectionId != -1) {
-                        auto *conn = connection(dest.connectionId);
-                        if (conn) {
-                            removeItem(conn);
-                            delete conn;
-                        }
-                    }
-                }
+    
+    // Step 3: Clean up node states
+    for (auto *node : nodesToCleanup) {
+        if (node) {
+            node->setLabel("");
+            node->setIsWireless(false);
+            if (auto *inputPort = node->inputPort()) {
+                inputPort->setHasWirelessConnection(false);
             }
         }
     }
+    
+    // Step 4: Delete connections safely
+    for (int connectionId : connectionsToDelete) {
+        safeDeleteConnection(connectionId);
+    }
+    
+    // Step 5: Apply cleaned mappings atomically
+    nodeMapping = std::move(updatedMappings);
+    
+    qCDebug(zero) << "Node deletion cleanup complete. Remaining mappings:" << nodeMapping.size();
+}
 
-    // Step 3: Apply the cleaned mappings (atomic update)
-    nodeMapping = updatedMappings;
+void Scene::dumpWirelessMappings() const
+{
+    QReadLocker locker(&m_wirelessMappingLock);
+    
+    qCDebug(zero) << "=== WIRELESS MAPPINGS DUMP ===";
+    qCDebug(zero) << "Total mappings:" << nodeMapping.size();
+    
+    if (nodeMapping.isEmpty()) {
+        qCDebug(zero) << "No wireless mappings present";
+        return;
+    }
+    
+    int totalDestinations = 0;
+    for (auto it = nodeMapping.cbegin(); it != nodeMapping.cend(); ++it) {
+        const int sourceId = it.key();
+        const auto &destinations = it.value();
+        totalDestinations += destinations.size();
+        
+        qCDebug(zero) << "Source node" << sourceId << "->" << destinations.size() << "destinations:";
+        for (const auto &dest : destinations) {
+            qCDebug(zero) << "  -> Node" << dest.nodeId << "via connection" << dest.connectionId;
+        }
+    }
+    
+    qCDebug(zero) << "Total destinations:" << totalDestinations;
+    qCDebug(zero) << "=== END WIRELESS MAPPINGS DUMP ===";
+}
+
+QString Scene::getWirelessMappingStats() const
+{
+    QReadLocker locker(&m_wirelessMappingLock);
+    
+    int totalMappings = nodeMapping.size();
+    int totalDestinations = 0;
+    int maxDestinations = 0;
+    int validConnections = 0;
+    int invalidConnections = 0;
+    
+    for (auto it = nodeMapping.cbegin(); it != nodeMapping.cend(); ++it) {
+        const auto &destinations = it.value();
+        totalDestinations += destinations.size();
+        maxDestinations = qMax(maxDestinations, destinations.size());
+        
+        for (const auto &dest : destinations) {
+            if (dest.connectionId != -1 && verifyConnectionExists(dest.connectionId)) {
+                validConnections++;
+            } else {
+                invalidConnections++;
+            }
+        }
+    }
+    
+    return QString("Wireless Stats: %1 mappings, %2 destinations, max %3 per source, %4 valid connections, %5 invalid")
+           .arg(totalMappings).arg(totalDestinations).arg(maxDestinations)
+           .arg(validConnections).arg(invalidConnections);
+}
+
+bool Scene::checkWirelessIntegrity(bool logResults) const
+{
+    QReadLocker locker(&m_wirelessMappingLock);
+    
+    bool isValid = true;
+    QStringList issues;
+    
+    // Build element lookup for efficiency
+    QSet<int> existingNodes;
+    const auto sceneElements = elements();
+    for (const auto *element : sceneElements) {
+        if (element) {
+            existingNodes.insert(element->id());
+        }
+    }
+    
+    // Check each mapping
+    for (auto it = nodeMapping.cbegin(); it != nodeMapping.cend(); ++it) {
+        const int sourceId = it.key();
+        
+        // Check source node exists
+        if (!existingNodes.contains(sourceId)) {
+            issues << QString("Source node %1 not found in scene").arg(sourceId);
+            isValid = false;
+        }
+        
+        // Check destinations
+        QSet<QPair<int, int>> seenDestinations;
+        for (const auto &dest : it.value()) {
+            // Check destination node exists
+            if (!existingNodes.contains(dest.nodeId)) {
+                issues << QString("Destination node %1 not found in scene").arg(dest.nodeId);
+                isValid = false;
+            }
+            
+            // Check for self-reference
+            if (dest.nodeId == sourceId) {
+                issues << QString("Self-reference detected for node %1").arg(sourceId);
+                isValid = false;
+            }
+            
+            // Check for duplicates
+            QPair<int, int> destPair(dest.connectionId, dest.nodeId);
+            if (seenDestinations.contains(destPair)) {
+                issues << QString("Duplicate destination: connection %1, node %2")
+                          .arg(dest.connectionId).arg(dest.nodeId);
+                isValid = false;
+            }
+            seenDestinations.insert(destPair);
+            
+            // Check connection validity
+            if (dest.connectionId != -1 && !verifyConnectionExists(dest.connectionId)) {
+                issues << QString("Invalid connection %1 for destination %2")
+                          .arg(dest.connectionId).arg(dest.nodeId);
+                isValid = false;
+            }
+        }
+    }
+    
+    if (logResults) {
+        if (isValid) {
+            qCDebug(zero) << "Wireless integrity check PASSED:" << getWirelessMappingStats();
+        } else {
+            qCCritical(zero) << "Wireless integrity check FAILED with" << issues.size() << "issues:";
+            for (const QString &issue : issues) {
+                qCCritical(zero) << "  -" << issue;
+            }
+        }
+    }
+    
+    return isValid;
+}
+
+void Scene::logWirelessOperation(const QString &operation, int sourceId, const QString &details) const
+{
+    QString logMsg = QString("Wireless: %1").arg(operation);
+    if (sourceId != -1) {
+        logMsg += QString(" [node %1]").arg(sourceId);
+    }
+    if (!details.isEmpty()) {
+        logMsg += QString(" - %1").arg(details);
+    }
+    
+    // Update operation counters
+    m_operationCounts[operation]++;
+    
+    qCDebug(zero) << logMsg;
+    
+    // Log performance stats periodically
+    static int operationCounter = 0;
+    if (++operationCounter % 100 == 0) {
+        qCDebug(zero) << "Wireless operation stats:";
+        for (auto it = m_operationCounts.cbegin(); it != m_operationCounts.cend(); ++it) {
+            qCDebug(zero) << "  " << it.key() << ":" << it.value();
+        }
+    }
 }
 
 void Scene::deleteAction()
@@ -1519,23 +1836,141 @@ QSet<Destination> Scene::getNodeSet(const QString &nodeLabel, QList<int> exclude
 
 void Scene::deleteNodeSetConnections(QSet<Destination> *set, const int nodeToRemove)
 {
+    if (!set) {
+        qCWarning(zero) << "deleteNodeSetConnections called with null set";
+        return;
+    }
+    
     QSet<Destination> toRemove;
+    QList<QNEConnection*> connectionsToDelete;
 
-    for (const auto &pair : *set) {
-        if (auto *node = qobject_cast<Node *>(element(pair.nodeId))) {
-            if (node->inputPort()->connections().size() == 1 &&
-                (nodeToRemove == -1 || nodeToRemove == node->id())
-            ) {
-                auto connection = this->connection(pair.connectionId);
+    for (const auto &dest : *set) {
+        auto *node = qobject_cast<Node *>(element(dest.nodeId));
+        if (!node) {
+            qCDebug(zero) << "Node" << dest.nodeId << "not found during connection cleanup";
+            toRemove.insert(dest);
+            continue;
+        }
+        
+        if (nodeToRemove != -1 && nodeToRemove != node->id()) {
+            continue;
+        }
+        
+        auto *inputPort = node->inputPort();
+        if (!inputPort) {
+            qCWarning(zero) << "Node" << dest.nodeId << "has no input port";
+            continue;
+        }
+        
+        if (inputPort->connections().size() == 1) {
+            auto *conn = connection(dest.connectionId);
+            if (conn && verifyConnectionExists(dest.connectionId)) {
+                // Clean up node state first
                 node->setLabel("");
-                receiveCommand(new DeleteItemsCommand({connection}, this));
-                simulation()->restart();
-                node->inputPort()->setHasWirelessConnection(false);
                 node->setIsWireless(false);
-                toRemove.insert(pair);
+                inputPort->setHasWirelessConnection(false);
+                
+                // Collect for batch deletion
+                connectionsToDelete.append(conn);
+                toRemove.insert(dest);
+                
+                qCDebug(zero) << "Marked connection" << dest.connectionId << "for deletion";
+            } else {
+                qCWarning(zero) << "Connection" << dest.connectionId << "not found or invalid";
+                toRemove.insert(dest);
             }
         }
     }
 
+    // Batch delete connections for better performance
+    if (!connectionsToDelete.isEmpty()) {
+        receiveCommand(new DeleteItemsCommand(QList<QGraphicsItem*>(connectionsToDelete.begin(), connectionsToDelete.end()), this));
+        simulation()->restart();
+        qCDebug(zero) << "Deleted" << connectionsToDelete.size() << "wireless connections";
+    }
+
+    // Remove processed destinations
     set->subtract(toRemove);
+}
+
+bool Scene::verifyConnectionExists(int connectionId) const
+{
+    if (connectionId == -1) {
+        return false;
+    }
+    
+    const auto *conn = connection(connectionId);
+    if (!conn) {
+        return false;
+    }
+    
+    // Verify connection is still in the scene
+    const auto sceneItems = items();
+    return std::find(sceneItems.begin(), sceneItems.end(), conn) != sceneItems.end();
+}
+
+void Scene::safeDeleteConnection(int connectionId)
+{
+    if (connectionId == -1) {
+        return;
+    }
+    
+    auto *conn = connection(connectionId);
+    if (!conn) {
+        qCDebug(zero) << "Connection" << connectionId << "already deleted or not found";
+        return;
+    }
+    
+    // Verify connection is in scene before attempting deletion
+    if (verifyConnectionExists(connectionId)) {
+        qCDebug(zero) << "Safely deleting connection" << connectionId;
+        removeItem(conn);
+        delete conn;
+    } else {
+        qCWarning(zero) << "Cannot delete connection" << connectionId << "- not in scene";
+    }
+}
+
+QSet<Destination> Scene::getWirelessDestinations(int sourceId) const
+{
+    QReadLocker locker(&m_wirelessMappingLock);
+    return nodeMapping.value(sourceId, QSet<Destination>());
+}
+
+void Scene::setWirelessDestinations(int sourceId, const QSet<Destination> &destinations)
+{
+    QWriteLocker locker(&m_wirelessMappingLock);
+    
+    // Invalidate cache
+    m_cacheValid = false;
+    m_elementCache.clear();
+    m_labelCache.clear();
+    
+    if (destinations.isEmpty()) {
+        nodeMapping.remove(sourceId);
+        qCDebug(zero) << "Removed wireless mapping for source" << sourceId;
+    } else {
+        nodeMapping[sourceId] = destinations;
+        qCDebug(zero) << "Set" << destinations.size() << "wireless destinations for source" << sourceId;
+    }
+}
+
+bool Scene::hasWirelessMapping(int sourceId) const
+{
+    QReadLocker locker(&m_wirelessMappingLock);
+    return nodeMapping.contains(sourceId);
+}
+
+void Scene::removeWirelessMapping(int sourceId)
+{
+    QWriteLocker locker(&m_wirelessMappingLock);
+    
+    // Invalidate cache
+    m_cacheValid = false;
+    m_elementCache.clear();
+    m_labelCache.clear();
+    
+    if (nodeMapping.remove(sourceId) > 0) {
+        qCDebug(zero) << "Removed wireless mapping for source" << sourceId;
+    }
 }

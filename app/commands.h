@@ -8,6 +8,26 @@
 #include "scene.h"
 
 #include <QCoreApplication>
+#include <stdexcept>
+
+// Custom exception classes for wireless operations
+class WirelessConnectionException : public std::runtime_error {
+public:
+    explicit WirelessConnectionException(const QString &message) 
+        : std::runtime_error(message.toStdString()) {}
+};
+
+class WirelessValidationException : public WirelessConnectionException {
+public:
+    explicit WirelessValidationException(const QString &message) 
+        : WirelessConnectionException("Wireless validation failed: " + message) {}
+};
+
+class WirelessMemoryException : public WirelessConnectionException {
+public:
+    explicit WirelessMemoryException(const QString &message) 
+        : WirelessConnectionException("Wireless memory error: " + message) {}
+};
 
 class QNEConnection;
 
@@ -53,6 +73,10 @@ public:
 
     void redo() override;
     void undo() override;
+    
+    // Validation and error handling
+    bool validateWirelessMappings() const;
+    bool validateItemIntegrity() const;
 
 private:
     QByteArray m_itemData;
@@ -61,6 +85,11 @@ private:
     Scene *m_scene;
     QMap<int, QSet<Destination>> m_wirelessMappings;
     QMap<int, QSet<Destination>> m_oldMappings; // Backup of original mappings
+    
+    // Error handling helpers
+    void handleMappingError(const QString &operation, int nodeId, const QString &details) const;
+    bool safelyRestoreMappings();
+    void validateMappingIntegrity() const;
 };
 
 //! Represents a single action of removing a list of elements on the editor
