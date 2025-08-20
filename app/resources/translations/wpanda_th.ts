@@ -1205,7 +1205,7 @@
         <translation>ประเภทที่ไม่รู้จัก 2: %1</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="186"/>
+        <location filename="../../elementfactory.cpp" line="191"/>
         <source>Not implemented yet: %1</source>
         <translation>ยังไม่ได้พัฒนา: %1</translation>
     </message>
@@ -1913,7 +1913,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1649"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>ปิดเสียง</translation>
@@ -1988,7 +1988,7 @@
         <location filename="../../mainwindow.cpp" line="289"/>
         <location filename="../../mainwindow.cpp" line="411"/>
         <location filename="../../mainwindow.cpp" line="672"/>
-        <location filename="../../mainwindow.cpp" line="1191"/>
+        <location filename="../../mainwindow.cpp" line="1193"/>
         <source>New Project</source>
         <translation>โปรเจกต์ใหม่</translation>
     </message>
@@ -2021,7 +2021,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="470"/>
-        <location filename="../../mainwindow.cpp" line="1690"/>
+        <location filename="../../mainwindow.cpp" line="1692"/>
         <source>Open File</source>
         <translation>เปิดไฟล์</translation>
     </message>
@@ -2075,95 +2075,95 @@ wiRedPanda %1 จะแสดงรายการไฟล์ .panda อื่�
         <translation>&lt;h1&gt;คีย์ลัดของแคนวาส&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : ขยายภาพ &lt;/li&gt;&lt;li&gt; Ctrl+- : ย่อภาพ &lt;/li&gt;&lt;li&gt; Ctrl+1 : ซ่อน/แสดงสายไฟ &lt;/li&gt;&lt;li&gt; Ctrl+2 : ซ่อน/แสดงเกต &lt;/li&gt;&lt;li&gt; Ctrl+F : ค้นหาองค์ประกอบ &lt;/li&gt;&lt;li&gt; Ctrl+W : เปิด beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : บันทึกโครงการ &lt;/li&gt;&lt;li&gt; Ctrl+Q : ออกจาก wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : เริ่ม/หยุดชั่วคราวการจำลอง &lt;/li&gt;&lt;li&gt; [ : คุณสมบัติหลักขององค์ประกอบก่อนหน้า &lt;/li&gt;&lt;li&gt; ] : คุณสมบัติหลักขององค์ประกอบถัดไป &lt;/li&gt;&lt;li&gt; { : คุณสมบัติรองขององค์ประกอบก่อนหน้า &lt;/li&gt;&lt;li&gt; } : คุณสมบัติรองขององค์ประกอบถัดไป &lt;/li&gt;&lt;li&gt; &amp;lt; : เปลี่ยนเป็นองค์ประกอบก่อนหน้า &lt;/li&gt;&lt;li&gt; &amp;gt; : เปลี่ยนเป็นองค์ประกอบถัดไป &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;เคล็ดลับทั่วไป&lt;/h1&gt;&lt;p&gt;ดับเบิลคลิกที่สายไฟเพื่อสร้างโหนด&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="950"/>
-        <location filename="../../mainwindow.cpp" line="977"/>
+        <location filename="../../mainwindow.cpp" line="952"/>
+        <location filename="../../mainwindow.cpp" line="979"/>
         <source>Missing file name.</source>
         <translation>ขาดชื่อไฟล์</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="956"/>
+        <location filename="../../mainwindow.cpp" line="958"/>
         <source>The .panda file is empty.</source>
         <translation>ไฟล์ .panda ว่างเปล่า</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="969"/>
+        <location filename="../../mainwindow.cpp" line="971"/>
         <source>Arduino code successfully generated.</source>
         <translation>สร้างโค้ด Arduino สำเร็จ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1004"/>
+        <location filename="../../mainwindow.cpp" line="1006"/>
         <source>Generate Arduino Code</source>
         <translation>สร้างโค้ด Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1004"/>
+        <location filename="../../mainwindow.cpp" line="1006"/>
         <source>Arduino file (*.ino)</source>
         <translation>ไฟล์ Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1106"/>
+        <location filename="../../mainwindow.cpp" line="1108"/>
         <source>Export to PDF</source>
         <translation>ส่งออกเป็น PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1106"/>
+        <location filename="../../mainwindow.cpp" line="1108"/>
         <source>PDF files (*.pdf)</source>
         <translation>ไฟล์ PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1124"/>
+        <location filename="../../mainwindow.cpp" line="1126"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>ไม่สามารถพิมพ์วงจรนี้เป็น PDF ได้</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1131"/>
-        <location filename="../../mainwindow.cpp" line="1169"/>
+        <location filename="../../mainwindow.cpp" line="1133"/>
+        <location filename="../../mainwindow.cpp" line="1171"/>
         <source>Exported file successfully.</source>
         <translation>ส่งออกไฟล์สำเร็จ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1150"/>
+        <location filename="../../mainwindow.cpp" line="1152"/>
         <source>Export to Image</source>
         <translation>ส่งออกเป็นรูปภาพ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1150"/>
+        <location filename="../../mainwindow.cpp" line="1152"/>
         <source>PNG files (*.png)</source>
         <translation>ไฟล์ PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1649"/>
         <source>Unmute</source>
         <translation>เปิดเสียง</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1686"/>
+        <location filename="../../mainwindow.cpp" line="1688"/>
         <source>Save file first.</source>
         <translation>บันทึกไฟล์ก่อน</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1692"/>
+        <location filename="../../mainwindow.cpp" line="1694"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1704"/>
-        <location filename="../../mainwindow.cpp" line="1716"/>
+        <location filename="../../mainwindow.cpp" line="1706"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <source>Info</source>
         <translation>ข้อมูล</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1704"/>
+        <location filename="../../mainwindow.cpp" line="1706"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>ไฟล์ที่เลือก (และไฟล์ที่เกี่ยวข้อง) จะถูกคัดลอกไปยังโฟลเดอร์ไฟล์ปัจจุบัน</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1716"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <source>Drag here to remove.</source>
         <translation>ลากมาที่นี่เพื่อลบ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1739"/>
+        <location filename="../../mainwindow.cpp" line="1741"/>
         <source>Error removing file: %1</source>
         <translation>ข้อผิดพลาดในการลบไฟล์: %1</translation>
     </message>
@@ -2427,37 +2427,37 @@ wiRedPanda %1 จะแสดงรายการไฟล์ .panda อื่�
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../workspace.cpp" line="72"/>
+        <location filename="../../workspace.cpp" line="76"/>
         <source>Save File</source>
         <translation>บันทึกไฟล์</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="72"/>
+        <location filename="../../workspace.cpp" line="76"/>
         <source>Panda files (*.panda)</source>
         <translation>ไฟล์ Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="90"/>
+        <location filename="../../workspace.cpp" line="94"/>
         <source>Error opening file: %1</source>
         <translation>ข้อผิดพลาดในการเปิดไฟล์: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="100"/>
+        <location filename="../../workspace.cpp" line="104"/>
         <source>Could not save file: %1</source>
         <translation>ไม่สามารถบันทึกไฟล์: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="136"/>
+        <location filename="../../workspace.cpp" line="140"/>
         <source>This file does not exist: %1</source>
         <translation>ไฟล์นี้ไม่มีอยู่: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="146"/>
+        <location filename="../../workspace.cpp" line="150"/>
         <source>Could not open file: %1</source>
         <translation>ไม่สามารถเปิดไฟล์: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="167"/>
+        <location filename="../../workspace.cpp" line="171"/>
         <source>Warning! Your wiRedPanda (Version: %1) is possibly out of date.
 The file you are opening was saved with version (%2).
 Please check for updates if the file does not load correctly.</source>
@@ -2466,22 +2466,22 @@ Please check for updates if the file does not load correctly.</source>
 โปรดตรวจสอบการอัปเดตหากไฟล์โหลดไม่ถูกต้อง</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="171"/>
+        <location filename="../../workspace.cpp" line="175"/>
         <source>Newer version file.</source>
         <translation>ไฟล์เวอร์ชั่นใหม่กว่า</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="175"/>
+        <location filename="../../workspace.cpp" line="179"/>
         <source>Old version file.</source>
         <translation>ไฟล์เวอร์ชั่นเก่า</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="270"/>
+        <location filename="../../workspace.cpp" line="290"/>
         <source>Error opening autosave file: %1</source>
         <translation>ข้อผิดพลาดในการเปิดไฟล์บันทึกอัตโนมัติ: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="173"/>
+        <location filename="../../workspace.cpp" line="177"/>
         <source>Warning! This is an old version wiRedPanda project file (version &lt; 4.0). To open it correctly, save all the ICs and skins in the main project directory.</source>
         <translation>คำเตือน! นี่เป็นไฟล์โปรเจกต์ wiRedPanda เวอร์ชั่นเก่า (เวอร์ชั่น &lt; 4.0) เพื่อเปิดได้อย่างถูกต้อง ให้บันทึก IC และสกินทั้งหมดในไดเรกทอรีโปรเจกต์หลัก</translation>
     </message>
