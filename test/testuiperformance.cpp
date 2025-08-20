@@ -610,8 +610,10 @@ void TestUIPerformance::createManyConnections(int count)
 
     int connectionsCreated = 0;
     for (int i = 0; i < elements.size() - 1 && connectionsCreated < count; ++i) {
-        auto* startElement = elements[i];
-        auto* endElement = elements[i + 1];
+        // Note: In a real implementation, these would be used for actual connection logic
+        // For performance testing, we just create connection objects
+        Q_UNUSED(elements[i])     // startElement
+        Q_UNUSED(elements[i + 1]) // endElement
 
         // Simple connection attempt (would need proper port logic for real circuits)
         auto* conn = new QNEConnection();

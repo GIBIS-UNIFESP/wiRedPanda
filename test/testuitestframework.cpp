@@ -80,7 +80,16 @@ void UITestFramework::simulateMouseHover(QWidget* widget, const QPoint &pos, int
     QTest::mouseMove(widget, pos);
     QTest::qWait(durationMs);
 
-    // Trigger hover events
+    // Trigger hover events with Qt version compatibility
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QHoverEvent hoverEnter(QEvent::HoverEnter, pos, pos, QPoint());
+    QApplication::sendEvent(widget, &hoverEnter);
+
+    QTest::qWait(50);
+
+    QHoverEvent hoverLeave(QEvent::HoverLeave, QPoint(), QPoint(), pos);
+    QApplication::sendEvent(widget, &hoverLeave);
+#else
     QHoverEvent hoverEnter(QEvent::HoverEnter, pos, QPoint());
     QApplication::sendEvent(widget, &hoverEnter);
 
@@ -88,6 +97,7 @@ void UITestFramework::simulateMouseHover(QWidget* widget, const QPoint &pos, int
 
     QHoverEvent hoverLeave(QEvent::HoverLeave, QPoint(), pos);
     QApplication::sendEvent(widget, &hoverLeave);
+#endif
 }
 
 void UITestFramework::simulateMouseDragWithFeedback(QWidget* widget, const QPoint &start, const QPoint &end)
@@ -166,6 +176,8 @@ UITestFramework::PerformanceMetrics UITestFramework::measureUIOperationPerforman
 
 bool UITestFramework::detectUIFreeze(QWidget* widget, int timeoutMs)
 {
+    Q_UNUSED(timeoutMs) // Parameter kept for API compatibility
+    
     if (!widget) return true;
 
     // For headless testing, assume no freeze if widget exists and is enabled
