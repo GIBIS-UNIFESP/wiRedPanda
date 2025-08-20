@@ -42,10 +42,10 @@ public:
     static QVersionNumber readPandaHeader(QDataStream &stream);
     static void readDolphinHeader(QDataStream &stream);
     static void saveNodeMappings(const QMap<int, QSet<Destination>> map, QDataStream &stream);
-    
+
     //! Translates node mappings from old IDs to new IDs after paste/undo operations
     static QMap<int, QSet<Destination>> translateNodeMappings(const QMap<int, QSet<Destination>> &mappings, const QMap<int, int> &idTranslation);
-    
+
     //! Filters node mappings to only include specified node IDs
     static QMap<int, QSet<Destination>> filterNodeMappings(const QMap<int, QSet<Destination>> &mappings, const QList<int> &nodeIds);
     static void writeDolphinHeader(QDataStream &stream);

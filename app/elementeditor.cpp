@@ -1070,8 +1070,8 @@ void ElementEditor::mapNode()
         return;
     }
 
-    if (selectedNode->elementType() != ElementType::Node) { 
-        return; 
+    if (selectedNode->elementType() != ElementType::Node) {
+        return;
     }
 
     // If source node already exists and the new label is different, remove and insert new.
@@ -1116,16 +1116,16 @@ void ElementEditor::mapNode()
 
         // Refresh UI for the source node
         setCurrentElements({selectedNode});
-        
+
         // Update combobox with new label
         refreshWirelessCombobox();
-        
+
         // Notify other ElementEditor instances that nodes have changed
         // This ensures any open editors show the updated labels
         for (auto *affectedNode : affectedNodes) {
             affectedNode->update(); // Trigger visual update
         }
-        
+
         return;
     }
 
@@ -1145,17 +1145,17 @@ void ElementEditor::connectNode(const QString &label)
     }
 
     auto *selectedNode = m_elements[0];
-    
+
     if (!selectedNode) {
         qDebug() << "Warning: Selected node is null in connectNode()";
         return;
     }
-    
+
     if (selectedNode->elementType() != ElementType::Node) {
         qDebug() << "Warning: Selected element is not a Node in connectNode()";
         return;
     }
-    
+
     // Validate label input
     if (label.length() > 50) { // Reasonable max length
         qDebug() << "Warning: Node label too long in connectNode()";
@@ -1178,7 +1178,7 @@ void ElementEditor::connectNode(const QString &label)
             qDebug() << "Warning: Null element found in nodeMapping with id:" << sourceNodeId;
             continue;
         }
-        
+
         if (sourceElement->label() == label) {
             nextSourceNodeId = sourceNodeId;
         }
@@ -1212,19 +1212,19 @@ void ElementEditor::connectNode(const QString &label)
 
     // Create a copy to avoid modifying collection during iteration
     QSet<Destination> nodesToProcess = nextNodeSet;
-    
+
     for (auto pair : nodesToProcess) {
         auto *sourceElement = m_scene->element(nextSourceNodeId);
         auto *destElement = m_scene->element(pair.nodeId);
-        
+
         if (!sourceElement || !destElement) {
             qDebug() << "Warning: Null element found in wireless connection - sourceId:" << nextSourceNodeId << "destId:" << pair.nodeId;
             continue;
         }
-        
+
         auto *sourceNode = qobject_cast<Node *>(sourceElement);
         auto *destNode = qobject_cast<Node *>(destElement);
-        
+
         if (!sourceNode || !destNode) {
             qDebug() << "Warning: Element is not a Node in wireless connection";
             continue;
@@ -1240,7 +1240,7 @@ void ElementEditor::connectNode(const QString &label)
             // Update both port and element wireless flags consistently
             destNode->inputPort()->setHasWirelessConnection(true);
             destNode->setIsWireless(true);
-            
+
             // Safely update the actual set (not the copy)
             const int nodeId = pair.nodeId;
             nextNodeSet.remove(pair);
@@ -1259,14 +1259,14 @@ void ElementEditor::refreshWirelessCombobox()
     if (!m_hasNode || !m_ui->comboBoxNode->isVisible()) {
         return;
     }
-    
+
     // Store current selection
     QString currentSelection = m_ui->comboBoxNode->currentText();
-    
+
     // Repopulate combobox
     m_ui->comboBoxNode->clear();
     m_ui->comboBoxNode->addItem("");
-    
+
     for (auto key : m_scene->nodeMapping.keys()) {
         auto *element = m_scene->element(key);
         if (element) {
@@ -1276,7 +1276,7 @@ void ElementEditor::refreshWirelessCombobox()
             }
         }
     }
-    
+
     // Restore selection if it still exists
     int index = m_ui->comboBoxNode->findText(currentSelection);
     if (index >= 0) {

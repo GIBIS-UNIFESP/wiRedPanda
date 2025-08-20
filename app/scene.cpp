@@ -563,7 +563,7 @@ void Scene::cleanupWirelessMappings()
     for (auto *element : elements()) {
         existingNodeIds.insert(element->id());
     }
-    
+
     // Clean up source nodes that don't exist
     auto it = nodeMapping.begin();
     while (it != nodeMapping.end()) {
@@ -578,7 +578,7 @@ void Scene::cleanupWirelessMappings()
                 }
             }
             it.value() = validDestinations;
-            
+
             // Remove empty mappings
             if (it.value().isEmpty()) {
                 it = nodeMapping.erase(it);
@@ -592,24 +592,24 @@ void Scene::cleanupWirelessMappings()
 void Scene::validateWirelessMappings()
 {
     cleanupWirelessMappings();
-    
+
     // Additional validation: check for circular references and orphaned connections
     for (auto it = nodeMapping.begin(); it != nodeMapping.end(); ++it) {
         int sourceId = it.key();
         auto *sourceElement = element(sourceId);
-        
+
         if (!sourceElement) {
             qCWarning(zero) << "Wireless mapping source node" << sourceId << "not found in scene";
             continue;
         }
-        
+
         for (const auto &dest : it.value()) {
             auto *destElement = element(dest.nodeId);
             if (!destElement) {
                 qCWarning(zero) << "Wireless mapping destination node" << dest.nodeId << "not found in scene";
                 continue;
             }
-            
+
             // Check for circular reference
             if (nodeMapping.contains(dest.nodeId)) {
                 for (const auto &subDest : nodeMapping[dest.nodeId]) {
@@ -626,7 +626,7 @@ void Scene::removeNodeFromWirelessMappings(int nodeId)
 {
     // Remove as source node
     nodeMapping.remove(nodeId);
-    
+
     // Remove as destination node
     for (auto it = nodeMapping.begin(); it != nodeMapping.end(); ++it) {
         QSet<Destination> filteredDestinations;
@@ -637,7 +637,7 @@ void Scene::removeNodeFromWirelessMappings(int nodeId)
         }
         it.value() = filteredDestinations;
     }
-    
+
     // Remove empty mappings
     auto it = nodeMapping.begin();
     while (it != nodeMapping.end()) {
@@ -1020,12 +1020,12 @@ void Scene::deleteNodeAction(const QList<QGraphicsItem *> items)
 
     // Step 1: Clean up child nodes (nodes connected TO source nodes being deleted)
     QMap<int, QSet<Destination>> updatedMappings;
-    
+
     for (auto it = nodeMapping.begin(); it != nodeMapping.end(); ++it) {
         int sourceNodeId = it.key();
         QSet<Destination> destinationSet = it.value();
         QSet<Destination> cleanedSet;
-        
+
         // Remove any destinations that point to nodes being deleted
         for (const auto &dest : destinationSet) {
             if (!nodeIdsToDelete.contains(dest.nodeId)) {
@@ -1042,13 +1042,13 @@ void Scene::deleteNodeAction(const QList<QGraphicsItem *> items)
                 }
             }
         }
-        
+
         // Only keep mappings that still have destinations and source node isn't being deleted
         if (!cleanedSet.isEmpty() && !nodeIdsToDelete.contains(sourceNodeId)) {
             updatedMappings.insert(sourceNodeId, cleanedSet);
         }
     }
-    
+
     // Step 2: Handle source nodes being deleted
     for (auto &sourceNode : nodes) {
         if (isSourceNode(sourceNode)) {
@@ -1063,7 +1063,7 @@ void Scene::deleteNodeAction(const QList<QGraphicsItem *> items)
                     if (auto *inputPort = childNode->inputPort()) {
                         inputPort->setHasWirelessConnection(false);
                     }
-                    
+
                     // Delete the actual wireless connection
                     if (dest.connectionId != -1) {
                         auto *conn = connection(dest.connectionId);
@@ -1076,7 +1076,7 @@ void Scene::deleteNodeAction(const QList<QGraphicsItem *> items)
             }
         }
     }
-    
+
     // Step 3: Apply the cleaned mappings (atomic update)
     nodeMapping = updatedMappings;
 }
@@ -1501,13 +1501,13 @@ QSet<Destination> Scene::getNodeSet(const QString &nodeLabel, QList<int> exclude
         if (excludeIds.contains(sourceNodeId)) {
             continue;
         }
-        
+
         auto *sourceElement = element(sourceNodeId);
         if (!sourceElement) {
             qDebug() << "Warning: Null element found in nodeMapping during getNodeSet with id:" << sourceNodeId;
             continue;
         }
-        
+
         if (sourceElement->label() == nodeLabel) {
             set = nodeMapping.value(sourceNodeId);
             break; // Found the matching node, no need to continue

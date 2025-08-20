@@ -160,7 +160,7 @@ void Serialization::serializeWithWireless(const QList<QGraphicsItem *> &items, Q
 {
     // First serialize the items normally
     serialize(items, stream);
-    
+
     // Extract node IDs from the items
     QList<int> nodeIds;
     for (auto *item : items) {
@@ -168,7 +168,7 @@ void Serialization::serializeWithWireless(const QList<QGraphicsItem *> &items, Q
             nodeIds.append(element->id());
         }
     }
-    
+
     // Filter and save only the relevant wireless mappings
     auto filteredMappings = filterNodeMappings(nodeMapping, nodeIds);
     saveNodeMappings(filteredMappings, stream);
@@ -178,23 +178,23 @@ QList<QGraphicsItem *> Serialization::deserializeWithWireless(QDataStream &strea
 {
     // First deserialize the items normally
     auto items = deserialize(stream, portMap, version);
-    
+
     // Then load the wireless mappings
     if (!stream.atEnd()) {
         outNodeMapping = loadNodeMappings(stream);
     }
-    
+
     return items;
 }
 
 QMap<int, QSet<Destination>> Serialization::translateNodeMappings(const QMap<int, QSet<Destination>> &mappings, const QMap<int, int> &idTranslation)
 {
     QMap<int, QSet<Destination>> translatedMappings;
-    
+
     for (auto it = mappings.begin(); it != mappings.end(); ++it) {
         int oldSourceId = it.key();
         int newSourceId = idTranslation.value(oldSourceId, oldSourceId);
-        
+
         QSet<Destination> translatedDestinations;
         for (const auto &dest : it.value()) {
             Destination newDest;
@@ -202,12 +202,12 @@ QMap<int, QSet<Destination>> Serialization::translateNodeMappings(const QMap<int
             newDest.nodeId = idTranslation.value(dest.nodeId, dest.nodeId);
             translatedDestinations.insert(newDest);
         }
-        
+
         if (!translatedDestinations.isEmpty()) {
             translatedMappings[newSourceId] = translatedDestinations;
         }
     }
-    
+
     return translatedMappings;
 }
 
@@ -215,27 +215,27 @@ QMap<int, QSet<Destination>> Serialization::filterNodeMappings(const QMap<int, Q
 {
     QMap<int, QSet<Destination>> filteredMappings;
     QSet<int> nodeIdSet(nodeIds.begin(), nodeIds.end());
-    
+
     for (auto it = mappings.begin(); it != mappings.end(); ++it) {
         int sourceId = it.key();
-        
+
         // Include mapping if source node is in the list
         if (nodeIdSet.contains(sourceId)) {
             QSet<Destination> filteredDestinations;
-            
+
             // Only include destinations that are also in the list
             for (const auto &dest : it.value()) {
                 if (nodeIdSet.contains(dest.nodeId)) {
                     filteredDestinations.insert(dest);
                 }
             }
-            
+
             if (!filteredDestinations.isEmpty()) {
                 filteredMappings[sourceId] = filteredDestinations;
             }
         }
     }
-    
+
     return filteredMappings;
 }
 
