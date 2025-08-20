@@ -582,11 +582,10 @@ bool TestUIInteraction::testUIRecoveryScenarios()
 
         // Final validation  
         bool finalVisible = m_view->isVisible();
+        Q_UNUSED(finalVisible)
         bool finalEnabled = m_view->isEnabled();
         bool finalScene = (m_scene != nullptr);
         
-                 << "enabled:" << finalEnabled 
-                 << "scene:" << finalScene;
         
         // Success if enabled and scene exists (visibility unreliable in test environments)
         bool success = finalEnabled && finalScene;

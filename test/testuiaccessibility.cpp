@@ -782,7 +782,6 @@ void TestUIAccessibility::testAccessibilityTree(QWidget* widget)
         QString name = interface->text(QAccessible::Name);
         QString description = interface->text(QAccessible::Description);
 
-                 << "Name:" << name << "Description:" << description;
 
         // Don't delete QAccessibleInterface directly - it's managed by Qt
     }
@@ -818,7 +817,6 @@ void TestUIAccessibility::testContrastRatios(QWidget* widget)
 
     // Simple contrast check (real implementation would calculate actual ratios)
     if (bg.isValid() && fg.isValid()) {
-                 << "BG:" << bg.name() << "FG:" << fg.name();
     }
 }
 
@@ -903,9 +901,11 @@ void TestUIAccessibility::reportAccessibilityViolation(const QString& violation,
 void TestUIAccessibility::generateAccessibilityReport()
 {
     for (const QString& violation : m_accessibilityViolations) {
+        Q_UNUSED(violation)
     }
 
     for (const QString& warning : m_accessibilityWarnings) {
+        Q_UNUSED(warning)
     }
 
     for (auto it = m_complianceChecks.begin(); it != m_complianceChecks.end(); ++it) {

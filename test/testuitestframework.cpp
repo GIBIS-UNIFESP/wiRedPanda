@@ -679,7 +679,7 @@ void UITestFramework::recordUserInteractionSession(QWidget* widget, const QStrin
 void UITestFramework::playbackUserSession(QWidget* widget, const QString &sessionName)
 {
     if (!widget) return;
-
+    Q_UNUSED(sessionName)
 
     // Simulate typical user session playback
     simulateTypicalUserBehavior(widget);

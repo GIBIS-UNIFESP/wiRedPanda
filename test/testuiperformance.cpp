@@ -272,6 +272,7 @@ void TestUIPerformance::testMemoryUsageGrowth()
     // Add elements and measure memory growth
     addManyElementsToScene(100, "And");
     qint64 afterElementsMemory = measureCurrentMemoryUsage();
+    Q_UNUSED(afterElementsMemory)
 
     createManyConnections(50);
     qint64 afterConnectionsMemory = measureCurrentMemoryUsage();
@@ -522,9 +523,6 @@ void TestUIPerformance::measureOperationPerformance(const QString &operationName
 {
     auto metrics = UITestFramework::measureUIOperationPerformance(operation);
 
-             << metrics.operationTimeMs << "ms"
-             << "| Responsiveness:" << QString::number(metrics.uiResponsiveness, 'f', 2)
-             << "| Freeze:" << (metrics.hasUIFreeze ? "YES" : "NO");
 
     logPerformanceBaseline(operationName, metrics.operationTimeMs);
 
@@ -655,7 +653,6 @@ bool TestUIPerformance::detectMemoryLeak(std::function<void()> operation, int it
     qint64 finalMemory = measureCurrentMemoryUsage();
     qint64 memoryDifference = finalMemory - initialMemory;
 
-             << "KB, Difference:" << memoryDifference << "KB over" << iterations << "iterations";
 
     // Consider it a leak if memory grows by more than 1MB per 10 iterations
     qint64 leakThreshold = (iterations / 10) * 1024; // 1MB per 10 iterations

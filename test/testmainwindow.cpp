@@ -434,7 +434,6 @@ void TestMainWindow::testViewMenuActions()
 
 void TestMainWindow::testHelpMenuActions()
 {
-    qDebug() << "Testing comprehensive help menu actions";
 
     QVERIFY(m_mainWindow != nullptr);
 
