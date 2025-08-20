@@ -594,7 +594,12 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         // If it is a source node, don't show combobox.
 
         for (auto key : m_scene->nodeMapping.keys()) {
-            m_ui->comboBoxNode->addItem(m_scene->element(key)->label());
+            auto *element = m_scene->element(key);
+            if (element) {
+                m_ui->comboBoxNode->addItem(element->label());
+            } else {
+                qDebug() << "Warning: Null element found in nodeMapping with key:" << key;
+            }
         }
 
         auto set = m_scene->getNodeSet(firstElement->label());
@@ -1135,11 +1140,17 @@ void ElementEditor::connectNode(const QString label)
     int nextSourceNodeId = -1;
 
     for (auto sourceNodeId : m_scene->nodeMapping.keys()) {
-        if (m_scene->element(sourceNodeId)->label() == label) {
+        auto *sourceElement = m_scene->element(sourceNodeId);
+        if (!sourceElement) {
+            qDebug() << "Warning: Null element found in nodeMapping with id:" << sourceNodeId;
+            continue;
+        }
+        
+        if (sourceElement->label() == label) {
             nextSourceNodeId = sourceNodeId;
         }
 
-        if (m_scene->element(sourceNodeId)->label() == selectedNode->label()) {
+        if (sourceElement->label() == selectedNode->label()) {
             currentSourceNodeId = sourceNodeId;
         }
     }
@@ -1168,8 +1179,21 @@ void ElementEditor::connectNode(const QString label)
     qDebug() << "nextNodeSet: " << nextNodeSet;
 
     for (auto pair : nextNodeSet) {
-        auto *sourceNode = qobject_cast<Node *>(m_scene->element(nextSourceNodeId));
-        auto *destNode = qobject_cast<Node *>(m_scene->element(pair.nodeId));
+        auto *sourceElement = m_scene->element(nextSourceNodeId);
+        auto *destElement = m_scene->element(pair.nodeId);
+        
+        if (!sourceElement || !destElement) {
+            qDebug() << "Warning: Null element found in wireless connection - sourceId:" << nextSourceNodeId << "destId:" << pair.nodeId;
+            continue;
+        }
+        
+        auto *sourceNode = qobject_cast<Node *>(sourceElement);
+        auto *destNode = qobject_cast<Node *>(destElement);
+        
+        if (!sourceNode || !destNode) {
+            qDebug() << "Warning: Element is not a Node in wireless connection";
+            continue;
+        }
 
         if (destNode->inputPort()->connections().size() == 0) {
             auto *connection = new QNEConnection();
