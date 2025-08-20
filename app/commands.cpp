@@ -332,10 +332,10 @@ DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scen
 
     // Backup wireless mappings that will be affected by the deletion
     QList<int> allIds = m_ids;
-    for (const auto &dest : qAsConst(m_scene->nodeMapping)) {
-        for (const auto &d : dest) {
-            if (m_ids.contains(d.nodeId)) {
-                allIds.append(d.nodeId);
+    for (const auto &dest : std::as_const(m_scene->nodeMapping)) {
+        for (const auto &destItem : dest) {
+            if (m_ids.contains(destItem.nodeId)) {
+                allIds.append(destItem.nodeId);
             }
         }
     }

@@ -767,7 +767,7 @@ void Scene::cloneDrag(const QPointF mousePos)
     drag->exec(Qt::CopyAction, Qt::CopyAction);
 }
 
-void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream, const QMap<int, QSet<Destination>> &nodeMapping)
+void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream, const QMap<int, QSet<Destination>> &wirelessMappings)
 {
     QPointF center(0.0, 0.0);
     int itemsQuantity = 0;
@@ -780,10 +780,10 @@ void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream, const
     }
 
     stream << center / static_cast<qreal>(itemsQuantity);
-    if (nodeMapping.isEmpty()) {
+    if (wirelessMappings.isEmpty()) {
         Serialization::serialize(items, stream);
     } else {
-        Serialization::serializeWithWireless(items, stream, nodeMapping);
+        Serialization::serializeWithWireless(items, stream, wirelessMappings);
     }
 }
 
@@ -995,9 +995,9 @@ void Scene::paste(QDataStream &stream, QVersionNumber version)
     resizeScene();
 }
 
-void Scene::cut(const QList<QGraphicsItem *> &items, QDataStream &stream, const QMap<int, QSet<Destination>> &nodeMapping)
+void Scene::cut(const QList<QGraphicsItem *> &items, QDataStream &stream, const QMap<int, QSet<Destination>> &wirelessMappings)
 {
-    copy(items, stream, nodeMapping);
+    copy(items, stream, wirelessMappings);
     deleteAction();
 }
 
