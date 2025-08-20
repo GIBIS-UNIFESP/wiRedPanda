@@ -1205,7 +1205,7 @@
         <translation>Ukendt type 2: %1</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="186"/>
+        <location filename="../../elementfactory.cpp" line="191"/>
         <source>Not implemented yet: %1</source>
         <translation>Ikke implementeret endnu: %1</translation>
     </message>
@@ -1913,7 +1913,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1649"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>Lyd fra</translation>
@@ -1988,7 +1988,7 @@
         <location filename="../../mainwindow.cpp" line="289"/>
         <location filename="../../mainwindow.cpp" line="411"/>
         <location filename="../../mainwindow.cpp" line="672"/>
-        <location filename="../../mainwindow.cpp" line="1191"/>
+        <location filename="../../mainwindow.cpp" line="1193"/>
         <source>New Project</source>
         <translation>Nyt projekt</translation>
     </message>
@@ -2021,7 +2021,7 @@ Vil du gemme dine ændringer?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="470"/>
-        <location filename="../../mainwindow.cpp" line="1690"/>
+        <location filename="../../mainwindow.cpp" line="1692"/>
         <source>Open File</source>
         <translation>Åbn fil</translation>
     </message>
@@ -2075,95 +2075,95 @@ Du skal gemme nye projekter før du får adgang til IC&apos;er og skins, eller k
         <translation>&lt;h1&gt;Lærred genveje&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom ind &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom ud &lt;/li&gt;&lt;li&gt; Ctrl+1 : Skjul/Vis ledninger &lt;/li&gt;&lt;li&gt; Ctrl+2 : Skjul/Vis porte &lt;/li&gt;&lt;li&gt; Ctrl+F : Søg elementer &lt;/li&gt;&lt;li&gt; Ctrl+W : Åbn beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Gem projekt &lt;/li&gt;&lt;li&gt; Ctrl+Q : Afslut wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulering &lt;/li&gt;&lt;li&gt; [ : Forrige primære elementegenskab &lt;/li&gt;&lt;li&gt; ] : Næste primære elementegenskab &lt;/li&gt;&lt;li&gt; { : Forrige sekundære elementegenskab &lt;/li&gt;&lt;li&gt; } : Næste sekundære elementegenskab &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph til forrige element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph til næste element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Generelle tips&lt;/h1&gt;&lt;p&gt;Dobbeltklik på en ledning for at oprette en knude&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="950"/>
-        <location filename="../../mainwindow.cpp" line="977"/>
+        <location filename="../../mainwindow.cpp" line="952"/>
+        <location filename="../../mainwindow.cpp" line="979"/>
         <source>Missing file name.</source>
         <translation>Manglende filnavn.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="956"/>
+        <location filename="../../mainwindow.cpp" line="958"/>
         <source>The .panda file is empty.</source>
         <translation>.panda-filen er tom.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="969"/>
+        <location filename="../../mainwindow.cpp" line="971"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino-kode genereret korrekt.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1004"/>
+        <location filename="../../mainwindow.cpp" line="1006"/>
         <source>Generate Arduino Code</source>
         <translation>Generer Arduino-kode</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1004"/>
+        <location filename="../../mainwindow.cpp" line="1006"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino-fil (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1106"/>
+        <location filename="../../mainwindow.cpp" line="1108"/>
         <source>Export to PDF</source>
         <translation>Eksporter til PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1106"/>
+        <location filename="../../mainwindow.cpp" line="1108"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF-filer (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1124"/>
+        <location filename="../../mainwindow.cpp" line="1126"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Kunne ikke udskrive dette kredsløb til PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1131"/>
-        <location filename="../../mainwindow.cpp" line="1169"/>
+        <location filename="../../mainwindow.cpp" line="1133"/>
+        <location filename="../../mainwindow.cpp" line="1171"/>
         <source>Exported file successfully.</source>
         <translation>Fil eksporteret korrekt.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1150"/>
+        <location filename="../../mainwindow.cpp" line="1152"/>
         <source>Export to Image</source>
         <translation>Eksporter til billede</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1150"/>
+        <location filename="../../mainwindow.cpp" line="1152"/>
         <source>PNG files (*.png)</source>
         <translation>PNG-filer (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1649"/>
         <source>Unmute</source>
         <translation>Lyd til</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1686"/>
+        <location filename="../../mainwindow.cpp" line="1688"/>
         <source>Save file first.</source>
         <translation>Gem fil først.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1692"/>
+        <location filename="../../mainwindow.cpp" line="1694"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1704"/>
-        <location filename="../../mainwindow.cpp" line="1716"/>
+        <location filename="../../mainwindow.cpp" line="1706"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1704"/>
+        <location filename="../../mainwindow.cpp" line="1706"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Valgte filer (og deres afhængigheder) vil blive kopieret til den nuværende filmappe.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1716"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <source>Drag here to remove.</source>
         <translation>Træk hertil for at fjerne.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1739"/>
+        <location filename="../../mainwindow.cpp" line="1741"/>
         <source>Error removing file: %1</source>
         <translation>Fejl ved fjernelse af fil: %1</translation>
     </message>
@@ -2427,37 +2427,37 @@ Du skal gemme nye projekter før du får adgang til IC&apos;er og skins, eller k
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../workspace.cpp" line="72"/>
+        <location filename="../../workspace.cpp" line="76"/>
         <source>Save File</source>
         <translation>Gem fil</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="72"/>
+        <location filename="../../workspace.cpp" line="76"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda-filer (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="90"/>
+        <location filename="../../workspace.cpp" line="94"/>
         <source>Error opening file: %1</source>
         <translation>Fejl ved åbning af fil: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="100"/>
+        <location filename="../../workspace.cpp" line="104"/>
         <source>Could not save file: %1</source>
         <translation>Kunne ikke gemme fil: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="136"/>
+        <location filename="../../workspace.cpp" line="140"/>
         <source>This file does not exist: %1</source>
         <translation>Denne fil eksisterer ikke: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="146"/>
+        <location filename="../../workspace.cpp" line="150"/>
         <source>Could not open file: %1</source>
         <translation>Kunne ikke åbne fil: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="167"/>
+        <location filename="../../workspace.cpp" line="171"/>
         <source>Warning! Your wiRedPanda (Version: %1) is possibly out of date.
 The file you are opening was saved with version (%2).
 Please check for updates if the file does not load correctly.</source>
@@ -2466,22 +2466,22 @@ Filen du åbner blev gemt med version (%2).
 Tjek venligst for opdateringer, hvis filen ikke indlæses korrekt.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="171"/>
+        <location filename="../../workspace.cpp" line="175"/>
         <source>Newer version file.</source>
         <translation>Nyere versionsfil.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="175"/>
+        <location filename="../../workspace.cpp" line="179"/>
         <source>Old version file.</source>
         <translation>Gammel versionsfil.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="270"/>
+        <location filename="../../workspace.cpp" line="290"/>
         <source>Error opening autosave file: %1</source>
         <translation>Fejl ved åbning af autogem-fil: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="173"/>
+        <location filename="../../workspace.cpp" line="177"/>
         <source>Warning! This is an old version wiRedPanda project file (version &lt; 4.0). To open it correctly, save all the ICs and skins in the main project directory.</source>
         <translation>Advarsel! Dette er en gammel version af wiRedPanda projektfil (version &lt; 4.0). For at åbne den korrekt, gem alle IC&apos;erne og skins i hovedprojektmappen.</translation>
     </message>

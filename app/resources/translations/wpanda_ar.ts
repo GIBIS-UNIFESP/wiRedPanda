@@ -1205,7 +1205,7 @@
         <translation>نوع غير معروف 2: %1</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="186"/>
+        <location filename="../../elementfactory.cpp" line="191"/>
         <source>Not implemented yet: %1</source>
         <translation>لم يتم تنفيذه بعد: %1</translation>
     </message>
@@ -1931,7 +1931,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1649"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>كتم</translation>
@@ -1988,7 +1988,7 @@
         <location filename="../../mainwindow.cpp" line="289"/>
         <location filename="../../mainwindow.cpp" line="411"/>
         <location filename="../../mainwindow.cpp" line="672"/>
-        <location filename="../../mainwindow.cpp" line="1191"/>
+        <location filename="../../mainwindow.cpp" line="1193"/>
         <source>New Project</source>
         <translation>مشروع جديد</translation>
     </message>
@@ -2021,7 +2021,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="470"/>
-        <location filename="../../mainwindow.cpp" line="1690"/>
+        <location filename="../../mainwindow.cpp" line="1692"/>
         <source>Open File</source>
         <translation>فتح ملف</translation>
     </message>
@@ -2075,95 +2075,95 @@ wiRedPanda %1 سيقوم بسرد جميع ملفات .panda الأخرى في �
         <translation>&lt;h1&gt;اختصارات اللوحة&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : تكبير &lt;/li&gt;&lt;li&gt; Ctrl+- : تصغير &lt;/li&gt;&lt;li&gt; Ctrl+1 : إخفاء/إظهار الأسلاك &lt;/li&gt;&lt;li&gt; Ctrl+2 : إخفاء/إظهار البوابات &lt;/li&gt;&lt;li&gt; Ctrl+F : بحث عن عناصر &lt;/li&gt;&lt;li&gt; Ctrl+W : فتح beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : حفظ المشروع &lt;/li&gt;&lt;li&gt; Ctrl+Q : خروج من wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : بدء/إيقاف المحاكاة &lt;/li&gt;&lt;li&gt; [ : خاصية العنصر الأساسية السابقة &lt;/li&gt;&lt;li&gt; ] : خاصية العنصر الأساسية التالية &lt;/li&gt;&lt;li&gt; { : خاصية العنصر الثانوية السابقة &lt;/li&gt;&lt;li&gt; } : خاصية العنصر الثانوية التالية &lt;/li&gt;&lt;li&gt; &amp;lt; : تحويل إلى العنصر السابق &lt;/li&gt;&lt;li&gt; &amp;gt; : تحويل إلى العنصر التالي &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;نصائح عامة&lt;/h1&gt;&lt;p&gt;انقر مزدوجاً على سلك لإنشاء عقدة&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="950"/>
-        <location filename="../../mainwindow.cpp" line="977"/>
+        <location filename="../../mainwindow.cpp" line="952"/>
+        <location filename="../../mainwindow.cpp" line="979"/>
         <source>Missing file name.</source>
         <translation>اسم الملف مفقود.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="956"/>
+        <location filename="../../mainwindow.cpp" line="958"/>
         <source>The .panda file is empty.</source>
         <translation>ملف .panda فارغ.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="969"/>
+        <location filename="../../mainwindow.cpp" line="971"/>
         <source>Arduino code successfully generated.</source>
         <translation>تم إنتاج كود أردوينو بنجاح.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1004"/>
+        <location filename="../../mainwindow.cpp" line="1006"/>
         <source>Generate Arduino Code</source>
         <translation>إنتاج كود أردوينو</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1004"/>
+        <location filename="../../mainwindow.cpp" line="1006"/>
         <source>Arduino file (*.ino)</source>
         <translation>ملف أردوينو (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1106"/>
+        <location filename="../../mainwindow.cpp" line="1108"/>
         <source>Export to PDF</source>
         <translation>تصدير إلى PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1106"/>
+        <location filename="../../mainwindow.cpp" line="1108"/>
         <source>PDF files (*.pdf)</source>
         <translation>ملفات PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1124"/>
+        <location filename="../../mainwindow.cpp" line="1126"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>لا يمكن طباعة هذه الدارة إلى PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1131"/>
-        <location filename="../../mainwindow.cpp" line="1169"/>
+        <location filename="../../mainwindow.cpp" line="1133"/>
+        <location filename="../../mainwindow.cpp" line="1171"/>
         <source>Exported file successfully.</source>
         <translation>تم تصدير الملف بنجاح.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1150"/>
+        <location filename="../../mainwindow.cpp" line="1152"/>
         <source>Export to Image</source>
         <translation>تصدير إلى صورة</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1150"/>
+        <location filename="../../mainwindow.cpp" line="1152"/>
         <source>PNG files (*.png)</source>
         <translation>ملفات PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1649"/>
         <source>Unmute</source>
         <translation>إلغاء الكتم</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1686"/>
+        <location filename="../../mainwindow.cpp" line="1688"/>
         <source>Save file first.</source>
         <translation>احفظ الملف أولاً.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1692"/>
+        <location filename="../../mainwindow.cpp" line="1694"/>
         <source>Panda (*.panda)</source>
         <translation>باندا (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1704"/>
-        <location filename="../../mainwindow.cpp" line="1716"/>
+        <location filename="../../mainwindow.cpp" line="1706"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <source>Info</source>
         <translation>معلومات</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1704"/>
+        <location filename="../../mainwindow.cpp" line="1706"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>سيتم نسخ الملفات المحددة (وتبعياتها) إلى مجلد الملف الحالي.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1716"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <source>Drag here to remove.</source>
         <translation>اسحب هنا للإزالة.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1739"/>
+        <location filename="../../mainwindow.cpp" line="1741"/>
         <source>Error removing file: %1</source>
         <translation>خطأ في حذف الملف: %1</translation>
     </message>
@@ -2427,37 +2427,37 @@ wiRedPanda %1 سيقوم بسرد جميع ملفات .panda الأخرى في �
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../workspace.cpp" line="72"/>
+        <location filename="../../workspace.cpp" line="76"/>
         <source>Save File</source>
         <translation>حفظ الملف</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="72"/>
+        <location filename="../../workspace.cpp" line="76"/>
         <source>Panda files (*.panda)</source>
         <translation>ملفات باندا (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="90"/>
+        <location filename="../../workspace.cpp" line="94"/>
         <source>Error opening file: %1</source>
         <translation>خطأ في فتح الملف: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="100"/>
+        <location filename="../../workspace.cpp" line="104"/>
         <source>Could not save file: %1</source>
         <translation>لا يمكن حفظ الملف: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="136"/>
+        <location filename="../../workspace.cpp" line="140"/>
         <source>This file does not exist: %1</source>
         <translation>هذا الملف غير موجود: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="146"/>
+        <location filename="../../workspace.cpp" line="150"/>
         <source>Could not open file: %1</source>
         <translation>لا يمكن فتح الملف: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="167"/>
+        <location filename="../../workspace.cpp" line="171"/>
         <source>Warning! Your wiRedPanda (Version: %1) is possibly out of date.
 The file you are opening was saved with version (%2).
 Please check for updates if the file does not load correctly.</source>
@@ -2466,22 +2466,22 @@ Please check for updates if the file does not load correctly.</source>
 يرجى التحقق من وجود تحديثات إذا لم يتم تحميل الملف بشكل صحيح.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="171"/>
+        <location filename="../../workspace.cpp" line="175"/>
         <source>Newer version file.</source>
         <translation>ملف إصدار أحدث.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="175"/>
+        <location filename="../../workspace.cpp" line="179"/>
         <source>Old version file.</source>
         <translation>ملف إصدار قديم.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="270"/>
+        <location filename="../../workspace.cpp" line="290"/>
         <source>Error opening autosave file: %1</source>
         <translation>خطأ في فتح ملف الحفظ التلقائي: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="173"/>
+        <location filename="../../workspace.cpp" line="177"/>
         <source>Warning! This is an old version wiRedPanda project file (version &lt; 4.0). To open it correctly, save all the ICs and skins in the main project directory.</source>
         <translation>تحذير! هذا ملف مشروع wiRedPanda بإصدار قديم (إصدار &lt; 4.0). لفتحه بشكل صحيح، احفظ جميع الدوائر المتكاملة والقوالب في مجلد المشروع الرئيسي.</translation>
     </message>

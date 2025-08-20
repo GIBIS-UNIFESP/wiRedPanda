@@ -1205,7 +1205,7 @@
         <translation>Type inconnu 2 : %1</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="186"/>
+        <location filename="../../elementfactory.cpp" line="191"/>
         <source>Not implemented yet: %1</source>
         <translation>Pas encore implémenté : %1</translation>
     </message>
@@ -1913,7 +1913,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1649"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>Muet</translation>
@@ -1982,7 +1982,7 @@
         <location filename="../../mainwindow.cpp" line="289"/>
         <location filename="../../mainwindow.cpp" line="411"/>
         <location filename="../../mainwindow.cpp" line="672"/>
-        <location filename="../../mainwindow.cpp" line="1191"/>
+        <location filename="../../mainwindow.cpp" line="1193"/>
         <source>New Project</source>
         <translation>Nouveau projet</translation>
     </message>
@@ -2015,7 +2015,7 @@ Voulez-vous enregistrer vos modifications&#x202f;?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="470"/>
-        <location filename="../../mainwindow.cpp" line="1690"/>
+        <location filename="../../mainwindow.cpp" line="1692"/>
         <source>Open File</source>
         <translation>Ouvrir le fichier</translation>
     </message>
@@ -2069,95 +2069,95 @@ Vous devez enregistrer les nouveaux projets avant d&apos;accéder aux CI et appa
         <translation>&lt;h1&gt;Raccourcis de la zone de travail&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom avant &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom arrière &lt;/li&gt;&lt;li&gt; Ctrl+1 : Masquer/Afficher les fils &lt;/li&gt;&lt;li&gt; Ctrl+2 : Masquer/Afficher les portes &lt;/li&gt;&lt;li&gt; Ctrl+F : Rechercher des éléments &lt;/li&gt;&lt;li&gt; Ctrl+W : Ouvrir beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Enregistrer le projet &lt;/li&gt;&lt;li&gt; Ctrl+Q : Quitter wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Démarrer/Mettre en pause la simulation &lt;/li&gt;&lt;li&gt; [ : Propriété d&apos;élément principal précédente &lt;/li&gt;&lt;li&gt; ] : Propriété d&apos;élément principal suivante &lt;/li&gt;&lt;li&gt; { : Propriété d&apos;élément secondaire précédente &lt;/li&gt;&lt;li&gt; } : Propriété d&apos;élément secondaire suivante &lt;/li&gt;&lt;li&gt; &amp;lt; : Transformer en élément précédent &lt;/li&gt;&lt;li&gt; &amp;gt; : Transformer en élément suivant &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Conseils généraux&lt;/h1&gt;&lt;p&gt;Double-cliquez sur un fil pour créer un nœud&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="950"/>
-        <location filename="../../mainwindow.cpp" line="977"/>
+        <location filename="../../mainwindow.cpp" line="952"/>
+        <location filename="../../mainwindow.cpp" line="979"/>
         <source>Missing file name.</source>
         <translation>Nom de fichier manquant.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="956"/>
+        <location filename="../../mainwindow.cpp" line="958"/>
         <source>The .panda file is empty.</source>
         <translation>Le fichier .panda est vide.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="969"/>
+        <location filename="../../mainwindow.cpp" line="971"/>
         <source>Arduino code successfully generated.</source>
         <translation>Le code Arduino a bien été généré.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1004"/>
+        <location filename="../../mainwindow.cpp" line="1006"/>
         <source>Generate Arduino Code</source>
         <translation>Générer le code Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1004"/>
+        <location filename="../../mainwindow.cpp" line="1006"/>
         <source>Arduino file (*.ino)</source>
         <translation>Fichier Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1106"/>
+        <location filename="../../mainwindow.cpp" line="1108"/>
         <source>Export to PDF</source>
         <translation>Exporter en PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1106"/>
+        <location filename="../../mainwindow.cpp" line="1108"/>
         <source>PDF files (*.pdf)</source>
         <translation>Fichiers PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1124"/>
+        <location filename="../../mainwindow.cpp" line="1126"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Impossible d&apos;imprimer ce circuit en PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1131"/>
-        <location filename="../../mainwindow.cpp" line="1169"/>
+        <location filename="../../mainwindow.cpp" line="1133"/>
+        <location filename="../../mainwindow.cpp" line="1171"/>
         <source>Exported file successfully.</source>
         <translation>Le fichier a bien été exporté.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1150"/>
+        <location filename="../../mainwindow.cpp" line="1152"/>
         <source>Export to Image</source>
         <translation>Exporter en image</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1150"/>
+        <location filename="../../mainwindow.cpp" line="1152"/>
         <source>PNG files (*.png)</source>
         <translation>Fichiers PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1649"/>
         <source>Unmute</source>
         <translation>Activer le son</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1686"/>
+        <location filename="../../mainwindow.cpp" line="1688"/>
         <source>Save file first.</source>
         <translation>Enregistrer le fichier d&apos;abord.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1692"/>
+        <location filename="../../mainwindow.cpp" line="1694"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1704"/>
-        <location filename="../../mainwindow.cpp" line="1716"/>
+        <location filename="../../mainwindow.cpp" line="1706"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <source>Info</source>
         <translation>Informations</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1704"/>
+        <location filename="../../mainwindow.cpp" line="1706"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Les fichiers sélectionnés (et leurs dépendances) seront copiés dans le dossier de fichier actuel.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1716"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <source>Drag here to remove.</source>
         <translation>Faites glisser ici pour enlever.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1739"/>
+        <location filename="../../mainwindow.cpp" line="1741"/>
         <source>Error removing file: %1</source>
         <translation>Erreur lors de la suppression du fichier : %1</translation>
     </message>
@@ -2427,37 +2427,37 @@ Vous devez enregistrer les nouveaux projets avant d&apos;accéder aux CI et appa
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../workspace.cpp" line="72"/>
+        <location filename="../../workspace.cpp" line="76"/>
         <source>Save File</source>
         <translation>Enregistrer le fichier</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="72"/>
+        <location filename="../../workspace.cpp" line="76"/>
         <source>Panda files (*.panda)</source>
         <translation>Fichiers Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="90"/>
+        <location filename="../../workspace.cpp" line="94"/>
         <source>Error opening file: %1</source>
         <translation>Erreur lors de l&apos;ouverture du fichier : %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="100"/>
+        <location filename="../../workspace.cpp" line="104"/>
         <source>Could not save file: %1</source>
         <translation>Impossible de sauvegarder le fichier : %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="136"/>
+        <location filename="../../workspace.cpp" line="140"/>
         <source>This file does not exist: %1</source>
         <translation>Ce fichier n&apos;existe pas : %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="146"/>
+        <location filename="../../workspace.cpp" line="150"/>
         <source>Could not open file: %1</source>
         <translation>Impossible d&apos;ouvrir le fichier : %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="167"/>
+        <location filename="../../workspace.cpp" line="171"/>
         <source>Warning! Your wiRedPanda (Version: %1) is possibly out of date.
 The file you are opening was saved with version (%2).
 Please check for updates if the file does not load correctly.</source>
@@ -2466,22 +2466,22 @@ Le fichier que vous ouvrez a été sauvegardé avec la version (%2).
 Veuillez vérifier les mises à jour si le fichier ne se charge pas correctement.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="171"/>
+        <location filename="../../workspace.cpp" line="175"/>
         <source>Newer version file.</source>
         <translation>Fichier de la nouvelle version.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="175"/>
+        <location filename="../../workspace.cpp" line="179"/>
         <source>Old version file.</source>
         <translation>Fichier de l&apos;ancienne version.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="270"/>
+        <location filename="../../workspace.cpp" line="290"/>
         <source>Error opening autosave file: %1</source>
         <translation>Erreur lors de l&apos;ouverture du fichier de sauvegarde automatique : %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="173"/>
+        <location filename="../../workspace.cpp" line="177"/>
         <source>Warning! This is an old version wiRedPanda project file (version &lt; 4.0). To open it correctly, save all the ICs and skins in the main project directory.</source>
         <translation>Attention ! Il s&apos;agit d&apos;un ancien fichier de projet wiRedPanda (version &lt; 4.0). Pour l&apos;ouvrir correctement, enregistrez tous les CI et apparences dans le répertoire du projet principal.</translation>
     </message>

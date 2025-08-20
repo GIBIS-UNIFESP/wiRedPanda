@@ -1205,7 +1205,7 @@
         <translation>Ismeretlen típus 2: %1</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="186"/>
+        <location filename="../../elementfactory.cpp" line="191"/>
         <source>Not implemented yet: %1</source>
         <translation>Még nincs megvalósítva: %1</translation>
     </message>
@@ -1913,7 +1913,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1649"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>Némítás</translation>
@@ -1988,7 +1988,7 @@
         <location filename="../../mainwindow.cpp" line="289"/>
         <location filename="../../mainwindow.cpp" line="411"/>
         <location filename="../../mainwindow.cpp" line="672"/>
-        <location filename="../../mainwindow.cpp" line="1191"/>
+        <location filename="../../mainwindow.cpp" line="1193"/>
         <source>New Project</source>
         <translation>Új projekt</translation>
     </message>
@@ -2021,7 +2021,7 @@ Menti a változtatásokat?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="470"/>
-        <location filename="../../mainwindow.cpp" line="1690"/>
+        <location filename="../../mainwindow.cpp" line="1692"/>
         <source>Open File</source>
         <translation>Fájl megnyitása</translation>
     </message>
@@ -2075,95 +2075,95 @@ A wiRedPanda %1 automatikusan felsorolja az aktuális projekt könyvtárában ta
         <translation>&lt;h1&gt;Vászon billentyűparancsok&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Nagyítás &lt;/li&gt;&lt;li&gt; Ctrl+- : Kicsinyítés &lt;/li&gt;&lt;li&gt; Ctrl+1 : Vezetékek elrejtése/megjelenítése &lt;/li&gt;&lt;li&gt; Ctrl+2 : Kapuk elrejtése/megjelenítése &lt;/li&gt;&lt;li&gt; Ctrl+F : Elemek keresése &lt;/li&gt;&lt;li&gt; Ctrl+W : beWaveDolphin megnyitása &lt;/li&gt;&lt;li&gt; Ctrl+S : Projekt mentése &lt;/li&gt;&lt;li&gt; Ctrl+Q : wiRedPanda bezárása &lt;/li&gt;&lt;li&gt; F5 : Szimuláció indítása/szüneteltetése &lt;/li&gt;&lt;li&gt; [ : Előző elsődleges elem tulajdonság &lt;/li&gt;&lt;li&gt; ] : Következő elsődleges elem tulajdonság &lt;/li&gt;&lt;li&gt; { : Előző másodlagos elem tulajdonság &lt;/li&gt;&lt;li&gt; } : Következő másodlagos elem tulajdonság &lt;/li&gt;&lt;li&gt; &amp;lt; : Átalakítás előző elemre &lt;/li&gt;&lt;li&gt; &amp;gt; : Átalakítás következő elemre &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Általános tippek&lt;/h1&gt;&lt;p&gt;Csomópont létrehozásához kattintson duplán a vezetékre&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="950"/>
-        <location filename="../../mainwindow.cpp" line="977"/>
+        <location filename="../../mainwindow.cpp" line="952"/>
+        <location filename="../../mainwindow.cpp" line="979"/>
         <source>Missing file name.</source>
         <translation>Hiányzó fájlnév.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="956"/>
+        <location filename="../../mainwindow.cpp" line="958"/>
         <source>The .panda file is empty.</source>
         <translation>A .panda fájl üres.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="969"/>
+        <location filename="../../mainwindow.cpp" line="971"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino kód sikeresen generálva.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1004"/>
+        <location filename="../../mainwindow.cpp" line="1006"/>
         <source>Generate Arduino Code</source>
         <translation>Arduino kód generálása</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1004"/>
+        <location filename="../../mainwindow.cpp" line="1006"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino fájl (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1106"/>
+        <location filename="../../mainwindow.cpp" line="1108"/>
         <source>Export to PDF</source>
         <translation>PDF exportálás</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1106"/>
+        <location filename="../../mainwindow.cpp" line="1108"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF fájlok (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1124"/>
+        <location filename="../../mainwindow.cpp" line="1126"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Nem sikerült kinyomtatni ezt az áramkört PDF-be.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1131"/>
-        <location filename="../../mainwindow.cpp" line="1169"/>
+        <location filename="../../mainwindow.cpp" line="1133"/>
+        <location filename="../../mainwindow.cpp" line="1171"/>
         <source>Exported file successfully.</source>
         <translation>Fájl sikeresen exportálva.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1150"/>
+        <location filename="../../mainwindow.cpp" line="1152"/>
         <source>Export to Image</source>
         <translation>Exportálás képpé</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1150"/>
+        <location filename="../../mainwindow.cpp" line="1152"/>
         <source>PNG files (*.png)</source>
         <translation>PNG fájlok (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1649"/>
         <source>Unmute</source>
         <translation>Hang feloldása</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1686"/>
+        <location filename="../../mainwindow.cpp" line="1688"/>
         <source>Save file first.</source>
         <translation>Először mentse el a fájlt.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1692"/>
+        <location filename="../../mainwindow.cpp" line="1694"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1704"/>
-        <location filename="../../mainwindow.cpp" line="1716"/>
+        <location filename="../../mainwindow.cpp" line="1706"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <source>Info</source>
         <translation>Infó</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1704"/>
+        <location filename="../../mainwindow.cpp" line="1706"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>A kiválasztott fájlok (és függőségeik) az aktuális fájl mappájába kerülnek másolásra.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1716"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <source>Drag here to remove.</source>
         <translation>Húzza ide az eltávolításhoz.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1739"/>
+        <location filename="../../mainwindow.cpp" line="1741"/>
         <source>Error removing file: %1</source>
         <translation>Hiba a fájl törlésekor: %1</translation>
     </message>
@@ -2427,37 +2427,37 @@ A wiRedPanda %1 automatikusan felsorolja az aktuális projekt könyvtárában ta
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../workspace.cpp" line="72"/>
+        <location filename="../../workspace.cpp" line="76"/>
         <source>Save File</source>
         <translation>Fájl mentése</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="72"/>
+        <location filename="../../workspace.cpp" line="76"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda fájlok (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="90"/>
+        <location filename="../../workspace.cpp" line="94"/>
         <source>Error opening file: %1</source>
         <translation>Hiba a fájl megnyitásakor: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="100"/>
+        <location filename="../../workspace.cpp" line="104"/>
         <source>Could not save file: %1</source>
         <translation>Nem sikerült menteni a fájlt: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="136"/>
+        <location filename="../../workspace.cpp" line="140"/>
         <source>This file does not exist: %1</source>
         <translation>Ez a fájl nem létezik: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="146"/>
+        <location filename="../../workspace.cpp" line="150"/>
         <source>Could not open file: %1</source>
         <translation>Nem sikerült megnyitni a fájlt: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="167"/>
+        <location filename="../../workspace.cpp" line="171"/>
         <source>Warning! Your wiRedPanda (Version: %1) is possibly out of date.
 The file you are opening was saved with version (%2).
 Please check for updates if the file does not load correctly.</source>
@@ -2466,22 +2466,22 @@ A megnyitni kívánt fájl (%2) verzióval lett mentve.
 Kérjük, ellenőrizze a frissítéseket, ha a fájl nem töltődik be megfelelően.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="171"/>
+        <location filename="../../workspace.cpp" line="175"/>
         <source>Newer version file.</source>
         <translation>Újabb verziójú fájl.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="175"/>
+        <location filename="../../workspace.cpp" line="179"/>
         <source>Old version file.</source>
         <translation>Régi verziójú fájl.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="270"/>
+        <location filename="../../workspace.cpp" line="290"/>
         <source>Error opening autosave file: %1</source>
         <translation>Hiba az automatikus mentés fájl megnyitásakor: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="173"/>
+        <location filename="../../workspace.cpp" line="177"/>
         <source>Warning! This is an old version wiRedPanda project file (version &lt; 4.0). To open it correctly, save all the ICs and skins in the main project directory.</source>
         <translation>Figyelem! Ez egy régi verziójú wiRedPanda projektfájl (verzió &lt; 4.0). A helyes megnyitáshoz mentse az összes IC-t és kinézetet a fő projektkönyvtárba.</translation>
     </message>

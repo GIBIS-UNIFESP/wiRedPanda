@@ -1205,7 +1205,7 @@
         <translation>Άγνωστος τύπος 2: %1</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="186"/>
+        <location filename="../../elementfactory.cpp" line="191"/>
         <source>Not implemented yet: %1</source>
         <translation>Δεν έχει υλοποιηθεί ακόμη: %1</translation>
     </message>
@@ -1913,7 +1913,7 @@
     </message>
     <message>
         <location filename="../../mainwindow.ui" line="1167"/>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1649"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>Σίγαση</translation>
@@ -1988,7 +1988,7 @@
         <location filename="../../mainwindow.cpp" line="289"/>
         <location filename="../../mainwindow.cpp" line="411"/>
         <location filename="../../mainwindow.cpp" line="672"/>
-        <location filename="../../mainwindow.cpp" line="1191"/>
+        <location filename="../../mainwindow.cpp" line="1193"/>
         <source>New Project</source>
         <translation>Νέο Έργο</translation>
     </message>
@@ -2021,7 +2021,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="470"/>
-        <location filename="../../mainwindow.cpp" line="1690"/>
+        <location filename="../../mainwindow.cpp" line="1692"/>
         <source>Open File</source>
         <translation>Άνοιγμα Αρχείου</translation>
     </message>
@@ -2075,95 +2075,95 @@ You have to save new projects before accessing ICs and skins, or running beWaved
         <translation>&lt;h1&gt;Συντομεύσεις Καμβά&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Μεγέθυνση &lt;/li&gt;&lt;li&gt; Ctrl+- : Σμίκρυνση &lt;/li&gt;&lt;li&gt; Ctrl+1 : Απόκρυψη/Εμφάνιση καλωδίων &lt;/li&gt;&lt;li&gt; Ctrl+2 : Απόκρυψη/Εμφάνιση πυλών &lt;/li&gt;&lt;li&gt; Ctrl+F : Αναζήτηση στοιχείων &lt;/li&gt;&lt;li&gt; Ctrl+W : Άνοιγμα beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Αποθήκευση έργου &lt;/li&gt;&lt;li&gt; Ctrl+Q : Έξοδος από wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Έναρξη/Παύση προσομοίωσης &lt;/li&gt;&lt;li&gt; [ : Προηγούμενη κύρια ιδιότητα στοιχείου &lt;/li&gt;&lt;li&gt; ] : Επόμενη κύρια ιδιότητα στοιχείου &lt;/li&gt;&lt;li&gt; { : Προηγούμενη δευτερεύουσα ιδιότητα στοιχείου &lt;/li&gt;&lt;li&gt; } : Επόμενη δευτερεύουσα ιδιότητα στοιχείου &lt;/li&gt;&lt;li&gt; &amp;lt; : Μετάβαση σε προηγούμενο στοιχείο &lt;/li&gt;&lt;li&gt; &amp;gt; : Μετάβαση σε επόμενο στοιχείο &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Γενικές Συμβουλές&lt;/h1&gt;&lt;p&gt;Διπλό κλικ σε ένα καλώδιο για δημιουργία κόμβου&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="950"/>
-        <location filename="../../mainwindow.cpp" line="977"/>
+        <location filename="../../mainwindow.cpp" line="952"/>
+        <location filename="../../mainwindow.cpp" line="979"/>
         <source>Missing file name.</source>
         <translation>Λείπει όνομα αρχείου.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="956"/>
+        <location filename="../../mainwindow.cpp" line="958"/>
         <source>The .panda file is empty.</source>
         <translation>Το αρχείο .panda είναι κενό.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="969"/>
+        <location filename="../../mainwindow.cpp" line="971"/>
         <source>Arduino code successfully generated.</source>
         <translation>Επιτυχής δημιουργία κώδικα Arduino.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1004"/>
+        <location filename="../../mainwindow.cpp" line="1006"/>
         <source>Generate Arduino Code</source>
         <translation>Δημιουργία Κώδικα Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1004"/>
+        <location filename="../../mainwindow.cpp" line="1006"/>
         <source>Arduino file (*.ino)</source>
         <translation>Αρχείο Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1106"/>
+        <location filename="../../mainwindow.cpp" line="1108"/>
         <source>Export to PDF</source>
         <translation>Εξαγωγή σε PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1106"/>
+        <location filename="../../mainwindow.cpp" line="1108"/>
         <source>PDF files (*.pdf)</source>
         <translation>Αρχεία PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1124"/>
+        <location filename="../../mainwindow.cpp" line="1126"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Δεν ήταν δυνατό να εκτυπωθεί αυτό το κύκλωμα σε PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1131"/>
-        <location filename="../../mainwindow.cpp" line="1169"/>
+        <location filename="../../mainwindow.cpp" line="1133"/>
+        <location filename="../../mainwindow.cpp" line="1171"/>
         <source>Exported file successfully.</source>
         <translation>Επιτυχής εξαγωγή αρχείου.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1150"/>
+        <location filename="../../mainwindow.cpp" line="1152"/>
         <source>Export to Image</source>
         <translation>Εξαγωγή σε Εικόνα</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1150"/>
+        <location filename="../../mainwindow.cpp" line="1152"/>
         <source>PNG files (*.png)</source>
         <translation>Αρχεία PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1647"/>
+        <location filename="../../mainwindow.cpp" line="1649"/>
         <source>Unmute</source>
         <translation>Αποσίγαση</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1686"/>
+        <location filename="../../mainwindow.cpp" line="1688"/>
         <source>Save file first.</source>
         <translation>Αποθηκεύστε πρώτα το αρχείο.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1692"/>
+        <location filename="../../mainwindow.cpp" line="1694"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1704"/>
-        <location filename="../../mainwindow.cpp" line="1716"/>
+        <location filename="../../mainwindow.cpp" line="1706"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <source>Info</source>
         <translation>Πληροφορίες</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1704"/>
+        <location filename="../../mainwindow.cpp" line="1706"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Τα επιλεγμένα αρχεία (και οι εξαρτήσεις τους) θα αντιγραφούν στον φάκελο του τρέχοντος αρχείου.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1716"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <source>Drag here to remove.</source>
         <translation>Σύρετε εδώ για αφαίρεση.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1739"/>
+        <location filename="../../mainwindow.cpp" line="1741"/>
         <source>Error removing file: %1</source>
         <translation>Σφάλμα αφαίρεσης αρχείου: %1</translation>
     </message>
@@ -2427,37 +2427,37 @@ You have to save new projects before accessing ICs and skins, or running beWaved
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../workspace.cpp" line="72"/>
+        <location filename="../../workspace.cpp" line="76"/>
         <source>Save File</source>
         <translation>Αποθήκευση Αρχείου</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="72"/>
+        <location filename="../../workspace.cpp" line="76"/>
         <source>Panda files (*.panda)</source>
         <translation>Αρχεία Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="90"/>
+        <location filename="../../workspace.cpp" line="94"/>
         <source>Error opening file: %1</source>
         <translation>Σφάλμα ανοίγματος αρχείου: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="100"/>
+        <location filename="../../workspace.cpp" line="104"/>
         <source>Could not save file: %1</source>
         <translation>Δεν ήταν δυνατό να αποθηκευτεί το αρχείο: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="136"/>
+        <location filename="../../workspace.cpp" line="140"/>
         <source>This file does not exist: %1</source>
         <translation>Αυτό το αρχείο δεν υπάρχει: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="146"/>
+        <location filename="../../workspace.cpp" line="150"/>
         <source>Could not open file: %1</source>
         <translation>Δεν ήταν δυνατό να ανοιχθεί το αρχείο: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="167"/>
+        <location filename="../../workspace.cpp" line="171"/>
         <source>Warning! Your wiRedPanda (Version: %1) is possibly out of date.
 The file you are opening was saved with version (%2).
 Please check for updates if the file does not load correctly.</source>
@@ -2466,22 +2466,22 @@ Please check for updates if the file does not load correctly.</source>
 Παρακαλούμε ελέγξτε για ενημερώσεις εάν το αρχείο δεν φορτώνει σωστά.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="171"/>
+        <location filename="../../workspace.cpp" line="175"/>
         <source>Newer version file.</source>
         <translation>Αρχείο νεότερης έκδοσης.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="175"/>
+        <location filename="../../workspace.cpp" line="179"/>
         <source>Old version file.</source>
         <translation>Αρχείο παλιάς έκδοσης.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="270"/>
+        <location filename="../../workspace.cpp" line="290"/>
         <source>Error opening autosave file: %1</source>
         <translation>Σφάλμα ανοίγματος αρχείου αυτόματης αποθήκευσης: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="173"/>
+        <location filename="../../workspace.cpp" line="177"/>
         <source>Warning! This is an old version wiRedPanda project file (version &lt; 4.0). To open it correctly, save all the ICs and skins in the main project directory.</source>
         <translation>Προειδοποίηση! Αυτό είναι αρχείο έργου παλιάς έκδοσης wiRedPanda (έκδοση &lt; 4.0). Για να το ανοίξετε σωστά, αποθηκεύστε όλα τα ICs και skins στον κύριο κατάλογο του έργου.</translation>
     </message>
