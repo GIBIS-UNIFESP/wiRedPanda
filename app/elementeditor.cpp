@@ -1103,12 +1103,29 @@ void ElementEditor::mapNode()
         selectedNode->setLabel(label);
         const auto childNodesSet = m_scene->nodeMapping.value(selectedNode->id());
 
+        // Update labels on all connected child nodes
+        QList<GraphicElement*> affectedNodes;
         for (auto &childNodesPair : childNodesSet.values()) {
             const int childNodeId = childNodesPair.nodeId;
             auto *childNode = m_scene->element(childNodeId);
-            childNode->setLabel(label);
+            if (childNode) {
+                childNode->setLabel(label);
+                affectedNodes.append(childNode);
+            }
         }
 
+        // Refresh UI for the source node
+        setCurrentElements({selectedNode});
+        
+        // Update combobox with new label
+        refreshWirelessCombobox();
+        
+        // Notify other ElementEditor instances that nodes have changed
+        // This ensures any open editors show the updated labels
+        for (auto *affectedNode : affectedNodes) {
+            affectedNode->update(); // Trigger visual update
+        }
+        
         return;
     }
 
@@ -1193,7 +1210,10 @@ void ElementEditor::connectNode(const QString &label)
     nextNodeSet.insert(Destination{-1, selectedNode->id()});
 
 
-    for (auto pair : nextNodeSet) {
+    // Create a copy to avoid modifying collection during iteration
+    QSet<Destination> nodesToProcess = nextNodeSet;
+    
+    for (auto pair : nodesToProcess) {
         auto *sourceElement = m_scene->element(nextSourceNodeId);
         auto *destElement = m_scene->element(pair.nodeId);
         
@@ -1217,10 +1237,13 @@ void ElementEditor::connectNode(const QString &label)
             connection->setEndPort(destNode->inputPort());
             m_scene->makeConnectionNode(connection);
 
-            destNode->inputPort()->setHasWirelessConnection(true); // why this since connection itself stores isWireless?
+            // Update both port and element wireless flags consistently
+            destNode->inputPort()->setHasWirelessConnection(true);
+            destNode->setIsWireless(true);
+            
+            // Safely update the actual set (not the copy)
             const int nodeId = pair.nodeId;
             nextNodeSet.remove(pair);
-            destNode->setIsWireless(true);
             nextNodeSet.insert(Destination{connection->id(), nodeId});
 
             selectedNode->setLabel(label);
@@ -1229,4 +1252,34 @@ void ElementEditor::connectNode(const QString &label)
 
     m_scene->nodeMapping.insert(nextSourceNodeId, nextNodeSet);
     setCurrentElements({selectedNode});
+}
+
+void ElementEditor::refreshWirelessCombobox()
+{
+    if (!m_hasNode || !m_ui->comboBoxNode->isVisible()) {
+        return;
+    }
+    
+    // Store current selection
+    QString currentSelection = m_ui->comboBoxNode->currentText();
+    
+    // Repopulate combobox
+    m_ui->comboBoxNode->clear();
+    m_ui->comboBoxNode->addItem("");
+    
+    for (auto key : m_scene->nodeMapping.keys()) {
+        auto *element = m_scene->element(key);
+        if (element) {
+            QString label = element->label();
+            if (!label.isEmpty()) {
+                m_ui->comboBoxNode->addItem(label);
+            }
+        }
+    }
+    
+    // Restore selection if it still exists
+    int index = m_ui->comboBoxNode->findText(currentSelection);
+    if (index >= 0) {
+        m_ui->comboBoxNode->setCurrentIndex(index);
+    }
 }

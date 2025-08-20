@@ -907,41 +907,80 @@ void Scene::deleteNodeAction(const QList<QGraphicsItem *> items)
 {
     // Need to delete nodes separately to account for wirelessNodes
     QList<GraphicElement *> nodes;
+    QSet<int> nodeIdsToDelete;
 
+    // Collect all nodes to be deleted
     for (auto &item : items) {
         if (item->type() == GraphicElement::Type) {
             auto elm = qgraphicsitem_cast<GraphicElement *>(item);
-
-            if (elm->elementType() == ElementType::Node) nodes.append(elm);
+            if (elm && elm->elementType() == ElementType::Node) {
+                nodes.append(elm);
+                nodeIdsToDelete.insert(elm->id());
+            }
         }
     }
 
-    for (auto &childNode : nodes) {
-        if (!isSourceNode(childNode)) {
-            for (auto &set : nodeMapping.values()) {
-                for (auto &pair: set) {
-                    if (pair.nodeId == childNode->id()) {
-                        auto key = nodeMapping.key(set);
-                        nodeMapping.remove(nodeMapping.key(set));
-                        set.remove(pair);
-                        nodeMapping.insert(key, set);
+    // Step 1: Clean up child nodes (nodes connected TO source nodes being deleted)
+    QMap<int, QSet<Destination>> updatedMappings;
+    
+    for (auto it = nodeMapping.begin(); it != nodeMapping.end(); ++it) {
+        int sourceNodeId = it.key();
+        QSet<Destination> destinationSet = it.value();
+        QSet<Destination> cleanedSet;
+        
+        // Remove any destinations that point to nodes being deleted
+        for (const auto &dest : destinationSet) {
+            if (!nodeIdsToDelete.contains(dest.nodeId)) {
+                cleanedSet.insert(dest);
+            } else {
+                // Clean up the wireless connection for the deleted node
+                auto *childNode = element(dest.nodeId);
+                if (childNode) {
+                    childNode->setLabel("");
+                    childNode->setIsWireless(false);
+                    if (auto *inputPort = childNode->inputPort()) {
+                        inputPort->setHasWirelessConnection(false);
+                    }
+                }
+            }
+        }
+        
+        // Only keep mappings that still have destinations and source node isn't being deleted
+        if (!cleanedSet.isEmpty() && !nodeIdsToDelete.contains(sourceNodeId)) {
+            updatedMappings.insert(sourceNodeId, cleanedSet);
+        }
+    }
+    
+    // Step 2: Handle source nodes being deleted
+    for (auto &sourceNode : nodes) {
+        if (isSourceNode(sourceNode)) {
+            // Clean up all child nodes connected to this source
+            const auto childDestinations = nodeMapping.value(sourceNode->id());
+            for (const auto &dest : childDestinations) {
+                auto *childNode = element(dest.nodeId);
+                if (childNode && !nodeIdsToDelete.contains(dest.nodeId)) {
+                    // Clear wireless state for child nodes that aren't being deleted
+                    childNode->setLabel("");
+                    childNode->setIsWireless(false);
+                    if (auto *inputPort = childNode->inputPort()) {
+                        inputPort->setHasWirelessConnection(false);
+                    }
+                    
+                    // Delete the actual wireless connection
+                    if (dest.connectionId != -1) {
+                        auto *conn = connection(dest.connectionId);
+                        if (conn) {
+                            removeItem(conn);
+                            delete conn;
+                        }
                     }
                 }
             }
         }
     }
-
-    for (auto &sourceNode : nodes) {
-        if (isSourceNode(sourceNode)) {
-            for (auto pair : nodeMapping.value(sourceNode->id())) {
-                const int childNodeId = pair.nodeId;
-                auto childNode = element(childNodeId);
-                childNode->setLabel("");
-            }
-
-            nodeMapping.remove(sourceNode->id());
-        }
-    }
+    
+    // Step 3: Apply the cleaned mappings (atomic update)
+    nodeMapping = updatedMappings;
 }
 
 void Scene::deleteAction()

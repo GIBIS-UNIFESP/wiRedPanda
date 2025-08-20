@@ -45,6 +45,7 @@ private:
 
     void apply();
     void connectNode(const QString &label);
+    void refreshWirelessCombobox();
     void defaultSkin();
     void inputIndexChanged(const int index);
     void inputLocked(const bool value);
