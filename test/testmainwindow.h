@@ -157,6 +157,11 @@ private:
     // Menu action helper
     QAction* findMenuAction(const QString& menuName, const QString& actionName);
 
+    // Additional functionality helpers
+    int getCurrentTabCount();
+    void simulateUserActionForUndo();
+    void testRecentFileMenuIntegration();
+
     // Test data and utilities
     MainWindow* m_mainWindow = nullptr;
     QTemporaryFile* m_tempFile = nullptr;

@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "uitestframework.h"
+
 #include <QObject>
 #include <QTest>
 
@@ -26,13 +28,42 @@ private slots:
     void init();
     void cleanup();
 
-    // UI interaction tests
+    // Enhanced UI interaction tests
     void testBuildSimpleCircuitWithClicks();
     void testDragAndDropElements();
     void testConnectionCreation();
 
+    // Comprehensive workflow testing
+    void testCompleteCircuitBuildingWorkflow();
+    void testCircuitModificationWorkflow();
+    void testErrorRecoveryWorkflow();
+    void testUndoRedoInteractionWorkflow();
+
+    // Advanced interaction patterns
+    void testMultiSelectAndBulkOperations();
+    void testContextMenuInteractions();
+    void testKeyboardOnlyNavigation();
+    void testDragDropWithSnapping();
+    void testElementAlignmentAndGrid();
+
+    // UI feedback validation
+    void testHoverStateVisualFeedback();
+    void testSelectionHighlighting();
+    void testConnectionPreviewFeedback();
+    void testInvalidActionFeedback();
+
+    // Performance and responsiveness
+    void testUIResponsivenessUnderLoad();
+    void testLargeCircuitUIPerformance();
+    void testScrollingAndZoomPerformance();
+
+    // Error scenario testing
+    void testUIErrorHandling();
+    void testInvalidInputRecovery();
+    void testUIStateConsistency();
+
 private:
-    // Helper functions
+    // Enhanced helper functions
     void setupWorkspace();
     void simulateMouseClick(const QPointF &pos);
     void simulateMouseDrag(const QPointF &start, const QPointF &end);
@@ -40,6 +71,25 @@ private:
     void addElementToScene(const QString &elementType, const QPointF &position);
     void connectElements(const QPointF &outputPos, const QPointF &inputPos);
     int countConnections() const;
+
+    // Advanced workflow helpers
+    void executeComplexUserWorkflow(const QStringList &workflowSteps);
+    void validateVisualFeedbackResponse(const QString &action);
+    void simulateRealisticUserBehavior();
+    void testKeyboardAccessibility();
+    void validateUIPerformanceMetrics();
+
+    // Circuit-specific helpers
+    void buildComplexTestCircuit();
+    void simulateCircuitModification();
+    void testCircuitValidationFeedback();
+    void validateConnectionRouting();
+
+    // Error and edge case helpers
+    void simulateInvalidUserActions();
+    void testUIRecoveryScenarios();
+    void validateErrorMessageDisplay();
+    bool verifyUIStateConsistency();
 
     WorkSpace *m_workspace{nullptr};
     Scene *m_scene{nullptr};
