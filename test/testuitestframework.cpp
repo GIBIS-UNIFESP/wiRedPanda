@@ -55,7 +55,6 @@ void UITestFramework::simulateTypicalUserBehavior(QWidget* widget)
 void UITestFramework::simulateComplexUserWorkflow(const QStringList &workflowSteps)
 {
     for (const QString &step : workflowSteps) {
-        qDebug() << "Executing workflow step:" << step;
         simulateRealisticUserPause(200, 500);
 
         // Process step (this would be extended based on specific workflow needs)
@@ -287,7 +286,6 @@ void UITestFramework::simulateCircuitBuildingWorkflow(WorkSpace* workspace)
     if (!scene) return;
 
     // Simulate typical circuit building workflow
-    qDebug() << "Starting circuit building workflow simulation";
 
     // Step 1: Add input elements
     QPointF inputPos(50, 100);
@@ -330,17 +328,14 @@ void UITestFramework::simulateCircuitBuildingWorkflow(WorkSpace* workspace)
     }
 
     waitForUIUpdate(500);
-    qDebug() << "Circuit building workflow simulation completed";
 }
 
 bool UITestFramework::validateCompleteUserJourney(QWidget* widget, const QStringList &journeySteps)
 {
     if (!widget) return false;
 
-    qDebug() << "Validating user journey with" << journeySteps.size() << "steps";
 
     for (const QString &step : journeySteps) {
-        qDebug() << "Journey step:" << step;
 
         // Simulate realistic user behavior for each step
         simulateTypicalUserBehavior(widget);
@@ -354,7 +349,6 @@ bool UITestFramework::validateCompleteUserJourney(QWidget* widget, const QString
         simulateRealisticUserPause(300, 600);
     }
 
-    qDebug() << "User journey validation completed successfully";
     return true;
 }
 
@@ -387,7 +381,6 @@ QPoint UITestFramework::findWidgetCenter(QWidget* widget)
 
 void UITestFramework::logPerformanceMetric(const QString &operation, qint64 timeMs)
 {
-    qDebug() << "Performance:" << operation << "took" << timeMs << "ms";
 
     if (timeMs > 100) {
         qWarning() << "Slow UI operation detected:" << operation << timeMs << "ms";
@@ -588,19 +581,16 @@ bool UITestFramework::checkARIALabelsPresence(QWidget* widget)
 void UITestFramework::simulateNetworkDisconnection()
 {
     // Simulate network disconnection scenario
-    qDebug() << "Simulating network disconnection for error scenario testing";
 }
 
 void UITestFramework::simulateFileSystemError()
 {
     // Simulate file system error scenario
-    qDebug() << "Simulating file system error for error scenario testing";
 }
 
 void UITestFramework::simulateMemoryPressure()
 {
     // Simulate memory pressure scenario
-    qDebug() << "Simulating memory pressure for error scenario testing";
 }
 
 void UITestFramework::simulateInvalidUserInput(QWidget* widget)
@@ -619,7 +609,6 @@ bool UITestFramework::validateErrorRecovery(QWidget* widget, const QString &erro
 {
     if (!widget) return false;
 
-    qDebug() << "Testing error recovery for scenario:" << errorScenario;
 
     // Simulate error condition
     if (errorScenario == "invalid_input") {
@@ -684,7 +673,6 @@ void UITestFramework::recordUserInteractionSession(QWidget* widget, const QStrin
 {
     if (!widget) return;
 
-    qDebug() << "Recording user interaction session:" << sessionName;
     captureUIState(widget, sessionName + "_start");
 }
 
@@ -692,7 +680,6 @@ void UITestFramework::playbackUserSession(QWidget* widget, const QString &sessio
 {
     if (!widget) return;
 
-    qDebug() << "Playing back user session:" << sessionName;
 
     // Simulate typical user session playback
     simulateTypicalUserBehavior(widget);
@@ -703,7 +690,6 @@ void UITestFramework::testHighDPIScaling(QWidget* widget, const QList<qreal> &dp
     if (!widget) return;
 
     for (qreal scale : dpiScales) {
-        qDebug() << "Testing UI at" << scale << "x DPI scaling";
 
         // Apply scaling (simplified simulation)
         QFont font = widget->font();
@@ -727,7 +713,6 @@ bool UITestFramework::validatePlatformConsistency(QWidget* widget)
     if (!widget) return false;
 
     // Test platform-specific consistency
-    qDebug() << "Validating platform consistency for widget";
 
     // Basic validation - widget should function consistently
     bool isVisible = widget->isVisible();
@@ -740,7 +725,6 @@ void UITestFramework::testTouchscreenCompatibility(QWidget* widget)
 {
     if (!widget) return;
 
-    qDebug() << "Testing touchscreen compatibility";
 
     // Simulate touch gestures
     QPoint center = findWidgetCenter(widget);
@@ -773,7 +757,6 @@ void UITestFramework::measureMemoryUsageUnderUILoad(QWidget* widget)
 {
     if (!widget) return;
 
-    qDebug() << "Measuring memory usage under UI load";
 
     // Simulate UI load and measure memory
     for (int i = 0; i < 50; ++i) {
@@ -787,7 +770,6 @@ void UITestFramework::measureMemoryUsageUnderUILoad(QWidget* widget)
 bool UITestFramework::detectMemoryLeaksInUIOperations(std::function<void()> operation)
 {
     // Simple memory leak detection
-    qDebug() << "Testing for memory leaks in UI operations";
 
     // Execute operation multiple times
     for (int i = 0; i < 10; ++i) {

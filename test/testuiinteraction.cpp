@@ -251,7 +251,6 @@ int TestUIInteraction::countConnections() const
 void TestUIInteraction::testCompleteCircuitBuildingWorkflow()
 {
     // Test a complete realistic circuit building workflow
-    qDebug() << "Testing complete circuit building workflow";
 
     // Step 1: Initialize with realistic user behavior
     UITestFramework::simulateRealisticUserPause(200, 400);
@@ -275,13 +274,11 @@ void TestUIInteraction::testCompleteCircuitBuildingWorkflow()
     QVERIFY(m_scene->elements().size() >= 3);
     verifyCircuitBuilt();
 
-    qDebug() << "Circuit building workflow completed successfully";
 }
 
 void TestUIInteraction::testCircuitModificationWorkflow()
 {
     // Test modifying an existing circuit
-    qDebug() << "Testing circuit modification workflow";
 
     // Build initial circuit
     testBuildSimpleCircuitWithClicks();
@@ -307,7 +304,6 @@ void TestUIInteraction::testCircuitModificationWorkflow()
 void TestUIInteraction::testKeyboardOnlyNavigation()
 {
     // Test complete keyboard-only workflow
-    qDebug() << "Testing keyboard-only navigation";
 
     // Test keyboard accessibility
     bool keyboardAccessible = UITestFramework::validateKeyboardAccessibility(m_view);
@@ -330,7 +326,6 @@ void TestUIInteraction::testKeyboardOnlyNavigation()
 void TestUIInteraction::testHoverStateVisualFeedback()
 {
     // Test visual feedback on hover
-    qDebug() << "Testing hover state visual feedback";
 
     // Add element to test hover on
     addElementToScene("And", QPointF(100, 100));
@@ -351,7 +346,6 @@ void TestUIInteraction::testHoverStateVisualFeedback()
 void TestUIInteraction::testUIResponsivenessUnderLoad()
 {
     // Test UI responsiveness with many elements
-    qDebug() << "Testing UI responsiveness under load";
 
     auto metrics = UITestFramework::measureUIOperationPerformance([this]() {
         // Add many elements to stress test UI
@@ -378,7 +372,6 @@ void TestUIInteraction::testUIResponsivenessUnderLoad()
 void TestUIInteraction::testUIErrorHandling()
 {
     // Test UI behavior during error conditions
-    qDebug() << "Testing UI error handling";
 
     // Simulate invalid operations
     simulateInvalidUserActions();
@@ -395,7 +388,6 @@ void TestUIInteraction::testUIErrorHandling()
 void TestUIInteraction::testInvalidActionFeedback()
 {
     // Test feedback for invalid user actions
-    qDebug() << "Testing invalid action feedback";
 
     // Try to connect incompatible elements (this should be handled gracefully)
     addElementToScene("Led", QPointF(0, 0));
@@ -414,10 +406,8 @@ void TestUIInteraction::testInvalidActionFeedback()
 
 void TestUIInteraction::executeComplexUserWorkflow(const QStringList &workflowSteps)
 {
-    qDebug() << "Executing complex user workflow with" << workflowSteps.size() << "steps";
 
     for (const QString &step : workflowSteps) {
-        qDebug() << "Workflow step:" << step;
 
         // Simulate realistic user behavior for each step
         UITestFramework::simulateTypicalUserBehavior(m_view);
@@ -443,7 +433,6 @@ void TestUIInteraction::executeComplexUserWorkflow(const QStringList &workflowSt
 
 void TestUIInteraction::validateVisualFeedbackResponse(const QString &action)
 {
-    qDebug() << "Validating visual feedback for action:" << action;
 
     // Capture state before action
     UITestFramework::captureUIState(m_view, "before_" + action);
@@ -502,7 +491,6 @@ void TestUIInteraction::buildComplexTestCircuit()
 
 void TestUIInteraction::simulateInvalidUserActions()
 {
-    qDebug() << "Simulating invalid user actions";
     
     // Simulate clicking on empty areas
     simulateMouseClick(QPointF(-100, -100)); // Outside normal bounds
@@ -512,14 +500,12 @@ void TestUIInteraction::simulateInvalidUserActions()
     try {
         addElementToScene("InvalidElementType", QPointF(-1000, -1000));
     } catch (...) {
-        qDebug() << "Expected exception caught for invalid element type";
     }
 
     // Try to connect non-existent elements (safely)
     try {
         connectElements(QPointF(999, 999), QPointF(1000, 1000));
     } catch (...) {
-        qDebug() << "Expected exception caught for invalid connection";
     }
 
     // Simulate dragging to invalid positions (safely)
@@ -537,7 +523,6 @@ void TestUIInteraction::simulateInvalidUserActions()
             simulateMouseDrag(QPointF(0, 0), QPointF(-5000, -5000));
         }
     } catch (...) {
-        qDebug() << "Expected exception caught during invalid drag operations";
     }
     
     // Simulate rapid click sequences
@@ -600,7 +585,6 @@ bool TestUIInteraction::testUIRecoveryScenarios()
         bool finalEnabled = m_view->isEnabled();
         bool finalScene = (m_scene != nullptr);
         
-        qDebug() << "Final recovery state - visible:" << finalVisible 
                  << "enabled:" << finalEnabled 
                  << "scene:" << finalScene;
         
@@ -638,7 +622,6 @@ bool TestUIInteraction::verifyUIStateConsistency()
 
 void TestUIInteraction::testInvalidInputRecovery()
 {
-    qDebug() << "Testing invalid input recovery";
     
     // Test recovery from various invalid inputs
     
@@ -651,7 +634,6 @@ void TestUIInteraction::testInvalidInputRecovery()
             m_scene->addItem(element);
         }
     } catch (...) {
-        qDebug() << "Caught exception during invalid element creation - this is expected";
     }
     
     // Verify UI is still functional (visibility unreliable in test environments)
@@ -668,7 +650,6 @@ void TestUIInteraction::testInvalidInputRecovery()
         try {
             element->setPos(invalidPos);
         } catch (...) {
-            qDebug() << "Handled invalid position gracefully";
         }
         
         // Verify element position is still valid
@@ -688,7 +669,6 @@ void TestUIInteraction::testInvalidInputRecovery()
         invalidConn->setEndPort(nullptr);
         m_scene->addItem(invalidConn);
     } catch (...) {
-        qDebug() << "Invalid connection handled gracefully";
     }
     
     // Clean up
@@ -703,7 +683,6 @@ void TestUIInteraction::testInvalidInputRecovery()
 
 void TestUIInteraction::testUIStateConsistency()
 {
-    qDebug() << "Testing UI state consistency";
     
     // Test 1: Basic state consistency
     QVERIFY2(verifyUIStateConsistency(), "Initial UI state should be consistent");
@@ -745,7 +724,6 @@ void TestUIInteraction::testUIStateConsistency()
 
 void TestUIInteraction::validateErrorMessageDisplay()
 {
-    qDebug() << "Validating error message display";
     
     // This would test that appropriate error messages are shown to users
     // when invalid operations are attempted
@@ -773,7 +751,6 @@ void TestUIInteraction::validateErrorMessageDisplay()
 
 void TestUIInteraction::testErrorRecoveryWorkflow()
 {
-    qDebug() << "Testing error recovery workflow";
     
     // Simulate error condition
     simulateInvalidUserActions();
@@ -789,7 +766,6 @@ void TestUIInteraction::testErrorRecoveryWorkflow()
 
 void TestUIInteraction::testUndoRedoInteractionWorkflow()
 {
-    qDebug() << "Testing undo/redo interaction workflow";
     
     // Add element
     addElementToScene("And", QPointF(100, 100));
@@ -811,7 +787,6 @@ void TestUIInteraction::testUndoRedoInteractionWorkflow()
 
 void TestUIInteraction::testMultiSelectAndBulkOperations()
 {
-    qDebug() << "Testing multi-select and bulk operations";
     
     // Add multiple elements
     addElementToScene("And", QPointF(50, 50));
@@ -837,7 +812,6 @@ void TestUIInteraction::testMultiSelectAndBulkOperations()
 
 void TestUIInteraction::testContextMenuInteractions()
 {
-    qDebug() << "Testing context menu interactions";
     
     // Test context menu functionality safely in headless mode
     // Instead of triggering mouse events, test the underlying signal/slot mechanism
@@ -856,7 +830,6 @@ void TestUIInteraction::testContextMenuInteractions()
         // Verify the scene has the contextMenuPos signal (indicates context menu support)
         QMetaObject::Connection connection = connect(m_scene, &Scene::contextMenuPos, 
                                                    [](QPoint, QGraphicsItem*) {
-            qDebug() << "Context menu signal emitted successfully";
         });
         
         // Test that we can disconnect (validates signal exists)
@@ -879,7 +852,6 @@ void TestUIInteraction::testContextMenuInteractions()
 
 void TestUIInteraction::testDragDropWithSnapping()
 {
-    qDebug() << "Testing drag and drop with snapping";
     
     addElementToScene("And", QPointF(100, 100));
     auto elements = m_scene->elements();
@@ -904,7 +876,6 @@ void TestUIInteraction::testDragDropWithSnapping()
         // In actual implementation, verify snapping behavior would occur
         // For now, just verify the element can handle position changes
         QPointF currentPos = element->pos();
-        qDebug() << "Position check - target:" << targetPos << "current:" << currentPos << "original:" << originalPos;
         
         // The element might have snapping behavior or constraints, so check if it moved at all
         bool elementMoved = (currentPos != originalPos);
@@ -916,7 +887,6 @@ void TestUIInteraction::testDragDropWithSnapping()
 
 void TestUIInteraction::testElementAlignmentAndGrid()
 {
-    qDebug() << "Testing element alignment and grid";
     
     addElementToScene("And", QPointF(50, 50));
     addElementToScene("Or", QPointF(150, 50));
@@ -945,7 +915,6 @@ void TestUIInteraction::testElementAlignmentAndGrid()
 
 void TestUIInteraction::testSelectionHighlighting()
 {
-    qDebug() << "Testing selection highlighting";
     
     addElementToScene("And", QPointF(100, 100));
     auto elements = m_scene->elements();
@@ -966,7 +935,6 @@ void TestUIInteraction::testSelectionHighlighting()
 
 void TestUIInteraction::testConnectionPreviewFeedback()
 {
-    qDebug() << "Testing connection preview feedback";
     
     addElementToScene("And", QPointF(50, 50));
     addElementToScene("Led", QPointF(200, 50));
@@ -979,7 +947,6 @@ void TestUIInteraction::testConnectionPreviewFeedback()
 
 void TestUIInteraction::testLargeCircuitUIPerformance()
 {
-    qDebug() << "Testing large circuit UI performance";
     
     // Add many elements to test performance
     for (int i = 0; i < 50; ++i) {
@@ -998,7 +965,6 @@ void TestUIInteraction::testLargeCircuitUIPerformance()
 
 void TestUIInteraction::testScrollingAndZoomPerformance()
 {
-    qDebug() << "Testing scrolling and zoom performance";
     
     // Add elements to create scrollable content
     for (int i = 0; i < 20; ++i) {

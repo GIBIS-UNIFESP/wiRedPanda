@@ -71,7 +71,6 @@ void TestUIAccessibility::cleanup()
 
 void TestUIAccessibility::testKeyboardOnlyCircuitBuilding()
 {
-    qDebug() << "Testing keyboard-only circuit building workflow";
 
     // Simulate complete keyboard-only user workflow
     simulateCompleteKeyboardWorkflow();
@@ -95,7 +94,6 @@ void TestUIAccessibility::testKeyboardOnlyCircuitBuilding()
 
 void TestUIAccessibility::testKeyboardOnlyMenuNavigation()
 {
-    qDebug() << "Testing keyboard-only menu navigation";
 
     // Test menu accessibility via keyboard
     QMenuBar* menuBar = m_mainWindow->menuBar();
@@ -131,7 +129,6 @@ void TestUIAccessibility::testKeyboardOnlyMenuNavigation()
 
 void TestUIAccessibility::testKeyboardOnlyFileOperations()
 {
-    qDebug() << "Testing keyboard-only file operations";
 
     // Test Ctrl+N for new file
     int beforeTabs = m_mainWindow->findChildren<QTabWidget*>().isEmpty() ?
@@ -165,7 +162,6 @@ void TestUIAccessibility::testKeyboardOnlyFileOperations()
 
 void TestUIAccessibility::testTabOrderLogic()
 {
-    qDebug() << "Testing tab order logic";
 
     // Get all focusable widgets in logical order
     QList<QWidget*> focusableWidgets;
@@ -211,7 +207,6 @@ void TestUIAccessibility::testTabOrderLogic()
 
 void TestUIAccessibility::testKeyboardShortcuts()
 {
-    qDebug() << "Testing accessibility of keyboard shortcuts";
 
     // Collect all actions with shortcuts
     QList<QAction*> actionsWithShortcuts;
@@ -220,7 +215,6 @@ void TestUIAccessibility::testKeyboardShortcuts()
     for (QAction* action : allActions) {
         if (!action->shortcut().isEmpty()) {
             actionsWithShortcuts.append(action);
-            qDebug() << "Found shortcut:" << action->text() << "-" << action->shortcut().toString();
         }
     }
 
@@ -251,7 +245,6 @@ void TestUIAccessibility::testKeyboardShortcuts()
 
 void TestUIAccessibility::testFocusManagement()
 {
-    qDebug() << "Testing focus management";
 
     // Test initial focus
     m_mainWindow->show();
@@ -288,7 +281,6 @@ void TestUIAccessibility::testFocusManagement()
 
 void TestUIAccessibility::testFocusIndicatorVisibility()
 {
-    qDebug() << "Testing focus indicator visibility";
 
     // Find widgets that can receive focus
     QList<QWidget*> testWidgets;
@@ -323,7 +315,6 @@ void TestUIAccessibility::testFocusIndicatorVisibility()
 
 void TestUIAccessibility::testFocusTrapping()
 {
-    qDebug() << "Testing focus trapping in modal contexts";
 
     // Test focus doesn't escape main window
     m_mainWindow->setFocus();
@@ -354,7 +345,6 @@ void TestUIAccessibility::testFocusTrapping()
 
 void TestUIAccessibility::testModalDialogFocus()
 {
-    qDebug() << "Testing modal dialog focus management";
 
     // This test would be expanded if modal dialogs are opened during testing
     // For now, verify the infrastructure for modal focus management
@@ -365,7 +355,6 @@ void TestUIAccessibility::testModalDialogFocus()
 
 void TestUIAccessibility::testFocusRestoration()
 {
-    qDebug() << "Testing focus restoration";
 
     // Set focus to a specific widget
     m_view->setFocus();
@@ -391,7 +380,6 @@ void TestUIAccessibility::testFocusRestoration()
 
 void TestUIAccessibility::testScreenReaderLabels()
 {
-    qDebug() << "Testing screen reader label accessibility";
 
     // Test main window accessibility
     testAccessibilityTree(m_mainWindow);
@@ -418,7 +406,6 @@ void TestUIAccessibility::testScreenReaderLabels()
 
 void TestUIAccessibility::testARIAAttributes()
 {
-    qDebug() << "Testing ARIA-equivalent attributes";
 
     // In Qt, this translates to accessibility properties
     QList<QWidget*> testWidgets = m_mainWindow->findChildren<QWidget*>();
@@ -449,7 +436,6 @@ void TestUIAccessibility::testARIAAttributes()
 
 void TestUIAccessibility::testAccessibleNames()
 {
-    qDebug() << "Testing accessible names for UI elements";
 
     // Test specific UI elements have proper accessible names
     if (m_mainWindow->menuBar()) {
@@ -474,7 +460,6 @@ void TestUIAccessibility::testAccessibleNames()
 
 void TestUIAccessibility::testAccessibleDescriptions()
 {
-    qDebug() << "Testing accessible descriptions";
 
     // Test tooltips provide accessible descriptions
     QList<QWidget*> widgetsWithTooltips;
@@ -486,7 +471,6 @@ void TestUIAccessibility::testAccessibleDescriptions()
         }
     }
 
-    qDebug() << "Found" << widgetsWithTooltips.size() << "widgets with tooltips";
     QVERIFY2(widgetsWithTooltips.size() >= 0, "Tooltips provide accessible descriptions");
 
     m_complianceChecks["accessible_descriptions"] = true;
@@ -494,7 +478,6 @@ void TestUIAccessibility::testAccessibleDescriptions()
 
 void TestUIAccessibility::testLiveRegions()
 {
-    qDebug() << "Testing live regions for dynamic content";
 
     // Test status bar as live region
     QStatusBar* statusBar = m_mainWindow->statusBar();
@@ -515,7 +498,6 @@ void TestUIAccessibility::testLiveRegions()
 
 void TestUIAccessibility::testHighContrastSupport()
 {
-    qDebug() << "Testing high contrast support";
 
     // Test application responds to high contrast mode
     simulateHighContrastMode();
@@ -532,7 +514,6 @@ void TestUIAccessibility::testHighContrastSupport()
 
 void TestUIAccessibility::testColorBlindnessSupport()
 {
-    qDebug() << "Testing color blindness support";
 
     // Verify UI doesn't rely solely on color for information
     validateColorIndependence();
@@ -546,7 +527,6 @@ void TestUIAccessibility::testColorBlindnessSupport()
 
 void TestUIAccessibility::testFontScaling()
 {
-    qDebug() << "Testing font scaling support";
 
     // Test UI with different font scales
     QList<qreal> scaleFactors = {1.0, 1.25, 1.5, 2.0};
@@ -564,7 +544,6 @@ void TestUIAccessibility::testFontScaling()
 
 void TestUIAccessibility::testMinimumTargetSizes()
 {
-    qDebug() << "Testing minimum target sizes for touch accessibility";
 
     validateTargetSizes();
 
@@ -592,7 +571,6 @@ void TestUIAccessibility::testMinimumTargetSizes()
 
 void TestUIAccessibility::testVisualIndicators()
 {
-    qDebug() << "Testing visual indicators for accessibility";
 
     // Test focus indicators
     testFocusIndicatorVisibility();
@@ -615,7 +593,6 @@ void TestUIAccessibility::testVisualIndicators()
 
 void TestUIAccessibility::testStickyKeysSupport()
 {
-    qDebug() << "Testing sticky keys support";
 
     // Test that modifier key combinations work with sticky keys
     // (This would require platform-specific testing)
@@ -626,7 +603,6 @@ void TestUIAccessibility::testStickyKeysSupport()
 
 void TestUIAccessibility::testMouseKeysSupport()
 {
-    qDebug() << "Testing mouse keys support";
 
     // Verify all mouse operations have keyboard equivalents
     testAlternativeInputMethods();
@@ -636,7 +612,6 @@ void TestUIAccessibility::testMouseKeysSupport()
 
 void TestUIAccessibility::testDragAndDropAlternatives()
 {
-    qDebug() << "Testing drag and drop keyboard alternatives";
 
     // Test that drag and drop has keyboard equivalents
     validateDragDropKeyboardAlternatives();
@@ -646,7 +621,6 @@ void TestUIAccessibility::testDragAndDropAlternatives()
 
 void TestUIAccessibility::testLargeTargetAreas()
 {
-    qDebug() << "Testing large target areas for motor impairments";
 
     // This overlaps with minimum target size testing
     validateTargetSizes();
@@ -656,7 +630,6 @@ void TestUIAccessibility::testLargeTargetAreas()
 
 void TestUIAccessibility::testTimeoutAdjustments()
 {
-    qDebug() << "Testing timeout adjustments";
 
     // Test that UI operations don't have unreasonable time limits
     validateTimeoutHandling();
@@ -668,7 +641,6 @@ void TestUIAccessibility::testTimeoutAdjustments()
 
 void TestUIAccessibility::testWCAGCompliance()
 {
-    qDebug() << "Testing WCAG compliance";
 
     runWCAGAudit(m_mainWindow);
 
@@ -689,7 +661,6 @@ void TestUIAccessibility::testWCAGCompliance()
 
 void TestUIAccessibility::testSection508Compliance()
 {
-    qDebug() << "Testing Section 508 compliance";
 
     // Section 508 focuses on keyboard accessibility and screen reader support
     bool keyboardCompliant = m_complianceChecks.value("keyboard_shortcuts", false);
@@ -703,7 +674,6 @@ void TestUIAccessibility::testSection508Compliance()
 
 void TestUIAccessibility::testAccessibilityStandards()
 {
-    qDebug() << "Testing general accessibility standards";
 
     // Generate final compliance report
     generateAccessibilityReport();
@@ -715,13 +685,11 @@ void TestUIAccessibility::testAccessibilityStandards()
         if (it.value()) passedChecks++;
     }
 
-    qDebug() << "Accessibility compliance:" << passedChecks << "/" << totalChecks << "checks passed";
     QVERIFY2(passedChecks >= totalChecks * 0.7, "Should pass at least 70% of accessibility checks");
 }
 
 void TestUIAccessibility::testKeyboardEquivalents()
 {
-    qDebug() << "Testing keyboard equivalents for all functions";
 
     // Verify major functions have keyboard access
     bool hasKeyboardFileOps = m_complianceChecks.value("keyboard_file_operations", false);
@@ -814,7 +782,6 @@ void TestUIAccessibility::testAccessibilityTree(QWidget* widget)
         QString name = interface->text(QAccessible::Name);
         QString description = interface->text(QAccessible::Description);
 
-        qDebug() << "Accessibility:" << widget->metaObject()->className()
                  << "Name:" << name << "Description:" << description;
 
         // Don't delete QAccessibleInterface directly - it's managed by Qt
@@ -851,7 +818,6 @@ void TestUIAccessibility::testContrastRatios(QWidget* widget)
 
     // Simple contrast check (real implementation would calculate actual ratios)
     if (bg.isValid() && fg.isValid()) {
-        qDebug() << "Color contrast check for" << widget->metaObject()->className()
                  << "BG:" << bg.name() << "FG:" << fg.name();
     }
 }
@@ -862,7 +828,6 @@ void TestUIAccessibility::validateColorIndependence()
     // This would involve checking that important information is conveyed
     // through multiple channels (color + text, color + icons, etc.)
 
-    qDebug() << "Validating color independence in UI design";
 }
 
 void TestUIAccessibility::testScalingBehavior(qreal scaleFactor)
@@ -891,19 +856,16 @@ void TestUIAccessibility::validateTargetSizes()
 void TestUIAccessibility::testAlternativeInputMethods()
 {
     // Test that mouse operations have keyboard alternatives
-    qDebug() << "Testing alternative input methods";
 }
 
 void TestUIAccessibility::validateDragDropKeyboardAlternatives()
 {
     // Test keyboard alternatives to drag and drop
-    qDebug() << "Validating drag-drop keyboard alternatives";
 }
 
 void TestUIAccessibility::validateTimeoutHandling()
 {
     // Test that operations don't have unreasonable timeouts
-    qDebug() << "Validating timeout handling";
 }
 
 void TestUIAccessibility::runWCAGAudit(QWidget* widget)
@@ -914,7 +876,6 @@ void TestUIAccessibility::runWCAGAudit(QWidget* widget)
     validateKeyboardOnlyAccess(widget);
     testAccessibilityTree(widget);
 
-    qDebug() << "WCAG audit completed for" << widget->metaObject()->className();
 }
 
 void TestUIAccessibility::simulateHighContrastMode()
@@ -941,23 +902,15 @@ void TestUIAccessibility::reportAccessibilityViolation(const QString& violation,
 
 void TestUIAccessibility::generateAccessibilityReport()
 {
-    qDebug() << "=== ACCESSIBILITY REPORT ===";
-    qDebug() << "Violations found:" << m_accessibilityViolations.size();
     for (const QString& violation : m_accessibilityViolations) {
-        qDebug() << "VIOLATION:" << violation;
     }
 
-    qDebug() << "Warnings found:" << m_accessibilityWarnings.size();
     for (const QString& warning : m_accessibilityWarnings) {
-        qDebug() << "WARNING:" << warning;
     }
 
-    qDebug() << "Compliance checks passed:" << m_complianceChecks.size();
     for (auto it = m_complianceChecks.begin(); it != m_complianceChecks.end(); ++it) {
-        qDebug() << it.key() << ":" << (it.value() ? "PASS" : "FAIL");
     }
 
-    qDebug() << "=== END ACCESSIBILITY REPORT ===";
 }
 
 QStringList TestUIAccessibility::findAccessibilityBarriers()
@@ -986,28 +939,24 @@ void TestUIAccessibility::simulateAssistiveTechnology()
 
 void TestUIAccessibility::testSimpleNavigation()
 {
-    qDebug() << "Testing simple navigation for cognitive accessibility";
     testTabOrderLogic();
     m_complianceChecks["simple_navigation"] = true;
 }
 
 void TestUIAccessibility::testConsistentInterfaces()
 {
-    qDebug() << "Testing consistent interfaces";
     m_complianceChecks["consistent_interfaces"] = true;
     QVERIFY2(true, "Interface consistency maintained");
 }
 
 void TestUIAccessibility::testErrorPrevention()
 {
-    qDebug() << "Testing error prevention mechanisms";
     m_complianceChecks["error_prevention"] = true;
     QVERIFY2(true, "Error prevention mechanisms in place");
 }
 
 void TestUIAccessibility::testHelpAndDocumentation()
 {
-    qDebug() << "Testing help and documentation accessibility";
     QList<QWidget*> allWidgets = m_mainWindow->findChildren<QWidget*>();
     int widgetsWithHelp = 0;
     
@@ -1023,35 +972,30 @@ void TestUIAccessibility::testHelpAndDocumentation()
 
 void TestUIAccessibility::testProgressIndicators()
 {
-    qDebug() << "Testing progress indicators for cognitive accessibility";
     m_complianceChecks["progress_indicators"] = true;
     QVERIFY2(true, "Progress indicators implemented for long operations");
 }
 
 void TestUIAccessibility::testWindowsAccessibility()
 {
-    qDebug() << "Testing Windows-specific accessibility";
     m_complianceChecks["windows_accessibility"] = true;
     QVERIFY2(true, "Windows accessibility features considered");
 }
 
 void TestUIAccessibility::testMacOSAccessibility()
 {
-    qDebug() << "Testing macOS-specific accessibility";
     m_complianceChecks["macos_accessibility"] = true;
     QVERIFY2(true, "macOS accessibility features considered");
 }
 
 void TestUIAccessibility::testLinuxAccessibility()
 {
-    qDebug() << "Testing Linux-specific accessibility";
     m_complianceChecks["linux_accessibility"] = true;
     QVERIFY2(true, "Linux accessibility features considered");
 }
 
 void TestUIAccessibility::testCrossPlatformConsistency()
 {
-    qDebug() << "Testing cross-platform accessibility consistency";
     bool hasKeyboardNav = m_complianceChecks.value("keyboard_menu_navigation", false);
     bool hasFocusManagement = m_complianceChecks.value("focus_management", false);
     

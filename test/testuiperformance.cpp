@@ -55,7 +55,6 @@ void TestUIPerformance::cleanup()
 
 void TestUIPerformance::testElementAdditionPerformance()
 {
-    qDebug() << "Testing element addition performance";
 
     measureOperationPerformance("Single Element Addition", [this]() {
         auto* element = ElementFactory::buildElement(ElementType::And);
@@ -86,7 +85,6 @@ void TestUIPerformance::testElementAdditionPerformance()
 
 void TestUIPerformance::testConnectionCreationPerformance()
 {
-    qDebug() << "Testing connection creation performance";
 
     // Setup elements for connection testing
     auto* input = ElementFactory::buildElement(ElementType::InputButton);
@@ -135,7 +133,6 @@ void TestUIPerformance::testConnectionCreationPerformance()
 
 void TestUIPerformance::testLargeCircuitRenderingPerformance()
 {
-    qDebug() << "Testing large circuit rendering performance";
 
     // Create a substantial circuit
     addManyElementsToScene(100, "And");
@@ -156,7 +153,6 @@ void TestUIPerformance::testLargeCircuitRenderingPerformance()
 
 void TestUIPerformance::testScrollingPerformance()
 {
-    qDebug() << "Testing scrolling performance";
 
     // Create circuit that requires scrolling
     addManyElementsToScene(200, "And");
@@ -178,7 +174,6 @@ void TestUIPerformance::testScrollingPerformance()
 
 void TestUIPerformance::testZoomingPerformance()
 {
-    qDebug() << "Testing zooming performance";
 
     addManyElementsToScene(50, "And");
 
@@ -201,7 +196,6 @@ void TestUIPerformance::testZoomingPerformance()
 
 void TestUIPerformance::testUIResponsivenessUnderElementLoad()
 {
-    qDebug() << "Testing UI responsiveness under element load";
 
     auto metrics = UITestFramework::measureUIOperationPerformance([this]() {
         addManyElementsToScene(100, "And");
@@ -216,7 +210,6 @@ void TestUIPerformance::testUIResponsivenessUnderElementLoad()
 
 void TestUIPerformance::testUIResponsivenessUnderSimulationLoad()
 {
-    qDebug() << "Testing UI responsiveness under simulation load";
 
     // Build a circuit that requires significant simulation work
     generateComplexCircuitTopology();
@@ -236,7 +229,6 @@ void TestUIPerformance::testUIResponsivenessUnderSimulationLoad()
 
 void TestUIPerformance::testUIResponsivenessDuringFileOperations()
 {
-    qDebug() << "Testing UI responsiveness during file operations";
 
     // Create substantial circuit for save/load testing
     addManyElementsToScene(50, "And");
@@ -256,7 +248,6 @@ void TestUIPerformance::testUIResponsivenessDuringFileOperations()
 
 void TestUIPerformance::testUIResponsivenessWithManyConnections()
 {
-    qDebug() << "Testing UI responsiveness with many connections";
 
     addManyElementsToScene(30, "And");
 
@@ -275,7 +266,6 @@ void TestUIPerformance::testUIResponsivenessWithManyConnections()
 
 void TestUIPerformance::testMemoryUsageGrowth()
 {
-    qDebug() << "Testing memory usage growth";
 
     qint64 initialMemory = measureCurrentMemoryUsage();
 
@@ -287,10 +277,6 @@ void TestUIPerformance::testMemoryUsageGrowth()
     qint64 afterConnectionsMemory = measureCurrentMemoryUsage();
 
     // Log memory usage progression
-    qDebug() << "Memory usage progression:";
-    qDebug() << "  Initial:" << initialMemory << "KB";
-    qDebug() << "  After 100 elements:" << afterElementsMemory << "KB (+)" << (afterElementsMemory - initialMemory) << "KB";
-    qDebug() << "  After 50 connections:" << afterConnectionsMemory << "KB (+)" << (afterConnectionsMemory - afterElementsMemory) << "KB";
 
     // Verify memory growth is reasonable
     qint64 totalGrowth = afterConnectionsMemory - initialMemory;
@@ -299,7 +285,6 @@ void TestUIPerformance::testMemoryUsageGrowth()
 
 void TestUIPerformance::testMemoryLeakDetection()
 {
-    qDebug() << "Testing memory leak detection";
 
     bool hasLeak = detectMemoryLeak([this]() {
         // Operation that should not leak memory
@@ -346,7 +331,6 @@ void TestUIPerformance::testMemoryLeakDetection()
 
 void TestUIPerformance::testResourceCleanupEfficiency()
 {
-    qDebug() << "Testing resource cleanup efficiency";
 
     measureOperationPerformance("Resource Cleanup", [this]() {
         // Create and clean up resources
@@ -366,7 +350,6 @@ void TestUIPerformance::testResourceCleanupEfficiency()
 
 void TestUIPerformance::testLongRunningSessionStability()
 {
-    qDebug() << "Testing long running session stability";
 
     qint64 sessionStartMemory = measureCurrentMemoryUsage();
 
@@ -392,7 +375,6 @@ void TestUIPerformance::testLongRunningSessionStability()
     qint64 sessionEndMemory = measureCurrentMemoryUsage();
     qint64 memoryGrowth = sessionEndMemory - sessionStartMemory;
 
-    qDebug() << "Long session memory growth:" << memoryGrowth << "KB";
     QVERIFY2(memoryGrowth < 100000, "Long session memory growth should be controlled (< 100MB)");
 }
 
@@ -400,7 +382,6 @@ void TestUIPerformance::testLongRunningSessionStability()
 
 void TestUIPerformance::testPerformanceWith100Elements()
 {
-    qDebug() << "Testing performance with 100 elements";
 
     auto metrics = UITestFramework::measureUIOperationPerformance([this]() {
         addManyElementsToScene(100, "And");
@@ -412,7 +393,6 @@ void TestUIPerformance::testPerformanceWith100Elements()
 
 void TestUIPerformance::testPerformanceWith500Elements()
 {
-    qDebug() << "Testing performance with 500 elements";
 
     auto metrics = UITestFramework::measureUIOperationPerformance([this]() {
         addManyElementsToScene(500, "And");
@@ -424,7 +404,6 @@ void TestUIPerformance::testPerformanceWith500Elements()
 
 void TestUIPerformance::testPerformanceWith1000Elements()
 {
-    qDebug() << "Testing performance with 1000 elements";
 
     auto metrics = UITestFramework::measureUIOperationPerformance([this]() {
         addManyElementsToScene(1000, "And");
@@ -439,7 +418,6 @@ void TestUIPerformance::testPerformanceWith1000Elements()
 
 void TestUIPerformance::testPerformanceWithComplexConnections()
 {
-    qDebug() << "Testing performance with complex connections";
 
     addManyElementsToScene(100, "And");
 
@@ -455,7 +433,6 @@ void TestUIPerformance::testPerformanceWithComplexConnections()
 
 void TestUIPerformance::testCircuitBuildingWorkflowPerformance()
 {
-    qDebug() << "Testing circuit building workflow performance";
 
     auto metrics = UITestFramework::measureUIOperationPerformance([this]() {
         UITestFramework::simulateCircuitBuildingWorkflow(m_workspace);
@@ -467,7 +444,6 @@ void TestUIPerformance::testCircuitBuildingWorkflowPerformance()
 
 void TestUIPerformance::testCircuitModificationWorkflowPerformance()
 {
-    qDebug() << "Testing circuit modification workflow performance";
 
     // Build initial circuit
     addManyElementsToScene(20, "And");
@@ -490,7 +466,6 @@ void TestUIPerformance::testCircuitModificationWorkflowPerformance()
 
 void TestUIPerformance::testSimulationStartStopPerformance()
 {
-    qDebug() << "Testing simulation start/stop performance";
 
     generateComplexCircuitTopology();
 
@@ -511,7 +486,6 @@ void TestUIPerformance::testSimulationStartStopPerformance()
 
 void TestUIPerformance::testFileLoadSavePerformance()
 {
-    qDebug() << "Testing file load/save performance simulation";
 
     // Create substantial circuit
     addManyElementsToScene(50, "And");
@@ -548,7 +522,6 @@ void TestUIPerformance::measureOperationPerformance(const QString &operationName
 {
     auto metrics = UITestFramework::measureUIOperationPerformance(operation);
 
-    qDebug() << "Performance [" << operationName << "]:"
              << metrics.operationTimeMs << "ms"
              << "| Responsiveness:" << QString::number(metrics.uiResponsiveness, 'f', 2)
              << "| Freeze:" << (metrics.hasUIFreeze ? "YES" : "NO");
@@ -641,7 +614,6 @@ void TestUIPerformance::generateComplexCircuitTopology()
 void TestUIPerformance::captureMemoryBaseline()
 {
     m_memoryBaseline = measureCurrentMemoryUsage();
-    qDebug() << "Memory baseline captured:" << m_memoryBaseline << "KB";
 }
 
 qint64 TestUIPerformance::measureCurrentMemoryUsage()
@@ -683,7 +655,6 @@ bool TestUIPerformance::detectMemoryLeak(std::function<void()> operation, int it
     qint64 finalMemory = measureCurrentMemoryUsage();
     qint64 memoryDifference = finalMemory - initialMemory;
 
-    qDebug() << "Memory leak test - Initial:" << initialMemory << "KB, Final:" << finalMemory
              << "KB, Difference:" << memoryDifference << "KB over" << iterations << "iterations";
 
     // Consider it a leak if memory grows by more than 1MB per 10 iterations
@@ -696,7 +667,6 @@ void TestUIPerformance::validateMemoryCleanup()
     qint64 currentMemory = measureCurrentMemoryUsage();
     qint64 memoryGrowth = currentMemory - m_memoryBaseline;
 
-    qDebug() << "Memory cleanup validation - Growth since baseline:" << memoryGrowth << "KB";
 
     // Allow some reasonable memory growth (5MB)
     QVERIFY2(memoryGrowth < 5120, "Memory cleanup should be effective (< 5MB growth)");
@@ -706,7 +676,6 @@ void TestUIPerformance::validateMemoryCleanup()
 
 void TestUIPerformance::testAnimationSmoothness()
 {
-    qDebug() << "Testing animation smoothness";
     addManyElementsToScene(10, "And");
     
     measureOperationPerformance("Animation Test", [this]() {
@@ -720,7 +689,6 @@ void TestUIPerformance::testAnimationSmoothness()
 
 void TestUIPerformance::testRenderingFrameRate()
 {
-    qDebug() << "Testing rendering frame rate";
     addManyElementsToScene(50, "And");
     
     measureOperationPerformance("Frame Rate Test", [this]() {
@@ -733,7 +701,6 @@ void TestUIPerformance::testRenderingFrameRate()
 
 void TestUIPerformance::testRedrawOptimization()
 {
-    qDebug() << "Testing redraw optimization";
     addManyElementsToScene(100, "And");
     
     measureOperationPerformance("Redraw Optimization", [this]() {
@@ -744,7 +711,6 @@ void TestUIPerformance::testRedrawOptimization()
 
 void TestUIPerformance::testViewportUpdateEfficiency()
 {
-    qDebug() << "Testing viewport update efficiency";
     addManyElementsToScene(20, "And");
     
     measureOperationPerformance("Viewport Update", [this]() {
@@ -755,7 +721,6 @@ void TestUIPerformance::testViewportUpdateEfficiency()
 
 void TestUIPerformance::testZoomPerformance()
 {
-    qDebug() << "Testing zoom performance";
     addManyElementsToScene(30, "And");
     
     measureOperationPerformance("Zoom Performance", [this]() {
@@ -768,7 +733,6 @@ void TestUIPerformance::testZoomPerformance()
 
 void TestUIPerformance::testDragDropPerformance()
 {
-    qDebug() << "Testing drag and drop performance";
     addManyElementsToScene(10, "And");
     auto elements = m_scene->elements();
     
@@ -782,7 +746,6 @@ void TestUIPerformance::testDragDropPerformance()
 
 void TestUIPerformance::testSelectionPerformance()
 {
-    qDebug() << "Testing selection performance";
     addManyElementsToScene(50, "And");
     auto elements = m_scene->elements();
     
@@ -798,7 +761,6 @@ void TestUIPerformance::testSelectionPerformance()
 
 void TestUIPerformance::testRenderingPerformance()
 {
-    qDebug() << "Testing rendering performance";
     addManyElementsToScene(100, "And");
     
     measureOperationPerformance("Rendering", [this]() {
@@ -811,7 +773,6 @@ void TestUIPerformance::testRenderingPerformance()
 
 void TestUIPerformance::testUndoRedoPerformance()
 {
-    qDebug() << "Testing undo/redo performance";
     
     measureOperationPerformance("Undo/Redo", [this]() {
         addManyElementsToScene(5, "And");
@@ -821,7 +782,6 @@ void TestUIPerformance::testUndoRedoPerformance()
 
 void TestUIPerformance::testSimulationPerformanceUnderLoad()
 {
-    qDebug() << "Testing simulation performance under load";
     addManyElementsToScene(20, "And");
     m_simulation->initialize();
     
@@ -836,7 +796,6 @@ void TestUIPerformance::testSimulationPerformanceUnderLoad()
 
 void TestUIPerformance::testConcurrentOperationPerformance()
 {
-    qDebug() << "Testing concurrent operation performance";
     addManyElementsToScene(20, "And");
     
     measureOperationPerformance("Concurrent Operations", [this]() {
@@ -848,7 +807,6 @@ void TestUIPerformance::testConcurrentOperationPerformance()
 
 void TestUIPerformance::testExtremeLimitPerformance()
 {
-    qDebug() << "Testing extreme limit performance";
     
     measureOperationPerformance("Extreme Limit", [this]() {
         addManyElementsToScene(200, "And");
@@ -857,21 +815,18 @@ void TestUIPerformance::testExtremeLimitPerformance()
 
 void TestUIPerformance::testMemoryUsageUnderLoad()
 {
-    qDebug() << "Testing memory usage under load";
     
     qint64 initialMemory = measureCurrentMemoryUsage();
     addManyElementsToScene(100, "And");
     qint64 loadedMemory = measureCurrentMemoryUsage();
     
     qint64 memoryIncrease = loadedMemory - initialMemory;
-    qDebug() << "Memory increase under load:" << memoryIncrease << "KB";
     
     QVERIFY2(memoryIncrease < 10240, "Memory usage should be reasonable under load");
 }
 
 void TestUIPerformance::testUIResponsivenessMetrics()
 {
-    qDebug() << "Testing UI responsiveness metrics";
     addManyElementsToScene(50, "And");
     
     bool responsive = !UITestFramework::detectUIFreeze(m_view, 1000);
@@ -880,7 +835,6 @@ void TestUIPerformance::testUIResponsivenessMetrics()
 
 void TestUIPerformance::benchmarkElementTypes()
 {
-    qDebug() << "Benchmarking different element types";
     
     QStringList elementTypes = {"And", "Or", "Not", "InputButton", "Led"};
     
@@ -894,7 +848,6 @@ void TestUIPerformance::benchmarkElementTypes()
 
 void TestUIPerformance::profileHotCodePaths()
 {
-    qDebug() << "Profiling hot code paths";
     
     measureOperationPerformance("Element Creation", [this]() {
         auto* element = ElementFactory::buildElement(ElementType::And);
