@@ -18,12 +18,47 @@
 #include "testwaveform.h"
 
 #include <QtTest>
+#include <QLoggingCategory>
+#include <QTextStream>
+
+
+// Custom message handler to suppress specific Qt framework warnings during testing
+void testMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    Q_UNUSED(context)
+    // Suppress specific Qt framework warnings that are not relevant for tests
+    if (type == QtWarningMsg) {
+        // Suppress propagateSizeHints warning from offscreen platform plugin
+        if (msg.contains("This plugin does not support propagateSizeHints()")) {
+            return;
+        }
+        // Suppress SVG path data warnings during icon loading
+        if (msg.contains("Invalid path data; path truncated.")) {
+            return;
+        }
+    }
+    
+    // Let all other messages through using Qt's default formatting
+    QTextStream stream(stderr);
+    const char* typeStr = "";
+    switch (type) {
+    case QtDebugMsg:    typeStr = "Debug"; break;
+    case QtWarningMsg:  typeStr = "Warning"; break;
+    case QtCriticalMsg: typeStr = "Critical"; break;
+    case QtFatalMsg:    typeStr = "Fatal"; break;
+    case QtInfoMsg:     typeStr = "Info"; break;
+    }
+    stream << typeStr << ": " << msg << Qt::endl;
+}
 
 int main(int argc, char **argv)
 {
     registerTypes();
 
     Comment::setVerbosity(-1);
+    
+    // Install custom message handler to suppress Qt framework warnings
+    qInstallMessageHandler(testMessageHandler);
 
     QApplication app(argc, argv);
     app.setOrganizationName("GIBIS-UNIFESP");
