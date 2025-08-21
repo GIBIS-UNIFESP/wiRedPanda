@@ -62,7 +62,7 @@ private:
     void setTruthTableProposition(const int row, const int column);
     void triggerChanged(const QString &cmd);
     void updateSkins();
-    
+
     // Wireless functionality
     void connectNode(const QString& label);
     void refreshWirelessCombobox();
@@ -96,7 +96,6 @@ private:
     bool m_hasFrequency = false;
     bool m_hasLabel = false;
     bool m_hasNode = false;
-    bool m_hasDisconnectedNodes = false;
     bool m_hasOnlyInputs = false;
     bool m_hasRotation = false;
     bool m_hasSameAudio = false;

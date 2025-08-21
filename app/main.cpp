@@ -169,14 +169,18 @@ int main(int argc, char *argv[])
                 MainWindow window;
                 window.loadPandaFile(args.at(0));
                 
-                // Manually run simulation updates to propagate wireless connections
-                // Since the timer doesn't fire in headless mode, we need to manually trigger updates
+                // Propagate wireless connections in headless mode
+                // The simulation timer doesn't fire without a GUI event loop,
+                // so we manually process events to ensure wireless signals propagate
                 auto *workspace = window.currentTab();
-                if (workspace) {
-                    // Let the event loop process multiple cycles to fully propagate wireless signals
-                    for (int i = 0; i < 5; ++i) {
-                        QCoreApplication::processEvents();
-                        QThread::msleep(5);
+                if (workspace && workspace->scene() && workspace->scene()->wirelessManager()) {
+                    auto *simulation = workspace->scene()->simulation();
+                    if (simulation) {
+                        // Trigger a few simulation cycles to propagate wireless signals
+                        for (int i = 0; i < 3; ++i) {
+                            simulation->update();
+                            QCoreApplication::processEvents();
+                        }
                     }
                 }
                 
