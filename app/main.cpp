@@ -14,6 +14,7 @@
 
 #include <QCommandLineParser>
 #include <QMessageBox>
+#include <QTextStream>
 #include <QThread>
 
 #include <iostream>
@@ -59,6 +60,18 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 #endif
+
+    // Install message handler before Qt application to suppress warnings in headless mode
+    qInstallMessageHandler([](QtMsgType type, const QMessageLogContext &, const QString &msg) {
+        // Filter out graphics-related and XDG warnings that occur in headless mode
+        if (msg.contains("Invalid path data") || msg.contains("path truncated") || 
+            (type == QtWarningMsg && (msg.startsWith("QStandardPaths:") || msg.contains("XDG_RUNTIME_DIR")))) {
+            return; // Suppress these warnings for cleaner CLI output
+        }
+        // For other messages, use simple output (default handler not available)
+        QTextStream stream(type == QtCriticalMsg || type == QtFatalMsg ? stderr : stdout);
+        stream << msg << Qt::endl;
+    });
 
     Application app(argc, argv);
     app.setOrganizationName("GIBIS-UNIFESP");
