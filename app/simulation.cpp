@@ -8,8 +8,10 @@
 #include "elementmapping.h"
 #include "graphicelement.h"
 #include "ic.h"
+#include "node.h"
 #include "qneconnection.h"
 #include "scene.h"
+#include "wirelessconnectionmanager.h"
 
 #include <QGraphicsView>
 
@@ -60,9 +62,13 @@ void Simulation::update()
         }
     }
 
+    // Update physical connections
     for (auto *connection : std::as_const(m_connections)) {
         updatePort(connection->startPort());
     }
+    
+    // Update wireless connections
+    updateWirelessConnections();
 
     for (auto *outputElm : std::as_const(m_outputs)) {
         for (auto *inputPort : outputElm->inputs()) {
@@ -97,6 +103,73 @@ void Simulation::updatePort(QNEInputPort *port)
 
     if (elm->elementGroup() == ElementGroup::Output) {
         elm->refresh();
+    }
+}
+
+void Simulation::updateWirelessConnections()
+{
+    if (!m_scene->wirelessManager()) {
+        return;
+    }
+
+    // Get all active wireless groups
+    const QStringList activeLabels = m_scene->wirelessManager()->getActiveLabels();
+    
+    for (const QString& label : activeLabels) {
+        // Get all nodes in this wireless group
+        const QSet<Node*> nodes = m_scene->wirelessManager()->getWirelessGroup(label);
+        
+        if (nodes.size() < 2) {
+            continue; // Need at least 2 nodes for a connection
+        }
+        
+        // Find the highest priority signal from any input node in the group
+        Status groupSignal = Status::Invalid;
+        bool foundValidSignal = false;
+        
+        for (Node* node : nodes) {
+            if (!node || !node->logic()) {
+                continue;
+            }
+            
+            // Check if this node has an input signal
+            Status nodeSignal = static_cast<Status>(node->logic()->outputValue(0));
+            
+            if (node->logic()->isValid() && nodeSignal != Status::Invalid) {
+                if (!foundValidSignal || nodeSignal == Status::Active) {
+                    groupSignal = nodeSignal;
+                    foundValidSignal = true;
+                    if (nodeSignal == Status::Active) {
+                        break; // Active signal has highest priority
+                    }
+                }
+            }
+        }
+        
+        // Propagate the group signal to all nodes in the group
+        if (foundValidSignal) {
+            for (Node* node : nodes) {
+                if (!node || !node->logic()) {
+                    continue;
+                }
+                
+                // Set the output of this node to match the group signal
+                node->outputPort()->setStatus(groupSignal);
+                // Also update the node's internal logic value for wireless signals
+                if (node->logic()) {
+                    node->logic()->setOutputValue(0, static_cast<bool>(groupSignal));
+                }
+                
+                // Update connected logic elements
+                auto connections = node->outputPort()->connections();
+                for (auto* connection : connections) {
+                    if (auto* inputPort = connection->endPort()) {
+                        updatePort(inputPort);
+                    }
+                }
+            }
+        } else {
+        }
     }
 }
 
