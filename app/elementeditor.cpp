@@ -21,6 +21,7 @@
 #include <QImageReader>
 #include <QKeyEvent>
 #include <QMenu>
+#include <algorithm>
 #include <cmath>
 
 ElementEditor::ElementEditor(QWidget *parent)
@@ -392,7 +393,6 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_canChangeSkin = m_hasSamePriority = false;
     m_hasElements = false;
     m_hasNode = false;
-    m_hasDisconnectedNodes = false;
 
     if (elements.isEmpty()) {
         hide();
@@ -407,15 +407,10 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_canChangeSkin = m_hasSamePriority = true;
     m_hasElements = true;
     m_hasAudioBox = true;
-    
+
     // Check if any of the selected elements is a Node with output connections
     for (auto *elm : std::as_const(m_elements)) {
         if (auto* node = qobject_cast<Node*>(elm)) {
-            // Track disconnected nodes for UI feedback
-            if (!node->hasInputConnection()) {
-                m_hasDisconnectedNodes = true;
-            }
-            
             // Only allow wireless label selection if node has output connections (can send signals)
             if (node->hasOutputConnection()) {
                 m_hasNode = true;
@@ -440,7 +435,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
         m_hasTruthTable &= elm->hasTruthTable();
         m_hasLabel &= elm->hasLabel();
-        
+
         // For wireless nodes (Node type), enforce connection constraints
         if (auto* node = qobject_cast<Node*>(elm)) {
             // Only allow wireless labeling if node has input connections (can receive signals)
@@ -496,7 +491,11 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     /* Element type */
     m_ui->groupBox->setTitle(ElementFactory::typeToTitleText(elementType));
     /* Labels */
-    bool showLabelField = m_hasLabel || m_hasDisconnectedNodes;
+    // Check if we have any nodes (for showing disabled label field with guidance)
+    bool hasAnyNodes = std::any_of(m_elements.cbegin(), m_elements.cend(),
+                                   [](GraphicElement* elm) { return qobject_cast<Node*>(elm) != nullptr; });
+
+    bool showLabelField = m_hasLabel || hasAnyNodes;
     m_ui->lineEditElementLabel->setVisible(showLabelField);
     m_ui->lineEditElementLabel->setEnabled(m_hasLabel);
     m_ui->labelLabels->setVisible(showLabelField);
@@ -504,7 +503,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     if (m_hasLabel) {
         m_ui->lineEditElementLabel->setText(m_hasSameLabel ? firstElement->label() : m_manyLabels);
         m_ui->lineEditElementLabel->setPlaceholderText("");
-    } else if (m_hasDisconnectedNodes) {
+    } else if (hasAnyNodes) {
         m_ui->lineEditElementLabel->setText("");
         m_ui->lineEditElementLabel->setPlaceholderText(tr("Connect an input first to set wireless label"));
     }
@@ -700,7 +699,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     if (m_hasNode) {
         // Refresh the wireless combobox when selecting nodes
         refreshWirelessCombobox();
-        
+
         // Set the current wireless label if a single node is selected
         if (elements.size() == 1) {
             if (auto *node = qobject_cast<Node*>(elements.first())) {
@@ -1079,12 +1078,12 @@ void ElementEditor::connectNode(const QString& label)
     if (node) {
         // Use new wireless system - simply set the wireless label
         node->setLabel(label);
-        
+
         // Update combobox and UI
         m_ui->comboBoxNode->setCurrentText(label);
         refreshWirelessCombobox();
         setCurrentElements({selectedElement});
-        
+
         qCDebug(zero) << "Wireless connection completed for node" << selectedElement->id() << "with label:" << label;
     }
 }
@@ -1097,7 +1096,7 @@ void ElementEditor::refreshWirelessCombobox()
     }
 
     qCDebug(zero) << "Refreshing wireless combobox for node elements";
-    
+
     // Store current selection
     QString currentSelection = m_ui->comboBoxNode->currentText();
 
@@ -1116,7 +1115,7 @@ void ElementEditor::refreshWirelessCombobox()
                 m_ui->comboBoxNode->addItem(label);
             }
         }
-        
+
         qCDebug(zero) << "Added" << activeLabels.size() << "items to wireless combobox";
     }
 

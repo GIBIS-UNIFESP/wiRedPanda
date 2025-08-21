@@ -50,15 +50,15 @@ void Node::save(QDataStream &stream) const
 void Node::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
 {
     GraphicElement::load(stream, portMap, version);
-    
+
     if (version >= VERSION("4.3")) {
-        QMap<QString, QVariant> map; 
+        QMap<QString, QVariant> map;
         stream >> map;
-        
+
         if (map.contains("wirelessLabel")) {
             m_wirelessLabel = map.value("wirelessLabel").toString();
             qCDebug(zero) << "Node" << id() << "loaded wireless label:" << m_wirelessLabel;
-            
+
             // Note: Wireless connection will be restored later when node is added to scene
             // The scene() is null during deserialization, so we defer restoration
         }
@@ -68,17 +68,17 @@ void Node::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QV
 void Node::setLabel(const QString& label)
 {
     const QString trimmedLabel = label.trimmed();
-    
+
     // Store the old wireless label for change notification
     QString oldWirelessLabel = m_wirelessLabel;
-    
+
     // Call parent implementation to set the visual label
     GraphicElement::setLabel(trimmedLabel);
-    
+
     // Update wireless label if it changed
     if (m_wirelessLabel != trimmedLabel) {
         m_wirelessLabel = trimmedLabel;
-        
+
         // Notify the scene's wireless manager
         if (scene()) {
             if (Scene* s = qobject_cast<Scene*>(scene())) {
@@ -87,7 +87,7 @@ void Node::setLabel(const QString& label)
                 }
             }
         }
-        
+
         emit wirelessLabelChanged(oldWirelessLabel, trimmedLabel);
         qCDebug(zero) << "Node" << id() << "wireless label changed from" << oldWirelessLabel << "to" << trimmedLabel;
     }

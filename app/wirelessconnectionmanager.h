@@ -15,7 +15,7 @@ class Scene;
 
 /**
  * @brief Manages wireless connections between nodes using labels
- * 
+ *
  * The WirelessConnectionManager provides a label-based system for connecting
  * nodes wirelessly. Nodes with the same wireless label are considered connected.
  */
@@ -30,27 +30,25 @@ public:
     void setNodeWirelessLabel(Node* node, const QString& label);
     void removeNode(Node* node);
     QString getNodeWirelessLabel(Node* node) const;
-    
+
     // Connection queries
     QSet<Node*> getWirelessGroup(const QString& label) const;
     QSet<Node*> getConnectedNodes(Node* node) const;
-    
+
     // Group management
     QStringList getActiveLabels() const;
     int getGroupCount() const;
     bool hasWirelessConnections() const;
-    
+
     // Serialization
     void serialize(QDataStream& stream) const;
     void deserialize(QDataStream& stream);
-    
+
     // Debug support
     QString getDebugInfo() const;
 
 signals:
     void wirelessConnectionsChanged();
-    void groupCreated(const QString& label);
-    void groupDestroyed(const QString& label);
 
 private slots:
     void onNodeDestroyed(QObject* obj);

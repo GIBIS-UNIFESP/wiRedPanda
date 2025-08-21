@@ -23,14 +23,14 @@ private slots:
     void testStressConditions();
     void testInvalidOperations();
     void testStateConsistency();
-    
+
     // New comprehensive simulation tests
     void testWirelessSignalPriority();
     void testWirelessSingleNodeGroup();
     void testWirelessMultipleGroups();
     void testWirelessNodeWithoutInput();
     void testWirelessUpdateCycles();
-    
+
     // UI constraint validation tests
     void testWirelessUIConstraints();
     void testWirelessConnectionValidation();
