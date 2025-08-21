@@ -32,6 +32,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/app/simulationblocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/thememanager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/trashbutton.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/wirelessconnectionmanager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/workspace.cpp
 
     ${CMAKE_CURRENT_LIST_DIR}/app/element/and.cpp
@@ -124,6 +125,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/app/simulationblocker.h
     ${CMAKE_CURRENT_LIST_DIR}/app/thememanager.h
     ${CMAKE_CURRENT_LIST_DIR}/app/trashbutton.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/wirelessconnectionmanager.h
     ${CMAKE_CURRENT_LIST_DIR}/app/workspace.h
 
     ${CMAKE_CURRENT_LIST_DIR}/app/element/and.h

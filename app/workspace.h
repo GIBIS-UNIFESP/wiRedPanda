@@ -50,6 +50,7 @@ signals:
 private:
     void autosave();
     void setAutosaveFileName();
+    void restoreWirelessConnections();
 
     GraphicsView m_view;
     QFileInfo m_fileInfo;

@@ -51,4 +51,6 @@ public:
     QLabel *labelAudio = nullptr;
     QLabel *labelDelay = nullptr;
     QDoubleSpinBox *doubleSpinBoxDelay = nullptr;
+    QLabel *labelNode = nullptr;
+    QComboBox *comboBoxNode = nullptr;
 };

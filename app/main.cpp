@@ -14,6 +14,7 @@
 
 #include <QCommandLineParser>
 #include <QMessageBox>
+#include <QThread>
 
 #include <iostream>
 
@@ -164,9 +165,20 @@ int main(int argc, char *argv[])
 
         if (const bool isInspect = parser.isSet(inspectOption); isInspect) {
             if (!args.empty()) {
-                GlobalProperties::verbose = false;
+                // GlobalProperties::verbose = false;  // Temporarily disabled for debugging
                 MainWindow window;
                 window.loadPandaFile(args.at(0));
+                
+                // Manually run simulation updates to propagate wireless connections
+                // Since the timer doesn't fire in headless mode, we need to manually trigger updates
+                auto *workspace = window.currentTab();
+                if (workspace) {
+                    // Let the event loop process multiple cycles to fully propagate wireless signals
+                    for (int i = 0; i < 5; ++i) {
+                        QCoreApplication::processEvents();
+                        QThread::msleep(5);
+                    }
+                }
                 
                 // Get the scene and extract inputs/outputs
                 auto *scene = window.currentTab()->scene();

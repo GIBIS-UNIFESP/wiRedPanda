@@ -177,6 +177,15 @@ void ElementEditor_Ui::setupUi(QWidget *ElementEditor)
     doubleSpinBoxDelay->setDecimals(1);
     gridLayout_2->addWidget(doubleSpinBoxDelay, 6, 1, 1, 1);
 
+    labelNode = new QLabel(groupBox);
+    labelNode->setObjectName("labelNode");
+    gridLayout_2->addWidget(labelNode, 13, 0, 1, 1);
+
+    comboBoxNode = new QComboBox(groupBox);
+    comboBoxNode->setObjectName("comboBoxNode");
+    comboBoxNode->setEditable(true);
+    gridLayout_2->addWidget(comboBoxNode, 13, 1, 1, 1);
+
     gridLayout->addWidget(groupBox, 0, 0, 1, 1);
 
     retranslateUi(ElementEditor);
@@ -219,4 +228,5 @@ void ElementEditor_Ui::retranslateUi(QWidget *ElementEditor)
     labelAudio->setText(QCoreApplication::translate("ElementEditor", "Audio:"));
     labelDelay->setText(QCoreApplication::translate("ElementEditor", "Delay:"));
     doubleSpinBoxDelay->setSuffix(QCoreApplication::translate("ElementEditor", " Hz"));
+    labelNode->setText(QCoreApplication::translate("ElementEditor", "Wireless:"));
 }
