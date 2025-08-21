@@ -3,13 +3,19 @@
 
 #include "application.h"
 #include "common.h"
+#include "elementfactory.h"
+#include "enums.h"
 #include "globalproperties.h"
+#include "graphicelement.h"
+#include "graphicelementinput.h"
 #include "mainwindow.h"
 #include "registertypes.h"
 #include "workspace.h"
 
 #include <QCommandLineParser>
 #include <QMessageBox>
+
+#include <iostream>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -95,6 +101,11 @@ int main(int argc, char *argv[])
             QCoreApplication::translate("main", "When used with -c/--terminal, block execution if the circuit contains Truth Tables."));
         parser.addOption(blockTruthTableOption);
 
+        QCommandLineOption inspectOption(
+            {"i", "inspect"},
+            QCoreApplication::translate("main", "Prints all inputs and outputs with their current values."));
+        parser.addOption(inspectOption);
+
         parser.process(app);
 
         if (const QString verbosity = parser.value(verbosityOption); !verbosity.isEmpty()) {
@@ -147,6 +158,84 @@ int main(int argc, char *argv[])
                 }
 
                 window.exportToWaveFormTerminal();
+            }
+            exit(0);
+        }
+
+        if (const bool isInspect = parser.isSet(inspectOption); isInspect) {
+            if (!args.empty()) {
+                GlobalProperties::verbose = false;
+                MainWindow window;
+                window.loadPandaFile(args.at(0));
+                
+                // Get the scene and extract inputs/outputs
+                auto *scene = window.currentTab()->scene();
+                const auto elements = Common::sortGraphicElements(scene->elements());
+                
+                QVector<GraphicElementInput *> inputs;
+                QVector<GraphicElement *> outputs;
+                
+                // Collect inputs and outputs
+                for (auto *elm : elements) {
+                    if (!elm || (elm->type() != GraphicElement::Type)) {
+                        continue;
+                    }
+                    
+                    if (elm->elementGroup() == ElementGroup::Input) {
+                        inputs.append(qobject_cast<GraphicElementInput *>(elm));
+                    }
+                    
+                    if (elm->elementGroup() == ElementGroup::Output) {
+                        outputs.append(elm);
+                    }
+                }
+                
+                // Sort alphabetically
+                std::stable_sort(inputs.begin(), inputs.end(), [](const auto &elm1, const auto &elm2) {
+                    return QString::compare(elm1->label(), elm2->label(), Qt::CaseInsensitive) < 0;
+                });
+                
+                std::stable_sort(outputs.begin(), outputs.end(), [](const auto &elm1, const auto &elm2) {
+                    return QString::compare(elm1->label(), elm2->label(), Qt::CaseInsensitive) < 0;
+                });
+                
+                // Print inputs with their current values
+                std::cout << "INPUTS:\n";
+                for (auto *input : inputs) {
+                    QString label = input->label();
+                    if (label.isEmpty()) {
+                        label = ElementFactory::translatedName(input->elementType());
+                    }
+                    
+                    for (int port = 0; port < input->outputSize(); ++port) {
+                        QString portLabel = label;
+                        if (input->outputSize() > 1) {
+                            portLabel += "[" + QString::number(port) + "]";
+                        }
+                        
+                        Status status = input->outputPort(port)->status();
+                        std::cout << portLabel.toStdString() << ": " << static_cast<int>(status) << "\n";
+                    }
+                }
+                
+                // Print outputs with their current values  
+                std::cout << "\nOUTPUTS:\n";
+                for (auto *output : outputs) {
+                    QString label = output->label();
+                    if (label.isEmpty()) {
+                        label = ElementFactory::translatedName(output->elementType());
+                    }
+                    
+                    for (int port = 0; port < output->inputSize(); ++port) {
+                        QString portLabel = label;
+                        if (output->inputSize() > 1) {
+                            portLabel += "[" + QString::number(port) + "]";
+                        }
+                        
+                        Status status = output->inputPort(port)->status();
+                        std::cout << portLabel.toStdString() << ": " << static_cast<int>(status) << "\n";
+                    }
+                }
             }
             exit(0);
         }
