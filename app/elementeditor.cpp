@@ -410,7 +410,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     // Check if any of the selected elements is a Node with output connections
     for (auto *elm : std::as_const(m_elements)) {
-        if (auto* node = qobject_cast<Node*>(elm)) {
+        if (auto *node = qobject_cast<Node *>(elm)) {
             // Only allow wireless label selection if node has output connections (can send signals)
             if (node->hasOutputConnection()) {
                 m_hasNode = true;
@@ -437,7 +437,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_hasLabel &= elm->hasLabel();
 
         // For wireless nodes (Node type), enforce connection constraints
-        if (auto* node = qobject_cast<Node*>(elm)) {
+        if (auto *node = qobject_cast<Node *>(elm)) {
             // Only allow wireless labeling if node has input connections (can receive signals)
             // But we still want to show the label field with a helpful message
             if (!node->hasInputConnection()) {
@@ -1064,7 +1064,7 @@ void ElementEditor::updateTheme()
     m_ui->groupBox->setStyleSheet(styleSheet.arg(borderColor));
 }
 
-void ElementEditor::connectNode(const QString& label)
+void ElementEditor::connectNode(const QString &label)
 {
     if (m_elements.isEmpty()) {
         qCWarning(zero) << "No elements selected for wireless connection";
@@ -1110,7 +1110,7 @@ void ElementEditor::refreshWirelessCombobox()
     // Get active labels from new wireless manager
     if (m_scene && m_scene->wirelessManager()) {
         auto activeLabels = m_scene->wirelessManager()->getActiveLabels();
-        for (const QString& label : activeLabels) {
+        for (const QString &label : activeLabels) {
             if (!label.isEmpty()) {
                 m_ui->comboBoxNode->addItem(label);
             }

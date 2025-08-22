@@ -39,8 +39,8 @@ void TestWireless::testWirelessConnectionManager()
     QVERIFY(wirelessManager->getActiveLabels().isEmpty());
 
     // Create test nodes
-    auto *node1 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *node2 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *node1 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *node2 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
 
     QVERIFY(node1 != nullptr);
     QVERIFY(node2 != nullptr);
@@ -87,8 +87,8 @@ void TestWireless::testBasicWirelessConnection()
     QSignalSpy connectionSpy(wirelessManager, &WirelessConnectionManager::wirelessConnectionsChanged);
 
     // Create nodes at specific positions
-    auto *outputNode = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *inputNode = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *outputNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *inputNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
 
     outputNode->setPos(0, 0);
     inputNode->setPos(100, 0);
@@ -149,10 +149,10 @@ void TestWireless::testMultipleWirelessConnections()
     auto *wirelessManager = scene->wirelessManager();
 
     // Create multiple nodes
-    auto *node1 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *node2 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *node3 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *node4 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *node1 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *node2 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *node3 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *node4 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
 
     scene->addItem(node1);
     scene->addItem(node2);
@@ -199,9 +199,9 @@ void TestWireless::testWirelessLabelChanges()
     auto *scene = new Scene();
     auto *wirelessManager = scene->wirelessManager();
 
-    auto *node1 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *node2 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *node3 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *node1 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *node2 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *node3 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
 
     scene->addItem(node1);
     scene->addItem(node2);
@@ -239,9 +239,9 @@ void TestWireless::testWirelessNodeRemoval()
     auto *scene = new Scene();
     auto *wirelessManager = scene->wirelessManager();
 
-    auto *node1 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *node2 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *node3 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *node1 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *node2 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *node3 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
 
     scene->addItem(node1);
     scene->addItem(node2);
@@ -273,7 +273,7 @@ void TestWireless::testEmptyLabels()
     auto *scene = new Scene();
     auto *wirelessManager = scene->wirelessManager();
 
-    auto *node = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *node = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     scene->addItem(node);
 
     // Test various forms of empty labels
@@ -301,9 +301,9 @@ void TestWireless::testDuplicateLabels()
     auto *wirelessManager = scene->wirelessManager();
 
     // Create 5 nodes with the same label
-    QList<Node*> nodes;
+    QList<Node *> nodes;
     for (int i = 0; i < 5; ++i) {
-        auto *node = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+        auto *node = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
         scene->addItem(node);
         node->setLabel("shared");
         nodes.append(node);
@@ -313,10 +313,10 @@ void TestWireless::testDuplicateLabels()
     QCOMPARE(wirelessManager->getWirelessGroup("shared").size(), 5);
 
     // Every node should see all 5 nodes in its connections
-    for (Node* node : nodes) {
+    for (Node *node : nodes) {
         auto connections = wirelessManager->getConnectedNodes(node);
         QCOMPARE(connections.size(), 5);
-        for (Node* otherNode : nodes) {
+        for (Node *otherNode : nodes) {
             QVERIFY(connections.contains(otherNode));
         }
     }
@@ -333,8 +333,8 @@ void TestWireless::testWirelessConnectionInSimulation()
 
     // Create circuit: InputSwitch -> Node(wireless:A) ... Node(wireless:A) -> LED
     auto *inputSwitch = qgraphicsitem_cast<InputSwitch*>(ElementFactory::buildElement(ElementType::InputSwitch));
-    auto *senderNode = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *receiverNode = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *senderNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *receiverNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *led = qgraphicsitem_cast<Led*>(ElementFactory::buildElement(ElementType::Led));
 
     // Add elements to scene
@@ -410,9 +410,9 @@ void TestWireless::testWirelessSerialization()
     auto *scene = new Scene();
     auto *wirelessManager = scene->wirelessManager();
 
-    auto *node1 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *node2 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *node3 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *node1 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *node2 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *node3 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
 
     scene->addItem(node1);
     scene->addItem(node2);
@@ -485,9 +485,9 @@ void TestWireless::testEdgeCases()
     // Set up signal monitoring
     QSignalSpy connectionSpy(wirelessManager, &WirelessConnectionManager::wirelessConnectionsChanged);
 
-    auto *nodeA = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *nodeB = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *nodeC = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *nodeA = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *nodeB = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *nodeC = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
 
     scene->addItem(nodeA);
     scene->addItem(nodeB);
@@ -552,11 +552,11 @@ void TestWireless::testStressConditions()
     auto *wirelessManager = scene->wirelessManager();
 
     // Create many nodes in a single group
-    QList<Node*> nodes;
+    QList<Node *> nodes;
     const int nodeCount = 200; // Stress test with 200 nodes
 
     for (int i = 0; i < nodeCount; ++i) {
-        auto *node = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+        auto *node = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
         scene->addItem(node);
         node->setLabel("stress_test");
         nodes.append(node);
@@ -567,12 +567,12 @@ void TestWireless::testStressConditions()
     QCOMPARE(wirelessManager->getWirelessGroup("stress_test").size(), nodeCount);
 
     // Test that every node sees all other nodes
-    for (Node* node : nodes) {
+    for (Node *node : nodes) {
         auto connections = wirelessManager->getConnectedNodes(node);
         QCOMPARE(connections.size(), nodeCount);
 
         // Verify this node can see all other nodes
-        for (Node* otherNode : nodes) {
+        for (Node *otherNode : nodes) {
             QVERIFY(connections.contains(otherNode));
         }
     }
@@ -608,7 +608,7 @@ void TestWireless::testInvalidOperations()
     QVERIFY(wirelessManager->getConnectedNodes(nullptr).isEmpty());
 
     // Test operations with nodes not added to scene
-    auto *orphanNode = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *orphanNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
 
     // Should handle gracefully
     orphanNode->setLabel("orphan");
@@ -617,7 +617,7 @@ void TestWireless::testInvalidOperations()
     delete orphanNode;
 
     // Test with empty/invalid labels
-    auto *node = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *node = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     scene->addItem(node);
 
     wirelessManager->setNodeWirelessLabel(node, QString()); // Empty
@@ -636,9 +636,9 @@ void TestWireless::testStateConsistency()
     auto *scene = new Scene();
     auto *wirelessManager = scene->wirelessManager();
 
-    auto *node1 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *node2 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *node3 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *node1 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *node2 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *node3 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
 
     scene->addItem(node1);
     scene->addItem(node2);
@@ -672,7 +672,7 @@ void TestWireless::testStateConsistency()
     // Test that active labels count matches actual groups
     auto activeLabels = wirelessManager->getActiveLabels();
     int expectedGroups = 0;
-    for (const QString& label : activeLabels) {
+    for (const QString &label : activeLabels) {
         if (wirelessManager->getWirelessGroup(label).size() > 0) {
             expectedGroups++;
         }
@@ -680,14 +680,14 @@ void TestWireless::testStateConsistency()
     QCOMPARE(wirelessManager->getGroupCount(), expectedGroups);
 
     // Test that group size consistency
-    for (const QString& label : activeLabels) {
+    for (const QString &label : activeLabels) {
         auto groupNodes = wirelessManager->getWirelessGroup(label);
-        for (Node* node : groupNodes) {
+        for (Node *node : groupNodes) {
             auto nodeConnections = wirelessManager->getConnectedNodes(node);
             QCOMPARE(nodeConnections.size(), groupNodes.size());
 
             // Every node in connections should be in the group
-            for (Node* connectedNode : nodeConnections) {
+            for (Node *connectedNode : nodeConnections) {
                 QVERIFY(groupNodes.contains(connectedNode));
             }
         }
@@ -705,9 +705,9 @@ void TestWireless::testWirelessSignalPriority()
     // Create circuit with multiple signal sources
     auto *vccSource = qgraphicsitem_cast<InputVcc*>(ElementFactory::buildElement(ElementType::InputVcc));
     auto *gndSource = qgraphicsitem_cast<InputGnd*>(ElementFactory::buildElement(ElementType::InputGnd));
-    auto *vccNode = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *gndNode = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *receiverNode = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *vccNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *gndNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *receiverNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *led = qgraphicsitem_cast<Led*>(ElementFactory::buildElement(ElementType::Led));
 
     scene->addItem(vccSource);
@@ -758,7 +758,7 @@ void TestWireless::testWirelessSingleNodeGroup()
     auto *simulation = scene->simulation();
 
     auto *inputSwitch = qgraphicsitem_cast<InputSwitch*>(ElementFactory::buildElement(ElementType::InputSwitch));
-    auto *singleNode = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *singleNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *led = qgraphicsitem_cast<Led*>(ElementFactory::buildElement(ElementType::Led));
 
     scene->addItem(inputSwitch);
@@ -810,14 +810,14 @@ void TestWireless::testWirelessMultipleGroups()
 
     // Group A: Switch1 -> NodeA1 ... NodeA2 -> LED1
     auto *switch1 = qgraphicsitem_cast<InputSwitch*>(ElementFactory::buildElement(ElementType::InputSwitch));
-    auto *nodeA1 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *nodeA2 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *nodeA1 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *nodeA2 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *led1 = qgraphicsitem_cast<Led*>(ElementFactory::buildElement(ElementType::Led));
 
     // Group B: Switch2 -> NodeB1 ... NodeB2 -> LED2
     auto *switch2 = qgraphicsitem_cast<InputSwitch*>(ElementFactory::buildElement(ElementType::InputSwitch));
-    auto *nodeB1 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *nodeB2 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *nodeB1 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *nodeB2 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *led2 = qgraphicsitem_cast<Led*>(ElementFactory::buildElement(ElementType::Led));
 
     scene->addItem(switch1);
@@ -899,9 +899,9 @@ void TestWireless::testWirelessNodeWithoutInput()
     auto *simulation = scene->simulation();
 
     auto *inputSwitch = qgraphicsitem_cast<InputSwitch*>(ElementFactory::buildElement(ElementType::InputSwitch));
-    auto *senderNode = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *floatingNode = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node)); // No input
-    auto *receiverNode = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *senderNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *floatingNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node)); // No input
+    auto *receiverNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *led = qgraphicsitem_cast<Led*>(ElementFactory::buildElement(ElementType::Led));
 
     scene->addItem(inputSwitch);
@@ -957,8 +957,8 @@ void TestWireless::testWirelessUpdateCycles()
     auto *simulation = scene->simulation();
 
     auto *inputSwitch = qgraphicsitem_cast<InputSwitch*>(ElementFactory::buildElement(ElementType::InputSwitch));
-    auto *node1 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
-    auto *node2 = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    auto *node1 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *node2 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *led = qgraphicsitem_cast<Led*>(ElementFactory::buildElement(ElementType::Led));
 
     scene->addItem(inputSwitch);
@@ -1018,14 +1018,14 @@ void TestWireless::testWirelessUIConstraints()
 {
     qCDebug(zero) << "=== Testing Wireless UI Constraints ===";
 
-    Scene* scene = new Scene();
+    Scene *scene = new Scene();
 
     // Create nodes for testing
-    auto* isolatedNode = new Node();
-    auto* senderNode = new Node();
-    auto* receiverNode = new Node();
-    auto* vccElement = new InputVcc();
-    auto* ledElement = new Led();
+    auto *isolatedNode = new Node();
+    auto *senderNode = new Node();
+    auto *receiverNode = new Node();
+    auto *vccElement = new InputVcc();
+    auto *ledElement = new Led();
 
     scene->addItem(isolatedNode);
     scene->addItem(senderNode);
@@ -1038,7 +1038,7 @@ void TestWireless::testWirelessUIConstraints()
     QVERIFY(!isolatedNode->hasOutputConnection());
 
     // Test 2: Connect VCC -> senderNode (gives it input connection)
-    QNEConnection* conn1 = new QNEConnection();
+    QNEConnection *conn1 = new QNEConnection();
     conn1->setStartPort(vccElement->outputPort());
     conn1->setEndPort(senderNode->inputPort());
     scene->addItem(conn1);
@@ -1048,7 +1048,7 @@ void TestWireless::testWirelessUIConstraints()
     QVERIFY(!senderNode->hasOutputConnection()); // Cannot select wireless labels
 
     // Test 3: Connect receiverNode -> LED (gives it output connection)
-    QNEConnection* conn2 = new QNEConnection();
+    QNEConnection *conn2 = new QNEConnection();
     conn2->setStartPort(receiverNode->outputPort());
     conn2->setEndPort(ledElement->inputPort());
     scene->addItem(conn2);
@@ -1058,7 +1058,7 @@ void TestWireless::testWirelessUIConstraints()
     QVERIFY(receiverNode->hasOutputConnection()); // Can select wireless labels
 
     // Test 4: Add input connection to receiver node
-    QNEConnection* conn3 = new QNEConnection();
+    QNEConnection *conn3 = new QNEConnection();
     conn3->setStartPort(vccElement->outputPort());
     conn3->setEndPort(receiverNode->inputPort());
     scene->addItem(conn3);
@@ -1074,13 +1074,13 @@ void TestWireless::testWirelessConnectionValidation()
 {
     qCDebug(zero) << "=== Testing Wireless Connection Validation ===";
 
-    Scene* scene = new Scene();
+    Scene *scene = new Scene();
 
     // Create test circuit: VCC -> Node1 -> Node2 -> LED
-    auto* vccElement = new InputVcc();
-    auto* node1 = new Node();
-    auto* node2 = new Node();
-    auto* ledElement = new Led();
+    auto *vccElement = new InputVcc();
+    auto *node1 = new Node();
+    auto *node2 = new Node();
+    auto *ledElement = new Led();
 
     scene->addItem(vccElement);
     scene->addItem(node1);
@@ -1088,13 +1088,13 @@ void TestWireless::testWirelessConnectionValidation()
     scene->addItem(ledElement);
 
     // VCC -> Node1 (Node1 can set wireless labels)
-    QNEConnection* conn1 = new QNEConnection();
+    QNEConnection *conn1 = new QNEConnection();
     conn1->setStartPort(vccElement->outputPort());
     conn1->setEndPort(node1->inputPort());
     scene->addItem(conn1);
 
     // Node2 -> LED (Node2 can select wireless labels)
-    QNEConnection* conn2 = new QNEConnection();
+    QNEConnection *conn2 = new QNEConnection();
     conn2->setStartPort(node2->outputPort());
     conn2->setEndPort(ledElement->inputPort());
     scene->addItem(conn2);
@@ -1129,10 +1129,10 @@ void TestWireless::testWirelessUIDisabledState()
 {
     qCDebug(zero) << "=== Testing Wireless UI Disabled State ===";
 
-    Scene* scene = new Scene();
+    Scene *scene = new Scene();
 
     // Create an isolated node with no connections
-    auto* isolatedNode = new Node();
+    auto *isolatedNode = new Node();
     scene->addItem(isolatedNode);
 
     // Verify the isolated node has no connections and cannot set wireless labels

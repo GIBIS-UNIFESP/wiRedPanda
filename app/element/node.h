@@ -17,7 +17,7 @@ public:
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
 
     // Override setLabel to handle wireless functionality automatically
-    void setLabel(const QString& label) override;
+    void setLabel(const QString &label) override;
 
     // Wireless functionality
     QString getWirelessLabel() const;
@@ -28,7 +28,7 @@ public:
     bool hasOutputConnection();   // Can select wireless labels (sends signals)
 
 signals:
-    void wirelessLabelChanged(const QString& oldLabel, const QString& newLabel);
+    void wirelessLabelChanged(const QString &oldLabel, const QString &newLabel);
 
 private:
     QString m_wirelessLabel;

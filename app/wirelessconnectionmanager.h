@@ -24,16 +24,16 @@ class WirelessConnectionManager : public QObject
     Q_OBJECT
 
 public:
-    explicit WirelessConnectionManager(Scene* scene, QObject* parent = nullptr);
+    explicit WirelessConnectionManager(Scene *scene, QObject *parent = nullptr);
 
     // Node management
-    void setNodeWirelessLabel(Node* node, const QString& label);
-    void removeNode(Node* node);
-    QString getNodeWirelessLabel(Node* node) const;
+    void setNodeWirelessLabel(Node *node, const QString &label);
+    void removeNode(Node *node);
+    QString getNodeWirelessLabel(Node *node) const;
 
     // Connection queries
-    QSet<Node*> getWirelessGroup(const QString& label) const;
-    QSet<Node*> getConnectedNodes(Node* node) const;
+    QSet<Node *> getWirelessGroup(const QString &label) const;
+    QSet<Node *> getConnectedNodes(Node *node) const;
 
     // Group management
     QStringList getActiveLabels() const;
@@ -41,8 +41,8 @@ public:
     bool hasWirelessConnections() const;
 
     // Serialization
-    void serialize(QDataStream& stream) const;
-    void deserialize(QDataStream& stream);
+    void serialize(QDataStream &stream) const;
+    void deserialize(QDataStream &stream);
 
     // Debug support
     QString getDebugInfo() const;
@@ -51,14 +51,14 @@ signals:
     void wirelessConnectionsChanged();
 
 private slots:
-    void onNodeDestroyed(QObject* obj);
+    void onNodeDestroyed(QObject *obj);
 
 private:
     void cleanupEmptyGroups();
-    void removeNodeFromGroup(Node* node, const QString& label);
-    void addNodeToGroup(Node* node, const QString& label);
+    void removeNodeFromGroup(Node *node, const QString &label);
+    void addNodeToGroup(Node *node, const QString &label);
 
-    Scene* m_scene;
-    QHash<Node*, QString> m_nodeLabels;           // Node -> wireless label
-    QHash<QString, QSet<Node*>> m_labelGroups;   // Label -> set of nodes
+    Scene *m_scene;
+    QHash<Node *, QString> m_nodeLabels;           // Node -> wireless label
+    QHash<QString, QSet<Node *>> m_labelGroups;   // Label -> set of nodes
 };
