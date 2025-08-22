@@ -10,7 +10,7 @@
 #include <QDataStream>
 #include <QDebug>
 
-WirelessConnectionManager::WirelessConnectionManager(Scene* scene, QObject* parent)
+WirelessConnectionManager::WirelessConnectionManager(Scene *scene, QObject *parent)
     : QObject(parent)
     , m_scene(scene)
 {
@@ -20,7 +20,7 @@ WirelessConnectionManager::WirelessConnectionManager(Scene* scene, QObject* pare
     }
 }
 
-void WirelessConnectionManager::setNodeWirelessLabel(Node* node, const QString& label)
+void WirelessConnectionManager::setNodeWirelessLabel(Node *node, const QString &label)
 {
     if (!node) {
         qCWarning(zero) << "Attempting to set wireless label on null node";
@@ -56,7 +56,7 @@ void WirelessConnectionManager::setNodeWirelessLabel(Node* node, const QString& 
     emit wirelessConnectionsChanged();
 }
 
-void WirelessConnectionManager::removeNode(Node* node)
+void WirelessConnectionManager::removeNode(Node *node)
 {
     if (!node) {
         return;
@@ -76,21 +76,21 @@ void WirelessConnectionManager::removeNode(Node* node)
     disconnect(node, &QObject::destroyed, this, &WirelessConnectionManager::onNodeDestroyed);
 }
 
-QString WirelessConnectionManager::getNodeWirelessLabel(Node* node) const
+QString WirelessConnectionManager::getNodeWirelessLabel(Node *node) const
 {
     return m_nodeLabels.value(node, QString());
 }
 
-QSet<Node*> WirelessConnectionManager::getWirelessGroup(const QString& label) const
+QSet<Node *> WirelessConnectionManager::getWirelessGroup(const QString &label) const
 {
-    return m_labelGroups.value(label, QSet<Node*>());
+    return m_labelGroups.value(label, QSet<Node *>());
 }
 
-QSet<Node*> WirelessConnectionManager::getConnectedNodes(Node* node) const
+QSet<Node *> WirelessConnectionManager::getConnectedNodes(Node *node) const
 {
     const QString label = getNodeWirelessLabel(node);
     if (label.isEmpty()) {
-        return QSet<Node*>();
+        return QSet<Node *>();
     }
 
     return getWirelessGroup(label);
@@ -124,14 +124,14 @@ bool WirelessConnectionManager::hasWirelessConnections() const
     return !m_nodeLabels.isEmpty();
 }
 
-void WirelessConnectionManager::serialize(QDataStream& stream) const
+void WirelessConnectionManager::serialize(QDataStream &stream) const
 {
     // Save format: node_id -> wireless_label
     QMap<int, QString> nodeWirelessLabels;
 
     for (auto it = m_nodeLabels.cbegin(); it != m_nodeLabels.cend(); ++it) {
-        Node* node = it.key();
-        const QString& label = it.value();
+        auto *node = it.key();
+        const QString &label = it.value();
 
         if (node && !label.isEmpty()) {
             nodeWirelessLabels[node->id()] = label;
@@ -141,7 +141,7 @@ void WirelessConnectionManager::serialize(QDataStream& stream) const
     stream << nodeWirelessLabels;
 }
 
-void WirelessConnectionManager::deserialize(QDataStream& stream)
+void WirelessConnectionManager::deserialize(QDataStream &stream)
 {
     QMap<int, QString> nodeWirelessLabels;
     stream >> nodeWirelessLabels;
@@ -152,10 +152,10 @@ void WirelessConnectionManager::deserialize(QDataStream& stream)
 
     // Rebuild wireless connections after all nodes are loaded
     for (auto it = nodeWirelessLabels.cbegin(); it != nodeWirelessLabels.cend(); ++it) {
-        int nodeId = it.key();
-        const QString& label = it.value();
+        const int nodeId = it.key();
+        const QString &label = it.value();
 
-        if (Node* node = m_scene->findNode(nodeId)) {
+        if (auto *node = m_scene->findNode(nodeId)) {
             setNodeWirelessLabel(node, label);
         } else {
             qCWarning(zero) << "Node" << nodeId << "not found for wireless label" << label;
@@ -172,8 +172,8 @@ QString WirelessConnectionManager::getDebugInfo() const
     info << QString("Total nodes: %1").arg(m_nodeLabels.size());
 
     for (auto it = m_labelGroups.cbegin(); it != m_labelGroups.cend(); ++it) {
-        const QString& label = it.key();
-        const QSet<Node*>& nodes = it.value();
+        const QString &label = it.key();
+        const auto &nodes = it.value();
         if (!nodes.isEmpty()) {
             info << QString("  %1: %2 nodes").arg(label).arg(nodes.size());
         }
@@ -182,10 +182,10 @@ QString WirelessConnectionManager::getDebugInfo() const
     return info.join('\n');
 }
 
-void WirelessConnectionManager::onNodeDestroyed(QObject* obj)
+void WirelessConnectionManager::onNodeDestroyed(QObject *obj)
 {
     // Clean up when a node is destroyed
-    Node* node = static_cast<Node*>(obj);
+    auto *node = static_cast<Node *>(obj);
 
     const QString currentLabel = m_nodeLabels.value(node, QString());
     if (!currentLabel.isEmpty()) {
@@ -211,19 +211,19 @@ void WirelessConnectionManager::cleanupEmptyGroups()
         }
     }
 
-    for (const QString& label : emptyLabels) {
+    for (const QString &label : emptyLabels) {
         m_labelGroups.remove(label);
     }
 }
 
-void WirelessConnectionManager::removeNodeFromGroup(Node* node, const QString& label)
+void WirelessConnectionManager::removeNodeFromGroup(Node *node, const QString &label)
 {
     if (m_labelGroups.contains(label)) {
         m_labelGroups[label].remove(node);
     }
 }
 
-void WirelessConnectionManager::addNodeToGroup(Node* node, const QString& label)
+void WirelessConnectionManager::addNodeToGroup(Node *node, const QString &label)
 {
     m_labelGroups[label].insert(node);
 }

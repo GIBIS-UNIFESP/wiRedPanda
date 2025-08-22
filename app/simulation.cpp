@@ -115,9 +115,9 @@ void Simulation::updateWirelessConnections()
     // Get all active wireless groups
     const QStringList activeLabels = m_scene->wirelessManager()->getActiveLabels();
     
-    for (const QString& label : activeLabels) {
+    for (const QString &label : activeLabels) {
         // Get all nodes in this wireless group
-        const QSet<Node*> nodes = m_scene->wirelessManager()->getWirelessGroup(label);
+        const QSet<Node *> nodes = m_scene->wirelessManager()->getWirelessGroup(label);
         
         if (nodes.size() < 2) {
             continue; // Need at least 2 nodes for a connection
@@ -127,13 +127,13 @@ void Simulation::updateWirelessConnections()
         Status groupSignal = Status::Invalid;
         bool foundValidSignal = false;
         
-        for (Node* node : nodes) {
+        for (auto *node : nodes) {
             if (!node || !node->logic()) {
                 continue;
             }
             
             // Check if this node has an input signal
-            Status nodeSignal = static_cast<Status>(node->logic()->outputValue(0));
+            const Status nodeSignal = static_cast<Status>(node->logic()->outputValue(0));
             
             if (node->logic()->isValid() && nodeSignal != Status::Invalid) {
                 if (!foundValidSignal || nodeSignal == Status::Active) {
@@ -148,7 +148,7 @@ void Simulation::updateWirelessConnections()
         
         // Propagate the group signal to all nodes in the group
         if (foundValidSignal) {
-            for (Node* node : nodes) {
+            for (auto *node : nodes) {
                 if (!node || !node->logic()) {
                     continue;
                 }
@@ -161,9 +161,9 @@ void Simulation::updateWirelessConnections()
                 }
                 
                 // Update connected logic elements
-                auto connections = node->outputPort()->connections();
-                for (auto* connection : connections) {
-                    if (auto* inputPort = connection->endPort()) {
+                const auto connections = node->outputPort()->connections();
+                for (auto *connection : connections) {
+                    if (auto *inputPort = connection->endPort()) {
                         updatePort(inputPort);
                     }
                 }

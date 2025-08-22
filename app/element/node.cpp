@@ -65,12 +65,12 @@ void Node::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QV
     }
 }
 
-void Node::setLabel(const QString& label)
+void Node::setLabel(const QString &label)
 {
     const QString trimmedLabel = label.trimmed();
 
     // Store the old wireless label for change notification
-    QString oldWirelessLabel = m_wirelessLabel;
+    const QString oldWirelessLabel = m_wirelessLabel;
 
     // Call parent implementation to set the visual label
     GraphicElement::setLabel(trimmedLabel);
@@ -81,7 +81,7 @@ void Node::setLabel(const QString& label)
 
         // Notify the scene's wireless manager
         if (scene()) {
-            if (Scene* s = qobject_cast<Scene*>(scene())) {
+            if (auto *s = qobject_cast<Scene *>(scene())) {
                 if (s->wirelessManager()) {
                     s->wirelessManager()->setNodeWirelessLabel(this, trimmedLabel);
                 }
