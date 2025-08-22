@@ -19,6 +19,9 @@ public:
     // Override setLabel to handle wireless functionality automatically
     void setLabel(const QString &label) override;
 
+    // Override itemChange to automatically register wireless labels when added to scene
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+
     // Wireless functionality
     QString getWirelessLabel() const;
     bool hasWirelessLabel() const;

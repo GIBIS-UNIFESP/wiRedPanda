@@ -93,6 +93,24 @@ void Node::setLabel(const QString &label)
     }
 }
 
+QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    // Call parent implementation first
+    QVariant result = GraphicElement::itemChange(change, value);
+    
+    // When node is added to a scene, automatically register wireless label if present
+    if (change == ItemSceneHasChanged && scene() && !m_wirelessLabel.isEmpty()) {
+        if (auto *s = qobject_cast<Scene *>(scene())) {
+            if (s->wirelessManager()) {
+                qCDebug(zero) << "Auto-registering node" << id() << "with wireless label" << m_wirelessLabel;
+                s->wirelessManager()->setNodeWirelessLabel(this, m_wirelessLabel);
+            }
+        }
+    }
+    
+    return result;
+}
+
 QString Node::getWirelessLabel() const
 {
     return m_wirelessLabel;

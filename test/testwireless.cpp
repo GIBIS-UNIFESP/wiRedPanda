@@ -6,6 +6,7 @@
 #include "common.h"
 #include "elementeditor.h"
 #include "elementfactory.h"
+#include "inputbutton.h"
 #include "inputgnd.h"
 #include "inputswitch.h"
 #include "inputvcc.h"
@@ -13,6 +14,7 @@
 #include "node.h"
 #include "qneconnection.h"
 #include "scene.h"
+#include "serialization.h"
 #include "simulation.h"
 #include "wirelessconnectionmanager.h"
 
@@ -1202,5 +1204,160 @@ void TestWireless::testWirelessUIDisabledState()
     // The UI constraints are tested through ElementEditor, which we validated in previous tests
     // The node model itself allows label setting - the UI prevents user input
 
+    delete scene;
+}
+
+void TestWireless::testNodeDuplicationWirelessBug()
+{
+    // Test that real drag-and-drop duplication works correctly with wireless labels
+    auto *scene = new Scene();
+    auto *simulation = scene->simulation();
+    auto *wirelessManager = scene->wirelessManager();
+
+    // Create original circuit: PushButton → Node A → LED
+    auto *pushButton = new InputButton();
+    auto *nodeA1 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *led1 = new Led();
+    
+    scene->addItem(pushButton);
+    scene->addItem(nodeA1);
+    scene->addItem(led1);
+    
+    // Set wireless label on the node
+    nodeA1->setLabel("A");
+    
+    // Connect: PushButton → Node A → LED
+    auto *conn1 = new QNEConnection();
+    auto *conn2 = new QNEConnection();
+    scene->addItem(conn1);
+    scene->addItem(conn2);
+    
+    conn1->setStartPort(pushButton->outputPort());
+    conn1->setEndPort(nodeA1->inputPort());
+    conn2->setStartPort(nodeA1->outputPort());
+    conn2->setEndPort(led1->inputPort());
+    
+    // Verify original circuit works
+    pushButton->setOn(true);
+    simulation->start();
+    
+    for (int i = 0; i < 5; ++i) {
+        simulation->update();
+    }
+    
+    QCOMPARE(led1->inputPort()->status(), Status::Active);
+    pushButton->setOn(false);
+    
+    // SIMULATE REAL DUPLICATION via drag-and-drop
+    // This is what actually happens when user duplicates items
+    
+    // Select items to duplicate (Node A + LED + connection)
+    nodeA1->setSelected(true);
+    led1->setSelected(true);
+    conn2->setSelected(true);
+    
+    // Create clone drag data (same as real duplication)
+    QList<QGraphicsItem*> selectedItems = {nodeA1, led1, conn2};
+    QByteArray itemData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    
+    Serialization::writePandaHeader(stream);
+    stream << QPointF(0, 0);  // mousePos
+    
+    // Use the actual scene copy method logic
+    QPointF center(0.0, 0.0);
+    int itemsQuantity = 0;
+    for (auto *item : selectedItems) {
+        if (item->type() == GraphicElement::Type) {
+            center += item->pos();
+            itemsQuantity++;
+        }
+    }
+    center /= itemsQuantity;
+    stream << center;
+    
+    // Serialize the selected items
+    Serialization::serialize(selectedItems, stream);
+    
+    // Create mime data for cloneDrag (real duplication)
+    auto *mimeData = new QMimeData();
+    mimeData->setData("application/x-wiredpanda-cloneDrag", itemData);
+    
+    // Simulate drop event (real duplication)
+    auto *dropEvent = new QGraphicsSceneDragDropEvent(QEvent::GraphicsSceneDrop);
+    dropEvent->setMimeData(mimeData);
+    dropEvent->setScenePos(QPointF(100, 100));  // Drop at offset position
+    
+    // Count items before duplication
+    int nodesBefore = 0;
+    int ledsBefore = 0;
+    for (auto *item : scene->items()) {
+        if (item->type() == GraphicElement::Type) {
+            if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
+                if (element->elementType() == ElementType::Node) nodesBefore++;
+                if (element->elementType() == ElementType::Led) ledsBefore++;
+            }
+        }
+    }
+    
+    // Trigger the actual drop event (this is real duplication!)
+    scene->dropEvent(dropEvent);
+    
+    // Count items after duplication
+    int nodesAfter = 0;
+    int ledsAfter = 0;
+    Node *nodeA2 = nullptr;
+    Led *led2 = nullptr;
+    
+    for (auto *item : scene->items()) {
+        if (item->type() == GraphicElement::Type) {
+            if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
+                if (element->elementType() == ElementType::Node) {
+                    nodesAfter++;
+                    if (auto *node = qobject_cast<Node *>(element)) {
+                        if (node != nodeA1 && node->getWirelessLabel() == "A") {
+                            nodeA2 = node;
+                        }
+                    }
+                }
+                if (element->elementType() == ElementType::Led) {
+                    ledsAfter++;
+                    if (auto *led = qobject_cast<Led *>(element)) {
+                        if (led != led1) {
+                            led2 = led;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Verify duplication worked
+    QCOMPARE(nodesAfter, nodesBefore + 1);
+    QCOMPARE(ledsAfter, ledsBefore + 1);
+    QVERIFY(nodeA2 != nullptr);
+    QVERIFY(led2 != nullptr);
+    
+    // Verify duplicated node has wireless label
+    QCOMPARE(nodeA2->getWirelessLabel(), QString("A"));
+    
+    // THE KEY TEST: Verify wireless manager knows about both nodes (tests our fix!)
+    auto groupAfterDuplication = wirelessManager->getWirelessGroup("A");
+    QCOMPARE(groupAfterDuplication.size(), 2);
+    QVERIFY(groupAfterDuplication.contains(nodeA1));
+    QVERIFY(groupAfterDuplication.contains(nodeA2));  // This would fail before the fix!
+    
+    // Final test: Both LEDs should work
+    pushButton->setOn(true);
+    for (int i = 0; i < 5; ++i) {
+        simulation->update();
+    }
+    
+    // Both LEDs should light up because both nodes receive the wireless signal
+    QCOMPARE(led1->inputPort()->status(), Status::Active);
+    QCOMPARE(led2->inputPort()->status(), Status::Active);  // This would fail before the fix
+    
+    simulation->stop();
+    delete dropEvent;
     delete scene;
 }
