@@ -1381,3 +1381,72 @@ void TestWireless::testWirelessUIValidation()
     
     delete scene;
 }
+
+void TestWireless::testWirelessDuplicationConstraint()
+{
+    // Test that the 1-N constraint prevents duplicate source labels
+    // This verifies the core constraint enforcement that prevents duplication issues
+    auto *scene = new Scene();
+    auto *wirelessManager = scene->wirelessManager();
+
+    // Create original source node with wireless connection
+    auto *vcc1 = new InputVcc();
+    auto *originalSourceNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *conn1 = new QNEConnection();
+    
+    scene->addItem(vcc1);
+    scene->addItem(originalSourceNode);
+    scene->addItem(conn1);
+    
+    conn1->setStartPort(vcc1->outputPort());
+    conn1->setEndPort(originalSourceNode->inputPort());
+    
+    // Set wireless label on original node
+    originalSourceNode->setLabel("CLOCK");
+    QCOMPARE(originalSourceNode->getWirelessLabel(), QString("CLOCK"));
+    QVERIFY(originalSourceNode->isWirelessSource());
+    QCOMPARE(wirelessManager->getWirelessSource("CLOCK"), originalSourceNode);
+    
+    // Create second source node (simulates a duplicated node)
+    auto *vcc2 = new InputVcc();
+    auto *duplicatedSourceNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *conn2 = new QNEConnection();
+    
+    scene->addItem(vcc2);
+    scene->addItem(duplicatedSourceNode);
+    scene->addItem(conn2);
+    
+    conn2->setStartPort(vcc2->outputPort());
+    conn2->setEndPort(duplicatedSourceNode->inputPort());
+    
+    // Now the duplicated node is a potential source. Try to set the same label
+    // This should fail due to 1-N constraint (simulates what happens during duplication)
+    const QString originalLabel = duplicatedSourceNode->getWirelessLabel();
+    duplicatedSourceNode->setLabel("CLOCK");
+    
+    // Verify the duplicated node could not take the same wireless label
+    QCOMPARE(duplicatedSourceNode->getWirelessLabel(), originalLabel);  // Should remain unchanged
+    QVERIFY(!duplicatedSourceNode->hasWirelessLabel());  // Should have no wireless label
+    
+    // Verify original node still has its label
+    QCOMPARE(originalSourceNode->getWirelessLabel(), QString("CLOCK"));
+    QVERIFY(originalSourceNode->isWirelessSource());
+    QCOMPARE(wirelessManager->getWirelessSource("CLOCK"), originalSourceNode);
+    
+    // Verify the wireless manager only has one source for "CLOCK"
+    auto activeLabels = wirelessManager->getActiveLabels();
+    QCOMPARE(activeLabels.count("CLOCK"), 1);
+    
+    // Test that duplicated node can set a different label
+    duplicatedSourceNode->setLabel("RESET");
+    QCOMPARE(duplicatedSourceNode->getWirelessLabel(), QString("RESET"));
+    QVERIFY(duplicatedSourceNode->isWirelessSource());
+    QCOMPARE(wirelessManager->getWirelessSource("RESET"), duplicatedSourceNode);
+    
+    // Verify both labels are now active
+    activeLabels = wirelessManager->getActiveLabels();
+    QVERIFY(activeLabels.contains("CLOCK"));
+    QVERIFY(activeLabels.contains("RESET"));
+    
+    delete scene;
+}

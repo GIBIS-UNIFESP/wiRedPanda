@@ -112,8 +112,9 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
                 if (!s->wirelessManager()->setNodeWirelessLabel(this, m_wirelessLabel)) {
                     qCWarning(zero) << "Failed to auto-register node" << id() 
                                    << "with wireless label" << m_wirelessLabel 
-                                   << "- 1-N constraint violated";
-                    // Could clear the label here if needed: m_wirelessLabel.clear();
+                                   << "- 1-N constraint violated. Clearing label to prevent duplication conflict.";
+                    // Clear the label to prevent constraint violation (e.g., during node duplication)
+                    m_wirelessLabel.clear();
                 }
             }
         }
