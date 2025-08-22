@@ -1318,3 +1318,66 @@ void TestWireless::testWireless1NConstraint()
     simulation->stop();
     delete scene;
 }
+
+void TestWireless::testWirelessUIValidation()
+{
+    // Test that UI validation properly handles 1-N constraint violations
+    // This test verifies that the setLabel method correctly rejects constraint violations
+    // without requiring actual UI interaction (ElementEditor is complex to test directly)
+    
+    auto *scene = new Scene();
+    auto *wirelessManager = scene->wirelessManager();
+
+    // Create two source nodes (both will have input connections)
+    auto *vcc1 = new InputVcc();
+    auto *vcc2 = new InputVcc();
+    auto *sourceNode1 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *sourceNode2 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    
+    scene->addItem(vcc1);
+    scene->addItem(vcc2);
+    scene->addItem(sourceNode1);
+    scene->addItem(sourceNode2);
+    
+    // Connect VCC → Nodes (makes them potential wireless sources)
+    auto *conn1 = new QNEConnection();
+    auto *conn2 = new QNEConnection();
+    scene->addItem(conn1);
+    scene->addItem(conn2);
+    
+    conn1->setStartPort(vcc1->outputPort());
+    conn1->setEndPort(sourceNode1->inputPort());
+    conn2->setStartPort(vcc2->outputPort());
+    conn2->setEndPort(sourceNode2->inputPort());
+    
+    // Test UI validation scenario: first source can set label
+    sourceNode1->setLabel("CLOCK");
+    QCOMPARE(sourceNode1->getWirelessLabel(), QString("CLOCK"));
+    QVERIFY(sourceNode1->isWirelessSource());
+    QCOMPARE(wirelessManager->getWirelessSource("CLOCK"), sourceNode1);
+    
+    // Test UI validation scenario: second source should be rejected
+    const QString originalLabel2 = sourceNode2->getWirelessLabel();
+    sourceNode2->setLabel("CLOCK");  // Should fail due to 1-N constraint
+    
+    // Verify constraint was enforced
+    QCOMPARE(sourceNode2->getWirelessLabel(), originalLabel2);  // Should remain unchanged
+    QCOMPARE(wirelessManager->getWirelessSource("CLOCK"), sourceNode1);  // Still first node
+    
+    // Test that different label works for second source
+    sourceNode2->setLabel("RESET");
+    QCOMPARE(sourceNode2->getWirelessLabel(), QString("RESET"));
+    QVERIFY(sourceNode2->isWirelessSource());
+    QCOMPARE(wirelessManager->getWirelessSource("RESET"), sourceNode2);
+    
+    // Test that sink nodes can share labels
+    auto *sinkNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    scene->addItem(sinkNode);
+    
+    sinkNode->setLabel("CLOCK");  // Should succeed (sink can share label)
+    QCOMPARE(sinkNode->getWirelessLabel(), QString("CLOCK"));
+    QVERIFY(sinkNode->isWirelessSink());
+    QVERIFY(wirelessManager->getWirelessSinks("CLOCK").contains(sinkNode));
+    
+    delete scene;
+}

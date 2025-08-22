@@ -21,6 +21,7 @@
 #include <QImageReader>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QMessageBox>
 #include <algorithm>
 #include <cmath>
 
@@ -768,7 +769,33 @@ void ElementEditor::apply()
         }
 
         if (elm->hasLabel() && (m_ui->lineEditElementLabel->text() != m_manyLabels)) {
-            elm->setLabel(m_ui->lineEditElementLabel->text());
+            // Special handling for Node elements with wireless constraint validation
+            if (auto *node = qobject_cast<Node*>(elm)) {
+                const QString newLabel = m_ui->lineEditElementLabel->text();
+                const QString originalLabel = node->getWirelessLabel();
+                
+                node->setLabel(newLabel);
+                
+                // Check if the label was actually set (1-N constraint validation)
+                if (node->getWirelessLabel() != newLabel) {
+                    // 1-N constraint was violated - show user-friendly message
+                    QString message = tr("Cannot set wireless label '%1' on node.\n\n"
+                                       "This label already has another source node. "
+                                       "Each wireless label can have only one source node that transmits signals.\n\n"
+                                       "Please choose a different label or remove the label from the existing source node.").arg(newLabel);
+                    
+                    QMessageBox::warning(this, tr("Wireless Connection Error"), message);
+                    
+                    // Revert the text field to the original label
+                    m_ui->lineEditElementLabel->setText(originalLabel);
+                    
+                    qCWarning(zero) << "Failed to set wireless label" << newLabel << "on node" << elm->id() 
+                                   << "- 1-N constraint violated";
+                }
+            } else {
+                // Regular element - set label normally
+                elm->setLabel(m_ui->lineEditElementLabel->text());
+            }
         }
 
         if (elm->hasFrequency() && (m_ui->doubleSpinBoxFrequency->text() != m_manyFreq)) {
@@ -1076,10 +1103,41 @@ void ElementEditor::connectNode(const QString &label)
 
     auto *node = qobject_cast<Node*>(selectedElement);
     if (node) {
-        // Use new wireless system - simply set the wireless label
+        // Store original label to check if assignment was successful
+        const QString originalLabel = node->getWirelessLabel();
+        
+        // Use new wireless system - attempt to set the wireless label
         node->setLabel(label);
+        
+        // Check if the label was actually set (1-N constraint validation)
+        if (node->getWirelessLabel() != label) {
+            // 1-N constraint was violated - show user-friendly message
+            QString message;
+            if (node->isWirelessSource()) {
+                // This node would be a source but the label already has a source
+                message = tr("Cannot set wireless label '%1' on this node.\n\n"
+                           "This label already has another source node. "
+                           "Each wireless label can have only one source node that transmits signals.\n\n"
+                           "To use this label:\n"
+                           "• Remove the wireless label from the existing source node, or\n"
+                           "• Choose a different label for this node").arg(label);
+            } else {
+                // Generic constraint violation
+                message = tr("Cannot set wireless label '%1' on this node.\n\n"
+                           "Wireless constraint violated. Please choose a different label.").arg(label);
+            }
+            
+            QMessageBox::warning(this, tr("Wireless Connection Error"), message);
+            
+            // Revert the combobox to the original label
+            m_ui->comboBoxNode->setCurrentText(originalLabel);
+            
+            qCWarning(zero) << "Failed to set wireless label" << label << "on node" << selectedElement->id() 
+                           << "- 1-N constraint violated";
+            return;
+        }
 
-        // Update combobox and UI
+        // Label was successfully set - update UI
         m_ui->comboBoxNode->setCurrentText(label);
         refreshWirelessCombobox();
         setCurrentElements({selectedElement});
