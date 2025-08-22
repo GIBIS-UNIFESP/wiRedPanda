@@ -89,6 +89,11 @@ vendor/
 .sass-cache/
 bower_components/
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
 # Testing and coverage
 *.gcda
 *.gcno

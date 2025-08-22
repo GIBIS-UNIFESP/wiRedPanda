@@ -5,6 +5,7 @@
 #include "common.h"
 #include "globalproperties.h"
 #include "mainwindow.h"
+#include "mcpprocessor.h"
 #include "registertypes.h"
 #include "workspace.h"
 
@@ -95,6 +96,11 @@ int main(int argc, char *argv[])
             QCoreApplication::translate("main", "When used with -c/--terminal, block execution if the circuit contains Truth Tables."));
         parser.addOption(blockTruthTableOption);
 
+        QCommandLineOption mcpModeOption(
+            {"mcp", "mcp-mode"},
+            QCoreApplication::translate("main", "Start in MCP (Model Context Protocol) mode for programmatic control via stdin/stdout."));
+        parser.addOption(mcpModeOption);
+
         parser.process(app);
 
         if (const QString verbosity = parser.value(verbosityOption); !verbosity.isEmpty()) {
@@ -149,6 +155,29 @@ int main(int argc, char *argv[])
                 window.exportToWaveFormTerminal();
             }
             exit(0);
+        }
+
+        if (const bool isMcpMode = parser.isSet(mcpModeOption); isMcpMode) {
+            GlobalProperties::verbose = false;
+            
+            // Create main window without showing GUI
+            auto *window = new MainWindow();
+            app.setMainWindow(window);
+            
+            // Load file if specified
+            if (!args.empty()) {
+                window->loadPandaFile(args.at(0));
+            } else {
+                // Create a new circuit if no file specified
+                window->createNewTab();
+            }
+            
+            // Create and start MCP processor
+            MCPProcessor processor(window);
+            processor.startProcessing();
+            
+            // Run the application event loop to process MCP commands
+            return app.exec();
         }
 
         auto *window = new MainWindow();
