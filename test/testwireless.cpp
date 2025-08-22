@@ -698,7 +698,7 @@ void TestWireless::testStateConsistency()
 
 void TestWireless::testWirelessSignalPriority()
 {
-    // Test that Active signals have priority over Inactive signals
+    // Test that wireless connections detect contention like physical connections
     auto *scene = new Scene();
     auto *simulation = scene->simulation();
 
@@ -732,10 +732,10 @@ void TestWireless::testWirelessSignalPriority()
     ledConnection->setStartPort(receiverNode->outputPort());
     ledConnection->setEndPort(led->inputPort());
 
-    // Set up wireless group with mixed signals
-    vccNode->setLabel("priority_test");
-    gndNode->setLabel("priority_test");
-    receiverNode->setLabel("priority_test");
+    // Set up wireless group with conflicting signals
+    vccNode->setLabel("contention_test");
+    gndNode->setLabel("contention_test");
+    receiverNode->setLabel("contention_test");
 
     simulation->start();
 
@@ -744,7 +744,62 @@ void TestWireless::testWirelessSignalPriority()
         simulation->update();
     }
 
-    // LED should be ON because Active (VCC) has priority over Inactive (GND)
+    // LED should be OFF because conflicting signals create contention (like physical connections)
+    QCOMPARE(led->inputPort()->status(), Status::Inactive);
+
+    simulation->stop();
+    delete scene;
+}
+
+void TestWireless::testWirelessSignalConsistency()
+{
+    // Test that wireless connections work normally when signals don't conflict
+    auto *scene = new Scene();
+    auto *simulation = scene->simulation();
+
+    // Test case 1: All signals are the same (no contention)
+    auto *vccSource1 = qgraphicsitem_cast<InputVcc*>(ElementFactory::buildElement(ElementType::InputVcc));
+    auto *vccSource2 = qgraphicsitem_cast<InputVcc*>(ElementFactory::buildElement(ElementType::InputVcc));
+    auto *vccNode1 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *vccNode2 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *receiverNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *led = qgraphicsitem_cast<Led*>(ElementFactory::buildElement(ElementType::Led));
+
+    scene->addItem(vccSource1);
+    scene->addItem(vccSource2);
+    scene->addItem(vccNode1);
+    scene->addItem(vccNode2);
+    scene->addItem(receiverNode);
+    scene->addItem(led);
+
+    // Create connections
+    auto *vccConnection1 = new QNEConnection();
+    auto *vccConnection2 = new QNEConnection();
+    auto *ledConnection = new QNEConnection();
+    scene->addItem(vccConnection1);
+    scene->addItem(vccConnection2);
+    scene->addItem(ledConnection);
+
+    vccConnection1->setStartPort(vccSource1->outputPort());
+    vccConnection1->setEndPort(vccNode1->inputPort());
+    vccConnection2->setStartPort(vccSource2->outputPort());
+    vccConnection2->setEndPort(vccNode2->inputPort());
+    ledConnection->setStartPort(receiverNode->outputPort());
+    ledConnection->setEndPort(led->inputPort());
+
+    // Set up wireless group with consistent signals (all HIGH)
+    vccNode1->setLabel("consistent_test");
+    vccNode2->setLabel("consistent_test");
+    receiverNode->setLabel("consistent_test");
+
+    simulation->start();
+
+    // Run simulation to propagate signals
+    for (int i = 0; i < 5; ++i) {
+        simulation->update();
+    }
+
+    // LED should be ON because all signals are consistent (no contention)
     QCOMPARE(led->inputPort()->status(), Status::Active);
 
     simulation->stop();

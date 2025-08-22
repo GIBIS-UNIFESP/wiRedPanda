@@ -123,9 +123,10 @@ void Simulation::updateWirelessConnections()
             continue; // Need at least 2 nodes for a connection
         }
         
-        // Find the highest priority signal from any input node in the group
+        // Find signals from input nodes and detect contention (like physical connections)
         Status groupSignal = Status::Invalid;
         bool foundValidSignal = false;
+        QSet<Status> uniqueSignals;
         
         for (auto *node : nodes) {
             if (!node || !node->logic()) {
@@ -136,14 +137,18 @@ void Simulation::updateWirelessConnections()
             const Status nodeSignal = static_cast<Status>(node->logic()->outputValue(0));
             
             if (node->logic()->isValid() && nodeSignal != Status::Invalid) {
-                if (!foundValidSignal || nodeSignal == Status::Active) {
+                uniqueSignals.insert(nodeSignal);
+                if (!foundValidSignal) {
                     groupSignal = nodeSignal;
                     foundValidSignal = true;
-                    if (nodeSignal == Status::Active) {
-                        break; // Active signal has highest priority
-                    }
                 }
             }
+        }
+        
+        // Detect contention: if we have conflicting signals (both Active and Inactive)
+        if (uniqueSignals.contains(Status::Active) && uniqueSignals.contains(Status::Inactive)) {
+            groupSignal = Status::Invalid; // Contention detected - behave like physical connections
+            foundValidSignal = true;
         }
         
         // Propagate the group signal to all nodes in the group
@@ -157,7 +162,11 @@ void Simulation::updateWirelessConnections()
                 node->outputPort()->setStatus(groupSignal);
                 // Also update the node's internal logic value for wireless signals
                 if (node->logic()) {
-                    node->logic()->setOutputValue(0, static_cast<bool>(groupSignal));
+                    if (groupSignal != Status::Invalid) {
+                        node->logic()->setOutputValue(0, static_cast<bool>(groupSignal));
+                    }
+                    // Note: For Invalid status, we let the port status handle the invalid state
+                    // The logic element's validity is managed by its normal validation process
                 }
                 
                 // Update connected logic elements

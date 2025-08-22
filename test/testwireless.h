@@ -26,6 +26,7 @@ private slots:
 
     // New comprehensive simulation tests
     void testWirelessSignalPriority();
+    void testWirelessSignalConsistency();
     void testWirelessSingleNodeGroup();
     void testWirelessMultipleGroups();
     void testWirelessNodeWithoutInput();
