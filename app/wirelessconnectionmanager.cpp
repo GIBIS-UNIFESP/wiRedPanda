@@ -20,11 +20,11 @@ WirelessConnectionManager::WirelessConnectionManager(Scene *scene, QObject *pare
     }
 }
 
-void WirelessConnectionManager::setNodeWirelessLabel(Node *node, const QString &label)
+bool WirelessConnectionManager::setNodeWirelessLabel(Node *node, const QString &label)
 {
     if (!node) {
         qCWarning(zero) << "Attempting to set wireless label on null node";
-        return;
+        return false;
     }
 
     const QString trimmedLabel = label.trimmed();
@@ -32,17 +32,40 @@ void WirelessConnectionManager::setNodeWirelessLabel(Node *node, const QString &
 
     // No change needed
     if (currentLabel == trimmedLabel) {
-        return;
+        return true;
     }
-
 
     // Remove from old group if it had a label
     if (!currentLabel.isEmpty()) {
         removeNodeFromGroup(node, currentLabel);
+        // Remove from 1-N model data structures
+        if (m_sourcesMap.value(currentLabel) == node) {
+            m_sourcesMap.remove(currentLabel);
+        }
+        m_sinksMap[currentLabel].remove(node);
+        if (m_sinksMap[currentLabel].isEmpty()) {
+            m_sinksMap.remove(currentLabel);
+        }
     }
 
     // Add to new group if label is not empty
     if (!trimmedLabel.isEmpty()) {
+        // 1-N Constraint check: if node would be source, check if label already has a source
+        if (node->isWirelessSource()) {
+            if (m_sourcesMap.contains(trimmedLabel) && m_sourcesMap[trimmedLabel] != node) {
+                qCWarning(zero) << "Cannot set wireless label" << trimmedLabel 
+                               << "on node" << node->id() 
+                               << "- another node is already the source for this label";
+                return false; // Constraint violated
+            }
+            // Node can be the source
+            m_sourcesMap[trimmedLabel] = node;
+        } else if (node->isWirelessSink()) {
+            // Node is a sink
+            m_sinksMap[trimmedLabel].insert(node);
+        }
+        
+        // Legacy group management (for backward compatibility)
         addNodeToGroup(node, trimmedLabel);
         m_nodeLabels[node] = trimmedLabel;
     } else {
@@ -54,6 +77,7 @@ void WirelessConnectionManager::setNodeWirelessLabel(Node *node, const QString &
 
     cleanupEmptyGroups();
     emit wirelessConnectionsChanged();
+    return true;
 }
 
 void WirelessConnectionManager::removeNode(Node *node)
@@ -64,9 +88,18 @@ void WirelessConnectionManager::removeNode(Node *node)
 
     const QString currentLabel = m_nodeLabels.value(node, QString());
     if (!currentLabel.isEmpty()) {
-
+        // Remove from legacy groups
         removeNodeFromGroup(node, currentLabel);
         m_nodeLabels.remove(node);
+        
+        // Remove from 1-N model data structures
+        if (m_sourcesMap.value(currentLabel) == node) {
+            m_sourcesMap.remove(currentLabel);
+        }
+        m_sinksMap[currentLabel].remove(node);
+        if (m_sinksMap[currentLabel].isEmpty()) {
+            m_sinksMap.remove(currentLabel);
+        }
 
         cleanupEmptyGroups();
         emit wirelessConnectionsChanged();
@@ -180,6 +213,21 @@ QString WirelessConnectionManager::getDebugInfo() const
     }
 
     return info.join('\n');
+}
+
+Node *WirelessConnectionManager::getWirelessSource(const QString &label) const
+{
+    return m_sourcesMap.value(label, nullptr);
+}
+
+QSet<Node *> WirelessConnectionManager::getWirelessSinks(const QString &label) const
+{
+    return m_sinksMap.value(label, QSet<Node *>());
+}
+
+bool WirelessConnectionManager::hasWirelessSource(const QString &label) const
+{
+    return m_sourcesMap.contains(label);
 }
 
 void WirelessConnectionManager::onNodeDestroyed(QObject *obj)

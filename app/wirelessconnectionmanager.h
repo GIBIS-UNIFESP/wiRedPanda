@@ -27,13 +27,18 @@ public:
     explicit WirelessConnectionManager(Scene *scene, QObject *parent = nullptr);
 
     // Node management
-    void setNodeWirelessLabel(Node *node, const QString &label);
+    bool setNodeWirelessLabel(Node *node, const QString &label);  // Returns false if constraint violated
     void removeNode(Node *node);
     QString getNodeWirelessLabel(Node *node) const;
 
-    // Connection queries
+    // Connection queries (legacy - for backward compatibility)
     QSet<Node *> getWirelessGroup(const QString &label) const;
     QSet<Node *> getConnectedNodes(Node *node) const;
+    
+    // 1-N model queries
+    Node *getWirelessSource(const QString &label) const;
+    QSet<Node *> getWirelessSinks(const QString &label) const;
+    bool hasWirelessSource(const QString &label) const;
 
     // Group management
     QStringList getActiveLabels() const;
@@ -60,5 +65,9 @@ private:
 
     Scene *m_scene;
     QHash<Node *, QString> m_nodeLabels;           // Node -> wireless label
-    QHash<QString, QSet<Node *>> m_labelGroups;   // Label -> set of nodes
+    QHash<QString, QSet<Node *>> m_labelGroups;   // Label -> set of nodes (legacy)
+    
+    // 1-N model data structures
+    QHash<QString, Node *> m_sourcesMap;           // Label -> source node
+    QHash<QString, QSet<Node *>> m_sinksMap;       // Label -> sink nodes
 };

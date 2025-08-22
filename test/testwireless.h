@@ -36,5 +36,5 @@ private slots:
     void testWirelessUIConstraints();
     void testWirelessConnectionValidation();
     void testWirelessUIDisabledState();
-    void testNodeDuplicationWirelessBug();
+    void testWireless1NConstraint();
 };

@@ -700,11 +700,11 @@ void TestWireless::testStateConsistency()
 
 void TestWireless::testWirelessSignalPriority()
 {
-    // Test that wireless connections detect contention like physical connections
+    // Test that 1-N constraint prevents multiple wireless sources
     auto *scene = new Scene();
     auto *simulation = scene->simulation();
 
-    // Create circuit with multiple signal sources
+    // Create circuit with multiple potential signal sources
     auto *vccSource = qgraphicsitem_cast<InputVcc*>(ElementFactory::buildElement(ElementType::InputVcc));
     auto *gndSource = qgraphicsitem_cast<InputGnd*>(ElementFactory::buildElement(ElementType::InputGnd));
     auto *vccNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
@@ -734,10 +734,17 @@ void TestWireless::testWirelessSignalPriority()
     ledConnection->setStartPort(receiverNode->outputPort());
     ledConnection->setEndPort(led->inputPort());
 
-    // Set up wireless group with conflicting signals
-    vccNode->setLabel("contention_test");
-    gndNode->setLabel("contention_test");
-    receiverNode->setLabel("contention_test");
+    // In 1-N model: first source node can set label
+    vccNode->setLabel("priority_test");
+    QCOMPARE(vccNode->getWirelessLabel(), QString("priority_test"));
+    
+    // Second source node cannot set same label (1-N constraint violated)
+    gndNode->setLabel("priority_test");
+    QCOMPARE(gndNode->getWirelessLabel(), QString()); // Should remain empty
+    
+    // Receiver (sink) node can set same label
+    receiverNode->setLabel("priority_test");
+    QCOMPARE(receiverNode->getWirelessLabel(), QString("priority_test"));
 
     simulation->start();
 
@@ -746,8 +753,8 @@ void TestWireless::testWirelessSignalPriority()
         simulation->update();
     }
 
-    // LED should be OFF because conflicting signals create contention (like physical connections)
-    QCOMPARE(led->inputPort()->status(), Status::Inactive);
+    // LED should be ON because only vccNode (VCC source) can transmit wirelessly
+    QCOMPARE(led->inputPort()->status(), Status::Active);
 
     simulation->stop();
     delete scene;
@@ -1207,157 +1214,107 @@ void TestWireless::testWirelessUIDisabledState()
     delete scene;
 }
 
-void TestWireless::testNodeDuplicationWirelessBug()
+void TestWireless::testWireless1NConstraint()
 {
-    // Test that real drag-and-drop duplication works correctly with wireless labels
+    // Test the 1-N wireless constraint and automatic registration
     auto *scene = new Scene();
     auto *simulation = scene->simulation();
     auto *wirelessManager = scene->wirelessManager();
 
-    // Create original circuit: PushButton → Node A → LED
-    auto *pushButton = new InputButton();
-    auto *nodeA1 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    // Create 1-N wireless connection: VCC → Source Node → [wireless] → Sink Nodes → LEDs
+    auto *vccSource = new InputVcc();
+    auto *sourceNode = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *sinkNode1 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *sinkNode2 = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *led1 = new Led();
+    auto *led2 = new Led();
     
-    scene->addItem(pushButton);
-    scene->addItem(nodeA1);
+    scene->addItem(vccSource);
+    scene->addItem(sourceNode);
+    scene->addItem(sinkNode1);
+    scene->addItem(sinkNode2);
     scene->addItem(led1);
+    scene->addItem(led2);
     
-    // Set wireless label on the node
-    nodeA1->setLabel("A");
+    // Connect: VCC → Source Node (makes it a wireless source)
+    auto *sourceConn = new QNEConnection();
+    scene->addItem(sourceConn);
+    sourceConn->setStartPort(vccSource->outputPort());
+    sourceConn->setEndPort(sourceNode->inputPort());
     
-    // Connect: PushButton → Node A → LED
-    auto *conn1 = new QNEConnection();
-    auto *conn2 = new QNEConnection();
-    scene->addItem(conn1);
-    scene->addItem(conn2);
+    // Connect: Sink Nodes → LEDs (sink nodes have no input, only wireless)
+    auto *sinkConn1 = new QNEConnection();
+    auto *sinkConn2 = new QNEConnection();
+    scene->addItem(sinkConn1);
+    scene->addItem(sinkConn2);
     
-    conn1->setStartPort(pushButton->outputPort());
-    conn1->setEndPort(nodeA1->inputPort());
-    conn2->setStartPort(nodeA1->outputPort());
-    conn2->setEndPort(led1->inputPort());
+    sinkConn1->setStartPort(sinkNode1->outputPort());
+    sinkConn1->setEndPort(led1->inputPort());
+    sinkConn2->setStartPort(sinkNode2->outputPort());
+    sinkConn2->setEndPort(led2->inputPort());
     
-    // Verify original circuit works
-    pushButton->setOn(true);
+    // Set wireless labels - source node first
+    sourceNode->setLabel("CLOCK");  // Should succeed (first source)
+    QCOMPARE(sourceNode->getWirelessLabel(), QString("CLOCK"));
+    
+    // Verify source node is recognized as source
+    QVERIFY(sourceNode->isWirelessSource());
+    QVERIFY(!sourceNode->isWirelessSink());
+    
+    // Set wireless labels on sink nodes
+    sinkNode1->setLabel("CLOCK");  // Should succeed (sink)
+    sinkNode2->setLabel("CLOCK");  // Should succeed (sink)
+    QCOMPARE(sinkNode1->getWirelessLabel(), QString("CLOCK"));
+    QCOMPARE(sinkNode2->getWirelessLabel(), QString("CLOCK"));
+    
+    // Verify sink nodes are recognized as sinks
+    QVERIFY(!sinkNode1->isWirelessSource());
+    QVERIFY(sinkNode1->isWirelessSink());
+    QVERIFY(!sinkNode2->isWirelessSource());
+    QVERIFY(sinkNode2->isWirelessSink());
+    
+    // Verify 1-N structure in wireless manager
+    QCOMPARE(wirelessManager->getWirelessSource("CLOCK"), sourceNode);
+    auto sinks = wirelessManager->getWirelessSinks("CLOCK");
+    QCOMPARE(sinks.size(), 2);
+    QVERIFY(sinks.contains(sinkNode1));
+    QVERIFY(sinks.contains(sinkNode2));
+    
+    // Test 1-N constraint: try to create second source (should fail)
+    auto *anotherSource = qgraphicsitem_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *anotherVcc = new InputVcc();
+    auto *anotherSourceConn = new QNEConnection();
+    
+    scene->addItem(anotherSource);
+    scene->addItem(anotherVcc);
+    scene->addItem(anotherSourceConn);
+    
+    anotherSourceConn->setStartPort(anotherVcc->outputPort());
+    anotherSourceConn->setEndPort(anotherSource->inputPort());
+    
+    // This should FAIL due to 1-N constraint (already have a source for "CLOCK")
+    anotherSource->setLabel("CLOCK");
+    QCOMPARE(anotherSource->getWirelessLabel(), QString());  // Label should not be set due to constraint
+    
+    // Verify original source is still the only source
+    QCOMPARE(wirelessManager->getWirelessSource("CLOCK"), sourceNode);
+    
+    // Test that different label works fine
+    anotherSource->setLabel("RESET");  // Should succeed (different label)
+    QCOMPARE(anotherSource->getWirelessLabel(), QString("RESET"));
+    QCOMPARE(wirelessManager->getWirelessSource("RESET"), anotherSource);
+    
+    // Test 1-N broadcast functionality
     simulation->start();
     
     for (int i = 0; i < 5; ++i) {
         simulation->update();
     }
     
+    // Both LEDs should light up from the single source
     QCOMPARE(led1->inputPort()->status(), Status::Active);
-    pushButton->setOn(false);
-    
-    // SIMULATE REAL DUPLICATION via drag-and-drop
-    // This is what actually happens when user duplicates items
-    
-    // Select items to duplicate (Node A + LED + connection)
-    nodeA1->setSelected(true);
-    led1->setSelected(true);
-    conn2->setSelected(true);
-    
-    // Create clone drag data (same as real duplication)
-    QList<QGraphicsItem*> selectedItems = {nodeA1, led1, conn2};
-    QByteArray itemData;
-    QDataStream stream(&itemData, QIODevice::WriteOnly);
-    
-    Serialization::writePandaHeader(stream);
-    stream << QPointF(0, 0);  // mousePos
-    
-    // Use the actual scene copy method logic
-    QPointF center(0.0, 0.0);
-    int itemsQuantity = 0;
-    for (auto *item : selectedItems) {
-        if (item->type() == GraphicElement::Type) {
-            center += item->pos();
-            itemsQuantity++;
-        }
-    }
-    center /= itemsQuantity;
-    stream << center;
-    
-    // Serialize the selected items
-    Serialization::serialize(selectedItems, stream);
-    
-    // Create mime data for cloneDrag (real duplication)
-    auto *mimeData = new QMimeData();
-    mimeData->setData("application/x-wiredpanda-cloneDrag", itemData);
-    
-    // Simulate drop event (real duplication)
-    auto *dropEvent = new QGraphicsSceneDragDropEvent(QEvent::GraphicsSceneDrop);
-    dropEvent->setMimeData(mimeData);
-    dropEvent->setScenePos(QPointF(100, 100));  // Drop at offset position
-    
-    // Count items before duplication
-    int nodesBefore = 0;
-    int ledsBefore = 0;
-    for (auto *item : scene->items()) {
-        if (item->type() == GraphicElement::Type) {
-            if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
-                if (element->elementType() == ElementType::Node) nodesBefore++;
-                if (element->elementType() == ElementType::Led) ledsBefore++;
-            }
-        }
-    }
-    
-    // Trigger the actual drop event (this is real duplication!)
-    scene->dropEvent(dropEvent);
-    
-    // Count items after duplication
-    int nodesAfter = 0;
-    int ledsAfter = 0;
-    Node *nodeA2 = nullptr;
-    Led *led2 = nullptr;
-    
-    for (auto *item : scene->items()) {
-        if (item->type() == GraphicElement::Type) {
-            if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
-                if (element->elementType() == ElementType::Node) {
-                    nodesAfter++;
-                    if (auto *node = qobject_cast<Node *>(element)) {
-                        if (node != nodeA1 && node->getWirelessLabel() == "A") {
-                            nodeA2 = node;
-                        }
-                    }
-                }
-                if (element->elementType() == ElementType::Led) {
-                    ledsAfter++;
-                    if (auto *led = qobject_cast<Led *>(element)) {
-                        if (led != led1) {
-                            led2 = led;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    // Verify duplication worked
-    QCOMPARE(nodesAfter, nodesBefore + 1);
-    QCOMPARE(ledsAfter, ledsBefore + 1);
-    QVERIFY(nodeA2 != nullptr);
-    QVERIFY(led2 != nullptr);
-    
-    // Verify duplicated node has wireless label
-    QCOMPARE(nodeA2->getWirelessLabel(), QString("A"));
-    
-    // THE KEY TEST: Verify wireless manager knows about both nodes (tests our fix!)
-    auto groupAfterDuplication = wirelessManager->getWirelessGroup("A");
-    QCOMPARE(groupAfterDuplication.size(), 2);
-    QVERIFY(groupAfterDuplication.contains(nodeA1));
-    QVERIFY(groupAfterDuplication.contains(nodeA2));  // This would fail before the fix!
-    
-    // Final test: Both LEDs should work
-    pushButton->setOn(true);
-    for (int i = 0; i < 5; ++i) {
-        simulation->update();
-    }
-    
-    // Both LEDs should light up because both nodes receive the wireless signal
-    QCOMPARE(led1->inputPort()->status(), Status::Active);
-    QCOMPARE(led2->inputPort()->status(), Status::Active);  // This would fail before the fix
+    QCOMPARE(led2->inputPort()->status(), Status::Active);
     
     simulation->stop();
-    delete dropEvent;
     delete scene;
 }

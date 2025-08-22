@@ -83,7 +83,13 @@ void Node::setLabel(const QString &label)
         if (scene()) {
             if (auto *s = qobject_cast<Scene *>(scene())) {
                 if (s->wirelessManager()) {
-                    s->wirelessManager()->setNodeWirelessLabel(this, trimmedLabel);
+                    if (!s->wirelessManager()->setNodeWirelessLabel(this, trimmedLabel)) {
+                        // 1-N constraint violated - revert the label change
+                        m_wirelessLabel = oldWirelessLabel;
+                        qCWarning(zero) << "Failed to set wireless label" << trimmedLabel 
+                                       << "on node" << id() << "- constraint violated";
+                        return; // Don't emit signal or update visuals
+                    }
                 }
             }
         }
@@ -103,7 +109,12 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
         if (auto *s = qobject_cast<Scene *>(scene())) {
             if (s->wirelessManager()) {
                 qCDebug(zero) << "Auto-registering node" << id() << "with wireless label" << m_wirelessLabel;
-                s->wirelessManager()->setNodeWirelessLabel(this, m_wirelessLabel);
+                if (!s->wirelessManager()->setNodeWirelessLabel(this, m_wirelessLabel)) {
+                    qCWarning(zero) << "Failed to auto-register node" << id() 
+                                   << "with wireless label" << m_wirelessLabel 
+                                   << "- 1-N constraint violated";
+                    // Could clear the label here if needed: m_wirelessLabel.clear();
+                }
             }
         }
     }
@@ -121,12 +132,30 @@ bool Node::hasWirelessLabel() const
     return !m_wirelessLabel.isEmpty();
 }
 
-bool Node::hasInputConnection()
+bool Node::hasInputConnection() const
 {
-    return inputPort() && !inputPort()->connections().isEmpty();
+    // Cast away const to access ports (they don't modify object state for our purposes)
+    auto *self = const_cast<Node*>(this);
+    return self->inputPort() && !self->inputPort()->connections().isEmpty();
 }
 
-bool Node::hasOutputConnection()
+bool Node::hasOutputConnection() const
 {
-    return outputPort() && !outputPort()->connections().isEmpty();
+    // Cast away const to access ports (they don't modify object state for our purposes)
+    auto *self = const_cast<Node*>(this);
+    return self->outputPort() && !self->outputPort()->connections().isEmpty();
+}
+
+bool Node::isWirelessSource() const
+{
+    // Node can be wireless source if it has input connection AND wireless label
+    // (receives signal physically, transmits wirelessly)
+    return hasInputConnection() && hasWirelessLabel();
+}
+
+bool Node::isWirelessSink() const
+{
+    // Node is wireless sink if it has wireless label but NO input connection
+    // (only receives wireless signals)
+    return !hasInputConnection() && hasWirelessLabel();
 }

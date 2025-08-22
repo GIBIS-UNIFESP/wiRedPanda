@@ -112,72 +112,45 @@ void Simulation::updateWirelessConnections()
         return;
     }
 
-    // Get all active wireless groups
+    // Get all active wireless labels
     const QStringList activeLabels = m_scene->wirelessManager()->getActiveLabels();
     
     for (const QString &label : activeLabels) {
-        // Get all nodes in this wireless group
-        const QSet<Node *> nodes = m_scene->wirelessManager()->getWirelessGroup(label);
+        // 1-N model: get source and sinks for this label
+        Node *source = m_scene->wirelessManager()->getWirelessSource(label);
+        QSet<Node *> sinks = m_scene->wirelessManager()->getWirelessSinks(label);
         
-        if (nodes.size() < 2) {
-            continue; // Need at least 2 nodes for a connection
+        if (!source || sinks.isEmpty()) {
+            continue; // No complete wireless connection (need source AND sinks)
         }
         
-        // Find signals from input nodes and detect contention (like physical connections)
-        Status groupSignal = Status::Invalid;
-        bool foundValidSignal = false;
-        QSet<Status> uniqueSignals;
+        // Get signal from the source node
+        Status sourceSignal = Status::Invalid;
+        if (source->logic() && source->logic()->isValid()) {
+            sourceSignal = static_cast<Status>(source->logic()->outputValue(0));
+        }
         
-        for (auto *node : nodes) {
-            if (!node || !node->logic()) {
+        // Broadcast signal from source to all sinks (simple 1-N broadcast)
+        for (Node *sink : sinks) {
+            if (!sink || !sink->logic()) {
                 continue;
             }
             
-            // Check if this node has an input signal
-            const Status nodeSignal = static_cast<Status>(node->logic()->outputValue(0));
+            // Set the output of sink node to match source signal
+            sink->outputPort()->setStatus(sourceSignal);
             
-            if (node->logic()->isValid() && nodeSignal != Status::Invalid) {
-                uniqueSignals.insert(nodeSignal);
-                if (!foundValidSignal) {
-                    groupSignal = nodeSignal;
-                    foundValidSignal = true;
+            // Update sink node's internal logic value
+            if (sink->logic() && sourceSignal != Status::Invalid) {
+                sink->logic()->setOutputValue(0, static_cast<bool>(sourceSignal));
+            }
+            
+            // Update elements connected to this sink
+            const auto connections = sink->outputPort()->connections();
+            for (auto *connection : connections) {
+                if (auto *inputPort = connection->endPort()) {
+                    updatePort(inputPort);
                 }
             }
-        }
-        
-        // Detect contention: if we have conflicting signals (both Active and Inactive)
-        if (uniqueSignals.contains(Status::Active) && uniqueSignals.contains(Status::Inactive)) {
-            groupSignal = Status::Invalid; // Contention detected - behave like physical connections
-            foundValidSignal = true;
-        }
-        
-        // Propagate the group signal to all nodes in the group
-        if (foundValidSignal) {
-            for (auto *node : nodes) {
-                if (!node || !node->logic()) {
-                    continue;
-                }
-                
-                // Set the output of this node to match the group signal
-                node->outputPort()->setStatus(groupSignal);
-                // Also update the node's internal logic value for wireless signals
-                if (node->logic()) {
-                    if (groupSignal != Status::Invalid) {
-                        node->logic()->setOutputValue(0, static_cast<bool>(groupSignal));
-                    }
-                    // Note: For Invalid status, we let the port status handle the invalid state
-                    // The logic element's validity is managed by its normal validation process
-                }
-                
-                // Update connected logic elements
-                const auto connections = node->outputPort()->connections();
-                for (auto *connection : connections) {
-                    if (auto *inputPort = connection->endPort()) {
-                        updatePort(inputPort);
-                    }
-                }
-            }
-        } else {
         }
     }
 }
