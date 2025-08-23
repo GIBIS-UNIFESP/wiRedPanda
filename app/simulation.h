@@ -35,6 +35,14 @@ private:
 
     static void updatePort(QNEInputPort *port);
     static void updatePort(QNEOutputPort *port);
+    
+    // New methods for feedback circuit handling
+    void updateCombinationalLogic();
+    void updateFeedbackCircuitsWithConvergence();
+    
+    // Configuration
+    static constexpr int MAX_CONVERGENCE_ITERATIONS = 10;
+    static constexpr int CONVERGENCE_TIMEOUT_MS = 5; // Max time per convergence loop
 
     QTimer m_timer;
     QVector<Clock *> m_clocks;

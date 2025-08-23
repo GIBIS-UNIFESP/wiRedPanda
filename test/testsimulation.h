@@ -11,4 +11,7 @@ class TestSimulation : public QObject
 
 private slots:
     void testCase1();
+    void testCrossCoupledConvergence();
+    void testSRLatchHoldBehavior();
+    void testFeedbackDetection();
 };

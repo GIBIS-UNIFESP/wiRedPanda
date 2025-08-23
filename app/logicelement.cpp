@@ -135,3 +135,36 @@ bool LogicElement::inputValue(const int index) const
     int port = m_inputPairs.at(index).port;
     return pred->outputValue(port);
 }
+
+QVector<bool> LogicElement::getAllOutputValues() const
+{
+    return m_outputValues;
+}
+
+bool LogicElement::hasOutputChanged(const QVector<bool> &previousOutputs) const
+{
+    return m_outputValues != previousOutputs;
+}
+
+void LogicElement::setFeedbackDependent(bool isFeedbackDependent)
+{
+    m_isFeedbackDependent = isFeedbackDependent;
+}
+
+bool LogicElement::isFeedbackDependent() const
+{
+    return m_isFeedbackDependent;
+}
+
+int LogicElement::inputCount() const
+{
+    return m_inputPairs.size();
+}
+
+LogicElement* LogicElement::getInputSource(int index) const
+{
+    if (index >= 0 && index < m_inputPairs.size()) {
+        return m_inputPairs[index].logic;
+    }
+    return nullptr;
+}

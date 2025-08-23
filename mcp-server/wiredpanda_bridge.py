@@ -125,7 +125,7 @@ class WiredPandaBridge:
                 [self.executable_path, "--mcp-mode"],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                stderr=None,  # Let stderr go to console for debug output
                 text=True,
                 env=env,
                 bufsize=1,
@@ -318,7 +318,7 @@ class WiredPandaBridge:
         self, source_id: int, source_port: int, target_id: int, target_port: int
     ) -> Dict[str, Any]:
         """Disconnect two elements."""
-        return self._send_command(
+        response = self._send_command(
             "disconnect_elements",
             {
                 "source_id": source_id,
@@ -327,19 +327,28 @@ class WiredPandaBridge:
                 "target_port": target_port,
             },
         )
+        return response.result or {}
 
     # Simulation Control
     def start_simulation(self) -> Dict[str, Any]:
         """Start circuit simulation."""
-        return self._send_command("simulation_control", {"action": "start"})
+        response = self._send_command("simulation_control", {"action": "start"})
+        return response.result or {}
 
     def stop_simulation(self) -> Dict[str, Any]:
         """Stop circuit simulation."""
-        return self._send_command("simulation_control", {"action": "stop"})
+        response = self._send_command("simulation_control", {"action": "stop"})
+        return response.result or {}
 
     def restart_simulation(self) -> Dict[str, Any]:
         """Restart circuit simulation."""
-        return self._send_command("simulation_control", {"action": "reset"})
+        response = self._send_command("simulation_control", {"action": "reset"})
+        return response.result or {}
+
+    def update_simulation(self) -> Dict[str, Any]:
+        """Force a single simulation update with convergence."""
+        response = self._send_command("simulation_control", {"action": "update"})
+        return response.result or {}
 
     @beartype
     def set_input_value(self, element_id: int, value: bool) -> Dict[str, Any]:
@@ -372,9 +381,10 @@ class WiredPandaBridge:
         Returns:
             Response dictionary with success/failure status
         """
-        return self._send_command(
+        response = self._send_command(
             "export_image", {"file_path": file_path, "format": image_format.lower()}
         )
+        return response.result or {}
 
     def export_png(self, file_path: str) -> Dict[str, Any]:
         """Export current circuit to PNG image."""

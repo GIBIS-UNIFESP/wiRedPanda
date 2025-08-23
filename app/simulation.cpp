@@ -37,14 +37,18 @@ void Simulation::update()
         }
     }
 
+    // Update input elements
     for (auto *inputElm : std::as_const(m_inputs)) {
         inputElm->updateOutputs();
     }
 
-    for (auto &logic : m_elmMapping->logicElms()) {
-        logic->updateLogic();
-    }
+    // Update combinational logic (single pass)
+    updateCombinationalLogic();
+    
+    // Update feedback circuits with convergence
+    updateFeedbackCircuitsWithConvergence();
 
+    // Update connections and outputs
     for (auto *connection : std::as_const(m_connections)) {
         updatePort(connection->startPort());
     }
@@ -176,4 +180,66 @@ bool Simulation::initialize()
 
     qCDebug(zero) << "Finished simulation layer.";
     return true;
+}
+
+void Simulation::updateCombinationalLogic()
+{
+    for (auto &logic : m_elmMapping->logicElms()) {
+        if (!logic->isFeedbackDependent()) {
+            logic->updateLogic();
+        }
+    }
+}
+
+void Simulation::updateFeedbackCircuitsWithConvergence()
+{
+    const auto &feedbackGroups = m_elmMapping->feedbackGroups();
+    
+    if (feedbackGroups.isEmpty()) {
+        return;
+    }
+    
+    for (const auto &feedbackGroup : feedbackGroups) {
+        if (feedbackGroup.isEmpty()) continue;
+        
+        
+        bool converged = false;
+        auto startTime = std::chrono::steady_clock::now();
+        
+        // Store initial outputs for all elements in group
+        QVector<QVector<bool>> previousOutputs;
+        for (const auto &element : feedbackGroup) {
+            previousOutputs.append(element->getAllOutputValues());
+        }
+        
+        for (int iteration = 0; iteration < MAX_CONVERGENCE_ITERATIONS && !converged; ++iteration) {
+            // Update all elements in the feedback group
+            for (const auto &element : feedbackGroup) {
+                element->updateLogic();
+            }
+            
+            // Check if any outputs changed
+            converged = true;
+            for (int i = 0; i < feedbackGroup.size(); ++i) {
+                if (feedbackGroup[i]->hasOutputChanged(previousOutputs[i])) {
+                    // Update previous outputs for next iteration
+                    previousOutputs[i] = feedbackGroup[i]->getAllOutputValues();
+                    converged = false;
+                }
+            }
+            
+            // Timeout check to prevent hanging
+            auto elapsed = std::chrono::steady_clock::now() - startTime;
+            if (elapsed > std::chrono::milliseconds(CONVERGENCE_TIMEOUT_MS)) {
+                qCDebug(zero) << "Feedback convergence timeout after" << iteration + 1 << "iterations";
+                break;
+            }
+        }
+        
+        if (!converged) {
+            qCDebug(zero) << "Warning: Feedback circuit failed to converge in" << MAX_CONVERGENCE_ITERATIONS << "iterations";
+        } else {
+            qCDebug(three) << "Feedback circuit converged successfully";
+        }
+    }
 }

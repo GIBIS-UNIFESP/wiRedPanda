@@ -34,6 +34,16 @@ public:
     void setOutputValue(const bool value);
     void setOutputValue(const int index, const bool value);
     void validate();
+    
+    // New methods for convergence support
+    QVector<bool> getAllOutputValues() const;
+    bool hasOutputChanged(const QVector<bool> &previousOutputs) const;
+    void setFeedbackDependent(bool isFeedbackDependent);
+    bool isFeedbackDependent() const;
+    
+    // Methods for feedback detection
+    int inputCount() const;
+    LogicElement* getInputSource(int index) const;
 
 protected:
     bool updateInputs();
@@ -48,4 +58,7 @@ private:
     QVector<bool> m_outputValues;
     bool m_isValid = true;
     int m_priority = -1;
+    
+    // New member for feedback circuit classification
+    bool m_isFeedbackDependent = false;
 };

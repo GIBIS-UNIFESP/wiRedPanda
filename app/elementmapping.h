@@ -6,6 +6,7 @@
 #include "logicinput.h"
 
 #include <QCoreApplication>
+#include <QSet>
 #include <memory>
 
 class Clock;
@@ -26,6 +27,9 @@ public:
 
     const QVector<std::shared_ptr<LogicElement>> &logicElms() const;
     void sort();
+    
+    // New method to access feedback groups
+    const QVector<QVector<std::shared_ptr<LogicElement>>>& feedbackGroups() const;
 
 private:
     Q_DISABLE_COPY(ElementMapping)
@@ -37,9 +41,18 @@ private:
     void setDefaultValue(GraphicElement *elm, QNEPort *in);
     void sortLogicElements();
     void validateElements();
+    
+    // New members for feedback circuit handling
+    void detectFeedbackLoops();
+    void findCycles(LogicElement *current, QSet<LogicElement*> &visited,
+                    QSet<LogicElement*> &recursionStack, QVector<LogicElement*> &currentPath);
+    void markFeedbackCycle(const QVector<LogicElement*> &path, LogicElement *cycleStart);
 
     LogicInput m_globalGND{false};
     LogicInput m_globalVCC{true};
     QVector<GraphicElement *> m_elements;
     QVector<std::shared_ptr<LogicElement>> m_logicElms;
+    
+    // New member for feedback circuit handling
+    QVector<QVector<std::shared_ptr<LogicElement>>> m_feedbackGroups;
 };

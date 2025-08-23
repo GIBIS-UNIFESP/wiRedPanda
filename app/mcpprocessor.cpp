@@ -47,6 +47,8 @@ MCPProcessor::~MCPProcessor() = default;
 void MCPProcessor::startProcessing()
 {
     qDebug() << "MCP Processor started - ready for commands";
+    fprintf(stderr, "MCP PROCESSOR DEBUG: startProcessing() called\n");
+    fflush(stderr);
     m_inputTimer->start();
 }
 
@@ -321,6 +323,24 @@ QJsonObject MCPProcessor::handleSimulationControl(const QJsonObject& params)
                 sim->stop();
             } else if (action == "reset") {
                 sim->restart();
+            } else if (action == "update") {
+                // Force a single simulation update (like QtTest does)
+                fprintf(stderr, "MCP DEBUG: update action called\n");
+                // Ensure simulation is stopped first to avoid conflicts
+                bool wasRunning = sim->isRunning();
+                fprintf(stderr, "MCP DEBUG: simulation was running: %s\n", wasRunning ? "true" : "false");
+                if (wasRunning) {
+                    sim->stop();
+                }
+                
+                // Force reinitialization and single update
+                sim->restart();  // This sets m_initialized = false
+                sim->update();   // This will call initialize() and then update
+                
+                // Restore running state if it was running before
+                if (wasRunning) {
+                    sim->start();
+                }
             } else {
                 return createErrorResponse(QString("Unknown simulation action: %1").arg(action));
             }
