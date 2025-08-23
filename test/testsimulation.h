@@ -14,4 +14,13 @@ private slots:
     void testCrossCoupledConvergence();
     void testSRLatchHoldBehavior();
     void testFeedbackDetection();
+    
+    // Comprehensive validation tests
+    void testDFlipFlopBehavior();
+    void testRingOscillatorStabilization();
+    void testMultipleFeedbackGroups();
+    void testMixedCombinationalFeedback();
+    void testLargeFeedbackGroup();
+    void testConvergencePerformance();
+    void testTimeoutProtection();
 };

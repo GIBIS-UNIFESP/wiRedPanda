@@ -20,17 +20,42 @@ Updated to use real wiRedPanda MCP integration.
 import itertools
 import json
 import sys
-from typing import List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union, cast, TypedDict
+
+# Type definitions for better type safety
+class TestCase(TypedDict):
+    """Test case result structure."""
+    inputs: Dict[str, Any]
+    expected: Dict[str, Any]
+    actual: Dict[str, Any]
+    correct: bool
+
+class TestResult(TypedDict):
+    """Test result structure."""
+    success: bool
+    description: str
+    total_cases: int
+    passed_cases: int
+    failed_cases: int
+    sample_results: List[TestCase]
+    accuracy: float
+    error: Optional[str]
+
+ElementID = int
+BitList = List[bool]
+InputIDs = List[ElementID]
+OutputIDs = List[ElementID]
+LogicFunction = Callable[..., bool]
 
 # Import the real wiRedPanda bridge
 from wiredpanda_bridge import WiredPandaBridge, WiredPandaError
 
 
 class AdvancedCombinationalValidator:
-    def __init__(self):
-        self.bridge = None
-        self.test_results = []
-        self.current_test = None
+    def __init__(self) -> None:
+        self.bridge: Optional[WiredPandaBridge] = None
+        self.test_results: List[Dict[str, Any]] = []
+        self.current_test: Optional[str] = None
         self.level_name = "Level 1: Advanced Combinational Logic"
 
         # Layout constants for proper element positioning
@@ -59,7 +84,7 @@ class AdvancedCombinationalValidator:
         """Get position for output elements."""
         return self._get_grid_position(col, row)
 
-    def _ensure_bridge(self):
+    def _ensure_bridge(self) -> None:
         """Ensure bridge is connected"""
         if not self.bridge:
             self.bridge = WiredPandaBridge()
@@ -69,6 +94,7 @@ class AdvancedCombinationalValidator:
         """Create a new circuit by starting the application."""
         try:
             self._ensure_bridge()
+            assert self.bridge is not None  # Type narrowing
             self.bridge.new_circuit()
             return True
         except WiredPandaError:
@@ -78,6 +104,7 @@ class AdvancedCombinationalValidator:
         """Save the current circuit to a .panda file."""
         try:
             self._ensure_bridge()
+            assert self.bridge is not None  # Type narrowing
             self.bridge.save_circuit(file_path)
             print(f"  💾 Circuit saved: {file_path}")
             print("      Note: Real .panda file created by wiRedPanda")
@@ -88,20 +115,22 @@ class AdvancedCombinationalValidator:
 
     def create_element(
         self, element_type: str, x: float, y: float, label: str = ""
-    ) -> Optional[int]:
+    ) -> Optional[ElementID]:
         """Create an element and return its ID."""
         try:
             self._ensure_bridge()
+            assert self.bridge is not None  # Type narrowing
             return self.bridge.create_element(element_type, x, y, label)
         except WiredPandaError:
             return None
 
     def connect_elements(
-        self, source_id: int, source_port: int, target_id: int, target_port: int
+        self, source_id: ElementID, source_port: int, target_id: ElementID, target_port: int
     ) -> bool:
         """Connect two elements."""
         try:
             self._ensure_bridge()
+            assert self.bridge is not None  # Type narrowing
             self.bridge.connect_elements(source_id, source_port, target_id, target_port)
             return True
         except WiredPandaError:
@@ -111,6 +140,7 @@ class AdvancedCombinationalValidator:
         """Start simulation."""
         try:
             self._ensure_bridge()
+            assert self.bridge is not None  # Type narrowing
             self.bridge.start_simulation()
             return True
         except WiredPandaError:
@@ -121,6 +151,7 @@ class AdvancedCombinationalValidator:
         try:
             self._ensure_bridge()
             # Note: Real wiRedPanda doesn't have step mode, use restart instead
+            assert self.bridge is not None  # Type narrowing
             self.bridge.restart_simulation()
             return True
         except WiredPandaError:
@@ -130,6 +161,7 @@ class AdvancedCombinationalValidator:
         """Set input element value."""
         try:
             self._ensure_bridge()
+            assert self.bridge is not None  # Type narrowing
             self.bridge.set_input_value(element_id, value)
             return True
         except WiredPandaError:
@@ -139,11 +171,12 @@ class AdvancedCombinationalValidator:
         """Get output element value."""
         try:
             self._ensure_bridge()
+            assert self.bridge is not None  # Type narrowing
             return self.bridge.get_output_value(element_id)
         except WiredPandaError:
             return None
 
-    def test_multi_input_gates(self) -> dict:
+    def test_multi_input_gates(self) -> Dict[str, Any]:
         """
         Test 1.1: Multi-Input Logic Gates
         Validate 3, 4, and 8-input AND/OR gates with exhaustive truth tables.
@@ -193,7 +226,9 @@ class AdvancedCombinationalValidator:
 
             # Create inputs with proper grid positioning
             input_ids = []
-            for i in range(gate_config["inputs"]):
+            inputs_count = gate_config["inputs"]
+            assert isinstance(inputs_count, int)
+            for i in range(inputs_count):
                 x, y = self._get_input_position(i)
                 input_id = self.create_element("InputButton", x, y, f"IN{i}")
                 if not input_id:
@@ -210,10 +245,12 @@ class AdvancedCombinationalValidator:
 
             # Create gate - note: wiRedPanda gates have 2 inputs by default
             # For multi-input, we need to cascade gates or use available multi-input gates
-            if gate_config["inputs"] > 2:
+            if inputs_count > 2:
                 # Create cascade of 2-input gates to simulate multi-input behavior
+                element_type = gate_config["element_type"]
+                assert isinstance(element_type, str)
                 gate_results = self._create_multi_input_gate_cascade(
-                    gate_config["element_type"], input_ids, gate_config["inputs"]
+                    element_type, input_ids, inputs_count
                 )
                 if not gate_results:
                     test_results[gate_name] = {
@@ -225,24 +262,37 @@ class AdvancedCombinationalValidator:
                 _, output_id = gate_results
             else:
                 # Direct 2-input gate with proper positioning
+                element_type = gate_config["element_type"]
+                assert isinstance(element_type, str)
                 gate_x, gate_y = self._get_grid_position(1, 0)
                 gate_id = self.create_element(
-                    gate_config["element_type"], gate_x, gate_y, gate_name.upper()
+                    element_type, gate_x, gate_y, gate_name.upper()
                 )
                 output_x, output_y = self._get_output_position(2, 0)
-                output_id = self.create_element("Led", output_x, output_y, "OUT")
+                output_id_temp = self.create_element("Led", output_x, output_y, "OUT")
+                if not output_id_temp:
+                    test_results[gate_name] = {
+                        "success": False,
+                        "error": "Output LED creation failed",
+                    }
+                    all_tests_passed = False
+                    continue
+                output_id = cast(int, output_id_temp)
 
-                if not all([gate_id, output_id]):
+                if not gate_id:
                     test_results[gate_name] = {
                         "success": False,
                         "error": "Gate creation failed",
                     }
                     all_tests_passed = False
                     continue
+                    
+                # Type assertion after validation
+                assert gate_id is not None
 
                 # Connect inputs to gate
                 for i, input_id in enumerate(input_ids):
-                    if not self.connect_elements(input_id, 0, gate_id, i):
+                    if not self.connect_elements(input_id, 0, cast(int, gate_id), i):
                         test_results[gate_name] = {
                             "success": False,
                             "error": f"Input {i} connection failed",
@@ -251,7 +301,7 @@ class AdvancedCombinationalValidator:
                         break
 
                 # Connect gate to output
-                if not self.connect_elements(gate_id, 0, output_id, 0):
+                if not self.connect_elements(cast(int, gate_id), 0, cast(int, output_id), 0):
                     test_results[gate_name] = {
                         "success": False,
                         "error": "Output connection failed",
@@ -269,16 +319,17 @@ class AdvancedCombinationalValidator:
 
             # Test all input combinations (limit for 4+ inputs due to exponential growth)
             test_cases = gate_config["test_cases"]
+            assert hasattr(test_cases, '__len__') and hasattr(test_cases, '__iter__')
             if (
                 len(test_cases) > 32
             ):  # Limit to reasonable number for large truth tables
                 # Sample representative cases including all corners
-                test_cases = self._select_representative_cases(test_cases)
+                test_cases = self._select_representative_cases(cast(List[Tuple[Any, ...]], test_cases))
 
             gate_passed = True
             case_results = []
 
-            for test_case in test_cases:
+            for test_case in cast(List[Tuple[Any, ...]], test_cases):
                 # Set inputs
                 for i, input_val in enumerate(test_case):
                     if not self.set_input(input_ids[i], input_val):
@@ -292,8 +343,10 @@ class AdvancedCombinationalValidator:
                 self.step_simulation()
 
                 # Get output
-                actual_output = self.get_output(output_id)
-                expected_output = gate_config["function"](test_case)
+                actual_output = self.get_output(cast(int, output_id))
+                gate_function = gate_config["function"]
+                assert callable(gate_function)
+                expected_output = gate_function(test_case)
 
                 case_correct = actual_output == expected_output
                 if not case_correct:
@@ -416,7 +469,7 @@ class AdvancedCombinationalValidator:
         # Remove duplicates and return
         return list(set(representative))
 
-    def test_compound_boolean_functions(self) -> dict:
+    def test_compound_boolean_functions(self) -> Dict[str, Any]:
         """
         Test 1.2: Compound Boolean Functions
         Test complex Boolean expressions using combinations of basic gates.
@@ -487,7 +540,9 @@ class AdvancedCombinationalValidator:
                 continue
 
             # Generate test cases for all input combinations
-            num_inputs = len(func_config["inputs"])
+            inputs_list = func_config["inputs"] 
+            assert hasattr(inputs_list, '__len__')
+            num_inputs = len(inputs_list)
             test_cases = list(itertools.product([False, True], repeat=num_inputs))
 
             func_passed = True
@@ -507,8 +562,10 @@ class AdvancedCombinationalValidator:
                 self.step_simulation()
 
                 # Get output
-                actual_output = self.get_output(output_id)
-                expected_output = func_config["function"](*test_case)
+                actual_output = self.get_output(cast(int, output_id))
+                func_function = func_config["function"]
+                assert callable(func_function)
+                expected_output = func_function(*test_case)
 
                 case_correct = actual_output == expected_output
                 if not case_correct:
@@ -516,7 +573,7 @@ class AdvancedCombinationalValidator:
 
                 case_results.append(
                     {
-                        "inputs": dict(zip(func_config["inputs"], test_case)),
+                        "inputs": dict(zip(cast(List[str], func_config["inputs"]), test_case)),
                         "expected": expected_output,
                         "actual": actual_output,
                         "correct": case_correct,
@@ -603,18 +660,21 @@ class AdvancedCombinationalValidator:
 
         if not all([and1_id, and2_id, or_id, not_id, output_id]):
             return None
+            
+        # Type assertions after validation
+        assert all(x is not None for x in [and1_id, and2_id, or_id, not_id, output_id])
 
         # Connect circuit with clear logic flow:
         # A,B -> AND1; C,D -> AND2; AND1,AND2 -> OR; OR -> NOT -> OUT
         connections = [
-            (input_ids[0], 0, and1_id, 0),  # A -> AND1
-            (input_ids[1], 0, and1_id, 1),  # B -> AND1
-            (input_ids[2], 0, and2_id, 0),  # C -> AND2
-            (input_ids[3], 0, and2_id, 1),  # D -> AND2
-            (and1_id, 0, or_id, 0),  # AND1 -> OR
-            (and2_id, 0, or_id, 1),  # AND2 -> OR
-            (or_id, 0, not_id, 0),  # OR -> NOT
-            (not_id, 0, output_id, 0),  # NOT -> OUT
+            (input_ids[0], 0, cast(int, and1_id), 0),  # A -> AND1
+            (input_ids[1], 0, cast(int, and1_id), 1),  # B -> AND1
+            (input_ids[2], 0, cast(int, and2_id), 0),  # C -> AND2
+            (input_ids[3], 0, cast(int, and2_id), 1),  # D -> AND2
+            (cast(int, and1_id), 0, cast(int, or_id), 0),  # AND1 -> OR
+            (cast(int, and2_id), 0, cast(int, or_id), 1),  # AND2 -> OR
+            (cast(int, or_id), 0, cast(int, not_id), 0),  # OR -> NOT
+            (cast(int, not_id), 0, cast(int, output_id), 0),  # NOT -> OUT
         ]
 
         for source_id, source_port, target_id, target_port in connections:
@@ -623,7 +683,7 @@ class AdvancedCombinationalValidator:
             ):
                 return None
 
-        return input_ids, output_id
+        return input_ids, cast(int, output_id)
 
     def _create_oai22_circuit(
         self, input_ids: List[int]
@@ -646,17 +706,20 @@ class AdvancedCombinationalValidator:
 
         if not all([or1_id, or2_id, and_id, not_id, output_id]):
             return None
+            
+        # Type assertions after validation
+        assert all(x is not None for x in [or1_id, or2_id, and_id, not_id, output_id])
 
         # Connect circuit: A,B -> OR1; C,D -> OR2; OR1,OR2 -> AND; AND -> NOT -> OUT
         connections = [
-            (input_ids[0], 0, or1_id, 0),  # A -> OR1
-            (input_ids[1], 0, or1_id, 1),  # B -> OR1
-            (input_ids[2], 0, or2_id, 0),  # C -> OR2
-            (input_ids[3], 0, or2_id, 1),  # D -> OR2
-            (or1_id, 0, and_id, 0),  # OR1 -> AND
-            (or2_id, 0, and_id, 1),  # OR2 -> AND
-            (and_id, 0, not_id, 0),  # AND -> NOT
-            (not_id, 0, output_id, 0),  # NOT -> OUT
+            (input_ids[0], 0, cast(int, or1_id), 0),  # A -> OR1
+            (input_ids[1], 0, cast(int, or1_id), 1),  # B -> OR1
+            (input_ids[2], 0, cast(int, or2_id), 0),  # C -> OR2
+            (input_ids[3], 0, cast(int, or2_id), 1),  # D -> OR2
+            (cast(int, or1_id), 0, cast(int, and_id), 0),  # OR1 -> AND
+            (cast(int, or2_id), 0, cast(int, and_id), 1),  # OR2 -> AND
+            (cast(int, and_id), 0, cast(int, not_id), 0),  # AND -> NOT
+            (cast(int, not_id), 0, cast(int, output_id), 0),  # NOT -> OUT
         ]
 
         for source_id, source_port, target_id, target_port in connections:
@@ -665,7 +728,7 @@ class AdvancedCombinationalValidator:
             ):
                 return None
 
-        return input_ids, output_id
+        return input_ids, cast(int, output_id)
 
     def _create_majority3_circuit(
         self, input_ids: List[int]
@@ -690,20 +753,23 @@ class AdvancedCombinationalValidator:
 
         if not all([and1_id, and2_id, and3_id, or1_id, or2_id, output_id]):
             return None
+            
+        # Type assertions after validation
+        assert all(x is not None for x in [and1_id, and2_id, and3_id, or1_id, or2_id, output_id])
 
         # Connect circuit
         connections = [
-            (input_ids[0], 0, and1_id, 0),  # A -> AND1
-            (input_ids[1], 0, and1_id, 1),  # B -> AND1
-            (input_ids[1], 0, and2_id, 0),  # B -> AND2
-            (input_ids[2], 0, and2_id, 1),  # C -> AND2
-            (input_ids[0], 0, and3_id, 0),  # A -> AND3
-            (input_ids[2], 0, and3_id, 1),  # C -> AND3
-            (and1_id, 0, or1_id, 0),  # AND1 -> OR1
-            (and2_id, 0, or1_id, 1),  # AND2 -> OR1
-            (or1_id, 0, or2_id, 0),  # OR1 -> OR2
-            (and3_id, 0, or2_id, 1),  # AND3 -> OR2
-            (or2_id, 0, output_id, 0),  # OR2 -> OUT
+            (input_ids[0], 0, cast(int, and1_id), 0),  # A -> AND1
+            (input_ids[1], 0, cast(int, and1_id), 1),  # B -> AND1
+            (input_ids[1], 0, cast(int, and2_id), 0),  # B -> AND2
+            (input_ids[2], 0, cast(int, and2_id), 1),  # C -> AND2
+            (input_ids[0], 0, cast(int, and3_id), 0),  # A -> AND3
+            (input_ids[2], 0, cast(int, and3_id), 1),  # C -> AND3
+            (cast(int, and1_id), 0, cast(int, or1_id), 0),  # AND1 -> OR1
+            (cast(int, and2_id), 0, cast(int, or1_id), 1),  # AND2 -> OR1
+            (cast(int, or1_id), 0, cast(int, or2_id), 0),  # OR1 -> OR2
+            (cast(int, and3_id), 0, cast(int, or2_id), 1),  # AND3 -> OR2
+            (cast(int, or2_id), 0, cast(int, output_id), 0),  # OR2 -> OUT
         ]
 
         for source_id, source_port, target_id, target_port in connections:
@@ -712,7 +778,7 @@ class AdvancedCombinationalValidator:
             ):
                 return None
 
-        return input_ids, output_id
+        return input_ids, cast(int, output_id)
 
     def _create_parity4_circuit(
         self, input_ids: List[int]
@@ -735,16 +801,19 @@ class AdvancedCombinationalValidator:
 
         if not all([xor1_id, xor2_id, xor3_id, output_id]):
             return None
+            
+        # Type assertions after validation
+        assert all(x is not None for x in [xor1_id, xor2_id, xor3_id, output_id])
 
         # Connect XOR cascade
         connections = [
-            (input_ids[0], 0, xor1_id, 0),  # A -> XOR1
-            (input_ids[1], 0, xor1_id, 1),  # B -> XOR1
-            (xor1_id, 0, xor2_id, 0),  # XOR1 -> XOR2
-            (input_ids[2], 0, xor2_id, 1),  # C -> XOR2
-            (xor2_id, 0, xor3_id, 0),  # XOR2 -> XOR3
-            (input_ids[3], 0, xor3_id, 1),  # D -> XOR3
-            (xor3_id, 0, output_id, 0),  # XOR3 -> OUT
+            (input_ids[0], 0, cast(int, xor1_id), 0),  # A -> XOR1
+            (input_ids[1], 0, cast(int, xor1_id), 1),  # B -> XOR1
+            (cast(int, xor1_id), 0, cast(int, xor2_id), 0),  # XOR1 -> XOR2
+            (input_ids[2], 0, cast(int, xor2_id), 1),  # C -> XOR2
+            (cast(int, xor2_id), 0, cast(int, xor3_id), 0),  # XOR2 -> XOR3
+            (input_ids[3], 0, cast(int, xor3_id), 1),  # D -> XOR3
+            (cast(int, xor3_id), 0, cast(int, output_id), 0),  # XOR3 -> OUT
         ]
 
         for source_id, source_port, target_id, target_port in connections:
@@ -753,9 +822,9 @@ class AdvancedCombinationalValidator:
             ):
                 return None
 
-        return input_ids, output_id
+        return input_ids, cast(int, output_id)
 
-    def test_signal_conditioning(self) -> dict:
+    def test_signal_conditioning(self) -> Dict[str, Any]:
         """
         Test 1.3: Signal Conditioning
         Test buffer chains, tri-state buffers, and fan-out capabilities.
@@ -798,15 +867,17 @@ class AdvancedCombinationalValidator:
                 continue
 
             if test_name == "buffer_chain":
-                circuit_result = self._create_buffer_chain_circuit(
-                    test_config["chain_length"]
-                )
+                chain_length = test_config["chain_length"]
+                assert isinstance(chain_length, int)
+                circuit_result = self._create_buffer_chain_circuit(chain_length)
             elif test_name == "fan_out_test":
-                circuit_result = self._create_fan_out_circuit(test_config["fan_out"])
+                fan_out = test_config["fan_out"]
+                assert isinstance(fan_out, int)
+                circuit_result = self._create_fan_out_circuit(fan_out)
             elif test_name == "signal_integrity":
-                circuit_result = self._create_signal_integrity_circuit(
-                    test_config["gate_levels"]
-                )
+                gate_levels = test_config["gate_levels"]
+                assert isinstance(gate_levels, int)
+                circuit_result = self._create_signal_integrity_circuit(gate_levels)
             else:
                 circuit_result = None
 
@@ -947,7 +1018,7 @@ class AdvancedCombinationalValidator:
 
         return input_id, [output_id]
 
-    def _create_fan_out_circuit(self, fan_out: int) -> Optional[Tuple[int, List[int]]]:
+    def _create_fan_out_circuit(self, fan_out: int) -> Optional[Tuple[ElementID, OutputIDs]]:
         """Create circuit testing fan-out capabilities."""
         input_x, input_y = self._get_input_position(0)
         input_id = self.create_element("InputButton", input_x, input_y, "IN")
@@ -962,11 +1033,14 @@ class AdvancedCombinationalValidator:
 
         if not all([not1_id, not2_id]):
             return None
+            
+        # Type assertions after validation
+        assert not1_id is not None and not2_id is not None
 
         # Connect input through buffer
-        if not self.connect_elements(input_id, 0, not1_id, 0):
+        if not self.connect_elements(cast(int, input_id), 0, cast(int, not1_id), 0):
             return None
-        if not self.connect_elements(not1_id, 0, not2_id, 0):
+        if not self.connect_elements(cast(int, not1_id), 0, cast(int, not2_id), 0):
             return None
 
         # Create multiple outputs with proper grid positioning
@@ -1009,18 +1083,21 @@ class AdvancedCombinationalValidator:
 
             if not all([supply_id, and_id]):
                 return None
+                
+            # Type assertions after validation
+            assert supply_id is not None and and_id is not None
 
             # Set supply to always True
-            self.set_input(supply_id, True)
+            self.set_input(cast(int, supply_id), True)
 
             # Connect signal and supply to AND gate
-            if not self.connect_elements(current_output, 0, and_id, 0):
+            if not self.connect_elements(current_output, 0, cast(int, and_id), 0):
                 return None
-            if not self.connect_elements(supply_id, 0, and_id, 1):
+            if not self.connect_elements(cast(int, supply_id), 0, cast(int, and_id), 1):
                 return None
 
-            current_output = and_id
-            gate_outputs.append(and_id)
+            current_output = cast(int, and_id)
+            gate_outputs.append(cast(int, and_id))
 
         # Create final output LED with proper positioning
         final_output_x, final_output_y = self._get_grid_position(gate_levels + 1, 0)
@@ -1035,7 +1112,7 @@ class AdvancedCombinationalValidator:
 
         return input_id, [final_output_id]
 
-    def test_complex_logic_networks(self) -> dict:
+    def test_complex_logic_networks(self) -> Dict[str, Any]:
         """
         Test 1.4: Complex Logic Networks
         Test realistic multi-level logic networks that might appear in CPU designs.
@@ -1106,7 +1183,9 @@ class AdvancedCombinationalValidator:
                 continue
 
             # Generate test cases
-            num_inputs = len(network_config["inputs"])
+            inputs_list = network_config["inputs"]
+            assert hasattr(inputs_list, '__len__')
+            num_inputs = len(inputs_list)
             test_cases = list(itertools.product([False, True], repeat=num_inputs))
 
             network_passed = True
@@ -1133,7 +1212,9 @@ class AdvancedCombinationalValidator:
                     actual_outputs.append(output_val)
 
                 # Calculate expected outputs
-                expected_outputs = network_config["function"](test_case)
+                network_function = network_config["function"]
+                assert callable(network_function)
+                expected_outputs = network_function(test_case)
                 if not isinstance(expected_outputs, list):
                     expected_outputs = [expected_outputs]
 
@@ -1144,7 +1225,7 @@ class AdvancedCombinationalValidator:
 
                 case_results.append(
                     {
-                        "inputs": dict(zip(network_config["inputs"], test_case)),
+                        "inputs": dict(zip(cast(List[str], network_config["inputs"]), test_case)),
                         "expected": expected_outputs,
                         "actual": actual_outputs,
                         "correct": case_correct,
@@ -1202,7 +1283,7 @@ class AdvancedCombinationalValidator:
         carry_out = (a & b) | (cin & (a ^ b))
         return [sum_out, carry_out]
 
-    def _create_2to4_decoder_circuit(self) -> Optional[Tuple[List[int], List[int]]]:
+    def _create_2to4_decoder_circuit(self) -> Optional[Tuple[InputIDs, OutputIDs]]:
         """Create 2-to-4 decoder circuit."""
         # Create inputs with proper grid positioning: A, B, EN
         a_x, a_y = self._get_input_position(0)
@@ -1214,6 +1295,9 @@ class AdvancedCombinationalValidator:
 
         if not all([a_id, b_id, en_id]):
             return None
+            
+        # Type assertions after validation
+        assert all(x is not None for x in [a_id, b_id, en_id])
 
         # Create NOT gates for inverted inputs with proper positioning
         not_a_x, not_a_y = self._get_grid_position(1, 0)
@@ -1223,11 +1307,14 @@ class AdvancedCombinationalValidator:
 
         if not all([not_a_id, not_b_id]):
             return None
+            
+        # Type assertions after validation
+        assert not_a_id is not None and not_b_id is not None
 
         # Connect inverters
-        if not self.connect_elements(a_id, 0, not_a_id, 0):
+        if not self.connect_elements(cast(int, a_id), 0, cast(int, not_a_id), 0):
             return None
-        if not self.connect_elements(b_id, 0, not_b_id, 0):
+        if not self.connect_elements(cast(int, b_id), 0, cast(int, not_b_id), 0):
             return None
 
         # Create AND gates for each output with proper grid positioning
@@ -1264,29 +1351,32 @@ class AdvancedCombinationalValidator:
         ]
         if not all(gates):
             return None
+            
+        # Type assertions after validation
+        assert all(gate_id is not None for gate_id in gates)
 
         # Connect address decoding logic
         connections = [
             # OUT0: ~A & ~B & EN
-            (not_a_id, 0, and0_ab_id, 0),
-            (not_b_id, 0, and0_ab_id, 1),
-            (and0_ab_id, 0, and0_id, 0),
-            (en_id, 0, and0_id, 1),
+            (cast(int, not_a_id), 0, cast(int, and0_ab_id), 0),
+            (cast(int, not_b_id), 0, cast(int, and0_ab_id), 1),
+            (cast(int, and0_ab_id), 0, cast(int, and0_id), 0),
+            (cast(int, en_id), 0, cast(int, and0_id), 1),
             # OUT1: A & ~B & EN
-            (a_id, 0, and1_ab_id, 0),
-            (not_b_id, 0, and1_ab_id, 1),
-            (and1_ab_id, 0, and1_id, 0),
-            (en_id, 0, and1_id, 1),
+            (cast(int, a_id), 0, cast(int, and1_ab_id), 0),
+            (cast(int, not_b_id), 0, cast(int, and1_ab_id), 1),
+            (cast(int, and1_ab_id), 0, cast(int, and1_id), 0),
+            (cast(int, en_id), 0, cast(int, and1_id), 1),
             # OUT2: ~A & B & EN
-            (not_a_id, 0, and2_ab_id, 0),
-            (b_id, 0, and2_ab_id, 1),
-            (and2_ab_id, 0, and2_id, 0),
-            (en_id, 0, and2_id, 1),
+            (cast(int, not_a_id), 0, cast(int, and2_ab_id), 0),
+            (cast(int, b_id), 0, cast(int, and2_ab_id), 1),
+            (cast(int, and2_ab_id), 0, cast(int, and2_id), 0),
+            (cast(int, en_id), 0, cast(int, and2_id), 1),
             # OUT3: A & B & EN
-            (a_id, 0, and3_ab_id, 0),
-            (b_id, 0, and3_ab_id, 1),
-            (and3_ab_id, 0, and3_id, 0),
-            (en_id, 0, and3_id, 1),
+            (cast(int, a_id), 0, cast(int, and3_ab_id), 0),
+            (cast(int, b_id), 0, cast(int, and3_ab_id), 1),
+            (cast(int, and3_ab_id), 0, cast(int, and3_id), 0),
+            (cast(int, en_id), 0, cast(int, and3_id), 1),
         ]
 
         for source_id, source_port, target_id, target_port in connections:
@@ -1308,13 +1398,16 @@ class AdvancedCombinationalValidator:
         output_ids = [out0_id, out1_id, out2_id, out3_id]
         if not all(output_ids):
             return None
+            
+        # Type assertions after validation
+        assert all(out_id is not None for out_id in output_ids)
 
         # Connect outputs
         output_connections = [
-            (and0_id, 0, out0_id, 0),
-            (and1_id, 0, out1_id, 0),
-            (and2_id, 0, out2_id, 0),
-            (and3_id, 0, out3_id, 0),
+            (cast(int, and0_id), 0, cast(int, out0_id), 0),
+            (cast(int, and1_id), 0, cast(int, out1_id), 0),
+            (cast(int, and2_id), 0, cast(int, out2_id), 0),
+            (cast(int, and3_id), 0, cast(int, out3_id), 0),
         ]
 
         for source_id, source_port, target_id, target_port in output_connections:
@@ -1323,9 +1416,9 @@ class AdvancedCombinationalValidator:
             ):
                 return None
 
-        return [a_id, b_id, en_id], output_ids
+        return [cast(int, a_id), cast(int, b_id), cast(int, en_id)], [cast(int, out_id) for out_id in output_ids]
 
-    def _create_4to1_mux_circuit(self) -> Optional[Tuple[List[int], List[int]]]:
+    def _create_4to1_mux_circuit(self) -> Optional[Tuple[InputIDs, OutputIDs]]:
         """Create 4-to-1 multiplexer circuit."""
         # Create data inputs with proper grid positioning
         d0_x, d0_y = self._get_input_position(0)
@@ -1346,6 +1439,10 @@ class AdvancedCombinationalValidator:
         input_ids = [d0_id, d1_id, d2_id, d3_id, s0_id, s1_id]
         if not all(input_ids):
             return None
+            
+        # Type assertions after validation
+        assert all(x is not None for x in input_ids)
+        assert all(x is not None for x in [d0_id, d1_id, d2_id, d3_id, s0_id, s1_id])
 
         # Create select logic (NOT gates for inverted selects) with proper positioning
         not_s0_x, not_s0_y = self._get_grid_position(1, 4)
@@ -1355,10 +1452,13 @@ class AdvancedCombinationalValidator:
 
         if not all([not_s0_id, not_s1_id]):
             return None
+            
+        # Type assertions after validation
+        assert not_s0_id is not None and not_s1_id is not None
 
-        if not self.connect_elements(s0_id, 0, not_s0_id, 0):
+        if not self.connect_elements(cast(int, s0_id), 0, cast(int, not_s0_id), 0):
             return None
-        if not self.connect_elements(s1_id, 0, not_s1_id, 0):
+        if not self.connect_elements(cast(int, s1_id), 0, cast(int, not_s1_id), 0):
             return None
 
         # Create AND gates for each data path with proper grid positioning
@@ -1398,21 +1498,24 @@ class AdvancedCombinationalValidator:
         ]
         if not all(and_gates):
             return None
+            
+        # Type assertions after validation
+        assert all(gate_id is not None for gate_id in and_gates)
 
         # Connect select decoding
         select_connections = [
             # Select for path 0: ~S1 & ~S0
-            (not_s1_id, 0, and0_s_id, 0),
-            (not_s0_id, 0, and0_s_id, 1),
+            (cast(int, not_s1_id), 0, cast(int, and0_s_id), 0),
+            (cast(int, not_s0_id), 0, cast(int, and0_s_id), 1),
             # Select for path 1: ~S1 & S0
-            (not_s1_id, 0, and1_s_id, 0),
-            (s0_id, 0, and1_s_id, 1),
+            (cast(int, not_s1_id), 0, cast(int, and1_s_id), 0),
+            (cast(int, s0_id), 0, cast(int, and1_s_id), 1),
             # Select for path 2: S1 & ~S0
-            (s1_id, 0, and2_s_id, 0),
-            (not_s0_id, 0, and2_s_id, 1),
+            (cast(int, s1_id), 0, cast(int, and2_s_id), 0),
+            (cast(int, not_s0_id), 0, cast(int, and2_s_id), 1),
             # Select for path 3: S1 & S0
-            (s1_id, 0, and3_s_id, 0),
-            (s0_id, 0, and3_s_id, 1),
+            (cast(int, s1_id), 0, cast(int, and3_s_id), 0),
+            (cast(int, s0_id), 0, cast(int, and3_s_id), 1),
         ]
 
         for source_id, source_port, target_id, target_port in select_connections:
@@ -1423,14 +1526,14 @@ class AdvancedCombinationalValidator:
 
         # Connect data and select to final AND gates
         data_connections = [
-            (d0_id, 0, and0_id, 0),
-            (and0_s_id, 0, and0_id, 1),
-            (d1_id, 0, and1_id, 0),
-            (and1_s_id, 0, and1_id, 1),
-            (d2_id, 0, and2_id, 0),
-            (and2_s_id, 0, and2_id, 1),
-            (d3_id, 0, and3_id, 0),
-            (and3_s_id, 0, and3_id, 1),
+            (cast(int, d0_id), 0, cast(int, and0_id), 0),
+            (cast(int, and0_s_id), 0, cast(int, and0_id), 1),
+            (cast(int, d1_id), 0, cast(int, and1_id), 0),
+            (cast(int, and1_s_id), 0, cast(int, and1_id), 1),
+            (cast(int, d2_id), 0, cast(int, and2_id), 0),
+            (cast(int, and2_s_id), 0, cast(int, and2_id), 1),
+            (cast(int, d3_id), 0, cast(int, and3_id), 0),
+            (cast(int, and3_s_id), 0, cast(int, and3_id), 1),
         ]
 
         for source_id, source_port, target_id, target_port in data_connections:
@@ -1452,12 +1555,12 @@ class AdvancedCombinationalValidator:
 
         # Connect OR tree
         or_connections = [
-            (and0_id, 0, or1_id, 0),
-            (and1_id, 0, or1_id, 1),
-            (and2_id, 0, or2_id, 0),
-            (and3_id, 0, or2_id, 1),
-            (or1_id, 0, or_final_id, 0),
-            (or2_id, 0, or_final_id, 1),
+            (cast(int, and0_id), 0, cast(int, or1_id), 0),
+            (cast(int, and1_id), 0, cast(int, or1_id), 1),
+            (cast(int, and2_id), 0, cast(int, or2_id), 0),
+            (cast(int, and3_id), 0, cast(int, or2_id), 1),
+            (cast(int, or1_id), 0, cast(int, or_final_id), 0),
+            (cast(int, or2_id), 0, cast(int, or_final_id), 1),
         ]
 
         for source_id, source_port, target_id, target_port in or_connections:
@@ -1471,13 +1574,16 @@ class AdvancedCombinationalValidator:
         output_id = self.create_element("Led", output_x, output_y, "OUT")
         if not output_id:
             return None
+            
+        # Type assertion after validation
+        assert output_id is not None
 
-        if not self.connect_elements(or_final_id, 0, output_id, 0):
+        if not self.connect_elements(cast(int, or_final_id), 0, cast(int, output_id), 0):
             return None
 
-        return input_ids, [output_id]
+        return [cast(int, x) for x in input_ids if x is not None], [cast(int, output_id)]
 
-    def _create_full_adder_circuit(self) -> Optional[Tuple[List[int], List[int]]]:
+    def _create_full_adder_circuit(self) -> Optional[Tuple[InputIDs, OutputIDs]]:
         """Create full adder circuit."""
         # Create inputs with proper grid positioning
         a_x, a_y = self._get_input_position(0)
@@ -1511,23 +1617,27 @@ class AdvancedCombinationalValidator:
         gates = [xor1_id, xor2_id, and1_id, and2_id, or_id]
         if not all(gates):
             return None
+            
+        # Type assertions after validation
+        assert all(gate_id is not None for gate_id in gates)
+        assert all(x is not None for x in [a_id, b_id, cin_id])
 
         # Connect sum logic
         sum_connections = [
-            (a_id, 0, xor1_id, 0),
-            (b_id, 0, xor1_id, 1),
-            (xor1_id, 0, xor2_id, 0),
-            (cin_id, 0, xor2_id, 1),
+            (cast(int, a_id), 0, cast(int, xor1_id), 0),
+            (cast(int, b_id), 0, cast(int, xor1_id), 1),
+            (cast(int, xor1_id), 0, cast(int, xor2_id), 0),
+            (cast(int, cin_id), 0, cast(int, xor2_id), 1),
         ]
 
         # Connect carry logic
         carry_connections = [
-            (a_id, 0, and1_id, 0),
-            (b_id, 0, and1_id, 1),
-            (cin_id, 0, and2_id, 0),
-            (xor1_id, 0, and2_id, 1),
-            (and1_id, 0, or_id, 0),
-            (and2_id, 0, or_id, 1),
+            (cast(int, a_id), 0, cast(int, and1_id), 0),
+            (cast(int, b_id), 0, cast(int, and1_id), 1),
+            (cast(int, cin_id), 0, cast(int, and2_id), 0),
+            (cast(int, xor1_id), 0, cast(int, and2_id), 1),
+            (cast(int, and1_id), 0, cast(int, or_id), 0),
+            (cast(int, and2_id), 0, cast(int, or_id), 1),
         ]
 
         all_connections = sum_connections + carry_connections
@@ -1545,22 +1655,25 @@ class AdvancedCombinationalValidator:
 
         if not all([sum_out_id, carry_out_id]):
             return None
+            
+        # Type assertions after validation
+        assert all(x is not None for x in [sum_out_id, carry_out_id])
 
         # Connect outputs
-        if not self.connect_elements(xor2_id, 0, sum_out_id, 0):
+        if not self.connect_elements(cast(int, xor2_id), 0, cast(int, sum_out_id), 0):
             return None
-        if not self.connect_elements(or_id, 0, carry_out_id, 0):
+        if not self.connect_elements(cast(int, or_id), 0, cast(int, carry_out_id), 0):
             return None
 
-        return [a_id, b_id, cin_id], [sum_out_id, carry_out_id]
+        return [cast(int, a_id), cast(int, b_id), cast(int, cin_id)], [cast(int, sum_out_id), cast(int, carry_out_id)]
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Clean up resources"""
         if self.bridge:
             self.bridge.stop()
             self.bridge = None
 
-    def run_all_tests(self) -> dict:
+    def run_all_tests(self) -> Dict[str, Any]:
         """Run all Level 1 advanced combinational logic tests."""
         print("🚀 CPU Level 1: Advanced Combinational Logic Validation")
         print("=" * 65)
