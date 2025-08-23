@@ -24,18 +24,24 @@ import json
 import random
 import sys
 import time
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union, cast, TypedDict
+from typing import Any, Dict, List, Optional, Tuple, TypedDict, cast
+
+from wiredpanda_bridge import WiredPandaBridge, WiredPandaError
+
 
 # Type definitions for better type safety
 class TestCase(TypedDict):
     """Test case result structure."""
+
     inputs: Dict[str, Any]
     expected: Dict[str, Any]
     actual: Dict[str, Any]
     correct: bool
 
+
 class TestResult(TypedDict):
     """Test result structure."""
+
     success: bool
     description: str
     total_cases: int
@@ -45,13 +51,11 @@ class TestResult(TypedDict):
     accuracy: float
     error: Optional[str]
 
+
 ElementID = int
 BitList = List[bool]
 InputIDs = List[ElementID]
 OutputIDs = List[ElementID]
-
-# Import the real wiRedPanda bridge
-from wiredpanda_bridge import WiredPandaBridge, WiredPandaError
 
 
 class ArithmeticBlocksValidator:
@@ -90,7 +94,7 @@ class ArithmeticBlocksValidator:
         if not self.bridge:
             self.bridge = WiredPandaBridge()
             self.bridge.start()
-    
+
     def _get_bridge(self) -> WiredPandaBridge:
         """Get the bridge with type narrowing."""
         self._ensure_bridge()
@@ -132,7 +136,11 @@ class ArithmeticBlocksValidator:
             return None
 
     def connect_elements(
-        self, source_id: ElementID, source_port: int, target_id: ElementID, target_port: int
+        self,
+        source_id: ElementID,
+        source_port: int,
+        target_id: ElementID,
+        target_port: int,
     ) -> bool:
         """Connect two elements."""
         try:
@@ -264,9 +272,9 @@ class ArithmeticBlocksValidator:
             case_results = []
 
             test_cases = adder_config["test_cases"]
-            assert hasattr(test_cases, '__iter__')
+            assert hasattr(test_cases, "__iter__")
             for test_case in test_cases:
-                assert hasattr(test_case, '__iter__')
+                assert hasattr(test_case, "__iter__")
                 # Set inputs
                 for i, input_val in enumerate(test_case):
                     if not self.set_input(input_ids[i], input_val):
@@ -285,10 +293,16 @@ class ArithmeticBlocksValidator:
                     output_val = self.get_output(output_id)
                     actual_outputs.append(output_val)
 
-                # Calculate expected outputs  
+                # Calculate expected outputs
                 function = adder_config["function"]
                 assert callable(function)
-                expected_outputs = list(function(*test_case))
+                function_result = function(*test_case)
+                # Handle both iterable and non-iterable results safely
+                try:
+                    expected_outputs = list(function_result)  # type: ignore
+                except TypeError:
+                    # function_result is not iterable, wrap in list
+                    expected_outputs = [function_result]
 
                 # Check correctness
                 case_correct = actual_outputs == expected_outputs
@@ -335,7 +349,7 @@ class ArithmeticBlocksValidator:
 
     def _create_half_adder_circuit(self) -> Optional[Tuple[InputIDs, OutputIDs]]:
         """Create half adder circuit: Sum = A XOR B, Carry = A AND B
-        
+
         Returns:
             Tuple of (input_ids, output_ids) where:
             - input_ids: [A, B] input button IDs
@@ -349,7 +363,7 @@ class ArithmeticBlocksValidator:
 
         if not all([a_id, b_id]):
             return None
-        
+
         # Type assertions after None check
         assert a_id is not None and b_id is not None
 
@@ -361,7 +375,7 @@ class ArithmeticBlocksValidator:
 
         if not all([xor_id, and_id]):
             return None
-        
+
         # Type assertions after None check
         assert xor_id is not None and and_id is not None
 
@@ -392,14 +406,17 @@ class ArithmeticBlocksValidator:
             ):
                 return None
 
-        # Type assertions for return values  
+        # Type assertions for return values
         assert all(x is not None for x in [a_id, b_id, sum_out_id, and_id])
-        return [cast(ElementID, a_id), cast(ElementID, b_id)], [cast(ElementID, sum_out_id), cast(ElementID, and_id)]  # Return gate output, not LED
+        return [cast(ElementID, a_id), cast(ElementID, b_id)], [
+            cast(ElementID, sum_out_id),
+            cast(ElementID, and_id),
+        ]  # Return gate output, not LED
 
     def _create_full_adder_circuit(self) -> Optional[Tuple[InputIDs, OutputIDs]]:
         """Create full adder circuit:
         Sum = A XOR B XOR Cin, Carry = (A AND B) OR (Cin AND (A XOR B))
-        
+
         Returns:
             Tuple of (input_ids, output_ids) where:
             - input_ids: [A, B, Cin] input button IDs
@@ -475,7 +492,14 @@ class ArithmeticBlocksValidator:
 
         # Type assertions for return values
         assert all(x is not None for x in [a_id, b_id, cin_id, sum_out_id, or_id])
-        return [cast(ElementID, a_id), cast(ElementID, b_id), cast(ElementID, cin_id)], [cast(ElementID, sum_out_id), cast(ElementID, or_id)]  # Return gate output, not LED
+        return [
+            cast(ElementID, a_id),
+            cast(ElementID, b_id),
+            cast(ElementID, cin_id),
+        ], [
+            cast(ElementID, sum_out_id),
+            cast(ElementID, or_id),
+        ]  # Return gate output, not LED
 
     def test_multi_bit_adders(self) -> Dict[str, Any]:
         """
@@ -549,7 +573,7 @@ class ArithmeticBlocksValidator:
             case_results = []
 
             test_cases_multi = adder_config["test_cases"]
-            assert hasattr(test_cases_multi, '__iter__')
+            assert hasattr(test_cases_multi, "__iter__")
             for a_val, b_val, cin_val in test_cases_multi:
 
                 # Convert to bits for detailed logging
@@ -600,10 +624,10 @@ class ArithmeticBlocksValidator:
                 # Calculate expected result
                 expected_sum = a_val + b_val + cin_val
                 expected_sum_bits = self._int_to_bits(
-                    expected_sum % (2 ** bit_width),
+                    expected_sum % (2**bit_width),
                     bit_width,
                 )
-                expected_carry = expected_sum >= (2 ** bit_width)
+                expected_carry = expected_sum >= (2**bit_width)
 
                 # Check correctness
                 sum_correct = actual_sum_bits == expected_sum_bits
@@ -630,7 +654,7 @@ class ArithmeticBlocksValidator:
                     {
                         "inputs": {"A": a_val, "B": b_val, "Cin": cin_val},
                         "expected": {
-                            "Sum": expected_sum % (2 ** bit_width),
+                            "Sum": expected_sum % (2**bit_width),
                             "Sum_bits": expected_sum_bits,
                             "Carry": expected_carry,
                         },
@@ -724,15 +748,23 @@ class ArithmeticBlocksValidator:
 
         return test_cases
 
-    def _create_ripple_carry_adder_circuit(
-        self, bit_width: int
-    ) -> Optional[Tuple[InputIDs, InputIDs, Optional[ElementID], OutputIDs, Optional[ElementID], Optional[ElementID], Optional[ElementID]]]:
+    def _create_ripple_carry_adder_circuit(self, bit_width: int) -> Optional[
+        Tuple[
+            InputIDs,
+            InputIDs,
+            Optional[ElementID],
+            OutputIDs,
+            Optional[ElementID],
+            Optional[ElementID],
+            Optional[ElementID],
+        ]
+    ]:
         """Create n-bit ripple carry adder using full adder stages with improved visual layout.
-        
+
         Returns:
             Tuple of (input_a_ids, input_b_ids, cin_id, sum_output_ids, cout_id, debug_xor1_id, debug_xor2_id)
             - input_a_ids: A input button IDs (bit 0 to n-1)
-            - input_b_ids: B input button IDs (bit 0 to n-1) 
+            - input_b_ids: B input button IDs (bit 0 to n-1)
             - cin_id: Carry input button ID
             - sum_output_ids: Sum output LED IDs (bit 0 to n-1)
             - cout_id: Carry output LED ID
@@ -755,7 +787,7 @@ class ArithmeticBlocksValidator:
 
             if not all([a_id, b_id]):
                 return None
-                
+
             # Type assertions after None check
             assert a_id is not None and b_id is not None
             input_a_ids.append(a_id)
@@ -766,7 +798,7 @@ class ArithmeticBlocksValidator:
         cin_id = self.create_element("InputButton", cin_x, cin_y, "Cin")
         if not cin_id:
             return None
-            
+
         # Type assertion after None check
         assert cin_id is not None
 
@@ -807,7 +839,7 @@ class ArithmeticBlocksValidator:
             gates = [xor1_id, xor2_id, and1_id, and2_id, or_id, sum_out_id]
             if not all(gates):
                 return None
-                
+
             # Type assertions after None check
             assert all(g is not None for g in gates)
 
@@ -935,7 +967,12 @@ class ArithmeticBlocksValidator:
 
         # Type assertion and cast for return values
         assert all(x is not None for x in [sum_out_id, or_id, xor1_id, xor2_id])
-        return cast(ElementID, sum_out_id), cast(ElementID, or_id), cast(ElementID, xor1_id), cast(ElementID, xor2_id)  # Return gate outputs for debugging
+        return (
+            cast(ElementID, sum_out_id),
+            cast(ElementID, or_id),
+            cast(ElementID, xor1_id),
+            cast(ElementID, xor2_id),
+        )  # Return gate outputs for debugging
 
     def _int_to_bits(self, value: int, bit_width: int) -> BitList:
         """Convert integer to list of bits (LSB first)."""
@@ -1017,7 +1054,7 @@ class ArithmeticBlocksValidator:
             case_results = []
 
             test_cases_sub = sub_config["test_cases"]
-            assert hasattr(test_cases_sub, '__iter__')
+            assert hasattr(test_cases_sub, "__iter__")
             for a_val, b_val in test_cases_sub:
                 # Ensure the constant "1" input is set for 2's complement addition
                 one_id = None
@@ -1030,17 +1067,13 @@ class ArithmeticBlocksValidator:
                     self.set_input(one_id, True)
 
                 # Set input A bits
-                for i, bit_val in enumerate(
-                    self._int_to_bits(a_val, bit_width)
-                ):
+                for i, bit_val in enumerate(self._int_to_bits(a_val, bit_width)):
                     if not self.set_input(input_a_ids[i], bit_val):
                         sub_passed = False
                         break
 
                 # Set input B bits
-                for i, bit_val in enumerate(
-                    self._int_to_bits(b_val, bit_width)
-                ):
+                for i, bit_val in enumerate(self._int_to_bits(b_val, bit_width)):
                     if not self.set_input(input_b_ids[i], bit_val):
                         sub_passed = False
                         break
@@ -1057,7 +1090,7 @@ class ArithmeticBlocksValidator:
                 actual_diff_bits = []
                 for diff_id in diff_output_ids:
                     diff_bit = self.get_output(diff_id)
-                    assert diff_bit is not None, f"Diff output returned None"
+                    assert diff_bit is not None, "Diff output returned None"
                     actual_diff_bits.append(diff_bit)
 
                 # Get borrow output
@@ -1068,17 +1101,13 @@ class ArithmeticBlocksValidator:
                 if expected_diff < 0:
                     # Negative result in 2's complement
                     # For 4-bit: -5 = 16 - 5 = 11 (binary 1011)
-                    expected_diff_unsigned = expected_diff + (
-                        1 << bit_width
-                    )
+                    expected_diff_unsigned = expected_diff + (1 << bit_width)
                     expected_diff_bits = self._int_to_bits(
                         expected_diff_unsigned, bit_width
                     )
                     expected_borrow = True  # Negative result indicates borrow
                 else:
-                    expected_diff_bits = self._int_to_bits(
-                        expected_diff, bit_width
-                    )
+                    expected_diff_bits = self._int_to_bits(expected_diff, bit_width)
                     expected_borrow = False
 
                 # Manual verification for 3 - 8
@@ -1162,7 +1191,7 @@ class ArithmeticBlocksValidator:
 
             if not all([a_id, b_id]):
                 return None
-            
+
             # Type assertions after None check
             assert a_id is not None and b_id is not None
             input_a_ids.append(a_id)
@@ -1175,7 +1204,7 @@ class ArithmeticBlocksValidator:
             not_id = self.create_element("Not", not_x, not_y, f"NOT_B{i}")
             if not not_id:
                 return None
-            
+
             # Type assertion after None check
             assert not_id is not None
             # Connect B to NOT gate
@@ -1233,7 +1262,7 @@ class ArithmeticBlocksValidator:
             gates = [xor1_id, xor2_id, and1_id, and2_id, or_id, diff_out_id]
             if not all(gates):
                 return None
-            
+
             # Type assertions after validation
             assert all(gate_id is not None for gate_id in gates)
             assert or_id is not None and diff_out_id is not None
@@ -1280,19 +1309,26 @@ class ArithmeticBlocksValidator:
 
         # Connect borrow logic: BORROW = NOT(final_carry)
         assert borrow_not_id is not None and borrow_out_id is not None
-        if not self.connect_elements(cast(ElementID, carry_signals[-1]), 0, cast(ElementID, borrow_not_id), 0):
+        if not self.connect_elements(
+            cast(ElementID, carry_signals[-1]), 0, cast(ElementID, borrow_not_id), 0
+        ):
             return None
-        if not self.connect_elements(cast(ElementID, borrow_not_id), 0, cast(ElementID, borrow_out_id), 0):
+        if not self.connect_elements(
+            cast(ElementID, borrow_not_id), 0, cast(ElementID, borrow_out_id), 0
+        ):
             return None
 
         # Type assertions and casts for return values
-        assert all(x is not None for x in diff_output_ids + diff_gate_ids) and borrow_not_id is not None
+        assert (
+            all(x is not None for x in diff_output_ids + diff_gate_ids)
+            and borrow_not_id is not None
+        )
         return (
-            cast(List[ElementID], input_a_ids), 
-            cast(List[ElementID], input_b_ids), 
-            cast(List[ElementID], diff_output_ids), 
-            cast(Optional[ElementID], borrow_not_id), 
-            cast(List[ElementID], diff_gate_ids)
+            cast(List[ElementID], input_a_ids),
+            cast(List[ElementID], input_b_ids),
+            cast(List[ElementID], diff_output_ids),
+            cast(Optional[ElementID], borrow_not_id),
+            cast(List[ElementID], diff_gate_ids),
         )
 
     def _create_subtractor_with_inputs(
@@ -1311,7 +1347,7 @@ class ArithmeticBlocksValidator:
             not_id = self.create_element("Not", not_x, not_y, f"NOT_B{i}")
             if not not_id:
                 return None
-            
+
             # Type assertion after None check
             assert not_id is not None
             # Connect B to NOT gate
@@ -1336,7 +1372,7 @@ class ArithmeticBlocksValidator:
         diff_output_ids: List[int] = []  # LED outputs
         diff_gate_ids: List[int] = []  # XOR2 gate outputs (for magnitude comparator)
         carry_signals = [cast(int, one_id)]  # Start with carry = 1 for 2's complement
-        borrow_gate_id: int  # Initialize borrow gate ID
+        borrow_gate_id: Optional[int] = None  # Initialize borrow gate ID
 
         for stage in range(bit_width):
             if stage < bit_width - 1:
@@ -1360,11 +1396,17 @@ class ArithmeticBlocksValidator:
                 if not stage_result_with_borrow:
                     return None
 
-                diff_out_id, carry_out_id, _, xor2_id, borrow_gate_id = stage_result_with_borrow
+                diff_out_id, carry_out_id, _, xor2_id, borrow_gate_id = (
+                    stage_result_with_borrow
+                )
                 diff_output_ids.append(diff_out_id)
                 diff_gate_ids.append(xor2_id)  # Store XOR2 gate output
 
-        return diff_output_ids, cast(int, borrow_gate_id), diff_gate_ids
+        # Return with properly typed borrow_gate_id
+        if borrow_gate_id is None:
+            # This shouldn't happen in normal flow, but provide safe fallback
+            return diff_output_ids, 0, diff_gate_ids
+        return diff_output_ids, borrow_gate_id, diff_gate_ids
 
     def _create_full_adder_stage_with_borrow(
         self, stage: int, a_id: int, b_id: int, cin_id: int
@@ -1422,7 +1464,10 @@ class ArithmeticBlocksValidator:
 
         # Type assertions after validation
         assert all(gate_id is not None for gate_id in gates)
-        assert all(x is not None for x in [sum_out_id, carry_out_id, not_borrow_id, borrow_out_id])
+        assert all(
+            x is not None
+            for x in [sum_out_id, carry_out_id, not_borrow_id, borrow_out_id]
+        )
 
         # Connect full adder logic with improved organization
         connections = [
@@ -1442,7 +1487,12 @@ class ArithmeticBlocksValidator:
             (cast(int, or_id), 0, cast(int, carry_out_id), 0),
             # Borrow path: BORROW = NOT(carry_out)
             (cast(int, or_id), 0, cast(int, not_borrow_id), 0),  # OR -> NOT (not LED!)
-            (cast(int, not_borrow_id), 0, cast(int, borrow_out_id), 0),  # NOT -> Borrow LED
+            (
+                cast(int, not_borrow_id),
+                0,
+                cast(int, borrow_out_id),
+                0,
+            ),  # NOT -> Borrow LED
         ]
 
         for source_id, source_port, target_id, target_port in connections:
@@ -1452,13 +1502,16 @@ class ArithmeticBlocksValidator:
                 return None
 
         # Type assertions and casts for return values
-        assert all(x is not None for x in [sum_out_id, carry_out_id, borrow_out_id, xor2_id, not_borrow_id])
+        assert all(
+            x is not None
+            for x in [sum_out_id, carry_out_id, borrow_out_id, xor2_id, not_borrow_id]
+        )
         return (
-            cast(ElementID, sum_out_id), 
-            cast(ElementID, carry_out_id), 
-            cast(ElementID, borrow_out_id), 
-            cast(ElementID, xor2_id), 
-            cast(ElementID, not_borrow_id)
+            cast(ElementID, sum_out_id),
+            cast(ElementID, carry_out_id),
+            cast(ElementID, borrow_out_id),
+            cast(ElementID, xor2_id),
+            cast(ElementID, not_borrow_id),
         )
 
     def _add_one_to_bits(self, bits: List[bool]) -> List[bool]:
@@ -1532,9 +1585,7 @@ class ArithmeticBlocksValidator:
             bit_width = comp_config["bit_width"]
             assert isinstance(bit_width, int)
             if comp_config["comparison"] == "equality":
-                equality_result = self._create_equality_comparator_circuit(
-                    bit_width
-                )
+                equality_result = self._create_equality_comparator_circuit(bit_width)
                 if not equality_result:
                     test_results[comp_name] = {
                         "success": False,
@@ -1545,9 +1596,7 @@ class ArithmeticBlocksValidator:
                 input_a_ids, input_b_ids, eq_output_id = equality_result
                 output_ids = [eq_output_id]
             elif comp_config["comparison"] == "magnitude":
-                magnitude_result = self._create_magnitude_comparator_circuit(
-                    bit_width
-                )
+                magnitude_result = self._create_magnitude_comparator_circuit(bit_width)
                 if not magnitude_result:
                     test_results[comp_name] = {
                         "success": False,
@@ -1555,7 +1604,9 @@ class ArithmeticBlocksValidator:
                     }
                     all_tests_passed = False
                     continue
-                input_a_ids, input_b_ids, gt_output_id, lt_output_id, eq_output_id = magnitude_result
+                input_a_ids, input_b_ids, gt_output_id, lt_output_id, eq_output_id = (
+                    magnitude_result
+                )
                 output_ids = [gt_output_id, lt_output_id, eq_output_id]
             else:
                 test_results[comp_name] = {
@@ -1578,25 +1629,25 @@ class ArithmeticBlocksValidator:
             case_results = []
 
             test_cases_comp = comp_config["test_cases"]
-            assert hasattr(test_cases_comp, '__iter__')
+            assert hasattr(test_cases_comp, "__iter__")
             for test_case in test_cases_comp:
+                # Initialize variables to avoid unbound issues
+                expected_eq = None
+                expected_result = None
+                
                 if comp_config["comparison"] == "equality":
                     a_val, b_val, expected_eq = test_case
                 else:
                     a_val, b_val, expected_result = test_case
 
                 # Set input A bits
-                for i, bit_val in enumerate(
-                    self._int_to_bits(a_val, bit_width)
-                ):
+                for i, bit_val in enumerate(self._int_to_bits(a_val, bit_width)):
                     if not self.set_input(input_a_ids[i], bit_val):
                         comp_passed = False
                         break
 
                 # Set input B bits
-                for i, bit_val in enumerate(
-                    self._int_to_bits(b_val, bit_width)
-                ):
+                for i, bit_val in enumerate(self._int_to_bits(b_val, bit_width)):
                     if not self.set_input(input_b_ids[i], bit_val):
                         comp_passed = False
                         break
@@ -1708,7 +1759,7 @@ class ArithmeticBlocksValidator:
             if not all([a_id, b_id]):
                 return None
 
-            # Type assertions after validation  
+            # Type assertions after validation
             assert a_id is not None and b_id is not None
             input_a_ids.append(cast(int, a_id))
             input_b_ids.append(cast(int, b_id))
@@ -1722,7 +1773,7 @@ class ArithmeticBlocksValidator:
             xnor_id = self.create_element("Xnor", xnor_x, xnor_y, f"EQ{i}")
             if not xnor_id:
                 return None
-            
+
             # Type assertion after validation
             assert xnor_id is not None
 
@@ -1748,7 +1799,7 @@ class ArithmeticBlocksValidator:
             and_tree_result = self._create_and_tree_positioned(xnor_ids, "EQ_AND", 0, 3)
             if not and_tree_result:
                 return None
-                
+
             # Type assertion after validation
             assert and_tree_result is not None
 
@@ -1758,10 +1809,12 @@ class ArithmeticBlocksValidator:
             eq_output_id = self.create_element("Led", eq_output_x, eq_output_y, "EQ")
             if not eq_output_id:
                 return None
-                
+
             # Type assertion after validation
             assert eq_output_id is not None
-            if not self.connect_elements(cast(int, and_tree_result), 0, cast(int, eq_output_id), 0):
+            if not self.connect_elements(
+                cast(int, and_tree_result), 0, cast(int, eq_output_id), 0
+            ):
                 return None
 
         return input_a_ids, input_b_ids, cast(int, eq_output_id)
@@ -1808,7 +1861,7 @@ class ArithmeticBlocksValidator:
         one_id = self.create_element("InputButton", one_x, one_y, "1")
         if not one_id:
             return None
-            
+
         # Type assertion after validation
         assert one_id is not None
         self.set_input(cast(int, one_id), True)
@@ -1825,7 +1878,7 @@ class ArithmeticBlocksValidator:
             not_b_id = self.create_element("Not", not_b_x, not_b_y, f"~B{i}")
             if not not_b_id:
                 return None
-                
+
             # Type assertion after validation
             assert not_b_id is not None
             if not self.connect_elements(input_b_ids[i], 0, cast(int, not_b_id), 0):
@@ -1836,7 +1889,7 @@ class ArithmeticBlocksValidator:
             xor1_id = self.create_element("Xor", xor1_x, xor1_y, f"X1_{i}")
             if not xor1_id:
                 return None
-                
+
             # Type assertion after validation
             assert xor1_id is not None
             if not self.connect_elements(input_a_ids[i], 0, cast(int, xor1_id), 0):
@@ -1849,7 +1902,7 @@ class ArithmeticBlocksValidator:
             xor2_id = self.create_element("Xor", xor2_x, xor2_y, f"D{i}")
             if not xor2_id:
                 return None
-                
+
             # Type assertion after validation
             assert xor2_id is not None
             if not self.connect_elements(cast(int, xor1_id), 0, cast(int, xor2_id), 0):
@@ -1864,7 +1917,7 @@ class ArithmeticBlocksValidator:
             and1_id = self.create_element("And", and1_x, and1_y, f"&1_{i}")
             if not and1_id:
                 return None
-                
+
             # Type assertion after validation
             assert and1_id is not None
             if not self.connect_elements(input_a_ids[i], 0, cast(int, and1_id), 0):
@@ -1877,7 +1930,7 @@ class ArithmeticBlocksValidator:
             and2_id = self.create_element("And", and2_x, and2_y, f"&2_{i}")
             if not and2_id:
                 return None
-                
+
             # Type assertion after validation
             assert and2_id is not None
             if not self.connect_elements(cast(int, xor1_id), 0, cast(int, and2_id), 0):
@@ -1890,7 +1943,7 @@ class ArithmeticBlocksValidator:
             or_id = self.create_element("Or", or_x, or_y, f"C{i}")
             if not or_id:
                 return None
-                
+
             # Type assertion after validation
             assert or_id is not None
             if not self.connect_elements(cast(int, and1_id), 0, cast(int, or_id), 0):
@@ -1909,7 +1962,7 @@ class ArithmeticBlocksValidator:
         borrow_id = self.create_element("Not", borrow_x, borrow_y, "BOR")
         if not borrow_id:
             return None
-            
+
         # Type assertion after validation
         assert borrow_id is not None
         if not self.connect_elements(final_carry, 0, cast(int, borrow_id), 0):
@@ -1924,7 +1977,7 @@ class ArithmeticBlocksValidator:
             zero_or_temp = self.create_element("Or", or_x, or_y, "OR")
             if not zero_or_temp:
                 return None
-                
+
             # Type assertion after validation
             assert zero_or_temp is not None
             zero_or = cast(int, zero_or_temp)
@@ -1945,7 +1998,7 @@ class ArithmeticBlocksValidator:
         zero_id = self.create_element("Not", zero_x, zero_y, "EQ")
         if not zero_id:
             return None
-            
+
         # Type assertion after validation
         assert zero_id is not None and zero_or is not None
         if not self.connect_elements(cast(int, zero_or), 0, cast(int, zero_id), 0):
@@ -1956,17 +2009,19 @@ class ArithmeticBlocksValidator:
         not_borrow_id = self.create_element("Not", not_borrow_x, not_borrow_y, "~B")
         if not not_borrow_id:
             return None
-            
+
         # Type assertion after validation
         assert not_borrow_id is not None and borrow_id is not None
-        if not self.connect_elements(cast(int, borrow_id), 0, cast(int, not_borrow_id), 0):
+        if not self.connect_elements(
+            cast(int, borrow_id), 0, cast(int, not_borrow_id), 0
+        ):
             return None
 
         not_zero_x, not_zero_y = self._get_grid_position(comp_start + 5, 4)
         not_zero_id = self.create_element("Not", not_zero_x, not_zero_y, "~Z")
         if not not_zero_id:
             return None
-            
+
         # Type assertion after validation
         assert not_zero_id is not None
         if not self.connect_elements(cast(int, zero_id), 0, cast(int, not_zero_id), 0):
@@ -1976,12 +2031,16 @@ class ArithmeticBlocksValidator:
         gt_and_id = self.create_element("And", gt_and_x, gt_and_y, "GT")
         if not gt_and_id:
             return None
-            
+
         # Type assertion after validation
         assert gt_and_id is not None
-        if not self.connect_elements(cast(int, not_borrow_id), 0, cast(int, gt_and_id), 0):
+        if not self.connect_elements(
+            cast(int, not_borrow_id), 0, cast(int, gt_and_id), 0
+        ):
             return None
-        if not self.connect_elements(cast(int, not_zero_id), 0, cast(int, gt_and_id), 1):
+        if not self.connect_elements(
+            cast(int, not_zero_id), 0, cast(int, gt_and_id), 1
+        ):
             return None
 
         # Row 5: Final outputs - directly below logic
@@ -2012,7 +2071,13 @@ class ArithmeticBlocksValidator:
 
         # Type assertions for return values
         assert all(x is not None for x in [gt_output_id, lt_output_id, eq_output_id])
-        return input_a_ids, input_b_ids, cast(int, gt_output_id), cast(int, lt_output_id), cast(int, eq_output_id)
+        return (
+            input_a_ids,
+            input_b_ids,
+            cast(int, gt_output_id),
+            cast(int, lt_output_id),
+            cast(int, eq_output_id),
+        )
 
     def _create_or_tree(self, signal_ids: List[int], prefix: str) -> Optional[int]:
         """Create OR tree to combine multiple signals."""

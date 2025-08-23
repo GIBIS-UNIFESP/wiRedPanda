@@ -1,0 +1,401 @@
+{
+  "level": 3,
+  "name": "Level 3: Sequential Logic Foundations",
+  "total_tests": 3,
+  "passed": 0,
+  "failed": 3,
+  "pass_rate": 0.0,
+  "results": [
+    {
+      "test": "basic_memory_elements",
+      "success": false,
+      "results": {
+        "sr_latch": {
+          "success": true,
+          "description": "SR Latch using cross-coupled NOR gates",
+          "total_cases": 5,
+          "passed_cases": 4,
+          "failed_cases": 1,
+          "results": [
+            {
+              "inputs": {
+                "S": false,
+                "R": true
+              },
+              "expected": {
+                "Q": false,
+                "Q_not": true
+              },
+              "actual": {
+                "Q": false,
+                "Q_not": true
+              },
+              "correct": true,
+              "complementary": true,
+              "description": "Reset: R=1, S=0 -> Q=0, Q_not=1"
+            },
+            {
+              "inputs": {
+                "S": false,
+                "R": false
+              },
+              "expected": {
+                "Q": false,
+                "Q_not": true
+              },
+              "actual": {
+                "Q": false,
+                "Q_not": true
+              },
+              "correct": true,
+              "complementary": true,
+              "description": "Hold reset state: R=0, S=0 -> Q=0, Q_not=1"
+            },
+            {
+              "inputs": {
+                "S": true,
+                "R": false
+              },
+              "expected": {
+                "Q": true,
+                "Q_not": false
+              },
+              "actual": {
+                "Q": true,
+                "Q_not": false
+              },
+              "correct": true,
+              "complementary": true,
+              "description": "Set: S=1, R=0 -> Q=1, Q_not=0"
+            },
+            {
+              "inputs": {
+                "S": false,
+                "R": false
+              },
+              "expected": {
+                "Q": true,
+                "Q_not": false
+              },
+              "actual": {
+                "Q": false,
+                "Q_not": true
+              },
+              "correct": false,
+              "complementary": true,
+              "description": "Hold set state: S=0, R=0 -> Q=1, Q_not=0"
+            },
+            {
+              "inputs": {
+                "S": false,
+                "R": true
+              },
+              "expected": {
+                "Q": false,
+                "Q_not": true
+              },
+              "actual": {
+                "Q": false,
+                "Q_not": true
+              },
+              "correct": true,
+              "complementary": true,
+              "description": "Reset again: R=1, S=0 -> Q=0, Q_not=1"
+            }
+          ],
+          "accuracy": 80.0
+        },
+        "d_latch": {
+          "success": true,
+          "description": "D Latch - transparent when enabled",
+          "total_cases": 6,
+          "passed_cases": 6,
+          "failed_cases": 0,
+          "results": [
+            {
+              "inputs": {
+                "D": false,
+                "EN": false
+              },
+              "expected": {
+                "Q": true,
+                "Q_not": false
+              },
+              "actual": {
+                "Q": true,
+                "Q_not": false
+              },
+              "correct": true,
+              "description": "Initialize: D=0, EN=0"
+            },
+            {
+              "inputs": {
+                "D": false,
+                "EN": true
+              },
+              "expected": {
+                "Q": false,
+                "Q_not": true
+              },
+              "actual": {
+                "Q": false,
+                "Q_not": true
+              },
+              "correct": true,
+              "description": "Transparent: D=0, EN=1 -> Q=0"
+            },
+            {
+              "inputs": {
+                "D": true,
+                "EN": true
+              },
+              "expected": {
+                "Q": true,
+                "Q_not": false
+              },
+              "actual": {
+                "Q": true,
+                "Q_not": false
+              },
+              "correct": true,
+              "description": "Transparent: D=1, EN=1 -> Q=1"
+            },
+            {
+              "inputs": {
+                "D": true,
+                "EN": false
+              },
+              "expected": {
+                "Q": true,
+                "Q_not": false
+              },
+              "actual": {
+                "Q": true,
+                "Q_not": false
+              },
+              "correct": true,
+              "description": "Hold: D=1, EN=0 -> Q=1 (held)"
+            },
+            {
+              "inputs": {
+                "D": false,
+                "EN": false
+              },
+              "expected": {
+                "Q": true,
+                "Q_not": false
+              },
+              "actual": {
+                "Q": true,
+                "Q_not": false
+              },
+              "correct": true,
+              "description": "Hold: D=0, EN=0 -> Q=1 (still held)"
+            },
+            {
+              "inputs": {
+                "D": false,
+                "EN": true
+              },
+              "expected": {
+                "Q": false,
+                "Q_not": true
+              },
+              "actual": {
+                "Q": false,
+                "Q_not": true
+              },
+              "correct": true,
+              "description": "Transparent: D=0, EN=1 -> Q=0"
+            }
+          ],
+          "accuracy": 100.0
+        },
+        "d_flip_flop": {
+          "success": false,
+          "description": "D Flip-Flop - simplified edge-triggered behavior",
+          "total_cases": 2,
+          "passed_cases": 1,
+          "failed_cases": 1,
+          "results": [
+            {
+              "test": 1,
+              "d_input": false,
+              "pre_clock_q": true,
+              "post_clock_q": true,
+              "post_clock_q_not": false,
+              "expected_q": false,
+              "correct": false,
+              "description": "Setup D=0, then clock pulse"
+            },
+            {
+              "test": 2,
+              "d_input": true,
+              "pre_clock_q": true,
+              "post_clock_q": true,
+              "post_clock_q_not": false,
+              "expected_q": true,
+              "correct": true,
+              "description": "Setup D=1, then clock pulse"
+            }
+          ],
+          "accuracy": 50.0,
+          "basic_functionality": false,
+          "note": "Simplified implementation focusing on edge-triggered concept"
+        }
+      },
+      "description": "Tests basic memory elements: latches and flip-flops"
+    },
+    {
+      "test": "registers_and_counters",
+      "success": false,
+      "results": {
+        "4bit_register": {
+          "success": true,
+          "description": "4-bit register with enable control",
+          "total_cases": 4,
+          "passed_cases": 2,
+          "failed_cases": 2,
+          "results": [
+            {
+              "data_input": [
+                true,
+                false,
+                true,
+                false
+              ],
+              "enable": true,
+              "expected": [
+                true,
+                false,
+                true,
+                false
+              ],
+              "actual": [
+                false,
+                false,
+                true,
+                true
+              ],
+              "correct": false,
+              "description": "Store 1010 with enable"
+            },
+            {
+              "data_input": [
+                true,
+                false,
+                true,
+                false
+              ],
+              "enable": false,
+              "expected": null,
+              "actual": [
+                false,
+                false,
+                true,
+                true
+              ],
+              "correct": true,
+              "description": "Hold 1010 with disable"
+            },
+            {
+              "data_input": [
+                false,
+                true,
+                false,
+                true
+              ],
+              "enable": false,
+              "expected": null,
+              "actual": [
+                false,
+                false,
+                true,
+                true
+              ],
+              "correct": true,
+              "description": "Try to change to 0101 (should hold)"
+            },
+            {
+              "data_input": [
+                false,
+                true,
+                false,
+                true
+              ],
+              "enable": true,
+              "expected": [
+                false,
+                true,
+                false,
+                true
+              ],
+              "actual": [
+                false,
+                false,
+                true,
+                true
+              ],
+              "correct": false,
+              "description": "Change to 0101 with enable"
+            }
+          ],
+          "accuracy": 50.0
+        },
+        "4bit_counter": {
+          "success": false,
+          "description": "4-bit counter (simplified ripple counter concept)",
+          "total_cases": 5,
+          "passed_cases": 1,
+          "failed_cases": 4,
+          "results": [
+            {
+              "clock_count": 0,
+              "expected": "0000",
+              "actual": "0000",
+              "description": "After 0 clock pulses"
+            },
+            {
+              "clock_count": 1,
+              "expected": "0001",
+              "actual": "0000",
+              "description": "After 1 clock pulses"
+            },
+            {
+              "clock_count": 2,
+              "expected": "0010",
+              "actual": "0000",
+              "description": "After 2 clock pulses"
+            },
+            {
+              "clock_count": 3,
+              "expected": "0011",
+              "actual": "0000",
+              "description": "After 3 clock pulses"
+            },
+            {
+              "clock_count": 4,
+              "expected": "0100",
+              "actual": "0000",
+              "description": "After 4 clock pulses"
+            }
+          ],
+          "accuracy": 20.0,
+          "note": "Simplified counter implementation demonstrating sequential counting concept"
+        }
+      },
+      "description": "Tests registers and counters for data storage and sequencing"
+    },
+    {
+      "test": "shift_registers",
+      "success": false,
+      "results": {
+        "siso_shift_register": {
+          "success": false,
+          "error": "Failed to create buffer for stage 1"
+        }
+      },
+      "description": "Tests shift registers for serial data processing"
+    }
+  ]
+}
