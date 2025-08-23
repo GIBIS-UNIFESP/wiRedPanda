@@ -1,10 +1,10 @@
 {
   "level": 4,
   "name": "Level 4: Advanced Sequential Logic Systems",
-  "total_tests": 2,
+  "total_tests": 3,
   "passed": 1,
-  "failed": 1,
-  "pass_rate": 50.0,
+  "failed": 2,
+  "pass_rate": 33.33333333333333,
   "results": [
     {
       "test": "state_machines",
@@ -12,79 +12,7 @@
       "results": {
         "2bit_counter": {
           "success": false,
-          "description": "2-bit counter state machine using convergence-enabled D flip-flops",
-          "total_cases": 5,
-          "passed_cases": 2,
-          "failed_cases": 3,
-          "results": [
-            {
-              "step": 0,
-              "expected": {
-                "Q1": 0,
-                "Q0": 0
-              },
-              "actual": {
-                "Q1": false,
-                "Q0": false
-              },
-              "correct": true,
-              "description": "Initial state: 00"
-            },
-            {
-              "step": 1,
-              "expected": {
-                "Q1": 0,
-                "Q0": 1
-              },
-              "actual": {
-                "Q1": false,
-                "Q0": false
-              },
-              "correct": false,
-              "description": "After 1 clock: 01"
-            },
-            {
-              "step": 2,
-              "expected": {
-                "Q1": 1,
-                "Q0": 0
-              },
-              "actual": {
-                "Q1": false,
-                "Q0": false
-              },
-              "correct": false,
-              "description": "After 2 clocks: 10"
-            },
-            {
-              "step": 3,
-              "expected": {
-                "Q1": 1,
-                "Q0": 1
-              },
-              "actual": {
-                "Q1": false,
-                "Q0": false
-              },
-              "correct": false,
-              "description": "After 3 clocks: 11"
-            },
-            {
-              "step": 4,
-              "expected": {
-                "Q1": 0,
-                "Q0": 0
-              },
-              "actual": {
-                "Q1": false,
-                "Q0": false
-              },
-              "correct": true,
-              "description": "After 4 clocks: 00 (wrap)"
-            }
-          ],
-          "accuracy": 40.0,
-          "convergence_enabled": true
+          "error": "Failed to connect FF0 output"
         },
         "moore_machine": {
           "success": true,
@@ -154,6 +82,21 @@
         }
       },
       "description": "Advanced state machines leveraging convergence-enabled memory elements"
+    },
+    {
+      "test": "advanced_state_machines",
+      "success": false,
+      "results": {
+        "mealy_machine": {
+          "success": false,
+          "error": "Failed to connect next state logic"
+        },
+        "johnson_counter": {
+          "success": false,
+          "error": "Failed to connect Johnson feedback"
+        }
+      },
+      "description": "Advanced state machines with full complexity - Mealy machines and ring counters"
     },
     {
       "test": "memory_systems",
