@@ -574,24 +574,25 @@ class AdvancedSequentialValidator:
         
         logger.info("✅ Initialization reset pulse completed")
 
-    def _force_initialization_state(self, flip_flop_components: List[List], target_states: List[bool]) -> None:
-        """Force flip-flops to specific initial states using controlled D inputs and clock pulses"""
-        logger.info("🔧 Forcing initialization to proper states...")
+    def _simple_counter_initialization_fix(self, clk_id: int) -> None:
+        """Simple initialization fix: Apply extra clock pulses to help convergence"""
+        logger.info("🔧 Applying simple initialization fix...")
         
-        # This method temporarily controls D inputs to set desired initial states
-        # Not ideal but necessary due to cross-coupled latch initialization issues
+        # Strategy: Multiple clock pulses often help cross-coupled latches settle
+        # to a more predictable state due to convergence algorithm
         
-        for i, (target_state, ff_components) in enumerate(zip(target_states, flip_flop_components)):
-            if len(ff_components) < 3:
-                continue
-                
-            d_input, q_output, q_not_output = ff_components[:3]
-            
-            logger.info(f"Setting flip-flop {i} to state {target_state}")
-            
-            # Temporarily drive D input to desired state (this is a workaround)
-            # In a real implementation, we would use proper reset/set lines
-            # For now, we work with the constraint that we have cross-coupled initialization issues
+        self.set_input(clk_id, False)
+        time.sleep(0.1)
+        
+        # Apply several slow clock pulses to encourage proper convergence
+        for i in range(5):
+            logger.info(f"Initialization pulse {i+1}/5")
+            self.set_input(clk_id, True)
+            time.sleep(0.1)  # Longer settling time
+            self.set_input(clk_id, False)
+            time.sleep(0.1)
+        
+        logger.info("✅ Simple initialization fix completed")
 
     def _test_moore_state_machine(self) -> Dict[str, Any]:
         """Test a simple Moore state machine (output depends only on current state)"""
@@ -1542,13 +1543,16 @@ class AdvancedSequentialValidator:
         results = []
         passed = 0
 
-        # Initialize with simple restart (without complex reset for now)
+        # Initialize with simple restart and convergence help
         self.set_input(clk_id, False)
         self.set_input(reset_id, False)
         self.restart_simulation()
         time.sleep(0.1)
         
-        logger.info("🔧 BCD Counter initialization - testing without complex reset")
+        # Apply initialization fix to help with convergence
+        self._simple_counter_initialization_fix(clk_id)
+        
+        logger.info("🔧 BCD Counter initialization with convergence assistance completed")
 
         # Test BCD sequence focusing on key transitions
         test_indices = [0, 1, 2, 3, 4, 5, -2, -1]  # Test first few, then critical end states
