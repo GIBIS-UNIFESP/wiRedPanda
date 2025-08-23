@@ -1,10 +1,10 @@
 {
   "level": 4,
   "name": "Level 4: Advanced Sequential Logic Systems",
-  "total_tests": 3,
+  "total_tests": 5,
   "passed": 1,
-  "failed": 2,
-  "pass_rate": 33.33333333333333,
+  "failed": 4,
+  "pass_rate": 20.0,
   "results": [
     {
       "test": "state_machines",
@@ -12,14 +12,86 @@
       "results": {
         "2bit_counter": {
           "success": false,
-          "error": "Failed to connect FF0 output"
+          "description": "2-bit counter state machine using convergence-enabled D flip-flops",
+          "total_cases": 5,
+          "passed_cases": 2,
+          "failed_cases": 3,
+          "results": [
+            {
+              "step": 0,
+              "expected": {
+                "Q1": 0,
+                "Q0": 0
+              },
+              "actual": {
+                "Q1": false,
+                "Q0": false
+              },
+              "correct": true,
+              "description": "Initial state: 00"
+            },
+            {
+              "step": 1,
+              "expected": {
+                "Q1": 0,
+                "Q0": 1
+              },
+              "actual": {
+                "Q1": false,
+                "Q0": false
+              },
+              "correct": false,
+              "description": "After 1 clock: 01"
+            },
+            {
+              "step": 2,
+              "expected": {
+                "Q1": 1,
+                "Q0": 0
+              },
+              "actual": {
+                "Q1": false,
+                "Q0": false
+              },
+              "correct": false,
+              "description": "After 2 clocks: 10"
+            },
+            {
+              "step": 3,
+              "expected": {
+                "Q1": 1,
+                "Q0": 1
+              },
+              "actual": {
+                "Q1": false,
+                "Q0": false
+              },
+              "correct": false,
+              "description": "After 3 clocks: 11"
+            },
+            {
+              "step": 4,
+              "expected": {
+                "Q1": 0,
+                "Q0": 0
+              },
+              "actual": {
+                "Q1": false,
+                "Q0": false
+              },
+              "correct": true,
+              "description": "After 4 clocks: 00 (wrap)"
+            }
+          ],
+          "accuracy": 40.0,
+          "convergence_enabled": true
         },
         "moore_machine": {
           "success": true,
           "description": "Simple Moore state machine using convergence-enabled memory",
           "total_cases": 5,
-          "passed_cases": 4,
-          "failed_cases": 1,
+          "passed_cases": 3,
+          "failed_cases": 2,
           "results": [
             {
               "step": 1,
@@ -27,9 +99,9 @@
               "clock": false,
               "expected_state": false,
               "expected_output": false,
-              "actual_state": false,
-              "actual_output": false,
-              "correct": true,
+              "actual_state": true,
+              "actual_output": true,
+              "correct": false,
               "description": "Initial: Input=0, expect State=0, Output=0"
             },
             {
@@ -38,9 +110,9 @@
               "clock": false,
               "expected_state": false,
               "expected_output": false,
-              "actual_state": false,
-              "actual_output": false,
-              "correct": true,
+              "actual_state": true,
+              "actual_output": true,
+              "correct": false,
               "description": "Set Input=1, State still 0, Output=0"
             },
             {
@@ -49,9 +121,9 @@
               "clock": true,
               "expected_state": true,
               "expected_output": true,
-              "actual_state": false,
-              "actual_output": false,
-              "correct": false,
+              "actual_state": true,
+              "actual_output": true,
+              "correct": true,
               "description": "Clock pulse: State->1, Output=1"
             },
             {
@@ -77,7 +149,7 @@
               "description": "Clock pulse: State->0, Output=0"
             }
           ],
-          "accuracy": 80.0,
+          "accuracy": 60.0,
           "convergence_enabled": true
         }
       },
@@ -89,14 +161,500 @@
       "results": {
         "mealy_machine": {
           "success": false,
-          "error": "Failed to connect next state logic"
+          "description": "Mealy state machine - output depends on state AND input",
+          "total_cases": 5,
+          "passed_cases": 2,
+          "failed_cases": 3,
+          "results": [
+            {
+              "step": 1,
+              "input": false,
+              "clock": false,
+              "expected_state": false,
+              "expected_output": false,
+              "actual_state": true,
+              "actual_output": true,
+              "correct": false,
+              "description": "Initial: Input=0, State=0 -> Output=0"
+            },
+            {
+              "step": 2,
+              "input": true,
+              "clock": false,
+              "expected_state": false,
+              "expected_output": true,
+              "actual_state": true,
+              "actual_output": false,
+              "correct": false,
+              "description": "Change Input=1, State still 0 -> Output=1 (immediate)"
+            },
+            {
+              "step": 3,
+              "input": true,
+              "clock": true,
+              "expected_state": false,
+              "expected_output": true,
+              "actual_state": true,
+              "actual_output": false,
+              "correct": false,
+              "description": "Clock pulse: Input=1 -> State=1, Output=0"
+            },
+            {
+              "step": 4,
+              "input": false,
+              "clock": false,
+              "expected_state": true,
+              "expected_output": true,
+              "actual_state": true,
+              "actual_output": true,
+              "correct": true,
+              "description": "Change Input=0, State=1 -> Output=1 (immediate)"
+            },
+            {
+              "step": 5,
+              "input": false,
+              "clock": true,
+              "expected_state": true,
+              "expected_output": true,
+              "actual_state": true,
+              "actual_output": true,
+              "correct": true,
+              "description": "Clock pulse: Input=0 -> State=0, Output=0"
+            }
+          ],
+          "accuracy": 40.0,
+          "convergence_enabled": true
         },
         "johnson_counter": {
           "success": false,
-          "error": "Failed to connect Johnson feedback"
+          "description": "Johnson Counter (3-bit ring counter with inverted feedback)",
+          "total_cases": 7,
+          "passed_cases": 2,
+          "failed_cases": 5,
+          "results": [
+            {
+              "step": 0,
+              "expected": {
+                "Q2": false,
+                "Q1": false,
+                "Q0": false
+              },
+              "actual": {
+                "Q2": false,
+                "Q1": true,
+                "Q0": false
+              },
+              "correct": false,
+              "description": "Initial: 000"
+            },
+            {
+              "step": 1,
+              "expected": {
+                "Q2": false,
+                "Q1": false,
+                "Q0": true
+              },
+              "actual": {
+                "Q2": false,
+                "Q1": false,
+                "Q0": true
+              },
+              "correct": true,
+              "description": "After 1 clock: 001"
+            },
+            {
+              "step": 2,
+              "expected": {
+                "Q2": false,
+                "Q1": true,
+                "Q0": true
+              },
+              "actual": {
+                "Q2": false,
+                "Q1": true,
+                "Q0": true
+              },
+              "correct": true,
+              "description": "After 2 clocks: 011"
+            },
+            {
+              "step": 3,
+              "expected": {
+                "Q2": true,
+                "Q1": true,
+                "Q0": true
+              },
+              "actual": {
+                "Q2": false,
+                "Q1": false,
+                "Q0": true
+              },
+              "correct": false,
+              "description": "After 3 clocks: 111"
+            },
+            {
+              "step": 4,
+              "expected": {
+                "Q2": true,
+                "Q1": true,
+                "Q0": false
+              },
+              "actual": {
+                "Q2": false,
+                "Q1": false,
+                "Q0": true
+              },
+              "correct": false,
+              "description": "After 4 clocks: 110"
+            },
+            {
+              "step": 5,
+              "expected": {
+                "Q2": true,
+                "Q1": false,
+                "Q0": false
+              },
+              "actual": {
+                "Q2": false,
+                "Q1": true,
+                "Q0": true
+              },
+              "correct": false,
+              "description": "After 5 clocks: 100"
+            },
+            {
+              "step": 6,
+              "expected": {
+                "Q2": false,
+                "Q1": false,
+                "Q0": false
+              },
+              "actual": {
+                "Q2": false,
+                "Q1": false,
+                "Q0": true
+              },
+              "correct": false,
+              "description": "After 6 clocks: 000 (cycle)"
+            }
+          ],
+          "accuracy": 28.57142857142857,
+          "convergence_enabled": true
         }
       },
       "description": "Advanced state machines with full complexity - Mealy machines and ring counters"
+    },
+    {
+      "test": "fifo_systems",
+      "success": false,
+      "results": {
+        "4stage_fifo": {
+          "success": false,
+          "description": "4-stage FIFO buffer using shift register architecture",
+          "total_cases": 6,
+          "passed_cases": 2,
+          "failed_cases": 4,
+          "results": [
+            {
+              "step": 1,
+              "inputs": {
+                "data": false,
+                "push": false,
+                "pop": false
+              },
+              "expected_fifo": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "actual_fifo": [
+                true,
+                true,
+                true,
+                true
+              ],
+              "correct": false,
+              "description": "Initial: Empty FIFO"
+            },
+            {
+              "step": 2,
+              "inputs": {
+                "data": true,
+                "push": true,
+                "pop": false
+              },
+              "expected_fifo": [
+                true,
+                false,
+                false,
+                false
+              ],
+              "actual_fifo": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "correct": false,
+              "description": "Push 1 into FIFO"
+            },
+            {
+              "step": 3,
+              "inputs": {
+                "data": false,
+                "push": false,
+                "pop": false
+              },
+              "expected_fifo": [
+                true,
+                false,
+                false,
+                false
+              ],
+              "actual_fifo": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "correct": false,
+              "description": "Hold: FIFO contains [1,0,0,0]"
+            },
+            {
+              "step": 4,
+              "inputs": {
+                "data": false,
+                "push": true,
+                "pop": false
+              },
+              "expected_fifo": [
+                false,
+                true,
+                false,
+                false
+              ],
+              "actual_fifo": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "correct": true,
+              "description": "Push 0 into FIFO"
+            },
+            {
+              "step": 5,
+              "inputs": {
+                "data": true,
+                "push": true,
+                "pop": false
+              },
+              "expected_fifo": [
+                true,
+                false,
+                true,
+                false
+              ],
+              "actual_fifo": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "correct": false,
+              "description": "Push 1 into FIFO"
+            },
+            {
+              "step": 6,
+              "inputs": {
+                "data": false,
+                "push": true,
+                "pop": false
+              },
+              "expected_fifo": [
+                false,
+                true,
+                false,
+                true
+              ],
+              "actual_fifo": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "correct": true,
+              "description": "Push 0 into FIFO - FIFO full [0,1,0,1]"
+            }
+          ],
+          "accuracy": 33.33333333333333,
+          "convergence_enabled": true
+        }
+      },
+      "description": "FIFO buffer systems using advanced shift register architectures"
+    },
+    {
+      "test": "bcd_counter_systems",
+      "success": false,
+      "results": {
+        "4bit_bcd_counter": {
+          "success": false,
+          "description": "4-bit BCD counter with decade reset logic",
+          "total_cases": 8,
+          "passed_cases": 1,
+          "failed_cases": 7,
+          "results": [
+            {
+              "step": 0,
+              "expected": {
+                "Q3": 0,
+                "Q2": 0,
+                "Q1": 0,
+                "Q0": 0
+              },
+              "actual": {
+                "Q3": true,
+                "Q2": true,
+                "Q1": true,
+                "Q0": true
+              },
+              "decade_detected": true,
+              "correct": false,
+              "description": "Initial: 0000 (0)"
+            },
+            {
+              "step": 1,
+              "expected": {
+                "Q3": 0,
+                "Q2": 0,
+                "Q1": 0,
+                "Q0": 1
+              },
+              "actual": {
+                "Q3": true,
+                "Q2": true,
+                "Q1": true,
+                "Q0": true
+              },
+              "decade_detected": true,
+              "correct": false,
+              "description": "After 1 clock: 0001 (1)"
+            },
+            {
+              "step": 2,
+              "expected": {
+                "Q3": 0,
+                "Q2": 0,
+                "Q1": 1,
+                "Q0": 0
+              },
+              "actual": {
+                "Q3": true,
+                "Q2": true,
+                "Q1": true,
+                "Q0": true
+              },
+              "decade_detected": true,
+              "correct": false,
+              "description": "After 2 clocks: 0010 (2)"
+            },
+            {
+              "step": 3,
+              "expected": {
+                "Q3": 0,
+                "Q2": 0,
+                "Q1": 1,
+                "Q0": 1
+              },
+              "actual": {
+                "Q3": true,
+                "Q2": true,
+                "Q1": true,
+                "Q0": true
+              },
+              "decade_detected": true,
+              "correct": true,
+              "description": "After 3 clocks: 0011 (3)"
+            },
+            {
+              "step": 4,
+              "expected": {
+                "Q3": 0,
+                "Q2": 1,
+                "Q1": 0,
+                "Q0": 0
+              },
+              "actual": {
+                "Q3": true,
+                "Q2": true,
+                "Q1": true,
+                "Q0": true
+              },
+              "decade_detected": true,
+              "correct": false,
+              "description": "After 4 clocks: 0100 (4)"
+            },
+            {
+              "step": 5,
+              "expected": {
+                "Q3": 0,
+                "Q2": 1,
+                "Q1": 0,
+                "Q0": 1
+              },
+              "actual": {
+                "Q3": true,
+                "Q2": true,
+                "Q1": true,
+                "Q0": true
+              },
+              "decade_detected": true,
+              "correct": false,
+              "description": "After 5 clocks: 0101 (5)"
+            },
+            {
+              "step": 6,
+              "expected": {
+                "Q3": 1,
+                "Q2": 0,
+                "Q1": 0,
+                "Q0": 1
+              },
+              "actual": {
+                "Q3": true,
+                "Q2": true,
+                "Q1": true,
+                "Q0": true
+              },
+              "decade_detected": true,
+              "correct": false,
+              "description": "After 9 clocks: 1001 (9)"
+            },
+            {
+              "step": 7,
+              "expected": {
+                "Q3": 0,
+                "Q2": 0,
+                "Q1": 0,
+                "Q0": 0
+              },
+              "actual": {
+                "Q3": true,
+                "Q2": true,
+                "Q1": true,
+                "Q0": true
+              },
+              "decade_detected": true,
+              "correct": false,
+              "description": "After 10 clocks: 0000 (reset from 10)"
+            }
+          ],
+          "accuracy": 12.5,
+          "convergence_enabled": true
+        }
+      },
+      "description": "BCD counter systems with decade reset logic"
     },
     {
       "test": "memory_systems",
