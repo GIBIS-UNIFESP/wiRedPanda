@@ -325,20 +325,14 @@ QJsonObject MCPProcessor::handleSimulationControl(const QJsonObject& params)
                 sim->restart();
             } else if (action == "update") {
                 // Force a single simulation update (like QtTest does)
-                fprintf(stderr, "MCP DEBUG: update action called\n");
-                // Ensure simulation is stopped first to avoid conflicts
-                bool wasRunning = sim->isRunning();
-                fprintf(stderr, "MCP DEBUG: simulation was running: %s\n", wasRunning ? "true" : "false");
-                if (wasRunning) {
+                // CRITICAL: Don't restart simulation - this preserves circuit state/memory
+                if (!sim->isRunning()) {
+                    // If simulation is stopped, just do a single update
+                    sim->update();
+                } else {
+                    // If simulation is running, temporarily stop it, update once, then restart
                     sim->stop();
-                }
-                
-                // Force reinitialization and single update
-                sim->restart();  // This sets m_initialized = false
-                sim->update();   // This will call initialize() and then update
-                
-                // Restore running state if it was running before
-                if (wasRunning) {
+                    sim->update();
                     sim->start();
                 }
             } else {
