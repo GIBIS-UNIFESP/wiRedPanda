@@ -1,0 +1,1581 @@
+{
+  "level": 1,
+  "name": "Advanced Combinational Logic",
+  "total_tests": 4,
+  "passed": 4,
+  "failed": 0,
+  "pass_rate": 100.0,
+  "results": [
+    {
+      "test": "multi_input_gates",
+      "success": true,
+      "results": {
+        "3_input_and": {
+          "success": true,
+          "total_cases": 8,
+          "passed_cases": 8,
+          "failed_cases": 0,
+          "sample_results": [
+            {
+              "inputs": [
+                false,
+                false,
+                false
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                false,
+                true
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                true,
+                false
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                true,
+                true
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                true,
+                false,
+                false
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                true,
+                false,
+                true
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                true,
+                true,
+                false
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                true,
+                true,
+                true
+              ],
+              "expected": true,
+              "actual": true,
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        },
+        "4_input_and": {
+          "success": true,
+          "total_cases": 16,
+          "passed_cases": 16,
+          "failed_cases": 0,
+          "sample_results": [
+            {
+              "inputs": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                false,
+                false,
+                true
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                false,
+                true,
+                false
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                false,
+                true,
+                true
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                true,
+                false,
+                false
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                true,
+                false,
+                true
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                true,
+                true,
+                false
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                true,
+                true,
+                true
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        },
+        "3_input_or": {
+          "success": true,
+          "total_cases": 8,
+          "passed_cases": 8,
+          "failed_cases": 0,
+          "sample_results": [
+            {
+              "inputs": [
+                false,
+                false,
+                false
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                false,
+                true
+              ],
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                true,
+                false
+              ],
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                true,
+                true
+              ],
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": [
+                true,
+                false,
+                false
+              ],
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": [
+                true,
+                false,
+                true
+              ],
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": [
+                true,
+                true,
+                false
+              ],
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": [
+                true,
+                true,
+                true
+              ],
+              "expected": true,
+              "actual": true,
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        },
+        "4_input_or": {
+          "success": true,
+          "total_cases": 16,
+          "passed_cases": 16,
+          "failed_cases": 0,
+          "sample_results": [
+            {
+              "inputs": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                false,
+                false,
+                true
+              ],
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                false,
+                true,
+                false
+              ],
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                false,
+                true,
+                true
+              ],
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                true,
+                false,
+                false
+              ],
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                true,
+                false,
+                true
+              ],
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                true,
+                true,
+                false
+              ],
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": [
+                false,
+                true,
+                true,
+                true
+              ],
+              "expected": true,
+              "actual": true,
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        }
+      },
+      "description": "Tests multi-input logic gates with exhaustive truth tables"
+    },
+    {
+      "test": "compound_boolean_functions",
+      "success": true,
+      "results": {
+        "aoi22": {
+          "success": true,
+          "description": "AND-OR-INVERT: F = NOT((A AND B) OR (C AND D))",
+          "total_cases": 16,
+          "passed_cases": 16,
+          "failed_cases": 0,
+          "sample_results": [
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "C": false,
+                "D": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "C": false,
+                "D": true
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "C": true,
+                "D": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "C": true,
+                "D": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "C": false,
+                "D": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "C": false,
+                "D": true
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "C": true,
+                "D": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "C": true,
+                "D": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "C": false,
+                "D": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "C": false,
+                "D": true
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "C": true,
+                "D": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "C": true,
+                "D": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "C": false,
+                "D": false
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "C": false,
+                "D": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "C": true,
+                "D": false
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "C": true,
+                "D": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        },
+        "oai22": {
+          "success": true,
+          "description": "OR-AND-INVERT: F = NOT((A OR B) AND (C OR D))",
+          "total_cases": 16,
+          "passed_cases": 16,
+          "failed_cases": 0,
+          "sample_results": [
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "C": false,
+                "D": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "C": false,
+                "D": true
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "C": true,
+                "D": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "C": true,
+                "D": true
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "C": false,
+                "D": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "C": false,
+                "D": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "C": true,
+                "D": false
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "C": true,
+                "D": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "C": false,
+                "D": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "C": false,
+                "D": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "C": true,
+                "D": false
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "C": true,
+                "D": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "C": false,
+                "D": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "C": false,
+                "D": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "C": true,
+                "D": false
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "C": true,
+                "D": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        },
+        "majority3": {
+          "success": true,
+          "description": "3-input Majority: F = (A AND B) OR (B AND C) OR (A AND C)",
+          "total_cases": 8,
+          "passed_cases": 8,
+          "failed_cases": 0,
+          "sample_results": [
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "C": false
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "C": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "C": false
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "C": true
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "C": false
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "C": true
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "C": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "C": true
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        },
+        "parity4": {
+          "success": true,
+          "description": "4-input Parity: F = A XOR B XOR C XOR D",
+          "total_cases": 16,
+          "passed_cases": 16,
+          "failed_cases": 0,
+          "sample_results": [
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "C": false,
+                "D": false
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "C": false,
+                "D": true
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "C": true,
+                "D": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "C": true,
+                "D": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "C": false,
+                "D": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "C": false,
+                "D": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "C": true,
+                "D": false
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "C": true,
+                "D": true
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "C": false,
+                "D": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "C": false,
+                "D": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "C": true,
+                "D": false
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "C": true,
+                "D": true
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "C": false,
+                "D": false
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "C": false,
+                "D": true
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "C": true,
+                "D": false
+              },
+              "expected": true,
+              "actual": true,
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "C": true,
+                "D": true
+              },
+              "expected": false,
+              "actual": false,
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        }
+      },
+      "description": "Tests complex Boolean functions implemented with gate networks"
+    },
+    {
+      "test": "signal_conditioning",
+      "success": true,
+      "results": {
+        "buffer_chain": {
+          "success": true,
+          "description": "Signal propagation through buffer chain (NOT-NOT pairs)",
+          "results": [
+            {
+              "input": false,
+              "outputs": [
+                false
+              ],
+              "correct": true
+            },
+            {
+              "input": true,
+              "outputs": [
+                true
+              ],
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        },
+        "fan_out_test": {
+          "success": true,
+          "description": "Single input driving multiple outputs",
+          "results": [
+            {
+              "input": false,
+              "outputs": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "correct": true
+            },
+            {
+              "input": true,
+              "outputs": [
+                true,
+                true,
+                true,
+                true
+              ],
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        },
+        "signal_integrity": {
+          "success": true,
+          "description": "Signal strength through multiple gate levels",
+          "results": [
+            {
+              "input": false,
+              "outputs": [
+                false
+              ],
+              "correct": true
+            },
+            {
+              "input": true,
+              "outputs": [
+                true
+              ],
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        }
+      },
+      "description": "Tests signal conditioning, buffering, and fan-out capabilities"
+    },
+    {
+      "test": "complex_logic_networks",
+      "success": true,
+      "results": {
+        "decoder_2_to_4": {
+          "success": true,
+          "description": "2-to-4 decoder with enable",
+          "total_cases": 8,
+          "passed_cases": 8,
+          "failed_cases": 0,
+          "sample_results": [
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "EN": false
+              },
+              "expected": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "actual": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "EN": true
+              },
+              "expected": [
+                true,
+                false,
+                false,
+                false
+              ],
+              "actual": [
+                true,
+                false,
+                false,
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "EN": false
+              },
+              "expected": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "actual": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "EN": true
+              },
+              "expected": [
+                false,
+                false,
+                true,
+                false
+              ],
+              "actual": [
+                false,
+                false,
+                true,
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "EN": false
+              },
+              "expected": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "actual": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "EN": true
+              },
+              "expected": [
+                false,
+                true,
+                false,
+                false
+              ],
+              "actual": [
+                false,
+                true,
+                false,
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "EN": false
+              },
+              "expected": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "actual": [
+                false,
+                false,
+                false,
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "EN": true
+              },
+              "expected": [
+                false,
+                false,
+                false,
+                true
+              ],
+              "actual": [
+                false,
+                false,
+                false,
+                true
+              ],
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        },
+        "mux_4_to_1": {
+          "success": true,
+          "description": "4-to-1 multiplexer",
+          "total_cases": 64,
+          "passed_cases": 64,
+          "failed_cases": 0,
+          "sample_results": [
+            {
+              "inputs": {
+                "D0": false,
+                "D1": false,
+                "D2": false,
+                "D3": false,
+                "S0": false,
+                "S1": false
+              },
+              "expected": [
+                false
+              ],
+              "actual": [
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "D0": false,
+                "D1": false,
+                "D2": false,
+                "D3": false,
+                "S0": false,
+                "S1": true
+              },
+              "expected": [
+                false
+              ],
+              "actual": [
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "D0": false,
+                "D1": false,
+                "D2": false,
+                "D3": false,
+                "S0": true,
+                "S1": false
+              },
+              "expected": [
+                false
+              ],
+              "actual": [
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "D0": false,
+                "D1": false,
+                "D2": false,
+                "D3": false,
+                "S0": true,
+                "S1": true
+              },
+              "expected": [
+                false
+              ],
+              "actual": [
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "D0": false,
+                "D1": false,
+                "D2": false,
+                "D3": true,
+                "S0": false,
+                "S1": false
+              },
+              "expected": [
+                false
+              ],
+              "actual": [
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "D0": false,
+                "D1": false,
+                "D2": false,
+                "D3": true,
+                "S0": false,
+                "S1": true
+              },
+              "expected": [
+                false
+              ],
+              "actual": [
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "D0": false,
+                "D1": false,
+                "D2": false,
+                "D3": true,
+                "S0": true,
+                "S1": false
+              },
+              "expected": [
+                false
+              ],
+              "actual": [
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "D0": false,
+                "D1": false,
+                "D2": false,
+                "D3": true,
+                "S0": true,
+                "S1": true
+              },
+              "expected": [
+                true
+              ],
+              "actual": [
+                true
+              ],
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        },
+        "full_adder": {
+          "success": true,
+          "description": "Full adder (Sum and Carry outputs)",
+          "total_cases": 8,
+          "passed_cases": 8,
+          "failed_cases": 0,
+          "sample_results": [
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "Cin": false
+              },
+              "expected": [
+                false,
+                false
+              ],
+              "actual": [
+                false,
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "Cin": true
+              },
+              "expected": [
+                true,
+                false
+              ],
+              "actual": [
+                true,
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "Cin": false
+              },
+              "expected": [
+                true,
+                false
+              ],
+              "actual": [
+                true,
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "Cin": true
+              },
+              "expected": [
+                false,
+                true
+              ],
+              "actual": [
+                false,
+                true
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "Cin": false
+              },
+              "expected": [
+                true,
+                false
+              ],
+              "actual": [
+                true,
+                false
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "Cin": true
+              },
+              "expected": [
+                false,
+                true
+              ],
+              "actual": [
+                false,
+                true
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "Cin": false
+              },
+              "expected": [
+                false,
+                true
+              ],
+              "actual": [
+                false,
+                true
+              ],
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "Cin": true
+              },
+              "expected": [
+                true,
+                true
+              ],
+              "actual": [
+                true,
+                true
+              ],
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        }
+      },
+      "description": "Tests complex multi-level logic networks used in CPU designs"
+    }
+  ]
+}

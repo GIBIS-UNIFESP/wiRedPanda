@@ -95,11 +95,6 @@ class ArithmeticBlocksValidator:
             self.bridge = WiredPandaBridge()
             self.bridge.start()
 
-    def _get_bridge(self) -> WiredPandaBridge:
-        """Get the bridge with type narrowing."""
-        self._ensure_bridge()
-        assert self.bridge is not None
-        return self.bridge
 
     def create_new_circuit(self) -> bool:
         """Create a new circuit by starting the application."""
@@ -897,82 +892,6 @@ class ArithmeticBlocksValidator:
             debug_xor2_id,
         )
 
-    def _create_full_adder_stage(
-        self, stage: int, a_id: int, b_id: int, cin_id: int
-    ) -> Optional[Tuple[int, int, int, int]]:
-        """Create a single full adder stage within a multi-bit adder."""
-        # Use grid positioning - each stage gets its own column group
-        stage_col_offset = stage * 3  # 3 columns per stage (XOR1, XOR2+AND2, OR)
-        base_col = 2  # Start at column 2 (after inputs)
-
-        # Create gates for this stage with proper grid positioning
-        xor1_x, xor1_y = self._get_grid_position(base_col + stage_col_offset, 0)
-        xor1_id = self.create_element("Xor", xor1_x, xor1_y, f"XOR1_{stage}")
-        xor2_x, xor2_y = self._get_grid_position(base_col + stage_col_offset + 1, 0)
-        xor2_id = self.create_element("Xor", xor2_x, xor2_y, f"XOR2_{stage}")
-        and1_x, and1_y = self._get_grid_position(base_col + stage_col_offset, 1)
-        and1_id = self.create_element("And", and1_x, and1_y, f"AND1_{stage}")
-        and2_x, and2_y = self._get_grid_position(base_col + stage_col_offset + 1, 1)
-        and2_id = self.create_element("And", and2_x, and2_y, f"AND2_{stage}")
-        or_x, or_y = self._get_grid_position(base_col + stage_col_offset + 2, 1)
-        or_id = self.create_element("Or", or_x, or_y, f"OR_{stage}")
-
-        gates = [xor1_id, xor2_id, and1_id, and2_id, or_id]
-        if not all(gates):
-            return None
-
-        # Create outputs with proper grid positioning
-        sum_out_x, sum_out_y = self._get_grid_position(
-            base_col + stage_col_offset + 1, stage
-        )
-        sum_out_id = self.create_element("Led", sum_out_x, sum_out_y, f"S{stage}")
-        carry_out_x, carry_out_y = self._get_grid_position(
-            base_col + stage_col_offset + 2, stage + 2
-        )
-        carry_out_id = self.create_element("Led", carry_out_x, carry_out_y, f"C{stage}")
-
-        if not all([sum_out_id, carry_out_id]):
-            return None
-
-        # Connect full adder logic
-        connections = [
-            # Sum path: A XOR B XOR Cin
-            (a_id, 0, xor1_id, 0),
-            (b_id, 0, xor1_id, 1),
-            (xor1_id, 0, xor2_id, 0),
-            (cin_id, 0, xor2_id, 1),
-            (xor2_id, 0, sum_out_id, 0),
-            # Carry path: (A AND B) OR (Cin AND (A XOR B))
-            (a_id, 0, and1_id, 0),
-            (b_id, 0, and1_id, 1),
-            (cin_id, 0, and2_id, 0),
-            (xor1_id, 0, and2_id, 1),
-            (and1_id, 0, or_id, 0),
-            (and2_id, 0, or_id, 1),
-            (or_id, 0, carry_out_id, 0),
-        ]
-
-        for source_id, source_port, target_id, target_port in connections:
-            # Type assertions for connections
-            assert source_id is not None and target_id is not None
-            success = self.connect_elements(
-                source_id, source_port, target_id, target_port
-            )
-            # Debug connection names for potential future use:
-            # ["A→XOR1", "B→XOR1", "XOR1→XOR2", "Cin→XOR2", "XOR2→Sum_LED",
-            #  "A→AND1", "B→AND1", "Cin→AND2", "XOR1→AND2", "AND1→OR",
-            #  "AND2→OR", "OR→Carry_LED"]
-            if not success:
-                return None
-
-        # Type assertion and cast for return values
-        assert all(x is not None for x in [sum_out_id, or_id, xor1_id, xor2_id])
-        return (
-            cast(ElementID, sum_out_id),
-            cast(ElementID, or_id),
-            cast(ElementID, xor1_id),
-            cast(ElementID, xor2_id),
-        )  # Return gate outputs for debugging
 
     def _int_to_bits(self, value: int, bit_width: int) -> BitList:
         """Convert integer to list of bits (LSB first)."""
@@ -1331,87 +1250,7 @@ class ArithmeticBlocksValidator:
             cast(List[ElementID], diff_gate_ids),
         )
 
-    def _create_subtractor_with_inputs(
-        self, input_a_ids: List[int], input_b_ids: List[int]
-    ) -> Optional[Tuple[List[int], int, List[int]]]:
-        """Create n-bit subtractor using provided input arrays: A - B = A + (~B + 1)"""
-        bit_width = len(input_a_ids)
 
-        if bit_width != len(input_b_ids) or bit_width < 1 or bit_width > 8:
-            return None
-
-        # Create NOT gates to invert B (first step of 2's complement) with proper positioning
-        not_b_ids = []
-        for i in range(bit_width):
-            not_x, not_y = self._get_grid_position(i, 2)  # NOT gates in row 2
-            not_id = self.create_element("Not", not_x, not_y, f"NOT_B{i}")
-            if not not_id:
-                return None
-
-            # Type assertion after None check
-            assert not_id is not None
-            # Connect B to NOT gate
-            if not self.connect_elements(input_b_ids[i], 0, not_id, 0):
-                return None
-
-            not_b_ids.append(not_id)
-
-        # Create ripple carry adder to add A + (~B + 1)
-        # The +1 is implemented by setting the initial carry input to 1
-        one_x, one_y = self._get_grid_position(
-            bit_width, 0
-        )  # ONE input next to other inputs
-        one_id = self.create_element("InputButton", one_x, one_y, "ONE")
-        if not one_id:
-            return None
-
-        # Set the constant 1 input
-        self.set_input(one_id, True)
-
-        # Create adder stages: A + ~B + 1
-        diff_output_ids: List[int] = []  # LED outputs
-        diff_gate_ids: List[int] = []  # XOR2 gate outputs (for magnitude comparator)
-        carry_signals = [cast(int, one_id)]  # Start with carry = 1 for 2's complement
-        borrow_gate_id: Optional[int] = None  # Initialize borrow gate ID
-
-        for stage in range(bit_width):
-            if stage < bit_width - 1:
-                # Regular stage
-                stage_result = self._create_full_adder_stage(
-                    stage, input_a_ids[stage], not_b_ids[stage], carry_signals[stage]
-                )
-
-                if not stage_result:
-                    return None
-
-                diff_out_id, carry_out_id, _, xor2_id = stage_result
-                diff_output_ids.append(diff_out_id)
-                diff_gate_ids.append(xor2_id)  # Store XOR2 gate output
-                carry_signals.append(carry_out_id)
-            else:
-                # Final stage with borrow output
-                stage_result_with_borrow = self._create_full_adder_stage_with_borrow(
-                    stage, input_a_ids[stage], not_b_ids[stage], carry_signals[stage]
-                )
-                if not stage_result_with_borrow:
-                    return None
-
-                diff_out_id, carry_out_id, _, xor2_id, borrow_gate_id = (
-                    stage_result_with_borrow
-                )
-                diff_output_ids.append(diff_out_id)
-                diff_gate_ids.append(xor2_id)  # Store XOR2 gate output
-
-        # Return with properly typed borrow_gate_id
-        if borrow_gate_id is None:
-            # This shouldn't happen in normal flow, but provide safe fallback
-            return diff_output_ids, 0, diff_gate_ids
-        return diff_output_ids, borrow_gate_id, diff_gate_ids
-
-    def _create_full_adder_stage_with_borrow(
-        self, stage: int, a_id: int, b_id: int, cin_id: int
-    ) -> Optional[Tuple[int, int, int, int, int]]:
-        """Create a full adder stage with borrow output using grid layout."""
 
         # Use grid positioning similar to regular full adder stages
         stage_col = stage
@@ -1514,22 +1353,6 @@ class ArithmeticBlocksValidator:
             cast(ElementID, not_borrow_id),
         )
 
-    def _add_one_to_bits(self, bits: List[bool]) -> List[bool]:
-        """Add 1 to a binary number represented as list of bits."""
-        result = bits.copy()
-        carry = True
-
-        for i in range(len(result)):
-            if carry:
-                if result[i]:
-                    result[i] = False  # 1 + 1 = 0 with carry
-                else:
-                    result[i] = True  # 0 + 1 = 1 no carry
-                    carry = False
-            else:
-                break
-
-        return result
 
     def test_comparator_circuits(self) -> Dict[str, Any]:
         """
@@ -2079,9 +1902,6 @@ class ArithmeticBlocksValidator:
             cast(int, eq_output_id),
         )
 
-    def _create_or_tree(self, signal_ids: List[int], prefix: str) -> Optional[int]:
-        """Create OR tree to combine multiple signals."""
-        return self._create_or_tree_positioned(signal_ids, prefix, 3, 0)
 
     def _create_or_tree_positioned(
         self, signal_ids: List[int], prefix: str, start_col: int, start_row: int

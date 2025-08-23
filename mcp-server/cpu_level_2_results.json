@@ -1,0 +1,1184 @@
+{
+  "level": 2,
+  "name": "Arithmetic Building Blocks",
+  "total_tests": 4,
+  "passed": 4,
+  "failed": 0,
+  "pass_rate": 100.0,
+  "results": [
+    {
+      "test": "basic_adders",
+      "success": true,
+      "results": {
+        "half_adder": {
+          "success": true,
+          "description": "Half Adder: Sum = A XOR B, Carry = A AND B",
+          "total_cases": 4,
+          "passed_cases": 4,
+          "failed_cases": 0,
+          "results": [
+            {
+              "inputs": {
+                "A": false,
+                "B": false
+              },
+              "expected": {
+                "Sum": false,
+                "Carry": false
+              },
+              "actual": {
+                "Sum": false,
+                "Carry": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true
+              },
+              "expected": {
+                "Sum": true,
+                "Carry": false
+              },
+              "actual": {
+                "Sum": true,
+                "Carry": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false
+              },
+              "expected": {
+                "Sum": true,
+                "Carry": false
+              },
+              "actual": {
+                "Sum": true,
+                "Carry": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true
+              },
+              "expected": {
+                "Sum": false,
+                "Carry": true
+              },
+              "actual": {
+                "Sum": false,
+                "Carry": true
+              },
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        },
+        "full_adder": {
+          "success": true,
+          "description": "Full Adder: Sum = A XOR B XOR Cin, Carry = (A AND B) OR (Cin AND (A XOR B))",
+          "total_cases": 8,
+          "passed_cases": 8,
+          "failed_cases": 0,
+          "results": [
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "Cin": false
+              },
+              "expected": {
+                "Sum": false,
+                "Cout": false
+              },
+              "actual": {
+                "Sum": false,
+                "Cout": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": false,
+                "Cin": true
+              },
+              "expected": {
+                "Sum": true,
+                "Cout": false
+              },
+              "actual": {
+                "Sum": true,
+                "Cout": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "Cin": false
+              },
+              "expected": {
+                "Sum": true,
+                "Cout": false
+              },
+              "actual": {
+                "Sum": true,
+                "Cout": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": false,
+                "B": true,
+                "Cin": true
+              },
+              "expected": {
+                "Sum": false,
+                "Cout": true
+              },
+              "actual": {
+                "Sum": false,
+                "Cout": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "Cin": false
+              },
+              "expected": {
+                "Sum": true,
+                "Cout": false
+              },
+              "actual": {
+                "Sum": true,
+                "Cout": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": false,
+                "Cin": true
+              },
+              "expected": {
+                "Sum": false,
+                "Cout": true
+              },
+              "actual": {
+                "Sum": false,
+                "Cout": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "Cin": false
+              },
+              "expected": {
+                "Sum": false,
+                "Cout": true
+              },
+              "actual": {
+                "Sum": false,
+                "Cout": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": true,
+                "B": true,
+                "Cin": true
+              },
+              "expected": {
+                "Sum": true,
+                "Cout": true
+              },
+              "actual": {
+                "Sum": true,
+                "Cout": true
+              },
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        }
+      },
+      "description": "Tests fundamental adder circuits (half and full adders)"
+    },
+    {
+      "test": "multi_bit_adders",
+      "success": true,
+      "results": {
+        "4_bit_adder": {
+          "success": true,
+          "description": "4-bit Ripple Carry Adder",
+          "bit_width": 4,
+          "total_cases": 32,
+          "passed_cases": 32,
+          "failed_cases": 0,
+          "sample_results": [
+            {
+              "inputs": {
+                "A": 0,
+                "B": 0,
+                "Cin": 0
+              },
+              "expected": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": false
+              },
+              "actual": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 15,
+                "B": 15,
+                "Cin": 1
+              },
+              "expected": {
+                "Sum": 15,
+                "Sum_bits": [
+                  true,
+                  true,
+                  true,
+                  true
+                ],
+                "Carry": true
+              },
+              "actual": {
+                "Sum": 15,
+                "Sum_bits": [
+                  true,
+                  true,
+                  true,
+                  true
+                ],
+                "Carry": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 8,
+                "B": 8,
+                "Cin": 0
+              },
+              "expected": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": true
+              },
+              "actual": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 1,
+                "B": 1,
+                "Cin": 1
+              },
+              "expected": {
+                "Sum": 3,
+                "Sum_bits": [
+                  true,
+                  true,
+                  false,
+                  false
+                ],
+                "Carry": false
+              },
+              "actual": {
+                "Sum": 3,
+                "Sum_bits": [
+                  true,
+                  true,
+                  false,
+                  false
+                ],
+                "Carry": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 7,
+                "B": 1,
+                "Cin": 0
+              },
+              "expected": {
+                "Sum": 8,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  true
+                ],
+                "Carry": false
+              },
+              "actual": {
+                "Sum": 8,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  true
+                ],
+                "Carry": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 15,
+                "B": 1,
+                "Cin": 0
+              },
+              "expected": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": true
+              },
+              "actual": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 0,
+                "B": 15,
+                "Cin": 1
+              },
+              "expected": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": true
+              },
+              "actual": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 3,
+                "B": 0,
+                "Cin": 1
+              },
+              "expected": {
+                "Sum": 4,
+                "Sum_bits": [
+                  false,
+                  false,
+                  true,
+                  false
+                ],
+                "Carry": false
+              },
+              "actual": {
+                "Sum": 4,
+                "Sum_bits": [
+                  false,
+                  false,
+                  true,
+                  false
+                ],
+                "Carry": false
+              },
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        },
+        "8_bit_adder": {
+          "success": true,
+          "description": "8-bit Ripple Carry Adder (complexity limit test)",
+          "bit_width": 8,
+          "total_cases": 107,
+          "passed_cases": 107,
+          "failed_cases": 0,
+          "sample_results": [
+            {
+              "inputs": {
+                "A": 0,
+                "B": 0,
+                "Cin": 0
+              },
+              "expected": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": false
+              },
+              "actual": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 255,
+                "B": 255,
+                "Cin": 1
+              },
+              "expected": {
+                "Sum": 255,
+                "Sum_bits": [
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true
+                ],
+                "Carry": true
+              },
+              "actual": {
+                "Sum": 255,
+                "Sum_bits": [
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true
+                ],
+                "Carry": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 128,
+                "B": 128,
+                "Cin": 0
+              },
+              "expected": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": true
+              },
+              "actual": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 127,
+                "B": 1,
+                "Cin": 0
+              },
+              "expected": {
+                "Sum": 128,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  true
+                ],
+                "Carry": false
+              },
+              "actual": {
+                "Sum": 128,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  true
+                ],
+                "Carry": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 255,
+                "B": 1,
+                "Cin": 0
+              },
+              "expected": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": true
+              },
+              "actual": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 0,
+                "B": 255,
+                "Cin": 1
+              },
+              "expected": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": true
+              },
+              "actual": {
+                "Sum": 0,
+                "Sum_bits": [
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Carry": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 170,
+                "B": 85,
+                "Cin": 0
+              },
+              "expected": {
+                "Sum": 255,
+                "Sum_bits": [
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true
+                ],
+                "Carry": false
+              },
+              "actual": {
+                "Sum": 255,
+                "Sum_bits": [
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true
+                ],
+                "Carry": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 26,
+                "B": 137,
+                "Cin": 0
+              },
+              "expected": {
+                "Sum": 163,
+                "Sum_bits": [
+                  true,
+                  true,
+                  false,
+                  false,
+                  false,
+                  true,
+                  false,
+                  true
+                ],
+                "Carry": false
+              },
+              "actual": {
+                "Sum": 163,
+                "Sum_bits": [
+                  true,
+                  true,
+                  false,
+                  false,
+                  false,
+                  true,
+                  false,
+                  true
+                ],
+                "Carry": false
+              },
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        }
+      },
+      "description": "Tests multi-bit ripple carry adders for CPU ALU"
+    },
+    {
+      "test": "subtraction_circuits",
+      "success": true,
+      "results": {
+        "4_bit_subtractor": {
+          "success": true,
+          "description": "4-bit Subtractor using 2's complement (A - B = A + (~B + 1))",
+          "bit_width": 4,
+          "total_cases": 7,
+          "passed_cases": 7,
+          "failed_cases": 0,
+          "results": [
+            {
+              "inputs": {
+                "A": 15,
+                "B": 1
+              },
+              "expected": {
+                "Difference": 14,
+                "Diff_bits": [
+                  false,
+                  true,
+                  true,
+                  true
+                ],
+                "Borrow": false
+              },
+              "actual": {
+                "Difference": 14,
+                "Diff_bits": [
+                  false,
+                  true,
+                  true,
+                  true
+                ],
+                "Borrow": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 8,
+                "B": 3
+              },
+              "expected": {
+                "Difference": 5,
+                "Diff_bits": [
+                  true,
+                  false,
+                  true,
+                  false
+                ],
+                "Borrow": false
+              },
+              "actual": {
+                "Difference": 5,
+                "Diff_bits": [
+                  true,
+                  false,
+                  true,
+                  false
+                ],
+                "Borrow": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 5,
+                "B": 5
+              },
+              "expected": {
+                "Difference": 0,
+                "Diff_bits": [
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Borrow": false
+              },
+              "actual": {
+                "Difference": 0,
+                "Diff_bits": [
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Borrow": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 3,
+                "B": 8
+              },
+              "expected": {
+                "Difference": -5,
+                "Diff_bits": [
+                  true,
+                  true,
+                  false,
+                  true
+                ],
+                "Borrow": true
+              },
+              "actual": {
+                "Difference": 11,
+                "Diff_bits": [
+                  true,
+                  true,
+                  false,
+                  true
+                ],
+                "Borrow": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 0,
+                "B": 1
+              },
+              "expected": {
+                "Difference": -1,
+                "Diff_bits": [
+                  true,
+                  true,
+                  true,
+                  true
+                ],
+                "Borrow": true
+              },
+              "actual": {
+                "Difference": 15,
+                "Diff_bits": [
+                  true,
+                  true,
+                  true,
+                  true
+                ],
+                "Borrow": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 15,
+                "B": 15
+              },
+              "expected": {
+                "Difference": 0,
+                "Diff_bits": [
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Borrow": false
+              },
+              "actual": {
+                "Difference": 0,
+                "Diff_bits": [
+                  false,
+                  false,
+                  false,
+                  false
+                ],
+                "Borrow": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 10,
+                "B": 6
+              },
+              "expected": {
+                "Difference": 4,
+                "Diff_bits": [
+                  false,
+                  false,
+                  true,
+                  false
+                ],
+                "Borrow": false
+              },
+              "actual": {
+                "Difference": 4,
+                "Diff_bits": [
+                  false,
+                  false,
+                  true,
+                  false
+                ],
+                "Borrow": false
+              },
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        }
+      },
+      "description": "Tests 2's complement subtraction circuits for CPU ALU"
+    },
+    {
+      "test": "comparator_circuits",
+      "success": true,
+      "results": {
+        "equality_comparator": {
+          "success": true,
+          "description": "4-bit Equality Comparator (A == B)",
+          "bit_width": 4,
+          "comparison_type": "equality",
+          "total_cases": 6,
+          "passed_cases": 6,
+          "failed_cases": 0,
+          "results": [
+            {
+              "inputs": {
+                "A": 0,
+                "B": 0
+              },
+              "expected": {
+                "Equal": true
+              },
+              "actual": {
+                "Equal": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 5,
+                "B": 5
+              },
+              "expected": {
+                "Equal": true
+              },
+              "actual": {
+                "Equal": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 15,
+                "B": 15
+              },
+              "expected": {
+                "Equal": true
+              },
+              "actual": {
+                "Equal": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 3,
+                "B": 7
+              },
+              "expected": {
+                "Equal": false
+              },
+              "actual": {
+                "Equal": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 10,
+                "B": 1
+              },
+              "expected": {
+                "Equal": false
+              },
+              "actual": {
+                "Equal": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 0,
+                "B": 15
+              },
+              "expected": {
+                "Equal": false
+              },
+              "actual": {
+                "Equal": false
+              },
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        },
+        "magnitude_comparator": {
+          "success": true,
+          "description": "4-bit Magnitude Comparator (A > B, A < B)",
+          "bit_width": 4,
+          "comparison_type": "magnitude",
+          "total_cases": 6,
+          "passed_cases": 6,
+          "failed_cases": 0,
+          "results": [
+            {
+              "inputs": {
+                "A": 8,
+                "B": 3
+              },
+              "expected": {
+                "Greater": true,
+                "Less": false,
+                "Equal": false
+              },
+              "actual": {
+                "Greater": true,
+                "Less": false,
+                "Equal": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 2,
+                "B": 10
+              },
+              "expected": {
+                "Greater": false,
+                "Less": true,
+                "Equal": false
+              },
+              "actual": {
+                "Greater": false,
+                "Less": true,
+                "Equal": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 7,
+                "B": 7
+              },
+              "expected": {
+                "Greater": false,
+                "Less": false,
+                "Equal": true
+              },
+              "actual": {
+                "Greater": false,
+                "Less": false,
+                "Equal": true
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 15,
+                "B": 0
+              },
+              "expected": {
+                "Greater": true,
+                "Less": false,
+                "Equal": false
+              },
+              "actual": {
+                "Greater": true,
+                "Less": false,
+                "Equal": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 0,
+                "B": 15
+              },
+              "expected": {
+                "Greater": false,
+                "Less": true,
+                "Equal": false
+              },
+              "actual": {
+                "Greater": false,
+                "Less": true,
+                "Equal": false
+              },
+              "correct": true
+            },
+            {
+              "inputs": {
+                "A": 12,
+                "B": 12
+              },
+              "expected": {
+                "Greater": false,
+                "Less": false,
+                "Equal": true
+              },
+              "actual": {
+                "Greater": false,
+                "Less": false,
+                "Equal": true
+              },
+              "correct": true
+            }
+          ],
+          "accuracy": 100.0
+        }
+      },
+      "description": "Tests equality and magnitude comparator circuits for CPU conditional operations"
+    }
+  ]
+}
