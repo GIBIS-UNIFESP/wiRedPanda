@@ -393,13 +393,13 @@ class AdvancedSequentialValidator:
             "convergence_enabled": True,
         }
 
-    def _create_d_flip_flop(self, base_col: int, base_row: int, label_prefix: str, clock_id: int) -> List[Optional[int]]:
-        """Create robust edge-triggered D flip-flop using proven Level 3 approach with clock control"""
+    def _create_d_flip_flop(self, base_col: int, base_row: int, label_prefix: str, clock_id: int, reset_id: Optional[int] = None) -> List[Optional[int]]:
+        """Create robust edge-triggered D flip-flop with reset capability for proper initialization"""
         logger.info(f"Creating robust edge-triggered D flip-flop: {label_prefix}")
         
-        # SIMPLIFIED BUT COMPLETE D FLIP-FLOP 
-        # Uses Level 3 proven D latch approach with edge detection
-        # Still maintains full complexity without excessive elements
+        # COMPLETE D FLIP-FLOP WITH RESET 
+        # Uses Level 3 proven D latch approach with edge detection and reset
+        # Reset ensures proper initialization to Q=False, Q_NOT=True
         
         # Create D input node (not InputButton - needs to be driven by other elements)
         d_x, d_y = self._get_grid_position(base_col, base_row)
@@ -415,7 +415,7 @@ class AdvancedSequentialValidator:
             logger.error(f"Failed to create NOT_CLK for {label_prefix}")
             return [None] * 6
         
-        # Create D latch components using Level 3 proven pattern
+        # Create D latch components using Level 3 proven pattern with reset capability
         and1_x, and1_y = self._get_grid_position(base_col + 1, base_row)
         and1 = self.create_element("And", and1_x, and1_y, f"{label_prefix}_AND1")
         
@@ -425,62 +425,118 @@ class AdvancedSequentialValidator:
         not_d_x, not_d_y = self._get_grid_position(base_col + 1, base_row + 2)
         not_d = self.create_element("Not", not_d_x, not_d_y, f"{label_prefix}_NOT_D")
         
-        nor1_x, nor1_y = self._get_grid_position(base_col + 2, base_row)
+        # Create reset logic - when reset=1, force Q=0, Q_NOT=1
+        if reset_id:
+            # Reset forces additional inputs to NOR gates
+            reset_or1_x, reset_or1_y = self._get_grid_position(base_col + 2, base_row - 1)
+            reset_or1 = self.create_element("Or", reset_or1_x, reset_or1_y, f"{label_prefix}_RESET_OR1")
+            
+            reset_or2_x, reset_or2_y = self._get_grid_position(base_col + 2, base_row + 2)
+            reset_or2 = self.create_element("Or", reset_or2_x, reset_or2_y, f"{label_prefix}_RESET_OR2")
+        else:
+            reset_or1 = None
+            reset_or2 = None
+        
+        nor1_x, nor1_y = self._get_grid_position(base_col + 3, base_row)
         nor1 = self.create_element("Nor", nor1_x, nor1_y, f"{label_prefix}_NOR1")
         
-        nor2_x, nor2_y = self._get_grid_position(base_col + 2, base_row + 1)
+        nor2_x, nor2_y = self._get_grid_position(base_col + 3, base_row + 1)
         nor2 = self.create_element("Nor", nor2_x, nor2_y, f"{label_prefix}_NOR2")
         
         # Create buffer outputs (LEDs can't be used as sources for other connections)
         # Use buffers to provide clean output signals that can drive other elements
-        q_buf_x, q_buf_y = self._get_grid_position(base_col + 3, base_row)
+        q_buf_x, q_buf_y = self._get_grid_position(base_col + 4, base_row)
         q_buf = self.create_element("Node", q_buf_x, q_buf_y, f"{label_prefix}_Q_BUF")
         
-        q_not_buf_x, q_not_buf_y = self._get_grid_position(base_col + 3, base_row + 1)
+        q_not_buf_x, q_not_buf_y = self._get_grid_position(base_col + 4, base_row + 1)
         q_not_buf = self.create_element("Node", q_not_buf_x, q_not_buf_y, f"{label_prefix}_Q_NOT_BUF")
         
         # Check all elements created successfully
-        all_elements = [d_input, not_clk, and1, and2, not_d, nor1, nor2, q_buf, q_not_buf]
+        core_elements = [d_input, not_clk, and1, and2, not_d, nor1, nor2, q_buf, q_not_buf]
+        if reset_id:
+            all_elements = core_elements + [reset_or1, reset_or2]
+            element_names = ['d_input', 'not_clk', 'and1', 'and2', 'not_d', 'nor1', 'nor2', 'q_buf', 'q_not_buf', 'reset_or1', 'reset_or2']
+        else:
+            all_elements = core_elements
+            element_names = ['d_input', 'not_clk', 'and1', 'and2', 'not_d', 'nor1', 'nor2', 'q_buf', 'q_not_buf']
+            
         if not all(all_elements):
-            failed_elements = [f"{name}={el}" for name, el in zip(
-                ['d_input', 'not_clk', 'and1', 'and2', 'not_d', 'nor1', 'nor2', 'q_buf', 'q_not_buf'],
-                all_elements
-            ) if el is None]
+            failed_elements = [f"{name}={el}" for name, el in zip(element_names, all_elements) if el is None]
             logger.error(f"Failed to create elements for {label_prefix}: {failed_elements}")
             return [None] * 6
         
-        # EDGE-TRIGGERED D FLIP-FLOP CONNECTIONS (based on Level 3 working D latch)
-        connections = [
-            # Clock inversion
-            (clock_id, 0, not_clk, 0),
-            
-            # D latch logic with clock enable (edge-triggered behavior)
-            (d_input, 0, not_d, 0),        # Create NOT_D
-            (d_input, 0, and1, 0),         # D -> AND1 (S path)
-            (clock_id, 0, and1, 1),        # CLK -> AND1 (enable on high)
-            (not_d, 0, and2, 0),           # NOT_D -> AND2 (R path)
-            (clock_id, 0, and2, 1),        # CLK -> AND2 (enable on high)
-            
-            # Cross-coupled NOR latch (the memory element)
-            (and2, 0, nor1, 0),            # R -> NOR1 (Q gate)
-            (and1, 0, nor2, 0),            # S -> NOR2 (Q_not gate)
-            (nor2, 0, nor1, 1),            # Cross-couple Q_not -> Q
-            (nor1, 0, nor2, 1),            # Cross-couple Q -> Q_not
-            
-            # Output buffer connections
-            (nor1, 0, q_buf, 0),           # Q -> Q buffer
-            (nor2, 0, q_not_buf, 0),       # Q_NOT -> Q_NOT buffer
-        ]
+        # EDGE-TRIGGERED D FLIP-FLOP CONNECTIONS WITH RESET CAPABILITY
+        if reset_id:
+            connections = [
+                # Clock inversion
+                (clock_id, 0, not_clk, 0),
+                
+                # D latch logic with clock enable (edge-triggered behavior)
+                (d_input, 0, not_d, 0),        # Create NOT_D
+                (d_input, 0, and1, 0),         # D -> AND1 (S path)
+                (clock_id, 0, and1, 1),        # CLK -> AND1 (enable on high)
+                (not_d, 0, and2, 0),           # NOT_D -> AND2 (R path)
+                (clock_id, 0, and2, 1),        # CLK -> AND2 (enable on high)
+                
+                # Proper reset logic - when reset=1, force Q=0 and Q_NOT=1
+                # OR gate for R path: normal R OR reset (forces reset when reset=1)
+                (and2, 0, reset_or1, 0),       # Normal R input
+                (reset_id, 0, reset_or1, 1),   # Reset input (R = normal_R OR reset)
+                
+                # OR gate for S path: normal S (no reset interference)
+                (and1, 0, reset_or2, 0),       # Normal S input
+                # Note: reset_or2 input 1 left unconnected (defaults to 0)
+                
+                # Cross-coupled NOR latch with reset capability
+                (reset_or1, 0, nor1, 0),       # (R OR reset) -> NOR1 (Q gate)
+                (reset_or2, 0, nor2, 0),       # S -> NOR2 (Q_not gate) 
+                (nor2, 0, nor1, 1),            # Cross-couple Q_not -> Q
+                (nor1, 0, nor2, 1),            # Cross-couple Q -> Q_not
+                
+                # Output buffer connections
+                (nor1, 0, q_buf, 0),           # Q -> Q buffer
+                (nor2, 0, q_not_buf, 0),       # Q_NOT -> Q_NOT buffer
+            ]
+        else:
+            # Original connections without reset
+            connections = [
+                # Clock inversion
+                (clock_id, 0, not_clk, 0),
+                
+                # D latch logic with clock enable (edge-triggered behavior)
+                (d_input, 0, not_d, 0),        # Create NOT_D
+                (d_input, 0, and1, 0),         # D -> AND1 (S path)
+                (clock_id, 0, and1, 1),        # CLK -> AND1 (enable on high)
+                (not_d, 0, and2, 0),           # NOT_D -> AND2 (R path)
+                (clock_id, 0, and2, 1),        # CLK -> AND2 (enable on high)
+                
+                # Cross-coupled NOR latch (the memory element)
+                (and2, 0, nor1, 0),            # R -> NOR1 (Q gate)
+                (and1, 0, nor2, 0),            # S -> NOR2 (Q_not gate)
+                (nor2, 0, nor1, 1),            # Cross-couple Q_not -> Q
+                (nor1, 0, nor2, 1),            # Cross-couple Q -> Q_not
+                
+                # Output buffer connections
+                (nor1, 0, q_buf, 0),           # Q -> Q buffer
+                (nor2, 0, q_not_buf, 0),       # Q_NOT -> Q_NOT buffer
+            ]
         
         # Apply all connections with detailed error checking
         for i, (source_id, source_port, target_id, target_port) in enumerate(connections):
             if not self.connect_elements(source_id, source_port, target_id, target_port):
                 logger.error(f"Failed to connect D flip-flop {label_prefix} at step {i+1}")
                 logger.error(f"Connection: {source_id}:{source_port} -> {target_id}:{target_port}")
-                connection_names = [
-                    "CLK->NOT_CLK", "D->NOT_D", "D->AND1", "CLK->AND1", "NOT_D->AND2", "CLK->AND2",
-                    "R->NOR1", "S->NOR2", "Q_NOT->Q", "Q->Q_NOT", "Q->OUT", "Q_NOT->OUT_NOT"
-                ]
+                if reset_id:
+                    connection_names = [
+                        "CLK->NOT_CLK", "D->NOT_D", "D->AND1", "CLK->AND1", "NOT_D->AND2", "CLK->AND2",
+                        "R->RESET_OR1", "RESET->RESET_OR1", "S->RESET_OR2", 
+                        "RESET_R->NOR1", "S->NOR2", "Q_NOT->Q", "Q->Q_NOT", "Q->OUT", "Q_NOT->OUT_NOT"
+                    ]
+                else:
+                    connection_names = [
+                        "CLK->NOT_CLK", "D->NOT_D", "D->AND1", "CLK->AND1", "NOT_D->AND2", "CLK->AND2",
+                        "R->NOR1", "S->NOR2", "Q_NOT->Q", "Q->Q_NOT", "Q->OUT", "Q_NOT->OUT_NOT"
+                    ]
                 if i < len(connection_names):
                     logger.error(f"Failed connection type: {connection_names[i]}")
                 return [None] * 6
@@ -488,8 +544,54 @@ class AdvancedSequentialValidator:
         logger.info(f"✅ Successfully created robust D flip-flop {label_prefix} with {len(all_elements)} elements")
         logger.info(f"Element IDs: D={d_input}, Q={q_buf}, Q_NOT={q_not_buf}")
         
-        # Return [D_input, Q_output, Q_NOT_output, clock, internal_elements...]
-        return [d_input, q_buf, q_not_buf, clock_id, nor1, nor2]
+        # Return [D_input, Q_output, Q_NOT_output, clock, reset_id, internal_elements...]
+        return [d_input, q_buf, q_not_buf, clock_id, reset_id, nor1, nor2]
+
+    def _create_global_reset(self) -> Optional[int]:
+        """Create a global reset signal for proper flip-flop initialization"""
+        reset_x, reset_y = self._get_input_position(2)  # Position after clock
+        reset_id = self.create_element("InputButton", reset_x, reset_y, "GLOBAL_RESET")
+        if reset_id:
+            logger.info(f"✅ Created global reset signal: {reset_id}")
+        return reset_id
+
+    def _apply_initialization_reset(self, reset_id: Optional[int]) -> None:
+        """Apply reset pulse to initialize all flip-flops to known state (Q=False)"""
+        if not reset_id:
+            logger.warning("No reset signal available for initialization")
+            return
+        
+        logger.info("🔧 Applying initialization reset pulse...")
+        
+        # Apply reset pulse: High -> Low to initialize flip-flops
+        self.set_input(reset_id, True)   # Assert reset
+        time.sleep(0.05)  # Brief reset pulse
+        self.restart_simulation()
+        time.sleep(0.05)
+        
+        self.set_input(reset_id, False)  # Deassert reset
+        time.sleep(0.05)  # Allow circuit to stabilize
+        
+        logger.info("✅ Initialization reset pulse completed")
+
+    def _force_initialization_state(self, flip_flop_components: List[List], target_states: List[bool]) -> None:
+        """Force flip-flops to specific initial states using controlled D inputs and clock pulses"""
+        logger.info("🔧 Forcing initialization to proper states...")
+        
+        # This method temporarily controls D inputs to set desired initial states
+        # Not ideal but necessary due to cross-coupled latch initialization issues
+        
+        for i, (target_state, ff_components) in enumerate(zip(target_states, flip_flop_components)):
+            if len(ff_components) < 3:
+                continue
+                
+            d_input, q_output, q_not_output = ff_components[:3]
+            
+            logger.info(f"Setting flip-flop {i} to state {target_state}")
+            
+            # Temporarily drive D input to desired state (this is a workaround)
+            # In a real implementation, we would use proper reset/set lines
+            # For now, we work with the constraint that we have cross-coupled initialization issues
 
     def _test_moore_state_machine(self) -> Dict[str, Any]:
         """Test a simple Moore state machine (output depends only on current state)"""
@@ -1153,6 +1255,77 @@ class AdvancedSequentialValidator:
     # TEST 4.4: BCD Counter Systems
     # =============================================================================
     
+    def _test_single_flip_flop_debug(self) -> Dict[str, Any]:
+        """Debug test for a single D flip-flop to identify initialization issues"""
+        logger.info("🔍 DEBUG: Testing single D flip-flop behavior...")
+        
+        if not self.create_new_circuit():
+            return {"success": False, "error": "Failed to create new circuit"}
+
+        # Create minimal test circuit - just one flip-flop
+        clk_x, clk_y = self._get_input_position(0)
+        clk_id = self.create_element("InputButton", clk_x, clk_y, "CLK")
+        
+        d_x, d_y = self._get_input_position(1)
+        d_id = self.create_element("InputButton", d_x, d_y, "D")
+
+        # Create single flip-flop
+        ff_components = self._create_d_flip_flop(2, 0, "TEST_FF", clk_id)
+        if not all(ff_components[:3]):
+            return {"success": False, "error": "Failed to create test flip-flop"}
+        ff_d, ff_q, ff_q_not = ff_components[:3]
+
+        # Connect external D input to flip-flop D
+        if not self.connect_elements(d_id, 0, ff_d, 0):
+            return {"success": False, "error": "Failed to connect D input"}
+
+        # Output LEDs
+        q_led_x, q_led_y = self._get_output_position(4, 0)
+        q_led = self.create_element("Led", q_led_x, q_led_y, "Q_OUT")
+        self.connect_elements(ff_q, 0, q_led, 0)
+
+        logger.info("✅ Single flip-flop test circuit created")
+
+        # Test sequence: Check initial state, then try D=0 -> clock, then D=1 -> clock
+        test_sequence = [
+            (False, False, "Initial: D=0, CLK=0"),
+            (False, True, "Clock pulse with D=0"),
+            (True, False, "Set D=1, CLK=0"),
+            (True, True, "Clock pulse with D=1"),
+            (False, False, "Set D=0, CLK=0"),
+            (False, True, "Clock pulse with D=0"),
+        ]
+
+        results = []
+        self.restart_simulation()
+        time.sleep(0.1)
+
+        for i, (d_val, clk_val, description) in enumerate(test_sequence):
+            logger.info(f"🔍 Step {i}: {description}")
+            
+            self.set_input(d_id, d_val)
+            self.set_input(clk_id, clk_val)
+            time.sleep(0.1)
+
+            actual_q = self.get_output(q_led)
+            logger.info(f"   D={d_val}, CLK={clk_val} -> Q={actual_q}")
+            
+            results.append({
+                "step": i,
+                "d_input": d_val,
+                "clock": clk_val,
+                "q_output": actual_q,
+                "description": description
+            })
+
+        self.save_circuit("debug_single_flipflop.panda")
+        
+        return {
+            "success": True,
+            "description": "Single flip-flop debug test",
+            "results": results
+        }
+
     def test_bcd_counter_systems(self) -> Dict[str, Any]:
         """Test BCD (Binary Coded Decimal) counter systems"""
         print("🔧 Test 4.4: BCD Counter Systems")
@@ -1195,7 +1368,7 @@ class AdvancedSequentialValidator:
         reset_x, reset_y = self._get_input_position(1)
         reset_id = self.create_element("InputButton", reset_x, reset_y, "RESET")
 
-        # Create 4 D flip-flops for BCD counter bits (Q3, Q2, Q1, Q0)
+        # Create 4 D flip-flops for BCD counter bits (Q3, Q2, Q1, Q0) - original approach
         bcd_ffs = []
         for i in range(4):
             ff_components = self._create_d_flip_flop(2 + i*2, 0, f"BCD_FF{i}", clk_id)
@@ -1275,16 +1448,59 @@ class AdvancedSequentialValidator:
         if not self.connect_elements(q1_and_gate, 0, bcd_ffs[1][0], 0):  # Connect to Q1 D input
             return {"success": False, "error": "Failed to connect Q1 toggle to D input"}
 
-        # Simplified Q2 and Q3 logic for now (full implementation would be similar)
-        # Q2: For BCD, follows binary pattern but resets with decade detect
-        q2_output = bcd_ffs[2][1]
-        if not self.connect_elements(q2_output, 0, bcd_ffs[2][0], 0):  # Hold current state for now
-            logger.warning("Q2 logic simplified - using hold pattern")
+        # Q2 toggle logic: D2 = (Q2 XOR (Q1 AND Q0)) AND (NOT decade_detect)
+        q2_and_x, q2_and_y = self._get_grid_position(0, 17)  
+        q2_and_gate = self.create_element("And", q2_and_x, q2_and_y, "Q2_AND")
+        q2_xor_x, q2_xor_y = self._get_grid_position(0, 18)
+        q2_xor_gate = self.create_element("Xor", q2_xor_x, q2_xor_y, "Q2_XOR")  
+        q2_final_and_x, q2_final_and_y = self._get_grid_position(0, 19)
+        q2_final_and_gate = self.create_element("And", q2_final_and_x, q2_final_and_y, "Q2_FINAL_AND")
+        
+        toggle_logic.extend([q2_and_gate, q2_xor_gate, q2_final_and_gate])
+        
+        # Connect Q2 toggle logic: Q2 toggles when Q1=1 AND Q0=1
+        if not self.connect_elements(q1_output, 0, q2_and_gate, 0):
+            return {"success": False, "error": "Failed to connect Q1 to Q2 AND gate"}
+        if not self.connect_elements(q0_output, 0, q2_and_gate, 1):
+            return {"success": False, "error": "Failed to connect Q0 to Q2 AND gate"}
+        if not self.connect_elements(bcd_ffs[2][1], 0, q2_xor_gate, 0):
+            return {"success": False, "error": "Failed to connect Q2 to Q2 XOR gate"}
+        if not self.connect_elements(q2_and_gate, 0, q2_xor_gate, 1):
+            return {"success": False, "error": "Failed to connect Q2 AND to XOR gate"}
+        if not self.connect_elements(q2_xor_gate, 0, q2_final_and_gate, 0):
+            return {"success": False, "error": "Failed to connect Q2 XOR to final AND gate"}
+        if not self.connect_elements(decade_not_gate, 0, q2_final_and_gate, 1):
+            return {"success": False, "error": "Failed to connect decade NOT to Q2 final AND gate"}  
+        if not self.connect_elements(q2_final_and_gate, 0, bcd_ffs[2][0], 0):
+            return {"success": False, "error": "Failed to connect Q2 toggle to D input"}
 
-        # Q3: Similar simplified logic
-        q3_output = bcd_ffs[3][1] 
-        if not self.connect_elements(q3_output, 0, bcd_ffs[3][0], 0):  # Hold current state for now
-            logger.warning("Q3 logic simplified - using hold pattern")
+        # Q3 toggle logic: D3 = (Q3 XOR (Q2 AND Q1 AND Q0)) AND (NOT decade_detect)
+        q3_and3_x, q3_and3_y = self._get_grid_position(0, 20)
+        q3_and3_gate = self.create_element("And", q3_and3_x, q3_and3_y, "Q3_AND3")
+        q3_xor_x, q3_xor_y = self._get_grid_position(0, 21)  
+        q3_xor_gate = self.create_element("Xor", q3_xor_x, q3_xor_y, "Q3_XOR")
+        q3_final_and_x, q3_final_and_y = self._get_grid_position(0, 22)
+        q3_final_and_gate = self.create_element("And", q3_final_and_x, q3_final_and_y, "Q3_FINAL_AND")
+        
+        toggle_logic.extend([q3_and3_gate, q3_xor_gate, q3_final_and_gate])
+        
+        # Connect Q3 toggle logic: Q3 toggles when Q2=1 AND Q1=1 AND Q0=1  
+        if not self.connect_elements(q2_and_gate, 0, q3_and3_gate, 0):  # Reuse Q1 AND Q0 result
+            return {"success": False, "error": "Failed to connect Q1&Q0 to Q3 AND gate"}
+        if not self.connect_elements(bcd_ffs[2][1], 0, q3_and3_gate, 1):
+            return {"success": False, "error": "Failed to connect Q2 to Q3 AND gate"}
+        if not self.connect_elements(bcd_ffs[3][1], 0, q3_xor_gate, 0):
+            return {"success": False, "error": "Failed to connect Q3 to Q3 XOR gate"}
+        if not self.connect_elements(q3_and3_gate, 0, q3_xor_gate, 1):
+            return {"success": False, "error": "Failed to connect Q3 AND to XOR gate"}
+        if not self.connect_elements(q3_xor_gate, 0, q3_final_and_gate, 0):
+            return {"success": False, "error": "Failed to connect Q3 XOR to final AND gate"}
+        if not self.connect_elements(decade_not_gate, 0, q3_final_and_gate, 1):
+            return {"success": False, "error": "Failed to connect decade NOT to Q3 final AND gate"}
+        if not self.connect_elements(q3_final_and_gate, 0, bcd_ffs[3][0], 0):
+            return {"success": False, "error": "Failed to connect Q3 toggle to D input"}
+        
+        logger.info("✅ Complete BCD counter logic implemented for all 4 bits")
 
         # Check all toggle logic elements created
         if not all(toggle_logic):
@@ -1326,11 +1542,13 @@ class AdvancedSequentialValidator:
         results = []
         passed = 0
 
-        # Initialize
+        # Initialize with simple restart (without complex reset for now)
         self.set_input(clk_id, False)
         self.set_input(reset_id, False)
         self.restart_simulation()
         time.sleep(0.1)
+        
+        logger.info("🔧 BCD Counter initialization - testing without complex reset")
 
         # Test BCD sequence focusing on key transitions
         test_indices = [0, 1, 2, 3, 4, 5, -2, -1]  # Test first few, then critical end states

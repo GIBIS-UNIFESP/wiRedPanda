@@ -229,8 +229,8 @@
           "success": false,
           "description": "Johnson Counter (3-bit ring counter with inverted feedback)",
           "total_cases": 7,
-          "passed_cases": 2,
-          "failed_cases": 5,
+          "passed_cases": 1,
+          "failed_cases": 6,
           "results": [
             {
               "step": 0,
@@ -271,10 +271,10 @@
               },
               "actual": {
                 "Q2": false,
-                "Q1": true,
+                "Q1": false,
                 "Q0": true
               },
-              "correct": true,
+              "correct": false,
               "description": "After 2 clocks: 011"
             },
             {
@@ -338,7 +338,7 @@
               "description": "After 6 clocks: 000 (cycle)"
             }
           ],
-          "accuracy": 28.57142857142857,
+          "accuracy": 14.285714285714285,
           "convergence_enabled": true
         }
       },
@@ -532,12 +532,12 @@
                 "Q0": 1
               },
               "actual": {
-                "Q3": true,
+                "Q3": false,
                 "Q2": true,
                 "Q1": true,
                 "Q0": true
               },
-              "decade_detected": true,
+              "decade_detected": false,
               "correct": false,
               "description": "After 1 clock: 0001 (1)"
             },
@@ -550,12 +550,12 @@
                 "Q0": 0
               },
               "actual": {
-                "Q3": true,
+                "Q3": false,
                 "Q2": true,
                 "Q1": true,
                 "Q0": true
               },
-              "decade_detected": true,
+              "decade_detected": false,
               "correct": false,
               "description": "After 2 clocks: 0010 (2)"
             },
@@ -568,12 +568,12 @@
                 "Q0": 1
               },
               "actual": {
-                "Q3": true,
+                "Q3": false,
                 "Q2": true,
                 "Q1": true,
                 "Q0": true
               },
-              "decade_detected": true,
+              "decade_detected": false,
               "correct": true,
               "description": "After 3 clocks: 0011 (3)"
             },
@@ -586,12 +586,12 @@
                 "Q0": 0
               },
               "actual": {
-                "Q3": true,
+                "Q3": false,
                 "Q2": true,
                 "Q1": true,
                 "Q0": true
               },
-              "decade_detected": true,
+              "decade_detected": false,
               "correct": false,
               "description": "After 4 clocks: 0100 (4)"
             },
@@ -604,12 +604,12 @@
                 "Q0": 1
               },
               "actual": {
-                "Q3": true,
+                "Q3": false,
                 "Q2": true,
                 "Q1": true,
                 "Q0": true
               },
-              "decade_detected": true,
+              "decade_detected": false,
               "correct": false,
               "description": "After 5 clocks: 0101 (5)"
             },
@@ -622,12 +622,12 @@
                 "Q0": 1
               },
               "actual": {
-                "Q3": true,
+                "Q3": false,
                 "Q2": true,
                 "Q1": true,
                 "Q0": true
               },
-              "decade_detected": true,
+              "decade_detected": false,
               "correct": false,
               "description": "After 9 clocks: 1001 (9)"
             },
@@ -640,12 +640,12 @@
                 "Q0": 0
               },
               "actual": {
-                "Q3": true,
+                "Q3": false,
                 "Q2": true,
                 "Q1": true,
                 "Q0": true
               },
-              "decade_detected": true,
+              "decade_detected": false,
               "correct": false,
               "description": "After 10 clocks: 0000 (reset from 10)"
             }
