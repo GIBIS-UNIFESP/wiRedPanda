@@ -1,137 +1,205 @@
 {
-  "success": true,
+  "success": false,
   "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems",
   "total_tests": 10,
-  "successful_tests": 10,
-  "failed_tests": 0,
-  "overall_accuracy": 100.0,
+  "successful_tests": 0,
+  "failed_tests": 10,
+  "overall_accuracy": 0.0,
   "individual_results": [
     {
-      "success": true,
-      "description": "Complete 4-bit ALU with operation selection and flags",
-      "total_cases": 16,
-      "passed_cases": 13,
-      "failed_cases": 3,
-      "accuracy": 81.25,
-      "sample_results": [],
-      "error": null,
+      "success": false,
+      "error": "Failed to create 4-bit ALU circuit",
+      "accuracy": 0.0,
       "test_name": "alu_4bit_complete",
       "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
     },
     {
-      "success": true,
-      "description": "8-bit ALU with comprehensive flags",
-      "total_cases": 10,
-      "passed_cases": 8,
-      "failed_cases": 2,
-      "accuracy": 80.0,
-      "sample_results": [],
-      "error": null,
+      "success": false,
+      "description": "8-bit ALU with comprehensive flag generation",
+      "total_cases": 6,
+      "passed_cases": 0,
+      "failed_cases": 6,
+      "accuracy": 0.0,
+      "sample_results": [
+        {
+          "inputs": {
+            "A": 127,
+            "B": 1,
+            "OP": 0,
+            "expected_result": 128,
+            "expected_overflow": true
+          },
+          "expected": 128,
+          "actual": 0,
+          "correct": false
+        },
+        {
+          "inputs": {
+            "A": 128,
+            "B": 1,
+            "OP": 1,
+            "expected_result": 127,
+            "expected_overflow": true
+          },
+          "expected": 127,
+          "actual": 0,
+          "correct": false
+        },
+        {
+          "inputs": {
+            "A": 255,
+            "B": 1,
+            "OP": 0,
+            "expected_result": 0,
+            "expected_carry": true,
+            "expected_zero": true
+          },
+          "expected": 0,
+          "actual": 0,
+          "correct": false
+        }
+      ],
+      "error": "Accuracy 0.0% below 85% threshold",
       "test_name": "alu_8bit_with_flags",
       "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
     },
     {
-      "success": true,
-      "description": "4x4-bit register file with addressing",
-      "total_cases": 16,
-      "passed_cases": 14,
-      "failed_cases": 2,
-      "accuracy": 87.5,
-      "sample_results": [],
-      "error": null,
+      "success": false,
+      "error": "Register file test failed: name 'outputs' is not defined",
+      "accuracy": 0.0,
       "test_name": "register_file_4x4bit",
       "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
     },
     {
-      "success": true,
-      "description": "Dual-port register file with simultaneous access",
-      "total_cases": 20,
-      "passed_cases": 18,
-      "failed_cases": 2,
-      "accuracy": 90.0,
-      "sample_results": [],
-      "error": null,
+      "success": false,
+      "error": "Dual-port register file test failed: name 'outputs' is not defined",
+      "accuracy": 0.0,
       "test_name": "dual_port_register_file",
       "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
     },
     {
-      "success": true,
-      "description": "Basic instruction decoder with control signals",
+      "success": false,
+      "description": "Complete 8-instruction decoder with full control signal generation",
       "total_cases": 8,
-      "passed_cases": 7,
-      "failed_cases": 1,
-      "accuracy": 87.5,
-      "sample_results": [],
-      "error": null,
+      "passed_cases": 0,
+      "failed_cases": 8,
+      "accuracy": 0.0,
+      "sample_results": [
+        {
+          "inputs": {
+            "opcode": 0,
+            "mnemonic": "ADD"
+          },
+          "expected": {
+            "ALU_OP1": false,
+            "ALU_OP0": false,
+            "REG_WRITE": true,
+            "MEM_READ": false,
+            "MEM_WRITE": false,
+            "BRANCH": false
+          },
+          "actual": {
+            "ALU_OP1": false,
+            "ALU_OP0": false,
+            "REG_WRITE": false,
+            "MEM_READ": false,
+            "MEM_WRITE": false,
+            "BRANCH": false
+          },
+          "correct": false
+        },
+        {
+          "inputs": {
+            "opcode": 1,
+            "mnemonic": "SUB"
+          },
+          "expected": {
+            "ALU_OP1": false,
+            "ALU_OP0": true,
+            "REG_WRITE": true,
+            "MEM_READ": false,
+            "MEM_WRITE": false,
+            "BRANCH": false
+          },
+          "actual": {
+            "ALU_OP1": false,
+            "ALU_OP0": false,
+            "REG_WRITE": false,
+            "MEM_READ": false,
+            "MEM_WRITE": false,
+            "BRANCH": false
+          },
+          "correct": false
+        },
+        {
+          "inputs": {
+            "opcode": 2,
+            "mnemonic": "AND"
+          },
+          "expected": {
+            "ALU_OP1": true,
+            "ALU_OP0": false,
+            "REG_WRITE": true,
+            "MEM_READ": false,
+            "MEM_WRITE": false,
+            "BRANCH": false
+          },
+          "actual": {
+            "ALU_OP1": false,
+            "ALU_OP0": false,
+            "REG_WRITE": false,
+            "MEM_READ": false,
+            "MEM_WRITE": false,
+            "BRANCH": false
+          },
+          "correct": false
+        }
+      ],
+      "error": "Accuracy 0.0% below 87.5% threshold",
       "test_name": "instruction_decoder_basic",
       "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
     },
     {
-      "success": true,
-      "description": "Control unit state machine with transitions",
-      "total_cases": 12,
-      "passed_cases": 11,
-      "failed_cases": 1,
-      "accuracy": 91.7,
-      "sample_results": [],
-      "error": null,
+      "success": false,
+      "error": "Control unit state machine test failed: name 'outputs' is not defined",
+      "accuracy": 0.0,
       "test_name": "control_unit_state_machine",
       "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
     },
     {
-      "success": true,
-      "description": "Basic cache controller with hit/miss logic",
-      "total_cases": 15,
-      "passed_cases": 12,
-      "failed_cases": 3,
-      "accuracy": 80.0,
-      "sample_results": [],
-      "error": null,
+      "success": false,
+      "error": "Cache controller test failed: name 'outputs' is not defined",
+      "accuracy": 0.0,
       "test_name": "cache_controller_basic",
       "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
     },
     {
-      "success": true,
-      "description": "Memory management unit with TLB",
-      "total_cases": 18,
-      "passed_cases": 15,
-      "failed_cases": 3,
-      "accuracy": 83.3,
-      "sample_results": [],
-      "error": null,
+      "success": false,
+      "error": "MMU test failed: name 'outputs' is not defined",
+      "accuracy": 0.0,
       "test_name": "memory_management_unit",
       "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
     },
     {
-      "success": true,
-      "description": "Instruction pipeline stage with stall/flush",
-      "total_cases": 14,
-      "passed_cases": 13,
-      "failed_cases": 1,
-      "accuracy": 92.9,
-      "sample_results": [],
-      "error": null,
+      "success": false,
+      "error": "Pipeline stage test failed: name 'outputs' is not defined",
+      "accuracy": 0.0,
       "test_name": "instruction_pipeline_stage",
       "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
     },
     {
-      "success": true,
-      "description": "Pipeline coordination with hazard detection",
-      "total_cases": 22,
-      "passed_cases": 18,
-      "failed_cases": 4,
-      "accuracy": 81.8,
-      "sample_results": [],
-      "error": null,
+      "success": false,
+      "error": "Pipeline coordination test failed: name 'outputs' is not defined",
+      "accuracy": 0.0,
       "test_name": "execution_pipeline_coordination",
       "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
     }
   ],
   "summary": {
-    "alu_systems": 2,
-    "register_systems": 2,
-    "control_systems": 4,
-    "memory_systems": 2,
-    "pipeline_systems": 2
+    "alu_systems": 0,
+    "register_systems": 0,
+    "control_systems": 2,
+    "memory_systems": 1,
+    "pipeline_systems": 0
   }
 }
