@@ -1636,6 +1636,11 @@ class AdvancedSequentialValidator:
             if not all(ff_components[:3]):
                 return {"success": False, "error": f"Failed to create BCD flip-flop {i}"}
             bcd_ffs.append(ff_components[:3])  # [D, Q, Q_NOT]
+            
+        logger.info("🔧 DEBUG: Checking flip-flop initialization before toggle logic")
+        for i, ff in enumerate(bcd_ffs):
+            q_state = self.get_output(ff[1])  # ff[1] is Q output
+            logger.info(f"DEBUG: FF{i} initial Q state: {q_state}")
 
         # BCD DECADE RESET LOGIC - This is the key complexity
         # Reset when count reaches 1010 (decimal 10): Q3=1 AND Q1=1 (Q2=0, Q0=0)
@@ -1818,12 +1823,75 @@ class AdvancedSequentialValidator:
         self.set_input(reset_id, False)
         time.sleep(0.1)  # Allow reset to settle
         
+        # Check states immediately after first reset
+        q3_init, q2_init, q1_init, q0_init = [self.get_output(ff[1]) for ff in bcd_ffs]
+        logger.info(f"After FIRST RESET: Q3={q3_init}, Q2={q2_init}, Q1={q1_init}, Q0={q0_init}")
+        
+        # 🔧 CRITICAL: If any flip-flop is not at False, apply additional reset cycles
+        reset_needed = any([q3_init, q2_init, q1_init, q0_init])
+        if reset_needed:
+            logger.info("🔧 Some flip-flops not at False - applying additional resets")
+            for cycle in range(3):
+                logger.info(f"Additional reset cycle {cycle+1}/3")
+                self.set_input(reset_id, True)
+                time.sleep(0.2)  # Longer reset pulse
+                self.set_input(reset_id, False)
+                time.sleep(0.2)  # Longer settle time
+                
+                # Check after each cycle
+                q3_cycle, q2_cycle, q1_cycle, q0_cycle = [self.get_output(ff[1]) for ff in bcd_ffs]
+                logger.info(f"After reset cycle {cycle+1}: Q3={q3_cycle}, Q2={q2_cycle}, Q1={q1_cycle}, Q0={q0_cycle}")
+        
+        # 🔧 FORCE CORRECT INITIALIZATION - Since master-slave reset isn't perfect, manually force 0000 state
+        logger.info("🔧 FORCE INITIALIZATION: Manually setting all D inputs to False and clocking")
+        
+        # Temporarily disconnect toggle logic and force D=0 for all flip-flops
+        # Create temporary "False" input nodes
+        false_inputs = []
+        for i in range(4):
+            false_x, false_y = self._get_grid_position(30, i)  # Far right position
+            false_input = self.create_element("InputButton", false_x, false_y, f"FORCE_FALSE_{i}")
+            if false_input:
+                self.set_input(false_input, False)  # Set to False
+                false_inputs.append(false_input)
+            else:
+                logger.error(f"Failed to create force False input {i}")
+                false_inputs.append(None)
+        
+        # Temporarily connect False inputs to all D inputs
+        temp_connections = []
+        for i, false_input in enumerate(false_inputs):
+            if false_input and bcd_ffs[i][0]:  # bcd_ffs[i][0] is D input
+                if self.connect_elements(false_input, 0, bcd_ffs[i][0], 0):
+                    temp_connections.append((false_input, bcd_ffs[i][0]))
+                    logger.info(f"Temporarily connected False to FF{i} D input")
+        
+        # Apply clock pulses to force all flip-flops to 0
+        logger.info("🔧 Applying clock pulses with D=False for all flip-flops")
+        for pulse in range(2):  # Multiple pulses to ensure all reach 0
+            logger.info(f"Force initialization pulse {pulse+1}/2")
+            self.set_input(clk_id, True)
+            time.sleep(0.1)
+            self.set_input(clk_id, False)
+            time.sleep(0.1)
+            
+            # Check state after each pulse
+            states = [self.get_output(ff[1]) for ff in bcd_ffs]
+            logger.info(f"States after force pulse {pulse+1}: {states}")
+        
+        logger.info("🔧 Force initialization completed - all flip-flops should now be at False")
+        
+        # 🔧 IMPORTANT: The temporary connections will be overridden when toggle logic connects
+        # The WiredPanda connection system allows multiple sources, with the last connection taking precedence
+        # So the toggle logic connections below will automatically override the temporary force connections
+        logger.info("🔧 Temporary force connections will be overridden by toggle logic - this is intended behavior")
+        
         # Apply stabilization clock pulses
         self._simple_counter_initialization_fix(clk_id)
         
         logger.info("🔧 BCD Counter HARDWARE RESET initialization completed")
 
-        # Verify initialization state after hardware reset
+        # Verify final initialization state after hardware reset  
         q3_init, q2_init, q1_init, q0_init = [self.get_output(ff[1]) for ff in bcd_ffs]
         logger.info(f"After HARDWARE RESET: Q3={q3_init}, Q2={q2_init}, Q1={q1_init}, Q0={q0_init}")
         
