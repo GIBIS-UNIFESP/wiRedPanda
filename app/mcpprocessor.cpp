@@ -22,6 +22,8 @@
 #include <QPdfWriter>
 #include <QSvgGenerator>
 #include <QPageSize>
+#include <cmath>
+#include <climits>
 
 MCPProcessor::MCPProcessor(MainWindow* mainWindow, QObject* parent)
     : QObject(parent)
@@ -81,16 +83,42 @@ void MCPProcessor::processInput()
 
 QJsonObject MCPProcessor::processCommand(const QJsonObject& command)
 {
+    // Validate command structure first
+    if (!command.contains("command")) {
+        return createErrorResponse("Missing 'command' field");
+    }
+    if (!command["command"].isString()) {
+        return createErrorResponse("'command' field must be a string");
+    }
+    if (!command.contains("parameters")) {
+        return createErrorResponse("Missing 'parameters' field");
+    }
+    if (!command["parameters"].isObject()) {
+        return createErrorResponse("'parameters' field must be an object");
+    }
+    
     QString commandType = command["command"].toString();
     QJsonObject params = command["parameters"].toObject();
     
-    // Ensure we have a valid scene
-    if (!m_scene && m_mainWindow && m_mainWindow->currentTab()) {
-        m_scene = m_mainWindow->currentTab()->scene();
+    // Validate command type
+    if (commandType.isEmpty() || commandType.length() > 50) {
+        return createErrorResponse("Invalid command type");
     }
     
-    if (!m_scene) {
-        return createErrorResponse("No active circuit scene available");
+    // Ensure we have a valid scene for commands that need it
+    QStringList sceneRequiredCommands = {
+        "create_element", "delete_element", "connect_elements", "disconnect_elements",
+        "set_input_value", "get_output_value", "list_elements", "get_element_info", "export_image"
+    };
+    
+    if (sceneRequiredCommands.contains(commandType)) {
+        if (!m_scene && m_mainWindow && m_mainWindow->currentTab()) {
+            m_scene = m_mainWindow->currentTab()->scene();
+        }
+        
+        if (!m_scene) {
+            return createErrorResponse("No active circuit scene available");
+        }
     }
     
     // Route command to appropriate handler
@@ -134,7 +162,10 @@ void MCPProcessor::writeResponse(const QJsonObject& response)
 
 QJsonObject MCPProcessor::handleCreateElement(const QJsonObject& params)
 {
+    qDebug() << "handleCreateElement called with params:" << params;
+    
     if (!validateParameters(params, {"type", "x", "y"})) {
+        qDebug() << "Parameter validation failed";
         return createErrorResponse("Missing required parameters: type, x, y");
     }
     
@@ -143,11 +174,15 @@ QJsonObject MCPProcessor::handleCreateElement(const QJsonObject& params)
     double y = params["y"].toDouble();
     QString label = params["label"].toString();
     
+    qDebug() << "Attempting to create element:" << type << "at position" << x << "," << y;
+    
     GraphicElement* element = createElementByType(type, QPointF(x, y), label);
     if (!element) {
+        qDebug() << "Element creation failed - returning error";
         return createErrorResponse(QString("Failed to create element of type: %1").arg(type));
     }
     
+    qDebug() << "Adding element to scene";
     // Add element to scene
     m_scene->addItem(element);
     
@@ -159,6 +194,7 @@ QJsonObject MCPProcessor::handleCreateElement(const QJsonObject& params)
         result["label"] = label;
     }
     
+    qDebug() << "Returning success response with element_id:" << element->id();
     return createSuccessResponse(result);
 }
 
@@ -256,12 +292,24 @@ QJsonObject MCPProcessor::handleSaveCircuit(const QJsonObject& params)
         return createErrorResponse("Missing required parameter: file_path");
     }
     
-    QString filePath = params["file_path"].toString();
+    QString rawPath = params["file_path"].toString();
+    QString filePath = sanitizeFilePath(rawPath);
+    
+    if (filePath.isEmpty()) {
+        return createErrorResponse("Invalid file path");
+    }
+    
+    // Additional security check - ensure path has valid circuit extension
+    if (!filePath.endsWith(".panda", Qt::CaseInsensitive) && !filePath.endsWith(".pandaproject", Qt::CaseInsensitive)) {
+        return createErrorResponse("File path must have .panda or .pandaproject extension for circuit files");
+    }
     
     // Use MainWindow's save functionality
     try {
         m_mainWindow->save(filePath);
-        return createSuccessResponse();
+        QJsonObject result;
+        result["saved_path"] = filePath;
+        return createSuccessResponse(result);
     } catch (const std::exception& e) {
         return createErrorResponse(QString("Failed to save circuit: %1").arg(e.what()));
     }
@@ -273,7 +321,17 @@ QJsonObject MCPProcessor::handleLoadCircuit(const QJsonObject& params)
         return createErrorResponse("Missing required parameter: file_path");
     }
     
-    QString filePath = params["file_path"].toString();
+    QString rawPath = params["file_path"].toString();
+    QString filePath = sanitizeFilePath(rawPath);
+    
+    if (filePath.isEmpty()) {
+        return createErrorResponse("Invalid file path");
+    }
+    
+    // Additional security check - ensure path has valid circuit extension
+    if (!filePath.endsWith(".panda", Qt::CaseInsensitive) && !filePath.endsWith(".pandaproject", Qt::CaseInsensitive)) {
+        return createErrorResponse("File path must have .panda or .pandaproject extension for circuit files");
+    }
     
     if (!QFile::exists(filePath)) {
         return createErrorResponse(QString("File not found: %1").arg(filePath));
@@ -285,7 +343,9 @@ QJsonObject MCPProcessor::handleLoadCircuit(const QJsonObject& params)
         if (m_mainWindow->currentTab()) {
             m_scene = m_mainWindow->currentTab()->scene();
         }
-        return createSuccessResponse();
+        QJsonObject result;
+        result["loaded_path"] = filePath;
+        return createSuccessResponse(result);
     } catch (const std::exception& e) {
         return createErrorResponse(QString("Failed to load circuit: %1").arg(e.what()));
     }
@@ -455,6 +515,12 @@ GraphicElement* MCPProcessor::findElementById(int elementId)
 {
     if (!m_scene) return nullptr;
     
+    // Basic bounds checking for element ID
+    if (elementId < 0 || elementId > 100000) {
+        qDebug() << "Element ID out of reasonable bounds:" << elementId;
+        return nullptr;
+    }
+    
     auto items = m_scene->items();
     for (auto* item : items) {
         auto* element = dynamic_cast<GraphicElement*>(item);
@@ -500,21 +566,183 @@ bool MCPProcessor::validateParameters(const QJsonObject& params, const QStringLi
 {
     for (const QString& param : required) {
         if (!params.contains(param)) {
+            qDebug() << "Missing required parameter:" << param;
             return false;
+        }
+        
+        QJsonValue value = params[param];
+        
+        // Type-specific validation
+        if (param.endsWith("_id") || param == "element_id" || param == "source_id" || param == "target_id") {
+            if (!value.isDouble()) {
+                qDebug() << "Parameter" << param << "must be numeric, got:" << value.type();
+                return false;
+            }
+            double numValue = value.toDouble();
+            if (std::isnan(numValue) || std::isinf(numValue) || numValue < 0) {
+                qDebug() << "Parameter" << param << "must be a positive number, got:" << numValue;
+                return false;
+            }
+        }
+        else if (param == "x" || param == "y") {
+            if (!value.isDouble()) {
+                qDebug() << "Coordinate parameter" << param << "must be numeric, got:" << value.type();
+                return false;
+            }
+            double coord = value.toDouble();
+            if (std::isnan(coord) || std::isinf(coord)) {
+                qDebug() << "Coordinate parameter" << param << "cannot be NaN or infinite, got:" << coord;
+                return false;
+            }
+            // Reasonable coordinate bounds to prevent extreme values
+            if (coord < -10000.0 || coord > 10000.0) {
+                qDebug() << "Coordinate parameter" << param << "out of reasonable bounds:" << coord;
+                return false;
+            }
+        }
+        else if (param.endsWith("_port") || param == "source_port" || param == "target_port") {
+            if (!value.isDouble()) {
+                qDebug() << "Port parameter" << param << "must be numeric, got:" << value.type();
+                return false;
+            }
+            double portValue = value.toDouble();
+            if (std::isnan(portValue) || std::isinf(portValue) || portValue < 0 || portValue > 100) {
+                qDebug() << "Port parameter" << param << "must be 0-100, got:" << portValue;
+                return false;
+            }
+        }
+        else if (param == "value") {
+            if (!value.isBool()) {
+                qDebug() << "Boolean parameter" << param << "must be true/false, got:" << value.type();
+                return false;
+            }
+        }
+        else if (param == "type" || param == "action" || param == "format") {
+            if (!value.isString()) {
+                qDebug() << "String parameter" << param << "must be a string, got:" << value.type();
+                return false;
+            }
+            QString strValue = value.toString();
+            if (strValue.isEmpty() || strValue.length() > 100) {
+                qDebug() << "String parameter" << param << "invalid length:" << strValue.length();
+                return false;
+            }
+        }
+        else if (param == "file_path") {
+            if (!value.isString()) {
+                qDebug() << "File path parameter must be a string, got:" << value.type();
+                return false;
+            }
+            QString path = value.toString();
+            if (path.isEmpty() || path.length() > 1000) {
+                qDebug() << "File path invalid length:" << path.length();
+                return false;
+            }
         }
     }
     return true;
 }
 
+QString MCPProcessor::sanitizeFilePath(const QString& path) const
+{
+    if (path.isEmpty()) {
+        return QString();
+    }
+    
+    // Remove potentially dangerous characters and sequences
+    QString sanitized = path;
+    
+    // Remove directory traversal sequences
+    sanitized.remove("../");
+    sanitized.remove("..\\");
+    sanitized.replace("\\", "/"); // Normalize path separators
+    
+    // Remove null bytes and control characters
+    for (int i = 0; i < sanitized.length(); i++) {
+        QChar c = sanitized.at(i);
+        if (c.unicode() < 32 || c.unicode() == 127) {
+            sanitized.remove(i, 1);
+            i--;
+        }
+    }
+    
+    // Ensure path doesn't start with / (absolute path) unless explicitly allowed
+    if (sanitized.startsWith("/")) {
+        qDebug() << "Warning: Absolute path provided, allowing for now:" << sanitized;
+        // In production, you might want to restrict this more
+    }
+    
+    // Basic length check
+    if (sanitized.length() > 1000) {
+        qDebug() << "Path too long, truncating";
+        sanitized = sanitized.left(1000);
+    }
+    
+    // Check for valid file extensions for circuit files
+    QStringList allowedExtensions = {".panda", ".pandaproject", ".png", ".pdf", ".svg"};
+    bool hasValidExtension = false;
+    for (const QString& ext : allowedExtensions) {
+        if (sanitized.endsWith(ext, Qt::CaseInsensitive)) {
+            hasValidExtension = true;
+            break;
+        }
+    }
+    
+    if (!hasValidExtension) {
+        qDebug() << "Warning: File extension not in allowed list:" << sanitized;
+        // In production, you might want to reject this
+    }
+    
+    return sanitized;
+}
+
+bool MCPProcessor::safeIntFromJson(const QJsonObject& params, const QString& key, int& result) const
+{
+    if (!params.contains(key)) {
+        return false;
+    }
+    
+    QJsonValue value = params[key];
+    if (!value.isDouble()) {
+        return false;
+    }
+    
+    double doubleValue = value.toDouble();
+    
+    // Check for NaN, infinity
+    if (std::isnan(doubleValue) || std::isinf(doubleValue)) {
+        return false;
+    }
+    
+    // Check if it's within reasonable integer bounds
+    if (doubleValue < INT_MIN || doubleValue > INT_MAX) {
+        return false;
+    }
+    
+    // Check if it's actually an integer (no fractional part)
+    if (doubleValue != std::floor(doubleValue)) {
+        return false;
+    }
+    
+    result = static_cast<int>(doubleValue);
+    return true;
+}
+
 GraphicElement* MCPProcessor::createElementByType(const QString& type, const QPointF& position, const QString& label)
 {
+    qDebug() << "Creating element of type:" << type;
     ElementType elementType = ElementFactory::textToType(type);
-    if (elementType == ElementType::Unknown) {
+    qDebug() << "ElementType resolved to:" << static_cast<int>(elementType);
+    
+    // Check for both Unknown (0) and invalid enum values (negative)
+    if (elementType == ElementType::Unknown || static_cast<int>(elementType) < 0) {
+        qDebug() << "Element type is Unknown or invalid - returning nullptr";
         return nullptr;
     }
     
     GraphicElement* element = ElementFactory::buildElement(elementType);
     if (!element) {
+        qDebug() << "ElementFactory::buildElement failed - returning nullptr";
         return nullptr;
     }
     
@@ -523,6 +751,7 @@ GraphicElement* MCPProcessor::createElementByType(const QString& type, const QPo
         element->setLabel(label);
     }
     
+    qDebug() << "Element created successfully with ID:" << element->id();
     return element;
 }
 
@@ -571,12 +800,23 @@ QJsonObject MCPProcessor::handleExportImage(const QJsonObject& params)
         return createErrorResponse("Missing required parameters: file_path, format");
     }
     
-    QString filePath = params["file_path"].toString();
+    QString rawPath = params["file_path"].toString();
+    QString filePath = sanitizeFilePath(rawPath);
     QString format = params["format"].toString().toLower();
+    
+    if (filePath.isEmpty()) {
+        return createErrorResponse("Invalid file path");
+    }
     
     // Validate format
     if (format != "png" && format != "pdf" && format != "svg") {
         return createErrorResponse("Unsupported format. Supported formats: png, pdf, svg");
+    }
+    
+    // Ensure file path has correct extension for format
+    QString expectedExt = "." + format;
+    if (!filePath.endsWith(expectedExt, Qt::CaseInsensitive)) {
+        return createErrorResponse(QString("File path must have %1 extension for %2 format").arg(expectedExt, format));
     }
     
     if (!m_scene) {
