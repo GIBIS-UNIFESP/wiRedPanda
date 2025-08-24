@@ -1294,11 +1294,45 @@ class AdvancedSequentialValidator:
         results = []
         passed = 0
 
-        # Initialize
+        # Initialize with ENHANCED stabilization for feedback loops
         self.set_input(clk_id, False)
         self.set_input(reset_id, False)
         self.restart_simulation()
         time.sleep(0.1)
+        
+        # CRITICAL FIX: Additional stabilization for circular feedback loops
+        # Johnson Counter has circular dependencies that need extra settling time
+        logger.info("🔧 JOHNSON COUNTER FIX: Additional stabilization for feedback loops")
+        
+        # Apply multiple stabilization cycles to ensure feedback loops converge
+        for stabilize_cycle in range(3):
+            self.update_simulation()
+            time.sleep(0.05)
+            logger.info(f"Stabilization cycle {stabilize_cycle + 1}/3")
+        
+        # Check initial state after stabilization
+        initial_q0 = self.get_output(out0_led)
+        initial_q1 = self.get_output(out1_led)
+        initial_q2 = self.get_output(out2_led)
+        logger.info(f"After stabilization: Q2={initial_q2}, Q1={initial_q1}, Q0={initial_q0}")
+        
+        # If not in expected initial state (000), apply additional reset
+        if initial_q0 or initial_q1 or initial_q2:
+            logger.info("🔧 Additional reset needed - feedback loops not at 000")
+            self.set_input(reset_id, True)
+            self.update_simulation()
+            time.sleep(0.1)
+            self.set_input(reset_id, False)
+            self.update_simulation()
+            time.sleep(0.1)
+            
+            # Check again after additional reset
+            final_q0 = self.get_output(out0_led)
+            final_q1 = self.get_output(out1_led)
+            final_q2 = self.get_output(out2_led)
+            logger.info(f"After additional reset: Q2={final_q2}, Q1={final_q1}, Q0={final_q0}")
+        
+        logger.info("✅ Johnson Counter stabilization complete")
 
         for i, (exp_q0, exp_q1, exp_q2, description) in enumerate(expected_sequence):
             if i > 0:  # Apply clock pulse for all except initial state
