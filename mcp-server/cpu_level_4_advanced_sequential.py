@@ -268,16 +268,16 @@ class AdvancedSequentialValidator:
         # Each flip-flop needs: D input, clock, Q output, Q_not output
         
         # Flip-flop 0 (LSB) - full master-slave with clock
-        ff0_components = self._create_d_flip_flop(1, 0, "FF0", clk_id)
+        ff0_components = self._create_simple_d_flip_flop_native(1, 0, "FF0", clk_id, reset_id)
         if not all(ff0_components[:3]):
             return {"success": False, "error": "Failed to create flip-flop 0"}
-        ff0_d_id, ff0_q_id, ff0_q_not_id = ff0_components[:3]
+        ff0_d_id, ff0_q_id, ff0_q_not_id = ff0_components[:3]  # All same element ID for native DFF
         
         # Flip-flop 1 (MSB) - full master-slave with clock (increased spacing for complex circuit)
-        ff1_components = self._create_d_flip_flop(1, 8, "FF1", clk_id) 
+        ff1_components = self._create_simple_d_flip_flop_native(1, 8, "FF1", clk_id, reset_id) 
         if not all(ff1_components[:3]):
             return {"success": False, "error": "Failed to create flip-flop 1"}
-        ff1_d_id, ff1_q_id, ff1_q_not_id = ff1_components[:3]
+        ff1_d_id, ff1_q_id, ff1_q_not_id = ff1_components[:3]  # All same element ID for native DFF
 
         # Output LEDs for state display (positioned to avoid complex flip-flop layout)
         q0_x, q0_y = self._get_output_position(8, 0)
@@ -308,7 +308,8 @@ class AdvancedSequentialValidator:
         
         # FF0 (LSB): Always toggles on clock edge
         # D0 = NOT Q0 (toggle flip-flop behavior)
-        if not self.connect_elements(ff0_q_not_id, 0, ff0_d_id, 0):
+        # Native DFF: Port 1 = Q_NOT output, Port 0 = D input
+        if not self.connect_elements(ff0_q_not_id, 1, ff0_d_id, 0):
             return {"success": False, "error": "Failed to connect FF0 toggle logic"}
         
         # FF1 (MSB): Toggles when FF0 is HIGH (synchronous counter logic)
@@ -319,6 +320,7 @@ class AdvancedSequentialValidator:
             return {"success": False, "error": "Failed to create XOR gate for counter logic"}
             
         # Connect synchronous counter logic
+        # Native DFF: Port 0 = Q output
         if not self.connect_elements(ff1_q_id, 0, xor_gate, 0):
             return {"success": False, "error": "Failed to connect Q1 to XOR"}
         if not self.connect_elements(ff0_q_id, 0, xor_gate, 1):
@@ -527,8 +529,9 @@ class AdvancedSequentialValidator:
                 
         logger.info(f"✅ FIXED native D flip-flop {label_prefix} created successfully")
         
-        # Return [D_input, Q_output, Q_NOT_output] 
-        return [dff, dff, dff]  # D FF has built-in D, Q, Q_NOT connections via ports
+        # Return [D_input_port, Q_output_port, Q_NOT_output_port]
+        # Native D Flip-Flop ports: [0]=D, [1]=CLK, [2]=PRESET, [3]=CLEAR | Outputs: [0]=Q, [1]=Q_NOT
+        return [dff, dff, dff]  # Use element ID - connections specify port numbers
     
     def _create_master_slave_d_flip_flop(self, base_col: int, base_row: int, label_prefix: str, clock_id: int, reset_id: int) -> List[Optional[int]]:
         """Create TRUE EDGE-TRIGGERED D flip-flop using master-slave latches"""
@@ -864,7 +867,7 @@ class AdvancedSequentialValidator:
         
         # Test sequence
         logger.info("DEBUG: Initial state after reset")
-        q0_initial = self.get_output(bcd_ffs[0][1])
+        q0_initial = self.get_output(bcd_ffs[0][0], 0)  # Read Q output port 0
         logger.info(f"DEBUG: Q0 initial = {q0_initial}")
         
         # Apply clock pulse with D0=True  
@@ -874,7 +877,7 @@ class AdvancedSequentialValidator:
         self.set_input(clk_id, False)
         time.sleep(0.1)
         
-        q0_after_clock = self.get_output(bcd_ffs[0][1])
+        q0_after_clock = self.get_output(bcd_ffs[0][0], 0)  # Read Q output port 0
         logger.info(f"DEBUG: Q0 after clock = {q0_after_clock}")
         
         # Clean up test connection (disconnect test input)
@@ -1711,11 +1714,11 @@ class AdvancedSequentialValidator:
             return {"success": False, "error": "Failed to create decade detection logic"}
 
         # Connect decade detection: Q3 AND Q1 (detects 1010 state)
-        q3_output = bcd_ffs[3][1]  # Q3 output
-        q1_output = bcd_ffs[1][1]  # Q1 output
-        if not self.connect_elements(q3_output, 0, decade_detect, 0):
+        q3_ff = bcd_ffs[3][0]  # Q3 flip-flop element
+        q1_ff = bcd_ffs[1][0]  # Q1 flip-flop element
+        if not self.connect_elements(q3_ff, 0, decade_detect, 0):  # Q3 output port 0 -> AND
             return {"success": False, "error": "Failed to connect Q3 to decade detect"}
-        if not self.connect_elements(q1_output, 0, decade_detect, 1):
+        if not self.connect_elements(q1_ff, 0, decade_detect, 1):  # Q1 output port 0 -> AND
             return {"success": False, "error": "Failed to connect Q1 to decade detect"}
 
         # BCD COUNTER LOGIC with Decade Reset
@@ -1742,9 +1745,9 @@ class AdvancedSequentialValidator:
         
         toggle_logic.extend([q0_not_gate, q0_and1_gate, decade_not_gate, reset_not_gate, q0_and2_gate])
         
-        # Connect Q0 toggle logic with reset override
-        q0_output = bcd_ffs[0][1]
-        if not self.connect_elements(q0_output, 0, q0_not_gate, 0):
+        # Connect Q0 toggle logic with reset override  
+        q0_output = bcd_ffs[0][0]  # Q0 flip-flop element
+        if not self.connect_elements(q0_output, 0, q0_not_gate, 0):  # Q output (port 0) -> NOT
             return {"success": False, "error": "Failed to connect Q0 toggle logic"}
         if not self.connect_elements(q0_not_gate, 0, q0_and1_gate, 0):
             return {"success": False, "error": "Failed to connect Q0 NOT to AND gate"}
@@ -1759,7 +1762,7 @@ class AdvancedSequentialValidator:
             return {"success": False, "error": "Failed to connect Q0 AND1 to AND2 gate"}
         if not self.connect_elements(reset_not_gate, 0, q0_and2_gate, 1):
             return {"success": False, "error": "Failed to connect reset NOT to Q0 AND2 gate"}
-        if not self.connect_elements(q0_and2_gate, 0, bcd_ffs[0][0], 0):  # Connect to Q0 D input
+        if not self.connect_elements(q0_and2_gate, 0, bcd_ffs[0][0], 0):  # Connect to Q0 D input (port 0)
             return {"success": False, "error": "Failed to connect Q0 toggle to D input"}
         
         # Q1 TOGGLE LOGIC - CORRECT BINARY COUNTER IMPLEMENTATION
@@ -1778,10 +1781,10 @@ class AdvancedSequentialValidator:
         toggle_logic.extend([q1_xor_gate, q1_or_reset_gate, q1_not_reset_gate, q1_final_and_gate])
         
         # STEP 1: Basic binary toggle logic - Q1 XOR Q0
-        q1_output = bcd_ffs[1][1]
-        if not self.connect_elements(q1_output, 0, q1_xor_gate, 0):  # Q1 -> XOR input 0
+        q1_output = bcd_ffs[1][0]  # Q1 flip-flop element
+        if not self.connect_elements(q1_output, 0, q1_xor_gate, 0):  # Q1 output port 0 -> XOR input 0
             return {"success": False, "error": "Failed to connect Q1 to XOR gate"}
-        if not self.connect_elements(q0_output, 0, q1_xor_gate, 1):  # Q0 -> XOR input 1
+        if not self.connect_elements(q0_output, 0, q1_xor_gate, 1):  # Q0 output port 0 -> XOR input 1
             return {"success": False, "error": "Failed to connect Q0 to XOR gate"}
             
         # STEP 2: Reset logic - OR(reset, decade_detect) then NOT to get enable signal
@@ -1797,7 +1800,7 @@ class AdvancedSequentialValidator:
             return {"success": False, "error": "Failed to connect Q1 XOR to final AND gate"}
         if not self.connect_elements(q1_not_reset_gate, 0, q1_final_and_gate, 1):  # NOT reset -> AND input 1
             return {"success": False, "error": "Failed to connect Q1 NOT reset to final AND gate"}
-        if not self.connect_elements(q1_final_and_gate, 0, bcd_ffs[1][0], 0):  # Final AND -> Q1 D input
+        if not self.connect_elements(q1_final_and_gate, 0, bcd_ffs[1][0], 0):  # Final AND -> Q1 D input port 0
             return {"success": False, "error": "Failed to connect Q1 final logic to D input"}
 
         logger.info("✅ Q0 and Q1 toggle logic connected with CORRECT binary logic - continuing with Q2, Q3")
@@ -1819,14 +1822,14 @@ class AdvancedSequentialValidator:
         
         # Q2 TOGGLE LOGIC: D2 = (Q2 XOR (Q1 AND Q0)) AND NOT(reset OR decade_detect)
         # STEP 1: Create enable condition (Q1 AND Q0)
-        if not self.connect_elements(q1_output, 0, q2_and_gate, 0):  # Q1 -> AND input 0
+        if not self.connect_elements(q1_output, 0, q2_and_gate, 0):  # Q1 output port 0 -> AND input 0
             return {"success": False, "error": "Failed to connect Q1 to Q2 AND gate"}
-        if not self.connect_elements(q0_output, 0, q2_and_gate, 1):  # Q0 -> AND input 1
+        if not self.connect_elements(q0_output, 0, q2_and_gate, 1):  # Q0 output port 0 -> AND input 1
             return {"success": False, "error": "Failed to connect Q0 to Q2 AND gate"}
             
         # STEP 2: XOR toggle logic (Q2 XOR enable_condition)
-        q2_output = bcd_ffs[2][1]
-        if not self.connect_elements(q2_output, 0, q2_xor_gate, 0):  # Q2 -> XOR input 0
+        q2_output = bcd_ffs[2][0]  # Q2 flip-flop element
+        if not self.connect_elements(q2_output, 0, q2_xor_gate, 0):  # Q2 output port 0 -> XOR input 0
             return {"success": False, "error": "Failed to connect Q2 to XOR gate"}
         if not self.connect_elements(q2_and_gate, 0, q2_xor_gate, 1):  # enable -> XOR input 1
             return {"success": False, "error": "Failed to connect Q2 enable AND to XOR gate"}
@@ -1844,7 +1847,7 @@ class AdvancedSequentialValidator:
             return {"success": False, "error": "Failed to connect Q2 XOR to final AND gate"}
         if not self.connect_elements(q2_not_reset_gate, 0, q2_final_and_gate, 1):  # NOT reset -> final AND input 1
             return {"success": False, "error": "Failed to connect Q2 NOT reset to final AND gate"}
-        if not self.connect_elements(q2_final_and_gate, 0, bcd_ffs[2][0], 0):  # Final -> Q2 D input
+        if not self.connect_elements(q2_final_and_gate, 0, bcd_ffs[2][0], 0):  # Final -> Q2 D input port 0
             return {"success": False, "error": "Failed to connect Q2 final logic to D input"}
 
         # Q3 TOGGLE LOGIC - CORRECT BINARY COUNTER IMPLEMENTATION
@@ -1870,8 +1873,8 @@ class AdvancedSequentialValidator:
             return {"success": False, "error": "Failed to connect Q2 to Q3 AND gate"}
             
         # STEP 2: XOR toggle logic (Q3 XOR enable_condition)
-        q3_output = bcd_ffs[3][1]
-        if not self.connect_elements(q3_output, 0, q3_xor_gate, 0):  # Q3 -> XOR input 0
+        q3_output = bcd_ffs[3][0]  # Q3 flip-flop element
+        if not self.connect_elements(q3_output, 0, q3_xor_gate, 0):  # Q3 output port 0 -> XOR input 0
             return {"success": False, "error": "Failed to connect Q3 to XOR gate"}
         if not self.connect_elements(q3_and3_gate, 0, q3_xor_gate, 1):  # enable -> XOR input 1
             return {"success": False, "error": "Failed to connect Q3 enable AND to XOR gate"}
@@ -1889,7 +1892,7 @@ class AdvancedSequentialValidator:
             return {"success": False, "error": "Failed to connect Q3 XOR to final AND gate"}
         if not self.connect_elements(q3_not_reset_gate, 0, q3_final_and_gate, 1):  # NOT reset -> final AND input 1
             return {"success": False, "error": "Failed to connect Q3 NOT reset to final AND gate"}
-        if not self.connect_elements(q3_final_and_gate, 0, bcd_ffs[3][0], 0):  # Final -> Q3 D input
+        if not self.connect_elements(q3_final_and_gate, 0, bcd_ffs[3][0], 0):  # Final -> Q3 D input port 0
             return {"success": False, "error": "Failed to connect Q3 final logic to D input"}
         
         logger.info("✅ CORRECT BCD counter logic implemented - Fixed Q1, Q2, Q3 toggle with proper reset logic")
@@ -1906,8 +1909,8 @@ class AdvancedSequentialValidator:
             out_led = self.create_element("Led", out_x, out_y, f"BCD_Q{i}")
             output_leds.append(out_led)
             
-            q_output = bcd_ffs[i][1]  # Q output of bit i
-            if not self.connect_elements(q_output, 0, out_led, 0):
+            q_ff = bcd_ffs[i][0]  # Flip-flop element for bit i
+            if not self.connect_elements(q_ff, 0, out_led, 0):  # Q output port 0 -> LED
                 return {"success": False, "error": f"Failed to connect BCD bit {i} output display"}
 
         # Decade detect output

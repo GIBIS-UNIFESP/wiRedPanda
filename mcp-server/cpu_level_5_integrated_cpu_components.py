@@ -480,6 +480,20 @@ class IntegratedCPUValidator:
                 }
                 
             # Create 8-bit ALU circuit with comprehensive flags
+            input_ids, output_ids = self._create_8bit_alu_elements()
+            if not input_ids or not output_ids:
+                return {
+                    'success': False,
+                    'error': 'Failed to create 8-bit ALU elements',
+                    'accuracy': 0.0
+                }
+                
+            if not self.start_simulation():
+                return {
+                    'success': False,
+                    'error': 'Failed to start simulation',
+                    'accuracy': 0.0
+                }
             
             # Test cases focusing on edge conditions and flag behavior
             test_cases = [
@@ -501,42 +515,53 @@ class IntegratedCPUValidator:
             sample_results = []
             
             for i, case in enumerate(test_cases):
-                # Set 8-bit inputs
-                input_values = {}
+                # Set 8-bit inputs using element IDs
+                input_mapping = {}
+                
+                # Set A inputs (first 8 input IDs)
                 for bit in range(8):
-                    input_values[f'A{bit}'] = bool(case['A'] & (1 << bit))
-                    input_values[f'B{bit}'] = bool(case['B'] & (1 << bit))
+                    if bit < len(input_ids):
+                        input_mapping[input_ids[bit]] = bool(case['A'] & (1 << bit))
                 
-                input_values['OP1'] = bool(case['OP'] & 2)
-                input_values['OP0'] = bool(case['OP'] & 1)
+                # Set B inputs (next 8 input IDs)
+                for bit in range(8):
+                    if (8 + bit) < len(input_ids):
+                        input_mapping[input_ids[8 + bit]] = bool(case['B'] & (1 << bit))
                 
-                if not self.bridge.set_inputs(input_values):
+                # Set operation inputs (OP1, OP0 are last 2 inputs)
+                if len(input_ids) >= 18:
+                    input_mapping[input_ids[16]] = bool(case['OP'] & 2)  # OP1
+                    input_mapping[input_ids[17]] = bool(case['OP'] & 1)  # OP0
+                
+                if not self.set_multiple_inputs(input_mapping):
                     continue
                 
-                if not self.bridge.run_simulation(steps=15):
+                if not self.run_simulation_steps(steps=15):
                     continue
                 
-                # Get outputs and check
-                outputs = self.bridge.get_outputs()
-                if not outputs:
+                # Get outputs using element IDs
+                outputs_dict = self.get_multiple_outputs(output_ids)
+                if not outputs_dict:
                     continue
                 
-                # Extract 8-bit result
+                # Extract 8-bit result using output element IDs
                 actual_result = 0
                 for bit in range(8):
-                    if outputs.get(f'R{bit}', False):
-                        actual_result |= (1 << bit)
+                    if bit < len(output_ids):
+                        if outputs_dict.get(output_ids[bit], False):
+                            actual_result |= (1 << bit)
                 
                 # Check result and relevant flags
                 result_correct = actual_result == case['expected_result']
                 flags_correct = True
                 
-                if 'expected_overflow' in case:
-                    flags_correct &= outputs.get('OVERFLOW', False) == case['expected_overflow']
-                if 'expected_carry' in case:
-                    flags_correct &= outputs.get('CARRY', False) == case['expected_carry']
-                if 'expected_zero' in case:
-                    flags_correct &= outputs.get('ZERO', False) == case['expected_zero']
+                # Flags are the last 3 outputs: OVERFLOW, CARRY, ZERO
+                if 'expected_overflow' in case and len(output_ids) >= 9:
+                    flags_correct &= outputs_dict.get(output_ids[8], False) == case['expected_overflow']
+                if 'expected_carry' in case and len(output_ids) >= 10:
+                    flags_correct &= outputs_dict.get(output_ids[9], False) == case['expected_carry']
+                if 'expected_zero' in case and len(output_ids) >= 11:
+                    flags_correct &= outputs_dict.get(output_ids[10], False) == case['expected_zero']
                 
                 is_correct = result_correct and flags_correct
                 if is_correct:
@@ -629,46 +654,51 @@ class IntegratedCPUValidator:
             
             for i, case in enumerate(test_cases):
                 if case['operation'] == 'write':
-                    # Set up write operation
-                    input_values = {
-                        'WE': True,  # Write Enable
-                        'ADDR1': bool(case['reg_addr'] & 2),
-                        'ADDR0': bool(case['reg_addr'] & 1),
-                        'WD3': bool(case['write_data'] & 8),
-                        'WD2': bool(case['write_data'] & 4),
-                        'WD1': bool(case['write_data'] & 2),
-                        'WD0': bool(case['write_data'] & 1),
-                        'CLK': False
+                    # Set up write operation using element ID mapping
+                    input_mapping = {
+                        input_ids[0]: True,  # WE - Write Enable
+                        input_ids[1]: False,  # CLK
+                        input_ids[2]: bool(case['reg_addr'] & 2),  # ADDR1
+                        input_ids[3]: bool(case['reg_addr'] & 1),  # ADDR0
+                        input_ids[4]: bool(case['write_data'] & 8),  # WD3
+                        input_ids[5]: bool(case['write_data'] & 4),  # WD2
+                        input_ids[6]: bool(case['write_data'] & 2),  # WD1
+                        input_ids[7]: bool(case['write_data'] & 1),  # WD0
                     }
                     
-                    self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=2)
+                    self.set_multiple_inputs(input_mapping)
+                    self.run_simulation_steps(steps=2)
                     
                     # Clock pulse
-                    input_values['CLK'] = True
-                    self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=2)
+                    input_mapping[input_ids[1]] = True  # CLK = True
+                    self.set_multiple_inputs(input_mapping)
+                    self.run_simulation_steps(steps=2)
                     
-                    input_values['CLK'] = False
-                    self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=2)
+                    input_mapping[input_ids[1]] = False  # CLK = False
+                    self.set_multiple_inputs(input_mapping)
+                    self.run_simulation_steps(steps=2)
                     
                     passed_cases += 1  # Assume write succeeded
                     
                 elif case['operation'] == 'read':
-                    # Set up read operation
-                    input_values = {
-                        'WE': False,  # Write disabled
-                        'ADDR1': bool(case['reg_addr'] & 2),
-                        'ADDR0': bool(case['reg_addr'] & 1),
-                        'CLK': False
+                    # Set up read operation using element ID mapping
+                    input_mapping = {
+                        input_ids[0]: False,  # WE - Write disabled
+                        input_ids[1]: False,  # CLK
+                        input_ids[2]: bool(case['reg_addr'] & 2),  # ADDR1
+                        input_ids[3]: bool(case['reg_addr'] & 1),  # ADDR0
+                        # Data inputs don't matter for reads
+                        input_ids[4]: False,  # WD3
+                        input_ids[5]: False,  # WD2
+                        input_ids[6]: False,  # WD1
+                        input_ids[7]: False,  # WD0
                     }
                     
-                    self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=5)
+                    self.set_multiple_inputs(input_mapping)
+                    self.run_simulation_steps(steps=5)
                     
                     # Get read data
-                    outputs = self.bridge.get_outputs()
+                    outputs_dict = self.get_multiple_outputs(output_ids)
                     if outputs:
                         actual_data = 0
                         if outputs.get('RD3', False): actual_data |= 8
@@ -777,16 +807,16 @@ class IntegratedCPUValidator:
                     }
                     
                     self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=2)
+                    self.run_simulation_steps(steps=2)
                     
                     # Clock pulse to write
                     input_values['CLK'] = True
                     self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=2)
+                    self.run_simulation_steps(steps=2)
                     
                     input_values['CLK'] = False
                     self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=2)
+                    self.run_simulation_steps(steps=2)
                     
                 elif case['operation'] == 'dual_read':
                     total_cases += 1
@@ -802,10 +832,10 @@ class IntegratedCPUValidator:
                     }
                     
                     self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=5)
+                    self.run_simulation_steps(steps=5)
                     
                     # Get simultaneous read outputs
-                    outputs = self.bridge.get_outputs()
+                    outputs_dict = self.get_multiple_outputs(output_ids)
                     if outputs:
                         # Extract port A data
                         actual_a = 0
@@ -1054,23 +1084,23 @@ class IntegratedCPUValidator:
                     # Apply clock pulse
                     input_values['CLK'] = False
                     self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=2)
+                    self.run_simulation_steps(steps=2)
                     
                     input_values['CLK'] = True  
                     self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=2)
+                    self.run_simulation_steps(steps=2)
                     
                     input_values['CLK'] = False
                     self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=2)
+                    self.run_simulation_steps(steps=2)
                     current_clock = False
                 else:
                     # Just set inputs
                     self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=3)
+                    self.run_simulation_steps(steps=3)
                     
                 # Get state machine outputs
-                outputs = self.bridge.get_outputs()
+                outputs_dict = self.get_multiple_outputs(output_ids)
                 if not outputs:
                     continue
                 
@@ -1234,19 +1264,19 @@ class IntegratedCPUValidator:
                 
                 # Execute cache operation
                 self.bridge.set_inputs(input_values)
-                self.bridge.run_simulation(steps=3)
+                self.run_simulation_steps(steps=3)
                 
                 # Clock pulse for state changes
                 input_values['CLK'] = True
                 self.bridge.set_inputs(input_values)
-                self.bridge.run_simulation(steps=3)
+                self.run_simulation_steps(steps=3)
                 
                 input_values['CLK'] = False
                 self.bridge.set_inputs(input_values)
-                self.bridge.run_simulation(steps=3)
+                self.run_simulation_steps(steps=3)
                 
                 # Get cache controller outputs
-                outputs = self.bridge.get_outputs()
+                outputs_dict = self.get_multiple_outputs(output_ids)
                 if not outputs:
                     continue
                 
@@ -1396,16 +1426,16 @@ class IntegratedCPUValidator:
                     }
                     
                     self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=2)
+                    self.run_simulation_steps(steps=2)
                     
                     # Clock pulse to setup entry
                     input_values['CLK'] = True
                     self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=2)
+                    self.run_simulation_steps(steps=2)
                     
                     input_values['CLK'] = False
                     self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=2)
+                    self.run_simulation_steps(steps=2)
                     
                 elif op['operation'] == 'invalidate_tlb':
                     # Invalidate TLB entry
@@ -1418,16 +1448,16 @@ class IntegratedCPUValidator:
                     }
                     
                     self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=2)
+                    self.run_simulation_steps(steps=2)
                     
                     # Clock pulse to invalidate
                     input_values['CLK'] = True
                     self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=2)
+                    self.run_simulation_steps(steps=2)
                     
                     input_values['CLK'] = False
                     self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=2)
+                    self.run_simulation_steps(steps=2)
                     
                 elif op['operation'] == 'translate':
                     total_cases += 1
@@ -1447,10 +1477,10 @@ class IntegratedCPUValidator:
                     }
                     
                     self.bridge.set_inputs(input_values)
-                    self.bridge.run_simulation(steps=5)
+                    self.run_simulation_steps(steps=5)
                     
                     # Get translation results
-                    outputs = self.bridge.get_outputs()
+                    outputs_dict = self.get_multiple_outputs(output_ids)
                     if outputs:
                         # Extract physical address
                         actual_physical = 0
@@ -1597,19 +1627,19 @@ class IntegratedCPUValidator:
                 
                 # Apply inputs
                 self.bridge.set_inputs(input_values)
-                self.bridge.run_simulation(steps=2)
+                self.run_simulation_steps(steps=2)
                 
                 # Clock edge to advance pipeline
                 input_values['CLK'] = True
                 self.bridge.set_inputs(input_values)
-                self.bridge.run_simulation(steps=2)
+                self.run_simulation_steps(steps=2)
                 
                 input_values['CLK'] = False
                 self.bridge.set_inputs(input_values)
-                self.bridge.run_simulation(steps=2)
+                self.run_simulation_steps(steps=2)
                 
                 # Get pipeline stage outputs
-                outputs = self.bridge.get_outputs()
+                outputs_dict = self.get_multiple_outputs(output_ids)
                 if not outputs:
                     continue
                 
@@ -1873,10 +1903,10 @@ class IntegratedCPUValidator:
                 
                 # Apply inputs and run coordination logic
                 self.bridge.set_inputs(input_values)
-                self.bridge.run_simulation(steps=8)  # More steps for complex coordination
+                self.run_simulation_steps(steps=8)  # More steps for complex coordination
                 
                 # Get coordination outputs
-                outputs = self.bridge.get_outputs()
+                outputs_dict = self.get_multiple_outputs(output_ids)
                 if not outputs:
                     continue
                 
@@ -2963,6 +2993,49 @@ class IntegratedCPUValidator:
             if not out_id:
                 return [], []
             output_ids.append(out_id)
+        
+        return input_ids, output_ids
+
+    def _create_8bit_alu_elements(self) -> Tuple[List[int], List[int]]:
+        """Create simplified 8-bit ALU elements"""
+        input_ids = []
+        output_ids = []
+        
+        # Create 8-bit A inputs
+        for bit in range(8):
+            a_id = self.create_element("InputButton", float(100 + bit * 30), float(100), f"A{bit}")
+            if not a_id:
+                return [], []
+            input_ids.append(a_id)
+        
+        # Create 8-bit B inputs  
+        for bit in range(8):
+            b_id = self.create_element("InputButton", float(100 + bit * 30), float(200), f"B{bit}")
+            if not b_id:
+                return [], []
+            input_ids.append(b_id)
+        
+        # Create operation select inputs
+        op1_id = self.create_element("InputButton", float(400), float(100), "OP1")
+        op0_id = self.create_element("InputButton", float(400), float(150), "OP0")
+        if not op1_id or not op0_id:
+            return [], []
+        input_ids.extend([op1_id, op0_id])
+        
+        # Create 8-bit result outputs
+        for bit in range(8):
+            r_id = self.create_element("Led", float(100 + bit * 30), float(400), f"R{bit}")
+            if not r_id:
+                return [], []
+            output_ids.append(r_id)
+        
+        # Create flag outputs
+        overflow_id = self.create_element("Led", float(400), float(400), "OVERFLOW")
+        carry_id = self.create_element("Led", float(450), float(400), "CARRY")
+        zero_id = self.create_element("Led", float(500), float(400), "ZERO")
+        if not overflow_id or not carry_id or not zero_id:
+            return [], []
+        output_ids.extend([overflow_id, carry_id, zero_id])
         
         return input_ids, output_ids
 
