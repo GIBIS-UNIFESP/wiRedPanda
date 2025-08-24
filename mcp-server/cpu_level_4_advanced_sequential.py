@@ -906,26 +906,39 @@ class AdvancedSequentialValidator:
         input_id = self.create_element("InputButton", input_x, input_y, "INPUT")
         clk_x, clk_y = self._get_input_position(1)
         clk_id = self.create_element("InputButton", clk_x, clk_y, "CLK")
+        reset_x, reset_y = self._get_input_position(2)
+        reset_id = self.create_element("InputButton", reset_x, reset_y, "RESET")
 
-        # Single flip-flop for state storage with proper clock distribution
-        ff_components = self._create_d_flip_flop(1, 0, "STATE_FF", clk_id)
+        # Single flip-flop for state storage with FIXED native D flip-flop
+        ff_components = self._create_simple_d_flip_flop_native(1, 0, "STATE_FF", clk_id, reset_id)
         if not all(ff_components[:3]):
             return {"success": False, "error": "Failed to create state flip-flop"}
         ff_d_id, ff_q_id, ff_q_not_id = ff_components[:3]
 
+        # Initialize with reset
+        self.set_input(reset_id, True)  # Apply reset
+        self.set_input(clk_id, False)   # Clock low during reset
+        self.update_simulation()
+        self.update_simulation()
+        self.set_input(reset_id, False) # Release reset
+        self.update_simulation()
+
         # Moore machine logic:
-        # Next state = current_input (simple toggle)
+        # Next state = current_input (simple toggle)  
         # Output = current_state
+        # Native DFF: Port 0 = D input
         self.connect_elements(input_id, 0, ff_d_id, 0)
 
         # Output LED (Moore output = current state)
         out_x, out_y = self._get_output_position(4, 0)
         output_led = self.create_element("Led", out_x, out_y, "OUTPUT")
+        # Native DFF: Port 0 = Q output
         self.connect_elements(ff_q_id, 0, output_led, 0)
 
         # State display LED
         state_x, state_y = self._get_output_position(4, 1)
         state_led = self.create_element("Led", state_x, state_y, "STATE")
+        # Native DFF: Port 0 = Q output
         self.connect_elements(ff_q_id, 0, state_led, 0)
 
         logger.info("✅ Moore state machine created")
@@ -1360,12 +1373,15 @@ class AdvancedSequentialValidator:
         
         data_in_x, data_in_y = self._get_input_position(3)
         data_in_id = self.create_element("InputButton", data_in_x, data_in_y, "DATA_IN")
+        
+        reset_x, reset_y = self._get_input_position(4)
+        reset_id = self.create_element("InputButton", reset_x, reset_y, "RESET")
 
-        # Create 4 D flip-flops for 4-stage FIFO (1-bit wide for simplicity)
+        # Create 4 FIXED native D flip-flops for 4-stage FIFO (1-bit wide for simplicity)
         # Stage 0: Input stage, Stage 3: Output stage
         stage_ffs = []
         for i in range(4):
-            ff_components = self._create_d_flip_flop(2 + i*2, 0, f"FIFO_STAGE{i}", clk_id)
+            ff_components = self._create_simple_d_flip_flop_native(2 + i*2, 0, f"FIFO_STAGE{i}", clk_id, reset_id)
             if not all(ff_components[:3]):
                 return {"success": False, "error": f"Failed to create FIFO stage {i}"}
             stage_ffs.append(ff_components[:3])  # [D, Q, Q_NOT]
