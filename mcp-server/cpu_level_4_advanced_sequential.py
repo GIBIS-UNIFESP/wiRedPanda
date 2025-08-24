@@ -1226,32 +1226,41 @@ class AdvancedSequentialValidator:
         reset_x, reset_y = self._get_input_position(1)
         reset_id = self.create_element("InputButton", reset_x, reset_y, "RESET")
 
-        # Create 3 flip-flops for Johnson counter (more spacing for complex circuit)
-        ff0_components = self._create_d_flip_flop(1, 0, "J_FF0", clk_id)
+        # Create 3 FIXED native D flip-flops for Johnson counter
+        ff0_components = self._create_simple_d_flip_flop_native(1, 0, "J_FF0", clk_id, reset_id)
         if not all(ff0_components[:3]):
             return {"success": False, "error": "Failed to create Johnson FF0"}
         ff0_d, ff0_q, ff0_q_not = ff0_components[:3]
 
-        ff1_components = self._create_d_flip_flop(1, 8, "J_FF1", clk_id)
+        ff1_components = self._create_simple_d_flip_flop_native(1, 8, "J_FF1", clk_id, reset_id)
         if not all(ff1_components[:3]):
             return {"success": False, "error": "Failed to create Johnson FF1"}
         ff1_d, ff1_q, ff1_q_not = ff1_components[:3]
 
-        ff2_components = self._create_d_flip_flop(1, 16, "J_FF2", clk_id)
+        ff2_components = self._create_simple_d_flip_flop_native(1, 16, "J_FF2", clk_id, reset_id)
         if not all(ff2_components[:3]):
             return {"success": False, "error": "Failed to create Johnson FF2"}
         ff2_d, ff2_q, ff2_q_not = ff2_components[:3]
+
+        # Initialize with reset
+        self.set_input(reset_id, True)  # Apply reset
+        self.set_input(clk_id, False)   # Clock low during reset
+        self.update_simulation()
+        self.update_simulation()
+        self.set_input(reset_id, False) # Release reset
+        self.update_simulation()
 
         # Johnson Counter connections: Shift register with inverted feedback
         # D0 = NOT Q2 (inverted feedback from last stage)
         # D1 = Q0 (shift from stage 0 to 1)
         # D2 = Q1 (shift from stage 1 to 2)
+        # Native DFF: Port 0 = D input, Port 0 = Q output, Port 1 = Q_NOT output
         
-        if not self.connect_elements(ff2_q_not, 0, ff0_d, 0):  # Inverted feedback
+        if not self.connect_elements(ff2_q_not, 1, ff0_d, 0):  # Q_NOT (port 1) -> D input (port 0)
             return {"success": False, "error": "Failed to connect Johnson feedback"}
-        if not self.connect_elements(ff0_q, 0, ff1_d, 0):     # Shift 0->1
+        if not self.connect_elements(ff0_q, 0, ff1_d, 0):     # Q output (port 0) -> D input (port 0)
             return {"success": False, "error": "Failed to connect Johnson shift 0->1"}
-        if not self.connect_elements(ff1_q, 0, ff2_d, 0):     # Shift 1->2
+        if not self.connect_elements(ff1_q, 0, ff2_d, 0):     # Q output (port 0) -> D input (port 0)
             return {"success": False, "error": "Failed to connect Johnson shift 1->2"}
 
         # Output LEDs

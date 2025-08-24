@@ -1429,75 +1429,128 @@ class IntegratedCPUValidator:
             
             for i, op in enumerate(translation_table):
                 if op['operation'] == 'setup_tlb':
-                    # Setup TLB entry
-                    input_values = {
-                        'MMU_SETUP': True,
-                        'TLB_ENTRY1': bool(op['entry'] & 2),
-                        'TLB_ENTRY0': bool(op['entry'] & 1),
-                        'VPAGE3': bool(op['virtual_page'] & 8),
-                        'VPAGE2': bool(op['virtual_page'] & 4),
-                        'VPAGE1': bool(op['virtual_page'] & 2),
-                        'VPAGE0': bool(op['virtual_page'] & 1),
-                        'PFRAME3': bool(op['physical_frame'] & 8),
-                        'PFRAME2': bool(op['physical_frame'] & 4),
-                        'PFRAME1': bool(op['physical_frame'] & 2),
-                        'PFRAME0': bool(op['physical_frame'] & 1),
-                        'VALID': op['valid'],
-                        'CLK': False
+                    # Setup TLB entry using element ID mapping
+                    input_mapping = {
+                        # Virtual address inputs (don't care for setup)
+                        input_ids[0]: False,  # VADDR0
+                        input_ids[1]: False,  # VADDR1
+                        input_ids[2]: False,  # VADDR2
+                        input_ids[3]: False,  # VADDR3
+                        input_ids[4]: False,  # VADDR4
+                        input_ids[5]: False,  # VADDR5
+                        input_ids[6]: False,  # VADDR6
+                        input_ids[7]: False,  # VADDR7
+                        # Control signals
+                        input_ids[8]: True,   # MMU_SETUP
+                        input_ids[9]: False,  # CLK
+                        # TLB entry selection
+                        input_ids[10]: bool(op['entry'] & 2),  # TLB_ENTRY1
+                        input_ids[11]: bool(op['entry'] & 1),  # TLB_ENTRY0
+                        # Virtual page data
+                        input_ids[12]: bool(op['virtual_page'] & 8),  # VPAGE3
+                        input_ids[13]: bool(op['virtual_page'] & 4),  # VPAGE2
+                        input_ids[14]: bool(op['virtual_page'] & 2),  # VPAGE1
+                        input_ids[15]: bool(op['virtual_page'] & 1),  # VPAGE0
+                        # Physical frame data
+                        input_ids[16]: bool(op['physical_frame'] & 8),  # PFRAME3
+                        input_ids[17]: bool(op['physical_frame'] & 4),  # PFRAME2
+                        input_ids[18]: bool(op['physical_frame'] & 2),  # PFRAME1
+                        input_ids[19]: bool(op['physical_frame'] & 1),  # PFRAME0
+                        # Valid bit
+                        input_ids[20]: op['valid'],  # VALID
                     }
                     
-                    self.bridge.set_inputs(input_values)
+                    self.set_multiple_inputs(input_mapping)
                     self.run_simulation_steps(steps=2)
                     
                     # Clock pulse to setup entry
-                    input_values['CLK'] = True
-                    self.bridge.set_inputs(input_values)
+                    input_mapping[input_ids[9]] = True  # CLK = True
+                    self.set_multiple_inputs(input_mapping)
                     self.run_simulation_steps(steps=2)
                     
-                    input_values['CLK'] = False
-                    self.bridge.set_inputs(input_values)
+                    input_mapping[input_ids[9]] = False  # CLK = False
+                    self.set_multiple_inputs(input_mapping)
                     self.run_simulation_steps(steps=2)
                     
                 elif op['operation'] == 'invalidate_tlb':
-                    # Invalidate TLB entry
-                    input_values = {
-                        'MMU_SETUP': True,
-                        'TLB_ENTRY1': bool(op['entry'] & 2),
-                        'TLB_ENTRY0': bool(op['entry'] & 1),
-                        'VALID': False,
-                        'CLK': False
+                    # Invalidate TLB entry using element ID mapping
+                    input_mapping = {
+                        # Virtual address inputs (don't care)
+                        input_ids[0]: False,  # VADDR0
+                        input_ids[1]: False,  # VADDR1
+                        input_ids[2]: False,  # VADDR2
+                        input_ids[3]: False,  # VADDR3
+                        input_ids[4]: False,  # VADDR4
+                        input_ids[5]: False,  # VADDR5
+                        input_ids[6]: False,  # VADDR6
+                        input_ids[7]: False,  # VADDR7
+                        # Control signals
+                        input_ids[8]: True,   # MMU_SETUP
+                        input_ids[9]: False,  # CLK
+                        # TLB entry selection
+                        input_ids[10]: bool(op['entry'] & 2),  # TLB_ENTRY1
+                        input_ids[11]: bool(op['entry'] & 1),  # TLB_ENTRY0
+                        # Virtual page data (don't care for invalidate)
+                        input_ids[12]: False,  # VPAGE3
+                        input_ids[13]: False,  # VPAGE2
+                        input_ids[14]: False,  # VPAGE1
+                        input_ids[15]: False,  # VPAGE0
+                        # Physical frame data (don't care for invalidate)
+                        input_ids[16]: False,  # PFRAME3
+                        input_ids[17]: False,  # PFRAME2
+                        input_ids[18]: False,  # PFRAME1
+                        input_ids[19]: False,  # PFRAME0
+                        # Valid bit - set to false to invalidate
+                        input_ids[20]: False,  # VALID
                     }
                     
-                    self.bridge.set_inputs(input_values)
+                    self.set_multiple_inputs(input_mapping)
                     self.run_simulation_steps(steps=2)
                     
                     # Clock pulse to invalidate
-                    input_values['CLK'] = True
-                    self.bridge.set_inputs(input_values)
+                    input_mapping[input_ids[9]] = True  # CLK = True
+                    self.set_multiple_inputs(input_mapping)
                     self.run_simulation_steps(steps=2)
                     
-                    input_values['CLK'] = False
-                    self.bridge.set_inputs(input_values)
+                    input_mapping[input_ids[9]] = False  # CLK = False
+                    self.set_multiple_inputs(input_mapping)
                     self.run_simulation_steps(steps=2)
                     
                 elif op['operation'] == 'translate':
                     total_cases += 1
                     
-                    # Perform address translation
-                    input_values = {
-                        'MMU_SETUP': False,
-                        'VADDR7': bool(op['virtual_addr'] & 128),
-                        'VADDR6': bool(op['virtual_addr'] & 64),
-                        'VADDR5': bool(op['virtual_addr'] & 32),
-                        'VADDR4': bool(op['virtual_addr'] & 16),
-                        'VADDR3': bool(op['virtual_addr'] & 8),
-                        'VADDR2': bool(op['virtual_addr'] & 4),
-                        'VADDR1': bool(op['virtual_addr'] & 2),
-                        'VADDR0': bool(op['virtual_addr'] & 1),
-                        'CLK': False
+                    # Perform address translation using element ID mapping
+                    input_mapping = {
+                        # Virtual address inputs
+                        input_ids[0]: bool(op['virtual_addr'] & 1),    # VADDR0
+                        input_ids[1]: bool(op['virtual_addr'] & 2),    # VADDR1
+                        input_ids[2]: bool(op['virtual_addr'] & 4),    # VADDR2
+                        input_ids[3]: bool(op['virtual_addr'] & 8),    # VADDR3
+                        input_ids[4]: bool(op['virtual_addr'] & 16),   # VADDR4
+                        input_ids[5]: bool(op['virtual_addr'] & 32),   # VADDR5
+                        input_ids[6]: bool(op['virtual_addr'] & 64),   # VADDR6
+                        input_ids[7]: bool(op['virtual_addr'] & 128),  # VADDR7
+                        # Control signals - setup mode off for translation
+                        input_ids[8]: False,  # MMU_SETUP
+                        input_ids[9]: False,  # CLK
+                        # TLB entry selection (don't care for translation)
+                        input_ids[10]: False,  # TLB_ENTRY1
+                        input_ids[11]: False,  # TLB_ENTRY0
+                        # Virtual page data (don't care for translation)
+                        input_ids[12]: False,  # VPAGE3
+                        input_ids[13]: False,  # VPAGE2
+                        input_ids[14]: False,  # VPAGE1
+                        input_ids[15]: False,  # VPAGE0
+                        # Physical frame data (don't care for translation)
+                        input_ids[16]: False,  # PFRAME3
+                        input_ids[17]: False,  # PFRAME2
+                        input_ids[18]: False,  # PFRAME1
+                        input_ids[19]: False,  # PFRAME0
+                        # Valid bit (don't care for translation)
+                        input_ids[20]: False,  # VALID
                     }
                     
-                    self.bridge.set_inputs(input_values)
+                    self.set_multiple_inputs(input_mapping)
                     self.run_simulation_steps(steps=5)
                     
                     # Get translation results
@@ -1631,32 +1684,34 @@ class IntegratedCPUValidator:
             sample_results = []
             
             for i, test in enumerate(pipeline_sequence):
-                # Set pipeline control inputs
-                input_values = {
-                    'NEW_INST7': bool(test['new_instruction'] & 128),
-                    'NEW_INST6': bool(test['new_instruction'] & 64),
-                    'NEW_INST5': bool(test['new_instruction'] & 32),
-                    'NEW_INST4': bool(test['new_instruction'] & 16),
-                    'NEW_INST3': bool(test['new_instruction'] & 8),
-                    'NEW_INST2': bool(test['new_instruction'] & 4),
-                    'NEW_INST1': bool(test['new_instruction'] & 2),
-                    'NEW_INST0': bool(test['new_instruction'] & 1),
-                    'STALL': test['stall'],
-                    'FLUSH': test.get('flush', False),
-                    'CLK': False
+                # Set pipeline control inputs using element ID mapping
+                input_mapping = {
+                    # New instruction bits
+                    input_ids[0]: bool(test['new_instruction'] & 1),    # NEW_INST0
+                    input_ids[1]: bool(test['new_instruction'] & 2),    # NEW_INST1
+                    input_ids[2]: bool(test['new_instruction'] & 4),    # NEW_INST2
+                    input_ids[3]: bool(test['new_instruction'] & 8),    # NEW_INST3
+                    input_ids[4]: bool(test['new_instruction'] & 16),   # NEW_INST4
+                    input_ids[5]: bool(test['new_instruction'] & 32),   # NEW_INST5
+                    input_ids[6]: bool(test['new_instruction'] & 64),   # NEW_INST6
+                    input_ids[7]: bool(test['new_instruction'] & 128),  # NEW_INST7
+                    # Control signals
+                    input_ids[8]: test['stall'],                        # STALL
+                    input_ids[9]: test.get('flush', False),             # FLUSH
+                    input_ids[10]: False                                # CLK
                 }
                 
                 # Apply inputs
-                self.bridge.set_inputs(input_values)
+                self.set_multiple_inputs(input_mapping)
                 self.run_simulation_steps(steps=2)
                 
                 # Clock edge to advance pipeline
-                input_values['CLK'] = True
-                self.bridge.set_inputs(input_values)
+                input_mapping[input_ids[10]] = True  # CLK = True
+                self.set_multiple_inputs(input_mapping)
                 self.run_simulation_steps(steps=2)
                 
-                input_values['CLK'] = False
-                self.bridge.set_inputs(input_values)
+                input_mapping[input_ids[10]] = False  # CLK = False
+                self.set_multiple_inputs(input_mapping)
                 self.run_simulation_steps(steps=2)
                 
                 # Get pipeline stage outputs
@@ -1922,8 +1977,52 @@ class IntegratedCPUValidator:
                     'CLK': False
                 }
                 
-                # Apply inputs and run coordination logic
-                self.bridge.set_inputs(input_values)
+                # Apply inputs and run coordination logic using complete element ID mapping
+                input_mapping = {
+                    # IF stage instruction (8-bit)
+                    input_ids[0]: bool(scenario['if_inst'] & 1),    # IF_INST0
+                    input_ids[1]: bool(scenario['if_inst'] & 2),    # IF_INST1
+                    input_ids[2]: bool(scenario['if_inst'] & 4),    # IF_INST2
+                    input_ids[3]: bool(scenario['if_inst'] & 8),    # IF_INST3
+                    input_ids[4]: bool(scenario['if_inst'] & 16),   # IF_INST4
+                    input_ids[5]: bool(scenario['if_inst'] & 32),   # IF_INST5
+                    input_ids[6]: bool(scenario['if_inst'] & 64),   # IF_INST6
+                    input_ids[7]: bool(scenario['if_inst'] & 128),  # IF_INST7
+                    # ID stage instruction (8-bit)
+                    input_ids[8]: bool(scenario['id_inst'] & 1),    # ID_INST0
+                    input_ids[9]: bool(scenario['id_inst'] & 2),    # ID_INST1
+                    input_ids[10]: bool(scenario['id_inst'] & 4),   # ID_INST2
+                    input_ids[11]: bool(scenario['id_inst'] & 8),   # ID_INST3
+                    input_ids[12]: bool(scenario['id_inst'] & 16),  # ID_INST4
+                    input_ids[13]: bool(scenario['id_inst'] & 32),  # ID_INST5
+                    input_ids[14]: bool(scenario['id_inst'] & 64),  # ID_INST6
+                    input_ids[15]: bool(scenario['id_inst'] & 128), # ID_INST7
+                    # EX stage instruction (8-bit)
+                    input_ids[16]: bool(scenario['ex_inst'] & 1),   # EX_INST0
+                    input_ids[17]: bool(scenario['ex_inst'] & 2),   # EX_INST1
+                    input_ids[18]: bool(scenario['ex_inst'] & 4),   # EX_INST2
+                    input_ids[19]: bool(scenario['ex_inst'] & 8),   # EX_INST3
+                    input_ids[20]: bool(scenario['ex_inst'] & 16),  # EX_INST4
+                    input_ids[21]: bool(scenario['ex_inst'] & 32),  # EX_INST5
+                    input_ids[22]: bool(scenario['ex_inst'] & 64),  # EX_INST6
+                    input_ids[23]: bool(scenario['ex_inst'] & 128), # EX_INST7
+                    # ID register source addresses
+                    input_ids[24]: bool(scenario['id_rs1'] & 1),    # ID_RS1_0
+                    input_ids[25]: bool(scenario['id_rs1'] & 2),    # ID_RS1_1
+                    input_ids[26]: bool(scenario['id_rs1'] & 4),    # ID_RS1_2
+                    input_ids[27]: bool(scenario['id_rs2'] & 1),    # ID_RS2_0
+                    input_ids[28]: bool(scenario['id_rs2'] & 2),    # ID_RS2_1
+                    input_ids[29]: bool(scenario['id_rs2'] & 4),    # ID_RS2_2
+                    # EX register destination address
+                    input_ids[30]: bool(scenario['ex_rd'] & 1),     # EX_RD_0
+                    input_ids[31]: bool(scenario['ex_rd'] & 2),     # EX_RD_1
+                    input_ids[32]: bool(scenario['ex_rd'] & 4),     # EX_RD_2
+                    # Control signals
+                    input_ids[33]: scenario.get('branch_taken', False),  # BRANCH_TAKEN
+                    input_ids[34]: False,                           # CLK
+                }
+                
+                self.set_multiple_inputs(input_mapping)
                 self.run_simulation_steps(steps=8)  # More steps for complex coordination
                 
                 # Get coordination outputs
@@ -3245,20 +3344,20 @@ class IntegratedCPUValidator:
         input_ids = []
         output_ids = []
         
-        # Create instruction inputs (16-bit)
-        for i in range(16):
-            inst_id = self.create_element("InputButton", float(100), float(100 + i * 30), f"INST{i}")
-            if not inst_id:
+        # Create new instruction inputs (8-bit)
+        for i in range(8):
+            new_inst_id = self.create_element("InputButton", float(100), float(100 + i * 40), f"NEW_INST{i}")
+            if not new_inst_id:
                 return [], []
-            input_ids.append(inst_id)
+            input_ids.append(new_inst_id)
         
         # Create control inputs
-        clk_id = self.create_element("InputButton", float(100), float(580), "CLK")
-        stall_id = self.create_element("InputButton", float(100), float(620), "STALL")
-        flush_id = self.create_element("InputButton", float(100), float(660), "FLUSH")
-        if not clk_id or not stall_id or not flush_id:
+        stall_id = self.create_element("InputButton", float(100), float(420), "STALL")
+        flush_id = self.create_element("InputButton", float(100), float(460), "FLUSH") 
+        clk_id = self.create_element("InputButton", float(100), float(500), "CLK")
+        if not stall_id or not flush_id or not clk_id:
             return [], []
-        input_ids.extend([clk_id, stall_id, flush_id])
+        input_ids.extend([stall_id, flush_id, clk_id])
         
         # Create pipeline registers (IF/ID, ID/EX)
         for stage in ["IF_ID", "ID_EX"]:
@@ -3281,25 +3380,53 @@ class IntegratedCPUValidator:
         input_ids = []
         output_ids = []
         
-        # Create register address inputs for hazard detection
-        for stage in ["ID", "EX", "MEM"]:
-            for reg_type in ["SRC1", "SRC2", "DEST"]:
-                for bit in range(3):  # 3-bit register addresses
-                    reg_id = self.create_element("InputButton", float(100 + len(input_ids) * 25), float(100), f"{stage}_{reg_type}{bit}")
-                    if not reg_id:
-                        return [], []
-                    input_ids.append(reg_id)
-        
-        # Create hazard detection logic (simplified with comparators)
-        for i in range(3):
-            comp_id = self.create_element("And", float(400), float(150 + i * 80), f"HAZARD_DETECT_{i}")
-            if not comp_id:
+        # Create IF stage instruction inputs (8-bit)
+        for i in range(8):
+            if_inst_id = self.create_element("InputButton", float(100), float(100 + i * 30), f"IF_INST{i}")
+            if not if_inst_id:
                 return [], []
+            input_ids.append(if_inst_id)
         
-        # Create forwarding outputs
-        forward_signals = ["FORWARD_A", "FORWARD_B", "PIPELINE_STALL", "PIPELINE_FLUSH"]
-        for i, signal in enumerate(forward_signals):
-            out_id = self.create_element("Led", float(600), float(100 + i * 60), signal)
+        # Create ID stage instruction inputs (8-bit)
+        for i in range(8):
+            id_inst_id = self.create_element("InputButton", float(200), float(100 + i * 30), f"ID_INST{i}")
+            if not id_inst_id:
+                return [], []
+            input_ids.append(id_inst_id)
+        
+        # Create EX stage instruction inputs (8-bit)
+        for i in range(8):
+            ex_inst_id = self.create_element("InputButton", float(300), float(100 + i * 30), f"EX_INST{i}")
+            if not ex_inst_id:
+                return [], []
+            input_ids.append(ex_inst_id)
+        
+        # Create ID register source addresses (3-bit each)
+        for reg in ["RS1", "RS2"]:
+            for i in range(3):
+                id_reg_id = self.create_element("InputButton", float(400), float(100 + len(input_ids) * 20), f"ID_{reg}_{i}")
+                if not id_reg_id:
+                    return [], []
+                input_ids.append(id_reg_id)
+        
+        # Create EX register destination address (3-bit)
+        for i in range(3):
+            ex_rd_id = self.create_element("InputButton", float(500), float(100 + i * 30), f"EX_RD_{i}")
+            if not ex_rd_id:
+                return [], []
+            input_ids.append(ex_rd_id)
+        
+        # Create control signals
+        branch_id = self.create_element("InputButton", float(600), float(100), "BRANCH_TAKEN")
+        clk_id = self.create_element("InputButton", float(600), float(150), "CLK")
+        if not branch_id or not clk_id:
+            return [], []
+        input_ids.extend([branch_id, clk_id])
+        
+        # Create coordination outputs
+        coord_signals = ["FORWARD_A", "FORWARD_B", "PIPELINE_STALL", "PIPELINE_FLUSH"]
+        for i, signal in enumerate(coord_signals):
+            out_id = self.create_element("Led", float(700), float(100 + i * 60), signal)
             if not out_id:
                 return [], []
             output_ids.append(out_id)
