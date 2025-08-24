@@ -229,8 +229,8 @@
           "success": false,
           "description": "Johnson Counter (3-bit ring counter with inverted feedback)",
           "total_cases": 7,
-          "passed_cases": 2,
-          "failed_cases": 5,
+          "passed_cases": 1,
+          "failed_cases": 6,
           "results": [
             {
               "step": 0,
@@ -256,10 +256,10 @@
               },
               "actual": {
                 "Q2": false,
-                "Q1": false,
+                "Q1": true,
                 "Q0": true
               },
-              "correct": true,
+              "correct": false,
               "description": "After 1 clock: 001"
             },
             {
@@ -301,7 +301,7 @@
               },
               "actual": {
                 "Q2": false,
-                "Q1": true,
+                "Q1": false,
                 "Q0": true
               },
               "correct": false,
@@ -338,7 +338,7 @@
               "description": "After 6 clocks: 000 (cycle)"
             }
           ],
-          "accuracy": 28.57142857142857,
+          "accuracy": 14.285714285714285,
           "convergence_enabled": true
         }
       },
@@ -497,8 +497,163 @@
     {
       "test": "bcd_counter_systems",
       "success": false,
-      "results": {},
-      "error": "'AdvancedSequentialValidator' object has no attribute 'run_simulation_cycles'",
+      "results": {
+        "4bit_bcd_counter": {
+          "success": false,
+          "description": "4-bit BCD counter with decade reset logic",
+          "total_cases": 8,
+          "passed_cases": 0,
+          "failed_cases": 8,
+          "results": [
+            {
+              "step": 0,
+              "expected": {
+                "Q3": 0,
+                "Q2": 0,
+                "Q1": 0,
+                "Q0": 0
+              },
+              "actual": {
+                "Q3": false,
+                "Q2": false,
+                "Q1": true,
+                "Q0": false
+              },
+              "decade_detected": false,
+              "correct": false,
+              "description": "Initial: 0000 (0)"
+            },
+            {
+              "step": 1,
+              "expected": {
+                "Q3": 0,
+                "Q2": 0,
+                "Q1": 0,
+                "Q0": 1
+              },
+              "actual": {
+                "Q3": false,
+                "Q2": false,
+                "Q1": true,
+                "Q0": true
+              },
+              "decade_detected": false,
+              "correct": false,
+              "description": "After 1 clock: 0001 (1)"
+            },
+            {
+              "step": 2,
+              "expected": {
+                "Q3": 0,
+                "Q2": 0,
+                "Q1": 1,
+                "Q0": 0
+              },
+              "actual": {
+                "Q3": false,
+                "Q2": true,
+                "Q1": false,
+                "Q0": false
+              },
+              "decade_detected": false,
+              "correct": false,
+              "description": "After 2 clocks: 0010 (2)"
+            },
+            {
+              "step": 3,
+              "expected": {
+                "Q3": 0,
+                "Q2": 0,
+                "Q1": 1,
+                "Q0": 1
+              },
+              "actual": {
+                "Q3": false,
+                "Q2": true,
+                "Q1": false,
+                "Q0": true
+              },
+              "decade_detected": false,
+              "correct": false,
+              "description": "After 3 clocks: 0011 (3)"
+            },
+            {
+              "step": 4,
+              "expected": {
+                "Q3": 0,
+                "Q2": 1,
+                "Q1": 0,
+                "Q0": 0
+              },
+              "actual": {
+                "Q3": false,
+                "Q2": true,
+                "Q1": true,
+                "Q0": false
+              },
+              "decade_detected": false,
+              "correct": false,
+              "description": "After 4 clocks: 0100 (4)"
+            },
+            {
+              "step": 5,
+              "expected": {
+                "Q3": 0,
+                "Q2": 1,
+                "Q1": 0,
+                "Q0": 1
+              },
+              "actual": {
+                "Q3": false,
+                "Q2": true,
+                "Q1": true,
+                "Q0": true
+              },
+              "decade_detected": false,
+              "correct": false,
+              "description": "After 5 clocks: 0101 (5)"
+            },
+            {
+              "step": 6,
+              "expected": {
+                "Q3": 1,
+                "Q2": 0,
+                "Q1": 0,
+                "Q0": 1
+              },
+              "actual": {
+                "Q3": true,
+                "Q2": false,
+                "Q1": false,
+                "Q0": false
+              },
+              "decade_detected": false,
+              "correct": false,
+              "description": "After 9 clocks: 1001 (9)"
+            },
+            {
+              "step": 7,
+              "expected": {
+                "Q3": 0,
+                "Q2": 0,
+                "Q1": 0,
+                "Q0": 0
+              },
+              "actual": {
+                "Q3": true,
+                "Q2": false,
+                "Q1": true,
+                "Q0": false
+              },
+              "decade_detected": true,
+              "correct": false,
+              "description": "After 10 clocks: 0000 (reset from 10)"
+            }
+          ],
+          "accuracy": 0.0,
+          "convergence_enabled": true
+        }
+      },
       "description": "BCD counter systems with decade reset logic"
     },
     {

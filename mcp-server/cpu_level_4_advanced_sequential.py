@@ -1694,36 +1694,47 @@ class AdvancedSequentialValidator:
         # Create toggle logic with reset override
         toggle_logic = []
         
-        # Q0 toggle logic: D0 = (NOT Q0) AND (NOT decade_detect)
+        # Q0 toggle logic: D0 = (NOT Q0) AND (NOT decade_detect) AND (NOT reset)
         q0_not_x, q0_not_y = self._get_grid_position(0, 12)
         q0_not_gate = self.create_element("Not", q0_not_x, q0_not_y, "Q0_NOT")
-        q0_and_x, q0_and_y = self._get_grid_position(0, 13)
-        q0_and_gate = self.create_element("And", q0_and_x, q0_and_y, "Q0_AND")
+        q0_and1_x, q0_and1_y = self._get_grid_position(0, 13)
+        q0_and1_gate = self.create_element("And", q0_and1_x, q0_and1_y, "Q0_AND1")
         decade_not_x, decade_not_y = self._get_grid_position(0, 14)
         decade_not_gate = self.create_element("Not", decade_not_x, decade_not_y, "DECADE_NOT")
+        reset_not_x, reset_not_y = self._get_grid_position(0, 15)
+        reset_not_gate = self.create_element("Not", reset_not_x, reset_not_y, "RESET_NOT")
+        q0_and2_x, q0_and2_y = self._get_grid_position(0, 16)
+        q0_and2_gate = self.create_element("And", q0_and2_x, q0_and2_y, "Q0_AND2")
         
-        toggle_logic.extend([q0_not_gate, q0_and_gate, decade_not_gate])
+        toggle_logic.extend([q0_not_gate, q0_and1_gate, decade_not_gate, reset_not_gate, q0_and2_gate])
         
-        # Connect Q0 toggle logic
+        # Connect Q0 toggle logic with reset override
         q0_output = bcd_ffs[0][1]
         if not self.connect_elements(q0_output, 0, q0_not_gate, 0):
             return {"success": False, "error": "Failed to connect Q0 toggle logic"}
-        if not self.connect_elements(q0_not_gate, 0, q0_and_gate, 0):
+        if not self.connect_elements(q0_not_gate, 0, q0_and1_gate, 0):
             return {"success": False, "error": "Failed to connect Q0 NOT to AND gate"}
         if not self.connect_elements(decade_detect, 0, decade_not_gate, 0):
             return {"success": False, "error": "Failed to connect decade detect to NOT gate"}
-        if not self.connect_elements(decade_not_gate, 0, q0_and_gate, 1):
+        if not self.connect_elements(decade_not_gate, 0, q0_and1_gate, 1):
             return {"success": False, "error": "Failed to connect decade NOT to Q0 AND gate"}
-        if not self.connect_elements(q0_and_gate, 0, bcd_ffs[0][0], 0):  # Connect to Q0 D input
+        # Add reset override: When reset=1, NOT reset=0, so toggle is disabled
+        if not self.connect_elements(reset_id, 0, reset_not_gate, 0):
+            return {"success": False, "error": "Failed to connect reset to NOT gate"}
+        if not self.connect_elements(q0_and1_gate, 0, q0_and2_gate, 0):
+            return {"success": False, "error": "Failed to connect Q0 AND1 to AND2 gate"}
+        if not self.connect_elements(reset_not_gate, 0, q0_and2_gate, 1):
+            return {"success": False, "error": "Failed to connect reset NOT to Q0 AND2 gate"}
+        if not self.connect_elements(q0_and2_gate, 0, bcd_ffs[0][0], 0):  # Connect to Q0 D input
             return {"success": False, "error": "Failed to connect Q0 toggle to D input"}
         
         # Skip Q2, Q3, and decade reset for now - focus on getting Q0, Q1 working first
         logger.info("✅ Simplified BCD counter logic created - focusing on Q0, Q1 binary counting")
         
         # Skip the complex decade reset logic for this test
-        q1_xor_x, q1_xor_y = self._get_grid_position(0, 15)
+        q1_xor_x, q1_xor_y = self._get_grid_position(0, 17)
         q1_xor_gate = self.create_element("Xor", q1_xor_x, q1_xor_y, "Q1_XOR")
-        q1_and_x, q1_and_y = self._get_grid_position(0, 16)
+        q1_and_x, q1_and_y = self._get_grid_position(0, 18)
         q1_and_gate = self.create_element("And", q1_and_x, q1_and_y, "Q1_AND")
         
         toggle_logic.extend([q1_xor_gate, q1_and_gate])
@@ -1738,7 +1749,7 @@ class AdvancedSequentialValidator:
             return {"success": False, "error": "Failed to connect Q1 XOR to AND gate"}
         # Skip decade reset for simplified test - directly enable Q1 toggle
         # Create constant True input for Q1 AND gate to enable toggling
-        true_input_x, true_input_y = self._get_grid_position(0, 25)
+        true_input_x, true_input_y = self._get_grid_position(0, 19)
         true_input = self.create_element("InputButton", true_input_x, true_input_y, "TRUE_ENABLE")
         if true_input:
             self.set_input(true_input, True)  # Set to True to enable Q1 toggling
