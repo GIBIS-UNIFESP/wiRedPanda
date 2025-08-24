@@ -497,6 +497,120 @@ class AdvancedSequentialValidator:
         # Call the reset version with dummy reset
         return self._create_working_d_flip_flop_with_reset(base_col, base_row, label_prefix, clock_id, dummy_reset)
 
+    def _create_master_slave_d_flip_flop(self, base_col: int, base_row: int, label_prefix: str, clock_id: int, reset_id: int) -> List[Optional[int]]:
+        """Create TRUE EDGE-TRIGGERED D flip-flop using master-slave latches"""
+        logger.info(f"Creating MASTER-SLAVE D flip-flop: {label_prefix}")
+        
+        # MASTER-SLAVE DESIGN:
+        # Master latch: enabled when CLK=0 (captures D during low phase)  
+        # Slave latch: enabled when CLK=1 (outputs during high phase)
+        # Result: Data captured on RISING EDGE of clock
+        
+        # Create D input and clock inverter
+        d_x, d_y = self._get_grid_position(base_col, base_row)
+        d_input = self.create_element("Node", d_x, d_y, f"{label_prefix}_D")
+        
+        clk_inv_x, clk_inv_y = self._get_grid_position(base_col, base_row + 1)
+        clk_inv = self.create_element("Not", clk_inv_x, clk_inv_y, f"{label_prefix}_CLK_INV")
+        
+        # MASTER LATCH (enabled when CLK=0, i.e., CLK_INV=1)
+        # Master S/R logic: S_M = D AND CLK_INV, R_M = NOT_D AND CLK_INV
+        not_d_x, not_d_y = self._get_grid_position(base_col + 1, base_row)
+        not_d = self.create_element("Not", not_d_x, not_d_y, f"{label_prefix}_NOT_D")
+        
+        s_master_x, s_master_y = self._get_grid_position(base_col + 1, base_row + 1)
+        s_master = self.create_element("And", s_master_x, s_master_y, f"{label_prefix}_S_MASTER")
+        
+        r_master_x, r_master_y = self._get_grid_position(base_col + 1, base_row + 2)
+        r_master = self.create_element("And", r_master_x, r_master_y, f"{label_prefix}_R_MASTER")
+        
+        # Master NOR latch with reset
+        reset_or_master_x, reset_or_master_y = self._get_grid_position(base_col + 1, base_row + 3)
+        reset_or_master = self.create_element("Or", reset_or_master_x, reset_or_master_y, f"{label_prefix}_RESET_OR_M")
+        
+        q_master_x, q_master_y = self._get_grid_position(base_col + 2, base_row)
+        q_master = self.create_element("Nor", q_master_x, q_master_y, f"{label_prefix}_Q_MASTER")
+        
+        qn_master_x, qn_master_y = self._get_grid_position(base_col + 2, base_row + 1)
+        qn_master = self.create_element("Nor", qn_master_x, qn_master_y, f"{label_prefix}_QN_MASTER")
+        
+        # SLAVE LATCH (enabled when CLK=1)
+        # Slave S/R logic: S_S = Q_M AND CLK, R_S = QN_M AND CLK
+        s_slave_x, s_slave_y = self._get_grid_position(base_col + 3, base_row)
+        s_slave = self.create_element("And", s_slave_x, s_slave_y, f"{label_prefix}_S_SLAVE")
+        
+        r_slave_x, r_slave_y = self._get_grid_position(base_col + 3, base_row + 1)
+        r_slave = self.create_element("And", r_slave_x, r_slave_y, f"{label_prefix}_R_SLAVE")
+        
+        # Slave NOR latch with reset
+        reset_or_slave_x, reset_or_slave_y = self._get_grid_position(base_col + 3, base_row + 3)
+        reset_or_slave = self.create_element("Or", reset_or_slave_x, reset_or_slave_y, f"{label_prefix}_RESET_OR_S")
+        
+        q_slave_x, q_slave_y = self._get_grid_position(base_col + 4, base_row)
+        q_slave = self.create_element("Nor", q_slave_x, q_slave_y, f"{label_prefix}_Q_SLAVE")
+        
+        qn_slave_x, qn_slave_y = self._get_grid_position(base_col + 4, base_row + 1)
+        qn_slave = self.create_element("Nor", qn_slave_x, qn_slave_y, f"{label_prefix}_QN_SLAVE")
+        
+        # Output nodes
+        q_out_x, q_out_y = self._get_grid_position(base_col + 5, base_row)
+        q_output = self.create_element("Node", q_out_x, q_out_y, f"{label_prefix}_Q")
+        
+        qn_out_x, qn_out_y = self._get_grid_position(base_col + 5, base_row + 1)
+        qn_output = self.create_element("Node", qn_out_x, qn_out_y, f"{label_prefix}_QN")
+        
+        elements = [d_input, clk_inv, not_d, s_master, r_master, reset_or_master, q_master, qn_master,
+                   s_slave, r_slave, reset_or_slave, q_slave, qn_slave, q_output, qn_output]
+        if not all(elements):
+            logger.error(f"Failed to create master-slave flip-flop elements for {label_prefix}")
+            return [None] * 4
+        
+        # CONNECTIONS for master-slave behavior
+        connections = [
+            # Clock inversion
+            (clock_id, 0, clk_inv, 0),
+            # NOT_D 
+            (d_input, 0, not_d, 0),
+            # Master latch: S_M = D AND CLK_INV, R_M = NOT_D AND CLK_INV
+            (d_input, 0, s_master, 0),
+            (clk_inv, 0, s_master, 1),
+            (not_d, 0, r_master, 0),
+            (clk_inv, 0, r_master, 1),
+            # Master reset: R_M_RESET = R_M OR RESET
+            (r_master, 0, reset_or_master, 0),
+            (reset_id, 0, reset_or_master, 1),
+            # Master NOR latch
+            (reset_or_master, 0, q_master, 0),
+            (qn_master, 0, q_master, 1),
+            (s_master, 0, qn_master, 0),
+            (q_master, 0, qn_master, 1),
+            # Slave latch: S_S = Q_M AND CLK, R_S = QN_M AND CLK  
+            (q_master, 0, s_slave, 0),
+            (clock_id, 0, s_slave, 1),
+            (qn_master, 0, r_slave, 0),
+            (clock_id, 0, r_slave, 1),
+            # Slave reset: R_S_RESET = R_S OR RESET
+            (r_slave, 0, reset_or_slave, 0),
+            (reset_id, 0, reset_or_slave, 1),
+            # Slave NOR latch
+            (reset_or_slave, 0, q_slave, 0),
+            (qn_slave, 0, q_slave, 1),
+            (s_slave, 0, qn_slave, 0),
+            (q_slave, 0, qn_slave, 1),
+            # Output connections
+            (q_slave, 0, q_output, 0),
+            (qn_slave, 0, qn_output, 0),
+        ]
+        
+        # Apply all connections
+        for i, (src, src_port, dst, dst_port) in enumerate(connections):
+            if not self.connect_elements(src, src_port, dst, dst_port):
+                logger.error(f"Failed master-slave connection {i} in {label_prefix}")
+                return [None] * 4
+        
+        logger.info(f"✅ MASTER-SLAVE flip-flop {label_prefix} created successfully")
+        return [d_input, q_output, qn_output, clock_id]
+
     def _create_d_flip_flop(self, base_col: int, base_row: int, label_prefix: str, clock_id: int, reset_id: Optional[int] = None) -> List[Optional[int]]:
         """Create robust edge-triggered D flip-flop with reset capability for proper initialization"""
         logger.info(f"Creating robust edge-triggered D flip-flop: {label_prefix}")
@@ -1515,10 +1629,10 @@ class AdvancedSequentialValidator:
         reset_x, reset_y = self._get_input_position(1)
         reset_id = self.create_element("InputButton", reset_x, reset_y, "RESET")
 
-        # Create 4 D flip-flops using WORKING Level 3 approach WITH HARDWARE RESET
+        # Create 4 D flip-flops using TRUE MASTER-SLAVE approach for edge-triggered behavior
         bcd_ffs = []
         for i in range(4):
-            ff_components = self._create_working_d_flip_flop_with_reset(2 + i*2, 0, f"BCD_FF{i}", clk_id, reset_id)
+            ff_components = self._create_master_slave_d_flip_flop(2 + i*6, 0, f"BCD_FF{i}", clk_id, reset_id)
             if not all(ff_components[:3]):
                 return {"success": False, "error": f"Failed to create BCD flip-flop {i}"}
             bcd_ffs.append(ff_components[:3])  # [D, Q, Q_NOT]
