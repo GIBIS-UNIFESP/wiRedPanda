@@ -69,6 +69,53 @@ class IntegratedCPUValidator:
             self.bridge.start()
             logger.info("WiredPanda bridge initialized and started successfully")
 
+    def set_multiple_inputs(self, input_mapping: Dict[int, bool]) -> bool:
+        """Set multiple input values at once using element IDs"""
+        try:
+            self._ensure_bridge()
+            assert self.bridge is not None
+            
+            for element_id, value in input_mapping.items():
+                result = self.bridge.set_input_value(element_id, value)
+                if result.get('status') == 'error':
+                    logger.error(f"Failed to set input {element_id} to {value}")
+                    return False
+            return True
+        except Exception as e:
+            logger.error(f"Error setting multiple inputs: {e}")
+            return False
+
+    def get_multiple_outputs(self, output_ids: List[int]) -> Dict[int, bool]:
+        """Get multiple output values at once"""
+        try:
+            self._ensure_bridge()
+            assert self.bridge is not None
+            
+            outputs = {}
+            for element_id in output_ids:
+                value = self.bridge.get_output_value(element_id)
+                outputs[element_id] = value
+            return outputs
+        except Exception as e:
+            logger.error(f"Error getting multiple outputs: {e}")
+            return {}
+
+    def run_simulation_steps(self, steps: int = 10) -> bool:
+        """Run simulation for specified steps"""
+        try:
+            self._ensure_bridge()
+            assert self.bridge is not None
+            
+            # Update simulation multiple times to propagate changes
+            for _ in range(steps):
+                result = self.bridge.update_simulation()
+                if result.get('status') == 'error':
+                    return False
+            return True
+        except Exception as e:
+            logger.error(f"Error running simulation: {e}")
+            return False
+
     def cleanup_bridge(self):
         """Cleanup the WiredPanda bridge"""
         if self.bridge:
@@ -859,33 +906,33 @@ class IntegratedCPUValidator:
             sample_results = []
             
             for i, instruction in enumerate(instruction_set):
-                # Set opcode inputs
-                input_values = {
-                    'OPCODE2': bool(instruction['opcode'] & 4),
-                    'OPCODE1': bool(instruction['opcode'] & 2),
-                    'OPCODE0': bool(instruction['opcode'] & 1)
-                }
+                # Set opcode inputs using element IDs
+                input_mapping = {}
+                if len(input_ids) >= 3:  # We have OPCODE2, OPCODE1, OPCODE0
+                    input_mapping[input_ids[0]] = bool(instruction['opcode'] & 4)  # OPCODE2
+                    input_mapping[input_ids[1]] = bool(instruction['opcode'] & 2)  # OPCODE1  
+                    input_mapping[input_ids[2]] = bool(instruction['opcode'] & 1)  # OPCODE0
                 
-                if not self.bridge.set_inputs(input_values):
+                if not self.set_multiple_inputs(input_mapping):
                     continue
                 
-                if not self.bridge.run_simulation(steps=5):
+                if not self.run_simulation_steps(steps=5):
                     continue
                 
-                # Get decoder outputs
-                outputs = self.bridge.get_outputs()
-                if not outputs:
+                # Get decoder outputs using element IDs
+                outputs_dict = self.get_multiple_outputs(output_ids)
+                if not outputs_dict:
                     continue
                 
-                # Extract control signals
-                actual_signals = {
-                    'ALU_OP1': outputs.get('ALU_OP1', False),
-                    'ALU_OP0': outputs.get('ALU_OP0', False),
-                    'REG_WRITE': outputs.get('REG_WRITE', False),
-                    'MEM_READ': outputs.get('MEM_READ', False),
-                    'MEM_WRITE': outputs.get('MEM_WRITE', False),
-                    'BRANCH': outputs.get('BRANCH', False)
-                }
+                # Extract control signals using output IDs
+                # Output order: ALU_OP1, ALU_OP0, REG_WRITE, MEM_READ, MEM_WRITE, BRANCH
+                signal_names = ['ALU_OP1', 'ALU_OP0', 'REG_WRITE', 'MEM_READ', 'MEM_WRITE', 'BRANCH']
+                actual_signals = {}
+                for idx, signal_name in enumerate(signal_names):
+                    if idx < len(output_ids):
+                        actual_signals[signal_name] = outputs_dict.get(output_ids[idx], False)
+                    else:
+                        actual_signals[signal_name] = False
                 
                 # Check if all control signals match expected
                 is_correct = all(
