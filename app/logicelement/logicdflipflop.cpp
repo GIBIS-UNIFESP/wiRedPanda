@@ -23,18 +23,20 @@ void LogicDFlipFlop::updateLogic()
     const bool prst = m_inputValues.at(2);
     const bool clr = m_inputValues.at(3);
 
+    // FIXED: Use CURRENT D value on rising edge (proper edge-triggered behavior)
     if (clk && !m_lastClk) {
-        q0 = m_lastValue;
-        q1 = !m_lastValue;
+        q0 = D;        // Use current D value, not previous
+        q1 = !D;       // Complement of current D value
     }
 
+    // Asynchronous preset and clear (active low)
     if (!prst || !clr) {
         q0 = !prst;
         q1 = !clr;
     }
 
     m_lastClk = clk;
-    m_lastValue = D;
+    // Note: m_lastValue no longer needed for edge-triggered behavior
 
     setOutputValue(0, q0);
     setOutputValue(1, q1);

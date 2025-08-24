@@ -497,6 +497,39 @@ class AdvancedSequentialValidator:
         # Call the reset version with dummy reset
         return self._create_working_d_flip_flop_with_reset(base_col, base_row, label_prefix, clock_id, dummy_reset)
 
+    def _create_simple_d_flip_flop_native(self, base_col: int, base_row: int, label_prefix: str, clock_id: int, reset_id: int) -> List[Optional[int]]:
+        """Create a FIXED native WiredPanda D flip-flop with proper edge-triggered behavior"""
+        logger.info(f"🔧 Creating FIXED native D flip-flop: {label_prefix}")
+        
+        # Create single native D flip-flop element
+        ff_x, ff_y = self._get_grid_position(base_col, base_row)
+        dff = self.create_element("DFlipFlop", ff_x, ff_y, label_prefix)
+        if not dff:
+            return [None, None, None]
+            
+        # Connect clock to the flip-flop
+        if not self.connect_elements(clock_id, 0, dff, 1):  # Clock -> D flip-flop CLK input
+            logger.error(f"Failed to connect clock to {label_prefix}")
+            return [None, None, None]
+            
+        # Connect reset to clear input (active low)
+        if reset_id:
+            reset_not_x, reset_not_y = self._get_grid_position(base_col, base_row + 1)
+            reset_not = self.create_element("Not", reset_not_x, reset_not_y, f"{label_prefix}_RESET_NOT")
+            if not reset_not:
+                return [None, None, None]
+            if not self.connect_elements(reset_id, 0, reset_not, 0):  # reset -> NOT
+                logger.error(f"Failed to connect reset NOT for {label_prefix}")
+                return [None, None, None]
+            if not self.connect_elements(reset_not, 0, dff, 3):  # NOT reset -> Clear (active low)
+                logger.error(f"Failed to connect reset to {label_prefix} clear")
+                return [None, None, None]
+                
+        logger.info(f"✅ FIXED native D flip-flop {label_prefix} created successfully")
+        
+        # Return [D_input, Q_output, Q_NOT_output] 
+        return [dff, dff, dff]  # D FF has built-in D, Q, Q_NOT connections via ports
+    
     def _create_master_slave_d_flip_flop(self, base_col: int, base_row: int, label_prefix: str, clock_id: int, reset_id: int) -> List[Optional[int]]:
         """Create TRUE EDGE-TRIGGERED D flip-flop using master-slave latches"""
         logger.info(f"Creating MASTER-SLAVE D flip-flop: {label_prefix}")
@@ -1638,7 +1671,8 @@ class AdvancedSequentialValidator:
         # Create 4 D flip-flops using MASTER-SLAVE approach with improved reset
         bcd_ffs = []
         for i in range(4):
-            ff_components = self._create_master_slave_d_flip_flop(2 + i*6, 0, f"BCD_FF{i}", clk_id, reset_id)
+            # Test with FIXED native WiredPanda D flip-flop
+            ff_components = self._create_simple_d_flip_flop_native(2 + i*2, 0, f"BCD_FF{i}", clk_id, reset_id)
             if not all(ff_components[:3]):
                 return {"success": False, "error": f"Failed to create BCD flip-flop {i}"}
             bcd_ffs.append(ff_components[:3])  # [D, Q, Q_NOT]
@@ -1728,96 +1762,137 @@ class AdvancedSequentialValidator:
         if not self.connect_elements(q0_and2_gate, 0, bcd_ffs[0][0], 0):  # Connect to Q0 D input
             return {"success": False, "error": "Failed to connect Q0 toggle to D input"}
         
-        # Skip Q2, Q3, and decade reset for now - focus on getting Q0, Q1 working first
-        logger.info("✅ Simplified BCD counter logic created - focusing on Q0, Q1 binary counting")
+        # Q1 TOGGLE LOGIC - CORRECT BINARY COUNTER IMPLEMENTATION
+        logger.info("🔧 Implementing CORRECT Q1 toggle logic: D1 = (Q1 XOR Q0) AND NOT(reset OR decade_detect)")
         
-        # Skip the complex decade reset logic for this test
+        # Create Q1 toggle logic elements
         q1_xor_x, q1_xor_y = self._get_grid_position(0, 17)
         q1_xor_gate = self.create_element("Xor", q1_xor_x, q1_xor_y, "Q1_XOR")
-        q1_and_x, q1_and_y = self._get_grid_position(0, 18)
-        q1_and_gate = self.create_element("And", q1_and_x, q1_and_y, "Q1_AND")
+        q1_or_reset_x, q1_or_reset_y = self._get_grid_position(0, 18)
+        q1_or_reset_gate = self.create_element("Or", q1_or_reset_x, q1_or_reset_y, "Q1_RESET_OR")
+        q1_not_reset_x, q1_not_reset_y = self._get_grid_position(0, 19)
+        q1_not_reset_gate = self.create_element("Not", q1_not_reset_x, q1_not_reset_y, "Q1_RESET_NOT")
+        q1_final_and_x, q1_final_and_y = self._get_grid_position(0, 20)
+        q1_final_and_gate = self.create_element("And", q1_final_and_x, q1_final_and_y, "Q1_FINAL_AND")
         
-        toggle_logic.extend([q1_xor_gate, q1_and_gate])
+        toggle_logic.extend([q1_xor_gate, q1_or_reset_gate, q1_not_reset_gate, q1_final_and_gate])
         
-        # Connect Q1 toggle logic - Binary counter: Q1 toggles when Q0=1
-        # Logic: D1 = Q1 XOR (Q0 AND NOT decade_detect AND NOT reset)
+        # STEP 1: Basic binary toggle logic - Q1 XOR Q0
         q1_output = bcd_ffs[1][1]
-        if not self.connect_elements(q1_output, 0, q1_xor_gate, 0):
+        if not self.connect_elements(q1_output, 0, q1_xor_gate, 0):  # Q1 -> XOR input 0
             return {"success": False, "error": "Failed to connect Q1 to XOR gate"}
-        # Connect the AND of conditions (Q0 AND NOT decade_detect) to XOR with Q1
-        if not self.connect_elements(q0_output, 0, q1_and_gate, 0):
-            return {"success": False, "error": "Failed to connect Q0 to Q1 AND gate"}
-        if not self.connect_elements(decade_not_gate, 0, q1_and_gate, 1):  # Add decade reset
-            return {"success": False, "error": "Failed to connect decade NOT to Q1 AND gate"}
-        if not self.connect_elements(q1_and_gate, 0, q1_xor_gate, 1):
-            return {"success": False, "error": "Failed to connect Q1 condition AND to XOR gate"}
-        # Add reset override to Q1 logic: D1 = (Q1 XOR Q0) AND (NOT reset)
-        q1_reset_and_x, q1_reset_and_y = self._get_grid_position(0, 19)
-        q1_reset_and_gate = self.create_element("And", q1_reset_and_x, q1_reset_and_y, "Q1_RESET_AND")
-        toggle_logic.append(q1_reset_and_gate)
-        
-        if not self.connect_elements(q1_and_gate, 0, q1_reset_and_gate, 0):
-            return {"success": False, "error": "Failed to connect Q1 AND to reset AND gate"}
-        if not self.connect_elements(reset_not_gate, 0, q1_reset_and_gate, 1):  # Reuse reset NOT from Q0
-            return {"success": False, "error": "Failed to connect reset NOT to Q1 reset AND gate"}
-        if not self.connect_elements(q1_reset_and_gate, 0, bcd_ffs[1][0], 0):  # Connect to Q1 D input
-            return {"success": False, "error": "Failed to connect Q1 reset toggle to D input"}
+        if not self.connect_elements(q0_output, 0, q1_xor_gate, 1):  # Q0 -> XOR input 1
+            return {"success": False, "error": "Failed to connect Q0 to XOR gate"}
+            
+        # STEP 2: Reset logic - OR(reset, decade_detect) then NOT to get enable signal
+        if not self.connect_elements(reset_id, 0, q1_or_reset_gate, 0):  # reset -> OR input 0
+            return {"success": False, "error": "Failed to connect reset to Q1 OR gate"}
+        if not self.connect_elements(decade_detect, 0, q1_or_reset_gate, 1):  # decade_detect -> OR input 1
+            return {"success": False, "error": "Failed to connect decade_detect to Q1 OR gate"}
+        if not self.connect_elements(q1_or_reset_gate, 0, q1_not_reset_gate, 0):  # OR -> NOT
+            return {"success": False, "error": "Failed to connect Q1 OR to NOT gate"}
+            
+        # STEP 3: Final logic - (Q1 XOR Q0) AND NOT(reset OR decade_detect)
+        if not self.connect_elements(q1_xor_gate, 0, q1_final_and_gate, 0):  # XOR -> AND input 0
+            return {"success": False, "error": "Failed to connect Q1 XOR to final AND gate"}
+        if not self.connect_elements(q1_not_reset_gate, 0, q1_final_and_gate, 1):  # NOT reset -> AND input 1
+            return {"success": False, "error": "Failed to connect Q1 NOT reset to final AND gate"}
+        if not self.connect_elements(q1_final_and_gate, 0, bcd_ffs[1][0], 0):  # Final AND -> Q1 D input
+            return {"success": False, "error": "Failed to connect Q1 final logic to D input"}
 
-        logger.info("✅ Q0 and Q1 toggle logic connected - continuing with Q2, Q3 and decade reset")
+        logger.info("✅ Q0 and Q1 toggle logic connected with CORRECT binary logic - continuing with Q2, Q3")
         
-        # Continue with complete BCD logic - no more shortcuts
-        q2_and_x, q2_and_y = self._get_grid_position(0, 20)  
+        # Q2 TOGGLE LOGIC - CORRECT BINARY COUNTER IMPLEMENTATION  
+        # Q2 toggles when Q1=1 AND Q0=1 (both previous bits are 1)
+        q2_and_x, q2_and_y = self._get_grid_position(0, 21)  
         q2_and_gate = self.create_element("And", q2_and_x, q2_and_y, "Q2_AND")
-        q2_xor_x, q2_xor_y = self._get_grid_position(0, 21)
+        q2_xor_x, q2_xor_y = self._get_grid_position(0, 22)
         q2_xor_gate = self.create_element("Xor", q2_xor_x, q2_xor_y, "Q2_XOR")  
-        q2_final_and_x, q2_final_and_y = self._get_grid_position(0, 22)
+        q2_or_reset_x, q2_or_reset_y = self._get_grid_position(0, 23)
+        q2_or_reset_gate = self.create_element("Or", q2_or_reset_x, q2_or_reset_y, "Q2_RESET_OR")
+        q2_not_reset_x, q2_not_reset_y = self._get_grid_position(0, 24)
+        q2_not_reset_gate = self.create_element("Not", q2_not_reset_x, q2_not_reset_y, "Q2_RESET_NOT")
+        q2_final_and_x, q2_final_and_y = self._get_grid_position(0, 25)
         q2_final_and_gate = self.create_element("And", q2_final_and_x, q2_final_and_y, "Q2_FINAL_AND")
         
-        toggle_logic.extend([q2_and_gate, q2_xor_gate, q2_final_and_gate])
+        toggle_logic.extend([q2_and_gate, q2_xor_gate, q2_or_reset_gate, q2_not_reset_gate, q2_final_and_gate])
         
-        # Connect Q2 toggle logic: Q2 toggles when Q1=1 AND Q0=1
-        if not self.connect_elements(q1_output, 0, q2_and_gate, 0):
+        # Q2 TOGGLE LOGIC: D2 = (Q2 XOR (Q1 AND Q0)) AND NOT(reset OR decade_detect)
+        # STEP 1: Create enable condition (Q1 AND Q0)
+        if not self.connect_elements(q1_output, 0, q2_and_gate, 0):  # Q1 -> AND input 0
             return {"success": False, "error": "Failed to connect Q1 to Q2 AND gate"}
-        if not self.connect_elements(q0_output, 0, q2_and_gate, 1):
+        if not self.connect_elements(q0_output, 0, q2_and_gate, 1):  # Q0 -> AND input 1
             return {"success": False, "error": "Failed to connect Q0 to Q2 AND gate"}
-        if not self.connect_elements(bcd_ffs[2][1], 0, q2_xor_gate, 0):
-            return {"success": False, "error": "Failed to connect Q2 to Q2 XOR gate"}
-        if not self.connect_elements(q2_and_gate, 0, q2_xor_gate, 1):
-            return {"success": False, "error": "Failed to connect Q2 AND to XOR gate"}
-        if not self.connect_elements(q2_xor_gate, 0, q2_final_and_gate, 0):
+            
+        # STEP 2: XOR toggle logic (Q2 XOR enable_condition)
+        q2_output = bcd_ffs[2][1]
+        if not self.connect_elements(q2_output, 0, q2_xor_gate, 0):  # Q2 -> XOR input 0
+            return {"success": False, "error": "Failed to connect Q2 to XOR gate"}
+        if not self.connect_elements(q2_and_gate, 0, q2_xor_gate, 1):  # enable -> XOR input 1
+            return {"success": False, "error": "Failed to connect Q2 enable AND to XOR gate"}
+            
+        # STEP 3: Reset logic - OR(reset, decade_detect) then NOT
+        if not self.connect_elements(reset_id, 0, q2_or_reset_gate, 0):  # reset -> OR input 0
+            return {"success": False, "error": "Failed to connect reset to Q2 OR gate"}
+        if not self.connect_elements(decade_detect, 0, q2_or_reset_gate, 1):  # decade_detect -> OR input 1
+            return {"success": False, "error": "Failed to connect decade_detect to Q2 OR gate"}
+        if not self.connect_elements(q2_or_reset_gate, 0, q2_not_reset_gate, 0):  # OR -> NOT
+            return {"success": False, "error": "Failed to connect Q2 OR to NOT gate"}
+            
+        # STEP 4: Final logic - XOR AND NOT(reset OR decade_detect)
+        if not self.connect_elements(q2_xor_gate, 0, q2_final_and_gate, 0):  # XOR -> final AND input 0
             return {"success": False, "error": "Failed to connect Q2 XOR to final AND gate"}
-        if not self.connect_elements(decade_not_gate, 0, q2_final_and_gate, 1):
-            return {"success": False, "error": "Failed to connect decade NOT to Q2 final AND gate"}  
-        if not self.connect_elements(q2_final_and_gate, 0, bcd_ffs[2][0], 0):
-            return {"success": False, "error": "Failed to connect Q2 toggle to D input"}
+        if not self.connect_elements(q2_not_reset_gate, 0, q2_final_and_gate, 1):  # NOT reset -> final AND input 1
+            return {"success": False, "error": "Failed to connect Q2 NOT reset to final AND gate"}
+        if not self.connect_elements(q2_final_and_gate, 0, bcd_ffs[2][0], 0):  # Final -> Q2 D input
+            return {"success": False, "error": "Failed to connect Q2 final logic to D input"}
 
-        # Q3 toggle logic: D3 = (Q3 XOR (Q2 AND Q1 AND Q0)) AND (NOT decade_detect)
-        q3_and3_x, q3_and3_y = self._get_grid_position(0, 23)
+        # Q3 TOGGLE LOGIC - CORRECT BINARY COUNTER IMPLEMENTATION
+        # Q3 toggles when Q2=1 AND Q1=1 AND Q0=1 (all previous bits are 1)
+        q3_and3_x, q3_and3_y = self._get_grid_position(0, 26)
         q3_and3_gate = self.create_element("And", q3_and3_x, q3_and3_y, "Q3_AND3")
-        q3_xor_x, q3_xor_y = self._get_grid_position(0, 24)  
+        q3_xor_x, q3_xor_y = self._get_grid_position(0, 27)  
         q3_xor_gate = self.create_element("Xor", q3_xor_x, q3_xor_y, "Q3_XOR")
-        q3_final_and_x, q3_final_and_y = self._get_grid_position(0, 25)
+        q3_or_reset_x, q3_or_reset_y = self._get_grid_position(0, 28)
+        q3_or_reset_gate = self.create_element("Or", q3_or_reset_x, q3_or_reset_y, "Q3_RESET_OR")
+        q3_not_reset_x, q3_not_reset_y = self._get_grid_position(0, 29)
+        q3_not_reset_gate = self.create_element("Not", q3_not_reset_x, q3_not_reset_y, "Q3_RESET_NOT")
+        q3_final_and_x, q3_final_and_y = self._get_grid_position(0, 30)
         q3_final_and_gate = self.create_element("And", q3_final_and_x, q3_final_and_y, "Q3_FINAL_AND")
         
-        toggle_logic.extend([q3_and3_gate, q3_xor_gate, q3_final_and_gate])
+        toggle_logic.extend([q3_and3_gate, q3_xor_gate, q3_or_reset_gate, q3_not_reset_gate, q3_final_and_gate])
         
-        # Connect Q3 toggle logic: Q3 toggles when Q2=1 AND Q1=1 AND Q0=1  
-        if not self.connect_elements(q2_and_gate, 0, q3_and3_gate, 0):  # Reuse Q1 AND Q0 result
+        # Q3 TOGGLE LOGIC: D3 = (Q3 XOR (Q2 AND Q1 AND Q0)) AND NOT(reset OR decade_detect)
+        # STEP 1: Create enable condition (Q2 AND Q1 AND Q0)
+        if not self.connect_elements(q2_and_gate, 0, q3_and3_gate, 0):  # Reuse Q1 AND Q0 result -> input 0
             return {"success": False, "error": "Failed to connect Q1&Q0 to Q3 AND gate"}
-        if not self.connect_elements(bcd_ffs[2][1], 0, q3_and3_gate, 1):
+        if not self.connect_elements(q2_output, 0, q3_and3_gate, 1):  # Q2 -> input 1
             return {"success": False, "error": "Failed to connect Q2 to Q3 AND gate"}
-        if not self.connect_elements(bcd_ffs[3][1], 0, q3_xor_gate, 0):
-            return {"success": False, "error": "Failed to connect Q3 to Q3 XOR gate"}
-        if not self.connect_elements(q3_and3_gate, 0, q3_xor_gate, 1):
-            return {"success": False, "error": "Failed to connect Q3 AND to XOR gate"}
-        if not self.connect_elements(q3_xor_gate, 0, q3_final_and_gate, 0):
+            
+        # STEP 2: XOR toggle logic (Q3 XOR enable_condition)
+        q3_output = bcd_ffs[3][1]
+        if not self.connect_elements(q3_output, 0, q3_xor_gate, 0):  # Q3 -> XOR input 0
+            return {"success": False, "error": "Failed to connect Q3 to XOR gate"}
+        if not self.connect_elements(q3_and3_gate, 0, q3_xor_gate, 1):  # enable -> XOR input 1
+            return {"success": False, "error": "Failed to connect Q3 enable AND to XOR gate"}
+            
+        # STEP 3: Reset logic - OR(reset, decade_detect) then NOT
+        if not self.connect_elements(reset_id, 0, q3_or_reset_gate, 0):  # reset -> OR input 0
+            return {"success": False, "error": "Failed to connect reset to Q3 OR gate"}
+        if not self.connect_elements(decade_detect, 0, q3_or_reset_gate, 1):  # decade_detect -> OR input 1
+            return {"success": False, "error": "Failed to connect decade_detect to Q3 OR gate"}
+        if not self.connect_elements(q3_or_reset_gate, 0, q3_not_reset_gate, 0):  # OR -> NOT
+            return {"success": False, "error": "Failed to connect Q3 OR to NOT gate"}
+            
+        # STEP 4: Final logic - XOR AND NOT(reset OR decade_detect)
+        if not self.connect_elements(q3_xor_gate, 0, q3_final_and_gate, 0):  # XOR -> final AND input 0
             return {"success": False, "error": "Failed to connect Q3 XOR to final AND gate"}
-        if not self.connect_elements(decade_not_gate, 0, q3_final_and_gate, 1):
-            return {"success": False, "error": "Failed to connect decade NOT to Q3 final AND gate"}
-        if not self.connect_elements(q3_final_and_gate, 0, bcd_ffs[3][0], 0):
-            return {"success": False, "error": "Failed to connect Q3 toggle to D input"}
+        if not self.connect_elements(q3_not_reset_gate, 0, q3_final_and_gate, 1):  # NOT reset -> final AND input 1
+            return {"success": False, "error": "Failed to connect Q3 NOT reset to final AND gate"}
+        if not self.connect_elements(q3_final_and_gate, 0, bcd_ffs[3][0], 0):  # Final -> Q3 D input
+            return {"success": False, "error": "Failed to connect Q3 final logic to D input"}
         
-        logger.info("✅ Complete BCD counter logic implemented for all 4 bits")
+        logger.info("✅ CORRECT BCD counter logic implemented - Fixed Q1, Q2, Q3 toggle with proper reset logic")
 
         # Check all toggle logic elements created
         if not all(toggle_logic):
