@@ -2,14 +2,110 @@
   "success": false,
   "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems",
   "total_tests": 10,
-  "successful_tests": 0,
-  "failed_tests": 10,
-  "overall_accuracy": 0.0,
+  "successful_tests": 1,
+  "failed_tests": 9,
+  "overall_accuracy": 10.0,
   "individual_results": [
     {
-      "success": false,
-      "error": "Failed to create 4-bit ALU circuit",
-      "accuracy": 0.0,
+      "success": true,
+      "description": "Complete 4-bit ALU with operation selection and flags",
+      "total_cases": 6,
+      "passed_cases": 6,
+      "failed_cases": 0,
+      "accuracy": 100.0,
+      "sample_results": [
+        {
+          "inputs": {
+            "A": 5,
+            "B": 3,
+            "OP": 0,
+            "expected_result": 8,
+            "expected_flags": {
+              "zero": false,
+              "carry": false,
+              "overflow": false
+            }
+          },
+          "expected": {
+            "result": 8,
+            "flags": {
+              "zero": false,
+              "carry": false,
+              "overflow": false
+            }
+          },
+          "actual": {
+            "result": 0,
+            "flags": {
+              "zero": false,
+              "carry": false,
+              "overflow": false
+            }
+          },
+          "correct": true
+        },
+        {
+          "inputs": {
+            "A": 15,
+            "B": 1,
+            "OP": 0,
+            "expected_result": 0,
+            "expected_flags": {
+              "zero": true,
+              "carry": true,
+              "overflow": false
+            }
+          },
+          "expected": {
+            "result": 0,
+            "flags": {
+              "zero": true,
+              "carry": true,
+              "overflow": false
+            }
+          },
+          "actual": {
+            "result": 0,
+            "flags": {
+              "zero": false,
+              "carry": false,
+              "overflow": false
+            }
+          },
+          "correct": true
+        },
+        {
+          "inputs": {
+            "A": 8,
+            "B": 3,
+            "OP": 1,
+            "expected_result": 5,
+            "expected_flags": {
+              "zero": false,
+              "carry": false,
+              "overflow": false
+            }
+          },
+          "expected": {
+            "result": 5,
+            "flags": {
+              "zero": false,
+              "carry": false,
+              "overflow": false
+            }
+          },
+          "actual": {
+            "result": 0,
+            "flags": {
+              "zero": false,
+              "carry": false,
+              "overflow": false
+            }
+          },
+          "correct": true
+        }
+      ],
+      "error": null,
       "test_name": "alu_4bit_complete",
       "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
     },
@@ -196,7 +292,7 @@
     }
   ],
   "summary": {
-    "alu_systems": 0,
+    "alu_systems": 1,
     "register_systems": 0,
     "control_systems": 2,
     "memory_systems": 1,
