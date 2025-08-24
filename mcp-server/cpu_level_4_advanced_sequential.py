@@ -1460,12 +1460,16 @@ class AdvancedSequentialValidator:
             pop_and = self.create_element("And", pop_and_x, pop_and_y, f"POP_AND{i}")
             pop_and_gates.append(pop_and)
 
-        # Create OR gates for combining push/pop data paths
+        # Create OR gates for combining push/pop data paths with GND for unused inputs
         data_or_gates = []
         for i in range(4):
             or_x, or_y = self._get_grid_position(0, i + 12)
             data_or = self.create_element("Or", or_x, or_y, f"DATA_OR{i}")
             data_or_gates.append(data_or)
+        
+        # CRITICAL FIX: Create GND for tying unused OR gate inputs (floating input bug fix)
+        gnd_x, gnd_y = self._get_input_position(5)
+        gnd_id = self.create_element("InputGnd", gnd_x, gnd_y, "FIFO_GND")
 
         # Check all control elements created
         all_control_elements = push_and_gates + pop_and_gates + data_or_gates
@@ -1507,7 +1511,11 @@ class AdvancedSequentialValidator:
         for i in range(4):
             if not self.connect_elements(push_and_gates[i], 0, data_or_gates[i], 0):
                 return {"success": False, "error": f"Failed to connect push logic to OR gate {i}"}
-            # Note: Pop logic would connect to OR gate input 1, but simplified for now
+            
+            # CRITICAL FIX: Tie unused OR gate input 1 to GND (prevents floating input bug)
+            if not self.connect_elements(gnd_id, 0, data_or_gates[i], 1):
+                return {"success": False, "error": f"Failed to tie OR gate {i} unused input to GND"}
+            
             if not self.connect_elements(data_or_gates[i], 0, stage_ffs[i], 0):  # OR gate -> D input (port 0)
                 return {"success": False, "error": f"Failed to connect OR gate to stage {i} D input"}
 
