@@ -1230,17 +1230,17 @@ class AdvancedSequentialValidator:
         ff0_components = self._create_simple_d_flip_flop_native(1, 0, "J_FF0", clk_id, reset_id)
         if not all(ff0_components[:3]):
             return {"success": False, "error": "Failed to create Johnson FF0"}
-        ff0_d, ff0_q, ff0_q_not = ff0_components[:3]
+        ff0_id = ff0_components[0]  # Element ID for FF0
 
         ff1_components = self._create_simple_d_flip_flop_native(1, 8, "J_FF1", clk_id, reset_id)
         if not all(ff1_components[:3]):
             return {"success": False, "error": "Failed to create Johnson FF1"}
-        ff1_d, ff1_q, ff1_q_not = ff1_components[:3]
+        ff1_id = ff1_components[0]  # Element ID for FF1
 
         ff2_components = self._create_simple_d_flip_flop_native(1, 16, "J_FF2", clk_id, reset_id)
         if not all(ff2_components[:3]):
             return {"success": False, "error": "Failed to create Johnson FF2"}
-        ff2_d, ff2_q, ff2_q_not = ff2_components[:3]
+        ff2_id = ff2_components[0]  # Element ID for FF2
 
         # Initialize with reset
         self.set_input(reset_id, True)  # Apply reset
@@ -1254,13 +1254,13 @@ class AdvancedSequentialValidator:
         # D0 = NOT Q2 (inverted feedback from last stage)
         # D1 = Q0 (shift from stage 0 to 1)
         # D2 = Q1 (shift from stage 1 to 2)
-        # Native DFF: Port 0 = D input, Port 0 = Q output, Port 1 = Q_NOT output
+        # FIXED: Native DFF port mapping: [0]=D, [1]=CLK, [2]=~PRESET, [3]=~CLEAR | Outputs: [0]=Q, [1]=~Q
         
-        if not self.connect_elements(ff2_q_not, 1, ff0_d, 0):  # Q_NOT (port 1) -> D input (port 0)
+        if not self.connect_elements(ff2_id, 1, ff0_id, 0):  # FF2 Q_NOT (port 1) -> FF0 D input (port 0)
             return {"success": False, "error": "Failed to connect Johnson feedback"}
-        if not self.connect_elements(ff0_q, 0, ff1_d, 0):     # Q output (port 0) -> D input (port 0)
+        if not self.connect_elements(ff0_id, 0, ff1_id, 0):  # FF0 Q output (port 0) -> FF1 D input (port 0)
             return {"success": False, "error": "Failed to connect Johnson shift 0->1"}
-        if not self.connect_elements(ff1_q, 0, ff2_d, 0):     # Q output (port 0) -> D input (port 0)
+        if not self.connect_elements(ff1_id, 0, ff2_id, 0):  # FF1 Q output (port 0) -> FF2 D input (port 0)
             return {"success": False, "error": "Failed to connect Johnson shift 1->2"}
 
         # Output LEDs
@@ -1271,11 +1271,11 @@ class AdvancedSequentialValidator:
         out2_x, out2_y = self._get_output_position(8, 2)
         out2_led = self.create_element("Led", out2_x, out2_y, "J_Q2")
 
-        if not self.connect_elements(ff0_q, 0, out0_led, 0):
+        if not self.connect_elements(ff0_id, 0, out0_led, 0):
             return {"success": False, "error": "Failed to connect output 0"}
-        if not self.connect_elements(ff1_q, 0, out1_led, 0):
+        if not self.connect_elements(ff1_id, 0, out1_led, 0):
             return {"success": False, "error": "Failed to connect output 1"}
-        if not self.connect_elements(ff2_q, 0, out2_led, 0):
+        if not self.connect_elements(ff2_id, 0, out2_led, 0):
             return {"success": False, "error": "Failed to connect output 2"}
 
         logger.info("✅ Johnson Counter created with inverted feedback")
@@ -1405,7 +1405,7 @@ class AdvancedSequentialValidator:
             ff_components = self._create_simple_d_flip_flop_native(2 + i*2, 0, f"FIFO_STAGE{i}", clk_id, reset_id)
             if not all(ff_components[:3]):
                 return {"success": False, "error": f"Failed to create FIFO stage {i}"}
-            stage_ffs.append(ff_components[:3])  # [D, Q, Q_NOT]
+            stage_ffs.append(ff_components[0])  # Store element ID only
         
         # FIFO Control Logic - this is where the complexity lies
         # Push operation: Shift all data right (stage[i] -> stage[i+1])  
@@ -1441,46 +1441,40 @@ class AdvancedSequentialValidator:
 
         # FIFO DATA PATH CONNECTIONS - Full complexity shift register with bidirectional control
         
+        # FIFO shift register connections using proper element IDs and ports
         # Stage 0 (Input stage): Gets data from input or from stage 1 (pop operation)
-        stage0_d, stage0_q, stage0_q_not = stage_ffs[0]
-        
-        # Input mux logic: Stage 0 gets either new data (push) or data from stage 1 (pop)
         if not self.connect_elements(data_in_id, 0, push_and_gates[0], 0):  # DATA_IN -> PUSH_AND0
             return {"success": False, "error": "Failed to connect data input to stage 0"}
         if not self.connect_elements(push_id, 0, push_and_gates[0], 1):     # PUSH -> PUSH_AND0
             return {"success": False, "error": "Failed to connect push control to stage 0"}
         
-        # Stage 1: Gets data from stage 0 (push) or from stage 2 (pop)
+        # Stage 1: Gets data from stage 0 Q output (push) or from stage 2 (pop)
         if len(stage_ffs) > 1:
-            stage1_d, stage1_q, stage1_q_not = stage_ffs[1]
-            if not self.connect_elements(stage0_q, 0, push_and_gates[1], 0):  # STAGE0_Q -> PUSH_AND1
+            if not self.connect_elements(stage_ffs[0], 0, push_and_gates[1], 0):  # STAGE0_Q -> PUSH_AND1
                 return {"success": False, "error": "Failed to connect stage 0 to stage 1"}
             if not self.connect_elements(push_id, 0, push_and_gates[1], 1):   # PUSH -> PUSH_AND1  
                 return {"success": False, "error": "Failed to connect push control to stage 1"}
         
-        # Stage 2: Gets data from stage 1 (push) or from stage 3 (pop)
+        # Stage 2: Gets data from stage 1 Q output (push) or from stage 3 (pop)
         if len(stage_ffs) > 2:
-            stage2_d, stage2_q, stage2_q_not = stage_ffs[2]
-            if not self.connect_elements(stage1_q, 0, push_and_gates[2], 0):  # STAGE1_Q -> PUSH_AND2
+            if not self.connect_elements(stage_ffs[1], 0, push_and_gates[2], 0):  # STAGE1_Q -> PUSH_AND2
                 return {"success": False, "error": "Failed to connect stage 1 to stage 2"}
             if not self.connect_elements(push_id, 0, push_and_gates[2], 1):   # PUSH -> PUSH_AND2
                 return {"success": False, "error": "Failed to connect push control to stage 2"}
         
-        # Stage 3 (Output stage): Gets data from stage 2 (push only, no pop source)
+        # Stage 3 (Output stage): Gets data from stage 2 Q output (push only, no pop source)
         if len(stage_ffs) > 3:
-            stage3_d, stage3_q, stage3_q_not = stage_ffs[3]
-            if not self.connect_elements(stage2_q, 0, push_and_gates[3], 0):  # STAGE2_Q -> PUSH_AND3
+            if not self.connect_elements(stage_ffs[2], 0, push_and_gates[3], 0):  # STAGE2_Q -> PUSH_AND3
                 return {"success": False, "error": "Failed to connect stage 2 to stage 3"}
             if not self.connect_elements(push_id, 0, push_and_gates[3], 1):   # PUSH -> PUSH_AND3
                 return {"success": False, "error": "Failed to connect push control to stage 3"}
 
         # Connect OR gates to flip-flop D inputs (combining push and pop data paths)
         for i in range(4):
-            stage_d = stage_ffs[i][0]  # D input of stage i
             if not self.connect_elements(push_and_gates[i], 0, data_or_gates[i], 0):
                 return {"success": False, "error": f"Failed to connect push logic to OR gate {i}"}
             # Note: Pop logic would connect to OR gate input 1, but simplified for now
-            if not self.connect_elements(data_or_gates[i], 0, stage_d, 0):
+            if not self.connect_elements(data_or_gates[i], 0, stage_ffs[i], 0):  # OR gate -> D input (port 0)
                 return {"success": False, "error": f"Failed to connect OR gate to stage {i} D input"}
 
         # Output displays for FIFO contents
@@ -1490,14 +1484,13 @@ class AdvancedSequentialValidator:
             out_led = self.create_element("Led", out_x, out_y, f"FIFO_STAGE{i}")
             output_leds.append(out_led)
             
-            stage_q = stage_ffs[i][1]  # Q output of stage i
-            if not self.connect_elements(stage_q, 0, out_led, 0):
+            if not self.connect_elements(stage_ffs[i], 0, out_led, 0):  # Q output (port 0) -> LED
                 return {"success": False, "error": f"Failed to connect stage {i} output display"}
 
         # Data output (from stage 3)
         data_out_x, data_out_y = self._get_output_position(12, 4)
         data_out_led = self.create_element("Led", data_out_x, data_out_y, "DATA_OUT")
-        if not self.connect_elements(stage3_q, 0, data_out_led, 0):
+        if not self.connect_elements(stage_ffs[3], 0, data_out_led, 0):  # Stage 3 Q output -> DATA_OUT LED
             return {"success": False, "error": "Failed to connect FIFO data output"}
 
         logger.info("✅ 4-stage FIFO buffer created with full shift register architecture")
