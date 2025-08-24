@@ -23,8 +23,9 @@ void LogicTFlipFlop::updateLogic()
     const bool prst = m_inputValues.at(2);
     const bool clr = m_inputValues.at(3);
 
+    // FIXED: Use CURRENT T value on rising edge (proper edge-triggered behavior)
     if (clk && !m_lastClk) {
-        if (m_lastValue) {
+        if (T) {
             q0 = !q0;
             q1 = !q0;
         }
@@ -36,7 +37,7 @@ void LogicTFlipFlop::updateLogic()
     }
 
     m_lastClk = clk;
-    m_lastValue = T;
+    // Note: m_lastValue no longer needed for edge-triggered behavior
 
     setOutputValue(0, q0);
     setOutputValue(1, q1);
