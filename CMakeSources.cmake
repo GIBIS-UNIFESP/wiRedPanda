@@ -22,6 +22,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow_ui.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/mcpprocessor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneconnection.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneport.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/recentfiles.cpp
@@ -113,6 +114,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement.h
     ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow.h
     ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow_ui.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/mcpprocessor.h
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneconnection.h
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneport.h
     ${CMAKE_CURRENT_LIST_DIR}/app/recentfiles.h
