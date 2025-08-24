@@ -794,44 +794,55 @@ class IntegratedCPUValidator:
             
             for i, case in enumerate(test_cases):
                 if case['operation'] == 'write_init':
-                    # Initialize register data
-                    input_values = {
-                        'WE': True,
-                        'ADDR_W1': bool(case['addr'] & 2),
-                        'ADDR_W0': bool(case['addr'] & 1),
-                        'WD3': bool(case['data'] & 8),
-                        'WD2': bool(case['data'] & 4),
-                        'WD1': bool(case['data'] & 2),
-                        'WD0': bool(case['data'] & 1),
-                        'CLK': False
+                    # Initialize register data using element ID mapping
+                    input_mapping = {
+                        input_ids[0]: True,  # WE
+                        input_ids[1]: False,  # CLK
+                        input_ids[2]: bool(case['addr'] & 2),  # ADDR_W1
+                        input_ids[3]: bool(case['addr'] & 1),  # ADDR_W0
+                        input_ids[4]: False,  # ADDR_A1 (don't care for write)
+                        input_ids[5]: False,  # ADDR_A0 (don't care for write)
+                        input_ids[6]: False,  # ADDR_B1 (don't care for write)
+                        input_ids[7]: False,  # ADDR_B0 (don't care for write)
+                        input_ids[8]: bool(case['data'] & 8),   # WD3
+                        input_ids[9]: bool(case['data'] & 4),   # WD2
+                        input_ids[10]: bool(case['data'] & 2),  # WD1
+                        input_ids[11]: bool(case['data'] & 1),  # WD0
                     }
                     
-                    self.bridge.set_inputs(input_values)
+                    self.set_multiple_inputs(input_mapping)
                     self.run_simulation_steps(steps=2)
                     
                     # Clock pulse to write
-                    input_values['CLK'] = True
-                    self.bridge.set_inputs(input_values)
+                    input_mapping[input_ids[1]] = True  # CLK = True
+                    self.set_multiple_inputs(input_mapping)
                     self.run_simulation_steps(steps=2)
                     
-                    input_values['CLK'] = False
-                    self.bridge.set_inputs(input_values)
+                    input_mapping[input_ids[1]] = False  # CLK = False
+                    self.set_multiple_inputs(input_mapping)
                     self.run_simulation_steps(steps=2)
                     
                 elif case['operation'] == 'dual_read':
                     total_cases += 1
                     
-                    # Set up dual read addresses
-                    input_values = {
-                        'WE': False,
-                        'ADDR_A1': bool(case['addr_a'] & 2),
-                        'ADDR_A0': bool(case['addr_a'] & 1),
-                        'ADDR_B1': bool(case['addr_b'] & 2),
-                        'ADDR_B0': bool(case['addr_b'] & 1),
-                        'CLK': False
+                    # Set up dual read addresses using element ID mapping
+                    input_mapping = {
+                        input_ids[0]: False,  # WE
+                        input_ids[1]: False,  # CLK
+                        input_ids[2]: False,  # ADDR_W1 (don't care for read)
+                        input_ids[3]: False,  # ADDR_W0 (don't care for read)
+                        input_ids[4]: bool(case['addr_a'] & 2),  # ADDR_A1
+                        input_ids[5]: bool(case['addr_a'] & 1),  # ADDR_A0
+                        input_ids[6]: bool(case['addr_b'] & 2),  # ADDR_B1
+                        input_ids[7]: bool(case['addr_b'] & 1),  # ADDR_B0
+                        # Data inputs don't matter for reads
+                        input_ids[8]: False,   # WD3
+                        input_ids[9]: False,   # WD2
+                        input_ids[10]: False,  # WD1
+                        input_ids[11]: False,  # WD0
                     }
                     
-                    self.bridge.set_inputs(input_values)
+                    self.set_multiple_inputs(input_mapping)
                     self.run_simulation_steps(steps=5)
                     
                     # Get simultaneous read outputs
@@ -1073,30 +1084,30 @@ class IntegratedCPUValidator:
             current_clock = False
             
             for i, test in enumerate(test_sequence):
-                # Set control inputs
-                input_values = {
-                    'RESET': test['reset'],
-                    'CLK': current_clock
+                # Set control inputs using element ID mapping
+                input_mapping = {
+                    input_ids[0]: test['reset'],  # RESET
+                    input_ids[1]: current_clock   # CLK
                 }
                 
                 # Handle clock edge if specified
                 if test.get('clock_edge', False):
                     # Apply clock pulse
-                    input_values['CLK'] = False
-                    self.bridge.set_inputs(input_values)
+                    input_mapping[input_ids[1]] = False  # CLK = False
+                    self.set_multiple_inputs(input_mapping)
                     self.run_simulation_steps(steps=2)
                     
-                    input_values['CLK'] = True  
-                    self.bridge.set_inputs(input_values)
+                    input_mapping[input_ids[1]] = True   # CLK = True
+                    self.set_multiple_inputs(input_mapping)
                     self.run_simulation_steps(steps=2)
                     
-                    input_values['CLK'] = False
-                    self.bridge.set_inputs(input_values)
+                    input_mapping[input_ids[1]] = False  # CLK = False
+                    self.set_multiple_inputs(input_mapping)
                     self.run_simulation_steps(steps=2)
                     current_clock = False
                 else:
                     # Just set inputs
-                    self.bridge.set_inputs(input_values)
+                    self.set_multiple_inputs(input_mapping)
                     self.run_simulation_steps(steps=3)
                     
                 # Get state machine outputs
@@ -1231,48 +1242,58 @@ class IntegratedCPUValidator:
             
             for i, op in enumerate(test_operations):
                 if op['operation'] == 'read':
-                    # Set read operation inputs
-                    input_values = {
-                        'READ_EN': True,
-                        'WRITE_EN': False,
-                        'ADDR5': bool(op['address'] & 32),
-                        'ADDR4': bool(op['address'] & 16),
-                        'ADDR3': bool(op['address'] & 8),
-                        'ADDR2': bool(op['address'] & 4),
-                        'ADDR1': bool(op['address'] & 2),
-                        'ADDR0': bool(op['address'] & 1),
-                        'CLK': False
+                    # Set read operation inputs using element ID mapping
+                    input_mapping = {
+                        # Address bits (6-bit)
+                        input_ids[0]: bool(op['address'] & 1),   # ADDR0
+                        input_ids[1]: bool(op['address'] & 2),   # ADDR1
+                        input_ids[2]: bool(op['address'] & 4),   # ADDR2
+                        input_ids[3]: bool(op['address'] & 8),   # ADDR3
+                        input_ids[4]: bool(op['address'] & 16),  # ADDR4
+                        input_ids[5]: bool(op['address'] & 32),  # ADDR5
+                        # Control signals
+                        input_ids[6]: True,   # READ_EN
+                        input_ids[7]: False,  # WRITE_EN
+                        input_ids[8]: False,  # CLK
+                        # Write data (don't care for reads)
+                        input_ids[9]: False,   # WD0
+                        input_ids[10]: False,  # WD1
+                        input_ids[11]: False,  # WD2
+                        input_ids[12]: False,  # WD3
                     }
                     
                 elif op['operation'] == 'write':
-                    # Set write operation inputs
-                    input_values = {
-                        'READ_EN': False,
-                        'WRITE_EN': True,
-                        'ADDR5': bool(op['address'] & 32),
-                        'ADDR4': bool(op['address'] & 16),
-                        'ADDR3': bool(op['address'] & 8),
-                        'ADDR2': bool(op['address'] & 4),
-                        'ADDR1': bool(op['address'] & 2),
-                        'ADDR0': bool(op['address'] & 1),
-                        'WD3': bool(op['write_data'] & 8),
-                        'WD2': bool(op['write_data'] & 4),
-                        'WD1': bool(op['write_data'] & 2),
-                        'WD0': bool(op['write_data'] & 1),
-                        'CLK': False
+                    # Set write operation inputs using element ID mapping
+                    input_mapping = {
+                        # Address bits (6-bit)
+                        input_ids[0]: bool(op['address'] & 1),   # ADDR0
+                        input_ids[1]: bool(op['address'] & 2),   # ADDR1
+                        input_ids[2]: bool(op['address'] & 4),   # ADDR2
+                        input_ids[3]: bool(op['address'] & 8),   # ADDR3
+                        input_ids[4]: bool(op['address'] & 16),  # ADDR4
+                        input_ids[5]: bool(op['address'] & 32),  # ADDR5
+                        # Control signals
+                        input_ids[6]: False,  # READ_EN
+                        input_ids[7]: True,   # WRITE_EN
+                        input_ids[8]: False,  # CLK
+                        # Write data
+                        input_ids[9]: bool(op['write_data'] & 1),   # WD0
+                        input_ids[10]: bool(op['write_data'] & 2),  # WD1
+                        input_ids[11]: bool(op['write_data'] & 4),  # WD2
+                        input_ids[12]: bool(op['write_data'] & 8),  # WD3
                     }
                 
                 # Execute cache operation
-                self.bridge.set_inputs(input_values)
+                self.set_multiple_inputs(input_mapping)
                 self.run_simulation_steps(steps=3)
                 
                 # Clock pulse for state changes
-                input_values['CLK'] = True
-                self.bridge.set_inputs(input_values)
+                input_mapping[input_ids[8]] = True  # CLK = True
+                self.set_multiple_inputs(input_mapping)
                 self.run_simulation_steps(steps=3)
                 
-                input_values['CLK'] = False
-                self.bridge.set_inputs(input_values)
+                input_mapping[input_ids[8]] = False  # CLK = False
+                self.set_multiple_inputs(input_mapping)
                 self.run_simulation_steps(steps=3)
                 
                 # Get cache controller outputs
@@ -2921,9 +2942,17 @@ class IntegratedCPUValidator:
         input_ids.extend([we_id, clk_id])
         
         # Create address inputs (2-bit each for 4 registers)
+        # Write address
+        for bit in [1, 0]:
+            addr_id = self.create_element("InputButton", float(200), float(100 + bit * 50), f"ADDR_W{bit}")
+            if not addr_id:
+                return [], []
+            input_ids.append(addr_id)
+        
+        # Read address ports A and B
         for port in ['A', 'B']:
             for bit in [1, 0]:
-                addr_id = self.create_element("InputButton", float(100 + len(input_ids) * 40), float(200), f"ADDR_{port}{bit}")
+                addr_id = self.create_element("InputButton", float(300 + (0 if port == 'A' else 100)), float(100 + bit * 50), f"ADDR_{port}{bit}")
                 if not addr_id:
                     return [], []
                 input_ids.append(addr_id)
@@ -3114,6 +3143,13 @@ class IntegratedCPUValidator:
             return [], []
         input_ids.extend([read_en_id, write_en_id, clk_id])
         
+        # Create write data inputs (4-bit)
+        for i in range(4):
+            wd_id = self.create_element("InputButton", float(200), float(100 + i * 50), f"WD{i}")
+            if not wd_id:
+                return [], []
+            input_ids.append(wd_id)
+        
         # Create cache storage (simplified with flip-flops)
         for entry in range(4):  # 4-entry cache
             for bit in range(8):  # 8-bit data + tag + valid
@@ -3148,12 +3184,39 @@ class IntegratedCPUValidator:
                 return [], []
             input_ids.append(vaddr_id)
         
-        # Create TLB setup inputs
-        tlb_setup_id = self.create_element("InputButton", float(100), float(420), "TLB_SETUP")
-        clk_id = self.create_element("InputButton", float(100), float(460), "CLK")
-        if not tlb_setup_id or not clk_id:
+        # Create MMU control inputs
+        mmu_setup_id = self.create_element("InputButton", float(200), float(100), "MMU_SETUP")
+        clk_id = self.create_element("InputButton", float(200), float(150), "CLK")
+        if not mmu_setup_id or not clk_id:
             return [], []
-        input_ids.extend([tlb_setup_id, clk_id])
+        input_ids.extend([mmu_setup_id, clk_id])
+        
+        # Create TLB entry selection inputs (2-bit)
+        tlb_entry1_id = self.create_element("InputButton", float(200), float(200), "TLB_ENTRY1")
+        tlb_entry0_id = self.create_element("InputButton", float(200), float(250), "TLB_ENTRY0")
+        if not tlb_entry1_id or not tlb_entry0_id:
+            return [], []
+        input_ids.extend([tlb_entry1_id, tlb_entry0_id])
+        
+        # Create virtual page inputs (4-bit)
+        for i in range(4):
+            vpage_id = self.create_element("InputButton", float(200), float(300 + i * 50), f"VPAGE{i}")
+            if not vpage_id:
+                return [], []
+            input_ids.append(vpage_id)
+        
+        # Create physical frame inputs (4-bit)
+        for i in range(4):
+            pframe_id = self.create_element("InputButton", float(200), float(500 + i * 50), f"PFRAME{i}")
+            if not pframe_id:
+                return [], []
+            input_ids.append(pframe_id)
+        
+        # Create valid bit input
+        valid_id = self.create_element("InputButton", float(200), float(700), "VALID")
+        if not valid_id:
+            return [], []
+        input_ids.append(valid_id)
         
         # Create TLB storage (simplified)
         for entry in range(4):  # 4-entry TLB

@@ -1072,16 +1072,27 @@ class AdvancedSequentialValidator:
         input_id = self.create_element("InputButton", input_x, input_y, "INPUT")
         clk_x, clk_y = self._get_input_position(1)
         clk_id = self.create_element("InputButton", clk_x, clk_y, "CLK")
+        reset_x, reset_y = self._get_input_position(2)
+        reset_id = self.create_element("InputButton", reset_x, reset_y, "RESET")
 
-        # State flip-flop (single bit state)
-        state_ff = self._create_d_flip_flop(1, 0, "STATE", clk_id)
+        # State flip-flop using FIXED native D flip-flop
+        state_ff = self._create_simple_d_flip_flop_native(1, 0, "STATE", clk_id, reset_id)
         if not all(state_ff[:3]):
             return {"success": False, "error": "Failed to create state flip-flop"}
         state_d, state_q, state_q_not = state_ff[:3]
 
+        # Initialize with reset
+        self.set_input(reset_id, True)  # Apply reset
+        self.set_input(clk_id, False)   # Clock low during reset
+        self.update_simulation()
+        self.update_simulation()
+        self.set_input(reset_id, False) # Release reset
+        self.update_simulation()
+
         # Mealy logic implementation using full combinational logic
         # Next State Logic: D = (current_state AND input) OR (NOT current_state AND input)
         # Simplifies to: D = input (state follows input)
+        # Native DFF: Port 0 = D input
         if not self.connect_elements(input_id, 0, state_d, 0):
             return {"success": False, "error": "Failed to connect next state logic"}
 
@@ -1095,6 +1106,7 @@ class AdvancedSequentialValidator:
         if not output_xor:
             return {"success": False, "error": "Failed to create output XOR gate"}
 
+        # Native DFF: Port 0 = Q output
         if not self.connect_elements(state_q, 0, output_xor, 0):
             return {"success": False, "error": "Failed to connect state to output logic"}
         if not self.connect_elements(input_id, 0, output_xor, 1):
