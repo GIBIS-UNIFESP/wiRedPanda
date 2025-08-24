@@ -281,19 +281,6 @@ class IntegratedCPUValidator:
         logger.info("Testing complete 4-bit ALU system...")
         
         try:
-            # For now, use placeholder result to test framework
-            placeholder = {
-                'success': True,
-                'description': 'Complete 4-bit ALU with operation selection and flags',
-                'total_cases': 16,
-                'passed_cases': 13,
-                'failed_cases': 3,
-                'accuracy': 81.25,
-                'sample_results': [],
-                'error': None
-            }
-            return placeholder
-            
             # Create new circuit for this test
             if not self.create_new_circuit():
                 return {
@@ -445,8 +432,7 @@ class IntegratedCPUValidator:
                     'accuracy': 0.0
                 }
                 
-            # For now, use placeholder result to test framework
-            return self.placeholders['test_8bit_alu_with_flags']
+            # Create 8-bit ALU circuit with comprehensive flags
             
             # Test cases focusing on edge conditions and flag behavior
             test_cases = [
@@ -544,8 +530,29 @@ class IntegratedCPUValidator:
         logger.info("Testing 4x4-bit register file...")
         
         try:
-            # For now, use placeholder result to test framework
-            return self.placeholders['test_register_file_4x4bit']
+            # Create register file circuit
+            if not self.create_new_circuit():
+                return {
+                    'success': False,
+                    'error': 'Failed to create new circuit',
+                    'accuracy': 0.0
+                }
+            
+            # Create simplified register file using direct element creation
+            input_ids, output_ids = self._create_register_file_elements()
+            if not input_ids or not output_ids:
+                return {
+                    'success': False,
+                    'error': 'Failed to create register file elements',
+                    'accuracy': 0.0
+                }
+                
+            if not self.start_simulation():
+                return {
+                    'success': False,
+                    'error': 'Failed to start simulation',
+                    'accuracy': 0.0
+                }
             
             # Test register file operations
             test_cases = [
@@ -661,16 +668,27 @@ class IntegratedCPUValidator:
         logger.info("Testing dual-port register file...")
         
         try:
-            # For now, use placeholder result to test framework
-            return self.placeholders['test_dual_port_register_file']
-            
             # Create dual-port register file circuit
-            circuit_data = self._create_dual_port_register_file_circuit()
-            
-            if not self.bridge.load_circuit(circuit_data):
+            if not self.create_new_circuit():
                 return {
                     'success': False,
-                    'error': 'Failed to load dual-port register file circuit',
+                    'error': 'Failed to create new circuit',
+                    'accuracy': 0.0
+                }
+            
+            # Create simplified dual-port register file using direct element creation
+            input_ids, output_ids = self._create_dual_port_register_elements()
+            if not input_ids or not output_ids:
+                return {
+                    'success': False,
+                    'error': 'Failed to create dual-port register file elements',
+                    'accuracy': 0.0
+                }
+                
+            if not self.start_simulation():
+                return {
+                    'success': False,
+                    'error': 'Failed to start simulation',
                     'accuracy': 0.0
                 }
             
@@ -799,16 +817,27 @@ class IntegratedCPUValidator:
         logger.info("Testing basic instruction decoder...")
         
         try:
-            # For now, use placeholder result to test framework
-            return self.placeholders['test_instruction_decoder_basic']
-            
             # Create instruction decoder circuit
-            circuit_data = self._create_instruction_decoder_circuit()
-            
-            if not self.bridge.load_circuit(circuit_data):
+            if not self.create_new_circuit():
                 return {
                     'success': False,
-                    'error': 'Failed to load instruction decoder circuit',
+                    'error': 'Failed to create new circuit',
+                    'accuracy': 0.0
+                }
+            
+            # Create instruction decoder elements
+            input_ids, output_ids = self._create_instruction_decoder_elements()
+            if not input_ids or not output_ids:
+                return {
+                    'success': False,
+                    'error': 'Failed to create instruction decoder elements',
+                    'accuracy': 0.0
+                }
+                
+            if not self.start_simulation():
+                return {
+                    'success': False,
+                    'error': 'Failed to start simulation',
                     'accuracy': 0.0
                 }
             
@@ -902,16 +931,27 @@ class IntegratedCPUValidator:
         logger.info("Testing control unit state machine...")
         
         try:
-            # For now, use placeholder result to test framework
-            return self.placeholders['test_control_unit_state_machine']
-            
             # Create control unit state machine circuit
-            circuit_data = self._create_control_unit_state_machine_circuit()
-            
-            if not self.bridge.load_circuit(circuit_data):
+            if not self.create_new_circuit():
                 return {
                     'success': False,
-                    'error': 'Failed to load control unit state machine circuit',
+                    'error': 'Failed to create new circuit',
+                    'accuracy': 0.0
+                }
+            
+            # Create control unit state machine elements
+            input_ids, output_ids = self._create_control_unit_elements()
+            if not input_ids or not output_ids:
+                return {
+                    'success': False,
+                    'error': 'Failed to create control unit elements',
+                    'accuracy': 0.0
+                }
+                
+            if not self.start_simulation():
+                return {
+                    'success': False,
+                    'error': 'Failed to start simulation',
                     'accuracy': 0.0
                 }
             
@@ -1054,16 +1094,27 @@ class IntegratedCPUValidator:
         logger.info("Testing basic cache controller...")
         
         try:
-            # For now, use placeholder result to test framework
-            return self.placeholders['test_cache_controller_basic']
-            
             # Create cache controller circuit
-            circuit_data = self._create_cache_controller_circuit()
-            
-            if not self.bridge.load_circuit(circuit_data):
+            if not self.create_new_circuit():
                 return {
                     'success': False,
-                    'error': 'Failed to load cache controller circuit',
+                    'error': 'Failed to create new circuit',
+                    'accuracy': 0.0
+                }
+            
+            # Create cache controller elements
+            input_ids, output_ids = self._create_cache_controller_elements()
+            if not input_ids or not output_ids:
+                return {
+                    'success': False,
+                    'error': 'Failed to create cache controller elements',
+                    'accuracy': 0.0
+                }
+                
+            if not self.start_simulation():
+                return {
+                    'success': False,
+                    'error': 'Failed to start simulation',
                     'accuracy': 0.0
                 }
             
@@ -1217,16 +1268,27 @@ class IntegratedCPUValidator:
         logger.info("Testing memory management unit...")
         
         try:
-            # For now, use placeholder result to test framework
-            return self.placeholders['test_memory_management_unit']
-            
             # Create MMU circuit
-            circuit_data = self._create_mmu_circuit()
-            
-            if not self.bridge.load_circuit(circuit_data):
+            if not self.create_new_circuit():
                 return {
                     'success': False,
-                    'error': 'Failed to load MMU circuit',
+                    'error': 'Failed to create new circuit',
+                    'accuracy': 0.0
+                }
+            
+            # Create MMU elements
+            input_ids, output_ids = self._create_mmu_elements()
+            if not input_ids or not output_ids:
+                return {
+                    'success': False,
+                    'error': 'Failed to create MMU elements',
+                    'accuracy': 0.0
+                }
+                
+            if not self.start_simulation():
+                return {
+                    'success': False,
+                    'error': 'Failed to start simulation',
                     'accuracy': 0.0
                 }
             
@@ -1409,16 +1471,27 @@ class IntegratedCPUValidator:
         logger.info("Testing instruction pipeline stage...")
         
         try:
-            # For now, use placeholder result to test framework
-            return self.placeholders['test_instruction_pipeline_stage']
-            
             # Create pipeline stage circuit
-            circuit_data = self._create_pipeline_stage_circuit()
-            
-            if not self.bridge.load_circuit(circuit_data):
+            if not self.create_new_circuit():
                 return {
                     'success': False,
-                    'error': 'Failed to load pipeline stage circuit',
+                    'error': 'Failed to create new circuit',
+                    'accuracy': 0.0
+                }
+            
+            # Create pipeline stage elements
+            input_ids, output_ids = self._create_pipeline_stage_elements()
+            if not input_ids or not output_ids:
+                return {
+                    'success': False,
+                    'error': 'Failed to create pipeline stage elements',
+                    'accuracy': 0.0
+                }
+                
+            if not self.start_simulation():
+                return {
+                    'success': False,
+                    'error': 'Failed to start simulation',
                     'accuracy': 0.0
                 }
             
@@ -1584,16 +1657,27 @@ class IntegratedCPUValidator:
         logger.info("Testing execution pipeline coordination...")
         
         try:
-            # For now, use placeholder result to test framework
-            return self.placeholders['test_execution_pipeline_coordination']
-            
             # Create pipeline coordination circuit
-            circuit_data = self._create_pipeline_coordination_circuit()
-            
-            if not self.bridge.load_circuit(circuit_data):
+            if not self.create_new_circuit():
                 return {
                     'success': False,
-                    'error': 'Failed to load pipeline coordination circuit',
+                    'error': 'Failed to create new circuit',
+                    'accuracy': 0.0
+                }
+            
+            # Create pipeline coordination elements
+            input_ids, output_ids = self._create_pipeline_coordination_elements()
+            if not input_ids or not output_ids:
+                return {
+                    'success': False,
+                    'error': 'Failed to create pipeline coordination elements',
+                    'accuracy': 0.0
+                }
+                
+            if not self.start_simulation():
+                return {
+                    'success': False,
+                    'error': 'Failed to start simulation',
                     'accuracy': 0.0
                 }
             
@@ -2746,6 +2830,298 @@ class IntegratedCPUValidator:
             })
         
         return json.dumps(circuit)
+
+    def _create_dual_port_register_elements(self) -> Tuple[List[int], List[int]]:
+        """Create simplified dual-port register file elements"""
+        input_ids = []
+        output_ids = []
+        
+        # Create inputs for write enable, addresses, and data
+        we_id = self.create_element("InputButton", float(100), float(100), "WE")
+        clk_id = self.create_element("InputButton", float(100), float(150), "CLK")
+        if not we_id or not clk_id:
+            return [], []
+        input_ids.extend([we_id, clk_id])
+        
+        # Create address inputs (2-bit each for 4 registers)
+        for port in ['A', 'B']:
+            for bit in [1, 0]:
+                addr_id = self.create_element("InputButton", float(100 + len(input_ids) * 40), float(200), f"ADDR_{port}{bit}")
+                if not addr_id:
+                    return [], []
+                input_ids.append(addr_id)
+        
+        # Create data inputs (4-bit)
+        for bit in range(4):
+            data_id = self.create_element("InputButton", float(100 + len(input_ids) * 40), float(250), f"WD{bit}")
+            if not data_id:
+                return [], []
+            input_ids.append(data_id)
+        
+        # Create simple register storage using D flip-flops (4 registers x 4 bits)
+        register_ids = []
+        for reg in range(4):
+            for bit in range(4):
+                ff_id = self.create_element("DFlipFlop", float(300 + reg * 100), float(300 + bit * 60), f"REG{reg}_BIT{bit}")
+                if not ff_id:
+                    return [], []
+                register_ids.append(ff_id)
+        
+        # Create output ports (dual read ports, 4 bits each)
+        for port in ['A', 'B']:
+            for bit in range(4):
+                out_id = self.create_element("Led", float(800 + (0 if port == 'A' else 200)), float(300 + bit * 60), f"RD_{port}{bit}")
+                if not out_id:
+                    return [], []
+                output_ids.append(out_id)
+        
+        return input_ids, output_ids
+
+    def _create_register_file_elements(self) -> Tuple[List[int], List[int]]:
+        """Create simplified register file elements"""
+        input_ids = []
+        output_ids = []
+        
+        # Create inputs for write enable, address, and data
+        we_id = self.create_element("InputButton", float(100), float(100), "WE")
+        clk_id = self.create_element("InputButton", float(100), float(150), "CLK")
+        if not we_id or not clk_id:
+            return [], []
+        input_ids.extend([we_id, clk_id])
+        
+        # Create register address inputs (2-bit for 4 registers)
+        for bit in [1, 0]:
+            addr_id = self.create_element("InputButton", float(200), float(100 + bit * 50), f"ADDR{bit}")
+            if not addr_id:
+                return [], []
+            input_ids.append(addr_id)
+        
+        # Create data inputs (4-bit)
+        for bit in range(4):
+            data_id = self.create_element("InputButton", float(300), float(100 + bit * 50), f"WD{bit}")
+            if not data_id:
+                return [], []
+            input_ids.append(data_id)
+        
+        # Create register storage using D flip-flops (4 registers x 4 bits)
+        for reg in range(4):
+            for bit in range(4):
+                ff_id = self.create_element("DFlipFlop", float(400 + reg * 80), float(100 + bit * 50), f"REG{reg}_BIT{bit}")
+                if not ff_id:
+                    return [], []
+        
+        # Create read data outputs (4-bit)
+        for bit in range(4):
+            out_id = self.create_element("Led", float(800), float(100 + bit * 50), f"RD{bit}")
+            if not out_id:
+                return [], []
+            output_ids.append(out_id)
+        
+        return input_ids, output_ids
+
+    def _create_instruction_decoder_elements(self) -> Tuple[List[int], List[int]]:
+        """Create instruction decoder elements"""
+        input_ids = []
+        output_ids = []
+        
+        # Create 3-bit opcode inputs
+        for i in range(3):
+            opcode_id = self.create_element("InputButton", float(100), float(100 + i * 60), f"OPCODE{2-i}")
+            if not opcode_id:
+                return [], []
+            input_ids.append(opcode_id)
+        
+        # Create decoder logic (simplified with basic gates)
+        decoder_id = self.create_element("And", float(300), float(200), "DECODER")
+        if not decoder_id:
+            return [], []
+        
+        # Create control signal outputs
+        control_signals = ["ALU_OP1", "ALU_OP0", "REG_WRITE", "MEM_READ", "MEM_WRITE", "BRANCH"]
+        for i, signal in enumerate(control_signals):
+            out_id = self.create_element("Led", float(500), float(100 + i * 50), signal)
+            if not out_id:
+                return [], []
+            output_ids.append(out_id)
+        
+        return input_ids, output_ids
+
+    def _create_control_unit_elements(self) -> Tuple[List[int], List[int]]:
+        """Create control unit state machine elements"""
+        input_ids = []
+        output_ids = []
+        
+        # Create inputs for reset and clock
+        reset_id = self.create_element("InputButton", float(100), float(100), "RESET")
+        clk_id = self.create_element("InputButton", float(100), float(160), "CLK")
+        if not reset_id or not clk_id:
+            return [], []
+        input_ids.extend([reset_id, clk_id])
+        
+        # Create state flip-flops (2 bits for 4 states)
+        for i in range(2):
+            ff_id = self.create_element("DFlipFlop", float(300), float(200 + i * 80), f"STATE_FF{i}")
+            if not ff_id:
+                return [], []
+        
+        # Create control outputs
+        control_signals = ["PC_INC", "IR_LOAD", "ALU_ENABLE", "STATE1", "STATE0"]
+        for i, signal in enumerate(control_signals):
+            out_id = self.create_element("Led", float(500), float(100 + i * 60), signal)
+            if not out_id:
+                return [], []
+            output_ids.append(out_id)
+        
+        return input_ids, output_ids
+
+    def _create_cache_controller_elements(self) -> Tuple[List[int], List[int]]:
+        """Create cache controller elements"""
+        input_ids = []
+        output_ids = []
+        
+        # Create address inputs (6-bit)
+        for i in range(6):
+            addr_id = self.create_element("InputButton", float(100), float(100 + i * 50), f"ADDR{i}")
+            if not addr_id:
+                return [], []
+            input_ids.append(addr_id)
+        
+        # Create read/write enable inputs
+        read_en_id = self.create_element("InputButton", float(100), float(400), "READ_EN")
+        write_en_id = self.create_element("InputButton", float(100), float(450), "WRITE_EN")
+        clk_id = self.create_element("InputButton", float(100), float(500), "CLK")
+        if not read_en_id or not write_en_id or not clk_id:
+            return [], []
+        input_ids.extend([read_en_id, write_en_id, clk_id])
+        
+        # Create cache storage (simplified with flip-flops)
+        for entry in range(4):  # 4-entry cache
+            for bit in range(8):  # 8-bit data + tag + valid
+                ff_id = self.create_element("DFlipFlop", float(300 + entry * 100), float(100 + bit * 40), f"CACHE_{entry}_{bit}")
+                if not ff_id:
+                    return [], []
+        
+        # Create outputs
+        hit_id = self.create_element("Led", float(800), float(300), "CACHE_HIT")
+        if not hit_id:
+            return [], []
+        output_ids.append(hit_id)
+        
+        # Create data outputs
+        for i in range(4):
+            data_out_id = self.create_element("Led", float(800), float(100 + i * 50), f"RD{i}")
+            if not data_out_id:
+                return [], []
+            output_ids.append(data_out_id)
+        
+        return input_ids, output_ids
+
+    def _create_mmu_elements(self) -> Tuple[List[int], List[int]]:
+        """Create MMU elements"""
+        input_ids = []
+        output_ids = []
+        
+        # Create virtual address inputs (8-bit)
+        for i in range(8):
+            vaddr_id = self.create_element("InputButton", float(100), float(100 + i * 40), f"VADDR{i}")
+            if not vaddr_id:
+                return [], []
+            input_ids.append(vaddr_id)
+        
+        # Create TLB setup inputs
+        tlb_setup_id = self.create_element("InputButton", float(100), float(420), "TLB_SETUP")
+        clk_id = self.create_element("InputButton", float(100), float(460), "CLK")
+        if not tlb_setup_id or not clk_id:
+            return [], []
+        input_ids.extend([tlb_setup_id, clk_id])
+        
+        # Create TLB storage (simplified)
+        for entry in range(4):  # 4-entry TLB
+            for field in range(9):  # vpage(4) + pframe(4) + valid(1)
+                tlb_ff_id = self.create_element("DFlipFlop", float(300 + entry * 80), float(100 + field * 40), f"TLB_{entry}_{field}")
+                if not tlb_ff_id:
+                    return [], []
+        
+        # Create outputs
+        hit_id = self.create_element("Led", float(700), float(300), "TLB_HIT")
+        if not hit_id:
+            return [], []
+        output_ids.append(hit_id)
+        
+        # Create physical address outputs
+        for i in range(8):
+            paddr_id = self.create_element("Led", float(700), float(100 + i * 30), f"PADDR{i}")
+            if not paddr_id:
+                return [], []
+            output_ids.append(paddr_id)
+        
+        return input_ids, output_ids
+
+    def _create_pipeline_stage_elements(self) -> Tuple[List[int], List[int]]:
+        """Create pipeline stage elements"""
+        input_ids = []
+        output_ids = []
+        
+        # Create instruction inputs (16-bit)
+        for i in range(16):
+            inst_id = self.create_element("InputButton", float(100), float(100 + i * 30), f"INST{i}")
+            if not inst_id:
+                return [], []
+            input_ids.append(inst_id)
+        
+        # Create control inputs
+        clk_id = self.create_element("InputButton", float(100), float(580), "CLK")
+        stall_id = self.create_element("InputButton", float(100), float(620), "STALL")
+        flush_id = self.create_element("InputButton", float(100), float(660), "FLUSH")
+        if not clk_id or not stall_id or not flush_id:
+            return [], []
+        input_ids.extend([clk_id, stall_id, flush_id])
+        
+        # Create pipeline registers (IF/ID, ID/EX)
+        for stage in ["IF_ID", "ID_EX"]:
+            for bit in range(16):
+                reg_id = self.create_element("DFlipFlop", float(300 + (100 if stage == "ID_EX" else 0)), float(100 + bit * 30), f"{stage}_{bit}")
+                if not reg_id:
+                    return [], []
+        
+        # Create outputs
+        for i in range(16):
+            out_id = self.create_element("Led", float(600), float(100 + i * 30), f"PIPELINE_OUT{i}")
+            if not out_id:
+                return [], []
+            output_ids.append(out_id)
+        
+        return input_ids, output_ids
+
+    def _create_pipeline_coordination_elements(self) -> Tuple[List[int], List[int]]:
+        """Create pipeline coordination elements"""
+        input_ids = []
+        output_ids = []
+        
+        # Create register address inputs for hazard detection
+        for stage in ["ID", "EX", "MEM"]:
+            for reg_type in ["SRC1", "SRC2", "DEST"]:
+                for bit in range(3):  # 3-bit register addresses
+                    reg_id = self.create_element("InputButton", float(100 + len(input_ids) * 25), float(100), f"{stage}_{reg_type}{bit}")
+                    if not reg_id:
+                        return [], []
+                    input_ids.append(reg_id)
+        
+        # Create hazard detection logic (simplified with comparators)
+        for i in range(3):
+            comp_id = self.create_element("And", float(400), float(150 + i * 80), f"HAZARD_DETECT_{i}")
+            if not comp_id:
+                return [], []
+        
+        # Create forwarding outputs
+        forward_signals = ["FORWARD_A", "FORWARD_B", "PIPELINE_STALL", "PIPELINE_FLUSH"]
+        for i, signal in enumerate(forward_signals):
+            out_id = self.create_element("Led", float(600), float(100 + i * 60), signal)
+            if not out_id:
+                return [], []
+            output_ids.append(out_id)
+        
+        return input_ids, output_ids
 
 
 def main():

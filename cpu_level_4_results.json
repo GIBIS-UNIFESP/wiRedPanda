@@ -229,8 +229,8 @@
           "success": false,
           "description": "Johnson Counter (3-bit ring counter with inverted feedback)",
           "total_cases": 7,
-          "passed_cases": 0,
-          "failed_cases": 7,
+          "passed_cases": 1,
+          "failed_cases": 6,
           "results": [
             {
               "step": 0,
@@ -271,10 +271,10 @@
               },
               "actual": {
                 "Q2": false,
-                "Q1": false,
+                "Q1": true,
                 "Q0": true
               },
-              "correct": false,
+              "correct": true,
               "description": "After 2 clocks: 011"
             },
             {
@@ -301,7 +301,7 @@
               },
               "actual": {
                 "Q2": false,
-                "Q1": true,
+                "Q1": false,
                 "Q0": true
               },
               "correct": false,
@@ -338,7 +338,7 @@
               "description": "After 6 clocks: 000 (cycle)"
             }
           ],
-          "accuracy": 0.0,
+          "accuracy": 14.285714285714285,
           "convergence_enabled": true
         }
       },
@@ -502,8 +502,8 @@
           "success": false,
           "description": "4-bit BCD counter with decade reset logic",
           "total_cases": 8,
-          "passed_cases": 3,
-          "failed_cases": 5,
+          "passed_cases": 0,
+          "failed_cases": 8,
           "results": [
             {
               "step": 0,
@@ -515,12 +515,12 @@
               },
               "actual": {
                 "Q3": false,
-                "Q2": false,
-                "Q1": false,
+                "Q2": true,
+                "Q1": true,
                 "Q0": false
               },
               "decade_detected": false,
-              "correct": true,
+              "correct": false,
               "description": "Initial: 0000 (0)"
             },
             {
@@ -533,9 +533,9 @@
               },
               "actual": {
                 "Q3": false,
-                "Q2": false,
-                "Q1": false,
-                "Q0": false
+                "Q2": true,
+                "Q1": true,
+                "Q0": true
               },
               "decade_detected": false,
               "correct": false,
@@ -550,7 +550,7 @@
                 "Q0": 0
               },
               "actual": {
-                "Q3": false,
+                "Q3": true,
                 "Q2": false,
                 "Q1": false,
                 "Q0": false
@@ -568,10 +568,10 @@
                 "Q0": 1
               },
               "actual": {
-                "Q3": false,
+                "Q3": true,
                 "Q2": false,
                 "Q1": false,
-                "Q0": false
+                "Q0": true
               },
               "decade_detected": false,
               "correct": false,
@@ -586,13 +586,13 @@
                 "Q0": 0
               },
               "actual": {
-                "Q3": false,
+                "Q3": true,
                 "Q2": false,
-                "Q1": false,
+                "Q1": true,
                 "Q0": false
               },
-              "decade_detected": false,
-              "correct": true,
+              "decade_detected": true,
+              "correct": false,
               "description": "After 4 clocks: 0100 (4)"
             },
             {
@@ -606,7 +606,7 @@
               "actual": {
                 "Q3": false,
                 "Q2": false,
-                "Q1": false,
+                "Q1": true,
                 "Q0": false
               },
               "decade_detected": false,
@@ -624,8 +624,8 @@
               "actual": {
                 "Q3": false,
                 "Q2": false,
-                "Q1": false,
-                "Q0": false
+                "Q1": true,
+                "Q0": true
               },
               "decade_detected": false,
               "correct": false,
@@ -641,16 +641,16 @@
               },
               "actual": {
                 "Q3": false,
-                "Q2": false,
+                "Q2": true,
                 "Q1": false,
-                "Q0": false
+                "Q0": true
               },
               "decade_detected": false,
-              "correct": true,
+              "correct": false,
               "description": "After 10 clocks: 0000 (reset from 10)"
             }
           ],
-          "accuracy": 37.5,
+          "accuracy": 0.0,
           "convergence_enabled": true
         }
       },
