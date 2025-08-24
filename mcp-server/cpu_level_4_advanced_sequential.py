@@ -1543,13 +1543,37 @@ class AdvancedSequentialValidator:
         results = []
         passed = 0
 
-        # Initialize
+        # Initialize with ENHANCED stabilization for shift register chains
         self.set_input(clk_id, False)
         self.set_input(push_id, False)
         self.set_input(pop_id, False)
         self.set_input(data_in_id, False)
         self.restart_simulation()
         time.sleep(0.1)
+        
+        # CRITICAL FIX: Additional stabilization for FIFO shift register chains
+        # FIFO has cascaded flip-flop dependencies that need extra settling time
+        logger.info("🔧 FIFO FIX: Additional stabilization for shift register chains")
+        
+        # Apply multiple stabilization cycles to ensure shift register converges
+        for stabilize_cycle in range(3):
+            self.update_simulation()
+            time.sleep(0.05)
+            logger.info(f"FIFO stabilization cycle {stabilize_cycle + 1}/3")
+        
+        # Check initial state of FIFO stages
+        initial_stages = []
+        for i, stage_ff in enumerate(stage_ffs):
+            stage_out = f"FIFO_OUT{i}"
+            # Get stage output if exists, otherwise assume False
+            try:
+                stage_val = self.get_output(stage_ff, 0)  # Try to read Q output
+                initial_stages.append(stage_val)
+            except:
+                initial_stages.append(False)  # Default to False if can't read
+        
+        logger.info(f"After FIFO stabilization: Stages={initial_stages}")
+        logger.info("✅ FIFO stabilization complete")
 
         fifo_contents = [False, False, False, False]  # Track expected FIFO state
 
