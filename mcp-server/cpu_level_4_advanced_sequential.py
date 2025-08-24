@@ -1643,10 +1643,28 @@ class AdvancedSequentialValidator:
                 return {"success": False, "error": f"Failed to create BCD flip-flop {i}"}
             bcd_ffs.append(ff_components[:3])  # [D, Q, Q_NOT]
             
-        logger.info("🔧 DEBUG: Checking flip-flop initialization before toggle logic")
+        # 🔧 CRITICAL: Initialize all flip-flops to 0000 using reset sequence
+        logger.info("🔧 INITIALIZING: Forcing all flip-flops to 0000 state with reset sequence")
+        
+        # Step 1: Apply reset to force all flip-flops to Q=0
+        self.set_input(reset_id, True)  # reset=1 forces all Q outputs to 0
+        self.set_input(clk_id, False)   # clock=0 during reset
+        # Allow reset to propagate through multiple simulation updates
+        for _ in range(3):
+            self.update_simulation()
+        
+        # Step 2: Release reset and verify initialization
+        self.set_input(reset_id, False) # reset=0 for normal operation
+        # Settle after reset release
+        for _ in range(2):
+            self.update_simulation()
+        
+        logger.info("🔧 DEBUG: Checking flip-flop initialization after reset sequence")
         for i, ff in enumerate(bcd_ffs):
             q_state = self.get_output(ff[1])  # ff[1] is Q output
-            logger.info(f"DEBUG: FF{i} initial Q state: {q_state}")
+            logger.info(f"DEBUG: FF{i} post-reset Q state: {q_state}")
+            if q_state:  # If Q is still True after reset
+                logger.warning(f"⚠️ FF{i} failed to reset to False - reset logic issue")
 
         # BCD DECADE RESET LOGIC - This is the key complexity
         # Reset when count reaches 1010 (decimal 10): Q3=1 AND Q1=1 (Q2=0, Q0=0)
