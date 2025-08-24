@@ -256,10 +256,10 @@
               },
               "actual": {
                 "Q2": false,
-                "Q1": false,
+                "Q1": true,
                 "Q0": true
               },
-              "correct": true,
+              "correct": false,
               "description": "After 1 clock: 001"
             },
             {
@@ -271,10 +271,10 @@
               },
               "actual": {
                 "Q2": false,
-                "Q1": false,
+                "Q1": true,
                 "Q0": true
               },
-              "correct": false,
+              "correct": true,
               "description": "After 2 clocks: 011"
             },
             {
@@ -286,7 +286,7 @@
               },
               "actual": {
                 "Q2": false,
-                "Q1": true,
+                "Q1": false,
                 "Q0": true
               },
               "correct": false,
@@ -331,7 +331,7 @@
               },
               "actual": {
                 "Q2": false,
-                "Q1": false,
+                "Q1": true,
                 "Q0": true
               },
               "correct": false,

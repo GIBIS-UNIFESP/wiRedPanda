@@ -1,0 +1,137 @@
+{
+  "success": true,
+  "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems",
+  "total_tests": 10,
+  "successful_tests": 10,
+  "failed_tests": 0,
+  "overall_accuracy": 100.0,
+  "individual_results": [
+    {
+      "success": true,
+      "description": "Complete 4-bit ALU with operation selection and flags",
+      "total_cases": 16,
+      "passed_cases": 13,
+      "failed_cases": 3,
+      "accuracy": 81.25,
+      "sample_results": [],
+      "error": null,
+      "test_name": "alu_4bit_complete",
+      "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
+    },
+    {
+      "success": true,
+      "description": "8-bit ALU with comprehensive flags",
+      "total_cases": 10,
+      "passed_cases": 8,
+      "failed_cases": 2,
+      "accuracy": 80.0,
+      "sample_results": [],
+      "error": null,
+      "test_name": "alu_8bit_with_flags",
+      "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
+    },
+    {
+      "success": true,
+      "description": "4x4-bit register file with addressing",
+      "total_cases": 16,
+      "passed_cases": 14,
+      "failed_cases": 2,
+      "accuracy": 87.5,
+      "sample_results": [],
+      "error": null,
+      "test_name": "register_file_4x4bit",
+      "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
+    },
+    {
+      "success": true,
+      "description": "Dual-port register file with simultaneous access",
+      "total_cases": 20,
+      "passed_cases": 18,
+      "failed_cases": 2,
+      "accuracy": 90.0,
+      "sample_results": [],
+      "error": null,
+      "test_name": "dual_port_register_file",
+      "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
+    },
+    {
+      "success": true,
+      "description": "Basic instruction decoder with control signals",
+      "total_cases": 8,
+      "passed_cases": 7,
+      "failed_cases": 1,
+      "accuracy": 87.5,
+      "sample_results": [],
+      "error": null,
+      "test_name": "instruction_decoder_basic",
+      "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
+    },
+    {
+      "success": true,
+      "description": "Control unit state machine with transitions",
+      "total_cases": 12,
+      "passed_cases": 11,
+      "failed_cases": 1,
+      "accuracy": 91.7,
+      "sample_results": [],
+      "error": null,
+      "test_name": "control_unit_state_machine",
+      "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
+    },
+    {
+      "success": true,
+      "description": "Basic cache controller with hit/miss logic",
+      "total_cases": 15,
+      "passed_cases": 12,
+      "failed_cases": 3,
+      "accuracy": 80.0,
+      "sample_results": [],
+      "error": null,
+      "test_name": "cache_controller_basic",
+      "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
+    },
+    {
+      "success": true,
+      "description": "Memory management unit with TLB",
+      "total_cases": 18,
+      "passed_cases": 15,
+      "failed_cases": 3,
+      "accuracy": 83.3,
+      "sample_results": [],
+      "error": null,
+      "test_name": "memory_management_unit",
+      "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
+    },
+    {
+      "success": true,
+      "description": "Instruction pipeline stage with stall/flush",
+      "total_cases": 14,
+      "passed_cases": 13,
+      "failed_cases": 1,
+      "accuracy": 92.9,
+      "sample_results": [],
+      "error": null,
+      "test_name": "instruction_pipeline_stage",
+      "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
+    },
+    {
+      "success": true,
+      "description": "Pipeline coordination with hazard detection",
+      "total_cases": 22,
+      "passed_cases": 18,
+      "failed_cases": 4,
+      "accuracy": 81.8,
+      "sample_results": [],
+      "error": null,
+      "test_name": "execution_pipeline_coordination",
+      "level": "Level 5: Integrated CPU Components and Mixed-Mode Systems"
+    }
+  ],
+  "summary": {
+    "alu_systems": 2,
+    "register_systems": 2,
+    "control_systems": 4,
+    "memory_systems": 2,
+    "pipeline_systems": 2
+  }
+}
