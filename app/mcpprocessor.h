@@ -60,6 +60,8 @@ private:
     QJsonObject handleListElements(const QJsonObject& params);
     QJsonObject handleGetElementInfo(const QJsonObject& params);
     QJsonObject handleExportImage(const QJsonObject& params);
+    QJsonObject handleTriggerCircuitUpdate(const QJsonObject& params);
+    QJsonObject handleConnectExistingElements(const QJsonObject& params);
     
     // Helper methods
     GraphicElement* findElementById(int elementId);
@@ -75,6 +77,7 @@ private:
     
     // Connection helpers
     bool connectElementPorts(GraphicElement* source, int sourcePort, GraphicElement* target, int targetPort);
+    void triggerCircuitUpdate();
     
     // Command processing
     QJsonObject processCommand(const QJsonObject& command);

@@ -8,6 +8,12 @@
 #include "elementmapping.h"
 #include "graphicelement.h"
 #include "ic.h"
+
+// Include flip-flop classes for sequential element detection
+#include "logicelement/logicdflipflop.h"
+#include "logicelement/logicjkflipflop.h"
+#include "logicelement/logictflipflop.h"
+#include "logicelement/logicsrflipflop.h"
 #include "qneconnection.h"
 #include "scene.h"
 
@@ -184,10 +190,10 @@ bool Simulation::initialize()
 
 void Simulation::updateCombinationalLogic()
 {
+    // Update ALL logic elements (both combinational and sequential)
+    // Sequential elements (flip-flops, latches) have proper edge detection to prevent multiple triggers
     for (auto &logic : m_elmMapping->logicElms()) {
-        if (!logic->isFeedbackDependent()) {
-            logic->updateLogic();
-        }
+        logic->updateLogic();
     }
 }
 
@@ -196,50 +202,109 @@ void Simulation::updateFeedbackCircuitsWithConvergence()
     const auto &feedbackGroups = m_elmMapping->feedbackGroups();
     
     if (feedbackGroups.isEmpty()) {
+        qDebug() << "CONVERGENCE DEBUG: No feedback groups detected";
         return;
     }
     
-    for (const auto &feedbackGroup : feedbackGroups) {
+    qDebug() << "CONVERGENCE DEBUG: Processing" << feedbackGroups.size() << "feedback groups";
+    
+    for (int groupIdx = 0; groupIdx < feedbackGroups.size(); ++groupIdx) {
+        const auto &feedbackGroup = feedbackGroups[groupIdx];
         if (feedbackGroup.isEmpty()) continue;
         
+        qDebug() << "CONVERGENCE DEBUG: Group" << groupIdx << "has" << feedbackGroup.size() << "elements";
+        
+        // CRITICAL FIX: Filter out sequential elements from convergence
+        // Sequential elements (flip-flops, latches) should only change on clock edges,
+        // not during convergence iterations. Only combinational logic needs convergence.
+        QVector<std::shared_ptr<LogicElement>> combinationalElements;
+        QVector<std::shared_ptr<LogicElement>> sequentialElements;
+        
+        for (const auto &element : feedbackGroup) {
+            // Check if element is sequential by attempting to cast to known sequential types
+            bool isSequential = false;
+            
+            // Use dynamic_cast to identify sequential element types
+            if (dynamic_cast<LogicDFlipFlop*>(element.get()) ||
+                dynamic_cast<LogicJKFlipFlop*>(element.get()) ||
+                dynamic_cast<LogicTFlipFlop*>(element.get()) ||
+                dynamic_cast<LogicSRFlipFlop*>(element.get())) {
+                isSequential = true;
+            }
+            
+            if (isSequential) {
+                sequentialElements.append(element);
+            } else {
+                combinationalElements.append(element);
+            }
+        }
+        
+        qDebug() << "CONVERGENCE DEBUG: Group" << groupIdx << "has" << combinationalElements.size() << "combinational and" << sequentialElements.size() << "sequential elements";
+        
+        // If the feedback group contains only sequential elements, skip convergence
+        // Sequential elements in feedback (like Johnson Counter) are intentional and don't need convergence
+        if (combinationalElements.isEmpty()) {
+            qDebug() << "CONVERGENCE DEBUG: Group" << groupIdx << "contains only sequential elements - skipping convergence (intentional feedback)";
+            continue;
+        }
         
         bool converged = false;
         auto startTime = std::chrono::steady_clock::now();
         
-        // Store initial outputs for all elements in group
+        // Store initial outputs for combinational elements only
         QVector<QVector<bool>> previousOutputs;
-        for (const auto &element : feedbackGroup) {
+        for (const auto &element : combinationalElements) {
             previousOutputs.append(element->getAllOutputValues());
         }
         
         for (int iteration = 0; iteration < MAX_CONVERGENCE_ITERATIONS && !converged; ++iteration) {
-            // Update all elements in the feedback group
-            for (const auto &element : feedbackGroup) {
+            qDebug() << "CONVERGENCE DEBUG: Group" << groupIdx << "iteration" << iteration + 1 << "(combinational only)";
+            
+            // Update only combinational elements during convergence
+            for (const auto &element : combinationalElements) {
                 element->updateLogic();
             }
             
-            // Check if any outputs changed
+            // Check if any combinational outputs changed
             converged = true;
-            for (int i = 0; i < feedbackGroup.size(); ++i) {
-                if (feedbackGroup[i]->hasOutputChanged(previousOutputs[i])) {
+            for (int i = 0; i < combinationalElements.size(); ++i) {
+                if (combinationalElements[i]->hasOutputChanged(previousOutputs[i])) {
+                    qDebug() << "CONVERGENCE DEBUG: Combinational element" << i << "output changed";
                     // Update previous outputs for next iteration
-                    previousOutputs[i] = feedbackGroup[i]->getAllOutputValues();
+                    previousOutputs[i] = combinationalElements[i]->getAllOutputValues();
                     converged = false;
                 }
+            }
+            
+            if (converged) {
+                qDebug() << "CONVERGENCE DEBUG: Group" << groupIdx << "converged in" << iteration + 1 << "iterations";
             }
             
             // Timeout check to prevent hanging
             auto elapsed = std::chrono::steady_clock::now() - startTime;
             if (elapsed > std::chrono::milliseconds(CONVERGENCE_TIMEOUT_MS)) {
-                qCDebug(zero) << "Feedback convergence timeout after" << iteration + 1 << "iterations";
+                qDebug() << "CONVERGENCE DEBUG: Group" << groupIdx << "timeout after" << iteration + 1 << "iterations";
                 break;
             }
         }
         
         if (!converged) {
-            qCDebug(zero) << "Warning: Feedback circuit failed to converge in" << MAX_CONVERGENCE_ITERATIONS << "iterations";
+            qDebug() << "CONVERGENCE DEBUG: Group" << groupIdx << "FAILED to converge in" << MAX_CONVERGENCE_ITERATIONS << "iterations";
         } else {
-            qCDebug(three) << "Feedback circuit converged successfully";
+            qDebug() << "CONVERGENCE DEBUG: Group" << groupIdx << "converged successfully (combinational only)";
         }
     }
+}
+
+void Simulation::redetectFeedbackLoops()
+{
+    if (m_elmMapping) {
+        qDebug() << "CONVERGENCE DEBUG: Manually re-detecting feedback loops";
+        m_elmMapping->detectFeedbackLoops();
+    }
+}
+
+ElementMapping* Simulation::elementMapping() const
+{
+    return m_elmMapping.get();
 }

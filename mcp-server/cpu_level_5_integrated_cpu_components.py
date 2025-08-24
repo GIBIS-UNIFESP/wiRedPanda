@@ -189,30 +189,64 @@ class IntegratedCPUValidator:
     def step_simulation(self) -> bool:
         """Step simulation (single cycle)."""
         try:
+            import time
+            step_start = time.time()
+            logger.debug("step_simulation: ensuring bridge...")
             self._ensure_bridge()
             assert self.bridge is not None  # Type narrowing
+            
+            logger.debug("step_simulation: calling restart_simulation...")
+            bridge_start = time.time()
             self.bridge.restart_simulation()
+            bridge_time = time.time() - bridge_start
+            
+            step_total = time.time() - step_start
+            logger.debug(f"step_simulation completed in {step_total:.3f}s (bridge: {bridge_time:.3f}s)")
             return True
-        except WiredPandaError:
+        except WiredPandaError as e:
+            logger.error(f"step_simulation failed: {e}")
             return False
 
     def set_input(self, element_id: int, value: bool) -> bool:
         """Set input element value."""
         try:
+            import time
+            set_start = time.time()
+            logger.debug(f"set_input: ID={element_id}, value={value}")
             self._ensure_bridge()
             assert self.bridge is not None  # Type narrowing
+            
+            bridge_start = time.time()
             self.bridge.set_input_value(element_id, value)
+            bridge_time = time.time() - bridge_start
+            
+            set_total = time.time() - set_start
+            if set_total > 0.05:  # Log slow sets
+                logger.debug(f"set_input completed in {set_total:.3f}s (bridge: {bridge_time:.3f}s)")
             return True
-        except WiredPandaError:
+        except WiredPandaError as e:
+            logger.error(f"set_input failed for ID {element_id}: {e}")
             return False
 
     def get_output(self, element_id: int) -> Optional[bool]:
         """Get output element value."""
         try:
+            import time
+            get_start = time.time()
+            logger.debug(f"get_output: ID={element_id}")
             self._ensure_bridge()
             assert self.bridge is not None  # Type narrowing
-            return self.bridge.get_output_value(element_id)
-        except WiredPandaError:
+            
+            bridge_start = time.time()
+            result = self.bridge.get_output_value(element_id)
+            bridge_time = time.time() - bridge_start
+            
+            get_total = time.time() - get_start
+            if get_total > 0.05:  # Log slow gets
+                logger.debug(f"get_output completed in {get_total:.3f}s (bridge: {bridge_time:.3f}s) -> {result}")
+            return result
+        except WiredPandaError as e:
+            logger.error(f"get_output failed for ID {element_id}: {e}")
             return None
 
     def run_comprehensive_validation(self) -> Dict[str, Any]:
@@ -325,20 +359,25 @@ class IntegratedCPUValidator:
 
     def test_4bit_alu_complete(self) -> Dict[str, Any]:
         """Test complete 4-bit ALU with operation selection and flag generation"""
-        logger.info("Testing complete 4-bit ALU system...")
+        logger.info("HANG_DEBUG: Starting test_4bit_alu_complete method")
         
         try:
+            logger.info("HANG_DEBUG: About to create new circuit")
             # Create new circuit for this test
             if not self.create_new_circuit():
+                logger.info("HANG_DEBUG: create_new_circuit failed, returning error")
                 return {
                     'success': False,
                     'error': 'Failed to create new circuit',
                     'accuracy': 0.0
                 }
+            logger.info("HANG_DEBUG: Circuit created successfully")
             
+            logger.info("HANG_DEBUG: About to create ALU circuit")
             # Create comprehensive 4-bit ALU circuit using bridge API
             circuit_result = self._create_4bit_alu_circuit()
             if not circuit_result:
+                logger.info("HANG_DEBUG: ALU circuit creation failed, returning error")
                 return {
                     'success': False,
                     'error': 'Failed to create 4-bit ALU circuit',
@@ -346,14 +385,22 @@ class IntegratedCPUValidator:
                 }
             
             input_ids, output_ids = circuit_result
+            logger.info(f"HANG_DEBUG: ALU circuit created successfully: {len(input_ids)} inputs, {len(output_ids)} outputs")
             
+            logger.info("HANG_DEBUG: About to start simulation")
+            import time
+            sim_start_time = time.time()
             if not self.start_simulation():
+                logger.info("HANG_DEBUG: start_simulation failed, returning error")
                 return {
                     'success': False,
                     'error': 'Failed to start simulation',
                     'accuracy': 0.0
                 }
+            sim_start_elapsed = time.time() - sim_start_time
+            logger.info(f"HANG_DEBUG: Simulation started successfully in {sim_start_elapsed:.3f}s")
             
+            logger.info("HANG_DEBUG: About to define test cases")
             # Test comprehensive ALU operations
             test_cases = [
                 # Addition operations
@@ -369,11 +416,17 @@ class IntegratedCPUValidator:
                 {'A': 0b1100, 'B': 0b1010, 'OP': 0b11, 'expected_result': 0b1110, 'expected_flags': {'zero': False, 'carry': False, 'overflow': False}},  # OR
             ]
             
+            logger.info(f"HANG_DEBUG: Test cases defined, count: {len(test_cases)}")
             passed_cases = 0
             total_cases = len(test_cases)
             sample_results = []
+            logger.info(f"HANG_DEBUG: About to start test loop with {total_cases} cases")
             
             for i, case in enumerate(test_cases):
+                import time
+                case_start = time.time()
+                logger.info(f"Starting test case {i+1}/{total_cases}: A={case['A']:04b}, B={case['B']:04b}, OP={case['OP']:02b}")
+                
                 # Set ALU inputs - input_ids should contain all input element IDs in order
                 # [A3, A2, A1, A0, B3, B2, B1, B0, OP1, OP0]
                 input_values = [
@@ -389,30 +442,61 @@ class IntegratedCPUValidator:
                     bool(case['OP'] & 0b01)    # OP0
                 ]
                 
+                logger.info(f"Setting {len(input_values)} input values...")
+                input_start = time.time()
+                
                 # Set all input values
                 success = True
                 for j, value in enumerate(input_values):
+                    input_set_start = time.time()
                     if not self.set_input(input_ids[j], value):
                         success = False
+                        logger.error(f"Failed to set input {j} (ID: {input_ids[j]}) to {value}")
                         break
+                    input_set_time = time.time() - input_set_start
+                    if input_set_time > 0.1:  # Log slow inputs
+                        logger.warning(f"Input {j} took {input_set_time:.3f}s to set")
+                
+                input_total_time = time.time() - input_start
+                logger.info(f"All inputs set in {input_total_time:.3f}s")
                 
                 if not success:
+                    logger.error(f"Test case {i+1} failed during input setting")
                     continue
                 
                 # Step simulation to allow propagation
+                logger.info("Stepping simulation...")
+                sim_start = time.time()
                 self.step_simulation()
+                sim_time = time.time() - sim_start
+                logger.info(f"Simulation step completed in {sim_time:.3f}s")
                 
                 # Get ALU outputs - output_ids contains result bits and flag bits
                 # output_ids = [R3, R2, R1, R0, ZERO, CARRY, OVERFLOW]
+                logger.info("Reading result outputs...")
+                output_start = time.time()
+                
                 result_outputs = []
                 for j in range(4):  # First 4 are result bits
+                    output_read_start = time.time()
                     output_val = self.get_output(output_ids[j])
+                    output_read_time = time.time() - output_read_start
+                    if output_read_time > 0.1:  # Log slow outputs
+                        logger.warning(f"Output {j} took {output_read_time:.3f}s to read")
                     result_outputs.append(output_val if output_val is not None else False)
                 
+                logger.info("Reading flag outputs...")
                 flag_outputs = []
                 for j in range(4, 7):  # Next 3 are flags
+                    output_read_start = time.time()
                     flag_val = self.get_output(output_ids[j])
+                    output_read_time = time.time() - output_read_start
+                    if output_read_time > 0.1:  # Log slow flags
+                        logger.warning(f"Flag {j-4} took {output_read_time:.3f}s to read")
                     flag_outputs.append(flag_val if flag_val is not None else False)
+                
+                output_total_time = time.time() - output_start
+                logger.info(f"All outputs read in {output_total_time:.3f}s")
                 
                 # Extract result bits
                 actual_result = 0
@@ -443,11 +527,17 @@ class IntegratedCPUValidator:
                         'actual': {'result': actual_result, 'flags': actual_flags},
                         'correct': is_correct
                     })
+                
+                case_total_time = time.time() - case_start
+                logger.info(f"HANG_DEBUG: Test case {i+1} completed in {case_total_time:.3f}s - {'PASS' if is_correct else 'FAIL'}")
             
+            logger.info("HANG_DEBUG: Test loop completed, calculating results...")
             accuracy = (passed_cases / total_cases * 100) if total_cases > 0 else 0
             success = accuracy >= 90.0
+            logger.info(f"HANG_DEBUG: Results calculated - accuracy: {accuracy}%, success: {success}")
             
-            return {
+            logger.info("HANG_DEBUG: About to create return dictionary")
+            result_dict = {
                 'success': success,
                 'description': 'Complete 4-bit ALU with operation selection and flags',
                 'total_cases': total_cases,
@@ -457,9 +547,12 @@ class IntegratedCPUValidator:
                 'sample_results': sample_results,
                 'error': None if success else f"Accuracy {accuracy:.1f}% below 90% threshold"
             }
+            logger.info("HANG_DEBUG: Return dictionary created, about to return")
+            return result_dict
             
         except Exception as e:
-            logger.error(f"Error in 4-bit ALU test: {e}")
+            logger.error(f"HANG_DEBUG: Exception caught in test method: {e}")
+            logger.info("HANG_DEBUG: Creating exception return dictionary")
             return {
                 'success': False,
                 'error': f"4-bit ALU test failed: {str(e)}",
@@ -2094,6 +2187,10 @@ class IntegratedCPUValidator:
 
     def _create_4bit_alu_circuit(self) -> Optional[Tuple[List[int], List[int]]]:
         """Create complete 4-bit ALU circuit with operation selection and flags"""
+        import time
+        
+        start_time = time.time()
+        logger.info("Starting 4-bit ALU creation...")
         
         input_ids = []
         
@@ -2125,6 +2222,9 @@ class IntegratedCPUValidator:
         # Create ALU using real full adders for proper arithmetic operations
         # This demonstrates true integrated CPU component complexity
         
+        fa_start = time.time()
+        logger.info("Creating 4 full adders...")
+        
         # Create 4-bit adder chain using full adder helper method
         adder_sum_ids = []
         adder_carry_ids = []
@@ -2134,6 +2234,7 @@ class IntegratedCPUValidator:
             x = float(100 + i * 120)  # More space for full adder complexity
             y = float(350)
             
+            fa_individual_start = time.time()
             # Create full adder using helper method
             fa_result = self._create_full_adder(x, y, f"FA{i}")
             if not fa_result:
@@ -2144,6 +2245,12 @@ class IntegratedCPUValidator:
             adder_carry_ids.append(carry_id) 
             adder_internal_ids.append(internal_id)
             
+            fa_individual_time = time.time() - fa_individual_start
+            logger.info(f"Full adder {i} created in {fa_individual_time:.2f}s")
+            
+        fa_total_time = time.time() - fa_start
+        logger.info(f"All 4 full adders created in {fa_total_time:.2f}s")
+        
         # Create carry chain connections for multi-bit addition
         # Connect Cout[i] to Cin[i+1] for proper carry propagation
         for i in range(3):  # Connect carries between adjacent full adders
@@ -2193,7 +2300,12 @@ class IntegratedCPUValidator:
         output_ids.extend([zero_flag_id, carry_flag_id, overflow_flag_id])
         
         # Connect inputs to logic gates and full adders
+        conn_start = time.time()
+        logger.info("Starting ALU connections...")
+        
         for i in range(4):
+            bit_conn_start = time.time()
+            
             # Connect A and B inputs to full adder inputs
             # Note: Full adders have complex internal connections already handled by helper method
             # We need to connect to the first XOR gate of each full adder (the internal_id)
@@ -2225,6 +2337,15 @@ class IntegratedCPUValidator:
             # Connect multiplexers to output LEDs
             if not self.connect_elements(mux_ids[i], 0, output_ids[i], 0):
                 return None
+                
+            bit_conn_time = time.time() - bit_conn_start
+            logger.info(f"Bit {i} connections completed in {bit_conn_time:.2f}s")
+        
+        conn_total_time = time.time() - conn_start
+        logger.info(f"All ALU connections completed in {conn_total_time:.2f}s")
+        
+        total_time = time.time() - start_time
+        logger.info(f"Complete 4-bit ALU created in {total_time:.2f}s")
         
         return input_ids, output_ids
 
@@ -2236,34 +2357,48 @@ class IntegratedCPUValidator:
         """Create full adder using basic gates: A, B, Cin -> Sum, Cout
         Returns (sum_output_id, carry_output_id, internal_connection_point) or None
         """
+        import time
+        fa_start = time.time()
+        
         # Full Adder Logic: Sum = A ⊕ B ⊕ Cin, Cout = AB + Cin(A ⊕ B)
         
         # Create intermediate XOR for A ⊕ B
+        elem_start = time.time()
         xor1_id = self.create_element("Xor", x, y, f"{label}_XOR1")
         if not xor1_id:
             return None
+        logger.debug(f"XOR1 created in {time.time() - elem_start:.3f}s")
             
         # Create final XOR for Sum = (A ⊕ B) ⊕ Cin
+        elem_start = time.time()
         sum_id = self.create_element("Xor", x + 80, y, f"{label}_SUM")
         if not sum_id:
             return None
+        logger.debug(f"SUM XOR created in {time.time() - elem_start:.3f}s")
             
         # Create AND for AB
+        elem_start = time.time()
         and1_id = self.create_element("And", x, y + 60, f"{label}_AND1") 
         if not and1_id:
             return None
+        logger.debug(f"AND1 created in {time.time() - elem_start:.3f}s")
             
         # Create AND for Cin(A ⊕ B)
+        elem_start = time.time()
         and2_id = self.create_element("And", x + 80, y + 60, f"{label}_AND2")
         if not and2_id:
             return None
+        logger.debug(f"AND2 created in {time.time() - elem_start:.3f}s")
             
         # Create OR for Cout = AB + Cin(A ⊕ B)
+        elem_start = time.time()
         cout_id = self.create_element("Or", x + 40, y + 120, f"{label}_COUT")
         if not cout_id:
             return None
+        logger.debug(f"COUT OR created in {time.time() - elem_start:.3f}s")
             
         # Connect internal logic
+        conn_start = time.time()
         # XOR1 output connects to both SUM input and AND2 input
         if not self.connect_elements(xor1_id, 0, sum_id, 0):
             return None
@@ -2275,7 +2410,11 @@ class IntegratedCPUValidator:
             return None
         if not self.connect_elements(and2_id, 0, cout_id, 1):
             return None
+        logger.debug(f"FA internal connections completed in {time.time() - conn_start:.3f}s")
             
+        fa_time = time.time() - fa_start
+        logger.debug(f"Full adder {label} completed in {fa_time:.3f}s")
+        
         return (sum_id, cout_id, xor1_id)
     
     def _create_decoder_2to4(self, x: float, y: float, label: str) -> Optional[List[int]]:

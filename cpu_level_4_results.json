@@ -2,20 +2,20 @@
   "level": 4,
   "name": "Level 4: Advanced Sequential Logic Systems",
   "total_tests": 5,
-  "passed": 3,
-  "failed": 2,
-  "pass_rate": 60.0,
+  "passed": 2,
+  "failed": 3,
+  "pass_rate": 40.0,
   "results": [
     {
       "test": "state_machines",
-      "success": true,
+      "success": false,
       "results": {
         "2bit_counter": {
-          "success": true,
+          "success": false,
           "description": "2-bit counter state machine using convergence-enabled D flip-flops",
           "total_cases": 5,
-          "passed_cases": 3,
-          "failed_cases": 2,
+          "passed_cases": 2,
+          "failed_cases": 3,
           "results": [
             {
               "step": 0,
@@ -37,8 +37,8 @@
                 "Q0": 1
               },
               "actual": {
-                "Q1": true,
-                "Q0": true
+                "Q1": false,
+                "Q0": false
               },
               "correct": false,
               "description": "After 1 clock: 01"
@@ -50,10 +50,10 @@
                 "Q0": 0
               },
               "actual": {
-                "Q1": true,
+                "Q1": false,
                 "Q0": false
               },
-              "correct": true,
+              "correct": false,
               "description": "After 2 clocks: 10"
             },
             {
@@ -64,7 +64,7 @@
               },
               "actual": {
                 "Q1": false,
-                "Q0": true
+                "Q0": false
               },
               "correct": false,
               "description": "After 3 clocks: 11"
@@ -83,7 +83,7 @@
               "description": "After 4 clocks: 00 (wrap)"
             }
           ],
-          "accuracy": 60.0,
+          "accuracy": 40.0,
           "convergence_enabled": true
         },
         "moore_machine": {
@@ -229,8 +229,8 @@
           "success": false,
           "description": "Johnson Counter (3-bit ring counter with inverted feedback)",
           "total_cases": 7,
-          "passed_cases": 3,
-          "failed_cases": 4,
+          "passed_cases": 2,
+          "failed_cases": 5,
           "results": [
             {
               "step": 0,
@@ -255,9 +255,9 @@
                 "Q0": true
               },
               "actual": {
-                "Q2": true,
-                "Q1": true,
-                "Q0": true
+                "Q2": false,
+                "Q1": false,
+                "Q0": false
               },
               "correct": false,
               "description": "After 1 clock: 001"
@@ -285,11 +285,11 @@
                 "Q0": true
               },
               "actual": {
-                "Q2": true,
-                "Q1": true,
-                "Q0": true
+                "Q2": false,
+                "Q1": false,
+                "Q0": false
               },
-              "correct": true,
+              "correct": false,
               "description": "After 3 clocks: 111"
             },
             {
@@ -315,9 +315,9 @@
                 "Q0": false
               },
               "actual": {
-                "Q2": true,
-                "Q1": true,
-                "Q0": true
+                "Q2": false,
+                "Q1": false,
+                "Q0": false
               },
               "correct": false,
               "description": "After 5 clocks: 100"
@@ -338,7 +338,7 @@
               "description": "After 6 clocks: 000 (cycle)"
             }
           ],
-          "accuracy": 42.857142857142854,
+          "accuracy": 28.57142857142857,
           "convergence_enabled": true
         }
       },
@@ -346,14 +346,14 @@
     },
     {
       "test": "fifo_systems",
-      "success": false,
+      "success": true,
       "results": {
         "4stage_fifo": {
-          "success": false,
+          "success": true,
           "description": "4-stage FIFO buffer using shift register architecture",
           "total_cases": 6,
-          "passed_cases": 3,
-          "failed_cases": 3,
+          "passed_cases": 6,
+          "failed_cases": 0,
           "results": [
             {
               "step": 1,
@@ -391,12 +391,12 @@
                 false
               ],
               "actual_fifo": [
-                false,
-                false,
-                false,
-                false
+                true,
+                true,
+                true,
+                true
               ],
-              "correct": false,
+              "correct": true,
               "description": "Push 1 into FIFO"
             },
             {
@@ -413,12 +413,12 @@
                 false
               ],
               "actual_fifo": [
-                false,
-                false,
-                false,
-                false
+                true,
+                true,
+                true,
+                true
               ],
-              "correct": false,
+              "correct": true,
               "description": "Hold: FIFO contains [1,0,0,0]"
             },
             {
@@ -457,12 +457,12 @@
                 false
               ],
               "actual_fifo": [
-                false,
-                false,
-                false,
-                false
+                true,
+                true,
+                true,
+                true
               ],
-              "correct": false,
+              "correct": true,
               "description": "Push 1 into FIFO"
             },
             {
@@ -488,7 +488,7 @@
               "description": "Push 0 into FIFO - FIFO full [0,1,0,1]"
             }
           ],
-          "accuracy": 50.0,
+          "accuracy": 100.0,
           "convergence_enabled": true
         }
       },
@@ -496,14 +496,14 @@
     },
     {
       "test": "bcd_counter_systems",
-      "success": true,
+      "success": false,
       "results": {
         "4bit_bcd_counter": {
-          "success": true,
+          "success": false,
           "description": "4-bit BCD counter with decade reset logic",
           "total_cases": 8,
-          "passed_cases": 4,
-          "failed_cases": 4,
+          "passed_cases": 3,
+          "failed_cases": 5,
           "results": [
             {
               "step": 0,
@@ -534,8 +534,8 @@
               "actual": {
                 "Q3": false,
                 "Q2": false,
-                "Q1": true,
-                "Q0": true
+                "Q1": false,
+                "Q0": false
               },
               "decade_detected": false,
               "correct": false,
@@ -551,12 +551,12 @@
               },
               "actual": {
                 "Q3": false,
-                "Q2": true,
-                "Q1": true,
+                "Q2": false,
+                "Q1": false,
                 "Q0": false
               },
               "decade_detected": false,
-              "correct": true,
+              "correct": false,
               "description": "After 2 clocks: 0010 (2)"
             },
             {
@@ -569,9 +569,9 @@
               },
               "actual": {
                 "Q3": false,
-                "Q2": true,
+                "Q2": false,
                 "Q1": false,
-                "Q0": true
+                "Q0": false
               },
               "decade_detected": false,
               "correct": false,
@@ -587,7 +587,7 @@
               },
               "actual": {
                 "Q3": false,
-                "Q2": true,
+                "Q2": false,
                 "Q1": false,
                 "Q0": false
               },
@@ -605,9 +605,9 @@
               },
               "actual": {
                 "Q3": false,
-                "Q2": true,
-                "Q1": true,
-                "Q0": true
+                "Q2": false,
+                "Q1": false,
+                "Q0": false
               },
               "decade_detected": false,
               "correct": false,
@@ -622,12 +622,12 @@
                 "Q0": 1
               },
               "actual": {
-                "Q3": true,
+                "Q3": false,
                 "Q2": false,
-                "Q1": true,
+                "Q1": false,
                 "Q0": false
               },
-              "decade_detected": true,
+              "decade_detected": false,
               "correct": false,
               "description": "After 9 clocks: 1001 (9)"
             },
@@ -650,7 +650,7 @@
               "description": "After 10 clocks: 0000 (reset from 10)"
             }
           ],
-          "accuracy": 50.0,
+          "accuracy": 37.5,
           "convergence_enabled": true
         }
       },
