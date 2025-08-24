@@ -111,6 +111,32 @@ class AdvancedSequentialValidator:
         except Exception as e:
             print(f"Connection error: {source_id}:{source_port} -> {target_id}:{target_port}, exception: {e}")
             return False
+    
+    def trigger_circuit_update(self) -> bool:
+        """Trigger ElementMapping rebuild after batch connection operations"""
+        try:
+            result = self.bridge.trigger_circuit_update()
+            if isinstance(result, dict) and "error" not in result:
+                return True
+            else:
+                print(f"Circuit update trigger failed: {result}")
+                return False
+        except Exception as e:
+            print(f"Circuit update trigger error: {e}")
+            return False
+    
+    def connect_existing_elements(self) -> bool:
+        """Connect existing LogicElements without recreating them"""
+        try:
+            result = self.bridge.connect_existing_elements()
+            if isinstance(result, dict) and "error" not in result:
+                return True
+            else:
+                print(f"Connect existing elements failed: {result}")
+                return False
+        except Exception as e:
+            print(f"Connect existing elements error: {e}")
+            return False
 
     def set_input(self, element_id: int, value: bool) -> bool:
         """Set input element value"""

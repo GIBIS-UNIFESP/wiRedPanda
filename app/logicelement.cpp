@@ -3,6 +3,7 @@
 
 #include "logicelement.h"
 
+#include <QDebug>
 #include <QHash>
 #include <QStack>
 
@@ -11,6 +12,7 @@ LogicElement::LogicElement(const int inputSize, const int outputSize)
     , m_inputPairs(inputSize, {})
     , m_outputValues(outputSize, false)
 {
+    qDebug() << "LOGIC ELEMENT DEBUG: Creating LogicElement" << (void*)this << "with" << inputSize << "inputs," << outputSize << "outputs";
 }
 
 bool LogicElement::isValid() const
@@ -52,7 +54,13 @@ int LogicElement::priority() const
 
 void LogicElement::connectPredecessor(const int index, LogicElement *logic, const int port)
 {
+    qDebug() << "CONNECT PREDECESSOR DEBUG: Element" << (void*)this << "input" << index 
+             << "connecting to predecessor" << (void*)logic << "port" << port;
+    qDebug() << "CONNECT PREDECESSOR DEBUG: Before - Input" << index << "was" << (void*)m_inputPairs[index].logic << "port" << m_inputPairs[index].port;
+    
     m_inputPairs[index] = {logic, port};
+    
+    qDebug() << "CONNECT PREDECESSOR DEBUG: After - Input" << index << "now" << (void*)m_inputPairs[index].logic << "port" << m_inputPairs[index].port;
 
     if (!logic->m_successors.contains(this)) {
         logic->m_successors.push_back(this);
@@ -74,7 +82,13 @@ void LogicElement::validate()
     m_isValid = std::all_of(m_inputPairs.cbegin(), m_inputPairs.cend(),
                             [](auto pair) { return pair.logic != nullptr; });
 
+    // Debug validation failures
     if (!m_isValid) {
+        qDebug() << "LOGIC ELEMENT DEBUG: Element invalid - checking input pairs:";
+        for (int i = 0; i < m_inputPairs.size(); ++i) {
+            qDebug() << "  Input" << i << ":" << (void*)m_inputPairs[i].logic << "port" << m_inputPairs[i].port;
+        }
+        
         for (auto *logic : std::as_const(m_successors)) {
             logic->m_isValid = false;
         }

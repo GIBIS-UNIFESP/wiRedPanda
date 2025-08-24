@@ -30,20 +30,24 @@ public:
     
     // New method to access feedback groups
     const QVector<QVector<std::shared_ptr<LogicElement>>>& feedbackGroups() const;
+    
+    // Public method to re-detect feedback loops
+    void detectFeedbackLoops();
+    
+    // Public method to establish connections on existing LogicElements
+    void connectElements();
 
 private:
     Q_DISABLE_COPY(ElementMapping)
 
     void applyConnection(GraphicElement *elm, QNEInputPort *inputPort);
-    void connectElements();
     void generateLogic(GraphicElement *elm);
     void generateMap();
     void setDefaultValue(GraphicElement *elm, QNEPort *in);
     void sortLogicElements();
     void validateElements();
     
-    // New members for feedback circuit handling
-    void detectFeedbackLoops();
+    // Private members for feedback circuit handling
     void findCycles(LogicElement *current, QSet<LogicElement*> &visited,
                     QSet<LogicElement*> &recursionStack, QVector<LogicElement*> &currentPath);
     void markFeedbackCycle(const QVector<LogicElement*> &path, LogicElement *cycleStart);

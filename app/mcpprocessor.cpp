@@ -108,7 +108,8 @@ QJsonObject MCPProcessor::processCommand(const QJsonObject& command)
     // Ensure we have a valid scene for commands that need it
     QStringList sceneRequiredCommands = {
         "create_element", "delete_element", "connect_elements", "disconnect_elements",
-        "set_input_value", "get_output_value", "list_elements", "get_element_info", "export_image"
+        "set_input_value", "get_output_value", "list_elements", "get_element_info", "export_image",
+        "trigger_circuit_update", "connect_existing_elements"
     };
     
     if (sceneRequiredCommands.contains(commandType)) {
@@ -148,6 +149,10 @@ QJsonObject MCPProcessor::processCommand(const QJsonObject& command)
         return handleGetElementInfo(params);
     } else if (commandType == "export_image") {
         return handleExportImage(params);
+    } else if (commandType == "trigger_circuit_update") {
+        return handleTriggerCircuitUpdate(params);
+    } else if (commandType == "connect_existing_elements") {
+        return handleConnectExistingElements(params);
     } else {
         return createErrorResponse(QString("Unknown command: %1").arg(commandType));
     }
@@ -185,6 +190,8 @@ QJsonObject MCPProcessor::handleCreateElement(const QJsonObject& params)
     qDebug() << "Adding element to scene";
     // Add element to scene
     m_scene->addItem(element);
+    // NOTE: setCircuitUpdateRequired() deferred to avoid premature ElementMapping rebuilds
+    // This prevents LogicElement recreation during batch element creation
     
     QJsonObject result;
     result["element_id"] = static_cast<int>(element->id());
@@ -241,6 +248,7 @@ QJsonObject MCPProcessor::handleConnectElements(const QJsonObject& params)
     if (!connectElementPorts(source, sourcePort, target, targetPort)) {
         return createErrorResponse("Failed to connect elements");
     }
+    
     
     return createSuccessResponse();
 }
@@ -757,40 +765,103 @@ GraphicElement* MCPProcessor::createElementByType(const QString& type, const QPo
 
 bool MCPProcessor::connectElementPorts(GraphicElement* source, int sourcePort, GraphicElement* target, int targetPort)
 {
+    qDebug() << "MCP CONNECTION DEBUG: connectElementPorts called - source:" << (void*)source << "sourcePort:" << sourcePort 
+             << "target:" << (void*)target << "targetPort:" << targetPort;
+             
     if (!source || !target) {
+        qDebug() << "MCP CONNECTION DEBUG: NULL source or target";
         return false;
     }
+    
+    qDebug() << "MCP CONNECTION DEBUG: Source element:" << source->objectName() << "outputs:" << source->outputs().size();
+    qDebug() << "MCP CONNECTION DEBUG: Target element:" << target->objectName() << "inputs:" << target->inputs().size();
     
     // Get output port from source
     if (sourcePort >= source->outputs().size()) {
+        qDebug() << "MCP CONNECTION DEBUG: Invalid source port" << sourcePort << ">=" << source->outputs().size();
         return false;
     }
     auto* outputPort = dynamic_cast<QNEOutputPort*>(source->outputs().at(sourcePort));
+    qDebug() << "MCP CONNECTION DEBUG: Output port retrieved:" << (void*)outputPort;
     
     // Get input port from target
     if (targetPort >= target->inputs().size()) {
+        qDebug() << "MCP CONNECTION DEBUG: Invalid target port" << targetPort << ">=" << target->inputs().size();
         return false;
     }
     auto* inputPort = dynamic_cast<QNEInputPort*>(target->inputs().at(targetPort));
+    qDebug() << "MCP CONNECTION DEBUG: Input port retrieved:" << (void*)inputPort << "index:" << inputPort->index() << "name:" << inputPort->name();
     
     if (!outputPort || !inputPort) {
+        qDebug() << "MCP CONNECTION DEBUG: Port cast failed - outputPort:" << (void*)outputPort << "inputPort:" << (void*)inputPort;
         return false;
     }
     
     // Create connection
     try {
+        qDebug() << "MCP CONNECTION DEBUG: Creating QNEConnection between ports";
         auto* connection = new QNEConnection();
         connection->setStartPort(outputPort);
         connection->setEndPort(inputPort);
         
+        qDebug() << "MCP CONNECTION DEBUG: Connection created:" << (void*)connection << "start:" << (void*)connection->startPort() << "end:" << (void*)connection->endPort();
+        
         // Add connection to scene
         if (m_scene) {
             m_scene->addItem(connection);
+            // NOTE: setCircuitUpdateRequired() deferred to avoid premature ElementMapping rebuilds
+            // This prevents connection mapping issues during batch connection creation
+            qDebug() << "MCP CONNECTION DEBUG: Connection added to scene (circuit update deferred)";
+        } else {
+            qDebug() << "MCP CONNECTION DEBUG: No scene - connection not added";
         }
+        
+        // Verify connection is working
+        auto connections = inputPort->connections();
+        qDebug() << "MCP CONNECTION DEBUG: Input port now has" << connections.size() << "connections";
         
         return true;
     } catch (...) {
+        qDebug() << "MCP CONNECTION DEBUG: Exception during connection creation";
         return false;
+    }
+}
+
+void MCPProcessor::triggerCircuitUpdate()
+{
+    if (m_scene) {
+        qDebug() << "MCP DEBUG: Triggering manual circuit update to rebuild ElementMapping";
+        m_scene->setCircuitUpdateRequired();
+    }
+}
+
+QJsonObject MCPProcessor::handleTriggerCircuitUpdate(const QJsonObject& params)
+{
+    Q_UNUSED(params)
+    
+    triggerCircuitUpdate();
+    return createSuccessResponse();
+}
+
+QJsonObject MCPProcessor::handleConnectExistingElements(const QJsonObject& params)
+{
+    Q_UNUSED(params)
+    
+    if (m_scene && m_scene->simulation()) {
+        qDebug() << "MCP DEBUG: Connecting existing LogicElements without rebuild";
+        auto* simulation = m_scene->simulation();
+        auto* elementMapping = simulation->elementMapping();
+        
+        if (elementMapping) {
+            qDebug() << "MCP DEBUG: Calling connectElements() on existing ElementMapping";
+            elementMapping->connectElements();
+            elementMapping->detectFeedbackLoops();  // Re-detect cycles after connecting
+            return createSuccessResponse();
+        } else {
+            return createErrorResponse("No ElementMapping available");
+        }
+    } else {
+        return createErrorResponse("No active simulation available");
     }
 }
 

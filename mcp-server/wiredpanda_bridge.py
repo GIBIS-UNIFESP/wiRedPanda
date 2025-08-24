@@ -329,6 +329,18 @@ class WiredPandaBridge:
         )
         return response.result or {}
 
+    @beartype
+    def trigger_circuit_update(self) -> Dict[str, Any]:
+        """Trigger ElementMapping rebuild after batch connection operations."""
+        response = self._send_command("trigger_circuit_update", {})
+        return response.result or {}
+
+    @beartype
+    def connect_existing_elements(self) -> Dict[str, Any]:
+        """Connect existing LogicElements without recreating them."""
+        response = self._send_command("connect_existing_elements", {})
+        return response.result or {}
+
     # Simulation Control
     def start_simulation(self) -> Dict[str, Any]:
         """Start circuit simulation."""

@@ -29,6 +29,12 @@ public:
     void start();
     void stop();
     void update();
+    
+    // Method to re-detect feedback loops after connections change
+    void redetectFeedbackLoops();
+    
+    // Method to access ElementMapping for direct connection establishment
+    ElementMapping* elementMapping() const;
 
 private:
     Q_DISABLE_COPY(Simulation)

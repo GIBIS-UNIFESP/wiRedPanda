@@ -4,6 +4,7 @@
 #include "graphicelement.h"
 
 #include "common.h"
+#include <QDebug>
 #include "elementfactory.h"
 #include "globalproperties.h"
 #include "qneconnection.h"
@@ -488,6 +489,8 @@ void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, QMap<quint6
 
 void GraphicElement::setLogic(LogicElement *newLogic)
 {
+    qDebug() << "GRAPHIC ELEMENT DEBUG: Element" << (void*)this << "(" << objectName() << ") setting LogicElement from" 
+             << (void*)m_logic << "to" << (void*)newLogic;
     m_logic = newLogic;
 }
 

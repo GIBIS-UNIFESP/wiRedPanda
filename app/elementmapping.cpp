@@ -67,23 +67,41 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEInputPort *inputPor
     }
 
     const auto connections = inputPort->connections();
+    
+    // DEBUG: Trace connection mapping for all inputs
+    qDebug() << "CONNECTION MAPPING DEBUG: Processing input" << inputIndex << "of element" << (void*)elm << "(" << elm->objectName() << ")";
+    qDebug() << "CONNECTION MAPPING DEBUG: Input port index:" << inputPort->index() << "name:" << inputPort->name() << "connections:" << connections.size();
+    qDebug() << "CONNECTION MAPPING DEBUG: Port required:" << inputPort->isRequired() << "default:" << (int)inputPort->defaultValue();
 
     if ((connections.size() == 0) && !inputPort->isRequired()) {
         auto *predecessorLogic = (inputPort->defaultValue() == Status::Active) ? &m_globalVCC : &m_globalGND;
+        qDebug() << "CONNECTION MAPPING DEBUG: Connecting input" << inputIndex << "to" << (predecessorLogic == &m_globalVCC ? "VCC" : "GND");
         currentLogic->connectPredecessor(inputIndex, predecessorLogic, 0);
     }
 
     if (connections.size() == 1) {
+        qDebug() << "CONNECTION MAPPING DEBUG: Processing single connection for input" << inputIndex;
         if (auto *outputPort = connections.constFirst()->startPort()) {
+            qDebug() << "CONNECTION MAPPING DEBUG: Found start port:" << (void*)outputPort << "from element" << (void*)outputPort->graphicElement();
             if (auto *predecessorElement = outputPort->graphicElement()) {
                 if (predecessorElement->elementType() == ElementType::IC) {
                     auto *predecessorLogic = qobject_cast<IC *>(predecessorElement)->outputLogic(outputPort->index());
+                    qDebug() << "CONNECTION MAPPING DEBUG: Connecting IC input" << inputIndex << "to predecessor" << (void*)predecessorLogic << "port 0";
                     currentLogic->connectPredecessor(inputIndex, predecessorLogic, 0);
                 } else {
+                    qDebug() << "CONNECTION MAPPING DEBUG: Connecting regular input" << inputIndex << "to predecessor" << (void*)predecessorElement->logic() << "port" << outputPort->index();
                     currentLogic->connectPredecessor(inputIndex, predecessorElement->logic(), outputPort->index());
                 }
+            } else {
+                qDebug() << "CONNECTION MAPPING DEBUG: ERROR - No predecessor element for input" << inputIndex;
             }
+        } else {
+            qDebug() << "CONNECTION MAPPING DEBUG: ERROR - No start port for input" << inputIndex;
         }
+    } else if (connections.size() > 1) {
+        qDebug() << "CONNECTION MAPPING DEBUG: WARNING - Multiple connections on input" << inputIndex << "- count:" << connections.size();
+    } else {
+        qDebug() << "CONNECTION MAPPING DEBUG: No connections on input" << inputIndex;
     }
 }
 
@@ -114,8 +132,8 @@ void ElementMapping::validateElements()
 
 void ElementMapping::detectFeedbackLoops()
 {
-    qCDebug(zero) << "CONVERGENCE DEBUG: Detecting feedback loops...";
-    qCDebug(zero) << "CONVERGENCE DEBUG: Total logic elements:" << m_logicElms.size();
+    qDebug() << "CONVERGENCE DEBUG: Detecting feedback loops...";
+    qDebug() << "CONVERGENCE DEBUG: Total logic elements:" << m_logicElms.size();
     
     // Clear any existing feedback groups
     m_feedbackGroups.clear();
@@ -136,9 +154,9 @@ void ElementMapping::detectFeedbackLoops()
         }
     }
     
-    qCDebug(zero) << "CONVERGENCE DEBUG: Found" << m_feedbackGroups.size() << "feedback groups";
+    qDebug() << "CONVERGENCE DEBUG: Found" << m_feedbackGroups.size() << "feedback groups";
     for (int i = 0; i < m_feedbackGroups.size(); ++i) {
-        qCDebug(zero) << "CONVERGENCE DEBUG: Feedback group" << i << "has" << m_feedbackGroups[i].size() << "elements";
+        qDebug() << "CONVERGENCE DEBUG: Feedback group" << i << "has" << m_feedbackGroups[i].size() << "elements";
     }
 }
 
@@ -153,15 +171,20 @@ void ElementMapping::findCycles(LogicElement *current, QSet<LogicElement*> &visi
     for (auto &logic : m_logicElms) {
         // Check if 'logic' depends on 'current' 
         for (int i = 0; i < logic->inputCount(); ++i) {
-            if (logic->getInputSource(i) == current) {
+            auto *inputSource = logic->getInputSource(i);
+            if (inputSource == current) {
+                qDebug() << "CONVERGENCE DEBUG: Found dependency:" << (void*)current << "->" << (void*)logic.get() << "at input" << i;
                 if (recursionStack.contains(logic.get())) {
                     // Found cycle! Mark all elements in cycle as feedback dependent
-                    qCDebug(zero) << "CONVERGENCE DEBUG: CYCLE DETECTED!";
+                    qDebug() << "CONVERGENCE DEBUG: CYCLE DETECTED! Path size:" << currentPath.size();
                     markFeedbackCycle(currentPath, logic.get());
                 } else if (!visited.contains(logic.get())) {
                     findCycles(logic.get(), visited, recursionStack, currentPath);
                 }
                 break;
+            } else if (inputSource != nullptr) {
+                // Debug: Show what the input source actually is when it's not null
+                qDebug() << "CONVERGENCE DEBUG: Input" << i << "of" << (void*)logic.get() << "connected to" << (void*)inputSource << "(not" << (void*)current << ")";
             }
         }
     }
