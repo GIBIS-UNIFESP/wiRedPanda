@@ -1739,33 +1739,38 @@ class AdvancedSequentialValidator:
         
         toggle_logic.extend([q1_xor_gate, q1_and_gate])
         
-        # Connect Q1 toggle logic
+        # Connect Q1 toggle logic - Binary counter: Q1 toggles when Q0=1
+        # Logic: D1 = Q1 XOR (Q0 AND NOT decade_detect AND NOT reset)
         q1_output = bcd_ffs[1][1]
         if not self.connect_elements(q1_output, 0, q1_xor_gate, 0):
             return {"success": False, "error": "Failed to connect Q1 to XOR gate"}
-        if not self.connect_elements(q0_output, 0, q1_xor_gate, 1):
-            return {"success": False, "error": "Failed to connect Q0 to Q1 XOR gate"}
-        if not self.connect_elements(q1_xor_gate, 0, q1_and_gate, 0):
-            return {"success": False, "error": "Failed to connect Q1 XOR to AND gate"}
-        # Skip decade reset for simplified test - directly enable Q1 toggle
-        # Create constant True input for Q1 AND gate to enable toggling
-        true_input_x, true_input_y = self._get_grid_position(0, 19)
-        true_input = self.create_element("InputButton", true_input_x, true_input_y, "TRUE_ENABLE")
-        if true_input:
-            self.set_input(true_input, True)  # Set to True to enable Q1 toggling
-            if not self.connect_elements(true_input, 0, q1_and_gate, 1):
-                return {"success": False, "error": "Failed to connect TRUE enable to Q1 AND gate"}
-        if not self.connect_elements(q1_and_gate, 0, bcd_ffs[1][0], 0):  # Connect to Q1 D input
-            return {"success": False, "error": "Failed to connect Q1 toggle to D input"}
+        # Connect the AND of conditions (Q0 AND NOT decade_detect) to XOR with Q1
+        if not self.connect_elements(q0_output, 0, q1_and_gate, 0):
+            return {"success": False, "error": "Failed to connect Q0 to Q1 AND gate"}
+        if not self.connect_elements(decade_not_gate, 0, q1_and_gate, 1):  # Add decade reset
+            return {"success": False, "error": "Failed to connect decade NOT to Q1 AND gate"}
+        if not self.connect_elements(q1_and_gate, 0, q1_xor_gate, 1):
+            return {"success": False, "error": "Failed to connect Q1 condition AND to XOR gate"}
+        # Add reset override to Q1 logic: D1 = (Q1 XOR Q0) AND (NOT reset)
+        q1_reset_and_x, q1_reset_and_y = self._get_grid_position(0, 19)
+        q1_reset_and_gate = self.create_element("And", q1_reset_and_x, q1_reset_and_y, "Q1_RESET_AND")
+        toggle_logic.append(q1_reset_and_gate)
+        
+        if not self.connect_elements(q1_and_gate, 0, q1_reset_and_gate, 0):
+            return {"success": False, "error": "Failed to connect Q1 AND to reset AND gate"}
+        if not self.connect_elements(reset_not_gate, 0, q1_reset_and_gate, 1):  # Reuse reset NOT from Q0
+            return {"success": False, "error": "Failed to connect reset NOT to Q1 reset AND gate"}
+        if not self.connect_elements(q1_reset_and_gate, 0, bcd_ffs[1][0], 0):  # Connect to Q1 D input
+            return {"success": False, "error": "Failed to connect Q1 reset toggle to D input"}
 
         logger.info("✅ Q0 and Q1 toggle logic connected - continuing with Q2, Q3 and decade reset")
         
         # Continue with complete BCD logic - no more shortcuts
-        q2_and_x, q2_and_y = self._get_grid_position(0, 17)  
+        q2_and_x, q2_and_y = self._get_grid_position(0, 20)  
         q2_and_gate = self.create_element("And", q2_and_x, q2_and_y, "Q2_AND")
-        q2_xor_x, q2_xor_y = self._get_grid_position(0, 18)
+        q2_xor_x, q2_xor_y = self._get_grid_position(0, 21)
         q2_xor_gate = self.create_element("Xor", q2_xor_x, q2_xor_y, "Q2_XOR")  
-        q2_final_and_x, q2_final_and_y = self._get_grid_position(0, 19)
+        q2_final_and_x, q2_final_and_y = self._get_grid_position(0, 22)
         q2_final_and_gate = self.create_element("And", q2_final_and_x, q2_final_and_y, "Q2_FINAL_AND")
         
         toggle_logic.extend([q2_and_gate, q2_xor_gate, q2_final_and_gate])
@@ -1787,11 +1792,11 @@ class AdvancedSequentialValidator:
             return {"success": False, "error": "Failed to connect Q2 toggle to D input"}
 
         # Q3 toggle logic: D3 = (Q3 XOR (Q2 AND Q1 AND Q0)) AND (NOT decade_detect)
-        q3_and3_x, q3_and3_y = self._get_grid_position(0, 20)
+        q3_and3_x, q3_and3_y = self._get_grid_position(0, 23)
         q3_and3_gate = self.create_element("And", q3_and3_x, q3_and3_y, "Q3_AND3")
-        q3_xor_x, q3_xor_y = self._get_grid_position(0, 21)  
+        q3_xor_x, q3_xor_y = self._get_grid_position(0, 24)  
         q3_xor_gate = self.create_element("Xor", q3_xor_x, q3_xor_y, "Q3_XOR")
-        q3_final_and_x, q3_final_and_y = self._get_grid_position(0, 22)
+        q3_final_and_x, q3_final_and_y = self._get_grid_position(0, 25)
         q3_final_and_gate = self.create_element("And", q3_final_and_x, q3_final_and_y, "Q3_FINAL_AND")
         
         toggle_logic.extend([q3_and3_gate, q3_xor_gate, q3_final_and_gate])
