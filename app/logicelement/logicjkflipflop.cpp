@@ -24,13 +24,14 @@ void LogicJKFlipFlop::updateLogic()
     const bool prst = m_inputValues.at(3);
     const bool clr = m_inputValues.at(4);
 
+    // FIXED: Use CURRENT J and K values on rising edge (proper edge-triggered behavior)
     if (clk && !m_lastClk) {
-        if (m_lastJ && m_lastK) {
+        if (j && k) {
             std::swap(q0, q1);
-        } else if (m_lastJ) {
+        } else if (j) {
             q0 = true;
             q1 = false;
-        } else if (m_lastK) {
+        } else if (k) {
             q0 = false;
             q1 = true;
         }
@@ -42,8 +43,7 @@ void LogicJKFlipFlop::updateLogic()
     }
 
     m_lastClk = clk;
-    m_lastK = k;
-    m_lastJ = j;
+    // Note: m_lastJ and m_lastK no longer needed for edge-triggered behavior
 
     setOutputValue(0, q0);
     setOutputValue(1, q1);
