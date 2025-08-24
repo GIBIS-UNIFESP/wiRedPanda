@@ -160,11 +160,11 @@
       "success": false,
       "results": {
         "mealy_machine": {
-          "success": false,
+          "success": true,
           "description": "Mealy state machine - output depends on state AND input",
           "total_cases": 5,
-          "passed_cases": 2,
-          "failed_cases": 3,
+          "passed_cases": 5,
+          "failed_cases": 0,
           "results": [
             {
               "step": 1,
@@ -172,9 +172,9 @@
               "clock": false,
               "expected_state": false,
               "expected_output": false,
-              "actual_state": true,
-              "actual_output": true,
-              "correct": false,
+              "actual_state": false,
+              "actual_output": false,
+              "correct": true,
               "description": "Initial: Input=0, State=0 -> Output=0"
             },
             {
@@ -183,9 +183,9 @@
               "clock": false,
               "expected_state": false,
               "expected_output": true,
-              "actual_state": true,
-              "actual_output": false,
-              "correct": false,
+              "actual_state": false,
+              "actual_output": true,
+              "correct": true,
               "description": "Change Input=1, State still 0 -> Output=1 (immediate)"
             },
             {
@@ -194,9 +194,9 @@
               "clock": true,
               "expected_state": false,
               "expected_output": true,
-              "actual_state": true,
-              "actual_output": false,
-              "correct": false,
+              "actual_state": false,
+              "actual_output": true,
+              "correct": true,
               "description": "Clock pulse: Input=1 -> State=1, Output=0"
             },
             {
@@ -222,15 +222,15 @@
               "description": "Clock pulse: Input=0 -> State=0, Output=0"
             }
           ],
-          "accuracy": 40.0,
+          "accuracy": 100.0,
           "convergence_enabled": true
         },
         "johnson_counter": {
           "success": false,
           "description": "Johnson Counter (3-bit ring counter with inverted feedback)",
           "total_cases": 7,
-          "passed_cases": 2,
-          "failed_cases": 5,
+          "passed_cases": 3,
+          "failed_cases": 4,
           "results": [
             {
               "step": 0,
@@ -241,10 +241,10 @@
               },
               "actual": {
                 "Q2": false,
-                "Q1": true,
+                "Q1": false,
                 "Q0": false
               },
-              "correct": false,
+              "correct": true,
               "description": "Initial: 000"
             },
             {
@@ -255,11 +255,11 @@
                 "Q0": true
               },
               "actual": {
-                "Q2": false,
-                "Q1": false,
+                "Q2": true,
+                "Q1": true,
                 "Q0": true
               },
-              "correct": true,
+              "correct": false,
               "description": "After 1 clock: 001"
             },
             {
@@ -271,10 +271,10 @@
               },
               "actual": {
                 "Q2": false,
-                "Q1": true,
-                "Q0": true
+                "Q1": false,
+                "Q0": false
               },
-              "correct": true,
+              "correct": false,
               "description": "After 2 clocks: 011"
             },
             {
@@ -285,11 +285,11 @@
                 "Q0": true
               },
               "actual": {
-                "Q2": false,
-                "Q1": false,
+                "Q2": true,
+                "Q1": true,
                 "Q0": true
               },
-              "correct": false,
+              "correct": true,
               "description": "After 3 clocks: 111"
             },
             {
@@ -302,7 +302,7 @@
               "actual": {
                 "Q2": false,
                 "Q1": false,
-                "Q0": true
+                "Q0": false
               },
               "correct": false,
               "description": "After 4 clocks: 110"
@@ -315,8 +315,8 @@
                 "Q0": false
               },
               "actual": {
-                "Q2": false,
-                "Q1": false,
+                "Q2": true,
+                "Q1": true,
                 "Q0": true
               },
               "correct": false,
@@ -331,14 +331,14 @@
               },
               "actual": {
                 "Q2": false,
-                "Q1": true,
-                "Q0": true
+                "Q1": false,
+                "Q0": false
               },
-              "correct": false,
+              "correct": true,
               "description": "After 6 clocks: 000 (cycle)"
             }
           ],
-          "accuracy": 28.57142857142857,
+          "accuracy": 42.857142857142854,
           "convergence_enabled": true
         }
       },
