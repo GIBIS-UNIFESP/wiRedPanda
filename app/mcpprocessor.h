@@ -67,6 +67,8 @@ private:
     QJsonObject createErrorResponse(const QString& message) const;
     QJsonObject createSuccessResponse(const QJsonObject& result = QJsonObject()) const;
     bool validateParameters(const QJsonObject& params, const QStringList& required);
+    QString sanitizeFilePath(const QString& path) const;
+    bool safeIntFromJson(const QJsonObject& params, const QString& key, int& result) const;
     
     // Element creation helpers
     GraphicElement* createElementByType(const QString& type, const QPointF& position, const QString& label);
