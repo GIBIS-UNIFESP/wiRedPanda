@@ -286,7 +286,7 @@
               },
               "actual": {
                 "Q2": false,
-                "Q1": false,
+                "Q1": true,
                 "Q0": true
               },
               "correct": false,
@@ -316,7 +316,7 @@
               },
               "actual": {
                 "Q2": false,
-                "Q1": true,
+                "Q1": false,
                 "Q0": true
               },
               "correct": false,
@@ -502,8 +502,8 @@
           "success": false,
           "description": "4-bit BCD counter with decade reset logic",
           "total_cases": 8,
-          "passed_cases": 1,
-          "failed_cases": 7,
+          "passed_cases": 0,
+          "failed_cases": 8,
           "results": [
             {
               "step": 0,
@@ -514,12 +514,12 @@
                 "Q0": 0
               },
               "actual": {
-                "Q3": true,
-                "Q2": true,
+                "Q3": false,
+                "Q2": false,
                 "Q1": true,
-                "Q0": true
+                "Q0": false
               },
-              "decade_detected": true,
+              "decade_detected": false,
               "correct": false,
               "description": "Initial: 0000 (0)"
             },
@@ -533,7 +533,7 @@
               },
               "actual": {
                 "Q3": false,
-                "Q2": true,
+                "Q2": false,
                 "Q1": true,
                 "Q0": true
               },
@@ -552,8 +552,8 @@
               "actual": {
                 "Q3": false,
                 "Q2": true,
-                "Q1": true,
-                "Q0": true
+                "Q1": false,
+                "Q0": false
               },
               "decade_detected": false,
               "correct": false,
@@ -570,11 +570,11 @@
               "actual": {
                 "Q3": false,
                 "Q2": true,
-                "Q1": true,
+                "Q1": false,
                 "Q0": true
               },
               "decade_detected": false,
-              "correct": true,
+              "correct": false,
               "description": "After 3 clocks: 0011 (3)"
             },
             {
@@ -589,7 +589,7 @@
                 "Q3": false,
                 "Q2": true,
                 "Q1": true,
-                "Q0": true
+                "Q0": false
               },
               "decade_detected": false,
               "correct": false,
@@ -622,10 +622,10 @@
                 "Q0": 1
               },
               "actual": {
-                "Q3": false,
-                "Q2": true,
-                "Q1": true,
-                "Q0": true
+                "Q3": true,
+                "Q2": false,
+                "Q1": false,
+                "Q0": false
               },
               "decade_detected": false,
               "correct": false,
@@ -640,17 +640,17 @@
                 "Q0": 0
               },
               "actual": {
-                "Q3": false,
-                "Q2": true,
+                "Q3": true,
+                "Q2": false,
                 "Q1": true,
-                "Q0": true
+                "Q0": false
               },
-              "decade_detected": false,
+              "decade_detected": true,
               "correct": false,
               "description": "After 10 clocks: 0000 (reset from 10)"
             }
           ],
-          "accuracy": 12.5,
+          "accuracy": 0.0,
           "convergence_enabled": true
         }
       },
