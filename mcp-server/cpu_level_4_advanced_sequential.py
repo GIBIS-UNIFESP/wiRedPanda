@@ -1629,10 +1629,14 @@ class AdvancedSequentialValidator:
         reset_x, reset_y = self._get_input_position(1)
         reset_id = self.create_element("InputButton", reset_x, reset_y, "RESET")
 
-        # Create 4 D flip-flops using TRUE MASTER-SLAVE approach for edge-triggered behavior
+        # 🔧 CRITICAL CHANGE: Use proven Level 3 D flip-flop implementation instead of complex master-slave
+        # Level 3 achieved 100% accuracy on D flip-flops, so let's use that proven foundation
+        logger.info("🔧 USING PROVEN LEVEL 3 D FLIP-FLOP IMPLEMENTATION")
+        
+        # Create 4 D flip-flops using Level 3 proven approach
         bcd_ffs = []
         for i in range(4):
-            ff_components = self._create_master_slave_d_flip_flop(2 + i*6, 0, f"BCD_FF{i}", clk_id, reset_id)
+            ff_components = self._create_d_flip_flop(2 + i*6, 0, f"BCD_FF{i}", clk_id, reset_id)
             if not all(ff_components[:3]):
                 return {"success": False, "error": f"Failed to create BCD flip-flop {i}"}
             bcd_ffs.append(ff_components[:3])  # [D, Q, Q_NOT]
