@@ -189,7 +189,7 @@ class SequentialLogicValidator:
             return False
 
     def restart_simulation(self) -> bool:
-        """Restart simulation for proper propagation"""
+        """Restart simulation - ONLY use when circuit state should be reset"""
         try:
             result = self.bridge.restart_simulation()
             # Handle MCPResponse object or dict
@@ -204,24 +204,40 @@ class SequentialLogicValidator:
             print(f"Error restarting simulation: {e}")
             return False
 
+    def update_simulation(self) -> bool:
+        """Update simulation preserving circuit state - USE FOR SEQUENTIAL CIRCUITS"""
+        try:
+            result = self.bridge.update_simulation()
+            # Handle MCPResponse object or dict
+            if hasattr(result, '__dict__'):
+                # MCPResponse object - consider success if no error
+                return not hasattr(result, 'error') or result.error is None
+            elif isinstance(result, dict):
+                return result.get("status") == "success"
+            else:
+                return bool(result)
+        except Exception as e:
+            print(f"Error updating simulation: {e}")
+            return False
+
     def pulse_clock(self, clock_id: int, duration: float = 0.05) -> None:
-        """Generate a clock pulse (low-high-low) with improved timing"""
+        """Generate a clock pulse (low-high-low) preserving circuit state"""
         # Ensure simulation is running
         self.start_simulation()
 
         # Set clock low
         self.set_input(clock_id, False)
-        self.restart_simulation()
+        self.update_simulation()  # Preserve circuit state during clock transitions
         time.sleep(duration)
 
         # Set clock high (rising edge)
         self.set_input(clock_id, True)
-        self.restart_simulation()
+        self.update_simulation()  # Preserve circuit state during clock transitions
         time.sleep(duration)
 
         # Set clock low (falling edge)
         self.set_input(clock_id, False)
-        self.restart_simulation()
+        self.update_simulation()  # Preserve circuit state during clock transitions
         time.sleep(duration)
 
     # =============================================================================
@@ -263,48 +279,49 @@ class SequentialLogicValidator:
             if not d_ff_result["success"]:
                 results["success"] = False
 
+            # NEW: Test Convergence Validation - verify iterative convergence is working
+            print("  Testing Iterative Convergence Validation")
+            logger.info("Starting Convergence Validation test...")
+            convergence_result = self._test_convergence_validation()
+            results["results"]["convergence_validation"] = convergence_result
+            logger.info(f"Convergence Validation test result: {convergence_result['success']} ({convergence_result.get('accuracy', 0)}% accuracy)")
+            if not convergence_result["success"]:
+                results["success"] = False
+
         except Exception as e:
             logger.error(f"Exception in basic memory elements test: {e}")
             print(f"❌ Error in basic memory elements test: {e}")
             results["success"] = False
             results["error"] = str(e)
 
-        # Adjust success criteria based on WiredPanda cross-coupling limitations
-        # After extensive diagnostics, WiredPanda cannot properly handle cross-coupled memory elements
-        # Educational objectives can still be met with adapted expectations
+        # NEW: With iterative convergence implemented, cross-coupling limitations are RESOLVED
+        # All memory elements should work correctly with proper hold behavior
         
-        d_latch_perfect = results["results"].get("d_latch", {}).get("success", False)
-        sr_latch_reasonable = results["results"].get("sr_latch", {}).get("accuracy", 0) >= 60
-        d_ff_shows_concept = results["results"].get("d_flip_flop", {}).get("accuracy", 0) >= 25
+        sr_latch_success = results["results"].get("sr_latch", {}).get("success", False)
+        d_latch_success = results["results"].get("d_latch", {}).get("success", False)
+        d_ff_success = results["results"].get("d_flip_flop", {}).get("success", False)
         
-        logger.info(f"Memory element assessment:")
-        logger.info(f"  D Latch (foundation): {d_latch_perfect}")
-        logger.info(f"  SR Latch (reasonable accuracy): {sr_latch_reasonable}")
-        logger.info(f"  D Flip-Flop (demonstrates concept): {d_ff_shows_concept}")
+        logger.info(f"Memory element assessment with convergence solution:")
+        logger.info(f"  SR Latch: {sr_latch_success}")
+        logger.info(f"  D Latch: {d_latch_success}")
+        logger.info(f"  D Flip-Flop: {d_ff_success}")
         
-        # Success criteria adapted for WiredPanda limitations:
-        # 1. D Latch must work perfectly (it's the proven foundation)
-        # 2. At least one other memory element shows reasonable behavior
-        # 3. Overall system demonstrates sequential logic concepts despite simulation limitations
+        # Updated success criteria with convergence solution:
+        # All cross-coupled memory elements should work correctly now
+        convergence_success = sr_latch_success and d_latch_success
         
-        adjusted_success = d_latch_perfect and (sr_latch_reasonable or d_ff_shows_concept)
-        
-        if adjusted_success:
-            if not results["success"]:
-                logger.info("✅ Adjusting success to TRUE: Core sequential logic concepts demonstrated despite WiredPanda cross-coupling limitations")
-                results["success"] = True
-            
-            # Add limitation documentation
-            results["wiredpanda_limitations"] = {
-                "cross_coupling_issues": True,
-                "memory_state_stability": "Limited in complex circuits",
-                "educational_impact": "Concepts demonstrated, implementation constrained by simulator",
-                "workaround_applied": "Adjusted success criteria for educational objectives"
+        if convergence_success:
+            logger.info("✅ SUCCESS: Cross-coupled memory elements working correctly with iterative convergence!")
+            results["convergence_validation"] = {
+                "cross_coupling_resolved": True,
+                "memory_state_stability": "Excellent - hold behavior working correctly",
+                "educational_impact": "Full sequential logic functionality demonstrated",
+                "convergence_applied": "Iterative convergence successfully handles feedback circuits"
             }
         else:
-            logger.info("❌ Even with adjusted criteria, insufficient sequential logic functionality demonstrated")
+            logger.info("⚠️ Some memory elements still failing - convergence may need tuning")
 
-        results["description"] = "Sequential logic foundations with WiredPanda cross-coupling workarounds applied"
+        results["description"] = "Sequential logic foundations with iterative convergence solution"
         return results
 
     def _test_sr_latch(self) -> Dict[str, Any]:
@@ -388,11 +405,11 @@ class SequentialLogicValidator:
         results = []
         passed = 0
 
-        # Initialize to known state
+        # Initialize to known state - use restart to initialize, then preserve circuit memory
         logger.info("Initializing SR Latch to known state...")
         self.set_input(s_id, False)
         self.set_input(r_id, False)
-        self.bridge.restart_simulation()
+        self.bridge.restart_simulation()  # Initialize circuit - this starts simulation correctly
         time.sleep(0.1)
 
         expected_q = False  # Track expected state
@@ -404,7 +421,7 @@ class SequentialLogicValidator:
             
             self.set_input(s_id, s)
             self.set_input(r_id, r)
-            self.bridge.restart_simulation()
+            self.bridge.update_simulation()  # Preserve circuit state - critical for hold behavior
             time.sleep(0.1)
 
             actual_q = self.get_output(q_id)
@@ -471,13 +488,15 @@ class SequentialLogicValidator:
         self.save_circuit(individual_filename)
 
         return {
-            "success": passed >= 4,  # Most test cases should work
-            "description": "SR Latch using cross-coupled NOR gates",
+            "success": passed >= len(test_sequence),  # With convergence solution, ALL tests should pass including hold behavior
+            "description": "SR Latch using cross-coupled NOR gates (with iterative convergence)",
             "total_cases": len(test_sequence),
             "passed_cases": passed,
             "failed_cases": len(test_sequence) - passed,
             "results": results,
             "accuracy": (passed / len(test_sequence)) * 100,
+            "convergence_enabled": True,
+            "hold_behavior_expected": True,
         }
 
     def _test_d_latch(self) -> Dict[str, Any]:
@@ -572,10 +591,10 @@ class SequentialLogicValidator:
         results = []
         passed = 0
 
-        # Initialize to known state
+        # Initialize to known state - use restart to initialize, then preserve circuit memory
         self.set_input(d_id, False)
         self.set_input(enable_id, False)
-        self.bridge.restart_simulation()
+        self.bridge.restart_simulation()  # Initialize circuit - this starts simulation correctly
         time.sleep(0.1)
 
         expected_q = None  # Will track expected state
@@ -586,7 +605,7 @@ class SequentialLogicValidator:
             
             self.set_input(d_id, d)
             self.set_input(enable_id, en)
-            self.bridge.restart_simulation()
+            self.bridge.update_simulation()  # Preserve circuit state for hold behavior
             time.sleep(0.1)
 
             actual_q = self.get_output(q_id)
@@ -644,13 +663,15 @@ class SequentialLogicValidator:
         self.save_circuit(individual_filename)
 
         return {
-            "success": passed >= 5,  # Most tests should pass
-            "description": "D Latch - transparent when enabled",
+            "success": passed >= len(test_sequence),  # With convergence solution, ALL tests should pass
+            "description": "D Latch - transparent when enabled (with iterative convergence)",
             "total_cases": len(test_sequence),
             "passed_cases": passed,
             "failed_cases": len(test_sequence) - passed,
             "results": results,
             "accuracy": (passed / len(test_sequence)) * 100,
+            "convergence_enabled": True,
+            "hold_behavior_expected": True,
         }
 
     def _test_d_flip_flop(self) -> Dict[str, Any]:
@@ -770,11 +791,11 @@ class SequentialLogicValidator:
         results = []
         passed = 0
 
-        # Initialize to known state
+        # Initialize to known state - use restart to initialize correctly
         logger.info("Initializing master-slave D Flip-Flop...")
         self.set_input(d_id, False)
         self.set_input(clk_id, False)  # Start with clock low
-        self.bridge.restart_simulation()
+        self.bridge.restart_simulation()  # Initialize circuit correctly
         time.sleep(0.1)
 
         # Master-slave D Flip-Flop test sequence
@@ -796,7 +817,7 @@ class SequentialLogicValidator:
             logger.info(f"Step 1: Set D={d_value}, CLK=0 (slave transparent)")
             self.set_input(d_id, d_value)
             self.set_input(clk_id, False)
-            self.bridge.restart_simulation()
+            self.bridge.update_simulation()  # Preserve circuit state
             time.sleep(0.1)
             
             pre_q = self.get_output(q_id)
@@ -806,7 +827,7 @@ class SequentialLogicValidator:
             # Step 2: Set clock HIGH (master transparent, slave holds)
             logger.info(f"Step 2: Set CLK=1 (master transparent, loads D={d_value})")
             self.set_input(clk_id, True)
-            self.bridge.restart_simulation()
+            self.bridge.update_simulation()  # Preserve circuit state
             time.sleep(0.1)
             
             high_q = self.get_output(q_id)
@@ -816,7 +837,7 @@ class SequentialLogicValidator:
             # Step 3: Set clock LOW again (falling edge - master holds, slave loads from master)
             logger.info(f"Step 3: Set CLK=0 (falling edge - slave loads from master)")
             self.set_input(clk_id, False)
-            self.bridge.restart_simulation()
+            self.bridge.update_simulation()  # Preserve circuit state
             time.sleep(0.1)
 
             post_q = self.get_output(q_id)
@@ -878,14 +899,155 @@ class SequentialLogicValidator:
 
         return {
             "success": success,
-            "description": "D Flip-Flop using D Latch foundation (WiredPanda workaround)",
+            "description": "D Flip-Flop using D Latch foundation (with iterative convergence)",
             "total_cases": len(test_cases),
             "passed_cases": passed,
             "failed_cases": len(test_cases) - passed,
             "results": results,
             "accuracy": (passed / len(test_cases)) * 100,
             "basic_functionality": basic_functionality,
-            "note": "Uses D Latch foundation to avoid WiredPanda cross-coupling limitations",
+            "note": "Uses D Latch foundation enhanced by iterative convergence",
+        }
+
+    def _test_convergence_validation(self) -> Dict[str, Any]:
+        """NEW: Test to specifically validate iterative convergence behavior"""
+        logger.info("🔧 Starting Convergence Validation test...")
+        logger.info("This test validates that our iterative convergence solution resolves cross-coupling")
+        
+        # Create new circuit
+        if not self.create_new_circuit():
+            return {"success": False, "error": "Failed to create new circuit"}
+
+        # Create the exact same SR latch from our test_convergence_simple.py that passed
+        s_x, s_y = self._get_input_position(0)
+        s_id = self.create_element("InputButton", s_x, s_y, "S")
+        r_x, r_y = self._get_input_position(1)
+        r_id = self.create_element("InputButton", r_x, r_y, "R")
+        nor1_x, nor1_y = self._get_grid_position(1, 0)
+        nor1_id = self.create_element("Nor", nor1_x, nor1_y, "NOR1")
+        nor2_x, nor2_y = self._get_grid_position(1, 1)
+        nor2_id = self.create_element("Nor", nor2_x, nor2_y, "NOR2")
+        q_x, q_y = self._get_output_position(2, 0)
+        q_id = self.create_element("Led", q_x, q_y, "Q")
+        q_not_x, q_not_y = self._get_output_position(2, 1)
+        q_not_id = self.create_element("Led", q_not_x, q_not_y, "Q_NOT")
+
+        if not all([s_id, r_id, nor1_id, nor2_id, q_id, q_not_id]):
+            logger.error("Failed to create convergence validation elements")
+            return {"success": False, "error": "Failed to create convergence validation elements"}
+        
+        logger.info(f"✅ Created elements: S={s_id}, R={r_id}, NOR1={nor1_id}, NOR2={nor2_id}, Q={q_id}, Q_NOT={q_not_id}")
+
+        # Connect exactly like our successful test
+        connections = [
+            (r_id, 0, nor1_id, 0),      # R → NOR1
+            (s_id, 0, nor2_id, 0),      # S → NOR2  
+            (nor2_id, 0, nor1_id, 1),   # Cross-couple Q̄ → NOR1
+            (nor1_id, 0, nor2_id, 1),   # Cross-couple Q → NOR2
+            (nor1_id, 0, q_id, 0),      # Q output
+            (nor2_id, 0, q_not_id, 0),  # Q̄ output
+        ]
+
+        for source_id, source_port, target_id, target_port in connections:
+            if not self.connect_elements(source_id, source_port, target_id, target_port):
+                logger.error("Failed to connect convergence validation circuit")
+                return {"success": False, "error": "Failed to connect convergence validation circuit"}
+        
+        logger.info("✅ All convergence validation connections completed")
+
+        # Test the CRITICAL convergence scenario that was failing before
+        logger.info("Testing CRITICAL convergence scenario...")
+        
+        # Initialize simulation - use restart to initialize correctly
+        self.bridge.restart_simulation()
+
+        # Test 1: Reset (R=1, S=0)
+        logger.info("Test 1: Reset (R=1, S=0)")
+        self.set_input(s_id, False)
+        self.set_input(r_id, True)
+        self.bridge.update_simulation()  # Don't restart - preserve state!
+        
+        q1 = self.get_output(q_id)
+        q_not1 = self.get_output(q_not_id)
+        logger.info(f"Result: Q={q1}, Q_NOT={q_not1}")
+        test1_correct = (q1 == False and q_not1 == True)
+        logger.info(f"Test 1 correct: {test1_correct}")
+
+        # Test 2: Set (S=1, R=0)
+        logger.info("Test 2: Set (S=1, R=0)")
+        self.set_input(s_id, True)
+        self.set_input(r_id, False)
+        self.bridge.update_simulation()  # Don't restart - preserve state!
+        
+        q2 = self.get_output(q_id)
+        q_not2 = self.get_output(q_not_id)
+        logger.info(f"Result: Q={q2}, Q_NOT={q_not2}")
+        test2_correct = (q2 == True and q_not2 == False)
+        logger.info(f"Test 2 correct: {test2_correct}")
+
+        # Test 3: Hold (S=0, R=0) - THE CRITICAL CONVERGENCE TEST
+        logger.info("Test 3: Hold (S=0, R=0) - THE CRITICAL CONVERGENCE TEST")
+        self.set_input(s_id, False)
+        self.set_input(r_id, False)
+        self.bridge.update_simulation()  # Don't restart - preserve state!
+        
+        q3 = self.get_output(q_id)
+        q_not3 = self.get_output(q_not_id)
+        logger.info(f"Result: Q={q3}, Q_NOT={q_not3}")
+        logger.info(f"Expected: Q=True, Q_NOT=False (should maintain set state)")
+        
+        # This is the test that proves convergence is working
+        hold_correct = (q3 == True and q_not3 == False)
+        complementary = (q3 != q_not3)
+        
+        logger.info(f"Hold behavior works: {hold_correct}")
+        logger.info(f"Outputs complementary: {complementary}")
+        
+        convergence_proven = test1_correct and test2_correct and hold_correct and complementary
+        logger.info(f"CONVERGENCE PROVEN: {convergence_proven}")
+
+        # Save this critical test circuit
+        individual_filename = "level3_convergence_validation.panda"
+        self.save_circuit(individual_filename)
+
+        results = [
+            {
+                "test": "Reset",
+                "inputs": {"S": False, "R": True},
+                "expected": {"Q": False, "Q_NOT": True},
+                "actual": {"Q": q1, "Q_NOT": q_not1},
+                "correct": test1_correct,
+            },
+            {
+                "test": "Set",
+                "inputs": {"S": True, "R": False},
+                "expected": {"Q": True, "Q_NOT": False},
+                "actual": {"Q": q2, "Q_NOT": q_not2},
+                "correct": test2_correct,
+            },
+            {
+                "test": "Hold (CRITICAL)",
+                "inputs": {"S": False, "R": False},
+                "expected": {"Q": True, "Q_NOT": False},
+                "actual": {"Q": q3, "Q_NOT": q_not3},
+                "correct": hold_correct,
+                "note": "This test proves iterative convergence is working",
+            },
+        ]
+
+        passed = sum(1 for r in results if r["correct"])
+
+        return {
+            "success": convergence_proven,
+            "description": "Iterative Convergence Validation - SR Latch Hold Behavior",
+            "total_cases": len(results),
+            "passed_cases": passed,
+            "failed_cases": len(results) - passed,
+            "results": results,
+            "accuracy": (passed / len(results)) * 100,
+            "convergence_proven": convergence_proven,
+            "hold_behavior_working": hold_correct,
+            "note": "This test specifically validates that iterative convergence resolves cross-coupling limitations",
         }
 
     # =============================================================================
@@ -1019,12 +1181,12 @@ class SequentialLogicValidator:
         results = []
         passed = 0
 
-        # Initialize
+        # Initialize - use restart only for initial setup
         for i in range(4):
             self.set_input(data_inputs[i], False)
         self.set_input(enable_id, False)
         self.set_input(clk_id, False)
-        self.bridge.restart_simulation()
+        self.bridge.restart_simulation()  # Initial setup only
         time.sleep(0.1)
 
         for data_bits, enable, desc in test_cases:
@@ -1174,10 +1336,10 @@ class SequentialLogicValidator:
         test_results = []
 
         # Simulate counter behavior by testing clock pulse responses
-        # Initialize
+        # Initialize - use restart only for initial setup
         self.set_input(clk_id, False)
         self.set_input(reset_id, False)
-        self.bridge.restart_simulation()
+        self.bridge.restart_simulation()  # Initial setup only
         time.sleep(0.1)
 
         # Test sequence - simulate counting from 0 to 7
@@ -1361,10 +1523,10 @@ class SequentialLogicValidator:
         # and that basic simulation works
         results = []
 
-        # Initialize
+        # Initialize - use restart only for initial setup
         self.set_input(serial_in_id, False)
         self.set_input(clk_id, False)
-        self.bridge.restart_simulation()
+        self.bridge.restart_simulation()  # Initial setup only
         time.sleep(0.05)  # Shorter delay
 
         # Simple test - just try 2 basic operations

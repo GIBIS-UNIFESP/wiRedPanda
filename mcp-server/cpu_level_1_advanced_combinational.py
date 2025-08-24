@@ -20,18 +20,24 @@ Updated to use real wiRedPanda MCP integration.
 import itertools
 import json
 import sys
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union, cast, TypedDict
+from typing import Any, Callable, Dict, List, Optional, Tuple, TypedDict, cast
+
+from wiredpanda_bridge import WiredPandaBridge, WiredPandaError
+
 
 # Type definitions for better type safety
 class TestCase(TypedDict):
     """Test case result structure."""
+
     inputs: Dict[str, Any]
     expected: Dict[str, Any]
     actual: Dict[str, Any]
     correct: bool
 
+
 class TestResult(TypedDict):
     """Test result structure."""
+
     success: bool
     description: str
     total_cases: int
@@ -41,14 +47,12 @@ class TestResult(TypedDict):
     accuracy: float
     error: Optional[str]
 
+
 ElementID = int
 BitList = List[bool]
 InputIDs = List[ElementID]
 OutputIDs = List[ElementID]
 LogicFunction = Callable[..., bool]
-
-# Import the real wiRedPanda bridge
-from wiredpanda_bridge import WiredPandaBridge, WiredPandaError
 
 
 class AdvancedCombinationalValidator:
@@ -125,7 +129,11 @@ class AdvancedCombinationalValidator:
             return None
 
     def connect_elements(
-        self, source_id: ElementID, source_port: int, target_id: ElementID, target_port: int
+        self,
+        source_id: ElementID,
+        source_port: int,
+        target_id: ElementID,
+        target_port: int,
     ) -> bool:
         """Connect two elements."""
         try:
@@ -286,7 +294,7 @@ class AdvancedCombinationalValidator:
                     }
                     all_tests_passed = False
                     continue
-                    
+
                 # Type assertion after validation
                 assert gate_id is not None
 
@@ -301,7 +309,9 @@ class AdvancedCombinationalValidator:
                         break
 
                 # Connect gate to output
-                if not self.connect_elements(cast(int, gate_id), 0, cast(int, output_id), 0):
+                if not self.connect_elements(
+                    cast(int, gate_id), 0, cast(int, output_id), 0
+                ):
                     test_results[gate_name] = {
                         "success": False,
                         "error": "Output connection failed",
@@ -319,12 +329,14 @@ class AdvancedCombinationalValidator:
 
             # Test all input combinations (limit for 4+ inputs due to exponential growth)
             test_cases = gate_config["test_cases"]
-            assert hasattr(test_cases, '__len__') and hasattr(test_cases, '__iter__')
+            assert hasattr(test_cases, "__len__") and hasattr(test_cases, "__iter__")
             if (
                 len(test_cases) > 32
             ):  # Limit to reasonable number for large truth tables
                 # Sample representative cases including all corners
-                test_cases = self._select_representative_cases(cast(List[Tuple[Any, ...]], test_cases))
+                test_cases = self._select_representative_cases(
+                    cast(List[Tuple[Any, ...]], test_cases)
+                )
 
             gate_passed = True
             case_results = []
@@ -540,8 +552,8 @@ class AdvancedCombinationalValidator:
                 continue
 
             # Generate test cases for all input combinations
-            inputs_list = func_config["inputs"] 
-            assert hasattr(inputs_list, '__len__')
+            inputs_list = func_config["inputs"]
+            assert hasattr(inputs_list, "__len__")
             num_inputs = len(inputs_list)
             test_cases = list(itertools.product([False, True], repeat=num_inputs))
 
@@ -573,7 +585,9 @@ class AdvancedCombinationalValidator:
 
                 case_results.append(
                     {
-                        "inputs": dict(zip(cast(List[str], func_config["inputs"]), test_case)),
+                        "inputs": dict(
+                            zip(cast(List[str], func_config["inputs"]), test_case)
+                        ),
                         "expected": expected_output,
                         "actual": actual_output,
                         "correct": case_correct,
@@ -660,7 +674,7 @@ class AdvancedCombinationalValidator:
 
         if not all([and1_id, and2_id, or_id, not_id, output_id]):
             return None
-            
+
         # Type assertions after validation
         assert all(x is not None for x in [and1_id, and2_id, or_id, not_id, output_id])
 
@@ -706,7 +720,7 @@ class AdvancedCombinationalValidator:
 
         if not all([or1_id, or2_id, and_id, not_id, output_id]):
             return None
-            
+
         # Type assertions after validation
         assert all(x is not None for x in [or1_id, or2_id, and_id, not_id, output_id])
 
@@ -753,9 +767,12 @@ class AdvancedCombinationalValidator:
 
         if not all([and1_id, and2_id, and3_id, or1_id, or2_id, output_id]):
             return None
-            
+
         # Type assertions after validation
-        assert all(x is not None for x in [and1_id, and2_id, and3_id, or1_id, or2_id, output_id])
+        assert all(
+            x is not None
+            for x in [and1_id, and2_id, and3_id, or1_id, or2_id, output_id]
+        )
 
         # Connect circuit
         connections = [
@@ -801,7 +818,7 @@ class AdvancedCombinationalValidator:
 
         if not all([xor1_id, xor2_id, xor3_id, output_id]):
             return None
-            
+
         # Type assertions after validation
         assert all(x is not None for x in [xor1_id, xor2_id, xor3_id, output_id])
 
@@ -1018,7 +1035,9 @@ class AdvancedCombinationalValidator:
 
         return input_id, [output_id]
 
-    def _create_fan_out_circuit(self, fan_out: int) -> Optional[Tuple[ElementID, OutputIDs]]:
+    def _create_fan_out_circuit(
+        self, fan_out: int
+    ) -> Optional[Tuple[ElementID, OutputIDs]]:
         """Create circuit testing fan-out capabilities."""
         input_x, input_y = self._get_input_position(0)
         input_id = self.create_element("InputButton", input_x, input_y, "IN")
@@ -1033,7 +1052,7 @@ class AdvancedCombinationalValidator:
 
         if not all([not1_id, not2_id]):
             return None
-            
+
         # Type assertions after validation
         assert not1_id is not None and not2_id is not None
 
@@ -1083,7 +1102,7 @@ class AdvancedCombinationalValidator:
 
             if not all([supply_id, and_id]):
                 return None
-                
+
             # Type assertions after validation
             assert supply_id is not None and and_id is not None
 
@@ -1184,7 +1203,7 @@ class AdvancedCombinationalValidator:
 
             # Generate test cases
             inputs_list = network_config["inputs"]
-            assert hasattr(inputs_list, '__len__')
+            assert hasattr(inputs_list, "__len__")
             num_inputs = len(inputs_list)
             test_cases = list(itertools.product([False, True], repeat=num_inputs))
 
@@ -1225,7 +1244,9 @@ class AdvancedCombinationalValidator:
 
                 case_results.append(
                     {
-                        "inputs": dict(zip(cast(List[str], network_config["inputs"]), test_case)),
+                        "inputs": dict(
+                            zip(cast(List[str], network_config["inputs"]), test_case)
+                        ),
                         "expected": expected_outputs,
                         "actual": actual_outputs,
                         "correct": case_correct,
@@ -1295,7 +1316,7 @@ class AdvancedCombinationalValidator:
 
         if not all([a_id, b_id, en_id]):
             return None
-            
+
         # Type assertions after validation
         assert all(x is not None for x in [a_id, b_id, en_id])
 
@@ -1307,7 +1328,7 @@ class AdvancedCombinationalValidator:
 
         if not all([not_a_id, not_b_id]):
             return None
-            
+
         # Type assertions after validation
         assert not_a_id is not None and not_b_id is not None
 
@@ -1351,7 +1372,7 @@ class AdvancedCombinationalValidator:
         ]
         if not all(gates):
             return None
-            
+
         # Type assertions after validation
         assert all(gate_id is not None for gate_id in gates)
 
@@ -1398,7 +1419,7 @@ class AdvancedCombinationalValidator:
         output_ids = [out0_id, out1_id, out2_id, out3_id]
         if not all(output_ids):
             return None
-            
+
         # Type assertions after validation
         assert all(out_id is not None for out_id in output_ids)
 
@@ -1416,7 +1437,9 @@ class AdvancedCombinationalValidator:
             ):
                 return None
 
-        return [cast(int, a_id), cast(int, b_id), cast(int, en_id)], [cast(int, out_id) for out_id in output_ids]
+        return [cast(int, a_id), cast(int, b_id), cast(int, en_id)], [
+            cast(int, out_id) for out_id in output_ids
+        ]
 
     def _create_4to1_mux_circuit(self) -> Optional[Tuple[InputIDs, OutputIDs]]:
         """Create 4-to-1 multiplexer circuit."""
@@ -1439,7 +1462,7 @@ class AdvancedCombinationalValidator:
         input_ids = [d0_id, d1_id, d2_id, d3_id, s0_id, s1_id]
         if not all(input_ids):
             return None
-            
+
         # Type assertions after validation
         assert all(x is not None for x in input_ids)
         assert all(x is not None for x in [d0_id, d1_id, d2_id, d3_id, s0_id, s1_id])
@@ -1452,7 +1475,7 @@ class AdvancedCombinationalValidator:
 
         if not all([not_s0_id, not_s1_id]):
             return None
-            
+
         # Type assertions after validation
         assert not_s0_id is not None and not_s1_id is not None
 
@@ -1498,7 +1521,7 @@ class AdvancedCombinationalValidator:
         ]
         if not all(and_gates):
             return None
-            
+
         # Type assertions after validation
         assert all(gate_id is not None for gate_id in and_gates)
 
@@ -1574,14 +1597,18 @@ class AdvancedCombinationalValidator:
         output_id = self.create_element("Led", output_x, output_y, "OUT")
         if not output_id:
             return None
-            
+
         # Type assertion after validation
         assert output_id is not None
 
-        if not self.connect_elements(cast(int, or_final_id), 0, cast(int, output_id), 0):
+        if not self.connect_elements(
+            cast(int, or_final_id), 0, cast(int, output_id), 0
+        ):
             return None
 
-        return [cast(int, x) for x in input_ids if x is not None], [cast(int, output_id)]
+        return [cast(int, x) for x in input_ids if x is not None], [
+            cast(int, output_id)
+        ]
 
     def _create_full_adder_circuit(self) -> Optional[Tuple[InputIDs, OutputIDs]]:
         """Create full adder circuit."""
@@ -1617,7 +1644,7 @@ class AdvancedCombinationalValidator:
         gates = [xor1_id, xor2_id, and1_id, and2_id, or_id]
         if not all(gates):
             return None
-            
+
         # Type assertions after validation
         assert all(gate_id is not None for gate_id in gates)
         assert all(x is not None for x in [a_id, b_id, cin_id])
@@ -1655,7 +1682,7 @@ class AdvancedCombinationalValidator:
 
         if not all([sum_out_id, carry_out_id]):
             return None
-            
+
         # Type assertions after validation
         assert all(x is not None for x in [sum_out_id, carry_out_id])
 
@@ -1665,7 +1692,10 @@ class AdvancedCombinationalValidator:
         if not self.connect_elements(cast(int, or_id), 0, cast(int, carry_out_id), 0):
             return None
 
-        return [cast(int, a_id), cast(int, b_id), cast(int, cin_id)], [cast(int, sum_out_id), cast(int, carry_out_id)]
+        return [cast(int, a_id), cast(int, b_id), cast(int, cin_id)], [
+            cast(int, sum_out_id),
+            cast(int, carry_out_id),
+        ]
 
     def cleanup(self) -> None:
         """Clean up resources"""
