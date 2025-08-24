@@ -90,6 +90,7 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEInputPort *inputPor
 void ElementMapping::sort()
 {
     sortLogicElements();
+    detectFeedbackLoops();  // Add feedback loop detection
     validateElements();
 }
 
@@ -109,6 +110,115 @@ void ElementMapping::validateElements()
     for (auto &logic : std::as_const(m_logicElms)) {
         logic->validate();
     }
+}
+
+void ElementMapping::detectFeedbackLoops()
+{
+    qCDebug(zero) << "CONVERGENCE DEBUG: Detecting feedback loops...";
+    qCDebug(zero) << "CONVERGENCE DEBUG: Total logic elements:" << m_logicElms.size();
+    
+    // Clear any existing feedback groups
+    m_feedbackGroups.clear();
+    
+    // Mark all elements initially as combinational
+    for (auto &logic : m_logicElms) {
+        logic->setFeedbackDependent(false);
+    }
+    
+    // Detect cycles using DFS
+    QSet<LogicElement*> visited;
+    QSet<LogicElement*> recursionStack;
+    QVector<LogicElement*> currentPath;
+    
+    for (auto &logic : m_logicElms) {
+        if (!visited.contains(logic.get())) {
+            findCycles(logic.get(), visited, recursionStack, currentPath);
+        }
+    }
+    
+    qCDebug(zero) << "CONVERGENCE DEBUG: Found" << m_feedbackGroups.size() << "feedback groups";
+    for (int i = 0; i < m_feedbackGroups.size(); ++i) {
+        qCDebug(zero) << "CONVERGENCE DEBUG: Feedback group" << i << "has" << m_feedbackGroups[i].size() << "elements";
+    }
+}
+
+void ElementMapping::findCycles(LogicElement *current, QSet<LogicElement*> &visited,
+                                QSet<LogicElement*> &recursionStack, QVector<LogicElement*> &currentPath)
+{
+    visited.insert(current);
+    recursionStack.insert(current);
+    currentPath.append(current);
+    
+    // Check all successors (elements that depend on this element)
+    for (auto &logic : m_logicElms) {
+        // Check if 'logic' depends on 'current' 
+        for (int i = 0; i < logic->inputCount(); ++i) {
+            if (logic->getInputSource(i) == current) {
+                if (recursionStack.contains(logic.get())) {
+                    // Found cycle! Mark all elements in cycle as feedback dependent
+                    qCDebug(zero) << "CONVERGENCE DEBUG: CYCLE DETECTED!";
+                    markFeedbackCycle(currentPath, logic.get());
+                } else if (!visited.contains(logic.get())) {
+                    findCycles(logic.get(), visited, recursionStack, currentPath);
+                }
+                break;
+            }
+        }
+    }
+    
+    recursionStack.remove(current);
+    currentPath.removeLast();
+}
+
+void ElementMapping::markFeedbackCycle(const QVector<LogicElement*> &path, LogicElement *cycleStart)
+{
+    // Find the start of the cycle in the current path
+    int cycleStartIndex = path.indexOf(cycleStart);
+    if (cycleStartIndex == -1) return;
+    
+    // Create a feedback group for this cycle
+    QVector<std::shared_ptr<LogicElement>> feedbackGroup;
+    
+    // Add all elements in the cycle to the feedback group
+    for (int i = cycleStartIndex; i < path.size(); ++i) {
+        path[i]->setFeedbackDependent(true);
+        
+        // Find the shared_ptr for this element
+        for (auto &logic : m_logicElms) {
+            if (logic.get() == path[i]) {
+                feedbackGroup.append(logic);
+                break;
+            }
+        }
+    }
+    
+    // Also add the cycle start element (completes the cycle)
+    cycleStart->setFeedbackDependent(true);
+    bool cycleStartAlreadyAdded = false;
+    for (const auto &element : feedbackGroup) {
+        if (element.get() == cycleStart) {
+            cycleStartAlreadyAdded = true;
+            break;
+        }
+    }
+    
+    if (!cycleStartAlreadyAdded) {
+        for (auto &logic : m_logicElms) {
+            if (logic.get() == cycleStart) {
+                feedbackGroup.append(logic);
+                break;
+            }
+        }
+    }
+    
+    if (!feedbackGroup.isEmpty()) {
+        m_feedbackGroups.append(feedbackGroup);
+    }
+}
+
+const QVector<QVector<std::shared_ptr<LogicElement>>>& ElementMapping::feedbackGroups() const
+{
+    return m_feedbackGroups;
 }
 
 const QVector<std::shared_ptr<LogicElement>> &ElementMapping::logicElms() const
