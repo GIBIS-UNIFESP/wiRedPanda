@@ -1,9 +1,14 @@
 {
     "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
     "name": "wiRedPanda Development Environment",
-    "dockerFile": "Dockerfile",
-    "context": "..",
-    
+
+    // Use this image if it exists, otherwise build it
+    "image": "wiredpanda-dev:latest",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+
     // Configure tool-specific properties
     "customizations": {
         "vscode": {
