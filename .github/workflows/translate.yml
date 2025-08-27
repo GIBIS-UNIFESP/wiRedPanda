@@ -65,11 +65,6 @@ jobs:
           cmake --build build_translations --target lrelease
           cmake --build build_translations --target generate_translations_qrc
 
-      - name: Generate translations.qrc
-        run: |
-          cd app/resources/translations
-          python3 compile_all_translations.py --qrc-only
-
       - name: Create PR for translation updates
         run: |
           git config user.name "Translation Bot"
@@ -169,10 +164,6 @@ jobs:
           cmake --build build_translations --target lrelease
           cmake --build build_translations --target generate_translations_qrc
 
-      - name: Generate translations.qrc
-        run: |
-          cd app/resources/translations
-          python3 compile_all_translations.py --qrc-only
 
       - name: Check translation completeness
         run: |
@@ -284,10 +275,6 @@ jobs:
           cmake --build build_translations --target lrelease
           cmake --build build_translations --target generate_translations_qrc
 
-      - name: Generate translations.qrc
-        run: |
-          cd app/resources/translations
-          python3 compile_all_translations.py --qrc-only
 
       - name: Commit compiled files
         run: |
