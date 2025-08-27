@@ -209,11 +209,48 @@ if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
     add_custom_target(compile_translations ALL DEPENDS ${QM_FILES})
 endif()
 
-# Custom target to regenerate translations.qrc
+# CMake script to generate translations.qrc natively
+set(QRC_GENERATOR_SCRIPT "${CMAKE_BINARY_DIR}/generate_translations_qrc.cmake")
+
+# Write the QRC generator script
+file(WRITE ${QRC_GENERATOR_SCRIPT} "
+# CMake script to generate translations.qrc
+set(QRC_FILE \"${CMAKE_SOURCE_DIR}/app/resources/translations/translations.qrc\")
+
+# Get list of .qm files in translations directory  
+file(GLOB QM_FILES \"${CMAKE_SOURCE_DIR}/app/resources/translations/*.qm\")
+
+# Sort the files for consistent output
+list(SORT QM_FILES)
+
+# Start QRC content
+set(QRC_CONTENT \"<RCC>\\n    <qresource prefix=\\\"/translations\\\">\\n\")
+
+# Add each .qm file
+foreach(qm_file \${QM_FILES})
+    get_filename_component(qm_name \${qm_file} NAME)
+    string(APPEND QRC_CONTENT \"        <file>\${qm_name}</file>\\n\")
+endforeach()
+
+# End QRC content
+string(APPEND QRC_CONTENT \"    </qresource>\\n</RCC>\\n\")
+
+# Write the QRC file
+file(WRITE \${QRC_FILE} \${QRC_CONTENT})
+
+# Report generation
+list(LENGTH QM_FILES QM_COUNT)
+message(STATUS \"Generated translations.qrc with \${QM_COUNT} files\")
+foreach(qm_file \${QM_FILES})
+    get_filename_component(qm_name \${qm_file} NAME)
+    message(STATUS \"  - \${qm_name}\")
+endforeach()
+")
+
+# Custom target to regenerate translations.qrc using native CMake
 add_custom_target(generate_translations_qrc
-    COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_SOURCE_DIR}/app/resources/translations
-            python3 compile_all_translations.py --qrc-only
-    COMMENT "Regenerating translations.qrc"
+    COMMAND ${CMAKE_COMMAND} -P ${QRC_GENERATOR_SCRIPT}
+    COMMENT "Generating translations.qrc with CMake"
     DEPENDS lrelease
 )
 
