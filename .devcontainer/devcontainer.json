@@ -26,9 +26,14 @@
             
             // Add the IDs of extensions you want installed when the container is created
             "extensions": [
-                "ms-vscode.cpptools-extension-pack",
+                "Anthropic.claude-code",
+                "astro-build.astro-vscode",
+                "bierner.markdown-mermaid",
+                "eamodio.gitlens",
+                "github.vscode-github-actions",
+                "ms-python.python-extension-pack",
                 "ms-vscode.cmake-tools",
-                "Anthropic.claude-code"
+                "ms-vscode.cpptools-extension-pack"
             ]
         }
     },
