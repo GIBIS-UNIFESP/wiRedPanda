@@ -11,7 +11,7 @@
             "detail": "Configure CMake for debug build"
         },
         {
-            "label": "Configure Release", 
+            "label": "Configure Release",
             "type": "shell",
             "command": "cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
             "group": "build",

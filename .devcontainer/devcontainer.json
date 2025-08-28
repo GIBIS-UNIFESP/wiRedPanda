@@ -23,7 +23,7 @@
                 "C_Cpp.default.cStandard": "c17",
                 "C_Cpp.default.cppStandard": "c++20"
             },
-            
+
             // Add the IDs of extensions you want installed when the container is created
             "extensions": [
                 "Anthropic.claude-code",
@@ -40,7 +40,7 @@
 
     // Configure container user
     "remoteUser": "developer",
-    
+
     // Enable debugging capabilities
     "runArgs": [
         "--volume=/etc/timezone:/etc/timezone:ro",
@@ -48,7 +48,7 @@
         "--cap-add=SYS_PTRACE",
         "--security-opt=seccomp:unconfined"
     ],
-    
+
     // Container environment variables
     "containerEnv": {
         "QT_QPA_PLATFORM": "offscreen",
@@ -73,7 +73,7 @@
     "initializeCommand": "echo 'Initializing wiRedPanda development container...'",
     "onCreateCommand": "echo 'Container created successfully'",
     "updateContentCommand": "echo 'Content updated'",
-    
+
     // Set the default path that VS Code should open when connecting to the container
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
     "workspaceFolder": "/workspace"

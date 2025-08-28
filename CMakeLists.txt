@@ -217,7 +217,7 @@ file(WRITE ${QRC_GENERATOR_SCRIPT} "
 # CMake script to generate translations.qrc
 set(QRC_FILE \"${CMAKE_SOURCE_DIR}/app/resources/translations/translations.qrc\")
 
-# Get list of .qm files in translations directory  
+# Get list of .qm files in translations directory
 file(GLOB QM_FILES \"${CMAKE_SOURCE_DIR}/app/resources/translations/*.qm\")
 
 # Sort the files for consistent output

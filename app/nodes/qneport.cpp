@@ -252,7 +252,7 @@ void QNEInputPort::setStatus(const Status status)
         setCurrentBrush(theme.m_portActiveBrush);
         break;
     }
-    
+
     default:
         // Handle unexpected status values gracefully - fallback to Invalid
         setPen(theme.m_portInvalidPen);
