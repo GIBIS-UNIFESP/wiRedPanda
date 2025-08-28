@@ -204,7 +204,7 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
         case ElementGroup::Mux:     [[fallthrough]];
         case ElementGroup::Other:
         case ElementGroup::Unknown: break;
-        
+
         default:
             // Handle any unexpected enum values gracefully
             break;
