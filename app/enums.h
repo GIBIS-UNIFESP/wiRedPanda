@@ -33,7 +33,7 @@ public:
         InputSwitch = 2,
         InputVcc = 12,
         JKFlipFlop = 18,
-        JKLatch = 16,
+        JKLatch = 16, // DEPRECATED: JKLatch element no longer exists, kept for backward compatibility
         Led = 3,
         Line = 29,
         Mux = 24,
