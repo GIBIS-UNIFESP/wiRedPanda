@@ -2,20 +2,21 @@ _Leia-me em [português](README_pt_BR.md). Léame en [español](README_es.md)._
 
 # wiRedPanda ![GitHub All Releases](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square) [![codecov](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda/branch/master/graph/badge.svg?token=5YBYB4J705)](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda) <a href="https://hosted.weblate.org/engage/wiredpanda/"><img src="https://hosted.weblate.org/widget/wiredpanda/svg-badge.svg" alt="Translation status" /></a>
 
-
 wiRedPanda is a free software designed to help students learn about logic circuits and simulate them in an easy and friendly way.
 
 The main features of the software are:
-  - Works on Windows, macOS and Linux;
-  - Real time logic simulation;
-  - User-friendly interface;
-  - It's intuitive and easy to use;
-  - Export your work as an image or a PDF.
+
+- Works on Windows, macOS and Linux;
+- Real time logic simulation;
+- User-friendly interface;
+- It's intuitive and easy to use;
+- Export your work as an image or a PDF.
 
 ![Main screen](https://gibis-unifesp.github.io/wiRedPanda/demo.gif)
 
 ## Downloads
-Compiled binaries for Windows, Linux and macOS are available [here](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
+
+Compiled binaries for Windows, Linux and macOS are available on the [releases page](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
 
 ## Building
 
@@ -60,17 +61,19 @@ wiRedPanda is licensed under the [GNU General Public License, Version 3.0](http:
 
 See [`LICENSE`](LICENSE) for the full license text.
 
-    Copyright (C) 2025 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres and Vinícius Miguel.
+```text
+Copyright (C) 2025 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres and Vinícius Miguel.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+```
