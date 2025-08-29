@@ -1,6 +1,6 @@
-## Compilando
+# Compilando
 
-### En Windows
+## En Windows
 
 Para Qt5 seleccione esto:
 ![qt5](https://github.com/user-attachments/assets/e6bfca48-7b4b-444f-9ad3-76c157a9036a)
@@ -10,10 +10,9 @@ O para Qt6 selecciona estos:
 
 Luego abra CMakeLists.txt en Qt Creator y presione Ctrl+R para compilar y ejecutar.
 
+## En Linux y macOS
 
-### En Linux y macOS
-
-#### Dependencias
+### Dependencias
 
 Se necesita Qt 5.15.0+ o 6.2.0+ y el módulo QtMultimedia para compilar.
 
@@ -39,9 +38,14 @@ brew install qt5
 
 * Otros
 
-Qt5 se puede instalar directamente desde el [sitio web de Qt] (https://www.qt.io/download), desde instaladores no oficiales como [aqtinstall] (https://github.com/miurahr/aqtinstall), desde repositorios mantenidos por la comunidad o [construidos desde la fuente] (https://wiki.qt.io/Building_Qt_5_from_Git).
+Qt5 se puede instalar directamente desde el
+[sitio web de Qt](https://www.qt.io/download), desde instaladores no oficiales
+como [aqtinstall](https://github.com/miurahr/aqtinstall), desde repositorios
+mantenidos por la comunidad o
+[construidos desde la fuente](https://wiki.qt.io/Building_Qt_5_from_Git).
 
-Así es como se podría usar aqtinstall para instalar Qt 5.15.2 en una distribución basada en Debian.
+Así es como se podría usar aqtinstall para instalar Qt 5.15.2 en una
+distribución basada en Debian.
 
 ```bash
 sudo apt-get update
@@ -53,10 +57,10 @@ PATH=~/Qt/5.15.2/gcc_64/bin:$PATH
 export PATH
 ```
 
-#### Proceso de compilación
+### Proceso de compilación
 
 ```bash
-git clone https://github.com/GIBIS-UNIFESP/wiredpanda.git
+git clone https://github.com/GIBIS-UNIFESP/wiredpanda
 cd wiredpanda
 cmake -B build
 cmake --build build --config Release
@@ -66,21 +70,23 @@ Este proceso podría llevar un tiempo. Una vez concluido, el binario se ubicará
 
 ## Licencia
 
-wiRedPanda tiene licencia bajo la [Licencia pública general de GNU, versión 3.0] (http://www.gnu.org/licenses/).
+wiRedPanda tiene licencia bajo la [Licencia pública general de GNU, versión 3.0](http://www.gnu.org/licenses/).
 
-Consulte [`LICENCIA`](LICENCIA) para obtener el texto completo de la licencia.
+Consulte [`LICENSE`](LICENSE) para obtener el texto completo de la licencia.
 
-    Copyright (C) 2025 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres y Vinícius Miguel.
+```text
+Copyright (C) 2025 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres y Vinícius Miguel.
 
-    Este programa es software libre: puedes redistribuirlo y/o modificar
-    bajo los términos de la Licencia Pública General GNU publicada por
-    la Free Software Foundation, ya sea la versión 3 de la Licencia, o
-    (a su elección) cualquier versión posterior.
+Este programa es software libre: puedes redistribuirlo y/o modificar
+bajo los términos de la Licencia Pública General GNU publicada por
+la Free Software Foundation, ya sea la versión 3 de la Licencia, o
+(a su elección) cualquier versión posterior.
 
-    Este programa se distribuye con la esperanza de que sea útil,
-    pero SIN NINGUNA GARANTIA; sin siquiera la garantía implícita de
-    COMERCIABILIDAD o IDONEIDAD PARA UN FIN DETERMINADO. Ver el
-    Licencia Pública General GNU para más detalles.
+Este programa se distribuye con la esperanza de que sea útil,
+pero SIN NINGUNA GARANTIA; sin siquiera la garantía implícita de
+COMERCIABILIDAD o IDONEIDAD PARA UN FIN DETERMINADO. Ver el
+Licencia Pública General GNU para más detalles.
 
-    Debería haber recibido una copia de la Licencia Pública General GNU
-    junto con este programa. Si no, consulte <http://www.gnu.org/licenses/>.
+Debería haber recibido una copia de la Licencia Pública General GNU
+junto con este programa. Si no, consulte http://www.gnu.org/licenses/.
+```

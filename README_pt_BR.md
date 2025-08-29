@@ -2,25 +2,26 @@ _Read me in [english](README.md). Léame en [español](README_es.md)._
 
 # wiRedPanda ![GitHub All Releases](https://img.shields.io/github/downloads/gibis-unifesp/wiredpanda/total?style=flat-square) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/gibis-unifesp/wiredpanda?style=flat-square) ![GitHub](https://img.shields.io/github/license/gibis-unifesp/wiredpanda?style=flat-square) [![codecov](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda/branch/master/graph/badge.svg?token=5YBYB4J705)](https://codecov.io/gh/GIBIS-UNIFESP/wiRedPanda) <a href="https://hosted.weblate.org/engage/wiredpanda/"><img src="https://hosted.weblate.org/widget/wiredpanda/svg-badge.svg" alt="Status da tradução" /></a>
 
-
 wiRedPanda é um software gratuito projetado para ajudar os alunos a aprender sobre circuitos lógicos e simulá-los de maneira fácil e amigável.
 
 As principais características do software são:
-  - Funciona em Windows, macOS e Linux;
-  - Simulação lógica em tempo real;
-  - Interface amigável;
-  - É intuitivo e fácil de usar;
-  - Exporte seu trabalho como imagem ou PDF.
+
+- Funciona em Windows, macOS e Linux;
+- Simulação lógica em tempo real;
+- Interface amigável;
+- É intuitivo e fácil de usar;
+- Exporte seu trabalho como imagem ou PDF.
 
 ![Tela principal](https://gibis-unifesp.github.io/wiRedPanda/demo.gif)
 
 ## Downloads
-Binários compilados para Windows, Linux e macOS estão disponíveis [aqui](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
+
+Binários compilados para Windows, Linux e macOS estão disponíveis na [página de lançamentos](https://github.com/GIBIS-UNIFESP/wiRedPanda/releases).
 
 ## Compilação
 
 ```bash
-git clone https://github.com/GIBIS-UNIFESP/wiredpanda.git
+git clone https://github.com/GIBIS-UNIFESP/wiredpanda
 cd wiredpanda
 cmake -B build
 cmake --build build --config Release
@@ -45,11 +46,11 @@ As traduções estão localizadas no diretório [app/resources/translations](htt
 ## Estrelas
 
 <a href="https://www.star-history.com/#GIBIS-UNIFESP/wiRedPanda&Date">
-<imagem>
-<source media="(prefere esquema de cores: escuro)" srcset="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date&theme=dark" />
-<source media="(prefere esquema de cores: light)" srcset="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date" />
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date&theme=dark" />
+<source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date" />
 <img alt="Gráfico Histórico Estelar" src="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date" />
-</imagem>
+</picture>
 </a>
 
 [![Status do pacote](https://repology.org/badge/vertical-allrepos/wiredpanda.svg)](https://repology.org/project/wiredpanda/versions)
@@ -60,17 +61,19 @@ wiRedPanda está licenciado sob a [GNU General Public License, Versão 3.0](http
 
 Consulte [`LICENSE`](LICENSE) para obter o texto completo da licença.
 
-    Copyright (C) 2025 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres e Vinícius Miguel.
+```text
+Copyright (C) 2025 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres e Vinícius Miguel.
 
-    Este programa é um software livre: você pode redistribuí-lo e/ou modificá-lo
-    sob os termos da Licença Pública Geral GNU conforme publicada pela
-	Free Software Foundation, seja a versão 3 da Licença, ou
-    (a seu critério) qualquer versão posterior.
+Este programa é um software livre: você pode redistribuí-lo e/ou modificá-lo
+sob os termos da Licença Pública Geral GNU conforme publicada pela
+Free Software Foundation, seja a versão 3 da Licença, ou
+(a seu critério) qualquer versão posterior.
 
-    Este programa é distribuído na esperança de que seja útil,
-    mas SEM QUALQUER GARANTIA; sem mesmo a garantia implícita de
-    COMERCIALIZAÇÃO ou ADEQUAÇÃO A UM DETERMINADO FIM. Veja a
-    Licença Pública Geral GNU para mais detalhes.
+Este programa é distribuído na esperança de que seja útil,
+mas SEM QUALQUER GARANTIA; sem mesmo a garantia implícita de
+COMERCIALIZAÇÃO ou ADEQUAÇÃO A UM DETERMINADO FIM. Veja a
+Licença Pública Geral GNU para mais detalhes.
 
-    Você deve ter recebido uma cópia da Licença Pública Geral GNU
-    junto com este programa. Caso contrário, consulte <http://www.gnu.org/licenses/>.
+Você deve ter recebido uma cópia da Licença Pública Geral GNU
+junto com este programa. Caso contrário, consulte http://www.gnu.org/licenses/.
+```

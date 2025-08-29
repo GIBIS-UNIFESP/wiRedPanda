@@ -1,6 +1,6 @@
-## Building
+# Building
 
-### On Windows
+## On Windows
 
 For Qt5 select this:
 ![qt5](https://github.com/user-attachments/assets/e6bfca48-7b4b-444f-9ad3-76c157a9036a)
@@ -10,10 +10,9 @@ Or for Qt6 select these:
 
 Then open CMakeLists.txt in Qt Creator and press Ctrl+R to build and run.
 
+## On Linux & macOS
 
-### On Linux & macOS
-
-#### Dependencies
+### Dependencies
 
 Qt 5.15.0+ or 6.2.0+ and the QtMultimedia module is needed for building.
 
@@ -39,7 +38,10 @@ brew install qt5
 
 * Others
 
-Qt5 may be installed directly from the [Qt website](https://www.qt.io/download), from unofficial installers such as [aqtinstall](https://github.com/miurahr/aqtinstall), from community-maintained repositories or [built from source](https://wiki.qt.io/Building_Qt_5_from_Git).
+Qt5 may be installed directly from the [Qt website](https://www.qt.io/download),
+from unofficial installers such as [aqtinstall](https://github.com/miurahr/aqtinstall),
+from community-maintained repositories or
+[built from source](https://wiki.qt.io/Building_Qt_5_from_Git).
 
 Here's how one could use aqtinstall to install Qt 5.15.2 on a Debian-based distro.
 
@@ -53,7 +55,7 @@ PATH=~/Qt/5.15.2/gcc_64/bin:$PATH
 export PATH
 ```
 
-#### Build process
+### Build process
 
 ```bash
 git clone https://github.com/GIBIS-UNIFESP/wiredpanda
@@ -70,17 +72,19 @@ wiRedPanda is licensed under the [GNU General Public License, Version 3.0](http:
 
 See [`LICENSE`](LICENSE) for the full license text.
 
-    Copyright (C) 2025 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres and Vinícius Miguel.
+```text
+Copyright (C) 2025 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres and Vinícius Miguel.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+```

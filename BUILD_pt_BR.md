@@ -1,6 +1,6 @@
-## Compilação
+# Compilação
 
-### No Windows
+## No Windows
 
 Para Qt5 selecione isso:
 ![qt5](https://github.com/user-attachments/assets/e6bfca48-7b4b-444f-9ad3-76c157a9036a)
@@ -10,10 +10,9 @@ Ou para Qt6 selecione esses:
 
 Em seguida, abra o CMakeLists.txt no Qt Creator e pressione Ctrl+R para compilar e executar.
 
+## No Linux e macOS
 
-### No Linux e macOS
-
-#### Dependências
+### Dependências
 
 Qt 5.15.0+ ou 6.2.0+ e o módulo QtMultimedia são necessários para compilar.
 
@@ -39,9 +38,13 @@ brew install qt5
 
 * Outras
 
-Qt5 pode ser instalado diretamente do [site Qt](https://www.qt.io/download), de instaladores não oficiais como [aqtinstall](https://github.com/miurahr/aqtinstall), de repositórios mantidos pela comunidade ou [construídos a partir da fonte](https://wiki.qt.io/Building_Qt_5_from_Git).
+Qt5 pode ser instalado diretamente do [site Qt](https://www.qt.io/download), de
+instaladores não oficiais como [aqtinstall](https://github.com/miurahr/aqtinstall),
+de repositórios mantidos pela comunidade ou
+[construídos a partir da fonte](https://wiki.qt.io/Building_Qt_5_from_Git).
 
-Aqui está como alguém pode usar o aqtinstall para instalar o Qt 5.15.2 em uma distribuição baseada no Debian.
+Aqui está como alguém pode usar o aqtinstall para instalar o Qt 5.15.2 em uma
+distribuição baseada no Debian.
 
 ```bash
 sudo apt-get update
@@ -53,10 +56,10 @@ PATH=~/Qt/5.15.2/gcc_64/bin:$PATH
 export PATH
 ```
 
-#### Processo de compilação
+### Processo de compilação
 
 ```bash
-git clone https://github.com/GIBIS-UNIFESP/wiredpanda.git
+git clone https://github.com/GIBIS-UNIFESP/wiredpanda
 cd wiredpanda
 cmake -B build
 cmake --build build --config Release
@@ -70,17 +73,19 @@ wiRedPanda está licenciado sob a [GNU General Public License, Versão 3.0](http
 
 Consulte [`LICENSE`](LICENSE) para obter o texto completo da licença.
 
-    Copyright (C) 2025 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres e Vinícius Miguel.
+```text
+Copyright (C) 2025 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres e Vinícius Miguel.
 
-    Este programa é um software livre: você pode redistribuí-lo e/ou modificá-lo
-    sob os termos da Licença Pública Geral GNU conforme publicada pela
-	Free Software Foundation, seja a versão 3 da Licença, ou
-    (a seu critério) qualquer versão posterior.
+Este programa é um software livre: você pode redistribuí-lo e/ou modificá-lo
+sob os termos da Licença Pública Geral GNU conforme publicada pela
+Free Software Foundation, seja a versão 3 da Licença, ou
+(a seu critério) qualquer versão posterior.
 
-    Este programa é distribuído na esperança de que seja útil,
-    mas SEM QUALQUER GARANTIA; sem mesmo a garantia implícita de
-    COMERCIALIZAÇÃO ou ADEQUAÇÃO A UM DETERMINADO FIM. Veja a
-    Licença Pública Geral GNU para mais detalhes.
+Este programa é distribuído na esperança de que seja útil,
+mas SEM QUALQUER GARANTIA; sem mesmo a garantia implícita de
+COMERCIALIZAÇÃO ou ADEQUAÇÃO A UM DETERMINADO FIM. Veja a
+Licença Pública Geral GNU para mais detalhes.
 
-    Você deve ter recebido uma cópia da Licença Pública Geral GNU
-    junto com este programa. Caso contrário, consulte <http://www.gnu.org/licenses/>.
+Você deve ter recebido uma cópia da Licença Pública Geral GNU
+junto com este programa. Caso contrário, consulte http://www.gnu.org/licenses/.
+```
