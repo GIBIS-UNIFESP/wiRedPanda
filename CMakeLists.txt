@@ -49,7 +49,7 @@ endif()
 
 find_program(MOLD_BIN mold)
 if(MOLD_BIN)
-    add_link_options("-fuse-ld=mold")
+    add_link_options(-fuse-ld=mold)
 endif()
 
 # Coverage support
@@ -60,9 +60,9 @@ if(ENABLE_COVERAGE)
 endif()
 
 # Sanitizer support
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+if(CMAKE_CXX_COMPILER_ID STREQUAL Clang OR CMAKE_CXX_COMPILER_ID STREQUAL GNU)
     if(ENABLE_MEMORY_SANITIZER)
-        if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
             add_compile_options(-fsanitize=memory -fPIE)
             add_link_options(-fsanitize=memory -fPIE)
             message(STATUS "Memory Sanitizer enabled")
@@ -84,7 +84,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU
     endif()
 
     if(ENABLE_UB_SANITIZER)
-        if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
             add_compile_options(-fsanitize=undefined,implicit-integer-truncation,implicit-integer-arithmetic-value-change,implicit-conversion,integer,nullability)
             add_link_options(-fsanitize=undefined,implicit-integer-truncation,implicit-integer-arithmetic-value-change,implicit-conversion,integer,nullability)
         else()
@@ -104,7 +104,7 @@ if(NOT MSVC)
 endif()
 
 if(QT_VERSION_MAJOR EQUAL 5)
-    set(CMAKE_OSX_ARCHITECTURES "x86_64")
+    set(CMAKE_OSX_ARCHITECTURES x86_64)
 else()
     set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 endif()
@@ -124,10 +124,10 @@ endif()
 include(CMakeSources.cmake)
 
 # Find available translation files
-file(GLOB_RECURSE TS_FILES "app/resources/translations/wpanda_*.ts")
+file(GLOB_RECURSE TS_FILES app/resources/translations/wpanda_*.ts)
 
 # Initialize QM_FILES list
-set(QM_FILES "")
+set(QM_FILES)
 
 # Create QM files in source directory so QRC can find them
 if(QT_VERSION_MAJOR EQUAL 5)
@@ -136,7 +136,7 @@ if(QT_VERSION_MAJOR EQUAL 5)
         foreach(ts_file ${TS_FILES})
             get_filename_component(qm_file ${ts_file} NAME_WE)
             get_filename_component(ts_dir ${ts_file} DIRECTORY)
-            set(qm_path "${ts_dir}/${qm_file}.qm")
+            set(qm_path ${ts_dir}/${qm_file}.qm)
             add_custom_command(
                 OUTPUT ${qm_path}
                 COMMAND ${Qt5_LRELEASE_EXECUTABLE} ${ts_file} -qm ${qm_path}
@@ -154,7 +154,7 @@ else()
         foreach(ts_file ${TS_FILES})
             get_filename_component(qm_file ${ts_file} NAME_WE)
             get_filename_component(ts_dir ${ts_file} DIRECTORY)
-            set(qm_path "${ts_dir}/${qm_file}.qm")
+            set(qm_path ${ts_dir}/${qm_file}.qm)
             add_custom_command(
                 OUTPUT ${qm_path}
                 COMMAND Qt6::lrelease ${ts_file} -qm ${qm_path}
@@ -180,7 +180,7 @@ include_directories(
 # ========= TRANSLATIONS ===========================
 
 # Find available translation files
-file(GLOB_RECURSE TS_FILES "app/resources/translations/wpanda_*.ts")
+file(GLOB_RECURSE TS_FILES app/resources/translations/wpanda_*.ts)
 
 # Custom targets for translation management
 if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
@@ -304,18 +304,18 @@ endif()
 
 if(WIN32)
     set(WINDOWS_APP_NAME "wiRedPanda - Logic Circuit Simulator")
-    set(RC_FILE "resources/wpanda.ico")
+    set(RC_FILE resources/wpanda.ico)
 
     set_target_properties(wiredpanda PROPERTIES
         WIN32_EXECUTABLE ON
-        RUNTIME_OUTPUT_NAME "wiredpanda"
+        RUNTIME_OUTPUT_NAME wiredpanda
         # Enhanced Windows metadata
         VERSION "${PROJECT_VERSION}"
         DESCRIPTION "wiRedPanda - Logic Circuit Simulator"
-        COMPANY_NAME "GIBIS-UNIFESP"
+        COMPANY_NAME GIBIS-UNIFESP
         FILE_DESCRIPTION "wiRedPanda - Logic Circuit Simulator"
         LEGAL_COPYRIGHT "GIBIS-UNIFESP and the wiRedPanda contributors"
-        ORIGINAL_FILENAME "wiredpanda.exe"
+        ORIGINAL_FILENAME wiredpanda.exe
         PRODUCT_NAME "wiRedPanda - Logic Circuit Simulator"
     )
 
@@ -326,8 +326,8 @@ endif()
 
 # ========= TESTS ===================================
 
-file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
-file(GLOB_RECURSE TEST_HEADERS "test/*.h")
+file(GLOB_RECURSE TEST_SOURCES test/*.cpp)
+file(GLOB_RECURSE TEST_HEADERS test/*.h)
 
 add_executable(wiredpanda-test ${TEST_SOURCES} ${TEST_HEADERS} ${RESOURCES_RCC})
 target_link_libraries(wiredpanda-test PRIVATE wiredpanda_lib)
