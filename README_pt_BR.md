@@ -27,7 +27,7 @@ cmake -B build
 cmake --build build --config Release
 ```
 
-Este processo pode demorar um pouco. Uma vez concluído, o binário estará localizado em `wiredpanda/build/wiredpanda`, no Linux, e em `wiredpanda/build/wiredpanda.app/Contents/MacOS/wiredpanda` no macOS.
+Este processo pode demorar um pouco. Uma vez concluído, o binário estará localizado em `build/wiredpanda` no Linux e macOS, ou `build/wiredpanda.exe` no Windows.
 
 Para obter instruções detalhadas de construção, verifique [BUILD.md](BUILD.md) ou visite o [wiki](https://github.com/GIBIS-UNIFESP/wiRedPanda/wiki/How-to-setup-environment).
 
