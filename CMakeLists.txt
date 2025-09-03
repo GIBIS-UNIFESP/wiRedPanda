@@ -300,7 +300,7 @@ if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
 endif()
 
 if(NOT CCACHE_BIN)
-    target_precompile_headers(wiredpanda PRIVATE pch.h)
+    target_precompile_headers(wiredpanda REUSE_FROM wiredpanda_lib)
 endif()
 
 if(WIN32)
