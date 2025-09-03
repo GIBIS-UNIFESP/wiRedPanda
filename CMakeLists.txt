@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Enable conforming preprocessor for MSVC to support __VA_OPT__
 if(MSVC)
     add_compile_options(/Zc:preprocessor)
+    add_compile_options(/MP)  # Enable parallel compilation
 endif()
 
 set(CMAKE_AUTOMOC ON)
