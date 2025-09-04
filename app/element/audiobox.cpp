@@ -65,7 +65,7 @@ void AudioBox::refresh()
 
 void AudioBox::setAudio(const QString &audioPath)
 {
-    if (audioPath.isEmpty() || !m_hasOutputDevice) {
+    if (audioPath.isEmpty() || !m_hasOutputDevice || !m_audio) {
         return;
     }
 
@@ -91,7 +91,7 @@ void AudioBox::setAudio(const QString &audioPath)
 
 QString AudioBox::audio() const
 {
-    return m_audio->fileName();
+    return m_audio ? m_audio->fileName() : QString();
 }
 
 void AudioBox::mute(const bool mute)
@@ -115,7 +115,7 @@ void AudioBox::play()
 
     setPixmap(1);
 
-    if (m_hasOutputDevice) {
+    if (m_hasOutputDevice && m_audio) {
         if (!m_audio->exists()) {
             setAudio("qrc:/output/audio/wiredpanda.wav");
         }
@@ -145,7 +145,9 @@ void AudioBox::save(QDataStream &stream) const
     GraphicElement::save(stream);
 
     QMap<QString, QVariant> map;
-    map.insert("audiobox", m_audio->filePath());
+    if (m_audio) {
+        map.insert("audiobox", m_audio->filePath());
+    }
 
     stream << map;
 }
