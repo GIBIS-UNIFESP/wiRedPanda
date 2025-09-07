@@ -126,7 +126,7 @@
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="201"/>
-        <location filename="../../bewaveddolphin.cpp" line="1393"/>
+        <location filename="../../bewaveddolphin.cpp" line="1386"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="242"/>
         <source>Export to PDF</source>
         <translation>Eksporter til PDF</translation>
@@ -386,45 +386,45 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="142"/>
         <location filename="../../bewaveddolphin.cpp" line="214"/>
-        <location filename="../../bewaveddolphin.cpp" line="1123"/>
-        <location filename="../../bewaveddolphin.cpp" line="1275"/>
+        <location filename="../../bewaveddolphin.cpp" line="1116"/>
+        <location filename="../../bewaveddolphin.cpp" line="1268"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin simulator</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="541"/>
-        <location filename="../../bewaveddolphin.cpp" line="1189"/>
+        <location filename="../../bewaveddolphin.cpp" line="534"/>
+        <location filename="../../bewaveddolphin.cpp" line="1182"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="542"/>
+        <location filename="../../bewaveddolphin.cpp" line="535"/>
         <source>Save simulation before closing?</source>
         <translation>Lagre simulering før lukking?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1190"/>
+        <location filename="../../bewaveddolphin.cpp" line="1183"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Vil du koble denne beWavedDolphin-filen til din nåværende wiRedPanda-fil og lagre den?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1090"/>
+        <location filename="../../bewaveddolphin.cpp" line="1083"/>
         <source>Save File as...</source>
         <translation>Lagre fil som...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1093"/>
+        <location filename="../../bewaveddolphin.cpp" line="1086"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>CSV-filer (*.csv);;Dolphin-filer (*.dolphin);;Alle støttede filer (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1094"/>
+        <location filename="../../bewaveddolphin.cpp" line="1087"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Dolphin-filer (*.dolphin);;CSV-filer (*.csv);;Alle støttede filer (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1081"/>
-        <location filename="../../bewaveddolphin.cpp" line="1124"/>
+        <location filename="../../bewaveddolphin.cpp" line="1074"/>
+        <location filename="../../bewaveddolphin.cpp" line="1117"/>
         <source>Saved file successfully.</source>
         <translation>Fil lagret vellykket.</translation>
     </message>
@@ -442,84 +442,84 @@
         <translation>Kunne ikke laste nok elementer for simuleringen.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="514"/>
+        <location filename="../../bewaveddolphin.cpp" line="507"/>
         <source>Waveform would be too big! Resetting zoom.</source>
         <translation>Bølgeformen ville blitt for stor! Tilbakestiller zoom.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="781"/>
+        <location filename="../../bewaveddolphin.cpp" line="774"/>
         <source>No cells selected.</source>
         <translation>Ingen celler valgt.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1133"/>
+        <location filename="../../bewaveddolphin.cpp" line="1126"/>
         <source>Error opening file: %1</source>
         <translation>Feil ved åpning av fil: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1147"/>
+        <location filename="../../bewaveddolphin.cpp" line="1140"/>
         <source>Error saving file: %1</source>
         <translation>Feil ved lagring av fil: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1217"/>
+        <location filename="../../bewaveddolphin.cpp" line="1210"/>
         <source>Open File</source>
         <translation>Åpne fil</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1219"/>
+        <location filename="../../bewaveddolphin.cpp" line="1212"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Alle støttede filer (*.dolphin *.csv);;Dolphin-filer (*.dolphin);;CSV-filer (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1235"/>
+        <location filename="../../bewaveddolphin.cpp" line="1228"/>
         <source>File loaded successfully.</source>
         <translation>Filen ble lastet inn.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1250"/>
+        <location filename="../../bewaveddolphin.cpp" line="1243"/>
         <source>Could not open file in ReadOnly mode: %1</source>
         <translation>Kunne ikke åpne fil i skrivebeskyttet modus: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1269"/>
+        <location filename="../../bewaveddolphin.cpp" line="1262"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>Format ikke støttet. Kunne ikke åpne fil: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1288"/>
-        <location filename="../../bewaveddolphin.cpp" line="1316"/>
+        <location filename="../../bewaveddolphin.cpp" line="1281"/>
+        <location filename="../../bewaveddolphin.cpp" line="1309"/>
         <source>Invalid number of columns.</source>
         <translation>Ugyldig antall kolonner.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1369"/>
+        <location filename="../../bewaveddolphin.cpp" line="1362"/>
         <source>Export to Image</source>
         <translation>Eksporter til bilde</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1369"/>
+        <location filename="../../bewaveddolphin.cpp" line="1362"/>
         <source>PNG files (*.png)</source>
         <translation>PNG-filer (*.png)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1393"/>
+        <location filename="../../bewaveddolphin.cpp" line="1386"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF-filer (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1412"/>
+        <location filename="../../bewaveddolphin.cpp" line="1405"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Kunne ikke skrive ut denne kretsen til PDF.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1423"/>
+        <location filename="../../bewaveddolphin.cpp" line="1416"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin er en bølgeform-simulator for wiRedPanda-programvaren utviklet av det føderale universitetet i São Paulo. Dette prosjektet ble opprettet for å hjelpe studenter med å lære om logiske kretser.&lt;/p&gt;&lt;p&gt;Programvareversjon: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Skapere:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin vedlikeholdes for tiden av Prof. Fábio Cappabianco, Ph.D. og hans studenter&lt;/p&gt;&lt;p&gt; Vennligst send inn rapport på vår GitHub-side hvis feil blir funnet eller hvis du ønsker at ny funksjonalitet skal implementeres.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Besøk nettsiden vår!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="220"/>
-        <location filename="../../bewaveddolphin.cpp" line="1243"/>
+        <location filename="../../bewaveddolphin.cpp" line="1236"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Fil &quot;%1&quot; finnes ikke!</translation>
     </message>

@@ -126,7 +126,7 @@
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="201"/>
-        <location filename="../../bewaveddolphin.cpp" line="1393"/>
+        <location filename="../../bewaveddolphin.cpp" line="1386"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="242"/>
         <source>Export to PDF</source>
         <translation>匯出為 PDF</translation>
@@ -386,45 +386,45 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="142"/>
         <location filename="../../bewaveddolphin.cpp" line="214"/>
-        <location filename="../../bewaveddolphin.cpp" line="1123"/>
-        <location filename="../../bewaveddolphin.cpp" line="1275"/>
+        <location filename="../../bewaveddolphin.cpp" line="1116"/>
+        <location filename="../../bewaveddolphin.cpp" line="1268"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin 模擬器</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="541"/>
-        <location filename="../../bewaveddolphin.cpp" line="1189"/>
+        <location filename="../../bewaveddolphin.cpp" line="534"/>
+        <location filename="../../bewaveddolphin.cpp" line="1182"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="542"/>
+        <location filename="../../bewaveddolphin.cpp" line="535"/>
         <source>Save simulation before closing?</source>
         <translation>關閉前是否儲存模擬？</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1190"/>
+        <location filename="../../bewaveddolphin.cpp" line="1183"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>您是否要將此 beWavedDolphin 檔案連結到您目前的 wiRedPanda 檔案並儲存？</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1090"/>
+        <location filename="../../bewaveddolphin.cpp" line="1083"/>
         <source>Save File as...</source>
         <translation>將檔案另存為...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1093"/>
+        <location filename="../../bewaveddolphin.cpp" line="1086"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>CSV 檔案 (*.csv);;Dolphin 檔案 (*.dolphin);;所有支援的檔案 (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1094"/>
+        <location filename="../../bewaveddolphin.cpp" line="1087"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Dolphin 檔案 (*.dolphin);;CSV 檔案 (*.csv);;所有支援的檔案 (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1081"/>
-        <location filename="../../bewaveddolphin.cpp" line="1124"/>
+        <location filename="../../bewaveddolphin.cpp" line="1074"/>
+        <location filename="../../bewaveddolphin.cpp" line="1117"/>
         <source>Saved file successfully.</source>
         <translation>檔案儲存成功。</translation>
     </message>
@@ -442,84 +442,84 @@
         <translation>無法為模擬載入足夠的元件。</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="514"/>
+        <location filename="../../bewaveddolphin.cpp" line="507"/>
         <source>Waveform would be too big! Resetting zoom.</source>
         <translation>波形會太大！重設縮放。</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="781"/>
+        <location filename="../../bewaveddolphin.cpp" line="774"/>
         <source>No cells selected.</source>
         <translation>未選擇任何儲存格。</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1133"/>
+        <location filename="../../bewaveddolphin.cpp" line="1126"/>
         <source>Error opening file: %1</source>
         <translation>開啟檔案時發生錯誤：%1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1147"/>
+        <location filename="../../bewaveddolphin.cpp" line="1140"/>
         <source>Error saving file: %1</source>
         <translation>儲存檔案時發生錯誤：%1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1217"/>
+        <location filename="../../bewaveddolphin.cpp" line="1210"/>
         <source>Open File</source>
         <translation>開啟檔案</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1219"/>
+        <location filename="../../bewaveddolphin.cpp" line="1212"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>所有支援的檔案 (*.dolphin *.csv);;Dolphin 檔案 (*.dolphin);;CSV 檔案 (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1235"/>
+        <location filename="../../bewaveddolphin.cpp" line="1228"/>
         <source>File loaded successfully.</source>
         <translation>檔案載入成功。</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1250"/>
+        <location filename="../../bewaveddolphin.cpp" line="1243"/>
         <source>Could not open file in ReadOnly mode: %1</source>
         <translation>無法以唯讀模式開啟檔案：%1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1269"/>
+        <location filename="../../bewaveddolphin.cpp" line="1262"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>不支援此格式。無法開啟檔案：%1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1288"/>
-        <location filename="../../bewaveddolphin.cpp" line="1316"/>
+        <location filename="../../bewaveddolphin.cpp" line="1281"/>
+        <location filename="../../bewaveddolphin.cpp" line="1309"/>
         <source>Invalid number of columns.</source>
         <translation>欄位數量無效。</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1369"/>
+        <location filename="../../bewaveddolphin.cpp" line="1362"/>
         <source>Export to Image</source>
         <translation>匯出為圖片</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1369"/>
+        <location filename="../../bewaveddolphin.cpp" line="1362"/>
         <source>PNG files (*.png)</source>
         <translation>PNG 檔案 (*.png)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1393"/>
+        <location filename="../../bewaveddolphin.cpp" line="1386"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF 檔案 (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1412"/>
+        <location filename="../../bewaveddolphin.cpp" line="1405"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>無法將此電路列印為 PDF。</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1423"/>
+        <location filename="../../bewaveddolphin.cpp" line="1416"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin 是由聖保羅聯邦大學開發的 wiRedPanda 軟體的波形模擬器。此專案旨在幫助學生學習邏輯電路。&lt;/p&gt;&lt;p&gt;軟體版本：%1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;創作者：&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin 目前由 Prof. Fábio Cappabianco, Ph.D. 和他的學生維護&lt;/p&gt;&lt;p&gt; 如果發現錯誤或希望實作新功能，請在我們的 GitHub 頁面提交報告。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;造訪我們的網站！&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="220"/>
-        <location filename="../../bewaveddolphin.cpp" line="1243"/>
+        <location filename="../../bewaveddolphin.cpp" line="1236"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>檔案「%1」不存在！</translation>
     </message>

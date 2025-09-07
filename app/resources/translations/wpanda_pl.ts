@@ -126,7 +126,7 @@
     </message>
     <message>
         <location filename="../../bewaveddolphin.ui" line="201"/>
-        <location filename="../../bewaveddolphin.cpp" line="1393"/>
+        <location filename="../../bewaveddolphin.cpp" line="1386"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="242"/>
         <source>Export to PDF</source>
         <translation>Eksportuj do PDF</translation>
@@ -386,45 +386,45 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="142"/>
         <location filename="../../bewaveddolphin.cpp" line="214"/>
-        <location filename="../../bewaveddolphin.cpp" line="1123"/>
-        <location filename="../../bewaveddolphin.cpp" line="1275"/>
+        <location filename="../../bewaveddolphin.cpp" line="1116"/>
+        <location filename="../../bewaveddolphin.cpp" line="1268"/>
         <source>beWavedDolphin Simulator</source>
         <translation>Symulator beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="541"/>
-        <location filename="../../bewaveddolphin.cpp" line="1189"/>
+        <location filename="../../bewaveddolphin.cpp" line="534"/>
+        <location filename="../../bewaveddolphin.cpp" line="1182"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="542"/>
+        <location filename="../../bewaveddolphin.cpp" line="535"/>
         <source>Save simulation before closing?</source>
         <translation>Zapisać symulację przed zamknięciem?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1190"/>
+        <location filename="../../bewaveddolphin.cpp" line="1183"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Czy chcesz połączyć ten plik beWavedDolphin z aktualnym plikiem wiRedPanda i go zapisać?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1090"/>
+        <location filename="../../bewaveddolphin.cpp" line="1083"/>
         <source>Save File as...</source>
         <translation>Zapisz plik jako...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1093"/>
+        <location filename="../../bewaveddolphin.cpp" line="1086"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>Pliki CSV (*.csv);;Pliki Dolphin (*.dolphin);;Wszystkie obsługiwane pliki (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1094"/>
+        <location filename="../../bewaveddolphin.cpp" line="1087"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Pliki Dolphin (*.dolphin);;Pliki CSV (*.csv);;Wszystkie obsługiwane pliki (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1081"/>
-        <location filename="../../bewaveddolphin.cpp" line="1124"/>
+        <location filename="../../bewaveddolphin.cpp" line="1074"/>
+        <location filename="../../bewaveddolphin.cpp" line="1117"/>
         <source>Saved file successfully.</source>
         <translation>Plik zapisany pomyślnie.</translation>
     </message>
@@ -442,84 +442,84 @@
         <translation>Nie można wczytać wystarczającej liczby elementów do symulacji.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="514"/>
+        <location filename="../../bewaveddolphin.cpp" line="507"/>
         <source>Waveform would be too big! Resetting zoom.</source>
         <translation>Przebieg byłby zbyt duży! Resetowanie powiększenia.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="781"/>
+        <location filename="../../bewaveddolphin.cpp" line="774"/>
         <source>No cells selected.</source>
         <translation>Nie wybrano komórek.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1133"/>
+        <location filename="../../bewaveddolphin.cpp" line="1126"/>
         <source>Error opening file: %1</source>
         <translation>Błąd podczas otwierania pliku: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1147"/>
+        <location filename="../../bewaveddolphin.cpp" line="1140"/>
         <source>Error saving file: %1</source>
         <translation>Błąd podczas zapisywania pliku: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1217"/>
+        <location filename="../../bewaveddolphin.cpp" line="1210"/>
         <source>Open File</source>
         <translation>Otwórz plik</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1219"/>
+        <location filename="../../bewaveddolphin.cpp" line="1212"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Wszystkie obsługiwane pliki (*.dolphin *.csv);;Pliki Dolphin (*.dolphin);;Pliki CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1235"/>
+        <location filename="../../bewaveddolphin.cpp" line="1228"/>
         <source>File loaded successfully.</source>
         <translation>Plik wczytany pomyślnie.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1250"/>
+        <location filename="../../bewaveddolphin.cpp" line="1243"/>
         <source>Could not open file in ReadOnly mode: %1</source>
         <translation>Nie można otworzyć pliku w trybie tylko do odczytu: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1269"/>
+        <location filename="../../bewaveddolphin.cpp" line="1262"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>Format nieobsługiwany. Nie można otworzyć pliku: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1288"/>
-        <location filename="../../bewaveddolphin.cpp" line="1316"/>
+        <location filename="../../bewaveddolphin.cpp" line="1281"/>
+        <location filename="../../bewaveddolphin.cpp" line="1309"/>
         <source>Invalid number of columns.</source>
         <translation>Nieprawidłowa liczba kolumn.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1369"/>
+        <location filename="../../bewaveddolphin.cpp" line="1362"/>
         <source>Export to Image</source>
         <translation>Eksportuj do obrazu</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1369"/>
+        <location filename="../../bewaveddolphin.cpp" line="1362"/>
         <source>PNG files (*.png)</source>
         <translation>Pliki PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1393"/>
+        <location filename="../../bewaveddolphin.cpp" line="1386"/>
         <source>PDF files (*.pdf)</source>
         <translation>Pliki PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1412"/>
+        <location filename="../../bewaveddolphin.cpp" line="1405"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Nie można wydrukować tego obwodu do PDF.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1423"/>
+        <location filename="../../bewaveddolphin.cpp" line="1416"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin to symulator przebiegów dla oprogramowania wiRedPanda opracowany przez Federalny Uniwersytet São Paulo. Ten projekt został stworzony w celu pomocy studentom w nauce o układach logicznych.&lt;/p&gt;&lt;p&gt;Wersja oprogramowania: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Twórcy:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin jest obecnie utrzymywany przez Prof. Fábio Cappabianco, Ph.D. i jego studentów&lt;/p&gt;&lt;p&gt; Prosimy o zgłaszanie błędów na naszej stronie GitHub lub żądania implementacji nowych funkcjonalności.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Odwiedź naszą stronę internetową!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="220"/>
-        <location filename="../../bewaveddolphin.cpp" line="1243"/>
+        <location filename="../../bewaveddolphin.cpp" line="1236"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Plik &quot;%1&quot; nie istnieje!</translation>
     </message>
