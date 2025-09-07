@@ -23,10 +23,12 @@ public:
     explicit LogicElement(const int inputSize, const int outputSize);
     virtual ~LogicElement() = default;
 
+    bool inFeedbackLoop() const;
     bool inputValue(const int index = 0) const;
     bool isValid() const;
     bool outputValue(const int index = 0) const;
     int calculatePriority();
+    int outputSize() const;
     int priority() const;
     virtual void updateLogic() = 0;
     void clearSucessors();
@@ -46,6 +48,7 @@ private:
     QVector<LogicElement *> m_successors;
     QVector<InputPair> m_inputPairs;
     QVector<bool> m_outputValues;
+    bool m_inFeedbackLoop = false;
     bool m_isValid = true;
     int m_priority = -1;
 };

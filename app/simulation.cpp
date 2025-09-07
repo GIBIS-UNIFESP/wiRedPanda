@@ -41,8 +41,23 @@ void Simulation::update()
         inputElm->updateOutputs();
     }
 
+    // Check if we have elements in feedback loops that need iterative settling
+    bool hasFeedbackElements = false;
     for (auto &logic : m_elmMapping->logicElms()) {
-        logic->updateLogic();
+        if (logic->inFeedbackLoop()) {
+            hasFeedbackElements = true;
+            break;
+        }
+    }
+
+    if (hasFeedbackElements) {
+        // Use iterative settling for circuits with feedback loops
+        updateWithIterativeSettling();
+    } else {
+        // Standard single-pass update for purely combinational circuits
+        for (auto &logic : m_elmMapping->logicElms()) {
+            logic->updateLogic();
+        }
     }
 
     for (auto *connection : std::as_const(m_connections)) {
@@ -112,6 +127,56 @@ void Simulation::start()
     m_timer.start();
     m_scene->mute(false);
     qCDebug(zero) << "Simulation started.";
+}
+
+void Simulation::updateWithIterativeSettling()
+{
+    const int maxIterations = 10; // Prevent infinite loops
+    const auto &logicElements = m_elmMapping->logicElms();
+
+    // Store previous output values for convergence detection
+    QVector<QVector<bool>> previousOutputs(logicElements.size());
+
+    for (int i = 0; i < logicElements.size(); ++i) {
+        auto &logic = logicElements[i];
+        // Initialize with current outputs
+        previousOutputs[i].resize(logic->outputSize());
+        for (int j = 0; j < previousOutputs[i].size(); ++j) {
+            previousOutputs[i][j] = logic->outputValue(j);
+        }
+    }
+
+    for (int iteration = 0; iteration < maxIterations; ++iteration) {
+        // Update all logic elements
+        for (auto &logic : logicElements) {
+            logic->updateLogic();
+        }
+
+        // Check for convergence (no output changes)
+        bool converged = true;
+        for (int i = 0; i < logicElements.size(); ++i) {
+            auto &logic = logicElements[i];
+
+            // Check all outputs for convergence
+            for (int j = 0; j < logic->outputSize(); ++j) {
+                bool currentOutput = logic->outputValue(j);
+                if (previousOutputs[i][j] != currentOutput) {
+                    converged = false;
+                    previousOutputs[i][j] = currentOutput;
+                }
+            }
+        }
+
+        if (converged) {
+            // Circuit has stabilized, no need for more iterations
+            break;
+        }
+
+        // If we're on the last iteration without convergence, log a warning
+        if (iteration == maxIterations - 1) {
+            qDebug() << "Warning: Feedback circuit did not converge after" << maxIterations << "iterations";
+        }
+    }
 }
 
 bool Simulation::initialize()
