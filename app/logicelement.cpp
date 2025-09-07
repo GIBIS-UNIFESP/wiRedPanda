@@ -50,6 +50,16 @@ int LogicElement::priority() const
     return m_priority;
 }
 
+bool LogicElement::inFeedbackLoop() const
+{
+    return m_inFeedbackLoop;
+}
+
+int LogicElement::outputSize() const
+{
+    return m_outputValues.size();
+}
+
 void LogicElement::connectPredecessor(const int index, LogicElement *logic, const int port)
 {
     m_inputPairs[index] = {logic, port};
@@ -86,6 +96,7 @@ int LogicElement::calculatePriority()
     QStack<LogicElement *> stack;
     QHash<LogicElement *, bool> inStack;
     QHash<LogicElement *, int> maxPriority;
+    QHash<LogicElement *, bool> inFeedbackLoop;
 
     stack.push(this);
     inStack[this] = true;
@@ -101,6 +112,7 @@ int LogicElement::calculatePriority()
 
         bool allProcessed = true;
         int maxSuccessorPriority = 0;
+        bool hasFeedbackLoop = false;
 
         for (auto *logic : std::as_const(current->m_successors)) {
             if (logic->m_priority == -1) {
@@ -108,14 +120,32 @@ int LogicElement::calculatePriority()
                     stack.push(logic);
                     inStack[logic] = true;
                     allProcessed = false;
+                } else {
+                    // FEEDBACK LOOP DETECTED: successor is already in processing stack
+                    hasFeedbackLoop = true;
+                    inFeedbackLoop[current] = true;
+                    inFeedbackLoop[logic] = true;
+                    // For feedback loops, don't wait for successor priority
+                    // This breaks the circular dependency
                 }
             }
 
-            maxSuccessorPriority = qMax(maxSuccessorPriority, logic->m_priority);
+            // Only use successor priority if it's not a feedback loop
+            if (logic->m_priority != -1) {
+                maxSuccessorPriority = qMax(maxSuccessorPriority, logic->m_priority);
+            }
         }
 
-        if (allProcessed) {
-            current->m_priority = maxSuccessorPriority + 1;
+        if (allProcessed || hasFeedbackLoop) {
+            if (hasFeedbackLoop) {
+                // Elements in feedback loops get special priority handling
+                // Set to a base priority that allows for iterative settling
+                current->m_priority = maxSuccessorPriority + 1;
+                current->m_inFeedbackLoop = true;
+            } else {
+                current->m_priority = maxSuccessorPriority + 1;
+                current->m_inFeedbackLoop = false;
+            }
             stack.pop();
             inStack[current] = false;
         }

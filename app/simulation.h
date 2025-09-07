@@ -35,6 +35,7 @@ private:
 
     static void updatePort(QNEInputPort *port);
     static void updatePort(QNEOutputPort *port);
+    void updateWithIterativeSettling();
 
     QTimer m_timer;
     QVector<Clock *> m_clocks;
