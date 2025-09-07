@@ -173,3 +173,6 @@ Deploy/
 *.panda
 !examples/**/*.panda
 !test/backward_compatibility/**/*.panda
+!test/files/**/*.panda
+/mcp/client/temp
+__pycache__/

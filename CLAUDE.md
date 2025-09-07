@@ -33,6 +33,12 @@ ctest --preset release
 - **mold linker**: Modern fast linker installed (`sudo apt install mold`) - automatically used by CMake when available
 - **Visual Studio BuildTools**: `"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"`
 
+### Python Usage
+
+- **CRITICAL**: On Unix systems (Linux/macOS), always use `python3` command instead of `python`
+- The `python` command may not exist or point to Python 2.x on many Unix systems
+- All Python scripts in this project require Python 3.x
+
 ### Development Features
 
 Advanced development features supported:

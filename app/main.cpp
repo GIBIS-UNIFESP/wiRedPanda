@@ -5,6 +5,7 @@
 #include "common.h"
 #include "globalproperties.h"
 #include "mainwindow.h"
+#include "mcpprocessor.h"
 #include "registertypes.h"
 #include "workspace.h"
 
@@ -62,11 +63,35 @@ int main(int argc, char *argv[])
     }
 #endif
 
+    // Early argument parsing for MCP mode detection
+    // This must be done before QApplication creation to set Qt platform correctly
+    // Full argument validation happens later with QCommandLineParser
+    bool mcpMode = false;
+    bool mcpGuiMode = false;
+    for (int i = 1; i < argc; i++) {
+        if (QString(argv[i]) == "--mcp") {
+            mcpMode = true;
+        }
+        if (QString(argv[i]) == "--mcp-gui") {
+            mcpGuiMode = true;
+        }
+    }
+
 #ifdef Q_OS_WIN
-    FILE *fpstdout = stdout, *fpstderr = stderr;
-    if (AttachConsole(ATTACH_PARENT_PROCESS)) {
-        freopen_s(&fpstdout, "CONOUT$", "w", stdout);
-        freopen_s(&fpstderr, "CONOUT$", "w", stderr);
+    if (!mcpMode) {
+        // Only attach console for non-MCP modes to preserve stdin/stdout pipes
+        FILE *fpstdout = stdout, *fpstderr = stderr;
+        if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+            freopen_s(&fpstdout, "CONOUT$", "w", stdout);
+            freopen_s(&fpstderr, "CONOUT$", "w", stderr);
+        }
+    }
+#endif
+
+#ifndef Q_OS_WIN
+    // Set environment for headless operation if in MCP mode without GUI
+    if (mcpMode && !mcpGuiMode) {
+        qputenv("QT_QPA_PLATFORM", "offscreen");
     }
 #endif
 
@@ -116,6 +141,16 @@ int main(int argc, char *argv[])
             {"btt", "blockTruthTable"},
             QCoreApplication::translate("main", "When used with -c/--terminal, block execution if the circuit contains Truth Tables."));
         parser.addOption(blockTruthTableOption);
+
+        QCommandLineOption mcpModeOption(
+            "mcp",
+            QCoreApplication::translate("main", "Run in MCP (Model Context Protocol) mode for programmatic control."));
+        parser.addOption(mcpModeOption);
+
+        QCommandLineOption mcpGuiOption(
+            "mcp-gui",
+            QCoreApplication::translate("main", "Run MCP mode with GUI (not headless). Only valid with --mcp."));
+        parser.addOption(mcpGuiOption);
 
         parser.process(app);
 
@@ -173,6 +208,32 @@ int main(int argc, char *argv[])
             exit(0);
         }
 
+        // Validate --mcp-gui can only be used with --mcp
+        if (parser.isSet(mcpGuiOption) && !parser.isSet(mcpModeOption)) {
+            QTextStream(stderr) << QCoreApplication::translate("main", "Error: --mcp-gui can only be used with --mcp option.");
+            exit(1);
+        }
+
+        // Handle MCP mode
+        if (parser.isSet(mcpModeOption)) {
+            // Set MCP mode flag to disable QMessageBox popups
+            app.setMcpMode(true);
+
+            auto *window = new MainWindow();
+            app.setMainWindow(window);
+
+            // Show window only if GUI mode is requested
+            if (parser.isSet(mcpGuiOption)) {
+                window->show();
+            }
+
+            // Start MCP processor
+            MCPProcessor processor(window);
+            processor.startProcessing();
+
+            return app.exec();
+        }
+
         auto *window = new MainWindow();
         app.setMainWindow(window);
         window->show();
@@ -181,7 +242,8 @@ int main(int argc, char *argv[])
             window->loadPandaFile(args.at(0));
         }
     } catch (const std::exception &e) {
-        if (GlobalProperties::verbose) {
+        // Don't show QMessageBox in MCP mode as it blocks waiting for user interaction
+        if (GlobalProperties::verbose && !app.isInMcpMode()) {
             QMessageBox::critical(nullptr, QObject::tr("Error!"), e.what());
         }
         exit(1);

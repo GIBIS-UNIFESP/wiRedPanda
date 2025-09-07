@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
+set(CMAKE_POLICY_VERSION_MINIMUM 3.16) # for nlohmann/json
 project(wiredpanda VERSION 4.3.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -110,6 +111,27 @@ else()
     set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 endif()
 
+# FetchContent for external dependencies
+include(FetchContent)
+
+# nlohmann/json for JSON schema validation
+FetchContent_Declare(
+    json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.12.0
+    GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(json)
+
+# JSON Schema Validator for nlohmann/json
+FetchContent_Declare(
+    json-schema-validator
+    GIT_REPOSITORY https://github.com/pboettch/json-schema-validator.git
+    GIT_TAG 2.3.0
+    GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(json-schema-validator)
+
 # WebAssembly specific configuration
 if(EMSCRIPTEN)
     # Essential WASM flags
@@ -176,6 +198,9 @@ include_directories(
     app/element
     app/logicelement
     app/nodes
+    mcp/server/core
+    mcp/server/handlers
+    mcp/server/interfaces
 )
 
 # ========= TRANSLATIONS ===========================
@@ -282,7 +307,7 @@ endforeach()
 # ========= LIB ===================================
 
 add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS} ${FORMS})
-target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS})
+target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS} nlohmann_json::nlohmann_json nlohmann_json_schema_validator)
 
 option(ENABLE_PCH "Enable precompiled headers for faster compilation" ON)
 if(ENABLE_PCH)
@@ -309,6 +334,15 @@ else()
     add_executable(wiredpanda app/main.cpp ${RESOURCES_RCC})
 endif()
 target_link_libraries(wiredpanda PRIVATE wiredpanda_lib)
+
+# Copy JSON schema to executable directory after build
+add_custom_command(TARGET wiredpanda POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_SOURCE_DIR}/mcp/schema-mcp.json
+        $<TARGET_FILE_DIR:wiredpanda>/schema-mcp.json
+    COMMENT "Copying JSON schema to executable directory"
+    VERBATIM
+)
 
 # Run windeployqt on Windows to copy Qt dependencies
 if(WIN32)
