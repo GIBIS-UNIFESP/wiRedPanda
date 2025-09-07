@@ -22,8 +22,12 @@ public:
     MainWindow *mainWindow() const;
     void setMainWindow(MainWindow *mainWindow);
 
+    bool isInMcpMode() const;
+    void setMcpMode(bool mcpMode);
+
 private:
     Q_DISABLE_COPY(Application)
 
     MainWindow *m_mainWindow = nullptr;
+    bool m_mcpMode = false;
 };
