@@ -106,6 +106,19 @@ public:
     void saveToTxt(QTextStream &stream);
     void show();
 
+    // MCP interface methods for programmatic access
+    bool exportToPng(const QString &filename);
+    void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = false);
+    void prepare(const QString &fileName = {});
+    void run();
+    void setLength(const int simLength, const bool runSimulation = false);
+
+    // Getters for MCP access to internal data
+    QStandardItemModel* getModel() const { return m_model; }
+    const QVector<GraphicElement *>& getOutputElements() const { return m_outputs; }
+    const QVector<GraphicElementInput *>& getInputElements() const { return m_inputs; }
+    int getLength() const { return m_length; }
+
 protected:
     void closeEvent(QCloseEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
@@ -114,11 +127,11 @@ private:
     Q_DISABLE_COPY(BewavedDolphin)
 
     bool checkSave();
+    bool exportWaveformToPng(const QString &filename);
     int sectionFirstColumn(const QItemSelection &ranges);
     int sectionFirstRow(const QItemSelection &ranges);
     void associateToWiRedPanda(const QString &fileName);
     void copy(const QItemSelection &ranges, QDataStream &stream);
-    void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = true);
     void createOneElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
     void createZeroElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
     void cut(const QItemSelection &ranges, QDataStream &stream);
@@ -158,14 +171,11 @@ private:
     void on_tableView_cellDoubleClicked();
     void on_tableView_selectionChanged();
     void paste(const QItemSelection &ranges, QDataStream &stream);
-    void prepare(const QString &fileName = {});
     void resizeScene();
     void restoreInputs();
-    void run();
     void save(QDataStream &stream);
     void save(QSaveFile &file);
     void save(const QString &fileName);
-    void setLength(const int simLength, const bool runSimulation);
     void zoomChanged();
 
     std::unique_ptr<BewavedDolphin_Ui> m_ui;

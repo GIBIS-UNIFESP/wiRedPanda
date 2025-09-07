@@ -686,6 +686,32 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
     }
 }
 
+bool BewavedDolphin::exportToPng(const QString &filename)
+{
+    try {
+        // Calculate dimensions based on actual waveform data
+        const int timeSteps = m_model->columnCount();
+        const int signalCount = m_model->rowCount();
+
+        // Use reasonable cell dimensions for waveform visibility
+        const int cellWidth = 50;   // pixels per time step
+        const int cellHeight = 40;  // pixels per signal
+        const int padding = 100;    // extra space for labels and margins
+
+        const int calculatedWidth = (timeSteps * cellWidth) + padding;
+        const int calculatedHeight = (signalCount * cellHeight) + padding;
+
+        // Apply the same scaling logic as resizeScene()
+        m_signalTableView->resize(static_cast<int>(calculatedWidth / (m_scale * 0.8)),
+                                  static_cast<int>(calculatedHeight / (m_scale * 0.8)));
+        m_scene->setSceneRect(m_scene->itemsBoundingRect());
+
+        return exportWaveformToPng(filename);
+    } catch (...) {
+        return false;
+    }
+}
+
 void BewavedDolphin::on_actionSetTo0_triggered()
 {
     qCDebug(zero) << "Pressed 0.";
@@ -1369,6 +1395,11 @@ void BewavedDolphin::on_actionExportToPng_triggered()
         pngFile.append(".png");
     }
 
+    exportWaveformToPng(pngFile);
+}
+
+bool BewavedDolphin::exportWaveformToPng(const QString &filename)
+{
     QRectF sceneRect = m_scene->sceneRect();
     QPixmap pixmap(sceneRect.size().toSize());
 
@@ -1378,7 +1409,7 @@ void BewavedDolphin::on_actionExportToPng_triggered()
     m_scene->render(&painter, QRectF(), sceneRect);
     painter.end();
 
-    pixmap.toImage().save(pngFile);
+    return pixmap.toImage().save(filename);
 }
 
 void BewavedDolphin::on_actionExportToPdf_triggered()
