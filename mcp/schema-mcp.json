@@ -1,0 +1,972 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://wiredpanda.org/schemas/mcp-v1.0.json",
+  "title": "wiRedPanda MCP (Model Context Protocol) Schema",
+  "description": "JSON Schema for wiRedPanda Model Context Protocol commands and responses",
+  "type": "object",
+  "version": "1.0.0",
+
+  "definitions": {
+    "ElementType": {
+      "type": "string",
+      "description": "Valid element types for circuit creation",
+      "enum": [
+        "And", "Or", "Not", "Nor", "Nand", "Xor", "Xnor", "Node",
+        "InputButton", "InputSwitch", "InputRotary", "InputVcc", "InputGnd", "Clock",
+        "Led", "Buzzer", "AudioBox", "Display7", "Display14", "Display16",
+        "DFlipFlop", "DLatch", "JKFlipFlop", "SRFlipFlop", "SRLatch", "TFlipFlop",
+        "Mux", "Demux", "IC", "TruthTable", "Line", "Text"
+      ]
+    },
+
+    "SimulationAction": {
+      "type": "string",
+      "description": "Valid simulation control actions",
+      "enum": ["start", "stop", "restart", "update"]
+    },
+
+    "ImageExportFormat": {
+      "type": "string",
+      "description": "Valid export formats for circuit images",
+      "enum": ["png", "svg", "pdf"]
+    },
+
+    "WaveformExportFormat": {
+      "type": "string",
+      "description": "Valid export formats for waveform data and charts",
+      "enum": ["txt", "png"]
+    },
+
+    "Position": {
+      "type": "object",
+      "properties": {
+        "x": {"type": "number", "description": "X coordinate"},
+        "y": {"type": "number", "description": "Y coordinate"}
+      },
+      "required": ["x", "y"],
+      "additionalProperties": false
+    },
+
+    "Element": {
+      "type": "object",
+      "properties": {
+        "element_id": {"type": "integer", "minimum": 1},
+        "type": {"$ref": "#/definitions/ElementType"},
+        "x": {"type": "number"},
+        "y": {"type": "number"},
+        "label": {"type": "string"}
+      },
+      "required": ["element_id", "type", "x", "y"],
+      "additionalProperties": false
+    },
+
+    "CommandRequest": {
+      "type": "object",
+      "properties": {
+        "jsonrpc": {"type": "string", "const": "2.0"},
+        "method": {"type": "string", "minLength": 1},
+        "params": {"type": "object"},
+        "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+      },
+      "required": ["jsonrpc", "method"],
+      "additionalProperties": false
+    },
+
+    "CommandResponse": {
+      "type": "object",
+      "properties": {
+        "jsonrpc": {"type": "string", "const": "2.0"},
+        "result": {"type": "object"},
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {"type": "integer"},
+            "message": {"type": "string"},
+            "data": {"type": ["object", "array", "string", "number", "boolean", "null"]}
+          },
+          "required": ["code", "message"],
+          "additionalProperties": false
+        },
+        "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+      },
+      "required": ["jsonrpc", "id"],
+      "oneOf": [
+        {
+          "required": ["result"],
+          "not": {"required": ["error"]}
+        },
+        {
+          "required": ["error"],
+          "not": {"required": ["result"]}
+        }
+      ],
+      "additionalProperties": false
+    }
+  },
+
+  "properties": {
+    "commands": {
+      "type": "object",
+      "description": "All available MCP commands",
+      "properties": {
+
+        "create_element": {
+          "type": "object",
+          "description": "Create a new circuit element",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "create_element"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "type": {"$ref": "#/definitions/ElementType"},
+                "x": {"type": "number"},
+                "y": {"type": "number"},
+                "label": {"type": "string", "description": "Optional element label"}
+              },
+              "required": ["type", "x", "y"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "delete_element": {
+          "type": "object",
+          "description": "Delete an existing circuit element",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "delete_element"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "element_id": {"type": "integer", "minimum": 1}
+              },
+              "required": ["element_id"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "connect_elements": {
+          "type": "object",
+          "description": "Connect two circuit elements via their ports",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "connect_elements"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "source_id": {"type": "integer", "minimum": 1},
+                "source_port": {"type": "integer", "minimum": 0},
+                "target_id": {"type": "integer", "minimum": 1},
+                "target_port": {"type": "integer", "minimum": 0}
+              },
+              "required": ["source_id", "source_port", "target_id", "target_port"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "disconnect_elements": {
+          "type": "object",
+          "description": "Disconnect two circuit elements",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "disconnect_elements"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "source_id": {"type": "integer", "minimum": 1},
+                "target_id": {"type": "integer", "minimum": 1}
+              },
+              "required": ["source_id", "target_id"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "list_connections": {
+          "type": "object",
+          "description": "List all connections in the current circuit",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "list_connections"},
+            "params": {
+              "type": "object",
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "list_elements": {
+          "type": "object",
+          "description": "List all elements in the current circuit",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "list_elements"},
+            "params": {
+              "type": "object",
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "simulation_control": {
+          "type": "object",
+          "description": "Control circuit simulation (start/stop/restart)",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "simulation_control"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "action": {"$ref": "#/definitions/SimulationAction"}
+              },
+              "required": ["action"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "set_input_value": {
+          "type": "object",
+          "description": "Set the value of an input element",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "set_input_value"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "element_id": {"type": "integer", "minimum": 1},
+                "value": {"type": "boolean"}
+              },
+              "required": ["element_id", "value"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "get_output_value": {
+          "type": "object",
+          "description": "Get the current value of an element's output",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "get_output_value"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "element_id": {"type": "integer", "minimum": 1}
+              },
+              "required": ["element_id"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "get_server_info": {
+          "type": "object",
+          "description": "Get server information, version, and capabilities",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "get_server_info"},
+            "params": {
+              "type": "object",
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "load_circuit": {
+          "type": "object",
+          "description": "Load a circuit from a .panda file",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "load_circuit"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "filename": {"type": "string", "minLength": 1, "pattern": ".*\\.panda$"}
+              },
+              "required": ["filename"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "save_circuit": {
+          "type": "object",
+          "description": "Save the current circuit to a .panda file",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "save_circuit"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "filename": {"type": "string", "pattern": ".*\\.panda$"}
+              },
+              "required": ["filename"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "new_circuit": {
+          "type": "object",
+          "description": "Create a new empty circuit",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "new_circuit"},
+            "params": {
+              "type": "object",
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "close_circuit": {
+          "type": "object",
+          "description": "Close the current circuit tab without saving",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "close_circuit"},
+            "params": {
+              "type": "object",
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "get_tab_count": {
+          "type": "object",
+          "description": "Get the number of open circuit tabs",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "get_tab_count"},
+            "params": {
+              "type": "object",
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "export_image": {
+          "type": "object",
+          "description": "Export circuit as image (PNG/SVG/PDF)",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "export_image"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "filename": {"type": "string", "minLength": 1},
+                "format": {"$ref": "#/definitions/ImageExportFormat"},
+                "padding": {"type": "integer", "minimum": 0, "default": 20}
+              },
+              "required": ["filename", "format"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "create_waveform": {
+          "type": "object",
+          "description": "Create waveform analysis for the current circuit",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "create_waveform"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "elements": {
+                  "type": "array",
+                  "items": {"type": "integer", "minimum": 1},
+                  "description": "Optional list of element IDs to analyze"
+                },
+                "duration": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1024,
+                  "default": 64,
+                  "description": "Number of simulation steps"
+                },
+                "input_patterns": {
+                  "type": "object",
+                  "description": "Input patterns for specific input elements",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {"type": "integer", "minimum": 0, "maximum": 1},
+                    "description": "Array of 0/1 values for this input signal"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "export_waveform": {
+          "type": "object",
+          "description": "Export waveform data to file (TXT or PNG format)",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "export_waveform"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "filename": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Output filename for the waveform export"
+                },
+                "format": {
+                  "$ref": "#/definitions/WaveformExportFormat",
+                  "description": "Export format: 'txt' for text data or 'png' for image"
+                }
+              },
+              "required": ["filename", "format"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "create_ic": {
+          "type": "object",
+          "description": "Create an Integrated Circuit (IC) from current circuit",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "create_ic"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "name": {"type": "string", "minLength": 1},
+                "description": {"type": "string", "description": "Optional IC description"}
+              },
+              "required": ["name"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "instantiate_ic": {
+          "type": "object",
+          "description": "Create an instance of a previously created IC",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "instantiate_ic"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "ic_name": {"type": "string", "minLength": 1},
+                "x": {"type": "number"},
+                "y": {"type": "number"},
+                "label": {"type": "string", "description": "Optional instance label"}
+              },
+              "required": ["ic_name", "x", "y"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "list_ics": {
+          "type": "object",
+          "description": "List all available ICs in the current directory",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "list_ics"},
+            "params": {
+              "type": "object",
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "move_element": {
+          "type": "object",
+          "description": "Move an element to a new position",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "move_element"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "element_id": {"type": "integer", "minimum": 1},
+                "x": {"type": "number"},
+                "y": {"type": "number"}
+              },
+              "required": ["element_id", "x", "y"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "set_element_properties": {
+          "type": "object",
+          "description": "Set various properties of an element",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "set_element_properties"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "element_id": {"type": "integer", "minimum": 1},
+                "label": {"type": "string"},
+                "input_size": {"type": "integer", "minimum": 1},
+                "output_size": {"type": "integer", "minimum": 1},
+                "color": {"type": "string"},
+                "frequency": {"type": "number", "minimum": 0},
+                "rotation": {"type": "number"}
+              },
+              "required": ["element_id"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        }
+      }
+    },
+
+    "responses": {
+      "type": "object",
+      "description": "Response formats for MCP commands",
+      "properties": {
+
+        "create_element_response": {
+          "allOf": [
+            {"$ref": "#/definitions/CommandResponse"},
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "element_id": {"type": "integer", "minimum": 1}
+                  },
+                  "required": ["element_id"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+
+        "list_connections_response": {
+          "allOf": [
+            {"$ref": "#/definitions/CommandResponse"},
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "connections": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "source_id": {"type": "integer"},
+                          "source_port": {"type": "integer"},
+                          "target_id": {"type": "integer"},
+                          "target_port": {"type": "integer"}
+                        },
+                        "required": ["source_id", "source_port", "target_id", "target_port"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["connections"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+
+        "list_elements_response": {
+          "allOf": [
+            {"$ref": "#/definitions/CommandResponse"},
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "elements": {
+                      "type": "array",
+                      "items": {"$ref": "#/definitions/Element"}
+                    }
+                  },
+                  "required": ["elements"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+
+        "get_output_value_response": {
+          "allOf": [
+            {"$ref": "#/definitions/CommandResponse"},
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "value": {"type": "boolean"}
+                  },
+                  "required": ["value"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+
+        "export_image_response": {
+          "allOf": [
+            {"$ref": "#/definitions/CommandResponse"},
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "exported_file": {"type": "string"},
+                    "format": {"type": "string"},
+                    "size": {"type": "string"}
+                  },
+                  "required": ["exported_file", "format", "size"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+
+        "create_waveform_response": {
+          "allOf": [
+            {"$ref": "#/definitions/CommandResponse"},
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "actual_duration": {"type": "integer"},
+                    "requested_duration": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "status": {"type": "string"},
+                    "warning": {"type": "string"},
+                    "waveform_data": {
+                      "type": "object",
+                      "properties": {
+                        "duration": {"type": "integer"},
+                        "inputs": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "label": {"type": "string"},
+                              "type": {"type": "string"},
+                              "values": {
+                                "type": "array",
+                                "items": {"type": "integer"}
+                              }
+                            },
+                            "required": ["label", "type", "values"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "outputs": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "label": {"type": "string"},
+                              "type": {"type": "string"},
+                              "values": {
+                                "type": "array",
+                                "items": {"type": "integer"}
+                              }
+                            },
+                            "required": ["label", "type", "values"],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": ["duration", "inputs", "outputs"],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": ["actual_duration", "requested_duration", "message", "status"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+
+        "export_waveform_response": {
+          "allOf": [
+            {"$ref": "#/definitions/CommandResponse"},
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "filename": {"type": "string"},
+                    "format": {"type": "string"},
+                    "exported": {"type": "boolean"}
+                  },
+                  "required": ["filename", "format", "exported"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+
+        "create_ic_response": {
+          "allOf": [
+            {"$ref": "#/definitions/CommandResponse"},
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "name": {"type": "string"},
+                    "filename": {"type": "string"},
+                    "path": {"type": "string"},
+                    "elements_count": {"type": "integer"},
+                    "description": {"type": "string"},
+                    "message": {"type": "string"}
+                  },
+                  "required": ["name", "filename", "path", "elements_count", "message"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+
+        "instantiate_ic_response": {
+          "allOf": [
+            {"$ref": "#/definitions/CommandResponse"},
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "element_id": {"type": "integer"},
+                    "ic_name": {"type": "string"},
+                    "filename": {"type": "string"},
+                    "label": {"type": "string"},
+                    "position": {"$ref": "#/definitions/Position"},
+                    "input_count": {"type": "integer"},
+                    "output_count": {"type": "integer"},
+                    "message": {"type": "string"}
+                  },
+                  "required": ["element_id", "ic_name", "filename", "label", "position", "input_count", "output_count", "message"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+
+        "list_ics_response": {
+          "allOf": [
+            {"$ref": "#/definitions/CommandResponse"},
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "ics": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {"type": "string"},
+                          "filename": {"type": "string"},
+                          "path": {"type": "string"},
+                          "size": {"type": "integer"},
+                          "modified": {"type": "string"},
+                          "input_count": {"type": "integer"},
+                          "output_count": {"type": "integer"},
+                          "has_valid_definition": {"type": "boolean"}
+                        },
+                        "required": ["name", "filename", "path", "has_valid_definition"],
+                        "additionalProperties": false
+                      }
+                    },
+                    "directory": {"type": "string"},
+                    "count": {"type": "integer"}
+                  },
+                  "required": ["ics", "directory", "count"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+
+        "move_element_response": {
+          "allOf": [
+            {"$ref": "#/definitions/CommandResponse"},
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "old_position": {"$ref": "#/definitions/Position"},
+                    "new_position": {"$ref": "#/definitions/Position"}
+                  },
+                  "required": ["old_position", "new_position"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+
+        "set_element_properties_response": {
+          "allOf": [
+            {"$ref": "#/definitions/CommandResponse"},
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "old_properties": {"type": "object"},
+                    "new_properties": {"type": "object"}
+                  },
+                  "required": ["old_properties", "new_properties"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+
+  "examples": {
+    "create_and_gate": {
+      "jsonrpc": "2.0",
+      "method": "create_element",
+      "params": {
+        "type": "And",
+        "x": 100,
+        "y": 150,
+        "label": "AND Gate 1"
+      },
+      "id": 1
+    },
+
+    "connect_elements": {
+      "jsonrpc": "2.0",
+      "method": "connect_elements",
+      "params": {
+        "source_id": 1,
+        "source_port": 0,
+        "target_id": 2,
+        "target_port": 0
+      },
+      "id": 2
+    },
+
+    "start_simulation": {
+      "jsonrpc": "2.0",
+      "method": "simulation_control",
+      "params": {
+        "action": "start"
+      },
+      "id": 3
+    },
+
+    "set_input_high": {
+      "jsonrpc": "2.0",
+      "method": "set_input_value",
+      "params": {
+        "element_id": 1,
+        "value": true
+      },
+      "id": 4
+    },
+
+    "export_circuit_png": {
+      "jsonrpc": "2.0",
+      "method": "export_image",
+      "params": {
+        "filename": "my_circuit.png",
+        "format": "png",
+        "padding": 20
+      },
+      "id": 5
+    }
+  }
+}
