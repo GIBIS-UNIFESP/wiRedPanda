@@ -19,7 +19,10 @@ bool Application::notify(QObject *receiver, QEvent *event)
     try {
         done = QApplication::notify(receiver, event);
     } catch (const std::exception &e) {
-        QMessageBox::critical(mainWindow(), tr("Error!"), e.what());
+        // Don't show QMessageBox in MCP mode as it blocks waiting for user interaction
+        if (!m_mcpMode) {
+            QMessageBox::critical(mainWindow(), tr("Error!"), e.what());
+        }
 #ifdef HAVE_SENTRY
         sentry_value_t event_ = sentry_value_new_event();
 
@@ -49,4 +52,14 @@ MainWindow *Application::mainWindow() const
 void Application::setMainWindow(MainWindow *mainWindow)
 {
     m_mainWindow = mainWindow;
+}
+
+bool Application::isInMcpMode() const
+{
+    return m_mcpMode;
+}
+
+void Application::setMcpMode(bool mcpMode)
+{
+    m_mcpMode = mcpMode;
 }

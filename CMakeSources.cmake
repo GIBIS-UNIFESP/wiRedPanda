@@ -85,6 +85,18 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logictruthtable.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicxnor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicxor.cpp
+
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/core/mcpprocessor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/core/mcpvalidator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/core/handlerfactory.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/core/standardvalidator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/handlers/basehandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/handlers/connectionhandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/handlers/elementhandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/handlers/filehandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/handlers/mcputilities.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/handlers/serverinfohandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/handlers/simulationhandler.cpp
 )
 
 set(HEADERS
@@ -178,6 +190,21 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logictruthtable.h
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicxnor.h
     ${CMAKE_CURRENT_LIST_DIR}/app/logicelement/logicxor.h
+
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/core/mcpprocessor.h
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/core/mcpvalidator.h
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/core/handlerfactory.h
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/core/standardvalidator.h
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/interfaces/icommand.h
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/interfaces/iresponse.h
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/interfaces/ivalidator.h
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/handlers/basehandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/handlers/connectionhandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/handlers/elementhandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/handlers/filehandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/handlers/mcputilities.h
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/handlers/serverinfohandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/mcp/server/handlers/simulationhandler.h
 )
 
 set(RESOURCES
