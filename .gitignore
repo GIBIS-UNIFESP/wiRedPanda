@@ -101,6 +101,7 @@ htmlcov/
 .hypothesis/
 .pytest_cache/
 test-results/
+__pycache__/
 
 # Documentation
 /docs/_build/
