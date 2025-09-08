@@ -11,7 +11,15 @@ LogicNode::LogicNode()
 void LogicNode::updateLogic()
 {
     if (!updateInputs()) {
-        return;
+        // For wireless nodes, try to use the output value as the source
+        // This allows wireless receiving nodes to be valid even without physical inputs
+        if (isValid()) {
+            // Node is acting as a wireless signal source - keep current output value
+            return;
+        } else {
+            // No valid inputs and no valid output - node is invalid
+            return;
+        }
     }
 
     setOutputValue(m_inputValues.at(0));

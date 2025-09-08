@@ -5,11 +5,14 @@
 
 #include "common.h"
 #include "elementfactory.h"
+#include "enums.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
+#include "node.h"
 #include "serialization.h"
 #include "settings.h"
 #include "simulationblocker.h"
+#include "wirelessconnectionmanager.h"
 
 #include <QFileDialog>
 #include <QHBoxLayout>
@@ -197,6 +200,9 @@ void WorkSpace::load(QDataStream &stream, QVersionNumber version)
 
     ElementFactory::setLastId(m_lastId);
 
+    // Restore wireless connections now that all nodes are added to the scene
+    restoreWirelessConnections();
+
     m_scene.setSceneRect(m_scene.itemsBoundingRect());
 
     qCDebug(zero) << "Finished loading file.";
@@ -310,4 +316,36 @@ void WorkSpace::autosave()
 void WorkSpace::setAutosaveFile()
 {
     m_autosaveFile.setFileName(m_fileInfo.filePath());
+}
+
+void WorkSpace::restoreWirelessConnections()
+{
+    qCDebug(zero) << "Restoring wireless connections after loading";
+
+    if (!m_scene.wirelessManager()) {
+        qCWarning(zero) << "No wireless manager found in scene";
+        return;
+    }
+
+    // Find all Node elements in the scene and restore their wireless connections
+    const auto items = m_scene.items();
+    int restoredCount = 0;
+
+
+    for (auto *item : items) {
+        if (item->type() == GraphicElement::Type) {
+            if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
+                if (element->elementType() == ElementType::Node) {
+                    if (auto *node = qobject_cast<Node *>(element)) {
+                        const QString wirelessLabel = node->getWirelessLabel();
+                        if (!wirelessLabel.isEmpty()) {
+                            m_scene.wirelessManager()->setNodeWirelessLabel(node, wirelessLabel);
+                            restoredCount++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

@@ -8,8 +8,10 @@
 #include "elementmapping.h"
 #include "graphicelement.h"
 #include "ic.h"
+#include "node.h"
 #include "qneconnection.h"
 #include "scene.h"
+#include "wirelessconnectionmanager.h"
 
 #include <QGraphicsView>
 
@@ -60,9 +62,13 @@ void Simulation::update()
         }
     }
 
+    // Update physical connections
     for (auto *connection : std::as_const(m_connections)) {
         updatePort(connection->startPort());
     }
+
+    // Update wireless connections
+    updateWirelessConnections();
 
     for (auto *outputElm : std::as_const(m_outputs)) {
         for (auto *inputPort : outputElm->inputs()) {
@@ -97,6 +103,55 @@ void Simulation::updatePort(QNEInputPort *port)
 
     if (elm->elementGroup() == ElementGroup::Output) {
         elm->refresh();
+    }
+}
+
+void Simulation::updateWirelessConnections()
+{
+    if (!m_scene->wirelessManager()) {
+        return;
+    }
+
+    // Get all active wireless labels
+    const QStringList activeLabels = m_scene->wirelessManager()->getActiveLabels();
+
+    for (const QString &label : activeLabels) {
+        // 1-N model: get source and sinks for this label
+        Node *source = m_scene->wirelessManager()->getWirelessSource(label);
+        QSet<Node *> sinks = m_scene->wirelessManager()->getWirelessSinks(label);
+
+        if (!source || sinks.isEmpty()) {
+            continue; // No complete wireless connection (need source AND sinks)
+        }
+
+        // Get signal from the source node
+        Status sourceSignal = Status::Invalid;
+        if (source->logic() && source->logic()->isValid()) {
+            sourceSignal = static_cast<Status>(source->logic()->outputValue(0));
+}
+
+        // Broadcast signal from source to all sinks (simple 1-N broadcast)
+        for (Node *sink : sinks) {
+            if (!sink || !sink->logic()) {
+                continue;
+            }
+
+            // Set the output of sink node to match source signal
+            sink->outputPort()->setStatus(sourceSignal);
+
+            // Update sink node's internal logic value
+            if (sink->logic() && sourceSignal != Status::Invalid) {
+                sink->logic()->setOutputValue(0, static_cast<bool>(sourceSignal));
+            }
+
+            // Update elements connected to this sink
+            const auto connections = sink->outputPort()->connections();
+            for (auto *connection : connections) {
+                if (auto *inputPort = connection->endPort()) {
+                    updatePort(inputPort);
+                }
+            }
+        }
     }
 }
 

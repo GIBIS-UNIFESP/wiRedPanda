@@ -63,6 +63,10 @@ private:
     void triggerChanged(const QString &cmd);
     void updateSkins();
 
+    // Wireless functionality
+    void connectNode(const QString& label);
+    void refreshWirelessCombobox();
+
     std::unique_ptr<ElementEditor_Ui> m_ui;
     QDialog *m_tableBox = nullptr;
     QList<GraphicElement *> m_elements;
@@ -91,6 +95,7 @@ private:
     bool m_hasElements = false;
     bool m_hasFrequency = false;
     bool m_hasLabel = false;
+    bool m_hasNode = false;
     bool m_hasOnlyInputs = false;
     bool m_hasRotation = false;
     bool m_hasSameAudio = false;
