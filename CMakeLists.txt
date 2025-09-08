@@ -297,7 +297,7 @@ target_link_libraries(wiredpanda PRIVATE wiredpanda_lib)
 # Run windeployqt on Windows to copy Qt dependencies
 if(WIN32)
     find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS ${Qt${QT_VERSION_MAJOR}_DIR}/../../../bin)
-    
+
     if(WINDEPLOYQT_EXECUTABLE)
         add_custom_command(TARGET wiredpanda POST_BUILD
             COMMAND ${WINDEPLOYQT_EXECUTABLE} --verbose 2 --no-translations --no-system-d3d-compiler --no-opengl-sw --no-compiler-runtime $<TARGET_FILE:wiredpanda>
