@@ -53,7 +53,7 @@ Advanced development features supported:
   QT_QPA_PLATFORM=offscreen ./build/wiredpanda-test
   ```
 
-- **Test execution (Windows after windeployqt)**: From `build/Release` directory:
+- **Test execution (Windows after windeployqt)**: From `build` directory:
 
   ```powershell
   powershell -Command "Start-Process -FilePath 'wiredpanda-test.exe' -Wait -NoNewWindow"

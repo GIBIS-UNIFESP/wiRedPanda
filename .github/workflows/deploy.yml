@@ -295,14 +295,14 @@ jobs:
       run: |
         cmake -B build -G "Visual Studio 17 2022" -A ${{ startsWith(matrix.qt, '5') && 'Win32' || 'x64' }}
         cmake --build build --config Release
-        cp thirdparty/sentry/bin/crashpad_handler.exe build/Release/
-        cp thirdparty/sentry/bin/sentry.dll build/Release/
-        cp thirdparty/sentry/bin/crashpad_wer.dll build/Release/
+        cp thirdparty/sentry/bin/crashpad_handler.exe build/
+        cp thirdparty/sentry/bin/sentry.dll build/
+        cp thirdparty/sentry/bin/crashpad_wer.dll build/
 
     - name: Test Windows
       if: runner.os == 'Windows'
       run: |
-        cd build/Release
+        cd build
         powershell -Command "Start-Process -FilePath 'wiredpanda-test.exe' -Wait -NoNewWindow"
 
     - name: windeployqt
@@ -313,10 +313,10 @@ jobs:
         mkdir wiredpanda-$env:VERSION
 
         # Copy only essential files to clean directory
-        cp Release/wiredpanda.exe wiredpanda-$env:VERSION/
-        cp Release/crashpad_handler.exe wiredpanda-$env:VERSION/
-        cp Release/sentry.dll wiredpanda-$env:VERSION/
-        cp Release/crashpad_wer.dll wiredpanda-$env:VERSION/
+        cp wiredpanda.exe wiredpanda-$env:VERSION/
+        cp crashpad_handler.exe wiredpanda-$env:VERSION/
+        cp sentry.dll wiredpanda-$env:VERSION/
+        cp crashpad_wer.dll wiredpanda-$env:VERSION/
         cp -r ../examples wiredpanda-$env:VERSION/
 
         # Run windeployqt in the clean directory
