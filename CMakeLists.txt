@@ -264,6 +264,21 @@ foreach(ts_file ${TS_FILES})
     message(STATUS "  - ${lang}")
 endforeach()
 
+# ========= OUTPUT DIRECTORIES ===================================
+
+# Force all output to be in the build root directory, not in Debug/Release subdirs
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+# For multi-config generators (like Visual Studio), override per-config output dirs
+foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+    string(TOUPPER ${CONFIG} CONFIG_UPPER)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONFIG_UPPER} ${CMAKE_BINARY_DIR})
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONFIG_UPPER} ${CMAKE_BINARY_DIR})
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CONFIG_UPPER} ${CMAKE_BINARY_DIR})
+endforeach()
+
 # ========= LIB ===================================
 
 add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS} ${FORMS})
