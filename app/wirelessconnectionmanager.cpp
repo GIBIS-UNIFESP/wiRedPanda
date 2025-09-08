@@ -182,16 +182,22 @@ void WirelessConnectionManager::deserialize(QDataStream &stream)
     // Clear existing data
     m_labelGroups.clear();
     m_nodeLabels.clear();
+    m_sourcesMap.clear();
+    m_sinksMap.clear();
 
     // Rebuild wireless connections after all nodes are loaded
     for (auto it = nodeWirelessLabels.cbegin(); it != nodeWirelessLabels.cend(); ++it) {
         const int nodeId = it.key();
         const QString &label = it.value();
 
-        if (auto *node = m_scene->findNode(nodeId)) {
-            setNodeWirelessLabel(node, label);
+        if (m_scene) {
+            if (auto *node = m_scene->findNode(nodeId)) {
+                setNodeWirelessLabel(node, label);
+            } else {
+                qCWarning(zero) << "Node" << nodeId << "not found for wireless label" << label;
+            }
         } else {
-            qCWarning(zero) << "Node" << nodeId << "not found for wireless label" << label;
+            qCWarning(zero) << "Scene is null during wireless deserialization";
         }
     }
 
@@ -238,11 +244,20 @@ void WirelessConnectionManager::onNodeDestroyed(QObject *obj)
     const QString currentLabel = m_nodeLabels.value(node, QString());
     if (!currentLabel.isEmpty()) {
 
-        // Remove from group and node mapping
+        // Remove from legacy group and node mapping
         if (m_labelGroups.contains(currentLabel)) {
             m_labelGroups[currentLabel].remove(node);
         }
         m_nodeLabels.remove(node);
+
+        // Remove from 1-N model data structures
+        if (m_sourcesMap.value(currentLabel) == node) {
+            m_sourcesMap.remove(currentLabel);
+        }
+        m_sinksMap[currentLabel].remove(node);
+        if (m_sinksMap[currentLabel].isEmpty()) {
+            m_sinksMap.remove(currentLabel);
+        }
 
         cleanupEmptyGroups();
         emit wirelessConnectionsChanged();
@@ -253,14 +268,37 @@ void WirelessConnectionManager::cleanupEmptyGroups()
 {
     QStringList emptyLabels;
 
+    // Find empty groups in legacy structure
     for (auto it = m_labelGroups.begin(); it != m_labelGroups.end(); ++it) {
         if (it.value().isEmpty()) {
             emptyLabels.append(it.key());
         }
     }
 
+    // Also check for labels with no sources and no sinks in 1-N model
+    for (auto it = m_sourcesMap.begin(); it != m_sourcesMap.end(); ++it) {
+        const QString &label = it.key();
+        if (!it.value() && (!m_sinksMap.contains(label) || m_sinksMap[label].isEmpty())) {
+            if (!emptyLabels.contains(label)) {
+                emptyLabels.append(label);
+            }
+        }
+    }
+
+    for (auto it = m_sinksMap.begin(); it != m_sinksMap.end(); ++it) {
+        const QString &label = it.key();
+        if (it.value().isEmpty() && (!m_sourcesMap.contains(label) || !m_sourcesMap[label])) {
+            if (!emptyLabels.contains(label)) {
+                emptyLabels.append(label);
+            }
+        }
+    }
+
+    // Clean up all data structures
     for (const QString &label : emptyLabels) {
         m_labelGroups.remove(label);
+        m_sourcesMap.remove(label);
+        m_sinksMap.remove(label);
     }
 }
 

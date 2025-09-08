@@ -126,9 +126,9 @@ void Simulation::updateWirelessConnections()
 
         // Get signal from the source node
         Status sourceSignal = Status::Invalid;
-        if (source->logic() && source->logic()->isValid()) {
+        if (source && source->logic() && source->logic()->isValid()) {
             sourceSignal = static_cast<Status>(source->logic()->outputValue(0));
-}
+        }
 
         // Broadcast signal from source to all sinks (simple 1-N broadcast)
         for (Node *sink : sinks) {
@@ -137,7 +137,9 @@ void Simulation::updateWirelessConnections()
             }
 
             // Set the output of sink node to match source signal
-            sink->outputPort()->setStatus(sourceSignal);
+            if (sink->outputPort()) {
+                sink->outputPort()->setStatus(sourceSignal);
+            }
 
             // Update sink node's internal logic value
             if (sink->logic() && sourceSignal != Status::Invalid) {
@@ -145,10 +147,12 @@ void Simulation::updateWirelessConnections()
             }
 
             // Update elements connected to this sink
-            const auto connections = sink->outputPort()->connections();
-            for (auto *connection : connections) {
-                if (auto *inputPort = connection->endPort()) {
-                    updatePort(inputPort);
+            if (sink->outputPort()) {
+                const auto connections = sink->outputPort()->connections();
+                for (auto *connection : connections) {
+                    if (connection && connection->endPort()) {
+                        updatePort(connection->endPort());
+                    }
                 }
             }
         }
