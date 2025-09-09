@@ -53,8 +53,8 @@
     // Container environment variables
     "containerEnv": {
         "QT_QPA_PLATFORM": "offscreen",
-        "QTDIR": "/usr/lib/qt5",
-        "QT_PLUGIN_PATH": "/usr/lib/x86_64-linux-gnu/qt5/plugins"
+        "QTDIR": "/opt/Qt/6.9.2/gcc_64",
+        "QT_PLUGIN_PATH": "/opt/Qt/6.9.2/gcc_64/plugins"
     },
 
     // Features to add to the dev container
