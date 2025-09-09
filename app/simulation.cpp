@@ -9,13 +9,14 @@
 #include "graphicelement.h"
 #include "ic.h"
 #include "logicelement/logicnode.h"
-#include "node.h"
+#include "element/node.h"
 #include "nodes/physicalconnection.h"
 #include "nodes/wirelessconnection.h"
 #include "qneconnection.h"
 #include "scene.h"
 #include "wirelessconnectionmanager.h"
 
+#include <QDebug>
 #include <QGraphicsView>
 
 using namespace std::chrono_literals;
@@ -228,18 +229,35 @@ bool Simulation::initialize()
     const auto globalTime = std::chrono::steady_clock::now();
 
     for (auto *item : items) {
+        qDebug() << "CRASH_DEBUG: Found scene item:" << item << "item->type():" << item->type();
+        
         // Check for all connection types - both physical and wireless
         if (item->type() == PhysicalConnection::Type) {
+            qDebug() << "CRASH_DEBUG: Found PhysicalConnection";
             m_connections.append(qgraphicsitem_cast<PhysicalConnection *>(item));
         } else if (item->type() == WirelessConnection::Type) {
+            qDebug() << "CRASH_DEBUG: Found WirelessConnection";
             m_connections.append(qgraphicsitem_cast<WirelessConnection *>(item));
         } else if (item->type() == QNEConnection::Type) {
+            qDebug() << "CRASH_DEBUG: Found legacy QNEConnection";
             // Legacy QNEConnection support (should not be created anymore)
             m_connections.append(qgraphicsitem_cast<QNEConnection *>(item));
         }
 
-        if (item->type() == GraphicElement::Type) {
-            auto *element = qgraphicsitem_cast<GraphicElement *>(item);
+        // Try to cast to GraphicElement
+        GraphicElement *element = qgraphicsitem_cast<GraphicElement *>(item);
+        
+        // If direct cast failed, try casting to Node (which inherits from GraphicElement)
+        if (!element && item->type() == Node::Type) {
+            qDebug() << "CRASH_DEBUG: Direct GraphicElement cast failed for Node, trying Node cast";
+            if (auto *node = qgraphicsitem_cast<Node *>(item)) {
+                element = node;  // Node inherits from GraphicElement
+                qDebug() << "CRASH_DEBUG: Successfully cast Node to GraphicElement";
+            }
+        }
+        
+        if (element) {
+            qDebug() << "CRASH_DEBUG: Adding element to simulation:" << element << "Type:" << static_cast<int>(element->elementType());
             elements.append(element);
 
             if (element->elementType() == ElementType::Clock) {
@@ -254,6 +272,8 @@ bool Simulation::initialize()
             if (element->elementGroup() == ElementGroup::Output) {
                 m_outputs.append(element);
             }
+        } else {
+            qDebug() << "CRASH_DEBUG: Item is not a GraphicElement:" << item;
         }
     }
 

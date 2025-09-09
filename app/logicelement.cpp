@@ -3,6 +3,7 @@
 
 #include "logicelement.h"
 
+#include <QDebug>
 #include <QHash>
 #include <QStack>
 
@@ -62,11 +63,40 @@ int LogicElement::outputSize() const
 
 void LogicElement::connectPredecessor(const int index, LogicElement *logic, const int port)
 {
-    m_inputPairs[index] = {logic, port};
-
-    if (!logic->m_successors.contains(this)) {
-        logic->m_successors.push_back(this);
+    qDebug() << "CRASH_DEBUG: connectPredecessor - this:" << this << "index:" << index << "logic:" << logic << "port:" << port;
+    
+    if (!logic) {
+        qDebug() << "CRASH_DEBUG: logic parameter is NULL!";
+        return;
     }
+    
+    if (index < 0 || index >= m_inputPairs.size()) {
+        qDebug() << "CRASH_DEBUG: index" << index << "out of range. m_inputPairs.size():" << m_inputPairs.size();
+        return;
+    }
+    
+    qDebug() << "CRASH_DEBUG: About to set m_inputPairs[" << index << "] = {" << logic << "," << port << "}";
+    m_inputPairs[index] = {logic, port};
+    
+    qDebug() << "CRASH_DEBUG: About to check if m_successors contains this. logic->m_successors.size():" << logic->m_successors.size();
+    
+    // Add defensive check for contains() call
+    bool containsThis = false;
+    try {
+        containsThis = logic->m_successors.contains(this);
+        qDebug() << "CRASH_DEBUG: m_successors.contains(this):" << containsThis;
+    } catch (...) {
+        qDebug() << "CRASH_DEBUG: Exception caught in m_successors.contains()!";
+        return;
+    }
+    
+    if (!containsThis) {
+        qDebug() << "CRASH_DEBUG: About to push_back to m_successors";
+        logic->m_successors.push_back(this);
+        qDebug() << "CRASH_DEBUG: push_back completed. New size:" << logic->m_successors.size();
+    }
+    
+    qDebug() << "CRASH_DEBUG: connectPredecessor completed successfully";
 }
 
 void LogicElement::setOutputValue(const int index, const bool value)
