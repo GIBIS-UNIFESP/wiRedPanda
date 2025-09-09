@@ -23,8 +23,10 @@
 #include "nor.h"
 #include "not.h"
 #include "or.h"
+#include "physicalconnection.h"
 #include "qneconnection.h"
 #include "qneport.h"
+#include "wirelessconnection.h"
 #include "srflipflop.h"
 #include "srlatch.h"
 #include "text.h"
@@ -60,7 +62,8 @@ inline void registerTypes() {
     qRegisterMetaType<Nor>();
     qRegisterMetaType<Not>();
     qRegisterMetaType<Or>();
-    qRegisterMetaType<QNEConnection>();
+    qRegisterMetaType<PhysicalConnection>();
+    qRegisterMetaType<WirelessConnection>();
     qRegisterMetaType<QNEInputPort>();
     qRegisterMetaType<QNEOutputPort>();
     qRegisterMetaType<SRFlipFlop>();

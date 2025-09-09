@@ -7,6 +7,7 @@
 #include "common.h"
 #include "inputbutton.h"
 #include "led.h"
+#include "physicalconnection.h"
 #include "qneconnection.h"
 #include "scene.h"
 #include "workspace.h"
@@ -21,9 +22,9 @@ void TestSimulation::testCase1()
     InputButton button2;
     And andItem;
     Led led;
-    QNEConnection connection1;
-    QNEConnection connection2;
-    QNEConnection connection3;
+    PhysicalConnection connection1;
+    PhysicalConnection connection2;
+    PhysicalConnection connection3;
 
     auto *scene = workspace.scene();
     scene->addItem(&led);

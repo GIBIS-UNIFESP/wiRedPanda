@@ -36,7 +36,8 @@ private:
     static void updatePort(QNEInputPort *port);
     static void updatePort(QNEOutputPort *port);
     void updateWithIterativeSettling();
-    void updateWirelessConnections();
+    void updateAllConnections();
+    // updateWirelessAsPhysical() removed - unified connection model in Option D
 
     QTimer m_timer;
     QVector<Clock *> m_clocks;

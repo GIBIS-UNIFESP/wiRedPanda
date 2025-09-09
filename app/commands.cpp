@@ -7,6 +7,7 @@
 #include "elementfactory.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
+#include "physicalconnection.h"
 #include "qneconnection.h"
 #include "qneport.h"
 #include "scene.h"
@@ -442,7 +443,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     m_elm2Id = conn->endPort()->graphicElement()->id();
 
     m_c1Id = conn->id();
-    m_c2Id = (new QNEConnection())->id();
+    m_c2Id = (new PhysicalConnection())->id();
 
     m_nodeId = node->id();
 
@@ -459,7 +460,7 @@ void SplitCommand::redo()
     auto *elm2 = findElm(m_elm2Id);
 
     if (!conn2) {
-        conn2 = new QNEConnection();
+        conn2 = new PhysicalConnection();
         ElementFactory::updateItemId(conn2, m_c2Id);
     }
 
@@ -760,7 +761,7 @@ void ChangeInputSizeCommand::undo()
 
     for (auto *elm : m_elements) {
         for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
-            auto *conn = new QNEConnection();
+            auto *conn = new PhysicalConnection();
             conn->load(stream, portMap);
             m_scene->addItem(conn);
         }
@@ -852,7 +853,7 @@ void ChangeOutputSizeCommand::undo()
 
     for (auto *elm : elements) {
         for (int out = m_newOutputSize; out < elm->outputSize(); ++out) {
-            auto *conn = new QNEConnection;
+            auto *conn = new PhysicalConnection();
             conn->load(stream, portMap);
             m_scene->addItem(conn);
         }

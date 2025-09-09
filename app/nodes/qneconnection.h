@@ -40,12 +40,10 @@ class QNEConnection : public QGraphicsPathItem, public ItemWithId
     Q_DECLARE_TR_FUNCTIONS(QNEConnection)
 
 public:
-    enum { Type = QGraphicsItem::UserType + 2 };
-    int type() const override { return Type; }
+    // Abstract base class - subclasses must define their own type
+    int type() const override = 0;
 
-    explicit QNEConnection(QGraphicsItem *parent = nullptr);
     ~QNEConnection() override;
-    QNEConnection(const QNEConnection &other) : QNEConnection(other.parentItem()) {}
 
     QNEInputPort *endPort() const;
     QNEOutputPort *startPort() const;
@@ -68,6 +66,10 @@ public:
     void updateTheme();
 
 protected:
+    // Protected constructor - only subclasses can instantiate
+    explicit QNEConnection(QGraphicsItem *parent = nullptr);
+    QNEConnection(const QNEConnection &other) : QNEConnection(other.parentItem()) {}
+    
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     bool sceneEvent(QEvent *event) override;
 
@@ -84,6 +86,6 @@ private:
     bool m_highLight = false;
 };
 
-Q_DECLARE_METATYPE(QNEConnection)
+// Note: QNEConnection is abstract - metatypes declared in concrete subclasses
 
 QDataStream &operator<<(QDataStream &stream, const QNEConnection *conn);

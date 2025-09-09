@@ -27,12 +27,16 @@ public:
     bool hasWirelessLabel() const;
 
     // Connection validation for wireless UI constraints
-    bool hasInputConnection() const;  // Can set wireless labels (receives signals)
-    bool hasOutputConnection() const; // Can select wireless labels (sends signals)
+    bool hasInputConnection() const;  // Legacy method - checks for any input connection
+    bool hasOutputConnection() const; // Legacy method - checks for any output connection
+    
+    // Type-safe connection detection methods
+    bool hasPhysicalInputConnection() const;   // Only counts PhysicalConnection objects
+    bool hasPhysicalOutputConnection() const;  // Only counts PhysicalConnection objects
 
-    // 1-N Wireless constraint methods
-    bool isWirelessSource() const;  // Has input connection AND wireless label (transmits wirelessly)
-    bool isWirelessSink() const;    // Has NO input connection AND wireless label (receives wirelessly)
+    // 1-N Wireless constraint methods (updated to use type-safe detection)
+    bool isWirelessSource() const;  // Has physical input connection AND wireless label (transmits wirelessly)
+    bool isWirelessSink() const;    // Has NO physical input connection AND wireless label (receives wirelessly)
 
 signals:
     void wirelessLabelChanged(const QString &oldLabel, const QString &newLabel);

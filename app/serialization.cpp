@@ -7,6 +7,7 @@
 #include "elementfactory.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
+#include "physicalconnection.h"
 #include "qneconnection.h"
 
 #include <QApplication>
@@ -125,7 +126,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
 
         case QNEConnection::Type: {
             qCDebug(three) << "Building connection.";
-            auto *conn = new QNEConnection();
+            auto *conn = new PhysicalConnection();
 
             qCDebug(three) << "Loading connection.";
             conn->load(stream, portMap);

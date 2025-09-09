@@ -39,4 +39,9 @@ private slots:
     void testWireless1NConstraint();
     void testWirelessUIValidation();
     void testWirelessDuplicationConstraint();
+    
+    // Timing equivalence tests
+    void testWirelessPhysicalTimingEquivalence();
+    void testMixedConnectionChains();
+    void testComplexTimingScenarios();
 };

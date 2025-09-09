@@ -8,7 +8,10 @@
 #include "elementmapping.h"
 #include "graphicelement.h"
 #include "ic.h"
+#include "logicelement/logicnode.h"
 #include "node.h"
+#include "nodes/physicalconnection.h"
+#include "nodes/wirelessconnection.h"
 #include "qneconnection.h"
 #include "scene.h"
 #include "wirelessconnectionmanager.h"
@@ -27,6 +30,9 @@ Simulation::Simulation(Scene *scene)
 
 void Simulation::update()
 {
+    static int cycleCount = 0;
+    qDebug() << "\n===== SIMULATION CYCLE" << cycleCount++ << "=====";
+    
     if (!m_initialized && !initialize()) {
         return;
     }
@@ -39,6 +45,7 @@ void Simulation::update()
         }
     }
 
+    qDebug() << "1. Updating input elements...";
     for (auto *inputElm : std::as_const(m_inputs)) {
         inputElm->updateOutputs();
     }
@@ -52,6 +59,7 @@ void Simulation::update()
         }
     }
 
+    qDebug() << "2. Updating logic elements..." << (hasFeedbackElements ? "(with feedback)" : "(single pass)");
     if (hasFeedbackElements) {
         // Use iterative settling for circuits with feedback loops
         updateWithIterativeSettling();
@@ -62,19 +70,19 @@ void Simulation::update()
         }
     }
 
-    // Update physical connections
-    for (auto *connection : std::as_const(m_connections)) {
-        updatePort(connection->startPort());
-    }
+    qDebug() << "3. Updating all connections (unified physical and wireless)...";
+    // Update all connections - both PhysicalConnection and WirelessConnection objects
+    // are processed identically since they both inherit from QNEConnection
+    updateAllConnections();
 
-    // Update wireless connections
-    updateWirelessConnections();
-
+    qDebug() << "4. Updating output elements...";
     for (auto *outputElm : std::as_const(m_outputs)) {
         for (auto *inputPort : outputElm->inputs()) {
             updatePort(inputPort);
         }
     }
+    
+    qDebug() << "===== END CYCLE =====\n";
 }
 
 void Simulation::updatePort(QNEOutputPort *port)
@@ -106,58 +114,21 @@ void Simulation::updatePort(QNEInputPort *port)
     }
 }
 
-void Simulation::updateWirelessConnections()
+void Simulation::updateAllConnections()
 {
-    if (!m_scene->wirelessManager()) {
-        return;
+    // Update all connections (both PhysicalConnection and WirelessConnection)
+    // Since WirelessConnection inherits from QNEConnection, they work identically
+    for (auto *connection : std::as_const(m_connections)) {
+        updatePort(connection->startPort());
     }
-
-    // Get all active wireless labels
-    const QStringList activeLabels = m_scene->wirelessManager()->getActiveLabels();
-
-    for (const QString &label : activeLabels) {
-        // 1-N model: get source and sinks for this label
-        Node *source = m_scene->wirelessManager()->getWirelessSource(label);
-        QSet<Node *> sinks = m_scene->wirelessManager()->getWirelessSinks(label);
-
-        if (!source || sinks.isEmpty()) {
-            continue; // No complete wireless connection (need source AND sinks)
-        }
-
-        // Get signal from the source node
-        Status sourceSignal = Status::Invalid;
-        if (source && source->logic() && source->logic()->isValid()) {
-            sourceSignal = static_cast<Status>(source->logic()->outputValue(0));
-        }
-
-        // Broadcast signal from source to all sinks (simple 1-N broadcast)
-        for (Node *sink : sinks) {
-            if (!sink || !sink->logic()) {
-                continue;
-            }
-
-            // Set the output of sink node to match source signal
-            if (sink->outputPort()) {
-                sink->outputPort()->setStatus(sourceSignal);
-            }
-
-            // Update sink node's internal logic value
-            if (sink->logic() && sourceSignal != Status::Invalid) {
-                sink->logic()->setOutputValue(0, static_cast<bool>(sourceSignal));
-            }
-
-            // Update elements connected to this sink
-            if (sink->outputPort()) {
-                const auto connections = sink->outputPort()->connections();
-                for (auto *connection : connections) {
-                    if (connection && connection->endPort()) {
-                        updatePort(connection->endPort());
-                    }
-                }
-            }
-        }
-    }
+    
+    // No special wireless handling needed! Perfect timing equivalence achieved
+    // through unified connection model
 }
+
+// updateWirelessAsPhysical() method removed - no longer needed in Option D!
+// Wireless connections are now actual QNEConnection objects that get processed 
+// automatically in updateAllConnections() with perfect timing equivalence.
 
 void Simulation::restart()
 {
@@ -257,7 +228,13 @@ bool Simulation::initialize()
     const auto globalTime = std::chrono::steady_clock::now();
 
     for (auto *item : items) {
-        if (item->type() == QNEConnection::Type) {
+        // Check for all connection types - both physical and wireless
+        if (item->type() == PhysicalConnection::Type) {
+            m_connections.append(qgraphicsitem_cast<PhysicalConnection *>(item));
+        } else if (item->type() == WirelessConnection::Type) {
+            m_connections.append(qgraphicsitem_cast<WirelessConnection *>(item));
+        } else if (item->type() == QNEConnection::Type) {
+            // Legacy QNEConnection support (should not be created anymore)
             m_connections.append(qgraphicsitem_cast<QNEConnection *>(item));
         }
 

@@ -18,6 +18,7 @@
 #include "mux.h"
 #include "node.h"
 #include "or.h"
+#include "physicalconnection.h"
 #include "qneconnection.h"
 #include "qneport.h"
 #include "scene.h"
@@ -33,7 +34,7 @@
 void TestElements::init()
 {
     for (int i = 0; i < connections.size(); ++i) {
-        connections[i] = new QNEConnection();
+        connections[i] = new PhysicalConnection();
         switches[i] = new InputSwitch();
         connections.at(i)->setStartPort(switches.at(i)->outputPort());
     }
@@ -219,19 +220,19 @@ void TestElements::testIC()
     auto *led1 = new Led();
     auto *led2 = new Led();
 
-    auto *connection1 = new QNEConnection();
+    auto *connection1 = new PhysicalConnection();
     connection1->setStartPort(clkButton->outputPort());
     connection1->setEndPort(ic->inputPort(2));
 
-    auto *connection2 = new QNEConnection();
+    auto *connection2 = new PhysicalConnection();
     connection2->setStartPort(prstButton->outputPort());
     connection2->setEndPort(ic->inputPort(0));
 
-    auto *connection3 = new QNEConnection();
+    auto *connection3 = new PhysicalConnection();
     connection3->setStartPort(ic->outputPort(0));
     connection3->setEndPort(led1->inputPort());
 
-    auto *connection4 = new QNEConnection();
+    auto *connection4 = new PhysicalConnection();
     connection4->setStartPort(ic->outputPort(1));
     connection4->setEndPort(led2->inputPort());
 

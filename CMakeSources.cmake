@@ -23,6 +23,8 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow_ui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneconnection.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/nodes/physicalconnection.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/nodes/wirelessconnection.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneport.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/recentfiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/scene.cpp
@@ -32,6 +34,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/app/simulationblocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/thememanager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/trashbutton.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/wirelessconnectionautomanager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/wirelessconnectionmanager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/workspace.cpp
 

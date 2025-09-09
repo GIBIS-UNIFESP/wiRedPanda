@@ -11,7 +11,11 @@ public:
     explicit LogicNode();
 
     void updateLogic() override;
+    
+    // Option D: No virtual input methods needed - wireless connections are actual QNEConnection objects
 
 private:
     Q_DISABLE_COPY(LogicNode)
+    
+    // Option D: No virtual input members needed
 };

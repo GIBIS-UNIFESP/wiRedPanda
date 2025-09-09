@@ -13,9 +13,11 @@
 #include "graphicsview.h"
 #include "ic.h"
 #include "node.h"
+#include "nodes/physicalconnection.h"
 #include "qneconnection.h"
 #include "serialization.h"
 #include "thememanager.h"
+#include "wirelessconnectionautomanager.h"
 #include "wirelessconnectionmanager.h"
 
 #include <QClipboard>
@@ -28,7 +30,10 @@ Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)
     , m_simulation(this)
     , m_wirelessManager(new WirelessConnectionManager(this, this))
+    , m_wirelessAutoManager(new WirelessConnectionAutoManager(this, this))
 {
+    qDebug() << "Scene::Scene() - Created scene with auto manager:" << m_wirelessAutoManager;
+    
     installEventFilter(this);
 
     m_selectionRect.setFlag(QGraphicsItem::ItemIsSelectable, false);
@@ -245,7 +250,7 @@ void Scene::setEditedConnection(QNEConnection *connection)
 
 void Scene::startNewConnection(QNEInputPort *endPort)
 {
-    auto *connection = new QNEConnection();
+    auto *connection = new PhysicalConnection();
     connection->setEndPort(endPort);
     connection->setStartPos(m_mousePos);
 
@@ -256,7 +261,7 @@ void Scene::startNewConnection(QNEInputPort *endPort)
 
 void Scene::startNewConnection(QNEOutputPort *startPort)
 {
-    auto *connection = new QNEConnection();
+    auto *connection = new PhysicalConnection();
     connection->setStartPort(startPort);
     connection->setEndPos(m_mousePos);
 
@@ -1270,6 +1275,12 @@ void Scene::addItem(QMimeData *mimeData)
 WirelessConnectionManager* Scene::wirelessManager() const
 {
     return m_wirelessManager;
+}
+
+WirelessConnectionAutoManager* Scene::wirelessAutoManager() const
+{
+    qDebug() << "Scene::wirelessAutoManager() called, returning:" << m_wirelessAutoManager;
+    return m_wirelessAutoManager;
 }
 
 Node* Scene::findNode(int nodeId) const
