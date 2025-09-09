@@ -1,0 +1,28 @@
+version: 2
+updates:
+  # GitHub Actions updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "ci"
+      prefix-development: "ci"
+      include: "scope"
+    reviewers:
+      - "darktorres"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    # Group minor and patch updates to reduce PR noise
+    groups:
+      actions-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
