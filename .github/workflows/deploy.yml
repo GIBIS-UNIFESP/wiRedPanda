@@ -293,7 +293,7 @@ jobs:
 
     - name: Setup Windows MSVC Toolchain
       if: runner.os == 'Windows'
-      uses: pbeast/gha-setup-vsdevenv@master
+      uses: seanmiddleditch/gha-setup-vsdevenv@v5
       with:
         arch: ${{ startsWith(matrix.qt, '5') && 'x86' || 'x64' }}
 
