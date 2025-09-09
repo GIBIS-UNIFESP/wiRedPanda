@@ -1,0 +1,13 @@
+{
+    "recommendations": [
+        "Anthropic.claude-code",
+        "astro-build.astro-vscode",
+        "bierner.markdown-mermaid",
+        "eamodio.gitlens",
+        "github.vscode-github-actions",
+        "ms-python.python-extension-pack",
+        "ms-vscode.cmake-tools",
+        "ms-vscode.cpptools-extension-pack",
+        "theqtcompany.qt"
+    ]
+}
