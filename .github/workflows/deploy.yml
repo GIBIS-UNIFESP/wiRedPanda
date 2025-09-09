@@ -89,7 +89,7 @@ jobs:
         python3 get-pip.py
         python3 -m pip install --no-cache-dir --upgrade pip setuptools wheel
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         submodules: recursive
         fetch-depth: 0
@@ -127,7 +127,7 @@ jobs:
         setup-python: ${{ matrix.os == 'ubuntu-latest' && 'false' || 'true' }}
 
     - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1
       with:
         key: ${{ matrix.os }}-${{ matrix.qt }}
 
