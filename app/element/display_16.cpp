@@ -10,31 +10,31 @@
 #include <QPainter>
 
 Display16::Display16(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Display16, ElementGroup::Output, ":/output/counter/counter_16_on.svg", tr("16-SEGMENT DISPLAY"), tr("16-Segment Display"), 17, 17, 0, 0, parent)
+    : GraphicElement(ElementType::Display16, ElementGroup::Output, ":/components/output/counter/counter_16_on.svg", tr("16-SEGMENT DISPLAY"), tr("16-Segment Display"), 17, 17, 0, 0, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
     }
 
     m_defaultSkins = QStringList{
-        ":/output/counter/counter_16_off.svg",
-        ":/output/counter/counter_a1.svg",
-        ":/output/counter/counter_a2.svg",
-        ":/output/counter/counter_b.svg",
-        ":/output/counter/counter_c.svg",
-        ":/output/counter/counter_d1.svg",
-        ":/output/counter/counter_d2.svg",
-        ":/output/counter/counter_e.svg",
-        ":/output/counter/counter_f.svg",
-        ":/output/counter/counter_g1.svg",
-        ":/output/counter/counter_g2.svg",
-        ":/output/counter/counter_h.svg",
-        ":/output/counter/counter_j.svg",
-        ":/output/counter/counter_k.svg",
-        ":/output/counter/counter_l.svg",
-        ":/output/counter/counter_m.svg",
-        ":/output/counter/counter_n.svg",
-        ":/output/counter/counter_dp.svg",
+        ":/components/output/counter/counter_16_off.svg",
+        ":/components/output/counter/counter_a1.svg",
+        ":/components/output/counter/counter_a2.svg",
+        ":/components/output/counter/counter_b.svg",
+        ":/components/output/counter/counter_c.svg",
+        ":/components/output/counter/counter_d1.svg",
+        ":/components/output/counter/counter_d2.svg",
+        ":/components/output/counter/counter_e.svg",
+        ":/components/output/counter/counter_f.svg",
+        ":/components/output/counter/counter_g1.svg",
+        ":/components/output/counter/counter_g2.svg",
+        ":/components/output/counter/counter_h.svg",
+        ":/components/output/counter/counter_j.svg",
+        ":/components/output/counter/counter_k.svg",
+        ":/components/output/counter/counter_l.svg",
+        ":/components/output/counter/counter_m.svg",
+        ":/components/output/counter/counter_n.svg",
+        ":/components/output/counter/counter_dp.svg",
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

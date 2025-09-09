@@ -14,7 +14,7 @@ void ClockDialog_Ui::setupUi(QDialog *ClockDialog)
 
     ClockDialog->resize(184, 116);
 
-    ClockDialog->setWindowIcon(QIcon(":/toolbar/wavyIcon.svg"));
+    ClockDialog->setWindowIcon(QIcon(":/interface/toolbar/wavyIcon.svg"));
 
     gridLayout_2 = new QGridLayout(ClockDialog);
     gridLayout_2->setObjectName("gridLayout_2");

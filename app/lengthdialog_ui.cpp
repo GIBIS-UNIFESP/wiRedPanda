@@ -14,7 +14,7 @@ void LengthDialog_Ui::setupUi(QDialog *LengthDialog)
 
     LengthDialog->resize(184, 116);
 
-    LengthDialog->setWindowIcon(QIcon(":/toolbar/wavyIcon.svg"));
+    LengthDialog->setWindowIcon(QIcon(":/interface/toolbar/wavyIcon.svg"));
 
     gridLayout_2 = new QGridLayout(LengthDialog);
     gridLayout_2->setObjectName("gridLayout_2");

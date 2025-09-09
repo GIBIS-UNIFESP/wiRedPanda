@@ -6,7 +6,7 @@
 #include "globalproperties.h"
 
 Not::Not(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Not, ElementGroup::Gate, ":/basic/not.svg", tr("NOT"), tr("Not"), 1, 1, 1, 1, parent)
+    : GraphicElement(ElementType::Not, ElementGroup::Gate, ":/components/logic/not.svg", tr("NOT"), tr("Not"), 1, 1, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

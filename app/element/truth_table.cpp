@@ -10,7 +10,7 @@
 #include <QPainter>
 
 TruthTable::TruthTable(QGraphicsItem *parent)
-    : GraphicElement(ElementType::TruthTable, ElementGroup::IC, ":/basic/truthtable-rotated.svg", tr("TRUTH TABLE"), tr("Truth Table"), 2, 8, 1, 8, parent)
+    : GraphicElement(ElementType::TruthTable, ElementGroup::IC, ":/components/logic/truthtable-rotated.svg", tr("TRUTH TABLE"), tr("Truth Table"), 2, 8, 1, 8, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
@@ -94,7 +94,7 @@ void TruthTable::generatePixmap()
     QRectF finalRect = QRectF(topLeft, finalSize);
     tmpPainter.drawRoundedRect(finalRect, 3, 3);
 
-    QPixmap panda(":/basic/truthtable-rotated.svg");
+    QPixmap panda(":/components/logic/truthtable-rotated.svg");
     QPointF pandaOrigin = finalRect.center();
     pandaOrigin.setX(pandaOrigin.x() - panda.width() / 2);
     pandaOrigin.setY(pandaOrigin.y() - panda.height() / 2);

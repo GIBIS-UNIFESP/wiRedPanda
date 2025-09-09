@@ -15,101 +15,101 @@ void MainWindow_Ui::setupUi(QMainWindow *MainWindow)
     MainWindow->resize(886, 765);
     MainWindow->setMinimumSize(QSize(0, 150));
     MainWindow->setWindowTitle("");
-    MainWindow->setWindowIcon(QIcon(":/toolbar/wpanda.svg"));
+    MainWindow->setWindowIcon(QIcon(":/interface/toolbar/wpanda.svg"));
     MainWindow->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     MainWindow->setUnifiedTitleAndToolBarOnMac(true);
 
     actionOpen = new QAction(MainWindow);
     actionOpen->setObjectName("actionOpen");
-    actionOpen->setIcon(QIcon(":/toolbar/folder.svg"));
+    actionOpen->setIcon(QIcon(":/interface/toolbar/folder.svg"));
     actionSave = new QAction(MainWindow);
     actionSave->setObjectName("actionSave");
-    actionSave->setIcon(QIcon(":/toolbar/save.svg"));
+    actionSave->setIcon(QIcon(":/interface/toolbar/save.svg"));
     actionSaveAs = new QAction(MainWindow);
     actionSaveAs->setObjectName("actionSaveAs");
-    actionSaveAs->setIcon(QIcon(":/toolbar/save.svg"));
+    actionSaveAs->setIcon(QIcon(":/interface/toolbar/save.svg"));
     actionCut = new QAction(MainWindow);
     actionCut->setObjectName("actionCut");
-    actionCut->setIcon(QIcon(":/toolbar/cut.svg"));
+    actionCut->setIcon(QIcon(":/interface/toolbar/cut.svg"));
     actionCopy = new QAction(MainWindow);
     actionCopy->setObjectName("actionCopy");
-    actionCopy->setIcon(QIcon(":/toolbar/copy.svg"));
+    actionCopy->setIcon(QIcon(":/interface/toolbar/copy.svg"));
     actionPaste = new QAction(MainWindow);
     actionPaste->setObjectName("actionPaste");
-    actionPaste->setIcon(QIcon(":/toolbar/paste.svg"));
+    actionPaste->setIcon(QIcon(":/interface/toolbar/paste.svg"));
     actionDelete = new QAction(MainWindow);
     actionDelete->setObjectName("actionDelete");
     QIcon icon6;
-    icon6.addFile(":/toolbar/delete.svg", QSize(), QIcon::Normal, QIcon::On);
+    icon6.addFile(":/interface/toolbar/delete.svg", QSize(), QIcon::Normal, QIcon::On);
     actionDelete->setIcon(icon6);
     actionNew = new QAction(MainWindow);
     actionNew->setObjectName("actionNew");
-    actionNew->setIcon(QIcon(":/toolbar/new.svg"));
+    actionNew->setIcon(QIcon(":/interface/toolbar/new.svg"));
     actionZoomIn = new QAction(MainWindow);
     actionZoomIn->setObjectName("actionZoomIn");
-    actionZoomIn->setIcon(QIcon(":/toolbar/zoomIn.svg"));
+    actionZoomIn->setIcon(QIcon(":/interface/toolbar/zoomIn.svg"));
     actionZoomOut = new QAction(MainWindow);
     actionZoomOut->setObjectName("actionZoomOut");
-    actionZoomOut->setIcon(QIcon(":/toolbar/zoomOut.svg"));
+    actionZoomOut->setIcon(QIcon(":/interface/toolbar/zoomOut.svg"));
     actionWires = new QAction(MainWindow);
     actionWires->setObjectName("actionWires");
     actionWires->setCheckable(true);
     actionWires->setChecked(true);
-    actionWires->setIcon(QIcon(":/toolbar/wires.svg"));
+    actionWires->setIcon(QIcon(":/interface/toolbar/wires.svg"));
     actionGates = new QAction(MainWindow);
     actionGates->setObjectName("actionGates");
     actionGates->setCheckable(true);
     actionGates->setChecked(true);
-    actionGates->setIcon(QIcon(":/basic/nor.svg"));
+    actionGates->setIcon(QIcon(":/components/logic/nor.svg"));
     actionAbout = new QAction(MainWindow);
     actionAbout->setObjectName("actionAbout");
-    actionAbout->setIcon(QIcon(":/toolbar/help.svg"));
+    actionAbout->setIcon(QIcon(":/interface/toolbar/help.svg"));
     actionExit = new QAction(MainWindow);
     actionExit->setObjectName("actionExit");
-    actionExit->setIcon(QIcon(":/toolbar/exit.svg"));
+    actionExit->setIcon(QIcon(":/interface/toolbar/exit.svg"));
     actionRotateRight = new QAction(MainWindow);
     actionRotateRight->setObjectName("actionRotateRight");
-    actionRotateRight->setIcon(QIcon(":/toolbar/rotateR.svg"));
+    actionRotateRight->setIcon(QIcon(":/interface/toolbar/rotateR.svg"));
     actionRotateLeft = new QAction(MainWindow);
     actionRotateLeft->setObjectName("actionRotateLeft");
-    actionRotateLeft->setIcon(QIcon(":/toolbar/rotateL.svg"));
+    actionRotateLeft->setIcon(QIcon(":/interface/toolbar/rotateL.svg"));
     actionAboutQt = new QAction(MainWindow);
     actionAboutQt->setObjectName("actionAboutQt");
-    actionAboutQt->setIcon(QIcon(":/toolbar/helpQt.svg"));
+    actionAboutQt->setIcon(QIcon(":/interface/toolbar/helpQt.svg"));
     actionSelectAll = new QAction(MainWindow);
     actionSelectAll->setObjectName("actionSelectAll");
-    actionSelectAll->setIcon(QIcon(":/toolbar/selectAll.svg"));
+    actionSelectAll->setIcon(QIcon(":/interface/toolbar/selectAll.svg"));
     actionReloadFile = new QAction(MainWindow);
     actionReloadFile->setObjectName("actionReloadFile");
-    actionReloadFile->setIcon(QIcon(":/toolbar/reloadFile.svg"));
+    actionReloadFile->setIcon(QIcon(":/interface/toolbar/reloadFile.svg"));
     actionExportToArduino = new QAction(MainWindow);
     actionExportToArduino->setObjectName("actionExportToArduino");
-    actionExportToArduino->setIcon(QIcon(":/toolbar/arduino.svg"));
+    actionExportToArduino->setIcon(QIcon(":/interface/toolbar/arduino.svg"));
     actionResetZoom = new QAction(MainWindow);
     actionResetZoom->setObjectName("actionResetZoom");
-    actionResetZoom->setIcon(QIcon(":/toolbar/zoomReset.svg"));
+    actionResetZoom->setIcon(QIcon(":/interface/toolbar/zoomReset.svg"));
     actionExportToPdf = new QAction(MainWindow);
     actionExportToPdf->setObjectName("actionExportToPdf");
-    actionExportToPdf->setIcon(QIcon(":/toolbar/pdf.svg"));
+    actionExportToPdf->setIcon(QIcon(":/interface/toolbar/pdf.svg"));
     actionPlay = new QAction(MainWindow);
     actionPlay->setObjectName("actionPlay");
     actionPlay->setCheckable(true);
-    QIcon icon22(":/toolbar/play.svg");
-    icon22.addFile(":/toolbar/pause.svg", QSize(), QIcon::Normal, QIcon::On);
+    QIcon icon22(":/interface/toolbar/play.svg");
+    icon22.addFile(":/interface/toolbar/pause.svg", QSize(), QIcon::Normal, QIcon::On);
     actionPlay->setIcon(icon22);
     actionRename = new QAction(MainWindow);
     actionRename->setObjectName("actionRename");
-    actionRename->setIcon(QIcon(":/toolbar/rename.svg"));
+    actionRename->setIcon(QIcon(":/interface/toolbar/rename.svg"));
     actionChangeTrigger = new QAction(MainWindow);
     actionChangeTrigger->setObjectName("actionChangeTrigger");
-    actionChangeTrigger->setIcon(QIcon(":/input/buttonOff.svg"));
+    actionChangeTrigger->setIcon(QIcon(":/components/input/buttonOff.svg"));
     actionClearSelection = new QAction(MainWindow);
     actionClearSelection->setObjectName("actionClearSelection");
-    actionClearSelection->setIcon(QIcon(":/toolbar/clearSelection.svg"));
+    actionClearSelection->setIcon(QIcon(":/interface/toolbar/clearSelection.svg"));
     actionFastMode = new QAction(MainWindow);
     actionFastMode->setObjectName("actionFastMode");
     actionFastMode->setCheckable(true);
-    actionFastMode->setIcon(QIcon(":/toolbar/fast.svg"));
+    actionFastMode->setIcon(QIcon(":/interface/toolbar/fast.svg"));
     actionLightTheme = new QAction(MainWindow);
     actionLightTheme->setObjectName("actionLightTheme");
     actionLightTheme->setCheckable(true);
@@ -119,10 +119,10 @@ void MainWindow_Ui::setupUi(QMainWindow *MainWindow)
     actionDarkTheme->setCheckable(true);
     actionWaveform = new QAction(MainWindow);
     actionWaveform->setObjectName("actionWaveform");
-    actionWaveform->setIcon(QIcon(":/toolbar/dolphin_icon.svg"));
+    actionWaveform->setIcon(QIcon(":/interface/toolbar/dolphin_icon.svg"));
     actionExportToImage = new QAction(MainWindow);
     actionExportToImage->setObjectName("actionExportToImage");
-    actionExportToImage->setIcon(QIcon(":/toolbar/png.svg"));
+    actionExportToImage->setIcon(QIcon(":/interface/toolbar/png.svg"));
     actionFlipHorizontally = new QAction(MainWindow);
     actionFlipHorizontally->setObjectName("actionFlipHorizontally");
     actionFlipVertically = new QAction(MainWindow);
@@ -132,8 +132,8 @@ void MainWindow_Ui::setupUi(QMainWindow *MainWindow)
     actionMute = new QAction(MainWindow);
     actionMute->setObjectName("actionMute");
     actionMute->setCheckable(true);
-    QIcon icon29(":/output/buzzer/BuzzerOff.svg");
-    icon29.addFile(":/toolbar/mute.svg", QSize(), QIcon::Normal, QIcon::On);
+    QIcon icon29(":/components/output/buzzer/BuzzerOff.svg");
+    icon29.addFile(":/interface/toolbar/mute.svg", QSize(), QIcon::Normal, QIcon::On);
     actionMute->setIcon(icon29);
     actionLabelsUnderIcons = new QAction(MainWindow);
     actionLabelsUnderIcons->setObjectName("actionLabelsUnderIcons");
@@ -142,7 +142,7 @@ void MainWindow_Ui::setupUi(QMainWindow *MainWindow)
     actionAboutThisVersion->setObjectName("actionAboutThisVersion");
     actionRestart = new QAction(MainWindow);
     actionRestart->setObjectName("actionRestart");
-    actionRestart->setIcon(QIcon(":/toolbar/reset.svg"));
+    actionRestart->setIcon(QIcon(":/interface/toolbar/reset.svg"));
     actionBackground_Simulation = new QAction(MainWindow);
     actionBackground_Simulation->setObjectName("actionBackground_Simulation");
     actionBackground_Simulation->setCheckable(true);
@@ -152,7 +152,7 @@ void MainWindow_Ui::setupUi(QMainWindow *MainWindow)
     actionShortcutsAndTips->setIcon(QIcon::fromTheme("help-about"));
     actionReportTranslationError = new QAction(MainWindow);
     actionReportTranslationError->setObjectName("actionReportTranslationError");
-    actionReportTranslationError->setIcon(QIcon(":/toolbar/help.svg"));
+    actionReportTranslationError->setIcon(QIcon(":/interface/toolbar/help.svg"));
     centralWidget = new QWidget(MainWindow);
     centralWidget->setObjectName("centralWidget");
     gridLayout_8 = new QGridLayout(centralWidget);
@@ -226,7 +226,7 @@ void MainWindow_Ui::setupUi(QMainWindow *MainWindow)
 
     gridLayout_2->addWidget(scrollAreaInOut, 0, 0, 1, 1);
 
-    tabElements->addTab(io, QIcon(":/input/buttonOff.svg"), QString());
+    tabElements->addTab(io, QIcon(":/components/input/buttonOff.svg"), QString());
     gates = new QWidget();
     gates->setObjectName("gates");
     gridLayout_6 = new QGridLayout(gates);
@@ -252,7 +252,7 @@ void MainWindow_Ui::setupUi(QMainWindow *MainWindow)
 
     gridLayout_6->addWidget(scrollAreaGates, 0, 1, 1, 1);
 
-    tabElements->addTab(gates, QIcon(":/basic/xor.svg"), QString());
+    tabElements->addTab(gates, QIcon(":/components/logic/xor.svg"), QString());
     combinational = new QWidget();
     combinational->setObjectName("combinational");
     gridLayout_10 = new QGridLayout(combinational);
@@ -283,7 +283,7 @@ void MainWindow_Ui::setupUi(QMainWindow *MainWindow)
 
     gridLayout_10->addWidget(scrollArea_Combinational, 0, 0, 1, 1);
 
-    tabElements->addTab(combinational, QIcon(":/basic/truthtable-rotated.svg"), QString());
+    tabElements->addTab(combinational, QIcon(":/components/logic/truthtable-rotated.svg"), QString());
     memory = new QWidget();
     memory->setObjectName("memory");
     gridLayout_5 = new QGridLayout(memory);
@@ -309,7 +309,7 @@ void MainWindow_Ui::setupUi(QMainWindow *MainWindow)
 
     gridLayout_5->addWidget(scrollAreaMemory, 0, 1, 1, 1);
 
-    tabElements->addTab(memory, QIcon(":/memory/light/D-flipflop.svg"), QString());
+    tabElements->addTab(memory, QIcon(":/components/memory/light/D-flipflop.svg"), QString());
     ic = new QWidget();
     ic->setObjectName("ic");
     gridLayout_4 = new QGridLayout(ic);
@@ -350,13 +350,13 @@ void MainWindow_Ui::setupUi(QMainWindow *MainWindow)
     sizePolicy2.setVerticalStretch(0);
     sizePolicy2.setHeightForWidth(pushButtonRemoveIC->sizePolicy().hasHeightForWidth());
     pushButtonRemoveIC->setSizePolicy(sizePolicy2);
-    pushButtonRemoveIC->setIcon(QIcon(":/toolbar/trashcan.svg"));
+    pushButtonRemoveIC->setIcon(QIcon(":/interface/toolbar/trashcan.svg"));
 
     horizontalLayout->addWidget(pushButtonRemoveIC);
 
     gridLayout_4->addLayout(horizontalLayout, 0, 0, 1, 1);
 
-    tabElements->addTab(ic, QIcon(":/basic/ic-panda.svg"), QString());
+    tabElements->addTab(ic, QIcon(":/components/logic/ic-panda.svg"), QString());
     misc = new QWidget();
     misc->setObjectName("misc");
     gridLayout_3 = new QGridLayout(misc);
@@ -387,7 +387,7 @@ void MainWindow_Ui::setupUi(QMainWindow *MainWindow)
 
     gridLayout_3->addWidget(scrollArea_Misc, 0, 0, 1, 1);
 
-    tabElements->addTab(misc, QIcon(":/misc/text.png"), QString());
+    tabElements->addTab(misc, QIcon(":/components/misc/text.png"), QString());
     search = new QWidget();
     search->setObjectName("search");
     gridLayout_9 = new QGridLayout(search);
@@ -484,7 +484,7 @@ void MainWindow_Ui::setupUi(QMainWindow *MainWindow)
     menuRecentFiles = new QMenu(menuFile);
     menuRecentFiles->setObjectName("menuRecentFiles");
     menuRecentFiles->setEnabled(false);
-    menuRecentFiles->setIcon(QIcon(":/toolbar/recentFiles.svg"));
+    menuRecentFiles->setIcon(QIcon(":/interface/toolbar/recentFiles.svg"));
     menuEdit = new QMenu(menuBar);
     menuEdit->setObjectName("menuEdit");
     menuHelp = new QMenu(menuBar);

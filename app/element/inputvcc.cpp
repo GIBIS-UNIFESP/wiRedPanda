@@ -7,7 +7,7 @@
 #include "qneport.h"
 
 InputVcc::InputVcc(QGraphicsItem *parent)
-    : GraphicElement(ElementType::InputVcc, ElementGroup::StaticInput, ":/input/1.svg", tr("VCC"), tr("VCC"), 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::InputVcc, ElementGroup::StaticInput, ":/components/input/1.svg", tr("VCC"), tr("VCC"), 0, 0, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

@@ -123,12 +123,12 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     qCDebug(zero) << "Setting left side menus.";
     populateLeftMenu();
-    m_ui->tabElements->setTabIcon(0, QIcon(":/input/buttonOff.svg"));
-    m_ui->tabElements->setTabIcon(1, QIcon(":/basic/xor.svg"));
-    m_ui->tabElements->setTabIcon(2, QIcon(":/basic/truthtable-rotated.svg"));
+    m_ui->tabElements->setTabIcon(0, QIcon(":/components/input/buttonOff.svg"));
+    m_ui->tabElements->setTabIcon(1, QIcon(":/components/logic/xor.svg"));
+    m_ui->tabElements->setTabIcon(2, QIcon(":/components/logic/truthtable-rotated.svg"));
     m_ui->tabElements->setTabIcon(3, QIcon(DFlipFlop::pixmapPath()));
-    m_ui->tabElements->setTabIcon(4, QIcon(":/basic/ic-panda.svg"));
-    m_ui->tabElements->setTabIcon(5, QIcon(":/misc/text.png"));
+    m_ui->tabElements->setTabIcon(4, QIcon(":/components/logic/ic-panda.svg"));
+    m_ui->tabElements->setTabIcon(5, QIcon(":/components/misc/text.png"));
     m_ui->tabElements->setTabEnabled(6, false);
 
     qCDebug(zero) << "Loading recent file list.";
@@ -719,7 +719,7 @@ void MainWindow::updateICList()
 
         qCDebug(zero) << "Files: " << files.join(", ");
         for (const QString &file : std::as_const(files)) {
-            QPixmap pixmap(":/basic/ic-panda.svg");
+            QPixmap pixmap(":/components/logic/ic-panda.svg");
 
             auto *item = new ElementLabel(pixmap, ElementType::IC, file, this);
             m_ui->scrollAreaWidgetContents_IC->layout()->addWidget(item);
@@ -1406,98 +1406,98 @@ QString MainWindow::getLanguageFlagIcon(const QString &langCode) const
 
     // Map Qt country codes to our flag resource names
     static const QMap<QLocale::Country, QString> countryToFlag = {
-        {QLocale::SaudiArabia, ":/toolbar/arabic.svg"},          // Arabic
-        {QLocale::Bulgaria, ":/toolbar/bulgarian.svg"},          // Bulgarian
-        {QLocale::Bangladesh, ":/toolbar/bangladesh.svg"},       // Bengali
-        {QLocale::CzechRepublic, ":/toolbar/czech.svg"},        // Czech
-        {QLocale::Denmark, ":/toolbar/danish.svg"},             // Danish
-        {QLocale::Germany, ":/toolbar/german.svg"},             // German
-        {QLocale::Greece, ":/toolbar/greek.svg"},               // Greek
-        {QLocale::UnitedStates, ":/toolbar/usa.svg"},           // English
-        {QLocale::Spain, ":/toolbar/spanish.svg"},              // Spanish
-        {QLocale::Estonia, ":/toolbar/estonian.svg"},           // Estonian
-        {QLocale::Iran, ":/toolbar/iranian.svg"},               // Persian/Farsi
-        {QLocale::Finland, ":/toolbar/finnish.svg"},            // Finnish
-        {QLocale::France, ":/toolbar/french.svg"},              // French
-        {QLocale::Israel, ":/toolbar/hebrew.svg"},              // Hebrew
-        {QLocale::India, ":/toolbar/hindi.svg"},                // Hindi
-        {QLocale::Croatia, ":/toolbar/croatian.svg"},           // Croatian
-        {QLocale::Hungary, ":/toolbar/hungarian.svg"},          // Hungarian
-        {QLocale::Indonesia, ":/toolbar/indonesian.svg"},       // Indonesian
-        {QLocale::Italy, ":/toolbar/italian.svg"},              // Italian
-        {QLocale::Japan, ":/toolbar/japanese.svg"},             // Japanese
-        {QLocale::SouthKorea, ":/toolbar/korean.svg"},          // Korean
-        {QLocale::Lithuania, ":/toolbar/lithuanian.svg"},       // Lithuanian
-        {QLocale::Latvia, ":/toolbar/latvian.svg"},             // Latvian
-        {QLocale::Malaysia, ":/toolbar/malaysian.svg"},         // Malay
-        {QLocale::Norway, ":/toolbar/norwegian.svg"},           // Norwegian
-        {QLocale::Netherlands, ":/toolbar/dutch.svg"},          // Dutch
-        {QLocale::Poland, ":/toolbar/polish.svg"},              // Polish
-        {QLocale::Portugal, ":/toolbar/portuguese.svg"},        // Portuguese
-        {QLocale::Brazil, ":/toolbar/brasil.svg"},              // Portuguese (Brazil)
-        {QLocale::Romania, ":/toolbar/romanian.svg"},           // Romanian
-        {QLocale::Russia, ":/toolbar/russian.svg"},             // Russian
-        {QLocale::Slovakia, ":/toolbar/slovak.svg"},            // Slovak
-        {QLocale::Sweden, ":/toolbar/swedish.svg"},             // Swedish
-        {QLocale::Thailand, ":/toolbar/thai.svg"},              // Thai
-        {QLocale::Turkey, ":/toolbar/turkish.svg"},             // Turkish
-        {QLocale::Ukraine, ":/toolbar/ukrainian.svg"},          // Ukrainian
-        {QLocale::Vietnam, ":/toolbar/vietnamese.svg"},         // Vietnamese
-        {QLocale::China, ":/toolbar/chinese.svg"},              // Chinese Simplified
-        {QLocale::Taiwan, ":/toolbar/chinese_traditional.svg"}  // Chinese Traditional
+        {QLocale::SaudiArabia, ":/interface/locale/arabic.svg"},          // Arabic
+        {QLocale::Bulgaria, ":/interface/locale/bulgarian.svg"},          // Bulgarian
+        {QLocale::Bangladesh, ":/interface/locale/bangladesh.svg"},       // Bengali
+        {QLocale::CzechRepublic, ":/interface/locale/czech.svg"},        // Czech
+        {QLocale::Denmark, ":/interface/locale/danish.svg"},             // Danish
+        {QLocale::Germany, ":/interface/locale/german.svg"},             // German
+        {QLocale::Greece, ":/interface/locale/greek.svg"},               // Greek
+        {QLocale::UnitedStates, ":/interface/locale/usa.svg"},           // English
+        {QLocale::Spain, ":/interface/locale/spanish.svg"},              // Spanish
+        {QLocale::Estonia, ":/interface/locale/estonian.svg"},           // Estonian
+        {QLocale::Iran, ":/interface/locale/iranian.svg"},               // Persian/Farsi
+        {QLocale::Finland, ":/interface/locale/finnish.svg"},            // Finnish
+        {QLocale::France, ":/interface/locale/french.svg"},              // French
+        {QLocale::Israel, ":/interface/locale/hebrew.svg"},              // Hebrew
+        {QLocale::India, ":/interface/locale/hindi.svg"},                // Hindi
+        {QLocale::Croatia, ":/interface/locale/croatian.svg"},           // Croatian
+        {QLocale::Hungary, ":/interface/locale/hungarian.svg"},          // Hungarian
+        {QLocale::Indonesia, ":/interface/locale/indonesian.svg"},       // Indonesian
+        {QLocale::Italy, ":/interface/locale/italian.svg"},              // Italian
+        {QLocale::Japan, ":/interface/locale/japanese.svg"},             // Japanese
+        {QLocale::SouthKorea, ":/interface/locale/korean.svg"},          // Korean
+        {QLocale::Lithuania, ":/interface/locale/lithuanian.svg"},       // Lithuanian
+        {QLocale::Latvia, ":/interface/locale/latvian.svg"},             // Latvian
+        {QLocale::Malaysia, ":/interface/locale/malaysian.svg"},         // Malay
+        {QLocale::Norway, ":/interface/locale/norwegian.svg"},           // Norwegian
+        {QLocale::Netherlands, ":/interface/locale/dutch.svg"},          // Dutch
+        {QLocale::Poland, ":/interface/locale/polish.svg"},              // Polish
+        {QLocale::Portugal, ":/interface/locale/portuguese.svg"},        // Portuguese
+        {QLocale::Brazil, ":/interface/locale/brasil.svg"},              // Portuguese (Brazil)
+        {QLocale::Romania, ":/interface/locale/romanian.svg"},           // Romanian
+        {QLocale::Russia, ":/interface/locale/russian.svg"},             // Russian
+        {QLocale::Slovakia, ":/interface/locale/slovak.svg"},            // Slovak
+        {QLocale::Sweden, ":/interface/locale/swedish.svg"},             // Swedish
+        {QLocale::Thailand, ":/interface/locale/thai.svg"},              // Thai
+        {QLocale::Turkey, ":/interface/locale/turkish.svg"},             // Turkish
+        {QLocale::Ukraine, ":/interface/locale/ukrainian.svg"},          // Ukrainian
+        {QLocale::Vietnam, ":/interface/locale/vietnamese.svg"},         // Vietnamese
+        {QLocale::China, ":/interface/locale/chinese.svg"},              // Chinese Simplified
+        {QLocale::Taiwan, ":/interface/locale/chinese_traditional.svg"}  // Chinese Traditional
     };
 
     // Get the flag for the locale's country
 #if QT_VERSION < QT_VERSION_CHECK(6, 2, 0)
-    QString flagIcon = countryToFlag.value(locale.country(), ":/toolbar/default.svg");
+    QString flagIcon = countryToFlag.value(locale.country(), ":/interface/locale/default.svg");
 #else
-    QString flagIcon = countryToFlag.value(locale.territory(), ":/toolbar/default.svg");
+    QString flagIcon = countryToFlag.value(locale.territory(), ":/interface/locale/default.svg");
 #endif
 
     // Fallback for languages where Qt might not detect the country correctly
-    if (flagIcon == ":/toolbar/default.svg") {
+    if (flagIcon == ":/interface/locale/default.svg") {
         static const QMap<QString, QString> languageFallbacks = {
-            {"ar", ":/toolbar/arabic.svg"},
-            {"bg", ":/toolbar/bulgarian.svg"},
-            {"bn", ":/toolbar/bangladesh.svg"},
-            {"cs", ":/toolbar/czech.svg"},
-            {"da", ":/toolbar/danish.svg"},
-            {"de", ":/toolbar/german.svg"},
-            {"el", ":/toolbar/greek.svg"},
-            {"en", ":/toolbar/usa.svg"},
-            {"es", ":/toolbar/spanish.svg"},
-            {"et", ":/toolbar/estonian.svg"},
-            {"fa", ":/toolbar/iranian.svg"},
-            {"fi", ":/toolbar/finnish.svg"},
-            {"fr", ":/toolbar/french.svg"},
-            {"he", ":/toolbar/hebrew.svg"},
-            {"hi", ":/toolbar/hindi.svg"},
-            {"hr", ":/toolbar/croatian.svg"},
-            {"hu", ":/toolbar/hungarian.svg"},
-            {"id", ":/toolbar/indonesian.svg"},
-            {"it", ":/toolbar/italian.svg"},
-            {"ja", ":/toolbar/japanese.svg"},
-            {"ko", ":/toolbar/korean.svg"},
-            {"lt", ":/toolbar/lithuanian.svg"},
-            {"lv", ":/toolbar/latvian.svg"},
-            {"ms", ":/toolbar/malaysian.svg"},
-            {"nb", ":/toolbar/norwegian.svg"},
-            {"nl", ":/toolbar/dutch.svg"},
-            {"pl", ":/toolbar/polish.svg"},
-            {"pt", ":/toolbar/portuguese.svg"},
-            {"pt_BR", ":/toolbar/brasil.svg"},
-            {"ro", ":/toolbar/romanian.svg"},
-            {"ru", ":/toolbar/russian.svg"},
-            {"sk", ":/toolbar/slovak.svg"},
-            {"sv", ":/toolbar/swedish.svg"},
-            {"th", ":/toolbar/thai.svg"},
-            {"tr", ":/toolbar/turkish.svg"},
-            {"uk", ":/toolbar/ukrainian.svg"},
-            {"vi", ":/toolbar/vietnamese.svg"},
-            {"zh_Hans", ":/toolbar/chinese.svg"},
-            {"zh_Hant", ":/toolbar/chinese_traditional.svg"}
+            {"ar", ":/interface/locale/arabic.svg"},
+            {"bg", ":/interface/locale/bulgarian.svg"},
+            {"bn", ":/interface/locale/bangladesh.svg"},
+            {"cs", ":/interface/locale/czech.svg"},
+            {"da", ":/interface/locale/danish.svg"},
+            {"de", ":/interface/locale/german.svg"},
+            {"el", ":/interface/locale/greek.svg"},
+            {"en", ":/interface/locale/usa.svg"},
+            {"es", ":/interface/locale/spanish.svg"},
+            {"et", ":/interface/locale/estonian.svg"},
+            {"fa", ":/interface/locale/iranian.svg"},
+            {"fi", ":/interface/locale/finnish.svg"},
+            {"fr", ":/interface/locale/french.svg"},
+            {"he", ":/interface/locale/hebrew.svg"},
+            {"hi", ":/interface/locale/hindi.svg"},
+            {"hr", ":/interface/locale/croatian.svg"},
+            {"hu", ":/interface/locale/hungarian.svg"},
+            {"id", ":/interface/locale/indonesian.svg"},
+            {"it", ":/interface/locale/italian.svg"},
+            {"ja", ":/interface/locale/japanese.svg"},
+            {"ko", ":/interface/locale/korean.svg"},
+            {"lt", ":/interface/locale/lithuanian.svg"},
+            {"lv", ":/interface/locale/latvian.svg"},
+            {"ms", ":/interface/locale/malaysian.svg"},
+            {"nb", ":/interface/locale/norwegian.svg"},
+            {"nl", ":/interface/locale/dutch.svg"},
+            {"pl", ":/interface/locale/polish.svg"},
+            {"pt", ":/interface/locale/portuguese.svg"},
+            {"pt_BR", ":/interface/locale/brasil.svg"},
+            {"ro", ":/interface/locale/romanian.svg"},
+            {"ru", ":/interface/locale/russian.svg"},
+            {"sk", ":/interface/locale/slovak.svg"},
+            {"sv", ":/interface/locale/swedish.svg"},
+            {"th", ":/interface/locale/thai.svg"},
+            {"tr", ":/interface/locale/turkish.svg"},
+            {"uk", ":/interface/locale/ukrainian.svg"},
+            {"vi", ":/interface/locale/vietnamese.svg"},
+            {"zh_Hans", ":/interface/locale/chinese.svg"},
+            {"zh_Hant", ":/interface/locale/chinese_traditional.svg"}
         };
-        flagIcon = languageFallbacks.value(langCode, ":/toolbar/default.svg");
+        flagIcon = languageFallbacks.value(langCode, ":/interface/locale/default.svg");
     }
 
     return flagIcon;

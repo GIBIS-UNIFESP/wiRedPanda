@@ -9,15 +9,15 @@
 #include <QGraphicsSceneMouseEvent>
 
 InputSwitch::InputSwitch(QGraphicsItem *parent)
-    : GraphicElementInput(ElementType::InputSwitch, ElementGroup::Input, ":/input/switchOn.svg", tr("INPUT SWITCH"), tr("Input Switch"), 0, 0, 1, 1, parent)
+    : GraphicElementInput(ElementType::InputSwitch, ElementGroup::Input, ":/components/input/switchOn.svg", tr("INPUT SWITCH"), tr("Input Switch"), 0, 0, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
     }
 
     m_defaultSkins = QStringList{
-        ":/input/switchOff.svg",
-        ":/input/switchOn.svg",
+        ":/components/input/switchOff.svg",
+        ":/components/input/switchOn.svg",
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

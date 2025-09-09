@@ -7,7 +7,7 @@
 #include "qneport.h"
 
 Mux::Mux(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Mux, ElementGroup::Mux, ":/basic/mux.svg", tr("MULTIPLEXER"), tr("Mux"), 3, 3, 1, 1, parent)
+    : GraphicElement(ElementType::Mux, ElementGroup::Mux, ":/components/logic/mux.svg", tr("MULTIPLEXER"), tr("Mux"), 3, 3, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

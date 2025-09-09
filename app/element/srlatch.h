@@ -15,7 +15,7 @@ public:
 
     static QString pixmapPath()
     {
-        return ":/memory/" + ThemeManager::themePath() + "/SR-latch.svg";
+        return ":/components/memory/" + ThemeManager::themePath() + "/SR-latch.svg";
     }
 
     void updatePortsProperties() override;

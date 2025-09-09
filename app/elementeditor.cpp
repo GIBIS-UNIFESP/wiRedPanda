@@ -103,7 +103,7 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
     menu.addAction(priorityText)->setData(priorityText);
 
     if (m_hasLabel) {
-        menu.addAction(QIcon(QPixmap(":/toolbar/rename.svg")), renameText)->setData(renameText);
+        menu.addAction(QIcon(QPixmap(":/interface/toolbar/rename.svg")), renameText)->setData(renameText);
     }
 
     if (m_hasTrigger) {
@@ -115,8 +115,8 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
         menu.addAction(revertSkinText);
     }
 
-    menu.addAction(QIcon(QPixmap(":/toolbar/rotateL.svg")), rotateLeftText)->setData(rotateLeftText);
-    menu.addAction(QIcon(QPixmap(":/toolbar/rotateR.svg")), rotateRightText)->setData(rotateRightText);
+    menu.addAction(QIcon(QPixmap(":/interface/toolbar/rotateL.svg")), rotateLeftText)->setData(rotateLeftText);
+    menu.addAction(QIcon(QPixmap(":/interface/toolbar/rotateR.svg")), rotateRightText)->setData(rotateRightText);
 
     if (m_hasFrequency) {
         menu.addAction(QIcon(ElementFactory::pixmap(ElementType::Clock)), frequencyText)->setData(frequencyText);
@@ -218,14 +218,14 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
     menu.addSeparator();
 
     if (m_hasElements) {
-        QAction *copyAction = menu.addAction(QIcon(QPixmap(":/toolbar/copy.svg")), tr("Copy"));
-        QAction *cutAction = menu.addAction(QIcon(QPixmap(":/toolbar/cut.svg")), tr("Cut"));
+        QAction *copyAction = menu.addAction(QIcon(QPixmap(":/interface/toolbar/copy.svg")), tr("Copy"));
+        QAction *cutAction = menu.addAction(QIcon(QPixmap(":/interface/toolbar/cut.svg")), tr("Cut"));
 
         connect(copyAction, &QAction::triggered, m_scene, &Scene::copyAction);
         connect(cutAction,  &QAction::triggered, m_scene, &Scene::cutAction);
     }
 
-    QAction *deleteAction = menu.addAction(QIcon(QPixmap(":/toolbar/delete.svg")), tr("Delete"));
+    QAction *deleteAction = menu.addAction(QIcon(QPixmap(":/interface/toolbar/delete.svg")), tr("Delete"));
     connect(deleteAction, &QAction::triggered, m_scene, &Scene::deleteAction);
 
     QAction *action = menu.exec(screenPos);
@@ -362,11 +362,11 @@ void ElementEditor::fillColorComboBox()
 {
     QSignalBlocker blocker(m_ui->comboBoxColor);
     m_ui->comboBoxColor->clear();
-    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/led/WhiteLed.svg")),  tr("White"),  "White");
-    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/led/RedLed.svg")),    tr("Red"),    "Red");
-    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/led/GreenLed.svg")),  tr("Green"),  "Green");
-    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/led/BlueLed.svg")),   tr("Blue"),   "Blue");
-    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/output/led/PurpleLed.svg")), tr("Purple"), "Purple");
+    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/components/output/led/WhiteLed.svg")),  tr("White"),  "White");
+    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/components/output/led/RedLed.svg")),    tr("Red"),    "Red");
+    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/components/output/led/GreenLed.svg")),  tr("Green"),  "Green");
+    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/components/output/led/BlueLed.svg")),   tr("Blue"),   "Blue");
+    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/components/output/led/PurpleLed.svg")), tr("Purple"), "Purple");
 }
 
 void ElementEditor::retranslateUi()

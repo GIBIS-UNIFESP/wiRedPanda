@@ -16,15 +16,15 @@
 #include <QDebug>
 
 Buzzer::Buzzer(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Buzzer, ElementGroup::Output, ":/output/buzzer/BuzzerOff.svg", tr("BUZZER"), tr("Buzzer"), 1, 1, 0, 0, parent)
+    : GraphicElement(ElementType::Buzzer, ElementGroup::Output, ":/components/output/buzzer/BuzzerOff.svg", tr("BUZZER"), tr("Buzzer"), 1, 1, 0, 0, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
     }
 
     m_defaultSkins = QStringList{
-        ":/output/buzzer/BuzzerOff.svg",
-        ":/output/buzzer/BuzzerOn.svg"
+        ":/components/output/buzzer/BuzzerOff.svg",
+        ":/components/output/buzzer/BuzzerOn.svg"
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
@@ -77,7 +77,7 @@ void Buzzer::setAudio(const QString &note)
     m_audio->setVolume(0.35f);
 #endif
 
-    m_audio->setSource(QUrl::fromLocalFile(":output/audio/" + note + ".wav"));
+    m_audio->setSource(QUrl::fromLocalFile(":/components/output/audio/" + note + ".wav"));
     m_audio->setLoopCount(QSoundEffect::Infinite); // TODO: fix audio clipping when repeating
 }
 
