@@ -41,344 +41,285 @@
 <context>
     <name>BewavedDolphin</name>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="14"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="233"/>
         <source>MainWindow</source>
         <translation>메인 창</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="48"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="287"/>
         <source>toolBar</source>
         <translation>도구 모음</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="93"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="288"/>
         <source>File</source>
         <translation>파일</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="106"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="289"/>
         <source>Help</source>
         <translation>도움말</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="113"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="290"/>
         <source>Edit</source>
         <translation>편집</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="131"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="291"/>
         <source>View</source>
         <translation>보기</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="153"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="234"/>
         <source>About</source>
         <translation>정보</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="156"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="235"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="165"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="236"/>
         <source>Load</source>
         <translation>불러오기</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="168"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="237"/>
         <source>Ctrl+L</source>
         <translation>Ctrl+L</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="177"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="238"/>
         <source>Exit</source>
         <translation>종료</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="180"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="239"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="189"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="240"/>
         <source>Combinational</source>
         <translation>조합 논리</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="192"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="241"/>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="201"/>
         <location filename="../../bewaveddolphin.cpp" line="1386"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="242"/>
         <source>Export to PDF</source>
         <translation>PDF로 내보내기</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="204"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="243"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="213"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="244"/>
         <source>Save</source>
         <translation>저장</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="216"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="245"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="225"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="246"/>
         <source>Save As...</source>
         <translation>다른 이름으로 저장...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="228"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="247"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="237"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="248"/>
         <source>Copy</source>
         <translation>복사</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="240"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="249"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="249"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="250"/>
         <source>Paste</source>
         <translation>붙여넣기</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="252"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="251"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="261"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="252"/>
         <source>Set to 0</source>
         <translation>0으로 설정</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="264"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="253"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="276"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="255"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="303"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="260"/>
         <source>Space</source>
         <translation>공백</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="388"/>
-        <location filename="../../bewaveddolphin.ui" line="391"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="273"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="274"/>
         <source>Fit to screen</source>
         <translation>화면에 맞추기</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="435"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="282"/>
         <source>Show Numbers</source>
         <translation>숫자 표시</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="440"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="283"/>
         <source>Show Waveforms</source>
         <translation>파형 표시</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="449"/>
-        <location filename="../../bewaveddolphin.ui" line="452"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="284"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="285"/>
         <source>AutoCrop</source>
         <translation>자동 자르기</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="455"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="286"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="273"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="254"/>
         <source>Set to 1</source>
         <translation>1로 설정</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="285"/>
-        <location filename="../../bewaveddolphin.ui" line="288"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="256"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="257"/>
         <source>Set clock frequency</source>
         <translation>클록 주파수 설정</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="291"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="258"/>
         <source>Alt+W</source>
         <translation>Alt+W</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="300"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="259"/>
         <source>Invert</source>
         <translation>반전</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="311"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="261"/>
         <source>Merge</source>
         <translation>병합</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="319"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="262"/>
         <source>Split</source>
         <translation>분할</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="328"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="263"/>
         <source>Export to PNG</source>
         <translation>PNG로 내보내기</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="331"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="264"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="340"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="265"/>
         <source>Set Length</source>
         <translation>길이 설정</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="343"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="266"/>
         <source>Alt+L</source>
         <translation>Alt+L</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="352"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="267"/>
         <source>About Qt</source>
         <translation>Qt 정보</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="355"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="268"/>
         <source>Ctrl+Shift+H</source>
         <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="364"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="269"/>
         <source>Zoom In</source>
         <translation>확대</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="367"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="270"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="376"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="271"/>
         <source>Zoom Out</source>
         <translation>축소</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="379"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="272"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="394"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="275"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="403"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="276"/>
         <source>Reset Zoom</source>
         <translation>줌 초기화</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="406"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="277"/>
         <source>Ctrl+Home</source>
         <translation>Ctrl+Home</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="415"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="278"/>
         <source>Clear</source>
         <translation>지우기</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="418"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="279"/>
         <source>Alt+X</source>
         <translation>Alt+X</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="427"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="280"/>
         <source>Cut</source>
         <translation>잘라내기</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="430"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="281"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
@@ -1408,572 +1349,477 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../mainwindow.ui" line="134"/>
         <location filename="../../mainwindow_ui.cpp" line="681"/>
         <source>Inputs/Outputs</source>
         <translation>입력/출력</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="183"/>
         <location filename="../../mainwindow_ui.cpp" line="683"/>
         <source>Gates</source>
         <translation>게이트</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="232"/>
         <location filename="../../mainwindow_ui.cpp" line="685"/>
         <source>Combinational</source>
         <translation>조합 논리</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="287"/>
         <location filename="../../mainwindow_ui.cpp" line="687"/>
         <source>Memory</source>
         <translation>메모리</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="336"/>
         <location filename="../../mainwindow_ui.cpp" line="691"/>
         <source>Integrated Circuits</source>
         <translation>집적 회로</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="379"/>
         <location filename="../../mainwindow_ui.cpp" line="688"/>
         <source>Add IC files</source>
         <translation>IC 파일 추가</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="392"/>
         <location filename="../../mainwindow_ui.cpp" line="689"/>
         <source>Remove IC</source>
         <translation>IC 제거</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="413"/>
         <location filename="../../mainwindow_ui.cpp" line="693"/>
         <source>Miscellaneous</source>
         <translation>기타</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="531"/>
         <location filename="../../mainwindow_ui.cpp" line="695"/>
         <source>Search:</source>
         <translation>검색:</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="626"/>
         <location filename="../../mainwindow_ui.cpp" line="696"/>
         <source>&amp;File</source>
         <translation>파일(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="636"/>
         <location filename="../../mainwindow_ui.cpp" line="697"/>
         <source>&amp;Recent files:</source>
         <translation>최근 파일(&amp;R):</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="661"/>
         <location filename="../../mainwindow_ui.cpp" line="698"/>
         <source>&amp;Edit</source>
         <translation>편집(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="682"/>
         <location filename="../../mainwindow_ui.cpp" line="699"/>
         <source>&amp;Help</source>
         <translation>도움말(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="697"/>
         <location filename="../../mainwindow_ui.cpp" line="701"/>
         <source>&amp;View</source>
         <translation>보기(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="701"/>
         <location filename="../../mainwindow_ui.cpp" line="702"/>
         <source>&amp;Theme</source>
         <translation>테마(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="721"/>
         <location filename="../../mainwindow_ui.cpp" line="703"/>
         <source>&amp;Language</source>
         <translation>언어(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="726"/>
         <location filename="../../mainwindow_ui.cpp" line="704"/>
         <source>Sim&amp;ulation</source>
         <translation>시뮤레이션(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="737"/>
         <location filename="../../mainwindow_ui.cpp" line="705"/>
         <source>Examples</source>
         <translation>예제</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="755"/>
         <location filename="../../mainwindow_ui.cpp" line="604"/>
         <source>&amp;Open...</source>
         <translation>열기(&amp;O)...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="758"/>
         <location filename="../../mainwindow_ui.cpp" line="605"/>
         <source>Open</source>
         <translation>열기</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="761"/>
         <location filename="../../mainwindow_ui.cpp" line="606"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="770"/>
         <location filename="../../mainwindow_ui.cpp" line="607"/>
         <source>&amp;Save</source>
         <translation>저장(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="773"/>
         <location filename="../../mainwindow_ui.cpp" line="608"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="782"/>
         <location filename="../../mainwindow_ui.cpp" line="609"/>
         <source>Save &amp;As...</source>
         <translation>다른 이름으로 저장(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="785"/>
         <location filename="../../mainwindow_ui.cpp" line="610"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="794"/>
         <location filename="../../mainwindow_ui.cpp" line="611"/>
         <source>Cu&amp;t</source>
         <translation>잘라내기(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="797"/>
         <location filename="../../mainwindow_ui.cpp" line="612"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="806"/>
         <location filename="../../mainwindow_ui.cpp" line="613"/>
         <source>&amp;Copy</source>
         <translation>복사(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="809"/>
         <location filename="../../mainwindow_ui.cpp" line="614"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="818"/>
         <location filename="../../mainwindow_ui.cpp" line="615"/>
         <source>&amp;Paste</source>
         <translation>붙여넣기(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="821"/>
         <location filename="../../mainwindow_ui.cpp" line="616"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="831"/>
         <location filename="../../mainwindow_ui.cpp" line="617"/>
         <source>&amp;Delete</source>
         <translation>삭제(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="834"/>
         <location filename="../../mainwindow_ui.cpp" line="618"/>
         <source>Del</source>
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="843"/>
         <location filename="../../mainwindow_ui.cpp" line="619"/>
         <source>&amp;New</source>
         <translation>새 문서(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="846"/>
         <location filename="../../mainwindow_ui.cpp" line="620"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="855"/>
         <location filename="../../mainwindow_ui.cpp" line="621"/>
         <source>Zoom &amp;in</source>
         <translation>확대(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="858"/>
         <location filename="../../mainwindow_ui.cpp" line="622"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="867"/>
         <location filename="../../mainwindow_ui.cpp" line="623"/>
         <source>Zoom &amp;out</source>
         <translation>축소(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="870"/>
         <location filename="../../mainwindow_ui.cpp" line="624"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="885"/>
         <location filename="../../mainwindow_ui.cpp" line="625"/>
         <source>&amp;Wires</source>
         <translation>전선(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="888"/>
         <location filename="../../mainwindow_ui.cpp" line="626"/>
         <source>Ctrl+1</source>
         <translation>Ctrl+1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="903"/>
         <location filename="../../mainwindow_ui.cpp" line="627"/>
         <source>&amp;Gates</source>
         <translation>게이트(&amp;G)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="906"/>
         <location filename="../../mainwindow_ui.cpp" line="628"/>
         <source>Ctrl+2</source>
         <translation>Ctrl+2</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="915"/>
         <location filename="../../mainwindow_ui.cpp" line="629"/>
         <source>&amp;About</source>
         <translation>정보(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="918"/>
         <location filename="../../mainwindow_ui.cpp" line="630"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="927"/>
         <location filename="../../mainwindow_ui.cpp" line="631"/>
         <source>&amp;Exit</source>
         <translation>종료(&amp;X)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="930"/>
         <location filename="../../mainwindow_ui.cpp" line="632"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="939"/>
         <location filename="../../mainwindow_ui.cpp" line="633"/>
         <source>R&amp;otate right</source>
         <translation>오른쪽 회전(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="942"/>
         <location filename="../../mainwindow_ui.cpp" line="634"/>
         <source>Ctrl+R</source>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="951"/>
         <location filename="../../mainwindow_ui.cpp" line="635"/>
         <source>Rotate &amp;left</source>
         <translation>왼쪽 회전(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="954"/>
         <location filename="../../mainwindow_ui.cpp" line="636"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="963"/>
         <location filename="../../mainwindow_ui.cpp" line="637"/>
         <source>About &amp;Qt</source>
         <translation>Qt 정보(&amp;Q)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="972"/>
         <location filename="../../mainwindow_ui.cpp" line="638"/>
         <source>&amp;Select all</source>
         <translation>모두 선택(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="975"/>
         <location filename="../../mainwindow_ui.cpp" line="639"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="984"/>
         <location filename="../../mainwindow_ui.cpp" line="640"/>
         <source>Re&amp;load File</source>
         <translation>파일 다시 불러오기(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="987"/>
         <location filename="../../mainwindow_ui.cpp" line="641"/>
         <source>Ctrl+F5</source>
         <translation>Ctrl+F5</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="996"/>
         <location filename="../../mainwindow_ui.cpp" line="642"/>
         <source>E&amp;xport to Arduino</source>
         <translation>Arduino로 내보내기(&amp;X)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="999"/>
         <location filename="../../mainwindow_ui.cpp" line="643"/>
         <source>Ctrl+Alt+I</source>
         <translation>Ctrl+Alt+I</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1008"/>
         <location filename="../../mainwindow_ui.cpp" line="644"/>
         <source>&amp;Reset Zoom</source>
         <translation>줌 초기화(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1011"/>
         <location filename="../../mainwindow_ui.cpp" line="645"/>
         <source>Ctrl+0</source>
         <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1020"/>
         <location filename="../../mainwindow_ui.cpp" line="646"/>
         <source>Export to &amp;PDF</source>
         <translation>PDF로 내보내기(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1023"/>
         <location filename="../../mainwindow_ui.cpp" line="647"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1209"/>
         <location filename="../../mainwindow_ui.cpp" line="676"/>
         <source>Background Simulation</source>
         <translation>백그라운드 시뮤레이션</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1226"/>
         <location filename="../../mainwindow_ui.cpp" line="678"/>
         <source>Report Translation Error</source>
         <translation>번역 오류 신고</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1229"/>
         <location filename="../../mainwindow_ui.cpp" line="679"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>번역 오류를 신고하거나 Weblate에서 번역 개선을 도와주세요</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1036"/>
         <location filename="../../mainwindow_ui.cpp" line="648"/>
         <source>&amp;Play/Pause</source>
         <translation>재생/일시정지(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="691"/>
         <location filename="../../mainwindow_ui.cpp" line="700"/>
         <source>&amp;Help Translate</source>
         <translation>&amp;번역 도움말</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1039"/>
         <location filename="../../mainwindow_ui.cpp" line="649"/>
         <source>Play or Pause simulation.</source>
         <translation>시뮤레이션을 재생하거나 일시정지합니다.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1042"/>
         <location filename="../../mainwindow_ui.cpp" line="650"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1051"/>
         <location filename="../../mainwindow_ui.cpp" line="651"/>
         <source>&amp;Rename</source>
         <translation>이름 바꾸기(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1054"/>
         <location filename="../../mainwindow_ui.cpp" line="652"/>
         <source>F2</source>
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1063"/>
         <location filename="../../mainwindow_ui.cpp" line="653"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>트리거 변경(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1066"/>
         <location filename="../../mainwindow_ui.cpp" line="654"/>
         <source>F3</source>
         <translation>F3</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1075"/>
         <location filename="../../mainwindow_ui.cpp" line="655"/>
         <source>Cl&amp;ear selection</source>
         <translation>선택 지우기(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1078"/>
         <location filename="../../mainwindow_ui.cpp" line="656"/>
         <source>Esc</source>
         <translation>Esc</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1090"/>
         <location filename="../../mainwindow_ui.cpp" line="657"/>
         <source>&amp;Fast Mode</source>
         <translation>고속 모드(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1101"/>
         <location filename="../../mainwindow_ui.cpp" line="658"/>
         <source>&amp;Panda Light</source>
         <translation>판다 라이트(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1109"/>
         <location filename="../../mainwindow_ui.cpp" line="659"/>
         <source>Panda &amp;Dark</source>
         <translation>판다 다크(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1118"/>
         <location filename="../../mainwindow_ui.cpp" line="660"/>
         <source>&amp;Waveform</source>
         <translation>파형(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1121"/>
         <location filename="../../mainwindow_ui.cpp" line="661"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1130"/>
         <location filename="../../mainwindow_ui.cpp" line="662"/>
         <source>Export to &amp;Image</source>
         <translation>이미지로 내보내기(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1133"/>
         <location filename="../../mainwindow_ui.cpp" line="663"/>
         <source>Ctrl+E</source>
         <translation>Ctrl+E</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1138"/>
         <location filename="../../mainwindow_ui.cpp" line="664"/>
         <source>&amp;Flip horizontally</source>
         <translation>수평 뒤집기(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1141"/>
         <location filename="../../mainwindow_ui.cpp" line="665"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1146"/>
         <location filename="../../mainwindow_ui.cpp" line="666"/>
         <source>Flip &amp;vertically</source>
         <translation>수직 뒤집기(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1151"/>
         <location filename="../../mainwindow_ui.cpp" line="667"/>
         <source>F&amp;ullscreen</source>
         <translation>전체 화면(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1154"/>
         <location filename="../../mainwindow_ui.cpp" line="668"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1167"/>
         <location filename="../../mainwindow.cpp" line="1649"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>음소거</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1170"/>
         <location filename="../../mainwindow_ui.cpp" line="670"/>
         <source>Mutes and unmutes circuit buzzers</source>
         <translation>회로 버저의 음소거를 설정합니다</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1173"/>
         <location filename="../../mainwindow_ui.cpp" line="671"/>
         <source>Ctrl+M</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1181"/>
         <location filename="../../mainwindow_ui.cpp" line="672"/>
         <source>Labels under icons</source>
         <translation>아이콘 아래 레이블</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1186"/>
         <location filename="../../mainwindow_ui.cpp" line="673"/>
         <source>About this version</source>
         <translation>이 버전에 대해</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1195"/>
         <location filename="../../mainwindow_ui.cpp" line="674"/>
         <source>&amp;Restart</source>
         <translation>재시작(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1198"/>
         <location filename="../../mainwindow_ui.cpp" line="675"/>
         <source>Restart simulation.</source>
         <translation>시뮤레이션을 재시작합니다.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1217"/>
         <location filename="../../mainwindow.cpp" line="550"/>
         <location filename="../../mainwindow_ui.cpp" line="677"/>
         <source>Shortcuts and Tips</source>

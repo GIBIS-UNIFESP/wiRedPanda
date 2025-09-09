@@ -41,344 +41,285 @@
 <context>
     <name>BewavedDolphin</name>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="14"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="233"/>
         <source>MainWindow</source>
         <translation>Главен Прозорец</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="48"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="287"/>
         <source>toolBar</source>
         <translation>Лента с Инструменти</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="93"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="288"/>
         <source>File</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="106"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="289"/>
         <source>Help</source>
         <translation>Помощ</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="113"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="290"/>
         <source>Edit</source>
         <translation>Редактиране</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="131"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="291"/>
         <source>View</source>
         <translation>Изглед</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="153"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="234"/>
         <source>About</source>
         <translation>Относно</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="156"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="235"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="165"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="236"/>
         <source>Load</source>
         <translation>Зареди</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="168"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="237"/>
         <source>Ctrl+L</source>
         <translation>Ctrl+L</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="177"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="238"/>
         <source>Exit</source>
         <translation>Изход</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="180"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="239"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="189"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="240"/>
         <source>Combinational</source>
         <translation>Комбинационен</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="192"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="241"/>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="201"/>
         <location filename="../../bewaveddolphin.cpp" line="1386"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="242"/>
         <source>Export to PDF</source>
         <translation>Експорт в PDF</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="204"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="243"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="213"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="244"/>
         <source>Save</source>
         <translation>Запази</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="216"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="245"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="225"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="246"/>
         <source>Save As...</source>
         <translation>Запази като...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="228"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="247"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="237"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="248"/>
         <source>Copy</source>
         <translation>Копирай</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="240"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="249"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="249"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="250"/>
         <source>Paste</source>
         <translation>Постави</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="252"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="251"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="261"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="252"/>
         <source>Set to 0</source>
         <translation>Задай на 0</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="264"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="253"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="276"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="255"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="303"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="260"/>
         <source>Space</source>
         <translation>Интервал</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="388"/>
-        <location filename="../../bewaveddolphin.ui" line="391"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="273"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="274"/>
         <source>Fit to screen</source>
         <translation>Побери на екрана</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="435"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="282"/>
         <source>Show Numbers</source>
         <translation>Покажи Номера</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="440"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="283"/>
         <source>Show Waveforms</source>
         <translation>Покажи Вълнови Форми</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="449"/>
-        <location filename="../../bewaveddolphin.ui" line="452"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="284"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="285"/>
         <source>AutoCrop</source>
         <translation>Автоматично Орязване</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="455"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="286"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="273"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="254"/>
         <source>Set to 1</source>
         <translation>Задай на 1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="285"/>
-        <location filename="../../bewaveddolphin.ui" line="288"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="256"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="257"/>
         <source>Set clock frequency</source>
         <translation>Задай честота на тактовия сигнал</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="291"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="258"/>
         <source>Alt+W</source>
         <translation>Alt+W</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="300"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="259"/>
         <source>Invert</source>
         <translation>Обърни</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="311"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="261"/>
         <source>Merge</source>
         <translation>Обедини</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="319"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="262"/>
         <source>Split</source>
         <translation>Раздели</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="328"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="263"/>
         <source>Export to PNG</source>
         <translation>Експорт в PNG</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="331"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="264"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="340"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="265"/>
         <source>Set Length</source>
         <translation>Задай Дължина</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="343"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="266"/>
         <source>Alt+L</source>
         <translation>Alt+L</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="352"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="267"/>
         <source>About Qt</source>
         <translation>Относно Qt</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="355"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="268"/>
         <source>Ctrl+Shift+H</source>
         <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="364"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="269"/>
         <source>Zoom In</source>
         <translation>Увеличи</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="367"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="270"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="376"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="271"/>
         <source>Zoom Out</source>
         <translation>Намали</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="379"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="272"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="394"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="275"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="403"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="276"/>
         <source>Reset Zoom</source>
         <translation>Нулирай Мащаба</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="406"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="277"/>
         <source>Ctrl+Home</source>
         <translation>Ctrl+Home</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="415"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="278"/>
         <source>Clear</source>
         <translation>Изчисти</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="418"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="279"/>
         <source>Alt+X</source>
         <translation>Alt+X</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="427"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="280"/>
         <source>Cut</source>
         <translation>Изрежи</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.ui" line="430"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="281"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
@@ -1408,573 +1349,478 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../mainwindow.ui" line="134"/>
         <location filename="../../mainwindow_ui.cpp" line="681"/>
         <source>Inputs/Outputs</source>
         <translation>Входове/Изходи</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="183"/>
         <location filename="../../mainwindow_ui.cpp" line="683"/>
         <source>Gates</source>
         <translation>Логически врати</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="232"/>
         <location filename="../../mainwindow_ui.cpp" line="685"/>
         <source>Combinational</source>
         <translation>Комбинационен</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="287"/>
         <location filename="../../mainwindow_ui.cpp" line="687"/>
         <source>Memory</source>
         <translation>Памет</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="336"/>
         <location filename="../../mainwindow_ui.cpp" line="691"/>
         <source>Integrated Circuits</source>
         <translation>Интегрални схеми</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="379"/>
         <location filename="../../mainwindow_ui.cpp" line="688"/>
         <source>Add IC files</source>
         <translation>Добави ИС файлове</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="392"/>
         <location filename="../../mainwindow_ui.cpp" line="689"/>
         <source>Remove IC</source>
         <translation>Премахни ИС</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="413"/>
         <location filename="../../mainwindow_ui.cpp" line="693"/>
         <source>Miscellaneous</source>
         <translation>Разни</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="531"/>
         <location filename="../../mainwindow_ui.cpp" line="695"/>
         <source>Search:</source>
         <translation>Търсене:</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="626"/>
         <location filename="../../mainwindow_ui.cpp" line="696"/>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="636"/>
         <location filename="../../mainwindow_ui.cpp" line="697"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;Последни файлове:</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="661"/>
         <location filename="../../mainwindow_ui.cpp" line="698"/>
         <source>&amp;Edit</source>
         <translation>&amp;Редактиране</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="682"/>
         <location filename="../../mainwindow_ui.cpp" line="699"/>
         <source>&amp;Help</source>
         <translation>&amp;Помощ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="691"/>
         <location filename="../../mainwindow_ui.cpp" line="700"/>
         <source>&amp;Help Translate</source>
         <translation>&amp;Помощ за Превод</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="697"/>
         <location filename="../../mainwindow_ui.cpp" line="701"/>
         <source>&amp;View</source>
         <translation>&amp;Изглед</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="701"/>
         <location filename="../../mainwindow_ui.cpp" line="702"/>
         <source>&amp;Theme</source>
         <translation>&amp;Тема</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="721"/>
         <location filename="../../mainwindow_ui.cpp" line="703"/>
         <source>&amp;Language</source>
         <translation>&amp;Език</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="726"/>
         <location filename="../../mainwindow_ui.cpp" line="704"/>
         <source>Sim&amp;ulation</source>
         <translation>Сим&amp;улация</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="737"/>
         <location filename="../../mainwindow_ui.cpp" line="705"/>
         <source>Examples</source>
         <translation>Примери</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="755"/>
         <location filename="../../mainwindow_ui.cpp" line="604"/>
         <source>&amp;Open...</source>
         <translation>&amp;Отвори...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="758"/>
         <location filename="../../mainwindow_ui.cpp" line="605"/>
         <source>Open</source>
         <translation>Отвори</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="761"/>
         <location filename="../../mainwindow_ui.cpp" line="606"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="770"/>
         <location filename="../../mainwindow_ui.cpp" line="607"/>
         <source>&amp;Save</source>
         <translation>&amp;Запази</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="773"/>
         <location filename="../../mainwindow_ui.cpp" line="608"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="782"/>
         <location filename="../../mainwindow_ui.cpp" line="609"/>
         <source>Save &amp;As...</source>
         <translation>Запази &amp;като...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="785"/>
         <location filename="../../mainwindow_ui.cpp" line="610"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="794"/>
         <location filename="../../mainwindow_ui.cpp" line="611"/>
         <source>Cu&amp;t</source>
         <translation>Из&amp;режи</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="797"/>
         <location filename="../../mainwindow_ui.cpp" line="612"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="806"/>
         <location filename="../../mainwindow_ui.cpp" line="613"/>
         <source>&amp;Copy</source>
         <translation>&amp;Копирай</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="809"/>
         <location filename="../../mainwindow_ui.cpp" line="614"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="818"/>
         <location filename="../../mainwindow_ui.cpp" line="615"/>
         <source>&amp;Paste</source>
         <translation>&amp;Постави</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="821"/>
         <location filename="../../mainwindow_ui.cpp" line="616"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="831"/>
         <location filename="../../mainwindow_ui.cpp" line="617"/>
         <source>&amp;Delete</source>
         <translation>&amp;Изтрий</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="834"/>
         <location filename="../../mainwindow_ui.cpp" line="618"/>
         <source>Del</source>
         <translation>Изтр</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="843"/>
         <location filename="../../mainwindow_ui.cpp" line="619"/>
         <source>&amp;New</source>
         <translation>&amp;Нов</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="846"/>
         <location filename="../../mainwindow_ui.cpp" line="620"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="855"/>
         <location filename="../../mainwindow_ui.cpp" line="621"/>
         <source>Zoom &amp;in</source>
         <translation>&amp;Увеличи</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="858"/>
         <location filename="../../mainwindow_ui.cpp" line="622"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="867"/>
         <location filename="../../mainwindow_ui.cpp" line="623"/>
         <source>Zoom &amp;out</source>
         <translation>&amp;Намали</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="870"/>
         <location filename="../../mainwindow_ui.cpp" line="624"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="885"/>
         <location filename="../../mainwindow_ui.cpp" line="625"/>
         <source>&amp;Wires</source>
         <translation>&amp;Проводници</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="888"/>
         <location filename="../../mainwindow_ui.cpp" line="626"/>
         <source>Ctrl+1</source>
         <translation>Ctrl+1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="903"/>
         <location filename="../../mainwindow_ui.cpp" line="627"/>
         <source>&amp;Gates</source>
         <translation>&amp;Врати</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="906"/>
         <location filename="../../mainwindow_ui.cpp" line="628"/>
         <source>Ctrl+2</source>
         <translation>Ctrl+2</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="915"/>
         <location filename="../../mainwindow_ui.cpp" line="629"/>
         <source>&amp;About</source>
         <translation>&amp;Относно</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="918"/>
         <location filename="../../mainwindow_ui.cpp" line="630"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="927"/>
         <location filename="../../mainwindow_ui.cpp" line="631"/>
         <source>&amp;Exit</source>
         <translation>&amp;Изход</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="930"/>
         <location filename="../../mainwindow_ui.cpp" line="632"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="939"/>
         <location filename="../../mainwindow_ui.cpp" line="633"/>
         <source>R&amp;otate right</source>
         <translation>&amp;Завърти надясно</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="942"/>
         <location filename="../../mainwindow_ui.cpp" line="634"/>
         <source>Ctrl+R</source>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="951"/>
         <location filename="../../mainwindow_ui.cpp" line="635"/>
         <source>Rotate &amp;left</source>
         <translation>Завърти на&amp;ляво</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="954"/>
         <location filename="../../mainwindow_ui.cpp" line="636"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="963"/>
         <location filename="../../mainwindow_ui.cpp" line="637"/>
         <source>About &amp;Qt</source>
         <translation>Относно &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="972"/>
         <location filename="../../mainwindow_ui.cpp" line="638"/>
         <source>&amp;Select all</source>
         <translation>&amp;Избери всички</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="975"/>
         <location filename="../../mainwindow_ui.cpp" line="639"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="984"/>
         <location filename="../../mainwindow_ui.cpp" line="640"/>
         <source>Re&amp;load File</source>
         <translation>Пре&amp;зареди файл</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="987"/>
         <location filename="../../mainwindow_ui.cpp" line="641"/>
         <source>Ctrl+F5</source>
         <translation>Ctrl+F5</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="996"/>
         <location filename="../../mainwindow_ui.cpp" line="642"/>
         <source>E&amp;xport to Arduino</source>
         <translation>&amp;Експорт за Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="999"/>
         <location filename="../../mainwindow_ui.cpp" line="643"/>
         <source>Ctrl+Alt+I</source>
         <translation>Ctrl+Alt+I</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1008"/>
         <location filename="../../mainwindow_ui.cpp" line="644"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;Нулирай увеличението</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1011"/>
         <location filename="../../mainwindow_ui.cpp" line="645"/>
         <source>Ctrl+0</source>
         <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1020"/>
         <location filename="../../mainwindow_ui.cpp" line="646"/>
         <source>Export to &amp;PDF</source>
         <translation>Експорт към &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1023"/>
         <location filename="../../mainwindow_ui.cpp" line="647"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1036"/>
         <location filename="../../mainwindow_ui.cpp" line="648"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;Пусни/Пауза</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1039"/>
         <location filename="../../mainwindow_ui.cpp" line="649"/>
         <source>Play or Pause simulation.</source>
         <translation>Пусни или паузирай симулацията.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1042"/>
         <location filename="../../mainwindow_ui.cpp" line="650"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1051"/>
         <location filename="../../mainwindow_ui.cpp" line="651"/>
         <source>&amp;Rename</source>
         <translation>&amp;Преименувай</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1054"/>
         <location filename="../../mainwindow_ui.cpp" line="652"/>
         <source>F2</source>
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1063"/>
         <location filename="../../mainwindow_ui.cpp" line="653"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>Сме&amp;ни тригера</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1066"/>
         <location filename="../../mainwindow_ui.cpp" line="654"/>
         <source>F3</source>
         <translation>F3</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1075"/>
         <location filename="../../mainwindow_ui.cpp" line="655"/>
         <source>Cl&amp;ear selection</source>
         <translation>Из&amp;чисти селекцията</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1078"/>
         <location filename="../../mainwindow_ui.cpp" line="656"/>
         <source>Esc</source>
         <translation>Esc</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1090"/>
         <location filename="../../mainwindow_ui.cpp" line="657"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;Бърз режим</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1101"/>
         <location filename="../../mainwindow_ui.cpp" line="658"/>
         <source>&amp;Panda Light</source>
         <translation>&amp;Panda светла</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1109"/>
         <location filename="../../mainwindow_ui.cpp" line="659"/>
         <source>Panda &amp;Dark</source>
         <translation>Panda &amp;тъмна</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1118"/>
         <location filename="../../mainwindow_ui.cpp" line="660"/>
         <source>&amp;Waveform</source>
         <translation>&amp;Вълнова форма</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1121"/>
         <location filename="../../mainwindow_ui.cpp" line="661"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1130"/>
         <location filename="../../mainwindow_ui.cpp" line="662"/>
         <source>Export to &amp;Image</source>
         <translation>Експорт към &amp;изображение</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1133"/>
         <location filename="../../mainwindow_ui.cpp" line="663"/>
         <source>Ctrl+E</source>
         <translation>Ctrl+E</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1138"/>
         <location filename="../../mainwindow_ui.cpp" line="664"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;Обърни хоризонтално</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1141"/>
         <location filename="../../mainwindow_ui.cpp" line="665"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1146"/>
         <location filename="../../mainwindow_ui.cpp" line="666"/>
         <source>Flip &amp;vertically</source>
         <translation>Обърни &amp;вертикално</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1151"/>
         <location filename="../../mainwindow_ui.cpp" line="667"/>
         <source>F&amp;ullscreen</source>
         <translation>&amp;Пълен екран</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1154"/>
         <location filename="../../mainwindow_ui.cpp" line="668"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1167"/>
         <location filename="../../mainwindow.cpp" line="1649"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>Без звук</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1170"/>
         <location filename="../../mainwindow_ui.cpp" line="670"/>
         <source>Mutes and unmutes circuit buzzers</source>
         <translation>Заглушава и включва сумерите на схемата</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1173"/>
         <location filename="../../mainwindow_ui.cpp" line="671"/>
         <source>Ctrl+M</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1181"/>
         <location filename="../../mainwindow_ui.cpp" line="672"/>
         <source>Labels under icons</source>
         <translation>Етикети под иконите</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1186"/>
         <location filename="../../mainwindow_ui.cpp" line="673"/>
         <source>About this version</source>
         <translation>Относно тази версия</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1195"/>
         <location filename="../../mainwindow_ui.cpp" line="674"/>
         <source>&amp;Restart</source>
         <translation>&amp;Престартирай</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1198"/>
         <location filename="../../mainwindow_ui.cpp" line="675"/>
         <source>Restart simulation.</source>
         <translation>Престартирай симулацията.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1209"/>
         <location filename="../../mainwindow_ui.cpp" line="676"/>
         <source>Background Simulation</source>
         <translation>Фонова симулация</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1217"/>
         <location filename="../../mainwindow.cpp" line="550"/>
         <location filename="../../mainwindow_ui.cpp" line="677"/>
         <source>Shortcuts and Tips</source>
         <translation>Клавишни комбинации и съвети</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1226"/>
         <location filename="../../mainwindow_ui.cpp" line="678"/>
         <source>Report Translation Error</source>
         <translation>Докладвайте грешка в превода</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.ui" line="1229"/>
         <location filename="../../mainwindow_ui.cpp" line="679"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>Докладвайте грешки в превода или помогнете за подобряване на преводите в Weblate</translation>
