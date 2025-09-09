@@ -69,7 +69,7 @@ jobs:
 
     - name: Setup Windows MSVC Toolchain
       if: runner.os == 'Windows'
-      uses: pbeast/gha-setup-vsdevenv@master
+      uses: seanmiddleditch/gha-setup-vsdevenv@v5
 
     - name: Build Windows
       if: runner.os == 'Windows'
