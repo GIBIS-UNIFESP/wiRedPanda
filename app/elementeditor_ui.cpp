@@ -70,7 +70,7 @@ void ElementEditor_Ui::setupUi(QWidget *ElementEditor)
     sizePolicy.setVerticalStretch(0);
     sizePolicy.setHeightForWidth(pushButtonDefaultSkin->sizePolicy().hasHeightForWidth());
     pushButtonDefaultSkin->setSizePolicy(sizePolicy);
-    pushButtonDefaultSkin->setIcon(QIcon(":/toolbar/default.svg"));
+    pushButtonDefaultSkin->setIcon(QIcon(":/interface/locale/default.svg"));
     pushButtonDefaultSkin->setIconSize(QSize(16, 16));
     horizontalLayout->addWidget(pushButtonDefaultSkin);
 

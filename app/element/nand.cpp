@@ -6,7 +6,7 @@
 #include "globalproperties.h"
 
 Nand::Nand(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Nand, ElementGroup::Gate, ":/basic/nand.svg", tr("NAND"), tr("Nand"), 2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::Nand, ElementGroup::Gate, ":/components/logic/nand.svg", tr("NAND"), tr("Nand"), 2, 8, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

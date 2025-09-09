@@ -14,59 +14,59 @@ void BewavedDolphin_Ui::setupUi(QMainWindow *BewavedDolphin)
 
     BewavedDolphin->resize(800, 600);
 
-    BewavedDolphin->setWindowIcon(QIcon(":/toolbar/dolphin_icon.svg"));
+    BewavedDolphin->setWindowIcon(QIcon(":/interface/toolbar/dolphin_icon.svg"));
 
     actionAbout = new QAction(BewavedDolphin);
     actionAbout->setObjectName("actionAbout");
-    actionAbout->setIcon(QIcon(":/dolphin/help.svg"));
+    actionAbout->setIcon(QIcon(":/interface/dolphin/help.svg"));
 
     actionLoad = new QAction(BewavedDolphin);
     actionLoad->setObjectName("actionLoad");
-    actionLoad->setIcon(QIcon(":/dolphin/folder.svg"));
+    actionLoad->setIcon(QIcon(":/interface/dolphin/folder.svg"));
 
     actionExit = new QAction(BewavedDolphin);
     actionExit->setObjectName("actionExit");
-    actionExit->setIcon(QIcon(":/dolphin/exit.svg"));
+    actionExit->setIcon(QIcon(":/interface/dolphin/exit.svg"));
 
     actionCombinational = new QAction(BewavedDolphin);
     actionCombinational->setObjectName("actionCombinational");
-    actionCombinational->setIcon(QIcon(":/toolbar/wavyIcon.svg"));
+    actionCombinational->setIcon(QIcon(":/interface/toolbar/wavyIcon.svg"));
 
     actionExportToPdf = new QAction(BewavedDolphin);
     actionExportToPdf->setObjectName("actionExportToPdf");
-    actionExportToPdf->setIcon(QIcon(":/dolphin/pdf.svg"));
+    actionExportToPdf->setIcon(QIcon(":/interface/dolphin/pdf.svg"));
 
     actionSave = new QAction(BewavedDolphin);
     actionSave->setObjectName("actionSave");
-    actionSave->setIcon(QIcon(":/dolphin/save.svg"));
+    actionSave->setIcon(QIcon(":/interface/dolphin/save.svg"));
 
     actionSaveAs = new QAction(BewavedDolphin);
     actionSaveAs->setObjectName("actionSaveAs");
-    actionSaveAs->setIcon(QIcon(":/dolphin/save.svg"));
+    actionSaveAs->setIcon(QIcon(":/interface/dolphin/save.svg"));
 
     actionCopy = new QAction(BewavedDolphin);
     actionCopy->setObjectName("actionCopy");
-    actionCopy->setIcon(QIcon(":/toolbar/copy.svg"));
+    actionCopy->setIcon(QIcon(":/interface/toolbar/copy.svg"));
 
     actionPaste = new QAction(BewavedDolphin);
     actionPaste->setObjectName("actionPaste");
-    actionPaste->setIcon(QIcon(":/dolphin/paste.svg"));
+    actionPaste->setIcon(QIcon(":/interface/dolphin/paste.svg"));
 
     actionSetTo0 = new QAction(BewavedDolphin);
     actionSetTo0->setObjectName("actionSetTo0");
-    actionSetTo0->setIcon(QIcon(":/input/0.svg"));
+    actionSetTo0->setIcon(QIcon(":/components/input/0.svg"));
 
     actionSetTo1 = new QAction(BewavedDolphin);
     actionSetTo1->setObjectName("actionSetTo1");
-    actionSetTo1->setIcon(QIcon(":/input/1.svg"));
+    actionSetTo1->setIcon(QIcon(":/components/input/1.svg"));
 
     actionSetClockWave = new QAction(BewavedDolphin);
     actionSetClockWave->setObjectName("actionSetClockWave");
-    actionSetClockWave->setIcon(QIcon(":/input/clock1.svg"));
+    actionSetClockWave->setIcon(QIcon(":/components/input/clock1.svg"));
 
     actionInvert = new QAction(BewavedDolphin);
     actionInvert->setObjectName("actionInvert");
-    actionInvert->setIcon(QIcon(":/basic/not.svg"));
+    actionInvert->setIcon(QIcon(":/components/logic/not.svg"));
 
     actionMerge = new QAction(BewavedDolphin);
     actionMerge->setObjectName("actionMerge");
@@ -78,39 +78,39 @@ void BewavedDolphin_Ui::setupUi(QMainWindow *BewavedDolphin)
 
     actionExportToPng = new QAction(BewavedDolphin);
     actionExportToPng->setObjectName("actionExportToPng");
-    actionExportToPng->setIcon(QIcon(":/dolphin/png.svg"));
+    actionExportToPng->setIcon(QIcon(":/interface/dolphin/png.svg"));
 
     actionSetLength = new QAction(BewavedDolphin);
     actionSetLength->setObjectName("actionSetLength");
-    actionSetLength->setIcon(QIcon(":/dolphin/range.svg"));
+    actionSetLength->setIcon(QIcon(":/interface/dolphin/range.svg"));
 
     actionAboutQt = new QAction(BewavedDolphin);
     actionAboutQt->setObjectName("actionAboutQt");
-    actionAboutQt->setIcon(QIcon(":/toolbar/helpQt.svg"));
+    actionAboutQt->setIcon(QIcon(":/interface/toolbar/helpQt.svg"));
 
     actionZoomIn = new QAction(BewavedDolphin);
     actionZoomIn->setObjectName("actionZoomIn");
-    actionZoomIn->setIcon(QIcon(":/dolphin/zoomIn.svg"));
+    actionZoomIn->setIcon(QIcon(":/interface/dolphin/zoomIn.svg"));
 
     actionZoomOut = new QAction(BewavedDolphin);
     actionZoomOut->setObjectName("actionZoomOut");
-    actionZoomOut->setIcon(QIcon(":/dolphin/zoomOut.svg"));
+    actionZoomOut->setIcon(QIcon(":/interface/dolphin/zoomOut.svg"));
 
     actionFitScreen = new QAction(BewavedDolphin);
     actionFitScreen->setObjectName("actionFitScreen");
-    actionFitScreen->setIcon(QIcon(":/dolphin/zoomRange.svg"));
+    actionFitScreen->setIcon(QIcon(":/interface/dolphin/zoomRange.svg"));
 
     actionResetZoom = new QAction(BewavedDolphin);
     actionResetZoom->setObjectName("actionResetZoom");
-    actionResetZoom->setIcon(QIcon(":/dolphin/zoomReset.svg"));
+    actionResetZoom->setIcon(QIcon(":/interface/dolphin/zoomReset.svg"));
 
     actionClear = new QAction(BewavedDolphin);
     actionClear->setObjectName("actionClear");
-    actionClear->setIcon(QIcon(":/dolphin/reloadFile.svg"));
+    actionClear->setIcon(QIcon(":/interface/dolphin/reloadFile.svg"));
 
     actionCut = new QAction(BewavedDolphin);
     actionCut->setObjectName("actionCut");
-    actionCut->setIcon(QIcon(":/dolphin/cut.svg"));
+    actionCut->setIcon(QIcon(":/interface/dolphin/cut.svg"));
 
     actionShowNumbers = new QAction(BewavedDolphin);
     actionShowNumbers->setObjectName("actionShowNumbers");
@@ -120,7 +120,7 @@ void BewavedDolphin_Ui::setupUi(QMainWindow *BewavedDolphin)
 
     actionAutoCrop = new QAction(BewavedDolphin);
     actionAutoCrop->setObjectName("actionAutoCrop");
-    actionAutoCrop->setIcon(QIcon(":/dolphin/autoCrop.svg"));
+    actionAutoCrop->setIcon(QIcon(":/interface/dolphin/autoCrop.svg"));
     actionAutoCrop->setMenuRole(QAction::NoRole);
 
     centralwidget = new QWidget(BewavedDolphin);

@@ -11,15 +11,15 @@
 using namespace std::chrono_literals;
 
 Clock::Clock(QGraphicsItem *parent)
-    : GraphicElementInput(ElementType::Clock, ElementGroup::Input, ":/input/clock1.svg", tr("CLOCK SIGNAL"), tr("Clock"), 0, 0, 1, 1, parent)
+    : GraphicElementInput(ElementType::Clock, ElementGroup::Input, ":/components/input/clock1.svg", tr("CLOCK SIGNAL"), tr("Clock"), 0, 0, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
     }
 
     m_defaultSkins = QStringList{
-        ":/input/clock0.svg",
-        ":/input/clock1.svg"
+        ":/components/input/clock0.svg",
+        ":/components/input/clock1.svg"
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

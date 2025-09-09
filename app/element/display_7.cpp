@@ -11,22 +11,22 @@
 #include <QPixmap>
 
 Display7::Display7(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Display7, ElementGroup::Output, ":/output/counter/counter_on.svg", tr("7-SEGMENT DISPLAY"), tr("7-Segment Display"), 8, 8, 0, 0, parent)
+    : GraphicElement(ElementType::Display7, ElementGroup::Output, ":/components/output/counter/counter_on.svg", tr("7-SEGMENT DISPLAY"), tr("7-Segment Display"), 8, 8, 0, 0, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
     }
 
     m_defaultSkins = QStringList{
-        ":/output/counter/counter_off.svg",
-        ":/output/counter/counter_a.svg",
-        ":/output/counter/counter_b.svg",
-        ":/output/counter/counter_c.svg",
-        ":/output/counter/counter_d.svg",
-        ":/output/counter/counter_e.svg",
-        ":/output/counter/counter_f.svg",
-        ":/output/counter/counter_g.svg",
-        ":/output/counter/counter_dp.svg",
+        ":/components/output/counter/counter_off.svg",
+        ":/components/output/counter/counter_a.svg",
+        ":/components/output/counter/counter_b.svg",
+        ":/components/output/counter/counter_c.svg",
+        ":/components/output/counter/counter_d.svg",
+        ":/components/output/counter/counter_e.svg",
+        ":/components/output/counter/counter_f.svg",
+        ":/components/output/counter/counter_g.svg",
+        ":/components/output/counter/counter_dp.svg",
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

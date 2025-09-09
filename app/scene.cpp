@@ -32,11 +32,11 @@ Scene::Scene(QObject *parent)
     addItem(&m_selectionRect);
 
     m_undoAction = undoStack()->createUndoAction(this, tr("&Undo"));
-    m_undoAction->setIcon(QIcon(":/toolbar/undo.svg"));
+    m_undoAction->setIcon(QIcon(":/interface/toolbar/undo.svg"));
     m_undoAction->setShortcut(QKeySequence::Undo);
 
     m_redoAction = undoStack()->createRedoAction(this, tr("&Redo"));
-    m_redoAction->setIcon(QIcon(":/toolbar/redo.svg"));
+    m_redoAction->setIcon(QIcon(":/interface/toolbar/redo.svg"));
     m_redoAction->setShortcut(QKeySequence::Redo);
 
     m_timer.start();
@@ -761,7 +761,7 @@ void Scene::contextMenu(const QPoint screenPos)
         }
     } else {
         QMenu menu;
-        auto *pasteAction = menu.addAction(QIcon(QPixmap(":/toolbar/paste.svg")), tr("Paste"));
+        auto *pasteAction = menu.addAction(QIcon(QPixmap(":/interface/toolbar/paste.svg")), tr("Paste"));
         const auto *mimeData = QApplication::clipboard()->mimeData();
 
         if (mimeData->hasFormat("wpanda/copydata")) {

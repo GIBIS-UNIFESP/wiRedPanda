@@ -9,7 +9,7 @@
 #include <bitset>
 
 Led::Led(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Led, ElementGroup::Output, ":/output/led/LedOff.svg", tr("LED"), tr("LED"), 1, 4, 0, 0, parent)
+    : GraphicElement(ElementType::Led, ElementGroup::Output, ":/components/output/led/LedOff.svg", tr("LED"), tr("LED"), 1, 4, 0, 0, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
@@ -17,34 +17,34 @@ Led::Led(QGraphicsItem *parent)
 
     m_defaultSkins = QStringList{
         // Single input values:
-        ":/output/led/LedOff.svg",        // 0
-        ":/output/led/WhiteLed.svg",      // 1
-        ":/output/led/LedOff.svg",        // 2
-        ":/output/led/RedLed.svg",        // 3
-        ":/output/led/LedOff.svg",        // 4
-        ":/output/led/GreenLed.svg",      // 5
-        ":/output/led/LedOff.svg",        // 6
-        ":/output/led/BlueLed.svg",       // 7
-        ":/output/led/LedOff.svg",        // 8
-        ":/output/led/PurpleLed.svg",     // 9
+        ":/components/output/led/LedOff.svg",        // 0
+        ":/components/output/led/WhiteLed.svg",      // 1
+        ":/components/output/led/LedOff.svg",        // 2
+        ":/components/output/led/RedLed.svg",        // 3
+        ":/components/output/led/LedOff.svg",        // 4
+        ":/components/output/led/GreenLed.svg",      // 5
+        ":/components/output/led/LedOff.svg",        // 6
+        ":/components/output/led/BlueLed.svg",       // 7
+        ":/components/output/led/LedOff.svg",        // 8
+        ":/components/output/led/PurpleLed.svg",     // 9
         // Multiple input values:
-        ":/output/led//BlackLed.png",     // 10
-        ":/output/led//NavyBlueLed.png",  // 11
-        ":/output/led//GreenLed.png",     // 12
-        ":/output/led//TealLed.png",      // 13
-        ":/output/led//DarkRedLed.png",   // 14
-        ":/output/led//MagentaLed.png",   // 15
-        ":/output/led//OrangeLed.png",    // 16
-        ":/output/led//LightGrayLed.png", // 17
+        ":/components/output/led//BlackLed.png",     // 10
+        ":/components/output/led//NavyBlueLed.png",  // 11
+        ":/components/output/led//GreenLed.png",     // 12
+        ":/components/output/led//TealLed.png",      // 13
+        ":/components/output/led//DarkRedLed.png",   // 14
+        ":/components/output/led//MagentaLed.png",   // 15
+        ":/components/output/led//OrangeLed.png",    // 16
+        ":/components/output/led//LightGrayLed.png", // 17
 
-        ":/output/led/LedOff.svg",        // 18
-        ":/output/led/RoyalLed.png",      // 19
-        ":/output/led/LimeGreenLed.png",  // 20
-        ":/output/led/AquaLightLed.png",  // 21
-        ":/output/led/RedLed.png",        // 22
-        ":/output/led/HotPinkLed.png",    // 23
-        ":/output/led/YellowLed.png",     // 24
-        ":/output/led/WhiteLed.png",      // 25
+        ":/components/output/led/LedOff.svg",        // 18
+        ":/components/output/led/RoyalLed.png",      // 19
+        ":/components/output/led/LimeGreenLed.png",  // 20
+        ":/components/output/led/AquaLightLed.png",  // 21
+        ":/components/output/led/RedLed.png",        // 22
+        ":/components/output/led/HotPinkLed.png",    // 23
+        ":/components/output/led/YellowLed.png",     // 24
+        ":/components/output/led/WhiteLed.png",      // 25
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

@@ -15,7 +15,7 @@ public:
 
     static QString pixmapPath()
     {
-        return ":/memory/" + ThemeManager::themePath() + "/T-flipflop.svg";
+        return ":/components/memory/" + ThemeManager::themePath() + "/T-flipflop.svg";
     }
 
     void updatePortsProperties() override;
