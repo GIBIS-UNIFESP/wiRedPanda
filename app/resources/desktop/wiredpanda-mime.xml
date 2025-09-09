@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<!--
+ Copyright 2015 - 2025, GIBIS-Unifesp and the wiRedPanda contributors
+ SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
+ <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+   <mime-type type="application/x-wpanda">
+     <comment>wiRedPanda circuit file</comment>
+     <comment xml:lang="ar">ملف دائرة wiRedPanda</comment>
+     <comment xml:lang="bg">Файл на схема wiRedPanda</comment>
+     <comment xml:lang="bn">wiRedPanda সার্কিট ফাইল</comment>
+     <comment xml:lang="cs">Soubor obvodu wiRedPanda</comment>
+     <comment xml:lang="da">wiRedPanda kredsløbsfil</comment>
+     <comment xml:lang="de">wiRedPanda-Schaltkreisdatei</comment>
+     <comment xml:lang="el">Αρχείο κυκλώματος wiRedPanda</comment>
+     <comment xml:lang="es">Archivo de circuito wiRedPanda</comment>
+     <comment xml:lang="et">wiRedPanda ahelafail</comment>
+     <comment xml:lang="fa">فایل مداری wiRedPanda</comment>
+     <comment xml:lang="fi">wiRedPanda-piiritiedosto</comment>
+     <comment xml:lang="fr">Fichier de circuit wiRedPanda</comment>
+     <comment xml:lang="he">קובץ מעגל wiRedPanda</comment>
+     <comment xml:lang="hi">wiRedPanda सर्किट फ़ाइल</comment>
+     <comment xml:lang="hr">wiRedPanda datoteka kruga</comment>
+     <comment xml:lang="hu">wiRedPanda áramköri fájl</comment>
+     <comment xml:lang="id">Berkas sirkuit wiRedPanda</comment>
+     <comment xml:lang="it">File del circuito wiRedPanda</comment>
+     <comment xml:lang="ja">wiRedPanda回路ファイル</comment>
+     <comment xml:lang="ko">wiRedPanda 회로 파일</comment>
+     <comment xml:lang="lt">wiRedPanda grandinės failas</comment>
+     <comment xml:lang="lv">wiRedPanda ķēdes fails</comment>
+     <comment xml:lang="ms">Fail litar wiRedPanda</comment>
+     <comment xml:lang="nb">wiRedPanda-kretsfil</comment>
+     <comment xml:lang="nl">wiRedPanda schakelingbestand</comment>
+     <comment xml:lang="pl">Plik układu wiRedPanda</comment>
+     <comment xml:lang="pt">Ficheiro de circuito wiRedPanda</comment>
+     <comment xml:lang="pt_BR">Arquivo de circuito wiRedPanda</comment>
+     <comment xml:lang="ro">Fișier de circuit wiRedPanda</comment>
+     <comment xml:lang="ru">Файл схемы wiRedPanda</comment>
+     <comment xml:lang="sk">Súbor obvodu wiRedPanda</comment>
+     <comment xml:lang="sv">wiRedPanda-kretsfil</comment>
+     <comment xml:lang="th">ไฟล์วงจร wiRedPanda</comment>
+     <comment xml:lang="tr">wiRedPanda devre dosyası</comment>
+     <comment xml:lang="uk">Файл ланцюга wiRedPanda</comment>
+     <comment xml:lang="vi">Tệp mạch wiRedPanda</comment>
+     <comment xml:lang="zh_Hans">wiRedPanda电路文件</comment>
+     <comment xml:lang="zh_Hant">wiRedPanda 電路檔案</comment>
+     <glob pattern="*.panda"/>
+   </mime-type>
+   <mime-type type="application/x-wiredpanda">
+     <comment>wiRedPanda circuit file</comment>
+     <comment xml:lang="ar">ملف دائرة wiRedPanda</comment>
+     <comment xml:lang="bg">Файл на схема wiRedPanda</comment>
+     <comment xml:lang="bn">wiRedPanda সার্কিট ফাইল</comment>
+     <comment xml:lang="cs">Soubor obvodu wiRedPanda</comment>
+     <comment xml:lang="da">wiRedPanda kredsløbsfil</comment>
+     <comment xml:lang="de">wiRedPanda-Schaltkreisdatei</comment>
+     <comment xml:lang="el">Αρχείο κυκλώματος wiRedPanda</comment>
+     <comment xml:lang="es">Archivo de circuito wiRedPanda</comment>
+     <comment xml:lang="et">wiRedPanda ahelafail</comment>
+     <comment xml:lang="fa">فایل مداری wiRedPanda</comment>
+     <comment xml:lang="fi">wiRedPanda-piiritiedosto</comment>
+     <comment xml:lang="fr">Fichier de circuit wiRedPanda</comment>
+     <comment xml:lang="he">קובץ מעגל wiRedPanda</comment>
+     <comment xml:lang="hi">wiRedPanda सर्किट फ़ाइल</comment>
+     <comment xml:lang="hr">wiRedPanda datoteka kruga</comment>
+     <comment xml:lang="hu">wiRedPanda áramköri fájl</comment>
+     <comment xml:lang="id">Berkas sirkuit wiRedPanda</comment>
+     <comment xml:lang="it">File del circuito wiRedPanda</comment>
+     <comment xml:lang="ja">wiRedPanda回路ファイル</comment>
+     <comment xml:lang="ko">wiRedPanda 회로 파일</comment>
+     <comment xml:lang="lt">wiRedPanda grandinės failas</comment>
+     <comment xml:lang="lv">wiRedPanda ķēdes fails</comment>
+     <comment xml:lang="ms">Fail litar wiRedPanda</comment>
+     <comment xml:lang="nb">wiRedPanda-kretsfil</comment>
+     <comment xml:lang="nl">wiRedPanda schakelingbestand</comment>
+     <comment xml:lang="pl">Plik układu wiRedPanda</comment>
+     <comment xml:lang="pt">Ficheiro de circuito wiRedPanda</comment>
+     <comment xml:lang="pt_BR">Arquivo de circuito wiRedPanda</comment>
+     <comment xml:lang="ro">Fișier de circuit wiRedPanda</comment>
+     <comment xml:lang="ru">Файл схемы wiRedPanda</comment>
+     <comment xml:lang="sk">Súbor obvodu wiRedPanda</comment>
+     <comment xml:lang="sv">wiRedPanda-kretsfil</comment>
+     <comment xml:lang="th">ไฟล์วงจร wiRedPanda</comment>
+     <comment xml:lang="tr">wiRedPanda devre dosyası</comment>
+     <comment xml:lang="uk">Файл ланцюга wiRedPanda</comment>
+     <comment xml:lang="vi">Tệp mạch wiRedPanda</comment>
+     <comment xml:lang="zh_Hans">wiRedPanda电路文件</comment>
+     <comment xml:lang="zh_Hant">wiRedPanda 電路檔案</comment>
+     <glob pattern="*.panda"/>
+   </mime-type>
+ </mime-info>

@@ -162,9 +162,26 @@ jobs:
     - name: linuxdeployqt
       if: runner.os == 'Linux'
       run: |
-        mkdir -p appimage appimage/lib
-        cp app/resources/desktop/wpanda.desktop appimage/wpanda.desktop
-        cp app/resources/assets/logos/wpanda.svg appimage/wpanda_icon.svg
+        # Create proper AppDir structure following FHS
+        mkdir -p appimage appimage/lib appimage/usr/share/icons/hicolor/scalable/apps appimage/usr/share/icons/hicolor/256x256/apps
+
+        # Copy desktop file to root and substitute version
+        cp app/resources/desktop/wiredpanda.desktop appimage/wiredpanda.desktop
+        sed -i "s/@VERSION@/$VERSION/g" appimage/wiredpanda.desktop
+
+        # Copy icons to proper FHS locations (both SVG and PNG for compatibility)
+        cp app/resources/assets/logos/wpanda.svg appimage/usr/share/icons/hicolor/scalable/apps/wpanda.svg
+
+        # Copy existing PNG icon for broader compatibility
+        cp app/resources/assets/logos/wpanda.png appimage/usr/share/icons/hicolor/256x256/apps/wpanda.png
+
+        # Copy icon to AppImage root for linuxdeployqt compatibility
+        cp app/resources/assets/logos/wpanda.png appimage/wpanda.png
+
+        # Create .DirIcon symlink for file managers (prefer PNG for compatibility)
+        ln -sf usr/share/icons/hicolor/256x256/apps/wpanda.png appimage/.DirIcon
+
+        # Copy executables and libraries
         cp build/wiredpanda appimage
         cp build/crashpad_handler appimage/
         cp thirdparty/sentry/lib/libsentry.so appimage/lib/
@@ -222,7 +239,7 @@ jobs:
         fi
 
         # Verify desktop integration files
-        if [ -f "squashfs-root/wpanda.desktop" ]; then
+        if [ -f "squashfs-root/wiredpanda.desktop" ]; then
           echo "✓ Desktop integration file present"
         else
           echo "Warning: Desktop integration file missing"
