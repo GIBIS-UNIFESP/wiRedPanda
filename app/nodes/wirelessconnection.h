@@ -10,7 +10,7 @@ class WirelessConnection : public QNEConnection
     Q_DECLARE_TR_FUNCTIONS(WirelessConnection)
 
 public:
-    enum { Type = QGraphicsItem::UserType + 11 };
+    enum { Type = QGraphicsItem::UserType + 6 };  // Next in sequence after PhysicalConnection(+5)
     int type() const override { return Type; }
 
     explicit WirelessConnection(QGraphicsItem *parent = nullptr);

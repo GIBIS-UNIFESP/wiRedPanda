@@ -10,7 +10,7 @@ class PhysicalConnection : public QNEConnection
     Q_DECLARE_TR_FUNCTIONS(PhysicalConnection)
 
 public:
-    enum { Type = QGraphicsItem::UserType + 10 };
+    enum { Type = QGraphicsItem::UserType + 5 };  // Next in sequence after Node(+4)
     int type() const override { return Type; }
 
     explicit PhysicalConnection(QGraphicsItem *parent = nullptr);

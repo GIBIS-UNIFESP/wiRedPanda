@@ -88,10 +88,21 @@ void TestWireless::testBasicWirelessConnection()
     auto *scene = new Scene();
     
     // Create circuit: Switch → SourceNode(wireless "test") ~~auto-created wireless~~ SinkNode → LED
+    qDebug() << "TEST: Creating sourceSwitch...";
     auto *sourceSwitch = qgraphicsitem_cast<InputSwitch*>(ElementFactory::buildElement(ElementType::InputSwitch));
+    qDebug() << "TEST: Created sourceSwitch at address" << sourceSwitch;
+    
+    qDebug() << "TEST: Creating sourceNode...";
     auto *sourceNode = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
+    qDebug() << "TEST: Created sourceNode at address" << sourceNode << "with ID" << (sourceNode ? sourceNode->id() : -1);
+    
+    qDebug() << "TEST: Creating sinkNode...";
     auto *sinkNode = qgraphicsitem_cast<Node*>(ElementFactory::buildElement(ElementType::Node)); 
+    qDebug() << "TEST: Created sinkNode at address" << sinkNode << "with ID" << (sinkNode ? sinkNode->id() : -1);
+    
+    qDebug() << "TEST: Creating sinkLED...";
     auto *sinkLED = qgraphicsitem_cast<Led*>(ElementFactory::buildElement(ElementType::Led));
+    qDebug() << "TEST: Created sinkLED at address" << sinkLED;
     
     scene->addItem(sourceSwitch);
     scene->addItem(sourceNode);

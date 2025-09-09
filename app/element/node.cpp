@@ -16,8 +16,9 @@
 
 Node::Node(QGraphicsItem *parent)
     : GraphicElement(ElementType::Node, ElementGroup::Gate, ":/basic/node.svg", tr("NODE"), tr("Node"), 1, 1, 1, 1, parent)
-    , m_wirelessLabel()
+    , m_wirelessLabel()  // CRITICAL: Always initialize this member regardless of skipInit
 {
+    // Essential: m_wirelessLabel is now always initialized before any early returns
     if (GlobalProperties::skipInit) {
         return;
     }
@@ -33,6 +34,10 @@ Node::Node(QGraphicsItem *parent)
     inputPort()->setRequired(true);
 
     Node::updatePortsProperties();
+}
+
+Node::~Node()
+{
 }
 
 void Node::updatePortsProperties()

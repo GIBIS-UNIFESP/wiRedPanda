@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.16)
+project(DebugWireless)
+
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Include the main app source files
+file(GLOB_RECURSE APP_SOURCES "app/*.cpp")
+list(REMOVE_ITEM APP_SOURCES "${CMAKE_SOURCE_DIR}/app/main.cpp")
+
+add_executable(debug_wireless debug_wireless.cpp ${APP_SOURCES})
+target_link_libraries(debug_wireless Qt5::Core Qt5::Widgets)
+target_include_directories(debug_wireless PRIVATE .)

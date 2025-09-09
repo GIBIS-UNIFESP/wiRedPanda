@@ -119,13 +119,58 @@ Node* WirelessConnectionAutoManager::findWirelessSource(const QString& label)
     qDebug() << "WirelessConnectionAutoManager: Finding wireless source for label" << label;
     
     // Find all nodes in the scene with this wireless label that have physical input connections
-    for (auto* item : m_scene->items()) {
+    auto items = m_scene->items();
+    qDebug() << "Scene has" << items.size() << "items total";
+    
+    for (auto* item : items) {
+        if (!item) {
+            qDebug() << "Skipping null scene item";
+            continue;
+        }
+        
+        qDebug() << "Checking item type:" << item->type() << "vs Node type:" << Node::Type;
+        
+        // Only try to cast items that are actually Node type
+        if (item->type() != Node::Type) {
+            qDebug() << "Skipping non-Node item with type:" << item->type();
+            continue;
+        }
+        
         if (auto* node = qgraphicsitem_cast<Node*>(item)) {
-            qDebug() << "Checking node" << node->id() << "with label" << node->getWirelessLabel() 
-                     << "has physical input:" << node->hasPhysicalInputConnection();
-            if (node->getWirelessLabel() == label && node->hasPhysicalInputConnection()) {
-                qDebug() << "Found wireless source:" << node->id();
-                return node; // This node is a wireless source
+            if (!node) {
+                qDebug() << "Node cast failed - skipping";
+                continue;
+            }
+            
+            qDebug() << "Found Node object, trying to get ID...";
+            
+            // Validate node object before accessing methods
+            try {
+                qDebug() << "About to access node ID for debugging...";
+                auto nodeId = node->id();
+                qDebug() << "Successfully got node ID:" << nodeId;
+                
+                qDebug() << "About to call getWirelessLabel() on node" << nodeId;
+                // Check if node has wireless label matching what we're looking for
+                QString nodeLabel = node->getWirelessLabel();
+                qDebug() << "Successfully got wireless label for node" << nodeId << ":" << nodeLabel;
+                if (nodeLabel != label) {
+                    continue; // Skip nodes with different labels
+                }
+                
+                qDebug() << "Checking node" << node->id() << "with label" << nodeLabel;
+                
+                // Check if this node has physical input connection
+                bool hasPhysicalInput = node->hasPhysicalInputConnection();
+                qDebug() << "Node" << node->id() << "has physical input:" << hasPhysicalInput;
+                
+                if (hasPhysicalInput) {
+                    qDebug() << "Found wireless source:" << node->id();
+                    return node; // This node is a wireless source
+                }
+            } catch (...) {
+                qDebug() << "Exception accessing Node methods - skipping corrupted node";
+                continue;
             }
         }
     }
@@ -146,13 +191,50 @@ QSet<Node*> WirelessConnectionAutoManager::findWirelessSinks(const QString& labe
     qDebug() << "WirelessConnectionAutoManager: Finding wireless sinks for label" << label;
     
     // Find all nodes in the scene with this wireless label that have NO physical input connections
-    for (auto* item : m_scene->items()) {
+    auto items = m_scene->items();
+    qDebug() << "Scene has" << items.size() << "items total for sinks search";
+    
+    for (auto* item : items) {
+        if (!item) {
+            qDebug() << "Skipping null scene item in sinks search";
+            continue;
+        }
+        
+        qDebug() << "Checking sink item type:" << item->type() << "vs Node type:" << Node::Type;
+        
+        // Only try to cast items that are actually Node type
+        if (item->type() != Node::Type) {
+            qDebug() << "Skipping non-Node item in sinks search with type:" << item->type();
+            continue;
+        }
+        
         if (auto* node = qgraphicsitem_cast<Node*>(item)) {
-            qDebug() << "Checking sink node" << node->id() << "with label" << node->getWirelessLabel() 
-                     << "has physical input:" << node->hasPhysicalInputConnection();
-            if (node->getWirelessLabel() == label && !node->hasPhysicalInputConnection()) {
-                qDebug() << "Found wireless sink:" << node->id();
-                sinks.insert(node); // This node is a wireless sink
+            if (!node) {
+                qDebug() << "Node cast failed in sinks search - skipping";
+                continue;
+            }
+            
+            // Validate node object before accessing methods
+            try {
+                // Check if node has wireless label matching what we're looking for
+                QString nodeLabel = node->getWirelessLabel();
+                if (nodeLabel != label) {
+                    continue; // Skip nodes with different labels
+                }
+                
+                qDebug() << "Checking sink node" << node->id() << "with label" << nodeLabel;
+                
+                // Check if this node lacks physical input connection (making it a sink)
+                bool hasPhysicalInput = node->hasPhysicalInputConnection();
+                qDebug() << "Node" << node->id() << "has physical input:" << hasPhysicalInput;
+                
+                if (!hasPhysicalInput) {
+                    qDebug() << "Found wireless sink:" << node->id();
+                    sinks.insert(node); // This node is a wireless sink
+                }
+            } catch (...) {
+                qDebug() << "Exception accessing Node methods in sinks search - skipping corrupted node";
+                continue;
             }
         }
     }

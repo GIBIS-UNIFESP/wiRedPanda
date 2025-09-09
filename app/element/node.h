@@ -10,7 +10,11 @@ class Node : public GraphicElement
     Q_OBJECT
 
 public:
+    enum { Type = QGraphicsItem::UserType + 4 };  // Unique type for Node, next in sequence after GraphicElement(+3)
+    int type() const override { return Type; }
+    
     explicit Node(QGraphicsItem *parent = nullptr);
+    ~Node() override;
 
     void updatePortsProperties() override;
     void save(QDataStream &stream) const override;
