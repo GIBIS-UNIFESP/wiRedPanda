@@ -51,6 +51,13 @@ Scene::Scene(QObject *parent)
 
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &Scene::updateTheme);
     connect(&m_undoStack,              &QUndoStack::indexChanged,   this, &Scene::checkUpdateRequest);
+    
+    // Connect wireless managers to restart simulation when connections change
+    connect(m_wirelessManager, &WirelessConnectionManager::wirelessConnectionsChanged, 
+            &m_simulation, &Simulation::restart);
+    connect(m_wirelessAutoManager, &WirelessConnectionAutoManager::wirelessConnectionsChanged, 
+            &m_simulation, &Simulation::restart);
+    qDebug() << "CRASH_DEBUG: Connected both wireless managers to simulation restart";
 
     qCDebug(zero) << "Scene created with wireless connection manager";
 }

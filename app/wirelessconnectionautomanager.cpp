@@ -107,6 +107,10 @@ void WirelessConnectionAutoManager::rebuildConnectionsForLabel(const QString& la
     }
     
     qDebug() << "Created" << m_wirelessConnections[label].size() << "wireless connections for label" << label;
+    
+    // Emit signal to notify that wireless connections have changed
+    qDebug() << "CRASH_DEBUG: Emitting wirelessConnectionsChanged signal";
+    emit wirelessConnectionsChanged();
 }
 
 Node* WirelessConnectionAutoManager::findWirelessSource(const QString& label)

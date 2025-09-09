@@ -32,6 +32,9 @@ public:
     // Get all wireless connections for a specific label (for debugging/visualization)
     QList<WirelessConnection*> getWirelessConnectionsForLabel(const QString& label) const;
 
+signals:
+    void wirelessConnectionsChanged();
+
 private:
     // Rebuild all connections for a specific label
     void rebuildConnectionsForLabel(const QString& label);
