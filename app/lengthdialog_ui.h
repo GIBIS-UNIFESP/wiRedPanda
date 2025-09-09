@@ -26,4 +26,3 @@ public:
     QSpinBox *lengthSpinBox = nullptr;
     QDialogButtonBox *buttonBox = nullptr;
 };
-
