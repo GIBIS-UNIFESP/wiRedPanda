@@ -181,13 +181,8 @@ set(HEADERS
 )
 
 set(RESOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/app/resources/basic/basic.qrc
-    ${CMAKE_CURRENT_LIST_DIR}/app/resources/dolphin/dolphin.qrc
-    ${CMAKE_CURRENT_LIST_DIR}/app/resources/input/input.qrc
-    ${CMAKE_CURRENT_LIST_DIR}/app/resources/memory/dark/memory_dark.qrc
-    ${CMAKE_CURRENT_LIST_DIR}/app/resources/memory/light/memory_light.qrc
-    ${CMAKE_CURRENT_LIST_DIR}/app/resources/misc/misc.qrc
-    ${CMAKE_CURRENT_LIST_DIR}/app/resources/output/output.qrc
-    ${CMAKE_CURRENT_LIST_DIR}/app/resources/toolbar/toolbar.qrc
+    ${CMAKE_CURRENT_LIST_DIR}/app/resources/assets/assets.qrc
+    ${CMAKE_CURRENT_LIST_DIR}/app/resources/components/components.qrc
+    ${CMAKE_CURRENT_LIST_DIR}/app/resources/interface/interface.qrc
     ${CMAKE_CURRENT_LIST_DIR}/app/resources/translations/translations.qrc
 )

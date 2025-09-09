@@ -20,8 +20,8 @@ AudioBox::AudioBox(QGraphicsItem *parent)
         return;
 
     m_defaultSkins = QStringList{
-        ":/output/audiobox/audioboxOff.svg",
-        ":/output/audiobox/audioboxOn.svg"
+        ":/components/output/audiobox/audioboxOff.svg",
+        ":/components/output/audiobox/audioboxOn.svg"
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
@@ -47,7 +47,7 @@ AudioBox::AudioBox(QGraphicsItem *parent)
         m_audioOutput = new QAudioOutput(this);
 #endif
         m_audio = new QFileInfo();
-        AudioBox::setAudio("qrc:/output/audio/wiredpanda.wav");
+        AudioBox::setAudio("qrc:/components/output/audio/wiredpanda.wav");
     }
 }
 
@@ -117,7 +117,7 @@ void AudioBox::play()
 
     if (m_hasOutputDevice && m_audio) {
         if (!m_audio->exists()) {
-            setAudio("qrc:/output/audio/wiredpanda.wav");
+            setAudio("qrc:/components/output/audio/wiredpanda.wav");
         }
         m_player->play();
     }

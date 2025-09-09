@@ -6,15 +6,15 @@
 #include "globalproperties.h"
 
 Text::Text(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Text, ElementGroup::Other, ":/misc/text.png", tr("TEXT"), tr("Text"), 0, 0, 0, 0, parent)
+    : GraphicElement(ElementType::Text, ElementGroup::Other, ":/components/misc/text.png", tr("TEXT"), tr("Text"), 0, 0, 0, 0, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
     }
 
     m_defaultSkins = QStringList{
-        ":/misc/no_text.png",
-        ":/misc/text.png",
+        ":/components/misc/no_text.png",
+        ":/components/misc/text.png",
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

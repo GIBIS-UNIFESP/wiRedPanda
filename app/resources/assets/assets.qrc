@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/assets">
+        <!-- Application Icons -->
+        <file>icons/128x128/wpanda-file.png</file>
+        <file>icons/128x128/wpanda.png</file>
+        <file>icons/26x26/wpanda-file.png</file>
+        <file>icons/26x26/wpanda.png</file>
+        <file>icons/32x32/wpanda-file.png</file>
+        <file>icons/32x32/wpanda.png</file>
+        <file>icons/48x48/wpanda-file.png</file>
+        <file>icons/48x48/wpanda.png</file>
+        <file>icons/64x64/wpanda-file.png</file>
+        <file>icons/64x64/wpanda.png</file>
+
+        <!-- Application Logos -->
+        <file>logos/wpanda.svg</file>
+        <file>logos/wpanda.png</file>
+        <file>logos/wpanda.ico</file>
+        <file>logos/pandaFile.svg</file>
+        <file>logos/pandaFile.png</file>
+        <file>logos/pandaFile.ico</file>
+    </qresource>
+</RCC>

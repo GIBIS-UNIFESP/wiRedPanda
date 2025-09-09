@@ -9,15 +9,15 @@
 #include <QGraphicsSceneMouseEvent>
 
 InputButton::InputButton(QGraphicsItem *parent)
-    : GraphicElementInput(ElementType::InputButton, ElementGroup::Input, ":/input/buttonOff.svg", tr("PUSH BUTTON"), tr("Push Button"), 0, 0, 1, 1, parent)
+    : GraphicElementInput(ElementType::InputButton, ElementGroup::Input, ":/components/input/buttonOff.svg", tr("PUSH BUTTON"), tr("Push Button"), 0, 0, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
     }
 
     m_defaultSkins = QStringList{
-        ":/input/buttonOff.svg",
-        ":/input/buttonOn.svg",
+        ":/components/input/buttonOff.svg",
+        ":/components/input/buttonOn.svg",
     };
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

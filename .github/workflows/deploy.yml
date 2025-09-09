@@ -163,8 +163,8 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         mkdir -p appimage appimage/lib
-        cp app/resources/wpanda.desktop appimage/wpanda.desktop
-        cp app/resources/wpanda.svg appimage/wpanda_icon.svg
+        cp app/resources/desktop/wpanda.desktop appimage/wpanda.desktop
+        cp app/resources/assets/logos/wpanda.svg appimage/wpanda_icon.svg
         cp build/wiredpanda appimage
         cp build/crashpad_handler appimage/
         cp thirdparty/sentry/lib/libsentry.so appimage/lib/

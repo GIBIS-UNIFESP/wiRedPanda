@@ -227,7 +227,7 @@ void IC::generatePixmap()
     QRectF finalRect = QRectF(topLeft, finalSize);
     tmpPainter.drawRoundedRect(finalRect, 3, 3);
 
-    QPixmap panda(":/basic/ic-panda2.svg");
+    QPixmap panda(":/components/logic/ic-panda2.svg");
     QPointF pandaOrigin = finalRect.center();
     pandaOrigin.setX(pandaOrigin.x() - panda.width() / 2);
     pandaOrigin.setY(pandaOrigin.y() - panda.height() / 2);

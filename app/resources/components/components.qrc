@@ -1,0 +1,118 @@
+<RCC>
+    <qresource prefix="/components">
+        <!-- Logic Gates -->
+        <file>logic/and.svg</file>
+        <file>logic/demux.svg</file>
+        <file>logic/ic-panda.svg</file>
+        <file>logic/ic-panda2.svg</file>
+        <file>logic/ic.svg</file>
+        <file>logic/mux.svg</file>
+        <file>logic/nand.svg</file>
+        <file>logic/node.svg</file>
+        <file>logic/nor.svg</file>
+        <file>logic/not.svg</file>
+        <file>logic/or.svg</file>
+        <file>logic/truthtable-rotated.svg</file>
+        <file>logic/truthtable.svg</file>
+        <file>logic/xnor.svg</file>
+        <file>logic/xor.svg</file>
+
+        <!-- Input Components -->
+        <file>input/0.svg</file>
+        <file>input/1.svg</file>
+        <file>input/buttonOff.svg</file>
+        <file>input/buttonOn.svg</file>
+        <file>input/clock0.svg</file>
+        <file>input/clock1.svg</file>
+        <file>input/rotary.svg</file>
+        <file>input/rotary_arrow.svg</file>
+        <file>input/rotary_icon.svg</file>
+        <file>input/switchOff.svg</file>
+        <file>input/switchOn.svg</file>
+
+        <!-- Output Components -->
+        <file>output/audio/A7.wav</file>
+        <file>output/audio/B7.wav</file>
+        <file>output/audio/C6.wav</file>
+        <file>output/audio/C7.wav</file>
+        <file>output/audio/D6.wav</file>
+        <file>output/audio/E6.wav</file>
+        <file>output/audio/F6.wav</file>
+        <file>output/audio/G6.wav</file>
+        <file>output/audio/wiredpanda.wav</file>
+        <file>output/audiobox/audioboxOff.svg</file>
+        <file>output/audiobox/audioboxOn.svg</file>
+        <file>output/buzzer/BuzzerOff.svg</file>
+        <file>output/buzzer/BuzzerOn.svg</file>
+        <file>output/counter/counter_14_off.svg</file>
+        <file>output/counter/counter_14_on.svg</file>
+        <file>output/counter/counter_16_off.svg</file>
+        <file>output/counter/counter_16_on.svg</file>
+        <file>output/counter/counter_a.svg</file>
+        <file>output/counter/counter_a1.svg</file>
+        <file>output/counter/counter_a2.svg</file>
+        <file>output/counter/counter_b.svg</file>
+        <file>output/counter/counter_c.svg</file>
+        <file>output/counter/counter_d.svg</file>
+        <file>output/counter/counter_d1.svg</file>
+        <file>output/counter/counter_d2.svg</file>
+        <file>output/counter/counter_dp.svg</file>
+        <file>output/counter/counter_e.svg</file>
+        <file>output/counter/counter_f.svg</file>
+        <file>output/counter/counter_g.svg</file>
+        <file>output/counter/counter_g1.svg</file>
+        <file>output/counter/counter_g2.svg</file>
+        <file>output/counter/counter_h.svg</file>
+        <file>output/counter/counter_j.svg</file>
+        <file>output/counter/counter_k.svg</file>
+        <file>output/counter/counter_l.svg</file>
+        <file>output/counter/counter_m.svg</file>
+        <file>output/counter/counter_n.svg</file>
+        <file>output/counter/counter_off.svg</file>
+        <file>output/counter/counter_on.svg</file>
+        <file>output/led/AquaLightLed.png</file>
+        <file>output/led/BlackLed.png</file>
+        <file>output/led/BlueLed.svg</file>
+        <file>output/led/DarkRedLed.png</file>
+        <file>output/led/GreenLed.png</file>
+        <file>output/led/GreenLed.svg</file>
+        <file>output/led/HotPinkLed.png</file>
+        <file>output/led/LedOff.svg</file>
+        <file>output/led/LightGrayLed.png</file>
+        <file>output/led/LimeGreenLed.png</file>
+        <file>output/led/MagentaLed.png</file>
+        <file>output/led/NavyBlueLed.png</file>
+        <file>output/led/OrangeLed.png</file>
+        <file>output/led/PurpleLed.svg</file>
+        <file>output/led/RedLed.png</file>
+        <file>output/led/RedLed.svg</file>
+        <file>output/led/RoyalLed.png</file>
+        <file>output/led/TealLed.png</file>
+        <file>output/led/WhiteLed.png</file>
+        <file>output/led/WhiteLed.svg</file>
+        <file>output/led/YellowLed.png</file>
+
+        <!-- Memory Components -->
+        <file>memory/dark/D-flipflop.svg</file>
+        <file>memory/dark/D-latch.svg</file>
+        <file>memory/dark/JK-flipflop.svg</file>
+        <file>memory/dark/JK-latch.svg</file>
+        <file>memory/dark/SR-flipflop.svg</file>
+        <file>memory/dark/SR-latch.svg</file>
+        <file>memory/dark/T-flipflop.svg</file>
+        <file>memory/dark/T-latch.svg</file>
+        <file>memory/light/D-flipflop.svg</file>
+        <file>memory/light/D-latch.svg</file>
+        <file>memory/light/JK-flipflop.svg</file>
+        <file>memory/light/JK-latch.svg</file>
+        <file>memory/light/SR-flipflop.svg</file>
+        <file>memory/light/SR-latch.svg</file>
+        <file>memory/light/T-flipflop.svg</file>
+        <file>memory/light/T-latch.svg</file>
+
+        <!-- Misc Components -->
+        <file>misc/line.svg</file>
+        <file>misc/no_text.png</file>
+        <file>misc/text.png</file>
+    </qresource>
+</RCC>

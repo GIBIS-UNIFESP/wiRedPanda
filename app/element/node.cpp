@@ -7,7 +7,7 @@
 #include "qneport.h"
 
 Node::Node(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Node, ElementGroup::Gate, ":/basic/node.svg", tr("NODE"), tr("Node"), 1, 1, 1, 1, parent)
+    : GraphicElement(ElementType::Node, ElementGroup::Gate, ":/components/logic/node.svg", tr("NODE"), tr("Node"), 1, 1, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

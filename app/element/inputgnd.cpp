@@ -6,7 +6,7 @@
 #include "globalproperties.h"
 
 InputGnd::InputGnd(QGraphicsItem *parent)
-    : GraphicElement(ElementType::InputGnd, ElementGroup::StaticInput, ":/input/0.svg", tr("GROUND"), tr("GND"), 0, 0, 1, 1, parent)
+    : GraphicElement(ElementType::InputGnd, ElementGroup::StaticInput, ":/components/input/0.svg", tr("GROUND"), tr("GND"), 0, 0, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;

@@ -6,7 +6,7 @@
 #include "globalproperties.h"
 
 Xor::Xor(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Xor, ElementGroup::Gate, ":/basic/xor.svg", tr("XOR"), tr("Xor"), 2, 8, 1, 1, parent)
+    : GraphicElement(ElementType::Xor, ElementGroup::Gate, ":/components/logic/xor.svg", tr("XOR"), tr("Xor"), 2, 8, 1, 1, parent)
 {
     if (GlobalProperties::skipInit) {
         return;
