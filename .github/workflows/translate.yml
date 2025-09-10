@@ -32,6 +32,9 @@ on:
 jobs:
   update-sources:
     name: Update Translation Sources
+    permissions:
+      contents: write    # needed to create branches and PRs
+      pull-requests: write
     runs-on: ubuntu-latest
     if: (github.event_name == 'push' && github.ref == 'refs/heads/master') || (github.event_name == 'workflow_dispatch' && github.event.inputs.update_sources == 'true')
 
@@ -115,6 +118,8 @@ jobs:
 
   compile-translations:
     name: Compile Translations
+    permissions:
+      contents: write    # needed to commit compiled translations
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.compile_only == 'true')
 
@@ -216,6 +221,9 @@ jobs:
 
   weblate-pr-handler:
     name: Handle Weblate PR
+    permissions:
+      contents: write           # needed to commit processed files
+      pull-requests: write      # needed to comment on PRs
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && contains(github.event.pull_request.title, 'Weblate') || contains(github.event.pull_request.user.login, 'weblate')
 

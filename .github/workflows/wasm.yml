@@ -10,6 +10,9 @@ on:
 
 jobs:
   build-wasm:
+    permissions:
+      contents: write  # needed to push to site branch
+      actions: write   # needed to trigger site deployment
     runs-on: ubuntu-latest
 
     steps:
