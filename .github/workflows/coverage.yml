@@ -41,7 +41,7 @@ jobs:
     - name: Test
       timeout-minutes: 10
       run: |
-        ./build/wiredpanda-test
+        ctest --test-dir build
 
     - name: Upload coverage data
       run: |

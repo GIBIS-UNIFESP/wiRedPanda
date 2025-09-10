@@ -357,18 +357,33 @@ endif()
 
 # ========= TESTS ===================================
 
-file(GLOB_RECURSE TEST_SOURCES test/*.cpp)
-file(GLOB_RECURSE TEST_HEADERS test/*.h)
+# Define the test executables
+set(TEST_EXECUTABLES
+    testcommands
+    testelements
+    testfiles
+    testicons
+    testlogicelements
+    testsimulation
+    testwaveform
+)
 
-add_executable(wiredpanda-test ${TEST_SOURCES} ${TEST_HEADERS} ${RESOURCES_RCC})
-target_link_libraries(wiredpanda-test PRIVATE wiredpanda_lib)
+# Create individual test executables
+foreach(test_name ${TEST_EXECUTABLES})
+    add_executable(${test_name} test/${test_name}.cpp test/${test_name}.h ${RESOURCES_RCC})
+    target_link_libraries(${test_name} PRIVATE wiredpanda_lib)
 
-# Ensure translations are compiled before building the test executable
-if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
-    add_dependencies(wiredpanda-test lrelease)
-endif()
-target_compile_definitions(wiredpanda-test PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/test)
+    target_compile_definitions(${test_name} PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/test)
 
-if(NOT CCACHE_BIN)
-    target_precompile_headers(wiredpanda-test PRIVATE pch.h)
-endif()
+    if(NOT CCACHE_BIN)
+        target_precompile_headers(${test_name} PRIVATE pch.h)
+    endif()
+endforeach()
+
+# Add CTest support
+enable_testing()
+
+# Register each test executable with CTest
+foreach(test_name ${TEST_EXECUTABLES})
+    add_test(NAME ${test_name} COMMAND ${test_name})
+endforeach()

@@ -9,7 +9,7 @@ cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
 cmake --build build
 
 echo "🧪 Running tests with coverage collection..."
-./build/wiredpanda-test
+ctest --test-dir build
 
 echo "📊 Generating coverage data..."
 cd build

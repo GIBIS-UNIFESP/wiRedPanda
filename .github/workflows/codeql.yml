@@ -50,7 +50,7 @@ jobs:
     - name: Test
       timeout-minutes: 10
       run: |
-        ./build/wiredpanda-test
+        ctest --test-dir build
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
