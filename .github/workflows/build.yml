@@ -97,3 +97,14 @@ jobs:
       timeout-minutes: 10
       run: |
         ./build/wiredpanda-test
+
+    - name: Upload build artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-logs-${{ matrix.os }}-${{ matrix.qt }}
+        path: |
+          build/CMakeCache.txt
+          build/CMakeFiles/CMakeOutput.log
+          build/CMakeFiles/CMakeError.log
+        retention-days: 7

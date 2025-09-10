@@ -74,9 +74,11 @@ jobs:
         cp ./build/wiredpanda.wasm ./public/wasm/
         cp ./build/index.html ./public/wasm/
         cp ./build/coi-serviceworker.min.js ./public/wasm/
-        cp ./build/favicon.ico ./public/wasm/ 2>/dev/null || true
-        cp ./build/qtloader.js ./public/wasm/ 2>/dev/null || true
-        cp ./build/qtlogo.svg ./public/wasm/ 2>/dev/null || true
+
+        # Copy optional files with explicit handling
+        [ -f ./build/favicon.ico ] && cp ./build/favicon.ico ./public/wasm/ || echo "favicon.ico not found, skipping"
+        [ -f ./build/qtloader.js ] && cp ./build/qtloader.js ./public/wasm/ || echo "qtloader.js not found, skipping"
+        [ -f ./build/qtlogo.svg ] && cp ./build/qtlogo.svg ./public/wasm/ || echo "qtlogo.svg not found, skipping"
 
         # Stage and commit the changes
         git add ./public/wasm/

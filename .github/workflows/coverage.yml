@@ -50,3 +50,14 @@ jobs:
         curl -Os https://uploader.codecov.io/latest/linux/codecov
         chmod +x ./codecov
         ./codecov
+
+    - name: Upload build artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-build-logs
+        path: |
+          build/CMakeCache.txt
+          build/CMakeFiles/CMakeOutput.log
+          build/CMakeFiles/CMakeError.log
+        retention-days: 7
