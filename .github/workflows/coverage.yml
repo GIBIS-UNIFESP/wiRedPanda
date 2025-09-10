@@ -41,7 +41,7 @@ jobs:
     - name: Test
       timeout-minutes: 10
       run: |
-        QT_QPA_PLATFORM=offscreen ./build/wiredpanda-test
+        ./build/wiredpanda-test
 
     - name: Upload coverage data
       run: |

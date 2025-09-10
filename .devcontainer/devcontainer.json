@@ -52,7 +52,6 @@
 
     // Container environment variables
     "containerEnv": {
-        "QT_QPA_PLATFORM": "offscreen",
         "QTDIR": "/opt/Qt/6.9.2/gcc_64",
         "QT_PLUGIN_PATH": "/opt/Qt/6.9.2/gcc_64/plugins"
     },

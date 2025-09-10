@@ -19,6 +19,10 @@ int main(int argc, char **argv)
 
     Comment::setVerbosity(-1);
 
+#ifdef Q_OS_LINUX
+    qputenv("QT_QPA_PLATFORM", "offscreen");
+#endif
+
     QApplication app(argc, argv);
     app.setOrganizationName("GIBIS-UNIFESP");
     app.setApplicationName("wiRedPanda");

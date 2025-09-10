@@ -158,7 +158,7 @@ jobs:
       if: runner.os == 'Linux'
       timeout-minutes: 10
       run: |
-        QT_QPA_PLATFORM=offscreen ./build/wiredpanda-test
+        ./build/wiredpanda-test
 
     - name: linuxdeployqt
       if: runner.os == 'Linux'

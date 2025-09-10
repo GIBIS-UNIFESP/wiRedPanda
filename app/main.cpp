@@ -40,6 +40,28 @@ int main(int argc, char *argv[])
 
     Comment::setVerbosity(-1);
 
+#ifdef Q_OS_LINUX
+    // Enable headless mode for CLI operations on Linux
+    // Check if any CLI-only options are present
+    bool isCliMode = false;
+    for (int i = 1; i < argc; ++i) {
+        QString arg = QString::fromLocal8Bit(argv[i]);
+        if (arg == "--arduino-file" || arg == "-a" ||
+            arg == "--waveform" || arg == "-w" ||
+            arg == "--terminal" || arg == "-c" ||
+            arg == "--help" || arg == "-h" ||
+            arg == "--version" || arg == "-v") {
+            isCliMode = true;
+            break;
+        }
+    }
+
+    // Also check if no DISPLAY is available (headless environment)
+    if (isCliMode || !qEnvironmentVariableIsSet("DISPLAY")) {
+        qputenv("QT_QPA_PLATFORM", "offscreen");
+    }
+#endif
+
 #ifdef Q_OS_WIN
     FILE *fpstdout = stdout, *fpstderr = stderr;
     if (AttachConsole(ATTACH_PARENT_PROCESS)) {
