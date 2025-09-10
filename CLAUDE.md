@@ -52,10 +52,10 @@ Advanced development features supported:
 
 - Project uses Qt Test framework
 - **IMPORTANT**: Always stay in project root directory - don't cd to build/
-- **Test execution (Linux/DevContainer)**: Always run in headless mode from project root:
+- **Test execution (Linux/DevContainer)**: Run from project root (offscreen mode configured in testmain.cpp):
 
   ```bash
-  QT_QPA_PLATFORM=offscreen ./build/wiredpanda-test
+  ./build/wiredpanda-test
   ```
 
 - **Test execution (Windows after windeployqt)**: From `build` directory:

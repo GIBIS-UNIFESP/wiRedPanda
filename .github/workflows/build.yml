@@ -66,9 +66,7 @@ jobs:
     - name: Test
       timeout-minutes: 10
       run: |
-        if [ "$RUNNER_OS" == "Linux" ]; then
-          QT_QPA_PLATFORM=offscreen ./build/wiredpanda-test
-        elif [ "$RUNNER_OS" == "Windows" ]; then
+        if [ "$RUNNER_OS" == "Windows" ]; then
           ./build/wiredpanda-test.exe
         else
           ./build/wiredpanda-test

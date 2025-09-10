@@ -50,7 +50,7 @@ jobs:
     - name: Test
       timeout-minutes: 10
       run: |
-        QT_QPA_PLATFORM=offscreen ./build/wiredpanda-test
+        ./build/wiredpanda-test
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
