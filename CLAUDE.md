@@ -24,7 +24,7 @@ cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 # Build
 cmake --build build --target wiredpanda
 # Tests
-cmake --build build --target wiredpanda-test
+ctest --test-dir build
 ```
 
 **Windows Qt Path**: Add `-DCMAKE_PREFIX_PATH="C:/Qt/5.15.2/msvc2019_64"` to configure command if needed.
@@ -52,26 +52,31 @@ Advanced development features supported:
 
 - Project uses Qt Test framework
 - **IMPORTANT**: Always stay in project root directory - don't cd to build/
-- **Test execution (Linux/DevContainer)**: Run from project root (offscreen mode configured in testmain.cpp):
+- **Test execution**: Cross-platform CTest approach from project root:
 
   ```bash
-  ./build/wiredpanda-test
+  ctest --test-dir build
   ```
 
-- **Test execution (Windows after windeployqt)**: From `build` directory:
+- **Individual test execution**: Run specific test executables directly:
 
-  ```powershell
-  powershell -Command "Start-Process -FilePath 'wiredpanda-test.exe' -Wait -NoNewWindow"
+  ```bash
+  ./build/testcommands -functions    # List functions in testcommands
+  ./build/testelements               # Run all element tests
+  ./build/testfiles                  # Run file loading tests
   ```
 
-- **Note**: Direct bash execution fails, cmd causes segfaults. PowerShell is the reliable method on Windows.
+- **CTest options**:
+  - `ctest --verbose` - Detailed output
+  - `ctest --parallel 4` - Parallel execution
+  - `ctest -R pattern` - Run tests matching pattern
 
 ## Project Structure
 
 - Main project file: `CMakeLists.txt`
 - App code: `app/` directory
 - Tests: `test/` directory with comprehensive test suite
-- Test executable: `wiredpanda-test`
+- Test executables: 7 separate Qt Test executables (testcommands, testelements, testfiles, etc.)
 
 ## Digital Logic Simulation
 

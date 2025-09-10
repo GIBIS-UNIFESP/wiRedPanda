@@ -8,10 +8,31 @@
 #include "inputbutton.h"
 #include "led.h"
 #include "qneconnection.h"
+#include "registertypes.h"
 #include "scene.h"
 #include "workspace.h"
 
+#include <QApplication>
 #include <QTest>
+
+int main(int argc, char **argv)
+{
+#ifdef Q_OS_LINUX
+    qputenv("QT_QPA_PLATFORM", "offscreen");
+#endif
+
+    registerTypes();
+
+    Comment::setVerbosity(-1);
+
+    QApplication app(argc, argv);
+    app.setOrganizationName("GIBIS-UNIFESP");
+    app.setApplicationName("wiRedPanda");
+    app.setApplicationVersion(APP_VERSION);
+
+    TestSimulation testSimulation;
+    return QTest::qExec(&testSimulation, argc, argv);
+}
 
 void TestSimulation::testCase1()
 {

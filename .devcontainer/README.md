@@ -71,11 +71,12 @@ cmake --build build
 # Run all tests (automatic via VS Code task)
 # Ctrl+Shift+P → "Tasks: Run Task" → "Run Tests"
 
-# Manual test execution
-./build/test/wiredpanda-test
+# Manual test execution using CTest
+ctest --test-dir build
 
-# Run specific test class
-./build/test/wiredpanda-test TestBasicGates
+# Run specific test executables
+./build/testcommands -functions    # Show available test functions
+./build/testelements               # Run element tests
 ```
 
 ## 🖥️ Display Mode
