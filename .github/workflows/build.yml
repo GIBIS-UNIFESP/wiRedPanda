@@ -66,11 +66,7 @@ jobs:
     - name: Test
       timeout-minutes: 10
       run: |
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          ./build/wiredpanda-test.exe
-        else
-          ./build/wiredpanda-test
-        fi
+        ctest --test-dir build
 
     - name: Upload build artifacts on failure
       if: failure()

@@ -158,7 +158,7 @@ jobs:
       if: runner.os == 'Linux'
       timeout-minutes: 10
       run: |
-        ./build/wiredpanda-test
+        ctest --test-dir build
 
     - name: linuxdeployqt
       if: runner.os == 'Linux'
@@ -317,7 +317,7 @@ jobs:
       if: runner.os == 'Windows'
       timeout-minutes: 10
       run: |
-        ./build/wiredpanda-test.exe
+        ctest --test-dir build
 
     - name: windeployqt
       if: runner.os == 'Windows'
@@ -478,7 +478,7 @@ jobs:
       if: runner.os == 'macOS'
       timeout-minutes: 10
       run: |
-        ./build/wiredpanda-test
+        ctest --test-dir build
 
     - name: macdeployqt
       if: runner.os == 'macOS'

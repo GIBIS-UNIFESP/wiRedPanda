@@ -4,6 +4,7 @@
 #include "testelements.h"
 
 #include "and.h"
+#include "common.h"
 #include "demux.h"
 #include "dflipflop.h"
 #include "dlatch.h"
@@ -20,15 +21,36 @@
 #include "or.h"
 #include "qneconnection.h"
 #include "qneport.h"
+#include "registertypes.h"
 #include "scene.h"
 #include "simulation.h"
 #include "srflipflop.h"
 #include "tflipflop.h"
 
+#include <QApplication>
 #include <QTest>
 
 #define QUOTE(string) _QUOTE(string)
 #define _QUOTE(string) #string
+
+int main(int argc, char **argv)
+{
+#ifdef Q_OS_LINUX
+    qputenv("QT_QPA_PLATFORM", "offscreen");
+#endif
+
+    registerTypes();
+
+    Comment::setVerbosity(-1);
+
+    QApplication app(argc, argv);
+    app.setOrganizationName("GIBIS-UNIFESP");
+    app.setApplicationName("wiRedPanda");
+    app.setApplicationVersion(APP_VERSION);
+
+    TestElements testElements;
+    return QTest::qExec(&testElements, argc, argv);
+}
 
 void TestElements::init()
 {

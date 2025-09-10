@@ -5,10 +5,32 @@
 
 #include "and.h"
 #include "commands.h"
+#include "common.h"
+#include "registertypes.h"
 #include "scene.h"
 #include "workspace.h"
 
+#include <QApplication>
 #include <QTest>
+
+int main(int argc, char **argv)
+{
+#ifdef Q_OS_LINUX
+    qputenv("QT_QPA_PLATFORM", "offscreen");
+#endif
+
+    registerTypes();
+
+    Comment::setVerbosity(-1);
+
+    QApplication app(argc, argv);
+    app.setOrganizationName("GIBIS-UNIFESP");
+    app.setApplicationName("wiRedPanda");
+    app.setApplicationVersion(APP_VERSION);
+
+    TestCommands testCommands;
+    return QTest::qExec(&testCommands, argc, argv);
+}
 
 void TestCommands::testAddDeleteCommands()
 {

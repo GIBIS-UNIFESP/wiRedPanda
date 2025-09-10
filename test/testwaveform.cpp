@@ -4,14 +4,36 @@
 #include "testwaveform.h"
 
 #include "bewaveddolphin.h"
+#include "common.h"
+#include "registertypes.h"
 #include "serialization.h"
 #include "workspace.h"
 
+#include <QApplication>
 #include <QTemporaryFile>
 #include <QTest>
 
 #define QUOTE(string) _QUOTE(string)
 #define _QUOTE(string) #string
+
+int main(int argc, char **argv)
+{
+#ifdef Q_OS_LINUX
+    qputenv("QT_QPA_PLATFORM", "offscreen");
+#endif
+
+    registerTypes();
+
+    Comment::setVerbosity(-1);
+
+    QApplication app(argc, argv);
+    app.setOrganizationName("GIBIS-UNIFESP");
+    app.setApplicationName("wiRedPanda");
+    app.setApplicationVersion(APP_VERSION);
+
+    TestWaveForm testWaveForm;
+    return QTest::qExec(&testWaveForm, argc, argv);
+}
 
 void TestWaveForm::testDisplay4Bits()
 {
