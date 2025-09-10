@@ -45,7 +45,7 @@ jobs:
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1
       with:
-        key: wasm-ubuntu-6.9.0
+        key: wasm-${{ runner.os }}
 
     - name: Build WASM
       run: |
