@@ -57,7 +57,7 @@ jobs:
 
       - name: Run lupdate to extract strings
         run: |
-          cmake -S . -B build_translations -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+          cmake -B build_translations
           cmake --build build_translations --target lupdate
 
       - name: Compile translations
@@ -160,7 +160,7 @@ jobs:
 
       - name: Compile translations
         run: |
-          cmake -S . -B build_translations -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+          cmake -B build_translations
           cmake --build build_translations --target lrelease
           cmake --build build_translations --target generate_translations_qrc
 
@@ -271,7 +271,7 @@ jobs:
 
       - name: Compile translations
         run: |
-          cmake -S . -B build_translations -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+          cmake -B build_translations
           cmake --build build_translations --target lrelease
           cmake --build build_translations --target generate_translations_qrc
 

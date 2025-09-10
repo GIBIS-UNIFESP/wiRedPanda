@@ -47,15 +47,13 @@ jobs:
     - name: Build WASM
       run: |
         source ./emsdk/emsdk_env.sh
-        mkdir build
-        cd build
-        qt-cmake .. -DCMAKE_BUILD_TYPE=Release -G Ninja
-        ninja wiredpanda
-        cp wiredpanda.html index.html
-        cp ../app/resources/wasm/coi-serviceworker.min.js .
-        cp ../app/resources/wasm/favicon.ico .
-        sed -i '/<script src="wiredpanda.js"><\/script>/a <script src="coi-serviceworker.min.js"><\/script>' index.html
-        sed -i '/<title>/a <link rel="icon" type="image/x-icon" href="favicon.ico">' index.html
+        qt-cmake -B build -DCMAKE_BUILD_TYPE=Release -G Ninja
+        cmake --build build --target wiredpanda
+        cp build/wiredpanda.html build/index.html
+        cp app/resources/wasm/coi-serviceworker.min.js build/
+        cp app/resources/wasm/favicon.ico build/
+        sed -i '/<script src="wiredpanda.js"><\/script>/a <script src="coi-serviceworker.min.js"><\/script>' build/index.html
+        sed -i '/<title>/a <link rel="icon" type="image/x-icon" href="favicon.ico">' build/index.html
 
     - name: Commit to site branch
       if: success()

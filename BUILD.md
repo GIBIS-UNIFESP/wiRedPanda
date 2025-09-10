@@ -57,11 +57,17 @@ export PATH
 
 ### Build process
 
+**Requirements**: Install Ninja build system:
+- Windows: `choco install ninja` or `scoop install ninja`
+- Linux: `apt install ninja-build` or `yum install ninja-build`
+- macOS: `brew install ninja`
+
+**Build commands (all platforms):**
 ```bash
 git clone https://github.com/GIBIS-UNIFESP/wiredpanda
 cd wiredpanda
-cmake -B build
-cmake --build build --config Release
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build build
 ```
 
 This process could take a while. Once concluded, the binary will be located at `wiredpanda/build/wiredpanda`, on Linux, and at `wiredpanda/build/wiredpanda.app/Contents/MacOS/wiredpanda` on macOS.

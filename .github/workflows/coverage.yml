@@ -32,8 +32,8 @@ jobs:
 
     - name: Build
       run: |
-        cmake -B build -G Ninja -DENABLE_COVERAGE=ON
-        cmake --build build --config Release
+        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
+        cmake --build build
 
     - name: Test
       run: |

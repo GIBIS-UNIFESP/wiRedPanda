@@ -8,21 +8,26 @@
 - **CRITICAL**: Always build in `build/` directory to prevent accidental commits
 - **Build Timeout**: Always use at least 5-10 minute timeout for compilation commands (2 minutes is insufficient)
 - **ccache**: Compiler cache installed for faster builds - automatically used via PATH in devcontainer
-- **Linux/DevContainer**: Always use Ninja generator + ccache for fastest builds (mold linker auto-detected)
+### Build System Requirements
 
-  ```bash
-  cmake -B build -G Ninja
-  ```
+- **CMake Generator**: Ninja (required on all platforms for consistency)
+- **Installation**:
+  - Windows: `choco install ninja` or `scoop install ninja`
+  - Linux: `apt install ninja-build` or `yum install ninja-build`  
+  - macOS: `brew install ninja`
 
-- **CMake configure (Windows command line)**:
+### Build Commands (All Platforms)
 
-  ```bash
-  cmake -B build -G "Visual Studio 17 2022" -A x64 -DCMAKE_PREFIX_PATH="C:/Qt/5.15.2/msvc2019_64"
-  ```
+```bash
+# Configure with build type
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+# Build
+cmake --build build --target wiredpanda
+# Tests
+cmake --build build --target wiredpanda-test
+```
 
-- **Build commands**:
-  - Main app: `cmake --build build --config Release --target wiredpanda`
-  - Tests: `cmake --build build --config Release --target wiredpanda-test`
+**Windows Qt Path**: Add `-DCMAKE_PREFIX_PATH="C:/Qt/5.15.2/msvc2019_64"` to configure command if needed.
 - **mold linker**: Modern fast linker installed (`sudo apt install mold`) - automatically used by CMake when available
 - **Visual Studio BuildTools**: `"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"`
 
