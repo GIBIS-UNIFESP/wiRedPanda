@@ -55,9 +55,7 @@ jobs:
     - name: Build Ubuntu
       if: runner.os == 'Linux'
       run: |
-        cmake -S . -B build -G Ninja \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
         cmake --build build
 
     - name: Test Ubuntu
@@ -74,8 +72,7 @@ jobs:
     - name: Build Windows
       if: runner.os == 'Windows'
       run: |
-        cmake -S . -B build -G Ninja `
-          -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
         cmake --build build
 
     - name: Test Windows
@@ -88,9 +85,7 @@ jobs:
     - name: Build macOS
       if: runner.os == 'macOS'
       run: |
-        cmake -S . -B build -G Ninja \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_PREFIX_PATH=$QT_INSTALL_PATH
+        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
         cmake --build build
 
     - name: Test macOS

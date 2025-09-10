@@ -20,11 +20,16 @@ Los binarios compilados para Windows, Linux y macOS están disponibles en la [p�
 
 ## Compilando
 
+**Requisitos**: Instale el sistema de compilación Ninja:
+- Windows: `choco install ninja` o `scoop install ninja`
+- Linux: `apt install ninja-build` o `yum install ninja-build`
+- macOS: `brew install ninja`
+
 ```bash
 git clone https://github.com/GIBIS-UNIFESP/wiredpanda
 cd wiredpanda
-cmake -B build
-cmake --build build --config Release
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build build
 ```
 
 Este proceso podría llevar un tiempo. Una vez concluido, el binario se ubicará en `build/wiredpanda` en Linux y macOS, o `build/wiredpanda.exe` en Windows.
