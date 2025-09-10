@@ -24,7 +24,12 @@ fi
 
 # Generate lcov info file
 lcov --capture --directory . --output-file coverage.info
-lcov --remove coverage.info '/usr/*' '*/test/*' '*/build/*' --output-file coverage_filtered.info
+lcov --remove coverage.info \
+    '/usr/*' \
+    '*/test/*' \
+    '*/build/*' \
+    '*/Qt*/include/Qt*' \
+    --output-file coverage_filtered.info
 
 # Generate HTML report with dark theme
 genhtml coverage_filtered.info --output-directory coverage_html --css-file ../lcov-dark-theme.css
