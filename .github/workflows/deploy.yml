@@ -722,3 +722,14 @@ jobs:
       with:
         fail_on_unmatched_files: true
         files: 'build/*.dmg'
+
+    - name: Upload build artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: deploy-logs-${{ matrix.os }}-${{ matrix.qt }}
+        path: |
+          build/CMakeCache.txt
+          build/CMakeFiles/CMakeOutput.log
+          build/CMakeFiles/CMakeError.log
+        retention-days: 7
