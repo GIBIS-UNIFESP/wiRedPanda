@@ -52,51 +52,27 @@ jobs:
       with:
         key: ${{ matrix.os }}-${{ matrix.qt }}
 
-# =================================
-
-    - name: Build Ubuntu
-      if: runner.os == 'Linux'
-      run: |
-        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-        cmake --build build
-
-    - name: Test Ubuntu
-      if: runner.os == 'Linux'
-      timeout-minutes: 10
-      run: |
-        QT_QPA_PLATFORM=offscreen ./build/wiredpanda-test
-
-# =================================
-
     - name: Setup Windows MSVC Toolchain
       if: runner.os == 'Windows'
       uses: seanmiddleditch/gha-setup-vsdevenv@v5
 
-    - name: Build Windows
-      if: runner.os == 'Windows'
-      run: |
-        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-        cmake --build build
-
-    - name: Test Windows
-      if: runner.os == 'Windows'
-      timeout-minutes: 10
-      run: |
-        ./build/wiredpanda-test.exe
-
 # =================================
 
-    - name: Build macOS
-      if: runner.os == 'macOS'
+    - name: Build
       run: |
         cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
         cmake --build build
 
-    - name: Test macOS
-      if: runner.os == 'macOS'
+    - name: Test
       timeout-minutes: 10
       run: |
-        ./build/wiredpanda-test
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          QT_QPA_PLATFORM=offscreen ./build/wiredpanda-test
+        elif [ "$RUNNER_OS" == "Windows" ]; then
+          ./build/wiredpanda-test.exe
+        else
+          ./build/wiredpanda-test
+        fi
 
     - name: Upload build artifacts on failure
       if: failure()
