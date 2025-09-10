@@ -80,7 +80,7 @@ cmake --build build
 
 ## 🖥️ Display Mode
 
-The container is configured to run in **offscreen mode** by default (`QT_QPA_PLATFORM=offscreen`), making it compatible with all host operating systems without requiring X11 setup. This is ideal for:
+The container is configured to run in **offscreen mode** automatically (via testmain.cpp), making it compatible with all host operating systems without requiring X11 setup. This is ideal for:
 
 - Running automated tests
 - CI/CD pipelines
