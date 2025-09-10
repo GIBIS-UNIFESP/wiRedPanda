@@ -11,10 +11,6 @@ cmake --build build
 echo "🧪 Running tests with coverage collection..."
 ctest --test-dir build
 
-echo "📊 Generating coverage data..."
-cd build
-gcov -abcfu $(find . -name "*.gcno")
-
 echo "📄 Generating HTML coverage report..."
 # Install lcov if not available
 if ! command -v lcov &> /dev/null; then
@@ -22,8 +18,9 @@ if ! command -v lcov &> /dev/null; then
     sudo apt-get update && sudo apt-get install -y lcov
 fi
 
-# Generate lcov info file
-lcov --capture --directory . --output-file coverage.info
+# Generate lcov info file directly with filtering
+cd build
+lcov --capture --directory . --output-file coverage.info --ignore-errors source
 lcov --remove coverage.info \
     '/usr/*' \
     '*/test/*' \
