@@ -10,6 +10,8 @@ on:
 
 jobs:
   Ubuntu-Qt5_15_2-Code_Coverage:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
 
     steps:
