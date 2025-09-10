@@ -123,7 +123,6 @@ jobs:
       uses: jurplel/install-qt-action@v4
       with:
         version: ${{ matrix.qt }}
-        arch: ${{ matrix.os == 'windows-latest' && matrix.qt == '5.15.2' && 'win32_msvc2019' || '' }}
         cache: true
         aqtversion: ==3.2.*
         modules: ${{ startsWith(matrix.qt, '6') && 'qtmultimedia qtimageformats debug_info' || 'debug_info' }}
@@ -295,8 +294,6 @@ jobs:
     - name: Setup Windows MSVC Toolchain
       if: runner.os == 'Windows'
       uses: seanmiddleditch/gha-setup-vsdevenv@v5
-      with:
-        arch: ${{ startsWith(matrix.qt, '5') && 'x86' || 'x64' }}
 
     - name: Compile Windows Sentry SDK
       if: runner.os == 'Windows'
@@ -309,8 +306,8 @@ jobs:
     - name: Build Windows
       if: runner.os == 'Windows'
       run: |
-        cmake -B build -G "Visual Studio 17 2022" -A ${{ startsWith(matrix.qt, '5') && 'Win32' || 'x64' }}
-        cmake --build build --config RelWithDebInfo
+        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+        cmake --build build
         cp thirdparty/sentry/bin/crashpad_handler.exe build/
         cp thirdparty/sentry/bin/sentry.dll build/
         cp thirdparty/sentry/bin/crashpad_wer.dll build/
