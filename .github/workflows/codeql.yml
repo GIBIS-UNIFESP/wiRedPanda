@@ -48,6 +48,7 @@ jobs:
         cmake --build build
 
     - name: Test
+      timeout-minutes: 10
       run: |
         QT_QPA_PLATFORM=offscreen ./build/wiredpanda-test
 

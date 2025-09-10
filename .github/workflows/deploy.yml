@@ -156,6 +156,7 @@ jobs:
 
     - name: Test Ubuntu
       if: runner.os == 'Linux'
+      timeout-minutes: 10
       run: |
         QT_QPA_PLATFORM=offscreen ./build/wiredpanda-test
 
@@ -314,6 +315,7 @@ jobs:
 
     - name: Test Windows
       if: runner.os == 'Windows'
+      timeout-minutes: 10
       run: |
         ./build/wiredpanda-test.exe
 
@@ -474,6 +476,7 @@ jobs:
 
     - name: Test macOS
       if: runner.os == 'macOS'
+      timeout-minutes: 10
       run: |
         ./build/wiredpanda-test
 
