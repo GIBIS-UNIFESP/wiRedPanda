@@ -59,11 +59,17 @@ export PATH
 
 ### Proceso de compilación
 
+**Requisitos**: Instale el sistema de compilación Ninja:
+- Windows: `choco install ninja` o `scoop install ninja`
+- Linux: `apt install ninja-build` o `yum install ninja-build`
+- macOS: `brew install ninja`
+
+**Comandos de compilación (todas las plataformas):**
 ```bash
 git clone https://github.com/GIBIS-UNIFESP/wiredpanda
 cd wiredpanda
-cmake -B build
-cmake --build build --config Release
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build build
 ```
 
 Este proceso podría llevar un tiempo. Una vez concluido, el binario se ubicará en `wiredpanda/build/wiredpanda`, en Linux, y en `wiredpanda/build/wiredpanda.app/Contents/MacOS/wiredpanda` en macOS.

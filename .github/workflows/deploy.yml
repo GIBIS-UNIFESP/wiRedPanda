@@ -137,17 +137,15 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         git clone --recursive https://github.com/getsentry/sentry-native.git
-        mkdir -p sentry-native/build
-        cd sentry-native/build
-        cmake .. -B build -D SENTRY_BACKEND=crashpad -D CMAKE_BUILD_TYPE=RelWithDebInfo -G Ninja
-        cmake --build build
-        cmake --install build --prefix ../../thirdparty/sentry
+        cmake -S sentry-native -B sentry-native/build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad
+        cmake --build sentry-native/build
+        cmake --install sentry-native/build --prefix thirdparty/sentry
 
     - name: Build Ubuntu
       if: runner.os == 'Linux'
       run: |
-        cmake -B build -G Ninja
-        cmake --build build --config Release
+        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+        cmake --build build
         mkdir -p build/lib
         cp thirdparty/sentry/bin/crashpad_handler build/
         cp thirdparty/sentry/lib/libsentry.so build/lib/
@@ -301,17 +299,15 @@ jobs:
       if: runner.os == 'Windows'
       run: |
         git clone --recursive https://github.com/getsentry/sentry-native.git
-        mkdir -p sentry-native/build
-        cd sentry-native/build
-        cmake .. -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -G Ninja
-        cmake --build build
-        cmake --install build --prefix ../../thirdparty/sentry
+        cmake -S sentry-native -B sentry-native/build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad
+        cmake --build sentry-native/build
+        cmake --install sentry-native/build --prefix thirdparty/sentry
 
     - name: Build Windows
       if: runner.os == 'Windows'
       run: |
         cmake -B build -G "Visual Studio 17 2022" -A ${{ startsWith(matrix.qt, '5') && 'Win32' || 'x64' }}
-        cmake --build build --config Release
+        cmake --build build --config RelWithDebInfo
         cp thirdparty/sentry/bin/crashpad_handler.exe build/
         cp thirdparty/sentry/bin/sentry.dll build/
         cp thirdparty/sentry/bin/crashpad_wer.dll build/
@@ -319,8 +315,7 @@ jobs:
     - name: Test Windows
       if: runner.os == 'Windows'
       run: |
-        cd build
-        powershell -Command "Start-Process -FilePath 'wiredpanda-test.exe' -Wait -NoNewWindow"
+        ./build/wiredpanda-test.exe
 
     - name: windeployqt
       if: runner.os == 'Windows'
@@ -455,17 +450,15 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         git clone --recursive https://github.com/getsentry/sentry-native.git
-        mkdir -p sentry-native/build
-        cd sentry-native/build
-        cmake .. -B build -D SENTRY_BACKEND=breakpad -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_OSX_ARCHITECTURES="x86_64;arm64" -G Ninja
-        cmake --build build
-        cmake --install build --prefix ../../thirdparty/sentry
+        cmake -S sentry-native -B sentry-native/build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=breakpad -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+        cmake --build sentry-native/build
+        cmake --install sentry-native/build --prefix thirdparty/sentry
 
     - name: Build macOS
       if: runner.os == 'macOS'
       run: |
-        cmake -B build
-        cmake --build build --config Release
+        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+        cmake --build build
         mkdir -p build/wiredpanda.app/Contents/MacOS
         mkdir -p build/wiredpanda.app/Contents/Frameworks
         # Copy the main executable to the app bundle
