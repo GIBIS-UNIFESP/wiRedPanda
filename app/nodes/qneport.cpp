@@ -84,15 +84,7 @@ void QNEPort::disconnect(QNEConnection *conn)
     updateConnections();
 }
 
-int QNEPort::portFlags() const
-{
-    return m_portFlags;
-}
 
-void QNEPort::setPtr(const quint64 ptr)
-{
-    m_ptr = ptr;
-}
 
 bool QNEPort::isConnected(QNEPort *otherPort)
 {
