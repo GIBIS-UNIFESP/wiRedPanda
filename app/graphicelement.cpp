@@ -158,7 +158,6 @@ void GraphicElement::save(QDataStream &stream) const
         QMap<QString, QVariant> tempMap;
         tempMap.insert("ptr", reinterpret_cast<quint64>(port));
         tempMap.insert("name", port->name());
-        tempMap.insert("flags", port->portFlags());
 
         inputMap << tempMap;
     }
@@ -173,7 +172,6 @@ void GraphicElement::save(QDataStream &stream) const
         QMap<QString, QVariant> tempMap;
         tempMap.insert("ptr", reinterpret_cast<quint64>(port));
         tempMap.insert("name", port->name());
-        tempMap.insert("flags", port->portFlags());
 
         outputMap << tempMap;
     }
@@ -296,13 +294,12 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         const QString name = input.value("name").toString();
 
         if (port < m_inputPorts.size()) {
-            m_inputPorts.value(port)->setPtr(ptr);
 
             if (elementType() == ElementType::IC) {
                 m_inputPorts.value(port)->setName(name);
             }
         } else {
-            addPort(name, false, static_cast<int>(ptr));
+            addPort(name, false);
         }
 
         portMap[ptr] = m_inputPorts.value(port);
@@ -322,13 +319,12 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         const QString name = output.value("name").toString();
 
         if (port < m_outputPorts.size()) {
-            m_outputPorts.value(port)->setPtr(ptr);
 
             if (elementType() == ElementType::IC) {
                 m_outputPorts.value(port)->setName(name);
             }
         } else {
-            addPort(name, true, static_cast<int>(ptr));
+            addPort(name, true);
         }
 
         portMap[ptr] = m_outputPorts.value(port);
@@ -454,13 +450,12 @@ void GraphicElement::loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *>
     int flags;    stream >> flags;
 
     if (port < m_inputPorts.size()) {
-        m_inputPorts.value(port)->setPtr(ptr);
 
         if (elementType() == ElementType::IC) {
             m_inputPorts.value(port)->setName(name);
         }
     } else {
-        addPort(name, false, static_cast<int>(ptr));
+        addPort(name, false);
     }
 
     portMap[ptr] = m_inputPorts.value(port);
@@ -530,13 +525,12 @@ void GraphicElement::loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *
     int flags;    stream >> flags;
 
     if (port < m_outputPorts.size()) {
-        m_outputPorts.value(port)->setPtr(ptr);
 
         if (elementType() == ElementType::IC) {
             m_outputPorts.value(port)->setName(name);
         }
     } else {
-        addPort(name, true, static_cast<int>(ptr));
+        addPort(name, true);
     }
 
     portMap[ptr] = m_outputPorts.value(port);
@@ -628,7 +622,7 @@ void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     painter->drawPixmap(QPoint(0, 0), pixmap());
 }
 
-void GraphicElement::addPort(const QString &name, const bool isOutput, const int ptr)
+void GraphicElement::addPort(const QString &name, const bool isOutput)
 {
     if (isOutput && (static_cast<quint64>(m_outputPorts.size()) >= m_maxOutputSize)) {
         return;
@@ -652,7 +646,6 @@ void GraphicElement::addPort(const QString &name, const bool isOutput, const int
     }
 
     port->setGraphicElement(this);
-    port->setPtr(static_cast<quint64>(ptr));
     port->setName(name);
     port->show();
 }
