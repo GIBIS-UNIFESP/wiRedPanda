@@ -175,7 +175,7 @@ private:
     void addOutputPort(const QString &name = {});
 
     //! adds an input or output port at the end of the port vector.
-    void addPort(const QString &name, const bool isOutput, const int ptr = 0);
+    void addPort(const QString &name, const bool isOutput);
 
     //! functions to load GraphicElement atributes through a binary data stream
     void loadPos(QDataStream &stream);

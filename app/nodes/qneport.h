@@ -53,7 +53,6 @@ public:
     bool isRequired() const;
     const QList<QNEConnection *> &connections() const;
     int index() const;
-    int portFlags() const;
     virtual bool isInput() const = 0;
     virtual bool isOutput() const = 0;
     virtual bool isValid() const = 0;
@@ -67,7 +66,6 @@ public:
     void setGraphicElement(GraphicElement *graphicElement);
     void setIndex(const int index);
     void setName(const QString &name);
-    void setPtr(const quint64 ptr);
     void setRequired(const bool required);
     void updateConnections();
 
@@ -85,9 +83,7 @@ protected:
     bool m_required = true;
     int m_index = 0;
     int m_margin = 2;
-    int m_portFlags = 0; // change this to std::bitset?
     int m_radius = 5;
-    quint64 m_ptr = 0;
 };
 
 class QNEInputPort : public QNEPort
