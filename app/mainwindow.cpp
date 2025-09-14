@@ -49,12 +49,6 @@ void ensureSvgUsage() {
 #include <emscripten/emscripten.h>
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-#define SKIPEMPTYPARTS QString::SkipEmptyParts
-#else
-#define SKIPEMPTYPARTS Qt::SkipEmptyParts
-#endif
-
 MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     : QMainWindow(parent)
     , m_ui(std::make_unique<MainWindow_Ui>())
