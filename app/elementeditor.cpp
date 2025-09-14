@@ -135,7 +135,7 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
 
     QMenu *submenuMorph = nullptr;
 
-    if (auto *selectedElm = dynamic_cast<GraphicElement *>(itemAtMouse); selectedElm && m_canMorph) {
+    if (auto *selectedElm = qgraphicsitem_cast<GraphicElement *>(itemAtMouse); selectedElm && m_canMorph) {
         submenuMorph = menu.addMenu(morphMenuText);
 
         switch (selectedElm->elementGroup()) {
@@ -887,7 +887,7 @@ void ElementEditor::truthTable()
 {
     if (!m_hasTruthTable) return;
 
-    auto *truthtable = dynamic_cast<TruthTable *>(m_elements[0]);
+    auto *truthtable = qobject_cast<TruthTable *>(m_elements[0]);
 
     // Assuming only one element selected for now...
 
@@ -971,7 +971,7 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
 
 void ElementEditor::audioBox()
 {
-    auto *audiobox = dynamic_cast<AudioBox *>(m_elements[0]);
+    auto *audiobox = qobject_cast<AudioBox *>(m_elements[0]);
 
     const QString filePath = QFileDialog::getOpenFileName(this, tr("Select any audio"),
                                                     QString(), tr("Audio (*.mp3 *.mp4 *.wav *.ogg)"));

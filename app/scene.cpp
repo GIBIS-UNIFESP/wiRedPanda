@@ -267,7 +267,7 @@ QUndoStack *Scene::undoStack()
 
 void Scene::makeConnection(QNEConnection *connection)
 {
-    auto *port = dynamic_cast<QNEPort *>(itemAt(m_mousePos));
+    auto *port = qgraphicsitem_cast<QNEPort *>(itemAt(m_mousePos));
 
     if (!port || !connection) {
         return;
@@ -648,7 +648,7 @@ void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream)
 
 void Scene::handleHoverPort()
 {
-    auto *port = dynamic_cast<QNEPort *>(itemAt(m_mousePos));
+    auto *port = qgraphicsitem_cast<QNEPort *>(itemAt(m_mousePos));
     auto *hoverPort_ = hoverPort();
 
     if (hoverPort_ && (hoverPort_ != port)) {
