@@ -855,7 +855,7 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
     if (text.isEmpty()) {
         m_ui->tabElements->tabBar()->show();
         m_ui->tabElements->setCurrentIndex(m_lastTabIndex);
-        m_ui->tabElements->setTabEnabled(5, false);
+        m_ui->tabElements->setTabEnabled(6, false);
 
         m_lastTabIndex = -1;
     } else {
@@ -864,8 +864,8 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
         }
 
         m_ui->tabElements->tabBar()->hide();
-        m_ui->tabElements->setCurrentIndex(5);
-        m_ui->tabElements->setTabEnabled(5, true);
+        m_ui->tabElements->setCurrentIndex(6);
+        m_ui->tabElements->setTabEnabled(6, true);
 
         const auto allItems = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
 
