@@ -28,13 +28,14 @@ ElementMapping::~ElementMapping()
 void ElementMapping::generateMap()
 {
     for (auto *elm : std::as_const(m_elements)) {
-        if (elm->elementType() == ElementType::IC) {
-            auto *ic = qobject_cast<IC *>(elm);
-            m_logicElms.append(ic->generateMap());
-            continue;
+        auto logicElements = elm->getLogicElementsForMapping();
+        if (logicElements.size() > 1) {
+            // Multi-logic element (like IC)
+            m_logicElms.append(logicElements);
+        } else {
+            // Single-logic element
+            generateLogic(elm);
         }
-
-        generateLogic(elm);
     }
 }
 
@@ -55,16 +56,8 @@ void ElementMapping::connectElements()
 
 void ElementMapping::applyConnection(GraphicElement *elm, QNEInputPort *inputPort)
 {
-    LogicElement *currentLogic;
-    int inputIndex = 0;
-
-    if (elm->elementType() == ElementType::IC) {
-        auto *ic = qobject_cast<IC *>(elm);
-        currentLogic = ic->inputLogic(inputPort->index());
-    } else {
-        currentLogic = elm->logic();
-        inputIndex = inputPort->index();
-    }
+    LogicElement *currentLogic = elm->getInputLogic(inputPort->index());
+    int inputIndex = elm->getInputIndexForPort(inputPort->index());
 
     const auto connections = inputPort->connections();
 
@@ -76,12 +69,9 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEInputPort *inputPor
     if (connections.size() == 1) {
         if (auto *outputPort = connections.constFirst()->startPort()) {
             if (auto *predecessorElement = outputPort->graphicElement()) {
-                if (predecessorElement->elementType() == ElementType::IC) {
-                    auto *predecessorLogic = qobject_cast<IC *>(predecessorElement)->outputLogic(outputPort->index());
-                    currentLogic->connectPredecessor(inputIndex, predecessorLogic, 0);
-                } else {
-                    currentLogic->connectPredecessor(inputIndex, predecessorElement->logic(), outputPort->index());
-                }
+                auto *predecessorLogic = predecessorElement->getOutputLogic(outputPort->index());
+                int outputIndex = predecessorElement->getOutputIndexForPort(outputPort->index());
+                currentLogic->connectPredecessor(inputIndex, predecessorLogic, outputIndex);
             }
         }
     }

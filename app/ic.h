@@ -31,6 +31,16 @@ public:
     void refresh() override;
     void save(QDataStream &stream) const override;
 
+    // Polymorphic interface overrides
+    LogicElement *getInputLogic(int portIndex) const override;
+    LogicElement *getOutputLogic(int portIndex) const override;
+    int getInputIndexForPort(int portIndex) const override;
+    int getOutputIndexForPort(int portIndex) const override;
+    QVector<std::shared_ptr<LogicElement>> getLogicElementsForMapping() override;
+    bool canSetPortNames() const override;
+    void setInputPortName(int port, const QString &name) override;
+    void setOutputPortName(int port, const QString &name) override;
+
 protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
