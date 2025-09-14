@@ -11,9 +11,6 @@
 
 #include <QRegularExpression>
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
-#define endl Qt::endl
-#endif
 
 CodeGenerator::CodeGenerator(const QString &fileName, const QVector<GraphicElement *> &elements)
     : m_file(fileName)
@@ -78,12 +75,12 @@ QString CodeGenerator::otherPortName(QNEPort *port)
 
 void CodeGenerator::generate()
 {
-    m_stream << "// ==================================================================== //" << endl;
-    m_stream << "// ======= This code was generated automatically by wiRedPanda ======== //" << endl;
-    m_stream << "// ==================================================================== //" << endl;
-    m_stream << endl
-             << endl;
-    m_stream << "#include <elapsedMillis.h>" << endl;
+    m_stream << "// ==================================================================== //" << Qt::endl;
+    m_stream << "// ======= This code was generated automatically by wiRedPanda ======== //" << Qt::endl;
+    m_stream << "// ==================================================================== //" << Qt::endl;
+    m_stream << Qt::endl
+             << Qt::endl;
+    m_stream << "#include <elapsedMillis.h>" << Qt::endl;
     /* Declaring input and output pins; */
     declareInputs();
     declareOutputs();
@@ -98,7 +95,7 @@ void CodeGenerator::generate()
 void CodeGenerator::declareInputs()
 {
     int counter = 1;
-    m_stream << "/* ========= Inputs ========== */" << endl;
+    m_stream << "/* ========= Inputs ========== */" << Qt::endl;
 
     for (auto *elm : m_elements) {
         const auto type = elm->elementType();
@@ -112,7 +109,7 @@ void CodeGenerator::declareInputs()
             }
 
             varName = removeForbiddenChars(varName);
-            m_stream << QString("const int %1 = %2;").arg(varName, m_availablePins.constFirst()) << endl;
+            m_stream << QString("const int %1 = %2;").arg(varName, m_availablePins.constFirst()) << Qt::endl;
             m_inputMap.append(MappedPin(elm, m_availablePins.constFirst(), varName, elm->outputPort(0), 0));
             m_availablePins.removeFirst();
             m_varMap[elm->outputPort()] = varName + QString("_val");
@@ -120,13 +117,13 @@ void CodeGenerator::declareInputs()
         }
     }
 
-    m_stream << endl;
+    m_stream << Qt::endl;
 }
 
 void CodeGenerator::declareOutputs()
 {
     int counter = 1;
-    m_stream << "/* ========= Outputs ========== */" << endl;
+    m_stream << "/* ========= Outputs ========== */" << Qt::endl;
     for (auto *elm : m_elements) {
         if (elm->elementGroup() == ElementGroup::Output) {
             QString label = elm->label();
@@ -140,14 +137,14 @@ void CodeGenerator::declareOutputs()
                     varName = QString("%1_%2").arg(varName, port->name());
                 }
                 varName = removeForbiddenChars(varName);
-                m_stream << QString("const int %1 = %2;").arg(varName, m_availablePins.constFirst()) << endl;
+                m_stream << QString("const int %1 = %2;").arg(varName, m_availablePins.constFirst()) << Qt::endl;
                 m_outputMap.append(MappedPin(elm, m_availablePins.constFirst(), varName, port, i));
                 m_availablePins.removeFirst();
             }
         }
         ++counter;
     }
-    m_stream << endl;
+    m_stream << Qt::endl;
 }
 
 void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox)
@@ -158,9 +155,9 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
 
             // FIXME: Get code generator to work again
             //      if (ic) {
-            //        out << "// " << ic->getLabel() << endl;
+            //        out << "// " << ic->getLabel() << Qt::endl;
             //        declareAuxVariablesRec(ic->getElements(), true);
-            //        out << "// END of " << ic->getLabel() << endl;
+            //        out << "// END of " << ic->getLabel() << Qt::endl;
             //        for (int i = 0; i < ic->outputSize(); ++i) {
             //          QNEPort *port = ic->outputMap.at(i);
             //          varMap[ic->outputPort(i)] = otherPortName(port);
@@ -203,26 +200,26 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
 
             for (auto *port : outputs) {
                 QString varName2 = m_varMap.value(port);
-                m_stream << "boolean " << varName2 << " = " << highLow(port->defaultValue()) << ";" << endl;
+                m_stream << "boolean " << varName2 << " = " << highLow(port->defaultValue()) << ";" << Qt::endl;
 
                 switch (elm->elementType()) {
                 case ElementType::Clock: {
                     if (!isBox) {
                         auto *clk = qgraphicsitem_cast<Clock *>(elm);
-                        m_stream << "elapsedMillis " << varName2 << "_elapsed = 0;" << endl;
-                        m_stream << "int " << varName2 << "_interval = " << 1000 / clk->frequency() << ";" << endl;
+                        m_stream << "elapsedMillis " << varName2 << "_elapsed = 0;" << Qt::endl;
+                        m_stream << "int " << varName2 << "_interval = " << 1000 / clk->frequency() << ";" << Qt::endl;
                     }
                     break;
                 }
                 case ElementType::DFlipFlop: {
-                    m_stream << "boolean " << varName2 << "_inclk = LOW;" << endl;
-                    m_stream << "boolean " << varName2 << "_last = LOW;" << endl;
+                    m_stream << "boolean " << varName2 << "_inclk = LOW;" << Qt::endl;
+                    m_stream << "boolean " << varName2 << "_last = LOW;" << Qt::endl;
                     break;
                 }
                 case ElementType::TFlipFlop:
                 case ElementType::SRFlipFlop:
                 case ElementType::JKFlipFlop: {
-                    m_stream << "boolean " << varName2 << "_inclk = LOW;" << endl;
+                    m_stream << "boolean " << varName2 << "_inclk = LOW;" << Qt::endl;
                     break;
                 }
 
@@ -236,22 +233,22 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
 
 void CodeGenerator::declareAuxVariables()
 {
-    m_stream << "/* ====== Aux. Variables ====== */" << endl;
+    m_stream << "/* ====== Aux. Variables ====== */" << Qt::endl;
     declareAuxVariablesRec(m_elements);
-    m_stream << endl;
+    m_stream << Qt::endl;
 }
 
 void CodeGenerator::setup()
 {
-    m_stream << "void setup() {" << endl;
+    m_stream << "void setup() {" << Qt::endl;
     for (const auto &pin : std::as_const(m_inputMap)) {
-        m_stream << "    pinMode(" << pin.m_varName << ", INPUT);" << endl;
+        m_stream << "    pinMode(" << pin.m_varName << ", INPUT);" << Qt::endl;
     }
     for (const auto &pin : std::as_const(m_outputMap)) {
-        m_stream << "    pinMode(" << pin.m_varName << ", OUTPUT);" << endl;
+        m_stream << "    pinMode(" << pin.m_varName << ", OUTPUT);" << Qt::endl;
     }
-    m_stream << "}" << endl
-             << endl;
+    m_stream << "}" << Qt::endl
+             << Qt::endl;
 }
 
 void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements)
@@ -261,7 +258,7 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             throw PANDACEPTION("IC element not supported: %1", elm->objectName());
             // TODO: CodeGenerator::assignVariablesRec for IC Element
             //      IC *ic = qgraphicsitem_cast<IC *>(elm);
-            //      out << "    // " << ic->getLabel() << endl;
+            //      out << "    // " << ic->getLabel() << Qt::endl;
             //      for (int i = 0; i < ic->inputSize(); ++i) {
             //          QNEPort *port = ic->inputPort(i);
             //          QNEPort *otherPort = port->connections().constFirst()->otherPort(port);
@@ -269,7 +266,7 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             //          if (!m_varMap.value(otherPort).isEmpty()) {
             //              value = m_varMap.value(otherPort);
             //          }
-            //          out << "    " << m_varMap.value(ic->inputMap.at(i)) << " = " << value << ";" << endl;
+            //          out << "    " << m_varMap.value(ic->inputMap.at(i)) << " = " << value << ";" << Qt::endl;
             //      }
             //      QVector<GraphicElement*> icElms = ic->getElements();
             //      if (icElms.isEmpty()) {
@@ -277,7 +274,7 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             //      }
             //      icElms = Simulation::sortElements(icElms);
             //      assignVariablesRec(icElms);
-            //      out << "    // End of " << ic->getLabel() << endl;
+            //      out << "    // End of " << ic->getLabel() << Qt::endl;
         }
         if (elm->inputs().isEmpty() || elm->outputs().isEmpty()) {
             continue;
@@ -291,22 +288,22 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             QString clk = otherPortName(elm->inputPort(1));
             QString inclk = firstOut + "_inclk";
             QString last = firstOut + "_last";
-            m_stream << QString("    //D FlipFlop") << endl;
-            m_stream << QString("    if (%1 && !%2) { ").arg(clk, inclk) << endl;
-            m_stream << QString("        %1 = %2;").arg(firstOut, last) << endl;
-            m_stream << QString("        %1 = !%2;").arg(secondOut, last) << endl;
-            m_stream << QString("    }") << endl;
+            m_stream << QString("    //D FlipFlop") << Qt::endl;
+            m_stream << QString("    if (%1 && !%2) { ").arg(clk, inclk) << Qt::endl;
+            m_stream << QString("        %1 = %2;").arg(firstOut, last) << Qt::endl;
+            m_stream << QString("        %1 = !%2;").arg(secondOut, last) << Qt::endl;
+            m_stream << QString("    }") << Qt::endl;
             QString prst = otherPortName(elm->inputPort(2));
             QString clr = otherPortName(elm->inputPort(3));
-            m_stream << QString("    if (!%1 || !%2) { ").arg(prst, clr) << endl;
-            m_stream << QString("        %1 = !%2; //Preset").arg(firstOut, prst) << endl;
-            m_stream << QString("        %1 = !%2; //Clear").arg(secondOut, clr) << endl;
-            m_stream << QString("    }") << endl;
+            m_stream << QString("    if (!%1 || !%2) { ").arg(prst, clr) << Qt::endl;
+            m_stream << QString("        %1 = !%2; //Preset").arg(firstOut, prst) << Qt::endl;
+            m_stream << QString("        %1 = !%2; //Clear").arg(secondOut, clr) << Qt::endl;
+            m_stream << QString("    }") << Qt::endl;
 
             /* Updating internal clock. */
-            m_stream << "    " << inclk << " = " << clk << ";" << endl;
-            m_stream << "    " << last << " = " << data << ";" << endl;
-            m_stream << QString("    //End of D FlipFlop") << endl;
+            m_stream << "    " << inclk << " = " << clk << ";" << Qt::endl;
+            m_stream << "    " << last << " = " << data << ";" << Qt::endl;
+            m_stream << QString("    //End of D FlipFlop") << Qt::endl;
 
             break;
         }
@@ -314,12 +311,12 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             QString secondOut = m_varMap.value(elm->outputPort(1));
             QString data = otherPortName(elm->inputPort(0));
             QString clk = otherPortName(elm->inputPort(1));
-            m_stream << QString("    //D Latch") << endl;
-            m_stream << QString("    if (%1) { ").arg(clk) << endl;
-            m_stream << QString("        %1 = %2;").arg(firstOut, data) << endl;
-            m_stream << QString("        %1 = !%2;").arg(secondOut, data) << endl;
-            m_stream << QString("    }") << endl;
-            m_stream << QString("    //End of D Latch") << endl;
+            m_stream << QString("    //D Latch") << Qt::endl;
+            m_stream << QString("    if (%1) { ").arg(clk) << Qt::endl;
+            m_stream << QString("        %1 = %2;").arg(firstOut, data) << Qt::endl;
+            m_stream << QString("        %1 = !%2;").arg(secondOut, data) << Qt::endl;
+            m_stream << QString("    }") << Qt::endl;
+            m_stream << QString("    //End of D Latch") << Qt::endl;
 
             break;
         }
@@ -329,30 +326,30 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             QString clk = otherPortName(elm->inputPort(1));
             QString k = otherPortName(elm->inputPort(2));
             QString inclk = firstOut + "_inclk";
-            m_stream << QString("    //JK FlipFlop") << endl;
-            m_stream << QString("    if (%1 && !%2) { ").arg(clk, inclk) << endl;
-            m_stream << QString("        if (%1 && %2) { ").arg(j, k) << endl;
-            m_stream << QString("            boolean aux = %1;").arg(firstOut) << endl;
-            m_stream << QString("            %1 = %2;").arg(firstOut, secondOut) << endl;
-            m_stream << QString("            %1 = aux;").arg(secondOut) << endl;
-            m_stream << QString("        } else if (%1) {").arg(j) << endl;
-            m_stream << QString("            %1 = 1;").arg(firstOut) << endl;
-            m_stream << QString("            %1 = 0;").arg(secondOut) << endl;
-            m_stream << QString("        } else if (%1) {").arg(k) << endl;
-            m_stream << QString("            %1 = 0;").arg(firstOut) << endl;
-            m_stream << QString("            %1 = 1;").arg(secondOut) << endl;
-            m_stream << QString("        }") << endl;
-            m_stream << QString("    }") << endl;
+            m_stream << QString("    //JK FlipFlop") << Qt::endl;
+            m_stream << QString("    if (%1 && !%2) { ").arg(clk, inclk) << Qt::endl;
+            m_stream << QString("        if (%1 && %2) { ").arg(j, k) << Qt::endl;
+            m_stream << QString("            boolean aux = %1;").arg(firstOut) << Qt::endl;
+            m_stream << QString("            %1 = %2;").arg(firstOut, secondOut) << Qt::endl;
+            m_stream << QString("            %1 = aux;").arg(secondOut) << Qt::endl;
+            m_stream << QString("        } else if (%1) {").arg(j) << Qt::endl;
+            m_stream << QString("            %1 = 1;").arg(firstOut) << Qt::endl;
+            m_stream << QString("            %1 = 0;").arg(secondOut) << Qt::endl;
+            m_stream << QString("        } else if (%1) {").arg(k) << Qt::endl;
+            m_stream << QString("            %1 = 0;").arg(firstOut) << Qt::endl;
+            m_stream << QString("            %1 = 1;").arg(secondOut) << Qt::endl;
+            m_stream << QString("        }") << Qt::endl;
+            m_stream << QString("    }") << Qt::endl;
             QString prst = otherPortName(elm->inputPort(3));
             QString clr = otherPortName(elm->inputPort(4));
-            m_stream << QString("    if (!%1 || !%2) { ").arg(prst, clr) << endl;
-            m_stream << QString("        %1 = !%2; //Preset").arg(firstOut, prst) << endl;
-            m_stream << QString("        %1 = !%2; //Clear").arg(secondOut, clr) << endl;
-            m_stream << QString("    }") << endl;
+            m_stream << QString("    if (!%1 || !%2) { ").arg(prst, clr) << Qt::endl;
+            m_stream << QString("        %1 = !%2; //Preset").arg(firstOut, prst) << Qt::endl;
+            m_stream << QString("        %1 = !%2; //Clear").arg(secondOut, clr) << Qt::endl;
+            m_stream << QString("    }") << Qt::endl;
 
             /* Updating internal clock. */
-            m_stream << "    " << inclk << " = " << clk << ";" << endl;
-            m_stream << QString("    //End of JK FlipFlop") << endl;
+            m_stream << "    " << inclk << " = " << clk << ";" << Qt::endl;
+            m_stream << QString("    //End of JK FlipFlop") << Qt::endl;
 
             break;
         }
@@ -362,26 +359,26 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             QString clk = otherPortName(elm->inputPort(1));
             QString r = otherPortName(elm->inputPort(2));
             QString inclk = firstOut + "_inclk";
-            m_stream << QString("    //SR FlipFlop") << endl;
-            m_stream << QString("    if (%1 && !%2) { ").arg(clk, inclk) << endl;
-            m_stream << QString("        if (%1 && %2) { ").arg(s, r) << endl;
-            m_stream << QString("            %1 = 1;").arg(firstOut) << endl;
-            m_stream << QString("            %1 = 1;").arg(secondOut) << endl;
-            m_stream << QString("        } else if (%1 != %2) {").arg(s, r) << endl;
-            m_stream << QString("            %1 = %2;").arg(firstOut, s) << endl;
-            m_stream << QString("            %1 = %2;").arg(secondOut, r) << endl;
-            m_stream << QString("        }") << endl;
-            m_stream << QString("    }") << endl;
+            m_stream << QString("    //SR FlipFlop") << Qt::endl;
+            m_stream << QString("    if (%1 && !%2) { ").arg(clk, inclk) << Qt::endl;
+            m_stream << QString("        if (%1 && %2) { ").arg(s, r) << Qt::endl;
+            m_stream << QString("            %1 = 1;").arg(firstOut) << Qt::endl;
+            m_stream << QString("            %1 = 1;").arg(secondOut) << Qt::endl;
+            m_stream << QString("        } else if (%1 != %2) {").arg(s, r) << Qt::endl;
+            m_stream << QString("            %1 = %2;").arg(firstOut, s) << Qt::endl;
+            m_stream << QString("            %1 = %2;").arg(secondOut, r) << Qt::endl;
+            m_stream << QString("        }") << Qt::endl;
+            m_stream << QString("    }") << Qt::endl;
             QString prst = otherPortName(elm->inputPort(3));
             QString clr = otherPortName(elm->inputPort(4));
-            m_stream << QString("    if (!%1 || !%2) { ").arg(prst, clr) << endl;
-            m_stream << QString("        %1 = !%2; //Preset").arg(firstOut, prst) << endl;
-            m_stream << QString("        %1 = !%2; //Clear").arg(secondOut, clr) << endl;
-            m_stream << QString("    }") << endl;
+            m_stream << QString("    if (!%1 || !%2) { ").arg(prst, clr) << Qt::endl;
+            m_stream << QString("        %1 = !%2; //Preset").arg(firstOut, prst) << Qt::endl;
+            m_stream << QString("        %1 = !%2; //Clear").arg(secondOut, clr) << Qt::endl;
+            m_stream << QString("    }") << Qt::endl;
 
             /* Updating internal clock. */
-            m_stream << "    " << inclk << " = " << clk << ";" << endl;
-            m_stream << QString("    //End of SR FlipFlop") << endl;
+            m_stream << "    " << inclk << " = " << clk << ";" << Qt::endl;
+            m_stream << QString("    //End of SR FlipFlop") << Qt::endl;
 
             break;
         }
@@ -391,24 +388,24 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             QString clk = otherPortName(elm->inputPort(1));
             QString inclk = firstOut + "_inclk";
             //          QString last = firstOut + "_last";
-            m_stream << QString("    //T FlipFlop") << endl;
-            m_stream << QString("    if (%1 && !%2) { ").arg(clk, inclk) << endl;
-            m_stream << QString("        if (%1) { ").arg(t) << endl;
-            m_stream << QString("            %1 = !%1;").arg(firstOut) << endl;
-            m_stream << QString("            %1 = !%2;").arg(secondOut, firstOut) << endl;
-            m_stream << QString("        }") << endl;
-            m_stream << QString("    }") << endl;
+            m_stream << QString("    //T FlipFlop") << Qt::endl;
+            m_stream << QString("    if (%1 && !%2) { ").arg(clk, inclk) << Qt::endl;
+            m_stream << QString("        if (%1) { ").arg(t) << Qt::endl;
+            m_stream << QString("            %1 = !%1;").arg(firstOut) << Qt::endl;
+            m_stream << QString("            %1 = !%2;").arg(secondOut, firstOut) << Qt::endl;
+            m_stream << QString("        }") << Qt::endl;
+            m_stream << QString("    }") << Qt::endl;
             QString prst = otherPortName(elm->inputPort(2));
             QString clr = otherPortName(elm->inputPort(3));
-            m_stream << QString("    if (!%1 || !%2) { ").arg(prst, clr) << endl;
-            m_stream << QString("        %1 = !%2; //Preset").arg(firstOut, prst) << endl;
-            m_stream << QString("        %1 = !%2; //Clear").arg(secondOut, clr) << endl;
-            m_stream << QString("    }") << endl;
+            m_stream << QString("    if (!%1 || !%2) { ").arg(prst, clr) << Qt::endl;
+            m_stream << QString("        %1 = !%2; //Preset").arg(firstOut, prst) << Qt::endl;
+            m_stream << QString("        %1 = !%2; //Clear").arg(secondOut, clr) << Qt::endl;
+            m_stream << QString("    }") << Qt::endl;
 
             /* Updating internal clock. */
-            m_stream << "    " << inclk << " = " << clk << ";" << endl;
-            //          out << "    " << last << " = " << data << ";" << endl;
-            m_stream << QString("    //End of T FlipFlop") << endl;
+            m_stream << "    " << inclk << " = " << clk << ";" << Qt::endl;
+            //          out << "    " << last << " = " << data << ";" << Qt::endl;
+            m_stream << QString("    //End of T FlipFlop") << Qt::endl;
 
             break;
         }
@@ -487,7 +484,7 @@ void CodeGenerator::assignLogicOperator(GraphicElement *elm)
         if (parentheses && negate) {
             m_stream << ")";
         }
-        m_stream << ";" << endl;
+        m_stream << ";" << Qt::endl;
     } else {
         /* ... */
     }
@@ -495,26 +492,26 @@ void CodeGenerator::assignLogicOperator(GraphicElement *elm)
 
 void CodeGenerator::loop()
 {
-    m_stream << "void loop() {" << endl;
-    m_stream << "    // Reading input data //." << endl;
+    m_stream << "void loop() {" << Qt::endl;
+    m_stream << "    // Reading input data //." << Qt::endl;
     for (const auto &pin : std::as_const(m_inputMap)) {
-        m_stream << QString("    %1_val = digitalRead(%1);").arg(pin.m_varName) << endl;
+        m_stream << QString("    %1_val = digitalRead(%1);").arg(pin.m_varName) << Qt::endl;
     }
-    m_stream << endl;
-    m_stream << "    // Updating clocks. //" << endl;
+    m_stream << Qt::endl;
+    m_stream << "    // Updating clocks. //" << Qt::endl;
     for (auto *elm : m_elements) {
         if (elm->elementType() == ElementType::Clock) {
             const auto elmOutputs = elm->outputs();
             QString varName = m_varMap.value(elmOutputs.constFirst());
-            m_stream << QString("    if (%1_elapsed > %1_interval) {").arg(varName) << endl;
-            m_stream << QString("        %1_elapsed = 0;").arg(varName) << endl;
-            m_stream << QString("        %1 = ! %1;").arg(varName) << endl;
-            m_stream << QString("    }") << endl;
+            m_stream << QString("    if (%1_elapsed > %1_interval) {").arg(varName) << Qt::endl;
+            m_stream << QString("        %1_elapsed = 0;").arg(varName) << Qt::endl;
+            m_stream << QString("        %1 = ! %1;").arg(varName) << Qt::endl;
+            m_stream << QString("    }") << Qt::endl;
         }
     }
     /* Aux variables. */
-    m_stream << endl;
-    m_stream << "    // Assigning aux variables. //" << endl;
+    m_stream << Qt::endl;
+    m_stream << "    // Assigning aux variables. //" << Qt::endl;
     assignVariablesRec(m_elements);
     m_stream << "\n";
     m_stream << "    // Writing output data. //\n";
@@ -523,7 +520,7 @@ void CodeGenerator::loop()
         if (varName.isEmpty()) {
             varName = highLow(pin.m_port->defaultValue());
         }
-        m_stream << QString("    digitalWrite(%1, %2);").arg(pin.m_varName, varName) << endl;
+        m_stream << QString("    digitalWrite(%1, %2);").arg(pin.m_varName, varName) << Qt::endl;
     }
-    m_stream << "}" << endl;
+    m_stream << "}" << Qt::endl;
 }
