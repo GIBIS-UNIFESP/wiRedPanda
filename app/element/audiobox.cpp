@@ -14,7 +14,7 @@
 #endif
 
 AudioBox::AudioBox(QGraphicsItem *parent)
-    : GraphicElement(ElementType::AudioBox, ElementGroup::Output, ":output/audiobox/audioboxOff.svg", tr("Audio Box"), tr("Audio Box"), 1, 1, 0, 0, parent)
+    : GraphicElement(ElementType::AudioBox, ElementGroup::Output, ":/components/output/audiobox/audioboxOff.svg", tr("Audio Box"), tr("Audio Box"), 1, 1, 0, 0, parent)
 {
     if (GlobalProperties::skipInit)
         return;
