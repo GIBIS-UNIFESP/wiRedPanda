@@ -13,7 +13,7 @@
 - **CMake Generator**: Ninja (required on all platforms for consistency)
 - **Installation**:
   - Windows: `choco install ninja` or `scoop install ninja`
-  - Linux: `apt install ninja-build` or `yum install ninja-build`  
+  - Linux: `apt install ninja-build` or `yum install ninja-build`
   - macOS: `brew install ninja`
 
 ### Build Commands (All Platforms)
