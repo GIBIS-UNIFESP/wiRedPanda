@@ -442,7 +442,7 @@ void BewavedDolphin::run()
         int row = 0;
 
         for (auto *input : std::as_const(m_inputs)) {
-            const bool isRotary = dynamic_cast<InputRotary *>(input);
+            const bool isRotary = qobject_cast<InputRotary *>(input);
             for (int port = 0; port < input->outputSize(); ++port) {
                 const bool value = m_model->index(row++, column).data().toBool();
 
