@@ -172,4 +172,4 @@ Deploy/
 /app/resources/output/
 *.panda
 !examples/**/*.panda
-!test/files/**/*.panda
+!test/backward_compatibility/**/*.panda
