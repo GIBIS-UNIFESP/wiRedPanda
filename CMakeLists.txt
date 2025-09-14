@@ -334,20 +334,11 @@ if(NOT CCACHE_BIN)
 endif()
 
 if(WIN32)
-    set(WINDOWS_APP_NAME "wiRedPanda - Logic Circuit Simulator")
-    set(RC_FILE resources/wpanda.ico)
+    set(RC_FILE "${CMAKE_SOURCE_DIR}/app/resources/windows/wpanda.rc")
 
     set_target_properties(wiredpanda PROPERTIES
         WIN32_EXECUTABLE ON
         RUNTIME_OUTPUT_NAME wiredpanda
-        # Enhanced Windows metadata
-        VERSION "${PROJECT_VERSION}"
-        DESCRIPTION "wiRedPanda - Logic Circuit Simulator"
-        COMPANY_NAME GIBIS-UNIFESP
-        FILE_DESCRIPTION "wiRedPanda - Logic Circuit Simulator"
-        LEGAL_COPYRIGHT "GIBIS-UNIFESP and the wiRedPanda contributors"
-        ORIGINAL_FILENAME wiredpanda.exe
-        PRODUCT_NAME "wiRedPanda - Logic Circuit Simulator"
     )
 
     if(EXISTS ${RC_FILE})
