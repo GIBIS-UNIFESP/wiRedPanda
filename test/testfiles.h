@@ -11,4 +11,5 @@ class TestFiles : public QObject
 
 private slots:
     void testFiles();
+    void testBackwardCompatibility();
 };
