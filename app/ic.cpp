@@ -179,6 +179,9 @@ void IC::loadFile(const QString &fileName)
         }
 
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        if (!elm) {
+            continue;
+        }
 
         switch (elm->elementGroup()) {
         case ElementGroup::Input:  loadInputElement(elm);    break;
@@ -328,8 +331,13 @@ void IC::loadOutputElement(GraphicElement *elm)
 
 bool IC::comparePorts(QNEPort *port1, QNEPort *port2)
 {
-    QPointF p1 = port1->graphicElement()->pos();
-    QPointF p2 = port2->graphicElement()->pos();
+    auto *elem1 = port1->graphicElement();
+    auto *elem2 = port2->graphicElement();
+    if (!elem1 || !elem2) {
+        return false;
+    }
+    QPointF p1 = elem1->pos();
+    QPointF p2 = elem2->pos();
 
     if (p1 != p2) {
         return (p1.y() < p2.y()) || (qFuzzyCompare(p1.y(), p2.y()) && (p1.x() < p2.x()));

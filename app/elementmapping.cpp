@@ -67,7 +67,11 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEInputPort *inputPor
     }
 
     if (connections.size() == 1) {
-        if (auto *outputPort = connections.constFirst()->startPort()) {
+        auto *connection = connections.constFirst();
+        if (!connection) {
+            return;
+        }
+        if (auto *outputPort = connection->startPort()) {
             if (auto *predecessorElement = outputPort->graphicElement()) {
                 auto *predecessorLogic = predecessorElement->getOutputLogic(outputPort->index());
                 int outputIndex = predecessorElement->getOutputIndexForPort(outputPort->index());

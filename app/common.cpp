@@ -79,7 +79,10 @@ int Common::calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool>
     for (auto *port : elm->outputs()) {
         for (auto *conn : port->connections()) {
             if (auto *successor = conn->endPort()) {
-                max = qMax(calculatePriority(successor->graphicElement(), beingVisited, priorities), max);
+                auto *successorElement = successor->graphicElement();
+                if (successorElement) {
+                    max = qMax(calculatePriority(successorElement, beingVisited, priorities), max);
+                }
             }
         }
     }

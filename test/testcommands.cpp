@@ -38,7 +38,9 @@ void TestCommands::testAddDeleteCommands()
 
     WorkSpace workspace;
     auto *scene = workspace.scene();
+    QVERIFY(scene != nullptr);
     auto *undoStack = scene->undoStack();
+    QVERIFY(undoStack != nullptr);
     undoStack->setUndoLimit(1);
     scene->receiveCommand(new AddItemsCommand(items, scene));
 

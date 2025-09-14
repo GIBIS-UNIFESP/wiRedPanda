@@ -125,11 +125,17 @@ void GraphicElement::setOutputs(const QVector<QNEOutputPort *> &outputs)
 
 QNEInputPort *GraphicElement::inputPort(const int index)
 {
+    if (index < 0 || index >= m_inputPorts.size()) {
+        return nullptr;
+    }
     return m_inputPorts.at(index);
 }
 
 QNEOutputPort *GraphicElement::outputPort(const int index)
 {
+    if (index < 0 || index >= m_outputPorts.size()) {
+        return nullptr;
+    }
     return m_outputPorts.at(index);
 }
 

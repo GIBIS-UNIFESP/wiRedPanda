@@ -1298,6 +1298,9 @@ void BewavedDolphin::load(QFile &file)
 {
     const QByteArray content = file.readAll();
     const auto wordList(content.split(','));
+    if (wordList.size() < 2) {
+        throw PANDACEPTION("Invalid CSV format: insufficient data.");
+    }
     int rows = wordList.at(0).toInt();
     const int cols = wordList.at(1).toInt();
 
@@ -1312,6 +1315,11 @@ void BewavedDolphin::load(QFile &file)
     setLength(cols, false);
 
     qCDebug(zero) << "Update table.";
+
+    const int expectedSize = 2 + rows * cols;
+    if (wordList.size() < expectedSize) {
+        throw PANDACEPTION("Invalid CSV format: expected %1 elements, got %2.", expectedSize, wordList.size());
+    }
 
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < cols; ++col) {

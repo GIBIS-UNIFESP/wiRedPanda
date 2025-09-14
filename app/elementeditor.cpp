@@ -666,9 +666,9 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     if (m_hasAudioBox) {
         if (elements.size() > 1) {
             m_ui->lineCurrentAudioBox->setText(m_manyAudios);
+        } else if (elements.size() == 1) {
+            m_ui->lineCurrentAudioBox->setText(elements[0]->audio());
         }
-
-        m_ui->lineCurrentAudioBox->setText(elements[0]->audio());
     }
 
     /* TruthTable */
@@ -888,6 +888,9 @@ void ElementEditor::truthTable()
     if (!m_hasTruthTable) return;
 
     auto *truthtable = qobject_cast<TruthTable *>(m_elements[0]);
+    if (!truthtable) {
+        return;
+    }
 
     // Assuming only one element selected for now...
 
@@ -972,6 +975,9 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
 void ElementEditor::audioBox()
 {
     auto *audiobox = qobject_cast<AudioBox *>(m_elements[0]);
+    if (!audiobox) {
+        return;
+    }
 
     const QString filePath = QFileDialog::getOpenFileName(this, tr("Select any audio"),
                                                     QString(), tr("Audio (*.mp3 *.mp4 *.wav *.ogg)"));

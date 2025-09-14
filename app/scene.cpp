@@ -303,7 +303,11 @@ void Scene::makeConnection(QNEConnection *connection)
 
 void Scene::detachConnection(QNEInputPort *endPort)
 {
-    auto *connection = endPort->connections().last();
+    const auto connections = endPort->connections();
+    if (connections.isEmpty()) {
+        return;
+    }
+    auto *connection = connections.last();
 
     if (auto *startPort = connection->startPort()) {
         receiveCommand(new DeleteItemsCommand({connection}, this));
@@ -473,7 +477,10 @@ void Scene::nextElm()
         receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
                        Enums::nextElmType(element->elementType()), this));
 
-        itemAt(elmPosition)->setSelected(true);
+        auto *item = itemAt(elmPosition);
+        if (item) {
+            item->setSelected(true);
+        }
     }
 }
 
@@ -488,7 +495,10 @@ void Scene::prevElm()
         receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
                                         Enums::prevElmType(element->elementType()), this));
 
-        itemAt(elmPosition)->setSelected(true);
+        auto *item = itemAt(elmPosition);
+        if (item) {
+            item->setSelected(true);
+        }
     }
 }
 
@@ -534,7 +544,11 @@ void Scene::showGates(const bool checked)
 
     for (auto *item : items_) {
         if (item->type() == GraphicElement::Type) {
-            const auto group = qgraphicsitem_cast<GraphicElement *>(item)->elementGroup();
+            auto *element = qgraphicsitem_cast<GraphicElement *>(item);
+            if (!element) {
+                continue;
+            }
+            const auto group = element->elementGroup();
 
             if ((group != ElementGroup::Input) && (group != ElementGroup::Output) && (group != ElementGroup::Other)) {
                 item->setVisible(checked);
@@ -900,7 +914,10 @@ void Scene::mute(const bool mute)
 {
     for (auto *element : elements()) {
         if (element->elementType() == ElementType::Buzzer) {
-            qobject_cast<Buzzer *>(element)->mute(mute);
+            auto *buzzer = qobject_cast<Buzzer *>(element);
+            if (buzzer) {
+                buzzer->mute(mute);
+            }
         }
     }
 }

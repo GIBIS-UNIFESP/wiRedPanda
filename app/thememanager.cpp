@@ -115,7 +115,9 @@ void ThemeAttributes::setTheme(const Theme theme)
         darkPalette.setColor(QPalette::Disabled, QPalette::Base, QColor(120, 120, 120));
         darkPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(120, 120, 120));
 
-        qApp->setPalette(darkPalette);
+        if (qApp) {
+            qApp->setPalette(darkPalette);
+        }
 #endif
 
         break;
@@ -128,7 +130,9 @@ void ThemeAttributes::setTheme(const Theme theme)
     }
 
 #ifndef Q_OS_MAC
-    qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
+    if (qApp) {
+        qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
+    }
 #endif
 
     m_portInvalidBrush = m_connectionInvalid;
