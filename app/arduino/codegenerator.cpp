@@ -151,7 +151,7 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
 {
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
-            //      IC *ic = qgraphicsitem_cast<IC *>(elm);
+            //      IC *ic = qobject_cast<IC *>(elm);
 
             // FIXME: Get code generator to work again
             //      if (ic) {
@@ -205,7 +205,7 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
                 switch (elm->elementType()) {
                 case ElementType::Clock: {
                     if (!isBox) {
-                        auto *clk = qgraphicsitem_cast<Clock *>(elm);
+                        auto *clk = qobject_cast<Clock *>(elm);
                         m_stream << "elapsedMillis " << varName2 << "_elapsed = 0;" << Qt::endl;
                         m_stream << "int " << varName2 << "_interval = " << 1000 / clk->frequency() << ";" << Qt::endl;
                     }
@@ -257,7 +257,7 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
         if (elm->elementType() == ElementType::IC) {
             throw PANDACEPTION("IC element not supported: %1", elm->objectName());
             // TODO: CodeGenerator::assignVariablesRec for IC Element
-            //      IC *ic = qgraphicsitem_cast<IC *>(elm);
+            //      IC *ic = qobject_cast<IC *>(elm);
             //      out << "    // " << ic->getLabel() << Qt::endl;
             //      for (int i = 0; i < ic->inputSize(); ++i) {
             //          QNEPort *port = ic->inputPort(i);

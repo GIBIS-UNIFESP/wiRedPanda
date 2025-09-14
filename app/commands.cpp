@@ -33,7 +33,7 @@ void storeIds(const QList<QGraphicsItem *> &items, QList<int> &ids)
 void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &ids, QList<int> &otherIds)
 {
     for (auto *item : connections) {
-        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item); conn && (item->type() == QNEConnection::Type)) {
+        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
             if (auto *port1 = conn->startPort(); port1 && port1->graphicElement() && !ids.contains(port1->graphicElement()->id())) {
                 otherIds.append(port1->graphicElement()->id());
             }
@@ -877,7 +877,7 @@ void ToggleTruthTableOutputCommand::redo()
 {
     qCDebug(zero) << text();
 
-    auto *truthtable = dynamic_cast<TruthTable *>(findElm(m_id));
+    auto *truthtable = qobject_cast<TruthTable *>(findElm(m_id));
 
     if (!truthtable) throw PANDACEPTION("Could not find truthtable element!");
 
@@ -891,7 +891,7 @@ void ToggleTruthTableOutputCommand::undo()
 {
     qCDebug(zero) << text();
 
-    auto *truthtable = dynamic_cast<TruthTable *>(findElm(m_id));
+    auto *truthtable = qobject_cast<TruthTable *>(findElm(m_id));
 
     if (!truthtable) throw PANDACEPTION("Could not find truthtable element!");
 
