@@ -294,9 +294,8 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         const QString name = input.value("name").toString();
 
         if (port < m_inputPorts.size()) {
-
-            if (elementType() == ElementType::IC) {
-                m_inputPorts.value(port)->setName(name);
+            if (canSetPortNames()) {
+                setInputPortName(port, name);
             }
         } else {
             addPort(name, false);
@@ -319,9 +318,8 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         const QString name = output.value("name").toString();
 
         if (port < m_outputPorts.size()) {
-
-            if (elementType() == ElementType::IC) {
-                m_outputPorts.value(port)->setName(name);
+            if (canSetPortNames()) {
+                setOutputPortName(port, name);
             }
         } else {
             addPort(name, true);
@@ -450,9 +448,8 @@ void GraphicElement::loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *>
     int flags;    stream >> flags;
 
     if (port < m_inputPorts.size()) {
-
-        if (elementType() == ElementType::IC) {
-            m_inputPorts.value(port)->setName(name);
+        if (canSetPortNames()) {
+            setInputPortName(port, name);
         }
     } else {
         addPort(name, false);
@@ -525,9 +522,8 @@ void GraphicElement::loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *
     int flags;    stream >> flags;
 
     if (port < m_outputPorts.size()) {
-
-        if (elementType() == ElementType::IC) {
-            m_outputPorts.value(port)->setName(name);
+        if (canSetPortNames()) {
+            setOutputPortName(port, name);
         }
     } else {
         addPort(name, true);
@@ -1128,6 +1124,50 @@ float GraphicElement::delay() const
 void GraphicElement::setDelay(const float delay)
 {
     Q_UNUSED(delay)
+}
+
+LogicElement *GraphicElement::getInputLogic(int portIndex) const
+{
+    Q_UNUSED(portIndex)
+    return logic();
+}
+
+LogicElement *GraphicElement::getOutputLogic(int portIndex) const
+{
+    Q_UNUSED(portIndex)
+    return logic();
+}
+
+int GraphicElement::getInputIndexForPort(int portIndex) const
+{
+    return portIndex;
+}
+
+int GraphicElement::getOutputIndexForPort(int portIndex) const
+{
+    return portIndex;
+}
+
+QVector<std::shared_ptr<LogicElement>> GraphicElement::getLogicElementsForMapping()
+{
+    return {std::shared_ptr<LogicElement>(logic(), [](LogicElement*){})};
+}
+
+bool GraphicElement::canSetPortNames() const
+{
+    return false;
+}
+
+void GraphicElement::setInputPortName(int port, const QString &name)
+{
+    Q_UNUSED(port)
+    Q_UNUSED(name)
+}
+
+void GraphicElement::setOutputPortName(int port, const QString &name)
+{
+    Q_UNUSED(port)
+    Q_UNUSED(name)
 }
 
 void GraphicElement::setMinOutputSize(const int minOutputSize)

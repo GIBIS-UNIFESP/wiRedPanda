@@ -62,6 +62,22 @@ public:
     //! Updates the GraphicElement theme according to the dark/light wiRedPanda theme.
     virtual void updateTheme();
 
+    //! Polymorphic interface for logic element access (eliminates manual IC type checking)
+    virtual LogicElement *getInputLogic(int portIndex) const;
+    virtual LogicElement *getOutputLogic(int portIndex) const;
+
+    //! Polymorphic interface for getting the correct input/output indices for ports
+    virtual int getInputIndexForPort(int portIndex) const;
+    virtual int getOutputIndexForPort(int portIndex) const;
+
+    //! Polymorphic interface for element mapping (replaces manual generateMap() calls)
+    virtual QVector<std::shared_ptr<LogicElement>> getLogicElementsForMapping();
+
+    //! Polymorphic interface for port naming (replaces elementType() == IC checks)
+    virtual bool canSetPortNames() const;
+    virtual void setInputPortName(int port, const QString &name);
+    virtual void setOutputPortName(int port, const QString &name);
+
     ElementGroup elementGroup() const;
     ElementType elementType() const;
     LogicElement *logic() const;
