@@ -162,6 +162,9 @@ bool LogicElement::outputValue(const int index) const
 bool LogicElement::inputValue(const int index) const
 {
     auto *pred = m_inputPairs.at(index).logic;
+    if (!pred) {
+        return false;
+    }
     int port = m_inputPairs.at(index).port;
     return pred->outputValue(port);
 }

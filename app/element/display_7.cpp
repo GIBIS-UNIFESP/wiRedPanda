@@ -95,14 +95,14 @@ void Display7::refresh()
 
 void Display7::updatePortsProperties()
 {
-    inputPort(0)->setPos( 0,  8);    inputPort(0)->setName("G (" +  tr("middle")      + ")");
-    inputPort(1)->setPos( 0, 24);    inputPort(1)->setName("F (" +  tr("upper left")  + ")");
-    inputPort(2)->setPos( 0, 40);    inputPort(2)->setName("E (" +  tr("lower left")  + ")");
-    inputPort(3)->setPos( 0, 56);    inputPort(3)->setName("D (" +  tr("bottom")      + ")");
-    inputPort(4)->setPos(64,  8);    inputPort(4)->setName("A (" +  tr("top")         + ")");
-    inputPort(5)->setPos(64, 24);    inputPort(5)->setName("B (" +  tr("upper right") + ")");
-    inputPort(6)->setPos(64, 40);    inputPort(6)->setName("DP (" + tr("dot")         + ")");
-    inputPort(7)->setPos(64, 56);    inputPort(7)->setName("C (" +  tr("lower right") + ")");
+    if (auto *port = inputPort(0)) { port->setPos( 0,  8); port->setName("G (" +  tr("middle")      + ")"); }
+    if (auto *port = inputPort(1)) { port->setPos( 0, 24); port->setName("F (" +  tr("upper left")  + ")"); }
+    if (auto *port = inputPort(2)) { port->setPos( 0, 40); port->setName("E (" +  tr("lower left")  + ")"); }
+    if (auto *port = inputPort(3)) { port->setPos( 0, 56); port->setName("D (" +  tr("bottom")      + ")"); }
+    if (auto *port = inputPort(4)) { port->setPos(64,  8); port->setName("A (" +  tr("top")         + ")"); }
+    if (auto *port = inputPort(5)) { port->setPos(64, 24); port->setName("B (" +  tr("upper right") + ")"); }
+    if (auto *port = inputPort(6)) { port->setPos(64, 40); port->setName("DP (" + tr("dot")         + ")"); }
+    if (auto *port = inputPort(7)) { port->setPos(64, 56); port->setName("C (" +  tr("lower right") + ")"); }
 
     for (auto *in : std::as_const(m_inputPorts)) {
         in->setRequired(false);
@@ -114,14 +114,14 @@ void Display7::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 {
     GraphicElement::paint(painter, option, widget);
 
-    if (inputPort(0)->status() == Status::Active) { painter->drawPixmap(0, 0, g.at(m_colorNumber));  }
-    if (inputPort(1)->status() == Status::Active) { painter->drawPixmap(0, 0, f.at(m_colorNumber));  }
-    if (inputPort(2)->status() == Status::Active) { painter->drawPixmap(0, 0, e.at(m_colorNumber));  }
-    if (inputPort(3)->status() == Status::Active) { painter->drawPixmap(0, 0, d.at(m_colorNumber));  }
-    if (inputPort(4)->status() == Status::Active) { painter->drawPixmap(0, 0, a.at(m_colorNumber));  }
-    if (inputPort(5)->status() == Status::Active) { painter->drawPixmap(0, 0, b.at(m_colorNumber));  }
-    if (inputPort(6)->status() == Status::Active) { painter->drawPixmap(0, 0, dp.at(m_colorNumber)); }
-    if (inputPort(7)->status() == Status::Active) { painter->drawPixmap(0, 0, c.at(m_colorNumber));  }
+    if (auto *port = inputPort(0); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, g.at(m_colorNumber));  }
+    if (auto *port = inputPort(1); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, f.at(m_colorNumber));  }
+    if (auto *port = inputPort(2); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, e.at(m_colorNumber));  }
+    if (auto *port = inputPort(3); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, d.at(m_colorNumber));  }
+    if (auto *port = inputPort(4); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, a.at(m_colorNumber));  }
+    if (auto *port = inputPort(5); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, b.at(m_colorNumber));  }
+    if (auto *port = inputPort(6); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, dp.at(m_colorNumber)); }
+    if (auto *port = inputPort(7); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, c.at(m_colorNumber));  }
 }
 
 void Display7::setColor(const QString &color)

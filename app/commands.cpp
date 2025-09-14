@@ -438,8 +438,20 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     m_nodeAngle = static_cast<int>(360 - 90 * (std::round(angle / 90.0)));
 
     /* Assigning class attributes */
-    m_elm1Id = conn->startPort()->graphicElement()->id();
-    m_elm2Id = conn->endPort()->graphicElement()->id();
+    auto *startPort = conn->startPort();
+    auto *endPort = conn->endPort();
+    if (!startPort || !endPort) {
+        throw PANDACEPTION("Invalid connection ports in SplitCommand constructor");
+    }
+
+    auto *startElement = startPort->graphicElement();
+    auto *endElement = endPort->graphicElement();
+    if (!startElement || !endElement) {
+        throw PANDACEPTION("Invalid graphic elements in SplitCommand constructor");
+    }
+
+    m_elm1Id = startElement->id();
+    m_elm2Id = endElement->id();
 
     m_c1Id = conn->id();
     m_c2Id = (new QNEConnection())->id();
@@ -476,6 +488,10 @@ void SplitCommand::redo()
     node->setRotation(m_nodeAngle);
 
     auto *endPort = conn1->endPort();
+    if (!endPort) {
+        throw PANDACEPTION("Error: endPort is null in SplitCommand::redo()");
+    }
+
     conn2->setStartPort(node->outputPort());
     conn2->setEndPort(endPort);
     conn1->setEndPort(node->inputPort());

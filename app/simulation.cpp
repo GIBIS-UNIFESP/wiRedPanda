@@ -33,20 +33,26 @@ void Simulation::update()
         const auto globalTime = std::chrono::steady_clock::now();
 
         for (auto *clock : std::as_const(m_clocks)) {
-            clock->updateClock(globalTime);
+            if (clock) {
+                clock->updateClock(globalTime);
+            }
         }
     }
 
     for (auto *inputElm : std::as_const(m_inputs)) {
-        inputElm->updateOutputs();
+        if (inputElm) {
+            inputElm->updateOutputs();
+        }
     }
 
     // Check if we have elements in feedback loops that need iterative settling
     bool hasFeedbackElements = false;
-    for (auto &logic : m_elmMapping->logicElms()) {
-        if (logic->inFeedbackLoop()) {
-            hasFeedbackElements = true;
-            break;
+    if (m_elmMapping) {
+        for (auto &logic : m_elmMapping->logicElms()) {
+            if (logic && logic->inFeedbackLoop()) {
+                hasFeedbackElements = true;
+                break;
+            }
         }
     }
 
@@ -55,8 +61,12 @@ void Simulation::update()
         updateWithIterativeSettling();
     } else {
         // Standard single-pass update for purely combinational circuits
-        for (auto &logic : m_elmMapping->logicElms()) {
-            logic->updateLogic();
+        if (m_elmMapping) {
+            for (auto &logic : m_elmMapping->logicElms()) {
+                if (logic) {
+                    logic->updateLogic();
+                }
+            }
         }
     }
 
@@ -65,8 +75,12 @@ void Simulation::update()
     }
 
     for (auto *outputElm : std::as_const(m_outputs)) {
-        for (auto *inputPort : outputElm->inputs()) {
-            updatePort(inputPort);
+        if (outputElm) {
+            for (auto *inputPort : outputElm->inputs()) {
+                if (inputPort) {
+                    updatePort(inputPort);
+                }
+            }
         }
     }
 }
@@ -78,15 +92,34 @@ void Simulation::updatePort(QNEOutputPort *port)
     }
 
     auto *elm = port->graphicElement();
+    if (!elm) {
+        return;
+    }
     auto *logic = elm->getOutputLogic(port->index());
+    if (!logic) {
+        port->setStatus(Status::Invalid);
+        return;
+    }
+
     int outputIndex = elm->getOutputIndexForPort(port->index());
     port->setStatus(logic->isValid() ? static_cast<Status>(logic->outputValue(outputIndex)) : Status::Invalid);
 }
 
 void Simulation::updatePort(QNEInputPort *port)
 {
+    if (!port) {
+        return;
+    }
+
     auto *elm = port->graphicElement();
+    if (!elm) {
+        return;
+    }
     auto *logic = elm->logic();
+    if (!logic) {
+        port->setStatus(Status::Invalid);
+        return;
+    }
 
     port->setStatus(logic->isValid() ? static_cast<Status>(logic->inputValue(port->index())) : Status::Invalid);
 
@@ -108,7 +141,9 @@ bool Simulation::isRunning()
 void Simulation::stop()
 {
     m_timer.stop();
-    m_scene->mute(true);
+    if (m_scene) {
+        m_scene->mute(true);
+    }
 }
 
 void Simulation::start()
@@ -120,12 +155,18 @@ void Simulation::start()
     }
 
     m_timer.start();
-    m_scene->mute(false);
+    if (m_scene) {
+        m_scene->mute(false);
+    }
     qCDebug(zero) << "Simulation started.";
 }
 
 void Simulation::updateWithIterativeSettling()
 {
+    if (!m_elmMapping) {
+        return;
+    }
+
     const int maxIterations = 10; // Prevent infinite loops
     const auto &logicElements = m_elmMapping->logicElms();
 
@@ -134,6 +175,9 @@ void Simulation::updateWithIterativeSettling()
 
     for (int i = 0; i < logicElements.size(); ++i) {
         auto &logic = logicElements[i];
+        if (!logic) {
+            continue;
+        }
         // Initialize with current outputs
         previousOutputs[i].resize(logic->outputSize());
         for (int j = 0; j < previousOutputs[i].size(); ++j) {
@@ -144,13 +188,18 @@ void Simulation::updateWithIterativeSettling()
     for (int iteration = 0; iteration < maxIterations; ++iteration) {
         // Update all logic elements
         for (auto &logic : logicElements) {
-            logic->updateLogic();
+            if (logic) {
+                logic->updateLogic();
+            }
         }
 
         // Check for convergence (no output changes)
         bool converged = true;
         for (int i = 0; i < logicElements.size(); ++i) {
             auto &logic = logicElements[i];
+            if (!logic) {
+                continue;
+            }
 
             // Check all outputs for convergence
             for (int j = 0; j < logic->outputSize(); ++j) {
@@ -176,6 +225,10 @@ void Simulation::updateWithIterativeSettling()
 
 bool Simulation::initialize()
 {
+    if (!m_scene) {
+        return false;
+    }
+
     m_clocks.clear();
     m_outputs.clear();
     m_inputs.clear();
@@ -193,21 +246,37 @@ bool Simulation::initialize()
     const auto globalTime = std::chrono::steady_clock::now();
 
     for (auto *item : items) {
+        if (!item) {
+            continue;
+        }
+
         if (item->type() == QNEConnection::Type) {
-            m_connections.append(qgraphicsitem_cast<QNEConnection *>(item));
+            auto *connection = qgraphicsitem_cast<QNEConnection *>(item);
+            if (connection) {
+                m_connections.append(connection);
+            }
         }
 
         if (item->type() == GraphicElement::Type) {
             auto *element = qgraphicsitem_cast<GraphicElement *>(item);
+            if (!element) {
+                continue;
+            }
             elements.append(element);
 
             if (element->elementType() == ElementType::Clock) {
-                m_clocks.append(qobject_cast<Clock *>(element));
-                m_clocks.constLast()->resetClock(globalTime);
+                auto *clock = qobject_cast<Clock *>(element);
+                if (clock) {
+                    m_clocks.append(clock);
+                    clock->resetClock(globalTime);
+                }
             }
 
             if (element->elementGroup() == ElementGroup::Input) {
-                m_inputs.append(qobject_cast<GraphicElementInput *>(element));
+                auto *input = qobject_cast<GraphicElementInput *>(element);
+                if (input) {
+                    m_inputs.append(input);
+                }
             }
 
             if (element->elementGroup() == ElementGroup::Output) {
@@ -217,6 +286,9 @@ bool Simulation::initialize()
     }
 
     std::sort(elements.begin(), elements.end(), [](const auto &a, const auto &b) {
+        if (!a || !b) {
+            return a != nullptr; // Put null elements at the end
+        }
         return a->priority() > b->priority();
     });
 
@@ -228,6 +300,10 @@ bool Simulation::initialize()
 
     qCDebug(two) << "Recreating mapping for simulation.";
     m_elmMapping = std::make_unique<ElementMapping>(elements);
+
+    if (!m_elmMapping) {
+        return false;
+    }
 
     qCDebug(two) << "Sorting.";
     m_elmMapping->sort();

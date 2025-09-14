@@ -310,8 +310,22 @@ void MainWindow::removeUndoRedoMenu()
 
 void MainWindow::addUndoRedoMenu()
 {
-    m_ui->menuEdit->insertAction(m_ui->menuEdit->actions().at(0), m_currentTab->scene()->undoAction());
-    m_ui->menuEdit->insertAction(m_ui->menuEdit->actions().at(1), m_currentTab->scene()->redoAction());
+    if (!m_currentTab) {
+        return;
+    }
+
+    auto *scene = m_currentTab->scene();
+    if (!scene) {
+        return;
+    }
+
+    const auto actions = m_ui->menuEdit->actions();
+    if (actions.size() < 2) {
+        return;
+    }
+
+    m_ui->menuEdit->insertAction(actions.at(0), scene->undoAction());
+    m_ui->menuEdit->insertAction(actions.at(1), scene->redoAction());
 }
 
 void MainWindow::setFastMode(const bool fastMode)
@@ -639,7 +653,15 @@ bool MainWindow::hasModifiedFiles()
     const auto workspaces = m_ui->tab->findChildren<WorkSpace *>();
 
     for (auto *workspace : workspaces) {
-        auto *undoStack = workspace->scene()->undoStack();
+        auto *scene = workspace->scene();
+        if (!scene) {
+            continue;
+        }
+
+        auto *undoStack = scene->undoStack();
+        if (!undoStack) {
+            continue;
+        }
 
         if (!undoStack->isClean()) {
             return true;
@@ -675,8 +697,14 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 
     QString text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
 
-    if (!m_currentTab->scene()->undoStack()->isClean()) {
-        text += "*";
+    if (m_currentTab) {
+        auto *scene = m_currentTab->scene();
+        if (scene) {
+            auto *undoStack = scene->undoStack();
+            if (undoStack && !undoStack->isClean()) {
+                text += "*";
+            }
+        }
     }
 
     m_ui->tab->setTabText(m_tabIndex, text);
@@ -743,7 +771,16 @@ bool MainWindow::closeTab(const int tabIndex)
 
     qCDebug(zero) << "Checking if needs to save file.";
 
-    if (!m_currentTab->scene()->undoStack()->isClean()) {
+    bool needsSave = false;
+    if (m_currentTab) {
+        auto *scene = m_currentTab->scene();
+        if (scene) {
+            auto *undoStack = scene->undoStack();
+            needsSave = undoStack && !undoStack->isClean();
+        }
+    }
+
+    if (needsSave) {
         const int selectedButton = confirmSave(false);
 
         if (selectedButton == QMessageBox::Cancel) {
@@ -1197,7 +1234,17 @@ void MainWindow::retranslateUi()
 
     for (int index = 0; index < m_ui->tab->count(); ++index) {
         auto *workspace = qobject_cast<WorkSpace *>(m_ui->tab->widget(index));
-        auto *undoStack = workspace->scene()->undoStack();
+        if (!workspace) {
+            continue;
+        }
+        auto *scene = workspace->scene();
+        if (!scene) {
+            continue;
+        }
+        auto *undoStack = scene->undoStack();
+        if (!undoStack) {
+            continue;
+        }
         auto fileInfo = workspace->fileInfo();
 
         QString text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");

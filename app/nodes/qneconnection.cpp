@@ -175,11 +175,19 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
 
         if (port1 && port2) {
             if (port1->isInput() && port2->isOutput()) {
-                setStartPort(dynamic_cast<QNEOutputPort *>(port2));
-                setEndPort(dynamic_cast<QNEInputPort *>(port1));
+                auto *outputPort = dynamic_cast<QNEOutputPort *>(port2);
+                auto *inputPort = dynamic_cast<QNEInputPort *>(port1);
+                if (outputPort && inputPort) {
+                    setStartPort(outputPort);
+                    setEndPort(inputPort);
+                }
             } else if (port1->isOutput() && port2->isInput()) {
-                setStartPort(dynamic_cast<QNEOutputPort *>(port1));
-                setEndPort(dynamic_cast<QNEInputPort *>(port2));
+                auto *outputPort = dynamic_cast<QNEOutputPort *>(port1);
+                auto *inputPort = dynamic_cast<QNEInputPort *>(port2);
+                if (outputPort && inputPort) {
+                    setStartPort(outputPort);
+                    setEndPort(inputPort);
+                }
             }
         }
     }
@@ -199,14 +207,22 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
 
             if (port1->isInput() && port2->isOutput()) {
                 qCDebug(three) << "Setting start 1.";
-                setStartPort(dynamic_cast<QNEOutputPort *>(port2));
-                qCDebug(three) << "Setting end 1.";
-                setEndPort(dynamic_cast<QNEInputPort *>(port1));
+                auto *outputPort = dynamic_cast<QNEOutputPort *>(port2);
+                auto *inputPort = dynamic_cast<QNEInputPort *>(port1);
+                if (outputPort && inputPort) {
+                    setStartPort(outputPort);
+                    qCDebug(three) << "Setting end 1.";
+                    setEndPort(inputPort);
+                }
             } else if (port1->isOutput() && port2->isInput()) {
                 qCDebug(three) << "Setting start 2.";
-                setStartPort(dynamic_cast<QNEOutputPort *>(port1));
-                qCDebug(three) << "Setting end 2.";
-                setEndPort(dynamic_cast<QNEInputPort *>(port2));
+                auto *outputPort = dynamic_cast<QNEOutputPort *>(port1);
+                auto *inputPort = dynamic_cast<QNEInputPort *>(port2);
+                if (outputPort && inputPort) {
+                    setStartPort(outputPort);
+                    qCDebug(three) << "Setting end 2.";
+                    setEndPort(inputPort);
+                }
             }
 
             qCDebug(three) << "After ifs.";

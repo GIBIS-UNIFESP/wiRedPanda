@@ -64,8 +64,12 @@ QString CodeGenerator::otherPortName(QNEPort *port)
         return highLow(port->defaultValue());
     }
 
-    auto *otherPort = port->connections().constFirst()->otherPort(port);
+    auto *connection = port->connections().constFirst();
+    if (!connection) {
+        return highLow(port->defaultValue());
+    }
 
+    auto *otherPort = connection->otherPort(port);
     if (!otherPort) {
         return highLow(port->defaultValue());
     }
@@ -110,9 +114,12 @@ void CodeGenerator::declareInputs()
 
             varName = removeForbiddenChars(varName);
             m_stream << QString("const int %1 = %2;").arg(varName, m_availablePins.constFirst()) << Qt::endl;
-            m_inputMap.append(MappedPin(elm, m_availablePins.constFirst(), varName, elm->outputPort(0), 0));
+            auto *outPort = elm->outputPort(0);
+            if (outPort) {
+                m_inputMap.append(MappedPin(elm, m_availablePins.constFirst(), varName, outPort, 0));
+                m_varMap[outPort] = varName + QString("_val");
+            }
             m_availablePins.removeFirst();
-            m_varMap[elm->outputPort()] = varName + QString("_val");
             ++counter;
         }
     }
@@ -133,7 +140,7 @@ void CodeGenerator::declareOutputs()
                     varName = QString("%1_%2").arg(varName, label);
                 }
                 QNEPort *port = elm->inputPort(i);
-                if (!port->name().isEmpty()) {
+                if (port && !port->name().isEmpty()) {
                     varName = QString("%1_%2").arg(varName, port->name());
                 }
                 varName = removeForbiddenChars(varName);
@@ -206,6 +213,9 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
                 case ElementType::Clock: {
                     if (!isBox) {
                         auto *clk = qobject_cast<Clock *>(elm);
+                        if (!clk) {
+                            break;
+                        }
                         m_stream << "elapsedMillis " << varName2 << "_elapsed = 0;" << Qt::endl;
                         m_stream << "int " << varName2 << "_interval = " << 1000 / clk->frequency() << ";" << Qt::endl;
                     }
@@ -280,10 +290,16 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             continue;
         }
 
-        QString firstOut = m_varMap.value(elm->outputPort(0));
+        auto *outputPort0 = elm->outputPort(0);
+        if (!outputPort0) {
+            continue;
+        }
+        QString firstOut = m_varMap.value(outputPort0);
         switch (elm->elementType()) {
         case ElementType::DFlipFlop: {
-            QString secondOut = m_varMap.value(elm->outputPort(1));
+            auto *outputPort1 = elm->outputPort(1);
+            if (!outputPort1) break;
+            QString secondOut = m_varMap.value(outputPort1);
             QString data = otherPortName(elm->inputPort(0));
             QString clk = otherPortName(elm->inputPort(1));
             QString inclk = firstOut + "_inclk";
@@ -308,7 +324,9 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             break;
         }
         case ElementType::DLatch: {
-            QString secondOut = m_varMap.value(elm->outputPort(1));
+            auto *outputPort1 = elm->outputPort(1);
+            if (!outputPort1) break;
+            QString secondOut = m_varMap.value(outputPort1);
             QString data = otherPortName(elm->inputPort(0));
             QString clk = otherPortName(elm->inputPort(1));
             m_stream << QString("    //D Latch") << Qt::endl;
@@ -321,7 +339,9 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             break;
         }
         case ElementType::JKFlipFlop: {
-            QString secondOut = m_varMap.value(elm->outputPort(1));
+            auto *outputPort1 = elm->outputPort(1);
+            if (!outputPort1) break;
+            QString secondOut = m_varMap.value(outputPort1);
             QString j = otherPortName(elm->inputPort(0));
             QString clk = otherPortName(elm->inputPort(1));
             QString k = otherPortName(elm->inputPort(2));
@@ -354,7 +374,9 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             break;
         }
         case ElementType::SRFlipFlop: {
-            QString secondOut = m_varMap.value(elm->outputPort(1));
+            auto *outputPort1 = elm->outputPort(1);
+            if (!outputPort1) break;
+            QString secondOut = m_varMap.value(outputPort1);
             QString s = otherPortName(elm->inputPort(0));
             QString clk = otherPortName(elm->inputPort(1));
             QString r = otherPortName(elm->inputPort(2));
@@ -383,7 +405,9 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             break;
         }
         case ElementType::TFlipFlop: {
-            QString secondOut = m_varMap.value(elm->outputPort(1));
+            auto *outputPort1 = elm->outputPort(1);
+            if (!outputPort1) break;
+            QString secondOut = m_varMap.value(outputPort1);
             QString t = otherPortName(elm->inputPort(0));
             QString clk = otherPortName(elm->inputPort(1));
             QString inclk = firstOut + "_inclk";
@@ -464,8 +488,11 @@ void CodeGenerator::assignLogicOperator(GraphicElement *elm)
         break;
     }
     if (elm->outputs().size() == 1) {
-        QString varName = m_varMap.value(elm->outputPort());
+        auto *outputPort = elm->outputPort();
+        if (!outputPort) return;
+        QString varName = m_varMap.value(outputPort);
         QNEPort *inPort = elm->inputPort();
+        if (!inPort) return;
         m_stream << "    " << varName << " = ";
         if (negate) {
             m_stream << "!";
