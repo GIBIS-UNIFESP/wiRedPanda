@@ -435,3 +435,49 @@ void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
     IC::srcPath_.clear();
     IC::destPath_.clear();
 }
+
+LogicElement *IC::getInputLogic(int portIndex) const
+{
+    return const_cast<IC*>(this)->inputLogic(portIndex);
+}
+
+LogicElement *IC::getOutputLogic(int portIndex) const
+{
+    return const_cast<IC*>(this)->outputLogic(portIndex);
+}
+
+int IC::getInputIndexForPort(int portIndex) const
+{
+    Q_UNUSED(portIndex)
+    return 0;  // IC input logic elements always use index 0
+}
+
+int IC::getOutputIndexForPort(int portIndex) const
+{
+    Q_UNUSED(portIndex)
+    return 0;  // IC output logic elements always use index 0
+}
+
+QVector<std::shared_ptr<LogicElement>> IC::getLogicElementsForMapping()
+{
+    return generateMap();
+}
+
+bool IC::canSetPortNames() const
+{
+    return true;
+}
+
+void IC::setInputPortName(int port, const QString &name)
+{
+    if (port < m_icInputs.size()) {
+        m_icInputs.value(port)->setName(name);
+    }
+}
+
+void IC::setOutputPortName(int port, const QString &name)
+{
+    if (port < m_icOutputs.size()) {
+        m_icOutputs.value(port)->setName(name);
+    }
+}
