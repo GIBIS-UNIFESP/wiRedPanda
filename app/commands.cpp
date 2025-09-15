@@ -852,7 +852,7 @@ void ChangeOutputSizeCommand::undo()
 
     for (auto *elm : elements) {
         for (int out = m_newOutputSize; out < elm->outputSize(); ++out) {
-            auto *conn = new QNEConnection;
+            auto *conn = new QNEConnection();
             conn->load(stream, portMap);
             m_scene->addItem(conn);
         }
