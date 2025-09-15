@@ -82,8 +82,8 @@ public:
     ElementType elementType() const;
     LogicElement *logic() const;
     QKeySequence trigger() const;
-    QNEInputPort *inputPort(const int index = 0);
-    QNEOutputPort *outputPort(const int index = 0);
+    QNEInputPort *inputPort(const int index = 0) const;
+    QNEOutputPort *outputPort(const int index = 0) const;
     QPointF pixmapCenter() const;
     QRectF boundingRect() const override;
     QString label() const;
@@ -120,13 +120,13 @@ public:
     virtual void setColor(const QString &color);
     virtual void setDelay(const float delay);
     virtual void setFrequency(const float freq);
+    virtual void setLabel(const QString &label);
     virtual void setSkin(const bool defaultSkin, const QString &fileName);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void retranslate();
     void rotatePorts(const qreal angle);
     void setInputSize(const int size);
     void setInputs(const QVector<QNEInputPort *> &inputs);
-    void setLabel(const QString &label);
     void setLogic(LogicElement *newLogic);
     void setOutputSize(const int size);
     void setOutputs(const QVector<QNEOutputPort *> &outputs);

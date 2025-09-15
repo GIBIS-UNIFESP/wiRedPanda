@@ -12,9 +12,11 @@
 #include "graphicelementinput.h"
 #include "graphicsview.h"
 #include "ic.h"
+#include "node.h"
 #include "qneconnection.h"
 #include "serialization.h"
 #include "thememanager.h"
+#include "wirelessconnectionmanager.h"
 
 #include <QClipboard>
 #include <QDrag>
@@ -25,7 +27,9 @@
 Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)
     , m_simulation(this)
+    , m_wirelessManager(new WirelessConnectionManager(this, this))
 {
+
     installEventFilter(this);
 
     m_selectionRect.setFlag(QGraphicsItem::ItemIsSelectable, false);
@@ -43,6 +47,12 @@ Scene::Scene(QObject *parent)
 
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &Scene::updateTheme);
     connect(&m_undoStack,              &QUndoStack::indexChanged,   this, &Scene::checkUpdateRequest);
+
+    // Connect wireless manager to restart simulation when connections change
+    connect(m_wirelessManager, &WirelessConnectionManager::wirelessConnectionsChanged,
+            &m_simulation, &Simulation::restart);
+
+    qCDebug(zero) << "Scene created with wireless connection manager";
 }
 
 void Scene::checkUpdateRequest()
@@ -1277,4 +1287,22 @@ void Scene::addItem(QMimeData *mimeData)
     element->setSelected(true);
 
     mimeData->deleteLater();
+}
+
+WirelessConnectionManager* Scene::wirelessManager() const
+{
+    return m_wirelessManager;
+}
+
+Node *Scene::findNode(int nodeId) const
+{
+    for (QGraphicsItem *item : items()) {
+        // Use dynamic_cast since all GraphicElements share the same UserType
+        if (Node *node = dynamic_cast<Node *>(item)) {
+            if (node->id() == nodeId) {
+                return node;
+            }
+        }
+    }
+    return nullptr;
 }

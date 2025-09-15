@@ -35,11 +35,11 @@ void ElementEditor_Ui::setupUi(QWidget *ElementEditor)
     }
 
     comboBoxAudio->setObjectName("comboBoxAudio");
-    gridLayout_2->addWidget(comboBoxAudio, 8, 1, 1, 1);
+    gridLayout_2->addWidget(comboBoxAudio, 9, 1, 1, 1);
 
     checkBoxLocked = new QCheckBox(groupBox);
     checkBoxLocked->setObjectName("checkBoxLocked");
-    gridLayout_2->addWidget(checkBoxLocked, 4, 1, 1, 1);
+    gridLayout_2->addWidget(checkBoxLocked, 5, 1, 1, 1);
 
     labelLabels = new QLabel(groupBox);
     labelLabels->setObjectName("labelLabels");
@@ -47,7 +47,7 @@ void ElementEditor_Ui::setupUi(QWidget *ElementEditor)
 
     labelTrigger = new QLabel(groupBox);
     labelTrigger->setObjectName("labelTrigger");
-    gridLayout_2->addWidget(labelTrigger, 10, 0, 1, 1);
+    gridLayout_2->addWidget(labelTrigger, 11, 0, 1, 1);
 
     horizontalLayout = new QHBoxLayout();
     horizontalLayout->setSpacing(6);
@@ -74,15 +74,15 @@ void ElementEditor_Ui::setupUi(QWidget *ElementEditor)
     pushButtonDefaultSkin->setIconSize(QSize(16, 16));
     horizontalLayout->addWidget(pushButtonDefaultSkin);
 
-    gridLayout_2->addLayout(horizontalLayout, 12, 0, 1, 2);
+    gridLayout_2->addLayout(horizontalLayout, 13, 0, 1, 2);
 
     lineEditTrigger = new QLineEdit(groupBox);
     lineEditTrigger->setObjectName("lineEditTrigger");
-    gridLayout_2->addWidget(lineEditTrigger, 10, 1, 1, 1);
+    gridLayout_2->addWidget(lineEditTrigger, 11, 1, 1, 1);
 
     labelValue = new QLabel(groupBox);
     labelValue->setObjectName("labelValue");
-    gridLayout_2->addWidget(labelValue, 3, 0, 1, 1);
+    gridLayout_2->addWidget(labelValue, 4, 0, 1, 1);
 
     doubleSpinBoxFrequency = new QDoubleSpinBox(groupBox);
     doubleSpinBoxFrequency->setObjectName("doubleSpinBoxFrequency");
@@ -90,19 +90,19 @@ void ElementEditor_Ui::setupUi(QWidget *ElementEditor)
     doubleSpinBoxFrequency->setMinimum(0.000000000000000);
     doubleSpinBoxFrequency->setMaximum(50.000000000000000);
     doubleSpinBoxFrequency->setSingleStep(0.100000000000000);
-    gridLayout_2->addWidget(doubleSpinBoxFrequency, 5, 1, 1, 1);
+    gridLayout_2->addWidget(doubleSpinBoxFrequency, 6, 1, 1, 1);
 
     comboBoxInputSize = new QComboBox(groupBox);
     comboBoxInputSize->setObjectName("comboBoxInputSize");
-    gridLayout_2->addWidget(comboBoxInputSize, 1, 1, 1, 1);
+    gridLayout_2->addWidget(comboBoxInputSize, 2, 1, 1, 1);
 
     labelFrequency = new QLabel(groupBox);
     labelFrequency->setObjectName("labelFrequency");
-    gridLayout_2->addWidget(labelFrequency, 5, 0, 1, 1);
+    gridLayout_2->addWidget(labelFrequency, 6, 0, 1, 1);
 
     labelColor = new QLabel(groupBox);
     labelColor->setObjectName("labelColor");
-    gridLayout_2->addWidget(labelColor, 7, 0, 1, 1);
+    gridLayout_2->addWidget(labelColor, 8, 0, 1, 1);
 
     horizontalLayout_2 = new QHBoxLayout();
     horizontalLayout_2->setObjectName("horizontalLayout_2");
@@ -121,7 +121,7 @@ void ElementEditor_Ui::setupUi(QWidget *ElementEditor)
     pushButtonAudioBox->setSizePolicy(sizePolicy1);
     pushButtonAudioBox->setMaximumSize(QSize(28, 16777215));
     horizontalLayout_2->addWidget(pushButtonAudioBox);
-    gridLayout_2->addLayout(horizontalLayout_2, 9, 1, 1, 1);
+    gridLayout_2->addLayout(horizontalLayout_2, 10, 1, 1, 1);
 
     lineEditElementLabel = new QLineEdit(groupBox);
     lineEditElementLabel->setObjectName("lineEditElementLabel");
@@ -129,53 +129,62 @@ void ElementEditor_Ui::setupUi(QWidget *ElementEditor)
 
     labelInputs = new QLabel(groupBox);
     labelInputs->setObjectName("labelInputs");
-    gridLayout_2->addWidget(labelInputs, 1, 0, 1, 1);
+    gridLayout_2->addWidget(labelInputs, 2, 0, 1, 1);
 
     comboBoxColor = new QComboBox(groupBox);
     comboBoxColor->setObjectName("comboBoxColor");
-    gridLayout_2->addWidget(comboBoxColor, 7, 1, 1, 1);
+    gridLayout_2->addWidget(comboBoxColor, 8, 1, 1, 1);
 
     labelAudioBox = new QLabel(groupBox);
     labelAudioBox->setObjectName("labelAudioBox");
-    gridLayout_2->addWidget(labelAudioBox, 9, 0, 1, 1);
+    gridLayout_2->addWidget(labelAudioBox, 10, 0, 1, 1);
 
     labelPriority = new QLabel(groupBox);
     labelPriority->setObjectName("labelPriority");
-    gridLayout_2->addWidget(labelPriority, 11, 0, 1, 1);
+    gridLayout_2->addWidget(labelPriority, 12, 0, 1, 1);
 
     comboBoxValue = new QComboBox(groupBox);
     comboBoxValue->setObjectName("comboBoxValue");
-    gridLayout_2->addWidget(comboBoxValue, 3, 1, 1, 1);
+    gridLayout_2->addWidget(comboBoxValue, 4, 1, 1, 1);
 
     comboBoxOutputSize = new QComboBox(groupBox);
     comboBoxOutputSize->setObjectName("comboBoxOutputSize");
-    gridLayout_2->addWidget(comboBoxOutputSize, 2, 1, 1, 1);
+    gridLayout_2->addWidget(comboBoxOutputSize, 3, 1, 1, 1);
 
     spinBoxPriority = new QSpinBox(groupBox);
     spinBoxPriority->setObjectName("spinBoxPriority");
     spinBoxPriority->setMaximum(9);
-    gridLayout_2->addWidget(spinBoxPriority, 11, 1, 1, 1);
+    gridLayout_2->addWidget(spinBoxPriority, 12, 1, 1, 1);
 
     labelOutputs = new QLabel(groupBox);
     labelOutputs->setObjectName("labelOutputs");
-    gridLayout_2->addWidget(labelOutputs, 2, 0, 1, 1);
+    gridLayout_2->addWidget(labelOutputs, 3, 0, 1, 1);
 
     labelLocked = new QLabel(groupBox);
     labelLocked->setObjectName("labelLocked");
-    gridLayout_2->addWidget(labelLocked, 4, 0, 1, 1);
+    gridLayout_2->addWidget(labelLocked, 5, 0, 1, 1);
 
     labelAudio = new QLabel(groupBox);
     labelAudio->setObjectName("labelAudio");
-    gridLayout_2->addWidget(labelAudio, 8, 0, 1, 1);
+    gridLayout_2->addWidget(labelAudio, 9, 0, 1, 1);
 
     labelDelay = new QLabel(groupBox);
     labelDelay->setObjectName("labelDelay");
-    gridLayout_2->addWidget(labelDelay, 6, 0, 1, 1);
+    gridLayout_2->addWidget(labelDelay, 7, 0, 1, 1);
 
     doubleSpinBoxDelay = new QDoubleSpinBox(groupBox);
     doubleSpinBoxDelay->setObjectName("doubleSpinBoxDelay");
     doubleSpinBoxDelay->setDecimals(1);
-    gridLayout_2->addWidget(doubleSpinBoxDelay, 6, 1, 1, 1);
+    gridLayout_2->addWidget(doubleSpinBoxDelay, 7, 1, 1, 1);
+
+    labelNode = new QLabel(groupBox);
+    labelNode->setObjectName("labelNode");
+    gridLayout_2->addWidget(labelNode, 1, 0, 1, 1);
+
+    comboBoxNode = new QComboBox(groupBox);
+    comboBoxNode->setObjectName("comboBoxNode");
+    comboBoxNode->setEditable(true);
+    gridLayout_2->addWidget(comboBoxNode, 1, 1, 1, 1);
 
     gridLayout->addWidget(groupBox, 0, 0, 1, 1);
 
@@ -219,4 +228,5 @@ void ElementEditor_Ui::retranslateUi(QWidget *ElementEditor)
     labelAudio->setText(QCoreApplication::translate("ElementEditor", "Audio:"));
     labelDelay->setText(QCoreApplication::translate("ElementEditor", "Delay:"));
     doubleSpinBoxDelay->setSuffix(QCoreApplication::translate("ElementEditor", " Hz"));
+    labelNode->setText(QCoreApplication::translate("ElementEditor", "Wireless:"));
 }

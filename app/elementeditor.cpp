@@ -9,9 +9,11 @@
 #include "common.h"
 #include "elementfactory.h"
 #include "inputrotary.h"
+#include "node.h"
 #include "scene.h"
 #include "serialization.h"
 #include "thememanager.h"
+#include "wirelessconnectionmanager.h"
 #include "truth_table.h"
 
 #include <QDebug>
@@ -19,6 +21,8 @@
 #include <QImageReader>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QMessageBox>
+#include <algorithm>
 #include <cmath>
 
 ElementEditor::ElementEditor(QWidget *parent)
@@ -36,6 +40,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_ui->comboBoxAudio->installEventFilter(this);
     m_ui->comboBoxColor->installEventFilter(this);
     m_ui->comboBoxInputSize->installEventFilter(this);
+    m_ui->comboBoxNode->installEventFilter(this);
     m_ui->comboBoxOutputSize->installEventFilter(this);
     m_ui->comboBoxValue->installEventFilter(this);
     m_ui->doubleSpinBoxDelay->installEventFilter(this);
@@ -58,6 +63,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->comboBoxAudio,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
     connect(m_ui->comboBoxColor,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
     connect(m_ui->comboBoxInputSize,      qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::inputIndexChanged);
+    connect(m_ui->comboBoxNode,           &QComboBox::currentTextChanged,                   this, &ElementEditor::connectNode);
     connect(m_ui->comboBoxOutputSize,     qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::outputIndexChanged);
     connect(m_ui->comboBoxValue,          &QComboBox::currentTextChanged,                   this, &ElementEditor::outputValueChanged);
     connect(m_ui->doubleSpinBoxDelay,     qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ElementEditor::apply);
@@ -387,6 +393,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
     m_canChangeSkin = m_hasSamePriority = false;
     m_hasElements = false;
+    m_hasNode = false;
 
     if (elements.isEmpty()) {
         hide();
@@ -401,6 +408,16 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_canChangeSkin = m_hasSamePriority = true;
     m_hasElements = true;
     m_hasAudioBox = true;
+
+    // Check if any of the selected elements is a Node with output connections
+    for (auto *elm : std::as_const(m_elements)) {
+        if (auto *node = qobject_cast<Node *>(elm)) {
+            // Only allow wireless label selection if node has output connections (can send signals)
+            if (node->hasOutputConnection()) {
+                m_hasNode = true;
+            }
+        }
+    }
 
     show();
     setEnabled(false);
@@ -419,6 +436,15 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
         m_hasTruthTable &= elm->hasTruthTable();
         m_hasLabel &= elm->hasLabel();
+
+        // For wireless nodes (Node type), enforce connection constraints
+        if (auto *node = qobject_cast<Node *>(elm)) {
+            // Only allow wireless labeling if node has input connections (can receive signals)
+            // But we still want to show the label field with a helpful message
+            if (!node->hasInputConnection()) {
+                m_hasLabel = false; // This specific node cannot set labels
+            }
+        }
         m_canChangeSkin &= elm->canChangeSkin();
         m_hasColors &= elm->hasColors();
         m_hasAudio &= elm->hasAudio();
@@ -466,12 +492,21 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     /* Element type */
     m_ui->groupBox->setTitle(ElementFactory::typeToTitleText(elementType));
     /* Labels */
-    m_ui->lineEditElementLabel->setVisible(m_hasLabel);
+    // Check if we have any nodes (for showing disabled label field with guidance)
+    bool hasAnyNodes = std::any_of(m_elements.cbegin(), m_elements.cend(),
+                                   [](GraphicElement *elm) { return qobject_cast<Node*>(elm) != nullptr; });
+
+    bool showLabelField = m_hasLabel || hasAnyNodes;
+    m_ui->lineEditElementLabel->setVisible(showLabelField);
     m_ui->lineEditElementLabel->setEnabled(m_hasLabel);
-    m_ui->labelLabels->setVisible(m_hasLabel);
+    m_ui->labelLabels->setVisible(showLabelField);
 
     if (m_hasLabel) {
         m_ui->lineEditElementLabel->setText(m_hasSameLabel ? firstElement->label() : m_manyLabels);
+        m_ui->lineEditElementLabel->setPlaceholderText("");
+    } else if (hasAnyNodes) {
+        m_ui->lineEditElementLabel->setText("");
+        m_ui->lineEditElementLabel->setPlaceholderText(tr("Connect an input first to set wireless label"));
     }
 
     /* Color */
@@ -657,6 +692,32 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_ui->lineEditTrigger->setText(m_hasSameTrigger ? firstElement->trigger().toString() : m_manyTriggers);
     }
 
+    /* Wireless Node */
+    m_ui->labelNode->setVisible(m_hasNode);
+    m_ui->comboBoxNode->setVisible(m_hasNode);
+    m_ui->comboBoxNode->setEnabled(m_hasNode);
+
+    if (m_hasNode) {
+        // Refresh the wireless combobox when selecting nodes
+        refreshWirelessCombobox();
+
+        // Temporarily disconnect signal to prevent modification during UI update
+        disconnect(m_ui->comboBoxNode, &QComboBox::currentTextChanged, this, &ElementEditor::connectNode);
+
+        // Set the current wireless label if a single node is selected
+        if (elements.size() == 1) {
+            if (auto *node = qobject_cast<Node*>(elements.first())) {
+                m_ui->comboBoxNode->setCurrentText(node->getWirelessLabel());
+            }
+        } else {
+            // Multiple nodes selected - show empty or common value
+            m_ui->comboBoxNode->setCurrentText("");
+        }
+
+        // Reconnect signal after UI update
+        connect(m_ui->comboBoxNode, &QComboBox::currentTextChanged, this, &ElementEditor::connectNode);
+    }
+
     /* AudioBox */
     m_ui->pushButtonAudioBox->setVisible(m_hasAudioBox);
     m_ui->pushButtonAudioBox->setEnabled(m_hasAudioBox);
@@ -714,7 +775,33 @@ void ElementEditor::apply()
         }
 
         if (elm->hasLabel() && (m_ui->lineEditElementLabel->text() != m_manyLabels)) {
-            elm->setLabel(m_ui->lineEditElementLabel->text());
+            // Special handling for Node elements with wireless constraint validation
+            if (auto *node = qobject_cast<Node*>(elm)) {
+                const QString newLabel = m_ui->lineEditElementLabel->text();
+                const QString originalLabel = node->getWirelessLabel();
+
+                node->setLabel(newLabel);
+
+                // Check if the label was actually set (1-N constraint validation)
+                if (node->getWirelessLabel() != newLabel) {
+                    // 1-N constraint was violated - show user-friendly message
+                    QString message = tr("Cannot set wireless label '%1' on node.\n\n"
+                                       "This label already has another source node. "
+                                       "Each wireless label can have only one source node that transmits signals.\n\n"
+                                       "Please choose a different label or remove the label from the existing source node.").arg(newLabel);
+
+                    QMessageBox::warning(this, tr("Wireless Connection Error"), message);
+
+                    // Revert the text field to the original label
+                    m_ui->lineEditElementLabel->setText(originalLabel);
+
+                    qCWarning(zero) << "Failed to set wireless label" << newLabel << "on node" << elm->id()
+                                   << "- 1-N constraint violated";
+                }
+            } else {
+                // Regular element - set label normally
+                elm->setLabel(m_ui->lineEditElementLabel->text());
+            }
         }
 
         if (elm->hasFrequency() && (m_ui->doubleSpinBoxFrequency->text() != m_manyFreq)) {
@@ -1014,4 +1101,103 @@ void ElementEditor::updateTheme()
             "}";
 
     m_ui->groupBox->setStyleSheet(styleSheet.arg(borderColor));
+}
+
+void ElementEditor::connectNode(const QString &label)
+{
+    if (m_elements.isEmpty()) {
+        qCWarning(zero) << "No elements selected for wireless connection";
+        return;
+    }
+
+    GraphicElement *selectedElement = m_elements.first();
+    qCDebug(zero) << "Attempting to connect element" << selectedElement->id() << "with label:" << label;
+
+    auto *node = qobject_cast<Node*>(selectedElement);
+    if (node) {
+        // Store original label to check if assignment was successful
+        const QString originalLabel = node->getWirelessLabel();
+
+        // Use new wireless system - attempt to set the wireless label
+        node->setLabel(label);
+
+        // Check if the label was actually set (1-N constraint validation)
+        if (node->getWirelessLabel() != label) {
+            // 1-N constraint was violated - show user-friendly message
+            QString message;
+            if (node->isWirelessSource()) {
+                // This node would be a source but the label already has a source
+                message = tr("Cannot set wireless label '%1' on this node.\n\n"
+                           "This label already has another source node. "
+                           "Each wireless label can have only one source node that transmits signals.\n\n"
+                           "To use this label:\n"
+                           "• Remove the wireless label from the existing source node, or\n"
+                           "• Choose a different label for this node").arg(label);
+            } else {
+                // Generic constraint violation
+                message = tr("Cannot set wireless label '%1' on this node.\n\n"
+                           "Wireless constraint violated. Please choose a different label.").arg(label);
+            }
+
+            QMessageBox::warning(this, tr("Wireless Connection Error"), message);
+
+            // Revert the combobox to the original label
+            m_ui->comboBoxNode->setCurrentText(originalLabel);
+
+            qCWarning(zero) << "Failed to set wireless label" << label << "on node" << selectedElement->id()
+                           << "- 1-N constraint violated";
+            return;
+        }
+
+        // Label was successfully set - update UI
+        m_ui->comboBoxNode->setCurrentText(label);
+        refreshWirelessCombobox();
+        setCurrentElements({selectedElement});
+
+        qCDebug(zero) << "Wireless connection completed for node" << selectedElement->id() << "with label:" << label;
+    }
+}
+
+void ElementEditor::refreshWirelessCombobox()
+{
+    if (!m_hasNode) {
+        qCDebug(zero) << "Skipping wireless combobox refresh - not a node element";
+        return;
+    }
+
+    qCDebug(zero) << "Refreshing wireless combobox for node elements";
+
+    // Store current selection
+    QString currentSelection = m_ui->comboBoxNode->currentText();
+
+    // Temporarily disconnect the signal to prevent infinite recursion
+    disconnect(m_ui->comboBoxNode, &QComboBox::currentTextChanged, this, &ElementEditor::connectNode);
+
+    // Repopulate combobox using new wireless system
+    m_ui->comboBoxNode->clear();
+    m_ui->comboBoxNode->addItem("");
+
+    // Get active labels from wireless manager
+    if (m_scene && m_scene->wirelessManager()) {
+        auto activeLabels = m_scene->wirelessManager()->getActiveLabels();
+        for (const QString &label : activeLabels) {
+            if (!label.isEmpty()) {
+                m_ui->comboBoxNode->addItem(label);
+            }
+        }
+
+        qCDebug(zero) << "Added" << activeLabels.size() << "items to wireless combobox";
+    }
+
+    // Restore selection if it still exists
+    int index = m_ui->comboBoxNode->findText(currentSelection);
+    if (index >= 0) {
+        m_ui->comboBoxNode->setCurrentIndex(index);
+        qCDebug(zero) << "Restored combobox selection:" << currentSelection;
+    } else if (!currentSelection.isEmpty()) {
+        qCDebug(zero) << "Could not restore combobox selection:" << currentSelection;
+    }
+
+    // Reconnect the signal
+    connect(m_ui->comboBoxNode, &QComboBox::currentTextChanged, this, &ElementEditor::connectNode);
 }

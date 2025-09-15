@@ -23,6 +23,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow_ui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneconnection.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/nodes/wirelessconnection.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneport.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/recentfiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/scene.cpp
@@ -32,6 +33,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/app/simulationblocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/thememanager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/trashbutton.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/wirelessconnectionmanager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/workspace.cpp
 
     ${CMAKE_CURRENT_LIST_DIR}/app/element/and.cpp
@@ -115,6 +117,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/app/mainwindow_ui.h
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneconnection.h
     ${CMAKE_CURRENT_LIST_DIR}/app/nodes/qneport.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/nodes/wirelessconnection.h
     ${CMAKE_CURRENT_LIST_DIR}/app/recentfiles.h
     ${CMAKE_CURRENT_LIST_DIR}/app/registertypes.h
     ${CMAKE_CURRENT_LIST_DIR}/app/scene.h
@@ -124,6 +127,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/app/simulationblocker.h
     ${CMAKE_CURRENT_LIST_DIR}/app/thememanager.h
     ${CMAKE_CURRENT_LIST_DIR}/app/trashbutton.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/wirelessconnectionmanager.h
     ${CMAKE_CURRENT_LIST_DIR}/app/workspace.h
 
     ${CMAKE_CURRENT_LIST_DIR}/app/element/and.h

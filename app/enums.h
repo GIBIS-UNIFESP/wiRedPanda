@@ -77,3 +77,9 @@ using ElementGroup = Enums::ElementGroup;
 ElementType &operator++(ElementType &type);
 QDataStream &operator>>(QDataStream &stream, ElementType &type);
 QDataStream &operator<<(QDataStream &stream, const ElementType &type);
+
+// Hash function for Status enum to allow use in QSet<Status>
+inline uint qHash(const Status &status, uint seed = 0) noexcept
+{
+    return static_cast<uint>(qHash(static_cast<int>(status), seed));
+}

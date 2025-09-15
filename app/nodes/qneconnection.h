@@ -63,9 +63,13 @@ public:
     void setStartPort(QNEOutputPort *port);
     void setStartPos(const QPointF point);
     void setStatus(const Status status);
+    void setWireless(bool wireless);
     void updatePath();
     void updatePosFromPorts();
     void updateTheme();
+
+    // Wireless connection methods
+    bool isWireless() const { return m_isWireless; }
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
@@ -82,6 +86,7 @@ private:
     QPointF m_startPos;
     Status m_status = Status::Invalid;
     bool m_highLight = false;
+    bool m_isWireless = false;
 };
 
 Q_DECLARE_METATYPE(QNEConnection)

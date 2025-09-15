@@ -271,6 +271,29 @@ void QNEConnection::setStatus(const Status status)
     }
 }
 
+void QNEConnection::setWireless(bool wireless)
+{
+    if (m_isWireless == wireless) {
+        return;
+    }
+
+    m_isWireless = wireless;
+
+    if (m_isWireless) {
+        // Make wireless connections invisible and non-interactive
+        setFlag(QGraphicsItem::ItemIsSelectable, false);
+        setFlag(QGraphicsItem::ItemIsMovable, false);
+        setZValue(-10); // Behind all other items
+    } else {
+        // Restore normal connection properties
+        setFlag(QGraphicsItem::ItemIsSelectable, true);
+        setFlag(QGraphicsItem::ItemIsMovable, false);
+        setZValue(-1); // Normal connection layer
+    }
+
+    update();
+}
+
 void QNEConnection::updateTheme()
 {
     const ThemeAttributes theme = ThemeManager::attributes();
@@ -285,6 +308,11 @@ void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 {
     Q_UNUSED(widget)
     Q_UNUSED(option)
+
+    // Skip rendering for wireless connections (they should be invisible)
+    if (m_isWireless) {
+        return;
+    }
 
     if (m_highLight) {
         painter->save();

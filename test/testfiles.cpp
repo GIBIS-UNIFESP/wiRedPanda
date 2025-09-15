@@ -163,7 +163,6 @@ void TestFiles::testBackwardCompatibility()
         }
     }
 
-    qDebug() << QString("Backward compatibility test: %1/%2 files loaded successfully").arg(successfulFiles).arg(totalFiles);
     QVERIFY2(successfulFiles > 0, "No files were successfully loaded");
 
     GlobalProperties::verbose = originalVerbose;

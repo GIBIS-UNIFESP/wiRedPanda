@@ -8,6 +8,8 @@
 #include "elementmapping.h"
 #include "graphicelement.h"
 #include "ic.h"
+#include "logicnode.h"
+#include "node.h"
 #include "qneconnection.h"
 #include "scene.h"
 
@@ -25,6 +27,8 @@ Simulation::Simulation(Scene *scene)
 
 void Simulation::update()
 {
+    // static int cycleCount = 0;
+
     if (!m_initialized && !initialize()) {
         return;
     }
@@ -70,9 +74,9 @@ void Simulation::update()
         }
     }
 
-    for (auto *connection : std::as_const(m_connections)) {
-        updatePort(connection->startPort());
-    }
+    // Update all connections - both PhysicalConnection and WirelessConnection objects
+    // are processed identically since they both inherit from QNEConnection
+    updateAllConnections();
 
     for (auto *outputElm : std::as_const(m_outputs)) {
         if (outputElm) {
@@ -83,6 +87,7 @@ void Simulation::update()
             }
         }
     }
+
 }
 
 void Simulation::updatePort(QNEOutputPort *port)
@@ -127,6 +132,22 @@ void Simulation::updatePort(QNEInputPort *port)
         elm->refresh();
     }
 }
+
+void Simulation::updateAllConnections()
+{
+    // Update all connections (both PhysicalConnection and WirelessConnection)
+    // Since WirelessConnection inherits from QNEConnection, they work identically
+    for (auto *connection : std::as_const(m_connections)) {
+        updatePort(connection->startPort());
+    }
+
+    // No special wireless handling needed! Perfect timing equivalence achieved
+    // through unified connection model
+}
+
+// updateWirelessAsPhysical() method removed - no longer needed in Option D!
+// Wireless connections are now actual QNEConnection objects that get processed
+// automatically in updateAllConnections() with perfect timing equivalence.
 
 void Simulation::restart()
 {
@@ -218,7 +239,6 @@ void Simulation::updateWithIterativeSettling()
 
         // If we're on the last iteration without convergence, log a warning
         if (iteration == maxIterations - 1) {
-            qDebug() << "Warning: Feedback circuit did not converge after" << maxIterations << "iterations";
         }
     }
 }
@@ -246,6 +266,7 @@ bool Simulation::initialize()
     const auto globalTime = std::chrono::steady_clock::now();
 
     for (auto *item : items) {
+        // Check for all connection types - now all share QNEConnection::Type
         if (!item) {
             continue;
         }
