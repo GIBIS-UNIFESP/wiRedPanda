@@ -117,13 +117,23 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     qCDebug(zero) << "Setting left side menus.";
     populateLeftMenu();
-    m_ui->tabElements->setTabIcon(0, QIcon(":/components/input/buttonOff.svg"));
-    m_ui->tabElements->setTabIcon(1, QIcon(":/components/logic/xor.svg"));
-    m_ui->tabElements->setTabIcon(2, QIcon(":/components/logic/truthtable-rotated.svg"));
-    m_ui->tabElements->setTabIcon(3, QIcon(DFlipFlop::pixmapPath()));
-    m_ui->tabElements->setTabIcon(4, QIcon(":/components/logic/ic-panda.svg"));
-    m_ui->tabElements->setTabIcon(5, QIcon(":/components/misc/text.png"));
-    m_ui->tabElements->setTabEnabled(6, false);
+
+    // Set tab icons using object name-based lookup for robustness
+    int ioTabIndex = getTabIndex("io");
+    int gatesTabIndex = getTabIndex("gates");
+    int combinationalTabIndex = getTabIndex("combinational");
+    int memoryTabIndex = getTabIndex("memory");
+    int icTabIndex = getTabIndex("ic");
+    int miscTabIndex = getTabIndex("misc");
+    int searchTabIndex = getTabIndex("search");
+
+    if (ioTabIndex != -1) m_ui->tabElements->setTabIcon(ioTabIndex, QIcon(":/components/input/buttonOff.svg"));
+    if (gatesTabIndex != -1) m_ui->tabElements->setTabIcon(gatesTabIndex, QIcon(":/components/logic/xor.svg"));
+    if (combinationalTabIndex != -1) m_ui->tabElements->setTabIcon(combinationalTabIndex, QIcon(":/components/logic/truthtable-rotated.svg"));
+    if (memoryTabIndex != -1) m_ui->tabElements->setTabIcon(memoryTabIndex, QIcon(DFlipFlop::pixmapPath()));
+    if (icTabIndex != -1) m_ui->tabElements->setTabIcon(icTabIndex, QIcon(":/components/logic/ic-panda.svg"));
+    if (miscTabIndex != -1) m_ui->tabElements->setTabIcon(miscTabIndex, QIcon(":/components/misc/text.png"));
+    if (searchTabIndex != -1) m_ui->tabElements->setTabEnabled(searchTabIndex, false);
 
     qCDebug(zero) << "Loading recent file list.";
     m_recentFiles = new RecentFiles(this);
@@ -846,10 +856,14 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
 {
     m_ui->scrollAreaWidgetContents_Search->layout()->removeItem(m_ui->verticalSpacer_Search);
 
+    const int searchTabIndex = getTabIndex("search");
+
     if (text.isEmpty()) {
         m_ui->tabElements->tabBar()->show();
         m_ui->tabElements->setCurrentIndex(m_lastTabIndex);
-        m_ui->tabElements->setTabEnabled(6, false);
+        if (searchTabIndex != -1) {
+            m_ui->tabElements->setTabEnabled(searchTabIndex, false);
+        }
 
         m_lastTabIndex = -1;
     } else {
@@ -858,8 +872,10 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
         }
 
         m_ui->tabElements->tabBar()->hide();
-        m_ui->tabElements->setCurrentIndex(6);
-        m_ui->tabElements->setTabEnabled(6, true);
+        if (searchTabIndex != -1) {
+            m_ui->tabElements->setCurrentIndex(searchTabIndex);
+            m_ui->tabElements->setTabEnabled(searchTabIndex, true);
+        }
 
         const auto allItems = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
 
@@ -1533,7 +1549,14 @@ void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLa
 
 void MainWindow::populateLeftMenu()
 {
-    m_ui->tabElements->setCurrentIndex(0);
+    // Set to the first tab (Inputs/Outputs)
+    const int ioTabIndex = getTabIndex("io");
+    if (ioTabIndex != -1) {
+        m_ui->tabElements->setCurrentIndex(ioTabIndex);
+    } else {
+        // Fallback to first tab if object name not found
+        m_ui->tabElements->setCurrentIndex(0);
+    }
     populateMenu(m_ui->verticalSpacer_InOut, {"InputVcc", "InputGnd", "InputButton", "InputSwitch", "InputRotary", "Clock", "Led", "Display7", "Display14", "Display16", "Buzzer", "AudioBox"}, m_ui->scrollAreaWidgetContents_InOut->layout());
     populateMenu(m_ui->verticalSpacer_Gates, {"And", "Or", "Not", "Nand", "Nor", "Xor", "Xnor", "Node"}, m_ui->scrollAreaWidgetContents_Gates->layout());
     populateMenu(m_ui->verticalSpacer_Combinational, {"TruthTable", "Mux", "Demux"}, m_ui->scrollAreaWidgetContents_Combinational->layout());
@@ -1581,7 +1604,11 @@ void MainWindow::updateTheme()
         break;
     }
 
-    m_ui->tabElements->setTabIcon(2, QIcon(DFlipFlop::pixmapPath()));
+    // Update memory tab icon using object name-based lookup
+    const int memoryTabIndex = getTabIndex("memory");
+    if (memoryTabIndex != -1) {
+        m_ui->tabElements->setTabIcon(memoryTabIndex, QIcon(DFlipFlop::pixmapPath()));
+    }
 
     const auto labels = m_ui->memory->findChildren<ElementLabel *>();
 
@@ -1737,4 +1764,15 @@ void MainWindow::removeICFile(const QString &icFileName)
 
     updateICList();
     on_actionSave_triggered();
+}
+
+int MainWindow::getTabIndex(const QString &objectName) const
+{
+    for (int i = 0; i < m_ui->tabElements->count(); ++i) {
+        QWidget *tabWidget = m_ui->tabElements->widget(i);
+        if (tabWidget && tabWidget->objectName() == objectName) {
+            return i;
+        }
+    }
+    return -1;
 }
