@@ -145,6 +145,9 @@ private:
     //! Function called as a tab is selected. The tab is connected to the UI.
     void connectTab();
 
+    //! Returns the index of a tab by its widget object name, or -1 if not found
+    int getTabIndex(const QString &objectName) const;
+
     std::unique_ptr<MainWindow_Ui> m_ui;
 
     QTranslator *m_pandaTranslator = nullptr;
