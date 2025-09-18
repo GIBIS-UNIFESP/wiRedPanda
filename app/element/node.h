@@ -59,6 +59,9 @@ public:
     bool isWirelessSource() const;  // Has physical input connection AND wireless label
     bool isWirelessSink() const;    // Has NO physical input connection AND wireless label
 
+    // Port visibility management for wireless nodes
+    void updatePortVisibility();
+
 signals:
     void wirelessLabelChanged(const QString &oldLabel, const QString &newLabel);
 

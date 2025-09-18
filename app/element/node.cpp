@@ -122,6 +122,7 @@ void Node::setLabel(const QString &label)
         m_wirelessLabel = trimmedLabel;
         notifyWirelessManager(oldWirelessLabel, trimmedLabel);
         emit wirelessLabelChanged(oldWirelessLabel, trimmedLabel);
+        updatePortVisibility(); // Update port visibility when wireless label changes
         update();
     }
 }
@@ -134,6 +135,7 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
     // When node is added to a scene, notify wireless manager to rebuild connections
     if (change == ItemSceneHasChanged && scene() && !m_wirelessLabel.isEmpty()) {
         notifyWirelessManager(QString(), m_wirelessLabel);
+        updatePortVisibility(); // Update port visibility when added to scene
     }
 
     return result;
@@ -340,5 +342,27 @@ void Node::refresh()
     // Trigger repaint to update wireless indicator colors if this node has wireless functionality
     if (hasWirelessLabel()) {
         update();
+    }
+}
+
+void Node::updatePortVisibility()
+{
+    // Update port visibility based on wireless status
+    if (hasWirelessLabel()) {
+        if (isWirelessSource()) {
+            // Source nodes: hide output port (they transmit wirelessly)
+            // but keep input port visible (they receive physical signals)
+            inputPort()->setVisible(true);
+            outputPort()->setVisible(false);
+        } else if (isWirelessSink()) {
+            // Sink nodes: hide input port (they receive wirelessly)
+            // but keep output port visible (they can forward signals physically)
+            inputPort()->setVisible(false);
+            outputPort()->setVisible(true);
+        }
+    } else {
+        // Non-wireless nodes: show both ports
+        inputPort()->setVisible(true);
+        outputPort()->setVisible(true);
     }
 }
