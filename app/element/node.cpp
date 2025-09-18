@@ -260,11 +260,11 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
         painter->setBrush(QBrush(wirelessColor));
 
         if (isWirelessSource()) {
-            // Draw WiFi bars to the right of the output port (pointing right - outgoing signal)
-            drawWirelessBars(painter, QPointF(40, 16), true);
+            // Draw WiFi bars close to the right edge of the node (output port is invisible)
+            drawWirelessBars(painter, QPointF(20, 16), true);
         } else if (isWirelessSink()) {
-            // Draw WiFi bars to the left of the input port (pointing left - incoming signal)
-            drawWirelessBars(painter, QPointF(-8, 16), false);
+            // Draw WiFi bars close to the left edge of the node (input port is invisible)
+            drawWirelessBars(painter, QPointF(12, 16), false);
         }
 
         painter->restore();
@@ -316,13 +316,13 @@ QRectF Node::boundingRect() const
 
         if (isWirelessSource()) {
             // Extend to the right for source indicators (largest arc radius = 30, plus pen width)
-            extendedRect.setRight(std::max(baseRect.right(), 75.0)); // 40 + 30 + 5 pixels for largest arc + pen
+            extendedRect.setRight(std::max(baseRect.right(), 55.0)); // 20 + 30 + 5 pixels for largest arc + pen
             // Also extend vertically for arc height
             extendedRect.setTop(std::min(baseRect.top(), -14.0)); // 16 - 30 pixels
             extendedRect.setBottom(std::max(baseRect.bottom(), 46.0)); // 16 + 30 pixels
         } else if (isWirelessSink()) {
             // Extend to the left for sink indicators (largest arc radius = 30, plus pen width)
-            extendedRect.setLeft(std::min(baseRect.left(), -43.0)); // -8 - 30 - 5 pixels for largest arc + pen
+            extendedRect.setLeft(std::min(baseRect.left(), -23.0)); // 12 - 30 - 5 pixels for largest arc + pen
             // Also extend vertically for arc height
             extendedRect.setTop(std::min(baseRect.top(), -14.0)); // 16 - 30 pixels
             extendedRect.setBottom(std::max(baseRect.bottom(), 46.0)); // 16 + 30 pixels
