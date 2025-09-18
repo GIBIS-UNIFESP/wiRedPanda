@@ -489,21 +489,36 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     /* Element type */
     m_ui->groupBox->setTitle(ElementFactory::typeToTitleText(elementType));
     /* Labels */
-    // Check if we have any nodes (for showing disabled label field with guidance)
+    // Check if we have any nodes and determine if they are sink nodes (no physical input)
     bool hasAnyNodes = std::any_of(m_elements.cbegin(), m_elements.cend(),
                                    [](GraphicElement *elm) { return qobject_cast<Node*>(elm) != nullptr; });
 
-    bool showLabelField = m_hasLabel || hasAnyNodes;
+    // For sink nodes (wireless receive only), we hide the regular label field entirely
+    bool hasOnlySinkNodes = hasAnyNodes && std::all_of(m_elements.cbegin(), m_elements.cend(),
+                                                        [](GraphicElement *elm) {
+                                                            auto *node = qobject_cast<Node*>(elm);
+                                                            return !node || !node->hasPhysicalInputConnection();
+                                                        });
+
+    // Show label field only if it's not exclusively sink nodes
+    bool showLabelField = m_hasLabel && !hasOnlySinkNodes;
+    if (hasAnyNodes && !hasOnlySinkNodes) {
+        // Mixed selection or source nodes - show the label field
+        showLabelField = m_hasLabel || hasAnyNodes;
+    }
+
     m_ui->lineEditElementLabel->setVisible(showLabelField);
-    m_ui->lineEditElementLabel->setEnabled(m_hasLabel);
+    m_ui->lineEditElementLabel->setEnabled(m_hasLabel && !hasOnlySinkNodes);
     m_ui->labelLabels->setVisible(showLabelField);
 
-    if (m_hasLabel) {
-        m_ui->lineEditElementLabel->setText(m_hasSameLabel ? firstElement->label() : m_manyLabels);
-        m_ui->lineEditElementLabel->setPlaceholderText("");
-    } else if (hasAnyNodes) {
-        m_ui->lineEditElementLabel->setText("");
-        m_ui->lineEditElementLabel->setPlaceholderText(tr("Connect an input first to set wireless label"));
+    if (showLabelField) {
+        if (m_hasLabel) {
+            m_ui->lineEditElementLabel->setText(m_hasSameLabel ? firstElement->label() : m_manyLabels);
+            m_ui->lineEditElementLabel->setPlaceholderText("");
+        } else if (hasAnyNodes && !hasOnlySinkNodes) {
+            m_ui->lineEditElementLabel->setText("");
+            m_ui->lineEditElementLabel->setPlaceholderText(tr("Connect an input first to set wireless label"));
+        }
     }
 
     /* Color */
@@ -695,6 +710,13 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_ui->comboBoxNode->setEnabled(m_hasNode);
 
     if (m_hasNode) {
+        // Update label text based on node type
+        if (hasOnlySinkNodes) {
+            m_ui->labelNode->setText(tr("Wireless Label:"));
+        } else {
+            m_ui->labelNode->setText(tr("Wireless:"));
+        }
+
         // Refresh the wireless combobox when selecting nodes
         refreshWirelessCombobox();
 
