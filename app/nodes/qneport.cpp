@@ -34,6 +34,9 @@
 #include <QFontMetrics>
 #include <QGraphicsScene>
 #include <QPen>
+#include <QMetaObject>
+
+#include "element/node.h"
 
 QNEPort::QNEPort(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
@@ -105,6 +108,14 @@ void QNEPort::updateConnections()
 
     if (m_connections.empty() && isInput()) {
         setStatus(defaultValue());
+    }
+
+    // If this port belongs to a Node with wireless functionality, update port visibility
+    if (auto *node = qobject_cast<Node*>(m_graphicElement)) {
+        if (node->hasWirelessLabel()) {
+            // Use a queued connection to avoid issues during connection setup/teardown
+            QMetaObject::invokeMethod(node, "updatePortVisibility", Qt::QueuedConnection);
+        }
     }
 }
 
