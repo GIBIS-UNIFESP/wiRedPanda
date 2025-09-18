@@ -27,7 +27,6 @@ void WirelessManager::onNodeLabelChanged(Node *node, const QString &oldLabel, co
 
     // Check if updates are blocked (e.g., during SplitCommand execution)
     if (m_updatesBlocked) {
-        qDebug() << "[WIRELESS_DEBUG] Updates blocked, deferring wireless connection rebuild";
         return;
     }
 
@@ -322,11 +321,43 @@ std::vector<Node *> WirelessManager::getNodesWithLabel(const QString &label) con
 
 void WirelessManager::setUpdatesBlocked(bool blocked)
 {
-    qDebug() << "[WIRELESS_DEBUG] WirelessManager updates" << (blocked ? "BLOCKED" : "UNBLOCKED");
     m_updatesBlocked = blocked;
 }
 
 bool WirelessManager::areUpdatesBlocked() const
 {
     return m_updatesBlocked;
+}
+
+bool WirelessManager::wouldCreateSourceConflict(Node *node, const QString &label) const
+{
+    if (label.isEmpty() || !node || !node->hasPhysicalInputConnection()) {
+        return false; // No conflict if label is empty, node is null, or node can't be a source
+    }
+
+    // Check if there's already a source with this label
+    Node *existingSource = findWirelessSource(label);
+    return existingSource != nullptr && existingSource != node;
+}
+
+QString WirelessManager::generateUniqueLabel(const QString &baseLabel) const
+{
+    if (baseLabel.isEmpty()) {
+        return baseLabel;
+    }
+
+    // If the base label doesn't exist, use it as-is
+    if (getNodesWithLabel(baseLabel).empty()) {
+        return baseLabel;
+    }
+
+    // Try appending numbers to make it unique
+    int counter = 2;
+    QString uniqueLabel;
+    do {
+        uniqueLabel = QString("%1_%2").arg(baseLabel).arg(counter);
+        ++counter;
+    } while (!getNodesWithLabel(uniqueLabel).empty());
+
+    return uniqueLabel;
 }

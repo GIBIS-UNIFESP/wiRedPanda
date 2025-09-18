@@ -96,7 +96,11 @@ void Node::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QV
         stream >> map;
 
         if (map.contains("wirelessLabel")) {
-            m_wirelessLabel = map.value("wirelessLabel").toString();
+            QString loadedLabel = map.value("wirelessLabel").toString();
+
+            // Store the loaded label but defer validation until node is added to scene
+            // This allows itemChange() to handle conflict detection properly
+            m_wirelessLabel = loadedLabel;
 
             // Note: Wireless connection will be restored later when node is added to scene
             // The scene() is null during deserialization, so we defer restoration
@@ -132,8 +136,21 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
     // Call parent implementation first
     QVariant result = GraphicElement::itemChange(change, value);
 
-    // When node is added to a scene, notify wireless manager to rebuild connections
+    // Only process ItemSceneHasChanged - ignore all other change types to reduce noise
     if (change == ItemSceneHasChanged && scene() && !m_wirelessLabel.isEmpty()) {
+        // Check if this wireless label would create a source conflict (multiple sources with same label)
+        if (auto *manager = getWirelessManager()) {
+            if (manager->wouldCreateSourceConflict(this, m_wirelessLabel)) {
+                QString oldLabel = m_wirelessLabel;
+                // Generate a unique label to avoid the conflict
+                QString uniqueLabel = manager->generateUniqueLabel(m_wirelessLabel);
+                m_wirelessLabel = uniqueLabel;
+
+                // CRITICAL: Update the visual display label to match the wireless label
+                GraphicElement::setLabel(uniqueLabel);
+            }
+        }
+
         notifyWirelessManager(QString(), m_wirelessLabel);
         updatePortVisibility(); // Update port visibility when added to scene
     }

@@ -36,6 +36,10 @@ public:
     void setUpdatesBlocked(bool blocked);
     bool areUpdatesBlocked() const;
 
+    // Label uniqueness methods for copy/paste operations
+    bool wouldCreateSourceConflict(Node *node, const QString &label) const;
+    QString generateUniqueLabel(const QString &baseLabel) const;
+
     // Find source node (has physical input connections) and sinks (no physical input connections)
     Node *findWirelessSource(const QString &label) const;
     QSet<Node *> findWirelessSinks(const QString &label) const;
