@@ -25,7 +25,7 @@ on:
         type: boolean
         default: false
       compile_only:
-        description: 'Only compile translations (lrelease)'
+        description: 'Compile translations (lrelease)'
         type: boolean
         default: true
 
