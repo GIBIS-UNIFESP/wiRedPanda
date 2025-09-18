@@ -111,7 +111,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1386"/>
+        <location filename="../../bewaveddolphin.cpp" line="1394"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="242"/>
         <source>Export to PDF</source>
         <translation>تصدير إلى PDF</translation>
@@ -429,32 +429,42 @@
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1281"/>
-        <location filename="../../bewaveddolphin.cpp" line="1309"/>
+        <location filename="../../bewaveddolphin.cpp" line="1312"/>
         <source>Invalid number of columns.</source>
         <translation>عدد الأعمدة غير صحيح.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1362"/>
+        <location filename="../../bewaveddolphin.cpp" line="1302"/>
+        <source>Invalid CSV format: insufficient data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.cpp" line="1321"/>
+        <source>Invalid CSV format: expected %1 elements, got %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.cpp" line="1370"/>
         <source>Export to Image</source>
         <translation>تصدير إلى صورة</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1362"/>
+        <location filename="../../bewaveddolphin.cpp" line="1370"/>
         <source>PNG files (*.png)</source>
         <translation>ملفات PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1386"/>
+        <location filename="../../bewaveddolphin.cpp" line="1394"/>
         <source>PDF files (*.pdf)</source>
         <translation>ملفات PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1405"/>
+        <location filename="../../bewaveddolphin.cpp" line="1413"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>لا يمكن طباعة هذه الدارة إلى PDF.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1416"/>
+        <location filename="../../bewaveddolphin.cpp" line="1424"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin هو محاكي للموجات لبرنامج wiRedPanda الذي طورته جامعة ساو باولو الفيدرالية. تم إنشاء هذا المشروع لمساعدة الطلاب في تعلم الدوائر المنطقية.&lt;/p&gt;&lt;p&gt;إصدار البرنامج: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;المطورون:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; البروفيسور فابيو كابابيانكو، دكتوراه &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin محتفظ به حالياً من قبل البروفيسور فابيو كابابيانكو، دكتوراه وطلابه&lt;/p&gt;&lt;p&gt; يرجى رفع تقرير في صفحتنا على GitHub إذا وجدت أخطاء أو إذا كنت ترغب في تنفيذ وظيفة جديدة.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;قم بزيارة موقعنا!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
@@ -481,7 +491,7 @@
 <context>
     <name>ChangeInputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="694"/>
+        <location filename="../../commands.cpp" line="710"/>
         <source>Change input size to %1</source>
         <translation>تغيير حجم المدخل إلى %1</translation>
     </message>
@@ -489,7 +499,7 @@
 <context>
     <name>ChangeOutputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="785"/>
+        <location filename="../../commands.cpp" line="801"/>
         <source>Change output size to %1</source>
         <translation>تغيير حجم المخرج إلى %1</translation>
     </message>
@@ -538,12 +548,12 @@
 <context>
     <name>CodeGenerator</name>
     <message>
-        <location filename="../../arduino/codegenerator.cpp" line="261"/>
+        <location filename="../../arduino/codegenerator.cpp" line="268"/>
         <source>IC element not supported: %1</source>
         <translation>عنصر الدارة المتكاملة غير مدعوم: %1</translation>
     </message>
     <message>
-        <location filename="../../arduino/codegenerator.cpp" line="423"/>
+        <location filename="../../arduino/codegenerator.cpp" line="444"/>
         <source>Element type not supported: %1</source>
         <translation>نوع العنصر غير مدعوم: %1</translation>
     </message>
@@ -1059,12 +1069,12 @@
         <translation>بنفسجي</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="976"/>
+        <location filename="../../elementeditor.cpp" line="982"/>
         <source>Select any audio</source>
         <translation>اختر أي صوت</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="977"/>
+        <location filename="../../elementeditor.cpp" line="983"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>صوت (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
@@ -1146,7 +1156,12 @@
         <translation>نوع غير معروف 2: %1</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="191"/>
+        <location filename="../../elementfactory.cpp" line="187"/>
+        <source>Failed to cast element to TruthTable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../elementfactory.cpp" line="197"/>
         <source>Not implemented yet: %1</source>
         <translation>لم يتم تنفيذه بعد: %1</translation>
     </message>
@@ -1154,7 +1169,7 @@
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="637"/>
+        <location filename="../../commands.cpp" line="653"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>قلب %1 عنصر في المحور %2</translation>
     </message>
@@ -1183,13 +1198,13 @@
     </message>
     <message>
         <location filename="../../graphicelement.cpp" line="440"/>
-        <location filename="../../graphicelement.cpp" line="516"/>
-        <location filename="../../graphicelement.cpp" line="552"/>
+        <location filename="../../graphicelement.cpp" line="514"/>
+        <location filename="../../graphicelement.cpp" line="548"/>
         <source>Corrupted DataStream!</source>
         <translation>تيار بيانات تالف!</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="548"/>
+        <location filename="../../graphicelement.cpp" line="544"/>
         <source>Loading pixmap skin names.</source>
         <translation>تحميل أسماء مظاهر الصور.</translation>
     </message>
@@ -1207,19 +1222,19 @@
         <translation>دارة متكاملة</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="92"/>
-        <location filename="../../ic.cpp" line="411"/>
+        <location filename="../../ic.cpp" line="97"/>
+        <location filename="../../ic.cpp" line="424"/>
         <source>Error copying file: %1</source>
         <translation>خطأ في نسخ الملف: %1</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="149"/>
+        <location filename="../../ic.cpp" line="154"/>
         <source>%1 not found.</source>
         <translation>%1 غير موجود.</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="161"/>
-        <location filename="../../ic.cpp" line="417"/>
+        <location filename="../../ic.cpp" line="166"/>
+        <location filename="../../ic.cpp" line="430"/>
         <source>Error opening file: %1</source>
         <translation>خطأ في فتح الملف: %1</translation>
     </message>
@@ -1784,7 +1799,7 @@
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1649"/>
+        <location filename="../../mainwindow.cpp" line="1717"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>كتم</translation>
@@ -1820,92 +1835,92 @@
         <translation>إعادة تشغيل المحاكاة.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="550"/>
+        <location filename="../../mainwindow.cpp" line="568"/>
         <location filename="../../mainwindow_ui.cpp" line="677"/>
         <source>Shortcuts and Tips</source>
         <translation>اختصارات ونصائح</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="264"/>
+        <location filename="../../mainwindow.cpp" line="268"/>
         <source>Error!</source>
         <translation>خطأ!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="289"/>
-        <location filename="../../mainwindow.cpp" line="411"/>
-        <location filename="../../mainwindow.cpp" line="672"/>
-        <location filename="../../mainwindow.cpp" line="1193"/>
+        <location filename="../../mainwindow.cpp" line="293"/>
+        <location filename="../../mainwindow.cpp" line="429"/>
+        <location filename="../../mainwindow.cpp" line="698"/>
+        <location filename="../../mainwindow.cpp" line="1250"/>
         <source>New Project</source>
         <translation>مشروع جديد</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="335"/>
+        <location filename="../../mainwindow.cpp" line="353"/>
         <source>File saved successfully.</source>
         <translation>تم حفظ الملف بنجاح.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="354"/>
+        <location filename="../../mainwindow.cpp" line="372"/>
         <source>Don&apos;t show this again.</source>
         <translation>لا تُظهر هذه الرسالة مرة أخرى.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="394"/>
+        <location filename="../../mainwindow.cpp" line="412"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>الملف غير محفوظ. إغلاق التبويب على أي حال؟</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="413"/>
+        <location filename="../../mainwindow.cpp" line="431"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> تم تعديله.
 هل تريد حفظ التغييرات؟</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="451"/>
+        <location filename="../../mainwindow.cpp" line="469"/>
         <source>File loaded successfully.</source>
         <translation>تم تحميل الملف بنجاح.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="470"/>
-        <location filename="../../mainwindow.cpp" line="1692"/>
+        <location filename="../../mainwindow.cpp" line="488"/>
+        <location filename="../../mainwindow.cpp" line="1760"/>
         <source>Open File</source>
         <translation>فتح ملف</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="470"/>
-        <location filename="../../mainwindow.cpp" line="491"/>
-        <location filename="../../mainwindow.cpp" line="511"/>
+        <location filename="../../mainwindow.cpp" line="488"/>
+        <location filename="../../mainwindow.cpp" line="509"/>
+        <location filename="../../mainwindow.cpp" line="529"/>
         <source>Panda files (*.panda)</source>
         <translation>ملفات باندا (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="491"/>
-        <location filename="../../mainwindow.cpp" line="511"/>
+        <location filename="../../mainwindow.cpp" line="509"/>
+        <location filename="../../mainwindow.cpp" line="529"/>
         <source>Save File as ...</source>
         <translation>حفظ الملف باسم...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="531"/>
+        <location filename="../../mainwindow.cpp" line="549"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda هو برنامج طوره طلاب الجامعة الفيدرالية في ساو باولو. تم إنشاء هذا المشروع من أجل مساعدة الطلاب على تعلم الدوائر المنطقية.&lt;/p&gt;&lt;p&gt;إصدار البرنامج: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;المطورون:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; يتم حاليًا صيانة wiRedPanda من قبل Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves و Maycon A. Santana.&lt;/p&gt;&lt;p&gt; يرجى تقديم تقرير في صفحة GitHub الخاصة بنا إذا تم العثور على أخطاء أو إذا كنت ترغب في تنفيذ وظيفة جديدة.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;زوروا موقعنا الإلكتروني!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="603"/>
+        <location filename="../../mainwindow.cpp" line="621"/>
         <source>Exit </source>
         <translation>خروج </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="604"/>
+        <location filename="../../mainwindow.cpp" line="622"/>
         <source>Are you sure?</source>
         <translation>هل أنت متأكد؟</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="753"/>
+        <location filename="../../mainwindow.cpp" line="794"/>
         <source>Error</source>
         <translation>خطأ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="362"/>
+        <location filename="../../mainwindow.cpp" line="380"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
@@ -1916,100 +1931,100 @@ wiRedPanda %1 سيقوم بسرد جميع ملفات .panda الأخرى في �
 يجب حفظ المشاريع الجديدة قبل الوصول إلى الدوائر المتكاملة والقوالب، أو تشغيل محاكاة beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="551"/>
+        <location filename="../../mainwindow.cpp" line="569"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;اختصارات اللوحة&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : تكبير &lt;/li&gt;&lt;li&gt; Ctrl+- : تصغير &lt;/li&gt;&lt;li&gt; Ctrl+1 : إخفاء/إظهار الأسلاك &lt;/li&gt;&lt;li&gt; Ctrl+2 : إخفاء/إظهار البوابات &lt;/li&gt;&lt;li&gt; Ctrl+F : بحث عن عناصر &lt;/li&gt;&lt;li&gt; Ctrl+W : فتح beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : حفظ المشروع &lt;/li&gt;&lt;li&gt; Ctrl+Q : خروج من wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : بدء/إيقاف المحاكاة &lt;/li&gt;&lt;li&gt; [ : خاصية العنصر الأساسية السابقة &lt;/li&gt;&lt;li&gt; ] : خاصية العنصر الأساسية التالية &lt;/li&gt;&lt;li&gt; { : خاصية العنصر الثانوية السابقة &lt;/li&gt;&lt;li&gt; } : خاصية العنصر الثانوية التالية &lt;/li&gt;&lt;li&gt; &amp;lt; : تحويل إلى العنصر السابق &lt;/li&gt;&lt;li&gt; &amp;gt; : تحويل إلى العنصر التالي &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;نصائح عامة&lt;/h1&gt;&lt;p&gt;انقر مزدوجاً على سلك لإنشاء عقدة&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="952"/>
-        <location filename="../../mainwindow.cpp" line="979"/>
+        <location filename="../../mainwindow.cpp" line="999"/>
+        <location filename="../../mainwindow.cpp" line="1026"/>
         <source>Missing file name.</source>
         <translation>اسم الملف مفقود.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="958"/>
+        <location filename="../../mainwindow.cpp" line="1005"/>
         <source>The .panda file is empty.</source>
         <translation>ملف .panda فارغ.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="971"/>
+        <location filename="../../mainwindow.cpp" line="1018"/>
         <source>Arduino code successfully generated.</source>
         <translation>تم إنتاج كود أردوينو بنجاح.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1006"/>
+        <location filename="../../mainwindow.cpp" line="1053"/>
         <source>Generate Arduino Code</source>
         <translation>إنتاج كود أردوينو</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1006"/>
+        <location filename="../../mainwindow.cpp" line="1053"/>
         <source>Arduino file (*.ino)</source>
         <translation>ملف أردوينو (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1108"/>
+        <location filename="../../mainwindow.cpp" line="1155"/>
         <source>Export to PDF</source>
         <translation>تصدير إلى PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1108"/>
+        <location filename="../../mainwindow.cpp" line="1155"/>
         <source>PDF files (*.pdf)</source>
         <translation>ملفات PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1126"/>
+        <location filename="../../mainwindow.cpp" line="1173"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>لا يمكن طباعة هذه الدارة إلى PDF.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1133"/>
-        <location filename="../../mainwindow.cpp" line="1171"/>
+        <location filename="../../mainwindow.cpp" line="1180"/>
+        <location filename="../../mainwindow.cpp" line="1218"/>
         <source>Exported file successfully.</source>
         <translation>تم تصدير الملف بنجاح.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1152"/>
+        <location filename="../../mainwindow.cpp" line="1199"/>
         <source>Export to Image</source>
         <translation>تصدير إلى صورة</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1152"/>
+        <location filename="../../mainwindow.cpp" line="1199"/>
         <source>PNG files (*.png)</source>
         <translation>ملفات PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1649"/>
+        <location filename="../../mainwindow.cpp" line="1717"/>
         <source>Unmute</source>
         <translation>إلغاء الكتم</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1688"/>
+        <location filename="../../mainwindow.cpp" line="1756"/>
         <source>Save file first.</source>
         <translation>احفظ الملف أولاً.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1694"/>
+        <location filename="../../mainwindow.cpp" line="1762"/>
         <source>Panda (*.panda)</source>
         <translation>باندا (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1706"/>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1774"/>
+        <location filename="../../mainwindow.cpp" line="1786"/>
         <source>Info</source>
         <translation>معلومات</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1706"/>
+        <location filename="../../mainwindow.cpp" line="1774"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>سيتم نسخ الملفات المحددة (وتبعياتها) إلى مجلد الملف الحالي.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1786"/>
         <source>Drag here to remove.</source>
         <translation>اسحب هنا للإزالة.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1741"/>
+        <location filename="../../mainwindow.cpp" line="1809"/>
         <source>Error removing file: %1</source>
         <translation>خطأ في حذف الملف: %1</translation>
     </message>
@@ -2017,7 +2032,7 @@ wiRedPanda %1 سيقوم بسرد جميع ملفات .panda الأخرى في �
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="531"/>
+        <location filename="../../commands.cpp" line="547"/>
         <source>Morph %1 elements to %2</source>
         <translation>تحويل %1 عنصر إلى %2</translation>
     </message>
@@ -2111,7 +2126,7 @@ wiRedPanda %1 سيقوم بسرد جميع ملفات .panda الأخرى في �
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../main.cpp" line="163"/>
+        <location filename="../../main.cpp" line="185"/>
         <source>Error!</source>
         <translation>خطأ!</translation>
     </message>
@@ -2163,7 +2178,7 @@ wiRedPanda %1 سيقوم بسرد جميع ملفات .panda الأخرى في �
         <translation>&amp;إعادة</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="764"/>
+        <location filename="../../scene.cpp" line="778"/>
         <source>Paste</source>
         <translation>لصق</translation>
     </message>
@@ -2186,17 +2201,32 @@ wiRedPanda %1 سيقوم بسرد جميع ملفات .panda الأخرى في �
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="449"/>
+        <location filename="../../commands.cpp" line="444"/>
+        <source>Invalid connection ports in SplitCommand constructor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="450"/>
+        <source>Invalid graphic elements in SplitCommand constructor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="461"/>
         <source>Wire split</source>
         <translation>تقسيم السلك</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="472"/>
+        <location filename="../../commands.cpp" line="484"/>
         <source>Error trying to redo %1</source>
         <translation>خطأ في محاولة إعادة %1</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="502"/>
+        <location filename="../../commands.cpp" line="492"/>
+        <source>Error: endPort is null in SplitCommand::redo()</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="518"/>
         <source>Error trying to undo %1</source>
         <translation>خطأ في محاولة تراجع %1</translation>
     </message>
@@ -2230,13 +2260,13 @@ wiRedPanda %1 سيقوم بسرد جميع ملفات .panda الأخرى في �
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="873"/>
+        <location filename="../../commands.cpp" line="889"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>تبديل مخرج جدول الحقيقة في الموضع: %1</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="882"/>
-        <location filename="../../commands.cpp" line="896"/>
+        <location filename="../../commands.cpp" line="898"/>
+        <location filename="../../commands.cpp" line="912"/>
         <source>Could not find truthtable element!</source>
         <translation>لا يمكن العثور على عنصر جدول الحقيقة!</translation>
     </message>
@@ -2361,52 +2391,52 @@ Please check for updates if the file does not load correctly.</source>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../main.cpp" line="68"/>
+        <location filename="../../main.cpp" line="90"/>
         <source>Circuit file to open.</source>
         <translation>ملف الدائرة لفتحه.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="72"/>
+        <location filename="../../main.cpp" line="94"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>مستوى التفصيل من 0 إلى 5، معطل افتراضياً.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="73"/>
+        <location filename="../../main.cpp" line="95"/>
         <source>verbosity level</source>
         <translation>مستوى التفصيل</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="78"/>
+        <location filename="../../main.cpp" line="100"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>تصدير الدائرة إلى &lt;arduino-file&gt;.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="90"/>
+        <location filename="../../main.cpp" line="112"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>تصدير الدائرة إلى ملف نصي للأشكال الموجية، بقراءة الإدخال من الطرفية.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="95"/>
+        <location filename="../../main.cpp" line="117"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>عند الاستخدام مع -c/--terminal، منع التنفيذ إذا احتوت الدائرة على جداول الحقيقة.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="144"/>
+        <location filename="../../main.cpp" line="166"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>خطأ: الدائرة تحتوي على عناصر جدول الحقيقة.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="79"/>
+        <location filename="../../main.cpp" line="101"/>
         <source>arduino file</source>
         <translation>ملف أردوينو</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="84"/>
+        <location filename="../../main.cpp" line="106"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>تصدير الدائرة إلى ملف نصي للأشكال الموجية.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="85"/>
+        <location filename="../../main.cpp" line="107"/>
         <source>waveform input text file</source>
         <translation>ملف نصي إدخال شكل الموجة</translation>
     </message>

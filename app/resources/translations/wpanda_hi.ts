@@ -111,7 +111,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1386"/>
+        <location filename="../../bewaveddolphin.cpp" line="1394"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="242"/>
         <source>Export to PDF</source>
         <translation>PDF में एक्सपोर्ट करें</translation>
@@ -429,32 +429,42 @@
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1281"/>
-        <location filename="../../bewaveddolphin.cpp" line="1309"/>
+        <location filename="../../bewaveddolphin.cpp" line="1312"/>
         <source>Invalid number of columns.</source>
         <translation>स्तंभों की अमान्य संख्या।</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1362"/>
+        <location filename="../../bewaveddolphin.cpp" line="1302"/>
+        <source>Invalid CSV format: insufficient data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.cpp" line="1321"/>
+        <source>Invalid CSV format: expected %1 elements, got %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.cpp" line="1370"/>
         <source>Export to Image</source>
         <translation>इमेज में एक्सपोर्ट करें</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1362"/>
+        <location filename="../../bewaveddolphin.cpp" line="1370"/>
         <source>PNG files (*.png)</source>
         <translation>PNG फ़ाइलें (*.png)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1386"/>
+        <location filename="../../bewaveddolphin.cpp" line="1394"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF फ़ाइलें (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1405"/>
+        <location filename="../../bewaveddolphin.cpp" line="1413"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>इस सर्किट को PDF में प्रिंट नहीं कर सके।</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1416"/>
+        <location filename="../../bewaveddolphin.cpp" line="1424"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin साओ पाउलो संघीय विश्वविद्यालय द्वारा विकसित wiRedPanda सॉफ्टवेयर के लिए एक तरंग सिमुलेटर है। यह प्रोजेक्ट छात्रों को लॉजिक सर्किट के बारे में सीखने में मदद करने के लिए बनाया गया था।&lt;/p&gt;&lt;p&gt;सॉफ्टवेयर संस्करण: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;निर्माता:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; प्रो. फैबियो कैप्पाबियांको, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin वर्तमान में प्रो. फैबियो कैप्पाबियांको, Ph.D. और उनके छात्रों द्वारा बनाए रखा जाता है&lt;/p&gt;&lt;p&gt; कृपया हमारे GitHub पेज पर रिपोर्ट दर्ज करें यदि बग मिलते हैं या यदि आप चाहते हैं कि कोई नई कार्यक्षमता लागू की जाए।&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;हमारी वेबसाइट पर जाएं!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
@@ -481,7 +491,7 @@
 <context>
     <name>ChangeInputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="694"/>
+        <location filename="../../commands.cpp" line="710"/>
         <source>Change input size to %1</source>
         <translation>इनपुट आकार %1 में बदलें</translation>
     </message>
@@ -489,7 +499,7 @@
 <context>
     <name>ChangeOutputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="785"/>
+        <location filename="../../commands.cpp" line="801"/>
         <source>Change output size to %1</source>
         <translation>आउटपुट आकार को %1 में बदलें</translation>
     </message>
@@ -538,12 +548,12 @@
 <context>
     <name>CodeGenerator</name>
     <message>
-        <location filename="../../arduino/codegenerator.cpp" line="261"/>
+        <location filename="../../arduino/codegenerator.cpp" line="268"/>
         <source>IC element not supported: %1</source>
         <translation>IC तत्व समर्थित नहीं: %1</translation>
     </message>
     <message>
-        <location filename="../../arduino/codegenerator.cpp" line="423"/>
+        <location filename="../../arduino/codegenerator.cpp" line="444"/>
         <source>Element type not supported: %1</source>
         <translation>तत्व प्रकार समर्थित नहीं: %1</translation>
     </message>
@@ -1059,12 +1069,12 @@
         <translation>बैंगनी</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="976"/>
+        <location filename="../../elementeditor.cpp" line="982"/>
         <source>Select any audio</source>
         <translation>कोई ऑडियो चुनें</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="977"/>
+        <location filename="../../elementeditor.cpp" line="983"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>ऑडियो (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
@@ -1146,7 +1156,12 @@
         <translation>अज्ञात प्रकार 2: %1</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="191"/>
+        <location filename="../../elementfactory.cpp" line="187"/>
+        <source>Failed to cast element to TruthTable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../elementfactory.cpp" line="197"/>
         <source>Not implemented yet: %1</source>
         <translation>अभी तक लागू नहीं किया गया: %1</translation>
     </message>
@@ -1154,7 +1169,7 @@
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="637"/>
+        <location filename="../../commands.cpp" line="653"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>अक्ष %2 में %1 तत्वों को फ़्लिप करें</translation>
     </message>
@@ -1183,13 +1198,13 @@
     </message>
     <message>
         <location filename="../../graphicelement.cpp" line="440"/>
-        <location filename="../../graphicelement.cpp" line="516"/>
-        <location filename="../../graphicelement.cpp" line="552"/>
+        <location filename="../../graphicelement.cpp" line="514"/>
+        <location filename="../../graphicelement.cpp" line="548"/>
         <source>Corrupted DataStream!</source>
         <translation>डेटास्ट्रीम दूषित!</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="548"/>
+        <location filename="../../graphicelement.cpp" line="544"/>
         <source>Loading pixmap skin names.</source>
         <translation>पिक्समैप स्किन नाम लोड हो रहे हैं।</translation>
     </message>
@@ -1207,19 +1222,19 @@
         <translation>एकीकृत परिपथ</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="92"/>
-        <location filename="../../ic.cpp" line="411"/>
+        <location filename="../../ic.cpp" line="97"/>
+        <location filename="../../ic.cpp" line="424"/>
         <source>Error copying file: %1</source>
         <translation>फ़ाइल कॉपी करने में त्रुटि: %1</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="149"/>
+        <location filename="../../ic.cpp" line="154"/>
         <source>%1 not found.</source>
         <translation>%1 नहीं मिला।</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="161"/>
-        <location filename="../../ic.cpp" line="417"/>
+        <location filename="../../ic.cpp" line="166"/>
+        <location filename="../../ic.cpp" line="430"/>
         <source>Error opening file: %1</source>
         <translation>फ़ाइल खोलने में त्रुटि: %1</translation>
     </message>
@@ -1784,7 +1799,7 @@
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1649"/>
+        <location filename="../../mainwindow.cpp" line="1717"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>मूक</translation>
@@ -1820,92 +1835,92 @@
         <translation>सिमुलेशन पुनरारंभ करें।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="550"/>
+        <location filename="../../mainwindow.cpp" line="568"/>
         <location filename="../../mainwindow_ui.cpp" line="677"/>
         <source>Shortcuts and Tips</source>
         <translation>शॉर्टकट और टिप्स</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="264"/>
+        <location filename="../../mainwindow.cpp" line="268"/>
         <source>Error!</source>
         <translation>त्रुटि!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="289"/>
-        <location filename="../../mainwindow.cpp" line="411"/>
-        <location filename="../../mainwindow.cpp" line="672"/>
-        <location filename="../../mainwindow.cpp" line="1193"/>
+        <location filename="../../mainwindow.cpp" line="293"/>
+        <location filename="../../mainwindow.cpp" line="429"/>
+        <location filename="../../mainwindow.cpp" line="698"/>
+        <location filename="../../mainwindow.cpp" line="1250"/>
         <source>New Project</source>
         <translation>नया प्रोजेक्ट</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="335"/>
+        <location filename="../../mainwindow.cpp" line="353"/>
         <source>File saved successfully.</source>
         <translation>फ़ाइल सफलतापूर्वक सेव हुई।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="354"/>
+        <location filename="../../mainwindow.cpp" line="372"/>
         <source>Don&apos;t show this again.</source>
         <translation>यह फिर से न दिखाएं।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="394"/>
+        <location filename="../../mainwindow.cpp" line="412"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>फ़ाइल सेव नहीं हुई। फिर भी टैब बंद करें?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="413"/>
+        <location filename="../../mainwindow.cpp" line="431"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> में बदलाव किया गया है।
 क्या आप अपने बदलाव सेव करना चाहते हैं?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="451"/>
+        <location filename="../../mainwindow.cpp" line="469"/>
         <source>File loaded successfully.</source>
         <translation>फ़ाइल सफलतापूर्वक लोड हुई।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="470"/>
-        <location filename="../../mainwindow.cpp" line="1692"/>
+        <location filename="../../mainwindow.cpp" line="488"/>
+        <location filename="../../mainwindow.cpp" line="1760"/>
         <source>Open File</source>
         <translation>फ़ाइल खोलें</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="470"/>
-        <location filename="../../mainwindow.cpp" line="491"/>
-        <location filename="../../mainwindow.cpp" line="511"/>
+        <location filename="../../mainwindow.cpp" line="488"/>
+        <location filename="../../mainwindow.cpp" line="509"/>
+        <location filename="../../mainwindow.cpp" line="529"/>
         <source>Panda files (*.panda)</source>
         <translation>पांडा फाइलें (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="491"/>
-        <location filename="../../mainwindow.cpp" line="511"/>
+        <location filename="../../mainwindow.cpp" line="509"/>
+        <location filename="../../mainwindow.cpp" line="529"/>
         <source>Save File as ...</source>
         <translation>फ़ाइल इस रूप में सेव करें...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="531"/>
+        <location filename="../../mainwindow.cpp" line="549"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda साओ पाउलो के फेडरल विश्वविद्यालय के छात्रों द्वारा विकसित एक सॉफ्टवेयर है। यह परियोजना छात्रों को लॉजिक सर्किट के बारे में सीखने में मदद करने के लिए बनाई गई थी।&lt;/p&gt;&lt;p&gt;सॉफ्टवेयर संस्करण: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;निर्माता:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda वर्तमान में Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves और Maycon A. Santana द्वारा बनाए रखा जाता है।&lt;/p&gt;&lt;p&gt; कृपया हमारे GitHub पेज पर एक रिपोर्ट दर्ज करें यदि कोई बग मिलते हैं या यदि आप चाहते हैं कि कोई नई कार्यक्षमता लागू की जाए।&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;हमारी वेबसाइट देखें!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="603"/>
+        <location filename="../../mainwindow.cpp" line="621"/>
         <source>Exit </source>
         <translation>बाहर निकलें </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="604"/>
+        <location filename="../../mainwindow.cpp" line="622"/>
         <source>Are you sure?</source>
         <translation>क्या आप निश्चित हैं?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="753"/>
+        <location filename="../../mainwindow.cpp" line="794"/>
         <source>Error</source>
         <translation>त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="362"/>
+        <location filename="../../mainwindow.cpp" line="380"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
@@ -1916,100 +1931,100 @@ wiRedPanda %1 स्वचालित रूप से वर्तमान �
 ICs और स्किन तक पहुँचने या beWavedDolphin सिमुलेशन चलाने से पहले आपको नए प्रोजेक्ट सेव करने होगे।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="551"/>
+        <location filename="../../mainwindow.cpp" line="569"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;कैनवास शॉर्टकट&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : ज़ूम इन &lt;/li&gt;&lt;li&gt; Ctrl+- : ज़ूम आउट &lt;/li&gt;&lt;li&gt; Ctrl+1 : वायर छुपाएं/दिखाएं &lt;/li&gt;&lt;li&gt; Ctrl+2 : गेट छुपाएं/दिखाएं &lt;/li&gt;&lt;li&gt; Ctrl+F : तत्व खोजें &lt;/li&gt;&lt;li&gt; Ctrl+W : beWaveDolphin खोलें &lt;/li&gt;&lt;li&gt; Ctrl+S : प्रोजेक्ट सेव करें &lt;/li&gt;&lt;li&gt; Ctrl+Q : wiRedPanda से बाहर निकलें &lt;/li&gt;&lt;li&gt; F5 : सिमुलेशन शुरू/रोकें &lt;/li&gt;&lt;li&gt; [ : पिछली मुख्य तत्व विशेषता &lt;/li&gt;&lt;li&gt; ] : अगली मुख्य तत्व विशेषता &lt;/li&gt;&lt;li&gt; { : पिछली द्वितीयक तत्व विशेषता &lt;/li&gt;&lt;li&gt; } : अगली द्वितीयक तत्व विशेषता &lt;/li&gt;&lt;li&gt; &amp;lt; : पिछले तत्व में मोर्फ &lt;/li&gt;&lt;li&gt; &amp;gt; : अगले तत्व में मोर्फ &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;सामान्य टिप्स&lt;/h1&gt;&lt;p&gt;नोड बनाने के लिए वायर पर डबल क्लिक करें&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="952"/>
-        <location filename="../../mainwindow.cpp" line="979"/>
+        <location filename="../../mainwindow.cpp" line="999"/>
+        <location filename="../../mainwindow.cpp" line="1026"/>
         <source>Missing file name.</source>
         <translation>फ़ाइल नाम गुम।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="958"/>
+        <location filename="../../mainwindow.cpp" line="1005"/>
         <source>The .panda file is empty.</source>
         <translation>.panda फ़ाइल खाली है।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="971"/>
+        <location filename="../../mainwindow.cpp" line="1018"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino कोड सफलतापूर्वक तैयार किया गया।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1006"/>
+        <location filename="../../mainwindow.cpp" line="1053"/>
         <source>Generate Arduino Code</source>
         <translation>Arduino कोड तैयार करें</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1006"/>
+        <location filename="../../mainwindow.cpp" line="1053"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino फाइल (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1108"/>
+        <location filename="../../mainwindow.cpp" line="1155"/>
         <source>Export to PDF</source>
         <translation>PDF में निर्यात करें</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1108"/>
+        <location filename="../../mainwindow.cpp" line="1155"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF फाइलें (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1126"/>
+        <location filename="../../mainwindow.cpp" line="1173"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>इस सर्किट को PDF में प्रिंट नहीं कर सके।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1133"/>
-        <location filename="../../mainwindow.cpp" line="1171"/>
+        <location filename="../../mainwindow.cpp" line="1180"/>
+        <location filename="../../mainwindow.cpp" line="1218"/>
         <source>Exported file successfully.</source>
         <translation>फाइल सफलतापूर्वक निर्यात की गई।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1152"/>
+        <location filename="../../mainwindow.cpp" line="1199"/>
         <source>Export to Image</source>
         <translation>छवि में निर्यात करें</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1152"/>
+        <location filename="../../mainwindow.cpp" line="1199"/>
         <source>PNG files (*.png)</source>
         <translation>PNG फाइलें (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1649"/>
+        <location filename="../../mainwindow.cpp" line="1717"/>
         <source>Unmute</source>
         <translation>अनम्यूट</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1688"/>
+        <location filename="../../mainwindow.cpp" line="1756"/>
         <source>Save file first.</source>
         <translation>पहले फ़ाइल सेव करें।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1694"/>
+        <location filename="../../mainwindow.cpp" line="1762"/>
         <source>Panda (*.panda)</source>
         <translation>पांडा (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1706"/>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1774"/>
+        <location filename="../../mainwindow.cpp" line="1786"/>
         <source>Info</source>
         <translation>जानकारी</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1706"/>
+        <location filename="../../mainwindow.cpp" line="1774"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>चयनित फाइलें (और उनकी निर्भरताएं) वर्तमान फाइल फोल्डर में कॉपी हो जाएंगी।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1786"/>
         <source>Drag here to remove.</source>
         <translation>हटाने के लिए यहाँ खींचें।</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1741"/>
+        <location filename="../../mainwindow.cpp" line="1809"/>
         <source>Error removing file: %1</source>
         <translation>फ़ाइल हटाने में त्रुटि: %1</translation>
     </message>
@@ -2017,7 +2032,7 @@ ICs और स्किन तक पहुँचने या beWavedDolphin �
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="531"/>
+        <location filename="../../commands.cpp" line="547"/>
         <source>Morph %1 elements to %2</source>
         <translation>%1 तत्वों को %2 में मोर्फ</translation>
     </message>
@@ -2111,7 +2126,7 @@ ICs और स्किन तक पहुँचने या beWavedDolphin �
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../main.cpp" line="163"/>
+        <location filename="../../main.cpp" line="185"/>
         <source>Error!</source>
         <translation>त्रुटि!</translation>
     </message>
@@ -2163,7 +2178,7 @@ ICs और स्किन तक पहुँचने या beWavedDolphin �
         <translation>&amp;रीडू</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="764"/>
+        <location filename="../../scene.cpp" line="778"/>
         <source>Paste</source>
         <translation>पेस्ट करें</translation>
     </message>
@@ -2186,17 +2201,32 @@ ICs और स्किन तक पहुँचने या beWavedDolphin �
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="449"/>
+        <location filename="../../commands.cpp" line="444"/>
+        <source>Invalid connection ports in SplitCommand constructor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="450"/>
+        <source>Invalid graphic elements in SplitCommand constructor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="461"/>
         <source>Wire split</source>
         <translation>वायर विभाजन</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="472"/>
+        <location filename="../../commands.cpp" line="484"/>
         <source>Error trying to redo %1</source>
         <translation>%1 को फिर से करने में त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="502"/>
+        <location filename="../../commands.cpp" line="492"/>
+        <source>Error: endPort is null in SplitCommand::redo()</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="518"/>
         <source>Error trying to undo %1</source>
         <translation>%1 को पूर्ववत करने में त्रुटि</translation>
     </message>
@@ -2230,13 +2260,13 @@ ICs और स्किन तक पहुँचने या beWavedDolphin �
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="873"/>
+        <location filename="../../commands.cpp" line="889"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>स्थिति %1 पर TruthTable आउटपुट टॉगल करें</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="882"/>
-        <location filename="../../commands.cpp" line="896"/>
+        <location filename="../../commands.cpp" line="898"/>
+        <location filename="../../commands.cpp" line="912"/>
         <source>Could not find truthtable element!</source>
         <translation>सत्य तालिका तत्व नहीं मिला!</translation>
     </message>
@@ -2361,52 +2391,52 @@ Please check for updates if the file does not load correctly.</source>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../main.cpp" line="68"/>
+        <location filename="../../main.cpp" line="90"/>
         <source>Circuit file to open.</source>
         <translation>खोलने के लिए सर्किट फ़ाइल।</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="72"/>
+        <location filename="../../main.cpp" line="94"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>वर्बोसिटी लेवल 0 से 5, डिफ़ॉल्ट रूप से अक्षम।</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="73"/>
+        <location filename="../../main.cpp" line="95"/>
         <source>verbosity level</source>
         <translation>वर्बोसिटी लेवल</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="78"/>
+        <location filename="../../main.cpp" line="100"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>सर्किट को &lt;arduino-file&gt; में एक्सपोर्ट करता है।</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="90"/>
+        <location filename="../../main.cpp" line="112"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>सर्किट को वेवफॉर्म टेक्स्ट फाइल में एक्सपोर्ट करता है, टर्मिनल से इनपुट पढ़ता है।</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="95"/>
+        <location filename="../../main.cpp" line="117"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>-c/--terminal के साथ इस्तेमाल करने पर, यदि सर्किट में Truth Tables हों तो एक्जिक्यूशन ब्लॉक करें।</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="144"/>
+        <location filename="../../main.cpp" line="166"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>एरर: सर्किट में Truth Table तत्व हैं।</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="79"/>
+        <location filename="../../main.cpp" line="101"/>
         <source>arduino file</source>
         <translation>arduino फ़ाइल</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="84"/>
+        <location filename="../../main.cpp" line="106"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>सर्किट को वेवफॉर्म टेक्स्ट फाइल में एक्सपोर्ट करता है।</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="85"/>
+        <location filename="../../main.cpp" line="107"/>
         <source>waveform input text file</source>
         <translation>वेवफॉर्म इनपुट टेक्स्ट फ़ाइल</translation>
     </message>
