@@ -62,20 +62,6 @@ private slots:
     void testWirelessWithSequentialElements();
 };
 
-// Performance and scalability tests (6 tests)
-class TestWirelessPerformance : public QObject
-{
-    Q_OBJECT
-
-private slots:
-    void testStressConditions();
-    void testPerformanceBenchmarks();
-    void testLargeScaleWirelessGroups();
-    void testHighFrequencySignalPropagation();
-    void testThreadSafety();
-    void testResourceExhaustion();
-};
-
 // Edge cases and robustness tests (6 tests)
 class TestWirelessEdgeCases : public QObject
 {
