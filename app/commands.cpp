@@ -4,6 +4,7 @@
 #include "commands.h"
 
 #include "common.h"
+#include "wirelessmanager.h"
 #include "elementfactory.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
@@ -133,7 +134,10 @@ const QList<GraphicElement *> findElements(const QList<int> &ids)
 
 QNEConnection *findConn(const int id)
 {
-    return dynamic_cast<QNEConnection *>(ElementFactory::itemById(id));
+    auto *item = ElementFactory::itemById(id);
+    auto *conn = dynamic_cast<QNEConnection *>(item);
+
+    return conn;
 }
 
 GraphicElement *findElm(const int id)
@@ -423,7 +427,12 @@ void UpdateCommand::loadData(QByteArray &itemData)
 SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_scene(scene)
+    , m_originalConnection(conn)
 {
+    if (!conn) {
+        throw PANDACEPTION("Null connection passed to SplitCommand constructor");
+    }
+
     auto *node = ElementFactory::buildElement(ElementType::Node);
 
     /* Align node to Grid */
@@ -440,6 +449,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     /* Assigning class attributes */
     auto *startPort = conn->startPort();
     auto *endPort = conn->endPort();
+
     if (!startPort || !endPort) {
         throw PANDACEPTION("Invalid connection ports in SplitCommand constructor");
     }
@@ -454,8 +464,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     m_elm2Id = endElement->id();
 
     m_c1Id = conn->id();
-    m_c2Id = (new QNEConnection())->id();
-
+    m_c2Id = -1; // Placeholder - will be set properly in redo()
     m_nodeId = node->id();
 
     setText(tr("Wire split"));
@@ -463,17 +472,35 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
 
 void SplitCommand::redo()
 {
-    qCDebug(zero) << text();
-    auto *conn1 = findConn(m_c1Id);
-    auto *conn2 = findConn(m_c2Id);
+    // Note: WirelessManager should already be blocked by mouseDoubleClickEvent
+    if (m_scene && m_scene->wirelessManager()) {
+        if (!m_scene->wirelessManager()->areUpdatesBlocked()) {
+            m_scene->wirelessManager()->setUpdatesBlocked(true);
+        }
+    }
+
+    // Try to use the original connection pointer first, fallback to ID lookup
+    QNEConnection *conn1 = nullptr;
+    if (m_originalConnection) {
+        // Validate the original connection pointer is still valid
+        if (auto *item = dynamic_cast<QNEConnection*>(m_originalConnection)) {
+            if (item->id() == m_c1Id) {
+                conn1 = item;
+            }
+        }
+    }
+
+    if (!conn1) {
+        conn1 = findConn(m_c1Id);
+    }
+
     auto *node = findElm(m_nodeId);
     auto *elm1 = findElm(m_elm1Id);
     auto *elm2 = findElm(m_elm2Id);
 
-    if (!conn2) {
-        conn2 = new QNEConnection();
-        ElementFactory::updateItemId(conn2, m_c2Id);
-    }
+    // Always create new conn2 since we used placeholder ID
+    auto *conn2 = new QNEConnection();
+    m_c2Id = conn2->id(); // Update with actual ID
 
     if (!node) {
         node = ElementFactory::buildElement(ElementType::Node);
@@ -492,6 +519,7 @@ void SplitCommand::redo()
         throw PANDACEPTION("Error: endPort is null in SplitCommand::redo()");
     }
 
+
     conn2->setStartPort(node->outputPort());
     conn2->setEndPort(endPort);
     conn1->setEndPort(node->inputPort());
@@ -503,11 +531,20 @@ void SplitCommand::redo()
     conn2->updatePosFromPorts();
 
     m_scene->setCircuitUpdateRequired();
+
+    // Unblock WirelessManager updates after split operation is complete
+    if (m_scene && m_scene->wirelessManager()) {
+        m_scene->wirelessManager()->setUpdatesBlocked(false);
+    }
 }
 
 void SplitCommand::undo()
 {
-    qCDebug(zero) << text();
+    // Block WirelessManager updates during undo operation to prevent connection invalidation
+    if (m_scene && m_scene->wirelessManager()) {
+        m_scene->wirelessManager()->setUpdatesBlocked(true);
+    }
+
     auto *conn1 = findConn(m_c1Id);
     auto *conn2 = findConn(m_c2Id);
     auto *node = findElm(m_nodeId);
@@ -529,6 +566,11 @@ void SplitCommand::undo()
     delete node;
 
     m_scene->setCircuitUpdateRequired();
+
+    // Unblock WirelessManager updates after undo operation is complete
+    if (m_scene && m_scene->wirelessManager()) {
+        m_scene->wirelessManager()->setUpdatesBlocked(false);
+    }
 }
 
 MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType type, Scene *scene, QUndoCommand *parent)

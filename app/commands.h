@@ -135,6 +135,7 @@ public:
 private:
     QPointF m_nodePos;
     Scene *m_scene;
+    QNEConnection *m_originalConnection; // Store direct pointer to original connection
     int m_c1Id;
     int m_c2Id;
     int m_elm1Id;

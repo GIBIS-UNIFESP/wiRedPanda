@@ -32,6 +32,10 @@ public:
     // Get all wireless connections for a specific label (for debugging/visualization)
     QList<QNEConnection *> getWirelessConnectionsForLabel(const QString &label) const;
 
+    // Blocking mechanism for critical operations (like SplitCommand)
+    void setUpdatesBlocked(bool blocked);
+    bool areUpdatesBlocked() const;
+
     // Find source node (has physical input connections) and sinks (no physical input connections)
     Node *findWirelessSource(const QString &label) const;
     QSet<Node *> findWirelessSinks(const QString &label) const;
@@ -66,4 +70,7 @@ private:
 
     // Scene pointer for adding/removing connections
     Scene *m_scene;
+
+    // Blocking flag to prevent updates during critical operations
+    bool m_updatesBlocked = false;
 };

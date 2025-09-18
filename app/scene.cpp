@@ -1251,8 +1251,25 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    if (auto *connection = qgraphicsitem_cast<QNEConnection *>(itemAt(m_mousePos)); connection && connection->startPort() && connection->endPort()) {
-        receiveCommand(new SplitCommand(connection, m_mousePos, this));
+    auto *item = itemAt(m_mousePos);
+    auto *connection = qgraphicsitem_cast<QNEConnection *>(item);
+
+    if (connection) {
+        // Check if this is a wireless connection - these cannot be split
+        if (connection->isWireless()) {
+            return; // Exit early, don't attempt to split wireless connections
+        }
+
+        if (connection->startPort() && connection->endPort()) {
+            // Block WirelessManager updates BEFORE creating SplitCommand to prevent connection invalidation
+            if (wirelessManager()) {
+                wirelessManager()->setUpdatesBlocked(true);
+            }
+
+            receiveCommand(new SplitCommand(connection, m_mousePos, this));
+
+            // Note: Unblocking will happen in SplitCommand::redo() after the operation completes
+        }
     }
 
     QGraphicsScene::mouseDoubleClickEvent(event);

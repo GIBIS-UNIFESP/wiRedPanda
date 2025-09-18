@@ -25,6 +25,12 @@ void WirelessManager::onNodeLabelChanged(Node *node, const QString &oldLabel, co
         return;
     }
 
+    // Check if updates are blocked (e.g., during SplitCommand execution)
+    if (m_updatesBlocked) {
+        qDebug() << "[WIRELESS_DEBUG] Updates blocked, deferring wireless connection rebuild";
+        return;
+    }
+
     // Rebuild connections for both old and new labels
     if (!oldLabel.isEmpty()) {
         rebuildConnectionsForLabel(oldLabel);
@@ -312,4 +318,15 @@ std::vector<Node *> WirelessManager::getNodesWithLabel(const QString &label) con
         }
     }
     return nodes;
+}
+
+void WirelessManager::setUpdatesBlocked(bool blocked)
+{
+    qDebug() << "[WIRELESS_DEBUG] WirelessManager updates" << (blocked ? "BLOCKED" : "UNBLOCKED");
+    m_updatesBlocked = blocked;
+}
+
+bool WirelessManager::areUpdatesBlocked() const
+{
+    return m_updatesBlocked;
 }
