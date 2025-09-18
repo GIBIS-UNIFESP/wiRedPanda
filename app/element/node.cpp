@@ -64,11 +64,9 @@ Node::Node(QGraphicsItem *parent)
 Node::~Node()
 {
     // Notify wireless manager that this node is being destroyed
-    if (!m_wirelessLabel.isEmpty() && scene()) {
-        if (auto *s = qobject_cast<Scene *>(scene())) {
-            if (auto *manager = s->wirelessManager()) {
-                manager->onNodeDestroyed(this);
-            }
+    if (!m_wirelessLabel.isEmpty()) {
+        if (auto *manager = getWirelessManager()) {
+            manager->onNodeDestroyed(this);
         }
     }
 }
@@ -109,8 +107,6 @@ void Node::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QV
 void Node::setLabel(const QString &label)
 {
     const QString trimmedLabel = label.trimmed();
-
-    // Store the old wireless label for change notification
     const QString oldWirelessLabel = m_wirelessLabel;
 
     // Call parent implementation to set the visual label
@@ -119,34 +115,13 @@ void Node::setLabel(const QString &label)
     // Update wireless label if it changed
     if (m_wirelessLabel != trimmedLabel) {
         // Validate 1-N constraint: only one source per wireless label
-        if (!trimmedLabel.isEmpty() && hasPhysicalInputConnection() && scene()) {
-            if (auto *s = qobject_cast<Scene *>(scene())) {
-                if (auto *manager = s->wirelessManager()) {
-                    // Check if there's already another source with this label
-                    // Access the internal method directly since this is the only legitimate use case
-                    Node *existingSource = manager->findWirelessSource(trimmedLabel);
-                    if (existingSource && existingSource != this) {
-                        // Don't update the label - constraint violation
-                        return;
-                    }
-                }
-            }
+        if (!validateWirelessConstraint(trimmedLabel)) {
+            return;
         }
 
         m_wirelessLabel = trimmedLabel;
-
-        // Notify the scene's wireless auto manager
-        if (scene()) {
-            if (auto *s = qobject_cast<Scene *>(scene())) {
-                if (s->wirelessManager()) {
-                    s->wirelessManager()->onNodeLabelChanged(this, oldWirelessLabel, trimmedLabel);
-                }
-            }
-        }
-
+        notifyWirelessManager(oldWirelessLabel, trimmedLabel);
         emit wirelessLabelChanged(oldWirelessLabel, trimmedLabel);
-
-        // Trigger a repaint to show/hide wireless indicators
         update();
     }
 }
@@ -156,13 +131,9 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
     // Call parent implementation first
     QVariant result = GraphicElement::itemChange(change, value);
 
-    // When node is added to a scene, notify auto manager to rebuild connections
+    // When node is added to a scene, notify wireless manager to rebuild connections
     if (change == ItemSceneHasChanged && scene() && !m_wirelessLabel.isEmpty()) {
-        if (auto *s = qobject_cast<Scene *>(scene())) {
-            if (s->wirelessManager()) {
-                s->wirelessManager()->onNodeLabelChanged(this, QString(), m_wirelessLabel);
-            }
-        }
+        notifyWirelessManager(QString(), m_wirelessLabel);
     }
 
     return result;
@@ -178,77 +149,78 @@ bool Node::hasWirelessLabel() const
     return !m_wirelessLabel.isEmpty();
 }
 
-bool Node::hasConnection(QNEPort *port, ConnectionType type) const
+bool Node::hasPhysicalConnection(QNEPort *port) const
 {
-    // Cast away const to access ports (they don't modify object state for our purposes)
     if (!port) {
         return false;
     }
 
-    const auto& connections = port->connections();
-    if (connections.isEmpty()) {
-        return false;
-    }
-
-    switch (type) {
-    case ConnectionType::Any:
-        return true; // Has connections, type doesn't matter
-
-    case ConnectionType::Physical:
-        // Check each connection to see if it's a physical (non-wireless) connection
-        for (auto *conn : connections) {
-            // Skip wireless connections - only count regular QNEConnection objects
-            if (!conn->isWireless()) {
-                return true; // Found a physical connection
-            }
+    for (auto *conn : port->connections()) {
+        if (!conn->isWireless()) {
+            return true;
         }
-        return false; // Only wireless connections
-
-    case ConnectionType::Wireless:
-        // Check each connection to see if it's a wireless connection
-        for (auto *conn : connections) {
-            if (conn->isWireless()) {
-                return true; // Found a wireless connection
-            }
-        }
-        return false; // Only physical connections
     }
-
     return false;
 }
 
 bool Node::hasInputConnection() const
 {
-    return hasConnection(inputPort(), ConnectionType::Any);
+    return inputPort() && !inputPort()->connections().isEmpty();
 }
 
 bool Node::hasOutputConnection() const
 {
-    return hasConnection(outputPort(), ConnectionType::Any);
+    return outputPort() && !outputPort()->connections().isEmpty();
 }
 
 bool Node::hasPhysicalInputConnection() const
 {
-    return hasConnection(inputPort(), ConnectionType::Physical);
+    return hasPhysicalConnection(inputPort());
 }
 
 bool Node::hasPhysicalOutputConnection() const
 {
-    return hasConnection(outputPort(), ConnectionType::Physical);
+    return hasPhysicalConnection(outputPort());
 }
 
 bool Node::isWirelessSource() const
 {
-    // Node can be wireless source if it has PHYSICAL input connection AND wireless label
-    // (receives signal physically, transmits wirelessly)
     return hasPhysicalInputConnection() && hasWirelessLabel();
 }
 
 bool Node::isWirelessSink() const
 {
-    // Node is wireless sink if it has wireless label but NO PHYSICAL input connection
-    // (only receives wireless signals)
     return !hasPhysicalInputConnection() && hasWirelessLabel();
+}
+
+WirelessConnectionManager* Node::getWirelessManager() const
+{
+    if (auto *s = qobject_cast<Scene *>(scene())) {
+        return s->wirelessManager();
+    }
+    return nullptr;
+}
+
+void Node::notifyWirelessManager(const QString &oldLabel, const QString &newLabel)
+{
+    if (auto *manager = getWirelessManager()) {
+        manager->onNodeLabelChanged(this, oldLabel, newLabel);
+    }
+}
+
+bool Node::validateWirelessConstraint(const QString &label) const
+{
+    if (label.isEmpty() || !hasPhysicalInputConnection() || !scene()) {
+        return true;
+    }
+
+    auto *manager = getWirelessManager();
+    if (!manager) {
+        return true;
+    }
+
+    Node *existingSource = manager->findWirelessSource(label);
+    return !existingSource || existingSource == this;
 }
 
 void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

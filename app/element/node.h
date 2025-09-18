@@ -6,8 +6,9 @@
 #include "graphicelement.h"
 #include "qneport.h"
 
-// Forward declaration
+// Forward declarations
 class Node;
+class WirelessConnectionManager;
 
 // Custom output port that notifies parent Node when status changes
 class WirelessNodeOutputPort : public QNEOutputPort
@@ -48,27 +49,26 @@ public:
     QString getWirelessLabel() const;
     bool hasWirelessLabel() const;
 
-    // Connection validation for wireless UI constraints
-    bool hasInputConnection() const;  // Legacy method - checks for any input connection
-    bool hasOutputConnection() const; // Legacy method - checks for any output connection
+    // Connection validation methods
+    bool hasInputConnection() const;   // Legacy method - checks for any input connection
+    bool hasOutputConnection() const;  // Legacy method - checks for any output connection
+    bool hasPhysicalInputConnection() const;
+    bool hasPhysicalOutputConnection() const;
 
-    // Type-safe connection detection methods
-    bool hasPhysicalInputConnection() const;   // Only counts PhysicalConnection objects
-    bool hasPhysicalOutputConnection() const;  // Only counts PhysicalConnection objects
-
-    // 1-N Wireless constraint methods (updated to use type-safe detection)
-    bool isWirelessSource() const;  // Has physical input connection AND wireless label (transmits wirelessly)
-    bool isWirelessSink() const;    // Has NO physical input connection AND wireless label (receives wirelessly)
+    // Wireless constraint methods
+    bool isWirelessSource() const;  // Has physical input connection AND wireless label
+    bool isWirelessSink() const;    // Has NO physical input connection AND wireless label
 
 signals:
     void wirelessLabelChanged(const QString &oldLabel, const QString &newLabel);
 
 private:
-    enum class ConnectionType { Any, Physical, Wireless };
-    bool hasConnection(QNEPort *port, ConnectionType type = ConnectionType::Any) const;
-
-    // Helper method to draw wireless signal bars
+    // Helper methods
+    bool hasPhysicalConnection(QNEPort *port) const;
+    WirelessConnectionManager* getWirelessManager() const;
     void drawWirelessBars(QPainter *painter, const QPointF &position, bool pointingRight) const;
+    void notifyWirelessManager(const QString &oldLabel, const QString &newLabel);
+    bool validateWirelessConstraint(const QString &label) const;
 
     QString m_wirelessLabel;
 };
