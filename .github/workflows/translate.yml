@@ -45,14 +45,13 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Install Qt Linguist Tools
+      - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
           version: 6.9.0
           cache: false
           aqtversion: ==3.2.*
-          archives: 'qttools'
-          no-qt-binaries: true
+          modules: qtmultimedia qtimageformats
 
       - name: Run lupdate to extract strings
         run: |
@@ -129,14 +128,13 @@ jobs:
           repository: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
 
-      - name: Install Qt Linguist Tools
+      - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
           version: 6.9.0
           cache: false
           aqtversion: ==3.2.*
-          archives: 'qttools'
-          no-qt-binaries: true
+          modules: qtmultimedia qtimageformats
 
       - name: Install XML tools
         run: |
@@ -234,14 +232,13 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
 
-      - name: Install Qt Linguist Tools
+      - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
           version: 6.9.0
           cache: false
           aqtversion: ==3.2.*
-          archives: 'qttools'
-          no-qt-binaries: true
+          modules: qtmultimedia qtimageformats
 
       - name: Install XML tools
         run: |
