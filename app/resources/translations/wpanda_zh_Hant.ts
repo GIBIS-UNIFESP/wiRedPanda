@@ -111,7 +111,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1386"/>
+        <location filename="../../bewaveddolphin.cpp" line="1394"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="242"/>
         <source>Export to PDF</source>
         <translation>匯出為 PDF</translation>
@@ -429,32 +429,42 @@
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1281"/>
-        <location filename="../../bewaveddolphin.cpp" line="1309"/>
+        <location filename="../../bewaveddolphin.cpp" line="1312"/>
         <source>Invalid number of columns.</source>
         <translation>欄位數量無效。</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1362"/>
+        <location filename="../../bewaveddolphin.cpp" line="1302"/>
+        <source>Invalid CSV format: insufficient data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.cpp" line="1321"/>
+        <source>Invalid CSV format: expected %1 elements, got %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.cpp" line="1370"/>
         <source>Export to Image</source>
         <translation>匯出為圖片</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1362"/>
+        <location filename="../../bewaveddolphin.cpp" line="1370"/>
         <source>PNG files (*.png)</source>
         <translation>PNG 檔案 (*.png)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1386"/>
+        <location filename="../../bewaveddolphin.cpp" line="1394"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF 檔案 (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1405"/>
+        <location filename="../../bewaveddolphin.cpp" line="1413"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>無法將此電路列印為 PDF。</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1416"/>
+        <location filename="../../bewaveddolphin.cpp" line="1424"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin 是由聖保羅聯邦大學開發的 wiRedPanda 軟體的波形模擬器。此專案旨在幫助學生學習邏輯電路。&lt;/p&gt;&lt;p&gt;軟體版本：%1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;創作者：&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin 目前由 Prof. Fábio Cappabianco, Ph.D. 和他的學生維護&lt;/p&gt;&lt;p&gt; 如果發現錯誤或希望實作新功能，請在我們的 GitHub 頁面提交報告。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;造訪我們的網站！&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
@@ -481,7 +491,7 @@
 <context>
     <name>ChangeInputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="694"/>
+        <location filename="../../commands.cpp" line="710"/>
         <source>Change input size to %1</source>
         <translation>更改輸入大小為 %1</translation>
     </message>
@@ -489,7 +499,7 @@
 <context>
     <name>ChangeOutputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="785"/>
+        <location filename="../../commands.cpp" line="801"/>
         <source>Change output size to %1</source>
         <translation>更改輸出大小為 %1</translation>
     </message>
@@ -538,12 +548,12 @@
 <context>
     <name>CodeGenerator</name>
     <message>
-        <location filename="../../arduino/codegenerator.cpp" line="261"/>
+        <location filename="../../arduino/codegenerator.cpp" line="268"/>
         <source>IC element not supported: %1</source>
         <translation>不支援 IC 元件：%1</translation>
     </message>
     <message>
-        <location filename="../../arduino/codegenerator.cpp" line="423"/>
+        <location filename="../../arduino/codegenerator.cpp" line="444"/>
         <source>Element type not supported: %1</source>
         <translation>不支援元件類型：%1</translation>
     </message>
@@ -1059,12 +1069,12 @@
         <translation>紫色</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="976"/>
+        <location filename="../../elementeditor.cpp" line="982"/>
         <source>Select any audio</source>
         <translation>選擇任意音響</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="977"/>
+        <location filename="../../elementeditor.cpp" line="983"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>音響 (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
@@ -1146,7 +1156,12 @@
         <translation>未知類型 2：%1</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="191"/>
+        <location filename="../../elementfactory.cpp" line="187"/>
+        <source>Failed to cast element to TruthTable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../elementfactory.cpp" line="197"/>
         <source>Not implemented yet: %1</source>
         <translation>尚未實作：%1</translation>
     </message>
@@ -1154,7 +1169,7 @@
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="637"/>
+        <location filename="../../commands.cpp" line="653"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>在軸 %2 上翻轉 %1 個元件</translation>
     </message>
@@ -1183,13 +1198,13 @@
     </message>
     <message>
         <location filename="../../graphicelement.cpp" line="440"/>
-        <location filename="../../graphicelement.cpp" line="516"/>
-        <location filename="../../graphicelement.cpp" line="552"/>
+        <location filename="../../graphicelement.cpp" line="514"/>
+        <location filename="../../graphicelement.cpp" line="548"/>
         <source>Corrupted DataStream!</source>
         <translation>資料流已損墮！</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="548"/>
+        <location filename="../../graphicelement.cpp" line="544"/>
         <source>Loading pixmap skin names.</source>
         <translation>載入像素圖皮膚名稱。</translation>
     </message>
@@ -1207,19 +1222,19 @@
         <translation>集成電路</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="92"/>
-        <location filename="../../ic.cpp" line="411"/>
+        <location filename="../../ic.cpp" line="97"/>
+        <location filename="../../ic.cpp" line="424"/>
         <source>Error copying file: %1</source>
         <translation>複製檔案時發生錯誤：%1</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="149"/>
+        <location filename="../../ic.cpp" line="154"/>
         <source>%1 not found.</source>
         <translation>找不到 %1。</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="161"/>
-        <location filename="../../ic.cpp" line="417"/>
+        <location filename="../../ic.cpp" line="166"/>
+        <location filename="../../ic.cpp" line="430"/>
         <source>Error opening file: %1</source>
         <translation>開啟檔案時發生錯誤：%1</translation>
     </message>
@@ -1769,7 +1784,7 @@
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1649"/>
+        <location filename="../../mainwindow.cpp" line="1717"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>靜音</translation>
@@ -1810,7 +1825,7 @@
         <translation>背景模擬</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="550"/>
+        <location filename="../../mainwindow.cpp" line="568"/>
         <location filename="../../mainwindow_ui.cpp" line="677"/>
         <source>Shortcuts and Tips</source>
         <translation>快捷鍵與提示</translation>
@@ -1826,81 +1841,81 @@
         <translation>報告翻譯錯誤或協助改善 Weblate 上的翻譯</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="264"/>
+        <location filename="../../mainwindow.cpp" line="268"/>
         <source>Error!</source>
         <translation>錯誤！</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="289"/>
-        <location filename="../../mainwindow.cpp" line="411"/>
-        <location filename="../../mainwindow.cpp" line="672"/>
-        <location filename="../../mainwindow.cpp" line="1193"/>
+        <location filename="../../mainwindow.cpp" line="293"/>
+        <location filename="../../mainwindow.cpp" line="429"/>
+        <location filename="../../mainwindow.cpp" line="698"/>
+        <location filename="../../mainwindow.cpp" line="1250"/>
         <source>New Project</source>
         <translation>新專案</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="335"/>
+        <location filename="../../mainwindow.cpp" line="353"/>
         <source>File saved successfully.</source>
         <translation>檔案儲存成功。</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="354"/>
+        <location filename="../../mainwindow.cpp" line="372"/>
         <source>Don&apos;t show this again.</source>
         <translation>不再顯示此項。</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="394"/>
+        <location filename="../../mainwindow.cpp" line="412"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>檔案未儲存。仍要關閉分頁嗎？</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="413"/>
+        <location filename="../../mainwindow.cpp" line="431"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> 已被修改。
 您要儲存變更嗎？</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="451"/>
+        <location filename="../../mainwindow.cpp" line="469"/>
         <source>File loaded successfully.</source>
         <translation>檔案載入成功。</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="470"/>
-        <location filename="../../mainwindow.cpp" line="1692"/>
+        <location filename="../../mainwindow.cpp" line="488"/>
+        <location filename="../../mainwindow.cpp" line="1760"/>
         <source>Open File</source>
         <translation>開啟檔案</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="470"/>
-        <location filename="../../mainwindow.cpp" line="491"/>
-        <location filename="../../mainwindow.cpp" line="511"/>
+        <location filename="../../mainwindow.cpp" line="488"/>
+        <location filename="../../mainwindow.cpp" line="509"/>
+        <location filename="../../mainwindow.cpp" line="529"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda 檔案 (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="491"/>
-        <location filename="../../mainwindow.cpp" line="511"/>
+        <location filename="../../mainwindow.cpp" line="509"/>
+        <location filename="../../mainwindow.cpp" line="529"/>
         <source>Save File as ...</source>
         <translation>另存為...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="603"/>
+        <location filename="../../mainwindow.cpp" line="621"/>
         <source>Exit </source>
         <translation>離開 </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="604"/>
+        <location filename="../../mainwindow.cpp" line="622"/>
         <source>Are you sure?</source>
         <translation>您確定嗎？</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="753"/>
+        <location filename="../../mainwindow.cpp" line="794"/>
         <source>Error</source>
         <translation>錯誤</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="362"/>
+        <location filename="../../mainwindow.cpp" line="380"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
@@ -1911,105 +1926,105 @@ wiRedPanda %1 將自動列出位於與當前專案相同目錄中的所有其他
 在存取 IC 和皮膚或執行 beWavedDolphin 模擬之前，您必須儲存新專案。</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="531"/>
+        <location filename="../../mainwindow.cpp" line="549"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda是由聖保羅聯邦大學學生開發的軟體。該專案旨在幫助學生學習邏輯電路。&lt;/p&gt;&lt;p&gt;軟體版本：%1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;創作者：&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda目前由Prof. Fábio Cappabianco, Ph.D.、João Pedro M. Oliveira、Matheus R. Esteves和Maycon A. Santana維護。&lt;/p&gt;&lt;p&gt; 如果發現錯誤或希望實現新功能，請在我們的GitHub頁面提交報告。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;造訪我們的網站！&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="551"/>
+        <location filename="../../mainwindow.cpp" line="569"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;畫布快捷鍵&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : 放大 &lt;/li&gt;&lt;li&gt; Ctrl+- : 縮小 &lt;/li&gt;&lt;li&gt; Ctrl+1 : 隱藏/顯示導線 &lt;/li&gt;&lt;li&gt; Ctrl+2 : 隱藏/顯示閘門 &lt;/li&gt;&lt;li&gt; Ctrl+F : 搜尋元件 &lt;/li&gt;&lt;li&gt; Ctrl+W : 開啟 beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : 儲存專案 &lt;/li&gt;&lt;li&gt; Ctrl+Q : 離開 wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : 開始/暫停模擬 &lt;/li&gt;&lt;li&gt; [ : 前一個主要元件屬性 &lt;/li&gt;&lt;li&gt; ] : 下一個主要元件屬性 &lt;/li&gt;&lt;li&gt; { : 前一個次要元件屬性 &lt;/li&gt;&lt;li&gt; } : 下一個次要元件屬性 &lt;/li&gt;&lt;li&gt; &amp;lt; : 變形為前一個元件 &lt;/li&gt;&lt;li&gt; &amp;gt; : 變形為下一個元件 &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;一般提示&lt;/h1&gt;&lt;p&gt;在導線上雙擊以建立節點&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="952"/>
-        <location filename="../../mainwindow.cpp" line="979"/>
+        <location filename="../../mainwindow.cpp" line="999"/>
+        <location filename="../../mainwindow.cpp" line="1026"/>
         <source>Missing file name.</source>
         <translation>缺少檔案名稱。</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="958"/>
+        <location filename="../../mainwindow.cpp" line="1005"/>
         <source>The .panda file is empty.</source>
         <translation>.panda 檔案是空的。</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="971"/>
+        <location filename="../../mainwindow.cpp" line="1018"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino 程式碼產生成功。</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1006"/>
+        <location filename="../../mainwindow.cpp" line="1053"/>
         <source>Generate Arduino Code</source>
         <translation>產生 Arduino 程式碼</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1006"/>
+        <location filename="../../mainwindow.cpp" line="1053"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino 檔案 (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1108"/>
+        <location filename="../../mainwindow.cpp" line="1155"/>
         <source>Export to PDF</source>
         <translation>匯出為 PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1108"/>
+        <location filename="../../mainwindow.cpp" line="1155"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF 檔案 (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1126"/>
+        <location filename="../../mainwindow.cpp" line="1173"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>無法將此電路列印為 PDF。</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1133"/>
-        <location filename="../../mainwindow.cpp" line="1171"/>
+        <location filename="../../mainwindow.cpp" line="1180"/>
+        <location filename="../../mainwindow.cpp" line="1218"/>
         <source>Exported file successfully.</source>
         <translation>檔案匯出成功。</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1152"/>
+        <location filename="../../mainwindow.cpp" line="1199"/>
         <source>Export to Image</source>
         <translation>匯出為圖片</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1152"/>
+        <location filename="../../mainwindow.cpp" line="1199"/>
         <source>PNG files (*.png)</source>
         <translation>PNG 檔案 (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1649"/>
+        <location filename="../../mainwindow.cpp" line="1717"/>
         <source>Unmute</source>
         <translation>取消靜音</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1688"/>
+        <location filename="../../mainwindow.cpp" line="1756"/>
         <source>Save file first.</source>
         <translation>請先儲存檔案。</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1694"/>
+        <location filename="../../mainwindow.cpp" line="1762"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1706"/>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1774"/>
+        <location filename="../../mainwindow.cpp" line="1786"/>
         <source>Info</source>
         <translation>資訊</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1706"/>
+        <location filename="../../mainwindow.cpp" line="1774"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>選擇的檔案（及其相關性）將被複製到目前檔案資料夾。</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1786"/>
         <source>Drag here to remove.</source>
         <translation>拖曳到此處以移除。</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1741"/>
+        <location filename="../../mainwindow.cpp" line="1809"/>
         <source>Error removing file: %1</source>
         <translation>移除檔案時發生錯誤：%1</translation>
     </message>
@@ -2017,7 +2032,7 @@ wiRedPanda %1 將自動列出位於與當前專案相同目錄中的所有其他
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="531"/>
+        <location filename="../../commands.cpp" line="547"/>
         <source>Morph %1 elements to %2</source>
         <translation>將 %1 個元件變形為 %2</translation>
     </message>
@@ -2111,7 +2126,7 @@ wiRedPanda %1 將自動列出位於與當前專案相同目錄中的所有其他
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../main.cpp" line="163"/>
+        <location filename="../../main.cpp" line="185"/>
         <source>Error!</source>
         <translation>錯誤！</translation>
     </message>
@@ -2163,7 +2178,7 @@ wiRedPanda %1 將自動列出位於與當前專案相同目錄中的所有其他
         <translation>重做(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="764"/>
+        <location filename="../../scene.cpp" line="778"/>
         <source>Paste</source>
         <translation>貼上</translation>
     </message>
@@ -2186,17 +2201,32 @@ wiRedPanda %1 將自動列出位於與當前專案相同目錄中的所有其他
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="449"/>
+        <location filename="../../commands.cpp" line="444"/>
+        <source>Invalid connection ports in SplitCommand constructor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="450"/>
+        <source>Invalid graphic elements in SplitCommand constructor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="461"/>
         <source>Wire split</source>
         <translation>線路分離</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="472"/>
+        <location filename="../../commands.cpp" line="484"/>
         <source>Error trying to redo %1</source>
         <translation>嘗試重做 %1 時發生錯誤</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="502"/>
+        <location filename="../../commands.cpp" line="492"/>
+        <source>Error: endPort is null in SplitCommand::redo()</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="518"/>
         <source>Error trying to undo %1</source>
         <translation>嘗試復原 %1 時發生錯誤</translation>
     </message>
@@ -2230,13 +2260,13 @@ wiRedPanda %1 將自動列出位於與當前專案相同目錄中的所有其他
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="873"/>
+        <location filename="../../commands.cpp" line="889"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>在位置 %1 切換真值表輸出</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="882"/>
-        <location filename="../../commands.cpp" line="896"/>
+        <location filename="../../commands.cpp" line="898"/>
+        <location filename="../../commands.cpp" line="912"/>
         <source>Could not find truthtable element!</source>
         <translation>找不到真值表元件！</translation>
     </message>
@@ -2361,52 +2391,52 @@ Please check for updates if the file does not load correctly.</source>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../main.cpp" line="68"/>
+        <location filename="../../main.cpp" line="90"/>
         <source>Circuit file to open.</source>
         <translation>要開啟的電路檔案。</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="72"/>
+        <location filename="../../main.cpp" line="94"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>詳細程度級別 0 到 5，預設停用。</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="73"/>
+        <location filename="../../main.cpp" line="95"/>
         <source>verbosity level</source>
         <translation>詳細程度級別</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="78"/>
+        <location filename="../../main.cpp" line="100"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>將電路匯出到 &lt;arduino-file&gt;。</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="90"/>
+        <location filename="../../main.cpp" line="112"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>將電路匯出到波形文字檔案，從終端讀取輸入。</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="95"/>
+        <location filename="../../main.cpp" line="117"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>與 -c/--terminal 一起使用時，如果電路包含真值表則阻止執行。</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="144"/>
+        <location filename="../../main.cpp" line="166"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>錯誤：電路包含真值表元件。</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="79"/>
+        <location filename="../../main.cpp" line="101"/>
         <source>arduino file</source>
         <translation>Arduino 檔案</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="84"/>
+        <location filename="../../main.cpp" line="106"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>將電路匯出到波形文字檔案。</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="85"/>
+        <location filename="../../main.cpp" line="107"/>
         <source>waveform input text file</source>
         <translation>波形輸入文字檔案</translation>
     </message>

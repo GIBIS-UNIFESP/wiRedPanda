@@ -111,7 +111,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1386"/>
+        <location filename="../../bewaveddolphin.cpp" line="1394"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="242"/>
         <source>Export to PDF</source>
         <translation>صادرات به PDF</translation>
@@ -429,32 +429,42 @@
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1281"/>
-        <location filename="../../bewaveddolphin.cpp" line="1309"/>
+        <location filename="../../bewaveddolphin.cpp" line="1312"/>
         <source>Invalid number of columns.</source>
         <translation>تعداد ستون‌ها نامعتبر است.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1362"/>
+        <location filename="../../bewaveddolphin.cpp" line="1302"/>
+        <source>Invalid CSV format: insufficient data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.cpp" line="1321"/>
+        <source>Invalid CSV format: expected %1 elements, got %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../bewaveddolphin.cpp" line="1370"/>
         <source>Export to Image</source>
         <translation>صادرات به تصویر</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1362"/>
+        <location filename="../../bewaveddolphin.cpp" line="1370"/>
         <source>PNG files (*.png)</source>
         <translation>فایل‌های PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1386"/>
+        <location filename="../../bewaveddolphin.cpp" line="1394"/>
         <source>PDF files (*.pdf)</source>
         <translation>فایل‌های PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1405"/>
+        <location filename="../../bewaveddolphin.cpp" line="1413"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>امکان چاپ این مدار به PDF وجود ندارد.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1416"/>
+        <location filename="../../bewaveddolphin.cpp" line="1424"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin یک شبیه‌ساز شکل موج برای نرم‌افزار wiRedPanda است که توسط دانشگاه فدرال سائوپائولو توسعه یافته است. این پروژه برای کمک به دانش‌آموزان در یادگیری مدارهای منطقی ایجاد شده است.&lt;/p&gt;&lt;p&gt;نسخه نرم‌افزار: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;سازندگان:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; پروفسور فابیو کاپابیانکو، دکتری &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin در حال حاضر توسط پروفسور فابیو کاپابیانکو، دکتری و دانش‌آموزانش نگهداری می‌شود&lt;/p&gt;&lt;p&gt; لطفاً در صورت یافتن اشکال یا تمایل به پیاده‌سازی قابلیت جدید، گزارشی در صفحه GitHub ما ثبت کنید.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;از وب‌سایت ما دیدن کنید!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
@@ -481,7 +491,7 @@
 <context>
     <name>ChangeInputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="694"/>
+        <location filename="../../commands.cpp" line="710"/>
         <source>Change input size to %1</source>
         <translation>تغییر اندازه ورودی به %1</translation>
     </message>
@@ -489,7 +499,7 @@
 <context>
     <name>ChangeOutputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="785"/>
+        <location filename="../../commands.cpp" line="801"/>
         <source>Change output size to %1</source>
         <translation>تغییر اندازه خروجی به %1</translation>
     </message>
@@ -538,12 +548,12 @@
 <context>
     <name>CodeGenerator</name>
     <message>
-        <location filename="../../arduino/codegenerator.cpp" line="261"/>
+        <location filename="../../arduino/codegenerator.cpp" line="268"/>
         <source>IC element not supported: %1</source>
         <translation>عنصر IC پشتیبانی نمی‌شود: %1</translation>
     </message>
     <message>
-        <location filename="../../arduino/codegenerator.cpp" line="423"/>
+        <location filename="../../arduino/codegenerator.cpp" line="444"/>
         <source>Element type not supported: %1</source>
         <translation>نوع عنصر پشتیبانی نمی‌شود: %1</translation>
     </message>
@@ -1059,12 +1069,12 @@
         <translation>بنفش</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="976"/>
+        <location filename="../../elementeditor.cpp" line="982"/>
         <source>Select any audio</source>
         <translation>انتخاب هر صدایی</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="977"/>
+        <location filename="../../elementeditor.cpp" line="983"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>فایل‌های صوتی (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
@@ -1146,7 +1156,12 @@
         <translation>نوع نامعلوم 2: %1</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="191"/>
+        <location filename="../../elementfactory.cpp" line="187"/>
+        <source>Failed to cast element to TruthTable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../elementfactory.cpp" line="197"/>
         <source>Not implemented yet: %1</source>
         <translation>هنوز پیاده‌سازی نشده: %1</translation>
     </message>
@@ -1154,7 +1169,7 @@
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="637"/>
+        <location filename="../../commands.cpp" line="653"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>انعکاس %1 عنصر در محور %2</translation>
     </message>
@@ -1183,13 +1198,13 @@
     </message>
     <message>
         <location filename="../../graphicelement.cpp" line="440"/>
-        <location filename="../../graphicelement.cpp" line="516"/>
-        <location filename="../../graphicelement.cpp" line="552"/>
+        <location filename="../../graphicelement.cpp" line="514"/>
+        <location filename="../../graphicelement.cpp" line="548"/>
         <source>Corrupted DataStream!</source>
         <translation>جریان داده خراب!</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="548"/>
+        <location filename="../../graphicelement.cpp" line="544"/>
         <source>Loading pixmap skin names.</source>
         <translation>بارگذاری نام‌های پوسته تصویری.</translation>
     </message>
@@ -1207,19 +1222,19 @@
         <translation>مدار یکپارچه</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="92"/>
-        <location filename="../../ic.cpp" line="411"/>
+        <location filename="../../ic.cpp" line="97"/>
+        <location filename="../../ic.cpp" line="424"/>
         <source>Error copying file: %1</source>
         <translation>خطا در کپی کردن فایل: %1</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="149"/>
+        <location filename="../../ic.cpp" line="154"/>
         <source>%1 not found.</source>
         <translation>%1 یافت نشد.</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="161"/>
-        <location filename="../../ic.cpp" line="417"/>
+        <location filename="../../ic.cpp" line="166"/>
+        <location filename="../../ic.cpp" line="430"/>
         <source>Error opening file: %1</source>
         <translation>خطا در باز کردن فایل: %1</translation>
     </message>
@@ -1769,7 +1784,7 @@
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1649"/>
+        <location filename="../../mainwindow.cpp" line="1717"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>بی‌صدا</translation>
@@ -1810,7 +1825,7 @@
         <translation>شبیه‌سازی پس‌زمینه</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="550"/>
+        <location filename="../../mainwindow.cpp" line="568"/>
         <location filename="../../mainwindow_ui.cpp" line="677"/>
         <source>Shortcuts and Tips</source>
         <translation>میانبرها و نکات</translation>
@@ -1826,81 +1841,81 @@
         <translation>خطاهای ترجمه را گزارش دهید یا در بهبود ترجمه‌ها در Weblate کمک کنید</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="264"/>
+        <location filename="../../mainwindow.cpp" line="268"/>
         <source>Error!</source>
         <translation>خطا!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="289"/>
-        <location filename="../../mainwindow.cpp" line="411"/>
-        <location filename="../../mainwindow.cpp" line="672"/>
-        <location filename="../../mainwindow.cpp" line="1193"/>
+        <location filename="../../mainwindow.cpp" line="293"/>
+        <location filename="../../mainwindow.cpp" line="429"/>
+        <location filename="../../mainwindow.cpp" line="698"/>
+        <location filename="../../mainwindow.cpp" line="1250"/>
         <source>New Project</source>
         <translation>پروژه جدید</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="335"/>
+        <location filename="../../mainwindow.cpp" line="353"/>
         <source>File saved successfully.</source>
         <translation>فایل با موفقیت ذخیره شد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="354"/>
+        <location filename="../../mainwindow.cpp" line="372"/>
         <source>Don&apos;t show this again.</source>
         <translation>دیگر نشان نده.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="394"/>
+        <location filename="../../mainwindow.cpp" line="412"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>فایل ذخیره نشد. با وجود این زبانه بسته شود؟</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="413"/>
+        <location filename="../../mainwindow.cpp" line="431"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> تغییر کرده است.
 آیا می‌خواهید تغییرات را ذخیره کنید؟</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="451"/>
+        <location filename="../../mainwindow.cpp" line="469"/>
         <source>File loaded successfully.</source>
         <translation>فایل با موفقیت بارگذاری شد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="470"/>
-        <location filename="../../mainwindow.cpp" line="1692"/>
+        <location filename="../../mainwindow.cpp" line="488"/>
+        <location filename="../../mainwindow.cpp" line="1760"/>
         <source>Open File</source>
         <translation>باز کردن فایل</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="470"/>
-        <location filename="../../mainwindow.cpp" line="491"/>
-        <location filename="../../mainwindow.cpp" line="511"/>
+        <location filename="../../mainwindow.cpp" line="488"/>
+        <location filename="../../mainwindow.cpp" line="509"/>
+        <location filename="../../mainwindow.cpp" line="529"/>
         <source>Panda files (*.panda)</source>
         <translation>فایل‌های Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="491"/>
-        <location filename="../../mainwindow.cpp" line="511"/>
+        <location filename="../../mainwindow.cpp" line="509"/>
+        <location filename="../../mainwindow.cpp" line="529"/>
         <source>Save File as ...</source>
         <translation>ذخیره فایل به نام ...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="603"/>
+        <location filename="../../mainwindow.cpp" line="621"/>
         <source>Exit </source>
         <translation>خروج </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="604"/>
+        <location filename="../../mainwindow.cpp" line="622"/>
         <source>Are you sure?</source>
         <translation>آیا مطمئن هستید؟</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="753"/>
+        <location filename="../../mainwindow.cpp" line="794"/>
         <source>Error</source>
         <translation>خطا</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="362"/>
+        <location filename="../../mainwindow.cpp" line="380"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
@@ -1911,105 +1926,105 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 قبل از دسترسی به IC ها و پوسته‌ها، یا اجرای شبیه‌سازی‌های beWavedDolphin، باید پروژه‌های جدید را ذخیره کنید.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="531"/>
+        <location filename="../../mainwindow.cpp" line="549"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda نرم‌افزاری است که توسط دانشجویان دانشگاه فدرال سائوپائولو توسعه یافته است. این پروژه برای کمک به دانشجویان در یادگیری مدارهای منطقی ایجاد شده است.&lt;/p&gt;&lt;p&gt;نسخه نرم‌افزار: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;سازندگان:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda در حال حاضر توسط Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves و Maycon A. Santana نگهداری می‌شود.&lt;/p&gt;&lt;p&gt; لطفاً در صفحه GitHub ما گزارشی ارسال کنید اگر اشکالی یافت شود یا اگر می‌خواهید عملکرد جدیدی پیاده‌سازی شود.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;از وب‌سایت ما دیدن کنید!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="551"/>
+        <location filename="../../mainwindow.cpp" line="569"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;میانبرهای بوم&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : بزرگنمایی &lt;/li&gt;&lt;li&gt; Ctrl+- : کوچکنمایی &lt;/li&gt;&lt;li&gt; Ctrl+1 : مخفی/نمایش سیم‌ها &lt;/li&gt;&lt;li&gt; Ctrl+2 : مخفی/نمایش دروازه‌ها &lt;/li&gt;&lt;li&gt; Ctrl+F : جستجوی المان‌ها &lt;/li&gt;&lt;li&gt; Ctrl+W : باز کردن beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : ذخیره پروژه &lt;/li&gt;&lt;li&gt; Ctrl+Q : خروج از wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : شروع/توقف شبیه‌سازی &lt;/li&gt;&lt;li&gt; [ : خاصیت اولیه قبلی المان &lt;/li&gt;&lt;li&gt; ] : خاصیت اولیه بعدی المان &lt;/li&gt;&lt;li&gt; { : خاصیت ثانویه قبلی المان &lt;/li&gt;&lt;li&gt; } : خاصیت ثانویه بعدی المان &lt;/li&gt;&lt;li&gt; &amp;lt; : تبدیل به المان قبلی &lt;/li&gt;&lt;li&gt; &amp;gt; : تبدیل به المان بعدی &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;نکات عمومی&lt;/h1&gt;&lt;p&gt;برای ایجاد گره روی سیم دوبار کلیک کنید&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="952"/>
-        <location filename="../../mainwindow.cpp" line="979"/>
+        <location filename="../../mainwindow.cpp" line="999"/>
+        <location filename="../../mainwindow.cpp" line="1026"/>
         <source>Missing file name.</source>
         <translation>نام فایل موجود نیست.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="958"/>
+        <location filename="../../mainwindow.cpp" line="1005"/>
         <source>The .panda file is empty.</source>
         <translation>فایل .panda خالی است.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="971"/>
+        <location filename="../../mainwindow.cpp" line="1018"/>
         <source>Arduino code successfully generated.</source>
         <translation>کد Arduino با موفقیت تولید شد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1006"/>
+        <location filename="../../mainwindow.cpp" line="1053"/>
         <source>Generate Arduino Code</source>
         <translation>تولید کد Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1006"/>
+        <location filename="../../mainwindow.cpp" line="1053"/>
         <source>Arduino file (*.ino)</source>
         <translation>فایل Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1108"/>
+        <location filename="../../mainwindow.cpp" line="1155"/>
         <source>Export to PDF</source>
         <translation>صادرات به PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1108"/>
+        <location filename="../../mainwindow.cpp" line="1155"/>
         <source>PDF files (*.pdf)</source>
         <translation>فایل‌های PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1126"/>
+        <location filename="../../mainwindow.cpp" line="1173"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>امکان چاپ این مدار به PDF وجود ندارد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1133"/>
-        <location filename="../../mainwindow.cpp" line="1171"/>
+        <location filename="../../mainwindow.cpp" line="1180"/>
+        <location filename="../../mainwindow.cpp" line="1218"/>
         <source>Exported file successfully.</source>
         <translation>فایل با موفقیت صادر شد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1152"/>
+        <location filename="../../mainwindow.cpp" line="1199"/>
         <source>Export to Image</source>
         <translation>صادرات به تصویر</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1152"/>
+        <location filename="../../mainwindow.cpp" line="1199"/>
         <source>PNG files (*.png)</source>
         <translation>فایل‌های PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1649"/>
+        <location filename="../../mainwindow.cpp" line="1717"/>
         <source>Unmute</source>
         <translation>برگرداندن صدا</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1688"/>
+        <location filename="../../mainwindow.cpp" line="1756"/>
         <source>Save file first.</source>
         <translation>ابتدا فایل را ذخیره کنید.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1694"/>
+        <location filename="../../mainwindow.cpp" line="1762"/>
         <source>Panda (*.panda)</source>
         <translation>پاندا (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1706"/>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1774"/>
+        <location filename="../../mainwindow.cpp" line="1786"/>
         <source>Info</source>
         <translation>اطلاعات</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1706"/>
+        <location filename="../../mainwindow.cpp" line="1774"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>فایل‌های انتخاب شده (و وابستگی‌هایشان) به پوشه فایل فعلی کپی خواهند شد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1786"/>
         <source>Drag here to remove.</source>
         <translation>برای حذف به اینجا بکشید.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1741"/>
+        <location filename="../../mainwindow.cpp" line="1809"/>
         <source>Error removing file: %1</source>
         <translation>خطا در حذف فایل: %1</translation>
     </message>
@@ -2017,7 +2032,7 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="531"/>
+        <location filename="../../commands.cpp" line="547"/>
         <source>Morph %1 elements to %2</source>
         <translation>تبدیل %1 عنصر به %2</translation>
     </message>
@@ -2111,7 +2126,7 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../main.cpp" line="163"/>
+        <location filename="../../main.cpp" line="185"/>
         <source>Error!</source>
         <translation>خطا!</translation>
     </message>
@@ -2163,7 +2178,7 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
         <translation>&amp;انجام مجدد</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="764"/>
+        <location filename="../../scene.cpp" line="778"/>
         <source>Paste</source>
         <translation>چسباندن</translation>
     </message>
@@ -2186,17 +2201,32 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="449"/>
+        <location filename="../../commands.cpp" line="444"/>
+        <source>Invalid connection ports in SplitCommand constructor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="450"/>
+        <source>Invalid graphic elements in SplitCommand constructor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="461"/>
         <source>Wire split</source>
         <translation>تقسیم سیم</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="472"/>
+        <location filename="../../commands.cpp" line="484"/>
         <source>Error trying to redo %1</source>
         <translation>خطا در تلاش برای انجام مجدد %1</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="502"/>
+        <location filename="../../commands.cpp" line="492"/>
+        <source>Error: endPort is null in SplitCommand::redo()</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../commands.cpp" line="518"/>
         <source>Error trying to undo %1</source>
         <translation>خطا در تلاش برای برگرداندن %1</translation>
     </message>
@@ -2230,13 +2260,13 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="873"/>
+        <location filename="../../commands.cpp" line="889"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>تغییر وضعیت خروجی جدول صحت در موقعیت: %1</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="882"/>
-        <location filename="../../commands.cpp" line="896"/>
+        <location filename="../../commands.cpp" line="898"/>
+        <location filename="../../commands.cpp" line="912"/>
         <source>Could not find truthtable element!</source>
         <translation>عنصر جدول صحت یافت نشد!</translation>
     </message>
@@ -2361,52 +2391,52 @@ Please check for updates if the file does not load correctly.</source>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../main.cpp" line="68"/>
+        <location filename="../../main.cpp" line="90"/>
         <source>Circuit file to open.</source>
         <translation>فایل مداری برای باز کردن.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="72"/>
+        <location filename="../../main.cpp" line="94"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>سطح جزئیات 0 تا 5، به طور پیش‌فرض غیرفعال.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="73"/>
+        <location filename="../../main.cpp" line="95"/>
         <source>verbosity level</source>
         <translation>سطح جزئیات</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="78"/>
+        <location filename="../../main.cpp" line="100"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>صادرات مدار به &lt;فایل-آردوینو&gt;.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="90"/>
+        <location filename="../../main.cpp" line="112"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>صادرات مدار به فایل متنی شکل موج، خواندن ورودی از ترمینال.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="95"/>
+        <location filename="../../main.cpp" line="117"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>هنگام استفاده با -c/--terminal، اجرا را مسدود کن اگر مدار شامل جداول صحت باشد.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="144"/>
+        <location filename="../../main.cpp" line="166"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>خطا: مدار شامل عناصر جدول صحت است.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="79"/>
+        <location filename="../../main.cpp" line="101"/>
         <source>arduino file</source>
         <translation>فایل arduino</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="84"/>
+        <location filename="../../main.cpp" line="106"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>صادرات مدار به فایل متنی شکل موج.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="85"/>
+        <location filename="../../main.cpp" line="107"/>
         <source>waveform input text file</source>
         <translation>فایل متنی ورودی موج</translation>
     </message>
