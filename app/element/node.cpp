@@ -273,36 +273,15 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
 void Node::drawWirelessBars(QPainter *painter, const QPointF &position, bool pointingRight) const
 {
-    // Draw 3 curved WiFi signal arcs of increasing radius
-    const int numArcs = 3;
-    const int baseRadius = 12;  // Tripled from 4
-    const int radiusIncrement = 9;  // Tripled from 3
-    const int arcSpan = 60; // degrees
+    // Get the wireless indicator path and draw it
+    QPainterPath path = getWirelessIndicatorPath(position, pointingRight);
 
-    for (int i = 0; i < numArcs; ++i) {
-        int radius = baseRadius + (i * radiusIncrement); // Increasing radius: 12, 21, 30
+    // Draw with a thicker pen for visibility
+    QPen arcPen = painter->pen();
+    arcPen.setWidth(3);
+    painter->setPen(arcPen);
 
-        QRectF arcRect;
-        int startAngle, spanAngle;
-
-        if (pointingRight) {
-            // Arcs pointing right (for source/transmitter) - opening to the right
-            arcRect = QRectF(position.x() - radius, position.y() - radius, radius * 2, radius * 2);
-            startAngle = (0 - arcSpan/2) * 16; // Point right (0°) with span
-            spanAngle = arcSpan * 16; // Span angle in 1/16th degrees
-        } else {
-            // Arcs pointing left (for sink/receiver) - opening to the left
-            arcRect = QRectF(position.x() - radius, position.y() - radius, radius * 2, radius * 2);
-            startAngle = (180 - arcSpan/2) * 16; // Point left (180°) with span
-            spanAngle = arcSpan * 16;
-        }
-
-        // Draw the arc with a thicker pen for visibility
-        QPen arcPen = painter->pen();
-        arcPen.setWidth(3);  // Made thicker
-        painter->setPen(arcPen);
-        painter->drawArc(arcRect, startAngle, spanAngle);
-    }
+    painter->drawPath(path);
 }
 
 QRectF Node::boundingRect() const
@@ -312,23 +291,23 @@ QRectF Node::boundingRect() const
 
     // Extend the bounding rect to include wireless indicators if present
     if (hasWirelessLabel()) {
-        QRectF extendedRect = baseRect;
+        QPainterPath wirelessPath;
 
         if (isWirelessSource()) {
-            // Extend to the right for source indicators (largest arc radius = 30, plus pen width)
-            extendedRect.setRight(std::max(baseRect.right(), 55.0)); // 20 + 30 + 5 pixels for largest arc + pen
-            // Also extend vertically for arc height
-            extendedRect.setTop(std::min(baseRect.top(), -14.0)); // 16 - 30 pixels
-            extendedRect.setBottom(std::max(baseRect.bottom(), 46.0)); // 16 + 30 pixels
+            // Get path for source indicators (pointing right)
+            wirelessPath = getWirelessIndicatorPath(QPointF(20, 16), true);
         } else if (isWirelessSink()) {
-            // Extend to the left for sink indicators (largest arc radius = 30, plus pen width)
-            extendedRect.setLeft(std::min(baseRect.left(), -23.0)); // 12 - 30 - 5 pixels for largest arc + pen
-            // Also extend vertically for arc height
-            extendedRect.setTop(std::min(baseRect.top(), -14.0)); // 16 - 30 pixels
-            extendedRect.setBottom(std::max(baseRect.bottom(), 46.0)); // 16 + 30 pixels
+            // Get path for sink indicators (pointing left)
+            wirelessPath = getWirelessIndicatorPath(QPointF(12, 16), false);
         }
 
-        return extendedRect;
+        // Account for pen width in the bounding rect
+        QPainterPathStroker stroker;
+        stroker.setWidth(3); // Same as the pen width used in drawWirelessBars
+        QPainterPath strokedPath = stroker.createStroke(wirelessPath);
+
+        // Unite the base rect with the wireless indicator bounds
+        return baseRect.united(strokedPath.boundingRect());
     }
 
     return baseRect;
@@ -365,4 +344,33 @@ void Node::updatePortVisibility()
         inputPort()->setVisible(true);
         outputPort()->setVisible(true);
     }
+}
+
+QPainterPath Node::getWirelessIndicatorPath(const QPointF &position, bool pointingRight) const
+{
+    QPainterPath path;
+    const int numArcs = 3;
+    const int baseRadius = 12;
+    const int radiusIncrement = 9;
+    const int arcSpan = 60; // degrees
+
+    for (int i = 0; i < numArcs; ++i) {
+        int radius = baseRadius + (i * radiusIncrement);
+
+        // Calculate the rectangle that defines the arc
+        QRectF arcRect(
+            position.x() - radius, position.y() - radius,
+            2 * radius, 2 * radius
+        );
+
+        // Calculate start angle based on direction
+        int startAngle = pointingRight ? -30 * 16 : 150 * 16; // Qt uses 16ths of a degree
+        int spanAngle = arcSpan * 16;
+
+        // Add the arc to the path
+        path.arcMoveTo(arcRect, startAngle / 16.0);
+        path.arcTo(arcRect, startAngle / 16.0, spanAngle / 16.0);
+    }
+
+    return path;
 }

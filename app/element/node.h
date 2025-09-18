@@ -71,6 +71,7 @@ private:
     bool hasPhysicalConnection(QNEPort *port) const;
     WirelessManager* getWirelessManager() const;
     void drawWirelessBars(QPainter *painter, const QPointF &position, bool pointingRight) const;
+    QPainterPath getWirelessIndicatorPath(const QPointF &position, bool pointingRight) const;
     void notifyWirelessManager(const QString &oldLabel, const QString &newLabel);
     bool validateWirelessConstraint(const QString &label) const;
 
