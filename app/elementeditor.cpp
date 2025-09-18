@@ -409,11 +409,12 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_hasElements = true;
     m_hasAudioBox = true;
 
-    // Check if any of the selected elements is a Node with output connections
+    // Check if any of the selected elements is a wireless sink node
     for (auto *elm : std::as_const(m_elements)) {
         if (auto *node = qobject_cast<Node *>(elm)) {
-            // Only allow wireless label selection if node has output connections (can send signals)
-            if (node->hasOutputConnection()) {
+            // Only show wireless combobox for sink nodes (no physical input connections)
+            // These nodes can receive wireless signals and optionally forward them
+            if (!node->hasPhysicalInputConnection()) {
                 m_hasNode = true;
             }
         }
@@ -437,14 +438,10 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_hasTruthTable &= elm->hasTruthTable();
         m_hasLabel &= elm->hasLabel();
 
-        // For wireless nodes (Node type), enforce connection constraints
-        if (auto *node = qobject_cast<Node *>(elm)) {
-            // Only allow wireless labeling if node has input connections (can receive signals)
-            // But we still want to show the label field with a helpful message
-            if (!node->hasInputConnection()) {
-                m_hasLabel = false; // This specific node cannot set labels
-            }
-        }
+        // Note: For wireless nodes, we allow both source and sink nodes to set labels:
+        // - Source nodes: have physical input + wireless label (transmit wirelessly)
+        // - Sink nodes: have no physical input + wireless label (receive wirelessly)
+        // So we don't restrict m_hasLabel based on connection status for Node types
         m_canChangeSkin &= elm->canChangeSkin();
         m_hasColors &= elm->hasColors();
         m_hasAudio &= elm->hasAudio();
