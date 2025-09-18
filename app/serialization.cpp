@@ -101,7 +101,7 @@ void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &
     for (auto *item : items) {
         if (auto *connection = qgraphicsitem_cast<QNEConnection *>(item)) {
             // Skip wireless connections - they should not be serialized
-            // They will be automatically recreated by WirelessConnectionManager
+            // They will be automatically recreated by WirelessManager
             // based on node labels when the file is loaded
             if (connection->isWireless()) {
                 continue; // Skip wireless connections

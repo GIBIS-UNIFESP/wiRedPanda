@@ -8,7 +8,7 @@
 
 // Forward declarations
 class Node;
-class WirelessConnectionManager;
+class WirelessManager;
 
 // Custom output port that notifies parent Node when status changes
 class WirelessNodeOutputPort : public QNEOutputPort
@@ -65,7 +65,7 @@ signals:
 private:
     // Helper methods
     bool hasPhysicalConnection(QNEPort *port) const;
-    WirelessConnectionManager* getWirelessManager() const;
+    WirelessManager* getWirelessManager() const;
     void drawWirelessBars(QPainter *painter, const QPointF &position, bool pointingRight) const;
     void notifyWirelessManager(const QString &oldLabel, const QString &newLabel);
     bool validateWirelessConstraint(const QString &label) const;

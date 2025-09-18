@@ -16,7 +16,7 @@
 #include "qneconnection.h"
 #include "serialization.h"
 #include "thememanager.h"
-#include "wirelessconnectionmanager.h"
+#include "wirelessmanager.h"
 
 #include <QClipboard>
 #include <QDrag>
@@ -27,7 +27,7 @@
 Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)
     , m_simulation(this)
-    , m_wirelessManager(new WirelessConnectionManager(this, this))
+    , m_wirelessManager(new WirelessManager(this, this))
 {
 
     installEventFilter(this);
@@ -49,7 +49,7 @@ Scene::Scene(QObject *parent)
     connect(&m_undoStack,              &QUndoStack::indexChanged,   this, &Scene::checkUpdateRequest);
 
     // Connect wireless manager to restart simulation when connections change
-    connect(m_wirelessManager, &WirelessConnectionManager::wirelessConnectionsChanged,
+    connect(m_wirelessManager, &WirelessManager::wirelessConnectionsChanged,
             &m_simulation, &Simulation::restart);
 
     qCDebug(zero) << "Scene created with wireless connection manager";
@@ -1289,7 +1289,7 @@ void Scene::addItem(QMimeData *mimeData)
     mimeData->deleteLater();
 }
 
-WirelessConnectionManager* Scene::wirelessManager() const
+WirelessManager* Scene::wirelessManager() const
 {
     return m_wirelessManager;
 }

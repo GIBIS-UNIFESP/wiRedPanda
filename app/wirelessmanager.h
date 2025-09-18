@@ -12,13 +12,13 @@ class Node;
 class QNEConnection;
 class Scene;
 
-class WirelessConnectionManager : public QObject
+class WirelessManager : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit WirelessConnectionManager(Scene *scene, QObject *parent = nullptr);
-    ~WirelessConnectionManager() override = default;
+    explicit WirelessManager(Scene *scene, QObject *parent = nullptr);
+    ~WirelessManager() override = default;
 
     // Called when any node's wireless label changes
     void onNodeLabelChanged(Node *node, const QString &oldLabel, const QString &newLabel);

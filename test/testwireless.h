@@ -14,7 +14,7 @@ class TestWirelessCore : public QObject
     Q_OBJECT
 
 private slots:
-    void testWirelessConnectionManager();
+    void testWirelessManager();
     void testBasicWirelessConnection();
     void testMultipleWirelessConnections();
     void testWirelessLabelChanges();

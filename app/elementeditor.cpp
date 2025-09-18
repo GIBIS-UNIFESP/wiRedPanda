@@ -13,7 +13,7 @@
 #include "scene.h"
 #include "serialization.h"
 #include "thememanager.h"
-#include "wirelessconnectionmanager.h"
+#include "wirelessmanager.h"
 #include "truth_table.h"
 
 #include <QDebug>

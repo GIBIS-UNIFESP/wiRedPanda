@@ -16,7 +16,7 @@ class GraphicElement;
 class GraphicsView;
 class Node;
 class QNEConnection;
-class WirelessConnectionManager;
+class WirelessManager;
 
 /*!
  * @class Scene
@@ -76,7 +76,7 @@ public:
     void updateTheme();
 
     // Wireless functionality
-    WirelessConnectionManager* wirelessManager() const;
+    WirelessManager* wirelessManager() const;
     Node *findNode(int nodeId) const;
 
 signals:
@@ -142,5 +142,5 @@ private:
     int m_editedConnectionId = 0;
     int m_hoverPortElmId = 0;
     int m_hoverPortNumber = 0;
-    WirelessConnectionManager* m_wirelessManager = nullptr;
+    WirelessManager* m_wirelessManager = nullptr;
 };

@@ -12,7 +12,7 @@
 #include "serialization.h"
 #include "settings.h"
 #include "simulationblocker.h"
-#include "wirelessconnectionmanager.h"
+#include "wirelessmanager.h"
 
 #include <QFileDialog>
 #include <QHBoxLayout>

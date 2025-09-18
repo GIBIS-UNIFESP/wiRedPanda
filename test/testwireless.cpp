@@ -17,7 +17,7 @@
 #include "scene.h"
 #include "serialization.h"
 #include "simulation.h"
-#include "wirelessconnectionmanager.h"
+#include "wirelessmanager.h"
 
 #include <QApplication>
 #include <QDataStream>
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 // TestWirelessCore - Core wireless functionality tests (15 tests)
 // =============================================================================
 
-void TestWirelessCore::testWirelessConnectionManager()
+void TestWirelessCore::testWirelessManager()
 {
     // Create scene with wireless manager
     auto *scene = new Scene();
@@ -1572,7 +1572,7 @@ void TestWirelessSimulation::testWirelessPhysicalTimingEquivalence()
     directConn->updatePath();
 
     // Circuit 2: Switch → SourceNode(wireless "signal") ~~wireless~~ SinkNode → LED
-    // The WirelessConnectionManager should automatically create the wireless connection
+    // The WirelessManager should automatically create the wireless connection
     auto *scene2 = new Scene();
     auto *switch2 = dynamic_cast<InputSwitch*>(ElementFactory::buildElement(ElementType::InputSwitch));
     auto *sourceNode = dynamic_cast<Node*>(ElementFactory::buildElement(ElementType::Node));
@@ -1598,7 +1598,7 @@ void TestWirelessSimulation::testWirelessPhysicalTimingEquivalence()
     physicalOut->setEndPort(led2->inputPort());
     physicalOut->updatePath();
 
-    // Set wireless labels - this should trigger WirelessConnectionManager
+    // Set wireless labels - this should trigger WirelessManager
     // to create an invisible WirelessConnection from sourceNode to sinkNode
     sourceNode->setLabel("signal");  // sourceNode becomes wireless source (has physical input + label)
     sinkNode->setLabel("signal");    // sinkNode becomes wireless sink (has label, no physical input)
@@ -2954,7 +2954,7 @@ void TestWirelessPerformance::testThreadSafety()
 
     // Test 3: Signal emission consistency
     bool signalEmitted = false;
-    QObject::connect(wirelessManager, &WirelessConnectionManager::wirelessConnectionsChanged,
+    QObject::connect(wirelessManager, &WirelessManager::wirelessConnectionsChanged,
                      [&signalEmitted]() { signalEmitted = true; });
 
     source->setLabel(threadTestLabel);

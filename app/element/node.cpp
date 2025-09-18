@@ -8,7 +8,7 @@
 #include "qneconnection.h"
 #include "qneport.h"
 #include "scene.h"
-#include "wirelessconnectionmanager.h"
+#include "wirelessmanager.h"
 
 #include <QDataStream>
 #include <QPainter>
@@ -193,7 +193,7 @@ bool Node::isWirelessSink() const
     return !hasPhysicalInputConnection() && hasWirelessLabel();
 }
 
-WirelessConnectionManager* Node::getWirelessManager() const
+WirelessManager* Node::getWirelessManager() const
 {
     if (auto *s = qobject_cast<Scene *>(scene())) {
         return s->wirelessManager();

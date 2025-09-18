@@ -1,7 +1,7 @@
 // Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "wirelessconnectionmanager.h"
+#include "wirelessmanager.h"
 
 #include "common.h"
 #include "node.h"
@@ -10,18 +10,18 @@
 
 #include <QDebug>
 
-WirelessConnectionManager::WirelessConnectionManager(Scene *scene, QObject *parent)
+WirelessManager::WirelessManager(Scene *scene, QObject *parent)
     : QObject(parent), m_scene(scene)
 {
     if (!m_scene) {
-        qCWarning(zero) << "WirelessConnectionManager created with null scene!";
+        qCWarning(zero) << "WirelessManager created with null scene!";
     }
 }
 
-void WirelessConnectionManager::onNodeLabelChanged(Node *node, const QString &oldLabel, const QString &newLabel)
+void WirelessManager::onNodeLabelChanged(Node *node, const QString &oldLabel, const QString &newLabel)
 {
     if (!node || !m_scene) {
-        qCWarning(zero) << "WirelessConnectionManager::onNodeLabelChanged - invalid node or scene";
+        qCWarning(zero) << "WirelessManager::onNodeLabelChanged - invalid node or scene";
         return;
     }
 
@@ -38,13 +38,13 @@ void WirelessConnectionManager::onNodeLabelChanged(Node *node, const QString &ol
     cleanupEmptyGroups();
 }
 
-void WirelessConnectionManager::onNodeDestroyed(Node *node)
+void WirelessManager::onNodeDestroyed(Node *node)
 {
     if (!node) {
         return;
     }
 
-    qCDebug(zero) << "WirelessConnectionManager: Node" << node->id() << "destroyed";
+    qCDebug(zero) << "WirelessManager: Node" << node->id() << "destroyed";
 
     // Get the node's wireless label before destruction
     QString label = node->getWirelessLabel();
@@ -57,7 +57,7 @@ void WirelessConnectionManager::onNodeDestroyed(Node *node)
     cleanupEmptyGroups();
 }
 
-QStringList WirelessConnectionManager::getActiveLabels() const
+QStringList WirelessManager::getActiveLabels() const
 {
     if (!m_scene) {
         return QStringList();
@@ -75,12 +75,12 @@ QStringList WirelessConnectionManager::getActiveLabels() const
     return uniqueLabels.values();
 }
 
-QList<QNEConnection *> WirelessConnectionManager::getWirelessConnectionsForLabel(const QString &label) const
+QList<QNEConnection *> WirelessManager::getWirelessConnectionsForLabel(const QString &label) const
 {
     return m_wirelessConnections.value(label);
 }
 
-QSet<Node *> WirelessConnectionManager::getWirelessGroup(const QString &label) const
+QSet<Node *> WirelessManager::getWirelessGroup(const QString &label) const
 {
     QSet<Node *> group;
 
@@ -97,7 +97,7 @@ QSet<Node *> WirelessConnectionManager::getWirelessGroup(const QString &label) c
     return group;
 }
 
-int WirelessConnectionManager::getGroupCount() const
+int WirelessManager::getGroupCount() const
 {
     if (!m_scene) {
         return 0;
@@ -115,7 +115,7 @@ int WirelessConnectionManager::getGroupCount() const
     return uniqueLabels.size();
 }
 
-QSet<Node *> WirelessConnectionManager::getConnectedNodes(Node *node) const
+QSet<Node *> WirelessManager::getConnectedNodes(Node *node) const
 {
     QSet<Node *> connected;
 
@@ -135,12 +135,12 @@ QSet<Node *> WirelessConnectionManager::getConnectedNodes(Node *node) const
     return connected;
 }
 
-bool WirelessConnectionManager::hasWirelessConnections() const
+bool WirelessManager::hasWirelessConnections() const
 {
     return !m_wirelessConnections.isEmpty();
 }
 
-void WirelessConnectionManager::serialize(QDataStream &stream) const
+void WirelessManager::serialize(QDataStream &stream) const
 {
     if (!m_scene) {
         stream << QMap<int, QString>();
@@ -159,7 +159,7 @@ void WirelessConnectionManager::serialize(QDataStream &stream) const
     stream << nodeLabels;
 }
 
-void WirelessConnectionManager::rebuildConnectionsForLabel(const QString &label)
+void WirelessManager::rebuildConnectionsForLabel(const QString &label)
 {
     if (label.isEmpty() || !m_scene) {
         return;
@@ -186,7 +186,7 @@ void WirelessConnectionManager::rebuildConnectionsForLabel(const QString &label)
     emit wirelessConnectionsChanged();
 }
 
-Node *WirelessConnectionManager::findWirelessSource(const QString &label) const
+Node *WirelessManager::findWirelessSource(const QString &label) const
 {
     if (!m_scene) {
         return nullptr;
@@ -205,7 +205,7 @@ Node *WirelessConnectionManager::findWirelessSource(const QString &label) const
     return nullptr; // No wireless source found
 }
 
-QSet<Node *> WirelessConnectionManager::findWirelessSinks(const QString &label) const
+QSet<Node *> WirelessManager::findWirelessSinks(const QString &label) const
 {
     QSet<Node *> sinks;
 
@@ -226,7 +226,7 @@ QSet<Node *> WirelessConnectionManager::findWirelessSinks(const QString &label) 
     return sinks;
 }
 
-void WirelessConnectionManager::createWirelessConnection(Node *source, Node *sink, const QString &label)
+void WirelessManager::createWirelessConnection(Node *source, Node *sink, const QString &label)
 {
     if (!source || !sink || !m_scene || label.isEmpty()) {
         return;
@@ -248,7 +248,7 @@ void WirelessConnectionManager::createWirelessConnection(Node *source, Node *sin
 
 }
 
-void WirelessConnectionManager::destroyWirelessConnectionsForLabel(const QString &label)
+void WirelessManager::destroyWirelessConnectionsForLabel(const QString &label)
 {
     if (label.isEmpty()) {
         return;
@@ -265,7 +265,7 @@ void WirelessConnectionManager::destroyWirelessConnectionsForLabel(const QString
 
 }
 
-void WirelessConnectionManager::cleanupEmptyGroups()
+void WirelessManager::cleanupEmptyGroups()
 {
     QStringList emptyLabels;
 
@@ -284,7 +284,7 @@ void WirelessConnectionManager::cleanupEmptyGroups()
 }
 
 // Scene iteration helper methods to reduce code duplication
-std::vector<Node *> WirelessConnectionManager::getAllNodesInScene() const
+std::vector<Node *> WirelessManager::getAllNodesInScene() const
 {
     std::vector<Node *> nodes;
     if (!m_scene) {
@@ -299,7 +299,7 @@ std::vector<Node *> WirelessConnectionManager::getAllNodesInScene() const
     return nodes;
 }
 
-std::vector<Node *> WirelessConnectionManager::getNodesWithLabel(const QString &label) const
+std::vector<Node *> WirelessManager::getNodesWithLabel(const QString &label) const
 {
     std::vector<Node *> nodes;
     if (label.isEmpty()) {
