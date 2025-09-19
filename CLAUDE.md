@@ -8,6 +8,7 @@
 - **CRITICAL**: Always build in `build/` directory to prevent accidental commits
 - **Build Timeout**: Always use at least 5-10 minute timeout for compilation commands (2 minutes is insufficient)
 - **ccache**: Compiler cache installed for faster builds - automatically used via PATH in devcontainer
+
 ### Build System Requirements
 
 - **CMake Generator**: Ninja (required on all platforms for consistency)
@@ -28,6 +29,7 @@ ctest --test-dir build
 ```
 
 **Windows Qt Path**: Add `-DCMAKE_PREFIX_PATH="C:/Qt/5.15.2/msvc2019_64"` to configure command if needed.
+
 - **mold linker**: Modern fast linker installed (`sudo apt install mold`) - automatically used by CMake when available
 - **Visual Studio BuildTools**: `"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"`
 

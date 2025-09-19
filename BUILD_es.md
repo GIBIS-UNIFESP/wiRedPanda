@@ -65,6 +65,7 @@ export PATH
 - macOS: `brew install ninja`
 
 **Comandos de compilación (todas las plataformas):**
+
 ```bash
 git clone https://github.com/GIBIS-UNIFESP/wiredpanda
 cd wiredpanda
