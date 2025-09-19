@@ -1,0 +1,265 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "build",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        },
+        {
+            "name": "debug",
+            "displayName": "Debug",
+            "description": "Debug build with full debugging information",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "release",
+            "displayName": "Release",
+            "description": "Optimized release build",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "relwithdebinfo",
+            "displayName": "RelWithDebInfo",
+            "description": "Release build with debug information (used for deployment)",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+        {
+            "name": "coverage",
+            "displayName": "Coverage",
+            "description": "Debug build with code coverage instrumentation",
+            "inherits": "debug",
+            "cacheVariables": {
+                "ENABLE_COVERAGE": "ON"
+            }
+        },
+        {
+            "name": "asan",
+            "displayName": "Address Sanitizer",
+            "description": "Debug build with Address Sanitizer for memory error detection",
+            "inherits": "debug",
+            "cacheVariables": {
+                "ENABLE_ADDRESS_SANITIZER": "ON"
+            }
+        },
+        {
+            "name": "tsan",
+            "displayName": "Thread Sanitizer",
+            "description": "Debug build with Thread Sanitizer for race condition detection",
+            "inherits": "debug",
+            "cacheVariables": {
+                "ENABLE_THREAD_SANITIZER": "ON"
+            }
+        },
+        {
+            "name": "msan",
+            "displayName": "Memory Sanitizer (Clang)",
+            "description": "Debug build with Memory Sanitizer for uninitialized memory detection (Clang only)",
+            "inherits": "debug",
+            "cacheVariables": {
+                "ENABLE_MEMORY_SANITIZER": "ON"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
+        },
+        {
+            "name": "ubsan",
+            "displayName": "UB Sanitizer",
+            "description": "Debug build with Undefined Behavior Sanitizer",
+            "inherits": "debug",
+            "cacheVariables": {
+                "ENABLE_UB_SANITIZER": "ON"
+            }
+        },
+        {
+            "name": "windows-qt",
+            "displayName": "Windows with Qt",
+            "description": "Release build for Windows with Qt path specified",
+            "inherits": "release",
+            "cacheVariables": {
+                "CMAKE_PREFIX_PATH": "C:/Qt/5.15.2/msvc2019_64"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "macos-universal",
+            "displayName": "macOS Universal",
+            "description": "Release build for macOS with universal binaries (x86_64 + arm64)",
+            "inherits": "release",
+            "cacheVariables": {
+                "CMAKE_OSX_ARCHITECTURES": "x86_64;arm64"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            }
+        },
+        {
+            "name": "sentry-crashpad",
+            "displayName": "Sentry with Crashpad",
+            "description": "RelWithDebInfo build with Sentry crashpad backend and IPO",
+            "inherits": "relwithdebinfo",
+            "cacheVariables": {
+                "CMAKE_INTERPROCEDURAL_OPTIMIZATION": "ON",
+                "SENTRY_BACKEND": "crashpad"
+            }
+        },
+        {
+            "name": "sentry-breakpad",
+            "displayName": "Sentry with Breakpad",
+            "description": "RelWithDebInfo build with Sentry breakpad backend and IPO for macOS",
+            "inherits": "relwithdebinfo",
+            "cacheVariables": {
+                "CMAKE_INTERPROCEDURAL_OPTIMIZATION": "ON",
+                "SENTRY_BACKEND": "breakpad",
+                "CMAKE_OSX_ARCHITECTURES": "x86_64;arm64"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug",
+            "displayName": "Build Debug",
+            "configurePreset": "debug"
+        },
+        {
+            "name": "release",
+            "displayName": "Build Release",
+            "configurePreset": "release"
+        },
+        {
+            "name": "relwithdebinfo",
+            "displayName": "Build RelWithDebInfo",
+            "configurePreset": "relwithdebinfo"
+        },
+        {
+            "name": "coverage",
+            "displayName": "Build Coverage",
+            "configurePreset": "coverage"
+        },
+        {
+            "name": "asan",
+            "displayName": "Build with AddressSanitizer",
+            "configurePreset": "asan"
+        },
+        {
+            "name": "tsan",
+            "displayName": "Build with ThreadSanitizer",
+            "configurePreset": "tsan"
+        },
+        {
+            "name": "msan",
+            "displayName": "Build with MemorySanitizer",
+            "configurePreset": "msan"
+        },
+        {
+            "name": "ubsan",
+            "displayName": "Build with UBSanitizer",
+            "configurePreset": "ubsan"
+        },
+        {
+            "name": "windows-qt",
+            "displayName": "Build Windows with Qt",
+            "configurePreset": "windows-qt"
+        },
+        {
+            "name": "macos-universal",
+            "displayName": "Build macOS Universal",
+            "configurePreset": "macos-universal"
+        },
+        {
+            "name": "sentry-crashpad",
+            "displayName": "Build with Sentry Crashpad",
+            "configurePreset": "sentry-crashpad"
+        },
+        {
+            "name": "sentry-breakpad",
+            "displayName": "Build with Sentry Breakpad",
+            "configurePreset": "sentry-breakpad"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "debug",
+            "displayName": "Test Debug",
+            "configurePreset": "debug",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "release",
+            "displayName": "Test Release",
+            "configurePreset": "release",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "coverage",
+            "displayName": "Test Coverage",
+            "configurePreset": "coverage",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "asan",
+            "displayName": "Test with AddressSanitizer",
+            "configurePreset": "asan",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "tsan",
+            "displayName": "Test with ThreadSanitizer",
+            "configurePreset": "tsan",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "msan",
+            "displayName": "Test with MemorySanitizer",
+            "configurePreset": "msan",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "ubsan",
+            "displayName": "Test with UBSanitizer",
+            "configurePreset": "ubsan",
+            "output": {
+                "outputOnFailure": true
+            }
+        }
+    ]
+}

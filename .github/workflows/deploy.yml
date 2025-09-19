@@ -146,8 +146,8 @@ jobs:
     - name: Build Ubuntu
       if: runner.os == 'Linux'
       run: |
-        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
-        cmake --build build
+        cmake --preset sentry-crashpad
+        cmake --build --preset sentry-crashpad
         mkdir -p build/lib
         cp thirdparty/sentry/bin/crashpad_handler build/
         cp thirdparty/sentry/lib/libsentry.so build/lib/
@@ -307,8 +307,8 @@ jobs:
     - name: Build Windows
       if: runner.os == 'Windows'
       run: |
-        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
-        cmake --build build
+        cmake --preset sentry-crashpad
+        cmake --build --preset sentry-crashpad
         cp thirdparty/sentry/bin/crashpad_handler.exe build/
         cp thirdparty/sentry/bin/sentry.dll build/
         cp thirdparty/sentry/bin/crashpad_wer.dll build/
@@ -459,8 +459,8 @@ jobs:
     - name: Build macOS
       if: runner.os == 'macOS'
       run: |
-        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
-        cmake --build build
+        cmake --preset sentry-breakpad
+        cmake --build --preset sentry-breakpad
         mkdir -p build/wiredpanda.app/Contents/MacOS
         mkdir -p build/wiredpanda.app/Contents/Frameworks
         # Copy the main executable to the app bundle

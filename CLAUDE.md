@@ -21,14 +21,14 @@
 
 ```bash
 # Configure with build type
-cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --preset release
 # Build
-cmake --build build --target wiredpanda
+cmake --build --preset release --target wiredpanda
 # Tests
-ctest --test-dir build
+ctest --preset release
 ```
 
-**Windows Qt Path**: Add `-DCMAKE_PREFIX_PATH="C:/Qt/5.15.2/msvc2019_64"` to configure command if needed.
+**Windows Qt Path**: Use `cmake --preset windows-qt` preset for Windows with Qt path preconfigured.
 
 - **mold linker**: Modern fast linker installed (`sudo apt install mold`) - automatically used by CMake when available
 - **Visual Studio BuildTools**: `"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"`
@@ -39,14 +39,14 @@ Advanced development features supported:
 
 **Coverage Analysis**:
 
-- `cmake -B build -DENABLE_COVERAGE=ON` (sets `--coverage` flags for GCC/Clang)
+- `cmake --preset coverage` (sets `--coverage` flags for GCC/Clang)
 
 **Sanitizers**:
 
-- Address Sanitizer: `cmake -B build -DENABLE_ADDRESS_SANITIZER=ON`
-- Thread Sanitizer: `cmake -B build -DENABLE_THREAD_SANITIZER=ON`
-- Memory Sanitizer: `cmake -B build -DENABLE_MEMORY_SANITIZER=ON` (Clang only)
-- UB Sanitizer: `cmake -B build -DENABLE_UB_SANITIZER=ON`
+- Address Sanitizer: `cmake --preset asan`
+- Thread Sanitizer: `cmake --preset tsan`
+- Memory Sanitizer: `cmake --preset msan` (Clang only)
+- UB Sanitizer: `cmake --preset ubsan`
 
 **Windows Metadata**: Comprehensive application properties for professional deployment
 

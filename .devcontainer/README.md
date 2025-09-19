@@ -60,8 +60,8 @@ Use **Ctrl+Shift+P** → "Tasks: Run Task":
 
 ```bash
 # Configure and build with CMake/Ninja
-cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
-cmake --build build
+cmake --preset debug
+cmake --build --preset debug
 ```
 
 
