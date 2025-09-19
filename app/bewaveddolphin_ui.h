@@ -3,7 +3,15 @@
 
 #pragma once
 
-#include <QtWidgets/QtWidgets>
+// Specific Qt includes instead of monolithic QtWidgets
+#include <QMainWindow>
+#include <QAction>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QStatusBar>
+#include <QToolBar>
+#include <QMenuBar>
+#include <QMenu>
 
 class BewavedDolphin_Ui
 {

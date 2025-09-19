@@ -5,7 +5,6 @@
 
 #include <QCoreApplication>
 #include <QLoggingCategory>
-#include <QObject>
 #include <stdexcept>
 
 Q_DECLARE_LOGGING_CATEGORY(zero)

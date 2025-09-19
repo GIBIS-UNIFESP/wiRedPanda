@@ -3,7 +3,13 @@
 
 #pragma once
 
-#include <QtWidgets/QtWidgets>
+// Specific Qt includes instead of monolithic QtWidgets
+#include <QDialog>
+#include <QGridLayout>
+#include <QDialogButtonBox>
+#include <QSpinBox>
+#include <QSlider>
+#include <QLabel>
 
 class ClockDialog_Ui
 {
