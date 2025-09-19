@@ -483,6 +483,31 @@
           "additionalProperties": false
         },
 
+        "export_arduino": {
+          "type": "object",
+          "description": "Export circuit as Arduino code (.ino file)",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "export_arduino"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "filename": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\.ino$",
+                  "description": "Output filename with .ino extension"
+                }
+              },
+              "required": ["filename"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
         "create_ic": {
           "type": "object",
           "description": "Create an Integrated Circuit (IC) from current circuit",
@@ -781,6 +806,25 @@
                     "exported": {"type": "boolean"}
                   },
                   "required": ["filename", "format", "exported"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+
+        "export_arduino_response": {
+          "allOf": [
+            {"$ref": "#/definitions/CommandResponse"},
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "exported_file": {"type": "string"},
+                    "format": {"type": "string"}
+                  },
+                  "required": ["exported_file", "format"],
                   "additionalProperties": false
                 }
               }
