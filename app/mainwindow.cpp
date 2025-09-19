@@ -30,6 +30,7 @@
 #include <QLoggingCategory>
 #include <QMessageBox>
 #include <QPdfWriter>
+#include <QPixmapCache>
 #include <QPrinter>
 #include <QResource>
 #include <QSaveFile>

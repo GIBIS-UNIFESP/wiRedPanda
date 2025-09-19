@@ -3,7 +3,18 @@
 
 #pragma once
 
-#include <QtWidgets/QtWidgets>
+// Specific Qt includes instead of monolithic QtWidgets
+#include <QWidget>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QLabel>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QLineEdit>
+#include <QDoubleSpinBox>
+#include <QSpinBox>
 
 class ElementEditor_Ui
 {

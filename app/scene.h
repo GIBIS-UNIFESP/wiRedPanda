@@ -15,6 +15,7 @@
 class GraphicElement;
 class GraphicsView;
 class QNEConnection;
+class QPainter;
 
 /*!
  * @class Scene

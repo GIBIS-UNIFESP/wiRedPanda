@@ -18,6 +18,7 @@
 #include "simulationblocker.h"
 
 #include <QAbstractItemView>
+#include <QApplication>
 #include <QClipboard>
 #include <QCloseEvent>
 #include <QFileDialog>

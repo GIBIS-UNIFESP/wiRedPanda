@@ -3,7 +3,13 @@
 
 #pragma once
 
-#include <QtWidgets/QtWidgets>
+// Specific Qt includes instead of monolithic QtWidgets
+#include <QDialog>
+#include <QGridLayout>
+#include <QSlider>
+#include <QLabel>
+#include <QSpinBox>
+#include <QDialogButtonBox>
 
 class LengthDialog_Ui
 {

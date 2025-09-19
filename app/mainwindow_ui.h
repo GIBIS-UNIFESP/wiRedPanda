@@ -6,7 +6,24 @@
 #include "elementeditor.h"
 #include "trashbutton.h"
 
-#include <QtWidgets/QtWidgets>
+// Specific Qt includes instead of monolithic QtWidgets
+#include <QMainWindow>
+#include <QAction>
+#include <QWidget>
+#include <QGridLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QSplitter>
+#include <QTabWidget>
+#include <QScrollArea>
+#include <QSpacerItem>
+#include <QPushButton>
+#include <QLabel>
+#include <QLineEdit>
+#include <QToolBar>
+#include <QStatusBar>
+#include <QMenuBar>
+#include <QMenu>
 
 class MainWindow_Ui
 {

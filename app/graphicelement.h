@@ -10,7 +10,6 @@
 #include <QBitArray>
 #include <QGraphicsItem>
 #include <QKeySequence>
-#include <QPixmapCache>
 #include <QVersionNumber>
 #include <memory>
 
@@ -18,6 +17,9 @@ class GraphicElement;
 class QNEInputPort;
 class QNEOutputPort;
 class QNEPort;
+class QPainter;
+class QStyleOptionGraphicsItem;
+class QWidget;
 
 /**
  * @brief Virtual class to implement graphical element appearance, input and output ports, and tooltips.
