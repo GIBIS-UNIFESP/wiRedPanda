@@ -44,7 +44,7 @@ jobs:
       with:
         version: ${{ matrix.qt }}
         cache: true
-        aqtversion: ==3.2.*
+        aqtversion: ==3.*
         modules: ${{ startsWith(matrix.qt, '6') && 'qtmultimedia qtimageformats' || '' }}
 
     - name: ccache

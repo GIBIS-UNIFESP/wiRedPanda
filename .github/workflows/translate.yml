@@ -50,7 +50,7 @@ jobs:
         with:
           version: 6.9.0
           cache: false
-          aqtversion: ==3.2.*
+          aqtversion: ==3.*
           modules: qtmultimedia qtimageformats
 
       - name: Run lupdate to extract strings
@@ -133,7 +133,7 @@ jobs:
         with:
           version: 6.9.0
           cache: false
-          aqtversion: ==3.2.*
+          aqtversion: ==3.*
           modules: qtmultimedia qtimageformats
 
       - name: Install XML tools
@@ -237,7 +237,7 @@ jobs:
         with:
           version: 6.9.0
           cache: false
-          aqtversion: ==3.2.*
+          aqtversion: ==3.*
           modules: qtmultimedia qtimageformats
 
       - name: Install XML tools
