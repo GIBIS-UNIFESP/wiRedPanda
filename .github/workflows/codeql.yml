@@ -44,13 +44,13 @@ jobs:
 
     - name: Build
       run: |
-        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-        cmake --build build
+        cmake --preset release
+        cmake --build --preset release
 
     - name: Test
       timeout-minutes: 10
       run: |
-        ctest --test-dir build
+        ctest --preset release
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

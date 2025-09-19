@@ -65,8 +65,8 @@ The easiest way to get started is using our development container:
 
 4. **Build and Test**:
    ```bash
-   cmake -B build -DCMAKE_BUILD_TYPE=Release
-   cmake --build build --target wiredpanda
+   cmake --preset release
+   cmake --build --preset release --target wiredpanda
    ctest --test-dir build
    ```
 
@@ -82,8 +82,8 @@ sudo apt install build-essential qtbase5-dev qtmultimedia5-dev libqt5svg5-dev
 # Clone and build
 git clone https://github.com/GIBIS-UNIFESP/wiRedPanda.git
 cd wiRedPanda
-cmake -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build
+cmake --preset release
+cmake --build --preset release
 ```
 
 ## Code Style Guidelines
@@ -136,7 +136,7 @@ ctest --test-dir build -R testcommands
 ### Test Coverage
 Enable coverage analysis during development:
 ```bash
-cmake -B build -DENABLE_COVERAGE=ON
+cmake --preset coverage
 cmake --build build
 ctest --test-dir build
 ```
@@ -145,13 +145,13 @@ ctest --test-dir build
 Use sanitizers to catch bugs early:
 ```bash
 # Address Sanitizer
-cmake -B build -DENABLE_ADDRESS_SANITIZER=ON
+cmake --preset asan
 
 # Thread Sanitizer
-cmake -B build -DENABLE_THREAD_SANITIZER=ON
+cmake --preset tsan
 
 # UB Sanitizer
-cmake -B build -DENABLE_UB_SANITIZER=ON
+cmake --preset ubsan
 ```
 
 ### Writing Tests

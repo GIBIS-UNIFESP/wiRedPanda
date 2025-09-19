@@ -35,13 +35,13 @@ jobs:
 
     - name: Build
       run: |
-        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
-        cmake --build build
+        cmake --preset coverage
+        cmake --build --preset coverage
 
     - name: Test
       timeout-minutes: 10
       run: |
-        ctest --test-dir build
+        ctest --preset coverage
 
     - name: Upload coverage data
       run: |

@@ -28,8 +28,8 @@ Binários compilados para Windows, Linux e macOS estão disponíveis na [página
 ```bash
 git clone https://github.com/GIBIS-UNIFESP/wiredpanda
 cd wiredpanda
-cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-cmake --build build
+cmake --preset release
+cmake --build --preset release
 ```
 
 Este processo pode demorar um pouco. Uma vez concluído, o binário estará localizado em `build/wiredpanda` no Linux e macOS, ou `build/wiredpanda.exe` no Windows.

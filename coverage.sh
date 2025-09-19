@@ -5,11 +5,11 @@
 set -e
 
 echo "🔍 Building with coverage enabled..."
-cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
-cmake --build build
+cmake --preset coverage
+cmake --build --preset coverage
 
 echo "🧪 Running tests with coverage collection..."
-ctest --test-dir build
+ctest --preset coverage
 
 echo "📄 Generating HTML coverage report..."
 # Install lcov if not available
