@@ -284,7 +284,8 @@ endforeach()
 add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS} ${FORMS})
 target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS})
 
-if(NOT CCACHE_BIN)
+option(ENABLE_PCH "Enable precompiled headers for faster compilation" ON)
+if(ENABLE_PCH)
     target_precompile_headers(wiredpanda_lib PRIVATE pch.h)
 endif()
 
@@ -329,7 +330,7 @@ if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
     add_dependencies(wiredpanda lrelease)
 endif()
 
-if(NOT CCACHE_BIN)
+if(ENABLE_PCH)
     target_precompile_headers(wiredpanda REUSE_FROM wiredpanda_lib)
 endif()
 
