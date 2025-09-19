@@ -131,6 +131,10 @@ void HandlerFactory::registerBuiltInHandlers()
                     [](MainWindow *mainWindow, MCPValidator *validator) {
                         return std::make_unique<FileHandler>(mainWindow, validator);
                     });
+    registerHandler("export_arduino", "file",
+                    [](MainWindow *mainWindow, MCPValidator *validator) {
+                        return std::make_unique<FileHandler>(mainWindow, validator);
+                    });
 
     // Element operation commands
     registerHandler("create_element", "element",

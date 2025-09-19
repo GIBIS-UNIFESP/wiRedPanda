@@ -147,7 +147,8 @@ void MCPProcessor::processCommand(const QString &line)
     }
     // File operation commands
     else if (method == "load_circuit" || method == "save_circuit" || method == "new_circuit" ||
-             method == "close_circuit" || method == "get_tab_count" || method == "export_image") {
+             method == "close_circuit" || method == "get_tab_count" || method == "export_image" ||
+             method == "export_arduino") {
         response = m_fileHandler->handleCommand(method, params, requestId);
     }
     // Element operation commands

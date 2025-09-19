@@ -34,6 +34,8 @@ QJsonObject FileHandler::handleCommand(const QString &command, const QJsonObject
         return handleGetTabCount(params, requestId);
     } else if (command == "export_image") {
         return handleExportImage(params, requestId);
+    } else if (command == "export_arduino") {
+        return handleExportArduino(params, requestId);
     } else {
         return createErrorResponse(QString("Unknown file command: %1").arg(command), requestId);
     }
@@ -234,5 +236,37 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
 
     } catch (const std::exception &e) {
         return createErrorResponse(QString("Failed to export image: %1").arg(e.what()), requestId);
+    }
+}
+
+QJsonObject FileHandler::handleExportArduino(const QJsonObject &params, const QJsonValue &requestId)
+{
+    if (!validateParameters(params, {"filename"})) {
+        return createErrorResponse("Missing required parameter: filename", requestId);
+    }
+
+    QString filename = params.value("filename").toString();
+
+    if (!m_mainWindow) {
+        return createErrorResponse("No main window available", requestId);
+    }
+
+    Scene *scene = getCurrentScene();
+    if (!scene) {
+        return createErrorResponse("No active circuit scene available", requestId);
+    }
+
+    try {
+        // Use the existing Arduino export functionality from MainWindow
+        m_mainWindow->exportToArduino(filename);
+
+        QJsonObject result;
+        result["exported_file"] = filename;
+        result["format"] = "arduino";
+
+        return createSuccessResponse(result, requestId);
+
+    } catch (const std::exception &e) {
+        return createErrorResponse(QString("Failed to export Arduino code: %1").arg(e.what()), requestId);
     }
 }

@@ -26,4 +26,5 @@ private:
     QJsonObject handleCloseCircuit(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleGetTabCount(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleExportImage(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleExportArduino(const QJsonObject &params, const QJsonValue &requestId);
 };

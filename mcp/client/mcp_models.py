@@ -24,7 +24,7 @@ from protocol import (
     CreateElementCommand, DeleteElementCommand, ConnectElementsCommand,
     DisconnectElementsCommand, SimulationControlCommand, SetInputValueCommand,
     GetOutputValueCommand, ListConnectionsCommand, ListElementsCommand,
-    SaveCircuitCommand, LoadCircuitCommand, ExportImageCommand,
+    SaveCircuitCommand, LoadCircuitCommand, ExportImageCommand, ExportArduinoCommand,
     CreateWaveformCommand, ExportWaveformCommand, CreateIcCommand,
     InstantiateIcCommand, ListIcsCommand, MoveElementCommand,
     SetElementPropertiesCommand,
