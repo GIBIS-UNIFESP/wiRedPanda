@@ -36,6 +36,10 @@ Este proceso podría llevar un tiempo. Una vez concluido, el binario se ubicará
 
 Para obtener instrucciones de compilación detalladas, consulte [BUILD.md](BUILD.md) o visite la [wiki](https://github.com/GIBIS-UNIFESP/wiRedPanda/wiki/How-to-setup-environment).
 
+## Hoja de ruta
+
+Consulta nuestra [hoja de ruta del proyecto](https://github.com/orgs/GIBIS-UNIFESP/projects/1) para ver las características planificadas, el estado actual del desarrollo y cómo puedes contribuir al futuro de wiRedPanda.
+
 ## Traducción
 
 Puedes ayudar a traducir wiRedPanda a otros idiomas. Utilizamos la plataforma [Weblate](https://hosted.weblate.org/projects/wiredpanda/wiredpanda) para gestionar las traducciones.

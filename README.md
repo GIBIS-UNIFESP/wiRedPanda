@@ -36,6 +36,10 @@ This process could take a while. Once concluded, the binary will be located at `
 
 For detailed build instructions, check the [BUILD.md](BUILD.md) or visit the [wiki](https://github.com/GIBIS-UNIFESP/wiRedPanda/wiki/How-to-setup-environment).
 
+## Roadmap
+
+Check our [project roadmap](https://github.com/orgs/GIBIS-UNIFESP/projects/1) to see planned features, current development status, and how you can contribute to wiRedPanda's future.
+
 ## Translation
 
 You can help translate wiRedPanda into other languages. We use the [Weblate](https://hosted.weblate.org/projects/wiredpanda/wiredpanda) platform to manage translations.
