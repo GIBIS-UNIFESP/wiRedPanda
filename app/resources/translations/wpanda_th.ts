@@ -111,7 +111,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1394"/>
+        <location filename="../../bewaveddolphin.cpp" line="1395"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="242"/>
         <source>Export to PDF</source>
         <translation>ส่งออกเป็น PDF</translation>
@@ -325,152 +325,152 @@
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="142"/>
-        <location filename="../../bewaveddolphin.cpp" line="214"/>
-        <location filename="../../bewaveddolphin.cpp" line="1116"/>
-        <location filename="../../bewaveddolphin.cpp" line="1268"/>
+        <location filename="../../bewaveddolphin.cpp" line="143"/>
+        <location filename="../../bewaveddolphin.cpp" line="215"/>
+        <location filename="../../bewaveddolphin.cpp" line="1117"/>
+        <location filename="../../bewaveddolphin.cpp" line="1269"/>
         <source>beWavedDolphin Simulator</source>
         <translation>โปรแกรมจำลอง beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="534"/>
-        <location filename="../../bewaveddolphin.cpp" line="1182"/>
+        <location filename="../../bewaveddolphin.cpp" line="535"/>
+        <location filename="../../bewaveddolphin.cpp" line="1183"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="535"/>
+        <location filename="../../bewaveddolphin.cpp" line="536"/>
         <source>Save simulation before closing?</source>
         <translation>บันทึกการจำลองก่อนปิดหรือไม่?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1183"/>
+        <location filename="../../bewaveddolphin.cpp" line="1184"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>คุณต้องการเชื่อมโยงไฟล์ beWavedDolphin นี้กับไฟล์ wiRedPanda ปัจจุบันและบันทึกหรือไม่?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1083"/>
+        <location filename="../../bewaveddolphin.cpp" line="1084"/>
         <source>Save File as...</source>
         <translation>บันทึกไฟล์เป็น...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1086"/>
+        <location filename="../../bewaveddolphin.cpp" line="1087"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>ไฟล์ CSV (*.csv);;ไฟล์ Dolphin (*.dolphin);;ไฟล์ที่รองรับทั้งหมด (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1087"/>
+        <location filename="../../bewaveddolphin.cpp" line="1088"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>ไฟล์ Dolphin (*.dolphin);;ไฟล์ CSV (*.csv);;ไฟล์ที่รองรับทั้งหมด (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1074"/>
-        <location filename="../../bewaveddolphin.cpp" line="1117"/>
+        <location filename="../../bewaveddolphin.cpp" line="1075"/>
+        <location filename="../../bewaveddolphin.cpp" line="1118"/>
         <source>Saved file successfully.</source>
         <translation>บันทึกไฟล์สำเร็จ</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="244"/>
-        <location filename="../../bewaveddolphin.cpp" line="255"/>
-        <location filename="../../bewaveddolphin.cpp" line="265"/>
+        <location filename="../../bewaveddolphin.cpp" line="245"/>
+        <location filename="../../bewaveddolphin.cpp" line="256"/>
+        <location filename="../../bewaveddolphin.cpp" line="266"/>
         <source></source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="298"/>
-        <location filename="../../bewaveddolphin.cpp" line="325"/>
+        <location filename="../../bewaveddolphin.cpp" line="299"/>
+        <location filename="../../bewaveddolphin.cpp" line="326"/>
         <source>Could not load enough elements for the simulation.</source>
         <translation>ไม่สามารถโหลดองค์ประกอบที่เพียงพอสำหรับการจำลองได้</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="507"/>
+        <location filename="../../bewaveddolphin.cpp" line="508"/>
         <source>Waveform would be too big! Resetting zoom.</source>
         <translation>รูปคลื่นจะใหญ่เกินไป! กำลังรีเซ็ตการซูม</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="774"/>
+        <location filename="../../bewaveddolphin.cpp" line="775"/>
         <source>No cells selected.</source>
         <translation>ไม่ได้เลือกเซลล์</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1126"/>
+        <location filename="../../bewaveddolphin.cpp" line="1127"/>
         <source>Error opening file: %1</source>
         <translation>ข้อผิดพลาดในการเปิดไฟล์: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1140"/>
+        <location filename="../../bewaveddolphin.cpp" line="1141"/>
         <source>Error saving file: %1</source>
         <translation>ข้อผิดพลาดในการบันทึกไฟล์: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1210"/>
+        <location filename="../../bewaveddolphin.cpp" line="1211"/>
         <source>Open File</source>
         <translation>เปิดไฟล์</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1212"/>
+        <location filename="../../bewaveddolphin.cpp" line="1213"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>ไฟล์ที่รองรับทั้งหมด (*.dolphin *.csv);;ไฟล์ Dolphin (*.dolphin);;ไฟล์ CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1228"/>
+        <location filename="../../bewaveddolphin.cpp" line="1229"/>
         <source>File loaded successfully.</source>
         <translation>โหลดไฟล์สำเร็จ</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1243"/>
+        <location filename="../../bewaveddolphin.cpp" line="1244"/>
         <source>Could not open file in ReadOnly mode: %1</source>
         <translation>ไม่สามารถเปิดไฟล์ในโหมดอ่านอย่างเดียว: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1262"/>
+        <location filename="../../bewaveddolphin.cpp" line="1263"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>รูปแบบไม่รองรับ ไม่สามารถเปิดไฟล์: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1281"/>
-        <location filename="../../bewaveddolphin.cpp" line="1312"/>
+        <location filename="../../bewaveddolphin.cpp" line="1282"/>
+        <location filename="../../bewaveddolphin.cpp" line="1313"/>
         <source>Invalid number of columns.</source>
         <translation>จำนวนคอลัมน์ไม่ถูกต้อง</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1302"/>
+        <location filename="../../bewaveddolphin.cpp" line="1303"/>
         <source>Invalid CSV format: insufficient data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1321"/>
+        <location filename="../../bewaveddolphin.cpp" line="1322"/>
         <source>Invalid CSV format: expected %1 elements, got %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1370"/>
+        <location filename="../../bewaveddolphin.cpp" line="1371"/>
         <source>Export to Image</source>
         <translation>ส่งออกเป็นรูปภาพ</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1370"/>
+        <location filename="../../bewaveddolphin.cpp" line="1371"/>
         <source>PNG files (*.png)</source>
         <translation>ไฟล์ PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1394"/>
+        <location filename="../../bewaveddolphin.cpp" line="1395"/>
         <source>PDF files (*.pdf)</source>
         <translation>ไฟล์ PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1413"/>
+        <location filename="../../bewaveddolphin.cpp" line="1414"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>ไม่สามารถพิมพ์วงจรนี้เป็น PDF ได้</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1424"/>
+        <location filename="../../bewaveddolphin.cpp" line="1425"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin เป็นเครื่องจำลองรูปคลื่นสำหรับซอฟต์แวร์ wiRedPanda ที่พัฒนาโดยมหาวิทยาลัยแห่งรัฐเซาเปาลู โครงการนี้ถูกสร้างขึ้นเพื่อช่วยให้นักเรียนเรียนรู้เกี่ยวกับวงจรลอจิก&lt;/p&gt;&lt;p&gt;เวอร์ชันซอฟต์แวร์: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;ผู้สร้าง:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; ศ.ดร. ฟาบิโอ คัปปาบิอันโก &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin ปัจจุบันดูแลโดย ศ.ดร. ฟาบิโอ คัปปาบิอันโก และนักเรียนของเขา&lt;/p&gt;&lt;p&gt; โปรดรายงานปัญหาที่หน้า GitHub ของเราหากพบข้อบกพร่องหรือต้องการให้มีการพัฒนาฟีเจอร์ใหม่&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;เยี่ยมชมเว็บไซต์ของเรา!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="220"/>
-        <location filename="../../bewaveddolphin.cpp" line="1236"/>
+        <location filename="../../bewaveddolphin.cpp" line="221"/>
+        <location filename="../../bewaveddolphin.cpp" line="1237"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>ไฟล์ &quot;%1&quot; ไม่มีอยู่!</translation>
     </message>
@@ -1784,7 +1784,7 @@
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1717"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>ปิดเสียง</translation>
@@ -1825,7 +1825,7 @@
         <translation>การจำลองเบื้องหลัง</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="568"/>
+        <location filename="../../mainwindow.cpp" line="569"/>
         <location filename="../../mainwindow_ui.cpp" line="677"/>
         <source>Shortcuts and Tips</source>
         <translation>ทางลัดและเคล็ดลับ</translation>
@@ -1841,81 +1841,81 @@
         <translation>รายงานข้อผิดพลาดในการแปลหรือช่วยปรับปรุงการแปลใน Weblate</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="268"/>
+        <location filename="../../mainwindow.cpp" line="269"/>
         <source>Error!</source>
         <translation>ข้อผิดพลาด!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="293"/>
-        <location filename="../../mainwindow.cpp" line="429"/>
-        <location filename="../../mainwindow.cpp" line="698"/>
-        <location filename="../../mainwindow.cpp" line="1250"/>
+        <location filename="../../mainwindow.cpp" line="294"/>
+        <location filename="../../mainwindow.cpp" line="430"/>
+        <location filename="../../mainwindow.cpp" line="699"/>
+        <location filename="../../mainwindow.cpp" line="1251"/>
         <source>New Project</source>
         <translation>โปรเจกต์ใหม่</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="353"/>
+        <location filename="../../mainwindow.cpp" line="354"/>
         <source>File saved successfully.</source>
         <translation>บันทึกไฟล์สำเร็จ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="372"/>
+        <location filename="../../mainwindow.cpp" line="373"/>
         <source>Don&apos;t show this again.</source>
         <translation>อย่าแสดงข้อความนี้อีก</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="412"/>
+        <location filename="../../mainwindow.cpp" line="413"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>ไฟล์ยังไม่ได้บันทึก ปิดแท็บต่อไปหรือไม่?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="431"/>
+        <location filename="../../mainwindow.cpp" line="432"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> ถูกแก้ไขแล้ว
 คุณต้องการบันทึกการเปลี่ยนแปลงหรือไม่?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="469"/>
+        <location filename="../../mainwindow.cpp" line="470"/>
         <source>File loaded successfully.</source>
         <translation>โหลดไฟล์สำเร็จ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="488"/>
-        <location filename="../../mainwindow.cpp" line="1760"/>
+        <location filename="../../mainwindow.cpp" line="489"/>
+        <location filename="../../mainwindow.cpp" line="1761"/>
         <source>Open File</source>
         <translation>เปิดไฟล์</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="488"/>
-        <location filename="../../mainwindow.cpp" line="509"/>
-        <location filename="../../mainwindow.cpp" line="529"/>
+        <location filename="../../mainwindow.cpp" line="489"/>
+        <location filename="../../mainwindow.cpp" line="510"/>
+        <location filename="../../mainwindow.cpp" line="530"/>
         <source>Panda files (*.panda)</source>
         <translation>ไฟล์ Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="509"/>
-        <location filename="../../mainwindow.cpp" line="529"/>
+        <location filename="../../mainwindow.cpp" line="510"/>
+        <location filename="../../mainwindow.cpp" line="530"/>
         <source>Save File as ...</source>
         <translation>บันทึกไฟล์เป็น...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="621"/>
+        <location filename="../../mainwindow.cpp" line="622"/>
         <source>Exit </source>
         <translation>ออก </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="622"/>
+        <location filename="../../mainwindow.cpp" line="623"/>
         <source>Are you sure?</source>
         <translation>คุณแน่ใจหรือไม่?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="794"/>
+        <location filename="../../mainwindow.cpp" line="795"/>
         <source>Error</source>
         <translation>ข้อผิดพลาด</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="380"/>
+        <location filename="../../mainwindow.cpp" line="381"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
@@ -1926,105 +1926,105 @@ wiRedPanda %1 จะแสดงรายการไฟล์ .panda อื่�
 คุณต้องบันทึกโปรเจกต์ใหม่ก่อนเข้าถึง IC และสกิน หรือเรียกใช้การจำลอง beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="549"/>
+        <location filename="../../mainwindow.cpp" line="550"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda เป็นซอฟต์แวร์ที่พัฒนาโดยนักศึกษาของมหาวิทยาลัยสหพันธรัฐเซาเปาโล โครงการนี้สร้างขึ้นเพื่อช่วยให้นักศึกษาเรียนรู้เกี่ยวกับวงจรตรรกะ&lt;/p&gt;&lt;p&gt;เวอร์ชันซอฟต์แวร์: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;ผู้สร้าง:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda ปัจจุบันได้รับการดูแลโดย Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves และ Maycon A. Santana&lt;/p&gt;&lt;p&gt; โปรดส่งรายงานที่หน้า GitHub ของเราหากพบข้อผิดพลาดหรือหากคุณต้องการให้มีการใช้งานฟังก์ชันใหม่&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;เยี่ยมชมเว็บไซต์ของเรา!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="569"/>
+        <location filename="../../mainwindow.cpp" line="570"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;คีย์ลัดของแคนวาส&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : ขยายภาพ &lt;/li&gt;&lt;li&gt; Ctrl+- : ย่อภาพ &lt;/li&gt;&lt;li&gt; Ctrl+1 : ซ่อน/แสดงสายไฟ &lt;/li&gt;&lt;li&gt; Ctrl+2 : ซ่อน/แสดงเกต &lt;/li&gt;&lt;li&gt; Ctrl+F : ค้นหาองค์ประกอบ &lt;/li&gt;&lt;li&gt; Ctrl+W : เปิด beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : บันทึกโครงการ &lt;/li&gt;&lt;li&gt; Ctrl+Q : ออกจาก wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : เริ่ม/หยุดชั่วคราวการจำลอง &lt;/li&gt;&lt;li&gt; [ : คุณสมบัติหลักขององค์ประกอบก่อนหน้า &lt;/li&gt;&lt;li&gt; ] : คุณสมบัติหลักขององค์ประกอบถัดไป &lt;/li&gt;&lt;li&gt; { : คุณสมบัติรองขององค์ประกอบก่อนหน้า &lt;/li&gt;&lt;li&gt; } : คุณสมบัติรองขององค์ประกอบถัดไป &lt;/li&gt;&lt;li&gt; &amp;lt; : เปลี่ยนเป็นองค์ประกอบก่อนหน้า &lt;/li&gt;&lt;li&gt; &amp;gt; : เปลี่ยนเป็นองค์ประกอบถัดไป &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;เคล็ดลับทั่วไป&lt;/h1&gt;&lt;p&gt;ดับเบิลคลิกที่สายไฟเพื่อสร้างโหนด&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="999"/>
-        <location filename="../../mainwindow.cpp" line="1026"/>
+        <location filename="../../mainwindow.cpp" line="1000"/>
+        <location filename="../../mainwindow.cpp" line="1027"/>
         <source>Missing file name.</source>
         <translation>ขาดชื่อไฟล์</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1005"/>
+        <location filename="../../mainwindow.cpp" line="1006"/>
         <source>The .panda file is empty.</source>
         <translation>ไฟล์ .panda ว่างเปล่า</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1018"/>
+        <location filename="../../mainwindow.cpp" line="1019"/>
         <source>Arduino code successfully generated.</source>
         <translation>สร้างโค้ด Arduino สำเร็จ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1053"/>
+        <location filename="../../mainwindow.cpp" line="1054"/>
         <source>Generate Arduino Code</source>
         <translation>สร้างโค้ด Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1053"/>
+        <location filename="../../mainwindow.cpp" line="1054"/>
         <source>Arduino file (*.ino)</source>
         <translation>ไฟล์ Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1155"/>
+        <location filename="../../mainwindow.cpp" line="1156"/>
         <source>Export to PDF</source>
         <translation>ส่งออกเป็น PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1155"/>
+        <location filename="../../mainwindow.cpp" line="1156"/>
         <source>PDF files (*.pdf)</source>
         <translation>ไฟล์ PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1173"/>
+        <location filename="../../mainwindow.cpp" line="1174"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>ไม่สามารถพิมพ์วงจรนี้เป็น PDF ได้</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1180"/>
-        <location filename="../../mainwindow.cpp" line="1218"/>
+        <location filename="../../mainwindow.cpp" line="1181"/>
+        <location filename="../../mainwindow.cpp" line="1219"/>
         <source>Exported file successfully.</source>
         <translation>ส่งออกไฟล์สำเร็จ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1199"/>
+        <location filename="../../mainwindow.cpp" line="1200"/>
         <source>Export to Image</source>
         <translation>ส่งออกเป็นรูปภาพ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1199"/>
+        <location filename="../../mainwindow.cpp" line="1200"/>
         <source>PNG files (*.png)</source>
         <translation>ไฟล์ PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1717"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <source>Unmute</source>
         <translation>เปิดเสียง</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1756"/>
+        <location filename="../../mainwindow.cpp" line="1757"/>
         <source>Save file first.</source>
         <translation>บันทึกไฟล์ก่อน</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1762"/>
+        <location filename="../../mainwindow.cpp" line="1763"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1774"/>
-        <location filename="../../mainwindow.cpp" line="1786"/>
+        <location filename="../../mainwindow.cpp" line="1775"/>
+        <location filename="../../mainwindow.cpp" line="1787"/>
         <source>Info</source>
         <translation>ข้อมูล</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1774"/>
+        <location filename="../../mainwindow.cpp" line="1775"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>ไฟล์ที่เลือก (และไฟล์ที่เกี่ยวข้อง) จะถูกคัดลอกไปยังโฟลเดอร์ไฟล์ปัจจุบัน</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1786"/>
+        <location filename="../../mainwindow.cpp" line="1787"/>
         <source>Drag here to remove.</source>
         <translation>ลากมาที่นี่เพื่อลบ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1809"/>
+        <location filename="../../mainwindow.cpp" line="1810"/>
         <source>Error removing file: %1</source>
         <translation>ข้อผิดพลาดในการลบไฟล์: %1</translation>
     </message>
