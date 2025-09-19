@@ -111,7 +111,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1394"/>
+        <location filename="../../bewaveddolphin.cpp" line="1395"/>
         <location filename="../../bewaveddolphin_ui.cpp" line="242"/>
         <source>Export to PDF</source>
         <translation>Als PDF exportieren</translation>
@@ -320,152 +320,152 @@
         <translation>Strg+X</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="142"/>
-        <location filename="../../bewaveddolphin.cpp" line="214"/>
-        <location filename="../../bewaveddolphin.cpp" line="1116"/>
-        <location filename="../../bewaveddolphin.cpp" line="1268"/>
+        <location filename="../../bewaveddolphin.cpp" line="143"/>
+        <location filename="../../bewaveddolphin.cpp" line="215"/>
+        <location filename="../../bewaveddolphin.cpp" line="1117"/>
+        <location filename="../../bewaveddolphin.cpp" line="1269"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin Simulator</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="534"/>
-        <location filename="../../bewaveddolphin.cpp" line="1182"/>
+        <location filename="../../bewaveddolphin.cpp" line="535"/>
+        <location filename="../../bewaveddolphin.cpp" line="1183"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="535"/>
+        <location filename="../../bewaveddolphin.cpp" line="536"/>
         <source>Save simulation before closing?</source>
         <translation>Simulation vor dem Schließen speichern?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1183"/>
+        <location filename="../../bewaveddolphin.cpp" line="1184"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Möchten Sie diese beWavedDolphin-Datei mit Ihrer aktuellen wiRedPanda-Datei verknüpfen und speichern?</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1083"/>
+        <location filename="../../bewaveddolphin.cpp" line="1084"/>
         <source>Save File as...</source>
         <translation>Datei speichern als...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1086"/>
+        <location filename="../../bewaveddolphin.cpp" line="1087"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>CSV-Dateien (*.csv);;Dolphin-Dateien (*.dolphin);;Alle unterstützten Dateien (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1087"/>
+        <location filename="../../bewaveddolphin.cpp" line="1088"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Dolphin-Dateien (*.dolphin);;CSV-Dateien (*.csv);;Alle unterstützten Dateien (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1074"/>
-        <location filename="../../bewaveddolphin.cpp" line="1117"/>
+        <location filename="../../bewaveddolphin.cpp" line="1075"/>
+        <location filename="../../bewaveddolphin.cpp" line="1118"/>
         <source>Saved file successfully.</source>
         <translation>Datei erfolgreich gespeichert.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="244"/>
-        <location filename="../../bewaveddolphin.cpp" line="255"/>
-        <location filename="../../bewaveddolphin.cpp" line="265"/>
+        <location filename="../../bewaveddolphin.cpp" line="245"/>
+        <location filename="../../bewaveddolphin.cpp" line="256"/>
+        <location filename="../../bewaveddolphin.cpp" line="266"/>
         <source></source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="298"/>
-        <location filename="../../bewaveddolphin.cpp" line="325"/>
+        <location filename="../../bewaveddolphin.cpp" line="299"/>
+        <location filename="../../bewaveddolphin.cpp" line="326"/>
         <source>Could not load enough elements for the simulation.</source>
         <translation>Es konnten nicht genügend Elemente für die Simulation geladen werden.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="507"/>
+        <location filename="../../bewaveddolphin.cpp" line="508"/>
         <source>Waveform would be too big! Resetting zoom.</source>
         <translation>Wellenform wäre zu groß! Zoom wird zurückgesetzt.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="774"/>
+        <location filename="../../bewaveddolphin.cpp" line="775"/>
         <source>No cells selected.</source>
         <translation>Keine Zellen ausgewählt.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1126"/>
+        <location filename="../../bewaveddolphin.cpp" line="1127"/>
         <source>Error opening file: %1</source>
         <translation>Fehler beim Öffnen der Datei: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1140"/>
+        <location filename="../../bewaveddolphin.cpp" line="1141"/>
         <source>Error saving file: %1</source>
         <translation>Fehler beim Speichern der Datei: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1210"/>
+        <location filename="../../bewaveddolphin.cpp" line="1211"/>
         <source>Open File</source>
         <translation>Datei öffnen</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1212"/>
+        <location filename="../../bewaveddolphin.cpp" line="1213"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Alle unterstützten Dateien (*.dolphin *.csv);;Dolphin-Dateien (*.dolphin);;CSV-Dateien (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1228"/>
+        <location filename="../../bewaveddolphin.cpp" line="1229"/>
         <source>File loaded successfully.</source>
         <translation>Datei erfolgreich geladen.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1243"/>
+        <location filename="../../bewaveddolphin.cpp" line="1244"/>
         <source>Could not open file in ReadOnly mode: %1</source>
         <translation>Datei konnte nicht im Nur-Lese-Modus geöffnet werden: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1262"/>
+        <location filename="../../bewaveddolphin.cpp" line="1263"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>Format nicht unterstützt. Datei konnte nicht geöffnet werden: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1281"/>
-        <location filename="../../bewaveddolphin.cpp" line="1312"/>
+        <location filename="../../bewaveddolphin.cpp" line="1282"/>
+        <location filename="../../bewaveddolphin.cpp" line="1313"/>
         <source>Invalid number of columns.</source>
         <translation>Ungültige Anzahl von Spalten.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1302"/>
+        <location filename="../../bewaveddolphin.cpp" line="1303"/>
         <source>Invalid CSV format: insufficient data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1321"/>
+        <location filename="../../bewaveddolphin.cpp" line="1322"/>
         <source>Invalid CSV format: expected %1 elements, got %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1370"/>
+        <location filename="../../bewaveddolphin.cpp" line="1371"/>
         <source>Export to Image</source>
         <translation>Als Bild exportieren</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1370"/>
+        <location filename="../../bewaveddolphin.cpp" line="1371"/>
         <source>PNG files (*.png)</source>
         <translation>PNG-Dateien (*.png)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1394"/>
+        <location filename="../../bewaveddolphin.cpp" line="1395"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF-Dateien (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1413"/>
+        <location filename="../../bewaveddolphin.cpp" line="1414"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Diese Schaltung konnte nicht als PDF gedruckt werden.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1424"/>
+        <location filename="../../bewaveddolphin.cpp" line="1425"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin ist ein Wellenform-Simulator für die wiRedPanda-Software, entwickelt von der Bundesuniversität São Paulo. Dieses Projekt wurde erstellt, um Studenten beim Erlernen von Logikschaltungen zu helfen.&lt;/p&gt;&lt;p&gt;Software-Version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Ersteller:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin wird derzeit von Prof. Fábio Cappabianco, Ph.D. und seinen Studenten betreut&lt;/p&gt;&lt;p&gt; Bitte melden Sie Fehler auf unserer GitHub-Seite, wenn Sie welche finden oder eine neue Funktionalität implementiert werden soll.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Besuchen Sie unsere Website!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="220"/>
-        <location filename="../../bewaveddolphin.cpp" line="1236"/>
+        <location filename="../../bewaveddolphin.cpp" line="221"/>
+        <location filename="../../bewaveddolphin.cpp" line="1237"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Datei &quot;%1&quot; existiert nicht!</translation>
     </message>
@@ -1799,7 +1799,7 @@
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1717"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>Stumm</translation>
@@ -1835,92 +1835,92 @@
         <translation>Simulation neu starten.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="568"/>
+        <location filename="../../mainwindow.cpp" line="569"/>
         <location filename="../../mainwindow_ui.cpp" line="677"/>
         <source>Shortcuts and Tips</source>
         <translation>Tastenkombinationen und Tipps</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="268"/>
+        <location filename="../../mainwindow.cpp" line="269"/>
         <source>Error!</source>
         <translation>Fehler!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="293"/>
-        <location filename="../../mainwindow.cpp" line="429"/>
-        <location filename="../../mainwindow.cpp" line="698"/>
-        <location filename="../../mainwindow.cpp" line="1250"/>
+        <location filename="../../mainwindow.cpp" line="294"/>
+        <location filename="../../mainwindow.cpp" line="430"/>
+        <location filename="../../mainwindow.cpp" line="699"/>
+        <location filename="../../mainwindow.cpp" line="1251"/>
         <source>New Project</source>
         <translation>Neues Projekt</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="353"/>
+        <location filename="../../mainwindow.cpp" line="354"/>
         <source>File saved successfully.</source>
         <translation>Datei erfolgreich gespeichert.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="372"/>
+        <location filename="../../mainwindow.cpp" line="373"/>
         <source>Don&apos;t show this again.</source>
         <translation>Dies nicht mehr anzeigen.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="412"/>
+        <location filename="../../mainwindow.cpp" line="413"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Datei nicht gespeichert. Tab trotzdem schließen?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="431"/>
+        <location filename="../../mainwindow.cpp" line="432"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> wurde geändert.
 Möchten Sie Ihre Änderungen speichern?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="469"/>
+        <location filename="../../mainwindow.cpp" line="470"/>
         <source>File loaded successfully.</source>
         <translation>Datei erfolgreich geladen.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="488"/>
-        <location filename="../../mainwindow.cpp" line="1760"/>
+        <location filename="../../mainwindow.cpp" line="489"/>
+        <location filename="../../mainwindow.cpp" line="1761"/>
         <source>Open File</source>
         <translation>Datei öffnen</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="488"/>
-        <location filename="../../mainwindow.cpp" line="509"/>
-        <location filename="../../mainwindow.cpp" line="529"/>
+        <location filename="../../mainwindow.cpp" line="489"/>
+        <location filename="../../mainwindow.cpp" line="510"/>
+        <location filename="../../mainwindow.cpp" line="530"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda-Dateien (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="509"/>
-        <location filename="../../mainwindow.cpp" line="529"/>
+        <location filename="../../mainwindow.cpp" line="510"/>
+        <location filename="../../mainwindow.cpp" line="530"/>
         <source>Save File as ...</source>
         <translation>Datei speichern als ...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="549"/>
+        <location filename="../../mainwindow.cpp" line="550"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda ist eine Software, die von Studenten der Bundesuniversität São Paulo entwickelt wurde. Dieses Projekt wurde erstellt, um Studenten beim Erlernen von Logikschaltungen zu helfen.&lt;/p&gt;&lt;p&gt;Software-Version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Ersteller:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda wird derzeit von Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves und Maycon A. Santana gepflegt.&lt;/p&gt;&lt;p&gt; Bitte erstellen Sie einen Bericht auf unserer GitHub-Seite, wenn Fehler gefunden werden oder wenn Sie wünschen, dass eine neue Funktionalität implementiert wird.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Besuchen Sie unsere Website!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="621"/>
+        <location filename="../../mainwindow.cpp" line="622"/>
         <source>Exit </source>
         <translation>Beenden </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="622"/>
+        <location filename="../../mainwindow.cpp" line="623"/>
         <source>Are you sure?</source>
         <translation>Sind Sie sicher?</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="794"/>
+        <location filename="../../mainwindow.cpp" line="795"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="380"/>
+        <location filename="../../mainwindow.cpp" line="381"/>
         <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
 To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
 wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
@@ -1931,100 +1931,100 @@ wiRedPanda %1 wird automatisch alle anderen .panda-Dateien im selben Verzeichnis
 Sie müssen neue Projekte speichern, bevor Sie auf ICs und Skins zugreifen oder beWavedDolphin-Simulationen ausführen können.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="569"/>
+        <location filename="../../mainwindow.cpp" line="570"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Leinwand-Tastenkombinationen&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Strg+= : Vergrößern &lt;/li&gt;&lt;li&gt; Strg+- : Verkleinern &lt;/li&gt;&lt;li&gt; Strg+1 : Leitungen ausblenden/anzeigen &lt;/li&gt;&lt;li&gt; Strg+2 : Gatter ausblenden/anzeigen &lt;/li&gt;&lt;li&gt; Strg+F : Elemente suchen &lt;/li&gt;&lt;li&gt; Strg+W : beWaveDolphin öffnen &lt;/li&gt;&lt;li&gt; Strg+S : Projekt speichern &lt;/li&gt;&lt;li&gt; Strg+Q : wiRedPanda beenden &lt;/li&gt;&lt;li&gt; F5 : Simulation starten/pausieren &lt;/li&gt;&lt;li&gt; [ : Vorherige primäre Elementeigenschaft &lt;/li&gt;&lt;li&gt; ] : Nächste primäre Elementeigenschaft &lt;/li&gt;&lt;li&gt; { : Vorherige sekundäre Elementeigenschaft &lt;/li&gt;&lt;li&gt; } : Nächste sekundäre Elementeigenschaft &lt;/li&gt;&lt;li&gt; &amp;lt; : Zu vorherigem Element morphen &lt;/li&gt;&lt;li&gt; &amp;gt; : Zu nächstem Element morphen &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Allgemeine Tipps&lt;/h1&gt;&lt;p&gt;Doppelklick auf eine Leitung, um einen Knoten zu erstellen&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="999"/>
-        <location filename="../../mainwindow.cpp" line="1026"/>
+        <location filename="../../mainwindow.cpp" line="1000"/>
+        <location filename="../../mainwindow.cpp" line="1027"/>
         <source>Missing file name.</source>
         <translation>Fehlender Dateiname.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1005"/>
+        <location filename="../../mainwindow.cpp" line="1006"/>
         <source>The .panda file is empty.</source>
         <translation>Die .panda-Datei ist leer.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1018"/>
+        <location filename="../../mainwindow.cpp" line="1019"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino-Code erfolgreich generiert.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1053"/>
+        <location filename="../../mainwindow.cpp" line="1054"/>
         <source>Generate Arduino Code</source>
         <translation>Arduino-Code generieren</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1053"/>
+        <location filename="../../mainwindow.cpp" line="1054"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino-Datei (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1155"/>
+        <location filename="../../mainwindow.cpp" line="1156"/>
         <source>Export to PDF</source>
         <translation>Als PDF exportieren</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1155"/>
+        <location filename="../../mainwindow.cpp" line="1156"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF-Dateien (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1173"/>
+        <location filename="../../mainwindow.cpp" line="1174"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Diese Schaltung konnte nicht als PDF gedruckt werden.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1180"/>
-        <location filename="../../mainwindow.cpp" line="1218"/>
+        <location filename="../../mainwindow.cpp" line="1181"/>
+        <location filename="../../mainwindow.cpp" line="1219"/>
         <source>Exported file successfully.</source>
         <translation>Datei erfolgreich exportiert.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1199"/>
+        <location filename="../../mainwindow.cpp" line="1200"/>
         <source>Export to Image</source>
         <translation>Als Bild exportieren</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1199"/>
+        <location filename="../../mainwindow.cpp" line="1200"/>
         <source>PNG files (*.png)</source>
         <translation>PNG-Dateien (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1717"/>
+        <location filename="../../mainwindow.cpp" line="1718"/>
         <source>Unmute</source>
         <translation>Laut</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1756"/>
+        <location filename="../../mainwindow.cpp" line="1757"/>
         <source>Save file first.</source>
         <translation>Datei zuerst speichern.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1762"/>
+        <location filename="../../mainwindow.cpp" line="1763"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1774"/>
-        <location filename="../../mainwindow.cpp" line="1786"/>
+        <location filename="../../mainwindow.cpp" line="1775"/>
+        <location filename="../../mainwindow.cpp" line="1787"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1774"/>
+        <location filename="../../mainwindow.cpp" line="1775"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Ausgewählte Dateien (und ihre Abhängigkeiten) werden in den aktuellen Dateiordner kopiert.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1786"/>
+        <location filename="../../mainwindow.cpp" line="1787"/>
         <source>Drag here to remove.</source>
         <translation>Hierher ziehen zum Entfernen.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1809"/>
+        <location filename="../../mainwindow.cpp" line="1810"/>
         <source>Error removing file: %1</source>
         <translation>Fehler beim Entfernen der Datei: %1</translation>
     </message>
