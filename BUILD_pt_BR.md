@@ -50,7 +50,7 @@ distribuição baseada no Debian.
 sudo apt-get update
 sudo apt-get install libgl1-mesa-dev libxcb-xinerama0 libpulse-dev git python3 python3-pip python3-venv -y
 python3 -m venv ~/venv
-~/venv/bin/pip install aqtinstall==3.2.*
+~/venv/bin/pip install aqtinstall==3.*
 ~/venv/bin/aqt install-qt linux desktop 5.15.2 --outputdir ~/Qt
 PATH=~/Qt/5.15.2/gcc_64/bin:$PATH
 export PATH
