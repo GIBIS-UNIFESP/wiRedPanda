@@ -139,14 +139,14 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         git clone --recursive https://github.com/getsentry/sentry-native.git
-        cmake -S sentry-native -B sentry-native/build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad
+        cmake -S sentry-native -B sentry-native/build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
         cmake --build sentry-native/build
         cmake --install sentry-native/build --prefix thirdparty/sentry
 
     - name: Build Ubuntu
       if: runner.os == 'Linux'
       run: |
-        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
         cmake --build build
         mkdir -p build/lib
         cp thirdparty/sentry/bin/crashpad_handler build/
@@ -300,14 +300,14 @@ jobs:
       if: runner.os == 'Windows'
       run: |
         git clone --recursive https://github.com/getsentry/sentry-native.git
-        cmake -S sentry-native -B sentry-native/build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad
+        cmake -S sentry-native -B sentry-native/build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
         cmake --build sentry-native/build
         cmake --install sentry-native/build --prefix thirdparty/sentry
 
     - name: Build Windows
       if: runner.os == 'Windows'
       run: |
-        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
         cmake --build build
         cp thirdparty/sentry/bin/crashpad_handler.exe build/
         cp thirdparty/sentry/bin/sentry.dll build/
@@ -452,14 +452,14 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         git clone --recursive https://github.com/getsentry/sentry-native.git
-        cmake -S sentry-native -B sentry-native/build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=breakpad -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+        cmake -S sentry-native -B sentry-native/build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=breakpad -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
         cmake --build sentry-native/build
         cmake --install sentry-native/build --prefix thirdparty/sentry
 
     - name: Build macOS
       if: runner.os == 'macOS'
       run: |
-        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
         cmake --build build
         mkdir -p build/wiredpanda.app/Contents/MacOS
         mkdir -p build/wiredpanda.app/Contents/Frameworks
