@@ -8,6 +8,9 @@
 #include "graphicelement.h"
 #include "qneconnection.h"
 #include "qneport.h"
+#include "logictruthtable.h"
+#include "truth_table.h"
+#include "buzzer.h"
 
 #include <QRegularExpression>
 
@@ -84,7 +87,7 @@ void CodeGenerator::generate()
     m_stream << "// ==================================================================== //" << Qt::endl;
     m_stream << Qt::endl
              << Qt::endl;
-    m_stream << "#include <elapsedMillis.h>" << Qt::endl;
+    // m_stream << "#include <elapsedMillis.h>" << Qt::endl;
     /* Declaring input and output pins; */
     declareInputs();
     declareOutputs();
@@ -135,7 +138,14 @@ void CodeGenerator::declareOutputs()
         if (elm->elementGroup() == ElementGroup::Output) {
             QString label = elm->label();
             for (int i = 0; i < elm->inputs().size(); ++i) {
-                QString varName = elm->objectName() + QString::number(counter);
+                QString varName = elm->objectName();
+
+                if(elm->elementType() == ElementType::Display7) {
+                    varName.replace("7", "seven");
+                }
+
+                varName += QString::number(counter);
+
                 if (!label.isEmpty()) {
                     varName = QString("%1_%2").arg(varName, label);
                 }
@@ -156,86 +166,81 @@ void CodeGenerator::declareOutputs()
 
 void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox)
 {
+    int counter = 0;
+
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
-            //      IC *ic = qobject_cast<IC *>(elm);
+            continue;
+        }
 
-            // FIXME: Get code generator to work again
-            //      if (ic) {
-            //        out << "// " << ic->getLabel() << Qt::endl;
-            //        declareAuxVariablesRec(ic->getElements(), true);
-            //        out << "// END of " << ic->getLabel() << Qt::endl;
-            //        for (int i = 0; i < ic->outputSize(); ++i) {
-            //          QNEPort *port = ic->outputMap.at(i);
-            //          varMap[ic->outputPort(i)] = otherPortName(port);
-            //        }
-            //      }
-        } else {
-            QString varName = QString("aux_%1_%2").arg(removeForbiddenChars(elm->objectName()), m_globalCounter++);
-            const auto outputs = elm->outputs();
+        const auto outputs = elm->outputs();
 
-            if (outputs.size() == 1) {
-                QNEPort *port = outputs.constFirst();
+        QString baseVarName = QString("aux_%1_%2").arg(removeForbiddenChars(elm->objectName()), QString::number(counter++));
 
-                if (elm->elementType() == ElementType::InputVcc) {
-                    m_varMap[port] = "HIGH";
-                    continue;
-                }
+        if (elm->elementType() == ElementType::TruthTable && !outputs.isEmpty()) {
+            QNEPort *outputPort = outputs.constFirst();
+            QString ttVarName = QString("%1_output").arg(removeForbiddenChars(elm->objectName()));
+            m_varMap[outputPort] = ttVarName;
+            m_stream << "boolean " << ttVarName << " = LOW;" << Qt::endl;
 
-                if (elm->elementType() == ElementType::InputGnd) {
-                    m_varMap[port] = "LOW";
-                    continue;
-                }
+            continue;
+        }
 
-                if (m_varMap.value(port).isEmpty()) {
-                    m_varMap[port] = varName;
-                }
-            } else {
-                int portCounter = 0;
+        // Lógica geral
+        if (outputs.size() == 1) {
+            QNEPort *port = outputs.constFirst();
 
-                for (auto *port : outputs) {
-                    QString portName = varName;
-                    portName.append(QString("_%1").arg(portCounter++));
-
-                    if (!port->name().isEmpty()) {
-                        portName.append(QString("_%1").arg(removeForbiddenChars(port->name())));
-                    }
-
-                    m_varMap[port] = portName;
-                }
+            if (elm->elementType() == ElementType::InputVcc) {
+                m_varMap[port] = "HIGH";
+                continue;
             }
 
+            if (elm->elementType() == ElementType::InputGnd) {
+                m_varMap[port] = "LOW";
+                continue;
+            }
+
+            if (m_varMap.value(port).isEmpty()) {
+                m_varMap[port] = baseVarName;
+            }
+
+        } else {
+            int portCounter = 0;
             for (auto *port : outputs) {
-                QString varName2 = m_varMap.value(port);
-                m_stream << "boolean " << varName2 << " = " << highLow(port->defaultValue()) << ";" << Qt::endl;
+                QString portName = baseVarName + QString("_%1").arg(portCounter++);
+                if (!port->name().isEmpty()) {
+                    portName += "_" + removeForbiddenChars(port->name());
+                }
+                m_varMap[port] = portName;
+            }
+        }
 
-                switch (elm->elementType()) {
-                case ElementType::Clock: {
-                    if (!isBox) {
-                        auto *clk = qobject_cast<Clock *>(elm);
-                        if (!clk) {
-                            break;
-                        }
-                        m_stream << "elapsedMillis " << varName2 << "_elapsed = 0;" << Qt::endl;
-                        m_stream << "int " << varName2 << "_interval = " << 1000 / clk->frequency() << ";" << Qt::endl;
+        for (auto *port : outputs) {
+            QString varName2 = m_varMap.value(port);
+            m_stream << "boolean " << varName2 << " = " << highLow(port->defaultValue()) << ";" << Qt::endl;
+
+            switch (elm->elementType()) {
+            case ElementType::Clock:
+                if (!isBox) {
+                    auto *clk = qobject_cast<Clock *>(elm);
+                    if (!clk) {
+                        break;
                     }
-                    break;
+                    m_stream << "unsigned long " << varName2 << "_lastTime = 0;" << Qt::endl;
+                    m_stream << "const unsigned long " << varName2 << "_interval = " << 1000UL / clk->frequency() << ";" << Qt::endl;
                 }
-                case ElementType::DFlipFlop: {
-                    m_stream << "boolean " << varName2 << "_inclk = LOW;" << Qt::endl;
-                    m_stream << "boolean " << varName2 << "_last = LOW;" << Qt::endl;
-                    break;
-                }
-                case ElementType::TFlipFlop:
-                case ElementType::SRFlipFlop:
-                case ElementType::JKFlipFlop: {
-                    m_stream << "boolean " << varName2 << "_inclk = LOW;" << Qt::endl;
-                    break;
-                }
-
-                default:
-                    break;
-                }
+                break;
+            case ElementType::DFlipFlop:
+                m_stream << "boolean " << varName2 << "_inclk = LOW;" << Qt::endl;
+                m_stream << "boolean " << varName2 << "_last = LOW;" << Qt::endl;
+                break;
+            case ElementType::TFlipFlop:
+            case ElementType::SRFlipFlop:
+            case ElementType::JKFlipFlop:
+                m_stream << "boolean " << varName2 << "_inclk = LOW;" << Qt::endl;
+                break;
+            default:
+                break;
             }
         }
     }
@@ -433,6 +438,62 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
 
             break;
         }
+        case ElementType::TruthTable: {
+            auto* ttGraphic = dynamic_cast<TruthTable*>(elm);
+            LogicTruthTable *ttLogic = dynamic_cast<LogicTruthTable *>(ttGraphic->logic());
+
+            QBitArray propositions = ttLogic->proposition();
+            const int nInputs = elm->inputSize();
+            const int rows = 1 << nInputs;
+
+            QString tableNameConst = QString("%1").arg(removeForbiddenChars(elm->objectName()));
+
+            QStringList inputSignalNames;
+            for (int i = 0; i < nInputs; ++i) {
+                QNEPort* ttInputPort = elm->inputPort(i);
+                QString signalName = otherPortName(ttInputPort);
+
+                if (signalName == "LOW") {
+                    signalName = "0";
+                } else if (signalName == "HIGH") {
+                    signalName = "1";
+                } else if (signalName.isEmpty()) {
+                    m_stream << "// ATENÇÃO: Entrada " << i << " da Tabela Verdade '" << elm->objectName() << "' parece desconectada ou indefinida. Assumindo LOW." << Qt::endl;
+                    signalName = "0";
+                }
+                inputSignalNames << signalName;
+            }
+
+            QString outputVarName = m_varMap.value(elm->outputPort(0));
+            if (outputVarName.isEmpty()) {
+                throw PANDACEPTION("Output variable not mapped for TruthTable: %1", elm->objectName());
+            }
+
+            m_stream << QString("    const uint8_t %1[%2] = {\n").arg(tableNameConst).arg(rows);
+            for (int i = 0; i < rows; ++i) {
+                m_stream << "        " << (propositions.testBit(i) ? "1" : "0");
+                if (i != rows - 1) m_stream << ",";
+                m_stream << " // entrada " << QString::number(i, 2).rightJustified(nInputs, '0') << "\n";
+            }
+            m_stream << "    };\n\n";
+
+            QStringList bitExpressions;
+            for (int i = 0; i < nInputs; ++i) {
+                bitExpressions << QString("(%1 << %2)").arg(inputSignalNames[i]).arg(nInputs - 1 - i);
+            }
+            QString indexCalculation = bitExpressions.join(" | ");
+            if (nInputs == 0) {
+                indexCalculation = "0";
+            }
+
+
+            m_stream << QString("    uint8_t index = %1;").arg(indexCalculation) << Qt::endl;
+            m_stream << QString("    %1 = %2[index];").arg(outputVarName, tableNameConst) << Qt::endl;
+            break;
+        }
+
+        // case ElementType::Display7: {}
+
         case ElementType::And:
         case ElementType::Or:
         case ElementType::Nand:
@@ -530,9 +591,55 @@ void CodeGenerator::loop()
         if (elm->elementType() == ElementType::Clock) {
             const auto elmOutputs = elm->outputs();
             QString varName = m_varMap.value(elmOutputs.constFirst());
-            m_stream << QString("    if (%1_elapsed > %1_interval) {").arg(varName) << Qt::endl;
-            m_stream << QString("        %1_elapsed = 0;").arg(varName) << Qt::endl;
-            m_stream << QString("        %1 = ! %1;").arg(varName) << Qt::endl;
+            // m_stream << QString("    if (%1_elapsed > %1_interval) {").arg(varName) << Qt::endl;
+            // m_stream << QString("        %1_elapsed = 0;").arg(varName) << Qt::endl;
+            // m_stream << QString("        %1 = ! %1;").arg(varName) << Qt::endl;
+            // m_stream << QString("    }") << Qt::endl;
+
+            m_stream << QString("    unsigned long now = millis();") << Qt::endl;
+            m_stream << QString("    if (now - %1_lastTime >= %1_interval) {").arg(varName) << Qt::endl;
+            m_stream << QString("        %1_lastTime = now;").arg(varName) << Qt::endl;
+            m_stream << QString("        %1 = !%1;").arg(varName) << Qt::endl;
+            m_stream << "    }" << Qt::endl;
+        }
+
+        if (elm->elementType() == ElementType::Buzzer) {
+            auto *buzzer = qobject_cast<Buzzer *>(elm);
+            if (!buzzer) continue;
+            QString inputSignal = otherPortName(buzzer->inputPort(0));
+
+            QString buzzerPinName;
+            for (const auto &pin : std::as_const(m_outputMap)) {
+                if (pin.m_elm == elm) {
+                    buzzerPinName = pin.m_varName;
+                    break;
+                }
+            }
+
+            if (buzzerPinName.isEmpty()) {
+                throw PANDACEPTION("Buzzer output pin not found for: %1", elm->objectName());
+            }
+
+            QString note = buzzer->audio();
+
+            // qDebug() << "Nota de áudio lida do Buzzer:" << note;
+
+            int frequency = 0;
+            if (note == "C6") frequency = 1047;
+            else if (note == "D6") frequency = 1175;
+            else if (note == "E6") frequency = 1319;
+            else if (note == "F6") frequency = 1397;
+            else if (note == "G6") frequency = 1568;
+            else if (note == "A7") frequency = 3520;
+            else if (note == "B7") frequency = 3951;
+            else if (note == "C7") frequency = 2093;
+            else frequency = 1047;
+
+            m_stream << QString("    // Buzzer: %1 //").arg(elm->objectName()) << Qt::endl;
+            m_stream << QString("    if (%1 == HIGH) {").arg(inputSignal) << Qt::endl;
+            m_stream << QString("        tone(%1, %2);").arg(buzzerPinName).arg(frequency) << Qt::endl;
+            m_stream << QString("    } else {") << Qt::endl;
+            m_stream << QString("        noTone(%1);").arg(buzzerPinName) << Qt::endl;
             m_stream << QString("    }") << Qt::endl;
         }
     }
@@ -543,6 +650,10 @@ void CodeGenerator::loop()
     m_stream << "\n";
     m_stream << "    // Writing output data. //\n";
     for (const auto &pin : std::as_const(m_outputMap)) {
+        if (pin.m_elm->elementType() == ElementType::Buzzer) {
+            continue;
+        }
+
         QString varName = otherPortName(pin.m_port);
         if (varName.isEmpty()) {
             varName = highLow(pin.m_port->defaultValue());

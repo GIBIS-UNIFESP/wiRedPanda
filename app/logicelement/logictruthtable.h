@@ -13,6 +13,7 @@ public:
     explicit LogicTruthTable(const int inputSize, const int outputSize, const QBitArray &key);
 
     void updateLogic() override;
+    const QBitArray &proposition() const { return m_proposition; }
 
 private:
     Q_DISABLE_COPY(LogicTruthTable)
