@@ -2,12 +2,8 @@
     "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
     "name": "wiRedPanda Development Environment",
 
-    // Use this image if it exists, otherwise build it
-    "image": "wiredpanda-dev:latest",
-    "build": {
-        "dockerfile": "Dockerfile",
-        "context": ".."
-    },
+    // Use pre-built devcontainer image
+    "image": "darktorres/wiredpanda-devcontainer:ubuntu22.04",
 
     // Configure tool-specific properties
     "customizations": {
@@ -56,18 +52,6 @@
         "QT_PLUGIN_PATH": "/opt/Qt/6.9.2/gcc_64/plugins"
     },
 
-    // Features to add to the dev container
-    "features": {
-        "ghcr.io/devcontainers/features/common-utils:2": {
-            "installZsh": true,
-            "configureZshAsDefaultShell": true,
-            "installOhMyZsh": true,
-            "upgradePackages": true,
-            "username": "developer",
-            "userUid": "1000",
-            "userGid": "1000"
-        }
-    },
 
     // Lifecycle scripts
     "initializeCommand": "echo 'Initializing wiRedPanda development container...'",
