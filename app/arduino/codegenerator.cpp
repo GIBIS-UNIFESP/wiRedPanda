@@ -6,6 +6,7 @@
 #include "clock.h"
 #include "common.h"
 #include "graphicelement.h"
+#include "ic.h"
 #include "qneconnection.h"
 #include "qneport.h"
 #include "logictruthtable.h"
@@ -170,6 +171,18 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
 
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
+            auto *ic = qobject_cast<IC *>(elm);
+            if (!ic) continue;
+
+            // Comment the IC block for readability
+            m_stream << "// IC: " << ic->label() << Qt::endl;
+
+            // Recursively declare variables for internal elements
+            if (!ic->m_icElements.isEmpty()) {
+                declareAuxVariablesRec(ic->m_icElements, true);
+            }
+
+            m_stream << "// End IC: " << ic->label() << Qt::endl;
             continue;
         }
 
@@ -270,26 +283,50 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
 {
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
-            throw PANDACEPTION("IC element not supported: %1", elm->objectName());
-            // TODO: CodeGenerator::assignVariablesRec for IC Element
-            //      IC *ic = qobject_cast<IC *>(elm);
-            //      out << "    // " << ic->getLabel() << Qt::endl;
-            //      for (int i = 0; i < ic->inputSize(); ++i) {
-            //          QNEPort *port = ic->inputPort(i);
-            //          QNEPort *otherPort = port->connections().constFirst()->otherPort(port);
-            //          QString value = highLow(port->defaultValue());
-            //          if (!m_varMap.value(otherPort).isEmpty()) {
-            //              value = m_varMap.value(otherPort);
-            //          }
-            //          out << "    " << m_varMap.value(ic->inputMap.at(i)) << " = " << value << ";" << Qt::endl;
-            //      }
-            //      QVector<GraphicElement*> icElms = ic->getElements();
-            //      if (icElms.isEmpty()) {
-            //          continue;
-            //      }
-            //      icElms = Simulation::sortElements(icElms);
-            //      assignVariablesRec(icElms);
-            //      out << "    // End of " << ic->getLabel() << Qt::endl;
+            auto *ic = qobject_cast<IC *>(elm);
+            if (!ic) continue;
+
+            m_stream << "    // IC: " << ic->label() << Qt::endl;
+
+            // Map IC inputs: external signals → internal IC input variables
+            for (int i = 0; i < ic->inputSize(); ++i) {
+                QNEPort *externalPort = ic->inputPort(i);
+                if (i >= ic->m_icInputs.size()) continue;
+                QNEPort *internalPort = ic->m_icInputs.at(i);
+
+                QString externalValue = otherPortName(externalPort);
+                if (externalValue.isEmpty()) {
+                    externalValue = highLow(externalPort->defaultValue());
+                }
+
+                QString internalVar = m_varMap.value(internalPort);
+                if (!internalVar.isEmpty()) {
+                    m_stream << "    " << internalVar << " = " << externalValue << ";" << Qt::endl;
+                }
+            }
+
+            // Process internal IC elements in correct dependency order
+            if (!ic->m_icElements.isEmpty()) {
+                auto sortedElements = Common::sortGraphicElements(ic->m_icElements);
+                assignVariablesRec(sortedElements);
+            }
+
+            // Map IC outputs: internal IC output variables → external signals
+            for (int i = 0; i < ic->outputSize(); ++i) {
+                QNEPort *externalPort = ic->outputPort(i);
+                if (i >= ic->m_icOutputs.size()) continue;
+                QNEPort *internalPort = ic->m_icOutputs.at(i);
+
+                QString internalValue = otherPortName(internalPort);
+                QString externalVar = m_varMap.value(externalPort);
+
+                if (!externalVar.isEmpty() && !internalValue.isEmpty()) {
+                    m_stream << "    " << externalVar << " = " << internalValue << ";" << Qt::endl;
+                }
+            }
+
+            m_stream << "    // End IC: " << ic->label() << Qt::endl;
+            continue;
         }
         if (elm->inputs().isEmpty() || elm->outputs().isEmpty()) {
             continue;
