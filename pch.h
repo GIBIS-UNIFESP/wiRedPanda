@@ -1,5 +1,6 @@
 #if defined __cplusplus
-// Add C++ includes here
+// Qt includes (most common and stable)
+#include <QBitArray>
 #include <QBrush>
 #include <QCheckBox>
 #include <QClipboard>
@@ -25,6 +26,7 @@
 #include <QHeaderView>
 #include <QItemDelegate>
 #include <QKeyEvent>
+#include <QKeySequence>
 #include <QLabel>
 #include <QMainWindow>
 #include <QMap>
@@ -48,6 +50,19 @@
 #include <QTextStream>
 #include <QTimer>
 #include <QVector>
+#include <QVersionNumber>
 #include <QWidget>
 #include <QtGlobal>
+
+// Standard library includes (most expensive templates)
+#include <memory>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
+// Project includes (most expensive headers based on ClangBuildAnalyzer)
+#include "app/enums.h"
+#include "app/logicelement.h"
+#include "app/itemwithid.h"
+#include "app/graphicelement.h"
 #endif
