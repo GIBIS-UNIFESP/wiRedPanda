@@ -20,10 +20,14 @@ Compiled binaries for Windows, Linux and macOS are available on the [releases pa
 
 ## Building
 
-**Requirements**: Install Ninja build system:
-- Windows: `choco install ninja` or `scoop install ninja`
-- Linux: `apt install ninja-build` or `yum install ninja-build`
-- macOS: `brew install ninja`
+**Requirements**:
+- CMake 3.16+
+- Qt 5.15+ or Qt 6.2+ (with Multimedia, Svg modules)
+- C++ compiler with C++20 support
+- Ninja build system:
+  - Windows: `choco install ninja` or `scoop install ninja`
+  - Linux: `apt install ninja-build` or `yum install ninja-build`
+  - macOS: `brew install ninja`
 
 ```bash
 git clone https://github.com/GIBIS-UNIFESP/wiredpanda

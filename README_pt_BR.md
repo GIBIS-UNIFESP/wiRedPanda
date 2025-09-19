@@ -20,10 +20,14 @@ Binários compilados para Windows, Linux e macOS estão disponíveis na [página
 
 ## Compilação
 
-**Requisitos**: Instale o sistema de compilação Ninja:
-- Windows: `choco install ninja` ou `scoop install ninja`
-- Linux: `apt install ninja-build` ou `yum install ninja-build`
-- macOS: `brew install ninja`
+**Requisitos**:
+- CMake 3.16+
+- Qt 5.15+ ou Qt 6.2+ (com módulos Multimedia, Svg)
+- Compilador C++ com suporte a C++20
+- Sistema de compilação Ninja:
+  - Windows: `choco install ninja` ou `scoop install ninja`
+  - Linux: `apt install ninja-build` ou `yum install ninja-build`
+  - macOS: `brew install ninja`
 
 ```bash
 git clone https://github.com/GIBIS-UNIFESP/wiredpanda
