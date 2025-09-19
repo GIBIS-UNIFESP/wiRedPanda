@@ -222,6 +222,26 @@ class ExportImageCommand(MCPCommand):
     params: Parameters
 
 
+class ExportArduinoCommand(MCPCommand):
+    """Model for export_arduino command"""
+
+    class Parameters(BaseModel):
+        filename: Annotated[str, Field(min_length=1)]
+
+        @field_validator("filename")
+        @classmethod
+        def validate_extension(cls, v: str) -> str:
+            """Ensure filename has .ino extension"""
+            if not v.endswith(".ino"):
+                raise ValueError("Filename must have .ino extension")
+            return v
+
+        class Config:
+            extra = "forbid"
+
+    params: Parameters
+
+
 class CreateWaveformCommand(MCPCommand):
     """Model for create_waveform command"""
 
