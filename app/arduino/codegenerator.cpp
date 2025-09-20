@@ -289,7 +289,7 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
                 for (int i = 0; i < ic->m_icInputs.size(); ++i) {
                     QNEPort *internalPort = ic->m_icInputs.at(i);
                     if (m_varMap.value(internalPort).isEmpty()) {
-                        QString portVarName = QString("aux_ic_input_%1_%2").arg(removeForbiddenChars(ic->objectName()), QString::number(i));
+                        QString portVarName = QString("aux_ci_input_%1_%2").arg(removeForbiddenChars(ic->objectName()), QString::number(i));
                         m_varMap[internalPort] = portVarName;
                         if (!m_declaredVariables.contains(portVarName)) {
                             m_stream << "bool " << portVarName << " = false;" << Qt::endl;
@@ -902,7 +902,7 @@ void CodeGenerator::assignLogicOperator(GraphicElement *elm)
                         QNEPort *icInputPort = m_currentIC->m_icInputs.at(i);
                         if (icInputPort == inputPort) {
                             // This is an IC internal input node - use the corresponding external input variable
-                            inputValue = QString("aux_ic_input_ic_%1").arg(i);
+                            inputValue = QString("aux_ci_input_ci_%1").arg(i);
                             break;
                         }
                     }
