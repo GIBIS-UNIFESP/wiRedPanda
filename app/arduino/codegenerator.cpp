@@ -602,6 +602,31 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
 
             break;
         }
+        case ElementType::SRLatch: {
+            auto *outputPort1 = elm->outputPort(1);
+            if (!outputPort1) break;
+            QString secondOut = m_varMap.value(outputPort1);
+            QString s = otherPortName(elm->inputPort(0));
+            QString r = otherPortName(elm->inputPort(1));
+            m_stream << QString("    //SR Latch") << Qt::endl;
+            m_stream << QString("    if (%1 && %2) { ").arg(s, r) << Qt::endl;
+            m_stream << QString("        // Invalid state: both Set and Reset active") << Qt::endl;
+            m_stream << QString("        %1 = false;").arg(firstOut) << Qt::endl;
+            m_stream << QString("        %1 = false;").arg(secondOut) << Qt::endl;
+            m_stream << QString("    } else if (%1) { ").arg(s) << Qt::endl;
+            m_stream << QString("        // Set: Q = 1, ~Q = 0").arg(firstOut) << Qt::endl;
+            m_stream << QString("        %1 = true;").arg(firstOut) << Qt::endl;
+            m_stream << QString("        %1 = false;").arg(secondOut) << Qt::endl;
+            m_stream << QString("    } else if (%1) { ").arg(r) << Qt::endl;
+            m_stream << QString("        // Reset: Q = 0, ~Q = 1") << Qt::endl;
+            m_stream << QString("        %1 = false;").arg(firstOut) << Qt::endl;
+            m_stream << QString("        %1 = true;").arg(secondOut) << Qt::endl;
+            m_stream << QString("    }") << Qt::endl;
+            m_stream << QString("    // Hold state when both S and R are 0") << Qt::endl;
+            m_stream << QString("    //End of SR Latch") << Qt::endl;
+
+            break;
+        }
         case ElementType::JKFlipFlop: {
             auto *outputPort1 = elm->outputPort(1);
             if (!outputPort1) break;
