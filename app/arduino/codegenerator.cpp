@@ -3,17 +3,17 @@
 
 #include "codegenerator.h"
 
+#include "buzzer.h"
 #include "clock.h"
 #include "common.h"
+#include "elementfactory.h"
 #include "graphicelement.h"
 #include "ic.h"
+#include "logictruthtable.h"
 #include "qneconnection.h"
 #include "qneport.h"
-#include "logictruthtable.h"
 #include "truth_table.h"
-#include "buzzer.h"
 
-#include <ElementFactory.h>
 #include <QRegularExpression>
 
 
