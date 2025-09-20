@@ -1014,7 +1014,7 @@ void MainWindow::exportToArduino(QString fileName)
 
     elements = Common::sortGraphicElements(elements);
 
-    CodeGenerator arduino(QDir::home().absoluteFilePath(fileName), elements);
+    CodeGenerator arduino(fileName, elements);
     arduino.generate();
     m_ui->statusBar->showMessage(tr("Arduino code successfully generated."), 4000);
 
