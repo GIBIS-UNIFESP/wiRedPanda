@@ -245,7 +245,7 @@ class MCPInfrastructure:
 
     # Communication Methods
     @beartype
-    async def send_command(self, command: str, parameters: Dict[str, Any], timeout: float = 10.0) -> MCPResponse:
+    async def send_command(self, command: str, parameters: Dict[str, Any], timeout: float = 30.0) -> MCPResponse:
         """Send command with validation and get response"""
         if not self.process or self.process.stdin is None or self.process.stdout is None:
             raise RuntimeError("MCP process not started")

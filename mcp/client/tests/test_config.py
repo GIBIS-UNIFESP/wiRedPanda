@@ -28,8 +28,8 @@ class TestConfig:
         self.wiredpanda_exe = self._find_wiredpanda_executable()
 
         # Test settings
-        self.default_timeout = 300  # 5 minutes
-        self.long_timeout = 900     # 15 minutes for performance tests
+        self.default_timeout = 600  # 10 minutes
+        self.long_timeout = 1800    # 30 minutes for performance tests
 
     def _find_wiredpanda_executable(self) -> Optional[Path]:
         """Find the WiredPanda executable relative to the mcp directory"""

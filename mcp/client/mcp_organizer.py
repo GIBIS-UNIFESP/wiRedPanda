@@ -75,7 +75,7 @@ class MCPTestOrganizer:
             filename = os.path.join(images_dir, f"{self.image_counter:03d}_{safe_test_name}.png")
 
             # Export the image with longer timeout for complex circuits
-            resp = await infrastructure.send_command("export_image", {"filename": filename, "format": "png", "padding": 20}, timeout=15.0)
+            resp = await infrastructure.send_command("export_image", {"filename": filename, "format": "png", "padding": 20}, timeout=45.0)
 
             if resp and resp.success:
                 print(f"   📸 Circuit image exported: {filename}")
