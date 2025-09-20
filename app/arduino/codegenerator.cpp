@@ -503,34 +503,22 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             }
 
             // Map IC outputs: internal IC output variables → external signals
-            qDebug() << "Processing IC outputs...";
             for (int i = 0; i < ic->outputSize(); ++i) {
                 QNEPort *externalPort = ic->outputPort(i);
                 if (i >= ic->m_icOutputs.size()) {
-                    qDebug() << "Output index" << i << "exceeds m_icOutputs size" << ic->m_icOutputs.size();
                     continue;
                 }
                 QNEPort *internalPort = ic->m_icOutputs.at(i);
 
-                QString externalPortTooltip = externalPort ? externalPort->toolTip() : "null";
-                QString internalPortTooltip = internalPort ? internalPort->toolTip() : "null";
-                qDebug() << "IC output" << i << "- External port tooltip:" << externalPortTooltip
-                         << "Internal port tooltip:" << internalPortTooltip;
-
-                QString internalValue = otherPortName(internalPort);
+                QString internalValue = m_varMap.value(internalPort);
                 QString externalVar = m_varMap.value(externalPort);
-
-                qDebug() << "IC output" << i << "mapping: internal=" << internalValue << "-> external=" << externalVar;
 
                 if (!externalVar.isEmpty() && !internalValue.isEmpty()) {
                     m_stream << "    " << externalVar << " = " << internalValue << ";" << Qt::endl;
                 } else {
-                    // Fallback: assign default value with warning comment
-                    if (!externalVar.isEmpty()) {
-                        m_stream << "    " << externalVar << " = LOW; // Warning: internal connection not found" << Qt::endl;
-                    }
-                    qDebug() << "Warning: Missing variable for IC output" << i
-                             << "external:" << externalVar << "internal:" << internalValue;
+                    qDebug() << "Warning: Could not map IC output" << i
+                             << "externalVar=" << externalVar
+                             << "internalValue=" << internalValue;
                 }
             }
 

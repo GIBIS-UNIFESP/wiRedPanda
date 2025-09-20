@@ -61,8 +61,8 @@ void loop() {
     aux_nand_3 = !(aux_nand_6 && aux_nand_2);
     aux_node_0 = aux_nand_2;
     aux_node_1 = aux_nand_3;
-    aux_ic_2_q_0 = LOW;
-    aux_ic_2_q_0_1 = LOW;
+    aux_ic_2_q_0 = aux_node_1;
+    aux_ic_2_q_0_1 = aux_node_0;
     // End IC: DLATCH
 
     // Writing output data. //
