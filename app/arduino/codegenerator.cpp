@@ -176,7 +176,7 @@ void CodeGenerator::declareOutputs()
     m_stream << Qt::endl;
 }
 
-void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox)
+void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox, const QString &icPrefix)
 {
     int counter = 0;
 
@@ -221,7 +221,8 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
             // Recursively declare variables for internal elements
             if (!ic->m_icElements.isEmpty()) {
                 qDebug() << "Before processing internal elements, m_varMap size:" << m_varMap.size();
-                declareAuxVariablesRec(ic->m_icElements, true);
+                QString icPrefix = QString("%1_%2_").arg(removeForbiddenChars(ic->objectName()), QString::number(counter-1));
+                declareAuxVariablesRec(ic->m_icElements, true, icPrefix);
                 qDebug() << "After processing internal elements, m_varMap size:" << m_varMap.size();
 
                 // Debug: Check if internal ports got variables assigned
@@ -267,7 +268,12 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
 
         const auto outputs = elm->outputs();
 
-        QString baseVarName = QString("aux_%1_%2").arg(removeForbiddenChars(elm->objectName()), QString::number(counter++));
+        QString baseVarName;
+        if (!icPrefix.isEmpty()) {
+            baseVarName = QString("aux_%1%2_%3").arg(icPrefix, removeForbiddenChars(elm->objectName()), QString::number(counter++));
+        } else {
+            baseVarName = QString("aux_%1_%2").arg(removeForbiddenChars(elm->objectName()), QString::number(counter++));
+        }
 
         if (elm->elementType() == ElementType::TruthTable && !outputs.isEmpty()) {
             QNEPort *outputPort = outputs.constFirst();
@@ -379,7 +385,7 @@ void CodeGenerator::declareAuxVariables()
         }
     }
 
-    declareAuxVariablesRec(m_elements);
+    declareAuxVariablesRec(m_elements, false, "");
     m_stream << Qt::endl;
 }
 
@@ -522,9 +528,12 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             m_stream << QString("    }") << Qt::endl;
             QString prst = otherPortName(elm->inputPort(2));
             QString clr = otherPortName(elm->inputPort(3));
-            m_stream << QString("    if (!%1 || !%2) { ").arg(prst, clr) << Qt::endl;
-            m_stream << QString("        %1 = !%2; //Preset").arg(firstOut, prst) << Qt::endl;
-            m_stream << QString("        %1 = !%2; //Clear").arg(secondOut, clr) << Qt::endl;
+            m_stream << QString("    if (!%1) { ").arg(prst) << Qt::endl;
+            m_stream << QString("        %1 = HIGH; //Preset").arg(firstOut) << Qt::endl;
+            m_stream << QString("        %1 = LOW;").arg(secondOut) << Qt::endl;
+            m_stream << QString("    } else if (!%1) { ").arg(clr) << Qt::endl;
+            m_stream << QString("        %1 = LOW; //Clear").arg(firstOut) << Qt::endl;
+            m_stream << QString("        %1 = HIGH;").arg(secondOut) << Qt::endl;
             m_stream << QString("    }") << Qt::endl;
 
             /* Updating internal clock. */
