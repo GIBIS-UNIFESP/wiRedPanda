@@ -33,6 +33,14 @@ public:
     int m_portNumber = 0;
 };
 
+struct ArduinoBoardConfig
+{
+    QString name;
+    QStringList availablePins;
+    QString description;
+    int maxPins() const { return availablePins.size(); }
+};
+
 class CodeGenerator
 {
     Q_DECLARE_TR_FUNCTIONS(CodeGenerator)
@@ -55,6 +63,10 @@ private:
     void loop();
     void setup();
 
+    // Board selection methods
+    ArduinoBoardConfig selectBoard(int requiredPins);
+    QVector<ArduinoBoardConfig> getAvailableBoards();
+
     QFile m_file;
     QHash<QNEPort *, QString> m_varMap;
     QStringList m_availablePins;
@@ -65,4 +77,5 @@ private:
     const QVector<GraphicElement *> m_elements;
     int m_globalCounter = 1;
     IC *m_currentIC = nullptr; // Track current IC context for internal element processing
+    ArduinoBoardConfig m_selectedBoard; // Currently selected board configuration
 };

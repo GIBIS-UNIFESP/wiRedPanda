@@ -25,27 +25,11 @@ CodeGenerator::CodeGenerator(const QString &fileName, const QVector<GraphicEleme
         return;
     }
     m_stream.setDevice(&m_file);
+
+    // Initialize with default Arduino UNO pins - will be updated by board selection
     m_availablePins = QStringList{
-        "A0",
-        "A1",
-        "A2",
-        "A3",
-        "A4",
-        "A5",
-     // "0",
-     // "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "11",
-        "12",
-        "13"
+        "A0", "A1", "A2", "A3", "A4", "A5",
+        "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"
     };
 }
 
@@ -108,19 +92,33 @@ void CodeGenerator::generate()
     }
 
     int totalRequiredPins = requiredInputPins + requiredOutputPins;
-    int availablePins = m_availablePins.size();
 
-    if (totalRequiredPins > availablePins) {
-        qWarning() << "Error: Circuit requires" << totalRequiredPins << "pins but Arduino only has" << availablePins << "available";
+    // Select the appropriate board based on pin requirements
+    m_selectedBoard = selectBoard(totalRequiredPins);
+
+    if (m_selectedBoard.name.isEmpty()) {
+        qWarning() << "Error: Circuit requires" << totalRequiredPins << "pins but no available Arduino board can accommodate this";
         qWarning() << "Required:" << requiredInputPins << "input pins +" << requiredOutputPins << "output pins =" << totalRequiredPins << "total";
-        qWarning() << "Available pins:" << m_availablePins.join(", ");
-        qWarning() << "Please reduce circuit complexity or use a microcontroller with more pins";
+        qWarning() << "Maximum available: Arduino Mega 2560 with 70 pins";
+        qWarning() << "Please reduce circuit complexity";
         return; // Exit before generating any code
     }
+
+    // Update available pins to match selected board
+    m_availablePins = m_selectedBoard.availablePins;
+
+    qInfo() << "Selected board:" << m_selectedBoard.name;
+    qInfo() << "Pin usage:" << totalRequiredPins << "/" << m_selectedBoard.maxPins() << "pins";
+    qInfo() << "Board description:" << m_selectedBoard.description;
 
     m_stream << "// ==================================================================== //" << Qt::endl;
     m_stream << "// ======= This code was generated automatically by wiRedPanda ======== //" << Qt::endl;
     m_stream << "// ==================================================================== //" << Qt::endl;
+    m_stream << "//" << Qt::endl;
+    m_stream << QString("// Target Board: %1").arg(m_selectedBoard.name) << Qt::endl;
+    m_stream << QString("// Pin Usage: %1/%2 pins").arg(totalRequiredPins).arg(m_selectedBoard.maxPins()) << Qt::endl;
+    m_stream << QString("// %1").arg(m_selectedBoard.description) << Qt::endl;
+    m_stream << "//" << Qt::endl;
     m_stream << Qt::endl
              << Qt::endl;
     // m_stream << "#include <elapsedMillis.h>" << Qt::endl;
@@ -1002,4 +1000,70 @@ void CodeGenerator::loop()
         m_stream << QString("    digitalWrite(%1, %2);").arg(pin.m_varName, varName) << Qt::endl;
     }
     m_stream << "}" << Qt::endl;
+}
+
+QVector<ArduinoBoardConfig> CodeGenerator::getAvailableBoards()
+{
+    QVector<ArduinoBoardConfig> boards;
+
+    // Arduino UNO R3/R4 - 20 pins
+    boards.append({
+        "Arduino UNO R3/R4",
+        {"A0", "A1", "A2", "A3", "A4", "A5", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
+        "Standard Arduino board with 20 I/O pins (14 digital + 6 analog)"
+    });
+
+    // Arduino Nano - 20 pins (same as UNO)
+    boards.append({
+        "Arduino Nano",
+        {"A0", "A1", "A2", "A3", "A4", "A5", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
+        "Compact Arduino board with 20 I/O pins (14 digital + 6 analog)"
+    });
+
+    // Arduino Mega 2560 - 70 pins
+    QStringList megaPins;
+    // Analog pins A0-A15
+    for (int i = 0; i <= 15; ++i) {
+        megaPins.append(QString("A%1").arg(i));
+    }
+    // Digital pins 2-53 (avoiding 0,1 for serial)
+    for (int i = 2; i <= 53; ++i) {
+        megaPins.append(QString::number(i));
+    }
+    boards.append({
+        "Arduino Mega 2560",
+        megaPins,
+        "High I/O count Arduino board with 70 I/O pins (54 digital + 16 analog)"
+    });
+
+    // ESP32 - 36 pins
+    boards.append({
+        "ESP32",
+        {"A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10", "A11", "A12", "A13", "A14", "A15", "A16", "A17",
+         "2", "4", "5", "12", "13", "14", "15", "16", "17", "18", "19", "21", "22", "23", "25", "26", "27", "32", "33", "34"},
+        "WiFi/Bluetooth enabled board with 36 I/O pins (18 digital + 18 analog)"
+    });
+
+    return boards;
+}
+
+ArduinoBoardConfig CodeGenerator::selectBoard(int requiredPins)
+{
+    auto boards = getAvailableBoards();
+
+    // Find the smallest board that can accommodate the required pins
+    ArduinoBoardConfig selectedBoard;
+    for (const auto &board : boards) {
+        if (board.maxPins() >= requiredPins) {
+            selectedBoard = board;
+            break;
+        }
+    }
+
+    // If no board found, return the largest available (Mega 2560)
+    if (selectedBoard.name.isEmpty() && !boards.isEmpty()) {
+        selectedBoard = boards.last(); // Mega 2560 should be last
+    }
+
+    return selectedBoard;
 }
