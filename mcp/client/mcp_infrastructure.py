@@ -61,7 +61,7 @@ class MCPInfrastructure:
             # Fallback to manual search relative to script location
             script_dir = os.path.dirname(os.path.abspath(__file__))
             project_root = os.path.dirname(os.path.dirname(script_dir))  # Go up from client/ to project root
-            
+
             if sys.platform == "win32":
                 # Windows paths relative to project root
                 possible_paths = [

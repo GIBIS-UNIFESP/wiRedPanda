@@ -464,12 +464,12 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                 await self.send_command("set_input_value", {"element_id": element_mapping[2], "value": False})  # CLK=0
                 await self.send_command("set_input_value", {"element_id": element_mapping[2], "value": True})   # CLK edge (no effect since T=0)
                 await self.send_command("set_input_value", {"element_id": element_mapping[2], "value": False})  # CLK=0
-                
+
                 # Get initial state (should be predictable now)
                 initial_resp = await self.send_command("get_output_value", {"element_id": element_mapping[4]})
                 initial_state = initial_resp.result.get("value", False) if initial_resp.success and initial_resp.result else False
                 print(f"Initial T flip-flop state: Q={initial_state}")
-                
+
                 # Now enable T input for toggle mode
                 await self.send_command("set_input_value", {"element_id": element_mapping[1], "value": True})  # T=1
 
@@ -478,10 +478,10 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                 for cycle in range(8):  # Test for 8 clock cycles
                     # Create clean clock transition (low to high) for edge triggering
                     await self.send_command("set_input_value", {"element_id": element_mapping[2], "value": False})
-                    
+
                     # Rising edge - T Flip-Flop should toggle on this edge when T=1
                     await self.send_command("set_input_value", {"element_id": element_mapping[2], "value": True})
-                    
+
                     # Read output after edge propagation
                     q_resp = await self.send_command("get_output_value", {"element_id": element_mapping[4]})
                     q_value = q_resp.result.get("value", False) if q_resp.success and q_resp.result else False
@@ -511,7 +511,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                 expected_transitions = len(t_flip_states) - 1
 
                 # T flip-flop should work 100% reliably - this is basic digital logic
-                # With proper initialization, there should be no timing variations  
+                # With proper initialization, there should be no timing variations
                 if alternating_pattern and transition_count == expected_transitions:
                     self.infrastructure.output.success("✅ T flip-flop divide-by-2 operation working correctly")
                     print(f"   Transitions: {transition_count}/{expected_transitions}")
@@ -537,7 +537,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
     @beartype
     async def test_setup_hold_timing_validation(self) -> bool:
         """Test educational timing model consistency with D flip-flop circuit
-        
+
         Validates that the zero-delay educational model provides consistent
         edge-triggered behavior without real-world timing complexity.
         """
@@ -579,7 +579,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
 
                 timing_tests: List[Dict[str, Any]] = []
 
-                # Test various data-to-clock scenarios in zero-delay educational model  
+                # Test various data-to-clock scenarios in zero-delay educational model
                 # Focus on edge-triggered behavior consistency
                 test_scenarios: List[Dict[str, Union[bool, bool, float, str]]] = [
                     {"data_value": True, "data_early": True, "description": "Data=1 setup before clock edge"},
@@ -590,10 +590,10 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                 for i, scenario in enumerate(test_scenarios):
                     print(f"\n  Testing scenario {i + 1}: {scenario['description']}")
 
-                    # Reset to known state  
+                    # Reset to known state
                     await self.send_command("set_input_value", {"element_id": element_mapping[1], "value": False})  # DATA=0
                     await self.send_command("set_input_value", {"element_id": element_mapping[2], "value": False})  # CLK=0
-                    
+
                     # Force a clock edge with DATA=0 to reset the flip-flop
                     await self.send_command("set_input_value", {"element_id": element_mapping[2], "value": True})   # CLK rising with DATA=0
                     await self.send_command("set_input_value", {"element_id": element_mapping[2], "value": False})  # CLK back to 0
@@ -607,7 +607,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                     if scenario["data_early"]:
                         # Data changes before clock
                         await self.send_command("set_input_value", {"element_id": element_mapping[1], "value": data_value})
-                        
+
                         # Then clock edge
                         await self.send_command("set_input_value", {"element_id": element_mapping[2], "value": True})  # CLK rising
                     else:
@@ -625,7 +625,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                     # Analyze timing behavior
                     # Educational Model: D flip-flop captures data on clock edge regardless of timing
                     # This is pedagogically correct - students learn edge-triggered behavior without timing complexity
-                    
+
                     # In educational model, D flip-flop captures D input value present at rising clock edge
                     # Educational behavior: consistent edge-triggered response
                     if scenario["data_early"]:
@@ -634,7 +634,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                     else:
                         # CLK edge occurred before DATA change, so DFF captures old DATA value (0)
                         expected_q = False  # DATA was still 0 when CLK edge occurred
-                        
+
                     timing_correct = (final_q == expected_q)
                     status = "✅" if timing_correct else "📋"
 

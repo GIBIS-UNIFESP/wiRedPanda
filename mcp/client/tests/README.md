@@ -10,7 +10,7 @@ The test suite is organized around comprehensive validation with the main test r
 ```text
 tests/
 ├── __init__.py                         # Package initialization (2,488 lines)
-├── README.md                           # This file  
+├── README.md                           # This file
 ├── mcp_test_base.py                    # Base test infrastructure (20,766 lines)
 ├── mcp_test_fixtures.py                # Test fixtures and setup (14,527 lines)
 ├── mcp_test_helpers.py                 # Test utilities and helper functions (14,627 lines)
@@ -51,7 +51,7 @@ python run_tests.py --verbose           # Run with verbose output
 ```bash
 cd mcp/client
 python -m pytest tests/test_basic_protocol.py          # Protocol validation tests
-python -m pytest tests/ -v                             # Verbose test output  
+python -m pytest tests/ -v                             # Verbose test output
 python -m pytest tests/ -k "element"                   # Filter by test name
 python -m pytest tests/test_performance.py             # Performance tests only
 ```
@@ -115,7 +115,7 @@ class CircuitTestSuite:
 
 ### **Modern Async Performance**
 - **Event-Driven I/O**: Complete async/await patterns replacing blocking operations
-- **Concurrent Testing**: Parallel test execution with proper resource management  
+- **Concurrent Testing**: Parallel test execution with proper resource management
 - **Resource Management**: Automatic cleanup with context managers and proper teardown
 - **Timeout Handling**: Configurable timeouts with graceful degradation
 - **Process Management**: Robust subprocess handling with signal management

@@ -28,7 +28,7 @@ class TestConfig:
         self.wiredpanda_exe = self._find_wiredpanda_executable()
 
         # Test settings
-        self.default_timeout = 300  # 5 minutes  
+        self.default_timeout = 300  # 5 minutes
         self.long_timeout = 900     # 15 minutes for performance tests
 
     def _find_wiredpanda_executable(self) -> Optional[Path]:
