@@ -110,6 +110,13 @@ void CodeGenerator::declareInputs()
         const auto type = elm->elementType();
 
         if ((type == ElementType::InputButton) || (type == ElementType::InputSwitch)) {
+            // Check if we have available pins before proceeding
+            if (m_availablePins.isEmpty()) {
+                qCritical() << "Error: No available pins for input element" << elm->objectName();
+                m_stream << "// ERROR: No available pins for input " << elm->objectName() << Qt::endl;
+                continue;
+            }
+
             QString varName = elm->objectName() + QString::number(counter);
             const QString label = elm->label();
 
@@ -118,10 +125,11 @@ void CodeGenerator::declareInputs()
             }
 
             varName = removeForbiddenChars(varName);
-            m_stream << QString("const int %1 = %2;").arg(varName, m_availablePins.constFirst()) << Qt::endl;
+            const QString pinName = m_availablePins.constFirst();
+            m_stream << QString("const int %1 = %2;").arg(varName, pinName) << Qt::endl;
             auto *outPort = elm->outputPort(0);
             if (outPort) {
-                m_inputMap.append(MappedPin(elm, m_availablePins.constFirst(), varName, outPort, 0));
+                m_inputMap.append(MappedPin(elm, pinName, varName, outPort, 0));
                 m_varMap[outPort] = varName + QString("_val");
             }
             m_availablePins.removeFirst();
@@ -140,6 +148,13 @@ void CodeGenerator::declareOutputs()
         if (elm->elementGroup() == ElementGroup::Output) {
             QString label = elm->label();
             for (int i = 0; i < elm->inputs().size(); ++i) {
+                // Check if we have available pins before proceeding
+                if (m_availablePins.isEmpty()) {
+                    qCritical() << "Error: No available pins for output element" << elm->objectName() << "port" << i;
+                    m_stream << "// ERROR: No available pins for output " << elm->objectName() << " port " << i << Qt::endl;
+                    continue;
+                }
+
                 QString varName = elm->objectName();
 
                 if(elm->elementType() == ElementType::Display7) {
@@ -156,8 +171,9 @@ void CodeGenerator::declareOutputs()
                     varName = QString("%1_%2").arg(varName, port->name());
                 }
                 varName = removeForbiddenChars(varName);
-                m_stream << QString("const int %1 = %2;").arg(varName, m_availablePins.constFirst()) << Qt::endl;
-                m_outputMap.append(MappedPin(elm, m_availablePins.constFirst(), varName, port, i));
+                const QString pinName = m_availablePins.constFirst();
+                m_stream << QString("const int %1 = %2;").arg(varName, pinName) << Qt::endl;
+                m_outputMap.append(MappedPin(elm, pinName, varName, port, i));
                 m_availablePins.removeFirst();
             }
         }
