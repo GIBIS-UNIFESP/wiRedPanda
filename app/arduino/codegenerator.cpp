@@ -88,6 +88,36 @@ QString CodeGenerator::otherPortName(QNEPort *port)
 
 void CodeGenerator::generate()
 {
+    // Pre-flight check: validate pin requirements before generation
+    int requiredInputPins = 0;
+    int requiredOutputPins = 0;
+
+    // Count input pins needed
+    for (auto *elm : m_elements) {
+        const auto type = elm->elementType();
+        if ((type == ElementType::InputButton) || (type == ElementType::InputSwitch)) {
+            requiredInputPins++;
+        }
+    }
+
+    // Count output pins needed
+    for (auto *elm : m_elements) {
+        if (elm->elementGroup() == ElementGroup::Output) {
+            requiredOutputPins += elm->inputs().size();
+        }
+    }
+
+    int totalRequiredPins = requiredInputPins + requiredOutputPins;
+    int availablePins = m_availablePins.size();
+
+    if (totalRequiredPins > availablePins) {
+        qWarning() << "Error: Circuit requires" << totalRequiredPins << "pins but Arduino only has" << availablePins << "available";
+        qWarning() << "Required:" << requiredInputPins << "input pins +" << requiredOutputPins << "output pins =" << totalRequiredPins << "total";
+        qWarning() << "Available pins:" << m_availablePins.join(", ");
+        qWarning() << "Please reduce circuit complexity or use a microcontroller with more pins";
+        return; // Exit before generating any code
+    }
+
     m_stream << "// ==================================================================== //" << Qt::endl;
     m_stream << "// ======= This code was generated automatically by wiRedPanda ======== //" << Qt::endl;
     m_stream << "// ==================================================================== //" << Qt::endl;
