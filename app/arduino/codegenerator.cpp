@@ -479,7 +479,9 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             m_stream << "    // End IC: " << ic->label() << Qt::endl;
             continue;
         }
-        if (elm->inputs().isEmpty() || elm->outputs().isEmpty()) {
+        // Skip elements that don't have the required ports, except input elements which only need outputs
+        bool isInputElement = (elm->elementType() == ElementType::InputButton || elm->elementType() == ElementType::InputSwitch);
+        if (elm->outputs().isEmpty() || (!isInputElement && elm->inputs().isEmpty())) {
             continue;
         }
 
@@ -489,6 +491,22 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
         }
         QString firstOut = m_varMap.value(outputPort0);
         switch (elm->elementType()) {
+        case ElementType::InputButton:
+        case ElementType::InputSwitch: {
+            // Connect input _val variable to circuit logic variable
+            // Find the corresponding _val variable in m_varMap for this element's output port
+            QString valVarName;
+            for (const auto &pin : std::as_const(m_inputMap)) {
+                if (pin.m_elm == elm) {
+                    valVarName = pin.m_varName + "_val";
+                    break;
+                }
+            }
+            if (!valVarName.isEmpty()) {
+                m_stream << QString("    %1 = %2;").arg(firstOut, valVarName) << Qt::endl;
+            }
+            break;
+        }
         case ElementType::DFlipFlop: {
             auto *outputPort1 = elm->outputPort(1);
             if (!outputPort1) break;
