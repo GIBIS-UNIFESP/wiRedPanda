@@ -79,12 +79,7 @@ QString CodeGenerator::otherPortName(QNEPort *port)
         return highLow(port->defaultValue());
     }
 
-    QString result = m_varMap.value(otherPort);
-    if (result.isEmpty()) {
-        // Fallback to default value if variable mapping is missing
-        return highLow(otherPort->defaultValue());
-    }
-    return result;
+    return m_varMap.value(otherPort);
 }
 
 void CodeGenerator::generate()
@@ -115,12 +110,6 @@ void CodeGenerator::declareInputs()
         const auto type = elm->elementType();
 
         if ((type == ElementType::InputButton) || (type == ElementType::InputSwitch)) {
-            // Check if we have available pins before proceeding
-            if (m_availablePins.isEmpty()) {
-                qCritical() << "Error: No available pins for input element" << elm->objectName();
-                m_stream << "// ERROR: No available pins for input " << elm->objectName() << Qt::endl;
-                continue;
-            }
 
             QString varName = elm->objectName() + QString::number(counter);
             const QString label = elm->label();
@@ -135,7 +124,9 @@ void CodeGenerator::declareInputs()
             auto *outPort = elm->outputPort(0);
             if (outPort) {
                 m_inputMap.append(MappedPin(elm, pinName, varName, outPort, 0));
-                m_varMap[outPort] = varName + QString("_val");
+                QString valVarName = varName + QString("_val");
+                m_varMap[outPort] = valVarName;
+
             }
             m_availablePins.removeFirst();
             ++counter;
@@ -153,12 +144,6 @@ void CodeGenerator::declareOutputs()
         if (elm->elementGroup() == ElementGroup::Output) {
             QString label = elm->label();
             for (int i = 0; i < elm->inputs().size(); ++i) {
-                // Check if we have available pins before proceeding
-                if (m_availablePins.isEmpty()) {
-                    qCritical() << "Error: No available pins for output element" << elm->objectName() << "port" << i;
-                    m_stream << "// ERROR: No available pins for output " << elm->objectName() << " port " << i << Qt::endl;
-                    continue;
-                }
 
                 QString varName = elm->objectName();
 
@@ -266,27 +251,10 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
                         if (!m_declaredVariables.contains(portVarName)) {
                             m_stream << "boolean " << portVarName << " = LOW;" << Qt::endl;
                             m_declaredVariables.append(portVarName);
-                            qDebug() << "Assigned missing variable for internal IC input port" << i << ":" << portVarName;
-                        } else {
-                            qDebug() << "Skipped duplicate declaration for internal IC input port" << i << ":" << portVarName;
                         }
                     }
                 }
 
-                for (int i = 0; i < ic->m_icOutputs.size(); ++i) {
-                    QNEPort *internalPort = ic->m_icOutputs.at(i);
-                    if (m_varMap.value(internalPort).isEmpty()) {
-                        QString portVarName = QString("aux_ic_output_%1_%2").arg(removeForbiddenChars(ic->objectName()), QString::number(i));
-                        m_varMap[internalPort] = portVarName;
-                        if (!m_declaredVariables.contains(portVarName)) {
-                            m_stream << "boolean " << portVarName << " = LOW;" << Qt::endl;
-                            m_declaredVariables.append(portVarName);
-                            qDebug() << "Assigned missing variable for internal IC output port" << i << ":" << portVarName;
-                        } else {
-                            qDebug() << "Skipped duplicate declaration for internal IC output port" << i << ":" << portVarName;
-                        }
-                    }
-                }
             }
 
             m_stream << "// End IC: " << ic->label() << Qt::endl;
@@ -323,9 +291,7 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
                 continue;
             }
 
-            if (m_varMap.value(port).isEmpty()) {
-                m_varMap[port] = baseVarName;
-            }
+            m_varMap[port] = baseVarName;
 
         } else {
             int portCounter = 0;
@@ -399,6 +365,16 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
 void CodeGenerator::declareAuxVariables()
 {
     m_stream << "/* ====== Aux. Variables ====== */" << Qt::endl;
+
+    // Declare input value variables
+    for (const auto &pin : std::as_const(m_inputMap)) {
+        QString valVarName = pin.m_varName + "_val";
+        if (!m_declaredVariables.contains(valVarName)) {
+            m_stream << "boolean " << valVarName << " = LOW;" << Qt::endl;
+            m_declaredVariables.append(valVarName);
+        }
+    }
+
     declareAuxVariablesRec(m_elements);
     m_stream << Qt::endl;
 }
@@ -447,10 +423,6 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
         }
         if (elm->elementType() == ElementType::IC) {
             auto *ic = qobject_cast<IC *>(elm);
-            if (!ic) {
-                qDebug() << "CodeGenerator::assignVariablesRec - IC cast failed for element:" << elm->objectName();
-                continue;
-            }
 
             qDebug() << "CodeGenerator::assignVariablesRec - Processing IC:" << ic->label()
                      << "with" << ic->inputSize() << "inputs and" << ic->outputSize() << "outputs";
@@ -464,10 +436,6 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             qDebug() << "Processing IC inputs...";
             for (int i = 0; i < ic->inputSize(); ++i) {
                 QNEPort *externalPort = ic->inputPort(i);
-                if (i >= ic->m_icInputs.size()) {
-                    qDebug() << "Input index" << i << "exceeds m_icInputs size" << ic->m_icInputs.size();
-                    continue;
-                }
                 QNEPort *internalPort = ic->m_icInputs.at(i);
 
                 QString externalPortTooltip = externalPort ? externalPort->toolTip() : "null";
@@ -476,19 +444,11 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
                          << "Internal port tooltip:" << internalPortTooltip;
 
                 QString externalValue = otherPortName(externalPort);
-                if (externalValue.isEmpty()) {
-                    externalValue = highLow(externalPort->defaultValue());
-                    qDebug() << "Using default value for input" << i << ":" << externalValue;
-                }
 
                 QString internalVar = m_varMap.value(internalPort);
                 qDebug() << "IC input" << i << "mapping: external=" << externalValue << "-> internal=" << internalVar;
 
-                if (!internalVar.isEmpty()) {
-                    m_stream << "    " << internalVar << " = " << externalValue << ";" << Qt::endl;
-                } else {
-                    qDebug() << "Warning: No internal variable found for IC input port" << i;
-                }
+                m_stream << "    " << internalVar << " = " << externalValue << ";" << Qt::endl;
             }
 
             // Process internal IC elements in correct dependency order
@@ -498,28 +458,17 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
                 qDebug() << "Sorted" << sortedElements.size() << "elements for processing";
                 assignVariablesRec(sortedElements);
                 qDebug() << "Finished processing internal IC elements";
-            } else {
-                qDebug() << "Warning: IC has no internal elements";
             }
 
             // Map IC outputs: internal IC output variables → external signals
             for (int i = 0; i < ic->outputSize(); ++i) {
                 QNEPort *externalPort = ic->outputPort(i);
-                if (i >= ic->m_icOutputs.size()) {
-                    continue;
-                }
                 QNEPort *internalPort = ic->m_icOutputs.at(i);
 
                 QString internalValue = m_varMap.value(internalPort);
                 QString externalVar = m_varMap.value(externalPort);
 
-                if (!externalVar.isEmpty() && !internalValue.isEmpty()) {
-                    m_stream << "    " << externalVar << " = " << internalValue << ";" << Qt::endl;
-                } else {
-                    qDebug() << "Warning: Could not map IC output" << i
-                             << "externalVar=" << externalVar
-                             << "internalValue=" << internalValue;
-                }
+                m_stream << "    " << externalVar << " = " << internalValue << ";" << Qt::endl;
             }
 
             qDebug() << "Finished processing IC:" << ic->label();
@@ -692,17 +641,11 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
                     signalName = "0";
                 } else if (signalName == "HIGH") {
                     signalName = "1";
-                } else if (signalName.isEmpty()) {
-                    m_stream << "// ATENÇÃO: Entrada " << i << " da Tabela Verdade '" << elm->objectName() << "' parece desconectada ou indefinida. Assumindo LOW." << Qt::endl;
-                    signalName = "0";
                 }
                 inputSignalNames << signalName;
             }
 
             QString outputVarName = m_varMap.value(elm->outputPort(0));
-            if (outputVarName.isEmpty()) {
-                throw PANDACEPTION("Output variable not mapped for TruthTable: %1", elm->objectName());
-            }
 
             m_stream << QString("    const uint8_t %1[%2] = {\n").arg(tableNameConst).arg(rows);
             for (int i = 0; i < rows; ++i) {
@@ -788,9 +731,7 @@ void CodeGenerator::assignLogicOperator(GraphicElement *elm)
             if (outputPort && inputPort) {
                 QString varName = m_varMap.value(outputPort);
                 QString inputValue = otherPortName(inputPort);
-                if (!varName.isEmpty() && !inputValue.isEmpty()) {
-                    m_stream << "    " << varName << " = " << inputValue << ";" << Qt::endl;
-                }
+                m_stream << "    " << varName << " = " << inputValue << ";" << Qt::endl;
             }
         }
         return; // Early return to skip the general logic below
@@ -855,7 +796,6 @@ void CodeGenerator::loop()
 
         if (elm->elementType() == ElementType::Buzzer) {
             auto *buzzer = qobject_cast<Buzzer *>(elm);
-            if (!buzzer) continue;
             QString inputSignal = otherPortName(buzzer->inputPort(0));
 
             QString buzzerPinName;
@@ -866,9 +806,6 @@ void CodeGenerator::loop()
                 }
             }
 
-            if (buzzerPinName.isEmpty()) {
-                throw PANDACEPTION("Buzzer output pin not found for: %1", elm->objectName());
-            }
 
             QString note = buzzer->audio();
 
@@ -905,9 +842,6 @@ void CodeGenerator::loop()
         }
 
         QString varName = otherPortName(pin.m_port);
-        if (varName.isEmpty()) {
-            varName = highLow(pin.m_port->defaultValue());
-        }
         m_stream << QString("    digitalWrite(%1, %2);").arg(pin.m_varName, varName) << Qt::endl;
     }
     m_stream << "}" << Qt::endl;

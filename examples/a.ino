@@ -12,6 +12,7 @@ const int led5_q_0 = A2;
 
 /* ====== Aux. Variables ====== */
 boolean push_button1_d_val = LOW;
+boolean aux_push_button_0 = LOW;
 boolean aux_clock_1 = LOW;
 unsigned long aux_clock_1_lastTime = 0;
 const unsigned long aux_clock_1_interval = 1000;
@@ -50,7 +51,7 @@ void loop() {
 
     // Assigning aux variables. //
     // IC: DLATCH
-    aux_ic_input_ic_0 = push_button1_d_val;
+    aux_ic_input_ic_0 = aux_push_button_0;
     aux_ic_input_ic_1 = aux_clock_1;
     aux_node_8 = LOW;
     aux_not_4 = !aux_node_8;
