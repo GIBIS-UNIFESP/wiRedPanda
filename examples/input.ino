@@ -14,14 +14,14 @@ const int led9_and_0 = A4;
 const int led10_or_0 = A5;
 
 /* ====== Aux. Variables ====== */
-boolean push_button1_x0_val = LOW;
-boolean push_button2_x1_val = LOW;
-boolean aux_push_button_0 = LOW;
-boolean aux_push_button_1 = LOW;
-boolean aux_not_2 = LOW;
-boolean aux_xor_3 = LOW;
-boolean aux_or_4 = LOW;
-boolean aux_and_5 = LOW;
+bool push_button1_x0_val = false;
+bool push_button2_x1_val = false;
+bool aux_push_button_0 = false;
+bool aux_push_button_1 = false;
+bool aux_not_2 = false;
+bool aux_xor_3 = false;
+bool aux_or_4 = false;
+bool aux_and_5 = false;
 
 void setup() {
     pinMode(push_button1_x0, INPUT);
@@ -33,13 +33,13 @@ void setup() {
 }
 
 void loop() {
-    // Reading input data //.
+    // Read input data
     push_button1_x0_val = digitalRead(push_button1_x0);
     push_button2_x1_val = digitalRead(push_button2_x1);
 
-    // Updating clocks. //
+    // Update clocks
 
-    // Assigning aux variables. //
+    // Update logic variables
     aux_push_button_0 = push_button1_x0_val;
     aux_push_button_1 = push_button2_x1_val;
     aux_not_2 = !aux_push_button_0;
@@ -47,7 +47,7 @@ void loop() {
     aux_or_4 = aux_push_button_0 || aux_push_button_1;
     aux_and_5 = aux_push_button_0 && aux_push_button_1;
 
-    // Writing output data. //
+    // Write output data
     digitalWrite(led7_xor_0, aux_xor_3);
     digitalWrite(led8_not_x0_0, aux_not_2);
     digitalWrite(led9_and_0, aux_and_5);

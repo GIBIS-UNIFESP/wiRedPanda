@@ -11,25 +11,25 @@ const int led4_q_0 = A1;
 const int led5_q_0 = A2;
 
 /* ====== Aux. Variables ====== */
-boolean push_button1_d_val = LOW;
-boolean aux_push_button_0 = LOW;
-boolean aux_clock_1 = LOW;
+bool push_button1_d_val = false;
+bool aux_push_button_0 = false;
+bool aux_clock_1 = false;
 unsigned long aux_clock_1_lastTime = 0;
 const unsigned long aux_clock_1_interval = 1000;
 // IC: DLATCH
-boolean aux_ic_2_q_0 = LOW;
-boolean aux_ic_2_q_0_1 = LOW;
-boolean aux_ic_2_node_0 = LOW;
-boolean aux_ic_2_node_1 = LOW;
-boolean aux_ic_2_nand_2 = LOW;
-boolean aux_ic_2_nand_3 = LOW;
-boolean aux_ic_2_not_4 = LOW;
-boolean aux_ic_2_nand_5 = LOW;
-boolean aux_ic_2_nand_6 = LOW;
-boolean aux_ic_2_node_7 = LOW;
-boolean aux_ic_2_node_8 = LOW;
-boolean aux_ic_input_ic_0 = LOW;
-boolean aux_ic_input_ic_1 = LOW;
+bool aux_ic_2_q_0 = false;
+bool aux_ic_2_q_0_1 = false;
+bool aux_ic_2_node_0 = false;
+bool aux_ic_2_node_1 = false;
+bool aux_ic_2_nand_2 = false;
+bool aux_ic_2_nand_3 = false;
+bool aux_ic_2_not_4 = false;
+bool aux_ic_2_nand_5 = false;
+bool aux_ic_2_nand_6 = false;
+bool aux_ic_2_node_7 = false;
+bool aux_ic_2_node_8 = false;
+bool aux_ic_input_ic_0 = false;
+bool aux_ic_input_ic_1 = false;
 // End IC: DLATCH
 
 void setup() {
@@ -39,17 +39,17 @@ void setup() {
 }
 
 void loop() {
-    // Reading input data //.
+    // Read input data
     push_button1_d_val = digitalRead(push_button1_d);
 
-    // Updating clocks. //
+    // Update clocks
     unsigned long now = millis();
     if (now - aux_clock_1_lastTime >= aux_clock_1_interval) {
         aux_clock_1_lastTime = now;
         aux_clock_1 = !aux_clock_1;
     }
 
-    // Assigning aux variables. //
+    // Update logic variables
     aux_push_button_0 = push_button1_d_val;
     // IC: DLATCH
     aux_ic_input_ic_0 = aux_push_button_0;
@@ -67,7 +67,7 @@ void loop() {
     aux_ic_2_q_0_1 = aux_ic_2_node_0;
     // End IC: DLATCH
 
-    // Writing output data. //
+    // Write output data
     digitalWrite(led4_q_0, aux_ic_2_q_0);
     digitalWrite(led5_q_0, aux_ic_2_q_0_1);
 }

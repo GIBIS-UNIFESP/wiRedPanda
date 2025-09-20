@@ -20,79 +20,79 @@ const int seven_segment_display63_dp_dot = 6;
 const int seven_segment_display63_c_lower_right = 7;
 
 /* ====== Aux. Variables ====== */
-boolean input_switch1_d_val = LOW;
-boolean input_switch2_c_val = LOW;
-boolean input_switch3_b_val = LOW;
-boolean input_switch4_a_val = LOW;
-boolean aux_input_switch_0 = LOW;
-boolean aux_node_1 = LOW;
-boolean aux_input_switch_2 = LOW;
-boolean aux_input_switch_3 = LOW;
-boolean aux_not_4 = LOW;
-boolean aux_node_5 = LOW;
-boolean aux_node_6 = LOW;
-boolean aux_node_7 = LOW;
-boolean aux_not_8 = LOW;
-boolean aux_not_9 = LOW;
-boolean aux_input_switch_10 = LOW;
-boolean aux_node_11 = LOW;
-boolean aux_node_12 = LOW;
-boolean aux_node_13 = LOW;
-boolean aux_node_14 = LOW;
-boolean aux_node_15 = LOW;
-boolean aux_node_16 = LOW;
-boolean aux_node_17 = LOW;
-boolean aux_node_18 = LOW;
-boolean aux_node_19 = LOW;
-boolean aux_node_20 = LOW;
-boolean aux_node_21 = LOW;
-boolean aux_node_22 = LOW;
-boolean aux_and_23 = LOW;
-boolean aux_node_24 = LOW;
-boolean aux_node_25 = LOW;
-boolean aux_node_26 = LOW;
-boolean aux_node_27 = LOW;
-boolean aux_and_28 = LOW;
-boolean aux_node_29 = LOW;
-boolean aux_node_30 = LOW;
-boolean aux_and_31 = LOW;
-boolean aux_node_32 = LOW;
-boolean aux_node_33 = LOW;
-boolean aux_node_34 = LOW;
-boolean aux_node_35 = LOW;
-boolean aux_and_36 = LOW;
-boolean aux_node_37 = LOW;
-boolean aux_node_38 = LOW;
-boolean aux_node_39 = LOW;
-boolean aux_node_40 = LOW;
-boolean aux_node_41 = LOW;
-boolean aux_node_42 = LOW;
-boolean aux_node_43 = LOW;
-boolean aux_node_44 = LOW;
-boolean aux_and_45 = LOW;
-boolean aux_node_46 = LOW;
-boolean aux_node_47 = LOW;
-boolean aux_and_48 = LOW;
-boolean aux_and_49 = LOW;
-boolean aux_node_50 = LOW;
-boolean aux_and_51 = LOW;
-boolean aux_and_52 = LOW;
-boolean aux_or_53 = LOW;
-boolean aux_or_54 = LOW;
-boolean aux_not_55 = LOW;
-boolean aux_or_56 = LOW;
-boolean aux_or_57 = LOW;
-boolean aux_or_58 = LOW;
-boolean aux_or_59 = LOW;
-boolean aux_or_60 = LOW;
-boolean aux_node_61 = LOW;
-boolean aux_node_63 = LOW;
-boolean aux_node_64 = LOW;
-boolean aux_node_65 = LOW;
-boolean aux_node_66 = LOW;
-boolean aux_node_67 = LOW;
-boolean aux_node_68 = LOW;
-boolean aux_node_69 = LOW;
+bool input_switch1_d_val = false;
+bool input_switch2_c_val = false;
+bool input_switch3_b_val = false;
+bool input_switch4_a_val = false;
+bool aux_input_switch_0 = false;
+bool aux_node_1 = false;
+bool aux_input_switch_2 = false;
+bool aux_input_switch_3 = false;
+bool aux_not_4 = false;
+bool aux_node_5 = false;
+bool aux_node_6 = false;
+bool aux_node_7 = false;
+bool aux_not_8 = false;
+bool aux_not_9 = false;
+bool aux_input_switch_10 = false;
+bool aux_node_11 = false;
+bool aux_node_12 = false;
+bool aux_node_13 = false;
+bool aux_node_14 = false;
+bool aux_node_15 = false;
+bool aux_node_16 = false;
+bool aux_node_17 = false;
+bool aux_node_18 = false;
+bool aux_node_19 = false;
+bool aux_node_20 = false;
+bool aux_node_21 = false;
+bool aux_node_22 = false;
+bool aux_and_23 = false;
+bool aux_node_24 = false;
+bool aux_node_25 = false;
+bool aux_node_26 = false;
+bool aux_node_27 = false;
+bool aux_and_28 = false;
+bool aux_node_29 = false;
+bool aux_node_30 = false;
+bool aux_and_31 = false;
+bool aux_node_32 = false;
+bool aux_node_33 = false;
+bool aux_node_34 = false;
+bool aux_node_35 = false;
+bool aux_and_36 = false;
+bool aux_node_37 = false;
+bool aux_node_38 = false;
+bool aux_node_39 = false;
+bool aux_node_40 = false;
+bool aux_node_41 = false;
+bool aux_node_42 = false;
+bool aux_node_43 = false;
+bool aux_node_44 = false;
+bool aux_and_45 = false;
+bool aux_node_46 = false;
+bool aux_node_47 = false;
+bool aux_and_48 = false;
+bool aux_and_49 = false;
+bool aux_node_50 = false;
+bool aux_and_51 = false;
+bool aux_and_52 = false;
+bool aux_or_53 = false;
+bool aux_or_54 = false;
+bool aux_not_55 = false;
+bool aux_or_56 = false;
+bool aux_or_57 = false;
+bool aux_or_58 = false;
+bool aux_or_59 = false;
+bool aux_or_60 = false;
+bool aux_node_61 = false;
+bool aux_node_63 = false;
+bool aux_node_64 = false;
+bool aux_node_65 = false;
+bool aux_node_66 = false;
+bool aux_node_67 = false;
+bool aux_node_68 = false;
+bool aux_node_69 = false;
 
 void setup() {
     pinMode(input_switch1_d, INPUT);
@@ -110,15 +110,15 @@ void setup() {
 }
 
 void loop() {
-    // Reading input data //.
+    // Read input data
     input_switch1_d_val = digitalRead(input_switch1_d);
     input_switch2_c_val = digitalRead(input_switch2_c);
     input_switch3_b_val = digitalRead(input_switch3_b);
     input_switch4_a_val = digitalRead(input_switch4_a);
 
-    // Updating clocks. //
+    // Update clocks
 
-    // Assigning aux variables. //
+    // Update logic variables
     aux_input_switch_0 = input_switch1_d_val;
     aux_node_1 = aux_input_switch_0;
     aux_input_switch_2 = input_switch2_c_val;
@@ -189,13 +189,13 @@ void loop() {
     aux_node_68 = aux_node_37;
     aux_node_69 = aux_node_34;
 
-    // Writing output data. //
+    // Write output data
     digitalWrite(seven_segment_display63_g_middle, aux_or_53);
     digitalWrite(seven_segment_display63_f_upper_left, aux_or_54);
     digitalWrite(seven_segment_display63_e_lower_left, aux_or_57);
     digitalWrite(seven_segment_display63_d_bottom, aux_or_58);
     digitalWrite(seven_segment_display63_a_top, aux_or_60);
     digitalWrite(seven_segment_display63_b_upper_right, aux_or_59);
-    digitalWrite(seven_segment_display63_dp_dot, LOW);
+    digitalWrite(seven_segment_display63_dp_dot, false);
     digitalWrite(seven_segment_display63_c_lower_right, aux_or_56);
 }

@@ -13,55 +13,55 @@ const int led12_q_0 = A3;
 const int led13_q_0 = A4;
 
 /* ====== Aux. Variables ====== */
-boolean push_button1_t_val = LOW;
-boolean input_switch2__preset_val = LOW;
-boolean input_switch3__clear_val = LOW;
-boolean aux_node_0 = LOW;
-boolean aux_push_button_1 = LOW;
-boolean aux_node_2 = LOW;
-boolean aux_not_3 = LOW;
-boolean aux_and_4 = LOW;
-boolean aux_clock_5 = LOW;
+bool push_button1_t_val = false;
+bool input_switch2__preset_val = false;
+bool input_switch3__clear_val = false;
+bool aux_node_0 = false;
+bool aux_push_button_1 = false;
+bool aux_node_2 = false;
+bool aux_not_3 = false;
+bool aux_and_4 = false;
+bool aux_clock_5 = false;
 unsigned long aux_clock_5_lastTime = 0;
 const unsigned long aux_clock_5_interval = 1000;
-boolean aux_input_switch_6 = LOW;
-boolean aux_input_switch_7 = LOW;
-boolean aux_or_8 = LOW;
+bool aux_input_switch_6 = false;
+bool aux_input_switch_7 = false;
+bool aux_or_8 = false;
 // IC: DFLIPFLOP
-boolean aux_ic_9_led_0 = LOW;
-boolean aux_ic_9_led_0_1 = LOW;
-boolean aux_ic_9_node_0 = LOW;
-boolean aux_ic_9_node_1 = LOW;
-boolean aux_ic_9_node_2 = LOW;
-boolean aux_ic_9_node_3 = LOW;
-boolean aux_ic_9_nand_4 = LOW;
-boolean aux_ic_9_node_5 = LOW;
-boolean aux_ic_9_nand_6 = LOW;
-boolean aux_ic_9_not_7 = LOW;
-boolean aux_ic_9_nand_8 = LOW;
-boolean aux_ic_9_nand_9 = LOW;
-boolean aux_ic_9_nand_10 = LOW;
-boolean aux_ic_9_nand_11 = LOW;
-boolean aux_ic_9_node_12 = LOW;
-boolean aux_ic_9_not_13 = LOW;
-boolean aux_ic_9_nand_14 = LOW;
-boolean aux_ic_9_nand_15 = LOW;
-boolean aux_ic_9_node_16 = LOW;
-boolean aux_ic_9_node_17 = LOW;
-boolean aux_ic_9_node_18 = LOW;
-boolean aux_ic_9_not_19 = LOW;
-boolean aux_ic_9_node_20 = LOW;
-boolean aux_ic_9_node_21 = LOW;
-boolean aux_ic_9_node_22 = LOW;
-boolean aux_ic_9_node_23 = LOW;
-boolean aux_ic_9_node_24 = LOW;
-boolean aux_ic_input_ic_0 = LOW;
-boolean aux_ic_input_ic_1 = LOW;
-boolean aux_ic_input_ic_2 = LOW;
-boolean aux_ic_input_ic_3 = LOW;
+bool aux_ic_9_led_0 = false;
+bool aux_ic_9_led_0_1 = false;
+bool aux_ic_9_node_0 = false;
+bool aux_ic_9_node_1 = false;
+bool aux_ic_9_node_2 = false;
+bool aux_ic_9_node_3 = false;
+bool aux_ic_9_nand_4 = false;
+bool aux_ic_9_node_5 = false;
+bool aux_ic_9_nand_6 = false;
+bool aux_ic_9_not_7 = false;
+bool aux_ic_9_nand_8 = false;
+bool aux_ic_9_nand_9 = false;
+bool aux_ic_9_nand_10 = false;
+bool aux_ic_9_nand_11 = false;
+bool aux_ic_9_node_12 = false;
+bool aux_ic_9_not_13 = false;
+bool aux_ic_9_nand_14 = false;
+bool aux_ic_9_nand_15 = false;
+bool aux_ic_9_node_16 = false;
+bool aux_ic_9_node_17 = false;
+bool aux_ic_9_node_18 = false;
+bool aux_ic_9_not_19 = false;
+bool aux_ic_9_node_20 = false;
+bool aux_ic_9_node_21 = false;
+bool aux_ic_9_node_22 = false;
+bool aux_ic_9_node_23 = false;
+bool aux_ic_9_node_24 = false;
+bool aux_ic_input_ic_0 = false;
+bool aux_ic_input_ic_1 = false;
+bool aux_ic_input_ic_2 = false;
+bool aux_ic_input_ic_3 = false;
 // End IC: DFLIPFLOP
-boolean aux_node_10 = LOW;
-boolean aux_and_13 = LOW;
+bool aux_node_10 = false;
+bool aux_and_13 = false;
 
 void setup() {
     pinMode(push_button1_t, INPUT);
@@ -72,19 +72,19 @@ void setup() {
 }
 
 void loop() {
-    // Reading input data //.
+    // Read input data
     push_button1_t_val = digitalRead(push_button1_t);
     input_switch2__preset_val = digitalRead(input_switch2__preset);
     input_switch3__clear_val = digitalRead(input_switch3__clear);
 
-    // Updating clocks. //
+    // Update clocks
     unsigned long now = millis();
     if (now - aux_clock_5_lastTime >= aux_clock_5_interval) {
         aux_clock_5_lastTime = now;
         aux_clock_5 = !aux_clock_5;
     }
 
-    // Assigning aux variables. //
+    // Update logic variables
     aux_node_0 = aux_ic_9_led_0;
     aux_push_button_1 = push_button1_t_val;
     aux_node_2 = aux_node_0;
@@ -129,7 +129,7 @@ void loop() {
     aux_node_10 = aux_push_button_1;
     aux_and_13 = aux_node_10 && aux_ic_9_led_0_1;
 
-    // Writing output data. //
+    // Write output data
     digitalWrite(led12_q_0, aux_ic_9_led_0);
     digitalWrite(led13_q_0, aux_ic_9_led_0_1);
 }

@@ -11,36 +11,36 @@ const int led22_0 = A1;
 const int led24_0 = A2;
 
 /* ====== Aux. Variables ====== */
-boolean input_switch1_val = LOW;
-boolean aux_clock_0 = LOW;
+bool input_switch1_val = false;
+bool aux_clock_0 = false;
 unsigned long aux_clock_0_lastTime = 0;
 const unsigned long aux_clock_0_interval = 1000;
-boolean aux_not_1 = LOW;
-boolean aux_node_2 = LOW;
-boolean aux_node_3 = LOW;
-boolean aux_input_switch_4 = LOW;
-boolean aux_not_5 = LOW;
-boolean aux_not_6 = LOW;
-boolean aux_node_7 = LOW;
-boolean aux_node_8 = LOW;
-boolean aux_nand_9 = LOW;
-boolean aux_node_10 = LOW;
-boolean aux_nand_11 = LOW;
-boolean aux_nand_12 = LOW;
-boolean aux_node_13 = LOW;
-boolean aux_node_14 = LOW;
-boolean aux_nand_15 = LOW;
-boolean aux_nand_16 = LOW;
-boolean aux_node_17 = LOW;
-boolean aux_nand_18 = LOW;
-boolean aux_d_flip_flop_19_0_q = LOW;
-boolean aux_d_flip_flop_19_0_q_inclk = LOW;
-boolean aux_d_flip_flop_19_0_q_last = LOW;
-boolean aux_d_flip_flop_19_1_q = HIGH;
-boolean aux_d_flip_flop_19_1_q_inclk = LOW;
-boolean aux_d_flip_flop_19_1_q_last = LOW;
-boolean aux_nand_20 = LOW;
-boolean aux_nand_22 = LOW;
+bool aux_not_1 = false;
+bool aux_node_2 = false;
+bool aux_node_3 = false;
+bool aux_input_switch_4 = false;
+bool aux_not_5 = false;
+bool aux_not_6 = false;
+bool aux_node_7 = false;
+bool aux_node_8 = false;
+bool aux_nand_9 = false;
+bool aux_node_10 = false;
+bool aux_nand_11 = false;
+bool aux_nand_12 = false;
+bool aux_node_13 = false;
+bool aux_node_14 = false;
+bool aux_nand_15 = false;
+bool aux_nand_16 = false;
+bool aux_node_17 = false;
+bool aux_nand_18 = false;
+bool aux_d_flip_flop_19_0_q = false;
+bool aux_d_flip_flop_19_0_q_inclk = false;
+bool aux_d_flip_flop_19_0_q_last = false;
+bool aux_d_flip_flop_19_1_q = true;
+bool aux_d_flip_flop_19_1_q_inclk = false;
+bool aux_d_flip_flop_19_1_q_last = false;
+bool aux_nand_20 = false;
+bool aux_nand_22 = false;
 
 void setup() {
     pinMode(input_switch1, INPUT);
@@ -49,17 +49,17 @@ void setup() {
 }
 
 void loop() {
-    // Reading input data //.
+    // Read input data
     input_switch1_val = digitalRead(input_switch1);
 
-    // Updating clocks. //
+    // Update clocks
     unsigned long now = millis();
     if (now - aux_clock_0_lastTime >= aux_clock_0_interval) {
         aux_clock_0_lastTime = now;
         aux_clock_0 = !aux_clock_0;
     }
 
-    // Assigning aux variables. //
+    // Update logic variables
     aux_not_1 = !aux_clock_0;
     aux_node_2 = aux_not_1;
     aux_node_3 = aux_node_2;
@@ -83,12 +83,12 @@ void loop() {
         aux_d_flip_flop_19_0_q = aux_d_flip_flop_19_0_q_last;
         aux_d_flip_flop_19_1_q = !aux_d_flip_flop_19_0_q_last;
     }
-    if (!HIGH) { 
-        aux_d_flip_flop_19_0_q = HIGH; //Preset
-        aux_d_flip_flop_19_1_q = LOW;
-    } else if (!HIGH) { 
-        aux_d_flip_flop_19_0_q = LOW; //Clear
-        aux_d_flip_flop_19_1_q = HIGH;
+    if (!true) { 
+        aux_d_flip_flop_19_0_q = true; // Preset
+        aux_d_flip_flop_19_1_q = false;
+    } else if (!true) { 
+        aux_d_flip_flop_19_0_q = false; // Clear
+        aux_d_flip_flop_19_1_q = true;
     }
     aux_d_flip_flop_19_0_q_inclk = aux_node_17;
     aux_d_flip_flop_19_0_q_last = aux_node_8;
@@ -96,7 +96,7 @@ void loop() {
     aux_nand_20 = !(aux_nand_16 && aux_nand_22);
     aux_nand_22 = !(aux_nand_20 && aux_nand_18);
 
-    // Writing output data. //
+    // Write output data
     digitalWrite(led22_0, aux_nand_20);
     digitalWrite(led24_0, aux_d_flip_flop_19_0_q);
 }

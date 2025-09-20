@@ -17,81 +17,81 @@ const int seven_segment_display16_dp_dot = 3;
 const int seven_segment_display16_c_lower_right = 4;
 
 /* ====== Aux. Variables ====== */
-boolean push_button1_btn_val = LOW;
-boolean aux_clock_0 = LOW;
+bool push_button1_btn_val = false;
+bool aux_clock_0 = false;
 unsigned long aux_clock_0_lastTime = 0;
 const unsigned long aux_clock_0_interval = 200;
-boolean aux_node_1 = LOW;
-boolean aux_push_button_2 = LOW;
-boolean aux_t_flip_flop_3_0_q = LOW;
-boolean aux_t_flip_flop_3_0_q_inclk = LOW;
-boolean aux_t_flip_flop_3_1_q = HIGH;
-boolean aux_t_flip_flop_3_1_q_inclk = LOW;
-boolean aux_node_4 = LOW;
-boolean aux_t_flip_flop_5_0_q = LOW;
-boolean aux_t_flip_flop_5_0_q_inclk = LOW;
-boolean aux_t_flip_flop_5_1_q = HIGH;
-boolean aux_t_flip_flop_5_1_q_inclk = LOW;
-boolean aux_node_6 = LOW;
-boolean aux_t_flip_flop_7_0_q = LOW;
-boolean aux_t_flip_flop_7_0_q_inclk = LOW;
-boolean aux_t_flip_flop_7_1_q = HIGH;
-boolean aux_t_flip_flop_7_1_q_inclk = LOW;
-boolean aux_node_8 = LOW;
-boolean aux_node_9 = LOW;
-boolean aux_node_10 = LOW;
-boolean aux_node_11 = LOW;
-boolean aux_node_12 = LOW;
-boolean aux_node_13 = LOW;
+bool aux_node_1 = false;
+bool aux_push_button_2 = false;
+bool aux_t_flip_flop_3_0_q = false;
+bool aux_t_flip_flop_3_0_q_inclk = false;
+bool aux_t_flip_flop_3_1_q = true;
+bool aux_t_flip_flop_3_1_q_inclk = false;
+bool aux_node_4 = false;
+bool aux_t_flip_flop_5_0_q = false;
+bool aux_t_flip_flop_5_0_q_inclk = false;
+bool aux_t_flip_flop_5_1_q = true;
+bool aux_t_flip_flop_5_1_q_inclk = false;
+bool aux_node_6 = false;
+bool aux_t_flip_flop_7_0_q = false;
+bool aux_t_flip_flop_7_0_q_inclk = false;
+bool aux_t_flip_flop_7_1_q = true;
+bool aux_t_flip_flop_7_1_q_inclk = false;
+bool aux_node_8 = false;
+bool aux_node_9 = false;
+bool aux_node_10 = false;
+bool aux_node_11 = false;
+bool aux_node_12 = false;
+bool aux_node_13 = false;
 // IC: DISPLAY-3BITS
-boolean aux_ic_14_display7_g_middle = LOW;
-boolean aux_ic_14_display7_f_upper_left_1 = LOW;
-boolean aux_ic_14_display7_e_lower_left_2 = LOW;
-boolean aux_ic_14_display7_d_bottom_3 = LOW;
-boolean aux_ic_14_display7_a_top_4 = LOW;
-boolean aux_ic_14_display7_b_upper_right_5 = LOW;
-boolean aux_ic_14_display7_dp_dot_6 = LOW;
-boolean aux_ic_14_display7_c_lower_right_7 = LOW;
-boolean aux_ic_14_node_0 = LOW;
-boolean aux_ic_14_or_1 = LOW;
-boolean aux_ic_14_or_2 = LOW;
-boolean aux_ic_14_and_3 = LOW;
-boolean aux_ic_14_or_4 = LOW;
-boolean aux_ic_14_not_5 = LOW;
-boolean aux_ic_14_and_6 = LOW;
-boolean aux_ic_14_and_7 = LOW;
-boolean aux_ic_14_and_8 = LOW;
-boolean aux_ic_14_xnor_9 = LOW;
-boolean aux_ic_14_and_10 = LOW;
-boolean aux_ic_14_or_11 = LOW;
-boolean aux_ic_14_nand_12 = LOW;
-boolean aux_ic_14_or_13 = LOW;
-boolean aux_ic_14_or_14 = LOW;
-boolean aux_ic_14_node_15 = LOW;
-boolean aux_ic_14_node_16 = LOW;
-boolean aux_ic_14_node_17 = LOW;
-boolean aux_ic_14_node_18 = LOW;
-boolean aux_ic_14_node_19 = LOW;
-boolean aux_ic_14_node_20 = LOW;
-boolean aux_ic_14_node_21 = LOW;
-boolean aux_ic_14_node_22 = LOW;
-boolean aux_ic_14_not_23 = LOW;
-boolean aux_ic_14_and_24 = LOW;
-boolean aux_ic_14_and_25 = LOW;
-boolean aux_ic_14_and_26 = LOW;
-boolean aux_ic_14_and_27 = LOW;
-boolean aux_ic_14_node_28 = LOW;
-boolean aux_ic_14_or_29 = LOW;
-boolean aux_ic_14_node_30 = LOW;
-boolean aux_ic_14_node_31 = LOW;
-boolean aux_ic_14_xnor_32 = LOW;
-boolean aux_ic_14_or_34 = LOW;
-boolean aux_ic_14_and_35 = LOW;
-boolean aux_ic_14_not_36 = LOW;
-boolean aux_ic_14_or_37 = LOW;
-boolean aux_ic_input_ic_0 = LOW;
-boolean aux_ic_input_ic_1 = LOW;
-boolean aux_ic_input_ic_2 = LOW;
+bool aux_ic_14_display7_g_middle = false;
+bool aux_ic_14_display7_f_upper_left_1 = false;
+bool aux_ic_14_display7_e_lower_left_2 = false;
+bool aux_ic_14_display7_d_bottom_3 = false;
+bool aux_ic_14_display7_a_top_4 = false;
+bool aux_ic_14_display7_b_upper_right_5 = false;
+bool aux_ic_14_display7_dp_dot_6 = false;
+bool aux_ic_14_display7_c_lower_right_7 = false;
+bool aux_ic_14_node_0 = false;
+bool aux_ic_14_or_1 = false;
+bool aux_ic_14_or_2 = false;
+bool aux_ic_14_and_3 = false;
+bool aux_ic_14_or_4 = false;
+bool aux_ic_14_not_5 = false;
+bool aux_ic_14_and_6 = false;
+bool aux_ic_14_and_7 = false;
+bool aux_ic_14_and_8 = false;
+bool aux_ic_14_xnor_9 = false;
+bool aux_ic_14_and_10 = false;
+bool aux_ic_14_or_11 = false;
+bool aux_ic_14_nand_12 = false;
+bool aux_ic_14_or_13 = false;
+bool aux_ic_14_or_14 = false;
+bool aux_ic_14_node_15 = false;
+bool aux_ic_14_node_16 = false;
+bool aux_ic_14_node_17 = false;
+bool aux_ic_14_node_18 = false;
+bool aux_ic_14_node_19 = false;
+bool aux_ic_14_node_20 = false;
+bool aux_ic_14_node_21 = false;
+bool aux_ic_14_node_22 = false;
+bool aux_ic_14_not_23 = false;
+bool aux_ic_14_and_24 = false;
+bool aux_ic_14_and_25 = false;
+bool aux_ic_14_and_26 = false;
+bool aux_ic_14_and_27 = false;
+bool aux_ic_14_node_28 = false;
+bool aux_ic_14_or_29 = false;
+bool aux_ic_14_node_30 = false;
+bool aux_ic_14_node_31 = false;
+bool aux_ic_14_xnor_32 = false;
+bool aux_ic_14_or_34 = false;
+bool aux_ic_14_and_35 = false;
+bool aux_ic_14_not_36 = false;
+bool aux_ic_14_or_37 = false;
+bool aux_ic_input_ic_0 = false;
+bool aux_ic_input_ic_1 = false;
+bool aux_ic_input_ic_2 = false;
 // End IC: DISPLAY-3BITS
 
 void setup() {
@@ -107,17 +107,17 @@ void setup() {
 }
 
 void loop() {
-    // Reading input data //.
+    // Read input data
     push_button1_btn_val = digitalRead(push_button1_btn);
 
-    // Updating clocks. //
+    // Update clocks
     unsigned long now = millis();
     if (now - aux_clock_0_lastTime >= aux_clock_0_interval) {
         aux_clock_0_lastTime = now;
         aux_clock_0 = !aux_clock_0;
     }
 
-    // Assigning aux variables. //
+    // Update logic variables
     aux_node_1 = aux_clock_0;
     aux_push_button_2 = push_button1_btn_val;
     //T FlipFlop
@@ -127,12 +127,12 @@ void loop() {
             aux_t_flip_flop_3_1_q = !aux_t_flip_flop_3_0_q;
         }
     }
-    if (!HIGH) { 
-        aux_t_flip_flop_3_0_q = HIGH; //Preset
-        aux_t_flip_flop_3_1_q = LOW;
-    } else if (!HIGH) { 
-        aux_t_flip_flop_3_0_q = LOW; //Clear
-        aux_t_flip_flop_3_1_q = HIGH;
+    if (!true) { 
+        aux_t_flip_flop_3_0_q = true; // Preset
+        aux_t_flip_flop_3_1_q = false;
+    } else if (!true) { 
+        aux_t_flip_flop_3_0_q = false; // Clear
+        aux_t_flip_flop_3_1_q = true;
     }
     aux_t_flip_flop_3_0_q_inclk = aux_node_1;
     //End of T FlipFlop
@@ -144,12 +144,12 @@ void loop() {
             aux_t_flip_flop_5_1_q = !aux_t_flip_flop_5_0_q;
         }
     }
-    if (!HIGH) { 
-        aux_t_flip_flop_5_0_q = HIGH; //Preset
-        aux_t_flip_flop_5_1_q = LOW;
-    } else if (!HIGH) { 
-        aux_t_flip_flop_5_0_q = LOW; //Clear
-        aux_t_flip_flop_5_1_q = HIGH;
+    if (!true) { 
+        aux_t_flip_flop_5_0_q = true; // Preset
+        aux_t_flip_flop_5_1_q = false;
+    } else if (!true) { 
+        aux_t_flip_flop_5_0_q = false; // Clear
+        aux_t_flip_flop_5_1_q = true;
     }
     aux_t_flip_flop_5_0_q_inclk = aux_t_flip_flop_3_1_q;
     //End of T FlipFlop
@@ -161,12 +161,12 @@ void loop() {
             aux_t_flip_flop_7_1_q = !aux_t_flip_flop_7_0_q;
         }
     }
-    if (!HIGH) { 
-        aux_t_flip_flop_7_0_q = HIGH; //Preset
-        aux_t_flip_flop_7_1_q = LOW;
-    } else if (!HIGH) { 
-        aux_t_flip_flop_7_0_q = LOW; //Clear
-        aux_t_flip_flop_7_1_q = HIGH;
+    if (!true) { 
+        aux_t_flip_flop_7_0_q = true; // Preset
+        aux_t_flip_flop_7_1_q = false;
+    } else if (!true) { 
+        aux_t_flip_flop_7_0_q = false; // Clear
+        aux_t_flip_flop_7_1_q = true;
     }
     aux_t_flip_flop_7_0_q_inclk = aux_t_flip_flop_5_1_q;
     //End of T FlipFlop
@@ -180,12 +180,12 @@ void loop() {
     aux_ic_input_ic_0 = aux_node_9;
     aux_ic_input_ic_1 = aux_node_12;
     aux_ic_input_ic_2 = aux_node_11;
-    aux_ic_14_node_31 = LOW;
-    aux_ic_14_node_30 = LOW;
-    aux_ic_14_node_28 = LOW;
-    aux_ic_14_or_1 = LOW || aux_ic_14_node_28;
-    aux_ic_14_or_37 = LOW || aux_ic_14_node_30;
-    aux_ic_14_or_2 = LOW || aux_ic_14_node_31;
+    aux_ic_14_node_31 = aux_ic_input_ic_1;
+    aux_ic_14_node_30 = aux_ic_input_ic_0;
+    aux_ic_14_node_28 = aux_ic_input_ic_2;
+    aux_ic_14_or_1 = false || aux_ic_14_node_28;
+    aux_ic_14_or_37 = false || aux_ic_14_node_30;
+    aux_ic_14_or_2 = false || aux_ic_14_node_31;
     aux_ic_14_not_23 = !aux_ic_14_or_1;
     aux_ic_14_not_36 = !aux_ic_14_or_2;
     aux_ic_14_not_5 = !aux_ic_14_or_37;
@@ -201,7 +201,7 @@ void loop() {
     aux_ic_14_xnor_9 = !(aux_ic_14_not_36 ^ aux_ic_14_not_23);
     aux_ic_14_and_8 = aux_ic_14_not_5 && aux_ic_14_not_36 && aux_ic_14_not_23;
     aux_ic_14_and_7 = aux_ic_14_or_2 && aux_ic_14_not_23;
-    aux_ic_14_node_0 = LOW;
+    aux_ic_14_node_0 = false;
     aux_ic_14_or_34 = aux_ic_14_xnor_32 || aux_ic_14_or_2;
     aux_ic_14_or_4 = aux_ic_14_and_7 || aux_ic_14_and_8;
     aux_ic_14_or_29 = aux_ic_14_and_27 || aux_ic_14_and_35 || aux_ic_14_and_3 || aux_ic_14_and_24;
@@ -227,7 +227,7 @@ void loop() {
     aux_ic_14_display7_c_lower_right_7 = aux_ic_14_node_22;
     // End IC: DISPLAY-3BITS
 
-    // Writing output data. //
+    // Write output data
     digitalWrite(seven_segment_display16_g_middle, aux_ic_14_display7_g_middle);
     digitalWrite(seven_segment_display16_f_upper_left, aux_ic_14_display7_f_upper_left_1);
     digitalWrite(seven_segment_display16_e_lower_left, aux_ic_14_display7_e_lower_left_2);

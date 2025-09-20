@@ -19,56 +19,56 @@ const int led48_0 = 5;
 const int led55_0 = 6;
 
 /* ====== Aux. Variables ====== */
-boolean input_switch1_val = LOW;
-boolean input_switch2_val = LOW;
-boolean input_switch3_val = LOW;
-boolean aux_input_switch_0 = LOW;
-boolean aux_input_switch_1 = LOW;
-boolean aux_input_switch_2 = LOW;
-boolean aux_node_3 = LOW;
-boolean aux_node_4 = LOW;
-boolean aux_node_5 = LOW;
-boolean aux_not_6 = LOW;
-boolean aux_not_7 = LOW;
-boolean aux_not_8 = LOW;
-boolean aux_node_9 = LOW;
-boolean aux_node_10 = LOW;
-boolean aux_node_11 = LOW;
-boolean aux_node_12 = LOW;
-boolean aux_node_13 = LOW;
-boolean aux_node_14 = LOW;
-boolean aux_node_15 = LOW;
-boolean aux_node_16 = LOW;
-boolean aux_node_17 = LOW;
-boolean aux_node_18 = LOW;
-boolean aux_node_19 = LOW;
-boolean aux_node_20 = LOW;
-boolean aux_node_21 = LOW;
-boolean aux_node_22 = LOW;
-boolean aux_node_23 = LOW;
-boolean aux_node_24 = LOW;
-boolean aux_node_25 = LOW;
-boolean aux_node_26 = LOW;
-boolean aux_node_27 = LOW;
-boolean aux_node_28 = LOW;
-boolean aux_node_29 = LOW;
-boolean aux_node_30 = LOW;
-boolean aux_node_31 = LOW;
-boolean aux_node_32 = LOW;
-boolean aux_and_33 = LOW;
-boolean aux_and_34 = LOW;
-boolean aux_and_35 = LOW;
-boolean aux_and_36 = LOW;
-boolean aux_and_37 = LOW;
-boolean aux_and_38 = LOW;
-boolean aux_and_39 = LOW;
-boolean aux_and_40 = LOW;
-boolean aux_node_48 = LOW;
-boolean aux_node_49 = LOW;
-boolean aux_node_50 = LOW;
-boolean aux_node_51 = LOW;
-boolean aux_node_52 = LOW;
-boolean aux_node_53 = LOW;
+bool input_switch1_val = false;
+bool input_switch2_val = false;
+bool input_switch3_val = false;
+bool aux_input_switch_0 = false;
+bool aux_input_switch_1 = false;
+bool aux_input_switch_2 = false;
+bool aux_node_3 = false;
+bool aux_node_4 = false;
+bool aux_node_5 = false;
+bool aux_not_6 = false;
+bool aux_not_7 = false;
+bool aux_not_8 = false;
+bool aux_node_9 = false;
+bool aux_node_10 = false;
+bool aux_node_11 = false;
+bool aux_node_12 = false;
+bool aux_node_13 = false;
+bool aux_node_14 = false;
+bool aux_node_15 = false;
+bool aux_node_16 = false;
+bool aux_node_17 = false;
+bool aux_node_18 = false;
+bool aux_node_19 = false;
+bool aux_node_20 = false;
+bool aux_node_21 = false;
+bool aux_node_22 = false;
+bool aux_node_23 = false;
+bool aux_node_24 = false;
+bool aux_node_25 = false;
+bool aux_node_26 = false;
+bool aux_node_27 = false;
+bool aux_node_28 = false;
+bool aux_node_29 = false;
+bool aux_node_30 = false;
+bool aux_node_31 = false;
+bool aux_node_32 = false;
+bool aux_and_33 = false;
+bool aux_and_34 = false;
+bool aux_and_35 = false;
+bool aux_and_36 = false;
+bool aux_and_37 = false;
+bool aux_and_38 = false;
+bool aux_and_39 = false;
+bool aux_and_40 = false;
+bool aux_node_48 = false;
+bool aux_node_49 = false;
+bool aux_node_50 = false;
+bool aux_node_51 = false;
+bool aux_node_52 = false;
+bool aux_node_53 = false;
 
 void setup() {
     pinMode(input_switch1, INPUT);
@@ -85,14 +85,14 @@ void setup() {
 }
 
 void loop() {
-    // Reading input data //.
+    // Read input data
     input_switch1_val = digitalRead(input_switch1);
     input_switch2_val = digitalRead(input_switch2);
     input_switch3_val = digitalRead(input_switch3);
 
-    // Updating clocks. //
+    // Update clocks
 
-    // Assigning aux variables. //
+    // Update logic variables
     aux_input_switch_0 = input_switch1_val;
     aux_input_switch_1 = input_switch2_val;
     aux_input_switch_2 = input_switch3_val;
@@ -141,7 +141,7 @@ void loop() {
     aux_node_52 = aux_node_30;
     aux_node_53 = aux_node_29;
 
-    // Writing output data. //
+    // Write output data
     digitalWrite(led42_0, aux_and_34);
     digitalWrite(led43_0, aux_and_35);
     digitalWrite(led44_0, aux_and_33);

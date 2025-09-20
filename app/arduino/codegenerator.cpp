@@ -49,9 +49,9 @@ CodeGenerator::CodeGenerator(const QString &fileName, const QVector<GraphicEleme
     };
 }
 
-static inline QString highLow(const Status val)
+static inline QString boolValue(const Status val)
 {
-    return (val == Status::Active) ? "HIGH" : "LOW";
+    return (val == Status::Active) ? "true" : "false";
 }
 
 QString CodeGenerator::removeForbiddenChars(const QString &input)
@@ -62,26 +62,26 @@ QString CodeGenerator::removeForbiddenChars(const QString &input)
 QString CodeGenerator::otherPortName(QNEPort *port)
 {
     if (!port) {
-        return "LOW";
+        return "false";
     }
 
     if (port->connections().isEmpty()) {
-        return highLow(port->defaultValue());
+        return boolValue(port->defaultValue());
     }
 
     auto *connection = port->connections().constFirst();
     if (!connection) {
-        return highLow(port->defaultValue());
+        return boolValue(port->defaultValue());
     }
 
     auto *otherPort = connection->otherPort(port);
     if (!otherPort) {
-        return highLow(port->defaultValue());
+        return boolValue(port->defaultValue());
     }
 
     QString result = m_varMap.value(otherPort);
     if (result.isEmpty()) {
-        return highLow(otherPort->defaultValue());
+        return boolValue(otherPort->defaultValue());
     }
     return result;
 }
@@ -249,7 +249,7 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
                     }
                     m_varMap[externalPort] = portVarName;
                     if (!m_declaredVariables.contains(portVarName)) {
-                        m_stream << "boolean " << portVarName << " = " << highLow(externalPort->defaultValue()) << ";" << Qt::endl;
+                        m_stream << "bool " << portVarName << " = " << (externalPort->defaultValue() == Status::Active ? "true" : "false") << ";" << Qt::endl;
                         m_declaredVariables.append(portVarName);
                         qDebug() << "Declared variable for external IC output port" << i << ":" << portVarName;
                     } else {
@@ -294,7 +294,7 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
                         QString portVarName = QString("aux_ic_input_%1_%2").arg(removeForbiddenChars(ic->objectName()), QString::number(i));
                         m_varMap[internalPort] = portVarName;
                         if (!m_declaredVariables.contains(portVarName)) {
-                            m_stream << "boolean " << portVarName << " = LOW;" << Qt::endl;
+                            m_stream << "bool " << portVarName << " = false;" << Qt::endl;
                             m_declaredVariables.append(portVarName);
                         }
                     }
@@ -320,7 +320,7 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
             QString ttVarName = QString("%1_output").arg(removeForbiddenChars(elm->objectName()));
             m_varMap[outputPort] = ttVarName;
             if (!m_declaredVariables.contains(ttVarName)) {
-                m_stream << "boolean " << ttVarName << " = LOW;" << Qt::endl;
+                m_stream << "bool " << ttVarName << " = false;" << Qt::endl;
                 m_declaredVariables.append(ttVarName);
             }
 
@@ -332,12 +332,12 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
             QNEPort *port = outputs.constFirst();
 
             if (elm->elementType() == ElementType::InputVcc) {
-                m_varMap[port] = "HIGH";
+                m_varMap[port] = "true";
                 continue;
             }
 
             if (elm->elementType() == ElementType::InputGnd) {
-                m_varMap[port] = "LOW";
+                m_varMap[port] = "false";
                 continue;
             }
 
@@ -357,7 +357,7 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
         for (auto *port : outputs) {
             QString varName2 = m_varMap.value(port);
             if (!m_declaredVariables.contains(varName2)) {
-                m_stream << "boolean " << varName2 << " = " << highLow(port->defaultValue()) << ";" << Qt::endl;
+                m_stream << "bool " << varName2 << " = " << (port->defaultValue() == Status::Active ? "true" : "false") << ";" << Qt::endl;
                 m_declaredVariables.append(varName2);
             }
 
@@ -385,11 +385,11 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
                     QString inclkVar = varName2 + "_inclk";
                     QString lastVar = varName2 + "_last";
                     if (!m_declaredVariables.contains(inclkVar)) {
-                        m_stream << "boolean " << inclkVar << " = LOW;" << Qt::endl;
+                        m_stream << "bool " << inclkVar << " = false;" << Qt::endl;
                         m_declaredVariables.append(inclkVar);
                     }
                     if (!m_declaredVariables.contains(lastVar)) {
-                        m_stream << "boolean " << lastVar << " = LOW;" << Qt::endl;
+                        m_stream << "bool " << lastVar << " = false;" << Qt::endl;
                         m_declaredVariables.append(lastVar);
                     }
                 }
@@ -400,7 +400,7 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
                 {
                     QString inclkVar = varName2 + "_inclk";
                     if (!m_declaredVariables.contains(inclkVar)) {
-                        m_stream << "boolean " << inclkVar << " = LOW;" << Qt::endl;
+                        m_stream << "bool " << inclkVar << " = false;" << Qt::endl;
                         m_declaredVariables.append(inclkVar);
                     }
                 }
@@ -420,7 +420,7 @@ void CodeGenerator::declareAuxVariables()
     for (const auto &pin : std::as_const(m_inputMap)) {
         QString valVarName = pin.m_varName + "_val";
         if (!m_declaredVariables.contains(valVarName)) {
-            m_stream << "boolean " << valVarName << " = LOW;" << Qt::endl;
+            m_stream << "bool " << valVarName << " = false;" << Qt::endl;
             m_declaredVariables.append(valVarName);
         }
     }
@@ -575,11 +575,11 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             QString prst = otherPortName(elm->inputPort(2));
             QString clr = otherPortName(elm->inputPort(3));
             m_stream << QString("    if (!%1) { ").arg(prst) << Qt::endl;
-            m_stream << QString("        %1 = HIGH; //Preset").arg(firstOut) << Qt::endl;
-            m_stream << QString("        %1 = LOW;").arg(secondOut) << Qt::endl;
+            m_stream << QString("        %1 = true; // Preset").arg(firstOut) << Qt::endl;
+            m_stream << QString("        %1 = false;").arg(secondOut) << Qt::endl;
             m_stream << QString("    } else if (!%1) { ").arg(clr) << Qt::endl;
-            m_stream << QString("        %1 = LOW; //Clear").arg(firstOut) << Qt::endl;
-            m_stream << QString("        %1 = HIGH;").arg(secondOut) << Qt::endl;
+            m_stream << QString("        %1 = false; // Clear").arg(firstOut) << Qt::endl;
+            m_stream << QString("        %1 = true;").arg(secondOut) << Qt::endl;
             m_stream << QString("    }") << Qt::endl;
 
             /* Updating internal clock. */
@@ -614,27 +614,81 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             QString inclk = firstOut + "_inclk";
             m_stream << QString("    //JK FlipFlop") << Qt::endl;
             m_stream << QString("    if (%1 && !%2) { ").arg(clk, inclk) << Qt::endl;
-            m_stream << QString("        if (%1 && %2) { ").arg(j, k) << Qt::endl;
-            m_stream << QString("            boolean aux = %1;").arg(firstOut) << Qt::endl;
-            m_stream << QString("            %1 = %2;").arg(firstOut, secondOut) << Qt::endl;
-            m_stream << QString("            %1 = aux;").arg(secondOut) << Qt::endl;
-            m_stream << QString("        } else if (%1) {").arg(j) << Qt::endl;
-            m_stream << QString("            %1 = HIGH;").arg(firstOut) << Qt::endl;
-            m_stream << QString("            %1 = LOW;").arg(secondOut) << Qt::endl;
-            m_stream << QString("        } else if (%1) {").arg(k) << Qt::endl;
-            m_stream << QString("            %1 = LOW;").arg(firstOut) << Qt::endl;
-            m_stream << QString("            %1 = HIGH;").arg(secondOut) << Qt::endl;
-            m_stream << QString("        }") << Qt::endl;
+
+            // Optimize JK logic based on constant inputs
+            bool jIsTrue = (j == "true");
+            bool jIsFalse = (j == "false");
+            bool kIsTrue = (k == "true");
+            bool kIsFalse = (k == "false");
+
+            if (jIsTrue && kIsTrue) {
+                // J=1, K=1: Toggle mode
+                m_stream << QString("        // Toggle mode (J=1, K=1)") << Qt::endl;
+                m_stream << QString("        bool aux = %1;").arg(firstOut) << Qt::endl;
+                m_stream << QString("        %1 = %2;").arg(firstOut, secondOut) << Qt::endl;
+                m_stream << QString("        %1 = aux;").arg(secondOut) << Qt::endl;
+            } else if (jIsTrue && kIsFalse) {
+                // J=1, K=0: Set mode
+                m_stream << QString("        // Set mode (J=1, K=0)") << Qt::endl;
+                m_stream << QString("        %1 = true;").arg(firstOut) << Qt::endl;
+                m_stream << QString("        %1 = false;").arg(secondOut) << Qt::endl;
+            } else if (jIsFalse && kIsTrue) {
+                // J=0, K=1: Reset mode
+                m_stream << QString("        // Reset mode (J=0, K=1)") << Qt::endl;
+                m_stream << QString("        %1 = false;").arg(firstOut) << Qt::endl;
+                m_stream << QString("        %1 = true;").arg(secondOut) << Qt::endl;
+            } else if (jIsFalse && kIsFalse) {
+                // J=0, K=0: Hold mode (no change)
+                m_stream << QString("        // Hold mode (J=0, K=0) - no change") << Qt::endl;
+            } else {
+                // General case with variable inputs
+                m_stream << QString("        if (%1 && %2) { ").arg(j, k) << Qt::endl;
+                m_stream << QString("            // Toggle mode") << Qt::endl;
+                m_stream << QString("            bool aux = %1;").arg(firstOut) << Qt::endl;
+                m_stream << QString("            %1 = %2;").arg(firstOut, secondOut) << Qt::endl;
+                m_stream << QString("            %1 = aux;").arg(secondOut) << Qt::endl;
+                m_stream << QString("        } else if (%1) {").arg(j) << Qt::endl;
+                m_stream << QString("            // Set mode") << Qt::endl;
+                m_stream << QString("            %1 = true;").arg(firstOut) << Qt::endl;
+                m_stream << QString("            %1 = false;").arg(secondOut) << Qt::endl;
+                m_stream << QString("        } else if (%1) {").arg(k) << Qt::endl;
+                m_stream << QString("            // Reset mode") << Qt::endl;
+                m_stream << QString("            %1 = false;").arg(firstOut) << Qt::endl;
+                m_stream << QString("            %1 = true;").arg(secondOut) << Qt::endl;
+                m_stream << QString("        }") << Qt::endl;
+            }
             m_stream << QString("    }") << Qt::endl;
+
+            // Preset and Clear logic - only generate if not constantly disabled
             QString prst = otherPortName(elm->inputPort(3));
             QString clr = otherPortName(elm->inputPort(4));
-            m_stream << QString("    if (!%1) { ").arg(prst) << Qt::endl;
-            m_stream << QString("        %1 = HIGH; //Preset").arg(firstOut) << Qt::endl;
-            m_stream << QString("        %1 = LOW;").arg(secondOut) << Qt::endl;
-            m_stream << QString("    } else if (!%1) { ").arg(clr) << Qt::endl;
-            m_stream << QString("        %1 = LOW; //Clear").arg(firstOut) << Qt::endl;
-            m_stream << QString("        %1 = HIGH;").arg(secondOut) << Qt::endl;
-            m_stream << QString("    }") << Qt::endl;
+            bool prstIsTrue = (prst == "true");
+            bool clrIsTrue = (clr == "true");
+
+            if (!prstIsTrue || !clrIsTrue) {
+                if (!prstIsTrue && !clrIsTrue) {
+                    // Both preset and clear can be active
+                    m_stream << QString("    if (!%1) { ").arg(prst) << Qt::endl;
+                    m_stream << QString("        %1 = true; // Preset").arg(firstOut) << Qt::endl;
+                    m_stream << QString("        %1 = false;").arg(secondOut) << Qt::endl;
+                    m_stream << QString("    } else if (!%1) { ").arg(clr) << Qt::endl;
+                    m_stream << QString("        %1 = false; // Clear").arg(firstOut) << Qt::endl;
+                    m_stream << QString("        %1 = true;").arg(secondOut) << Qt::endl;
+                    m_stream << QString("    }") << Qt::endl;
+                } else if (!prstIsTrue) {
+                    // Only preset can be active
+                    m_stream << QString("    if (!%1) { ").arg(prst) << Qt::endl;
+                    m_stream << QString("        %1 = true; // Preset").arg(firstOut) << Qt::endl;
+                    m_stream << QString("        %1 = false;").arg(secondOut) << Qt::endl;
+                    m_stream << QString("    }") << Qt::endl;
+                } else if (!clrIsTrue) {
+                    // Only clear can be active
+                    m_stream << QString("    if (!%1) { ").arg(clr) << Qt::endl;
+                    m_stream << QString("        %1 = false; // Clear").arg(firstOut) << Qt::endl;
+                    m_stream << QString("        %1 = true;").arg(secondOut) << Qt::endl;
+                    m_stream << QString("    }") << Qt::endl;
+                }
+            }
 
             /* Updating internal clock. */
             m_stream << "    " << inclk << " = " << clk << ";" << Qt::endl;
@@ -653,8 +707,8 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             m_stream << QString("    //SR FlipFlop") << Qt::endl;
             m_stream << QString("    if (%1 && !%2) { ").arg(clk, inclk) << Qt::endl;
             m_stream << QString("        if (%1 && %2) { ").arg(s, r) << Qt::endl;
-            m_stream << QString("            %1 = HIGH;").arg(firstOut) << Qt::endl;
-            m_stream << QString("            %1 = HIGH;").arg(secondOut) << Qt::endl;
+            m_stream << QString("            %1 = true;").arg(firstOut) << Qt::endl;
+            m_stream << QString("            %1 = true;").arg(secondOut) << Qt::endl;
             m_stream << QString("        } else if (%1 != %2) {").arg(s, r) << Qt::endl;
             m_stream << QString("            %1 = %2;").arg(firstOut, s) << Qt::endl;
             m_stream << QString("            %1 = %2;").arg(secondOut, r) << Qt::endl;
@@ -663,11 +717,11 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             QString prst = otherPortName(elm->inputPort(3));
             QString clr = otherPortName(elm->inputPort(4));
             m_stream << QString("    if (!%1) { ").arg(prst) << Qt::endl;
-            m_stream << QString("        %1 = HIGH; //Preset").arg(firstOut) << Qt::endl;
-            m_stream << QString("        %1 = LOW;").arg(secondOut) << Qt::endl;
+            m_stream << QString("        %1 = true; // Preset").arg(firstOut) << Qt::endl;
+            m_stream << QString("        %1 = false;").arg(secondOut) << Qt::endl;
             m_stream << QString("    } else if (!%1) { ").arg(clr) << Qt::endl;
-            m_stream << QString("        %1 = LOW; //Clear").arg(firstOut) << Qt::endl;
-            m_stream << QString("        %1 = HIGH;").arg(secondOut) << Qt::endl;
+            m_stream << QString("        %1 = false; // Clear").arg(firstOut) << Qt::endl;
+            m_stream << QString("        %1 = true;").arg(secondOut) << Qt::endl;
             m_stream << QString("    }") << Qt::endl;
 
             /* Updating internal clock. */
@@ -694,11 +748,11 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             QString prst = otherPortName(elm->inputPort(2));
             QString clr = otherPortName(elm->inputPort(3));
             m_stream << QString("    if (!%1) { ").arg(prst) << Qt::endl;
-            m_stream << QString("        %1 = HIGH; //Preset").arg(firstOut) << Qt::endl;
-            m_stream << QString("        %1 = LOW;").arg(secondOut) << Qt::endl;
+            m_stream << QString("        %1 = true; // Preset").arg(firstOut) << Qt::endl;
+            m_stream << QString("        %1 = false;").arg(secondOut) << Qt::endl;
             m_stream << QString("    } else if (!%1) { ").arg(clr) << Qt::endl;
-            m_stream << QString("        %1 = LOW; //Clear").arg(firstOut) << Qt::endl;
-            m_stream << QString("        %1 = HIGH;").arg(secondOut) << Qt::endl;
+            m_stream << QString("        %1 = false; // Clear").arg(firstOut) << Qt::endl;
+            m_stream << QString("        %1 = true;").arg(secondOut) << Qt::endl;
             m_stream << QString("    }") << Qt::endl;
 
             /* Updating internal clock. */
@@ -723,9 +777,9 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
                 QNEPort* ttInputPort = elm->inputPort(i);
                 QString signalName = otherPortName(ttInputPort);
 
-                if (signalName == "LOW") {
+                if (signalName == "false") {
                     signalName = "0";
-                } else if (signalName == "HIGH") {
+                } else if (signalName == "true") {
                     signalName = "1";
                 }
                 inputSignalNames << signalName;
@@ -819,7 +873,7 @@ void CodeGenerator::assignLogicOperator(GraphicElement *elm)
                 QString inputValue = otherPortName(inputPort);
 
                 // Special handling for IC internal input nodes
-                if (inputValue == "LOW" && m_currentIC) {
+                if (inputValue == "false" && m_currentIC) {
                     // Check if this node's input port is an IC internal input
                     for (int i = 0; i < m_currentIC->m_icInputs.size(); ++i) {
                         QNEPort *icInputPort = m_currentIC->m_icInputs.at(i);
@@ -872,22 +926,25 @@ void CodeGenerator::assignLogicOperator(GraphicElement *elm)
 void CodeGenerator::loop()
 {
     m_stream << "void loop() {" << Qt::endl;
-    m_stream << "    // Reading input data //." << Qt::endl;
+    m_stream << "    // Read input data" << Qt::endl;
     for (const auto &pin : std::as_const(m_inputMap)) {
         m_stream << QString("    %1_val = digitalRead(%1);").arg(pin.m_varName) << Qt::endl;
     }
     m_stream << Qt::endl;
-    m_stream << "    // Updating clocks. //" << Qt::endl;
+    m_stream << "    // Update clocks" << Qt::endl;
+    bool hasClocks = false;
     for (auto *elm : m_elements) {
         if (elm->elementType() == ElementType::Clock) {
+            if (!hasClocks) {
+                m_stream << QString("    unsigned long now = millis();") << Qt::endl;
+                hasClocks = true;
+            }
             const auto elmOutputs = elm->outputs();
             QString varName = m_varMap.value(elmOutputs.constFirst());
             // m_stream << QString("    if (%1_elapsed > %1_interval) {").arg(varName) << Qt::endl;
             // m_stream << QString("        %1_elapsed = 0;").arg(varName) << Qt::endl;
             // m_stream << QString("        %1 = ! %1;").arg(varName) << Qt::endl;
             // m_stream << QString("    }") << Qt::endl;
-
-            m_stream << QString("    unsigned long now = millis();") << Qt::endl;
             m_stream << QString("    if (now - %1_lastTime >= %1_interval) {").arg(varName) << Qt::endl;
             m_stream << QString("        %1_lastTime = now;").arg(varName) << Qt::endl;
             m_stream << QString("        %1 = !%1;").arg(varName) << Qt::endl;
@@ -923,7 +980,7 @@ void CodeGenerator::loop()
             else frequency = 1047;
 
             m_stream << QString("    // Buzzer: %1 //").arg(elm->objectName()) << Qt::endl;
-            m_stream << QString("    if (%1 == HIGH) {").arg(inputSignal) << Qt::endl;
+            m_stream << QString("    if (%1) {").arg(inputSignal) << Qt::endl;
             m_stream << QString("        tone(%1, %2);").arg(buzzerPinName).arg(frequency) << Qt::endl;
             m_stream << QString("    } else {") << Qt::endl;
             m_stream << QString("        noTone(%1);").arg(buzzerPinName) << Qt::endl;
@@ -932,10 +989,10 @@ void CodeGenerator::loop()
     }
     /* Aux variables. */
     m_stream << Qt::endl;
-    m_stream << "    // Assigning aux variables. //" << Qt::endl;
+    m_stream << "    // Update logic variables" << Qt::endl;
     assignVariablesRec(m_elements);
     m_stream << "\n";
-    m_stream << "    // Writing output data. //\n";
+    m_stream << "    // Write output data\n";
     for (const auto &pin : std::as_const(m_outputMap)) {
         if (pin.m_elm->elementType() == ElementType::Buzzer) {
             continue;
