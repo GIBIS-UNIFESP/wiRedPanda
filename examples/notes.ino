@@ -1,6 +1,11 @@
 // ==================================================================== //
 // ======= This code was generated automatically by wiRedPanda ======== //
 // ==================================================================== //
+//
+// Target Board: Arduino UNO R3/R4
+// Pin Usage: 8/18 pins
+// Standard Arduino board with 20 I/O pins (14 digital + 6 analog)
+//
 
 
 /* ========= Inputs ========== */

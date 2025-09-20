@@ -13,7 +13,7 @@
 | display-4bits-counter | 10/20 | 20 | 1 | 9 | [display-4bits-counter_setup.md](display-4bits-counter_setup.md) | [display-4bits-counter_tinkercad.json](display-4bits-counter_tinkercad.json) |
 | display-4bits | 16/20 | 26 | 4 | 12 | [display-4bits_setup.md](display-4bits_setup.md) | [display-4bits_tinkercad.json](display-4bits_tinkercad.json) |
 | dlatch | 4/20 | 8 | 1 | 3 | [dlatch_setup.md](dlatch_setup.md) | [dlatch_tinkercad.json](dlatch_tinkercad.json) |
-| ic | 0/20 | 2 | 0 | 0 | [ic_setup.md](ic_setup.md) | [ic_tinkercad.json](ic_tinkercad.json) |
+| ic | 28/20 | 58 | 0 | 28 | [ic_setup.md](ic_setup.md) | [ic_tinkercad.json](ic_tinkercad.json) |
 | input | 8/20 | 14 | 2 | 6 | [input_setup.md](input_setup.md) | [input_tinkercad.json](input_tinkercad.json) |
 | jkflipflop | 10/20 | 14 | 4 | 6 | [jkflipflop_setup.md](jkflipflop_setup.md) | [jkflipflop_tinkercad.json](jkflipflop_tinkercad.json) |
 | notes | 8/20 | 10 | 0 | 8 | [notes_setup.md](notes_setup.md) | [notes_tinkercad.json](notes_tinkercad.json) |

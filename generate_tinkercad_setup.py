@@ -14,6 +14,25 @@ def parse_arduino_file(file_path):
     with open(file_path, 'r') as f:
         content = f.read()
 
+    # Extract board information from header
+    board_info = {
+        'name': 'Arduino UNO R3/R4',
+        'pin_usage': '0/18',
+        'description': 'Standard Arduino board'
+    }
+
+    board_match = re.search(r'// Target Board: (.+)', content)
+    if board_match:
+        board_info['name'] = board_match.group(1)
+
+    pin_usage_match = re.search(r'// Pin Usage: (\d+/\d+) pins', content)
+    if pin_usage_match:
+        board_info['pin_usage'] = pin_usage_match.group(1)
+
+    desc_match = re.search(r'// (.+ board .+)', content)
+    if desc_match:
+        board_info['description'] = desc_match.group(1)
+
     # Extract inputs
     inputs = []
     input_matches = re.finditer(r'const int (\w+) = (A?\d+);.*// Input', content)
@@ -83,16 +102,27 @@ def parse_arduino_file(file_path):
     return {
         'inputs': input_types,
         'outputs': outputs,
-        'clocks': clocks
+        'clocks': clocks,
+        'board_info': board_info
     }
 
 def generate_tinkercad_json(circuit_data, filename):
     """Generate a JSON file with component specifications for Tinkercad."""
     components = []
 
-    # Add Arduino board
+    # Add appropriate Arduino board based on pin requirements
+    board_name = circuit_data['board_info']['name']
+    if 'Mega' in board_name:
+        arduino_type = 'Arduino Mega 2560'
+    elif 'ESP32' in board_name:
+        arduino_type = 'ESP32'
+    elif 'Nano' in board_name:
+        arduino_type = 'Arduino Nano'
+    else:
+        arduino_type = 'Arduino Uno R3'
+
     components.append({
-        'type': 'Arduino Uno R3',
+        'type': arduino_type,
         'id': 'arduino1',
         'position': {'x': 0, 'y': 0}
     })
@@ -162,17 +192,25 @@ def generate_tinkercad_json(circuit_data, filename):
         'filename': filename,
         'components': components,
         'clock_info': circuit_data['clocks'],
-        'total_pins_used': len(circuit_data['inputs']) + len(circuit_data['outputs'])
+        'total_pins_used': len(circuit_data['inputs']) + len(circuit_data['outputs']),
+        'board_info': circuit_data['board_info']
     }
 
 def generate_setup_guide(tinkercad_data, filename):
     """Generate a markdown setup guide for Tinkercad."""
     base_name = Path(filename).stem
 
+    board_info = tinkercad_data['board_info']
+
     guide = f"""# Tinkercad Setup Guide: {base_name}
 
 ## Overview
 This guide helps you recreate the circuit for `{filename}` in Tinkercad.
+
+## Target Arduino Board
+**{board_info['name']}**
+- Pin Usage: {board_info['pin_usage']} pins
+- {board_info['description']}
 
 ## Required Components
 """
@@ -186,7 +224,9 @@ This guide helps you recreate the circuit for `{filename}` in Tinkercad.
     for comp_type, count in component_counts.items():
         guide += f"- {count}x {comp_type}\n"
 
-    guide += f"\n## Pin Usage\nTotal pins used: {tinkercad_data['total_pins_used']}/20 available\n\n"
+    # Extract pin info from board_info
+    pin_usage = board_info['pin_usage']
+    guide += f"\n## Pin Usage\nTotal pins used: {pin_usage}\n\n"
 
     # Input connections
     inputs = [c for c in tinkercad_data['components'] if 'input_' in c.get('id', '')]
@@ -213,10 +253,10 @@ This guide helps you recreate the circuit for `{filename}` in Tinkercad.
         guide += "\n"
 
     # Setup steps
-    guide += """## Setup Steps in Tinkercad
+    guide += f"""## Setup Steps in Tinkercad
 
-1. **Add Arduino Uno R3**
-   - Drag Arduino Uno R3 to the workspace
+1. **Add {board_info['name']}**
+   - Drag {board_info['name']} to the workspace
 
 2. **Add Breadboard**
    - Place a breadboard next to the Arduino

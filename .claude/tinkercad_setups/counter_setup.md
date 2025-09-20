@@ -3,6 +3,11 @@
 ## Overview
 This guide helps you recreate the circuit for `counter.ino` in Tinkercad.
 
+## Target Arduino Board
+**Arduino UNO R3/R4**
+- Pin Usage: 3/18 pins
+- Standard Arduino board with 20 I/O pins (14 digital + 6 analog)
+
 ## Required Components
 - 1x Arduino Uno R3
 - 1x Breadboard
@@ -10,7 +15,7 @@ This guide helps you recreate the circuit for `counter.ino` in Tinkercad.
 - 3x Resistor
 
 ## Pin Usage
-Total pins used: 3/20 available
+Total pins used: 3/18
 
 ### Output Connections
 - **led5_0** (LED) → Arduino pin A0 (with 220Ω resistor)
@@ -22,8 +27,8 @@ Total pins used: 3/20 available
 
 ## Setup Steps in Tinkercad
 
-1. **Add Arduino Uno R3**
-   - Drag Arduino Uno R3 to the workspace
+1. **Add Arduino UNO R3/R4**
+   - Drag Arduino UNO R3/R4 to the workspace
 
 2. **Add Breadboard**
    - Place a breadboard next to the Arduino

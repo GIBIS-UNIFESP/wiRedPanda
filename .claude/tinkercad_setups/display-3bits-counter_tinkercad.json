@@ -205,5 +205,10 @@
       "frequency_hz": 5.0
     }
   ],
-  "total_pins_used": 10
+  "total_pins_used": 10,
+  "board_info": {
+    "name": "Arduino UNO R3/R4",
+    "pin_usage": "9/18",
+    "description": "Standard Arduino board with 20 I/O pins (14 digital + 6 analog)"
+  }
 }
