@@ -1,0 +1,23 @@
+{
+  "filename": "ic.ino",
+  "components": [
+    {
+      "type": "Arduino Uno R3",
+      "id": "arduino1",
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "type": "Breadboard",
+      "id": "breadboard1",
+      "position": {
+        "x": 200,
+        "y": 0
+      }
+    }
+  ],
+  "clock_info": [],
+  "total_pins_used": 0
+}

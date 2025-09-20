@@ -1,0 +1,209 @@
+{
+  "filename": "display-3bits-counter.ino",
+  "components": [
+    {
+      "type": "Arduino Uno R3",
+      "id": "arduino1",
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "type": "Breadboard",
+      "id": "breadboard1",
+      "position": {
+        "x": 200,
+        "y": 0
+      }
+    },
+    {
+      "type": "Pushbutton",
+      "id": "input_0",
+      "name": "push_button1_btn",
+      "pin": "A0",
+      "position": {
+        "x": 400,
+        "y": 100
+      }
+    },
+    {
+      "type": "Generic Output",
+      "id": "output_0",
+      "name": "push_button1_btn",
+      "pin": "A0",
+      "position": {
+        "x": 600,
+        "y": 100
+      },
+      "resistor_needed": false
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_1",
+      "name": "seven_segment_display16_g_middle",
+      "pin": "A1",
+      "position": {
+        "x": 600,
+        "y": 150
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_1",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 150
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_2",
+      "name": "seven_segment_display16_f_upper_left",
+      "pin": "A2",
+      "position": {
+        "x": 600,
+        "y": 200
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_2",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 200
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_3",
+      "name": "seven_segment_display16_e_lower_left",
+      "pin": "A3",
+      "position": {
+        "x": 600,
+        "y": 250
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_3",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 250
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_4",
+      "name": "seven_segment_display16_d_bottom",
+      "pin": "A4",
+      "position": {
+        "x": 600,
+        "y": 300
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_4",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 300
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_5",
+      "name": "seven_segment_display16_a_top",
+      "pin": "A5",
+      "position": {
+        "x": 600,
+        "y": 350
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_5",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 350
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_6",
+      "name": "seven_segment_display16_b_upper_right",
+      "pin": "2",
+      "position": {
+        "x": 600,
+        "y": 400
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_6",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 400
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_7",
+      "name": "seven_segment_display16_dp_dot",
+      "pin": "3",
+      "position": {
+        "x": 600,
+        "y": 450
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_7",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 450
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_8",
+      "name": "seven_segment_display16_c_lower_right",
+      "pin": "4",
+      "position": {
+        "x": 600,
+        "y": 500
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_8",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 500
+      }
+    }
+  ],
+  "clock_info": [
+    {
+      "interval_ms": 200.0,
+      "frequency_hz": 5.0
+    }
+  ],
+  "total_pins_used": 10
+}

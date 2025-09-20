@@ -1,0 +1,189 @@
+{
+  "filename": "serialize.ino",
+  "components": [
+    {
+      "type": "Arduino Uno R3",
+      "id": "arduino1",
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "type": "Breadboard",
+      "id": "breadboard1",
+      "position": {
+        "x": 200,
+        "y": 0
+      }
+    },
+    {
+      "type": "Slide Switch",
+      "id": "input_0",
+      "name": "input_switch1_load__shift",
+      "pin": "A0",
+      "position": {
+        "x": 400,
+        "y": 100
+      }
+    },
+    {
+      "type": "Slide Switch",
+      "id": "input_1",
+      "name": "input_switch2_clock",
+      "pin": "A1",
+      "position": {
+        "x": 400,
+        "y": 150
+      }
+    },
+    {
+      "type": "Slide Switch",
+      "id": "input_2",
+      "name": "input_switch3_d0",
+      "pin": "A2",
+      "position": {
+        "x": 400,
+        "y": 200
+      }
+    },
+    {
+      "type": "Slide Switch",
+      "id": "input_3",
+      "name": "input_switch4_d1",
+      "pin": "A3",
+      "position": {
+        "x": 400,
+        "y": 250
+      }
+    },
+    {
+      "type": "Slide Switch",
+      "id": "input_4",
+      "name": "input_switch5_d2",
+      "pin": "A4",
+      "position": {
+        "x": 400,
+        "y": 300
+      }
+    },
+    {
+      "type": "Slide Switch",
+      "id": "input_5",
+      "name": "input_switch6_d3",
+      "pin": "A5",
+      "position": {
+        "x": 400,
+        "y": 350
+      }
+    },
+    {
+      "type": "Generic Output",
+      "id": "output_0",
+      "name": "input_switch1_load__shift",
+      "pin": "A0",
+      "position": {
+        "x": 600,
+        "y": 100
+      },
+      "resistor_needed": false
+    },
+    {
+      "type": "Generic Output",
+      "id": "output_1",
+      "name": "input_switch2_clock",
+      "pin": "A1",
+      "position": {
+        "x": 600,
+        "y": 150
+      },
+      "resistor_needed": false
+    },
+    {
+      "type": "Generic Output",
+      "id": "output_2",
+      "name": "input_switch3_d0",
+      "pin": "A2",
+      "position": {
+        "x": 600,
+        "y": 200
+      },
+      "resistor_needed": false
+    },
+    {
+      "type": "Generic Output",
+      "id": "output_3",
+      "name": "input_switch4_d1",
+      "pin": "A3",
+      "position": {
+        "x": 600,
+        "y": 250
+      },
+      "resistor_needed": false
+    },
+    {
+      "type": "Generic Output",
+      "id": "output_4",
+      "name": "input_switch5_d2",
+      "pin": "A4",
+      "position": {
+        "x": 600,
+        "y": 300
+      },
+      "resistor_needed": false
+    },
+    {
+      "type": "Generic Output",
+      "id": "output_5",
+      "name": "input_switch6_d3",
+      "pin": "A5",
+      "position": {
+        "x": 600,
+        "y": 350
+      },
+      "resistor_needed": false
+    },
+    {
+      "type": "LED",
+      "id": "output_6",
+      "name": "led37_0",
+      "pin": "2",
+      "position": {
+        "x": 600,
+        "y": 400
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_6",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 400
+      }
+    },
+    {
+      "type": "LED",
+      "id": "output_7",
+      "name": "led38_0",
+      "pin": "3",
+      "position": {
+        "x": 600,
+        "y": 450
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_7",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 450
+      }
+    }
+  ],
+  "clock_info": [],
+  "total_pins_used": 14
+}
