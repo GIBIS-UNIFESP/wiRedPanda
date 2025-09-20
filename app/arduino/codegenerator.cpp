@@ -207,8 +207,14 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
                 QNEPort *externalPort = ic->outputPort(i);
                 if (externalPort) {
                     QString portVarName = baseVarName;
-                    if (!externalPort->name().isEmpty()) {
-                        portVarName += "_" + removeForbiddenChars(externalPort->name());
+                    QString portName = externalPort->name();
+
+                    if (!portName.isEmpty()) {
+                        portVarName += "_" + removeForbiddenChars(portName);
+                        // Ensure uniqueness by adding index for subsequent ports with same name
+                        if (i > 0) {
+                            portVarName += "_" + QString::number(i);
+                        }
                     } else {
                         portVarName += "_out" + QString::number(i);
                     }
@@ -519,6 +525,10 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
                 if (!externalVar.isEmpty() && !internalValue.isEmpty()) {
                     m_stream << "    " << externalVar << " = " << internalValue << ";" << Qt::endl;
                 } else {
+                    // Fallback: assign default value with warning comment
+                    if (!externalVar.isEmpty()) {
+                        m_stream << "    " << externalVar << " = LOW; // Warning: internal connection not found" << Qt::endl;
+                    }
                     qDebug() << "Warning: Missing variable for IC output" << i
                              << "external:" << externalVar << "internal:" << internalValue;
                 }

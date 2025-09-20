@@ -17,6 +17,7 @@ unsigned long aux_clock_1_lastTime = 0;
 const unsigned long aux_clock_1_interval = 1000;
 // IC: DLATCH
 boolean aux_ic_2_q_0 = LOW;
+boolean aux_ic_2_q_0_1 = LOW;
 boolean aux_node_0 = LOW;
 boolean aux_node_1 = LOW;
 boolean aux_nand_2 = LOW;
@@ -61,10 +62,10 @@ void loop() {
     aux_node_0 = aux_nand_2;
     aux_node_1 = aux_nand_3;
     aux_ic_2_q_0 = LOW;
-    aux_ic_2_q_0 = LOW;
+    aux_ic_2_q_0_1 = LOW;
     // End IC: DLATCH
 
     // Writing output data. //
     digitalWrite(led4_q_0, aux_ic_2_q_0);
-    digitalWrite(led5_q_0, aux_ic_2_q_0);
+    digitalWrite(led5_q_0, aux_ic_2_q_0_1);
 }
