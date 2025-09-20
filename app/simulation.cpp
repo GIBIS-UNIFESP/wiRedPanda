@@ -152,6 +152,14 @@ void Simulation::start()
 
     if (!m_initialized) {
         initialize();
+    } else {
+        // Reset clocks to current time to prevent catch-up behavior after pause
+        const auto globalTime = std::chrono::steady_clock::now();
+        for (auto *clock : std::as_const(m_clocks)) {
+            if (clock) {
+                clock->resetClock(globalTime);
+            }
+        }
     }
 
     m_timer.start();
