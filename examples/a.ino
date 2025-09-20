@@ -51,9 +51,9 @@ void loop() {
     // IC: DLATCH
     aux_ic_input_ic_0 = push_button1_d_val;
     aux_ic_input_ic_1 = aux_clock_1;
-    aux_node_8 = ;
+    aux_node_8 = LOW;
     aux_not_4 = !aux_node_8;
-    aux_node_7 = ;
+    aux_node_7 = LOW;
     aux_nand_5 = !(aux_node_7 && aux_not_4);
     aux_nand_2 = !(aux_nand_3 && aux_nand_5);
     aux_nand_6 = !(aux_node_8 && aux_node_7);

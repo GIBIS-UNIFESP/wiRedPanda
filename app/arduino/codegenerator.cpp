@@ -79,7 +79,12 @@ QString CodeGenerator::otherPortName(QNEPort *port)
         return highLow(port->defaultValue());
     }
 
-    return m_varMap.value(otherPort);
+    QString result = m_varMap.value(otherPort);
+    if (result.isEmpty()) {
+        // Fallback to default value if variable mapping is missing
+        return highLow(otherPort->defaultValue());
+    }
+    return result;
 }
 
 void CodeGenerator::generate()
@@ -776,6 +781,21 @@ void CodeGenerator::assignLogicOperator(GraphicElement *elm)
         negate = true;
         parentheses = false;
         break;
+    }
+    case ElementType::Node: {
+        // Nodes are pass-through connections - handle them specially
+        if (elm->outputs().size() == 1 && elm->inputs().size() == 1) {
+            auto *outputPort = elm->outputPort(0);
+            auto *inputPort = elm->inputPort(0);
+            if (outputPort && inputPort) {
+                QString varName = m_varMap.value(outputPort);
+                QString inputValue = otherPortName(inputPort);
+                if (!varName.isEmpty() && !inputValue.isEmpty()) {
+                    m_stream << "    " << varName << " = " << inputValue << ";" << Qt::endl;
+                }
+            }
+        }
+        return; // Early return to skip the general logic below
     }
     default:
         break;
