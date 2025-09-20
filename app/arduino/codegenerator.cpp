@@ -123,6 +123,11 @@ void CodeGenerator::declareInputs()
             }
 
             varName = removeForbiddenChars(varName);
+            if (m_availablePins.isEmpty()) {
+                qWarning() << "Error: Ran out of available Arduino pins for input:" << varName;
+                qWarning() << "Circuit has too many inputs for Arduino hardware";
+                return; // Exit gracefully instead of crashing
+            }
             const QString pinName = m_availablePins.constFirst();
             m_stream << QString("const int %1 = %2;").arg(varName, pinName) << Qt::endl;
             auto *outPort = elm->outputPort(0);
@@ -165,6 +170,11 @@ void CodeGenerator::declareOutputs()
                     varName = QString("%1_%2").arg(varName, port->name());
                 }
                 varName = removeForbiddenChars(varName);
+                if (m_availablePins.isEmpty()) {
+                    qWarning() << "Error: Ran out of available Arduino pins for output:" << varName;
+                    qWarning() << "Circuit has too many outputs for Arduino hardware";
+                    return; // Exit gracefully instead of crashing
+                }
                 const QString pinName = m_availablePins.constFirst();
                 m_stream << QString("const int %1 = %2;").arg(varName, pinName) << Qt::endl;
                 m_outputMap.append(MappedPin(elm, pinName, varName, port, i));
