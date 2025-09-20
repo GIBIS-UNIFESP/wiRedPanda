@@ -13,6 +13,7 @@
 #include "truth_table.h"
 #include "buzzer.h"
 
+#include <ElementFactory.h>
 #include <QRegularExpression>
 
 
@@ -177,9 +178,73 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
             // Comment the IC block for readability
             m_stream << "// IC: " << ic->label() << Qt::endl;
 
+            // Declare variables for external IC ports first
+            QString baseVarName = QString("aux_%1_%2").arg(removeForbiddenChars(ic->objectName()), QString::number(counter++));
+
+            // Declare variables for external IC output ports
+            for (int i = 0; i < ic->outputSize(); ++i) {
+                QNEPort *externalPort = ic->outputPort(i);
+                if (externalPort) {
+                    QString portVarName = baseVarName;
+                    if (!externalPort->name().isEmpty()) {
+                        portVarName += "_" + removeForbiddenChars(externalPort->name());
+                    } else {
+                        portVarName += "_out" + QString::number(i);
+                    }
+                    m_varMap[externalPort] = portVarName;
+                    m_stream << "boolean " << portVarName << " = " << highLow(externalPort->defaultValue()) << ";" << Qt::endl;
+                    qDebug() << "Declared variable for external IC output port" << i << ":" << portVarName;
+                }
+            }
+
             // Recursively declare variables for internal elements
             if (!ic->m_icElements.isEmpty()) {
+                qDebug() << "Before processing internal elements, m_varMap size:" << m_varMap.size();
                 declareAuxVariablesRec(ic->m_icElements, true);
+                qDebug() << "After processing internal elements, m_varMap size:" << m_varMap.size();
+
+                // Debug: Check if internal ports got variables assigned
+                for (int i = 0; i < ic->m_icInputs.size(); ++i) {
+                    QNEPort *internalPort = ic->m_icInputs.at(i);
+                    QString internalVar = m_varMap.value(internalPort);
+                    GraphicElement *parentElement = internalPort->graphicElement();
+                    QString elementType = parentElement ? ElementFactory::typeToText(parentElement->elementType()) : "null";
+                    qDebug() << "Internal input port" << i << "variable in m_varMap:" << internalVar
+                             << "parent element type:" << elementType
+                             << "parent element name:" << (parentElement ? parentElement->objectName() : "null")
+                             << "port is input:" << internalPort->isInput() << "output:" << internalPort->isOutput();
+                }
+                for (int i = 0; i < ic->m_icOutputs.size(); ++i) {
+                    QNEPort *internalPort = ic->m_icOutputs.at(i);
+                    QString internalVar = m_varMap.value(internalPort);
+                    GraphicElement *parentElement = internalPort->graphicElement();
+                    QString elementType = parentElement ? ElementFactory::typeToText(parentElement->elementType()) : "null";
+                    qDebug() << "Internal output port" << i << "variable in m_varMap:" << internalVar
+                             << "parent element type:" << elementType
+                             << "parent element name:" << (parentElement ? parentElement->objectName() : "null")
+                             << "port is input:" << internalPort->isInput() << "output:" << internalPort->isOutput();
+                }
+
+                // Ensure internal IC ports have variables assigned
+                for (int i = 0; i < ic->m_icInputs.size(); ++i) {
+                    QNEPort *internalPort = ic->m_icInputs.at(i);
+                    if (m_varMap.value(internalPort).isEmpty()) {
+                        QString portVarName = QString("aux_ic_input_%1_%2").arg(removeForbiddenChars(ic->objectName()), QString::number(i));
+                        m_varMap[internalPort] = portVarName;
+                        m_stream << "boolean " << portVarName << " = LOW;" << Qt::endl;
+                        qDebug() << "Assigned missing variable for internal IC input port" << i << ":" << portVarName;
+                    }
+                }
+
+                for (int i = 0; i < ic->m_icOutputs.size(); ++i) {
+                    QNEPort *internalPort = ic->m_icOutputs.at(i);
+                    if (m_varMap.value(internalPort).isEmpty()) {
+                        QString portVarName = QString("aux_ic_output_%1_%2").arg(removeForbiddenChars(ic->objectName()), QString::number(i));
+                        m_varMap[internalPort] = portVarName;
+                        m_stream << "boolean " << portVarName << " = LOW;" << Qt::endl;
+                        qDebug() << "Assigned missing variable for internal IC output port" << i << ":" << portVarName;
+                    }
+                }
             }
 
             m_stream << "// End IC: " << ic->label() << Qt::endl;
@@ -282,49 +347,118 @@ void CodeGenerator::setup()
 void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements)
 {
     for (auto *elm : elements) {
+        // Log element type for debugging
+        QString elementTypeName = ElementFactory::typeToText(elm->elementType());
+        qDebug() << "CodeGenerator::assignVariablesRec - Processing element type:" << elementTypeName
+                 << "(" << static_cast<int>(elm->elementType()) << ") with label:" << elm->objectName();
+
+        // Debug otherPortName for problematic elements
+        if (elm->elementType() == ElementType::Node && !elm->inputs().isEmpty()) {
+            QNEPort *inputPort = elm->inputPort(0);
+            QString inputValue = otherPortName(inputPort);
+            qDebug() << "Node" << elm->objectName() << "input value from otherPortName:" << inputValue;
+            if (inputValue.isEmpty()) {
+                qDebug() << "  Input port connections count:" << (inputPort ? inputPort->connections().size() : -1);
+                if (inputPort && !inputPort->connections().isEmpty()) {
+                    auto *conn = inputPort->connections().constFirst();
+                    QNEPort *otherPort = nullptr;
+                    if (conn->startPort() == inputPort) {
+                        otherPort = conn->endPort();
+                    } else {
+                        otherPort = conn->startPort();
+                    }
+                    QString otherPortVar = m_varMap.value(otherPort);
+                    qDebug() << "  Connected to port with variable:" << otherPortVar;
+                    qDebug() << "  Other port parent element:" << (otherPort->graphicElement() ? otherPort->graphicElement()->objectName() : "null");
+                }
+            }
+        }
         if (elm->elementType() == ElementType::IC) {
             auto *ic = qobject_cast<IC *>(elm);
-            if (!ic) continue;
+            if (!ic) {
+                qDebug() << "CodeGenerator::assignVariablesRec - IC cast failed for element:" << elm->objectName();
+                continue;
+            }
+
+            qDebug() << "CodeGenerator::assignVariablesRec - Processing IC:" << ic->label()
+                     << "with" << ic->inputSize() << "inputs and" << ic->outputSize() << "outputs";
+            qDebug() << "IC internal elements count:" << ic->m_icElements.size();
+            qDebug() << "IC inputs mapping size:" << ic->m_icInputs.size();
+            qDebug() << "IC outputs mapping size:" << ic->m_icOutputs.size();
 
             m_stream << "    // IC: " << ic->label() << Qt::endl;
 
             // Map IC inputs: external signals → internal IC input variables
+            qDebug() << "Processing IC inputs...";
             for (int i = 0; i < ic->inputSize(); ++i) {
                 QNEPort *externalPort = ic->inputPort(i);
-                if (i >= ic->m_icInputs.size()) continue;
+                if (i >= ic->m_icInputs.size()) {
+                    qDebug() << "Input index" << i << "exceeds m_icInputs size" << ic->m_icInputs.size();
+                    continue;
+                }
                 QNEPort *internalPort = ic->m_icInputs.at(i);
+
+                QString externalPortTooltip = externalPort ? externalPort->toolTip() : "null";
+                QString internalPortTooltip = internalPort ? internalPort->toolTip() : "null";
+                qDebug() << "IC input" << i << "- External port tooltip:" << externalPortTooltip
+                         << "Internal port tooltip:" << internalPortTooltip;
 
                 QString externalValue = otherPortName(externalPort);
                 if (externalValue.isEmpty()) {
                     externalValue = highLow(externalPort->defaultValue());
+                    qDebug() << "Using default value for input" << i << ":" << externalValue;
                 }
 
                 QString internalVar = m_varMap.value(internalPort);
+                qDebug() << "IC input" << i << "mapping: external=" << externalValue << "-> internal=" << internalVar;
+
                 if (!internalVar.isEmpty()) {
                     m_stream << "    " << internalVar << " = " << externalValue << ";" << Qt::endl;
+                } else {
+                    qDebug() << "Warning: No internal variable found for IC input port" << i;
                 }
             }
 
             // Process internal IC elements in correct dependency order
             if (!ic->m_icElements.isEmpty()) {
+                qDebug() << "Processing" << ic->m_icElements.size() << "internal IC elements...";
                 auto sortedElements = Common::sortGraphicElements(ic->m_icElements);
+                qDebug() << "Sorted" << sortedElements.size() << "elements for processing";
                 assignVariablesRec(sortedElements);
+                qDebug() << "Finished processing internal IC elements";
+            } else {
+                qDebug() << "Warning: IC has no internal elements";
             }
 
             // Map IC outputs: internal IC output variables → external signals
+            qDebug() << "Processing IC outputs...";
             for (int i = 0; i < ic->outputSize(); ++i) {
                 QNEPort *externalPort = ic->outputPort(i);
-                if (i >= ic->m_icOutputs.size()) continue;
+                if (i >= ic->m_icOutputs.size()) {
+                    qDebug() << "Output index" << i << "exceeds m_icOutputs size" << ic->m_icOutputs.size();
+                    continue;
+                }
                 QNEPort *internalPort = ic->m_icOutputs.at(i);
+
+                QString externalPortTooltip = externalPort ? externalPort->toolTip() : "null";
+                QString internalPortTooltip = internalPort ? internalPort->toolTip() : "null";
+                qDebug() << "IC output" << i << "- External port tooltip:" << externalPortTooltip
+                         << "Internal port tooltip:" << internalPortTooltip;
 
                 QString internalValue = otherPortName(internalPort);
                 QString externalVar = m_varMap.value(externalPort);
 
+                qDebug() << "IC output" << i << "mapping: internal=" << internalValue << "-> external=" << externalVar;
+
                 if (!externalVar.isEmpty() && !internalValue.isEmpty()) {
                     m_stream << "    " << externalVar << " = " << internalValue << ";" << Qt::endl;
+                } else {
+                    qDebug() << "Warning: Missing variable for IC output" << i
+                             << "external:" << externalVar << "internal:" << internalValue;
                 }
             }
 
+            qDebug() << "Finished processing IC:" << ic->label();
             m_stream << "    // End IC: " << ic->label() << Qt::endl;
             continue;
         }

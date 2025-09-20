@@ -72,6 +72,11 @@ class MCPSchemaValidator:
                 self._command_schemas = self._schema.get("properties", {}).get("commands", {}).get("properties", {})
                 self._response_schemas = self._schema.get("properties", {}).get("responses", {}).get("properties", {})
 
+                # Schema loading completed successfully
+                if self._command_schemas:
+                    command_count = len(self._command_schemas.keys())
+                    print(f"🔍 Loaded {command_count} commands from schema")
+
         except (FileNotFoundError, json.JSONDecodeError) as e:
             print(f"❌ CRITICAL: Failed to load schema from {self.schema_path}: {e}")
             print("🛑 Stopping execution - schema loading failed")

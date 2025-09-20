@@ -187,14 +187,14 @@ class ICArduinoExportTest:
 
         # Step 10: Export to Arduino and validate
         print("🚀 Exporting to Arduino...")
-        arduino_file = "test_ic_circuit.ino"
+        arduino_file = "/home/developer/test_ic_circuit.ino"  # Arduino exports to home directory
 
         # Clean up any existing test file
         if os.path.exists(arduino_file):
             os.remove(arduino_file)
 
         export_resp = await self.infrastructure.send_command("export_arduino", {
-            "filename": arduino_file
+            "filename": "test_ic_circuit.ino"  # Use relative filename, system will put it in home directory
         })
 
         if not await self.validation.assert_success(export_resp, "Export Arduino code"):
