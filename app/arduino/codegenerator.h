@@ -57,6 +57,7 @@ private:
     QFile m_file;
     QHash<QNEPort *, QString> m_varMap;
     QStringList m_availablePins;
+    QStringList m_declaredVariables;
     QTextStream m_stream;
     QVector<MappedPin> m_inputMap;
     QVector<MappedPin> m_outputMap;

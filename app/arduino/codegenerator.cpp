@@ -208,8 +208,13 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
                         portVarName += "_out" + QString::number(i);
                     }
                     m_varMap[externalPort] = portVarName;
-                    m_stream << "boolean " << portVarName << " = " << highLow(externalPort->defaultValue()) << ";" << Qt::endl;
-                    qDebug() << "Declared variable for external IC output port" << i << ":" << portVarName;
+                    if (!m_declaredVariables.contains(portVarName)) {
+                        m_stream << "boolean " << portVarName << " = " << highLow(externalPort->defaultValue()) << ";" << Qt::endl;
+                        m_declaredVariables.append(portVarName);
+                        qDebug() << "Declared variable for external IC output port" << i << ":" << portVarName;
+                    } else {
+                        qDebug() << "Skipped duplicate declaration for external IC output port" << i << ":" << portVarName;
+                    }
                 }
             }
 
@@ -247,8 +252,13 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
                     if (m_varMap.value(internalPort).isEmpty()) {
                         QString portVarName = QString("aux_ic_input_%1_%2").arg(removeForbiddenChars(ic->objectName()), QString::number(i));
                         m_varMap[internalPort] = portVarName;
-                        m_stream << "boolean " << portVarName << " = LOW;" << Qt::endl;
-                        qDebug() << "Assigned missing variable for internal IC input port" << i << ":" << portVarName;
+                        if (!m_declaredVariables.contains(portVarName)) {
+                            m_stream << "boolean " << portVarName << " = LOW;" << Qt::endl;
+                            m_declaredVariables.append(portVarName);
+                            qDebug() << "Assigned missing variable for internal IC input port" << i << ":" << portVarName;
+                        } else {
+                            qDebug() << "Skipped duplicate declaration for internal IC input port" << i << ":" << portVarName;
+                        }
                     }
                 }
 
@@ -257,8 +267,13 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
                     if (m_varMap.value(internalPort).isEmpty()) {
                         QString portVarName = QString("aux_ic_output_%1_%2").arg(removeForbiddenChars(ic->objectName()), QString::number(i));
                         m_varMap[internalPort] = portVarName;
-                        m_stream << "boolean " << portVarName << " = LOW;" << Qt::endl;
-                        qDebug() << "Assigned missing variable for internal IC output port" << i << ":" << portVarName;
+                        if (!m_declaredVariables.contains(portVarName)) {
+                            m_stream << "boolean " << portVarName << " = LOW;" << Qt::endl;
+                            m_declaredVariables.append(portVarName);
+                            qDebug() << "Assigned missing variable for internal IC output port" << i << ":" << portVarName;
+                        } else {
+                            qDebug() << "Skipped duplicate declaration for internal IC output port" << i << ":" << portVarName;
+                        }
                     }
                 }
             }
@@ -275,7 +290,10 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
             QNEPort *outputPort = outputs.constFirst();
             QString ttVarName = QString("%1_output").arg(removeForbiddenChars(elm->objectName()));
             m_varMap[outputPort] = ttVarName;
-            m_stream << "boolean " << ttVarName << " = LOW;" << Qt::endl;
+            if (!m_declaredVariables.contains(ttVarName)) {
+                m_stream << "boolean " << ttVarName << " = LOW;" << Qt::endl;
+                m_declaredVariables.append(ttVarName);
+            }
 
             continue;
         }
@@ -311,7 +329,10 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
 
         for (auto *port : outputs) {
             QString varName2 = m_varMap.value(port);
-            m_stream << "boolean " << varName2 << " = " << highLow(port->defaultValue()) << ";" << Qt::endl;
+            if (!m_declaredVariables.contains(varName2)) {
+                m_stream << "boolean " << varName2 << " = " << highLow(port->defaultValue()) << ";" << Qt::endl;
+                m_declaredVariables.append(varName2);
+            }
 
             switch (elm->elementType()) {
             case ElementType::Clock:
@@ -320,18 +341,42 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
                     if (!clk) {
                         break;
                     }
-                    m_stream << "unsigned long " << varName2 << "_lastTime = 0;" << Qt::endl;
-                    m_stream << "const unsigned long " << varName2 << "_interval = " << 1000UL / clk->frequency() << ";" << Qt::endl;
+                    QString lastTimeVar = varName2 + "_lastTime";
+                    QString intervalVar = varName2 + "_interval";
+                    if (!m_declaredVariables.contains(lastTimeVar)) {
+                        m_stream << "unsigned long " << lastTimeVar << " = 0;" << Qt::endl;
+                        m_declaredVariables.append(lastTimeVar);
+                    }
+                    if (!m_declaredVariables.contains(intervalVar)) {
+                        m_stream << "const unsigned long " << intervalVar << " = " << 1000UL / clk->frequency() << ";" << Qt::endl;
+                        m_declaredVariables.append(intervalVar);
+                    }
                 }
                 break;
             case ElementType::DFlipFlop:
-                m_stream << "boolean " << varName2 << "_inclk = LOW;" << Qt::endl;
-                m_stream << "boolean " << varName2 << "_last = LOW;" << Qt::endl;
+                {
+                    QString inclkVar = varName2 + "_inclk";
+                    QString lastVar = varName2 + "_last";
+                    if (!m_declaredVariables.contains(inclkVar)) {
+                        m_stream << "boolean " << inclkVar << " = LOW;" << Qt::endl;
+                        m_declaredVariables.append(inclkVar);
+                    }
+                    if (!m_declaredVariables.contains(lastVar)) {
+                        m_stream << "boolean " << lastVar << " = LOW;" << Qt::endl;
+                        m_declaredVariables.append(lastVar);
+                    }
+                }
                 break;
             case ElementType::TFlipFlop:
             case ElementType::SRFlipFlop:
             case ElementType::JKFlipFlop:
-                m_stream << "boolean " << varName2 << "_inclk = LOW;" << Qt::endl;
+                {
+                    QString inclkVar = varName2 + "_inclk";
+                    if (!m_declaredVariables.contains(inclkVar)) {
+                        m_stream << "boolean " << inclkVar << " = LOW;" << Qt::endl;
+                        m_declaredVariables.append(inclkVar);
+                    }
+                }
                 break;
             default:
                 break;

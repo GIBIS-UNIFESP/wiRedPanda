@@ -17,7 +17,6 @@ unsigned long aux_clock_1_lastTime = 0;
 const unsigned long aux_clock_1_interval = 1000;
 // IC: DLATCH
 boolean aux_ic_2_q_0 = LOW;
-boolean aux_ic_2_q_0 = LOW;
 boolean aux_node_0 = LOW;
 boolean aux_node_1 = LOW;
 boolean aux_nand_2 = LOW;
