@@ -79,7 +79,11 @@ QString CodeGenerator::otherPortName(QNEPort *port)
         return highLow(port->defaultValue());
     }
 
-    return m_varMap.value(otherPort);
+    QString result = m_varMap.value(otherPort);
+    if (result.isEmpty()) {
+        return highLow(otherPort->defaultValue());
+    }
+    return result;
 }
 
 void CodeGenerator::generate()
@@ -542,11 +546,11 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             m_stream << QString("            %1 = %2;").arg(firstOut, secondOut) << Qt::endl;
             m_stream << QString("            %1 = aux;").arg(secondOut) << Qt::endl;
             m_stream << QString("        } else if (%1) {").arg(j) << Qt::endl;
-            m_stream << QString("            %1 = 1;").arg(firstOut) << Qt::endl;
-            m_stream << QString("            %1 = 0;").arg(secondOut) << Qt::endl;
+            m_stream << QString("            %1 = HIGH;").arg(firstOut) << Qt::endl;
+            m_stream << QString("            %1 = LOW;").arg(secondOut) << Qt::endl;
             m_stream << QString("        } else if (%1) {").arg(k) << Qt::endl;
-            m_stream << QString("            %1 = 0;").arg(firstOut) << Qt::endl;
-            m_stream << QString("            %1 = 1;").arg(secondOut) << Qt::endl;
+            m_stream << QString("            %1 = LOW;").arg(firstOut) << Qt::endl;
+            m_stream << QString("            %1 = HIGH;").arg(secondOut) << Qt::endl;
             m_stream << QString("        }") << Qt::endl;
             m_stream << QString("    }") << Qt::endl;
             QString prst = otherPortName(elm->inputPort(3));
@@ -573,8 +577,8 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
             m_stream << QString("    //SR FlipFlop") << Qt::endl;
             m_stream << QString("    if (%1 && !%2) { ").arg(clk, inclk) << Qt::endl;
             m_stream << QString("        if (%1 && %2) { ").arg(s, r) << Qt::endl;
-            m_stream << QString("            %1 = 1;").arg(firstOut) << Qt::endl;
-            m_stream << QString("            %1 = 1;").arg(secondOut) << Qt::endl;
+            m_stream << QString("            %1 = HIGH;").arg(firstOut) << Qt::endl;
+            m_stream << QString("            %1 = HIGH;").arg(secondOut) << Qt::endl;
             m_stream << QString("        } else if (%1 != %2) {").arg(s, r) << Qt::endl;
             m_stream << QString("            %1 = %2;").arg(firstOut, s) << Qt::endl;
             m_stream << QString("            %1 = %2;").arg(secondOut, r) << Qt::endl;
