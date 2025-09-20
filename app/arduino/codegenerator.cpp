@@ -506,7 +506,13 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
                 qDebug() << "Processing" << ic->m_icElements.size() << "internal IC elements...";
                 auto sortedElements = Common::sortGraphicElements(ic->m_icElements);
                 qDebug() << "Sorted" << sortedElements.size() << "elements for processing";
+
+                // Set IC context for internal element processing
+                IC *previousIC = m_currentIC;
+                m_currentIC = ic;
                 assignVariablesRec(sortedElements);
+                m_currentIC = previousIC; // Restore previous context
+
                 qDebug() << "Finished processing internal IC elements";
             }
 
@@ -811,6 +817,20 @@ void CodeGenerator::assignLogicOperator(GraphicElement *elm)
             if (outputPort && inputPort) {
                 QString varName = m_varMap.value(outputPort);
                 QString inputValue = otherPortName(inputPort);
+
+                // Special handling for IC internal input nodes
+                if (inputValue == "LOW" && m_currentIC) {
+                    // Check if this node's input port is an IC internal input
+                    for (int i = 0; i < m_currentIC->m_icInputs.size(); ++i) {
+                        QNEPort *icInputPort = m_currentIC->m_icInputs.at(i);
+                        if (icInputPort == inputPort) {
+                            // This is an IC internal input node - use the corresponding external input variable
+                            inputValue = QString("aux_ic_input_ic_%1").arg(i);
+                            break;
+                        }
+                    }
+                }
+
                 m_stream << "    " << varName << " = " << inputValue << ";" << Qt::endl;
             }
         }

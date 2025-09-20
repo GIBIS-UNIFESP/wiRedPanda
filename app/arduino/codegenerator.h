@@ -11,6 +11,7 @@
 
 class GraphicElement;
 class QNEPort;
+class IC;
 
 class MappedPin
 {
@@ -48,7 +49,7 @@ private:
     void assignLogicOperator(GraphicElement *elm);
     void assignVariablesRec(const QVector<GraphicElement *> &elements);
     void declareAuxVariables();
-    void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox = false);
+    void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox = false, const QString &icPrefix = "");
     void declareInputs();
     void declareOutputs();
     void loop();
@@ -63,4 +64,5 @@ private:
     QVector<MappedPin> m_outputMap;
     const QVector<GraphicElement *> m_elements;
     int m_globalCounter = 1;
+    IC *m_currentIC = nullptr; // Track current IC context for internal element processing
 };
