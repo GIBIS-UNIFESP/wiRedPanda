@@ -45,6 +45,7 @@ class MCPInfrastructure:
         self.validation_warnings = 0
         self.output = MCPOutput(verbose=verbose)
         self._request_id_counter = 1
+        self._stderr_task: Optional[asyncio.Task] = None
 
     @beartype
     async def start_mcp(self) -> bool:
@@ -110,7 +111,7 @@ class MCPInfrastructure:
                 *cmd_args,
                 stdin=asyncio.subprocess.PIPE,
                 stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.STDOUT,  # Merge stderr to stdout to capture qDebug output
+                stderr=asyncio.subprocess.PIPE,  # Capture stderr to prevent buffer blocking
             )
 
             # Test if process started successfully by checking if it's still running
@@ -129,6 +130,9 @@ class MCPInfrastructure:
             # Register process for orphan prevention
             _test_process_manager.register_process(self.process)
 
+            # Start stderr monitoring task to prevent buffer blocking
+            self._stderr_task = asyncio.create_task(self._monitor_stderr())
+
             # Skip waiting for ready message - just assume it's ready after process starts
             # This avoids issues with stderr/stdout message routing and follows MCP protocol
 
@@ -146,6 +150,15 @@ class MCPInfrastructure:
     async def stop_mcp(self) -> None:
         """Stop MCP process"""
         if self.process:
+            # Stop stderr monitoring task
+            if self._stderr_task and not self._stderr_task.done():
+                self._stderr_task.cancel()
+                try:
+                    await self._stderr_task
+                except asyncio.CancelledError:
+                    pass
+            self._stderr_task = None
+
             # Unregister from process manager
             _test_process_manager.unregister_process(self.process)
 
@@ -385,3 +398,46 @@ class MCPInfrastructure:
                 continue
 
         return None
+
+    async def _monitor_stderr(self) -> None:
+        """
+        Monitor stderr stream to prevent buffer blocking.
+
+        If verbose=True, print messages to console.
+        If verbose=False, discard messages but keep draining the buffer.
+        This prevents the child process from blocking on stderr writes.
+        """
+        if not self.process or not self.process.stderr:
+            return
+
+        try:
+            while True:
+                # Use a small timeout to avoid blocking indefinitely
+                try:
+                    line_bytes = await asyncio.wait_for(
+                        self.process.stderr.readline(),
+                        timeout=0.1
+                    )
+                except asyncio.TimeoutError:
+                    # No data available, check if process is still alive
+                    if self.process.returncode is not None:
+                        break
+                    continue
+
+                if not line_bytes:
+                    # EOF reached, process likely terminated
+                    break
+
+                # Always decode the line to properly drain the buffer
+                line = line_bytes.decode('utf-8', errors='replace').strip()
+
+                # Only print if verbose mode is enabled
+                if line and self.verbose:
+                    print(f"[STDERR] {line}", file=sys.stderr)
+
+        except asyncio.CancelledError:
+            # Task was cancelled, this is expected during shutdown
+            pass
+        except Exception as e:
+            if self.verbose:
+                print(f"[STDERR Monitor Error] {e}", file=sys.stderr)
