@@ -1,0 +1,613 @@
+{
+  "filename": "ic.ino",
+  "components": [
+    {
+      "type": "Arduino Mega 2560",
+      "id": "arduino1",
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "type": "Breadboard",
+      "id": "breadboard1",
+      "position": {
+        "x": 200,
+        "y": 0
+      }
+    },
+    {
+      "type": "LED",
+      "id": "output_0",
+      "name": "led16_0",
+      "pin": "A0",
+      "position": {
+        "x": 600,
+        "y": 100
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_0",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 100
+      }
+    },
+    {
+      "type": "LED",
+      "id": "output_1",
+      "name": "led17_0",
+      "pin": "A1",
+      "position": {
+        "x": 600,
+        "y": 150
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_1",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 150
+      }
+    },
+    {
+      "type": "LED",
+      "id": "output_2",
+      "name": "led18_0",
+      "pin": "A2",
+      "position": {
+        "x": 600,
+        "y": 200
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_2",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 200
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_3",
+      "name": "seven_segment_display19_g_middle",
+      "pin": "A3",
+      "position": {
+        "x": 600,
+        "y": 250
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_3",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 250
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_4",
+      "name": "seven_segment_display19_f_upper_left",
+      "pin": "A4",
+      "position": {
+        "x": 600,
+        "y": 300
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_4",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 300
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_5",
+      "name": "seven_segment_display19_e_lower_left",
+      "pin": "A5",
+      "position": {
+        "x": 600,
+        "y": 350
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_5",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 350
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_6",
+      "name": "seven_segment_display19_d_bottom",
+      "pin": "A6",
+      "position": {
+        "x": 600,
+        "y": 400
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_6",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 400
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_7",
+      "name": "seven_segment_display19_a_top",
+      "pin": "A7",
+      "position": {
+        "x": 600,
+        "y": 450
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_7",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 450
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_8",
+      "name": "seven_segment_display19_b_upper_right",
+      "pin": "A8",
+      "position": {
+        "x": 600,
+        "y": 500
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_8",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 500
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_9",
+      "name": "seven_segment_display19_dp_dot",
+      "pin": "A9",
+      "position": {
+        "x": 600,
+        "y": 550
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_9",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 550
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_10",
+      "name": "seven_segment_display19_c_lower_right",
+      "pin": "A10",
+      "position": {
+        "x": 600,
+        "y": 600
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_10",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 600
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_11",
+      "name": "seven_segment_display20_g_middle",
+      "pin": "A11",
+      "position": {
+        "x": 600,
+        "y": 650
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_11",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 650
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_12",
+      "name": "seven_segment_display20_f_upper_left",
+      "pin": "A12",
+      "position": {
+        "x": 600,
+        "y": 700
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_12",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 700
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_13",
+      "name": "seven_segment_display20_e_lower_left",
+      "pin": "A13",
+      "position": {
+        "x": 600,
+        "y": 750
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_13",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 750
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_14",
+      "name": "seven_segment_display20_d_bottom",
+      "pin": "A14",
+      "position": {
+        "x": 600,
+        "y": 800
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_14",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 800
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_15",
+      "name": "seven_segment_display20_a_top",
+      "pin": "A15",
+      "position": {
+        "x": 600,
+        "y": 850
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_15",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 850
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_16",
+      "name": "seven_segment_display20_b_upper_right",
+      "pin": "2",
+      "position": {
+        "x": 600,
+        "y": 900
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_16",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 900
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_17",
+      "name": "seven_segment_display20_dp_dot",
+      "pin": "3",
+      "position": {
+        "x": 600,
+        "y": 950
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_17",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 950
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_18",
+      "name": "seven_segment_display20_c_lower_right",
+      "pin": "4",
+      "position": {
+        "x": 600,
+        "y": 1000
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_18",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 1000
+      }
+    },
+    {
+      "type": "LED",
+      "id": "output_19",
+      "name": "led21_0",
+      "pin": "5",
+      "position": {
+        "x": 600,
+        "y": 1050
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_19",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 1050
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_20",
+      "name": "seven_segment_display22_g_middle",
+      "pin": "6",
+      "position": {
+        "x": 600,
+        "y": 1100
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_20",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 1100
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_21",
+      "name": "seven_segment_display22_f_upper_left",
+      "pin": "7",
+      "position": {
+        "x": 600,
+        "y": 1150
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_21",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 1150
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_22",
+      "name": "seven_segment_display22_e_lower_left",
+      "pin": "8",
+      "position": {
+        "x": 600,
+        "y": 1200
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_22",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 1200
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_23",
+      "name": "seven_segment_display22_d_bottom",
+      "pin": "9",
+      "position": {
+        "x": 600,
+        "y": 1250
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_23",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 1250
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_24",
+      "name": "seven_segment_display22_a_top",
+      "pin": "10",
+      "position": {
+        "x": 600,
+        "y": 1300
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_24",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 1300
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_25",
+      "name": "seven_segment_display22_b_upper_right",
+      "pin": "11",
+      "position": {
+        "x": 600,
+        "y": 1350
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_25",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 1350
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_26",
+      "name": "seven_segment_display22_dp_dot",
+      "pin": "12",
+      "position": {
+        "x": 600,
+        "y": 1400
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_26",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 1400
+      }
+    },
+    {
+      "type": "7-Segment Display",
+      "id": "output_27",
+      "name": "seven_segment_display22_c_lower_right",
+      "pin": "13",
+      "position": {
+        "x": 600,
+        "y": 1450
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_27",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 1450
+      }
+    }
+  ],
+  "clock_info": [
+    {
+      "interval_ms": 250.0,
+      "frequency_hz": 4.0
+    },
+    {
+      "interval_ms": 2000.0,
+      "frequency_hz": 0.5
+    },
+    {
+      "interval_ms": 1000.0,
+      "frequency_hz": 1.0
+    },
+    {
+      "interval_ms": 1000.0,
+      "frequency_hz": 1.0
+    },
+    {
+      "interval_ms": 500.0,
+      "frequency_hz": 2.0
+    },
+    {
+      "interval_ms": 250.0,
+      "frequency_hz": 4.0
+    }
+  ],
+  "total_pins_used": 28,
+  "board_info": {
+    "name": "Arduino Mega 2560",
+    "pin_usage": "28/68",
+    "description": "High I/O count Arduino board with 70 I/O pins (54 digital + 16 analog)"
+  }
+}

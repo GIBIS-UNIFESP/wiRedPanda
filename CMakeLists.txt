@@ -391,6 +391,7 @@ endif()
 
 # Define the test executables
 set(TEST_EXECUTABLES
+    testarduino
     testcommands
     testelements
     testfiles

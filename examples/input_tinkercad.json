@@ -1,0 +1,150 @@
+{
+  "filename": "input.ino",
+  "components": [
+    {
+      "type": "Arduino Uno R3",
+      "id": "arduino1",
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "type": "Breadboard",
+      "id": "breadboard1",
+      "position": {
+        "x": 200,
+        "y": 0
+      }
+    },
+    {
+      "type": "Pushbutton",
+      "id": "input_0",
+      "name": "push_button1_x0",
+      "pin": "A0",
+      "position": {
+        "x": 400,
+        "y": 100
+      }
+    },
+    {
+      "type": "Pushbutton",
+      "id": "input_1",
+      "name": "push_button2_x1",
+      "pin": "A1",
+      "position": {
+        "x": 400,
+        "y": 150
+      }
+    },
+    {
+      "type": "Generic Output",
+      "id": "output_0",
+      "name": "push_button1_x0",
+      "pin": "A0",
+      "position": {
+        "x": 600,
+        "y": 100
+      },
+      "resistor_needed": false
+    },
+    {
+      "type": "Generic Output",
+      "id": "output_1",
+      "name": "push_button2_x1",
+      "pin": "A1",
+      "position": {
+        "x": 600,
+        "y": 150
+      },
+      "resistor_needed": false
+    },
+    {
+      "type": "LED",
+      "id": "output_2",
+      "name": "led7_xor_0",
+      "pin": "A2",
+      "position": {
+        "x": 600,
+        "y": 200
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_2",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 200
+      }
+    },
+    {
+      "type": "LED",
+      "id": "output_3",
+      "name": "led8_not_x0_0",
+      "pin": "A3",
+      "position": {
+        "x": 600,
+        "y": 250
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_3",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 250
+      }
+    },
+    {
+      "type": "LED",
+      "id": "output_4",
+      "name": "led9_and_0",
+      "pin": "A4",
+      "position": {
+        "x": 600,
+        "y": 300
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_4",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 300
+      }
+    },
+    {
+      "type": "LED",
+      "id": "output_5",
+      "name": "led10_or_0",
+      "pin": "A5",
+      "position": {
+        "x": 600,
+        "y": 350
+      },
+      "resistor_needed": true
+    },
+    {
+      "type": "Resistor",
+      "id": "resistor_5",
+      "value": "220 \u03a9",
+      "position": {
+        "x": 550,
+        "y": 350
+      }
+    }
+  ],
+  "clock_info": [],
+  "total_pins_used": 8,
+  "board_info": {
+    "name": "Arduino UNO R3/R4",
+    "pin_usage": "6/18",
+    "description": "Standard Arduino board with 20 I/O pins (14 digital + 6 analog)"
+  }
+}

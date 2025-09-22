@@ -1,0 +1,664 @@
+// ==================================================================== //
+// ======= This code was generated automatically by wiRedPanda ======== //
+// ==================================================================== //
+//
+// Target Board: Arduino UNO R3/R4
+// Pin Usage: 9/18 pins
+// Standard Arduino board with 20 I/O pins (14 digital + 6 analog)
+//
+
+
+/* ========= Inputs ========== */
+const int push_button1 = A0;
+
+/* ========= Outputs ========== */
+const int seven_segment_display24_g_middle = A1;
+const int seven_segment_display24_f_upper_left = A2;
+const int seven_segment_display24_e_lower_left = A3;
+const int seven_segment_display24_d_bottom = A4;
+const int seven_segment_display24_a_top = A5;
+const int seven_segment_display24_b_upper_right = 2;
+const int seven_segment_display24_dp_dot = 3;
+const int seven_segment_display24_c_lower_right = 4;
+
+/* ====== Aux. Variables ====== */
+bool push_button1_val = false;
+bool aux_push_button_0 = false;
+bool aux_not_1 = false;
+bool aux_clock_2 = false;
+unsigned long aux_clock_2_lastTime = 0;
+const unsigned long aux_clock_2_interval = 250;
+// IC: JKFLIPFLOP
+bool aux_jkflipflop_3_q_0 = false;
+bool aux_jkflipflop_3_q_0_1 = false;
+// IC: DFLIPFLOP
+bool aux_dflipflop_0_led_0 = false;
+bool aux_dflipflop_0_led_0_1 = false;
+bool aux_dflipflop_0_node_0 = false;
+bool aux_dflipflop_0_node_1 = false;
+bool aux_dflipflop_0_node_2 = false;
+bool aux_dflipflop_0_node_3 = false;
+bool aux_dflipflop_0_nand_4 = false;
+bool aux_dflipflop_0_node_5 = false;
+bool aux_dflipflop_0_nand_6 = false;
+bool aux_dflipflop_0_not_7 = false;
+bool aux_dflipflop_0_nand_8 = false;
+bool aux_dflipflop_0_nand_9 = false;
+bool aux_dflipflop_0_nand_10 = false;
+bool aux_dflipflop_0_nand_11 = false;
+bool aux_dflipflop_0_node_12 = false;
+bool aux_dflipflop_0_not_13 = false;
+bool aux_dflipflop_0_nand_14 = false;
+bool aux_dflipflop_0_nand_15 = false;
+bool aux_dflipflop_0_node_16 = false;
+bool aux_dflipflop_0_node_17 = false;
+bool aux_dflipflop_0_node_18 = false;
+bool aux_dflipflop_0_not_19 = false;
+bool aux_dflipflop_0_node_20 = false;
+bool aux_dflipflop_0_node_21 = false;
+bool aux_dflipflop_0_node_22 = false;
+bool aux_dflipflop_0_node_23 = false;
+bool aux_dflipflop_0_node_24 = false;
+bool aux_ic_input_dflipflop_0 = false;
+bool aux_ic_input_dflipflop_1 = false;
+bool aux_ic_input_dflipflop_2 = false;
+bool aux_ic_input_dflipflop_3 = false;
+// End IC: DFLIPFLOP
+bool aux_jkflipflop_3_node_1 = false;
+bool aux_jkflipflop_3_node_2 = false;
+bool aux_jkflipflop_3_node_3 = false;
+bool aux_jkflipflop_3_node_4 = false;
+bool aux_jkflipflop_3_node_5 = false;
+bool aux_jkflipflop_3_node_6 = false;
+bool aux_jkflipflop_3_node_7 = false;
+bool aux_jkflipflop_3_node_8 = false;
+bool aux_jkflipflop_3_not_9 = false;
+bool aux_jkflipflop_3_and_10 = false;
+bool aux_jkflipflop_3_node_11 = false;
+bool aux_jkflipflop_3_or_12 = false;
+bool aux_jkflipflop_3_node_13 = false;
+bool aux_jkflipflop_3_node_14 = false;
+bool aux_jkflipflop_3_node_15 = false;
+bool aux_jkflipflop_3_node_16 = false;
+bool aux_jkflipflop_3_and_17 = false;
+bool aux_jkflipflop_3_node_18 = false;
+bool aux_jkflipflop_3_node_19 = false;
+bool aux_ic_input_jkflipflop_0 = false;
+bool aux_ic_input_jkflipflop_1 = false;
+bool aux_ic_input_jkflipflop_2 = false;
+bool aux_ic_input_jkflipflop_3 = false;
+bool aux_ic_input_jkflipflop_4 = false;
+// End IC: JKFLIPFLOP
+// IC: JKFLIPFLOP
+bool aux_jkflipflop_4_q_0 = false;
+bool aux_jkflipflop_4_q_0_1 = false;
+// IC: DFLIPFLOP
+// End IC: DFLIPFLOP
+bool aux_jkflipflop_4_node_1 = false;
+bool aux_jkflipflop_4_node_2 = false;
+bool aux_jkflipflop_4_node_3 = false;
+bool aux_jkflipflop_4_node_4 = false;
+bool aux_jkflipflop_4_node_5 = false;
+bool aux_jkflipflop_4_node_6 = false;
+bool aux_jkflipflop_4_node_7 = false;
+bool aux_jkflipflop_4_node_8 = false;
+bool aux_jkflipflop_4_not_9 = false;
+bool aux_jkflipflop_4_and_10 = false;
+bool aux_jkflipflop_4_node_11 = false;
+bool aux_jkflipflop_4_or_12 = false;
+bool aux_jkflipflop_4_node_13 = false;
+bool aux_jkflipflop_4_node_14 = false;
+bool aux_jkflipflop_4_node_15 = false;
+bool aux_jkflipflop_4_node_16 = false;
+bool aux_jkflipflop_4_and_17 = false;
+bool aux_jkflipflop_4_node_18 = false;
+bool aux_jkflipflop_4_node_19 = false;
+// End IC: JKFLIPFLOP
+bool aux_node_5 = false;
+bool aux_node_6 = false;
+bool aux_and_7 = false;
+bool aux_not_8 = false;
+bool aux_node_9 = false;
+bool aux_node_10 = false;
+bool aux_node_11 = false;
+// IC: JKFLIPFLOP
+bool aux_jkflipflop_12_q_0 = false;
+bool aux_jkflipflop_12_q_0_1 = false;
+// IC: DFLIPFLOP
+// End IC: DFLIPFLOP
+bool aux_jkflipflop_12_node_1 = false;
+bool aux_jkflipflop_12_node_2 = false;
+bool aux_jkflipflop_12_node_3 = false;
+bool aux_jkflipflop_12_node_4 = false;
+bool aux_jkflipflop_12_node_5 = false;
+bool aux_jkflipflop_12_node_6 = false;
+bool aux_jkflipflop_12_node_7 = false;
+bool aux_jkflipflop_12_node_8 = false;
+bool aux_jkflipflop_12_not_9 = false;
+bool aux_jkflipflop_12_and_10 = false;
+bool aux_jkflipflop_12_node_11 = false;
+bool aux_jkflipflop_12_or_12 = false;
+bool aux_jkflipflop_12_node_13 = false;
+bool aux_jkflipflop_12_node_14 = false;
+bool aux_jkflipflop_12_node_15 = false;
+bool aux_jkflipflop_12_node_16 = false;
+bool aux_jkflipflop_12_and_17 = false;
+bool aux_jkflipflop_12_node_18 = false;
+bool aux_jkflipflop_12_node_19 = false;
+// End IC: JKFLIPFLOP
+// IC: JKFLIPFLOP
+bool aux_jkflipflop_13_q_0 = false;
+bool aux_jkflipflop_13_q_0_1 = false;
+// IC: DFLIPFLOP
+// End IC: DFLIPFLOP
+bool aux_jkflipflop_13_node_1 = false;
+bool aux_jkflipflop_13_node_2 = false;
+bool aux_jkflipflop_13_node_3 = false;
+bool aux_jkflipflop_13_node_4 = false;
+bool aux_jkflipflop_13_node_5 = false;
+bool aux_jkflipflop_13_node_6 = false;
+bool aux_jkflipflop_13_node_7 = false;
+bool aux_jkflipflop_13_node_8 = false;
+bool aux_jkflipflop_13_not_9 = false;
+bool aux_jkflipflop_13_and_10 = false;
+bool aux_jkflipflop_13_node_11 = false;
+bool aux_jkflipflop_13_or_12 = false;
+bool aux_jkflipflop_13_node_13 = false;
+bool aux_jkflipflop_13_node_14 = false;
+bool aux_jkflipflop_13_node_15 = false;
+bool aux_jkflipflop_13_node_16 = false;
+bool aux_jkflipflop_13_and_17 = false;
+bool aux_jkflipflop_13_node_18 = false;
+bool aux_jkflipflop_13_node_19 = false;
+// End IC: JKFLIPFLOP
+bool aux_node_14 = false;
+bool aux_node_15 = false;
+bool aux_node_16 = false;
+bool aux_node_17 = false;
+bool aux_node_18 = false;
+// IC: DISPLAY-4BITS
+bool aux_display_4bits_19_display7_g_middle = false;
+bool aux_display_4bits_19_display7_f_upper_left_1 = false;
+bool aux_display_4bits_19_display7_e_lower_left_2 = false;
+bool aux_display_4bits_19_display7_d_bottom_3 = false;
+bool aux_display_4bits_19_display7_a_top_4 = false;
+bool aux_display_4bits_19_display7_b_upper_right_5 = false;
+bool aux_display_4bits_19_display7_dp_dot_6 = false;
+bool aux_display_4bits_19_display7_c_lower_right_7 = false;
+bool aux_display_4bits_19_node_0 = false;
+bool aux_display_4bits_19_node_1 = false;
+bool aux_display_4bits_19_node_2 = false;
+bool aux_display_4bits_19_node_3 = false;
+bool aux_display_4bits_19_and_4 = false;
+bool aux_display_4bits_19_node_5 = false;
+bool aux_display_4bits_19_node_6 = false;
+bool aux_display_4bits_19_node_7 = false;
+bool aux_display_4bits_19_node_8 = false;
+bool aux_display_4bits_19_node_9 = false;
+bool aux_display_4bits_19_node_10 = false;
+bool aux_display_4bits_19_node_11 = false;
+bool aux_display_4bits_19_node_12 = false;
+bool aux_display_4bits_19_node_13 = false;
+bool aux_display_4bits_19_node_14 = false;
+bool aux_display_4bits_19_node_15 = false;
+bool aux_display_4bits_19_or_16 = false;
+bool aux_display_4bits_19_or_17 = false;
+bool aux_display_4bits_19_node_18 = false;
+bool aux_display_4bits_19_node_19 = false;
+bool aux_display_4bits_19_node_20 = false;
+bool aux_display_4bits_19_node_21 = false;
+bool aux_display_4bits_19_node_22 = false;
+bool aux_display_4bits_19_node_23 = false;
+bool aux_display_4bits_19_node_24 = false;
+bool aux_display_4bits_19_or_25 = false;
+bool aux_display_4bits_19_or_26 = false;
+bool aux_display_4bits_19_or_27 = false;
+bool aux_display_4bits_19_node_28 = false;
+bool aux_display_4bits_19_node_29 = false;
+bool aux_display_4bits_19_node_30 = false;
+bool aux_display_4bits_19_node_31 = false;
+bool aux_display_4bits_19_node_32 = false;
+bool aux_display_4bits_19_node_33 = false;
+bool aux_display_4bits_19_node_34 = false;
+bool aux_display_4bits_19_node_35 = false;
+bool aux_display_4bits_19_node_36 = false;
+bool aux_display_4bits_19_node_37 = false;
+bool aux_display_4bits_19_node_38 = false;
+bool aux_display_4bits_19_or_39 = false;
+bool aux_display_4bits_19_node_40 = false;
+bool aux_display_4bits_19_node_41 = false;
+bool aux_display_4bits_19_node_42 = false;
+bool aux_display_4bits_19_node_43 = false;
+bool aux_display_4bits_19_or_44 = false;
+bool aux_display_4bits_19_and_45 = false;
+bool aux_display_4bits_19_and_46 = false;
+bool aux_display_4bits_19_and_47 = false;
+bool aux_display_4bits_19_and_48 = false;
+bool aux_display_4bits_19_and_49 = false;
+bool aux_display_4bits_19_and_50 = false;
+bool aux_display_4bits_19_node_51 = false;
+bool aux_display_4bits_19_node_52 = false;
+bool aux_display_4bits_19_and_53 = false;
+bool aux_display_4bits_19_node_54 = false;
+bool aux_display_4bits_19_node_55 = false;
+bool aux_display_4bits_19_and_56 = false;
+bool aux_display_4bits_19_node_57 = false;
+bool aux_display_4bits_19_node_58 = false;
+bool aux_display_4bits_19_node_59 = false;
+bool aux_display_4bits_19_node_60 = false;
+bool aux_display_4bits_19_node_61 = false;
+bool aux_display_4bits_19_node_62 = false;
+bool aux_display_4bits_19_node_63 = false;
+bool aux_display_4bits_19_node_64 = false;
+bool aux_display_4bits_19_node_65 = false;
+bool aux_display_4bits_19_node_66 = false;
+bool aux_display_4bits_19_node_67 = false;
+bool aux_display_4bits_19_node_68 = false;
+bool aux_display_4bits_19_node_69 = false;
+bool aux_display_4bits_19_node_70 = false;
+bool aux_display_4bits_19_node_71 = false;
+bool aux_display_4bits_19_node_72 = false;
+bool aux_display_4bits_19_not_73 = false;
+bool aux_display_4bits_19_not_74 = false;
+bool aux_display_4bits_19_not_75 = false;
+bool aux_display_4bits_19_not_76 = false;
+bool aux_ic_input_display_4bits_0 = false;
+bool aux_ic_input_display_4bits_1 = false;
+bool aux_ic_input_display_4bits_2 = false;
+bool aux_ic_input_display_4bits_3 = false;
+// End IC: DISPLAY-4BITS
+bool aux_node_20 = false;
+bool aux_node_21 = false;
+bool aux_node_22 = false;
+bool aux_node_24 = false;
+bool aux_node_25 = false;
+
+void setup() {
+    pinMode(push_button1, INPUT);
+    pinMode(seven_segment_display24_g_middle, OUTPUT);
+    pinMode(seven_segment_display24_f_upper_left, OUTPUT);
+    pinMode(seven_segment_display24_e_lower_left, OUTPUT);
+    pinMode(seven_segment_display24_d_bottom, OUTPUT);
+    pinMode(seven_segment_display24_a_top, OUTPUT);
+    pinMode(seven_segment_display24_b_upper_right, OUTPUT);
+    pinMode(seven_segment_display24_dp_dot, OUTPUT);
+    pinMode(seven_segment_display24_c_lower_right, OUTPUT);
+}
+
+void loop() {
+    // Read input data
+    push_button1_val = digitalRead(push_button1);
+
+    // Update clocks
+    unsigned long now = millis();
+    if (now - aux_clock_2_lastTime >= aux_clock_2_interval) {
+        aux_clock_2_lastTime = now;
+        aux_clock_2 = !aux_clock_2;
+    }
+
+    // Update logic variables
+    aux_push_button_0 = push_button1_val;
+    aux_not_1 = !aux_push_button_0;
+    // IC: JKFLIPFLOP
+    aux_ic_input_jkflipflop_0 = true;
+    aux_ic_input_jkflipflop_1 = aux_not_1;
+    aux_ic_input_jkflipflop_2 = aux_clock_2;
+    aux_ic_input_jkflipflop_3 = aux_not_1;
+    aux_ic_input_jkflipflop_4 = aux_node_25;
+    aux_jkflipflop_3_node_13 = true;
+    aux_jkflipflop_3_node_11 = true;
+    aux_jkflipflop_3_node_8 = aux_ic_input_jkflipflop_2;
+    aux_jkflipflop_3_node_1 = aux_jkflipflop_3_node_11;
+    aux_jkflipflop_3_node_3 = aux_jkflipflop_3_node_8;
+    aux_jkflipflop_3_node_2 = aux_jkflipflop_3_node_13;
+    // IC: DFLIPFLOP
+    aux_ic_input_dflipflop_0 = aux_jkflipflop_3_node_1;
+    aux_ic_input_dflipflop_1 = aux_jkflipflop_3_or_12;
+    aux_ic_input_dflipflop_2 = aux_jkflipflop_3_node_3;
+    aux_ic_input_dflipflop_3 = aux_jkflipflop_3_node_2;
+    aux_dflipflop_0_node_18 = aux_ic_input_dflipflop_2;
+    aux_dflipflop_0_not_19 = !aux_dflipflop_0_node_18;
+    aux_dflipflop_0_not_7 = !aux_dflipflop_0_not_19;
+    aux_dflipflop_0_node_20 = aux_dflipflop_0_not_19;
+    aux_dflipflop_0_node_1 = aux_dflipflop_0_not_7;
+    aux_dflipflop_0_node_2 = aux_dflipflop_0_node_20;
+    aux_dflipflop_0_node_3 = aux_ic_input_dflipflop_1;
+    aux_dflipflop_0_node_16 = aux_ic_input_dflipflop_0;
+    aux_dflipflop_0_node_17 = aux_ic_input_dflipflop_3;
+    aux_dflipflop_0_not_13 = !aux_dflipflop_0_node_3;
+    aux_dflipflop_0_node_21 = aux_dflipflop_0_node_1;
+    aux_dflipflop_0_nand_4 = !(aux_dflipflop_0_node_3 && aux_dflipflop_0_node_2);
+    aux_dflipflop_0_nand_9 = !(aux_dflipflop_0_node_16 && aux_dflipflop_0_nand_4 && aux_dflipflop_0_nand_8);
+    aux_dflipflop_0_node_22 = aux_dflipflop_0_node_17;
+    aux_dflipflop_0_node_0 = aux_dflipflop_0_node_21;
+    aux_dflipflop_0_nand_15 = !(aux_dflipflop_0_node_20 && aux_dflipflop_0_not_13);
+    aux_dflipflop_0_node_24 = aux_dflipflop_0_node_16;
+    aux_dflipflop_0_nand_10 = !(aux_dflipflop_0_nand_9 && aux_dflipflop_0_node_0);
+    aux_dflipflop_0_nand_8 = !(aux_dflipflop_0_nand_9 && aux_dflipflop_0_nand_15 && aux_dflipflop_0_node_22);
+    aux_dflipflop_0_nand_14 = !(aux_dflipflop_0_node_21 && aux_dflipflop_0_nand_8);
+    aux_dflipflop_0_nand_6 = !(aux_dflipflop_0_node_24 && aux_dflipflop_0_nand_10 && aux_dflipflop_0_nand_11);
+    aux_dflipflop_0_node_23 = aux_dflipflop_0_node_17;
+    aux_dflipflop_0_nand_11 = !(aux_dflipflop_0_nand_6 && aux_dflipflop_0_nand_14 && aux_dflipflop_0_node_23);
+    aux_dflipflop_0_node_12 = aux_dflipflop_0_nand_11;
+    aux_dflipflop_0_node_5 = aux_dflipflop_0_nand_6;
+    aux_dflipflop_0_led_0 = aux_dflipflop_0_node_5;
+    aux_dflipflop_0_led_0_1 = aux_dflipflop_0_node_12;
+    // End IC: DFLIPFLOP
+    aux_jkflipflop_3_node_6 = aux_dflipflop_0_led_0_1;
+    aux_jkflipflop_3_node_7 = aux_dflipflop_0_led_0;
+    aux_jkflipflop_3_node_14 = true;
+    aux_jkflipflop_3_node_15 = true;
+    aux_jkflipflop_3_node_4 = aux_jkflipflop_3_node_7;
+    aux_jkflipflop_3_node_5 = aux_jkflipflop_3_node_6;
+    aux_jkflipflop_3_not_9 = !aux_jkflipflop_3_node_14;
+    aux_jkflipflop_3_node_16 = aux_jkflipflop_3_node_15;
+    aux_jkflipflop_3_and_17 = aux_jkflipflop_3_node_4 && aux_jkflipflop_3_not_9;
+    aux_jkflipflop_3_and_10 = aux_jkflipflop_3_node_16 && aux_jkflipflop_3_node_5;
+    aux_jkflipflop_3_or_12 = aux_jkflipflop_3_and_17 || aux_jkflipflop_3_and_10;
+    aux_jkflipflop_3_node_18 = aux_dflipflop_0_led_0;
+    aux_jkflipflop_3_node_19 = aux_dflipflop_0_led_0_1;
+    aux_jkflipflop_3_q_0 = aux_jkflipflop_3_node_18;
+    aux_jkflipflop_3_q_0_1 = aux_jkflipflop_3_node_19;
+    // End IC: JKFLIPFLOP
+    // IC: JKFLIPFLOP
+    aux_ic_input_jkflipflop_0 = true;
+    aux_ic_input_jkflipflop_1 = true;
+    aux_ic_input_jkflipflop_2 = aux_jkflipflop_3_q_0_1;
+    aux_ic_input_jkflipflop_3 = true;
+    aux_ic_input_jkflipflop_4 = aux_node_20;
+    aux_jkflipflop_4_node_13 = true;
+    aux_jkflipflop_4_node_11 = true;
+    aux_jkflipflop_4_node_8 = aux_ic_input_jkflipflop_2;
+    aux_jkflipflop_4_node_1 = aux_jkflipflop_4_node_11;
+    aux_jkflipflop_4_node_3 = aux_jkflipflop_4_node_8;
+    aux_jkflipflop_4_node_2 = aux_jkflipflop_4_node_13;
+    // IC: DFLIPFLOP
+    aux_ic_input_dflipflop_0 = aux_jkflipflop_4_node_1;
+    aux_ic_input_dflipflop_1 = aux_jkflipflop_4_or_12;
+    aux_ic_input_dflipflop_2 = aux_jkflipflop_4_node_3;
+    aux_ic_input_dflipflop_3 = aux_jkflipflop_4_node_2;
+    aux_dflipflop_0_node_18 = aux_ic_input_dflipflop_2;
+    aux_dflipflop_0_not_19 = !aux_dflipflop_0_node_18;
+    aux_dflipflop_0_not_7 = !aux_dflipflop_0_not_19;
+    aux_dflipflop_0_node_20 = aux_dflipflop_0_not_19;
+    aux_dflipflop_0_node_1 = aux_dflipflop_0_not_7;
+    aux_dflipflop_0_node_2 = aux_dflipflop_0_node_20;
+    aux_dflipflop_0_node_3 = aux_ic_input_dflipflop_1;
+    aux_dflipflop_0_node_16 = aux_ic_input_dflipflop_0;
+    aux_dflipflop_0_node_17 = aux_ic_input_dflipflop_3;
+    aux_dflipflop_0_not_13 = !aux_dflipflop_0_node_3;
+    aux_dflipflop_0_node_21 = aux_dflipflop_0_node_1;
+    aux_dflipflop_0_nand_4 = !(aux_dflipflop_0_node_3 && aux_dflipflop_0_node_2);
+    aux_dflipflop_0_nand_9 = !(aux_dflipflop_0_node_16 && aux_dflipflop_0_nand_4 && aux_dflipflop_0_nand_8);
+    aux_dflipflop_0_node_22 = aux_dflipflop_0_node_17;
+    aux_dflipflop_0_node_0 = aux_dflipflop_0_node_21;
+    aux_dflipflop_0_nand_15 = !(aux_dflipflop_0_node_20 && aux_dflipflop_0_not_13);
+    aux_dflipflop_0_node_24 = aux_dflipflop_0_node_16;
+    aux_dflipflop_0_nand_10 = !(aux_dflipflop_0_nand_9 && aux_dflipflop_0_node_0);
+    aux_dflipflop_0_nand_8 = !(aux_dflipflop_0_nand_9 && aux_dflipflop_0_nand_15 && aux_dflipflop_0_node_22);
+    aux_dflipflop_0_nand_14 = !(aux_dflipflop_0_node_21 && aux_dflipflop_0_nand_8);
+    aux_dflipflop_0_nand_6 = !(aux_dflipflop_0_node_24 && aux_dflipflop_0_nand_10 && aux_dflipflop_0_nand_11);
+    aux_dflipflop_0_node_23 = aux_dflipflop_0_node_17;
+    aux_dflipflop_0_nand_11 = !(aux_dflipflop_0_nand_6 && aux_dflipflop_0_nand_14 && aux_dflipflop_0_node_23);
+    aux_dflipflop_0_node_12 = aux_dflipflop_0_nand_11;
+    aux_dflipflop_0_node_5 = aux_dflipflop_0_nand_6;
+    aux_dflipflop_0_led_0 = aux_dflipflop_0_node_5;
+    aux_dflipflop_0_led_0_1 = aux_dflipflop_0_node_12;
+    // End IC: DFLIPFLOP
+    aux_jkflipflop_4_node_6 = aux_dflipflop_0_led_0_1;
+    aux_jkflipflop_4_node_7 = aux_dflipflop_0_led_0;
+    aux_jkflipflop_4_node_14 = true;
+    aux_jkflipflop_4_node_15 = true;
+    aux_jkflipflop_4_node_4 = aux_jkflipflop_4_node_7;
+    aux_jkflipflop_4_node_5 = aux_jkflipflop_4_node_6;
+    aux_jkflipflop_4_not_9 = !aux_jkflipflop_4_node_14;
+    aux_jkflipflop_4_node_16 = aux_jkflipflop_4_node_15;
+    aux_jkflipflop_4_and_17 = aux_jkflipflop_4_node_4 && aux_jkflipflop_4_not_9;
+    aux_jkflipflop_4_and_10 = aux_jkflipflop_4_node_16 && aux_jkflipflop_4_node_5;
+    aux_jkflipflop_4_or_12 = aux_jkflipflop_4_and_17 || aux_jkflipflop_4_and_10;
+    aux_jkflipflop_4_node_18 = aux_dflipflop_0_led_0;
+    aux_jkflipflop_4_node_19 = aux_dflipflop_0_led_0_1;
+    aux_jkflipflop_4_q_0 = aux_jkflipflop_4_node_18;
+    aux_jkflipflop_4_q_0_1 = aux_jkflipflop_4_node_19;
+    // End IC: JKFLIPFLOP
+    aux_node_5 = aux_jkflipflop_3_q_0_1;
+    aux_node_6 = aux_jkflipflop_4_q_0;
+    aux_and_7 = aux_node_24 && aux_node_22 && aux_node_6 && aux_node_5;
+    aux_not_8 = !aux_and_7;
+    aux_node_9 = aux_not_8;
+    aux_node_10 = aux_node_9;
+    aux_node_11 = aux_node_10;
+    // IC: JKFLIPFLOP
+    aux_ic_input_jkflipflop_0 = true;
+    aux_ic_input_jkflipflop_1 = true;
+    aux_ic_input_jkflipflop_2 = aux_jkflipflop_4_q_0_1;
+    aux_ic_input_jkflipflop_3 = true;
+    aux_ic_input_jkflipflop_4 = aux_node_11;
+    aux_jkflipflop_12_node_13 = true;
+    aux_jkflipflop_12_node_11 = true;
+    aux_jkflipflop_12_node_8 = aux_ic_input_jkflipflop_2;
+    aux_jkflipflop_12_node_1 = aux_jkflipflop_12_node_11;
+    aux_jkflipflop_12_node_3 = aux_jkflipflop_12_node_8;
+    aux_jkflipflop_12_node_2 = aux_jkflipflop_12_node_13;
+    // IC: DFLIPFLOP
+    aux_ic_input_dflipflop_0 = aux_jkflipflop_12_node_1;
+    aux_ic_input_dflipflop_1 = aux_jkflipflop_12_or_12;
+    aux_ic_input_dflipflop_2 = aux_jkflipflop_12_node_3;
+    aux_ic_input_dflipflop_3 = aux_jkflipflop_12_node_2;
+    aux_dflipflop_0_node_18 = aux_ic_input_dflipflop_2;
+    aux_dflipflop_0_not_19 = !aux_dflipflop_0_node_18;
+    aux_dflipflop_0_not_7 = !aux_dflipflop_0_not_19;
+    aux_dflipflop_0_node_20 = aux_dflipflop_0_not_19;
+    aux_dflipflop_0_node_1 = aux_dflipflop_0_not_7;
+    aux_dflipflop_0_node_2 = aux_dflipflop_0_node_20;
+    aux_dflipflop_0_node_3 = aux_ic_input_dflipflop_1;
+    aux_dflipflop_0_node_16 = aux_ic_input_dflipflop_0;
+    aux_dflipflop_0_node_17 = aux_ic_input_dflipflop_3;
+    aux_dflipflop_0_not_13 = !aux_dflipflop_0_node_3;
+    aux_dflipflop_0_node_21 = aux_dflipflop_0_node_1;
+    aux_dflipflop_0_nand_4 = !(aux_dflipflop_0_node_3 && aux_dflipflop_0_node_2);
+    aux_dflipflop_0_nand_9 = !(aux_dflipflop_0_node_16 && aux_dflipflop_0_nand_4 && aux_dflipflop_0_nand_8);
+    aux_dflipflop_0_node_22 = aux_dflipflop_0_node_17;
+    aux_dflipflop_0_node_0 = aux_dflipflop_0_node_21;
+    aux_dflipflop_0_nand_15 = !(aux_dflipflop_0_node_20 && aux_dflipflop_0_not_13);
+    aux_dflipflop_0_node_24 = aux_dflipflop_0_node_16;
+    aux_dflipflop_0_nand_10 = !(aux_dflipflop_0_nand_9 && aux_dflipflop_0_node_0);
+    aux_dflipflop_0_nand_8 = !(aux_dflipflop_0_nand_9 && aux_dflipflop_0_nand_15 && aux_dflipflop_0_node_22);
+    aux_dflipflop_0_nand_14 = !(aux_dflipflop_0_node_21 && aux_dflipflop_0_nand_8);
+    aux_dflipflop_0_nand_6 = !(aux_dflipflop_0_node_24 && aux_dflipflop_0_nand_10 && aux_dflipflop_0_nand_11);
+    aux_dflipflop_0_node_23 = aux_dflipflop_0_node_17;
+    aux_dflipflop_0_nand_11 = !(aux_dflipflop_0_nand_6 && aux_dflipflop_0_nand_14 && aux_dflipflop_0_node_23);
+    aux_dflipflop_0_node_12 = aux_dflipflop_0_nand_11;
+    aux_dflipflop_0_node_5 = aux_dflipflop_0_nand_6;
+    aux_dflipflop_0_led_0 = aux_dflipflop_0_node_5;
+    aux_dflipflop_0_led_0_1 = aux_dflipflop_0_node_12;
+    // End IC: DFLIPFLOP
+    aux_jkflipflop_12_node_6 = aux_dflipflop_0_led_0_1;
+    aux_jkflipflop_12_node_7 = aux_dflipflop_0_led_0;
+    aux_jkflipflop_12_node_14 = true;
+    aux_jkflipflop_12_node_15 = true;
+    aux_jkflipflop_12_node_4 = aux_jkflipflop_12_node_7;
+    aux_jkflipflop_12_node_5 = aux_jkflipflop_12_node_6;
+    aux_jkflipflop_12_not_9 = !aux_jkflipflop_12_node_14;
+    aux_jkflipflop_12_node_16 = aux_jkflipflop_12_node_15;
+    aux_jkflipflop_12_and_17 = aux_jkflipflop_12_node_4 && aux_jkflipflop_12_not_9;
+    aux_jkflipflop_12_and_10 = aux_jkflipflop_12_node_16 && aux_jkflipflop_12_node_5;
+    aux_jkflipflop_12_or_12 = aux_jkflipflop_12_and_17 || aux_jkflipflop_12_and_10;
+    aux_jkflipflop_12_node_18 = aux_dflipflop_0_led_0;
+    aux_jkflipflop_12_node_19 = aux_dflipflop_0_led_0_1;
+    aux_jkflipflop_12_q_0 = aux_jkflipflop_12_node_18;
+    aux_jkflipflop_12_q_0_1 = aux_jkflipflop_12_node_19;
+    // End IC: JKFLIPFLOP
+    // IC: JKFLIPFLOP
+    aux_ic_input_jkflipflop_0 = true;
+    aux_ic_input_jkflipflop_1 = true;
+    aux_ic_input_jkflipflop_2 = aux_jkflipflop_12_q_0_1;
+    aux_ic_input_jkflipflop_3 = true;
+    aux_ic_input_jkflipflop_4 = aux_node_10;
+    aux_jkflipflop_13_node_13 = true;
+    aux_jkflipflop_13_node_11 = true;
+    aux_jkflipflop_13_node_8 = aux_ic_input_jkflipflop_2;
+    aux_jkflipflop_13_node_1 = aux_jkflipflop_13_node_11;
+    aux_jkflipflop_13_node_3 = aux_jkflipflop_13_node_8;
+    aux_jkflipflop_13_node_2 = aux_jkflipflop_13_node_13;
+    // IC: DFLIPFLOP
+    aux_ic_input_dflipflop_0 = aux_jkflipflop_13_node_1;
+    aux_ic_input_dflipflop_1 = aux_jkflipflop_13_or_12;
+    aux_ic_input_dflipflop_2 = aux_jkflipflop_13_node_3;
+    aux_ic_input_dflipflop_3 = aux_jkflipflop_13_node_2;
+    aux_dflipflop_0_node_18 = aux_ic_input_dflipflop_2;
+    aux_dflipflop_0_not_19 = !aux_dflipflop_0_node_18;
+    aux_dflipflop_0_not_7 = !aux_dflipflop_0_not_19;
+    aux_dflipflop_0_node_20 = aux_dflipflop_0_not_19;
+    aux_dflipflop_0_node_1 = aux_dflipflop_0_not_7;
+    aux_dflipflop_0_node_2 = aux_dflipflop_0_node_20;
+    aux_dflipflop_0_node_3 = aux_ic_input_dflipflop_1;
+    aux_dflipflop_0_node_16 = aux_ic_input_dflipflop_0;
+    aux_dflipflop_0_node_17 = aux_ic_input_dflipflop_3;
+    aux_dflipflop_0_not_13 = !aux_dflipflop_0_node_3;
+    aux_dflipflop_0_node_21 = aux_dflipflop_0_node_1;
+    aux_dflipflop_0_nand_4 = !(aux_dflipflop_0_node_3 && aux_dflipflop_0_node_2);
+    aux_dflipflop_0_nand_9 = !(aux_dflipflop_0_node_16 && aux_dflipflop_0_nand_4 && aux_dflipflop_0_nand_8);
+    aux_dflipflop_0_node_22 = aux_dflipflop_0_node_17;
+    aux_dflipflop_0_node_0 = aux_dflipflop_0_node_21;
+    aux_dflipflop_0_nand_15 = !(aux_dflipflop_0_node_20 && aux_dflipflop_0_not_13);
+    aux_dflipflop_0_node_24 = aux_dflipflop_0_node_16;
+    aux_dflipflop_0_nand_10 = !(aux_dflipflop_0_nand_9 && aux_dflipflop_0_node_0);
+    aux_dflipflop_0_nand_8 = !(aux_dflipflop_0_nand_9 && aux_dflipflop_0_nand_15 && aux_dflipflop_0_node_22);
+    aux_dflipflop_0_nand_14 = !(aux_dflipflop_0_node_21 && aux_dflipflop_0_nand_8);
+    aux_dflipflop_0_nand_6 = !(aux_dflipflop_0_node_24 && aux_dflipflop_0_nand_10 && aux_dflipflop_0_nand_11);
+    aux_dflipflop_0_node_23 = aux_dflipflop_0_node_17;
+    aux_dflipflop_0_nand_11 = !(aux_dflipflop_0_nand_6 && aux_dflipflop_0_nand_14 && aux_dflipflop_0_node_23);
+    aux_dflipflop_0_node_12 = aux_dflipflop_0_nand_11;
+    aux_dflipflop_0_node_5 = aux_dflipflop_0_nand_6;
+    aux_dflipflop_0_led_0 = aux_dflipflop_0_node_5;
+    aux_dflipflop_0_led_0_1 = aux_dflipflop_0_node_12;
+    // End IC: DFLIPFLOP
+    aux_jkflipflop_13_node_6 = aux_dflipflop_0_led_0_1;
+    aux_jkflipflop_13_node_7 = aux_dflipflop_0_led_0;
+    aux_jkflipflop_13_node_14 = true;
+    aux_jkflipflop_13_node_15 = true;
+    aux_jkflipflop_13_node_4 = aux_jkflipflop_13_node_7;
+    aux_jkflipflop_13_node_5 = aux_jkflipflop_13_node_6;
+    aux_jkflipflop_13_not_9 = !aux_jkflipflop_13_node_14;
+    aux_jkflipflop_13_node_16 = aux_jkflipflop_13_node_15;
+    aux_jkflipflop_13_and_17 = aux_jkflipflop_13_node_4 && aux_jkflipflop_13_not_9;
+    aux_jkflipflop_13_and_10 = aux_jkflipflop_13_node_16 && aux_jkflipflop_13_node_5;
+    aux_jkflipflop_13_or_12 = aux_jkflipflop_13_and_17 || aux_jkflipflop_13_and_10;
+    aux_jkflipflop_13_node_18 = aux_dflipflop_0_led_0;
+    aux_jkflipflop_13_node_19 = aux_dflipflop_0_led_0_1;
+    aux_jkflipflop_13_q_0 = aux_jkflipflop_13_node_18;
+    aux_jkflipflop_13_q_0_1 = aux_jkflipflop_13_node_19;
+    // End IC: JKFLIPFLOP
+    aux_node_14 = aux_clock_2;
+    aux_node_15 = aux_jkflipflop_3_q_0;
+    aux_node_16 = aux_jkflipflop_4_q_0;
+    aux_node_17 = aux_jkflipflop_12_q_0;
+    aux_node_18 = aux_jkflipflop_13_q_0;
+    // IC: DISPLAY-4BITS
+    aux_ic_input_display_4bits_0 = aux_node_18;
+    aux_ic_input_display_4bits_1 = aux_node_17;
+    aux_ic_input_display_4bits_2 = aux_node_16;
+    aux_ic_input_display_4bits_3 = aux_node_15;
+    aux_display_4bits_19_node_68 = true;
+    aux_display_4bits_19_node_72 = aux_display_4bits_19_node_68;
+    aux_display_4bits_19_node_67 = aux_ic_input_display_4bits_2;
+    aux_display_4bits_19_node_65 = aux_ic_input_display_4bits_1;
+    aux_display_4bits_19_not_76 = !aux_display_4bits_19_node_72;
+    aux_display_4bits_19_node_71 = aux_display_4bits_19_node_67;
+    aux_display_4bits_19_node_70 = aux_display_4bits_19_node_65;
+    aux_display_4bits_19_not_75 = !aux_display_4bits_19_node_71;
+    aux_display_4bits_19_not_73 = !aux_display_4bits_19_node_70;
+    aux_display_4bits_19_node_66 = aux_ic_input_display_4bits_0;
+    aux_display_4bits_19_node_42 = aux_display_4bits_19_node_71;
+    aux_display_4bits_19_node_51 = aux_display_4bits_19_not_76;
+    aux_display_4bits_19_node_36 = aux_display_4bits_19_not_75;
+    aux_display_4bits_19_node_37 = aux_display_4bits_19_node_51;
+    aux_display_4bits_19_node_41 = aux_display_4bits_19_node_42;
+    aux_display_4bits_19_node_52 = aux_display_4bits_19_not_73;
+    aux_display_4bits_19_node_54 = aux_display_4bits_19_node_72;
+    aux_display_4bits_19_node_55 = aux_display_4bits_19_node_70;
+    aux_display_4bits_19_node_69 = aux_display_4bits_19_node_66;
+    aux_display_4bits_19_and_53 = aux_display_4bits_19_node_52 && aux_display_4bits_19_node_51;
+    aux_display_4bits_19_node_15 = aux_display_4bits_19_node_37;
+    aux_display_4bits_19_node_14 = aux_display_4bits_19_node_41;
+    aux_display_4bits_19_node_43 = aux_display_4bits_19_node_69;
+    aux_display_4bits_19_node_22 = aux_display_4bits_19_node_55;
+    aux_display_4bits_19_node_23 = aux_display_4bits_19_node_36;
+    aux_display_4bits_19_node_40 = aux_display_4bits_19_node_54;
+    aux_display_4bits_19_and_50 = aux_display_4bits_19_node_36 && aux_display_4bits_19_node_37;
+    aux_display_4bits_19_and_47 = aux_display_4bits_19_node_14 && aux_display_4bits_19_node_15;
+    aux_display_4bits_19_node_38 = aux_display_4bits_19_node_52;
+    aux_display_4bits_19_node_18 = aux_display_4bits_19_node_43;
+    aux_display_4bits_19_node_21 = aux_display_4bits_19_and_53;
+    aux_display_4bits_19_node_24 = aux_display_4bits_19_node_40;
+    aux_display_4bits_19_node_10 = aux_display_4bits_19_node_22;
+    aux_display_4bits_19_node_9 = aux_display_4bits_19_node_23;
+    aux_display_4bits_19_node_13 = aux_display_4bits_19_node_14;
+    aux_display_4bits_19_node_12 = aux_display_4bits_19_node_38;
+    aux_display_4bits_19_node_20 = aux_display_4bits_19_node_21;
+    aux_display_4bits_19_and_46 = aux_display_4bits_19_node_10 && aux_display_4bits_19_node_9;
+    aux_display_4bits_19_node_11 = aux_display_4bits_19_node_24;
+    aux_display_4bits_19_node_8 = aux_display_4bits_19_and_47;
+    aux_display_4bits_19_node_0 = aux_display_4bits_19_node_18;
+    aux_display_4bits_19_node_6 = aux_display_4bits_19_and_50;
+    aux_display_4bits_19_node_3 = aux_display_4bits_19_node_15;
+    aux_display_4bits_19_node_2 = aux_display_4bits_19_node_10;
+    aux_display_4bits_19_node_7 = aux_display_4bits_19_node_8;
+    aux_display_4bits_19_node_5 = aux_display_4bits_19_node_6;
+    aux_display_4bits_19_and_4 = aux_display_4bits_19_node_2 && aux_display_4bits_19_node_3;
+    aux_display_4bits_19_and_45 = aux_display_4bits_19_node_11 && aux_display_4bits_19_and_46;
+    aux_display_4bits_19_and_48 = aux_display_4bits_19_node_12 && aux_display_4bits_19_node_13;
+    aux_display_4bits_19_and_49 = aux_display_4bits_19_node_41 && aux_display_4bits_19_node_40;
+    aux_display_4bits_19_node_19 = aux_display_4bits_19_node_20;
+    aux_display_4bits_19_and_56 = aux_display_4bits_19_node_55 && aux_display_4bits_19_node_54;
+    aux_display_4bits_19_node_1 = aux_display_4bits_19_node_0;
+    aux_display_4bits_19_not_74 = !aux_display_4bits_19_node_69;
+    aux_display_4bits_19_or_16 = aux_display_4bits_19_node_7 || aux_display_4bits_19_and_46 || aux_display_4bits_19_node_1 || aux_display_4bits_19_and_48;
+    aux_display_4bits_19_or_17 = aux_display_4bits_19_node_5 || aux_display_4bits_19_and_4 || aux_display_4bits_19_and_46 || aux_display_4bits_19_node_0;
+    aux_display_4bits_19_or_27 = aux_display_4bits_19_node_18 || aux_display_4bits_19_node_20 || aux_display_4bits_19_node_8 || aux_display_4bits_19_and_48 || aux_display_4bits_19_and_45;
+    aux_display_4bits_19_or_39 = aux_display_4bits_19_and_49 || aux_display_4bits_19_node_38 || aux_display_4bits_19_node_6;
+    aux_display_4bits_19_or_26 = aux_display_4bits_19_node_19 || aux_display_4bits_19_node_7;
+    aux_display_4bits_19_or_25 = aux_display_4bits_19_node_22 || aux_display_4bits_19_node_23 || aux_display_4bits_19_node_24;
+    aux_display_4bits_19_or_44 = aux_display_4bits_19_and_56 || aux_display_4bits_19_node_43 || aux_display_4bits_19_node_42 || aux_display_4bits_19_node_21;
+    aux_display_4bits_19_node_61 = aux_display_4bits_19_node_12;
+    aux_display_4bits_19_node_62 = aux_display_4bits_19_not_74;
+    aux_display_4bits_19_node_63 = aux_display_4bits_19_node_1;
+    aux_display_4bits_19_node_64 = aux_display_4bits_19_node_3;
+    aux_display_4bits_19_node_60 = aux_display_4bits_19_node_2;
+    aux_display_4bits_19_node_59 = aux_display_4bits_19_node_9;
+    aux_display_4bits_19_node_58 = aux_display_4bits_19_node_13;
+    aux_display_4bits_19_node_57 = aux_display_4bits_19_node_11;
+    aux_display_4bits_19_node_29 = aux_display_4bits_19_or_17;
+    aux_display_4bits_19_node_28 = aux_display_4bits_19_or_16;
+    aux_display_4bits_19_node_35 = aux_display_4bits_19_or_25;
+    aux_display_4bits_19_node_34 = false;
+    aux_display_4bits_19_node_33 = aux_display_4bits_19_or_39;
+    aux_display_4bits_19_node_32 = aux_display_4bits_19_or_44;
+    aux_display_4bits_19_node_31 = aux_display_4bits_19_or_27;
+    aux_display_4bits_19_node_30 = aux_display_4bits_19_or_26;
+    aux_display_4bits_19_display7_g_middle = aux_display_4bits_19_node_28;
+    aux_display_4bits_19_display7_f_upper_left_1 = aux_display_4bits_19_node_29;
+    aux_display_4bits_19_display7_e_lower_left_2 = aux_display_4bits_19_node_30;
+    aux_display_4bits_19_display7_d_bottom_3 = aux_display_4bits_19_node_31;
+    aux_display_4bits_19_display7_a_top_4 = aux_display_4bits_19_node_32;
+    aux_display_4bits_19_display7_b_upper_right_5 = aux_display_4bits_19_node_33;
+    aux_display_4bits_19_display7_dp_dot_6 = aux_display_4bits_19_node_34;
+    aux_display_4bits_19_display7_c_lower_right_7 = aux_display_4bits_19_node_35;
+    // End IC: DISPLAY-4BITS
+    aux_node_20 = aux_node_11;
+    aux_node_21 = aux_node_14;
+    aux_node_22 = aux_jkflipflop_12_q_0_1;
+    aux_node_24 = aux_jkflipflop_13_q_0;
+    aux_node_25 = aux_node_20;
+
+    // Write output data
+    digitalWrite(seven_segment_display24_g_middle, aux_display_4bits_19_display7_g_middle);
+    digitalWrite(seven_segment_display24_f_upper_left, aux_display_4bits_19_display7_f_upper_left_1);
+    digitalWrite(seven_segment_display24_e_lower_left, aux_display_4bits_19_display7_e_lower_left_2);
+    digitalWrite(seven_segment_display24_d_bottom, aux_display_4bits_19_display7_d_bottom_3);
+    digitalWrite(seven_segment_display24_a_top, aux_display_4bits_19_display7_a_top_4);
+    digitalWrite(seven_segment_display24_b_upper_right, aux_display_4bits_19_display7_b_upper_right_5);
+    digitalWrite(seven_segment_display24_dp_dot, aux_node_21);
+    digitalWrite(seven_segment_display24_c_lower_right, aux_display_4bits_19_display7_c_lower_right_7);
+}
