@@ -19,7 +19,6 @@ class MainWindow;
 class QItemSelection;
 class QSaveFile;
 
-
 enum class PlotType { Number, Line };
 
 /*!
