@@ -6,6 +6,8 @@
 #include "qneconnection.h"
 #include "qneport.h"
 
+#include <algorithm>
+
 Q_LOGGING_CATEGORY(zero,  "0")
 Q_LOGGING_CATEGORY(one,   "1")
 Q_LOGGING_CATEGORY(two,   "2")
@@ -52,7 +54,7 @@ QVector<GraphicElement *> Common::sortGraphicElements(QVector<GraphicElement *> 
         calculatePriority(elm, beingVisited, priorities);
     }
 
-    std::sort(elements.begin(), elements.end(), [priorities](const auto &e1, const auto &e2) {
+    std::stable_sort(elements.begin(), elements.end(), [priorities](const auto &e1, const auto &e2) {
         return priorities.value(e1) > priorities.value(e2);
     });
 
