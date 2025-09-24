@@ -10,6 +10,7 @@
 #include <QVector>
 
 class GraphicElement;
+class IC;
 class QNEPort;
 
 class MappedPin
@@ -32,6 +33,14 @@ public:
     int m_portNumber = 0;
 };
 
+struct ArduinoBoardConfig
+{
+    QString name;
+    QStringList availablePins;
+    QString description;
+    int maxPins() const { return availablePins.size(); }
+};
+
 class CodeGenerator
 {
     Q_DECLARE_TR_FUNCTIONS(CodeGenerator)
@@ -48,18 +57,25 @@ private:
     void assignLogicOperator(GraphicElement *elm);
     void assignVariablesRec(const QVector<GraphicElement *> &elements);
     void declareAuxVariables();
-    void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox = false);
+    void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox = false, const QString &icPrefix = "");
     void declareInputs();
     void declareOutputs();
     void loop();
     void setup();
 
+    // Board selection methods
+    ArduinoBoardConfig selectBoard(int requiredPins);
+    QVector<ArduinoBoardConfig> getAvailableBoards();
+
     QFile m_file;
     QHash<QNEPort *, QString> m_varMap;
     QStringList m_availablePins;
+    QStringList m_declaredVariables;
     QTextStream m_stream;
     QVector<MappedPin> m_inputMap;
     QVector<MappedPin> m_outputMap;
     const QVector<GraphicElement *> m_elements;
     int m_globalCounter = 1;
+    IC *m_currentIC = nullptr; // Track current IC context for internal element processing
+    ArduinoBoardConfig m_selectedBoard; // Currently selected board configuration
 };

@@ -173,5 +173,6 @@ Deploy/
 *.panda
 !examples/**/*.panda
 !test/backward_compatibility/**/*.panda
+!test/arduino/**/*.panda
 /mcp/client/temp
 __pycache__/
