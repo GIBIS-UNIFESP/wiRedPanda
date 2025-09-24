@@ -6,6 +6,8 @@
 #include "qneconnection.h"
 #include "qneport.h"
 
+#include <algorithm>
+
 Q_LOGGING_CATEGORY(zero,  "0")
 Q_LOGGING_CATEGORY(one,   "1")
 Q_LOGGING_CATEGORY(two,   "2")

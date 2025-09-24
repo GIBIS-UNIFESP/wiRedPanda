@@ -156,9 +156,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
         loadPandaFile(fileName);
     }
 
-    qCDebug(zero) << "Disabling Arduino export.";
-    m_ui->actionExportToArduino->setEnabled(false);
-
     QPixmapCache::setCacheLimit(100000);
 
     qCDebug(zero) << "Adding examples to menu";
@@ -1014,7 +1011,7 @@ void MainWindow::exportToArduino(QString fileName)
 
     elements = Common::sortGraphicElements(elements);
 
-    CodeGenerator arduino(QDir::home().absoluteFilePath(fileName), elements);
+    CodeGenerator arduino(fileName, elements);
     arduino.generate();
     m_ui->statusBar->showMessage(tr("Arduino code successfully generated."), 4000);
 
