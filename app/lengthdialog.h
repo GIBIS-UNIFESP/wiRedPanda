@@ -8,7 +8,6 @@
 #include <QDialog>
 #include <memory>
 
-
 /*!
  * @class LengthDialog
  * @brief Dialog for setting a numeric length value
