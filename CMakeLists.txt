@@ -36,18 +36,7 @@ if((QT_VERSION_MAJOR EQUAL 5 AND Qt5_VERSION VERSION_LESS 5.15) OR
     message(FATAL_ERROR "Minimum required Qt version is 5.15 for Qt5 or 6.2 for Qt6.")
 endif()
 
-add_compile_definitions(
-    APP_VERSION="${PROJECT_VERSION}"
-    QT_DEPRECATED_WARNINGS
-    QT_DISABLE_DEPRECATED_BEFORE=0x060000
-    QT_MESSAGELOGCONTEXT
-)
 
-if(MSVC)
-    add_compile_options(/W4 /external:W0 /permissive-)
-else()
-    add_compile_options(-Wall -Wextra -Wpedantic)
-endif()
 
 find_program(MOLD_BIN mold)
 if(MOLD_BIN)
@@ -132,18 +121,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(json-schema-validator)
 
-# WebAssembly specific configuration
-if(EMSCRIPTEN)
-    # Essential WASM flags
-    add_link_options(-sASYNCIFY -Os)
-
-    # Additional optimization flags recommended by Qt docs
-    add_compile_options(-Os -flto)
-    add_link_options(-flto)
-
-    message(STATUS "WebAssembly build detected - Adding ASYNCIFY and optimization flags")
-endif()
-
 include(CMakeSources.cmake)
 
 # Find available translation files
@@ -191,17 +168,6 @@ else()
     qt6_add_resources(RESOURCES_RCC ${RESOURCES})
 endif()
 
-include_directories(
-    ${CMAKE_BINARY_DIR}
-    app
-    app/arduino
-    app/element
-    app/logicelement
-    app/nodes
-    mcp/server/core
-    mcp/server/handlers
-    mcp/server/interfaces
-)
 
 # ========= TRANSLATIONS ===========================
 
@@ -309,6 +275,46 @@ endforeach()
 add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS} ${FORMS})
 target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS} nlohmann_json::nlohmann_json nlohmann_json_schema_validator)
 
+# Target-specific include directories
+target_include_directories(wiredpanda_lib PUBLIC
+    ${CMAKE_BINARY_DIR}
+    app
+    app/arduino
+    app/element
+    app/logicelement
+    app/nodes
+    mcp/server/core
+    mcp/server/handlers
+    mcp/server/interfaces
+)
+
+# Target-specific compile definitions
+target_compile_definitions(wiredpanda_lib PUBLIC
+    APP_VERSION="${PROJECT_VERSION}"
+    QT_DEPRECATED_WARNINGS
+    QT_DISABLE_DEPRECATED_BEFORE=0x060000
+    QT_MESSAGELOGCONTEXT
+)
+
+# Target-specific compile options
+if(MSVC)
+    target_compile_options(wiredpanda_lib PUBLIC /W4 /external:W0 /permissive-)
+else()
+    target_compile_options(wiredpanda_lib PUBLIC -Wall -Wextra -Wpedantic)
+endif()
+
+# WebAssembly specific configuration
+if(EMSCRIPTEN)
+    # Essential WASM flags
+    target_link_options(wiredpanda_lib PUBLIC -sASYNCIFY -Os)
+
+    # Additional optimization flags recommended by Qt docs
+    target_compile_options(wiredpanda_lib PUBLIC -Os -flto)
+    target_link_options(wiredpanda_lib PUBLIC -flto)
+
+    message(STATUS "WebAssembly build detected - Adding ASYNCIFY and optimization flags")
+endif()
+
 option(ENABLE_PCH "Enable precompiled headers for faster compilation" ON)
 if(ENABLE_PCH)
     target_precompile_headers(wiredpanda_lib PRIVATE pch.h)
@@ -318,9 +324,9 @@ find_path(SENTRY_INCLUDE_DIR NAMES sentry.h PATHS thirdparty/sentry/include)
 
 if (SENTRY_INCLUDE_DIR)
     message(STATUS "Sentry found: Enabling HAVE_SENTRY")
-    add_definitions(-DHAVE_SENTRY)
+    target_compile_definitions(wiredpanda_lib PUBLIC HAVE_SENTRY)
 
-    include_directories(${SENTRY_INCLUDE_DIR})
+    target_include_directories(wiredpanda_lib PUBLIC ${SENTRY_INCLUDE_DIR})
     link_directories(thirdparty/sentry/lib)
     target_link_libraries(wiredpanda_lib PUBLIC sentry)
 endif()
