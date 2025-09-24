@@ -70,7 +70,7 @@ private:
     // Test helper methods
     GraphicElement* createInputSwitch(const QString& label = "");
     GraphicElement* createLed(const QString& label = "");
-    GraphicElement* createLogicGate(Enums::ElementType type, int inputs = 2);
+    GraphicElement* createLogicGate(Enums::ElementType type);
     GraphicElement* createSequentialElement(Enums::ElementType type, const QString& label = "");
     GraphicElement* createSpecialElement(Enums::ElementType type, const QString& label = "");
     GraphicElement* createIC(const QString& label = "", const QVector<GraphicElement*>& internalElements = {});

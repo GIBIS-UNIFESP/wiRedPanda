@@ -121,7 +121,7 @@ GraphicElement* TestArduino::createLed(const QString& label)
     return element;
 }
 
-GraphicElement* TestArduino::createLogicGate(Enums::ElementType type, int inputs)
+GraphicElement* TestArduino::createLogicGate(Enums::ElementType type)
 {
     GraphicElement* element = nullptr;
 
@@ -299,10 +299,10 @@ QVector<GraphicElement*> TestArduino::createComplexMultiElementCircuit()
     circuit.append(createInputSwitch("Clock"));
 
     // Logic gates
-    circuit.append(createLogicGate(Enums::ElementType::And, 2));
-    circuit.append(createLogicGate(Enums::ElementType::Or, 2));
-    circuit.append(createLogicGate(Enums::ElementType::Xor, 2));
-    circuit.append(createLogicGate(Enums::ElementType::Not, 1));
+    circuit.append(createLogicGate(Enums::ElementType::And));
+    circuit.append(createLogicGate(Enums::ElementType::Or));
+    circuit.append(createLogicGate(Enums::ElementType::Xor));
+    circuit.append(createLogicGate(Enums::ElementType::Not));
 
     // Sequential elements
     circuit.append(createSequentialElement(Enums::ElementType::DFlipFlop, "DFF1"));
@@ -779,7 +779,7 @@ void TestArduino::testAdvancedRealWorldCircuits()
 
     // Add XOR gates for sum calculation (simplified)
     for (int i = 0; i < 2; ++i) {  // Reduced to avoid complexity
-        adderCircuit.append(createLogicGate(Enums::ElementType::Xor, 2));
+        adderCircuit.append(createLogicGate(Enums::ElementType::Xor));
     }
 
     // Add sum outputs
@@ -876,7 +876,7 @@ void TestArduino::testSimpleICGeneration()
     // Create a simple IC with internal AND gate
     auto* inputSwitch1 = createInputSwitch("switch1");
     auto* inputSwitch2 = createInputSwitch("switch2");
-    auto* andGate = createLogicGate(Enums::ElementType::And, 2);
+    auto* andGate = createLogicGate(Enums::ElementType::And);
     auto* outputLed = createLed("output");
 
     // Create internal elements for IC
@@ -915,7 +915,7 @@ void TestArduino::testNestedICHandling()
     auto* input2 = createInputSwitch("in2");
 
     // Create inner IC with AND gate
-    auto* innerAnd = createLogicGate(Enums::ElementType::And, 2);
+    auto* innerAnd = createLogicGate(Enums::ElementType::And);
     QVector<GraphicElement*> innerElements = {innerAnd};
     auto* innerIC = createIC("InnerAND", innerElements);
 
@@ -953,7 +953,7 @@ void TestArduino::testICPortMapping()
     auto* led = createLed("Output");
 
     // Create IC with clear input/output mapping
-    auto* andGate = createLogicGate(Enums::ElementType::And, 2);
+    auto* andGate = createLogicGate(Enums::ElementType::And);
     QVector<GraphicElement*> icElements = {andGate};
     auto* ic = createIC("ANDModule", icElements);
 
@@ -1019,7 +1019,7 @@ void TestArduino::testPerformanceAndEdgeCases()
     // Create a moderate-sized circuit (30 elements)
     for (int i = 0; i < 10; ++i) {
         performanceCircuit.append(createInputSwitch(QString("perf_in%1").arg(i)));
-        performanceCircuit.append(createLogicGate(Enums::ElementType::And, 2));
+        performanceCircuit.append(createLogicGate(Enums::ElementType::And));
         performanceCircuit.append(createLed(QString("perf_out%1").arg(i)));
     }
 
@@ -1126,10 +1126,10 @@ void TestArduino::testTestCoverageAnalysis()
     coverageCircuit.append(createSpecialElement(Enums::ElementType::InputButton, "coverage_button"));
 
     // Logic gates
-    coverageCircuit.append(createLogicGate(Enums::ElementType::And, 2));
-    coverageCircuit.append(createLogicGate(Enums::ElementType::Or, 2));
-    coverageCircuit.append(createLogicGate(Enums::ElementType::Not, 1));
-    coverageCircuit.append(createLogicGate(Enums::ElementType::Xor, 2));
+    coverageCircuit.append(createLogicGate(Enums::ElementType::And));
+    coverageCircuit.append(createLogicGate(Enums::ElementType::Or));
+    coverageCircuit.append(createLogicGate(Enums::ElementType::Not));
+    coverageCircuit.append(createLogicGate(Enums::ElementType::Xor));
 
     // Sequential elements
     coverageCircuit.append(createSequentialElement(Enums::ElementType::DFlipFlop, "coverage_dff"));
@@ -1496,6 +1496,9 @@ void TestArduino::testCorpusCodeQuality()
 
 QVector<GraphicElement*> TestArduino::loadPandaFile(const QString& filePath)
 {
+    QFileInfo fileInfo(filePath);
+    GlobalProperties::currentDir = fileInfo.absolutePath();
+
     QFile file(filePath);
     if (!file.exists()) {
         throw std::runtime_error(QString("File does not exist: %1").arg(filePath).toStdString());
