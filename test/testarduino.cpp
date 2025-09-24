@@ -1355,7 +1355,10 @@ void TestArduino::testArduinoRegressionCorpus()
 
     for (const QString& pandaFile : pandaFiles) {
         QString baseName = QFileInfo(pandaFile).baseName();
-        QString expectedInoFile = QString("test/arduino/%1.ino").arg(baseName);
+
+        // Use the same directory as the .panda file for the .ino file
+        QFileInfo pandaFileInfo(pandaFile);
+        QString expectedInoFile = pandaFileInfo.dir().filePath(baseName + ".ino");
 
         // Skip if expected .ino file doesn't exist
         if (!QFile::exists(expectedInoFile)) {
@@ -1415,9 +1418,9 @@ void TestArduino::testIndividualCorpusFiles()
 {
     // Test individual files that should definitely work
     QStringList criticalFiles = {
-        "test/arduino/counter.panda",
-        "test/arduino/input.panda",
-        "test/arduino/dflipflop.panda"
+        QString(QUOTE(CURRENTDIR)) + "/arduino/counter.panda",
+        QString(QUOTE(CURRENTDIR)) + "/arduino/input.panda",
+        QString(QUOTE(CURRENTDIR)) + "/arduino/dflipflop.panda"
     };
 
     for (const QString& pandaFile : criticalFiles) {
@@ -1579,9 +1582,9 @@ bool TestArduino::compareArduinoCode(const QString& generated, const QString& ex
 
 QStringList TestArduino::getCorpusPandaFiles() const
 {
-    QDir corpusDir("test/arduino");
+    const QDir corpusDir(QString(QUOTE(CURRENTDIR)) + "/arduino");
     if (!corpusDir.exists()) {
-        qWarning() << "Test corpus directory does not exist: test/arduino";
+        qWarning() << "Test corpus directory does not exist:" << corpusDir.absolutePath();
         return QStringList();
     }
 
