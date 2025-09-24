@@ -42,8 +42,11 @@ public:
     //! Mostly used by `loadPandaFile` and clearing functions
     void setCurrentFile(const QFileInfo &fileInfo);
 
-    //! Exports the current simulation to an
+    //! Exports the current simulation to an Arduino .ino file
     void exportToArduino(QString fileName);
+
+    //! Exports the current simulation to a Verilog .v file
+    void exportToVerilog(QString fileName);
 
     //! Saves the current beWavedDolphin (waveform simulator) file
     void exportToWaveFormFile(const QString &fileName);
@@ -92,6 +95,7 @@ private:
     void on_actionAbout_triggered();
     void on_actionExit_triggered();
     void on_actionExportToArduino_triggered();
+    void on_actionExportToVerilog_triggered();
     void on_actionExportToImage_triggered();
     void on_actionExportToPdf_triggered();
     void on_actionFastMode_triggered(const bool checked);

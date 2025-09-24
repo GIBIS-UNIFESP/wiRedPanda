@@ -6,6 +6,7 @@
 
 #include "bewaveddolphin.h"
 #include "codegenerator.h"
+#include "codegeneratorverilog.h"
 #include "common.h"
 #include "dflipflop.h"
 #include "elementfactory.h"
@@ -207,6 +208,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->actionDarkTheme,        &QAction::triggered,        this,                &MainWindow::on_actionDarkTheme_triggered);
     connect(m_ui->actionExit,             &QAction::triggered,        this,                &MainWindow::on_actionExit_triggered);
     connect(m_ui->actionExportToArduino,  &QAction::triggered,        this,                &MainWindow::on_actionExportToArduino_triggered);
+    connect(m_ui->actionExportToVerilog,  &QAction::triggered,        this,                &MainWindow::on_actionExportToVerilog_triggered);
     connect(m_ui->actionExportToImage,    &QAction::triggered,        this,                &MainWindow::on_actionExportToImage_triggered);
     connect(m_ui->actionExportToPdf,      &QAction::triggered,        this,                &MainWindow::on_actionExportToPdf_triggered);
     connect(m_ui->actionFastMode,         &QAction::triggered,        this,                &MainWindow::on_actionFastMode_triggered);
@@ -1018,6 +1020,37 @@ void MainWindow::exportToArduino(QString fileName)
     qCDebug(zero) << "Arduino code successfully generated.";
 }
 
+void MainWindow::exportToVerilog(QString fileName)
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    if (fileName.isEmpty()) {
+        throw PANDACEPTION("Missing file name.");
+    }
+
+    auto elements = m_currentTab->scene()->elements();
+
+    if (elements.isEmpty()) {
+        throw PANDACEPTION("The .panda file is empty.");
+    }
+
+    SimulationBlocker simulationBlocker(m_currentTab->simulation());
+
+    if (!fileName.endsWith(".v")) {
+        fileName.append(".v");
+    }
+
+    elements = Common::sortGraphicElements(elements);
+
+    CodeGeneratorVerilog verilog(fileName, elements);
+    verilog.generate();
+    m_ui->statusBar->showMessage(tr("Verilog code successfully generated."), 4000);
+
+    qCDebug(zero) << "Verilog code successfully generated.";
+}
+
 void MainWindow::exportToWaveFormFile(const QString &fileName)
 {
     if (fileName.isEmpty()) {
@@ -1052,6 +1085,25 @@ void MainWindow::on_actionExportToArduino_triggered()
 
     if (!fileName.isEmpty()) {
         exportToArduino(fileName);
+    }
+}
+
+void MainWindow::on_actionExportToVerilog_triggered()
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    QString path;
+
+    if (m_currentFile.exists()) {
+        path = m_currentFile.absolutePath();
+    }
+
+    const QString fileName = QFileDialog::getSaveFileName(this, tr("Generate Verilog Code"), path, tr("Verilog file (*.v)"));
+
+    if (!fileName.isEmpty()) {
+        exportToVerilog(fileName);
     }
 }
 

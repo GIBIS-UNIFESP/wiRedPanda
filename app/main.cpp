@@ -126,6 +126,12 @@ int main(int argc, char *argv[])
             QCoreApplication::translate("main", "arduino file"));
         parser.addOption(arduinoFileOption);
 
+        QCommandLineOption verilogFileOption(
+            {"V", "verilog-file"},
+            QCoreApplication::translate("main", "Exports circuit to <verilog-file>."),
+            QCoreApplication::translate("main", "verilog file"));
+        parser.addOption(verilogFileOption);
+
         QCommandLineOption waveformFileOption(
             {"w", "waveform"},
             QCoreApplication::translate("main", "Exports circuit to waveform text file."),
@@ -166,6 +172,16 @@ int main(int argc, char *argv[])
                 MainWindow window;
                 window.loadPandaFile(args.at(0));
                 window.exportToArduino(arduFile);
+            }
+            exit(0);
+        }
+
+        if (const QString verilogFile = parser.value(verilogFileOption); !verilogFile.isEmpty()) {
+            if (!args.empty()) {
+                GlobalProperties::verbose = false;
+                MainWindow window;
+                window.loadPandaFile(args.at(0));
+                window.exportToVerilog(verilogFile);
             }
             exit(0);
         }

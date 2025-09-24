@@ -280,6 +280,7 @@ target_include_directories(wiredpanda_lib PUBLIC
     app/element
     app/logicelement
     app/nodes
+    app/verilog
     mcp/server/core
     mcp/server/handlers
     mcp/server/interfaces
@@ -395,6 +396,7 @@ set(TEST_EXECUTABLES
     testicons
     testlogicelements
     testsimulation
+    testverilog
     testwaveform
 )
 

@@ -58,6 +58,7 @@ public:
     QAction *actionSelectAll = nullptr;
     QAction *actionReloadFile = nullptr;
     QAction *actionExportToArduino = nullptr;
+    QAction *actionExportToVerilog = nullptr;
     QAction *actionResetZoom = nullptr;
     QAction *actionExportToPdf = nullptr;
     QAction *actionPlay = nullptr;

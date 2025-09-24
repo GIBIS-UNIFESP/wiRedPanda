@@ -2,6 +2,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/app/application.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/arduino/codegenerator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/bewaveddolphin.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/app/verilog/codegeneratorverilog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/bewaveddolphin_ui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/clockdialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/app/clockdialog_ui.cpp
@@ -103,6 +104,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/app/application.h
     ${CMAKE_CURRENT_LIST_DIR}/app/arduino/codegenerator.h
     ${CMAKE_CURRENT_LIST_DIR}/app/bewaveddolphin.h
+    ${CMAKE_CURRENT_LIST_DIR}/app/verilog/codegeneratorverilog.h
     ${CMAKE_CURRENT_LIST_DIR}/app/bewaveddolphin_ui.h
     ${CMAKE_CURRENT_LIST_DIR}/app/clockdialog.h
     ${CMAKE_CURRENT_LIST_DIR}/app/clockdialog_ui.h
