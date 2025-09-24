@@ -330,7 +330,10 @@ QString TestArduino::generateCodeToString(const QVector<GraphicElement*>& elemen
     QString fileName = m_tempFile->fileName();
     m_tempFile->close();
 
-    CodeGenerator generator(fileName, elements);
+    // Sort elements to match MainWindow::exportToArduino behavior
+    auto sortedElements = Common::sortGraphicElements(elements);
+
+    CodeGenerator generator(fileName, sortedElements);
     generator.generate();
 
     // Read the generated file content
