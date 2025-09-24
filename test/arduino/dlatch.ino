@@ -12,25 +12,25 @@
 const int push_button1_d = A0;
 
 /* ========= Outputs ========== */
-const int led8_q_0 = A1;
-const int led9_q_0 = A2;
+const int led1_q_0 = A1;
+const int led2_q_0 = A2;
 
 /* ====== Aux. Variables ====== */
 bool push_button1_d_val = false;
-bool aux_push_button_0 = false;
-bool aux_not_1 = false;
-bool aux_clock_2 = false;
-unsigned long aux_clock_2_lastTime = 0;
-const unsigned long aux_clock_2_interval = 1000;
+bool aux_nand_2 = false;
 bool aux_nand_3 = false;
-bool aux_nand_4 = false;
+bool aux_not_4 = false;
 bool aux_nand_5 = false;
 bool aux_nand_6 = false;
+bool aux_clock_7 = false;
+unsigned long aux_clock_7_lastTime = 0;
+const unsigned long aux_clock_7_interval = 1000;
+bool aux_push_button_8 = false;
 
 void setup() {
     pinMode(push_button1_d, INPUT);
-    pinMode(led8_q_0, OUTPUT);
-    pinMode(led9_q_0, OUTPUT);
+    pinMode(led1_q_0, OUTPUT);
+    pinMode(led2_q_0, OUTPUT);
 }
 
 void loop() {
@@ -39,20 +39,20 @@ void loop() {
 
     // Update clocks
     unsigned long now = millis();
-    if (now - aux_clock_2_lastTime >= aux_clock_2_interval) {
-        aux_clock_2_lastTime = now;
-        aux_clock_2 = !aux_clock_2;
+    if (now - aux_clock_7_lastTime >= aux_clock_7_interval) {
+        aux_clock_7_lastTime = now;
+        aux_clock_7 = !aux_clock_7;
     }
 
     // Update logic variables
-    aux_push_button_0 = push_button1_d_val;
-    aux_not_1 = !aux_push_button_0;
-    aux_nand_3 = !(aux_clock_2 && aux_not_1);
-    aux_nand_4 = !(aux_nand_6 && aux_nand_3);
-    aux_nand_5 = !(aux_push_button_0 && aux_clock_2);
-    aux_nand_6 = !(aux_nand_5 && aux_nand_4);
+    aux_nand_2 = !(aux_nand_3 && aux_nand_5);
+    aux_nand_3 = !(aux_nand_6 && aux_nand_2);
+    aux_not_4 = !aux_push_button_8;
+    aux_nand_5 = !(aux_clock_7 && aux_not_4);
+    aux_nand_6 = !(aux_push_button_8 && aux_clock_7);
+    aux_push_button_8 = push_button1_d_val;
 
     // Write output data
-    digitalWrite(led8_q_0, aux_nand_4);
-    digitalWrite(led9_q_0, aux_nand_6);
+    digitalWrite(led1_q_0, aux_nand_2);
+    digitalWrite(led2_q_0, aux_nand_3);
 }
