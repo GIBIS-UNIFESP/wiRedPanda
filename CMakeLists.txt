@@ -406,6 +406,15 @@ foreach(test_name ${TEST_EXECUTABLES})
     endif()
 endforeach()
 
+# Run windeployqt on Windows for one test executable to copy Qt dependencies
+if(WIN32 AND WINDEPLOYQT_EXECUTABLE)
+    add_custom_command(TARGET testarduino POST_BUILD
+        COMMAND ${WINDEPLOYQT_EXECUTABLE} --verbose 2 --no-translations --no-system-d3d-compiler --no-opengl-sw --no-compiler-runtime $<TARGET_FILE:testarduino>
+        COMMENT "Deploying Qt libraries for testarduino with windeployqt"
+        VERBATIM
+    )
+endif()
+
 # Add CTest support
 enable_testing()
 
