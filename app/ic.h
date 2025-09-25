@@ -14,6 +14,7 @@ class IC : public GraphicElement
     Q_OBJECT
 
     friend class CodeGenerator;
+    friend class CodeGeneratorVerilog;
     friend class TestArduino;
 
 public:

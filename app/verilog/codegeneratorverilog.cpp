@@ -429,7 +429,11 @@ void CodeGeneratorVerilog::processICsRecursively(const QVector<GraphicElement *>
 {
     m_icDepth = depth;
 
+    generateDebugInfo(QString("processICsRecursively called with %1 elements at depth %2").arg(elements.size()).arg(depth));
+
     for (auto *elm : elements) {
+        generateDebugInfo(QString("Processing element: %1 (type: %2)").arg(elm->objectName()).arg(static_cast<int>(elm->elementType())));
+
         if (elm->elementType() == ElementType::IC) {
             auto *ic = qgraphicsitem_cast<IC *>(elm);
             if (!ic) {
@@ -457,9 +461,30 @@ void CodeGeneratorVerilog::processICsRecursively(const QVector<GraphicElement *>
             mapICPortsToSignals(ic);
 
             // Process IC internal elements recursively
-            // Note: This would need access to IC internal elements
-            // For now, we'll handle this as a placeholder
-            generateDebugInfo(QString("Processing IC: %1 at depth %2").arg(ic->label()).arg(depth), ic);
+            generateDebugInfo(QString("Checking IC %1: m_icElements.size() = %2").arg(ic->label()).arg(ic->m_icElements.size()), ic);
+
+            if (!ic->m_icElements.isEmpty()) {
+                generateDebugInfo(QString("Processing IC: %1 with %2 internal elements at depth %3")
+                                .arg(ic->label()).arg(ic->m_icElements.size()).arg(depth), ic);
+
+                // List all internal elements for debugging
+                for (int i = 0; i < ic->m_icElements.size(); ++i) {
+                    auto *elm = ic->m_icElements[i];
+                    generateDebugInfo(QString("IC internal element %1: %2 (type %3)").arg(i).arg(elm->objectName()).arg(static_cast<int>(elm->elementType())), elm);
+                }
+
+                // Recursively declare variables for internal elements
+                generateDebugInfo(QString("About to declare signals for IC %1 internal elements").arg(ic->label()), ic);
+                declareUsedSignalsOnly(ic->m_icElements, true);
+
+                // Recursively assign variables for internal elements
+                generateDebugInfo(QString("About to assign variables for IC %1 internal elements").arg(ic->label()), ic);
+                assignVariablesRec(ic->m_icElements, true);
+
+                generateDebugInfo(QString("Completed processing IC %1 internal elements").arg(ic->label()), ic);
+            } else {
+                generateDebugInfo(QString("IC %1 has no internal elements").arg(ic->label()), ic);
+            }
 
             // Restore previous IC context
             m_icStack.removeLast();
@@ -495,6 +520,9 @@ QString CodeGeneratorVerilog::generateICBoundaryComment(IC *ic, bool isStart)
 
 void CodeGeneratorVerilog::mapICPortsToSignals(IC *ic)
 {
+    generateDebugInfo(QString("mapICPortsToSignals starting for IC %1 with %2 inputs, %3 outputs")
+                     .arg(ic->label()).arg(ic->inputSize()).arg(ic->outputSize()), ic);
+
     // Map input ports
     for (int i = 0; i < ic->inputSize(); ++i) {
         QNEPort *externalPort = ic->inputPort(i);
@@ -528,6 +556,8 @@ void CodeGeneratorVerilog::mapICPortsToSignals(IC *ic)
         // Map external port to this internal signal
         m_varMap[externalPort] = internalSignal;
     }
+
+    generateDebugInfo(QString("mapICPortsToSignals completed for IC %1").arg(ic->label()), ic);
 }
 
 bool CodeGeneratorVerilog::validateICConnectivity(IC *ic)
@@ -869,11 +899,21 @@ void CodeGeneratorVerilog::declareUsedSignalsOnly(const QVector<GraphicElement *
     // OPTIMIZATION: Only declare signals that will actually be used
     // This prevents unused signal warnings in strict Verilog validation
 
+    // First, process ICs (same as old declareAuxVariablesRec)
+    processICsRecursively(elements, isIC ? m_icDepth + 1 : 0);
+
     QSet<QString> usedSignals;
     QHash<QNEPort*, QString> tempVarMap = m_varMap; // Copy current variable map
 
     // First pass: Identify which signals will actually be assigned
-    QVector<GraphicElement *> sortedElements = topologicalSort(elements);
+    QVector<GraphicElement *> sortedElements;
+    if (isIC) {
+        // Don't sort IC internal elements - process in original order to avoid circular dependency issues
+        sortedElements = elements;
+    } else {
+        // Sort top-level elements topologically for proper dependency order
+        sortedElements = topologicalSort(elements);
+    }
 
     for (auto *elm : sortedElements) {
         if (elm->elementType() == ElementType::IC) {
@@ -1037,9 +1077,17 @@ void CodeGeneratorVerilog::generateLogicAssignments()
 
 void CodeGeneratorVerilog::assignVariablesRec(const QVector<GraphicElement *> &elements, bool isIC)
 {
-    Q_UNUSED(isIC)
-    // Sort elements topologically for proper dependency order
-    QVector<GraphicElement *> sortedElements = topologicalSort(elements);
+    // For IC internal elements, skip topological sorting since sequential circuits have feedback loops
+    QVector<GraphicElement *> sortedElements;
+    if (isIC) {
+        // Don't sort IC internal elements - process in original order to avoid circular dependency issues
+        sortedElements = elements;
+        generateDebugInfo(QString("Processing %1 IC internal elements without topological sorting").arg(elements.size()));
+    } else {
+        // Sort top-level elements topologically for proper dependency order
+        sortedElements = topologicalSort(elements);
+        generateDebugInfo(QString("Processing %1 top-level elements with topological sorting").arg(sortedElements.size()));
+    }
 
     for (auto *elm : sortedElements) {
         if (elm->elementType() == ElementType::IC) {
