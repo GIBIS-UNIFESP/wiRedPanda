@@ -2168,17 +2168,17 @@ Deve guardar novos projectos antes de aceder a ICs e skins, ou executar simulaç
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../scene.cpp" line="34"/>
+        <location filename="../../scene.cpp" line="35"/>
         <source>&amp;Undo</source>
         <translation>&amp;Desfazer</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="38"/>
+        <location filename="../../scene.cpp" line="39"/>
         <source>&amp;Redo</source>
         <translation>&amp;Refazer</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="778"/>
+        <location filename="../../scene.cpp" line="779"/>
         <source>Paste</source>
         <translation>Colar</translation>
     </message>

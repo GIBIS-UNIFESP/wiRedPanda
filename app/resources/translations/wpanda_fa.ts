@@ -2168,17 +2168,17 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../scene.cpp" line="34"/>
+        <location filename="../../scene.cpp" line="35"/>
         <source>&amp;Undo</source>
         <translation>&amp;برگردان</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="38"/>
+        <location filename="../../scene.cpp" line="39"/>
         <source>&amp;Redo</source>
         <translation>&amp;انجام مجدد</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="778"/>
+        <location filename="../../scene.cpp" line="779"/>
         <source>Paste</source>
         <translation>چسباندن</translation>
     </message>

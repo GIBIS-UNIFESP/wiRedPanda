@@ -2168,17 +2168,17 @@ Jums ir jāsaglabā jaunie projekti pirms IK un apvalku piekļ uves vai beWavedD
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../scene.cpp" line="34"/>
+        <location filename="../../scene.cpp" line="35"/>
         <source>&amp;Undo</source>
         <translation>&amp;Atcelt</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="38"/>
+        <location filename="../../scene.cpp" line="39"/>
         <source>&amp;Redo</source>
         <translation>&amp;Atcelt atcelšanu</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="778"/>
+        <location filename="../../scene.cpp" line="779"/>
         <source>Paste</source>
         <translation>Ielīmēt</translation>
     </message>

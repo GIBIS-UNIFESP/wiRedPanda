@@ -2168,17 +2168,17 @@ Anda perlu menyimpan projek baru sebelum mengakses IC dan kulit, atau menjalanka
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../scene.cpp" line="34"/>
+        <location filename="../../scene.cpp" line="35"/>
         <source>&amp;Undo</source>
         <translation>&amp;Buat asal</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="38"/>
+        <location filename="../../scene.cpp" line="39"/>
         <source>&amp;Redo</source>
         <translation>&amp;Buat semula</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="778"/>
+        <location filename="../../scene.cpp" line="779"/>
         <source>Paste</source>
         <translation>Tampal</translation>
     </message>

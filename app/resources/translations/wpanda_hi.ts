@@ -2168,17 +2168,17 @@ ICs और स्किन तक पहुँचने या beWavedDolphin �
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../scene.cpp" line="34"/>
+        <location filename="../../scene.cpp" line="35"/>
         <source>&amp;Undo</source>
         <translation>&amp;अनडू</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="38"/>
+        <location filename="../../scene.cpp" line="39"/>
         <source>&amp;Redo</source>
         <translation>&amp;रीडू</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="778"/>
+        <location filename="../../scene.cpp" line="779"/>
         <source>Paste</source>
         <translation>पेस्ट करें</translation>
     </message>
