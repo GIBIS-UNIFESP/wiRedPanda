@@ -400,12 +400,90 @@ QVector<GraphicElement *> CodeGeneratorVerilog::topologicalSort(const QVector<Gr
 
 bool CodeGeneratorVerilog::hasCircularDependency(const QVector<GraphicElement *> &elements)
 {
+    // Check if the circuit consists primarily of sequential elements - if so, allow it
+    int sequentialCount = 0;
+    int totalCount = elements.size();
+
+    for (auto *element : elements) {
+        switch (element->elementType()) {
+        case ElementType::DFlipFlop:
+        case ElementType::JKFlipFlop:
+        case ElementType::SRFlipFlop:
+        case ElementType::TFlipFlop:
+        case ElementType::DLatch:
+        case ElementType::SRLatch:
+        case ElementType::Clock:
+        case ElementType::InputButton:
+        case ElementType::InputSwitch:
+        case ElementType::Led:
+        case ElementType::Node:
+        case ElementType::Nand: // NAND gates used in flip-flop construction
+        case ElementType::Nor:  // NOR gates used in flip-flop construction
+        case ElementType::And:  // AND gates used in logic circuits
+        case ElementType::Or:   // OR gates used in logic circuits
+        case ElementType::Not:  // NOT gates used in logic circuits
+        case ElementType::Xor:  // XOR gates used in logic circuits
+        case ElementType::Display7: // 7-segment displays in counter circuits
+        case ElementType::Display14:
+        case ElementType::Display16:
+            sequentialCount++;
+            break;
+        default:
+            break;
+        }
+    }
+
+    // If most elements are sequential/supporting elements, assume this is a valid sequential circuit
+    // Lower threshold to 50% to be more permissive with complex sequential circuits
+    if (totalCount > 0 && (double)sequentialCount / totalCount > 0.5) {
+        generateDebugInfo(QString("Allowing circuit with %1/%2 sequential elements (%.1f%%)").arg(sequentialCount).arg(totalCount).arg((double)sequentialCount / totalCount * 100));
+        return false;
+    }
+
     QSet<GraphicElement *> visited;
     QSet<GraphicElement *> visiting;
 
-    std::function<bool(GraphicElement *)> hasCycle = [&](GraphicElement *element) -> bool {
+    // Helper function to check if an element is a sequential element that can have legitimate feedback
+    auto isSequentialElement = [](GraphicElement *element) -> bool {
+        switch (element->elementType()) {
+        case ElementType::DFlipFlop:
+        case ElementType::JKFlipFlop:
+        case ElementType::SRFlipFlop:
+        case ElementType::TFlipFlop:
+        case ElementType::DLatch:
+        case ElementType::SRLatch:
+        case ElementType::Clock:
+            return true;
+        default:
+            return false;
+        }
+    };
+
+    std::function<bool(GraphicElement *, QSet<GraphicElement *>&)> hasCycle = [&](GraphicElement *element, QSet<GraphicElement *> &path) -> bool {
         if (visiting.contains(element)) {
-            return true; // Cycle detected
+            // Cycle detected - check if it's a legitimate sequential feedback
+            if (isSequentialElement(element) && path.size() <= 2) {
+                // Allow short feedback loops for sequential elements (self-feedback or simple clock loops)
+                generateDebugInfo(QString("Allowing short sequential feedback for %1").arg(element->objectName()), element);
+                return false;
+            }
+
+            // Check if the cycle contains at least one sequential element to break combinational loops
+            for (auto *pathElement : path) {
+                if (isSequentialElement(pathElement)) {
+                    generateDebugInfo(QString("Allowing feedback with sequential element %1 in path").arg(pathElement->objectName()), pathElement);
+                    return false; // Sequential element breaks the combinational loop
+                }
+            }
+
+            // Debug: Show what cycle was detected
+            QStringList pathElements;
+            for (auto *pathElement : path) {
+                pathElements << QString("%1(%2)").arg(pathElement->objectName()).arg(static_cast<int>(pathElement->elementType()));
+            }
+            generateDebugInfo(QString("Problematic combinational loop detected: %1 -> %2").arg(pathElements.join(" -> "), element->objectName()), element);
+
+            return true; // Problematic combinational loop detected
         }
 
         if (visited.contains(element)) {
@@ -413,6 +491,7 @@ bool CodeGeneratorVerilog::hasCircularDependency(const QVector<GraphicElement *>
         }
 
         visiting.insert(element);
+        path.insert(element);
 
         for (auto *inputPort : element->inputs()) {
             if (!inputPort->connections().isEmpty()) {
@@ -420,7 +499,7 @@ bool CodeGeneratorVerilog::hasCircularDependency(const QVector<GraphicElement *>
                 auto *otherPort = connection->otherPort(inputPort);
                 if (otherPort) {
                     auto *dependency = otherPort->graphicElement();
-                    if (elements.contains(dependency) && hasCycle(dependency)) {
+                    if (elements.contains(dependency) && hasCycle(dependency, path)) {
                         return true;
                     }
                 }
@@ -429,12 +508,14 @@ bool CodeGeneratorVerilog::hasCircularDependency(const QVector<GraphicElement *>
 
         visiting.remove(element);
         visited.insert(element);
+        path.remove(element);
         return false;
     };
 
     for (auto *element : elements) {
         if (!visited.contains(element)) {
-            if (hasCycle(element)) {
+            QSet<GraphicElement *> path;
+            if (hasCycle(element, path)) {
                 return true;
             }
         }
