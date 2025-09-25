@@ -1195,7 +1195,7 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
         code += QString("                2'b00: begin /* hold */ end\n");
         code += QString("                2'b01: begin %1 <= 1'b0; %2 <= 1'b1; end\n").arg(firstOut, secondOut);
         code += QString("                2'b10: begin %1 <= 1'b1; %2 <= 1'b0; end\n").arg(firstOut, secondOut);
-        code += QString("                2'b11: begin %1 <= %2; %2 <= %1; end // toggle\n").arg(firstOut, secondOut, secondOut, firstOut);
+        code += QString("                2'b11: begin %1 <= %2; %3 <= %4; end // toggle\n").arg(firstOut, secondOut, secondOut, firstOut);
         code += QString("            endcase\n");
         code += QString("        end\n");
         code += QString("    end\n");

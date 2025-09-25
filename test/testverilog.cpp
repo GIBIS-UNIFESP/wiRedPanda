@@ -9937,8 +9937,8 @@ void TestVerilog::testPerformanceScaling()
 
         // Time growth should not be worse than quadratic relative to size growth
         QVERIFY2(timeRatio <= sizeRatio * sizeRatio * 1.5,
-                 qPrintable(QString("Performance scaling: size ratio %.2f, time ratio %.2f (should be better than quadratic)")
-                           .arg(sizeRatio).arg(timeRatio)));
+                 qPrintable(QString("Performance scaling: size ratio %1, time ratio %2 (should be better than quadratic)")
+                           .arg(sizeRatio, 0, 'f', 2).arg(timeRatio, 0, 'f', 2)));
     }
 
     // Test Case 2: Complexity Pattern Performance
@@ -10123,7 +10123,7 @@ void TestVerilog::testPerformanceScaling()
 
     double codeEfficiency = (double)significantLines / totalLines;
     QVERIFY2(codeEfficiency >= 0.3,
-             qPrintable(QString("Code efficiency should be at least 30%% (got %.1f%%)").arg(codeEfficiency * 100)));
+             qPrintable(QString("Code efficiency should be at least 30%% (got %1%%)").arg(codeEfficiency * 100, 0, 'f', 1)));
 
     // Test Case 4: Performance Benchmarking with Realistic Workloads
     QVector<QString> workloadNames = {"8-bit ALU", "4-bit Counter", "3-8 Decoder", "16:1 Multiplexer"};
@@ -10198,11 +10198,11 @@ void TestVerilog::testPerformanceScaling()
     qInfo() << "  Complexity Pattern Performance:";
     for (const auto &test : complexityTests) {
         double elementsPerMs = (double)test.baseSize / qMax(test.generationTime, qint64(1));
-        qInfo() << QString("    %1 (%2 elements): %3ms (%.2f elem/ms)")
-                   .arg(test.name).arg(test.baseSize).arg(test.generationTime).arg(elementsPerMs);
+        qInfo() << QString("    %1 (%2 elements): %3ms (%4 elem/ms)")
+                   .arg(test.name).arg(test.baseSize).arg(test.generationTime).arg(elementsPerMs, 0, 'f', 2);
     }
 
-    qInfo() << QString("  Code Efficiency: %.1f%% significant lines").arg(codeEfficiency * 100);
+    qInfo() << QString("  Code Efficiency: %1%% significant lines").arg(codeEfficiency * 100, 0, 'f', 1);
     qInfo() << QString("  Total Test Time: %1ms").arg(totalTestTime);
 
     // Validate performance characteristics
@@ -10217,7 +10217,7 @@ void TestVerilog::testPerformanceScaling()
             worstGrowthRatio = qMax(worstGrowthRatio, growthRatio);
         }
         QVERIFY2(worstGrowthRatio < 10.0,
-                 qPrintable(QString("Performance growth ratio should be reasonable (got %.2fx)").arg(worstGrowthRatio)));
+                 qPrintable(QString("Performance growth ratio should be reasonable (got %1x)").arg(worstGrowthRatio, 0, 'f', 2)));
     }
 
     qInfo() << "✓ Performance scaling test passed";
@@ -15239,7 +15239,7 @@ void TestVerilog::testCodeOptimization()
 
     double codeEfficiency = elementCount > 0 ? static_cast<double>(codeLines) / elementCount : 0.0;
 
-    qInfo() << QString("◊ Code generation efficiency: %.2f lines per element").arg(codeEfficiency);
+    qInfo() << QString("◊ Code generation efficiency: %1 lines per element").arg(codeEfficiency, 0, 'f', 2);
 
     bool hasOverallOptimization = hasConstantOptimization || hasDeadCodeHandling ||
                                  hasLogicSimplification || hasResourceSharing ||
@@ -15308,8 +15308,8 @@ void TestVerilog::testMemoryUsageEfficiency()
         scalingData.append(qMakePair(scalingElements.size(), codeSize));
 
         double efficiency = static_cast<double>(codeSize) / scalingElements.size();
-        qInfo() << QString("◊ Scale test %1 elements: %2 chars (%.1f chars/element)")
-                      .arg(scalingElements.size()).arg(codeSize).arg(efficiency);
+        qInfo() << QString("◊ Scale test %1 elements: %2 chars (%3 chars/element)")
+                      .arg(scalingElements.size()).arg(codeSize).arg(efficiency, 0, 'f', 1);
     }
 
     // Test 3: Memory efficiency analysis
@@ -15331,9 +15331,9 @@ void TestVerilog::testMemoryUsageEfficiency()
     }
 
     if (hasLinearScaling) {
-        qInfo() << QString("◊ Linear scaling efficiency maintained (max variation: %.1f%%)").arg(maxEfficiencyVariation * 100);
+        qInfo() << QString("◊ Linear scaling efficiency maintained (max variation: %1%%)").arg(maxEfficiencyVariation * 100, 0, 'f', 1);
     } else {
-        qInfo() << QString("◊ Non-linear scaling detected (max variation: %.1f%%)").arg(maxEfficiencyVariation * 100);
+        qInfo() << QString("◊ Non-linear scaling detected (max variation: %1%%)").arg(maxEfficiencyVariation * 100, 0, 'f', 1);
     }
 
     // Test 4: Code redundancy analysis
@@ -15378,8 +15378,8 @@ void TestVerilog::testMemoryUsageEfficiency()
     }
 
     double redundancyRatio = codeLines.size() > 0 ? static_cast<double>(duplicatedLines) / codeLines.size() : 0.0;
-    qInfo() << QString("◊ Code redundancy: %.1f%% (%1 duplicate lines out of %2 total)")
-                  .arg(redundancyRatio * 100).arg(duplicatedLines).arg(codeLines.size());
+    qInfo() << QString("◊ Code redundancy: %1%% (%2 duplicate lines out of %3 total)")
+                  .arg(redundancyRatio * 100, 0, 'f', 1).arg(duplicatedLines).arg(codeLines.size());
 
     // Test 5: String optimization and interning
     bool hasStringOptimization = redundancyRatio < 0.3; // Less than 30% redundancy indicates good optimization
@@ -15402,8 +15402,8 @@ void TestVerilog::testMemoryUsageEfficiency()
     }
 
     double avgNameLength = varNames.size() > 0 ? static_cast<double>(totalNameLength) / varNames.size() : 0.0;
-    qInfo() << QString("◊ Variable name efficiency: avg %.1f chars (range %1-%2)")
-                  .arg(avgNameLength).arg(minNameLength == INT_MAX ? 0 : minNameLength).arg(maxNameLength);
+    qInfo() << QString("◊ Variable name efficiency: avg %1 chars (range %2-%3)")
+                  .arg(avgNameLength, 0, 'f', 1).arg(minNameLength == INT_MAX ? 0 : minNameLength).arg(maxNameLength);
 
     bool hasEfficientNaming = avgNameLength > 3 && avgNameLength < 20; // Reasonable range
 
@@ -15462,8 +15462,8 @@ void TestVerilog::testMemoryUsageEfficiency()
     double largeEfficiency = static_cast<double>(largeCode.length()) / largeCircuit.size();
     bool hasLargeCircuitEfficiency = !largeCode.isEmpty() && largeEfficiency < 100.0; // Reasonable threshold
 
-    qInfo() << QString("◊ Large circuit (%1 elements): %2 chars (%.1f chars/element)")
-                  .arg(largeCircuit.size()).arg(largeCode.length()).arg(largeEfficiency);
+    qInfo() << QString("◊ Large circuit (%1 elements): %2 chars (%3 chars/element)")
+                  .arg(largeCircuit.size()).arg(largeCode.length()).arg(largeEfficiency, 0, 'f', 1);
 
     if (hasLargeCircuitEfficiency) {
         qInfo() << "◊ Large circuit memory efficiency maintained";
@@ -15571,8 +15571,8 @@ void TestVerilog::testGenerationSpeed()
     QVERIFY2(!smallCode.isEmpty(), "Small circuit generation must succeed");
 
     double smallEfficiency = smallCircuit.size() > 0 ? static_cast<double>(smallTime) / smallCircuit.size() : 0.0;
-    qInfo() << QString("◊ Small circuit: %1 ms for %2 elements (%.2f ms/element)")
-                  .arg(smallTime).arg(smallCircuit.size()).arg(smallEfficiency);
+    qInfo() << QString("◊ Small circuit: %1 ms for %2 elements (%3 ms/element)")
+                  .arg(smallTime).arg(smallCircuit.size()).arg(smallEfficiency, 0, 'f', 2);
 
     // Test 3: Medium circuit generation speed
     timer.restart();
@@ -15600,8 +15600,8 @@ void TestVerilog::testGenerationSpeed()
     QVERIFY2(!mediumCode.isEmpty(), "Medium circuit generation must succeed");
 
     double mediumEfficiency = mediumCircuit.size() > 0 ? static_cast<double>(mediumTime) / mediumCircuit.size() : 0.0;
-    qInfo() << QString("◊ Medium circuit: %1 ms for %2 elements (%.2f ms/element)")
-                  .arg(mediumTime).arg(mediumCircuit.size()).arg(mediumEfficiency);
+    qInfo() << QString("◊ Medium circuit: %1 ms for %2 elements (%3 ms/element)")
+                  .arg(mediumTime).arg(mediumCircuit.size()).arg(mediumEfficiency, 0, 'f', 2);
 
     // Test 4: Large circuit generation speed
     timer.restart();
@@ -15627,8 +15627,8 @@ void TestVerilog::testGenerationSpeed()
     QVERIFY2(!largeCode.isEmpty(), "Large circuit generation must succeed");
 
     double largeEfficiency = largeCircuit.size() > 0 ? static_cast<double>(largeTime) / largeCircuit.size() : 0.0;
-    qInfo() << QString("◊ Large circuit: %1 ms for %2 elements (%.2f ms/element)")
-                  .arg(largeTime).arg(largeCircuit.size()).arg(largeEfficiency);
+    qInfo() << QString("◊ Large circuit: %1 ms for %2 elements (%3 ms/element)")
+                  .arg(largeTime).arg(largeCircuit.size()).arg(largeEfficiency, 0, 'f', 2);
 
     // Test 5: Scaling analysis
     QList<QPair<int, double>> scalingData;
@@ -15702,8 +15702,8 @@ void TestVerilog::testGenerationSpeed()
     QVERIFY2(!complexCode.isEmpty(), "Complex connectivity generation must succeed");
 
     double complexEfficiency = complexCircuit.size() > 0 ? static_cast<double>(complexTime) / complexCircuit.size() : 0.0;
-    qInfo() << QString("◊ Complex circuit: %1 ms for %2 elements (%.2f ms/element)")
-                  .arg(complexTime).arg(complexCircuit.size()).arg(complexEfficiency);
+    qInfo() << QString("◊ Complex circuit: %1 ms for %2 elements (%3 ms/element)")
+                  .arg(complexTime).arg(complexCircuit.size()).arg(complexEfficiency, 0, 'f', 2);
 
     // Test 7: Sequential logic performance
     timer.restart();
@@ -15734,8 +15734,8 @@ void TestVerilog::testGenerationSpeed()
     QVERIFY2(!sequentialCode.isEmpty(), "Sequential circuit generation must succeed");
 
     double seqEfficiency = sequentialCircuit.size() > 0 ? static_cast<double>(sequentialTime) / sequentialCircuit.size() : 0.0;
-    qInfo() << QString("◊ Sequential circuit: %1 ms for %2 elements (%.2f ms/element)")
-                  .arg(sequentialTime).arg(sequentialCircuit.size()).arg(seqEfficiency);
+    qInfo() << QString("◊ Sequential circuit: %1 ms for %2 elements (%3 ms/element)")
+                  .arg(sequentialTime).arg(sequentialCircuit.size()).arg(seqEfficiency, 0, 'f', 2);
 
     // Test 8: Repeated generation performance (caching/optimization)
     timer.restart();
@@ -15899,8 +15899,8 @@ void TestVerilog::testFileSizeOptimization()
         sizingData.append(qMakePair(sizingElements.size(), codeSize));
 
         double efficiency = sizingElements.size() > 0 ? static_cast<double>(codeSize) / sizingElements.size() : 0.0;
-        qInfo() << QString("◊ %1 elements: %2 bytes (%.1f bytes/element)")
-                      .arg(sizingElements.size()).arg(codeSize).arg(efficiency);
+        qInfo() << QString("◊ %1 elements: %2 bytes (%3 bytes/element)")
+                      .arg(sizingElements.size()).arg(codeSize).arg(efficiency, 0, 'f', 1);
     }
 
     // Test 3: Size efficiency analysis
@@ -15922,9 +15922,9 @@ void TestVerilog::testFileSizeOptimization()
     }
 
     if (hasEfficientSizing) {
-        qInfo() << QString("◊ Efficient size scaling (max growth: %.1fx)").arg(maxSizeGrowth);
+        qInfo() << QString("◊ Efficient size scaling (max growth: %1x)").arg(maxSizeGrowth, 0, 'f', 1);
     } else {
-        qInfo() << QString("◊ Size scaling issues detected (max growth: %.1fx)").arg(maxSizeGrowth);
+        qInfo() << QString("◊ Size scaling issues detected (max growth: %1x)").arg(maxSizeGrowth, 0, 'f', 1);
     }
 
     // Test 4: Whitespace and formatting optimization
@@ -15943,8 +15943,8 @@ void TestVerilog::testFileSizeOptimization()
     }
 
     double whitespaceRatio = totalChars > 0 ? static_cast<double>(whitespaceChars) / totalChars : 0.0;
-    qInfo() << QString("◊ Whitespace usage: %.1f%% (%1 whitespace, %2 newlines, %3 total)")
-                  .arg(whitespaceRatio * 100).arg(whitespaceChars).arg(newlineChars).arg(totalChars);
+    qInfo() << QString("◊ Whitespace usage: %1%% (%2 whitespace, %3 newlines, %4 total)")
+                  .arg(whitespaceRatio * 100, 0, 'f', 1).arg(whitespaceChars).arg(newlineChars).arg(totalChars);
 
     // Reasonable whitespace usage (not too compressed, not too verbose)
     bool hasReasonableFormatting = whitespaceRatio > 0.1 && whitespaceRatio < 0.4;
@@ -15967,8 +15967,8 @@ void TestVerilog::testFileSizeOptimization()
     }
 
     double avgIdLength = identifiers.size() > 0 ? static_cast<double>(totalIdLength) / identifiers.size() : 0.0;
-    qInfo() << QString("◊ Identifier lengths: avg %.1f chars (range %1-%2)")
-                  .arg(avgIdLength).arg(minIdLength == INT_MAX ? 0 : minIdLength).arg(maxIdLength);
+    qInfo() << QString("◊ Identifier lengths: avg %1 chars (range %2-%3)")
+                  .arg(avgIdLength, 0, 'f', 1).arg(minIdLength == INT_MAX ? 0 : minIdLength).arg(maxIdLength);
 
     // Optimal identifier length (descriptive but not excessive)
     bool hasOptimalIdentifiers = avgIdLength > 4 && avgIdLength < 16 &&
@@ -15998,8 +15998,8 @@ void TestVerilog::testFileSizeOptimization()
                          static_cast<double>(commentLines) / (commentLines + codeOnlyLines) : 0.0;
     double commentCharRatio = totalChars > 0 ? static_cast<double>(commentChars) / totalChars : 0.0;
 
-    qInfo() << QString("◊ Comments: %.1f%% of lines, %.1f%% of characters")
-                  .arg(commentRatio * 100).arg(commentCharRatio * 100);
+    qInfo() << QString("◊ Comments: %1%% of lines, %2%% of characters")
+                  .arg(commentRatio * 100, 0, 'f', 1).arg(commentCharRatio * 100, 0, 'f', 1);
 
     // Balanced comment usage
     bool hasBalancedComments = commentRatio > 0.05 && commentRatio < 0.3 &&
@@ -16027,7 +16027,7 @@ void TestVerilog::testFileSizeOptimization()
     }
 
     double redundancyRatio = totalChars > 0 ? static_cast<double>(duplicatedBytes) / totalChars : 0.0;
-    qInfo() << QString("◊ Code redundancy: %.1f%% (%1 duplicate bytes)").arg(redundancyRatio * 100).arg(duplicatedBytes);
+    qInfo() << QString("◊ Code redundancy: %1%% (%2 duplicate bytes)").arg(redundancyRatio * 100, 0, 'f', 1).arg(duplicatedBytes);
 
     bool hasLowRedundancy = redundancyRatio < 0.15; // Less than 15% redundancy
 
@@ -16043,8 +16043,8 @@ void TestVerilog::testFileSizeOptimization()
     int compressedSize = compressedCode.size();
     double compressionRatio = originalSize > 0 ? static_cast<double>(compressedSize) / originalSize : 1.0;
 
-    qInfo() << QString("◊ Compression test: %1 bytes -> %2 bytes (%.1f%% of original)")
-                  .arg(originalSize).arg(compressedSize).arg(compressionRatio * 100);
+    qInfo() << QString("◊ Compression test: %1 bytes -> %2 bytes (%3%% of original)")
+                  .arg(originalSize).arg(compressedSize).arg(compressionRatio * 100, 0, 'f', 1);
 
     // Good compression ratio indicates repeating patterns that could be optimized
     bool hasGoodCompressionRatio = compressionRatio > 0.3 && compressionRatio < 0.8;
@@ -16088,9 +16088,9 @@ void TestVerilog::testFileSizeOptimization()
     double sizeSavings = expectedCombinedSize > 0 ?
                         static_cast<double>(expectedCombinedSize - combinedSize) / expectedCombinedSize : 0.0;
 
-    qInfo() << QString("◊ Similar circuits: %1+%2=%3 bytes (expected %4, savings %.1f%%)")
+    qInfo() << QString("◊ Similar circuits: %1+%2=%3 bytes (expected %4, savings %5%%)")
                   .arg(individual1Size).arg(individual2Size).arg(combinedSize)
-                  .arg(expectedCombinedSize).arg(sizeSavings * 100);
+                  .arg(expectedCombinedSize).arg(sizeSavings * 100, 0, 'f', 1);
 
     // Test 10: Large circuit size optimization
     QVector<GraphicElement *> largeOptCircuit;
@@ -16114,8 +16114,8 @@ void TestVerilog::testFileSizeOptimization()
     double largeOptEfficiency = largeOptCircuit.size() > 0 ?
                                static_cast<double>(largeOptSize) / largeOptCircuit.size() : 0.0;
 
-    qInfo() << QString("◊ Large circuit optimization: %1 bytes for %2 elements (%.1f bytes/element)")
-                  .arg(largeOptSize).arg(largeOptCircuit.size()).arg(largeOptEfficiency);
+    qInfo() << QString("◊ Large circuit optimization: %1 bytes for %2 elements (%3 bytes/element)")
+                  .arg(largeOptSize).arg(largeOptCircuit.size()).arg(largeOptEfficiency, 0, 'f', 1);
 
     bool hasLargeCircuitOptimization = largeOptEfficiency < 150.0; // Reasonable threshold
 
@@ -16863,9 +16863,9 @@ void TestVerilog::testConcurrentGeneration()
                                   std::all_of(scalabilityResults.begin(), scalabilityResults.end(),
                                              [](const QString &code) { return !code.isEmpty(); });
 
-    qInfo() << QString("◊ Scalability test: %1 circuits in %2 ms (%.1f ms/circuit)")
+    qInfo() << QString("◊ Scalability test: %1 circuits in %2 ms (%3 ms/circuit)")
                   .arg(SCALABILITY_TEST_COUNT).arg(scalabilityTime)
-                  .arg(static_cast<double>(scalabilityTime) / SCALABILITY_TEST_COUNT);
+                  .arg(static_cast<double>(scalabilityTime) / SCALABILITY_TEST_COUNT, 0, 'f', 1);
 
     if (hasScalabilityUnderLoad) {
         qInfo() << "◊ Generator maintains scalability under concurrent-like load";
