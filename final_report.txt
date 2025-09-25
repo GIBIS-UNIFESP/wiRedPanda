@@ -1,0 +1,72 @@
+=== FINAL EDA TOOL VALIDATION REPORT ===
+Generated: Thu Sep 25 23:13:40 UTC 2025
+
+=== ICARUS VERILOG (Strict Mode) ===
+✅ counter.v
+✅ decoder.v
+✅ display-3bits.v
+✅ display-4bits.v
+✅ ic-FIXED.v
+✅ ic.v
+✅ input.v
+✅ notes.v
+✅ register.v
+✅ serialize.v
+
+=== VERILATOR (Lint Mode) ===
+✅ counter.v
+✅ decoder.v
+❌ display-3bits.v: %Warning-DECLFILENAME: test/verilog/display-3bits.v:14:8: Filename 'display-3bits' does not match MODULE name: 'display_3bits'
+   14 | module display_3bits (
+❌ display-4bits.v: %Warning-DECLFILENAME: test/verilog/display-4bits.v:14:8: Filename 'display-4bits' does not match MODULE name: 'display_4bits'
+   14 | module display_4bits (
+❌ ic-FIXED.v: %Warning-DECLFILENAME: test/verilog/ic-FIXED.v:14:8: Filename 'ic-FIXED' does not match MODULE name: 'ic_fixed'
+   14 | module ic_fixed (
+❌ ic.v: %Warning-UNDRIVEN: test/verilog/ic.v:65:6: Signal is not driven: 'ic_jkflipflop_jkflipflop_ic_out_0_40'
+                                         : ... In instance ic
+❌ input.v: %Warning-DECLFILENAME: test/verilog/input.v:14:8: Filename 'input' does not match MODULE name: 'wiredpanda_module'
+   14 | module wiredpanda_module (
+❌ notes.v: %Warning-UNDRIVEN: test/verilog/notes.v:40:6: Signal is not driven: 'ic_jkflipflop_jkflipflop_ic_out_0_15'
+                                            : ... In instance notes
+✅ register.v
+✅ serialize.v
+
+=== YOSYS (Synthesis Check) ===
+✅ counter.v
+✅ decoder.v
+✅ display-3bits.v
+✅ display-4bits.v
+✅ ic-FIXED.v
+✅ ic.v
+✅ input.v
+✅ notes.v
+✅ register.v
+✅ serialize.v
+
+=== PROBLEM FILES ANALYSIS ===
+
+🔍 ANALYZING dflipflop-masterslave-FIXED.v:
+  File size: 30 lines
+  Icarus errors:
+    test/verilog/dflipflop-masterslave-FIXED.v:31: syntax error
+    I give up.
+
+🔍 ANALYZING display-3bits-counter-FIXED.v:
+  File size: 99 lines
+  Icarus errors:
+    test/verilog/display-3bits-counter-FIXED.v:51: syntax error
+    test/verilog/display-3bits-counter-FIXED.v:51: error: malformed statement
+    test/verilog/display-3bits-counter-FIXED.v:52: syntax error
+
+🔍 ANALYZING sequential.v:
+  File size: 247 lines
+  Icarus errors:
+    test/verilog/sequential.v:46: syntax error
+    test/verilog/sequential.v:46: Syntax in assignment statement l-value.
+    test/verilog/sequential.v:47: syntax error
+
+🔍 ANALYZING dflipflop-masterslave.v:
+  File size: 46 lines
+  Icarus errors:
+    test/verilog/dflipflop-masterslave.v:47: syntax error
+    I give up.
