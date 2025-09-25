@@ -508,6 +508,31 @@
           "additionalProperties": false
         },
 
+        "export_verilog": {
+          "type": "object",
+          "description": "Export circuit as Verilog HDL code (.v file)",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "export_verilog"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "filename": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\.v$",
+                  "description": "Output filename with .v extension"
+                }
+              },
+              "required": ["filename"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
         "create_ic": {
           "type": "object",
           "description": "Create an Integrated Circuit (IC) from current circuit",
@@ -832,6 +857,25 @@
           ]
         },
 
+        "export_verilog_response": {
+          "allOf": [
+            {"$ref": "#/definitions/CommandResponse"},
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "exported_file": {"type": "string"},
+                    "format": {"type": "string"}
+                  },
+                  "required": ["exported_file", "format"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+
         "create_ic_response": {
           "allOf": [
             {"$ref": "#/definitions/CommandResponse"},
@@ -1011,6 +1055,15 @@
         "padding": 20
       },
       "id": 5
+    },
+
+    "export_circuit_verilog": {
+      "jsonrpc": "2.0",
+      "method": "export_verilog",
+      "params": {
+        "filename": "my_circuit.v"
+      },
+      "id": 6
     }
   }
 }
