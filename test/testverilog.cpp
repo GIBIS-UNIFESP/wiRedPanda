@@ -883,7 +883,7 @@ QString TestVerilog::generateTestVerilog(const QVector<GraphicElement *> &elemen
 
 bool TestVerilog::validateVerilogSyntax(const QString &code)
 {
-    // Basic syntax validation
+    // Basic syntax validation first
     if (code.isEmpty()) {
         return false;
     }
@@ -915,6 +915,39 @@ bool TestVerilog::validateVerilogSyntax(const QString &code)
     QRegularExpressionMatch invalidMatch = invalidId.match(code);
     if (invalidMatch.hasMatch()) {
         return false;
+    }
+
+    // Enhanced validation: Use Icarus Verilog for professional syntax checking
+    // Write code to temporary file for iverilog validation
+    QString tempFile = m_tempDir + "/syntax_check.v";
+    QFile file(tempFile);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        file.write(code.toUtf8());
+        file.close();
+
+        // Run iverilog syntax check
+        QProcess process;
+        process.setProgram("iverilog");
+        process.setArguments({"-t", "null", "-Wall", tempFile});
+        process.start();
+
+        if (process.waitForFinished(5000)) { // 5 second timeout
+            bool syntaxValid = (process.exitCode() == 0);
+
+            // Clean up temp file
+            QFile::remove(tempFile);
+
+            // If iverilog validation fails, return false
+            if (!syntaxValid) {
+                QString errorOutput = process.readAllStandardError();
+                qDebug() << "Verilog syntax validation failed with iverilog:" << errorOutput;
+                return false;
+            }
+        } else {
+            // If iverilog is not available or times out, fall back to basic validation
+            QFile::remove(tempFile);
+            qDebug() << "iverilog validation unavailable, using basic validation only";
+        }
     }
 
     return true;

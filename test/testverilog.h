@@ -7,6 +7,7 @@
 #include "codegeneratorverilog.h"
 
 #include <QObject>
+#include <QProcess>
 #include <QtTest>
 
 class GraphicElement;
