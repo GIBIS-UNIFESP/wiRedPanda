@@ -1,11 +1,9 @@
-// DEBUG: Selected FPGA: Generic-Small (Small generic FPGA (educational))
-// DEBUG: Estimated resources: 10 LUTs, 35 FFs, 4 IOs
 // ====================================================================
 // ======= This Verilog code was generated automatically by wiRedPanda =======
 // ====================================================================
 //
-// Module: dflipflop_masterslave
-// Generated: Thu Sep 25 22:27:03 2025
+// Module: dflipflop_masterslave_fixed
+// Generated: Thu Sep 25 22:55:24 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 10/1000 LUTs, 35/1000 FFs, 4/50 IOs
 //
@@ -13,31 +11,17 @@
 // https://github.com/gibis-unifesp/wiredpanda
 // ====================================================================
 
-module dflipflop_masterslave (
+module dflipflop_masterslave_fixed (
     // ========= Input Ports =========
-// DEBUG: Input port: Clock -> input_clock1_clk_1 (Element: Clock)
-// DEBUG: Input port: Push Button -> input_push_button2_d_2 (Element: Push Button)
     input wire input_clock1_clk_1,
     input wire input_push_button2_d_2,
 
     // ========= Output Ports =========
-// DEBUG: Output port: LED[0] -> output_led1_q_0_3 (Element: LED)
-// DEBUG: Output port: LED[0] -> output_led2_q_0_4 (Element: LED)
     output wire output_led1_q_0_3,
     output wire output_led2_q_0_4
 );
 
     // ========= Internal Signals =========
-// DEBUG: processICsRecursively called with 9 elements at depth 0
-// DEBUG: Processing element: Clock (type: 9)
-// DEBUG: Processing element: Not (type: 4)
-// DEBUG: Processing element: Push Button (type: 1)
-// DEBUG: Processing element: Node (type: 23)
-// DEBUG: Processing element: IC (type: 22)
-// ============== BEGIN IC: DLATCH ==============
-// IC inputs: 2, IC outputs: 2
-// Nesting depth: 0
-// DEBUG: mapICPortsToSignals starting for IC DLATCH with 2 inputs, 2 outputs (Element: IC)
 wire ic_dlatch_dlatch_ic_in_0_5; // IC input 0
 assign ic_dlatch_dlatch_ic_in_0_5 = input_push_button2_d_2;
 wire ic_dlatch_dlatch_ic_in_1_6; // IC input 1

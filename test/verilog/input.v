@@ -2,8 +2,8 @@
 // ======= This Verilog code was generated automatically by wiRedPanda =======
 // ====================================================================
 //
-// Module: input
-// Generated: Thu Sep 25 21:23:10 2025
+// Module: wiredpanda_module
+// Generated: Thu Sep 25 22:35:46 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 12/1000 LUTs, 0/1000 FFs, 6/50 IOs
 //
@@ -11,7 +11,7 @@
 // https://github.com/gibis-unifesp/wiredpanda
 // ====================================================================
 
-module input (
+module wiredpanda_module (
     // ========= Input Ports =========
     input wire input_push_button1_x0_1,
     input wire input_push_button2_x1_2,
@@ -24,16 +24,8 @@ module input (
 );
 
     // ========= Internal Signals =========
-    wire not_7;
-    wire xor_8;
-    wire or_9;
-    wire and_10;
 
     // ========= Logic Assignments =========
-    assign and_10 = (input_push_button1_x0_1 & input_push_button2_x1_2); // And
-    assign or_9 = (input_push_button1_x0_1 | input_push_button2_x1_2); // Or
-    assign xor_8 = (input_push_button1_x0_1 ^ input_push_button2_x1_2); // Xor
-    assign not_7 = ~input_push_button1_x0_1; // Not
 
     // ========= Output Assignments =========
     assign output_led1_xor_0_3 = (input_push_button1_x0_1 ^ input_push_button2_x1_2); // LED
@@ -41,10 +33,10 @@ module input (
     assign output_led3_and_0_5 = (input_push_button1_x0_1 & input_push_button2_x1_2); // LED
     assign output_led4_or_0_6 = (input_push_button1_x0_1 | input_push_button2_x1_2); // LED
 
-endmodule // input
+endmodule // wiredpanda_module
 
 // ====================================================================
-// Module input generation completed successfully
+// Module wiredpanda_module generation completed successfully
 // Elements processed: 10
 // Inputs: 2, Outputs: 4
 // ====================================================================

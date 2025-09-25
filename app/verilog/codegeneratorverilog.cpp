@@ -512,9 +512,34 @@ void CodeGeneratorVerilog::processICsRecursively(const QVector<GraphicElement *>
                     generateDebugInfo(QString("IC internal element %1: %2 (type %3)").arg(i).arg(elm->objectName()).arg(static_cast<int>(elm->elementType())), elm);
                 }
 
-                // Recursively declare variables for internal elements
-                generateDebugInfo(QString("About to declare signals for IC %1 internal elements").arg(ic->label()), ic);
-                declareUsedSignalsOnly(ic->m_icElements, true);
+                // Process internal elements directly (without recursive declareUsedSignalsOnly call to prevent infinite recursion)
+                generateDebugInfo(QString("Processing IC %1 internal elements directly").arg(ic->label()), ic);
+                for (auto *elm : ic->m_icElements) {
+                    if (elm->elementType() != ElementType::IC) {
+                        // Only process non-IC elements here to avoid deeper recursion
+                        for (auto *port : elm->outputs()) {
+                            QString varName = m_varMap.value(port);
+                            if (!varName.isEmpty()) {
+                                generateDebugInfo(QString("IC internal signal: %1").arg(varName), elm);
+                                // Add basic signal declaration for IC internal elements
+                                switch (elm->elementType()) {
+                                case ElementType::DLatch:
+                                case ElementType::SRLatch:
+                                case ElementType::SRFlipFlop:
+                                case ElementType::DFlipFlop:
+                                case ElementType::TFlipFlop:
+                                case ElementType::JKFlipFlop:
+                                case ElementType::Clock:
+                                    m_stream << QString("    reg %1 = 1'b0;").arg(varName) << Qt::endl;
+                                    break;
+                                default:
+                                    m_stream << QString("    wire %1;").arg(varName) << Qt::endl;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
 
                 // Recursively assign variables for internal elements
                 generateDebugInfo(QString("About to assign variables for IC %1 internal elements").arg(ic->label()), ic);
@@ -938,9 +963,6 @@ void CodeGeneratorVerilog::declareUsedSignalsOnly(const QVector<GraphicElement *
     // OPTIMIZATION: Only declare signals that will actually be used
     // This prevents unused signal warnings in strict Verilog validation
 
-    // First, process ICs (same as old declareAuxVariablesRec)
-    processICsRecursively(elements, isIC ? m_icDepth + 1 : 0);
-
     QSet<QString> usedSignals;
     QHash<QNEPort*, QString> tempVarMap = m_varMap; // Copy current variable map
 
@@ -1019,6 +1041,13 @@ void CodeGeneratorVerilog::declareUsedSignalsOnly(const QVector<GraphicElement *
         }
     }
 
+    // Process ICs after variable mapping is complete but before declarations
+    // Temporarily update m_varMap so IC processing can find the new variables
+    QHash<QNEPort*, QString> originalVarMap = m_varMap;
+    m_varMap = tempVarMap;
+    processICsRecursively(elements, isIC ? m_icDepth + 1 : 0);
+    m_varMap = originalVarMap;
+
     // Second pass: Only declare the signals that are actually used
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
@@ -1030,16 +1059,16 @@ void CodeGeneratorVerilog::declareUsedSignalsOnly(const QVector<GraphicElement *
             continue;
         }
 
-        QString varName = generateUniqueVariableName(elm->objectName(), isIC ? "ic" : "");
         const auto outputs = elm->outputs();
 
         if (outputs.size() == 1) {
             QNEPort *port = outputs.constFirst();
-            QString varName2 = QString("%1_%2").arg(varName).arg(port->index());
 
-            // Only declare if this signal will actually be used
-            if (usedSignals.contains(varName2)) {
-                m_varMap[port] = varName2;
+            // Use the variable name from tempVarMap instead of regenerating it
+            QString varName2 = tempVarMap.value(port);
+
+            // Only declare if this signal is mapped and will be used
+            if (!varName2.isEmpty()) {
 
                 switch (elm->elementType()) {
                 case ElementType::DFlipFlop:
@@ -1078,11 +1107,12 @@ void CodeGeneratorVerilog::declareUsedSignalsOnly(const QVector<GraphicElement *
         } else {
             for (int i = 0; i < outputs.size(); ++i) {
                 QNEPort *port = outputs.at(i);
-                QString varName2 = QString("%1_%2_%3").arg(varName).arg(port->index()).arg(i);
 
-                // Only declare if this signal will actually be used
-                if (usedSignals.contains(varName2)) {
-                    m_varMap[port] = varName2;
+                // Use the variable name from tempVarMap instead of regenerating it
+                QString varName2 = tempVarMap.value(port);
+
+                // Only declare if this signal is mapped and will be used
+                if (!varName2.isEmpty()) {
 
                     switch (elm->elementType()) {
                     case ElementType::DFlipFlop:
@@ -1103,6 +1133,10 @@ void CodeGeneratorVerilog::declareUsedSignalsOnly(const QVector<GraphicElement *
             }
         }
     }
+
+    // CRITICAL FIX: Update the actual variable map with the new mappings
+    // This was missing, causing IC internal elements to have empty variable names
+    m_varMap = tempVarMap;
 }
 
 void CodeGeneratorVerilog::generateLogicAssignments()
@@ -1347,7 +1381,9 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
     }
 
     case ElementType::DFlipFlop: {
+        QString firstOut = m_varMap.value(elm->outputPort(0));
         QString secondOut = m_varMap.value(elm->outputPort(1));
+
         QString data = otherPortName(elm->inputPort(0));
         QString clk = otherPortName(elm->inputPort(1));
         QString prst = otherPortName(elm->inputPort(2));
@@ -1415,7 +1451,9 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
     }
 
     case ElementType::JKFlipFlop: {
+        QString firstOut = m_varMap.value(elm->outputPort(0));
         QString secondOut = m_varMap.value(elm->outputPort(1));
+
         QString j = otherPortName(elm->inputPort(0));
         QString clk = otherPortName(elm->inputPort(1));
         QString k = otherPortName(elm->inputPort(2));
@@ -1486,6 +1524,7 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
     }
 
     case ElementType::SRFlipFlop: {
+        QString firstOut = m_varMap.value(elm->outputPort(0));
         QString secondOut = m_varMap.value(elm->outputPort(1));
         QString s = otherPortName(elm->inputPort(0));
         QString r = otherPortName(elm->inputPort(1));
@@ -1511,6 +1550,7 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
     }
 
     case ElementType::TFlipFlop: {
+        QString firstOut = m_varMap.value(elm->outputPort(0));
         QString secondOut = m_varMap.value(elm->outputPort(1));
         QString t = otherPortName(elm->inputPort(0));
         QString clk = otherPortName(elm->inputPort(1));
