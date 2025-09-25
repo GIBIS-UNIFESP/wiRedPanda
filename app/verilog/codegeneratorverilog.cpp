@@ -748,7 +748,8 @@ void CodeGeneratorVerilog::declareAuxVariables()
 {
     m_stream << "    // ========= Internal Signals =========" << Qt::endl;
 
-    declareAuxVariablesRec(m_elements, false);
+    // OPTIMIZED: Only declare signals that will actually be used
+    declareUsedSignalsOnly(m_elements, false);
 
     m_stream << Qt::endl;
 }
@@ -858,6 +859,168 @@ void CodeGeneratorVerilog::declareAuxVariablesRec(const QVector<GraphicElement *
             default:
                 m_stream << QString("    wire %1;").arg(varName2) << Qt::endl;
                 break;
+            }
+        }
+    }
+}
+
+void CodeGeneratorVerilog::declareUsedSignalsOnly(const QVector<GraphicElement *> &elements, bool isIC)
+{
+    // OPTIMIZATION: Only declare signals that will actually be used
+    // This prevents unused signal warnings in strict Verilog validation
+
+    QSet<QString> usedSignals;
+    QHash<QNEPort*, QString> tempVarMap = m_varMap; // Copy current variable map
+
+    // First pass: Identify which signals will actually be assigned
+    QVector<GraphicElement *> sortedElements = topologicalSort(elements);
+
+    for (auto *elm : sortedElements) {
+        if (elm->elementType() == ElementType::IC) {
+            continue; // ICs handled separately
+        }
+
+        // Skip input and output elements - they're already declared as ports
+        if (elm->elementGroup() == ElementGroup::Input || elm->elementGroup() == ElementGroup::Output) {
+            continue;
+        }
+
+        // Only process elements that have both inputs and outputs (will be assigned)
+        if (elm->inputs().isEmpty() || elm->outputs().isEmpty()) {
+            continue;
+        }
+
+        // Check if this element type will generate assignments
+        bool willGenerateAssignment = false;
+        switch (elm->elementType()) {
+        case ElementType::And:
+        case ElementType::Or:
+        case ElementType::Nand:
+        case ElementType::Nor:
+        case ElementType::Xor:
+        case ElementType::Xnor:
+        case ElementType::Not:
+        case ElementType::Node:
+        case ElementType::DFlipFlop:
+        case ElementType::JKFlipFlop:
+        case ElementType::SRFlipFlop:
+        case ElementType::TFlipFlop:
+        case ElementType::DLatch:
+        case ElementType::SRLatch:
+            willGenerateAssignment = true;
+            break;
+        default:
+            // For other element types, assume they will generate assignments
+            willGenerateAssignment = true;
+            break;
+        }
+
+        if (willGenerateAssignment) {
+            // Generate variable names for this element and mark as used
+            QString varName = generateUniqueVariableName(elm->objectName(), isIC ? "ic" : "");
+            const auto outputs = elm->outputs();
+
+            if (outputs.size() == 1) {
+                QNEPort *port = outputs.constFirst();
+                if (!tempVarMap.contains(port)) {
+                    QString varName2 = QString("%1_%2").arg(varName).arg(port->index());
+                    tempVarMap[port] = varName2;
+                    usedSignals.insert(varName2);
+                }
+            } else {
+                for (int i = 0; i < outputs.size(); ++i) {
+                    QNEPort *port = outputs.at(i);
+                    if (!tempVarMap.contains(port)) {
+                        QString varName2 = QString("%1_%2_%3").arg(varName).arg(port->index()).arg(i);
+                        tempVarMap[port] = varName2;
+                        usedSignals.insert(varName2);
+                    }
+                }
+            }
+        }
+    }
+
+    // Second pass: Only declare the signals that are actually used
+    for (auto *elm : elements) {
+        if (elm->elementType() == ElementType::IC) {
+            continue; // Already processed above
+        }
+
+        // Skip input and output elements - they're already declared as ports
+        if (elm->elementGroup() == ElementGroup::Input || elm->elementGroup() == ElementGroup::Output) {
+            continue;
+        }
+
+        QString varName = generateUniqueVariableName(elm->objectName(), isIC ? "ic" : "");
+        const auto outputs = elm->outputs();
+
+        if (outputs.size() == 1) {
+            QNEPort *port = outputs.constFirst();
+            QString varName2 = QString("%1_%2").arg(varName).arg(port->index());
+
+            // Only declare if this signal will actually be used
+            if (usedSignals.contains(varName2)) {
+                m_varMap[port] = varName2;
+
+                switch (elm->elementType()) {
+                case ElementType::DFlipFlop:
+                case ElementType::JKFlipFlop:
+                case ElementType::SRFlipFlop:
+                case ElementType::TFlipFlop:
+                case ElementType::DLatch:
+                case ElementType::SRLatch: {
+                    m_stream << QString("    reg %1 = 1'b0;").arg(varName2) << Qt::endl;
+                    break;
+                }
+
+                case ElementType::Buzzer: {
+                    m_stream << QString("    wire %1; // Buzzer output").arg(varName2) << Qt::endl;
+                    break;
+                }
+
+                case ElementType::Display7:
+                case ElementType::Display14:
+                case ElementType::Display16: {
+                    m_stream << QString("    wire %1; // Display segment").arg(varName2) << Qt::endl;
+                    break;
+                }
+
+                case ElementType::Mux:
+                case ElementType::Demux: {
+                    m_stream << QString("    reg %1; // MUX/DEMUX output").arg(varName2) << Qt::endl;
+                    break;
+                }
+
+                default:
+                    m_stream << QString("    wire %1;").arg(varName2) << Qt::endl;
+                    break;
+                }
+            }
+        } else {
+            for (int i = 0; i < outputs.size(); ++i) {
+                QNEPort *port = outputs.at(i);
+                QString varName2 = QString("%1_%2_%3").arg(varName).arg(port->index()).arg(i);
+
+                // Only declare if this signal will actually be used
+                if (usedSignals.contains(varName2)) {
+                    m_varMap[port] = varName2;
+
+                    switch (elm->elementType()) {
+                    case ElementType::DFlipFlop:
+                    case ElementType::JKFlipFlop:
+                    case ElementType::SRFlipFlop:
+                    case ElementType::TFlipFlop:
+                    case ElementType::DLatch:
+                    case ElementType::SRLatch: {
+                        m_stream << QString("    reg %1 = 1'b0;").arg(varName2) << Qt::endl;
+                        break;
+                    }
+
+                    default:
+                        m_stream << QString("    wire %1;").arg(varName2) << Qt::endl;
+                        break;
+                    }
+                }
             }
         }
     }

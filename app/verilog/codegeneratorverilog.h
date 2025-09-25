@@ -293,6 +293,13 @@ private:
     void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, bool isIC = false);
 
     /**
+     * @brief Declare only internal signals that will actually be used (OPTIMIZATION)
+     * @param elements Elements to process for signal declarations
+     * @param isIC True if processing IC internal elements
+     */
+    void declareUsedSignalsOnly(const QVector<GraphicElement *> &elements, bool isIC = false);
+
+    /**
      * @brief Declare all auxiliary variables and wires
      */
     void declareAuxVariables();
