@@ -11,4 +11,11 @@ class TestSimulation : public QObject
 
 private slots:
     void testCase1();
+
+    // Determinism tests to prevent regressions
+    void testElementProcessingOrderConsistency();
+    void testSceneInitializationDeterminism();
+    void testSimulationOutputReproducibility();
+    void testElementMappingStability();
+    void testCircuitWithFeedbackLoops();
 };

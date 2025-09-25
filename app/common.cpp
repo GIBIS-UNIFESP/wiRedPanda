@@ -45,21 +45,21 @@ QString Pandaception::englishMessage() const
 
 QVector<GraphicElement *> Common::sortGraphicElements(QVector<GraphicElement *> elements)
 {
-    QHash<GraphicElement *, bool> beingVisited;
-    QHash<GraphicElement *, int> priorities;
+    QMap<GraphicElement *, bool> beingVisited;
+    QMap<GraphicElement *, int> priorities;
 
     for (auto *elm : elements) {
         calculatePriority(elm, beingVisited, priorities);
     }
 
-    std::sort(elements.begin(), elements.end(), [priorities](const auto &e1, const auto &e2) {
+    std::stable_sort(elements.begin(), elements.end(), [priorities](const auto &e1, const auto &e2) {
         return priorities.value(e1) > priorities.value(e2);
     });
 
     return elements;
 }
 
-int Common::calculatePriority(GraphicElement *elm, QHash<GraphicElement *, bool> &beingVisited, QHash<GraphicElement *, int> &priorities)
+int Common::calculatePriority(GraphicElement *elm, QMap<GraphicElement *, bool> &beingVisited, QMap<GraphicElement *, int> &priorities)
 {
     if (!elm) {
         return 0;
