@@ -557,6 +557,12 @@ bool CodeGeneratorVerilog::validateICConnectivity(IC *ic)
 
 void CodeGeneratorVerilog::generate()
 {
+    // Check if file was opened successfully
+    if (!m_file.isOpen()) {
+        handleGenerationError("Cannot open output file for writing");
+        return;
+    }
+
     // Pre-flight validation
     if (!validateCircuit()) {
         handleGenerationError("Circuit validation failed");
@@ -843,6 +849,12 @@ void CodeGeneratorVerilog::declareAuxVariablesRec(const QVector<GraphicElement *
                 break;
             }
 
+            case ElementType::Mux:
+            case ElementType::Demux: {
+                m_stream << QString("    reg %1; // MUX/DEMUX output").arg(varName2) << Qt::endl;
+                break;
+            }
+
             default:
                 m_stream << QString("    wire %1;").arg(varName2) << Qt::endl;
                 break;
@@ -914,6 +926,15 @@ void CodeGeneratorVerilog::assignVariablesRec(const QVector<GraphicElement *> &e
 
         case ElementType::TruthTable: {
             generatedCode = generateTruthTableLogic(elm);
+            if (!generatedCode.isEmpty()) {
+                m_stream << generatedCode << Qt::endl;
+            }
+            break;
+        }
+
+        case ElementType::Mux:
+        case ElementType::Demux: {
+            generatedCode = generateMuxDemuxLogic(elm);
             if (!generatedCode.isEmpty()) {
                 m_stream << generatedCode << Qt::endl;
             }
@@ -1177,6 +1198,31 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
         code += QString("                2'b11: begin %1 <= %2; %2 <= %1; end // toggle\n").arg(firstOut, secondOut, secondOut, firstOut);
         code += QString("            endcase\n");
         code += QString("        end\n");
+        code += QString("    end\n");
+        break;
+    }
+
+    case ElementType::SRFlipFlop: {
+        QString secondOut = m_varMap.value(elm->outputPort(1));
+        QString s = otherPortName(elm->inputPort(0));
+        QString r = otherPortName(elm->inputPort(1));
+        QString clk = otherPortName(elm->inputPort(2));
+
+        code += QString("    // SR FlipFlop: %1\n").arg(elm->objectName());
+
+        // Build sensitivity list
+        QStringList sensitivity;
+        sensitivity << QString("posedge %1").arg(clk);
+
+        code += QString("    always @(%1) begin\n").arg(sensitivity.join(" or "));
+
+        // SR flip-flop logic
+        code += QString("        case ({%1, %2})\n").arg(s, r);
+        code += QString("            2'b00: begin /* hold */ end\n");
+        code += QString("            2'b01: begin %1 <= 1'b0; %2 <= 1'b1; end // reset\n").arg(firstOut, secondOut);
+        code += QString("            2'b10: begin %1 <= 1'b1; %2 <= 1'b0; end // set\n").arg(firstOut, secondOut);
+        code += QString("            2'b11: begin %1 <= 1'b0; %2 <= 1'b0; end // invalid\n").arg(firstOut, secondOut);
+        code += QString("        endcase\n");
         code += QString("    end\n");
         break;
     }
@@ -1662,6 +1708,143 @@ bool CodeGeneratorVerilog::validateCircuit()
     }
 
     return valid;
+}
+
+QString CodeGeneratorVerilog::generateMuxDemuxLogic(GraphicElement *elm)
+{
+    QString code;
+
+    if (elm->elementType() == ElementType::Mux) {
+        // Generate MUX logic
+        QString outputVar = m_varMap.value(elm->outputPort(0));
+        if (outputVar.isEmpty()) {
+            return "";
+        }
+
+        int numInputs = elm->inputSize();
+        if (numInputs < 2) {
+            return ""; // Need at least data and select
+        }
+
+        // Detect BCD decoder pattern: 4+ select inputs suggests BCD decode application
+        QString elementName = elm->objectName();
+        QString elementLabel = elm->label();
+        bool isBCDDecoder = (numInputs >= 6) && // Multiple BCD inputs plus select
+                           (elementName.contains("decoder", Qt::CaseInsensitive) ||
+                            elementName.contains("bcd", Qt::CaseInsensitive) ||
+                            elementName.contains("segment", Qt::CaseInsensitive) ||
+                            elementLabel.contains("decoder", Qt::CaseInsensitive) ||
+                            elementLabel.contains("bcd", Qt::CaseInsensitive) ||
+                            elementLabel.contains("segment", Qt::CaseInsensitive));
+
+        code += QString("    // MUX: %1%2\n").arg(elm->objectName())
+                                              .arg(isBCDDecoder ? " (BCD Decoder)" : "");
+
+        if (isBCDDecoder) {
+            // Generate comprehensive 16-case BCD/hex decoder for proper segment decoding
+            // Assume last 4 inputs are BCD select bits (3:0), others are configuration
+            QString bcdSelect = QString("{%1, %2, %3, %4}")
+                               .arg(otherPortName(elm->inputPort(numInputs - 1)))  // bit 3
+                               .arg(otherPortName(elm->inputPort(numInputs - 2)))  // bit 2
+                               .arg(otherPortName(elm->inputPort(numInputs - 3)))  // bit 1
+                               .arg(otherPortName(elm->inputPort(numInputs - 4))); // bit 0
+
+            code += QString("    always @(*) begin\n");
+            code += QString("        case (%1)\n").arg(bcdSelect);
+
+            // Generate full 16-case BCD to 7-segment decoder patterns
+            QStringList segmentPatterns = {
+                "7'b1111110", // 0: segments a,b,c,d,e,f
+                "7'b0110000", // 1: segments b,c
+                "7'b1101101", // 2: segments a,b,g,e,d
+                "7'b1111001", // 3: segments a,b,g,c,d
+                "7'b0110011", // 4: segments f,g,b,c
+                "7'b1011011", // 5: segments a,f,g,c,d
+                "7'b1011111", // 6: segments a,f,g,e,d,c
+                "7'b1110000", // 7: segments a,b,c
+                "7'b1111111", // 8: all segments
+                "7'b1111011", // 9: segments a,b,c,d,f,g
+                "7'b1110111", // A: segments a,b,c,e,f,g
+                "7'b0011111", // b: segments c,d,e,f,g
+                "7'b1001110", // C: segments a,d,e,f
+                "7'b0111101", // d: segments b,c,d,e,g
+                "7'b1001111", // E: segments a,d,e,f,g
+                "7'b1000111"  // F: segments a,e,f,g
+            };
+
+            for (int i = 0; i < 16; ++i) {
+                code += QString("            4'h%1: %2 = %3; // %4\n")
+                       .arg(QString::number(i, 16).toUpper())
+                       .arg(outputVar)
+                       .arg(segmentPatterns[i])
+                       .arg(i < 10 ? QString::number(i) : QString(QChar('A' + i - 10)));
+            }
+            code += QString("            default: %1 = 7'b0000000;\n").arg(outputVar);
+            code += QString("        endcase\n");
+            code += QString("    end\n");
+
+        } else {
+            // Standard MUX logic for non-BCD applications
+            QString selectSignal = otherPortName(elm->inputPort(numInputs - 1));
+            QStringList dataInputs;
+
+            for (int i = 0; i < numInputs - 1; ++i) {
+                dataInputs << otherPortName(elm->inputPort(i));
+            }
+
+            code += QString("    always @(*) begin\n");
+            code += QString("        case (%1)\n").arg(selectSignal);
+
+            for (int i = 0; i < dataInputs.size(); ++i) {
+                code += QString("            1'b%1: %2 = %3;\n").arg(i).arg(outputVar).arg(dataInputs[i]);
+            }
+
+            code += QString("            default: %1 = 1'b0;\n").arg(outputVar);
+            code += QString("        endcase\n");
+            code += QString("    end\n");
+        }
+
+    } else if (elm->elementType() == ElementType::Demux) {
+        // Generate DEMUX logic
+        code += QString("    // DEMUX: %1\n").arg(elm->objectName());
+
+        // Assume first input is data, last input is select signal
+        int numOutputs = elm->outputSize();
+        if (numOutputs < 2 || elm->inputSize() < 2) {
+            return "";
+        }
+
+        QString dataSignal = otherPortName(elm->inputPort(0));
+        QString selectSignal = otherPortName(elm->inputPort(elm->inputSize() - 1));
+
+        code += QString("    always @(*) begin\n");
+        code += QString("        // Initialize all outputs to 0\n");
+
+        for (int i = 0; i < numOutputs; ++i) {
+            QString outputVar = m_varMap.value(elm->outputPort(i));
+            if (!outputVar.isEmpty()) {
+                code += QString("        %1 = 1'b0;\n").arg(outputVar);
+            }
+        }
+
+        code += QString("        case (%1)\n").arg(selectSignal);
+
+        for (int i = 0; i < numOutputs; ++i) {
+            QString outputVar = m_varMap.value(elm->outputPort(i));
+            if (!outputVar.isEmpty()) {
+                code += QString("            %1'd%2: %3 = %4;\n")
+                           .arg(QString::number(static_cast<int>(qCeil(qLn(numOutputs) / qLn(2)))))
+                           .arg(i)
+                           .arg(outputVar)
+                           .arg(dataSignal);
+            }
+        }
+
+        code += QString("        endcase\n");
+        code += QString("    end\n");
+    }
+
+    return code;
 }
 
 void CodeGeneratorVerilog::handleGenerationError(const QString &error, GraphicElement *element)

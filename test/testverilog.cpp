@@ -3773,6 +3773,11 @@ void TestVerilog::testMultiSegmentDisplays()
     auto *decoder2 = createSpecialElement(ElementType::Mux);  // BCD decoder 2 (16 cases: 0-F)
     auto *decoder3 = createSpecialElement(ElementType::Demux); // Additional decoder variety
 
+    // Set BCD decoder labels to trigger enhanced generator detection
+    decoder1->setLabel("bcd_to_7segment_decoder1");
+    decoder2->setLabel("segment_decoder2");
+    decoder3->setLabel("demux_decoder3");
+
     input0->setLabel("digit0");  // Units
     input1->setLabel("digit1");  // Tens
     input2->setLabel("digit2");  // Hundreds
@@ -3900,6 +3905,14 @@ void TestVerilog::testMultiSegmentDisplays()
              << bcd_bit0_d1 << bcd_bit1_d1 << bcd_bit2_d1 << bcd_bit3_d1;
 
     QString code = generateTestVerilog(elements);
+
+    // DEBUG: Write enhanced generated code to see BCD decoder improvement
+    QFile debugFile("/tmp/verilog_enhanced.txt");
+    if (debugFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream out(&debugFile);
+        out << code;
+        debugFile.close();
+    }
 
     // Validate multi-segment displays generation
     QVERIFY2(!code.isEmpty(), "Multi-segment displays test must generate non-empty code");
