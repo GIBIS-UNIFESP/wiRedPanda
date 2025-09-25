@@ -436,12 +436,12 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1303"/>
         <source>Invalid CSV format: insufficient data.</source>
-        <translation type="unfinished"></translation>
+        <translation>无效的CSV格式：数据不足。</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1322"/>
         <source>Invalid CSV format: expected %1 elements, got %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>无效的CSV格式：期望%1个元素，得到%2个。</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1371"/>
@@ -1158,7 +1158,7 @@
     <message>
         <location filename="../../elementfactory.cpp" line="187"/>
         <source>Failed to cast element to TruthTable</source>
-        <translation type="unfinished"></translation>
+        <translation>无法将元素转换为TruthTable</translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="197"/>
@@ -2202,12 +2202,12 @@ wiRedPanda %1将自动列出位于当前项目相同目录中的所有其他.pan
     <message>
         <location filename="../../commands.cpp" line="444"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="unfinished"></translation>
+        <translation>SplitCommand构造函数中的连接端口无效</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="450"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="unfinished"></translation>
+        <translation>SplitCommand构造函数中的图形元素无效</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="461"/>
@@ -2222,7 +2222,7 @@ wiRedPanda %1将自动列出位于当前项目相同目录中的所有其他.pan
     <message>
         <location filename="../../commands.cpp" line="492"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="unfinished"></translation>
+        <translation>错误：SplitCommand::redo()中endPort为null</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="518"/>
