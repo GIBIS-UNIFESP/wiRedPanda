@@ -21,6 +21,7 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <QKeyEvent>
 #include <QMenu>
+#include <algorithm>
 
 Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)
@@ -123,7 +124,7 @@ const QVector<GraphicElement *> Scene::elements() const
         }
     }
 
-    return elements_;
+    return Common::sortGraphicElements(elements_);
 }
 
 const QVector<GraphicElement *> Scene::elements(const QRectF &rect) const
@@ -138,7 +139,7 @@ const QVector<GraphicElement *> Scene::elements(const QRectF &rect) const
         }
     }
 
-    return elements_;
+    return Common::sortGraphicElements(elements_);
 }
 
 const QVector<QNEConnection *> Scene::connections()

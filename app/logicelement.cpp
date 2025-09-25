@@ -4,6 +4,7 @@
 #include "logicelement.h"
 
 #include <QHash>
+#include <QMap>
 #include <QStack>
 
 LogicElement::LogicElement(const int inputSize, const int outputSize)
@@ -94,9 +95,9 @@ void LogicElement::validate()
 int LogicElement::calculatePriority()
 {
     QStack<LogicElement *> stack;
-    QHash<LogicElement *, bool> inStack;
-    QHash<LogicElement *, int> maxPriority;
-    QHash<LogicElement *, bool> inFeedbackLoop;
+    QMap<LogicElement *, bool> inStack;
+    QMap<LogicElement *, int> maxPriority;
+    QMap<LogicElement *, bool> inFeedbackLoop;
 
     stack.push(this);
     inStack[this] = true;

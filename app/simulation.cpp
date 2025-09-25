@@ -243,7 +243,19 @@ bool Simulation::initialize()
     m_connections.clear();
 
     QVector<GraphicElement *> elements;
-    const auto items = m_scene->items();
+    auto items = m_scene->items();
+
+    // Sort items by position coordinates for consistent ordering between runs
+    std::stable_sort(items.begin(), items.end(), [](const auto &a, const auto &b) {
+        if (!a || !b) {
+            return a != nullptr;
+        }
+        // Sort by Y coordinate first, then X coordinate for consistent 2D ordering
+        if (qFuzzyCompare(a->y(), b->y())) {
+            return a->x() < b->x();
+        }
+        return a->y() < b->y();
+    });
 
     if (items.size() == 1) {
         return false;
@@ -293,9 +305,17 @@ bool Simulation::initialize()
         }
     }
 
-    std::sort(elements.begin(), elements.end(), [](const auto &a, const auto &b) {
+    std::stable_sort(elements.begin(), elements.end(), [](const auto &a, const auto &b) {
         if (!a || !b) {
             return a != nullptr; // Put null elements at the end
+        }
+        // Use stable sort with consistent tie-breaking by position for deterministic ordering
+        if (a->priority() == b->priority()) {
+            // Sort by Y coordinate first, then X coordinate for consistent tie-breaking
+            if (qFuzzyCompare(a->y(), b->y())) {
+                return a->x() < b->x();
+            }
+            return a->y() < b->y();
         }
         return a->priority() > b->priority();
     });

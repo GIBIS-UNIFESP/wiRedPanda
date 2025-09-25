@@ -93,7 +93,7 @@ void ElementMapping::sortLogicElements()
         logic->calculatePriority();
     }
 
-    std::sort(m_logicElms.begin(), m_logicElms.end(), [](const auto &logic1, const auto &logic2) {
+    std::stable_sort(m_logicElms.begin(), m_logicElms.end(), [](const auto &logic1, const auto &logic2) {
         return logic1->priority() > logic2->priority();
     });
 }
