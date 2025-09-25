@@ -661,6 +661,13 @@ private:
     QStringList extractVariableDeclarations(const QString &code);
 
     /**
+     * @brief Extract port names from Verilog code
+     * @param code Verilog code
+     * @return List of port names
+     */
+    QStringList extractPortNames(const QString &code);
+
+    /**
      * @brief Extract always blocks from Verilog code
      * @param code Verilog code
      * @return List of always blocks
