@@ -750,6 +750,29 @@ private:
     void validatePatternCount(const QString &code, const QString &pattern,
                              int minCount, int maxCount, const QString &context);
 
+    // ============================================================================
+    // SEMANTIC CONSTANTS - Replace magic numbers with meaningful thresholds
+    // ============================================================================
+
+    // Logic complexity thresholds
+    static constexpr int MIN_LOGIC_DEPTH = 3;           // Minimum levels for multi-level logic
+    static constexpr int MIN_BASIC_ASSIGNS = 3;         // Basic logic gate assignments
+    static constexpr int MIN_COMPLEX_ASSIGNS = 5;       // Complex circuit assignments
+    static constexpr int MIN_PROPAGATION_LEVELS = 5;    // Signal propagation chain depth
+
+    // Port and connection thresholds
+    static constexpr int MIN_MULTI_ELEMENT_PORTS = 10;  // Multi-element circuit ports
+    static constexpr int MIN_PORT_DECLARATIONS = 5;     // Basic port declaration count
+    static constexpr int MIN_CONNECTION_PAIRS = 2;      // Valid connection pairs
+
+    // Sequential logic thresholds
+    static constexpr int MIN_ALWAYS_BLOCKS = 2;         // Sequential circuit complexity
+    static constexpr int MIN_CLOCK_DOMAINS = 2;         // Multi-clock designs
+
+    // Code structure thresholds
+    static constexpr int MIN_CODE_LENGTH = 20;          // Non-trivial code generation
+    static constexpr int MIN_VARIABLE_DECLARATIONS = 4; // Internal signal complexity
+
     // Test data management
     Scene *m_scene = nullptr;
     QVector<GraphicElement *> m_testElements;

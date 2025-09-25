@@ -424,18 +424,20 @@ void TestVerilog::testFileOperations()
     CodeGeneratorVerilog invalidGenerator(invalidPath, elements);
     // Should not crash - validate error handling
     bool invalidGenSucceeded = false;
+    bool processStableAfterError = true;
     try {
         invalidGenerator.generate();
-        // If no exception, check if file was created (shouldn't be)
+        // If no exception, check if file was created (shouldn't be for invalid path)
         QFile invalidFile(invalidPath);
         invalidGenSucceeded = invalidFile.exists();
     } catch (...) {
         // Exception expected for invalid path - this is correct behavior
         invalidGenSucceeded = false;
     }
-    // For invalid paths, either graceful failure (file doesn't exist) or exception is acceptable
-    // But process should not crash
-    QVERIFY2(true, "Process survived invalid file path handling");
+
+    // Validate proper error handling: either graceful failure or controlled exception
+    QVERIFY2(!invalidGenSucceeded, "Invalid file path should not result in successful file creation");
+    QVERIFY2(processStableAfterError, "Process must remain stable after invalid file path handling");
 
     qInfo() << "✓ File operations test passed";
 }
@@ -490,7 +492,7 @@ void TestVerilog::testBasicLogicGates()
 
     // Validate assignments are present
     QStringList assigns = extractAssignStatements(code);
-    QVERIFY(assigns.size() >= 3); // Should have at least 3 assignments
+    QVERIFY(assigns.size() >= MIN_BASIC_ASSIGNS); // Should have minimum basic logic assignments
 
     qInfo() << "✓ Basic logic gates test passed";
 }
@@ -546,7 +548,7 @@ void TestVerilog::testComplexLogicGates()
 
     // Should have proper assignments
     QStringList assigns = extractAssignStatements(code);
-    QVERIFY(assigns.size() >= 4);
+    QVERIFY(assigns.size() >= MIN_VARIABLE_DECLARATIONS);
 
     qInfo() << "✓ Complex logic gates test passed";
 }
@@ -1252,10 +1254,7 @@ void TestVerilog::testConnectionValidation()
     QString validCode = generateTestVerilog(validElements);
 
     // Validate properly connected circuit
-    QVERIFY2(!validCode.isEmpty(), "Valid connections must generate non-empty code");
-    QVERIFY2(validCode.contains("module"), "Valid connections must generate module declaration");
-    QVERIFY2(validCode.contains("endmodule"), "Valid connections must generate module end");
-    QVERIFY2(validateVerilogSyntax(validCode), "Valid connections must generate syntactically correct Verilog");
+    validateBasicVerilogStructure(validCode, "Valid connections");
 
     // Test Case 3: Unconnected elements (should handle gracefully)
     auto *isolatedInput = createInputElement(ElementType::InputButton);
@@ -1408,26 +1407,23 @@ void TestVerilog::testMultiElementCircuits()
     QString code = generateTestVerilog(elements);
 
     // Validate multi-element circuit generation
-    QVERIFY2(!code.isEmpty(), "Multi-element circuit must generate non-empty code");
-    QVERIFY2(code.contains("module"), "Multi-element circuit must generate module declaration");
-    QVERIFY2(code.contains("endmodule"), "Multi-element circuit must generate module end");
-    QVERIFY2(validateVerilogSyntax(code), "Multi-element circuit must generate syntactically correct Verilog");
+    validateBasicVerilogStructure(code, "Multi-element circuit");
 
     // Check for proper scaling - multiple port declarations
     QStringList portDecls = extractPortDeclarations(code);
-    QVERIFY2(portDecls.size() >= 10, "Multi-element circuit must generate multiple port declarations");
+    QVERIFY2(portDecls.size() >= MIN_MULTI_ELEMENT_PORTS, "Multi-element circuit must generate multiple port declarations");
 
     // Check for proper internal signal handling
     QStringList varDecls = extractVariableDeclarations(code);
-    QVERIFY2(varDecls.size() >= 5, "Multi-element circuit must generate multiple internal wire declarations");
+    QVERIFY2(varDecls.size() >= MIN_PORT_DECLARATIONS, "Multi-element circuit must generate multiple internal wire declarations");
 
     // Check for proper logic assignments
     QStringList assigns = extractAssignStatements(code);
-    QVERIFY2(assigns.size() >= 5, "Multi-element circuit must generate multiple logic assignments");
+    QVERIFY2(assigns.size() >= MIN_COMPLEX_ASSIGNS, "Multi-element circuit must generate multiple logic assignments");
 
     // Check for proper sequential logic
     QStringList alwaysBlocks = extractAlwaysBlocks(code);
-    QVERIFY2(alwaysBlocks.size() >= 2, "Multi-element circuit must generate always blocks for sequential elements");
+    QVERIFY2(alwaysBlocks.size() >= MIN_ALWAYS_BLOCKS, "Multi-element circuit must generate always blocks for sequential elements");
 
     // Verify complex logic operations are present
     bool hasComplexLogic = code.contains("&") && code.contains("|") &&
@@ -1521,14 +1517,11 @@ void TestVerilog::testSignalPropagation()
     QString code = generateTestVerilog(elements);
 
     // Validate signal propagation generation
-    QVERIFY2(!code.isEmpty(), "Signal propagation test must generate non-empty code");
-    QVERIFY2(code.contains("module"), "Signal propagation test must generate module declaration");
-    QVERIFY2(code.contains("endmodule"), "Signal propagation test must generate module end");
-    QVERIFY2(validateVerilogSyntax(code), "Signal propagation test must generate syntactically correct Verilog");
+    validateBasicVerilogStructure(code, "Signal propagation test");
 
     // Check for proper propagation chain representation
     QStringList assigns = extractAssignStatements(code);
-    QVERIFY2(assigns.size() >= 5, "Signal propagation must generate multiple assignment levels");
+    QVERIFY2(assigns.size() >= MIN_PROPAGATION_LEVELS, "Signal propagation must generate multiple assignment levels");
 
     // Verify fanout handling - same signal should drive multiple destinations
     bool foundFanout = false;
@@ -1708,17 +1701,14 @@ void TestVerilog::testContinuousAssignments()
     QString code = generateTestVerilog(elements);
 
     // Validate continuous assignments generation
-    QVERIFY2(!code.isEmpty(), "Continuous assignments test must generate non-empty code");
-    QVERIFY2(code.contains("module"), "Continuous assignments test must generate module declaration");
-    QVERIFY2(code.contains("endmodule"), "Continuous assignments test must generate module end");
-    QVERIFY2(validateVerilogSyntax(code), "Continuous assignments test must generate syntactically correct Verilog");
+    validateBasicVerilogStructure(code, "Continuous assignments test");
 
     // Critical: Must contain assign statements for combinational logic
     QVERIFY2(code.contains("assign"), "Continuous assignments test must generate assign statements");
 
     // Extract and validate assign statements
     QStringList assigns = extractAssignStatements(code);
-    QVERIFY2(assigns.size() >= 4, "Continuous assignments test must generate multiple assign statements");
+    QVERIFY2(assigns.size() >= MIN_VARIABLE_DECLARATIONS, "Continuous assignments test must generate multiple assign statements");
 
     // Check for various logic operators in assignments
     bool hasAndAssign = false, hasOrAssign = false, hasXorAssign = false, hasNotAssign = false;
@@ -1884,10 +1874,7 @@ void TestVerilog::testWireDeclarations()
     QString code = generateTestVerilog(elements);
 
     // Validate wire declarations generation
-    QVERIFY2(!code.isEmpty(), "Wire declarations test must generate non-empty code");
-    QVERIFY2(code.contains("module"), "Wire declarations test must generate module declaration");
-    QVERIFY2(code.contains("endmodule"), "Wire declarations test must generate module end");
-    QVERIFY2(validateVerilogSyntax(code), "Wire declarations test must generate syntactically correct Verilog");
+    validateBasicVerilogStructure(code, "Wire declarations test");
 
     // Extract variable declarations
     QStringList varDecls = extractVariableDeclarations(code);
@@ -2146,14 +2133,16 @@ void TestVerilog::testPortNameSanitization()
             foundSanitizedSpecialChars = true;
         }
 
-        // Check for evidence of digit start handling
-        if (portName.at(0).isLetter() && portName.contains("starts") && portName.contains("digit")) {
+        // Check for evidence of digit start handling (original: "123_starts_with_digit")
+        if (portName.at(0).isLetter() &&
+            (portName.contains("starts_with_digit") || portName.contains("digit") || portName.contains("_123"))) {
             foundSanitizedDigitStart = true;
         }
     }
 
     QVERIFY2(foundSanitizedSpaces, "Port name sanitization must convert spaces to underscores or similar");
     QVERIFY2(foundSanitizedSpecialChars, "Port name sanitization must handle special characters");
+    QVERIFY2(foundSanitizedDigitStart, "Port name sanitization must handle identifiers that start with digits");
 
     // Test reserved keyword handling
     bool hasConflictAvoidance = true;
@@ -2614,13 +2603,27 @@ void TestVerilog::testPresetClearLogic()
         }
     }
 
-    // Accept any sequential logic as valid preset/clear implementation
+    // Validate sequential logic contains actual preset/clear patterns
     if (!hasResetLogic && !alwaysBlocks.isEmpty()) {
-        hasResetLogic = true; // If we have always blocks, accept as valid
-        qInfo() << "✓ Found valid sequential logic blocks for preset/clear";
+        for (const QString &block : alwaysBlocks) {
+            // Look for actual preset/clear logic patterns
+            if (block.contains("reset") || block.contains("clear") || block.contains("preset") ||
+                (block.contains("if") && (block.contains("1'b1") || block.contains("1'b0")))) {
+                hasResetLogic = true;
+                qInfo() << "✓ Found valid preset/clear logic patterns in sequential blocks";
+                break;
+            }
+        }
     }
 
     QVERIFY2(hasResetLogic, "Preset/Clear logic test must include reset/clear/preset handling");
+
+    // Validate async reset pattern capability (advanced feature but not required)
+    if (hasAsyncResetPattern) {
+        qInfo() << "✓ Found asynchronous reset patterns - advanced sequential logic capability";
+    } else {
+        qInfo() << "◊ Note: No explicit async reset patterns found - using basic sequential logic";
+    }
 
     // Check for proper register declarations for resettable elements
     QStringList varDecls = extractVariableDeclarations(code);
@@ -2995,6 +2998,9 @@ void TestVerilog::testClockFrequencyScaling()
         qInfo() << "✓ Found multiple registers for different clock domains";
     }
 
+    QVERIFY2(hasMultiDomainRegs || regNames.size() >= 1,
+            "Clock frequency scaling must generate registers for proper sequential logic");
+
     // Test 8: Clock skew and timing constraints
     bool hasTimingConstraints = code.contains("constraint") ||
                                code.contains("timing") ||
@@ -3026,6 +3032,12 @@ void TestVerilog::testClockFrequencyScaling()
         }
     }
 
+    if (hasFrequencyMonitoring) {
+        qInfo() << "◊ Advanced: Frequency monitoring capability detected";
+    } else {
+        qInfo() << "◊ Note: Basic clock scaling without explicit frequency monitoring";
+    }
+
     // Test 11: Reset synchronization across clock domains
     bool hasResetSync = false;
 
@@ -3037,6 +3049,12 @@ void TestVerilog::testClockFrequencyScaling()
         }
     }
 
+    if (hasResetSync) {
+        qInfo() << "◊ Advanced: Reset synchronization capability detected - good for multi-domain designs";
+    } else {
+        qInfo() << "◊ Note: No explicit reset synchronization - ensure proper reset domain handling";
+    }
+
     // Test 12: Clock multiplexing
     bool hasClockMux = false;
 
@@ -3046,6 +3064,12 @@ void TestVerilog::testClockFrequencyScaling()
             qInfo() << "✓ Found clock multiplexing logic";
             break;
         }
+    }
+
+    if (hasClockMux) {
+        qInfo() << "◊ Advanced: Clock multiplexing detected - complex clock switching capability";
+    } else {
+        qInfo() << "◊ Note: No clock multiplexing found - using static clock assignment";
     }
 
     // Test 13: Validate proper clock naming conventions (filter out constants/artifacts)
@@ -3074,6 +3098,12 @@ void TestVerilog::testClockFrequencyScaling()
             qInfo() << "✓ Found potential metastability protection (synchronizer chain)";
             break;
         }
+    }
+
+    if (hasMetastabilityProtection) {
+        qInfo() << "◊ Advanced: Metastability protection found - excellent for robust clock domain crossing";
+    } else {
+        qInfo() << "◊ Note: No explicit metastability protection - consider synchronizer chains for CDC";
     }
 
     // Test 15: Overall clock scaling validation
@@ -3282,6 +3312,8 @@ void TestVerilog::testComplexTruthTables()
             if (caseComplexity >= 8) { // At least half the expected cases
                 qInfo() << "✓ 4-input truth table appears to handle multiple cases";
             }
+            QVERIFY2(caseComplexity <= expectedCases * 4,
+                    "Truth table case complexity should not exceed four times the expected cases for efficiency");
         }
     }
 
@@ -3385,11 +3417,16 @@ void TestVerilog::testComplexTruthTables()
         int totalCaseItems = code.count(":");
         if (totalCaseItems > 32) { // More than 5-input truth table
             qInfo() << "◊ Note: Very large truth table detected (" << totalCaseItems << " cases)";
+            hasEfficientImplementation = false;
         }
     }
 
     // Check for excessive nesting or complexity
     int nestingDepth = qMax(code.count("if"), code.count("case"));
+    if (nestingDepth > 20) {
+        hasEfficientImplementation = false;
+    }
+    QVERIFY2(hasEfficientImplementation, "Complex truth table implementation should maintain reasonable resource efficiency");
     if (nestingDepth > 8) {
         qInfo() << "◊ Note: High complexity truth table implementation";
     }
@@ -3734,13 +3771,16 @@ void TestVerilog::testDisplayElements()
     int totalCaseItems = code.count(":");
     if (totalCaseItems > 50) {
         qInfo() << "◊ Note: High complexity display implementation (" << totalCaseItems << " cases)";
+        hasEfficientImplementation = false;
     }
 
     // Check for reasonable number of assignments
     QStringList assigns = extractAssignStatements(code);
     if (assigns.size() > 30) {
         qInfo() << "◊ Note: Many assignment statements (" << assigns.size() << ") - consider optimization";
+        hasEfficientImplementation = false;
     }
+    QVERIFY2(hasEfficientImplementation, "Display implementation should maintain reasonable resource efficiency");
 
     // Test 13: Common display patterns
     bool hasCommonPatterns = false;
@@ -4225,9 +4265,9 @@ void TestVerilog::testMultiSegmentDisplays()
 
     if (decoderComplexity > 100) {
         qInfo() << "◊ Note: High decoder complexity (" << decoderComplexity << " cases) - consider optimization";
-    } else if (decoderComplexity >= 10) {
-        qInfo() << "✓ Reasonable decoder complexity (" << decoderComplexity << " cases)";
+        hasEfficientImplementation = false;
     }
+    QVERIFY2(hasEfficientImplementation, "Multi-digit display implementation should maintain reasonable decoder efficiency");
 
     // Test 12: Multi-digit number display capability
     bool hasMultiDigitNumber = false;
@@ -5415,15 +5455,22 @@ void TestVerilog::testSensitivityLists()
             if (block.contains("@(") && !block.contains("@(*)") && !block.contains("always_comb")) {
                 // This is a simplified check - in practice, this is complex to verify correctly
                 if (block.contains("input") && !block.contains("posedge") && !block.contains("negedge")) {
-                    // Combinational block should ideally use @(*) for completeness
+                    foundSensitivityIssues = true;
                     qInfo() << "◊ Suggestion: Consider using @(*) for complete sensitivity";
                 }
             }
 
             // Check for mixing blocking and non-blocking assignments (potential issue)
             if (block.contains("=") && block.contains("<=")) {
+                foundSensitivityIssues = true;
                 qInfo() << "◊ Note: Mixed blocking and non-blocking assignments in same block";
             }
+        }
+
+        if (foundSensitivityIssues) {
+            qInfo() << "◊ Sensitivity list issues detected - code may still function but consider best practices";
+        } else {
+            qInfo() << "✓ No sensitivity list issues detected - following Verilog best practices";
         }
     }
 
@@ -5676,9 +5723,13 @@ void TestVerilog::testRegisterWireDeclarations()
         }
 
         if (!wireUsedCorrectly) {
+            properWireUsage = false;
             qInfo() << "◊ Note: Wire" << wireName << "usage could not be verified (may be correct)";
         }
     }
+
+    QVERIFY2(properWireUsage || wireNames.isEmpty(),
+            "Wire declarations should follow proper Verilog usage patterns");
 
     // Regs should be used for:
     // 1. Targets of procedural assignments in always blocks
@@ -5699,9 +5750,15 @@ void TestVerilog::testRegisterWireDeclarations()
         }
 
         if (!regUsedCorrectly) {
+            properRegUsage = false;
             qInfo() << "◊ Note: Reg" << regName << "usage could not be verified (may be correct)";
         }
     }
+
+    // Allow for verification limitations - reg usage may be correct even if not detected by simple regex
+    bool acceptableRegUsage = properRegUsage || regNames.isEmpty() || regNames.size() <= 10; // Allow reasonable number of unverified regs
+    QVERIFY2(acceptableRegUsage,
+            "Register declarations should follow proper Verilog usage patterns (allowing for verification limitations)");
 
     // Test 6: Verify no illegal mixing
     // - Wires should not be targets of procedural assignments
@@ -6314,7 +6371,14 @@ void TestVerilog::testICVariableScoping()
         // Accept either scoped naming or generic unique naming
         if (!hasScopeIndicator && !varName.contains("wire") && !varName.isEmpty()) {
             // This is fine - may use generic unique naming
+            qInfo() << "◊ Note: Variable" << varName << "uses generic naming (not scoped)";
         }
+    }
+
+    if (hasProperScoping) {
+        qInfo() << "✓ Variable scoping follows proper IC isolation patterns";
+    } else {
+        qInfo() << "◊ Variable scoping uses alternative naming patterns";
     }
 
     // Test IC variable isolation
@@ -6355,9 +6419,15 @@ void TestVerilog::testICVariableScoping()
         // Should not have direct cross-IC references without proper routing
         if (assignment.contains("ic1") && assignment.contains("ic2") &&
             !assignment.contains("scope_test_global")) {
-            // This might indicate improper cross-IC access
-            // But allow it if it's through global signals
+            hasLocalIsolation = false;
+            qInfo() << "◊ Warning: Potential cross-IC reference without proper global routing:" << assignment;
         }
+    }
+
+    if (hasLocalIsolation) {
+        qInfo() << "✓ Local variable isolation maintained - no improper cross-IC references";
+    } else {
+        qInfo() << "◊ Note: Cross-IC references detected - ensure proper global signal routing";
     }
 
     // Verify scope depth handling
@@ -6703,8 +6773,15 @@ void TestVerilog::testBinaryCounter()
                                 code.contains("assign") || code.contains("wire") || code.contains("reg");
 
     if (!hasBinaryCounterClock) {
-        qInfo() << "◊ Note: No clock signals found - accepting any logic implementation";
-        hasBinaryCounterClock = !code.isEmpty();
+        // For binary counters, we need at least sequential logic indicators
+        bool hasSequentialIndicators = code.contains("<=") || code.contains("always") ||
+                                      code.contains("reg") || code.contains("posedge");
+        if (hasSequentialIndicators) {
+            hasBinaryCounterClock = true;
+            qInfo() << "◊ Note: Found sequential logic patterns - accepting as binary counter logic";
+        } else {
+            qInfo() << "◊ Warning: No clock or sequential logic patterns found for binary counter";
+        }
     }
 
     QVERIFY2(hasBinaryCounterClock, "Generated code should contain proper clock signal handling");
@@ -6909,10 +6986,14 @@ void TestVerilog::testStateMachine()
                         code.contains("<=") || code.contains("case") || code.contains("begin") ||
                         code.contains("assign") || code.contains("=") || code.contains("?");
 
-    // Accept any logic implementation for state machines
+    // Validate logic actually suitable for state machines
     if (!hasStateLogic && (code.contains("input") && code.contains("output"))) {
-        hasStateLogic = true;
-        qInfo() << "✓ Found logic implementation that can handle state machine behavior";
+        // State machines need storage elements or sequential logic patterns
+        if (code.contains("reg") || code.contains("always") || code.contains("<=") ||
+            code.contains("case") || code.contains("if")) {
+            hasStateLogic = true;
+            qInfo() << "✓ Found logic patterns suitable for state machine implementation";
+        }
     }
 
     QVERIFY2(hasStateLogic, "Generated code should contain sequential logic for state storage");
@@ -6924,8 +7005,15 @@ void TestVerilog::testStateMachine()
                                code.contains("assign") || code.contains("wire") || code.contains("reg");
 
     if (!hasStateMachineClock) {
-        qInfo() << "◊ Note: No explicit clock signals found - accepting any logic implementation";
-        hasStateMachineClock = !code.isEmpty();
+        // State machines need some form of sequential control
+        bool hasStateMachineControl = code.contains("<=") || code.contains("always") ||
+                                     (code.contains("case") && code.contains("begin"));
+        if (hasStateMachineControl) {
+            hasStateMachineClock = true;
+            qInfo() << "◊ Note: Found sequential control patterns for state machine";
+        } else {
+            qInfo() << "◊ Warning: No sequential control patterns found for state machine";
+        }
     }
 
     QVERIFY2(hasStateMachineClock, "Generated code should contain proper clock signal handling");
@@ -10708,8 +10796,7 @@ void TestVerilog::testComprehensiveIntegration() { QSKIP("Comprehensive integrat
 
 void TestVerilog::validateBasicVerilogStructure(const QString &code, const QString &testName)
 {
-    // Constants for minimum requirements
-    static const int MIN_CODE_LENGTH = 20;
+    // Required structural elements for valid Verilog modules
     static const QStringList REQUIRED_ELEMENTS = {"module", "endmodule"};
 
     QVERIFY2(!code.isEmpty(), qPrintable(QString("%1 must generate non-empty code").arg(testName)));
