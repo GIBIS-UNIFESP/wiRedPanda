@@ -436,12 +436,12 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1303"/>
         <source>Invalid CSV format: insufficient data.</source>
-        <translation type="unfinished"></translation>
+        <translation>รูปแบบ CSV ไม่ถูกต้อง: ข้อมูลไม่เพียงพอ</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1322"/>
         <source>Invalid CSV format: expected %1 elements, got %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>รูปแบบ CSV ไม่ถูกต้อง: คาดหวัง %1 องค์ประกอบ แต่ได้รับ %2</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1371"/>
@@ -1158,7 +1158,7 @@
     <message>
         <location filename="../../elementfactory.cpp" line="187"/>
         <source>Failed to cast element to TruthTable</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่สามารถแปลงองค์ประกอบเป็น TruthTable</translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="197"/>
@@ -2203,12 +2203,12 @@ wiRedPanda %1 จะแสดงรายการไฟล์ .panda อื่�
     <message>
         <location filename="../../commands.cpp" line="444"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="unfinished"></translation>
+        <translation>พอร์ตการเชื่อมต่อไม่ถูกต้องใน constructor ของ SplitCommand</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="450"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="unfinished"></translation>
+        <translation>องค์ประกอบกราฟิกไม่ถูกต้องใน constructor ของ SplitCommand</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="461"/>
@@ -2223,7 +2223,7 @@ wiRedPanda %1 จะแสดงรายการไฟล์ .panda อื่�
     <message>
         <location filename="../../commands.cpp" line="492"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="unfinished"></translation>
+        <translation>ข้อผิดพลาด: endPort เป็น null ใน SplitCommand::redo()</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="518"/>

@@ -431,12 +431,12 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1303"/>
         <source>Invalid CSV format: insufficient data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiges CSV-Format: unzureichende Daten.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1322"/>
         <source>Invalid CSV format: expected %1 elements, got %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiges CSV-Format: %1 Elemente erwartet, %2 erhalten.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1371"/>
@@ -1158,7 +1158,7 @@
     <message>
         <location filename="../../elementfactory.cpp" line="187"/>
         <source>Failed to cast element to TruthTable</source>
-        <translation type="unfinished"></translation>
+        <translation>Element konnte nicht zu TruthTable gecastet werden</translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="197"/>
@@ -2203,12 +2203,12 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Skins zugreifen oder 
     <message>
         <location filename="../../commands.cpp" line="444"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Verbindungsports im SplitCommand-Konstruktor</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="450"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige grafische Elemente im SplitCommand-Konstruktor</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="461"/>
@@ -2223,7 +2223,7 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Skins zugreifen oder 
     <message>
         <location filename="../../commands.cpp" line="492"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: endPort ist null in SplitCommand::redo()</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="518"/>

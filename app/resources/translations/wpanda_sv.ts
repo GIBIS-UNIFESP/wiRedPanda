@@ -436,12 +436,12 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1303"/>
         <source>Invalid CSV format: insufficient data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogiltigt CSV-format: otillräcklig data.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1322"/>
         <source>Invalid CSV format: expected %1 elements, got %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogiltigt CSV-format: förväntade %1 element, fick %2.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1371"/>
@@ -1158,7 +1158,7 @@
     <message>
         <location filename="../../elementfactory.cpp" line="187"/>
         <source>Failed to cast element to TruthTable</source>
-        <translation type="unfinished"></translation>
+        <translation>Misslyckades med att konvertera element till TruthTable</translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="197"/>
@@ -2203,12 +2203,12 @@ Du måste spara nya projekt innan du får tillgång till IC:er och skins, eller 
     <message>
         <location filename="../../commands.cpp" line="444"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogiltiga anslutningsportar i SplitCommand konstruktor</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="450"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogiltiga grafiska element i SplitCommand konstruktor</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="461"/>
@@ -2223,7 +2223,7 @@ Du måste spara nya projekt innan du får tillgång till IC:er och skins, eller 
     <message>
         <location filename="../../commands.cpp" line="492"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: endPort är null i SplitCommand::redo()</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="518"/>

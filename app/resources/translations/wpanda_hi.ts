@@ -436,12 +436,12 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1303"/>
         <source>Invalid CSV format: insufficient data.</source>
-        <translation type="unfinished"></translation>
+        <translation>अमान्य CSV प्रारूप: अपर्याप्त डेटा।</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1322"/>
         <source>Invalid CSV format: expected %1 elements, got %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>अमान्य CSV प्रारूप: %1 तत्वों की अपेक्षा थी, %2 मिले।</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1371"/>
@@ -1158,7 +1158,7 @@
     <message>
         <location filename="../../elementfactory.cpp" line="187"/>
         <source>Failed to cast element to TruthTable</source>
-        <translation type="unfinished"></translation>
+        <translation>तत्व को TruthTable में कास्ट करने में विफल</translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="197"/>
@@ -2203,12 +2203,12 @@ ICs और स्किन तक पहुँचने या beWavedDolphin �
     <message>
         <location filename="../../commands.cpp" line="444"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="unfinished"></translation>
+        <translation>SplitCommand कन्स्ट्रक्टर में अमान्य कनेक्शन पोर्ट</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="450"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="unfinished"></translation>
+        <translation>SplitCommand कन्स्ट्रक्टर में अमान्य ग्राफिक तत्व</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="461"/>
@@ -2223,7 +2223,7 @@ ICs और स्किन तक पहुँचने या beWavedDolphin �
     <message>
         <location filename="../../commands.cpp" line="492"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="unfinished"></translation>
+        <translation>त्रुटि: SplitCommand::redo() में endPort null है</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="518"/>

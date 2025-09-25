@@ -436,12 +436,12 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1303"/>
         <source>Invalid CSV format: insufficient data.</source>
-        <translation type="unfinished"></translation>
+        <translation>유효하지 않은 CSV 형식: 데이터가 부족합니다.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1322"/>
         <source>Invalid CSV format: expected %1 elements, got %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>유효하지 않은 CSV 형식: %1개 요소가 예상되었지만 %2개를 받았습니다.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1371"/>
@@ -1158,7 +1158,7 @@
     <message>
         <location filename="../../elementfactory.cpp" line="187"/>
         <source>Failed to cast element to TruthTable</source>
-        <translation type="unfinished"></translation>
+        <translation>요소를 TruthTable로 캐스트하는데 실패했습니다</translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="197"/>
@@ -2203,12 +2203,12 @@ IC와 스킨에 액세스하거나 beWavedDolphin 시뮬레이션을 실행하�
     <message>
         <location filename="../../commands.cpp" line="444"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="unfinished"></translation>
+        <translation>SplitCommand 생성자에서 유효하지 않은 연결 포트</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="450"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="unfinished"></translation>
+        <translation>SplitCommand 생성자에서 유효하지 않은 그래픽 요소</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="461"/>
@@ -2223,7 +2223,7 @@ IC와 스킨에 액세스하거나 beWavedDolphin 시뮬레이션을 실행하�
     <message>
         <location filename="../../commands.cpp" line="492"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="unfinished"></translation>
+        <translation>오류: SplitCommand::redo()에서 endPort가 null입니다</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="518"/>

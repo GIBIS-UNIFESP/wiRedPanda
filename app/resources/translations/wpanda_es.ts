@@ -442,12 +442,12 @@
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1303"/>
         <source>Invalid CSV format: insufficient data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato CSV inválido: datos insuficientes.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1322"/>
         <source>Invalid CSV format: expected %1 elements, got %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato CSV inválido: se esperaban %1 elementos, se obtuvieron %2.</translation>
     </message>
     <message>
         <location filename="../../bewaveddolphin.cpp" line="1371"/>
@@ -1158,7 +1158,7 @@
     <message>
         <location filename="../../elementfactory.cpp" line="187"/>
         <source>Failed to cast element to TruthTable</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al convertir elemento a TruthTable</translation>
     </message>
     <message>
         <location filename="../../elementfactory.cpp" line="197"/>
@@ -2202,12 +2202,12 @@ Debe guardar los proyectos nuevos antes de acceder a circuitos integrados y más
     <message>
         <location filename="../../commands.cpp" line="444"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="unfinished"></translation>
+        <translation>Puertos de conexión inválidos en el constructor SplitCommand</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="450"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementos gráficos inválidos en el constructor SplitCommand</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="461"/>
@@ -2222,7 +2222,7 @@ Debe guardar los proyectos nuevos antes de acceder a circuitos integrados y más
     <message>
         <location filename="../../commands.cpp" line="492"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="unfinished"></translation>
+        <translation>Error: endPort es null en SplitCommand::redo()</translation>
     </message>
     <message>
         <location filename="../../commands.cpp" line="518"/>
