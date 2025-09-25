@@ -352,6 +352,13 @@ private:
     QString generateClockLogic(GraphicElement *elm);
 
     /**
+     * @brief Generate multiplexer and demultiplexer logic
+     * @param elm MUX or DEMUX element
+     * @return Generated Verilog logic with case statements
+     */
+    QString generateMuxDemuxLogic(GraphicElement *elm);
+
+    /**
      * @brief Generate display element logic (7-segment, etc.)
      * @param elm Display element
      * @return Generated display controller logic
