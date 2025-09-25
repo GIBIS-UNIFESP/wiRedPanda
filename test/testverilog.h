@@ -718,6 +718,38 @@ private:
      */
     bool testCodeCompilation(const QString &code);
 
+    // ============================================================================
+    // VALIDATION HELPER METHODS (Added for test quality improvement)
+    // ============================================================================
+
+    /**
+     * @brief Validate basic Verilog code structure (module, endmodule, syntax)
+     * @param code Generated Verilog code
+     * @param testName Name of test for error messages
+     */
+    void validateBasicVerilogStructure(const QString &code, const QString &testName);
+
+    /**
+     * @brief Validate that code contains expected logic patterns
+     * @param code Generated Verilog code
+     * @param expectedPatterns List of patterns that should be present
+     * @param testName Name of test for error messages
+     * @param requireAll If true, all patterns must be present; if false, at least one
+     */
+    void validateLogicPatterns(const QString &code, const QStringList &expectedPatterns,
+                              const QString &testName, bool requireAll = false);
+
+    /**
+     * @brief Count and validate minimum/maximum occurrences of patterns
+     * @param code Generated Verilog code
+     * @param pattern Pattern to count
+     * @param minCount Minimum expected count (use 0 for no minimum)
+     * @param maxCount Maximum expected count (use -1 for no maximum)
+     * @param context Description for error messages
+     */
+    void validatePatternCount(const QString &code, const QString &pattern,
+                             int minCount, int maxCount, const QString &context);
+
     // Test data management
     Scene *m_scene = nullptr;
     QVector<GraphicElement *> m_testElements;

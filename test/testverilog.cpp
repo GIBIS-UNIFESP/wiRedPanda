@@ -1170,10 +1170,8 @@ void TestVerilog::testVariableMapping()
     QVector<GraphicElement *> elements = {input1, input2, gate1, gate2, output1, output2};
     QString code = generateTestVerilog(elements);
 
-    // Validate variable mapping
-    QVERIFY2(!code.isEmpty(), "Variable mapping test must generate non-empty code");
-    QVERIFY2(code.contains("module"), "Variable mapping test must generate module declaration");
-    QVERIFY2(code.contains("endmodule"), "Variable mapping test must generate module end");
+    // Validate variable mapping - use helper for common checks
+    validateBasicVerilogStructure(code, "Variable mapping test");
 
     // Check that input labels are mapped to port names (sanitized)
     QString lowerCode = code.toLower();
@@ -1566,7 +1564,6 @@ void TestVerilog::testSignalPropagation()
     QVERIFY2(foundFanout, "Signal propagation must handle fanout (same signal to multiple destinations)");
 
     // Verify multi-level logic depth
-    bool hasMultiLevelLogic = true;
     int logicDepth = 0;
 
     // Count logic operators to estimate depth
@@ -1576,7 +1573,8 @@ void TestVerilog::testSignalPropagation()
             logicDepth++;
         }
     }
-    QVERIFY2(logicDepth >= 3, "Signal propagation must generate multi-level logic (at least 3 levels)");
+    bool hasMultiLevelLogic = (logicDepth >= 3);
+    QVERIFY2(hasMultiLevelLogic, "Signal propagation must generate multi-level logic (at least 3 levels)");
 
     // Verify proper wire routing for propagation
     bool hasIntermediateSignals = false;
@@ -1628,8 +1626,13 @@ void TestVerilog::testSignalPropagation()
                     !rhsVar.contains("input") && !rhsVar.contains("btn") &&
                     !rhsVar.contains("sw") && rhsVar.length() > 2) {
 
-                    // This would indicate potential ordering issue, but we'll be lenient
-                    // as modern synthesizers can handle most ordering issues
+                    // Check for forward references (using variables before they're declared)
+                    if (!declaredVars.contains(rhsVar) && !rhsVar.contains("input") &&
+                        !rhsVar.contains("button") && !rhsVar.contains("switch")) {
+                        // This indicates a potential ordering issue
+                        qInfo() << "⚠ Potential forward reference detected:" << rhsVar << "in assignment of" << lhsVar;
+                        // Modern synthesizers can handle most ordering issues, so we'll note but allow
+                    }
                 }
             }
 
@@ -1637,8 +1640,8 @@ void TestVerilog::testSignalPropagation()
         }
     }
 
-    // For now, assume ordering is acceptable if code is syntactically valid
-    QVERIFY2(validateVerilogSyntax(code), "Signal propagation must maintain proper signal ordering");
+    // Validate topological ordering - accept if code is syntactically valid (synthesizers handle ordering)
+    QVERIFY2(hasProperOrdering && validateVerilogSyntax(code), "Signal propagation must maintain proper signal ordering");
 
     qInfo() << "✓ Signal propagation test passed";
 }
@@ -1771,10 +1774,13 @@ void TestVerilog::testContinuousAssignments()
         if (match.hasMatch()) {
             QString varName = match.captured(1);
             // Variable name should be valid Verilog identifier
-            QVERIFY2(varName.at(0).isLetter() || varName.at(0) == '_',
-                    qPrintable(QString("Assignment variable '%1' must start with letter or underscore").arg(varName)));
+            if (varName.isEmpty() || (!varName.at(0).isLetter() && varName.at(0) != '_')) {
+                hasValidVariableReferences = false;
+                qInfo() << "⚠ Invalid variable reference:" << varName;
+            }
         }
     }
+    QVERIFY2(hasValidVariableReferences, "Continuous assignments must reference valid Verilog identifiers");
 
     // Test complex assignments (multiple operators in one statement)
     bool hasComplexAssignment = false;
@@ -1790,7 +1796,10 @@ void TestVerilog::testContinuousAssignments()
             break;
         }
     }
-    // Complex assignments are good but not required for basic functionality
+    // Complex assignments demonstrate advanced capability but are not required for basic functionality
+    if (hasComplexAssignment) {
+        qInfo() << "✓ Found complex assignments with multiple operators - advanced capability";
+    }
 
     // Verify node pass-through generates simple assignments
     bool hasPassThroughAssign = false;
@@ -10692,6 +10701,66 @@ void TestVerilog::testVersionCompatibility() { QSKIP("Version compatibility test
 void TestVerilog::testBackwardsCompatibility() { QSKIP("Backwards compatibility test not yet implemented"); }
 void TestVerilog::testFutureExtensibility() { QSKIP("Future extensibility test not yet implemented"); }
 void TestVerilog::testComprehensiveIntegration() { QSKIP("Comprehensive integration test not yet implemented - critical final validation"); }
+
+// ============================================================================
+// VALIDATION HELPER METHODS IMPLEMENTATION (Test Quality Improvements)
+// ============================================================================
+
+void TestVerilog::validateBasicVerilogStructure(const QString &code, const QString &testName)
+{
+    // Constants for minimum requirements
+    static const int MIN_CODE_LENGTH = 20;
+    static const QStringList REQUIRED_ELEMENTS = {"module", "endmodule"};
+
+    QVERIFY2(!code.isEmpty(), qPrintable(QString("%1 must generate non-empty code").arg(testName)));
+    QVERIFY2(code.length() > MIN_CODE_LENGTH, qPrintable(QString("%1 must generate substantial code (>%2 chars)").arg(testName).arg(MIN_CODE_LENGTH)));
+
+    for (const QString &element : REQUIRED_ELEMENTS) {
+        QVERIFY2(code.contains(element), qPrintable(QString("%1 must generate %2").arg(testName, element)));
+    }
+
+    QVERIFY2(validateVerilogSyntax(code), qPrintable(QString("%1 must generate syntactically correct Verilog").arg(testName)));
+}
+
+void TestVerilog::validateLogicPatterns(const QString &code, const QStringList &expectedPatterns,
+                                       const QString &testName, bool requireAll)
+{
+    if (requireAll) {
+        for (const QString &pattern : expectedPatterns) {
+            QVERIFY2(code.contains(pattern),
+                    qPrintable(QString("%1 must contain pattern: %2").arg(testName, pattern)));
+        }
+    } else {
+        bool foundAny = false;
+        for (const QString &pattern : expectedPatterns) {
+            if (code.contains(pattern)) {
+                foundAny = true;
+                break;
+            }
+        }
+        QVERIFY2(foundAny,
+                qPrintable(QString("%1 must contain at least one of these patterns: %2")
+                          .arg(testName, expectedPatterns.join(", "))));
+    }
+}
+
+void TestVerilog::validatePatternCount(const QString &code, const QString &pattern,
+                                      int minCount, int maxCount, const QString &context)
+{
+    int actualCount = code.count(pattern);
+
+    if (minCount > 0) {
+        QVERIFY2(actualCount >= minCount,
+                qPrintable(QString("%1: Expected at least %2 occurrences of '%3', found %4")
+                          .arg(context).arg(minCount).arg(pattern).arg(actualCount)));
+    }
+
+    if (maxCount >= 0) {
+        QVERIFY2(actualCount <= maxCount,
+                qPrintable(QString("%1: Expected at most %2 occurrences of '%3', found %4")
+                          .arg(context).arg(maxCount).arg(pattern).arg(actualCount)));
+    }
+}
 
 int main(int argc, char **argv)
 {
