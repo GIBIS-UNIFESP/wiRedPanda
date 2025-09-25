@@ -149,6 +149,13 @@ private:
      */
     static QString boolValue(const Status val);
 
+    /**
+     * @brief Check if identifier is a Verilog reserved keyword
+     * @param identifier Identifier to check
+     * @return True if identifier is reserved
+     */
+    static bool isVerilogReservedKeyword(const QString &identifier);
+
     // ============================================================================
     // FPGA BOARD SELECTION AND VALIDATION
     // ============================================================================

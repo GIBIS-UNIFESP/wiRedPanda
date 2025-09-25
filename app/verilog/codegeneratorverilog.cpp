@@ -34,7 +34,7 @@ CodeGeneratorVerilog::CodeGeneratorVerilog(const QString &fileName, const QVecto
     m_fileName = removeForbiddenChars(stripAccents(info.completeBaseName()));
 
     // Ensure module name starts with letter and is valid Verilog identifier
-    if (m_fileName.isEmpty() || !m_fileName.at(0).isLetter()) {
+    if (m_fileName.isEmpty() || !m_fileName.at(0).isLetter() || isVerilogReservedKeyword(m_fileName)) {
         m_fileName = "wiredpanda_module";
     }
 }
@@ -62,6 +62,45 @@ QString CodeGeneratorVerilog::stripAccents(const QString &input)
 QString CodeGeneratorVerilog::boolValue(const Status val)
 {
     return (val == Status::Active) ? "1'b1" : "1'b0";
+}
+
+bool CodeGeneratorVerilog::isVerilogReservedKeyword(const QString &identifier)
+{
+    // Comprehensive list of Verilog reserved keywords (IEEE 1364/1800)
+    static const QSet<QString> reservedKeywords = {
+        // Port and signal keywords
+        "input", "output", "inout", "wire", "reg", "tri", "tri0", "tri1",
+
+        // Module and hierarchy keywords
+        "module", "endmodule", "generate", "endgenerate", "genvar",
+        "task", "endtask", "function", "endfunction",
+
+        // Control flow keywords
+        "if", "else", "case", "casex", "casez", "endcase", "default",
+        "for", "while", "repeat", "forever", "begin", "end",
+
+        // Logic keywords
+        "and", "or", "not", "nand", "nor", "xor", "xnor", "buf", "bufif0", "bufif1",
+        "notif0", "notif1", "nmos", "pmos", "cmos", "rnmos", "rpmos", "rcmos",
+
+        // Timing and behavioral keywords
+        "always", "initial", "assign", "posedge", "negedge", "edge",
+        "wait", "disable", "fork", "join",
+
+        // SystemVerilog additions
+        "logic", "bit", "byte", "shortint", "int", "longint", "time",
+        "interface", "endinterface", "class", "endclass", "package", "endpackage",
+        "program", "endprogram", "property", "endproperty",
+
+        // Compiler directives (without backticks)
+        "define", "undef", "ifdef", "ifndef", "else", "endif", "include",
+        "timescale", "resetall", "celldefine", "endcelldefine",
+
+        // System tasks and functions (without $)
+        "display", "monitor", "strobe", "write", "finish", "stop", "time", "realtime"
+    };
+
+    return reservedKeywords.contains(identifier.toLower());
 }
 
 // ============================================================================
@@ -1321,17 +1360,29 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
         sensitivity << QString("posedge %1").arg(clk);
 
         if (prst != "1'b1" && prst != "1'b0") {
-            sensitivity << QString("negedge %1").arg(prst);
+            // Handle inverted signals properly in sensitivity list
+            if (prst.startsWith("~")) {
+                sensitivity << QString("posedge %1").arg(prst.mid(1)); // Remove ~ and use posedge
+            } else {
+                sensitivity << QString("negedge %1").arg(prst);
+            }
         }
         if (clr != "1'b1" && clr != "1'b0") {
-            sensitivity << QString("negedge %1").arg(clr);
+            // Handle inverted signals properly in sensitivity list
+            if (clr.startsWith("~")) {
+                sensitivity << QString("posedge %1").arg(clr.mid(1)); // Remove ~ and use posedge
+            } else {
+                sensitivity << QString("negedge %1").arg(clr);
+            }
         }
 
         code += QString("    always @(%1) begin\n").arg(sensitivity.join(" or "));
 
         // Handle asynchronous preset
         if (prst != "1'b1" && prst != "1'b0") {
-            code += QString("        if (!%1) begin\n").arg(prst);
+            // Handle inverted signals properly in conditional logic
+            QString presetCondition = prst.startsWith("~") ? prst.mid(1) : QString("!%1").arg(prst);
+            code += QString("        if (%1) begin\n").arg(presetCondition);
             code += QString("            %1 <= 1'b1;\n").arg(firstOut);
             code += QString("            %1 <= 1'b0;\n").arg(secondOut);
             code += QString("        end else ");
@@ -1339,10 +1390,12 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
 
         // Handle asynchronous clear
         if (clr != "1'b1" && clr != "1'b0") {
+            // Handle inverted signals properly in conditional logic
+            QString clearCondition = clr.startsWith("~") ? clr.mid(1) : QString("!%1").arg(clr);
             if (prst == "1'b1" || prst == "1'b0") {
-                code += QString("        if (!%1) begin\n").arg(clr);
+                code += QString("        if (%1) begin\n").arg(clearCondition);
             } else {
-                code += QString("if (!%1) begin\n").arg(clr);
+                code += QString("if (%1) begin\n").arg(clearCondition);
             }
             code += QString("            %1 <= 1'b0;\n").arg(firstOut);
             code += QString("            %1 <= 1'b1;\n").arg(secondOut);
@@ -1374,23 +1427,42 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
         // Build sensitivity list
         QStringList sensitivity;
         sensitivity << QString("posedge %1").arg(clk);
-        if (prst != "1'b1" && prst != "1'b0") sensitivity << QString("negedge %1").arg(prst);
-        if (clr != "1'b1" && clr != "1'b0") sensitivity << QString("negedge %1").arg(clr);
+
+        if (prst != "1'b1" && prst != "1'b0") {
+            // Handle inverted signals properly in sensitivity list
+            if (prst.startsWith("~")) {
+                sensitivity << QString("posedge %1").arg(prst.mid(1)); // Remove ~ and use posedge
+            } else {
+                sensitivity << QString("negedge %1").arg(prst);
+            }
+        }
+        if (clr != "1'b1" && clr != "1'b0") {
+            // Handle inverted signals properly in sensitivity list
+            if (clr.startsWith("~")) {
+                sensitivity << QString("posedge %1").arg(clr.mid(1)); // Remove ~ and use posedge
+            } else {
+                sensitivity << QString("negedge %1").arg(clr);
+            }
+        }
 
         code += QString("    always @(%1) begin\n").arg(sensitivity.join(" or "));
 
         // Asynchronous controls
         if (prst != "1'b1" && prst != "1'b0") {
-            code += QString("        if (!%1) begin\n").arg(prst);
+            // Handle inverted signals properly in conditional logic
+            QString presetCondition = prst.startsWith("~") ? prst.mid(1) : QString("!%1").arg(prst);
+            code += QString("        if (%1) begin\n").arg(presetCondition);
             code += QString("            %1 <= 1'b1;\n").arg(firstOut);
             code += QString("            %1 <= 1'b0;\n").arg(secondOut);
             code += QString("        end else ");
         }
         if (clr != "1'b1" && clr != "1'b0") {
+            // Handle inverted signals properly in conditional logic
+            QString clearCondition = clr.startsWith("~") ? clr.mid(1) : QString("!%1").arg(clr);
             if (prst == "1'b1" || prst == "1'b0") {
-                code += QString("        if (!%1) begin\n").arg(clr);
+                code += QString("        if (%1) begin\n").arg(clearCondition);
             } else {
-                code += QString("if (!%1) begin\n").arg(clr);
+                code += QString("if (%1) begin\n").arg(clearCondition);
             }
             code += QString("            %1 <= 1'b0;\n").arg(firstOut);
             code += QString("            %1 <= 1'b1;\n").arg(secondOut);
