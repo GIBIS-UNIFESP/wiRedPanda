@@ -70,10 +70,10 @@ void TestVerilog::testBasicVerilogGeneration()
     QVector<GraphicElement *> elements = {input, output};
     QString code = generateTestVerilog(elements);
 
-    // Validate basic structure
-    QVERIFY(!code.isEmpty());
-    QVERIFY(code.contains("module"));
-    QVERIFY(code.contains("endmodule"));
+    // Validate basic structure - must have complete module framework
+    QVERIFY2(code.contains("module") && code.contains("endmodule") && code.length() > MIN_SUBSTANTIAL_CODE,
+            "Basic Verilog generation must produce complete module structure with substantial content");
+    validateBasicVerilogStructure(code, "Basic generation test");
     QVERIFY(code.contains("input wire"));
     QVERIFY(code.contains("output wire"));
     QVERIFY(code.contains("assign"));
@@ -106,7 +106,7 @@ void TestVerilog::testFPGABoardSelection()
     QVector<GraphicElement *> largeCircuit;
 
     // Create a circuit with many elements to force larger FPGA selection
-    for (int i = 0; i < 20; ++i) {
+    for (int i = 0; i < STANDARD_TEST_ITERATIONS; ++i) {
         auto *input = createInputElement(ElementType::InputButton);
         auto *gate = createLogicGate(ElementType::And);
         auto *output = createOutputElement(ElementType::Led);
@@ -118,8 +118,10 @@ void TestVerilog::testFPGABoardSelection()
     }
 
     QString largeCode = generateTestVerilog(largeCircuit);
-    QVERIFY(!largeCode.isEmpty());
-    QVERIFY(largeCode.contains("Resource Usage:"));
+    // Validate comprehensive structure for large circuit
+    QVERIFY2(largeCode.contains("module") && largeCode.contains("endmodule") &&
+             largeCode.contains("Resource Usage:") && largeCode.length() > MIN_LARGE_CIRCUIT_CODE,
+            "Large FPGA circuit must generate substantial Verilog code with resource information");
 
     // Clean up
     for (auto *elem : largeCircuit) {
@@ -334,10 +336,12 @@ void TestVerilog::testErrorHandling()
 {
     // Test error handling for various invalid scenarios
 
-    // Test 1: Empty element list
+    // Test 1: Empty element list - should generate minimal valid module
     QVector<GraphicElement *> emptyElements;
     QString emptyCode = generateTestVerilog(emptyElements);
-    QVERIFY(!emptyCode.isEmpty()); // Should still generate basic module
+    QVERIFY2(emptyCode.contains("module") && emptyCode.contains("endmodule") &&
+             (emptyCode.contains("// No elements") || emptyCode.length() > 50),
+            "Empty circuit must generate valid minimal module structure");
 
     // Test 2: Unconnected elements
     auto *input = createInputElement(ElementType::InputButton);
@@ -347,13 +351,17 @@ void TestVerilog::testErrorHandling()
     // Don't connect elements - should generate warnings but not fail
     QVector<GraphicElement *> unconnectedElements = {input, gate, output};
     QString unconnectedCode = generateTestVerilog(unconnectedElements);
-    QVERIFY(!unconnectedCode.isEmpty());
+    QVERIFY2(unconnectedCode.contains("module") && unconnectedCode.contains("endmodule") &&
+             (unconnectedCode.contains("input") || unconnectedCode.contains("output")) &&
+             unconnectedCode.length() > MIN_SUBSTANTIAL_CODE,
+            "Unconnected elements must generate valid module with port declarations");
 
-    // Test 3: Invalid element configurations
-    // This should be handled gracefully
+    // Test 3: Invalid element configurations - should handle gracefully
     QVector<GraphicElement *> invalidElements = {input};
     QString invalidCode = generateTestVerilog(invalidElements);
-    QVERIFY(!invalidCode.isEmpty());
+    QVERIFY2(invalidCode.contains("module") && invalidCode.contains("endmodule") &&
+             invalidCode.contains("input") && invalidCode.length() > 50,
+            "Invalid configurations must generate valid module with proper input handling");
 
     qInfo() << "✓ Error handling test passed";
 }
@@ -484,11 +492,12 @@ void TestVerilog::testBasicLogicGates()
 
     QString code = generateTestVerilog(elements);
 
-    // Check for proper logic expressions
-    QVERIFY(code.contains("assign"));
-    QVERIFY(code.contains("&") || code.contains("and")); // AND operation
-    QVERIFY(code.contains("|") || code.contains("or"));  // OR operation
-    QVERIFY(code.contains("~") || code.contains("not")); // NOT operation
+    // Check for proper logic expressions in valid Verilog context
+    QVERIFY2(code.contains("assign") &&
+             (code.contains("& ") || code.contains(" &") || code.contains("and ")) &&
+             (code.contains("| ") || code.contains(" |") || code.contains("or ")) &&
+             (code.contains("~ ") || code.contains(" ~") || code.contains("not ")),
+            "Basic logic gates must generate proper Verilog operators in assignment context");
 
     // Validate assignments are present
     QStringList assigns = extractAssignStatements(code);
@@ -544,7 +553,12 @@ void TestVerilog::testComplexLogicGates()
     // XOR: A ^ B
     // XNOR: ~(A ^ B)
 
-    QVERIFY(code.contains("~") && (code.contains("&") || code.contains("|") || code.contains("^")));
+    // Validate complex logic patterns in proper Verilog syntax
+    bool hasComplexLogic = (code.contains("~(") && code.contains("&")) ||  // NAND pattern
+                          (code.contains("~(") && code.contains("|")) ||  // NOR pattern
+                          (code.contains(" ^ ") || code.contains("^")) ||  // XOR pattern
+                          (code.contains("~") && code.contains("^"));     // XNOR pattern
+    QVERIFY2(hasComplexLogic, "Complex logic gates must generate proper inversion and compound logic patterns");
 
     // Should have proper assignments
     QStringList assigns = extractAssignStatements(code);
@@ -1133,7 +1147,7 @@ void TestVerilog::testCircularDependencyDetection()
 
     // Should not contain obvious infinite loop patterns
     int assignCount = code.count("assign");
-    QVERIFY2(assignCount < 100, "Circular dependency handling should not generate excessive assignments");
+    QVERIFY2(assignCount < MAX_CIRCULAR_ASSIGNMENTS, "Circular dependency handling should not generate excessive assignments");
 
     // Verify basic structure is maintained
     QVERIFY(code.contains("input wire"));
@@ -1439,8 +1453,8 @@ void TestVerilog::testMultiElementCircuits()
 
     // Test scalability - measure complexity
     int complexity = measureCodeComplexity(code);
-    QVERIFY2(complexity > 10, "Multi-element circuit should have reasonable complexity measure");
-    QVERIFY2(complexity < 1000, "Multi-element circuit complexity should be manageable");
+    QVERIFY2(complexity > MAX_COMMENT_THRESHOLD, "Multi-element circuit should have reasonable complexity measure");
+    QVERIFY2(complexity < MAX_MANAGEABLE_COMPLEXITY, "Multi-element circuit complexity should be manageable");
 
     // Validate that all element types are represented in the code
     bool hasCombinatorialLogic = code.contains("assign") || code.contains("&") || code.contains("|");
@@ -2206,10 +2220,10 @@ void TestVerilog::testDFlipFlop()
     qDebug() << "DEBUG: Generated D flip-flop code:";
     qDebug() << code;
 
-    // Validate D flip-flop generates proper sequential logic
-    QVERIFY(!code.isEmpty());
-    QVERIFY(code.contains("module"));
-    QVERIFY(code.contains("endmodule"));
+    // Validate D flip-flop generates proper sequential logic structure
+    QVERIFY2(code.contains("module") && code.contains("endmodule") &&
+             code.contains("always") && code.length() > MIN_SEQUENTIAL_CODE,
+            "D flip-flop must generate substantial sequential logic module with always blocks");
 
     // Critical sequential logic validation
     QVERIFY2(code.contains("always"), "D flip-flop must generate always block for sequential logic");
@@ -3431,7 +3445,17 @@ void TestVerilog::testComplexTruthTables()
         qInfo() << "◊ Note: High complexity truth table implementation";
     }
 
-    // Test 8: Comparison with equivalent gate-level logic
+    // Test 8: Optimization validation
+    // For lookup-based implementations, check for optimization patterns
+    if (hasLookupImplementation && assigns.size() > 2) {
+        if (hasOptimizedLogic) {
+            qInfo() << "✓ Complex truth tables demonstrate optimization patterns (sum-of-products or product-of-sums)";
+        } else {
+            qInfo() << "◊ Note: Truth table implementation uses basic patterns (optimization opportunities may exist)";
+        }
+    }
+
+    // Test 9: Comparison with equivalent gate-level logic
     // The gate-level equivalent should generate similar functionality
     bool hasEquivalentLogic = code.contains("xor") || code.contains("^") ||
                              code.contains("and") || code.contains("&");
@@ -3795,6 +3819,27 @@ void TestVerilog::testDisplayElements()
     if (code.contains("case") && code.contains("10")) {
         hasCommonPatterns = true;
         qInfo() << "✓ Found decimal display patterns";
+    }
+
+    // Test validation for display features
+    // For multi-digit displays, expect multiplexing or refresh logic
+    if (hasMultiBitDisplay || extractAlwaysBlocks(code).size() > 2) {
+        QVERIFY2(hasMultiplexing || hasRefreshLogic, "Multi-digit displays should implement multiplexing or refresh logic");
+    }
+
+    // For display elements, expect some form of pattern generation
+    if (hasDecoderLogic) {
+        QVERIFY2(hasLEDPatterns || hasValidSegmentEncoding || hasBCDConversion, "Display decoders should implement LED patterns, segment encoding, or BCD conversion");
+    }
+
+    // For complex displays, expect dynamic content or common patterns
+    if (extractAlwaysBlocks(code).size() > 1 || code.contains("case")) {
+        QVERIFY2(hasDynamicContent || hasCommonPatterns, "Complex displays should support dynamic content or common display patterns");
+    }
+
+    // Display enable is optional but validate if present
+    if (code.contains("enable")) {
+        QVERIFY2(hasDisplayEnable, "Displays with enable signals must implement proper enable logic");
     }
 
     // Overall validation
@@ -4319,6 +4364,24 @@ void TestVerilog::testMultiSegmentDisplays()
 
     QVERIFY2(hasComprehensiveMultiDisplay,
             "Multi-segment displays must have comprehensive multi-digit display support");
+
+    // Validate cathode/anode support for proper display driving
+    if (code.contains("~") || code.contains("enable")) {
+        if (hasCathodeAnodeSupport) {
+            qInfo() << "✓ Multi-segment displays include common cathode/anode support";
+        } else {
+            qInfo() << "◊ Note: Multi-segment displays use direct drive (cathode/anode support not detected)";
+        }
+    }
+
+    // Validate blanking logic for professional display features
+    if (code.contains("blank") || code.contains("zero") || code.contains("suppress") || (alwaysBlocks.size() > 3)) {
+        if (hasBlankingLogic) {
+            qInfo() << "✓ Advanced multi-segment displays implement blanking or zero suppression logic";
+        } else {
+            qInfo() << "◊ Note: Multi-segment displays use basic display (blanking logic not detected)";
+        }
+    }
 
     qInfo() << "✓ Multi-segment displays test passed";
 }
@@ -4898,6 +4961,36 @@ void TestVerilog::testSequentialTiming()
         }
     }
 
+    // Validate sequential timing requirements
+    QVERIFY2(hasProperSequentialAssignments, "Sequential timing must use proper non-blocking assignments (<=) for registers");
+
+    // Validate timing practices for professional implementations
+    if (hasTimingSafePractices) {
+        qInfo() << "✓ Sequential timing follows timing-safe coding practices";
+    } else {
+        qInfo() << "◊ Warning: Sequential timing has potential timing hazards (mixed assignments detected)";
+        // Still valid Verilog, just suboptimal for complex designs
+    }
+
+    // For complex sequential circuits, expect critical path considerations
+    if (assigns.size() > 2 && sequentialBlocks > 1) {
+        QVERIFY2(hasCriticalPathStructures, "Complex sequential circuits should identify critical path structures");
+    }
+
+    // If reset logic is present, validate reset timing
+    if (code.contains("reset")) {
+        if (hasSyncReset || hasAsyncReset) {
+            qInfo() << "✓ Reset logic implements proper timing (sync or async reset detected)";
+        } else {
+            qInfo() << "◊ Note: Reset signal present but timing pattern not clearly identified";
+        }
+    }
+
+    // Validate edge-triggered vs latch timing preference
+    if (hasLatchTiming && hasEdgeTriggeredTiming) {
+        qInfo() << "◊ Note: Mixed latch and edge-triggered timing - ensure intentional design";
+    }
+
     qInfo() << "✓ Sequential timing test passed";
 }
 void TestVerilog::testAlwaysBlocks()
@@ -5014,6 +5107,13 @@ void TestVerilog::testAlwaysBlocks()
         }
     }
     QVERIFY2(hasRegForAlways, "Always blocks must use reg variables for storage");
+
+    // Validate combinational logic implementation approach
+    // Either combinational always blocks OR continuous assignments should be used
+    QStringList assigns = extractAssignStatements(code);
+    bool hasContinuousAssigns = assigns.size() > 0;
+    QVERIFY2(hasCombinationalAlways || hasContinuousAssigns,
+            "Circuit must implement combinational logic using either always blocks or continuous assignments");
 
     qInfo() << "✓ Always blocks test passed";
 }
@@ -5377,6 +5477,12 @@ void TestVerilog::testSensitivityLists()
                     block.contains("posedge reset") || block.contains("negedge reset")) {
                     hasAsyncReset = true;
                     qInfo() << "✓ Found asynchronous reset in sensitivity list";
+                }
+
+                // Validate reset implementation if reset signals are present
+                if (block.contains("reset") || block.contains("rst")) {
+                    QVERIFY2(hasAsyncReset || block.contains("if") || block.contains("case"),
+                            "Sequential blocks with reset must implement either asynchronous reset (in sensitivity list) or synchronous reset (in logic)");
                 }
 
                 // Should use non-blocking assignments (<=) for sequential logic

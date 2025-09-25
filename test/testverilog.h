@@ -771,7 +771,21 @@ private:
 
     // Code structure thresholds
     static constexpr int MIN_CODE_LENGTH = 20;          // Non-trivial code generation
+    static constexpr int MIN_SUBSTANTIAL_CODE = 100;    // Substantial module content
+    static constexpr int MIN_SEQUENTIAL_CODE = 200;     // Sequential logic complexity
+    static constexpr int MIN_LARGE_CIRCUIT_CODE = 500;  // Large circuit content
     static constexpr int MIN_VARIABLE_DECLARATIONS = 4; // Internal signal complexity
+
+    // Complexity and resource limits
+    static constexpr int MAX_CIRCULAR_ASSIGNMENTS = 100; // Circular dependency limit
+    static constexpr int MAX_MANAGEABLE_COMPLEXITY = 1000; // Circuit complexity limit
+    static constexpr int MAX_COMMENT_THRESHOLD = 10;     // Minimum comment expectation
+    static constexpr int STANDARD_TEST_ITERATIONS = 20;  // Standard loop count
+
+    // Element configuration limits
+    static constexpr int MAX_TRUTH_TABLE_CASES = 32;     // 5-input truth table limit
+    static constexpr int STANDARD_DISPLAY_ASSIGNMENTS = 30; // Display assignment limit
+    static constexpr int HIGH_COMPLEXITY_CASES = 50;     // High complexity threshold
 
     // Test data management
     Scene *m_scene = nullptr;
