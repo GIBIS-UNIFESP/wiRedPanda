@@ -413,22 +413,26 @@ QString CodeGeneratorVerilog::otherPortName(QNEPort *port, QSet<GraphicElement*>
         elm->elementType() == ElementType::Not ||
         elm->elementType() == ElementType::Node) {
 
-        generateDebugInfo("otherPortName: Connected to logic gate, generating expression", elm);
+        generateDebugInfo("otherPortName: Connected to logic gate, checking for existing variable first", elm);
+
+        // CRITICAL FIX: Check if we already have a variable for this port BEFORE generating inline expression
+        QString existingVar = m_varMap.value(otherPort);
+        if (!existingVar.isEmpty() && existingVar != "1'b0" && existingVar != "1'b1") {
+            generateDebugInfo(QString("otherPortName: Found existing variable for logic gate: %1").arg(existingVar), elm);
+            return existingVar;  // Use the intermediate signal name instead of regenerating expression
+        }
+
+        generateDebugInfo("otherPortName: No existing variable found, will generate expression", elm);
 
         // SPECIAL CASE: Handle Node elements inside ICs that might carry mapped signals
         if (elm->elementType() == ElementType::Node && m_currentIC) {
             generateDebugInfo(QString("otherPortName: Node inside IC %1, checking for IC port mappings").arg(m_currentIC->label()), elm);
 
-            // Check if this Node's output port is already correctly mapped in varMap
-            QString existingMapping = m_varMap.value(otherPort);
-            if (!existingMapping.isEmpty() && existingMapping != "1'b0" && existingMapping != "1'b1") {
-                generateDebugInfo(QString("otherPortName: Node inside IC has valid mapping: %1").arg(existingMapping), elm);
-                return existingMapping;
-            }
-
-            generateDebugInfo(QString("otherPortName: Node inside IC has no valid mapping, proceeding with expression generation: '%1'").arg(existingMapping), elm);
+            // For IC nodes, we already checked existingVar above, so proceed with expression generation
+            generateDebugInfo(QString("otherPortName: Node inside IC has no valid mapping, proceeding with expression generation"), elm);
         }
 
+        // Fall back to generating inline expression only if no variable exists
         return generateLogicExpression(elm, visited);
     }
 

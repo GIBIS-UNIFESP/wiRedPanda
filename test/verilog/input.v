@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: wiredpanda_module
-// Generated: Fri Sep 26 14:36:26 2025
+// Generated: Fri Sep 26 14:59:13 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 12/1000 LUTs, 0/1000 FFs, 6/50 IOs
 //
@@ -36,10 +36,10 @@ module wiredpanda_module (
     assign not_7 = ~input_push_button1_x0_1; // Not
 
     // ========= Output Assignments =========
-    assign output_led1_xor_0_3 = (input_push_button1_x0_1 ^ input_push_button2_x1_2); // LED
-    assign output_led2_not_x0_0_4 = ~input_push_button1_x0_1; // LED
-    assign output_led3_and_0_5 = (input_push_button1_x0_1 & input_push_button2_x1_2); // LED
-    assign output_led4_or_0_6 = (input_push_button1_x0_1 | input_push_button2_x1_2); // LED
+    assign output_led1_xor_0_3 = xor_8; // LED
+    assign output_led2_not_x0_0_4 = not_7; // LED
+    assign output_led3_and_0_5 = and_10; // LED
+    assign output_led4_or_0_6 = or_9; // LED
 
 endmodule // wiredpanda_module
 

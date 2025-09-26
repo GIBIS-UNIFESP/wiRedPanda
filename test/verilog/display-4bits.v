@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: display_4bits
-// Generated: Fri Sep 26 14:36:24 2025
+// Generated: Fri Sep 26 14:59:10 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 94/1000 LUTs, 0/1000 FFs, 13/50 IOs
 //
@@ -97,81 +97,81 @@ module display_4bits (
     wire node_77;
 
     // ========= Logic Assignments =========
-    assign node_77 = ~input_input_switch1_d_1; // Node
-    assign node_76 = input_input_switch4_a_4; // Node
-    assign node_75 = ~input_input_switch4_a_4; // Node
-    assign node_74 = ~input_input_switch2_b_2; // Node
-    assign node_73 = input_input_switch2_b_2; // Node
-    assign node_72 = ~input_input_switch3_c_3; // Node
-    assign node_71 = input_input_switch3_c_3; // Node
-    assign node_70 = input_input_switch1_d_1; // Node
-    assign not_69 = ~input_input_switch4_a_4; // Not
-    assign or_68 = ((input_input_switch2_b_2 & input_input_switch1_d_1) | input_input_switch4_a_4 | input_input_switch3_c_3 | (~input_input_switch2_b_2 & ~input_input_switch1_d_1)); // Or
-    assign or_67 = ((input_input_switch3_c_3 & input_input_switch1_d_1) | ~input_input_switch2_b_2 | (~input_input_switch3_c_3 & ~input_input_switch1_d_1)); // Or
-    assign or_66 = (input_input_switch4_a_4 | (~input_input_switch2_b_2 & ~input_input_switch1_d_1) | (input_input_switch3_c_3 & ~input_input_switch1_d_1) | (~input_input_switch2_b_2 & input_input_switch3_c_3) | (input_input_switch1_d_1 & (input_input_switch2_b_2 & ~input_input_switch3_c_3))); // Or
-    assign or_65 = ((~input_input_switch2_b_2 & ~input_input_switch1_d_1) | (input_input_switch3_c_3 & ~input_input_switch1_d_1)); // Or
-    assign or_64 = (input_input_switch2_b_2 | ~input_input_switch3_c_3 | input_input_switch1_d_1); // Or
-    assign or_63 = ((~input_input_switch3_c_3 & ~input_input_switch1_d_1) | (input_input_switch2_b_2 & ~input_input_switch1_d_1) | (input_input_switch2_b_2 & ~input_input_switch3_c_3) | input_input_switch4_a_4); // Or
-    assign or_62 = ((input_input_switch3_c_3 & ~input_input_switch1_d_1) | (input_input_switch2_b_2 & ~input_input_switch3_c_3) | input_input_switch4_a_4 | (~input_input_switch2_b_2 & input_input_switch3_c_3)); // Or
-    assign and_61 = (input_input_switch2_b_2 & input_input_switch1_d_1); // And
-    assign and_60 = (input_input_switch3_c_3 & input_input_switch1_d_1); // And
-    assign and_59 = (~input_input_switch2_b_2 & input_input_switch3_c_3); // And
-    assign and_58 = (input_input_switch1_d_1 & (input_input_switch2_b_2 & ~input_input_switch3_c_3)); // And
-    assign node_57 = (~input_input_switch2_b_2 & ~input_input_switch1_d_1); // Node
-    assign node_56 = (input_input_switch3_c_3 & ~input_input_switch1_d_1); // Node
-    assign node_55 = (~input_input_switch3_c_3 & ~input_input_switch1_d_1); // Node
-    assign and_54 = (input_input_switch2_b_2 & ~input_input_switch1_d_1); // And
-    assign node_53 = input_input_switch4_a_4; // Node
-    assign and_52 = (input_input_switch2_b_2 & ~input_input_switch3_c_3); // And
-    assign node_51 = (~input_input_switch2_b_2 & ~input_input_switch1_d_1); // Node
-    assign node_50 = input_input_switch3_c_3; // Node
-    assign node_49 = ~input_input_switch2_b_2; // Node
-    assign node_48 = input_input_switch1_d_1; // Node
-    assign node_47 = (input_input_switch3_c_3 & ~input_input_switch1_d_1); // Node
-    assign node_46 = (~input_input_switch3_c_3 & ~input_input_switch1_d_1); // Node
-    assign node_45 = ~input_input_switch1_d_1; // Node
-    assign node_44 = input_input_switch2_b_2; // Node
-    assign node_43 = input_input_switch4_a_4; // Node
-    assign and_42 = (~input_input_switch3_c_3 & ~input_input_switch1_d_1); // And
-    assign and_41 = (input_input_switch3_c_3 & ~input_input_switch1_d_1); // And
-    assign node_40 = ~input_input_switch2_b_2; // Node
-    assign node_39 = input_input_switch1_d_1; // Node
-    assign node_38 = (~input_input_switch2_b_2 & ~input_input_switch1_d_1); // Node
-    assign node_37 = input_input_switch4_a_4; // Node
-    assign node_36 = input_input_switch2_b_2; // Node
-    assign node_35 = ~input_input_switch3_c_3; // Node
-    assign and_34 = (~input_input_switch2_b_2 & ~input_input_switch1_d_1); // And
-    assign node_33 = input_input_switch4_a_4; // Node
-    assign node_32 = input_input_switch1_d_1; // Node
-    assign node_31 = ~input_input_switch3_c_3; // Node
-    assign node_30 = input_input_switch2_b_2; // Node
-    assign node_29 = ~input_input_switch1_d_1; // Node
-    assign node_28 = input_input_switch3_c_3; // Node
+    assign node_77 = node_45; // Node
+    assign node_76 = node_53; // Node
+    assign node_75 = not_69; // Node
+    assign node_74 = node_49; // Node
+    assign node_73 = node_44; // Node
+    assign node_72 = node_35; // Node
+    assign node_71 = node_50; // Node
+    assign node_70 = node_48; // Node
+    assign not_69 = ~node_27; // Not
+    assign or_68 = (and_61 | node_33 | node_17 | node_38); // Or
+    assign or_67 = (and_60 | node_40 | node_46); // Or
+    assign or_66 = (node_37 | node_51 | node_47 | and_59 | and_58); // Or
+    assign or_65 = (node_57 | node_56); // Or
+    assign or_64 = (node_30 | node_31 | node_39); // Or
+    assign or_63 = (node_55 | and_54 | and_52 | node_43); // Or
+    assign or_62 = (node_56 | and_52 | node_53 | and_59); // Or
+    assign and_61 = (node_26 & node_25); // And
+    assign and_60 = (node_23 & node_32); // And
+    assign and_59 = (node_49 & node_50); // And
+    assign and_58 = (node_48 & and_52); // And
+    assign node_57 = node_51; // Node
+    assign node_56 = node_47; // Node
+    assign node_55 = node_46; // Node
+    assign and_54 = (node_44 & node_45); // And
+    assign node_53 = node_43; // Node
+    assign and_52 = (node_36 & node_35); // And
+    assign node_51 = node_38; // Node
+    assign node_50 = node_28; // Node
+    assign node_49 = node_40; // Node
+    assign node_48 = node_39; // Node
+    assign node_47 = and_41; // Node
+    assign node_46 = and_42; // Node
+    assign node_45 = node_29; // Node
+    assign node_44 = node_36; // Node
+    assign node_43 = node_37; // Node
+    assign and_42 = (node_21 & node_22); // And
+    assign and_41 = (node_28 & node_29); // And
+    assign node_40 = node_24; // Node
+    assign node_39 = node_32; // Node
+    assign node_38 = and_34; // Node
+    assign node_37 = node_33; // Node
+    assign node_36 = node_30; // Node
+    assign node_35 = node_31; // Node
+    assign and_34 = (node_24 & node_18); // And
+    assign node_33 = node_27; // Node
+    assign node_32 = node_25; // Node
+    assign node_31 = node_21; // Node
+    assign node_30 = node_26; // Node
+    assign node_29 = node_22; // Node
+    assign node_28 = node_23; // Node
     assign node_27 = input_input_switch4_a_4; // Node
-    assign node_26 = input_input_switch2_b_2; // Node
-    assign node_25 = input_input_switch1_d_1; // Node
-    assign node_24 = ~input_input_switch2_b_2; // Node
-    assign node_23 = input_input_switch3_c_3; // Node
-    assign node_22 = ~input_input_switch1_d_1; // Node
-    assign node_21 = ~input_input_switch3_c_3; // Node
-    assign not_20 = ~input_input_switch3_c_3; // Not
-    assign not_19 = ~input_input_switch2_b_2; // Not
-    assign node_18 = ~input_input_switch1_d_1; // Node
-    assign node_17 = input_input_switch3_c_3; // Node
-    assign not_16 = ~input_input_switch1_d_1; // Not
+    assign node_26 = node_14; // Node
+    assign node_25 = node_13; // Node
+    assign node_24 = not_19; // Node
+    assign node_23 = node_17; // Node
+    assign node_22 = node_18; // Node
+    assign node_21 = not_20; // Node
+    assign not_20 = ~node_15; // Not
+    assign not_19 = ~node_14; // Not
+    assign node_18 = not_16; // Node
+    assign node_17 = node_15; // Node
+    assign not_16 = ~node_13; // Not
     assign node_15 = input_input_switch3_c_3; // Node
     assign node_14 = input_input_switch2_b_2; // Node
     assign node_13 = input_input_switch1_d_1; // Node
 
     // ========= Output Assignments =========
-    assign output_7_segment_display1_g_middle_5 = ((input_input_switch3_c_3 & ~input_input_switch1_d_1) | (input_input_switch2_b_2 & ~input_input_switch3_c_3) | input_input_switch4_a_4 | (~input_input_switch2_b_2 & input_input_switch3_c_3)); // 7-Segment Display
-    assign output_7_segment_display1_f_upper_left_6 = ((~input_input_switch3_c_3 & ~input_input_switch1_d_1) | (input_input_switch2_b_2 & ~input_input_switch1_d_1) | (input_input_switch2_b_2 & ~input_input_switch3_c_3) | input_input_switch4_a_4); // 7-Segment Display
-    assign output_7_segment_display1_e_lower_left_7 = ((~input_input_switch2_b_2 & ~input_input_switch1_d_1) | (input_input_switch3_c_3 & ~input_input_switch1_d_1)); // 7-Segment Display
-    assign output_7_segment_display1_d_bottom_8 = (input_input_switch4_a_4 | (~input_input_switch2_b_2 & ~input_input_switch1_d_1) | (input_input_switch3_c_3 & ~input_input_switch1_d_1) | (~input_input_switch2_b_2 & input_input_switch3_c_3) | (input_input_switch1_d_1 & (input_input_switch2_b_2 & ~input_input_switch3_c_3))); // 7-Segment Display
-    assign output_7_segment_display1_a_top_9 = ((input_input_switch2_b_2 & input_input_switch1_d_1) | input_input_switch4_a_4 | input_input_switch3_c_3 | (~input_input_switch2_b_2 & ~input_input_switch1_d_1)); // 7-Segment Display
-    assign output_7_segment_display1_b_upper_right_10 = ((input_input_switch3_c_3 & input_input_switch1_d_1) | ~input_input_switch2_b_2 | (~input_input_switch3_c_3 & ~input_input_switch1_d_1)); // 7-Segment Display
+    assign output_7_segment_display1_g_middle_5 = or_62; // 7-Segment Display
+    assign output_7_segment_display1_f_upper_left_6 = or_63; // 7-Segment Display
+    assign output_7_segment_display1_e_lower_left_7 = or_65; // 7-Segment Display
+    assign output_7_segment_display1_d_bottom_8 = or_66; // 7-Segment Display
+    assign output_7_segment_display1_a_top_9 = or_68; // 7-Segment Display
+    assign output_7_segment_display1_b_upper_right_10 = or_67; // 7-Segment Display
     assign output_7_segment_display1_dp_dot_11 = 1'b0; // 7-Segment Display
-    assign output_7_segment_display1_c_lower_right_12 = (input_input_switch2_b_2 | ~input_input_switch3_c_3 | input_input_switch1_d_1); // 7-Segment Display
+    assign output_7_segment_display1_c_lower_right_12 = or_64; // 7-Segment Display
 
 endmodule // display_4bits
 

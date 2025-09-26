@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: decoder
-// Generated: Fri Sep 26 14:36:18 2025
+// Generated: Fri Sep 26 14:59:05 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 66/1000 LUTs, 0/1000 FFs, 12/50 IOs
 //
@@ -75,60 +75,60 @@ module decoder (
     wire node_55;
 
     // ========= Logic Assignments =========
-    assign node_55 = ~input_input_switch2_2; // Node
-    assign node_54 = input_input_switch2_2; // Node
-    assign node_53 = ~input_input_switch1_1; // Node
-    assign node_52 = input_input_switch1_1; // Node
-    assign node_51 = ~input_input_switch3_3; // Node
-    assign node_50 = input_input_switch3_3; // Node
-    assign and_49 = (input_input_switch3_3 & input_input_switch1_1 & input_input_switch2_2); // And
-    assign and_48 = (input_input_switch3_3 & input_input_switch1_1 & ~input_input_switch2_2); // And
-    assign and_47 = (input_input_switch3_3 & ~input_input_switch1_1 & input_input_switch2_2); // And
-    assign and_46 = (input_input_switch3_3 & ~input_input_switch1_1 & ~input_input_switch2_2); // And
-    assign and_45 = (~input_input_switch3_3 & input_input_switch1_1 & input_input_switch2_2); // And
-    assign and_44 = (~input_input_switch3_3 & input_input_switch1_1 & ~input_input_switch2_2); // And
-    assign and_43 = (~input_input_switch3_3 & ~input_input_switch1_1 & input_input_switch2_2); // And
-    assign and_42 = (~input_input_switch2_2 & ~input_input_switch1_1 & ~input_input_switch3_3); // And
-    assign node_41 = input_input_switch3_3; // Node
-    assign node_40 = input_input_switch1_1; // Node
-    assign node_39 = input_input_switch2_2; // Node
-    assign node_38 = ~input_input_switch2_2; // Node
-    assign node_37 = ~input_input_switch1_1; // Node
-    assign node_36 = ~input_input_switch3_3; // Node
-    assign node_35 = input_input_switch3_3; // Node
-    assign node_34 = input_input_switch1_1; // Node
-    assign node_33 = input_input_switch2_2; // Node
-    assign node_32 = ~input_input_switch2_2; // Node
-    assign node_31 = ~input_input_switch1_1; // Node
-    assign node_30 = ~input_input_switch3_3; // Node
-    assign node_29 = input_input_switch3_3; // Node
-    assign node_28 = input_input_switch1_1; // Node
-    assign node_27 = input_input_switch2_2; // Node
-    assign node_26 = ~input_input_switch2_2; // Node
-    assign node_25 = ~input_input_switch3_3; // Node
-    assign node_24 = ~input_input_switch1_1; // Node
-    assign node_23 = input_input_switch3_3; // Node
-    assign node_22 = input_input_switch1_1; // Node
-    assign node_21 = input_input_switch2_2; // Node
-    assign node_20 = ~input_input_switch2_2; // Node
-    assign node_19 = ~input_input_switch1_1; // Node
-    assign node_18 = ~input_input_switch3_3; // Node
-    assign not_17 = ~input_input_switch2_2; // Not
-    assign not_16 = ~input_input_switch1_1; // Not
-    assign not_15 = ~input_input_switch3_3; // Not
+    assign node_55 = node_38; // Node
+    assign node_54 = node_39; // Node
+    assign node_53 = node_37; // Node
+    assign node_52 = node_40; // Node
+    assign node_51 = node_36; // Node
+    assign node_50 = node_41; // Node
+    assign and_49 = (node_41 & node_40 & node_39); // And
+    assign and_48 = (node_35 & node_34 & node_38); // And
+    assign and_47 = (node_29 & node_37 & node_33); // And
+    assign and_46 = (node_23 & node_31 & node_32); // And
+    assign and_45 = (node_36 & node_28 & node_27); // And
+    assign and_44 = (node_30 & node_22 & node_26); // And
+    assign and_43 = (node_25 & node_24 & node_21); // And
+    assign and_42 = (node_20 & node_19 & node_18); // And
+    assign node_41 = node_35; // Node
+    assign node_40 = node_34; // Node
+    assign node_39 = node_33; // Node
+    assign node_38 = node_32; // Node
+    assign node_37 = node_31; // Node
+    assign node_36 = node_30; // Node
+    assign node_35 = node_29; // Node
+    assign node_34 = node_28; // Node
+    assign node_33 = node_27; // Node
+    assign node_32 = node_26; // Node
+    assign node_31 = node_24; // Node
+    assign node_30 = node_25; // Node
+    assign node_29 = node_23; // Node
+    assign node_28 = node_22; // Node
+    assign node_27 = node_21; // Node
+    assign node_26 = node_20; // Node
+    assign node_25 = node_18; // Node
+    assign node_24 = node_19; // Node
+    assign node_23 = node_12; // Node
+    assign node_22 = node_13; // Node
+    assign node_21 = node_14; // Node
+    assign node_20 = not_17; // Node
+    assign node_19 = not_16; // Node
+    assign node_18 = not_15; // Node
+    assign not_17 = ~node_14; // Not
+    assign not_16 = ~node_13; // Not
+    assign not_15 = ~node_12; // Not
     assign node_14 = input_input_switch2_2; // Node
     assign node_13 = input_input_switch1_1; // Node
     assign node_12 = input_input_switch3_3; // Node
 
     // ========= Output Assignments =========
-    assign output_led1_0_4 = (input_input_switch3_3 & input_input_switch1_1 & input_input_switch2_2); // LED
-    assign output_led2_0_5 = (input_input_switch3_3 & input_input_switch1_1 & ~input_input_switch2_2); // LED
-    assign output_led3_0_6 = (input_input_switch3_3 & ~input_input_switch1_1 & input_input_switch2_2); // LED
-    assign output_led4_0_7 = (input_input_switch3_3 & ~input_input_switch1_1 & ~input_input_switch2_2); // LED
-    assign output_led5_0_8 = (~input_input_switch3_3 & input_input_switch1_1 & input_input_switch2_2); // LED
-    assign output_led6_0_9 = (~input_input_switch3_3 & input_input_switch1_1 & ~input_input_switch2_2); // LED
-    assign output_led7_0_10 = (~input_input_switch3_3 & ~input_input_switch1_1 & input_input_switch2_2); // LED
-    assign output_led8_0_11 = (~input_input_switch2_2 & ~input_input_switch1_1 & ~input_input_switch3_3); // LED
+    assign output_led1_0_4 = and_49; // LED
+    assign output_led2_0_5 = and_48; // LED
+    assign output_led3_0_6 = and_47; // LED
+    assign output_led4_0_7 = and_46; // LED
+    assign output_led5_0_8 = and_45; // LED
+    assign output_led6_0_9 = and_44; // LED
+    assign output_led7_0_10 = and_43; // LED
+    assign output_led8_0_11 = and_42; // LED
 
 endmodule // decoder
 

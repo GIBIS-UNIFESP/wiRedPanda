@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: dlatch
-// Generated: Fri Sep 26 14:36:24 2025
+// Generated: Fri Sep 26 14:59:11 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 10/1000 LUTs, 35/1000 FFs, 4/50 IOs
 //
@@ -29,19 +29,15 @@ module dlatch (
     wire nand_9;
 
     // ========= Logic Assignments =========
-    /* verilator lint_off UNOPTFLAT */
-    assign nand_7 = ~((input_push_button1_d_1 & input_clock2_clk_2) & nand_7 & ~(input_clock2_clk_2 & ~input_push_button1_d_1)); // Nand
-    /* verilator lint_on UNOPTFLAT */
-    /* verilator lint_off UNOPTFLAT */
-    assign nand_9 = (input_push_button1_d_1 & input_clock2_clk_2) & ~(nand_9 & ~(input_clock2_clk_2 & ~input_push_button1_d_1)); // Nand
-    /* verilator lint_on UNOPTFLAT */
+    assign nand_7 = ~(nand_9 & nand_6); // Nand
+    assign nand_9 = ~(nand_8 & nand_7); // Nand
     assign nand_8 = ~(input_push_button1_d_1 & input_clock2_clk_2); // Nand
-    assign nand_6 = ~(input_clock2_clk_2 & ~input_push_button1_d_1); // Nand
+    assign nand_6 = ~(input_clock2_clk_2 & not_5); // Nand
     assign not_5 = ~input_push_button1_d_1; // Not
 
     // ========= Output Assignments =========
-    assign output_led1_q_0_3 = ~((input_push_button1_d_1 & input_clock2_clk_2) & nand_7 & ~(input_clock2_clk_2 & ~input_push_button1_d_1)); // LED
-    assign output_led2_q_0_4 = (input_push_button1_d_1 & input_clock2_clk_2) & ~(nand_9 & ~(input_clock2_clk_2 & ~input_push_button1_d_1)); // LED
+    assign output_led1_q_0_3 = nand_7; // LED
+    assign output_led2_q_0_4 = nand_9; // LED
 
 endmodule // dlatch
 

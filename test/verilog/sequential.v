@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: sequential
-// Generated: Fri Sep 26 14:36:29 2025
+// Generated: Fri Sep 26 14:59:15 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 45/1000 LUTs, 74/1000 FFs, 8/50 IOs
 //
@@ -57,31 +57,31 @@ module sequential (
     reg ic_serialize_ic_serialize_d_flip_flop_43_1 = 1'b0;
     wire ic_serialize_ic_serialize_and_44;
     wire ic_serialize_ic_serialize_or_45;
-    assign ic_serialize_ic_serialize_node_17 = ~input_clock2_slow_clk_2; // Node
-    assign ic_serialize_ic_serialize_node_18 = ~input_clock2_slow_clk_2; // Node
-    assign ic_serialize_ic_serialize_node_19 = ~input_clock2_slow_clk_2; // Node
-    assign ic_serialize_ic_serialize_node_20 = ~input_clock2_slow_clk_2; // Node
+    assign ic_serialize_ic_serialize_node_17 = ic_serialize_ic_serialize_not_28; // Node
+    assign ic_serialize_ic_serialize_node_18 = ic_serialize_ic_serialize_not_28; // Node
+    assign ic_serialize_ic_serialize_node_19 = ic_serialize_ic_serialize_not_28; // Node
+    assign ic_serialize_ic_serialize_node_20 = ic_serialize_ic_serialize_not_28; // Node
     assign ic_serialize_ic_serialize_and_26 = (ic_serialize_ic_serialize_node_17 & ic_serialize_ic_serialize_d_flip_flop_32_0); // And
-    assign ic_serialize_ic_serialize_node_27 = (ic_serialize_ic_serialize_node_17 & ic_serialize_ic_serialize_d_flip_flop_32_0); // Node
+    assign ic_serialize_ic_serialize_node_27 = ic_serialize_ic_serialize_and_26; // Node
     assign ic_serialize_ic_serialize_not_28 = ~input_clock2_slow_clk_2; // Not
     assign ic_serialize_ic_serialize_and_29 = (ic_serialize_ic_serialize_node_18 & ic_serialize_ic_serialize_d_flip_flop_35_0); // And
-    assign ic_serialize_ic_serialize_or_30 = ((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_41) | (ic_serialize_ic_serialize_node_18 & ic_serialize_ic_serialize_d_flip_flop_35_0)); // Or
+    assign ic_serialize_ic_serialize_or_30 = (ic_serialize_ic_serialize_and_31 | ic_serialize_ic_serialize_and_29); // Or
     assign ic_serialize_ic_serialize_and_31 = (input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_41); // And
     // D FlipFlop: D-Flip-Flop
     always @(posedge input_clock3_fast_clk_3) begin
         begin
-            ic_serialize_ic_serialize_d_flip_flop_32_0 <= ((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_41) | (ic_serialize_ic_serialize_node_18 & ic_serialize_ic_serialize_d_flip_flop_35_0));
-            ic_serialize_ic_serialize_d_flip_flop_32_1 <= ~((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_41) | (ic_serialize_ic_serialize_node_18 & ic_serialize_ic_serialize_d_flip_flop_35_0));
+            ic_serialize_ic_serialize_d_flip_flop_32_0 <= ic_serialize_ic_serialize_or_30;
+            ic_serialize_ic_serialize_d_flip_flop_32_1 <= ~ic_serialize_ic_serialize_or_30;
         end
     end
 
     assign ic_serialize_ic_serialize_and_33 = (input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_40); // And
-    assign ic_serialize_ic_serialize_or_34 = ((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_40) | (ic_serialize_ic_serialize_node_19 & ic_serialize_ic_serialize_d_flip_flop_37_0)); // Or
+    assign ic_serialize_ic_serialize_or_34 = (ic_serialize_ic_serialize_and_33 | ic_serialize_ic_serialize_and_36); // Or
     // D FlipFlop: D-Flip-Flop
     always @(posedge input_clock3_fast_clk_3) begin
         begin
-            ic_serialize_ic_serialize_d_flip_flop_35_0 <= ((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_40) | (ic_serialize_ic_serialize_node_19 & ic_serialize_ic_serialize_d_flip_flop_37_0));
-            ic_serialize_ic_serialize_d_flip_flop_35_1 <= ~((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_40) | (ic_serialize_ic_serialize_node_19 & ic_serialize_ic_serialize_d_flip_flop_37_0));
+            ic_serialize_ic_serialize_d_flip_flop_35_0 <= ic_serialize_ic_serialize_or_34;
+            ic_serialize_ic_serialize_d_flip_flop_35_1 <= ~ic_serialize_ic_serialize_or_34;
         end
     end
 
@@ -89,8 +89,8 @@ module sequential (
     // D FlipFlop: D-Flip-Flop
     always @(posedge input_clock3_fast_clk_3) begin
         begin
-            ic_serialize_ic_serialize_d_flip_flop_37_0 <= ((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_39) | (ic_serialize_ic_serialize_node_20 & ic_serialize_ic_serialize_d_flip_flop_43_0));
-            ic_serialize_ic_serialize_d_flip_flop_37_1 <= ~((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_39) | (ic_serialize_ic_serialize_node_20 & ic_serialize_ic_serialize_d_flip_flop_43_0));
+            ic_serialize_ic_serialize_d_flip_flop_37_0 <= ic_serialize_ic_serialize_or_45;
+            ic_serialize_ic_serialize_d_flip_flop_37_1 <= ~ic_serialize_ic_serialize_or_45;
         end
     end
 
@@ -108,7 +108,7 @@ module sequential (
     end
 
     assign ic_serialize_ic_serialize_and_44 = (input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_39); // And
-    assign ic_serialize_ic_serialize_or_45 = ((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_39) | (ic_serialize_ic_serialize_node_20 & ic_serialize_ic_serialize_d_flip_flop_43_0)); // Or
+    assign ic_serialize_ic_serialize_or_45 = (ic_serialize_ic_serialize_and_44 | ic_serialize_ic_serialize_and_42); // Or
 // ============== END IC: SERIALIZE ==============
 // ============== BEGIN IC: REGISTER ==============
 // IC inputs: 2, IC outputs: 4
@@ -206,11 +206,11 @@ module sequential (
     wire and_88;
 
     // ========= Logic Assignments =========
-    assign and_88 = (1'b0 & input_clock2_slow_clk_2); // And
-    assign and_87 = (1'b0 & input_clock2_slow_clk_2); // And
-    assign and_86 = (1'b0 & input_clock2_slow_clk_2); // And
-    assign and_85 = (1'b0 & input_clock2_slow_clk_2); // And
-    assign node_84 = input_clock2_slow_clk_2; // Node
+    assign and_88 = (1'b0 & node_84); // And
+    assign and_87 = (1'b0 & node_83); // And
+    assign and_86 = (1'b0 & node_81); // And
+    assign and_85 = (1'b0 & node_78); // And
+    assign node_84 = node_83; // Node
     // D FlipFlop: D-Flip-Flop
     always @(posedge ic_register_ic_register_d_flip_flop_47_0_clk_wire) begin
         begin
@@ -248,37 +248,37 @@ module sequential (
         end
     end
 
-    assign node_83 = input_clock2_slow_clk_2; // Node
-    assign and_82 = (~1'b0 & input_clock3_fast_clk_3); // And
-    assign node_81 = input_clock2_slow_clk_2; // Node
-    assign node_80 = input_clock3_fast_clk_3; // Node
+    assign node_83 = node_81; // Node
+    assign and_82 = (not_79 & node_80); // And
+    assign node_81 = node_78; // Node
+    assign node_80 = node_77; // Node
     assign not_79 = ~1'b0; // Not
-    assign node_78 = input_clock2_slow_clk_2; // Node
-    assign ic_serialize_ic_serialize_node_17 = ~input_clock2_slow_clk_2; // Node
-    assign ic_serialize_ic_serialize_node_18 = ~input_clock2_slow_clk_2; // Node
-    assign ic_serialize_ic_serialize_node_19 = ~input_clock2_slow_clk_2; // Node
-    assign ic_serialize_ic_serialize_node_20 = ~input_clock2_slow_clk_2; // Node
+    assign node_78 = node_76; // Node
+    assign ic_serialize_ic_serialize_node_17 = ic_serialize_ic_serialize_not_28; // Node
+    assign ic_serialize_ic_serialize_node_18 = ic_serialize_ic_serialize_not_28; // Node
+    assign ic_serialize_ic_serialize_node_19 = ic_serialize_ic_serialize_not_28; // Node
+    assign ic_serialize_ic_serialize_node_20 = ic_serialize_ic_serialize_not_28; // Node
     assign ic_serialize_ic_serialize_and_26 = (ic_serialize_ic_serialize_node_17 & ic_serialize_ic_serialize_d_flip_flop_32_0); // And
-    assign ic_serialize_ic_serialize_node_27 = (ic_serialize_ic_serialize_node_17 & ic_serialize_ic_serialize_d_flip_flop_32_0); // Node
+    assign ic_serialize_ic_serialize_node_27 = ic_serialize_ic_serialize_and_26; // Node
     assign ic_serialize_ic_serialize_not_28 = ~input_clock2_slow_clk_2; // Not
     assign ic_serialize_ic_serialize_and_29 = (ic_serialize_ic_serialize_node_18 & ic_serialize_ic_serialize_d_flip_flop_35_0); // And
-    assign ic_serialize_ic_serialize_or_30 = ((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_41) | (ic_serialize_ic_serialize_node_18 & ic_serialize_ic_serialize_d_flip_flop_35_0)); // Or
+    assign ic_serialize_ic_serialize_or_30 = (ic_serialize_ic_serialize_and_31 | ic_serialize_ic_serialize_and_29); // Or
     assign ic_serialize_ic_serialize_and_31 = (input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_41); // And
     // D FlipFlop: D-Flip-Flop
     always @(posedge input_clock3_fast_clk_3) begin
         begin
-            ic_serialize_ic_serialize_d_flip_flop_32_0 <= ((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_41) | (ic_serialize_ic_serialize_node_18 & ic_serialize_ic_serialize_d_flip_flop_35_0));
-            ic_serialize_ic_serialize_d_flip_flop_32_1 <= ~((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_41) | (ic_serialize_ic_serialize_node_18 & ic_serialize_ic_serialize_d_flip_flop_35_0));
+            ic_serialize_ic_serialize_d_flip_flop_32_0 <= ic_serialize_ic_serialize_or_30;
+            ic_serialize_ic_serialize_d_flip_flop_32_1 <= ~ic_serialize_ic_serialize_or_30;
         end
     end
 
     assign ic_serialize_ic_serialize_and_33 = (input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_40); // And
-    assign ic_serialize_ic_serialize_or_34 = ((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_40) | (ic_serialize_ic_serialize_node_19 & ic_serialize_ic_serialize_d_flip_flop_37_0)); // Or
+    assign ic_serialize_ic_serialize_or_34 = (ic_serialize_ic_serialize_and_33 | ic_serialize_ic_serialize_and_36); // Or
     // D FlipFlop: D-Flip-Flop
     always @(posedge input_clock3_fast_clk_3) begin
         begin
-            ic_serialize_ic_serialize_d_flip_flop_35_0 <= ((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_40) | (ic_serialize_ic_serialize_node_19 & ic_serialize_ic_serialize_d_flip_flop_37_0));
-            ic_serialize_ic_serialize_d_flip_flop_35_1 <= ~((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_40) | (ic_serialize_ic_serialize_node_19 & ic_serialize_ic_serialize_d_flip_flop_37_0));
+            ic_serialize_ic_serialize_d_flip_flop_35_0 <= ic_serialize_ic_serialize_or_34;
+            ic_serialize_ic_serialize_d_flip_flop_35_1 <= ~ic_serialize_ic_serialize_or_34;
         end
     end
 
@@ -286,8 +286,8 @@ module sequential (
     // D FlipFlop: D-Flip-Flop
     always @(posedge input_clock3_fast_clk_3) begin
         begin
-            ic_serialize_ic_serialize_d_flip_flop_37_0 <= ((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_39) | (ic_serialize_ic_serialize_node_20 & ic_serialize_ic_serialize_d_flip_flop_43_0));
-            ic_serialize_ic_serialize_d_flip_flop_37_1 <= ~((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_39) | (ic_serialize_ic_serialize_node_20 & ic_serialize_ic_serialize_d_flip_flop_43_0));
+            ic_serialize_ic_serialize_d_flip_flop_37_0 <= ic_serialize_ic_serialize_or_45;
+            ic_serialize_ic_serialize_d_flip_flop_37_1 <= ~ic_serialize_ic_serialize_or_45;
         end
     end
 
@@ -305,17 +305,17 @@ module sequential (
     end
 
     assign ic_serialize_ic_serialize_and_44 = (input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_39); // And
-    assign ic_serialize_ic_serialize_or_45 = ((input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_39) | (ic_serialize_ic_serialize_node_20 & ic_serialize_ic_serialize_d_flip_flop_43_0)); // Or
+    assign ic_serialize_ic_serialize_or_45 = (ic_serialize_ic_serialize_and_44 | ic_serialize_ic_serialize_and_42); // Or
     assign node_77 = input_clock3_fast_clk_3; // Node
-    assign node_76 = input_clock2_slow_clk_2; // Node
+    assign node_76 = node_71; // Node
     assign node_75 = jk_flip_flop_70_1_q; // Node
     assign node_74 = jk_flip_flop_68_1_q; // Node
     assign node_73 = jk_flip_flop_66_1_q; // Node
     assign node_72 = jk_flip_flop_64_1_q; // Node
     assign node_71 = input_clock2_slow_clk_2; // Node
     // JK FlipFlop: JK-Flip-Flop
-    always @(posedge jk_flip_flop_68_0_q or posedge input_push_button1_reset_1) begin
-        if (input_push_button1_reset_1) begin
+    always @(posedge jk_flip_flop_68_0_q or negedge node_69) begin
+        if (!node_69) begin
             jk_flip_flop_70_0_q <= 1'b1;
             jk_flip_flop_70_1_q <= 1'b0;
         end else begin
@@ -328,10 +328,10 @@ module sequential (
         end
     end
 
-    assign node_69 = ~input_push_button1_reset_1; // Node
+    assign node_69 = node_67; // Node
     // JK FlipFlop: JK-Flip-Flop
-    always @(posedge jk_flip_flop_66_0_q or posedge input_push_button1_reset_1) begin
-        if (input_push_button1_reset_1) begin
+    always @(posedge jk_flip_flop_66_0_q or negedge node_67) begin
+        if (!node_67) begin
             jk_flip_flop_68_0_q <= 1'b1;
             jk_flip_flop_68_1_q <= 1'b0;
         end else begin
@@ -344,10 +344,10 @@ module sequential (
         end
     end
 
-    assign node_67 = ~input_push_button1_reset_1; // Node
+    assign node_67 = node_65; // Node
     // JK FlipFlop: JK-Flip-Flop
-    always @(posedge jk_flip_flop_64_0_q or posedge input_push_button1_reset_1) begin
-        if (input_push_button1_reset_1) begin
+    always @(posedge jk_flip_flop_64_0_q or negedge node_65) begin
+        if (!node_65) begin
             jk_flip_flop_66_0_q <= 1'b1;
             jk_flip_flop_66_1_q <= 1'b0;
         end else begin
@@ -360,10 +360,10 @@ module sequential (
         end
     end
 
-    assign node_65 = ~input_push_button1_reset_1; // Node
+    assign node_65 = node_63; // Node
     // JK FlipFlop: JK-Flip-Flop
-    always @(posedge input_clock2_slow_clk_2 or posedge input_push_button1_reset_1) begin
-        if (input_push_button1_reset_1) begin
+    always @(posedge input_clock2_slow_clk_2 or negedge node_63) begin
+        if (!node_63) begin
             jk_flip_flop_64_0_q <= 1'b1;
             jk_flip_flop_64_1_q <= 1'b0;
         end else begin
@@ -376,16 +376,16 @@ module sequential (
         end
     end
 
-    assign node_63 = ~input_push_button1_reset_1; // Node
-    assign node_62 = ~input_push_button1_reset_1; // Node
+    assign node_63 = node_62; // Node
+    assign node_62 = not_61; // Node
     assign not_61 = ~input_push_button1_reset_1; // Not
 
     // ========= Output Assignments =========
-    assign output_led1_load_shift_0_4 = input_clock2_slow_clk_2; // LED
-    assign output_led2_l1_0_5 = (1'b0 & input_clock2_slow_clk_2); // LED
-    assign output_led3_l3_0_6 = (1'b0 & input_clock2_slow_clk_2); // LED
-    assign output_led4_l2_0_7 = (1'b0 & input_clock2_slow_clk_2); // LED
-    assign output_led5_l0_0_8 = (1'b0 & input_clock2_slow_clk_2); // LED
+    assign output_led1_load_shift_0_4 = node_76; // LED
+    assign output_led2_l1_0_5 = and_87; // LED
+    assign output_led3_l3_0_6 = and_85; // LED
+    assign output_led4_l2_0_7 = and_86; // LED
+    assign output_led5_l0_0_8 = and_88; // LED
 
 endmodule // sequential
 

@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: register
-// Generated: Fri Sep 26 14:36:28 2025
+// Generated: Fri Sep 26 14:59:15 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 16/1000 LUTs, 74/1000 FFs, 6/50 IOs
 //
@@ -39,16 +39,16 @@ module register (
 
     // ========= Logic Assignments =========
     // D FlipFlop: D-Flip-Flop
-    always @(posedge input_clock1_1) begin
+    always @(posedge node_13) begin
         begin
             d_flip_flop_14_0_q <= d_flip_flop_12_0_q;
             d_flip_flop_14_1_q <= ~d_flip_flop_12_0_q;
         end
     end
 
-    assign node_13 = input_clock1_1; // Node
+    assign node_13 = node_10; // Node
     // D FlipFlop: D-Flip-Flop
-    always @(posedge input_clock1_1) begin
+    always @(posedge node_10) begin
         begin
             d_flip_flop_12_0_q <= d_flip_flop_11_0_q;
             d_flip_flop_12_1_q <= ~d_flip_flop_11_0_q;
@@ -56,23 +56,23 @@ module register (
     end
 
     // D FlipFlop: D-Flip-Flop
-    always @(posedge input_clock1_1) begin
+    always @(posedge node_8) begin
         begin
             d_flip_flop_11_0_q <= d_flip_flop_9_0_q;
             d_flip_flop_11_1_q <= ~d_flip_flop_9_0_q;
         end
     end
 
-    assign node_10 = input_clock1_1; // Node
+    assign node_10 = node_8; // Node
     // D FlipFlop: D-Flip-Flop
-    always @(posedge input_clock1_1) begin
+    always @(posedge node_7) begin
         begin
             d_flip_flop_9_0_q <= input_clock2_2;
             d_flip_flop_9_1_q <= ~input_clock2_2;
         end
     end
 
-    assign node_8 = input_clock1_1; // Node
+    assign node_8 = node_7; // Node
     assign node_7 = input_clock1_1; // Node
 
     // ========= Output Assignments =========

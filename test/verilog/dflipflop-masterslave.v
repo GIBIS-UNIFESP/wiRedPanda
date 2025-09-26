@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: dflipflop_masterslave
-// Generated: Fri Sep 26 14:36:19 2025
+// Generated: Fri Sep 26 14:59:06 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 10/1000 LUTs, 35/1000 FFs, 4/50 IOs
 //
@@ -32,16 +32,12 @@ module dflipflop_masterslave (
     wire ic_dlatch_ic_dlatch_not_9;
     wire ic_dlatch_ic_dlatch_nand_10;
     wire ic_dlatch_ic_dlatch_nand_11;
-    assign ic_dlatch_ic_dlatch_node_5 = ~((input_push_button2_d_2 & input_clock1_clk_1) & ic_dlatch_ic_dlatch_nand_7 & ~(input_clock1_clk_1 & ~input_push_button2_d_2)); // Node
-    assign ic_dlatch_ic_dlatch_node_6 = (input_push_button2_d_2 & input_clock1_clk_1) & ~(ic_dlatch_ic_dlatch_nand_8 & ~(input_clock1_clk_1 & ~input_push_button2_d_2)); // Node
-    /* verilator lint_off UNOPTFLAT */
-    assign ic_dlatch_ic_dlatch_nand_7 = ~((input_push_button2_d_2 & input_clock1_clk_1) & ic_dlatch_ic_dlatch_nand_7 & ~(input_clock1_clk_1 & ~input_push_button2_d_2)); // Nand
-    /* verilator lint_on UNOPTFLAT */
-    /* verilator lint_off UNOPTFLAT */
-    assign ic_dlatch_ic_dlatch_nand_8 = (input_push_button2_d_2 & input_clock1_clk_1) & ~(ic_dlatch_ic_dlatch_nand_8 & ~(input_clock1_clk_1 & ~input_push_button2_d_2)); // Nand
-    /* verilator lint_on UNOPTFLAT */
+    assign ic_dlatch_ic_dlatch_node_5 = ic_dlatch_ic_dlatch_nand_7; // Node
+    assign ic_dlatch_ic_dlatch_node_6 = ic_dlatch_ic_dlatch_nand_8; // Node
+    assign ic_dlatch_ic_dlatch_nand_7 = ~(ic_dlatch_ic_dlatch_nand_8 & ic_dlatch_ic_dlatch_nand_10); // Nand
+    assign ic_dlatch_ic_dlatch_nand_8 = ~(ic_dlatch_ic_dlatch_nand_11 & ic_dlatch_ic_dlatch_nand_7); // Nand
     assign ic_dlatch_ic_dlatch_not_9 = ~input_push_button2_d_2; // Not
-    assign ic_dlatch_ic_dlatch_nand_10 = ~(input_clock1_clk_1 & ~input_push_button2_d_2); // Nand
+    assign ic_dlatch_ic_dlatch_nand_10 = ~(input_clock1_clk_1 & ic_dlatch_ic_dlatch_not_9); // Nand
     assign ic_dlatch_ic_dlatch_nand_11 = ~(input_push_button2_d_2 & input_clock1_clk_1); // Nand
 // ============== END IC: DLATCH ==============
 // ============== BEGIN IC: DLATCH ==============
@@ -55,16 +51,12 @@ module dflipflop_masterslave (
     wire ic_dlatch_ic_dlatch_nand_19;
     wire ic_dlatch_ic_dlatch_nand_20;
     wire ic_dlatch_ic_dlatch_node_22;
-    assign ic_dlatch_ic_dlatch_node_14 = ~((ic_dlatch_ic_dlatch_node_22 & ~input_clock1_clk_1) & ic_dlatch_ic_dlatch_nand_16 & input_clock1_clk_1 & ~ic_dlatch_ic_dlatch_node_22); // Node
-    assign ic_dlatch_ic_dlatch_node_15 = (ic_dlatch_ic_dlatch_node_22 & ~input_clock1_clk_1) & ~(ic_dlatch_ic_dlatch_nand_17 & input_clock1_clk_1 & ~ic_dlatch_ic_dlatch_node_22); // Node
-    /* verilator lint_off UNOPTFLAT */
-    assign ic_dlatch_ic_dlatch_nand_16 = ~((ic_dlatch_ic_dlatch_node_22 & ~input_clock1_clk_1) & ic_dlatch_ic_dlatch_nand_16 & input_clock1_clk_1 & ~ic_dlatch_ic_dlatch_node_22); // Nand
-    /* verilator lint_on UNOPTFLAT */
-    /* verilator lint_off UNOPTFLAT */
-    assign ic_dlatch_ic_dlatch_nand_17 = (ic_dlatch_ic_dlatch_node_22 & ~input_clock1_clk_1) & ~(ic_dlatch_ic_dlatch_nand_17 & input_clock1_clk_1 & ~ic_dlatch_ic_dlatch_node_22); // Nand
-    /* verilator lint_on UNOPTFLAT */
+    assign ic_dlatch_ic_dlatch_node_14 = ic_dlatch_ic_dlatch_nand_16; // Node
+    assign ic_dlatch_ic_dlatch_node_15 = ic_dlatch_ic_dlatch_nand_17; // Node
+    assign ic_dlatch_ic_dlatch_nand_16 = ~(ic_dlatch_ic_dlatch_nand_17 & ic_dlatch_ic_dlatch_nand_19); // Nand
+    assign ic_dlatch_ic_dlatch_nand_17 = ~(ic_dlatch_ic_dlatch_nand_20 & ic_dlatch_ic_dlatch_nand_16); // Nand
     assign ic_dlatch_ic_dlatch_not_18 = ~ic_dlatch_ic_dlatch_node_22; // Not
-    assign ic_dlatch_ic_dlatch_nand_19 = input_clock1_clk_1 & ~ic_dlatch_ic_dlatch_node_22; // Nand
+    assign ic_dlatch_ic_dlatch_nand_19 = input_clock1_clk_1 & ic_dlatch_ic_dlatch_not_18; // Nand
     assign ic_dlatch_ic_dlatch_nand_20 = ~(ic_dlatch_ic_dlatch_node_22 & ~input_clock1_clk_1); // Nand
     assign ic_dlatch_ic_dlatch_node_22 = 1'b0; // Node
 // ============== END IC: DLATCH ==============
@@ -73,29 +65,21 @@ module dflipflop_masterslave (
     wire node_25;
 
     // ========= Logic Assignments =========
-    assign ic_dlatch_ic_dlatch_node_14 = ~((ic_dlatch_ic_dlatch_node_22 & ~input_clock1_clk_1) & ic_dlatch_ic_dlatch_nand_16 & input_clock1_clk_1 & ~ic_dlatch_ic_dlatch_node_22); // Node
-    assign ic_dlatch_ic_dlatch_node_15 = (ic_dlatch_ic_dlatch_node_22 & ~input_clock1_clk_1) & ~(ic_dlatch_ic_dlatch_nand_17 & input_clock1_clk_1 & ~ic_dlatch_ic_dlatch_node_22); // Node
-    /* verilator lint_off UNOPTFLAT */
-    assign ic_dlatch_ic_dlatch_nand_16 = ~((ic_dlatch_ic_dlatch_node_22 & ~input_clock1_clk_1) & ic_dlatch_ic_dlatch_nand_16 & input_clock1_clk_1 & ~ic_dlatch_ic_dlatch_node_22); // Nand
-    /* verilator lint_on UNOPTFLAT */
-    /* verilator lint_off UNOPTFLAT */
-    assign ic_dlatch_ic_dlatch_nand_17 = (ic_dlatch_ic_dlatch_node_22 & ~input_clock1_clk_1) & ~(ic_dlatch_ic_dlatch_nand_17 & input_clock1_clk_1 & ~ic_dlatch_ic_dlatch_node_22); // Nand
-    /* verilator lint_on UNOPTFLAT */
+    assign ic_dlatch_ic_dlatch_node_14 = ic_dlatch_ic_dlatch_nand_16; // Node
+    assign ic_dlatch_ic_dlatch_node_15 = ic_dlatch_ic_dlatch_nand_17; // Node
+    assign ic_dlatch_ic_dlatch_nand_16 = ~(ic_dlatch_ic_dlatch_nand_17 & ic_dlatch_ic_dlatch_nand_19); // Nand
+    assign ic_dlatch_ic_dlatch_nand_17 = ~(ic_dlatch_ic_dlatch_nand_20 & ic_dlatch_ic_dlatch_nand_16); // Nand
     assign ic_dlatch_ic_dlatch_not_18 = ~ic_dlatch_ic_dlatch_node_22; // Not
-    assign ic_dlatch_ic_dlatch_nand_19 = input_clock1_clk_1 & ~ic_dlatch_ic_dlatch_node_22; // Nand
+    assign ic_dlatch_ic_dlatch_nand_19 = input_clock1_clk_1 & ic_dlatch_ic_dlatch_not_18; // Nand
     assign ic_dlatch_ic_dlatch_nand_20 = ~(ic_dlatch_ic_dlatch_node_22 & ~input_clock1_clk_1); // Nand
     assign ic_dlatch_ic_dlatch_node_22 = 1'b0; // Node
-    assign node_25 = ~input_clock1_clk_1; // Node
-    assign ic_dlatch_ic_dlatch_node_5 = ~((input_push_button2_d_2 & input_clock1_clk_1) & ic_dlatch_ic_dlatch_nand_7 & ~(input_clock1_clk_1 & ~input_push_button2_d_2)); // Node
-    assign ic_dlatch_ic_dlatch_node_6 = (input_push_button2_d_2 & input_clock1_clk_1) & ~(ic_dlatch_ic_dlatch_nand_8 & ~(input_clock1_clk_1 & ~input_push_button2_d_2)); // Node
-    /* verilator lint_off UNOPTFLAT */
-    assign ic_dlatch_ic_dlatch_nand_7 = ~((input_push_button2_d_2 & input_clock1_clk_1) & ic_dlatch_ic_dlatch_nand_7 & ~(input_clock1_clk_1 & ~input_push_button2_d_2)); // Nand
-    /* verilator lint_on UNOPTFLAT */
-    /* verilator lint_off UNOPTFLAT */
-    assign ic_dlatch_ic_dlatch_nand_8 = (input_push_button2_d_2 & input_clock1_clk_1) & ~(ic_dlatch_ic_dlatch_nand_8 & ~(input_clock1_clk_1 & ~input_push_button2_d_2)); // Nand
-    /* verilator lint_on UNOPTFLAT */
+    assign node_25 = not_23; // Node
+    assign ic_dlatch_ic_dlatch_node_5 = ic_dlatch_ic_dlatch_nand_7; // Node
+    assign ic_dlatch_ic_dlatch_node_6 = ic_dlatch_ic_dlatch_nand_8; // Node
+    assign ic_dlatch_ic_dlatch_nand_7 = ~(ic_dlatch_ic_dlatch_nand_8 & ic_dlatch_ic_dlatch_nand_10); // Nand
+    assign ic_dlatch_ic_dlatch_nand_8 = ~(ic_dlatch_ic_dlatch_nand_11 & ic_dlatch_ic_dlatch_nand_7); // Nand
     assign ic_dlatch_ic_dlatch_not_9 = ~input_push_button2_d_2; // Not
-    assign ic_dlatch_ic_dlatch_nand_10 = ~(input_clock1_clk_1 & ~input_push_button2_d_2); // Nand
+    assign ic_dlatch_ic_dlatch_nand_10 = ~(input_clock1_clk_1 & ic_dlatch_ic_dlatch_not_9); // Nand
     assign ic_dlatch_ic_dlatch_nand_11 = ~(input_push_button2_d_2 & input_clock1_clk_1); // Nand
     assign node_24 = input_clock1_clk_1; // Node
     assign not_23 = ~input_clock1_clk_1; // Not
