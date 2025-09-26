@@ -2,8 +2,8 @@
 // ======= This Verilog code was generated automatically by wiRedPanda =======
 // ====================================================================
 //
-// Module: jkflipflop
-// Generated: Fri Sep 26 21:22:27 2025
+// Module: jkflipflop_fixed
+// Generated: Fri Sep 26 20:59:38 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 24/1000 LUTs, 35/1000 FFs, 7/50 IOs
 //
@@ -11,9 +11,7 @@
 // https://github.com/gibis-unifesp/wiredpanda
 // ====================================================================
 
-`timescale 1ns/1ps
-
-module jkflipflop (
+module jkflipflop_fixed (
     // ========= Input Ports =========
 
     // ========= Output Ports =========
@@ -105,10 +103,10 @@ module jkflipflop (
     assign output_led1_q_0_1 = ic_dflipflop_ic_node_71_0; // LED
     assign output_led2_q_0_2 = ic_dflipflop_ic_node_72_0; // LED
 
-endmodule // jkflipflop
+endmodule // jkflipflop_fixed
 
 // ====================================================================
-// Module jkflipflop generation completed successfully
+// Module jkflipflop_fixed generation completed successfully
 // Elements processed: 20
 // Inputs: 0, Outputs: 2
 // ====================================================================

@@ -2,8 +2,8 @@
 // ======= This Verilog code was generated automatically by wiRedPanda =======
 // ====================================================================
 //
-// Module: dflipflop
-// Generated: Fri Sep 26 21:22:19 2025
+// Module: dflipflop_fixed
+// Generated: Fri Sep 26 20:58:46 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 30/1000 LUTs, 35/1000 FFs, 6/50 IOs
 //
@@ -11,9 +11,7 @@
 // https://github.com/gibis-unifesp/wiredpanda
 // ====================================================================
 
-`timescale 1ns/1ps
-
-module dflipflop (
+module dflipflop_fixed (
     // ========= Input Ports =========
 
     // ========= Output Ports =========
@@ -66,10 +64,10 @@ module dflipflop (
     assign output_led1_0_1 = nand_18; // LED
     assign output_led2_0_2 = nand_21; // LED
 
-endmodule // dflipflop
+endmodule // dflipflop_fixed
 
 // ====================================================================
-// Module dflipflop generation completed successfully
+// Module dflipflop_fixed generation completed successfully
 // Elements processed: 25
 // Inputs: 0, Outputs: 2
 // ====================================================================

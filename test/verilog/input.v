@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: wiredpanda_module
-// Generated: Fri Sep 26 19:56:52 2025
+// Generated: Fri Sep 26 21:22:26 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 12/1000 LUTs, 0/1000 FFs, 6/50 IOs
 //
@@ -11,40 +11,40 @@
 // https://github.com/gibis-unifesp/wiredpanda
 // ====================================================================
 
+`timescale 1ns/1ps
+
 module wiredpanda_module (
     // ========= Input Ports =========
-    input wire input_push_button1_x0_1,
-    input wire input_push_button2_x1_2,
 
     // ========= Output Ports =========
-    output wire output_led1_xor_0_3,
-    output wire output_led2_not_x0_0_4,
-    output wire output_led3_and_0_5,
-    output wire output_led4_or_0_6
+    output wire output_led1_xor_0_1,
+    output wire output_led2_not_x0_0_2,
+    output wire output_led3_and_0_3,
+    output wire output_led4_or_0_4
 );
 
     // ========= Internal Signals =========
-    wire not_7;
-    wire xor_8;
-    wire or_9;
-    wire and_10;
+    wire not_5;
+    wire xor_6;
+    wire or_7;
+    wire and_8;
 
     // ========= Logic Assignments =========
-    assign and_10 = (input_push_button1_x0_1 & input_push_button2_x1_2); // And
-    assign or_9 = (input_push_button1_x0_1 | input_push_button2_x1_2); // Or
-    assign xor_8 = (input_push_button1_x0_1 ^ input_push_button2_x1_2); // Xor
-    assign not_7 = ~input_push_button1_x0_1; // Not
+    assign and_8 = (1'b0 & 1'b0); // And
+    assign or_7 = (1'b0 | 1'b0); // Or
+    assign xor_6 = (1'b0 ^ 1'b0); // Xor
+    assign not_5 = ~1'b0; // Not
 
     // ========= Output Assignments =========
-    assign output_led1_xor_0_3 = xor_8; // LED
-    assign output_led2_not_x0_0_4 = not_7; // LED
-    assign output_led3_and_0_5 = and_10; // LED
-    assign output_led4_or_0_6 = or_9; // LED
+    assign output_led1_xor_0_1 = xor_6; // LED
+    assign output_led2_not_x0_0_2 = not_5; // LED
+    assign output_led3_and_0_3 = and_8; // LED
+    assign output_led4_or_0_4 = or_7; // LED
 
 endmodule // wiredpanda_module
 
 // ====================================================================
 // Module wiredpanda_module generation completed successfully
 // Elements processed: 10
-// Inputs: 2, Outputs: 4
+// Inputs: 0, Outputs: 4
 // ====================================================================

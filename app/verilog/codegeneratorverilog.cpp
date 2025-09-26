@@ -1130,6 +1130,10 @@ void CodeGeneratorVerilog::generateModuleHeader()
     m_stream << "// ====================================================================" << Qt::endl;
     m_stream << Qt::endl;
 
+    // Add timescale directive to avoid warnings
+    m_stream << "`timescale 1ns/1ps" << Qt::endl;
+    m_stream << Qt::endl;
+
     // Add FPGA-specific attributes
     if (m_targetFamily == FPGAFamily::Xilinx) {
         m_stream << "(* keep_hierarchy = \"yes\" *)" << Qt::endl;

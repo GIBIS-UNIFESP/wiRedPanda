@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: serialize
-// Generated: Fri Sep 26 19:56:55 2025
+// Generated: Fri Sep 26 21:22:30 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 45/1000 LUTs, 4/1000 FFs, 8/50 IOs
 //
@@ -11,122 +11,118 @@
 // https://github.com/gibis-unifesp/wiredpanda
 // ====================================================================
 
+`timescale 1ns/1ps
+
 module serialize (
     // ========= Input Ports =========
-    input wire input_input_switch1_load__shift_1,
-    input wire input_input_switch2_clock_2,
-    input wire input_input_switch3_d0_3,
-    input wire input_input_switch4_d1_4,
-    input wire input_input_switch5_d2_5,
-    input wire input_input_switch6_d3_6,
 
     // ========= Output Ports =========
-    output wire output_led1_0_7,
-    output wire output_led2_0_8
+    output wire output_led1_0_1,
+    output wire output_led2_0_2
 );
 
     // ========= Internal Signals =========
-    wire node_9;
-    wire node_10;
-    wire node_11;
-    wire not_12;
-    wire node_13;
+    wire node_3;
+    wire node_4;
+    wire node_5;
+    wire not_6;
+    wire node_7;
+    wire node_8;
+    reg d_flip_flop_9_0_q = 1'b0;
+    reg d_flip_flop_9_1_q = 1'b0;
+    wire and_10;
+    wire and_11;
+    wire node_12;
+    wire or_13;
     wire node_14;
-    reg d_flip_flop_15_0_q = 1'b0;
-    reg d_flip_flop_15_1_q = 1'b0;
-    wire and_16;
+    wire node_15;
+    reg d_flip_flop_16_0_q = 1'b0;
+    reg d_flip_flop_16_1_q = 1'b0;
     wire and_17;
-    wire node_18;
-    wire or_19;
-    wire node_20;
+    wire and_18;
+    wire node_19;
+    wire or_20;
     wire node_21;
-    reg d_flip_flop_22_0_q = 1'b0;
-    reg d_flip_flop_22_1_q = 1'b0;
-    wire and_23;
+    wire node_22;
+    reg d_flip_flop_23_0_q = 1'b0;
+    reg d_flip_flop_23_1_q = 1'b0;
     wire and_24;
-    wire node_25;
-    wire or_26;
-    wire node_27;
+    wire and_25;
+    wire node_26;
+    wire or_27;
     wire node_28;
-    reg d_flip_flop_29_0_q = 1'b0;
-    reg d_flip_flop_29_1_q = 1'b0;
-    wire and_30;
-    wire and_31;
-    wire node_32;
-    wire or_33;
-    wire node_34;
-    wire node_35;
-    reg d_flip_flop_36_0_q = 1'b0;
-    reg d_flip_flop_36_1_q = 1'b0;
-    wire node_37;
-    wire and_38;
+    wire node_29;
+    reg d_flip_flop_30_0_q = 1'b0;
+    reg d_flip_flop_30_1_q = 1'b0;
+    wire node_31;
+    wire and_32;
 
     // ========= Logic Assignments =========
-    assign and_38 = (node_34 & d_flip_flop_36_0_q); // And
-    assign node_37 = node_35; // Node
+    assign and_32 = (node_28 & d_flip_flop_30_0_q); // And
+    assign node_31 = node_29; // Node
     // D FlipFlop: D-Flip-Flop
-    always @(posedge node_32) begin
+    always @(posedge node_26) begin
         begin
-            d_flip_flop_36_0_q <= or_33;
-            d_flip_flop_36_1_q <= ~or_33;
+            d_flip_flop_30_0_q <= or_27;
+            d_flip_flop_30_1_q <= ~or_27;
         end
     end
 
-    assign node_34 = not_12; // Node
-    assign or_33 = (and_31 | and_30); // Or
-    assign node_32 = input_input_switch2_clock_2; // Node
-    assign and_31 = (node_27 & input_input_switch6_d3_6); // And
-    assign and_30 = (node_28 & d_flip_flop_29_0_q); // And
+    assign node_28 = not_6; // Node
+    assign or_27 = (and_25 | and_24); // Or
+    assign node_26 = 1'b0; // Node
+    assign and_25 = (node_21 & 1'b0); // And
+    assign and_24 = (node_22 & d_flip_flop_23_0_q); // And
     // D FlipFlop: D-Flip-Flop
-    always @(posedge node_25) begin
+    always @(posedge node_19) begin
         begin
-            d_flip_flop_29_0_q <= or_26;
-            d_flip_flop_29_1_q <= ~or_26;
+            d_flip_flop_23_0_q <= or_20;
+            d_flip_flop_23_1_q <= ~or_20;
         end
     end
 
-    assign node_28 = not_12; // Node
-    assign node_27 = node_11; // Node
-    assign or_26 = (and_23 | and_24); // Or
-    assign node_25 = input_input_switch2_clock_2; // Node
-    assign and_24 = (node_21 & d_flip_flop_22_0_q); // And
-    assign and_23 = (node_20 & input_input_switch5_d2_5); // And
+    assign node_22 = not_6; // Node
+    assign node_21 = node_5; // Node
+    assign or_20 = (and_17 | and_18); // Or
+    assign node_19 = 1'b0; // Node
+    assign and_18 = (node_15 & d_flip_flop_16_0_q); // And
+    assign and_17 = (node_14 & 1'b0); // And
     // D FlipFlop: D-Flip-Flop
-    always @(posedge node_18) begin
+    always @(posedge node_12) begin
         begin
-            d_flip_flop_22_0_q <= or_19;
-            d_flip_flop_22_1_q <= ~or_19;
+            d_flip_flop_16_0_q <= or_13;
+            d_flip_flop_16_1_q <= ~or_13;
         end
     end
 
-    assign node_21 = not_12; // Node
-    assign node_20 = node_11; // Node
-    assign or_19 = (and_17 | and_16); // Or
-    assign node_18 = input_input_switch2_clock_2; // Node
-    assign and_17 = (node_13 & input_input_switch4_d1_4); // And
-    assign and_16 = (node_14 & d_flip_flop_15_0_q); // And
+    assign node_15 = not_6; // Node
+    assign node_14 = node_5; // Node
+    assign or_13 = (and_11 | and_10); // Or
+    assign node_12 = 1'b0; // Node
+    assign and_11 = (node_7 & 1'b0); // And
+    assign and_10 = (node_8 & d_flip_flop_9_0_q); // And
     // D FlipFlop: D-Flip-Flop
-    always @(posedge node_10) begin
+    always @(posedge node_4) begin
         begin
-            d_flip_flop_15_0_q <= input_input_switch3_d0_3;
-            d_flip_flop_15_1_q <= ~input_input_switch3_d0_3;
+            d_flip_flop_9_0_q <= 1'b0;
+            d_flip_flop_9_1_q <= ~1'b0;
         end
     end
 
-    assign node_14 = not_12; // Node
-    assign node_13 = node_11; // Node
-    assign not_12 = ~node_9; // Not
-    assign node_10 = input_input_switch2_clock_2; // Node
-    assign node_9 = input_input_switch1_load__shift_1; // Node
+    assign node_8 = not_6; // Node
+    assign node_7 = node_5; // Node
+    assign not_6 = ~node_3; // Not
+    assign node_4 = 1'b0; // Node
+    assign node_3 = 1'b0; // Node
 
     // ========= Output Assignments =========
-    assign output_led1_0_7 = node_37; // LED
-    assign output_led2_0_8 = and_38; // LED
+    assign output_led1_0_1 = node_31; // LED
+    assign output_led2_0_2 = and_32; // LED
 
 endmodule // serialize
 
 // ====================================================================
 // Module serialize generation completed successfully
 // Elements processed: 38
-// Inputs: 6, Outputs: 2
+// Inputs: 0, Outputs: 2
 // ====================================================================
