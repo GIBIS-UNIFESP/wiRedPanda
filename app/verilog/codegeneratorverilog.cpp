@@ -2922,7 +2922,14 @@ void CodeGeneratorVerilog::processICWithBoundaries(IC *ic)
     generateDebugInfo(QString("Processing %1 internal elements with IC context").arg(ic->m_icElements.size()), ic);
     if (!ic->m_icElements.isEmpty()) {
         auto sortedElements = Common::sortGraphicElements(ic->m_icElements);
-        assignVariablesRec(sortedElements);
+
+        // CRITICAL FIX: Declare variables for IC internal elements BEFORE assigning
+        generateDebugInfo(QString("Declaring variables for %1 IC internal elements").arg(sortedElements.size()), ic);
+        declareVariablesRec(sortedElements, true);
+
+        // Now assign logic to the declared variables
+        generateDebugInfo(QString("Assigning logic for %1 IC internal elements").arg(sortedElements.size()), ic);
+        assignVariablesRec(sortedElements, true);
     }
 
     // Phase 3: Map IC outputs (internal IC variables → external signals)
