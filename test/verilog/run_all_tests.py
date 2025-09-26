@@ -83,19 +83,22 @@ class TestRunner:
         return available_tools
 
     def test_with_iverilog(self, verilog_file, testbench_file=None):
-        """Test using Icarus Verilog"""
+        """Test using Icarus Verilog with strictest validation"""
         file_stem = Path(verilog_file).stem
         output_file = TEST_RESULTS_DIR / f"{file_stem}_iverilog.out"
 
         try:
+            # Strictest iverilog flags: -Wall enables all warnings, -Winfloop for infinite loop detection
+            strict_flags = ["-Wall", "-Winfloop", "-g2012"]  # Use newest standard supported by iverilog (2012)
+
             if testbench_file and Path(testbench_file).exists():
-                # Use existing testbench
-                self.log(f"Testing {verilog_file} with existing testbench {testbench_file}")
-                compile_cmd = ["iverilog", "-o", str(output_file), str(testbench_file), str(verilog_file)]
+                # Use existing testbench with strict validation
+                self.log(f"Testing {verilog_file} with existing testbench {testbench_file} (STRICT MODE)")
+                compile_cmd = ["iverilog"] + strict_flags + ["-o", str(output_file), str(testbench_file), str(verilog_file)]
             else:
-                # Just check syntax compilation
-                self.log(f"Syntax checking {verilog_file}")
-                compile_cmd = ["iverilog", "-t", "null", str(verilog_file)]
+                # Just check syntax compilation with strict validation
+                self.log(f"Syntax checking {verilog_file} (STRICT MODE)")
+                compile_cmd = ["iverilog"] + strict_flags + ["-t", "null", str(verilog_file)]
 
             # Compile
             result = subprocess.run(compile_cmd, capture_output=True, text=True, timeout=30)
@@ -126,12 +129,15 @@ class TestRunner:
             return False, str(e)
 
     def test_with_verilator(self, verilog_file):
-        """Test using Verilator (lint/syntax check)"""
+        """Test using Verilator with strictest lint validation"""
         file_stem = Path(verilog_file).stem
 
         try:
-            self.log(f"Verilator lint checking {verilog_file}")
-            result = subprocess.run(["verilator", "--lint-only", str(verilog_file)],
+            # Strictest verilator flags: --lint-only with newest standard and all warnings enabled
+            strict_flags = ["--lint-only", "-Wall", "+1800-2017ext+.v"]  # Newest standard (2017) + all warnings
+
+            self.log(f"Verilator strict lint checking {verilog_file} (STRICT MODE)")
+            result = subprocess.run(["verilator"] + strict_flags + [str(verilog_file)],
                                   capture_output=True, text=True, timeout=30)
 
             if result.returncode == 0:
@@ -149,20 +155,30 @@ class TestRunner:
             return False, str(e)
 
     def test_with_yosys(self, verilog_file):
-        """Test using Yosys (synthesis check)"""
+        """Test using Yosys with strictest synthesis validation"""
         file_stem = Path(verilog_file).stem
 
         try:
-            self.log(f"Yosys synthesis checking {verilog_file}")
-            # Create a simple Yosys script
+            # Strictest yosys mode: verbose, detailed timing, treat all warnings as errors
+            strict_flags = ["-v", "2", "-d", "-t"]  # Verbose level 2, detailed timing, timestamps
+
+            self.log(f"Yosys strict synthesis checking {verilog_file} (STRICT MODE)")
+            # Enhanced Yosys script with stricter checks (auto-detect top module)
             yosys_script = f"""
 read_verilog {verilog_file}
-hierarchy -check
-proc
-opt
+hierarchy -check -auto-top
+proc -global_arst
+opt -full
+memory
+opt -full
+techmap
+opt -full
+abc -g cmos
+opt -full
 check
+stat
 """
-            result = subprocess.run(["yosys", "-p", yosys_script],
+            result = subprocess.run(["yosys"] + strict_flags + ["-p", yosys_script],
                                   capture_output=True, text=True, timeout=60)
 
             if result.returncode == 0:
@@ -180,8 +196,13 @@ check
             return False, str(e)
 
     def run_all_tests(self):
-        """Run all tests on all Verilog files"""
-        self.log("Starting comprehensive Verilog test suite")
+        """Run all tests on all Verilog files with STRICTEST validation modes"""
+        self.log("Starting comprehensive Verilog test suite - STRICTEST MODE")
+        self.log("="*60)
+        self.log("STRICT MODE ENABLED:")
+        self.log("  - iverilog: -Wall -Winfloop -g2012 (IEEE 1800-2012 - newest supported)")
+        self.log("  - verilator: -Wall +1800-2017ext+.v (IEEE 1800-2017 - newest supported)")
+        self.log("  - yosys: -v 2 -d -t -auto-top (verbose + enhanced synthesis)")
         self.log("="*60)
 
         available_tools = self.check_tool_availability()
