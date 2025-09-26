@@ -68,9 +68,8 @@ module register_tb;
     // Test specific clock scenarios
     task test_clock_scenario;
         input [1:0] clock_values;
-        input string description;
         begin
-            $display("\nTesting: %s", description);
+            $display("\nTesting clock scenario with values: %2b", clock_values);
 
             {input_clock1_1, input_clock2_2} = clock_values;
             #50;
@@ -93,10 +92,10 @@ module register_tb;
         #150;
 
         // Test various clock combinations
-        test_clock_scenario(2'b00, "Both clocks low");
-        test_clock_scenario(2'b01, "Clock1 low, Clock2 high");
-        test_clock_scenario(2'b10, "Clock1 high, Clock2 low");
-        test_clock_scenario(2'b11, "Both clocks high");
+        test_clock_scenario(2'b00);
+        test_clock_scenario(2'b01);
+        test_clock_scenario(2'b10);
+        test_clock_scenario(2'b11);
 
         // Run with free-running clocks for observation
         $display("\nRunning with free-running clocks for 2000ns...");

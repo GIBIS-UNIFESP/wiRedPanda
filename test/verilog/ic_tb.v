@@ -159,9 +159,8 @@ module ic_tb;
     // Test different clock scenarios
     task test_clock_scenario;
         input [5:0] clock_enables;
-        input string description;
         begin
-            $display("\nTesting: %s", description);
+            $display("\nTesting clock scenario with enables: %6b", clock_enables);
 
             // Stop all clocks first
             input_clock1_1 = 0; input_clock2_2 = 0; input_clock3_3 = 0;
@@ -188,9 +187,9 @@ module ic_tb;
         #2000;
 
         // Test individual clock domains
-        test_clock_scenario(6'b000001, "Clock1 only");
-        test_clock_scenario(6'b000010, "Clock2 only");
-        test_clock_scenario(6'b000100, "Clock3 only");
+        test_clock_scenario(6'b000001);
+        test_clock_scenario(6'b000010);
+        test_clock_scenario(6'b000100);
 
         // Run with all clocks for observation
         $display("\nRunning with all clocks for 20000ns...");
