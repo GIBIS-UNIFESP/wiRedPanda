@@ -123,24 +123,28 @@ public:
      */
     void setDebugOutput(bool enable) { m_debugOutput = enable; }
 
-private:
     // ============================================================================
-    // CORE UTILITY METHODS
+    // PUBLIC UTILITY FUNCTIONS FOR VERILOG NAMING CONVENTIONS
     // ============================================================================
 
     /**
      * @brief Remove forbidden characters from Verilog identifiers
      * @param input Input string to clean
-     * @return Clean Verilog identifier
+     * @return Clean Verilog identifier suitable for module names and variables
      */
     static QString removeForbiddenChars(const QString &input);
 
     /**
      * @brief Remove accents and diacritics from text
      * @param input Input string with accents
-     * @return String without accents
+     * @return String without accents suitable for Verilog identifiers
      */
     static QString stripAccents(const QString &input);
+
+private:
+    // ============================================================================
+    // CORE UTILITY METHODS
+    // ============================================================================
 
     /**
      * @brief Convert status value to Verilog constant

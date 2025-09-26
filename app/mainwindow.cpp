@@ -26,6 +26,7 @@
 #include <QCloseEvent>
 #include <QDebug>
 #include <QDesktopServices>
+#include <QDir>
 #include <QFileDialog>
 #include <QLocale>
 #include <QLoggingCategory>
@@ -1042,9 +1043,18 @@ void MainWindow::exportToVerilog(QString fileName)
         fileName.append(".v");
     }
 
+    // DECLFILENAME FIX: Transform filename to match Verilog module naming conventions
+    // This ensures the filename uses underscores like the module name, preventing DECLFILENAME warnings
+    QFileInfo fileInfo(fileName);
+    QString baseNameCleaned = CodeGeneratorVerilog::removeForbiddenChars(CodeGeneratorVerilog::stripAccents(fileInfo.completeBaseName()));
+    if (baseNameCleaned.isEmpty()) {
+        baseNameCleaned = "wiredpanda_module";
+    }
+    QString transformedFileName = fileInfo.path() + QDir::separator() + baseNameCleaned + ".v";
+
     elements = Common::sortGraphicElements(elements);
 
-    CodeGeneratorVerilog verilog(fileName, elements);
+    CodeGeneratorVerilog verilog(transformedFileName, elements);
     verilog.generate();
     m_ui->statusBar->showMessage(tr("Verilog code successfully generated."), 4000);
 
