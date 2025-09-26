@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: display_4bits_counter
-// Generated: Fri Sep 26 18:49:24 2025
+// Generated: Fri Sep 26 19:56:48 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 42/1000 LUTs, 35/1000 FFs, 11/50 IOs
 //
@@ -321,275 +321,26 @@ module display_4bits_counter (
     wire node_329;
 
     // ========= Logic Assignments =========
-    assign node_325 = node_320; // Node
-    wire ic_display_4bits_ic_node_330_0;
-    wire ic_display_4bits_ic_node_331_0;
-    wire ic_display_4bits_ic_node_332_0;
-    wire ic_display_4bits_ic_node_333_0;
-    wire ic_display_4bits_ic_node_334_0;
-    wire ic_display_4bits_ic_node_335_0;
-    wire ic_display_4bits_ic_not_336_0;
-    wire ic_display_4bits_ic_node_337_0;
-    wire ic_display_4bits_ic_node_338_0;
-    wire ic_display_4bits_ic_node_339_0;
-    wire ic_display_4bits_ic_not_340_0;
-    wire ic_display_4bits_ic_not_341_0;
-    wire ic_display_4bits_ic_node_342_0;
-    wire ic_display_4bits_ic_node_343_0;
-    wire ic_display_4bits_ic_node_344_0;
-    wire ic_display_4bits_ic_node_345_0;
-    wire ic_display_4bits_ic_node_346_0;
-    wire ic_display_4bits_ic_node_347_0;
-    wire ic_display_4bits_ic_node_348_0;
-    wire ic_display_4bits_ic_node_349_0;
-    wire ic_display_4bits_ic_node_350_0;
-    wire ic_display_4bits_ic_node_351_0;
-    wire ic_display_4bits_ic_node_352_0;
-    wire ic_display_4bits_ic_node_353_0;
-    wire ic_display_4bits_ic_node_354_0;
-    wire ic_display_4bits_ic_and_355_0;
-    wire ic_display_4bits_ic_node_356_0;
-    wire ic_display_4bits_ic_node_357_0;
-    wire ic_display_4bits_ic_node_358_0;
-    wire ic_display_4bits_ic_node_359_0;
-    wire ic_display_4bits_ic_node_360_0;
-    wire ic_display_4bits_ic_node_361_0;
-    wire ic_display_4bits_ic_and_362_0;
-    wire ic_display_4bits_ic_and_363_0;
-    wire ic_display_4bits_ic_node_364_0;
-    wire ic_display_4bits_ic_node_365_0;
-    wire ic_display_4bits_ic_node_366_0;
-    wire ic_display_4bits_ic_node_367_0;
-    wire ic_display_4bits_ic_node_368_0;
-    wire ic_display_4bits_ic_node_369_0;
-    wire ic_display_4bits_ic_node_370_0;
-    wire ic_display_4bits_ic_node_371_0;
-    wire ic_display_4bits_ic_node_372_0;
-    wire ic_display_4bits_ic_and_373_0;
-    wire ic_display_4bits_ic_node_374_0;
-    wire ic_display_4bits_ic_and_375_0;
-    wire ic_display_4bits_ic_node_376_0;
-    wire ic_display_4bits_ic_node_377_0;
-    wire ic_display_4bits_ic_node_378_0;
-    wire ic_display_4bits_ic_and_379_0;
-    wire ic_display_4bits_ic_and_380_0;
-    wire ic_display_4bits_ic_and_381_0;
-    wire ic_display_4bits_ic_and_382_0;
-    wire ic_display_4bits_ic_or_383_0;
-    wire ic_display_4bits_ic_or_384_0;
-    wire ic_display_4bits_ic_or_385_0;
-    wire ic_display_4bits_ic_or_386_0;
-    wire ic_display_4bits_ic_or_387_0;
-    wire ic_display_4bits_ic_or_388_0;
-    wire ic_display_4bits_ic_or_389_0;
-    wire ic_display_4bits_ic_not_390_0;
-    wire ic_display_4bits_ic_node_391_0;
-    wire ic_display_4bits_ic_node_392_0;
-    wire ic_display_4bits_ic_node_393_0;
-    wire ic_display_4bits_ic_node_394_0;
-    wire ic_display_4bits_ic_node_395_0;
-    wire ic_display_4bits_ic_node_396_0;
-    wire ic_display_4bits_ic_node_397_0;
-    wire ic_display_4bits_ic_node_398_0;
-    wire ic_display_4bits_ic_node_399_0;
-    wire ic_display_4bits_ic_node_400_0;
-    wire ic_display_4bits_ic_node_401_0;
-    wire ic_display_4bits_ic_node_402_0;
-    wire ic_display_4bits_ic_node_403_0;
-    wire ic_display_4bits_ic_node_404_0;
-    wire ic_display_4bits_ic_node_405_0;
-    wire ic_display_4bits_ic_node_406_0;
-    assign node_324 = 1'b0; // Node
-    assign node_323 = 1'b0; // Node
-    assign node_322 = 1'b0; // Node
-    assign node_321 = 1'b0; // Node
-    wire ic_jkflipflop_ic_node_407_0;
-    wire ic_jkflipflop_ic_node_408_0;
-    wire ic_jkflipflop_ic_node_409_0;
-    wire ic_jkflipflop_ic_node_410_0;
-    wire ic_jkflipflop_ic_node_411_0;
-    wire ic_jkflipflop_ic_node_412_0;
-    wire ic_dflipflop_ic_node_413_0;
-    wire ic_dflipflop_ic_node_414_0;
-    wire ic_dflipflop_ic_node_415_0;
-    wire ic_dflipflop_ic_node_416_0;
-    wire ic_dflipflop_ic_nand_417_0;
-    wire ic_dflipflop_ic_node_418_0;
-    wire ic_dflipflop_ic_nand_419_0;
-    wire ic_dflipflop_ic_not_420_0;
-    wire ic_dflipflop_ic_nand_421_0;
-    wire ic_dflipflop_ic_nand_422_0;
-    wire ic_dflipflop_ic_nand_423_0;
-    wire ic_dflipflop_ic_nand_424_0;
-    wire ic_dflipflop_ic_node_425_0;
-    wire ic_dflipflop_ic_not_426_0;
-    wire ic_dflipflop_ic_nand_427_0;
-    wire ic_dflipflop_ic_nand_428_0;
-    wire ic_dflipflop_ic_node_429_0;
-    wire ic_dflipflop_ic_node_430_0;
-    wire ic_dflipflop_ic_node_431_0;
-    wire ic_dflipflop_ic_not_432_0;
-    wire ic_dflipflop_ic_node_433_0;
-    wire ic_dflipflop_ic_node_434_0;
-    wire ic_dflipflop_ic_node_435_0;
-    wire ic_dflipflop_ic_node_436_0;
-    wire ic_dflipflop_ic_node_437_0;
-    wire ic_jkflipflop_ic_node_438_0;
-    wire ic_jkflipflop_ic_node_439_0;
-    wire ic_jkflipflop_ic_node_440_0;
-    wire ic_jkflipflop_ic_node_441_0;
-    wire ic_jkflipflop_ic_node_442_0;
-    wire ic_jkflipflop_ic_node_443_0;
-    wire ic_jkflipflop_ic_not_444_0;
-    wire ic_jkflipflop_ic_node_445_0;
-    wire ic_jkflipflop_ic_and_446_0;
-    wire ic_jkflipflop_ic_and_447_0;
-    wire ic_jkflipflop_ic_or_448_0;
-    wire ic_jkflipflop_ic_node_449_0;
-    wire ic_jkflipflop_ic_node_450_0;
-    assign node_327 = node_326; // Node
-    assign node_326 = node_319; // Node
-    assign node_319 = node_318; // Node
-    assign node_318 = node_317; // Node
-    assign not_316 = ~and_315; // Not
-    assign and_315 = (node_328 & node_329 & node_313 & node_314); // And
-    assign node_314 = 1'b0; // Node
-    assign node_313 = 1'b0; // Node
-    assign node_329 = 1'b0; // Node
-    assign node_328 = 1'b0; // Node
-    wire ic_jkflipflop_ic_node_451_0;
-    wire ic_jkflipflop_ic_node_452_0;
-    wire ic_jkflipflop_ic_node_453_0;
-    wire ic_jkflipflop_ic_node_454_0;
-    wire ic_jkflipflop_ic_node_455_0;
-    wire ic_jkflipflop_ic_node_456_0;
-    wire ic_dflipflop_ic_node_457_0;
-    wire ic_dflipflop_ic_node_458_0;
-    wire ic_dflipflop_ic_node_459_0;
-    wire ic_dflipflop_ic_node_460_0;
-    wire ic_dflipflop_ic_nand_461_0;
-    wire ic_dflipflop_ic_node_462_0;
-    wire ic_dflipflop_ic_nand_463_0;
-    wire ic_dflipflop_ic_not_464_0;
-    wire ic_dflipflop_ic_nand_465_0;
-    wire ic_dflipflop_ic_nand_466_0;
-    wire ic_dflipflop_ic_nand_467_0;
-    wire ic_dflipflop_ic_nand_468_0;
-    wire ic_dflipflop_ic_node_469_0;
-    wire ic_dflipflop_ic_not_470_0;
-    wire ic_dflipflop_ic_nand_471_0;
-    wire ic_dflipflop_ic_nand_472_0;
-    wire ic_dflipflop_ic_node_473_0;
-    wire ic_dflipflop_ic_node_474_0;
-    wire ic_dflipflop_ic_node_475_0;
-    wire ic_dflipflop_ic_not_476_0;
-    wire ic_dflipflop_ic_node_477_0;
-    wire ic_dflipflop_ic_node_478_0;
-    wire ic_dflipflop_ic_node_479_0;
-    wire ic_dflipflop_ic_node_480_0;
-    wire ic_dflipflop_ic_node_481_0;
-    wire ic_jkflipflop_ic_node_482_0;
-    wire ic_jkflipflop_ic_node_483_0;
-    wire ic_jkflipflop_ic_node_484_0;
-    wire ic_jkflipflop_ic_node_485_0;
-    wire ic_jkflipflop_ic_node_486_0;
-    wire ic_jkflipflop_ic_node_487_0;
-    wire ic_jkflipflop_ic_not_488_0;
-    wire ic_jkflipflop_ic_node_489_0;
-    wire ic_jkflipflop_ic_and_490_0;
-    wire ic_jkflipflop_ic_and_491_0;
-    wire ic_jkflipflop_ic_or_492_0;
-    wire ic_jkflipflop_ic_node_493_0;
-    wire ic_jkflipflop_ic_node_494_0;
-    wire ic_jkflipflop_ic_node_495_0;
-    wire ic_jkflipflop_ic_node_496_0;
-    wire ic_jkflipflop_ic_node_497_0;
-    wire ic_jkflipflop_ic_node_498_0;
-    wire ic_jkflipflop_ic_node_499_0;
-    wire ic_jkflipflop_ic_node_500_0;
-    wire ic_dflipflop_ic_node_501_0;
-    wire ic_dflipflop_ic_node_502_0;
-    wire ic_dflipflop_ic_node_503_0;
-    wire ic_dflipflop_ic_node_504_0;
-    wire ic_dflipflop_ic_nand_505_0;
-    wire ic_dflipflop_ic_node_506_0;
-    wire ic_dflipflop_ic_nand_507_0;
-    wire ic_dflipflop_ic_not_508_0;
-    wire ic_dflipflop_ic_nand_509_0;
-    wire ic_dflipflop_ic_nand_510_0;
-    wire ic_dflipflop_ic_nand_511_0;
-    wire ic_dflipflop_ic_nand_512_0;
-    wire ic_dflipflop_ic_node_513_0;
-    wire ic_dflipflop_ic_not_514_0;
-    wire ic_dflipflop_ic_nand_515_0;
-    wire ic_dflipflop_ic_nand_516_0;
-    wire ic_dflipflop_ic_node_517_0;
-    wire ic_dflipflop_ic_node_518_0;
-    wire ic_dflipflop_ic_node_519_0;
-    wire ic_dflipflop_ic_not_520_0;
-    wire ic_dflipflop_ic_node_521_0;
-    wire ic_dflipflop_ic_node_522_0;
-    wire ic_dflipflop_ic_node_523_0;
-    wire ic_dflipflop_ic_node_524_0;
-    wire ic_dflipflop_ic_node_525_0;
-    wire ic_jkflipflop_ic_node_526_0;
-    wire ic_jkflipflop_ic_node_527_0;
-    wire ic_jkflipflop_ic_node_528_0;
-    wire ic_jkflipflop_ic_node_529_0;
-    wire ic_jkflipflop_ic_node_530_0;
-    wire ic_jkflipflop_ic_node_531_0;
-    wire ic_jkflipflop_ic_not_532_0;
-    wire ic_jkflipflop_ic_node_533_0;
-    wire ic_jkflipflop_ic_and_534_0;
-    wire ic_jkflipflop_ic_and_535_0;
-    wire ic_jkflipflop_ic_or_536_0;
-    wire ic_jkflipflop_ic_node_537_0;
-    wire ic_jkflipflop_ic_node_538_0;
-    wire ic_jkflipflop_ic_node_539_0;
-    wire ic_jkflipflop_ic_node_540_0;
-    wire ic_jkflipflop_ic_node_541_0;
-    wire ic_jkflipflop_ic_node_542_0;
-    wire ic_jkflipflop_ic_node_543_0;
-    wire ic_jkflipflop_ic_node_544_0;
-    wire ic_dflipflop_ic_node_545_0;
-    wire ic_dflipflop_ic_node_546_0;
-    wire ic_dflipflop_ic_node_547_0;
-    wire ic_dflipflop_ic_node_548_0;
-    wire ic_dflipflop_ic_nand_549_0;
-    wire ic_dflipflop_ic_node_550_0;
-    wire ic_dflipflop_ic_nand_551_0;
-    wire ic_dflipflop_ic_not_552_0;
-    wire ic_dflipflop_ic_nand_553_0;
-    wire ic_dflipflop_ic_nand_554_0;
-    wire ic_dflipflop_ic_nand_555_0;
-    wire ic_dflipflop_ic_nand_556_0;
-    wire ic_dflipflop_ic_node_557_0;
-    wire ic_dflipflop_ic_not_558_0;
-    wire ic_dflipflop_ic_nand_559_0;
-    wire ic_dflipflop_ic_nand_560_0;
-    wire ic_dflipflop_ic_node_561_0;
-    wire ic_dflipflop_ic_node_562_0;
-    wire ic_dflipflop_ic_node_563_0;
-    wire ic_dflipflop_ic_not_564_0;
-    wire ic_dflipflop_ic_node_565_0;
-    wire ic_dflipflop_ic_node_566_0;
-    wire ic_dflipflop_ic_node_567_0;
-    wire ic_dflipflop_ic_node_568_0;
-    wire ic_dflipflop_ic_node_569_0;
-    wire ic_jkflipflop_ic_node_570_0;
-    wire ic_jkflipflop_ic_node_571_0;
-    wire ic_jkflipflop_ic_node_572_0;
-    wire ic_jkflipflop_ic_node_573_0;
-    wire ic_jkflipflop_ic_node_574_0;
-    wire ic_jkflipflop_ic_node_575_0;
-    wire ic_jkflipflop_ic_not_576_0;
-    wire ic_jkflipflop_ic_node_577_0;
-    wire ic_jkflipflop_ic_and_578_0;
-    wire ic_jkflipflop_ic_and_579_0;
-    wire ic_jkflipflop_ic_or_580_0;
-    wire ic_jkflipflop_ic_node_581_0;
-    wire ic_jkflipflop_ic_node_582_0;
-    assign not_312 = ~input_push_button1_1; // Not
+
+    // ========= Internal Sequential Register =========
+    reg output_7_segment_display1_g_middle_3_behavioral_reg = 1'b0; // Internal sequential register
+
+    // ========= Behavioral Sequential Logic (replaces gate-level feedback) =========
+    // Industry-standard behavioral sequential logic
+    always @(posedge input_clock2_2) begin
+begin // Synchronous operation
+            output_7_segment_display1_g_middle_3_behavioral_reg <= input_push_button1_1;
+        end
+    end
+
+    assign output_7_segment_display1_g_middle_3 = output_7_segment_display1_g_middle_3_behavioral_reg; // Connect behavioral register to output
+    assign output_7_segment_display1_f_upper_left_4 = ~output_7_segment_display1_g_middle_3_behavioral_reg; // Complementary output
+    assign output_7_segment_display1_e_lower_left_5 = ~output_7_segment_display1_g_middle_3_behavioral_reg; // Complementary output
+    assign output_7_segment_display1_d_bottom_6 = ~output_7_segment_display1_g_middle_3_behavioral_reg; // Complementary output
+    assign output_7_segment_display1_a_top_7 = ~output_7_segment_display1_g_middle_3_behavioral_reg; // Complementary output
+    assign output_7_segment_display1_b_upper_right_8 = ~output_7_segment_display1_g_middle_3_behavioral_reg; // Complementary output
+    assign output_7_segment_display1_dp_dot_9 = ~output_7_segment_display1_g_middle_3_behavioral_reg; // Complementary output
+    assign output_7_segment_display1_c_lower_right_10 = ~output_7_segment_display1_g_middle_3_behavioral_reg; // Complementary output
 
     // ========= Output Assignments =========
     assign output_7_segment_display1_g_middle_3 = 1'b0; // 7-Segment Display

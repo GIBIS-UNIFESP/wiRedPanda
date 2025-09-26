@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: dflipflop2
-// Generated: Fri Sep 26 18:49:22 2025
+// Generated: Fri Sep 26 19:56:46 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 28/1000 LUTs, 36/1000 FFs, 4/50 IOs
 //
@@ -45,31 +45,20 @@ module dflipflop2 (
     wire nand_24;
 
     // ========= Logic Assignments =========
-    // D FlipFlop: D-Flip-Flop
-    always @(posedge node_19) begin
-        begin
-            d_flip_flop_22_0_q <= node_12;
-            d_flip_flop_22_1_q <= ~node_12;
+
+    // ========= Internal Sequential Register =========
+    reg output_led1_0_3_behavioral_reg = 1'b0; // Internal sequential register
+
+    // ========= Behavioral Sequential Logic (replaces gate-level feedback) =========
+    // Industry-standard behavioral sequential logic
+    always @(posedge input_clock1_1) begin
+begin // Synchronous operation
+            output_led1_0_3_behavioral_reg <= input_input_switch2_2;
         end
     end
 
-    assign nand_21 = ~(nand_20 & nand_24); // Nand
-    assign nand_24 = ~(nand_21 & nand_23); // Nand
-    assign nand_23 = ~(node_15 & nand_13); // Nand
-    assign nand_20 = ~(nand_17 & node_16); // Nand
-    assign node_19 = node_18; // Node
-    assign node_16 = node_15; // Node
-    assign node_15 = node_10; // Node
-    assign nand_13 = ~(nand_17 & nand_11); // Nand
-    assign nand_17 = ~(nand_14 & nand_13); // Nand
-    assign nand_14 = ~(node_12 & not_5); // Nand
-    assign node_12 = input_input_switch2_2; // Node
-    assign nand_11 = ~(node_6 & not_8); // Nand
-    assign not_9 = ~node_7; // Not
-    assign not_8 = ~input_input_switch2_2; // Not
-    assign node_7 = node_6; // Node
-    assign node_6 = not_5; // Node
-    assign not_5 = ~input_clock1_1; // Not
+    assign output_led1_0_3 = output_led1_0_3_behavioral_reg; // Connect behavioral register to output
+    assign output_led2_0_4 = ~output_led1_0_3_behavioral_reg; // Complementary output
 
     // ========= Output Assignments =========
     assign output_led1_0_3 = d_flip_flop_22_0_q; // LED

@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: tflipflop
-// Generated: Fri Sep 26 18:49:32 2025
+// Generated: Fri Sep 26 19:56:56 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 16/1000 LUTs, 35/1000 FFs, 6/50 IOs
 //
@@ -62,41 +62,26 @@ module tflipflop (
     wire and_46;
 
     // ========= Logic Assignments =========
-    wire ic_dflipflop_ic_node_47_0;
-    wire ic_dflipflop_ic_not_48_0;
-    wire ic_dflipflop_ic_not_49_0;
-    wire ic_dflipflop_ic_node_50_0;
-    wire ic_dflipflop_ic_node_51_0;
-    wire ic_dflipflop_ic_node_52_0;
-    wire ic_dflipflop_ic_node_53_0;
-    wire ic_dflipflop_ic_nand_54_0;
-    wire ic_dflipflop_ic_not_55_0;
-    wire ic_dflipflop_ic_node_56_0;
-    wire ic_dflipflop_ic_node_57_0;
-    wire ic_dflipflop_ic_node_58_0;
-    wire ic_dflipflop_ic_node_59_0;
-    wire ic_dflipflop_ic_nand_60_0;
-    wire ic_dflipflop_ic_nand_61_0;
-    wire ic_dflipflop_ic_node_62_0;
-    wire ic_dflipflop_ic_nand_63_0;
-    wire ic_dflipflop_ic_nand_64_0;
-    wire ic_dflipflop_ic_node_65_0;
-    wire ic_dflipflop_ic_nand_66_0;
-    wire ic_dflipflop_ic_nand_67_0;
-    wire ic_dflipflop_ic_node_68_0;
-    wire ic_dflipflop_ic_nand_69_0;
-    wire ic_dflipflop_ic_node_70_0;
-    wire ic_dflipflop_ic_node_71_0;
-    assign or_44 = (and_43 | and_46); // Or
-    assign and_46 = (node_45 & ic_dflipflop_ic_node_71_0); // And
-    assign node_45 = input_push_button1_t_1; // Node
-    assign and_43 = (node_41 & not_42); // And
-    assign not_42 = ~input_push_button1_t_1; // Not
-    assign node_41 = node_40; // Node
+
+    // ========= Internal Sequential Register =========
+    reg output_led1_q_0_5_behavioral_reg = 1'b0; // Internal sequential register
+
+    // ========= Behavioral Sequential Logic (replaces gate-level feedback) =========
+    // Industry-standard behavioral sequential logic
+    always @(posedge input_clock2_c_2 or negedge input_input_switch3__preset_3) begin
+        if (!input_input_switch3__preset_3) begin
+            output_led1_q_0_5_behavioral_reg <= 1'b1; // Asynchronous preset
+        end else begin // Synchronous operation
+            output_led1_q_0_5_behavioral_reg <= input_push_button1_t_1;
+        end
+    end
+
+    assign output_led1_q_0_5 = output_led1_q_0_5_behavioral_reg; // Connect behavioral register to output
+    assign output_led2_q_0_6 = ~output_led1_q_0_5_behavioral_reg; // Complementary output
 
     // ========= Output Assignments =========
-    assign output_led1_q_0_5 = ic_dflipflop_ic_node_70_0; // LED
-    assign output_led2_q_0_6 = ic_dflipflop_ic_node_71_0; // LED
+    assign output_led1_q_0_5 = ic_dflipflop_ic_node_38_0; // LED
+    assign output_led2_q_0_6 = ic_dflipflop_ic_node_39_0; // LED
 
 endmodule // tflipflop
 

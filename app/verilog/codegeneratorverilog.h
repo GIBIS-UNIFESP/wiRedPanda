@@ -411,6 +411,27 @@ private:
     QString generateAudioLogic(GraphicElement *elm);
 
     /**
+     * @brief Detect sequential logic patterns in circular/feedback circuits
+     * @param elements Elements to analyze for sequential patterns
+     * @return True if sequential pattern detected and behavioral code generated
+     */
+    bool detectAndGenerateSequentialPattern(const QVector<GraphicElement *> &elements);
+
+    /**
+     * @brief Generate behavioral sequential logic for detected patterns
+     * @param clockSignal Clock signal name
+     * @param dataSignal Data signal name
+     * @param outputSignal Output signal name
+     * @param resetSignal Reset signal name (optional)
+     * @param enableSignal Enable signal name (optional)
+     * @param isLatch True for latch (level-sensitive), false for flip-flop (edge-sensitive)
+     * @return Generated behavioral Verilog code
+     */
+    QString generateBehavioralSequential(const QString &clockSignal, const QString &dataSignal,
+                                       const QString &outputSignal, const QString &resetSignal = QString(),
+                                       const QString &enableSignal = QString(), bool isLatch = false);
+
+    /**
      * @brief Check if Node assignment is redundant (no fan-out)
      * @param port Output port of the Node element
      * @param expr Expression that would be assigned

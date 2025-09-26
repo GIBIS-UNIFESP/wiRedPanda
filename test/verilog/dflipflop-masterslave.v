@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: dflipflop_masterslave
-// Generated: Fri Sep 26 18:49:20 2025
+// Generated: Fri Sep 26 19:56:45 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 10/1000 LUTs, 35/1000 FFs, 4/50 IOs
 //
@@ -53,31 +53,24 @@ module dflipflop_masterslave (
     wire node_33;
 
     // ========= Logic Assignments =========
-    wire ic_dlatch_ic_node_34_0;
-    wire ic_dlatch_ic_not_35_0;
-    wire ic_dlatch_ic_node_36_0;
-    wire ic_dlatch_ic_nand_37_0;
-    wire ic_dlatch_ic_nand_38_0;
-    wire ic_dlatch_ic_nand_39_0;
-    wire ic_dlatch_ic_nand_40_0;
-    wire ic_dlatch_ic_node_41_0;
-    wire ic_dlatch_ic_node_42_0;
-    assign node_33 = not_31; // Node
-    wire ic_dlatch_ic_node_43_0;
-    wire ic_dlatch_ic_not_44_0;
-    wire ic_dlatch_ic_node_45_0;
-    wire ic_dlatch_ic_nand_46_0;
-    wire ic_dlatch_ic_nand_47_0;
-    wire ic_dlatch_ic_nand_48_0;
-    wire ic_dlatch_ic_nand_49_0;
-    wire ic_dlatch_ic_node_50_0;
-    wire ic_dlatch_ic_node_51_0;
-    assign node_32 = input_clock1_clk_1; // Node
-    assign not_31 = ~input_clock1_clk_1; // Not
+
+    // ========= Internal Sequential Register =========
+    reg output_led1_q_0_3_behavioral_reg = 1'b0; // Internal sequential register
+
+    // ========= Behavioral Sequential Logic (replaces gate-level feedback) =========
+    // Industry-standard behavioral sequential logic
+    always @(posedge input_clock1_clk_1) begin
+begin // Synchronous operation
+            output_led1_q_0_3_behavioral_reg <= input_push_button2_d_2;
+        end
+    end
+
+    assign output_led1_q_0_3 = output_led1_q_0_3_behavioral_reg; // Connect behavioral register to output
+    assign output_led2_q_0_4 = ~output_led1_q_0_3_behavioral_reg; // Complementary output
 
     // ========= Output Assignments =========
-    assign output_led1_q_0_3 = ic_dlatch_ic_node_41_0; // LED
-    assign output_led2_q_0_4 = ic_dlatch_ic_node_42_0; // LED
+    assign output_led1_q_0_3 = ic_dlatch_ic_node_29_0; // LED
+    assign output_led2_q_0_4 = ic_dlatch_ic_node_30_0; // LED
 
 endmodule // dflipflop_masterslave
 

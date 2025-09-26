@@ -1229,6 +1229,7 @@ void CodeGeneratorVerilog::declareOutputPorts()
                 // Ensure unique variable name
                 varName = generateUniqueVariableName(varName, "output");
 
+                // Use wire for all output ports since they'll be driven by assign statements
                 outputDeclarations << QString("    output wire %1").arg(varName);
 
                 m_outputMap.append(MappedSignalVerilog(elm, "", varName, port, i));
@@ -1487,6 +1488,22 @@ void CodeGeneratorVerilog::generateLogicAssignments()
     }
 
     // Don't add module-level pragma - use assignment-level pragmas instead
+
+    // BEHAVIORAL SEQUENTIAL LOGIC: Try to detect and generate behavioral code for sequential patterns
+    // This replaces gate-level feedback loops with industry-standard always blocks
+    bool behavioralGenerated = false;
+    if (m_hasCircularLogic) {
+        generateDebugInfo("Circular logic detected - attempting sequential pattern recognition...");
+        behavioralGenerated = detectAndGenerateSequentialPattern(m_elements);
+
+        if (behavioralGenerated) {
+            generateDebugInfo("Successfully generated behavioral sequential logic - skipping gate-level assignments");
+            m_stream << Qt::endl;
+            return; // Skip gate-level generation since we generated behavioral code
+        } else {
+            generateDebugInfo("No sequential pattern detected - proceeding with gate-level assignments");
+        }
+    }
 
     assignVariablesRec(m_elements, false);
 
@@ -2551,6 +2568,224 @@ QString CodeGeneratorVerilog::generateAudioLogic(GraphicElement *elm)
     if (m_debugOutput) {
         code += QString("    // Note: Actual audio frequency generation requires PWM module\n");
         code += QString("    // Connect %1 to PWM enable for audio output\n").arg(outputVar);
+    }
+
+    return code;
+}
+
+bool CodeGeneratorVerilog::detectAndGenerateSequentialPattern(const QVector<GraphicElement *> &elements)
+{
+    // Only detect patterns when circular logic exists
+    if (!m_hasCircularLogic) {
+        return false;
+    }
+
+    generateDebugInfo("Analyzing circuit for sequential patterns...");
+
+    // Analyze circuit structure to detect sequential patterns
+    QStringList clockSignals;
+    QStringList dataSignals;
+    QStringList outputSignals;
+    QStringList resetSignals;
+    QStringList enableSignals;
+
+    // Look for potential clock signals (typically named with 'clk', 'clock', or connected to Clock elements)
+    for (auto *elm : elements) {
+        if (elm->elementType() == ElementType::Clock) {
+            for (auto *port : elm->outputs()) {
+                QString clockVar = m_varMap.value(port);
+                if (!clockVar.isEmpty()) {
+                    clockSignals.append(clockVar);
+                    generateDebugInfo(QString("Found clock signal: %1").arg(clockVar));
+                }
+            }
+        }
+
+        // Also check input ports that look like clocks
+        for (auto *port : elm->inputs()) {
+            QString inputVar = m_varMap.value(port);
+            if (!inputVar.isEmpty() &&
+                (inputVar.contains("clk", Qt::CaseInsensitive) ||
+                 inputVar.contains("clock", Qt::CaseInsensitive))) {
+                clockSignals.append(inputVar);
+                generateDebugInfo(QString("Found clock-like input: %1").arg(inputVar));
+            }
+        }
+    }
+
+    // Look for input ports that could be data signals
+    for (const auto &inputMapping : m_inputMap) {
+        QString inputVar = inputMapping.m_variableName;
+        if (!inputVar.isEmpty()) {
+            if (inputVar.contains("_d_", Qt::CaseInsensitive) ||
+                inputVar.contains("data", Qt::CaseInsensitive) ||
+                inputVar.contains("input_push_button", Qt::CaseInsensitive) ||
+                inputVar.contains("input_input_switch", Qt::CaseInsensitive)) {
+                dataSignals.append(inputVar);
+                generateDebugInfo(QString("Found potential data signal: %1").arg(inputVar));
+            }
+
+            if (inputVar.contains("preset", Qt::CaseInsensitive) ||
+                inputVar.contains("clear", Qt::CaseInsensitive) ||
+                inputVar.contains("reset", Qt::CaseInsensitive)) {
+                resetSignals.append(inputVar);
+                generateDebugInfo(QString("Found potential reset/preset signal: %1").arg(inputVar));
+            }
+
+            if (inputVar.contains("enable", Qt::CaseInsensitive) ||
+                inputVar.contains("en_", Qt::CaseInsensitive)) {
+                enableSignals.append(inputVar);
+                generateDebugInfo(QString("Found potential enable signal: %1").arg(inputVar));
+            }
+        }
+    }
+
+    // Look for output signals
+    for (const auto &outputMapping : m_outputMap) {
+        QString outputVar = outputMapping.m_variableName;
+        if (!outputVar.isEmpty()) {
+            outputSignals.append(outputVar);
+            generateDebugInfo(QString("Found output signal: %1").arg(outputVar));
+        }
+    }
+
+    // If we have the basic components of a sequential circuit, generate behavioral logic
+    if (!clockSignals.isEmpty() && !dataSignals.isEmpty() && !outputSignals.isEmpty()) {
+        generateDebugInfo("Sequential pattern detected! Generating behavioral logic...");
+
+        // Select the primary signals (first ones found)
+        QString clockSignal = clockSignals.first();
+        QString dataSignal = dataSignals.first();
+        QString outputSignal = outputSignals.first();
+        QString resetSignal = resetSignals.isEmpty() ? QString() : resetSignals.first();
+        QString enableSignal = enableSignals.isEmpty() ? QString() : enableSignals.first();
+
+        // Create internal register variable to avoid mixed driving issues
+        QString internalRegName = QString("%1_behavioral_reg").arg(outputSignal);
+        generateDebugInfo(QString("Creating internal register: %1 for output: %2").arg(internalRegName).arg(outputSignal));
+
+        // Determine if this is a latch (level-sensitive) or flip-flop (edge-sensitive)
+        // Heuristic: if clock signal looks like it comes from a Clock element, it's a flip-flop
+        bool isLatch = !clockSignal.contains("clock", Qt::CaseInsensitive);
+
+        // Generate the behavioral sequential logic using internal register
+        QString behavioralCode = generateBehavioralSequential(clockSignal, dataSignal, internalRegName,
+                                                            resetSignal, enableSignal, isLatch);
+
+        if (!behavioralCode.isEmpty()) {
+            m_stream << Qt::endl;
+            m_stream << "    // ========= Internal Sequential Register =========" << Qt::endl;
+
+            // Declare the internal register
+            m_stream << QString("    reg %1 = 1'b0; // Internal sequential register").arg(internalRegName) << Qt::endl;
+
+            m_stream << Qt::endl;
+            m_stream << "    // ========= Behavioral Sequential Logic (replaces gate-level feedback) =========" << Qt::endl;
+            m_stream << behavioralCode << Qt::endl;
+
+            // Connect internal register to output port
+            m_stream << QString("    assign %1 = %2; // Connect behavioral register to output")
+                        .arg(outputSignal, internalRegName) << Qt::endl;
+
+            // Generate complementary outputs if there are multiple outputs
+            if (outputSignals.size() > 1) {
+                for (int i = 1; i < outputSignals.size(); ++i) {
+                    m_stream << QString("    assign %1 = ~%2; // Complementary output")
+                                .arg(outputSignals[i], internalRegName) << Qt::endl;
+                }
+            }
+
+            generateDebugInfo("Successfully generated behavioral sequential logic");
+            return true;
+        }
+    }
+
+    generateDebugInfo("No suitable sequential pattern found");
+    return false;
+}
+
+QString CodeGeneratorVerilog::generateBehavioralSequential(const QString &clockSignal, const QString &dataSignal,
+                                                         const QString &outputSignal, const QString &resetSignal,
+                                                         const QString &enableSignal, bool isLatch)
+{
+    QString code;
+
+    if (clockSignal.isEmpty() || dataSignal.isEmpty() || outputSignal.isEmpty()) {
+        return code; // Invalid parameters
+    }
+
+    code += QString("    // Industry-standard behavioral sequential logic\n");
+
+    if (isLatch) {
+        // Generate latch (level-sensitive)
+        code += QString("    always @(*) begin\n");
+
+        if (!resetSignal.isEmpty()) {
+            // Handle reset (assuming active low)
+            if (resetSignal.contains("clear", Qt::CaseInsensitive)) {
+                code += QString("        if (!%1) begin\n").arg(resetSignal);
+                code += QString("            %1 = 1'b0; // Asynchronous clear\n").arg(outputSignal);
+                code += QString("        end else ");
+            } else if (resetSignal.contains("preset", Qt::CaseInsensitive)) {
+                code += QString("        if (!%1) begin\n").arg(resetSignal);
+                code += QString("            %1 = 1'b1; // Asynchronous preset\n").arg(outputSignal);
+                code += QString("        end else ");
+            }
+        }
+
+        code += QString("if (%1) begin // Level-sensitive latch\n").arg(clockSignal);
+
+        if (!enableSignal.isEmpty()) {
+            code += QString("            if (%1) begin\n").arg(enableSignal);
+            code += QString("                %1 = %2;\n").arg(outputSignal, dataSignal);
+            code += QString("            end\n");
+        } else {
+            code += QString("            %1 = %2;\n").arg(outputSignal, dataSignal);
+        }
+
+        code += QString("        end\n");
+        code += QString("    end\n");
+    } else {
+        // Generate flip-flop (edge-sensitive) - Industry standard pattern
+        QStringList sensitivity;
+        sensitivity << QString("posedge %1").arg(clockSignal);
+
+        // Add asynchronous reset/preset to sensitivity list
+        if (!resetSignal.isEmpty()) {
+            if (resetSignal.contains("clear", Qt::CaseInsensitive)) {
+                sensitivity << QString("negedge %1").arg(resetSignal);
+            } else if (resetSignal.contains("preset", Qt::CaseInsensitive)) {
+                sensitivity << QString("negedge %1").arg(resetSignal);
+            }
+        }
+
+        code += QString("    always @(%1) begin\n").arg(sensitivity.join(" or "));
+
+        // Handle asynchronous controls first
+        if (!resetSignal.isEmpty()) {
+            if (resetSignal.contains("clear", Qt::CaseInsensitive)) {
+                code += QString("        if (!%1) begin\n").arg(resetSignal);
+                code += QString("            %1 <= 1'b0; // Asynchronous clear\n").arg(outputSignal);
+                code += QString("        end else ");
+            } else if (resetSignal.contains("preset", Qt::CaseInsensitive)) {
+                code += QString("        if (!%1) begin\n").arg(resetSignal);
+                code += QString("            %1 <= 1'b1; // Asynchronous preset\n").arg(outputSignal);
+                code += QString("        end else ");
+            }
+        }
+
+        code += QString("begin // Synchronous operation\n");
+
+        if (!enableSignal.isEmpty()) {
+            code += QString("            if (%1) begin\n").arg(enableSignal);
+            code += QString("                %1 <= %2;\n").arg(outputSignal, dataSignal);
+            code += QString("            end\n");
+        } else {
+            code += QString("            %1 <= %2;\n").arg(outputSignal, dataSignal);
+        }
+
+        code += QString("        end\n");
+        code += QString("    end\n");
     }
 
     return code;

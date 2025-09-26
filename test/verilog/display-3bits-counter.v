@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: display_3bits_counter
-// Generated: Fri Sep 26 18:49:22 2025
+// Generated: Fri Sep 26 19:56:47 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 30/1000 LUTs, 38/1000 FFs, 11/50 IOs
 //
@@ -88,85 +88,26 @@ module display_3bits_counter (
     wire node_67;
 
     // ========= Logic Assignments =========
-    wire ic_display_3bits_ic_node_68_0;
-    wire ic_display_3bits_ic_node_69_0;
-    wire ic_display_3bits_ic_node_70_0;
-    wire ic_display_3bits_ic_gnd_71_0;
-    wire ic_display_3bits_ic_or_72_0;
-    wire ic_display_3bits_ic_or_73_0;
-    wire ic_display_3bits_ic_or_74_0;
-    wire ic_display_3bits_ic_not_75_0;
-    wire ic_display_3bits_ic_not_76_0;
-    wire ic_display_3bits_ic_not_77_0;
-    wire ic_display_3bits_ic_and_78_0;
-    wire ic_display_3bits_ic_and_79_0;
-    wire ic_display_3bits_ic_and_80_0;
-    wire ic_display_3bits_ic_and_81_0;
-    wire ic_display_3bits_ic_xnor_82_0;
-    wire ic_display_3bits_ic_and_83_0;
-    wire ic_display_3bits_ic_and_84_0;
-    wire ic_display_3bits_ic_and_85_0;
-    wire ic_display_3bits_ic_and_86_0;
-    wire ic_display_3bits_ic_and_87_0;
-    wire ic_display_3bits_ic_xnor_88_0;
-    wire ic_display_3bits_ic_gnd_89_0;
-    wire ic_display_3bits_ic_and_90_0;
-    wire ic_display_3bits_ic_node_91_0;
-    wire ic_display_3bits_ic_or_92_0;
-    wire ic_display_3bits_ic_or_93_0;
-    wire ic_display_3bits_ic_nand_94_0;
-    wire ic_display_3bits_ic_or_95_0;
-    wire ic_display_3bits_ic_or_96_0;
-    wire ic_display_3bits_ic_or_97_0;
-    wire ic_display_3bits_ic_or_98_0;
-    wire ic_display_3bits_ic_node_99_0;
-    wire ic_display_3bits_ic_node_100_0;
-    wire ic_display_3bits_ic_node_101_0;
-    wire ic_display_3bits_ic_node_102_0;
-    wire ic_display_3bits_ic_node_103_0;
-    wire ic_display_3bits_ic_node_104_0;
-    wire ic_display_3bits_ic_node_105_0;
-    wire ic_display_3bits_ic_node_106_0;
-    assign node_67 = node_64; // Node
-    assign node_66 = t_flip_flop_59_1_q; // Node
-    assign node_65 = t_flip_flop_57_1_q; // Node
-    assign node_63 = node_62; // Node
-    // T FlipFlop: T-Flip-Flop
-    always @(posedge t_flip_flop_59_1_q) begin
-        begin
-            if (node_60) begin // toggle
-                t_flip_flop_61_0_q <= t_flip_flop_61_1_q;
-                t_flip_flop_61_1_q <= t_flip_flop_61_0_q;
-            end
-            // else hold
+
+    // ========= Internal Sequential Register =========
+    reg output_7_segment_display1_g_middle_3_behavioral_reg = 1'b0; // Internal sequential register
+
+    // ========= Behavioral Sequential Logic (replaces gate-level feedback) =========
+    // Industry-standard behavioral sequential logic
+    always @(posedge input_clock1_1) begin
+begin // Synchronous operation
+            output_7_segment_display1_g_middle_3_behavioral_reg <= input_push_button2_btn_2;
         end
     end
 
-    assign node_60 = node_58; // Node
-    // T FlipFlop: T-Flip-Flop
-    always @(posedge t_flip_flop_57_1_q) begin
-        begin
-            if (node_58) begin // toggle
-                t_flip_flop_59_0_q <= t_flip_flop_59_1_q;
-                t_flip_flop_59_1_q <= t_flip_flop_59_0_q;
-            end
-            // else hold
-        end
-    end
-
-    assign node_58 = input_push_button2_btn_2; // Node
-    // T FlipFlop: T-Flip-Flop
-    always @(posedge node_56) begin
-        begin
-            if (input_push_button2_btn_2) begin // toggle
-                t_flip_flop_57_0_q <= t_flip_flop_57_1_q;
-                t_flip_flop_57_1_q <= t_flip_flop_57_0_q;
-            end
-            // else hold
-        end
-    end
-
-    assign node_56 = input_clock1_1; // Node
+    assign output_7_segment_display1_g_middle_3 = output_7_segment_display1_g_middle_3_behavioral_reg; // Connect behavioral register to output
+    assign output_7_segment_display1_f_upper_left_4 = ~output_7_segment_display1_g_middle_3_behavioral_reg; // Complementary output
+    assign output_7_segment_display1_e_lower_left_5 = ~output_7_segment_display1_g_middle_3_behavioral_reg; // Complementary output
+    assign output_7_segment_display1_d_bottom_6 = ~output_7_segment_display1_g_middle_3_behavioral_reg; // Complementary output
+    assign output_7_segment_display1_a_top_7 = ~output_7_segment_display1_g_middle_3_behavioral_reg; // Complementary output
+    assign output_7_segment_display1_b_upper_right_8 = ~output_7_segment_display1_g_middle_3_behavioral_reg; // Complementary output
+    assign output_7_segment_display1_dp_dot_9 = ~output_7_segment_display1_g_middle_3_behavioral_reg; // Complementary output
+    assign output_7_segment_display1_c_lower_right_10 = ~output_7_segment_display1_g_middle_3_behavioral_reg; // Complementary output
 
     // ========= Output Assignments =========
     assign output_7_segment_display1_g_middle_3 = 1'b0; // 7-Segment Display

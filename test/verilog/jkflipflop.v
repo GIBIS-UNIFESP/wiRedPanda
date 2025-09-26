@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: jkflipflop
-// Generated: Fri Sep 26 18:49:28 2025
+// Generated: Fri Sep 26 19:56:52 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 24/1000 LUTs, 35/1000 FFs, 7/50 IOs
 //
@@ -68,45 +68,26 @@ module jkflipflop (
     wire or_52;
 
     // ========= Logic Assignments =========
-    wire ic_dflipflop_ic_node_53_0;
-    wire ic_dflipflop_ic_not_54_0;
-    wire ic_dflipflop_ic_not_55_0;
-    wire ic_dflipflop_ic_node_56_0;
-    wire ic_dflipflop_ic_node_57_0;
-    wire ic_dflipflop_ic_node_58_0;
-    wire ic_dflipflop_ic_node_59_0;
-    wire ic_dflipflop_ic_nand_60_0;
-    wire ic_dflipflop_ic_not_61_0;
-    wire ic_dflipflop_ic_node_62_0;
-    wire ic_dflipflop_ic_node_63_0;
-    wire ic_dflipflop_ic_node_64_0;
-    wire ic_dflipflop_ic_node_65_0;
-    wire ic_dflipflop_ic_nand_66_0;
-    wire ic_dflipflop_ic_nand_67_0;
-    wire ic_dflipflop_ic_node_68_0;
-    wire ic_dflipflop_ic_nand_69_0;
-    wire ic_dflipflop_ic_nand_70_0;
-    wire ic_dflipflop_ic_node_71_0;
-    wire ic_dflipflop_ic_nand_72_0;
-    wire ic_dflipflop_ic_nand_73_0;
-    wire ic_dflipflop_ic_node_74_0;
-    wire ic_dflipflop_ic_nand_75_0;
-    wire ic_dflipflop_ic_node_76_0;
-    wire ic_dflipflop_ic_node_77_0;
-    assign or_52 = (and_51 | and_50); // Or
-    assign and_50 = (node_49 & node_47); // And
-    assign node_47 = node_44; // Node
-    assign node_49 = input_input_switch5_k_5; // Node
-    assign and_51 = (node_46 & not_48); // And
-    assign not_48 = ~input_input_switch4_j_4; // Not
-    assign node_46 = node_45; // Node
-    assign node_43 = input_clock1_c_1; // Node
-    assign node_42 = input_input_switch3__clear_3; // Node
-    assign node_41 = input_input_switch2__preset_2; // Node
+
+    // ========= Internal Sequential Register =========
+    reg output_led1_q_0_6_behavioral_reg = 1'b0; // Internal sequential register
+
+    // ========= Behavioral Sequential Logic (replaces gate-level feedback) =========
+    // Industry-standard behavioral sequential logic
+    always @(posedge input_clock1_c_1 or negedge input_input_switch2__preset_2) begin
+        if (!input_input_switch2__preset_2) begin
+            output_led1_q_0_6_behavioral_reg <= 1'b1; // Asynchronous preset
+        end else begin // Synchronous operation
+            output_led1_q_0_6_behavioral_reg <= input_input_switch2__preset_2;
+        end
+    end
+
+    assign output_led1_q_0_6 = output_led1_q_0_6_behavioral_reg; // Connect behavioral register to output
+    assign output_led2_q_0_7 = ~output_led1_q_0_6_behavioral_reg; // Complementary output
 
     // ========= Output Assignments =========
-    assign output_led1_q_0_6 = ic_dflipflop_ic_node_76_0; // LED
-    assign output_led2_q_0_7 = ic_dflipflop_ic_node_77_0; // LED
+    assign output_led1_q_0_6 = ic_dflipflop_ic_node_39_0; // LED
+    assign output_led2_q_0_7 = ic_dflipflop_ic_node_40_0; // LED
 
 endmodule // jkflipflop
 

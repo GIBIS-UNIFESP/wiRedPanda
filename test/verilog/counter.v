@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: counter
-// Generated: Fri Sep 26 18:49:19 2025
+// Generated: Fri Sep 26 19:56:43 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 8/1000 LUTs, 38/1000 FFs, 4/50 IOs
 //
