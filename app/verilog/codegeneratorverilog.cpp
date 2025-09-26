@@ -1144,6 +1144,10 @@ void CodeGeneratorVerilog::declareInputPorts()
 {
     m_stream << "    // ========= Input Ports =========" << Qt::endl;
 
+    // UNUSED INPUT ELIMINATION: Analyze which input elements are actually used in logic
+    QSet<GraphicElement*> usedInputElements;
+    analyzeUsedInputPorts(m_elements, usedInputElements);
+
     QStringList inputDeclarations;
     int counter = 1;
 
@@ -1153,6 +1157,12 @@ void CodeGeneratorVerilog::declareInputPorts()
         if ((type == ElementType::InputButton) ||
             (type == ElementType::InputSwitch) ||
             (type == ElementType::Clock)) {
+
+            // UNUSED INPUT ELIMINATION: Only declare input ports that are actually used
+            if (!usedInputElements.contains(elm)) {
+                generateDebugInfo(QString("UNUSED INPUT ELIMINATION: Skipping unused input element %1").arg(elm->objectName()), elm);
+                continue;
+            }
 
             QString varName = elm->objectName() + QString::number(counter);
             const QString label = elm->label();
@@ -3595,4 +3605,70 @@ void CodeGeneratorVerilog::predictUsedSignals(const QVector<GraphicElement *> &e
 
     generateDebugInfo(QString("Dead code elimination after removing %1 undriven signals: %2 signals remain")
                      .arg(undrivenUsedSignals.size()).arg(usedSignals.size()));
+}
+
+// ============================================================================
+// INPUT PORT USAGE ANALYSIS
+// ============================================================================
+
+void CodeGeneratorVerilog::analyzeUsedInputPorts(const QVector<GraphicElement *> &elements, QSet<GraphicElement*> &usedInputElements)
+{
+    generateDebugInfo("Starting input port usage analysis");
+
+    // Analyze which input elements are actually referenced in logic expressions
+    for (auto *elm : elements) {
+        if (!elm) continue;
+
+        // Generate all logic expressions for this element to see what inputs they reference
+        for (auto *outputPort : elm->outputs()) {
+            if (outputPort && !outputPort->connections().isEmpty()) {
+                // Get the expression that would be generated for this output
+                QString expr = generateLogicExpression(elm);
+
+                if (!expr.isEmpty()) {
+                    // Check if this expression references any input variables
+                    for (auto *inputElm : elements) {
+                        if (!inputElm) continue;
+
+                        // Check if this is an input element
+                        if ((inputElm->elementType() == ElementType::InputButton) ||
+                            (inputElm->elementType() == ElementType::InputSwitch) ||
+                            (inputElm->elementType() == ElementType::Clock)) {
+
+                            // Generate the variable name that would be used for this input
+                            QString inputVarPattern = inputElm->objectName();
+
+                            // Check if the expression contains this input variable pattern
+                            if (expr.contains(inputVarPattern, Qt::CaseInsensitive)) {
+                                usedInputElements.insert(inputElm);
+                                generateDebugInfo(QString("Input element %1 is used in logic expression: %2")
+                                                 .arg(inputElm->objectName()).arg(expr.left(50)), inputElm);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Special case: IC elements - recursively analyze their internal elements
+        if (elm->elementType() == ElementType::IC) {
+            IC *ic = qobject_cast<IC*>(elm);
+            if (ic && !ic->m_icElements.isEmpty()) {
+                generateDebugInfo(QString("Analyzing IC %1 for input usage").arg(ic->objectName()));
+                QSet<GraphicElement*> icUsedInputs;
+                analyzeUsedInputPorts(ic->m_icElements, icUsedInputs);
+
+                // Mark IC boundary inputs as used if internal elements use them
+                for (auto *inputPort : ic->inputs()) {
+                    if (!inputPort->connections().isEmpty()) {
+                        // Check if this IC input connects to internal logic that uses inputs
+                        usedInputElements.insert(elm);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    generateDebugInfo(QString("Input port usage analysis complete: %1 input elements are actually used").arg(usedInputElements.size()));
 }

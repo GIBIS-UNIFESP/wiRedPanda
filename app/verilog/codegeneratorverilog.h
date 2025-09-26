@@ -450,6 +450,13 @@ private:
      */
     void predictUsedSignals(const QVector<GraphicElement *> &elements, QSet<QNEPort*> &usedSignals);
 
+    /**
+     * @brief Analyze which input elements are actually referenced in logic expressions
+     * @param elements Circuit elements to analyze
+     * @param usedInputElements Set of input elements that are actually used (output parameter)
+     */
+    void analyzeUsedInputPorts(const QVector<GraphicElement *> &elements, QSet<GraphicElement*> &usedInputElements);
+
     // ============================================================================
     // IC BOUNDARY HANDLING (ARDUINO-STYLE ARCHITECTURE)
     // ============================================================================
