@@ -275,6 +275,14 @@ private:
     void mapICPortsToSignals(IC *ic);
 
     /**
+     * @brief Propagate external signal mapping to all connected Node elements inside IC
+     * @param startPort Starting port from IC input
+     * @param externalSignal External signal to propagate
+     * @param ic IC context
+     */
+    void propagateSignalToConnectedNodes(QNEPort *startPort, const QString &externalSignal, IC *ic);
+
+    /**
      * @brief Validate IC connectivity and signal flow
      * @param ic IC to validate
      * @return True if IC is properly connected
@@ -484,6 +492,8 @@ private:
     bool m_debugOutput = false;                             // Enable debug comments
     bool m_optimizeForSpeed = true;                         // Speed vs area optimization
     bool m_generateConstraints = false;                     // Generate constraint files
+    bool m_hasCircularLogic = false;                        // Module contains circular/feedback logic
+    bool m_circularPragmaOpened = false;                    // Opening pragma has been written
 
     // Resource tracking
     int m_estimatedLUTs = 0;                                // Estimated LUT usage
