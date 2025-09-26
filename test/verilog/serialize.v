@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: serialize
-// Generated: Fri Sep 26 00:20:08 2025
+// Generated: Fri Sep 26 00:42:07 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 45/1000 LUTs, 4/1000 FFs, 8/50 IOs
 //

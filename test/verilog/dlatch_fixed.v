@@ -2,8 +2,8 @@
 // ======= This Verilog code was generated automatically by wiRedPanda =======
 // ====================================================================
 //
-// Module: dlatch
-// Generated: Fri Sep 26 00:42:02 2025
+// Module: dlatch_fixed
+// Generated: Fri Sep 26 00:40:07 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 10/1000 LUTs, 35/1000 FFs, 4/50 IOs
 //
@@ -11,7 +11,7 @@
 // https://github.com/gibis-unifesp/wiredpanda
 // ====================================================================
 
-module dlatch (
+module dlatch_fixed (
     // ========= Input Ports =========
     input wire input_push_button1_d_1,
     input wire input_clock2_clk_2,
@@ -39,10 +39,10 @@ module dlatch (
     assign output_led1_q_0_3 = ~(~(~(input_push_button1_d_1 & input_clock2_clk_2) & nand_5_0) & ~(input_clock2_clk_2 & ~input_push_button1_d_1)); // LED
     assign output_led2_q_0_4 = ~(~(input_push_button1_d_1 & input_clock2_clk_2) & ~(nand_6_0 & ~(input_clock2_clk_2 & ~input_push_button1_d_1))); // LED
 
-endmodule // dlatch
+endmodule // dlatch_fixed
 
 // ====================================================================
-// Module dlatch generation completed successfully
+// Module dlatch_fixed generation completed successfully
 // Elements processed: 9
 // Inputs: 2, Outputs: 2
 // ====================================================================

@@ -260,7 +260,7 @@ void CodeGeneratorVerilog::estimateResourceUsage(int &luts, int &ffs, int &ios)
 // VARIABLE MANAGEMENT AND NAMING
 // ============================================================================
 
-QString CodeGeneratorVerilog::otherPortName(QNEPort *port)
+QString CodeGeneratorVerilog::otherPortName(QNEPort *port, QSet<GraphicElement*> *visited)
 {
     if (!port) {
         return "1'b0";
@@ -282,6 +282,23 @@ QString CodeGeneratorVerilog::otherPortName(QNEPort *port)
 
     // Check if connected to a logic gate - generate expression directly
     auto *elm = otherPort->graphicElement();
+
+    // Initialize visited set if not provided
+    QSet<GraphicElement*> localVisited;
+    if (!visited) {
+        visited = &localVisited;
+    }
+
+    // Check for circular dependency
+    if (visited->contains(elm)) {
+        // Return variable name from map if available, otherwise return default value
+        QString result = m_varMap.value(otherPort);
+        if (result.isEmpty()) {
+            return boolValue(otherPort->defaultValue());
+        }
+        return result;
+    }
+
     if (elm->elementType() == ElementType::And ||
         elm->elementType() == ElementType::Or ||
         elm->elementType() == ElementType::Nand ||
@@ -291,7 +308,7 @@ QString CodeGeneratorVerilog::otherPortName(QNEPort *port)
         elm->elementType() == ElementType::Not ||
         elm->elementType() == ElementType::Node) {
 
-        return generateLogicExpression(elm);
+        return generateLogicExpression(elm, visited);
     }
 
     QString result = m_varMap.value(otherPort);
@@ -1259,8 +1276,23 @@ void CodeGeneratorVerilog::generateModuleFooter()
 // ELEMENT-SPECIFIC CODE GENERATION
 // ============================================================================
 
-QString CodeGeneratorVerilog::generateLogicExpression(GraphicElement *elm)
+QString CodeGeneratorVerilog::generateLogicExpression(GraphicElement *elm, QSet<GraphicElement*> *visited)
 {
+    // Initialize visited set if not provided
+    QSet<GraphicElement*> localVisited;
+    if (!visited) {
+        visited = &localVisited;
+    }
+
+    // Check for circular dependency
+    if (visited->contains(elm)) {
+        // Return a default value to break the cycle
+        return "1'b0";
+    }
+
+    // Add current element to visited set
+    visited->insert(elm);
+
     bool negate = false;
     QString logicOperator;
 
@@ -1272,21 +1304,30 @@ QString CodeGeneratorVerilog::generateLogicExpression(GraphicElement *elm)
     case ElementType::Xor: logicOperator = "^"; break;
     case ElementType::Xnor: logicOperator = "^"; negate = true; break;
     case ElementType::Not:
-        return "~" + otherPortName(elm->inputPort(0));
+        {
+            QString result = "~" + otherPortName(elm->inputPort(0), visited);
+            visited->remove(elm);  // Remove from visited before returning
+            return result;
+        }
     case ElementType::Node:
-        return otherPortName(elm->inputPort(0)); // Node is just a pass-through
+        {
+            QString result = otherPortName(elm->inputPort(0), visited); // Node is just a pass-through
+            visited->remove(elm);  // Remove from visited before returning
+            return result;
+        }
     default:
+        visited->remove(elm);  // Remove from visited before returning
         return "";
     }
 
     QString expr;
     if (elm->inputs().size() == 1) {
-        expr = otherPortName(elm->inputPort(0));
+        expr = otherPortName(elm->inputPort(0), visited);
     } else {
         expr = "(";
         for (int i = 0; i < elm->inputs().size(); ++i) {
             if (i > 0) expr += " " + logicOperator + " ";
-            expr += otherPortName(elm->inputPort(i));
+            expr += otherPortName(elm->inputPort(i), visited);
         }
         expr += ")";
     }
@@ -1295,6 +1336,8 @@ QString CodeGeneratorVerilog::generateLogicExpression(GraphicElement *elm)
         expr = "~" + expr;
     }
 
+    // Remove from visited set before returning
+    visited->remove(elm);
     return expr;
 }
 

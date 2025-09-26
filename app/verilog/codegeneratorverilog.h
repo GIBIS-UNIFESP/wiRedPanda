@@ -190,9 +190,10 @@ private:
     /**
      * @brief Get variable name for connected port, handling complex expressions
      * @param port Input port to analyze
+     * @param visited Set of visited elements to prevent infinite recursion
      * @return Variable name or expression
      */
-    QString otherPortName(QNEPort *port);
+    QString otherPortName(QNEPort *port, QSet<GraphicElement*> *visited = nullptr);
 
     /**
      * @brief Generate unique variable name with collision prevention
@@ -340,9 +341,10 @@ private:
     /**
      * @brief Generate logic expression for combinational elements
      * @param elm Element to process
+     * @param visited Set of visited elements to prevent infinite recursion
      * @return Verilog expression string
      */
-    QString generateLogicExpression(GraphicElement *elm);
+    QString generateLogicExpression(GraphicElement *elm, QSet<GraphicElement*> *visited = nullptr);
 
     /**
      * @brief Generate sequential logic for flip-flops and latches
@@ -477,4 +479,7 @@ private:
     // Error handling
     QStringList m_warnings;                                 // Generation warnings
     QStringList m_errors;                                   // Generation errors
+
+    // Circular dependency detection
+    QSet<GraphicElement*> m_visitedElements;                // Track visited elements to prevent infinite recursion
 };

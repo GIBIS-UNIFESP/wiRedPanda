@@ -2,8 +2,8 @@
 // ======= This Verilog code was generated automatically by wiRedPanda =======
 // ====================================================================
 //
-// Module: tflipflop
-// Generated: Fri Sep 26 00:42:08 2025
+// Module: tflipflop_fixed
+// Generated: Fri Sep 26 00:40:47 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 16/1000 LUTs, 35/1000 FFs, 6/50 IOs
 //
@@ -11,7 +11,7 @@
 // https://github.com/gibis-unifesp/wiredpanda
 // ====================================================================
 
-module tflipflop (
+module tflipflop_fixed (
     // ========= Input Ports =========
     input wire input_push_button1_t_1,
     input wire input_clock2_c_2,
@@ -55,10 +55,10 @@ wire ic_dflipflop_dflipflop_ic_out_1_19; // IC output 1
     assign output_led1_q_0_5 = ic_dflipflop_dflipflop_ic_out_0_18; // LED
     assign output_led2_q_0_6 = ic_dflipflop_dflipflop_ic_out_1_19; // LED
 
-endmodule // tflipflop
+endmodule // tflipflop_fixed
 
 // ====================================================================
-// Module tflipflop generation completed successfully
+// Module tflipflop_fixed generation completed successfully
 // Elements processed: 14
 // Inputs: 4, Outputs: 2
 // ====================================================================
