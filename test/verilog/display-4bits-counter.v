@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: display_4bits_counter
-// Generated: Fri Sep 26 00:05:55 2025
+// Generated: Fri Sep 26 00:20:00 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 42/1000 LUTs, 35/1000 FFs, 11/50 IOs
 //
@@ -113,33 +113,33 @@ wire ic_display_4bits_display_4bits_ic_out_7_68; // IC output 7
 
     // ========= Logic Assignments =========
     assign node_11_0 = input_clock2_2; // Node
-    assign node_12_0 = 1'b0; // Node
-    assign node_13_0 = 1'b0; // Node
-    assign node_14_0 = 1'b0; // Node
-    assign node_15_0 = 1'b0; // Node
+    assign node_12_0 = ic_jkflipflop_jkflipflop_ic_out_0_34; // Node
+    assign node_13_0 = ic_jkflipflop_jkflipflop_ic_out_0_41; // Node
+    assign node_14_0 = ic_jkflipflop_jkflipflop_ic_out_0_48; // Node
+    assign node_15_0 = ic_jkflipflop_jkflipflop_ic_out_0_55; // Node
     assign node_16_0 = input_clock2_2; // Node
-    assign node_17_0 = ~(1'b0 & 1'b0 & 1'b0 & 1'b0); // Node
-    assign node_18_0 = ~(1'b0 & 1'b0 & 1'b0 & 1'b0); // Node
-    assign node_19_0 = ~(1'b0 & 1'b0 & 1'b0 & 1'b0); // Node
-    assign node_20_0 = ~(1'b0 & 1'b0 & 1'b0 & 1'b0); // Node
-    assign node_21_0 = ~(1'b0 & 1'b0 & 1'b0 & 1'b0); // Node
-    assign not_22_0 = ~(1'b0 & 1'b0 & 1'b0 & 1'b0); // Not
-    assign and_23_0 = (1'b0 & 1'b0 & 1'b0 & 1'b0); // And
-    assign node_24_0 = 1'b0; // Node
-    assign node_25_0 = 1'b0; // Node
-    assign node_26_0 = 1'b0; // Node
-    assign node_27_0 = 1'b0; // Node
+    assign node_17_0 = ~(ic_jkflipflop_jkflipflop_ic_out_0_55 & ic_jkflipflop_jkflipflop_ic_out_1_49 & ic_jkflipflop_jkflipflop_ic_out_0_41 & ic_jkflipflop_jkflipflop_ic_out_1_35); // Node
+    assign node_18_0 = ~(ic_jkflipflop_jkflipflop_ic_out_0_55 & ic_jkflipflop_jkflipflop_ic_out_1_49 & ic_jkflipflop_jkflipflop_ic_out_0_41 & ic_jkflipflop_jkflipflop_ic_out_1_35); // Node
+    assign node_19_0 = ~(ic_jkflipflop_jkflipflop_ic_out_0_55 & ic_jkflipflop_jkflipflop_ic_out_1_49 & ic_jkflipflop_jkflipflop_ic_out_0_41 & ic_jkflipflop_jkflipflop_ic_out_1_35); // Node
+    assign node_20_0 = ~(ic_jkflipflop_jkflipflop_ic_out_0_55 & ic_jkflipflop_jkflipflop_ic_out_1_49 & ic_jkflipflop_jkflipflop_ic_out_0_41 & ic_jkflipflop_jkflipflop_ic_out_1_35); // Node
+    assign node_21_0 = ~(ic_jkflipflop_jkflipflop_ic_out_0_55 & ic_jkflipflop_jkflipflop_ic_out_1_49 & ic_jkflipflop_jkflipflop_ic_out_0_41 & ic_jkflipflop_jkflipflop_ic_out_1_35); // Node
+    assign not_22_0 = ~(ic_jkflipflop_jkflipflop_ic_out_0_55 & ic_jkflipflop_jkflipflop_ic_out_1_49 & ic_jkflipflop_jkflipflop_ic_out_0_41 & ic_jkflipflop_jkflipflop_ic_out_1_35); // Not
+    assign and_23_0 = (ic_jkflipflop_jkflipflop_ic_out_0_55 & ic_jkflipflop_jkflipflop_ic_out_1_49 & ic_jkflipflop_jkflipflop_ic_out_0_41 & ic_jkflipflop_jkflipflop_ic_out_1_35); // And
+    assign node_24_0 = ic_jkflipflop_jkflipflop_ic_out_1_35; // Node
+    assign node_25_0 = ic_jkflipflop_jkflipflop_ic_out_0_41; // Node
+    assign node_26_0 = ic_jkflipflop_jkflipflop_ic_out_1_49; // Node
+    assign node_27_0 = ic_jkflipflop_jkflipflop_ic_out_0_55; // Node
     assign not_28_0 = ~input_push_button1_1; // Not
 
     // ========= Output Assignments =========
-    assign output_7_segment_display1_g_middle_3 = 1'b0; // 7-Segment Display
-    assign output_7_segment_display1_f_upper_left_4 = 1'b0; // 7-Segment Display
-    assign output_7_segment_display1_e_lower_left_5 = 1'b0; // 7-Segment Display
-    assign output_7_segment_display1_d_bottom_6 = 1'b0; // 7-Segment Display
-    assign output_7_segment_display1_a_top_7 = 1'b0; // 7-Segment Display
-    assign output_7_segment_display1_b_upper_right_8 = 1'b0; // 7-Segment Display
+    assign output_7_segment_display1_g_middle_3 = ic_display_4bits_display_4bits_ic_out_0_61; // 7-Segment Display
+    assign output_7_segment_display1_f_upper_left_4 = ic_display_4bits_display_4bits_ic_out_1_62; // 7-Segment Display
+    assign output_7_segment_display1_e_lower_left_5 = ic_display_4bits_display_4bits_ic_out_2_63; // 7-Segment Display
+    assign output_7_segment_display1_d_bottom_6 = ic_display_4bits_display_4bits_ic_out_3_64; // 7-Segment Display
+    assign output_7_segment_display1_a_top_7 = ic_display_4bits_display_4bits_ic_out_4_65; // 7-Segment Display
+    assign output_7_segment_display1_b_upper_right_8 = ic_display_4bits_display_4bits_ic_out_5_66; // 7-Segment Display
     assign output_7_segment_display1_dp_dot_9 = input_clock2_2; // 7-Segment Display
-    assign output_7_segment_display1_c_lower_right_10 = 1'b0; // 7-Segment Display
+    assign output_7_segment_display1_c_lower_right_10 = ic_display_4bits_display_4bits_ic_out_7_68; // 7-Segment Display
 
 endmodule // display_4bits_counter
 

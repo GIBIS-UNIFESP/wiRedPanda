@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: sequential
-// Generated: Fri Sep 26 00:06:02 2025
+// Generated: Fri Sep 26 00:20:07 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 45/1000 LUTs, 74/1000 FFs, 8/50 IOs
 //
@@ -146,16 +146,16 @@ wire ic_register_register_ic_out_3_50; // IC output 3
     wire and_9_0;
 
     // ========= Logic Assignments =========
-    assign and_9_0 = (1'b0 & input_clock2_slow_clk_2); // And
-    assign and_10_0 = (1'b0 & input_clock2_slow_clk_2); // And
-    assign and_11_0 = (1'b0 & input_clock2_slow_clk_2); // And
-    assign and_12_0 = (1'b0 & input_clock2_slow_clk_2); // And
+    assign and_9_0 = (ic_register_register_ic_out_0_47 & input_clock2_slow_clk_2); // And
+    assign and_10_0 = (ic_register_register_ic_out_1_48 & input_clock2_slow_clk_2); // And
+    assign and_11_0 = (ic_register_register_ic_out_2_49 & input_clock2_slow_clk_2); // And
+    assign and_12_0 = (ic_register_register_ic_out_3_50 & input_clock2_slow_clk_2); // And
     assign node_13_0 = input_clock2_slow_clk_2; // Node
     assign node_14_0 = input_clock2_slow_clk_2; // Node
-    assign and_15_0 = (~1'b0 & input_clock3_fast_clk_3); // And
+    assign and_15_0 = (~ic_serialize_serialize_ic_out_1_44 & input_clock3_fast_clk_3); // And
     assign node_16_0 = input_clock2_slow_clk_2; // Node
     assign node_17_0 = input_clock3_fast_clk_3; // Node
-    assign not_18_0 = ~1'b0; // Not
+    assign not_18_0 = ~ic_serialize_serialize_ic_out_1_44; // Not
     assign node_19_0 = input_clock2_slow_clk_2; // Node
     assign node_20_0 = input_clock3_fast_clk_3; // Node
     assign node_21_0 = input_clock2_slow_clk_2; // Node
@@ -233,10 +233,10 @@ wire ic_register_register_ic_out_3_50; // IC output 3
 
     // ========= Output Assignments =========
     assign output_led1_load_shift_0_4 = input_clock2_slow_clk_2; // LED
-    assign output_led2_l1_0_5 = (1'b0 & input_clock2_slow_clk_2); // LED
-    assign output_led3_l3_0_6 = (1'b0 & input_clock2_slow_clk_2); // LED
-    assign output_led4_l2_0_7 = (1'b0 & input_clock2_slow_clk_2); // LED
-    assign output_led5_l0_0_8 = (1'b0 & input_clock2_slow_clk_2); // LED
+    assign output_led2_l1_0_5 = (ic_register_register_ic_out_1_48 & input_clock2_slow_clk_2); // LED
+    assign output_led3_l3_0_6 = (ic_register_register_ic_out_3_50 & input_clock2_slow_clk_2); // LED
+    assign output_led4_l2_0_7 = (ic_register_register_ic_out_2_49 & input_clock2_slow_clk_2); // LED
+    assign output_led5_l0_0_8 = (ic_register_register_ic_out_0_47 & input_clock2_slow_clk_2); // LED
 
 endmodule // sequential
 

@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: display_3bits_counter
-// Generated: Fri Sep 26 00:05:53 2025
+// Generated: Fri Sep 26 00:19:59 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 30/1000 LUTs, 38/1000 FFs, 11/50 IOs
 //
@@ -103,14 +103,14 @@ wire ic_display_3bits_display_3bits_ic_out_7_33; // IC output 7
     assign node_22_0 = input_clock1_1; // Node
 
     // ========= Output Assignments =========
-    assign output_7_segment_display1_g_middle_3 = 1'b0; // 7-Segment Display
-    assign output_7_segment_display1_f_upper_left_4 = 1'b0; // 7-Segment Display
-    assign output_7_segment_display1_e_lower_left_5 = 1'b0; // 7-Segment Display
-    assign output_7_segment_display1_d_bottom_6 = 1'b0; // 7-Segment Display
-    assign output_7_segment_display1_a_top_7 = 1'b0; // 7-Segment Display
-    assign output_7_segment_display1_b_upper_right_8 = 1'b0; // 7-Segment Display
+    assign output_7_segment_display1_g_middle_3 = ic_display_3bits_display_3bits_ic_out_0_26; // 7-Segment Display
+    assign output_7_segment_display1_f_upper_left_4 = ic_display_3bits_display_3bits_ic_out_1_27; // 7-Segment Display
+    assign output_7_segment_display1_e_lower_left_5 = ic_display_3bits_display_3bits_ic_out_2_28; // 7-Segment Display
+    assign output_7_segment_display1_d_bottom_6 = ic_display_3bits_display_3bits_ic_out_3_29; // 7-Segment Display
+    assign output_7_segment_display1_a_top_7 = ic_display_3bits_display_3bits_ic_out_4_30; // 7-Segment Display
+    assign output_7_segment_display1_b_upper_right_8 = ic_display_3bits_display_3bits_ic_out_5_31; // 7-Segment Display
     assign output_7_segment_display1_dp_dot_9 = input_clock1_1; // 7-Segment Display
-    assign output_7_segment_display1_c_lower_right_10 = 1'b0; // 7-Segment Display
+    assign output_7_segment_display1_c_lower_right_10 = ic_display_3bits_display_3bits_ic_out_7_33; // 7-Segment Display
 
 endmodule // display_3bits_counter
 

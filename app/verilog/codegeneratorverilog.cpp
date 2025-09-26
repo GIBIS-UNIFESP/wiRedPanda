@@ -1002,6 +1002,8 @@ void CodeGeneratorVerilog::declareUsedSignalsOnly(const QVector<GraphicElement *
     QHash<QNEPort*, QString> originalVarMap = m_varMap;
     m_varMap = tempVarMap;
     processICsRecursively(elements, isIC ? m_icDepth + 1 : 0);
+    // CRITICAL FIX: Merge IC-added variables back into tempVarMap before restoring originalVarMap
+    tempVarMap = m_varMap;  // Capture IC internal variables
     m_varMap = originalVarMap;
 
     // Second pass: Only declare the signals that are actually used

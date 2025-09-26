@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: notes
-// Generated: Fri Sep 26 00:06:00 2025
+// Generated: Fri Sep 26 00:20:06 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 16/1000 LUTs, 38/1000 FFs, 9/50 IOs
 //
@@ -86,7 +86,7 @@ wire ic_decoder_decoder_ic_out_7_30; // IC output 7
     end
 
     // JK FlipFlop: JK-Flip-Flop
-    always @(posedge 1'b0) begin
+    always @(posedge ic_jkflipflop_jkflipflop_ic_out_0_18) begin
         begin
             case ({1'b1, 1'b1})
                 2'b00: begin /* hold */ end
@@ -99,14 +99,14 @@ wire ic_decoder_decoder_ic_out_7_30; // IC output 7
 
 
     // ========= Output Assignments =========
-    assign output_buzzer1_g6_2 = 1'b0; // Buzzer
-    assign output_buzzer2_f6_3 = 1'b0; // Buzzer
-    assign output_buzzer3_d6_4 = 1'b0; // Buzzer
-    assign output_buzzer4_b7_5 = 1'b0; // Buzzer
-    assign output_buzzer5_c6_6 = 1'b0; // Buzzer
-    assign output_buzzer6_a7_7 = 1'b0; // Buzzer
-    assign output_buzzer7_e6_8 = 1'b0; // Buzzer
-    assign output_buzzer8_c7_9 = 1'b0; // Buzzer
+    assign output_buzzer1_g6_2 = ic_decoder_decoder_ic_out_4_27; // Buzzer
+    assign output_buzzer2_f6_3 = ic_decoder_decoder_ic_out_3_26; // Buzzer
+    assign output_buzzer3_d6_4 = ic_decoder_decoder_ic_out_1_24; // Buzzer
+    assign output_buzzer4_b7_5 = ic_decoder_decoder_ic_out_6_29; // Buzzer
+    assign output_buzzer5_c6_6 = ic_decoder_decoder_ic_out_0_23; // Buzzer
+    assign output_buzzer6_a7_7 = ic_decoder_decoder_ic_out_5_28; // Buzzer
+    assign output_buzzer7_e6_8 = ic_decoder_decoder_ic_out_2_25; // Buzzer
+    assign output_buzzer8_c7_9 = ic_decoder_decoder_ic_out_7_30; // Buzzer
 
 endmodule // notes
 
