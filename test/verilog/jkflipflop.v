@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: jkflipflop
-// Generated: Fri Sep 26 15:11:00 2025
+// Generated: Fri Sep 26 18:49:28 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 24/1000 LUTs, 35/1000 FFs, 7/50 IOs
 //
@@ -28,86 +28,85 @@ module jkflipflop (
 // ============== BEGIN IC: DFLIPFLOP ==============
 // IC inputs: 4, IC outputs: 2
 // Nesting depth: 0
-    wire ic_dflipflop_ic_dflipflop_node_8;
-    wire ic_dflipflop_ic_dflipflop_node_9;
-    wire ic_dflipflop_ic_dflipflop_node_10;
-    wire ic_dflipflop_ic_dflipflop_node_11;
-    wire ic_dflipflop_ic_dflipflop_nand_12;
-    wire ic_dflipflop_ic_dflipflop_node_13;
-    wire ic_dflipflop_ic_dflipflop_nand_14;
-    wire ic_dflipflop_ic_dflipflop_not_15;
-    wire ic_dflipflop_ic_dflipflop_nand_16;
-    wire ic_dflipflop_ic_dflipflop_nand_17;
-    wire ic_dflipflop_ic_dflipflop_nand_18;
-    wire ic_dflipflop_ic_dflipflop_nand_19;
-    wire ic_dflipflop_ic_dflipflop_node_20;
-    wire ic_dflipflop_ic_dflipflop_not_21;
-    wire ic_dflipflop_ic_dflipflop_nand_22;
-    wire ic_dflipflop_ic_dflipflop_nand_23;
-    wire ic_dflipflop_ic_dflipflop_not_27;
-    wire ic_dflipflop_ic_dflipflop_node_28;
-    wire ic_dflipflop_ic_dflipflop_node_29;
-    assign ic_dflipflop_ic_dflipflop_node_8 = ic_dflipflop_ic_dflipflop_node_29; // Node
-    assign ic_dflipflop_ic_dflipflop_node_10 = ic_dflipflop_ic_dflipflop_node_28; // Node
-    assign ic_dflipflop_ic_dflipflop_node_11 = 1'b0; // Node
-    assign ic_dflipflop_ic_dflipflop_nand_12 = ~(ic_dflipflop_ic_dflipflop_node_11 & ic_dflipflop_ic_dflipflop_node_10); // Nand
-    assign ic_dflipflop_ic_dflipflop_nand_14 = ~(input_input_switch2__preset_2 & ic_dflipflop_ic_dflipflop_nand_18 & ic_dflipflop_ic_dflipflop_nand_19); // Nand
-    assign ic_dflipflop_ic_dflipflop_not_15 = ~ic_dflipflop_ic_dflipflop_not_27; // Not
-    assign ic_dflipflop_ic_dflipflop_nand_16 = ~(ic_dflipflop_ic_dflipflop_nand_17 & ic_dflipflop_ic_dflipflop_nand_23 & input_input_switch3__clear_3); // Nand
-    assign ic_dflipflop_ic_dflipflop_nand_17 = ~(input_input_switch2__preset_2 & ic_dflipflop_ic_dflipflop_nand_12 & ic_dflipflop_ic_dflipflop_nand_16); // Nand
-    assign ic_dflipflop_ic_dflipflop_nand_18 = ~(ic_dflipflop_ic_dflipflop_nand_17 & ic_dflipflop_ic_dflipflop_node_8); // Nand
-    assign ic_dflipflop_ic_dflipflop_nand_19 = ~(ic_dflipflop_ic_dflipflop_nand_14 & ic_dflipflop_ic_dflipflop_nand_22 & input_input_switch3__clear_3); // Nand
-    assign ic_dflipflop_ic_dflipflop_not_21 = ~ic_dflipflop_ic_dflipflop_node_11; // Not
-    assign ic_dflipflop_ic_dflipflop_nand_22 = ~(ic_dflipflop_ic_dflipflop_node_29 & ic_dflipflop_ic_dflipflop_nand_16); // Nand
-    assign ic_dflipflop_ic_dflipflop_nand_23 = ~(ic_dflipflop_ic_dflipflop_node_28 & ic_dflipflop_ic_dflipflop_not_21); // Nand
-    assign ic_dflipflop_ic_dflipflop_not_27 = ~input_clock1_c_1; // Not
-    assign ic_dflipflop_ic_dflipflop_node_28 = ic_dflipflop_ic_dflipflop_not_27; // Node
-    assign ic_dflipflop_ic_dflipflop_node_29 = ic_dflipflop_ic_dflipflop_node_9; // Node
+    wire ic_dflipflop_ic_node_16_0;
+    wire ic_dflipflop_ic_not_17_0;
+    wire ic_dflipflop_ic_not_18_0;
+    wire ic_dflipflop_ic_node_19_0;
+    wire ic_dflipflop_ic_node_20_0;
+    wire ic_dflipflop_ic_node_21_0;
+    wire ic_dflipflop_ic_node_22_0;
+    wire ic_dflipflop_ic_nand_23_0;
+    wire ic_dflipflop_ic_not_24_0;
+    wire ic_dflipflop_ic_node_25_0;
+    wire ic_dflipflop_ic_node_26_0;
+    wire ic_dflipflop_ic_node_27_0;
+    wire ic_dflipflop_ic_node_28_0;
+    wire ic_dflipflop_ic_nand_29_0;
+    wire ic_dflipflop_ic_nand_30_0;
+    wire ic_dflipflop_ic_node_31_0;
+    wire ic_dflipflop_ic_nand_32_0;
+    wire ic_dflipflop_ic_nand_33_0;
+    wire ic_dflipflop_ic_node_34_0;
+    wire ic_dflipflop_ic_nand_35_0;
+    wire ic_dflipflop_ic_nand_36_0;
+    wire ic_dflipflop_ic_node_37_0;
+    wire ic_dflipflop_ic_nand_38_0;
+    wire ic_dflipflop_ic_node_39_0;
+    wire ic_dflipflop_ic_node_40_0;
 // ============== END IC: DFLIPFLOP ==============
-    wire node_33;
-    wire node_34;
-    wire node_35;
-    wire node_36;
-    wire node_37;
-    wire node_38;
-    wire node_39;
-    wire not_40;
     wire node_41;
-    wire and_42;
-    wire and_43;
-    wire or_44;
+    wire node_42;
+    wire node_43;
+    wire node_44;
+    wire node_45;
+    wire node_46;
+    wire node_47;
+    wire not_48;
+    wire node_49;
+    wire and_50;
+    wire and_51;
+    wire or_52;
 
     // ========= Logic Assignments =========
-    assign ic_dflipflop_ic_dflipflop_node_8 = ic_dflipflop_ic_dflipflop_node_29; // Node
-    assign ic_dflipflop_ic_dflipflop_node_10 = ic_dflipflop_ic_dflipflop_node_28; // Node
-    assign ic_dflipflop_ic_dflipflop_node_11 = 1'b0; // Node
-    assign ic_dflipflop_ic_dflipflop_nand_12 = ~(ic_dflipflop_ic_dflipflop_node_11 & ic_dflipflop_ic_dflipflop_node_10); // Nand
-    assign ic_dflipflop_ic_dflipflop_nand_14 = ~(input_input_switch2__preset_2 & ic_dflipflop_ic_dflipflop_nand_18 & ic_dflipflop_ic_dflipflop_nand_19); // Nand
-    assign ic_dflipflop_ic_dflipflop_not_15 = ~ic_dflipflop_ic_dflipflop_not_27; // Not
-    assign ic_dflipflop_ic_dflipflop_nand_16 = ~(ic_dflipflop_ic_dflipflop_nand_17 & ic_dflipflop_ic_dflipflop_nand_23 & input_input_switch3__clear_3); // Nand
-    assign ic_dflipflop_ic_dflipflop_nand_17 = ~(input_input_switch2__preset_2 & ic_dflipflop_ic_dflipflop_nand_12 & ic_dflipflop_ic_dflipflop_nand_16); // Nand
-    assign ic_dflipflop_ic_dflipflop_nand_18 = ~(ic_dflipflop_ic_dflipflop_nand_17 & ic_dflipflop_ic_dflipflop_node_8); // Nand
-    assign ic_dflipflop_ic_dflipflop_nand_19 = ~(ic_dflipflop_ic_dflipflop_nand_14 & ic_dflipflop_ic_dflipflop_nand_22 & input_input_switch3__clear_3); // Nand
-    assign ic_dflipflop_ic_dflipflop_not_21 = ~ic_dflipflop_ic_dflipflop_node_11; // Not
-    assign ic_dflipflop_ic_dflipflop_nand_22 = ~(ic_dflipflop_ic_dflipflop_node_29 & ic_dflipflop_ic_dflipflop_nand_16); // Nand
-    assign ic_dflipflop_ic_dflipflop_nand_23 = ~(ic_dflipflop_ic_dflipflop_node_28 & ic_dflipflop_ic_dflipflop_not_21); // Nand
-    assign ic_dflipflop_ic_dflipflop_not_27 = ~input_clock1_c_1; // Not
-    assign ic_dflipflop_ic_dflipflop_node_28 = ic_dflipflop_ic_dflipflop_not_27; // Node
-    assign ic_dflipflop_ic_dflipflop_node_29 = ic_dflipflop_ic_dflipflop_node_9; // Node
-    assign or_44 = (and_43 | and_42); // Or
-    assign and_42 = (node_41 & node_39); // And
-    assign node_39 = node_36; // Node
-    assign node_41 = input_input_switch5_k_5; // Node
-    assign and_43 = (node_38 & not_40); // And
-    assign not_40 = ~input_input_switch4_j_4; // Not
-    assign node_38 = node_37; // Node
-    assign node_35 = input_clock1_c_1; // Node
-    assign node_34 = input_input_switch3__clear_3; // Node
-    assign node_33 = input_input_switch2__preset_2; // Node
+    wire ic_dflipflop_ic_node_53_0;
+    wire ic_dflipflop_ic_not_54_0;
+    wire ic_dflipflop_ic_not_55_0;
+    wire ic_dflipflop_ic_node_56_0;
+    wire ic_dflipflop_ic_node_57_0;
+    wire ic_dflipflop_ic_node_58_0;
+    wire ic_dflipflop_ic_node_59_0;
+    wire ic_dflipflop_ic_nand_60_0;
+    wire ic_dflipflop_ic_not_61_0;
+    wire ic_dflipflop_ic_node_62_0;
+    wire ic_dflipflop_ic_node_63_0;
+    wire ic_dflipflop_ic_node_64_0;
+    wire ic_dflipflop_ic_node_65_0;
+    wire ic_dflipflop_ic_nand_66_0;
+    wire ic_dflipflop_ic_nand_67_0;
+    wire ic_dflipflop_ic_node_68_0;
+    wire ic_dflipflop_ic_nand_69_0;
+    wire ic_dflipflop_ic_nand_70_0;
+    wire ic_dflipflop_ic_node_71_0;
+    wire ic_dflipflop_ic_nand_72_0;
+    wire ic_dflipflop_ic_nand_73_0;
+    wire ic_dflipflop_ic_node_74_0;
+    wire ic_dflipflop_ic_nand_75_0;
+    wire ic_dflipflop_ic_node_76_0;
+    wire ic_dflipflop_ic_node_77_0;
+    assign or_52 = (and_51 | and_50); // Or
+    assign and_50 = (node_49 & node_47); // And
+    assign node_47 = node_44; // Node
+    assign node_49 = input_input_switch5_k_5; // Node
+    assign and_51 = (node_46 & not_48); // And
+    assign not_48 = ~input_input_switch4_j_4; // Not
+    assign node_46 = node_45; // Node
+    assign node_43 = input_clock1_c_1; // Node
+    assign node_42 = input_input_switch3__clear_3; // Node
+    assign node_41 = input_input_switch2__preset_2; // Node
 
     // ========= Output Assignments =========
-    assign output_led1_q_0_6 = 1'b0; // LED
-    assign output_led2_q_0_7 = 1'b0; // LED
+    assign output_led1_q_0_6 = ic_dflipflop_ic_node_76_0; // LED
+    assign output_led2_q_0_7 = ic_dflipflop_ic_node_77_0; // LED
 
 endmodule // jkflipflop
 

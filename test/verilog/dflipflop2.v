@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: dflipflop2
-// Generated: Fri Sep 26 15:10:54 2025
+// Generated: Fri Sep 26 18:49:22 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 28/1000 LUTs, 36/1000 FFs, 4/50 IOs
 //

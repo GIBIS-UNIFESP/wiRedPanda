@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: dlatch
-// Generated: Fri Sep 26 15:10:58 2025
+// Generated: Fri Sep 26 18:49:26 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 10/1000 LUTs, 35/1000 FFs, 4/50 IOs
 //
