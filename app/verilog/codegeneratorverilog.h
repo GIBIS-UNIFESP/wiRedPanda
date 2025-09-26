@@ -313,7 +313,7 @@ private:
      * @param elements Elements to process
      * @param isIC True if processing IC internal elements
      */
-    void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, bool isIC = false);
+    void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const QSet<QNEPort*> &usedSignals, bool isIC = false);
 
     /**
      * @brief Declare only internal signals that will actually be used (OPTIMIZATION)
