@@ -1,9 +1,11 @@
+// DEBUG: Selected FPGA: Generic-Small (Small generic FPGA (educational))
+// DEBUG: Estimated resources: 10 LUTs, 35 FFs, 4 IOs
 // ====================================================================
 // ======= This Verilog code was generated automatically by wiRedPanda =======
 // ====================================================================
 //
 // Module: dflipflop_masterslave
-// Generated: Fri Sep 26 00:41:57 2025
+// Generated: Fri Sep 26 03:03:39 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 10/1000 LUTs, 35/1000 FFs, 4/50 IOs
 //
@@ -13,39 +15,470 @@
 
 module dflipflop_masterslave (
     // ========= Input Ports =========
+// DEBUG: Input port: Clock -> input_clock1_clk_1 (Element: Clock)
+// DEBUG: Input port: Push Button -> input_push_button2_d_2 (Element: Push Button)
     input wire input_clock1_clk_1,
     input wire input_push_button2_d_2,
 
     // ========= Output Ports =========
+// DEBUG: Output port: LED[0] -> output_led1_q_0_3 (Element: LED)
+// DEBUG: Output port: LED[0] -> output_led2_q_0_4 (Element: LED)
     output wire output_led1_q_0_3,
     output wire output_led2_q_0_4
 );
 
     // ========= Internal Signals =========
-wire ic_dlatch_dlatch_ic_in_0_8; // IC input 0
-assign ic_dlatch_dlatch_ic_in_0_8 = input_push_button2_d_2;
-wire ic_dlatch_dlatch_ic_in_1_9; // IC input 1
-assign ic_dlatch_dlatch_ic_in_1_9 = input_clock1_clk_1;
-wire ic_dlatch_dlatch_ic_out_0_10; // IC output 0
-wire ic_dlatch_dlatch_ic_out_1_11; // IC output 1
-wire ic_dlatch_dlatch_ic_in_0_12; // IC input 0
-assign ic_dlatch_dlatch_ic_in_0_12 = ic_dlatch_dlatch_ic_out_0_10;
-wire ic_dlatch_dlatch_ic_in_1_13; // IC input 1
-assign ic_dlatch_dlatch_ic_in_1_13 = ~input_clock1_clk_1;
-wire ic_dlatch_dlatch_ic_out_0_14; // IC output 0
-wire ic_dlatch_dlatch_ic_out_1_15; // IC output 1
-    wire not_7_0;
+    wire not_5_0;
     wire node_6_0;
-    wire node_5_0;
+    wire ic_dlatch_ic_node_7_0;
+    wire ic_dlatch_ic_node_8_0;
+    wire ic_dlatch_ic_nand_9_0;
+    wire ic_dlatch_ic_nand_10_0;
+    wire ic_dlatch_ic_not_11_0;
+    wire ic_dlatch_ic_nand_12_0;
+    wire ic_dlatch_ic_nand_13_0;
+    wire ic_dlatch_ic_node_14_0;
+    wire ic_dlatch_ic_node_15_0;
+    wire node_16_0;
+    wire ic_dlatch_ic_node_17_0;
+    wire ic_dlatch_ic_node_18_0;
+    wire ic_dlatch_ic_nand_19_0;
+    wire ic_dlatch_ic_nand_20_0;
+    wire ic_dlatch_ic_not_21_0;
+    wire ic_dlatch_ic_nand_22_0;
+    wire ic_dlatch_ic_nand_23_0;
+    wire ic_dlatch_ic_node_24_0;
+    wire ic_dlatch_ic_node_25_0;
 
     // ========= Logic Assignments =========
-    assign node_5_0 = ~input_clock1_clk_1; // Node
+// DEBUG: Processing 9 top-level elements with topological sorting
+// DEBUG: Processing 9 IC internal elements without topological sorting
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Circular dependency detected, checking varMap (Element: Nand)
+// DEBUG: otherPortName: varMap result for circular dependency: 'ic_dlatch_ic_nand_19_0' (Element: Nand)
+// DEBUG: otherPortName: Returning varMap result for circular dependency: ic_dlatch_ic_nand_19_0 (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_node_17_0 = ~((1'b0 & 1'b0) & ic_dlatch_ic_nand_19_0 & ~(1'b0 & ~1'b0)); // Node
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Circular dependency detected, checking varMap (Element: Nand)
+// DEBUG: otherPortName: varMap result for circular dependency: 'ic_dlatch_ic_nand_20_0' (Element: Nand)
+// DEBUG: otherPortName: Returning varMap result for circular dependency: ic_dlatch_ic_nand_20_0 (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_node_18_0 = (1'b0 & 1'b0) & ~(ic_dlatch_ic_nand_20_0 & ~(1'b0 & ~1'b0)); // Node
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Circular dependency detected, checking varMap (Element: Nand)
+// DEBUG: otherPortName: varMap result for circular dependency: 'ic_dlatch_ic_nand_19_0' (Element: Nand)
+// DEBUG: otherPortName: Returning varMap result for circular dependency: ic_dlatch_ic_nand_19_0 (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_nand_19_0 = ~((1'b0 & 1'b0) & ic_dlatch_ic_nand_19_0 & ~(1'b0 & ~1'b0)); // Nand
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Circular dependency detected, checking varMap (Element: Nand)
+// DEBUG: otherPortName: varMap result for circular dependency: 'ic_dlatch_ic_nand_20_0' (Element: Nand)
+// DEBUG: otherPortName: Returning varMap result for circular dependency: ic_dlatch_ic_nand_20_0 (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_nand_20_0 = (1'b0 & 1'b0) & ~(ic_dlatch_ic_nand_20_0 & ~(1'b0 & ~1'b0)); // Nand
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_not_21_0 = ~1'b0; // Not
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_nand_22_0 = ~(1'b0 & ~1'b0); // Nand
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_nand_23_0 = ~(1'b0 & 1'b0); // Nand
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_node_24_0 = 1'b0; // Node
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_node_25_0 = 1'b0; // Node
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Clock (type 9) (Element: Clock)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Clock)
+// DEBUG: otherPortName: varMap lookup result: 'input_clock1_clk_1' (Element: Clock)
+// DEBUG: otherPortName: Final result: input_clock1_clk_1 (Element: Clock)
+    assign node_16_0 = ~input_clock1_clk_1; // Node
+// DEBUG: Processing 9 IC internal elements without topological sorting
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Circular dependency detected, checking varMap (Element: Nand)
+// DEBUG: otherPortName: varMap result for circular dependency: 'ic_dlatch_ic_nand_9_0' (Element: Nand)
+// DEBUG: otherPortName: Returning varMap result for circular dependency: ic_dlatch_ic_nand_9_0 (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_node_7_0 = ~((1'b0 & 1'b0) & ic_dlatch_ic_nand_9_0 & ~(1'b0 & ~1'b0)); // Node
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Circular dependency detected, checking varMap (Element: Nand)
+// DEBUG: otherPortName: varMap result for circular dependency: 'ic_dlatch_ic_nand_10_0' (Element: Nand)
+// DEBUG: otherPortName: Returning varMap result for circular dependency: ic_dlatch_ic_nand_10_0 (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_node_8_0 = (1'b0 & 1'b0) & ~(ic_dlatch_ic_nand_10_0 & ~(1'b0 & ~1'b0)); // Node
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Circular dependency detected, checking varMap (Element: Nand)
+// DEBUG: otherPortName: varMap result for circular dependency: 'ic_dlatch_ic_nand_9_0' (Element: Nand)
+// DEBUG: otherPortName: Returning varMap result for circular dependency: ic_dlatch_ic_nand_9_0 (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_nand_9_0 = ~((1'b0 & 1'b0) & ic_dlatch_ic_nand_9_0 & ~(1'b0 & ~1'b0)); // Nand
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Circular dependency detected, checking varMap (Element: Nand)
+// DEBUG: otherPortName: varMap result for circular dependency: 'ic_dlatch_ic_nand_10_0' (Element: Nand)
+// DEBUG: otherPortName: Returning varMap result for circular dependency: ic_dlatch_ic_nand_10_0 (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Nand)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_nand_10_0 = (1'b0 & 1'b0) & ~(ic_dlatch_ic_nand_10_0 & ~(1'b0 & ~1'b0)); // Nand
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_not_11_0 = ~1'b0; // Not
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_nand_12_0 = ~(1'b0 & ~1'b0); // Nand
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+// DEBUG: otherPortName: Processing port from element Nand (type 7) (Element: Nand)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_nand_13_0 = ~(1'b0 & 1'b0); // Nand
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_node_14_0 = 1'b0; // Node
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: Node)
+    assign ic_dlatch_ic_node_15_0 = 1'b0; // Node
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Clock (type 9) (Element: Clock)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Clock)
+// DEBUG: otherPortName: varMap lookup result: 'input_clock1_clk_1' (Element: Clock)
+// DEBUG: otherPortName: Final result: input_clock1_clk_1 (Element: Clock)
     assign node_6_0 = input_clock1_clk_1; // Node
-    assign not_7_0 = ~input_clock1_clk_1; // Not
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Clock (type 9) (Element: Clock)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Clock)
+// DEBUG: otherPortName: varMap lookup result: 'input_clock1_clk_1' (Element: Clock)
+// DEBUG: otherPortName: Final result: input_clock1_clk_1 (Element: Clock)
+    assign not_5_0 = ~input_clock1_clk_1; // Not
 
     // ========= Output Assignments =========
-    assign output_led1_q_0_3 = ic_dlatch_dlatch_ic_out_1_15; // LED
-    assign output_led2_q_0_4 = ic_dlatch_dlatch_ic_out_0_14; // LED
+// DEBUG: otherPortName: Processing port from element LED (type 3) (Element: LED)
+// DEBUG: otherPortName: Found connected port from element IC (type 22) (Element: IC)
+// DEBUG: otherPortName: Checking varMap for final result (Element: IC)
+// DEBUG: otherPortName: varMap lookup result: '' (Element: IC)
+// DEBUG: otherPortName: varMap empty, returning default value (Element: IC)
+    assign output_led1_q_0_3 = 1'b0; // LED
+// DEBUG: otherPortName: Processing port from element LED (type 3) (Element: LED)
+// DEBUG: otherPortName: Found connected port from element IC (type 22) (Element: IC)
+// DEBUG: otherPortName: Checking varMap for final result (Element: IC)
+// DEBUG: otherPortName: varMap lookup result: '' (Element: IC)
+// DEBUG: otherPortName: varMap empty, returning default value (Element: IC)
+    assign output_led2_q_0_4 = 1'b0; // LED
 
 endmodule // dflipflop_masterslave
 
@@ -53,6 +486,4 @@ endmodule // dflipflop_masterslave
 // Module dflipflop_masterslave generation completed successfully
 // Elements processed: 9
 // Inputs: 2, Outputs: 2
-// Warnings: 1
-//   IC DLATCH output 1 is not connected
 // ====================================================================

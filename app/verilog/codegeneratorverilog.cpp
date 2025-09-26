@@ -37,6 +37,9 @@ CodeGeneratorVerilog::CodeGeneratorVerilog(const QString &fileName, const QVecto
     if (m_fileName.isEmpty() || !m_fileName.at(0).isLetter() || isVerilogReservedKeyword(m_fileName)) {
         m_fileName = "wiredpanda_module";
     }
+
+    // TEMPORARY: Enable debug output to trace clock signal resolution issues
+    m_debugOutput = true;
 }
 
 // ============================================================================
@@ -62,6 +65,39 @@ QString CodeGeneratorVerilog::stripAccents(const QString &input)
 QString CodeGeneratorVerilog::boolValue(const Status val)
 {
     return (val == Status::Active) ? "1'b1" : "1'b0";
+}
+
+QString CodeGeneratorVerilog::simplifyExpression(const QString &expr)
+{
+    QString simplified = expr.trimmed();
+
+    // Handle double negation: ~~signal -> signal
+    while (simplified.startsWith("~~")) {
+        simplified = simplified.mid(2); // Remove first two characters
+    }
+
+    // Handle complex double negation in parentheses: ~(~expr) -> expr
+    if (simplified.startsWith("~(~") && simplified.endsWith(")")) {
+        QString inner = simplified.mid(3, simplified.length() - 4); // Remove "~(~" and ")"
+        // Only simplify if the inner expression is balanced (no unmatched parentheses)
+        int parenCount = 0;
+        bool balanced = true;
+        for (const QChar &c : inner) {
+            if (c == '(') parenCount++;
+            else if (c == ')') {
+                parenCount--;
+                if (parenCount < 0) {
+                    balanced = false;
+                    break;
+                }
+            }
+        }
+        if (balanced && parenCount == 0) {
+            simplified = inner;
+        }
+    }
+
+    return simplified;
 }
 
 bool CodeGeneratorVerilog::isVerilogReservedKeyword(const QString &identifier)
@@ -263,22 +299,36 @@ void CodeGeneratorVerilog::estimateResourceUsage(int &luts, int &ffs, int &ios)
 QString CodeGeneratorVerilog::otherPortName(QNEPort *port, QSet<GraphicElement*> *visited)
 {
     if (!port) {
+        generateDebugInfo("otherPortName: port is nullptr, returning 1'b0", nullptr);
         return "1'b0";
     }
 
+    generateDebugInfo(QString("otherPortName: Processing port from element %1 (type %2)")
+                     .arg(port->graphicElement() ? port->graphicElement()->objectName() : "unknown")
+                     .arg(port->graphicElement() ? QString::number(static_cast<int>(port->graphicElement()->elementType())) : "unknown"),
+                     port->graphicElement());
+
     if (port->connections().isEmpty()) {
+        generateDebugInfo("otherPortName: port has no connections, returning default value", port->graphicElement());
         return boolValue(port->defaultValue());
     }
 
     auto *connection = port->connections().constFirst();
     if (!connection) {
+        generateDebugInfo("otherPortName: connection is nullptr, returning default value", port->graphicElement());
         return boolValue(port->defaultValue());
     }
 
     auto *otherPort = connection->otherPort(port);
     if (!otherPort) {
+        generateDebugInfo("otherPortName: otherPort is nullptr, returning default value", port->graphicElement());
         return boolValue(port->defaultValue());
     }
+
+    generateDebugInfo(QString("otherPortName: Found connected port from element %1 (type %2)")
+                     .arg(otherPort->graphicElement() ? otherPort->graphicElement()->objectName() : "unknown")
+                     .arg(otherPort->graphicElement() ? QString::number(static_cast<int>(otherPort->graphicElement()->elementType())) : "unknown"),
+                     otherPort->graphicElement());
 
     // Check if connected to a logic gate - generate expression directly
     auto *elm = otherPort->graphicElement();
@@ -291,11 +341,15 @@ QString CodeGeneratorVerilog::otherPortName(QNEPort *port, QSet<GraphicElement*>
 
     // Check for circular dependency
     if (visited->contains(elm)) {
+        generateDebugInfo("otherPortName: Circular dependency detected, checking varMap", elm);
         // Return variable name from map if available, otherwise return default value
         QString result = m_varMap.value(otherPort);
+        generateDebugInfo(QString("otherPortName: varMap result for circular dependency: '%1'").arg(result), elm);
         if (result.isEmpty()) {
+            generateDebugInfo("otherPortName: varMap empty, returning default value", elm);
             return boolValue(otherPort->defaultValue());
         }
+        generateDebugInfo(QString("otherPortName: Returning varMap result for circular dependency: %1").arg(result), elm);
         return result;
     }
 
@@ -308,13 +362,18 @@ QString CodeGeneratorVerilog::otherPortName(QNEPort *port, QSet<GraphicElement*>
         elm->elementType() == ElementType::Not ||
         elm->elementType() == ElementType::Node) {
 
+        generateDebugInfo("otherPortName: Connected to logic gate, generating expression", elm);
         return generateLogicExpression(elm, visited);
     }
 
+    generateDebugInfo("otherPortName: Checking varMap for final result", elm);
     QString result = m_varMap.value(otherPort);
+    generateDebugInfo(QString("otherPortName: varMap lookup result: '%1'").arg(result), elm);
     if (result.isEmpty()) {
+        generateDebugInfo("otherPortName: varMap empty, returning default value", elm);
         return boolValue(otherPort->defaultValue());
     }
+    generateDebugInfo(QString("otherPortName: Final result: %1").arg(result), elm);
     return result;
 }
 
@@ -441,17 +500,22 @@ void CodeGeneratorVerilog::processICsRecursively(const QVector<GraphicElement *>
 {
     m_icDepth = depth;
 
-    generateDebugInfo(QString("processICsRecursively called with %1 elements at depth %2").arg(elements.size()).arg(depth));
+    generateDebugInfo(QString(">>> processICsRecursively called with %1 elements at depth %2").arg(elements.size()).arg(depth));
 
     for (auto *elm : elements) {
         generateDebugInfo(QString("Processing element: %1 (type: %2)").arg(elm->objectName()).arg(static_cast<int>(elm->elementType())));
 
         if (elm->elementType() == ElementType::IC) {
+            generateDebugInfo(QString(">>> Found IC element: %1").arg(elm->objectName()), elm);
+
             auto *ic = qgraphicsitem_cast<IC *>(elm);
             if (!ic) {
+                generateDebugInfo(QString(">>> CRITICAL: Failed to cast IC element: %1").arg(elm->objectName()), elm);
                 handleGenerationError(QString("Failed to cast IC element: %1").arg(elm->objectName()), elm);
                 continue;
             }
+
+            generateDebugInfo(QString(">>> IC cast successful: %1 (label: %2)").arg(elm->objectName()).arg(ic->label()), ic);
 
             // Set current IC context
             IC *previousIC = m_currentIC;
@@ -464,13 +528,20 @@ void CodeGeneratorVerilog::processICsRecursively(const QVector<GraphicElement *>
             }
 
             // Validate IC connectivity
-            if (!validateICConnectivity(ic)) {
+            generateDebugInfo(QString(">>> About to validate IC connectivity: %1").arg(ic->label()), ic);
+            bool connectivityValid = validateICConnectivity(ic);
+            generateDebugInfo(QString(">>> IC connectivity validation result: %1 for IC: %2").arg(connectivityValid ? "PASSED" : "FAILED").arg(ic->label()), ic);
+
+            if (!connectivityValid) {
+                generateDebugInfo(QString(">>> CRITICAL: IC connectivity validation failed, skipping: %1").arg(ic->label()), ic);
                 handleGenerationError(QString("IC connectivity validation failed: %1").arg(ic->label()), elm);
                 continue;
             }
 
             // Map IC ports to internal signals
+            generateDebugInfo(QString(">>> About to call mapICPortsToSignals for IC: %1").arg(ic->label()), ic);
             mapICPortsToSignals(ic);
+            generateDebugInfo(QString(">>> Completed mapICPortsToSignals for IC: %1").arg(ic->label()), ic);
 
             // Process IC internal elements recursively
             generateDebugInfo(QString("Checking IC %1: m_icElements.size() = %2").arg(ic->label()).arg(ic->m_icElements.size()), ic);
@@ -485,16 +556,47 @@ void CodeGeneratorVerilog::processICsRecursively(const QVector<GraphicElement *>
                     generateDebugInfo(QString("IC internal element %1: %2 (type %3)").arg(i).arg(elm->objectName()).arg(static_cast<int>(elm->elementType())), elm);
                 }
 
-                // Process internal elements directly (without recursive declareUsedSignalsOnly call to prevent infinite recursion)
-                generateDebugInfo(QString("Processing IC %1 internal elements directly").arg(ic->label()), ic);
+                // CRITICAL FIX: Register AND declare variables for IC internal elements
+                generateDebugInfo(QString("CRITICAL FIX: Processing IC %1 internal elements - registering variables").arg(ic->label()), ic);
                 for (auto *elm : ic->m_icElements) {
                     if (elm->elementType() != ElementType::IC) {
-                        // Only process non-IC elements here to avoid deeper recursion
-                        for (auto *port : elm->outputs()) {
-                            QString varName = m_varMap.value(port);
-                            if (!varName.isEmpty()) {
-                                generateDebugInfo(QString("IC internal signal: %1").arg(varName), elm);
-                                // Add basic signal declaration for IC internal elements
+                        // Skip input and output elements
+                        if (elm->elementGroup() == ElementGroup::Input || elm->elementGroup() == ElementGroup::Output) {
+                            continue;
+                        }
+
+                        QString varName = generateUniqueVariableName(elm->objectName(), QString("ic_%1").arg(ic->label().toLower()));
+                        const auto outputs = elm->outputs();
+
+                        if (outputs.size() == 1) {
+                            // Single output elements
+                            QNEPort *port = outputs.at(0);
+                            generateDebugInfo(QString("CRITICAL FIX: Registering single output port for %1 -> %2").arg(elm->objectName()).arg(varName), elm);
+                            m_varMap[port] = varName;
+
+                            // Declare the variable
+                            switch (elm->elementType()) {
+                            case ElementType::DLatch:
+                            case ElementType::SRLatch:
+                            case ElementType::SRFlipFlop:
+                            case ElementType::DFlipFlop:
+                            case ElementType::TFlipFlop:
+                            case ElementType::JKFlipFlop:
+                                m_stream << QString("    reg %1 = 1'b0;").arg(varName) << Qt::endl;
+                                break;
+                            default:
+                                m_stream << QString("    wire %1;").arg(varName) << Qt::endl;
+                                break;
+                            }
+                        } else if (outputs.size() > 1) {
+                            // Multi-output elements (like D-Flip-Flops)
+                            int portCounter = 0;
+                            for (auto *port : outputs) {
+                                QString portName = QString("%1_%2").arg(varName).arg(portCounter++);
+                                generateDebugInfo(QString("CRITICAL FIX: Registering multi-output port %1 for %2 -> %3").arg(portCounter-1).arg(elm->objectName()).arg(portName), elm);
+                                m_varMap[port] = portName;
+
+                                // Declare the variable
                                 switch (elm->elementType()) {
                                 case ElementType::DLatch:
                                 case ElementType::SRLatch:
@@ -502,11 +604,10 @@ void CodeGeneratorVerilog::processICsRecursively(const QVector<GraphicElement *>
                                 case ElementType::DFlipFlop:
                                 case ElementType::TFlipFlop:
                                 case ElementType::JKFlipFlop:
-                                case ElementType::Clock:
-                                    m_stream << QString("    reg %1 = 1'b0;").arg(varName) << Qt::endl;
+                                    m_stream << QString("    reg %1 = 1'b0;").arg(portName) << Qt::endl;
                                     break;
                                 default:
-                                    m_stream << QString("    wire %1;").arg(varName) << Qt::endl;
+                                    m_stream << QString("    wire %1;").arg(portName) << Qt::endl;
                                     break;
                                 }
                             }
@@ -557,41 +658,82 @@ QString CodeGeneratorVerilog::generateICBoundaryComment(IC *ic, bool isStart)
 
 void CodeGeneratorVerilog::mapICPortsToSignals(IC *ic)
 {
-    generateDebugInfo(QString("mapICPortsToSignals starting for IC %1 with %2 inputs, %3 outputs")
-                     .arg(ic->label()).arg(ic->inputSize()).arg(ic->outputSize()), ic);
+    generateDebugInfo(QString("mapICPortsToSignals starting for IC %1 with %2 inputs, %3 outputs, %4 internal inputs, %5 internal outputs")
+                     .arg(ic->label()).arg(ic->inputSize()).arg(ic->outputSize()).arg(ic->m_icInputs.size()).arg(ic->m_icOutputs.size()), ic);
 
-    // Map input ports
-    for (int i = 0; i < ic->inputSize(); ++i) {
-        QNEPort *externalPort = ic->inputPort(i);
-        QString externalSignal = otherPortName(externalPort);
-
-        QString internalSignal = generateUniqueVariableName(
-            QString("ic_in_%1").arg(i),
-            removeForbiddenChars(stripAccents(ic->label()))
-        );
-
-        // Create internal wire for IC input
-        m_stream << QString("wire %1; // IC input %2").arg(internalSignal).arg(i) << Qt::endl;
-        m_stream << QString("assign %1 = %2;").arg(internalSignal, externalSignal) << Qt::endl;
-
-        // Map internal port to this signal
-        // Note: This would need actual IC internal structure access
+    // Debug: Print all m_icInputs and m_icOutputs
+    for (int i = 0; i < ic->m_icInputs.size(); ++i) {
+        QNEPort *internalPort = ic->m_icInputs.at(i);
+        generateDebugInfo(QString("IC internal input %1: port from element %2")
+                         .arg(i).arg(internalPort->graphicElement() ? internalPort->graphicElement()->objectName() : "unknown"), ic);
+    }
+    for (int i = 0; i < ic->m_icOutputs.size(); ++i) {
+        QNEPort *internalPort = ic->m_icOutputs.at(i);
+        generateDebugInfo(QString("IC internal output %1: port from element %2")
+                         .arg(i).arg(internalPort->graphicElement() ? internalPort->graphicElement()->objectName() : "unknown"), ic);
     }
 
-    // Map output ports
+    // Map input ports - Connect IC internal input ports to external signals
+    for (int i = 0; i < ic->inputSize(); ++i) {
+        QNEPort *externalPort = ic->inputPort(i);
+        generateDebugInfo(QString("Processing external input port %1 from element %2")
+                         .arg(i).arg(externalPort ? externalPort->graphicElement()->objectName() : "unknown"), ic);
+
+        QString externalSignal = otherPortName(externalPort);
+        generateDebugInfo(QString("External input port %1 resolves to signal: %2").arg(i).arg(externalSignal), ic);
+
+        // Map the corresponding internal input port to the external signal
+        if (i < ic->m_icInputs.size()) {
+            QNEPort *internalInputPort = ic->m_icInputs.at(i);
+            generateDebugInfo(QString("Mapping internal input port %1 (from %2) to external signal: %3")
+                             .arg(i).arg(internalInputPort->graphicElement() ? internalInputPort->graphicElement()->objectName() : "unknown").arg(externalSignal), ic);
+
+            // Check if already in varMap
+            QString oldValue = m_varMap.value(internalInputPort);
+            generateDebugInfo(QString("Internal input port %1 old varMap value: '%2'").arg(i).arg(oldValue), ic);
+
+            m_varMap[internalInputPort] = externalSignal;
+
+            generateDebugInfo(QString("Successfully mapped IC internal input port %1 to external signal: %2")
+                             .arg(i).arg(externalSignal), ic);
+        } else {
+            generateDebugInfo(QString("ERROR: External input %1 has no corresponding internal input (m_icInputs size: %2)").arg(i).arg(ic->m_icInputs.size()), ic);
+        }
+    }
+
+    // Map output ports - Connect IC internal output ports to external ports
     for (int i = 0; i < ic->outputSize(); ++i) {
         QNEPort *externalPort = ic->outputPort(i);
+        generateDebugInfo(QString("Processing external output port %1").arg(i), ic);
 
-        QString internalSignal = generateUniqueVariableName(
-            QString("ic_out_%1").arg(i),
-            removeForbiddenChars(stripAccents(ic->label()))
-        );
+        // Map the corresponding internal output port to the external port
+        if (i < ic->m_icOutputs.size()) {
+            QNEPort *internalOutputPort = ic->m_icOutputs.at(i);
+            generateDebugInfo(QString("Getting source signal for internal output port %1 (from %2)")
+                             .arg(i).arg(internalOutputPort->graphicElement() ? internalOutputPort->graphicElement()->objectName() : "unknown"), ic);
 
-        // Create internal wire for IC output
-        m_stream << QString("wire %1; // IC output %2").arg(internalSignal).arg(i) << Qt::endl;
+            // Get the signal that drives the internal output port
+            QString sourceSignal = otherPortName(internalOutputPort);
+            generateDebugInfo(QString("Internal output port %1 source signal: %2").arg(i).arg(sourceSignal), ic);
 
-        // Map external port to this internal signal
-        m_varMap[externalPort] = internalSignal;
+            // Map the external port to this source signal
+            m_varMap[externalPort] = sourceSignal;
+
+            generateDebugInfo(QString("Successfully mapped IC external output port %1 to internal source signal: %2")
+                             .arg(i).arg(sourceSignal), ic);
+        } else {
+            generateDebugInfo(QString("ERROR: External output %1 has no corresponding internal output (m_icOutputs size: %2)").arg(i).arg(ic->m_icOutputs.size()), ic);
+        }
+    }
+
+    // Debug: Print current state of m_varMap for this IC
+    generateDebugInfo(QString("Current m_varMap entries for IC %1:").arg(ic->label()), ic);
+    for (auto it = m_varMap.begin(); it != m_varMap.end(); ++it) {
+        QNEPort *port = it.key();
+        QString signal = it.value();
+        if (port && port->graphicElement()) {
+            generateDebugInfo(QString("  Port from %1 -> %2").arg(port->graphicElement()->objectName()).arg(signal), ic);
+        }
     }
 
     generateDebugInfo(QString("mapICPortsToSignals completed for IC %1").arg(ic->label()), ic);
@@ -815,8 +957,9 @@ void CodeGeneratorVerilog::declareAuxVariables()
 {
     m_stream << "    // ========= Internal Signals =========" << Qt::endl;
 
-    // OPTIMIZED: Only declare signals that will actually be used
-    declareUsedSignalsOnly(m_elements, false);
+    // CRITICAL FIX: Use declareAuxVariablesRec which includes IC port mapping via processICsRecursively
+    generateDebugInfo(">>> CRITICAL: Calling declareAuxVariablesRec instead of declareUsedSignalsOnly to ensure IC processing");
+    declareAuxVariablesRec(m_elements, false);
 
     m_stream << Qt::endl;
 }
@@ -854,8 +997,14 @@ void CodeGeneratorVerilog::declareAuxVariablesRec(const QVector<GraphicElement *
                 continue;
             }
 
-            if (m_varMap.value(port).isEmpty()) {
+            QString existingValue = m_varMap.value(port);
+            generateDebugInfo(QString("declareVariablesRec: Port from %1, existing varMap value: '%2', new varName: '%3'").arg(elm->objectName()).arg(existingValue).arg(varName), elm);
+
+            if (existingValue.isEmpty()) {
+                generateDebugInfo(QString("declareVariablesRec: OVERWRITING empty varMap - setting port to '%1'").arg(varName), elm);
                 m_varMap[port] = varName;
+            } else {
+                generateDebugInfo(QString("declareVariablesRec: PRESERVING existing varMap value '%1' instead of '%2'").arg(existingValue).arg(varName), elm);
             }
         } else {
             // Multi-output elements
@@ -867,6 +1016,13 @@ void CodeGeneratorVerilog::declareAuxVariablesRec(const QVector<GraphicElement *
 
                 if (!port->name().isEmpty()) {
                     portName.append(QString("_%1").arg(removeForbiddenChars(stripAccents(port->name()))));
+                }
+
+                QString existingMultiValue = m_varMap.value(port);
+                generateDebugInfo(QString("declareVariablesRec: Multi-output port %1 from %2, existing: '%3', new: '%4'").arg(portCounter-1).arg(elm->objectName()).arg(existingMultiValue).arg(portName), elm);
+
+                if (!existingMultiValue.isEmpty()) {
+                    generateDebugInfo(QString("declareVariablesRec: CRITICAL - OVERWRITING multi-output port mapping '%1' with '%2' for element %3!").arg(existingMultiValue).arg(portName).arg(elm->objectName()), elm);
                 }
 
                 m_varMap[port] = portName;
@@ -933,100 +1089,38 @@ void CodeGeneratorVerilog::declareAuxVariablesRec(const QVector<GraphicElement *
 
 void CodeGeneratorVerilog::declareUsedSignalsOnly(const QVector<GraphicElement *> &elements, bool isIC)
 {
-    // OPTIMIZATION: Only declare signals that will actually be used
-    // This prevents unused signal warnings in strict Verilog validation
+    // ARDUINO-STYLE APPROACH: Pure variable declaration phase
+    // Following the Arduino pattern: declare ALL variables first, generate logic later
 
-    QSet<QString> usedSignals;
-    QHash<QNEPort*, QString> tempVarMap = m_varMap; // Copy current variable map
+    // Recursively process all elements including IC internals
+    declareVariablesRec(elements, isIC);
+}
 
-    // First pass: Identify which signals will actually be assigned
-    QVector<GraphicElement *> sortedElements;
-    if (isIC) {
-        // Don't sort IC internal elements - process in original order to avoid circular dependency issues
-        sortedElements = elements;
-    } else {
-        // Sort top-level elements topologically for proper dependency order
-        sortedElements = topologicalSort(elements);
-    }
+void CodeGeneratorVerilog::declareVariablesRec(const QVector<GraphicElement *> &elements, bool isIC)
+{
+    generateDebugInfo(QString("declareVariablesRec: Processing %1 elements, isIC=%2").arg(elements.size()).arg(isIC));
 
-    for (auto *elm : sortedElements) {
-        if (elm->elementType() == ElementType::IC) {
-            continue; // ICs handled separately
-        }
-
-        // Skip input and output elements - they're already declared as ports
-        if (elm->elementGroup() == ElementGroup::Input || elm->elementGroup() == ElementGroup::Output) {
-            continue;
-        }
-
-        // Only process elements that have both inputs and outputs (will be assigned)
-        if (elm->inputs().isEmpty() || elm->outputs().isEmpty()) {
-            continue;
-        }
-
-        // Check if this element type will generate assignments
-        bool willGenerateAssignment = false;
-        switch (elm->elementType()) {
-        case ElementType::And:
-        case ElementType::Or:
-        case ElementType::Nand:
-        case ElementType::Nor:
-        case ElementType::Xor:
-        case ElementType::Xnor:
-        case ElementType::Not:
-        case ElementType::Node:
-        case ElementType::DFlipFlop:
-        case ElementType::JKFlipFlop:
-        case ElementType::SRFlipFlop:
-        case ElementType::TFlipFlop:
-        case ElementType::DLatch:
-        case ElementType::SRLatch:
-            willGenerateAssignment = true;
-            break;
-        default:
-            // For other element types, assume they will generate assignments
-            willGenerateAssignment = true;
-            break;
-        }
-
-        if (willGenerateAssignment) {
-            // Generate variable names for this element and mark as used
-            QString varName = generateUniqueVariableName(elm->objectName(), isIC ? "ic" : "");
-            const auto outputs = elm->outputs();
-
-            if (outputs.size() == 1) {
-                QNEPort *port = outputs.constFirst();
-                if (!tempVarMap.contains(port)) {
-                    QString varName2 = QString("%1_%2").arg(varName).arg(port->index());
-                    tempVarMap[port] = varName2;
-                    usedSignals.insert(varName2);
-                }
-            } else {
-                for (int i = 0; i < outputs.size(); ++i) {
-                    QNEPort *port = outputs.at(i);
-                    if (!tempVarMap.contains(port)) {
-                        QString varName2 = QString("%1_%2_%3").arg(varName).arg(port->index()).arg(i);
-                        tempVarMap[port] = varName2;
-                        usedSignals.insert(varName2);
-                    }
-                }
-            }
-        }
-    }
-
-    // Process ICs after variable mapping is complete but before declarations
-    // Temporarily update m_varMap so IC processing can find the new variables
-    QHash<QNEPort*, QString> originalVarMap = m_varMap;
-    m_varMap = tempVarMap;
-    processICsRecursively(elements, isIC ? m_icDepth + 1 : 0);
-    // CRITICAL FIX: Merge IC-added variables back into tempVarMap before restoring originalVarMap
-    tempVarMap = m_varMap;  // Capture IC internal variables
-    m_varMap = originalVarMap;
-
-    // Second pass: Only declare the signals that are actually used
     for (auto *elm : elements) {
+        generateDebugInfo(QString("declareVariablesRec: Processing element %1 (type %2)").arg(elm->objectName()).arg(static_cast<int>(elm->elementType())));
+
         if (elm->elementType() == ElementType::IC) {
-            continue; // Already processed above
+            generateDebugInfo(QString("declareVariablesRec: Found IC element: %1").arg(elm->objectName()), elm);
+            // Process IC internal elements recursively (Arduino pattern)
+            auto *ic = qgraphicsitem_cast<IC *>(elm);
+            if (ic && !ic->m_icElements.isEmpty()) {
+                // Set IC context for proper variable naming
+                IC *previousIC = m_currentIC;
+                m_currentIC = ic;
+
+                // Declare variables for IC internal elements
+                generateDebugInfo(QString("declareVariablesRec: About to process %1 IC internal elements for IC: %2").arg(ic->m_icElements.size()).arg(ic->label()), ic);
+                declareVariablesRec(ic->m_icElements, true);
+                generateDebugInfo(QString("declareVariablesRec: Completed processing IC internal elements for IC: %1").arg(ic->label()), ic);
+
+                // Restore context
+                m_currentIC = previousIC;
+            }
+            continue;
         }
 
         // Skip input and output elements - they're already declared as ports
@@ -1035,83 +1129,38 @@ void CodeGeneratorVerilog::declareUsedSignalsOnly(const QVector<GraphicElement *
         }
 
         const auto outputs = elm->outputs();
+        for (int i = 0; i < outputs.size(); ++i) {
+            QNEPort *port = outputs.at(i);
 
-        if (outputs.size() == 1) {
-            QNEPort *port = outputs.constFirst();
+            // Generate unique variable name
+            QString baseVarName = generateUniqueVariableName(elm->objectName(), isIC ? "ic" : "");
+            QString varName;
 
-            // Use the variable name from tempVarMap instead of regenerating it
-            QString varName2 = tempVarMap.value(port);
-
-            // Only declare if this signal is mapped and will be used
-            if (!varName2.isEmpty()) {
-
-                switch (elm->elementType()) {
-                case ElementType::DFlipFlop:
-                case ElementType::JKFlipFlop:
-                case ElementType::SRFlipFlop:
-                case ElementType::TFlipFlop:
-                case ElementType::DLatch:
-                case ElementType::SRLatch: {
-                    m_stream << QString("    reg %1 = 1'b0;").arg(varName2) << Qt::endl;
-                    break;
-                }
-
-                case ElementType::Buzzer: {
-                    m_stream << QString("    wire %1; // Buzzer output").arg(varName2) << Qt::endl;
-                    break;
-                }
-
-                case ElementType::Display7:
-                case ElementType::Display14:
-                case ElementType::Display16: {
-                    m_stream << QString("    wire %1; // Display segment").arg(varName2) << Qt::endl;
-                    break;
-                }
-
-                case ElementType::Mux:
-                case ElementType::Demux: {
-                    m_stream << QString("    reg %1; // MUX/DEMUX output").arg(varName2) << Qt::endl;
-                    break;
-                }
-
-                default:
-                    m_stream << QString("    wire %1;").arg(varName2) << Qt::endl;
-                    break;
-                }
+            if (outputs.size() == 1) {
+                varName = QString("%1_%2").arg(baseVarName).arg(port->index());
+            } else {
+                varName = QString("%1_%2_%3").arg(baseVarName).arg(port->index()).arg(i);
             }
-        } else {
-            for (int i = 0; i < outputs.size(); ++i) {
-                QNEPort *port = outputs.at(i);
 
-                // Use the variable name from tempVarMap instead of regenerating it
-                QString varName2 = tempVarMap.value(port);
+            // Map port to variable name
+            m_varMap[port] = varName;
 
-                // Only declare if this signal is mapped and will be used
-                if (!varName2.isEmpty()) {
-
-                    switch (elm->elementType()) {
-                    case ElementType::DFlipFlop:
-                    case ElementType::JKFlipFlop:
-                    case ElementType::SRFlipFlop:
-                    case ElementType::TFlipFlop:
-                    case ElementType::DLatch:
-                    case ElementType::SRLatch: {
-                        m_stream << QString("    reg %1 = 1'b0;").arg(varName2) << Qt::endl;
-                        break;
-                    }
-
-                    default:
-                        m_stream << QString("    wire %1;").arg(varName2) << Qt::endl;
-                        break;
-                    }
-                }
+            // Declare the variable based on element type
+            switch (elm->elementType()) {
+            case ElementType::DFlipFlop:
+            case ElementType::JKFlipFlop:
+            case ElementType::SRFlipFlop:
+            case ElementType::TFlipFlop:
+            case ElementType::DLatch:
+            case ElementType::SRLatch:
+                m_stream << QString("    reg %1 = 1'b0;").arg(varName) << Qt::endl;
+                break;
+            default:
+                m_stream << QString("    wire %1;").arg(varName) << Qt::endl;
+                break;
             }
         }
     }
-
-    // CRITICAL FIX: Update the actual variable map with the new mappings
-    // This was missing, causing IC internal elements to have empty variable names
-    m_varMap = tempVarMap;
 }
 
 void CodeGeneratorVerilog::generateLogicAssignments()
@@ -1139,7 +1188,20 @@ void CodeGeneratorVerilog::assignVariablesRec(const QVector<GraphicElement *> &e
 
     for (auto *elm : sortedElements) {
         if (elm->elementType() == ElementType::IC) {
-            continue; // ICs are handled separately
+            // Process IC and its internal elements
+            auto *ic = qgraphicsitem_cast<IC *>(elm);
+            if (ic && !ic->m_icElements.isEmpty()) {
+                // Set IC context for internal element processing
+                IC *previousIC = m_currentIC;
+                m_currentIC = ic;
+
+                // Recursively process IC internal elements for logic generation
+                assignVariablesRec(ic->m_icElements, true);
+
+                // Restore previous context
+                m_currentIC = previousIC;
+            }
+            continue;
         }
 
         if (elm->inputs().isEmpty() || elm->outputs().isEmpty()) {
@@ -1305,13 +1367,14 @@ QString CodeGeneratorVerilog::generateLogicExpression(GraphicElement *elm, QSet<
     case ElementType::Xnor: logicOperator = "^"; negate = true; break;
     case ElementType::Not:
         {
-            QString result = "~" + otherPortName(elm->inputPort(0), visited);
+            QString input = otherPortName(elm->inputPort(0), visited);
+            QString result = simplifyExpression("~" + input);
             visited->remove(elm);  // Remove from visited before returning
             return result;
         }
     case ElementType::Node:
         {
-            QString result = otherPortName(elm->inputPort(0), visited); // Node is just a pass-through
+            QString result = simplifyExpression(otherPortName(elm->inputPort(0), visited)); // Node is just a pass-through
             visited->remove(elm);  // Remove from visited before returning
             return result;
         }
@@ -1338,7 +1401,7 @@ QString CodeGeneratorVerilog::generateLogicExpression(GraphicElement *elm, QSet<
 
     // Remove from visited set before returning
     visited->remove(elm);
-    return expr;
+    return simplifyExpression(expr);
 }
 
 QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
@@ -1382,19 +1445,42 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
     }
 
     case ElementType::DFlipFlop: {
+        generateDebugInfo(QString("generateSequentialLogic: Processing DFlipFlop %1").arg(elm->objectName()), elm);
+
         QString firstOut = m_varMap.value(elm->outputPort(0));
         QString secondOut = m_varMap.value(elm->outputPort(1));
 
+        generateDebugInfo(QString("DFlipFlop %1: firstOut=%2, secondOut=%3").arg(elm->objectName()).arg(firstOut).arg(secondOut), elm);
+
+        // Get input signals with extensive logging
+        generateDebugInfo(QString("DFlipFlop %1: Getting data signal from input port 0").arg(elm->objectName()), elm);
         QString data = otherPortName(elm->inputPort(0));
+        generateDebugInfo(QString("DFlipFlop %1: data signal = %2").arg(elm->objectName()).arg(data), elm);
+
+        generateDebugInfo(QString("DFlipFlop %1: Getting clock signal from input port 1").arg(elm->objectName()), elm);
         QString clk = otherPortName(elm->inputPort(1));
+        generateDebugInfo(QString("DFlipFlop %1: CLOCK signal = %2 (THIS IS CRITICAL!)").arg(elm->objectName()).arg(clk), elm);
+
+        generateDebugInfo(QString("DFlipFlop %1: Getting preset signal from input port 2").arg(elm->objectName()), elm);
         QString prst = otherPortName(elm->inputPort(2));
+        generateDebugInfo(QString("DFlipFlop %1: preset signal = %2").arg(elm->objectName()).arg(prst), elm);
+
+        generateDebugInfo(QString("DFlipFlop %1: Getting clear signal from input port 3").arg(elm->objectName()), elm);
         QString clr = otherPortName(elm->inputPort(3));
+        generateDebugInfo(QString("DFlipFlop %1: clear signal = %2").arg(elm->objectName()).arg(clr), elm);
 
         code += QString("    // D FlipFlop: %1\n").arg(elm->objectName());
 
         // Build sensitivity list based on connected signals
+        generateDebugInfo(QString("DFlipFlop %1: Building sensitivity list with clock=%2").arg(elm->objectName()).arg(clk), elm);
         QStringList sensitivity;
+
+        // CRITICAL: This is where the syntax error occurs if clk is "1'b0"
+        if (clk == "1'b0" || clk == "1'b1") {
+            generateDebugInfo(QString("WARNING: DFlipFlop %1 clock is constant %2, this will cause syntax error!").arg(elm->objectName()).arg(clk), elm);
+        }
         sensitivity << QString("posedge %1").arg(clk);
+        generateDebugInfo(QString("DFlipFlop %1: Added 'posedge %2' to sensitivity list").arg(elm->objectName()).arg(clk), elm);
 
         if (prst != "1'b1" && prst != "1'b0") {
             // Handle inverted signals properly in sensitivity list
@@ -1419,6 +1505,7 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
         if (prst != "1'b1" && prst != "1'b0") {
             // Handle inverted signals properly in conditional logic
             QString presetCondition = prst.startsWith("~") ? prst.mid(1) : QString("!%1").arg(prst);
+            generateDebugInfo(QString("DFlipFlop %1: Generating preset - firstOut='%2', secondOut='%3'").arg(elm->objectName()).arg(firstOut).arg(secondOut), elm);
             code += QString("        if (%1) begin\n").arg(presetCondition);
             code += QString("            %1 <= 1'b1;\n").arg(firstOut);
             code += QString("            %1 <= 1'b0;\n").arg(secondOut);
@@ -1429,6 +1516,7 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
         if (clr != "1'b1" && clr != "1'b0") {
             // Handle inverted signals properly in conditional logic
             QString clearCondition = clr.startsWith("~") ? clr.mid(1) : QString("!%1").arg(clr);
+            generateDebugInfo(QString("DFlipFlop %1: Generating clear - firstOut='%2', secondOut='%3'").arg(elm->objectName()).arg(firstOut).arg(secondOut), elm);
             if (prst == "1'b1" || prst == "1'b0") {
                 code += QString("        if (%1) begin\n").arg(clearCondition);
             } else {
@@ -1444,6 +1532,15 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
         }
 
         // Normal clocked operation
+        generateDebugInfo(QString("DFlipFlop %1: About to generate assignments - firstOut='%2', secondOut='%3', data='%4'").arg(elm->objectName()).arg(firstOut).arg(secondOut).arg(data), elm);
+
+        if (firstOut.isEmpty()) {
+            generateDebugInfo(QString("CRITICAL ERROR: DFlipFlop %1 firstOut is EMPTY!").arg(elm->objectName()), elm);
+        }
+        if (secondOut.isEmpty()) {
+            generateDebugInfo(QString("CRITICAL ERROR: DFlipFlop %1 secondOut is EMPTY!").arg(elm->objectName()), elm);
+        }
+
         code += QString("            %1 <= %2;\n").arg(firstOut, data);
         code += QString("            %1 <= ~%2;\n").arg(secondOut, data);
         code += QString("        end\n");
@@ -2194,5 +2291,6 @@ void CodeGeneratorVerilog::generateDebugInfo(const QString &message, GraphicElem
         debugMsg += QString(" (Element: %1)").arg(element->objectName());
     }
 
-    m_stream << QString("// DEBUG: %1\n").arg(debugMsg);
+    // Log to console instead of polluting the generated Verilog file
+    qDebug() << "VERILOG DEBUG:" << debugMsg;
 }

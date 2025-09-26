@@ -4,8 +4,8 @@
 // ======= This Verilog code was generated automatically by wiRedPanda =======
 // ====================================================================
 //
-// Module: ic
-// Generated: Fri Sep 26 03:03:44 2025
+// Module: ic_debug
+// Generated: Fri Sep 26 02:46:48 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 58/1000 LUTs, 215/1000 FFs, 37/50 IOs
 //
@@ -13,7 +13,7 @@
 // https://github.com/gibis-unifesp/wiredpanda
 // ====================================================================
 
-module ic (
+module ic_debug (
     // ========= Input Ports =========
 // DEBUG: Input port: Clock -> input_clock1_1 (Element: Clock)
 // DEBUG: Input port: Clock -> input_clock2_2 (Element: Clock)
@@ -9475,10 +9475,10 @@ module ic (
 // DEBUG: otherPortName: Final result: jk_flip_flop_288_0_0 (Element: JK-Flip-Flop)
     assign output_led7_0_34 = jk_flip_flop_288_0_0; // LED
 
-endmodule // ic
+endmodule // ic_debug
 
 // ====================================================================
-// Module ic generation completed successfully
+// Module ic_debug generation completed successfully
 // Elements processed: 22
 // Inputs: 6, Outputs: 28
 // ====================================================================

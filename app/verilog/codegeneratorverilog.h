@@ -150,6 +150,13 @@ private:
     static QString boolValue(const Status val);
 
     /**
+     * @brief Simplify Verilog expressions to prevent double negation
+     * @param expr Input expression that may have redundant negations
+     * @return Simplified expression
+     */
+    static QString simplifyExpression(const QString &expr);
+
+    /**
      * @brief Check if identifier is a Verilog reserved keyword
      * @param identifier Identifier to check
      * @return True if identifier is reserved
@@ -306,6 +313,13 @@ private:
      * @param isIC True if processing IC internal elements
      */
     void declareUsedSignalsOnly(const QVector<GraphicElement *> &elements, bool isIC = false);
+
+    /**
+     * @brief Recursively declare variables for elements (Arduino-style approach)
+     * @param elements Elements to process for variable declarations
+     * @param isIC True if processing IC internal elements
+     */
+    void declareVariablesRec(const QVector<GraphicElement *> &elements, bool isIC = false);
 
     /**
      * @brief Declare all auxiliary variables and wires

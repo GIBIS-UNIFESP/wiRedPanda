@@ -1,9 +1,11 @@
+// DEBUG: Selected FPGA: Generic-Small (Small generic FPGA (educational))
+// DEBUG: Estimated resources: 45 LUTs, 4 FFs, 8 IOs
 // ====================================================================
 // ======= This Verilog code was generated automatically by wiRedPanda =======
 // ====================================================================
 //
 // Module: serialize
-// Generated: Fri Sep 26 00:42:07 2025
+// Generated: Fri Sep 26 03:03:49 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 45/1000 LUTs, 4/1000 FFs, 8/50 IOs
 //
@@ -13,6 +15,12 @@
 
 module serialize (
     // ========= Input Ports =========
+// DEBUG: Input port: Input Switch -> input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: Input port: Input Switch -> input_input_switch2_clock_2 (Element: Input Switch)
+// DEBUG: Input port: Input Switch -> input_input_switch3_d0_3 (Element: Input Switch)
+// DEBUG: Input port: Input Switch -> input_input_switch4_d1_4 (Element: Input Switch)
+// DEBUG: Input port: Input Switch -> input_input_switch5_d2_5 (Element: Input Switch)
+// DEBUG: Input port: Input Switch -> input_input_switch6_d3_6 (Element: Input Switch)
     input wire input_input_switch1_load__shift_1,
     input wire input_input_switch2_clock_2,
     input wire input_input_switch3_d0_3,
@@ -21,109 +29,753 @@ module serialize (
     input wire input_input_switch6_d3_6,
 
     // ========= Output Ports =========
+// DEBUG: Output port: LED[0] -> output_led1_0_7 (Element: LED)
+// DEBUG: Output port: LED[0] -> output_led2_0_8 (Element: LED)
     output wire output_led1_0_7,
     output wire output_led2_0_8
 );
 
     // ========= Internal Signals =========
-    wire node_38_0;
-    wire node_37_0;
-    wire node_36_0;
-    wire not_35_0;
-    wire node_34_0;
-    wire node_33_0;
-    reg d_flip_flop_32_0_0 = 1'b0;
-    reg d_flip_flop_32_1_1 = 1'b0;
-    wire and_31_0;
-    wire and_30_0;
-    wire node_29_0;
-    wire or_28_0;
-    wire node_27_0;
-    wire node_26_0;
-    reg d_flip_flop_25_0_0 = 1'b0;
-    reg d_flip_flop_25_1_1 = 1'b0;
-    wire and_24_0;
-    wire and_23_0;
-    wire node_22_0;
-    wire or_21_0;
-    wire node_20_0;
-    wire node_19_0;
-    reg d_flip_flop_18_0_0 = 1'b0;
-    reg d_flip_flop_18_1_1 = 1'b0;
-    wire and_17_0;
-    wire and_16_0;
-    wire node_15_0;
-    wire or_14_0;
-    wire node_13_0;
-    wire node_12_0;
-    reg d_flip_flop_11_0_0 = 1'b0;
-    reg d_flip_flop_11_1_1 = 1'b0;
+    wire node_9_0;
     wire node_10_0;
-    wire and_9_0;
+    wire node_11_0;
+    wire not_12_0;
+    wire node_13_0;
+    wire node_14_0;
+    reg d_flip_flop_15_0_0 = 1'b0;
+    reg d_flip_flop_16_1_1 = 1'b0;
+    wire and_17_0;
+    wire and_18_0;
+    wire node_19_0;
+    wire or_20_0;
+    wire node_21_0;
+    wire node_22_0;
+    reg d_flip_flop_23_0_0 = 1'b0;
+    reg d_flip_flop_24_1_1 = 1'b0;
+    wire and_25_0;
+    wire and_26_0;
+    wire node_27_0;
+    wire or_28_0;
+    wire node_29_0;
+    wire node_30_0;
+    reg d_flip_flop_31_0_0 = 1'b0;
+    reg d_flip_flop_32_1_1 = 1'b0;
+    wire and_33_0;
+    wire and_34_0;
+    wire node_35_0;
+    wire or_36_0;
+    wire node_37_0;
+    wire node_38_0;
+    reg d_flip_flop_39_0_0 = 1'b0;
+    reg d_flip_flop_40_1_1 = 1'b0;
+    wire node_41_0;
+    wire and_42_0;
 
     // ========= Logic Assignments =========
-    assign and_9_0 = (~input_input_switch1_load__shift_1 & d_flip_flop_11_0_0); // And
-    assign node_10_0 = input_input_switch1_load__shift_1; // Node
+// DEBUG: Processing 38 top-level elements with topological sorting
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Checking varMap for final result (Element: D-Flip-Flop)
+// DEBUG: otherPortName: varMap lookup result: 'd_flip_flop_39_0_0' (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Final result: d_flip_flop_39_0_0 (Element: D-Flip-Flop)
+    assign and_42_0 = (~input_input_switch1_load__shift_1 & d_flip_flop_39_0_0); // And
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+    assign node_41_0 = input_input_switch1_load__shift_1; // Node
+// DEBUG: generateSequentialLogic: Processing DFlipFlop D-Flip-Flop (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: firstOut=d_flip_flop_39_0_0, secondOut=d_flip_flop_40_1_1 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting data signal from input port 0 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Found connected port from element Or (type 6) (Element: Or)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Or)
+// DEBUG: otherPortName: Processing port from element Or (type 6) (Element: Or)
+// DEBUG: otherPortName: Found connected port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: And)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch6_d3_6' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch6_d3_6 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element Or (type 6) (Element: Or)
+// DEBUG: otherPortName: Found connected port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: And)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Checking varMap for final result (Element: D-Flip-Flop)
+// DEBUG: otherPortName: varMap lookup result: 'd_flip_flop_31_0_0' (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Final result: d_flip_flop_31_0_0 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: data signal = ((input_input_switch1_load__shift_1 & input_input_switch6_d3_6) | (~input_input_switch1_load__shift_1 & d_flip_flop_31_0_0)) (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting clock signal from input port 1 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch2_clock_2' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch2_clock_2 (Element: Input Switch)
+// DEBUG: DFlipFlop D-Flip-Flop: CLOCK signal = input_input_switch2_clock_2 (THIS IS CRITICAL!) (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting preset signal from input port 2 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: preset signal = 1'b1 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting clear signal from input port 3 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: clear signal = 1'b1 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Building sensitivity list with clock=input_input_switch2_clock_2 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Added 'posedge input_input_switch2_clock_2' to sensitivity list (Element: D-Flip-Flop)
     // D FlipFlop: D-Flip-Flop
     always @(posedge input_input_switch2_clock_2) begin
         begin
-            d_flip_flop_11_0_0 <= ((input_input_switch1_load__shift_1 & input_input_switch6_d3_6) | (~input_input_switch1_load__shift_1 & d_flip_flop_18_0_0));
-            d_flip_flop_11_1_1 <= ~((input_input_switch1_load__shift_1 & input_input_switch6_d3_6) | (~input_input_switch1_load__shift_1 & d_flip_flop_18_0_0));
+            d_flip_flop_39_0_0 <= ((input_input_switch1_load__shift_1 & input_input_switch6_d3_6) | (~input_input_switch1_load__shift_1 & d_flip_flop_31_0_0));
+            d_flip_flop_40_1_1 <= ~((input_input_switch1_load__shift_1 & input_input_switch6_d3_6) | (~input_input_switch1_load__shift_1 & d_flip_flop_31_0_0));
         end
     end
 
-    assign node_12_0 = input_input_switch1_load__shift_1; // Node
-    assign node_13_0 = ~input_input_switch1_load__shift_1; // Node
-    assign or_14_0 = ((input_input_switch1_load__shift_1 & input_input_switch6_d3_6) | (~input_input_switch1_load__shift_1 & d_flip_flop_18_0_0)); // Or
-    assign node_15_0 = input_input_switch2_clock_2; // Node
-    assign and_16_0 = (input_input_switch1_load__shift_1 & input_input_switch6_d3_6); // And
-    assign and_17_0 = (~input_input_switch1_load__shift_1 & d_flip_flop_18_0_0); // And
-    // D FlipFlop: D-Flip-Flop
-    always @(posedge input_input_switch2_clock_2) begin
-        begin
-            d_flip_flop_18_0_0 <= ((input_input_switch1_load__shift_1 & input_input_switch5_d2_5) | (~input_input_switch1_load__shift_1 & d_flip_flop_25_0_0));
-            d_flip_flop_18_1_1 <= ~((input_input_switch1_load__shift_1 & input_input_switch5_d2_5) | (~input_input_switch1_load__shift_1 & d_flip_flop_25_0_0));
-        end
-    end
-
-    assign node_19_0 = ~input_input_switch1_load__shift_1; // Node
-    assign node_20_0 = input_input_switch1_load__shift_1; // Node
-    assign or_21_0 = ((input_input_switch1_load__shift_1 & input_input_switch5_d2_5) | (~input_input_switch1_load__shift_1 & d_flip_flop_25_0_0)); // Or
-    assign node_22_0 = input_input_switch2_clock_2; // Node
-    assign and_23_0 = (~input_input_switch1_load__shift_1 & d_flip_flop_25_0_0); // And
-    assign and_24_0 = (input_input_switch1_load__shift_1 & input_input_switch5_d2_5); // And
-    // D FlipFlop: D-Flip-Flop
-    always @(posedge input_input_switch2_clock_2) begin
-        begin
-            d_flip_flop_25_0_0 <= ((input_input_switch1_load__shift_1 & input_input_switch4_d1_4) | (~input_input_switch1_load__shift_1 & d_flip_flop_32_0_0));
-            d_flip_flop_25_1_1 <= ~((input_input_switch1_load__shift_1 & input_input_switch4_d1_4) | (~input_input_switch1_load__shift_1 & d_flip_flop_32_0_0));
-        end
-    end
-
-    assign node_26_0 = ~input_input_switch1_load__shift_1; // Node
-    assign node_27_0 = input_input_switch1_load__shift_1; // Node
-    assign or_28_0 = ((input_input_switch1_load__shift_1 & input_input_switch4_d1_4) | (~input_input_switch1_load__shift_1 & d_flip_flop_32_0_0)); // Or
-    assign node_29_0 = input_input_switch2_clock_2; // Node
-    assign and_30_0 = (input_input_switch1_load__shift_1 & input_input_switch4_d1_4); // And
-    assign and_31_0 = (~input_input_switch1_load__shift_1 & d_flip_flop_32_0_0); // And
-    // D FlipFlop: D-Flip-Flop
-    always @(posedge input_input_switch2_clock_2) begin
-        begin
-            d_flip_flop_32_0_0 <= input_input_switch3_d0_3;
-            d_flip_flop_32_1_1 <= ~input_input_switch3_d0_3;
-        end
-    end
-
-    assign node_33_0 = ~input_input_switch1_load__shift_1; // Node
-    assign node_34_0 = input_input_switch1_load__shift_1; // Node
-    assign not_35_0 = ~input_input_switch1_load__shift_1; // Not
-    assign node_36_0 = input_input_switch1_load__shift_1; // Node
-    assign node_37_0 = input_input_switch2_clock_2; // Node
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
     assign node_38_0 = input_input_switch1_load__shift_1; // Node
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+    assign node_37_0 = ~input_input_switch1_load__shift_1; // Node
+// DEBUG: otherPortName: Processing port from element Or (type 6) (Element: Or)
+// DEBUG: otherPortName: Found connected port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: And)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch6_d3_6' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch6_d3_6 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element Or (type 6) (Element: Or)
+// DEBUG: otherPortName: Found connected port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: And)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Checking varMap for final result (Element: D-Flip-Flop)
+// DEBUG: otherPortName: varMap lookup result: 'd_flip_flop_31_0_0' (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Final result: d_flip_flop_31_0_0 (Element: D-Flip-Flop)
+    assign or_36_0 = ((input_input_switch1_load__shift_1 & input_input_switch6_d3_6) | (~input_input_switch1_load__shift_1 & d_flip_flop_31_0_0)); // Or
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch2_clock_2' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch2_clock_2 (Element: Input Switch)
+    assign node_35_0 = input_input_switch2_clock_2; // Node
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch6_d3_6' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch6_d3_6 (Element: Input Switch)
+    assign and_34_0 = (input_input_switch1_load__shift_1 & input_input_switch6_d3_6); // And
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Checking varMap for final result (Element: D-Flip-Flop)
+// DEBUG: otherPortName: varMap lookup result: 'd_flip_flop_31_0_0' (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Final result: d_flip_flop_31_0_0 (Element: D-Flip-Flop)
+    assign and_33_0 = (~input_input_switch1_load__shift_1 & d_flip_flop_31_0_0); // And
+// DEBUG: generateSequentialLogic: Processing DFlipFlop D-Flip-Flop (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: firstOut=d_flip_flop_31_0_0, secondOut=d_flip_flop_32_1_1 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting data signal from input port 0 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Found connected port from element Or (type 6) (Element: Or)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Or)
+// DEBUG: otherPortName: Processing port from element Or (type 6) (Element: Or)
+// DEBUG: otherPortName: Found connected port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: And)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch5_d2_5' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch5_d2_5 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element Or (type 6) (Element: Or)
+// DEBUG: otherPortName: Found connected port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: And)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Checking varMap for final result (Element: D-Flip-Flop)
+// DEBUG: otherPortName: varMap lookup result: 'd_flip_flop_23_0_0' (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Final result: d_flip_flop_23_0_0 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: data signal = ((input_input_switch1_load__shift_1 & input_input_switch5_d2_5) | (~input_input_switch1_load__shift_1 & d_flip_flop_23_0_0)) (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting clock signal from input port 1 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch2_clock_2' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch2_clock_2 (Element: Input Switch)
+// DEBUG: DFlipFlop D-Flip-Flop: CLOCK signal = input_input_switch2_clock_2 (THIS IS CRITICAL!) (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting preset signal from input port 2 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: preset signal = 1'b1 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting clear signal from input port 3 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: clear signal = 1'b1 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Building sensitivity list with clock=input_input_switch2_clock_2 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Added 'posedge input_input_switch2_clock_2' to sensitivity list (Element: D-Flip-Flop)
+    // D FlipFlop: D-Flip-Flop
+    always @(posedge input_input_switch2_clock_2) begin
+        begin
+            d_flip_flop_31_0_0 <= ((input_input_switch1_load__shift_1 & input_input_switch5_d2_5) | (~input_input_switch1_load__shift_1 & d_flip_flop_23_0_0));
+            d_flip_flop_32_1_1 <= ~((input_input_switch1_load__shift_1 & input_input_switch5_d2_5) | (~input_input_switch1_load__shift_1 & d_flip_flop_23_0_0));
+        end
+    end
+
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+    assign node_30_0 = ~input_input_switch1_load__shift_1; // Node
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+    assign node_29_0 = input_input_switch1_load__shift_1; // Node
+// DEBUG: otherPortName: Processing port from element Or (type 6) (Element: Or)
+// DEBUG: otherPortName: Found connected port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: And)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch5_d2_5' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch5_d2_5 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element Or (type 6) (Element: Or)
+// DEBUG: otherPortName: Found connected port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: And)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Checking varMap for final result (Element: D-Flip-Flop)
+// DEBUG: otherPortName: varMap lookup result: 'd_flip_flop_23_0_0' (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Final result: d_flip_flop_23_0_0 (Element: D-Flip-Flop)
+    assign or_28_0 = ((input_input_switch1_load__shift_1 & input_input_switch5_d2_5) | (~input_input_switch1_load__shift_1 & d_flip_flop_23_0_0)); // Or
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch2_clock_2' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch2_clock_2 (Element: Input Switch)
+    assign node_27_0 = input_input_switch2_clock_2; // Node
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Checking varMap for final result (Element: D-Flip-Flop)
+// DEBUG: otherPortName: varMap lookup result: 'd_flip_flop_23_0_0' (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Final result: d_flip_flop_23_0_0 (Element: D-Flip-Flop)
+    assign and_26_0 = (~input_input_switch1_load__shift_1 & d_flip_flop_23_0_0); // And
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch5_d2_5' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch5_d2_5 (Element: Input Switch)
+    assign and_25_0 = (input_input_switch1_load__shift_1 & input_input_switch5_d2_5); // And
+// DEBUG: generateSequentialLogic: Processing DFlipFlop D-Flip-Flop (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: firstOut=d_flip_flop_23_0_0, secondOut=d_flip_flop_24_1_1 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting data signal from input port 0 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Found connected port from element Or (type 6) (Element: Or)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Or)
+// DEBUG: otherPortName: Processing port from element Or (type 6) (Element: Or)
+// DEBUG: otherPortName: Found connected port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: And)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch4_d1_4' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch4_d1_4 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element Or (type 6) (Element: Or)
+// DEBUG: otherPortName: Found connected port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: And)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Checking varMap for final result (Element: D-Flip-Flop)
+// DEBUG: otherPortName: varMap lookup result: 'd_flip_flop_15_0_0' (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Final result: d_flip_flop_15_0_0 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: data signal = ((input_input_switch1_load__shift_1 & input_input_switch4_d1_4) | (~input_input_switch1_load__shift_1 & d_flip_flop_15_0_0)) (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting clock signal from input port 1 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch2_clock_2' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch2_clock_2 (Element: Input Switch)
+// DEBUG: DFlipFlop D-Flip-Flop: CLOCK signal = input_input_switch2_clock_2 (THIS IS CRITICAL!) (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting preset signal from input port 2 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: preset signal = 1'b1 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting clear signal from input port 3 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: clear signal = 1'b1 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Building sensitivity list with clock=input_input_switch2_clock_2 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Added 'posedge input_input_switch2_clock_2' to sensitivity list (Element: D-Flip-Flop)
+    // D FlipFlop: D-Flip-Flop
+    always @(posedge input_input_switch2_clock_2) begin
+        begin
+            d_flip_flop_23_0_0 <= ((input_input_switch1_load__shift_1 & input_input_switch4_d1_4) | (~input_input_switch1_load__shift_1 & d_flip_flop_15_0_0));
+            d_flip_flop_24_1_1 <= ~((input_input_switch1_load__shift_1 & input_input_switch4_d1_4) | (~input_input_switch1_load__shift_1 & d_flip_flop_15_0_0));
+        end
+    end
+
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+    assign node_22_0 = ~input_input_switch1_load__shift_1; // Node
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+    assign node_21_0 = input_input_switch1_load__shift_1; // Node
+// DEBUG: otherPortName: Processing port from element Or (type 6) (Element: Or)
+// DEBUG: otherPortName: Found connected port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: And)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch4_d1_4' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch4_d1_4 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element Or (type 6) (Element: Or)
+// DEBUG: otherPortName: Found connected port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: And)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Checking varMap for final result (Element: D-Flip-Flop)
+// DEBUG: otherPortName: varMap lookup result: 'd_flip_flop_15_0_0' (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Final result: d_flip_flop_15_0_0 (Element: D-Flip-Flop)
+    assign or_20_0 = ((input_input_switch1_load__shift_1 & input_input_switch4_d1_4) | (~input_input_switch1_load__shift_1 & d_flip_flop_15_0_0)); // Or
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch2_clock_2' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch2_clock_2 (Element: Input Switch)
+    assign node_19_0 = input_input_switch2_clock_2; // Node
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch4_d1_4' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch4_d1_4 (Element: Input Switch)
+    assign and_18_0 = (input_input_switch1_load__shift_1 & input_input_switch4_d1_4); // And
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Checking varMap for final result (Element: D-Flip-Flop)
+// DEBUG: otherPortName: varMap lookup result: 'd_flip_flop_15_0_0' (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Final result: d_flip_flop_15_0_0 (Element: D-Flip-Flop)
+    assign and_17_0 = (~input_input_switch1_load__shift_1 & d_flip_flop_15_0_0); // And
+// DEBUG: generateSequentialLogic: Processing DFlipFlop D-Flip-Flop (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: firstOut=d_flip_flop_15_0_0, secondOut=d_flip_flop_16_1_1 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting data signal from input port 0 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch3_d0_3' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch3_d0_3 (Element: Input Switch)
+// DEBUG: DFlipFlop D-Flip-Flop: data signal = input_input_switch3_d0_3 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting clock signal from input port 1 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch2_clock_2' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch2_clock_2 (Element: Input Switch)
+// DEBUG: DFlipFlop D-Flip-Flop: CLOCK signal = input_input_switch2_clock_2 (THIS IS CRITICAL!) (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting preset signal from input port 2 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: preset signal = 1'b1 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Getting clear signal from input port 3 (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Processing port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: port has no connections, returning default value (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: clear signal = 1'b1 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Building sensitivity list with clock=input_input_switch2_clock_2 (Element: D-Flip-Flop)
+// DEBUG: DFlipFlop D-Flip-Flop: Added 'posedge input_input_switch2_clock_2' to sensitivity list (Element: D-Flip-Flop)
+    // D FlipFlop: D-Flip-Flop
+    always @(posedge input_input_switch2_clock_2) begin
+        begin
+            d_flip_flop_15_0_0 <= input_input_switch3_d0_3;
+            d_flip_flop_16_1_1 <= ~input_input_switch3_d0_3;
+        end
+    end
+
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+    assign node_14_0 = ~input_input_switch1_load__shift_1; // Node
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+    assign node_13_0 = input_input_switch1_load__shift_1; // Node
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+    assign not_12_0 = ~input_input_switch1_load__shift_1; // Not
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+    assign node_11_0 = input_input_switch1_load__shift_1; // Node
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch2_clock_2' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch2_clock_2 (Element: Input Switch)
+    assign node_10_0 = input_input_switch2_clock_2; // Node
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+    assign node_9_0 = input_input_switch1_load__shift_1; // Node
 
     // ========= Output Assignments =========
+// DEBUG: otherPortName: Processing port from element LED (type 3) (Element: LED)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
     assign output_led1_0_7 = input_input_switch1_load__shift_1; // LED
-    assign output_led2_0_8 = (~input_input_switch1_load__shift_1 & d_flip_flop_11_0_0); // LED
+// DEBUG: otherPortName: Processing port from element LED (type 3) (Element: LED)
+// DEBUG: otherPortName: Found connected port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: And)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Not)
+// DEBUG: otherPortName: Processing port from element Not (type 4) (Element: Not)
+// DEBUG: otherPortName: Found connected port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Connected to logic gate, generating expression (Element: Node)
+// DEBUG: otherPortName: Processing port from element Node (type 23) (Element: Node)
+// DEBUG: otherPortName: Found connected port from element Input Switch (type 2) (Element: Input Switch)
+// DEBUG: otherPortName: Checking varMap for final result (Element: Input Switch)
+// DEBUG: otherPortName: varMap lookup result: 'input_input_switch1_load__shift_1' (Element: Input Switch)
+// DEBUG: otherPortName: Final result: input_input_switch1_load__shift_1 (Element: Input Switch)
+// DEBUG: otherPortName: Processing port from element And (type 5) (Element: And)
+// DEBUG: otherPortName: Found connected port from element D-Flip-Flop (type 17) (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Checking varMap for final result (Element: D-Flip-Flop)
+// DEBUG: otherPortName: varMap lookup result: 'd_flip_flop_39_0_0' (Element: D-Flip-Flop)
+// DEBUG: otherPortName: Final result: d_flip_flop_39_0_0 (Element: D-Flip-Flop)
+    assign output_led2_0_8 = (~input_input_switch1_load__shift_1 & d_flip_flop_39_0_0); // LED
 
 endmodule // serialize
 
