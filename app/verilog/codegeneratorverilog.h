@@ -426,6 +426,37 @@ private:
     void predictUsedSignals(const QVector<GraphicElement *> &elements, QSet<QNEPort*> &usedSignals);
 
     // ============================================================================
+    // IC BOUNDARY HANDLING (ARDUINO-STYLE ARCHITECTURE)
+    // ============================================================================
+
+    /**
+     * @brief Process IC with proper boundary crossing (Arduino-style)
+     * @param ic IC element to process
+     */
+    void processICWithBoundaries(IC *ic);
+
+    /**
+     * @brief Map IC inputs: external signals → internal IC input variables
+     * @param ic IC element
+     */
+    void mapICInputBoundaries(IC *ic);
+
+    /**
+     * @brief Map IC outputs: internal IC output variables → external signals
+     * @param ic IC element
+     */
+    void mapICOutputBoundaries(IC *ic);
+
+    /**
+     * @brief Get IC boundary variable name for internal port
+     * @param ic IC context
+     * @param port Internal IC port
+     * @param isInput True for input boundary, false for output boundary
+     * @return Variable name for boundary crossing
+     */
+    QString getICBoundaryVariable(IC *ic, QNEPort *port, bool isInput);
+
+    // ============================================================================
     // FPGA-SPECIFIC OPTIMIZATIONS
     // ============================================================================
 
