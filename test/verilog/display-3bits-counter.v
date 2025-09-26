@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: display_3bits_counter
-// Generated: Fri Sep 26 14:59:08 2025
+// Generated: Fri Sep 26 15:10:54 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 30/1000 LUTs, 38/1000 FFs, 11/50 IOs
 //
@@ -70,7 +70,6 @@ module display_3bits_counter (
     wire ic_display_3bits_ic_display_3bits_not_47;
     wire ic_display_3bits_ic_display_3bits_or_48;
     wire ic_display_3bits_ic_display_3bits_gnd_49;
-    assign ic_display_3bits_ic_display_3bits_node_11 = ic_display_3bits_ic_display_3bits_gnd_44; // Node
     assign ic_display_3bits_ic_display_3bits_or_12 = (ic_display_3bits_ic_display_3bits_gnd_49 | ic_display_3bits_ic_display_3bits_node_39); // Or
     assign ic_display_3bits_ic_display_3bits_or_13 = (ic_display_3bits_ic_display_3bits_gnd_49 | ic_display_3bits_ic_display_3bits_node_42); // Or
     assign ic_display_3bits_ic_display_3bits_and_14 = (ic_display_3bits_ic_display_3bits_or_13 & ic_display_3bits_ic_display_3bits_not_34); // And
@@ -85,14 +84,6 @@ module display_3bits_counter (
     assign ic_display_3bits_ic_display_3bits_nand_23 = ~(ic_display_3bits_ic_display_3bits_not_16 & ic_display_3bits_ic_display_3bits_or_13 & ic_display_3bits_ic_display_3bits_not_34); // Nand
     assign ic_display_3bits_ic_display_3bits_or_24 = (ic_display_3bits_ic_display_3bits_and_17 | ic_display_3bits_ic_display_3bits_and_46 | ic_display_3bits_ic_display_3bits_and_36); // Or
     assign ic_display_3bits_ic_display_3bits_or_25 = (ic_display_3bits_ic_display_3bits_not_16 | ic_display_3bits_ic_display_3bits_xnor_20); // Or
-    assign ic_display_3bits_ic_display_3bits_node_26 = ic_display_3bits_ic_display_3bits_or_24; // Node
-    assign ic_display_3bits_ic_display_3bits_node_27 = ic_display_3bits_ic_display_3bits_or_22; // Node
-    assign ic_display_3bits_ic_display_3bits_node_28 = ic_display_3bits_ic_display_3bits_or_15; // Node
-    assign ic_display_3bits_ic_display_3bits_node_29 = ic_display_3bits_ic_display_3bits_or_40; // Node
-    assign ic_display_3bits_ic_display_3bits_node_30 = ic_display_3bits_ic_display_3bits_or_45; // Node
-    assign ic_display_3bits_ic_display_3bits_node_31 = ic_display_3bits_ic_display_3bits_or_25; // Node
-    assign ic_display_3bits_ic_display_3bits_node_32 = ic_display_3bits_ic_display_3bits_node_11; // Node
-    assign ic_display_3bits_ic_display_3bits_node_33 = ic_display_3bits_ic_display_3bits_nand_23; // Node
     assign ic_display_3bits_ic_display_3bits_not_34 = ~ic_display_3bits_ic_display_3bits_or_12; // Not
     assign ic_display_3bits_ic_display_3bits_and_35 = (ic_display_3bits_ic_display_3bits_or_48 & ic_display_3bits_ic_display_3bits_not_47 & ic_display_3bits_ic_display_3bits_or_12); // And
     assign ic_display_3bits_ic_display_3bits_and_36 = (ic_display_3bits_ic_display_3bits_node_42 & ic_display_3bits_ic_display_3bits_not_34); // And
@@ -125,7 +116,6 @@ module display_3bits_counter (
     wire node_61;
 
     // ========= Logic Assignments =========
-    assign ic_display_3bits_ic_display_3bits_node_11 = ic_display_3bits_ic_display_3bits_gnd_44; // Node
     assign ic_display_3bits_ic_display_3bits_or_12 = (ic_display_3bits_ic_display_3bits_gnd_49 | ic_display_3bits_ic_display_3bits_node_39); // Or
     assign ic_display_3bits_ic_display_3bits_or_13 = (ic_display_3bits_ic_display_3bits_gnd_49 | ic_display_3bits_ic_display_3bits_node_42); // Or
     assign ic_display_3bits_ic_display_3bits_and_14 = (ic_display_3bits_ic_display_3bits_or_13 & ic_display_3bits_ic_display_3bits_not_34); // And
@@ -140,14 +130,6 @@ module display_3bits_counter (
     assign ic_display_3bits_ic_display_3bits_nand_23 = ~(ic_display_3bits_ic_display_3bits_not_16 & ic_display_3bits_ic_display_3bits_or_13 & ic_display_3bits_ic_display_3bits_not_34); // Nand
     assign ic_display_3bits_ic_display_3bits_or_24 = (ic_display_3bits_ic_display_3bits_and_17 | ic_display_3bits_ic_display_3bits_and_46 | ic_display_3bits_ic_display_3bits_and_36); // Or
     assign ic_display_3bits_ic_display_3bits_or_25 = (ic_display_3bits_ic_display_3bits_not_16 | ic_display_3bits_ic_display_3bits_xnor_20); // Or
-    assign ic_display_3bits_ic_display_3bits_node_26 = ic_display_3bits_ic_display_3bits_or_24; // Node
-    assign ic_display_3bits_ic_display_3bits_node_27 = ic_display_3bits_ic_display_3bits_or_22; // Node
-    assign ic_display_3bits_ic_display_3bits_node_28 = ic_display_3bits_ic_display_3bits_or_15; // Node
-    assign ic_display_3bits_ic_display_3bits_node_29 = ic_display_3bits_ic_display_3bits_or_40; // Node
-    assign ic_display_3bits_ic_display_3bits_node_30 = ic_display_3bits_ic_display_3bits_or_45; // Node
-    assign ic_display_3bits_ic_display_3bits_node_31 = ic_display_3bits_ic_display_3bits_or_25; // Node
-    assign ic_display_3bits_ic_display_3bits_node_32 = ic_display_3bits_ic_display_3bits_node_11; // Node
-    assign ic_display_3bits_ic_display_3bits_node_33 = ic_display_3bits_ic_display_3bits_nand_23; // Node
     assign ic_display_3bits_ic_display_3bits_not_34 = ~ic_display_3bits_ic_display_3bits_or_12; // Not
     assign ic_display_3bits_ic_display_3bits_and_35 = (ic_display_3bits_ic_display_3bits_or_48 & ic_display_3bits_ic_display_3bits_not_47 & ic_display_3bits_ic_display_3bits_or_12); // And
     assign ic_display_3bits_ic_display_3bits_and_36 = (ic_display_3bits_ic_display_3bits_node_42 & ic_display_3bits_ic_display_3bits_not_34); // And
@@ -165,9 +147,7 @@ module display_3bits_counter (
     assign node_61 = node_58; // Node
     assign node_60 = t_flip_flop_53_1_q; // Node
     assign node_59 = t_flip_flop_51_1_q; // Node
-    assign node_58 = input_clock1_1; // Node
     assign node_57 = node_56; // Node
-    assign node_56 = t_flip_flop_55_1_q; // Node
     // T FlipFlop: T-Flip-Flop
     always @(posedge t_flip_flop_53_1_q) begin
         begin

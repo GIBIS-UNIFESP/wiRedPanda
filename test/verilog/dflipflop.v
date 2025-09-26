@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: dflipflop
-// Generated: Fri Sep 26 14:59:06 2025
+// Generated: Fri Sep 26 15:10:53 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 30/1000 LUTs, 35/1000 FFs, 6/50 IOs
 //
@@ -60,7 +60,6 @@ module dflipflop (
     assign not_13 = ~input_push_button2_d_2; // Not
     assign nand_12 = ~(input_push_button2_d_2 & node_11); // Nand
     assign node_11 = node_9; // Node
-    assign node_10 = not_8; // Node
     assign node_9 = not_7; // Node
     assign not_8 = ~not_7; // Not
     assign not_7 = ~input_clock1_clk_1; // Not

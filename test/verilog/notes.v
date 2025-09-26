@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: notes
-// Generated: Fri Sep 26 14:59:14 2025
+// Generated: Fri Sep 26 15:11:01 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 16/1000 LUTs, 38/1000 FFs, 9/50 IOs
 //
@@ -51,19 +51,12 @@ module notes (
     assign ic_jkflipflop_ic_jkflipflop_node_11 = ic_jkflipflop_ic_jkflipflop_node_22; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_13 = ic_jkflipflop_ic_jkflipflop_node_16; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_14 = ic_jkflipflop_ic_jkflipflop_node_15; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_15 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_16 = 1'b0; // Node
     assign ic_jkflipflop_ic_jkflipflop_not_18 = ~ic_jkflipflop_ic_jkflipflop_node_23; // Not
     assign ic_jkflipflop_ic_jkflipflop_and_19 = (ic_jkflipflop_ic_jkflipflop_node_25 & ic_jkflipflop_ic_jkflipflop_node_14); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_20 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_or_21 = (ic_jkflipflop_ic_jkflipflop_and_26 | ic_jkflipflop_ic_jkflipflop_and_19); // Or
-    assign ic_jkflipflop_ic_jkflipflop_node_22 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_23 = 1'b1; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_24 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_25 = ic_jkflipflop_ic_jkflipflop_node_24; // Node
     assign ic_jkflipflop_ic_jkflipflop_and_26 = (ic_jkflipflop_ic_jkflipflop_node_13 & ic_jkflipflop_ic_jkflipflop_not_18); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_27 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_28 = 1'b0; // Node
 // ============== END IC: JKFLIPFLOP ==============
 // ============== BEGIN IC: DECODER ==============
 // IC inputs: 3, IC outputs: 8
@@ -123,26 +116,12 @@ module notes (
     wire ic_decoder_ic_decoder_node_81;
     wire ic_decoder_ic_decoder_node_82;
     wire ic_decoder_ic_decoder_node_83;
-    assign ic_decoder_ic_decoder_node_29 = ic_decoder_ic_decoder_and_59; // Node
-    assign ic_decoder_ic_decoder_node_30 = ic_decoder_ic_decoder_and_58; // Node
-    assign ic_decoder_ic_decoder_node_31 = ic_decoder_ic_decoder_and_57; // Node
-    assign ic_decoder_ic_decoder_node_32 = ic_decoder_ic_decoder_and_56; // Node
-    assign ic_decoder_ic_decoder_node_33 = ic_decoder_ic_decoder_and_55; // Node
-    assign ic_decoder_ic_decoder_node_34 = ic_decoder_ic_decoder_and_54; // Node
-    assign ic_decoder_ic_decoder_node_35 = ic_decoder_ic_decoder_and_53; // Node
-    assign ic_decoder_ic_decoder_node_36 = ic_decoder_ic_decoder_and_52; // Node
     assign ic_decoder_ic_decoder_not_37 = ~ic_decoder_ic_decoder_node_40; // Not
     assign ic_decoder_ic_decoder_not_38 = ~ic_decoder_ic_decoder_node_41; // Not
     assign ic_decoder_ic_decoder_not_39 = ~ic_decoder_ic_decoder_node_42; // Not
     assign ic_decoder_ic_decoder_node_40 = ic_decoder_ic_decoder_node_65; // Node
     assign ic_decoder_ic_decoder_node_41 = ic_decoder_ic_decoder_node_63; // Node
     assign ic_decoder_ic_decoder_node_42 = ic_decoder_ic_decoder_node_64; // Node
-    assign ic_decoder_ic_decoder_node_43 = ic_decoder_ic_decoder_node_83; // Node
-    assign ic_decoder_ic_decoder_node_44 = ic_decoder_ic_decoder_node_71; // Node
-    assign ic_decoder_ic_decoder_node_45 = ic_decoder_ic_decoder_node_82; // Node
-    assign ic_decoder_ic_decoder_node_46 = ic_decoder_ic_decoder_node_76; // Node
-    assign ic_decoder_ic_decoder_node_47 = ic_decoder_ic_decoder_node_81; // Node
-    assign ic_decoder_ic_decoder_node_48 = ic_decoder_ic_decoder_node_78; // Node
     assign ic_decoder_ic_decoder_node_49 = ic_decoder_ic_decoder_not_37; // Node
     assign ic_decoder_ic_decoder_node_50 = ic_decoder_ic_decoder_not_38; // Node
     assign ic_decoder_ic_decoder_node_51 = ic_decoder_ic_decoder_not_39; // Node
@@ -157,9 +136,6 @@ module notes (
     assign ic_decoder_ic_decoder_node_60 = ic_decoder_ic_decoder_node_42; // Node
     assign ic_decoder_ic_decoder_node_61 = ic_decoder_ic_decoder_node_50; // Node
     assign ic_decoder_ic_decoder_node_62 = ic_decoder_ic_decoder_node_49; // Node
-    assign ic_decoder_ic_decoder_node_63 = 1'b0; // Node
-    assign ic_decoder_ic_decoder_node_64 = 1'b0; // Node
-    assign ic_decoder_ic_decoder_node_65 = 1'b0; // Node
     assign ic_decoder_ic_decoder_node_66 = ic_decoder_ic_decoder_node_51; // Node
     assign ic_decoder_ic_decoder_node_67 = ic_decoder_ic_decoder_node_41; // Node
     assign ic_decoder_ic_decoder_node_68 = ic_decoder_ic_decoder_node_62; // Node
@@ -187,26 +163,12 @@ module notes (
     reg jk_flip_flop_86_1_q = 1'b0;
 
     // ========= Logic Assignments =========
-    assign ic_decoder_ic_decoder_node_29 = ic_decoder_ic_decoder_and_59; // Node
-    assign ic_decoder_ic_decoder_node_30 = ic_decoder_ic_decoder_and_58; // Node
-    assign ic_decoder_ic_decoder_node_31 = ic_decoder_ic_decoder_and_57; // Node
-    assign ic_decoder_ic_decoder_node_32 = ic_decoder_ic_decoder_and_56; // Node
-    assign ic_decoder_ic_decoder_node_33 = ic_decoder_ic_decoder_and_55; // Node
-    assign ic_decoder_ic_decoder_node_34 = ic_decoder_ic_decoder_and_54; // Node
-    assign ic_decoder_ic_decoder_node_35 = ic_decoder_ic_decoder_and_53; // Node
-    assign ic_decoder_ic_decoder_node_36 = ic_decoder_ic_decoder_and_52; // Node
     assign ic_decoder_ic_decoder_not_37 = ~ic_decoder_ic_decoder_node_40; // Not
     assign ic_decoder_ic_decoder_not_38 = ~ic_decoder_ic_decoder_node_41; // Not
     assign ic_decoder_ic_decoder_not_39 = ~ic_decoder_ic_decoder_node_42; // Not
     assign ic_decoder_ic_decoder_node_40 = ic_decoder_ic_decoder_node_65; // Node
     assign ic_decoder_ic_decoder_node_41 = ic_decoder_ic_decoder_node_63; // Node
     assign ic_decoder_ic_decoder_node_42 = ic_decoder_ic_decoder_node_64; // Node
-    assign ic_decoder_ic_decoder_node_43 = ic_decoder_ic_decoder_node_83; // Node
-    assign ic_decoder_ic_decoder_node_44 = ic_decoder_ic_decoder_node_71; // Node
-    assign ic_decoder_ic_decoder_node_45 = ic_decoder_ic_decoder_node_82; // Node
-    assign ic_decoder_ic_decoder_node_46 = ic_decoder_ic_decoder_node_76; // Node
-    assign ic_decoder_ic_decoder_node_47 = ic_decoder_ic_decoder_node_81; // Node
-    assign ic_decoder_ic_decoder_node_48 = ic_decoder_ic_decoder_node_78; // Node
     assign ic_decoder_ic_decoder_node_49 = ic_decoder_ic_decoder_not_37; // Node
     assign ic_decoder_ic_decoder_node_50 = ic_decoder_ic_decoder_not_38; // Node
     assign ic_decoder_ic_decoder_node_51 = ic_decoder_ic_decoder_not_39; // Node
@@ -221,9 +183,6 @@ module notes (
     assign ic_decoder_ic_decoder_node_60 = ic_decoder_ic_decoder_node_42; // Node
     assign ic_decoder_ic_decoder_node_61 = ic_decoder_ic_decoder_node_50; // Node
     assign ic_decoder_ic_decoder_node_62 = ic_decoder_ic_decoder_node_49; // Node
-    assign ic_decoder_ic_decoder_node_63 = 1'b0; // Node
-    assign ic_decoder_ic_decoder_node_64 = 1'b0; // Node
-    assign ic_decoder_ic_decoder_node_65 = 1'b0; // Node
     assign ic_decoder_ic_decoder_node_66 = ic_decoder_ic_decoder_node_51; // Node
     assign ic_decoder_ic_decoder_node_67 = ic_decoder_ic_decoder_node_41; // Node
     assign ic_decoder_ic_decoder_node_68 = ic_decoder_ic_decoder_node_62; // Node
@@ -277,19 +236,12 @@ module notes (
     assign ic_jkflipflop_ic_jkflipflop_node_11 = ic_jkflipflop_ic_jkflipflop_node_22; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_13 = ic_jkflipflop_ic_jkflipflop_node_16; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_14 = ic_jkflipflop_ic_jkflipflop_node_15; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_15 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_16 = 1'b0; // Node
     assign ic_jkflipflop_ic_jkflipflop_not_18 = ~ic_jkflipflop_ic_jkflipflop_node_23; // Not
     assign ic_jkflipflop_ic_jkflipflop_and_19 = (ic_jkflipflop_ic_jkflipflop_node_25 & ic_jkflipflop_ic_jkflipflop_node_14); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_20 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_or_21 = (ic_jkflipflop_ic_jkflipflop_and_26 | ic_jkflipflop_ic_jkflipflop_and_19); // Or
-    assign ic_jkflipflop_ic_jkflipflop_node_22 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_23 = 1'b1; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_24 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_25 = ic_jkflipflop_ic_jkflipflop_node_24; // Node
     assign ic_jkflipflop_ic_jkflipflop_and_26 = (ic_jkflipflop_ic_jkflipflop_node_13 & ic_jkflipflop_ic_jkflipflop_not_18); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_27 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_28 = 1'b0; // Node
 
     // ========= Output Assignments =========
     assign output_buzzer1_g6_2 = 1'b0; // Buzzer

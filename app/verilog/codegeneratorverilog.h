@@ -410,6 +410,14 @@ private:
      */
     QString generateAudioLogic(GraphicElement *elm);
 
+    /**
+     * @brief Check if Node assignment is redundant (no fan-out)
+     * @param port Output port of the Node element
+     * @param expr Expression that would be assigned
+     * @return True if assignment is redundant and should be skipped
+     */
+    bool isRedundantNodeAssignment(QNEPort *port, const QString &expr);
+
     // ============================================================================
     // FPGA-SPECIFIC OPTIMIZATIONS
     // ============================================================================

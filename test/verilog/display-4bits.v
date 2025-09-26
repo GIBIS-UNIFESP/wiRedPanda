@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: display_4bits
-// Generated: Fri Sep 26 14:59:10 2025
+// Generated: Fri Sep 26 15:10:57 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 94/1000 LUTs, 0/1000 FFs, 13/50 IOs
 //
@@ -97,14 +97,6 @@ module display_4bits (
     wire node_77;
 
     // ========= Logic Assignments =========
-    assign node_77 = node_45; // Node
-    assign node_76 = node_53; // Node
-    assign node_75 = not_69; // Node
-    assign node_74 = node_49; // Node
-    assign node_73 = node_44; // Node
-    assign node_72 = node_35; // Node
-    assign node_71 = node_50; // Node
-    assign node_70 = node_48; // Node
     assign not_69 = ~node_27; // Not
     assign or_68 = (and_61 | node_33 | node_17 | node_38); // Or
     assign or_67 = (and_60 | node_40 | node_46); // Or

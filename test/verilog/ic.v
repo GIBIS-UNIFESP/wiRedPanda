@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: ic
-// Generated: Fri Sep 26 14:59:12 2025
+// Generated: Fri Sep 26 15:10:58 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 58/1000 LUTs, 215/1000 FFs, 37/50 IOs
 //
@@ -76,19 +76,12 @@ module ic (
     assign ic_jkflipflop_ic_jkflipflop_node_36 = ic_jkflipflop_ic_jkflipflop_node_47; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_38 = ic_jkflipflop_ic_jkflipflop_node_41; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_39 = ic_jkflipflop_ic_jkflipflop_node_40; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_40 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_41 = 1'b0; // Node
     assign ic_jkflipflop_ic_jkflipflop_not_43 = ~ic_jkflipflop_ic_jkflipflop_node_48; // Not
     assign ic_jkflipflop_ic_jkflipflop_and_44 = (ic_jkflipflop_ic_jkflipflop_node_50 & ic_jkflipflop_ic_jkflipflop_node_39); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_45 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_or_46 = (ic_jkflipflop_ic_jkflipflop_and_51 | ic_jkflipflop_ic_jkflipflop_and_44); // Or
-    assign ic_jkflipflop_ic_jkflipflop_node_47 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_48 = 1'b1; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_49 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_50 = ic_jkflipflop_ic_jkflipflop_node_49; // Node
     assign ic_jkflipflop_ic_jkflipflop_and_51 = (ic_jkflipflop_ic_jkflipflop_node_38 & ic_jkflipflop_ic_jkflipflop_not_43); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_52 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_53 = 1'b0; // Node
 // ============== END IC: JKFLIPFLOP ==============
 // ============== BEGIN IC: INPUT ==============
 // IC inputs: 2, IC outputs: 4
@@ -105,10 +98,6 @@ module ic (
     assign ic_input_ic_input_xor_55 = (input_clock3_3 ^ input_clock2_2); // Xor
     assign ic_input_ic_input_or_56 = (input_clock3_3 | input_clock2_2); // Or
     assign ic_input_ic_input_and_57 = (input_clock3_3 & input_clock2_2); // And
-    assign ic_input_ic_input_node_60 = ic_input_ic_input_xor_55; // Node
-    assign ic_input_ic_input_node_61 = ic_input_ic_input_not_54; // Node
-    assign ic_input_ic_input_node_62 = ic_input_ic_input_and_57; // Node
-    assign ic_input_ic_input_node_63 = ic_input_ic_input_or_56; // Node
 // ============== END IC: INPUT ==============
 // ============== BEGIN IC: DISPLAY-4BITS ==============
 // IC inputs: 4, IC outputs: 8
@@ -218,14 +207,6 @@ module ic (
     assign ic_display_4bits_ic_display_4bits_or_89 = (ic_display_4bits_ic_display_4bits_node_86 | ic_display_4bits_ic_display_4bits_node_87 | ic_display_4bits_ic_display_4bits_node_88); // Or
     assign ic_display_4bits_ic_display_4bits_or_90 = (ic_display_4bits_ic_display_4bits_node_83 | ic_display_4bits_ic_display_4bits_node_71); // Or
     assign ic_display_4bits_ic_display_4bits_or_91 = (ic_display_4bits_ic_display_4bits_node_82 | ic_display_4bits_ic_display_4bits_node_84 | ic_display_4bits_ic_display_4bits_node_72 | ic_display_4bits_ic_display_4bits_and_112 | ic_display_4bits_ic_display_4bits_and_109); // Or
-    assign ic_display_4bits_ic_display_4bits_node_92 = ic_display_4bits_ic_display_4bits_or_80; // Node
-    assign ic_display_4bits_ic_display_4bits_node_93 = ic_display_4bits_ic_display_4bits_or_81; // Node
-    assign ic_display_4bits_ic_display_4bits_node_94 = ic_display_4bits_ic_display_4bits_or_90; // Node
-    assign ic_display_4bits_ic_display_4bits_node_95 = ic_display_4bits_ic_display_4bits_or_91; // Node
-    assign ic_display_4bits_ic_display_4bits_node_96 = ic_display_4bits_ic_display_4bits_or_108; // Node
-    assign ic_display_4bits_ic_display_4bits_node_97 = ic_display_4bits_ic_display_4bits_or_103; // Node
-    assign ic_display_4bits_ic_display_4bits_node_98 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_99 = ic_display_4bits_ic_display_4bits_or_89; // Node
     assign ic_display_4bits_ic_display_4bits_node_100 = ic_display_4bits_ic_display_4bits_not_139; // Node
     assign ic_display_4bits_ic_display_4bits_node_101 = ic_display_4bits_ic_display_4bits_node_115; // Node
     assign ic_display_4bits_ic_display_4bits_node_102 = ic_display_4bits_ic_display_4bits_node_116; // Node
@@ -247,18 +228,6 @@ module ic (
     assign ic_display_4bits_ic_display_4bits_node_118 = ic_display_4bits_ic_display_4bits_node_136; // Node
     assign ic_display_4bits_ic_display_4bits_node_119 = ic_display_4bits_ic_display_4bits_node_134; // Node
     assign ic_display_4bits_ic_display_4bits_and_120 = (ic_display_4bits_ic_display_4bits_node_119 & ic_display_4bits_ic_display_4bits_node_118); // And
-    assign ic_display_4bits_ic_display_4bits_node_121 = ic_display_4bits_ic_display_4bits_node_75; // Node
-    assign ic_display_4bits_ic_display_4bits_node_122 = ic_display_4bits_ic_display_4bits_node_77; // Node
-    assign ic_display_4bits_ic_display_4bits_node_123 = ic_display_4bits_ic_display_4bits_node_73; // Node
-    assign ic_display_4bits_ic_display_4bits_node_124 = ic_display_4bits_ic_display_4bits_node_66; // Node
-    assign ic_display_4bits_ic_display_4bits_node_125 = ic_display_4bits_ic_display_4bits_node_76; // Node
-    assign ic_display_4bits_ic_display_4bits_node_126 = ic_display_4bits_ic_display_4bits_not_138; // Node
-    assign ic_display_4bits_ic_display_4bits_node_127 = ic_display_4bits_ic_display_4bits_node_65; // Node
-    assign ic_display_4bits_ic_display_4bits_node_128 = ic_display_4bits_ic_display_4bits_node_67; // Node
-    assign ic_display_4bits_ic_display_4bits_node_129 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_130 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_131 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_132 = 1'b1; // Node
     assign ic_display_4bits_ic_display_4bits_node_133 = ic_display_4bits_ic_display_4bits_node_130; // Node
     assign ic_display_4bits_ic_display_4bits_node_134 = ic_display_4bits_ic_display_4bits_node_129; // Node
     assign ic_display_4bits_ic_display_4bits_node_135 = ic_display_4bits_ic_display_4bits_node_131; // Node
@@ -338,14 +307,6 @@ module ic (
     assign ic_display_4bits_ic_display_4bits_or_166 = (input_clock2_2 | ic_display_4bits_ic_display_4bits_node_164 | input_clock4_4); // Or
     assign ic_display_4bits_ic_display_4bits_or_167 = (ic_display_4bits_ic_display_4bits_node_160 | ic_display_4bits_ic_display_4bits_node_148); // Or
     assign ic_display_4bits_ic_display_4bits_or_168 = (input_clock3_3 | ic_display_4bits_ic_display_4bits_node_161 | ic_display_4bits_ic_display_4bits_node_149 | ic_display_4bits_ic_display_4bits_and_189 | ic_display_4bits_ic_display_4bits_and_186); // Or
-    assign ic_display_4bits_ic_display_4bits_node_169 = ic_display_4bits_ic_display_4bits_or_157; // Node
-    assign ic_display_4bits_ic_display_4bits_node_170 = ic_display_4bits_ic_display_4bits_or_158; // Node
-    assign ic_display_4bits_ic_display_4bits_node_171 = ic_display_4bits_ic_display_4bits_or_167; // Node
-    assign ic_display_4bits_ic_display_4bits_node_172 = ic_display_4bits_ic_display_4bits_or_168; // Node
-    assign ic_display_4bits_ic_display_4bits_node_173 = ic_display_4bits_ic_display_4bits_or_185; // Node
-    assign ic_display_4bits_ic_display_4bits_node_174 = ic_display_4bits_ic_display_4bits_or_180; // Node
-    assign ic_display_4bits_ic_display_4bits_node_175 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_176 = ic_display_4bits_ic_display_4bits_or_166; // Node
     assign ic_display_4bits_ic_display_4bits_node_177 = ic_display_4bits_ic_display_4bits_not_216; // Node
     assign ic_display_4bits_ic_display_4bits_node_178 = ic_display_4bits_ic_display_4bits_node_192; // Node
     assign ic_display_4bits_ic_display_4bits_node_179 = ic_display_4bits_ic_display_4bits_node_193; // Node
@@ -361,10 +322,6 @@ module ic (
     assign ic_display_4bits_ic_display_4bits_node_193 = ic_display_4bits_ic_display_4bits_not_214; // Node
     assign ic_display_4bits_ic_display_4bits_and_194 = (ic_display_4bits_ic_display_4bits_node_193 & ic_display_4bits_ic_display_4bits_node_192); // And
     assign ic_display_4bits_ic_display_4bits_and_197 = (input_clock2_2 & input_clock4_4); // And
-    assign ic_display_4bits_ic_display_4bits_node_200 = ic_display_4bits_ic_display_4bits_node_150; // Node
-    assign ic_display_4bits_ic_display_4bits_node_202 = ic_display_4bits_ic_display_4bits_node_153; // Node
-    assign ic_display_4bits_ic_display_4bits_node_203 = ic_display_4bits_ic_display_4bits_not_215; // Node
-    assign ic_display_4bits_ic_display_4bits_node_205 = ic_display_4bits_ic_display_4bits_node_144; // Node
     assign ic_display_4bits_ic_display_4bits_not_214 = ~input_clock2_2; // Not
     assign ic_display_4bits_ic_display_4bits_not_215 = ~input_clock3_3; // Not
     assign ic_display_4bits_ic_display_4bits_not_216 = ~input_clock5_5; // Not
@@ -412,7 +369,6 @@ module ic (
     wire ic_display_3bits_ic_display_3bits_not_254;
     wire ic_display_3bits_ic_display_3bits_or_255;
     wire ic_display_3bits_ic_display_3bits_gnd_256;
-    assign ic_display_3bits_ic_display_3bits_node_218 = ic_display_3bits_ic_display_3bits_gnd_251; // Node
     assign ic_display_3bits_ic_display_3bits_or_219 = (ic_display_3bits_ic_display_3bits_gnd_256 | ic_display_3bits_ic_display_3bits_node_246); // Or
     assign ic_display_3bits_ic_display_3bits_or_220 = (ic_display_3bits_ic_display_3bits_gnd_256 | ic_display_3bits_ic_display_3bits_node_249); // Or
     assign ic_display_3bits_ic_display_3bits_and_221 = (ic_display_3bits_ic_display_3bits_or_220 & ic_display_3bits_ic_display_3bits_not_241); // And
@@ -427,14 +383,6 @@ module ic (
     assign ic_display_3bits_ic_display_3bits_nand_230 = ~(ic_display_3bits_ic_display_3bits_not_223 & ic_display_3bits_ic_display_3bits_or_220 & ic_display_3bits_ic_display_3bits_not_241); // Nand
     assign ic_display_3bits_ic_display_3bits_or_231 = (ic_display_3bits_ic_display_3bits_and_224 | ic_display_3bits_ic_display_3bits_and_253 | ic_display_3bits_ic_display_3bits_and_243); // Or
     assign ic_display_3bits_ic_display_3bits_or_232 = (ic_display_3bits_ic_display_3bits_not_223 | ic_display_3bits_ic_display_3bits_xnor_227); // Or
-    assign ic_display_3bits_ic_display_3bits_node_233 = ic_display_3bits_ic_display_3bits_or_231; // Node
-    assign ic_display_3bits_ic_display_3bits_node_234 = ic_display_3bits_ic_display_3bits_or_229; // Node
-    assign ic_display_3bits_ic_display_3bits_node_235 = ic_display_3bits_ic_display_3bits_or_222; // Node
-    assign ic_display_3bits_ic_display_3bits_node_236 = ic_display_3bits_ic_display_3bits_or_247; // Node
-    assign ic_display_3bits_ic_display_3bits_node_237 = ic_display_3bits_ic_display_3bits_or_252; // Node
-    assign ic_display_3bits_ic_display_3bits_node_238 = ic_display_3bits_ic_display_3bits_or_232; // Node
-    assign ic_display_3bits_ic_display_3bits_node_239 = ic_display_3bits_ic_display_3bits_node_218; // Node
-    assign ic_display_3bits_ic_display_3bits_node_240 = ic_display_3bits_ic_display_3bits_nand_230; // Node
     assign ic_display_3bits_ic_display_3bits_not_241 = ~ic_display_3bits_ic_display_3bits_or_219; // Not
     assign ic_display_3bits_ic_display_3bits_and_242 = (ic_display_3bits_ic_display_3bits_or_255 & ic_display_3bits_ic_display_3bits_not_254 & ic_display_3bits_ic_display_3bits_or_219); // And
     assign ic_display_3bits_ic_display_3bits_and_243 = (ic_display_3bits_ic_display_3bits_node_249 & ic_display_3bits_ic_display_3bits_not_241); // And
@@ -472,7 +420,6 @@ module ic (
         end
     end
 
-    assign ic_display_3bits_ic_display_3bits_node_218 = ic_display_3bits_ic_display_3bits_gnd_251; // Node
     assign ic_display_3bits_ic_display_3bits_or_219 = (ic_display_3bits_ic_display_3bits_gnd_256 | ic_display_3bits_ic_display_3bits_node_246); // Or
     assign ic_display_3bits_ic_display_3bits_or_220 = (ic_display_3bits_ic_display_3bits_gnd_256 | ic_display_3bits_ic_display_3bits_node_249); // Or
     assign ic_display_3bits_ic_display_3bits_and_221 = (ic_display_3bits_ic_display_3bits_or_220 & ic_display_3bits_ic_display_3bits_not_241); // And
@@ -487,14 +434,6 @@ module ic (
     assign ic_display_3bits_ic_display_3bits_nand_230 = ~(ic_display_3bits_ic_display_3bits_not_223 & ic_display_3bits_ic_display_3bits_or_220 & ic_display_3bits_ic_display_3bits_not_241); // Nand
     assign ic_display_3bits_ic_display_3bits_or_231 = (ic_display_3bits_ic_display_3bits_and_224 | ic_display_3bits_ic_display_3bits_and_253 | ic_display_3bits_ic_display_3bits_and_243); // Or
     assign ic_display_3bits_ic_display_3bits_or_232 = (ic_display_3bits_ic_display_3bits_not_223 | ic_display_3bits_ic_display_3bits_xnor_227); // Or
-    assign ic_display_3bits_ic_display_3bits_node_233 = ic_display_3bits_ic_display_3bits_or_231; // Node
-    assign ic_display_3bits_ic_display_3bits_node_234 = ic_display_3bits_ic_display_3bits_or_229; // Node
-    assign ic_display_3bits_ic_display_3bits_node_235 = ic_display_3bits_ic_display_3bits_or_222; // Node
-    assign ic_display_3bits_ic_display_3bits_node_236 = ic_display_3bits_ic_display_3bits_or_247; // Node
-    assign ic_display_3bits_ic_display_3bits_node_237 = ic_display_3bits_ic_display_3bits_or_252; // Node
-    assign ic_display_3bits_ic_display_3bits_node_238 = ic_display_3bits_ic_display_3bits_or_232; // Node
-    assign ic_display_3bits_ic_display_3bits_node_239 = ic_display_3bits_ic_display_3bits_node_218; // Node
-    assign ic_display_3bits_ic_display_3bits_node_240 = ic_display_3bits_ic_display_3bits_nand_230; // Node
     assign ic_display_3bits_ic_display_3bits_not_241 = ~ic_display_3bits_ic_display_3bits_or_219; // Not
     assign ic_display_3bits_ic_display_3bits_and_242 = (ic_display_3bits_ic_display_3bits_or_255 & ic_display_3bits_ic_display_3bits_not_254 & ic_display_3bits_ic_display_3bits_or_219); // And
     assign ic_display_3bits_ic_display_3bits_and_243 = (ic_display_3bits_ic_display_3bits_node_249 & ic_display_3bits_ic_display_3bits_not_241); // And
@@ -527,14 +466,6 @@ module ic (
     assign ic_display_4bits_ic_display_4bits_or_166 = (input_clock2_2 | ic_display_4bits_ic_display_4bits_node_164 | input_clock4_4); // Or
     assign ic_display_4bits_ic_display_4bits_or_167 = (ic_display_4bits_ic_display_4bits_node_160 | ic_display_4bits_ic_display_4bits_node_148); // Or
     assign ic_display_4bits_ic_display_4bits_or_168 = (input_clock3_3 | ic_display_4bits_ic_display_4bits_node_161 | ic_display_4bits_ic_display_4bits_node_149 | ic_display_4bits_ic_display_4bits_and_189 | ic_display_4bits_ic_display_4bits_and_186); // Or
-    assign ic_display_4bits_ic_display_4bits_node_169 = ic_display_4bits_ic_display_4bits_or_157; // Node
-    assign ic_display_4bits_ic_display_4bits_node_170 = ic_display_4bits_ic_display_4bits_or_158; // Node
-    assign ic_display_4bits_ic_display_4bits_node_171 = ic_display_4bits_ic_display_4bits_or_167; // Node
-    assign ic_display_4bits_ic_display_4bits_node_172 = ic_display_4bits_ic_display_4bits_or_168; // Node
-    assign ic_display_4bits_ic_display_4bits_node_173 = ic_display_4bits_ic_display_4bits_or_185; // Node
-    assign ic_display_4bits_ic_display_4bits_node_174 = ic_display_4bits_ic_display_4bits_or_180; // Node
-    assign ic_display_4bits_ic_display_4bits_node_175 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_176 = ic_display_4bits_ic_display_4bits_or_166; // Node
     assign ic_display_4bits_ic_display_4bits_node_177 = ic_display_4bits_ic_display_4bits_not_216; // Node
     assign ic_display_4bits_ic_display_4bits_node_178 = ic_display_4bits_ic_display_4bits_node_192; // Node
     assign ic_display_4bits_ic_display_4bits_node_179 = ic_display_4bits_ic_display_4bits_node_193; // Node
@@ -550,10 +481,6 @@ module ic (
     assign ic_display_4bits_ic_display_4bits_node_193 = ic_display_4bits_ic_display_4bits_not_214; // Node
     assign ic_display_4bits_ic_display_4bits_and_194 = (ic_display_4bits_ic_display_4bits_node_193 & ic_display_4bits_ic_display_4bits_node_192); // And
     assign ic_display_4bits_ic_display_4bits_and_197 = (input_clock2_2 & input_clock4_4); // And
-    assign ic_display_4bits_ic_display_4bits_node_200 = ic_display_4bits_ic_display_4bits_node_150; // Node
-    assign ic_display_4bits_ic_display_4bits_node_202 = ic_display_4bits_ic_display_4bits_node_153; // Node
-    assign ic_display_4bits_ic_display_4bits_node_203 = ic_display_4bits_ic_display_4bits_not_215; // Node
-    assign ic_display_4bits_ic_display_4bits_node_205 = ic_display_4bits_ic_display_4bits_node_144; // Node
     assign ic_display_4bits_ic_display_4bits_not_214 = ~input_clock2_2; // Not
     assign ic_display_4bits_ic_display_4bits_not_215 = ~input_clock3_3; // Not
     assign ic_display_4bits_ic_display_4bits_not_216 = ~input_clock5_5; // Not
@@ -586,14 +513,6 @@ module ic (
     assign ic_display_4bits_ic_display_4bits_or_89 = (ic_display_4bits_ic_display_4bits_node_86 | ic_display_4bits_ic_display_4bits_node_87 | ic_display_4bits_ic_display_4bits_node_88); // Or
     assign ic_display_4bits_ic_display_4bits_or_90 = (ic_display_4bits_ic_display_4bits_node_83 | ic_display_4bits_ic_display_4bits_node_71); // Or
     assign ic_display_4bits_ic_display_4bits_or_91 = (ic_display_4bits_ic_display_4bits_node_82 | ic_display_4bits_ic_display_4bits_node_84 | ic_display_4bits_ic_display_4bits_node_72 | ic_display_4bits_ic_display_4bits_and_112 | ic_display_4bits_ic_display_4bits_and_109); // Or
-    assign ic_display_4bits_ic_display_4bits_node_92 = ic_display_4bits_ic_display_4bits_or_80; // Node
-    assign ic_display_4bits_ic_display_4bits_node_93 = ic_display_4bits_ic_display_4bits_or_81; // Node
-    assign ic_display_4bits_ic_display_4bits_node_94 = ic_display_4bits_ic_display_4bits_or_90; // Node
-    assign ic_display_4bits_ic_display_4bits_node_95 = ic_display_4bits_ic_display_4bits_or_91; // Node
-    assign ic_display_4bits_ic_display_4bits_node_96 = ic_display_4bits_ic_display_4bits_or_108; // Node
-    assign ic_display_4bits_ic_display_4bits_node_97 = ic_display_4bits_ic_display_4bits_or_103; // Node
-    assign ic_display_4bits_ic_display_4bits_node_98 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_99 = ic_display_4bits_ic_display_4bits_or_89; // Node
     assign ic_display_4bits_ic_display_4bits_node_100 = ic_display_4bits_ic_display_4bits_not_139; // Node
     assign ic_display_4bits_ic_display_4bits_node_101 = ic_display_4bits_ic_display_4bits_node_115; // Node
     assign ic_display_4bits_ic_display_4bits_node_102 = ic_display_4bits_ic_display_4bits_node_116; // Node
@@ -615,18 +534,6 @@ module ic (
     assign ic_display_4bits_ic_display_4bits_node_118 = ic_display_4bits_ic_display_4bits_node_136; // Node
     assign ic_display_4bits_ic_display_4bits_node_119 = ic_display_4bits_ic_display_4bits_node_134; // Node
     assign ic_display_4bits_ic_display_4bits_and_120 = (ic_display_4bits_ic_display_4bits_node_119 & ic_display_4bits_ic_display_4bits_node_118); // And
-    assign ic_display_4bits_ic_display_4bits_node_121 = ic_display_4bits_ic_display_4bits_node_75; // Node
-    assign ic_display_4bits_ic_display_4bits_node_122 = ic_display_4bits_ic_display_4bits_node_77; // Node
-    assign ic_display_4bits_ic_display_4bits_node_123 = ic_display_4bits_ic_display_4bits_node_73; // Node
-    assign ic_display_4bits_ic_display_4bits_node_124 = ic_display_4bits_ic_display_4bits_node_66; // Node
-    assign ic_display_4bits_ic_display_4bits_node_125 = ic_display_4bits_ic_display_4bits_node_76; // Node
-    assign ic_display_4bits_ic_display_4bits_node_126 = ic_display_4bits_ic_display_4bits_not_138; // Node
-    assign ic_display_4bits_ic_display_4bits_node_127 = ic_display_4bits_ic_display_4bits_node_65; // Node
-    assign ic_display_4bits_ic_display_4bits_node_128 = ic_display_4bits_ic_display_4bits_node_67; // Node
-    assign ic_display_4bits_ic_display_4bits_node_129 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_130 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_131 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_132 = 1'b1; // Node
     assign ic_display_4bits_ic_display_4bits_node_133 = ic_display_4bits_ic_display_4bits_node_130; // Node
     assign ic_display_4bits_ic_display_4bits_node_134 = ic_display_4bits_ic_display_4bits_node_129; // Node
     assign ic_display_4bits_ic_display_4bits_node_135 = ic_display_4bits_ic_display_4bits_node_131; // Node
@@ -639,10 +546,6 @@ module ic (
     assign ic_input_ic_input_xor_55 = (input_clock3_3 ^ input_clock2_2); // Xor
     assign ic_input_ic_input_or_56 = (input_clock3_3 | input_clock2_2); // Or
     assign ic_input_ic_input_and_57 = (input_clock3_3 & input_clock2_2); // And
-    assign ic_input_ic_input_node_60 = ic_input_ic_input_xor_55; // Node
-    assign ic_input_ic_input_node_61 = ic_input_ic_input_not_54; // Node
-    assign ic_input_ic_input_node_62 = ic_input_ic_input_and_57; // Node
-    assign ic_input_ic_input_node_63 = ic_input_ic_input_or_56; // Node
     // JK FlipFlop: JK-Flip-Flop
     always @(posedge jk_flip_flop_258_0_q) begin
         begin
@@ -678,19 +581,12 @@ module ic (
     assign ic_jkflipflop_ic_jkflipflop_node_36 = ic_jkflipflop_ic_jkflipflop_node_47; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_38 = ic_jkflipflop_ic_jkflipflop_node_41; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_39 = ic_jkflipflop_ic_jkflipflop_node_40; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_40 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_41 = 1'b0; // Node
     assign ic_jkflipflop_ic_jkflipflop_not_43 = ~ic_jkflipflop_ic_jkflipflop_node_48; // Not
     assign ic_jkflipflop_ic_jkflipflop_and_44 = (ic_jkflipflop_ic_jkflipflop_node_50 & ic_jkflipflop_ic_jkflipflop_node_39); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_45 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_or_46 = (ic_jkflipflop_ic_jkflipflop_and_51 | ic_jkflipflop_ic_jkflipflop_and_44); // Or
-    assign ic_jkflipflop_ic_jkflipflop_node_47 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_48 = 1'b1; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_49 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_50 = ic_jkflipflop_ic_jkflipflop_node_49; // Node
     assign ic_jkflipflop_ic_jkflipflop_and_51 = (ic_jkflipflop_ic_jkflipflop_node_38 & ic_jkflipflop_ic_jkflipflop_not_43); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_52 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_53 = 1'b0; // Node
 
     // ========= Output Assignments =========
     assign output_7_segment_display1_g_middle_7 = 1'b0; // 7-Segment Display

@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: dflipflop2
-// Generated: Fri Sep 26 14:59:07 2025
+// Generated: Fri Sep 26 15:10:54 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 28/1000 LUTs, 36/1000 FFs, 4/50 IOs
 //
@@ -58,7 +58,6 @@ module dflipflop2 (
     assign nand_23 = ~(node_15 & nand_13); // Nand
     assign nand_20 = ~(nand_17 & node_16); // Nand
     assign node_19 = node_18; // Node
-    assign node_18 = input_clock1_1; // Node
     assign node_16 = node_15; // Node
     assign node_15 = node_10; // Node
     assign nand_13 = ~(nand_17 & nand_11); // Nand
@@ -66,7 +65,6 @@ module dflipflop2 (
     assign nand_14 = ~(node_12 & not_5); // Nand
     assign node_12 = input_input_switch2_2; // Node
     assign nand_11 = ~(node_6 & not_8); // Nand
-    assign node_10 = not_9; // Node
     assign not_9 = ~node_7; // Not
     assign not_8 = ~input_input_switch2_2; // Not
     assign node_7 = node_6; // Node

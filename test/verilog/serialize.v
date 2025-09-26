@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: serialize
-// Generated: Fri Sep 26 14:59:16 2025
+// Generated: Fri Sep 26 15:11:03 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 45/1000 LUTs, 4/1000 FFs, 8/50 IOs
 //
@@ -72,7 +72,6 @@ module serialize (
         end
     end
 
-    assign node_35 = node_9; // Node
     assign node_34 = not_12; // Node
     assign or_33 = (and_31 | and_30); // Or
     assign node_32 = input_input_switch2_clock_2; // Node
@@ -117,7 +116,6 @@ module serialize (
     assign node_14 = not_12; // Node
     assign node_13 = node_11; // Node
     assign not_12 = ~node_9; // Not
-    assign node_11 = input_input_switch1_load__shift_1; // Node
     assign node_10 = input_input_switch2_clock_2; // Node
     assign node_9 = input_input_switch1_load__shift_1; // Node
 

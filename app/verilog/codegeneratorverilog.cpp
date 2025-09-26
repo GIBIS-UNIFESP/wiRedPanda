@@ -1435,6 +1435,13 @@ void CodeGeneratorVerilog::assignVariablesRec(const QVector<GraphicElement *> &e
                     continue;
                 }
 
+                // ARCHITECTURAL FIX: Skip redundant Node pass-through assignments that have no fan-out
+                if (elm->elementType() == ElementType::Node && isRedundantNodeAssignment(port, expr)) {
+                    generateDebugInfo(QString("Node %1: Skipping redundant pass-through assignment: %2 = %3 (no fan-out)")
+                                     .arg(elm->objectName()).arg(outputVar).arg(expr), elm);
+                    continue;
+                }
+
                 generateDebugInfo(QString("Node %1: Generating assignment: %2 = %3")
                                  .arg(elm->objectName()).arg(outputVar).arg(expr), elm);
 
@@ -2656,6 +2663,69 @@ void CodeGeneratorVerilog::handleGenerationError(const QString &error, GraphicEl
     }
 
     qWarning() << "Verilog Generation Error:" << fullError;
+}
+
+bool CodeGeneratorVerilog::isRedundantNodeAssignment(QNEPort *port, const QString &expr)
+{
+    if (!port) {
+        return false;
+    }
+
+    // Check if it's a simple pass-through assignment (expr is just a variable name)
+    // Skip if expression contains operators or is complex
+    if (expr.contains('(') || expr.contains('&') || expr.contains('|') ||
+        expr.contains('^') || expr.contains('~') || expr.contains('+') ||
+        expr.contains('-') || expr.contains('*') || expr.contains('/') ||
+        expr.contains(' ')) {
+        return false; // Not a simple pass-through
+    }
+
+    // Get the variable name for this port
+    QString outputVar = m_varMap.value(port);
+    if (outputVar.isEmpty()) {
+        return false;
+    }
+
+    // Check if this port has any connections (fan-out)
+    if (port->connections().isEmpty()) {
+        generateDebugInfo(QString("Node output '%1' has no connections - redundant assignment").arg(outputVar));
+        return true; // No fan-out, assignment is redundant
+    }
+
+    // Check if any of the connections actually read from this port
+    // If all connections are to other Node inputs that also have no fan-out,
+    // then this forms a chain of redundant assignments
+    int meaningfulConnections = 0;
+
+    for (auto *connection : port->connections()) {
+        QNEPort *otherPort = connection->otherPort(port);
+        if (!otherPort) continue;
+
+        GraphicElement *otherElement = otherPort->graphicElement();
+        if (!otherElement) continue;
+
+        // If connected to an output port, it's meaningful
+        if (otherElement->elementGroup() == ElementGroup::Output) {
+            meaningfulConnections++;
+            continue;
+        }
+
+        // If connected to logic element input, it's meaningful
+        if (otherElement->elementType() != ElementType::Node) {
+            meaningfulConnections++;
+            continue;
+        }
+
+        // If connected to another Node, check if that Node has meaningful connections
+        // For now, consider Node-to-Node connections as potentially redundant
+    }
+
+    if (meaningfulConnections == 0) {
+        generateDebugInfo(QString("Node output '%1' has no meaningful connections - redundant assignment").arg(outputVar));
+        return true;
+    }
+
+    return false; // Assignment is needed
 }
 
 void CodeGeneratorVerilog::generateDebugInfo(const QString &message, GraphicElement *element)

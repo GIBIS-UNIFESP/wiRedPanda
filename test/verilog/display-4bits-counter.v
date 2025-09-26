@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: display_4bits_counter
-// Generated: Fri Sep 26 14:59:09 2025
+// Generated: Fri Sep 26 15:10:56 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 42/1000 LUTs, 35/1000 FFs, 11/50 IOs
 //
@@ -52,19 +52,12 @@ module display_4bits_counter (
     assign ic_jkflipflop_ic_jkflipflop_node_12 = ic_jkflipflop_ic_jkflipflop_node_23; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_14 = ic_jkflipflop_ic_jkflipflop_node_17; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_15 = ic_jkflipflop_ic_jkflipflop_node_16; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_16 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_17 = 1'b0; // Node
     assign ic_jkflipflop_ic_jkflipflop_not_19 = ~ic_jkflipflop_ic_jkflipflop_node_24; // Not
     assign ic_jkflipflop_ic_jkflipflop_and_20 = (ic_jkflipflop_ic_jkflipflop_node_26 & ic_jkflipflop_ic_jkflipflop_node_15); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_21 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_or_22 = (ic_jkflipflop_ic_jkflipflop_and_27 | ic_jkflipflop_ic_jkflipflop_and_20); // Or
-    assign ic_jkflipflop_ic_jkflipflop_node_23 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_24 = 1'b1; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_25 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_26 = ic_jkflipflop_ic_jkflipflop_node_25; // Node
     assign ic_jkflipflop_ic_jkflipflop_and_27 = (ic_jkflipflop_ic_jkflipflop_node_14 & ic_jkflipflop_ic_jkflipflop_not_19); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_28 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_29 = 1'b0; // Node
 // ============== END IC: JKFLIPFLOP ==============
 // ============== BEGIN IC: JKFLIPFLOP ==============
 // IC inputs: 5, IC outputs: 2
@@ -93,20 +86,12 @@ module display_4bits_counter (
     assign ic_jkflipflop_ic_jkflipflop_node_32 = ic_jkflipflop_ic_jkflipflop_node_37; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_33 = ic_jkflipflop_ic_jkflipflop_node_36; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_34 = ic_jkflipflop_ic_jkflipflop_node_35; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_35 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_36 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_37 = 1'b0; // Node
     assign ic_jkflipflop_ic_jkflipflop_not_38 = ~ic_jkflipflop_ic_jkflipflop_node_43; // Not
     assign ic_jkflipflop_ic_jkflipflop_and_39 = (ic_jkflipflop_ic_jkflipflop_node_45 & ic_jkflipflop_ic_jkflipflop_node_34); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_40 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_or_41 = (ic_jkflipflop_ic_jkflipflop_and_46 | ic_jkflipflop_ic_jkflipflop_and_39); // Or
-    assign ic_jkflipflop_ic_jkflipflop_node_42 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_43 = 1'b1; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_44 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_45 = ic_jkflipflop_ic_jkflipflop_node_44; // Node
     assign ic_jkflipflop_ic_jkflipflop_and_46 = (ic_jkflipflop_ic_jkflipflop_node_33 & ic_jkflipflop_ic_jkflipflop_not_38); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_47 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_48 = 1'b0; // Node
 // ============== END IC: JKFLIPFLOP ==============
 // ============== BEGIN IC: JKFLIPFLOP ==============
 // IC inputs: 5, IC outputs: 2
@@ -135,20 +120,12 @@ module display_4bits_counter (
     assign ic_jkflipflop_ic_jkflipflop_node_51 = ic_jkflipflop_ic_jkflipflop_node_56; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_52 = ic_jkflipflop_ic_jkflipflop_node_55; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_53 = ic_jkflipflop_ic_jkflipflop_node_54; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_54 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_55 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_56 = 1'b0; // Node
     assign ic_jkflipflop_ic_jkflipflop_not_57 = ~ic_jkflipflop_ic_jkflipflop_node_62; // Not
     assign ic_jkflipflop_ic_jkflipflop_and_58 = (ic_jkflipflop_ic_jkflipflop_node_64 & ic_jkflipflop_ic_jkflipflop_node_53); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_59 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_or_60 = (ic_jkflipflop_ic_jkflipflop_and_65 | ic_jkflipflop_ic_jkflipflop_and_58); // Or
-    assign ic_jkflipflop_ic_jkflipflop_node_61 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_62 = 1'b1; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_63 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_64 = ic_jkflipflop_ic_jkflipflop_node_63; // Node
     assign ic_jkflipflop_ic_jkflipflop_and_65 = (ic_jkflipflop_ic_jkflipflop_node_52 & ic_jkflipflop_ic_jkflipflop_not_57); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_66 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_67 = 1'b0; // Node
 // ============== END IC: JKFLIPFLOP ==============
 // ============== BEGIN IC: JKFLIPFLOP ==============
 // IC inputs: 5, IC outputs: 2
@@ -177,20 +154,12 @@ module display_4bits_counter (
     assign ic_jkflipflop_ic_jkflipflop_node_70 = ic_jkflipflop_ic_jkflipflop_node_75; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_71 = ic_jkflipflop_ic_jkflipflop_node_74; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_72 = ic_jkflipflop_ic_jkflipflop_node_73; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_73 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_74 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_75 = 1'b0; // Node
     assign ic_jkflipflop_ic_jkflipflop_not_76 = ~ic_jkflipflop_ic_jkflipflop_node_81; // Not
     assign ic_jkflipflop_ic_jkflipflop_and_77 = (ic_jkflipflop_ic_jkflipflop_node_83 & ic_jkflipflop_ic_jkflipflop_node_72); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_78 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_or_79 = (ic_jkflipflop_ic_jkflipflop_and_84 | ic_jkflipflop_ic_jkflipflop_and_77); // Or
-    assign ic_jkflipflop_ic_jkflipflop_node_80 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_81 = 1'b1; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_82 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_83 = ic_jkflipflop_ic_jkflipflop_node_82; // Node
     assign ic_jkflipflop_ic_jkflipflop_and_84 = (ic_jkflipflop_ic_jkflipflop_node_71 & ic_jkflipflop_ic_jkflipflop_not_76); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_85 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_86 = 1'b0; // Node
 // ============== END IC: JKFLIPFLOP ==============
 // ============== BEGIN IC: DISPLAY-4BITS ==============
 // IC inputs: 4, IC outputs: 8
@@ -300,14 +269,6 @@ module display_4bits_counter (
     assign ic_display_4bits_ic_display_4bits_or_112 = (ic_display_4bits_ic_display_4bits_node_109 | ic_display_4bits_ic_display_4bits_node_110 | ic_display_4bits_ic_display_4bits_node_111); // Or
     assign ic_display_4bits_ic_display_4bits_or_113 = (ic_display_4bits_ic_display_4bits_node_106 | ic_display_4bits_ic_display_4bits_node_94); // Or
     assign ic_display_4bits_ic_display_4bits_or_114 = (ic_display_4bits_ic_display_4bits_node_105 | ic_display_4bits_ic_display_4bits_node_107 | ic_display_4bits_ic_display_4bits_node_95 | ic_display_4bits_ic_display_4bits_and_135 | ic_display_4bits_ic_display_4bits_and_132); // Or
-    assign ic_display_4bits_ic_display_4bits_node_115 = ic_display_4bits_ic_display_4bits_or_103; // Node
-    assign ic_display_4bits_ic_display_4bits_node_116 = ic_display_4bits_ic_display_4bits_or_104; // Node
-    assign ic_display_4bits_ic_display_4bits_node_117 = ic_display_4bits_ic_display_4bits_or_113; // Node
-    assign ic_display_4bits_ic_display_4bits_node_118 = ic_display_4bits_ic_display_4bits_or_114; // Node
-    assign ic_display_4bits_ic_display_4bits_node_119 = ic_display_4bits_ic_display_4bits_or_131; // Node
-    assign ic_display_4bits_ic_display_4bits_node_120 = ic_display_4bits_ic_display_4bits_or_126; // Node
-    assign ic_display_4bits_ic_display_4bits_node_121 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_122 = ic_display_4bits_ic_display_4bits_or_112; // Node
     assign ic_display_4bits_ic_display_4bits_node_123 = ic_display_4bits_ic_display_4bits_not_162; // Node
     assign ic_display_4bits_ic_display_4bits_node_124 = ic_display_4bits_ic_display_4bits_node_138; // Node
     assign ic_display_4bits_ic_display_4bits_node_125 = ic_display_4bits_ic_display_4bits_node_139; // Node
@@ -329,18 +290,6 @@ module display_4bits_counter (
     assign ic_display_4bits_ic_display_4bits_node_141 = ic_display_4bits_ic_display_4bits_node_159; // Node
     assign ic_display_4bits_ic_display_4bits_node_142 = ic_display_4bits_ic_display_4bits_node_157; // Node
     assign ic_display_4bits_ic_display_4bits_and_143 = (ic_display_4bits_ic_display_4bits_node_142 & ic_display_4bits_ic_display_4bits_node_141); // And
-    assign ic_display_4bits_ic_display_4bits_node_144 = ic_display_4bits_ic_display_4bits_node_98; // Node
-    assign ic_display_4bits_ic_display_4bits_node_145 = ic_display_4bits_ic_display_4bits_node_100; // Node
-    assign ic_display_4bits_ic_display_4bits_node_146 = ic_display_4bits_ic_display_4bits_node_96; // Node
-    assign ic_display_4bits_ic_display_4bits_node_147 = ic_display_4bits_ic_display_4bits_node_89; // Node
-    assign ic_display_4bits_ic_display_4bits_node_148 = ic_display_4bits_ic_display_4bits_node_99; // Node
-    assign ic_display_4bits_ic_display_4bits_node_149 = ic_display_4bits_ic_display_4bits_not_161; // Node
-    assign ic_display_4bits_ic_display_4bits_node_150 = ic_display_4bits_ic_display_4bits_node_88; // Node
-    assign ic_display_4bits_ic_display_4bits_node_151 = ic_display_4bits_ic_display_4bits_node_90; // Node
-    assign ic_display_4bits_ic_display_4bits_node_152 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_153 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_154 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_155 = 1'b1; // Node
     assign ic_display_4bits_ic_display_4bits_node_156 = ic_display_4bits_ic_display_4bits_node_153; // Node
     assign ic_display_4bits_ic_display_4bits_node_157 = ic_display_4bits_ic_display_4bits_node_152; // Node
     assign ic_display_4bits_ic_display_4bits_node_158 = ic_display_4bits_ic_display_4bits_node_154; // Node
@@ -399,14 +348,6 @@ module display_4bits_counter (
     assign ic_display_4bits_ic_display_4bits_or_112 = (ic_display_4bits_ic_display_4bits_node_109 | ic_display_4bits_ic_display_4bits_node_110 | ic_display_4bits_ic_display_4bits_node_111); // Or
     assign ic_display_4bits_ic_display_4bits_or_113 = (ic_display_4bits_ic_display_4bits_node_106 | ic_display_4bits_ic_display_4bits_node_94); // Or
     assign ic_display_4bits_ic_display_4bits_or_114 = (ic_display_4bits_ic_display_4bits_node_105 | ic_display_4bits_ic_display_4bits_node_107 | ic_display_4bits_ic_display_4bits_node_95 | ic_display_4bits_ic_display_4bits_and_135 | ic_display_4bits_ic_display_4bits_and_132); // Or
-    assign ic_display_4bits_ic_display_4bits_node_115 = ic_display_4bits_ic_display_4bits_or_103; // Node
-    assign ic_display_4bits_ic_display_4bits_node_116 = ic_display_4bits_ic_display_4bits_or_104; // Node
-    assign ic_display_4bits_ic_display_4bits_node_117 = ic_display_4bits_ic_display_4bits_or_113; // Node
-    assign ic_display_4bits_ic_display_4bits_node_118 = ic_display_4bits_ic_display_4bits_or_114; // Node
-    assign ic_display_4bits_ic_display_4bits_node_119 = ic_display_4bits_ic_display_4bits_or_131; // Node
-    assign ic_display_4bits_ic_display_4bits_node_120 = ic_display_4bits_ic_display_4bits_or_126; // Node
-    assign ic_display_4bits_ic_display_4bits_node_121 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_122 = ic_display_4bits_ic_display_4bits_or_112; // Node
     assign ic_display_4bits_ic_display_4bits_node_123 = ic_display_4bits_ic_display_4bits_not_162; // Node
     assign ic_display_4bits_ic_display_4bits_node_124 = ic_display_4bits_ic_display_4bits_node_138; // Node
     assign ic_display_4bits_ic_display_4bits_node_125 = ic_display_4bits_ic_display_4bits_node_139; // Node
@@ -428,18 +369,6 @@ module display_4bits_counter (
     assign ic_display_4bits_ic_display_4bits_node_141 = ic_display_4bits_ic_display_4bits_node_159; // Node
     assign ic_display_4bits_ic_display_4bits_node_142 = ic_display_4bits_ic_display_4bits_node_157; // Node
     assign ic_display_4bits_ic_display_4bits_and_143 = (ic_display_4bits_ic_display_4bits_node_142 & ic_display_4bits_ic_display_4bits_node_141); // And
-    assign ic_display_4bits_ic_display_4bits_node_144 = ic_display_4bits_ic_display_4bits_node_98; // Node
-    assign ic_display_4bits_ic_display_4bits_node_145 = ic_display_4bits_ic_display_4bits_node_100; // Node
-    assign ic_display_4bits_ic_display_4bits_node_146 = ic_display_4bits_ic_display_4bits_node_96; // Node
-    assign ic_display_4bits_ic_display_4bits_node_147 = ic_display_4bits_ic_display_4bits_node_89; // Node
-    assign ic_display_4bits_ic_display_4bits_node_148 = ic_display_4bits_ic_display_4bits_node_99; // Node
-    assign ic_display_4bits_ic_display_4bits_node_149 = ic_display_4bits_ic_display_4bits_not_161; // Node
-    assign ic_display_4bits_ic_display_4bits_node_150 = ic_display_4bits_ic_display_4bits_node_88; // Node
-    assign ic_display_4bits_ic_display_4bits_node_151 = ic_display_4bits_ic_display_4bits_node_90; // Node
-    assign ic_display_4bits_ic_display_4bits_node_152 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_153 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_154 = 1'b0; // Node
-    assign ic_display_4bits_ic_display_4bits_node_155 = 1'b1; // Node
     assign ic_display_4bits_ic_display_4bits_node_156 = ic_display_4bits_ic_display_4bits_node_153; // Node
     assign ic_display_4bits_ic_display_4bits_node_157 = ic_display_4bits_ic_display_4bits_node_152; // Node
     assign ic_display_4bits_ic_display_4bits_node_158 = ic_display_4bits_ic_display_4bits_node_154; // Node
@@ -452,29 +381,20 @@ module display_4bits_counter (
     assign node_175 = 1'b0; // Node
     assign node_174 = 1'b0; // Node
     assign node_173 = 1'b0; // Node
-    assign node_172 = input_clock2_2; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_11 = ic_jkflipflop_ic_jkflipflop_node_21; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_12 = ic_jkflipflop_ic_jkflipflop_node_23; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_14 = ic_jkflipflop_ic_jkflipflop_node_17; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_15 = ic_jkflipflop_ic_jkflipflop_node_16; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_16 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_17 = 1'b0; // Node
     assign ic_jkflipflop_ic_jkflipflop_not_19 = ~ic_jkflipflop_ic_jkflipflop_node_24; // Not
     assign ic_jkflipflop_ic_jkflipflop_and_20 = (ic_jkflipflop_ic_jkflipflop_node_26 & ic_jkflipflop_ic_jkflipflop_node_15); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_21 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_or_22 = (ic_jkflipflop_ic_jkflipflop_and_27 | ic_jkflipflop_ic_jkflipflop_and_20); // Or
-    assign ic_jkflipflop_ic_jkflipflop_node_23 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_24 = 1'b1; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_25 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_26 = ic_jkflipflop_ic_jkflipflop_node_25; // Node
     assign ic_jkflipflop_ic_jkflipflop_and_27 = (ic_jkflipflop_ic_jkflipflop_node_14 & ic_jkflipflop_ic_jkflipflop_not_19); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_28 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_29 = 1'b0; // Node
     assign node_179 = node_178; // Node
     assign node_178 = node_171; // Node
     assign node_171 = node_170; // Node
     assign node_170 = node_169; // Node
-    assign node_169 = not_168; // Node
     assign not_168 = ~and_167; // Not
     assign and_167 = (node_180 & node_181 & node_165 & node_166); // And
     assign node_166 = 1'b0; // Node
@@ -486,58 +406,34 @@ module display_4bits_counter (
     assign ic_jkflipflop_ic_jkflipflop_node_70 = ic_jkflipflop_ic_jkflipflop_node_75; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_71 = ic_jkflipflop_ic_jkflipflop_node_74; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_72 = ic_jkflipflop_ic_jkflipflop_node_73; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_73 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_74 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_75 = 1'b0; // Node
     assign ic_jkflipflop_ic_jkflipflop_not_76 = ~ic_jkflipflop_ic_jkflipflop_node_81; // Not
     assign ic_jkflipflop_ic_jkflipflop_and_77 = (ic_jkflipflop_ic_jkflipflop_node_83 & ic_jkflipflop_ic_jkflipflop_node_72); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_78 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_or_79 = (ic_jkflipflop_ic_jkflipflop_and_84 | ic_jkflipflop_ic_jkflipflop_and_77); // Or
-    assign ic_jkflipflop_ic_jkflipflop_node_80 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_81 = 1'b1; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_82 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_83 = ic_jkflipflop_ic_jkflipflop_node_82; // Node
     assign ic_jkflipflop_ic_jkflipflop_and_84 = (ic_jkflipflop_ic_jkflipflop_node_71 & ic_jkflipflop_ic_jkflipflop_not_76); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_85 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_86 = 1'b0; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_49 = ic_jkflipflop_ic_jkflipflop_node_59; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_50 = ic_jkflipflop_ic_jkflipflop_node_61; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_51 = ic_jkflipflop_ic_jkflipflop_node_56; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_52 = ic_jkflipflop_ic_jkflipflop_node_55; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_53 = ic_jkflipflop_ic_jkflipflop_node_54; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_54 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_55 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_56 = 1'b0; // Node
     assign ic_jkflipflop_ic_jkflipflop_not_57 = ~ic_jkflipflop_ic_jkflipflop_node_62; // Not
     assign ic_jkflipflop_ic_jkflipflop_and_58 = (ic_jkflipflop_ic_jkflipflop_node_64 & ic_jkflipflop_ic_jkflipflop_node_53); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_59 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_or_60 = (ic_jkflipflop_ic_jkflipflop_and_65 | ic_jkflipflop_ic_jkflipflop_and_58); // Or
-    assign ic_jkflipflop_ic_jkflipflop_node_61 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_62 = 1'b1; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_63 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_64 = ic_jkflipflop_ic_jkflipflop_node_63; // Node
     assign ic_jkflipflop_ic_jkflipflop_and_65 = (ic_jkflipflop_ic_jkflipflop_node_52 & ic_jkflipflop_ic_jkflipflop_not_57); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_66 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_67 = 1'b0; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_30 = ic_jkflipflop_ic_jkflipflop_node_40; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_31 = ic_jkflipflop_ic_jkflipflop_node_42; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_32 = ic_jkflipflop_ic_jkflipflop_node_37; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_33 = ic_jkflipflop_ic_jkflipflop_node_36; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_34 = ic_jkflipflop_ic_jkflipflop_node_35; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_35 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_36 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_37 = 1'b0; // Node
     assign ic_jkflipflop_ic_jkflipflop_not_38 = ~ic_jkflipflop_ic_jkflipflop_node_43; // Not
     assign ic_jkflipflop_ic_jkflipflop_and_39 = (ic_jkflipflop_ic_jkflipflop_node_45 & ic_jkflipflop_ic_jkflipflop_node_34); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_40 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_or_41 = (ic_jkflipflop_ic_jkflipflop_and_46 | ic_jkflipflop_ic_jkflipflop_and_39); // Or
-    assign ic_jkflipflop_ic_jkflipflop_node_42 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_43 = 1'b1; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_44 = 1'b1; // Node
     assign ic_jkflipflop_ic_jkflipflop_node_45 = ic_jkflipflop_ic_jkflipflop_node_44; // Node
     assign ic_jkflipflop_ic_jkflipflop_and_46 = (ic_jkflipflop_ic_jkflipflop_node_33 & ic_jkflipflop_ic_jkflipflop_not_38); // And
-    assign ic_jkflipflop_ic_jkflipflop_node_47 = 1'b0; // Node
-    assign ic_jkflipflop_ic_jkflipflop_node_48 = 1'b0; // Node
     assign not_164 = ~input_push_button1_1; // Not
 
     // ========= Output Assignments =========

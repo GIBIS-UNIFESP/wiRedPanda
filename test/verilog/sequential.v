@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: sequential
-// Generated: Fri Sep 26 14:59:15 2025
+// Generated: Fri Sep 26 15:11:02 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 45/1000 LUTs, 74/1000 FFs, 8/50 IOs
 //
@@ -62,7 +62,6 @@ module sequential (
     assign ic_serialize_ic_serialize_node_19 = ic_serialize_ic_serialize_not_28; // Node
     assign ic_serialize_ic_serialize_node_20 = ic_serialize_ic_serialize_not_28; // Node
     assign ic_serialize_ic_serialize_and_26 = (ic_serialize_ic_serialize_node_17 & ic_serialize_ic_serialize_d_flip_flop_32_0); // And
-    assign ic_serialize_ic_serialize_node_27 = ic_serialize_ic_serialize_and_26; // Node
     assign ic_serialize_ic_serialize_not_28 = ~input_clock2_slow_clk_2; // Not
     assign ic_serialize_ic_serialize_and_29 = (ic_serialize_ic_serialize_node_18 & ic_serialize_ic_serialize_d_flip_flop_35_0); // And
     assign ic_serialize_ic_serialize_or_30 = (ic_serialize_ic_serialize_and_31 | ic_serialize_ic_serialize_and_29); // Or
@@ -147,7 +146,6 @@ module sequential (
         end
     end
 
-    assign ic_register_ic_register_node_51 = ic_register_ic_register_d_flip_flop_60_0; // Node
     wire ic_register_ic_register_d_flip_flop_52_0_clk_wire;
     assign ic_register_ic_register_d_flip_flop_52_0_clk_wire = (~1'b0 & input_clock3_fast_clk_3); // Clock expression wire
     // D FlipFlop: D-Flip-Flop
@@ -158,9 +156,6 @@ module sequential (
         end
     end
 
-    assign ic_register_ic_register_node_54 = ic_register_ic_register_d_flip_flop_47_0; // Node
-    assign ic_register_ic_register_node_55 = ic_register_ic_register_d_flip_flop_50_0; // Node
-    assign ic_register_ic_register_node_57 = ic_register_ic_register_d_flip_flop_52_0; // Node
     wire ic_register_ic_register_d_flip_flop_60_0_clk_wire;
     assign ic_register_ic_register_d_flip_flop_60_0_clk_wire = (~1'b0 & input_clock3_fast_clk_3); // Clock expression wire
     // D FlipFlop: D-Flip-Flop
@@ -228,7 +223,6 @@ module sequential (
         end
     end
 
-    assign ic_register_ic_register_node_51 = ic_register_ic_register_d_flip_flop_60_0; // Node
     // D FlipFlop: D-Flip-Flop
     always @(posedge ic_register_ic_register_d_flip_flop_52_0_clk_wire) begin
         begin
@@ -237,9 +231,6 @@ module sequential (
         end
     end
 
-    assign ic_register_ic_register_node_54 = ic_register_ic_register_d_flip_flop_47_0; // Node
-    assign ic_register_ic_register_node_55 = ic_register_ic_register_d_flip_flop_50_0; // Node
-    assign ic_register_ic_register_node_57 = ic_register_ic_register_d_flip_flop_52_0; // Node
     // D FlipFlop: D-Flip-Flop
     always @(posedge ic_register_ic_register_d_flip_flop_60_0_clk_wire) begin
         begin
@@ -259,7 +250,6 @@ module sequential (
     assign ic_serialize_ic_serialize_node_19 = ic_serialize_ic_serialize_not_28; // Node
     assign ic_serialize_ic_serialize_node_20 = ic_serialize_ic_serialize_not_28; // Node
     assign ic_serialize_ic_serialize_and_26 = (ic_serialize_ic_serialize_node_17 & ic_serialize_ic_serialize_d_flip_flop_32_0); // And
-    assign ic_serialize_ic_serialize_node_27 = ic_serialize_ic_serialize_and_26; // Node
     assign ic_serialize_ic_serialize_not_28 = ~input_clock2_slow_clk_2; // Not
     assign ic_serialize_ic_serialize_and_29 = (ic_serialize_ic_serialize_node_18 & ic_serialize_ic_serialize_d_flip_flop_35_0); // And
     assign ic_serialize_ic_serialize_or_30 = (ic_serialize_ic_serialize_and_31 | ic_serialize_ic_serialize_and_29); // Or
@@ -306,7 +296,6 @@ module sequential (
 
     assign ic_serialize_ic_serialize_and_44 = (input_clock2_slow_clk_2 & ic_serialize_ic_serialize_node_39); // And
     assign ic_serialize_ic_serialize_or_45 = (ic_serialize_ic_serialize_and_44 | ic_serialize_ic_serialize_and_42); // Or
-    assign node_77 = input_clock3_fast_clk_3; // Node
     assign node_76 = node_71; // Node
     assign node_75 = jk_flip_flop_70_1_q; // Node
     assign node_74 = jk_flip_flop_68_1_q; // Node
@@ -377,7 +366,6 @@ module sequential (
     end
 
     assign node_63 = node_62; // Node
-    assign node_62 = not_61; // Node
     assign not_61 = ~input_push_button1_reset_1; // Not
 
     // ========= Output Assignments =========

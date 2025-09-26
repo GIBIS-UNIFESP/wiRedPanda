@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: decoder
-// Generated: Fri Sep 26 14:59:05 2025
+// Generated: Fri Sep 26 15:10:52 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 66/1000 LUTs, 0/1000 FFs, 12/50 IOs
 //
@@ -75,12 +75,6 @@ module decoder (
     wire node_55;
 
     // ========= Logic Assignments =========
-    assign node_55 = node_38; // Node
-    assign node_54 = node_39; // Node
-    assign node_53 = node_37; // Node
-    assign node_52 = node_40; // Node
-    assign node_51 = node_36; // Node
-    assign node_50 = node_41; // Node
     assign and_49 = (node_41 & node_40 & node_39); // And
     assign and_48 = (node_35 & node_34 & node_38); // And
     assign and_47 = (node_29 & node_37 & node_33); // And
