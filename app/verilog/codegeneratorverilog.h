@@ -418,6 +418,13 @@ private:
      */
     bool isRedundantNodeAssignment(QNEPort *port, const QString &expr);
 
+    /**
+     * @brief Predict which signals will actually be used in assignments or expressions
+     * @param elements Elements to analyze for signal usage
+     * @param usedSignals Output set of ports that will be used
+     */
+    void predictUsedSignals(const QVector<GraphicElement *> &elements, QSet<QNEPort*> &usedSignals);
+
     // ============================================================================
     // FPGA-SPECIFIC OPTIMIZATIONS
     // ============================================================================
