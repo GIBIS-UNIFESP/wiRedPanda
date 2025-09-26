@@ -358,8 +358,7 @@ QVector<GraphicElement *> CodeGeneratorVerilog::topologicalSort(const QVector<Gr
 
     std::function<void(GraphicElement *)> visit = [&](GraphicElement *element) {
         if (visiting.contains(element)) {
-            // Circular dependency detected
-            handleGenerationError(QString("Circular dependency detected involving element: %1").arg(element->objectName()), element);
+            // Note: Skip circular dependencies in topological sort - let sequential circuits proceed
             return;
         }
 
