@@ -1,0 +1,493 @@
+$date
+	Fri Sep 26 21:33:17 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module display_3bits_tb $end
+$var wire 1 ! output_7_segment_display1_g_middle_4 $end
+$var wire 1 " output_7_segment_display1_f_upper_left_5 $end
+$var wire 1 # output_7_segment_display1_e_lower_left_6 $end
+$var wire 1 $ output_7_segment_display1_dp_dot_10 $end
+$var wire 1 % output_7_segment_display1_d_bottom_7 $end
+$var wire 1 & output_7_segment_display1_c_lower_right_11 $end
+$var wire 1 ' output_7_segment_display1_b_upper_right_9 $end
+$var wire 1 ( output_7_segment_display1_a_top_8 $end
+$var reg 8 ) display_pattern [7:0] $end
+$var reg 1 * input_input_switch1_p3_1 $end
+$var reg 1 + input_input_switch2_p1_2 $end
+$var reg 1 , input_input_switch3_p2_3 $end
+$var reg 3 - input_value [2:0] $end
+$var integer 32 . pass_count [31:0] $end
+$var integer 32 / test_count [31:0] $end
+$scope module dut $end
+$var wire 1 0 and_19 $end
+$var wire 1 1 and_20 $end
+$var wire 1 2 and_21 $end
+$var wire 1 3 and_22 $end
+$var wire 1 4 and_24 $end
+$var wire 1 5 and_25 $end
+$var wire 1 6 and_26 $end
+$var wire 1 7 and_27 $end
+$var wire 1 8 and_28 $end
+$var wire 1 9 and_31 $end
+$var wire 1 * input_input_switch1_p3_1 $end
+$var wire 1 + input_input_switch2_p1_2 $end
+$var wire 1 , input_input_switch3_p2_3 $end
+$var wire 1 : nand_35 $end
+$var wire 1 ; node_32 $end
+$var wire 1 < not_16 $end
+$var wire 1 = not_17 $end
+$var wire 1 > not_18 $end
+$var wire 1 ? or_13 $end
+$var wire 1 @ or_14 $end
+$var wire 1 A or_15 $end
+$var wire 1 B or_33 $end
+$var wire 1 C or_34 $end
+$var wire 1 D or_36 $end
+$var wire 1 E or_37 $end
+$var wire 1 F or_38 $end
+$var wire 1 G or_39 $end
+$var wire 1 ( output_7_segment_display1_a_top_8 $end
+$var wire 1 ' output_7_segment_display1_b_upper_right_9 $end
+$var wire 1 & output_7_segment_display1_c_lower_right_11 $end
+$var wire 1 % output_7_segment_display1_d_bottom_7 $end
+$var wire 1 $ output_7_segment_display1_dp_dot_10 $end
+$var wire 1 # output_7_segment_display1_e_lower_left_6 $end
+$var wire 1 " output_7_segment_display1_f_upper_left_5 $end
+$var wire 1 ! output_7_segment_display1_g_middle_4 $end
+$var wire 1 H xnor_23 $end
+$var wire 1 I xnor_29 $end
+$upscope $end
+$scope begin $ivl_for_loop0 $end
+$var integer 32 J i [31:0] $end
+$upscope $end
+$scope task test_display $end
+$var reg 3 K inputs [2:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx K
+bx J
+1I
+1H
+1G
+1F
+1E
+0D
+1C
+1B
+0A
+0@
+0?
+1>
+1=
+1<
+0;
+1:
+09
+18
+17
+06
+05
+04
+13
+02
+01
+00
+b0 /
+b0 .
+bx -
+0,
+0+
+0*
+b1111101 )
+1(
+1'
+1&
+1%
+0$
+1#
+1"
+0!
+$end
+#50000
+b0 -
+b1 /
+b0 K
+#60000
+0%
+0F
+0#
+0B
+0(
+0G
+b11000101 )
+03
+0I
+1!
+1D
+08
+0<
+11
+14
+1A
+b1 -
+1+
+b10 /
+b1 K
+b1 .
+#70000
+0"
+0C
+0H
+1%
+1F
+0&
+0:
+1I
+07
+1#
+1B
+b10111100 )
+18
+0>
+10
+12
+19
+1(
+1G
+1<
+01
+04
+16
+1@
+0A
+b10 -
+1,
+0+
+b11 /
+b10 K
+b10 .
+#80000
+1&
+1:
+0I
+b11111001 )
+08
+09
+0'
+0E
+1"
+1C
+0<
+14
+1A
+b11 -
+1+
+b100 /
+b11 K
+b11 .
+#90000
+0%
+0F
+0#
+0B
+b101 )
+1'
+1E
+0"
+0C
+0!
+0D
+1>
+00
+02
+0(
+0G
+1<
+04
+0=
+06
+0@
+0A
+1?
+b100 -
+0,
+0+
+1*
+b101 /
+b100 K
+b100 .
+#100000
+1(
+1G
+1I
+b11011001 )
+1"
+1C
+1!
+1D
+1%
+1F
+0'
+0E
+15
+0<
+11
+1A
+b101 -
+1+
+b110 /
+b101 K
+b101 .
+#110000
+1H
+0I
+b10011101 )
+0"
+0C
+1%
+1F
+1'
+1E
+05
+0>
+19
+1<
+01
+1@
+0A
+b110 -
+1,
+0+
+b111 /
+b110 K
+b110 .
+#120000
+b1101 )
+0%
+0F
+0!
+0D
+1I
+09
+0<
+1A
+b111 -
+1+
+b1000 /
+b111 K
+b111 .
+#130000
+b1111101 )
+1%
+1F
+1#
+1B
+1"
+1C
+13
+17
+18
+1>
+1<
+1=
+0@
+0A
+0?
+b0 -
+0,
+0+
+0*
+b1001 /
+b0 K
+b0 J
+b1000 .
+#140000
+b1001 .
+#160000
+0%
+0F
+0#
+0B
+0(
+0G
+b11000101 )
+03
+0I
+1!
+1D
+08
+0<
+11
+14
+1A
+b1 -
+1+
+b1010 /
+b1 K
+b1 J
+#170000
+b1010 .
+#190000
+0"
+0C
+0H
+1%
+1F
+0&
+0:
+1I
+07
+1#
+1B
+b10111100 )
+18
+0>
+10
+12
+19
+1(
+1G
+1<
+01
+04
+16
+1@
+0A
+b10 -
+1,
+0+
+b1011 /
+b10 K
+b10 J
+#200000
+b1011 .
+#220000
+1&
+1:
+0I
+b11111001 )
+08
+09
+0'
+0E
+1"
+1C
+0<
+14
+1A
+b11 -
+1+
+b1100 /
+b11 K
+b11 J
+#230000
+b1100 .
+#250000
+0%
+0F
+0#
+0B
+b101 )
+1'
+1E
+0"
+0C
+0!
+0D
+1>
+00
+02
+0(
+0G
+1<
+04
+0=
+06
+0@
+0A
+1?
+b100 -
+0,
+0+
+1*
+b1101 /
+b100 K
+b100 J
+#260000
+b1101 .
+#280000
+1(
+1G
+1I
+b11011001 )
+1"
+1C
+1!
+1D
+1%
+1F
+0'
+0E
+15
+0<
+11
+1A
+b101 -
+1+
+b1110 /
+b101 K
+b101 J
+#290000
+b1110 .
+#310000
+1H
+0I
+b10011101 )
+0"
+0C
+1%
+1F
+1'
+1E
+05
+0>
+19
+1<
+01
+1@
+0A
+b110 -
+1,
+0+
+b1111 /
+b110 K
+b110 J
+#320000
+b1111 .
+#340000
+b1101 )
+0%
+0F
+0!
+0D
+1I
+09
+0<
+1A
+b111 -
+1+
+b10000 /
+b111 K
+b111 J
+#350000
+b10000 .
+#370000
+b1000 J

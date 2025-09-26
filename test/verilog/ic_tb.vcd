@@ -1,0 +1,666 @@
+$date
+	Fri Sep 26 21:01:40 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module ic_tb $end
+$var wire 1 ! output_7_segment_display1_a_top_11 $end
+$var wire 1 " output_7_segment_display1_b_upper_right_12 $end
+$var wire 1 # output_7_segment_display1_c_lower_right_14 $end
+$var wire 1 $ output_7_segment_display1_d_bottom_10 $end
+$var wire 1 % output_7_segment_display1_dp_dot_13 $end
+$var wire 1 & output_7_segment_display1_e_lower_left_9 $end
+$var wire 1 ' output_7_segment_display1_f_upper_left_8 $end
+$var wire 1 ( output_7_segment_display1_g_middle_7 $end
+$var wire 1 ) output_7_segment_display2_a_top_19 $end
+$var wire 1 * output_7_segment_display2_b_upper_right_20 $end
+$var wire 1 + output_7_segment_display2_c_lower_right_22 $end
+$var wire 1 , output_7_segment_display2_d_bottom_18 $end
+$var wire 1 - output_7_segment_display2_dp_dot_21 $end
+$var wire 1 . output_7_segment_display2_e_lower_left_17 $end
+$var wire 1 / output_7_segment_display2_f_upper_left_16 $end
+$var wire 1 0 output_7_segment_display2_g_middle_15 $end
+$var wire 1 1 output_7_segment_display3_a_top_27 $end
+$var wire 1 2 output_7_segment_display3_b_upper_right_28 $end
+$var wire 1 3 output_7_segment_display3_c_lower_right_30 $end
+$var wire 1 4 output_7_segment_display3_d_bottom_26 $end
+$var wire 1 5 output_7_segment_display3_dp_dot_29 $end
+$var wire 1 6 output_7_segment_display3_e_lower_left_25 $end
+$var wire 1 7 output_7_segment_display3_f_upper_left_24 $end
+$var wire 1 8 output_7_segment_display3_g_middle_23 $end
+$var wire 1 9 output_led6_0_33 $end
+$var wire 1 : output_led5_0_32 $end
+$var wire 1 ; output_led4_0_31 $end
+$var reg 8 < display1_pattern [7:0] $end
+$var reg 8 = display2_pattern [7:0] $end
+$var reg 8 > display3_pattern [7:0] $end
+$var reg 1 ? input_clock1_1 $end
+$var reg 1 @ input_clock2_2 $end
+$var reg 1 A input_clock3_3 $end
+$var reg 1 B input_clock4_4 $end
+$var reg 1 C input_clock5_5 $end
+$var reg 1 D input_clock6_6 $end
+$var reg 3 E led_pattern [2:0] $end
+$var reg 8 F prev_disp1 [7:0] $end
+$var reg 8 G prev_disp2 [7:0] $end
+$var reg 8 H prev_disp3 [7:0] $end
+$var reg 3 I prev_leds [2:0] $end
+$var integer 32 J cycle_count [31:0] $end
+$var integer 32 K pass_count [31:0] $end
+$var integer 32 L test_count [31:0] $end
+$scope module dut $end
+$var wire 1 M ic_input_ic_node_522_0 $end
+$var wire 1 N ic_input_ic_node_523_0 $end
+$var wire 1 O ic_input_ic_node_524_0 $end
+$var wire 1 ? input_clock1_1 $end
+$var wire 1 @ input_clock2_2 $end
+$var wire 1 A input_clock3_3 $end
+$var wire 1 B input_clock4_4 $end
+$var wire 1 C input_clock5_5 $end
+$var wire 1 D input_clock6_6 $end
+$var wire 1 ! output_7_segment_display1_a_top_11 $end
+$var wire 1 " output_7_segment_display1_b_upper_right_12 $end
+$var wire 1 # output_7_segment_display1_c_lower_right_14 $end
+$var wire 1 $ output_7_segment_display1_d_bottom_10 $end
+$var wire 1 % output_7_segment_display1_dp_dot_13 $end
+$var wire 1 & output_7_segment_display1_e_lower_left_9 $end
+$var wire 1 ' output_7_segment_display1_f_upper_left_8 $end
+$var wire 1 ( output_7_segment_display1_g_middle_7 $end
+$var wire 1 ) output_7_segment_display2_a_top_19 $end
+$var wire 1 * output_7_segment_display2_b_upper_right_20 $end
+$var wire 1 + output_7_segment_display2_c_lower_right_22 $end
+$var wire 1 , output_7_segment_display2_d_bottom_18 $end
+$var wire 1 - output_7_segment_display2_dp_dot_21 $end
+$var wire 1 . output_7_segment_display2_e_lower_left_17 $end
+$var wire 1 / output_7_segment_display2_f_upper_left_16 $end
+$var wire 1 0 output_7_segment_display2_g_middle_15 $end
+$var wire 1 1 output_7_segment_display3_a_top_27 $end
+$var wire 1 2 output_7_segment_display3_b_upper_right_28 $end
+$var wire 1 3 output_7_segment_display3_c_lower_right_30 $end
+$var wire 1 4 output_7_segment_display3_d_bottom_26 $end
+$var wire 1 5 output_7_segment_display3_dp_dot_29 $end
+$var wire 1 6 output_7_segment_display3_e_lower_left_25 $end
+$var wire 1 7 output_7_segment_display3_f_upper_left_24 $end
+$var wire 1 8 output_7_segment_display3_g_middle_23 $end
+$var wire 1 ; output_led4_0_31 $end
+$var wire 1 : output_led5_0_32 $end
+$var wire 1 9 output_led6_0_33 $end
+$var wire 1 P output_led7_0_34 $end
+$var reg 1 Q jk_flip_flop_318_0_q $end
+$var reg 1 R jk_flip_flop_318_1_q $end
+$var reg 1 S jk_flip_flop_319_0_q $end
+$var reg 1 T jk_flip_flop_319_1_q $end
+$var reg 1 U jk_flip_flop_320_0_q $end
+$var reg 1 V jk_flip_flop_320_1_q $end
+$var reg 1 W jk_flip_flop_321_0_q $end
+$var reg 1 X jk_flip_flop_321_1_q $end
+$upscope $end
+$scope task test_clock_scenario $end
+$var reg 6 Y clock_enables [5:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx Y
+0X
+0W
+0V
+0U
+0T
+0S
+1R
+0Q
+0P
+zO
+zN
+zM
+b0 L
+b0 K
+b0 J
+b0 I
+b0 H
+b0 G
+b0 F
+bz E
+0D
+0C
+0B
+0A
+0@
+0?
+b0 >
+b0 =
+b0 <
+z;
+z:
+z9
+08
+07
+06
+05
+04
+03
+02
+01
+00
+0/
+0.
+0-
+0,
+0+
+0*
+0)
+0(
+0'
+0&
+0%
+0$
+0#
+0"
+0!
+$end
+#250000
+1?
+#333000
+1@
+#500000
+0?
+1A
+#666000
+0@
+#750000
+1?
+1B
+#999000
+1@
+#1000000
+0?
+0A
+1C
+#1250000
+1?
+#1332000
+0@
+#1500000
+0?
+1A
+0B
+1D
+#1665000
+1@
+#1750000
+1?
+#1998000
+0@
+#2000000
+0D
+1C
+1A
+1?
+b1 Y
+#2250000
+0?
+1B
+#2331000
+1@
+#2500000
+1?
+0A
+#2664000
+0@
+#2750000
+0?
+#2997000
+1@
+#3000000
+1?
+1A
+1C
+1B
+0@
+b10 Y
+0D
+#3250000
+0?
+#3330000
+1@
+#3500000
+1?
+0A
+#3663000
+0@
+#3750000
+0?
+0B
+#3996000
+1@
+#4000000
+1?
+1A
+1C
+0@
+b100 Y
+#4250000
+0?
+#4329000
+1@
+#4500000
+1?
+0A
+1B
+1D
+#4662000
+0@
+#4750000
+0?
+#4995000
+1@
+#5000000
+1?
+1A
+0C
+#5250000
+0?
+0B
+#5328000
+0@
+#5500000
+1?
+0A
+#5661000
+1@
+#5750000
+0?
+#5994000
+0@
+#6000000
+1?
+1A
+1B
+1C
+0D
+#6250000
+0?
+#6327000
+1@
+#6500000
+1?
+0A
+#6660000
+0@
+#6750000
+0?
+0B
+#6993000
+1@
+#7000000
+1?
+1A
+0C
+#7250000
+0?
+#7326000
+0@
+#7500000
+1?
+0A
+1B
+1D
+#7659000
+1@
+#7750000
+0?
+#7992000
+0@
+#8000000
+1?
+1A
+1C
+#8250000
+0?
+0B
+#8325000
+1@
+#8500000
+1?
+0A
+#8658000
+0@
+#8750000
+0?
+#8991000
+1@
+#9000000
+1?
+1A
+1B
+0C
+0D
+#9250000
+0?
+#9324000
+0@
+#9500000
+1?
+0A
+#9657000
+1@
+#9750000
+0?
+0B
+#9990000
+0@
+#10000000
+1?
+1A
+1C
+#10250000
+0?
+#10323000
+1@
+#10500000
+1?
+0A
+1B
+1D
+#10656000
+0@
+#10750000
+0?
+#10989000
+1@
+#11000000
+1?
+1A
+0C
+#11250000
+0?
+0B
+#11322000
+0@
+#11500000
+1?
+0A
+#11655000
+1@
+#11750000
+0?
+#11988000
+0@
+#12000000
+1?
+1A
+1B
+1C
+0D
+#12250000
+0?
+#12321000
+1@
+#12500000
+1?
+0A
+#12654000
+0@
+#12750000
+0?
+0B
+#12987000
+1@
+#13000000
+1?
+1A
+0C
+#13250000
+0?
+#13320000
+0@
+#13500000
+1?
+0A
+1B
+1D
+#13653000
+1@
+#13750000
+0?
+#13986000
+0@
+#14000000
+1?
+1A
+1C
+#14250000
+0?
+0B
+#14319000
+1@
+#14500000
+1?
+0A
+#14652000
+0@
+#14750000
+0?
+#14985000
+1@
+#15000000
+1?
+1A
+1B
+0C
+0D
+#15250000
+0?
+#15318000
+0@
+#15500000
+1?
+0A
+#15651000
+1@
+#15750000
+0?
+0B
+#15984000
+0@
+#16000000
+1?
+1A
+1C
+#16250000
+0?
+#16317000
+1@
+#16500000
+1?
+0A
+1B
+1D
+#16650000
+0@
+#16750000
+0?
+#16983000
+1@
+#17000000
+1?
+1A
+0C
+#17250000
+0?
+0B
+#17316000
+0@
+#17500000
+1?
+0A
+#17649000
+1@
+#17750000
+0?
+#17982000
+0@
+#18000000
+1?
+1A
+1B
+1C
+0D
+#18250000
+0?
+#18315000
+1@
+#18500000
+1?
+0A
+#18648000
+0@
+#18750000
+0?
+0B
+#18981000
+1@
+#19000000
+1?
+1A
+0C
+#19250000
+0?
+#19314000
+0@
+#19500000
+1?
+0A
+1B
+1D
+#19647000
+1@
+#19750000
+0?
+#19980000
+0@
+#20000000
+1?
+1A
+1C
+#20250000
+0?
+0B
+#20313000
+1@
+#20500000
+1?
+0A
+#20646000
+0@
+#20750000
+0?
+#20979000
+1@
+#21000000
+1?
+1A
+1B
+0C
+0D
+#21250000
+0?
+#21312000
+0@
+#21500000
+1?
+0A
+#21645000
+1@
+#21750000
+0?
+0B
+#21978000
+0@
+#22000000
+1?
+1A
+1C
+#22250000
+0?
+#22311000
+1@
+#22500000
+1?
+0A
+1B
+1D
+#22644000
+0@
+#22750000
+0?
+#22977000
+1@
+#23000000
+1?
+1A
+0C
+#23250000
+0?
+0B
+#23310000
+0@
+#23500000
+1?
+0A
+#23643000
+1@
+#23750000
+0?
+#23976000
+0@
+#24000000
+1?
+1A
+1B
+1C
+0D
+#24250000
+0?
+#24309000
+1@
+#24500000
+1?
+0A
+#24642000
+0@
+#24750000
+0?
+0B
+#24975000
+1@
+#25000000
+1?
+1A
+1C
+0@
+#25250000
+0?
+#25308000
+1@
+#25500000
+1?
+0A
+1B
+1D
+#25641000
+0@
+#25750000
+0?
+#25974000
+1@
+#26000000
+1?
+1A
+0C

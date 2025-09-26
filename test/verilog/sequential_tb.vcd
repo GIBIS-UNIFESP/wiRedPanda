@@ -1,0 +1,453 @@
+$date
+	Fri Sep 26 21:01:40 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module sequential_tb $end
+$var wire 1 ! output_led1_load_shift_0_4 $end
+$var wire 1 " output_led2_l1_0_5 $end
+$var wire 1 # output_led3_l3_0_6 $end
+$var wire 1 $ output_led4_l2_0_7 $end
+$var wire 1 % output_led5_l0_0_8 $end
+$var reg 1 & input_clock2_slow_clk_2 $end
+$var reg 1 ' input_clock3_fast_clk_3 $end
+$var reg 1 ( input_push_button1_reset_1 $end
+$var reg 5 ) output_state [4:0] $end
+$var reg 5 * previous_state [4:0] $end
+$var integer 32 + cycle_count [31:0] $end
+$var integer 32 , pass_count [31:0] $end
+$var integer 32 - test_count [31:0] $end
+$scope module dut $end
+$var wire 1 . and_109 $end
+$var wire 1 / and_110 $end
+$var wire 1 0 and_111 $end
+$var wire 1 1 and_112 $end
+$var wire 1 & input_clock2_slow_clk_2 $end
+$var wire 1 ' input_clock3_fast_clk_3 $end
+$var wire 1 ( input_push_button1_reset_1 $end
+$var wire 1 2 node_100 $end
+$var wire 1 ! output_led1_load_shift_0_4 $end
+$var wire 1 " output_led2_l1_0_5 $end
+$var wire 1 # output_led3_l3_0_6 $end
+$var wire 1 $ output_led4_l2_0_7 $end
+$var wire 1 % output_led5_l0_0_8 $end
+$var reg 1 3 ic_register_ic_d_flip_flop_71_0_0 $end
+$var reg 1 4 ic_register_ic_d_flip_flop_72_1_1 $end
+$var reg 1 5 ic_register_ic_d_flip_flop_74_0_0 $end
+$var reg 1 6 ic_register_ic_d_flip_flop_75_1_1 $end
+$var reg 1 7 ic_register_ic_d_flip_flop_76_0_0 $end
+$var reg 1 8 ic_register_ic_d_flip_flop_77_1_1 $end
+$var reg 1 9 ic_register_ic_d_flip_flop_79_0_0 $end
+$var reg 1 : ic_register_ic_d_flip_flop_80_1_1 $end
+$var reg 1 ; ic_serialize_ic_d_flip_flop_31_0_0 $end
+$var reg 1 < ic_serialize_ic_d_flip_flop_32_1_1 $end
+$var reg 1 = ic_serialize_ic_d_flip_flop_39_0_0 $end
+$var reg 1 > ic_serialize_ic_d_flip_flop_40_1_1 $end
+$var reg 1 ? ic_serialize_ic_d_flip_flop_48_0_0 $end
+$var reg 1 @ ic_serialize_ic_d_flip_flop_49_1_1 $end
+$var reg 1 A ic_serialize_ic_d_flip_flop_57_0_0 $end
+$var reg 1 B ic_serialize_ic_d_flip_flop_58_1_1 $end
+$var reg 1 C jk_flip_flop_88_0_q $end
+$var reg 1 D jk_flip_flop_88_1_q $end
+$var reg 1 E jk_flip_flop_90_0_q $end
+$var reg 1 F jk_flip_flop_90_1_q $end
+$var reg 1 G jk_flip_flop_92_0_q $end
+$var reg 1 H jk_flip_flop_92_1_q $end
+$var reg 1 I jk_flip_flop_94_0_q $end
+$var reg 1 J jk_flip_flop_94_1_q $end
+$var reg 1 K output_led1_load_shift_0_4_behavioral_reg $end
+$upscope $end
+$scope task test_clock_interaction $end
+$var integer 32 L num_cycles [31:0] $end
+$upscope $end
+$scope task test_reset $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx L
+0K
+0J
+0I
+0H
+0G
+0F
+0E
+0D
+0C
+0B
+0A
+0@
+0?
+0>
+0=
+0<
+0;
+0:
+09
+08
+07
+06
+05
+04
+03
+z2
+z1
+z0
+z/
+z.
+b0 -
+b0 ,
+b0 +
+b0 *
+bx )
+0(
+0'
+0&
+1%
+1$
+1#
+1"
+0!
+$end
+#100000
+1(
+b1 -
+#125000
+1'
+#250000
+0'
+#300000
+0(
+#375000
+1'
+#500000
+0'
+b10 -
+b1010 L
+b1 ,
+1&
+#625000
+1'
+#750000
+0'
+#875000
+1'
+#1000000
+0'
+0&
+#1125000
+1'
+#1250000
+0'
+#1375000
+1'
+#1500000
+0'
+1&
+#1625000
+1'
+#1750000
+0'
+#1875000
+1'
+#2000000
+0'
+0&
+#2125000
+1'
+#2250000
+0'
+#2375000
+1'
+#2500000
+b1 *
+b10 +
+0%
+0$
+0#
+0"
+b1 )
+1!
+1K
+1(
+b11 -
+b10 ,
+0'
+1&
+#2625000
+1'
+#2700000
+0(
+#2750000
+0'
+#2875000
+1'
+#2900000
+b100 -
+b1111 L
+b11 ,
+#3000000
+0'
+0&
+#3125000
+1'
+#3250000
+0'
+#3375000
+1'
+#3500000
+b11110 *
+b100 +
+1%
+1$
+1#
+1"
+b11110 )
+0!
+0K
+0'
+1&
+#3625000
+1'
+#3750000
+0'
+#3875000
+1'
+#4000000
+0'
+0&
+#4125000
+1'
+#4250000
+0'
+#4375000
+1'
+#4500000
+0'
+1&
+#4625000
+1'
+#4750000
+0'
+#4875000
+1'
+#5000000
+0'
+0&
+#5125000
+1'
+#5250000
+0'
+#5375000
+1'
+#5500000
+0'
+1&
+#5625000
+1'
+#5750000
+0'
+#5875000
+1(
+b101 -
+b100 ,
+1'
+#6000000
+0'
+0&
+#6075000
+0(
+#6125000
+1'
+#6250000
+0'
+#6275000
+b110 -
+b101 L
+b101 ,
+#6375000
+1'
+#6500000
+0'
+1&
+#6625000
+1'
+#6750000
+0'
+#6875000
+1'
+#7000000
+0'
+0&
+#7125000
+1(
+b111 -
+b110 ,
+1'
+#7250000
+0'
+#7325000
+0(
+#7375000
+1'
+#7500000
+0'
+1&
+#7525000
+b1000 -
+b111 ,
+#7625000
+1'
+#7750000
+0'
+#7875000
+1'
+#8000000
+0'
+0&
+#8125000
+1'
+#8250000
+0'
+#8375000
+1'
+#8500000
+b1 *
+b110 +
+0%
+0$
+0#
+0"
+b1 )
+1!
+1K
+1(
+b1001 -
+b1000 ,
+0'
+1&
+#8625000
+1'
+#8700000
+0(
+#8750000
+0'
+#8875000
+1'
+#8900000
+b1010 -
+b1001 ,
+#9000000
+0'
+0&
+#9125000
+1'
+#9250000
+0'
+#9375000
+1'
+#9500000
+b11110 *
+b1000 +
+1%
+1$
+1#
+1"
+b11110 )
+0!
+0K
+0'
+1&
+#9625000
+1'
+#9750000
+0'
+#9875000
+b1011 -
+b10100 L
+b1010 ,
+1'
+#10000000
+0'
+0&
+#10125000
+1'
+#10250000
+0'
+#10375000
+1'
+#10500000
+0'
+1&
+#10625000
+1'
+#10750000
+0'
+#10875000
+1'
+#11000000
+0'
+0&
+#11125000
+1'
+#11250000
+0'
+#11375000
+1'
+#11500000
+0'
+1&
+#11625000
+1'
+#11750000
+0'
+#11875000
+1'
+#12000000
+0'
+0&
+#12125000
+1'
+#12250000
+0'
+#12375000
+1'
+#12500000
+0'
+1&
+#12625000
+1'
+#12750000
+0'
+#12875000
+1'
+#13000000
+0'
+0&
+#13125000
+1'
+#13250000
+0'
+#13375000
+1'
+#13500000
+0'
+1&
+#13625000
+1'
+#13750000
+0'
+#13875000
+0&
+b1011 ,
+0'
+#14000000
+1'
+1&
+#14075000

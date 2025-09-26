@@ -1,0 +1,183 @@
+#! /usr/bin/vvp
+:ivl_version "11.0 (stable)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision - 12;
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/system.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/vhdl_sys.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/vhdl_textio.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/v2005_math.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/va_math.vpi";
+S_0x558a95ae3250 .scope module, "dflipflop_tb" "dflipflop_tb" 2 3;
+ .timescale -9 -12;
+v0x558a95b140c0_0 .net "output_led1_0_1", 0 0, L_0x558a95b15d40;  1 drivers
+v0x558a95b14160_0 .net "output_led2_0_2", 0 0, L_0x558a95b15ee0;  1 drivers
+v0x558a95b14200_0 .var/i "pass_count", 31 0;
+v0x558a95b142a0_0 .var/i "test_count", 31 0;
+S_0x558a95ae0b70 .scope module, "dut" "dflipflop" 2 15, 3 14 0, S_0x558a95ae3250;
+ .timescale -9 -12;
+    .port_info 0 /OUTPUT 1 "output_led1_0_1";
+    .port_info 1 /OUTPUT 1 "output_led2_0_2";
+L_0x7fdd25ba7060 .functor BUFT 1, C4<0>, C4<0>, C4<0>, C4<0>;
+L_0x558a95ae3bc0 .functor AND 1, L_0x7fdd25ba7060, L_0x558a95b14b30, C4<1>, C4<1>;
+L_0x558a95ae3c30 .functor AND 1, L_0x558a95ae3bc0, L_0x558a95b14700, C4<1>, C4<1>;
+L_0x558a95b14430 .functor NOT 1, L_0x558a95ae3c30, C4<0>, C4<0>, C4<0>;
+L_0x558a95b14520 .functor AND 1, L_0x558a95b14430, L_0x558a95b14910, C4<1>, C4<1>;
+L_0x7fdd25ba7018 .functor BUFT 1, C4<0>, C4<0>, C4<0>, C4<0>;
+L_0x558a95b14610 .functor AND 1, L_0x558a95b14520, L_0x7fdd25ba7018, C4<1>, C4<1>;
+L_0x558a95b14700 .functor NOT 1, L_0x558a95b14610, C4<0>, C4<0>, C4<0>;
+L_0x558a95b148a0 .functor AND 1, L_0x558a95b155e0, L_0x558a95b15110, C4<1>, C4<1>;
+L_0x558a95b14910 .functor NOT 1, L_0x558a95b148a0, C4<0>, C4<0>, C4<0>;
+L_0x558a95b14ac0 .functor AND 1, L_0x558a95b14ec0, L_0x558a95b154d0, C4<1>, C4<1>;
+L_0x558a95b14b30 .functor NOT 1, L_0x558a95b14ac0, C4<0>, C4<0>, C4<0>;
+L_0x7fdd25ba70a8 .functor BUFT 1, C4<0>, C4<0>, C4<0>, C4<0>;
+L_0x558a95b14ca0 .functor AND 1, L_0x7fdd25ba70a8, L_0x558a95b15860, C4<1>, C4<1>;
+L_0x558a95b14d10 .functor AND 1, L_0x558a95b14ca0, L_0x558a95b15110, C4<1>, C4<1>;
+L_0x558a95b14ec0 .functor NOT 1, L_0x558a95b14d10, C4<0>, C4<0>, C4<0>;
+L_0x558a95b14fd0 .functor AND 1, L_0x558a95b14ec0, L_0x558a95b15320, C4<1>, C4<1>;
+L_0x7fdd25ba70f0 .functor BUFT 1, C4<0>, C4<0>, C4<0>, C4<0>;
+L_0x558a95b14e50 .functor AND 1, L_0x558a95b14fd0, L_0x7fdd25ba70f0, C4<1>, C4<1>;
+L_0x558a95b15110 .functor NOT 1, L_0x558a95b14e50, C4<0>, C4<0>, C4<0>;
+L_0x7fdd25ba7138 .functor BUFT 1, C4<1>, C4<0>, C4<0>, C4<0>;
+L_0x558a95b152b0 .functor AND 1, L_0x558a95b15b40, L_0x7fdd25ba7138, C4<1>, C4<1>;
+L_0x558a95b15320 .functor NOT 1, L_0x558a95b152b0, C4<0>, C4<0>, C4<0>;
+L_0x558a95b154d0 .functor BUFZ 1, L_0x558a95b155e0, C4<0>, C4<0>, C4<0>;
+o0x7fdd25bf0558 .functor BUFZ 1, C4<z>; HiZ drive
+L_0x558a95b155e0 .functor BUFZ 1, o0x7fdd25bf0558, C4<0>, C4<0>, C4<0>;
+L_0x7fdd25ba7180 .functor BUFT 1, C4<0>, C4<0>, C4<0>, C4<0>;
+L_0x558a95b157a0 .functor AND 1, L_0x7fdd25ba7180, L_0x558a95b15a30, C4<1>, C4<1>;
+L_0x558a95b15860 .functor NOT 1, L_0x558a95b157a0, C4<0>, C4<0>, C4<0>;
+L_0x558a95b15a30 .functor BUFZ 1, L_0x558a95b15b40, C4<0>, C4<0>, C4<0>;
+L_0x7fdd25ba71c8 .functor BUFT 1, C4<1>, C4<0>, C4<0>, C4<0>;
+L_0x558a95b15b40 .functor BUFZ 1, L_0x7fdd25ba71c8, C4<0>, C4<0>, C4<0>;
+L_0x558a95b15c80 .functor NOT 1, L_0x7fdd25ba71c8, C4<0>, C4<0>, C4<0>;
+L_0x558a95b15d40 .functor BUFZ 1, L_0x558a95b14430, C4<0>, C4<0>, C4<0>;
+L_0x558a95b15ee0 .functor BUFZ 1, L_0x558a95b14700, C4<0>, C4<0>, C4<0>;
+v0x558a95ae2a30_0 .net *"_ivl_0", 0 0, L_0x558a95ae3bc0;  1 drivers
+v0x558a95b12510_0 .net *"_ivl_14", 0 0, L_0x558a95b148a0;  1 drivers
+v0x558a95b125f0_0 .net *"_ivl_2", 0 0, L_0x558a95ae3c30;  1 drivers
+v0x558a95b126b0_0 .net *"_ivl_20", 0 0, L_0x558a95b14ac0;  1 drivers
+v0x558a95b12790_0 .net/2u *"_ivl_24", 0 0, L_0x7fdd25ba70a8;  1 drivers
+v0x558a95b128c0_0 .net *"_ivl_26", 0 0, L_0x558a95b14ca0;  1 drivers
+v0x558a95b129a0_0 .net *"_ivl_28", 0 0, L_0x558a95b14d10;  1 drivers
+v0x558a95b12a80_0 .net *"_ivl_32", 0 0, L_0x558a95b14fd0;  1 drivers
+v0x558a95b12b60_0 .net *"_ivl_34", 0 0, L_0x558a95b14e50;  1 drivers
+v0x558a95b12c40_0 .net *"_ivl_40", 0 0, L_0x558a95b152b0;  1 drivers
+v0x558a95b12d20_0 .net/2u *"_ivl_50", 0 0, L_0x7fdd25ba7180;  1 drivers
+v0x558a95b12e00_0 .net *"_ivl_52", 0 0, L_0x558a95b157a0;  1 drivers
+v0x558a95b12ee0_0 .net *"_ivl_6", 0 0, L_0x558a95b14520;  1 drivers
+v0x558a95b12fc0_0 .net *"_ivl_8", 0 0, L_0x558a95b14610;  1 drivers
+v0x558a95b130a0_0 .net "nand_12", 0 0, L_0x558a95b14ec0;  1 drivers
+v0x558a95b13160_0 .net "nand_13", 0 0, L_0x558a95b15320;  1 drivers
+v0x558a95b13220_0 .net "nand_15", 0 0, L_0x558a95b15110;  1 drivers
+v0x558a95b132e0_0 .net "nand_16", 0 0, L_0x558a95b14b30;  1 drivers
+v0x558a95b133a0_0 .net "nand_18", 0 0, L_0x558a95b14430;  1 drivers
+v0x558a95b13460_0 .net "nand_19", 0 0, L_0x558a95b14910;  1 drivers
+v0x558a95b13520_0 .net "nand_21", 0 0, L_0x558a95b14700;  1 drivers
+v0x558a95b135e0_0 .net "nand_8", 0 0, L_0x558a95b15860;  1 drivers
+v0x558a95b136a0_0 .net "node_10", 0 0, L_0x558a95b155e0;  1 drivers
+v0x558a95b13760_0 .net "node_11", 0 0, L_0x558a95b154d0;  1 drivers
+v0x558a95b13820_0 .net "node_14", 0 0, L_0x7fdd25ba70f0;  1 drivers
+v0x558a95b138e0_0 .net "node_17", 0 0, L_0x7fdd25ba7060;  1 drivers
+v0x558a95b139a0_0 .net "node_20", 0 0, L_0x7fdd25ba7018;  1 drivers
+v0x558a95b13a60_0 .net "node_5", 0 0, L_0x558a95b15b40;  1 drivers
+v0x558a95b13b20_0 .net "node_6", 0 0, o0x7fdd25bf0558;  0 drivers
+v0x558a95b13be0_0 .net "node_7", 0 0, L_0x558a95b15a30;  1 drivers
+v0x558a95b13ca0_0 .net "not_3", 0 0, L_0x7fdd25ba71c8;  1 drivers
+v0x558a95b13d60_0 .net "not_4", 0 0, L_0x558a95b15c80;  1 drivers
+v0x558a95b13e20_0 .net "not_9", 0 0, L_0x7fdd25ba7138;  1 drivers
+v0x558a95b13ee0_0 .net "output_led1_0_1", 0 0, L_0x558a95b15d40;  alias, 1 drivers
+v0x558a95b13fa0_0 .net "output_led2_0_2", 0 0, L_0x558a95b15ee0;  alias, 1 drivers
+S_0x558a95ae0ef0 .scope task, "monitor_outputs" "monitor_outputs" 2 24, 2 24 0, S_0x558a95ae3250;
+ .timescale -9 -12;
+TD_dflipflop_tb.monitor_outputs ;
+    %load/vec4 v0x558a95b142a0_0;
+    %addi 1, 0, 32;
+    %store/vec4 v0x558a95b142a0_0, 0, 32;
+    %delay 100000, 0;
+    %vpi_call 2 31 "$display", "Test %0d: Monitoring outputs => Q=%b, Q\314\204=%b", v0x558a95b142a0_0, v0x558a95b140c0_0, v0x558a95b14160_0 {0 0 0};
+    %load/vec4 v0x558a95b140c0_0;
+    %pushi/vec4 0, 0, 1;
+    %cmp/e;
+    %flag_get/vec4 6;
+    %load/vec4 v0x558a95b140c0_0;
+    %pushi/vec4 1, 0, 1;
+    %cmp/e;
+    %flag_get/vec4 6;
+    %or;
+    %load/vec4 v0x558a95b14160_0;
+    %pushi/vec4 0, 0, 1;
+    %cmp/e;
+    %flag_get/vec4 6;
+    %load/vec4 v0x558a95b14160_0;
+    %pushi/vec4 1, 0, 1;
+    %cmp/e;
+    %flag_get/vec4 6;
+    %or;
+    %and;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_0.0, 8;
+    %load/vec4 v0x558a95b14200_0;
+    %addi 1, 0, 32;
+    %store/vec4 v0x558a95b14200_0, 0, 32;
+    %vpi_call 2 38 "$display", "      PASS: Valid logic levels detected" {0 0 0};
+    %jmp T_0.1;
+T_0.0 ;
+    %vpi_call 2 40 "$display", "      FAIL: Invalid logic levels (X or Z detected)" {0 0 0};
+T_0.1 ;
+    %end;
+    .scope S_0x558a95ae3250;
+T_1 ;
+    %pushi/vec4 0, 0, 32;
+    %store/vec4 v0x558a95b142a0_0, 0, 32;
+    %pushi/vec4 0, 0, 32;
+    %store/vec4 v0x558a95b14200_0, 0, 32;
+    %end;
+    .thread T_1;
+    .scope S_0x558a95ae3250;
+T_2 ;
+    %vpi_call 2 47 "$display", "=== ENHANCED D FLIP-FLOP TESTBENCH ===" {0 0 0};
+    %vpi_call 2 48 "$display", "Testing self-contained D flip-flop circuit with no input ports" {0 0 0};
+    %vpi_call 2 49 "$display", "Enhanced code generator eliminated unused inputs for cleaner design" {0 0 0};
+    %delay 50000, 0;
+    %fork TD_dflipflop_tb.monitor_outputs, S_0x558a95ae0ef0;
+    %join;
+    %delay 200000, 0;
+    %fork TD_dflipflop_tb.monitor_outputs, S_0x558a95ae0ef0;
+    %join;
+    %delay 300000, 0;
+    %fork TD_dflipflop_tb.monitor_outputs, S_0x558a95ae0ef0;
+    %join;
+    %delay 500000, 0;
+    %fork TD_dflipflop_tb.monitor_outputs, S_0x558a95ae0ef0;
+    %join;
+    %vpi_call 2 64 "$display", "\012=== TEST SUMMARY ===" {0 0 0};
+    %vpi_call 2 65 "$display", "Total tests: %0d", v0x558a95b142a0_0 {0 0 0};
+    %vpi_call 2 66 "$display", "Passed: %0d", v0x558a95b14200_0 {0 0 0};
+    %load/vec4 v0x558a95b142a0_0;
+    %load/vec4 v0x558a95b14200_0;
+    %sub;
+    %vpi_call 2 67 "$display", "Failed: %0d", S<0,vec4,s32> {1 0 0};
+    %load/vec4 v0x558a95b14200_0;
+    %load/vec4 v0x558a95b142a0_0;
+    %cmp/e;
+    %jmp/0xz  T_2.0, 4;
+    %vpi_call 2 70 "$display", "*** ALL TESTS PASSED ***" {0 0 0};
+    %jmp T_2.1;
+T_2.0 ;
+    %vpi_call 2 72 "$display", "*** SOME TESTS FAILED ***" {0 0 0};
+T_2.1 ;
+    %vpi_call 2 75 "$finish" {0 0 0};
+    %end;
+    .thread T_2;
+    .scope S_0x558a95ae3250;
+T_3 ;
+    %vpi_call 2 80 "$dumpfile", "dflipflop_tb.vcd" {0 0 0};
+    %vpi_call 2 81 "$dumpvars", 32'sb00000000000000000000000000000000, S_0x558a95ae3250 {0 0 0};
+    %end;
+    .thread T_3;
+# The file index is used to find the file name in the following table.
+:file_names 4;
+    "N/A";
+    "<interactive>";
+    "dflipflop_tb.v";
+    "dflipflop.v";

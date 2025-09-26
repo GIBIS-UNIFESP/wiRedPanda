@@ -1,0 +1,176 @@
+Verilog Test Report - 2025-09-26 21:34:31
+============================================================
+
+Total tests: 54
+Passed: 23
+Failed: 31
+Success rate: 42.6%
+
+counter:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/counter_tb.v:18: error: port ``input_clock1_1'' is not a port of dut.
+/workspace/test/verilog/counter_tb.v:18: error: port ``output_led1_0_2'' is not a port of dut.
+/workspace/...
+  verilator: PASS
+  yosys: PASS
+
+decoder:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/decoder_tb.v:26: error: port ``input_input_switch1_1'' is not a port of dut.
+/workspace/test/verilog/decoder_tb.v:26: error: port ``input_input_switch2_2'' is not a port of dut...
+  verilator: PASS
+  yosys: PASS
+
+dflipflop_masterslave:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/dflipflop_masterslave_tb.v:18: error: port ``input_clock1_clk_1'' is not a port of dut.
+/workspace/test/verilog/dflipflop_masterslave_tb.v:18: error: port ``input_push_button2_...
+  verilator: FAIL
+    Error: %Warning-UNUSED: /workspace/test/verilog/dflipflop_masterslave.v:28:10: Signal is not driven, nor used: 'ic_dlatch_ic_node_7_0'
+                                                                      : ...
+  yosys: PASS
+
+dflipflop:
+  iverilog: PASS
+  verilator: FAIL
+    Error: %Warning-UNUSED: /workspace/test/verilog/dflipflop.v:26:10: Signal is not used: 'not_4'
+                                                          : ... In instance dflipflop
+   26 |     wire not_4;
+  ...
+  yosys: PASS
+
+dflipflop2:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/dflipflop2_tb.v:16: error: port ``input_clock1_1'' is not a port of dut.
+/workspace/test/verilog/dflipflop2_tb.v:16: error: port ``input_input_switch2_2'' is not a port of dut....
+  verilator: FAIL
+    Error: %Warning-UNUSED: /workspace/test/verilog/dflipflop2.v:29:10: Signal is not used: 'not_7'
+                                                           : ... In instance dflipflop2
+   29 |     wire not_7;...
+  yosys: PASS
+
+display_3bits_counter:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/display_3bits_counter_tb.v:28: error: port ``input_clock1_1'' is not a port of dut.
+/workspace/test/verilog/display_3bits_counter_tb.v:28: error: port ``input_push_button2_btn_...
+  verilator: FAIL
+    Error: %Warning-UNUSED: /workspace/test/verilog/display_3bits_counter.v:34:10: Signal is not driven, nor used: 'ic_display_3bits_ic_node_15_0'
+                                                                ...
+  yosys: PASS
+
+display_3bits:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/display_3bits_tb.v:29: error: port ``input_input_switch1_p3_1'' is not a port of dut.
+/workspace/test/verilog/display_3bits_tb.v:29: error: port ``input_input_switch2_p1_2'' is...
+  verilator: PASS
+  yosys: PASS
+
+display_4bits_counter:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/display_4bits_counter_tb.v:24: error: port ``input_push_button1_1'' is not a port of dut.
+/workspace/test/verilog/display_4bits_counter_tb.v:24: error: port ``input_clock2_2'' ...
+  verilator: FAIL
+    Error: %Warning-UNUSED: /workspace/test/verilog/display_4bits_counter.v:34:10: Signal is not driven, nor used: 'ic_jkflipflop_ic_node_19_0'
+                                                                   ...
+  yosys: PASS
+
+display_4bits:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/display_4bits_tb.v:26: error: port ``input_input_switch1_d_1'' is not a port of dut.
+/workspace/test/verilog/display_4bits_tb.v:26: error: port ``input_input_switch2_b_2'' is n...
+  verilator: PASS
+  yosys: PASS
+
+dlatch:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/dlatch_tb.v:16: error: port ``input_push_button1_d_1'' is not a port of dut.
+/workspace/test/verilog/dlatch_tb.v:16: error: port ``input_clock2_clk_2'' is not a port of dut.
+/w...
+  verilator: FAIL
+    Error: %Warning-UNOPTFLAT: /workspace/test/verilog/dlatch.v:29:10: Signal unoptimizable: Feedback to clock or circular logic: 'dlatch.nand_7'
+   29 |     wire nand_7;
+      |          ^~~~~~
+                ...
+  yosys: PASS
+
+ic:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/ic_tb.v:56: error: port ``input_clock1_1'' is not a port of dut.
+/workspace/test/verilog/ic_tb.v:56: error: port ``input_clock2_2'' is not a port of dut.
+/workspace/test/verilo...
+  verilator: FAIL
+    Error: %Warning-UNUSED: /workspace/test/verilog/ic.v:54:10: Signal is not driven, nor used: 'ic_jkflipflop_ic_node_39_0'
+                                                   : ... In instance ic
+   54 |     wi...
+  yosys: PASS
+
+input:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/input_tb.v:19: error: port ``input_push_button1_x0_1'' is not a port of dut.
+/workspace/test/verilog/input_tb.v:19: error: port ``input_push_button2_x1_2'' is not a port of dut...
+  verilator: FAIL
+    Error: %Warning-DECLFILENAME: /workspace/test/verilog/input.v:16:8: Filename 'input' does not match MODULE name: 'wiredpanda_module'
+   16 | module wiredpanda_module (
+      |        ^~~~~~~~~~~~~~~~~
+      ...
+  yosys: PASS
+
+jkflipflop:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/jkflipflop_tb.v:20: error: port ``input_clock1_c_1'' is not a port of dut.
+/workspace/test/verilog/jkflipflop_tb.v:20: error: port ``input_input_switch2__preset_2'' is not a po...
+  verilator: FAIL
+    Error: %Warning-UNUSED: /workspace/test/verilog/jkflipflop.v:28:10: Signal is not driven, nor used: 'ic_dflipflop_ic_node_11_0'
+                                                           : ... In instance jk...
+  yosys: PASS
+
+notes:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/notes_tb.v:27: error: port ``input_clock1_1'' is not a port of dut.
+/workspace/test/verilog/notes_tb.v:27: error: port ``output_buzzer1_g6_2'' is not a port of dut.
+/workspace/...
+  verilator: FAIL
+    Error: %Warning-UNUSED: /workspace/test/verilog/notes.v:34:10: Signal is not driven, nor used: 'ic_jkflipflop_ic_node_19_0'
+                                                      : ... In instance notes
+   34...
+  yosys: PASS
+
+register:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/register_tb.v:21: error: port ``input_clock1_1'' is not a port of dut.
+/workspace/test/verilog/register_tb.v:21: error: port ``input_clock2_2'' is not a port of dut.
+/workspace...
+  verilator: FAIL
+    Error: %Warning-UNUSED: /workspace/test/verilog/register.v:30:9: Signal is not used: 'd_flip_flop_7_1_q'
+                                                        : ... In instance register
+   30 |     reg d_f...
+  yosys: PASS
+
+sequential:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/sequential_tb.v:23: error: port ``input_push_button1_reset_1'' is not a port of dut.
+/workspace/test/verilog/sequential_tb.v:23: error: port ``input_clock2_slow_clk_2'' is not ...
+  verilator: FAIL
+    Error: %Warning-UNUSED: /workspace/test/verilog/sequential.v:31:10: Signal is not driven, nor used: 'ic_serialize_ic_node_18_0'
+                                                           : ... In instance se...
+  yosys: PASS
+
+serialize:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/serialize_tb.v:23: error: port ``input_input_switch1_load__shift_1'' is not a port of dut.
+/workspace/test/verilog/serialize_tb.v:23: error: port ``input_input_switch2_clock_2'...
+  verilator: FAIL
+    Error: %Warning-UNDRIVEN: /workspace/test/verilog/serialize.v:27:10: Signal is not driven: 'node_5'
+                                                            : ... In instance serialize
+   27 |     wire no...
+  yosys: PASS
+
+tflipflop:
+  iverilog: FAIL
+    Error: /workspace/test/verilog/tflipflop_tb.v:19: error: port ``input_push_button1_t_1'' is not a port of dut.
+/workspace/test/verilog/tflipflop_tb.v:19: error: port ``input_clock2_c_2'' is not a port of dut...
+  verilator: FAIL
+    Error: %Warning-UNUSED: /workspace/test/verilog/tflipflop.v:28:10: Signal is not driven, nor used: 'ic_dflipflop_ic_node_11_0'
+                                                          : ... In instance tfli...
+  yosys: PASS
+

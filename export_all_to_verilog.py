@@ -9,9 +9,11 @@ from pathlib import Path
 def export_panda_to_verilog(panda_file, output_dir):
     """Export a .panda file to Verilog using wiRedPanda."""
 
-    # Get base filename without extension
+    # Get base filename without extension and transform to match module naming
     base_name = Path(panda_file).stem
-    verilog_file = os.path.join(output_dir, f"{base_name}.v")
+    # Transform filename to match Verilog module naming (hyphens to underscores)
+    verilog_base_name = base_name.replace('-', '_')
+    verilog_file = os.path.join(output_dir, f"{verilog_base_name}.v")
 
     # Build the wiRedPanda command
     cmd = [
@@ -20,7 +22,7 @@ def export_panda_to_verilog(panda_file, output_dir):
         panda_file
     ]
 
-    print(f"Exporting {base_name}...")
+    print(f"Exporting {base_name} -> {verilog_base_name}...")
     print(f"  Input:  {panda_file}")
     print(f"  Output: {verilog_file}")
 

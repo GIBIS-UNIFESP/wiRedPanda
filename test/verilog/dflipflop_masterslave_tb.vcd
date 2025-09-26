@@ -1,0 +1,150 @@
+$date
+	Fri Sep 26 21:33:16 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module dflipflop_masterslave_tb $end
+$var wire 1 ! output_led1_q_0_3 $end
+$var wire 1 " output_led2_q_0_4 $end
+$var reg 1 # expected_q $end
+$var reg 1 $ input_clock1_clk_1 $end
+$var reg 1 % input_push_button2_d_2 $end
+$var reg 1 & previous_d $end
+$var integer 32 ' pass_count [31:0] $end
+$var integer 32 ( test_count [31:0] $end
+$scope module dut $end
+$var wire 1 ) ic_dlatch_ic_node_29_0 $end
+$var wire 1 * ic_dlatch_ic_node_30_0 $end
+$var wire 1 $ input_clock1_clk_1 $end
+$var wire 1 % input_push_button2_d_2 $end
+$var wire 1 ! output_led1_q_0_3 $end
+$var wire 1 " output_led2_q_0_4 $end
+$var reg 1 + output_led1_q_0_3_behavioral_reg $end
+$upscope $end
+$scope task test_dff $end
+$var reg 1 , d_value $end
+$upscope $end
+$scope task test_hold $end
+$var reg 1 - d_value $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+x-
+x,
+0+
+z*
+z)
+b0 (
+b0 '
+0&
+0%
+0$
+0#
+1"
+0!
+$end
+#50000
+1$
+#100000
+0$
+b1 (
+0,
+#150000
+1$
+#160000
+1%
+b10 (
+1,
+b1 '
+#200000
+0$
+#250000
+0"
+1!
+1+
+1$
+#260000
+0%
+b11 (
+0,
+1#
+b10 '
+#300000
+0$
+#350000
+1"
+0!
+0+
+1$
+#360000
+1%
+b100 (
+1,
+0#
+b11 '
+#400000
+0$
+#450000
+0"
+1!
+1+
+1$
+#460000
+0%
+b101 (
+0-
+1#
+b100 '
+#490000
+1%
+b110 (
+1-
+b101 '
+#500000
+0$
+#520000
+0%
+b111 (
+0,
+b110 '
+#550000
+1"
+0!
+0+
+1$
+#560000
+1%
+b1000 (
+1,
+0#
+b111 '
+#600000
+0$
+#650000
+0"
+1!
+1+
+1$
+#660000
+0%
+1#
+b1000 '
+#665000
+1%
+#670000
+0%
+#675000
+b1001 (
+1%
+#700000
+0$
+#750000
+1$
+#760000
+b1001 '

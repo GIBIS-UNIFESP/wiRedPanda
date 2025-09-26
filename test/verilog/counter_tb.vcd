@@ -1,0 +1,190 @@
+$date
+	Fri Sep 26 21:01:38 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module counter_tb $end
+$var wire 1 ! output_led3_0_4 $end
+$var wire 1 " output_led2_0_3 $end
+$var wire 1 # output_led1_0_2 $end
+$var reg 3 $ actual_count [2:0] $end
+$var reg 3 % expected_count [2:0] $end
+$var reg 1 & input_clock1_1 $end
+$var integer 32 ' cycle_count [31:0] $end
+$var integer 32 ( test_count [31:0] $end
+$scope module dut $end
+$var wire 1 & input_clock1_1 $end
+$var wire 1 # output_led1_0_2 $end
+$var wire 1 " output_led2_0_3 $end
+$var wire 1 ! output_led3_0_4 $end
+$var reg 1 ) jk_flip_flop_5_0_q $end
+$var reg 1 * jk_flip_flop_5_1_q $end
+$var reg 1 + jk_flip_flop_6_0_q $end
+$var reg 1 , jk_flip_flop_6_1_q $end
+$var reg 1 - jk_flip_flop_7_0_q $end
+$var reg 1 . jk_flip_flop_7_1_q $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+0.
+0-
+0,
+0+
+0*
+0)
+b0 (
+b0 '
+0&
+b0 %
+bx $
+0#
+0"
+0!
+$end
+#50000
+b1 '
+1&
+#100000
+0&
+#150000
+b10 '
+1&
+#200000
+0&
+#250000
+b11 '
+1&
+#300000
+0&
+#350000
+b100 '
+1&
+#360000
+b1 (
+#400000
+0&
+#450000
+b101 '
+1&
+#460000
+b10 (
+#500000
+0&
+#550000
+b110 '
+1&
+#560000
+b11 (
+#600000
+0&
+#650000
+b111 '
+1&
+#660000
+b100 (
+#700000
+0&
+#750000
+b1000 '
+1&
+#760000
+b101 (
+#800000
+0&
+#850000
+b1001 '
+1&
+#860000
+b110 (
+#900000
+0&
+#950000
+b1010 '
+1&
+#960000
+b111 (
+#1000000
+0&
+#1050000
+b1011 '
+1&
+#1060000
+b1000 (
+#1100000
+0&
+#1150000
+b1100 '
+1&
+#1160000
+b1001 (
+#1200000
+0&
+#1250000
+b1101 '
+1&
+#1260000
+b1010 (
+#1300000
+0&
+#1350000
+b1110 '
+1&
+#1360000
+b1011 (
+#1400000
+0&
+#1450000
+b1111 '
+1&
+#1460000
+b1100 (
+#1500000
+0&
+#1550000
+b10000 '
+1&
+#1560000
+b1101 (
+#1600000
+0&
+#1650000
+b10001 '
+1&
+#1660000
+b1110 (
+#1700000
+0&
+#1750000
+b10010 '
+1&
+#1760000
+b1111 (
+#1800000
+0&
+#1850000
+b10011 '
+1&
+#1860000
+b10000 (
+#1900000
+0&
+#1950000
+b10100 '
+1&
+#1960000
+b10001 (
+#2000000
+0&
+#2050000
+b10101 '
+1&
+#2060000
+b10010 (
+#2100000
+0&

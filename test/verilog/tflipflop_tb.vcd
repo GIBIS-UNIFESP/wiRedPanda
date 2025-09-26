@@ -1,0 +1,198 @@
+$date
+	Fri Sep 26 21:01:41 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module tflipflop_tb $end
+$var wire 1 ! output_led1_q_0_5 $end
+$var wire 1 " output_led2_q_0_6 $end
+$var reg 1 # input_clock2_c_2 $end
+$var reg 1 $ input_input_switch3__preset_3 $end
+$var reg 1 % input_input_switch4__clear_4 $end
+$var reg 1 & input_push_button1_t_1 $end
+$var reg 1 ' previous_q $end
+$var integer 32 ( pass_count [31:0] $end
+$var integer 32 ) test_count [31:0] $end
+$scope module dut $end
+$var wire 1 * ic_dflipflop_ic_node_38_0 $end
+$var wire 1 + ic_dflipflop_ic_node_39_0 $end
+$var wire 1 # input_clock2_c_2 $end
+$var wire 1 $ input_input_switch3__preset_3 $end
+$var wire 1 % input_input_switch4__clear_4 $end
+$var wire 1 & input_push_button1_t_1 $end
+$var wire 1 ! output_led1_q_0_5 $end
+$var wire 1 " output_led2_q_0_6 $end
+$var reg 1 , output_led1_q_0_5_behavioral_reg $end
+$upscope $end
+$scope task test_tff $end
+$var reg 1 - clear $end
+$var reg 1 . preset $end
+$var reg 1 / t_value $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+x/
+x.
+x-
+0,
+z+
+z*
+b0 )
+b0 (
+0'
+0&
+1%
+1$
+0#
+1"
+0!
+$end
+#100000
+1#
+#150000
+b1 )
+1-
+1.
+0/
+#200000
+0#
+#300000
+1#
+#320000
+1&
+b10 )
+1/
+b1 (
+#400000
+0#
+#500000
+0"
+1!
+1,
+1#
+#520000
+b11 )
+b10 (
+#530000
+1'
+#600000
+0#
+#700000
+1#
+#720000
+0&
+b100 )
+0/
+#800000
+0#
+#900000
+1"
+0!
+0,
+1#
+#920000
+1&
+b101 )
+1/
+#930000
+0'
+#1000000
+0#
+#1100000
+0"
+1!
+1,
+1#
+#1120000
+0&
+b110 )
+0/
+b11 (
+#1130000
+1'
+#1200000
+0#
+#1300000
+1"
+0!
+0,
+1#
+#1320000
+0"
+1!
+1,
+0$
+b111 )
+0.
+#1400000
+0#
+#1500000
+1#
+#1520000
+1&
+1$
+b1000 )
+1.
+1/
+b100 (
+#1600000
+0#
+#1700000
+1#
+#1720000
+0%
+b1001 )
+0-
+#1800000
+0#
+#1900000
+1#
+#1920000
+0&
+1%
+b1010 )
+1-
+0/
+b101 (
+#2000000
+0#
+#2100000
+1"
+0!
+0,
+1#
+#2120000
+1&
+b1011 )
+1/
+#2130000
+0'
+#2200000
+0#
+#2300000
+0"
+1!
+1,
+1#
+#2320000
+b1100 )
+b110 (
+#2330000
+1'
+#2400000
+0#
+#2500000
+1#
+#2520000
+b1101 )
+#2600000
+0#
+#2700000
+1#
+#2720000

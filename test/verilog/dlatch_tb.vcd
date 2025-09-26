@@ -1,0 +1,107 @@
+$date
+	Fri Sep 26 21:01:39 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module dlatch_tb $end
+$var wire 1 ! output_led1_q_0_3 $end
+$var wire 1 " output_led2_q_0_4 $end
+$var reg 1 # input_clock2_clk_2 $end
+$var reg 1 $ input_push_button1_d_1 $end
+$var integer 32 % pass_count [31:0] $end
+$var integer 32 & test_count [31:0] $end
+$scope module dut $end
+$var wire 1 # input_clock2_clk_2 $end
+$var wire 1 $ input_push_button1_d_1 $end
+$var wire 1 ' nand_7 $end
+$var wire 1 ( nand_9 $end
+$var wire 1 ! output_led1_q_0_3 $end
+$var wire 1 " output_led2_q_0_4 $end
+$var reg 1 ) output_led1_q_0_3_behavioral_reg $end
+$upscope $end
+$scope task test_latch $end
+$var reg 1 * clk_value $end
+$var reg 1 + d_value $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+x+
+x*
+0)
+z(
+z'
+b0 &
+b0 %
+0$
+0#
+1"
+0!
+$end
+#50000
+1#
+b1 &
+1*
+0+
+#60000
+1$
+b10 &
+1+
+b1 %
+#70000
+0$
+b11 &
+0+
+b10 %
+#80000
+0#
+b100 &
+0*
+b11 %
+#90000
+1$
+b101 &
+1+
+b100 %
+#100000
+0"
+1!
+1)
+1#
+b110 &
+1*
+b101 %
+#110000
+0$
+b111 &
+0+
+b110 %
+#120000
+0#
+b1000 &
+0*
+b111 %
+#130000
+1$
+b1001 &
+1+
+b1000 %
+#140000
+0$
+b1010 &
+0+
+b1001 %
+#150000
+1#
+1$
+b1011 &
+1*
+1+
+b1010 %
+#160000
+b1011 %

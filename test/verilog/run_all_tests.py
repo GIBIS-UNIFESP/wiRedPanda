@@ -19,17 +19,17 @@ TOOLS = {
     "yosys": {"compiler": "yosys", "simulator": None, "version_flag": "-V"}
 }
 
-# List of all exported Verilog files
+# List of all exported Verilog files (updated for underscore naming)
 VERILOG_FILES = [
     "counter.v",
     "decoder.v",
-    "dflipflop-masterslave.v",
+    "dflipflop_masterslave.v",
     "dflipflop.v",
     "dflipflop2.v",
-    "display-3bits-counter.v",
-    "display-3bits.v",
-    "display-4bits-counter.v",
-    "display-4bits.v",
+    "display_3bits_counter.v",
+    "display_3bits.v",
+    "display_4bits_counter.v",
+    "display_4bits.v",
     "dlatch.v",
     "ic.v",
     "input.v",
@@ -163,17 +163,11 @@ class TestRunner:
             strict_flags = ["-v", "2", "-d", "-t"]  # Verbose level 2, detailed timing, timestamps
 
             self.log(f"Yosys strict synthesis checking {verilog_file} (STRICT MODE)")
-            # Enhanced Yosys script with stricter checks (auto-detect top module)
+            # Enhanced Yosys script with stricter checks (compatible with yosys 0.9)
             yosys_script = f"""
 read_verilog {verilog_file}
 hierarchy -check -auto-top
-proc -global_arst
-opt -full
-memory
-opt -full
-techmap
-opt -full
-abc -g cmos
+proc
 opt -full
 check
 stat
