@@ -3469,69 +3469,27 @@ QString CodeGeneratorVerilog::getICBoundaryVariable(IC *ic, QNEPort *, bool isIn
 
 void CodeGeneratorVerilog::predictUsedSignals(const QVector<GraphicElement *> &elements, QSet<QNEPort*> &usedSignals)
 {
-    generateDebugInfo("Starting dead code elimination analysis");
+    generateDebugInfo("Starting enhanced dead code elimination analysis with backward propagation");
 
-    // Phase 1: Mark all ports that are directly used as signal sources
+    // Phase 1: Initialize with outputs and sequential elements (the "roots" of usage)
+    QSet<QNEPort*> workingSet;
+
     for (auto *elm : elements) {
         if (!elm) continue;
 
-        // Skip input/output elements - they're always considered used
-        if (elm->elementGroup() == ElementGroup::Input || elm->elementGroup() == ElementGroup::Output) {
-            for (auto *port : elm->outputs()) {
-                usedSignals.insert(port);
-            }
+        // Output elements define what signals are actually needed
+        if (elm->elementGroup() == ElementGroup::Output) {
             for (auto *port : elm->inputs()) {
+                workingSet.insert(port);
+                generateDebugInfo(QString("Root usage: Output element %1").arg(elm->objectName()));
+            }
+            for (auto *port : elm->outputs()) {
                 usedSignals.insert(port);
             }
             continue;
         }
 
-        // Special case: Constants (VCC/GND) are always used if they have connections
-        if (elm->elementType() == ElementType::InputVcc || elm->elementType() == ElementType::InputGnd) {
-            for (auto *port : elm->outputs()) {
-                if (!port->connections().isEmpty()) {
-                    usedSignals.insert(port);
-                }
-            }
-            continue;
-        }
-
-        // Process all input ports - if an element's input is connected, mark the source as used
-        for (auto *inputPort : elm->inputs()) {
-            for (auto *conn : inputPort->connections()) {
-                // Input ports are connected to output ports, so find the output port driving this input
-                QNEOutputPort *sourceOutputPort = static_cast<QNEOutputPort*>(conn->startPort());
-                if (sourceOutputPort) {
-                    usedSignals.insert(sourceOutputPort);
-                    generateDebugInfo(QString("Marked output port as used (drives %1): %2")
-                                     .arg(elm->objectName()).arg(sourceOutputPort->graphicElement()->objectName()));
-                }
-            }
-        }
-
-        // Process all output ports - if an element's output drives something, mark it as used
-        for (auto *outputPort : elm->outputs()) {
-            if (!outputPort->connections().isEmpty()) {
-                usedSignals.insert(outputPort);
-                generateDebugInfo(QString("Marked output port as used (has connections): %1")
-                                 .arg(elm->objectName()));
-            }
-        }
-    }
-
-    // Phase 2: Mark clock and sequential element ports as always used
-    for (auto *elm : elements) {
-        if (!elm) continue;
-
-        // Clock elements are always used
-        if (elm->elementType() == ElementType::Clock) {
-            for (auto *port : elm->outputs()) {
-                usedSignals.insert(port);
-            }
-        }
-
-        // Sequential elements (flip-flops, latches) are always considered used
-        // to maintain circuit state even if outputs aren't directly connected
+        // Sequential elements maintain state and are always considered used
         if (elm->elementType() == ElementType::DFlipFlop ||
             elm->elementType() == ElementType::JKFlipFlop ||
             elm->elementType() == ElementType::TFlipFlop ||
@@ -3541,14 +3499,105 @@ void CodeGeneratorVerilog::predictUsedSignals(const QVector<GraphicElement *> &e
 
             for (auto *port : elm->outputs()) {
                 usedSignals.insert(port);
+                generateDebugInfo(QString("Sequential element output marked as used: %1").arg(elm->objectName()));
             }
             for (auto *port : elm->inputs()) {
-                usedSignals.insert(port);
+                workingSet.insert(port);
+                generateDebugInfo(QString("Sequential element input marked for analysis: %1").arg(elm->objectName()));
             }
         }
     }
 
-    // Phase 3: Recursive analysis for IC elements
+    // Phase 2: Backward propagation - propagate usage backwards through the circuit
+    bool changed = true;
+    int iterations = 0;
+    while (changed && iterations < 100) { // Safety limit
+        changed = false;
+        iterations++;
+
+        QSet<QNEPort*> newWorkingSet = workingSet;
+
+        for (auto *port : workingSet) {
+            if (usedSignals.contains(port)) {
+                continue; // Already processed
+            }
+
+            usedSignals.insert(port);
+            changed = true;
+
+            // Find the element that drives this input port and mark its inputs as needed
+            for (auto *conn : port->connections()) {
+                QNEOutputPort *sourcePort = static_cast<QNEOutputPort*>(conn->startPort());
+                if (sourcePort && !usedSignals.contains(sourcePort)) {
+                    GraphicElement *sourceElement = sourcePort->graphicElement();
+
+                    // Mark the source output as used
+                    usedSignals.insert(sourcePort);
+                    generateDebugInfo(QString("Backward propagation: %1 output drives used signal")
+                                     .arg(sourceElement->objectName()));
+
+                    // Add source element's inputs to working set (if not input/constant elements)
+                    if (sourceElement->elementGroup() != ElementGroup::Input &&
+                        sourceElement->elementType() != ElementType::InputVcc &&
+                        sourceElement->elementType() != ElementType::InputGnd) {
+
+                        for (auto *inputPort : sourceElement->inputs()) {
+                            if (!usedSignals.contains(inputPort)) {
+                                newWorkingSet.insert(inputPort);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        workingSet = newWorkingSet;
+    }
+
+    // Phase 3: Handle input elements and constants
+    for (auto *elm : elements) {
+        if (!elm) continue;
+
+        // Input elements are used if they drive used signals
+        if (elm->elementGroup() == ElementGroup::Input) {
+            for (auto *outputPort : elm->outputs()) {
+                bool drivesUsedSignal = false;
+                for (auto *conn : outputPort->connections()) {
+                    QNEInputPort *targetPort = static_cast<QNEInputPort*>(conn->endPort());
+                    if (targetPort && usedSignals.contains(targetPort)) {
+                        drivesUsedSignal = true;
+                        break;
+                    }
+                }
+                if (drivesUsedSignal) {
+                    usedSignals.insert(outputPort);
+                    generateDebugInfo(QString("Input element output marked as used: %1").arg(elm->objectName()));
+                }
+            }
+            continue;
+        }
+
+        // Constants are used if they drive used signals
+        if (elm->elementType() == ElementType::InputVcc || elm->elementType() == ElementType::InputGnd) {
+            for (auto *outputPort : elm->outputs()) {
+                bool drivesUsedSignal = false;
+                for (auto *conn : outputPort->connections()) {
+                    QNEInputPort *targetPort = static_cast<QNEInputPort*>(conn->endPort());
+                    if (targetPort && usedSignals.contains(targetPort)) {
+                        drivesUsedSignal = true;
+                        break;
+                    }
+                }
+                if (drivesUsedSignal) {
+                    usedSignals.insert(outputPort);
+                    generateDebugInfo(QString("Constant element output marked as used: %1").arg(elm->objectName()));
+                }
+            }
+            continue;
+        }
+    }
+
+    // Phase 4: Handle IC elements with proper backward propagation
     for (auto *elm : elements) {
         if (elm && elm->elementType() == ElementType::IC) {
             IC *ic = qobject_cast<IC*>(elm);
@@ -3556,28 +3605,45 @@ void CodeGeneratorVerilog::predictUsedSignals(const QVector<GraphicElement *> &e
                 generateDebugInfo(QString("Analyzing IC %1 with %2 internal elements")
                                  .arg(ic->objectName()).arg(ic->m_icElements.size()));
 
-                // Recursively analyze IC internal elements
-                QSet<QNEPort*> icUsedSignals;
-                predictUsedSignals(ic->m_icElements, icUsedSignals);
-
-                // Mark IC boundary ports as used if they connect to used internal signals
-                for (auto *port : ic->inputs()) {
-                    if (!port->connections().isEmpty()) {
-                        usedSignals.insert(port);
+                // Check if any IC outputs are used
+                bool icHasUsedOutputs = false;
+                for (auto *outputPort : ic->outputs()) {
+                    for (auto *conn : outputPort->connections()) {
+                        QNEInputPort *targetPort = static_cast<QNEInputPort*>(conn->endPort());
+                        if (targetPort && usedSignals.contains(targetPort)) {
+                            icHasUsedOutputs = true;
+                            usedSignals.insert(outputPort);
+                            generateDebugInfo(QString("IC output marked as used: %1").arg(ic->objectName()));
+                            break;
+                        }
                     }
                 }
-                for (auto *port : ic->outputs()) {
-                    if (!port->connections().isEmpty()) {
-                        usedSignals.insert(port);
+
+                // If IC has used outputs, recursively analyze and mark necessary inputs
+                if (icHasUsedOutputs) {
+                    QSet<QNEPort*> icUsedSignals;
+                    predictUsedSignals(ic->m_icElements, icUsedSignals);
+
+                    // Mark IC inputs as used if they drive used internal signals
+                    for (auto *inputPort : ic->inputs()) {
+                        for (auto *conn : inputPort->connections()) {
+                            QNEInputPort *targetPort = static_cast<QNEInputPort*>(conn->endPort());
+                            if (targetPort && icUsedSignals.contains(targetPort)) {
+                                usedSignals.insert(inputPort);
+                                generateDebugInfo(QString("IC input marked as used: %1").arg(ic->objectName()));
+                                break;
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    generateDebugInfo(QString("Dead code elimination complete: %1 ports marked as used").arg(usedSignals.size()));
+    generateDebugInfo(QString("Enhanced dead code elimination complete: %1 ports marked as used after %2 iterations")
+                     .arg(usedSignals.size()).arg(iterations));
 
-    // Phase 4: Detect undriven signals that are used (HIGH SEVERITY issue)
+    // Phase 5: Detect undriven signals that are used (HIGH SEVERITY issue)
     QSet<QNEPort*> drivenSignals;
 
     // Collect all signals that are actually driven (have assignments)
