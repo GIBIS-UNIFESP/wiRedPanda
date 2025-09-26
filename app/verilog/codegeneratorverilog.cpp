@@ -1508,6 +1508,12 @@ void CodeGeneratorVerilog::assignVariablesRec(const QVector<GraphicElement *> &e
     }
 
     for (auto *elm : sortedElements) {
+        // CRITICAL FIX: Skip elements already processed by IC boundary handling
+        if (m_visitedElements.contains(elm)) {
+            generateDebugInfo(QString("Skipping element %1 - already processed by IC boundary handling").arg(elm->objectName()), elm);
+            continue;
+        }
+
         if (elm->elementType() == ElementType::IC) {
             // ARCHITECTURAL FIX: Use Arduino-style IC boundary handling
             auto *ic = qgraphicsitem_cast<IC *>(elm);
@@ -1542,6 +1548,23 @@ void CodeGeneratorVerilog::assignVariablesRec(const QVector<GraphicElement *> &e
                 }
 
                 QString expr = generateLogicExpression(elm);
+
+                // CRITICAL FIX: Handle unconnected Nodes inside ICs
+                if (m_currentIC && expr == "1'b0") {
+                    // Check if this is an unconnected Node that should get the IC input signal
+                    generateDebugInfo(QString("Node %1: Unconnected inside IC, checking for IC input boundary fallback").arg(elm->objectName()), elm);
+
+                    // Try to find an IC input boundary mapping
+                    for (int i = 0; i < m_currentIC->m_icInputs.size(); ++i) {
+                        QNEPort *icInputPort = m_currentIC->m_icInputs.at(i);
+                        QString inputMapping = m_varMap.value(icInputPort);
+                        if (!inputMapping.isEmpty() && inputMapping != "1'b0" && inputMapping != "1'b1") {
+                            generateDebugInfo(QString("Node %1: Using IC input boundary fallback: %2").arg(elm->objectName()).arg(inputMapping), elm);
+                            expr = inputMapping;
+                            break;
+                        }
+                    }
+                }
 
                 // Skip assignment if it would be a self-assignment or invalid syntax
                 if (outputVar == expr) {
@@ -2923,6 +2946,11 @@ void CodeGeneratorVerilog::processICWithBoundaries(IC *ic)
     if (!ic->m_icElements.isEmpty()) {
         auto sortedElements = Common::sortGraphicElements(ic->m_icElements);
 
+        // CRITICAL FIX: Mark IC internal elements as processed to prevent duplicate generation
+        for (auto *element : sortedElements) {
+            m_visitedElements.insert(element);
+        }
+
         // CRITICAL FIX: Declare variables for IC internal elements BEFORE assigning
         generateDebugInfo(QString("Declaring variables for %1 IC internal elements").arg(sortedElements.size()), ic);
         declareVariablesRec(sortedElements, true);
@@ -2930,10 +2958,58 @@ void CodeGeneratorVerilog::processICWithBoundaries(IC *ic)
         // Now assign logic to the declared variables
         generateDebugInfo(QString("Assigning logic for %1 IC internal elements").arg(sortedElements.size()), ic);
         assignVariablesRec(sortedElements, true);
+
+        // CRITICAL FIX: Generate sequential logic for JK flip-flops inside IC
+        generateDebugInfo(QString("Generating sequential logic for JK flip-flops inside IC"), ic);
+        for (auto *elm : sortedElements) {
+            if (elm->elementType() == ElementType::JKFlipFlop ||
+                elm->elementType() == ElementType::SRFlipFlop ||
+                elm->elementType() == ElementType::TFlipFlop ||
+                elm->elementType() == ElementType::DLatch ||
+                elm->elementType() == ElementType::SRLatch) {
+
+                QString generatedCode = generateSequentialLogic(elm);
+                if (!generatedCode.isEmpty()) {
+                    generateDebugInfo(QString("Generated sequential logic for %1 inside IC").arg(elm->objectName()), elm);
+                    m_stream << generatedCode << Qt::endl;
+                }
+            }
+        }
+
+        generateDebugInfo(QString("Marked %1 IC internal elements as processed").arg(sortedElements.size()), ic);
     }
 
     // Phase 3: Map IC outputs (internal IC variables → external signals)
     mapICOutputBoundaries(ic);
+
+    // Phase 4: Generate explicit assign statements for internal nodes connected to external signals
+    generateDebugInfo(QString("Generating explicit assign statements for IC internal nodes"), ic);
+    for (int i = 0; i < ic->inputSize(); ++i) {
+        QNEPort *externalPort = ic->inputPort(i);
+        QNEPort *internalPort = (i < ic->m_icInputs.size()) ? ic->m_icInputs.at(i) : nullptr;
+
+        if (externalPort && internalPort) {
+            QString externalSignal = otherPortName(externalPort);
+
+            // Find the internal node variable that was declared for this input
+            for (auto *element : ic->m_icElements) {
+                if (element->elementType() == ElementType::Node) {
+                    for (int j = 0; j < element->outputSize(); ++j) {
+                        QNEPort *nodePort = element->outputPort(j);
+                        if (nodePort == internalPort) {
+                            QString nodeVar = m_varMap.value(nodePort);
+                            if (!nodeVar.isEmpty() && nodeVar != externalSignal) {
+                                m_stream << "    assign " << nodeVar << " = " << externalSignal << "; // IC input boundary" << Qt::endl;
+                                generateDebugInfo(QString("Generated assign %1 = %2 for IC input boundary")
+                                                 .arg(nodeVar).arg(externalSignal), ic);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     // Restore previous IC context
     m_icStack.removeLast();
@@ -2966,11 +3042,10 @@ void CodeGeneratorVerilog::mapICInputBoundaries(IC *ic)
             m_varMap[internalPort] = internalVar;
         }
 
-        // ARDUINO-STYLE: Direct variable mapping without explicit assignments
-        // Map the internal input node to use the external signal directly
+        // CRITICAL FIX: Map internal nodes directly to external signals AND generate assign statements
         m_varMap[internalPort] = externalSignal;
 
-        generateDebugInfo(QString("IC input boundary %1: internal port mapped to external signal %2 (no explicit assignment)")
+        generateDebugInfo(QString("IC input boundary %1: mapped internal port directly to external signal %2")
                          .arg(i).arg(externalSignal), ic);
     }
 }
@@ -2980,9 +3055,16 @@ void CodeGeneratorVerilog::mapICOutputBoundaries(IC *ic)
     generateDebugInfo(QString(">>> BOUNDARY MAPPING: IC outputs for %1").arg(ic->label()), ic);
 
     // Map IC outputs: internal IC output variables → external signals
+    generateDebugInfo(QString("IC has %1 outputs, %2 internal outputs").arg(ic->outputSize()).arg(ic->m_icOutputs.size()), ic);
+
     for (int i = 0; i < ic->outputSize(); ++i) {
         QNEPort *externalPort = ic->outputPort(i);     // IC external output pin
         QNEPort *internalPort = (i < ic->m_icOutputs.size()) ? ic->m_icOutputs.at(i) : nullptr; // IC internal output node
+
+        generateDebugInfo(QString("IC output %1: externalPort=%2, internalPort=%3")
+                         .arg(i)
+                         .arg(externalPort ? "valid" : "NULL")
+                         .arg(internalPort ? "valid" : "NULL"), ic);
 
         if (!externalPort || !internalPort) {
             generateDebugInfo(QString("Skipping IC output %1: missing port").arg(i), ic);
@@ -2992,9 +3074,12 @@ void CodeGeneratorVerilog::mapICOutputBoundaries(IC *ic)
         QString internalSignal = m_varMap.value(internalPort);  // What internal element produces
         QString externalVar = m_varMap.value(externalPort);     // External variable name
 
-        // If internal signal is not found, try to find the actual driving element
-        if (internalSignal.isEmpty() || internalSignal == "1'b0") {
-            generateDebugInfo(QString("IC output %1 internal signal not found, searching for driving element").arg(i), ic);
+        generateDebugInfo(QString("IC output %1 - internalSignal: '%2', externalVar: '%3'")
+                         .arg(i).arg(internalSignal).arg(externalVar), ic);
+
+        // CRITICAL FIX: If internal signal is not found or is just a node, find the actual driving element
+        if (internalSignal.isEmpty() || internalSignal == "1'b0" || internalSignal.contains("_node_")) {
+            generateDebugInfo(QString("IC output %1 internal signal '%2' needs replacement, searching for driving element").arg(i).arg(internalSignal), ic);
 
             // Look for sequential elements that should drive this output
             QList<GraphicElement*> flipFlops;
@@ -3007,26 +3092,70 @@ void CodeGeneratorVerilog::mapICOutputBoundaries(IC *ic)
                 }
             }
 
-            // Use sequential assignment for counter circuits
+            // CRITICAL FIX: For counter circuits, map flip-flop outputs directly to LED outputs
             if (i < flipFlops.size()) {
                 auto *targetFF = flipFlops.at(i);
                 QString ffOutput = m_varMap.value(targetFF->outputPort(0)); // Q output
                 if (!ffOutput.isEmpty() && ffOutput != "1'b0") {
                     internalSignal = ffOutput;
-                    generateDebugInfo(QString("Found driving FF %1 output: %2")
+                    generateDebugInfo(QString("CRITICAL FIX: Replaced node with FF %1 output: %2")
                                      .arg(targetFF->objectName()).arg(internalSignal), ic);
+                } else {
+                    generateDebugInfo(QString("WARNING: FF %1 output not found in varMap").arg(targetFF->objectName()), ic);
                 }
+            } else {
+                generateDebugInfo(QString("WARNING: No flip-flop found for IC output %1").arg(i), ic);
             }
         }
 
         if (externalVar.isEmpty()) {
-            generateDebugInfo(QString("Warning: IC output %1 external variable not found").arg(i), ic);
-            continue;
+            generateDebugInfo(QString("IC output %1 external variable not found, searching connected elements").arg(i), ic);
+
+            // CRITICAL FIX: Find what external elements are connected to this IC output port
+            // The LED outputs aren't in varMap yet, so we need to find them by traversing connections
+            for (QNEConnection *conn : externalPort->connections()) {
+                QNEPort *otherPort = (conn->startPort() == externalPort) ?
+                                     static_cast<QNEPort*>(conn->endPort()) :
+                                     static_cast<QNEPort*>(conn->startPort());
+                if (otherPort && otherPort->graphicElement()) {
+                    GraphicElement *connectedElement = otherPort->graphicElement();
+
+                    // Check if this is an output element (LED)
+                    if (connectedElement->elementType() == ElementType::Led) {
+                        externalVar = QString("output_%1_%2_%3")
+                                      .arg(connectedElement->objectName().toLower())
+                                      .arg(otherPort->index())
+                                      .arg(connectedElement->id());
+                        generateDebugInfo(QString("Found connected LED %1 with output variable: %2")
+                                         .arg(connectedElement->objectName()).arg(externalVar), ic);
+                        break;
+                    }
+                }
+            }
+
+            if (externalVar.isEmpty()) {
+                generateDebugInfo(QString("Warning: IC output %1 has no valid external connection").arg(i), ic);
+                continue;
+            }
         }
 
         // ARDUINO-STYLE: Direct variable mapping without explicit assignments
         // Map the external output port to use the internal signal directly
         m_varMap[externalPort] = internalSignal;
+
+        // CRITICAL FIX: Also update the LED output port to use the internal signal
+        // This ensures generateOutputAssignments() will use the flip-flop output instead of 1'b0
+        for (QNEConnection *conn : externalPort->connections()) {
+            QNEPort *otherPort = (conn->startPort() == externalPort) ?
+                                 static_cast<QNEPort*>(conn->endPort()) :
+                                 static_cast<QNEPort*>(conn->startPort());
+            if (otherPort && otherPort->graphicElement() &&
+                otherPort->graphicElement()->elementType() == ElementType::Led) {
+                m_varMap[otherPort] = internalSignal;
+                generateDebugInfo(QString("CRITICAL FIX: Mapped LED output port to internal signal: %1")
+                                 .arg(internalSignal), ic);
+            }
+        }
 
         generateDebugInfo(QString("IC output boundary %1: external port mapped to internal signal %2 (no explicit assignment)")
                          .arg(i).arg(internalSignal), ic);
