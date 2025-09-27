@@ -451,6 +451,16 @@ private:
     void predictUsedSignals(const QVector<GraphicElement *> &elements, QSet<QNEPort*> &usedSignals);
 
     /**
+     * @brief Pre-populate m_varMap with sequential element variables to fix architectural timing
+     */
+    void prePopulateSequentialVariables();
+
+    /**
+     * @brief Recursive helper for pre-populating sequential variables
+     */
+    void prePopulateSequentialVariablesRec(const QVector<GraphicElement *> &elements);
+
+    /**
      * @brief Start tracking wire assignments
      */
     void startAssignmentTracking();
@@ -623,6 +633,7 @@ private:
 
     // Assignment-driven wire declaration for UNUSED signal elimination
     QSet<QString> m_actuallyAssignedWires;                  // Track wire names that get actual assignments
+    QSet<QString> m_referencedWires;                       // Track wire names that are only referenced in expressions
     QStringList m_assignmentBuffer;                         // Buffer all assignments before wire declarations
     QStringList m_alwaysBlockBuffer;                        // Buffer always blocks (sequential logic)
     bool m_trackingAssignments = false;                     // Flag to indicate assignment tracking phase

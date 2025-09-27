@@ -32,7 +32,7 @@ VERILOG_FILES = [
     "display_4bits.v",
     "dlatch.v",
     "ic.v",
-    "input.v",
+    "input_module.v",
     "jkflipflop.v",
     "notes.v",
     "register.v",
