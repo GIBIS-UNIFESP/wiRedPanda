@@ -2,10 +2,10 @@
 // ======= This Verilog code was generated automatically by wiRedPanda =======
 // ====================================================================
 //
-// Module: tflipflop
-// Generated: Sat Sep 27 18:03:57 2025
+// Module: jkflipflop_register_fix
+// Generated: Sat Sep 27 16:37:54 2025
 // Target FPGA: Generic-Small
-// Resource Usage: 16/1000 LUTs, 35/1000 FFs, 6/50 IOs
+// Resource Usage: 24/1000 LUTs, 35/1000 FFs, 7/50 IOs
 //
 // wiRedPanda - Digital Logic Circuit Simulator
 // https://github.com/gibis-unifesp/wiredpanda
@@ -13,30 +13,31 @@
 
 `timescale 1ns/1ps
 
-module tflipflop (
+module jkflipflop_register_fix (
     // ========= Input Ports =========
-    input wire input_push_button1_t_1,
-    input wire input_clock2_c_2,
-    input wire input_input_switch3__preset_3,
-    input wire input_input_switch4__clear_4,
+    input wire input_clock1_c_1,
+    input wire input_input_switch2__preset_2,
+    input wire input_input_switch3__clear_3,
+    input wire input_input_switch4_j_4,
+    input wire input_input_switch5_k_5,
 
     // ========= Output Ports =========
-    output wire output_led1_q_0_5,
-    output wire output_led2_q_0_6
+    output wire output_led1_q_0_6,
+    output wire output_led2_q_0_7
 );
 
     // ========= Logic Assignments =========
 
     // ========= Internal Sequential Register =========
-    reg output_led1_q_0_5_behavioral_reg = 1'b0; // Internal sequential register
+    reg output_led1_q_0_6_behavioral_reg = 1'b0; // Internal sequential register
 
     // ========= Behavioral Sequential Logic (replaces gate-level feedback) =========
     // Industry-standard behavioral sequential logic
-    always @(posedge input_clock2_c_2 or negedge input_input_switch3__preset_3) begin
-        if (!input_input_switch3__preset_3) begin
-            output_led1_q_0_5_behavioral_reg <= 1'b1; // Asynchronous preset
+    always @(posedge input_clock1_c_1 or negedge input_input_switch2__preset_2) begin
+        if (!input_input_switch2__preset_2) begin
+            output_led1_q_0_6_behavioral_reg <= 1'b1; // Asynchronous preset
         end else begin // Synchronous operation
-            output_led1_q_0_5_behavioral_reg <= input_push_button1_t_1;
+            output_led1_q_0_6_behavioral_reg <= input_input_switch2__preset_2;
         end
     end
 
@@ -49,15 +50,15 @@ module tflipflop (
 // ============== END IC: DFLIPFLOP ==============
 
     // ========= Logic Assignments =========
-    assign output_led1_q_0_5 = output_led1_q_0_5_behavioral_reg; // Connect behavioral register to output
-    assign output_led2_q_0_6 = ~output_led1_q_0_5_behavioral_reg; // Complementary output
-    assign output_led1_q_0_5 = 1'b0; // LED
-    assign output_led2_q_0_6 = 1'b0; // LED
+    assign output_led1_q_0_6 = output_led1_q_0_6_behavioral_reg; // Connect behavioral register to output
+    assign output_led2_q_0_7 = ~output_led1_q_0_6_behavioral_reg; // Complementary output
+    assign output_led1_q_0_6 = 1'b0; // LED
+    assign output_led2_q_0_7 = 1'b0; // LED
 
-endmodule // tflipflop
+endmodule // jkflipflop_register_fix
 
 // ====================================================================
-// Module tflipflop generation completed successfully
-// Elements processed: 14
-// Inputs: 4, Outputs: 2
+// Module jkflipflop_register_fix generation completed successfully
+// Elements processed: 20
+// Inputs: 5, Outputs: 2
 // ====================================================================

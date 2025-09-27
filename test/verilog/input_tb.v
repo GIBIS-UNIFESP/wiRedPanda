@@ -15,7 +15,7 @@ module input_tb;
     integer pass_count = 0;
 
     // Instantiate the Device Under Test (DUT) - Updated port mapping
-    wiredpanda_module dut (
+    input_module dut (
         .output_led1_xor_0_1(output_led1_xor_0_1),
         .output_led2_not_x0_0_2(output_led2_not_x0_0_2),
         .output_led3_and_0_3(output_led3_and_0_3),

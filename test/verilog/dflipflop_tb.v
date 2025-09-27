@@ -2,23 +2,31 @@
 
 module dflipflop_tb;
 
-    // Testbench signals - Updated to match new clean Verilog output structure
-    // NOTE: Enhanced code generator eliminated unused input ports
-    wire output_led1_0_1;
-    wire output_led2_0_2;
+    // Testbench signals - Updated for systematic improvements
+    reg input_clock1_clk_1 = 0;
+    reg input_push_button2_d_2 = 0;
+    reg input_input_switch3__preset_3 = 1; // Active low preset
+    reg input_input_switch4__clear_4 = 1;  // Active low clear
+    wire output_led1_0_5;
+    wire output_led2_0_6;
 
     // Test control
     integer test_count = 0;
     integer pass_count = 0;
 
-    // Instantiate the Device Under Test (DUT) - Updated port mapping
+    // Instantiate the Device Under Test (DUT) - Updated for systematic improvements
     dflipflop dut (
-        .output_led1_0_1(output_led1_0_1),
-        .output_led2_0_2(output_led2_0_2)
+        .input_clock1_clk_1(input_clock1_clk_1),
+        .input_push_button2_d_2(input_push_button2_d_2),
+        .input_input_switch3__preset_3(input_input_switch3__preset_3),
+        .input_input_switch4__clear_4(input_input_switch4__clear_4),
+        .output_led1_0_5(output_led1_0_5),
+        .output_led2_0_6(output_led2_0_6)
     );
 
-    // Enhanced testbench for clean Verilog output with no input ports
-    // The new dflipflop module has no inputs - it's a self-contained circuit
+    // Enhanced testbench for systematic D flip-flop with preset/clear functionality
+    // Generate clock for the D flip-flop
+    always #50 input_clock1_clk_1 = ~input_clock1_clk_1; // 10MHz clock
 
     // Test monitoring for output behavior observation
     task monitor_outputs;

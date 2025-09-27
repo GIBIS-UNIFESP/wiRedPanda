@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: dflipflop_masterslave
-// Generated: Sat Sep 27 11:33:02 2025
+// Generated: Sat Sep 27 18:03:46 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 10/1000 LUTs, 35/1000 FFs, 4/50 IOs
 //
@@ -15,13 +15,27 @@
 
 module dflipflop_masterslave (
     // ========= Input Ports =========
+    input wire input_clock1_clk_1,
+    input wire input_push_button2_d_2,
 
     // ========= Output Ports =========
-    output wire output_led1_q_0_1,
-    output wire output_led2_q_0_2
+    output wire output_led1_q_0_3,
+    output wire output_led2_q_0_4
 );
 
     // ========= Logic Assignments =========
+
+    // ========= Internal Sequential Register =========
+    reg output_led1_q_0_3_behavioral_reg = 1'b0; // Internal sequential register
+
+    // ========= Behavioral Sequential Logic (replaces gate-level feedback) =========
+    // Industry-standard behavioral sequential logic
+    always @(posedge input_clock1_clk_1) begin
+begin // Synchronous operation
+            output_led1_q_0_3_behavioral_reg <= input_push_button2_d_2;
+        end
+    end
+
 
     // ========= Output Assignments =========
     // ========= Internal Signals =========
@@ -35,15 +49,17 @@ module dflipflop_masterslave (
 // ============== END IC: DLATCH ==============
 
     // ========= Logic Assignments =========
-    assign output_led1_q_0_1 = ic_dlatch_ic_node_14_0; // LED
-    assign output_led2_q_0_2 = ic_dlatch_ic_node_15_0; // LED
+    assign output_led1_q_0_3 = output_led1_q_0_3_behavioral_reg; // Connect behavioral register to output
+    assign output_led2_q_0_4 = ~output_led1_q_0_3_behavioral_reg; // Complementary output
+    assign output_led1_q_0_3 = 1'b0; // LED
+    assign output_led2_q_0_4 = 1'b0; // LED
 
 endmodule // dflipflop_masterslave
 
 // ====================================================================
 // Module dflipflop_masterslave generation completed successfully
 // Elements processed: 9
-// Inputs: 0, Outputs: 2
+// Inputs: 2, Outputs: 2
 // Warnings: 1
 //   IC DLATCH output 1 is not connected
 // ====================================================================

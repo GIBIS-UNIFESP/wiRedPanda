@@ -2,11 +2,11 @@
 
 module counter_tb;
 
-    // Testbench signals - Updated for enhanced code generator (no input ports)
-    // The enhanced generator eliminated unused input ports for cleaner design
-    wire output_led1_0_1;
-    wire output_led2_0_2;
-    wire output_led3_0_3;
+    // Testbench signals - Updated for systematic improvements
+    reg input_clock1_1 = 0;
+    wire output_led1_0_2;
+    wire output_led2_0_3;
+    wire output_led3_0_4;
 
     // Test control
     integer test_count = 0;
@@ -14,19 +14,21 @@ module counter_tb;
     reg [2:0] expected_count = 0;
     reg [2:0] actual_count;
 
-    // Instantiate the Device Under Test (DUT) - Updated port mapping
+    // Instantiate the Device Under Test (DUT) - Updated port mapping for systematic improvements
     counter dut (
-        .output_led1_0_1(output_led1_0_1),
-        .output_led2_0_2(output_led2_0_2),
-        .output_led3_0_3(output_led3_0_3)
+        .input_clock1_1(input_clock1_1),
+        .output_led1_0_2(output_led1_0_2),
+        .output_led2_0_3(output_led2_0_3),
+        .output_led3_0_4(output_led3_0_4)
     );
 
-    // Enhanced testbench for self-contained counter with no external clock
-    // The counter now uses internal clock generation
+    // Enhanced testbench with systematic improvements - clock generation for JK flip-flop cascade
+    // Generate clock for the systematic JK flip-flop counter
+    always #50 input_clock1_1 = ~input_clock1_1; // 10MHz clock
 
-    // Pack outputs into a 3-bit counter value - Updated signal names
+    // Pack outputs into a 3-bit counter value - Updated signal names for systematic improvements
     always @(*) begin
-        actual_count = {output_led1_0_1, output_led2_0_2, output_led3_0_3};
+        actual_count = {output_led1_0_2, output_led2_0_3, output_led3_0_4};
     end
 
     // Monitor counter behavior over time (no external clock needed)
@@ -62,7 +64,7 @@ module counter_tb;
         // Summary
         $display("\n=== TEST SUMMARY ===");
         $display("Test completed after %0d monitoring cycles", cycle_count);
-        $display("Final count: %b%b%b (%0d)", output_led1_0_1, output_led2_0_2, output_led3_0_3, actual_count);
+        $display("Final count: %b%b%b (%0d)", output_led1_0_2, output_led2_0_3, output_led3_0_4, actual_count);
         $display("Enhanced counter demonstrates self-contained operation");
 
         $finish;

@@ -2,8 +2,8 @@
 // ======= This Verilog code was generated automatically by wiRedPanda =======
 // ====================================================================
 //
-// Module: counter
-// Generated: Sat Sep 27 18:03:45 2025
+// Module: counter_architecture_fix
+// Generated: Sat Sep 27 16:54:38 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 8/1000 LUTs, 38/1000 FFs, 4/50 IOs
 //
@@ -13,7 +13,7 @@
 
 `timescale 1ns/1ps
 
-module counter (
+module counter_architecture_fix (
     // ========= Input Ports =========
     input wire input_clock1_1,
 
@@ -69,10 +69,10 @@ module counter (
     end
 
 
-endmodule // counter
+endmodule // counter_architecture_fix
 
 // ====================================================================
-// Module counter generation completed successfully
+// Module counter_architecture_fix generation completed successfully
 // Elements processed: 7
 // Inputs: 1, Outputs: 3
 // ====================================================================
