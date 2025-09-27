@@ -2,10 +2,11 @@
 
 module dflipflop_masterslave_tb;
 
-    // Testbench signals - Updated for enhanced code generator (no input ports)
-    // The enhanced generator eliminated unused input ports for cleaner design
-    wire output_led1_q_0_1;
-    wire output_led2_q_0_2;
+    // Testbench signals - Updated to match actual module interface
+    reg input_clock1_clk_1;
+    reg input_push_button2_d_2;
+    wire output_led1_q_0_3;
+    wire output_led2_q_0_4;
 
     // Test control
     integer test_count = 0;
@@ -13,53 +14,66 @@ module dflipflop_masterslave_tb;
 
     // Instantiate the Device Under Test (DUT) - Updated port mapping
     dflipflop_masterslave dut (
-        .output_led1_q_0_1(output_led1_q_0_1),
-        .output_led2_q_0_2(output_led2_q_0_2)
+        .input_clock1_clk_1(input_clock1_clk_1),
+        .input_push_button2_d_2(input_push_button2_d_2),
+        .output_led1_q_0_3(output_led1_q_0_3),
+        .output_led2_q_0_4(output_led2_q_0_4)
     );
 
-    // Enhanced testbench for self-contained D master-slave flip-flop with no external inputs
-    // The flip-flop now uses internal clock and data generation
+    // Clock generation
+    initial begin
+        input_clock1_clk_1 = 0;
+        forever #50 input_clock1_clk_1 = ~input_clock1_clk_1; // 10 MHz clock
+    end
 
-    // Test procedure for self-contained D master-slave flip-flop
-    task test_dff_output;
+    // Test procedure for D master-slave flip-flop with clock and data inputs
+    task test_ms_dff(input data_val, input [31:0] test_num);
         begin
             test_count = test_count + 1;
 
-            // Wait for circuit behavior
-            #100;
+            // Set data input
+            input_push_button2_d_2 = data_val;
 
-            $display("Test %0d: Self-contained D flip-flop => Q=%b, Q̄=%b",
-                     test_count, output_led1_q_0_1, output_led2_q_0_2);
+            // Wait for next clock edge
+            @(posedge input_clock1_clk_1);
+            #10; // Small delay for propagation
 
-            // Basic validation: Q and Q̄ should be complementary
-            if (output_led1_q_0_1 != output_led2_q_0_2) begin
+            $display("Test %0d: D=%b, CLK edge => Q=%b, Qbar=%b",
+                     test_num, data_val, output_led1_q_0_3, output_led2_q_0_4);
+
+            // Verify D flip-flop behavior: Q should equal D after clock edge
+            if (output_led1_q_0_3 == data_val && output_led2_q_0_4 == ~data_val) begin
                 pass_count = pass_count + 1;
-                $display("      PASS: Outputs are complementary");
+                $display("      PASS: D master-slave flip-flop behavior correct");
             end else begin
-                $display("      FAIL: Outputs should be complementary");
-                $display("      Note: Enhanced generator created self-contained design");
+                $display("      FAIL: Expected Q=%b, Qbar=%b, Got Q=%b, Qbar=%b",
+                         data_val, ~data_val, output_led1_q_0_3, output_led2_q_0_4);
             end
         end
     endtask
 
     // Main test sequence
     initial begin
-        $display("=== ENHANCED D MASTER-SLAVE FLIP-FLOP TESTBENCH ===");
-        $display("Testing self-contained D flip-flop with master-slave architecture");
-        $display("Enhanced code generator eliminated unused input ports for cleaner design");
+        $display("=== D MASTER-SLAVE FLIP-FLOP TESTBENCH ===");
+        $display("Testing D flip-flop with master-slave architecture");
 
-        // Wait for initialization
-        #100;
+        // Initialize inputs
+        input_push_button2_d_2 = 0;
 
-        // Test the self-contained D flip-flop behavior
-        test_dff_output();
-        test_dff_output();
-        test_dff_output();
+        // Wait for initialization and first clock edge
+        #200;
+
+        // Test D master-slave flip-flop functionality
+        $display("\nTesting D master-slave flip-flop behavior:");
+        test_ms_dff(1'b0, 1);  // Test with D=0
+        test_ms_dff(1'b1, 2);  // Test with D=1
+        test_ms_dff(1'b0, 3);  // Test with D=0 again
+        test_ms_dff(1'b1, 4);  // Test with D=1 again
 
         // Additional monitoring
-        $display("\nDetailed output analysis:");
-        $display("output_led1_q_0_1 (Q) = %b", output_led1_q_0_1);
-        $display("output_led2_q_0_2 (Q̄) = %b", output_led2_q_0_2);
+        $display("\nFinal output state:");
+        $display("output_led1_q_0_3 (Q) = %b", output_led1_q_0_3);
+        $display("output_led2_q_0_4 (Qbar) = %b", output_led2_q_0_4);
 
         // Summary
         $display("\n=== TEST SUMMARY ===");
@@ -73,7 +87,7 @@ module dflipflop_masterslave_tb;
             $display("*** SOME TESTS FAILED ***");
         end
 
-        $display("Enhanced D flip-flop demonstrates self-contained operation");
+        $display("D master-slave flip-flop testbench completed");
         $finish;
     end
 

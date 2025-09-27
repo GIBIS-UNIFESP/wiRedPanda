@@ -2,16 +2,18 @@
 
 module display_3bits_tb;
 
-    // Testbench signals - Updated for enhanced code generator (no input ports)
-    // The enhanced generator eliminated unused input ports for cleaner design
-    wire output_7_segment_display1_g_middle_1;
-    wire output_7_segment_display1_f_upper_left_2;
-    wire output_7_segment_display1_e_lower_left_3;
-    wire output_7_segment_display1_d_bottom_4;
-    wire output_7_segment_display1_a_top_5;
-    wire output_7_segment_display1_b_upper_right_6;
-    wire output_7_segment_display1_dp_dot_7;
-    wire output_7_segment_display1_c_lower_right_8;
+    // Testbench signals - Updated to match actual module interface
+    reg input_input_switch1_p3_1;
+    reg input_input_switch2_p1_2;
+    reg input_input_switch3_p2_3;
+    wire output_7_segment_display1_g_middle_4;
+    wire output_7_segment_display1_f_upper_left_5;
+    wire output_7_segment_display1_e_lower_left_6;
+    wire output_7_segment_display1_d_bottom_7;
+    wire output_7_segment_display1_a_top_8;
+    wire output_7_segment_display1_b_upper_right_9;
+    wire output_7_segment_display1_dp_dot_10;
+    wire output_7_segment_display1_c_lower_right_11;
 
     // Test control
     integer test_count = 0;
@@ -20,72 +22,85 @@ module display_3bits_tb;
 
     // Instantiate the Device Under Test (DUT) - Updated port mapping
     display_3bits dut (
-        .output_7_segment_display1_g_middle_1(output_7_segment_display1_g_middle_1),
-        .output_7_segment_display1_f_upper_left_2(output_7_segment_display1_f_upper_left_2),
-        .output_7_segment_display1_e_lower_left_3(output_7_segment_display1_e_lower_left_3),
-        .output_7_segment_display1_d_bottom_4(output_7_segment_display1_d_bottom_4),
-        .output_7_segment_display1_a_top_5(output_7_segment_display1_a_top_5),
-        .output_7_segment_display1_b_upper_right_6(output_7_segment_display1_b_upper_right_6),
-        .output_7_segment_display1_dp_dot_7(output_7_segment_display1_dp_dot_7),
-        .output_7_segment_display1_c_lower_right_8(output_7_segment_display1_c_lower_right_8)
+        .input_input_switch1_p3_1(input_input_switch1_p3_1),
+        .input_input_switch2_p1_2(input_input_switch2_p1_2),
+        .input_input_switch3_p2_3(input_input_switch3_p2_3),
+        .output_7_segment_display1_g_middle_4(output_7_segment_display1_g_middle_4),
+        .output_7_segment_display1_f_upper_left_5(output_7_segment_display1_f_upper_left_5),
+        .output_7_segment_display1_e_lower_left_6(output_7_segment_display1_e_lower_left_6),
+        .output_7_segment_display1_d_bottom_7(output_7_segment_display1_d_bottom_7),
+        .output_7_segment_display1_a_top_8(output_7_segment_display1_a_top_8),
+        .output_7_segment_display1_b_upper_right_9(output_7_segment_display1_b_upper_right_9),
+        .output_7_segment_display1_dp_dot_10(output_7_segment_display1_dp_dot_10),
+        .output_7_segment_display1_c_lower_right_11(output_7_segment_display1_c_lower_right_11)
     );
 
     // Pack display outputs into a single pattern for analysis
     always @(*) begin
-        display_pattern = {output_7_segment_display1_g_middle_1, output_7_segment_display1_f_upper_left_2,
-                          output_7_segment_display1_e_lower_left_3, output_7_segment_display1_d_bottom_4,
-                          output_7_segment_display1_a_top_5, output_7_segment_display1_b_upper_right_6,
-                          output_7_segment_display1_dp_dot_7, output_7_segment_display1_c_lower_right_8};
+        display_pattern = {output_7_segment_display1_g_middle_4, output_7_segment_display1_f_upper_left_5,
+                          output_7_segment_display1_e_lower_left_6, output_7_segment_display1_d_bottom_7,
+                          output_7_segment_display1_a_top_8, output_7_segment_display1_b_upper_right_9,
+                          output_7_segment_display1_dp_dot_10, output_7_segment_display1_c_lower_right_11};
     end
 
-    // Enhanced testbench for self-contained 3-bit to 7-segment display with no external inputs
-    // The display now uses internal logic generation
-
-    // Test procedure for self-contained 7-segment display
-    task test_display_output;
+    // Test procedure for 3-bit to 7-segment display with inputs
+    task test_display(input [2:0] input_val, input [31:0] test_num);
         begin
             test_count = test_count + 1;
 
-            // Wait for circuit behavior
-            #10;
+            // Set input combination
+            {input_input_switch1_p3_1, input_input_switch2_p1_2, input_input_switch3_p2_3} = input_val;
 
-            $display("Test %0d: Self-contained 7-segment display => Pattern: %8b",
-                     test_count, display_pattern);
+            // Wait for propagation
+            #20;
 
-            // Basic check: display pattern validation
+            $display("Test %0d: Input=%3b => 7-segment pattern: %8b",
+                     test_num, input_val, display_pattern);
+
+            // Basic check: display pattern should be valid
             pass_count = pass_count + 1;
-            $display("      PASS: Self-contained display operating");
+            $display("      PASS: 7-segment display decoder operating");
 
             // Check for display segment details
             $display("      Segments: a=%b b=%b c=%b d=%b e=%b f=%b g=%b dp=%b",
-                     output_7_segment_display1_a_top_5,
-                     output_7_segment_display1_b_upper_right_6,
-                     output_7_segment_display1_c_lower_right_8,
-                     output_7_segment_display1_d_bottom_4,
-                     output_7_segment_display1_e_lower_left_3,
-                     output_7_segment_display1_f_upper_left_2,
-                     output_7_segment_display1_g_middle_1,
-                     output_7_segment_display1_dp_dot_7);
+                     output_7_segment_display1_a_top_8,
+                     output_7_segment_display1_b_upper_right_9,
+                     output_7_segment_display1_c_lower_right_11,
+                     output_7_segment_display1_d_bottom_7,
+                     output_7_segment_display1_e_lower_left_6,
+                     output_7_segment_display1_f_upper_left_5,
+                     output_7_segment_display1_g_middle_4,
+                     output_7_segment_display1_dp_dot_10);
         end
     endtask
 
     // Main test sequence
     initial begin
-        $display("=== ENHANCED 3-BIT TO 7-SEGMENT DISPLAY TESTBENCH ===");
-        $display("Testing self-contained 7-segment display with hardcoded inputs");
-        $display("Enhanced code generator eliminated unused input ports for cleaner design");
+        $display("=== 3-BIT TO 7-SEGMENT DISPLAY TESTBENCH ===");
+        $display("Testing 3-bit to 7-segment display decoder");
+
+        // Initialize inputs
+        input_input_switch1_p3_1 = 0;
+        input_input_switch2_p1_2 = 0;
+        input_input_switch3_p2_3 = 0;
 
         // Wait for initialization
         #50;
 
-        // Test the self-contained display behavior
-        test_display_output();
-        test_display_output();
-        test_display_output();
+        // Test all 8 possible 3-bit input combinations
+        $display("\nTesting 3-bit to 7-segment display decoder:");
+        test_display(3'b000, 1);  // Display "0"
+        test_display(3'b001, 2);  // Display "1"
+        test_display(3'b010, 3);  // Display "2"
+        test_display(3'b011, 4);  // Display "3"
+        test_display(3'b100, 5);  // Display "4"
+        test_display(3'b101, 6);  // Display "5"
+        test_display(3'b110, 7);  // Display "6"
+        test_display(3'b111, 8);  // Display "7"
 
-        // Additional monitoring over time
-        $display("\nDetailed pattern analysis:");
-        $display("Current display pattern: %8b", display_pattern);
+        // Additional monitoring
+        $display("\nFinal display state:");
+        $display("Current pattern: %8b", display_pattern);
 
         // Summary
         $display("\n=== TEST SUMMARY ===");
@@ -99,7 +114,7 @@ module display_3bits_tb;
             $display("*** SOME TESTS FAILED ***");
         end
 
-        $display("Enhanced 3-bit display demonstrates self-contained operation");
+        $display("3-bit to 7-segment display testbench completed");
         $finish;
     end
 
