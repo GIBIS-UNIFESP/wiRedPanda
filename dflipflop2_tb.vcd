@@ -1,5 +1,5 @@
 $date
-	Sat Sep 27 11:33:42 2025
+	Sat Sep 27 11:53:50 2025
 $end
 $version
 	Icarus Verilog
@@ -7,7 +7,7 @@ $end
 $timescale
 	1ps
 $end
-$scope module dflipflop_tb $end
+$scope module dflipflop2_tb $end
 $var wire 1 ! output_led1_0_1 $end
 $var wire 1 " output_led2_0_2 $end
 $var integer 32 # pass_count [31:0] $end
@@ -16,7 +16,7 @@ $scope module dut $end
 $var wire 1 ! output_led1_0_1 $end
 $var wire 1 " output_led2_0_2 $end
 $upscope $end
-$scope task monitor_outputs $end
+$scope task test_dff_output $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
@@ -25,21 +25,15 @@ $dumpvars
 b0 $
 b0 #
 0"
-1!
+0!
 $end
-#50000
+#100000
 b1 $
-#150000
-b1 #
-#350000
+#200000
 b10 $
-#450000
-b10 #
-#750000
+b1 #
+#300000
 b11 $
-#850000
+b10 #
+#400000
 b11 #
-#1350000
-b100 $
-#1450000
-b100 #

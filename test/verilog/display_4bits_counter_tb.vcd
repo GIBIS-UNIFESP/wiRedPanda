@@ -1,5 +1,5 @@
 $date
-	Fri Sep 26 21:33:17 2025
+	Sat Sep 27 11:33:42 2025
 $end
 $version
 	Icarus Verilog
@@ -8,289 +8,91 @@ $timescale
 	1ps
 $end
 $scope module display_4bits_counter_tb $end
-$var wire 1 ! output_7_segment_display1_a_top_7 $end
-$var wire 1 " output_7_segment_display1_b_upper_right_8 $end
-$var wire 1 # output_7_segment_display1_c_lower_right_10 $end
-$var wire 1 $ output_7_segment_display1_d_bottom_6 $end
-$var wire 1 % output_7_segment_display1_dp_dot_9 $end
-$var wire 1 & output_7_segment_display1_e_lower_left_5 $end
-$var wire 1 ' output_7_segment_display1_f_upper_left_4 $end
-$var wire 1 ( output_7_segment_display1_g_middle_3 $end
+$var wire 1 ! output_7_segment_display1_a_top_5 $end
+$var wire 1 " output_7_segment_display1_b_upper_right_6 $end
+$var wire 1 # output_7_segment_display1_c_lower_right_8 $end
+$var wire 1 $ output_7_segment_display1_d_bottom_4 $end
+$var wire 1 % output_7_segment_display1_e_lower_left_3 $end
+$var wire 1 & output_7_segment_display1_f_upper_left_2 $end
+$var wire 1 ' output_7_segment_display1_g_middle_1 $end
+$var wire 1 ( output_7_segment_display1_dp_dot_7 $end
 $var reg 8 ) display_pattern [7:0] $end
-$var reg 1 * input_clock2_2 $end
-$var reg 1 + input_push_button1_1 $end
-$var integer 32 , cycle_count [31:0] $end
-$var integer 32 - pass_count [31:0] $end
-$var integer 32 . test_count [31:0] $end
+$var integer 32 * cycle_count [31:0] $end
+$var integer 32 + pass_count [31:0] $end
+$var integer 32 , test_count [31:0] $end
 $scope module dut $end
-$var wire 1 * input_clock2_2 $end
-$var wire 1 + input_push_button1_1 $end
-$var wire 1 / node_325 $end
-$var wire 1 ! output_7_segment_display1_a_top_7 $end
-$var wire 1 " output_7_segment_display1_b_upper_right_8 $end
-$var wire 1 # output_7_segment_display1_c_lower_right_10 $end
-$var wire 1 $ output_7_segment_display1_d_bottom_6 $end
-$var wire 1 % output_7_segment_display1_dp_dot_9 $end
-$var wire 1 & output_7_segment_display1_e_lower_left_5 $end
-$var wire 1 ' output_7_segment_display1_f_upper_left_4 $end
-$var wire 1 ( output_7_segment_display1_g_middle_3 $end
-$var reg 1 0 output_7_segment_display1_g_middle_3_behavioral_reg $end
+$var wire 1 - and_313 $end
+$var wire 1 . node_311 $end
+$var wire 1 / node_312 $end
+$var wire 1 0 node_315 $end
+$var wire 1 1 node_316 $end
+$var wire 1 2 node_317 $end
+$var wire 1 3 node_318 $end
+$var wire 1 4 node_319 $end
+$var wire 1 5 node_320 $end
+$var wire 1 6 node_321 $end
+$var wire 1 7 node_322 $end
+$var wire 1 8 node_323 $end
+$var wire 1 9 node_324 $end
+$var wire 1 : node_325 $end
+$var wire 1 ; node_326 $end
+$var wire 1 < node_327 $end
+$var wire 1 = not_310 $end
+$var wire 1 > not_314 $end
+$var wire 1 ! output_7_segment_display1_a_top_5 $end
+$var wire 1 " output_7_segment_display1_b_upper_right_6 $end
+$var wire 1 # output_7_segment_display1_c_lower_right_8 $end
+$var wire 1 $ output_7_segment_display1_d_bottom_4 $end
+$var wire 1 ( output_7_segment_display1_dp_dot_7 $end
+$var wire 1 % output_7_segment_display1_e_lower_left_3 $end
+$var wire 1 & output_7_segment_display1_f_upper_left_2 $end
+$var wire 1 ' output_7_segment_display1_g_middle_1 $end
 $upscope $end
-$scope task test_reset $end
+$scope task test_display_counter $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
 #0
 $dumpvars
-00
-z/
-b0 .
-b0 -
+1>
+1=
+0<
+0;
+z:
+z9
+z8
+07
+06
+05
+04
+z3
+z2
+z1
+z0
+0/
+0.
+0-
 b0 ,
-1+
-0*
-b0xxxxx1x )
-0(
-x'
-x&
-1%
-x$
-x#
-x"
-x!
+b0 +
+b0 *
+b0z0 )
+z(
+0'
+0&
+0%
+0$
+0#
+0"
+0!
 $end
-#200000
-0+
-#1000000
+#100000
 b1 ,
-1*
-#1050000
-b1 -
-b1 .
-#2000000
-0*
-#3000000
+#200000
 b10 ,
-1*
-#3050000
-b10 -
-b10 .
-#4000000
-0*
-#5000000
+b1 +
+#300000
 b11 ,
-1*
-#5050000
-b11 -
-b11 .
-#6000000
-0*
-#7000000
-b100 ,
-1*
-#7050000
-b100 -
-b100 .
-#8000000
-0*
-#9000000
-b101 ,
-1*
-#9050000
-b101 -
-b101 .
-#10000000
-0*
-#11000000
-b110 ,
-1*
-#11050000
-b110 -
-b110 .
-#12000000
-0*
-#13000000
-b111 ,
-1*
-#13050000
-b111 -
-b111 .
-#14000000
-0*
-#15000000
-b1000 ,
-1*
-#15050000
-b1000 -
-b1000 .
-#16000000
-0*
-#17000000
-b1001 ,
-1*
-#17050000
-b1001 -
-b1001 .
-#18000000
-0*
-#19000000
-b1010 ,
-1*
-#19050000
-b1010 -
-b1010 .
-#20000000
-0*
-#21000000
-b1011 ,
-1*
-#21050000
-b1011 -
-b1011 .
-#22000000
-0*
-#23000000
-b1100 ,
-1*
-#23050000
-b1100 -
-b1100 .
-#24000000
-0*
-#25000000
-b1101 ,
-1*
-#25050000
-b1101 -
-b1101 .
-#26000000
-0*
-#27000000
-b1110 ,
-1*
-#27050000
-b1110 -
-b1110 .
-#28000000
-0*
-#29000000
-b1111 ,
-1*
-#29050000
-b1111 -
-b1111 .
-#30000000
-0*
-#31000000
-1+
-b10000 ,
-1*
-#31050000
-b10000 -
-b10000 .
-#31200000
-0+
-#32000000
-0*
-#33000000
-b10001 ,
-1*
-#33050000
-b10001 -
-b10001 .
-#34000000
-0*
-#35000000
-b10010 ,
-1*
-#35050000
-b10010 -
-b10010 .
-#36000000
-0*
-#37000000
-b10011 ,
-1*
-#37050000
-b10011 -
-b10011 .
-#38000000
-0*
-#39000000
-b10100 ,
-1*
-#39050000
-b10100 -
-b10100 .
-#40000000
-0*
-#41000000
-1+
-b10101 ,
-1*
-#41050000
-b10101 -
-b10101 .
-#41200000
-0+
-#42000000
-0*
-#43000000
-b10110 ,
-1*
-#43050000
-b10110 -
-b10110 .
-#44000000
-0*
-#45000000
-b10111 ,
-1*
-#45050000
-b10111 -
-b10111 .
-#46000000
-0*
-#47000000
-b11000 ,
-1*
-#47050000
-b11000 -
-b11000 .
-#48000000
-0*
-#49000000
-b11001 ,
-1*
-#49050000
-b11001 -
-b11001 .
-#50000000
-0*
-#51000000
-b11010 ,
-1*
-#51050000
-b11010 -
-b11010 .
-#52000000
-0*
-#53000000
-b11011 ,
-1*
-#53050000
-b11011 -
-b11011 .
-#54000000
-0*
-#55000000
-b11100 ,
-1*
-#55050000
-b11100 -
-b11100 .
-#56000000
-0*
-#57000000
-b11101 ,
-1*
+b10 +
+#400000
+b11 +
+#1400000

@@ -1,0 +1,53 @@
+$date
+	Sat Sep 27 11:53:51 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module input_tb $end
+$var wire 1 ! output_led4_or_0_4 $end
+$var wire 1 " output_led3_and_0_3 $end
+$var wire 1 # output_led2_not_x0_0_2 $end
+$var wire 1 $ output_led1_xor_0_1 $end
+$var integer 32 % pass_count [31:0] $end
+$var integer 32 & test_count [31:0] $end
+$scope module dut $end
+$var wire 1 ' and_8 $end
+$var wire 1 ( not_5 $end
+$var wire 1 ) or_7 $end
+$var wire 1 $ output_led1_xor_0_1 $end
+$var wire 1 # output_led2_not_x0_0_2 $end
+$var wire 1 " output_led3_and_0_3 $end
+$var wire 1 ! output_led4_or_0_4 $end
+$var wire 1 * xor_6 $end
+$upscope $end
+$scope task test_logic_output $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+0*
+0)
+1(
+0'
+b0 &
+b0 %
+0$
+1#
+0"
+0!
+$end
+#50000
+b1 &
+#150000
+b10 &
+b1 %
+#250000
+b11 &
+b10 %
+#350000
+b11 %

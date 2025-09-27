@@ -683,10 +683,16 @@ void CodeGeneratorVerilog::processICsRecursively(const QVector<GraphicElement *>
                                 case ElementType::DFlipFlop:
                                 case ElementType::TFlipFlop:
                                 case ElementType::JKFlipFlop:
-                                    m_stream << QString("    reg %1 = 1'b0;").arg(varName) << Qt::endl;
+                                    // Only declare register if it's actually assigned during logic generation
+                                    if (m_actuallyAssignedWires.contains(varName)) {
+                                        m_stream << QString("    reg %1 = 1'b0;").arg(varName) << Qt::endl;
+                                    }
                                     break;
                                 default:
-                                    m_stream << QString("    wire %1;").arg(varName) << Qt::endl;
+                                    // Only declare wire if it's actually assigned during logic generation
+                                    if (m_actuallyAssignedWires.contains(varName)) {
+                                        m_stream << QString("    wire %1;").arg(varName) << Qt::endl;
+                                    }
                                     break;
                                 }
                             }
@@ -714,10 +720,16 @@ void CodeGeneratorVerilog::processICsRecursively(const QVector<GraphicElement *>
                                     case ElementType::DFlipFlop:
                                     case ElementType::TFlipFlop:
                                     case ElementType::JKFlipFlop:
-                                        m_stream << QString("    reg %1 = 1'b0;").arg(portName) << Qt::endl;
+                                        // Only declare register if it's actually assigned during logic generation
+                                        if (m_actuallyAssignedWires.contains(portName)) {
+                                            m_stream << QString("    reg %1 = 1'b0;").arg(portName) << Qt::endl;
+                                        }
                                         break;
                                     default:
-                                        m_stream << QString("    wire %1;").arg(portName) << Qt::endl;
+                                        // Only declare wire if it's actually assigned during logic generation
+                                        if (m_actuallyAssignedWires.contains(portName)) {
+                                            m_stream << QString("    wire %1;").arg(portName) << Qt::endl;
+                                        }
                                         break;
                                     }
                                 }
@@ -1098,14 +1110,19 @@ void CodeGeneratorVerilog::generate()
     // Close module port list
     m_stream << ");" << Qt::endl << Qt::endl;
 
-    // Declare auxiliary variables
+    // NEW APPROACH: Assignment-driven wire declaration
+    // Step 1: Start tracking assignments
+    startAssignmentTracking();
+
+    // Step 2: Generate all logic assignments (buffered)
+    generateLogicAssignments();
+    generateOutputAssignments();
+
+    // Step 3: Declare only wires that are actually assigned
     declareAuxVariables();
 
-    // Generate main logic
-    generateLogicAssignments();
-
-    // Generate output assignments
-    generateOutputAssignments();
+    // Step 4: Output the buffered logic
+    outputBufferedLogic();
 
     // Generate module footer
     generateModuleFooter();
@@ -1397,7 +1414,10 @@ void CodeGeneratorVerilog::declareAuxVariablesRec(const QVector<GraphicElement *
             case ElementType::DFlipFlop:
             case ElementType::TFlipFlop:
             case ElementType::JKFlipFlop: {
-                m_stream << QString("    reg %1 = 1'b0;").arg(varName2) << Qt::endl;
+                // Only declare register if it's actually assigned during logic generation
+                if (m_actuallyAssignedWires.contains(varName2)) {
+                    m_stream << QString("    reg %1 = 1'b0;").arg(varName2) << Qt::endl;
+                }
                 break;
             }
 
@@ -1419,14 +1439,20 @@ void CodeGeneratorVerilog::declareAuxVariablesRec(const QVector<GraphicElement *
             }
 
             case ElementType::Buzzer: {
-                m_stream << QString("    wire %1; // Buzzer output").arg(varName2) << Qt::endl;
+                // Only declare wire if it's actually assigned during logic generation
+                if (m_actuallyAssignedWires.contains(varName2)) {
+                    m_stream << QString("    wire %1; // Buzzer output").arg(varName2) << Qt::endl;
+                }
                 break;
             }
 
             case ElementType::Display7:
             case ElementType::Display14:
             case ElementType::Display16: {
-                m_stream << QString("    wire %1; // Display segment").arg(varName2) << Qt::endl;
+                // Only declare wire if it's actually assigned during logic generation
+                if (m_actuallyAssignedWires.contains(varName2)) {
+                    m_stream << QString("    wire %1; // Display segment").arg(varName2) << Qt::endl;
+                }
                 break;
             }
 
@@ -1437,7 +1463,10 @@ void CodeGeneratorVerilog::declareAuxVariablesRec(const QVector<GraphicElement *
             }
 
             default:
-                m_stream << QString("    wire %1;").arg(varName2) << Qt::endl;
+                // Only declare wire if it's actually assigned during logic generation
+                if (m_actuallyAssignedWires.contains(varName2)) {
+                    m_stream << QString("    wire %1;").arg(varName2) << Qt::endl;
+                }
                 break;
             }
         }
@@ -1510,10 +1539,16 @@ void CodeGeneratorVerilog::declareVariablesRec(const QVector<GraphicElement *> &
             case ElementType::TFlipFlop:
             case ElementType::DLatch:
             case ElementType::SRLatch:
-                m_stream << QString("    reg %1 = 1'b0;").arg(varName) << Qt::endl;
+                // Only declare register if it's actually assigned during logic generation
+                if (m_actuallyAssignedWires.contains(varName)) {
+                    m_stream << QString("    reg %1 = 1'b0;").arg(varName) << Qt::endl;
+                }
                 break;
             default:
-                m_stream << QString("    wire %1;").arg(varName) << Qt::endl;
+                // Only declare wire if it's actually assigned during logic generation
+                if (m_actuallyAssignedWires.contains(varName)) {
+                    m_stream << QString("    wire %1;").arg(varName) << Qt::endl;
+                }
                 break;
             }
         }
@@ -1670,14 +1705,23 @@ void CodeGeneratorVerilog::assignVariablesRec(const QVector<GraphicElement *> &e
                                      .arg(elm->objectName()).arg(outputVar), elm);
                     m_hasCircularLogic = true;
 
-                    // Add assignment-level pragma
-                    m_stream << QString("    /* verilator lint_off UNOPTFLAT */") << Qt::endl;
-                    m_stream << QString("    assign %1 = %2; // %3")
-                                .arg(outputVar, expr, elm->objectName()) << Qt::endl;
-                    m_stream << QString("    /* verilator lint_on UNOPTFLAT */") << Qt::endl;
+                    // Add assignment-level pragma for circular logic
+                    m_hasCircularLogic = true;
+                    if (m_trackingAssignments) {
+                        trackAssignedWire(outputVar);
+                        m_assignmentBuffer.append(QString("    /* verilator lint_off UNOPTFLAT */"));
+                        m_assignmentBuffer.append(QString("    assign %1 = %2; // %3 (circular logic)")
+                                                 .arg(outputVar, expr, elm->objectName()));
+                        m_assignmentBuffer.append(QString("    /* verilator lint_on UNOPTFLAT */"));
+                    } else {
+                        // Fallback - should not happen in new flow
+                        m_stream << QString("    /* verilator lint_off UNOPTFLAT */") << Qt::endl;
+                        m_stream << QString("    assign %1 = %2; // %3 (circular logic)")
+                                    .arg(outputVar, expr, elm->objectName()) << Qt::endl;
+                        m_stream << QString("    /* verilator lint_on UNOPTFLAT */") << Qt::endl;
+                    }
                 } else {
-                    m_stream << QString("    assign %1 = %2; // %3")
-                                .arg(outputVar, expr, elm->objectName()) << Qt::endl;
+                    addBufferedAssignment(outputVar, expr, elm->objectName());
                 }
             }
             break;
@@ -1691,7 +1735,7 @@ void CodeGeneratorVerilog::assignVariablesRec(const QVector<GraphicElement *> &e
         case ElementType::SRLatch: {
             generatedCode = generateSequentialLogic(elm);
             if (!generatedCode.isEmpty()) {
-                m_stream << generatedCode << Qt::endl;
+                addBufferedAlwaysBlock(generatedCode);
             }
             break;
         }
@@ -1794,12 +1838,8 @@ void CodeGeneratorVerilog::generateOutputAssignments()
         generateDebugInfo(QString(">>> ULTRA LOGGING: Final assignment: %1 = %2")
                          .arg(outputMapping.m_variableName).arg(expr), outputMapping.m_element);
 
-        m_stream << QString("    assign %1 = %2; // %3")
-                    .arg(outputMapping.m_variableName, expr, outputMapping.m_element->objectName())
-                 << Qt::endl;
+        addBufferedAssignment(outputMapping.m_variableName, expr, outputMapping.m_element->objectName());
     }
-
-    m_stream << Qt::endl;
 }
 
 void CodeGeneratorVerilog::generateModuleFooter()
@@ -1998,10 +2038,16 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
                 code += QString("    end\n");
             } else {
                 // Clock is always low - no data propagation (hold state)
-                code += QString("    initial begin // Clock always low - hold state\n");
-                code += QString("        %1 = 1'b0;\n").arg(firstOut);
-                code += QString("        %1 = 1'b1;\n").arg(secondOut);
-                code += QString("    end\n");
+                if (!firstOut.isEmpty() && !secondOut.isEmpty()) {
+                    code += QString("    initial begin // Clock always low - hold state\n");
+                    code += QString("        %1 = 1'b0;\n").arg(firstOut);
+                    code += QString("        %1 = 1'b1;\n").arg(secondOut);
+                    code += QString("    end\n");
+                } else {
+                    generateDebugInfo(QString("DFlipFlop %1: Skipping initial block - empty output variables (firstOut=%2, secondOut=%3)")
+                                     .arg(elm->objectName()).arg(firstOut).arg(secondOut), elm);
+                    // Don't generate any code for this case
+                }
             }
             return code; // Early return - skip sequential logic
         }
@@ -2109,10 +2155,15 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
                 code += QString("    end\n");
             } else {
                 // Clock always low - no state change (hold state)
-                code += QString("    initial begin // Clock always low - hold state\n");
-                code += QString("        %1 = 1'b0;\n").arg(firstOut);
-                code += QString("        %1 = 1'b1;\n").arg(secondOut);
-                code += QString("    end\n");
+                if (!firstOut.isEmpty() && !secondOut.isEmpty()) {
+                    code += QString("    initial begin // Clock always low - hold state\n");
+                    code += QString("        %1 = 1'b0;\n").arg(firstOut);
+                    code += QString("        %1 = 1'b1;\n").arg(secondOut);
+                    code += QString("    end\n");
+                } else {
+                    generateDebugInfo(QString("JKFlipFlop %1: Skipping initial block - empty output variables (firstOut=%2, secondOut=%3)")
+                                     .arg(elm->objectName()).arg(firstOut).arg(secondOut), elm);
+                }
             }
             return code; // Early return - skip sequential logic
         }
@@ -2269,10 +2320,15 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
                 code += QString("    end\n");
             } else {
                 // Clock always low - no state change (hold state)
-                code += QString("    initial begin // Clock always low - hold state\n");
-                code += QString("        %1 = 1'b0;\n").arg(firstOut);
-                code += QString("        %1 = 1'b1;\n").arg(secondOut);
-                code += QString("    end\n");
+                if (!firstOut.isEmpty() && !secondOut.isEmpty()) {
+                    code += QString("    initial begin // Clock always low - hold state\n");
+                    code += QString("        %1 = 1'b0;\n").arg(firstOut);
+                    code += QString("        %1 = 1'b1;\n").arg(secondOut);
+                    code += QString("    end\n");
+                } else {
+                    generateDebugInfo(QString("TFlipFlop %1: Skipping initial block - empty output variables (firstOut=%2, secondOut=%3)")
+                                     .arg(elm->objectName()).arg(firstOut).arg(secondOut), elm);
+                }
             }
             return code; // Early return - skip sequential logic
         }
@@ -2730,22 +2786,22 @@ bool CodeGeneratorVerilog::detectAndGenerateSequentialPattern(const QVector<Grap
             m_stream << Qt::endl;
             m_stream << "    // ========= Internal Sequential Register =========" << Qt::endl;
 
-            // Declare the internal register
-            m_stream << QString("    reg %1 = 1'b0; // Internal sequential register").arg(internalRegName) << Qt::endl;
+            // Declare the internal register - only if it's actually assigned during logic generation
+            if (m_actuallyAssignedWires.contains(internalRegName)) {
+                m_stream << QString("    reg %1 = 1'b0; // Internal sequential register").arg(internalRegName) << Qt::endl;
+            }
 
             m_stream << Qt::endl;
             m_stream << "    // ========= Behavioral Sequential Logic (replaces gate-level feedback) =========" << Qt::endl;
             m_stream << behavioralCode << Qt::endl;
 
             // Connect internal register to output port
-            m_stream << QString("    assign %1 = %2; // Connect behavioral register to output")
-                        .arg(outputSignal, internalRegName) << Qt::endl;
+            addBufferedAssignment(outputSignal, internalRegName, "Connect behavioral register to output");
 
             // Generate complementary outputs if there are multiple outputs
             if (outputSignals.size() > 1) {
                 for (int i = 1; i < outputSignals.size(); ++i) {
-                    m_stream << QString("    assign %1 = ~%2; // Complementary output")
-                                .arg(outputSignals[i], internalRegName) << Qt::endl;
+                    addBufferedAssignment(outputSignals[i], QString("~%1").arg(internalRegName), "Complementary output");
                 }
             }
 
@@ -3260,7 +3316,7 @@ void CodeGeneratorVerilog::processICWithBoundaries(IC *ic)
                 QString generatedCode = generateSequentialLogic(elm);
                 if (!generatedCode.isEmpty()) {
                     generateDebugInfo(QString("Generated sequential logic for %1 inside IC").arg(elm->objectName()), elm);
-                    m_stream << generatedCode << Qt::endl;
+                    addBufferedAlwaysBlock(generatedCode);
                 }
             }
         }
@@ -3741,4 +3797,119 @@ void CodeGeneratorVerilog::analyzeUsedInputPorts(const QVector<GraphicElement *>
     }
 
     generateDebugInfo(QString("Input port usage analysis complete: %1 input elements are actually used").arg(usedInputElements.size()));
+}
+
+// ============================================================================
+// ASSIGNMENT-DRIVEN WIRE DECLARATION FOR UNUSED SIGNAL ELIMINATION
+// ============================================================================
+
+void CodeGeneratorVerilog::startAssignmentTracking()
+{
+    generateDebugInfo("Starting assignment tracking for wire usage analysis");
+    m_trackingAssignments = true;
+    m_actuallyAssignedWires.clear();
+    m_assignmentBuffer.clear();
+    m_alwaysBlockBuffer.clear();
+}
+
+void CodeGeneratorVerilog::trackAssignedWire(const QString &wireName)
+{
+    if (m_trackingAssignments && !wireName.isEmpty()) {
+        m_actuallyAssignedWires.insert(wireName);
+        generateDebugInfo(QString("Tracked assigned wire: %1").arg(wireName));
+    }
+}
+
+void CodeGeneratorVerilog::trackExpressionReferences(const QString &expression)
+{
+    if (!m_trackingAssignments || expression.isEmpty()) {
+        return;
+    }
+
+    // Parse expression for wire references
+    // Pattern matches identifiers that start with letter/underscore followed by alphanumeric/underscore
+    QRegularExpression wirePattern(R"(\b([a-zA-Z_][a-zA-Z0-9_]*)\b)");
+    QRegularExpressionMatchIterator iterator = wirePattern.globalMatch(expression);
+
+    while (iterator.hasNext()) {
+        QRegularExpressionMatch match = iterator.next();
+        QString identifier = match.captured(1);
+
+        // Skip Verilog keywords and constants
+        static const QSet<QString> verilogKeywords = {
+            "and", "or", "not", "xor", "nand", "nor", "xnor", "buf",
+            "wire", "reg", "input", "output", "inout", "parameter",
+            "if", "else", "case", "default", "for", "while", "repeat",
+            "begin", "end", "module", "endmodule", "function", "endfunction",
+            "task", "endtask", "always", "initial", "assign", "posedge", "negedge"
+        };
+
+        // Skip constants like 1'b0, 1'b1, etc., and pure numbers
+        if (verilogKeywords.contains(identifier) ||
+            identifier.contains('\'') ||
+            identifier.at(0).isDigit()) {
+            continue;
+        }
+
+        // Track this wire as being referenced
+        m_actuallyAssignedWires.insert(identifier);
+        generateDebugInfo(QString("Tracked expression reference: %1").arg(identifier));
+    }
+}
+
+void CodeGeneratorVerilog::addBufferedAssignment(const QString &target, const QString &expression, const QString &comment)
+{
+    if (m_trackingAssignments) {
+        // Track the target wire as being assigned
+        trackAssignedWire(target);
+
+        // Track all wires referenced in the expression
+        trackExpressionReferences(expression);
+
+        // Buffer the assignment for later output
+        QString assignment = QString("    assign %1 = %2; // %3").arg(target, expression, comment);
+        m_assignmentBuffer.append(assignment);
+
+        generateDebugInfo(QString("Buffered assignment: %1 = %2").arg(target, expression));
+    } else {
+        // Direct output mode (should not happen in new flow)
+        m_stream << QString("    assign %1 = %2; // %3").arg(target, expression, comment) << Qt::endl;
+    }
+}
+
+void CodeGeneratorVerilog::addBufferedAlwaysBlock(const QString &alwaysBlock)
+{
+    if (m_trackingAssignments) {
+        // Track all wires referenced in the always block
+        trackExpressionReferences(alwaysBlock);
+
+        m_alwaysBlockBuffer.append(alwaysBlock);
+        generateDebugInfo(QString("Buffered always block (%1 chars)").arg(alwaysBlock.length()));
+    } else {
+        // Direct output mode (should not happen in new flow)
+        m_stream << alwaysBlock << Qt::endl;
+    }
+}
+
+void CodeGeneratorVerilog::outputBufferedLogic()
+{
+    generateDebugInfo(QString("Outputting buffered logic: %1 assignments, %2 always blocks")
+                     .arg(m_assignmentBuffer.size()).arg(m_alwaysBlockBuffer.size()));
+
+    m_stream << "    // ========= Logic Assignments =========" << Qt::endl;
+
+    // Output all buffered assignments
+    for (const QString &assignment : m_assignmentBuffer) {
+        m_stream << assignment << Qt::endl;
+    }
+
+    // Output all buffered always blocks
+    for (const QString &alwaysBlock : m_alwaysBlockBuffer) {
+        m_stream << alwaysBlock << Qt::endl;
+    }
+
+    m_stream << Qt::endl;
+
+    // Stop tracking
+    m_trackingAssignments = false;
 }

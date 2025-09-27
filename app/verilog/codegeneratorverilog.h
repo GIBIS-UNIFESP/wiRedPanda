@@ -451,6 +451,42 @@ private:
     void predictUsedSignals(const QVector<GraphicElement *> &elements, QSet<QNEPort*> &usedSignals);
 
     /**
+     * @brief Start tracking wire assignments
+     */
+    void startAssignmentTracking();
+
+    /**
+     * @brief Track a wire that gets assigned a value
+     * @param wireName Wire name being assigned
+     */
+    void trackAssignedWire(const QString &wireName);
+
+    /**
+     * @brief Track wire names referenced in expressions during tracking phase
+     * @param expression Expression to parse for wire references
+     */
+    void trackExpressionReferences(const QString &expression);
+
+    /**
+     * @brief Add buffered assignment during tracking phase
+     * @param target Target wire name
+     * @param expression Source expression
+     * @param comment Assignment comment
+     */
+    void addBufferedAssignment(const QString &target, const QString &expression, const QString &comment);
+
+    /**
+     * @brief Add buffered always block during tracking phase
+     * @param alwaysBlock Complete always block code
+     */
+    void addBufferedAlwaysBlock(const QString &alwaysBlock);
+
+    /**
+     * @brief Output all buffered assignments and always blocks
+     */
+    void outputBufferedLogic();
+
+    /**
      * @brief Analyze which input elements are actually referenced in logic expressions
      * @param elements Circuit elements to analyze
      * @param usedInputElements Set of input elements that are actually used (output parameter)
@@ -584,4 +620,10 @@ private:
 
     // Circular dependency detection
     QSet<GraphicElement*> m_visitedElements;                // Track visited elements to prevent infinite recursion
+
+    // Assignment-driven wire declaration for UNUSED signal elimination
+    QSet<QString> m_actuallyAssignedWires;                  // Track wire names that get actual assignments
+    QStringList m_assignmentBuffer;                         // Buffer all assignments before wire declarations
+    QStringList m_alwaysBlockBuffer;                        // Buffer always blocks (sequential logic)
+    bool m_trackingAssignments = false;                     // Flag to indicate assignment tracking phase
 };

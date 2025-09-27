@@ -1,5 +1,5 @@
 $date
-	Fri Sep 26 21:01:40 2025
+	Sat Sep 27 11:32:46 2025
 $end
 $version
 	Icarus Verilog
@@ -8,194 +8,60 @@ $timescale
 	1ps
 $end
 $scope module jkflipflop_tb $end
-$var wire 1 ! output_led1_q_0_6 $end
-$var wire 1 " output_led2_q_0_7 $end
-$var reg 1 # input_clock1_c_1 $end
-$var reg 1 $ input_input_switch2__preset_2 $end
-$var reg 1 % input_input_switch3__clear_3 $end
-$var reg 1 & input_input_switch4_j_4 $end
-$var reg 1 ' input_input_switch5_k_5 $end
-$var reg 1 ( previous_q $end
-$var integer 32 ) pass_count [31:0] $end
-$var integer 32 * test_count [31:0] $end
+$var wire 1 ! output_led2_q_0_2 $end
+$var wire 1 " output_led1_q_0_1 $end
+$var integer 32 # pass_count [31:0] $end
+$var integer 32 $ test_count [31:0] $end
 $scope module dut $end
-$var wire 1 + ic_dflipflop_ic_node_39_0 $end
-$var wire 1 , ic_dflipflop_ic_node_40_0 $end
-$var wire 1 # input_clock1_c_1 $end
-$var wire 1 $ input_input_switch2__preset_2 $end
-$var wire 1 % input_input_switch3__clear_3 $end
-$var wire 1 & input_input_switch4_j_4 $end
-$var wire 1 ' input_input_switch5_k_5 $end
-$var wire 1 ! output_led1_q_0_6 $end
-$var wire 1 " output_led2_q_0_7 $end
-$var reg 1 - output_led1_q_0_6_behavioral_reg $end
+$var wire 1 % and_45 $end
+$var wire 1 & and_46 $end
+$var wire 1 ' ic_dflipflop_ic_node_71_0 $end
+$var wire 1 ( ic_dflipflop_ic_node_72_0 $end
+$var wire 1 ) node_36 $end
+$var wire 1 * node_37 $end
+$var wire 1 + node_38 $end
+$var wire 1 , node_39 $end
+$var wire 1 - node_40 $end
+$var wire 1 . node_41 $end
+$var wire 1 / node_42 $end
+$var wire 1 0 node_44 $end
+$var wire 1 1 not_43 $end
+$var wire 1 2 or_47 $end
+$var wire 1 " output_led1_q_0_1 $end
+$var wire 1 ! output_led2_q_0_2 $end
 $upscope $end
-$scope task test_jkff $end
-$var reg 1 . clear $end
-$var reg 1 / j_value $end
-$var reg 1 0 k_value $end
-$var reg 1 1 preset $end
+$scope task test_jkff_output $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
 #0
 $dumpvars
-x1
-x0
-x/
-x.
-0-
+x2
+11
+00
+z/
+z.
+z-
 z,
-z+
-b0 *
-b0 )
-0(
-0'
-0&
-1%
-1$
-0#
-1"
-0!
-$end
-#100000
-0"
-1!
-1-
-1#
-#150000
-b1 *
-1.
-11
-00
-0/
-#160000
-1(
-#200000
-0#
-#300000
-1#
-#320000
-1'
-b10 *
-10
-b1 )
-#400000
-0#
-#500000
-1#
-#520000
-0'
-1&
-b11 *
-00
-1/
-#600000
-0#
-#700000
-1#
-#720000
-1'
-b100 *
-10
-b10 )
-#800000
-0#
-#900000
-1#
-#920000
-b101 *
-#1000000
-0#
-#1100000
-1#
-#1120000
-b110 *
-#1200000
-0#
-#1300000
-1#
-#1320000
-b111 *
-#1400000
-0#
-#1500000
-1#
-#1520000
-0'
-b1000 *
-00
-#1600000
-0#
-#1700000
-1#
-#1720000
-0&
-b1001 *
-0/
-b11 )
-#1800000
-0#
-#1900000
-1#
-#1920000
-1'
-b1010 *
-10
-b100 )
-#2000000
-0#
-#2100000
-1#
-#2120000
-0'
-b1011 *
-00
-#2200000
-0#
-#2300000
-1#
-#2320000
-0$
-b1100 *
-01
-b101 )
-#2400000
-0#
-#2500000
-1#
-#2520000
-1'
-1&
-1$
-b1101 *
-11
-10
-1/
-b110 )
-#2600000
-0#
-#2700000
-1#
-#2720000
-0'
+0+
+0*
+0)
+z(
+z'
+x&
 0%
-b1110 *
-0.
-00
-#2800000
-0#
-#2900000
-1#
-#2920000
-1'
-1%
-b1111 *
-1.
-10
-b111 )
-#3000000
-0#
-#3100000
-1#
-#3120000
+b0 $
+b0 #
+z"
+z!
+$end
+#50000
+b1 $
+#150000
+b10 $
+b1 #
+#250000
+b11 $
+b10 #
+#350000
+b11 #
