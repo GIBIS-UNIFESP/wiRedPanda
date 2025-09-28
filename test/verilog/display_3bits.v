@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: display_3bits
-// Generated: Sun Sep 28 03:36:11 2025
+// Generated: Sun Sep 28 03:51:14 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 49/1000 LUTs, 0/1000 FFs, 12/50 IOs
 //

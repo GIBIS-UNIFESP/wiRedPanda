@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: ic
-// Generated: Sun Sep 28 03:36:21 2025
+// Generated: Sun Sep 28 03:51:18 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 58/1000 LUTs, 215/1000 FFs, 37/50 IOs
 //
@@ -15,6 +15,7 @@
 
 module ic (
     // ========= Input Ports =========
+    input wire input_clock6_6,
 
     // ========= Output Ports =========
     output wire output_7_segment_display1_g_middle_7,
@@ -71,14 +72,15 @@ module ic (
 // IC inputs: 3, IC outputs: 8
 // Nesting depth: 0
 // ============== END IC: DISPLAY-3BITS ==============
-    reg seq_jk_flip_flop_38_1_q = 1'b0; // Sequential element register
+    /* verilator lint_off UNUSED */
+    reg seq_jk_flip_flop_35_1_q = 1'b0; // Sequential element register (complement output)
+    /* verilator lint_on UNUSED */
+    reg seq_jk_flip_flop_38_0_q = 1'b0; // Sequential element register
     reg seq_jk_flip_flop_36_0_q = 1'b0; // Sequential element register
     reg seq_jk_flip_flop_35_0_q = 1'b0; // Sequential element register
-    reg seq_jk_flip_flop_35_1_q = 1'b0; // Sequential element register
-    reg seq_jk_flip_flop_38_0_q = 1'b0; // Sequential element register
-    wire ic_input_ic_node_267_0 = 1'b0; // Auto-declared and assigned default for referenced IC node
-    wire ic_input_ic_node_265_0 = 1'b0; // Auto-declared and assigned default for referenced IC node
     wire ic_input_ic_node_266_0 = 1'b0; // Auto-declared and assigned default for referenced IC node
+    wire ic_input_ic_node_265_0 = 1'b0; // Auto-declared and assigned default for referenced IC node
+    wire ic_input_ic_node_267_0 = 1'b0; // Auto-declared and assigned default for referenced IC node
 
     // ========= Logic Assignments =========
     assign output_7_segment_display1_g_middle_7 = 1'b0; // 7-Segment Display
@@ -110,10 +112,10 @@ module ic (
     assign output_led6_0_33 = ic_input_ic_node_267_0; // LED
     assign output_led7_0_34 = seq_jk_flip_flop_38_0_q; // LED
     // JK FlipFlop: JK-Flip-Flop
-    // JK FlipFlop with constant clock: JK-Flip-Flop
-    initial begin // Clock always low - hold state
-        seq_jk_flip_flop_38_0_q = 1'b0;
-        seq_jk_flip_flop_38_1_q = 1'b1;
+    always @(posedge input_clock6_6) begin
+        begin
+            // J=0, K=0: Hold mode only (no state change)
+        end
     end
 
     // JK FlipFlop: JK-Flip-Flop
@@ -142,7 +144,7 @@ module ic (
     // ========= ULTRATHINK FINAL SCAN: Diagnostic Information =========
     // ULTRATHINK DEBUG: Found 0 potentially undeclared variables
     // ULTRATHINK DEBUG: Already declared variables count: 5
-    // ULTRATHINK DEBUG: Scanned content size: 2960 characters
+    // ULTRATHINK DEBUG: Scanned content size: 2903 characters
     // ULTRATHINK DEBUG: Module ic specific debug
     // ULTRATHINK DEBUG: seq_jk_flip_flop_12_1_q - inContent:0 inAlreadyDeclared:0 inSequentialVars:0
     // ULTRATHINK DEBUG: seq_jk_flip_flop_11_1_q - inContent:0 inAlreadyDeclared:0 inSequentialVars:0
@@ -155,7 +157,7 @@ endmodule // ic
 // ====================================================================
 // Module ic generation completed successfully
 // Elements processed: 22
-// Inputs: 0, Outputs: 28
+// Inputs: 1, Outputs: 28
 // Warnings: 5
 //   IC JKFLIPFLOP input 0 is not connected
 //   IC JKFLIPFLOP input 1 is not connected

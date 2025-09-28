@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: tflipflop
-// Generated: Sun Sep 28 03:36:35 2025
+// Generated: Sun Sep 28 03:51:24 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 16/1000 LUTs, 35/1000 FFs, 6/50 IOs
 //
@@ -30,8 +30,8 @@ module tflipflop (
 // IC inputs: 4, IC outputs: 2
 // Nesting depth: 0
 // ============== END IC: DFLIPFLOP ==============
-    wire ic_dflipflop_ic_node_38_0 = 1'b0; // Auto-declared and assigned default for referenced IC node
     wire ic_dflipflop_ic_node_39_0 = 1'b0; // Auto-declared and assigned default for referenced IC node
+    wire ic_dflipflop_ic_node_38_0 = 1'b0; // Auto-declared and assigned default for referenced IC node
 
     // ========= Logic Assignments =========
     assign output_led1_q_0_5 = ic_dflipflop_ic_node_38_0; // LED

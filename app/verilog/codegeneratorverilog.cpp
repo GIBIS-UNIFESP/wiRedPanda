@@ -1466,7 +1466,14 @@ void CodeGeneratorVerilog::declareAuxVariables()
                 if (m_referencedWires.contains(trackedVar)) {
                     // Check if this is a sequential variable that should be declared as reg
                     if (m_sequentialVariables.contains(trackedVar)) {
-                        m_stream << QString("    reg %1 = 1'b0; // Sequential element register").arg(trackedVar) << Qt::endl;
+                        // ULTRATHINK FIX: Add Verilator pragma for complement outputs that might be unused
+                        if (trackedVar.contains("_1_q")) {
+                            m_stream << QString("    /* verilator lint_off UNUSED */") << Qt::endl;
+                            m_stream << QString("    reg %1 = 1'b0; // Sequential element register (complement output)").arg(trackedVar) << Qt::endl;
+                            m_stream << QString("    /* verilator lint_on UNUSED */") << Qt::endl;
+                        } else {
+                            m_stream << QString("    reg %1 = 1'b0; // Sequential element register").arg(trackedVar) << Qt::endl;
+                        }
                         generateDebugInfo(QString("SAFETY NET: Auto-declared sequential variable as reg: %1").arg(trackedVar));
                     } else {
                         m_stream << QString("    wire %1; // Auto-declared from assignment tracking").arg(trackedVar) << Qt::endl;
@@ -4076,9 +4083,69 @@ void CodeGeneratorVerilog::analyzeUsedInputPorts(const QVector<GraphicElement *>
 {
     generateDebugInfo("Starting input port usage analysis");
 
-    // Analyze which input elements are actually referenced in logic expressions
+    // ULTRATHINK FIX: First analyze sequential elements (flip-flops, latches) since they use inputs differently
+    // Sequential elements use inputs in always blocks, not simple logic expressions
     for (auto *elm : elements) {
         if (!elm) continue;
+
+        // Check if this is a sequential element
+        if (elm->elementType() == ElementType::JKFlipFlop ||
+            elm->elementType() == ElementType::DFlipFlop ||
+            elm->elementType() == ElementType::TFlipFlop ||
+            elm->elementType() == ElementType::SRFlipFlop ||
+            elm->elementType() == ElementType::DLatch ||
+            elm->elementType() == ElementType::SRLatch) {
+
+            generateDebugInfo(QString("ULTRATHINK: Analyzing sequential element %1").arg(elm->objectName()), elm);
+
+            // Analyze each input port to see if it will be used in the always block
+            for (int i = 0; i < elm->inputs().size(); ++i) {
+                QNEPort *inputPort = elm->inputPort(i);
+                if (!inputPort) continue;
+
+                QString inputSignal = otherPortName(inputPort);
+
+                // Find the input element that provides this signal
+                for (auto *inputElm : elements) {
+                    if (!inputElm) continue;
+
+                    if ((inputElm->elementType() == ElementType::InputButton) ||
+                        (inputElm->elementType() == ElementType::InputSwitch) ||
+                        (inputElm->elementType() == ElementType::Clock)) {
+
+                        QString inputVarName = m_varMap.value(inputElm->outputPort());
+
+                        if (inputSignal == inputVarName && !inputSignal.isEmpty()) {
+                            // Check if this input will actually be used in the always block
+                            // Constants like "1'b0" and "1'b1" are treated as unconnected and won't appear in always blocks
+                            if (inputSignal != "1'b0" && inputSignal != "1'b1") {
+                                usedInputElements.insert(inputElm);
+                                generateDebugInfo(QString("ULTRATHINK: Sequential element %1 uses input %2 (%3)")
+                                                 .arg(elm->objectName()).arg(inputElm->objectName()).arg(inputSignal), elm);
+                            } else {
+                                generateDebugInfo(QString("ULTRATHINK: Sequential element %1 has constant input %2 (%3) - marking as unused")
+                                                 .arg(elm->objectName()).arg(inputElm->objectName()).arg(inputSignal), elm);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Analyze which input elements are actually referenced in combinational logic expressions
+    for (auto *elm : elements) {
+        if (!elm) continue;
+
+        // Skip sequential elements since we already analyzed them above
+        if (elm->elementType() == ElementType::JKFlipFlop ||
+            elm->elementType() == ElementType::DFlipFlop ||
+            elm->elementType() == ElementType::TFlipFlop ||
+            elm->elementType() == ElementType::SRFlipFlop ||
+            elm->elementType() == ElementType::DLatch ||
+            elm->elementType() == ElementType::SRLatch) {
+            continue;
+        }
 
         // Generate all logic expressions for this element to see what inputs they reference
         for (auto *outputPort : elm->outputs()) {

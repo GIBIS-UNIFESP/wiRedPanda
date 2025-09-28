@@ -2,9 +2,9 @@
 
 module register_tb;
 
-    // Testbench signals - Updated to match actual module interface
+    // Testbench signals - ULTRATHINK: Updated to match actual module interface
     reg input_clock1_1;
-    reg input_clock2_2;
+    // ULTRATHINK FIX: Removed input_clock2_2 - not present in register module
     wire output_led1_0_3;
     wire output_led2_0_4;
     wire output_led3_0_5;
@@ -14,10 +14,10 @@ module register_tb;
     integer test_count = 0;
     integer pass_count = 0;
 
-    // Instantiate the Device Under Test (DUT) - Updated port mapping
+    // Instantiate the Device Under Test (DUT) - ULTRATHINK: Fixed port mapping
     register dut (
         .input_clock1_1(input_clock1_1),
-        .input_clock2_2(input_clock2_2),
+        // ULTRATHINK FIX: Removed input_clock2_2 - not present in register module
         .output_led1_0_3(output_led1_0_3),
         .output_led2_0_4(output_led2_0_4),
         .output_led3_0_5(output_led3_0_5),
@@ -36,7 +36,7 @@ module register_tb;
             test_count = test_count + 1;
 
             // Set data input (using second clock as data)
-            input_clock2_2 = data_clk;
+            // ULTRATHINK FIX: Removed input_clock2_2 assignment - port doesn't exist
 
             // Wait for next shift clock edge
             @(posedge input_clock1_1);
@@ -57,7 +57,7 @@ module register_tb;
         $display("Testing register circuit with clock and data inputs");
 
         // Initialize inputs
-        input_clock2_2 = 0;
+        // ULTRATHINK FIX: Removed input_clock2_2 initialization - port doesn't exist
 
         // Wait for initialization
         #100;
