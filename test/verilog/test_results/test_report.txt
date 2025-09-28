@@ -1,4 +1,4 @@
-Verilog Test Report - 2025-09-28 03:04:07
+Verilog Test Report - 2025-09-28 03:36:46
 ============================================================
 
 Total tests: 54
@@ -64,9 +64,9 @@ dlatch:
 ic:
   iverilog: PASS
   verilator: FAIL
-    Error: %Warning-UNUSED: /workspace/test/verilog/ic.v:76:9: Signal is not used: 'seq_jk_flip_flop_35_1_q'
+    Error: %Warning-UNUSED: /workspace/test/verilog/ic.v:74:9: Signal is not used: 'seq_jk_flip_flop_38_1_q'
                                                   : ... In instance ic
-   76 |     reg seq_jk_flip_flo...
+   74 |     reg seq_jk_flip_flo...
   yosys: PASS
 
 input_module:
@@ -85,9 +85,9 @@ jkflipflop:
 notes:
   iverilog: PASS
   verilator: FAIL
-    Error: %Warning-UNUSED: /workspace/test/verilog/notes.v:42:9: Signal is not used: 'seq_jk_flip_flop_10_1_q'
+    Error: %Warning-UNUSED: /workspace/test/verilog/notes.v:44:9: Signal is not used: 'seq_jk_flip_flop_10_1_q'
                                                      : ... In instance notes
-   42 |     reg seq_jk...
+   44 |     reg seq_jk...
   yosys: PASS
 
 register:
@@ -96,9 +96,9 @@ register:
 1 error(s) during elaboration.
 ...
   verilator: FAIL
-    Error: %Warning-UNUSED: /workspace/test/verilog/register.v:32:9: Signal is not used: 'seq_d_flip_flop_7_1_q'
+    Error: %Warning-UNUSED: /workspace/test/verilog/register.v:32:9: Signal is not used: 'seq_d_flip_flop_10_1_q'
                                                         : ... In instance register
-   32 |     reg...
+   32 |     re...
   yosys: PASS
 
 sequential:
@@ -112,9 +112,9 @@ sequential:
 serialize:
   iverilog: PASS
   verilator: FAIL
-    Error: %Warning-UNUSED: /workspace/test/verilog/serialize.v:34:9: Signal is not used: 'seq_d_flip_flop_9_1_q'
+    Error: %Warning-UNUSED: /workspace/test/verilog/serialize.v:33:9: Signal is not used: 'seq_d_flip_flop_10_1_q'
                                                          : ... In instance serialize
-   34 |     ...
+   33 |    ...
   yosys: PASS
 
 tflipflop:

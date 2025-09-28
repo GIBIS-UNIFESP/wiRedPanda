@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: dflipflop_masterslave
-// Generated: Sun Sep 28 03:03:32 2025
+// Generated: Sun Sep 28 03:36:05 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 10/1000 LUTs, 35/1000 FFs, 4/50 IOs
 //
@@ -34,8 +34,8 @@ module dflipflop_masterslave (
 // IC inputs: 2, IC outputs: 2
 // Nesting depth: 0
 // ============== END IC: DLATCH ==============
-    wire ic_dlatch_ic_node_17_0 = 1'b0; // Auto-declared and assigned default for referenced IC node
     wire ic_dlatch_ic_node_16_0 = 1'b0; // Auto-declared and assigned default for referenced IC node
+    wire ic_dlatch_ic_node_17_0 = 1'b0; // Auto-declared and assigned default for referenced IC node
 
     // ========= Logic Assignments =========
     assign output_led1_q_0_3 = ic_dlatch_ic_node_16_0; // LED

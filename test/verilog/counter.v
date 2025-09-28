@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: counter
-// Generated: Sun Sep 28 03:03:31 2025
+// Generated: Sun Sep 28 03:36:02 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 8/1000 LUTs, 38/1000 FFs, 4/50 IOs
 //
@@ -27,11 +27,11 @@ module counter (
 
     // ========= Output Assignments =========
     // ========= Internal Signals =========
-    reg seq_jk_flip_flop_5_0_q = 1'b0; // Sequential element register
-    reg seq_jk_flip_flop_7_1_q = 1'b0; // Sequential element register
-    reg seq_jk_flip_flop_6_0_q = 1'b0; // Sequential element register
     reg seq_jk_flip_flop_6_1_q = 1'b0; // Sequential element register
     reg seq_jk_flip_flop_5_1_q = 1'b0; // Sequential element register
+    reg seq_jk_flip_flop_7_1_q = 1'b0; // Sequential element register
+    reg seq_jk_flip_flop_5_0_q = 1'b0; // Sequential element register
+    reg seq_jk_flip_flop_6_0_q = 1'b0; // Sequential element register
 
     // ========= Logic Assignments =========
     assign output_led1_0_2 = seq_jk_flip_flop_7_1_q; // LED

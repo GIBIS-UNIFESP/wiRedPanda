@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: serialize
-// Generated: Sun Sep 28 03:03:44 2025
+// Generated: Sun Sep 28 03:36:33 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 45/1000 LUTs, 4/1000 FFs, 8/50 IOs
 //
@@ -30,14 +30,14 @@ module serialize (
 
     // ========= Output Assignments =========
     // ========= Internal Signals =========
-    reg seq_d_flip_flop_12_0_q = 1'b0; // Sequential element register
-    reg seq_d_flip_flop_9_1_q = 1'b0; // Sequential element register
     reg seq_d_flip_flop_10_1_q = 1'b0; // Sequential element register
-    reg seq_d_flip_flop_10_0_q = 1'b0; // Sequential element register
+    reg seq_d_flip_flop_11_0_q = 1'b0; // Sequential element register
     reg seq_d_flip_flop_12_1_q = 1'b0; // Sequential element register
     reg seq_d_flip_flop_11_1_q = 1'b0; // Sequential element register
+    reg seq_d_flip_flop_10_0_q = 1'b0; // Sequential element register
     reg seq_d_flip_flop_9_0_q = 1'b0; // Sequential element register
-    reg seq_d_flip_flop_11_0_q = 1'b0; // Sequential element register
+    reg seq_d_flip_flop_9_1_q = 1'b0; // Sequential element register
+    reg seq_d_flip_flop_12_0_q = 1'b0; // Sequential element register
 
     // ========= Logic Assignments =========
     assign output_led1_0_7 = ~input_input_switch1_load__shift_1; // LED

@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: notes
-// Generated: Sun Sep 28 03:03:42 2025
+// Generated: Sun Sep 28 03:36:28 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 16/1000 LUTs, 38/1000 FFs, 9/50 IOs
 //
@@ -39,9 +39,9 @@ module notes (
 // IC inputs: 3, IC outputs: 8
 // Nesting depth: 0
 // ============== END IC: DECODER ==============
-    reg seq_jk_flip_flop_10_1_q = 1'b0; // Sequential element register
     reg seq_jk_flip_flop_11_0_q = 1'b0; // Sequential element register
     reg seq_jk_flip_flop_10_0_q = 1'b0; // Sequential element register
+    reg seq_jk_flip_flop_10_1_q = 1'b0; // Sequential element register
 
     // ========= Logic Assignments =========
     assign output_buzzer1_g6_2 = 1'b0; // Buzzer

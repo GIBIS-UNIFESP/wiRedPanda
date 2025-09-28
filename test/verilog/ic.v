@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: ic
-// Generated: Sun Sep 28 03:03:39 2025
+// Generated: Sun Sep 28 03:36:21 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 58/1000 LUTs, 215/1000 FFs, 37/50 IOs
 //
@@ -71,14 +71,14 @@ module ic (
 // IC inputs: 3, IC outputs: 8
 // Nesting depth: 0
 // ============== END IC: DISPLAY-3BITS ==============
+    reg seq_jk_flip_flop_38_1_q = 1'b0; // Sequential element register
     reg seq_jk_flip_flop_36_0_q = 1'b0; // Sequential element register
     reg seq_jk_flip_flop_35_0_q = 1'b0; // Sequential element register
     reg seq_jk_flip_flop_35_1_q = 1'b0; // Sequential element register
-    reg seq_jk_flip_flop_38_1_q = 1'b0; // Sequential element register
     reg seq_jk_flip_flop_38_0_q = 1'b0; // Sequential element register
+    wire ic_input_ic_node_267_0 = 1'b0; // Auto-declared and assigned default for referenced IC node
     wire ic_input_ic_node_265_0 = 1'b0; // Auto-declared and assigned default for referenced IC node
     wire ic_input_ic_node_266_0 = 1'b0; // Auto-declared and assigned default for referenced IC node
-    wire ic_input_ic_node_267_0 = 1'b0; // Auto-declared and assigned default for referenced IC node
 
     // ========= Logic Assignments =========
     assign output_7_segment_display1_g_middle_7 = 1'b0; // 7-Segment Display
