@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: jkflipflop
-// Generated: Sat Sep 27 18:03:53 2025
+// Generated: Sun Sep 28 03:03:41 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 24/1000 LUTs, 35/1000 FFs, 7/50 IOs
 //
@@ -52,8 +52,13 @@ module jkflipflop (
     // ========= Logic Assignments =========
     assign output_led1_q_0_6 = output_led1_q_0_6_behavioral_reg; // Connect behavioral register to output
     assign output_led2_q_0_7 = ~output_led1_q_0_6_behavioral_reg; // Complementary output
-    assign output_led1_q_0_6 = 1'b0; // LED
-    assign output_led2_q_0_7 = 1'b0; // LED
+
+
+    // ========= ULTRATHINK FINAL SCAN: Diagnostic Information =========
+    // ULTRATHINK DEBUG: Found 0 potentially undeclared variables
+    // ULTRATHINK DEBUG: Already declared variables count: 5
+    // ULTRATHINK DEBUG: Scanned content size: 195 characters
+    // ULTRATHINK DEBUG: No additional variables found to declare
 
 endmodule // jkflipflop
 

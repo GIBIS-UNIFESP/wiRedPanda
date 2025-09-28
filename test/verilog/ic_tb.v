@@ -4,34 +4,34 @@ module ic_tb;
 
     // Testbench signals - Updated for enhanced code generator (no input ports)
     // The enhanced generator eliminated unused input ports for cleaner design
-    wire output_7_segment_display1_g_middle_1;
-    wire output_7_segment_display1_f_upper_left_2;
-    wire output_7_segment_display1_e_lower_left_3;
-    wire output_7_segment_display1_d_bottom_4;
-    wire output_7_segment_display1_a_top_5;
-    wire output_7_segment_display1_b_upper_right_6;
-    wire output_7_segment_display1_dp_dot_7;
-    wire output_7_segment_display1_c_lower_right_8;
-    wire output_7_segment_display2_g_middle_9;
-    wire output_7_segment_display2_f_upper_left_10;
-    wire output_7_segment_display2_e_lower_left_11;
-    wire output_7_segment_display2_d_bottom_12;
-    wire output_7_segment_display2_a_top_13;
-    wire output_7_segment_display2_b_upper_right_14;
-    wire output_7_segment_display2_dp_dot_15;
-    wire output_7_segment_display2_c_lower_right_16;
-    wire output_7_segment_display3_g_middle_17;
-    wire output_7_segment_display3_f_upper_left_18;
-    wire output_7_segment_display3_e_lower_left_19;
-    wire output_7_segment_display3_d_bottom_20;
-    wire output_7_segment_display3_a_top_21;
-    wire output_7_segment_display3_b_upper_right_22;
-    wire output_7_segment_display3_dp_dot_23;
-    wire output_7_segment_display3_c_lower_right_24;
-    wire output_led4_0_25;
-    wire output_led5_0_26;
-    wire output_led6_0_27;
-    wire output_led7_0_28;
+    wire output_7_segment_display1_g_middle_7;
+    wire output_7_segment_display1_f_upper_left_8;
+    wire output_7_segment_display1_e_lower_left_9;
+    wire output_7_segment_display1_d_bottom_10;
+    wire output_7_segment_display1_a_top_11;
+    wire output_7_segment_display1_b_upper_right_12;
+    wire output_7_segment_display1_dp_dot_13;
+    wire output_7_segment_display1_c_lower_right_14;
+    wire output_7_segment_display2_g_middle_15;
+    wire output_7_segment_display2_f_upper_left_16;
+    wire output_7_segment_display2_e_lower_left_17;
+    wire output_7_segment_display2_d_bottom_18;
+    wire output_7_segment_display2_a_top_19;
+    wire output_7_segment_display2_b_upper_right_20;
+    wire output_7_segment_display2_dp_dot_21;
+    wire output_7_segment_display2_c_lower_right_22;
+    wire output_7_segment_display3_g_middle_23;
+    wire output_7_segment_display3_f_upper_left_24;
+    wire output_7_segment_display3_e_lower_left_25;
+    wire output_7_segment_display3_d_bottom_26;
+    wire output_7_segment_display3_a_top_27;
+    wire output_7_segment_display3_b_upper_right_28;
+    wire output_7_segment_display3_dp_dot_29;
+    wire output_7_segment_display3_c_lower_right_30;
+    wire output_led4_0_31;
+    wire output_led5_0_32;
+    wire output_led6_0_33;
+    wire output_led7_0_34;
 
     // Test control
     integer test_count = 0;
@@ -39,34 +39,34 @@ module ic_tb;
 
     // Instantiate the Device Under Test (DUT) - Updated port mapping
     ic dut (
-        .output_7_segment_display1_g_middle_1(output_7_segment_display1_g_middle_1),
-        .output_7_segment_display1_f_upper_left_2(output_7_segment_display1_f_upper_left_2),
-        .output_7_segment_display1_e_lower_left_3(output_7_segment_display1_e_lower_left_3),
-        .output_7_segment_display1_d_bottom_4(output_7_segment_display1_d_bottom_4),
-        .output_7_segment_display1_a_top_5(output_7_segment_display1_a_top_5),
-        .output_7_segment_display1_b_upper_right_6(output_7_segment_display1_b_upper_right_6),
-        .output_7_segment_display1_dp_dot_7(output_7_segment_display1_dp_dot_7),
-        .output_7_segment_display1_c_lower_right_8(output_7_segment_display1_c_lower_right_8),
-        .output_7_segment_display2_g_middle_9(output_7_segment_display2_g_middle_9),
-        .output_7_segment_display2_f_upper_left_10(output_7_segment_display2_f_upper_left_10),
-        .output_7_segment_display2_e_lower_left_11(output_7_segment_display2_e_lower_left_11),
-        .output_7_segment_display2_d_bottom_12(output_7_segment_display2_d_bottom_12),
-        .output_7_segment_display2_a_top_13(output_7_segment_display2_a_top_13),
-        .output_7_segment_display2_b_upper_right_14(output_7_segment_display2_b_upper_right_14),
-        .output_7_segment_display2_dp_dot_15(output_7_segment_display2_dp_dot_15),
-        .output_7_segment_display2_c_lower_right_16(output_7_segment_display2_c_lower_right_16),
-        .output_7_segment_display3_g_middle_17(output_7_segment_display3_g_middle_17),
-        .output_7_segment_display3_f_upper_left_18(output_7_segment_display3_f_upper_left_18),
-        .output_7_segment_display3_e_lower_left_19(output_7_segment_display3_e_lower_left_19),
-        .output_7_segment_display3_d_bottom_20(output_7_segment_display3_d_bottom_20),
-        .output_7_segment_display3_a_top_21(output_7_segment_display3_a_top_21),
-        .output_7_segment_display3_b_upper_right_22(output_7_segment_display3_b_upper_right_22),
-        .output_7_segment_display3_dp_dot_23(output_7_segment_display3_dp_dot_23),
-        .output_7_segment_display3_c_lower_right_24(output_7_segment_display3_c_lower_right_24),
-        .output_led4_0_25(output_led4_0_25),
-        .output_led5_0_26(output_led5_0_26),
-        .output_led6_0_27(output_led6_0_27),
-        .output_led7_0_28(output_led7_0_28)
+        .output_7_segment_display1_g_middle_7(output_7_segment_display1_g_middle_7),
+        .output_7_segment_display1_f_upper_left_8(output_7_segment_display1_f_upper_left_8),
+        .output_7_segment_display1_e_lower_left_9(output_7_segment_display1_e_lower_left_9),
+        .output_7_segment_display1_d_bottom_10(output_7_segment_display1_d_bottom_10),
+        .output_7_segment_display1_a_top_11(output_7_segment_display1_a_top_11),
+        .output_7_segment_display1_b_upper_right_12(output_7_segment_display1_b_upper_right_12),
+        .output_7_segment_display1_dp_dot_13(output_7_segment_display1_dp_dot_13),
+        .output_7_segment_display1_c_lower_right_14(output_7_segment_display1_c_lower_right_14),
+        .output_7_segment_display2_g_middle_15(output_7_segment_display2_g_middle_15),
+        .output_7_segment_display2_f_upper_left_16(output_7_segment_display2_f_upper_left_16),
+        .output_7_segment_display2_e_lower_left_17(output_7_segment_display2_e_lower_left_17),
+        .output_7_segment_display2_d_bottom_18(output_7_segment_display2_d_bottom_18),
+        .output_7_segment_display2_a_top_19(output_7_segment_display2_a_top_19),
+        .output_7_segment_display2_b_upper_right_20(output_7_segment_display2_b_upper_right_20),
+        .output_7_segment_display2_dp_dot_21(output_7_segment_display2_dp_dot_21),
+        .output_7_segment_display2_c_lower_right_22(output_7_segment_display2_c_lower_right_22),
+        .output_7_segment_display3_g_middle_23(output_7_segment_display3_g_middle_23),
+        .output_7_segment_display3_f_upper_left_24(output_7_segment_display3_f_upper_left_24),
+        .output_7_segment_display3_e_lower_left_25(output_7_segment_display3_e_lower_left_25),
+        .output_7_segment_display3_d_bottom_26(output_7_segment_display3_d_bottom_26),
+        .output_7_segment_display3_a_top_27(output_7_segment_display3_a_top_27),
+        .output_7_segment_display3_b_upper_right_28(output_7_segment_display3_b_upper_right_28),
+        .output_7_segment_display3_dp_dot_29(output_7_segment_display3_dp_dot_29),
+        .output_7_segment_display3_c_lower_right_30(output_7_segment_display3_c_lower_right_30),
+        .output_led4_0_31(output_led4_0_31),
+        .output_led5_0_32(output_led5_0_32),
+        .output_led6_0_33(output_led6_0_33),
+        .output_led7_0_34(output_led7_0_34)
     );
 
     // Test procedure for self-contained IC circuit
@@ -76,22 +76,22 @@ module ic_tb;
             #100;
             $display("Test %0d: Self-contained IC circuit operating", test_count);
             $display("      Display1: %b%b%b%b%b%b%b%b",
-                     output_7_segment_display1_g_middle_1, output_7_segment_display1_f_upper_left_2,
-                     output_7_segment_display1_e_lower_left_3, output_7_segment_display1_d_bottom_4,
-                     output_7_segment_display1_a_top_5, output_7_segment_display1_b_upper_right_6,
-                     output_7_segment_display1_dp_dot_7, output_7_segment_display1_c_lower_right_8);
+                     output_7_segment_display1_g_middle_7, output_7_segment_display1_f_upper_left_8,
+                     output_7_segment_display1_e_lower_left_9, output_7_segment_display1_d_bottom_10,
+                     output_7_segment_display1_a_top_11, output_7_segment_display1_b_upper_right_12,
+                     output_7_segment_display1_dp_dot_13, output_7_segment_display1_c_lower_right_14);
             $display("      Display2: %b%b%b%b%b%b%b%b",
-                     output_7_segment_display2_g_middle_9, output_7_segment_display2_f_upper_left_10,
-                     output_7_segment_display2_e_lower_left_11, output_7_segment_display2_d_bottom_12,
-                     output_7_segment_display2_a_top_13, output_7_segment_display2_b_upper_right_14,
-                     output_7_segment_display2_dp_dot_15, output_7_segment_display2_c_lower_right_16);
+                     output_7_segment_display2_g_middle_15, output_7_segment_display2_f_upper_left_16,
+                     output_7_segment_display2_e_lower_left_17, output_7_segment_display2_d_bottom_18,
+                     output_7_segment_display2_a_top_19, output_7_segment_display2_b_upper_right_20,
+                     output_7_segment_display2_dp_dot_21, output_7_segment_display2_c_lower_right_22);
             $display("      Display3: %b%b%b%b%b%b%b%b",
-                     output_7_segment_display3_g_middle_17, output_7_segment_display3_f_upper_left_18,
-                     output_7_segment_display3_e_lower_left_19, output_7_segment_display3_d_bottom_20,
-                     output_7_segment_display3_a_top_21, output_7_segment_display3_b_upper_right_22,
-                     output_7_segment_display3_dp_dot_23, output_7_segment_display3_c_lower_right_24);
+                     output_7_segment_display3_g_middle_23, output_7_segment_display3_f_upper_left_24,
+                     output_7_segment_display3_e_lower_left_25, output_7_segment_display3_d_bottom_26,
+                     output_7_segment_display3_a_top_27, output_7_segment_display3_b_upper_right_28,
+                     output_7_segment_display3_dp_dot_29, output_7_segment_display3_c_lower_right_30);
             $display("      LEDs: %b%b%b%b",
-                     output_led4_0_25, output_led5_0_26, output_led6_0_27, output_led7_0_28);
+                     output_led4_0_31, output_led5_0_32, output_led6_0_33, output_led7_0_34);
             pass_count = pass_count + 1;
             $display("      PASS: Self-contained IC circuit operating");
         end

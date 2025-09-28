@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: input_module
-// Generated: Sat Sep 27 18:03:53 2025
+// Generated: Sun Sep 28 03:03:41 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 12/1000 LUTs, 0/1000 FFs, 6/50 IOs
 //
@@ -35,6 +35,13 @@ module input_module (
     assign output_led2_not_x0_0_4 = ~input_push_button1_x0_1; // LED
     assign output_led3_and_0_5 = (input_push_button1_x0_1 & input_push_button2_x1_2); // LED
     assign output_led4_or_0_6 = (input_push_button1_x0_1 | input_push_button2_x1_2); // LED
+
+
+    // ========= ULTRATHINK FINAL SCAN: Diagnostic Information =========
+    // ULTRATHINK DEBUG: Found 0 potentially undeclared variables
+    // ULTRATHINK DEBUG: Already declared variables count: 2
+    // ULTRATHINK DEBUG: Scanned content size: 346 characters
+    // ULTRATHINK DEBUG: No additional variables found to declare
 
 endmodule // input_module
 

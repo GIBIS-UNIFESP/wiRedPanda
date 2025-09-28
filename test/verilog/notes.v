@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: notes
-// Generated: Sat Sep 27 18:03:54 2025
+// Generated: Sun Sep 28 03:03:42 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 16/1000 LUTs, 38/1000 FFs, 9/50 IOs
 //
@@ -15,7 +15,6 @@
 
 module notes (
     // ========= Input Ports =========
-    input wire input_clock1_1,
 
     // ========= Output Ports =========
     output wire output_buzzer1_g6_2,
@@ -40,6 +39,9 @@ module notes (
 // IC inputs: 3, IC outputs: 8
 // Nesting depth: 0
 // ============== END IC: DECODER ==============
+    reg seq_jk_flip_flop_10_1_q = 1'b0; // Sequential element register
+    reg seq_jk_flip_flop_11_0_q = 1'b0; // Sequential element register
+    reg seq_jk_flip_flop_10_0_q = 1'b0; // Sequential element register
 
     // ========= Logic Assignments =========
     assign output_buzzer1_g6_2 = 1'b0; // Buzzer
@@ -53,24 +55,14 @@ module notes (
     // JK FlipFlop: JK-Flip-Flop
     always @(posedge seq_jk_flip_flop_11_0_q) begin
         begin
-            case ({1'b1, 1'b1})
-                2'b00: begin /* hold */ end
-                2'b01: begin seq_jk_flip_flop_12_0_q <= 1'b0; seq_jk_flip_flop_12_1_q <= 1'b1; end
-                2'b10: begin seq_jk_flip_flop_12_0_q <= 1'b1; seq_jk_flip_flop_12_1_q <= 1'b0; end
-                2'b11: begin seq_jk_flip_flop_12_0_q <= seq_jk_flip_flop_12_1_q; seq_jk_flip_flop_12_1_q <= seq_jk_flip_flop_12_0_q; end // toggle
-            endcase
+            // J=0, K=0: Hold mode only (no state change)
         end
     end
 
     // JK FlipFlop: JK-Flip-Flop
     always @(posedge seq_jk_flip_flop_10_0_q) begin
         begin
-            case ({1'b1, 1'b1})
-                2'b00: begin /* hold */ end
-                2'b01: begin seq_jk_flip_flop_11_0_q <= 1'b0; seq_jk_flip_flop_11_1_q <= 1'b1; end
-                2'b10: begin seq_jk_flip_flop_11_0_q <= 1'b1; seq_jk_flip_flop_11_1_q <= 1'b0; end
-                2'b11: begin seq_jk_flip_flop_11_0_q <= seq_jk_flip_flop_11_1_q; seq_jk_flip_flop_11_1_q <= seq_jk_flip_flop_11_0_q; end // toggle
-            endcase
+            // J=0, K=0: Hold mode only (no state change)
         end
     end
 
@@ -82,12 +74,24 @@ module notes (
     end
 
 
+
+    // ========= ULTRATHINK FINAL SCAN: Diagnostic Information =========
+    // ULTRATHINK DEBUG: Found 0 potentially undeclared variables
+    // ULTRATHINK DEBUG: Already declared variables count: 3
+    // ULTRATHINK DEBUG: Scanned content size: 973 characters
+    // ULTRATHINK DEBUG: Module notes specific debug
+    // ULTRATHINK DEBUG: seq_jk_flip_flop_12_1_q - inContent:0 inAlreadyDeclared:0 inSequentialVars:1
+    // ULTRATHINK DEBUG: seq_jk_flip_flop_11_1_q - inContent:0 inAlreadyDeclared:0 inSequentialVars:1
+    // ULTRATHINK DEBUG: seq_jk_flip_flop_10_1_q - inContent:1 inAlreadyDeclared:1 inSequentialVars:1
+    // ULTRATHINK DEBUG: seq_jk_flip_flop_37_1_q - inContent:0 inAlreadyDeclared:0 inSequentialVars:0
+    // ULTRATHINK DEBUG: No additional variables found to declare
+
 endmodule // notes
 
 // ====================================================================
 // Module notes generation completed successfully
 // Elements processed: 14
-// Inputs: 1, Outputs: 8
+// Inputs: 0, Outputs: 8
 // Warnings: 5
 //   IC JKFLIPFLOP input 0 is not connected
 //   IC JKFLIPFLOP input 1 is not connected

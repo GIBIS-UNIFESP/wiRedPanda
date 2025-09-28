@@ -2,8 +2,8 @@
 // ======= This Verilog code was generated automatically by wiRedPanda =======
 // ====================================================================
 //
-// Module: display_3bits
-// Generated: Sun Sep 28 03:03:35 2025
+// Module: display_3bits_test
+// Generated: Sun Sep 28 01:58:17 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 49/1000 LUTs, 0/1000 FFs, 12/50 IOs
 //
@@ -13,7 +13,7 @@
 
 `timescale 1ns/1ps
 
-module display_3bits (
+module display_3bits_test (
     // ========= Input Ports =========
     input wire input_input_switch1_p3_1,
     input wire input_input_switch2_p1_2,
@@ -52,10 +52,10 @@ module display_3bits (
     // ULTRATHINK DEBUG: Scanned content size: 1583 characters
     // ULTRATHINK DEBUG: No additional variables found to declare
 
-endmodule // display_3bits
+endmodule // display_3bits_test
 
 // ====================================================================
-// Module display_3bits generation completed successfully
+// Module display_3bits_test generation completed successfully
 // Elements processed: 32
 // Inputs: 3, Outputs: 8
 // ====================================================================

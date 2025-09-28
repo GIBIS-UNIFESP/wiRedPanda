@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: register
-// Generated: Sat Sep 27 18:03:55 2025
+// Generated: Sun Sep 28 03:03:43 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 16/1000 LUTs, 74/1000 FFs, 6/50 IOs
 //
@@ -16,7 +16,6 @@
 module register (
     // ========= Input Ports =========
     input wire input_clock1_1,
-    input wire input_clock2_2,
 
     // ========= Output Ports =========
     output wire output_led1_0_3,
@@ -29,6 +28,14 @@ module register (
 
     // ========= Output Assignments =========
     // ========= Internal Signals =========
+    reg seq_d_flip_flop_7_0_q = 1'b0; // Sequential element register
+    reg seq_d_flip_flop_7_1_q = 1'b0; // Sequential element register
+    reg seq_d_flip_flop_8_0_q = 1'b0; // Sequential element register
+    reg seq_d_flip_flop_10_1_q = 1'b0; // Sequential element register
+    reg seq_d_flip_flop_9_0_q = 1'b0; // Sequential element register
+    reg seq_d_flip_flop_10_0_q = 1'b0; // Sequential element register
+    reg seq_d_flip_flop_9_1_q = 1'b0; // Sequential element register
+    reg seq_d_flip_flop_8_1_q = 1'b0; // Sequential element register
 
     // ========= Logic Assignments =========
     assign output_led1_0_3 = seq_d_flip_flop_7_0_q; // LED
@@ -62,16 +69,23 @@ module register (
     // D FlipFlop: D-Flip-Flop
     always @(posedge input_clock1_1) begin
         begin
-            seq_d_flip_flop_7_0_q <= input_clock2_2;
-            seq_d_flip_flop_7_1_q <= ~input_clock2_2;
+            seq_d_flip_flop_7_0_q <= 1'b0;
+            seq_d_flip_flop_7_1_q <= ~1'b0;
         end
     end
 
+
+
+    // ========= ULTRATHINK FINAL SCAN: Diagnostic Information =========
+    // ULTRATHINK DEBUG: Found 0 potentially undeclared variables
+    // ULTRATHINK DEBUG: Already declared variables count: 9
+    // ULTRATHINK DEBUG: Scanned content size: 1124 characters
+    // ULTRATHINK DEBUG: No additional variables found to declare
 
 endmodule // register
 
 // ====================================================================
 // Module register generation completed successfully
 // Elements processed: 14
-// Inputs: 2, Outputs: 4
+// Inputs: 1, Outputs: 4
 // ====================================================================

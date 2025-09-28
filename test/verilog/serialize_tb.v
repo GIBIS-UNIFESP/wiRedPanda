@@ -4,8 +4,8 @@ module serialize_tb;
 
     // Testbench signals - Updated for enhanced code generator (no input ports)
     // The enhanced generator eliminated unused input ports for cleaner design
-    wire output_led1_0_1;
-    wire output_led2_0_2;
+    wire output_led1_0_7;
+    wire output_led2_0_8;
 
     // Test control
     integer test_count = 0;
@@ -13,8 +13,8 @@ module serialize_tb;
 
     // Instantiate the Device Under Test (DUT) - Updated port mapping
     serialize dut (
-        .output_led1_0_1(output_led1_0_1),
-        .output_led2_0_2(output_led2_0_2)
+        .output_led1_0_7(output_led1_0_7),
+        .output_led2_0_8(output_led2_0_8)
     );
 
     // Test procedure for self-contained serialize circuit
@@ -23,7 +23,7 @@ module serialize_tb;
             test_count = test_count + 1;
             #100;
             $display("Test %0d: Self-contained serialize circuit => Out1=%b, Out2=%b",
-                     test_count, output_led1_0_1, output_led2_0_2);
+                     test_count, output_led1_0_7, output_led2_0_8);
             pass_count = pass_count + 1;
             $display("      PASS: Self-contained serialize circuit operating");
         end

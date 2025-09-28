@@ -3,7 +3,7 @@
 // ====================================================================
 //
 // Module: decoder_new
-// Generated: Sat Sep 27 15:37:24 2025
+// Generated: Sun Sep 28 00:19:37 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 66/1000 LUTs, 0/1000 FFs, 12/50 IOs
 //
@@ -36,14 +36,21 @@ module decoder_new (
     // ========= Internal Signals =========
 
     // ========= Logic Assignments =========
-    assign output_led1_0_4 = (input_input_switch3_3 & input_input_switch1_1 & input_input_switch2_2); // LED
-    assign output_led2_0_5 = (input_input_switch3_3 & input_input_switch1_1 & ~input_input_switch2_2); // LED
-    assign output_led3_0_6 = (input_input_switch3_3 & ~input_input_switch1_1 & input_input_switch2_2); // LED
-    assign output_led4_0_7 = (input_input_switch3_3 & ~input_input_switch1_1 & ~input_input_switch2_2); // LED
-    assign output_led5_0_8 = (~input_input_switch3_3 & input_input_switch1_1 & input_input_switch2_2); // LED
-    assign output_led6_0_9 = (~input_input_switch3_3 & input_input_switch1_1 & ~input_input_switch2_2); // LED
-    assign output_led7_0_10 = (~input_input_switch3_3 & ~input_input_switch1_1 & input_input_switch2_2); // LED
-    assign output_led8_0_11 = (~input_input_switch2_2 & ~input_input_switch1_1 & ~input_input_switch3_3); // LED
+    assign output_led1_0_4 = (~input_input_switch3_3 & ~input_input_switch1_1 & ~input_input_switch2_2); // LED
+    assign output_led2_0_5 = (~input_input_switch3_3 & ~input_input_switch1_1 & input_input_switch2_2); // LED
+    assign output_led3_0_6 = (~input_input_switch3_3 & input_input_switch1_1 & ~input_input_switch2_2); // LED
+    assign output_led4_0_7 = (~input_input_switch3_3 & input_input_switch1_1 & input_input_switch2_2); // LED
+    assign output_led5_0_8 = (input_input_switch3_3 & ~input_input_switch1_1 & ~input_input_switch2_2); // LED
+    assign output_led6_0_9 = (input_input_switch3_3 & ~input_input_switch1_1 & input_input_switch2_2); // LED
+    assign output_led7_0_10 = (input_input_switch3_3 & input_input_switch1_1 & ~input_input_switch2_2); // LED
+    assign output_led8_0_11 = (input_input_switch2_2 & input_input_switch1_1 & input_input_switch3_3); // LED
+
+
+    // ========= ULTRATHINK FINAL SCAN: Diagnostic Information =========
+    // ULTRATHINK DEBUG: Found 0 potentially undeclared variables
+    // ULTRATHINK DEBUG: Already declared variables count: 3
+    // ULTRATHINK DEBUG: Scanned content size: 885 characters
+    // ULTRATHINK DEBUG: No additional variables found to declare
 
 endmodule // decoder_new
 

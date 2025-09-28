@@ -2,8 +2,8 @@
 // ======= This Verilog code was generated automatically by wiRedPanda =======
 // ====================================================================
 //
-// Module: counter
-// Generated: Sun Sep 28 03:03:31 2025
+// Module: counter_new
+// Generated: Sun Sep 28 00:18:28 2025
 // Target FPGA: Generic-Small
 // Resource Usage: 8/1000 LUTs, 38/1000 FFs, 4/50 IOs
 //
@@ -13,7 +13,7 @@
 
 `timescale 1ns/1ps
 
-module counter (
+module counter_new (
     // ========= Input Ports =========
     input wire input_clock1_1,
 
@@ -27,11 +27,12 @@ module counter (
 
     // ========= Output Assignments =========
     // ========= Internal Signals =========
-    reg seq_jk_flip_flop_5_0_q = 1'b0; // Sequential element register
+    reg seq_jk_flip_flop_6_1_q = 1'b0; // Sequential element register
     reg seq_jk_flip_flop_7_1_q = 1'b0; // Sequential element register
     reg seq_jk_flip_flop_6_0_q = 1'b0; // Sequential element register
-    reg seq_jk_flip_flop_6_1_q = 1'b0; // Sequential element register
+    reg seq_jk_flip_flop_5_0_q = 1'b0; // Sequential element register
     reg seq_jk_flip_flop_5_1_q = 1'b0; // Sequential element register
+    reg seq_jk_flip_flop_7_0_q = 1'b0; // Sequential element register
 
     // ========= Logic Assignments =========
     assign output_led1_0_2 = seq_jk_flip_flop_7_1_q; // LED
@@ -40,21 +41,36 @@ module counter (
     // JK FlipFlop: JK-Flip-Flop
     always @(posedge seq_jk_flip_flop_6_0_q) begin
         begin
-            // J=0, K=0: Hold mode only (no state change)
+            case ({1'b1, 1'b1})
+                2'b00: begin /* hold */ end
+                2'b01: begin seq_jk_flip_flop_7_0_q <= 1'b0; seq_jk_flip_flop_7_1_q <= 1'b1; end
+                2'b10: begin seq_jk_flip_flop_7_0_q <= 1'b1; seq_jk_flip_flop_7_1_q <= 1'b0; end
+                2'b11: begin seq_jk_flip_flop_7_0_q <= seq_jk_flip_flop_7_1_q; seq_jk_flip_flop_7_1_q <= seq_jk_flip_flop_7_0_q; end // toggle
+            endcase
         end
     end
 
     // JK FlipFlop: JK-Flip-Flop
     always @(posedge seq_jk_flip_flop_5_0_q) begin
         begin
-            // J=0, K=0: Hold mode only (no state change)
+            case ({1'b1, 1'b1})
+                2'b00: begin /* hold */ end
+                2'b01: begin seq_jk_flip_flop_6_0_q <= 1'b0; seq_jk_flip_flop_6_1_q <= 1'b1; end
+                2'b10: begin seq_jk_flip_flop_6_0_q <= 1'b1; seq_jk_flip_flop_6_1_q <= 1'b0; end
+                2'b11: begin seq_jk_flip_flop_6_0_q <= seq_jk_flip_flop_6_1_q; seq_jk_flip_flop_6_1_q <= seq_jk_flip_flop_6_0_q; end // toggle
+            endcase
         end
     end
 
     // JK FlipFlop: JK-Flip-Flop
     always @(posedge input_clock1_1) begin
         begin
-            // J=0, K=0: Hold mode only (no state change)
+            case ({1'b1, 1'b1})
+                2'b00: begin /* hold */ end
+                2'b01: begin seq_jk_flip_flop_5_0_q <= 1'b0; seq_jk_flip_flop_5_1_q <= 1'b1; end
+                2'b10: begin seq_jk_flip_flop_5_0_q <= 1'b1; seq_jk_flip_flop_5_1_q <= 1'b0; end
+                2'b11: begin seq_jk_flip_flop_5_0_q <= seq_jk_flip_flop_5_1_q; seq_jk_flip_flop_5_1_q <= seq_jk_flip_flop_5_0_q; end // toggle
+            endcase
         end
     end
 
@@ -62,14 +78,14 @@ module counter (
 
     // ========= ULTRATHINK FINAL SCAN: Diagnostic Information =========
     // ULTRATHINK DEBUG: Found 0 potentially undeclared variables
-    // ULTRATHINK DEBUG: Already declared variables count: 6
-    // ULTRATHINK DEBUG: Scanned content size: 702 characters
+    // ULTRATHINK DEBUG: Already declared variables count: 7
+    // ULTRATHINK DEBUG: Scanned content size: 1827 characters
     // ULTRATHINK DEBUG: No additional variables found to declare
 
-endmodule // counter
+endmodule // counter_new
 
 // ====================================================================
-// Module counter generation completed successfully
+// Module counter_new generation completed successfully
 // Elements processed: 7
 // Inputs: 1, Outputs: 3
 // ====================================================================

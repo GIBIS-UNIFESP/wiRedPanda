@@ -4,14 +4,14 @@ module display_4bits_counter_tb;
 
     // Testbench signals - Updated for enhanced code generator (no input ports)
     // The enhanced generator eliminated unused input ports for cleaner design
-    wire output_7_segment_display1_g_middle_1;
-    wire output_7_segment_display1_f_upper_left_2;
-    wire output_7_segment_display1_e_lower_left_3;
-    wire output_7_segment_display1_d_bottom_4;
-    wire output_7_segment_display1_a_top_5;
-    wire output_7_segment_display1_b_upper_right_6;
-    wire output_7_segment_display1_dp_dot_7;
-    wire output_7_segment_display1_c_lower_right_8;
+    wire output_7_segment_display1_g_middle_3;
+    wire output_7_segment_display1_f_upper_left_4;
+    wire output_7_segment_display1_e_lower_left_5;
+    wire output_7_segment_display1_d_bottom_6;
+    wire output_7_segment_display1_a_top_7;
+    wire output_7_segment_display1_b_upper_right_8;
+    wire output_7_segment_display1_dp_dot_9;
+    wire output_7_segment_display1_c_lower_right_10;
 
     // Test control
     integer test_count = 0;
@@ -21,14 +21,14 @@ module display_4bits_counter_tb;
 
     // Instantiate the Device Under Test (DUT) - Updated port mapping
     display_4bits_counter dut (
-        .output_7_segment_display1_g_middle_1(output_7_segment_display1_g_middle_1),
-        .output_7_segment_display1_f_upper_left_2(output_7_segment_display1_f_upper_left_2),
-        .output_7_segment_display1_e_lower_left_3(output_7_segment_display1_e_lower_left_3),
-        .output_7_segment_display1_d_bottom_4(output_7_segment_display1_d_bottom_4),
-        .output_7_segment_display1_a_top_5(output_7_segment_display1_a_top_5),
-        .output_7_segment_display1_b_upper_right_6(output_7_segment_display1_b_upper_right_6),
-        .output_7_segment_display1_dp_dot_7(output_7_segment_display1_dp_dot_7),
-        .output_7_segment_display1_c_lower_right_8(output_7_segment_display1_c_lower_right_8)
+        .output_7_segment_display1_g_middle_3(output_7_segment_display1_g_middle_3),
+        .output_7_segment_display1_f_upper_left_4(output_7_segment_display1_f_upper_left_4),
+        .output_7_segment_display1_e_lower_left_5(output_7_segment_display1_e_lower_left_5),
+        .output_7_segment_display1_d_bottom_6(output_7_segment_display1_d_bottom_6),
+        .output_7_segment_display1_a_top_7(output_7_segment_display1_a_top_7),
+        .output_7_segment_display1_b_upper_right_8(output_7_segment_display1_b_upper_right_8),
+        .output_7_segment_display1_dp_dot_9(output_7_segment_display1_dp_dot_9),
+        .output_7_segment_display1_c_lower_right_10(output_7_segment_display1_c_lower_right_10)
     );
 
     // Enhanced testbench for self-contained 4-bit counter display with no external inputs
@@ -36,10 +36,10 @@ module display_4bits_counter_tb;
 
     // Pack display outputs into a single pattern for analysis
     always @(*) begin
-        display_pattern = {output_7_segment_display1_g_middle_1, output_7_segment_display1_f_upper_left_2,
-                          output_7_segment_display1_e_lower_left_3, output_7_segment_display1_d_bottom_4,
-                          output_7_segment_display1_a_top_5, output_7_segment_display1_b_upper_right_6,
-                          output_7_segment_display1_dp_dot_7, output_7_segment_display1_c_lower_right_8};
+        display_pattern = {output_7_segment_display1_g_middle_3, output_7_segment_display1_f_upper_left_4,
+                          output_7_segment_display1_e_lower_left_5, output_7_segment_display1_d_bottom_6,
+                          output_7_segment_display1_a_top_7, output_7_segment_display1_b_upper_right_8,
+                          output_7_segment_display1_dp_dot_9, output_7_segment_display1_c_lower_right_10};
     end
 
     // Test procedure for self-contained display counter
@@ -74,14 +74,14 @@ module display_4bits_counter_tb;
             #200;
             $display("Time %0t: Display pattern = %8b", $time, display_pattern);
             $display("      Segments: a=%b b=%b c=%b d=%b e=%b f=%b g=%b dp=%b",
-                     output_7_segment_display1_a_top_5,
-                     output_7_segment_display1_b_upper_right_6,
-                     output_7_segment_display1_c_lower_right_8,
-                     output_7_segment_display1_d_bottom_4,
-                     output_7_segment_display1_e_lower_left_3,
-                     output_7_segment_display1_f_upper_left_2,
-                     output_7_segment_display1_g_middle_1,
-                     output_7_segment_display1_dp_dot_7);
+                     output_7_segment_display1_a_top_7,
+                     output_7_segment_display1_b_upper_right_8,
+                     output_7_segment_display1_c_lower_right_10,
+                     output_7_segment_display1_d_bottom_6,
+                     output_7_segment_display1_e_lower_left_5,
+                     output_7_segment_display1_f_upper_left_4,
+                     output_7_segment_display1_g_middle_3,
+                     output_7_segment_display1_dp_dot_9);
         end
 
         // Summary

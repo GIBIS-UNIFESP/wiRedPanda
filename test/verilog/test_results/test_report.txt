@@ -1,10 +1,10 @@
-Verilog Test Report - 2025-09-27 11:53:52
+Verilog Test Report - 2025-09-28 03:04:07
 ============================================================
 
 Total tests: 54
-Passed: 39
-Failed: 15
-Success rate: 72.2%
+Passed: 44
+Failed: 10
+Success rate: 81.5%
 
 counter:
   iverilog: PASS
@@ -17,18 +17,18 @@ decoder:
   yosys: PASS
 
 dflipflop_masterslave:
-  iverilog: FAIL
-    Error: /workspace/test/verilog/dflipflop_masterslave.v:38: error: Unable to bind wire/reg/memory `ic_dlatch_ic_node_14_0' in `dflipflop_masterslave_tb.dut'
-/workspace/test/verilog/dflipflop_masterslave.v:38:...
+  iverilog: PASS
   verilator: FAIL
-    Error: %Error: /workspace/test/verilog/dflipflop_masterslave.v:38:32: Can't find definition of variable: 'ic_dlatch_ic_node_14_0'
-   38 |     assign output_led1_q_0_1 = ic_dlatch_ic_node_14_0;  
-      |     ...
+    Error: %Warning-UNUSED: /workspace/test/verilog/dflipflop_masterslave.v:18:16: Signal is not used: 'input_clock1_clk_1'
+                                                                      : ... In instance...
   yosys: PASS
 
 dflipflop:
   iverilog: PASS
-  verilator: PASS
+  verilator: FAIL
+    Error: %Warning-UNUSED: /workspace/test/verilog/dflipflop.v:21:16: Signal is not used: 'input_input_switch4__clear_4'
+                                                          : ... In instance dflipflop
+   ...
   yosys: PASS
 
 dflipflop2:
@@ -38,9 +38,7 @@ dflipflop2:
 
 display_3bits_counter:
   iverilog: PASS
-  verilator: FAIL
-    Error: %Warning-UNUSED: /workspace/test/verilog/display_3bits_counter.v:34:10: Signal is not driven, nor used: 'ic_display_3bits_ic_node_15_0'
-                                                                ...
+  verilator: PASS
   yosys: PASS
 
 display_3bits:
@@ -50,9 +48,7 @@ display_3bits:
 
 display_4bits_counter:
   iverilog: PASS
-  verilator: FAIL
-    Error: %Warning-UNUSED: /workspace/test/verilog/display_4bits_counter.v:34:10: Signal is not driven, nor used: 'ic_jkflipflop_ic_node_19_0'
-                                                                   ...
+  verilator: PASS
   yosys: PASS
 
 display_4bits:
@@ -62,78 +58,70 @@ display_4bits:
 
 dlatch:
   iverilog: PASS
-  verilator: FAIL
-    Error: %Warning-UNOPTFLAT: /workspace/test/verilog/dlatch.v:29:10: Signal unoptimizable: Feedback to clock or circular logic: 'dlatch.nand_7'
-   29 |     wire nand_7;
-      |          ^~~~~~
-                ...
+  verilator: PASS
   yosys: PASS
 
 ic:
   iverilog: PASS
   verilator: FAIL
-    Error: %Warning-UNUSED: /workspace/test/verilog/ic.v:54:10: Signal is not driven, nor used: 'ic_jkflipflop_ic_node_39_0'
-                                                   : ... In instance ic
-   54 |     wi...
+    Error: %Warning-UNUSED: /workspace/test/verilog/ic.v:76:9: Signal is not used: 'seq_jk_flip_flop_35_1_q'
+                                                  : ... In instance ic
+   76 |     reg seq_jk_flip_flo...
   yosys: PASS
 
-input:
+input_module:
   iverilog: PASS
-  verilator: FAIL
-    Error: %Warning-DECLFILENAME: /workspace/test/verilog/input.v:16:8: Filename 'input' does not match MODULE name: 'wiredpanda_module'
-   16 | module wiredpanda_module (
-      |        ^~~~~~~~~~~~~~~~~
-      ...
+  verilator: PASS
   yosys: PASS
 
 jkflipflop:
-  iverilog: FAIL
-    Error: /workspace/test/verilog/jkflipflop.v:34: error: Unable to bind wire/reg/memory `ic_dflipflop_ic_node_34_0' in `jkflipflop_tb.dut'
-/workspace/test/verilog/jkflipflop.v:34: error: Unable to elaborate r-...
+  iverilog: PASS
   verilator: FAIL
-    Error: %Error: /workspace/test/verilog/jkflipflop.v:34:32: Can't find definition of variable: 'ic_dflipflop_ic_node_34_0'
-   34 |     assign output_led1_q_0_1 = ic_dflipflop_ic_node_34_0;  
-      |          ...
+    Error: %Warning-UNUSED: /workspace/test/verilog/jkflipflop.v:20:16: Signal is not used: 'input_input_switch3__clear_3'
+                                                           : ... In instance jkflipflop
+...
   yosys: PASS
 
 notes:
   iverilog: PASS
   verilator: FAIL
-    Error: %Warning-UNUSED: /workspace/test/verilog/notes.v:34:10: Signal is not driven, nor used: 'ic_jkflipflop_ic_node_19_0'
-                                                      : ... In instance notes
-   34...
+    Error: %Warning-UNUSED: /workspace/test/verilog/notes.v:42:9: Signal is not used: 'seq_jk_flip_flop_10_1_q'
+                                                     : ... In instance notes
+   42 |     reg seq_jk...
   yosys: PASS
 
 register:
-  iverilog: PASS
+  iverilog: FAIL
+    Error: /workspace/test/verilog/register_tb.v:18: error: port ``input_clock2_2'' is not a port of dut.
+1 error(s) during elaboration.
+...
   verilator: FAIL
-    Error: %Warning-UNUSED: /workspace/test/verilog/register.v:30:9: Signal is not used: 'd_flip_flop_7_1_q'
+    Error: %Warning-UNUSED: /workspace/test/verilog/register.v:32:9: Signal is not used: 'seq_d_flip_flop_7_1_q'
                                                         : ... In instance register
-   30 |     reg d_f...
+   32 |     reg...
   yosys: PASS
 
 sequential:
   iverilog: PASS
   verilator: FAIL
-    Error: %Warning-UNUSED: /workspace/test/verilog/sequential.v:31:10: Signal is not driven, nor used: 'ic_serialize_ic_node_18_0'
-                                                           : ... In instance se...
+    Error: %Warning-UNUSED: /workspace/test/verilog/sequential.v:20:16: Signal is not used: 'input_clock3_fast_clk_3'
+                                                           : ... In instance sequential
+   20...
   yosys: PASS
 
 serialize:
   iverilog: PASS
   verilator: FAIL
-    Error: %Warning-UNDRIVEN: /workspace/test/verilog/serialize.v:27:10: Signal is not driven: 'node_5'
-                                                            : ... In instance serialize
-   27 |     wire no...
+    Error: %Warning-UNUSED: /workspace/test/verilog/serialize.v:34:9: Signal is not used: 'seq_d_flip_flop_9_1_q'
+                                                         : ... In instance serialize
+   34 |     ...
   yosys: PASS
 
 tflipflop:
-  iverilog: FAIL
-    Error: /workspace/test/verilog/tflipflop.v:34: error: Unable to bind wire/reg/memory `ic_dflipflop_ic_node_34_0' in `tflipflop_tb.dut'
-/workspace/test/verilog/tflipflop.v:34: error: Unable to elaborate r-val...
+  iverilog: PASS
   verilator: FAIL
-    Error: %Error: /workspace/test/verilog/tflipflop.v:34:32: Can't find definition of variable: 'ic_dflipflop_ic_node_34_0'
-   34 |     assign output_led1_q_0_1 = ic_dflipflop_ic_node_34_0;  
-      |           ...
+    Error: %Warning-UNUSED: /workspace/test/verilog/tflipflop.v:18:16: Signal is not used: 'input_push_button1_t_1'
+                                                          : ... In instance tflipflop
+   18 |  ...
   yosys: PASS
 

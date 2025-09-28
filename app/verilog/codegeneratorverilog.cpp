@@ -100,6 +100,47 @@ QString CodeGeneratorVerilog::simplifyExpression(const QString &expr)
         }
     }
 
+    // ULTRATHINK FIX: Boolean algebra simplification for degenerate constants
+    // Handle OR operations with constants: (1'b0 | expr) -> expr, (1'b1 | expr) -> 1'b1
+    QRegularExpression orWithFalse(R"(\(1'b0\s*\|\s*(.+?)\))");
+    QRegularExpression orWithTrue(R"(\(1'b1\s*\|\s*(.+?)\))");
+    QRegularExpression orWithFalseReverse(R"(\((.+?)\s*\|\s*1'b0\))");
+    QRegularExpression orWithTrueReverse(R"(\((.+?)\s*\|\s*1'b1\))");
+
+    // (1'b0 | expr) -> expr
+    simplified.replace(orWithFalse, "\\1");
+    // (expr | 1'b0) -> expr
+    simplified.replace(orWithFalseReverse, "\\1");
+    // (1'b1 | expr) -> 1'b1
+    simplified.replace(orWithTrue, "1'b1");
+    // (expr | 1'b1) -> 1'b1
+    simplified.replace(orWithTrueReverse, "1'b1");
+
+    // Handle AND operations with constants: (1'b0 & expr) -> 1'b0, (1'b1 & expr) -> expr
+    QRegularExpression andWithFalse(R"(\(1'b0\s*&\s*(.+?)\))");
+    QRegularExpression andWithTrue(R"(\(1'b1\s*&\s*(.+?)\))");
+    QRegularExpression andWithFalseReverse(R"(\((.+?)\s*&\s*1'b0\))");
+    QRegularExpression andWithTrueReverse(R"(\((.+?)\s*&\s*1'b1\))");
+
+    // (1'b0 & expr) -> 1'b0
+    simplified.replace(andWithFalse, "1'b0");
+    // (expr & 1'b0) -> 1'b0
+    simplified.replace(andWithFalseReverse, "1'b0");
+    // (1'b1 & expr) -> expr
+    simplified.replace(andWithTrue, "\\1");
+    // (expr & 1'b1) -> expr
+    simplified.replace(andWithTrueReverse, "\\1");
+
+    // Handle constant folding: (1'b0 | 1'b0) -> 1'b0, (1'b1 | 1'b1) -> 1'b1, etc.
+    simplified.replace("(1'b0 | 1'b0)", "1'b0");
+    simplified.replace("(1'b1 | 1'b1)", "1'b1");
+    simplified.replace("(1'b0 & 1'b0)", "1'b0");
+    simplified.replace("(1'b1 & 1'b1)", "1'b1");
+    simplified.replace("(1'b0 | 1'b1)", "1'b1");
+    simplified.replace("(1'b1 | 1'b0)", "1'b1");
+    simplified.replace("(1'b0 & 1'b1)", "1'b0");
+    simplified.replace("(1'b1 & 1'b0)", "1'b0");
+
     return simplified;
 }
 
@@ -1276,6 +1317,16 @@ void CodeGeneratorVerilog::declareInputPorts()
     QSet<GraphicElement*> usedInputElements;
     analyzeUsedInputPorts(m_elements, usedInputElements);
 
+    // ULTRATHINK SAFETY CHECK: Prevent over-aggressive elimination
+    if (usedInputElements.isEmpty() && !inputElements.isEmpty()) {
+        generateDebugInfo("ULTRATHINK WARNING: No inputs detected as used, but inputs exist. Pattern matching may have failed.");
+        generateDebugInfo("ULTRATHINK SAFETY: Preserving all inputs to prevent functionality loss");
+        // Preserve all inputs as a safety measure
+        for (auto *elm : inputElements) {
+            usedInputElements.insert(elm);
+        }
+    }
+
     // DEAD CODE ELIMINATION: Filter out unused input ports from declarations
     QStringList filteredInputDeclarations;
     QVector<GraphicElement*> filteredInputElements;
@@ -2355,6 +2406,26 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
         QString prst = otherPortName(elm->inputPort(3));
         QString clr = otherPortName(elm->inputPort(4));
 
+        // ULTRATHINK FIX: Handle unconnected J/K inputs properly
+        // Unconnected inputs return boolValue(defaultValue()) which can be "1'b0" or "1'b1"
+        // Check if J and K are unconnected by checking if they are constant values
+        bool jIsConstant = (j == "1'b0" || j == "1'b1");
+        bool kIsConstant = (k == "1'b0" || k == "1'b1");
+
+        if (jIsConstant && kIsConstant) {
+            generateDebugInfo(QString("JK FlipFlop %1: Both J and K are constants (unconnected) - J=%2, K=%3").arg(elm->objectName()).arg(j).arg(k), elm);
+            // For unconnected inputs, default to hold mode (J=0, K=0)
+            if (j == "1'b1" || k == "1'b1") {
+                generateDebugInfo(QString("JK FlipFlop %1: Overriding unconnected defaults to hold mode").arg(elm->objectName()), elm);
+                j = "1'b0"; // Force hold mode for unconnected inputs
+                k = "1'b0";
+            }
+        } else if (jIsConstant || kIsConstant) {
+            generateDebugInfo(QString("JK FlipFlop %1: Partially connected inputs - J=%2, K=%3").arg(elm->objectName()).arg(j).arg(k), elm);
+        } else {
+            generateDebugInfo(QString("JK FlipFlop %1: Connected inputs - J=%2, K=%3").arg(elm->objectName()).arg(j).arg(k), elm);
+        }
+
         code += QString("    // JK FlipFlop: %1\n").arg(elm->objectName());
 
         // Build sensitivity list
@@ -2371,12 +2442,17 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
             if (clk == "1'b1") {
                 // Clock always high - implement JK logic combinationally
                 code += QString("    always @(*) begin // Clock always high - combinational JK\n");
-                code += QString("        case ({%1, %2})\n").arg(j, k);
-                code += QString("            2'b00: begin /* hold */ end\n");
-                code += QString("            2'b01: begin %1 = 1'b0; %2 = 1'b1; end // reset\n").arg(firstOut, secondOut);
-                code += QString("            2'b10: begin %1 = 1'b1; %2 = 1'b0; end // set\n").arg(firstOut, secondOut);
-                code += QString("            2'b11: begin %1 = %2; %3 = %4; end // toggle\n").arg(firstOut, secondOut, secondOut, firstOut);
-                code += QString("        endcase\n");
+                if (j == "1'b0" && k == "1'b0") {
+                    // Hold mode only - optimize by not generating case statement
+                    code += QString("        // J=0, K=0: Hold mode only (no state change)\n");
+                } else {
+                    code += QString("        case ({%1, %2})\n").arg(j, k);
+                    code += QString("            2'b00: begin /* hold */ end\n");
+                    code += QString("            2'b01: begin %1 = 1'b0; %2 = 1'b1; end // reset\n").arg(firstOut, secondOut);
+                    code += QString("            2'b10: begin %1 = 1'b1; %2 = 1'b0; end // set\n").arg(firstOut, secondOut);
+                    code += QString("            2'b11: begin %1 = %2; %3 = %4; end // toggle\n").arg(firstOut, secondOut, secondOut, firstOut);
+                    code += QString("        endcase\n");
+                }
                 code += QString("    end\n");
             } else {
                 // Clock always low - no state change (hold state)
@@ -2456,13 +2532,19 @@ QString CodeGeneratorVerilog::generateSequentialLogic(GraphicElement *elm)
             code += QString("        begin\n");
         }
 
-        // JK logic
-        code += QString("            case ({%1, %2})\n").arg(j, k);
-        code += QString("                2'b00: begin /* hold */ end\n");
-        code += QString("                2'b01: begin %1 <= 1'b0; %2 <= 1'b1; end\n").arg(firstOut, secondOut);
-        code += QString("                2'b10: begin %1 <= 1'b1; %2 <= 1'b0; end\n").arg(firstOut, secondOut);
-        code += QString("                2'b11: begin %1 <= %2; %3 <= %4; end // toggle\n").arg(firstOut, secondOut, secondOut, firstOut);
-        code += QString("            endcase\n");
+        // ULTRATHINK FIX: Generate proper JK logic with corrected inputs
+        if (j == "1'b0" && k == "1'b0") {
+            // Hold mode only - optimize by not generating case statement
+            code += QString("            // J=0, K=0: Hold mode only (no state change)\n");
+        } else {
+            // Generate dynamic case statement with corrected J/K values
+            code += QString("            case ({%1, %2})\n").arg(j, k);
+            code += QString("                2'b00: begin /* hold */ end\n");
+            code += QString("                2'b01: begin %1 <= 1'b0; %2 <= 1'b1; end\n").arg(firstOut, secondOut);
+            code += QString("                2'b10: begin %1 <= 1'b1; %2 <= 1'b0; end\n").arg(firstOut, secondOut);
+            code += QString("                2'b11: begin %1 <= %2; %3 <= %4; end // toggle\n").arg(firstOut, secondOut, secondOut, firstOut);
+            code += QString("            endcase\n");
+        }
         code += QString("        end\n");
         code += QString("    end\n");
         break;
@@ -4014,14 +4096,17 @@ void CodeGeneratorVerilog::analyzeUsedInputPorts(const QVector<GraphicElement *>
                             (inputElm->elementType() == ElementType::InputSwitch) ||
                             (inputElm->elementType() == ElementType::Clock)) {
 
-                            // Generate the variable name that would be used for this input
-                            QString inputVarPattern = inputElm->objectName();
+                            // ULTRATHINK FIX: Use actual variable name from varMap, not object name
+                            QString actualVarName = m_varMap.value(inputElm->outputPort());
 
-                            // Check if the expression contains this input variable pattern
-                            if (expr.contains(inputVarPattern, Qt::CaseInsensitive)) {
+                            // Check if the expression contains this actual variable name
+                            if (!actualVarName.isEmpty() && expr.contains(actualVarName)) {
                                 usedInputElements.insert(inputElm);
-                                generateDebugInfo(QString("Input element %1 is used in logic expression: %2")
-                                                 .arg(inputElm->objectName()).arg(expr.left(50)), inputElm);
+                                generateDebugInfo(QString("ULTRATHINK: Input element %1 (%2) is used in logic expression: %3")
+                                                 .arg(inputElm->objectName()).arg(actualVarName).arg(expr.left(50)), inputElm);
+                            } else {
+                                generateDebugInfo(QString("ULTRATHINK: Input element %1 (%2) NOT found in expression: %3")
+                                                 .arg(inputElm->objectName()).arg(actualVarName).arg(expr.left(50)), inputElm);
                             }
                         }
                     }
