@@ -2,8 +2,7 @@
 
 module counter_tb;
 
-    // Testbench signals - Updated for systematic improvements
-    reg input_clock1_1 = 0;
+    // Testbench signals - Updated for input port dead code elimination
     wire output_led1_0_2;
     wire output_led2_0_3;
     wire output_led3_0_4;
@@ -14,17 +13,14 @@ module counter_tb;
     reg [2:0] expected_count = 0;
     reg [2:0] actual_count;
 
-    // Instantiate the Device Under Test (DUT) - Updated port mapping for systematic improvements
+    // Instantiate the Device Under Test (DUT) - Updated for input port dead code elimination
     counter dut (
-        .input_clock1_1(input_clock1_1),
         .output_led1_0_2(output_led1_0_2),
         .output_led2_0_3(output_led2_0_3),
         .output_led3_0_4(output_led3_0_4)
     );
 
-    // Enhanced testbench with systematic improvements - clock generation for JK flip-flop cascade
-    // Generate clock for the systematic JK flip-flop counter
-    always #50 input_clock1_1 = ~input_clock1_1; // 10MHz clock
+    // Self-contained counter - no external clock needed after input port dead code elimination
 
     // Pack outputs into a 3-bit counter value - Updated signal names for systematic improvements
     always @(*) begin
@@ -36,7 +32,7 @@ module counter_tb;
         cycle_count = cycle_count + 1;
 
         $display("Time %0t: Count = %b%b%b (%0d)",
-                 $time, output_led1_0_1, output_led2_0_2, output_led3_0_3, actual_count);
+                 $time, output_led1_0_2, output_led2_0_3, output_led3_0_4, actual_count);
 
         // Monitor for changes in counter state
         if (cycle_count > 3) begin

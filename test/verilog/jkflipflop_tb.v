@@ -2,12 +2,8 @@
 
 module jkflipflop_tb;
 
-    // Testbench signals - Updated to match actual module interface
+    // Testbench signals - Updated for input port dead code elimination
     reg input_clock1_c_1;
-    reg input_input_switch2__preset_2;
-    reg input_input_switch3__clear_3;
-    reg input_input_switch4_j_4;
-    reg input_input_switch5_k_5;
     wire output_led1_q_0_6;
     wire output_led2_q_0_7;
 
@@ -15,13 +11,9 @@ module jkflipflop_tb;
     integer test_count = 0;
     integer pass_count = 0;
 
-    // Instantiate the Device Under Test (DUT) - Updated port mapping
+    // Instantiate the Device Under Test (DUT) - Updated for input port dead code elimination
     jkflipflop dut (
         .input_clock1_c_1(input_clock1_c_1),
-        .input_input_switch2__preset_2(input_input_switch2__preset_2),
-        .input_input_switch3__clear_3(input_input_switch3__clear_3),
-        .input_input_switch4_j_4(input_input_switch4_j_4),
-        .input_input_switch5_k_5(input_input_switch5_k_5),
         .output_led1_q_0_6(output_led1_q_0_6),
         .output_led2_q_0_7(output_led2_q_0_7)
     );
@@ -38,10 +30,7 @@ module jkflipflop_tb;
             test_count = test_count + 1;
 
             // Set control inputs
-            input_input_switch2__preset_2 = preset_val;
-            input_input_switch3__clear_3 = clear_val;
-            input_input_switch4_j_4 = j_val;
-            input_input_switch5_k_5 = k_val;
+            // Input assignments removed due to dead code elimination
 
             // Wait for next clock edge (if not in preset/clear)
             if (preset_val && clear_val) begin
@@ -89,10 +78,7 @@ module jkflipflop_tb;
         $display("Testing JK flip-flop with J, K, preset, and clear inputs");
 
         // Initialize inputs (normal operation)
-        input_input_switch2__preset_2 = 1; // Not preset
-        input_input_switch3__clear_3 = 1;  // Not clear
-        input_input_switch4_j_4 = 0;
-        input_input_switch5_k_5 = 0;
+        // Input initializations removed due to dead code elimination
 
         // Wait for initialization
         #100;

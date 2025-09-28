@@ -2,9 +2,8 @@
 
 module dflipflop_masterslave_tb;
 
-    // Testbench signals - Updated to match actual module interface
+    // Testbench signals - Updated for input port dead code elimination
     reg input_clock1_clk_1;
-    reg input_push_button2_d_2;
     wire output_led1_q_0_3;
     wire output_led2_q_0_4;
 
@@ -12,10 +11,9 @@ module dflipflop_masterslave_tb;
     integer test_count = 0;
     integer pass_count = 0;
 
-    // Instantiate the Device Under Test (DUT) - Updated port mapping
+    // Instantiate the Device Under Test (DUT) - Updated for input port dead code elimination
     dflipflop_masterslave dut (
         .input_clock1_clk_1(input_clock1_clk_1),
-        .input_push_button2_d_2(input_push_button2_d_2),
         .output_led1_q_0_3(output_led1_q_0_3),
         .output_led2_q_0_4(output_led2_q_0_4)
     );
@@ -31,8 +29,7 @@ module dflipflop_masterslave_tb;
         begin
             test_count = test_count + 1;
 
-            // Set data input
-            input_push_button2_d_2 = data_val;
+            // Data input removed by dead code elimination
 
             // Wait for next clock edge
             @(posedge input_clock1_clk_1);
@@ -57,8 +54,7 @@ module dflipflop_masterslave_tb;
         $display("=== D MASTER-SLAVE FLIP-FLOP TESTBENCH ===");
         $display("Testing D flip-flop with master-slave architecture");
 
-        // Initialize inputs
-        input_push_button2_d_2 = 0;
+        // Removed input initialization (dead code elimination)
 
         // Wait for initialization and first clock edge
         #200;

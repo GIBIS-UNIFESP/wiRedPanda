@@ -2,11 +2,7 @@
 
 module display_4bits_tb;
 
-    // Testbench signals - Updated to match actual module interface
-    reg input_input_switch1_d_1;
-    reg input_input_switch2_b_2;
-    reg input_input_switch3_c_3;
-    reg input_input_switch4_a_4;
+    // Testbench signals - Updated for input port dead code elimination
     wire output_7_segment_display1_g_middle_5;
     wire output_7_segment_display1_f_upper_left_6;
     wire output_7_segment_display1_e_lower_left_7;
@@ -22,12 +18,8 @@ module display_4bits_tb;
     reg [3:0] input_value;
     reg [7:0] display_pattern;
 
-    // Instantiate the Device Under Test (DUT) - Updated port mapping
+    // Instantiate the Device Under Test (DUT) - Self-contained after input port dead code elimination
     display_4bits dut (
-        .input_input_switch1_d_1(input_input_switch1_d_1),
-        .input_input_switch2_b_2(input_input_switch2_b_2),
-        .input_input_switch3_c_3(input_input_switch3_c_3),
-        .input_input_switch4_a_4(input_input_switch4_a_4),
         .output_7_segment_display1_g_middle_5(output_7_segment_display1_g_middle_5),
         .output_7_segment_display1_f_upper_left_6(output_7_segment_display1_f_upper_left_6),
         .output_7_segment_display1_e_lower_left_7(output_7_segment_display1_e_lower_left_7),
@@ -55,7 +47,7 @@ module display_4bits_tb;
             test_count = test_count + 1;
 
             // Set input combination
-            {input_input_switch4_a_4, input_input_switch3_c_3, input_input_switch2_b_2, input_input_switch1_d_1} = input_val;
+            // Input assignments removed by dead code elimination
 
             // Wait for propagation
             #20;
@@ -86,10 +78,7 @@ module display_4bits_tb;
         $display("Testing 4-bit to 7-segment display decoder");
 
         // Initialize inputs
-        input_input_switch1_d_1 = 0;
-        input_input_switch2_b_2 = 0;
-        input_input_switch3_c_3 = 0;
-        input_input_switch4_a_4 = 0;
+        // Input initializations removed by dead code elimination
 
         // Wait for initialization
         #50;

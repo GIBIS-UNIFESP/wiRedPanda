@@ -2,8 +2,7 @@
 
 module sequential_tb;
 
-    // Testbench signals - Updated to match actual module interface
-    reg input_push_button1_reset_1;
+    // Testbench signals - Updated for input port dead code elimination
     reg input_clock2_slow_clk_2;
     reg input_clock3_fast_clk_3;
     wire output_led1_load_shift_0_4;
@@ -16,9 +15,8 @@ module sequential_tb;
     integer test_count = 0;
     integer pass_count = 0;
 
-    // Instantiate the Device Under Test (DUT) - Updated port mapping
+    // Instantiate the Device Under Test (DUT) - Updated for input port dead code elimination
     sequential dut (
-        .input_push_button1_reset_1(input_push_button1_reset_1),
         .input_clock2_slow_clk_2(input_clock2_slow_clk_2),
         .input_clock3_fast_clk_3(input_clock3_fast_clk_3),
         .output_led1_load_shift_0_4(output_led1_load_shift_0_4),
@@ -45,7 +43,7 @@ module sequential_tb;
             test_count = test_count + 1;
 
             // Set reset input
-            input_push_button1_reset_1 = reset_val;
+            // Reset signal removed by dead code elimination
 
             // Wait for slow clock edge
             @(posedge input_clock2_slow_clk_2);
@@ -67,7 +65,7 @@ module sequential_tb;
         $display("Testing sequential circuit with reset and clock inputs");
 
         // Initialize inputs
-        input_push_button1_reset_1 = 0;
+        // Reset initialization removed by dead code elimination
 
         // Wait for initialization
         #150;

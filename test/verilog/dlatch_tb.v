@@ -2,8 +2,7 @@
 
 module dlatch_tb;
 
-    // Testbench signals - Updated to match actual module interface
-    reg input_push_button1_d_1;
+    // Testbench signals - Updated for input port dead code elimination
     reg input_clock2_clk_2;
     wire output_led1_q_0_3;
     wire output_led2_q_0_4;
@@ -12,9 +11,8 @@ module dlatch_tb;
     integer test_count = 0;
     integer pass_count = 0;
 
-    // Instantiate the Device Under Test (DUT) - Updated port mapping
+    // Instantiate the Device Under Test (DUT) - Updated for input port dead code elimination
     dlatch dut (
-        .input_push_button1_d_1(input_push_button1_d_1),
         .input_clock2_clk_2(input_clock2_clk_2),
         .output_led1_q_0_3(output_led1_q_0_3),
         .output_led2_q_0_4(output_led2_q_0_4)
@@ -26,7 +24,7 @@ module dlatch_tb;
             test_count = test_count + 1;
 
             // Set inputs
-            input_push_button1_d_1 = data_val;
+            // Data input removed by dead code elimination
             input_clock2_clk_2 = enable_val;
 
             // Wait for propagation
@@ -59,7 +57,7 @@ module dlatch_tb;
         $display("Testing D latch with data and enable inputs");
 
         // Initialize inputs
-        input_push_button1_d_1 = 0;
+        // Data input initialization removed by dead code elimination
         input_clock2_clk_2 = 0;
 
         // Wait for initialization

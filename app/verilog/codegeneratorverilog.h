@@ -478,6 +478,32 @@ private:
     void trackExpressionReferences(const QString &expression);
 
     /**
+     * @brief Track a variable that should be declared as reg (sequential element)
+     * @param varName Variable name for sequential element
+     */
+    void trackSequentialVariable(const QString &varName);
+
+    /**
+     * @brief Scan generated code for undeclared variables
+     * @return Set of variable names that are used but not declared
+     */
+    QSet<QString> scanForUndeclaredVariables();
+
+    /**
+     * @brief Final comprehensive scan of complete generated module for any remaining undeclared variables
+     * @param moduleContent Complete generated module content
+     * @param alreadyDeclared Set of variables already declared
+     * @return Set of variable names that are used but not declared
+     */
+    QSet<QString> finalUndeclaredVariableScan(const QString &moduleContent, const QSet<QString> &alreadyDeclared);
+
+    /**
+     * @brief Scan output stream content for actually declared variables
+     * @return Set of variable names that are actually declared in main sections
+     */
+    QSet<QString> scanForActuallyDeclaredVariables() const;
+
+    /**
      * @brief Add buffered assignment during tracking phase
      * @param target Target wire name
      * @param expression Source expression
@@ -634,7 +660,12 @@ private:
     // Assignment-driven wire declaration for UNUSED signal elimination
     QSet<QString> m_actuallyAssignedWires;                  // Track wire names that get actual assignments
     QSet<QString> m_referencedWires;                       // Track wire names that are only referenced in expressions
+    QSet<QString> m_sequentialVariables;                   // Track variables that need reg declaration (sequential elements)
+    QSet<QString> m_actuallyDeclaredVariables;             // Track variables that are actually declared in main sections
     QStringList m_assignmentBuffer;                         // Buffer all assignments before wire declarations
     QStringList m_alwaysBlockBuffer;                        // Buffer always blocks (sequential logic)
     bool m_trackingAssignments = false;                     // Flag to indicate assignment tracking phase
+
+    // Behavioral sequential logic tracking
+    QSet<QString> m_behavioralOutputsHandled;              // Track output ports handled by behavioral sequential logic
 };

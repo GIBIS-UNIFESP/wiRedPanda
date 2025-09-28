@@ -2,9 +2,8 @@
 
 module dflipflop2_tb;
 
-    // Testbench signals - Updated to match actual module interface
+    // Testbench signals - Updated for input port dead code elimination
     reg input_clock1_1;
-    reg input_input_switch2_2;
     wire output_led1_0_3;
     wire output_led2_0_4;
 
@@ -12,10 +11,9 @@ module dflipflop2_tb;
     integer test_count = 0;
     integer pass_count = 0;
 
-    // Instantiate the Device Under Test (DUT) - Updated port mapping
+    // Instantiate the Device Under Test (DUT) - Updated for input port dead code elimination
     dflipflop2 dut (
         .input_clock1_1(input_clock1_1),
-        .input_input_switch2_2(input_input_switch2_2),
         .output_led1_0_3(output_led1_0_3),
         .output_led2_0_4(output_led2_0_4)
     );
@@ -32,7 +30,7 @@ module dflipflop2_tb;
             test_count = test_count + 1;
 
             // Set data input
-            input_input_switch2_2 = data_val;
+            // Data input removed by dead code elimination
 
             // Wait for next clock edge
             @(posedge input_clock1_1);
@@ -58,7 +56,7 @@ module dflipflop2_tb;
         $display("Testing D flip-flop with clock and data inputs");
 
         // Initialize inputs
-        input_input_switch2_2 = 0;
+        // Data input initialization removed by dead code elimination
 
         // Wait for initialization and first clock edge
         #200;

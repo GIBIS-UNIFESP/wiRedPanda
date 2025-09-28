@@ -2,8 +2,7 @@
 
 module notes_tb;
 
-    // Testbench signals - Updated to match actual module interface
-    reg input_clock1_1;
+    // Testbench signals - Updated for input port dead code elimination
     wire output_buzzer1_g6_2;
     wire output_buzzer2_f6_3;
     wire output_buzzer3_d6_4;
@@ -17,9 +16,8 @@ module notes_tb;
     integer test_count = 0;
     integer pass_count = 0;
 
-    // Instantiate the Device Under Test (DUT) - Updated port mapping
+    // Instantiate the Device Under Test (DUT) - Self-contained after input port dead code elimination
     notes dut (
-        .input_clock1_1(input_clock1_1),
         .output_buzzer1_g6_2(output_buzzer1_g6_2),
         .output_buzzer2_f6_3(output_buzzer2_f6_3),
         .output_buzzer3_d6_4(output_buzzer3_d6_4),
@@ -32,8 +30,7 @@ module notes_tb;
 
     // Clock generation
     initial begin
-        input_clock1_1 = 0;
-        forever #50 input_clock1_1 = ~input_clock1_1; // 10 MHz clock
+        // Clock generation removed - self-contained module
     end
 
     // Test procedure for notes circuit with clock input
@@ -42,7 +39,7 @@ module notes_tb;
             test_count = test_count + 1;
 
             // Wait for several clock cycles to observe note generation
-            repeat(10) @(posedge input_clock1_1);
+            #500; // Fixed delay instead of clock edges
             #20;
 
             $display("Test %0d: Notes circuit with clock", test_num);

@@ -2,10 +2,7 @@
 
 module display_3bits_tb;
 
-    // Testbench signals - Updated to match actual module interface
-    reg input_input_switch1_p3_1;
-    reg input_input_switch2_p1_2;
-    reg input_input_switch3_p2_3;
+    // Testbench signals - Updated for input port dead code elimination
     wire output_7_segment_display1_g_middle_4;
     wire output_7_segment_display1_f_upper_left_5;
     wire output_7_segment_display1_e_lower_left_6;
@@ -20,11 +17,8 @@ module display_3bits_tb;
     integer pass_count = 0;
     reg [7:0] display_pattern;
 
-    // Instantiate the Device Under Test (DUT) - Updated port mapping
+    // Instantiate the Device Under Test (DUT) - Self-contained after input port dead code elimination
     display_3bits dut (
-        .input_input_switch1_p3_1(input_input_switch1_p3_1),
-        .input_input_switch2_p1_2(input_input_switch2_p1_2),
-        .input_input_switch3_p2_3(input_input_switch3_p2_3),
         .output_7_segment_display1_g_middle_4(output_7_segment_display1_g_middle_4),
         .output_7_segment_display1_f_upper_left_5(output_7_segment_display1_f_upper_left_5),
         .output_7_segment_display1_e_lower_left_6(output_7_segment_display1_e_lower_left_6),
@@ -49,7 +43,7 @@ module display_3bits_tb;
             test_count = test_count + 1;
 
             // Set input combination
-            {input_input_switch1_p3_1, input_input_switch2_p1_2, input_input_switch3_p2_3} = input_val;
+            // Input assignments removed by dead code elimination
 
             // Wait for propagation
             #20;
@@ -80,9 +74,7 @@ module display_3bits_tb;
         $display("Testing 3-bit to 7-segment display decoder");
 
         // Initialize inputs
-        input_input_switch1_p3_1 = 0;
-        input_input_switch2_p1_2 = 0;
-        input_input_switch3_p2_3 = 0;
+        // Input initializations removed by dead code elimination
 
         // Wait for initialization
         #50;

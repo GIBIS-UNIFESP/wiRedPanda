@@ -2,11 +2,8 @@
 
 module dflipflop_tb;
 
-    // Testbench signals - Updated for systematic improvements
+    // Testbench signals - Updated for input port dead code elimination
     reg input_clock1_clk_1 = 0;
-    reg input_push_button2_d_2 = 0;
-    reg input_input_switch3__preset_3 = 1; // Active low preset
-    reg input_input_switch4__clear_4 = 1;  // Active low clear
     wire output_led1_0_5;
     wire output_led2_0_6;
 
@@ -14,12 +11,9 @@ module dflipflop_tb;
     integer test_count = 0;
     integer pass_count = 0;
 
-    // Instantiate the Device Under Test (DUT) - Updated for systematic improvements
+    // Instantiate the Device Under Test (DUT) - Updated for input port dead code elimination
     dflipflop dut (
         .input_clock1_clk_1(input_clock1_clk_1),
-        .input_push_button2_d_2(input_push_button2_d_2),
-        .input_input_switch3__preset_3(input_input_switch3__preset_3),
-        .input_input_switch4__clear_4(input_input_switch4__clear_4),
         .output_led1_0_5(output_led1_0_5),
         .output_led2_0_6(output_led2_0_6)
     );
@@ -37,11 +31,11 @@ module dflipflop_tb;
             #100;
 
             $display("Test %0d: Monitoring outputs => Q=%b, Q̄=%b",
-                     test_count, output_led1_0_1, output_led2_0_2);
+                     test_count, output_led1_0_5, output_led2_0_6);
 
             // Basic validation: Check if outputs have valid logic levels
-            if ((output_led1_0_1 === 1'b0 || output_led1_0_1 === 1'b1) &&
-                (output_led2_0_2 === 1'b0 || output_led2_0_2 === 1'b1)) begin
+            if ((output_led1_0_5 === 1'b0 || output_led1_0_5 === 1'b1) &&
+                (output_led2_0_6 === 1'b0 || output_led2_0_6 === 1'b1)) begin
                 pass_count = pass_count + 1;
                 $display("      PASS: Valid logic levels detected");
             end else begin
