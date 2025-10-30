@@ -719,40 +719,6 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
 
             break;
         }
-        case ElementType::SRFlipFlop: {
-            auto *outputPort1 = elm->outputPort(1);
-            if (!outputPort1) break;
-            QString secondOut = m_varMap.value(outputPort1);
-            QString s = otherPortName(elm->inputPort(0));
-            QString clk = otherPortName(elm->inputPort(1));
-            QString r = otherPortName(elm->inputPort(2));
-            QString inclk = firstOut + "_inclk";
-            m_stream << QString("    //SR FlipFlop") << Qt::endl;
-            m_stream << QString("    if (%1 && !%2) { ").arg(clk, inclk) << Qt::endl;
-            m_stream << QString("        if (%1 && %2) { ").arg(s, r) << Qt::endl;
-            m_stream << QString("            %1 = true;").arg(firstOut) << Qt::endl;
-            m_stream << QString("            %1 = true;").arg(secondOut) << Qt::endl;
-            m_stream << QString("        } else if (%1 != %2) {").arg(s, r) << Qt::endl;
-            m_stream << QString("            %1 = %2;").arg(firstOut, s) << Qt::endl;
-            m_stream << QString("            %1 = %2;").arg(secondOut, r) << Qt::endl;
-            m_stream << QString("        }") << Qt::endl;
-            m_stream << QString("    }") << Qt::endl;
-            QString prst = otherPortName(elm->inputPort(3));
-            QString clr = otherPortName(elm->inputPort(4));
-            m_stream << QString("    if (!%1) { ").arg(prst) << Qt::endl;
-            m_stream << QString("        %1 = true; // Preset").arg(firstOut) << Qt::endl;
-            m_stream << QString("        %1 = false;").arg(secondOut) << Qt::endl;
-            m_stream << QString("    } else if (!%1) { ").arg(clr) << Qt::endl;
-            m_stream << QString("        %1 = false; // Clear").arg(firstOut) << Qt::endl;
-            m_stream << QString("        %1 = true;").arg(secondOut) << Qt::endl;
-            m_stream << QString("    }") << Qt::endl;
-
-            /* Updating internal clock. */
-            m_stream << "    " << inclk << " = " << clk << ";" << Qt::endl;
-            m_stream << QString("    //End of SR FlipFlop") << Qt::endl;
-
-            break;
-        }
         case ElementType::TFlipFlop: {
             auto *outputPort1 = elm->outputPort(1);
             if (!outputPort1) break;
@@ -830,6 +796,30 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
 
             m_stream << QString("    uint8_t index = %1;").arg(indexCalculation) << Qt::endl;
             m_stream << QString("    %1 = %2[index];").arg(outputVarName, tableNameConst) << Qt::endl;
+            break;
+        }
+
+        case ElementType::Mux: {
+            QString in0 = otherPortName(elm->inputPort(0));
+            QString in1 = otherPortName(elm->inputPort(1));
+            QString select = otherPortName(elm->inputPort(2));
+            m_stream << QString("    //Mux") << Qt::endl;
+            m_stream << QString("    %1 = %2 ? %3 : %4;").arg(firstOut, select, in1, in0) << Qt::endl;
+            m_stream << QString("    //End of Mux") << Qt::endl;
+            break;
+        }
+
+        case ElementType::Demux: {
+            auto *outputPort1 = elm->outputPort(1);
+            if (!outputPort1) break;
+            QString out0 = m_varMap.value(elm->outputPort(0));
+            QString out1 = m_varMap.value(outputPort1);
+            QString data = otherPortName(elm->inputPort(0));
+            QString select = otherPortName(elm->inputPort(1));
+            m_stream << QString("    //Demux") << Qt::endl;
+            m_stream << QString("    %1 = %2 ? false : %3;").arg(out0, select, data) << Qt::endl;
+            m_stream << QString("    %1 = %2 ? %3 : false;").arg(out1, select, data) << Qt::endl;
+            m_stream << QString("    //End of Demux") << Qt::endl;
             break;
         }
 
