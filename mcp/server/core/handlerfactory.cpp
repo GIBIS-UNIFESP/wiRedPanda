@@ -22,7 +22,6 @@ bool HandlerFactory::registerHandler(const QString &commandName,
                                      const HandlerCreator &creator)
 {
     if (m_handlers.contains(commandName)) {
-        qDebug() << "Command already registered:" << commandName;
         return false;
     }
 

@@ -401,7 +401,9 @@ foreach(test_name ${TEST_EXECUTABLES})
 
     target_compile_definitions(${test_name} PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/test)
 
-    if(NOT CCACHE_BIN)
+    # MSVC + Qt 5.15.2 has a known incompatibility with /Zc:preprocessor in PCH
+    # Skip PCH for tests on MSVC to avoid compilation errors
+    if(NOT MSVC AND NOT CCACHE_BIN)
         target_precompile_headers(${test_name} PRIVATE pch.h)
     endif()
 endforeach()

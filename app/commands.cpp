@@ -32,20 +32,14 @@ void storeIds(const QList<QGraphicsItem *> &items, QList<int> &ids)
 
 void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &ids, QList<int> &otherIds)
 {
-    qDebug() << "=== storeOtherIds START ===";
-    qDebug() << "  ids to delete:" << ids;
-    qDebug() << "  otherIds before:" << otherIds;
-
     for (auto *item : connections) {
         if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
             if (auto *port1 = conn->startPort(); port1 && port1->graphicElement()) {
                 int port1_id = port1->graphicElement()->id();
                 bool in_ids = ids.contains(port1_id);
                 bool in_otherIds = otherIds.contains(port1_id);
-                qDebug() << "  Connection port1:" << port1_id << "in_ids:" << in_ids << "in_otherIds:" << in_otherIds;
                 if (!in_ids && !in_otherIds) {
                     otherIds.append(port1_id);
-                    qDebug() << "    -> Added port1 id:" << port1_id;
                 }
             }
 
@@ -53,17 +47,12 @@ void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &
                 int port2_id = port2->graphicElement()->id();
                 bool in_ids = ids.contains(port2_id);
                 bool in_otherIds = otherIds.contains(port2_id);
-                qDebug() << "  Connection port2:" << port2_id << "in_ids:" << in_ids << "in_otherIds:" << in_otherIds;
                 if (!in_ids && !in_otherIds) {
                     otherIds.append(port2_id);
-                    qDebug() << "    -> Added port2 id:" << port2_id;
                 }
             }
         }
     }
-
-    qDebug() << "  otherIds after:" << otherIds;
-    qDebug() << "=== storeOtherIds END ===";
 }
 
 const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> &ids, QList<int> &otherIds)
@@ -268,10 +257,6 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
 
     // Phase 3.2: Deserialization Validation
     try {
-        qDebug() << "=== loadItems START ===";
-        qDebug() << "  ids to restore:" << ids;
-        qDebug() << "  otherIds (already deleted):" << otherIds;
-
         QDataStream stream(&itemData, QIODevice::ReadOnly);
         QVersionNumber version = Serialization::readPandaHeader(stream);
 
@@ -288,12 +273,9 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
         }
 
         QMap<quint64, QNEPort *> portMap;
-        qDebug() << "  Loading 'other' elements (not being restored):";
 
         for (auto *elm : findElements(otherIds)) {
-            qDebug() << "    Loading element id:" << elm->id();
             elm->load(stream, portMap, version);
-            qDebug() << "    portMap size after loading element" << elm->id() << ":" << portMap.size();
 
             // Phase 3.2: Check stream status after each element load
             if (stream.status() != QDataStream::Ok) {
@@ -304,9 +286,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
 
         /* Assuming that all connections are stored after the elements, we will deserialize the elements first.
          * We will store one additional information: The element IDs! */
-        qDebug() << "  portMap size before deserialize:" << portMap.size();
         const auto items = Serialization::deserialize(stream, portMap, version);
-        qDebug() << "  Deserialized" << items.size() << "items";
 
         // Phase 3.2: Validate deserialized items
         if (items.isEmpty() && !ids.isEmpty()) {
@@ -337,7 +317,6 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
             ElementFactory::updateItemId(itemId, ids.at(i));
         }
 
-        qCDebug(zero) << "=== loadItems END - successfully restored" << items.size() << "items ===";
         addItems(scene, items);
         return items;
 
