@@ -213,6 +213,31 @@
           "additionalProperties": false
         },
 
+        "split_connection": {
+          "type": "object",
+          "description": "Split a connection by inserting a node element",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "split_connection"},
+            "params": {
+              "type": "object",
+              "properties": {
+                "source_id": {"type": "integer", "minimum": 1},
+                "source_port": {"type": "integer", "minimum": 0, "maximum": 63},
+                "target_id": {"type": "integer", "minimum": 1},
+                "target_port": {"type": "integer", "minimum": 0, "maximum": 63},
+                "x": {"type": "number"},
+                "y": {"type": "number"}
+              },
+              "required": ["source_id", "source_port", "target_id", "target_port", "x", "y"],
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
         "list_elements": {
           "type": "object",
           "description": "List all elements in the current circuit",

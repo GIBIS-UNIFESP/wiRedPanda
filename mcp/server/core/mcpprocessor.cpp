@@ -157,7 +157,7 @@ void MCPProcessor::processCommand(const QString &line)
         response = m_elementHandler->handleCommand(method, params, requestId);
     }
     // Connection operation commands
-    else if (method == "connect_elements" || method == "disconnect_elements" || method == "list_connections") {
+    else if (method == "connect_elements" || method == "disconnect_elements" || method == "list_connections" || method == "split_connection") {
         response = m_connectionHandler->handleCommand(method, params, requestId);
     }
     // Simulation operation commands

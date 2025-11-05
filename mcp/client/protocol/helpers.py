@@ -20,6 +20,7 @@ from .commands import (
     CreateWaveformCommand, ExportWaveformCommand, CreateIcCommand,
     InstantiateIcCommand, ListIcsCommand, MoveElementCommand,
     SetElementPropertiesCommand, UndoCommand, RedoCommand, GetUndoStackCommand,
+    SplitConnectionCommand,
 )
 
 # Union type for command parsing
@@ -48,6 +49,7 @@ MCPCommandTypes = Union[
     UndoCommand,
     RedoCommand,
     GetUndoStackCommand,
+    SplitConnectionCommand,
 ]
 
 
@@ -82,6 +84,7 @@ def parse_mcp_command(data: Dict[str, Any]) -> MCPCommandTypes:
         "undo": UndoCommand,
         "redo": RedoCommand,
         "get_undo_stack": GetUndoStackCommand,
+        "split_connection": SplitConnectionCommand,
     }
 
     model_class = command_map.get(command_type)

@@ -337,3 +337,20 @@ class GetUndoStackCommand(MCPCommand):
     """Model for get_undo_stack command"""
 
     params: EmptyParameters = Field(default_factory=EmptyParameters)
+
+
+class SplitConnectionCommand(MCPCommand):
+    """Model for split_connection command"""
+
+    class Parameters(BaseModel):
+        source_id: Annotated[int, Field(gt=0, description="Source element ID")]
+        source_port: Annotated[int, Field(ge=0, le=63, description="Source output port")]
+        target_id: Annotated[int, Field(gt=0, description="Target element ID")]
+        target_port: Annotated[int, Field(ge=0, le=63, description="Target input port")]
+        x: Annotated[float, Field(ge=-2147483648, le=2147483647, description="X coordinate for split node")]
+        y: Annotated[float, Field(ge=-2147483648, le=2147483647, description="Y coordinate for split node")]
+
+        class Config:
+            extra = "forbid"
+
+    params: Parameters

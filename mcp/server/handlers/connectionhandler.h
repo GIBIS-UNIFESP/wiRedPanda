@@ -23,4 +23,5 @@ private:
     QJsonObject handleConnectElements(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleDisconnectElements(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleListConnections(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleSplitConnection(const QJsonObject &params, const QJsonValue &requestId);
 };

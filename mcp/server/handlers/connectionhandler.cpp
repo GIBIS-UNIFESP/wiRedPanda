@@ -25,6 +25,8 @@ QJsonObject ConnectionHandler::handleCommand(const QString &command, const QJson
         return handleDisconnectElements(params, requestId);
     } else if (command == "list_connections") {
         return handleListConnections(params, requestId);
+    } else if (command == "split_connection") {
+        return handleSplitConnection(params, requestId);
     } else {
         return createErrorResponse(QString("Unknown connection command: %1").arg(command), requestId);
     }
@@ -195,4 +197,79 @@ QJsonObject ConnectionHandler::handleListConnections(const QJsonObject &, const 
     result["connections"] = connections;
 
     return createSuccessResponse(result, requestId);
+}
+
+QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, const QJsonValue &requestId)
+{
+    if (!validateParameters(params, {"source_id", "source_port", "target_id", "target_port", "x", "y"})) {
+        return createErrorResponse("Missing required parameters: source_id, source_port, target_id, target_port, x, y", requestId);
+    }
+
+    QString errorMsg;
+
+    if (!validatePositiveInteger(params.value("source_id"), "source_id", errorMsg)) {
+        return createErrorResponse(errorMsg, requestId);
+    }
+
+    if (!validatePositiveInteger(params.value("target_id"), "target_id", errorMsg)) {
+        return createErrorResponse(errorMsg, requestId);
+    }
+
+    int sourceId = params.value("source_id").toInt();
+    int targetId = params.value("target_id").toInt();
+    int sourcePort = params.value("source_port").toInt();
+    int targetPort = params.value("target_port").toInt();
+    double x = params.value("x").toDouble();
+    double y = params.value("y").toDouble();
+
+    if (!validateElementId(sourceId, "source_id", errorMsg)) {
+        return createErrorResponse(errorMsg, requestId);
+    }
+
+    if (!validateElementId(targetId, "target_id", errorMsg)) {
+        return createErrorResponse(errorMsg, requestId);
+    }
+
+    Scene *scene = getCurrentScene();
+    if (!scene) {
+        return createErrorResponse("No active circuit scene available", requestId);
+    }
+
+    // Find the connection between source and target
+    QNEConnection *connectionToSplit = nullptr;
+    const auto sceneItems = scene->items();
+
+    for (auto *item : sceneItems) {
+        auto *connection = qgraphicsitem_cast<QNEConnection*>(item);
+        if (!connection) continue;
+
+        QNEPort *port1 = connection->startPort();
+        QNEPort *port2 = connection->endPort();
+
+        if (!port1 || !port2) continue;
+
+        GraphicElement *elem1 = port1->graphicElement();
+        GraphicElement *elem2 = port2->graphicElement();
+
+        if (!elem1 || !elem2) continue;
+
+        // Check if this connection matches source->target
+        if (elem1->id() == sourceId && elem2->id() == targetId &&
+            port1->index() == sourcePort && port2->index() == targetPort) {
+            connectionToSplit = connection;
+            break;
+        }
+    }
+
+    if (!connectionToSplit) {
+        return createErrorResponse("Connection not found between specified source and target", requestId);
+    }
+
+    try {
+        // Create and execute the SplitCommand
+        scene->receiveCommand(new SplitCommand(connectionToSplit, QPointF(x, y), scene));
+        return createSuccessResponse(QJsonObject(), requestId);
+    } catch (const std::exception &e) {
+        return createErrorResponse(QString("Split operation failed: %1").arg(e.what()), requestId);
+    }
 }
