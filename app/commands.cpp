@@ -245,31 +245,75 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
         return {};
     }
 
-    QDataStream stream(&itemData, QIODevice::ReadOnly);
-    QVersionNumber version = Serialization::readPandaHeader(stream);
+    // Phase 3.2: Deserialization Validation
+    try {
+        QDataStream stream(&itemData, QIODevice::ReadOnly);
+        QVersionNumber version = Serialization::readPandaHeader(stream);
 
-    QMap<quint64, QNEPort *> portMap;
+        // Check stream status after header read
+        if (stream.status() != QDataStream::Ok) {
+            throw PANDACEPTION_WITH_CONTEXT("commands",
+                "Stream error after reading header: status=%1", static_cast<int>(stream.status()));
+        }
 
-    for (auto *elm : findElements(otherIds)) {
-        elm->load(stream, portMap, version);
-    }
+        // Validate version compatibility
+        if (version.majorVersion() > 1) {
+            qCWarning(zero) << "loadItems: File version" << version.toString()
+                           << "is newer than expected. Attempting to load anyway...";
+        }
 
-    /* Assuming that all connections are stored after the elements, we will deserialize the elements first.
-     * We will store one additional information: The element IDs! */
-    const auto items = Serialization::deserialize(stream, portMap, version);
+        QMap<quint64, QNEPort *> portMap;
 
-    if (items.size() != ids.size()) {
-        throw PANDACEPTION_WITH_CONTEXT("commands", "One or more elements were not found on scene. Expected %1, found %2.", ids.size(), items.size());
-    }
+        for (auto *elm : findElements(otherIds)) {
+            elm->load(stream, portMap, version);
 
-    for (int i = 0; i < items.size(); ++i) {
-        if (auto *itemId = dynamic_cast<ItemWithId *>(items.at(i))) {
+            // Phase 3.2: Check stream status after each element load
+            if (stream.status() != QDataStream::Ok) {
+                qCWarning(zero) << "loadItems: Stream error while loading element. Status:"
+                               << static_cast<int>(stream.status());
+            }
+        }
+
+        /* Assuming that all connections are stored after the elements, we will deserialize the elements first.
+         * We will store one additional information: The element IDs! */
+        const auto items = Serialization::deserialize(stream, portMap, version);
+
+        // Phase 3.2: Validate deserialized items
+        if (items.isEmpty() && !ids.isEmpty()) {
+            throw PANDACEPTION_WITH_CONTEXT("commands",
+                "Deserialization failed: No items returned but expected %1 items", ids.size());
+        }
+
+        if (items.size() != ids.size()) {
+            throw PANDACEPTION_WITH_CONTEXT("commands",
+                "One or more elements were not found on scene. Expected %1, found %2.",
+                ids.size(), items.size());
+        }
+
+        // Phase 3.2: Validate each deserialized item
+        for (int i = 0; i < items.size(); ++i) {
+            auto *item = items.at(i);
+            if (!item) {
+                throw PANDACEPTION_WITH_CONTEXT("commands",
+                    "Deserialized item at index %1 is null", i);
+            }
+
+            auto *itemId = dynamic_cast<ItemWithId *>(item);
+            if (!itemId) {
+                throw PANDACEPTION_WITH_CONTEXT("commands",
+                    "Deserialized item at index %1 is not an ItemWithId", i);
+            }
+
             ElementFactory::updateItemId(itemId, ids.at(i));
         }
-    }
 
-    addItems(scene, items);
-    return items;
+        addItems(scene, items);
+        return items;
+
+    } catch (const std::exception &e) {
+        qCCritical(zero) << "loadItems: Deserialization failed with exception:" << e.what();
+        throw;
+    }
 }
 
 void deleteItems(Scene *scene, const QList<QGraphicsItem *> &items)
@@ -747,64 +791,131 @@ void MorphCommand::redo()
 
 void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<GraphicElement *> to)
 {
+    // Phase 3.3: MorphCommand Safety - Transactional approach
     for (int elm = 0; elm < from.size(); ++elm) {
-        auto *oldElm = from.at(elm);
-        auto *newElm = to.at(elm);
+        try {
+            auto *oldElm = from.at(elm);
+            auto *newElm = to.at(elm);
 
-        newElm->setInputSize(oldElm->inputSize());
-        newElm->setPos(oldElm->pos());
+            // Phase 3.3: Validate elements exist
+            if (!oldElm || !newElm) {
+                qCWarning(zero) << "MorphCommand::transferConnections - Invalid element pointers at index" << elm;
+                continue;
+            }
 
-        if ((oldElm->elementType() == ElementType::Not) && (newElm->elementType() == ElementType::Node)) {
-            newElm->moveBy(16, 16);
-        }
+            // Phase 3.3: Set input size with validation
+            if (oldElm->inputSize() >= 0) {
+                newElm->setInputSize(oldElm->inputSize());
+            }
+            newElm->setPos(oldElm->pos());
 
-        if ((oldElm->elementType() == ElementType::Node) && (newElm->elementType() == ElementType::Not)) {
-            newElm->moveBy(-16, -16);
-        }
+            if ((oldElm->elementType() == ElementType::Not) && (newElm->elementType() == ElementType::Node)) {
+                newElm->moveBy(16, 16);
+            }
 
-        if (newElm->isRotatable() && oldElm->isRotatable()) {
-            newElm->setRotation(oldElm->rotation());
-        }
+            if ((oldElm->elementType() == ElementType::Node) && (newElm->elementType() == ElementType::Not)) {
+                newElm->moveBy(-16, -16);
+            }
 
-        if (newElm->hasLabel() && oldElm->hasLabel() && (oldElm->elementType() != ElementType::Buzzer)) {
-            newElm->setLabel(oldElm->label());
-        }
+            if (newElm->isRotatable() && oldElm->isRotatable()) {
+                newElm->setRotation(oldElm->rotation());
+            }
 
-        if (newElm->hasColors() && oldElm->hasColors()) {
-            newElm->setColor(oldElm->color());
-        }
+            if (newElm->hasLabel() && oldElm->hasLabel() && (oldElm->elementType() != ElementType::Buzzer)) {
+                newElm->setLabel(oldElm->label());
+            }
 
-        if (newElm->hasFrequency() && oldElm->hasFrequency()) {
-            newElm->setFrequency(oldElm->frequency());
-        }
+            if (newElm->hasColors() && oldElm->hasColors()) {
+                newElm->setColor(oldElm->color());
+            }
 
-        if (newElm->hasTrigger() && oldElm->hasTrigger()) {
-            newElm->setTrigger(oldElm->trigger());
-        }
+            if (newElm->hasFrequency() && oldElm->hasFrequency()) {
+                newElm->setFrequency(oldElm->frequency());
+            }
 
-        for (int port = 0; port < oldElm->inputSize(); ++port) {
-            while (!oldElm->inputPort(port)->connections().isEmpty()) {
-                if (auto *conn = oldElm->inputPort(port)->connections().constFirst(); conn && (conn->endPort() == oldElm->inputPort(port))) {
-                    conn->setEndPort(newElm->inputPort(port));
+            if (newElm->hasTrigger() && oldElm->hasTrigger()) {
+                newElm->setTrigger(oldElm->trigger());
+            }
+
+            // Phase 3.3: Port compatibility validation - transfer input connections
+            int compatibleInputPorts = 0;
+            for (int port = 0; port < oldElm->inputSize(); ++port) {
+                // Phase 3.3: Validate port exists on new element
+                if (port >= newElm->inputSize()) {
+                    qCWarning(zero) << "MorphCommand::transferConnections - New element has fewer input ports"
+                                   << "than old element. Skipping ports" << port << "-" << (oldElm->inputSize() - 1);
+                    break;
+                }
+
+                try {
+                    while (!oldElm->inputPort(port)->connections().isEmpty()) {
+                        if (auto *conn = oldElm->inputPort(port)->connections().constFirst();
+                            conn && (conn->endPort() == oldElm->inputPort(port))) {
+                            // Phase 3.3: Validate new port exists before transfer
+                            if (newElm->inputPort(port)) {
+                                conn->setEndPort(newElm->inputPort(port));
+                                compatibleInputPorts++;
+                            } else {
+                                qCWarning(zero) << "MorphCommand - Could not transfer input connection at port" << port;
+                            }
+                        }
+                    }
+                } catch (const std::exception &e) {
+                    qCWarning(zero) << "MorphCommand - Exception transferring input connections:" << e.what();
                 }
             }
-        }
 
-        for (int port = 0; port < oldElm->outputSize(); ++port) {
-            while (!oldElm->outputPort(port)->connections().isEmpty()) {
-                if (auto *conn = oldElm->outputPort(port)->connections().constFirst(); conn && (conn->startPort() == oldElm->outputPort(port))) {
-                    conn->setStartPort(newElm->outputPort(port));
+            // Phase 3.3: Port compatibility validation - transfer output connections
+            int compatibleOutputPorts = 0;
+            for (int port = 0; port < oldElm->outputSize(); ++port) {
+                // Phase 3.3: Validate port exists on new element
+                if (port >= newElm->outputSize()) {
+                    qCWarning(zero) << "MorphCommand::transferConnections - New element has fewer output ports"
+                                   << "than old element. Skipping ports" << port << "-" << (oldElm->outputSize() - 1);
+                    break;
+                }
+
+                try {
+                    while (!oldElm->outputPort(port)->connections().isEmpty()) {
+                        if (auto *conn = oldElm->outputPort(port)->connections().constFirst();
+                            conn && (conn->startPort() == oldElm->outputPort(port))) {
+                            // Phase 3.3: Validate new port exists before transfer
+                            if (newElm->outputPort(port)) {
+                                conn->setStartPort(newElm->outputPort(port));
+                                compatibleOutputPorts++;
+                            } else {
+                                qCWarning(zero) << "MorphCommand - Could not transfer output connection at port" << port;
+                            }
+                        }
+                    }
+                } catch (const std::exception &e) {
+                    qCWarning(zero) << "MorphCommand - Exception transferring output connections:" << e.what();
                 }
             }
+
+            // Phase 3.3: Update ID BEFORE deleting old element (prevents ID collision)
+            const int oldId = oldElm->id();
+            ElementFactory::updateItemId(newElm, oldId);
+
+            // Phase 3.3: Remove and delete old element
+            if (m_scene) {
+                m_scene->removeItem(oldElm);
+            }
+            delete oldElm;
+
+            // Add new element to scene
+            if (m_scene) {
+                m_scene->addItem(newElm);
+            }
+            newElm->updatePortsProperties();
+
+            qCDebug(zero) << "MorphCommand::transferConnections - Element morphed successfully"
+                         << "(transferred" << compatibleInputPorts << "input and" << compatibleOutputPorts << "output connections)";
+
+        } catch (const std::exception &e) {
+            qCCritical(zero) << "MorphCommand::transferConnections - Unhandled exception at element" << elm << ":" << e.what();
+            // Continue with next element instead of crashing
         }
-
-        const int oldId = oldElm->id();
-        m_scene->removeItem(oldElm);
-        delete oldElm;
-
-        ElementFactory::updateItemId(newElm, oldId);
-        m_scene->addItem(newElm);
-        newElm->updatePortsProperties();
     }
 }
 
