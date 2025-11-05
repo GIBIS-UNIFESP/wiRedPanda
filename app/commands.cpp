@@ -34,11 +34,11 @@ void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &
 {
     for (auto *item : connections) {
         if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
-            if (auto *port1 = conn->startPort(); port1 && port1->graphicElement() && !ids.contains(port1->graphicElement()->id())) {
+            if (auto *port1 = conn->startPort(); port1 && port1->graphicElement() && !ids.contains(port1->graphicElement()->id()) && !otherIds.contains(port1->graphicElement()->id())) {
                 otherIds.append(port1->graphicElement()->id());
             }
 
-            if (auto *port2 = conn->endPort(); port2 && port2->graphicElement() && !ids.contains(port2->graphicElement()->id())) {
+            if (auto *port2 = conn->endPort(); port2 && port2->graphicElement() && !ids.contains(port2->graphicElement()->id()) && !otherIds.contains(port2->graphicElement()->id())) {
                 otherIds.append(port2->graphicElement()->id());
             }
         }
