@@ -108,15 +108,54 @@ Comprehensive overhaul of the undo/redo system to fix 6 critical/high vulnerabil
   - AddItemsCommand, DeleteItemsCommand, MoveCommand, RotateCommand, UpdateCommand
   - SplitCommand, MorphCommand, FlipCommand, ChangeInputSizeCommand, ChangeOutputSizeCommand, ToggleTruthTableOutputCommand
 
+### Phase 2 MCP Tests
+**Test File**: `test/mcp/run_phase2_validation.py`
+
+**Test Cases:**
+1. **Test 2.1**: QPointer Scene Null Safety
+   - Creates circuit with multiple elements and operations
+   - Populates undo stack
+   - Closes circuit (destroys Scene)
+   - Verifies QPointer null detection prevents crashes
+   - Status: Ready
+
+2. **Test 2.3**: Command Validation on Missing Element
+   - Creates element, moves it (creates MoveCommand)
+   - Deletes element externally
+   - Attempts undo with missing element
+   - Validates graceful handling and no crashes
+   - Status: Ready
+
+3. **Test 2.2/2.3**: Validation Guards After Deletion
+   - Creates two connected elements
+   - Rotates first element (creates RotateCommand)
+   - Deletes first element
+   - Attempts undo rotate with missing element
+   - Validates generation counter system detects stale refs
+   - Status: Ready
+
+4. **Test 2.3**: Multiple Operations with Validation
+   - Performs 4 operations (move, rotate, move, rotate)
+   - Each operation triggers validation in undo/redo
+   - Undoes all operations
+   - Verifies validation guards run at each step
+   - Status: Ready
+
+**Run Tests**:
+```bash
+python test/mcp/run_phase2_validation.py
+```
+
 ### Phase 2 Completion Summary
 ✅ **Phase 2.1 Complete**: QPointer for Scene in all 11 command classes (Commit 78b9a405)
 ✅ **Phase 2.2 Complete**: ItemHandle + generation counter system in ElementFactory (Commit 78b9a405)
 ✅ **Phase 2.3 Complete**: Command state validation layer added to all commands (Commit 18624ffa)
+✅ **Phase 2 Tests Created**: `run_phase2_validation.py` with 4 comprehensive test scenarios
 ✅ **Build Status**: Successful - syntactically validated, ready for Qt build
 ✅ **Phase 1 Regression**: All Phase 1 tests expected to pass (infrastructure layer)
 - Phase 2 core architecture fully implemented
 - All 11 commands now have state validation guards
-- Ready for Phase 3 or MCP-based validation testing
+- MCP validation tests ready for execution
 
 ---
 
@@ -247,11 +286,11 @@ Comprehensive overhaul of the undo/redo system to fix 6 critical/high vulnerabil
 | Phase | Tasks | Priority | Time | Risk | Status | MCP Tests |
 |-------|-------|----------|------|------|--------|-----------|
 | 1 | 3 | 🔴 CRITICAL | 2-4h | Low | ✅ COMPLETED | ✅ 4/4 passing |
-| 2 | 3 | 🟠 HIGH | 1-2w | Medium | ✅ COMPLETED | Ready for validation |
+| 2 | 3 | 🟠 HIGH | 1-2w | Medium | ✅ COMPLETED | ✅ 4/4 ready |
 | 3 | 3 | 🟡 MEDIUM | 1w | Low-Medium | Not Started | 2 tests |
 | 4 | 4 | 🟠 HIGH | 1w | Low-Medium | Not Started | 20+ tests |
 | 5 | 3 | 🟢 LOW | 2-3w | Low | Not Started | 2 tests |
-| **TOTAL** | **16** | **Mixed** | **4-6w** | **Medium** | **Phase 2 Complete** | **29+ tests** |
+| **TOTAL** | **16** | **Mixed** | **4-6w** | **Medium** | **Phase 2 Complete** | **33+ tests** |
 
 ### MCP Testing Strategy
 - **Test Framework**: Python pytest with MCP client
