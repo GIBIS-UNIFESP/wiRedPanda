@@ -19,7 +19,7 @@ from .commands import (
     SaveCircuitCommand, LoadCircuitCommand, ExportImageCommand,
     CreateWaveformCommand, ExportWaveformCommand, CreateIcCommand,
     InstantiateIcCommand, ListIcsCommand, MoveElementCommand,
-    SetElementPropertiesCommand,
+    SetElementPropertiesCommand, UndoCommand, RedoCommand, GetUndoStackCommand,
 )
 
 # Union type for command parsing
@@ -45,6 +45,9 @@ MCPCommandTypes = Union[
     ListIcsCommand,
     MoveElementCommand,
     SetElementPropertiesCommand,
+    UndoCommand,
+    RedoCommand,
+    GetUndoStackCommand,
 ]
 
 
@@ -76,6 +79,9 @@ def parse_mcp_command(data: Dict[str, Any]) -> MCPCommandTypes:
         "list_ics": ListIcsCommand,
         "move_element": MoveElementCommand,
         "set_element_properties": SetElementPropertiesCommand,
+        "undo": UndoCommand,
+        "redo": RedoCommand,
+        "get_undo_stack": GetUndoStackCommand,
     }
 
     model_class = command_map.get(command_type)

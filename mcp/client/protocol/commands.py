@@ -319,3 +319,21 @@ class SetElementPropertiesCommand(MCPCommand):
             extra = "forbid"
 
     params: Parameters
+
+
+class UndoCommand(MCPCommand):
+    """Model for undo command"""
+
+    params: EmptyParameters = Field(default_factory=EmptyParameters)
+
+
+class RedoCommand(MCPCommand):
+    """Model for redo command"""
+
+    params: EmptyParameters = Field(default_factory=EmptyParameters)
+
+
+class GetUndoStackCommand(MCPCommand):
+    """Model for get_undo_stack command"""
+
+    params: EmptyParameters = Field(default_factory=EmptyParameters)

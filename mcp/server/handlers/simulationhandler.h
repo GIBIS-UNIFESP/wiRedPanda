@@ -29,6 +29,9 @@ private:
     QJsonObject handleCreateIC(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleInstantiateIC(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleListICs(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleUndo(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleRedo(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleGetUndoStack(const QJsonObject &params, const QJsonValue &requestId);
 
     BewavedDolphin *m_persistentDolphin;
 };

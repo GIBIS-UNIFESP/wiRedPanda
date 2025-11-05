@@ -249,6 +249,54 @@
           "additionalProperties": false
         },
 
+        "undo": {
+          "type": "object",
+          "description": "Execute undo operation on current circuit",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "undo"},
+            "params": {
+              "type": "object",
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "redo": {
+          "type": "object",
+          "description": "Execute redo operation on current circuit",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "redo"},
+            "params": {
+              "type": "object",
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
+        "get_undo_stack": {
+          "type": "object",
+          "description": "Get undo/redo stack information",
+          "properties": {
+            "jsonrpc": {"type": "string", "const": "2.0"},
+            "method": {"const": "get_undo_stack"},
+            "params": {
+              "type": "object",
+              "additionalProperties": false
+            },
+            "id": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "null"}]}
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+
         "set_input_value": {
           "type": "object",
           "description": "Set the value of an input element",

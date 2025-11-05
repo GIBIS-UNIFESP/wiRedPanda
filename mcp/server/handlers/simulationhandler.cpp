@@ -47,6 +47,12 @@ QJsonObject SimulationHandler::handleCommand(const QString &command, const QJson
         return handleInstantiateIC(params, requestId);
     } else if (command == "list_ics") {
         return handleListICs(params, requestId);
+    } else if (command == "undo") {
+        return handleUndo(params, requestId);
+    } else if (command == "redo") {
+        return handleRedo(params, requestId);
+    } else if (command == "get_undo_stack") {
+        return handleGetUndoStack(params, requestId);
     } else {
         return createErrorResponse(QString("Unknown simulation command: %1").arg(command), requestId);
     }
@@ -428,5 +434,114 @@ QJsonObject SimulationHandler::handleListICs(const QJsonObject &, const QJsonVal
         return createErrorResponse(QString("Failed to list ICs: %1").arg(e.what()), requestId);
     } catch (...) {
         return createErrorResponse("Failed to list ICs: Unknown error", requestId);
+    }
+}
+
+QJsonObject SimulationHandler::handleUndo(const QJsonObject &params, const QJsonValue &requestId)
+{
+    Scene *scene = getCurrentScene();
+    if (!scene) {
+        return createErrorResponse("No active circuit scene available", requestId);
+    }
+
+    QUndoStack *undoStack = scene->undoStack();
+    if (!undoStack) {
+        return createErrorResponse("Undo stack not available", requestId);
+    }
+
+    try {
+        if (!undoStack->canUndo()) {
+            QJsonObject result;
+            result["success"] = false;
+            result["message"] = "Nothing to undo";
+            return createSuccessResponse(result, requestId);
+        }
+
+        undoStack->undo();
+
+        QJsonObject result;
+        result["success"] = true;
+        result["message"] = "Undo operation completed";
+        result["can_undo"] = undoStack->canUndo();
+        result["can_redo"] = undoStack->canRedo();
+        result["undo_text"] = undoStack->undoText();
+        result["redo_text"] = undoStack->redoText();
+
+        return createSuccessResponse(result, requestId);
+
+    } catch (const std::exception &e) {
+        return createErrorResponse(QString("Undo failed: %1").arg(e.what()), requestId);
+    } catch (...) {
+        return createErrorResponse("Undo failed: Unknown error", requestId);
+    }
+}
+
+QJsonObject SimulationHandler::handleRedo(const QJsonObject &params, const QJsonValue &requestId)
+{
+    Scene *scene = getCurrentScene();
+    if (!scene) {
+        return createErrorResponse("No active circuit scene available", requestId);
+    }
+
+    QUndoStack *undoStack = scene->undoStack();
+    if (!undoStack) {
+        return createErrorResponse("Undo stack not available", requestId);
+    }
+
+    try {
+        if (!undoStack->canRedo()) {
+            QJsonObject result;
+            result["success"] = false;
+            result["message"] = "Nothing to redo";
+            return createSuccessResponse(result, requestId);
+        }
+
+        undoStack->redo();
+
+        QJsonObject result;
+        result["success"] = true;
+        result["message"] = "Redo operation completed";
+        result["can_undo"] = undoStack->canUndo();
+        result["can_redo"] = undoStack->canRedo();
+        result["undo_text"] = undoStack->undoText();
+        result["redo_text"] = undoStack->redoText();
+
+        return createSuccessResponse(result, requestId);
+
+    } catch (const std::exception &e) {
+        return createErrorResponse(QString("Redo failed: %1").arg(e.what()), requestId);
+    } catch (...) {
+        return createErrorResponse("Redo failed: Unknown error", requestId);
+    }
+}
+
+QJsonObject SimulationHandler::handleGetUndoStack(const QJsonObject &params, const QJsonValue &requestId)
+{
+    Scene *scene = getCurrentScene();
+    if (!scene) {
+        return createErrorResponse("No active circuit scene available", requestId);
+    }
+
+    QUndoStack *undoStack = scene->undoStack();
+    if (!undoStack) {
+        return createErrorResponse("Undo stack not available", requestId);
+    }
+
+    try {
+        QJsonObject result;
+        result["can_undo"] = undoStack->canUndo();
+        result["can_redo"] = undoStack->canRedo();
+        result["undo_text"] = undoStack->undoText();
+        result["redo_text"] = undoStack->redoText();
+        result["undo_limit"] = undoStack->undoLimit();
+        result["undo_count"] = undoStack->count();
+        result["undo_index"] = undoStack->index();
+
+        return createSuccessResponse(result, requestId);
+
+    } catch (const std::exception &e) {
+        return createErrorResponse(QString("Failed to get undo stack info: %1").arg(e.what()), requestId);
+    } catch (...) {
+        return createErrorResponse("Failed to get undo stack info: Unknown error", requestId);
     }
 }

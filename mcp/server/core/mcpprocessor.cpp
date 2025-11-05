@@ -162,7 +162,8 @@ void MCPProcessor::processCommand(const QString &line)
     }
     // Simulation operation commands
     else if (method == "simulation_control" || method == "create_waveform" || method == "export_waveform" ||
-             method == "create_ic" || method == "instantiate_ic" || method == "list_ics") {
+             method == "create_ic" || method == "instantiate_ic" || method == "list_ics" ||
+             method == "undo" || method == "redo" || method == "get_undo_stack") {
         response = m_simulationHandler->handleCommand(method, params, requestId);
     }
     else {
