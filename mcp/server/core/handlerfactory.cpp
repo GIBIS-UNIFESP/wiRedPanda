@@ -161,6 +161,10 @@ void HandlerFactory::registerBuiltInHandlers()
                     [](MainWindow *mainWindow, MCPValidator *validator) {
                         return std::make_unique<ElementHandler>(mainWindow, validator);
                     });
+    registerHandler("morph_element", "element",
+                    [](MainWindow *mainWindow, MCPValidator *validator) {
+                        return std::make_unique<ElementHandler>(mainWindow, validator);
+                    });
 
     // Connection operation commands
     registerHandler("connect_elements", "connection",

@@ -437,3 +437,20 @@ class SplitConnectionCommand(MCPCommand):
             extra = "forbid"
 
     params: Parameters
+
+
+class MorphElementCommand(MCPCommand):
+    """Model for morph_element command
+
+    Morphs one or more elements to a different element type.
+    Connections are intelligently transferred when possible (same port indices).
+    """
+
+    class Parameters(BaseModel):
+        element_ids: Annotated[List[int], Field(min_items=1, description="List of element IDs to morph")]
+        target_type: ElementType = Field(description="Target element type to morph to")
+
+        class Config:
+            extra = "forbid"
+
+    params: Parameters

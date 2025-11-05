@@ -1787,6 +1787,60 @@
             "method"
           ],
           "additionalProperties": false
+        },
+        "morph_element": {
+          "type": "object",
+          "description": "Morph one or more elements to a different element type",
+          "properties": {
+            "jsonrpc": {
+              "type": "string",
+              "const": "2.0"
+            },
+            "method": {
+              "const": "morph_element"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "element_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "minItems": 1,
+                  "description": "List of element IDs to morph"
+                },
+                "target_type": {
+                  "$ref": "#/definitions/ElementType",
+                  "description": "Target element type to morph to"
+                }
+              },
+              "required": [
+                "element_ids",
+                "target_type"
+              ],
+              "additionalProperties": false
+            },
+            "id": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method"
+          ],
+          "additionalProperties": false
         }
       }
     },
@@ -2460,6 +2514,39 @@
                   "required": [
                     "element_id",
                     "position"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "morph_element_response": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/CommandResponse"
+            },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "morphed_elements": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "description": "IDs of morphed elements"
+                    },
+                    "target_type": {
+                      "$ref": "#/definitions/ElementType",
+                      "description": "Target element type"
+                    }
+                  },
+                  "required": [
+                    "morphed_elements",
+                    "target_type"
                   ],
                   "additionalProperties": false
                 }

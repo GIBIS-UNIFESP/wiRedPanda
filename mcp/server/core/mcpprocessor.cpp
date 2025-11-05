@@ -155,7 +155,8 @@ void MCPProcessor::processCommand(const QString &line)
              method == "move_element" || method == "set_element_properties" ||
              method == "set_input_value" || method == "get_output_value" ||
              method == "rotate_element" || method == "flip_element" || method == "update_element" ||
-             method == "change_input_size" || method == "change_output_size" || method == "toggle_truth_table_output") {
+             method == "change_input_size" || method == "change_output_size" || method == "toggle_truth_table_output" ||
+             method == "morph_element") {
         response = m_elementHandler->handleCommand(method, params, requestId);
     }
     // Connection operation commands

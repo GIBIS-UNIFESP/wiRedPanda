@@ -47,6 +47,8 @@ QJsonObject ElementHandler::handleCommand(const QString &command, const QJsonObj
         return handleChangeOutputSize(params, requestId);
     } else if (command == "toggle_truth_table_output") {
         return handleToggleTruthTableOutput(params, requestId);
+    } else if (command == "morph_element") {
+        return handleMorphElement(params, requestId);
     } else {
         return createErrorResponse(QString("Unknown element command: %1").arg(command), requestId);
     }
@@ -669,6 +671,81 @@ QJsonObject ElementHandler::handleToggleTruthTableOutput(const QJsonObject &para
     QJsonObject result;
     result["element_id"] = elementId;
     result["position"] = position;
+
+    return createSuccessResponse(result, requestId);
+}
+
+QJsonObject ElementHandler::handleMorphElement(const QJsonObject &params, const QJsonValue &requestId)
+{
+    if (!validateParameters(params, {"element_ids", "target_type"})) {
+        return createErrorResponse("Missing required parameters: element_ids, target_type", requestId);
+    }
+
+    QString errorMsg;
+
+    // Validate element_ids is an array
+    if (!params.value("element_ids").isArray()) {
+        return createErrorResponse("element_ids must be an array", requestId);
+    }
+
+    QJsonArray elementIdsArray = params.value("element_ids").toArray();
+    if (elementIdsArray.empty()) {
+        return createErrorResponse("element_ids array cannot be empty", requestId);
+    }
+
+    // Validate target_type
+    if (!validateNonEmptyString(params.value("target_type"), "target_type", errorMsg)) {
+        return createErrorResponse(errorMsg, requestId);
+    }
+
+    QString typeStr = params.value("target_type").toString();
+    ElementType targetType = ElementFactory::textToType(typeStr);
+    if (targetType == ElementType::Unknown) {
+        return createErrorResponse(QString("Invalid target element type: %1").arg(typeStr), requestId);
+    }
+
+    // Collect elements to morph
+    QList<GraphicElement *> elementsToMorph;
+    for (const QJsonValue &idValue : elementIdsArray) {
+        if (!idValue.isDouble()) {
+            return createErrorResponse("element_ids must contain only integers", requestId);
+        }
+
+        int elementId = idValue.toInt();
+        if (!validateElementId(elementId, "element_ids", errorMsg)) {
+            return createErrorResponse(errorMsg, requestId);
+        }
+
+        auto *item = ElementFactory::itemById(elementId);
+        auto *element = dynamic_cast<GraphicElement*>(item);
+        if (!element) {
+            return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);
+        }
+
+        elementsToMorph.append(element);
+    }
+
+    Scene *scene = getCurrentScene();
+    if (!scene) {
+        return createErrorResponse("No active circuit scene available", requestId);
+    }
+
+    try {
+        // Use MorphCommand for undo/redo support
+        scene->receiveCommand(new MorphCommand(elementsToMorph, targetType, scene));
+    } catch (const std::exception &e) {
+        return createErrorResponse(QString("Failed to morph elements: %1").arg(e.what()), requestId);
+    } catch (...) {
+        return createErrorResponse("Failed to morph elements: Unknown exception", requestId);
+    }
+
+    QJsonObject result;
+    QJsonArray morphedIds;
+    for (GraphicElement *element : elementsToMorph) {
+        morphedIds.append(element->id());
+    }
+    result["morphed_elements"] = morphedIds;
+    result["target_type"] = typeStr;
 
     return createSuccessResponse(result, requestId);
 }

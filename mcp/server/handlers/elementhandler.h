@@ -33,4 +33,5 @@ private:
     QJsonObject handleChangeInputSize(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleChangeOutputSize(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleToggleTruthTableOutput(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleMorphElement(const QJsonObject &params, const QJsonValue &requestId);
 };
