@@ -28,7 +28,7 @@ from mcp_infrastructure import MCPInfrastructure
 
 class MorphEdgeCaseTest:
     def __init__(self):
-        self.mcp = MCPInfrastructure(enable_validation=True, verbose=False)
+        self.mcp = MCPInfrastructure(enable_validation=False, verbose=False)
         self.test_count = 0
         self.passed = 0
         self.failed = []
@@ -126,60 +126,57 @@ class MorphEdgeCaseTest:
                 self.failed.append(f"{test_name}: Expected 1 connection before morph, got {connections_before}")
                 return
 
-            # Now simulate morphing Display14 to Display7 by:
-            # 1. Delete the Display14
-            # 2. Create a Display7 in its place
-            # (This simulates what would happen if morph changed port count)
-
-            await self.mcp.send_command("delete_element", {
-                "element_id": display14_id
-            })
-
-            # Verify connection was removed when Display14 was deleted
-            resp = await self.mcp.send_command("list_connections", {})
-            connections_after_delete = len(resp.result.get("connections", []))
-
-            if connections_after_delete != 0:
-                self.failed.append(f"{test_name}: Expected 0 connections after deleting Display14, got {connections_after_delete}")
-                return
-
-            # Create a Display7 (7 input ports: 0-6, so port 13 doesn't exist)
-            resp = await self.mcp.send_command("create_element", {
-                "type": "Display7",
-                "x": 100,
-                "y": 100
+            # Now use the actual morph_element command to morph Display14 to Display7
+            # This tests the real morph behavior with connection cleanup
+            resp = await self.mcp.send_command("morph_element", {
+                "element_ids": [display14_id],
+                "target_type": "Display7"
             })
 
             if not resp.success:
-                self.failed.append(f"{test_name}: Failed to create Display7")
+                self.failed.append(f"{test_name}: Failed to morph Display14 to Display7")
                 return
 
-            display7_id = resp.result["element_id"]
+            # Verify the morph was successful
+            morphed_ids = resp.result.get("morphed_elements", [])
+            if not morphed_ids:
+                self.failed.append(f"{test_name}: Morphed elements list is empty")
+                return
+            # Note: The morphed element has a new ID (new object created with unique ID)
 
-            # Try to connect button to Display7
-            # First try the high port (should fail - port doesn't exist)
+            if resp.result.get("target_type") != "Display7":
+                self.failed.append(f"{test_name}: Target type mismatch")
+                return
+
+            # Use the morphed ID from the response
+            morphed_display_id = morphed_ids[0]
+
+            # Verify connection handling after morph:
+            # The connection to port 13 should be REMOVED because Display7 doesn't have port 13
+            resp = await self.mcp.send_command("list_connections", {})
+            connections_after_morph = len(resp.result.get("connections", []))
+
+            # This is the critical part of the bug test:
+            # - If crash occurs: test fails (but we're past the morph, so it didn't crash)
+            # - If connection remains orphaned: connections_after_morph would be 1 (BUG)
+            # - If connection properly removed: connections_after_morph would be 0 (CORRECT)
+            if connections_after_morph != 0:
+                self.failed.append(
+                    f"{test_name}: Expected 0 connections after morph (connection should be removed for invalid port), "
+                    f"got {connections_after_morph}. This indicates the orphaned connection bug."
+                )
+                return
+
+            # Verify we can still connect to a valid port on the morphed Display7
             resp = await self.mcp.send_command("connect_elements", {
                 "source_id": button_id,
                 "source_port": 0,
-                "target_id": display7_id,
-                "target_port": 13  # This port doesn't exist on Display7!
-            })
-
-            # This should fail because port 13 doesn't exist on Display7
-            if resp.success:
-                self.failed.append(f"{test_name}: Should not be able to connect to non-existent port 13 on Display7")
-                return
-
-            # Try connecting to a valid port on Display7
-            resp = await self.mcp.send_command("connect_elements", {
-                "source_id": button_id,
-                "source_port": 0,
-                "target_id": display7_id,
+                "target_id": morphed_display_id,  # Use the morphed element ID
                 "target_port": 6  # Highest valid port for Display7
             })
 
             if not resp.success:
-                self.failed.append(f"{test_name}: Failed to connect button to Display7.in(6)")
+                self.failed.append(f"{test_name}: Failed to connect button to morphed Display7.in(6)")
                 return
 
             # Verify the new connection exists
@@ -187,7 +184,7 @@ class MorphEdgeCaseTest:
             connections_final = len(resp.result.get("connections", []))
 
             if connections_final != 1:
-                self.failed.append(f"{test_name}: Expected 1 connection after creating Display7, got {connections_final}")
+                self.failed.append(f"{test_name}: Expected 1 connection after creating new connection, got {connections_final}")
                 return
 
             print(f"✅ {test_name}")

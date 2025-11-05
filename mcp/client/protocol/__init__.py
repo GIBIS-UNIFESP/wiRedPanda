@@ -42,6 +42,11 @@ from .commands import (
     ChangeInputSizeCommand,
     ChangeOutputSizeCommand,
     ToggleTruthTableOutputCommand,
+    UndoCommand,
+    RedoCommand,
+    GetUndoStackCommand,
+    SplitConnectionCommand,
+    MorphElementCommand,
 )
 
 # Re-export all result classes
@@ -99,6 +104,11 @@ __all__ = [
     "ChangeInputSizeCommand",
     "ChangeOutputSizeCommand",
     "ToggleTruthTableOutputCommand",
+    "UndoCommand",
+    "RedoCommand",
+    "GetUndoStackCommand",
+    "SplitConnectionCommand",
+    "MorphElementCommand",
     # Result classes
     "ElementCreationResult",
     "ElementListResult",

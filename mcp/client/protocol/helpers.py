@@ -22,7 +22,7 @@ from .commands import (
     SetElementPropertiesCommand, UndoCommand, RedoCommand, GetUndoStackCommand,
     SplitConnectionCommand, RotateElementCommand, FlipElementCommand,
     UpdateElementCommand, ChangeInputSizeCommand, ChangeOutputSizeCommand,
-    ToggleTruthTableOutputCommand,
+    ToggleTruthTableOutputCommand, MorphElementCommand,
 )
 
 # Union type for command parsing
@@ -58,6 +58,7 @@ MCPCommandTypes = Union[
     RedoCommand,
     GetUndoStackCommand,
     SplitConnectionCommand,
+    MorphElementCommand,
 ]
 
 
@@ -99,6 +100,7 @@ def parse_mcp_command(data: Dict[str, Any]) -> MCPCommandTypes:
         "redo": RedoCommand,
         "get_undo_stack": GetUndoStackCommand,
         "split_connection": SplitConnectionCommand,
+        "morph_element": MorphElementCommand,
     }
 
     model_class = command_map.get(command_type)

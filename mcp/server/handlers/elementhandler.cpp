@@ -730,6 +730,12 @@ QJsonObject ElementHandler::handleMorphElement(const QJsonObject &params, const 
         return createErrorResponse("No active circuit scene available", requestId);
     }
 
+    // Store original IDs before morphing
+    QList<int> originalIds;
+    for (const auto *element : elementsToMorph) {
+        originalIds.append(element->id());
+    }
+
     try {
         // Use MorphCommand for undo/redo support
         scene->receiveCommand(new MorphCommand(elementsToMorph, targetType, scene));
@@ -739,11 +745,49 @@ QJsonObject ElementHandler::handleMorphElement(const QJsonObject &params, const 
         return createErrorResponse("Failed to morph elements: Unknown exception", requestId);
     }
 
+    // After morph, find the new elements with the same original IDs
+    // (Note: with Approach 2, the new elements will have different IDs)
+    // Find all elements of the target type and match by position in the scene
     QJsonObject result;
     QJsonArray morphedIds;
-    for (GraphicElement *element : elementsToMorph) {
-        morphedIds.append(element->id());
+
+    // Get all elements in the scene and find the new morphed elements
+    // We can identify them as elements of targetType that weren't there before
+    auto sceneItems = scene->items();
+    QList<GraphicElement *> newElements;
+
+    for (auto *item : sceneItems) {
+        if (auto *elem = dynamic_cast<GraphicElement*>(item)) {
+            if (elem->elementType() == targetType) {
+                // Check if this element wasn't in our original list
+                bool isNew = true;
+                for (int origId : originalIds) {
+                    if (elem->id() == origId) {
+                        isNew = false;
+                        break;
+                    }
+                }
+                if (isNew) {
+                    newElements.append(elem);
+                }
+            }
+        }
     }
+
+    // If we found the right number of new elements, use them
+    if (newElements.size() == originalIds.size()) {
+        for (auto *elem : newElements) {
+            morphedIds.append(elem->id());
+        }
+    } else {
+        // Fallback: return the original IDs (may be incorrect but better than nothing)
+        // This shouldn't happen in normal operation
+        qCWarning(zero) << "ElementHandler::handleMorphElement - Could not find all new elements after morph";
+        for (int origId : originalIds) {
+            morphedIds.append(origId);
+        }
+    }
+
     result["morphed_elements"] = morphedIds;
     result["target_type"] = typeStr;
 

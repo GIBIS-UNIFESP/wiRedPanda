@@ -788,9 +788,11 @@ void MorphCommand::undo()
 {
     qCDebug(zero) << text();
     // Phase 2.3: Validate state before undo
-    validateElementIds(m_ids, text());
+    // Use m_newIds if available (after redo has been called), otherwise use m_ids
+    const auto &idsToFind = m_newIds.isEmpty() ? m_ids : m_newIds;
+    validateElementIds(idsToFind, text());
 
-    auto newElms = findElements(m_ids);
+    auto newElms = findElements(idsToFind);
     decltype(newElms) oldElms;
     oldElms.reserve(m_ids.size());
 
@@ -799,6 +801,14 @@ void MorphCommand::undo()
     }
 
     transferConnections(newElms, oldElms);
+
+    // After undo, update m_newIds to the old element IDs for next redo
+    m_newIds.clear();
+    m_newIds.reserve(oldElms.size());
+    for (auto *elm : oldElms) {
+        m_newIds.append(elm->id());
+    }
+
     m_scene->setCircuitUpdateRequired();
 }
 
@@ -817,6 +827,14 @@ void MorphCommand::redo()
     }
 
     transferConnections(oldElms, newElms);
+
+    // Capture the new element IDs for undo/redo operations
+    m_newIds.clear();
+    m_newIds.reserve(newElms.size());
+    for (auto *elm : newElms) {
+        m_newIds.append(elm->id());
+    }
+
     m_scene->setCircuitUpdateRequired();
 }
 
@@ -924,17 +942,13 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
                 }
             }
 
-            // Phase 3.3: Update ID BEFORE deleting old element (prevents ID collision)
-            const int oldId = oldElm->id();
-            ElementFactory::updateItemId(newElm, oldId);
-
             // Phase 3.3: Remove and delete old element
             if (m_scene) {
                 m_scene->removeItem(oldElm);
             }
             delete oldElm;
 
-            // Add new element to scene
+            // Add new element to scene with its own unique ID
             if (m_scene) {
                 m_scene->addItem(newElm);
             }

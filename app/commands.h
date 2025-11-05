@@ -222,7 +222,8 @@ private:
 
     ElementType m_newType;
     QList<ElementType> m_types;
-    QList<int> m_ids;
+    QList<int> m_ids;  // Original element IDs
+    QList<int> m_newIds;  // New element IDs after morph
     QPointer<Scene> m_scene;
 };
 
