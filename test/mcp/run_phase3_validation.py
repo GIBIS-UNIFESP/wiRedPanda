@@ -395,13 +395,10 @@ class Phase3Validator:
             for test in self.failed_tests:
                 print(f"  ❌ {test}")
 
-        success = (self.passed_count >= self.test_count - 1)  # Allow 1 test skip for API differences
+        success = (self.passed_count == self.test_count)
         print("\n" + ("=" * 70))
         if self.passed_count == self.test_count:
             print("✅ ALL PHASE 3 TESTS PASSED - Robustness enhancements validated!")
-        elif self.passed_count >= 3:
-            print("✅ PHASE 3 VALIDATION SUCCESSFUL - Core improvements validated!")
-            print(f"   ({self.passed_count}/{self.test_count} tests passed)")
         else:
             print("❌ SOME TESTS FAILED - Review errors above")
         print("=" * 70 + "\n")

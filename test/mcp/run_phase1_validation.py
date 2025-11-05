@@ -367,13 +367,10 @@ class Phase1Validator:
             for test in self.failed_tests:
                 print(f"  ❌ {test}")
 
-        success = (self.passed_count >= self.test_count - 1)  # Allow 1 test skip for API differences
+        success = (self.passed_count == self.test_count)
         print("\n" + ("=" * 70))
         if self.passed_count == self.test_count:
             print("✅ ALL PHASE 1 TESTS PASSED - Safety fixes validated!")
-        elif self.passed_count >= 3:
-            print("✅ PHASE 1 VALIDATION SUCCESSFUL - Core fixes validated!")
-            print(f"   ({self.passed_count}/{self.test_count} tests passed)")
         else:
             print("❌ SOME TESTS FAILED - Review errors above")
         print("=" * 70 + "\n")

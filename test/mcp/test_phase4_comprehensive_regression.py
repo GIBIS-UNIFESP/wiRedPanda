@@ -851,13 +851,10 @@ class Phase4CommandTests:
             for test in self.failed_tests:
                 print(f"  ❌ {test}")
 
-        success = (self.passed_count >= self.test_count - 2)  # Allow 2 command type skips
+        success = (self.passed_count == self.test_count)
         print("\n" + ("=" * 70))
         if self.passed_count == self.test_count:
             print("✅ ALL PHASE 4.1 TESTS PASSED - All command types validated!")
-        elif self.passed_count >= 9:
-            print("✅ PHASE 4.1 VALIDATION SUCCESSFUL - Core command types validated!")
-            print(f"   ({self.passed_count}/{self.test_count} tests passed)")
         else:
             print("❌ SOME TESTS FAILED - Review errors above")
         print("=" * 70 + "\n")
