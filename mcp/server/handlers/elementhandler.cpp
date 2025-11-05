@@ -12,6 +12,8 @@
 #include "simulation.h"
 #include "qneport.h"
 
+#include <QJsonArray>
+
 ElementHandler::ElementHandler(MainWindow *mainWindow, MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
 {

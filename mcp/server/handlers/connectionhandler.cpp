@@ -10,6 +10,8 @@
 #include "qneport.h"
 #include "scene.h"
 
+#include <QJsonArray>
+
 ConnectionHandler::ConnectionHandler(MainWindow *mainWindow, MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
 {

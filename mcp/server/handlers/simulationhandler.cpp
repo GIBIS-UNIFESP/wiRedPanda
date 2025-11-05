@@ -16,6 +16,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonArray>
 #include <QTextStream>
 
 SimulationHandler::SimulationHandler(MainWindow *mainWindow, MCPValidator *validator)
