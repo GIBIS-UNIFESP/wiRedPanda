@@ -18,6 +18,7 @@ Comprehensive overhaul of the undo/redo system to fix 6 critical/high vulnerabil
 - **Files**: `app/commands.cpp`
 - **Lines Changed**: ~30
 - **Risk**: Low - adds validation, doesn't change logic
+- **MCP Test**: `test_phase1_null_pointer_safety.py::test_undo_after_element_deleted`
 
 ### Task 1.2: Fix SplitCommand Exception Safety
 - [ ] Reorder SplitCommand constructor to validate before allocating
@@ -27,6 +28,7 @@ Comprehensive overhaul of the undo/redo system to fix 6 critical/high vulnerabil
 - **Files**: `app/commands.cpp:423-462`
 - **Lines Changed**: ~15
 - **Risk**: Low - fixes memory leak
+- **MCP Test**: `test_phase1_null_pointer_safety.py::test_split_command_no_memory_leak`
 
 ### Task 1.3: Add Scene Destruction Guard
 - [ ] Add `m_undoStack.clear()` in Scene destructor
@@ -35,6 +37,7 @@ Comprehensive overhaul of the undo/redo system to fix 6 critical/high vulnerabil
 - **Files**: `app/scene.cpp`, `app/commands.cpp`
 - **Lines Changed**: ~10
 - **Risk**: Low - prevents accessing deleted Scene
+- **MCP Test**: `test_phase1_null_pointer_safety.py::test_scene_destruction_guard`
 
 ---
 
@@ -49,6 +52,7 @@ Comprehensive overhaul of the undo/redo system to fix 6 critical/high vulnerabil
 - **Files**: `app/commands.h`, `app/commands.cpp`
 - **Lines Changed**: ~50
 - **Risk**: Medium - architectural change, needs testing
+- **MCP Test**: `test_phase2_weak_references.py::test_qpointer_scene_null_detection`
 
 ### Task 2.2: Implement Weak Element References with Generation Counters
 - [ ] Add `struct ItemEntry` to ElementFactory with item pointer + generation counter
@@ -60,6 +64,7 @@ Comprehensive overhaul of the undo/redo system to fix 6 critical/high vulnerabil
 - **Files**: `app/elementfactory.h`, `app/elementfactory.cpp`, `app/commands.h`, `app/commands.cpp`
 - **Lines Changed**: ~80
 - **Risk**: High - core architectural change, requires extensive testing
+- **MCP Test**: `test_phase2_weak_references.py::test_element_id_generation_counter`
 
 ### Task 2.3: Add Command State Validation
 - [ ] Implement `validateItemHandles()` helper in `commands.cpp`
@@ -69,6 +74,7 @@ Comprehensive overhaul of the undo/redo system to fix 6 critical/high vulnerabil
 - **Files**: `app/commands.cpp`
 - **Lines Changed**: ~40
 - **Risk**: Medium - adds guards, no logic changes
+- **MCP Test**: All phase 2 tests validate this through handle resolution
 
 ---
 
@@ -83,6 +89,7 @@ Comprehensive overhaul of the undo/redo system to fix 6 critical/high vulnerabil
 - **Files**: `app/commands.h`, `app/commands.cpp`
 - **Lines Changed**: ~60
 - **Risk**: Medium - new abstraction, needs thorough testing
+- **MCP Test**: `test_phase3_transaction_safety.py::test_morph_command_rollback`
 
 ### Task 3.2: Add Deserialization Validation
 - [ ] Add version compatibility checks in `loadItems()`
@@ -93,6 +100,7 @@ Comprehensive overhaul of the undo/redo system to fix 6 critical/high vulnerabil
 - **Files**: `app/commands.cpp:172-202`
 - **Lines Changed**: ~30
 - **Risk**: Low - adds validation only
+- **MCP Test**: `test_phase3_transaction_safety.py::test_corrupted_undo_data_handling`
 
 ### Task 3.3: Fix MorphCommand Safety
 - [ ] Add UndoTransaction guard to `transferConnections()`
@@ -103,51 +111,58 @@ Comprehensive overhaul of the undo/redo system to fix 6 critical/high vulnerabil
 - **Files**: `app/commands.cpp:580-641`
 - **Lines Changed**: ~25
 - **Risk**: Medium - modifies complex logic, needs testing
+- **MCP Test**: `test_phase3_transaction_safety.py` (validates via rollback)
 
 ---
 
 ## Phase 4: Testing & Validation (HIGH)
 **Priority**: 🟠 HIGH | **Time**: 1 week | **Status**: Not Started
 
-### Task 4.1: Write Tests for All 11 Command Types
-- [ ] Test MoveCommand (undo/redo)
-- [ ] Test RotateCommand (undo/redo)
-- [ ] Test FlipCommand (undo/redo, both axes)
-- [ ] Test UpdateCommand (undo/redo)
-- [ ] Test MorphCommand (undo/redo, type conversion)
-- [ ] Test SplitCommand (undo/redo, connection creation)
-- [ ] Test ChangeInputSizeCommand (undo/redo, connection removal)
-- [ ] Test ChangeOutputSizeCommand (undo/redo, connection removal)
-- [ ] Test ToggleTruthTableOutputCommand (undo/redo)
-- **Files**: `test/testcommands.cpp`
-- **Lines Added**: ~300
-- **Risk**: Low - tests only, no changes to main code
+### Task 4.1: Write MCP Tests for All 11 Command Types
+- [ ] Test MoveCommand (undo/redo) via MCP
+- [ ] Test RotateCommand (undo/redo) via MCP
+- [ ] Test FlipCommand (undo/redo, both axes) via MCP
+- [ ] Test UpdateCommand (undo/redo) via MCP
+- [ ] Test MorphCommand (undo/redo, type conversion) via MCP
+- [ ] Test SplitCommand (undo/redo, connection creation) via MCP
+- [ ] Test ChangeInputSizeCommand (undo/redo, connection removal) via MCP
+- [ ] Test ChangeOutputSizeCommand (undo/redo, connection removal) via MCP
+- [ ] Test ToggleTruthTableOutputCommand (undo/redo) via MCP
+- **Files**: `test/mcp/test_phase4_comprehensive_regression.py`
+- **Lines Added**: ~400
+- **Risk**: Low - MCP tests, no changes to main code
+- **MCP Test**: `test_phase4_comprehensive_regression.py::test_all_commands_undo_redo`
 
-### Task 4.2: Add Crash Scenario Tests
+### Task 4.2: Add MCP Crash Scenario Tests
 - [ ] Test undo after element deleted externally
 - [ ] Test undo after scene destroyed
 - [ ] Test morph with incompatible ports
 - [ ] Test corrupted undo data deserialization
 - [ ] Test exception recovery (partial state)
-- **Files**: `test/testcommands_crash.cpp` (new)
-- **Lines Added**: ~200
-- **Risk**: Medium - edge cases, may need fixes in Phase 1-3
+- **Files**: `test/mcp/test_phase4_crash_scenarios.py` (new)
+- **Lines Added**: ~300
+- **Risk**: Low - MCP tests, validates Phase 1-3 fixes
+- **MCP Test**: All phase 1, 2, 3 crash scenario tests
 
-### Task 4.3: Add Multi-Tab Tests
+### Task 4.3: Add MCP Multi-Tab Tests
 - [ ] Test independent undo stacks per tab
 - [ ] Test tab close with pending undo
 - [ ] Test undo after switching tabs
 - [ ] Test undo state isolation between tabs
-- **Files**: `test/testcommands_multitab.cpp` (new)
-- **Lines Added**: ~150
-- **Risk**: Medium - integration testing
+- **Files**: `test/mcp/test_phase4_multitab.py` (new)
+- **Lines Added**: ~200
+- **Risk**: Low - MCP integration tests
+- **MCP Test**: `test_phase4_comprehensive_regression.py::test_multi_tab_undo_isolation`
 
 ### Task 4.4: Run Full Test Suite
-- [ ] Run `ctest --preset release` and fix any failures
-- [ ] Run with AddressSanitizer for memory leak detection
-- [ ] Run with ThreadSanitizer for race conditions
+- [ ] Run all MCP tests: `pytest test/mcp/ -v`
+- [ ] Run C++ tests: `ctest --preset release`
+- [ ] Run with AddressSanitizer for memory leak detection: `cmake --preset asan && ctest --preset asan`
+- [ ] Run with ThreadSanitizer for race conditions: `cmake --preset tsan && ctest --preset tsan`
 - [ ] Verify no new crashes in integration tests
-- **Risk**: High - may discover additional issues
+- [ ] Generate coverage report: `--cov=mcp --cov-report=html`
+- **Risk**: Low - validation only, no code changes
+- **CI/CD**: `.github/workflows/undo-redo-testing.yml` executes all tests
 
 ---
 
@@ -161,6 +176,7 @@ Comprehensive overhaul of the undo/redo system to fix 6 critical/high vulnerabil
 - **Files**: `app/commands.h`, `app/commands.cpp`
 - **Lines Changed**: ~30
 - **Risk**: Low - performance optimization, optional
+- **MCP Test**: `test_phase5_performance.py::test_command_merging_undo_reduction`
 
 ### Task 5.2: Implement Undo Stack Compression
 - [ ] Set undo limit to 100 in Scene constructor
@@ -170,6 +186,7 @@ Comprehensive overhaul of the undo/redo system to fix 6 critical/high vulnerabil
 - **Files**: `app/scene.cpp`, `app/commands.cpp`
 - **Lines Changed**: ~50
 - **Risk**: Low - optimization only
+- **MCP Test**: `test_phase5_performance.py::test_large_circuit_undo_memory`
 
 ### Task 5.3: Add Delta Encoding for UpdateCommand
 - [ ] Create PropertyDelta structure (elementId, property, oldValue, newValue)
@@ -179,19 +196,28 @@ Comprehensive overhaul of the undo/redo system to fix 6 critical/high vulnerabil
 - **Files**: `app/commands.h`, `app/commands.cpp`
 - **Lines Changed**: ~60
 - **Risk**: Medium - changes serialization, needs testing
+- **MCP Test**: `test_phase5_performance.py::test_large_circuit_undo_memory` (memory validation)
 
 ---
 
 ## Summary by Phase
 
-| Phase | Tasks | Priority | Time | Risk | Status |
-|-------|-------|----------|------|------|--------|
-| 1 | 3 | 🔴 CRITICAL | 2-4h | Low | Not Started |
-| 2 | 3 | 🟠 HIGH | 1-2w | Medium | Not Started |
-| 3 | 3 | 🟡 MEDIUM | 1w | Low-Medium | Not Started |
-| 4 | 4 | 🟠 HIGH | 1w | Low-Medium | Not Started |
-| 5 | 3 | 🟢 LOW | 2-3w | Low | Not Started |
-| **TOTAL** | **16** | **Mixed** | **4-6w** | **Medium** | **Not Started** |
+| Phase | Tasks | Priority | Time | Risk | Status | MCP Tests |
+|-------|-------|----------|------|------|--------|-----------|
+| 1 | 3 | 🔴 CRITICAL | 2-4h | Low | Not Started | 3 tests |
+| 2 | 3 | 🟠 HIGH | 1-2w | Medium | Not Started | 2 tests |
+| 3 | 3 | 🟡 MEDIUM | 1w | Low-Medium | Not Started | 2 tests |
+| 4 | 4 | 🟠 HIGH | 1w | Low-Medium | Not Started | 20+ tests |
+| 5 | 3 | 🟢 LOW | 2-3w | Low | Not Started | 2 tests |
+| **TOTAL** | **16** | **Mixed** | **4-6w** | **Medium** | **Not Started** | **29+ tests** |
+
+### MCP Testing Strategy
+- **Test Framework**: Python pytest with MCP client
+- **Execution**: Automated via `pytest test/mcp/ -v`
+- **CI/CD**: `.github/workflows/undo-redo-testing.yml`
+- **Coverage**: 95%+ of undo/redo system
+- **Performance**: ~5 minutes for full suite
+- **Early Detection**: Regressions caught after each phase
 
 ---
 
@@ -244,12 +270,45 @@ Phase 5 (Optimizations) — Optional, after Phase 4 passes
 
 ## Reference Documents
 
-- **Detailed Analysis**: `.claude/UNDO_REDO_CRASH_ANALYSIS.md`
-- **Code Locations**: See "Code Locations Reference" section in analysis
-- **Related Issues**: flipHorizontally bug (FIXED in commit 5de42cd5)
+- **Detailed Analysis**: `.claude/UNDO_REDO_CRASH_ANALYSIS.md` - Complete vulnerability analysis and code examples
+- **MCP Testing Strategy**: `.claude/UNDO_REDO_MCP_TESTING_STRATEGY.md` - Comprehensive testing plan with 29+ tests
+- **MCP API Reference**: `.claude/MCP_API_REFERENCE.md` - All 32+ commands with JSON examples
+- **MCP Architecture**: `.claude/MCP_ARCHITECTURE.md` - System design and integration
+
+## Git Commits
+
+- **Commit 5de42cd5**: Fixed flipHorizontally() inverted condition bug
+- **Commit b9e5e78d**: Cherry-picked MCP server implementation
+- **Commit 9046e58d**: Added documentation (analysis, overhaul plan, MCP testing strategy)
+
+---
+
+## Quick Start
+
+1. **Phase 1 Implementation**:
+   ```bash
+   # Code changes for Task 1.1, 1.2, 1.3
+   # Then run tests:
+   pytest test/mcp/test_phase1_null_pointer_safety.py -v
+   ```
+
+2. **Monitor Progress**:
+   - Mark completed tasks with `[x]` in this file
+   - Run MCP tests after each task
+   - Check CI/CD: `.github/workflows/undo-redo-testing.yml`
+
+3. **Full Test Suite**:
+   ```bash
+   # Build
+   cmake --preset release && cmake --build --preset release
+
+   # Run all tests
+   pytest test/mcp/ -v
+   ctest --preset release
+   ```
 
 ---
 
 **Created**: 2025-11-05
 **Last Updated**: 2025-11-05
-**Version**: 1.0
+**Version**: 2.0 (Updated with MCP testing integration)
