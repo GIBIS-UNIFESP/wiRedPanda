@@ -224,6 +224,7 @@ private:
     QList<ElementType> m_types;
     QList<int> m_ids;  // Original element IDs
     QList<int> m_newIds;  // New element IDs after morph
+    QList<QByteArray> m_deletedConnectionsData;  // Store deleted connections for undo
     QPointer<Scene> m_scene;
 };
 
