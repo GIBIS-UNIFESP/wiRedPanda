@@ -265,6 +265,9 @@ class Phase71EdgeCases:
             resp = await self.mcp.send_command("create_element", {"type": "Or", "x": 300, "y": 100})
             z_id = resp.result["element_id"]
 
+            # Change Or gate to have 3 inputs
+            await self.mcp.send_command("change_input_size", {"element_id": z_id, "size": 3})
+
             # Connect all sources to Z
             for i, s_id in enumerate(sources):
                 await self.mcp.send_command("connect_elements", {
