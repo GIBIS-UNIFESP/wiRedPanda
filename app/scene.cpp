@@ -927,7 +927,7 @@ void Scene::flipHorizontally()
 {
     const auto elements_ = selectedElements();
 
-    if (elements_.isEmpty()) {
+    if (!elements_.isEmpty()) {
         receiveCommand(new FlipCommand(elements_, 0, this));
     }
 }
