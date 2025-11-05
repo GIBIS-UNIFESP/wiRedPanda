@@ -1,0 +1,421 @@
+[1/140] Compiling wpanda_bn.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_bn.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[2/140] Compiling wpanda_bg.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_bg.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[3/140] Compiling wpanda_cs.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_cs.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[4/140] Compiling wpanda_ar.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_ar.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[5/140] Compiling wpanda_da.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_da.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[6/140] Compiling wpanda_de.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_de.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[7/140] Compiling wpanda_el.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_el.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[8/140] Compiling wpanda_es.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_es.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[9/140] Compiling wpanda_et.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_et.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[10/140] Compiling wpanda_en.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_en.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[11/140] Compiling wpanda_fa.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_fa.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[12/140] Compiling wpanda_he.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_he.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[13/140] Compiling wpanda_fr.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_fr.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[14/140] Compiling wpanda_fi.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_fi.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[15/140] Compiling wpanda_hi.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_hi.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[16/140] Compiling wpanda_id.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_id.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[17/140] Compiling wpanda_hu.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_hu.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[18/140] Compiling wpanda_hr.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_hr.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[19/140] Compiling wpanda_it.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_it.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[20/140] Compiling wpanda_ja.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_ja.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[21/140] Compiling wpanda_lt.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_lt.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[22/140] Compiling wpanda_lv.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_lv.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[23/140] Compiling wpanda_ko.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_ko.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[24/140] Compiling wpanda_ms.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_ms.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[25/140] Compiling wpanda_nb.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_nb.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[26/140] Compiling wpanda_pt.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_pt.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[27/140] Compiling wpanda_pl.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_pl.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[28/140] Compiling wpanda_sk.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_sk.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[29/140] Compiling wpanda_ru.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_ru.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[30/140] Compiling wpanda_nl.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_nl.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[31/140] Compiling wpanda_ro.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_ro.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[32/140] Compiling wpanda_pt_BR.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_pt_BR.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[33/140] Compiling wpanda_th.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_th.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[34/140] Compiling wpanda_sv.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_sv.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[35/140] Compiling wpanda_tr.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_tr.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[36/140] Compiling wpanda_zh_Hans.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_zh_Hans.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[37/140] Compiling wpanda_vi.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_vi.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[38/140] Compiling wpanda_uk.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_uk.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[39/140] Compiling wpanda_zh_Hant.qm
+Updating 'C:/Users/Torres/Documents/GitHub/wiRedPanda/app/resources/translations/wpanda_zh_Hant.qm'...
+    Generated 442 translation(s) (442 finished and 0 unfinished)
+[40/140] Automatic MOC for target wiredpanda_lib
+[41/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\cmake_pch.cxx.obj
+[42/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\clockdialog.cpp.obj
+[43/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\elementlabel.cpp.obj
+[44/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\application.cpp.obj
+[45/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\elementeditor_ui.cpp.obj
+[46/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\clockdialog_ui.cpp.obj
+[47/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\graphicsview.cpp.obj
+[48/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\itemwithid.cpp.obj
+[49/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\lengthdialog.cpp.obj
+[50/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\common.cpp.obj
+[51/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\lengthdialog_ui.cpp.obj
+[52/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\elementmapping.cpp.obj
+[53/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\elementfactory.cpp.obj
+[54/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\bewaveddolphin_ui.cpp.obj
+[55/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\recentfiles.cpp.obj
+[56/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement.cpp.obj
+[57/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\enums.cpp.obj
+[58/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\settings.cpp.obj
+[59/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\arduino\codegenerator.cpp.obj
+[60/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\simulationblocker.cpp.obj
+[61/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\commands.cpp.obj
+[62/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\elementeditor.cpp.obj
+[63/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\bewaveddolphin.cpp.obj
+[64/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\serialization.cpp.obj
+[65/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\thememanager.cpp.obj
+[66/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\scene.cpp.obj
+[67/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\trashbutton.cpp.obj
+[68/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\and.cpp.obj
+[69/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\demux.cpp.obj
+[70/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\buzzer.cpp.obj
+[71/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\audiobox.cpp.obj
+[72/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\dflipflop.cpp.obj
+[73/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\clock.cpp.obj
+[74/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\ic.cpp.obj
+[75/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\inputbutton.cpp.obj
+[76/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\inputgnd.cpp.obj
+[77/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\simulation.cpp.obj
+[78/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\wiredpanda_lib_autogen\mocs_compilation.cpp.obj
+[79/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\display_14.cpp.obj
+[80/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\inputrotary.cpp.obj
+[81/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\inputswitch.cpp.obj
+[82/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\line.cpp.obj
+[83/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\led.cpp.obj
+[84/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\nodes\qneport.cpp.obj
+[85/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\node.cpp.obj
+[86/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\mux.cpp.obj
+[87/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\jkflipflop.cpp.obj
+[88/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\nand.cpp.obj
+[89/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\inputvcc.cpp.obj
+[90/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\nor.cpp.obj
+[91/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\not.cpp.obj
+[92/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\nodes\qneconnection.cpp.obj
+[93/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\or.cpp.obj
+[94/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\text.cpp.obj
+[95/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\display_16.cpp.obj
+[96/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\mainwindow_ui.cpp.obj
+[97/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\xnor.cpp.obj
+[98/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\workspace.cpp.obj
+[99/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\srlatch.cpp.obj
+[100/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\truth_table.cpp.obj
+[101/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicinput.cpp.obj
+[102/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicjkflipflop.cpp.obj
+[103/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\xor.cpp.obj
+[104/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicmux.cpp.obj
+[105/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicnode.cpp.obj
+[106/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\graphicelement.cpp.obj
+[107/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicnor.cpp.obj
+[108/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicnand.cpp.obj
+[109/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\srflipflop.cpp.obj
+[110/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\tflipflop.cpp.obj
+[111/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicnot.cpp.obj
+[112/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicor.cpp.obj
+[113/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicoutput.cpp.obj
+[114/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicsrflipflop.cpp.obj
+[115/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicsrlatch.cpp.obj
+[116/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logictflipflop.cpp.obj
+[117/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logictruthtable.cpp.obj
+[118/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicand.cpp.obj
+[119/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicdemux.cpp.obj
+[120/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicxnor.cpp.obj
+[121/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicdlatch.cpp.obj
+[122/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\dlatch.cpp.obj
+[123/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\mainwindow.cpp.obj
+[124/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicdflipflop.cpp.obj
+[125/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\logicelement\logicxor.cpp.obj
+[126/140] Building CXX object CMakeFiles\wiredpanda_lib.dir\app\element\display_7.cpp.obj
+[127/140] Linking CXX static library wiredpanda_lib.lib
+[128/140] Generating qrc_assets.cpp
+[129/140] Automatic MOC for target wiredpanda
+[130/140] Generating qrc_translations.cpp
+[131/140] Generating qrc_components.cpp
+[132/140] Generating qrc_interface.cpp
+[133/140] Building CXX object CMakeFiles\wiredpanda.dir\wiredpanda_autogen\mocs_compilation.cpp.obj
+[134/140] Building RC object CMakeFiles\wiredpanda.dir\app\resources\windows\wpanda.rc.res
+[135/140] Building CXX object CMakeFiles\wiredpanda.dir\qrc_assets.cpp.obj
+[136/140] Building CXX object CMakeFiles\wiredpanda.dir\qrc_components.cpp.obj
+[137/140] Building CXX object CMakeFiles\wiredpanda.dir\qrc_translations.cpp.obj
+[138/140] Building CXX object CMakeFiles\wiredpanda.dir\app\main.cpp.obj
+[139/140] Building CXX object CMakeFiles\wiredpanda.dir\qrc_interface.cpp.obj
+[140/140] Linking CXX executable wiredpanda.exe; Deploying Qt libraries with windeployqt
+Qt binaries in C:\Qt\5.15.2\msvc2019_64\bin
+readPeExecutable: C:\Users\Torres\Documents\GitHub\wiRedPanda\build\wiredpanda.exe 64 bit, dependent libraries: 16, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5PrintSupport.dll 64 bit, dependent libraries: 13
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Multimedia.dll 64 bit, dependent libraries: 10
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Network.dll 64 bit, dependent libraries: 17
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Widgets.dll 64 bit, dependent libraries: 17
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+C:\Users\Torres\Documents\GitHub\wiRedPanda\build\wiredpanda.exe 64 bit, release executable
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\audio\qtaudio_wasapi.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\audio\qtaudio_wasapid.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\audio\qtaudio_windows.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\audio\qtaudio_windowsd.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\audio\qtaudio_wasapi.dll 64 bit, dependent libraries: 13
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Multimedia.dll 64 bit, dependent libraries: 10
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Network.dll 64 bit, dependent libraries: 17
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\audio\qtaudio_windows.dll 64 bit, dependent libraries: 10
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Multimedia.dll 64 bit, dependent libraries: 10
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Network.dll 64 bit, dependent libraries: 17
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\bearer\qgenericbearer.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\bearer\qgenericbearerd.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\bearer\qgenericbearer.dll 64 bit, dependent libraries: 7
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Network.dll 64 bit, dependent libraries: 17
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\iconengines\qsvgicon.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\iconengines\qsvgicond.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\iconengines\qsvgicon.dll 64 bit, dependent libraries: 7
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Svg.dll 64 bit, dependent libraries: 9
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Widgets.dll 64 bit, dependent libraries: 17
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+Adding Qt5Svg for qsvgicon.dll
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qgif.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qgifd.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qicns.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qicnsd.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qico.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qicod.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qjpeg.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qjpegd.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qsvg.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qsvgd.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qtga.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qtgad.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qtiff.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qtiffd.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qwbmp.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qwbmpd.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qwebp.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qwebpd.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qgif.dll 64 bit, dependent libraries: 7
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qicns.dll 64 bit, dependent libraries: 7
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qico.dll 64 bit, dependent libraries: 6
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qjpeg.dll 64 bit, dependent libraries: 10
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qsvg.dll 64 bit, dependent libraries: 7
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Svg.dll 64 bit, dependent libraries: 9
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Widgets.dll 64 bit, dependent libraries: 17
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qtga.dll 64 bit, dependent libraries: 7
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qtiff.dll 64 bit, dependent libraries: 12
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qwbmp.dll 64 bit, dependent libraries: 6
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\imageformats\qwebp.dll 64 bit, dependent libraries: 8
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\mediaservice\dsengine.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\mediaservice\dsengined.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\mediaservice\qtmedia_audioengine.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\mediaservice\qtmedia_audioengined.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\mediaservice\wmfengine.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\mediaservice\wmfengined.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\mediaservice\dsengine.dll 64 bit, dependent libraries: 23
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Multimedia.dll 64 bit, dependent libraries: 10
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Widgets.dll 64 bit, dependent libraries: 17
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Network.dll 64 bit, dependent libraries: 17
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\mediaservice\qtmedia_audioengine.dll 64 bit, dependent libraries: 6
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Multimedia.dll 64 bit, dependent libraries: 10
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Network.dll 64 bit, dependent libraries: 17
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\mediaservice\wmfengine.dll 64 bit, dependent libraries: 21
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Multimedia.dll 64 bit, dependent libraries: 10
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Widgets.dll 64 bit, dependent libraries: 17
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Network.dll 64 bit, dependent libraries: 17
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\platforms\qwindows.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\platforms\qwindows.dll 64 bit, dependent libraries: 23
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\playlistformats\qtmultimedia_m3u.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\playlistformats\qtmultimedia_m3ud.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\playlistformats\qtmultimedia_m3u.dll 64 bit, dependent libraries: 7
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Multimedia.dll 64 bit, dependent libraries: 10
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Network.dll 64 bit, dependent libraries: 17
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\printsupport\windowsprintersupport.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\printsupport\windowsprintersupportd.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\printsupport\windowsprintersupport.dll 64 bit, dependent libraries: 9
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5PrintSupport.dll 64 bit, dependent libraries: 13
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Widgets.dll 64 bit, dependent libraries: 17
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\styles\qwindowsvistastyle.dll 64 bit, release
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\styles\qwindowsvistastyled.dll 64 bit, debug
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\plugins\styles\qwindowsvistastyle.dll 64 bit, dependent libraries: 11
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Widgets.dll 64 bit, dependent libraries: 17
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Core.dll 64 bit, dependent libraries: 25
+Direct dependencies: Qt5Core Qt5Gui Qt5Multimedia Qt5PrintSupport Qt5Widgets
+All dependencies   : Qt5Core Qt5Gui Qt5Multimedia Qt5Network Qt5PrintSupport Qt5Widgets
+To be deployed     : Qt5Core Qt5Gui Qt5Multimedia Qt5Network Qt5PrintSupport Qt5Svg Qt5Widgets
+Plugins: C:/Qt/5.15.2/msvc2019_64/plugins/audio/qtaudio_wasapi.dll,C:/Qt/5.15.2/msvc2019_64/plugins/audio/qtaudio_windows.dll,C:/Qt/5.15.2/msvc2019_64/plugins/bearer/qgenericbearer.dll,C:/Qt/5.15.2/msvc2019_64/plugins/iconengines/qsvgicon.dll,C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qgif.dll,C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qicns.dll,C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qico.dll,C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qjpeg.dll,C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qsvg.dll,C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qtga.dll,C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qtiff.dll,C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qwbmp.dll,C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qwebp.dll,C:/Qt/5.15.2/msvc2019_64/plugins/mediaservice/dsengine.dll,C:/Qt/5.15.2/msvc2019_64/plugins/mediaservice/qtmedia_audioengine.dll,C:/Qt/5.15.2/msvc2019_64/plugins/mediaservice/wmfengine.dll,C:/Qt/5.15.2/msvc2019_64/plugins/platforms/qwindows.dll,C:/Qt/5.15.2/msvc2019_64/plugins/playlistformats/qtmultimedia_m3u.dll,C:/Qt/5.15.2/msvc2019_64/plugins/printsupport/windowsprintersupport.dll,C:/Qt/5.15.2/msvc2019_64/plugins/styles/qwindowsvistastyle.dll
+readPeExecutable: C:\Qt\5.15.2\msvc2019_64\bin\Qt5Gui.dll 64 bit, dependent libraries: 18
+Checking C:/Qt/5.15.2/msvc2019_64/bin/Qt5Core.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/Qt5Core.dll
+Updating Qt5Core.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/bin/Qt5Gui.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/Qt5Gui.dll
+Updating Qt5Gui.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/bin/Qt5Multimedia.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/Qt5Multimedia.dll
+Updating Qt5Multimedia.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/bin/Qt5Network.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/Qt5Network.dll
+Updating Qt5Network.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/bin/Qt5PrintSupport.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/Qt5PrintSupport.dll
+Updating Qt5PrintSupport.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/bin/Qt5Svg.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/Qt5Svg.dll
+Updating Qt5Svg.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/bin/Qt5Widgets.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/Qt5Widgets.dll
+Updating Qt5Widgets.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/bin/libGLESv2.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/libGLESv2.dll
+Updating libGLESv2.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/bin/libEGL.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/libEGL.dll
+Updating libEGL.dll.
+Creating directory C:/Users/Torres/Documents/GitHub/wiRedPanda/build/audio.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/audio/qtaudio_wasapi.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/audio/qtaudio_wasapi.dll
+Updating qtaudio_wasapi.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/audio/qtaudio_windows.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/audio/qtaudio_windows.dll
+Updating qtaudio_windows.dll.
+Creating directory C:/Users/Torres/Documents/GitHub/wiRedPanda/build/bearer.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/bearer/qgenericbearer.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/bearer/qgenericbearer.dll
+Updating qgenericbearer.dll.
+Creating directory C:/Users/Torres/Documents/GitHub/wiRedPanda/build/iconengines.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/iconengines/qsvgicon.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/iconengines/qsvgicon.dll
+Updating qsvgicon.dll.
+Creating directory C:/Users/Torres/Documents/GitHub/wiRedPanda/build/imageformats.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qgif.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/imageformats/qgif.dll
+Updating qgif.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qicns.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/imageformats/qicns.dll
+Updating qicns.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qico.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/imageformats/qico.dll
+Updating qico.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qjpeg.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/imageformats/qjpeg.dll
+Updating qjpeg.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qsvg.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/imageformats/qsvg.dll
+Updating qsvg.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qtga.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/imageformats/qtga.dll
+Updating qtga.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qtiff.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/imageformats/qtiff.dll
+Updating qtiff.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qwbmp.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/imageformats/qwbmp.dll
+Updating qwbmp.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/imageformats/qwebp.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/imageformats/qwebp.dll
+Updating qwebp.dll.
+Creating directory C:/Users/Torres/Documents/GitHub/wiRedPanda/build/mediaservice.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/mediaservice/dsengine.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/mediaservice/dsengine.dll
+Updating dsengine.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/mediaservice/qtmedia_audioengine.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/mediaservice/qtmedia_audioengine.dll
+Updating qtmedia_audioengine.dll.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/mediaservice/wmfengine.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/mediaservice/wmfengine.dll
+Updating wmfengine.dll.
+Creating directory C:/Users/Torres/Documents/GitHub/wiRedPanda/build/platforms.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/platforms/qwindows.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/platforms/qwindows.dll
+Updating qwindows.dll.
+Creating directory C:/Users/Torres/Documents/GitHub/wiRedPanda/build/playlistformats.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/playlistformats/qtmultimedia_m3u.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/playlistformats/qtmultimedia_m3u.dll
+Updating qtmultimedia_m3u.dll.
+Creating directory C:/Users/Torres/Documents/GitHub/wiRedPanda/build/printsupport.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/printsupport/windowsprintersupport.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/printsupport/windowsprintersupport.dll
+Updating windowsprintersupport.dll.
+Creating directory C:/Users/Torres/Documents/GitHub/wiRedPanda/build/styles.
+Checking C:/Qt/5.15.2/msvc2019_64/plugins/styles/qwindowsvistastyle.dll, C:/Users/Torres/Documents/GitHub/wiRedPanda/build/styles/qwindowsvistastyle.dll
+Updating qwindowsvistastyle.dll.
