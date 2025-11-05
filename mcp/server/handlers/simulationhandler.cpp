@@ -439,6 +439,7 @@ QJsonObject SimulationHandler::handleListICs(const QJsonObject &, const QJsonVal
 
 QJsonObject SimulationHandler::handleUndo(const QJsonObject &params, const QJsonValue &requestId)
 {
+    (void)params;  // Parameter not used
     Scene *scene = getCurrentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId);
@@ -478,6 +479,7 @@ QJsonObject SimulationHandler::handleUndo(const QJsonObject &params, const QJson
 
 QJsonObject SimulationHandler::handleRedo(const QJsonObject &params, const QJsonValue &requestId)
 {
+    (void)params;  // Parameter not used
     Scene *scene = getCurrentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId);
@@ -517,6 +519,7 @@ QJsonObject SimulationHandler::handleRedo(const QJsonObject &params, const QJson
 
 QJsonObject SimulationHandler::handleGetUndoStack(const QJsonObject &params, const QJsonValue &requestId)
 {
+    (void)params;  // Parameter not used
     Scene *scene = getCurrentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId);
