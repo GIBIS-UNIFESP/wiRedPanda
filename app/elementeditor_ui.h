@@ -15,6 +15,7 @@
 #include <QLineEdit>
 #include <QDoubleSpinBox>
 #include <QSpinBox>
+#include <QSlider>
 
 class ElementEditor_Ui
 {
@@ -61,5 +62,5 @@ public:
     QLabel *labelLocked = nullptr;
     QLabel *labelAudio = nullptr;
     QLabel *labelDelay = nullptr;
-    QDoubleSpinBox *doubleSpinBoxDelay = nullptr;
+    QSlider *sliderDelay = nullptr;
 };

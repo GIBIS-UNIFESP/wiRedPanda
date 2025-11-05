@@ -38,7 +38,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_ui->comboBoxInputSize->installEventFilter(this);
     m_ui->comboBoxOutputSize->installEventFilter(this);
     m_ui->comboBoxValue->installEventFilter(this);
-    m_ui->doubleSpinBoxDelay->installEventFilter(this);
+    m_ui->sliderDelay->installEventFilter(this);
     m_ui->doubleSpinBoxFrequency->installEventFilter(this);
     m_ui->lineEditElementLabel->installEventFilter(this);
     m_ui->lineEditTrigger->installEventFilter(this);
@@ -60,7 +60,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->comboBoxInputSize,      qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::inputIndexChanged);
     connect(m_ui->comboBoxOutputSize,     qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::outputIndexChanged);
     connect(m_ui->comboBoxValue,          &QComboBox::currentTextChanged,                   this, &ElementEditor::outputValueChanged);
-    connect(m_ui->doubleSpinBoxDelay,     qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ElementEditor::apply);
+    connect(m_ui->sliderDelay,            qOverload<int>(&QSlider::valueChanged),           this, &ElementEditor::apply);
     connect(m_ui->doubleSpinBoxFrequency, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ElementEditor::apply);
     connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::apply);
     connect(m_ui->lineEditTrigger,        &QLineEdit::textChanged,                          this, &ElementEditor::triggerChanged);
@@ -522,8 +522,8 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_ui->doubleSpinBoxFrequency->setEnabled(m_hasFrequency);
     m_ui->labelFrequency->setVisible(m_hasFrequency);
 
-    m_ui->doubleSpinBoxDelay->setVisible(m_hasDelay);
-    m_ui->doubleSpinBoxDelay->setEnabled(m_hasDelay);
+    m_ui->sliderDelay->setVisible(m_hasDelay);
+    m_ui->sliderDelay->setEnabled(m_hasDelay);
     m_ui->labelDelay->setVisible(m_hasDelay);
 
     if (m_hasFrequency) {
@@ -540,13 +540,11 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     if (m_hasDelay) {
         if (m_hasSameDelay) {
-            m_ui->doubleSpinBoxDelay->setMinimum(0.0);
-            m_ui->doubleSpinBoxDelay->setSpecialValueText({});
-            m_ui->doubleSpinBoxDelay->setValue(static_cast<double>(firstElement->delay()));
+            // Convert delay value (in fraction of period, -1 to 1) to slider value (-100 to 100)
+            const int sliderValue = static_cast<int>(firstElement->delay() * 100.0f);
+            m_ui->sliderDelay->setValue(sliderValue);
         } else {
-            m_ui->doubleSpinBoxDelay->setMinimum(0.0);
-            m_ui->doubleSpinBoxDelay->setSpecialValueText(m_manyDelay);
-            m_ui->doubleSpinBoxDelay->setValue(0.0);
+            m_ui->sliderDelay->setValue(0);
         }
     }
 
@@ -721,8 +719,10 @@ void ElementEditor::apply()
             elm->setFrequency(static_cast<float>(m_ui->doubleSpinBoxFrequency->value()));
         }
 
-        if (elm->hasDelay() && (m_ui->doubleSpinBoxDelay->text() != m_manyDelay)) {
-            elm->setDelay(static_cast<float>(m_ui->doubleSpinBoxDelay->value()));
+        if (elm->hasDelay()) {
+            // Convert slider value (-100 to 100) to phase delay (-1 to 1 as fraction of period)
+            const float delayFraction = static_cast<float>(m_ui->sliderDelay->value()) / 100.0f;
+            elm->setDelay(delayFraction);
         }
 
         if (elm->hasTrigger() && (m_ui->lineEditTrigger->text() != m_manyTriggers)) {

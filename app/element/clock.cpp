@@ -155,9 +155,12 @@ void Clock::setDelay(const float delay)
 void Clock::resetClock(const std::chrono::steady_clock::time_point &globalTime)
 {
     setOn();
-    auto delay_ms = static_cast<uint>(m_delay * 1000);
+    // m_delay is a fraction of the period (-1 to 1)
+    // Full period is 2 * m_interval (since m_interval is half the period)
+    const auto fullPeriod = 2 * m_interval;
+    const auto delayMicroseconds = static_cast<std::chrono::microseconds::rep>(m_delay * fullPeriod.count());
     m_startTime = globalTime;
-    m_startTime -= std::chrono::milliseconds(delay_ms);
+    m_startTime -= std::chrono::microseconds(delayMicroseconds);
 }
 
 QString Clock::genericProperties()
