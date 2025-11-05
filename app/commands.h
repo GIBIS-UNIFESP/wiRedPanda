@@ -8,6 +8,7 @@
 #include "scene.h"
 
 #include <QCoreApplication>
+#include <QPointer>
 
 class QNEConnection;
 
@@ -39,7 +40,7 @@ private:
     QByteArray m_itemData;
     QList<int> m_ids;
     QList<int> m_otherIds;
-    Scene *m_scene;
+    QPointer<Scene> m_scene;
 };
 
 //! Represents a single action of removing a list of elements on the editor
@@ -59,7 +60,7 @@ private:
     QByteArray m_itemData;
     QList<int> m_ids;
     QList<int> m_otherIds;
-    Scene *m_scene;
+    QPointer<Scene> m_scene;
 };
 
 //! Represents a single action of rotating a list of elements on the editor
@@ -81,7 +82,7 @@ private:
 
     QList<QPointF> m_positions;
     QList<int> m_ids;
-    Scene *m_scene;
+    QPointer<Scene> m_scene;
 };
 
 //! Represents a single action of moving a list of actions on the editor
@@ -100,7 +101,7 @@ private:
     QList<QPointF> m_oldPositions;
     QPointF m_offset;
     QList<int> m_ids;
-    Scene *m_scene;
+    QPointer<Scene> m_scene;
 };
 
 class UpdateCommand : public QUndoCommand
@@ -119,7 +120,7 @@ private:
     QByteArray m_newData;
     QByteArray m_oldData;
     QList<int> m_ids;
-    Scene *m_scene;
+    QPointer<Scene> m_scene;
 };
 
 class SplitCommand : public QUndoCommand
@@ -134,7 +135,7 @@ public:
 
 private:
     QPointF m_nodePos;
-    Scene *m_scene;
+    QPointer<Scene> m_scene;
     int m_c1Id;
     int m_c2Id;
     int m_elm1Id;
@@ -159,7 +160,7 @@ private:
     ElementType m_newType;
     QList<ElementType> m_types;
     QList<int> m_ids;
-    Scene *m_scene;
+    QPointer<Scene> m_scene;
 };
 
 class ChangeInputSizeCommand : public QUndoCommand
@@ -176,7 +177,7 @@ private:
     QByteArray m_oldData;
     QList<int> m_ids;
     QList<int> m_order;
-    Scene *m_scene;
+    QPointer<Scene> m_scene;
     int m_newInputSize;
 };
 
@@ -195,7 +196,7 @@ private:
     QList<int> m_ids;
     QPointF m_maxPos;
     QPointF m_minPos;
-    Scene *m_scene;
+    QPointer<Scene> m_scene;
     int m_axis;
 };
 
@@ -213,7 +214,7 @@ private:
     QByteArray m_oldData;
     QList<int> m_ids;
     QList<int> m_order;
-    Scene *m_scene;
+    QPointer<Scene> m_scene;
     int m_newOutputSize;
 };
 
@@ -229,7 +230,7 @@ public:
 
 private:
     ElementEditor *m_elementeditor;
-    Scene *m_scene;
+    QPointer<Scene> m_scene;
     int m_id;
     int m_pos;
 };

@@ -120,12 +120,23 @@ void ElementFactory::addItem(ItemWithId *item)
     if (item) {
         item->setId(instance().nextId());
         instance().m_map[item->id()] = item;
+        // Phase 2: Register with generation counter
+        ItemEntry entry;
+        entry.item = item;
+        entry.generation = instance().m_nextGeneration;
+        instance().m_registry[item->id()] = entry;
     }
 }
 
 void ElementFactory::removeItem(ItemWithId *item)
 {
     instance().m_map.remove(item->id());
+    // Phase 2: Increment generation to invalidate handles
+    if (instance().m_registry.contains(item->id())) {
+        instance().m_registry[item->id()].item = nullptr;
+        instance().m_registry[item->id()].generation = instance().m_nextGeneration;
+        instance().m_nextGeneration++;
+    }
 }
 
 void ElementFactory::updateItemId(ItemWithId *item, const int newId)
@@ -221,4 +232,60 @@ const ElementStaticProperties& ElementFactory::ensurePropertiesCached(ElementTyp
     m_propertyCache[type] = props;
 
     return m_propertyCache.find(type).value();
+}
+
+ItemHandle ElementFactory::getHandle(ItemWithId *item)
+{
+    if (!item) {
+        return ItemHandle();
+    }
+
+    auto &inst = instance();
+    const int id = item->id();
+
+    // If item is in registry, use its generation
+    if (inst.m_registry.contains(id)) {
+        ItemHandle handle;
+        handle.id = id;
+        handle.generation = inst.m_registry[id].generation;
+        return handle;
+    }
+
+    // Item not in registry yet (shouldn't happen in normal flow)
+    // Create a new entry with current generation
+    ItemEntry entry;
+    entry.item = item;
+    entry.generation = inst.m_nextGeneration;
+    inst.m_registry[id] = entry;
+
+    ItemHandle handle;
+    handle.id = id;
+    handle.generation = entry.generation;
+    return handle;
+}
+
+ItemWithId *ElementFactory::resolveHandle(const ItemHandle &handle)
+{
+    if (!handle.isValid()) {
+        return nullptr;
+    }
+
+    auto &inst = instance();
+
+    // Check if item exists and generation matches
+    if (inst.m_registry.contains(handle.id)) {
+        const ItemEntry &entry = inst.m_registry[handle.id];
+        if (entry.generation == handle.generation && entry.item != nullptr) {
+            return entry.item;
+        }
+        // Generation mismatch = stale reference
+        qCWarning(zero) << "Stale element reference detected: ID" << handle.id
+                        << "expected generation" << handle.generation
+                        << "but found" << entry.generation;
+        return nullptr;
+    }
+
+    // Not in registry = never existed
+    qCWarning(zero) << "Element with ID" << handle.id << "not found in registry";
+    return nullptr;
 }
