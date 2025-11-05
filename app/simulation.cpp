@@ -226,7 +226,7 @@ void Simulation::updateWithIterativeSettling()
 
         // If we're on the last iteration without convergence, log a warning
         if (iteration == maxIterations - 1) {
-            qDebug() << "Warning: Feedback circuit did not converge after" << maxIterations << "iterations";
+            qCWarning(zero) << "Feedback circuit did not converge after" << maxIterations << "iterations";
         }
     }
 }

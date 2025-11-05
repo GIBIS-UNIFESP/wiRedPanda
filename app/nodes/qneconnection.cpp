@@ -168,8 +168,6 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
     quint64 ptr1; stream >> ptr1;
     quint64 ptr2; stream >> ptr2;
 
-    qDebug() << "  Connection::load ptr1=" << ptr1 << "ptr2=" << ptr2 << "portMap.size=" << portMap.size();
-
     if (portMap.isEmpty()) {
         qCDebug(three) << "Empty port map.";
         auto *port1 = reinterpret_cast<QNEPort *>(ptr1);
@@ -197,16 +195,13 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
     if (!portMap.isEmpty()) {
         bool has_ptr1 = portMap.contains(ptr1);
         bool has_ptr2 = portMap.contains(ptr2);
-        qDebug() << "    portMap check: ptr1 found=" << has_ptr1 << "ptr2 found=" << has_ptr2;
         if (!has_ptr1 || !has_ptr2) {
-            qDebug() << "    SKIPPING CONNECTION - missing port(s) in portMap";
             return;
         }
 
         qCDebug(three) << "Port map with elements: ptr1(" << ptr1 << "), ptr2(" << ptr2 << ")";
         auto *port1 = portMap.value(ptr1);
         auto *port2 = portMap.value(ptr2);
-        qDebug() << "    Got ports from map - port1=" << port1 << "port2=" << port2;
 
         if (port1 && port2) {
             qCDebug(three) << "Before if 2.";
@@ -217,7 +212,6 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
                 auto *inputPort = dynamic_cast<QNEInputPort *>(port1);
                 if (outputPort && inputPort) {
                     setStartPort(outputPort);
-                    qDebug() << "    CONNECTION RESTORED (type 1): output=" << outputPort << "input=" << inputPort;
                     setEndPort(inputPort);
                 }
             } else if (port1->isOutput() && port2->isInput()) {
@@ -226,7 +220,6 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
                 auto *inputPort = dynamic_cast<QNEInputPort *>(port2);
                 if (outputPort && inputPort) {
                     setStartPort(outputPort);
-                    qDebug() << "    CONNECTION RESTORED (type 2): output=" << outputPort << "input=" << inputPort;
                     setEndPort(inputPort);
                 }
             }
