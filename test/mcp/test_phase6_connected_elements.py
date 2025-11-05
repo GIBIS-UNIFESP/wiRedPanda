@@ -279,7 +279,7 @@ class Phase6Validator:
             resp = await self.mcp.send_command("list_elements", {})
             if resp.success:
                 for elem in resp.result.get("elements", []):
-                    if elem["id"] == b_id:
+                    if elem.get("element_id") == b_id:
                         if elem["x"] == 200.0 and elem["y"] == 100.0:
                             print(f"✓ B back at original (200, 100)")
                         else:
@@ -305,7 +305,7 @@ class Phase6Validator:
             connections_valid = True
             if resp.success:
                 for elem in resp.result.get("elements", []):
-                    if elem["id"] == b_id:
+                    if elem.get("element_id") == b_id:
                         if elem["x"] == 250.0 and elem["y"] == 150.0:
                             print(f"✓ B moved again to (250, 150)")
                         else:
@@ -596,7 +596,7 @@ class Phase6Validator:
             resp = await self.mcp.send_command("list_elements", {})
             if resp.success:
                 for elem in resp.result.get("elements", []):
-                    if elem["id"] == and_id:
+                    if elem.get("element_id") == and_id:
                         print(f"✓ Element type after undo: {elem.get('type', 'unknown')}")
 
             # Check process
