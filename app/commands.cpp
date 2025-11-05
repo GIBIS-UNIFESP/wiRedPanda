@@ -101,13 +101,23 @@ const QList<QGraphicsItem *> findItems(const QList<int> &ids)
     items.reserve(ids.size());
 
     for (const int id : ids) {
-        if (auto *item = dynamic_cast<QGraphicsItem *>(ElementFactory::itemById(id))) {
+        auto *rawItem = ElementFactory::itemById(id);
+        if (!rawItem) {
+            qCWarning(zero) << "Item with ID" << id << "not found in registry (may have been deleted)";
+            continue;
+        }
+
+        if (auto *item = dynamic_cast<QGraphicsItem *>(rawItem)) {
             items.append(item);
+        } else {
+            qCWarning(zero) << "Item with ID" << id << "is not a valid QGraphicsItem";
         }
     }
 
     if (items.size() != ids.size()) {
-        throw PANDACEPTION_WITH_CONTEXT("commands", "One or more items was not found on the scene.");
+        throw PANDACEPTION_WITH_CONTEXT("commands",
+            "Item lookup failed: expected %1 items but found %2. Some items may have been deleted externally.",
+            ids.size(), items.size());
     }
 
     return items;
@@ -119,13 +129,23 @@ const QList<GraphicElement *> findElements(const QList<int> &ids)
     items.reserve(ids.size());
 
     for (const int id : ids) {
-        if (auto *item = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id))) {
+        auto *rawItem = ElementFactory::itemById(id);
+        if (!rawItem) {
+            qCWarning(zero) << "Element with ID" << id << "not found in registry (may have been deleted)";
+            continue;
+        }
+
+        if (auto *item = dynamic_cast<GraphicElement *>(rawItem)) {
             items.append(item);
+        } else {
+            qCWarning(zero) << "Item with ID" << id << "is not a valid GraphicElement";
         }
     }
 
     if (items.size() != ids.size()) {
-        throw PANDACEPTION_WITH_CONTEXT("commands", "One or more elements was not found on the scene.");
+        throw PANDACEPTION_WITH_CONTEXT("commands",
+            "Element lookup failed: expected %1 elements but found %2. Some elements may have been deleted externally.",
+            ids.size(), items.size());
     }
 
     return items;
@@ -224,19 +244,39 @@ AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &items, Scene *sce
 void AddItemsCommand::undo()
 {
     qCDebug(zero) << text();
-    SimulationBlocker blocker(m_scene->simulation());
-    const auto items = findItems(m_ids);
-    saveItems(m_itemData, items, m_otherIds);
-    deleteItems(m_scene, items);
-    m_scene->setCircuitUpdateRequired();
+    if (!m_scene) {
+        qCCritical(zero) << "Scene pointer is null, cannot undo" << text();
+        return;
+    }
+
+    try {
+        SimulationBlocker blocker(m_scene->simulation());
+        const auto items = findItems(m_ids);
+        saveItems(m_itemData, items, m_otherIds);
+        deleteItems(m_scene, items);
+        m_scene->setCircuitUpdateRequired();
+    } catch (const std::exception &e) {
+        qCCritical(zero) << "Undo failed:" << e.what();
+        throw;
+    }
 }
 
 void AddItemsCommand::redo()
 {
     qCDebug(zero) << text();
-    SimulationBlocker blocker(m_scene->simulation());
-    loadItems(m_scene, m_itemData, m_ids, m_otherIds);
-    m_scene->setCircuitUpdateRequired();
+    if (!m_scene) {
+        qCCritical(zero) << "Scene pointer is null, cannot redo" << text();
+        return;
+    }
+
+    try {
+        SimulationBlocker blocker(m_scene->simulation());
+        loadItems(m_scene, m_itemData, m_ids, m_otherIds);
+        m_scene->setCircuitUpdateRequired();
+    } catch (const std::exception &e) {
+        qCCritical(zero) << "Redo failed:" << e.what();
+        throw;
+    }
 }
 
 DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scene *scene, QUndoCommand *parent)
@@ -251,19 +291,39 @@ DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scen
 void DeleteItemsCommand::undo()
 {
     qCDebug(zero) << text();
-    SimulationBlocker blocker(m_scene->simulation());
-    loadItems(m_scene, m_itemData, m_ids, m_otherIds);
-    m_scene->setCircuitUpdateRequired();
+    if (!m_scene) {
+        qCCritical(zero) << "Scene pointer is null, cannot undo" << text();
+        return;
+    }
+
+    try {
+        SimulationBlocker blocker(m_scene->simulation());
+        loadItems(m_scene, m_itemData, m_ids, m_otherIds);
+        m_scene->setCircuitUpdateRequired();
+    } catch (const std::exception &e) {
+        qCCritical(zero) << "Undo failed:" << e.what();
+        throw;
+    }
 }
 
 void DeleteItemsCommand::redo()
 {
     qCDebug(zero) << text();
-    SimulationBlocker blocker(m_scene->simulation());
-    const auto items = findItems(m_ids);
-    saveItems(m_itemData, items, m_otherIds);
-    deleteItems(m_scene, items);
-    m_scene->setCircuitUpdateRequired();
+    if (!m_scene) {
+        qCCritical(zero) << "Scene pointer is null, cannot redo" << text();
+        return;
+    }
+
+    try {
+        SimulationBlocker blocker(m_scene->simulation());
+        const auto items = findItems(m_ids);
+        saveItems(m_itemData, items, m_otherIds);
+        deleteItems(m_scene, items);
+        m_scene->setCircuitUpdateRequired();
+    } catch (const std::exception &e) {
+        qCCritical(zero) << "Redo failed:" << e.what();
+        throw;
+    }
 }
 
 RotateCommand::RotateCommand(const QList<GraphicElement *> &items, const int angle, Scene *scene, QUndoCommand *parent)
@@ -424,20 +484,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     : QUndoCommand(parent)
     , m_scene(scene)
 {
-    auto *node = ElementFactory::buildElement(ElementType::Node);
-
-    /* Align node to Grid */
-    m_nodePos = mousePos - node->pixmapCenter();
-    const int gridSize = GlobalProperties::gridSize;
-    qreal xV = qRound(m_nodePos.x() / gridSize) * gridSize;
-    qreal yV = qRound(m_nodePos.y() / gridSize) * gridSize;
-    m_nodePos = QPointF(xV, yV);
-
-    /* Rotate line according to angle between p1 and p2 */
-    const int angle = static_cast<int>(conn->angle());
-    m_nodeAngle = static_cast<int>(360 - 90 * (std::round(angle / 90.0)));
-
-    /* Assigning class attributes */
+    // VALIDATE FIRST, before allocating any objects
     auto *startPort = conn->startPort();
     auto *endPort = conn->endPort();
     if (!startPort || !endPort) {
@@ -450,15 +497,39 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
         throw PANDACEPTION("Invalid graphic elements in SplitCommand constructor");
     }
 
+    // Store existing element/connection IDs
     m_elm1Id = startElement->id();
     m_elm2Id = endElement->id();
-
     m_c1Id = conn->id();
-    m_c2Id = (new QNEConnection())->id();
 
-    m_nodeId = node->id();
+    // NOW allocate temporary node for position calculation
+    auto *node = ElementFactory::buildElement(ElementType::Node);
+    try {
+        /* Align node to Grid */
+        m_nodePos = mousePos - node->pixmapCenter();
+        const int gridSize = GlobalProperties::gridSize;
+        qreal xV = qRound(m_nodePos.x() / gridSize) * gridSize;
+        qreal yV = qRound(m_nodePos.y() / gridSize) * gridSize;
+        m_nodePos = QPointF(xV, yV);
 
-    setText(tr("Wire split"));
+        /* Rotate line according to angle between p1 and p2 */
+        const int angle = static_cast<int>(conn->angle());
+        m_nodeAngle = static_cast<int>(360 - 90 * (std::round(angle / 90.0)));
+
+        m_nodeId = node->id();
+
+        // Allocate new connection LAST (after all validation passes)
+        auto *conn2 = new QNEConnection();
+        m_c2Id = conn2->id();
+        delete conn2;  // Delete temporary, will be recreated in redo()
+
+        delete node;  // Delete temporary, will be recreated in redo()
+
+        setText(tr("Wire split"));
+    } catch (...) {
+        delete node;  // Cleanup on exception
+        throw;
+    }
 }
 
 void SplitCommand::redo()

@@ -35,6 +35,7 @@ public:
     using QGraphicsScene::addItem;
 
     explicit Scene(QObject *parent = nullptr);
+    ~Scene();
 
     GraphicsView *view() const;
     QAction *redoAction() const;

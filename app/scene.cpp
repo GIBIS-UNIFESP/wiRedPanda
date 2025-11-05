@@ -46,6 +46,18 @@ Scene::Scene(QObject *parent)
     connect(&m_undoStack,              &QUndoStack::indexChanged,   this, &Scene::checkUpdateRequest);
 }
 
+Scene::~Scene()
+{
+    // Clear undo stack BEFORE scene items are deleted to prevent dangling pointer access
+    // Commands store raw Scene* pointers, so we must clear them before destruction
+    m_undoStack.clear();
+
+    // Disconnect all signals from undoStack to prevent accessing deleted Scene
+    disconnect(&m_undoStack, nullptr, this, nullptr);
+
+    qCDebug(zero) << "Scene destructor: undo stack cleared and signals disconnected";
+}
+
 void Scene::checkUpdateRequest()
 {
     if (m_autosaveRequired) {
