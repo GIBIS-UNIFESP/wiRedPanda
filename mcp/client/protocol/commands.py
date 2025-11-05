@@ -321,6 +321,89 @@ class SetElementPropertiesCommand(MCPCommand):
     params: Parameters
 
 
+class RotateElementCommand(MCPCommand):
+    """Model for rotate_element command"""
+
+    class Parameters(BaseModel):
+        element_id: Annotated[int, Field(gt=0)]
+        angle: Annotated[int, Field(ge=0, le=359, description="Rotation angle in degrees (0-359)")]
+
+        class Config:
+            extra = "forbid"
+
+    params: Parameters
+
+
+class FlipElementCommand(MCPCommand):
+    """Model for flip_element command"""
+
+    class Parameters(BaseModel):
+        element_id: Annotated[int, Field(gt=0)]
+        axis: Annotated[int, Field(ge=0, le=1)]
+
+        class Config:
+            extra = "forbid"
+
+    params: Parameters
+
+
+class UpdateElementCommand(MCPCommand):
+    """Model for update_element command"""
+
+    class Parameters(BaseModel):
+        element_id: Annotated[int, Field(gt=0)]
+        label: Optional[str] = Field(default=None)
+        input_size: Optional[Annotated[int, Field(gt=0)]] = Field(default=None)
+        output_size: Optional[Annotated[int, Field(gt=0)]] = Field(default=None)
+        color: Optional[str] = Field(default=None)
+        frequency: Optional[Annotated[float, Field(ge=0)]] = None
+        rotation: Optional[float] = Field(default=None)
+
+        class Config:
+            extra = "forbid"
+
+    params: Parameters
+
+
+class ChangeInputSizeCommand(MCPCommand):
+    """Model for change_input_size command"""
+
+    class Parameters(BaseModel):
+        element_id: Annotated[int, Field(gt=0)]
+        size: Annotated[int, Field(gt=0, description="New input port count")]
+
+        class Config:
+            extra = "forbid"
+
+    params: Parameters
+
+
+class ChangeOutputSizeCommand(MCPCommand):
+    """Model for change_output_size command"""
+
+    class Parameters(BaseModel):
+        element_id: Annotated[int, Field(gt=0)]
+        size: Annotated[int, Field(gt=0, description="New output port count")]
+
+        class Config:
+            extra = "forbid"
+
+    params: Parameters
+
+
+class ToggleTruthTableOutputCommand(MCPCommand):
+    """Model for toggle_truth_table_output command"""
+
+    class Parameters(BaseModel):
+        element_id: Annotated[int, Field(gt=0)]
+        position: Annotated[int, Field(ge=0)]
+
+        class Config:
+            extra = "forbid"
+
+    params: Parameters
+
+
 class UndoCommand(MCPCommand):
     """Model for undo command"""
 

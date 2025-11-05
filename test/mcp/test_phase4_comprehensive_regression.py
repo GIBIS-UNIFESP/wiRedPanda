@@ -157,9 +157,8 @@ class Phase4CommandTests:
             if resp.success:
                 print("✓ Rotate 90° succeeded")
             else:
-                print(f"⚠ Rotate command not available in MCP (this is expected)")
-                self.passed_count += 1
-                await self.mcp.cleanup_circuit("test_rotate")
+                print(f"❌ Rotate failed: {resp.error}")
+                self.failed_tests.append("test_rotate_command: rotate failed")
                 return
 
             # Undo rotate
@@ -226,9 +225,8 @@ class Phase4CommandTests:
             if resp.success:
                 print("✓ Flip horizontally succeeded")
             else:
-                print(f"⚠ Flip command not available in MCP (this is expected)")
-                self.passed_count += 1
-                await self.mcp.cleanup_circuit("test_flip")
+                print(f"❌ Flip failed: {resp.error}")
+                self.failed_tests.append("test_flip_command: flip failed")
                 return
 
             # Undo flip
@@ -296,9 +294,8 @@ class Phase4CommandTests:
             if resp.success:
                 print("✓ Update label succeeded")
             else:
-                print(f"⚠ Update command not available in MCP (this is expected)")
-                self.passed_count += 1
-                await self.mcp.cleanup_circuit("test_update")
+                print(f"❌ Update failed: {resp.error}")
+                self.failed_tests.append("test_update_command: update failed")
                 return
 
             # Undo update
@@ -517,9 +514,8 @@ class Phase4CommandTests:
             if resp.success:
                 print("✓ Change input size to 3 succeeded")
             else:
-                print(f"⚠ Change input size command not available or failed (this is expected)")
-                self.passed_count += 1
-                await self.mcp.cleanup_circuit("test_input_size")
+                print(f"❌ Change input size failed: {resp.error}")
+                self.failed_tests.append("test_change_input_size_command: change_input_size failed")
                 return
 
             # Undo change
@@ -586,9 +582,8 @@ class Phase4CommandTests:
             if resp.success:
                 print("✓ Change output size succeeded")
             else:
-                print(f"⚠ Change output size command not available or failed (this is expected)")
-                self.passed_count += 1
-                await self.mcp.cleanup_circuit("test_output_size")
+                print(f"❌ Change output size failed: {resp.error}")
+                self.failed_tests.append("test_change_output_size_command: change_output_size failed")
                 return
 
             # Undo change
@@ -655,9 +650,8 @@ class Phase4CommandTests:
             if resp.success:
                 print("✓ Toggle truth table output succeeded")
             else:
-                print(f"⚠ Toggle command not available or failed (this is expected)")
-                self.passed_count += 1
-                await self.mcp.cleanup_circuit("test_truth_table")
+                print(f"❌ Toggle failed: {resp.error}")
+                self.failed_tests.append("test_toggle_truth_table_command: toggle failed")
                 return
 
             # Undo toggle

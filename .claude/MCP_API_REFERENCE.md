@@ -64,11 +64,23 @@ Remove connection between elements.
 #### list_connections
 Get all connections in circuit.
 
-### SIMULATION OPERATIONS (6 commands)
+### SIMULATION OPERATIONS (9 commands)
 
 #### simulation_control
 Control simulation.
 Actions: start, stop, restart, update
+
+#### undo
+Execute undo operation on current circuit.
+Returns: success status, can_undo, can_redo, undo_text, redo_text
+
+#### redo
+Execute redo operation on current circuit.
+Returns: success status, can_undo, can_redo, undo_text, redo_text
+
+#### get_undo_stack
+Get undo/redo stack information.
+Returns: can_undo, can_redo, undo_text, redo_text, undo_limit, undo_count, undo_index
 
 #### create_waveform
 Initialize waveform recording.

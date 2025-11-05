@@ -27,4 +27,10 @@ private:
     QJsonObject handleSetElementProperties(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleSetInputValue(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleGetOutputValue(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleRotateElement(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleFlipElement(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleUpdateElement(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleChangeInputSize(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleChangeOutputSize(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleToggleTruthTableOutput(const QJsonObject &params, const QJsonValue &requestId);
 };

@@ -36,6 +36,12 @@ from .commands import (
     ListIcsCommand,
     MoveElementCommand,
     SetElementPropertiesCommand,
+    RotateElementCommand,
+    FlipElementCommand,
+    UpdateElementCommand,
+    ChangeInputSizeCommand,
+    ChangeOutputSizeCommand,
+    ToggleTruthTableOutputCommand,
 )
 
 # Re-export all result classes
@@ -87,6 +93,12 @@ __all__ = [
     "ListIcsCommand",
     "MoveElementCommand",
     "SetElementPropertiesCommand",
+    "RotateElementCommand",
+    "FlipElementCommand",
+    "UpdateElementCommand",
+    "ChangeInputSizeCommand",
+    "ChangeOutputSizeCommand",
+    "ToggleTruthTableOutputCommand",
     # Result classes
     "ElementCreationResult",
     "ElementListResult",
