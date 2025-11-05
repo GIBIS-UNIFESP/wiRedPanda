@@ -161,6 +161,56 @@ GraphicElement *findElm(const int id)
     return dynamic_cast<GraphicElement *>(ElementFactory::itemById(id));
 }
 
+// Phase 2.3: Command State Validation
+// Helper function to validate that elements still exist with their stored IDs
+// Returns true if all elements exist, false and logs warnings if any are missing
+bool validateElementIds(const QList<int> &ids, const QString &commandText)
+{
+    bool allValid = true;
+    for (const int id : ids) {
+        if (!ElementFactory::contains(id)) {
+            qCWarning(zero) << "Validation warning for" << commandText
+                           << "- Element with ID" << id << "not found in registry (may have been deleted)";
+            allValid = false;
+        }
+    }
+    return allValid;
+}
+
+// Helper function to validate handles using the generation counter system (Phase 2.2)
+// Returns list of valid elements, skipping any with stale handles
+// Logs warnings for any stale references detected
+QList<GraphicElement *> validateAndResolveHandles(const QList<ItemHandle> &handles, const QString &commandText)
+{
+    QList<GraphicElement *> resolved;
+    resolved.reserve(handles.size());
+
+    for (const ItemHandle &handle : handles) {
+        if (!handle.isValid()) {
+            qCWarning(zero) << "Validation warning for" << commandText
+                           << "- Invalid handle (id=0 or uninitialized)";
+            continue;
+        }
+
+        auto *item = ElementFactory::resolveHandle(handle);
+        if (!item) {
+            qCWarning(zero) << "Validation warning for" << commandText
+                           << "- Stale reference detected for element ID" << handle.id
+                           << "(generation mismatch - element was deleted and ID may have been reused)";
+            continue;
+        }
+
+        if (auto *elm = dynamic_cast<GraphicElement *>(item)) {
+            resolved.append(elm);
+        } else {
+            qCWarning(zero) << "Validation warning for" << commandText
+                           << "- Element ID" << handle.id << "is not a GraphicElement";
+        }
+    }
+
+    return resolved;
+}
+
 void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const QList<int> &otherIds)
 {
     itemData.clear();
@@ -249,6 +299,11 @@ void AddItemsCommand::undo()
         return;
     }
 
+    // Phase 2.3: Validate state before undo
+    if (!validateElementIds(m_ids, text())) {
+        qCWarning(zero) << "AddItemsCommand::undo - some elements are missing, undo may be incomplete";
+    }
+
     try {
         SimulationBlocker blocker(m_scene->simulation());
         const auto items = findItems(m_ids);
@@ -296,6 +351,13 @@ void DeleteItemsCommand::undo()
         return;
     }
 
+    // Phase 2.3: Validate state before undo (elements should not exist during undo of delete)
+    for (const int id : m_ids) {
+        if (ElementFactory::contains(id)) {
+            qCWarning(zero) << "DeleteItemsCommand::undo - element ID" << id << "already exists, undo may conflict";
+        }
+    }
+
     try {
         SimulationBlocker blocker(m_scene->simulation());
         loadItems(m_scene, m_itemData, m_ids, m_otherIds);
@@ -312,6 +374,11 @@ void DeleteItemsCommand::redo()
     if (!m_scene) {
         qCCritical(zero) << "Scene pointer is null, cannot redo" << text();
         return;
+    }
+
+    // Phase 2.3: Validate state before redo
+    if (!validateElementIds(m_ids, text())) {
+        qCWarning(zero) << "DeleteItemsCommand::redo - some elements are missing, redo may be incomplete";
     }
 
     try {
@@ -345,6 +412,9 @@ RotateCommand::RotateCommand(const QList<GraphicElement *> &items, const int ang
 void RotateCommand::undo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before undo
+    validateElementIds(m_ids, text());
+
     const auto elements = findElements(m_ids);
 
     for (int i = 0; i < elements.size(); ++i) {
@@ -361,6 +431,9 @@ void RotateCommand::undo()
 void RotateCommand::redo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before redo
+    validateElementIds(m_ids, text());
+
     const auto elements = findElements(m_ids);
     double cx = 0;
     double cy = 0;
@@ -409,6 +482,9 @@ MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPoint
 void MoveCommand::undo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before undo
+    validateElementIds(m_ids, text());
+
     const auto elements = findElements(m_ids);
 
     for (int i = 0; i < elements.size(); ++i) {
@@ -421,6 +497,9 @@ void MoveCommand::undo()
 void MoveCommand::redo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before redo
+    validateElementIds(m_ids, text());
+
     const auto elements = findElements(m_ids);
 
     for (int i = 0; i < elements.size(); ++i) {
@@ -450,6 +529,8 @@ UpdateCommand::UpdateCommand(const QList<GraphicElement *> &elements, const QByt
 void UpdateCommand::undo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before undo
+    validateElementIds(m_ids, text());
     loadData(m_oldData);
     m_scene->setCircuitUpdateRequired();
 }
@@ -457,6 +538,8 @@ void UpdateCommand::undo()
 void UpdateCommand::redo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before redo
+    validateElementIds(m_ids, text());
     loadData(m_newData);
     m_scene->setCircuitUpdateRequired();
 }
@@ -535,6 +618,10 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
 void SplitCommand::redo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before redo
+    QList<int> relevantIds = {m_c1Id, m_c2Id, m_nodeId, m_elm1Id, m_elm2Id};
+    validateElementIds(relevantIds, text());
+
     auto *conn1 = findConn(m_c1Id);
     auto *conn2 = findConn(m_c2Id);
     auto *node = findElm(m_nodeId);
@@ -579,6 +666,10 @@ void SplitCommand::redo()
 void SplitCommand::undo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before undo
+    QList<int> relevantIds = {m_c1Id, m_c2Id, m_nodeId, m_elm1Id, m_elm2Id};
+    validateElementIds(relevantIds, text());
+
     auto *conn1 = findConn(m_c1Id);
     auto *conn2 = findConn(m_c2Id);
     auto *node = findElm(m_nodeId);
@@ -621,6 +712,9 @@ MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType 
 void MorphCommand::undo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before undo
+    validateElementIds(m_ids, text());
+
     auto newElms = findElements(m_ids);
     decltype(newElms) oldElms;
     oldElms.reserve(m_ids.size());
@@ -636,6 +730,9 @@ void MorphCommand::undo()
 void MorphCommand::redo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before redo
+    validateElementIds(m_ids, text());
+
     auto oldElms = findElements(m_ids);
     decltype(oldElms) newElms;
     newElms.reserve(m_ids.size());
@@ -751,6 +848,9 @@ void FlipCommand::undo()
 void FlipCommand::redo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before redo
+    validateElementIds(m_ids, text());
+
     for (auto *elm : findElements(m_ids)) {
         auto pos = elm->pos();
 
@@ -784,6 +884,9 @@ ChangeInputSizeCommand::ChangeInputSizeCommand(const QList<GraphicElement *> &el
 void ChangeInputSizeCommand::redo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before redo
+    validateElementIds(m_ids, text());
+
     const auto m_elements = findElements(m_ids);
 
     QList<GraphicElement *> serializationOrder;
@@ -833,6 +936,10 @@ void ChangeInputSizeCommand::redo()
 void ChangeInputSizeCommand::undo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before undo
+    validateElementIds(m_ids, text());
+    validateElementIds(m_order, text());
+
     const auto m_elements = findElements(m_ids);
     const auto serializationOrder = findElements(m_order);
 
@@ -875,6 +982,9 @@ ChangeOutputSizeCommand::ChangeOutputSizeCommand(const QList<GraphicElement *> &
 void ChangeOutputSizeCommand::redo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before redo
+    validateElementIds(m_ids, text());
+
     const auto m_elements = findElements(m_ids);
 
     QList<GraphicElement *> serializationOrder;
@@ -925,6 +1035,10 @@ void ChangeOutputSizeCommand::redo()
 void ChangeOutputSizeCommand::undo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before undo
+    validateElementIds(m_ids, text());
+    validateElementIds(m_order, text());
+
     const auto elements = findElements(m_ids);
     const auto serializationOrder = findElements(m_order);
 
@@ -963,6 +1077,8 @@ ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(GraphicElement *ele
 void ToggleTruthTableOutputCommand::redo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before redo
+    validateElementIds(QList<int>{m_id}, text());
 
     auto *truthtable = qobject_cast<TruthTable *>(findElm(m_id));
 
@@ -977,6 +1093,8 @@ void ToggleTruthTableOutputCommand::redo()
 void ToggleTruthTableOutputCommand::undo()
 {
     qCDebug(zero) << text();
+    // Phase 2.3: Validate state before undo
+    validateElementIds(QList<int>{m_id}, text());
 
     auto *truthtable = qobject_cast<TruthTable *>(findElm(m_id));
 
