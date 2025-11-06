@@ -1784,7 +1784,7 @@
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1722"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>Vaigista</translation>
@@ -1882,7 +1882,7 @@ Kas soovite muudatused salvestada?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="489"/>
-        <location filename="../../mainwindow.cpp" line="1761"/>
+        <location filename="../../mainwindow.cpp" line="1765"/>
         <source>Open File</source>
         <translation>Ava fail</translation>
     </message>
@@ -1993,38 +1993,38 @@ Peate salvestama uued projektid enne IC-de ja nahkade avamist või beWavedDolphi
         <translation>PNG failid (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1722"/>
         <source>Unmute</source>
         <translation>Lülita heli sisse</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1757"/>
+        <location filename="../../mainwindow.cpp" line="1761"/>
         <source>Save file first.</source>
         <translation>Salvesta esmalt fail.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1763"/>
+        <location filename="../../mainwindow.cpp" line="1767"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1775"/>
-        <location filename="../../mainwindow.cpp" line="1787"/>
+        <location filename="../../mainwindow.cpp" line="1779"/>
+        <location filename="../../mainwindow.cpp" line="1791"/>
         <source>Info</source>
         <translation>Teave</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1775"/>
+        <location filename="../../mainwindow.cpp" line="1779"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Valitud failid (ja nende sõltuvused) kopeeritakse praegusesse failikausta.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1787"/>
+        <location filename="../../mainwindow.cpp" line="1791"/>
         <source>Drag here to remove.</source>
         <translation>Lohistage siia eemaldamiseks.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1810"/>
+        <location filename="../../mainwindow.cpp" line="1814"/>
         <source>Error removing file: %1</source>
         <translation>Viga faili eemaldamisel: %1</translation>
     </message>

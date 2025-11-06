@@ -1784,7 +1784,7 @@
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1722"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>Lyd fra</translation>
@@ -1882,7 +1882,7 @@ Vil du gemme dine ændringer?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="489"/>
-        <location filename="../../mainwindow.cpp" line="1761"/>
+        <location filename="../../mainwindow.cpp" line="1765"/>
         <source>Open File</source>
         <translation>Åbn fil</translation>
     </message>
@@ -1993,38 +1993,38 @@ Du skal gemme nye projekter før du får adgang til IC&apos;er og skins, eller k
         <translation>PNG-filer (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1722"/>
         <source>Unmute</source>
         <translation>Lyd til</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1757"/>
+        <location filename="../../mainwindow.cpp" line="1761"/>
         <source>Save file first.</source>
         <translation>Gem fil først.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1763"/>
+        <location filename="../../mainwindow.cpp" line="1767"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1775"/>
-        <location filename="../../mainwindow.cpp" line="1787"/>
+        <location filename="../../mainwindow.cpp" line="1779"/>
+        <location filename="../../mainwindow.cpp" line="1791"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1775"/>
+        <location filename="../../mainwindow.cpp" line="1779"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Valgte filer (og deres afhængigheder) vil blive kopieret til den nuværende filmappe.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1787"/>
+        <location filename="../../mainwindow.cpp" line="1791"/>
         <source>Drag here to remove.</source>
         <translation>Træk hertil for at fjerne.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1810"/>
+        <location filename="../../mainwindow.cpp" line="1814"/>
         <source>Error removing file: %1</source>
         <translation>Fejl ved fjernelse af fil: %1</translation>
     </message>

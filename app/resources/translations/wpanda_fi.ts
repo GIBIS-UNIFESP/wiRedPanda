@@ -1784,7 +1784,7 @@
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1722"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>Vaimenna</translation>
@@ -1882,7 +1882,7 @@ Haluatko tallentaa muutokset?</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="489"/>
-        <location filename="../../mainwindow.cpp" line="1761"/>
+        <location filename="../../mainwindow.cpp" line="1765"/>
         <source>Open File</source>
         <translation>Avaa tiedosto</translation>
     </message>
@@ -1993,38 +1993,38 @@ Sinun on tallennettava uudet projektit ennen IC:iden ja ulkoasujen käyttöä ta
         <translation>PNG-tiedostot (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1722"/>
         <source>Unmute</source>
         <translation>Poista vaimennus</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1757"/>
+        <location filename="../../mainwindow.cpp" line="1761"/>
         <source>Save file first.</source>
         <translation>Tallenna tiedosto ensin.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1763"/>
+        <location filename="../../mainwindow.cpp" line="1767"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1775"/>
-        <location filename="../../mainwindow.cpp" line="1787"/>
+        <location filename="../../mainwindow.cpp" line="1779"/>
+        <location filename="../../mainwindow.cpp" line="1791"/>
         <source>Info</source>
         <translation>Tiedot</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1775"/>
+        <location filename="../../mainwindow.cpp" line="1779"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>Valitut tiedostot (ja niiden riippuvuudet) kopioidaan nykyiseen tiedostokansioon.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1787"/>
+        <location filename="../../mainwindow.cpp" line="1791"/>
         <source>Drag here to remove.</source>
         <translation>Vedä tähän poistaaksesi.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1810"/>
+        <location filename="../../mainwindow.cpp" line="1814"/>
         <source>Error removing file: %1</source>
         <translation>Virhe poistettaessa tiedostoa: %1</translation>
     </message>

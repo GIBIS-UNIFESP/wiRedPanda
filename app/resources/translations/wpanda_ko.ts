@@ -1799,7 +1799,7 @@
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1722"/>
         <location filename="../../mainwindow_ui.cpp" line="669"/>
         <source>Mute</source>
         <translation>음소거</translation>
@@ -1882,7 +1882,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="489"/>
-        <location filename="../../mainwindow.cpp" line="1761"/>
+        <location filename="../../mainwindow.cpp" line="1765"/>
         <source>Open File</source>
         <translation>파일 열기</translation>
     </message>
@@ -1993,38 +1993,38 @@ IC와 스킨에 액세스하거나 beWavedDolphin 시뮬레이션을 실행하�
         <translation>PNG 파일 (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1718"/>
+        <location filename="../../mainwindow.cpp" line="1722"/>
         <source>Unmute</source>
         <translation>음소거 해제</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1757"/>
+        <location filename="../../mainwindow.cpp" line="1761"/>
         <source>Save file first.</source>
         <translation>먼저 파일을 저장하세요.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1763"/>
+        <location filename="../../mainwindow.cpp" line="1767"/>
         <source>Panda (*.panda)</source>
         <translation>판다 (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1775"/>
-        <location filename="../../mainwindow.cpp" line="1787"/>
+        <location filename="../../mainwindow.cpp" line="1779"/>
+        <location filename="../../mainwindow.cpp" line="1791"/>
         <source>Info</source>
         <translation>정보</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1775"/>
+        <location filename="../../mainwindow.cpp" line="1779"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>선택된 파일(및 종속성)이 현재 파일 폴더로 복사됩니다.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1787"/>
+        <location filename="../../mainwindow.cpp" line="1791"/>
         <source>Drag here to remove.</source>
         <translation>제거하려면 여기로 끌어다 놓으세요.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1810"/>
+        <location filename="../../mainwindow.cpp" line="1814"/>
         <source>Error removing file: %1</source>
         <translation>파일 삭제 오류: %1</translation>
     </message>
