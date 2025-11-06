@@ -218,13 +218,20 @@ public:
     void undo() override;
 
 private:
+    struct DeletedConnection {
+        int sourceElementId;
+        int sourcePortIndex;
+        int targetElementId;
+        int targetPortIndex;
+    };
+
     void transferConnections(QList<GraphicElement *> from, QList<GraphicElement *> to);
 
     ElementType m_newType;
     QList<ElementType> m_types;
     QList<int> m_ids;  // Original element IDs
     QList<int> m_newIds;  // New element IDs after morph
-    QList<QByteArray> m_deletedConnectionsData;  // Store deleted connections for undo
+    QList<DeletedConnection> m_deletedConnections;  // Store deleted connections with IDs and port indices
     QPointer<Scene> m_scene;
 };
 

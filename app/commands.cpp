@@ -782,41 +782,34 @@ void MorphCommand::undo()
     transferConnections(newElms, oldElms);
 
     // Restore any connections that were deleted during the morph
-    if (!m_deletedConnectionsData.isEmpty()) {
-        auto sceneItems = m_scene->items();
-        QMap<quint64, QNEPort *> portMap;
-
-        // Build port map from current scene elements
-        for (auto *item : sceneItems) {
-            if (auto *elm = dynamic_cast<GraphicElement *>(item)) {
-                for (int i = 0; i < elm->outputSize(); ++i) {
-                    if (auto *port = elm->outputPort(i)) {
-                        portMap[reinterpret_cast<quint64>(port)] = port;
-                    }
-                }
-                for (int i = 0; i < elm->inputSize(); ++i) {
-                    if (auto *port = elm->inputPort(i)) {
-                        portMap[reinterpret_cast<quint64>(port)] = port;
-                    }
-                }
-            }
-        }
-
-        // Restore each deleted connection
-        for (const auto &connData : m_deletedConnectionsData) {
+    if (!m_deletedConnections.isEmpty()) {
+        for (const auto &deletedConn : m_deletedConnections) {
             try {
-                auto *conn = new QNEConnection();
-                QDataStream stream(connData);
-                stream.setDevice(nullptr);
-                // Create a temporary buffer to read from
-                QByteArray buffer = connData;
-                QDataStream restoreStream(&buffer, QIODevice::ReadOnly);
-                conn->load(restoreStream, portMap);
-                if (conn->startPort() && conn->endPort()) {
-                    m_scene->addItem(conn);
-                } else {
-                    delete conn;
+                // Look up elements by ID
+                auto *sourceElm = findElm(deletedConn.sourceElementId);
+                auto *targetElm = findElm(deletedConn.targetElementId);
+
+                if (!sourceElm || !targetElm) {
+                    qCWarning(zero) << "Failed to restore connection: element not found"
+                                   << "source:" << deletedConn.sourceElementId
+                                   << "target:" << deletedConn.targetElementId;
+                    continue;
                 }
+
+                // Get the ports
+                auto *sourcePort = sourceElm->outputPort(deletedConn.sourcePortIndex);
+                auto *targetPort = targetElm->inputPort(deletedConn.targetPortIndex);
+
+                if (!sourcePort || !targetPort) {
+                    qCWarning(zero) << "Failed to restore connection: port not found";
+                    continue;
+                }
+
+                // Create and connect
+                auto *conn = new QNEConnection();
+                conn->setStartPort(sourcePort);
+                conn->setEndPort(targetPort);
+                m_scene->addItem(conn);
             } catch (const std::exception &e) {
                 qCWarning(zero) << "Failed to restore deleted connection:" << e.what();
             }
@@ -840,7 +833,7 @@ void MorphCommand::redo()
     validateElementIds(m_ids, text());
 
     // Clear deleted connections from previous undo since we're redoing the morph
-    m_deletedConnectionsData.clear();
+    m_deletedConnections.clear();
 
     auto oldElms = findElements(m_ids);
     decltype(oldElms) newElms;
@@ -921,11 +914,17 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
                     while (!oldElm->inputPort(port)->connections().isEmpty()) {
                         if (auto *conn = oldElm->inputPort(port)->connections().constFirst();
                             conn && (conn->endPort() == oldElm->inputPort(port))) {
-                            // Serialize the connection before deletion
-                            QByteArray connData;
-                            QDataStream connStream(&connData, QIODevice::WriteOnly);
-                            conn->save(connStream);
-                            m_deletedConnectionsData.append(connData);
+                            // Store connection reference by element IDs and port indices
+                            if (auto *startPort = conn->startPort()) {
+                                if (auto *sourceElm = startPort->graphicElement()) {
+                                    m_deletedConnections.append(DeletedConnection{
+                                        sourceElm->id(),
+                                        startPort->index(),
+                                        oldElm->id(),
+                                        port
+                                    });
+                                }
+                            }
                             // Remove from port
                             conn->setEndPort(nullptr);
                         }
@@ -943,11 +942,17 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
                                 compatibleInputPorts++;
                             } else {
                                 qCWarning(zero) << "MorphCommand - Could not transfer input connection at port" << port;
-                                // Serialize the connection before deletion
-                                QByteArray connData;
-                                QDataStream connStream(&connData, QIODevice::WriteOnly);
-                                conn->save(connStream);
-                                m_deletedConnectionsData.append(connData);
+                                // Store connection reference by element IDs and port indices
+                                if (auto *startPort = conn->startPort()) {
+                                    if (auto *sourceElm = startPort->graphicElement()) {
+                                        m_deletedConnections.append(DeletedConnection{
+                                            sourceElm->id(),
+                                            startPort->index(),
+                                            oldElm->id(),
+                                            port
+                                        });
+                                    }
+                                }
                                 // Remove from port
                                 conn->setEndPort(nullptr);
                             }
@@ -969,11 +974,17 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
                     while (!oldElm->outputPort(port)->connections().isEmpty()) {
                         if (auto *conn = oldElm->outputPort(port)->connections().constFirst();
                             conn && (conn->startPort() == oldElm->outputPort(port))) {
-                            // Serialize the connection before deletion
-                            QByteArray connData;
-                            QDataStream connStream(&connData, QIODevice::WriteOnly);
-                            conn->save(connStream);
-                            m_deletedConnectionsData.append(connData);
+                            // Store connection reference by element IDs and port indices
+                            if (auto *endPort = conn->endPort()) {
+                                if (auto *targetElm = endPort->graphicElement()) {
+                                    m_deletedConnections.append(DeletedConnection{
+                                        oldElm->id(),
+                                        port,
+                                        targetElm->id(),
+                                        endPort->index()
+                                    });
+                                }
+                            }
                             // Remove from port
                             conn->setStartPort(nullptr);
                         }
@@ -991,11 +1002,17 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
                                 compatibleOutputPorts++;
                             } else {
                                 qCWarning(zero) << "MorphCommand - Could not transfer output connection at port" << port;
-                                // Serialize the connection before deletion
-                                QByteArray connData;
-                                QDataStream connStream(&connData, QIODevice::WriteOnly);
-                                conn->save(connStream);
-                                m_deletedConnectionsData.append(connData);
+                                // Store connection reference by element IDs and port indices
+                                if (auto *endPort = conn->endPort()) {
+                                    if (auto *targetElm = endPort->graphicElement()) {
+                                        m_deletedConnections.append(DeletedConnection{
+                                            oldElm->id(),
+                                            port,
+                                            targetElm->id(),
+                                            endPort->index()
+                                        });
+                                    }
+                                }
                                 // Remove from port
                                 conn->setStartPort(nullptr);
                             }
