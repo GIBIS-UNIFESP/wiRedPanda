@@ -540,8 +540,9 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     if (m_hasDelay) {
         if (m_hasSameDelay) {
-            // Convert delay value (in fraction of period, -1 to 1) to slider value (-100 to 100)
-            const int sliderValue = static_cast<int>(firstElement->delay() * 100.0f);
+            // Convert delay value (in fraction of period, -1 to 1) to slider value (-8 to 8)
+            // Each step represents 1/8 of a period
+            const int sliderValue = static_cast<int>(firstElement->delay() * 8.0f);
             m_ui->sliderDelay->setValue(sliderValue);
         } else {
             m_ui->sliderDelay->setValue(0);
@@ -720,8 +721,9 @@ void ElementEditor::apply()
         }
 
         if (elm->hasDelay()) {
-            // Convert slider value (-100 to 100) to phase delay (-1 to 1 as fraction of period)
-            const float delayFraction = static_cast<float>(m_ui->sliderDelay->value()) / 100.0f;
+            // Convert slider value (-8 to 8) to phase delay (-1 to 1 as fraction of period)
+            // Each step represents 1/8 of a period
+            const float delayFraction = static_cast<float>(m_ui->sliderDelay->value()) / 8.0f;
             elm->setDelay(delayFraction);
         }
 

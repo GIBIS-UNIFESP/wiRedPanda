@@ -175,11 +175,13 @@ void ElementEditor_Ui::setupUi(QWidget *ElementEditor)
     sliderDelay = new QSlider(groupBox);
     sliderDelay->setObjectName("sliderDelay");
     sliderDelay->setOrientation(Qt::Horizontal);
-    sliderDelay->setMinimum(-100);
-    sliderDelay->setMaximum(100);
+    sliderDelay->setMinimum(-8);
+    sliderDelay->setMaximum(8);
     sliderDelay->setValue(0);
+    sliderDelay->setSingleStep(1);
+    sliderDelay->setPageStep(1);
     sliderDelay->setTickPosition(QSlider::TicksBelow);
-    sliderDelay->setTickInterval(25);
+    sliderDelay->setTickInterval(1);
     gridLayout_2->addWidget(sliderDelay, 6, 1, 1, 1);
 
     gridLayout->addWidget(groupBox, 0, 0, 1, 1);
