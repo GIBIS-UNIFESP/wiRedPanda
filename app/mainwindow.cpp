@@ -1642,6 +1642,9 @@ void MainWindow::on_actionDarkTheme_triggered()
 
 void MainWindow::updateTheme()
 {
+    // Clear the pixmap cache so elements will regenerate their pixmaps for the new theme
+    ElementFactory::clearCache();
+
     switch (ThemeManager::theme()) {
     case Theme::Dark:  m_ui->actionDarkTheme->setChecked(true); break;
     case Theme::Light: m_ui->actionLightTheme->setChecked(true); break;
@@ -1658,6 +1661,7 @@ void MainWindow::updateTheme()
         m_ui->tabElements->setTabIcon(memoryTabIndex, QIcon(DFlipFlop::pixmapPath()));
     }
 
+    // Update memory tab element labels (only tab with theme-dependent icons)
     const auto labels = m_ui->memory->findChildren<ElementLabel *>();
 
     for (auto *label : labels) {
