@@ -8,6 +8,7 @@
 #include "elementfactory.h"
 #include "globalproperties.h"
 #include "graphicelement.h"
+#include "node.h"
 #include "qneconnection.h"
 #include "qneport.h"
 #include "scene.h"
@@ -582,6 +583,12 @@ MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType 
     m_types.reserve(elements.size());
 
     for (auto *oldElm : elements) {
+        if (auto *node = dynamic_cast<Node *>(oldElm)) {
+            if (node->hasWirelessLabel()) {
+                throw PANDACEPTION("Cannot morph a component that is being used as a wireless node.");
+            }
+        }
+
         m_ids.append(oldElm->id());
         m_types.append(oldElm->elementType());
     }
