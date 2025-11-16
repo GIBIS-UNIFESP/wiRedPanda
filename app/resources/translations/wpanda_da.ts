@@ -843,253 +843,252 @@
 <context>
     <name>ElementEditor</name>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="189"/>
+        <location filename="../../elementeditor_ui.cpp" line="197"/>
         <source>Form</source>
         <translation>Formular</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="190"/>
+        <location filename="../../elementeditor_ui.cpp" line="198"/>
         <source>Title</source>
         <translation>Titel</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="213"/>
+        <location filename="../../elementeditor_ui.cpp" line="221"/>
         <source>Inputs:</source>
         <translation>Input:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="207"/>
+        <location filename="../../elementeditor_ui.cpp" line="215"/>
         <source>Value:</source>
         <translation>Værdi:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="215"/>
-        <location filename="../../elementeditor_ui.cpp" line="219"/>
+        <location filename="../../elementeditor_ui.cpp" line="223"/>
+        <location filename="../../elementeditor_ui.cpp" line="227"/>
         <source>Audio:</source>
         <translation>Lyd:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="212"/>
+        <location filename="../../elementeditor_ui.cpp" line="220"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="202"/>
+        <location filename="../../elementeditor_ui.cpp" line="210"/>
         <source>Trigger:</source>
         <translation>Udløser:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="217"/>
+        <location filename="../../elementeditor_ui.cpp" line="225"/>
         <source>Outputs:</source>
         <translation>Output:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="210"/>
+        <location filename="../../elementeditor_ui.cpp" line="218"/>
         <source>Frequency:</source>
         <translation>Frekvens:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="201"/>
+        <location filename="../../elementeditor_ui.cpp" line="209"/>
         <source>Label:</source>
         <translation>Etiket:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="211"/>
+        <location filename="../../elementeditor_ui.cpp" line="219"/>
         <source>Color:</source>
         <translation>Farve:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="203"/>
+        <location filename="../../elementeditor_ui.cpp" line="211"/>
         <source>TruthTable</source>
         <translation>Sandhedstabel</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="191"/>
+        <location filename="../../elementeditor_ui.cpp" line="199"/>
         <source>C6</source>
         <translation>C6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="192"/>
+        <location filename="../../elementeditor_ui.cpp" line="200"/>
         <source>D6</source>
         <translation>D6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="193"/>
+        <location filename="../../elementeditor_ui.cpp" line="201"/>
         <source>E6</source>
         <translation>E6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="194"/>
+        <location filename="../../elementeditor_ui.cpp" line="202"/>
         <source>F6</source>
         <translation>F6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="195"/>
+        <location filename="../../elementeditor_ui.cpp" line="203"/>
         <source>G6</source>
         <translation>G6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="196"/>
+        <location filename="../../elementeditor_ui.cpp" line="204"/>
         <source>A7</source>
         <translation>A7</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="197"/>
+        <location filename="../../elementeditor_ui.cpp" line="205"/>
         <source>B7</source>
         <translation>B7</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="198"/>
+        <location filename="../../elementeditor_ui.cpp" line="206"/>
         <source>C7</source>
         <translation>C7</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="209"/>
-        <location filename="../../elementeditor_ui.cpp" line="221"/>
+        <location filename="../../elementeditor_ui.cpp" line="217"/>
         <source> Hz</source>
         <translation> Hz</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="220"/>
+        <location filename="../../elementeditor_ui.cpp" line="228"/>
         <source>Delay:</source>
         <translation>Forsinkelse:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="92"/>
-        <location filename="../../elementeditor_ui.cpp" line="204"/>
+        <location filename="../../elementeditor.cpp" line="93"/>
+        <location filename="../../elementeditor_ui.cpp" line="212"/>
         <source>Change skin to ...</source>
         <translation>Skift udseende til ...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="205"/>
+        <location filename="../../elementeditor_ui.cpp" line="213"/>
         <source>Default</source>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="218"/>
+        <location filename="../../elementeditor_ui.cpp" line="226"/>
         <source>Locked:</source>
         <translation>Låst:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="216"/>
+        <location filename="../../elementeditor_ui.cpp" line="224"/>
         <source>Priority:</source>
         <translation>Prioritet:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="93"/>
+        <location filename="../../elementeditor.cpp" line="94"/>
         <source>Change color to...</source>
         <translation>Skift farve til...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="94"/>
+        <location filename="../../elementeditor.cpp" line="95"/>
         <source>Change frequency</source>
         <translation>Skift frekvens</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="95"/>
+        <location filename="../../elementeditor.cpp" line="96"/>
         <source>Morph to...</source>
         <translation>Morphér til...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="97"/>
+        <location filename="../../elementeditor.cpp" line="98"/>
         <source>Rename</source>
         <translation>Omdøb</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="98"/>
+        <location filename="../../elementeditor.cpp" line="99"/>
         <source>Set skin to default</source>
         <translation>Sæt udseende til standard</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="99"/>
+        <location filename="../../elementeditor.cpp" line="100"/>
         <source>Rotate left</source>
         <translation>Rotér til venstre</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="100"/>
+        <location filename="../../elementeditor.cpp" line="101"/>
         <source>Rotate right</source>
         <translation>Rotér til højre</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="101"/>
+        <location filename="../../elementeditor.cpp" line="102"/>
         <source>Change trigger</source>
         <translation>Skift trigger</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="96"/>
+        <location filename="../../elementeditor.cpp" line="97"/>
         <source>Change priority</source>
         <translation>Skift prioritet</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="49"/>
+        <location filename="../../elementeditor.cpp" line="50"/>
         <source>Truth Table</source>
         <translation>Sandhedstabel</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="221"/>
-        <location filename="../../elementeditor.cpp" line="294"/>
+        <location filename="../../elementeditor.cpp" line="222"/>
+        <location filename="../../elementeditor.cpp" line="295"/>
         <source>Copy</source>
         <translation>Kopier</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="222"/>
-        <location filename="../../elementeditor.cpp" line="294"/>
+        <location filename="../../elementeditor.cpp" line="223"/>
+        <location filename="../../elementeditor.cpp" line="295"/>
         <source>Cut</source>
         <translation>Klip</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="228"/>
-        <location filename="../../elementeditor.cpp" line="294"/>
+        <location filename="../../elementeditor.cpp" line="229"/>
+        <location filename="../../elementeditor.cpp" line="295"/>
         <source>Delete</source>
         <translation>Slet</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="298"/>
+        <location filename="../../elementeditor.cpp" line="299"/>
         <source>Unknown context menu option.</source>
         <translation>Ukendt kontekstmenu-indstilling.</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="322"/>
+        <location filename="../../elementeditor.cpp" line="323"/>
         <source>Open File</source>
         <translation>Åbn fil</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="367"/>
+        <location filename="../../elementeditor.cpp" line="368"/>
         <source>Green</source>
         <translation>Grøn</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="368"/>
+        <location filename="../../elementeditor.cpp" line="369"/>
         <source>Blue</source>
         <translation>Blå</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="369"/>
+        <location filename="../../elementeditor.cpp" line="370"/>
         <source>Purple</source>
         <translation>Lilla</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="982"/>
+        <location filename="../../elementeditor.cpp" line="985"/>
         <source>Select any audio</source>
         <translation>Vælg en lydfil</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="983"/>
+        <location filename="../../elementeditor.cpp" line="986"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>Lyd (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="366"/>
+        <location filename="../../elementeditor.cpp" line="367"/>
         <source>Red</source>
         <translation>Rød</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="324"/>
+        <location filename="../../elementeditor.cpp" line="325"/>
         <source>Images</source>
         <translation>Billeder</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="365"/>
+        <location filename="../../elementeditor.cpp" line="366"/>
         <source>White</source>
         <translation>Hvid</translation>
     </message>

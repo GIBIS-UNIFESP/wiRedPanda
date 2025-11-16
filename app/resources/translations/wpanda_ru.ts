@@ -843,253 +843,252 @@
 <context>
     <name>ElementEditor</name>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="189"/>
+        <location filename="../../elementeditor_ui.cpp" line="197"/>
         <source>Form</source>
         <translation>Форма</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="190"/>
+        <location filename="../../elementeditor_ui.cpp" line="198"/>
         <source>Title</source>
         <translation>Заголовок</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="213"/>
+        <location filename="../../elementeditor_ui.cpp" line="221"/>
         <source>Inputs:</source>
         <translation>Входы:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="207"/>
+        <location filename="../../elementeditor_ui.cpp" line="215"/>
         <source>Value:</source>
         <translation>Значение:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="215"/>
-        <location filename="../../elementeditor_ui.cpp" line="219"/>
+        <location filename="../../elementeditor_ui.cpp" line="223"/>
+        <location filename="../../elementeditor_ui.cpp" line="227"/>
         <source>Audio:</source>
         <translation>Аудио:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="212"/>
+        <location filename="../../elementeditor_ui.cpp" line="220"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="202"/>
+        <location filename="../../elementeditor_ui.cpp" line="210"/>
         <source>Trigger:</source>
         <translation>Триггер:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="217"/>
+        <location filename="../../elementeditor_ui.cpp" line="225"/>
         <source>Outputs:</source>
         <translation>Выходы:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="210"/>
+        <location filename="../../elementeditor_ui.cpp" line="218"/>
         <source>Frequency:</source>
         <translation>Частота:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="201"/>
+        <location filename="../../elementeditor_ui.cpp" line="209"/>
         <source>Label:</source>
         <translation>Метка:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="211"/>
+        <location filename="../../elementeditor_ui.cpp" line="219"/>
         <source>Color:</source>
         <translation>Цвет:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="203"/>
+        <location filename="../../elementeditor_ui.cpp" line="211"/>
         <source>TruthTable</source>
         <translation>Таблица Истинности</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="191"/>
+        <location filename="../../elementeditor_ui.cpp" line="199"/>
         <source>C6</source>
         <translation>C6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="192"/>
+        <location filename="../../elementeditor_ui.cpp" line="200"/>
         <source>D6</source>
         <translation>D6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="193"/>
+        <location filename="../../elementeditor_ui.cpp" line="201"/>
         <source>E6</source>
         <translation>E6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="194"/>
+        <location filename="../../elementeditor_ui.cpp" line="202"/>
         <source>F6</source>
         <translation>F6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="195"/>
+        <location filename="../../elementeditor_ui.cpp" line="203"/>
         <source>G6</source>
         <translation>G6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="196"/>
+        <location filename="../../elementeditor_ui.cpp" line="204"/>
         <source>A7</source>
         <translation>A7</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="197"/>
+        <location filename="../../elementeditor_ui.cpp" line="205"/>
         <source>B7</source>
         <translation>B7</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="198"/>
+        <location filename="../../elementeditor_ui.cpp" line="206"/>
         <source>C7</source>
         <translation>C7</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="209"/>
-        <location filename="../../elementeditor_ui.cpp" line="221"/>
+        <location filename="../../elementeditor_ui.cpp" line="217"/>
         <source> Hz</source>
         <translation> Гц</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="220"/>
+        <location filename="../../elementeditor_ui.cpp" line="228"/>
         <source>Delay:</source>
         <translation>Задержка:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="92"/>
-        <location filename="../../elementeditor_ui.cpp" line="204"/>
+        <location filename="../../elementeditor.cpp" line="93"/>
+        <location filename="../../elementeditor_ui.cpp" line="212"/>
         <source>Change skin to ...</source>
         <translation>Изменить скин на ...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="205"/>
+        <location filename="../../elementeditor_ui.cpp" line="213"/>
         <source>Default</source>
         <translation>По умолчанию</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="218"/>
+        <location filename="../../elementeditor_ui.cpp" line="226"/>
         <source>Locked:</source>
         <translation>Заблокировано:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="216"/>
+        <location filename="../../elementeditor_ui.cpp" line="224"/>
         <source>Priority:</source>
         <translation>Приоритет:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="93"/>
+        <location filename="../../elementeditor.cpp" line="94"/>
         <source>Change color to...</source>
         <translation>Изменить цвет на...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="94"/>
+        <location filename="../../elementeditor.cpp" line="95"/>
         <source>Change frequency</source>
         <translation>Изменить частоту</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="95"/>
+        <location filename="../../elementeditor.cpp" line="96"/>
         <source>Morph to...</source>
         <translation>Преобразовать в...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="97"/>
+        <location filename="../../elementeditor.cpp" line="98"/>
         <source>Rename</source>
         <translation>Переименовать</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="98"/>
+        <location filename="../../elementeditor.cpp" line="99"/>
         <source>Set skin to default</source>
         <translation>Установить скин по умолчанию</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="99"/>
+        <location filename="../../elementeditor.cpp" line="100"/>
         <source>Rotate left</source>
         <translation>Повернуть влево</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="100"/>
+        <location filename="../../elementeditor.cpp" line="101"/>
         <source>Rotate right</source>
         <translation>Повернуть вправо</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="101"/>
+        <location filename="../../elementeditor.cpp" line="102"/>
         <source>Change trigger</source>
         <translation>Изменить триггер</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="96"/>
+        <location filename="../../elementeditor.cpp" line="97"/>
         <source>Change priority</source>
         <translation>Изменить приоритет</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="49"/>
+        <location filename="../../elementeditor.cpp" line="50"/>
         <source>Truth Table</source>
         <translation>Таблица Истинности</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="221"/>
-        <location filename="../../elementeditor.cpp" line="294"/>
+        <location filename="../../elementeditor.cpp" line="222"/>
+        <location filename="../../elementeditor.cpp" line="295"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="222"/>
-        <location filename="../../elementeditor.cpp" line="294"/>
+        <location filename="../../elementeditor.cpp" line="223"/>
+        <location filename="../../elementeditor.cpp" line="295"/>
         <source>Cut</source>
         <translation>Вырезать</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="228"/>
-        <location filename="../../elementeditor.cpp" line="294"/>
+        <location filename="../../elementeditor.cpp" line="229"/>
+        <location filename="../../elementeditor.cpp" line="295"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="298"/>
+        <location filename="../../elementeditor.cpp" line="299"/>
         <source>Unknown context menu option.</source>
         <translation>Неизвестная опция контекстного меню.</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="322"/>
+        <location filename="../../elementeditor.cpp" line="323"/>
         <source>Open File</source>
         <translation>Открыть файл</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="367"/>
+        <location filename="../../elementeditor.cpp" line="368"/>
         <source>Green</source>
         <translation>Зеленый</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="368"/>
+        <location filename="../../elementeditor.cpp" line="369"/>
         <source>Blue</source>
         <translation>Синий</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="369"/>
+        <location filename="../../elementeditor.cpp" line="370"/>
         <source>Purple</source>
         <translation>Фиолетовый</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="982"/>
+        <location filename="../../elementeditor.cpp" line="985"/>
         <source>Select any audio</source>
         <translation>Выберите аудио</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="983"/>
+        <location filename="../../elementeditor.cpp" line="986"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>Аудио (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="366"/>
+        <location filename="../../elementeditor.cpp" line="367"/>
         <source>Red</source>
         <translation>Красный</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="324"/>
+        <location filename="../../elementeditor.cpp" line="325"/>
         <source>Images</source>
         <translation>Изображения</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="365"/>
+        <location filename="../../elementeditor.cpp" line="366"/>
         <source>White</source>
         <translation>Белый</translation>
     </message>

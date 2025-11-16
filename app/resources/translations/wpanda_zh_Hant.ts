@@ -843,253 +843,252 @@
 <context>
     <name>ElementEditor</name>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="189"/>
+        <location filename="../../elementeditor_ui.cpp" line="197"/>
         <source>Form</source>
         <translation>表單</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="190"/>
+        <location filename="../../elementeditor_ui.cpp" line="198"/>
         <source>Title</source>
         <translation>標題</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="213"/>
+        <location filename="../../elementeditor_ui.cpp" line="221"/>
         <source>Inputs:</source>
         <translation>輸入：</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="207"/>
+        <location filename="../../elementeditor_ui.cpp" line="215"/>
         <source>Value:</source>
         <translation>數值：</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="215"/>
-        <location filename="../../elementeditor_ui.cpp" line="219"/>
+        <location filename="../../elementeditor_ui.cpp" line="223"/>
+        <location filename="../../elementeditor_ui.cpp" line="227"/>
         <source>Audio:</source>
         <translation>音響：</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="212"/>
+        <location filename="../../elementeditor_ui.cpp" line="220"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="202"/>
+        <location filename="../../elementeditor_ui.cpp" line="210"/>
         <source>Trigger:</source>
         <translation>觸發：</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="217"/>
+        <location filename="../../elementeditor_ui.cpp" line="225"/>
         <source>Outputs:</source>
         <translation>輸出：</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="210"/>
+        <location filename="../../elementeditor_ui.cpp" line="218"/>
         <source>Frequency:</source>
         <translation>頻率：</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="201"/>
+        <location filename="../../elementeditor_ui.cpp" line="209"/>
         <source>Label:</source>
         <translation>標籤：</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="211"/>
+        <location filename="../../elementeditor_ui.cpp" line="219"/>
         <source>Color:</source>
         <translation>顏色：</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="203"/>
+        <location filename="../../elementeditor_ui.cpp" line="211"/>
         <source>TruthTable</source>
         <translation>真值表</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="191"/>
+        <location filename="../../elementeditor_ui.cpp" line="199"/>
         <source>C6</source>
         <translation>C6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="192"/>
+        <location filename="../../elementeditor_ui.cpp" line="200"/>
         <source>D6</source>
         <translation>D6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="193"/>
+        <location filename="../../elementeditor_ui.cpp" line="201"/>
         <source>E6</source>
         <translation>E6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="194"/>
+        <location filename="../../elementeditor_ui.cpp" line="202"/>
         <source>F6</source>
         <translation>F6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="195"/>
+        <location filename="../../elementeditor_ui.cpp" line="203"/>
         <source>G6</source>
         <translation>G6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="196"/>
+        <location filename="../../elementeditor_ui.cpp" line="204"/>
         <source>A7</source>
         <translation>A7</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="197"/>
+        <location filename="../../elementeditor_ui.cpp" line="205"/>
         <source>B7</source>
         <translation>B7</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="198"/>
+        <location filename="../../elementeditor_ui.cpp" line="206"/>
         <source>C7</source>
         <translation>C7</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="209"/>
-        <location filename="../../elementeditor_ui.cpp" line="221"/>
+        <location filename="../../elementeditor_ui.cpp" line="217"/>
         <source> Hz</source>
         <translation> Hz</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="220"/>
+        <location filename="../../elementeditor_ui.cpp" line="228"/>
         <source>Delay:</source>
         <translation>延遲：</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="92"/>
-        <location filename="../../elementeditor_ui.cpp" line="204"/>
+        <location filename="../../elementeditor.cpp" line="93"/>
+        <location filename="../../elementeditor_ui.cpp" line="212"/>
         <source>Change skin to ...</source>
         <translation>更改外觀為...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="205"/>
+        <location filename="../../elementeditor_ui.cpp" line="213"/>
         <source>Default</source>
         <translation>預設</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="218"/>
+        <location filename="../../elementeditor_ui.cpp" line="226"/>
         <source>Locked:</source>
         <translation>鎖定：</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="216"/>
+        <location filename="../../elementeditor_ui.cpp" line="224"/>
         <source>Priority:</source>
         <translation>優先權：</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="93"/>
+        <location filename="../../elementeditor.cpp" line="94"/>
         <source>Change color to...</source>
         <translation>更改顏色為...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="94"/>
+        <location filename="../../elementeditor.cpp" line="95"/>
         <source>Change frequency</source>
         <translation>更改頻率</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="95"/>
+        <location filename="../../elementeditor.cpp" line="96"/>
         <source>Morph to...</source>
         <translation>變形為...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="97"/>
+        <location filename="../../elementeditor.cpp" line="98"/>
         <source>Rename</source>
         <translation>重新命名</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="98"/>
+        <location filename="../../elementeditor.cpp" line="99"/>
         <source>Set skin to default</source>
         <translation>設定外觀為預設</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="99"/>
+        <location filename="../../elementeditor.cpp" line="100"/>
         <source>Rotate left</source>
         <translation>向左旋轉</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="100"/>
+        <location filename="../../elementeditor.cpp" line="101"/>
         <source>Rotate right</source>
         <translation>向右旋轉</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="101"/>
+        <location filename="../../elementeditor.cpp" line="102"/>
         <source>Change trigger</source>
         <translation>更改觸發</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="96"/>
+        <location filename="../../elementeditor.cpp" line="97"/>
         <source>Change priority</source>
         <translation>更改優先權</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="49"/>
+        <location filename="../../elementeditor.cpp" line="50"/>
         <source>Truth Table</source>
         <translation>真值表</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="221"/>
-        <location filename="../../elementeditor.cpp" line="294"/>
+        <location filename="../../elementeditor.cpp" line="222"/>
+        <location filename="../../elementeditor.cpp" line="295"/>
         <source>Copy</source>
         <translation>複製</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="222"/>
-        <location filename="../../elementeditor.cpp" line="294"/>
+        <location filename="../../elementeditor.cpp" line="223"/>
+        <location filename="../../elementeditor.cpp" line="295"/>
         <source>Cut</source>
         <translation>剪下</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="228"/>
-        <location filename="../../elementeditor.cpp" line="294"/>
+        <location filename="../../elementeditor.cpp" line="229"/>
+        <location filename="../../elementeditor.cpp" line="295"/>
         <source>Delete</source>
         <translation>刪除</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="298"/>
+        <location filename="../../elementeditor.cpp" line="299"/>
         <source>Unknown context menu option.</source>
         <translation>未知的右鍵選單選項。</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="322"/>
+        <location filename="../../elementeditor.cpp" line="323"/>
         <source>Open File</source>
         <translation>開啟檔案</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="367"/>
+        <location filename="../../elementeditor.cpp" line="368"/>
         <source>Green</source>
         <translation>綠色</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="368"/>
+        <location filename="../../elementeditor.cpp" line="369"/>
         <source>Blue</source>
         <translation>藍色</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="369"/>
+        <location filename="../../elementeditor.cpp" line="370"/>
         <source>Purple</source>
         <translation>紫色</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="982"/>
+        <location filename="../../elementeditor.cpp" line="985"/>
         <source>Select any audio</source>
         <translation>選擇任意音響</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="983"/>
+        <location filename="../../elementeditor.cpp" line="986"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>音響 (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="366"/>
+        <location filename="../../elementeditor.cpp" line="367"/>
         <source>Red</source>
         <translation>紅色</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="324"/>
+        <location filename="../../elementeditor.cpp" line="325"/>
         <source>Images</source>
         <translation>圖片</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="365"/>
+        <location filename="../../elementeditor.cpp" line="366"/>
         <source>White</source>
         <translation>白色</translation>
     </message>
