@@ -112,7 +112,14 @@ void Clock::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const Q
         }
 
         if (map.contains("delay")) {
-            setDelay(map.value("delay").toFloat());
+            float delayValue = map.value("delay").toFloat();
+
+            if (version < VERSION("4.3")) {
+                // Discard old delay data from versions < 4.3
+                // The old implementation was incorrect and incompatible with the new period-fraction format
+            } else {
+                setDelay(delayValue);
+            }
         }
 
         if (map.contains("locked")) {
@@ -155,9 +162,13 @@ void Clock::setDelay(const float delay)
 void Clock::resetClock(const std::chrono::steady_clock::time_point &globalTime)
 {
     setOn();
-    auto delay_ms = static_cast<uint>(m_delay * 1000);
+    // m_delay is a fraction of the period (-1 to 1)
+    // Negative delays advance the clock (trigger earlier), positive delays delay it
+    // Full period is 2 * m_interval (since m_interval is half the period)
+    const auto fullPeriod = 2 * m_interval;
+    const auto delayMicroseconds = static_cast<std::chrono::microseconds::rep>(-m_delay * fullPeriod.count());
     m_startTime = globalTime;
-    m_startTime -= std::chrono::milliseconds(delay_ms);
+    m_startTime -= std::chrono::microseconds(delayMicroseconds);
 }
 
 QString Clock::genericProperties()

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "elementeditor_ui.h"
+#include "labeledslider.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QMetaObject>
@@ -172,10 +173,17 @@ void ElementEditor_Ui::setupUi(QWidget *ElementEditor)
     labelDelay->setObjectName("labelDelay");
     gridLayout_2->addWidget(labelDelay, 6, 0, 1, 1);
 
-    doubleSpinBoxDelay = new QDoubleSpinBox(groupBox);
-    doubleSpinBoxDelay->setObjectName("doubleSpinBoxDelay");
-    doubleSpinBoxDelay->setDecimals(1);
-    gridLayout_2->addWidget(doubleSpinBoxDelay, 6, 1, 1, 1);
+    sliderDelay = new LabeledSlider(groupBox);
+    sliderDelay->setObjectName("sliderDelay");
+    sliderDelay->setOrientation(Qt::Horizontal);
+    sliderDelay->setMinimum(-4);
+    sliderDelay->setMaximum(4);
+    sliderDelay->setValue(0);
+    sliderDelay->setSingleStep(1);
+    sliderDelay->setPageStep(1);
+    sliderDelay->setTickPosition(QSlider::TicksBelow);
+    sliderDelay->setTickInterval(1);
+    gridLayout_2->addWidget(sliderDelay, 6, 1, 1, 1);
 
     gridLayout->addWidget(groupBox, 0, 0, 1, 1);
 
@@ -218,5 +226,5 @@ void ElementEditor_Ui::retranslateUi(QWidget *ElementEditor)
     labelLocked->setText(QCoreApplication::translate("ElementEditor", "Locked:"));
     labelAudio->setText(QCoreApplication::translate("ElementEditor", "Audio:"));
     labelDelay->setText(QCoreApplication::translate("ElementEditor", "Delay:"));
-    doubleSpinBoxDelay->setSuffix(QCoreApplication::translate("ElementEditor", " Hz"));
 }
+
