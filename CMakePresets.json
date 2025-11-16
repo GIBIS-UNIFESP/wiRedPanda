@@ -89,11 +89,14 @@
         },
         {
             "name": "windows-qt",
-            "displayName": "Windows with Qt",
-            "description": "Release build for Windows with Qt path specified",
-            "inherits": "release",
+            "displayName": "Windows with Qt (MSVC)",
+            "description": "Release build for Windows with MSVC and Qt",
+            "generator": "Visual Studio 17 2022",
+            "binaryDir": "build",
             "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "C:/Qt/5.15.2/msvc2019_64"
+                "CMAKE_PREFIX_PATH": "C:/Qt/6.9.2/msvc2022_64",
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
             },
             "condition": {
                 "type": "equals",
