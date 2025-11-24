@@ -92,7 +92,7 @@ jobs:
         python3 get-pip.py
         python3 -m pip install --no-cache-dir --upgrade pip setuptools wheel
 
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         submodules: recursive
         fetch-depth: 0
