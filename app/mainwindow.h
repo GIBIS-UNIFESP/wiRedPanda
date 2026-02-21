@@ -160,4 +160,6 @@ private:
     int m_tabIndex = -1;
 
     int m_lastTabIndex = -1;
+
+    bool isFileOpenInOtherTab(const QString &fileName);
 };

@@ -463,6 +463,17 @@ void MainWindow::on_actionRotateLeft_triggered()
 
 void MainWindow::loadPandaFile(const QString &fileName)
 {
+    const QString newFileName = QFileInfo(fileName).fileName();
+
+    for (int i = 0; i < m_ui->tab->count(); ++i) {
+        if (auto *workspace = qobject_cast<WorkSpace *>(m_ui->tab->widget(i))) {
+            if (workspace->fileInfo().fileName() == newFileName) {
+                m_ui->tab->setCurrentIndex(i);
+                return;
+            }
+        }
+    }
+
     createNewTab();
     qCDebug(zero) << "Loading in editor.";
     m_currentTab->load(fileName);
@@ -516,9 +527,27 @@ void MainWindow::on_actionSave_triggered()
         if (!fileName.endsWith(".panda")) {
             fileName.append(".panda");
         }
+
+        if (isFileOpenInOtherTab(fileName)) {
+            QMessageBox::warning(this, tr("Error"), tr("This file is already open in another tab."));
+            return;
+        }
     }
 
     save(fileName);
+}
+
+bool MainWindow::isFileOpenInOtherTab(const QString &fileName)
+{
+    const QFileInfo newFileInfo(fileName);
+    for (int i = 0; i < m_ui->tab->count(); ++i) {
+        if (auto *workspace = qobject_cast<WorkSpace *>(m_ui->tab->widget(i))) {
+            if (workspace != m_currentTab && workspace->fileInfo() == newFileInfo) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 void MainWindow::on_actionSaveAs_triggered()
@@ -535,6 +564,11 @@ void MainWindow::on_actionSaveAs_triggered()
 
     if (!fileName.endsWith(".panda")) {
         fileName.append(".panda");
+    }
+
+    if (isFileOpenInOtherTab(fileName)) {
+        QMessageBox::warning(this, tr("Error"), tr("This file is already open in another tab."));
+        return;
     }
 
     IC::copyFiles(QFileInfo(m_currentFile), QFileInfo(fileName));
