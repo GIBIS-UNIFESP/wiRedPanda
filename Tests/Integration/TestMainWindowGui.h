@@ -28,6 +28,8 @@ private slots:
     void testOpenFile();
     void testOpenCreatesNewTab();
     void testSaveAndReload();
+    void testSaveAsConflictBlocksSave();
+    void testSaveAsConflictSwitchToTab();
     void testReloadFile();
 
     // --- Simulation controls ---
@@ -141,6 +143,7 @@ private slots:
     void testInputButtonMomentary();
     void testRapidSimulationToggle();
     void testOpenSameFileTwice();
+    void testOpenSameFileFromDifferentDirs();
 
     // --- Context menu operations ---
 

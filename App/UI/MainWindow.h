@@ -307,6 +307,8 @@ private:
     WorkSpace *m_currentTab = nullptr;
     int m_tabIndex = -1;
 
+    [[nodiscard]] int findTabWithFile(const QString &fileName) const;
+
     // Scene-level shortcuts created once in setupShortcuts(), reconnected on tab switch.
     QShortcut *m_prevMainPropShortcut  = nullptr;
     QShortcut *m_nextMainPropShortcut  = nullptr;
