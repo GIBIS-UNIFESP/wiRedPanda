@@ -704,6 +704,17 @@ void MainWindow::on_actionRotateLeft_triggered()
 
 void MainWindow::loadPandaFile(const QString &fileName)
 {
+    const QFileInfo newFileInfo(fileName);
+
+    for (int i = 0; i < m_ui->tab->count(); ++i) {
+        if (auto *workspace = qobject_cast<WorkSpace *>(m_ui->tab->widget(i))) {
+            if (workspace->fileInfo() == newFileInfo) {
+                m_ui->tab->setCurrentIndex(i);
+                return;
+            }
+        }
+    }
+
     createNewTab();
     qCDebug(zero) << "Loading in editor.";
     m_currentTab->load(fileName);
@@ -812,6 +823,21 @@ void MainWindow::on_actionSave_triggered()
         ensureFileExtension(fileName, ".panda");
     }
 
+    const int conflictTab = findTabWithFile(fileName);
+    if (conflictTab != -1) {
+        QMessageBox msgBox(QMessageBox::Warning,
+                           tr("File Conflict"),
+                           tr("The file \"%1\" is already open in another tab.").arg(QFileInfo(fileName).fileName()),
+                           QMessageBox::Ok,
+                           this);
+        QPushButton *switchBtn = msgBox.addButton(tr("Switch to Tab"), QMessageBox::ActionRole);
+        msgBox.exec();
+        if (msgBox.clickedButton() == switchBtn) {
+            m_ui->tab->setCurrentIndex(conflictTab);
+        }
+        return;
+    }
+
     save(fileName);
 #endif
 }
@@ -848,8 +874,36 @@ void MainWindow::on_actionSaveAs_triggered()
 
     ensureFileExtension(fileName, ".panda");
 
+    const int conflictTab = findTabWithFile(fileName);
+    if (conflictTab != -1) {
+        QMessageBox msgBox(QMessageBox::Warning,
+                           tr("File Conflict"),
+                           tr("The file \"%1\" is already open in another tab.").arg(QFileInfo(fileName).fileName()),
+                           QMessageBox::Ok,
+                           this);
+        QPushButton *switchBtn = msgBox.addButton(tr("Switch to Tab"), QMessageBox::ActionRole);
+        msgBox.exec();
+        if (msgBox.clickedButton() == switchBtn) {
+            m_ui->tab->setCurrentIndex(conflictTab);
+        }
+        return;
+    }
+
     save(fileName);
 #endif
+}
+
+int MainWindow::findTabWithFile(const QString &fileName) const
+{
+    const QFileInfo newFileInfo(fileName);
+    for (int i = 0; i < m_ui->tab->count(); ++i) {
+        if (auto *workspace = qobject_cast<WorkSpace *>(m_ui->tab->widget(i))) {
+            if (workspace != m_currentTab && workspace->fileInfo() == newFileInfo) {
+                return i;
+            }
+        }
+    }
+    return -1;
 }
 
 void MainWindow::on_actionAbout_triggered()

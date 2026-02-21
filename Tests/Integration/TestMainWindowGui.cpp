@@ -134,6 +134,22 @@ static void autoCloseNextMessageBox()
     });
 }
 
+static void clickNextMessageBoxButton(const QString &text)
+{
+    QTimer::singleShot(0, [text] {
+        if (auto *w = QApplication::activeModalWidget()) {
+            if (auto *msgBox = qobject_cast<QMessageBox *>(w)) {
+                for (auto *btn : msgBox->buttons()) {
+                    if (btn->text() == text) {
+                        btn->click();
+                        return;
+                    }
+                }
+            }
+        }
+    });
+}
+
 } // namespace MainWindowGuiHelpers
 
 using namespace MainWindowGuiHelpers;
@@ -277,6 +293,54 @@ void TestMainWindowGui::testSaveAndReload()
     }
 
     QFile::remove(savePath);
+}
+
+void TestMainWindowGui::testSaveAsConflictBlocksSave()
+{
+    QTemporaryDir tmpDir;
+    QVERIFY(tmpDir.isValid());
+    const QString path1 = tmpDir.path() + "/file_a.panda";
+    const QString path2 = tmpDir.path() + "/file_b.panda";
+    createMWFixture(path1);
+    createMWFixture(path2);
+
+    std::unique_ptr<MainWindow> window(createMW());
+    window->loadPandaFile(path1);
+    window->loadPandaFile(path2);
+
+    // Active tab is path2; attempt Save As into path1 which is open in another tab.
+    ScopedFileDialogStub guard;
+    guard.stub.saveResult = {path1, "Panda files (*.panda)"};
+
+    autoCloseNextMessageBox(); // dismiss conflict dialog with OK
+    QTest::keyClick(window.get(), Qt::Key_S, Qt::ControlModifier | Qt::ShiftModifier);
+
+    // Save was blocked: active tab is still path2.
+    QCOMPARE(window->currentFile().absoluteFilePath(), QFileInfo(path2).absoluteFilePath());
+}
+
+void TestMainWindowGui::testSaveAsConflictSwitchToTab()
+{
+    QTemporaryDir tmpDir;
+    QVERIFY(tmpDir.isValid());
+    const QString path1 = tmpDir.path() + "/file_a.panda";
+    const QString path2 = tmpDir.path() + "/file_b.panda";
+    createMWFixture(path1);
+    createMWFixture(path2);
+
+    std::unique_ptr<MainWindow> window(createMW());
+    window->loadPandaFile(path1);
+    window->loadPandaFile(path2);
+
+    // Active tab is path2; attempt Save As into path1 — a conflict.
+    ScopedFileDialogStub guard;
+    guard.stub.saveResult = {path1, "Panda files (*.panda)"};
+
+    clickNextMessageBoxButton("Switch to Tab");
+    QTest::keyClick(window.get(), Qt::Key_S, Qt::ControlModifier | Qt::ShiftModifier);
+
+    // "Switch to Tab" was clicked: the tab for path1 is now active.
+    QCOMPARE(window->currentFile().absoluteFilePath(), QFileInfo(path1).absoluteFilePath());
 }
 
 void TestMainWindowGui::testReloadFile()
@@ -2224,19 +2288,37 @@ void TestMainWindowGui::testOpenSameFileTwice()
 {
     std::unique_ptr<MainWindow> window(createMW());
     auto *tabs = findTabs(window.get());
-    int initialCount = tabs->count();
+    const int initialCount = tabs->count();
 
-    // Load file directly
     window->loadPandaFile(m_fixtureDir + "/test_circuit.panda");
-    int countAfterFirst = tabs->count();
-    QCOMPARE(countAfterFirst, initialCount + 1);
+    QCOMPARE(tabs->count(), initialCount + 1);
+    const int firstTabIndex = tabs->currentIndex();
 
-    // Load same file again
+    // Loading the same file again must reuse the existing tab, not open a new one.
     window->loadPandaFile(m_fixtureDir + "/test_circuit.panda");
-    int countAfterSecond = tabs->count();
+    QCOMPARE(tabs->count(), initialCount + 1);
+    QCOMPARE(tabs->currentIndex(), firstTabIndex);
+}
 
-    // Should either reuse the existing tab or create a new one without crash
-    QVERIFY(countAfterSecond >= countAfterFirst);
+void TestMainWindowGui::testOpenSameFileFromDifferentDirs()
+{
+    QTemporaryDir dir1, dir2;
+    QVERIFY(dir1.isValid() && dir2.isValid());
+    const QString path1 = dir1.path() + "/circuit.panda";
+    const QString path2 = dir2.path() + "/circuit.panda";
+    createMWFixture(path1);
+    createMWFixture(path2);
+
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *tabs = findTabs(window.get());
+    const int initialCount = tabs->count();
+
+    window->loadPandaFile(path1);
+    QCOMPARE(tabs->count(), initialCount + 1);
+
+    // A different file that shares only the basename must open a separate tab.
+    window->loadPandaFile(path2);
+    QCOMPARE(tabs->count(), initialCount + 2);
 }
 
 // ===========================================================================
