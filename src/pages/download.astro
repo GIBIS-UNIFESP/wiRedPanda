@@ -3,84 +3,93 @@ import { Icon } from 'astro-icon/components';
 import Base from '../layouts/Base.astro';
 import DownloadPlatform from '../components/DownloadPlatform.astro';
 
-// These are now primarily for fallback or initial display if JS fails/is slow
 const GITHUB_REPO_OWNER = "GIBIS-UNIFESP";
 const GITHUB_REPO_NAME = "wiRedPanda";
 const GITHUB_RELEASES_PAGE_URL = `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases`;
 
-// For the package manager commands, these remain static
 const archInstallCommand = "yay -S wiredpanda";
 const debianInstallCommand = "apt-get install wiredpanda";
 ---
 
 <Base pageTitle="Download">
-  <section class="content container has-text-centered">
-    <h2>Download the software</h2>
+  <section class="max-w-4xl mx-auto px-6 pt-24 pb-16 text-center">
+    <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-6">Download the software</h2>
 
-    <div id="release-info-container" class="my-4" style="min-height: 50px;">
-      <p id="release-version-text">Fetching latest release information...</p>
-      <div id="error-message-container" class="notification is-danger my-4" style="display: none;">
-        <p><strong>Could not load latest download links:</strong></p>
-        <p id="error-text"></p>
-        <p>Please visit the <a href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer">GitHub Releases page</a> directly.</p>
+    <div id="release-info-container" class="mb-8 min-h-[50px]">
+      <p id="release-version-text" class="text-gray-600 dark:text-gray-300">Fetching latest release information...</p>
+      <div id="error-message-container" class="hidden bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-500/40 rounded-xl p-4 mt-4 text-left">
+        <p class="text-red-600 dark:text-red-400 font-semibold">Could not load latest download links:</p>
+        <p id="error-text" class="text-red-500 dark:text-red-300 mt-1"></p>
+        <p class="text-gray-600 dark:text-gray-300 mt-2">
+          Please visit the <a href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" class="text-brand-light-blue hover:underline">GitHub Releases page</a> directly.
+        </p>
       </div>
     </div>
 
-
-    <div class="box is-flex is-justify-content-space-around p-6 my-6">
+    <div class="rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 bg-bg-card-light dark:bg-bg-card backdrop-blur-sm p-8 mb-10 flex flex-col sm:flex-row items-center justify-around gap-8">
       <div>
         <a id="windows-download-link"
-          class="is-flex is-flex-direction-column is-align-items-center is-disabled-link"
+          class="flex flex-col items-center gap-2 disabled-link"
           href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true"
         >
-          <Icon name="platforms/windows" class="icon is-disabled-icon" />
-          <span class="pt-3">Windows</span>
+          <Icon name="platforms/windows" class="platform-icon disabled-icon" />
+          <span class="text-gray-600 dark:text-gray-300">Windows</span>
         </a>
-        <small id="windows-status" class="has-text-grey" style="display: none;">(Link not available)</small>
+        <small id="windows-status" class="text-gray-400 dark:text-gray-500 text-xs hidden">(Link not available)</small>
       </div>
       <div>
         <a id="linux-download-link"
-          class="is-flex is-flex-direction-column is-align-items-center is-disabled-link"
+          class="flex flex-col items-center gap-2 disabled-link"
           href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true"
         >
-          <Icon name="platforms/linux" class="icon is-disabled-icon" />
-          <span class="pt-3">Linux</span>
+          <Icon name="platforms/linux" class="platform-icon disabled-icon" />
+          <span class="text-gray-600 dark:text-gray-300">Linux</span>
         </a>
-        <small id="linux-status" class="has-text-grey" style="display: none;">(Link not available)</small>
+        <small id="linux-status" class="text-gray-400 dark:text-gray-500 text-xs hidden">(Link not available)</small>
       </div>
       <div>
         <a id="macos-download-link"
-          class="is-flex is-flex-direction-column is-align-items-center is-disabled-link"
+          class="flex flex-col items-center gap-2 disabled-link"
           href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true"
         >
-          <Icon name="platforms/macos" class="icon is-disabled-icon" />
-          <span class="pt-3">Mac OS</span>
+          <Icon name="platforms/macos" class="platform-icon disabled-icon" />
+          <span class="text-gray-600 dark:text-gray-300">Mac OS</span>
         </a>
-        <small id="macos-status" class="has-text-grey" style="display: none;">(Link not available)</small>
+        <small id="macos-status" class="text-gray-400 dark:text-gray-500 text-xs hidden">(Link not available)</small>
       </div>
     </div>
 
-    <h2>Other Options</h2>
-    <p>
+    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Other Options</h2>
+    <p class="text-gray-600 dark:text-gray-300 mb-6">
       You can also install wiRedPanda using package managers on some Linux distributions.
       These packages might not always be the absolute latest version found on GitHub releases.
     </p>
-    <div class="box is-inline-block m-6">
+
+    <div class="max-w-lg mx-auto rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 bg-bg-card-light dark:bg-bg-card backdrop-blur-sm px-5 py-4 mb-8 space-y-1 divide-y divide-gray-200/60 dark:divide-brand-blue/15">
       <DownloadPlatform platform="arch" platformName="Arch-based" installCommand={archInstallCommand} />
       <DownloadPlatform platform="debian" platformName="Debian-based" installCommand={debianInstallCommand} />
     </div>
-    <p>
+
+    <p class="text-gray-600 dark:text-gray-300">
       For all releases, including older versions or pre-releases, please visit the
-      <a href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer">
+      <a href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" class="text-brand-light-blue hover:underline">
         official GitHub Releases page
       </a>.
     </p>
   </section>
+
+  <!-- Copy toast -->
+  <div
+    id="copy-toast"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-full opacity-0 z-50 pointer-events-none px-4 py-2.5 rounded-lg bg-gray-800 dark:bg-gray-700 text-white text-sm font-medium shadow-lg transition-all duration-300 ease-out"
+    role="status"
+    aria-live="polite"
+  >
+    Copied to clipboard!
+  </div>
 </Base>
 
 <script define:vars={{ GITHUB_REPO_OWNER, GITHUB_REPO_NAME, GITHUB_RELEASES_PAGE_URL }}>
-  // This script runs in the user's browser when they visit the page
-
   const releaseVersionTextEl = document.getElementById('release-version-text');
   const errorMessageContainerEl = document.getElementById('error-message-container');
   const errorTextEl = document.getElementById('error-text');
@@ -96,28 +105,27 @@ const debianInstallCommand = "apt-get install wiredpanda";
   function setLink(element, url, statusElement) {
     if (url && url !== '#') {
       element.href = url;
-      element.classList.remove('is-disabled-link');
-      element.querySelector('.icon').classList.remove('is-disabled-icon');
+      element.classList.remove('disabled-link');
+      element.querySelector('.platform-icon').classList.remove('disabled-icon');
       element.removeAttribute('aria-disabled');
-      if (statusElement) statusElement.style.display = 'none';
+      if (statusElement) statusElement.classList.add('hidden');
     } else {
-      element.href = GITHUB_RELEASES_PAGE_URL; // Fallback to general releases page
-      element.classList.add('is-disabled-link');
-      element.querySelector('.icon').classList.add('is-disabled-icon');
+      element.href = GITHUB_RELEASES_PAGE_URL;
+      element.classList.add('disabled-link');
+      element.querySelector('.platform-icon').classList.add('disabled-icon');
       element.setAttribute('aria-disabled', 'true');
       if (statusElement) {
         statusElement.textContent = '(Link not available in latest release)';
-        statusElement.style.display = 'block';
+        statusElement.classList.remove('hidden');
       }
     }
   }
 
   function showError(message) {
-    if (releaseVersionTextEl) releaseVersionTextEl.style.display = 'none'; // Hide "Fetching..."
+    if (releaseVersionTextEl) releaseVersionTextEl.style.display = 'none';
     if (errorTextEl) errorTextEl.textContent = message;
-    if (errorMessageContainerEl) errorMessageContainerEl.style.display = 'block';
+    if (errorMessageContainerEl) errorMessageContainerEl.classList.remove('hidden');
 
-    // Ensure links are in their disabled/fallback state
     setLink(windowsLinkEl, GITHUB_RELEASES_PAGE_URL, windowsStatusEl);
     setLink(linuxLinkEl, GITHUB_RELEASES_PAGE_URL, linuxStatusEl);
     setLink(macosLinkEl, GITHUB_RELEASES_PAGE_URL, macosStatusEl);
@@ -145,8 +153,7 @@ const debianInstallCommand = "apt-get install wiredpanda";
       if (releaseVersionTextEl) {
         releaseVersionTextEl.textContent = `Here you can download the ${releaseVersion} version of wiRedPanda binaries for:`;
       }
-      if (errorMessageContainerEl) errorMessageContainerEl.style.display = 'none';
-
+      if (errorMessageContainerEl) errorMessageContainerEl.classList.add('hidden');
 
       let windowsUrl = null;
       let linuxUrl = null;
@@ -181,51 +188,48 @@ const debianInstallCommand = "apt-get install wiredpanda";
     }
   }
 
-  // Call the function when the DOM is ready (or immediately)
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', fetchLatestRelease);
   } else {
     fetchLatestRelease();
   }
-
 </script>
 
 <style>
-.icon {
-  width: 70px;
-  height: 70px;
-  color: #ddd; /* Default enabled color */
-}
+  .platform-icon {
+    width: 70px;
+    height: 70px;
+    color: #777;
+    transition: color 0.2s;
+  }
 
-.icon:hover:not(.is-disabled-icon) { /* Only hover effect if not disabled */
-  color: #BD2812;
-}
+  :global(.dark) .platform-icon {
+    color: #ddd;
+  }
 
-.is-disabled-icon {
-  color: #7a7a7a !important; /* Grey out icon */
-}
+  .platform-icon:hover:not(.disabled-icon) {
+    color: var(--color-brand-red);
+  }
 
-.is-disabled-link {
-  pointer-events: none; /* Make link unclickable */
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-.is-disabled-link .icon { /* Ensure disabled icon color persists */
-  color: #7a7a7a !important;
-}
-/* Prevent hover color change on disabled link's icon */
-.is-disabled-link:hover .icon {
-  color: #7a7a7a !important;
-}
+  .disabled-icon {
+    color: #aaa !important;
+  }
 
+  :global(.dark) .disabled-icon {
+    color: #7a7a7a !important;
+  }
 
-.box {
-  border: 1.4px solid #134074;
-  border-radius: 20px;
-  background-color: rgba(1,1,1, 0.1);
-  backdrop-filter: blur(6px);
-  padding: 10px;
-  margin-bottom: 20px;
-  box-shadow: 1px 1px 50px black;"
-}
+  .disabled-link {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .disabled-link .platform-icon {
+    color: #aaa !important;
+  }
+
+  :global(.dark) .disabled-link .platform-icon {
+    color: #7a7a7a !important;
+  }
 </style>

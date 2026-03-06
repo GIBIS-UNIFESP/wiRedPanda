@@ -1,15 +1,13 @@
 ---
+interface Props {
+  title: string;
+  content: string;
+}
+
 const { title, content } = Astro.props;
 ---
 
-<div class="box">
-  <h3 class="title is-3">{title}</h3>
-  <span>{content}</span>
+<div class="group rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 bg-bg-card-light dark:bg-bg-card backdrop-blur-sm p-6 shadow-lg transition-all duration-300 hover:shadow-brand-red/20 hover:shadow-xl hover:border-brand-red/50">
+  <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">{title}</h3>
+  <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{content}</p>
 </div>
-
-<style>
-.box:hover {
-  transition: box-shadow 0.5s;
-  box-shadow: 5px 5px 15px #BD2812;
-}
-</style>

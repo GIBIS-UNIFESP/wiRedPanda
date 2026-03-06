@@ -1,0 +1,204 @@
+---
+import { Image } from "astro:assets";
+
+import pandaLogo from '../images/wpanda.svg';
+
+const letters = "wiRedPanda".split("");
+---
+
+<section id="hero" class="h-screen flex items-center justify-center bg-bg-light dark:bg-bg-darker relative overflow-hidden">
+  <!-- Protoboard backgorund -->
+  <div class="hero-dotgrid absolute inset-0 pointer-events-none" aria-hidden="true"></div>
+
+  <!-- Subtle radial glow behind the logo -->
+  <!-- <div class="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true"> -->
+  <!--   <div class="w-[500px] h-[500px] rounded-full bg-brand-blue/10 blur-3xl"></div> -->
+  <!-- </div> -->
+
+  <div class="relative z-10 flex flex-col items-center gap-8 px-6">
+    <div class="flex flex-col md:flex-row items-center gap-6 md:gap-10">
+      <Image
+        src={pandaLogo}
+        alt="wiRedPanda Logo"
+        width={220}
+        loading="eager"
+        class="hero-logo drop-shadow-2xl"
+      />
+
+      <h1 class="hero-title text-gray-900 dark:text-white font-bold tracking-tight select-none" aria-label="wiRedPanda">
+        {letters.map((char, i) => (
+          <span class="hero-letter" data-index={i}>{char}</span>
+        ))}
+      </h1>
+    </div>
+
+    <p class="hero-after text-gray-500 dark:text-gray-400 text-lg md:text-xl text-center max-w-xl leading-relaxed">
+      A fun and easy way to learn logic circuits
+    </p>
+  </div>
+
+  <a
+    href="#content"
+    class="hero-after absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-gray-400 dark:text-gray-500 hover:text-brand-light-blue dark:hover:text-brand-light-blue transition-colors duration-200"
+    aria-label="Scroll down"
+  >
+    <svg class="w-8 h-8 scroll-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  </a>
+</section>
+
+<style>
+  /* Dot grid - protoboard pattern */
+  .hero-dotgrid {
+    background-image: radial-gradient(circle, rgba(100, 100, 120, 0.3) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  :global(.dark) .hero-dotgrid {
+    background-image: radial-gradient(circle, rgba(180, 180, 200, 0.13) 1px, transparent 1px);
+  }
+
+  .hero-title {
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    line-height: 1.1;
+  }
+
+  .hero-letter {
+    display: inline-block;
+    transition: opacity 0.06s linear;
+  }
+
+  /* Scroll arrow bounce (always active) */
+  .scroll-arrow {
+    animation: bounce-arrow 1.5s ease-in-out infinite;
+  }
+
+  /* prevent FOUC */
+  .hero-logo,
+  .hero-letter,
+  .hero-after {
+    opacity: 0;
+  }
+
+  .hero-after {
+    pointer-events: none;
+  }
+
+  .hero-after.revealed {
+    animation: fade-in-up 0.5s ease-out both;
+    pointer-events: auto;
+  }
+
+  :global(#hero.no-animation) .hero-logo,
+  :global(#hero.no-animation) .hero-letter,
+  :global(#hero.no-animation) .hero-after {
+    opacity: 1 !important;
+    animation: none !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+</style>
+
+<!-- Synchronous inline script to prevent FOUC -->
+<script is:inline>
+  (function () {
+    var hero = document.getElementById('hero');
+    if (!hero) return;
+
+    if (sessionStorage.getItem('hero-animated')) {
+      hero.classList.add('no-animation');
+    } else {
+      var header = document.getElementById('site-header');
+      if (header) {
+        header.style.opacity = '0';
+        header.style.pointerEvents = 'none';
+      }
+    }
+  })();
+</script>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const hero = document.getElementById('hero');
+    const header = document.getElementById('site-header');
+    if (!hero) return;
+
+    if (hero.classList.contains('no-animation') || sessionStorage.getItem('hero-animated')) {
+      hero.classList.add('no-animation');
+      return;
+    }
+
+    if (header) {
+      header.style.opacity = '0';
+      header.style.pointerEvents = 'none';
+    }
+
+    const logo = hero.querySelector<HTMLImageElement>('.hero-logo');
+    if (logo) {
+      logo.style.animation = 'logo-fade-in 0.8s ease-out 0.1s both';
+    }
+
+    const letters = hero.querySelectorAll<HTMLSpanElement>('.hero-letter');
+    const letterCount = letters.length;
+
+    const settled = new Array(letterCount).fill(false);
+    let settledCount = 0;
+
+    const blinkStart = 600; // start after logo begins fading in
+    const blinkDuration = 1000;
+    const blinkInterval = 60; // ms between blink ticks
+
+    let blinkTimer: ReturnType<typeof setInterval>;
+
+    setTimeout(() => {
+      blinkTimer = setInterval(() => {
+        for (let i = 0; i < letterCount; i++) {
+          if (settled[i]) continue;
+          letters[i].style.opacity = Math.random() > 0.5 ? '1' : '0';
+        }
+      }, blinkInterval);
+    }, blinkStart);
+
+    const settleStart = blinkStart + blinkDuration;
+    const settleGap = 100; // ms between each letter settling
+
+    const indices = Array.from({ length: letterCount }, (_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+
+    indices.forEach((letterIdx, order) => {
+      setTimeout(() => {
+        settled[letterIdx] = true;
+        letters[letterIdx].style.opacity = '1';
+        settledCount++;
+
+        if (settledCount === letterCount) {
+          clearInterval(blinkTimer);
+          revealAfterElements();
+        }
+      }, settleStart + order * settleGap);
+    });
+
+    function revealAfterElements() {
+      const afterEls = hero!.querySelectorAll('.hero-after');
+      afterEls.forEach((el, i) => {
+        setTimeout(() => {
+          el.classList.add('revealed');
+        }, i * 150);
+      });
+
+      if (header) {
+        setTimeout(() => {
+          header.style.transition = 'opacity 0.4s ease';
+          header.style.opacity = '1';
+          header.style.pointerEvents = '';
+        }, 300);
+      }
+
+      sessionStorage.setItem('hero-animated', '1');
+    }
+  });
+</script>

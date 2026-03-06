@@ -1,0 +1,117 @@
+<button
+  id="theme-toggle"
+  type="button"
+  class="theme-switch"
+  aria-label="Toggle dark mode"
+  role="switch"
+  aria-checked="false"
+>
+  <span class="theme-switch__track">
+    <span class="theme-switch__knob"></span>
+  </span>
+</button>
+
+<style>
+  .theme-switch {
+    position: relative;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+  }
+
+  .theme-switch__track {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 44px;
+    height: 24px;
+    border-radius: 9999px;
+    background-color: #d1d5db;
+    padding: 0 4px;
+    transition: background-color 0.25s ease;
+  }
+
+  :global(.dark) .theme-switch__track {
+    background-color: #374151;
+  }
+
+  .theme-switch__icon {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    z-index: 1;
+    transition: color 0.25s ease;
+  }
+
+  .theme-switch__icon--sun {
+    color: #f59e0b;
+  }
+
+  .theme-switch__icon--moon {
+    color: #6b7280;
+  }
+
+  :global(.dark) .theme-switch__icon--sun {
+    color: #6b7280;
+  }
+
+  :global(.dark) .theme-switch__icon--moon {
+    color: #a5b4fc;
+  }
+
+  .theme-switch__knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 9999px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: transform 0.25s ease;
+  }
+
+  :global(.dark) .theme-switch__knob {
+    transform: translateX(20px);
+  }
+</style>
+
+<!-- Inline script to prevent flash of wrong theme (FOUC) -->
+<script is:inline>
+  (function() {
+    const stored = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = stored === 'dark' || (!stored && prefersDark);
+
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  })();
+</script>
+
+<script>
+  function setupThemeToggle() {
+    const btn = document.getElementById('theme-toggle');
+
+    function updateAria() {
+      const isDark = document.documentElement.classList.contains('dark');
+      btn?.setAttribute('aria-checked', String(isDark));
+    }
+
+    updateAria();
+
+    btn?.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      updateAria();
+    });
+  }
+
+  document.addEventListener('astro:page-load', setupThemeToggle);
+</script>

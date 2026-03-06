@@ -4,34 +4,21 @@ import { Image } from "astro:assets";
 import unifespLogo from '../images/unifesp_white.png';
 import gibisLogo from '../images/gibis.webp';
 
-const buildTimeYear = new Date().getFullYear(); // fallback value
+const year = new Date().getFullYear();
 ---
 
-<footer class="is-flex is-flex-direction-row is-justify-content-space-around is-align-items-center background-color">
-  <a href="https://www.unifesp.br/" target="_blank">
-    <Image src={unifespLogo} alt="Unifesp logo" width={120} />
-  </a>
-  <span>wiRedPanda Team © <span id="copyright-year">{buildTimeYear}</span></span>
-  <a href="http://gibis.unifesp.br/" target="_blank">
-    <Image src={gibisLogo} alt="GIBIS logo" width={90} />
-  </a>
+<footer class="bg-gray-100 dark:bg-bg-darker">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <a href="https://www.unifesp.br/" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity duration-200">
+      <Image src={unifespLogo} alt="UNIFESP logo" width={120} class="dark:brightness-100 brightness-0" />
+    </a>
+
+    <span class="text-gray-500 dark:text-gray-400 text-sm">
+      wiRedPanda Team &copy; {year}
+    </span>
+
+    <a href="http://gibis.unifesp.br/" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity duration-200">
+      <Image src={gibisLogo} alt="GIBIS logo" width={90} />
+    </a>
+  </div>
 </footer>
-
-<script is:inline>
-  const yearElement = document.getElementById('copyright-year');
-  if (yearElement) {
-    yearElement.textContent = new Date().getFullYear();
-  }
-</script>
-
-<style>
-footer {
-  padding: 10px;
-  box-shadow: 0px 5px 35px black;
-  border-top: 3px inset #2DA6F4;
-}
-
-span {
-  color: white;
-}
-</style>

@@ -1,64 +1,74 @@
 ---
 import { Icon } from 'astro-icon/components';
 
+interface Props {
+  platform: string;
+  platformName: string;
+  installCommand: string;
+}
+
 const { platform, platformName, installCommand } = Astro.props;
 ---
 
-<div class="is-flex is-align-items-center is-justify-content-space-between p-5">
-  <div class="platform is-flex is-flex-direction-column is-align-items-center">
-    <Icon name=`platforms/${platform}` class='icon'/>
-    <span class="pt-3">{platformName}</span>
+<div class="flex items-center gap-4 py-3">
+  <div class="flex flex-col items-center w-20 flex-shrink-0">
+    <Icon name={`platforms/${platform}`} class="w-10 h-10 text-gray-500 dark:text-gray-300 hover:text-brand-red transition-colors duration-200" />
+    <span class="pt-1 text-xs text-gray-500 dark:text-gray-400">{platformName}</span>
   </div>
-  <code class="p-3 is-flex is-justify-content-space-between">$ {installCommand} </code>
+
+  <div class="flex items-center flex-1 min-w-0 rounded-lg bg-gray-100 dark:bg-bg-darker border border-gray-200 dark:border-brand-blue/20 overflow-hidden">
+    <code class="flex-1 min-w-0 px-4 py-2.5 text-gray-700 dark:text-gray-300 font-mono text-sm truncate select-all text-left">
+      $ {installCommand}
+    </code>
+    <button
+      type="button"
+      class="copy-btn flex-shrink-0 px-3 py-2.5 border-l border-gray-200 dark:border-brand-blue/20 text-gray-400 dark:text-gray-500 hover:text-brand-light-blue dark:hover:text-brand-light-blue hover:bg-gray-200/50 dark:hover:bg-white/5 transition-colors duration-150"
+      data-command={installCommand}
+      aria-label={`Copy ${platformName} install command`}
+    >
+      <svg class="copy-icon w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+      </svg>
+      <svg class="check-icon w-4 h-4 hidden text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+      </svg>
+    </button>
+  </div>
 </div>
 
-<style>
-.icon {
-  width: 70px; 
-  height: 70px; 
-  color: #ddd;
-}
-
-.icon:hover {
-  color: #BD2812;
-}
-
-.platform {
-  width: 15vw;
-}
-
-code {
-  width: 19vw;
-  margin-left: 30px; 
-  border-radius: 10px; 
-  color: white; 
-  font-family: monospace; 
-  font-size: large;
-  font-style: italic;
-  text-align: left;
-  background-color: rgba(0.1, 0.1, 0.1, 0.4);
-  backdrop-filter: blur(5px);
-}
-
-code:hover {
-  cursor: pointer;
-  font-weight: 500;
-}
-
-</style>
-
 <script>
-  const codes = document.querySelectorAll('code');
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll('.copy-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const command = (btn as HTMLElement).dataset.command;
+        if (!command) return;
 
-  codes.forEach((code) => {
-    code.addEventListener('click', () => {
-      navigator.clipboard.writeText(code.innerText).then(() => {
-        const text = code.innerText;
-        code.innerText = 'Copied!'
-        setTimeout(() => {
-          code.innerText = text;
-        }, 500);
+        navigator.clipboard.writeText(command).then(() => {
+          const copyIcon = btn.querySelector('.copy-icon');
+          const checkIcon = btn.querySelector('.check-icon');
+
+          // Swap icons
+          copyIcon?.classList.add('hidden');
+          checkIcon?.classList.remove('hidden');
+
+          // Show toast
+          const toast = document.getElementById('copy-toast');
+          if (toast) {
+            toast.classList.remove('translate-y-full', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+              toast.classList.remove('translate-y-0', 'opacity-100');
+              toast.classList.add('translate-y-full', 'opacity-0');
+            }, 2000);
+          }
+
+          setTimeout(() => {
+            copyIcon?.classList.remove('hidden');
+            checkIcon?.classList.add('hidden');
+          }, 2000);
+        });
       });
-    })
+    });
   });
 </script>

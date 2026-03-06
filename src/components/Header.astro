@@ -1,80 +1,182 @@
 ---
 import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
+import ThemeToggle from "./ThemeToggle.astro";
 
 import pandaLogo from '../images/wpanda.svg';
+
+const currentPath = Astro.url.pathname;
+const base = import.meta.env.BASE_URL;
+
+interface NavLink {
+  label: string;
+  href: string;
+}
+
+const navLinks: NavLink[] = [
+  { label: 'Home', href: `${base}` },
+  { label: 'About', href: `${base}about` },
+  { label: 'Download', href: `${base}download` },
+  { label: 'Try out', href: `${base}wasm/index.html` },
+];
+
+function isActive(href: string): boolean {
+  const normalized = currentPath.replace(/\/$/, '');
+  const hrefNormalized = href.replace(/\/$/, '');
+  return normalized === hrefNormalized;
+}
 ---
-<header class="is-flex is-flex-direction-row is-justify-content-space-between">
-  <div class="navbar m-3">
-    <Image src={pandaLogo} alt="wiRedPanda Logo" width={40} loading="eager" class="pandalogo"/>
-    <span class="navbar-item">wiRedPanda</span>
-  </div>
-  <nav class="navbar m-3">
-    <ul class="navbar-menu">
-      <li class="navbar-item"><a href={`${import.meta.env.BASE_URL}`}>Home</a></li>
-      <li class="navbar-item"><a href={`${import.meta.env.BASE_URL}about`}>About</a></li>
-      <li class="navbar-item"><a href={`${import.meta.env.BASE_URL}download`}>Download</a></li>
-      <li class="navbar-item"><a href={`${import.meta.env.BASE_URL}wasm/index.html`}>Try out</a></li>
-      <li class="navbar-item">
-        <a href="https://github.com/GIBIS-UNIFESP/wiRedPanda" target="_blank" class="github">
-          <Icon name="github" style="font-size: 3.5rem;"/>
+
+<header
+  id="site-header"
+  class="fixed top-0 left-0 w-full z-50 bg-transparent border-b border-transparent"
+  style="transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;"
+>
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+    <a href={base} class="flex items-center gap-2 group">
+      <Image
+        src={pandaLogo}
+        alt="wiRedPanda Logo"
+        width={36}
+        loading="eager"
+        class="transition-transform duration-200 group-hover:scale-110"
+      />
+      <span class="text-gray-800 dark:text-white font-semibold text-lg tracking-tight">wiRedPanda</span>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <ul class="hidden md:flex items-center gap-1">
+      {navLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class:list={[
+              'nav-link px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200',
+              isActive(link.href)
+                ? 'text-brand-light-blue dark:text-brand-light-blue bg-black/5 dark:bg-white/5'
+                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5',
+            ]}
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+      <li>
+        <a
+          href="https://github.com/GIBIS-UNIFESP/wiRedPanda"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="nav-link ml-2 p-2 text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
+          aria-label="GitHub Repository"
+        >
+          <Icon name="github" class="w-6 h-6" />
+        </a>
+      </li>
+      <li>
+        <ThemeToggle />
+      </li>
+    </ul>
+
+    <!-- Mobile: theme toggle + hamburger -->
+    <div class="flex items-center gap-2 md:hidden">
+      <ThemeToggle />
+      <button
+        id="mobile-menu-btn"
+        type="button"
+        class="p-2 text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path id="hamburger-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          <path id="close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Navigation -->
+  <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 dark:border-brand-blue/20 bg-white/80 dark:bg-bg-darker/90 backdrop-blur-md">
+    <ul class="px-4 py-3 space-y-1">
+      {navLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class:list={[
+              'nav-link block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200',
+              isActive(link.href)
+                ? 'text-brand-light-blue bg-black/5 dark:bg-white/5'
+                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5',
+            ]}
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+      <li>
+        <a
+          href="https://github.com/GIBIS-UNIFESP/wiRedPanda"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="nav-link flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-200"
+        >
+          <Icon name="github" class="w-5 h-5" />
+          GitHub
         </a>
       </li>
     </ul>
-  </nav>
+  </div>
 </header>
 
 <style>
-header {
-  padding: 7px;
-  min-width: 100vw;
-  z-index: 2;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
-[data-icon] {
-  margin-top: 10px;
-}
-
-li {
-  padding: 10px;
-}
-
-a,
-span {
-  font-size: 1.3rem;
-  color: white;
-}
-
-span {
-  font-weight: 500;
-}
-
-li:hover:not(:last-child) {
-  font-weight: 600;
-  text-shadow: 1px 1px 15px darkgreen;
-  animation: blink 0.15s linear 2;
-}
-
-div,
-nav {
-  border: 1.4px solid #134074;
-  border-radius: 10px;
-  background-color: rgba(1,1,1, 0.5);
-  backdrop-filter: blur(6px);
-  padding: 5px 10px;
-  box-shadow: 1px 1px 50px black;
-}
-
-@keyframes blink {
-  0%, 100% {
-    opacity: 1;
+  .nav-link:hover {
+    animation: nav-blink 0.15s linear 2;
   }
 
-  25%, 75% {
-    opacity: 0;
+  /* Scrolled state: applied via JS */
+  header.scrolled {
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
   }
-}
+
+  :global(.dark) header.scrolled {
+    background-color: rgba(17, 17, 24, 0.75);
+    border-color: rgba(19, 64, 116, 0.3);
+    box-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
+  }
 </style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const header = document.getElementById('site-header');
+    const btn = document.getElementById('mobile-menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    const hamburgerIcon = document.getElementById('hamburger-icon');
+    const closeIcon = document.getElementById('close-icon');
+
+    // Scroll-based header background
+    function updateHeader() {
+      if (!header) return;
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    }
+
+    updateHeader();
+    window.addEventListener('scroll', updateHeader, { passive: true });
+
+    // Mobile menu toggle
+    btn?.addEventListener('click', () => {
+      const isOpen = !menu?.classList.contains('hidden');
+      menu?.classList.toggle('hidden');
+      hamburgerIcon?.classList.toggle('hidden');
+      closeIcon?.classList.toggle('hidden');
+      btn.setAttribute('aria-expanded', String(!isOpen));
+    });
+  });
+</script>

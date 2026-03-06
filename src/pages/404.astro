@@ -2,9 +2,16 @@
 import Base from '../layouts/Base.astro';
 ---
 
-<Base titlePage="404">
-  <div class="content is-flex is-flex-direction-column is-align-items-center">
-    <h1>Oops!</h1>
-    <p>Looks like you came to the don't care part of the Karnaugh map, but don't worry! <br /> We've already simplified the process, just return to the main page and it'll be okay</p>
+<Base pageTitle="404">
+  <div class="flex flex-col items-center justify-center min-h-[60vh] pt-20 text-center px-6">
+    <h1 class="text-6xl font-bold text-brand-red mb-4">Oops!</h1>
+    <p class="text-gray-600 dark:text-gray-300 text-lg max-w-lg leading-relaxed">
+      Looks like you came to the don't care part of the Karnaugh map, but don't worry!
+      <br />
+      We've already simplified the process, just return to the main page and it'll be okay.
+    </p>
+    <a href={import.meta.env.BASE_URL} class="mt-8 px-6 py-3 bg-brand-blue hover:bg-brand-light-blue text-white rounded-lg font-medium transition-colors duration-200">
+      Back to Home
+    </a>
   </div>
 </Base>

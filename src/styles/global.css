@@ -1,28 +1,115 @@
-@import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
 @import url('https://fonts.googleapis.com/css2?family=Moderustic:wght@300..800&display=swap');
 
-@import './tiltin-animation.css';
-@import './flicker-animation.css';
-@import './jello-animation.css';
-@import './infinite-background.css';
+@import "tailwindcss";
 
-* {
-  font-family: "Moderustic", Helvetica, sans-serif;
-  font-size: 22px;
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Brand colors */
+  --color-brand-blue: #134074;
+  --color-brand-light-blue: #2DA6F4;
+  --color-brand-red: #BD2812;
+
+  /* Light mode background colors */
+  --color-bg-light: #f0ece4;
+  --color-bg-lighter: #ffffff;
+  --color-bg-card-light: rgba(255, 255, 255, 0.7);
+
+  /* Dark mode background colors */
+  --color-bg-dark: #1a1a2e;
+  --color-bg-darker: #111118;
+  --color-bg-card: rgba(17, 17, 24, 0.6);
+
+  /* Font family */
+  --font-sans: "Moderustic", Helvetica, sans-serif;
 }
 
-*::selection {
-  color: white;
-  background-color: #BD2812;
+/* Base styles */
+@layer base {
+  html {
+    font-size: 18px;
+    scroll-behavior: smooth;
+  }
+
+  /* Light mode defaults */
+  body {
+    @apply bg-bg-light text-gray-800 font-sans antialiased;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Dark mode */
+  .dark body {
+    @apply bg-bg-dark text-white;
+  }
+
+  ::selection {
+    color: white;
+    background-color: var(--color-brand-red);
+  }
+
+  a {
+    @apply transition-colors duration-200;
+  }
 }
 
-body {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 100vh;
+.led-dot {
+  display: inline-block;
+  width: 0.18em;
+  height: 0.18em;
+  background-color: var(--color-brand-red);
+  border-radius: 50%;
+  vertical-align: 0.58em;
+  margin-left: -0.05em;
+  margin-right: 0.02em;
+  animation: led-flicker 3s linear both;
+  box-shadow: 0 0 8px var(--color-brand-red), 0 0 16px rgba(189, 40, 18, 0.4);
 }
 
-.background-color {
-  background-color: #134074;
+/* Nav link blink animation */
+@keyframes nav-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0;
+  }
+}
+
+/* Scroll-down arrow bounce */
+@keyframes bounce-arrow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+}
+
+/* Hero "power on" animations */
+
+/* Generic fade-in + slide up for subtitle, arrow, header, etc. */
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Logo: simple fade-in and settle into place */
+@keyframes logo-fade-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
