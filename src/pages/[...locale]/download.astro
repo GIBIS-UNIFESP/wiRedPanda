@@ -1,7 +1,15 @@
 ---
 import { Icon } from 'astro-icon/components';
-import Base from '../layouts/Base.astro';
-import DownloadPlatform from '../components/DownloadPlatform.astro';
+import Base from '../../layouts/Base.astro';
+import DownloadPlatform from '../../components/DownloadPlatform.astro';
+import { getStaticLocalePaths, useTranslations, type Locale } from '../../i18n';
+
+export function getStaticPaths() {
+  return getStaticLocalePaths();
+}
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
 
 const GITHUB_REPO_OWNER = "GIBIS-UNIFESP";
 const GITHUB_REPO_NAME = "wiRedPanda";
@@ -9,19 +17,31 @@ const GITHUB_RELEASES_PAGE_URL = `https://github.com/${GITHUB_REPO_OWNER}/${GITH
 
 const archInstallCommand = "yay -S wiredpanda";
 const debianInstallCommand = "apt-get install wiredpanda";
+
+// Pass translations to client-side script
+const clientTranslations = {
+  fetching: t('download.fetching'),
+  errorHeading: t('download.errorHeading'),
+  linkNotAvailableRelease: t('download.linkNotAvailableRelease'),
+  versionText: t('download.versionText'),
+  errorFetching: t('download.errorFetching'),
+  errorNotFound: t('download.errorNotFound'),
+  errorRateLimit: t('download.errorRateLimit'),
+  errorConnection: t('download.errorConnection'),
+};
 ---
 
-<Base pageTitle="Download">
+<Base pageTitle={t('download.title')}>
   <section class="max-w-4xl mx-auto px-6 pt-24 pb-16 text-center">
-    <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-6">Download the software</h2>
+    <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-6">{t('download.heading')}</h2>
 
     <div id="release-info-container" class="mb-8 min-h-[50px]">
-      <p id="release-version-text" class="text-gray-600 dark:text-gray-300">Fetching latest release information...</p>
+      <p id="release-version-text" class="text-gray-600 dark:text-gray-300">{t('download.fetching')}</p>
       <div id="error-message-container" class="hidden bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-500/40 rounded-xl p-4 mt-4 text-left">
-        <p class="text-red-600 dark:text-red-400 font-semibold">Could not load latest download links:</p>
+        <p class="text-red-600 dark:text-red-400 font-semibold">{t('download.errorHeading')}</p>
         <p id="error-text" class="text-red-500 dark:text-red-300 mt-1"></p>
         <p class="text-gray-600 dark:text-gray-300 mt-2">
-          Please visit the <a href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" class="text-brand-light-blue hover:underline">GitHub Releases page</a> directly.
+          {t('download.errorVisit')} <a href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" class="text-brand-light-blue hover:underline">{t('download.errorVisitLink')}</a> {t('download.errorVisitSuffix')}
         </p>
       </div>
     </div>
@@ -33,9 +53,9 @@ const debianInstallCommand = "apt-get install wiredpanda";
           href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true"
         >
           <Icon name="platforms/windows" class="platform-icon disabled-icon" />
-          <span class="text-gray-600 dark:text-gray-300">Windows</span>
+          <span class="text-gray-600 dark:text-gray-300">{t('download.windows')}</span>
         </a>
-        <small id="windows-status" class="text-gray-400 dark:text-gray-500 text-xs hidden">(Link not available)</small>
+        <small id="windows-status" class="text-gray-400 dark:text-gray-500 text-xs hidden">{t('download.linkNotAvailable')}</small>
       </div>
       <div>
         <a id="linux-download-link"
@@ -43,9 +63,9 @@ const debianInstallCommand = "apt-get install wiredpanda";
           href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true"
         >
           <Icon name="platforms/linux" class="platform-icon disabled-icon" />
-          <span class="text-gray-600 dark:text-gray-300">Linux</span>
+          <span class="text-gray-600 dark:text-gray-300">{t('download.linux')}</span>
         </a>
-        <small id="linux-status" class="text-gray-400 dark:text-gray-500 text-xs hidden">(Link not available)</small>
+        <small id="linux-status" class="text-gray-400 dark:text-gray-500 text-xs hidden">{t('download.linkNotAvailable')}</small>
       </div>
       <div>
         <a id="macos-download-link"
@@ -53,16 +73,15 @@ const debianInstallCommand = "apt-get install wiredpanda";
           href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true"
         >
           <Icon name="platforms/macos" class="platform-icon disabled-icon" />
-          <span class="text-gray-600 dark:text-gray-300">Mac OS</span>
+          <span class="text-gray-600 dark:text-gray-300">{t('download.macos')}</span>
         </a>
-        <small id="macos-status" class="text-gray-400 dark:text-gray-500 text-xs hidden">(Link not available)</small>
+        <small id="macos-status" class="text-gray-400 dark:text-gray-500 text-xs hidden">{t('download.linkNotAvailable')}</small>
       </div>
     </div>
 
-    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Other Options</h2>
+    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">{t('download.otherOptions')}</h2>
     <p class="text-gray-600 dark:text-gray-300 mb-6">
-      You can also install wiRedPanda using package managers on some Linux distributions.
-      These packages might not always be the absolute latest version found on GitHub releases.
+      {t('download.packageManagers')}
     </p>
 
     <div class="max-w-lg mx-auto rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 bg-bg-card-light dark:bg-bg-card backdrop-blur-sm px-5 py-4 mb-8 space-y-1 divide-y divide-gray-200/60 dark:divide-brand-blue/15">
@@ -71,9 +90,9 @@ const debianInstallCommand = "apt-get install wiredpanda";
     </div>
 
     <p class="text-gray-600 dark:text-gray-300">
-      For all releases, including older versions or pre-releases, please visit the
+      {t('download.allReleases')}
       <a href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" class="text-brand-light-blue hover:underline">
-        official GitHub Releases page
+        {t('download.officialGithub')}
       </a>.
     </p>
   </section>
@@ -85,11 +104,11 @@ const debianInstallCommand = "apt-get install wiredpanda";
     role="status"
     aria-live="polite"
   >
-    Copied to clipboard!
+    {t('download.copiedToClipboard')}
   </div>
 </Base>
 
-<script define:vars={{ GITHUB_REPO_OWNER, GITHUB_REPO_NAME, GITHUB_RELEASES_PAGE_URL }}>
+<script define:vars={{ GITHUB_REPO_OWNER, GITHUB_REPO_NAME, GITHUB_RELEASES_PAGE_URL, clientTranslations }}>
   const releaseVersionTextEl = document.getElementById('release-version-text');
   const errorMessageContainerEl = document.getElementById('error-message-container');
   const errorTextEl = document.getElementById('error-text');
@@ -115,7 +134,7 @@ const debianInstallCommand = "apt-get install wiredpanda";
       element.querySelector('.platform-icon').classList.add('disabled-icon');
       element.setAttribute('aria-disabled', 'true');
       if (statusElement) {
-        statusElement.textContent = '(Link not available in latest release)';
+        statusElement.textContent = clientTranslations.linkNotAvailableRelease;
         statusElement.classList.remove('hidden');
       }
     }
@@ -136,11 +155,11 @@ const debianInstallCommand = "apt-get install wiredpanda";
       const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`);
 
       if (!response.ok) {
-        let message = `Error fetching latest release: ${response.status} ${response.statusText}.`;
+        let message = clientTranslations.errorFetching.replace('{status}', response.status).replace('{statusText}', response.statusText);
         if (response.status === 404) {
-          message = `No releases found for ${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}.`;
+          message = clientTranslations.errorNotFound.replace('{owner}', GITHUB_REPO_OWNER).replace('{repo}', GITHUB_REPO_NAME);
         } else if (response.status === 403) {
-          message = "GitHub API rate limit likely exceeded. Please try again later.";
+          message = clientTranslations.errorRateLimit;
         }
         console.error(message);
         showError(message);
@@ -151,7 +170,7 @@ const debianInstallCommand = "apt-get install wiredpanda";
       const releaseVersion = latestRelease.tag_name || "latest";
 
       if (releaseVersionTextEl) {
-        releaseVersionTextEl.textContent = `Here you can download the ${releaseVersion} version of wiRedPanda binaries for:`;
+        releaseVersionTextEl.textContent = clientTranslations.versionText.replace('{version}', releaseVersion);
       }
       if (errorMessageContainerEl) errorMessageContainerEl.classList.add('hidden');
 
@@ -182,7 +201,7 @@ const debianInstallCommand = "apt-get install wiredpanda";
       setLink(macosLinkEl, macosUrl, macosStatusEl);
 
     } catch (error) {
-      const message = "Failed to connect to GitHub API or parse the response. Please check your internet connection or try again later.";
+      const message = clientTranslations.errorConnection;
       console.error("Error fetching or parsing latest release data:", error);
       showError(message);
     }

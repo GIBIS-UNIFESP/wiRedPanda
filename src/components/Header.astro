@@ -2,8 +2,13 @@
 import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
 import ThemeToggle from "./ThemeToggle.astro";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import { getLocaleFromUrl, useTranslations, getLocalePath } from '../i18n';
 
 import pandaLogo from '../images/wpanda.svg';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
 
 const currentPath = Astro.url.pathname;
 const base = import.meta.env.BASE_URL;
@@ -14,10 +19,10 @@ interface NavLink {
 }
 
 const navLinks: NavLink[] = [
-  { label: 'Home', href: `${base}` },
-  { label: 'About', href: `${base}about` },
-  { label: 'Download', href: `${base}download` },
-  { label: 'Try out', href: `${base}wasm/index.html` },
+  { label: t('nav.home'), href: getLocalePath('/', locale) },
+  { label: t('nav.about'), href: getLocalePath('/about', locale) },
+  { label: t('nav.download'), href: getLocalePath('/download', locale) },
+  { label: t('nav.tryout'), href: `${base}wasm/index.html` },
 ];
 
 function isActive(href: string): boolean {
@@ -33,10 +38,10 @@ function isActive(href: string): boolean {
   style="transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;"
 >
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-    <a href={base} class="flex items-center gap-2 group">
+    <a href={getLocalePath('/', locale)} class="flex items-center gap-2 group">
       <Image
         src={pandaLogo}
-        alt="wiRedPanda Logo"
+        alt={t('hero.logoAlt')}
         width={36}
         loading="eager"
         class="transition-transform duration-200 group-hover:scale-110"
@@ -46,6 +51,9 @@ function isActive(href: string): boolean {
 
     <!-- Desktop Navigation -->
     <ul class="hidden md:flex items-center gap-1">
+      <li>
+        <LanguageSwitcher />
+      </li>
       {navLinks.map((link) => (
         <li>
           <a
@@ -67,7 +75,7 @@ function isActive(href: string): boolean {
           target="_blank"
           rel="noopener noreferrer"
           class="nav-link ml-2 p-2 text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
-          aria-label="GitHub Repository"
+          aria-label={t('nav.githubRepo')}
         >
           <Icon name="github" class="w-6 h-6" />
         </a>
@@ -77,14 +85,15 @@ function isActive(href: string): boolean {
       </li>
     </ul>
 
-    <!-- Mobile: theme toggle + hamburger -->
+    <!-- Mobile: theme toggle + lang switcher + hamburger -->
     <div class="flex items-center gap-2 md:hidden">
+      <LanguageSwitcher />
       <ThemeToggle />
       <button
         id="mobile-menu-btn"
         type="button"
         class="p-2 text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
-        aria-label="Toggle navigation menu"
+        aria-label={t('nav.toggleMenu')}
         aria-expanded="false"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,7 +130,7 @@ function isActive(href: string): boolean {
           class="nav-link flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-200"
         >
           <Icon name="github" class="w-5 h-5" />
-          GitHub
+          {t('nav.github')}
         </a>
       </li>
     </ul>

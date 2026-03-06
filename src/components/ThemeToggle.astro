@@ -1,8 +1,15 @@
+---
+import { getLocaleFromUrl, useTranslations } from '../i18n';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+---
+
 <button
   id="theme-toggle"
   type="button"
   class="theme-switch"
-  aria-label="Toggle dark mode"
+  aria-label={t('theme.toggle')}
   role="switch"
   aria-checked="false"
 >

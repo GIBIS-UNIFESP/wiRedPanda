@@ -1,7 +1,11 @@
 ---
 import { Image } from "astro:assets";
+import { getLocaleFromUrl, useTranslations } from '../i18n';
 
 import pandaLogo from '../images/wpanda.svg';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
 
 const letters = "wiRedPanda".split("");
 ---
@@ -10,16 +14,11 @@ const letters = "wiRedPanda".split("");
   <!-- Protoboard backgorund -->
   <div class="hero-dotgrid absolute inset-0 pointer-events-none" aria-hidden="true"></div>
 
-  <!-- Subtle radial glow behind the logo -->
-  <!-- <div class="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true"> -->
-  <!--   <div class="w-[500px] h-[500px] rounded-full bg-brand-blue/10 blur-3xl"></div> -->
-  <!-- </div> -->
-
   <div class="relative z-10 flex flex-col items-center gap-8 px-6">
     <div class="flex flex-col md:flex-row items-center gap-6 md:gap-10">
       <Image
         src={pandaLogo}
-        alt="wiRedPanda Logo"
+        alt={t('hero.logoAlt')}
         width={220}
         loading="eager"
         class="hero-logo drop-shadow-2xl"
@@ -33,14 +32,14 @@ const letters = "wiRedPanda".split("");
     </div>
 
     <p class="hero-after text-gray-500 dark:text-gray-400 text-lg md:text-xl text-center max-w-xl leading-relaxed">
-      A fun and easy way to learn logic circuits
+      {t('hero.tagline')}
     </p>
   </div>
 
   <a
     href="#content"
     class="hero-after absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-gray-400 dark:text-gray-500 hover:text-brand-light-blue dark:hover:text-brand-light-blue transition-colors duration-200"
-    aria-label="Scroll down"
+    aria-label={t('hero.scrollDown')}
   >
     <svg class="w-8 h-8 scroll-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
       <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />

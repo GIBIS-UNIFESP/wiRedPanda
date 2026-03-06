@@ -5,21 +5,31 @@ import '../styles/global.css';
 
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { getLocaleFromUrl, getHtmlLang, useTranslations, getOtherLocales, getLocalePath } from '../i18n';
 
 interface Props {
   pageTitle: string;
 }
 
 const { pageTitle } = Astro.props;
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+const htmlLang = getHtmlLang(locale);
+const otherLocales = getOtherLocales(locale);
+const origin = Astro.site?.origin ?? '';
 ---
 
-<html lang="en" class="dark">
+<html lang={htmlLang} class="dark">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/ico" href={`${import.meta.env.BASE_URL}wpanda.ico`} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="description" content="wiRedPanda - A free, intuitive tool for learning and designing digital logic circuits." />
+    <meta name="description" content={t('meta.description')} />
+    {otherLocales.map((altLocale) => (
+      <link rel="alternate" hreflang={getHtmlLang(altLocale)} href={`${origin}${getLocalePath(Astro.url.pathname, altLocale)}`} />
+    ))}
     <ViewTransitions />
     <title>Panda | {pageTitle}</title>
   </head>
@@ -31,3 +41,29 @@ const { pageTitle } = Astro.props;
     <Footer />
   </body>
 </html>
+
+<!-- Redirect users to their locale on first visit -->
+<script is:inline>
+  (function() {
+    if (sessionStorage.getItem('locale-checked')) return;
+    sessionStorage.setItem('locale-checked', '1');
+
+    var path = window.location.pathname;
+    var base = '/wiRedPanda';
+    var stripped = path;
+    if (base && path.indexOf(base) === 0) {
+      stripped = path.slice(base.length);
+    }
+
+    // Already on a non-default locale? Skip.
+    if (stripped.indexOf('/pt-br') === 0 || stripped.indexOf('/es') === 0) return;
+
+    // Check browser language
+    var lang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+    if (lang.indexOf('pt') === 0) {
+      window.location.replace(base + '/pt-br' + stripped);
+    } else if (lang.indexOf('es') === 0) {
+      window.location.replace(base + '/es' + stripped);
+    }
+  })();
+</script>

@@ -8,6 +8,14 @@ export default defineConfig({
   site: 'https://gibis-unifesp.github.io/wiRedPanda',
   base: '/wiRedPanda/',
   integrations: [icon()],
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'pt-br', 'es'],
+    routing: {
+      prefixDefaultLocale: false,
+      redirectToDefaultLocale: false,
+    },
+  },
   vite: {
     plugins: [tailwindcss()],
   },

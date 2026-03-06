@@ -1,17 +1,21 @@
 ---
 import Base from '../layouts/Base.astro';
+import { getLocaleFromUrl, useTranslations, getLocalePath } from '../i18n';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
 ---
 
-<Base pageTitle="404">
+<Base pageTitle={t('404.title')}>
   <div class="flex flex-col items-center justify-center min-h-[60vh] pt-20 text-center px-6">
-    <h1 class="text-6xl font-bold text-brand-red mb-4">Oops!</h1>
+    <h1 class="text-6xl font-bold text-brand-red mb-4">{t('404.heading')}</h1>
     <p class="text-gray-600 dark:text-gray-300 text-lg max-w-lg leading-relaxed">
-      Looks like you came to the don't care part of the Karnaugh map, but don't worry!
+      {t('404.message')}
       <br />
-      We've already simplified the process, just return to the main page and it'll be okay.
+      {t('404.submessage')}
     </p>
-    <a href={import.meta.env.BASE_URL} class="mt-8 px-6 py-3 bg-brand-blue hover:bg-brand-light-blue text-white rounded-lg font-medium transition-colors duration-200">
-      Back to Home
+    <a href={getLocalePath('/', locale)} class="mt-8 px-6 py-3 bg-brand-blue hover:bg-brand-light-blue text-white rounded-lg font-medium transition-colors duration-200">
+      {t('404.backHome')}
     </a>
   </div>
 </Base>

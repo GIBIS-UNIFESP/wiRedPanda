@@ -1,0 +1,90 @@
+---
+import { Icon } from 'astro-icon/components';
+import { getLocaleFromUrl, getOtherLocales, getLocalePath, useTranslations, localeFlags, languages, type Locale } from '../i18n';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+const otherLocales = getOtherLocales(locale);
+const currentPath = Astro.url.pathname;
+const currentFlag = localeFlags[locale];
+---
+
+<div class="lang-switcher relative">
+  <button
+    type="button"
+    class="lang-switcher-btn p-2 text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 flex items-center gap-1"
+    aria-label={t('lang.switchLanguage')}
+    title={t('lang.switchLanguage')}
+    aria-expanded="false"
+    aria-haspopup="true"
+  >
+    <Icon name={currentFlag} class="w-5 h-5 rounded-sm" />
+    <svg class="w-3 h-3 lang-switcher-chevron transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+
+  <div class="lang-switcher-dropdown hidden absolute right-0 top-full mt-1 py-1 min-w-[140px] rounded-lg border border-gray-200 dark:border-brand-blue/30 bg-white dark:bg-bg-darker shadow-lg shadow-black/10 dark:shadow-black/40 z-50">
+    {otherLocales.map((altLocale: Locale) => (
+      <a
+        href={getLocalePath(currentPath, altLocale)}
+        class="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors duration-150"
+      >
+        <Icon name={localeFlags[altLocale]} class="w-4 h-4 rounded-sm" />
+        <span>{languages[altLocale]}</span>
+      </a>
+    ))}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll('.lang-switcher').forEach((switcher) => {
+      const btn = switcher.querySelector('.lang-switcher-btn');
+      const dropdown = switcher.querySelector('.lang-switcher-dropdown');
+      const chevron = switcher.querySelector('.lang-switcher-chevron');
+
+      if (!btn || !dropdown) return;
+
+      function toggle() {
+        const isOpen = !dropdown!.classList.contains('hidden');
+        if (isOpen) {
+          close();
+        } else {
+          open();
+        }
+      }
+
+      function open() {
+        dropdown!.classList.remove('hidden');
+        chevron?.classList.add('rotate-180');
+        btn!.setAttribute('aria-expanded', 'true');
+      }
+
+      function close() {
+        dropdown!.classList.add('hidden');
+        chevron?.classList.remove('rotate-180');
+        btn!.setAttribute('aria-expanded', 'false');
+      }
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggle();
+      });
+
+      // Close on click outside
+      document.addEventListener('click', (e) => {
+        if (!switcher.contains(e.target as Node)) {
+          close();
+        }
+      });
+
+      // Close on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          close();
+        }
+      });
+    });
+  });
+</script>

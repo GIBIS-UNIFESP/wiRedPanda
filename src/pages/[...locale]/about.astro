@@ -1,9 +1,17 @@
 ---
 import { Image } from 'astro:assets';
 
-import Base from '../layouts/Base.astro';
+import Base from '../../layouts/Base.astro';
+import { getStaticLocalePaths, useTranslations, type Locale } from '../../i18n';
 
-import campusUnifesp from '../images/unifesp_campus.webp';
+import campusUnifesp from '../../images/unifesp_campus.webp';
+
+export function getStaticPaths() {
+  return getStaticLocalePaths();
+}
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
 
 const formerDevs = [
   'André Leiniö', 'Daniel Renato', 'Guilherme Costa', 'Gustavo Oliveira', 'Héctor Castelli', 'Ivan Borgia Dardi',
@@ -11,18 +19,18 @@ const formerDevs = [
 ];
 ---
 
-<Base pageTitle="About">
+<Base pageTitle={t('about.title')}>
   <section class="max-w-4xl mx-auto px-6 pt-24 pb-16">
-    <h2 class="text-4xl font-bold text-gray-900 dark:text-white text-center mb-8">About the project</h2>
+    <h2 class="text-4xl font-bold text-gray-900 dark:text-white text-center mb-8">{t('about.heading')}</h2>
 
     <p class="text-gray-600 dark:text-gray-300 text-justify leading-relaxed mb-8">
-      The project was born in 2015 with Dr. Fábio Cappabianco, Davi Morales, Lucas Lellis and Rodrigo Torres, with the aim of having a software program capable of making the subject of logic circuits easy to learn, 100% free and cross-platform. Built to be easy to use, today the software is used to teach digital circuits at UNIFESP, as well as in other university project that teaches digital logic to high school students in São José dos Campos public schools.
+      {t('about.history')}
     </p>
 
     <div class="flex justify-center mb-8">
       <Image
         src={campusUnifesp}
-        alt="Unifesp campus"
+        alt={t('about.campusAlt')}
         width={600}
         loading="eager"
         class="rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 shadow-lg shadow-black/20 dark:shadow-black/40"
@@ -30,10 +38,10 @@ const formerDevs = [
     </div>
 
     <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-12">
-      We're in active development, so if you want to report bugs or share with us new ideas, please open a discussion on GitHub! Surely we can improve the software with your help.
+      {t('about.contribute')}
     </p>
 
-    <h3 class="text-3xl font-bold text-gray-900 dark:text-white text-center mb-6">wiRedPanda Team</h3>
+    <h3 class="text-3xl font-bold text-gray-900 dark:text-white text-center mb-6">{t('about.team')}</h3>
     <ul class="text-center text-gray-600 dark:text-gray-300 space-y-1 mb-12">
       <li>João Pedro Oliveira</li>
       <li>Matheus Esteves</li>
@@ -42,7 +50,7 @@ const formerDevs = [
       <li>Prof. Fábio Cappabianco, Ph.D.</li>
     </ul>
 
-    <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center mb-6">Former Developers</h3>
+    <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center mb-6">{t('about.formerDevs')}</h3>
     <ul class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 text-center text-gray-600 dark:text-gray-300">
       {formerDevs.map((dev) => (
         <li class="p-2">{dev}</li>

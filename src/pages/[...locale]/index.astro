@@ -1,0 +1,81 @@
+---
+import { Image } from "astro:assets";
+
+import Base from "../../layouts/Base.astro";
+import Hero from "../../components/Hero.astro";
+import FeatureCard from "../../components/FeatureCard.astro";
+import { getStaticLocalePaths, useTranslations, type Locale } from '../../i18n';
+
+import panda1 from '../../images/panda/panda1.png';
+import panda2 from '../../images/panda/panda2.png';
+
+export function getStaticPaths() {
+  return getStaticLocalePaths();
+}
+
+const { locale } = Astro.props as { locale: Locale };
+const t = useTranslations(locale);
+---
+
+<Base pageTitle={t('home.title')}>
+  <Hero />
+
+  <section id="content" class="max-w-5xl mx-auto px-6 py-16 text-justify">
+    <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-lg mb-16">
+      {t('home.intro')}
+    </p>
+
+    <h2 class="text-4xl font-bold text-gray-900 dark:text-white text-center mb-12">{t('home.mainFeatures')}</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-16">
+      <FeatureCard
+        title={t('home.feature.simulation.title')}
+        content={t('home.feature.simulation.content')}
+      />
+      <FeatureCard
+        title={t('home.feature.interface.title')}
+        content={t('home.feature.interface.content')}
+      />
+      <FeatureCard
+        title={t('home.feature.analysis.title')}
+        content={t('home.feature.analysis.content')}
+      />
+      <FeatureCard
+        title={t('home.feature.crossplatform.title')}
+        content={t('home.feature.crossplatform.content')}
+      />
+    </div>
+
+    <div class="flex justify-center mb-16">
+      <video autoplay muted loop class="w-full max-w-4xl rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 shadow-lg shadow-black/20 dark:shadow-black/40">
+        <source src={`${import.meta.env.BASE_URL}demo.mp4`} type="video/mp4" />
+      </video>
+    </div>
+
+    <div class="flex flex-col md:flex-row items-center gap-8 mb-16">
+      <p class="text-gray-600 dark:text-gray-300 leading-relaxed flex-1">
+        {t('home.mission')}
+      </p>
+      <Image
+        src={panda1}
+        alt={t('home.screenshotAlt')}
+        width={500}
+        class="rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 shadow-lg shadow-black/20 dark:shadow-black/40 flex-shrink-0"
+        loading="lazy"
+      />
+    </div>
+
+    <div class="flex flex-col-reverse md:flex-row items-center gap-8">
+      <Image
+        src={panda2}
+        alt={t('home.screenshotAlt')}
+        width={500}
+        class="rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 shadow-lg shadow-black/20 dark:shadow-black/40 flex-shrink-0"
+        loading="lazy"
+      />
+      <p class="text-gray-600 dark:text-gray-300 leading-relaxed flex-1">
+        {t('home.cta')}
+      </p>
+    </div>
+  </section>
+</Base>
