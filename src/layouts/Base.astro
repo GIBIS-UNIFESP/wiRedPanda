@@ -20,9 +20,18 @@ const otherLocales = getOtherLocales(locale);
 const origin = Astro.site?.origin ?? '';
 ---
 
-<html lang={htmlLang} class="dark">
+<html lang={htmlLang}>
   <head>
     <meta charset="utf-8" />
+    <!-- Theme init: must run before any rendering to avoid FOUC -->
+    <script is:inline>
+      (function() {
+        var stored = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var isDark = stored === 'dark' || (!stored && prefersDark);
+        document.documentElement.classList.toggle('dark', isDark);
+      })();
+    </script>
     <link rel="icon" type="image/ico" href={`${import.meta.env.BASE_URL}wpanda.ico`} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
@@ -32,6 +41,13 @@ const origin = Astro.site?.origin ?? '';
     ))}
     <ViewTransitions />
     <title>Panda | {pageTitle}</title>
+    <!-- Preserve theme across view transitions -->
+    <script is:inline>
+      document.addEventListener('astro:before-swap', function(ev) {
+        var isDark = document.documentElement.classList.contains('dark');
+        ev.newDocument.documentElement.classList.toggle('dark', isDark);
+      });
+    </script>
   </head>
   <body>
     <Header />

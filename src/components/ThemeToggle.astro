@@ -87,21 +87,6 @@ const t = useTranslations(locale);
   }
 </style>
 
-<!-- Inline script to prevent flash of wrong theme (FOUC) -->
-<script is:inline>
-  (function() {
-    const stored = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const isDark = stored === 'dark' || (!stored && prefersDark);
-
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  })();
-</script>
-
 <script>
   function setupThemeToggle() {
     const btn = document.getElementById('theme-toggle');
