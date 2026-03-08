@@ -71,7 +71,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     // --- Language / translation setup ---
     // Get language from settings, or auto-detect from system if not set
-    QString language = Settings::value("language").toString();
+    QString language = Settings::language();
     if (language.isEmpty()) {
         // Auto-detect system language
         QLocale systemLocale = QLocale::system();
@@ -107,10 +107,10 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->tab, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
 
     qCDebug(zero) << "Restoring geometry and setting zoom controls.";
-    restoreGeometry(Settings::value("MainWindow/geometry").toByteArray());
-    restoreState(Settings::value("MainWindow/windowState").toByteArray());
-    m_ui->splitter->restoreGeometry(Settings::value("MainWindow/splitter/geometry").toByteArray());
-    m_ui->splitter->restoreState(Settings::value("MainWindow/splitter/state").toByteArray());
+    restoreGeometry(Settings::mainWindowGeometry());
+    restoreState(Settings::mainWindowState());
+    m_ui->splitter->restoreGeometry(Settings::splitterGeometry());
+    m_ui->splitter->restoreState(Settings::splitterState());
 
     qCDebug(zero) << "Preparing theme and UI modes.";
     auto *themeGroup = new QActionGroup(this);
@@ -123,9 +123,9 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     themeGroup->setExclusive(true);
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &MainWindow::updateTheme);
     updateTheme();
-    setFastMode(Settings::value("fastMode").toBool());
-    m_ui->actionLabelsUnderIcons->setChecked(Settings::value("labelsUnderIcons").toBool());
-    m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
+    setFastMode(Settings::fastMode());
+    m_ui->actionLabelsUnderIcons->setChecked(Settings::labelsUnderIcons());
+    m_ui->mainToolBar->setToolButtonStyle(Settings::labelsUnderIcons() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
     qCDebug(zero) << "Setting left side menus.";
     populateLeftMenu();
@@ -268,7 +268,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::loadAutosaveFiles()
 {
-    QStringList autosaves(Settings::value("autosaveFile").toStringList());
+    QStringList autosaves(Settings::autosaveFiles());
 
     qCDebug(zero) << "All autosave files: " << autosaves;
 
@@ -299,7 +299,7 @@ void MainWindow::loadAutosaveFiles()
         ++it;
     }
 
-    Settings::setValue("autosaveFile", autosaves);
+    Settings::setAutosaveFiles(autosaves);
 }
 
 void MainWindow::createNewTab()
@@ -387,7 +387,7 @@ void MainWindow::show()
 
     // Recovery is deferred to show() so that the window is fully visible
     // before any blocking message boxes are presented to the user.
-    if (!Settings::contains("hideV4Warning")) {
+    if (!Settings::hideV4Warning()) {
         aboutThisVersion();
     }
 
@@ -433,7 +433,7 @@ void MainWindow::showUpdateDialog(const QString &latestVersion, const QUrl &rele
     dialog.exec();
 
     if (skipCheckBox->isChecked()) {
-        Settings::setValue("updateCheck/skippedVersion", latestVersion);
+        Settings::setUpdateCheckSkippedVersion(latestVersion);
     }
 }
 
@@ -467,9 +467,9 @@ void MainWindow::aboutThisVersion()
     connect(checkBox, &QCheckBox::checkStateChanged, this, [](int state) {
 #endif
         if (static_cast<Qt::CheckState>(state) == Qt::CheckState::Checked) {
-            Settings::setValue("hideV4Warning", "true");
+            Settings::setHideV4Warning(true);
         } else {
-            Settings::remove("hideV4Warning");
+            Settings::setHideV4Warning(false);
         }
     });
 
@@ -725,15 +725,15 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::updateSettings()
 {
-    Settings::setValue("MainWindow/geometry", saveGeometry());
-    Settings::setValue("MainWindow/windowState", saveState());
-    Settings::setValue("MainWindow/splitter/geometry", m_ui->splitter->saveGeometry());
-    Settings::setValue("MainWindow/splitter/state", m_ui->splitter->saveState());
+    Settings::setMainWindowGeometry(saveGeometry());
+    Settings::setMainWindowState(saveState());
+    Settings::setSplitterGeometry(m_ui->splitter->saveGeometry());
+    Settings::setSplitterState(m_ui->splitter->saveState());
 }
 
 bool MainWindow::hasModifiedFiles()
 {
-    const QStringList autosaves = Settings::value("autosaveFile").toStringList();
+    const QStringList autosaves = Settings::autosaveFiles();
 
     const auto workspaces = m_ui->tab->findChildren<WorkSpace *>();
 
@@ -1457,7 +1457,7 @@ void MainWindow::loadTranslation(const QString &language)
 
     // Persist immediately so if the app crashes during translation loading the
     // preference is still saved for the next launch.
-    Settings::setValue("language", language);
+    Settings::setLanguage(language);
 
     // Always remove and recreate translators rather than calling load() on an
     // existing one — Qt does not guarantee that a re-loaded translator emits
@@ -1588,8 +1588,8 @@ void MainWindow::populateLanguageMenu()
         action->setIcon(QIcon(getLanguageFlagIcon(langCode)));
 
         // Check if this is the current language
-        if (langCode == Settings::value("language").toString() ||
-           (langCode == "en" && Settings::value("language").toString().isEmpty())) {
+        if (langCode == Settings::language() ||
+           (langCode == "en" && Settings::language().isEmpty())) {
             action->setChecked(true);
         }
 
@@ -1816,7 +1816,7 @@ void MainWindow::populateLeftMenu()
 void MainWindow::on_actionFastMode_triggered(const bool checked)
 {
     setFastMode(checked);
-    Settings::setValue("fastMode", checked);
+    Settings::setFastMode(checked);
 }
 
 void MainWindow::on_actionWaveform_triggered()
@@ -1924,7 +1924,7 @@ void MainWindow::on_actionMute_triggered(const bool checked)
 void MainWindow::on_actionLabelsUnderIcons_triggered(const bool checked)
 {
     m_ui->mainToolBar->setToolButtonStyle(checked ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
-    Settings::setValue("labelsUnderIcons", checked);
+    Settings::setLabelsUnderIcons(checked);
 }
 
 bool MainWindow::event(QEvent *event)

@@ -24,7 +24,7 @@ void UpdateChecker::checkForUpdates()
 {
     // Skip if we already checked today.
     const QString today = QDate::currentDate().toString(Qt::ISODate);
-    if (Settings::value("updateCheck/lastCheckDate").toString() == today) {
+    if (Settings::updateCheckLastDate() == today) {
         return;
     }
 
@@ -47,7 +47,7 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
 
     // Record the check date only on a successful response so a network error
     // allows a retry on the next application launch.
-    Settings::setValue("updateCheck/lastCheckDate", QDate::currentDate().toString(Qt::ISODate));
+    Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
 
     const QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
     if (doc.isNull() || !doc.isObject()) {
@@ -61,7 +61,7 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
     }
 
     // Respect the user's per-version suppression.
-    if (latest.toString() == Settings::value("updateCheck/skippedVersion").toString()) {
+    if (latest.toString() == Settings::updateCheckSkippedVersion()) {
         return;
     }
 

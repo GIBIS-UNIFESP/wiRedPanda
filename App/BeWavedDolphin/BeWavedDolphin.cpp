@@ -163,7 +163,7 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
     resize(800, 500);
 
-    restoreGeometry(Settings::value("beWavedDolphin/geometry").toByteArray());
+    restoreGeometry(Settings::dolphinGeometry());
 
     // Custom delegate renders SVG waveform segments instead of plain text in Line mode
     m_signalTableView->setItemDelegate(new SignalDelegate(this));
@@ -180,7 +180,7 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     m_view.setRedirectZoom(true);
     m_ui->verticalLayout->addWidget(&m_view);
 
-    m_ui->mainToolBar->setToolButtonStyle(Settings::value("labelsUnderIcons").toBool() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
+    m_ui->mainToolBar->setToolButtonStyle(Settings::labelsUnderIcons() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
     loadPixmaps();
 
@@ -215,7 +215,7 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
 BewavedDolphin::~BewavedDolphin()
 {
-    Settings::setValue("beWavedDolphin/geometry", saveGeometry());
+    Settings::setDolphinGeometry(saveGeometry());
 }
 
 void BewavedDolphin::loadPixmaps()
