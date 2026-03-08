@@ -1,0 +1,15 @@
+# IC Generator Dependencies
+#
+# These generators create .panda test fixture files for the IC test suite.
+# Dependencies are inherited from MCP/Client infrastructure.
+#
+# Install with:
+#   pip install -r requirements.txt
+#   # OR (if running from project root):
+#   export PYTHONPATH=/path/to/wiredpanda/MCP/Client:$PYTHONPATH
+#
+
+# Runtime type checking and validation
+beartype>=0.15.0         # Runtime type checking used in ic_builder_base.py
+pydantic>=2.4.0          # Data validation (via mcp_infrastructure)
+jsonschema>=4.17.0       # JSON Schema validation (via mcp_infrastructure)

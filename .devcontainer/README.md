@@ -74,9 +74,9 @@ cmake --build --preset debug
 # Manual test execution using CTest presets
 ctest --preset debug
 
-# Run specific test executables
-./build/testcommands -functions    # Show available test functions
-./build/testelements               # Run element tests
+# Run specific test class
+./build/test_wiredpanda TestClassName
+./build/test_wiredpanda -functions  # List all available test classes
 ```
 
 Tests run in parallel automatically with all CPU cores available. Output on failure and verbose details are enabled automatically.
