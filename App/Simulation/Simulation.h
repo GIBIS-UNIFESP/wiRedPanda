@@ -91,6 +91,7 @@ private:
     QVector<GraphicElement *> m_outputs;
     QVector<GraphicElementInput *> m_inputs;
     QVector<QNEConnection *> m_connections;
+    QVector<QVector<bool>> m_previousOutputs;
 
     // --- Members: Scene & mapping ---
 
@@ -99,5 +100,6 @@ private:
 
     // --- Members: State flags ---
 
+    bool m_hasFeedbackElements = false;
     bool m_initialized = false;
 };
