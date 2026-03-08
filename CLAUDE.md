@@ -23,12 +23,10 @@
 # Configure with build type
 cmake --preset debug
 # Build
-cmake --build --preset debug --target wiredpanda
+cmake --build --preset debug
 # Tests
 ctest --preset debug
 ```
-
-**Windows Qt Path**: Use `cmake --preset windows-qt` preset for Windows with Qt path preconfigured.
 
 - **mold linker**: Modern fast linker installed (`sudo apt install mold`) - automatically used by CMake when available
 - **Visual Studio BuildTools**: `"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"`
@@ -54,10 +52,10 @@ Advanced development features supported:
 
 - Project uses Qt Test framework
 - **IMPORTANT**: Always stay in project root directory - don't cd to build/
-- **Test execution**: Cross-platform CTest approach from project root:
+- **Test execution**: Use CMake presets for automatic configuration:
 
   ```bash
-  ctest --test-dir build
+  ctest --preset debug
   ```
 
 - **Individual test execution**: Run specific test executables directly:
@@ -68,10 +66,15 @@ Advanced development features supported:
   ./build/testfiles                  # Run file loading tests
   ```
 
-- **CTest options**:
-  - `ctest --verbose` - Detailed output
-  - `ctest --parallel 4` - Parallel execution
-  - `ctest -R pattern` - Run tests matching pattern
+- **CTest preset options**:
+  - `ctest --preset debug` - Debug build tests
+  - `ctest --preset release` - Release build tests
+  - `ctest --preset coverage` - Coverage analysis
+  - `ctest --preset asan` - Address Sanitizer
+  - `ctest --preset tsan` - Thread Sanitizer
+  - `ctest --preset msan` - Memory Sanitizer
+  - `ctest --preset ubsan` - Undefined Behavior Sanitizer
+  - Parallel execution and output on failure are automatic via CMakeLists.txt configuration
 
 ## Project Structure
 
