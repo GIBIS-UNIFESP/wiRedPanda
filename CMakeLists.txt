@@ -317,6 +317,12 @@ endforeach()
 add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS} ${FORMS})
 target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS})
 
+# Treat external dependencies as system headers to suppress clazy warnings
+target_include_directories(wiredpanda_lib SYSTEM PUBLIC
+    ${CMAKE_BINARY_DIR}/_deps/json-src/include
+    ${CMAKE_BINARY_DIR}/_deps/json-schema-validator-src/src
+)
+
 option(ENABLE_PCH "Enable precompiled headers for faster compilation" ON)
 if(ENABLE_PCH)
     target_precompile_headers(wiredpanda_lib PRIVATE pch.h)
