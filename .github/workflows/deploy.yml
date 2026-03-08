@@ -21,31 +21,19 @@ jobs:
 # =================================
 
     runs-on: ${{ matrix.os }}
-    container: ${{ matrix.os == 'ubuntu-latest' && 'ubuntu:20.04' || '' }}
 
     steps:
     - name: Install Ubuntu dependencies
       if: runner.os == 'Linux'
       run: |
         export DEBIAN_FRONTEND=noninteractive
-        apt-get update
-        apt-get install -y software-properties-common
-        add-apt-repository ppa:ubuntu-toolchain-r/test -y
-        apt-get update
-        apt-get install -y \
-          build-essential \
-          gcc-11 \
-          g++-11 \
-          git \
-          jq \
-          libasound2 \
-          libcups2 \
+        sudo apt-get update
+        sudo apt-get install -y \
           libcurl4-openssl-dev \
-          libfontconfig1-dev \
-          libfreetype6-dev \
-          libfuse2 \
-          libgstreamer-gl1.0-0 \
-          libx11-dev \
+          libegl-dev \
+          libfuse2t64 \
+          libgl-dev \
+          libpulse-dev \
           libx11-xcb-dev \
           libxcb-cursor0 \
           libxcb-glx0-dev \
@@ -55,42 +43,13 @@ jobs:
           libxcb-randr0-dev \
           libxcb-render-util0-dev \
           libxcb-shape0-dev \
-          libxcb-shm0-dev \
           libxcb-sync0-dev \
           libxcb-xfixes0-dev \
-          libxcb1-dev \
-          libxext-dev \
           libxfixes-dev \
           libxi-dev \
           libxkbcommon-dev \
           libxkbcommon-x11-dev \
-          libxrandr2 \
-          libxrender-dev \
-          ninja-build \
-          sudo \
-          wget
-        update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11
-
-    - name: Install Modern CMake
-      if: runner.os == 'Linux'
-      run: |
-        # Install CMake 3.25+ from Kitware's APT repository
-        wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
-        echo 'deb https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null
-        apt-get update
-        apt-get install -y cmake
-
-    - name: Install Ubuntu Python
-      if: runner.os == 'Linux'
-      run: |
-        apt-get install -y software-properties-common
-        add-apt-repository ppa:deadsnakes/ppa
-        apt-get update
-        apt-get install -y curl python3.10
-        ln -sf /usr/bin/python3.10 /usr/bin/python3
-        curl -sS https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-        python3 get-pip.py
-        python3 -m pip install --no-cache-dir --upgrade pip setuptools wheel
+          patchelf
 
     - uses: actions/checkout@v6
       with:
@@ -126,7 +85,6 @@ jobs:
         cache: true
         aqtversion: ==3.*
         modules: qtmultimedia qtimageformats debug_info
-        setup-python: ${{ matrix.os == 'ubuntu-latest' && 'false' || 'true' }}
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1
@@ -148,10 +106,8 @@ jobs:
       run: |
         cmake --preset sentry-crashpad
         cmake --build --preset sentry-crashpad
-        mkdir -p build/lib
         cp thirdparty/sentry/bin/crashpad_handler build/
-        cp thirdparty/sentry/lib/libsentry.so build/lib/
-        # Ensure crashpad_handler is executable
+        cp thirdparty/sentry/lib/libsentry.so build/
         chmod +x build/crashpad_handler
 
     - name: Test Ubuntu
@@ -160,61 +116,96 @@ jobs:
       run: |
         ctest --preset sentry-crashpad
 
-    - name: linuxdeployqt
+    - name: go-appimage
       if: runner.os == 'Linux'
       run: |
-        # Create proper AppDir structure following FHS
-        mkdir -p appimage appimage/lib appimage/usr/share/icons/hicolor/scalable/apps appimage/usr/share/icons/hicolor/256x256/apps
+        mkdir -p appimage/usr/bin \
+                 appimage/usr/lib \
+                 appimage/usr/share/applications \
+                 appimage/usr/share/icons/hicolor/scalable/apps \
+                 appimage/usr/share/icons/hicolor/256x256/apps \
+                 appimage/usr/share/wiredpanda
 
-        # Copy desktop file to root and substitute version
-        cp App/Resources/Freedesktop/wiredpanda.desktop appimage/wiredpanda.desktop
-        sed -i "s/@VERSION@/$VERSION/g" appimage/wiredpanda.desktop
+        cp build/wiredpanda appimage/usr/bin/
+        cp build/crashpad_handler appimage/usr/bin/
+        cp thirdparty/sentry/lib/libsentry.so appimage/usr/lib/
 
-        # Copy icons to proper FHS locations (both SVG and PNG for compatibility)
+        cp App/Resources/Freedesktop/wiredpanda.desktop appimage/usr/share/applications/wiredpanda.desktop
+        sed -i "s/@VERSION@/$VERSION/g;s/@PROJECT_VERSION@/$VERSION/g" appimage/usr/share/applications/wiredpanda.desktop
+
         cp App/Resources/Assets/Logos/wpanda.svg appimage/usr/share/icons/hicolor/scalable/apps/wpanda.svg
-
-        # Copy existing PNG icon for broader compatibility
         cp App/Resources/Assets/Logos/wpanda.png appimage/usr/share/icons/hicolor/256x256/apps/wpanda.png
 
-        # Copy icon to AppImage root for linuxdeployqt compatibility
-        cp App/Resources/Assets/Logos/wpanda.png appimage/wpanda.png
+        wget -q "https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous \
+          -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)" \
+          -O appimagetool
+        chmod +x appimagetool
 
-        # Create .DirIcon symlink for file managers (prefer PNG for compatibility)
-        ln -sf usr/share/icons/hicolor/256x256/apps/wpanda.png appimage/.DirIcon
+        # Copy all runtime Qt plugin categories before deploy so go-appimage
+        # bundles their dependencies and patches their RPATHs too.
+        # (go-appimage only auto-detects plugins loaded at build time)
+        mkdir -p appimage/usr/plugins
+        for dir in \
+          generic \
+          iconengines \
+          imageformats \
+          multimedia \
+          networkinformation \
+          platforminputcontexts \
+          platforms \
+          platformthemes \
+          printsupport \
+          styles \
+          tls \
+          wayland-decoration-client \
+          wayland-graphics-integration-client \
+          wayland-shell-integration \
+          xcbglintegrations; do
+          [ -d "$QT_ROOT_DIR/plugins/$dir" ] && cp -r "$QT_ROOT_DIR/plugins/$dir" appimage/usr/plugins/
+        done
+        find appimage/usr/plugins -name "*.debug" -delete
 
-        # Copy executables and libraries
-        cp build/wiredpanda appimage
-        cp build/crashpad_handler appimage/
-        cp thirdparty/sentry/lib/libsentry.so appimage/lib/
-        wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
-        chmod +x ./linuxdeployqt-continuous-x86_64.AppImage
-        ./linuxdeployqt-continuous-x86_64.AppImage --appimage-extract
-        VERSION=$VERSION ./squashfs-root/usr/bin/linuxdeployqt ./appimage/wiredpanda -appimage
-        rm ./linuxdeployqt-continuous-x86_64.AppImage
-        mv wiRedPanda-$VERSION-x86_64.AppImage wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage
+        # Ubuntu 24.04 ships libtiff.so.6 (t64 transition); Qt plugins built against .so.5.
+        # Symlink so go-appimage can find and bundle it.
+        sudo ln -sf /usr/lib/x86_64-linux-gnu/libtiff.so.6 /usr/lib/x86_64-linux-gnu/libtiff.so.5
+
+        # Deploy: bundle all dependencies (including glibc) and patch RPATHs.
+        # go-appimage uses patchelf internally to set $ORIGIN-relative RPATHs
+        # on all bundled ELFs, covering transitive deps like libGLdispatch.so.0.
+        APPIMAGE_EXTRACT_AND_RUN=1 QTDIR=$QT_ROOT_DIR \
+          ./appimagetool -s deploy appimage/usr/share/applications/wiredpanda.desktop
+
+        # go-appimage copies fonts.conf as a symlink to the host absolute path,
+        # which breaks in containers and other systems. Dereference it.
+        FONTS_CONF=$(find appimage -name "fonts.conf" -type l | head -1)
+        [ -n "$FONTS_CONF" ] && cp --remove-destination "$(readlink -f "$FONTS_CONF")" "$FONTS_CONF"
+
+        APPIMAGE_EXTRACT_AND_RUN=1 VERSION=$VERSION \
+          ./appimagetool appimage
+
+        mv wiRedPanda-*-x86_64.AppImage wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage
 
     - name: Validate Ubuntu Release Artifacts
       if: runner.os == 'Linux'
       run: |
-        # Verify AppImage exists and is executable
-        if [ ! -f "wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage" ]; then
+        APPIMAGE_FILE="wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage"
+
+        if [ ! -f "$APPIMAGE_FILE" ]; then
           echo "Error: AppImage not found"
           exit 1
         fi
 
         # Verify AppImage build quality and structure
-        chmod +x "wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage"
+        chmod +x "$APPIMAGE_FILE"
         echo "Validating AppImage build quality..."
 
-        # Check AppImage file properties
-        APPIMAGE_FILE="wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage"
         echo "AppImage file info:"
         ls -lh "$APPIMAGE_FILE"
         file "$APPIMAGE_FILE"
 
         # Extract AppImage to verify internal structure
         echo "Extracting AppImage to verify contents..."
-        "./$APPIMAGE_FILE" --appimage-extract >/dev/null 2>&1
+        APPIMAGE_EXTRACT_AND_RUN=1 "./$APPIMAGE_FILE" --appimage-extract >/dev/null 2>&1
         if [ ! -d "squashfs-root" ]; then
           echo "Error: AppImage extraction failed - corrupt AppImage"
           exit 1
@@ -222,16 +213,13 @@ jobs:
 
         echo "AppImage structure validation:"
 
-        # Verify main executable exists and is properly linked
-        if [ ! -f "squashfs-root/wiredpanda" ]; then
+        if [ ! -f "squashfs-root/usr/bin/wiredpanda" ]; then
           echo "Error: Main executable missing from AppImage"
           exit 1
         fi
+        echo "✓ Main executable: $(ls -lh squashfs-root/usr/bin/wiredpanda)"
+        echo "✓ Executable type: $(file squashfs-root/usr/bin/wiredpanda)"
 
-        echo "✓ Main executable: $(ls -lh squashfs-root/wiredpanda)"
-        echo "✓ Executable type: $(file squashfs-root/wiredpanda)"
-
-        # Check Qt libraries are bundled
         QT_LIBS_COUNT=$(find squashfs-root -name "libQt*.so*" | wc -l)
         echo "✓ Qt libraries found: $QT_LIBS_COUNT"
         if [ "$QT_LIBS_COUNT" -lt 3 ]; then
@@ -239,8 +227,7 @@ jobs:
           find squashfs-root -name "libQt*.so*" | head -10
         fi
 
-        # Verify desktop integration files
-        if [ -f "squashfs-root/wiredpanda.desktop" ]; then
+        if [ -f "squashfs-root/usr/share/applications/wiredpanda.desktop" ]; then
           echo "✓ Desktop integration file present"
         else
           echo "Warning: Desktop integration file missing"
@@ -248,26 +235,26 @@ jobs:
 
         # Check dependencies are reasonable
         echo "✓ Executable dependencies (sample):"
-        ldd squashfs-root/wiredpanda | head -10 | grep -v "not found" || echo "Some dependencies missing (may be normal)"
+        ldd squashfs-root/usr/bin/wiredpanda | head -10 | grep -v "not found" || echo "Some dependencies missing (may be normal)"
 
         echo "AppImage build quality validation completed successfully"
 
         # Verify required Sentry files are included
-        if [ ! -f "appimage/lib/libsentry.so" ]; then
-          echo "Error: Sentry library missing from AppImage"
+        if [ ! -f "appimage/usr/bin/crashpad_handler" ]; then
+          echo "Error: Crashpad handler missing from AppImage"
           exit 1
         fi
 
-        if [ ! -f "appimage/crashpad_handler" ]; then
-          echo "Error: Crashpad handler missing from AppImage"
+        if [ ! -f "appimage/usr/lib/libsentry.so" ]; then
+          echo "Error: Sentry library missing from AppImage"
           exit 1
         fi
 
         # Log Sentry configuration for debugging
         echo "Sentry configuration check:"
-        echo "  - libsentry.so: $(ls -la appimage/lib/libsentry.so)"
-        echo "  - crashpad_handler: $(ls -la appimage/crashpad_handler)"
-        echo "  - RPATH settings: $(objdump -p appimage/wiredpanda | grep RPATH || echo 'No RPATH found')"
+        echo "  - libsentry.so: $(ls -la appimage/usr/lib/libsentry.so)"
+        echo "  - crashpad_handler: $(ls -la appimage/usr/bin/crashpad_handler)"
+        echo "  - RPATH settings: $(objdump -p appimage/usr/bin/wiredpanda | grep RPATH || echo 'No RPATH found')"
 
         echo "Ubuntu release artifacts validated successfully"
 
