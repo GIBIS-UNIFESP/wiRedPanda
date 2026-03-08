@@ -71,13 +71,15 @@ cmake --build --preset debug
 # Run all tests (automatic via VS Code task)
 # Ctrl+Shift+P → "Tasks: Run Task" → "Run Tests"
 
-# Manual test execution using CTest
-ctest --test-dir build
+# Manual test execution using CTest presets
+ctest --preset debug
 
 # Run specific test executables
 ./build/testcommands -functions    # Show available test functions
 ./build/testelements               # Run element tests
 ```
+
+Tests run in parallel automatically with all CPU cores available. Output on failure and verbose details are enabled automatically.
 
 ## 🖥️ Display Mode
 
@@ -97,8 +99,8 @@ The container is configured to run in **offscreen mode** automatically (via test
 
 ### Build Failures
 - Check Qt installation: `qmake6 --version`
-- Verify CMake configuration: `cd build && cmake ..`
-- Clean build: `rm -rf build && mkdir build`
+- Verify CMake configuration: `cmake --preset debug`
+- Clean build: `rm -rf build`
 
 ### Permission Issues
 - The container user (developer) should have UID 1000

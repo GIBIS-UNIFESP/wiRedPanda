@@ -5,10 +5,7 @@
             "name": "base",
             "hidden": true,
             "generator": "Ninja",
-            "binaryDir": "build",
-            "cacheVariables": {
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
-            }
+            "binaryDir": "build"
         },
         {
             "name": "debug",
@@ -43,7 +40,9 @@
             "description": "Debug build with code coverage instrumentation",
             "inherits": "debug",
             "cacheVariables": {
-                "ENABLE_COVERAGE": "ON"
+                "ENABLE_COVERAGE": "ON",
+                "ENABLE_UNITY": "OFF",
+                "ENABLE_PCH": "OFF"
             }
         },
         {
@@ -52,7 +51,9 @@
             "description": "Debug build with Address Sanitizer for memory error detection",
             "inherits": "debug",
             "cacheVariables": {
-                "ENABLE_ADDRESS_SANITIZER": "ON"
+                "ENABLE_ADDRESS_SANITIZER": "ON",
+                "ENABLE_PCH": "OFF",
+                "ENABLE_UNITY": "OFF"
             }
         },
         {
@@ -61,7 +62,9 @@
             "description": "Debug build with Thread Sanitizer for race condition detection",
             "inherits": "debug",
             "cacheVariables": {
-                "ENABLE_THREAD_SANITIZER": "ON"
+                "ENABLE_THREAD_SANITIZER": "ON",
+                "ENABLE_PCH": "OFF",
+                "ENABLE_UNITY": "OFF"
             }
         },
         {
@@ -70,12 +73,9 @@
             "description": "Debug build with Memory Sanitizer for uninitialized memory detection (Clang only)",
             "inherits": "debug",
             "cacheVariables": {
-                "ENABLE_MEMORY_SANITIZER": "ON"
-            },
-            "condition": {
-                "type": "equals",
-                "lhs": "${hostSystemName}",
-                "rhs": "Linux"
+                "ENABLE_MEMORY_SANITIZER": "ON",
+                "ENABLE_PCH": "OFF",
+                "ENABLE_UNITY": "OFF"
             }
         },
         {
@@ -84,24 +84,9 @@
             "description": "Debug build with Undefined Behavior Sanitizer",
             "inherits": "debug",
             "cacheVariables": {
-                "ENABLE_UB_SANITIZER": "ON"
-            }
-        },
-        {
-            "name": "windows-qt",
-            "displayName": "Windows with Qt (MSVC)",
-            "description": "Release build for Windows with MSVC and Qt",
-            "generator": "Visual Studio 17 2022",
-            "binaryDir": "build",
-            "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "C:/Qt/6.9.3/msvc2022_64",
-                "CMAKE_BUILD_TYPE": "Release",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
-            },
-            "condition": {
-                "type": "equals",
-                "lhs": "${hostSystemName}",
-                "rhs": "Windows"
+                "ENABLE_UB_SANITIZER": "ON",
+                "ENABLE_PCH": "OFF",
+                "ENABLE_UNITY": "OFF"
             }
         },
         {
@@ -121,20 +106,18 @@
         {
             "name": "sentry-crashpad",
             "displayName": "Sentry with Crashpad",
-            "description": "RelWithDebInfo build with Sentry crashpad backend and IPO",
+            "description": "RelWithDebInfo build with Sentry crashpad backend",
             "inherits": "relwithdebinfo",
             "cacheVariables": {
-                "CMAKE_INTERPROCEDURAL_OPTIMIZATION": "ON",
                 "SENTRY_BACKEND": "crashpad"
             }
         },
         {
             "name": "sentry-breakpad",
             "displayName": "Sentry with Breakpad",
-            "description": "RelWithDebInfo build with Sentry breakpad backend and IPO for macOS",
+            "description": "RelWithDebInfo build with Sentry breakpad backend for macOS",
             "inherits": "relwithdebinfo",
             "cacheVariables": {
-                "CMAKE_INTERPROCEDURAL_OPTIMIZATION": "ON",
                 "SENTRY_BACKEND": "breakpad",
                 "CMAKE_OSX_ARCHITECTURES": "x86_64;arm64"
             },
@@ -187,11 +170,6 @@
             "configurePreset": "ubsan"
         },
         {
-            "name": "windows-qt",
-            "displayName": "Build Windows with Qt",
-            "configurePreset": "windows-qt"
-        },
-        {
             "name": "macos-universal",
             "displayName": "Build macOS Universal",
             "configurePreset": "macos-universal"
@@ -209,60 +187,71 @@
     ],
     "testPresets": [
         {
-            "name": "debug",
-            "displayName": "Test Debug",
-            "configurePreset": "debug",
+            "name": "base",
+            "hidden": true,
             "output": {
                 "outputOnFailure": true
             }
+        },
+        {
+            "name": "debug",
+            "displayName": "Test Debug",
+            "configurePreset": "debug",
+            "inherits": "base"
         },
         {
             "name": "release",
             "displayName": "Test Release",
             "configurePreset": "release",
-            "output": {
-                "outputOnFailure": true
-            }
+            "inherits": "base"
+        },
+        {
+            "name": "relwithdebinfo",
+            "displayName": "Test RelWithDebInfo",
+            "configurePreset": "relwithdebinfo",
+            "inherits": "base"
         },
         {
             "name": "coverage",
             "displayName": "Test Coverage",
             "configurePreset": "coverage",
-            "output": {
-                "outputOnFailure": true
-            }
+            "inherits": "base"
         },
         {
             "name": "asan",
             "displayName": "Test with AddressSanitizer",
             "configurePreset": "asan",
-            "output": {
-                "outputOnFailure": true
-            }
+            "inherits": "base"
         },
         {
             "name": "tsan",
             "displayName": "Test with ThreadSanitizer",
             "configurePreset": "tsan",
-            "output": {
-                "outputOnFailure": true
-            }
+            "inherits": "base"
         },
         {
             "name": "msan",
             "displayName": "Test with MemorySanitizer",
             "configurePreset": "msan",
-            "output": {
-                "outputOnFailure": true
-            }
+            "inherits": "base"
         },
         {
             "name": "ubsan",
             "displayName": "Test with UBSanitizer",
             "configurePreset": "ubsan",
-            "output": {
-                "outputOnFailure": true
-            }
+            "inherits": "base"
+        },
+        {
+            "name": "sentry-crashpad",
+            "displayName": "Test with Sentry Crashpad",
+            "configurePreset": "sentry-crashpad",
+            "inherits": "base"
+        },
+        {
+            "name": "sentry-breakpad",
+            "displayName": "Test with Sentry Breakpad",
+            "configurePreset": "sentry-breakpad",
+            "inherits": "base"
         }
     ]
 }
