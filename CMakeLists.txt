@@ -85,6 +85,15 @@ if(ENABLE_COVERAGE)
     message(STATUS "Coverage enabled")
 endif()
 
+# Unity builds support
+option(ENABLE_UNITY_BUILD "Enable Unity builds for faster compilation" ON)
+set(UNITY_BUILD_BATCH_SIZE 8 CACHE STRING "Number of source files to combine in each unity file")
+if(ENABLE_UNITY_BUILD)
+    set(CMAKE_UNITY_BUILD ON)
+    set(CMAKE_UNITY_BUILD_BATCH_SIZE ${UNITY_BUILD_BATCH_SIZE})
+    message(STATUS "Unity builds enabled globally (batch size: ${UNITY_BUILD_BATCH_SIZE})")
+endif()
+
 # Sanitizer support
 if(CMAKE_CXX_COMPILER_ID STREQUAL Clang OR CMAKE_CXX_COMPILER_ID STREQUAL GNU)
     if(ENABLE_MEMORY_SANITIZER)
@@ -195,6 +204,7 @@ else()
 endif()
 
 add_library(wiredpanda_resources OBJECT ${RESOURCES_RCC})
+set_target_properties(wiredpanda_resources PROPERTIES UNITY_BUILD OFF)
 
 include_directories(
     ${CMAKE_BINARY_DIR}
