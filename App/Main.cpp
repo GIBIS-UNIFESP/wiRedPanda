@@ -19,7 +19,6 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
-#include "App/GlobalProperties.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
 
@@ -228,12 +227,12 @@ int main(int argc, char *argv[])
 
         // --- Non-interactive batch operations ---
         // Each branch loads the circuit, runs the export, then exits immediately
-        // without entering the Qt event loop.  GlobalProperties::interactiveMode is set
+        // without entering the Qt event loop.  Application::interactiveMode is set
         // to false so that error dialogs are suppressed and errors go to stderr only.
 
         if (const QString arduFile = parser.value(arduinoFileOption); !arduFile.isEmpty()) {
             if (!args.empty()) {
-                GlobalProperties::interactiveMode = false;
+                Application::interactiveMode = false;
                 MainWindow window;
                 window.loadPandaFile(args.at(0));
                 window.exportToArduino(arduFile);
@@ -243,7 +242,7 @@ int main(int argc, char *argv[])
 
         if (const QString wfFile = parser.value(waveformFileOption); !wfFile.isEmpty()) {
             if (!args.empty()) {
-                GlobalProperties::interactiveMode = false;
+                Application::interactiveMode = false;
                 MainWindow window;
                 window.loadPandaFile(args.at(0));
                 window.exportToWaveFormFile(wfFile);
@@ -253,7 +252,7 @@ int main(int argc, char *argv[])
 
         if (const bool isTerminal = parser.isSet(terminalFileOption); isTerminal) {
             if (!args.empty()) {
-                GlobalProperties::interactiveMode = false;
+                Application::interactiveMode = false;
                 MainWindow window;
                 window.loadPandaFile(args.at(0));
 
@@ -285,7 +284,7 @@ int main(int argc, char *argv[])
 #ifdef ENABLE_MCP_SERVER
         // Handle MCP mode
         if (parser.isSet(mcpModeOption) || parser.isSet(mcpGuiOption)) {
-            GlobalProperties::interactiveMode = false;
+            Application::interactiveMode = false;
 
             auto *window = new MainWindow();
             app.setMainWindow(window);
@@ -311,7 +310,7 @@ int main(int argc, char *argv[])
             window->loadPandaFile(args.at(0));
         }
     } catch (const std::exception &e) {
-        if (GlobalProperties::interactiveMode) {
+        if (Application::interactiveMode) {
             QMessageBox::critical(nullptr, QObject::tr("Error!"), e.what());
         }
         exit(1);

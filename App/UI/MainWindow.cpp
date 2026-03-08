@@ -37,6 +37,7 @@
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
 #include "App/CodeGen/ArduinoCodeGen.h"
 #include "App/CodeGen/SystemVerilogCodeGen.h"
+#include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
@@ -284,7 +285,7 @@ void MainWindow::loadAutosaveFiles()
         try {
             loadPandaFile(*it);
         } catch (const std::exception &e) {
-            if (GlobalProperties::interactiveMode) {
+            if (Application::interactiveMode) {
                 QMessageBox::critical(nullptr, tr("Error!"), e.what());
             }
             qCDebug(zero) << "Removing autosave file that is corrupted.";
@@ -394,7 +395,7 @@ void MainWindow::show()
     qCDebug(zero) << "Checking for autosave file recovery.";
     loadAutosaveFiles();
 
-    if (GlobalProperties::interactiveMode) {
+    if (Application::interactiveMode) {
         connect(&m_updateChecker, &UpdateChecker::updateAvailable, this, &MainWindow::showUpdateDialog);
         m_updateChecker.checkForUpdates();
     }
