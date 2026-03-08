@@ -168,8 +168,6 @@ void GraphicElement::save(QDataStream &stream) const
     map.insert("minOutputSize", m_minOutputSize);
     map.insert("maxOutputSize", m_maxOutputSize);
     map.insert("trigger", m_trigger);
-    map.insert("priority", m_priority);
-
     stream << map;
 
     // -------------------------------------------
@@ -270,7 +268,9 @@ void GraphicElement::loadOldFormat(QDataStream &stream, SerializationContext &co
     /* <Version1.9> */
     loadTrigger(stream, context.version);
     /* <\Version4.01> */
-    loadPriority(stream, context.version);
+    if (context.version >= Versions::V_4_0_1) {
+        quint64 unusedPriority; stream >> unusedPriority;
+    }
     /* <\Version1.9> */
     loadInputPorts(stream, context);
     loadOutputPorts(stream, context);
@@ -324,10 +324,6 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
 
     if (map.contains("trigger")) {
         setTrigger(map.value("trigger").toString());
-    }
-
-    if (map.contains("priority")) {
-        setPriority(static_cast<int>(map.value("priority").toULongLong()));
     }
 
     // -------------------------------------------
@@ -537,14 +533,6 @@ void GraphicElement::loadTrigger(QDataStream &stream, const QVersionNumber &vers
     if (version >= Versions::V_1_9) {
         QKeySequence trigger; stream >> trigger;
         setTrigger(trigger);
-    }
-}
-
-void GraphicElement::loadPriority(QDataStream &stream, const QVersionNumber &version)
-{
-    if (version >= Versions::V_4_0_1) {
-        quint64 priority; stream >> priority;
-        setPriority(static_cast<int>(priority));
     }
 }
 
@@ -788,11 +776,6 @@ void GraphicElement::addOutputPort(const QString &name)
 void GraphicElement::setPortName(const QString &name)
 {
     setObjectName(name);
-}
-
-void GraphicElement::setPriority(const int value)
-{
-    m_priority = static_cast<quint64>(value);
 }
 
 void GraphicElement::setRotation(const qreal angle)
@@ -1210,11 +1193,6 @@ void GraphicElement::setInputSize(const int size)
 int GraphicElement::outputSize() const
 {
     return m_outputPorts.size();
-}
-
-int GraphicElement::priority() const
-{
-    return static_cast<int>(m_priority);
 }
 
 void GraphicElement::setOutputSize(const int size)

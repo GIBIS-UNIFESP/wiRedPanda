@@ -18,7 +18,6 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSlider>
-#include <QSpinBox>
 #include <QWidget>
 
 class LabeledSlider;
@@ -103,8 +102,4 @@ public:
     // Lock
     QLabel *labelLocked = nullptr;
     QCheckBox *checkBoxLocked = nullptr;
-
-    // Priority
-    QLabel *labelPriority = nullptr;
-    QSpinBox *spinBoxPriority = nullptr;
 };
