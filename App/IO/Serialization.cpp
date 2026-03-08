@@ -134,15 +134,35 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
 
     while (!stream.atEnd()) {
         int type; stream >> type;
+
+        // Check stream integrity after reading type tag
+        if (stream.status() != QDataStream::Ok) {
+            throw PANDACEPTION("Stream error reading type tag at position %1: status %2",
+                               stream.device()->pos(), static_cast<int>(stream.status()));
+        }
+
         qCDebug(three) << "Type: " << typeName(type);
 
         switch (type) {
         case GraphicElement::Type: {
             ElementType elmType; stream >> elmType;
 
+            // Check stream integrity after reading element type
+            if (stream.status() != QDataStream::Ok) {
+                throw PANDACEPTION("Stream error reading element type at position %1: status %2",
+                                   stream.device()->pos(), static_cast<int>(stream.status()));
+            }
+
             auto *elm = ElementFactory::buildElement(elmType);
             itemList.append(elm);
             elm->load(stream, portMap, version);
+
+            // Check stream integrity after element load
+            if (stream.status() != QDataStream::Ok) {
+                throw PANDACEPTION("Stream error loading element at position %1: status %2",
+                                   stream.device()->pos(), static_cast<int>(stream.status()));
+            }
+
             break;
         }
 
@@ -152,6 +172,12 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
 
             qCDebug(three) << "Loading connection.";
             conn->load(stream, portMap);
+
+            // Check stream integrity after connection load
+            if (stream.status() != QDataStream::Ok) {
+                throw PANDACEPTION("Stream error loading connection at position %1: status %2",
+                                   stream.device()->pos(), static_cast<int>(stream.status()));
+            }
 
             qCDebug(three) << "Appending connection.";
             itemList.append(conn);
