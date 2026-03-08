@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief ElementEditorUi: hand-written UI class for the ElementEditor widget.
+ */
+
 #pragma once
 
 // Specific Qt includes instead of monolithic QtWidgets
@@ -31,7 +35,16 @@ public:
 
     // --- Setup ---
 
+    /**
+     * \brief Creates and lays out all child widgets inside \a ElementEditor.
+     * \param ElementEditor The host QWidget.
+     */
     void setupUi(QWidget *ElementEditor);
+
+    /**
+     * \brief Updates all translatable strings in the widget.
+     * \param ElementEditor The host QWidget.
+     */
     void retranslateUi(QWidget *ElementEditor);
 
     // --- Widgets ---

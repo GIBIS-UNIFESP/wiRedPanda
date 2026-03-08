@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief Main application window providing menus, toolbars, and tab management.
+ */
+
 #pragma once
 
 #include <memory>
@@ -16,6 +20,14 @@ class ElementLabel;
 class RecentFiles;
 class WorkSpace;
 
+/**
+ * \class MainWindow
+ * \brief The top-level application window hosting the tab bar, menus, element palette, and editor.
+ *
+ * \details MainWindow orchestrates the full editing workflow: it owns the tab widget (each tab is a
+ * WorkSpace), connects undo/redo stacks, handles file open/save/export, manages translations,
+ * and integrates the element palette, element editor, and IC list panel.
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -23,85 +35,106 @@ class MainWindow : public QMainWindow
 public:
     // --- Lifecycle ---
 
+    /**
+     * \brief Constructs the main window, optionally opening \a fileName.
+     * \param fileName Optional .panda file to load on startup.
+     * \param parent   Optional parent widget.
+     */
     explicit MainWindow(const QString &fileName = {}, QWidget *parent = nullptr);
     ~MainWindow() override;
 
-    //! Sets the main window as visible, as well as its child widgets. Cleans the editor.
+    /// Sets the main window as visible, as well as its child widgets. Cleans the editor.
     void show();
 
     // --- Tab Management ---
 
-    //! Creates a new tab with the given tab_name. Used by new and load actions.
+    /// Creates a new tab with the given tab_name. Used by new and load actions.
     void createNewTab();
 
+    /// Returns the currently active WorkSpace tab.
     WorkSpace *currentTab() const;
+    /// Prompts the user to save unsaved changes; returns \c true if all tabs can be closed.
     bool closeFiles();
 
     // --- File Operations ---
 
-    //! Returns the file name of the currently loaded Panda file.
+    /// Returns the file name of the currently loaded Panda file.
     QFileInfo currentFile() const;
 
-    //! Returns the dir name of the currently loaded Panda file.
+    /// Returns the dir name of the currently loaded Panda file.
     QDir currentDir() const;
 
-    //! Sets the current file to the given value.
-    //! Mostly used by `loadPandaFile` and clearing functions
+    /// Sets the current file to the given value.
+    /// Mostly used by `loadPandaFile` and clearing functions
     void setCurrentFile(const QFileInfo &fileInfo);
 
-    //! Saves the project to a .panda file. Removes the autosave file in the process.
+    /// Saves the project to a .panda file. Removes the autosave file in the process.
     void save(const QString &fileName = {});
 
-    //! Loads a .panda file
+    /// Loads a .panda file
     void loadPandaFile(const QString &fileName);
 
-    //! Opens a message box asking the user if he wishes to save his progress
+    /// Opens a message box asking the user if he wishes to save his progress
     int confirmSave(const bool multiple = true);
 
     // --- Export ---
 
-    //! Exports the current simulation to an
+    /// Exports the current simulation to Arduino
     void exportToArduino(QString fileName);
 
-    //! Saves the current beWavedDolphin (waveform simulator) file
+    /// Saves the current beWavedDolphin (waveform simulator) file
     void exportToWaveFormFile(const QString &fileName);
 
+    /// Opens the BeWavedDolphin waveform editor for the current circuit.
     void exportToWaveFormTerminal();
 
     // --- BeWavedDolphin Integration ---
 
+    /// Returns the .dolphin file path associated with the current tab.
     QString dolphinFileName();
+    /// Sets the .dolphin file path for the current tab.
     void setDolphinFileName(const QString &fileName);
 
     // --- Translation ---
 
+    /// Loads and applies the translation for \a language (e.g. "pt_BR").
     void loadTranslation(const QString &language);
+    /// Returns the display name for the given \a langCode.
     QString getLanguageDisplayName(const QString &langCode) const;
+    /// Returns the flag emoji or icon identifier for \a langCode.
     QString getLanguageFlagIcon(const QString &langCode) const;
+    /// Returns the list of available language codes.
     QStringList getAvailableLanguages() const;
+    /// Rebuilds the language-selection menu from available translations.
     void populateLanguageMenu();
+    /// Re-applies all translatable strings to the main window UI.
     void retranslateUi();
 
     // --- Palette ---
 
+    /// Populates a menu layout with element labels from \a names.
     void populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout);
 
     // --- View / Rendering ---
 
+    /// Enables or disables fast rendering mode across all views.
     void setFastMode(const bool fastMode);
 
     // --- Qt Event Override ---
 
+    /// \reimp
     bool event(QEvent *event) override;
 
 signals:
     // --- Signals ---
 
+    /// Adds \a fileName to the recent files list and updates the menu.
     void addRecentFile(const QString &fileName);
 
 protected:
     // --- Protected Interface ---
 
+    /// \reimp
     void closeEvent(QCloseEvent *event) override;
 
 private:
@@ -109,16 +142,16 @@ private:
 
     // --- Tab Lifecycle ---
 
-    //! Adds undo and redo of selected tab into the UI menu.
+    /// Adds undo and redo of selected tab into the UI menu.
     void addUndoRedoMenu();
 
-    //! Removes undo and redo of current tab from the UI menu.
+    /// Removes undo and redo of current tab from the UI menu.
     void removeUndoRedoMenu();
 
-    //! Function used to disconnect elements of current tab, to safely change or close a tab.
+    /// Function used to disconnect elements of current tab, to safely change or close a tab.
     void disconnectTab();
 
-    //! Function called as a tab is selected. The tab is connected to the UI.
+    /// Function called as a tab is selected. The tab is connected to the UI.
     void connectTab();
 
     void tabChanged(const int newTabIndex);
@@ -197,7 +230,7 @@ private:
 
     // Internal helpers
     void backgroundSimulation();
-    //! Returns the index of a tab by its widget object name, or -1 if not found
+    /// Returns the index of a tab by its widget object name, or -1 if not found
     int getTabIndex(const QString &objectName) const;
     void populateLeftMenu();
     void updateICList();
