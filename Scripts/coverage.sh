@@ -26,6 +26,7 @@ lcov --remove coverage.info \
     '*/Tests/*' \
     '*/build/*' \
     '*/Qt*/include/Qt*' \
+    '*/Qt/*' \
     --output-file coverage_filtered.info
 
 # Generate HTML report with dark theme
