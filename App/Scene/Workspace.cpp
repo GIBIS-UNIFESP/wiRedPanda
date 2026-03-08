@@ -179,7 +179,7 @@ void WorkSpace::load(QDataStream &stream, QVersionNumber version)
     qCDebug(zero) << "Stopped simulation.";
     qCDebug(zero) << "Version: " << version;
 
-    if (GlobalProperties::verbose) {
+    if (GlobalProperties::interactiveMode) {
         if (version > GlobalProperties::version) {
             const QString progVersion = GlobalProperties::version.toString();
             const QString fileVersion = version.toString();
