@@ -29,10 +29,9 @@ class IC : public GraphicElement
     Q_OBJECT
 
     friend class TestArduino;
+    friend class TestIC;
 
 public:
-    // --- Lifecycle ---
-
     /// Constructs an IC element without loading a file.
     explicit IC(QGraphicsItem *parent = nullptr);
 
@@ -42,56 +41,22 @@ public:
     /// Copy-constructs by delegating to the parent item constructor.
     IC(const IC &other) : IC(other.parentItem()) {}
 
-    // --- File loading ---
-
-    /**
-     * \brief Loads the sub-circuit from \a fileName relative to \a contextDir.
-     * \param fileName   Path to the .panda sub-circuit file.
-     * \param contextDir Directory used to resolve relative paths (optional).
-     */
-    void loadFile(const QString &fileName, const QString &contextDir = {});
-
-    /**
-     * \brief Loads the IC from \a fileName after a drag-drop operation.
-     * \param fileName   Dropped .panda file path.
-     * \param contextDir Context directory for relative path resolution.
-     */
-    void loadFromDrop(const QString &fileName, const QString &contextDir) override;
-
-    // --- File utilities ---
-
     /**
      * \brief Copies IC-related files from \a srcPath to \a destPath.
      * \param srcPath  Source .panda file info.
      * \param destPath Destination .panda file info.
      */
     static void copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath);
+    /// Loads the IC circuit from \a fileName and rebuilds the logic mapping.
+    void loadFile(const QString &fileName, const QString &contextDir = {});
 
-    // --- Simulation ---
+    // --- Polymorphic interface overrides ---
 
-    /**
-     * \brief Builds and returns the flat LogicElement mapping for simulation.
-     * \return Vector of shared_ptr LogicElements representing the IC's internals.
-     */
-    const QVector<std::shared_ptr<LogicElement>> generateMap();
-
-    /// Returns all logic elements from the IC's internal mapping.
     QVector<std::shared_ptr<LogicElement>> getLogicElementsForMapping() override;
-
-    // --- Logic access ---
-
-    /// \reimp
-    LogicElement *getInputLogic(int portIndex) const override;
-    /// \reimp
-    LogicElement *getOutputLogic(int portIndex) const override;
-    /// \reimp
-    int getInputIndexForPort(int portIndex) const override;
-    /// \reimp
-    int getOutputIndexForPort(int portIndex) const override;
 
     // --- Port naming ---
 
-    /// Returns \c true; IC elements support custom port naming.
+    /// \reimp Returns \c true; IC port names are editable.
     bool canSetPortNames() const override;
 
     /**
@@ -107,6 +72,7 @@ public:
      * \param name New port name.
      */
     void setOutputPortName(int port, const QString &name) override;
+    void loadFromDrop(const QString &fileName, const QString &contextDir) override;
 
     const QString &icFile() const { return m_file; }
     const QVector<GraphicElement *> &icElements() const { return m_icElements; }
@@ -115,32 +81,41 @@ public:
 
     // --- Visual ---
 
-    /// Paints the IC box with its generated pixmap.
+    /// \reimp
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-
-    /// Regenerates the IC pixmap and port layout.
+    /// \reimp
     void refresh() override;
 
     // --- Serialization ---
 
-    /// Deserializes the IC (file reference and port configuration) from \a stream.
+    /// \reimp
     void load(QDataStream &stream, SerializationContext &context) override;
-
-    /// Serializes the IC file reference and port configuration to \a stream.
+    /// \reimp
     void save(QDataStream &stream) const override;
 
 protected:
-    // --- Qt event overrides ---
+    // --- Event handlers ---
 
+    /// \reimp Opens the IC sub-circuit for editing on double-click.
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    // --- Port sorting helpers ---
+    // --- Utility methods ---
 
     static bool comparePorts(QNEPort *port1, QNEPort *port2);
     static void sortPorts(QVector<QNEPort *> &map);
 
-    // --- Internal loading helpers ---
+    // --- File copy helper ---
+
+    void copyFile(const CopyOperation &op);
+    const QVector<std::shared_ptr<LogicElement>> generateMap();
+
+    // --- Logic access ---
+
+    LogicElement *inputLogic(int index);
+    LogicElement *outputLogic(int index);
+
+    // --- Loading helpers ---
 
     void loadInputElement(GraphicElement *elm);
     void loadInputs();
@@ -149,29 +124,15 @@ private:
     void loadOutputs();
     void loadOutputsLabels();
 
-    // --- Simulation helpers ---
-
-    LogicElement *inputLogic(int index);
-    LogicElement *outputLogic(int index);
-
     // --- Visual helpers ---
 
     void generatePixmap();
 
-    // --- File copy helper ---
-
-    void copyFile(const CopyOperation &op);
-
     // --- Members ---
 
-    // Simulation
     std::unique_ptr<ElementMapping> m_mapping;
-
-    // File watching
     QFileSystemWatcher m_fileWatcher;
     QString m_file;
-
-    // IC internals
     QVector<GraphicElement *> m_icElements;
     QVector<QNEPort *> m_icInputs;
     QVector<QNEPort *> m_icOutputs;

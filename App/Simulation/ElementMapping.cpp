@@ -31,7 +31,7 @@ void ElementMapping::generateMap()
     for (auto *elm : std::as_const(m_elements)) {
         auto logicElements = elm->getLogicElementsForMapping();
         if (logicElements.size() > 1) {
-            // Multi-logic element (like IC)
+            // Multi-logic element (like IC): port logic is set by getLogicElementsForMapping()
             m_logicElms.append(logicElements);
         } else {
             // Single-logic element
@@ -45,22 +45,30 @@ void ElementMapping::generateLogic(GraphicElement *elm)
     const auto &meta = ElementMetadataRegistry::metadata(elm->elementType());
     auto logicElm = meta.logicCreator ? meta.logicCreator(elm) : std::make_shared<LogicNone>();
     m_logicElms.append(std::move(logicElm));
-    elm->setLogic(m_logicElms.last().get());
+    auto *logic = m_logicElms.last().get();
+    elm->setLogic(logic);
+
+    for (int i = 0; i < elm->inputSize(); ++i) {
+        elm->inputPort(i)->setPortLogic(logic, i);
+    }
+    for (int i = 0; i < elm->outputSize(); ++i) {
+        elm->outputPort(i)->setPortLogic(logic, i);
+    }
 }
 
 void ElementMapping::connectElements()
 {
     for (auto *elm : std::as_const(m_elements)) {
         for (auto *inputPort : elm->inputs()) {
-            applyConnection(elm, inputPort);
+            applyConnection(inputPort);
         }
     }
 }
 
-void ElementMapping::applyConnection(GraphicElement *elm, QNEInputPort *inputPort)
+void ElementMapping::applyConnection(QNEInputPort *inputPort)
 {
-    LogicElement *currentLogic = elm->getInputLogic(inputPort->index());
-    int inputIndex = elm->getInputIndexForPort(inputPort->index());
+    auto *currentLogic = inputPort->logic();
+    int inputIndex = inputPort->logicIndex();
 
     const auto connections = inputPort->connections();
 
@@ -75,11 +83,9 @@ void ElementMapping::applyConnection(GraphicElement *elm, QNEInputPort *inputPor
             return;
         }
         if (auto *outputPort = connection->startPort()) {
-            if (auto *predecessorElement = outputPort->graphicElement()) {
-                auto *predecessorLogic = predecessorElement->getOutputLogic(outputPort->index());
-                int outputIndex = predecessorElement->getOutputIndexForPort(outputPort->index());
-                currentLogic->connectPredecessor(inputIndex, predecessorLogic, outputIndex);
-            }
+            auto *predecessorLogic = outputPort->logic();
+            int outputIndex = outputPort->logicIndex();
+            currentLogic->connectPredecessor(inputIndex, predecessorLogic, outputIndex);
         }
     }
 }
