@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief ClockDialogUi: hand-written UI class for the ClockDialog.
+ */
+
 #pragma once
 
 // Specific Qt includes instead of monolithic QtWidgets
@@ -23,7 +27,16 @@ public:
 
     // --- Setup ---
 
+    /**
+     * \brief Creates and lays out all child widgets inside \a ClockDialog.
+     * \param ClockDialog The host QDialog.
+     */
     void setupUi(QDialog *ClockDialog);
+
+    /**
+     * \brief Updates all translatable strings in the dialog.
+     * \param ClockDialog The host QDialog.
+     */
     void retranslateUi(QDialog *ClockDialog);
 
     // --- Widgets ---

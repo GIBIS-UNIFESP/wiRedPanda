@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief BeWavedDolphin waveform editor: digital signal creation, display, and export.
+ */
+
 #pragma once
 
 #include <memory>
@@ -20,52 +24,65 @@ class MainWindow;
 class QItemSelection;
 class QSaveFile;
 
-enum class PlotType { Number, Line };
+/// Controls how signal cells are rendered in the waveform table.
+enum class PlotType {
+    Number, ///< Cells display the numeric value (0/1).
+    Line    ///< Cells display a waveform-style rising/falling edge graphic.
+};
 
-/*!
- * @class SignalModel
- * @brief Data model for digital signals in the waveform editor
+/**
+ * \class SignalModel
+ * \brief QStandardItemModel subclass that makes output rows read-only in the waveform table.
  *
- * The SignalModel class extends QStandardItemModel to manage the data representation
- * of digital signals in the waveform editor table. It handles the editable/non-editable
- * state of cells based on whether they represent input or output signals.
+ * \details Input signal cells are editable; output signal cells are read-only since their
+ * values are computed by the simulation.
  */
 class SignalModel : public QStandardItemModel
 {
     Q_OBJECT
 
 public:
+    /**
+     * \brief Constructs the model.
+     * \param inputs  Number of input signal rows (these are editable).
+     * \param rows    Total number of signal rows.
+     * \param columns Number of time-step columns.
+     * \param parent  Optional parent object.
+     */
     SignalModel(const int inputs, const int rows, const int columns, QObject *parent = nullptr);
 
+    /// \reimp
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
 private:
-    const int m_inputCount;
+    const int m_inputCount; ///< Number of input rows; rows above this index are editable.
 };
 
-/*!
- * @class SignalDelegate
- * @brief Custom drawing delegate for waveform signal cells
+/**
+ * \class SignalDelegate
+ * \brief Item delegate that draws digital waveform graphics inside table cells.
  *
- * This class handles the visual representation of signal cells in the
- * waveform table and provide custom drawing for digital signal states.
+ * \details Replaces the default text rendering with pixmaps representing logic-high,
+ * logic-low, rising-edge, and falling-edge states in the chosen PlotType style.
  */
 class SignalDelegate : public QItemDelegate
 {
     Q_OBJECT
 
 public:
+    /// Constructs the delegate with \a parent.
     SignalDelegate(QObject *parent);
 
+    /// \reimp
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 };
 
-/*!
- * @class DolphinGraphicsView
- * @brief Custom GraphicsView for the waveform display
+/**
+ * \class DolphinGraphicsView
+ * \brief GraphicsView subclass with waveform-editor zoom behaviour.
  *
- * Extends GraphicsView to provide special zooming behavior and wheel
- * event handling specific to the waveform editor (like Quartus Prime zooming).
+ * \details Overrides the wheel event to zoom the entire scene (like Quartus Prime) rather
+ * than scroll, and provides a discrete zoom-level range suitable for waveform display.
  */
 class DolphinGraphicsView : public GraphicsView
 {
@@ -74,29 +91,43 @@ class DolphinGraphicsView : public GraphicsView
 public:
     // --- Lifecycle ---
 
+    /// Constructs the view with \a parent.
     explicit DolphinGraphicsView(QWidget *parent = nullptr);
 
     // --- Zoom ---
 
+    /// Returns \c true if zooming in further is possible.
     bool canZoomIn() const;
+
+    /// Returns \c true if further zoom-out is possible.
     bool canZoomOut() const;
+
+    /// Resets zoom to the default scale.
     void resetZoom();
+
+    /// Increases zoom by one step.
     void zoomIn();
+
+    /// Decreases zoom by one step.
     void zoomOut();
 
 protected:
     // --- Qt event overrides ---
 
+    /// \reimp Redirects wheel events to zoom instead of scroll.
     void wheelEvent(QWheelEvent *event) override;
 };
 
-/*!
- * @class BewavedDolphin
- * @brief Main waveform editor window
+/**
+ * \class BewavedDolphin
+ * \brief Waveform editor main window for creating and analyzing digital signal sequences.
  *
- * beWavedDolphin is the main class for the waveform editor component.
- * It provides functionality to create, edit, visualize, and export digital
- * waveforms, integrating with wiRedPanda circuit simulations.
+ * \details BewavedDolphin displays a table where rows represent circuit I/O signals and
+ * columns represent simulation time steps.  Users can set input values and then run the
+ * associated wiRedPanda circuit to observe output responses.  The waveform can be saved
+ * to a .dolphin file, printed, or exported to PDF/PNG.
+ *
+ * A subset of methods is also accessible via the MCP server for automated testing.
  */
 class BewavedDolphin : public QMainWindow
 {
@@ -105,27 +136,44 @@ class BewavedDolphin : public QMainWindow
 public:
     // --- Lifecycle ---
 
+    /**
+     * \brief Constructs the waveform editor.
+     * \param scene External scene to read circuit elements from.
+     * \param askConnection Whether to prompt when the file association is ambiguous.
+     * \param parent Parent window.
+     */
     explicit BewavedDolphin(Scene *scene, const bool askConnection = true, MainWindow *parent = nullptr);
     ~BewavedDolphin() override;
 
     // --- Waveform Initialization ---
 
+    /// Creates a fresh empty waveform table from the current circuit.
     void createWaveform();
+
+    /**
+     * \brief Initializes the waveform from \a fileName if it matches the current circuit.
+     * \param fileName Path to an existing .dolphin file.
+     */
     void createWaveform(const QString &fileName);
 
     // --- Display ---
 
+    /// Shows the waveform editor window.
     void show();
 
     // --- Export ---
 
+    /// Prints the waveform to the system printer.
     void print();
+    /// Writes the waveform data as plain text to \a stream.
     void saveToTxt(QTextStream &stream);
 
 protected:
     // --- Qt event overrides ---
 
+    /// \reimp
     void closeEvent(QCloseEvent *event) override;
+    /// \reimp
     void resizeEvent(QResizeEvent *event) override;
 
 private:

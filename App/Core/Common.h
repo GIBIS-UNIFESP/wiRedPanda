@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief Common logging utilities, the Pandaception error type, and helper macros.
+ */
+
 #pragma once
 
 #include <stdexcept>
@@ -25,27 +29,47 @@ Q_DECLARE_LOGGING_CATEGORY(five)
 #define qCDebug(category) QT_MESSAGE_LOGGER_COMMON(category, QtDebugMsg).debug().noquote().nospace()
 #endif
 
+/**
+ * \class Comment
+ * \brief Controls the verbosity level of diagnostic logging categories.
+ */
 class Comment
 {
 public:
-    // --- Verbosity control ---
-
+    /**
+     * \brief Sets the active logging verbosity level.
+     * \param verbosity Level 0–5 corresponds to logging categories zero–five.
+     */
     static void setVerbosity(const int verbosity);
 };
 
+/**
+ * \class Pandaception
+ * \brief Exception type for user-facing circuit errors.
+ *
+ * \details Pandaception carries both a translated message (for display in the UI)
+ * and the original English message (for logging and Sentry reports).
+ * Throw it via the PANDACEPTION() macro to take advantage of Qt's tr() mechanism.
+ */
 class Pandaception : public std::runtime_error
 {
 public:
     // --- Lifecycle ---
 
+    /**
+     * \brief Constructs the exception.
+     * \param translatedMessage Localized message shown to the user.
+     * \param englishMessage    English message for logging/Sentry.
+     */
     explicit Pandaception(const QString &translatedMessage, const QString &englishMessage);
 
     // --- Message access ---
 
+    /// Returns the English (non-translated) message for logging and crash reports.
     QString englishMessage() const;
 
 private:
-    QString m_englishMessage;
+    QString m_englishMessage; ///< English message preserved for logging.
 };
 
 // Main macro for class contexts that can use tr() - uses __VA_OPT__ for optional arguments
@@ -61,7 +85,15 @@ class GraphicElement;
 class Common
 {
 public:
+    /// Returns \a elements sorted in topological dependency order for simulation.
     static QVector<GraphicElement *> sortGraphicElements(QVector<GraphicElement *> elements);
+    /**
+     * \brief Computes the update-priority depth for \a elm via DFS.
+     * \param elm           The element whose priority is being calculated.
+     * \param beingVisited  Tracks elements currently on the DFS stack (cycle detection).
+     * \param priorities    Cache of already-computed priorities.
+     * \returns The computed priority (depth) value for \a elm.
+     */
     static int calculatePriority(GraphicElement *elm, QMap<GraphicElement *, bool> &beingVisited, QMap<GraphicElement *, int> &priorities);
 };
 

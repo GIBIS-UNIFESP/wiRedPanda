@@ -1,12 +1,16 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief Central enumeration types for element types, groups, and signal status.
+ */
+
 #pragma once
 
 #include <QObject>
 
 /**
- * @brief Preferred way to indicate the element types and groups (input, output, etc)
+ * \brief Preferred way to indicate the element types and groups (input, output, etc).
  */
 class Enums
 {
@@ -15,11 +19,11 @@ class Enums
 public:
     Enums() = delete;
 
-    // --- Enumerations ---
-
+    /// Signal status on a port or connection.
     enum class Status { Invalid = -1, Inactive = 0, Active = 1 };
     Q_ENUM(Status)
 
+    /// Numeric identifiers for every concrete element type.
     enum class ElementType { // last element is 33
         And = 5,
         AudioBox = 31,
@@ -58,6 +62,7 @@ public:
     };
     Q_ENUM(ElementType)
 
+    /// Logical grouping used to organise elements in the UI palette.
     enum class ElementGroup {
         Gate = 4,
         IC = 2,
@@ -71,9 +76,16 @@ public:
     };
     Q_ENUM(ElementGroup)
 
-    // --- ElementType navigation ---
-
+    /**
+     * \brief Returns the ElementType that follows \a type in the defined sequence.
+     * \param type Current element type.
+     */
     static ElementType nextElmType(ElementType type);
+
+    /**
+     * \brief Returns the ElementType that precedes \a type in the defined sequence.
+     * \param type Current element type.
+     */
     static ElementType prevElmType(ElementType type);
 };
 
@@ -81,7 +93,10 @@ using Status = Enums::Status;
 using ElementType = Enums::ElementType;
 using ElementGroup = Enums::ElementGroup;
 
+/// Pre-increment operator; advances \a type to the next ElementType in sequence.
 ElementType &operator++(ElementType &type);
+/// Deserializes an ElementType from \a stream into \a type.
 QDataStream &operator>>(QDataStream &stream, ElementType &type);
+/// Serializes \a type into \a stream.
 QDataStream &operator<<(QDataStream &stream, const ElementType &type);
 

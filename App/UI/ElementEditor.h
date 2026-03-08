@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief ElementEditor widget for inspecting and modifying selected circuit element properties.
+ */
+
 #pragma once
 
 #include <memory>
@@ -13,14 +17,14 @@
 #include "App/Scene/Scene.h"
 #include "App/UI/ElementEditorUI.h"
 
-/*!
- * @class ElementEditor
- * @brief Widget for editing the element properties of a circuit
+/**
+ * \class ElementEditor
+ * \brief Widget for inspecting and editing the properties of selected circuit elements.
  *
- * The ElementEditor class provides a user interface for editing properties
- * of circuit elements. It dynamically adapts to show appropriate controls
- * based on the selected element types, handling both single and multiple
- * element selections.
+ * \details The ElementEditor dynamically shows controls appropriate for the current
+ * selection: label, color, frequency, input/output count, skin, trigger, audio, and
+ * truth-table.  When multiple elements are selected it coalesces values, showing
+ * placeholder text when values differ.  Property changes are pushed as QUndoCommands.
  */
 class ElementEditor : public QWidget
 {
@@ -29,38 +33,54 @@ class ElementEditor : public QWidget
 public:
     // --- Lifecycle ---
 
+    /// Constructs the element editor with optional \a parent.
     explicit ElementEditor(QWidget *parent = nullptr);
     ~ElementEditor() override;
 
     // --- Scene Binding ---
 
+    /// Associates the editor with \a scene to read/write selected elements.
     void setScene(Scene *scene);
 
     // --- UI Refresh ---
 
+    /// Refreshes the editor UI to reflect the current selection.
     void update();
+    /// Re-applies translatable strings to all editor widgets.
     void retranslateUi();
+    /// Applies the current theme colors to the editor widgets.
     void updateTheme();
+    /// Repopulates the color combo box with available color options.
     void fillColorComboBox();
 
     // --- User Actions ---
 
+    /// Opens an inline editor to rename the selected element(s).
     void renameAction();
+    /// Opens a dialog to change the trigger key for the selected element(s).
     void changeTriggerAction();
+    /// Opens the audio file selector for the selected element(s).
     void audioBox();
+    /// Opens the truth table editor for the selected element(s).
     void truthTable();
+    /// Applies the chosen skin to the selected element(s).
     void updateElementSkin();
+    /// Applies the priority value from the spin box to the selected element(s).
     void updatePriorityAction();
 
     // --- Context Menu ---
 
+    /// Shows the element context menu at \a screenPos for the item under \a itemAtMouse.
     void contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse);
 
+    /// \reimp
     bool eventFilter(QObject *obj, QEvent *event) override;
 
 signals:
-    // --- Signals ---
-
+    /**
+     * \brief Emitted when a property change should be pushed onto the undo stack.
+     * \param cmd The undo command encapsulating the change.
+     */
     void sendCommand(QUndoCommand *cmd);
 
 private:
