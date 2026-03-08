@@ -113,9 +113,6 @@ public:
     /// Returns the logic element that backs this graphic element.
     LogicElement *logic() const;
 
-    /// Returns the topological-sort priority of this element.
-    int priority() const;
-
     // --- Port Access ---
 
     /// Returns the input port at \a index (default 0).
@@ -359,9 +356,6 @@ public:
     /// Sets the object name of all ports to \a name for identification.
     void setPortName(const QString &name);
 
-    /// Sets the topological-sort priority to \a value.
-    void setPriority(const int value);
-
     // --- Theme ---
 
     //! Updates the GraphicElement theme according to the dark/light wiRedPanda theme.
@@ -488,7 +482,6 @@ private:
     void loadLabel(QDataStream &stream, const QVersionNumber &version);
     void loadPixmapSkinName(QDataStream &stream, const int skin, const QString &contextDir);
     void loadPixmapSkinNames(QDataStream &stream, SerializationContext &context);
-    void loadPriority(QDataStream &stream, const QVersionNumber &version);
     void loadRotation(QDataStream &stream, const QVersionNumber &version);
     void loadTrigger(QDataStream &stream, const QVersionNumber &version);
 
@@ -507,7 +500,6 @@ private:
     ElementGroup m_elementGroup = ElementGroup::Unknown;
     ElementType m_elementType = ElementType::Unknown;
     LogicElement *m_logic = nullptr;
-    quint64 m_priority = 0;
 
     // --- Members: Trigger & Label ---
 
