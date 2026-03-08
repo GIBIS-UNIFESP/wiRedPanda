@@ -88,6 +88,7 @@ public:
      * \param name New port name.
      */
     void setOutputPortName(int port, const QString &name) override;
+    void loadFromDrop(const QString &fileName, const QString &contextDir) override;
 
     const QString &icFile() const { return m_file; }
     const QVector<GraphicElement *> &icElements() const { return m_icElements; }

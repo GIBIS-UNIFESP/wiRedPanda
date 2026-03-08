@@ -30,8 +30,8 @@ ElementLabel::ElementLabel(const QPixmap &pixmap, ElementType type, const QStrin
 
     // ICs are identified by their .panda file name rather than a translated string
     // because each IC has a unique user-chosen name rather than a fixed element type name.
-    m_nameLabel.setText((type == ElementType::IC) ? QFileInfo(icFileName).baseName().toUpper()
-                                                  : ElementFactory::translatedName(type));
+    m_nameLabel.setText(type == ElementType::IC ? QFileInfo(icFileName).baseName().toUpper()
+                                                : ElementFactory::translatedName(type));
 
     auto *itemLayout = new QHBoxLayout();
     itemLayout->setSpacing(6);

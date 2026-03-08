@@ -1359,6 +1359,12 @@ void GraphicElement::retranslate()
     setToolTip(m_translatedName);
 }
 
+void GraphicElement::loadFromDrop(const QString &fileName, const QString &contextDir)
+{
+    Q_UNUSED(fileName)
+    Q_UNUSED(contextDir)
+}
+
 QDataStream &operator<<(QDataStream &stream, const GraphicElement *item)
 {
     // Type tags are now written by Serialization::serialize() for symmetry
