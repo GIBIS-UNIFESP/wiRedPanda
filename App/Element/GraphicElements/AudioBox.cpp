@@ -14,6 +14,7 @@
 #include "App/GlobalProperties.h"
 #include "App/Element/LogicElements/LogicOutput.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Versions.h"
 
 template<>
 struct ElementInfo<AudioBox> {
@@ -207,18 +208,18 @@ void AudioBox::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, cons
 {
     GraphicElement::load(stream, portMap, version);
 
-    if (version < VERSION("2.4")) {
+    if (version < Versions::V_2_4) {
         // Audio was added in v2.4; nothing to read for earlier files
         return;
     }
 
-    if (version < VERSION("4.1")) {
+    if (version < Versions::V_4_1) {
         // v2.4–4.0 stored the path as a bare QString
         QString audio; stream >> audio;
         setAudio(audio);
     }
 
-    if (version >= VERSION("4.1")) {
+    if (version >= Versions::V_4_1) {
         // v4.1+ uses a key-value map for forward-compatible extensibility
         QMap<QString, QVariant> map; stream >> map;
 

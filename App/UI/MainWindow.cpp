@@ -52,6 +52,7 @@
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/UI/MainWindowUI.h"
+#include "App/Versions.h"
 
 #ifdef Q_OS_MAC
 void ensureSvgUsage() {
@@ -63,7 +64,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     : QMainWindow(parent)
     , m_ui(std::make_unique<MainWindowUi>())
 {
-    qCDebug(zero) << "wiRedPanda Version = " APP_VERSION " OR " << GlobalProperties::version;
+    qCDebug(zero) << "wiRedPanda Version = " APP_VERSION " OR " << AppVersion::current;
     m_ui->setupUi(this);
 
     qCDebug(zero) << "Settings fileName: " << Settings::fileName();

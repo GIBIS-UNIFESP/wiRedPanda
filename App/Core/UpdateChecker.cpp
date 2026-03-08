@@ -12,6 +12,7 @@
 
 #include "App/Core/Settings.h"
 #include "App/GlobalProperties.h"
+#include "App/Versions.h"
 
 static constexpr auto k_apiUrl = "https://api.github.com/repos/gibis-unifesp/wiredpanda/releases/latest";
 
@@ -56,7 +57,7 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
 
     const QString tagName = doc.object().value("tag_name").toString();
     const QVersionNumber latest = QVersionNumber::fromString(tagName).normalized();
-    if (latest.isNull() || latest <= GlobalProperties::version) {
+    if (latest.isNull() || latest <= AppVersion::current) {
         return;
     }
 

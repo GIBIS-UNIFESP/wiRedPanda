@@ -11,12 +11,13 @@
 #include "App/Element/GraphicElement.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEConnection.h"
+#include "App/Versions.h"
 
 void Serialization::writePandaHeader(QDataStream &stream)
 {
     stream.setVersion(QDataStream::Qt_5_12);
     stream << MAGIC_HEADER_CIRCUIT;
-    stream << GlobalProperties::version;
+    stream << AppVersion::current;
 }
 
 QVersionNumber Serialization::readPandaHeader(QDataStream &stream)
@@ -74,7 +75,7 @@ void Serialization::writeDolphinHeader(QDataStream &stream)
 {
     stream.setVersion(QDataStream::Qt_5_12);
     stream << MAGIC_HEADER_WAVEFORM;
-    stream << GlobalProperties::version;
+    stream << AppVersion::current;
 }
 
 void Serialization::readDolphinHeader(QDataStream &stream)
@@ -197,13 +198,13 @@ QString Serialization::loadDolphinFileName(QDataStream &stream, const QVersionNu
 {
     QString filename;
 
-    if (version >= VERSION("3.0")) {
+    if (version >= Versions::V_3_0) {
         stream >> filename;
 
         // Versions 3.0–3.2 used the sentinel string "none" instead of an empty
         // QString to indicate that no waveform file was associated; normalize it here
         // so callers can simply check isEmpty()
-        if ((version < VERSION("3.3")) && (filename == "none")) {
+        if ((version < Versions::V_3_3) && (filename == "none")) {
             filename.clear();
         }
     }
@@ -218,7 +219,7 @@ QRectF Serialization::loadRect(QDataStream &stream, const QVersionNumber version
 
     // The stored rect is always discarded by the caller (WorkSpace recomputes it from
     // items after load), but it must still be read to advance the stream past this field
-    if (version >= VERSION("1.4")) {
+    if (version >= Versions::V_1_4) {
         stream >> rect;
     }
 

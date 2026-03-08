@@ -10,6 +10,7 @@
 #include "App/Element/LogicElements/LogicTruthTable.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Versions.h"
 
 template<>
 struct ElementInfo<TruthTable> {
@@ -214,7 +215,7 @@ void TruthTable::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, co
 {
     GraphicElement::load(stream, portMap, version);
 
-    if (version >= VERSION("4.2")) {
+    if (version >= Versions::V_4_2) {
         // Truth-table key (the output bit-array) was first serialized in v4.2
         QMap<QString, QVariant> map; stream >> map;
 
