@@ -81,9 +81,12 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/ElementMapping.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LanguageManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.cpp
@@ -196,9 +199,12 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/ElementMapping.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LanguageManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.h
