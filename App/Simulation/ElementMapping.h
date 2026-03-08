@@ -42,7 +42,7 @@ public:
     explicit ElementMapping(const QVector<GraphicElement *> &elements);
 
     /// Destructor.
-    ~ElementMapping();
+    ~ElementMapping() = default;
 
     // --- Query ---
 
