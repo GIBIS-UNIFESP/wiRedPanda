@@ -621,7 +621,7 @@ void MorphCommand::redo()
     m_scene->setCircuitUpdateRequired();
 }
 
-void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<GraphicElement *> to)
+void MorphCommand::transferConnections(const QList<GraphicElement *> &from, const QList<GraphicElement *> &to)
 {
     for (int elm = 0; elm < from.size(); ++elm) {
         auto *oldElm = from.at(elm);

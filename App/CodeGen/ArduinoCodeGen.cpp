@@ -37,14 +37,15 @@ QString ArduinoCodeGen::stripAccents(const QString &input)
 {
     QString normalized = input.normalized(QString::NormalizationForm_D);
     // Remove combining marks (diacritics)
-    QRegularExpression diacriticMarks("[\\p{Mn}]");
+    static const QRegularExpression diacriticMarks("[\\p{Mn}]");
     return normalized.remove(diacriticMarks);
 }
 
 QString ArduinoCodeGen::removeForbiddenChars(const QString &input)
 {
     QString result = stripAccents(input).toLower().trimmed().replace(' ', '_').replace('-', '_');
-    result.remove(QRegularExpression("\\W"));
+    static const QRegularExpression re("\\W");
+    result.remove(re);
 
     if (result.isEmpty()) {
         result = "_unnamed";

@@ -200,7 +200,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
     return itemList;
 }
 
-QString Serialization::loadDolphinFileName(QDataStream &stream, const QVersionNumber version)
+QString Serialization::loadDolphinFileName(QDataStream &stream, const QVersionNumber &version)
 {
     QString filename;
 
@@ -219,7 +219,7 @@ QString Serialization::loadDolphinFileName(QDataStream &stream, const QVersionNu
     return filename;
 }
 
-QRectF Serialization::loadRect(QDataStream &stream, const QVersionNumber version)
+QRectF Serialization::loadRect(QDataStream &stream, const QVersionNumber &version)
 {
     QRectF rect;
 

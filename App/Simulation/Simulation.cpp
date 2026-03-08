@@ -285,7 +285,7 @@ bool Simulation::initialize()
 
     const auto globalTime = std::chrono::steady_clock::now();
 
-    for (auto *item : items) {
+    for (auto *item : std::as_const(items)) {
         if (!item) {
             continue;
         }

@@ -264,7 +264,7 @@ public:
 
 private:
     // --- Helpers ---
-    void transferConnections(QList<GraphicElement *> from, QList<GraphicElement *> to);
+    void transferConnections(const QList<GraphicElement *> &from, const QList<GraphicElement *> &to);
 
     // --- Members ---
     ElementType m_newType;
