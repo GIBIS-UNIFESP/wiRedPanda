@@ -3,9 +3,19 @@
 
 #include "App/Element/LogicElements/LogicMux.h"
 
-LogicMux::LogicMux()
-    : LogicElement(3, 1)
+LogicMux::LogicMux(int inputSize)
+    : LogicElement(inputSize, 1)
 {
+    // Calculate minimum select lines needed for the given data input count
+    // We need: 2^m_numSelectLines >= m_numDataInputs, where m_numDataInputs = inputSize - m_numSelectLines
+    m_numSelectLines = 1;
+    while (true) {
+        m_numDataInputs = inputSize - m_numSelectLines;
+        if ((1 << m_numSelectLines) >= m_numDataInputs) {
+            break;
+        }
+        m_numSelectLines++;
+    }
 }
 
 void LogicMux::updateLogic()
@@ -14,13 +24,13 @@ void LogicMux::updateLogic()
         return;
     }
 
-    // Input layout: data0 at index 0, data1 at index 1, select at index 2.
-    // This matches the pin ordering defined in the graphic element.
-    const bool data1 = m_inputValues.at(0);
-    const bool data2 = m_inputValues.at(1);
-    const bool choice = m_inputValues.at(2);
+    int selectValue = 0;
+    for (int i = 0; i < m_numSelectLines; i++) {
+        if (m_inputValues.at(m_numDataInputs + i)) {
+            selectValue |= (1 << i);
+        }
+    }
 
-    // choice=0 → forward data1 (input 0); choice=1 → forward data2 (input 1).
-    setOutputValue(choice ? data2 : data1);
+    setOutputValue(m_inputValues.at(selectValue));
 }
 
