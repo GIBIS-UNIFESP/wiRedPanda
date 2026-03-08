@@ -62,11 +62,5 @@
 #include <QVector>
 #include <QVersionNumber>
 #include <QWidget>
-
-// Project includes (most expensive headers based on ClangBuildAnalyzer)
-#include "App/Core/Enums.h"
-#include "App/Core/ItemWithId.h"
-#include "App/Element/GraphicElement.h"
-#include "App/Element/LogicElement.h"
 #endif
 
