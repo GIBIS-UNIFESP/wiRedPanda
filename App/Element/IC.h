@@ -159,5 +159,3 @@ private:
     QVector<QString> m_icInputLabels;
     QVector<QString> m_icOutputLabels;
 };
-
-Q_DECLARE_METATYPE(IC)

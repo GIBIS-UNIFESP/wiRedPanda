@@ -21,5 +21,3 @@ public:
     /// Constructs an Or gate element with default 2 inputs.
     explicit Or(QGraphicsItem *parent = nullptr);
 };
-
-Q_DECLARE_METATYPE(Or)

@@ -21,5 +21,3 @@ public:
     /// Constructs a Nor gate element with default 2 inputs.
     explicit Nor(QGraphicsItem *parent = nullptr);
 };
-
-Q_DECLARE_METATYPE(Nor)

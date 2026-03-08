@@ -21,5 +21,3 @@ public:
     /// Constructs a Not gate element.
     explicit Not(QGraphicsItem *parent = nullptr);
 };
-
-Q_DECLARE_METATYPE(Not)

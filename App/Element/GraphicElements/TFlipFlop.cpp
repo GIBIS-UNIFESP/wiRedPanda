@@ -3,24 +3,54 @@
 
 #include "App/Element/GraphicElements/TFlipFlop.h"
 
-#include "App/GlobalProperties.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicTFlipFlop.h"
 #include "App/Nodes/QNEPort.h"
 
-TFlipFlop::TFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::TFlipFlop, ElementGroup::Memory, pixmapPath(), tr("T-FLIP-FLOP"), tr("T-Flip-Flop"), 4, 4, 2, 2, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<TFlipFlop> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::TFlipFlop,
+        .group = ElementGroup::Memory,
+        .minInputSize = 4,
+        .maxInputSize = 4,
+        .minOutputSize = 2,
+        .maxOutputSize = 2,
+        .canChangeSkin = true,
+        .hasColors = false,
+        .hasAudio = false,
+        .hasAudioBox = false,
+        .hasTrigger = false,
+        .hasFrequency = false,
+        .hasDelay = false,
+        .hasLabel = false,
+        .hasTruthTable = false,
+        .rotatable = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return TFlipFlop::pixmapPath(); };
+        meta.titleText = QT_TRANSLATE_NOOP("TFlipFlop", "T-FLIP-FLOP");
+        meta.translatedName = QT_TRANSLATE_NOOP("TFlipFlop", "T-Flip-Flop");
+        meta.trContext = "TFlipFlop";
+        meta.defaultSkins = QStringList({":/Components/Memory/Dark/T-flipflop.svg"});
+        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicTFlipFlop>(); };
+        return meta;
     }
 
-    // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new TFlipFlop(); });
+        return true;
+    }();
+};
 
-    setCanChangeSkin(true);
-
+TFlipFlop::TFlipFlop(QGraphicsItem *parent)
+    : GraphicElement(ElementType::TFlipFlop, parent)
+{
     // Call the most-derived override explicitly (see SRFlipFlop.cpp for rationale).
     TFlipFlop::updatePortsProperties();
 }

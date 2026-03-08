@@ -5,32 +5,61 @@
 
 #include <chrono>
 
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicInput.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
 
 using namespace std::chrono_literals;
 
-Clock::Clock(QGraphicsItem *parent)
-    : GraphicElementInput(ElementType::Clock, ElementGroup::Input, ":/Components/Input/clock1.svg", tr("CLOCK SIGNAL"), tr("Clock"), 0, 0, 1, 1, parent)
-{
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<Clock> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::Clock,
+        .group = ElementGroup::Input,
+        .minInputSize = 0,
+        .maxInputSize = 0,
+        .minOutputSize = 1,
+        .maxOutputSize = 1,
+        .canChangeSkin = true,
+        .hasColors = false,
+        .hasAudio = false,
+        .hasAudioBox = false,
+        .hasTrigger = false,
+        .hasFrequency = true,
+        .hasDelay = true,
+        .hasLabel = true,
+        .hasTruthTable = false,
+        .rotatable = false,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Input/clock1.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("Clock", "CLOCK SIGNAL");
+        meta.translatedName = QT_TRANSLATE_NOOP("Clock", "Clock");
+        meta.trContext = "Clock";
+        meta.defaultSkins = QStringList({
+            ":/Components/Input/clock0.svg",
+            ":/Components/Input/clock1.svg",
+        });
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicInput>(false, elm->outputSize()); };
+        return meta;
     }
 
-    m_defaultSkins = QStringList{
-        ":/Components/Input/clock0.svg",
-        ":/Components/Input/clock1.svg"
-    };
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new Clock(); });
+        return true;
+    }();
+};
 
+Clock::Clock(QGraphicsItem *parent)
+    : GraphicElementInput(ElementType::Clock, parent)
+{
     m_locked = false;
-
-    setCanChangeSkin(true);
-    setHasFrequency(true);
-    setHasLabel(true);
-    setRotatable(false);
-    setHasDelay(true);
 
     Clock::setFrequency(1.0);  // 1 Hz default → 500 ms half-period
     Clock::setDelay(0.0);       // no phase offset by default

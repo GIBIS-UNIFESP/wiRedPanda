@@ -63,5 +63,3 @@ private:
     QVector<QPixmap> bkg, a, b, c, d, e, f, g1, g2, h, j, k, l, m, n, dp;
     int m_colorNumber = 1;
 };
-
-Q_DECLARE_METATYPE(Display14)

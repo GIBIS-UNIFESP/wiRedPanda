@@ -40,5 +40,3 @@ public:
     /// Refreshes the pixmap when the application theme changes.
     void updateTheme() override;
 };
-
-Q_DECLARE_METATYPE(DFlipFlop)

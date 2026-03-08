@@ -21,5 +21,3 @@ public:
     /// Constructs a Nand gate element with default 2 inputs.
     explicit Nand(QGraphicsItem *parent = nullptr);
 };
-
-Q_DECLARE_METATYPE(Nand)

@@ -43,5 +43,3 @@ private:
     // Prevent direct input size setting - inputs are derived from output size
     void setInputSize(const int size) override;
 };
-
-Q_DECLARE_METATYPE(Demux)

@@ -77,5 +77,3 @@ private:
     bool m_isPlaying = false;
     bool m_muted = false;
 };
-
-Q_DECLARE_METATYPE(AudioBox)

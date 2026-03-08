@@ -5,6 +5,7 @@
 
 #include <cmath>
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
 #include <QGraphicsSceneMouseEvent>
@@ -16,31 +17,29 @@
 #include "App/Core/Common.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/ElementMetadata.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 
-// Sanity cap when deserialising: any port count beyond this indicates a corrupt stream
-// rather than a legitimately large element.
-const int maximumValidInputSize = 256;
+static const int s_metatypeId = qRegisterMetaType<GraphicElement>();
 
-GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QString &pixmapPath, const QString &titleText, const QString &translatedName, const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent)
+GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
     : QGraphicsObject(parent)
-    , m_pixmapPath(pixmapPath)
-    , m_titleText(titleText)
-    , m_translatedName(translatedName)
-    , m_elementGroup(group)
     , m_elementType(type)
-    // Port-count limits are stored as quint64 to match the QDataStream serialisation
-    // format; signed ints are cast on the way in and out.
-    , m_minInputSize(static_cast<quint64>(minInputSize))
-    , m_maxInputSize(static_cast<quint64>(maxInputSize))
-    , m_minOutputSize(static_cast<quint64>(minOutputSize))
-    , m_maxOutputSize(static_cast<quint64>(maxOutputSize))
 {
-    if (GlobalProperties::skipInit) {
-        return;
-    }
+    const auto &metadata = ElementMetadataRegistry::metadata(type);
+    m_defaultSkins = metadata.defaultSkins;
+    m_alternativeSkins = metadata.alternativeSkins.isEmpty() ? metadata.defaultSkins : metadata.alternativeSkins;
+    m_pixmapPath = metadata.pixmapPath();
+    m_titleText = QCoreApplication::translate(metadata.trContext, metadata.titleText);
+    m_translatedName = QCoreApplication::translate(metadata.trContext, metadata.translatedName);
+    m_elementGroup = metadata.group;
+    m_hasColors = metadata.hasColors;
+    m_maxInputSize = metadata.maxInputSize;
+    m_maxOutputSize = metadata.maxOutputSize;
+    m_minInputSize = metadata.minInputSize;
+    m_minOutputSize = metadata.minOutputSize;
 
     qCDebug(four) << "Setting flags of elements.";
     // ItemSendsGeometryChanges is required so itemChange() receives ItemPositionChange and
@@ -48,7 +47,7 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
 
     qCDebug(four) << "Setting attributes.";
-    m_label->hide();
+    m_label->setVisible(metadata.hasLabel);
     QFont font("SansSerif");
     font.setBold(true);
     m_label->setFont(font);
@@ -61,8 +60,8 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     setToolTip(m_translatedName);
 
     qCDebug(four) << "Including input and output ports.";
-    setInputSize(minInputSize);
-    setOutputSize(minOutputSize);
+    setInputSize(metadata.minInputSize);
+    setOutputSize(metadata.minOutputSize);
 
     GraphicElement::updatePortsProperties();
     GraphicElement::updateTheme();
@@ -70,6 +69,10 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     // DeviceCoordinateCache reuses the rendered pixmap when the device transform changes,
     // giving a large speedup for elements that don't redraw on every pan/zoom
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+
+    if (!m_defaultSkins.isEmpty()) {
+        setPixmap(0);
+    }
 }
 
 ElementType GraphicElement::elementType() const
@@ -497,10 +500,6 @@ void GraphicElement::loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *
     qCDebug(four) << "Loading input ports.";
     quint64 inputSize; stream >> inputSize;
 
-    if (inputSize > maximumValidInputSize) {
-        throw PANDACEPTION("Corrupted DataStream!");
-    }
-
     for (size_t port = 0; port < inputSize; ++port) {
         loadInputPort(stream, portMap, static_cast<int>(port));
     }
@@ -575,10 +574,6 @@ void GraphicElement::loadOutputPorts(QDataStream &stream, QMap<quint64, QNEPort 
     qCDebug(four) << "Loading output ports.";
     quint64 outputSize; stream >> outputSize;
 
-    if (outputSize > maximumValidInputSize) {
-        throw PANDACEPTION("Corrupted DataStream!");
-    }
-
     for (size_t port = 0; port < outputSize; ++port) {
         loadOutputPort(stream, portMap, static_cast<int>(port));
     }
@@ -608,10 +603,6 @@ void GraphicElement::loadPixmapSkinNames(QDataStream &stream, const QVersionNumb
     if (version >= VERSION("2.7")) {
         qCDebug(four) << tr("Loading pixmap skin names.");
         quint64 outputSize; stream >> outputSize;
-
-        if (outputSize > maximumValidInputSize) {
-            throw PANDACEPTION("Corrupted DataStream!");
-        }
 
         for (size_t skin = 0; skin < outputSize; ++skin) {
             loadPixmapSkinName(stream, static_cast<int>(skin));
@@ -912,12 +903,7 @@ bool GraphicElement::sceneEvent(QEvent *event)
 
 bool GraphicElement::hasAudio() const
 {
-    return m_hasAudio;
-}
-
-void GraphicElement::setHasAudio(const bool hasAudio)
-{
-    m_hasAudio = hasAudio;
+    return ElementMetadataRegistry::metadata(m_elementType).hasAudio;
 }
 
 QKeySequence GraphicElement::trigger() const
@@ -1065,12 +1051,17 @@ bool GraphicElement::hasColors() const
 
 bool GraphicElement::hasTrigger() const
 {
-    return m_hasTrigger;
+    return ElementMetadataRegistry::metadata(m_elementType).hasTrigger;
 }
 
 void GraphicElement::setColor(const QString &color)
 {
     Q_UNUSED(color)
+}
+
+void GraphicElement::setHasColors(const bool hasColors)
+{
+    m_hasColors = hasColors;
 }
 
 QString GraphicElement::color() const
@@ -1088,90 +1079,39 @@ QString GraphicElement::audio() const
     return {};
 }
 
-void GraphicElement::setHasColors(const bool hasColors)
-{
-    m_hasColors = hasColors;
-}
-
-void GraphicElement::setCanChangeSkin(const bool canChangeSkin)
-{
-    m_canChangeSkin = canChangeSkin;
-}
-
-void GraphicElement::setHasTrigger(const bool hasTrigger)
-{
-    m_hasTrigger = hasTrigger;
-}
-
 bool GraphicElement::hasFrequency() const
 {
-    return m_hasFrequency;
-}
-
-void GraphicElement::setHasFrequency(const bool hasFrequency)
-{
-    m_hasFrequency = hasFrequency;
+    return ElementMetadataRegistry::metadata(m_elementType).hasFrequency;
 }
 
 bool GraphicElement::hasDelay() const
 {
-    return m_hasDelay;
-}
-
-void GraphicElement::setHasDelay(const bool hasDelay)
-{
-    m_hasDelay = hasDelay;
+    return ElementMetadataRegistry::metadata(m_elementType).hasDelay;
 }
 
 bool GraphicElement::hasLabel() const
 {
-    return m_hasLabel;
+    return ElementMetadataRegistry::metadata(m_elementType).hasLabel;
 }
 
 bool GraphicElement::hasTruthTable() const
 {
-    return m_hasTruthTable;
-}
-
-void GraphicElement::setHasTruthTable(const bool hasTruthTable)
-{
-    m_hasTruthTable = hasTruthTable;
-}
-
-void GraphicElement::setHasAudioBox(const bool hasAudioBox)
-{
-    m_hasAudioBox = hasAudioBox;
+    return ElementMetadataRegistry::metadata(m_elementType).hasTruthTable;
 }
 
 bool GraphicElement::hasAudioBox() const
 {
-    return m_hasAudioBox;
+    return ElementMetadataRegistry::metadata(m_elementType).hasAudioBox;
 }
 
 bool GraphicElement::canChangeSkin() const
 {
-    return m_canChangeSkin;
-}
-
-void GraphicElement::setHasLabel(const bool hasLabel)
-{
-    m_hasLabel = hasLabel;
-    m_label->setVisible(hasLabel);
+    return ElementMetadataRegistry::metadata(m_elementType).canChangeSkin;
 }
 
 bool GraphicElement::isRotatable() const
 {
-    return m_rotatable;
-}
-
-void GraphicElement::setRotatable(const bool rotatable)
-{
-    m_rotatable = rotatable;
-}
-
-int GraphicElement::minOutputSize() const
-{
-    return static_cast<int>(m_minOutputSize);
+    return ElementMetadataRegistry::metadata(m_elementType).rotatable;
 }
 
 int GraphicElement::inputSize() const
@@ -1287,9 +1227,9 @@ void GraphicElement::setOutputPortName(int port, const QString &name)
     Q_UNUSED(name)
 }
 
-void GraphicElement::setMinOutputSize(const int minOutputSize)
+int GraphicElement::minOutputSize() const
 {
-    m_minOutputSize = static_cast<quint64>(minOutputSize);
+    return static_cast<int>(m_minOutputSize);
 }
 
 int GraphicElement::minInputSize() const
@@ -1297,19 +1237,9 @@ int GraphicElement::minInputSize() const
     return static_cast<int>(m_minInputSize);
 }
 
-void GraphicElement::setMinInputSize(const int minInputSize)
-{
-    m_minInputSize = static_cast<quint64>(minInputSize);
-}
-
 int GraphicElement::maxOutputSize() const
 {
     return static_cast<int>(m_maxOutputSize);
-}
-
-void GraphicElement::setMaxOutputSize(const int maxOutputSize)
-{
-    m_maxOutputSize = static_cast<quint64>(maxOutputSize);
 }
 
 int GraphicElement::maxInputSize() const
@@ -1320,6 +1250,21 @@ int GraphicElement::maxInputSize() const
 void GraphicElement::setMaxInputSize(const int maxInputSize)
 {
     m_maxInputSize = static_cast<quint64>(maxInputSize);
+}
+
+void GraphicElement::setMaxOutputSize(const int maxOutputSize)
+{
+    m_maxOutputSize = static_cast<quint64>(maxOutputSize);
+}
+
+void GraphicElement::setMinInputSize(const int minInputSize)
+{
+    m_minInputSize = static_cast<quint64>(minInputSize);
+}
+
+void GraphicElement::setMinOutputSize(const int minOutputSize)
+{
+    m_minOutputSize = static_cast<quint64>(minOutputSize);
 }
 
 void GraphicElement::highlight(const bool isSelected)

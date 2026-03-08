@@ -5,29 +5,59 @@
 
 #include <QGraphicsSceneMouseEvent>
 
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicInput.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
 
-InputButton::InputButton(QGraphicsItem *parent)
-    : GraphicElementInput(ElementType::InputButton, ElementGroup::Input, ":/Components/Input/buttonOff.svg", tr("PUSH BUTTON"), tr("Push Button"), 0, 0, 1, 1, parent)
-{
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<InputButton> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::InputButton,
+        .group = ElementGroup::Input,
+        .minInputSize = 0,
+        .maxInputSize = 0,
+        .minOutputSize = 1,
+        .maxOutputSize = 1,
+        .canChangeSkin = true,
+        .hasColors = false,
+        .hasAudio = false,
+        .hasAudioBox = false,
+        .hasTrigger = true,
+        .hasFrequency = false,
+        .hasDelay = false,
+        .hasLabel = true,
+        .hasTruthTable = false,
+        .rotatable = false,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Input/buttonOff.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("InputButton", "PUSH BUTTON");
+        meta.translatedName = QT_TRANSLATE_NOOP("InputButton", "Push Button");
+        meta.trContext = "InputButton";
+        meta.defaultSkins = QStringList({
+            ":/Components/Input/buttonOff.svg",
+            ":/Components/Input/buttonOn.svg",
+        });
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicInput>(false, elm->outputSize()); };
+        return meta;
     }
 
-    m_defaultSkins = QStringList{
-        ":/Components/Input/buttonOff.svg",
-        ":/Components/Input/buttonOn.svg",
-    };
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new InputButton(); });
+        return true;
+    }();
+};
 
+InputButton::InputButton(QGraphicsItem *parent)
+    : GraphicElementInput(ElementType::InputButton, parent)
+{
     m_locked = false;
-
-    setCanChangeSkin(true);
-    setHasLabel(true);
-    setHasTrigger(true);
-    setRotatable(false);
 
     InputButton::setOff();
 }
