@@ -314,7 +314,7 @@ endforeach()
 
 # ========= LIB ===================================
 
-add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS} ${FORMS})
+add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS})
 target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS})
 
 # Treat external dependencies as system headers to suppress clazy warnings
