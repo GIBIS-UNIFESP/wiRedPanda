@@ -9,8 +9,8 @@
 
 #include "App/Element/ElementInfo.h"
 #include "App/Element/LogicElements/LogicMux.h"
-#include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Scene/Scene.h"
 
 template<>
 struct ElementInfo<Mux> {
@@ -72,7 +72,7 @@ void Mux::updatePortsProperties()
     }
     int numDataInputs = inputSize() - numSelectLines;
 
-    const int step = GlobalProperties::gridSize / 2; // 8
+    const int step = Scene::gridSize / 2; // 8
 
     // Calculate element height to fit all data ports with padding
     int dataPortsSpan = (numDataInputs - 1) * step * 2; // spacing between first and last port

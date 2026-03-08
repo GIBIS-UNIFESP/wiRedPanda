@@ -8,8 +8,8 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/LogicElements/LogicTruthTable.h"
-#include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Scene/Scene.h"
 #include "App/Versions.h"
 
 template<>
@@ -74,7 +74,7 @@ void TruthTable::updatePortsProperties()
 {
     int index = 0;
     // step = 8px (half the 16px grid), giving ports a 16px pitch (every other grid line)
-    const int step = GlobalProperties::gridSize / 2;
+    const int step = Scene::gridSize / 2;
 
     if (!m_inputPorts.isEmpty()) {
         // Center the input port column vertically within the 64px-minimum body height.

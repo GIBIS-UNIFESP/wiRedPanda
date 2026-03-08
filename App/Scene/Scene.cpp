@@ -18,7 +18,6 @@
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/IC.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Commands.h"
@@ -74,9 +73,6 @@ void Scene::drawBackground(QPainter *painter, const QRectF &rect)
     painter->setRenderHint(QPainter::Antialiasing, true);
     QGraphicsScene::drawBackground(painter, rect);
 
-    // Align the dot grid to the nearest gridSize boundary so dots don't drift
-    // as the viewport scrolls — the modulo brings the start point back to a grid line
-    const int gridSize = GlobalProperties::gridSize;
     const int left = static_cast<int>(rect.left()) - (static_cast<int>(rect.left()) % gridSize);
     const int top = static_cast<int>(rect.top()) - (static_cast<int>(rect.top()) % gridSize);
     painter->setPen(m_dots);

@@ -12,7 +12,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/TruthTable.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
@@ -451,7 +450,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     // Subtract pixmapCenter so the node's visual center lands on the mouse click,
     // then snap to the nearest grid intersection
     m_nodePos = mousePos - node->pixmapCenter();
-    const int gridSize = GlobalProperties::gridSize;
+    const int gridSize = Scene::gridSize;
     qreal xV = qRound(m_nodePos.x() / gridSize) * gridSize;
     qreal yV = qRound(m_nodePos.y() / gridSize) * gridSize;
     m_nodePos = QPointF(xV, yV);

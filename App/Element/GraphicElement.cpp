@@ -21,6 +21,7 @@
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Scene/Scene.h"
 #include "App/Versions.h"
 
 static const int s_metatypeId = qRegisterMetaType<GraphicElement>();
@@ -787,7 +788,7 @@ void GraphicElement::updatePortsProperties()
 
     // gridSize is 16 px; half that (8 px) is the port spacing unit so ports land
     // on sub-grid snap points that wires can reach when snapped to the same grid.
-    const int step = GlobalProperties::gridSize / 2;
+    const int step = Scene::gridSize / 2;
 
     if (!m_inputPorts.isEmpty()) {
         // Centre the port column vertically around y=32 (the mid-point of a 64 px body).
@@ -859,7 +860,7 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
         QPointF newPos = value.toPointF();
         // Snap to half-grid (8 px steps) so elements always align with each other
         // and with the port positions computed in updatePortsProperties().
-        const int gridSize = GlobalProperties::gridSize / 2;
+        const int gridSize = Scene::gridSize / 2;
         const int xV = qRound(newPos.x() / gridSize) * gridSize;
         const int yV = qRound(newPos.y() / gridSize) * gridSize;
         return QPoint(xV, yV);
