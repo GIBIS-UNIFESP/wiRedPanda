@@ -79,13 +79,16 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/HandlerFactory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.cpp
@@ -149,6 +152,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/TruthTable.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xnor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/PropertyDescriptor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicAnd.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicDemux.h
@@ -186,13 +190,16 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/HandlerFactory.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.h

@@ -12,12 +12,14 @@
 #include <QBitArray>
 #include <QGraphicsItem>
 #include <QKeySequence>
+#include <QList>
 #include <QVersionNumber>
 
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Element/ElementMetadata.h"
 #include "App/Element/LogicElements/LogicElement.h"
+#include "App/Element/PropertyDescriptor.h"
 #include "App/IO/SerializationContext.h"
 
 class GraphicElement;
@@ -229,6 +231,13 @@ public:
 
     /// Sets the clock phase delay to \a delay (overridden by clock elements).
     virtual void setDelay(const float delay);
+
+    /**
+     * \brief Returns the list of editable properties this element exposes in the ElementEditor.
+     * \details Derived from metadata flags; no override needed in subclasses.
+     * \return Ordered list of PropertyDescriptors for all supported property types.
+     */
+    QList<PropertyDescriptor> editableProperties() const;
 
     // --- Skin Management ---
 

@@ -173,6 +173,12 @@ signals:
      */
     void contextMenuPos(QPoint screenPos, QGraphicsItem *itemAtMouse);
 
+    /**
+     * \brief Emitted after a TruthTable element's output bit is toggled (redo or undo).
+     * \param element The TruthTable element that changed.
+     */
+    void truthTableElementChanged(GraphicElement *element);
+
 protected:
     // --- Qt event overrides ---
 
