@@ -19,13 +19,13 @@
 #include <QTextStream>
 
 #include "App/BeWavedDolphin/BeWavedDolphinUI.h"
+#include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Settings.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/InputRotary.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/UI/ClockDialog.h"
@@ -1357,7 +1357,7 @@ void BewavedDolphin::save(QSaveFile &file)
 
 void BewavedDolphin::associateToWiRedPanda(const QString &fileName)
 {
-    if ((m_mainWindow->dolphinFileName() != fileName) && GlobalProperties::interactiveMode) {
+    if ((m_mainWindow->dolphinFileName() != fileName) && Application::interactiveMode) {
         const auto reply =
             QMessageBox::question(
                 this,
