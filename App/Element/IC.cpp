@@ -325,7 +325,9 @@ void IC::loadInputElement(GraphicElement *elm)
                             : elm->label());
 
         auto *nodeInput = nodeElm->inputPort();
-        nodeInput->setName(outputPort->name());
+        if (elm->outputSize() > 1) {
+            nodeInput->setName(outputPort->name());
+        }
         // Clock inputs are required (the IC won't function without a clock signal)
         nodeInput->setRequired(elm->elementType() == ElementType::Clock);
         nodeInput->setDefaultStatus(outputPort->status());
@@ -360,7 +362,9 @@ void IC::loadOutputElement(GraphicElement *elm)
                             : elm->label());
 
         auto *nodeOutput = nodeElm->outputPort();
-        nodeOutput->setName(inputPort->name());
+        if (elm->inputSize() > 1) {
+            nodeOutput->setName(inputPort->name());
+        }
 
         m_icOutputs.append(nodeOutput);
         m_icElements.append(nodeElm);
