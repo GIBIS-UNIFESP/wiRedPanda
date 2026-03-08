@@ -10,6 +10,9 @@ set(QT_VERSION "auto" CACHE STRING "Qt version to use: auto (default), 5, or 6")
 set_property(CACHE QT_VERSION PROPERTY STRINGS "auto" "5" "6")
 message(STATUS "Qt version selection: ${QT_VERSION}")
 
+# Generate compilation database for clazy and clang-tools
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Enable conforming preprocessor for MSVC to support __VA_OPT__
 if(MSVC)
     add_compile_options(/Zc:preprocessor)
