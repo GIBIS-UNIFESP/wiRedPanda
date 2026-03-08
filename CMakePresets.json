@@ -143,6 +143,42 @@
                 "lhs": "${hostSystemName}",
                 "rhs": "Darwin"
             }
+        },
+        {
+            "name": "qt5-debug",
+            "displayName": "Qt5 Debug",
+            "description": "Debug build with Qt5",
+            "inherits": "debug",
+            "cacheVariables": {
+                "QT_VERSION": "5"
+            }
+        },
+        {
+            "name": "qt5-release",
+            "displayName": "Qt5 Release",
+            "description": "Optimized release build with Qt5",
+            "inherits": "release",
+            "cacheVariables": {
+                "QT_VERSION": "5"
+            }
+        },
+        {
+            "name": "qt6-debug",
+            "displayName": "Qt6 Debug",
+            "description": "Debug build with Qt6",
+            "inherits": "debug",
+            "cacheVariables": {
+                "QT_VERSION": "6"
+            }
+        },
+        {
+            "name": "qt6-release",
+            "displayName": "Qt6 Release",
+            "description": "Optimized release build with Qt6",
+            "inherits": "release",
+            "cacheVariables": {
+                "QT_VERSION": "6"
+            }
         }
     ],
     "buildPresets": [
@@ -205,6 +241,26 @@
             "name": "sentry-breakpad",
             "displayName": "Build with Sentry Breakpad",
             "configurePreset": "sentry-breakpad"
+        },
+        {
+            "name": "qt5-debug",
+            "displayName": "Build Qt5 Debug",
+            "configurePreset": "qt5-debug"
+        },
+        {
+            "name": "qt5-release",
+            "displayName": "Build Qt5 Release",
+            "configurePreset": "qt5-release"
+        },
+        {
+            "name": "qt6-debug",
+            "displayName": "Build Qt6 Debug",
+            "configurePreset": "qt6-debug"
+        },
+        {
+            "name": "qt6-release",
+            "displayName": "Build Qt6 Release",
+            "configurePreset": "qt6-release"
         }
     ],
     "testPresets": [
