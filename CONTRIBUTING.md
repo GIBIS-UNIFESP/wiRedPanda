@@ -73,8 +73,8 @@ The easiest way to get started is using our development container:
 
    ```bash
    cmake --preset release
-   cmake --build --preset release --target wiredpanda
-   ctest --test-dir build
+   cmake --build --preset release
+   ctest --preset release
    ```
 
 ### Local Development Setup
@@ -132,19 +132,17 @@ wiRedPanda uses Qt Test framework with CTest integration.
 ### Running Tests
 
 ```bash
-# Run all tests
-ctest --test-dir build
+# Run tests with debug preset
+ctest --preset debug
 
-# Run with verbose output
-ctest --test-dir build --verbose
-
-# Run specific test pattern
-ctest --test-dir build -R testcommands
+# Run tests with release preset
+ctest --preset release
 
 # Run individual test executable
-./build/testelements
-./build/testfiles
+./build/test_wiredpanda
 ```
+
+All test output and parallelization are configured automatically via CMakeLists.txt.
 
 ### Test Coverage
 
@@ -152,8 +150,8 @@ Enable coverage analysis during development:
 
 ```bash
 cmake --preset coverage
-cmake --build build
-ctest --test-dir build
+cmake --build --preset coverage
+ctest --preset coverage
 ```
 
 ### Sanitizers
@@ -163,12 +161,18 @@ Use sanitizers to catch bugs early:
 ```bash
 # Address Sanitizer
 cmake --preset asan
+cmake --build --preset asan
+ctest --preset asan
 
 # Thread Sanitizer
 cmake --preset tsan
+cmake --build --preset tsan
+ctest --preset tsan
 
 # UB Sanitizer
 cmake --preset ubsan
+cmake --build --preset ubsan
+ctest --preset ubsan
 ```
 
 ### Writing Tests
