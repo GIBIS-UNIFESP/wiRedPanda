@@ -366,6 +366,35 @@ if(WIN32)
     endif()
 endif()
 
+# ========= INSTALLATION =============================
+
+# Install executable
+install(TARGETS wiredpanda
+    RUNTIME DESTINATION bin
+    BUNDLE DESTINATION .
+)
+
+# Configure and install .desktop file (replaces @VERSION@ with actual version)
+configure_file(
+    App/Resources/Freedesktop/wiredpanda.desktop
+    ${CMAKE_CURRENT_BINARY_DIR}/wiredpanda.desktop
+    @ONLY
+)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/wiredpanda.desktop
+    DESTINATION share/applications
+    COMPONENT desktop
+)
+
+# Install icons in standard FreeDesktop Icon Theme hierarchy
+set(ICON_SIZES 26x26 32x32 48x48 64x64 128x128)
+foreach(SIZE ${ICON_SIZES})
+    install(FILES App/Resources/Assets/Icons/${SIZE}/wpanda.png
+        DESTINATION share/icons/hicolor/${SIZE}/apps
+        RENAME wpanda.png
+        COMPONENT icons
+    )
+endforeach()
+
 # ========= TESTS ===================================
 
 # Define the test executables

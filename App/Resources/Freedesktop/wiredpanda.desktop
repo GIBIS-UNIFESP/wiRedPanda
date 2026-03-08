@@ -1,12 +1,15 @@
 [Desktop Entry]
+Version=1.0
 Type=Application
 Name=wiRedPanda
-GenericName=wiRedPanda
+GenericName=Logic Circuit Simulator
 Comment=Learn about logic circuits in an easy and friendly way.
+Keywords=logic;circuit;education;simulator;digital;
 Icon=wpanda
-Exec=wiredpanda
+Exec=wiredpanda %F
 Terminal=false
 Categories=Education;Science;Electronics;
 StartupNotify=false
+StartupWMClass=wiredpanda
 MimeType=application/x-wpanda;application/x-wiredpanda;
-X-AppImage-Version=@VERSION@
+X-AppImage-Version=@PROJECT_VERSION@
