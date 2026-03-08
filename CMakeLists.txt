@@ -194,6 +194,8 @@ else()
     qt6_add_resources(RESOURCES_RCC ${RESOURCES})
 endif()
 
+add_library(wiredpanda_resources OBJECT ${RESOURCES_RCC})
+
 include_directories(
     ${CMAKE_BINARY_DIR}
     ${CMAKE_SOURCE_DIR}
@@ -325,11 +327,11 @@ endif()
 
 # Use qt_add_executable for WASM builds as recommended by Qt docs
 if(EMSCRIPTEN)
-    qt_add_executable(wiredpanda App/Main.cpp ${RESOURCES_RCC})
+    qt_add_executable(wiredpanda App/Main.cpp)
 else()
-    add_executable(wiredpanda App/Main.cpp ${RESOURCES_RCC})
+    add_executable(wiredpanda App/Main.cpp)
 endif()
-target_link_libraries(wiredpanda PRIVATE wiredpanda_lib)
+target_link_libraries(wiredpanda PRIVATE wiredpanda_lib wiredpanda_resources)
 
 # Run windeployqt on Windows to copy Qt dependencies
 if(WIN32)
@@ -383,8 +385,8 @@ set(TEST_EXECUTABLES
 
 # Create individual test executables
 foreach(test_name ${TEST_EXECUTABLES})
-    add_executable(${test_name} Tests/${test_name}.cpp Tests/${test_name}.h ${RESOURCES_RCC})
-    target_link_libraries(${test_name} PRIVATE wiredpanda_lib)
+    add_executable(${test_name} Tests/${test_name}.cpp Tests/${test_name}.h)
+    target_link_libraries(${test_name} PRIVATE wiredpanda_lib wiredpanda_resources)
 
     target_compile_definitions(${test_name} PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests)
 
