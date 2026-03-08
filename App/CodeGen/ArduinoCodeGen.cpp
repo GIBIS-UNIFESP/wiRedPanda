@@ -16,7 +16,7 @@ ArduinoCodeGen::ArduinoCodeGen(const QString &fileName, const QVector<GraphicEle
     , m_elements(elements)
 {
     if (!m_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        return;
+        throw PANDACEPTION("Could not open file for writing: %1", fileName);
     }
     m_stream.setDevice(&m_file);
     // Pin pool for Arduino Uno/Nano.  Analog pins A0-A5 are listed first because
@@ -84,24 +84,35 @@ QString ArduinoCodeGen::otherPortName(QNEPort *port)
 
 void ArduinoCodeGen::generate()
 {
-    m_stream << "// ==================================================================== //" << Qt::endl;
-    m_stream << "// ======= This code was generated automatically by wiRedPanda ======== //" << Qt::endl;
-    m_stream << "// ==================================================================== //" << Qt::endl;
-    m_stream << Qt::endl
-             << Qt::endl;
-    // elapsedMillis is an Arduino library that provides an auto-incrementing
-    // millisecond counter; used to implement clock element timing without
-    // blocking the Arduino loop() with delay() calls
-    m_stream << "#include <elapsedMillis.h>" << Qt::endl;
-    /* Declaring input and output pins; */
-    declareInputs();
-    declareOutputs();
-    declareAuxVariables();
-    /* Setup section */
-    setup();
+    try {
+        // Validate all elements before writing anything — avoids leaving a partial file on disk
+        for (auto *elm : m_elements) {
+            if (elm->elementType() == ElementType::IC) {
+                throw PANDACEPTION("IC element not supported: %1", elm->objectName());
+            }
+        }
 
-    /* Loop section */
-    loop();
+        m_stream << "// ==================================================================== //" << Qt::endl;
+        m_stream << "// ======= This code was generated automatically by wiRedPanda ======== //" << Qt::endl;
+        m_stream << "// ==================================================================== //" << Qt::endl;
+        m_stream << Qt::endl
+                 << Qt::endl;
+        // elapsedMillis is an Arduino library that provides an auto-incrementing
+        // millisecond counter; used to implement clock element timing without
+        // blocking the Arduino loop() with delay() calls
+        m_stream << "#include <elapsedMillis.h>" << Qt::endl;
+        /* Declaring input and output pins; */
+        declareInputs();
+        declareOutputs();
+        declareAuxVariables();
+        /* Setup section */
+        setup();
+        loop();
+    } catch (...) {
+        m_file.close();
+        m_file.remove();
+        throw;
+    }
 }
 
 void ArduinoCodeGen::declareInputs()
@@ -116,6 +127,10 @@ void ArduinoCodeGen::declareInputs()
         // other input types (Clock, Vcc, Gnd) either have no physical pin or are
         // handled elsewhere (Clock gets elapsedMillis vars; Vcc/Gnd get HIGH/LOW literals)
         if ((type == ElementType::InputButton) || (type == ElementType::InputSwitch)) {
+            // Check if we have available pins before assigning
+            if (m_availablePins.isEmpty()) {
+                throw PANDACEPTION("Not enough pins available for all input elements");
+            }
             // Append the element counter to the object name to ensure uniqueness when
             // multiple switches of the same type exist without user-assigned labels
             QString varName = elm->objectName() + QString::number(counter);
@@ -152,6 +167,11 @@ void ArduinoCodeGen::declareOutputs()
         if (elm->elementGroup() == ElementGroup::Output) {
             QString label = elm->label();
             for (int i = 0; i < elm->inputs().size(); ++i) {
+                // Check if we have available pins before assigning
+                if (m_availablePins.isEmpty()) {
+                    throw PANDACEPTION("Not enough pins available for all output elements");
+                }
+
                 QString varName = elm->objectName() + QString::number(counter);
                 if (!label.isEmpty()) {
                     varName = QString("%1_%2").arg(varName, label);
@@ -577,6 +597,9 @@ void ArduinoCodeGen::loop()
     for (auto *elm : m_elements) {
         if (elm->elementType() == ElementType::Clock) {
             const auto elmOutputs = elm->outputs();
+            if (elmOutputs.isEmpty()) {
+                continue;
+            }
             QString varName = m_varMap.value(elmOutputs.constFirst());
             m_stream << QString("    if (%1_elapsed > %1_interval) {").arg(varName) << Qt::endl;
             m_stream << QString("        %1_elapsed = 0;").arg(varName) << Qt::endl;

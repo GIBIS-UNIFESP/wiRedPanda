@@ -93,8 +93,19 @@ QString Buzzer::audio() const
     return m_note;
 }
 
+bool Buzzer::isPlaying() const
+{
+    return m_isPlaying;
+}
+
+bool Buzzer::isMuted() const
+{
+    return m_muted;
+}
+
 void Buzzer::mute(const bool mute)
 {
+    m_muted = mute;
     if (!m_hasOutputDevice) {
         return;
     }

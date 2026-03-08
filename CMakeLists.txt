@@ -502,35 +502,253 @@ endforeach()
 
 # ========= TESTS ===================================
 
-# Define the test executables
-set(TEST_EXECUTABLES
-    TestCommands
-    TestElements
-    TestFiles
-    TestIcons
-    TestLogicElements
-    TestSimulation
-    TestWaveform
-)
-
-# Create individual test executables
-foreach(test_name ${TEST_EXECUTABLES})
-    add_executable(${test_name} Tests/${test_name}.cpp Tests/${test_name}.h)
-    target_link_libraries(${test_name} PRIVATE wiredpanda_lib wiredpanda_resources)
-
-    target_compile_definitions(${test_name} PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests)
-
-    if(ENABLE_PCH)
-        target_precompile_headers(${test_name} REUSE_FROM wiredpanda_lib)
-    endif()
-endforeach()
-
 # Add CTest support
 enable_testing()
 
-# Register each test executable with CTest
-foreach(test_name ${TEST_EXECUTABLES})
-    add_test(NAME ${test_name} COMMAND ${test_name})
+# Test utilities library (shared helpers for all tests)
+add_library(test_utils STATIC ${TEST_UTILS_SOURCES} ${TEST_UTILS_HEADERS})
+target_link_libraries(test_utils PUBLIC wiredpanda_lib)
+target_compile_definitions(test_utils PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests)
+
+# Helper library for shared circuit builders (register file, memory tests)
+add_library(memory_helpers STATIC ${MEMORY_HELPERS_SOURCES} ${MEMORY_HELPERS_HEADERS})
+target_link_libraries(memory_helpers PUBLIC wiredpanda_lib test_utils)
+
+# ---- Single consolidated test executable ----
+# All test classes in one binary; CTest registers per-class entries.
+# Usage: ./build/test_wiredpanda ClassName [functionName]
+add_executable(test_wiredpanda ${TEST_WIREDPANDA_SOURCES} ${TEST_WIREDPANDA_HEADERS})
+target_link_libraries(test_wiredpanda PRIVATE test_utils wiredpanda_resources memory_helpers)
+target_compile_definitions(test_wiredpanda PRIVATE
+    CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests
+)
+
+if(ENABLE_PCH)
+    target_precompile_headers(test_wiredpanda REUSE_FROM wiredpanda_lib)
+endif()
+
+if(ENABLE_UNITY_BUILD)
+    message(STATUS "Unity builds enabled for test executable (batch size: ${UNITY_BUILD_BATCH_SIZE})")
+    set_target_properties(test_wiredpanda PROPERTIES
+        UNITY_BUILD ON
+        UNITY_BUILD_BATCH_SIZE ${UNITY_BUILD_BATCH_SIZE}
+    )
+endif()
+
+add_test(NAME TestCPUAlu COMMAND test_wiredpanda TestCPUAlu WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUBranch COMMAND test_wiredpanda TestCPUBranch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUControlUnit COMMAND test_wiredpanda TestCPUControlUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUDecoders COMMAND test_wiredpanda TestCPUDecoders WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUInstructionExecute COMMAND test_wiredpanda TestCPUInstructionExecute WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUInstructionFetch COMMAND test_wiredpanda TestCPUInstructionFetch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUIntegration COMMAND test_wiredpanda TestCPUIntegration WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUMemoryInterface COMMAND test_wiredpanda TestCPUMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUProgramCounter COMMAND test_wiredpanda TestCPUProgramCounter WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPURegisterBank COMMAND test_wiredpanda TestCPURegisterBank WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPURegisters COMMAND test_wiredpanda TestCPURegisters WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel1DFlipFlop COMMAND test_wiredpanda TestLevel1DFlipFlop WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel1DLatch COMMAND test_wiredpanda TestLevel1DLatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel1JKFlipFlop COMMAND test_wiredpanda TestLevel1JKFlipFlop WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel1SRLatch COMMAND test_wiredpanda TestLevel1SRLatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2Decoder2To4 COMMAND test_wiredpanda TestLevel2Decoder2To4 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2Decoder3To8 COMMAND test_wiredpanda TestLevel2Decoder3To8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2Decoder4To16 COMMAND test_wiredpanda TestLevel2Decoder4To16 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2FullAdder1Bit COMMAND test_wiredpanda TestLevel2FullAdder1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2HalfAdder COMMAND test_wiredpanda TestLevel2HalfAdder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2MUX2To1 COMMAND test_wiredpanda TestLevel2MUX2To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2MUX4To1 COMMAND test_wiredpanda TestLevel2MUX4To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2MUX8To1 COMMAND test_wiredpanda TestLevel2MUX8To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2ParityChecker COMMAND test_wiredpanda TestLevel2ParityChecker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2ParityGenerator COMMAND test_wiredpanda TestLevel2ParityGenerator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2PriorityEncoder8To3 COMMAND test_wiredpanda TestLevel2PriorityEncoder8To3 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2PriorityMUX3To1 COMMAND test_wiredpanda TestLevel2PriorityMUX3To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel3ALUSelector5Way COMMAND test_wiredpanda TestLevel3ALUSelector5Way WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel3BCD7SegmentDecoder COMMAND test_wiredpanda TestLevel3BCD7SegmentDecoder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel3Comparator4Bit COMMAND test_wiredpanda TestLevel3Comparator4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel3Comparator4BitEquality COMMAND test_wiredpanda TestLevel3Comparator4BitEquality WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel3Register1Bit COMMAND test_wiredpanda TestLevel3Register1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4BinaryCounter4Bit COMMAND test_wiredpanda TestLevel4BinaryCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4BusMUX4Bit COMMAND test_wiredpanda TestLevel4BusMUX4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4BusMUX8Bit COMMAND test_wiredpanda TestLevel4BusMUX8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4Comparator4Bit COMMAND test_wiredpanda TestLevel4Comparator4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4JohnsonCounter4Bit COMMAND test_wiredpanda TestLevel4JohnsonCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4RAM4X1 COMMAND test_wiredpanda TestLevel4RAM4X1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4RAM8X1 COMMAND test_wiredpanda TestLevel4RAM8X1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4Register4Bit COMMAND test_wiredpanda TestLevel4Register4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4RingCounter4Bit COMMAND test_wiredpanda TestLevel4RingCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4RippleALU4Bit COMMAND test_wiredpanda TestLevel4RippleALU4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4RippleAdder4Bit COMMAND test_wiredpanda TestLevel4RippleAdder4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4ShiftRegisterPISO COMMAND test_wiredpanda TestLevel4ShiftRegisterPISO WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4ShiftRegisterSIPO COMMAND test_wiredpanda TestLevel4ShiftRegisterSIPO WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5BarrelRotator COMMAND test_wiredpanda TestLevel5BarrelRotator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5BarrelShifter4Bit COMMAND test_wiredpanda TestLevel5BarrelShifter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5ClockGatedDecoder COMMAND test_wiredpanda TestLevel5ClockGatedDecoder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5Controller4Bit COMMAND test_wiredpanda TestLevel5Controller4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5InstructionDecoder4Bit COMMAND test_wiredpanda TestLevel5InstructionDecoder4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5LoadableCounter4Bit COMMAND test_wiredpanda TestLevel5LoadableCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5ModuloCounter4Bit COMMAND test_wiredpanda TestLevel5ModuloCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5ProgramCounter4Bit COMMAND test_wiredpanda TestLevel5ProgramCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5RegisterFile4X4 COMMAND test_wiredpanda TestLevel5RegisterFile4X4 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5RegisterFile8X8 COMMAND test_wiredpanda TestLevel5RegisterFile8X8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6StackMemoryInterface COMMAND test_wiredpanda TestLevel6StackMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5UpDownCounter4Bit COMMAND test_wiredpanda TestLevel5UpDownCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6ALU8Bit COMMAND test_wiredpanda TestLevel6ALU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6ProgramCounter8BitArithmetic COMMAND test_wiredpanda TestLevel6ProgramCounter8BitArithmetic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6RAM256X8 COMMAND test_wiredpanda TestLevel6RAM256X8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6Register8Bit COMMAND test_wiredpanda TestLevel6Register8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6RegisterFile8X8 COMMAND test_wiredpanda TestLevel6RegisterFile8X8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6RippleAdder8Bit COMMAND test_wiredpanda TestLevel6RippleAdder8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6StackPointer8Bit COMMAND test_wiredpanda TestLevel6StackPointer8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7ALU16Bit COMMAND test_wiredpanda TestLevel7ALU16Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7CPUProgramCounter8Bit COMMAND test_wiredpanda TestLevel7CPUProgramCounter8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7DataForwardingUnit COMMAND test_wiredpanda TestLevel7DataForwardingUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7ExecutionDatapath COMMAND test_wiredpanda TestLevel7ExecutionDatapath WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7FlagRegister COMMAND test_wiredpanda TestLevel7FlagRegister WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7InstructionDecoder8Bit COMMAND test_wiredpanda TestLevel7InstructionDecoder8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7InstructionMemoryInterface COMMAND test_wiredpanda TestLevel7InstructionMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7InstructionRegister8Bit COMMAND test_wiredpanda TestLevel7InstructionRegister8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel8DecodeStage COMMAND test_wiredpanda TestLevel8DecodeStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel8ExecuteStage COMMAND test_wiredpanda TestLevel8ExecuteStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel8FetchStage COMMAND test_wiredpanda TestLevel8FetchStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel8MemoryStage COMMAND test_wiredpanda TestLevel8MemoryStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel9CPU16BitRISC COMMAND test_wiredpanda TestLevel9CPU16BitRISC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel9FetchStage16Bit COMMAND test_wiredpanda TestLevel9FetchStage16Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel9MultiCycleCPU8Bit COMMAND test_wiredpanda TestLevel9MultiCycleCPU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel9SingleCycleCPU8Bit COMMAND test_wiredpanda TestLevel9SingleCycleCPU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDecoder8To256 COMMAND test_wiredpanda TestDecoder8To256 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestMemorySettlingTime COMMAND test_wiredpanda TestMemorySettlingTime WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestRAMCell1Bit COMMAND test_wiredpanda TestRAMCell1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSequential COMMAND test_wiredpanda TestSequential WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestMUXDEMUXComprehensive COMMAND test_wiredpanda TestMUXDEMUXComprehensive WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestArduino COMMAND test_wiredpanda TestArduino WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestFeedback COMMAND test_wiredpanda TestFeedback WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestFiles COMMAND test_wiredpanda TestFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestIC COMMAND test_wiredpanda TestIC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSimulation COMMAND test_wiredpanda TestSimulation WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestWorkspace COMMAND test_wiredpanda TestWorkspace WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestWorkspaceFileops COMMAND test_wiredpanda TestWorkspaceFileops WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestIcons COMMAND test_wiredpanda TestIcons WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestWaveform COMMAND test_wiredpanda TestWaveform WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCommands COMMAND test_wiredpanda TestCommands WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCommon COMMAND test_wiredpanda TestCommon WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestEnums COMMAND test_wiredpanda TestEnums WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestRecentFiles COMMAND test_wiredpanda TestRecentFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSettings COMMAND test_wiredpanda TestSettings WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestThemeManager COMMAND test_wiredpanda TestThemeManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestAudioBox COMMAND test_wiredpanda TestAudioBox WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestBuzzer COMMAND test_wiredpanda TestBuzzer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestClock COMMAND test_wiredpanda TestClock WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestClocksAdvanced COMMAND test_wiredpanda TestClocksAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestComponents COMMAND test_wiredpanda TestComponents WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDisplays COMMAND test_wiredpanda TestDisplays WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestElementLabel COMMAND test_wiredpanda TestElementLabel WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestElementProperties COMMAND test_wiredpanda TestElementProperties WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestFeatures COMMAND test_wiredpanda TestFeatures WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestGeometry COMMAND test_wiredpanda TestGeometry WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestGraphicelementAdvanced COMMAND test_wiredpanda TestGraphicelementAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestInputElements COMMAND test_wiredpanda TestInputElements WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestInputRotary COMMAND test_wiredpanda TestInputRotary WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLED COMMAND test_wiredpanda TestLED WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLogicGates COMMAND test_wiredpanda TestLogicGates WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestMultiplexing COMMAND test_wiredpanda TestMultiplexing WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSequentialLogic COMMAND test_wiredpanda TestSequentialLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestTruthTable COMMAND test_wiredpanda TestTruthTable WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestElementFactory COMMAND test_wiredpanda TestElementFactory WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLogicElements COMMAND test_wiredpanda TestLogicElements WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLogicElementsErrors COMMAND test_wiredpanda TestLogicElementsErrors WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLogicNode COMMAND test_wiredpanda TestLogicNode WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestConnectionSerialization COMMAND test_wiredpanda TestConnectionSerialization WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestConnectionValidity COMMAND test_wiredpanda TestConnectionValidity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestConnections COMMAND test_wiredpanda TestConnections WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestScene COMMAND test_wiredpanda TestScene WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSceneConnections COMMAND test_wiredpanda TestSceneConnections WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSceneState COMMAND test_wiredpanda TestSceneState WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSceneUndoredo COMMAND test_wiredpanda TestSceneUndoredo WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSerialization COMMAND test_wiredpanda TestSerialization WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestElementMapping COMMAND test_wiredpanda TestElementMapping WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSimulationBlocker COMMAND test_wiredpanda TestSimulationBlocker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDialogs COMMAND test_wiredpanda TestDialogs WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+# ============================================================================
+# Test Properties: Labels and Timeouts
+# ============================================================================
+# Labels: unit (fast unit tests), integration (system/IC tests)
+
+# CPU Tests - Integration category (high complexity)
+foreach(TEST TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders
+        TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration
+        TestCPUMemoryInterface TestCPUProgramCounter TestCPURegisterBank TestCPURegisters)
+    set_tests_properties(${TEST} PROPERTIES LABELS "integration")
+endforeach()
+
+# Level Tests - Integration category (IC-level hierarchical tests)
+foreach(TEST TestLevel1DFlipFlop TestLevel1DLatch TestLevel1JKFlipFlop TestLevel1SRLatch
+        TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16
+        TestLevel2FullAdder1Bit TestLevel2HalfAdder TestLevel2MUX2To1 TestLevel2MUX4To1
+        TestLevel2MUX8To1 TestLevel2ParityChecker TestLevel2ParityGenerator
+        TestLevel2PriorityEncoder8To3 TestLevel2PriorityMUX3To1
+        TestLevel3ALUSelector5Way TestLevel3BCD7SegmentDecoder TestLevel3Comparator4Bit
+        TestLevel3Comparator4BitEquality TestLevel3Register1Bit
+        TestLevel4BinaryCounter4Bit TestLevel4BusMUX4Bit TestLevel4BusMUX8Bit
+        TestLevel4Comparator4Bit TestLevel4JohnsonCounter4Bit TestLevel4RAM4X1
+        TestLevel4RAM8X1 TestLevel4Register4Bit TestLevel4RingCounter4Bit
+        TestLevel4RippleALU4Bit TestLevel4RippleAdder4Bit TestLevel4ShiftRegisterPISO
+        TestLevel4ShiftRegisterSIPO
+        TestLevel5BarrelRotator TestLevel5BarrelShifter4Bit TestLevel5ClockGatedDecoder
+        TestLevel5Controller4Bit TestLevel5InstructionDecoder4Bit TestLevel5LoadableCounter4Bit
+        TestLevel5ModuloCounter4Bit TestLevel5ProgramCounter4Bit TestLevel5RegisterFile4X4
+        TestLevel5RegisterFile8X8 TestLevel6StackMemoryInterface TestLevel5UpDownCounter4Bit
+        TestLevel6ALU8Bit TestLevel6ProgramCounter8BitArithmetic TestLevel6RAM256X8
+        TestLevel6Register8Bit TestLevel6RegisterFile8X8 TestLevel6RippleAdder8Bit
+        TestLevel6StackPointer8Bit
+        TestLevel7ALU16Bit TestLevel7CPUProgramCounter8Bit TestLevel7DataForwardingUnit
+        TestLevel7ExecutionDatapath TestLevel7FlagRegister TestLevel7InstructionDecoder8Bit
+        TestLevel7InstructionMemoryInterface TestLevel7InstructionRegister8Bit
+        TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage
+        TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MultiCycleCPU8Bit
+        TestLevel9SingleCycleCPU8Bit)
+    set_tests_properties(${TEST} PROPERTIES LABELS "integration")
+endforeach()
+
+# IC-specific deep tests - Integration category
+foreach(TEST TestDecoder8To256 TestMemorySettlingTime TestRAMCell1Bit TestSequential
+        TestMUXDEMUXComprehensive)
+    set_tests_properties(${TEST} PROPERTIES LABELS "integration")
+endforeach()
+
+# File and Simulation Tests - Integration category
+foreach(TEST TestArduino TestFeedback TestFiles TestIC TestSimulation TestWorkspace
+        TestWorkspaceFileops)
+    set_tests_properties(${TEST} PROPERTIES LABELS "integration")
+endforeach()
+
+# Element and Component Unit Tests - Unit category
+foreach(TEST TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocksAdvanced
+        TestComponents TestDisplays TestElementLabel TestElementProperties TestFeatures
+        TestGeometry TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED
+        TestLogicGates TestMultiplexing TestSequentialLogic TestTruthTable)
+    set_tests_properties(${TEST} PROPERTIES LABELS "unit")
+endforeach()
+
+# Factory and Core Element Tests - Unit category
+foreach(TEST TestElementFactory TestLogicElements TestLogicElementsErrors TestLogicNode)
+    set_tests_properties(${TEST} PROPERTIES LABELS "unit")
+endforeach()
+
+# Connection and Scene Tests - Integration category
+foreach(TEST TestConnectionSerialization TestConnectionValidity TestConnections TestScene
+        TestSceneConnections TestSceneState TestSceneUndoredo)
+    set_tests_properties(${TEST} PROPERTIES LABELS "integration")
+endforeach()
+
+# Serialization and Command Tests - Integration category
+foreach(TEST TestSerialization TestElementMapping TestSimulationBlocker TestDialogs)
+    set_tests_properties(${TEST} PROPERTIES LABELS "integration")
+endforeach()
+
+# Core Functionality Tests - Unit category
+foreach(TEST TestCommands TestCommon TestEnums TestRecentFiles TestSettings TestThemeManager)
+    set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
 
 # ========= DOCUMENTATION ===================================

@@ -39,6 +39,10 @@ public:
 
     /// Returns the file path of the currently loaded audio file.
     QString audio() const override;
+    /// Returns \c true if audio is currently playing.
+    bool isPlaying() const;
+    /// Returns \c true if audio output is muted.
+    bool isMuted() const;
 
     // --- Playback Control ---
 
@@ -63,7 +67,7 @@ private:
     void stop();
 
     QAudioOutput *m_audioOutput = nullptr;
-    QFileInfo *m_audio = nullptr;
+    QFileInfo m_audio;
     QMediaPlayer *m_player = nullptr;
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QMediaPlaylist *m_playlist = nullptr;
@@ -71,6 +75,7 @@ private:
 
     bool m_hasOutputDevice = false;
     bool m_isPlaying = false;
+    bool m_muted = false;
 };
 
 Q_DECLARE_METATYPE(AudioBox)

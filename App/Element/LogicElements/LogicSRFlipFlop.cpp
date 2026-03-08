@@ -29,16 +29,16 @@ void LogicSRFlipFlop::updateLogic()
     // (m_lastS, m_lastR) to correctly model setup-time semantics — the data
     // inputs must be stable before the clock edge.
     if (clk && !m_lastClk) {
-        if (s && r) {
+        if (m_lastS && m_lastR) {
             // S=R=1 is the forbidden/undefined state in a real SR flip-flop;
             // here it forces both outputs high to give a deterministic result
             // instead of leaving the simulation in an undefined value.
             q0 = true;
             q1 = true;
-        } else if (s != r) {
+        } else if (m_lastS != m_lastR) {
             // Normal SR behaviour: S sets (Q=1, Q'=0), R resets (Q=0, Q'=1).
-            q0 = s;
-            q1 = r;
+            q0 = m_lastS;
+            q1 = m_lastR;
         }
         // S=R=0 → hold; q0/q1 already retain the previous state.
     }
@@ -52,6 +52,8 @@ void LogicSRFlipFlop::updateLogic()
 
     // Record clock level after output computation so next call detects the edge.
     m_lastClk = clk;
+    m_lastS = s;
+    m_lastR = r;
 
     setOutputValue(0, q0);
     setOutputValue(1, q1);

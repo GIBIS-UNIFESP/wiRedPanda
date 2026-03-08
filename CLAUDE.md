@@ -64,12 +64,12 @@ Advanced development features supported:
   ctest --preset debug
   ```
 
-- **Individual test execution**: Run specific test executables directly:
+- **Individual test execution**: Run specific test classes directly:
 
   ```bash
-  ./build/testcommands -functions    # List functions in testcommands
-  ./build/testelements               # Run all element tests
-  ./build/testfiles                  # Run file loading tests
+  ./build/test_wiredpanda TestSceneUndoredo    # Run a specific test class
+  ./build/test_wiredpanda TestFiles            # Run file loading tests
+  ./build/test_wiredpanda -functions           # List all available test classes
   ```
 
 - **CTest preset options**:
@@ -87,7 +87,7 @@ Advanced development features supported:
 - Main project file: `CMakeLists.txt`
 - App code: `App/` directory
 - Tests: `Tests/` directory with comprehensive test suite
-- Test executables: 7 separate Qt Test executables (testcommands, testelements, testfiles, etc.)
+- Test executable: single unified `test_wiredpanda` binary with 132 test classes (run via `ctest --preset debug`)
 
 ## Digital Logic Simulation
 

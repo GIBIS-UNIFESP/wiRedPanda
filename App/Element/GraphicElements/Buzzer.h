@@ -34,6 +34,10 @@ public:
 
     /// Returns the name of the currently selected musical note.
     QString audio() const override;
+    /// Returns \c true if the buzzer sound is currently playing.
+    bool isPlaying() const;
+    /// Returns \c true if audio output is muted.
+    bool isMuted() const;
 
     // --- Playback Control ---
 
@@ -61,6 +65,7 @@ private:
     QString m_note;
     bool m_isPlaying = false;
     bool m_hasOutputDevice = false;
+    bool m_muted = false;
 };
 
 Q_DECLARE_METATYPE(Buzzer)

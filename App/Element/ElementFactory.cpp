@@ -203,6 +203,7 @@ std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *
     case ElementType::Xnor:        return std::make_shared<LogicXnor>(elm->inputSize());
     case ElementType::Xor:         return std::make_shared<LogicXor>(elm->inputSize());
 
+    case ElementType::IC:
     // Line and Text are purely decorative; LogicNone produces no outputs and is
     // never added to the simulation's update queue.
     case ElementType::Line:
