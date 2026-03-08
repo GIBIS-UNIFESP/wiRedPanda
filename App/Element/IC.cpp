@@ -68,9 +68,7 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVer
         stream >> m_file;
 
         // For tests with old files containing absolute paths, strip to filename only
-        if (GlobalProperties::testMode) {
-            m_file = QFileInfo(m_file).fileName();
-        }
+        m_file = QFileInfo(m_file).fileName();
 
         if (IC::needToCopyFiles) {
             copyFile();
