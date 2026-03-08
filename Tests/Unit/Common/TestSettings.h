@@ -16,36 +16,19 @@ private slots:
 
     // Basic Operations
     void testSettingsFileName();
-    void testSettingsSetAndGet();
-    void testSettingsContains();
-    void testSettingsRemove();
-    void testSettingsGetNonExistent();
-    void testSettingsOverwrite();
 
-    // Data Types
-    void testSettingsString();
-    void testSettingsInteger();
-    void testSettingsBoolean();
-    void testSettingsByteArray();
-    void testSettingsStringList();
-    void testSettingsEmptyStringList();
-    void testSettingsNullVariant();
-
-    // Real-World Settings
-    void testThemePersistence();
-    void testLanguagePersistence();
-    void testRecentFilesPersistence();
-    void testAutosaveFilesPersistence();
-    void testWindowGeometryPersistence();
-    void testBooleanSettings();
-    void testHierarchicalKeys();
-    void testWarningFlagsPersistence();
-
-    // Edge Cases
-    void testMultipleReads();
-    void testClearAllSettings();
-    void testVeryLongKey();
-    void testVeryLargeValue();
+    // Typed Accessors
+    void testTypedMainWindowGeometry();
+    void testTypedMainWindowState();
+    void testTypedSplitterGeometry();
+    void testTypedSplitterState();
+    void testTypedDolphinGeometry();
+    void testTypedFastMode();
+    void testTypedLabelsUnderIcons();
+    void testTypedLanguage();
+    void testTypedTheme();
+    void testTypedRecentFiles();
+    void testTypedAutosaveFiles();
 
 private:
     QString m_testOrganization = "TestWiredPanda";

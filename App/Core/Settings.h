@@ -7,7 +7,11 @@
 
 #pragma once
 
+#include <QByteArray>
 #include <QSettings>
+#include <QStringList>
+
+#include "App/Core/ThemeManager.h"
 
 /**
  * \class Settings
@@ -25,20 +29,55 @@ public:
     /// Returns the path to the settings file on disk.
     static QString fileName();
 
-    // --- Accessors ---
+    // --- Typed accessors ---
 
-    /// Returns the value stored under \a key, or an invalid QVariant if not set.
-    static QVariant value(const QString &key);
-    /// Returns \c true if a setting exists for \a key.
-    static bool contains(const QString &key);
-    /// Removes the setting identified by \a key.
-    static void remove(const QString &key);
-    /// Sets the setting identified by \a key to \a value.
-    static void setValue(const QString &key, const QVariant &value);
+    // Window state
+    static QByteArray mainWindowGeometry();
+    static void setMainWindowGeometry(const QByteArray &geometry);
+    static QByteArray mainWindowState();
+    static void setMainWindowState(const QByteArray &state);
+    static QByteArray splitterGeometry();
+    static void setSplitterGeometry(const QByteArray &geometry);
+    static QByteArray splitterState();
+    static void setSplitterState(const QByteArray &state);
+    static QByteArray dolphinGeometry();
+    static void setDolphinGeometry(const QByteArray &geometry);
+
+    // UI preferences
+    static bool fastMode();
+    static void setFastMode(bool enabled);
+    static bool labelsUnderIcons();
+    static void setLabelsUnderIcons(bool enabled);
+
+    // Language
+    static QString language();
+    static void setLanguage(const QString &lang);
+
+    // Theme
+    static Theme theme();
+    static void setTheme(Theme theme);
+
+    // Recent files
+    static QStringList recentFiles();
+    static void setRecentFiles(const QStringList &files);
+
+    // Autosave
+    static QStringList autosaveFiles();
+    static void setAutosaveFiles(const QStringList &files);
+
+    // V4 format warning suppression
+    static bool hideV4Warning();
+    static void setHideV4Warning(bool hide);
+
+    // Update checker
+    static QString updateCheckLastDate();
+    static void setUpdateCheckLastDate(const QString &date);
+    static QString updateCheckSkippedVersion();
+    static void setUpdateCheckSkippedVersion(const QString &version);
 
 private:
-    // --- Internal helpers ---
-
+    static QVariant value(const QString &key);
+    static void setValue(const QString &key, const QVariant &value);
     static QSettings *settingsInstance();
 
     // --- Members ---

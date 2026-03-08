@@ -13,9 +13,7 @@
 RecentFiles::RecentFiles(QObject *parent)
     : QObject(parent)
 {
-    if (Settings::contains("recentFileList")) {
-        m_files = Settings::value("recentFileList").toStringList();
-    }
+    m_files = Settings::recentFiles();
 
     // Watch every already-known file so the menu updates live if a file is
     // deleted or renamed outside the application (e.g. by the OS or another app).
@@ -78,5 +76,5 @@ QStringList RecentFiles::recentFiles()
 
 void RecentFiles::saveRecentFiles()
 {
-    Settings::setValue("recentFileList", m_files);
+    Settings::setRecentFiles(m_files);
 }
