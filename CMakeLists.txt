@@ -5,6 +5,9 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Generate compilation database for clazy and clang-tools
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Enable conforming preprocessor for MSVC to support __VA_OPT__
 if(MSVC)
     add_compile_options(/Zc:preprocessor)
