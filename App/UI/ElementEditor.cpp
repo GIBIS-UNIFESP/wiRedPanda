@@ -616,14 +616,33 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         }
     }
 
+    // For Demux, input size is derived from output size - hide input combobox
+    if (m_hasSameType && elementType == ElementType::Demux) {
+        m_canChangeInputSize = false;
+    }
+
     /* Input size */
     m_ui->comboBoxInputSize->clear();
     m_ui->labelInputs->setVisible(m_canChangeInputSize);
     m_ui->comboBoxInputSize->setVisible(m_canChangeInputSize);
     m_ui->comboBoxInputSize->setEnabled(m_canChangeInputSize);
 
-    for (int port = minimumInputs; port <= maximumInputs; ++port) {
-        m_ui->comboBoxInputSize->addItem(QString::number(port), port);
+    if (m_canChangeInputSize && m_hasSameType && elementType == ElementType::Mux) {
+        // For Mux, show data input count (select lines are auto-calculated)
+        for (int dataInputs = 2; dataInputs <= 8; ++dataInputs) {
+            int selectLines = 1;
+            while ((1 << selectLines) < dataInputs) {
+                selectLines++;
+            }
+            int totalInputs = dataInputs + selectLines;
+            if (totalInputs >= minimumInputs && totalInputs <= maximumInputs) {
+                m_ui->comboBoxInputSize->addItem(QString::number(dataInputs), totalInputs);
+            }
+        }
+    } else {
+        for (int port = minimumInputs; port <= maximumInputs; ++port) {
+            m_ui->comboBoxInputSize->addItem(QString::number(port), port);
+        }
     }
 
     if (m_ui->comboBoxInputSize->findText(m_manyIS) == -1) {
@@ -633,8 +652,10 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     if (m_canChangeInputSize) {
         if (m_hasSameInputSize) {
             m_ui->comboBoxInputSize->removeItem(m_ui->comboBoxInputSize->findText(m_manyIS));
-            QString inputSize = QString::number(firstElement->inputSize());
-            m_ui->comboBoxInputSize->setCurrentText(inputSize);
+            const int idx = m_ui->comboBoxInputSize->findData(firstElement->inputSize());
+            if (idx >= 0) {
+                m_ui->comboBoxInputSize->setCurrentIndex(idx);
+            }
         } else {
             m_ui->comboBoxInputSize->setCurrentText(m_manyIS);
         }
@@ -647,14 +668,21 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_ui->comboBoxOutputSize->setEnabled(m_canChangeOutputSize);
 
     if (m_canChangeOutputSize) {
-        m_ui->comboBoxOutputSize->addItem("2", 2);
-        m_ui->comboBoxOutputSize->addItem("3", 3);
-        m_ui->comboBoxOutputSize->addItem("4", 4);
-        m_ui->comboBoxOutputSize->addItem("6", 6);
-        m_ui->comboBoxOutputSize->addItem("8", 8);
-        m_ui->comboBoxOutputSize->addItem("10", 10);
-        m_ui->comboBoxOutputSize->addItem("12", 12);
-        m_ui->comboBoxOutputSize->addItem("16", 16);
+        if (m_hasSameType && elementType == ElementType::Demux) {
+            // Demux: show 2-8 output options, mirroring Mux's 2-8 data inputs
+            for (int n = minimumOutputs; n <= maximumOutputs; ++n) {
+                m_ui->comboBoxOutputSize->addItem(QString::number(n), n);
+            }
+        } else {
+            m_ui->comboBoxOutputSize->addItem("2", 2);
+            m_ui->comboBoxOutputSize->addItem("3", 3);
+            m_ui->comboBoxOutputSize->addItem("4", 4);
+            m_ui->comboBoxOutputSize->addItem("6", 6);
+            m_ui->comboBoxOutputSize->addItem("8", 8);
+            m_ui->comboBoxOutputSize->addItem("10", 10);
+            m_ui->comboBoxOutputSize->addItem("12", 12);
+            m_ui->comboBoxOutputSize->addItem("16", 16);
+        }
     }
 
     if (m_ui->comboBoxOutputSize->findText(m_manyOS) == -1) {
@@ -664,8 +692,10 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     if (m_canChangeOutputSize && !m_hasTruthTable) {
         if (m_hasSameOutputSize) {
             m_ui->comboBoxOutputSize->removeItem(m_ui->comboBoxOutputSize->findText(m_manyOS));
-            QString outputSize = QString::number(firstElement->outputSize());
-            m_ui->comboBoxOutputSize->setCurrentText(outputSize);
+            const int idx = m_ui->comboBoxOutputSize->findData(firstElement->outputSize());
+            if (idx >= 0) {
+                m_ui->comboBoxOutputSize->setCurrentIndex(idx);
+            }
         } else {
             m_ui->comboBoxOutputSize->setCurrentText(m_manyOS);
         }

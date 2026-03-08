@@ -26,10 +26,22 @@ public:
     /// Constructs the element with optional \a parent.
     explicit Demux(QGraphicsItem *parent = nullptr);
 
-    // --- Port Configuration ---
+    // --- Visual / Port Configuration ---
+
+    /// \reimp
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+
+    /// \reimp Co-updates input count when output size changes.
+    void setOutputSize(const int size) override;
 
     /// Recalculates port positions for the current port count.
     void updatePortsProperties() override;
+
+private:
+    void generatePixmap();
+
+    // Prevent direct input size setting - inputs are derived from output size
+    void setInputSize(const int size) override;
 };
 
 Q_DECLARE_METATYPE(Demux)

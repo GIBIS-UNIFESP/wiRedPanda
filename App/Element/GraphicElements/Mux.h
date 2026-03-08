@@ -26,10 +26,16 @@ public:
     /// Constructs the element with optional \a parent.
     explicit Mux(QGraphicsItem *parent = nullptr);
 
-    // --- Port Configuration ---
+    // --- Visual / Port Configuration ---
+
+    /// \reimp
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     /// Recalculates port positions for the current port count.
     void updatePortsProperties() override;
+
+private:
+    void generatePixmap();
 };
 
 Q_DECLARE_METATYPE(Mux)

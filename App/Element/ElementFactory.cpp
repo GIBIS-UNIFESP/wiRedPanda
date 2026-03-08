@@ -180,11 +180,11 @@ std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *
     case ElementType::And:         return std::make_shared<LogicAnd>(elm->inputSize());
     case ElementType::DFlipFlop:   return std::make_shared<LogicDFlipFlop>();
     case ElementType::DLatch:      return std::make_shared<LogicDLatch>();
-    case ElementType::Demux:       return std::make_shared<LogicDemux>();
+    case ElementType::Demux:       return std::make_shared<LogicDemux>(elm->outputSize());
     case ElementType::InputGnd:    return std::make_shared<LogicInput>(false);
     case ElementType::InputVcc:    return std::make_shared<LogicInput>(true);
     case ElementType::JKFlipFlop:  return std::make_shared<LogicJKFlipFlop>();
-    case ElementType::Mux:         return std::make_shared<LogicMux>();
+    case ElementType::Mux:         return std::make_shared<LogicMux>(elm->inputSize());
     case ElementType::Nand:        return std::make_shared<LogicNand>(elm->inputSize());
     case ElementType::Node:        return std::make_shared<LogicNode>();
     case ElementType::Nor:         return std::make_shared<LogicNor>(elm->inputSize());
