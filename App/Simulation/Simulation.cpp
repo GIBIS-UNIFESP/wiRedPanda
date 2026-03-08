@@ -53,19 +53,7 @@ void Simulation::update()
         }
     }
 
-    // Detect feedback loops once per tick so we can choose the right update
-    // strategy.  A single linear scan is cheaper than building a second graph.
-    bool hasFeedbackElements = false;
-    if (m_elmMapping) {
-        for (auto &logic : m_elmMapping->logicElms()) {
-            if (logic && logic->inFeedbackLoop()) {
-                hasFeedbackElements = true;
-                break;
-            }
-        }
-    }
-
-    if (hasFeedbackElements) {
+    if (m_hasFeedbackElements) {
         // Use iterative settling for circuits with feedback loops.
         // A single topological pass is insufficient when a gate's output feeds
         // back into an earlier stage; iterations continue until stable or the
@@ -208,16 +196,13 @@ void Simulation::updateWithIterativeSettling()
 
     // Snapshot outputs before the first pass so the convergence check on
     // iteration 0 has valid "previous" values to compare against.
-    QVector<QVector<bool>> previousOutputs(logicElements.size());
-
     for (int i = 0; i < logicElements.size(); ++i) {
         auto &logic = logicElements[i];
         if (!logic) {
             continue;
         }
-        previousOutputs[i].resize(logic->outputSize());
-        for (int j = 0; j < previousOutputs[i].size(); ++j) {
-            previousOutputs[i][j] = logic->outputValue(j);
+        for (int j = 0; j < m_previousOutputs[i].size(); ++j) {
+            m_previousOutputs[i][j] = logic->outputValue(j);
         }
     }
 
@@ -240,9 +225,9 @@ void Simulation::updateWithIterativeSettling()
             // Check all outputs for convergence
             for (int j = 0; j < logic->outputSize(); ++j) {
                 bool currentOutput = logic->outputValue(j);
-                if (previousOutputs[i][j] != currentOutput) {
+                if (m_previousOutputs[i][j] != currentOutput) {
                     converged = false;
-                    previousOutputs[i][j] = currentOutput;
+                    m_previousOutputs[i][j] = currentOutput;
                 }
             }
         }
@@ -373,6 +358,19 @@ bool Simulation::initialize()
 
     qCDebug(two) << "Sorting.";
     m_elmMapping->sort();
+
+    // Cache feedback flag and pre-allocate previousOutputs for iterative settling
+    const auto &logicElms = m_elmMapping->logicElms();
+    m_hasFeedbackElements = std::any_of(logicElms.begin(), logicElms.end(), [](const auto &logic) {
+        return logic && logic->inFeedbackLoop();
+    });
+
+    m_previousOutputs.resize(logicElms.size());
+    for (int i = 0; i < logicElms.size(); ++i) {
+        if (logicElms[i]) {
+            m_previousOutputs[i].resize(logicElms[i]->outputSize());
+        }
+    }
 
     m_initialized = true;
 
