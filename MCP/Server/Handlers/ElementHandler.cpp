@@ -12,7 +12,6 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/TruthTable.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Commands.h"
@@ -217,7 +216,7 @@ QJsonObject ElementHandler::handleMoveElement(const QJsonObject &params, const Q
     }
 
     int elementId = params.value("element_id").toInt();
-    const int snap = GlobalProperties::gridSize / 2;
+    const int snap = Scene::gridSize / 2;
     const int x = qRound(params.value("x").toDouble() / snap) * snap;
     const int y = qRound(params.value("y").toDouble() / snap) * snap;
 
