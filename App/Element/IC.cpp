@@ -421,7 +421,7 @@ void IC::loadInputsLabels()
         auto *elm = inputPort->graphicElement();
         QString lb = elm->label();
 
-        if (!inputPort->name().isEmpty()) {
+        if (elm->outputSize() > 1 && !inputPort->name().isEmpty()) {
             lb += " ";
             lb += inputPort->name();
         }
@@ -443,7 +443,7 @@ void IC::loadOutputsLabels()
         auto *elm = outputPort->graphicElement();
         QString label = elm->label();
 
-        if (!outputPort->name().isEmpty()) {
+        if (elm->inputSize() > 1 && !outputPort->name().isEmpty()) {
             label += " ";
             label += outputPort->name();
         }
