@@ -66,7 +66,7 @@ Clock::Clock(QGraphicsItem *parent)
     Clock::setOff();             // start LOW; resetClock() will start HIGH when simulation begins
 }
 
-void Clock::updateClock(const std::chrono::steady_clock::time_point &globalTime)
+void Clock::updateClock(std::chrono::steady_clock::time_point globalTime)
 {
     if (m_locked) {
         return;
@@ -198,7 +198,7 @@ void Clock::setDelay(const float delay)
     m_delay = static_cast<double>(delay);
 }
 
-void Clock::resetClock(const std::chrono::steady_clock::time_point &globalTime)
+void Clock::resetClock(std::chrono::steady_clock::time_point globalTime)
 {
     // Start clocks in the HIGH state; the first transition happens after one interval
     setOn();

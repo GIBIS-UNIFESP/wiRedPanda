@@ -173,7 +173,7 @@ void WorkSpace::load(const QString &fileName)
     emit fileChanged(m_fileInfo);
 }
 
-void WorkSpace::load(QDataStream &stream, QVersionNumber version, const QString &contextDir)
+void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const QString &contextDir)
 {
     qCDebug(zero) << "Loading file.";
     // Block simulation updates while items are being added to avoid intermediate

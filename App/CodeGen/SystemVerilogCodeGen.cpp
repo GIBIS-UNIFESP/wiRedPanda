@@ -56,7 +56,8 @@ QString SystemVerilogCodeGen::highLow(const Status val)
 QString SystemVerilogCodeGen::removeForbiddenChars(const QString &input)
 {
     QString result = input.toLower().trimmed().replace(' ', '_').replace('-', '_');
-    result.remove(QRegularExpression("\\W"));
+    static const QRegularExpression re("\\W");
+    result.remove(re);
 
     if (result.isEmpty()) {
         result = "_unnamed";
@@ -71,7 +72,7 @@ QString SystemVerilogCodeGen::stripAccents(const QString &input)
 {
     QString normalized = input.normalized(QString::NormalizationForm_D);
     // Remove combining marks (diacritics)
-    QRegularExpression diacriticMarks("[\\p{Mn}]");
+    static const QRegularExpression diacriticMarks("[\\p{Mn}]");
     return normalized.remove(diacriticMarks);
 }
 
@@ -405,7 +406,7 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
 
     // Build list of internal (non-boundary) elements
     QVector<GraphicElement *> internalElements;
-    for (auto *elm : ic->icElements()) {
+    for (auto *elm : std::as_const(ic->icElements())) {
         if (!boundaryNodes.contains(elm)) {
             internalElements.append(elm);
         }

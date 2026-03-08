@@ -486,16 +486,16 @@ private:
     void loadInputPorts(QDataStream &stream, SerializationContext &context);
     void loadOutputPort(QDataStream &stream, SerializationContext &context, const int port);
     void loadOutputPorts(QDataStream &stream, SerializationContext &context);
-    void loadPortsSize(QDataStream &stream, const QVersionNumber version);
+    void loadPortsSize(QDataStream &stream, const QVersionNumber &version);
 
     // --- Property Loading ---
 
-    void loadLabel(QDataStream &stream, const QVersionNumber version);
+    void loadLabel(QDataStream &stream, const QVersionNumber &version);
     void loadPixmapSkinName(QDataStream &stream, const int skin, const QString &contextDir);
     void loadPixmapSkinNames(QDataStream &stream, SerializationContext &context);
-    void loadPriority(QDataStream &stream, const QVersionNumber version);
-    void loadRotation(QDataStream &stream, const QVersionNumber version);
-    void loadTrigger(QDataStream &stream, const QVersionNumber version);
+    void loadPriority(QDataStream &stream, const QVersionNumber &version);
+    void loadRotation(QDataStream &stream, const QVersionNumber &version);
+    void loadTrigger(QDataStream &stream, const QVersionNumber &version);
 
     // --- Display & Interaction ---
 
