@@ -344,7 +344,7 @@ foreach(test_name ${TEST_EXECUTABLES})
     target_compile_definitions(${test_name} PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests)
 
     if(NOT CCACHE_BIN)
-        target_precompile_headers(${test_name} PRIVATE pch.h)
+        target_precompile_headers(${test_name} REUSE_FROM wiredpanda_lib)
     endif()
 endforeach()
 
