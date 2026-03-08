@@ -799,6 +799,13 @@ void ChangeInputSizeCommand::redo()
     }
 
     for (auto *elm : m_elements) {
+        // Count connections first, write count before connection data
+        int connCount = 0;
+        for (int port = m_newInputSize; port < elm->inputSize(); ++port) {
+            connCount += elm->inputPort(port)->connections().size();
+        }
+        stream << connCount;
+
         for (int port = m_newInputSize; port < elm->inputSize(); ++port) {
             while (!elm->inputPort(port)->connections().isEmpty()) {
                 auto *conn = elm->inputPort(port)->connections().constFirst();
@@ -841,7 +848,8 @@ void ChangeInputSizeCommand::undo()
     }
 
     for (auto *elm : m_elements) {
-        for (int in = m_newInputSize; in < elm->inputSize(); ++in) {
+        int connCount; stream >> connCount;
+        for (int i = 0; i < connCount; ++i) {
             auto *conn = new QNEConnection();
             conn->load(stream, portMap);
             m_scene->addItem(conn);
@@ -893,6 +901,13 @@ void ChangeOutputSizeCommand::redo()
     }
 
     for (auto *elm : m_elements) {
+        // Count connections first, write count before connection data
+        int connCount = 0;
+        for (int port = m_newOutputSize; port < elm->outputSize(); ++port) {
+            connCount += elm->outputPort(port)->connections().size();
+        }
+        stream << connCount;
+
         for (int port = m_newOutputSize; port < elm->outputSize(); ++port) {
             while (!elm->outputPort(port)->connections().isEmpty()) {
                 auto *conn = elm->outputPort(port)->connections().constFirst();
@@ -933,7 +948,8 @@ void ChangeOutputSizeCommand::undo()
     }
 
     for (auto *elm : elements) {
-        for (int out = m_newOutputSize; out < elm->outputSize(); ++out) {
+        int connCount; stream >> connCount;
+        for (int i = 0; i < connCount; ++i) {
             auto *conn = new QNEConnection();
             conn->load(stream, portMap);
             m_scene->addItem(conn);
