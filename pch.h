@@ -62,10 +62,4 @@
 #include <QVector>
 #include <QVersionNumber>
 #include <QWidget>
-
-// Project includes
-#include "App/Core/Enums.h"
-#include "App/Core/ItemWithId.h"
-#include "App/Element/GraphicElement.h"
-#include "App/Element/LogicElements/LogicElement.h"
 #endif
