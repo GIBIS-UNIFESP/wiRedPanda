@@ -8,8 +8,8 @@
 
 #include "App/Element/ElementInfo.h"
 #include "App/Element/LogicElements/LogicInput.h"
-#include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Versions.h"
 
 template<>
 struct ElementInfo<InputRotary> {
@@ -286,16 +286,16 @@ void InputRotary::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
 {
     GraphicElement::load(stream, portMap, version);
 
-    if (version < VERSION("4.1")) {
+    if (version < Versions::V_4_1) {
         // v1.x–4.0 stored currentPort as a bare int; locked added in v3.1
         stream >> m_currentPort;
 
-        if (version >= VERSION("3.1")) {
+        if (version >= Versions::V_3_1) {
             stream >> m_locked;
         }
     }
 
-    if (version >= VERSION("4.1")) {
+    if (version >= Versions::V_4_1) {
         // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 
