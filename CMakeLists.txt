@@ -5,6 +5,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Enable RPATH for development builds with custom Qt installations
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+set(CMAKE_BUILD_RPATH_USE_ORIGIN TRUE)
+
 # Qt version selection: "auto" (default), "5", or "6"
 set(QT_VERSION "auto" CACHE STRING "Qt version to use: auto (default), 5, or 6")
 set_property(CACHE QT_VERSION PROPERTY STRINGS "auto" "5" "6")
