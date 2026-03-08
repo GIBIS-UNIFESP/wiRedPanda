@@ -20,6 +20,7 @@
 #include <QBitArray>
 #include <QBrush>
 #include <QBuffer>
+#include <QByteArray>
 #include <QCheckBox>
 #include <QClipboard>
 #include <QCloseEvent>
@@ -85,8 +86,10 @@
 #include <QPen>
 #include <QPixmap>
 #include <QPixmapCache>
+#include <QPointF>
 #include <QPrinter>
 #include <QPushButton>
+#include <QRectF>
 #include <QRegularExpression>
 #include <QResource>
 #include <QSaveFile>
@@ -95,6 +98,8 @@
 #include <QScrollBar>
 #include <QSettings>
 #include <QShortcut>
+#include <QSignalSpy>
+#include <QSizeF>
 #include <QSlider>
 #include <QSoundEffect>
 #include <QSpacerItem>
@@ -114,10 +119,12 @@
 #include <QTabWidget>
 #include <QTableView>
 #include <QTableWidget>
+#include <QTemporaryDir>
 #include <QTemporaryFile>
 #include <QTest>
 #include <QTextStream>
 #include <QThread>
+#include <QTime>
 #include <QTimer>
 #include <QToolBar>
 #include <QTranslator>
@@ -129,6 +136,7 @@
 #include <QVersionNumber>
 #include <QWidget>
 #include <QtGlobal>
+#include <QtTest>
 
 #endif
 
