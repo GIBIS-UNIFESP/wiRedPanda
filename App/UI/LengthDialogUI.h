@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief LengthDialogUi: hand-written UI class for the LengthDialog.
+ */
+
 #pragma once
 
 // Specific Qt includes instead of monolithic QtWidgets
@@ -23,7 +27,16 @@ public:
 
     // --- Setup ---
 
+    /**
+     * \brief Creates and lays out all child widgets inside \a LengthDialog.
+     * \param LengthDialog The host QDialog.
+     */
     void setupUi(QDialog *LengthDialog);
+
+    /**
+     * \brief Updates all translatable strings in the dialog.
+     * \param LengthDialog The host QDialog.
+     */
     void retranslateUi(QDialog *LengthDialog);
 
     // --- Widgets ---

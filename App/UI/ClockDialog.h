@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief ClockDialog: dialog for configuring a clock element's frequency.
+ */
+
 #pragma once
 
 #include <memory>
@@ -9,9 +13,13 @@
 
 #include "App/UI/ClockDialogUI.h"
 
-//!
-//! \brief The clockDialog class handles dialogs for setting the frequency at which a clock ticks
-//!
+/**
+ * \class ClockDialog
+ * \brief Modal dialog for selecting the tick frequency of a Clock element.
+ *
+ * \details Presents a slider and spin-box linked to the same frequency value.
+ * The user accepts or cancels; the chosen frequency is retrieved via frequency().
+ */
 class ClockDialog : public QDialog
 {
     Q_OBJECT
@@ -19,6 +27,7 @@ class ClockDialog : public QDialog
 public:
     // --- Lifecycle ---
 
+    /// Constructs the dialog with \a currentFrequency as the initial value.
     explicit ClockDialog(const int currentFrequency, QWidget *parent = nullptr);
     ~ClockDialog() override;
 

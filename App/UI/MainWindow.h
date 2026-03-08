@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief Main application window providing menus, toolbars, and tab management.
+ */
+
 #pragma once
 
 #include <memory>
@@ -16,6 +20,14 @@ class ElementLabel;
 class RecentFiles;
 class WorkSpace;
 
+/**
+ * \class MainWindow
+ * \brief The top-level application window hosting the tab bar, menus, element palette, and editor.
+ *
+ * \details MainWindow orchestrates the full editing workflow: it owns the tab widget (each tab is a
+ * WorkSpace), connects undo/redo stacks, handles file open/save/export, manages translations,
+ * and integrates the element palette, element editor, and IC list panel.
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -23,6 +35,11 @@ class MainWindow : public QMainWindow
 public:
     // --- Lifecycle ---
 
+    /**
+     * \brief Constructs the main window, optionally opening \a fileName.
+     * \param fileName Optional .panda file to load on startup.
+     * \param parent   Optional parent widget.
+     */
     explicit MainWindow(const QString &fileName = {}, QWidget *parent = nullptr);
     ~MainWindow() override;
 
@@ -34,7 +51,9 @@ public:
     //! Creates a new tab with the given tab_name. Used by new and load actions.
     void createNewTab();
 
+    /// Returns the currently active WorkSpace tab.
     WorkSpace *currentTab() const;
+    /// Prompts the user to save unsaved changes; returns \c true if all tabs can be closed.
     bool closeFiles();
 
     // --- File Operations ---
@@ -60,48 +79,62 @@ public:
 
     // --- Export ---
 
-    //! Exports the current simulation to an
+    //! Exports the current simulation to Arduino
     void exportToArduino(QString fileName);
 
     //! Saves the current beWavedDolphin (waveform simulator) file
     void exportToWaveFormFile(const QString &fileName);
 
+    /// Opens the BeWavedDolphin waveform editor for the current circuit.
     void exportToWaveFormTerminal();
 
     // --- BeWavedDolphin Integration ---
 
+    /// Returns the .dolphin file path associated with the current tab.
     QString dolphinFileName();
+    /// Sets the .dolphin file path for the current tab.
     void setDolphinFileName(const QString &fileName);
 
     // --- Translation ---
 
+    /// Loads and applies the translation for \a language (e.g. "pt_BR").
     void loadTranslation(const QString &language);
+    /// Returns the display name for the given \a langCode.
     QString getLanguageDisplayName(const QString &langCode) const;
+    /// Returns the flag emoji or icon identifier for \a langCode.
     QString getLanguageFlagIcon(const QString &langCode) const;
+    /// Returns the list of available language codes.
     QStringList getAvailableLanguages() const;
+    /// Rebuilds the language-selection menu from available translations.
     void populateLanguageMenu();
+    /// Re-applies all translatable strings to the main window UI.
     void retranslateUi();
 
     // --- Palette ---
 
+    /// Populates a menu layout with element labels from \a names.
     void populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout);
 
     // --- View / Rendering ---
 
+    /// Enables or disables fast rendering mode across all views.
     void setFastMode(const bool fastMode);
 
     // --- Qt Event Override ---
 
+    /// \reimp
     bool event(QEvent *event) override;
 
 signals:
     // --- Signals ---
 
+    /// Adds \a fileName to the recent files list and updates the menu.
     void addRecentFile(const QString &fileName);
 
 protected:
     // --- Protected Interface ---
 
+    /// \reimp
     void closeEvent(QCloseEvent *event) override;
 
 private:

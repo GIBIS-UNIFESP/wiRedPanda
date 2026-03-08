@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief LengthDialog: dialog for setting the BeWavedDolphin simulation length.
+ */
+
 #pragma once
 
 #include <memory>
@@ -9,13 +13,11 @@
 
 #include "App/UI/LengthDialogUI.h"
 
-/*!
- * @class LengthDialog
- * @brief Dialog for setting a numeric length value
+/**
+ * \class LengthDialog
+ * \brief Modal dialog for setting the BeWavedDolphin simulation length (number of time steps).
  *
- * The LengthDialog class provides a simple dialog with a numeric input
- * for setting length values. It is used for configuring
- * simulation length inside beWavedDolphin.
+ * \details Provides a slider and spin-box for entering the desired column count.
  */
 class LengthDialog : public QDialog
 {
@@ -24,11 +26,16 @@ class LengthDialog : public QDialog
 public:
     // --- Lifecycle ---
 
+    /** \brief Constructs the dialog.
+     * \param currentLength The initial simulation length value.
+     * \param parent Optional parent widget.
+     */
     explicit LengthDialog(const int currentLength, QWidget *parent = nullptr);
     ~LengthDialog() override;
 
     // --- Result Access ---
 
+    /// Returns the simulation length value selected by the user.
     int length();
 
 private:

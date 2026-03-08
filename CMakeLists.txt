@@ -375,3 +375,34 @@ enable_testing()
 foreach(test_name ${TEST_EXECUTABLES})
     add_test(NAME ${test_name} COMMAND ${test_name})
 endforeach()
+
+# ========= DOCUMENTATION ===================================
+
+find_package(Doxygen OPTIONAL_COMPONENTS dot)
+if(DOXYGEN_FOUND)
+    if(Doxygen_dot_FOUND)
+        set(DOXYGEN_HAVE_DOT YES)
+        get_filename_component(DOXYGEN_DOT_PATH "${DOXYGEN_DOT_EXECUTABLE}" DIRECTORY)
+    else()
+        set(DOXYGEN_HAVE_DOT NO)
+        set(DOXYGEN_DOT_PATH "")
+    endif()
+
+    configure_file(
+        ${CMAKE_SOURCE_DIR}/Doxyfile.in
+        ${CMAKE_BINARY_DIR}/docs/Doxyfile
+        @ONLY
+    )
+
+    add_custom_target(doxygen
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_BINARY_DIR}/docs/Doxyfile
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM
+    )
+
+    message(STATUS "Doxygen found: 'cmake --build --preset debug --target doxygen' to generate docs")
+    message(STATUS "  Output: ${CMAKE_BINARY_DIR}/docs/html/index.html")
+else()
+    message(STATUS "Doxygen not found: documentation target unavailable (install doxygen)")
+endif()

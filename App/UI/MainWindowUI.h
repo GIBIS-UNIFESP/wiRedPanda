@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief MainWindowUi: hand-written UI class for the MainWindow.
+ */
+
 #pragma once
 
 #include "App/UI/ElementEditor.h"
@@ -37,7 +41,13 @@ public:
 
     // --- Setup ---
 
+    /**
+     * \brief Creates and lays out all child widgets inside \a MainWindow.
+     * \param MainWindow The host QMainWindow.
+     */
     void setupUi(QMainWindow *MainWindow);
+
+    /// Updates all translatable strings in the window.
     void retranslateUi();
 
     // --- Actions ---

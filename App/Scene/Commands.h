@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief All QUndoCommand subclasses and the CommandUtils helper namespace.
+ */
+
 #pragma once
 
 #include <QCoreApplication>
@@ -31,16 +35,27 @@ void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &
 void addItems(Scene *scene, const QList<QGraphicsItem *> &items);
 void deleteItems(Scene *scene, const QList<QGraphicsItem *> &items);
 
+/**
+ * \class AddItemsCommand
+ * \brief Undo command that adds a list of graphic elements to the scene.
+ */
 class AddItemsCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(AddItemsCommand)
 
 public:
-    //! \param item   A list of items in the form of GraphicElements (an IO elem., a gate or an IC)
-    //! \param editor The editor to which the command will be added to
+    /**
+     * \brief Constructs the command for adding \a items.
+     * \param items List of GraphicElements (IO elements, gates, ICs) to add.
+     * \param scene Target scene.
+     * \param parent Optional parent undo command.
+     */
     explicit AddItemsCommand(const QList<QGraphicsItem *> &items, Scene *scene, QUndoCommand *parent = nullptr);
 
+    /// Adds the items to the scene.
     void redo() override;
+
+    /// Removes the items from the scene.
     void undo() override;
 
 private:
@@ -51,17 +66,27 @@ private:
     Scene *m_scene;
 };
 
-//! Represents a single action of removing a list of elements on the editor
+/**
+ * \class DeleteItemsCommand
+ * \brief Undo command that removes a list of items from the scene.
+ */
 class DeleteItemsCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(DeleteItemsCommand)
 
 public:
-    //! \param items  A list of QGraphicsItems to be removed from the editor
-    //! \param editor The editor from where the items will be removed
+    /**
+     * \brief Constructs the command for deleting \a items.
+     * \param items List of QGraphicsItems to remove.
+     * \param scene Target scene.
+     * \param parent Optional parent undo command.
+     */
     explicit DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scene *scene, QUndoCommand *parent = nullptr);
 
+    /// Removes the items from the scene.
     void redo() override;
+
+    /// Restores the items to the scene.
     void undo() override;
 
 private:
@@ -72,22 +97,32 @@ private:
     Scene *m_scene;
 };
 
-//! Represents a single action of rotating a list of elements on the editor
+/**
+ * \class RotateCommand
+ * \brief Undo command that rotates a list of elements by a fixed angle.
+ */
 class RotateCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(RotateCommand)
 
 public:
-    //! \param items are the items to be rotated
-    //! \param angle defines how many degrees will be rotated, in clockwise direction, by this command.
+    /**
+     * \brief Constructs the command.
+     * \param items  Elements to rotate.
+     * \param angle  Clockwise rotation in degrees (e.g. 90 or -90).
+     * \param scene  Target scene.
+     * \param parent Optional parent undo command.
+     */
     explicit RotateCommand(const QList<GraphicElement *> &items, const int angle, Scene *scene, QUndoCommand *parent = nullptr);
 
+    /// Applies the rotation.
     void redo() override;
+
+    /// Reverses the rotation.
     void undo() override;
 
 private:
-    // --- Members ---
-    //! Defines how many degrees will be rotated, in clockwise direction, in this command.
+    /// Defines how many degrees will be rotated, in clockwise direction, in this command.
     int m_angle;
 
     QList<QPointF> m_positions;
@@ -95,15 +130,28 @@ private:
     Scene *m_scene;
 };
 
-//! Represents a single action of moving a list of actions on the editor
+/**
+ * \class MoveCommand
+ * \brief Undo command that records a drag-move of a set of elements.
+ */
 class MoveCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(MoveCommand)
 
 public:
+    /**
+     * \brief Constructs the command capturing old and new positions.
+     * \param list         Elements that were moved.
+     * \param oldPositions Positions before the move.
+     * \param scene        Target scene.
+     * \param parent       Optional parent undo command.
+     */
     explicit MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &oldPositions, Scene *scene, QUndoCommand *parent = nullptr);
 
+    /// Moves elements to their new positions.
     void redo() override;
+
+    /// Restores elements to their old positions.
     void undo() override;
 
 private:
@@ -115,14 +163,31 @@ private:
     Scene *m_scene;
 };
 
+/**
+ * \class UpdateCommand
+ * \brief Undo command for property changes (label, color, frequency, skin, etc.).
+ *
+ * \details Captures the pre-change state in \a oldData; the post-change state
+ * is serialized from the elements at construction time.
+ */
 class UpdateCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(UpdateCommand)
 
 public:
+    /**
+     * \brief Constructs the command.
+     * \param elements Elements whose properties changed.
+     * \param oldData  Serialized state before the change.
+     * \param scene    Target scene.
+     * \param parent   Optional parent undo command.
+     */
     explicit UpdateCommand(const QList<GraphicElement *> &elements, const QByteArray &oldData, Scene *scene, QUndoCommand *parent = nullptr);
 
+    /// Applies the new property values.
     void redo() override;
+
+    /// Restores the old property values.
     void undo() override;
 
 private:
@@ -136,14 +201,28 @@ private:
     Scene *m_scene;
 };
 
+/**
+ * \class SplitCommand
+ * \brief Undo command that inserts a Node junction into an existing connection.
+ */
 class SplitCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(SplitCommand)
 
 public:
+    /**
+     * \brief Constructs the split command.
+     * \param conn     Connection to split.
+     * \param mousePos Scene position where the node will be inserted.
+     * \param scene    Target scene.
+     * \param parent   Optional parent undo command.
+     */
     explicit SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, QUndoCommand *parent = nullptr);
 
+    /// Removes the node and restores the original connection.
     void undo() override;
+
+    /// Inserts the node and splits the connection.
     void redo() override;
 
 private:
@@ -158,14 +237,28 @@ private:
     int m_nodeId;
 };
 
+/**
+ * \class MorphCommand
+ * \brief Undo command that changes the type of selected elements while preserving connections.
+ */
 class MorphCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(MorphCommand)
 
 public:
+    /**
+     * \brief Constructs the morph command.
+     * \param elements Elements to morph.
+     * \param type     Target element type.
+     * \param scene    Target scene.
+     * \param parent   Optional parent undo command.
+     */
     explicit MorphCommand(const QList<GraphicElement *> &elements, ElementType type, Scene *scene, QUndoCommand *parent = nullptr);
 
+    /// Replaces elements with instances of the new type.
     void redo() override;
+
+    /// Restores the original element types.
     void undo() override;
 
 private:
@@ -179,14 +272,28 @@ private:
     Scene *m_scene;
 };
 
+/**
+ * \class ChangeInputSizeCommand
+ * \brief Undo command that changes the number of input ports on selected elements.
+ */
 class ChangeInputSizeCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(ChangeInputSizeCommand)
 
 public:
+    /**
+     * \brief Constructs the command.
+     * \param elements     Elements whose input count will change.
+     * \param newInputSize Desired number of input ports.
+     * \param scene        Target scene.
+     * \param parent       Optional parent undo command.
+     */
     explicit ChangeInputSizeCommand(const QList<GraphicElement *> &elements, const int newInputSize, Scene *scene, QUndoCommand *parent = nullptr);
 
+    /// Applies the new input port count.
     void redo() override;
+
+    /// Restores the old input port count and connections.
     void undo() override;
 
 private:
@@ -198,14 +305,28 @@ private:
     int m_newInputSize;
 };
 
+/**
+ * \class FlipCommand
+ * \brief Undo command that flips a selection of elements along a horizontal or vertical axis.
+ */
 class FlipCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(FlipCommand)
 
 public:
+    /**
+     * \brief Constructs the flip command.
+     * \param items  Elements to flip.
+     * \param axis   0 = horizontal axis (vertical flip), 1 = vertical axis (horizontal flip).
+     * \param scene  Target scene.
+     * \param parent Optional parent undo command.
+     */
     explicit FlipCommand(const QList<GraphicElement *> &items, const int axis, Scene *scene, QUndoCommand *parent = nullptr);
 
+    /// Applies the flip transformation.
     void redo() override;
+
+    /// Reverses the flip transformation (involution: flip twice = identity).
     void undo() override;
 
 private:
@@ -218,14 +339,28 @@ private:
     int m_axis;
 };
 
+/**
+ * \class ChangeOutputSizeCommand
+ * \brief Undo command that changes the number of output ports on selected elements.
+ */
 class ChangeOutputSizeCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(ChangeOutputSizeCommand)
 
 public:
+    /**
+     * \brief Constructs the command.
+     * \param elements      Elements whose output count will change.
+     * \param newOutputSize Desired number of output ports.
+     * \param scene         Target scene.
+     * \param parent        Optional parent undo command.
+     */
     explicit ChangeOutputSizeCommand(const QList<GraphicElement *> &elements, const int newOutputSize, Scene *scene, QUndoCommand *parent = nullptr);
 
+    /// Applies the new output port count.
     void redo() override;
+
+    /// Restores the old output port count and connections.
     void undo() override;
 
 private:
@@ -237,14 +372,29 @@ private:
     int m_newOutputSize;
 };
 
+/**
+ * \class ToggleTruthTableOutputCommand
+ * \brief Undo command that toggles one output bit in a TruthTable element.
+ */
 class ToggleTruthTableOutputCommand : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(ToggleTruthTableOutputCommand)
 
 public:
+    /**
+     * \brief Constructs the toggle command.
+     * \param element       TruthTable element to modify.
+     * \param pos           Flat index of the bit to toggle in the proposition array.
+     * \param scene         Target scene.
+     * \param ElementEditor Optional element editor to refresh (may be nullptr).
+     * \param parent        Optional parent undo command.
+     */
     explicit ToggleTruthTableOutputCommand(GraphicElement *element, int pos, Scene *scene, ElementEditor *ElementEditor, QUndoCommand *parent = nullptr);
 
+    /// Toggles the bit at \a pos.
     void redo() override;
+
+    /// Toggles the bit again (involution).
     void undo() override;
 
 private:

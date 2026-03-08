@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief Abstract base class for all graphical circuit elements.
+ */
+
 #pragma once
 
 #include <memory>
@@ -23,10 +27,23 @@ class QStyleOptionGraphicsItem;
 class QWidget;
 
 /**
- * @brief Virtual class to implement graphical element appearance, input and output ports, and tooltips.
+ * \class GraphicElement
+ * \brief Abstract base class for all graphical circuit elements in wiRedPanda.
  *
- * The appearance includes editable features such as pose, colors, skins, shortcuts, and labels.
- * It also implements the functions to handle loading and saving the element into files.
+ * \details Combines a QGraphicsObject (visual representation on the scene) with
+ * ItemWithId (stable numeric identity) to form the common interface that every
+ * circuit element must implement.  Concrete subclasses cover gates, flip-flops,
+ * I/O elements, integrated circuits, and all other element types.
+ *
+ * Responsibilities handled here:
+ * - Port management (input and output QNEPort children).
+ * - Pixmap / skin rendering with default and user-defined skins.
+ * - Serialization to / from a versioned QDataStream (save/load).
+ * - Grid-snapping and wire-update callbacks via itemChange().
+ * - Label and keyboard-trigger display.
+ * - Theme-aware selection highlight painting.
+ * - Polymorphic hooks for clock frequency, audio, color, and truth-table
+ *   features that only a subset of elements support.
  */
 class GraphicElement : public QGraphicsObject, public ItemWithId
 {
@@ -39,13 +56,33 @@ public:
     // --- Type Info ---
 
     enum { Type = QGraphicsItem::UserType + 3 };
+
+    /// Returns the custom type identifier for this item.
     int type() const override { return Type; }
 
     // --- Lifecycle ---
 
+    /**
+     * \brief Constructs a fully-described graphic element.
+     * \param type           Element type enum value.
+     * \param group          Logical group the element belongs to.
+     * \param pixmapPath     Resource path of the default pixmap.
+     * \param titleText      Short title shown in UI panels.
+     * \param translatedName Human-readable translated name used as tooltip.
+     * \param minInputSize   Minimum number of input ports.
+     * \param maxInputSize   Maximum number of input ports.
+     * \param minOutputSize  Minimum number of output ports.
+     * \param maxOutputSize  Maximum number of output ports.
+     * \param parent         Optional parent graphics item.
+     */
     explicit GraphicElement(ElementType type, ElementGroup group, const QString &pixmapPath, const QString &titleText, const QString &translatedName,
                             const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent = nullptr);
     explicit GraphicElement(QGraphicsItem *parent = nullptr) : QGraphicsObject(parent) {}
+
+    /**
+     * \brief Copy constructor — creates a new element parented to the same item as \a other.
+     * \param other The source element whose parent is reused.
+     */
     GraphicElement(const GraphicElement &other) : GraphicElement(other.parentItem()) {}
 
     // --- Serialization ---
@@ -61,60 +98,123 @@ public:
 
     // --- Port Management ---
 
-    //! Updates the number and the connected elements to the ports whenever needed (e.g. loading the element, changing the number of inputs/outputs).
+    /**
+     * \brief Repositions and reconfigures all ports after the port count changes.
+     * \details Distributes input ports vertically on the left edge (x=0) and
+     * output ports on the right edge (x=64), spaced by half the scene grid size.
+     * Also reapplies rotation for non-rotatable elements.  Called after
+     * construction, loading, and any input/output size change.
+     */
     virtual void updatePortsProperties();
 
     // --- Element Type & Identity ---
 
+    /// Returns the group this element belongs to.
     ElementGroup elementGroup() const;
+
+    /// Returns the type identifier for this element.
     ElementType elementType() const;
+
+    /// Returns the logic element that backs this graphic element.
     LogicElement *logic() const;
+
+    /// Returns the topological-sort priority of this element.
     int priority() const;
 
     // --- Port Access ---
 
+    /// Returns the input port at \a index (default 0).
     QNEInputPort *inputPort(const int index = 0);
+
+    /// Returns the output port at \a index (default 0).
     QNEOutputPort *outputPort(const int index = 0);
+
+    /// Returns a const reference to the vector of all input ports.
     const QVector<QNEInputPort *> &inputs() const;
+
+    /// Returns a const reference to the vector of all output ports.
     const QVector<QNEOutputPort *> &outputs() const;
+
+    /// Returns the current number of input ports.
     int inputSize() const;
+
+    /// Returns the current number of output ports.
     int outputSize() const;
 
     // --- Port Size Constraints ---
 
+    /// Returns the maximum allowed number of input ports.
     int maxInputSize() const;
+
+    /// Returns the minimum allowed number of input ports.
     int minInputSize() const;
+
+    /// Returns the maximum allowed number of output ports.
     int maxOutputSize() const;
+
+    /// Returns the minimum allowed number of output ports.
     int minOutputSize() const;
 
     // --- Labeling ---
 
+    /// Returns the user-visible label text for this element.
     QString label() const;
+
+    /// Sets the label text to \a label and refreshes the display.
     void setLabel(const QString &label);
+
+    /// Repositions and updates the label child item to reflect current state.
     void updateLabel();
+
+    /// Returns \c true if this element type supports a user-editable label.
     bool hasLabel() const;
 
     // --- Trigger Control ---
 
+    /// Returns the keyboard shortcut that activates this element.
     QKeySequence trigger() const;
+
+    /// Sets the keyboard shortcut to \a trigger and updates the label.
     void setTrigger(const QKeySequence &trigger);
+
+    /// Returns \c true if this element type supports a keyboard trigger.
     bool hasTrigger() const;
 
     // --- Audio Properties ---
 
+    /// Returns the name of the audio file currently associated with this element.
     virtual QString audio() const;
+
+    /// Sets the audio file associated with this element to \a audio.
     virtual void setAudio(const QString &audio);
+
+    /// Returns \c true if this element type supports audio output.
     bool hasAudio() const;
+
+    /// Returns \c true if this element type shows an audio selection box.
     bool hasAudioBox() const;
+
+    /// Returns the name of the next audio file in the element's audio list.
     QString nextAudio() const;
+
+    /// Returns the name of the previous audio file in the element's audio list.
     QString previousAudio() const;
 
     // --- Color Properties ---
 
+    /// Returns the name of the color currently applied to this element.
     virtual QString color() const;
+
+    /// Sets the element color to \a color and refreshes the pixmap.
     virtual void setColor(const QString &color);
+
+    /// Returns \c true if this element type supports color selection.
     bool hasColors() const;
+
+    /// Returns the name of the next color in the element's color list.
     QString nextColor() const;
+
+    /// Returns the name of the previous color in the element's color list.
     QString previousColor() const;
 
     // --- Frequency & Delay ---
@@ -124,80 +224,154 @@ public:
 
     //! virtual function overloaded by clock element. Other elements have frequency of 0.
     virtual float delay() const;
+
+    /// Returns \c true if this element type exposes a configurable clock frequency.
     bool hasFrequency() const;
+
+    /// Returns \c true if this element type exposes a configurable clock phase delay.
     bool hasDelay() const;
+
+    /// Sets the clock frequency to \a freq (overridden by clock elements).
     virtual void setFrequency(const float freq);
+
+    /// Sets the clock phase delay to \a delay (overridden by clock elements).
     virtual void setDelay(const float delay);
 
     // --- Skin Management ---
 
+    /// Returns \c true if the user is allowed to choose a custom skin for this element.
     bool canChangeSkin() const;
+
+    /**
+     * \brief Switches the element's skin.
+     * \param defaultSkin \c true to restore the built-in default skin.
+     * \param fileName    File path of the custom skin image (used when \a defaultSkin is \c false).
+     */
     virtual void setSkin(const bool defaultSkin, const QString &fileName);
+
+    /// Loads and applies the pixmap located at \a pixmapPath.
     void setPixmap(const QString &pixmapPath);
+
+    /// Loads and applies the skin at position \a index in the skin list.
     void setPixmap(const int index);
 
     // --- Truth Table ---
 
+    /// Returns \c true if this element type has an editable truth table.
     bool hasTruthTable() const;
 
     // --- Rotation ---
 
+    /// Returns the current rotation angle of this element in degrees.
     qreal rotation() const;
+
+    /// Rotates the element to \a angle degrees and updates port positions.
     void setRotation(const qreal angle);
+
+    /// Returns \c true if the user is allowed to rotate this element.
     bool isRotatable() const;
+
+    /// Rotates all ports by \a angle degrees around the element centre.
     void rotatePorts(const qreal angle);
 
     // --- Geometric Properties ---
 
+    /// Returns the centre point of the element's pixmap in local coordinates.
     QPointF pixmapCenter() const;
+
+    /// Returns the bounding rectangle of this element in local coordinates.
     QRectF boundingRect() const override;
 
     // --- State Queries ---
 
+    /// Returns \c true if the element is fully initialised and connected correctly.
     bool isValid();
 
     // --- Polymorphic Logic Element Interface ---
 
     //! Polymorphic interface for logic element access (eliminates manual IC type checking)
     virtual LogicElement *getInputLogic(int portIndex) const;
+
+    /// Returns the logic element that drives output \a portIndex.
     virtual LogicElement *getOutputLogic(int portIndex) const;
 
     // --- Polymorphic Port Index Interface ---
 
     //! Polymorphic interface for getting the correct input/output indices for ports
     virtual int getInputIndexForPort(int portIndex) const;
+
+    /// Returns the logic-element output index corresponding to \a portIndex.
     virtual int getOutputIndexForPort(int portIndex) const;
 
     // --- Polymorphic Element Mapping Interface ---
 
-    //! Polymorphic interface for element mapping (replaces manual generateMap() calls)
+    /**
+     * \brief Returns the LogicElement instances that should be registered in the simulation map.
+     * \details The default implementation wraps logic() in a non-owning shared_ptr.
+     * IC elements override this to return multiple inner logic elements.
+     * \return A vector of shared_ptr<LogicElement> for simulation mapping.
+     */
     virtual QVector<std::shared_ptr<LogicElement>> getLogicElementsForMapping();
 
     // --- Polymorphic Port Naming Interface ---
 
     //! Polymorphic interface for port naming (replaces elementType() == IC checks)
     virtual bool canSetPortNames() const;
+
+    /// Sets the name of input \a port to \a name (only for elements that support it).
     virtual void setInputPortName(int port, const QString &name);
+
+    /// Sets the name of output \a port to \a name (only for elements that support it).
     virtual void setOutputPortName(int port, const QString &name);
 
     // --- Virtual Methods ---
 
+    /// Returns a string encoding element-specific properties for serialization or display.
     virtual QString genericProperties();
+
+    /// Forces a visual refresh of the element's pixmap and ports.
     virtual void refresh();
 
     // --- Qt Graphics & Display ---
 
+    /**
+     * \brief Paints the element onto the scene.
+     * \details Draws a rounded selection rectangle when the item is selected,
+     * then draws the current pixmap at the item origin.
+     * \param painter Painter provided by the graphics view framework.
+     * \param option  Style options (unused).
+     * \param widget  Target widget (unused).
+     */
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+
+    /**
+     * \brief Updates the translated display name, tooltip, and port object name after a locale change.
+     * \details Queries ElementFactory for the new translated name and propagates
+     * it to setPortName() and setToolTip().
+     */
     void retranslate();
 
     // --- Setters (Port & Logic Configuration) ---
 
+    /// Adjusts the number of input ports to \a size, adding or removing ports as needed.
     void setInputSize(const int size);
+
+    /// Adjusts the number of output ports to \a size, adding or removing ports as needed.
     void setOutputSize(const int size);
+
+    /// Replaces the input port vector with \a inputs.
     void setInputs(const QVector<QNEInputPort *> &inputs);
+
+    /// Replaces the output port vector with \a outputs.
     void setOutputs(const QVector<QNEOutputPort *> &outputs);
+
+    /// Assigns \a newLogic as the backing logic element.
     void setLogic(LogicElement *newLogic);
+
+    /// Sets the object name of all ports to \a name for identification.
     void setPortName(const QString &name);
+
+    /// Sets the topological-sort priority to \a value.
     void setPriority(const int value);
 
     // --- Theme ---
@@ -208,59 +382,112 @@ public:
 protected:
     // --- Graphics & Rendering ---
 
+    /// Returns the pixmap currently displayed by this element.
     QPixmap pixmap() const;
+
+    /**
+     * \brief Returns the bounding rectangle that encompasses all child ports.
+     * \details Iterates over childItems(), mapping each QNEPort's bounding rect
+     * into the element's local coordinate space.
+     * \return Combined bounding QRectF of all port children.
+     */
     QRectF portsBoundingRect() const;
 
     // --- Qt Event Handling ---
 
+    /**
+     * \brief Handles item state changes such as position, rotation, and selection.
+     * \details Three change types are intercepted:
+     * - ItemPositionChange: snaps the new position to half the scene grid size.
+     * - ItemScenePositionHasChanged / ItemRotationHasChanged / ItemTransformHasChanged:
+     *   calls updateConnections() on all ports to redraw attached wires.
+     * - ItemSelectedHasChanged: toggles connection highlight via highlight().
+     * \param change The type of change that occurred.
+     * \param value  The new value associated with the change.
+     * \return The (possibly modified) value to use, or the base class result.
+     */
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+
+    /**
+     * \brief Intercepts mouse-press and mouse-release events to handle Ctrl+click.
+     * \details When Ctrl is held during a mouse press or release, the event is
+     * consumed here and not forwarded, preventing accidental multi-selection.
+     * \param event The scene event to inspect.
+     * \return true if the event was consumed; otherwise the base class result.
+     */
     bool sceneEvent(QEvent *event) override;
 
     // --- Capability Setters ---
 
+    /// Sets whether the user may apply a custom skin to this element.
     void setCanChangeSkin(const bool canChangeSkin);
+
+    /// Sets whether this element type supports audio output.
     void setHasAudio(const bool hasAudio);
+
+    /// Sets whether this element type shows an audio selection box.
     void setHasAudioBox(const bool hasAudioBox);
+
+    /// Sets whether this element type supports color selection.
     void setHasColors(const bool hasColors);
+
+    /// Sets whether this element type exposes a configurable clock phase delay.
     void setHasDelay(const bool hasDelay);
+
+    /// Sets whether this element type exposes a configurable clock frequency.
     void setHasFrequency(const bool hasFrequency);
+
+    /// Sets whether this element type supports a user-editable label.
     void setHasLabel(const bool hasLabel);
+
+    /// Sets whether this element type supports a keyboard trigger shortcut.
     void setHasTrigger(const bool hasTrigger);
+
+    /// Sets whether this element type has an editable truth table.
     void setHasTruthTable(const bool hasTruthTable);
+
+    /// Sets whether the user is allowed to rotate this element.
     void setRotatable(const bool rotatable);
 
     // --- Port Size Constraint Setters ---
 
+    /// Sets the maximum number of input ports to \a maxInputSize.
     void setMaxInputSize(const int maxInputSize);
+
+    /// Sets the minimum number of input ports to \a minInputSize.
     void setMinInputSize(const int minInputSize);
+
+    /// Sets the maximum number of output ports to \a maxOutputSize.
     void setMaxOutputSize(const int maxOutputSize);
+
+    /// Sets the minimum number of output ports to \a minOutputSize.
     void setMinOutputSize(const int minOutputSize);
 
-    //! Path to all default skins. The default skin is in a resource file.
+    /// Path to all default skins. The default skin is in a resource file.
     QStringList m_defaultSkins;
 
-    //! Path to all custom skins. Custom skin names are system file paths defined by the user.
+    /// Path to all custom skins. Custom skin names are system file paths defined by the user.
     QStringList m_alternativeSkins;
 
-    //! input port vector
+    /// input port vector
     QVector<QNEInputPort *> m_inputPorts;
 
-    //! output port vector
+    /// output port vector
     QVector<QNEOutputPort *> m_outputPorts;
 
-    //! Current pixmap displayed for this GraphicElement.
+    /// Current pixmap displayed for this GraphicElement.
     QPixmap m_pixmap;
 
-    QColor m_selectionBrush;
-    QColor m_selectionPen;
-    QGraphicsTextItem *m_label = new QGraphicsTextItem(this);
+    QColor m_selectionBrush; ///< Fill color used to draw the selection highlight rectangle.
+    QColor m_selectionPen;   ///< Border color used to draw the selection highlight rectangle.
+    QGraphicsTextItem *m_label = new QGraphicsTextItem(this); ///< Child text item that displays the label and optional trigger shortcut.
 
     // --- Members: Metadata ---
 
-    QString m_pixmapPath;
-    QString m_titleText;
-    QString m_translatedName;
-    bool m_usingDefaultSkin = true;
+    QString m_pixmapPath;     ///< Resource or file path of the element's default pixmap (from metadata).
+    QString m_titleText;      ///< Translated title text shown in UI panels (from metadata).
+    QString m_translatedName; ///< Translated element name used as tooltip and port object name.
+    bool m_usingDefaultSkin = true; ///< True when the active skin matches the built-in default skins.
 
 private:
     // --- Port Management Helpers ---
@@ -307,6 +534,12 @@ private:
 
     // --- Display & Interaction ---
 
+    /**
+     * \brief Highlights or un-highlights all connections attached to this element.
+     * \details Iterates over every port and every connection, toggling the highLight
+     * flag to match the element's new selection state.
+     * \param isSelected true when the element has just been selected.
+     */
     void highlight(const bool isSelected);
 
     // --- Members: Element Type & Identity ---
@@ -353,6 +586,7 @@ private:
 
 Q_DECLARE_METATYPE(GraphicElement)
 
+/// Stream insertion operator that serializes \a item to \a stream via GraphicElement::save().
 QDataStream &operator<<(QDataStream &stream, const GraphicElement *item);
 
 // FIXME: connecting more than one source makes element stop working
