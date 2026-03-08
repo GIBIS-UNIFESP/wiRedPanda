@@ -92,7 +92,7 @@ jobs:
         python3 get-pip.py
         python3 -m pip install --no-cache-dir --upgrade pip setuptools wheel
 
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         submodules: recursive
         fetch-depth: 0
@@ -725,7 +725,7 @@ jobs:
 
     - name: Upload build artifacts on failure
       if: failure()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: deploy-logs-${{ matrix.os }}-${{ matrix.qt }}
         path: |
