@@ -20,8 +20,8 @@
 class LogicDemux : public LogicElement
 {
 public:
-    /// Constructs the demultiplexer with its default input/output ports.
-    explicit LogicDemux();
+    /// Constructs the demultiplexer with \a outputSize data outputs.
+    explicit LogicDemux(int outputSize = 2);
 
     /// Routes the data input to the output selected by the select lines.
     void updateLogic() override;

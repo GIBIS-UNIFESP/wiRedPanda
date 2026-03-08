@@ -356,10 +356,10 @@ public:
     // --- Setters (Port & Logic Configuration) ---
 
     /// Adjusts the number of input ports to \a size, adding or removing ports as needed.
-    void setInputSize(const int size);
+    virtual void setInputSize(const int size);
 
     /// Adjusts the number of output ports to \a size, adding or removing ports as needed.
-    void setOutputSize(const int size);
+    virtual void setOutputSize(const int size);
 
     /// Replaces the input port vector with \a inputs.
     void setInputs(const QVector<QNEInputPort *> &inputs);
