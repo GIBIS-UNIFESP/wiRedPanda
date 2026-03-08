@@ -20,14 +20,13 @@ fi
 
 # Generate lcov info file directly with filtering
 cd build
-lcov --capture --directory . --output-file coverage.info --ignore-errors source
+lcov --capture --directory . --output-file coverage.info --ignore-errors source,inconsistent
 lcov --remove coverage.info \
     '/usr/*' \
     '*/Tests/*' \
     '*/build/*' \
-    '*/Qt*/include/Qt*' \
-    '*/Qt/*' \
-    --output-file coverage_filtered.info
+    '*/Qt*/' \
+    --output-file coverage_filtered.info --ignore-errors inconsistent,unused
 
 # Generate HTML report with dark theme
 genhtml coverage_filtered.info --output-directory coverage_html --css-file ../scripts/lcov-dark-theme.css
