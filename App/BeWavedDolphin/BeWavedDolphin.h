@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief BeWavedDolphin waveform editor: digital signal creation, display, and export.
+ * \brief BewavedDolphin waveform editor: digital signal creation, display, and export.
  */
 
 #pragma once
@@ -10,113 +10,19 @@
 #include <memory>
 
 #include <QFileInfo>
-#include <QItemDelegate>
 #include <QMainWindow>
 #include <QStandardItemModel>
 #include <QTableView>
 
 #include "App/BeWavedDolphin/BeWavedDolphinUI.h"
-#include "App/Scene/GraphicsView.h"
+#include "App/BeWavedDolphin/SignalDelegate.h"
+#include "App/BeWavedDolphin/SignalModel.h"
+#include "App/BeWavedDolphin/WaveformView.h"
 #include "App/Scene/Scene.h"
 
-class GraphicsView;
 class MainWindow;
 class QItemSelection;
 class QSaveFile;
-
-/// Controls how signal cells are rendered in the waveform table.
-enum class PlotType {
-    Number, ///< Cells display the numeric value (0/1).
-    Line    ///< Cells display a waveform-style rising/falling edge graphic.
-};
-
-/**
- * \class SignalModel
- * \brief QStandardItemModel subclass that makes output rows read-only in the waveform table.
- *
- * \details Input signal cells are editable; output signal cells are read-only since their
- * values are computed by the simulation.
- */
-class SignalModel : public QStandardItemModel
-{
-    Q_OBJECT
-
-public:
-    /**
-     * \brief Constructs the model.
-     * \param inputs  Number of input signal rows (these are editable).
-     * \param rows    Total number of signal rows.
-     * \param columns Number of time-step columns.
-     * \param parent  Optional parent object.
-     */
-    SignalModel(const int inputs, const int rows, const int columns, QObject *parent = nullptr);
-
-    /// \reimp
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
-
-private:
-    const int m_inputCount; ///< Number of input rows; rows above this index are editable.
-};
-
-/**
- * \class SignalDelegate
- * \brief Item delegate that draws digital waveform graphics inside table cells.
- *
- * \details Replaces the default text rendering with pixmaps representing logic-high,
- * logic-low, rising-edge, and falling-edge states in the chosen PlotType style.
- */
-class SignalDelegate : public QItemDelegate
-{
-    Q_OBJECT
-
-public:
-    /// Constructs the delegate with \a parent.
-    SignalDelegate(QObject *parent);
-
-    /// \reimp
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-};
-
-/**
- * \class DolphinGraphicsView
- * \brief GraphicsView subclass with waveform-editor zoom behaviour.
- *
- * \details Overrides the wheel event to zoom the entire scene (like Quartus Prime) rather
- * than scroll, and provides a discrete zoom-level range suitable for waveform display.
- */
-class DolphinGraphicsView : public GraphicsView
-{
-    Q_OBJECT
-
-public:
-    // --- Lifecycle ---
-
-    /// Constructs the view with \a parent.
-    explicit DolphinGraphicsView(QWidget *parent = nullptr);
-
-    // --- Zoom ---
-
-    /// Returns \c true if zooming in further is possible.
-    bool canZoomIn() const;
-
-    /// Returns \c true if further zoom-out is possible.
-    bool canZoomOut() const;
-
-    /// Resets zoom to the default scale.
-    void resetZoom();
-
-    /// Increases zoom by one step.
-    void zoomIn();
-
-    /// Decreases zoom by one step.
-    void zoomOut();
-
-protected:
-    // --- Qt event overrides ---
-
-    /// \reimp Redirects wheel events to zoom instead of scroll.
-    void wheelEvent(QWheelEvent *event) override;
-};
 
 /**
  * \class BewavedDolphin
@@ -134,20 +40,16 @@ class BewavedDolphin : public QMainWindow
     Q_OBJECT
 
 public:
-    // --- Lifecycle ---
-
     /**
      * \brief Constructs the waveform editor.
-     * \param scene External scene to read circuit elements from.
-     * \param askConnection Whether to prompt when the file association is ambiguous.
-     * \param parent Parent window.
+     * \param scene         Circuit scene whose I/O elements will be mapped to signals.
+     * \param askConnection If \c true, prompts the user to link to a .dolphin file.
+     * \param parent        Owner MainWindow (used to restore simulation state after run).
      */
     explicit BewavedDolphin(Scene *scene, const bool askConnection = true, MainWindow *parent = nullptr);
     ~BewavedDolphin() override;
 
-    // --- Waveform Initialization ---
-
-    /// Creates a fresh empty waveform table from the current circuit.
+    /// Initializes a blank waveform from the current scene's I/O elements.
     void createWaveform();
 
     /**
@@ -156,40 +58,65 @@ public:
      */
     void createWaveform(const QString &fileName);
 
-    // --- Display ---
-
-    /// Shows the waveform editor window.
-    void show();
-
-    // --- Export ---
-
-    /// Prints the waveform to the system printer.
+    /// Prints the waveform table to the system printer.
     void print();
-    /// Writes the waveform data as plain text to \a stream.
+
+    /**
+     * \brief Exports the waveform data as plain text to \a stream.
+     * \param stream Destination text stream.
+     */
     void saveToTxt(QTextStream &stream);
-    /// Exports the waveform view to a PNG file at \a filename.
-    bool exportToPng(const QString &filename);
+
+    /// Shows the window and loads the initial waveform.
+    void show();
 
     // --- MCP Interface ---
 
-    /// Sets an individual waveform cell at (\a row, \a col) to \a value.
+    /**
+     * \brief Exports the waveform scene to a PNG image file.
+     * \param filename Output file path.
+     * \return \c true on success.
+     */
+    bool exportToPng(const QString &filename);
+
+    /**
+     * \brief Sets a single cell value in the waveform table.
+     * \param row        Signal row index.
+     * \param col        Time-step column index.
+     * \param value      Logical value (0 or 1).
+     * \param isInput    \c true if the row is an input signal.
+     * \param changeNext \c true to also update the subsequent cell's edge pixmap.
+     */
     void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = false);
-    /// Prepares the waveform editor, optionally loading from \a fileName.
+
+    /**
+     * \brief Prepares the waveform from \a fileName (or blank if empty).
+     * \param fileName Optional .dolphin file to load.
+     */
     void prepare(const QString &fileName = {});
-    /// Runs the simulation and updates the waveform display.
+
+    /// Runs the simulation for all input combinations and fills output rows.
     void run();
-    /// Sets the simulation length to \a simLength cycles, optionally re-running.
+
+    /**
+     * \brief Sets the number of time-step columns.
+     * \param simLength     Number of columns.
+     * \param runSimulation If \c true, immediately re-runs the simulation.
+     */
     void setLength(const int simLength, const bool runSimulation = false);
 
     // --- MCP Accessors ---
 
-    /// Returns the underlying data model.
-    QStandardItemModel *getModel() const { return m_model; }
-    /// Returns the output elements used in the simulation.
-    const QVector<GraphicElement *> &getOutputElements() const { return m_outputs; }
-    /// Returns the input elements used in the simulation.
-    const QVector<GraphicElementInput *> &getInputElements() const { return m_inputs; }
-    /// Returns the current simulation length (number of cycles).
+    /// Returns the underlying table model (MCP access).
+    QStandardItemModel* getModel() const { return m_model; }
+
+    /// Returns the output element vector (MCP access).
+    const QVector<GraphicElement *>& getOutputElements() const { return m_outputs; }
+
+    /// Returns the input element vector (MCP access).
+    const QVector<GraphicElementInput *>& getInputElements() const { return m_inputs; }
+
+    /// Returns the current simulation length (number of columns).
     int getLength() const { return m_length; }
 
 protected:
@@ -217,101 +144,72 @@ private:
 
     // --- Signal Table Management ---
 
-    void loadElements();
-    void loadFromTerminal();
-    void loadNewTable();
-    void loadPixmaps();
-    void loadSignals(QStringList &inputLabels, QStringList &outputLabels);
-    void createOneElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
-    void createZeroElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
-
-    // --- Clipboard ---
-
     int sectionFirstColumn(const QItemSelection &ranges);
     int sectionFirstRow(const QItemSelection &ranges);
     void copy(const QItemSelection &ranges, QDataStream &stream);
     void cut(const QItemSelection &ranges, QDataStream &stream);
+    void loadElements();
+    void loadFromTerminal();
+    void loadNewTable();
+    void loadSignals(QStringList &inputLabels, QStringList &outputLabels);
     void paste(const QItemSelection &ranges, QDataStream &stream);
-
-    // --- Simulation State ---
-
-    void restoreInputs();
-
-    // --- Scene / View ---
-
     void resizeScene();
+    void restoreInputs();
+    void setCellValue(int row, int col, int value, bool isInput = true, bool changeNext = true);
+    void setTableViewSize(int width, int height);
     void zoomChanged();
 
-    // --- Table View Event Handlers ---
+    // --- Action Handlers ---
 
-    void on_tableView_cellDoubleClicked();
-    void on_tableView_selectionChanged();
-
-    // --- Menu Actions: File ---
-
-    void on_actionLoad_triggered();
-    void on_actionSave_triggered();
-    void on_actionSaveAs_triggered();
-    void on_actionExportToPdf_triggered();
-    void on_actionExportToPng_triggered();
-    void on_actionExit_triggered();
-
-    // --- Menu Actions: Edit ---
-
+    void on_actionAboutQt_triggered();
+    void on_actionAbout_triggered();
     void on_actionAutoCrop_triggered();
     void on_actionClear_triggered();
     void on_actionCombinational_triggered();
     void on_actionCopy_triggered();
     void on_actionCut_triggered();
+    void on_actionExit_triggered();
+    void on_actionExportToPdf_triggered();
+    void on_actionExportToPng_triggered();
+    void on_actionFitScreen_triggered();
     void on_actionInvert_triggered();
+    void on_actionLoad_triggered();
     void on_actionPaste_triggered();
+    void on_actionResetZoom_triggered();
+    void on_actionSaveAs_triggered();
+    void on_actionSave_triggered();
     void on_actionSetClockWave_triggered();
     void on_actionSetLength_triggered();
     void on_actionSetTo0_triggered();
     void on_actionSetTo1_triggered();
-
-    // --- Menu Actions: View ---
-
-    void on_actionFitScreen_triggered();
-    void on_actionResetZoom_triggered();
     void on_actionShowNumbers_triggered();
     void on_actionShowWaveforms_triggered();
     void on_actionZoomIn_triggered();
     void on_actionZoomOut_triggered();
-
-    // --- Menu Actions: About ---
-
-    void on_actionAbout_triggered();
-    void on_actionAboutQt_triggered();
+    void on_tableView_cellDoubleClicked();
+    void on_tableView_selectionChanged();
 
     // --- Members ---
 
-    std::unique_ptr<BewavedDolphin_Ui> m_ui;
-    DolphinGraphicsView m_view;
-    MainWindow *m_mainWindow = nullptr;
-    PlotType m_type = PlotType::Line;
+    std::unique_ptr<BewavedDolphinUi> m_ui;
+    WaveformView m_view;
+    MainWindow *m_mainWindow       = nullptr;
+    PlotType m_type                = PlotType::Line;
     QFileInfo m_currentFile;
-    QGraphicsScene *m_scene = new QGraphicsScene(this);
-    QPixmap m_fallingBlue;
-    QPixmap m_fallingGreen;
-    QPixmap m_highBlue;
-    QPixmap m_highGreen;
-    QPixmap m_lowBlue;
-    QPixmap m_lowGreen;
-    QPixmap m_risingBlue;
-    QPixmap m_risingGreen;
-    QStandardItemModel *m_model = nullptr;
-    QTableView *m_signalTableView = new QTableView();
+    QGraphicsScene *m_scene        = new QGraphicsScene(this);
+    QStandardItemModel *m_model    = nullptr;
+    QTableView *m_signalTableView  = new QTableView();
+    SignalDelegate *m_delegate     = nullptr;
     QVector<GraphicElement *> m_outputs;
     QVector<GraphicElementInput *> m_inputs;
     QVector<Status> m_oldInputValues;
-    Scene *m_externalScene = nullptr;
-    Simulation *m_simulation = nullptr;
-    bool m_edited = false;
+    Scene *m_externalScene         = nullptr;
+    Simulation *m_simulation       = nullptr;
+    bool m_edited                  = false;
     const bool m_askConnection;
-    const double m_scaleFactor = 0.8;
-    double m_scale = 1.25;
-    int m_clockPeriod = 0;
-    int m_inputPorts = 0;
-    int m_length = 32;
+    const double m_scaleFactor     = 0.8;
+    double m_scale                 = 1.25;
+    int m_clockPeriod              = 0;
+    int m_inputPorts               = 0;
+    int m_length                   = 32;
 };

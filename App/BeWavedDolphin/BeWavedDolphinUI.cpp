@@ -7,7 +7,7 @@
 #include <QtCore/QMetaObject>
 #include <QtGui/QIcon>
 
-void BewavedDolphin_Ui::setupUi(QMainWindow *BewavedDolphin)
+void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
 {
     if (BewavedDolphin->objectName().isEmpty()) {
         BewavedDolphin->setObjectName("BewavedDolphin");
@@ -130,7 +130,7 @@ void BewavedDolphin_Ui::setupUi(QMainWindow *BewavedDolphin)
     centralwidget = new QWidget(BewavedDolphin);
     centralwidget->setObjectName("centralwidget");
     // Maximum size policy prevents the central widget from expanding beyond its content,
-    // letting the DolphinGraphicsView (added later) control the window's actual dimensions
+    // letting the WaveformView (added later) control the window's actual dimensions
     QSizePolicy sizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
@@ -238,7 +238,7 @@ void BewavedDolphin_Ui::setupUi(QMainWindow *BewavedDolphin)
     QMetaObject::connectSlotsByName(BewavedDolphin);
 }
 
-void BewavedDolphin_Ui::retranslateUi(QMainWindow *BewavedDolphin)
+void BewavedDolphinUi::retranslateUi(QMainWindow *BewavedDolphin)
 {
     BewavedDolphin->setWindowTitle(QCoreApplication::translate("BewavedDolphin", "MainWindow"));
     actionAbout->setText(QCoreApplication::translate("BewavedDolphin", "About"));

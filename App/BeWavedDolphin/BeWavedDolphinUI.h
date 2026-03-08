@@ -17,13 +17,21 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-class BewavedDolphin_Ui
+/**
+ * \class BewavedDolphinUi
+ * \brief Hand-written UI descriptor for the BeWavedDolphin main window.
+ *
+ * \details Replaces the Qt Designer .ui workflow.  Call setupUi() once after
+ * construction to build the widget hierarchy, and retranslateUi() whenever the
+ * application language changes.
+ */
+class BewavedDolphinUi
 {
 public:
-    BewavedDolphin_Ui() = default;
+    BewavedDolphinUi() = default;
 
-    BewavedDolphin_Ui(const BewavedDolphin_Ui&) = delete;
-    BewavedDolphin_Ui& operator=(const BewavedDolphin_Ui&) = delete;
+    BewavedDolphinUi(const BewavedDolphinUi&) = delete;
+    BewavedDolphinUi& operator=(const BewavedDolphinUi&) = delete;
 
     /**
      * \brief Creates and lays out all child widgets inside \a BewavedDolphin.
@@ -37,54 +45,37 @@ public:
      */
     void retranslateUi(QMainWindow *BewavedDolphin);
 
-    // --- Actions: File Menu ---
-
+    QAction *actionAbout = nullptr;
     QAction *actionLoad = nullptr;
+    QAction *actionExit = nullptr;
+    QAction *actionCombinational = nullptr;
+    QAction *actionExportToPdf = nullptr;
     QAction *actionSave = nullptr;
     QAction *actionSaveAs = nullptr;
-    QAction *actionExportToPdf = nullptr;
-    QAction *actionExportToPng = nullptr;
-    QAction *actionExit = nullptr;
-
-    // --- Actions: Edit Menu ---
-
     QAction *actionCopy = nullptr;
-    QAction *actionCut = nullptr;
     QAction *actionPaste = nullptr;
-    QAction *actionClear = nullptr;
-    QAction *actionInvert = nullptr;
     QAction *actionSetTo0 = nullptr;
     QAction *actionSetTo1 = nullptr;
     QAction *actionSetClockWave = nullptr;
-    QAction *actionSetLength = nullptr;
-    QAction *actionCombinational = nullptr;
-    QAction *actionAutoCrop = nullptr;
+    QAction *actionInvert = nullptr;
     QAction *actionMerge = nullptr;
     QAction *actionSplit = nullptr;
-
-    // --- Actions: View Menu ---
-
-    QAction *actionShowNumbers = nullptr;
-    QAction *actionShowWaveforms = nullptr;
+    QAction *actionExportToPng = nullptr;
+    QAction *actionSetLength = nullptr;
+    QAction *actionAboutQt = nullptr;
     QAction *actionZoomIn = nullptr;
     QAction *actionZoomOut = nullptr;
     QAction *actionFitScreen = nullptr;
     QAction *actionResetZoom = nullptr;
-
-    // --- Actions: About Menu ---
-
-    QAction *actionAbout = nullptr;
-    QAction *actionAboutQt = nullptr;
-
-    // --- Window Layout Widgets ---
-
+    QAction *actionClear = nullptr;
+    QAction *actionCut = nullptr;
+    QAction *actionShowNumbers = nullptr;
+    QAction *actionShowWaveforms = nullptr;
+    QAction *actionAutoCrop = nullptr;
     QWidget *centralwidget = nullptr;
     QVBoxLayout *verticalLayout = nullptr;
     QStatusBar *statusbar = nullptr;
     QToolBar *mainToolBar = nullptr;
-
-    // --- Menus ---
-
     QMenuBar *menubar = nullptr;
     QMenu *menuFile = nullptr;
     QMenu *menuAbout = nullptr;
