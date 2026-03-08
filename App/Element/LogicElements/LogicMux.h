@@ -19,8 +19,8 @@
 class LogicMux : public LogicElement
 {
 public:
-    /// Constructs the multiplexer with its default input/output ports.
-    explicit LogicMux();
+    /// Constructs the multiplexer with \a inputSize total input ports.
+    explicit LogicMux(int inputSize = 3);
 
     /// Routes the data input selected by the select lines to the output.
     void updateLogic() override;
