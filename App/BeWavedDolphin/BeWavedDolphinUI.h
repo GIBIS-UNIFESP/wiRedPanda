@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief BewavedDolphinUi: hand-written UI class for the BeWavedDolphin main window.
+ */
+
 #pragma once
 
 // Specific Qt includes instead of monolithic QtWidgets
@@ -21,7 +25,16 @@ public:
     BewavedDolphinUi(const BewavedDolphinUi&) = delete;
     BewavedDolphinUi& operator=(const BewavedDolphinUi&) = delete;
 
+    /**
+     * \brief Creates and lays out all child widgets inside \a BewavedDolphin.
+     * \param BewavedDolphin The host QMainWindow.
+     */
     void setupUi(QMainWindow *BewavedDolphin);
+
+    /**
+     * \brief Updates all translatable strings in the window.
+     * \param BewavedDolphin The host QMainWindow.
+     */
     void retranslateUi(QMainWindow *BewavedDolphin);
 
     // --- Actions: File Menu ---

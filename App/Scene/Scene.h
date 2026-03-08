@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief Main circuit editing scene with undo/redo and user interaction.
+ */
+
 #pragma once
 
 #include <QElapsedTimer>
@@ -17,9 +21,9 @@ class GraphicsView;
 class QNEConnection;
 class QPainter;
 
-/*!
- * @class Scene
- * @brief Main circuit editing scene
+/**
+ * \class Scene
+ * \brief Main circuit editing scene.
  *
  * The Scene class extends QGraphicsScene to provide the main circuit editing
  * environment. It manages circuit elements and their connections, handles user
@@ -36,95 +40,157 @@ public:
 
     // --- Lifecycle ---
 
+    /// Constructs a Scene and initialises the undo stack and simulation.
     explicit Scene(QObject *parent = nullptr);
 
     // --- View / Display Management ---
 
+    /// Returns the GraphicsView currently displaying this scene.
     GraphicsView *view() const;
+    /// Sets the GraphicsView that displays this scene to \a view.
     void setView(GraphicsView *view);
+
+    /**
+     * \brief Shows or hides gate elements.
+     * \param checked \c true to show gates.
+     */
     void showGates(const bool checked);
+
+    /**
+     * \brief Shows or hides connection wires.
+     * \param checked \c true to show wires.
+     */
     void showWires(const bool checked);
 
     // --- Element Access / Queries ---
 
+    /// \reimp
     QList<QGraphicsItem *> items(Qt::SortOrder order = Qt::AscendingOrder) const;
+    /// \reimp
     QList<QGraphicsItem *> items(const QPointF &pos, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::AscendingOrder, const QTransform &deviceTransform = QTransform()) const;
+    /// \reimp
     QList<QGraphicsItem *> items(const QRectF &rect, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::AscendingOrder, const QTransform &deviceTransform = QTransform()) const;
+    /// Returns the list of currently selected graphic elements.
     const QList<GraphicElement *> selectedElements() const;
+    /// Returns all graphic elements in the scene.
     const QVector<GraphicElement *> elements() const;
+    /// Returns all graphic elements within \a rect.
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
+    /// Returns all visible (non-hidden) graphic elements in the scene.
     const QVector<GraphicElement *> visibleElements() const;
 
     // --- Adding Items ---
 
+    /// Deserializes and adds items from \a mimeData to the scene.
     void addItem(QMimeData *mimeData);
 
     // --- Clipboard (Copy / Cut / Paste) ---
 
+    /// Copies the selected items to the internal clipboard.
     void copyAction();
+    /// Cuts the selected items to the internal clipboard.
     void cutAction();
+    /// Pastes items from the internal clipboard into the scene.
     void pasteAction();
 
     // --- Element Operations (Rotate / Flip / Delete / Mute) ---
 
+    /// Deletes the currently selected items.
     void deleteAction();
+    /// Rotates selected elements 90 degrees clockwise.
     void rotateRight();
+    /// Rotates selected elements 90 degrees counter-clockwise.
     void rotateLeft();
+    /// Flips selected elements horizontally.
     void flipHorizontally();
+    /// Flips selected elements vertically.
     void flipVertically();
+    /// Mutes or unmutes selected elements according to \a mute.
     void mute(const bool mute = true);
+    /// Selects all items in the scene.
     void selectAll();
 
     // --- Element Property Cycling ---
 
+    /// Cycles selection forward to the next element.
     void nextElm();
+    /// Cycles selection backward to the previous element.
     void prevElm();
+    /// Advances the main property of selected elements to the next value.
     void nextMainPropShortcut();
+    /// Retreats the main property of selected elements to the previous value.
     void prevMainPropShortcut();
+    /// Advances the secondary property of selected elements to the next value.
     void nextSecndPropShortcut();
+    /// Retreats the secondary property of selected elements to the previous value.
     void prevSecndPropShortcut();
 
     // --- Undo / Redo ---
 
+    /// Returns the scene's undo stack.
     QUndoStack *undoStack();
+    /// Returns the redo QAction bound to the undo stack.
     QAction *redoAction() const;
+    /// Returns the undo QAction bound to the undo stack.
     QAction *undoAction() const;
+    /// Pushes \a cmd onto the undo stack (immediately executes its redo()).
     void receiveCommand(QUndoCommand *cmd);
 
     // --- Simulation ---
 
+    /// Returns the simulation engine associated with this scene.
     Simulation *simulation();
+    /// Marks the simulation mapping as stale so it is rebuilt on the next tick.
     void setCircuitUpdateRequired();
 
     // --- Autosave ---
 
+    /// Schedules an autosave of the current circuit state.
     void setAutosaveRequired();
 
     // --- Theme ---
 
+    /// Propagates the current theme to all elements and connections.
     void updateTheme();
 
     // --- Event Filter ---
 
+    /// \reimp
     bool eventFilter(QObject *watched, QEvent *event) override;
 
 signals:
     // --- Signals ---
 
+    /// Emitted whenever the circuit changes (element added/removed/moved).
     void circuitHasChanged();
+
+    /**
+     * \brief Emitted when a context menu should appear.
+     * \param screenPos    Screen coordinates of the right-click.
+     * \param itemAtMouse  Item under the mouse pointer (may be nullptr).
+     */
     void contextMenuPos(QPoint screenPos, QGraphicsItem *itemAtMouse);
 
 protected:
     // --- Qt event overrides ---
 
+    /// \reimp
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event) override;
+    /// \reimp
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
+    /// \reimp
     void dropEvent(QGraphicsSceneDragDropEvent *event) override;
+    /// \reimp
     void keyPressEvent(QKeyEvent *event) override;
+    /// \reimp
     void keyReleaseEvent(QKeyEvent *event) override;
+    /// \reimp
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
+    /// \reimp
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    /// \reimp
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    /// \reimp
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:

@@ -206,4 +206,8 @@ The simulation accurately represents **ideal digital logic behavior** while deli
 
 - **Trailing Newlines**: All source files must end with a trailing newline character
 - **Line Trimming**: All lines must have trailing whitespace trimmed (no spaces/tabs at line ends)
+- **Documentation Comments** (Doxygen C++ style):
+  - Single-line documentation: Use `///` (e.g., `/// Brief description`)
+  - Multi-line documentation: Use `/** ... */` (e.g., `/** \brief ... \details ... */`)
+  - Do NOT use `//!` style — all instances have been converted to `///`
 - **File Types**: Applies to all code files (.cpp, .h, .yml, .yaml, .cmake, CMakeLists.txt, .sh, .py, .js, .ts, .md, etc.)
