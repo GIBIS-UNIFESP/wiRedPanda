@@ -21,11 +21,11 @@
 
 ```bash
 # Configure with build type
-cmake --preset release
+cmake --preset debug
 # Build
-cmake --build --preset release --target wiredpanda
+cmake --build --preset debug --target wiredpanda
 # Tests
-ctest --preset release
+ctest --preset debug
 ```
 
 **Windows Qt Path**: Use `cmake --preset windows-qt` preset for Windows with Qt path preconfigured.
