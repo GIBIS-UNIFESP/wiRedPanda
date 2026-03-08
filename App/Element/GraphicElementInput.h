@@ -22,11 +22,8 @@ class GraphicElementInput : public GraphicElement
     Q_OBJECT
 
 public:
-    // --- Lifecycle ---
-
-    explicit GraphicElementInput(ElementType type, ElementGroup group, const QString &pixmapPath, const QString &titleText, const QString &translatedName,
-                                 const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent = nullptr)
-        : GraphicElement(type, group, pixmapPath, titleText, translatedName, minInputSize, maxInputSize, minOutputSize, maxOutputSize, parent) {}
+    explicit GraphicElementInput(ElementType type, QGraphicsItem *parent = nullptr)
+        : GraphicElement(type, parent) {}
 
     // --- State Queries ---
 

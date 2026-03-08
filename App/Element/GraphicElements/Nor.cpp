@@ -3,20 +3,44 @@
 
 #include "App/Element/GraphicElements/Nor.h"
 
-#include "App/GlobalProperties.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicNor.h"
 
-Nor::Nor(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Nor, ElementGroup::Gate, ":/Components/Logic/nor.svg", tr("NOR"), tr("Nor"), 2, 8, 1, 1, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<Nor> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::Nor,
+        .group = ElementGroup::Gate,
+        .minInputSize = 2,
+        .maxInputSize = 8,
+        .minOutputSize = 1,
+        .maxOutputSize = 1,
+        .canChangeSkin = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Logic/nor.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("Nor", "NOR");
+        meta.translatedName = QT_TRANSLATE_NOOP("Nor", "Nor");
+        meta.trContext = "Nor";
+        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
+        meta.defaultSkins = QStringList({":/Components/Logic/nor.svg"});
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicNor>(elm->inputSize()); };
+        return meta;
     }
 
-    // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new Nor(); });
+        return true;
+    }();
+};
 
-    setCanChangeSkin(true);
+Nor::Nor(QGraphicsItem *parent)
+    : GraphicElement(ElementType::Nor, parent)
+{
+    // Skip full initialisation when building a property-probe instance (see ElementFactory).
 }

@@ -21,5 +21,3 @@ public:
     /// Constructs an Xnor gate element with default 2 inputs.
     explicit Xnor(QGraphicsItem *parent = nullptr);
 };
-
-Q_DECLARE_METATYPE(Xnor)

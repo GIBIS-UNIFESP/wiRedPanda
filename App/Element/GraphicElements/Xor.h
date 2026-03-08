@@ -21,5 +21,3 @@ public:
     /// Constructs an Xor gate element with default 2 inputs.
     explicit Xor(QGraphicsItem *parent = nullptr);
 };
-
-Q_DECLARE_METATYPE(Xor)

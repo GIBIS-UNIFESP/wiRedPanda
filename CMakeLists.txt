@@ -369,6 +369,22 @@ foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CONFIG_UPPER} ${CMAKE_BINARY_DIR})
 endforeach()
 
+# Link a target against wiredpanda_lib with --whole-archive to prevent the
+# linker from discarding element .o files whose only external symbols are
+# static-initialization registrations (ElementInfo<T>::registered).
+function(link_wiredpanda_whole_archive target)
+    if(MSVC)
+        target_link_libraries(${target} PRIVATE wiredpanda_lib)
+        target_link_options(${target} PRIVATE /WHOLEARCHIVE:wiredpanda_lib)
+    elseif(APPLE)
+        target_link_libraries(${target} PRIVATE wiredpanda_lib)
+        target_link_options(${target} PRIVATE "LINKER:-force_load,$<TARGET_FILE:wiredpanda_lib>")
+    else()
+        target_link_libraries(${target} PRIVATE
+            -Wl,--whole-archive wiredpanda_lib -Wl,--no-whole-archive)
+    endif()
+endfunction()
+
 # ========= LIB ===================================
 
 add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS})
@@ -414,7 +430,8 @@ if(EMSCRIPTEN)
 else()
     add_executable(wiredpanda App/Main.cpp)
 endif()
-target_link_libraries(wiredpanda PRIVATE wiredpanda_lib wiredpanda_resources)
+link_wiredpanda_whole_archive(wiredpanda)
+target_link_libraries(wiredpanda PRIVATE wiredpanda_resources)
 
 # Copy JSON schema to executable directory after build
 add_custom_command(TARGET wiredpanda POST_BUILD
@@ -518,6 +535,7 @@ target_link_libraries(memory_helpers PUBLIC wiredpanda_lib test_utils)
 # All test classes in one binary; CTest registers per-class entries.
 # Usage: ./build/test_wiredpanda ClassName [functionName]
 add_executable(test_wiredpanda ${TEST_WIREDPANDA_SOURCES} ${TEST_WIREDPANDA_HEADERS})
+link_wiredpanda_whole_archive(test_wiredpanda)
 target_link_libraries(test_wiredpanda PRIVATE test_utils wiredpanda_resources memory_helpers)
 target_compile_definitions(test_wiredpanda PRIVATE
     CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests

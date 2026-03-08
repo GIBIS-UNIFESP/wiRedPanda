@@ -5,15 +5,83 @@
 
 #include <bitset>
 
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicOutput.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
 
-Led::Led(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Led, ElementGroup::Output, ":/Components/Output/Led/LedOff.svg", tr("LED"), tr("LED"), 1, 4, 0, 0, parent)
-{
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<Led> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::Led,
+        .group = ElementGroup::Output,
+        .minInputSize = 1,
+        .maxInputSize = 4,
+        .minOutputSize = 0,
+        .maxOutputSize = 0,
+        .canChangeSkin = true,
+        .hasColors = true,
+        .hasAudio = false,
+        .hasAudioBox = false,
+        .hasTrigger = false,
+        .hasFrequency = false,
+        .hasDelay = false,
+        .hasLabel = true,
+        .hasTruthTable = false,
+        .rotatable = false,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Output/Led/LedOff.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("Led", "LED");
+        meta.translatedName = QT_TRANSLATE_NOOP("Led", "LED");
+        meta.trContext = "Led";
+        meta.defaultSkins = QStringList({
+            ":/Components/Output/Led/LedOff.svg",
+            ":/Components/Output/Led/WhiteLed.svg",
+            ":/Components/Output/Led/LedOff.svg",
+            ":/Components/Output/Led/RedLed.svg",
+            ":/Components/Output/Led/LedOff.svg",
+            ":/Components/Output/Led/GreenLed.svg",
+            ":/Components/Output/Led/LedOff.svg",
+            ":/Components/Output/Led/BlueLed.svg",
+            ":/Components/Output/Led/LedOff.svg",
+            ":/Components/Output/Led/PurpleLed.svg",
+            ":/Components/Output/Led//BlackLed.png",
+            ":/Components/Output/Led//NavyBlueLed.png",
+            ":/Components/Output/Led//GreenLed.png",
+            ":/Components/Output/Led//TealLed.png",
+            ":/Components/Output/Led//DarkRedLed.png",
+            ":/Components/Output/Led//MagentaLed.png",
+            ":/Components/Output/Led//OrangeLed.png",
+            ":/Components/Output/Led//LightGrayLed.png",
+            ":/Components/Output/Led/LedOff.svg",
+            ":/Components/Output/Led/RoyalLed.png",
+            ":/Components/Output/Led/LimeGreenLed.png",
+            ":/Components/Output/Led/AquaLightLed.png",
+            ":/Components/Output/Led/RedLed.png",
+            ":/Components/Output/Led/HotPinkLed.png",
+            ":/Components/Output/Led/YellowLed.png",
+            ":/Components/Output/Led/WhiteLed.png",
+        });
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicOutput>(elm->inputSize()); };
+        return meta;
     }
+
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new Led(); });
+        return true;
+    }();
+};
+
+Led::Led(QGraphicsItem *parent)
+    : GraphicElement(ElementType::Led, parent)
+{
+    Led::updatePortsProperties();
 
     // The skin list is indexed by colorIndex(). For a 1-input LED the index is
     // m_colorIndex + input_value, where m_colorIndex is set by setColor() to the
@@ -54,10 +122,7 @@ Led::Led(QGraphicsItem *parent)
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
 
-    setCanChangeSkin(true);
     setHasColors(true);
-    setHasLabel(true);
-    setRotatable(false);
 
     Led::updatePortsProperties();
 }
@@ -113,7 +178,8 @@ int Led::colorIndex()
     case 4: index2 = 10 + index;                     break;
 
     default:
-        index2 = index;
+        // Handle unexpected input sizes gracefully
+        index2 = index;  // Simple fallback
         break;
     }
 

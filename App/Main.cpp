@@ -18,8 +18,8 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Element/GraphicElement.h"
 #include "App/GlobalProperties.h"
-#include "App/RegisterTypes.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
 
@@ -50,13 +50,6 @@ int main(int argc, char *argv[])
     auto sentryClose = qScopeGuard([] { sentry_close(); });
 #endif
 
-    // registerTypes() must run before QApplication construction so that Qt's
-    // meta-object system knows all custom types (e.g. ElementType, Status) when
-    // QVariant, signals/slots, or QDataStream serializers are set up.
-    registerTypes();
-
-    // Disable all debug/verbose output at startup; the --verbosity option re-enables
-    // it after the command-line parser runs below
     Comment::setVerbosity(-1);
 
 #ifdef ENABLE_MCP_SERVER

@@ -31,5 +31,3 @@ public:
     /// Recalculates port positions for the current port count.
     void updatePortsProperties() override;
 };
-
-Q_DECLARE_METATYPE(Node)

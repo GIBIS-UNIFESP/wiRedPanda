@@ -12,6 +12,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElement.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.cpp
@@ -112,7 +113,9 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInfo.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElement.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementInput.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.h
@@ -173,7 +176,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEConnection.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEPort.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/RegisterTypes.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.h

@@ -37,5 +37,3 @@ public:
 private:
     void generatePixmap();
 };
-
-Q_DECLARE_METATYPE(Mux)

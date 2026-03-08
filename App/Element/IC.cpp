@@ -11,28 +11,59 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/ElementInfo.h"
 #include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
 
-IC::IC(QGraphicsItem *parent)
-    : GraphicElement(ElementType::IC, ElementGroup::IC, "", tr("INTEGRATED CIRCUIT"), tr("IC"), 0, 0, 0, 0, parent)
-{
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<IC> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::IC,
+        .group = ElementGroup::IC,
+        .minInputSize = 0,
+        .maxInputSize = 0,
+        .minOutputSize = 0,
+        .maxOutputSize = 0,
+        .canChangeSkin = false,
+        .hasColors = false,
+        .hasAudio = false,
+        .hasAudioBox = false,
+        .hasTrigger = false,
+        .hasFrequency = false,
+        .hasDelay = false,
+        .hasLabel = true,
+        .hasTruthTable = false,
+        .rotatable = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QString(); };
+        meta.titleText = QT_TRANSLATE_NOOP("IC", "INTEGRATED CIRCUIT");
+        meta.translatedName = QT_TRANSLATE_NOOP("IC", "IC");
+        meta.trContext = "IC";
+        meta.defaultSkins = QStringList();
+        meta.logicCreator = nullptr;
+        return meta;
     }
 
-    // ICs display their label vertically alongside the chip body, matching the physical
-    // convention of reading IC labels along the side of a physical DIP package
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new IC(); });
+        return true;
+    }();
+};
+
+IC::IC(QGraphicsItem *parent)
+    : GraphicElement(ElementType::IC, parent)
+{
     m_label->setRotation(90);
 
-    setHasLabel(true);
-
-    // Hot-reload: when the .panda file backing this IC changes on disk (e.g. the user saved
-    // an edited sub-circuit), reload the IC definition and restart the simulation so the
-    // parent circuit immediately reflects the updated internals
     connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, [this](const QString &filePath) {
         loadFile(filePath);
 
@@ -52,8 +83,6 @@ void IC::save(QDataStream &stream) const
     GraphicElement::save(stream);
 
     QMap<QString, QVariant> map;
-    // Store only the base filename, not the full path, so that .panda files remain
-    // portable — the context directory is added back at load time
     map.insert("fileName", QFileInfo(m_file).fileName());
 
     stream << map;
@@ -64,7 +93,6 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVer
     GraphicElement::load(stream, portMap, version);
 
     if ((VERSION("1.2") <= version) && (version < VERSION("4.1"))) {
-        // v1.2–4.0 stored the IC filename as a bare QString (could be absolute path in old files)
         stream >> m_file;
 
         // For tests with old files containing absolute paths, strip to filename only
@@ -78,7 +106,6 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVer
     }
 
     if (version >= VERSION("4.1")) {
-        // v4.1+ uses a key-value map; stores base filename only (path resolved at load time)
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("fileName")) {
@@ -107,15 +134,11 @@ void IC::copyFile()
 
 void IC::loadInputs()
 {
-    // Lock port count to exactly the number of inputs found in the sub-circuit file;
-    // min == max == actual count prevents the user from adding/removing IC input ports
     setMaxInputSize(m_icInputs.size());
     setMinInputSize(m_icInputs.size());
     setInputSize(m_icInputs.size());
     qCDebug(three) << "IC " << m_file << " -> Inputs. min: " << minInputSize() << ", max: " << maxInputSize() << ", current: " << inputSize() << ", m_inputs: " << m_inputPorts.size();
 
-    // Mirror the required/default-status from the sub-circuit's input elements so that
-    // unconnected optional inputs (e.g. enable lines) don't flag the IC as invalid
     for (int inputIndex = 0; inputIndex < m_icInputs.size(); ++inputIndex) {
         auto *inpPort = inputPort(inputIndex);
         inpPort->setName(m_icInputLabels.at(inputIndex));
@@ -127,8 +150,6 @@ void IC::loadInputs()
 
 void IC::loadOutputs()
 {
-    // Same port-count locking as loadInputs; outputs are always driven so
-    // required/defaultStatus mirroring is not needed here
     setMaxOutputSize(m_icOutputs.size());
     setMinOutputSize(m_icOutputs.size());
     setOutputSize(m_icOutputs.size());
@@ -145,7 +166,6 @@ void IC::loadFile(const QString &fileName)
 {
     qCDebug(zero) << "Reading IC.";
 
-    // Reset all previously loaded state so a hot-reload starts from a clean slate
     m_icInputs.clear();
     m_icOutputs.clear();
     setInputSize(0);
@@ -153,7 +173,7 @@ void IC::loadFile(const QString &fileName)
     qDeleteAll(m_icElements);
     m_icElements.clear();
 
-    // --- Resolve file path ---
+    // ----------------------------------------------
 
     QFileInfo fileInfo;
 
@@ -168,13 +188,11 @@ void IC::loadFile(const QString &fileName)
         throw PANDACEPTION("%1 not found.", fileInfo.absoluteFilePath());
     }
 
-    // Register with the file watcher after resolution so the absolute path is used;
-    // the watcher callback will trigger a reload if the file changes on disk
     m_fileWatcher.addPath(fileInfo.absoluteFilePath());
     m_file = fileInfo.absoluteFilePath();
     setToolTip(fileInfo.fileName());
 
-    // --- Deserialize sub-circuit elements ---
+    // ----------------------------------------------
 
     QFile file(fileInfo.absoluteFilePath());
 
@@ -199,7 +217,6 @@ void IC::loadFile(const QString &fileName)
             continue;
         }
 
-        // Input/Output elements become the IC's external ports; everything else is internal logic
         switch (elm->elementGroup()) {
         case ElementGroup::Input:  loadInputElement(elm);    break;
         case ElementGroup::Output: loadOutputElement(elm);   break;
@@ -209,11 +226,8 @@ void IC::loadFile(const QString &fileName)
 
     file.close();
 
-    // --- Build sorted, labelled port lists ---
-
     m_icInputLabels = QVector<QString>(m_icInputs.size());
     m_icOutputLabels = QVector<QString>(m_icOutputs.size());
-    // Sort top-to-bottom by Y position so port order on the IC body matches visual layout
     sortPorts(m_icInputs);
     sortPorts(m_icOutputs);
     loadInputsLabels();
@@ -221,14 +235,12 @@ void IC::loadFile(const QString &fileName)
     loadInputs();
     loadOutputs();
 
-    // --- Update visual representation ---
+    // ----------------------------------------------
 
-    // Default label: uppercased filename without extension (e.g. "adder.panda" → "ADDER")
     if (label().isEmpty()) {
         setLabel(fileInfo.baseName().toUpper());
     }
 
-    // Position label just below the IC body, which grows with port count
     const qreal bottom = portsBoundingRect().united(QRectF(0, 0, 64, 64)).bottom();
     m_label->setPos(30, bottom + 5);
 
@@ -239,19 +251,17 @@ void IC::loadFile(const QString &fileName)
 
 void IC::generatePixmap()
 {
-    // The pixmap must encompass both the 64×64 body and any ports that extend beyond it
+    // make pixmap
     const QSize size = portsBoundingRect().united(QRectF(0, 0, 64, 64)).size().toSize();
     QPixmap tempPixmap(size);
     tempPixmap.fill(Qt::transparent);
 
     QPainter tmpPainter(&tempPixmap);
 
-    // IC body: mid-grey fill with darker border, styled like a physical DIP package
     tmpPainter.setBrush(QColor(126, 126, 126));
     tmpPainter.setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
 
-    // 7px inset on each side (14px total width reduction) so the port connector dots
-    // visually overlap the border, matching the TruthTable and physical DIP appearance
+    // draw package
     QPoint topLeft = tempPixmap.rect().topLeft();
     topLeft.setX(topLeft.x() + 7);
     QSize finalSize = tempPixmap.rect().size();
@@ -259,27 +269,21 @@ void IC::generatePixmap()
     QRectF finalRect = QRectF(topLeft, finalSize);
     tmpPainter.drawRoundedRect(finalRect, 3, 3);
 
-    // Centre the wiRedPanda mascot logo on the IC body
     QPixmap panda(":/Components/Logic/ic-panda2.svg");
     QPointF pandaOrigin = finalRect.center();
     pandaOrigin.setX(pandaOrigin.x() - panda.width() / 2);
     pandaOrigin.setY(pandaOrigin.y() - panda.height() / 2);
     tmpPainter.drawPixmap(pandaOrigin, panda);
 
-    // Draw a thin dark strip at the bottom edge to simulate the package shadow/bevel
+    // draw shadow
     tmpPainter.setBrush(QColor(78, 78, 78));
     tmpPainter.setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
 
-    // Collapse the two-point rect to a 3px-tall strip flush with the bottom of the body
     QRectF shadowRect(finalRect.bottomLeft(), finalRect.bottomRight());
     shadowRect.adjust(0, -3, 0, 0);
     tmpPainter.drawRoundedRect(shadowRect, 3, 3);
 
-    // Draw the orientation notch (semicircle) at the top centre, matching the physical
-    // DIP IC convention for pin-1 identification.
-    // drawChord angle parameters are in 1/16th-degree units; -180*16 = lower half-circle.
-    // The 24×24 circle is offset left by (body_width/2 - 12) = 18px from the body's
-    // top-left corner, and raised 12px above the top edge so only the bottom half shows.
+    // draw semicircle
     QRectF topCenter = QRectF(finalRect.topLeft() + QPointF(18, -12), QSize(24, 24));
     tmpPainter.drawChord(topCenter, 0, -180 * 16);
 
@@ -310,11 +314,6 @@ void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidge
 
 void IC::loadInputElement(GraphicElement *elm)
 {
-    // Each output port of an input element (Switch, Button, Clock, …) becomes one
-    // external input pin on the IC.  A proxy Node element is inserted as a bridge:
-    //   [IC external input] → Node.input → Node.output → [internal sub-circuit wires]
-    // This lets the parent circuit drive the Node's input, which in turn propagates into
-    // the sub-circuit without exposing the original input element.
     for (auto *outputPort : elm->outputs()) {
         auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
         nodeElm->setPos(elm->pos());
@@ -324,7 +323,6 @@ void IC::loadInputElement(GraphicElement *elm)
 
         auto *nodeInput = nodeElm->inputPort();
         nodeInput->setName(outputPort->name());
-        // Clock inputs are required (the IC won't function without a clock signal)
         nodeInput->setRequired(elm->elementType() == ElementType::Clock);
         nodeInput->setDefaultStatus(outputPort->status());
         nodeInput->setStatus(outputPort->status());
@@ -332,8 +330,6 @@ void IC::loadInputElement(GraphicElement *elm)
         m_icInputs.append(nodeInput);
         m_icElements.append(nodeElm);
 
-        // Re-route connections that previously started from the original input element
-        // so they now originate from the proxy Node's output port
         const auto conns = outputPort->connections();
 
         for (auto *conn : conns) {
@@ -341,15 +337,11 @@ void IC::loadInputElement(GraphicElement *elm)
         }
     }
 
-    // The original input element is no longer needed — the Node proxy replaces it
     delete elm;
 }
 
 void IC::loadOutputElement(GraphicElement *elm)
 {
-    // Mirror of loadInputElement: each input port of an output element (LED, Display, …) becomes
-    // one external output pin on the IC, again bridged through a proxy Node element:
-    //   [internal sub-circuit wires] → Node.input → Node.output → [IC external output]
     for (auto *inputPort : elm->inputs()) {
         auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
         nodeElm->setPos(elm->pos());
@@ -363,8 +355,6 @@ void IC::loadOutputElement(GraphicElement *elm)
         m_icOutputs.append(nodeOutput);
         m_icElements.append(nodeElm);
 
-        // Re-route connections that previously ended at the original output element
-        // so they now terminate at the proxy Node's input port
         for (auto *conn : inputPort->connections()) {
             conn->setEndPort(nodeElm->inputPort());
         }
@@ -383,14 +373,10 @@ bool IC::comparePorts(QNEPort *port1, QNEPort *port2)
     QPointF p1 = elem1->pos();
     QPointF p2 = elem2->pos();
 
-    // Primary sort: top-to-bottom by parent element Y, then left-to-right by X.
-    // This gives an intuitive pin order that matches the visual layout in the sub-circuit.
     if (p1 != p2) {
         return (p1.y() < p2.y()) || (qFuzzyCompare(p1.y(), p2.y()) && (p1.x() < p2.x()));
     }
 
-    // Secondary sort: when two ports share the same parent element position, sort by
-    // the port's own local coordinates (left-to-right, top-to-bottom)
     p1 = port1->pos();
     p2 = port2->pos();
 
@@ -424,8 +410,6 @@ void IC::loadInputsLabels()
             lb += inputPort->name();
         }
 
-        // Append generic properties (e.g. clock frequency) in brackets so the IC pin tooltip
-        // carries enough context for the user to identify the signal without opening the sub-circuit
         if (!elm->genericProperties().isEmpty()) {
             lb += " [" + elm->genericProperties() + "]";
         }
@@ -470,7 +454,6 @@ void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
 
     QFile destFile;
 
-    // Skip the copy if the destination already exists (e.g. two ICs reference the same file)
     if (!QFile::exists(destPath.absoluteFilePath()) && !destFile.copy(srcPath.absoluteFilePath(), destPath.absoluteFilePath())) {
         throw PANDACEPTION("Error copying file: %1", destFile.errorString());
     }
@@ -481,20 +464,15 @@ void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
         throw PANDACEPTION("Error opening file: %1", destFile.errorString());
     }
 
-    // Deserialize the copied file so that any nested ICs it references also get
-    // copied transitively into the destination directory
     QDataStream stream(&destFile);
     QVersionNumber version = Serialization::readPandaHeader(stream);
     Serialization::loadDolphinFileName(stream, version);
     Serialization::loadRect(stream, version);
 
-    // Set the global src/dest paths before deserialization so that any IC elements
-    // encountered while parsing can call copyFile() with the correct directories
     IC::srcPath_ = srcPath.absolutePath();
     IC::destPath_ = destPath.absolutePath();
     Serialization::deserialize(stream, {}, version);
 
-    // Clear after deserialization to prevent stale paths from affecting later operations
     IC::needToCopyFiles = false;
     IC::srcPath_.clear();
     IC::destPath_.clear();
@@ -513,16 +491,13 @@ LogicElement *IC::getOutputLogic(int portIndex) const
 int IC::getInputIndexForPort(int portIndex) const
 {
     Q_UNUSED(portIndex)
-    // Each IC input is represented by a single-output Node element; the driven port
-    // is always the first (and only) output, so the index into the logic element is always 0
-    return 0;
+    return 0;  // IC input logic elements always use index 0
 }
 
 int IC::getOutputIndexForPort(int portIndex) const
 {
     Q_UNUSED(portIndex)
-    // Same reasoning as getInputIndexForPort: each IC output is a Node with one output port
-    return 0;
+    return 0;  // IC output logic elements always use index 0
 }
 
 QVector<std::shared_ptr<LogicElement>> IC::getLogicElementsForMapping()

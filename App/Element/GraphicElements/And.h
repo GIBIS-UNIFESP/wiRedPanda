@@ -21,5 +21,3 @@ public:
     /// Constructs an And gate element with default 2 inputs.
     explicit And(QGraphicsItem *parent = nullptr);
 };
-
-Q_DECLARE_METATYPE(And)

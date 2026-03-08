@@ -3,25 +3,57 @@
 
 #include "App/Element/GraphicElements/InputVCC.h"
 
-#include "App/GlobalProperties.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicInput.h"
 #include "App/Nodes/QNEPort.h"
 
-InputVcc::InputVcc(QGraphicsItem *parent)
-    : GraphicElement(ElementType::InputVcc, ElementGroup::StaticInput, ":/Components/Input/1.svg", tr("VCC"), tr("VCC"), 0, 0, 1, 1, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<InputVcc> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::InputVcc,
+        .group = ElementGroup::StaticInput,
+        .minInputSize = 0,
+        .maxInputSize = 0,
+        .minOutputSize = 1,
+        .maxOutputSize = 1,
+        .canChangeSkin = true,
+        .hasColors = false,
+        .hasAudio = false,
+        .hasAudioBox = false,
+        .hasTrigger = false,
+        .hasFrequency = false,
+        .hasDelay = false,
+        .hasLabel = false,
+        .hasTruthTable = false,
+        // Static inputs are not rotatable as a whole (see InputGND.cpp for explanation).
+        .rotatable = false,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Input/1.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("InputVcc", "VCC");
+        meta.translatedName = QT_TRANSLATE_NOOP("InputVcc", "VCC");
+        meta.trContext = "InputVcc";
+        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
+        meta.defaultSkins = QStringList({":/Components/Input/1.svg"});
+        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicInput>(true); };
+        return meta;
     }
 
-    // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new InputVcc(); });
+        return true;
+    }();
+};
 
-    setCanChangeSkin(true);
-    // Static inputs are not rotatable as a whole (see InputGND.cpp for explanation).
-    setRotatable(false);
+InputVcc::InputVcc(QGraphicsItem *parent)
+    : GraphicElement(ElementType::InputVcc, parent)
+{
+    // Skip full initialisation when building a property-probe instance (see ElementFactory).
 
     // VCC always outputs logic HIGH; set the port status at construction so the
     // visual wire colour is correct before the first simulation tick runs.

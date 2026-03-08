@@ -13,6 +13,7 @@
 #include "App/Core/Common.h"
 #include "App/Core/Settings.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElements/Led.h"
 #include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"

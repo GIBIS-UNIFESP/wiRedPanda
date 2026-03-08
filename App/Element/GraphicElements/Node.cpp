@@ -3,25 +3,47 @@
 
 #include "App/Element/GraphicElements/Node.h"
 
-#include "App/GlobalProperties.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicNode.h"
 #include "App/Nodes/QNEPort.h"
+
+template<>
+struct ElementInfo<Node> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::Node,
+        .group = ElementGroup::Gate,
+        .minInputSize = 1,
+        .maxInputSize = 1,
+        .minOutputSize = 1,
+        .maxOutputSize = 1,
+        .canChangeSkin = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Logic/node.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("Node", "NODE");
+        meta.translatedName = QT_TRANSLATE_NOOP("Node", "Node");
+        meta.trContext = "Node";
+        meta.defaultSkins = QStringList({":/Components/Logic/node.svg"});
+        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicNode>(); };
+        return meta;
+    }
+
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new Node(); });
+        return true;
+    }();
+};
 
 // Node is a wire junction / fan-out point: 1 input, 1 output (1:1 pass-through).
 // Its sole logical role is to create a named connection split on the canvas.
 Node::Node(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Node, ElementGroup::Gate, ":/Components/Logic/node.svg", tr("NODE"), tr("Node"), 1, 1, 1, 1, parent)
+    : GraphicElement(ElementType::Node, parent)
 {
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-    if (GlobalProperties::skipInit) {
-        return;
-    }
-
-    // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
-
-    setCanChangeSkin(true);
     // The single input must always be connected; an undriven node would silently
     // propagate an undefined state to all downstream connections.
     inputPort()->setRequired(true);

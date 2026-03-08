@@ -5,44 +5,80 @@
 
 #include <QPainter>
 
+#include "App/Element/ElementFactory.h"
+#include "App/Element/ElementInfo.h"
 #include "App/Element/GraphicElements/Display7.h"
+#include "App/Element/LogicElements/LogicOutput.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
 
+template<>
+struct ElementInfo<Display16> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::Display16,
+        .group = ElementGroup::Output,
+        .minInputSize = 17,
+        .maxInputSize = 17,
+        .minOutputSize = 0,
+        .maxOutputSize = 0,
+        .canChangeSkin = true,
+        .hasColors = true,
+        .hasAudio = false,
+        .hasAudioBox = false,
+        .hasTrigger = false,
+        .hasFrequency = false,
+        .hasDelay = false,
+        .hasLabel = true,
+        .hasTruthTable = false,
+        .rotatable = false,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Output/Counter/counter_16_on.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("Display16", "16-SEGMENT DISPLAY");
+        meta.translatedName = QT_TRANSLATE_NOOP("Display16", "16-Segment Display");
+        meta.trContext = "Display16";
+        meta.defaultSkins = QStringList({
+            ":/Components/Output/Counter/counter_16_off.svg",
+            ":/Components/Output/Counter/counter_a1.svg",
+            ":/Components/Output/Counter/counter_a2.svg",
+            ":/Components/Output/Counter/counter_b.svg",
+            ":/Components/Output/Counter/counter_c.svg",
+            ":/Components/Output/Counter/counter_d1.svg",
+            ":/Components/Output/Counter/counter_d2.svg",
+            ":/Components/Output/Counter/counter_e.svg",
+            ":/Components/Output/Counter/counter_f.svg",
+            ":/Components/Output/Counter/counter_g1.svg",
+            ":/Components/Output/Counter/counter_g2.svg",
+            ":/Components/Output/Counter/counter_h.svg",
+            ":/Components/Output/Counter/counter_j.svg",
+            ":/Components/Output/Counter/counter_k.svg",
+            ":/Components/Output/Counter/counter_l.svg",
+            ":/Components/Output/Counter/counter_m.svg",
+            ":/Components/Output/Counter/counter_n.svg",
+            ":/Components/Output/Counter/counter_dp.svg",
+        });
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicOutput>(elm->inputSize()); };
+        return meta;
+    }
+
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new Display16(); });
+        return true;
+    }();
+};
+
 Display16::Display16(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Display16, ElementGroup::Output, ":/Components/Output/Counter/counter_16_on.svg", tr("16-SEGMENT DISPLAY"), tr("16-Segment Display"), 17, 17, 0, 0, parent)
+    : GraphicElement(ElementType::Display16, parent)
 {
     // Each of the 16 segments plus the decimal point (dp) is stored as 5 color
     // variants. Indices match the defaultSkins list: skin[0]=off background,
     // skins[1..17]=individual segment images, all in white initially.
     // Display7::convertAllColors() recolors them in-place (see Display7.cpp).
-    if (GlobalProperties::skipInit) {
-        return;
-    }
-
-    m_defaultSkins = QStringList{
-        ":/Components/Output/Counter/counter_16_off.svg",
-        ":/Components/Output/Counter/counter_a1.svg",
-        ":/Components/Output/Counter/counter_a2.svg",
-        ":/Components/Output/Counter/counter_b.svg",
-        ":/Components/Output/Counter/counter_c.svg",
-        ":/Components/Output/Counter/counter_d1.svg",
-        ":/Components/Output/Counter/counter_d2.svg",
-        ":/Components/Output/Counter/counter_e.svg",
-        ":/Components/Output/Counter/counter_f.svg",
-        ":/Components/Output/Counter/counter_g1.svg",
-        ":/Components/Output/Counter/counter_g2.svg",
-        ":/Components/Output/Counter/counter_h.svg",
-        ":/Components/Output/Counter/counter_j.svg",
-        ":/Components/Output/Counter/counter_k.svg",
-        ":/Components/Output/Counter/counter_l.svg",
-        ":/Components/Output/Counter/counter_m.svg",
-        ":/Components/Output/Counter/counter_n.svg",
-        ":/Components/Output/Counter/counter_dp.svg",
-    };
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
-
     a1 = QVector<QPixmap>(5, m_defaultSkins.at(1));
     a2 = QVector<QPixmap>(5, m_defaultSkins.at(2));
     b  = QVector<QPixmap>(5, m_defaultSkins.at(3));
@@ -78,11 +114,6 @@ Display16::Display16(QGraphicsItem *parent)
     Display7::convertAllColors(m);
     Display7::convertAllColors(n);
     Display7::convertAllColors(dp);
-
-    setCanChangeSkin(true);
-    setHasColors(true);
-    setHasLabel(true);
-    setRotatable(false);
 
     Display16::updatePortsProperties();
 }

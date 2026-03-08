@@ -6,29 +6,61 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicInput.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
 
-InputRotary::InputRotary(QGraphicsItem *parent)
-    : GraphicElementInput(ElementType::InputRotary, ElementGroup::Input, ":/Components/Input/rotary_icon.svg", tr("ROTARY SWITCH"), tr("Rotary Switch"), 0, 0, 2, 16, parent)
-{
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<InputRotary> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::InputRotary,
+        .group = ElementGroup::Input,
+        .minInputSize = 0,
+        .maxInputSize = 0,
+        .minOutputSize = 2,
+        .maxOutputSize = 16,
+        .canChangeSkin = true,
+        .hasColors = false,
+        .hasAudio = false,
+        .hasAudioBox = false,
+        .hasTrigger = true,
+        .hasFrequency = false,
+        .hasDelay = false,
+        .hasLabel = true,
+        .hasTruthTable = false,
+        .rotatable = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Input/rotary_icon.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("InputRotary", "ROTARY SWITCH");
+        meta.translatedName = QT_TRANSLATE_NOOP("InputRotary", "Rotary Switch");
+        meta.trContext = "InputRotary";
+        meta.defaultSkins = QStringList({
+            ":/Components/Input/rotary.svg",
+            ":/Components/Input/rotary_arrow.svg",
+        });
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicInput>(false, elm->outputSize()); };
+        return meta;
     }
 
-    m_defaultSkins = QStringList{
-        ":/Components/Input/rotary.svg",
-        ":/Components/Input/rotary_arrow.svg"
-    };
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new InputRotary(); });
+        return true;
+    }();
+};
 
-    m_rotary = m_defaultSkins.at(0);
-    m_arrow  = m_defaultSkins.at(1);
+InputRotary::InputRotary(QGraphicsItem *parent)
+    : GraphicElementInput(ElementType::InputRotary, parent)
+{
+    m_rotary = QPixmap(":/Components/Input/rotary.svg");
+    m_arrow = QPixmap(":/Components/Input/rotary_arrow.svg");
 
-    setCanChangeSkin(true);
-    setHasLabel(true);
-    setHasTrigger(true);
     setLocked(false);
 
     InputRotary::updatePortsProperties();

@@ -21,7 +21,6 @@ void setupTestEnvironment()
 #ifdef Q_OS_LINUX
     qputenv("QT_QPA_PLATFORM", "offscreen");
 #endif
-    registerTypes();
     Comment::setVerbosity(-1);
     GlobalProperties::interactiveMode = false;  // Suppress dialogs during headless test execution
 }
