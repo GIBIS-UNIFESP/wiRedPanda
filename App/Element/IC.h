@@ -26,7 +26,7 @@ class IC : public GraphicElement
 {
     Q_OBJECT
 
-    friend class ArduinoCodeGen;
+    friend class TestArduino;
 
 public:
     /// Constructs an IC element without loading a file.
@@ -93,6 +93,11 @@ public:
      * \param name New port name.
      */
     void setOutputPortName(int port, const QString &name) override;
+
+    const QString &icFile() const { return m_file; }
+    const QVector<GraphicElement *> &icElements() const { return m_icElements; }
+    const QVector<QNEPort *> &icInputs() const { return m_icInputs; }
+    const QVector<QNEPort *> &icOutputs() const { return m_icOutputs; }
 
     // --- Visual ---
 

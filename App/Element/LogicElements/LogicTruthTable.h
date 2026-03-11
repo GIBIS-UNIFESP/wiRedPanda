@@ -36,6 +36,7 @@ public:
 
     /// \reimp Looks up the current input pattern in the truth table and drives outputs.
     void updateLogic() override;
+    const QBitArray &proposition() const { return m_proposition; }
 
 private:
     Q_DISABLE_COPY(LogicTruthTable)

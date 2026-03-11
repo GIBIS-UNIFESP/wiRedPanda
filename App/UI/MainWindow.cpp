@@ -169,11 +169,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
         loadPandaFile(fileName);
     }
 
-    // Arduino export is experimentally disabled until the code generator is
-    // complete enough for general use.
-    qCDebug(zero) << "Disabling Arduino export.";
-    m_ui->actionExportToArduino->setEnabled(false);
-
     // 100 000 KB — large circuits with many IC pixmaps benefit from generous caching;
     // the default Qt limit of 10 000 KB causes frequent cache misses on complex designs.
     QPixmapCache::setCacheLimit(100000);

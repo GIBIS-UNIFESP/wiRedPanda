@@ -20,6 +20,18 @@ jobs:
         submodules: recursive
         fetch-depth: 0
 
+    - name: Install simavr
+      run: sudo apt-get update && sudo apt-get install -y simavr
+
+    - name: Install arduino-cli
+      uses: arduino/setup-arduino-cli@v2
+
+    - name: Install Arduino AVR core and elapsedMillis library
+      run: |
+        arduino-cli core update-index
+        arduino-cli core install arduino:avr
+        arduino-cli lib install "elapsedMillis"
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
