@@ -81,7 +81,7 @@ wiRedPanda está licenciado sob a [GNU General Public License, Versão 3.0](http
 Consulte [`LICENSE`](LICENSE) para obter o texto completo da licença.
 
 ```text
-Copyright (C) 2025 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres e Vinícius Miguel.
+Copyright (C) 2026 - Davi Morales, Fábio Cappabianco, Lucas Lellis, Rodrigo Torres e Vinícius Miguel.
 
 Este programa é um software livre: você pode redistribuí-lo e/ou modificá-lo
 sob os termos da Licença Pública Geral GNU conforme publicada pela
