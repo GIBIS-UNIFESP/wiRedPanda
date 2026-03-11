@@ -167,7 +167,7 @@ jobs:
         mkdir -p appimage appimage/lib appimage/usr/share/icons/hicolor/scalable/apps appimage/usr/share/icons/hicolor/256x256/apps
 
         # Copy desktop file to root and substitute version
-        cp app/resources/desktop/wiredpanda.desktop appimage/wiredpanda.desktop
+        cp app/resources/freedesktop/wiredpanda.desktop appimage/wiredpanda.desktop
         sed -i "s/@VERSION@/$VERSION/g" appimage/wiredpanda.desktop
 
         # Copy icons to proper FHS locations (both SVG and PNG for compatibility)

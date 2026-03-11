@@ -19,3 +19,4 @@ public:
     inline static const int gridSize = 16;
     inline static const int maxRecentFiles = 10;
 };
+

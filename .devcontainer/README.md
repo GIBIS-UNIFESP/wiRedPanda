@@ -41,7 +41,7 @@ This directory contains the configuration for a streamlined containerized develo
 ```
 /workspace/          # Your project files (mounted from host)
 ├── app/            # Application source code
-├── test/           # Test suite
+├── tests/           # Test suite
 ├── build/          # Build output directory
 └── .devcontainer/  # Container configuration
 ```
