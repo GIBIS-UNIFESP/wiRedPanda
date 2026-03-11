@@ -27,35 +27,53 @@ class WorkSpace : public QWidget
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit WorkSpace(QWidget *parent = nullptr);
 
+    // --- Component Access ---
+
     GraphicsView *view();
-    QFileInfo fileInfo();
-    QString dolphinFileName();
     Scene *scene();
     Simulation *simulation();
-    void load(QDataStream &stream, QVersionNumber number);
+
+    // --- File Operations ---
+
+    QFileInfo fileInfo();
     void load(const QString &fileName);
-    void save(QDataStream &stream);
+    void load(QDataStream &stream, QVersionNumber number);
     void save(const QString &fileName);
+    void save(QDataStream &stream);
     void setAutosaveFile();
+
+    // --- Waveform Integration ---
+
+    QString dolphinFileName();
     void setDolphinFileName(const QString &fileName);
+
+    // --- ID Management ---
 
     int lastId() const;
     void setLastId(int newLastId);
 
 signals:
+    // --- File signals ---
+
     void fileChanged(const QFileInfo &fileInfo);
 
 private:
+    // --- Internal methods ---
+
     void autosave();
     void setAutosaveFileName();
 
+    // --- Members ---
+
     GraphicsView m_view;
+    Scene m_scene;
     QFileInfo m_fileInfo;
     QString m_dolphinFileName;
     QTemporaryFile m_autosaveFile;
-    Scene m_scene;
     int m_lastId = 0;
 };
 

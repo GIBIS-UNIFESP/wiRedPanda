@@ -15,6 +15,8 @@ class Enums
 public:
     Enums() = delete;
 
+    // --- Enumerations ---
+
     enum class Status { Invalid = -1, Inactive = 0, Active = 1 };
     Q_ENUM(Status)
 
@@ -68,6 +70,8 @@ public:
         Unknown = 0,
     };
     Q_ENUM(ElementGroup)
+
+    // --- ElementType navigation ---
 
     static ElementType nextElmType(ElementType type);
     static ElementType prevElmType(ElementType type);

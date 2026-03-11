@@ -16,50 +16,85 @@ class IC : public GraphicElement
     friend class ArduinoCodeGen;
 
 public:
+    // --- Lifecycle ---
+
     explicit IC(QGraphicsItem *parent = nullptr);
     ~IC() override;
     IC(const IC &other) : IC(other.parentItem()) {}
 
+    // --- File operations ---
+
     static void copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath);
+    void loadFile(const QString &fileName);
+
+    // --- Logic mapping ---
 
     const QVector<std::shared_ptr<LogicElement>> generateMap();
-    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
-    void loadFile(const QString &fileName);
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-    void refresh() override;
-    void save(QDataStream &stream) const override;
+    QVector<std::shared_ptr<LogicElement>> getLogicElementsForMapping() override;
 
-    // Polymorphic interface overrides
+    // --- Logic access ---
+
     LogicElement *getInputLogic(int portIndex) const override;
     LogicElement *getOutputLogic(int portIndex) const override;
+
+    // --- Port information ---
+
     int getInputIndexForPort(int portIndex) const override;
     int getOutputIndexForPort(int portIndex) const override;
-    QVector<std::shared_ptr<LogicElement>> getLogicElementsForMapping() override;
+
+    // --- Port naming ---
+
     bool canSetPortNames() const override;
     void setInputPortName(int port, const QString &name) override;
     void setOutputPortName(int port, const QString &name) override;
 
+    // --- Visual ---
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void refresh() override;
+
+    // --- Serialization ---
+
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
+    void save(QDataStream &stream) const override;
+
 protected:
+    // --- Event handlers ---
+
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
+    // --- Utility methods ---
+
     static bool comparePorts(QNEPort *port1, QNEPort *port2);
     static void sortPorts(QVector<QNEPort *> &map);
 
-    inline static QString destPath_;
-    inline static QString srcPath_;
-    inline static bool needToCopyFiles = false;
+    // --- File copy helper ---
 
     LogicElement *inputLogic(int index);
     LogicElement *outputLogic(int index);
     void copyFile();
-    void generatePixmap();
+
+    // --- Loading helpers ---
+
     void loadInputElement(GraphicElement *elm);
     void loadInputs();
     void loadInputsLabels();
     void loadOutputElement(GraphicElement *elm);
     void loadOutputs();
     void loadOutputsLabels();
+
+    // --- Visual helpers ---
+
+    void generatePixmap();
+
+    // --- Static file paths ---
+
+    inline static QString destPath_;
+    inline static QString srcPath_;
+    inline static bool needToCopyFiles = false;
+
+    // --- Members ---
 
     ElementMapping *m_mapping = nullptr;
     QFileSystemWatcher m_fileWatcher;

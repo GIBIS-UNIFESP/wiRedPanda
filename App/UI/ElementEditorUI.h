@@ -22,48 +22,77 @@ class LabeledSlider;
 class ElementEditorUi
 {
 public:
-    // Default constructor (required for instantiation)
+    // --- Lifecycle ---
+
     ElementEditorUi() = default;
 
-    // Delete copy constructor and assignment operator
     ElementEditorUi(const ElementEditorUi&) = delete;
     ElementEditorUi& operator=(const ElementEditorUi&) = delete;
+
+    // --- Setup ---
 
     void setupUi(QWidget *ElementEditor);
     void retranslateUi(QWidget *ElementEditor);
 
+    // --- Widgets ---
+
+    // Layout
     QGridLayout *gridLayout = nullptr;
     QGroupBox *groupBox = nullptr;
     QGridLayout *gridLayout_2 = nullptr;
-    QComboBox *comboBoxAudio = nullptr;
-    QCheckBox *checkBoxLocked = nullptr;
-    QLabel *labelLabels = nullptr;
-    QLabel *labelTrigger = nullptr;
     QHBoxLayout *horizontalLayout = nullptr;
-    QPushButton *pushButtonTruthTable = nullptr;
-    QPushButton *pushButtonChangeSkin = nullptr;
-    QPushButton *pushButtonDefaultSkin = nullptr;
-    QLineEdit *lineEditTrigger = nullptr;
-    QLabel *labelValue = nullptr;
-    QDoubleSpinBox *doubleSpinBoxFrequency = nullptr;
-    QComboBox *comboBoxInputSize = nullptr;
-    QLabel *labelFrequency = nullptr;
-    QLabel *labelColor = nullptr;
     QHBoxLayout *horizontalLayout_2 = nullptr;
-    QLineEdit *lineCurrentAudioBox = nullptr;
-    QPushButton *pushButtonAudioBox = nullptr;
+
+    // Label editing
+    QLabel *labelLabels = nullptr;
     QLineEdit *lineEditElementLabel = nullptr;
-    QLabel *labelInputs = nullptr;
+
+    // Color selection
+    QLabel *labelColor = nullptr;
     QComboBox *comboBoxColor = nullptr;
-    QLabel *labelAudioBox = nullptr;
-    QLabel *labelPriority = nullptr;
-    QComboBox *comboBoxValue = nullptr;
-    QComboBox *comboBoxOutputSize = nullptr;
-    QSpinBox *spinBoxPriority = nullptr;
+
+    // Input / output size
+    QLabel *labelInputs = nullptr;
+    QComboBox *comboBoxInputSize = nullptr;
     QLabel *labelOutputs = nullptr;
-    QLabel *labelLocked = nullptr;
-    QLabel *labelAudio = nullptr;
+    QComboBox *comboBoxOutputSize = nullptr;
+
+    // Output value
+    QLabel *labelValue = nullptr;
+    QComboBox *comboBoxValue = nullptr;
+
+    // Frequency
+    QLabel *labelFrequency = nullptr;
+    QDoubleSpinBox *doubleSpinBoxFrequency = nullptr;
+
+    // Delay
     QLabel *labelDelay = nullptr;
     LabeledSlider *sliderDelay = nullptr;
+
+    // Trigger
+    QLabel *labelTrigger = nullptr;
+    QLineEdit *lineEditTrigger = nullptr;
+
+    // Skin
+    QPushButton *pushButtonChangeSkin = nullptr;
+    QPushButton *pushButtonDefaultSkin = nullptr;
+
+    // Truth table
+    QPushButton *pushButtonTruthTable = nullptr;
+
+    // Audio
+    QLabel *labelAudioBox = nullptr;
+    QLabel *labelAudio = nullptr;
+    QComboBox *comboBoxAudio = nullptr;
+    QLineEdit *lineCurrentAudioBox = nullptr;
+    QPushButton *pushButtonAudioBox = nullptr;
+
+    // Lock
+    QLabel *labelLocked = nullptr;
+    QCheckBox *checkBoxLocked = nullptr;
+
+    // Priority
+    QLabel *labelPriority = nullptr;
+    QSpinBox *spinBoxPriority = nullptr;
 };
 

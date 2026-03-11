@@ -20,30 +20,50 @@ struct InputPair
 class LogicElement
 {
 public:
+    // --- Lifecycle ---
+
     explicit LogicElement(const int inputSize, const int outputSize);
     virtual ~LogicElement() = default;
 
-    bool inFeedbackLoop() const;
-    bool inputValue(const int index = 0) const;
+    // --- Validity & Feedback ---
+
     bool isValid() const;
-    bool outputValue(const int index = 0) const;
-    int calculatePriority();
-    int outputSize() const;
-    int priority() const;
-    virtual void updateLogic() = 0;
-    void clearSucessors();
-    void connectPredecessor(const int index, LogicElement *logic, const int port);
-    void setOutputValue(const bool value);
-    void setOutputValue(const int index, const bool value);
+    bool inFeedbackLoop() const;
     void validate();
 
+    // --- I/O Values ---
+
+    bool inputValue(const int index = 0) const;
+    bool outputValue(const int index = 0) const;
+    int outputSize() const;
+
+    // --- Priority & Logic ---
+
+    int calculatePriority();
+    int priority() const;
+    virtual void updateLogic() = 0;
+
+    // --- Connection management ---
+
+    void connectPredecessor(const int index, LogicElement *logic, const int port);
+    void clearSucessors();
+
+    // --- Output setting ---
+
+    void setOutputValue(const bool value);
+    void setOutputValue(const int index, const bool value);
+
 protected:
+    // --- Internal updates ---
+
     bool updateInputs();
 
     QVector<bool> m_inputValues;
 
 private:
     Q_DISABLE_COPY(LogicElement)
+
+    // --- Members ---
 
     QVector<LogicElement *> m_successors;
     QVector<InputPair> m_inputPairs;
