@@ -1,0 +1,29 @@
+// Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#include "LengthDialog.h"
+#include "LengthDialogUI.h"
+
+LengthDialog::LengthDialog(const int currentLength, QWidget *parent)
+    : QDialog(parent)
+    , m_ui(std::make_unique<LengthDialogUi>())
+{
+    m_ui->setupUi(this);
+
+    m_ui->lengthSpinBox->setValue(currentLength);
+
+    setWindowTitle(tr("Simulation Length Selection"));
+
+    connect(m_ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(m_ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+}
+
+LengthDialog::~LengthDialog()
+{
+}
+
+int LengthDialog::length()
+{
+    return (exec() == QDialog::Accepted) ? m_ui->lengthSpinBox->value() : -1;
+}
+

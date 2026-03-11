@@ -61,9 +61,9 @@
 #include <vector>
 
 // Project includes (most expensive headers based on ClangBuildAnalyzer)
-#include "app/core/enums.h"
-#include "app/element/logicelement.h"
-#include "app/core/itemwithid.h"
-#include "app/element/graphicelement.h"
+#include "App/Core/Enums.h"
+#include "App/Element/LogicElement.h"
+#include "App/Core/ItemWithId.h"
+#include "App/Element/GraphicElement.h"
 #endif
 

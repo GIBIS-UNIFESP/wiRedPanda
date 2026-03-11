@@ -155,7 +155,7 @@ cmake --preset ubsan
 ```
 
 ### Writing Tests
-- Create test files in the `tests/` directory
+- Create test files in the `Tests/` directory
 - Use Qt Test framework (`QTEST_MAIN`, `QVERIFY`, etc.)
 - Test both positive and negative cases
 - Include edge cases and error conditions
@@ -219,7 +219,7 @@ wiRedPanda supports multiple languages through our translation system.
 4. Translations are automatically submitted as pull requests
 
 ### Manual Translation
-1. Find translation files in `app/resources/translations/`
+1. Find translation files in `App/Resources/Translations/`
 2. Copy `wpanda_en.ts` to `wpanda_[language_code].ts`
 3. Use Qt Linguist or edit XML directly
 4. Test your translation in the application

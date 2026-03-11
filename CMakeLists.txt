@@ -125,7 +125,7 @@ endif()
 include(CMakeSources.cmake)
 
 # Find available translation files
-file(GLOB_RECURSE TS_FILES app/resources/translations/wpanda_*.ts)
+file(GLOB_RECURSE TS_FILES App/Resources/Translations/wpanda_*.ts)
 
 # Initialize QM_FILES list
 set(QM_FILES)
@@ -171,37 +171,37 @@ endif()
 
 include_directories(
     ${CMAKE_BINARY_DIR}
-    app
-    app/bewaveddolphin
-    app/codegen
-    app/core
-    app/element
-    app/element/graphicelements
-    app/element/logicelements
-    app/io
-    app/nodes
-    app/scene
-    app/simulation
-    app/ui
+    App
+    App/BeWavedDolphin
+    App/CodeGen
+    App/Core
+    App/Element
+    App/Element/GraphicElements
+    App/Element/LogicElements
+    App/IO
+    App/Nodes
+    App/Scene
+    App/Simulation
+    App/UI
 )
 
 # ========= TRANSLATIONS ===========================
 
 # Find available translation files
-file(GLOB_RECURSE TS_FILES app/resources/translations/wpanda_*.ts)
+file(GLOB_RECURSE TS_FILES App/Resources/Translations/wpanda_*.ts)
 
 # Custom targets for translation management
 if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
     # Custom target to update translation source files
     if(QT_VERSION_MAJOR EQUAL 5)
         add_custom_target(lupdate
-            COMMAND Qt5::lupdate -tr-function-alias tr+=PANDACEPTION ${CMAKE_SOURCE_DIR}/app -ts ${TS_FILES}
+            COMMAND Qt5::lupdate -tr-function-alias tr+=PANDACEPTION ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES}
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
             COMMENT "Updating translation source files"
         )
     else()
         add_custom_target(lupdate
-            COMMAND Qt6::lupdate -tr-function-alias tr+=PANDACEPTION ${CMAKE_SOURCE_DIR}/app -ts ${TS_FILES}
+            COMMAND Qt6::lupdate -tr-function-alias tr+=PANDACEPTION ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES}
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
             COMMENT "Updating translation source files"
         )
@@ -223,10 +223,10 @@ set(QRC_GENERATOR_SCRIPT "${CMAKE_BINARY_DIR}/generate_translations_qrc.cmake")
 # Write the QRC generator script
 file(WRITE ${QRC_GENERATOR_SCRIPT} "
 # CMake script to generate translations.qrc
-set(QRC_FILE \"${CMAKE_SOURCE_DIR}/app/resources/translations/translations.qrc\")
+set(QRC_FILE \"${CMAKE_SOURCE_DIR}/App/Resources/Translations/Translations.qrc\")
 
 # Get list of .qm files in translations directory
-file(GLOB QM_FILES \"${CMAKE_SOURCE_DIR}/app/resources/translations/*.qm\")
+file(GLOB QM_FILES \"${CMAKE_SOURCE_DIR}/App/Resources/Translations/*.qm\")
 
 # Sort the files for consistent output
 list(SORT QM_FILES)
@@ -311,9 +311,9 @@ endif()
 
 # Use qt_add_executable for WASM builds as recommended by Qt docs
 if(EMSCRIPTEN)
-    qt_add_executable(wiredpanda app/main.cpp ${RESOURCES_RCC})
+    qt_add_executable(wiredpanda App/Main.cpp ${RESOURCES_RCC})
 else()
-    add_executable(wiredpanda app/main.cpp ${RESOURCES_RCC})
+    add_executable(wiredpanda App/Main.cpp ${RESOURCES_RCC})
 endif()
 target_link_libraries(wiredpanda PRIVATE wiredpanda_lib)
 
@@ -342,7 +342,7 @@ if(ENABLE_PCH)
 endif()
 
 if(WIN32)
-    set(RC_FILE "${CMAKE_SOURCE_DIR}/app/resources/windows/wpanda.rc")
+    set(RC_FILE "${CMAKE_SOURCE_DIR}/App/Resources/Windows/wpanda.rc")
 
     set_target_properties(wiredpanda PROPERTIES
         WIN32_EXECUTABLE ON
@@ -358,21 +358,21 @@ endif()
 
 # Define the test executables
 set(TEST_EXECUTABLES
-    testcommands
-    testelements
-    testfiles
-    testicons
-    testlogicelements
-    testsimulation
-    testwaveform
+    TestCommands
+    TestElements
+    TestFiles
+    TestIcons
+    TestLogicElements
+    TestSimulation
+    TestWaveform
 )
 
 # Create individual test executables
 foreach(test_name ${TEST_EXECUTABLES})
-    add_executable(${test_name} tests/${test_name}.cpp tests/${test_name}.h ${RESOURCES_RCC})
+    add_executable(${test_name} Tests/${test_name}.cpp Tests/${test_name}.h ${RESOURCES_RCC})
     target_link_libraries(${test_name} PRIVATE wiredpanda_lib)
 
-    target_compile_definitions(${test_name} PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/tests)
+    target_compile_definitions(${test_name} PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests)
 
     if(NOT CCACHE_BIN)
         target_precompile_headers(${test_name} PRIVATE pch.h)
