@@ -117,3 +117,4 @@ public:
 };
 
 Q_DECLARE_METATYPE(QNEOutputPort)
+

@@ -87,3 +87,4 @@ private:
 Q_DECLARE_METATYPE(QNEConnection)
 
 QDataStream &operator<<(QDataStream &stream, const QNEConnection *conn);
+

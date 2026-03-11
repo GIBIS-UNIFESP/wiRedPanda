@@ -155,7 +155,7 @@ cmake --preset ubsan
 ```
 
 ### Writing Tests
-- Create test files in the `test/` directory
+- Create test files in the `tests/` directory
 - Use Qt Test framework (`QTEST_MAIN`, `QVERIFY`, etc.)
 - Test both positive and negative cases
 - Include edge cases and error conditions
