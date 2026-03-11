@@ -5,6 +5,7 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QMetaObject>
+#include <QtGui/QIcon>
 
 void BewavedDolphin_Ui::setupUi(QMainWindow *BewavedDolphin)
 {
