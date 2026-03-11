@@ -3,9 +3,10 @@
 
 #pragma once
 
+#include <stdexcept>
+
 #include <QCoreApplication>
 #include <QLoggingCategory>
-#include <stdexcept>
 
 Q_DECLARE_LOGGING_CATEGORY(zero)
 Q_DECLARE_LOGGING_CATEGORY(one)

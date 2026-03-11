@@ -3,11 +3,11 @@
 
 #include "Display16.h"
 
+#include <QPainter>
+
 #include "Display7.h"
 #include "GlobalProperties.h"
 #include "QNEPort.h"
-
-#include <QPainter>
 
 Display16::Display16(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display16, ElementGroup::Output, ":/Components/Output/Counter/counter_16_on.svg", tr("16-SEGMENT DISPLAY"), tr("16-Segment Display"), 17, 17, 0, 0, parent)

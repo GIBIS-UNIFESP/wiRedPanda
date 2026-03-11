@@ -3,11 +3,11 @@
 
 #include "InputRotary.h"
 
-#include "GlobalProperties.h"
-#include "QNEPort.h"
-
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+
+#include "GlobalProperties.h"
+#include "QNEPort.h"
 
 InputRotary::InputRotary(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::InputRotary, ElementGroup::Input, ":/Components/Input/rotary_icon.svg", tr("ROTARY SWITCH"), tr("Rotary Switch"), 0, 0, 2, 16, parent)

@@ -3,6 +3,8 @@
 
 #include "ElementFactory.h"
 
+#include <QMetaEnum>
+
 #include "Common.h"
 #include "GlobalProperties.h"
 #include "GraphicElement.h"
@@ -27,8 +29,6 @@
 #include "LogicXnor.h"
 #include "LogicXor.h"
 #include "TruthTable.h"
-
-#include <QMetaEnum>
 
 ElementType ElementFactory::textToType(const QString &text)
 {

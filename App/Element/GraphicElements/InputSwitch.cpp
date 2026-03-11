@@ -3,10 +3,10 @@
 
 #include "InputSwitch.h"
 
+#include <QGraphicsSceneMouseEvent>
+
 #include "GlobalProperties.h"
 #include "QNEPort.h"
-
-#include <QGraphicsSceneMouseEvent>
 
 InputSwitch::InputSwitch(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::InputSwitch, ElementGroup::Input, ":/Components/Input/switchOn.svg", tr("INPUT SWITCH"), tr("Input Switch"), 0, 0, 1, 1, parent)

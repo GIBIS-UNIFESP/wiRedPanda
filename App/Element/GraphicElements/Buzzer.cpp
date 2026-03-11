@@ -3,10 +3,11 @@
 
 #include "Buzzer.h"
 
+#include <QAudio>
+
 #include "GlobalProperties.h"
 #include "QNEPort.h"
 
-#include <QAudio>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QAudioDeviceInfo>
 #else

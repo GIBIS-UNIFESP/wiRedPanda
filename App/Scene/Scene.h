@@ -3,14 +3,14 @@
 
 #pragma once
 
-#include "QNEPort.h"
-#include "Simulation.h"
-
 #include <QElapsedTimer>
 #include <QGraphicsScene>
 #include <QMimeData>
 #include <QUndoCommand>
 #include <QVersionNumber>
+
+#include "QNEPort.h"
+#include "Simulation.h"
 
 class GraphicElement;
 class GraphicsView;

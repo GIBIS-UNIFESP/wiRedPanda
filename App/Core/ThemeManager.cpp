@@ -3,9 +3,10 @@
 
 #include "ThemeManager.h"
 
+#include <QDebug>
+
 #include "Settings.h"
 
-#include <QDebug>
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
 #include <QStyleHints>
 #endif

@@ -3,10 +3,11 @@
 
 #pragma once
 
-#include "Enums.h"
+#include <memory>
 
 #include <QGraphicsItem>
-#include <memory>
+
+#include "Enums.h"
 
 class GraphicElement;
 class ItemWithId;

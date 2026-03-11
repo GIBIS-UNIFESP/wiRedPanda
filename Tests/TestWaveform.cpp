@@ -3,15 +3,15 @@
 
 #include "TestWaveform.h"
 
+#include <QApplication>
+#include <QTemporaryFile>
+#include <QTest>
+
 #include "BeWavedDolphin.h"
 #include "Common.h"
 #include "RegisterTypes.h"
 #include "Serialization.h"
 #include "Workspace.h"
-
-#include <QApplication>
-#include <QTemporaryFile>
-#include <QTest>
 
 #define QUOTE(string) _QUOTE(string)
 #define _QUOTE(string) #string

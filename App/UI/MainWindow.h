@@ -3,13 +3,14 @@
 
 #pragma once
 
-#include "MainWindowUI.h"
+#include <memory>
 
 #include <QDir>
 #include <QMainWindow>
 #include <QSpacerItem>
 #include <QTranslator>
-#include <memory>
+
+#include "MainWindowUI.h"
 
 class ElementLabel;
 class RecentFiles;

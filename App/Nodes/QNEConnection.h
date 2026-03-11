@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include "Enums.h"
-#include "ItemWithId.h"
-
 #include <QCoreApplication>
 #include <QGraphicsPathItem>
+
+#include "Enums.h"
+#include "ItemWithId.h"
 
 class QNEInputPort;
 class QNEOutputPort;
