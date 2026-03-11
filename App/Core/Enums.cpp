@@ -5,6 +5,10 @@
 
 #include <QDataStream>
 
+// nextElmType / prevElmType implement per-group circular "morph" cycles so the
+// user can press a key to rotate through related element types (e.g. AND→OR→NAND…).
+// Types in different groups are intentionally kept separate and do NOT cycle into
+// each other; Unknown is returned as a sentinel for unhandled types.
 ElementType Enums::nextElmType(ElementType type)
 {
     switch (type) {
@@ -83,13 +87,19 @@ ElementType Enums::prevElmType(ElementType type)
     }
 }
 
+// Pre-increment used to iterate over all enum values sequentially (e.g. in loops
+// that walk the full ElementType range); does not wrap around.
 ElementType &operator++(ElementType &type)
 {
     return type = static_cast<ElementType>(static_cast<int>(type) + 1);
 }
 
+// Serialise as quint64 so the on-disk representation is stable even if the enum
+// underlying type changes or new values are inserted in future versions.
 QDataStream &operator>>(QDataStream &stream, ElementType &type)
 {
+    // Read into a temporary so that a partially-read stream doesn't leave 'type'
+    // in an indeterminate state if the cast would produce an out-of-range value
     quint64 temp; stream >> temp;
     type = static_cast<ElementType>(temp);
     return stream;

@@ -26,6 +26,9 @@
 int main(int argc, char *argv[])
 {
 #ifdef HAVE_SENTRY
+    // Sentry must be initialised before QApplication so that crashes during Qt
+    // startup are captured; sentry_close() is called via qScopeGuard at process exit
+    // to flush any queued events even if the app exits via an exception or exit().
     sentry_options_t *options = sentry_options_new();
     sentry_options_set_dsn(options, "https://719a4881adf6e678b198bf9aad6b4500@o4508704323469312.ingest.us.sentry.io/4508704326352896");
     // This is also the default-path. For further information and recommendations:
@@ -39,13 +42,19 @@ int main(int argc, char *argv[])
     auto sentryClose = qScopeGuard([] { sentry_close(); });
 #endif
 
+    // registerTypes() must run before QApplication construction so that Qt's
+    // meta-object system knows all custom types (e.g. ElementType, Status) when
+    // QVariant, signals/slots, or QDataStream serializers are set up.
     registerTypes();
 
+    // Disable all debug/verbose output at startup; the --verbosity option re-enables
+    // it after the command-line parser runs below
     Comment::setVerbosity(-1);
 
 #ifdef Q_OS_LINUX
-    // Enable headless mode for CLI operations on Linux
-    // Check if any CLI-only options are present
+    // On Linux, CLI-only invocations (codegen, waveform export) must not try to
+    // connect to an X11 display — CI runners and headless servers typically don't
+    // have one.  Forcing "offscreen" before QApplication avoids a crash.
     bool isCliMode = false;
     for (int i = 1; i < argc; ++i) {
         QString arg = QString::fromLocal8Bit(argv[i]);
@@ -66,6 +75,9 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef Q_OS_WIN
+    // Windows GUI applications don't inherit the parent console by default.
+    // AttachConsole() reattaches to it so that CLI output (--arduino-file, etc.)
+    // is visible when the user runs wiRedPanda from cmd.exe or PowerShell.
     FILE *fpstdout = stdout, *fpstderr = stderr;
     if (AttachConsole(ATTACH_PARENT_PROCESS)) {
         freopen_s(&fpstdout, "CONOUT$", "w", stdout);
@@ -82,6 +94,8 @@ int main(int argc, char *argv[])
     app.setOrganizationName("GIBIS-UNIFESP");
     app.setApplicationName("wiRedPanda");
     app.setApplicationVersion(APP_VERSION);
+    // Fusion style provides a consistent cross-platform look and is required for
+    // the custom theme colours defined in ThemeManager to render correctly on all OSes
     app.setStyle("Fusion");
     app.setWindowIcon(QIcon(":/Interface/Toolbar/wpanda.svg"));
 
@@ -128,6 +142,11 @@ int main(int argc, char *argv[])
 
         QStringList args = parser.positionalArguments();
 
+        // --- Non-interactive batch operations ---
+        // Each branch loads the circuit, runs the export, then exits immediately
+        // without entering the Qt event loop.  GlobalProperties::verbose is set
+        // to false so that error dialogs are suppressed and errors go to stderr only.
+
         if (const QString arduFile = parser.value(arduinoFileOption); !arduFile.isEmpty()) {
             if (!args.empty()) {
                 GlobalProperties::verbose = false;
@@ -154,6 +173,9 @@ int main(int argc, char *argv[])
                 MainWindow window;
                 window.loadPandaFile(args.at(0));
 
+                // --blockTruthTable allows callers (e.g. automated graders) to
+                // reject circuits that contain truth tables, which cannot be
+                // reliably evaluated via the terminal waveform interface.
                 if (parser.isSet(blockTruthTableOption)) {
                     bool containsTruthTable = false;
                     auto elements = window.currentTab()->scene()->elements();

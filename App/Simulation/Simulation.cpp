@@ -19,16 +19,23 @@ Simulation::Simulation(Scene *scene)
     : QObject(scene)
     , m_scene(scene)
 {
+    // 1ms tick drives the simulation at ~1000 steps/second — fast enough for
+    // human perception while keeping CPU load predictable.
     m_timer.setInterval(1ms);
     connect(&m_timer, &QTimer::timeout, this, &Simulation::update);
 }
 
 void Simulation::update()
 {
+    // Lazily build the simulation layer on the first tick after a restart so
+    // that circuit edits made while stopped are always reflected when the
+    // simulation resumes.
     if (!m_initialized && !initialize()) {
         return;
     }
 
+    // Clock elements are the only truly time-driven components; all other logic
+    // is combinational and responds immediately to their values.
     if (m_timer.isActive()) {
         const auto globalTime = std::chrono::steady_clock::now();
 
@@ -39,13 +46,15 @@ void Simulation::update()
         }
     }
 
+    // Phase 1: propagate user-controlled inputs (switches, buttons, etc.)
     for (auto *inputElm : std::as_const(m_inputs)) {
         if (inputElm) {
             inputElm->updateOutputs();
         }
     }
 
-    // Check if we have elements in feedback loops that need iterative settling
+    // Detect feedback loops once per tick so we can choose the right update
+    // strategy.  A single linear scan is cheaper than building a second graph.
     bool hasFeedbackElements = false;
     if (m_elmMapping) {
         for (auto &logic : m_elmMapping->logicElms()) {
@@ -57,10 +66,14 @@ void Simulation::update()
     }
 
     if (hasFeedbackElements) {
-        // Use iterative settling for circuits with feedback loops
+        // Use iterative settling for circuits with feedback loops.
+        // A single topological pass is insufficient when a gate's output feeds
+        // back into an earlier stage; iterations continue until stable or the
+        // cap is reached.
         updateWithIterativeSettling();
     } else {
-        // Standard single-pass update for purely combinational circuits
+        // Phase 2: update all logic elements in topologically sorted order so
+        // every gate sees its inputs before computing its output.
         if (m_elmMapping) {
             for (auto &logic : m_elmMapping->logicElms()) {
                 if (logic) {
@@ -70,10 +83,12 @@ void Simulation::update()
         }
     }
 
+    // Phase 3: push computed logic values onto the wire (QNEOutputPort) visuals
     for (auto *connection : std::as_const(m_connections)) {
         updatePort(connection->startPort());
     }
 
+    // Phase 4: refresh output element visuals (LEDs, buzzers, etc.) using their input ports
     for (auto *outputElm : std::as_const(m_outputs)) {
         if (outputElm) {
             for (auto *inputPort : outputElm->inputs()) {
@@ -97,10 +112,15 @@ void Simulation::updatePort(QNEOutputPort *port)
     }
     auto *logic = elm->getOutputLogic(port->index());
     if (!logic) {
+        // No logic node means the element isn't mapped (e.g. mid-deletion);
+        // mark the port invalid so connected wires show the error colour.
         port->setStatus(Status::Invalid);
         return;
     }
 
+    // getOutputIndexForPort translates the visible port number to the index
+    // inside the LogicElement's output array (they differ for ICs that expose
+    // multiple outputs from a single logic node).
     int outputIndex = elm->getOutputIndexForPort(port->index());
     port->setStatus(logic->isValid() ? static_cast<Status>(logic->outputValue(outputIndex)) : Status::Invalid);
 }
@@ -121,8 +141,10 @@ void Simulation::updatePort(QNEInputPort *port)
         return;
     }
 
+    // Reflect the logic input value on the port so connection colors update correctly.
     port->setStatus(logic->isValid() ? static_cast<Status>(logic->inputValue(port->index())) : Status::Invalid);
 
+    // Output elements (LEDs, buzzers) need an explicit repaint to show the new state.
     if (elm->elementGroup() == ElementGroup::Output) {
         elm->refresh();
     }
@@ -130,6 +152,8 @@ void Simulation::updatePort(QNEInputPort *port)
 
 void Simulation::restart()
 {
+    // Clearing the flag causes the next update() call to rebuild the entire
+    // element mapping, effectively resetting all logic state to its default.
     m_initialized = false;
 }
 
@@ -153,7 +177,8 @@ void Simulation::start()
     if (!m_initialized) {
         initialize();
     } else {
-        // Reset clocks to current time to prevent catch-up behavior after pause
+        // After a pause the wall clock has advanced, so clocks must be reset
+        // to "now" — otherwise they would fire many missed ticks immediately.
         const auto globalTime = std::chrono::steady_clock::now();
         for (auto *clock : std::as_const(m_clocks)) {
             if (clock) {
@@ -175,10 +200,14 @@ void Simulation::updateWithIterativeSettling()
         return;
     }
 
-    const int maxIterations = 10; // Prevent infinite loops
+    // 10 passes is enough for any realistic SR/JK feedback depth; circuits that
+    // genuinely oscillate (e.g. a ring oscillator) won't converge and we log a
+    // warning on the last iteration rather than looping forever.
+    const int maxIterations = 10;
     const auto &logicElements = m_elmMapping->logicElms();
 
-    // Store previous output values for convergence detection
+    // Snapshot outputs before the first pass so the convergence check on
+    // iteration 0 has valid "previous" values to compare against.
     QVector<QVector<bool>> previousOutputs(logicElements.size());
 
     for (int i = 0; i < logicElements.size(); ++i) {
@@ -186,7 +215,6 @@ void Simulation::updateWithIterativeSettling()
         if (!logic) {
             continue;
         }
-        // Initialize with current outputs
         previousOutputs[i].resize(logic->outputSize());
         for (int j = 0; j < previousOutputs[i].size(); ++j) {
             previousOutputs[i][j] = logic->outputValue(j);
@@ -237,6 +265,8 @@ bool Simulation::initialize()
         return false;
     }
 
+    // Rebuild all four categorised lists from scratch so stale pointers from
+    // a previous circuit state don't linger after undo/redo or file load.
     m_clocks.clear();
     m_outputs.clear();
     m_inputs.clear();
@@ -245,7 +275,10 @@ bool Simulation::initialize()
     QVector<GraphicElement *> elements;
     auto items = m_scene->items();
 
-    // Sort items by position coordinates for consistent ordering between runs
+    // Sort items by position coordinates for consistent ordering between runs.
+    // QGraphicsScene::items() returns items in an unspecified Z/stacking order;
+    // stabilising on (Y, X) gives deterministic wire-update sequences across
+    // sessions and makes test results reproducible.
     std::stable_sort(items.begin(), items.end(), [](const auto &a, const auto &b) {
         if (!a || !b) {
             return a != nullptr;
@@ -257,6 +290,8 @@ bool Simulation::initialize()
         return a->y() < b->y();
     });
 
+    // A scene with only one item is the scene border/background rectangle;
+    // there is no circuit yet, so building an element mapping would be pointless.
     if (items.size() == 1) {
         return false;
     }
@@ -305,13 +340,14 @@ bool Simulation::initialize()
         }
     }
 
+    // Primary sort: user-assigned priority (higher value = evaluated earlier).
+    // Secondary sort: position, for a stable deterministic order when priorities
+    // are equal — important so test replays give the same output every run.
     std::stable_sort(elements.begin(), elements.end(), [](const auto &a, const auto &b) {
         if (!a || !b) {
             return a != nullptr; // Put null elements at the end
         }
-        // Use stable sort with consistent tie-breaking by position for deterministic ordering
         if (a->priority() == b->priority()) {
-            // Sort by Y coordinate first, then X coordinate for consistent tie-breaking
             if (qFuzzyCompare(a->y(), b->y())) {
                 return a->x() < b->x();
             }
@@ -327,6 +363,8 @@ bool Simulation::initialize()
     }
 
     qCDebug(two) << "Recreating mapping for simulation.";
+    // ElementMapping builds logic nodes and wires their predecessors; sort()
+    // then assigns priorities and validates each node in topological order.
     m_elmMapping = std::make_unique<ElementMapping>(elements);
 
     if (!m_elmMapping) {

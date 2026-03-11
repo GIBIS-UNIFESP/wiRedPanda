@@ -11,6 +11,7 @@ ClockDialog::ClockDialog(const int currentFrequency, QWidget *parent)
 {
     m_ui->setupUi(this);
 
+    // Pre-populate with the last used frequency so the user doesn't have to re-enter it
     m_ui->frequencySpinBox->setValue(currentFrequency);
 
     setWindowTitle(tr("Clock Frequency Selection"));
@@ -25,6 +26,8 @@ ClockDialog::~ClockDialog()
 
 int ClockDialog::frequency()
 {
+    // Returns -1 on cancel so callers can distinguish "user chose a frequency" from
+    // "user dismissed the dialog" without needing a separate success/failure flag
     return (exec() == QDialog::Accepted) ? m_ui->frequencySpinBox->value() : -1;
 }
 

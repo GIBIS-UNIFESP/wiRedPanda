@@ -32,9 +32,9 @@ Clock::Clock(QGraphicsItem *parent)
     setRotatable(false);
     setHasDelay(true);
 
-    Clock::setFrequency(1.0);
-    Clock::setDelay(0.0);
-    Clock::setOff();
+    Clock::setFrequency(1.0);  // 1 Hz default → 500 ms half-period
+    Clock::setDelay(0.0);       // no phase offset by default
+    Clock::setOff();             // start LOW; resetClock() will start HIGH when simulation begins
 }
 
 void Clock::updateClock(const std::chrono::steady_clock::time_point &globalTime)
@@ -45,6 +45,9 @@ void Clock::updateClock(const std::chrono::steady_clock::time_point &globalTime)
 
     const auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(globalTime - m_startTime);
 
+    // m_interval is the half-period (time per HIGH or LOW phase).
+    // Rather than resetting to globalTime we advance by exactly one interval so
+    // that accumulated drift doesn't skew the clock frequency over time.
     if (elapsed > m_interval) {
         m_startTime += m_interval;
         setOn(!m_isOn);
@@ -71,6 +74,7 @@ void Clock::setOn(const bool value, const int port)
 {
     Q_UNUSED(port)
     m_isOn = value;
+    // Pixmap index 0 = clock-low SVG, index 1 = clock-high SVG (matches bool→int cast)
     setPixmap(static_cast<int>(m_isOn));
     outputPort()->setStatus(static_cast<Status>(m_isOn));
 }
@@ -92,10 +96,12 @@ void Clock::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const Q
     GraphicElement::load(stream, portMap, version);
 
     if (version < VERSION("1.1")) {
+        // Clock serialization was introduced in v1.1; nothing to read in earlier files
         return;
     }
 
     if (version < VERSION("4.1")) {
+        // v1.1–4.0 stored frequency as a bare float; locked state added in v3.1
         float freq; stream >> freq;
         setFrequency(freq);
 
@@ -105,6 +111,7 @@ void Clock::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const Q
     }
 
     if (version >= VERSION("4.1")) {
+        // v4.1+ uses a key-value map so new properties can be added without breaking old files
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("frequency")) {
@@ -139,8 +146,11 @@ void Clock::setFrequency(const float freq)
         return;
     }
 
+    // m_interval is the half-period: at frequency f, the full period is 1/f seconds,
+    // so each HIGH/LOW phase lasts 1/(2f) seconds = half-period in microseconds.
     std::chrono::microseconds auxInterval = std::chrono::duration_cast<std::chrono::microseconds>(1s / (2 * freq));
 
+    // Guard against frequencies so high that the half-period rounds to zero
     if (auxInterval.count() <= 0) {
         return;
     }
@@ -161,10 +171,12 @@ void Clock::setDelay(const float delay)
 
 void Clock::resetClock(const std::chrono::steady_clock::time_point &globalTime)
 {
+    // Start clocks in the HIGH state; the first transition happens after one interval
     setOn();
-    // m_delay is a fraction of the period (-1 to 1)
-    // Negative delays advance the clock (trigger earlier), positive delays delay it
-    // Full period is 2 * m_interval (since m_interval is half the period)
+    // m_delay is a fraction of the period (-1 to 1).
+    // Negative delays advance the clock (trigger earlier), positive delays delay it.
+    // Shifting m_startTime backward by the delay fraction effectively phase-shifts the waveform.
+    // Full period is 2 * m_interval (since m_interval is the half-period).
     const auto fullPeriod = 2 * m_interval;
     const auto delayMicroseconds = static_cast<std::chrono::microseconds::rep>(-m_delay * fullPeriod.count());
     m_startTime = globalTime;

@@ -13,6 +13,7 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
         BewavedDolphin->setObjectName("BewavedDolphin");
     }
 
+    // Initial geometry; the constructor restores the saved geometry immediately after
     BewavedDolphin->resize(800, 600);
 
     BewavedDolphin->setWindowIcon(QIcon(":/Interface/Toolbar/dolphin_icon.svg"));
@@ -69,6 +70,8 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     actionInvert->setObjectName("actionInvert");
     actionInvert->setIcon(QIcon(":/Components/Logic/not.svg"));
 
+    // Merge/Split are reserved for future multi-bit bus functionality and intentionally
+    // disabled until the feature is implemented
     actionMerge = new QAction(BewavedDolphin);
     actionMerge->setObjectName("actionMerge");
     actionMerge->setEnabled(false);
@@ -126,12 +129,15 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
 
     centralwidget = new QWidget(BewavedDolphin);
     centralwidget->setObjectName("centralwidget");
+    // Maximum size policy prevents the central widget from expanding beyond its content,
+    // letting the DolphinGraphicsView (added later) control the window's actual dimensions
     QSizePolicy sizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
     sizePolicy.setHeightForWidth(centralwidget->sizePolicy().hasHeightForWidth());
     centralwidget->setSizePolicy(sizePolicy);
 
+    // Zero spacing/margins so the waveform view fills the entire central area
     verticalLayout = new QVBoxLayout(centralwidget);
     verticalLayout->setSpacing(0);
     verticalLayout->setObjectName("verticalLayout");
@@ -148,6 +154,7 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
 
     menubar = new QMenuBar(BewavedDolphin);
     menubar->setObjectName("menubar");
+    // Height of 27px matches the typical platform menubar height; width matches initial window size
     menubar->setGeometry(QRect(0, 0, 800, 27));
 
     menuFile = new QMenu(menubar);
@@ -226,6 +233,8 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
 
     retranslateUi(BewavedDolphin);
 
+    // Connects signals to slots by naming convention (on_<objectName>_<signal>), but
+    // BewavedDolphin manually connects all its actions, so this is a safety net only
     QMetaObject::connectSlotsByName(BewavedDolphin);
 }
 

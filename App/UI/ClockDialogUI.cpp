@@ -13,6 +13,7 @@ void ClockDialogUi::setupUi(QDialog *ClockDialog)
         ClockDialog->setObjectName("ClockDialog");
     }
 
+    // Fixed dialog size — no resizing needed since the content is minimal.
     ClockDialog->resize(184, 116);
 
     ClockDialog->setWindowIcon(QIcon(":/Interface/Toolbar/wavyIcon.svg"));
@@ -25,6 +26,8 @@ void ClockDialogUi::setupUi(QDialog *ClockDialog)
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
     gridLayout_2->addWidget(buttonBox, 6, 0, 1, 2);
 
+    // Minimum of 2 because a clock with period 1 would toggle every step (degenerate);
+    // step of 2 enforces even periods so 50% duty cycle divides cleanly
     frequencySpinBox = new QSpinBox(ClockDialog);
     frequencySpinBox->setObjectName("frequencySpinBox");
     frequencySpinBox->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
@@ -35,6 +38,8 @@ void ClockDialogUi::setupUi(QDialog *ClockDialog)
 
     frequencySlider = new QSlider(ClockDialog);
     frequencySlider->setObjectName("frequencySlider");
+    // Slider mirrors the spin box constraints exactly so both controls always
+    // show the same legal range.
     frequencySlider->setMinimum(2);
     frequencySlider->setMaximum(1024);
     frequencySlider->setSingleStep(2);
@@ -57,6 +62,7 @@ void ClockDialogUi::setupUi(QDialog *ClockDialog)
 
     retranslateUi(ClockDialog);
 
+    // Bidirectionally sync the slider and spin box so either control can drive the other
     QObject::connect(frequencySlider, &QSlider::valueChanged, frequencySpinBox, &QSpinBox::setValue);
     QObject::connect(frequencySpinBox, QOverload<int>::of(&QSpinBox::valueChanged), frequencySlider, &QSlider::setValue);
 

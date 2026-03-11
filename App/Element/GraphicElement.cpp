@@ -20,6 +20,8 @@
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 
+// Sanity cap when deserialising: any port count beyond this indicates a corrupt stream
+// rather than a legitimately large element.
 const int maximumValidInputSize = 256;
 
 GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QString &pixmapPath, const QString &titleText, const QString &translatedName, const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent)
@@ -29,6 +31,8 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     , m_translatedName(translatedName)
     , m_elementGroup(group)
     , m_elementType(type)
+    // Port-count limits are stored as quint64 to match the QDataStream serialisation
+    // format; signed ints are cast on the way in and out.
     , m_minInputSize(static_cast<quint64>(minInputSize))
     , m_maxInputSize(static_cast<quint64>(maxInputSize))
     , m_minOutputSize(static_cast<quint64>(minOutputSize))
@@ -39,6 +43,8 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     }
 
     qCDebug(four) << "Setting flags of elements.";
+    // ItemSendsGeometryChanges is required so itemChange() receives ItemPositionChange and
+    // can snap movement to the grid
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
 
     qCDebug(four) << "Setting attributes.";
@@ -46,6 +52,7 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     QFont font("SansSerif");
     font.setBold(true);
     m_label->setFont(font);
+    // 64 px below origin keeps the label below the standard 64×64 element body
     m_label->setPos(0, 64);
     m_label->setParentItem(this);
     m_label->setDefaultTextColor(Qt::black);
@@ -60,6 +67,8 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     GraphicElement::updatePortsProperties();
     GraphicElement::updateTheme();
 
+    // DeviceCoordinateCache reuses the rendered pixmap when the device transform changes,
+    // giving a large speedup for elements that don't redraw on every pan/zoom
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
 
@@ -85,12 +94,15 @@ void GraphicElement::setPixmap(const int index)
 
 void GraphicElement::setPixmap(const QString &pixmapPath)
 {
+    // Skip if unchanged to avoid redundant loads and cache invalidation
     if (pixmapPath.isEmpty() || (pixmapPath == m_currentPixmapPath)) {
         return;
     }
 
     QString path = pixmapPath;
 
+    // Qt resource paths start with ":/"; anything else is a filesystem path
+    // relative to the project's working directory (where the .panda file lives).
     if (not path.startsWith(":/")) {
         path.prepend(GlobalProperties::currentDir + "/");
     }
@@ -103,11 +115,14 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
                                          ? tr("File is not readable")
                                          : tr("Unknown reason");
 
+        // Load the default skin so the element remains renderable before the exception unwinds
         m_pixmap.load(m_defaultSkins.constFirst());
         qCDebug(zero) << "Problem loading pixmapPath: " << path;
         throw PANDACEPTION("Couldn't load pixmap: %1 (%2)", path, reason);
     }
 
+    // The transform origin must be updated whenever the pixmap changes so that
+    // rotation and scale operations remain centred on the new image
     setTransformOriginPoint(pixmapCenter());
     update();
 
@@ -158,6 +173,9 @@ void GraphicElement::save(QDataStream &stream) const
 
     for (auto *port : m_inputPorts) {
         QMap<QString, QVariant> tempMap;
+        // The raw pointer is serialised as a 64-bit integer and used only as a
+        // temporary key when reconstructing connection endpoints during load();
+        // it is never dereferenced after the save/load round-trip.
         tempMap.insert("ptr", reinterpret_cast<quint64>(port));
         tempMap.insert("name", port->name());
 
@@ -188,9 +206,12 @@ void GraphicElement::save(QDataStream &stream) const
         QFileInfo fileInfo(skinName);
         QString skinName2 = skinName;
 
+        // When a custom skin lives outside the project directory, copy it alongside
+        // the .panda file so the project remains self-contained when moved or shared.
         if (!skinName.startsWith(":/") && (fileInfo.absoluteDir() != GlobalProperties::currentDir)) {
             const QString newFile = GlobalProperties::currentDir + "/" + fileInfo.fileName();
             QFile::copy(skinName, newFile);
+            // Store only the bare filename; the project dir is prepended on load.
             skinName2 = fileInfo.fileName();
         }
 
@@ -213,10 +234,14 @@ void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap
 {
     qCDebug(four) << "Loading element. Type: " << objectName();
 
+    // Files before 4.1 used a flat sequential binary format; 4.1+ use a keyed QMap
+    // format that tolerates fields being added or reordered in future versions.
     (version < VERSION("4.1")) ? loadOldFormat(stream, portMap, version) : loadNewFormat(stream, portMap);
 
     qCDebug(four) << "Updating port positions.";
     updatePortsProperties();
+    // Apply the deserialized angle after ports are positioned so any non-rotatable element
+    // can apply its own rotatePorts() path correctly
     setRotation(m_angle);
 
     qCDebug(four) << "Finished loading element.";
@@ -266,6 +291,9 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     const quint64 minOutputSize = map.value("minOutputSize").toULongLong();
     const quint64 maxOutputSize = map.value("maxOutputSize").toULongLong();
 
+    // Only update constraints when the element allows variable port counts OR when
+    // the saved value falls within the current allowed range.  Prevents a fixed-port
+    // element (min == max) from being silently corrupted by a stale saved value.
     if ((m_minInputSize != m_maxInputSize) || (m_minInputSize <= maxInputSize)) {
         m_minInputSize = minInputSize;
         m_maxInputSize = maxInputSize;
@@ -349,6 +377,8 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         ++skin;
     }
 
+    // If all alternative skin slots still match the defaults, the user never
+    // applied a custom skin — record that so the "Reset to default" action works.
     m_usingDefaultSkin = std::equal(
         m_defaultSkins.begin(), m_defaultSkins.end(),
         m_alternativeSkins.begin(), m_alternativeSkins.end()
@@ -368,12 +398,16 @@ void GraphicElement::loadRotation(QDataStream &stream, const QVersionNumber vers
     qreal angle; stream >> angle;
     m_angle = angle;
 
+    // In versions before 4.1 the coordinate system for inputs and outputs was
+    // rotated 90° relative to the current convention.  Apply a compensating offset
+    // so old files render correctly without migrating every saved angle.
     if (version < VERSION("4.1")) {
         if ((m_elementGroup == ElementGroup::Input) || (m_elementGroup == ElementGroup::StaticInput)) {
             m_angle += 90;
         }
 
         if ((m_elementGroup == ElementGroup::Output) || (m_elementGroup == ElementGroup::IC) || (m_elementGroup == ElementGroup::Gate)) {
+            // Displays and Node never had the old convention applied, so skip them.
             if ((m_elementType == ElementType::Display7) || (m_elementType == ElementType::Display14) || (m_elementType == ElementType::Display16) || (m_elementType == ElementType::Node)) {
                 return;
             }
@@ -399,6 +433,10 @@ void GraphicElement::loadPortsSize(QDataStream &stream, const QVersionNumber ver
         quint64 minOutputSize; stream >> minOutputSize;
         quint64 maxOutputSize; stream >> maxOutputSize;
 
+        // Only override the compiled-in constraints when the element has a variable port count
+        // (min != max) or the saved count is within the allowed range.  This prevents a fixed-port
+        // element from being corrupted by a stale value that was written before its constraints
+        // were tightened.
         if ((m_minInputSize != m_maxInputSize) || (m_minInputSize <= maxInputSize)) {
             m_minInputSize = minInputSize;
             m_maxInputSize = maxInputSize;
@@ -462,6 +500,9 @@ void GraphicElement::loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *>
 
 void GraphicElement::removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap)
 {
+    // The element may have been constructed with more ports than are stored in the file
+    // (e.g. default constructor creates minInputSize ports).  Trim the excess from the end,
+    // but never go below minInputSize to avoid leaving an unusable element.
     while ((inputSize() > static_cast<int>(inputSize_)) && (inputSize_ >= m_minInputSize)) {
         auto *deletedPort = m_inputPorts.constLast();
         removePortFromMap(deletedPort, portMap);
@@ -472,6 +513,7 @@ void GraphicElement::removeSurplusInputs(const quint64 inputSize_, QMap<quint64,
 
 void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap)
 {
+    // Same trimming logic as removeSurplusInputs, applied to output ports
     while ((outputSize() > static_cast<int>(outputSize_)) && (outputSize_ >= m_minOutputSize)) {
         auto *deletedPort = m_outputPorts.constLast();
         removePortFromMap(deletedPort, portMap);
@@ -565,6 +607,9 @@ void GraphicElement::loadPixmapSkinName(QDataStream &stream, const int skin)
         qCDebug(zero) << "Could not load some of the skins.";
     }
 
+    // Only override the alternative skin if it is a filesystem path; resource
+    // paths (":/...") are always available and should not be replaced by the
+    // potentially missing saved path from an older project file.
     if (!name.startsWith(":/")) {
         m_alternativeSkins[skin] = name;
     }
@@ -612,16 +657,23 @@ void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     if (isSelected()) {
         painter->save();
         painter->setBrush(m_selectionBrush);
+        // 0.5 pen width keeps the selection outline thin regardless of zoom level
         painter->setPen(QPen(m_selectionPen, 0.5, Qt::SolidLine));
+        // Corner radius of 5 matches the visual rounding used on element bodies
         painter->drawRoundedRect(boundingRect(), 5, 5);
         painter->restore();
     }
 
+    // Pixmap origin is always (0,0) in item coordinates; the transform origin
+    // (centre of the pixmap) is set separately via setTransformOriginPoint().
     painter->drawPixmap(QPoint(0, 0), pixmap());
 }
 
 void GraphicElement::addPort(const QString &name, const bool isOutput)
 {
+    // Silently ignore the request rather than throwing; callers such as load()
+    // may attempt to add more ports than the current constraints allow when
+    // opening a file saved with looser constraints.
     if (isOutput && (static_cast<quint64>(m_outputPorts.size()) >= m_maxOutputSize)) {
         return;
     }
@@ -670,7 +722,11 @@ void GraphicElement::setPriority(const int value)
 
 void GraphicElement::setRotation(const qreal angle)
 {
+    // Keep angle in [0, 360) to avoid accumulated floating-point drift across many rotations
     m_angle = std::fmod(angle, 360);
+    // Rotatable elements rotate the entire QGraphicsItem (pixmap + ports move together).
+    // Non-rotatable elements (inputs/outputs) keep the pixmap fixed and only spin ports
+    // around the element centre so connections track the correct positions.
     isRotatable() ? QGraphicsItem::setRotation(m_angle) : rotatePorts(m_angle);
 }
 
@@ -710,18 +766,25 @@ void GraphicElement::updatePortsProperties()
 {
     qCDebug(five) << "Updating port positions that belong to the IC.";
 
+    // gridSize is 16 px; half that (8 px) is the port spacing unit so ports land
+    // on sub-grid snap points that wires can reach when snapped to the same grid.
     const int step = GlobalProperties::gridSize / 2;
 
     if (!m_inputPorts.isEmpty()) {
+        // Centre the port column vertically around y=32 (the mid-point of a 64 px body).
+        // The first port starts at 32 - (count-1)*step so all ports are symmetrically distributed.
         int y = 32 - (m_inputPorts.size() * step) + step;
 
         for (auto *port : std::as_const(m_inputPorts)) {
             qCDebug(five) << "Setting input at " << 0 << ", " << y;
 
+            // Non-rotatable elements (e.g. inputs) spin their ports in place rather than rotating
+            // the whole item, so reset port rotation before applying the current element angle
             if (!isRotatable()) {
                 port->setRotation(0);
             }
 
+            // Inputs are pinned to the left edge (x=0) of the 64 px body
             port->setPos(0, y);
 
             if (!isRotatable()) {
@@ -729,6 +792,8 @@ void GraphicElement::updatePortsProperties()
                 port->setRotation(m_angle);
             }
 
+            // Ports are spaced 2*step (16 px) apart so they align with the
+            // full grid and remain easily connectable with straight wires.
             y += step * 2;
         }
     }
@@ -743,6 +808,7 @@ void GraphicElement::updatePortsProperties()
                 port->setRotation(0);
             }
 
+            // Outputs are pinned to the right edge (x=64) of the 64 px body
             port->setPos(64, y);
 
             if (!isRotatable()) {
@@ -757,11 +823,14 @@ void GraphicElement::updatePortsProperties()
 
 void GraphicElement::refresh()
 {
+    // Reload skin index 0, which is the currently active skin for the element's
+    // present state (e.g. after a theme change or skin file replacement).
     setPixmap(0);
 }
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
 {
+    // Guard against changes fired during construction before the item is added to a scene
     if (!scene()) {
         return QGraphicsItem::itemChange(change, value);
     }
@@ -769,12 +838,15 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
     if (change == ItemPositionChange) {
         qCDebug(four) << "Align to grid.";
         QPointF newPos = value.toPointF();
+        // Snap to half-grid (8 px steps) so elements always align with each other
+        // and with the port positions computed in updatePortsProperties().
         const int gridSize = GlobalProperties::gridSize / 2;
         const int xV = qRound(newPos.x() / gridSize) * gridSize;
         const int yV = qRound(newPos.y() / gridSize) * gridSize;
         return QPoint(xV, yV);
     }
 
+    // Any geometric change (move, rotate, shear) requires redrawing all connected wires
     if ((change == ItemScenePositionHasChanged) || (change == ItemRotationHasChanged) || (change == ItemTransformHasChanged)) {
         qCDebug(four) << "Moves wires.";
         for (auto *port : std::as_const(m_outputPorts)) {
@@ -788,6 +860,8 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
 
     if (change == ItemSelectedHasChanged) {
         m_selected = value.toBool();
+        // Propagate selection highlight to all connected wires so users see which
+        // signals are attached to the selected element
         highlight(m_selected);
     }
 
@@ -796,6 +870,8 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
 
 bool GraphicElement::sceneEvent(QEvent *event)
 {
+    // Swallow Ctrl+click events so the scene's rubber-band selection logic can handle them
+    // without the element intercepting the press and starting a move instead
     if (event->type() == QEvent::GraphicsSceneMousePress || event->type() == QEvent::GraphicsSceneMouseRelease) {
         if (auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event)) {
             if (mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
@@ -837,6 +913,8 @@ void GraphicElement::updateLabel()
 {
     QString label = m_labelText;
 
+    // If a keyboard trigger is assigned, append it in parentheses so users can see
+    // the shortcut directly on the canvas, e.g. "Clock (Space)"
     if (!hasTrigger() || trigger().toString().isEmpty()) {
         m_label->setPlainText(label);
     } else {
@@ -859,6 +937,9 @@ QString GraphicElement::label() const
     return m_labelText;
 }
 
+// Color cycle (forward): White → Red → Green → Blue → Purple → White
+// These two functions implement previous/next steps in that cycle so the
+// property editor can wrap around without knowing the full list
 QString GraphicElement::previousColor() const
 {
     if (color() == "White") return "Purple";
@@ -879,6 +960,9 @@ QString GraphicElement::nextColor() const
     return "White"; // Standard
 }
 
+// Audio note cycle (ascending): C6 D6 E6 F6 G6 A7 B7 C7 (wraps back to C6)
+// The jump from G6 to A7 is intentional — the note names follow the piano
+// naming scheme used in the buzzer audio assets
 QString GraphicElement::previousAudio() const
 {
     if (audio() == "C6") return "C7";
@@ -927,10 +1011,12 @@ void GraphicElement::updateTheme()
 bool GraphicElement::isValid()
 {
     qCDebug(four) << "Checking if the element has the required signals to compute its value.";
+    // An element is valid only when every input port is satisfied (connected or optional)
     const bool valid = std::all_of(m_inputPorts.cbegin(), m_inputPorts.cend(),
                                    [](auto *input) { return input->isValid(); });
 
     if (!valid) {
+        // Propagate invalid status downstream so the visual chain shows where validity breaks
         for (auto *output : std::as_const(m_outputPorts)) {
             for (auto *conn : output->connections()) {
                 conn->setStatus(Status::Invalid);
@@ -1152,6 +1238,8 @@ int GraphicElement::getOutputIndexForPort(int portIndex) const
 
 QVector<std::shared_ptr<LogicElement>> GraphicElement::getLogicElementsForMapping()
 {
+    // Wrap the raw pointer in a non-owning shared_ptr (no-op deleter) so the logic mapping
+    // infrastructure can handle base elements and ICs uniformly without double-freeing
     return {std::shared_ptr<LogicElement>(logic(), [](LogicElement*){})};
 }
 
@@ -1209,6 +1297,8 @@ void GraphicElement::setMaxInputSize(const int maxInputSize)
 
 void GraphicElement::highlight(const bool isSelected)
 {
+    // Collect all ports (both input and output) into a single list to avoid duplicating
+    // the inner loop
     QVector<QNEPort *> ports;
 
     for (auto *port : std::as_const(m_inputPorts)) {
@@ -1221,6 +1311,8 @@ void GraphicElement::highlight(const bool isSelected)
 
     for (auto *port : std::as_const(ports)) {
         for (auto *connection : port->connections()) {
+            // Skip connections already in the desired highlight state to avoid
+            // triggering unnecessary repaints
             if (connection->highLight() == isSelected) {
                 continue;
             }
