@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "And.h"
+#include "App/Element/GraphicElements/And.h"
 
-#include "GlobalProperties.h"
+#include "App/GlobalProperties.h"
 
 And::And(QGraphicsItem *parent)
     : GraphicElement(ElementType::And, ElementGroup::Gate, ":/Components/Logic/and.svg", tr("AND"), tr("And"), 2, 8, 1, 1, parent)

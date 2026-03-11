@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "LogicNor.h"
+#include "App/Element/LogicElements/LogicNor.h"
 
 #include <functional>
 

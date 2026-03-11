@@ -4,7 +4,7 @@
 // Portions Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "QNEPort.h"
+#include "App/Nodes/QNEPort.h"
 
 #include <QCursor>
 #include <QDebug>
@@ -12,10 +12,10 @@
 #include <QGraphicsScene>
 #include <QPen>
 
-#include "Enums.h"
-#include "GraphicElement.h"
-#include "QNEConnection.h"
-#include "ThemeManager.h"
+#include "App/Core/Enums.h"
+#include "App/Core/ThemeManager.h"
+#include "App/Element/GraphicElement.h"
+#include "App/Nodes/QNEConnection.h"
 
 QNEPort::QNEPort(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)

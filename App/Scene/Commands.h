@@ -5,9 +5,9 @@
 
 #include <QCoreApplication>
 
-#include "ElementEditor.h"
-#include "GraphicElement.h"
-#include "Scene.h"
+#include "App/Element/GraphicElement.h"
+#include "App/Scene/Scene.h"
+#include "App/UI/ElementEditor.h"
 
 class QNEConnection;
 

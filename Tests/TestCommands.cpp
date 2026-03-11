@@ -1,17 +1,17 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "TestCommands.h"
+#include "Tests/TestCommands.h"
 
 #include <QApplication>
 #include <QTest>
 
-#include "And.h"
-#include "Commands.h"
-#include "Common.h"
-#include "RegisterTypes.h"
-#include "Scene.h"
-#include "Workspace.h"
+#include "App/Core/Common.h"
+#include "App/Element/GraphicElements/And.h"
+#include "App/RegisterTypes.h"
+#include "App/Scene/Commands.h"
+#include "App/Scene/Scene.h"
+#include "App/Scene/Workspace.h"
 
 int main(int argc, char **argv)
 {

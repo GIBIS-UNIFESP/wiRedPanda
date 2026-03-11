@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "InputGND.h"
+#include "App/Element/GraphicElements/InputGND.h"
 
-#include "GlobalProperties.h"
+#include "App/GlobalProperties.h"
 
 InputGnd::InputGnd(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputGnd, ElementGroup::StaticInput, ":/Components/Input/0.svg", tr("GROUND"), tr("GND"), 0, 0, 1, 1, parent)

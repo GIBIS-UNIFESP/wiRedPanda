@@ -9,7 +9,7 @@
 #include <QBrush>
 #include <QGraphicsPathItem>
 
-#include "Enums.h"
+#include "App/Core/Enums.h"
 
 class GraphicElement;
 class LogicElement;

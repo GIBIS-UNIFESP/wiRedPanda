@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "LogicDFlipFlop.h"
+#include "App/Element/LogicElements/LogicDFlipFlop.h"
 
 LogicDFlipFlop::LogicDFlipFlop()
     : LogicElement(4, 2)

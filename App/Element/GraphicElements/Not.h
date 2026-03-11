@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "GraphicElement.h"
+#include "App/Element/GraphicElement.h"
 
 class Not : public GraphicElement
 {

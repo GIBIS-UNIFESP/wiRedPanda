@@ -1,15 +1,15 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "ArduinoCodeGen.h"
+#include "App/CodeGen/ArduinoCodeGen.h"
 
 #include <QRegularExpression>
 
-#include "Clock.h"
-#include "Common.h"
-#include "GraphicElement.h"
-#include "QNEConnection.h"
-#include "QNEPort.h"
+#include "App/Core/Common.h"
+#include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElements/Clock.h"
+#include "App/Nodes/QNEConnection.h"
+#include "App/Nodes/QNEPort.h"
 
 ArduinoCodeGen::ArduinoCodeGen(const QString &fileName, const QVector<GraphicElement *> &elements)
     : m_file(fileName)

@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Settings.h"
+#include "App/Core/Settings.h"
 
 QSettings *Settings::settingsInstance()
 {
