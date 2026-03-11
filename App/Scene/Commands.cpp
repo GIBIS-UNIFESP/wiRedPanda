@@ -1,24 +1,24 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Commands.h"
+#include "App/Scene/Commands.h"
 
 #include <cmath>
 
 #include <QCoreApplication>
 #include <QIODevice>
 
-#include "Common.h"
-#include "ElementFactory.h"
-#include "GlobalProperties.h"
-#include "GraphicElement.h"
-#include "QNEConnection.h"
-#include "QNEPort.h"
-#include "Scene.h"
-#include "Serialization.h"
-#include "Simulation.h"
-#include "SimulationBlocker.h"
-#include "TruthTable.h"
+#include "App/Core/Common.h"
+#include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElements/TruthTable.h"
+#include "App/GlobalProperties.h"
+#include "App/IO/Serialization.h"
+#include "App/Nodes/QNEConnection.h"
+#include "App/Nodes/QNEPort.h"
+#include "App/Scene/Scene.h"
+#include "App/Simulation/Simulation.h"
+#include "App/Simulation/SimulationBlocker.h"
 
 void storeIds(const QList<QGraphicsItem *> &items, QList<int> &ids)
 {

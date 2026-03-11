@@ -7,8 +7,8 @@
 #include <QTemporaryFile>
 #include <QUndoStack>
 
-#include "GraphicsView.h"
-#include "Scene.h"
+#include "App/Scene/GraphicsView.h"
+#include "App/Scene/Scene.h"
 
 class GraphicsView;
 class Simulation;

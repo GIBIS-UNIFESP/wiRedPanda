@@ -5,7 +5,7 @@
 
 #include <QBitArray>
 
-#include "LogicElement.h"
+#include "App/Element/LogicElement.h"
 
 class LogicTruthTable : public LogicElement
 {

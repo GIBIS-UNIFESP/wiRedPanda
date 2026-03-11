@@ -1,34 +1,34 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "TestElements.h"
+#include "Tests/TestElements.h"
 
 #include <QApplication>
 #include <QTest>
 
-#include "And.h"
-#include "Common.h"
-#include "Demux.h"
-#include "DFlipFlop.h"
-#include "DLatch.h"
-#include "GlobalProperties.h"
-#include "IC.h"
-#include "InputButton.h"
-#include "InputGND.h"
-#include "InputSwitch.h"
-#include "InputVCC.h"
-#include "JKFlipFlop.h"
-#include "Led.h"
-#include "Mux.h"
-#include "Node.h"
-#include "Or.h"
-#include "QNEConnection.h"
-#include "QNEPort.h"
-#include "RegisterTypes.h"
-#include "Scene.h"
-#include "Simulation.h"
-#include "SRFlipFlop.h"
-#include "TFlipFlop.h"
+#include "App/Core/Common.h"
+#include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/Demux.h"
+#include "App/Element/GraphicElements/DFlipFlop.h"
+#include "App/Element/GraphicElements/DLatch.h"
+#include "App/Element/GraphicElements/InputButton.h"
+#include "App/Element/GraphicElements/InputGND.h"
+#include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/InputVCC.h"
+#include "App/Element/GraphicElements/JKFlipFlop.h"
+#include "App/Element/GraphicElements/Led.h"
+#include "App/Element/GraphicElements/Mux.h"
+#include "App/Element/GraphicElements/Node.h"
+#include "App/Element/GraphicElements/Or.h"
+#include "App/Element/GraphicElements/SRFlipFlop.h"
+#include "App/Element/GraphicElements/TFlipFlop.h"
+#include "App/Element/IC.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEConnection.h"
+#include "App/Nodes/QNEPort.h"
+#include "App/RegisterTypes.h"
+#include "App/Scene/Scene.h"
+#include "App/Simulation/Simulation.h"
 
 #define QUOTE(string) _QUOTE(string)
 #define _QUOTE(string) #string

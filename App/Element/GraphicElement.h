@@ -10,9 +10,9 @@
 #include <QKeySequence>
 #include <QVersionNumber>
 
-#include "Enums.h"
-#include "ItemWithId.h"
-#include "LogicElement.h"
+#include "App/Core/Enums.h"
+#include "App/Core/ItemWithId.h"
+#include "App/Element/LogicElement.h"
 
 class GraphicElement;
 class QNEInputPort;

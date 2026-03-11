@@ -1,14 +1,14 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Display7.h"
+#include "App/Element/GraphicElements/Display7.h"
 
 #include <QPainter>
 #include <QPixmap>
 
-#include "Common.h"
-#include "GlobalProperties.h"
-#include "QNEPort.h"
+#include "App/Core/Common.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEPort.h"
 
 Display7::Display7(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display7, ElementGroup::Output, ":/Components/Output/Counter/counter_on.svg", tr("7-SEGMENT DISPLAY"), tr("7-Segment Display"), 8, 8, 0, 0, parent)

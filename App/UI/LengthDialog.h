@@ -7,7 +7,7 @@
 
 #include <QDialog>
 
-#include "LengthDialogUI.h"
+#include "App/UI/LengthDialogUI.h"
 
 /*!
  * @class LengthDialog

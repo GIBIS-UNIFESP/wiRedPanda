@@ -12,15 +12,15 @@
 #include <QScopeGuard>
 #endif
 
-#include "Application.h"
-#include "Common.h"
-#include "GlobalProperties.h"
-#include "MainWindow.h"
-#include "RegisterTypes.h"
-#include "Workspace.h"
+#include "App/Core/Application.h"
+#include "App/Core/Common.h"
+#include "App/GlobalProperties.h"
+#include "App/RegisterTypes.h"
+#include "App/Scene/Workspace.h"
+#include "App/UI/MainWindow.h"
 
 #ifdef HAVE_SENTRY
-#include "../thirdparty/sentry/include/sentry.h"
+#include "thirdparty/sentry/include/sentry.h"
 #endif
 
 int main(int argc, char *argv[])

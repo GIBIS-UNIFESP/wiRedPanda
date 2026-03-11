@@ -1,10 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Demux.h"
+#include "App/Element/GraphicElements/Demux.h"
 
-#include "GlobalProperties.h"
-#include "QNEPort.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEPort.h"
 
 Demux::Demux(QGraphicsItem *parent)
     : GraphicElement(ElementType::Demux, ElementGroup::Mux, ":/Components/Logic/demux.svg", tr("DEMULTIPLEXER"), tr("Demux"), 2, 2, 2, 2, parent)

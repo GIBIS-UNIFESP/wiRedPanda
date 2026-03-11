@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Line.h"
+#include "App/Element/GraphicElements/Line.h"
 
-#include "GlobalProperties.h"
+#include "App/GlobalProperties.h"
 
 Line::Line(QGraphicsItem *parent)
     : GraphicElement(ElementType::Line, ElementGroup::Other, ":/Components/Misc/line.svg", tr("LINE"), tr("Line"), 0, 0, 0, 0, parent)

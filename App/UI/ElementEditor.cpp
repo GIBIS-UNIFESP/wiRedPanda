@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "ElementEditor.h"
+#include "App/UI/ElementEditor.h"
 
 #include <cmath>
 
@@ -11,17 +11,17 @@
 #include <QKeyEvent>
 #include <QMenu>
 
-#include "AudioBox.h"
-#include "Commands.h"
-#include "Common.h"
-#include "ElementEditorUI.h"
-#include "ElementFactory.h"
-#include "InputRotary.h"
-#include "LabeledSlider.h"
-#include "Scene.h"
-#include "Serialization.h"
-#include "ThemeManager.h"
-#include "TruthTable.h"
+#include "App/Core/Common.h"
+#include "App/Core/ThemeManager.h"
+#include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElements/AudioBox.h"
+#include "App/Element/GraphicElements/InputRotary.h"
+#include "App/Element/GraphicElements/TruthTable.h"
+#include "App/IO/Serialization.h"
+#include "App/Scene/Commands.h"
+#include "App/Scene/Scene.h"
+#include "App/UI/ElementEditorUI.h"
+#include "App/UI/LabeledSlider.h"
 
 ElementEditor::ElementEditor(QWidget *parent)
     : QWidget(parent)

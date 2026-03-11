@@ -1,24 +1,24 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "TestLogicElements.h"
+#include "Tests/TestLogicElements.h"
 
 #include <QApplication>
 #include <QTest>
 
-#include "Common.h"
-#include "LogicAnd.h"
-#include "LogicDemux.h"
-#include "LogicDFlipFlop.h"
-#include "LogicDLatch.h"
-#include "LogicInput.h"
-#include "LogicJKFlipFlop.h"
-#include "LogicMux.h"
-#include "LogicNode.h"
-#include "LogicOr.h"
-#include "LogicSRFlipFlop.h"
-#include "LogicTFlipFlop.h"
-#include "RegisterTypes.h"
+#include "App/Core/Common.h"
+#include "App/Element/LogicElements/LogicAnd.h"
+#include "App/Element/LogicElements/LogicDemux.h"
+#include "App/Element/LogicElements/LogicDFlipFlop.h"
+#include "App/Element/LogicElements/LogicDLatch.h"
+#include "App/Element/LogicElements/LogicInput.h"
+#include "App/Element/LogicElements/LogicJKFlipFlop.h"
+#include "App/Element/LogicElements/LogicMux.h"
+#include "App/Element/LogicElements/LogicNode.h"
+#include "App/Element/LogicElements/LogicOr.h"
+#include "App/Element/LogicElements/LogicSRFlipFlop.h"
+#include "App/Element/LogicElements/LogicTFlipFlop.h"
+#include "App/RegisterTypes.h"
 
 int main(int argc, char **argv)
 {
