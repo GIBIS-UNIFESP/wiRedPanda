@@ -169,5 +169,5 @@ Deploy/
 
 # wiRedPanda specific
 *.panda
-!examples/**/*.panda
-!tests/**/*.panda
+!Examples/**/*.panda
+!Tests/**/*.panda

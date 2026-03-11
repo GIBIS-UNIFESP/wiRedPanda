@@ -50,7 +50,7 @@ Você pode ajudar a traduzir o wiRedPanda para outros idiomas. Usamos a platafor
 
 Como alternativa, você também pode contribuir bifurcando este repositório e adicionando traduções manualmente.
 
-As traduções estão localizadas no diretório [app/resources/translations](https://github.com/GIBIS-UNIFESP/wiRedPanda/tree/master/app/resources/translations).
+As traduções estão localizadas no diretório [App/Resources/Translations](https://github.com/GIBIS-UNIFESP/wiRedPanda/tree/master/App/Resources/Translations).
 
 <a href="https://hosted.weblate.org/engage/wiredpanda/">
 <img src="https://hosted.weblate.org/widget/wiredpanda/wiredpanda/multi-auto.svg" alt="Status da tradução" />

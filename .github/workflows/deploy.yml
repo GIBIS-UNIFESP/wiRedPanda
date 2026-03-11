@@ -167,17 +167,17 @@ jobs:
         mkdir -p appimage appimage/lib appimage/usr/share/icons/hicolor/scalable/apps appimage/usr/share/icons/hicolor/256x256/apps
 
         # Copy desktop file to root and substitute version
-        cp app/resources/freedesktop/wiredpanda.desktop appimage/wiredpanda.desktop
+        cp App/Resources/Freedesktop/wiredpanda.desktop appimage/wiredpanda.desktop
         sed -i "s/@VERSION@/$VERSION/g" appimage/wiredpanda.desktop
 
         # Copy icons to proper FHS locations (both SVG and PNG for compatibility)
-        cp app/resources/assets/logos/wpanda.svg appimage/usr/share/icons/hicolor/scalable/apps/wpanda.svg
+        cp App/Resources/Assets/Logos/wpanda.svg appimage/usr/share/icons/hicolor/scalable/apps/wpanda.svg
 
         # Copy existing PNG icon for broader compatibility
-        cp app/resources/assets/logos/wpanda.png appimage/usr/share/icons/hicolor/256x256/apps/wpanda.png
+        cp App/Resources/Assets/Logos/wpanda.png appimage/usr/share/icons/hicolor/256x256/apps/wpanda.png
 
         # Copy icon to AppImage root for linuxdeployqt compatibility
-        cp app/resources/assets/logos/wpanda.png appimage/wpanda.png
+        cp App/Resources/Assets/Logos/wpanda.png appimage/wpanda.png
 
         # Create .DirIcon symlink for file managers (prefer PNG for compatibility)
         ln -sf usr/share/icons/hicolor/256x256/apps/wpanda.png appimage/.DirIcon
@@ -417,8 +417,8 @@ jobs:
         }
 
         # Verify examples directory
-        if (Test-Path "build/wiredpanda-$env:VERSION/examples") {
-          $exampleCount = (Get-ChildItem "build/wiredpanda-$env:VERSION/examples" -Recurse -File | Measure-Object).Count
+        if (Test-Path "build/wiredpanda-$env:VERSION/Examples") {
+          $exampleCount = (Get-ChildItem "build/wiredpanda-$env:VERSION/Examples" -Recurse -File | Measure-Object).Count
           Write-Output "✓ Examples directory present with $exampleCount files"
         } else {
           Write-Output "Warning: Examples directory missing"

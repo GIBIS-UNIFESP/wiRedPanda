@@ -5,16 +5,16 @@ on:
   push:
     branches: [master, translations]
     paths:
-      - 'app/**/*.cpp'
-      - 'app/**/*.h'
-      - 'app/**/*.ui'
+      - 'App/**/*.cpp'
+      - 'App/**/*.h'
+      - 'App/**/*.ui'
       - 'CMakeLists.txt'
 
   # Trigger on translation file changes (typically from Weblate)
   pull_request:
     branches: [master]
     paths:
-      - 'app/resources/translations/*.ts'
+      - 'App/Resources/Translations/*.ts'
     types: [opened, synchronize, reopened]
 
   # Manual trigger
@@ -74,7 +74,7 @@ jobs:
             branch_name="translation-update-$(date +%Y%m%d-%H%M%S)"
             git checkout -b "$branch_name"
 
-            git add app/resources/translations/
+            git add App/Resources/Translations/
 
             # Create commit message
             changed_files=$(git diff --cached --name-only | wc -l)
@@ -143,7 +143,7 @@ jobs:
 
       - name: Validate translation files
         run: |
-          cd app/resources/translations
+          cd App/Resources/Translations
           echo "Validating .ts files..."
           for ts_file in wpanda_*.ts; do
             if [[ -f "$ts_file" ]]; then
@@ -167,7 +167,7 @@ jobs:
 
       - name: Check translation completeness
         run: |
-          cd app/resources/translations
+          cd App/Resources/Translations
           echo "Translation completeness report:"
           echo "=================================="
           for ts_file in wpanda_*.ts; do
@@ -197,9 +197,9 @@ jobs:
           git config user.email "translation-bot@users.noreply.github.com"
 
           # Check if there are any changes to compiled files
-          if ! git diff --quiet app/resources/translations/; then
-            git add app/resources/translations/*.qm
-            git add app/resources/translations/translations.qrc
+          if ! git diff --quiet App/Resources/Translations/; then
+            git add App/Resources/Translations/*.qm
+            git add App/Resources/Translations/translations.qrc
 
             git commit -m "Compile translation files
 
@@ -247,7 +247,7 @@ jobs:
 
       - name: Process Weblate changes
         run: |
-          cd app/resources/translations
+          cd App/Resources/Translations
 
           # Remove backup files that Weblate might have created
           find . -name "*.ts.backup" -delete
@@ -285,10 +285,10 @@ jobs:
           git config user.email "weblate-integration@users.noreply.github.com"
 
           # Remove any backup files
-          find app/resources/translations -name "*.backup" -delete
+          find App/Resources/Translations -name "*.backup" -delete
 
           # Add all translation-related changes
-          git add app/resources/translations/
+          git add App/Resources/Translations/
 
           # Check if there are changes to commit
           if ! git diff --cached --quiet; then
@@ -320,7 +320,7 @@ jobs:
             const path = require('path');
 
             // Get translation completeness
-            const translationsDir = 'app/resources/translations';
+            const translationsDir = 'App/Resources/Translations';
             const tsFiles = fs.readdirSync(translationsDir).filter(f => f.startsWith('wpanda_') && f.endsWith('.ts'));
 
             let report = '## 🌐 Translation Status\n\n';
