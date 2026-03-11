@@ -3,15 +3,15 @@
 
 #include "TestCommands.h"
 
+#include <QApplication>
+#include <QTest>
+
 #include "And.h"
 #include "Commands.h"
 #include "Common.h"
 #include "RegisterTypes.h"
 #include "Scene.h"
 #include "Workspace.h"
-
-#include <QApplication>
-#include <QTest>
 
 int main(int argc, char **argv)
 {

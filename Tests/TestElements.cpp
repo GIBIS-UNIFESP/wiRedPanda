@@ -3,6 +3,9 @@
 
 #include "TestElements.h"
 
+#include <QApplication>
+#include <QTest>
+
 #include "And.h"
 #include "Common.h"
 #include "Demux.h"
@@ -26,9 +29,6 @@
 #include "Simulation.h"
 #include "SRFlipFlop.h"
 #include "TFlipFlop.h"
-
-#include <QApplication>
-#include <QTest>
 
 #define QUOTE(string) _QUOTE(string)
 #define _QUOTE(string) #string

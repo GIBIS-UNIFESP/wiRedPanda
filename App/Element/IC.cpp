@@ -3,6 +3,11 @@
 
 #include "IC.h"
 
+#include <QDir>
+#include <QGraphicsSceneMouseEvent>
+#include <QPainter>
+#include <QStyleOptionGraphicsItem>
+
 #include "Application.h"
 #include "Common.h"
 #include "ElementFactory.h"
@@ -11,11 +16,6 @@
 #include "QNEPort.h"
 #include "Scene.h"
 #include "Serialization.h"
-
-#include <QDir>
-#include <QGraphicsSceneMouseEvent>
-#include <QPainter>
-#include <QStyleOptionGraphicsItem>
 
 IC::IC(QGraphicsItem *parent)
     : GraphicElement(ElementType::IC, ElementGroup::IC, "", tr("INTEGRATED CIRCUIT"), tr("IC"), 0, 0, 0, 0, parent)

@@ -3,9 +3,9 @@
 
 #pragma once
 
-#include "LogicElement.h"
-
 #include <QBitArray>
+
+#include "LogicElement.h"
 
 class LogicTruthTable : public LogicElement
 {

@@ -4,17 +4,18 @@
 // Portions Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Enums.h"
-#include "GraphicElement.h"
-#include "QNEConnection.h"
 #include "QNEPort.h"
-#include "ThemeManager.h"
 
 #include <QCursor>
 #include <QDebug>
 #include <QFontMetrics>
 #include <QGraphicsScene>
 #include <QPen>
+
+#include "Enums.h"
+#include "GraphicElement.h"
+#include "QNEConnection.h"
+#include "ThemeManager.h"
 
 QNEPort::QNEPort(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)

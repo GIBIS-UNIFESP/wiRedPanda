@@ -3,11 +3,11 @@
 
 #include "TruthTable.h"
 
+#include <QPainter>
+
 #include "Common.h"
 #include "GlobalProperties.h"
 #include "QNEPort.h"
-
-#include <QPainter>
 
 TruthTable::TruthTable(QGraphicsItem *parent)
     : GraphicElement(ElementType::TruthTable, ElementGroup::IC, ":/Components/Logic/truthtable-rotated.svg", tr("TRUTH TABLE"), tr("Truth Table"), 2, 8, 1, 8, parent)

@@ -2,20 +2,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "BeWavedDolphin.h"
-#include "BeWavedDolphinUI.h"
 
-#include "ClockDialog.h"
-#include "Common.h"
-#include "ElementFactory.h"
-#include "GlobalProperties.h"
-#include "GraphicElement.h"
-#include "GraphicElementInput.h"
-#include "InputRotary.h"
-#include "LengthDialog.h"
-#include "MainWindow.h"
-#include "Serialization.h"
-#include "Settings.h"
-#include "SimulationBlocker.h"
+#include <cmath>
+#include <iostream>
 
 #include <QAbstractItemView>
 #include <QApplication>
@@ -28,8 +17,20 @@
 #include <QPrinter>
 #include <QSaveFile>
 #include <QTextStream>
-#include <cmath>
-#include <iostream>
+
+#include "BeWavedDolphinUI.h"
+#include "ClockDialog.h"
+#include "Common.h"
+#include "ElementFactory.h"
+#include "GlobalProperties.h"
+#include "GraphicElement.h"
+#include "GraphicElementInput.h"
+#include "InputRotary.h"
+#include "LengthDialog.h"
+#include "MainWindow.h"
+#include "Serialization.h"
+#include "Settings.h"
+#include "SimulationBlocker.h"
 
 SignalModel::SignalModel(const int inputs, const int rows, const int columns, QObject *parent)
     : QStandardItemModel(rows, columns, parent)

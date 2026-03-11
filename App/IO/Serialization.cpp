@@ -3,14 +3,14 @@
 
 #include "Serialization.h"
 
+#include <QApplication>
+#include <QIODevice>
+
 #include "Common.h"
 #include "ElementFactory.h"
 #include "GlobalProperties.h"
 #include "GraphicElement.h"
 #include "QNEConnection.h"
-
-#include <QApplication>
-#include <QIODevice>
 
 void Serialization::writePandaHeader(QDataStream &stream)
 {

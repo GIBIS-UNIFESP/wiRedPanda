@@ -2,23 +2,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "MainWindow.h"
-#include "MainWindowUI.h"
 
-#include "ArduinoCodeGen.h"
-#include "BeWavedDolphin.h"
-#include "Common.h"
-#include "DFlipFlop.h"
-#include "ElementFactory.h"
-#include "ElementLabel.h"
-#include "GlobalProperties.h"
-#include "GraphicsView.h"
-#include "IC.h"
-#include "RecentFiles.h"
-#include "Settings.h"
-#include "Simulation.h"
-#include "SimulationBlocker.h"
-#include "ThemeManager.h"
-#include "Workspace.h"
+#ifdef Q_OS_WASM
+#include <emscripten/emscripten.h>
+#endif
 
 #include <QActionGroup>
 #include <QCheckBox>
@@ -40,14 +27,29 @@
 
 #ifdef Q_OS_MAC
 #include <QSvgRenderer>
+#endif
 
+#include "ArduinoCodeGen.h"
+#include "BeWavedDolphin.h"
+#include "Common.h"
+#include "DFlipFlop.h"
+#include "ElementFactory.h"
+#include "ElementLabel.h"
+#include "GlobalProperties.h"
+#include "GraphicsView.h"
+#include "IC.h"
+#include "MainWindowUI.h"
+#include "RecentFiles.h"
+#include "Settings.h"
+#include "Simulation.h"
+#include "SimulationBlocker.h"
+#include "ThemeManager.h"
+#include "Workspace.h"
+
+#ifdef Q_OS_MAC
 void ensureSvgUsage() {
     QSvgRenderer dummy; // for macdeployqt to add libqsvg.dylib
 }
-#endif
-
-#ifdef Q_OS_WASM
-#include <emscripten/emscripten.h>
 #endif
 
 MainWindow::MainWindow(const QString &fileName, QWidget *parent)

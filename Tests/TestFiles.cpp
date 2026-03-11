@@ -3,6 +3,10 @@
 
 #include "TestFiles.h"
 
+#include <QApplication>
+#include <QTemporaryFile>
+#include <QTest>
+
 #include "Common.h"
 #include "GlobalProperties.h"
 #include "QNEConnection.h"
@@ -10,10 +14,6 @@
 #include "Scene.h"
 #include "Serialization.h"
 #include "Workspace.h"
-
-#include <QApplication>
-#include <QTemporaryFile>
-#include <QTest>
 
 #define QUOTE(string) _QUOTE(string)
 #define _QUOTE(string) #string

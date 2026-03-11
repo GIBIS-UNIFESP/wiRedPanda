@@ -5,11 +5,11 @@
 
 // Specific Qt includes instead of monolithic QtWidgets
 #include <QDialog>
-#include <QGridLayout>
-#include <QSlider>
-#include <QLabel>
-#include <QSpinBox>
 #include <QDialogButtonBox>
+#include <QGridLayout>
+#include <QLabel>
+#include <QSlider>
+#include <QSpinBox>
 
 class LengthDialogUi
 {

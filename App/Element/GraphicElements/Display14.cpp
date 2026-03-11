@@ -3,11 +3,11 @@
 
 #include "Display14.h"
 
+#include <QPainter>
+
 #include "Display7.h"
 #include "GlobalProperties.h"
 #include "QNEPort.h"
-
-#include <QPainter>
 
 Display14::Display14(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display14, ElementGroup::Output, ":/Components/Output/Counter/counter_14_on.svg", tr("14-SEGMENT DISPLAY"), tr("14-Segment Display"), 15, 15, 0, 0, parent)

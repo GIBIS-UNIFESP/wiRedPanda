@@ -3,9 +3,9 @@
 
 #pragma once
 
-#include "MainWindow.h"
-
 #include <QApplication>
+
+#include "MainWindow.h"
 
 #if defined(qApp)
 #undef qApp
