@@ -3,12 +3,12 @@
 
 #include "TestIcons.h"
 
+#include <QApplication>
+#include <QTest>
+
 #include "Common.h"
 #include "ElementFactory.h"
 #include "RegisterTypes.h"
-
-#include <QApplication>
-#include <QTest>
 
 int main(int argc, char **argv)
 {

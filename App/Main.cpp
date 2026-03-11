@@ -1,6 +1,17 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
+#include <QCommandLineParser>
+#include <QMessageBox>
+
+#ifdef HAVE_SENTRY
+#include <QScopeGuard>
+#endif
+
 #include "Application.h"
 #include "Common.h"
 #include "GlobalProperties.h"
@@ -8,16 +19,8 @@
 #include "RegisterTypes.h"
 #include "Workspace.h"
 
-#include <QCommandLineParser>
-#include <QMessageBox>
-
-#ifdef Q_OS_WIN
-#include <windows.h>
-#endif
-
 #ifdef HAVE_SENTRY
 #include "../thirdparty/sentry/include/sentry.h"
-#include <QScopeGuard>
 #endif
 
 int main(int argc, char *argv[])

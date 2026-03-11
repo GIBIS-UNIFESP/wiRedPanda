@@ -4,18 +4,18 @@
 #pragma once
 
 // Specific Qt includes instead of monolithic QtWidgets
-#include <QWidget>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QDoubleSpinBox>
 #include <QGridLayout>
 #include <QGroupBox>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QLabel>
 #include <QHBoxLayout>
-#include <QPushButton>
+#include <QLabel>
 #include <QLineEdit>
-#include <QDoubleSpinBox>
+#include <QPushButton>
 #include <QSlider>
 #include <QSpinBox>
+#include <QWidget>
 
 class LabeledSlider;
 

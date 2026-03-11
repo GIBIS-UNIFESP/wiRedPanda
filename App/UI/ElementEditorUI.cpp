@@ -2,11 +2,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "ElementEditorUI.h"
-#include "LabeledSlider.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QMetaObject>
 #include <QtGui/QIcon>
+
+#include "LabeledSlider.h"
 
 void ElementEditor_Ui::setupUi(QWidget *ElementEditor)
 {

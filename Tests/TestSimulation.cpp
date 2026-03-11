@@ -3,6 +3,12 @@
 
 #include "TestSimulation.h"
 
+#include <algorithm>
+
+#include <QApplication>
+#include <QTest>
+#include <QVector>
+
 #include "And.h"
 #include "Common.h"
 #include "ElementMapping.h"
@@ -15,11 +21,6 @@
 #include "Scene.h"
 #include "Simulation.h"
 #include "Workspace.h"
-
-#include <QApplication>
-#include <QTest>
-#include <QVector>
-#include <algorithm>
 
 int main(int argc, char **argv)
 {

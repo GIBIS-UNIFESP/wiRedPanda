@@ -3,11 +3,11 @@
 
 #pragma once
 
+#include <QCoreApplication>
+
 #include "ElementEditor.h"
 #include "GraphicElement.h"
 #include "Scene.h"
-
-#include <QCoreApplication>
 
 class QNEConnection;
 

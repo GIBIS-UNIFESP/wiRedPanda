@@ -3,12 +3,13 @@
 
 #pragma once
 
-#include "ElementMapping.h"
+#include <memory>
 
 #include <QGraphicsItem>
 #include <QObject>
 #include <QTimer>
-#include <memory>
+
+#include "ElementMapping.h"
 
 class QNEConnection;
 class QNEInputPort;

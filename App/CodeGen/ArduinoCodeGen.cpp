@@ -3,13 +3,13 @@
 
 #include "ArduinoCodeGen.h"
 
+#include <QRegularExpression>
+
 #include "Clock.h"
 #include "Common.h"
 #include "GraphicElement.h"
 #include "QNEConnection.h"
 #include "QNEPort.h"
-
-#include <QRegularExpression>
 
 ArduinoCodeGen::ArduinoCodeGen(const QString &fileName, const QVector<GraphicElement *> &elements)
     : m_file(fileName)

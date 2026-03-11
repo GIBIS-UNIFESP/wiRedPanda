@@ -3,11 +3,11 @@
 
 #pragma once
 
-#include "Application.h"
-
 #include <QColor>
 #include <QObject>
 #include <QPalette>
+
+#include "Application.h"
 
 enum class Theme { Light, Dark };
 

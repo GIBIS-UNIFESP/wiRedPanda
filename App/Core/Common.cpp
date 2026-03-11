@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "Common.h"
+
 #include "GraphicElement.h"
 #include "QNEConnection.h"
 #include "QNEPort.h"

@@ -3,15 +3,15 @@
 
 #include "ElementLabel.h"
 
-#include "ElementFactory.h"
-#include "GlobalProperties.h"
-#include "Serialization.h"
-
 #include <QDrag>
 #include <QFileInfo>
 #include <QHBoxLayout>
 #include <QMimeData>
 #include <QMouseEvent>
+
+#include "ElementFactory.h"
+#include "GlobalProperties.h"
+#include "Serialization.h"
 
 ElementLabel::ElementLabel(const QPixmap *pixmap, ElementType type, const QString &icFileName, QWidget *parent)
     : ElementLabel(*pixmap, type, icFileName, parent)

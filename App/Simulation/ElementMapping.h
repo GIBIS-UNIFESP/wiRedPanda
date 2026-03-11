@@ -3,10 +3,11 @@
 
 #pragma once
 
-#include "LogicInput.h"
+#include <memory>
 
 #include <QCoreApplication>
-#include <memory>
+
+#include "LogicInput.h"
 
 class Clock;
 class GraphicElement;

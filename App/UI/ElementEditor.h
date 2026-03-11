@@ -3,14 +3,15 @@
 
 #pragma once
 
-#include "ElementEditorUI.h"
-#include "Scene.h"
+#include <memory>
 
 #include <QDialog>
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QWidget>
-#include <memory>
+
+#include "ElementEditorUI.h"
+#include "Scene.h"
 
 /*!
  * @class ElementEditor

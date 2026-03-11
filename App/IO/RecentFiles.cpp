@@ -3,13 +3,13 @@
 
 #include "RecentFiles.h"
 
-#include "Common.h"
-#include "GlobalProperties.h"
-#include "Settings.h"
-
 #include <QApplication>
 #include <QFile>
 #include <QFileInfo>
+
+#include "Common.h"
+#include "GlobalProperties.h"
+#include "Settings.h"
 
 RecentFiles::RecentFiles(QObject *parent)
     : QObject(parent)

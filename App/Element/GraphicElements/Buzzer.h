@@ -3,10 +3,10 @@
 
 #pragma once
 
-#include "GraphicElement.h"
-
 #include <QSoundEffect>
 #include <QVersionNumber>
+
+#include "GraphicElement.h"
 
 class Buzzer : public GraphicElement
 {

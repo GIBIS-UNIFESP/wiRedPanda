@@ -3,6 +3,13 @@
 
 #include "Workspace.h"
 
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QMessageBox>
+#include <QSaveFile>
+#include <QStandardPaths>
+#include <QTemporaryFile>
+
 #include "Common.h"
 #include "ElementFactory.h"
 #include "GlobalProperties.h"
@@ -10,13 +17,6 @@
 #include "Serialization.h"
 #include "Settings.h"
 #include "SimulationBlocker.h"
-
-#include <QFileDialog>
-#include <QHBoxLayout>
-#include <QMessageBox>
-#include <QSaveFile>
-#include <QStandardPaths>
-#include <QTemporaryFile>
 
 WorkSpace::WorkSpace(QWidget *parent)
     : QWidget(parent)

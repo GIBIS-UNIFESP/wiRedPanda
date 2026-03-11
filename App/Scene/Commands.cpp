@@ -3,6 +3,11 @@
 
 #include "Commands.h"
 
+#include <cmath>
+
+#include <QCoreApplication>
+#include <QIODevice>
+
 #include "Common.h"
 #include "ElementFactory.h"
 #include "GlobalProperties.h"
@@ -14,10 +19,6 @@
 #include "Simulation.h"
 #include "SimulationBlocker.h"
 #include "TruthTable.h"
-
-#include <QCoreApplication>
-#include <QIODevice>
-#include <cmath>
 
 void storeIds(const QList<QGraphicsItem *> &items, QList<int> &ids)
 {

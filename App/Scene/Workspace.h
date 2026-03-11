@@ -3,12 +3,12 @@
 
 #pragma once
 
-#include "GraphicsView.h"
-#include "Scene.h"
-
 #include <QFileInfo>
 #include <QTemporaryFile>
 #include <QUndoStack>
+
+#include "GraphicsView.h"
+#include "Scene.h"
 
 class GraphicsView;
 class Simulation;

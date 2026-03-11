@@ -3,6 +3,8 @@
 
 #include "Simulation.h"
 
+#include <QGraphicsView>
+
 #include "Clock.h"
 #include "Common.h"
 #include "ElementMapping.h"
@@ -10,8 +12,6 @@
 #include "IC.h"
 #include "QNEConnection.h"
 #include "Scene.h"
-
-#include <QGraphicsView>
 
 using namespace std::chrono_literals;
 

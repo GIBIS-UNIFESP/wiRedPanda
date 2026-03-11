@@ -2,7 +2,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #if defined __cplusplus
-// Qt includes (most common and stable)
+// Standard library includes
+#include <memory>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
+// Qt includes
 #include <QBitArray>
 #include <QBrush>
 #include <QCheckBox>
@@ -24,8 +30,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
-#include <QHBoxLayout>
 #include <QHash>
+#include <QHBoxLayout>
 #include <QHeaderView>
 #include <QItemDelegate>
 #include <QKeyEvent>
@@ -51,21 +57,15 @@
 #include <QStyleOptionGraphicsItem>
 #include <QTableView>
 #include <QTextStream>
+#include <QtGlobal>
 #include <QTimer>
 #include <QVector>
 #include <QVersionNumber>
 #include <QWidget>
-#include <QtGlobal>
 
-// Standard library includes (most expensive templates)
-#include <memory>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-
-// Project includes (most expensive headers based on ClangBuildAnalyzer)
+// Project includes
 #include "Enums.h"
-#include "LogicElement.h"
-#include "ItemWithId.h"
 #include "GraphicElement.h"
+#include "ItemWithId.h"
+#include "LogicElement.h"
 #endif

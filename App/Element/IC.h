@@ -3,11 +3,11 @@
 
 #pragma once
 
-#include "ElementMapping.h"
-#include "GraphicElement.h"
-
 #include <QFileInfo>
 #include <QFileSystemWatcher>
+
+#include "ElementMapping.h"
+#include "GraphicElement.h"
 
 class IC : public GraphicElement
 {

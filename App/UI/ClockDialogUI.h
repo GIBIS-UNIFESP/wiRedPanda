@@ -5,11 +5,11 @@
 
 // Specific Qt includes instead of monolithic QtWidgets
 #include <QDialog>
-#include <QGridLayout>
 #include <QDialogButtonBox>
-#include <QSpinBox>
-#include <QSlider>
+#include <QGridLayout>
 #include <QLabel>
+#include <QSlider>
+#include <QSpinBox>
 
 class ClockDialog_Ui
 {

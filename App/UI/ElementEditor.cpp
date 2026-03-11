@@ -2,11 +2,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "ElementEditor.h"
-#include "ElementEditorUI.h"
+
+#include <cmath>
+
+#include <QDebug>
+#include <QFileDialog>
+#include <QImageReader>
+#include <QKeyEvent>
+#include <QMenu>
 
 #include "AudioBox.h"
 #include "Commands.h"
 #include "Common.h"
+#include "ElementEditorUI.h"
 #include "ElementFactory.h"
 #include "InputRotary.h"
 #include "LabeledSlider.h"
@@ -14,13 +22,6 @@
 #include "Serialization.h"
 #include "ThemeManager.h"
 #include "TruthTable.h"
-
-#include <QDebug>
-#include <QFileDialog>
-#include <QImageReader>
-#include <QKeyEvent>
-#include <QMenu>
-#include <cmath>
 
 ElementEditor::ElementEditor(QWidget *parent)
     : QWidget(parent)

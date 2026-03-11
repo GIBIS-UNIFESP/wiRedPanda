@@ -3,13 +3,13 @@
 
 #include "TrashButton.h"
 
-#include "Enums.h"
-#include "Serialization.h"
-
 #include <QDragEnterEvent>
 #include <QMessageBox>
 #include <QMimeData>
 #include <QVersionNumber>
+
+#include "Enums.h"
+#include "Serialization.h"
 
 TrashButton::TrashButton(QWidget *parent)
     : QPushButton(parent)

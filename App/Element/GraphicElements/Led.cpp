@@ -3,10 +3,10 @@
 
 #include "Led.h"
 
+#include <bitset>
+
 #include "GlobalProperties.h"
 #include "QNEPort.h"
-
-#include <bitset>
 
 Led::Led(QGraphicsItem *parent)
     : GraphicElement(ElementType::Led, ElementGroup::Output, ":/Components/Output/Led/LedOff.svg", tr("LED"), tr("LED"), 1, 4, 0, 0, parent)

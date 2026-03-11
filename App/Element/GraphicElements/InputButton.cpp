@@ -3,10 +3,10 @@
 
 #include "InputButton.h"
 
+#include <QGraphicsSceneMouseEvent>
+
 #include "GlobalProperties.h"
 #include "QNEPort.h"
-
-#include <QGraphicsSceneMouseEvent>
 
 InputButton::InputButton(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::InputButton, ElementGroup::Input, ":/Components/Input/buttonOff.svg", tr("PUSH BUTTON"), tr("Push Button"), 0, 0, 1, 1, parent)

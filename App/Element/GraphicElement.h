@@ -3,15 +3,16 @@
 
 #pragma once
 
-#include "Enums.h"
-#include "ItemWithId.h"
-#include "LogicElement.h"
+#include <memory>
 
 #include <QBitArray>
 #include <QGraphicsItem>
 #include <QKeySequence>
 #include <QVersionNumber>
-#include <memory>
+
+#include "Enums.h"
+#include "ItemWithId.h"
+#include "LogicElement.h"
 
 class GraphicElement;
 class QNEInputPort;

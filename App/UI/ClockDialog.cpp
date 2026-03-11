@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "ClockDialog.h"
+
 #include "ClockDialogUI.h"
 
 ClockDialog::ClockDialog(const int currentFrequency, QWidget *parent)

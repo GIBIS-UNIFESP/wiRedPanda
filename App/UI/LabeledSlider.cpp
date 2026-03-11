@@ -3,10 +3,11 @@
 
 #include "LabeledSlider.h"
 
+#include <algorithm>
+
 #include <QPainter>
 #include <QSlider>
 #include <QStyle>
-#include <algorithm>
 
 LabeledSlider::LabeledSlider(QWidget *parent)
     : QSlider(parent)

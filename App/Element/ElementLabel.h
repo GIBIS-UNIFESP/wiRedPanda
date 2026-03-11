@@ -3,11 +3,11 @@
 
 #pragma once
 
-#include "Enums.h"
-
 #include <QFrame>
 #include <QLabel>
 #include <QMimeData>
+
+#include "Enums.h"
 
 class ElementLabel : public QFrame
 {
