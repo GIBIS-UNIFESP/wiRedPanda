@@ -71,3 +71,4 @@ inline void registerTypes() {
     qRegisterMetaType<Xnor>();
     qRegisterMetaType<Xor>();
 }
+

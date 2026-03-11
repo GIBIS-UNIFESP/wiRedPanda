@@ -172,10 +172,17 @@ endif()
 include_directories(
     ${CMAKE_BINARY_DIR}
     app
-    app/arduino
+    app/bewaveddolphin
+    app/codegen
+    app/core
     app/element
-    app/logicelement
+    app/element/graphicelements
+    app/element/logicelements
+    app/io
     app/nodes
+    app/scene
+    app/simulation
+    app/ui
 )
 
 # ========= TRANSLATIONS ===========================
@@ -362,10 +369,10 @@ set(TEST_EXECUTABLES
 
 # Create individual test executables
 foreach(test_name ${TEST_EXECUTABLES})
-    add_executable(${test_name} test/${test_name}.cpp test/${test_name}.h ${RESOURCES_RCC})
+    add_executable(${test_name} tests/${test_name}.cpp tests/${test_name}.h ${RESOURCES_RCC})
     target_link_libraries(${test_name} PRIVATE wiredpanda_lib)
 
-    target_compile_definitions(${test_name} PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/test)
+    target_compile_definitions(${test_name} PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
     if(NOT CCACHE_BIN)
         target_precompile_headers(${test_name} PRIVATE pch.h)

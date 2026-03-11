@@ -168,8 +168,6 @@ Deploy/
 *.patch
 
 # wiRedPanda specific
-/examples/output/
-/app/resources/output/
 *.panda
 !examples/**/*.panda
-!test/backward_compatibility/**/*.panda
+!tests/**/*.panda

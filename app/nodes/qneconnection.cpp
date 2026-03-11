@@ -346,3 +346,4 @@ QDataStream &operator<<(QDataStream &stream, const QNEConnection *conn)
     conn->save(stream);
     return stream;
 }
+
