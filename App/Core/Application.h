@@ -17,16 +17,24 @@ class Application : public QApplication
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     Application(int &argc, char **argv);
     ~Application() override = default;
 
+    // --- Event Handling ---
+
     bool notify(QObject *receiver, QEvent *event) override;
+
+    // --- Main Window Access ---
 
     MainWindow *mainWindow() const;
     void setMainWindow(MainWindow *mainWindow);
 
 private:
     Q_DISABLE_COPY(Application)
+
+    // --- Members ---
 
     MainWindow *m_mainWindow = nullptr;
 };

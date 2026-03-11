@@ -17,14 +17,20 @@ class ClockDialog : public QDialog
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit ClockDialog(const int currentFrequency, QWidget *parent = nullptr);
     ~ClockDialog() override;
+
+    // --- Result Access ---
 
     //! Returns the clock frequency in Hz
     int frequency();
 
 private:
     Q_DISABLE_COPY(ClockDialog)
+
+    // --- Members ---
 
     std::unique_ptr<ClockDialogUi> m_ui;
 };

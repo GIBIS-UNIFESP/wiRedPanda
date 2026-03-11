@@ -11,7 +11,11 @@ class SRLatch : public GraphicElement
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit SRLatch(QGraphicsItem *parent = nullptr);
+
+    // --- Visual ---
 
     static QString pixmapPath()
     {

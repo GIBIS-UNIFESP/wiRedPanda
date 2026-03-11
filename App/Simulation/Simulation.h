@@ -21,30 +21,50 @@ class Simulation : public QObject
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit Simulation(Scene *scene);
     ~Simulation() override = default;
 
-    bool initialize();
-    bool isRunning();
-    void restart();
+    // --- Control ---
+
     void start();
     void stop();
+    void restart();
+    bool isRunning();
+
+    // --- Initialization ---
+
+    bool initialize();
+
+    // --- Step ---
+
     void update();
 
 private:
     Q_DISABLE_COPY(Simulation)
 
+    // --- Helpers ---
+
     static void updatePort(QNEInputPort *port);
     static void updatePort(QNEOutputPort *port);
     void updateWithIterativeSettling();
+
+    // --- Members: Timer & element lists ---
 
     QTimer m_timer;
     QVector<Clock *> m_clocks;
     QVector<GraphicElement *> m_outputs;
     QVector<GraphicElementInput *> m_inputs;
     QVector<QNEConnection *> m_connections;
+
+    // --- Members: Scene & mapping ---
+
     Scene *m_scene;
-    bool m_initialized = false;
     std::unique_ptr<ElementMapping> m_elmMapping;
+
+    // --- Members: State flags ---
+
+    bool m_initialized = false;
 };
 

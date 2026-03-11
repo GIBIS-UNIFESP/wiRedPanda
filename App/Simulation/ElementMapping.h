@@ -22,21 +22,38 @@ class ElementMapping
     Q_DECLARE_TR_FUNCTIONS(ElementMapping)
 
 public:
+    // --- Lifecycle ---
+
     explicit ElementMapping(const QVector<GraphicElement *> &elements);
     ~ElementMapping();
 
+    // --- Query ---
+
     const QVector<std::shared_ptr<LogicElement>> &logicElms() const;
+
+    // --- Topology ---
+
     void sort();
 
 private:
     Q_DISABLE_COPY(ElementMapping)
 
-    void applyConnection(GraphicElement *elm, QNEInputPort *inputPort);
-    void connectElements();
-    void generateLogic(GraphicElement *elm);
+    // --- Mapping generation ---
+
     void generateMap();
-    void sortLogicElements();
+    void generateLogic(GraphicElement *elm);
+
+    // --- Connection setup ---
+
+    void connectElements();
+    void applyConnection(GraphicElement *elm, QNEInputPort *inputPort);
+
+    // --- Validation & sorting ---
+
     void validateElements();
+    void sortLogicElements();
+
+    // --- Members ---
 
     LogicInput m_globalGND{false};
     LogicInput m_globalVCC{true};

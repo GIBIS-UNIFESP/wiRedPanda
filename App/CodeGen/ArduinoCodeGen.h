@@ -37,11 +37,17 @@ class ArduinoCodeGen
     Q_DECLARE_TR_FUNCTIONS(ArduinoCodeGen)
 
 public:
+    // --- Lifecycle ---
+
     ArduinoCodeGen(const QString &fileName, const QVector<GraphicElement *> &elements);
+
+    // --- Code Generation ---
 
     void generate();
 
 private:
+    // --- Internal helpers ---
+
     static QString removeForbiddenChars(const QString &input);
 
     QString otherPortName(QNEPort *port);
@@ -53,6 +59,8 @@ private:
     void declareOutputs();
     void loop();
     void setup();
+
+    // --- Members ---
 
     QFile m_file;
     QHash<QNEPort *, QString> m_varMap;

@@ -10,7 +10,11 @@ class Node : public GraphicElement
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit Node(QGraphicsItem *parent = nullptr);
+
+    // --- Visual ---
 
     void updatePortsProperties() override;
 };

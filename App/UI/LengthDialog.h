@@ -22,13 +22,19 @@ class LengthDialog : public QDialog
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit LengthDialog(const int currentLength, QWidget *parent = nullptr);
     ~LengthDialog() override;
+
+    // --- Result Access ---
 
     int length();
 
 private:
     Q_DISABLE_COPY(LengthDialog)
+
+    // --- Members ---
 
     std::unique_ptr<LengthDialogUi> m_ui;
 };
