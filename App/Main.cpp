@@ -23,6 +23,10 @@
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
 
+#ifdef ENABLE_MCP_SERVER
+#include "MCP/Server/Core/MCPProcessor.h"
+#endif
+
 #ifdef HAVE_SENTRY
 #include "thirdparty/sentry/include/sentry.h"
 #endif
@@ -55,6 +59,25 @@ int main(int argc, char *argv[])
     // it after the command-line parser runs below
     Comment::setVerbosity(-1);
 
+#ifdef ENABLE_MCP_SERVER
+    // Early argument parsing for MCP mode detection
+    // This must be done before QApplication creation to set Qt platform correctly
+    // Full argument validation happens later with QCommandLineParser
+    bool mcpMode = false;
+    bool mcpGuiMode = false;
+    for (int i = 1; i < argc; i++) {
+        if (QString(argv[i]) == "--mcp") {
+            mcpMode = true;
+        }
+        if (QString(argv[i]) == "--mcp-gui") {
+            mcpGuiMode = true;
+        }
+    }
+#else
+    bool mcpMode = false;
+    bool mcpGuiMode = false;
+#endif
+
 #ifdef Q_OS_LINUX
     // On Linux, CLI-only invocations (codegen, waveform export) must not try to
     // connect to an X11 display — CI runners and headless servers typically don't
@@ -79,13 +102,20 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef Q_OS_WIN
-    // Windows GUI applications don't inherit the parent console by default.
-    // AttachConsole() reattaches to it so that CLI output (--arduino-file, etc.)
-    // is visible when the user runs wiRedPanda from cmd.exe or PowerShell.
-    FILE *fpstdout = stdout, *fpstderr = stderr;
-    if (AttachConsole(ATTACH_PARENT_PROCESS)) {
-        freopen_s(&fpstdout, "CONOUT$", "w", stdout);
-        freopen_s(&fpstderr, "CONOUT$", "w", stderr);
+    if (!mcpMode && !mcpGuiMode) {
+        // Only attach console for non-MCP modes to preserve stdin/stdout pipes
+        FILE *fpstdout = stdout, *fpstderr = stderr;
+        if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+            freopen_s(&fpstdout, "CONOUT$", "w", stdout);
+            freopen_s(&fpstderr, "CONOUT$", "w", stderr);
+        }
+    }
+#endif
+
+#ifndef Q_OS_WIN
+    // Set environment for headless operation if in MCP mode without GUI
+    if (mcpMode && !mcpGuiMode) {
+        qputenv("QT_QPA_PLATFORM", "offscreen");
     }
 #endif
 
@@ -178,6 +208,18 @@ int main(int argc, char *argv[])
             QCoreApplication::translate("main", "When used with -c/--terminal, block execution if the circuit contains Truth Tables."));
         parser.addOption(blockTruthTableOption);
 
+#ifdef ENABLE_MCP_SERVER
+        QCommandLineOption mcpModeOption(
+            "mcp",
+            QCoreApplication::translate("main", "Run in MCP (Model Context Protocol) mode for programmatic control."));
+        parser.addOption(mcpModeOption);
+
+        QCommandLineOption mcpGuiOption(
+            "mcp-gui",
+            QCoreApplication::translate("main", "Run MCP mode with a visible GUI window."));
+        parser.addOption(mcpGuiOption);
+#endif
+
         parser.process(app);
 
         if (const QString verbosity = parser.value(verbosityOption); !verbosity.isEmpty()) {
@@ -241,6 +283,27 @@ int main(int argc, char *argv[])
             }
             exit(0);
         }
+
+#ifdef ENABLE_MCP_SERVER
+        // Handle MCP mode
+        if (parser.isSet(mcpModeOption) || parser.isSet(mcpGuiOption)) {
+            GlobalProperties::verbose = false;
+
+            auto *window = new MainWindow();
+            app.setMainWindow(window);
+
+            // Show window only if GUI mode is requested
+            if (parser.isSet(mcpGuiOption)) {
+                window->show();
+            }
+
+            // Start MCP processor
+            MCPProcessor processor(window);
+            processor.startProcessing();
+
+            return app.exec();
+        }
+#endif
 
         auto *window = new MainWindow();
         app.setMainWindow(window);
