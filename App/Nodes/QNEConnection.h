@@ -24,43 +24,72 @@ public:
     enum { Type = QGraphicsItem::UserType + 2 };
     int type() const override { return Type; }
 
+    // --- Lifecycle ---
+
     explicit QNEConnection(QGraphicsItem *parent = nullptr);
     ~QNEConnection() override;
     QNEConnection(const QNEConnection &other) : QNEConnection(other.parentItem()) {}
 
-    QNEInputPort *endPort() const;
+    // --- Port / Endpoint Access ---
+
     QNEOutputPort *startPort() const;
+    QNEInputPort *endPort() const;
     QNEPort *otherPort(const QNEPort *port) const;
-    QRectF boundingRect() const override;
-    Status status() const;
-    bool highLight();
-    double angle();
-    void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {});
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-    void save(QDataStream &stream) const;
-    void setEndPort(QNEInputPort *port);
-    void setEndPos(const QPointF point);
-    void setHighLight(const bool highLight);
+
+    // --- Port Configuration ---
+
     void setStartPort(QNEOutputPort *port);
+    void setEndPort(QNEInputPort *port);
     void setStartPos(const QPointF point);
+    void setEndPos(const QPointF point);
+
+    // --- Status & Visualization ---
+
+    Status status() const;
     void setStatus(const Status status);
+    bool highLight();
+    void setHighLight(const bool highLight);
+
+    // --- Geometric properties ---
+
+    QRectF boundingRect() const override;
+    double angle();
     void updatePath();
     void updatePosFromPorts();
+
+    // --- Visual rendering ---
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void updateTheme();
 
+    // --- Serialization ---
+
+    void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {});
+    void save(QDataStream &stream) const;
+
 protected:
+    // --- Qt event overrides ---
+
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     bool sceneEvent(QEvent *event) override;
 
 private:
+    // --- Members: Theme colors ---
+
     QColor m_activeColor;
     QColor m_inactiveColor;
     QColor m_invalidColor;
     QColor m_selectedColor;
-    QNEInputPort *m_endPort = nullptr;
+
+    // --- Members: Ports & positions ---
+
     QNEOutputPort *m_startPort = nullptr;
-    QPointF m_endPos;
+    QNEInputPort *m_endPort = nullptr;
     QPointF m_startPos;
+    QPointF m_endPos;
+
+    // --- Members: State ---
+
     Status m_status = Status::Invalid;
     bool m_highLight = false;
 };

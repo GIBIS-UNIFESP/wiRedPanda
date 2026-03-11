@@ -11,7 +11,11 @@ class DFlipFlop : public GraphicElement
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit DFlipFlop(QGraphicsItem *parent = nullptr);
+
+    // --- Visual ---
 
     static QString pixmapPath()
     {

@@ -14,22 +14,36 @@ class ElementLabel : public QFrame
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit ElementLabel(const QPixmap *pixmap, ElementType type, const QString &icFileName, QWidget *parent = nullptr);
     explicit ElementLabel(const QPixmap &pixmap, ElementType type, const QString &icFileName, QWidget *parent = nullptr);
 
-    QMimeData *mimeData();
+    // --- Queries ---
+
+    const ElementType &elementType() const;
     QString icFileName() const;
     QString name() const;
-    const ElementType &elementType() const;
     const QPixmap &pixmap() const;
+
+    // --- Drag support ---
+
+    QMimeData *mimeData();
     void startDrag();
+
+    // --- Display updates ---
+
     void updateName();
     void updateTheme();
 
 protected:
+    // --- Qt event overrides ---
+
     void mousePressEvent(QMouseEvent *event) override;
 
 private:
+    // --- Members ---
+
     ElementType m_elementType = ElementType::Unknown;
     QLabel m_iconLabel;
     QLabel m_nameLabel;

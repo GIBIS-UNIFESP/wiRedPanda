@@ -72,7 +72,11 @@ class DolphinGraphicsView : public GraphicsView
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit DolphinGraphicsView(QWidget *parent = nullptr);
+
+    // --- Zoom ---
 
     bool canZoomIn() const;
     bool canZoomOut() const;
@@ -81,6 +85,8 @@ public:
     void zoomOut();
 
 protected:
+    // --- Qt event overrides ---
+
     void wheelEvent(QWheelEvent *event) override;
 };
 
@@ -97,76 +103,119 @@ class BewavedDolphin : public QMainWindow
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit BewavedDolphin(Scene *scene, const bool askConnection = true, MainWindow *parent = nullptr);
     ~BewavedDolphin() override;
 
+    // --- Waveform Initialization ---
+
     void createWaveform();
     void createWaveform(const QString &fileName);
-    void print();
-    void saveToTxt(QTextStream &stream);
+
+    // --- Display ---
+
     void show();
 
+    // --- Export ---
+
+    void print();
+    void saveToTxt(QTextStream &stream);
+
 protected:
+    // --- Qt event overrides ---
+
     void closeEvent(QCloseEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
 
 private:
     Q_DISABLE_COPY(BewavedDolphin)
 
+    // --- File I/O ---
+
     bool checkSave();
-    int sectionFirstColumn(const QItemSelection &ranges);
-    int sectionFirstRow(const QItemSelection &ranges);
     void associateToWiRedPanda(const QString &fileName);
-    void copy(const QItemSelection &ranges, QDataStream &stream);
-    void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = true);
-    void createOneElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
-    void createZeroElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
-    void cut(const QItemSelection &ranges, QDataStream &stream);
     void load(QDataStream &stream);
     void load(QFile &file);
     void load(const QString &fileName);
+    void save(QDataStream &stream);
+    void save(QSaveFile &file);
+    void save(const QString &fileName);
+
+    // --- Signal Table Management ---
+
     void loadElements();
     void loadFromTerminal();
     void loadNewTable();
     void loadPixmaps();
     void loadSignals(QStringList &inputLabels, QStringList &outputLabels);
-    void on_actionAboutQt_triggered();
-    void on_actionAbout_triggered();
+    void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = true);
+    void createOneElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
+    void createZeroElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
+
+    // --- Clipboard ---
+
+    int sectionFirstColumn(const QItemSelection &ranges);
+    int sectionFirstRow(const QItemSelection &ranges);
+    void copy(const QItemSelection &ranges, QDataStream &stream);
+    void cut(const QItemSelection &ranges, QDataStream &stream);
+    void paste(const QItemSelection &ranges, QDataStream &stream);
+
+    // --- Simulation State ---
+
+    void prepare(const QString &fileName = {});
+    void restoreInputs();
+    void run();
+    void setLength(const int simLength, const bool runSimulation);
+
+    // --- Scene / View ---
+
+    void resizeScene();
+    void zoomChanged();
+
+    // --- Table View Event Handlers ---
+
+    void on_tableView_cellDoubleClicked();
+    void on_tableView_selectionChanged();
+
+    // --- Menu Actions: File ---
+
+    void on_actionLoad_triggered();
+    void on_actionSave_triggered();
+    void on_actionSaveAs_triggered();
+    void on_actionExportToPdf_triggered();
+    void on_actionExportToPng_triggered();
+    void on_actionExit_triggered();
+
+    // --- Menu Actions: Edit ---
+
     void on_actionAutoCrop_triggered();
     void on_actionClear_triggered();
     void on_actionCombinational_triggered();
     void on_actionCopy_triggered();
     void on_actionCut_triggered();
-    void on_actionExit_triggered();
-    void on_actionExportToPdf_triggered();
-    void on_actionExportToPng_triggered();
-    void on_actionFitScreen_triggered();
     void on_actionInvert_triggered();
-    void on_actionLoad_triggered();
     void on_actionPaste_triggered();
-    void on_actionResetZoom_triggered();
-    void on_actionSaveAs_triggered();
-    void on_actionSave_triggered();
     void on_actionSetClockWave_triggered();
     void on_actionSetLength_triggered();
     void on_actionSetTo0_triggered();
     void on_actionSetTo1_triggered();
+
+    // --- Menu Actions: View ---
+
+    void on_actionFitScreen_triggered();
+    void on_actionResetZoom_triggered();
     void on_actionShowNumbers_triggered();
     void on_actionShowWaveforms_triggered();
     void on_actionZoomIn_triggered();
     void on_actionZoomOut_triggered();
-    void on_tableView_cellDoubleClicked();
-    void on_tableView_selectionChanged();
-    void paste(const QItemSelection &ranges, QDataStream &stream);
-    void prepare(const QString &fileName = {});
-    void resizeScene();
-    void restoreInputs();
-    void run();
-    void save(QDataStream &stream);
-    void save(QSaveFile &file);
-    void save(const QString &fileName);
-    void setLength(const int simLength, const bool runSimulation);
-    void zoomChanged();
+
+    // --- Menu Actions: About ---
+
+    void on_actionAbout_triggered();
+    void on_actionAboutQt_triggered();
+
+    // --- Members ---
 
     std::unique_ptr<BewavedDolphin_Ui> m_ui;
     DolphinGraphicsView m_view;

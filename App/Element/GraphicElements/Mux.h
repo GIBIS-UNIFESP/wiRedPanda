@@ -10,7 +10,11 @@ class Mux : public GraphicElement
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit Mux(QGraphicsItem *parent = nullptr);
+
+    // --- Port Configuration ---
 
     void updatePortsProperties() override;
 };

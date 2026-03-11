@@ -19,14 +19,26 @@ class QNEPort;
 class QNEPort : public QGraphicsPathItem
 {
 public:
+    // --- Type ---
+
     enum { Type = QGraphicsItem::UserType + 1 };
     int type() const override { return Type; }
 
+    // --- Lifecycle ---
+
     explicit QNEPort(QGraphicsItem *parent = nullptr);
+
+    // --- Element Access ---
 
     GraphicElement *graphicElement() const;
     LogicElement *logic() const;
+
+    // --- Appearance ---
+
     QBrush currentBrush() const;
+
+    // --- Identity & Status ---
+
     QString name() const;
     Status defaultValue() const;
     Status status() const;
@@ -34,14 +46,29 @@ public:
     bool isRequired() const;
     const QList<QNEConnection *> &connections() const;
     int index() const;
+
+    // --- Type Queries ---
+
     virtual bool isInput() const = 0;
     virtual bool isOutput() const = 0;
     virtual bool isValid() const = 0;
+
+    // --- Status Management ---
+
     virtual void setStatus(Status status) = 0;
+
+    // --- Connection Management ---
+
     void connect(QNEConnection *conn);
     void disconnect(QNEConnection *conn);
+
+    // --- Interaction ---
+
     void hoverEnter();
     void hoverLeave();
+
+    // --- Property Setters ---
+
     void setCurrentBrush(const QBrush &currentBrush);
     void setDefaultStatus(const Status defaultStatus);
     void setGraphicElement(GraphicElement *graphicElement);
@@ -51,8 +78,12 @@ public:
     void updateConnections();
 
 protected:
+    // --- Qt Event Handling ---
+
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     virtual void updateTheme() = 0;
+
+    // --- Members ---
 
     GraphicElement *m_graphicElement = nullptr;
     QBrush m_currentBrush;
@@ -70,14 +101,24 @@ protected:
 class QNEInputPort : public QNEPort
 {
 public:
+    // --- Lifecycle ---
+
     explicit QNEInputPort(QGraphicsItem *parent = nullptr);
     ~QNEInputPort() override;
     QNEInputPort(const QNEInputPort &other) : QNEInputPort(other.parentItem()) {}
 
+    // --- Type Queries ---
+
     bool isInput() const override;
     bool isOutput() const override;
     bool isValid() const override;
+
+    // --- Status Management ---
+
     void setStatus(const Status status) override;
+
+    // --- Theme ---
+
     void updateTheme() override;
 };
 
@@ -86,14 +127,24 @@ Q_DECLARE_METATYPE(QNEInputPort)
 class QNEOutputPort : public QNEPort
 {
 public:
+    // --- Lifecycle ---
+
     explicit QNEOutputPort(QGraphicsItem *parent = nullptr);
     ~QNEOutputPort() override;
     QNEOutputPort(const QNEOutputPort &other) : QNEOutputPort(other.parentItem()) {}
 
+    // --- Type Queries ---
+
     bool isInput() const override;
     bool isOutput() const override;
     bool isValid() const override;
+
+    // --- Status Management ---
+
     void setStatus(const Status status) override;
+
+    // --- Theme ---
+
     void updateTheme() override;
 };
 

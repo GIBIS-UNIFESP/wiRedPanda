@@ -10,7 +10,11 @@ class Demux : public GraphicElement
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit Demux(QGraphicsItem *parent = nullptr);
+
+    // --- Port Configuration ---
 
     void updatePortsProperties() override;
 };

@@ -11,7 +11,11 @@ class SRFlipFlop : public GraphicElement
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit SRFlipFlop(QGraphicsItem *parent = nullptr);
+
+    // --- Visual ---
 
     static QString pixmapPath()
     {

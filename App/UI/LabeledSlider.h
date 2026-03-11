@@ -17,8 +17,12 @@ class LabeledSlider : public QSlider
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit LabeledSlider(QWidget *parent = nullptr);
 
 protected:
+    // --- Painting ---
+
     void paintEvent(QPaintEvent *event) override;
 };

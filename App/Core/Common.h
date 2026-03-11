@@ -28,13 +28,19 @@ Q_DECLARE_LOGGING_CATEGORY(five)
 class Comment
 {
 public:
+    // --- Verbosity control ---
+
     static void setVerbosity(const int verbosity);
 };
 
 class Pandaception : public std::runtime_error
 {
 public:
+    // --- Lifecycle ---
+
     explicit Pandaception(const QString &translatedMessage, const QString &englishMessage);
+
+    // --- Message access ---
 
     QString englishMessage() const;
 

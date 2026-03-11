@@ -11,10 +11,15 @@
 class GlobalProperties
 {
 public:
+    // --- Runtime State ---
+
     inline static QString currentDir = {};
     inline static bool skipInit = false;
     inline static bool verbose = true;
     inline static bool testMode = false;
+
+    // --- Application Constants ---
+
     inline static const QVersionNumber version = VERSION(APP_VERSION);
     inline static const int gridSize = 16;
     inline static const int maxRecentFiles = 10;

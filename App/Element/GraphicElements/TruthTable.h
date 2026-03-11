@@ -10,17 +10,29 @@ class TruthTable : public GraphicElement
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit TruthTable(QGraphicsItem *parent = nullptr);
 
+    // --- Key Access ---
+
     QBitArray &key();
-    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-    void save(QDataStream &stream) const override;
     void setkey(const QBitArray &key);
+
+    // --- Visual ---
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void update();
     void updatePortsProperties() override;
 
+    // --- Serialization ---
+
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
+    void save(QDataStream &stream) const override;
+
 private:
+    // --- Internal methods ---
+
     void generatePixmap();
 
     QBitArray m_key;

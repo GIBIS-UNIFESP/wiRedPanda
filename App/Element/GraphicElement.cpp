@@ -29,10 +29,10 @@ GraphicElement::GraphicElement(ElementType type, ElementGroup group, const QStri
     , m_translatedName(translatedName)
     , m_elementGroup(group)
     , m_elementType(type)
-    , m_maxInputSize(static_cast<quint64>(maxInputSize))
-    , m_maxOutputSize(static_cast<quint64>(maxOutputSize))
     , m_minInputSize(static_cast<quint64>(minInputSize))
+    , m_maxInputSize(static_cast<quint64>(maxInputSize))
     , m_minOutputSize(static_cast<quint64>(minOutputSize))
+    , m_maxOutputSize(static_cast<quint64>(maxOutputSize))
 {
     if (GlobalProperties::skipInit) {
         return;

@@ -15,6 +15,8 @@ class Serialization
     Q_DECLARE_TR_FUNCTIONS(Serialization)
 
 public:
+    // --- Circuit Serialization ---
+
     //! Serializes the list of QGraphicItems through a binary data stream.
     static void serialize(const QList<QGraphicsItem *> &items, QDataStream &stream);
 
@@ -25,15 +27,27 @@ public:
      */
     static QList<QGraphicsItem *> deserialize(QDataStream &stream, QMap<quint64, QNEPort *> portMap, const QVersionNumber version);
 
+    // --- View Serialization ---
+
     //! returns the canvas pose from the last saved session.
     static QRectF loadRect(QDataStream &stream, const QVersionNumber version);
 
+    // --- Waveform Serialization ---
+
     static QString loadDolphinFileName(QDataStream &stream, const QVersionNumber version);
+
+    // --- Utility ---
+
     static QString typeName(const int type);
+
+    // --- File Headers ---
+
     static QVersionNumber readPandaHeader(QDataStream &stream);
     static void readDolphinHeader(QDataStream &stream);
     static void writeDolphinHeader(QDataStream &stream);
     static void writePandaHeader(QDataStream &stream);
+
+    // --- Magic Headers ---
 
     constexpr static quint32 MAGIC_HEADER_CIRCUIT = 0x57504346; // "WPCF" (wiRedPanda Circuit File)
     constexpr static quint32 MAGIC_HEADER_WAVEFORM = 0x57505746; // "WPWF" (wiRedPanda Waveform File)

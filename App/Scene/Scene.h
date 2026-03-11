@@ -34,51 +34,89 @@ class Scene : public QGraphicsScene
 public:
     using QGraphicsScene::addItem;
 
+    // --- Lifecycle ---
+
     explicit Scene(QObject *parent = nullptr);
 
+    // --- View / Display Management ---
+
     GraphicsView *view() const;
-    QAction *redoAction() const;
-    QAction *undoAction() const;
+    void setView(GraphicsView *view);
+    void showGates(const bool checked);
+    void showWires(const bool checked);
+
+    // --- Element Access / Queries ---
+
     QList<QGraphicsItem *> items(Qt::SortOrder order = Qt::AscendingOrder) const;
     QList<QGraphicsItem *> items(const QPointF &pos, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::AscendingOrder, const QTransform &deviceTransform = QTransform()) const;
     QList<QGraphicsItem *> items(const QRectF &rect, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::AscendingOrder, const QTransform &deviceTransform = QTransform()) const;
-    QUndoStack *undoStack();
-    Simulation *simulation();
-    bool eventFilter(QObject *watched, QEvent *event) override;
     const QList<GraphicElement *> selectedElements() const;
     const QVector<GraphicElement *> elements() const;
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
     const QVector<GraphicElement *> visibleElements() const;
+
+    // --- Adding Items ---
+
     void addItem(QMimeData *mimeData);
+
+    // --- Clipboard (Copy / Cut / Paste) ---
+
     void copyAction();
     void cutAction();
+    void pasteAction();
+
+    // --- Element Operations (Rotate / Flip / Delete / Mute) ---
+
     void deleteAction();
+    void rotateRight();
+    void rotateLeft();
     void flipHorizontally();
     void flipVertically();
     void mute(const bool mute = true);
-    void nextElm();
-    void nextMainPropShortcut();
-    void nextSecndPropShortcut();
-    void pasteAction();
-    void prevElm();
-    void prevMainPropShortcut();
-    void prevSecndPropShortcut();
-    void receiveCommand(QUndoCommand *cmd);
-    void rotateLeft();
-    void rotateRight();
     void selectAll();
-    void setAutosaveRequired();
+
+    // --- Element Property Cycling ---
+
+    void nextElm();
+    void prevElm();
+    void nextMainPropShortcut();
+    void prevMainPropShortcut();
+    void nextSecndPropShortcut();
+    void prevSecndPropShortcut();
+
+    // --- Undo / Redo ---
+
+    QUndoStack *undoStack();
+    QAction *redoAction() const;
+    QAction *undoAction() const;
+    void receiveCommand(QUndoCommand *cmd);
+
+    // --- Simulation ---
+
+    Simulation *simulation();
     void setCircuitUpdateRequired();
-    void setView(GraphicsView *view);
-    void showGates(const bool checked);
-    void showWires(const bool checked);
+
+    // --- Autosave ---
+
+    void setAutosaveRequired();
+
+    // --- Theme ---
+
     void updateTheme();
 
+    // --- Event Filter ---
+
+    bool eventFilter(QObject *watched, QEvent *event) override;
+
 signals:
+    // --- Signals ---
+
     void circuitHasChanged();
     void contextMenuPos(QPoint screenPos, QGraphicsItem *itemAtMouse);
 
 protected:
+    // --- Qt event overrides ---
+
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event) override;
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
     void dropEvent(QGraphicsSceneDragDropEvent *event) override;
@@ -90,6 +128,8 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
+    // --- Helpers ---
+
     static void copy(const QList<QGraphicsItem *> &items, QDataStream &stream);
 
     QGraphicsItem *itemAt(const QPointF pos);
@@ -117,24 +157,43 @@ private:
     void startNewConnection(QNEOutputPort *startPort);
     void startSelectionRect();
 
+    // --- Members ---
+
+    // View
     GraphicsView *m_view = nullptr;
+
+    // Undo/redo
+    QUndoStack m_undoStack;
     QAction *m_redoAction;
     QAction *m_undoAction;
-    QElapsedTimer m_timer;
-    QGraphicsRectItem m_selectionRect;
-    QList<GraphicElement *> m_movedElements;
-    QList<QPointF> m_oldPositions;
+
+    // Simulation
+    Simulation m_simulation;
+
+    // Rendering
     QPen m_dots;
+    QGraphicsRectItem m_selectionRect;
+
+    // Mouse / interaction state
+    QElapsedTimer m_timer;
     QPointF m_mousePos;
     QPointF m_selectionStartPoint;
-    QUndoStack m_undoStack;
-    Simulation m_simulation;
-    bool m_autosaveRequired = false;
+    QList<GraphicElement *> m_movedElements;
+    QList<QPointF> m_oldPositions;
     bool m_draggingElement = false;
     bool m_markingSelectionBox = false;
+
+    // Visibility flags
     bool m_showGates = true;
     bool m_showWires = true;
+
+    // Autosave
+    bool m_autosaveRequired = false;
+
+    // Connection editing
     int m_editedConnectionId = 0;
+
+    // Hover port tracking
     int m_hoverPortElmId = 0;
     int m_hoverPortNumber = 0;
 };

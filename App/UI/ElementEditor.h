@@ -27,45 +27,86 @@ class ElementEditor : public QWidget
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit ElementEditor(QWidget *parent = nullptr);
     ~ElementEditor() override;
 
-    bool eventFilter(QObject *obj, QEvent *event) override;
-    void audioBox();
-    void changeTriggerAction();
-    void contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse);
-    void fillColorComboBox();
-    void renameAction();
-    void retranslateUi();
+    // --- Scene Binding ---
+
     void setScene(Scene *scene);
-    void truthTable();
+
+    // --- UI Refresh ---
+
     void update();
+    void retranslateUi();
+    void updateTheme();
+    void fillColorComboBox();
+
+    // --- User Actions ---
+
+    void renameAction();
+    void changeTriggerAction();
+    void audioBox();
+    void truthTable();
     void updateElementSkin();
     void updatePriorityAction();
-    void updateTheme();
+
+    // --- Context Menu ---
+
+    void contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse);
+
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 signals:
+    // --- Signals ---
+
     void sendCommand(QUndoCommand *cmd);
 
 private:
     Q_DISABLE_COPY(ElementEditor)
 
+    // --- Helpers ---
+
     void apply();
+    void applyCapabilitiesToUi();
     void defaultSkin();
+    void selectionChanged();
+    void setCurrentElements(const QList<GraphicElement *> &elements);
+
+    // Input/output slot handlers
     void inputIndexChanged(const int index);
     void inputLocked(const bool value);
     void outputIndexChanged(const int index);
     void outputValueChanged(const QString &value);
-    void priorityChanged(const int value);
-    void selectionChanged();
-    void setCurrentElements(const QList<GraphicElement *> &elements);
-    void setTruthTableProposition(const int row, const int column);
-    void triggerChanged(const QString &cmd);
-    void updateSkins();
 
+    // Truth table helpers
+    void setTruthTableProposition(const int row, const int column);
+
+    // Trigger handler
+    void triggerChanged(const QString &cmd);
+
+    // Skin helpers
+    void updateSkins();
+    void priorityChanged(const int value);
+
+    // --- Members ---
+
+    // UI and sub-widgets
     std::unique_ptr<ElementEditor_Ui> m_ui;
     QDialog *m_tableBox = nullptr;
+    QTableWidget *m_table = nullptr;
+
+    // Scene and selection state
+    Scene *m_scene = nullptr;
     QList<GraphicElement *> m_elements;
+
+    // Skin state
+    QString m_skinName;
+    bool m_isDefaultSkin = true;
+    bool m_isUpdatingSkin = false;
+
+    // Placeholder strings for multi-selection display
     QString m_manyAudios = tr("<Many sounds>");
     QString m_manyColors = tr("<Many colors>");
     QString m_manyDelay = tr("<Many values>");
@@ -76,13 +117,14 @@ private:
     QString m_manyOV = tr("<Many values>");
     QString m_manyPriorities = tr("<Many priorities>");
     QString m_manyTriggers = tr("<Many triggers>");
-    QString m_skinName;
-    QTableWidget *m_table = nullptr;
-    Scene *m_scene = nullptr;
+
+    // Capability flags
     bool m_canChangeInputSize = false;
     bool m_canChangeOutputSize = false;
     bool m_canChangeSkin = false;
     bool m_canMorph = false;
+
+    // Property detection flags
     bool m_hasAnyProperty = false;
     bool m_hasAudio = false;
     bool m_hasAudioBox = false;
@@ -93,6 +135,10 @@ private:
     bool m_hasLabel = false;
     bool m_hasOnlyInputs = false;
     bool m_hasRotation = false;
+    bool m_hasTrigger = false;
+    bool m_hasTruthTable = false;
+
+    // Property matching flags (set when all selected elements have same value)
     bool m_hasSameAudio = false;
     bool m_hasSameColors = false;
     bool m_hasSameDelay = false;
@@ -104,8 +150,4 @@ private:
     bool m_hasSamePriority = false;
     bool m_hasSameTrigger = false;
     bool m_hasSameType = false;
-    bool m_hasTrigger = false;
-    bool m_hasTruthTable = false;
-    bool m_isDefaultSkin = true;
-    bool m_isUpdatingSkin = false;
 };

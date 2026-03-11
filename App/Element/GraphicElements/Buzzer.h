@@ -13,17 +13,29 @@ class Buzzer : public GraphicElement
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit Buzzer(QGraphicsItem *parent = nullptr);
     Buzzer(const Buzzer &other) : Buzzer(other.parentItem()) {}
 
+    // --- State Queries ---
+
     QString audio() const override;
-    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
+
+    // --- Playback Control ---
+
     void mute(const bool mute = true);
-    void refresh() override;
-    void save(QDataStream &stream) const override;
     void setAudio(const QString &note) override;
+    void refresh() override;
+
+    // --- Serialization ---
+
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
+    void save(QDataStream &stream) const override;
 
 private:
+    // --- Internal methods ---
+
     void play();
     void stop();
 

@@ -10,24 +10,42 @@ class Clock : public GraphicElementInput
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit Clock(QGraphicsItem *parent = nullptr);
 
-    QString genericProperties() override;
+    // --- State Queries ---
+
     bool isOn(const int port = 0) const override;
-    float delay() const override;
     float frequency() const override;
-    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
-    void resetClock(const std::chrono::steady_clock::time_point &globalTime);
-    void save(QDataStream &stream) const override;
-    void setDelay(const float delay) override;
-    void setFrequency(const float freq) override;
-    void setOff() override;
+    float delay() const override;
+    QString genericProperties() override;
+
+    // --- State Setters ---
+
     void setOn() override;
+    void setOff() override;
     void setOn(const bool value, const int port = 0) override;
-    void setSkin(const bool defaultSkin, const QString &fileName) override;
+    void setFrequency(const float freq) override;
+    void setDelay(const float delay) override;
+
+    // --- Simulation ---
+
+    void resetClock(const std::chrono::steady_clock::time_point &globalTime);
     void updateClock(const std::chrono::steady_clock::time_point &globalTime);
 
+    // --- Visual ---
+
+    void setSkin(const bool defaultSkin, const QString &fileName) override;
+
+    // --- Serialization ---
+
+    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
+    void save(QDataStream &stream) const override;
+
 private:
+    // --- Members ---
+
     bool m_isOn = false;
     double m_delay = 0;
     double m_frequency = 0;

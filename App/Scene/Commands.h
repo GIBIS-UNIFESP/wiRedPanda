@@ -11,17 +11,25 @@
 
 class QNEConnection;
 
+// --- Helper Functions: Item Lookup ---
+
 GraphicElement *findElm(const int id);
 QNEConnection *findConn(const int id);
 const QList<GraphicElement *> findElements(const QList<int> &ids);
 const QList<QGraphicsItem *> findItems(const QList<int> &ids);
+
+// --- Helper Functions: Item Loading & Storage ---
+
 const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const QList<int> &ids, QList<int> &otherIds);
 const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> &ids, QList<int> &otherIds);
-void addItems(Scene *scene, const QList<QGraphicsItem *> &items);
-void deleteItems(Scene *scene, const QList<QGraphicsItem *> &items);
 void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const QList<int> &otherIds);
 void storeIds(const QList<QGraphicsItem *> &items, QList<int> &ids);
 void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &ids, QList<int> &otherIds);
+
+// --- Helper Functions: Item Management ---
+
+void addItems(Scene *scene, const QList<QGraphicsItem *> &items);
+void deleteItems(Scene *scene, const QList<QGraphicsItem *> &items);
 
 class AddItemsCommand : public QUndoCommand
 {
@@ -36,6 +44,7 @@ public:
     void undo() override;
 
 private:
+    // --- Members ---
     QByteArray m_itemData;
     QList<int> m_ids;
     QList<int> m_otherIds;
@@ -56,6 +65,7 @@ public:
     void undo() override;
 
 private:
+    // --- Members ---
     QByteArray m_itemData;
     QList<int> m_ids;
     QList<int> m_otherIds;
@@ -76,6 +86,7 @@ public:
     void undo() override;
 
 private:
+    // --- Members ---
     //! Defines how many degrees will be rotated, in clockwise direction, in this command.
     int m_angle;
 
@@ -96,6 +107,7 @@ public:
     void undo() override;
 
 private:
+    // --- Members ---
     QList<QPointF> m_newPositions;
     QList<QPointF> m_oldPositions;
     QPointF m_offset;
@@ -114,8 +126,10 @@ public:
     void undo() override;
 
 private:
+    // --- Helpers ---
     void loadData(QByteArray &itemData);
 
+    // --- Members ---
     QByteArray m_newData;
     QByteArray m_oldData;
     QList<int> m_ids;
@@ -133,6 +147,7 @@ public:
     void redo() override;
 
 private:
+    // --- Members ---
     QPointF m_nodePos;
     Scene *m_scene;
     int m_c1Id;
@@ -154,8 +169,10 @@ public:
     void undo() override;
 
 private:
+    // --- Helpers ---
     void transferConnections(QList<GraphicElement *> from, QList<GraphicElement *> to);
 
+    // --- Members ---
     ElementType m_newType;
     QList<ElementType> m_types;
     QList<int> m_ids;
@@ -173,6 +190,7 @@ public:
     void undo() override;
 
 private:
+    // --- Members ---
     QByteArray m_oldData;
     QList<int> m_ids;
     QList<int> m_order;
@@ -191,6 +209,7 @@ public:
     void undo() override;
 
 private:
+    // --- Members ---
     QList<QPointF> m_positions;
     QList<int> m_ids;
     QPointF m_maxPos;
@@ -210,6 +229,7 @@ public:
     void undo() override;
 
 private:
+    // --- Members ---
     QByteArray m_oldData;
     QList<int> m_ids;
     QList<int> m_order;
@@ -228,6 +248,7 @@ public:
     void undo() override;
 
 private:
+    // --- Members ---
     ElementEditor *m_elementeditor;
     Scene *m_scene;
     int m_id;
