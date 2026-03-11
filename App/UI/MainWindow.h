@@ -10,7 +10,7 @@
 #include <QSpacerItem>
 #include <QTranslator>
 
-#include "MainWindowUI.h"
+#include "App/UI/MainWindowUI.h"
 
 class ElementLabel;
 class RecentFiles;

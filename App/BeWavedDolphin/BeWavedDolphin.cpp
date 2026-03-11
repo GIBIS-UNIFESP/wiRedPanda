@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "BeWavedDolphin.h"
+#include "App/BeWavedDolphin/BeWavedDolphin.h"
 
 #include <cmath>
 #include <iostream>
@@ -18,19 +18,19 @@
 #include <QSaveFile>
 #include <QTextStream>
 
-#include "BeWavedDolphinUI.h"
-#include "ClockDialog.h"
-#include "Common.h"
-#include "ElementFactory.h"
-#include "GlobalProperties.h"
-#include "GraphicElement.h"
-#include "GraphicElementInput.h"
-#include "InputRotary.h"
-#include "LengthDialog.h"
-#include "MainWindow.h"
-#include "Serialization.h"
-#include "Settings.h"
-#include "SimulationBlocker.h"
+#include "App/BeWavedDolphin/BeWavedDolphinUI.h"
+#include "App/Core/Common.h"
+#include "App/Core/Settings.h"
+#include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElementInput.h"
+#include "App/Element/GraphicElements/InputRotary.h"
+#include "App/GlobalProperties.h"
+#include "App/IO/Serialization.h"
+#include "App/Simulation/SimulationBlocker.h"
+#include "App/UI/ClockDialog.h"
+#include "App/UI/LengthDialog.h"
+#include "App/UI/MainWindow.h"
 
 SignalModel::SignalModel(const int inputs, const int rows, const int columns, QObject *parent)
     : QStandardItemModel(rows, columns, parent)

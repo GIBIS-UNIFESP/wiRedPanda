@@ -1,10 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "AudioBox.h"
+#include "App/Element/GraphicElements/AudioBox.h"
 
-#include "GlobalProperties.h"
-#include "QNEPort.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEPort.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QAudioDeviceInfo>

@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "LogicTruthTable.h"
+#include "App/Element/LogicElements/LogicTruthTable.h"
 
 LogicTruthTable::LogicTruthTable(const int inputSize, const int outputSize, const QBitArray &key)
     : LogicElement(inputSize, outputSize)

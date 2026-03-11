@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "MainWindow.h"
+#include "App/UI/MainWindow.h"
 
 #ifdef Q_OS_WASM
 #include <emscripten/emscripten.h>
@@ -29,22 +29,22 @@
 #include <QSvgRenderer>
 #endif
 
-#include "ArduinoCodeGen.h"
-#include "BeWavedDolphin.h"
-#include "Common.h"
-#include "DFlipFlop.h"
-#include "ElementFactory.h"
-#include "ElementLabel.h"
-#include "GlobalProperties.h"
-#include "GraphicsView.h"
-#include "IC.h"
-#include "MainWindowUI.h"
-#include "RecentFiles.h"
-#include "Settings.h"
-#include "Simulation.h"
-#include "SimulationBlocker.h"
-#include "ThemeManager.h"
-#include "Workspace.h"
+#include "App/BeWavedDolphin/BeWavedDolphin.h"
+#include "App/CodeGen/ArduinoCodeGen.h"
+#include "App/Core/Common.h"
+#include "App/Core/Settings.h"
+#include "App/Core/ThemeManager.h"
+#include "App/Element/ElementFactory.h"
+#include "App/Element/ElementLabel.h"
+#include "App/Element/GraphicElements/DFlipFlop.h"
+#include "App/Element/IC.h"
+#include "App/GlobalProperties.h"
+#include "App/IO/RecentFiles.h"
+#include "App/Scene/GraphicsView.h"
+#include "App/Scene/Workspace.h"
+#include "App/Simulation/Simulation.h"
+#include "App/Simulation/SimulationBlocker.h"
+#include "App/UI/MainWindowUI.h"
 
 #ifdef Q_OS_MAC
 void ensureSvgUsage() {

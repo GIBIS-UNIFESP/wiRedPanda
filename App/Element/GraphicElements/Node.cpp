@@ -1,10 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Node.h"
+#include "App/Element/GraphicElements/Node.h"
 
-#include "GlobalProperties.h"
-#include "QNEPort.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEPort.h"
 
 Node::Node(QGraphicsItem *parent)
     : GraphicElement(ElementType::Node, ElementGroup::Gate, ":/Components/Logic/node.svg", tr("NODE"), tr("Node"), 1, 1, 1, 1, parent)

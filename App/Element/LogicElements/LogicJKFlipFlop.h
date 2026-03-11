@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "LogicElement.h"
+#include "App/Element/LogicElement.h"
 
 class LogicJKFlipFlop : public LogicElement
 {

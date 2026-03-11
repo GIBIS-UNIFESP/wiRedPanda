@@ -1,21 +1,21 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "IC.h"
+#include "App/Element/IC.h"
 
 #include <QDir>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
-#include "Application.h"
-#include "Common.h"
-#include "ElementFactory.h"
-#include "GlobalProperties.h"
-#include "QNEConnection.h"
-#include "QNEPort.h"
-#include "Scene.h"
-#include "Serialization.h"
+#include "App/Core/Application.h"
+#include "App/Core/Common.h"
+#include "App/Element/ElementFactory.h"
+#include "App/GlobalProperties.h"
+#include "App/IO/Serialization.h"
+#include "App/Nodes/QNEConnection.h"
+#include "App/Nodes/QNEPort.h"
+#include "App/Scene/Scene.h"
 
 IC::IC(QGraphicsItem *parent)
     : GraphicElement(ElementType::IC, ElementGroup::IC, "", tr("INTEGRATED CIRCUIT"), tr("IC"), 0, 0, 0, 0, parent)

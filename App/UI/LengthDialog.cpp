@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "LengthDialog.h"
+#include "App/UI/LengthDialog.h"
 
-#include "LengthDialogUI.h"
+#include "App/UI/LengthDialogUI.h"
 
 LengthDialog::LengthDialog(const int currentLength, QWidget *parent)
     : QDialog(parent)

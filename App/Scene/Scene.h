@@ -9,8 +9,8 @@
 #include <QUndoCommand>
 #include <QVersionNumber>
 
-#include "QNEPort.h"
-#include "Simulation.h"
+#include "App/Nodes/QNEPort.h"
+#include "App/Simulation/Simulation.h"
 
 class GraphicElement;
 class GraphicsView;

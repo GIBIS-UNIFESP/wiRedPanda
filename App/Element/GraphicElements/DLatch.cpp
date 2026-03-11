@@ -1,10 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "DLatch.h"
+#include "App/Element/GraphicElements/DLatch.h"
 
-#include "GlobalProperties.h"
-#include "QNEPort.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEPort.h"
 
 DLatch::DLatch(QGraphicsItem *parent)
     : GraphicElement(ElementType::DLatch, ElementGroup::Memory, pixmapPath(), tr("D-LATCH"), tr("D-Latch"), 2, 2, 2, 2, parent)

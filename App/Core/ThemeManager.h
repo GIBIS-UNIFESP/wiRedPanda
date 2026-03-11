@@ -7,7 +7,7 @@
 #include <QObject>
 #include <QPalette>
 
-#include "Application.h"
+#include "App/Core/Application.h"
 
 enum class Theme { Light, Dark };
 

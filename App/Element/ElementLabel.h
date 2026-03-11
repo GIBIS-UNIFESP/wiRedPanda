@@ -7,7 +7,7 @@
 #include <QLabel>
 #include <QMimeData>
 
-#include "Enums.h"
+#include "App/Core/Enums.h"
 
 class ElementLabel : public QFrame
 {

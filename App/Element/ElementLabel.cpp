@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "ElementLabel.h"
+#include "App/Element/ElementLabel.h"
 
 #include <QDrag>
 #include <QFileInfo>
@@ -9,9 +9,9 @@
 #include <QMimeData>
 #include <QMouseEvent>
 
-#include "ElementFactory.h"
-#include "GlobalProperties.h"
-#include "Serialization.h"
+#include "App/Element/ElementFactory.h"
+#include "App/GlobalProperties.h"
+#include "App/IO/Serialization.h"
 
 ElementLabel::ElementLabel(const QPixmap *pixmap, ElementType type, const QString &icFileName, QWidget *parent)
     : ElementLabel(*pixmap, type, icFileName, parent)

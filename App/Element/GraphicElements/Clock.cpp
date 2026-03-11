@@ -1,12 +1,12 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Clock.h"
+#include "App/Element/GraphicElements/Clock.h"
 
 #include <chrono>
 
-#include "GlobalProperties.h"
-#include "QNEPort.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEPort.h"
 
 using namespace std::chrono_literals;
 

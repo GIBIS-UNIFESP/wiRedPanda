@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "GraphicElementInput.h"
+#include "App/Element/GraphicElementInput.h"
 
 class InputRotary : public GraphicElementInput
 {

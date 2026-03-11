@@ -1,10 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "SRFlipFlop.h"
+#include "App/Element/GraphicElements/SRFlipFlop.h"
 
-#include "GlobalProperties.h"
-#include "QNEPort.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEPort.h"
 
 SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::SRFlipFlop, ElementGroup::Memory, pixmapPath(), tr("SR-FLIP-FLOP"), tr("SR-Flip-Flop"), 5, 5, 2, 2, parent)

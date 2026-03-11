@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "ElementEditor.h"
-#include "TrashButton.h"
+#include "App/UI/ElementEditor.h"
+#include "App/UI/TrashButton.h"
 
 // Specific Qt includes instead of monolithic QtWidgets
 #include <QMainWindow>
