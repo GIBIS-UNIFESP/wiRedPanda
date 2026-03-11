@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include "Enums.h"
-
 #include <QBrush>
 #include <QGraphicsPathItem>
+
+#include "Enums.h"
 
 class GraphicElement;
 class LogicElement;

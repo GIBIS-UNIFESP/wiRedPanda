@@ -3,10 +3,11 @@
 
 #pragma once
 
-#include "LengthDialogUI.h"
+#include <memory>
 
 #include <QDialog>
-#include <memory>
+
+#include "LengthDialogUI.h"
 
 /*!
  * @class LengthDialog

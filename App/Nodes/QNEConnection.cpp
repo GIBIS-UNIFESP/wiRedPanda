@@ -6,10 +6,6 @@
 
 #include "QNEConnection.h"
 
-#include "Common.h"
-#include "QNEPort.h"
-#include "ThemeManager.h"
-
 #include <QBrush>
 #include <QDebug>
 #include <QGraphicsScene>
@@ -17,6 +13,10 @@
 #include <QPainter>
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
+
+#include "Common.h"
+#include "QNEPort.h"
+#include "ThemeManager.h"
 
 QNEConnection::QNEConnection(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)

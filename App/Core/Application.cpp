@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "Application.h"
-#include "Common.h"
 
 #include <QMessageBox>
+
+#include "Common.h"
 
 #ifdef HAVE_SENTRY
 #include "../thirdparty/sentry/include/sentry.h"

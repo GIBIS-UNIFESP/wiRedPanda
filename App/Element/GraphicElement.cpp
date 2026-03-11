@@ -3,12 +3,7 @@
 
 #include "GraphicElement.h"
 
-#include "Common.h"
-#include "ElementFactory.h"
-#include "GlobalProperties.h"
-#include "QNEConnection.h"
-#include "QNEPort.h"
-#include "ThemeManager.h"
+#include <cmath>
 
 #include <QDir>
 #include <QFileInfo>
@@ -17,7 +12,13 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QStyleOptionGraphicsItem>
-#include <cmath>
+
+#include "Common.h"
+#include "ElementFactory.h"
+#include "GlobalProperties.h"
+#include "QNEConnection.h"
+#include "QNEPort.h"
+#include "ThemeManager.h"
 
 const int maximumValidInputSize = 256;
 

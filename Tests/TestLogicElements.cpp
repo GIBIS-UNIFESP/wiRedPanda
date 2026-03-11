@@ -3,6 +3,9 @@
 
 #include "TestLogicElements.h"
 
+#include <QApplication>
+#include <QTest>
+
 #include "Common.h"
 #include "LogicAnd.h"
 #include "LogicDemux.h"
@@ -16,9 +19,6 @@
 #include "LogicSRFlipFlop.h"
 #include "LogicTFlipFlop.h"
 #include "RegisterTypes.h"
-
-#include <QApplication>
-#include <QTest>
 
 int main(int argc, char **argv)
 {

@@ -3,10 +3,11 @@
 
 #pragma once
 
-#include "ClockDialogUI.h"
+#include <memory>
 
 #include <QDialog>
-#include <memory>
+
+#include "ClockDialogUI.h"
 
 //!
 //! \brief The clockDialog class handles dialogs for setting the frequency at which a clock ticks

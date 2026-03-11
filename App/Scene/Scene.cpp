@@ -3,6 +3,14 @@
 
 #include "Scene.h"
 
+#include <algorithm>
+
+#include <QClipboard>
+#include <QDrag>
+#include <QGraphicsSceneDragDropEvent>
+#include <QKeyEvent>
+#include <QMenu>
+
 #include "Buzzer.h"
 #include "Commands.h"
 #include "Common.h"
@@ -15,13 +23,6 @@
 #include "QNEConnection.h"
 #include "Serialization.h"
 #include "ThemeManager.h"
-
-#include <QClipboard>
-#include <QDrag>
-#include <QGraphicsSceneDragDropEvent>
-#include <QKeyEvent>
-#include <QMenu>
-#include <algorithm>
 
 Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)

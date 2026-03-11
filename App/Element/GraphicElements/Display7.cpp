@@ -3,12 +3,12 @@
 
 #include "Display7.h"
 
+#include <QPainter>
+#include <QPixmap>
+
 #include "Common.h"
 #include "GlobalProperties.h"
 #include "QNEPort.h"
-
-#include <QPainter>
-#include <QPixmap>
 
 Display7::Display7(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display7, ElementGroup::Output, ":/Components/Output/Counter/counter_on.svg", tr("7-SEGMENT DISPLAY"), tr("7-Segment Display"), 8, 8, 0, 0, parent)

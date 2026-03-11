@@ -3,10 +3,10 @@
 
 #include "Clock.h"
 
+#include <chrono>
+
 #include "GlobalProperties.h"
 #include "QNEPort.h"
-
-#include <chrono>
 
 using namespace std::chrono_literals;
 

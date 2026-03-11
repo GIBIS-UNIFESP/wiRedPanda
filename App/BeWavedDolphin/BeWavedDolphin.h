@@ -3,16 +3,17 @@
 
 #pragma once
 
-#include "BeWavedDolphinUI.h"
-#include "GraphicsView.h"
-#include "Scene.h"
+#include <memory>
 
 #include <QFileInfo>
 #include <QItemDelegate>
 #include <QMainWindow>
 #include <QStandardItemModel>
 #include <QTableView>
-#include <memory>
+
+#include "BeWavedDolphinUI.h"
+#include "GraphicsView.h"
+#include "Scene.h"
 
 class GraphicsView;
 class MainWindow;
