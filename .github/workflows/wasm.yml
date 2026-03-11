@@ -53,8 +53,8 @@ jobs:
         qt-cmake -B build -DCMAKE_BUILD_TYPE=Release -G Ninja
         cmake --build build --target wiredpanda
         cp build/wiredpanda.html build/index.html
-        cp app/resources/wasm/coi-serviceworker.min.js build/
-        cp app/resources/wasm/favicon.ico build/
+        cp App/Resources/Wasm/coi-serviceworker.min.js build/
+        cp App/Resources/Wasm/favicon.ico build/
         sed -i '/<script src="wiredpanda.js"><\/script>/a <script src="coi-serviceworker.min.js"><\/script>' build/index.html
         sed -i '/<title>/a <link rel="icon" type="image/x-icon" href="favicon.ico">' build/index.html
 
