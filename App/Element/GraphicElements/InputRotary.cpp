@@ -36,6 +36,7 @@ InputRotary::InputRotary(QGraphicsItem *parent)
 
 void InputRotary::refresh()
 {
+    // Guard against stale currentPort if output size was reduced (e.g. via undo)
     if (m_currentPort >= InputRotary::outputSize()) {
         m_currentPort = 0;
     }
@@ -45,6 +46,10 @@ void InputRotary::refresh()
 
 void InputRotary::updatePortsProperties()
 {
+    // Ports are placed around the perimeter of the 64x64 bounding box,
+    // evenly distributed to match the visual rotary positions on the SVG.
+    // Only specific output counts (2, 3, 4, 6, 8, 10, 12, 16) have defined
+    // layouts; these correspond to standard rotary switch configurations.
     switch (InputRotary::outputSize()) {
     case 2: {
         outputPort(0)->setPos(32,  0);    outputPort(0)->setName("0");
@@ -108,6 +113,7 @@ void InputRotary::updatePortsProperties()
         outputPort( 7)->setPos(16, 64);   outputPort( 7)->setName("7");
         outputPort( 8)->setPos( 0, 48);   outputPort( 8)->setName("8");
         outputPort( 9)->setPos( 0, 32);   outputPort( 9)->setName("9");
+        // Ports >= 10 use hex labels (A, B, ...) to stay single-character
         outputPort(10)->setPos( 0, 16);   outputPort(10)->setName("A");
         outputPort(11)->setPos(16,  0);   outputPort(11)->setName("B");
         break;
@@ -149,13 +155,22 @@ void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 {
     GraphicElement::paint(painter, option, widget);
 
+    // Draw a small position mark for every output port, evenly spaced around the dial.
+    // The active port also gets the arrow overlay drawn on top.
     for (int port = 0; port < outputSize(); ++port) {
         painter->save();
 
+        // Distribute marks evenly: port 0 is at the top (12 o'clock), increasing clockwise
         const double angle = 360. / outputSize() * port;
         const QPointF center = pixmapCenter();
+        // Mark rect coordinates are in the pre-rotation (top) position — the painter
+        // transform rotates the entire coordinate system around the dial center.
+        // 30.2, 8.727 = top-centre of the dial face (horizontally centred on the 64px body,
+        //               placed near the rim rather than the hub so it's visible on the SVG).
+        // 3.6 × 6.4 = small rectangular pip sized to match the tick marks on the SVG artwork.
         QRectF mark{30.2, 8.727, 3.6, 6.4};
 
+        // Off-white / cream colour matches the dial face artwork, making the tick marks blend naturally
         painter->setBrush(QBrush{QColor{255, 246, 213}});
         painter->translate(center.x(), center.y());
         painter->rotate(angle);
@@ -168,6 +183,7 @@ void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
             continue;
         }
 
+        // Overlay the arrow pixmap at the same rotation as the active mark
         painter->save();
 
         painter->translate(center.x(), center.y());
@@ -190,12 +206,14 @@ void InputRotary::setOff()
 
 void InputRotary::setOn()
 {
+    // Advance the dial one position forward, wrapping around to 0 after the last port
     const int port = (outputValue() + 1) % outputSize();
     InputRotary::setOn(true, port);
 }
 
 void InputRotary::setOn(const bool value, const int port)
 {
+    // value is ignored — the rotary is not a simple toggle; the selected port determines state
     Q_UNUSED(value)
     m_currentPort = port;
 
@@ -205,6 +223,7 @@ void InputRotary::setOn(const bool value, const int port)
 
     update();
 
+    // Exactly one output port is Active (the selected position); all others are Inactive
     for (int index = 0; index < outputSize(); ++index) {
         outputPort(index)->setStatus((m_currentPort == index) ? Status::Active : Status::Inactive);
     }
@@ -236,6 +255,7 @@ void InputRotary::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
     GraphicElement::load(stream, portMap, version);
 
     if (version < VERSION("4.1")) {
+        // v1.x–4.0 stored currentPort as a bare int; locked added in v3.1
         stream >> m_currentPort;
 
         if (version >= VERSION("3.1")) {
@@ -244,6 +264,7 @@ void InputRotary::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
     }
 
     if (version >= VERSION("4.1")) {
+        // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("currentPort")) {
@@ -255,6 +276,7 @@ void InputRotary::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
         }
     }
 
+    // Apply loaded state to ports so the simulation reflects the saved position
     setOn(true, m_currentPort);
 }
 

@@ -21,6 +21,8 @@ bool LogicElement::isValid() const
 
 void LogicElement::clearSucessors()
 {
+    // Walk every successor and null-out any InputPair that still points back
+    // to this element, so dangling pointers can't be followed after deletion.
     for (const auto &logic : std::as_const(m_successors)) {
         for (auto &inputPair : logic->m_inputPairs) {
             if (inputPair.logic == this) {
@@ -39,6 +41,8 @@ bool LogicElement::updateInputs()
         return false;
     }
 
+    // Snapshot predecessor outputs into m_inputValues so that updateLogic()
+    // can read a consistent view even when predecessor values change mid-cycle.
     for (int index = 0; index < m_inputPairs.size(); ++index) {
         m_inputValues[index] = inputValue(index);
     }
@@ -65,6 +69,10 @@ void LogicElement::connectPredecessor(const int index, LogicElement *logic, cons
 {
     m_inputPairs[index] = {logic, port};
 
+    // Register this element as a successor of the predecessor so that
+    // clearSuccessors() and priority propagation can traverse downstream edges.
+    // The duplicate guard prevents a second registration when multiple input
+    // slots share the same predecessor element.
     if (!logic->m_successors.contains(this)) {
         logic->m_successors.push_back(this);
     }
@@ -82,10 +90,16 @@ void LogicElement::setOutputValue(const bool value)
 
 void LogicElement::validate()
 {
+    // An element is valid only when every input slot has a predecessor logic
+    // node; unconnected required inputs leave a null pointer and mark the
+    // element invalid so its outputs propagate Status::Invalid downstream.
     m_isValid = std::all_of(m_inputPairs.cbegin(), m_inputPairs.cend(),
                             [](auto pair) { return pair.logic != nullptr; });
 
     if (!m_isValid) {
+        // Propagate invalidity one level downstream; the full transitive closure
+        // is reached because each successor calls validate() in turn during the
+        // same simulation-setup pass.
         for (auto *logic : std::as_const(m_successors)) {
             logic->m_isValid = false;
         }
@@ -94,9 +108,13 @@ void LogicElement::validate()
 
 int LogicElement::calculatePriority()
 {
+    // Iterative post-order DFS that computes a topological depth for each node.
+    // Higher priority means the element is deeper in the DAG and must be updated
+    // later (after all its predecessors) during each simulation cycle.
+    // m_priority == -1 serves as "not yet assigned" sentinel (see header).
     QStack<LogicElement *> stack;
     QMap<LogicElement *, bool> inStack;
-    QMap<LogicElement *, int> maxPriority;
+    QMap<LogicElement *, int> maxPriority;   // unused bookkeeping — kept for clarity
     QMap<LogicElement *, bool> inFeedbackLoop;
 
     stack.push(this);
@@ -105,6 +123,7 @@ int LogicElement::calculatePriority()
     while (!stack.isEmpty()) {
         auto *current = stack.top();
 
+        // Already assigned on a previous visit (e.g. shared successor); skip.
         if (current->m_priority != -1) {
             stack.pop();
             inStack[current] = false;
@@ -118,6 +137,7 @@ int LogicElement::calculatePriority()
         for (auto *logic : std::as_const(current->m_successors)) {
             if (logic->m_priority == -1) {
                 if (!inStack[logic]) {
+                    // Successor not yet visited — push it and process first (DFS).
                     stack.push(logic);
                     inStack[logic] = true;
                     allProcessed = false;
@@ -144,6 +164,8 @@ int LogicElement::calculatePriority()
                 current->m_priority = maxSuccessorPriority + 1;
                 current->m_inFeedbackLoop = true;
             } else {
+                // Normal case: priority is one greater than the deepest successor,
+                // ensuring this element is updated before any of its dependents.
                 current->m_priority = maxSuccessorPriority + 1;
                 current->m_inFeedbackLoop = false;
             }
@@ -162,6 +184,8 @@ bool LogicElement::outputValue(const int index) const
 
 bool LogicElement::inputValue(const int index) const
 {
+    // Traverse one edge of the logic graph: read the output of the predecessor
+    // element at the specific port that drives this input slot.
     auto *pred = m_inputPairs.at(index).logic;
     if (!pred) {
         return false;

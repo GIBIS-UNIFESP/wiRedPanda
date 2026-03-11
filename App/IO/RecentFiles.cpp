@@ -18,6 +18,8 @@ RecentFiles::RecentFiles(QObject *parent)
         m_files = Settings::value("recentFileList").toStringList();
     }
 
+    // Watch every already-known file so the menu updates live if a file is
+    // deleted or renamed outside the application (e.g. by the OS or another app).
     connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, [this](const QString &filePath) {
         if (!QFile::exists(filePath)) {
             m_files.removeAll(filePath);
@@ -36,6 +38,8 @@ void RecentFiles::addRecentFile(const QString &filePath)
 
     m_fileWatcher.addPath(filePath);
 
+    // Move to front: remove any existing occurrence first so there are no
+    // duplicates, then prepend so the latest file is always at index 0.
     m_files.removeAll(filePath);
     m_files.prepend(filePath);
 
@@ -50,6 +54,10 @@ void RecentFiles::addRecentFile(const QString &filePath)
 
 QStringList RecentFiles::recentFiles()
 {
+    // Walk with an index rather than an iterator so we can remove stale entries
+    // in-place without invalidating the loop; the file-system watcher covers
+    // deletions at runtime, but files may have disappeared while the app was
+    // closed (between sessions).
     int i = 0;
 
     while (i < m_files.size()) {
@@ -63,6 +71,7 @@ QStringList RecentFiles::recentFiles()
         ++i;
     }
 
+    // Persist the cleaned list so stale paths don't accumulate across restarts.
     saveRecentFiles();
 
     return m_files;

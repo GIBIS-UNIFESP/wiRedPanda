@@ -24,6 +24,11 @@ Demux::Demux(QGraphicsItem *parent)
 
 void Demux::updatePortsProperties()
 {
+    // The 1-of-2 demux SVG is 64×64 px. Port coordinates are in item-local space:
+    //   "In"  — data input, left side, vertically centred (y=32)
+    //   "S"   — select line, lower-left corner (x=32, y=56); offset right so the
+    //            wire doesn't overlap the data-input wire at the same x position
+    //   "Out0"/"Out1" — right side at y=16/48, evenly splitting the body height
     inputPort(0)->setPos(16, 32);     inputPort(0)->setName("In");
     inputPort(1)->setPos(32, 56);     inputPort(1)->setName("S");
 
