@@ -5,6 +5,7 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QMetaObject>
+#include <QtGui/QIcon>
 
 void ClockDialogUi::setupUi(QDialog *ClockDialog)
 {
