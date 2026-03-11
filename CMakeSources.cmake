@@ -8,6 +8,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElement.cpp
@@ -96,6 +97,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElement.h

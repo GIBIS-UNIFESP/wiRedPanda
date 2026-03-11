@@ -14,6 +14,7 @@
 #include <QSpacerItem>
 #include <QTranslator>
 
+#include "App/Core/UpdateChecker.h"
 #include "App/UI/MainWindowUI.h"
 
 class ElementLabel;
@@ -219,6 +220,7 @@ private:
     void on_actionShortcuts_and_Tips_triggered();
     void on_actionReportTranslationError_triggered();
     void aboutThisVersion();
+    void showUpdateDialog(const QString &latestVersion, const QUrl &releaseUrl);
 
     // IC panel actions
     void on_pushButtonAddIC_clicked();
@@ -245,7 +247,8 @@ private:
     QTranslator *m_qtTranslator = nullptr;
 
     // Sub-controllers
-    RecentFiles *m_recentFiles = nullptr;
+    RecentFiles   *m_recentFiles = nullptr;
+    UpdateChecker  m_updateChecker;
 
     // Tab state
     QFileInfo m_currentFile;
