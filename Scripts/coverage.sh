@@ -27,6 +27,7 @@ lcov --remove coverage.info \
     '*/Tests/*' \
     '*/build/*' \
     '*/Qt*/' \
+    '*MCP/*' \
     --output-file coverage_filtered.info --ignore-errors inconsistent,unused
 
 # Generate HTML report with dark theme

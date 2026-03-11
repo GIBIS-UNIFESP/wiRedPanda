@@ -84,6 +84,17 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/HandlerFactory.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPValidator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/StandardValidator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/BaseHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ConnectionHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ElementHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/FileHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/MCPUtilities.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ServerInfoHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/SimulationHandler.cpp
 )
 
 set(HEADERS
@@ -176,6 +187,20 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/HandlerFactory.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPValidator.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/StandardValidator.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/BaseHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ConnectionHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ElementHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/FileHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/MCPUtilities.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ServerInfoHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/SimulationHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Interfaces/ICommand.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Interfaces/IResponse.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Interfaces/IValidator.h
 )
 
 set(RESOURCES
