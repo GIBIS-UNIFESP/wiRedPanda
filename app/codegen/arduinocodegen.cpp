@@ -1,7 +1,7 @@
 // Copyright 2015 - 2025, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "codegenerator.h"
+#include "arduinocodegen.h"
 
 #include "clock.h"
 #include "common.h"
@@ -11,8 +11,7 @@
 
 #include <QRegularExpression>
 
-
-CodeGenerator::CodeGenerator(const QString &fileName, const QVector<GraphicElement *> &elements)
+ArduinoCodeGen::ArduinoCodeGen(const QString &fileName, const QVector<GraphicElement *> &elements)
     : m_file(fileName)
     , m_elements(elements)
 {
@@ -49,12 +48,12 @@ static inline QString highLow(const Status val)
     return (val == Status::Active) ? "HIGH" : "LOW";
 }
 
-QString CodeGenerator::removeForbiddenChars(const QString &input)
+QString ArduinoCodeGen::removeForbiddenChars(const QString &input)
 {
     return input.toLower().trimmed().replace(' ', '_').replace('-', '_').replace(QRegularExpression("\\W"), "");
 }
 
-QString CodeGenerator::otherPortName(QNEPort *port)
+QString ArduinoCodeGen::otherPortName(QNEPort *port)
 {
     if (!port) {
         return "LOW";
@@ -77,7 +76,7 @@ QString CodeGenerator::otherPortName(QNEPort *port)
     return m_varMap.value(otherPort);
 }
 
-void CodeGenerator::generate()
+void ArduinoCodeGen::generate()
 {
     m_stream << "// ==================================================================== //" << Qt::endl;
     m_stream << "// ======= This code was generated automatically by wiRedPanda ======== //" << Qt::endl;
@@ -96,7 +95,7 @@ void CodeGenerator::generate()
     loop();
 }
 
-void CodeGenerator::declareInputs()
+void ArduinoCodeGen::declareInputs()
 {
     int counter = 1;
     m_stream << "/* ========= Inputs ========== */" << Qt::endl;
@@ -127,7 +126,7 @@ void CodeGenerator::declareInputs()
     m_stream << Qt::endl;
 }
 
-void CodeGenerator::declareOutputs()
+void ArduinoCodeGen::declareOutputs()
 {
     int counter = 1;
     m_stream << "/* ========= Outputs ========== */" << Qt::endl;
@@ -154,7 +153,7 @@ void CodeGenerator::declareOutputs()
     m_stream << Qt::endl;
 }
 
-void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox)
+void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox)
 {
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
@@ -241,14 +240,14 @@ void CodeGenerator::declareAuxVariablesRec(const QVector<GraphicElement *> &elem
     }
 }
 
-void CodeGenerator::declareAuxVariables()
+void ArduinoCodeGen::declareAuxVariables()
 {
     m_stream << "/* ====== Aux. Variables ====== */" << Qt::endl;
     declareAuxVariablesRec(m_elements);
     m_stream << Qt::endl;
 }
 
-void CodeGenerator::setup()
+void ArduinoCodeGen::setup()
 {
     m_stream << "void setup() {" << Qt::endl;
     for (const auto &pin : std::as_const(m_inputMap)) {
@@ -261,12 +260,12 @@ void CodeGenerator::setup()
              << Qt::endl;
 }
 
-void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements)
+void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &elements)
 {
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
             throw PANDACEPTION("IC element not supported: %1", elm->objectName());
-            // TODO: CodeGenerator::assignVariablesRec for IC Element
+            // TODO: ArduinoCodeGen::assignVariablesRec for IC Element
             //      IC *ic = qobject_cast<IC *>(elm);
             //      out << "    // " << ic->getLabel() << Qt::endl;
             //      for (int i = 0; i < ic->inputSize(); ++i) {
@@ -446,7 +445,7 @@ void CodeGenerator::assignVariablesRec(const QVector<GraphicElement *> &elements
     }
 }
 
-void CodeGenerator::assignLogicOperator(GraphicElement *elm)
+void ArduinoCodeGen::assignLogicOperator(GraphicElement *elm)
 {
     bool negate = false;
     bool parentheses = true;
@@ -517,7 +516,7 @@ void CodeGenerator::assignLogicOperator(GraphicElement *elm)
     }
 }
 
-void CodeGenerator::loop()
+void ArduinoCodeGen::loop()
 {
     m_stream << "void loop() {" << Qt::endl;
     m_stream << "    // Reading input data //." << Qt::endl;

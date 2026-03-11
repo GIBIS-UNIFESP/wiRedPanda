@@ -13,7 +13,7 @@ class IC : public GraphicElement
 {
     Q_OBJECT
 
-    friend class CodeGenerator;
+    friend class ArduinoCodeGen;
 
 public:
     explicit IC(QGraphicsItem *parent = nullptr);
@@ -61,7 +61,7 @@ private:
     void loadOutputs();
     void loadOutputsLabels();
 
-    ElementMapping *mapping = nullptr;
+    ElementMapping *m_mapping = nullptr;
     QFileSystemWatcher m_fileWatcher;
     QString m_file;
     QVector<GraphicElement *> m_icElements;

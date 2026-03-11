@@ -15,7 +15,6 @@ class ElementLabel;
 class RecentFiles;
 class WorkSpace;
 
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

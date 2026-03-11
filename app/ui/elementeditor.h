@@ -12,7 +12,6 @@
 #include <QWidget>
 #include <memory>
 
-
 /*!
  * @class ElementEditor
  * @brief Widget for editing the element properties of a circuit

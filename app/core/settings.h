@@ -26,5 +26,5 @@ public:
 
 private:
     static QSettings *settingsInstance();
-    static QSettings *settings;
+    inline static QSettings *settings = nullptr;
 };

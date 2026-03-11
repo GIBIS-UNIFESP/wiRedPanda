@@ -77,7 +77,7 @@ Advanced development features supported:
 
 - Main project file: `CMakeLists.txt`
 - App code: `app/` directory
-- Tests: `test/` directory with comprehensive test suite
+- Tests: `tests/` directory with comprehensive test suite
 - Test executables: 7 separate Qt Test executables (testcommands, testelements, testfiles, etc.)
 
 ## Digital Logic Simulation
@@ -88,7 +88,7 @@ Advanced development features supported:
 - **Secondary Model**: Event-driven clock elements with real-time timing
 - **Design Goal**: Educational simplicity prioritizing correctness over timing accuracy
 
-### Core Architecture (`app/simulation.cpp`)
+### Core Architecture (`app/simulation/simulation.cpp`)
 
 - **Fixed Update Cycle**: 1ms intervals via QTimer for consistent simulation steps
 - **Sequential Update Phases** per cycle:

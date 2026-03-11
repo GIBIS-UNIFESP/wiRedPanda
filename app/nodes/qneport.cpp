@@ -84,8 +84,6 @@ void QNEPort::disconnect(QNEConnection *conn)
     updateConnections();
 }
 
-
-
 bool QNEPort::isConnected(QNEPort *otherPort)
 {
     return std::any_of(m_connections.cbegin(), m_connections.cend(),

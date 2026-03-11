@@ -23,13 +23,13 @@ cd build
 lcov --capture --directory . --output-file coverage.info --ignore-errors source
 lcov --remove coverage.info \
     '/usr/*' \
-    '*/test/*' \
+    '*/tests/*' \
     '*/build/*' \
     '*/Qt*/include/Qt*' \
     --output-file coverage_filtered.info
 
 # Generate HTML report with dark theme
-genhtml coverage_filtered.info --output-directory coverage_html --css-file ../lcov-dark-theme.css
+genhtml coverage_filtered.info --output-directory coverage_html --css-file ../scripts/lcov-dark-theme.css
 
 echo "✅ Coverage report generated!"
 echo "📂 Open coverage_html/index.html in your browser to view the report"

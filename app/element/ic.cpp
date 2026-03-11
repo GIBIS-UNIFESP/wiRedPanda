@@ -39,7 +39,7 @@ IC::IC(QGraphicsItem *parent)
 
 IC::~IC()
 {
-    delete mapping;
+    delete m_mapping;
 }
 
 void IC::save(QDataStream &stream) const
@@ -406,8 +406,8 @@ void IC::loadOutputsLabels()
 
 const QVector<std::shared_ptr<LogicElement>> IC::generateMap()
 {
-    mapping = new ElementMapping(m_icElements);
-    return mapping->logicElms();
+    m_mapping = new ElementMapping(m_icElements);
+    return m_mapping->logicElms();
 }
 
 void IC::refresh()

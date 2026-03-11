@@ -32,12 +32,12 @@ public:
     int m_portNumber = 0;
 };
 
-class CodeGenerator
+class ArduinoCodeGen
 {
-    Q_DECLARE_TR_FUNCTIONS(CodeGenerator)
+    Q_DECLARE_TR_FUNCTIONS(ArduinoCodeGen)
 
 public:
-    CodeGenerator(const QString &fileName, const QVector<GraphicElement *> &elements);
+    ArduinoCodeGen(const QString &fileName, const QVector<GraphicElement *> &elements);
 
     void generate();
 

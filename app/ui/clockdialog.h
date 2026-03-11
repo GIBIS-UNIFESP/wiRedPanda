@@ -8,7 +8,6 @@
 #include <QDialog>
 #include <memory>
 
-
 //!
 //! \brief The clockDialog class handles dialogs for setting the frequency at which a clock ticks
 //!

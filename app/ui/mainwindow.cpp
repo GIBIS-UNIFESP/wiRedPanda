@@ -4,8 +4,8 @@
 #include "mainwindow.h"
 #include "mainwindow_ui.h"
 
+#include "arduinocodegen.h"
 #include "bewaveddolphin.h"
-#include "codegenerator.h"
 #include "common.h"
 #include "dflipflop.h"
 #include "elementfactory.h"
@@ -1014,7 +1014,7 @@ void MainWindow::exportToArduino(QString fileName)
 
     elements = Common::sortGraphicElements(elements);
 
-    CodeGenerator arduino(QDir::home().absoluteFilePath(fileName), elements);
+    ArduinoCodeGen arduino(QDir::home().absoluteFilePath(fileName), elements);
     arduino.generate();
     m_ui->statusBar->showMessage(tr("Arduino code successfully generated."), 4000);
 

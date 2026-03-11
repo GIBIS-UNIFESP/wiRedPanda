@@ -85,7 +85,7 @@ void TestFiles::testBackwardCompatibility()
     GlobalProperties::verbose = false;
     GlobalProperties::testMode = true;
 
-    const QDir tagExamplesDir(QString(QUOTE(CURRENTDIR)) + "/../test/backward_compatibility/");
+    const QDir tagExamplesDir(QString(QUOTE(CURRENTDIR)) + "/../tests/backward_compatibility/");
     QVERIFY(tagExamplesDir.exists());
 
     const auto versionDirs = tagExamplesDir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);

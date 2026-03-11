@@ -1,13 +1,11 @@
 #include "settings.h"
 
-QSettings *Settings::settings = nullptr;
-
 QSettings *Settings::settingsInstance()
 {
-    if (!settings) {
-        settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "GIBIS-UNIFESP", "wiRedPanda");
+    if (!Settings::settings) {
+        Settings::settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "GIBIS-UNIFESP", "wiRedPanda");
     }
-    return settings;
+    return Settings::settings;
 }
 
 QString Settings::fileName()
