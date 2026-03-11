@@ -28,12 +28,18 @@ ElementEditor::ElementEditor(QWidget *parent)
     , m_ui(std::make_unique<ElementEditor_Ui>())
 {
     m_ui->setupUi(this);
+    // Start hidden/disabled; setCurrentElements() enables and shows it once a
+    // selection is made in the scene.
     setEnabled(false);
     hide();
 
+    // Trigger key accepts a single alphanumeric character (keyboard hotkey for
+    // InputButton elements).  The validator prevents multi-char entries.
     m_ui->lineEditTrigger->setValidator(new QRegularExpressionValidator(QRegularExpression("[a-z]| |[A-Z]|[0-9]"), this));
     fillColorComboBox();
 
+    // Install an event filter on every interactive widget so Tab/Shift+Tab
+    // cycle through scene elements rather than moving focus between UI fields.
     m_ui->checkBoxLocked->installEventFilter(this);
     m_ui->comboBoxAudio->installEventFilter(this);
     m_ui->comboBoxColor->installEventFilter(this);
@@ -44,6 +50,8 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_ui->doubleSpinBoxFrequency->installEventFilter(this);
     m_ui->lineEditElementLabel->installEventFilter(this);
     m_ui->lineEditTrigger->installEventFilter(this);
+    // The truth table editor is a floating dialog rather than embedded in the
+    // panel so it doesn't push other properties off-screen for large tables.
     m_ui->spinBoxPriority->installEventFilter(this);
 
     m_tableBox = new QDialog(this);
@@ -77,6 +85,8 @@ ElementEditor::~ElementEditor()
 {
 }
 
+// Helper: add a morph target to the submenu unless the element already IS that type
+// (in which case morphing would be a no-op, so we skip it).
 static QAction *addElementAction(QMenu *menu, GraphicElement *selectedElm, ElementType type, const bool hasSameType)
 {
     if (hasSameType && (selectedElm->elementType() == type)) {
@@ -90,6 +100,10 @@ static QAction *addElementAction(QMenu *menu, GraphicElement *selectedElm, Eleme
 
 void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
 {
+    // --- Build context menu ---
+    // Items are added conditionally based on the capabilities of the current
+    // selection.  String literals are captured for later identity comparison
+    // because some menu items don't carry a data payload.
     QMenu menu;
     QString changeSkinText(tr("Change skin to ..."));
     QString colorMenuText(tr("Change color to..."));
@@ -140,8 +154,12 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
     if (auto *selectedElm = qgraphicsitem_cast<GraphicElement *>(itemAtMouse); selectedElm && m_canMorph) {
         submenuMorph = menu.addMenu(morphMenuText);
 
+        // --- Morph targets per element group ---
+        // Only offer morph options that are structurally compatible (same input
+        // count for gates, same group for inputs, same pin config for flip-flops).
         switch (selectedElm->elementGroup()) {
         case ElementGroup::Gate: {
+            // 1-input gates can only morph to other 1-input types (Not / Node).
             if (selectedElm->inputSize() == 1) {
                 addElementAction(submenuMorph, selectedElm, ElementType::Node, m_hasSameType);
                 addElementAction(submenuMorph, selectedElm, ElementType::Not, m_hasSameType);
@@ -170,6 +188,9 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
         }
 
         case ElementGroup::Memory: {
+            // Each flip-flop/latch variant has a distinct pin count; morph only
+            // to types that have the same number of inputs to preserve connections.
+            // 2 inputs → DLatch; 4 inputs → DFF/TFF; 5 inputs → JKFF/SRFF.
             if (selectedElm->inputSize() == 2) {
                 addElementAction(submenuMorph, selectedElm, ElementType::DLatch, m_hasSameType);
                 break;
@@ -190,6 +211,9 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
         }
 
         case ElementGroup::Output: {
+            // 7/14/16-segment displays share a morph group; LED and Buzzer share
+            // another.  Mixing between the two subgroups is not offered because
+            // their port counts differ significantly.
             if ((selectedElm->elementType() == ElementType::Display7) || (selectedElm->elementType() == ElementType::Display14) || (selectedElm->elementType() == ElementType::Display16)) {
                 addElementAction(submenuMorph, selectedElm, ElementType::Display7, m_hasSameType);
                 addElementAction(submenuMorph, selectedElm, ElementType::Display14, m_hasSameType);
@@ -212,6 +236,8 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
             break;
         }
 
+        // If no compatible morph targets were found, remove the empty submenu
+        // so it doesn't appear as a greyed-out entry.
         if (submenuMorph->actions().empty()) {
             menu.removeAction(submenuMorph->menuAction());
         }
@@ -230,6 +256,7 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
     QAction *deleteAction = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/delete.svg")), tr("Delete"));
     connect(deleteAction, &QAction::triggered, m_scene, &Scene::deleteAction);
 
+    // --- Dispatch the chosen action ---
     QAction *action = menu.exec(screenPos);
 
     if (!action) {
@@ -270,6 +297,8 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
     }
 
     if (actionText == revertSkinText) {
+        // Signal apply() to call elm->setSkin(true, ...) which resets to the
+        // built-in SVG for this element type.
         m_isDefaultSkin = true;
         m_isUpdatingSkin = true;
         apply();
@@ -289,10 +318,13 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
     }
 
     if (submenuColors && submenuColors->actions().contains(action)) {
+        // Changing the combobox text triggers the apply() slot via signal,
+        // so no explicit apply() call is needed here.
         m_ui->comboBoxColor->setCurrentText(action->text());
         return;
     }
 
+    // Copy/Cut/Delete are handled by their connected slots; nothing more to do.
     if ((actionText == tr("Copy")) || (actionText == tr("Cut")) || (actionText == tr("Delete"))) {
         return;
     }
@@ -345,6 +377,8 @@ void ElementEditor::updateElementSkin()
 
 void ElementEditor::setScene(Scene *scene)
 {
+    // Disconnect from the old scene first; passing nullptr is valid and is used
+    // when the active tab changes (disconnectTab in MainWindow).
     if (m_scene) {
         disconnect(m_scene, &QGraphicsScene::selectionChanged, this,    &ElementEditor::selectionChanged);
         disconnect(m_scene, &Scene::contextMenuPos,            this,    &ElementEditor::contextMenu);
@@ -362,8 +396,12 @@ void ElementEditor::setScene(Scene *scene)
 
 void ElementEditor::fillColorComboBox()
 {
+    // Block signals while rebuilding to avoid triggering apply() for each
+    // addItem() call, which would create spurious undo commands.
     QSignalBlocker blocker(m_ui->comboBoxColor);
     m_ui->comboBoxColor->clear();
+    // item data stores the untranslated English colour name used internally
+    // by GraphicElement::setColor(); item text is the translated display name.
     m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/WhiteLed.svg")),  tr("White"),  "White");
     m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/RedLed.svg")),    tr("Red"),    "Red");
     m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/GreenLed.svg")),  tr("Green"),  "Green");
@@ -374,8 +412,12 @@ void ElementEditor::fillColorComboBox()
 void ElementEditor::retranslateUi()
 {
     m_ui->retranslateUi(this);
+    // Color names are translated strings; rebuild the combo box so current-language
+    // names are shown.
     fillColorComboBox();
 
+    // Refresh the editor with the current selection in case any visible text
+    // (e.g. "Many values") needs to be re-translated.
     if (m_scene) {
         selectionChanged();
     }
@@ -384,6 +426,9 @@ void ElementEditor::retranslateUi()
 void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 {
     m_elements = elements;
+    // --- Reset capability flags ---
+    // All flags start false; if elements is non-empty, they are set true and
+    // then AND-reduced over the selection below.
     m_hasAudioBox = m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_hasDelay = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameDelay = m_hasSameAudio = m_hasOnlyInputs = false;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
@@ -397,6 +442,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     }
 
     bool sameCheckState = true;
+    // Start all capabilities as true; each element in the loop ANDs them down.
     m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_hasDelay = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
     m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameDelay = m_hasSameAudio = m_hasOnlyInputs = true;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = true;
@@ -405,11 +451,19 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_hasAudioBox = true;
 
     show();
+    // Disable during the update pass to prevent partial changes from being
+    // emitted as undo commands while we're computing capabilities.
     setEnabled(false);
+    // minimumInputs/Outputs accumulates the highest lower-bound across elements;
+    // maximumInputs/Outputs accumulates the lowest upper-bound.  The intersection
+    // of those ranges is the set of sizes valid for ALL selected elements.
     int minimumInputs = 0;
+    // Start at a very high "infinity" so std::min finds the real maximum.
     int maximumInputs = 100000000;
     int minimumOutputs = 0;
     int maximumOutputs = 100000000;
+    // maxCurrentOutputSize tracks the smallest current outputSize in the
+    // selection; used to bound the "value" combobox for rotary inputs.
     int maxCurrentOutputSize = 100000000;
     auto *firstElement = m_elements.constFirst();
     auto *firstInput = qobject_cast<GraphicElementInput *>(firstElement);
@@ -452,6 +506,8 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_hasSameAudio &= (elm->audio() == firstElement->audio());
         m_hasSamePriority &= (elm->priority() == firstElement->priority());
 
+        // Static inputs (Vcc/Gnd) and regular inputs share morph compatibility
+        // because they occupy the same pin role in a circuit.
         bool sameElementGroup = (group == firstGroup);
         sameElementGroup |= (group == ElementGroup::Input && (firstGroup == ElementGroup::StaticInput));
         sameElementGroup |= (group == ElementGroup::StaticInput && (firstGroup == ElementGroup::Input));
@@ -463,7 +519,9 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         elementType = ElementType::Unknown;
     }
 
+    // A size combobox is only useful when there is a valid range of options.
     m_canChangeInputSize = (minimumInputs < maximumInputs);
+    // TruthTable output count is controlled by its own dialog, not this combobox.
     m_canChangeOutputSize = (minimumOutputs < maximumOutputs && !m_hasTruthTable);
     /* Element type */
     m_ui->groupBox->setTitle(ElementFactory::typeToTitleText(elementType));
@@ -481,6 +539,8 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_ui->comboBoxColor->setVisible(m_hasColors);
     m_ui->comboBoxColor->setEnabled(m_hasColors);
 
+    // Keep the placeholder "many colors" item in reserve so we can display it
+    // when elements have different colors.  Remove it only when all match.
     if (m_ui->comboBoxColor->findText(m_manyColors) == -1) {
         m_ui->comboBoxColor->addItem(m_manyColors);
     }
@@ -530,10 +590,15 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 
     if (m_hasFrequency) {
         if (m_hasSameFrequency) {
+            // Minimum 0.1 Hz prevents a frequency of 0, which would mean the
+            // clock never toggles.  0.0 is only used as the sentinel value for
+            // the "many frequencies" placeholder text below.
             m_ui->doubleSpinBoxFrequency->setMinimum(0.1);
             m_ui->doubleSpinBoxFrequency->setSpecialValueText({});
             m_ui->doubleSpinBoxFrequency->setValue(static_cast<double>(firstElement->frequency()));
         } else {
+            // Lower the minimum to 0.0 so setValue(0.0) triggers the special
+            // value text "many frequencies" without violating the validator.
             m_ui->doubleSpinBoxFrequency->setMinimum(0.0);
             m_ui->doubleSpinBoxFrequency->setSpecialValueText(m_manyFreq);
             m_ui->doubleSpinBoxFrequency->setValue(0.0);
@@ -613,6 +678,8 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_ui->comboBoxValue->setEnabled(m_hasOnlyInputs);
 
     if (m_hasOnlyInputs) {
+        // Binary inputs have outputSize == 1 but must offer values 0 and 1,
+        // so bump the upper bound to 2 in that case.
         if (maxCurrentOutputSize == 1) {
             ++maxCurrentOutputSize;
         }
@@ -642,6 +709,8 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     m_ui->checkBoxLocked->setEnabled(m_hasOnlyInputs);
 
     if (m_hasOnlyInputs) {
+        // When a multi-selection has mixed lock states, show a partially-checked
+        // state rather than incorrectly representing all as locked or unlocked.
         if (sameCheckState) {
             m_ui->checkBoxLocked->setCheckState(firstInput->isLocked() ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
         } else {
@@ -693,15 +762,23 @@ void ElementEditor::apply()
 {
     qCDebug(three) << "Apply.";
 
+    // Guard against recursive calls: signals from UI widgets (e.g. comboBox
+    // currentIndexChanged) can fire during setCurrentElements() while the
+    // widget is disabled, which would produce spurious undo entries.
     if (m_elements.isEmpty() || !isEnabled()) {
         return;
     }
 
+    // Snapshot current state into oldData before modifying anything.
+    // UpdateCommand uses oldData for undo and captures the post-modification
+    // state internally as newData when it is constructed.
     QByteArray oldData;
     QDataStream stream(&oldData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
 
     for (auto *elm : std::as_const(m_elements)) {
+        // Save the pre-edit state of every element into the stream so the undo
+        // command can restore all of them atomically.
         elm->save(stream);
 
         elm->setPriority(m_ui->spinBoxPriority->value());
@@ -740,10 +817,14 @@ void ElementEditor::apply()
         }
     }
 
+    // Reset the one-shot skin update flag after applying to all elements.
     if (m_isUpdatingSkin) {
         m_isUpdatingSkin = false;
     }
 
+    // sendCommand routes through the scene's undo stack; the scene emits
+    // selectionChanged which calls update() automatically, so no explicit
+    // refresh call is needed here.
     emit sendCommand(new UpdateCommand(m_elements, oldData, m_scene));
 }
 
@@ -753,11 +834,15 @@ void ElementEditor::inputIndexChanged(const int index)
         return;
     }
 
+    // Ignore selection of the placeholder "many input sizes" item so we don't
+    // accidentally resize all selected elements to an invalid value.
     if (m_canChangeInputSize && (m_ui->comboBoxInputSize->currentText() != m_manyIS)) {
         emit sendCommand(new ChangeInputSizeCommand(m_elements, m_ui->comboBoxInputSize->currentData().toInt(), m_scene));
     }
 
     qCDebug(zero) << "Input size changed to " << index;
+    // Refresh the editor because changing input count may affect which rows are
+    // visible (e.g. the value combobox depends on output count).
     update();
 }
 
@@ -785,10 +870,13 @@ void ElementEditor::outputValueChanged(const QString &value)
 
     for (auto *elm : std::as_const(m_elements)) {
         if (elm->elementType() == ElementType::InputRotary) {
+            // InputRotary carries a multi-bit integer value; keep it enabled
+            // (first arg true) and update the numeric output.
             if (auto *input = qobject_cast<InputRotary *>(elm)) {
                 input->setOn(true, newValue);
             }
         } else {
+            // Regular binary inputs treat any non-zero value as "on".
             if (auto *input = qobject_cast<GraphicElementInput *>(elm)) {
                 input->setOn(static_cast<bool>(newValue));
             }
@@ -816,6 +904,8 @@ void ElementEditor::inputLocked(const bool value)
 
 void ElementEditor::triggerChanged(const QString &cmd)
 {
+    // Force uppercase so the stored key sequence matches Qt's key names and is
+    // compatible across keyboard layouts.
     m_ui->lineEditTrigger->setText(cmd.toUpper());
     apply();
 }
@@ -836,9 +926,16 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
             const bool moveBack = (keyEvent->key() == Qt::Key_Backtab);
 
             if (moveBack || moveFwd) {
+                // --- Tab navigation between elements ---
+                // Tab/Shift+Tab while an editor field is focused cycles focus
+                // through visible scene elements in reading order (left-to-right
+                // then top-to-bottom), rather than between UI widgets.
                 auto *elm = m_elements.constFirst();
                 auto elements = m_scene->visibleElements();
 
+                // Sort by Y first, then stable-sort by X so the net order is
+                // row-by-row left-to-right (stable_sort preserves Y order within
+                // the same X column after the second sort).
                 std::stable_sort(elements.begin(), elements.end(), [](const auto &elm1, const auto &elm2) {
                     return elm1->pos().ry() < elm2->pos().ry();
                 });
@@ -855,9 +952,16 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
                     step = -1;
                 }
 
+                // obj is one of the filtered child widgets; cast to QWidget so
+                // we can later check isEnabled() against the same widget after
+                // setCurrentElements() potentially hides/disables it.
                 auto *widget = qobject_cast<QWidget *>(obj);
+                // +elements.size() before the mod avoids negative modulo for step=-1.
                 int pos = (elements.size() + elmPos + step) % elements.size();
 
+                // Advance until we find an element whose editor field is actually
+                // enabled (some elements don't expose the field that currently
+                // has focus, so we skip them).
                 for (; pos != elmPos; pos = ((elements.size() + pos + step) % elements.size())) {
                     qCDebug(zero) << "Pos = " << pos;
                     elm = elements.at(pos);
@@ -871,6 +975,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
 
                 m_scene->clearSelection();
 
+                // If no suitable element was found, stay on the original one.
                 if (!widget->isEnabled()) {
                     elm = elements.at(elmPos);
                 }
@@ -896,13 +1001,16 @@ void ElementEditor::truthTable()
         return;
     }
 
-    // Assuming only one element selected for now...
+    // Only a single TruthTable element is supported at a time.
 
     int nInputs = truthtable->inputSize();
     int nOutputs = truthtable->outputSize();
 
+    // --- Build / refresh table ---
     QStringList inputLabels;
+    // Columns: nInputs input columns (A, B, C, …) + nOutputs output columns (S0, S1, …).
     m_table->setColumnCount(nInputs + nOutputs);
+    // Rows: one per input combination — 2^nInputs.
     m_table->setRowCount(static_cast<int>(std::pow(2, nInputs)));
 
     for (int i = 0; i < nInputs; ++i) {
@@ -919,16 +1027,19 @@ void ElementEditor::truthTable()
     for (int i = 0; i < std::pow(2, nInputs); ++i) {
         for (int j = 0; j < nInputs; ++j) {
             m_table->setColumnWidth(j, 14);
+            // Convert row index to binary string, zero-padded to nInputs digits.
             auto newItemValue = QString::number(i, 2);
 
             if (newItemValue.size() < nInputs) {
                 newItemValue = newItemValue.rightJustified(nInputs, '0');
             }
 
+            // Reuse existing items to avoid re-allocating on every refresh.
             if (m_table->item(i, j) == nullptr) {
                 auto *newItem = new QTableWidgetItem(newItemValue.at(j), QTableWidgetItem::Type);
                 newItem->setTextAlignment(Qt::AlignCenter);
                 m_table->setItem(i, j, newItem);
+                // Input columns are read-only; only output cells can be toggled.
                 m_table->item(i, j)->setFlags(Qt::ItemIsEnabled);
             }
 
@@ -938,6 +1049,8 @@ void ElementEditor::truthTable()
         auto bitArray = truthtable->key();
 
         for (int z = 0; z < nOutputs; ++z) {
+            // The key QBitArray stores all outputs interleaved: output z at row i
+            // lives at index 256*z + i (256 rows max per output).
             const int output = bitArray.at(256 * z + i);
 
             if (m_table->item(i, nInputs + z) == nullptr) {
@@ -958,17 +1071,22 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
 {
     if (m_elements.size() > 1) return;
 
+    // Input columns (< nInputs) are read-only; only output columns are editable.
     if (column < m_elements[0]->inputSize()) return;
 
+    // Toggle the cell text immediately for visual feedback before the command
+    // propagates through the undo stack.
     auto cellItem = m_table->item(row, column);
     cellItem->setText((cellItem->text() == "0") ? "1" : "0");
 
     auto truthtable = m_elements[0];
     const int nInputs = truthtable->inputSize();
+    // Compute the flat bit index using the same layout as truthTable(): 256*outputCol + row.
     const int positionToChange = 256 * (column - nInputs) + row;
 
     emit sendCommand(new ToggleTruthTableOutputCommand(truthtable, positionToChange, m_scene, this));
 
+    // Re-render the table so the model state and displayed text stay in sync.
     ElementEditor::truthTable();
 
     update();
@@ -992,6 +1110,8 @@ void ElementEditor::audioBox()
 
 void ElementEditor::defaultSkin()
 {
+    // Set flags before calling apply() so apply() sees them during the loop
+    // and passes true/empty to elm->setSkin() for each selected element.
     m_isUpdatingSkin = true;
     m_isDefaultSkin = true;
     apply();
@@ -999,11 +1119,15 @@ void ElementEditor::defaultSkin()
 
 void ElementEditor::update()
 {
+    // Re-run setCurrentElements on the existing selection to refresh all
+    // visibility flags and widget values after an external state change.
     setCurrentElements(m_elements);
 }
 
 void ElementEditor::updateTheme()
 {
+    // Tweak the group box border colour to match the active theme.
+    // Light theme: rgb(216,216,216) — a light grey; Dark: rgb(66,66,66) — a dark grey.
     const QString borderColor = (ThemeManager::theme() == Theme::Light) ? "216" : "66";
     const QString styleSheet =
             "QGroupBox {"

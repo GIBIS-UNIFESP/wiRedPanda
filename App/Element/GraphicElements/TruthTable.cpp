@@ -12,6 +12,9 @@
 TruthTable::TruthTable(QGraphicsItem *parent)
     : GraphicElement(ElementType::TruthTable, ElementGroup::IC, ":/Components/Logic/truthtable-rotated.svg", tr("TRUTH TABLE"), tr("Truth Table"), 2, 8, 1, 8, parent)
 {
+    // 2048 bits = 256 rows × 8 output columns (max: 8 inputs × 8 outputs).
+    // Laid out as [row0_out0, row0_out1, ..., row0_out7, row1_out0, ...].
+    // All outputs default to 0 (all-false table).
     if (GlobalProperties::skipInit) {
         return;
     }
@@ -31,9 +34,15 @@ TruthTable::TruthTable(QGraphicsItem *parent)
 void TruthTable::updatePortsProperties()
 {
     int index = 0;
+    // step = 8px (half the 16px grid), giving ports a 16px pitch (every other grid line)
     const int step = GlobalProperties::gridSize / 2;
 
     if (!m_inputPorts.isEmpty()) {
+        // Center the input port column vertically within the 64px-minimum body height.
+        // Formula: start at body centre (32) minus half the total column height, then
+        // add one step back so the first port lands at the right offset.
+        // Total height of n ports at 2*step pitch = n * 2*step; half = n*step.
+        // e.g. 4 inputs → y_start = 32 - 4*8 + 8 = 8; ports at y=8,24,40,56
         int y = 32 - (m_inputPorts.size() * step) + step;
 
         for (auto *port : std::as_const(m_inputPorts)) {
@@ -46,6 +55,7 @@ void TruthTable::updatePortsProperties()
 
             y += step * 2;
 
+            // Inputs are labeled A, B, C, ... (alphabetically, matching truth table convention)
             port->setName(QChar::fromLatin1(static_cast<char>('A' + index)));
             ++index;
         }
@@ -54,6 +64,7 @@ void TruthTable::updatePortsProperties()
     index = 0;
 
     if (!m_outputPorts.isEmpty()) {
+        // Same centering formula as inputs; output column is on the right edge (x=64)
         int y = 32 - (m_outputPorts.size() * step) + step;
 
         for (auto *port : std::as_const(m_outputPorts)) {
@@ -66,6 +77,7 @@ void TruthTable::updatePortsProperties()
 
             y += step * 2;
 
+            // Outputs are labeled S0, S1, ... to distinguish them from input names
             port->setName("S" + QString::number(index));
             ++index;
         }
@@ -74,7 +86,9 @@ void TruthTable::updatePortsProperties()
 
 void TruthTable::generatePixmap()
 {
-    // make pixmap
+    // The TruthTable renders a custom IC-style body rather than using a fixed SVG.
+    // The pixmap is regenerated whenever port count changes because the body height
+    // must grow to accommodate the port layout.
     const QSize size = portsBoundingRect().united(QRectF(0, 0, 64, 64)).size().toSize();
 
     QPixmap tempPixmap(size);
@@ -83,10 +97,13 @@ void TruthTable::generatePixmap()
 
     QPainter tmpPainter(&tempPixmap);
 
+    // Main body: mid-gray rounded rectangle inset 7px on each side to leave room
+    // for port connectors on the left and right edges
     tmpPainter.setBrush(QColor(126, 126, 126));
     tmpPainter.setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
 
-    // draw package
+    // 7px inset on each side (14px total width reduction) so port connector dots sit
+    // on top of the body border rather than floating in empty space
     QPoint topLeft = tempPixmap.rect().topLeft();
     topLeft.setX(topLeft.x() + 7);
     QSize finalSize = tempPixmap.rect().size();
@@ -94,16 +111,18 @@ void TruthTable::generatePixmap()
     QRectF finalRect = QRectF(topLeft, finalSize);
     tmpPainter.drawRoundedRect(finalRect, 3, 3);
 
+    // Center the truth-table icon inside the body
     QPixmap panda(":/Components/Logic/truthtable-rotated.svg");
     QPointF pandaOrigin = finalRect.center();
     pandaOrigin.setX(pandaOrigin.x() - panda.width() / 2);
     pandaOrigin.setY(pandaOrigin.y() - panda.height() / 2);
     tmpPainter.drawPixmap(pandaOrigin, panda);
 
-    // draw shadow
+    // Shadow strip at the bottom of the body to give a subtle 3-D depth effect
     tmpPainter.setBrush(QColor(78, 78, 78));
     tmpPainter.setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
 
+    // Collapse the two-point rect to a 3px-tall strip at the bottom edge for the shadow
     QRectF shadowRect(finalRect.bottomLeft(), finalRect.bottomRight());
     shadowRect.adjust(0, -3, 0, 0);
     tmpPainter.drawRoundedRect(shadowRect, 3, 3);
@@ -118,19 +137,25 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     Q_UNUSED(widget)
     Q_UNUSED(option)
 
+    // updatePortsProperties() is called here because port count can change between
+    // paints (e.g. via undo/redo), and port positions must be in sync before the
+    // body pixmap is regenerated below.
     TruthTable::updatePortsProperties();
 
     if (isSelected()) {
         painter->save();
         painter->setBrush(m_selectionBrush);
         painter->setPen(QPen(m_selectionPen, 0.5, Qt::SolidLine));
+        // Expand the highlight rect to cover any ports that extend outside the 64x64 body
         painter->drawRoundedRect(portsBoundingRect().united(QRectF(0, 0, 64, 64)), 5, 5);
         painter->restore();
     }
 
+    // Reposition the label below the actual body (which may be taller than 64px with many ports)
     const qreal bottom = portsBoundingRect().united(QRectF(0, 0, 64, 64)).bottom();
     m_label->setPos(30, bottom + 5);
 
+    // Regenerate on every paint so the body height tracks the current port count
     generatePixmap();
     painter->drawPixmap(boundingRect().topLeft(), pixmap());
 }
@@ -158,6 +183,7 @@ void TruthTable::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, co
     GraphicElement::load(stream, portMap, version);
 
     if (version >= VERSION("4.2")) {
+        // Truth-table key (the output bit-array) was first serialized in v4.2
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("key")) {

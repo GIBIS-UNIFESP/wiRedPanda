@@ -23,15 +23,20 @@ WorkSpace::WorkSpace(QWidget *parent)
 {
     m_view.setCacheMode(QGraphicsView::CacheBackground);
     m_view.setScene(&m_scene);
+    // Back-pointer lets the scene query the view (e.g., for zoom level in drawBackground)
     m_scene.setView(&m_view);
     m_scene.setSceneRect(m_view.rect());
     setLayout(new QHBoxLayout());
     layout()->addWidget(&m_view);
 
+    // Trigger autosave on every change; autosave() checks the undo stack cleanliness
+    // before actually writing to disk
     connect(&m_scene, &Scene::circuitHasChanged, this, &WorkSpace::autosave);
 
     setAutosaveFileName();
 
+    // Ensure the global element-ID counter starts at least at the workspace's last known ID
+    // so that a new WorkSpace in the same process session doesn't reuse existing IDs
     ElementFactory::setLastId(m_lastId);
 }
 
@@ -67,6 +72,7 @@ void WorkSpace::save(const QString &fileName)
     QString autosaveFileName;
     qCDebug(zero) << "Checking if it is an autosave file or a new project, and ask for a fileName.";
 
+    // If saving to an autosave path or no path at all, prompt the user for a real filename
     if (fileName_.isEmpty() || autosaves.contains(fileName_)) {
         qCDebug(zero) << "Should open window.";
         autosaveFileName = fileName_;
@@ -88,6 +94,8 @@ void WorkSpace::save(const QString &fileName)
     GlobalProperties::currentDir = QFileInfo(fileName_).absolutePath();
     m_fileInfo = QFileInfo(fileName_);
 
+    // QSaveFile writes to a temp file and commits atomically, preventing data loss
+    // if the process is interrupted during a write
     QSaveFile saveFile(fileName_);
 
     if (!saveFile.open(QIODevice::WriteOnly)) {
@@ -104,8 +112,10 @@ void WorkSpace::save(const QString &fileName)
         throw PANDACEPTION("Could not save file: %1", saveFile.errorString());
     }
 
+    // Mark the undo stack as clean so the title bar no longer shows unsaved-change indicator
     m_scene.undoStack()->setClean();
 
+    // Clean up autosave records associated with this project now that it has a real file
     if (!autosaveFileName.isEmpty()) {
         qCDebug(zero) << "Remove from autosave list recovered file that has been saved.";
         autosaves.removeAll(autosaveFileName);
@@ -126,6 +136,9 @@ void WorkSpace::save(const QString &fileName)
 
 void WorkSpace::save(QDataStream &stream)
 {
+    // The dolphin filename is the path of the beWavedDolphin waveform file that is
+    // "associated" with this circuit; it is serialized here so the waveform tool can
+    // be opened automatically when the circuit is loaded.  Empty string means none.
     stream << m_dolphinFileName;
     stream << m_scene.sceneRect();
     Serialization::serialize(m_scene.items(), stream);
@@ -160,6 +173,8 @@ void WorkSpace::load(const QString &fileName)
 void WorkSpace::load(QDataStream &stream, QVersionNumber version)
 {
     qCDebug(zero) << "Loading file.";
+    // Block simulation updates while items are being added to avoid intermediate
+    // partial-topology updates that could crash or produce incorrect output
     SimulationBlocker simulationBlocker(m_scene.simulation());
     qCDebug(zero) << "Stopped simulation.";
     qCDebug(zero) << "Version: " << version;
@@ -183,13 +198,21 @@ void WorkSpace::load(QDataStream &stream, QVersionNumber version)
     m_dolphinFileName = Serialization::loadDolphinFileName(stream, version);
     qCDebug(zero) << "Dolphin name: " << m_dolphinFileName;
 
+    // loadRect reads (and discards) the stored scene rect; the actual rect is
+    // recomputed from items after they are added because items may have moved
+    // relative to the stored rect (e.g., old files with a different viewport origin).
     Serialization::loadRect(stream, version);
+    // Pass an empty portMap: the port addresses stored in the file are from the
+    // previous process run, so each element's load() rebuilds the portMap as it
+    // initialises its own ports, then connections resolve against that fresh map.
     const auto items = Serialization::deserialize(stream, {}, version);
     qCDebug(zero) << "Finished loading items.";
 
     for (auto *item : items) {
         m_scene.addItem(item);
 
+        // Track the highest element ID seen so that newly created elements
+        // will receive IDs that don't collide with those just loaded
         if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
             m_lastId = qMax(m_lastId, ge->id());
         }
@@ -222,6 +245,8 @@ void WorkSpace::setAutosaveFileName()
     }
 
     qCDebug(zero) << "Autosavepath: " << autosavePath.absolutePath();
+    // The leading dot makes the autosave file hidden on Unix; XXXXXX is replaced
+    // by QTemporaryFile with a unique suffix to prevent collisions between workspaces
     m_autosaveFile.setFileTemplate(autosavePath.absoluteFilePath(".XXXXXX.panda"));
     qCDebug(zero) << "Setting current file to random file.";
 }
@@ -244,6 +269,8 @@ void WorkSpace::autosave()
 
     qCDebug(zero) << "Checking if autosave file exists and if it contains current project file. If so, remove autosave file from it.";
 
+    // Remove the stale autosave entry from the registry before creating the new one;
+    // this prevents the registry from growing unboundedly on each autosave cycle
     if (!m_autosaveFile.fileName().isEmpty() && autosaves.contains(m_autosaveFile.fileName())) {
         qCDebug(three) << "Removing current autosave file name.";
         autosaves.removeAll(m_autosaveFile.fileName());
@@ -255,6 +282,8 @@ void WorkSpace::autosave()
     auto *undoStack = m_scene.undoStack();
     qCDebug(zero) << "Undo stack element: " << undoStack->index() << " of " << undoStack->count();
 
+    // If the undo stack is clean the project has no unsaved changes, so there's
+    // nothing to protect; delete any leftover autosave file and bail out
     if (undoStack->isClean()) {
         qCDebug(three) << "Undo stack is clean.";
         m_autosaveFile.remove();
@@ -268,6 +297,7 @@ void WorkSpace::autosave()
     QDir path;
 
     if (m_fileInfo.fileName().isEmpty()) {
+        // Unsaved new project: write autosave to the global autosave directory
         qCDebug(three) << "Default value not set yet.";
         path.setPath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/autosaves");
 
@@ -279,6 +309,8 @@ void WorkSpace::autosave()
         m_autosaveFile.setFileTemplate(path.absoluteFilePath(".XXXXXX.panda"));
         qCDebug(three) << "Setting current file to random file.";
     } else {
+        // Existing project: write autosave next to the real file so it's easy to find
+        // in case of crash recovery
         qCDebug(three) << "Autosave path set to the current file's directory, if there is one.";
         path.setPath(m_fileInfo.absolutePath());
         qCDebug(three) << "Autosavepath: " << path.absolutePath();

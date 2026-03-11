@@ -20,10 +20,16 @@
 QNEPort::QNEPort(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
 {
+    // ItemSendsScenePositionChanges triggers itemChange(ItemScenePositionHasChanged)
+    // which keeps connected wires redrawn when the parent element moves
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     QPainterPath path;
 
+    // Port hit-area / shape: a small square centred on the port's origin (±m_radius).
+    // m_radius = 5 px gives a 10×10 px clickable area which is large enough to hit
+    // reliably without obscuring nearby elements.  The same value is used for the
+    // visual diamond size so appearance and hit-testing stay in sync.
     path.addPolygon(QRectF(QPointF(-m_radius, -m_radius), QPointF(m_radius, m_radius)));
     setPath(path);
 }
@@ -44,6 +50,8 @@ void QNEPort::connect(QNEConnection *conn)
         return;
     }
 
+    // Guard against duplicate entries; QNEConnection::setStartPort/setEndPort call connect()
+    // and may be called more than once during IC rewiring
     if (!m_connections.contains(conn)) {
         m_connections.append(conn);
     }
@@ -55,6 +63,8 @@ void QNEPort::disconnect(QNEConnection *conn)
 {
     m_connections.removeAll(conn);
 
+    // Null out the port reference on the connection so it knows it is detached;
+    // this prevents the connection from calling disconnect() again in its destructor
     if (conn->startPort() == this) {
         conn->setStartPort(nullptr);
     }
@@ -74,15 +84,20 @@ bool QNEPort::isConnected(QNEPort *otherPort)
 
 void QNEPort::updateConnections()
 {
+    // Redraw all wires whose geometry depends on this port's scene position
     for (auto *conn : std::as_const(m_connections)) {
         conn->updatePosFromPorts();
     }
 
+    // A port that violates its validity constraints (e.g. required but unconnected) must
+    // show the invalid status regardless of any incoming signal
     if (!isValid()) {
         setStatus(Status::Invalid);
         return;
     }
 
+    // An unconnected optional input reverts to its default (design-time) signal value
+    // rather than staying at whatever status it last had
     if (m_connections.empty() && isInput()) {
         setStatus(defaultValue());
     }
@@ -138,6 +153,8 @@ void QNEPort::setCurrentBrush(const QBrush &currentBrush)
 {
     m_currentBrush = currentBrush;
 
+    // Qt::yellow is used by hoverEnter() as a transient highlight; don't overwrite it
+    // with the status colour while the user is hovering over the port
     if (brush().color() != Qt::yellow) {
         setBrush(currentBrush);
     }
@@ -151,6 +168,8 @@ bool QNEPort::isRequired() const
 void QNEPort::setRequired(const bool required)
 {
     m_required = required;
+    // Required ports default to Invalid when unconnected so the element (and its downstream
+    // chain) immediately shows an error rather than silently using a zero/low default
     setDefaultStatus(required ? Status::Invalid : Status::Inactive);
 }
 
@@ -182,6 +201,8 @@ void QNEPort::hoverEnter()
 QNEInputPort::QNEInputPort(QGraphicsItem *parent)
     : QNEPort(parent)
 {
+    // Place the label to the left of the port dot so it doesn't overlap the element body.
+    // m_margin = 2 px gap between the port dot edge and the label text.
     m_label->setPos(-m_radius - m_margin - m_label->boundingRect().width(),
                     -m_label->boundingRect().height() / 2);
 
@@ -190,6 +211,9 @@ QNEInputPort::QNEInputPort(QGraphicsItem *parent)
 
 QNEInputPort::~QNEInputPort()
 {
+    // An input port owns (and must clean up) all connections that terminate here.
+    // Manually remove from the list before deleting to prevent the connection destructor
+    // from calling disconnect() back into a partially destroyed port.
     while (!m_connections.isEmpty()) {
         auto *conn = m_connections.constLast();
         m_connections.removeAll(conn);
@@ -204,6 +228,8 @@ void QNEInputPort::setStatus(const Status status)
         return;
     }
 
+    // If the port itself is invalid (e.g. required but unconnected), clamp to Invalid
+    // regardless of whatever signal status is being pushed in from a connected wire
     m_status = QNEInputPort::isValid() ? status : Status::Invalid;
 
     const auto theme = ThemeManager::attributes();
@@ -245,6 +271,8 @@ bool QNEInputPort::isOutput() const
 
 bool QNEInputPort::isValid() const
 {
+    // Valid states: unconnected and optional (default value is safe to use), OR
+    // exactly one connection (multi-driver wiring is not allowed in this simulation model)
     return m_connections.isEmpty() ? !isRequired() : (m_connections.size() == 1);
 }
 
@@ -255,6 +283,8 @@ void QNEInputPort::updateTheme()
 QNEOutputPort::QNEOutputPort(QGraphicsItem *parent)
     : QNEPort(parent)
 {
+    // Place the label to the right of the port dot, opposite to input ports,
+    // so labels read outward from the element body on both sides
     m_label->setPos(m_radius + m_margin,
                     -m_label->boundingRect().height() / 2);
 
@@ -263,6 +293,8 @@ QNEOutputPort::QNEOutputPort(QGraphicsItem *parent)
 
 QNEOutputPort::~QNEOutputPort()
 {
+    // Mirror of QNEInputPort destructor: output port also owns the connections that originate
+    // here and must break the back-reference before deletion to avoid re-entrant disconnect()
     while (!m_connections.isEmpty()) {
         auto *conn = m_connections.constLast();
         m_connections.removeAll(conn);
@@ -279,6 +311,8 @@ void QNEOutputPort::setStatus(const Status status)
 
     m_status = status;
 
+    // Fan-out: broadcast the new signal status to every wire leaving this output port;
+    // each wire in turn propagates it to the input port at its far end
     for (auto *conn : connections()) {
         conn->setStatus(status);
     }
@@ -296,6 +330,8 @@ bool QNEOutputPort::isOutput() const
 
 bool QNEOutputPort::isValid() const
 {
+    // An output port is valid as long as its driving logic element is valid;
+    // it has no connectivity constraints (fan-out is unrestricted)
     return (m_status != Status::Invalid);
 }
 

@@ -16,6 +16,7 @@ void LogicAnd::updateLogic()
         return;
     }
 
+    // Identity for AND is true; any false input short-circuits the fold to false.
     const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), true, std::bit_and<>());
     setOutputValue(result);
 }

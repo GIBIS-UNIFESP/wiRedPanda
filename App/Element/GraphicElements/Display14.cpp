@@ -12,6 +12,9 @@
 Display14::Display14(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display14, ElementGroup::Output, ":/Components/Output/Counter/counter_14_on.svg", tr("14-SEGMENT DISPLAY"), tr("14-Segment Display"), 15, 15, 0, 0, parent)
 {
+    // Each of the 14 segments plus DP gets 5 color variants (White, Red, Green, Blue, Purple).
+    // Skin indices 1-15 map to segment SVGs in defaultSkins; skin[0] is the off background.
+    // Display7::convertAllColors() recolors the pre-rendered images pixel-by-pixel.
     if (GlobalProperties::skipInit) {
         return;
     }
@@ -84,6 +87,9 @@ void Display14::refresh()
 
 void Display14::updatePortsProperties()
 {
+    // Left-side ports (x=0): G1, F, E, D (outer horizontal/vertical) + G2, H, J (diagonals/center)
+    // Right-side ports (x=64): A, B, DP, C + K, L, M, N
+    // This two-column layout mirrors the physical dual-inline-package pin arrangement.
     inputPort( 0)->setPos( 0,  -8);    inputPort(0)->setName("G1 (" + tr("middle left horizontal")  + ")");
     inputPort( 1)->setPos( 0,   8);    inputPort(1)->setName("F (" +  tr("upper left vertical")     + ")");
     inputPort( 2)->setPos( 0,  24);    inputPort(2)->setName("E (" +  tr("lower left vertical")     + ")");
@@ -108,6 +114,7 @@ void Display14::updatePortsProperties()
 
 void Display14::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    // Base class paints the off-state background; active segments are overlaid additively
     GraphicElement::paint(painter, option, widget);
 
     if (inputPort(0)->status() == Status::Active)  { painter->drawPixmap(0, 0, g1.at(m_colorNumber)); }
@@ -158,11 +165,13 @@ void Display14::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, con
     GraphicElement::load(stream, portMap, version);
 
     if ((VERSION("3.1") <= version) && (version < VERSION("4.1"))) {
+        // v3.1–4.0 stored color as a bare QString
         QString color_; stream >> color_;
         setColor(color_);
     }
 
     if (version >= VERSION("4.1")) {
+        // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("color")) {

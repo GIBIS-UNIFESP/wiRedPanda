@@ -16,6 +16,7 @@ void LogicOr::updateLogic()
         return;
     }
 
+    // Identity for OR is false; any true input will propagate through the fold.
     const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_or<>());
     setOutputValue(result);
 }

@@ -32,6 +32,8 @@
 
 ElementType ElementFactory::textToType(const QString &text)
 {
+    // QMetaEnum provides compile-time–safe string↔int conversion for Q_ENUM types;
+    // returns -1 on failure, which maps to the first enum value (Unknown).
     qCDebug(four) << text;
     return static_cast<ElementType>(QMetaEnum::fromType<ElementType>().keyToValue(text.toLatin1()));
 }
@@ -44,6 +46,7 @@ QString ElementFactory::typeToText(const ElementType type)
         return "UNKNOWN";
     }
 
+    // QVariant leverages the Q_ENUM registration to produce the enum key name.
     return QVariant::fromValue(type).toString();
 }
 
@@ -84,6 +87,9 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
         throw PANDACEPTION("Unknown type 1: %1", typeToText(type));
     }
 
+    // Each GraphicElement subclass is registered with Q_DECLARE_METATYPE and
+    // qRegisterMetaType so that QMetaType can instantiate it by name without a
+    // manual switch/case.  typeToText() produces the exact string used at registration.
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     const int id = QMetaType::type(typeToText(type).toLatin1());
 
@@ -93,6 +99,7 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
 
     auto *elm = static_cast<GraphicElement *>(QMetaType::create(id));
 #else
+    // Qt 6 replaced the integer-based API with QMetaType value objects.
     const auto metaType = QMetaType::fromName(typeToText(type).toLatin1());
 
     if (!metaType.isValid() || (metaType.id() == QMetaType::UnknownType)) {
@@ -118,6 +125,8 @@ bool ElementFactory::contains(const int id)
 void ElementFactory::addItem(ItemWithId *item)
 {
     if (item) {
+        // Assign the next monotonically increasing ID; IDs are never reused, so
+        // a stale reference to an old ID will simply not find anything in the map.
         item->setId(instance().nextId());
         instance().m_map[item->id()] = item;
     }
@@ -130,6 +139,9 @@ void ElementFactory::removeItem(ItemWithId *item)
 
 void ElementFactory::updateItemId(ItemWithId *item, const int newId)
 {
+    // Used by MorphCommand to preserve the logical identity of an element across
+    // a type change: the old pointer is gone but the ID stays the same so that
+    // undo/redo can locate the replacement element by ID.
     instance().m_map.remove(item->id());
     instance().m_map[newId] = item;
     item->setId(newId);
@@ -191,6 +203,8 @@ std::shared_ptr<LogicElement> ElementFactory::buildLogicElement(GraphicElement *
     case ElementType::Xnor:        return std::make_shared<LogicXnor>(elm->inputSize());
     case ElementType::Xor:         return std::make_shared<LogicXor>(elm->inputSize());
 
+    // Line and Text are purely decorative; LogicNone produces no outputs and is
+    // never added to the simulation's update queue.
     case ElementType::Line:
     case ElementType::Text:        return std::make_shared<LogicNone>();
 
@@ -207,6 +221,9 @@ const ElementStaticProperties& ElementFactory::ensurePropertiesCached(ElementTyp
         return it.value();
     }
 
+    // skipInit suppresses the full GraphicElement constructor body (port creation,
+    // pixmap loading, scene-item flags) so we can harvest static Q_PROPERTY values
+    // cheaply without allocating Qt scene infrastructure.
     GlobalProperties::skipInit = true;
     auto *elm = buildElement(type);
     GlobalProperties::skipInit = false;

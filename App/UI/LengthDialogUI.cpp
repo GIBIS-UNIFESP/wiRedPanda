@@ -20,6 +20,9 @@ void LengthDialog_Ui::setupUi(QDialog *LengthDialog)
     gridLayout_2 = new QGridLayout(LengthDialog);
     gridLayout_2->setObjectName("gridLayout_2");
 
+    // Minimum of 2 time steps (need at least one rising and one falling edge to be meaningful);
+    // maximum of 2048 is enforced throughout the app to keep memory and render time bounded.
+    // Default of 64 is a reasonable starting point for a small circuit demo.
     lengthSlider = new QSlider(LengthDialog);
     lengthSlider->setObjectName("lengthSlider");
     lengthSlider->setMinimum(2);
@@ -59,6 +62,7 @@ void LengthDialog_Ui::setupUi(QDialog *LengthDialog)
 
     retranslateUi(LengthDialog);
 
+    // Bidirectionally sync slider and spin box so either control can drive the other
     QObject::connect(lengthSlider, &QSlider::valueChanged, lengthSpinBox, &QSpinBox::setValue);
     QObject::connect(lengthSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), lengthSlider, &QSlider::setValue);
 

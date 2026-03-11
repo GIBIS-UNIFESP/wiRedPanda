@@ -4,8 +4,10 @@
 #include "App/Element/LogicElements/LogicInput.h"
 
 LogicInput::LogicInput(const bool defaultValue, const int nOutputs)
-    : LogicElement(0, nOutputs)
+    : LogicElement(0, nOutputs) // 0 inputs: source node, drives the graph boundary
 {
+    // Primary output carries the user-controlled value; secondary outputs (used
+    // by multi-bit input devices such as keyboards) default to false.
     setOutputValue(0, defaultValue);
 
     for (int port = 1; port < nOutputs; ++port) {
@@ -15,4 +17,6 @@ LogicInput::LogicInput(const bool defaultValue, const int nOutputs)
 
 void LogicInput::updateLogic()
 {
+    // Intentionally empty: the output value is set externally by the UI layer
+    // (e.g. when the user toggles a switch), not computed from any inputs.
 }

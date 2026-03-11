@@ -23,9 +23,11 @@ QNEConnection::QNEConnection(QGraphicsItem *parent)
 {
     setFlag(QGraphicsItem::ItemIsSelectable);
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    // Draw wires behind elements so port dots and element bodies always render on top
     setZValue(-1);
 
     updateTheme();
+    // Start in the Invalid visual state; the wire colour is updated once both ports are attached
     setPen(QPen(m_invalidColor, 5));
 }
 
@@ -55,6 +57,8 @@ void QNEConnection::setStartPort(QNEOutputPort *port)
     auto *oldPort = m_startPort;
     m_startPort = port;
 
+    // Detach from the previous port before attaching to the new one to avoid
+    // dangling entries in the old port's connection list (e.g. during IC hot-reload)
     if (oldPort && (oldPort != port)) {
         oldPort->disconnect(this);
     }
@@ -62,6 +66,7 @@ void QNEConnection::setStartPort(QNEOutputPort *port)
     if (port) {
         port->connect(this);
         setStartPos(port->scenePos());
+        // Inherit the source port's signal status so the wire colour is correct immediately
         setStatus(port->status());
     }
 }
@@ -78,6 +83,8 @@ void QNEConnection::setEndPort(QNEInputPort *port)
     if (port) {
         port->connect(this);
         setEndPos(port->scenePos());
+        // Push the current wire status into the destination port so it displays correctly
+        // even before the next simulation step
         port->setStatus(status());
     }
 }
@@ -104,6 +111,9 @@ void QNEConnection::updatePath()
     qreal dx = m_endPos.x() - m_startPos.x();
     qreal dy = m_endPos.y() - m_startPos.y();
 
+    // Cubic Bézier control points chosen so the wire leaves/arrives roughly horizontally
+    // (small Y fraction) and curves gently in the middle (0.25/0.75 X fraction).
+    // This gives an S-curve appearance typical of schematic wire routing tools.
     QPointF ctr1(m_startPos.x() + dx * 0.25, m_startPos.y() + dy * 0.1);
     QPointF ctr2(m_startPos.x() + dx * 0.75, m_startPos.y() + dy * 0.9);
 
@@ -128,6 +138,9 @@ double QNEConnection::angle()
     QNEPort *port2 = m_endPort;
 
     if (port1 && port2) {
+        // Normalise: port1 = output, port2 = input regardless of which end was set first.
+        // QLineF::angle() measures from positive X axis counter-clockwise, so the
+        // returned angle always describes the direction from output to input.
         if (port2->isOutput()) {
             std::swap(port1, port2);
         }
@@ -140,6 +153,9 @@ double QNEConnection::angle()
 
 void QNEConnection::save(QDataStream &stream) const
 {
+    // Persist the raw pointer addresses as opaque 64-bit IDs.  They are meaningless
+    // as pointers after a reload but serve as unique tokens during the same session,
+    // and load() uses a portMap to translate them back to the correct QNEPort objects.
     stream << reinterpret_cast<quint64>(m_startPort);
     stream << reinterpret_cast<quint64>(m_endPort);
 }
@@ -150,6 +166,9 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
     quint64 ptr2; stream >> ptr2;
 
     if (portMap.isEmpty()) {
+        // No portMap means this is an in-process clipboard paste: the stored integers
+        // ARE still valid pointer addresses because no process restart occurred.
+        // Casting them back is safe here, but would be undefined behaviour after reload.
         qCDebug(three) << "Empty port map.";
         auto *port1 = reinterpret_cast<QNEPort *>(ptr1);
         auto *port2 = reinterpret_cast<QNEPort *>(ptr2);
@@ -236,6 +255,8 @@ void QNEConnection::setStatus(const Status status)
 
     m_status = status;
 
+    // Invalid wires are drawn thicker (5 px) to draw attention to the problem;
+    // active/inactive wires are thinner (3 px) to reduce visual clutter during simulation
     switch (status) {
     case Status::Invalid:  setPen(QPen(m_invalidColor,  5)); break;
     case Status::Inactive: setPen(QPen(m_inactiveColor, 3)); break;
@@ -247,6 +268,7 @@ void QNEConnection::setStatus(const Status status)
         break;
     }
 
+    // Propagate to the destination port so its fill colour also reflects the signal state
     if (endPort()) {
         endPort()->setStatus(status);
     }
@@ -267,6 +289,8 @@ void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     Q_UNUSED(widget)
     Q_UNUSED(option)
 
+    // Highlight is drawn as a wider blue halo beneath the normal wire, so users can
+    // easily see which wires belong to a selected element
     if (m_highLight) {
         painter->save();
         painter->setPen(QPen(Qt::blue, 10));
@@ -274,12 +298,16 @@ void QNEConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
         painter->restore();
     }
 
+    // When the wire itself is selected (clicked), switch to the selection colour;
+    // otherwise use the status-driven pen set by setStatus()
     painter->setPen(isSelected() ? QPen(m_selectedColor, 5) : pen());
     painter->drawPath(path());
 }
 
 QVariant QNEConnection::itemChange(GraphicsItemChange change, const QVariant &value)
 {
+    // When the wire is selected/deselected, visually highlight both endpoint ports
+    // so the user can see which element pins are connected by this wire
     if (change == ItemSelectedChange) {
         if (value.toBool()) {
             if (startPort()) startPort()->hoverEnter();
@@ -306,11 +334,15 @@ void QNEConnection::setHighLight(const bool highLight)
 
 QRectF QNEConnection::boundingRect() const
 {
+    // Expand beyond the path's tight bounding box by 10 px on all sides to ensure
+    // the thick selection outline and highlight halo are fully covered during repaints
     return path().boundingRect().adjusted(-10, -10, 10, 10);
 }
 
 bool QNEConnection::sceneEvent(QEvent *event)
 {
+    // Swallow Ctrl+click so the scene can use Ctrl+click for multi-selection without
+    // the wire consuming the event and blocking the rubber-band/deselect behaviour
     if (auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event)) {
         if (mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
             return true;

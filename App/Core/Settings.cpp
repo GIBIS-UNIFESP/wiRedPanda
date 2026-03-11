@@ -6,6 +6,10 @@
 QSettings *Settings::settingsInstance()
 {
     if (!Settings::settings) {
+        // IniFormat produces a human-readable text file rather than the platform registry
+        // (Windows) or plist (macOS), making it easy to inspect and version-control settings.
+        // UserScope stores the file in the user's home/config directory so that multiple
+        // system users don't share the same preference file.
         Settings::settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "GIBIS-UNIFESP", "wiRedPanda");
     }
     return Settings::settings;

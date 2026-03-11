@@ -14,9 +14,12 @@ void LogicMux::updateLogic()
         return;
     }
 
+    // Input layout: data0 at index 0, data1 at index 1, select at index 2.
+    // This matches the pin ordering defined in the graphic element.
     const bool data1 = m_inputValues.at(0);
     const bool data2 = m_inputValues.at(1);
     const bool choice = m_inputValues.at(2);
 
+    // choice=0 → forward data1 (input 0); choice=1 → forward data2 (input 1).
     setOutputValue(choice ? data2 : data1);
 }

@@ -4,8 +4,9 @@
 #include "App/Element/LogicElements/LogicDLatch.h"
 
 LogicDLatch::LogicDLatch()
-    : LogicElement(2, 2)
+    : LogicElement(2, 2) // inputs: D, Enable; outputs: Q, Q'
 {
+    // Power-on default: Q=0, Q'=1
     setOutputValue(0, false);
     setOutputValue(1, true);
 }
@@ -21,6 +22,8 @@ void LogicDLatch::updateLogic()
     const bool D = m_inputValues.at(0);
     const bool enable = m_inputValues.at(1);
 
+    // Level-sensitive latch: transparent when Enable is high — outputs follow D
+    // continuously.  When Enable is low the state is held (no change).
     if (enable) {
         q0 = D;
         q1 = !D;

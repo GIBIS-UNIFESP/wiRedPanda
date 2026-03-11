@@ -61,6 +61,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     qCDebug(zero) << "Settings fileName: " << Settings::fileName();
 
+    // --- Language / translation setup ---
     // Get language from settings, or auto-detect from system if not set
     QString language = Settings::value("language").toString();
     if (language.isEmpty()) {
@@ -121,6 +122,8 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     qCDebug(zero) << "Setting left side menus.";
     populateLeftMenu();
 
+    // --- Left-panel tab icon setup ---
+    // Lookup by object name rather than positional index so reordering tabs doesn't break icons.
     // Set tab icons using object name-based lookup for robustness
     int ioTabIndex = getTabIndex("io");
     int gatesTabIndex = getTabIndex("gates");
@@ -136,6 +139,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     if (memoryTabIndex != -1) m_ui->tabElements->setTabIcon(memoryTabIndex, QIcon(DFlipFlop::pixmapPath()));
     if (icTabIndex != -1) m_ui->tabElements->setTabIcon(icTabIndex, QIcon(":/Components/Logic/ic-panda.svg"));
     if (miscTabIndex != -1) m_ui->tabElements->setTabIcon(miscTabIndex, QIcon(":/Components/Misc/text.png"));
+    // Search tab is a virtual tab that only becomes enabled when the user types in the search box.
     if (searchTabIndex != -1) m_ui->tabElements->setTabEnabled(searchTabIndex, false);
 
     qCDebug(zero) << "Loading recent file list.";
@@ -145,6 +149,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_recentFiles, &RecentFiles::recentFilesUpdated, this, &MainWindow::updateRecentFileActions);
 
     qCDebug(zero) << "Checking playing simulation.";
+    // Start simulation running by default so the circuit is live on open.
     m_ui->actionPlay->setChecked(true);
 
     qCDebug(zero) << "Window title.";
@@ -158,9 +163,13 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
         loadPandaFile(fileName);
     }
 
+    // Arduino export is experimentally disabled until the code generator is
+    // complete enough for general use.
     qCDebug(zero) << "Disabling Arduino export.";
     m_ui->actionExportToArduino->setEnabled(false);
 
+    // 100 000 KB — large circuits with many IC pixmaps benefit from generous caching;
+    // the default Qt limit of 10 000 KB causes frequent cache misses on complex designs.
     QPixmapCache::setCacheLimit(100000);
 
     qCDebug(zero) << "Adding examples to menu";
@@ -186,7 +195,10 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
         m_ui->menuExamples->menuAction()->setVisible(false);
     }
 
-    // Shortcuts
+    // --- Scene-level keyboard shortcuts ---
+    // These are not in the menu bar, so they live here as QShortcut objects.
+    // [ / ] cycle a selected element's primary property (e.g. input size).
+    // { / } cycle a secondary property; < / > morph through element variants.
     auto *searchShortcut = new QShortcut(QKeySequence("Ctrl+F"), this);
     auto *prevMainPropShortcut = new QShortcut(QKeySequence("["), this);
     auto *nextMainPropShortcut = new QShortcut(QKeySequence("]"), this);
@@ -274,6 +286,8 @@ void MainWindow::loadAutosaveFiles()
             continue;
         }
 
+        // Mark the newly loaded tab so it knows it came from an autosave,
+        // causing it to prompt for a real save path on the next Ctrl+S.
         m_currentTab->setAutosaveFile();
 
         ++it;
@@ -307,6 +321,9 @@ void MainWindow::removeUndoRedoMenu()
         return;
     }
 
+    // Undo and Redo are the first two actions in menuEdit (inserted by
+    // addUndoRedoMenu).  Removing index 0 twice pops them both; after the
+    // first removal the previous index 1 becomes the new index 0.
     m_ui->menuEdit->removeAction(m_ui->menuEdit->actions().constFirst());
     m_ui->menuEdit->removeAction(m_ui->menuEdit->actions().constFirst());
 }
@@ -327,6 +344,8 @@ void MainWindow::addUndoRedoMenu()
         return;
     }
 
+    // Insert before position 0 then before the new position 1 so undo appears
+    // first, redo second — above the separator that already exists in menuEdit.
     m_ui->menuEdit->insertAction(actions.at(0), scene->undoAction());
     m_ui->menuEdit->insertAction(actions.at(1), scene->redoAction());
 }
@@ -360,6 +379,8 @@ void MainWindow::show()
 {
     QMainWindow::show();
 
+    // Recovery is deferred to show() so that the window is fully visible
+    // before any blocking message boxes are presented to the user.
     if (!Settings::contains("hideV4Warning")) {
         aboutThisVersion();
     }
@@ -423,6 +444,8 @@ int MainWindow::confirmSave(const bool multiple)
     QMessageBox msgBox;
     msgBox.setParent(this);
 
+    // When closing all tabs at once, offer "Yes to All" / "No to All" to avoid
+    // repeated per-file prompts.
     if (multiple) {
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel);
     } else {
@@ -506,6 +529,7 @@ void MainWindow::on_actionSave_triggered()
 
     // TODO: if current file is autosave ask for filename
 
+    // If the project has never been saved, fall through to a Save-As dialog.
     QString fileName = m_currentFile.absoluteFilePath();
 
     if (fileName.isEmpty()) {
@@ -539,8 +563,12 @@ void MainWindow::on_actionSaveAs_triggered()
         fileName.append(".panda");
     }
 
+    // IC sub-circuit files are stored alongside the main .panda file.
+    // Copy them to the new location so the saved copy is self-contained.
     IC::copyFiles(QFileInfo(m_currentFile), QFileInfo(fileName));
 
+    // Open the new file in a fresh tab rather than just saving in-place so
+    // the tab title and m_currentFile update to reflect the new path.
     loadPandaFile(fileName);
 }
 
@@ -605,9 +633,11 @@ void MainWindow::on_actionReportTranslationError_triggered()
 
 bool MainWindow::closeFiles()
 {
+    // Close from last to first so that tab indices stay stable during iteration;
+    // removing the last tab never shifts the indices of earlier tabs.
     while (m_ui->tab->count() != 0) {
         if (!closeTab(m_ui->tab->count() - 1)) {
-            return false;
+            return false; // user cancelled — abort the close sequence
         }
     }
     return true;
@@ -617,6 +647,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     bool closeWindow = false;
 
+    // If nothing is modified, ask once before exiting so the user can't
+    // accidentally quit with a keyboard shortcut.  If there are unsaved changes,
+    // delegate to closeFiles() which prompts per-tab.
     if (!hasModifiedFiles()) {
         auto reply =
             QMessageBox::question(
@@ -634,6 +667,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 
     if (closeWindow) {
+        // Persist window/splitter layout so the next session opens the same way.
         updateSettings();
         event->accept();
     } else {
@@ -666,10 +700,13 @@ bool MainWindow::hasModifiedFiles()
             continue;
         }
 
+        // An un-clean undo stack means uncommitted edits since the last save.
         if (!undoStack->isClean()) {
             return true;
         }
 
+        // An autosave file that is still in the list has not been explicitly
+        // saved by the user yet and should be treated as modified.
         const QString fileName = workspace->fileInfo().fileName();
 
         if (!fileName.isEmpty() && autosaves.contains(fileName)) {
@@ -700,6 +737,8 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 
     QString text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
 
+    // Append an asterisk to the tab title to indicate unsaved changes,
+    // following the common editor convention.
     if (m_currentTab) {
         auto *scene = m_currentTab->scene();
         if (scene) {
@@ -711,6 +750,7 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
     }
 
     m_ui->tab->setTabText(m_tabIndex, text);
+    // Full path in the tooltip so users can distinguish files with the same name.
     m_ui->tab->setTabToolTip(m_tabIndex, fileInfo.absoluteFilePath());
 
     qCDebug(zero) << "Adding file to recent files.";
@@ -724,8 +764,11 @@ void MainWindow::on_actionSelectAll_triggered()
 
 void MainWindow::updateICList()
 {
+    // Remove the expanding spacer before inserting items so new labels don't
+    // push it out of place; it's re-added at the bottom after all labels.
     m_ui->scrollAreaWidgetContents_IC->layout()->removeItem(m_ui->verticalSpacer_IC);
 
+    // Clear all existing IC labels from both the IC panel and the search panel.
     const auto items = m_ui->scrollAreaWidgetContents_IC->findChildren<ElementLabel *>();
 
     for (auto *item : items) {
@@ -743,9 +786,13 @@ void MainWindow::updateICList()
     if (m_currentFile.exists()) {
         qCDebug(zero) << "Show files.";
         QDir directory(m_currentFile.absoluteDir());
+        // Enumerate all .panda files in the same directory — they are candidate ICs.
         QStringList files = directory.entryList({"*.panda", "*.PANDA"}, QDir::Files);
+        // Exclude the project file itself from the IC list.
         files.removeAll(m_currentFile.fileName());
 
+        // Skip hidden files (names starting with '.') — these are typically
+        // autosave/temporary files, not user-created ICs.
         for (int i = files.size() - 1; i >= 0; --i) {
             if (files.at(i).at(0) == '.') {
                 files.removeAt(i);
@@ -756,6 +803,8 @@ void MainWindow::updateICList()
         for (const QString &file : std::as_const(files)) {
             QPixmap pixmap(":/Components/Logic/ic-panda.svg");
 
+            // Each IC needs two label instances: one for the dedicated IC tab
+            // and another mirrored into the search panel.
             auto *item = new ElementLabel(pixmap, ElementType::IC, file, this);
             m_ui->scrollAreaWidgetContents_IC->layout()->addWidget(item);
 
@@ -770,6 +819,8 @@ void MainWindow::updateICList()
 bool MainWindow::closeTab(const int tabIndex)
 {
     qCDebug(zero) << "Closing tab " << tabIndex + 1 << ", #tabs: " << m_ui->tab->count();
+    // Activate the tab being closed so m_currentTab reflects the right workspace
+    // before we inspect its undo stack.
     m_ui->tab->setCurrentIndex(tabIndex);
 
     qCDebug(zero) << "Checking if needs to save file.";
@@ -796,6 +847,7 @@ bool MainWindow::closeTab(const int tabIndex)
             } catch (const std::exception &e) {
                 QMessageBox::critical(this, tr("Error"), e.what());
 
+                // If saving failed ask whether to discard and close anyway.
                 if (closeTabAnyway() == QMessageBox::No) {
                     return false;
                 }
@@ -814,6 +866,9 @@ bool MainWindow::closeTab(const int tabIndex)
 
 void MainWindow::disconnectTab()
 {
+    // Called before switching away from a tab.  Tear down all connections that
+    // route scene signals into shared UI elements, and stop the simulation so it
+    // doesn't keep running in the background consuming CPU.
     if (!m_currentTab) {
         return;
     }
@@ -860,13 +915,18 @@ void MainWindow::connectTab()
     if (m_ui->actionPlay->isChecked()) {
         qCDebug(zero) << "Restarting simulation.";
         m_currentTab->simulation()->start();
+        // Clear selection so the element editor doesn't show stale data from the
+        // previously active tab.
         m_currentTab->scene()->clearSelection();
     }
 
     m_currentTab->view()->setFastMode(m_ui->actionFastMode->isChecked());
+    // Synchronise zoom button state to the newly visible tab's zoom level.
     m_ui->actionZoomIn->setEnabled(m_currentTab->view()->canZoomIn());
     m_ui->actionZoomOut->setEnabled(m_currentTab->view()->canZoomOut());
 
+    // Keep the global ID counter ahead of the highest ID already used in this
+    // scene so that new elements receive unique IDs.
     ElementFactory::setLastId(m_currentTab->lastId());
 }
 
@@ -879,9 +939,12 @@ void MainWindow::tabChanged(const int newTabIndex)
 {
     disconnectTab(); // disconnect previously selected tab
     m_tabIndex = newTabIndex;
+    // Hide the editor panel during the transition; connectTab() will restore it
+    // once the new scene's selection is known.
     m_ui->elementEditor->hide();
 
     if (newTabIndex == -1) {
+        // All tabs were closed; reset state.
         m_currentTab = nullptr;
         return;
     }
@@ -894,11 +957,15 @@ void MainWindow::tabChanged(const int newTabIndex)
 
 void MainWindow::on_lineEditSearch_textChanged(const QString &text)
 {
+    // Remove spacer before modifying visible items to avoid layout artefacts;
+    // it's re-added at the end.
     m_ui->scrollAreaWidgetContents_Search->layout()->removeItem(m_ui->verticalSpacer_Search);
 
     const int searchTabIndex = getTabIndex("search");
 
     if (text.isEmpty()) {
+        // Restore the normal tab bar and return to the tab the user was on before
+        // they started typing.
         m_ui->tabElements->tabBar()->show();
         m_ui->tabElements->setCurrentIndex(m_lastTabIndex);
         if (searchTabIndex != -1) {
@@ -907,10 +974,12 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
 
         m_lastTabIndex = -1;
     } else {
+        // On first keystroke, remember which tab was active so we can restore it.
         if (m_lastTabIndex == -1) {
             m_lastTabIndex = m_ui->tabElements->currentIndex();
         }
 
+        // Hide the tab bar so only the unified search results are visible.
         m_ui->tabElements->tabBar()->hide();
         if (searchTabIndex != -1) {
             m_ui->tabElements->setCurrentIndex(searchTabIndex);
@@ -919,9 +988,12 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
 
         const auto allItems = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
 
+        // First pass: match by object name (e.g. "label_and", "label_or"), which
+        // prioritises exact type name hits over looser name-string matches.
         QRegularExpression regex1(QString("^label_.*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
         auto searchResults = m_ui->scrollArea_Search->findChildren<ElementLabel *>(regex1);
 
+        // Second pass: match by the human-readable translated element name.
         QRegularExpression regex2(QString(".*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
 
         for (auto *item : allItems) {
@@ -932,6 +1004,8 @@ void MainWindow::on_lineEditSearch_textChanged(const QString &text)
             }
         }
 
+        // Third pass: also search IC file names — ICs share the object name
+        // "label_ic" so the regex above can't distinguish between them.
         const auto ics = m_ui->scrollArea_Search->findChildren<ElementLabel *>("label_ic");
 
         for (auto *ic : ics) {
@@ -987,7 +1061,12 @@ void MainWindow::on_actionGates_triggered(const bool checked)
         return;
     }
 
+    // Wire visibility depends on gates being visible: if gates are hidden, wires
+    // make no sense and should be hidden too.  Re-enable the wire toggle only when
+    // gates are shown so the user can't end up with floating wires.
     m_ui->actionWires->setEnabled(checked);
+    // When hiding gates, force wires off regardless of the wire-toggle state.
+    // When showing gates, restore whatever the wire toggle was set to.
     m_currentTab->scene()->showWires(checked ? m_ui->actionWires->isChecked() : checked);
     m_currentTab->scene()->showGates(checked);
 }
@@ -1008,6 +1087,8 @@ void MainWindow::exportToArduino(QString fileName)
         throw PANDACEPTION("The .panda file is empty.");
     }
 
+    // Pause the simulation while generating code to avoid data races between
+    // the simulation timer and the code generator reading element state.
     SimulationBlocker simulationBlocker(m_currentTab->simulation());
 
     if (!fileName.endsWith(".ino")) {
@@ -1108,6 +1189,9 @@ void MainWindow::updateRecentFileActions()
 
     auto actions = m_ui->menuRecentFiles->actions();
 
+    // The menu has exactly RecentFiles::maxFiles pre-allocated actions; update
+    // visible ones in order, hide the rest.  Prefix "&1", "&2" … adds a mnemonic
+    // so the entries are keyboard-accessible without a mouse.
     for (int i = 0; i < numRecentFiles; ++i) {
         const QString text = "&" + QString::number(i + 1) + " " + QFileInfo(files.at(i)).fileName();
         actions.at(i)->setText(text);
@@ -1147,6 +1231,7 @@ void MainWindow::on_actionExportToPdf_triggered()
         return;
     }
 
+    // De-select elements so their selection handles don't appear in the export.
     m_currentTab->scene()->clearSelection();
 
     QString path;
@@ -1167,6 +1252,7 @@ void MainWindow::on_actionExportToPdf_triggered()
 
     QPrinter printer(QPrinter::HighResolution);
     printer.setPageSize(QPageSize(QPageSize::A4));
+    // Landscape fits most circuits better than portrait.
     printer.setPageOrientation(QPageLayout::Orientation::Landscape);
     printer.setOutputFormat(QPrinter::PdfFormat);
     printer.setOutputFileName(pdfFile);
@@ -1177,6 +1263,7 @@ void MainWindow::on_actionExportToPdf_triggered()
     }
 
     auto *scene = m_currentTab->scene();
+    // Add a 64 px margin around the bounding rect so elements at the edge aren't clipped.
     scene->render(&painter, QRectF(), scene->itemsBoundingRect().adjusted(-64, -64, 64, 64));
     painter.end();
 
@@ -1209,6 +1296,9 @@ void MainWindow::on_actionExportToImage_triggered()
         pngFile.append(".png");
     }
 
+    // Render to a pixmap sized exactly to the circuit bounding box + 64 px margin.
+    // Antialiasing is enabled here but not in the PDF path because QPrinter
+    // already renders at high DPI.
     QRectF rect = m_currentTab->scene()->itemsBoundingRect().adjusted(-64, -64, 64, 64);
     QPixmap pixmap(rect.size().toSize());
     QPainter painter;
@@ -1270,8 +1360,13 @@ void MainWindow::loadTranslation(const QString &language)
         return;
     }
 
+    // Persist immediately so if the app crashes during translation loading the
+    // preference is still saved for the next launch.
     Settings::setValue("language", language);
 
+    // Always remove and recreate translators rather than calling load() on an
+    // existing one — Qt does not guarantee that a re-loaded translator emits
+    // languageChanged reliably.
     qApp->removeTranslator(m_pandaTranslator);
     qApp->removeTranslator(m_qtTranslator);
 
@@ -1281,6 +1376,8 @@ void MainWindow::loadTranslation(const QString &language)
     m_pandaTranslator = nullptr;
     m_qtTranslator = nullptr;
 
+    // English is the source language; no .qm file exists for it, so just
+    // retranslate the UI (which resets to the source strings).
     if (language == "en") {
         retranslateUi();
         return;
@@ -1331,8 +1428,9 @@ QStringList MainWindow::getAvailableLanguages() const
     // Always include English as it's the default
     languages << "en";
 
-    // Dynamically discover all available wpanda translation files
-    // Get all resources in the translations directory
+    // The Qt resource system exposes ":/Translations" as a virtual directory
+    // that can be listed like a real filesystem — more robust than hardcoding a
+    // language list, and automatically picks up newly added .qm files.
     QDir translationsDir(":/Translations");
     if (translationsDir.exists()) {
         QStringList qmFiles = translationsDir.entryList({"wpanda_*.qm"}, QDir::Files);
@@ -1571,6 +1669,8 @@ void MainWindow::on_actionPlay_toggled(const bool checked)
 
     auto *simulation = m_currentTab->simulation();
 
+    // toggled(bool) carries the new checked state, so this is the canonical
+    // start/stop dispatch point — no separate on/off slots needed.
     checked ? simulation->start() : simulation->stop();
 }
 
@@ -1585,8 +1685,12 @@ void MainWindow::on_actionRestart_triggered()
 
 void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout)
 {
+    // The spacer must be removed before inserting widgets so it stays at the
+    // bottom after they are added; it is put back at the end of this function.
     layout->removeItem(spacer);
 
+    // Each element type gets two labels: one in its own category panel and a
+    // duplicate in the shared search panel so search can find everything in one place.
     for (const auto &name : names) {
         auto type = ElementFactory::textToType(name);
         auto pixmap(ElementFactory::pixmap(type));
@@ -1644,7 +1748,8 @@ void MainWindow::on_actionDarkTheme_triggered()
 
 void MainWindow::updateTheme()
 {
-    // Clear the pixmap cache so elements will regenerate their pixmaps for the new theme
+    // Pixmaps are theme-dependent (dark/light SVG variants); clearing the cache
+    // forces each element to re-render with the new palette on next paint.
     ElementFactory::clearCache();
 
     switch (ThemeManager::theme()) {
@@ -1657,13 +1762,14 @@ void MainWindow::updateTheme()
         break;
     }
 
-    // Update memory tab icon using object name-based lookup
+    // Memory tab icon uses DFlipFlop's SVG which differs between themes.
     const int memoryTabIndex = getTabIndex("memory");
     if (memoryTabIndex != -1) {
         m_ui->tabElements->setTabIcon(memoryTabIndex, QIcon(DFlipFlop::pixmapPath()));
     }
 
-    // Update memory tab element labels (only tab with theme-dependent icons)
+    // Only memory element labels are theme-sensitive (their SVGs change colour);
+    // other tabs use fixed icons and don't need individual repaints.
     const auto labels = m_ui->memory->findChildren<ElementLabel *>();
 
     for (auto *label : labels) {
@@ -1734,6 +1840,7 @@ bool MainWindow::event(QEvent *event)
 {
     switch (event->type()) {
     case QEvent::WindowActivate: {
+        // Resume simulation when the window regains focus.
         if (m_ui->actionPlay->isChecked()) {
             on_actionPlay_toggled(true);
         }
@@ -1741,6 +1848,8 @@ bool MainWindow::event(QEvent *event)
     }
 
     case QEvent::WindowDeactivate: {
+        // Pause simulation when the window loses focus unless the user opted in
+        // to background simulation (useful for demoing circuits on a second display).
         if (!m_ui->actionBackground_Simulation->isChecked()) {
             on_actionPlay_toggled(false);
         }
@@ -1759,6 +1868,8 @@ void MainWindow::on_pushButtonAddIC_clicked()
         return;
     }
 
+    // The IC list is directory-relative.  If the project hasn't been saved yet
+    // we don't have a directory to copy into, so require a save first.
     if (!m_currentTab->fileInfo().isReadable()) {
         throw PANDACEPTION("Save file first.");
     }
@@ -1780,6 +1891,8 @@ void MainWindow::on_pushButtonAddIC_clicked()
 
     QMessageBox::information(this, tr("Info"), tr("Selected files (and their dependencies) will be copied to current file folder."));
 
+    // Copy the chosen .panda file (and any ICs it depends on transitively)
+    // into the project's directory so that relative paths work when reopened.
     for (const auto &file : files) {
         QFileInfo destPath(GlobalProperties::currentDir + "/" + QFileInfo(file).fileName());
         IC::copyFiles(QFileInfo(file), destPath);
@@ -1799,10 +1912,15 @@ void MainWindow::removeICFile(const QString &icFileName)
         return;
     }
 
+    // Stop simulation so IC elements aren't updated while we're deleting them.
     SimulationBlocker blocker(m_currentTab->simulation());
 
     auto elements = m_currentTab->scene()->elements();
 
+    // Iterate in reverse so that removing items doesn't invalidate subsequent
+    // iterators (the list is a copy, but the scene's internal container may shift).
+    // label().append(".panda").toLower() reconstructs the filename from the IC
+    // label (e.g. "adder" → "adder.panda") for comparison against icFileName.
     for (auto it = elements.rbegin(); it != elements.rend(); ++it) {
         if ((*it)->elementType() == ElementType::IC && (*it)->label().append(".panda").toLower() == icFileName) {
             m_currentTab->scene()->removeItem(*it);
@@ -1817,6 +1935,7 @@ void MainWindow::removeICFile(const QString &icFileName)
     }
 
     updateICList();
+    // Auto-save after removal so the scene no longer references the deleted file.
     on_actionSave_triggered();
 }
 

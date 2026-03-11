@@ -32,6 +32,9 @@ Display7::Display7(QGraphicsItem *parent)
     setPixmap(0);
 
     qCDebug(three) << "Allocating pixmaps.";
+    // Each segment is stored as a vector of 5 color variants (White, Red, Green, Blue, Purple).
+    // They all start as copies of the default (white) SVG; convertAllColors() then recolors
+    // each copy in-place using pixel-level channel manipulation.
     a =  QVector<QPixmap>(5, m_defaultSkins.at(1));
     b =  QVector<QPixmap>(5, m_defaultSkins.at(2));
     c =  QVector<QPixmap>(5, m_defaultSkins.at(3));
@@ -61,6 +64,10 @@ Display7::Display7(QGraphicsItem *parent)
 
 void Display7::convertAllColors(QVector<QPixmap> &pixmaps)
 {
+    // All five slots start with the same source image; recolor each one by
+    // selectively passing or zeroing the R/G/B channels:
+    //   0 = White  (R+G+B), 1 = Red (R only), 2 = Green (G only),
+    //   3 = Blue   (B only), 4 = Purple (R+B)
     QImage tmp(pixmaps.at(0).toImage());
     pixmaps[0] = convertColor(tmp, true, true, true);
     pixmaps[1] = convertColor(tmp, true, false, false);
@@ -77,6 +84,9 @@ QPixmap Display7::convertColor(const QImage &source, const bool red, const bool 
         QRgb *line = reinterpret_cast<QRgb *>(target.scanLine(y));
         for (int x = 0; x < target.width(); ++x) {
             QRgb &rgb = line[x];
+            // The source SVG uses grayscale: red channel encodes pixel brightness.
+            // Reuse that brightness value for the enabled channels and set alpha
+            // equal to brightness so transparent backgrounds remain transparent.
             const int value = qRed(rgb);
             rgb = qRgba(red   ? value : 0,
                         green ? value : 0,
@@ -95,6 +105,9 @@ void Display7::refresh()
 
 void Display7::updatePortsProperties()
 {
+    // Ports on the left side (x=0) correspond to the left segments (G, F, E, D);
+    // ports on the right side (x=64) correspond to the right segments and DP (A, B, DP, C).
+    // This matches the physical pin layout used by common 7-segment display ICs.
     if (auto *port = inputPort(0)) { port->setPos( 0,  8); port->setName("G (" +  tr("middle")      + ")"); }
     if (auto *port = inputPort(1)) { port->setPos( 0, 24); port->setName("F (" +  tr("upper left")  + ")"); }
     if (auto *port = inputPort(2)) { port->setPos( 0, 40); port->setName("E (" +  tr("lower left")  + ")"); }
@@ -105,6 +118,7 @@ void Display7::updatePortsProperties()
     if (auto *port = inputPort(7)) { port->setPos(64, 56); port->setName("C (" +  tr("lower right") + ")"); }
 
     for (auto *in : std::as_const(m_inputPorts)) {
+        // Segments are individually driven; leaving a pin unconnected turns that segment off
         in->setRequired(false);
         in->setDefaultStatus(Status::Inactive);
     }
@@ -112,6 +126,9 @@ void Display7::updatePortsProperties()
 
 void Display7::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    // The base class draws the background (off-state SVG).
+    // Active segments are painted on top by overlaying the pre-rendered colored pixmaps.
+    // All segment pixmaps are the same dimensions as the background, so they composite correctly.
     GraphicElement::paint(painter, option, widget);
 
     if (auto *port = inputPort(0); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, g.at(m_colorNumber));  }
@@ -161,6 +178,10 @@ void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, cons
      */
 
     if (version < VERSION("1.6")) {
+        // The pin-to-segment mapping changed at v1.6. The permutation
+        // order[i] = j means "the port that was at index i in the old file
+        // should now live at index j in the canonical layout."
+        // Permutation: old[0]→new[2], old[1]→new[1], old[2]→new[4], etc.
         qCDebug(zero) << "Remapping inputs.";
         QVector<int> order{2, 1, 4, 5, 0, 7, 3, 6};
         QVector<QNEInputPort *> aux = inputs();
@@ -174,6 +195,8 @@ void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, cons
     }
 
     if (version < VERSION("1.7")) {
+        // A second pin-order change occurred at v1.7, requiring another permutation
+        // applied on top of whatever v1.6 remapping already happened.
         qCDebug(zero) << "Remapping inputs.";
         QVector<int> order{2, 5, 4, 0, 7, 3, 6, 1};
         QVector<QNEInputPort *> aux = inputs();
@@ -187,11 +210,13 @@ void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, cons
     }
 
     if ((VERSION("3.1") <= version) && (version < VERSION("4.1"))) {
+        // v3.1–4.0 stored color as a bare QString
         QString color_; stream >> color_;
         setColor(color_);
     }
 
     if (version >= VERSION("4.1")) {
+        // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("color")) {

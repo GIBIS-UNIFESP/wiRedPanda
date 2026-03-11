@@ -16,6 +16,8 @@ void LogicNand::updateLogic()
         return;
     }
 
+    // Reuse the AND fold (identity=true) and invert at the end rather than
+    // folding with a custom negating functor, keeping the logic consistent with LogicAnd.
     const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), true, std::bit_and<>());
     setOutputValue(!result);
 }

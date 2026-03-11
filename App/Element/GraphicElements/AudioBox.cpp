@@ -26,8 +26,11 @@ AudioBox::AudioBox(QGraphicsItem *parent)
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
 
+    // 64,34: label sits to the right of the 64×64 body, vertically centred
     m_label->setPos(64, 34);
 
+    // Detect audio hardware at construction time; all subsequent audio calls are
+    // guarded by m_hasOutputDevice so the element works silently in headless/CI environments.
     setCanChangeSkin(true);
     setHasAudioBox(true);
     setHasLabel(true);
@@ -71,6 +74,7 @@ void AudioBox::setAudio(const QString &audioPath)
 
     m_audio->setFile(audioPath);
 
+    // Volume is set at 50% (Qt5: integer 0-100, Qt6: float 0.0-1.0)
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_player->setVolume(50);
     m_playlist->clear();
@@ -84,6 +88,7 @@ void AudioBox::setAudio(const QString &audioPath)
     m_player->setLoops(QMediaPlayer::Infinite);
 #endif
 
+    // If already playing, restart playback with the new audio immediately
     if (m_isPlaying) {
         m_player->play();
     }
@@ -157,15 +162,18 @@ void AudioBox::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, cons
     GraphicElement::load(stream, portMap, version);
 
     if (version < VERSION("2.4")) {
+        // Audio was added in v2.4; nothing to read for earlier files
         return;
     }
 
     if (version < VERSION("4.1")) {
+        // v2.4–4.0 stored the path as a bare QString
         QString audio; stream >> audio;
         setAudio(audio);
     }
 
     if (version >= VERSION("4.1")) {
+        // v4.1+ uses a key-value map for forward-compatible extensibility
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("audiobox")) {

@@ -38,6 +38,9 @@ bool InputSwitch::isOn(const int port) const
 
 void InputSwitch::setOff()
 {
+    // Unlike a button, a switch toggles its latched state rather than forcing a specific value.
+    // Both setOff() and setOn() implement toggle so external callers (e.g. scripts, tests)
+    // get consistent behavior regardless of which variant they call.
     InputSwitch::setOn(!isOn());
 }
 
@@ -50,6 +53,7 @@ void InputSwitch::setOn(const bool value, const int port)
 {
     Q_UNUSED(port)
     m_isOn = value;
+    // Pixmap index 0 = switch-off SVG, index 1 = switch-on SVG (matches bool→int cast)
     setPixmap(static_cast<int>(m_isOn));
     outputPort()->setStatus(static_cast<Status>(m_isOn));
 }
@@ -80,6 +84,7 @@ void InputSwitch::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
     GraphicElement::load(stream, portMap, version);
 
     if (version < VERSION("4.1")) {
+        // v1.x–4.0 stored isOn as a bare bool; locked flag added in v3.1
         stream >> m_isOn;
 
         if (version >= VERSION("3.1")) {
@@ -88,6 +93,7 @@ void InputSwitch::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
     }
 
     if (version >= VERSION("4.1")) {
+        // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("isOn")) {
@@ -99,6 +105,7 @@ void InputSwitch::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
         }
     }
 
+    // Apply the loaded on/off state to port and pixmap
     setOn(m_isOn);
 }
 

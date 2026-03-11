@@ -12,6 +12,10 @@
 Display16::Display16(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display16, ElementGroup::Output, ":/Components/Output/Counter/counter_16_on.svg", tr("16-SEGMENT DISPLAY"), tr("16-Segment Display"), 17, 17, 0, 0, parent)
 {
+    // Each of the 16 segments plus the decimal point (dp) is stored as 5 color
+    // variants. Indices match the defaultSkins list: skin[0]=off background,
+    // skins[1..17]=individual segment images, all in white initially.
+    // Display7::convertAllColors() recolors them in-place (see Display7.cpp).
     if (GlobalProperties::skipInit) {
         return;
     }
@@ -90,6 +94,11 @@ void Display16::refresh()
 
 void Display16::updatePortsProperties()
 {
+    // Ports on the left (x=0) drive left-side and center segments;
+    // ports on the right (x=64) drive right-side segments and DP.
+    // The port order follows the standard 16-segment naming convention
+    // (A1/A2 = top, B/C = right verticals, D1/D2 = bottom, E/F = left verticals,
+    //  G1/G2 = middle, H/J/K/L/M/N = diagonals and center verticals).
     inputPort( 0)->setPos( 0,  -8);    inputPort( 0)->setName("G1 (" + tr("middle left horizontal")  + ")");
     inputPort( 1)->setPos( 0,   8);    inputPort( 1)->setName("F ("  + tr("upper left vertical")     + ")");
     inputPort( 2)->setPos( 0,  24);    inputPort( 2)->setName("E ("  + tr("lower left vertical")     + ")");
@@ -116,6 +125,7 @@ void Display16::updatePortsProperties()
 
 void Display16::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    // Base class draws the off-state background; active segments are overlaid on top
     GraphicElement::paint(painter, option, widget);
 
     if (inputPort( 0)->status() == Status::Active) { painter->drawPixmap(0, 0, g1.at(m_colorNumber)); }
@@ -168,11 +178,13 @@ void Display16::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, con
     GraphicElement::load(stream, portMap, version);
 
     if ((VERSION("3.1") <= version) && (version < VERSION("4.1"))) {
+        // v3.1–4.0 stored color as a bare QString
         QString color_; stream >> color_;
         setColor(color_);
     }
 
     if (version >= VERSION("4.1")) {
+        // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("color")) {
