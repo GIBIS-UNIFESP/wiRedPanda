@@ -30,8 +30,11 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
 
+    // 64,34: label sits to the right of the 64×64 body, vertically centred
     m_label->setPos(64, 34);
 
+    // Check for audio hardware once at construction; subsequent audio calls are
+    // guarded by m_hasOutputDevice to allow headless/CI operation without warnings.
     setCanChangeSkin(true);
     setHasAudio(true);
     setHasLabel(true);
@@ -66,12 +69,15 @@ void Buzzer::setAudio(const QString &note)
         return;
     }
 
+    // Store the note name (e.g. "C6") separately from the file path so it
+    // can be serialized and displayed in the properties panel
     m_note = note;
 
     if (!m_hasOutputDevice) {
         return;
     }
 
+    // Volume at 35% to avoid startling users; WAV files reside in Qt resources
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_audio->setVolume(0.35);
 #else
@@ -105,6 +111,7 @@ void Buzzer::play()
     setPixmap(1);
 
     if (m_hasOutputDevice) {
+        // Default to middle-C octave 6 if no note was configured
         if (m_audio->source().isEmpty()) {
             setAudio("C6");
         }
@@ -145,15 +152,18 @@ void Buzzer::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const 
     GraphicElement::load(stream, portMap, version);
 
     if (version < VERSION("2.4")) {
+        // Buzzer audio was added in v2.4; nothing to read for earlier files
         return;
     }
 
     if (version < VERSION("4.1")) {
+        // v2.4–4.0 stored the note name as a bare QString
         QString note; stream >> note;
         setAudio(note);
     }
 
     if (version >= VERSION("4.1")) {
+        // v4.1+ uses a key-value map for forward-compatible extensibility
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("note")) {

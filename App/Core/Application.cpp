@@ -18,6 +18,9 @@ Application::Application(int &argc, char **argv)
 
 bool Application::notify(QObject *receiver, QEvent *event)
 {
+    // Overriding notify() is the only reliable way to catch exceptions thrown inside
+    // Qt event handlers, because Qt does not propagate C++ exceptions through its own
+    // event dispatch loop — they would terminate the program with std::terminate() instead.
     bool done = false;
 
     try {
@@ -27,7 +30,8 @@ bool Application::notify(QObject *receiver, QEvent *event)
 #ifdef HAVE_SENTRY
         sentry_value_t event_ = sentry_value_new_event();
 
-        // Try to cast to Pandaception to get English message for Sentry
+        // Pandaception carries a separate English message for Sentry so that
+        // crash reports are readable even when the UI is shown in another locale.
         QString sentryMessage;
         if (const auto *pandaEx = dynamic_cast<const Pandaception*>(&e)) {
             sentryMessage = pandaEx->englishMessage();
@@ -36,7 +40,7 @@ bool Application::notify(QObject *receiver, QEvent *event)
         }
 
         sentry_value_t exc = sentry_value_new_exception("Exception", sentryMessage.toStdString().c_str());
-        sentry_value_set_stacktrace(exc, NULL, 0);
+        sentry_value_set_stacktrace(exc, NULL, 0); // NULL/0 → capture current stack automatically
         sentry_event_add_exception(event_, exc);
         sentry_capture_event(event_);
 #endif

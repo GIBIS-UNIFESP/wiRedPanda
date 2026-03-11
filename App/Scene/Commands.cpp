@@ -33,6 +33,9 @@ void storeIds(const QList<QGraphicsItem *> &items, QList<int> &ids)
 
 void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &ids, QList<int> &otherIds)
 {
+    // Track elements on the opposite end of connections that are NOT being deleted.
+    // These elements must be re-saved/re-loaded during undo so their port state
+    // (connected/disconnected) is correctly restored after the operation.
     for (auto *item : connections) {
         if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
             if (auto *port1 = conn->startPort(); port1 && port1->graphicElement() && !ids.contains(port1->graphicElement()->id())) {
@@ -48,6 +51,7 @@ void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &
 
 const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> &ids, QList<int> &otherIds)
 {
+    // --- Collect elements in the operation ---
     QList<QGraphicsItem *> elements;
     /* Stores selected graphicElements */
     for (auto *item : items) {
@@ -58,6 +62,9 @@ const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList
         }
     }
 
+    // --- Collect all wires attached to those elements ---
+    // Always include the wires connected to the affected elements, even if the
+    // user only selected the element body; this keeps the topology consistent
     QList<QGraphicsItem *> connections;
     /* Stores all the wires linked to these elements */
     for (auto *item : elements) {
@@ -193,6 +200,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
         throw PANDACEPTION_WITH_CONTEXT("commands", "One or more elements were not found on scene. Expected %1, found %2.", ids.size(), items.size());
     }
 
+    // Re-assign the original IDs so undo/redo chains that store IDs remain valid
     for (int i = 0; i < items.size(); ++i) {
         if (auto *itemId = dynamic_cast<ItemWithId *>(items.at(i))) {
             ElementFactory::updateItemId(itemId, ids.at(i));
@@ -216,7 +224,10 @@ AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &items, Scene *sce
     : QUndoCommand(parent)
     , m_scene(scene)
 {
+    // Simulation must be paused while items are added to avoid a partial-topology update
     SimulationBlocker blocker(m_scene->simulation());
+    // Note: QUndoStack::push() calls redo() immediately after construction, so
+    // the constructor itself acts as the first redo — items are added here, not later.
     const auto items_ = loadList(items, m_ids, m_otherIds);
     addItems(m_scene, items_);
     setText(tr("Add %1 elements").arg(items_.size()));
@@ -245,6 +256,9 @@ DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scen
     , m_scene(scene)
 {
     SimulationBlocker blocker(m_scene->simulation());
+    // Unlike AddItemsCommand, the constructor only captures IDs — it does NOT delete yet.
+    // Deletion happens in redo() so that QUndoStack::push() triggers the first delete,
+    // keeping the constructor side-effect-free for safe exception handling.
     const auto items_ = loadList(items, m_ids, m_otherIds);
     setText(tr("Delete %1 elements").arg(items_.size()));
 }
@@ -318,6 +332,8 @@ void RotateCommand::redo()
         cy /= sz;
     }
 
+    // --- Apply group rotation via 2D transform ---
+    // Translate-rotate-translate-back maps each element position around the centroid
     QTransform transform;
     transform.translate(cx, cy);
     transform.rotate(m_angle);
@@ -373,6 +389,9 @@ void MoveCommand::redo()
 
 UpdateCommand::UpdateCommand(const QList<GraphicElement *> &elements, const QByteArray &oldData, Scene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
+    // oldData must be captured by the caller *before* applying the change, so that
+    // undo() can restore the previous state; the constructor cannot capture it here
+    // because the change has already been applied by the time construction runs.
     , m_oldData(oldData)
     , m_scene(scene)
 {
@@ -380,6 +399,7 @@ UpdateCommand::UpdateCommand(const QList<GraphicElement *> &elements, const QByt
     QDataStream stream(&m_newData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
 
+    // Snapshot the current (post-change) state as the "new" data used by redo()
     for (auto *elm : elements) {
         elm->save(stream);
         m_ids.append(elm->id());
@@ -428,6 +448,8 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     auto *node = ElementFactory::buildElement(ElementType::Node);
 
     /* Align node to Grid */
+    // Subtract pixmapCenter so the node's visual center lands on the mouse click,
+    // then snap to the nearest grid intersection
     m_nodePos = mousePos - node->pixmapCenter();
     const int gridSize = GlobalProperties::gridSize;
     qreal xV = qRound(m_nodePos.x() / gridSize) * gridSize;
@@ -435,6 +457,10 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     m_nodePos = QPointF(xV, yV);
 
     /* Rotate line according to angle between p1 and p2 */
+    // QLineF::angle() is counter-clockwise from the positive X axis (0–360°).
+    // Dividing by 90 and rounding quantises to the nearest cardinal direction (0–3),
+    // then (360 − 90*step) converts that back to a clockwise Qt rotation angle so
+    // the node's arrow graphic points in the correct direction along the wire.
     const int angle = static_cast<int>(conn->angle());
     m_nodeAngle = static_cast<int>(360 - 90 * (std::round(angle / 90.0)));
 
@@ -455,6 +481,10 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     m_elm2Id = endElement->id();
 
     m_c1Id = conn->id();
+    // Pre-allocate a second QNEConnection solely to claim a unique ID from ElementFactory
+    // before the constructor returns.  The object is immediately orphaned (no scene or
+    // parent), but its ID is registered and will be reused by redo() so that the split
+    // wire's second segment always has the same stable ID across multiple undo/redo cycles.
     m_c2Id = (new QNEConnection())->id();
 
     m_nodeId = node->id();
@@ -471,6 +501,8 @@ void SplitCommand::redo()
     auto *elm1 = findElm(m_elm1Id);
     auto *elm2 = findElm(m_elm2Id);
 
+    // After undo(), conn2 and node were deleted; recreate them with the same
+    // stable IDs so subsequent redo() calls find them correctly via findConn/findElm
     if (!conn2) {
         conn2 = new QNEConnection();
         ElementFactory::updateItemId(conn2, m_c2Id);
@@ -493,6 +525,7 @@ void SplitCommand::redo()
         throw PANDACEPTION("Error: endPort is null in SplitCommand::redo()");
     }
 
+    // Wire topology after split: elm1 → conn1 → node → conn2 → elm2
     conn2->setStartPort(node->outputPort());
     conn2->setEndPort(endPort);
     conn1->setEndPort(node->inputPort());
@@ -519,10 +552,12 @@ void SplitCommand::undo()
         throw PANDACEPTION("Error trying to undo %1", text());
     }
 
+    // Restore the original direct wire: conn1 skips the node and connects straight to elm2
     conn1->setEndPort(conn2->endPort());
 
     conn1->updatePosFromPorts();
 
+    // Remove the node and the second wire segment introduced by the split
     m_scene->removeItem(conn2);
     m_scene->removeItem(node);
 
@@ -541,6 +576,8 @@ MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType 
     m_types.reserve(elements.size());
 
     for (auto *oldElm : elements) {
+        // Store both the ID and the original type so undo() can rebuild the old element
+        // with the correct type and then re-assign the same ID via updateItemId()
         m_ids.append(oldElm->id());
         m_types.append(oldElm->elementType());
     }
@@ -587,6 +624,8 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
         newElm->setInputSize(oldElm->inputSize());
         newElm->setPos(oldElm->pos());
 
+        // Not↔Node morphs need a 16px position adjustment because the two element
+        // types have different pixmap sizes and their visual centers differ by that amount
         if ((oldElm->elementType() == ElementType::Not) && (newElm->elementType() == ElementType::Node)) {
             newElm->moveBy(16, 16);
         }
@@ -595,10 +634,14 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
             newElm->moveBy(-16, -16);
         }
 
+        // Copy over all compatible properties; each is guarded by capability checks
+        // so that mismatched element types are silently skipped
         if (newElm->isRotatable() && oldElm->isRotatable()) {
             newElm->setRotation(oldElm->rotation());
         }
 
+        // Buzzer label is intentionally not preserved because the next/prev audio
+        // shortcut relies on a fresh default label to display the audio name
         if (newElm->hasLabel() && oldElm->hasLabel() && (oldElm->elementType() != ElementType::Buzzer)) {
             newElm->setLabel(oldElm->label());
         }
@@ -615,6 +658,9 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
             newElm->setTrigger(oldElm->trigger());
         }
 
+        // --- Migrate existing wires to the new element's ports ---
+        // The while loop drains the connection list; setEndPort/setStartPort calls
+        // internally detach from oldElm and attach to newElm, so the list shrinks
         for (int port = 0; port < oldElm->inputSize(); ++port) {
             while (!oldElm->inputPort(port)->connections().isEmpty()) {
                 if (auto *conn = oldElm->inputPort(port)->connections().constFirst(); conn && (conn->endPort() == oldElm->inputPort(port))) {
@@ -631,6 +677,8 @@ void MorphCommand::transferConnections(QList<GraphicElement *> from, QList<Graph
             }
         }
 
+        // Reuse the old element's ID on the new element so that any external
+        // references (e.g. undo commands) remain valid after the morph
         const int oldId = oldElm->id();
         m_scene->removeItem(oldElm);
         delete oldElm;
@@ -654,6 +702,9 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
     setText(tr("Flip %1 elements in axis %2").arg(items.size(), axis));
     m_ids.reserve(items.size());
     m_positions.reserve(items.size());
+
+    // Compute the bounding box of all selected elements so redo() can mirror
+    // each position about the selection's own axis rather than the scene origin
     double xmin = items.constFirst()->pos().rx();
     double ymin = items.constFirst()->pos().ry();
     double xmax = xmin;
@@ -675,6 +726,8 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
 void FlipCommand::undo()
 {
     qCDebug(zero) << text();
+    // Flip is an involution: applying it twice returns to the original state,
+    // so undo is identical to redo (position formula and +180° rotation cancel out)
     redo();
 }
 
@@ -684,11 +737,16 @@ void FlipCommand::redo()
     for (auto *elm : findElements(m_ids)) {
         auto pos = elm->pos();
 
+        // axis == 0: mirror across the vertical axis (flip horizontally)
+        // axis == 1: mirror across the horizontal axis (flip vertically)
+        // The formula reflects the coordinate: newX = xmin + (xmax - oldX)
         (m_axis == 0) ? pos.setX(m_minPos.rx() + (m_maxPos.rx() - pos.rx()))
                       : pos.setY(m_minPos.ry() + (m_maxPos.ry() - pos.ry()));
 
         elm->setPos(pos);
 
+        // Adding 180° to the element's own rotation flips the pixmap direction
+        // to match the mirrored position (works because flip is an involution)
         if (elm->isRotatable()) {
             elm->setRotation(elm->rotation() + 180);
         }
@@ -716,6 +774,9 @@ void ChangeInputSizeCommand::redo()
     qCDebug(zero) << text();
     const auto elements = findElements(m_ids);
 
+    // --- Snapshot current state before shrinking ---
+    // Save element state and the state of any elements on the other end of
+    // connections that will be severed, so undo() can fully restore them
     QList<GraphicElement *> serializationOrder;
     serializationOrder.reserve(elements.size());
     m_oldData.clear();
@@ -727,6 +788,7 @@ void ChangeInputSizeCommand::redo()
         elm->save(stream);
         serializationOrder.append(elm);
 
+        // Save the upstream elements whose wires will be cut (ports >= newInputSize)
         for (int port = m_newInputSize; port < elm->inputSize(); ++port) {
             for (auto *conn : elm->inputPort(port)->connections()) {
                 auto *outputPort = conn->startPort();
@@ -751,6 +813,7 @@ void ChangeInputSizeCommand::redo()
         elm->setInputSize(m_newInputSize);
     }
 
+    // Record the serialization order (by ID) so undo() can reload in the same sequence
     m_order.clear();
 
     for (auto *elm : serializationOrder) {
@@ -771,6 +834,8 @@ void ChangeInputSizeCommand::undo()
 
     QMap<quint64, QNEPort *> portMap;
 
+    // Restore element and upstream element state first (expands port count back),
+    // then reconstruct the connection objects that were severed during redo()
     for (auto *elm : serializationOrder) {
         elm->load(stream, portMap, version);
     }
@@ -898,6 +963,8 @@ void ToggleTruthTableOutputCommand::redo()
 
     if (!truthtable) throw PANDACEPTION("Could not find truthtable element!");
 
+    // toggleBit is its own inverse: applying it a second time undoes it, so both
+    // redo() and undo() call the identical operation — no separate state capture needed
     truthtable->key().toggleBit(m_pos);
 
     m_scene->setCircuitUpdateRequired();

@@ -9,33 +9,40 @@
 SRLatch::SRLatch(QGraphicsItem *parent)
     : GraphicElement(ElementType::SRLatch, ElementGroup::Memory, pixmapPath(), tr("SR-LATCH"), tr("SR-Latch"), 2, 2, 2, 2, parent)
 {
+    // Skip full initialisation when building a property-probe instance (see ElementFactory).
     if (GlobalProperties::skipInit) {
         return;
     }
 
+    // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);
 
     setCanChangeSkin(true);
 
+    // Call the most-derived override explicitly (see SRFlipFlop.cpp for rationale).
     SRLatch::updatePortsProperties();
 }
 
 void SRLatch::updatePortsProperties()
 {
+    // SR latch: no clock, no asynchronous overrides — simplest bistable element.
+    // Both inputs are required (Set=1 → Q=1, Reset=1 → Q=0, both=1 is forbidden).
     inputPort(0)->setPos(0, 16);      inputPort(0)->setName("Set");
     inputPort(1)->setPos(0, 48);      inputPort(1)->setName("Reset");
 
     outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
     outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
 
+    // Initial state: Q=0, ~Q=1
     outputPort(0)->setDefaultStatus(Status::Inactive);
     outputPort(1)->setDefaultStatus(Status::Active);
 }
 
 void SRLatch::updateTheme()
 {
+    // Reload the pixmap before delegating to the base class (see SRFlipFlop.cpp).
     setPixmap(pixmapPath());
     GraphicElement::updateTheme();
 }

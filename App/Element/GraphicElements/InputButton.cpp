@@ -34,6 +34,7 @@ InputButton::InputButton(QGraphicsItem *parent)
 
 void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    // Momentary action: button goes HIGH on press, LOW on release (unlike InputSwitch which latches)
     if (!m_locked && (event->button() == Qt::LeftButton)) {
         setOn();
         event->accept();
@@ -67,10 +68,12 @@ void InputButton::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, c
     GraphicElement::load(stream, portMap, version);
 
     if ((VERSION("3.1") <= version) && (version < VERSION("4.1"))) {
+        // v3.1–4.0 stored the locked flag as a bare bool
         stream >> m_locked;
     }
 
     if (version >= VERSION("4.1")) {
+        // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("locked")) {
@@ -99,6 +102,7 @@ void InputButton::setOn(const bool value, const int port)
 {
     Q_UNUSED(port)
     m_isOn = value;
+    // Pixmap index 0 = button-off SVG, index 1 = button-on SVG (matches bool→int cast)
     setPixmap(static_cast<int>(m_isOn));
     outputPort()->setStatus(static_cast<Status>(m_isOn));
 }

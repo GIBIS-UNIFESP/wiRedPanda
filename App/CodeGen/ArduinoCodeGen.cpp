@@ -19,6 +19,12 @@ ArduinoCodeGen::ArduinoCodeGen(const QString &fileName, const QVector<GraphicEle
         return;
     }
     m_stream.setDevice(&m_file);
+    // Pin pool for Arduino Uno/Nano.  Analog pins A0-A5 are listed first because
+    // they are equally usable as digital GPIO and the circuit's inputs/outputs are
+    // assigned in the order elements appear in the element list.
+    // Pins 0 and 1 are commented out because they are shared with the hardware
+    // UART (TX/RX) used for Serial communication and the USB bootloader; using them
+    // would prevent sketch upload and break Serial.print() calls.
     m_availablePins = QStringList{
         "A0",
         "A1",
@@ -26,8 +32,8 @@ ArduinoCodeGen::ArduinoCodeGen(const QString &fileName, const QVector<GraphicEle
         "A3",
         "A4",
         "A5",
-     // "0",
-     // "1",
+     // "0",  // UART RX — reserved for Serial / bootloader
+     // "1",  // UART TX — reserved for Serial / bootloader
         "2",
         "3",
         "4",
@@ -83,6 +89,9 @@ void ArduinoCodeGen::generate()
     m_stream << "// ==================================================================== //" << Qt::endl;
     m_stream << Qt::endl
              << Qt::endl;
+    // elapsedMillis is an Arduino library that provides an auto-incrementing
+    // millisecond counter; used to implement clock element timing without
+    // blocking the Arduino loop() with delay() calls
     m_stream << "#include <elapsedMillis.h>" << Qt::endl;
     /* Declaring input and output pins; */
     declareInputs();
@@ -103,7 +112,12 @@ void ArduinoCodeGen::declareInputs()
     for (auto *elm : m_elements) {
         const auto type = elm->elementType();
 
+        // Only switches and buttons map directly to Arduino digital input pins;
+        // other input types (Clock, Vcc, Gnd) either have no physical pin or are
+        // handled elsewhere (Clock gets elapsedMillis vars; Vcc/Gnd get HIGH/LOW literals)
         if ((type == ElementType::InputButton) || (type == ElementType::InputSwitch)) {
+            // Append the element counter to the object name to ensure uniqueness when
+            // multiple switches of the same type exist without user-assigned labels
             QString varName = elm->objectName() + QString::number(counter);
             const QString label = elm->label();
 
@@ -112,10 +126,14 @@ void ArduinoCodeGen::declareInputs()
             }
 
             varName = removeForbiddenChars(varName);
+            // Emit "const int <pin_name> = <pin_number>;" — Arduino convention for
+            // pin aliases; using const int rather than #define preserves type safety
             m_stream << QString("const int %1 = %2;").arg(varName, m_availablePins.constFirst()) << Qt::endl;
             auto *outPort = elm->outputPort(0);
             if (outPort) {
                 m_inputMap.append(MappedPin(elm, m_availablePins.constFirst(), varName, outPort, 0));
+                // The live value read from the pin is stored in a separate "_val" variable
+                // (e.g. "sw1_val = digitalRead(sw1);") to keep pin alias and runtime value distinct
                 m_varMap[outPort] = varName + QString("_val");
             }
             m_availablePins.removeFirst();
@@ -155,6 +173,9 @@ void ArduinoCodeGen::declareOutputs()
 
 void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox)
 {
+    // isBox=true when called recursively for elements inside an IC; clock elements
+    // inside a box do not get their own elapsedMillis variables because the IC's
+    // internal timing is not directly mapped to real Arduino time
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
             //      IC *ic = qobject_cast<IC *>(elm);
@@ -170,6 +191,8 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
             //        }
             //      }
         } else {
+            // m_globalCounter ensures aux variable names are unique across the whole
+            // generated sketch even when multiple elements share the same object name
             QString varName = QString("aux_%1_%2").arg(removeForbiddenChars(elm->objectName()), m_globalCounter++);
             const auto outputs = elm->outputs();
 
@@ -216,11 +239,17 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
                             break;
                         }
                         m_stream << "elapsedMillis " << varName2 << "_elapsed = 0;" << Qt::endl;
+                        // Convert frequency (Hz) to half-period (ms): interval = 1000ms / freq.
+                        // The clock toggles when elapsed > interval, producing a square wave
+                        // with the requested frequency (each full cycle = 2 × interval ms).
                         m_stream << "int " << varName2 << "_interval = " << 1000 / clk->frequency() << ";" << Qt::endl;
                     }
                     break;
                 }
                 case ElementType::DFlipFlop: {
+                    // _inclk tracks the clock level from the previous loop() iteration to
+                    // detect rising edges; _last tracks the D input from the previous cycle
+                    // so the flip-flop samples D at the moment the clock edge is detected
                     m_stream << "boolean " << varName2 << "_inclk = LOW;" << Qt::endl;
                     m_stream << "boolean " << varName2 << "_last = LOW;" << Qt::endl;
                     break;
@@ -228,6 +257,9 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
                 case ElementType::TFlipFlop:
                 case ElementType::SRFlipFlop:
                 case ElementType::JKFlipFlop: {
+                    // _inclk is the only extra state needed for these flip-flops: they
+                    // sample their inputs on the rising clock edge, so only the previous
+                    // clock level is required (unlike D flip-flop which also needs _last)
                     m_stream << "boolean " << varName2 << "_inclk = LOW;" << Qt::endl;
                     break;
                 }
@@ -304,10 +336,15 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
             QString inclk = firstOut + "_inclk";
             QString last = firstOut + "_last";
             m_stream << QString("    //D FlipFlop") << Qt::endl;
+            // Rising-edge detection: clk is HIGH now and was LOW last iteration
             m_stream << QString("    if (%1 && !%2) { ").arg(clk, inclk) << Qt::endl;
+            // On the rising edge, sample the D input that was registered in _last
+            // (one iteration old), matching the setup-time semantics of real flip-flops
             m_stream << QString("        %1 = %2;").arg(firstOut, last) << Qt::endl;
             m_stream << QString("        %1 = !%2;").arg(secondOut, last) << Qt::endl;
             m_stream << QString("    }") << Qt::endl;
+            // Preset (active-low) forces Q=1; Clear (active-low) forces Q=0.
+            // These are asynchronous: checked every loop iteration, not just on clock edges.
             QString prst = otherPortName(elm->inputPort(2));
             QString clr = otherPortName(elm->inputPort(3));
             m_stream << QString("    if (!%1 || !%2) { ").arg(prst, clr) << Qt::endl;
@@ -316,6 +353,8 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
             m_stream << QString("    }") << Qt::endl;
 
             /* Updating internal clock. */
+            // Update _inclk and _last at the END of each iteration so they hold
+            // the "previous" values when the next iteration evaluates the edge condition
             m_stream << "    " << inclk << " = " << clk << ";" << Qt::endl;
             m_stream << "    " << last << " = " << data << ";" << Qt::endl;
             m_stream << QString("    //End of D FlipFlop") << Qt::endl;
@@ -432,6 +471,8 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
 
             break;
         }
+        // All combinational gates are handled by a single helper that emits a C boolean
+        // expression; the distinction between gate types is encoded in logicOperator/negate
         case ElementType::And:
         case ElementType::Or:
         case ElementType::Nand:
@@ -447,6 +488,9 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
 
 void ArduinoCodeGen::assignLogicOperator(GraphicElement *elm)
 {
+    // negate=true wraps the expression in "!(...)" for NAND/NOR/XNOR/NOT.
+    // parentheses=false for NOT because the single operand needs no grouping:
+    // "!a" is unambiguous, while "!(a && b)" requires parentheses to negate the whole expression.
     bool negate = false;
     bool parentheses = true;
     QString logicOperator;
@@ -496,9 +540,13 @@ void ArduinoCodeGen::assignLogicOperator(GraphicElement *elm)
         if (negate) {
             m_stream << "!";
         }
+        // Only open a parenthesis when both negating AND there are multiple operands to group;
+        // for NOT (parentheses=false) the "!" applies directly to the single operand
         if (parentheses && negate) {
             m_stream << "(";
         }
+        // Walk all input ports and join their driving variable names with the operator.
+        // Unconnected ports fall back to their default value (HIGH/LOW) via otherPortName().
         if (!inPort->connections().isEmpty()) {
             m_stream << otherPortName(inPort);
             for (int i = 1; i < elm->inputs().size(); ++i) {
@@ -512,6 +560,7 @@ void ArduinoCodeGen::assignLogicOperator(GraphicElement *elm)
         }
         m_stream << ";" << Qt::endl;
     } else {
+        // Multi-output combinational gates are not yet supported
         /* ... */
     }
 }

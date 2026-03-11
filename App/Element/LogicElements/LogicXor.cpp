@@ -16,6 +16,9 @@ void LogicXor::updateLogic()
         return;
     }
 
+    // XOR fold with identity=false; for n inputs this computes odd-parity
+    // (true when an odd number of inputs are high), which generalises the
+    // 2-input XOR definition consistently across all gate widths.
     const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_xor<>());
     setOutputValue(result);
 }

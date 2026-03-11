@@ -28,8 +28,12 @@ Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)
     , m_simulation(this)
 {
+    // The scene filters its own events to intercept mouse events before items see them
+    // (e.g., to detect Ctrl+drag for cloning before Qt's default drag-selection activates)
     installEventFilter(this);
 
+    // The rubber-band selection rectangle must not itself be selectable or it would
+    // appear in selectedItems() and interfere with element operations
     m_selectionRect.setFlag(QGraphicsItem::ItemIsSelectable, false);
     addItem(&m_selectionRect);
 
@@ -41,14 +45,18 @@ Scene::Scene(QObject *parent)
     m_redoAction->setIcon(QIcon(":/Interface/Toolbar/redo.svg"));
     m_redoAction->setShortcut(QKeySequence::Redo);
 
+    // Used to throttle expensive operations during drag (e.g., ensureVisible)
     m_timer.start();
 
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &Scene::updateTheme);
+    // Emit autosave signal only after each undo-stack index change (not on every internal state update)
     connect(&m_undoStack,              &QUndoStack::indexChanged,   this, &Scene::checkUpdateRequest);
 }
 
 void Scene::checkUpdateRequest()
 {
+    // Coalesces multiple rapid undo-stack changes into a single autosave signal:
+    // the flag is set by setCircuitUpdateRequired() and cleared here after emitting.
     if (m_autosaveRequired) {
         emit circuitHasChanged();
         m_autosaveRequired = false;
@@ -57,7 +65,8 @@ void Scene::checkUpdateRequest()
 
 void Scene::drawBackground(QPainter *painter, const QRectF &rect)
 {
-    // don't draw background if zoomed out
+    // m11() is the X-axis scale factor of the view transform; below 0.3 the grid dots
+    // would be sub-pixel and invisible anyway, so skip the per-pixel loop for performance
     if (view() and view()->transform().m11() < 0.3) {
         return;
     }
@@ -65,6 +74,8 @@ void Scene::drawBackground(QPainter *painter, const QRectF &rect)
     painter->setRenderHint(QPainter::Antialiasing, true);
     QGraphicsScene::drawBackground(painter, rect);
 
+    // Align the dot grid to the nearest gridSize boundary so dots don't drift
+    // as the viewport scrolls — the modulo brings the start point back to a grid line
     const int gridSize = GlobalProperties::gridSize;
     const int left = static_cast<int>(rect.left()) - (static_cast<int>(rect.left()) % gridSize);
     const int top = static_cast<int>(rect.top()) - (static_cast<int>(rect.top()) % gridSize);
@@ -95,12 +106,14 @@ void Scene::setAutosaveRequired()
 
 void Scene::setCircuitUpdateRequired()
 {
-    // set these again to avoid having new ports showing when elements are invisible
+    // Re-applying visibility ensures newly-added ports/wires respect the current
+    // show/hide state; without this, ports on fresh elements would always appear visible
     showWires(m_showWires);
     showGates(m_showGates);
 
     update();
 
+    // Re-initialize topological sort and simulation graph after any structural change
     m_simulation.initialize();
 
     m_autosaveRequired = true;
@@ -175,14 +188,18 @@ const QList<GraphicElement *> Scene::selectedElements() const
 QGraphicsItem *Scene::itemAt(const QPointF pos)
 {
     auto items_ = items(pos);
+    // Also check a small surrounding rectangle so port hit-testing works when
+    // the cursor is near but not exactly on the port's bounding box
     items_.append(itemsAt(pos));
 
+    // Ports get priority so wire dragging begins/ends on the port, not the element body
     for (auto *item : std::as_const(items_)) {
         if (item->type() == QNEPort::Type) {
             return item;
         }
     }
 
+    // Return any custom item (UserType < type); ignores built-in Qt items
     for (auto *item : std::as_const(items_)) {
         if (item->type() > QGraphicsItem::UserType) {
             return item;
@@ -194,6 +211,8 @@ QGraphicsItem *Scene::itemAt(const QPointF pos)
 
 QList<QGraphicsItem *> Scene::itemsAt(const QPointF pos)
 {
+    // 9×9 pixel hit area (4px margin around the exact point) compensates for the
+    // small visual size of ports and makes them easier to click precisely
     QRectF rect(pos - QPointF(4, 4), QSize(9, 9));
     return items(rect.normalized());
 }
@@ -279,6 +298,8 @@ void Scene::makeConnection(QNEConnection *connection)
     QNEOutputPort *startPort = nullptr;
     QNEInputPort *endPort = nullptr;
 
+    // A wire being dragged from an output needs the drop target to be an input, and vice versa.
+    // The dynamic_cast returns nullptr if the port type doesn't match, which is caught below.
     if (connection->startPort() != nullptr) {
         startPort = connection->startPort();
         endPort = dynamic_cast<QNEInputPort *>(port);
@@ -292,6 +313,7 @@ void Scene::makeConnection(QNEConnection *connection)
     }
 
     /* Verifying if the connection is valid. */
+    // Self-loops (same element on both ends) and duplicate connections are forbidden
     if ((startPort->graphicElement() != endPort->graphicElement()) && !startPort->isConnected(endPort)) {
         /* Making connection. */
         connection->setStartPort(startPort);
@@ -309,9 +331,13 @@ void Scene::detachConnection(QNEInputPort *endPort)
     if (connections.isEmpty()) {
         return;
     }
+    // Take the last connection — an input port normally has at most one, but
+    // .last() is the safe choice if the model ever allows multiple
     auto *connection = connections.last();
 
     if (auto *startPort = connection->startPort()) {
+        // Delete the existing wire, then immediately start a new in-progress wire
+        // anchored to the same output port, so the user can re-route it
         receiveCommand(new DeleteItemsCommand({connection}, this));
         startNewConnection(startPort);
     }
@@ -319,6 +345,9 @@ void Scene::detachConnection(QNEInputPort *endPort)
 
 void Scene::prevMainPropShortcut()
 {
+    // Keyboard shortcut to decrement the "primary" configurable property of each
+    // selected element: input count for logic gates, output count for rotary inputs,
+    // clock frequency (step 0.5 Hz), buzzer audio, or display color
     for (auto *element : selectedElements()) {
         switch (element->elementType()) {
         // Logic Elements
@@ -364,6 +393,7 @@ void Scene::prevMainPropShortcut()
             break;
         }
 
+        // Toggling selection off and on forces the property inspector to refresh
         element->setSelected(false);
         element->setSelected(true);
     }
@@ -371,6 +401,7 @@ void Scene::prevMainPropShortcut()
 
 void Scene::nextMainPropShortcut()
 {
+    // Mirror of prevMainPropShortcut() — increments the same per-type primary property
     for (auto *element : selectedElements()) {
         switch (element->elementType()) {
         // Logic Elements
@@ -474,11 +505,14 @@ void Scene::nextElm()
         const QPointF elmPosition = element->scenePos();
         auto nextType = Enums::nextElmType(element->elementType());
 
+        // ElementType::Unknown signals there is no "next" in the cycle for this type
         if (nextType == ElementType::Unknown) { continue; }
 
         receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
                        Enums::nextElmType(element->elementType()), this));
 
+        // MorphCommand replaces the element in-place; re-select via position because
+        // the old pointer is now invalid after the command's redo()
         auto *item = itemAt(elmPosition);
         if (item) {
             item->setSelected(true);
@@ -552,6 +586,8 @@ void Scene::showGates(const bool checked)
             }
             const auto group = element->elementGroup();
 
+            // Only hide/show internal logic gates; Input, Output and Other elements
+            // (e.g., labels, ICs) are always kept visible regardless of this toggle
             if ((group != ElementGroup::Input) && (group != ElementGroup::Output) && (group != ElementGroup::Other)) {
                 item->setVisible(checked);
             }
@@ -573,9 +609,13 @@ void Scene::showWires(const bool checked)
         if (item->type() == GraphicElement::Type) {
             auto *element = qgraphicsitem_cast<GraphicElement *>(item);
 
+            // Node elements are purely wire-routing helpers with no logical function;
+            // hiding wires should hide nodes too since they're meaningless without wires
             if (element->elementType() == ElementType::Node) {
                 element->setVisible(checked);
             } else {
+                // For other elements, hide only their port handles (the connectable dots),
+                // not the element body itself, so the gate symbols remain visible
                 for (auto *inputPort : element->inputs()) {
                     inputPort->setVisible(checked);
                 }
@@ -597,6 +637,9 @@ void Scene::cloneDrag(const QPointF mousePos)
         return;
     }
 
+    // --- Build drag pixmap ---
+    // Temporarily hide non-selected items so the rendered image shows only
+    // the selection, giving the drag ghost the correct visual appearance
     const auto items_ = items();
 
     for (auto *item : items_) {
@@ -611,6 +654,7 @@ void Scene::cloneDrag(const QPointF mousePos)
         rect = rect.united(element->sceneBoundingRect());
     }
 
+    // 8px padding avoids clipping port handles at the bounding-rect edges
     rect = rect.adjusted(-8, -8, 8, 8);
 
     auto mappedSize = m_view->transform().mapRect(rect).size().toSize();
@@ -618,20 +662,24 @@ void Scene::cloneDrag(const QPointF mousePos)
     image.fill(Qt::transparent);
 
     QPainter painter(&image);
+    // Opacity 0 makes the ghost transparent; the drag cursor shape still appears
     painter.setOpacity(0.0);
     QRectF target = image.rect();
     QRectF source = rect;
     render(&painter, target, source);
 
+    // Restore hidden items before the drag begins so the scene looks normal
     for (auto *item : items_) {
         if (((item->type() == GraphicElement::Type) || (item->type() == QNEConnection::Type)) && !item->isSelected()) {
             item->show();
         }
     }
 
+    // --- Serialize selection for drop target ---
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
+    // Embed the mouse-press position so the drop handler can compute the correct offset
     stream << mousePos;
     copy(selectedItems(), stream);
 
@@ -641,6 +689,7 @@ void Scene::cloneDrag(const QPointF mousePos)
     auto *drag = new QDrag(this);
     drag->setMimeData(mimeData);
     drag->setPixmap(QPixmap::fromImage(image));
+    // Hot-spot aligns the drag image to the original element positions under the cursor
     QPointF offset = m_view->transform().map(mousePos - rect.topLeft());
     drag->setHotSpot(offset.toPoint());
     drag->exec(Qt::CopyAction, Qt::CopyAction);
@@ -648,6 +697,8 @@ void Scene::cloneDrag(const QPointF mousePos)
 
 void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream)
 {
+    // Compute the centroid of all selected elements (not connections) so that
+    // paste() can place the clipboard contents relative to the cursor position
     QPointF center(0.0, 0.0);
     int itemsQuantity = 0;
 
@@ -702,9 +753,13 @@ void Scene::setHoverPort(QNEPort *port)
     port->hoverEnter();
     auto *hoverElm = port->graphicElement();
 
+    // Store element ID + port index rather than raw pointers so the hover state
+    // remains valid across undo/redo operations that may recreate the element
     if (hoverElm && ElementFactory::contains(hoverElm->id())) {
         m_hoverPortElmId = hoverElm->id();
 
+        // Encode inputs first (indices 0..inputSize-1), then outputs (inputSize..total-1)
+        // so a single integer uniquely identifies any port on an element
         for (int i = 0; i < (hoverElm->inputSize() + hoverElm->outputSize()); ++i) {
             if (i < hoverElm->inputSize()) {
                 if (port == hoverElm->inputPort(i)) {
@@ -768,14 +823,18 @@ QAction *Scene::redoAction() const
 void Scene::contextMenu(const QPoint screenPos)
 {
     if (auto *item = itemAt(m_mousePos)) {
+        // Right-clicking a selected item opens the property context menu for that selection
         if (selectedItems().contains(item)) {
             emit contextMenuPos(screenPos, item);
         } else if (item->type() == GraphicElement::Type) {
+            // Right-clicking an unselected element clears the old selection and selects
+            // only this item, then opens its context menu
             clearSelection();
             item->setSelected(true);
             emit contextMenuPos(screenPos, item);
         }
     } else {
+        // Right-click on empty canvas: show a minimal paste-only context menu
         QMenu menu;
         auto *pasteAction = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/paste.svg")), tr("Paste"));
         const auto *mimeData = QApplication::clipboard()->mimeData();
@@ -854,6 +913,9 @@ void Scene::paste(QDataStream &stream, QVersionNumber version)
     QPointF center; stream >> center;
 
     const auto itemList = Serialization::deserialize(stream, {}, version);
+    // Shift pasted elements so their centroid lands at the cursor position,
+    // then nudge 32 px diagonally so repeated pastes are visually offset and
+    // don't completely overlap the original selection.
     const QPointF offset = m_mousePos - center - QPointF(32.0, 32.0);
 
     receiveCommand(new AddItemsCommand(itemList, this));
@@ -876,10 +938,13 @@ void Scene::cut(const QList<QGraphicsItem *> &items, QDataStream &stream)
 void Scene::deleteAction()
 {
     const auto selectedItems_ = selectedItems();
+    // Clear selection before the command so that the scene's selectedItems()
+    // list is empty during the command's redo() — avoids double-processing
     clearSelection();
 
     if (!selectedItems_.isEmpty()) {
         receiveCommand(new DeleteItemsCommand(selectedItems_, this));
+        // Restart the simulation so it doesn't reference any deleted element pointers
         m_simulation.restart();
     }
 }
@@ -974,6 +1039,8 @@ void Scene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 
 void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
+    // --- New element drop from toolbox ---
+    // Both MIME types carry the same payload; the newer format has a namespaced key
     if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")
         || event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
         QByteArray itemData;
@@ -993,6 +1060,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         ElementType type;   stream >> type;
         QString icFileName; stream >> icFileName;
 
+        // Subtract the drag offset so the element lands under the original grab point
         QPointF pos = event->scenePos() - offset;
         qCDebug(zero) << type << " at position: " << pos.x() << ", " << pos.y() << ", label: " << icFileName;
 
@@ -1018,6 +1086,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         element->setPos(pos);
     }
 
+    // --- Clone drag (Ctrl+drag of existing selection) ---
     if (event->mimeData()->hasFormat("wpanda/ctrlDragData")
         || event->mimeData()->hasFormat("application/x-wiredpanda-cloneDrag")) {
         QByteArray itemData;
@@ -1033,6 +1102,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         QDataStream stream(&itemData, QIODevice::ReadOnly);
         QVersionNumber version = Serialization::readPandaHeader(stream);
 
+        // offset = mouse position at drag-start; recompute drop offset from current position
         QPointF offset; stream >> offset;
         QPointF ctr;    stream >> ctr;
         offset = event->scenePos() - offset;
@@ -1057,6 +1127,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
 
 void Scene::keyPressEvent(QKeyEvent *event)
 {
+    // Skip keyboard triggers while Ctrl is held to avoid firing during Ctrl+Z/C/V shortcuts
     if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
         for (auto *element : elements()) {
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
@@ -1075,6 +1146,7 @@ void Scene::keyReleaseEvent(QKeyEvent *event)
     if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
         for (auto *element : elements()) {
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
+                // Only InputButton (momentary) is released on key-up; InputSwitch stays latched
                 if (auto *input = qobject_cast<GraphicElementInput *>(element); input && !input->isLocked() && (element->elementType() == ElementType::InputButton)) {
                     input->setOff();
                 }
@@ -1088,11 +1160,17 @@ void Scene::keyReleaseEvent(QKeyEvent *event)
 bool Scene::eventFilter(QObject *watched, QEvent *event)
 {
     if (auto *mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event)) {
+        // Qt's default QGraphicsScene selection behaviour treats Shift+click as
+        // "extend selection to range" (like a list widget), which is meaningless for
+        // a free-form canvas.  Remapping Shift→Ctrl activates the Ctrl toggle-select
+        // path instead, which is what users expect from a design tool.
         if (mouseEvent->modifiers().testFlag(Qt::ShiftModifier)) {
             mouseEvent->setModifiers(Qt::ControlModifier);
             return false;
         }
 
+        // Intercept Ctrl+Left-click on an element to begin a clone-drag instead of
+        // the default rubber-band selection; return true to swallow the event
         if ((mouseEvent->button() == Qt::LeftButton) && mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
             if (auto *item = itemAt(mouseEvent->scenePos()); item && ((item->type() == GraphicElement::Type) || (item->type() == QNEConnection::Type))) {
                 item->setSelected(true);
@@ -1113,19 +1191,24 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     auto *item = itemAt(m_mousePos);
 
     if (item) {
+        // --- Element selection and drag preparation ---
         if (event->button() == Qt::LeftButton) {
             if (event->modifiers().testFlag(Qt::ControlModifier)) {
+                // Ctrl+click toggles individual item membership in the selection
                 item->setSelected(!item->isSelected());
             }
 
             auto selectedElements_ = selectedElements();
 
+            // Include the clicked element even if it isn't yet selected, so a
+            // single-click drag of an unselected element works immediately
             if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
                 selectedElements_ << element;
             }
 
             m_draggingElement = ((item->type() == GraphicElement::Type) && !selectedElements_.isEmpty());
 
+            // Snapshot positions now; MoveCommand compares these against release-time positions
             m_movedElements.clear();
             m_oldPositions.clear();
 
@@ -1135,10 +1218,12 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
         }
 
+        // --- Wire connection handling ---
         if (item->type() == QNEPort::Type) {
             /* When the mouse is pressed over an connected input port, the line
              * is disconnected and can be connected to another port. */
             if (auto *connection = editedConnection()) {
+                // An in-progress wire exists; try to complete it at this port
                 makeConnection(connection);
                 return;
             }
@@ -1151,12 +1236,14 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
 
             if (auto *endPort = dynamic_cast<QNEInputPort *>(pressedPort)) {
+                // Empty input port: begin a new wire; occupied port: detach the existing wire
                 endPort->connections().isEmpty() ? startNewConnection(endPort) : detachConnection(endPort);
                 return;
             }
         }
     }
 
+    // Clicking on empty space while a wire is being drawn cancels it
     if (editedConnection()) {
         deleteEditedConnection();
     }
@@ -1177,27 +1264,33 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     m_mousePos = event->scenePos();
     handleHoverPort();
 
+    // Expand scene rect while dragging so elements can be moved beyond the current boundary
     if (m_draggingElement) {
         resizeScene();
     }
 
+    // --- In-progress wire routing ---
     if (auto *connection = editedConnection()) {
         if (connection->startPort()) {
+            // Wire anchored at start: free end follows the mouse
             connection->setEndPos(m_mousePos);
             connection->updatePath();
             return;
         }
 
         if (connection->endPort()) {
+            // Wire anchored at end (dragged from input): free start follows the mouse
             connection->setStartPos(m_mousePos);
             connection->updatePath();
             return;
         }
 
+        // Connection lost both ports (e.g., element deleted mid-drag) — clean up
         deleteEditedConnection();
         return;
     }
 
+    // --- Rubber-band selection rectangle ---
     if (m_markingSelectionBox) {
         const QRectF rect = QRectF(m_selectionStartPoint, m_mousePos).normalized();
         m_selectionRect.setRect(rect);
@@ -1213,6 +1306,8 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (m_draggingElement && (event->button() == Qt::LeftButton)) {
         if (!m_movedElements.empty()) {
+            // Only push a MoveCommand if at least one element actually changed position;
+            // avoids polluting the undo stack with no-op moves (e.g., click without drag)
             const bool valid = std::any_of(m_movedElements.cbegin(), m_movedElements.cend(), [this](auto *elm) {
                 return (elm->pos() != m_oldPositions.at(m_movedElements.indexOf(elm)));
             });
@@ -1229,6 +1324,8 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     m_selectionRect.hide();
     m_markingSelectionBox = false;
 
+    // Complete an in-progress wire on mouse release (when no button is held)
+    // — this handles the drag-to-connect gesture (press output → drag → release on input)
     if (auto *connection = editedConnection(); connection && (event->buttons() == Qt::NoButton)) {
         makeConnection(connection);
         return;
@@ -1243,6 +1340,8 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
+    // Double-click on a fully connected wire inserts a routing node at the click point,
+    // splitting the wire into two segments; guard ensures it's not a dangling wire
     if (auto *connection = qgraphicsitem_cast<QNEConnection *>(itemAt(m_mousePos)); connection && connection->startPort() && connection->endPort()) {
         receiveCommand(new SplitCommand(connection, m_mousePos, this));
     }

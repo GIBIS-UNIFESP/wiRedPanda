@@ -15,13 +15,18 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
         ElementEditor->setObjectName("ElementEditor");
     }
 
+    // Design size — actual size is controlled by the parent splitter.
     ElementEditor->resize(304, 395);
 
+    // Zero margins/spacing so the group box fills the widget edge-to-edge,
+    // keeping the panel compact inside the narrow left splitter pane.
     gridLayout = new QGridLayout(ElementEditor);
     gridLayout->setSpacing(0);
     gridLayout->setObjectName("gridLayout");
     gridLayout->setContentsMargins(0, 0, 0, 0);
 
+    // The group box title shows the element type name (set dynamically by
+    // ElementEditor::setCurrentElements).  Bold font makes it stand out.
     groupBox = new QGroupBox(ElementEditor);
     groupBox->setObjectName("groupBox");
     QFont font;
@@ -31,6 +36,8 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     gridLayout_2 = new QGridLayout(groupBox);
     gridLayout_2->setObjectName("gridLayout_2");
 
+    // Pre-populate with 8 empty items so retranslateUi() can fill them in
+    // without needing to know the count at construction time.
     comboBoxAudio = new QComboBox(groupBox);
 
     for (int i = 0; i < 8; ++i) {
@@ -90,6 +97,9 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     doubleSpinBoxFrequency = new QDoubleSpinBox(groupBox);
     doubleSpinBoxFrequency->setObjectName("doubleSpinBoxFrequency");
     doubleSpinBoxFrequency->setDecimals(1);
+    // Minimum 0.0 here; ElementEditor raises it to 0.1 when a real value is shown
+    // (0.0 is reserved as the sentinel for "many frequencies").  50 Hz max matches
+    // the simulation's 1 ms tick rate (anything faster would be indistinguishable).
     doubleSpinBoxFrequency->setMinimum(0.000000000000000);
     doubleSpinBoxFrequency->setMaximum(50.000000000000000);
     doubleSpinBoxFrequency->setSingleStep(0.100000000000000);
@@ -110,11 +120,15 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     horizontalLayout_2 = new QHBoxLayout();
     horizontalLayout_2->setObjectName("horizontalLayout_2");
 
+    // Read-only line edit shows the currently selected audio file path.
+    // Editing is done via the "..." button which opens a file dialog.
     lineCurrentAudioBox = new QLineEdit(groupBox);
     lineCurrentAudioBox->setObjectName("lineCurrentAudioBox");
     lineCurrentAudioBox->setReadOnly(true);
     horizontalLayout_2->addWidget(lineCurrentAudioBox);
 
+    // Narrow "..." button beside the audio path — constrained to 28 px wide so
+    // it doesn't steal space from the filename display.
     pushButtonAudioBox = new QPushButton(groupBox);
     pushButtonAudioBox->setObjectName("pushButtonAudioBox");
     QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -154,6 +168,8 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     comboBoxOutputSize->setObjectName("comboBoxOutputSize");
     gridLayout_2->addWidget(comboBoxOutputSize, 2, 1, 1, 1);
 
+    // Priority range 0–9 matches GraphicElement::minPriority/maxPriority;
+    // higher priority elements are evaluated first by the topological sorter.
     spinBoxPriority = new QSpinBox(groupBox);
     spinBoxPriority->setObjectName("spinBoxPriority");
     spinBoxPriority->setMaximum(9);
@@ -175,6 +191,9 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     labelDelay->setObjectName("labelDelay");
     gridLayout_2->addWidget(labelDelay, 6, 0, 1, 1);
 
+    // Delay slider range -4 to +4 in integer steps.  Each step represents 1/8 of
+    // a clock period, giving a phase offset range of -0.5 to +0.5 periods.
+    // ElementEditor converts between slider integer and float delay on read/write.
     sliderDelay = new LabeledSlider(groupBox);
     sliderDelay->setObjectName("sliderDelay");
     sliderDelay->setOrientation(Qt::Horizontal);

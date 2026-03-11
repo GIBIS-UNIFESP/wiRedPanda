@@ -8,10 +8,12 @@
 Xor::Xor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Xor, ElementGroup::Gate, ":/Components/Logic/xor.svg", tr("XOR"), tr("Xor"), 2, 8, 1, 1, parent)
 {
+    // Skip full initialisation when building a property-probe instance (see ElementFactory).
     if (GlobalProperties::skipInit) {
         return;
     }
 
+    // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
     m_defaultSkins << m_pixmapPath;
     m_alternativeSkins = m_defaultSkins;
     setPixmap(0);

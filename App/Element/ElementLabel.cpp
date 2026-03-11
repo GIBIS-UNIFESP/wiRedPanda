@@ -29,6 +29,8 @@ ElementLabel::ElementLabel(const QPixmap &pixmap, ElementType type, const QStrin
     m_iconLabel.setScaledContents(true);
     m_iconLabel.setFixedSize(64, 64);
 
+    // ICs are identified by their .panda file name rather than a translated string
+    // because each IC has a unique user-chosen name rather than a fixed element type name.
     m_nameLabel.setText((type == ElementType::IC) ? QFileInfo(icFileName).baseName().toUpper()
                                                   : ElementFactory::translatedName(type));
 
@@ -80,19 +82,27 @@ QString ElementLabel::icFileName() const
 
 void ElementLabel::startDrag()
 {
+    // The hot spot is the icon's centre so the element appears centred under
+    // the cursor when dropped onto the scene.
     QPoint offset = m_iconLabel.pixmap(Qt::ReturnByValue).rect().center();
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
+    // Embed a full panda header so the drop target can version-check the data
+    // using the same code path as file loading.
     Serialization::writePandaHeader(stream);
     stream << offset << m_elementType << m_icFileName;
 
     auto *mimeData = new QMimeData();
+    // Custom MIME type prevents accidental drops on foreign Qt applications
+    // that happen to accept generic drag-and-drop data.
     mimeData->setData("application/x-wiredpanda-dragdrop", itemData);
 
     auto *drag = new QDrag(parent());
     drag->setMimeData(mimeData);
     drag->setPixmap(pixmap());
     drag->setHotSpot(offset);
+    // CopyAction for both proposed and allowed: placing an element on the scene
+    // always creates a new instance, never moves the palette entry.
     drag->exec(Qt::CopyAction, Qt::CopyAction);
 }
 

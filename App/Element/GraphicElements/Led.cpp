@@ -15,6 +15,11 @@ Led::Led(QGraphicsItem *parent)
         return;
     }
 
+    // The skin list is indexed by colorIndex(). For a 1-input LED the index is
+    // m_colorIndex + input_value, where m_colorIndex is set by setColor() to the
+    // base offset for the chosen color (0=White, 2=Red, 4=Green, 6=Blue, 8=Purple).
+    // Even indices are the Off state; odd indices are the On state.
+    // Indices 10-25 cover multi-input (2/3/4-bit) color palettes (see comment below).
     m_defaultSkins = QStringList{
         // Single input values:
         ":/Components/Output/Led/LedOff.svg",        // 0
@@ -84,6 +89,8 @@ int Led::colorIndex()
         return 0;
     }
 
+    // Encode the state of all input ports as a binary number.
+    // Bit 0 = port 0, bit 1 = port 1, etc. (LSB-first ordering).
     std::bitset<4> indexBit;
 
     for (int i = 0; i < inputSize(); ++i) {
@@ -94,6 +101,11 @@ int Led::colorIndex()
 
     int index2 = 0;
 
+    // Map the encoded value to a skin list index depending on how many inputs
+    // the LED has. Multi-input LEDs use a fixed color palette (indices 10-25);
+    // single-input LEDs offset by m_colorIndex to pick the user-selected color.
+    // For 2-input, index 3 (both on) maps to index 25 (white "on") rather than
+    // index 21 (aqua) to preserve backward-compatible color behavior.
     switch (inputSize()) {
     case 1: index2 = m_colorIndex + index;           break;
     case 2: index2 = (index == 3) ? 25 : 18 + index; break;
@@ -101,8 +113,7 @@ int Led::colorIndex()
     case 4: index2 = 10 + index;                     break;
 
     default:
-        // Handle unexpected input sizes gracefully
-        index2 = index;  // Simple fallback
+        index2 = index;
         break;
     }
 
@@ -118,6 +129,8 @@ void Led::setColor(const QString &color)
 {
     m_color = color;
 
+    // m_colorIndex is the base offset into the single-input skin list.
+    // Each color occupies two consecutive entries: [base]=Off, [base+1]=On.
     if (color == "White")  { m_colorIndex = 0; }
     if (color == "Red")    { m_colorIndex = 2; }
     if (color == "Green")  { m_colorIndex = 4; }
@@ -145,11 +158,13 @@ void Led::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVe
     GraphicElement::load(stream, portMap, version);
 
     if ((VERSION("1.1") <= version) && (version < VERSION("4.1"))) {
+        // v1.1–4.0 stored color as a bare QString
         QString color_; stream >> color_;
         setColor(color_);
     }
 
     if (version >= VERSION("4.1")) {
+        // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("color")) {
@@ -165,10 +180,13 @@ QString Led::genericProperties()
 
 void Led::updatePortsProperties()
 {
+    // Color selection is only meaningful for single-input LEDs; with multiple
+    // inputs the color is determined entirely by the input bit pattern.
     setHasColors(inputSize() == 1);
 
     for (auto *port : std::as_const(m_inputPorts)) {
         port->setName(QString::number(m_inputPorts.indexOf(port)));
+        // All inputs are optional — an unconnected port is treated as Inactive (0)
         port->setRequired(false);
     }
 
@@ -182,6 +200,8 @@ void Led::setSkin(const bool useDefaultSkin, const QString &fileName)
     if (useDefaultSkin) {
         m_alternativeSkins = m_defaultSkins;
     } else {
+        // Replace only the skin for the currently active color/state, so other
+        // color states continue to use their default images.
         m_alternativeSkins[index] = fileName;
     }
 

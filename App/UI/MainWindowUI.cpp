@@ -13,11 +13,15 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
         MainWindow->setObjectName("MainWindow");
     }
 
+    // --- Window defaults ---
+    // 886×765 is the designed comfortable default; 150 px minimum height
+    // prevents the toolbar/menu from being completely collapsed.
     MainWindow->resize(886, 765);
     MainWindow->setMinimumSize(QSize(0, 150));
     MainWindow->setWindowTitle("");
     MainWindow->setWindowIcon(QIcon(":/Interface/Toolbar/wpanda.svg"));
     MainWindow->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    // On macOS, merging the title bar and toolbar saves vertical space.
     MainWindow->setUnifiedTitleAndToolBarOnMac(true);
 
     actionOpen = new QAction(MainWindow);
@@ -95,6 +99,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionPlay = new QAction(MainWindow);
     actionPlay->setObjectName("actionPlay");
     actionPlay->setCheckable(true);
+    // Use a two-state icon: play icon when unchecked, pause icon when checked.
     QIcon icon22(":/Interface/Toolbar/play.svg");
     icon22.addFile(":/Interface/Toolbar/pause.svg", QSize(), QIcon::Normal, QIcon::On);
     actionPlay->setIcon(icon22);
@@ -133,6 +138,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionMute = new QAction(MainWindow);
     actionMute->setObjectName("actionMute");
     actionMute->setCheckable(true);
+    // Similarly, the mute action swaps between buzzer and mute icons.
     QIcon icon29(":/Components/Output/Buzzer/BuzzerOff.svg");
     icon29.addFile(":/Interface/Toolbar/mute.svg", QSize(), QIcon::Normal, QIcon::On);
     actionMute->setIcon(icon29);
@@ -160,6 +166,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     gridLayout_8->setSpacing(6);
     gridLayout_8->setContentsMargins(11, 11, 11, 11);
     gridLayout_8->setObjectName("gridLayout_8");
+    // --- Main horizontal splitter ---
+    // Left child = component palette + element editor; right child = canvas tabs.
     splitter = new QSplitter(centralWidget);
     splitter->setObjectName("splitter");
     QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -171,9 +179,13 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     splitter->setLineWidth(1);
     splitter->setMidLineWidth(2);
     splitter->setOrientation(Qt::Horizontal);
+    // Non-opaque resize prevents repainting while dragging, which is cheaper.
     splitter->setOpaqueResize(false);
     splitter->setHandleWidth(8);
+    // Prevent either pane from being fully collapsed by dragging.
     splitter->setChildrenCollapsible(false);
+    // Left panel: 280–600 px wide — wide enough to show element labels
+    // but capped so it doesn't swallow too much of the canvas area.
     leftPannel = new QWidget(splitter);
     leftPannel->setObjectName("leftPannel");
     leftPannel->setMinimumSize(QSize(280, 0));
@@ -191,6 +203,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     sizePolicy.setHeightForWidth(tabElements->sizePolicy().hasHeightForWidth());
     tabElements->setSizePolicy(sizePolicy);
     tabElements->setMinimumSize(QSize(220, 0));
+    // Disabled tabs (e.g. the "search" tab that's only visible while typing)
+    // are collapsed to zero size so they don't appear as empty slots.
     tabElements->setStyleSheet("QTabBar::tab:disabled {\n"
 "	 width: 0;\n"
 "	 height: 0;\n"
@@ -453,6 +467,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     verticalLayout_5->addLayout(gridLayout);
 
     splitter->addWidget(leftPannel);
+    // Canvas tabs — horizontal stretch = 255 so they expand to fill all remaining
+    // space after the left panel gets its share.
     tab = new QTabWidget(splitter);
     tab->setObjectName("tab");
     QSizePolicy sizePolicy7(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -484,6 +500,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuFile->setToolTipsVisible(false);
     menuRecentFiles = new QMenu(menuFile);
     menuRecentFiles->setObjectName("menuRecentFiles");
+    // Keep the recent-files submenu disabled until at least one entry exists;
+    // a greyed-out menu is less confusing than an empty open submenu.
     menuRecentFiles->setEnabled(false);
     menuRecentFiles->setIcon(QIcon(":/Interface/Toolbar/recentFiles.svg"));
     menuEdit = new QMenu(menuBar);
@@ -595,6 +613,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     retranslateUi();
 
     tabElements->setCurrentIndex(0);
+    // -1 means no tab is active yet; the first call to createNewTab() will
+    // add a tab and tabChanged(0) will be emitted to set up all connections.
     tab->setCurrentIndex(-1);
 
     QMetaObject::connectSlotsByName(MainWindow);
