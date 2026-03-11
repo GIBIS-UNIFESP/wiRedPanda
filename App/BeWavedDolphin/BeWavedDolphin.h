@@ -167,6 +167,30 @@ public:
     void print();
     /// Writes the waveform data as plain text to \a stream.
     void saveToTxt(QTextStream &stream);
+    /// Exports the waveform view to a PNG file at \a filename.
+    bool exportToPng(const QString &filename);
+
+    // --- MCP Interface ---
+
+    /// Sets an individual waveform cell at (\a row, \a col) to \a value.
+    void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = false);
+    /// Prepares the waveform editor, optionally loading from \a fileName.
+    void prepare(const QString &fileName = {});
+    /// Runs the simulation and updates the waveform display.
+    void run();
+    /// Sets the simulation length to \a simLength cycles, optionally re-running.
+    void setLength(const int simLength, const bool runSimulation = false);
+
+    // --- MCP Accessors ---
+
+    /// Returns the underlying data model.
+    QStandardItemModel *getModel() const { return m_model; }
+    /// Returns the output elements used in the simulation.
+    const QVector<GraphicElement *> &getOutputElements() const { return m_outputs; }
+    /// Returns the input elements used in the simulation.
+    const QVector<GraphicElementInput *> &getInputElements() const { return m_inputs; }
+    /// Returns the current simulation length (number of cycles).
+    int getLength() const { return m_length; }
 
 protected:
     // --- Qt event overrides ---
@@ -183,6 +207,7 @@ private:
 
     /// Prompts the user to save unsaved changes; returns \c false if cancelled.
     bool checkSave();
+    bool exportWaveformToPng(const QString &filename);
     /// Links the waveform editor to the .dolphin file at \a fileName.
     void associateToWiRedPanda(const QString &fileName);
     /// Loads waveform data from a binary \a stream.
@@ -209,7 +234,6 @@ private:
     void loadPixmaps();
     /// Fills \a inputLabels and \a outputLabels from the circuit's I/O elements.
     void loadSignals(QStringList &inputLabels, QStringList &outputLabels);
-    void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = true);
     void createOneElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
     void createZeroElement(const int row, const int col, const bool isInput = true, const bool changeNext = true);
 
@@ -228,11 +252,8 @@ private:
 
     // --- Simulation State ---
 
-    void prepare(const QString &fileName = {});
     /// Restores original input element values after a simulation run.
     void restoreInputs();
-    void run();
-    void setLength(const int simLength, const bool runSimulation);
 
     // --- Scene / View ---
 
