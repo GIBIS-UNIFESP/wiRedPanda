@@ -10,8 +10,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "ElementEditorUI.h"
-#include "Scene.h"
+#include "App/Scene/Scene.h"
+#include "App/UI/ElementEditorUI.h"
 
 /*!
  * @class ElementEditor

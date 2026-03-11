@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "TestSimulation.h"
+#include "Tests/TestSimulation.h"
 
 #include <algorithm>
 
@@ -9,18 +9,18 @@
 #include <QTest>
 #include <QVector>
 
-#include "And.h"
-#include "Common.h"
-#include "ElementMapping.h"
-#include "InputButton.h"
-#include "Led.h"
-#include "Not.h"
-#include "Or.h"
-#include "QNEConnection.h"
-#include "RegisterTypes.h"
-#include "Scene.h"
-#include "Simulation.h"
-#include "Workspace.h"
+#include "App/Core/Common.h"
+#include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/InputButton.h"
+#include "App/Element/GraphicElements/Led.h"
+#include "App/Element/GraphicElements/Not.h"
+#include "App/Element/GraphicElements/Or.h"
+#include "App/Nodes/QNEConnection.h"
+#include "App/RegisterTypes.h"
+#include "App/Scene/Scene.h"
+#include "App/Scene/Workspace.h"
+#include "App/Simulation/ElementMapping.h"
+#include "App/Simulation/Simulation.h"
 
 int main(int argc, char **argv)
 {

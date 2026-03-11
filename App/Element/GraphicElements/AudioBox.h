@@ -7,7 +7,7 @@
 #include <QFileInfo>
 #include <QMediaPlayer>
 
-#include "GraphicElement.h"
+#include "App/Element/GraphicElement.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QMediaPlaylist>

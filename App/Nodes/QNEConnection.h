@@ -9,8 +9,8 @@
 #include <QCoreApplication>
 #include <QGraphicsPathItem>
 
-#include "Enums.h"
-#include "ItemWithId.h"
+#include "App/Core/Enums.h"
+#include "App/Core/ItemWithId.h"
 
 class QNEInputPort;
 class QNEOutputPort;

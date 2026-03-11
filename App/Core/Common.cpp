@@ -1,11 +1,11 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Common.h"
+#include "App/Core/Common.h"
 
-#include "GraphicElement.h"
-#include "QNEConnection.h"
-#include "QNEPort.h"
+#include "App/Element/GraphicElement.h"
+#include "App/Nodes/QNEConnection.h"
+#include "App/Nodes/QNEPort.h"
 
 Q_LOGGING_CATEGORY(zero,  "0")
 Q_LOGGING_CATEGORY(one,   "1")

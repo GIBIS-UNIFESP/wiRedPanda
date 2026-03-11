@@ -6,8 +6,8 @@
 #include <QFileInfo>
 #include <QFileSystemWatcher>
 
-#include "ElementMapping.h"
-#include "GraphicElement.h"
+#include "App/Element/GraphicElement.h"
+#include "App/Simulation/ElementMapping.h"
 
 class IC : public GraphicElement
 {

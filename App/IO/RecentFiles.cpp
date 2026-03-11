@@ -1,15 +1,15 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "RecentFiles.h"
+#include "App/IO/RecentFiles.h"
 
 #include <QApplication>
 #include <QFile>
 #include <QFileInfo>
 
-#include "Common.h"
-#include "GlobalProperties.h"
-#include "Settings.h"
+#include "App/Core/Common.h"
+#include "App/Core/Settings.h"
+#include "App/GlobalProperties.h"
 
 RecentFiles::RecentFiles(QObject *parent)
     : QObject(parent)

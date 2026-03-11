@@ -171,18 +171,7 @@ endif()
 
 include_directories(
     ${CMAKE_BINARY_DIR}
-    App
-    App/BeWavedDolphin
-    App/CodeGen
-    App/Core
-    App/Element
-    App/Element/GraphicElements
-    App/Element/LogicElements
-    App/IO
-    App/Nodes
-    App/Scene
-    App/Simulation
-    App/UI
+    ${CMAKE_SOURCE_DIR}
 )
 
 # ========= TRANSLATIONS ===========================
@@ -195,13 +184,13 @@ if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
     # Custom target to update translation source files
     if(QT_VERSION_MAJOR EQUAL 5)
         add_custom_target(lupdate
-            COMMAND Qt5::lupdate -tr-function-alias tr+=PANDACEPTION ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES}
+            COMMAND Qt5::lupdate -tr-function-alias tr+=PANDACEPTION -extensions cpp,h,ui -I ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES}
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
             COMMENT "Updating translation source files"
         )
     else()
         add_custom_target(lupdate
-            COMMAND Qt6::lupdate -tr-function-alias tr+=PANDACEPTION ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES}
+            COMMAND Qt6::lupdate -tr-function-alias tr+=PANDACEPTION -extensions cpp,h,ui -I ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES}
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
             COMMENT "Updating translation source files"
         )

@@ -7,7 +7,7 @@
 
 #include <QCoreApplication>
 
-#include "LogicInput.h"
+#include "App/Element/LogicElements/LogicInput.h"
 
 class Clock;
 class GraphicElement;

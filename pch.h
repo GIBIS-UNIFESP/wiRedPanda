@@ -64,8 +64,8 @@
 #include <QWidget>
 
 // Project includes
-#include "Enums.h"
-#include "GraphicElement.h"
-#include "ItemWithId.h"
-#include "LogicElement.h"
+#include "App/Core/Enums.h"
+#include "App/Core/ItemWithId.h"
+#include "App/Element/GraphicElement.h"
+#include "App/Element/LogicElements/LogicElement.h"
 #endif

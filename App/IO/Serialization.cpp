@@ -1,16 +1,16 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Serialization.h"
+#include "App/IO/Serialization.h"
 
 #include <QApplication>
 #include <QIODevice>
 
-#include "Common.h"
-#include "ElementFactory.h"
-#include "GlobalProperties.h"
-#include "GraphicElement.h"
-#include "QNEConnection.h"
+#include "App/Core/Common.h"
+#include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElement.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEConnection.h"
 
 void Serialization::writePandaHeader(QDataStream &stream)
 {

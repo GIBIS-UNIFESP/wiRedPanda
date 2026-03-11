@@ -1,11 +1,11 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "ThemeManager.h"
+#include "App/Core/ThemeManager.h"
 
 #include <QDebug>
 
-#include "Settings.h"
+#include "App/Core/Settings.h"
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
 #include <QStyleHints>

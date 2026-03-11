@@ -1,13 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Display16.h"
+#include "App/Element/GraphicElements/Display16.h"
 
 #include <QPainter>
 
-#include "Display7.h"
-#include "GlobalProperties.h"
-#include "QNEPort.h"
+#include "App/Element/GraphicElements/Display7.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEPort.h"
 
 Display16::Display16(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display16, ElementGroup::Output, ":/Components/Output/Counter/counter_16_on.svg", tr("16-SEGMENT DISPLAY"), tr("16-Segment Display"), 17, 17, 0, 0, parent)

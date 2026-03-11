@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Workspace.h"
+#include "App/Scene/Workspace.h"
 
 #include <QFileDialog>
 #include <QHBoxLayout>
@@ -10,13 +10,13 @@
 #include <QStandardPaths>
 #include <QTemporaryFile>
 
-#include "Common.h"
-#include "ElementFactory.h"
-#include "GlobalProperties.h"
-#include "GraphicElement.h"
-#include "Serialization.h"
-#include "Settings.h"
-#include "SimulationBlocker.h"
+#include "App/Core/Common.h"
+#include "App/Core/Settings.h"
+#include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElement.h"
+#include "App/GlobalProperties.h"
+#include "App/IO/Serialization.h"
+#include "App/Simulation/SimulationBlocker.h"
 
 WorkSpace::WorkSpace(QWidget *parent)
     : QWidget(parent)

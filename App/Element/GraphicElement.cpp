@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "GraphicElement.h"
+#include "App/Element/GraphicElement.h"
 
 #include <cmath>
 
@@ -13,12 +13,12 @@
 #include <QPixmap>
 #include <QStyleOptionGraphicsItem>
 
-#include "Common.h"
-#include "ElementFactory.h"
-#include "GlobalProperties.h"
-#include "QNEConnection.h"
-#include "QNEPort.h"
-#include "ThemeManager.h"
+#include "App/Core/Common.h"
+#include "App/Core/ThemeManager.h"
+#include "App/Element/ElementFactory.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEConnection.h"
+#include "App/Nodes/QNEPort.h"
 
 const int maximumValidInputSize = 256;
 

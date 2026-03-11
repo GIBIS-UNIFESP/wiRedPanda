@@ -1,12 +1,12 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "InputButton.h"
+#include "App/Element/GraphicElements/InputButton.h"
 
 #include <QGraphicsSceneMouseEvent>
 
-#include "GlobalProperties.h"
-#include "QNEPort.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEPort.h"
 
 InputButton::InputButton(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::InputButton, ElementGroup::Input, ":/Components/Input/buttonOff.svg", tr("PUSH BUTTON"), tr("Push Button"), 0, 0, 1, 1, parent)

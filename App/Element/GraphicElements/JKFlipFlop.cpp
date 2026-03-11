@@ -1,10 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "JKFlipFlop.h"
+#include "App/Element/GraphicElements/JKFlipFlop.h"
 
-#include "GlobalProperties.h"
-#include "QNEPort.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEPort.h"
 
 JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::JKFlipFlop, ElementGroup::Memory, pixmapPath(), tr("JK-FLIP-FLOP"), tr("JK-Flip-Flop"), 5, 5, 2, 2, parent)

@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "ClockDialog.h"
+#include "App/UI/ClockDialog.h"
 
-#include "ClockDialogUI.h"
+#include "App/UI/ClockDialogUI.h"
 
 ClockDialog::ClockDialog(const int currentFrequency, QWidget *parent)
     : QDialog(parent)

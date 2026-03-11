@@ -1,14 +1,14 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "TestIcons.h"
+#include "Tests/TestIcons.h"
 
 #include <QApplication>
 #include <QTest>
 
-#include "Common.h"
-#include "ElementFactory.h"
-#include "RegisterTypes.h"
+#include "App/Core/Common.h"
+#include "App/Element/ElementFactory.h"
+#include "App/RegisterTypes.h"
 
 int main(int argc, char **argv)
 {

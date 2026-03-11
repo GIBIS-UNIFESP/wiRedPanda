@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Nor.h"
+#include "App/Element/GraphicElements/Nor.h"
 
-#include "GlobalProperties.h"
+#include "App/GlobalProperties.h"
 
 Nor::Nor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Nor, ElementGroup::Gate, ":/Components/Logic/nor.svg", tr("NOR"), tr("Nor"), 2, 8, 1, 1, parent)

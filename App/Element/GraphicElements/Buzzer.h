@@ -6,7 +6,7 @@
 #include <QSoundEffect>
 #include <QVersionNumber>
 
-#include "GraphicElement.h"
+#include "App/Element/GraphicElement.h"
 
 class Buzzer : public GraphicElement
 {

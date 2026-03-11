@@ -1,14 +1,14 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "ElementMapping.h"
+#include "App/Simulation/ElementMapping.h"
 
-#include "Common.h"
-#include "ElementFactory.h"
-#include "GraphicElement.h"
-#include "IC.h"
-#include "QNEConnection.h"
-#include "QNEPort.h"
+#include "App/Core/Common.h"
+#include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElement.h"
+#include "App/Element/IC.h"
+#include "App/Nodes/QNEConnection.h"
+#include "App/Nodes/QNEPort.h"
 
 ElementMapping::ElementMapping(const QVector<GraphicElement *> &elements)
     : m_elements(elements)

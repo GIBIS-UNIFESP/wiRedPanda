@@ -9,7 +9,7 @@
 #include <QObject>
 #include <QTimer>
 
-#include "ElementMapping.h"
+#include "App/Simulation/ElementMapping.h"
 
 class QNEConnection;
 class QNEInputPort;

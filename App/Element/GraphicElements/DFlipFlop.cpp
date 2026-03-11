@@ -1,10 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "DFlipFlop.h"
+#include "App/Element/GraphicElements/DFlipFlop.h"
 
-#include "GlobalProperties.h"
-#include "QNEPort.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEPort.h"
 
 DFlipFlop::DFlipFlop(QGraphicsItem *parent)
     : GraphicElement(ElementType::DFlipFlop, ElementGroup::Memory, pixmapPath(), tr("D-FLIP-FLOP"), tr("D-Flip-Flop"), 4, 4, 2, 2, parent)

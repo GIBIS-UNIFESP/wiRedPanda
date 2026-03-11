@@ -1,13 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "InputRotary.h"
+#include "App/Element/GraphicElements/InputRotary.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
-#include "GlobalProperties.h"
-#include "QNEPort.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEPort.h"
 
 InputRotary::InputRotary(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::InputRotary, ElementGroup::Input, ":/Components/Input/rotary_icon.svg", tr("ROTARY SWITCH"), tr("Rotary Switch"), 0, 0, 2, 16, parent)

@@ -7,7 +7,7 @@
 
 #include <QDialog>
 
-#include "ClockDialogUI.h"
+#include "App/UI/ClockDialogUI.h"
 
 //!
 //! \brief The clockDialog class handles dialogs for setting the frequency at which a clock ticks

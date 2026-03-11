@@ -5,7 +5,7 @@
 
 #include <QApplication>
 
-#include "MainWindow.h"
+#include "App/UI/MainWindow.h"
 
 #if defined(qApp)
 #undef qApp

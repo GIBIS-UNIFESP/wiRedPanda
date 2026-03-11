@@ -1,12 +1,12 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "InputSwitch.h"
+#include "App/Element/GraphicElements/InputSwitch.h"
 
 #include <QGraphicsSceneMouseEvent>
 
-#include "GlobalProperties.h"
-#include "QNEPort.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEPort.h"
 
 InputSwitch::InputSwitch(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::InputSwitch, ElementGroup::Input, ":/Components/Input/switchOn.svg", tr("INPUT SWITCH"), tr("Input Switch"), 0, 0, 1, 1, parent)

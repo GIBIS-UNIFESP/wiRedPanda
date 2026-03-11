@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "GraphicElement.h"
-#include "ThemeManager.h"
+#include "App/Core/ThemeManager.h"
+#include "App/Element/GraphicElement.h"
 
 class DFlipFlop : public GraphicElement
 {

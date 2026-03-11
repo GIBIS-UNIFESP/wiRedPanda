@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Scene.h"
+#include "App/Scene/Scene.h"
 
 #include <algorithm>
 
@@ -11,18 +11,18 @@
 #include <QKeyEvent>
 #include <QMenu>
 
-#include "Buzzer.h"
-#include "Commands.h"
-#include "Common.h"
-#include "ElementFactory.h"
-#include "GlobalProperties.h"
-#include "GraphicElement.h"
-#include "GraphicElementInput.h"
-#include "GraphicsView.h"
-#include "IC.h"
-#include "QNEConnection.h"
-#include "Serialization.h"
-#include "ThemeManager.h"
+#include "App/Core/Common.h"
+#include "App/Core/ThemeManager.h"
+#include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElementInput.h"
+#include "App/Element/GraphicElements/Buzzer.h"
+#include "App/Element/IC.h"
+#include "App/GlobalProperties.h"
+#include "App/IO/Serialization.h"
+#include "App/Nodes/QNEConnection.h"
+#include "App/Scene/Commands.h"
+#include "App/Scene/GraphicsView.h"
 
 Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)

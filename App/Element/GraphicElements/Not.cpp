@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Not.h"
+#include "App/Element/GraphicElements/Not.h"
 
-#include "GlobalProperties.h"
+#include "App/GlobalProperties.h"
 
 Not::Not(QGraphicsItem *parent)
     : GraphicElement(ElementType::Not, ElementGroup::Gate, ":/Components/Logic/not.svg", tr("NOT"), tr("Not"), 1, 1, 1, 1, parent)

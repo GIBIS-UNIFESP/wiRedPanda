@@ -1,17 +1,17 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Simulation.h"
+#include "App/Simulation/Simulation.h"
 
 #include <QGraphicsView>
 
-#include "Clock.h"
-#include "Common.h"
-#include "ElementMapping.h"
-#include "GraphicElement.h"
-#include "IC.h"
-#include "QNEConnection.h"
-#include "Scene.h"
+#include "App/Core/Common.h"
+#include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElements/Clock.h"
+#include "App/Element/IC.h"
+#include "App/Nodes/QNEConnection.h"
+#include "App/Scene/Scene.h"
+#include "App/Simulation/ElementMapping.h"
 
 using namespace std::chrono_literals;
 

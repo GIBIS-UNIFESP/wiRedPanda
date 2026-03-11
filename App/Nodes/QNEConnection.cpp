@@ -4,7 +4,7 @@
 // Portions Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "QNEConnection.h"
+#include "App/Nodes/QNEConnection.h"
 
 #include <QBrush>
 #include <QDebug>
@@ -14,9 +14,9 @@
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
 
-#include "Common.h"
-#include "QNEPort.h"
-#include "ThemeManager.h"
+#include "App/Core/Common.h"
+#include "App/Core/ThemeManager.h"
+#include "App/Nodes/QNEPort.h"
 
 QNEConnection::QNEConnection(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)

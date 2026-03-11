@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "LogicMux.h"
+#include "App/Element/LogicElements/LogicMux.h"
 
 LogicMux::LogicMux()
     : LogicElement(3, 1)

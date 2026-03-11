@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "ClockDialogUI.h"
+#include "App/UI/ClockDialogUI.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QMetaObject>

@@ -1,12 +1,12 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Led.h"
+#include "App/Element/GraphicElements/Led.h"
 
 #include <bitset>
 
-#include "GlobalProperties.h"
-#include "QNEPort.h"
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEPort.h"
 
 Led::Led(QGraphicsItem *parent)
     : GraphicElement(ElementType::Led, ElementGroup::Output, ":/Components/Output/Led/LedOff.svg", tr("LED"), tr("LED"), 1, 4, 0, 0, parent)

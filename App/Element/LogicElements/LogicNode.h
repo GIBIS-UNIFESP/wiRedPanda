@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "LogicElement.h"
+#include "App/Element/LogicElements/LogicElement.h"
 
 class LogicNode : public LogicElement
 {

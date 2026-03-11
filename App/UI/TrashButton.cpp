@@ -1,15 +1,15 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "TrashButton.h"
+#include "App/UI/TrashButton.h"
 
 #include <QDragEnterEvent>
 #include <QMessageBox>
 #include <QMimeData>
 #include <QVersionNumber>
 
-#include "Enums.h"
-#include "Serialization.h"
+#include "App/Core/Enums.h"
+#include "App/IO/Serialization.h"
 
 TrashButton::TrashButton(QWidget *parent)
     : QPushButton(parent)

@@ -1,10 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "ItemWithId.h"
+#include "App/Core/ItemWithId.h"
 
-#include "ElementFactory.h"
-#include "GlobalProperties.h"
+#include "App/Element/ElementFactory.h"
+#include "App/GlobalProperties.h"
 
 ItemWithId::ItemWithId()
 {

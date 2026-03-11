@@ -1,13 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "ElementEditorUI.h"
+#include "App/UI/ElementEditorUI.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QMetaObject>
 #include <QtGui/QIcon>
 
-#include "LabeledSlider.h"
+#include "App/UI/LabeledSlider.h"
 
 void ElementEditor_Ui::setupUi(QWidget *ElementEditor)
 {

@@ -1,14 +1,14 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Application.h"
+#include "App/Core/Application.h"
 
 #include <QMessageBox>
 
-#include "Common.h"
+#include "App/Core/Common.h"
 
 #ifdef HAVE_SENTRY
-#include "../thirdparty/sentry/include/sentry.h"
+#include "thirdparty/sentry/include/sentry.h"
 #endif
 
 Application::Application(int &argc, char **argv)
