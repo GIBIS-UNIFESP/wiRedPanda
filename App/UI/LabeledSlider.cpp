@@ -5,6 +5,7 @@
 
 #include <QPainter>
 #include <QSlider>
+#include <QStyle>
 #include <algorithm>
 
 LabeledSlider::LabeledSlider(QWidget *parent)

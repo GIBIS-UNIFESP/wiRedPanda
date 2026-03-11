@@ -6,6 +6,7 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QMetaObject>
+#include <QtGui/QIcon>
 
 void ElementEditorUi::setupUi(QWidget *ElementEditor)
 {
