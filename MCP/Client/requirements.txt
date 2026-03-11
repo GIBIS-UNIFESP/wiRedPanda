@@ -1,0 +1,22 @@
+# Core formatters and linters
+ruff>=0.1.0              # Fast Python linter and formatter (replaces many tools)
+black>=23.0.0            # Code formatter
+isort>=5.12.0            # Import sorter
+pylint>=3.0.0            # Static analysis and linting
+flake8>=6.0.0            # Style guide enforcement
+mypy>=1.5.0              # Static type checker
+pyright>=1.1.300         # Microsoft's Python type checker
+pyrefly>=0.30.0          # Python refactoring tool
+vulture>=2.9.1           # Dead code finder
+
+# Type checking and validation
+beartype>=0.15.0         # Runtime type checking
+pydantic>=2.4.0          # Data validation using Python type annotations
+jsonschema>=4.17.0       # JSON Schema validation
+
+# Type stubs for mypy
+types-jsonschema>=4.25.1 # Type stubs for jsonschema
+types-psutil>=7.0.0      # Type stubs for psutil
+
+# Testing and process monitoring
+psutil>=5.9.0            # System and process utilities (used in mcp_test_suite.py)

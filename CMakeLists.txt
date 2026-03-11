@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
+set(CMAKE_POLICY_VERSION_MINIMUM 3.16) # for nlohmann/json
 project(wiredpanda VERSION 4.4.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -70,6 +71,25 @@ add_compile_definitions(
     QT_DISABLE_DEPRECATED_BEFORE=0x060000
     QT_MESSAGELOGCONTEXT
 )
+
+# MCP Server - disabled on tagged release CI builds, enabled on development branches
+if(DEFINED ENV{GITHUB_REF} AND "$ENV{GITHUB_REF}" MATCHES "^refs/tags/")
+    # Tagged release CI build — MCP disabled
+else()
+    find_package(Git QUIET)
+    if(GIT_FOUND)
+        execute_process(
+            COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            OUTPUT_VARIABLE GIT_BRANCH
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            ERROR_QUIET
+        )
+        if(NOT GIT_BRANCH MATCHES "^(master|main)$")
+            add_compile_definitions(ENABLE_MCP_SERVER)
+        endif()
+    endif()
+endif()
 
 if(MSVC)
     add_compile_options(/W4 /external:W0 /permissive-)
@@ -153,6 +173,32 @@ if(QT_VERSION_MAJOR EQUAL 5)
     set(CMAKE_OSX_ARCHITECTURES x86_64)
 else()
     set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
+endif()
+
+# FetchContent for external dependencies
+include(FetchContent)
+
+# nlohmann/json for JSON schema validation
+FetchContent_Declare(
+    json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.12.0
+    GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(json)
+
+# JSON Schema Validator for nlohmann/json
+FetchContent_Declare(
+    json-schema-validator
+    GIT_REPOSITORY https://github.com/pboettch/json-schema-validator.git
+    GIT_TAG 2.3.0
+    GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(json-schema-validator)
+
+# Suppress subobject-linkage warnings from json-schema-validator
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(nlohmann_json_schema_validator PRIVATE -Wno-subobject-linkage)
 endif()
 
 # WebAssembly specific configuration
@@ -326,12 +372,19 @@ endforeach()
 # ========= LIB ===================================
 
 add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS})
-target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS})
+target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS} nlohmann_json::nlohmann_json nlohmann_json_schema_validator)
 
 # Treat external dependencies as system headers to suppress clazy warnings
 target_include_directories(wiredpanda_lib SYSTEM PUBLIC
     ${CMAKE_BINARY_DIR}/_deps/json-src/include
     ${CMAKE_BINARY_DIR}/_deps/json-schema-validator-src/src
+)
+
+# Add MCP server include directories
+target_include_directories(wiredpanda_lib PUBLIC
+    MCP/Server/Core
+    MCP/Server/Handlers
+    MCP/Server/Interfaces
 )
 
 option(ENABLE_PCH "Enable precompiled headers for faster compilation" ON)
@@ -362,6 +415,15 @@ else()
     add_executable(wiredpanda App/Main.cpp)
 endif()
 target_link_libraries(wiredpanda PRIVATE wiredpanda_lib wiredpanda_resources)
+
+# Copy JSON schema to executable directory after build
+add_custom_command(TARGET wiredpanda POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_SOURCE_DIR}/MCP/schema-mcp.json
+        $<TARGET_FILE_DIR:wiredpanda>/schema-mcp.json
+    COMMENT "Copying JSON schema to executable directory"
+    VERBATIM
+)
 
 # Run windeployqt on Windows to copy Qt dependencies
 if(WIN32)

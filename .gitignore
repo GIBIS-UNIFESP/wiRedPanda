@@ -171,3 +171,6 @@ Deploy/
 *.panda
 !Examples/**/*.panda
 !Tests/**/*.panda
+
+# MCP (Model Context Protocol)
+MCP/Client/temp/

@@ -968,7 +968,9 @@ void ToggleTruthTableOutputCommand::redo()
     truthtable->key().toggleBit(m_pos);
 
     m_scene->setCircuitUpdateRequired();
-    m_elementeditor->truthTable();
+    if (m_elementeditor) {
+        m_elementeditor->truthTable();
+    }
 }
 
 void ToggleTruthTableOutputCommand::undo()
@@ -982,5 +984,7 @@ void ToggleTruthTableOutputCommand::undo()
     truthtable->key().toggleBit(m_pos);
 
     m_scene->setCircuitUpdateRequired();
-    m_elementeditor->truthTable();
+    if (m_elementeditor) {
+        m_elementeditor->truthTable();
+    }
 }
