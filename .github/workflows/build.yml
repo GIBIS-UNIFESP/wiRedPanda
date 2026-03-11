@@ -45,6 +45,17 @@ jobs:
         submodules: recursive
         fetch-depth: 0
 
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+        cache-dependency-path: 'MCP/Client/requirements.txt'
+
+    - name: Install Python Dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r MCP/Client/requirements.txt
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
@@ -86,3 +97,7 @@ jobs:
           build/CMakeFiles/CMakeOutput.log
           build/CMakeFiles/CMakeError.log
         retention-days: 7
+
+    - name: MCP Integration Test
+      run: |
+        python3 MCP/Client/run_tests.py
