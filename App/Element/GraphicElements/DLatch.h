@@ -11,7 +11,11 @@ class DLatch : public GraphicElement
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit DLatch(QGraphicsItem *parent = nullptr);
+
+    // --- Visual ---
 
     static QString pixmapPath()
     {

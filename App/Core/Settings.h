@@ -18,14 +18,24 @@ class Settings
 public:
     Settings() = delete;
 
+    // --- Storage location ---
+
     static QString fileName();
+
+    // --- Accessors ---
+
     static QVariant value(const QString &key);
     static bool contains(const QString &key);
     static void remove(const QString &key);
     static void setValue(const QString &key, const QVariant &value);
 
 private:
+    // --- Internal helpers ---
+
     static QSettings *settingsInstance();
+
+    // --- Members ---
+
     inline static QSettings *settings = nullptr;
 };
 

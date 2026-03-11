@@ -14,22 +14,33 @@
 class LengthDialogUi
 {
 public:
-    // Default constructor (required for instantiation)
+    // --- Lifecycle ---
+
     LengthDialogUi() = default;
 
-    // Delete copy constructor and assignment operator
     LengthDialogUi(const LengthDialogUi&) = delete;
     LengthDialogUi& operator=(const LengthDialogUi&) = delete;
+
+    // --- Setup ---
 
     void setupUi(QDialog *LengthDialog);
     void retranslateUi(QDialog *LengthDialog);
 
+    // --- Widgets ---
+
+    // Layout
     QGridLayout *gridLayout_2 = nullptr;
+
+    // Controls
     QSlider *lengthSlider = nullptr;
-    QLabel *minLabel = nullptr;
-    QLabel *titleLabel = nullptr;
-    QLabel *maxLabel = nullptr;
     QSpinBox *lengthSpinBox = nullptr;
+
+    // Labels
+    QLabel *titleLabel = nullptr;
+    QLabel *minLabel = nullptr;
+    QLabel *maxLabel = nullptr;
+
+    // Buttons
     QDialogButtonBox *buttonBox = nullptr;
 };
 

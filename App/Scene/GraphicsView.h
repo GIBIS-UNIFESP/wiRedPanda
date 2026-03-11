@@ -19,22 +19,33 @@ class GraphicsView : public QGraphicsView
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
     explicit GraphicsView(QWidget *parent = nullptr);
+
+    // --- Zoom ---
 
     bool canZoomIn() const;
     bool canZoomOut() const;
     void resetZoom();
-    void setFastMode(const bool fastMode);
-    void setRedirectZoom(const bool value);
     void zoomIn();
     void zoomOut();
 
+    // --- Settings ---
+
+    void setFastMode(const bool fastMode);
+    void setRedirectZoom(const bool value);
+
 signals:
+    // --- Zoom signals ---
+
     void scaleIn();
     void scaleOut();
     void zoomChanged();
 
 protected:
+    // --- Event handlers ---
+
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -42,10 +53,14 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
 
+    // --- Members ---
+
     bool m_redirectZoom = false;
     int m_zoomLevel = 0;
 
 private:
+    // --- Members ---
+
     bool m_pan = false;
     bool m_space = false;
     int m_panStartX = 0;

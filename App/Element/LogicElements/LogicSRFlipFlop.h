@@ -8,12 +8,18 @@
 class LogicSRFlipFlop : public LogicElement
 {
 public:
+    // --- Lifecycle ---
+
     explicit LogicSRFlipFlop();
+
+    // --- Logic ---
 
     void updateLogic() override;
 
 private:
     Q_DISABLE_COPY(LogicSRFlipFlop)
+
+    // --- Members ---
 
     bool m_lastClk = false;
 };

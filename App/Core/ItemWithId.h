@@ -8,8 +8,12 @@
 class ItemWithId
 {
 public:
+    // --- Lifecycle ---
+
     ItemWithId();
     virtual ~ItemWithId();
+
+    // --- Identity ---
 
     int id() const;
     void setId(const int id);

@@ -41,35 +41,48 @@ class ElementFactory : public QObject
     Q_OBJECT
 
 public:
+    // --- Singleton access ---
+
     static ElementFactory &instance()
     {
         static ElementFactory instance;
         return instance;
     }
 
-    static ElementType textToType(const QString &text);
+    // --- Element creation ---
+
     static GraphicElement *buildElement(const ElementType type);
+    static std::shared_ptr<LogicElement> buildLogicElement(GraphicElement *elm);
+
+    // --- Item registry ---
+
+    static void addItem(ItemWithId *item);
+    static void removeItem(ItemWithId *item);
     static ItemWithId *itemById(const int id);
-    static QPixmap pixmap(const ElementType type);
-    static QString translatedName(const ElementType type);
+    static bool contains(const int id);
+    static void updateItemId(ItemWithId *item, const int newId);
+    static void setLastId(const int newLastId);
+
+    // --- Type name conversion ---
+
+    static ElementType textToType(const QString &text);
     static QString typeToText(const ElementType type);
     static QString typeToTitleText(const ElementType type);
-    static bool contains(const int id);
+    static QString translatedName(const ElementType type);
+    static QPixmap pixmap(const ElementType type);
     static const ElementStaticProperties& getStaticProperties(ElementType type);
-    static std::shared_ptr<LogicElement> buildLogicElement(GraphicElement *elm);
-    static void addItem(ItemWithId *item);
     static void clearCache();
-    static void removeItem(ItemWithId *item);
-    static void setLastId(const int newLastId);
-    static void updateItemId(ItemWithId *item, const int newId);
 
 private:
-    int nextId();
+    // --- Members ---
 
     QMap<int, ItemWithId *> m_map;
     int m_lastId = 0;
-
     QMap<ElementType, ElementStaticProperties> m_propertyCache;
+
+    // --- Internal methods ---
+
+    int nextId();
     const ElementStaticProperties& ensurePropertiesCached(ElementType type);
 };
 

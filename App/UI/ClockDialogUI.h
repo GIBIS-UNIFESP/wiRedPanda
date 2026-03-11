@@ -14,22 +14,33 @@
 class ClockDialogUi
 {
 public:
-    // Default constructor (required for instantiation)
+    // --- Lifecycle ---
+
     ClockDialogUi() = default;
 
-    // Delete copy constructor and assignment operator
     ClockDialogUi(const ClockDialogUi&) = delete;
     ClockDialogUi& operator=(const ClockDialogUi&) = delete;
+
+    // --- Setup ---
 
     void setupUi(QDialog *ClockDialog);
     void retranslateUi(QDialog *ClockDialog);
 
+    // --- Widgets ---
+
+    // Layout
     QGridLayout *gridLayout_2 = nullptr;
-    QDialogButtonBox *buttonBox = nullptr;
+
+    // Controls
     QSpinBox *frequencySpinBox = nullptr;
     QSlider *frequencySlider = nullptr;
+
+    // Labels
     QLabel *titleLabel = nullptr;
     QLabel *maxLabel = nullptr;
     QLabel *minLabel = nullptr;
+
+    // Buttons
+    QDialogButtonBox *buttonBox = nullptr;
 };
 
