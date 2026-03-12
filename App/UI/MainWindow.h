@@ -83,6 +83,9 @@ public:
     //! Exports the current simulation to Arduino
     void exportToArduino(QString fileName);
 
+    //! Exports the current simulation to SystemVerilog
+    void exportToSystemVerilog(QString fileName);
+
     //! Saves the current beWavedDolphin (waveform simulator) file
     void exportToWaveFormFile(const QString &fileName);
 
@@ -187,6 +190,7 @@ private:
 
     // Export actions
     void on_actionExportToArduino_triggered();
+    void on_actionExportToSystemVerilog_triggered();
     void on_actionExportToImage_triggered();
     void on_actionExportToPdf_triggered();
 

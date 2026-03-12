@@ -36,6 +36,8 @@ QJsonObject FileHandler::handleCommand(const QString &command, const QJsonObject
         return handleExportImage(params, requestId);
     } else if (command == "export_arduino") {
         return handleExportArduino(params, requestId);
+    } else if (command == "export_systemverilog") {
+        return handleExportSystemVerilog(params, requestId);
     } else {
         return createErrorResponse(QString("Unknown file command: %1").arg(command), requestId);
     }
@@ -261,5 +263,30 @@ QJsonObject FileHandler::handleExportArduino(const QJsonObject &params, const QJ
         return createSuccessResponse(result, requestId);
     } catch (const std::exception &e) {
         return createErrorResponse(QString("Failed to export Arduino code: %1").arg(e.what()), requestId);
+    }
+}
+
+QJsonObject FileHandler::handleExportSystemVerilog(const QJsonObject &params, const QJsonValue &requestId)
+{
+    if (!validateParameters(params, {"filename"})) {
+        return createErrorResponse("Missing required parameter: filename", requestId);
+    }
+
+    QString filename = params.value("filename").toString();
+
+    if (!m_mainWindow) {
+        return createErrorResponse("No main window available", requestId);
+    }
+
+    try {
+        m_mainWindow->exportToSystemVerilog(filename);
+
+        QJsonObject result;
+        result["exported_file"] = filename;
+        result["format"] = "systemverilog";
+
+        return createSuccessResponse(result, requestId);
+    } catch (const std::exception &e) {
+        return createErrorResponse(QString("Failed to export SystemVerilog code: %1").arg(e.what()), requestId);
     }
 }

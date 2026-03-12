@@ -97,6 +97,7 @@ public:
 
     // Export actions
     QAction *actionExportToArduino = nullptr;
+    QAction *actionExportToSystemVerilog = nullptr;
     QAction *actionExportToPdf = nullptr;
     QAction *actionExportToImage = nullptr;
 

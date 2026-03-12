@@ -41,9 +41,9 @@ jobs:
         submodules: recursive
         fetch-depth: 0
 
-    - name: Install simavr on Ubuntu
+    - name: Install simavr and SystemVerilog tools on Ubuntu
       if: runner.os == 'Linux'
-      run: sudo apt-get update && sudo apt-get install -y simavr
+      run: sudo apt-get update && sudo apt-get install -y simavr iverilog yosys verilator
 
     - name: Install arduino-cli on Ubuntu
       if: runner.os == 'Linux'
