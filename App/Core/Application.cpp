@@ -16,6 +16,11 @@ Application::Application(int &argc, char **argv)
 {
 }
 
+Application *Application::instance()
+{
+    return qobject_cast<Application *>(QCoreApplication::instance());
+}
+
 bool Application::notify(QObject *receiver, QEvent *event)
 {
     // Overriding notify() is the only reliable way to catch exceptions thrown inside
