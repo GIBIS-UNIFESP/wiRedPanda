@@ -72,7 +72,7 @@ const origin = Astro.site?.origin ?? '';
     }
 
     // Already on a non-default locale? Skip.
-    if (stripped.indexOf('/pt-br') === 0 || stripped.indexOf('/es') === 0) return;
+    if (stripped.indexOf('/pt-br') === 0 || stripped.indexOf('/es') === 0 || stripped.indexOf('/zh') === 0 || stripped.indexOf('/ja') === 0 || stripped.indexOf('/fr') === 0 || stripped.indexOf('/de') === 0) return;
 
     // Check browser language
     var lang = (navigator.language || navigator.userLanguage || '').toLowerCase();
@@ -80,6 +80,14 @@ const origin = Astro.site?.origin ?? '';
       window.location.replace(base + '/pt-br' + stripped);
     } else if (lang.indexOf('es') === 0) {
       window.location.replace(base + '/es' + stripped);
+    } else if (lang.indexOf('zh') === 0) {
+      window.location.replace(base + '/zh' + stripped);
+    } else if (lang.indexOf('ja') === 0) {
+      window.location.replace(base + '/ja' + stripped);
+    } else if (lang.indexOf('fr') === 0) {
+      window.location.replace(base + '/fr' + stripped);
+    } else if (lang.indexOf('de') === 0) {
+      window.location.replace(base + '/de' + stripped);
     }
   })();
 </script>

@@ -1,11 +1,19 @@
 import en from './en';
 import ptBr from './pt-br';
 import es from './es';
+import zh from './zh';
+import ja from './ja';
+import fr from './fr';
+import de from './de';
 
 export const languages = {
   en: 'English',
   'pt-br': 'Português',
   es: 'Español',
+  zh: '中文',
+  ja: '日本語',
+  fr: 'Français',
+  de: 'Deutsch',
 } as const;
 
 export const defaultLocale = 'en' as const;
@@ -17,6 +25,10 @@ const translations: Record<Locale, Record<string, string>> = {
   en,
   'pt-br': ptBr,
   es,
+  zh,
+  ja,
+  fr,
+  de,
 };
 
 /**
@@ -26,6 +38,10 @@ export const localeFlags: Record<Locale, string> = {
   en: 'countries/unitedstates',
   'pt-br': 'countries/brazil',
   es: 'countries/spain',
+  zh: 'countries/china',
+  ja: 'countries/japan',
+  fr: 'countries/france',
+  de: 'countries/germany',
 };
 
 /**
@@ -99,6 +115,10 @@ export function getHtmlLang(locale: Locale): string {
     en: 'en',
     'pt-br': 'pt-BR',
     es: 'es',
+    zh: 'zh',
+    ja: 'ja',
+    fr: 'fr',
+    de: 'de',
   };
   return map[locale] ?? 'en';
 }
