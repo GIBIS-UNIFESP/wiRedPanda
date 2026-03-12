@@ -66,7 +66,6 @@ private:
 
     void connectElements();
     void applyConnection(GraphicElement *elm, QNEInputPort *inputPort);
-    void setDefaultValue(GraphicElement *elm, QNEPort *in);
 
     // --- Validation & sorting ---
 

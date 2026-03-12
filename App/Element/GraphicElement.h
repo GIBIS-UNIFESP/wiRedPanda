@@ -362,9 +362,6 @@ public:
     /// Replaces the input port vector with \a inputs.
     void setInputs(const QVector<QNEInputPort *> &inputs);
 
-    /// Replaces the output port vector with \a outputs.
-    void setOutputs(const QVector<QNEOutputPort *> &outputs);
-
     /// Assigns \a newLogic as the backing logic element.
     void setLogic(LogicElement *newLogic);
 

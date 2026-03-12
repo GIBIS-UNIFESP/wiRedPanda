@@ -63,11 +63,6 @@ public:
     LogicElement *getInputLogic(int portIndex) const override;
     /// \reimp
     LogicElement *getOutputLogic(int portIndex) const override;
-    /// Returns the logic element at input index \a index.
-    LogicElement *inputLogic(const int index);
-    /// Returns the logic element at output index \a index.
-    LogicElement *outputLogic(const int index);
-
     // --- Port information ---
 
     /// \reimp
@@ -128,6 +123,11 @@ private:
     // --- File copy helper ---
 
     void copyFile();
+
+    // --- Logic access ---
+
+    LogicElement *inputLogic(int index);
+    LogicElement *outputLogic(int index);
 
     // --- Loading helpers ---
 

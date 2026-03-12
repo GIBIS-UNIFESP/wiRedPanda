@@ -52,11 +52,6 @@ public:
     /// Returns the LogicElement associated with this port.
     LogicElement *logic() const;
 
-    // --- Appearance ---
-
-    /// Returns the brush used to paint the port handle.
-    QBrush currentBrush() const;
-
     // --- Identity & Status ---
 
     /// Returns the port's label text.
@@ -174,6 +169,9 @@ protected:
     int m_index = 0;
     int m_margin = 2;
     int m_radius = 5;
+
+private:
+    QBrush currentBrush() const;
 };
 
 /**
