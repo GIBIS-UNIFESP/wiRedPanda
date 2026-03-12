@@ -4,6 +4,7 @@
 #include "App/Simulation/ElementMapping.h"
 
 #include "App/Core/Common.h"
+#include "App/Core/Priorities.h"
 #include "App/Element/ElementMetadata.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
@@ -93,7 +94,11 @@ void ElementMapping::sort()
 void ElementMapping::sortLogicElements()
 {
     QHash<LogicElement *, QVector<LogicElement *>> successors;
+    QVector<LogicElement *> rawPtrs;
+    rawPtrs.reserve(m_logicElms.size());
+
     for (const auto &logic : std::as_const(m_logicElms)) {
+        rawPtrs.append(logic.get());
         for (const auto &pair : logic->inputPairs()) {
             if (pair.logic && !successors[pair.logic].contains(logic.get())) {
                 successors[pair.logic].append(logic.get());
@@ -101,8 +106,13 @@ void ElementMapping::sortLogicElements()
         }
     }
 
-    for (auto &logic : std::as_const(m_logicElms)) {
-        logic->calculatePriority(successors);
+    QHash<LogicElement *, int> priorities;
+    calculatePriorities(rawPtrs, successors, priorities);
+    const auto feedbackElements = findFeedbackNodes(rawPtrs, successors);
+
+    for (const auto &logic : std::as_const(m_logicElms)) {
+        logic->setPriority(priorities.value(logic.get(), -1));
+        logic->setInFeedbackLoop(feedbackElements.contains(logic.get()));
     }
 
     std::stable_sort(m_logicElms.begin(), m_logicElms.end(), [](const auto &logic1, const auto &logic2) {

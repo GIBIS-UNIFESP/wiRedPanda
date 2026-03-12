@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <QHash>
 #include <QVector>
 
 class LogicElement;
@@ -59,8 +58,6 @@ public:
 
     // --- Priority & Logic ---
 
-    /// Computes and returns the topological depth of this element.
-    int calculatePriority(const QHash<LogicElement *, QVector<LogicElement *>> &successors);
     /// Returns the cached topological priority (higher = closer to inputs, updated first).
     int priority() const;
     const QVector<InputPair> &inputPairs() const;
@@ -70,6 +67,8 @@ public:
 
     /** \brief Connects input \a index of this element to output \a port of \a logic. */
     void connectPredecessor(const int index, LogicElement *logic, const int port);
+    /// Marks this element as participating (or not) in a feedback loop.
+    void setInFeedbackLoop(const bool inLoop);
 
     // --- Output setting ---
 
@@ -77,6 +76,8 @@ public:
     void setOutputValue(const bool value);
     /// Sets output port \a index to \a value.
     void setOutputValue(const int index, const bool value);
+    /// Sets the topological priority for this element.
+    void setPriority(const int priority);
 
 protected:
     /**

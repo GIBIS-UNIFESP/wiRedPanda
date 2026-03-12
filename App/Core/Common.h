@@ -79,20 +79,3 @@ private:
 // Special macro for non-class contexts - uses __VA_OPT__ for optional arguments
 #define PANDACEPTION_WITH_CONTEXT(context, msg, ...) \
     Pandaception(QCoreApplication::translate(context, msg) __VA_OPT__(.arg(__VA_ARGS__)), QString(msg) __VA_OPT__(.arg(__VA_ARGS__)))
-
-class GraphicElement;
-
-class Common
-{
-public:
-    /// Returns \a elements sorted in topological dependency order for simulation.
-    static QVector<GraphicElement *> sortGraphicElements(QVector<GraphicElement *> elements);
-    /**
-     * \brief Computes the update-priority depth for \a elm via DFS.
-     * \param elm           The element whose priority is being calculated.
-     * \param beingVisited  Tracks elements currently on the DFS stack (cycle detection).
-     * \param priorities    Cache of already-computed priorities.
-     * \returns The computed priority (depth) value for \a elm.
-     */
-    static int calculatePriority(GraphicElement *elm, QMap<GraphicElement *, bool> &beingVisited, QMap<GraphicElement *, int> &priorities);
-};
