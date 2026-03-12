@@ -444,6 +444,38 @@ void TestFeedback::testLargeFeedbackLoops()
     verifyStableState(&scene);
 }
 
+void TestFeedback::testAllCycleNodesMarked()
+{
+    // SR latch from NAND: switchS → nand1[0], switchR → nand2[0], nand1 ↔ nand2
+    // Both NAND gates are in the cycle; both switches are NOT.
+    std::unique_ptr<Scene> scene(createSRLatchFromNAND());
+    QVERIFY(scene != nullptr);
+
+    Simulation sim(scene.get());
+    sim.update();
+
+    int feedbackCount = 0;
+    int nonFeedbackCount = 0;
+
+    for (auto *elem : scene->elements()) {
+        if (!elem->logic()) {
+            continue;
+        }
+        if (elem->elementType() == ElementType::InputSwitch) {
+            QVERIFY2(!elem->logic()->inFeedbackLoop(),
+                     "Input switch should NOT be in feedback loop");
+            ++nonFeedbackCount;
+        } else if (elem->elementType() == ElementType::Nand) {
+            QVERIFY2(elem->logic()->inFeedbackLoop(),
+                     "NAND gate in SR latch cycle should be in feedback loop");
+            ++feedbackCount;
+        }
+    }
+
+    QCOMPARE(feedbackCount, 2);
+    QCOMPARE(nonFeedbackCount, 2);
+}
+
 // ============================================================
 // Performance Tests
 // ============================================================

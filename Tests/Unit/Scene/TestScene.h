@@ -74,4 +74,12 @@ private slots:
     void testWireVisibilityStateTracking();
     void testShowGatesWithMultipleElements();
     void testShowWiresWithMultipleConnections();
+
+    // ============================================================
+    // Topological Sort Tests (4 tests)
+    // ============================================================
+    void testSortSimpleChain();
+    void testSortMultipleChains();
+    void testSortCycleDetection();
+    void testSortDisconnectedComponents();
 };

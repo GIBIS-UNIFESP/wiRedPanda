@@ -17,6 +17,7 @@
 #include "App/Element/LogicElements/LogicTruthTable.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Scene/Scene.h"
 
 ArduinoCodeGen::ArduinoCodeGen(const QString &fileName, const QVector<GraphicElement *> &elements)
     : m_file(fileName)
@@ -486,7 +487,7 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
             if (!ic->icElements().isEmpty()) {
                 IC *previousIC = m_currentIC;
                 m_currentIC = ic;
-                assignVariablesRec(Common::sortGraphicElements(ic->icElements()));
+                assignVariablesRec(Scene::sortByTopology(ic->icElements()));
                 m_currentIC = previousIC;
             }
 

@@ -110,6 +110,7 @@
 // unit/common
 #include "Tests/Unit/Common/TestCommon.h"
 #include "Tests/Unit/Common/TestEnums.h"
+#include "Tests/Unit/Common/TestPriorities.h"
 #include "Tests/Unit/Common/TestRecentFiles.h"
 #include "Tests/Unit/Common/TestSettings.h"
 #include "Tests/Unit/Common/TestThemeManager.h"
@@ -256,6 +257,7 @@ int main(int argc, char **argv)
         {"TestCommands", []() -> QObject * { return new TestCommands; }},
         {"TestCommon", []() -> QObject * { return new TestCommon; }},
         {"TestEnums", []() -> QObject * { return new TestEnums; }},
+        {"TestPriorities", []() -> QObject * { return new TestPriorities; }},
         {"TestRecentFiles", []() -> QObject * { return new TestRecentFiles; }},
         {"TestSettings", []() -> QObject * { return new TestSettings; }},
         {"TestThemeManager", []() -> QObject * { return new TestThemeManager; }},

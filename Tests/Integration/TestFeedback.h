@@ -41,10 +41,11 @@ private slots:
     void testNestedFeedbackLoops();
     void testPriorityCalculationWithFeedback();
 
-    // Edge Cases Tests (3 tests)
+    // Edge Cases Tests (4 tests)
     void testSingleElementFeedback();
     void testFeedbackThroughMultipleElementTypes();
     void testLargeFeedbackLoops();
+    void testAllCycleNodesMarked();
 
     // Performance Tests (2 tests)
     void testDeepCircuitsWithFeedback();

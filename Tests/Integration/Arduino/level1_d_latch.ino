@@ -50,10 +50,10 @@ void computeLogic() {
     aux_level1_d_latch_0_node_0 = aux_ic_input_level1_d_latch_0;
     aux_level1_d_latch_0_node_1 = aux_ic_input_level1_d_latch_1;
     aux_level1_d_latch_0_not_2 = !aux_level1_d_latch_0_node_0;
-    aux_level1_d_latch_0_and_4 = aux_level1_d_latch_0_not_2 && aux_level1_d_latch_0_node_1;
     aux_level1_d_latch_0_and_3 = aux_level1_d_latch_0_node_0 && aux_level1_d_latch_0_node_1;
-    aux_level1_d_latch_0_nor_5 = !(aux_level1_d_latch_0_and_4 || aux_level1_d_latch_0_nor_6);
+    aux_level1_d_latch_0_and_4 = aux_level1_d_latch_0_not_2 && aux_level1_d_latch_0_node_1;
     aux_level1_d_latch_0_nor_6 = !(aux_level1_d_latch_0_and_3 || aux_level1_d_latch_0_nor_5);
+    aux_level1_d_latch_0_nor_5 = !(aux_level1_d_latch_0_and_4 || aux_level1_d_latch_0_nor_6);
     aux_level1_d_latch_0_node_7 = aux_level1_d_latch_0_nor_5;
     aux_level1_d_latch_0_node_8 = aux_level1_d_latch_0_nor_6;
     aux_level1_d_latch_0_q = aux_level1_d_latch_0_node_7;

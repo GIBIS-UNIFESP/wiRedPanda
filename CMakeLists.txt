@@ -650,6 +650,7 @@ add_test(NAME TestWaveform COMMAND test_wiredpanda TestWaveform WORKING_DIRECTOR
 add_test(NAME TestCommands COMMAND test_wiredpanda TestCommands WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCommon COMMAND test_wiredpanda TestCommon WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestEnums COMMAND test_wiredpanda TestEnums WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestPriorities COMMAND test_wiredpanda TestPriorities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRecentFiles COMMAND test_wiredpanda TestRecentFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSettings COMMAND test_wiredpanda TestSettings WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestThemeManager COMMAND test_wiredpanda TestThemeManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -765,7 +766,7 @@ foreach(TEST TestSerialization TestElementMapping TestSimulationBlocker TestDial
 endforeach()
 
 # Core Functionality Tests - Unit category
-foreach(TEST TestCommands TestCommon TestEnums TestRecentFiles TestSettings TestThemeManager)
+foreach(TEST TestCommands TestCommon TestEnums TestPriorities TestRecentFiles TestSettings TestThemeManager)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
 

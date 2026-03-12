@@ -1211,3 +1211,216 @@ void TestScene::testShowWiresWithMultipleConnections()
     // All elements should remain
     QCOMPARE(scene->elements().size(), 3);
 }
+
+// ============================================================================
+// Topological Sort Tests (moved from TestCommon)
+// ============================================================================
+
+void TestScene::testSortSimpleChain()
+{
+    // Test: InputSwitch → AND → LED (simple chain)
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    And andGate;
+    Led led;
+
+    builder.add(&sw, &andGate, &led);
+    builder.connect(&sw, 0, &andGate, 0);
+    builder.connect(&andGate, 0, &led, 0);
+
+    // Get only our specific elements (don't rely on scene elements)
+    QVector<GraphicElement *> elements{&sw, &andGate, &led};
+
+    // Sort elements
+    auto sorted = Scene::sortByTopology(elements);
+
+    // Verify all elements are present
+    QCOMPARE(sorted.size(), 3);
+
+    // Verify ordering: LED (priority 1) should come before AND (priority 2) should come before SW (priority 3)
+    // Priority is based on distance from outputs, higher priority = deeper in dependency chain
+    int ledIndex = -1, andIndex = -1, swIndex = -1;
+    for (int i = 0; i < sorted.size(); ++i) {
+        if (sorted[i] == &led) {
+            ledIndex = i;
+        } else if (sorted[i] == &andGate) {
+            andIndex = i;
+        } else if (sorted[i] == &sw) {
+            swIndex = i;
+        }
+    }
+
+    QVERIFY2(ledIndex >= 0, "LED not found in sorted list");
+    QVERIFY2(andIndex >= 0, "AND gate not found in sorted list");
+    QVERIFY2(swIndex >= 0, "Switch not found in sorted list");
+
+    // Priority-based sorting: higher priority (further from outputs) comes first
+    // SW has priority 3 (highest), AND has priority 2, LED has priority 1 (lowest)
+    // So sorted order should be: SW (index 0), AND (index 1), LED (index 2)
+    QVERIFY2(swIndex < andIndex, "SW should come before AND");
+    QVERIFY2(andIndex < ledIndex, "AND should come before LED");
+}
+
+void TestScene::testSortMultipleChains()
+{
+    // Test: Multiple independent chains
+    // SW1 → AND → LED1
+    // SW2 → OR → LED2
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw1, sw2;
+    And andGate;
+    Or orGate;
+    Led led1, led2;
+
+    builder.add(&sw1, &sw2, &andGate, &orGate, &led1, &led2);
+
+    // First chain
+    builder.connect(&sw1, 0, &andGate, 0);
+    builder.connect(&andGate, 0, &led1, 0);
+
+    // Second chain
+    builder.connect(&sw2, 0, &orGate, 0);
+    builder.connect(&orGate, 0, &led2, 0);
+
+    // Use our specific elements
+    QVector<GraphicElement *> elements{&sw1, &sw2, &andGate, &orGate, &led1, &led2};
+
+    // Sort elements
+    auto sorted = Scene::sortByTopology(elements);
+
+    // Verify all elements are present
+    QCOMPARE(sorted.size(), 6);
+
+    // Both chains should be sorted independently
+    // Count our specific elements
+    int ledCount = 0;
+    int andOrCount = 0;
+    int switchCount = 0;
+
+    for (auto *elem : std::as_const(sorted)) {
+        if (elem == &led1 || elem == &led2) {
+            ledCount++;
+        } else if (elem == &andGate || elem == &orGate) {
+            andOrCount++;
+        } else if (elem == &sw1 || elem == &sw2) {
+            switchCount++;
+        }
+    }
+
+    QCOMPARE(ledCount, 2);
+    QCOMPARE(andOrCount, 2);
+    QCOMPARE(switchCount, 2);
+}
+
+void TestScene::testSortCycleDetection()
+{
+    // Test: Cycle handling (SW → AND → OR → back to AND input)
+    // The cycle detection should prevent infinite recursion
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    And andGate;
+    Or orGate;
+
+    builder.add(&sw, &andGate, &orGate);
+
+    // Create connections: SW → AND → OR
+    builder.connect(&sw, 0, &andGate, 0);
+    builder.connect(&andGate, 0, &orGate, 0);
+
+    // Create back edge: OR → AND (creates cycle)
+    builder.connect(&orGate, 0, &andGate, 1);
+
+    // Use our specific elements
+    QVector<GraphicElement *> elements{&sw, &andGate, &orGate};
+
+    // Sort should handle cycle without hanging
+    auto sorted = Scene::sortByTopology(elements);
+
+    // Verify all elements are present (no crash or infinite loop)
+    QCOMPARE(sorted.size(), 3);
+
+    // Verify each element appears exactly once (no duplicates due to cycle)
+    int andCount = 0, orCount = 0, swCount = 0;
+    for (auto *elem : std::as_const(sorted)) {
+        if (elem == &andGate) andCount++;
+        else if (elem == &orGate) orCount++;
+        else if (elem == &sw) swCount++;
+    }
+    QCOMPARE(andCount, 1);  // Each appears exactly once
+    QCOMPARE(orCount, 1);
+    QCOMPARE(swCount, 1);
+
+    // Verify output element (orGate) comes early in sort order
+    // since it needs to be updated first in cycle handling
+    int orIndex = -1, andIndex = -1;
+    for (int i = 0; i < sorted.size(); ++i) {
+        if (sorted[i] == &orGate) orIndex = i;
+        if (sorted[i] == &andGate) andIndex = i;
+    }
+    QVERIFY(orIndex >= 0);
+    QVERIFY(andIndex >= 0);
+}
+
+void TestScene::testSortDisconnectedComponents()
+{
+    // Test: Elements with no connections
+    // SW1 (isolated) + (SW2 → AND → LED)
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw1, sw2;
+    And andGate;
+    Led led;
+
+    builder.add(&sw1, &sw2, &andGate, &led);
+
+    // Create chain: SW2 → AND → LED
+    builder.connect(&sw2, 0, &andGate, 0);
+    builder.connect(&andGate, 0, &led, 0);
+
+    // SW1 is left disconnected
+
+    // Use our specific elements
+    QVector<GraphicElement *> elements{&sw1, &sw2, &andGate, &led};
+
+    // Sort should handle disconnected components
+    auto sorted = Scene::sortByTopology(elements);
+
+    // All elements should be present
+    QCOMPARE(sorted.size(), 4);
+
+    // Find indices of each element in sorted order
+    QHash<GraphicElement*, int> sortedIndex;
+    for (int i = 0; i < sorted.size(); ++i) {
+        sortedIndex[sorted[i]] = i;
+    }
+
+    QVERIFY(sortedIndex.contains(&sw1));
+    QVERIFY(sortedIndex.contains(&sw2));
+    QVERIFY(sortedIndex.contains(&andGate));
+    QVERIFY(sortedIndex.contains(&led));
+
+    // Verify the connected chain ordering based on priority (higher priority first)
+    // Priority calculation: distance from outputs
+    // SW2 (input) has highest priority (3 - furthest from output LED)
+    // AND (logic gate) has medium priority (2 - between input and output)
+    // LED (output) has lowest priority (1 - distance 0 from output)
+    // Therefore sort order should be: SW2, AND, LED
+    int ledIndex = sortedIndex.value(&led, -1);
+    int andIndex = sortedIndex.value(&andGate, -1);
+    int sw2Index = sortedIndex.value(&sw2, -1);
+    int sw1Index = sortedIndex.value(&sw1, -1);
+
+    // Verify priority-based ordering: higher priority elements come first
+    QVERIFY2(sw2Index < andIndex, "SW2 (priority 3) should come before AND (priority 2)");
+    QVERIFY2(andIndex < ledIndex, "AND (priority 2) should come before LED (priority 1)");
+
+    // SW1 (isolated) can appear anywhere, but should be present
+    QVERIFY2(sw1Index >= 0, "SW1 (isolated) should be in sorted list");
+}
