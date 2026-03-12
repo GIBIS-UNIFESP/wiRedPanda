@@ -171,6 +171,7 @@ Deploy/
 *.panda
 !Examples/**/*.panda
 !Tests/**/*.panda
+.verilog_test_output/
 
 # MCP (Model Context Protocol)
 MCP/Client/temp/

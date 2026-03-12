@@ -90,6 +90,9 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionExportToArduino = new QAction(MainWindow);
     actionExportToArduino->setObjectName("actionExportToArduino");
     actionExportToArduino->setIcon(QIcon(":/Interface/Toolbar/arduino.svg"));
+    actionExportToSystemVerilog = new QAction(MainWindow);
+    actionExportToSystemVerilog->setObjectName("actionExportToSystemVerilog");
+    actionExportToSystemVerilog->setIcon(QIcon(":/Interface/Toolbar/verilog.svg"));
     actionResetZoom = new QAction(MainWindow);
     actionResetZoom->setObjectName("actionResetZoom");
     actionResetZoom->setIcon(QIcon(":/Interface/Toolbar/zoomReset.svg"));
@@ -562,6 +565,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuFile->addAction(actionSave);
     menuFile->addAction(actionSaveAs);
     menuFile->addAction(actionExportToArduino);
+    menuFile->addAction(actionExportToSystemVerilog);
     menuFile->addAction(actionExportToPdf);
     menuFile->addAction(actionExportToImage);
     menuFile->addSeparator();
@@ -662,6 +666,8 @@ void MainWindowUi::retranslateUi()
     actionReloadFile->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+F5"));
     actionExportToArduino->setText(QCoreApplication::translate("MainWindow", "E&xport to Arduino"));
     actionExportToArduino->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+Alt+I"));
+    actionExportToSystemVerilog->setText(QCoreApplication::translate("MainWindow", "Export to &SystemVerilog"));
+    actionExportToSystemVerilog->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+Alt+O"));
     actionResetZoom->setText(QCoreApplication::translate("MainWindow", "&Reset Zoom"));
     actionResetZoom->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+0"));
     actionExportToPdf->setText(QCoreApplication::translate("MainWindow", "Export to &PDF"));

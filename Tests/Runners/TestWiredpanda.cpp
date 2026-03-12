@@ -98,6 +98,7 @@
 #include "Tests/Integration/TestFiles.h"
 #include "Tests/Integration/TestIc.h"
 #include "Tests/Integration/TestSimulation.h"
+#include "Tests/Integration/TestSystemVerilogExport.h"
 #include "Tests/Integration/TestWorkspace.h"
 #include "Tests/Integration/TestWorkspaceFileops.h"
 // resources
@@ -247,6 +248,7 @@ int main(int argc, char **argv)
         {"TestFiles", []() -> QObject * { return new TestFiles; }},
         {"TestIC", []() -> QObject * { return new TestIC; }},
         {"TestSimulation", []() -> QObject * { return new TestSimulation; }},
+        {"TestSystemVerilogExport", []() -> QObject * { return new TestSystemVerilogExport; }},
         {"TestWorkspace", []() -> QObject * { return new TestWorkspace; }},
         {"TestWorkspaceFileops", []() -> QObject * { return new TestWorkspaceFileops; }},
         {"TestIcons", []() -> QObject * { return new TestIcons; }},

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Verilog/SystemVerilog export icon -->
+<svg:svg
+   width="64"
+   height="64"
+   id="svg-verilog"
+   version="1.1"
+   viewBox="0 0 64 64"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <svg:defs id="defs" />
+  <svg:g id="layer1" style="display:inline">
+    <!-- Left bracket -->
+    <svg:path
+       d="M 16 12 L 20 12 L 20 52 L 16 52"
+       style="fill:none;stroke:#d946ef;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"
+       id="left-bracket" />
+    <!-- Right bracket -->
+    <svg:path
+       d="M 48 12 L 44 12 L 44 52 L 48 52"
+       style="fill:none;stroke:#d946ef;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"
+       id="right-bracket" />
+    <!-- Code lines inside -->
+    <svg:line
+       x1="24"
+       y1="24"
+       x2="40"
+       y2="24"
+       style="stroke:#d946ef;stroke-width:2;stroke-linecap:round"
+       id="line1" />
+    <svg:line
+       x1="24"
+       y1="32"
+       x2="40"
+       y2="32"
+       style="stroke:#d946ef;stroke-width:2;stroke-linecap:round"
+       id="line2" />
+    <svg:line
+       x1="24"
+       y1="40"
+       x2="40"
+       y2="40"
+       style="stroke:#d946ef;stroke-width:2;stroke-linecap:round"
+       id="line3" />
+  </svg:g>
+</svg:svg>

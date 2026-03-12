@@ -2,6 +2,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphin.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphinUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/ArduinoCodeGen.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/SystemVerilogCodeGen.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Common.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Enums.cpp
@@ -102,6 +103,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphin.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphinUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/ArduinoCodeGen.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/SystemVerilogCodeGen.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Common.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Enums.h
@@ -319,6 +321,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestIc.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSimulation.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSystemVerilogExport.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspaceFileops.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Resources/TestIcons.cpp
@@ -456,6 +459,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestIc.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSimulation.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSystemVerilogExport.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspace.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspaceFileops.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Resources/TestIcons.h
