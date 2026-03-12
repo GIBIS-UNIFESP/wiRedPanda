@@ -1462,8 +1462,8 @@ void MainWindow::loadTranslation(const QString &language)
     // Always remove and recreate translators rather than calling load() on an
     // existing one — Qt does not guarantee that a re-loaded translator emits
     // languageChanged reliably.
-    qApp->removeTranslator(m_pandaTranslator);
-    qApp->removeTranslator(m_qtTranslator);
+    Application::instance()->removeTranslator(m_pandaTranslator);
+    Application::instance()->removeTranslator(m_qtTranslator);
 
     delete m_pandaTranslator;
     delete m_qtTranslator;
@@ -1489,7 +1489,7 @@ void MainWindow::loadTranslation(const QString &language)
     if (pandaResource.isValid()) {
         m_pandaTranslator = new QTranslator(this);
 
-        if (!m_pandaTranslator->load(pandaFile) || !qApp->installTranslator(m_pandaTranslator)) {
+        if (!m_pandaTranslator->load(pandaFile) || !Application::instance()->installTranslator(m_pandaTranslator)) {
             qCWarning(zero) << "Failed to load wiRedPanda translation for" << language << ", falling back to English";
             delete m_pandaTranslator;
             m_pandaTranslator = nullptr;
@@ -1506,7 +1506,7 @@ void MainWindow::loadTranslation(const QString &language)
     if (qtResource.isValid()) {
         m_qtTranslator = new QTranslator(this);
 
-        if (!m_qtTranslator->load(qtFile) || !qApp->installTranslator(m_qtTranslator)) {
+        if (!m_qtTranslator->load(qtFile) || !Application::instance()->installTranslator(m_qtTranslator)) {
             qCWarning(zero) << "Failed to load Qt translation for" << language << ", continuing without Qt translation";
             delete m_qtTranslator;
             m_qtTranslator = nullptr;

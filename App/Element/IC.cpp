@@ -321,7 +321,7 @@ void IC::generatePixmap()
 void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     event->accept();
-    qApp->mainWindow()->loadPandaFile(m_file);
+    Application::instance()->mainWindow()->loadPandaFile(m_file);
 }
 
 void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

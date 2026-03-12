@@ -72,7 +72,7 @@ public:
     QColor m_portHoverPort;
 
 private:
-    QPalette const m_defaultPalette = qApp->palette();
+    QPalette const m_defaultPalette = Application::instance()->palette();
 };
 
 /**
