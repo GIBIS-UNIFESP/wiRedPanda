@@ -52,7 +52,8 @@ public:
 
     // --- Polymorphic interface overrides ---
 
-    QVector<std::shared_ptr<LogicElement>> getLogicElementsForMapping() override;
+    QVector<std::shared_ptr<LogicElement>> createLogicElements() override;
+    void bindPorts() override;
 
     // --- Port naming ---
 

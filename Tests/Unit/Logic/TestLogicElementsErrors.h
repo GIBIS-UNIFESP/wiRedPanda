@@ -23,4 +23,8 @@ private slots:
     void testConnectionCycles();
     void testInputValueBoundary();
     void testGateWithZeroInputs();
+
+    // Status propagation tests (Phase 4+6)
+    void testInvalidPropagatesChain();
+    void testBoolOverloadMapsToStatus();
 };

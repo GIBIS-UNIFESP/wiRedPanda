@@ -1231,11 +1231,29 @@ void GraphicElement::setDelay(const float delay)
     Q_UNUSED(delay)
 }
 
-QVector<std::shared_ptr<LogicElement>> GraphicElement::getLogicElementsForMapping()
+QVector<std::shared_ptr<LogicElement>> GraphicElement::createLogicElements()
 {
-    // Wrap the raw pointer in a non-owning shared_ptr (no-op deleter) so the logic mapping
-    // infrastructure can handle base elements and ICs uniformly without double-freeing
-    return {std::shared_ptr<LogicElement>(logic(), [](LogicElement*){})};
+    const auto &meta = ElementMetadataRegistry::metadata(elementType());
+    if (!meta.logicCreator) {
+        return {}; // decorative elements (Line, Text) have no simulation behaviour
+    }
+    auto logicElm = meta.logicCreator(this);
+    setLogic(logicElm.get());
+    return {std::move(logicElm)};
+}
+
+void GraphicElement::bindPorts()
+{
+    auto *logic = this->logic();
+    if (!logic) {
+        return; // decorative elements have no logic to bind
+    }
+    for (int i = 0; i < inputSize(); ++i) {
+        inputPort(i)->setPortLogic(logic, i);
+    }
+    for (int i = 0; i < outputSize(); ++i) {
+        outputPort(i)->setPortLogic(logic, i);
+    }
 }
 
 bool GraphicElement::canSetPortNames() const

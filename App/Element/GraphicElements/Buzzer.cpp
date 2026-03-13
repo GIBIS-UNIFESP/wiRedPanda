@@ -14,7 +14,7 @@
 #endif
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicOutput.h"
+#include "App/Element/LogicElements/LogicSink.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Versions.h"
 
@@ -51,7 +51,7 @@ struct ElementInfo<Buzzer> {
             ":/Components/Output/Buzzer/BuzzerOff.svg",
             ":/Components/Output/Buzzer/BuzzerOn.svg",
         });
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicOutput>(elm->inputSize()); };
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicSink>(elm->inputSize()); };
         return meta;
     }
 

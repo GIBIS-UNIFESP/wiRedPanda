@@ -75,6 +75,8 @@ protected:
 inline void GraphicElementInput::updateOutputs()
 {
     for (int portIndex = 0; portIndex < outputSize(); ++portIndex) {
-        logic()->setOutputValue(portIndex, isOn(portIndex));
+        // isOn() returns bool (a switch is inherently on or off, never Invalid).
+        // This is the sole bool→Status conversion boundary in the simulation layer.
+        logic()->setOutputValue(portIndex, isOn(portIndex) ? Status::Active : Status::Inactive);
     }
 }

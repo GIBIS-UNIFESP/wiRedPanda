@@ -7,8 +7,8 @@ LogicDLatch::LogicDLatch()
     : LogicElement(2, 2) // inputs: D, Enable; outputs: Q, Q'
 {
     // Power-on default: Q=0, Q'=1
-    setOutputValue(0, false);
-    setOutputValue(1, true);
+    setOutputValue(0, Status::Inactive);
+    setOutputValue(1, Status::Active);
 }
 
 void LogicDLatch::updateLogic()
@@ -17,16 +17,16 @@ void LogicDLatch::updateLogic()
         return;
     }
 
-    bool q0 = outputValue(0);
-    bool q1 = outputValue(1);
-    const bool D = m_inputValues.at(0);
-    const bool enable = m_inputValues.at(1);
+    Status q0 = outputs().at(0);
+    Status q1 = outputs().at(1);
+    const Status D = inputs().at(0);
+    const Status enable = inputs().at(1);
 
     // Level-sensitive latch: transparent when Enable is high — outputs follow D
     // continuously.  When Enable is low the state is held (no change).
-    if (enable) {
+    if (enable == Status::Active) {
         q0 = D;
-        q1 = !D;
+        q1 = (D == Status::Active) ? Status::Inactive : Status::Active;
     }
 
     setOutputValue(0, q0);

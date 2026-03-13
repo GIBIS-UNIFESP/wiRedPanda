@@ -14,5 +14,5 @@ void LogicNot::updateLogic()
         return;
     }
 
-    setOutputValue(!m_inputValues.at(0));
+    setOutputValue(inputs().at(0) == Status::Active ? Status::Inactive : Status::Active);
 }

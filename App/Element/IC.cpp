@@ -474,18 +474,19 @@ void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
     Serialization::deserialize(stream, context);
 }
 
-QVector<std::shared_ptr<LogicElement>> IC::getLogicElementsForMapping()
+QVector<std::shared_ptr<LogicElement>> IC::createLogicElements()
 {
-    auto logicElms = generateMap();
+    return generateMap();
+}
 
+void IC::bindPorts()
+{
     for (int i = 0; i < inputSize(); ++i) {
         inputPort(i)->setPortLogic(inputLogic(i), 0);
     }
     for (int i = 0; i < outputSize(); ++i) {
         outputPort(i)->setPortLogic(outputLogic(i), 0);
     }
-
-    return logicElms;
 }
 
 bool IC::canSetPortNames() const

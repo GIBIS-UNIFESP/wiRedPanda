@@ -41,6 +41,13 @@ private slots:
     // Connection Application (1 test)
     void testApplyConnectionsDefaultValues();
 
+    // Refactor coverage tests
+    void testDecorativeElementsExcluded();
+    void testPriorityOrderingIsTopological();
+    void testPortsHaveLogicAfterMapping();
+    void testLogicElementCountMatchesNonDecorativeElements();
+    void testDefaultVCCAppliedToOptionalInputs();
+
 private:
     // Helper functions
     std::unique_ptr<Scene> createSimpleCircuit();
@@ -48,5 +55,5 @@ private:
     std::unique_ptr<Scene> createCircuitWithVCCGND();
 
     // Verification helpers
-    void verifyMappingCreated(const QVector<GraphicElement *> &elements);
+    void verifyMappingCreated(const ElementMapping &mapping);
 };

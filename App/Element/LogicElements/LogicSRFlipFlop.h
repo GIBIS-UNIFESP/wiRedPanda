@@ -34,7 +34,7 @@ private:
 
     // --- Members ---
 
-    bool m_lastClk = false;
-    bool m_lastS = false;
-    bool m_lastR = false;
+    Status m_lastClk = Status::Inactive;
+    Status m_lastS = Status::Inactive;
+    Status m_lastR = Status::Inactive;
 };

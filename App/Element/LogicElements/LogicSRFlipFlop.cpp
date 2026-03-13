@@ -7,8 +7,8 @@ LogicSRFlipFlop::LogicSRFlipFlop()
     : LogicElement(5, 2) // inputs: S, CLK, R, PRESET, CLEAR; outputs: Q, Q'
 {
     // Power-on default: Q=0, Q'=1 — the canonical reset state of an SR flip-flop.
-    setOutputValue(0, false);
-    setOutputValue(1, true);
+    setOutputValue(0, Status::Inactive);
+    setOutputValue(1, Status::Active);
 }
 
 void LogicSRFlipFlop::updateLogic()
@@ -17,24 +17,24 @@ void LogicSRFlipFlop::updateLogic()
         return;
     }
 
-    bool q0 = outputValue(0);
-    bool q1 = outputValue(1);
-    const bool s = m_inputValues.at(0);
-    const bool clk = m_inputValues.at(1);
-    const bool r = m_inputValues.at(2);
-    const bool prst = m_inputValues.at(3);
-    const bool clr = m_inputValues.at(4);
+    Status q0 = outputs().at(0);
+    Status q1 = outputs().at(1);
+    const Status s = inputs().at(0);
+    const Status clk = inputs().at(1);
+    const Status r = inputs().at(2);
+    const Status prst = inputs().at(3);
+    const Status clr = inputs().at(4);
 
     // Rising-edge detection: latch the S/R values from the previous cycle
     // (m_lastS, m_lastR) to correctly model setup-time semantics — the data
     // inputs must be stable before the clock edge.
-    if (clk && !m_lastClk) {
-        if (m_lastS && m_lastR) {
+    if (clk == Status::Active && m_lastClk != Status::Active) {
+        if (m_lastS == Status::Active && m_lastR == Status::Active) {
             // S=R=1 is the forbidden/undefined state in a real SR flip-flop;
             // here it forces both outputs high to give a deterministic result
             // instead of leaving the simulation in an undefined value.
-            q0 = true;
-            q1 = true;
+            q0 = Status::Active;
+            q1 = Status::Active;
         } else if (m_lastS != m_lastR) {
             // Normal SR behaviour: S sets (Q=1, Q'=0), R resets (Q=0, Q'=1).
             q0 = m_lastS;
@@ -44,10 +44,10 @@ void LogicSRFlipFlop::updateLogic()
     }
 
     // Asynchronous preset/clear override the clocked state: active-low signals
-    // (asserted when the input is 0) take priority over the clock edge.
-    if (!prst || !clr) {
-        q0 = !prst;
-        q1 = !clr;
+    // (asserted when the input is Inactive) take priority over the clock edge.
+    if (prst != Status::Active || clr != Status::Active) {
+        q0 = (prst != Status::Active) ? Status::Active : Status::Inactive;
+        q1 = (clr != Status::Active) ? Status::Active : Status::Inactive;
     }
 
     // Record clock level after output computation so next call detects the edge.

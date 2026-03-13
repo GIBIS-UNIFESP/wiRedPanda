@@ -4,40 +4,28 @@
 #include "App/Element/LogicElements/LogicElement.h"
 
 LogicElement::LogicElement(const int inputSize, const int outputSize)
-    : m_inputValues(inputSize, false)
-    , m_inputPairs(inputSize, {})
-    , m_outputValues(outputSize, false)
+    : m_inputPairs(inputSize, {})
+    , m_inputValues(inputSize, Status::Inactive)
+    , m_outputValues(outputSize, Status::Inactive)
 {
-}
-
-bool LogicElement::isValid() const
-{
-    return m_isValid;
 }
 
 bool LogicElement::updateInputs()
 {
-    if (!m_isValid) {
-        return false;
-    }
-
     // Snapshot predecessor outputs into m_inputValues so that updateLogic()
     // can read a consistent view even when predecessor values change mid-cycle.
     for (int index = 0; index < m_inputPairs.size(); ++index) {
-        m_inputValues[index] = inputValue(index);
+        const Status val = inputValue(index);
+        if (val == Status::Invalid) {
+            // An unconnected (null) predecessor makes all outputs Invalid; the
+            // simulation cannot compute a meaningful result from incomplete data.
+            std::fill(m_outputValues.begin(), m_outputValues.end(), Status::Invalid);
+            return false;
+        }
+        m_inputValues[index] = val;
     }
 
     return true;
-}
-
-int LogicElement::priority() const
-{
-    return m_priority;
-}
-
-bool LogicElement::inFeedbackLoop() const
-{
-    return m_inFeedbackLoop;
 }
 
 int LogicElement::outputSize() const
@@ -55,44 +43,29 @@ void LogicElement::connectPredecessor(const int index, LogicElement *logic, cons
     m_inputPairs[index] = {logic, port};
 }
 
-void LogicElement::setInFeedbackLoop(const bool inLoop)
-{
-    m_inFeedbackLoop = inLoop;
-}
-
-void LogicElement::setOutputValue(const int index, const bool value)
+void LogicElement::setOutputValue(const int index, const Status value)
 {
     m_outputValues[index] = value;
 }
 
-void LogicElement::setOutputValue(const bool value)
+void LogicElement::setOutputValue(const Status value)
 {
     setOutputValue(0, value);
 }
 
-void LogicElement::setPriority(const int priority)
-{
-    m_priority = priority;
-}
-
-void LogicElement::validate()
-{
-    m_isValid = std::all_of(m_inputPairs.cbegin(), m_inputPairs.cend(),
-                            [](const auto &pair) { return pair.logic != nullptr; });
-}
-
-bool LogicElement::outputValue(const int index) const
+Status LogicElement::outputValue(const int index) const
 {
     return m_outputValues.at(index);
 }
 
-bool LogicElement::inputValue(const int index) const
+Status LogicElement::inputValue(const int index) const
 {
     // Traverse one edge of the logic graph: read the output of the predecessor
     // element at the specific port that drives this input slot.
+    // A null predecessor (unconnected input port) returns Invalid.
     auto *pred = m_inputPairs.at(index).logic;
     if (!pred) {
-        return false;
+        return Status::Invalid;
     }
     int port = m_inputPairs.at(index).port;
     return pred->outputValue(port);

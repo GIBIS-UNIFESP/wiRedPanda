@@ -627,7 +627,7 @@ void TestSimulation::testElementMappingStability()
         QVector<QPair<int, int>> elementProperties;
         for (const auto &logicPtr : logicElements) {
             // Store priority and output size as stable comparison
-            int priority = logicPtr->priority();
+            int priority = mapping.priority(logicPtr.get());
             int outputSize = logicPtr->outputSize();
             elementProperties.append(QPair<int, int>(priority, outputSize));
         }

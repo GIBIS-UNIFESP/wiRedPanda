@@ -6,9 +6,9 @@
 #include <QtTest>
 
 #include "App/Element/LogicElements/LogicAnd.h"
-#include "App/Element/LogicElements/LogicInput.h"
 #include "App/Element/LogicElements/LogicNot.h"
 #include "App/Element/LogicElements/LogicOr.h"
+#include "App/Element/LogicElements/LogicSource.h"
 
 // ============================================================
 // Robustness Tests — Error Conditions and Boundary Behavior
@@ -23,7 +23,7 @@ void TestLogicElementsErrors::testInvalidInputPortIndex()
 {
     // 4-input AND gate: valid input port indices are 0..3
     LogicAnd gate(4);
-    LogicInput in0, in1, in2, in3;
+    LogicSource in0, in1, in2, in3;
 
     gate.connectPredecessor(0, &in0, 0);
     gate.connectPredecessor(1, &in1, 0);
@@ -35,32 +35,33 @@ void TestLogicElementsErrors::testInvalidInputPortIndex()
     in2.setOutputValue(true);
     in3.setOutputValue(true);
     gate.updateLogic();
-    QCOMPARE(gate.outputValue(), true);  // all inputs true
+    QCOMPARE(gate.outputValue() == Status::Active, true);  // all inputs true
 
     // The boundary port controls the output correctly
     in3.setOutputValue(false);
     gate.updateLogic();
-    QCOMPARE(gate.outputValue(), false);  // boundary input correctly propagated
+    QCOMPARE(gate.outputValue() == Status::Active, false);  // boundary input correctly propagated
 }
 
 /**
- * Test: An unconnected predecessor (nullptr) is treated as false by inputValue().
- * Connect only some ports; others remain null from construction.
+ * Test: An unconnected predecessor (nullptr) propagates Invalid through the gate.
+ * A null input port means the circuit is incomplete, which is reflected as Invalid
+ * on all outputs — regardless of the connected inputs' values.
  */
 void TestLogicElementsErrors::testNullPredecessor()
 {
     // 2-input AND: connect port 0, leave port 1 null
     LogicAnd andGate(2);
-    LogicInput input;
+    LogicSource input;
     andGate.connectPredecessor(0, &input, 0);
 
     input.setOutputValue(true);
     andGate.updateLogic();
-    QCOMPARE(andGate.outputValue(), false);  // AND(true, null=false) = false
+    QCOMPARE(andGate.outputValue(), Status::Invalid);  // null port 1 → Invalid
 
     input.setOutputValue(false);
     andGate.updateLogic();
-    QCOMPARE(andGate.outputValue(), false);  // AND(false, null=false) = false
+    QCOMPARE(andGate.outputValue(), Status::Invalid);  // null port 1 → Invalid
 
     // 2-input OR: connect port 0, leave port 1 null
     LogicOr orGate(2);
@@ -68,34 +69,34 @@ void TestLogicElementsErrors::testNullPredecessor()
 
     input.setOutputValue(true);
     orGate.updateLogic();
-    QCOMPARE(orGate.outputValue(), true);  // OR(true, null=false) = true
+    QCOMPARE(orGate.outputValue(), Status::Invalid);  // null port 1 → Invalid
 
     input.setOutputValue(false);
     orGate.updateLogic();
-    QCOMPARE(orGate.outputValue(), false);  // OR(false, null=false) = false
+    QCOMPARE(orGate.outputValue(), Status::Invalid);  // null port 1 → Invalid
 }
 
 /**
  * Test: Gate with all inputs never connected (all predecessors null).
- * Since m_isValid starts as true and validate() is never called, updateInputs()
- * proceeds and inputValue() returns false for each null predecessor.
+ * All null predecessors produce Invalid outputs — the simulation cannot compute
+ * a result from an incomplete circuit.
  */
 void TestLogicElementsErrors::testDisconnectedInput()
 {
-    // AND(false, false) = false
+    // AND with no predecessors connected → Invalid
     LogicAnd andGate(2);
     andGate.updateLogic();
-    QCOMPARE(andGate.outputValue(), false);
+    QCOMPARE(andGate.outputValue(), Status::Invalid);
 
-    // OR(false, false) = false
+    // OR with no predecessors connected → Invalid
     LogicOr orGate(2);
     orGate.updateLogic();
-    QCOMPARE(orGate.outputValue(), false);
+    QCOMPARE(orGate.outputValue(), Status::Invalid);
 
-    // NOT(false) = true — single unconnected input is treated as false
+    // NOT with no predecessor connected → Invalid
     LogicNot notGate;
     notGate.updateLogic();
-    QCOMPARE(notGate.outputValue(), true);
+    QCOMPARE(notGate.outputValue(), Status::Invalid);
 }
 
 /**
@@ -105,7 +106,7 @@ void TestLogicElementsErrors::testDisconnectedInput()
 void TestLogicElementsErrors::testMultipleConnectionsSamePort()
 {
     LogicAnd gate(2);
-    LogicInput first, second, other;
+    LogicSource first, second, other;
 
     // Connect port 0 to 'first', then overwrite with 'second'
     gate.connectPredecessor(0, &first, 0);
@@ -117,16 +118,16 @@ void TestLogicElementsErrors::testMultipleConnectionsSamePort()
     other.setOutputValue(true);   // active on port 1
 
     gate.updateLogic();
-    QCOMPARE(gate.outputValue(), false);  // AND(second=false, other=true) = false
+    QCOMPARE(gate.outputValue() == Status::Active, false);  // AND(second=false, other=true) = false
 
     second.setOutputValue(true);
     gate.updateLogic();
-    QCOMPARE(gate.outputValue(), true);   // AND(second=true, other=true) = true
+    QCOMPARE(gate.outputValue() == Status::Active, true);   // AND(second=true, other=true) = true
 
     // Verify 'first' truly has no effect
     first.setOutputValue(false);
     gate.updateLogic();
-    QCOMPARE(gate.outputValue(), true);   // still true; 'first' is not wired
+    QCOMPARE(gate.outputValue() == Status::Active, true);   // still true; 'first' is not wired
 }
 
 /**
@@ -136,7 +137,7 @@ void TestLogicElementsErrors::testMultipleConnectionsSamePort()
 void TestLogicElementsErrors::testRapidStateChanges()
 {
     LogicAnd andGate(2);
-    LogicInput input1, input2;
+    LogicSource input1, input2;
 
     andGate.connectPredecessor(0, &input1, 0);
     andGate.connectPredecessor(1, &input2, 0);
@@ -146,31 +147,24 @@ void TestLogicElementsErrors::testRapidStateChanges()
         input2.setOutputValue(i % 3 == 0);
         andGate.updateLogic();
         bool expected = (i % 2 == 0) && (i % 3 == 0);
-        QCOMPARE(andGate.outputValue(), expected);
+        QCOMPARE(andGate.outputValue() == Status::Active, expected);
     }
 }
 
 /**
- * Test: validate() marks a gate invalid if any predecessor is null.
- * After validation, updateLogic() becomes a no-op (updateInputs returns false)
- * and the output stays at its initial value (false).
+ * Test: A gate with null predecessors produces Invalid outputs automatically.
+ * No explicit validate() call is needed — invalidity flows through the value
+ * system: null predecessor → inputValue() returns Invalid → all outputs set Invalid.
  */
 void TestLogicElementsErrors::testUnconnectedGate()
 {
-    // Call validate() explicitly: all predecessors null → m_isValid = false
     LogicAnd gate(2);
-    gate.validate();
-    QVERIFY(!gate.isValid());
-
     gate.updateLogic();
-    QCOMPARE(gate.outputValue(), false);  // output unchanged (no-op)
+    QCOMPARE(gate.outputValue(), Status::Invalid);  // null predecessors → Invalid
 
     LogicNot notGate;
-    notGate.validate();
-    QVERIFY(!notGate.isValid());
-
     notGate.updateLogic();
-    QCOMPARE(notGate.outputValue(), false);  // output unchanged (no-op), NOT NOT executed
+    QCOMPARE(notGate.outputValue(), Status::Invalid);  // null predecessor → Invalid
 }
 
 /**
@@ -179,7 +173,7 @@ void TestLogicElementsErrors::testUnconnectedGate()
 void TestLogicElementsErrors::testDeepCascading()
 {
     // Chain: (in1 AND in2) → stage1 → AND in3 → stage2 → AND in4 → stage3
-    LogicInput in1, in2, in3, in4;
+    LogicSource in1, in2, in3, in4;
     LogicAnd stage1(2), stage2(2), stage3(2);
 
     stage1.connectPredecessor(0, &in1, 0);
@@ -197,16 +191,16 @@ void TestLogicElementsErrors::testDeepCascading()
     stage1.updateLogic();
     stage2.updateLogic();
     stage3.updateLogic();
-    QCOMPARE(stage3.outputValue(), true);
+    QCOMPARE(stage3.outputValue() == Status::Active, true);
 
     // One false at the start propagates through the full chain
     in1.setOutputValue(false);
     stage1.updateLogic();
     stage2.updateLogic();
     stage3.updateLogic();
-    QCOMPARE(stage1.outputValue(), false);
-    QCOMPARE(stage2.outputValue(), false);
-    QCOMPARE(stage3.outputValue(), false);
+    QCOMPARE(stage1.outputValue() == Status::Active, false);
+    QCOMPARE(stage2.outputValue() == Status::Active, false);
+    QCOMPARE(stage3.outputValue() == Status::Active, false);
 
     // Restore in1; inject false midway via in3
     in1.setOutputValue(true);
@@ -214,9 +208,9 @@ void TestLogicElementsErrors::testDeepCascading()
     stage1.updateLogic();
     stage2.updateLogic();
     stage3.updateLogic();
-    QCOMPARE(stage1.outputValue(), true);
-    QCOMPARE(stage2.outputValue(), false);  // false injected here
-    QCOMPARE(stage3.outputValue(), false);
+    QCOMPARE(stage1.outputValue() == Status::Active, true);
+    QCOMPARE(stage2.outputValue() == Status::Active, false);  // false injected here
+    QCOMPARE(stage3.outputValue() == Status::Active, false);
 }
 
 /**
@@ -239,24 +233,24 @@ void TestLogicElementsErrors::testInvalidOutputPortIndex()
     QCOMPARE(notGate.outputSize(), 1);
 
     // Valid boundary index (outputSize() - 1 = 0) is accessible
-    QCOMPARE(andGate.outputValue(0), false);
-    QCOMPARE(orGate.outputValue(0), false);
-    QCOMPARE(notGate.outputValue(0), false);
+    QCOMPARE(andGate.outputValue(0) == Status::Active, false);
+    QCOMPARE(orGate.outputValue(0) == Status::Active, false);
+    QCOMPARE(notGate.outputValue(0) == Status::Active, false);
 
-    // LogicInput supports configurable output counts
+    // LogicSource supports configurable output counts
     // Constructor sets output 0 to defaultValue; remaining outputs start false
-    LogicInput input(true, 4);  // 4 outputs: index 0 = true, indices 1-3 = false
+    LogicSource input(true, 4);  // 4 outputs: index 0 = true, indices 1-3 = false
     QCOMPARE(input.outputSize(), 4);
-    QCOMPARE(input.outputValue(0), true);
-    QCOMPARE(input.outputValue(3), false);  // highest valid index (outputSize() - 1)
+    QCOMPARE(input.outputValue(0) == Status::Active, true);
+    QCOMPARE(input.outputValue(3) == Status::Active, false);  // highest valid index (outputSize() - 1)
 
     // Verify each output is independently settable
     input.setOutputValue(1, true);
     input.setOutputValue(3, true);
-    QCOMPARE(input.outputValue(0), true);
-    QCOMPARE(input.outputValue(1), true);
-    QCOMPARE(input.outputValue(2), false);
-    QCOMPARE(input.outputValue(3), true);
+    QCOMPARE(input.outputValue(0) == Status::Active, true);
+    QCOMPARE(input.outputValue(1) == Status::Active, true);
+    QCOMPARE(input.outputValue(2) == Status::Active, false);
+    QCOMPARE(input.outputValue(3) == Status::Active, true);
 }
 
 /**
@@ -270,17 +264,17 @@ void TestLogicElementsErrors::testConnectionCycles()
     notGate.connectPredecessor(0, &notGate, 0);
 
     // Initial output is false
-    QCOMPARE(notGate.outputValue(), false);
+    QCOMPARE(notGate.outputValue() == Status::Active, false);
 
     // Each call reads the current (stale) output and inverts it
     notGate.updateLogic();
-    QCOMPARE(notGate.outputValue(), true);   // NOT(false) = true
+    QCOMPARE(notGate.outputValue() == Status::Active, true);   // NOT(false) = true
 
     notGate.updateLogic();
-    QCOMPARE(notGate.outputValue(), false);  // NOT(true) = false
+    QCOMPARE(notGate.outputValue() == Status::Active, false);  // NOT(true) = false
 
     notGate.updateLogic();
-    QCOMPARE(notGate.outputValue(), true);   // stable single-step oscillation
+    QCOMPARE(notGate.outputValue() == Status::Active, true);   // stable single-step oscillation
 }
 
 /**
@@ -290,7 +284,7 @@ void TestLogicElementsErrors::testConnectionCycles()
 void TestLogicElementsErrors::testInputValueBoundary()
 {
     LogicAnd gate(4);
-    LogicInput in0, in1, in2, in3;
+    LogicSource in0, in1, in2, in3;
 
     gate.connectPredecessor(0, &in0, 0);
     gate.connectPredecessor(1, &in1, 0);
@@ -303,23 +297,86 @@ void TestLogicElementsErrors::testInputValueBoundary()
         in2.setOutputValue((combo & 0x4) != 0);
         in3.setOutputValue((combo & 0x8) != 0);
         gate.updateLogic();
-        QCOMPARE(gate.outputValue(), combo == 15);
+        QCOMPARE(gate.outputValue() == Status::Active, combo == 15);
     }
 }
 
 /**
  * Test: Gates with 0 inputs return their identity element.
- * std::accumulate over an empty range returns the init value:
- *   AND(∅) = true   (init = true,  bit_and)
- *   OR(∅)  = false  (init = false, bit_or)
+ * std::all_of / std::any_of over an empty range:
+ *   AND(∅) = Active   (all_of over {} = true)
+ *   OR(∅)  = Inactive (any_of over {} = false)
  */
 void TestLogicElementsErrors::testGateWithZeroInputs()
 {
     LogicAnd andGate(0);
     andGate.updateLogic();
-    QCOMPARE(andGate.outputValue(), true);  // identity of AND
+    QCOMPARE(andGate.outputValue() == Status::Active, true);  // identity of AND
 
     LogicOr orGate(0);
     orGate.updateLogic();
-    QCOMPARE(orGate.outputValue(), false);  // identity of OR
+    QCOMPARE(orGate.outputValue() == Status::Active, false);  // identity of OR
+}
+
+/**
+ * Test: Status::Invalid propagates downstream through a chain of gates.
+ * A gate with a null input produces Invalid. A downstream gate reading
+ * that Invalid output must also produce Invalid — no gate should silently
+ * convert Invalid into Active or Inactive.
+ */
+void TestLogicElementsErrors::testInvalidPropagatesChain()
+{
+    // AND with one null input → outputs Invalid
+    LogicAnd andGate(2);
+    LogicNot notGate;
+    LogicSource input;
+
+    andGate.connectPredecessor(0, &input, 0);
+    // port 1 is left null → AND will produce Invalid
+    notGate.connectPredecessor(0, &andGate, 0);
+
+    input.setOutputValue(true);
+    andGate.updateLogic();
+    QCOMPARE(andGate.outputValue(), Status::Invalid);  // null port → Invalid
+
+    notGate.updateLogic();
+    QCOMPARE(notGate.outputValue(), Status::Invalid);  // Invalid propagates downstream
+
+    // Confirm it's not specific to true input: same with false
+    input.setOutputValue(false);
+    andGate.updateLogic();
+    QCOMPARE(andGate.outputValue(), Status::Invalid);
+
+    notGate.updateLogic();
+    QCOMPARE(notGate.outputValue(), Status::Invalid);
+}
+
+/**
+ * Test: setOutputValue(bool) convenience overload maps correctly to Status.
+ * true  → Status::Active
+ * false → Status::Inactive
+ * Neither produces Status::Invalid — this overload is the UI→simulation
+ * boundary where a switch is inherently on or off, never invalid.
+ */
+void TestLogicElementsErrors::testBoolOverloadMapsToStatus()
+{
+    // Default-output overload
+    LogicSource src(false, 2);
+
+    src.setOutputValue(true);
+    QCOMPARE(src.outputValue(0), Status::Active);
+
+    src.setOutputValue(false);
+    QCOMPARE(src.outputValue(0), Status::Inactive);
+
+    // Indexed overload
+    src.setOutputValue(1, true);
+    QCOMPARE(src.outputValue(1), Status::Active);
+
+    src.setOutputValue(1, false);
+    QCOMPARE(src.outputValue(1), Status::Inactive);
+
+    // Neither overload can produce Invalid
+    QVERIFY(src.outputValue(0) != Status::Invalid);
+    QVERIFY(src.outputValue(1) != Status::Invalid);
 }

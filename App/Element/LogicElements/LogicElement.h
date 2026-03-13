@@ -9,6 +9,8 @@
 
 #include <QVector>
 
+#include "App/Core/Enums.h"
+
 class LogicElement;
 
 /**
@@ -38,28 +40,15 @@ public:
     /// Virtual destructor.
     virtual ~LogicElement() = default;
 
-    // --- Validity & Feedback ---
-
-    /// Returns \c true if all required input ports are connected.
-    bool isValid() const;
-    /// Returns \c true if this element is part of a combinational feedback loop.
-    bool inFeedbackLoop() const;
-    /// Recomputes and caches the validity state.
-    void validate();
-
     // --- I/O Values ---
 
-    /// Returns the current logic value on input port \a index.
-    bool inputValue(const int index = 0) const;
-    /// Returns the current logic value on output port \a index.
-    bool outputValue(const int index = 0) const;
+    /// Returns the tri-state signal value on output port \a index.
+    Status outputValue(const int index = 0) const;
     /// Returns the number of output ports.
     int outputSize() const;
 
-    // --- Priority & Logic ---
+    // --- Logic ---
 
-    /// Returns the cached topological priority (higher = closer to inputs, updated first).
-    int priority() const;
     const QVector<InputPair> &inputPairs() const;
     virtual void updateLogic() = 0;
 
@@ -67,35 +56,46 @@ public:
 
     /** \brief Connects input \a index of this element to output \a port of \a logic. */
     void connectPredecessor(const int index, LogicElement *logic, const int port);
-    /// Marks this element as participating (or not) in a feedback loop.
-    void setInFeedbackLoop(const bool inLoop);
 
     // --- Output setting ---
 
     /// Sets all output ports to \a value.
-    void setOutputValue(const bool value);
+    void setOutputValue(const Status value);
     /// Sets output port \a index to \a value.
-    void setOutputValue(const int index, const bool value);
-    /// Sets the topological priority for this element.
-    void setPriority(const int priority);
+    void setOutputValue(const int index, const Status value);
+
+    /// Convenience overload — converts \c bool to Active/Inactive.
+    void setOutputValue(const bool value) { setOutputValue(value ? Status::Active : Status::Inactive); }
+    /// Convenience overload — converts \c bool to Active/Inactive.
+    void setOutputValue(const int index, const bool value) { setOutputValue(index, value ? Status::Active : Status::Inactive); }
 
 protected:
     /**
-     * \brief Copies each predecessor's output into m_inputValues.
-     * \return \c true if all inputs were successfully read.
+     * \brief Snapshots each predecessor's output into the input cache.
+     *
+     * If any predecessor output is Invalid (unconnected port), all outputs are
+     * set to Invalid and the method returns \c false so that \c updateLogic()
+     * implementations can perform an early return without computing a result
+     * from incomplete data.
+     *
+     * \return \c true if all inputs are Active or Inactive (simulation can proceed).
      */
     bool updateInputs();
 
-    QVector<bool> m_inputValues; ///< Cached input values refreshed each simulation step.
+    /// Read-only view of the cached input values for use by subclass updateLogic().
+    const QVector<Status> &inputs()  const { return m_inputValues; }
+    /// Read-only view of the current output values for use by subclass updateLogic().
+    const QVector<Status> &outputs() const { return m_outputValues; }
 
 private:
     Q_DISABLE_COPY(LogicElement)
 
+    /// Traverses the predecessor pointer to read the live value on input port \a index.
+    Status inputValue(const int index = 0) const;
+
     // --- Members ---
 
     QVector<InputPair> m_inputPairs;
-    QVector<bool> m_outputValues;
-    bool m_inFeedbackLoop = false;
-    bool m_isValid = true;
-    int m_priority = -1;
+    QVector<Status> m_inputValues; ///< Cached input values refreshed each simulation step.
+    QVector<Status> m_outputValues;
 };

@@ -7,8 +7,8 @@ LogicSRLatch::LogicSRLatch()
     : LogicElement(2, 2) // inputs: S, R; outputs: Q, Q'
 {
     // Power-on default: Q=0, Q'=1 (reset state)
-    setOutputValue(0, false);
-    setOutputValue(1, true);
+    setOutputValue(0, Status::Inactive);
+    setOutputValue(1, Status::Active);
 }
 
 void LogicSRLatch::updateLogic()
@@ -17,24 +17,24 @@ void LogicSRLatch::updateLogic()
         return;
     }
 
-    bool q0 = outputValue(0);
-    bool q1 = outputValue(1);
-    const bool S = m_inputValues.at(0);
-    const bool R = m_inputValues.at(1);
+    Status q0 = outputs().at(0);
+    Status q1 = outputs().at(1);
+    const Status S = inputs().at(0);
+    const Status R = inputs().at(1);
 
     // Level-sensitive SR latch — outputs update continuously while inputs are held.
-    if (S && R) {
+    if (S == Status::Active && R == Status::Active) {
         // Forbidden state (S=R=1): both outputs forced to 0 (NOR-latch behaviour).
-        q0 = false;
-        q1 = false;
-    } else if (S) {
+        q0 = Status::Inactive;
+        q1 = Status::Inactive;
+    } else if (S == Status::Active) {
         // Set: Q→1, Q'→0.
-        q0 = true;
-        q1 = false;
-    } else if (R) {
+        q0 = Status::Active;
+        q1 = Status::Inactive;
+    } else if (R == Status::Active) {
         // Reset: Q→0, Q'→1.
-        q0 = false;
-        q1 = true;
+        q0 = Status::Inactive;
+        q1 = Status::Active;
     }
     // S=R=0 → hold; q0/q1 already retain the latched state.
 

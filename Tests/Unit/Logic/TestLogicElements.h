@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QVector>
 
-class LogicInput;
+class LogicSource;
 
 class TestLogicElements : public QObject
 {
@@ -21,7 +21,9 @@ private slots:
     void testLogicAnd();
     void testLogicOr_data();
     void testLogicOr();
-    void testLogicInput();
+    void testLogicSource();
+    void testLogicSourceMultiOutput();
+    void testLogicSink();
     void testLogicMux_data();
     void testLogicMux();
     void testLogicDemux_data();
@@ -106,5 +108,5 @@ private slots:
     void testLogic6InputAnd();
 
 private:
-    QVector<LogicInput *> m_inputs{8};
+    QVector<LogicSource *> m_inputs{8};
 };
