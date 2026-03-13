@@ -11,7 +11,6 @@
 #include <QVersionNumber>
 
 #include "App/Core/Settings.h"
-#include "App/GlobalProperties.h"
 #include "App/Versions.h"
 
 static constexpr auto k_apiUrl = "https://api.github.com/repos/gibis-unifesp/wiredpanda/releases/latest";

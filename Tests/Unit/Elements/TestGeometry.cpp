@@ -11,7 +11,6 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
-#include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
 #include "Tests/Common/TestUtils.h"
 

@@ -11,7 +11,6 @@
 #endif
 
 #include "App/Element/ElementInfo.h"
-#include "App/GlobalProperties.h"
 #include "App/Element/LogicElements/LogicOutput.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Versions.h"

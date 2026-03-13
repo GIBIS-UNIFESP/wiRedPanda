@@ -9,7 +9,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
-#include "App/GlobalProperties.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Versions.h"
 
