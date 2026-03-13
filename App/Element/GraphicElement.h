@@ -291,12 +291,21 @@ public:
     // --- Polymorphic Element Mapping Interface ---
 
     /**
-     * \brief Returns the LogicElement instances that should be registered in the simulation map.
-     * \details The default implementation wraps logic() in a non-owning shared_ptr.
-     * IC elements override this to return multiple inner logic elements.
-     * \return A vector of shared_ptr<LogicElement> for simulation mapping.
+     * \brief Creates and returns the LogicElement instances for this element.
+     * \details The default implementation uses the element's registered logicCreator.
+     * Decorative elements (no logicCreator) return an empty vector.
+     * IC elements override this to return their full set of internal logic elements.
+     * \return Owning shared_ptrs to the created logic elements.
      */
-    virtual QVector<std::shared_ptr<LogicElement>> getLogicElementsForMapping();
+    virtual QVector<std::shared_ptr<LogicElement>> createLogicElements();
+
+    /**
+     * \brief Binds this element's graphic ports to their corresponding logic elements.
+     * \details Called by ElementMapping after createLogicElements(). The default
+     * implementation binds every input/output port to logic() by port index.
+     * IC elements override this to bind external ports to internal boundary elements.
+     */
+    virtual void bindPorts();
 
     // --- Polymorphic Port Naming Interface ---
 

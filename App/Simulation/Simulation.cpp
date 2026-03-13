@@ -101,7 +101,7 @@ void Simulation::updatePort(QNEOutputPort *port)
     }
 
     int outputIndex = port->logicIndex();
-    port->setStatus(logic->isValid() ? static_cast<Status>(logic->outputValue(outputIndex)) : Status::Invalid);
+    port->setStatus(logic->outputValue(outputIndex));
 }
 
 void Simulation::updatePort(QNEInputPort *port)
@@ -110,21 +110,20 @@ void Simulation::updatePort(QNEInputPort *port)
         return;
     }
 
-    auto *elm = port->graphicElement();
-    if (!elm) {
-        return;
-    }
-    auto *logic = elm->logic();
-    if (!logic) {
-        port->setStatus(Status::Invalid);
-        return;
-    }
-
-    // Reflect the logic input value on the port so connection colors update correctly.
-    port->setStatus(logic->isValid() ? static_cast<Status>(logic->inputValue(port->index())) : Status::Invalid);
+    // Phase 3 already set every QNEOutputPort's status from the logic values.
+    // Propagate that already-computed status forward rather than re-traversing
+    // the logic graph via logic->inputValue().
+    // For unconnected optional ports, fall back to the port's declared default
+    // (mirrors the globalVCC/globalGND predecessor set in ElementMapping::applyConnection).
+    const auto &conns = port->connections();
+    const Status status = (!conns.isEmpty() && conns.first()->startPort())
+                              ? conns.first()->startPort()->status()
+                              : port->defaultValue();
+    port->setStatus(status);
 
     // Output elements (LEDs, buzzers) need an explicit repaint to show the new state.
-    if (elm->elementGroup() == ElementGroup::Output) {
+    auto *elm = port->graphicElement();
+    if (elm && elm->elementGroup() == ElementGroup::Output) {
         elm->refresh();
     }
 }
@@ -139,6 +138,11 @@ void Simulation::restart()
 bool Simulation::isRunning()
 {
     return m_timer.isActive();
+}
+
+bool Simulation::isInFeedbackLoop(const LogicElement *logic) const
+{
+    return m_elmMapping && m_elmMapping->isInFeedbackLoop(logic);
 }
 
 void Simulation::stop()
@@ -215,7 +219,7 @@ void Simulation::updateWithIterativeSettling()
 
             // Check all outputs for convergence
             for (int j = 0; j < logic->outputSize(); ++j) {
-                bool currentOutput = logic->outputValue(j);
+                Status currentOutput = logic->outputValue(j);
                 if (m_previousOutputs[i][j] != currentOutput) {
                     converged = false;
                     m_previousOutputs[i][j] = currentOutput;
@@ -336,9 +340,7 @@ bool Simulation::initialize()
 
     // Cache feedback flag and pre-allocate previousOutputs for iterative settling
     const auto &logicElms = m_elmMapping->logicElms();
-    m_hasFeedbackElements = std::any_of(logicElms.begin(), logicElms.end(), [](const auto &logic) {
-        return logic && logic->inFeedbackLoop();
-    });
+    m_hasFeedbackElements = m_elmMapping->hasFeedbackElements();
 
     m_previousOutputs.resize(logicElms.size());
     for (int i = 0; i < logicElms.size(); ++i) {

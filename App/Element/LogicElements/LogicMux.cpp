@@ -26,10 +26,10 @@ void LogicMux::updateLogic()
 
     int selectValue = 0;
     for (int i = 0; i < m_numSelectLines; i++) {
-        if (m_inputValues.at(m_numDataInputs + i)) {
+        if (inputs().at(m_numDataInputs + i) == Status::Active) {
             selectValue |= (1 << i);
         }
     }
 
-    setOutputValue(m_inputValues.at(selectValue));
+    setOutputValue(inputs().at(selectValue));
 }

@@ -3,8 +3,6 @@
 
 #include "App/Element/LogicElements/LogicAnd.h"
 
-#include <functional>
-
 LogicAnd::LogicAnd(const int inputSize)
     : LogicElement(inputSize, 1)
 {
@@ -16,7 +14,8 @@ void LogicAnd::updateLogic()
         return;
     }
 
-    // Identity for AND is true; any false input short-circuits the fold to false.
-    const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), true, std::bit_and<>());
-    setOutputValue(result);
+    // Output is Active only when every input is Active.
+    const bool result = std::all_of(inputs().cbegin(), inputs().cend(),
+                                    [](Status s) { return s == Status::Active; });
+    setOutputValue(result ? Status::Active : Status::Inactive);
 }

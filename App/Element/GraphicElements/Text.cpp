@@ -4,7 +4,6 @@
 #include "App/Element/GraphicElements/Text.h"
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicNone.h"
 
 template<>
 struct ElementInfo<Text> {
@@ -39,7 +38,7 @@ struct ElementInfo<Text> {
             ":/Components/Misc/no_text.png",
             ":/Components/Misc/text.png",
         });
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicNone>(); };
+        // No logicCreator: Text is decorative and excluded from simulation.
         return meta;
     }
 

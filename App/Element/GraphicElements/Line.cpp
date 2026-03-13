@@ -4,7 +4,6 @@
 #include "App/Element/GraphicElements/Line.h"
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicNone.h"
 
 template<>
 struct ElementInfo<Line> {
@@ -38,7 +37,7 @@ struct ElementInfo<Line> {
         meta.trContext = "Line";
         // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Misc/line.svg"});
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicNone>(); };
+        // No logicCreator: Line is decorative and excluded from simulation.
         return meta;
     }
 

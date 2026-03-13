@@ -10,8 +10,10 @@
 #include <memory>
 
 #include <QCoreApplication>
+#include <QHash>
+#include <QSet>
 
-#include "App/Element/LogicElements/LogicInput.h"
+#include "App/Element/LogicElements/LogicSource.h"
 
 class Clock;
 class GraphicElement;
@@ -49,6 +51,17 @@ public:
     /// Returns the ordered vector of logic elements.
     const QVector<std::shared_ptr<LogicElement>> &logicElms() const;
 
+    // --- Topology queries ---
+
+    /// Returns the topological priority for \a logic (-1 if unknown).
+    int priority(const LogicElement *logic) const;
+
+    /// Returns \c true if \a logic participates in a combinational feedback loop.
+    bool isInFeedbackLoop(const LogicElement *logic) const;
+
+    /// Returns \c true if any logic element in the mapping is part of a feedback loop.
+    bool hasFeedbackElements() const;
+
     // --- Topology ---
 
     /// Topologically sorts the logic elements by priority.
@@ -60,22 +73,22 @@ private:
     // --- Mapping generation ---
 
     void generateMap();
-    void generateLogic(GraphicElement *elm);
 
     // --- Connection setup ---
 
     void connectElements();
     void applyConnection(QNEInputPort *inputPort);
 
-    // --- Validation & sorting ---
+    // --- Sorting ---
 
-    void validateElements();
     void sortLogicElements();
 
     // --- Members ---
 
-    LogicInput m_globalGND{false};
-    LogicInput m_globalVCC{true};
+    LogicSource m_globalGND{false};
+    LogicSource m_globalVCC{true};
     QVector<GraphicElement *> m_elements;
     QVector<std::shared_ptr<LogicElement>> m_logicElms;
+    QHash<const LogicElement *, int> m_priorities;
+    QSet<const LogicElement *> m_feedbackNodes;
 };

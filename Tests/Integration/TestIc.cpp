@@ -384,11 +384,12 @@ void TestIC::testICStatusPropagation()
     bool ledStateSecondOff = TestUtils::getInputStatus(&outputLed);
     QCOMPARE(ledStateSecondOff, ledStateWhenSwitchOff);
 
-    // Test 4: Verify complementary output (Q and ~Q should be opposite)
-    // For a JK flip-flop, Q and ~Q should always be complementary
-    bool qOutput = TestUtils::getOutputStatus(ic, 0);
-    bool notQOutput = TestUtils::getOutputStatus(ic, 1);
-    QCOMPARE(qOutput, !notQOutput);
+    // Test 4: With only 1 of 5 IC inputs connected, the remaining predecessors are null.
+    // Since Phase 4 (Status unification), null predecessors propagate Status::Invalid through
+    // the entire chain — both IC outputs report Invalid (neither is Active).
+    // Verifying both outputs are consistently non-Active (Invalid state).
+    QCOMPARE(TestUtils::getOutputStatus(ic, 0), false);
+    QCOMPARE(TestUtils::getOutputStatus(ic, 1), false);
 }
 
 void TestIC::testICRequiredPorts()

@@ -7,8 +7,8 @@ LogicJKFlipFlop::LogicJKFlipFlop()
     : LogicElement(5, 2) // inputs: J, CLK, K, PRESET, CLEAR; outputs: Q, Q'
 {
     // Power-on default: Q=0, Q'=1
-    setOutputValue(0, false);
-    setOutputValue(1, true);
+    setOutputValue(0, Status::Inactive);
+    setOutputValue(1, Status::Active);
 }
 
 void LogicJKFlipFlop::updateLogic()
@@ -17,35 +17,35 @@ void LogicJKFlipFlop::updateLogic()
         return;
     }
 
-    bool q0 = outputValue(0);
-    bool q1 = outputValue(1);
-    const bool j = m_inputValues.at(0);
-    const bool clk = m_inputValues.at(1);
-    const bool k = m_inputValues.at(2);
-    const bool prst = m_inputValues.at(3);
-    const bool clr = m_inputValues.at(4);
+    Status q0 = outputs().at(0);
+    Status q1 = outputs().at(1);
+    const Status j = inputs().at(0);
+    const Status clk = inputs().at(1);
+    const Status k = inputs().at(2);
+    const Status prst = inputs().at(3);
+    const Status clr = inputs().at(4);
 
     // Rising-edge detection; inputs sampled from the previous cycle (setup time).
-    if (clk && !m_lastClk) {
-        if (m_lastJ && m_lastK) {
+    if (clk == Status::Active && m_lastClk != Status::Active) {
+        if (m_lastJ == Status::Active && m_lastK == Status::Active) {
             // J=K=1 → Toggle: swap Q and Q' outputs
             std::swap(q0, q1);
-        } else if (m_lastJ) {
+        } else if (m_lastJ == Status::Active) {
             // J=1, K=0 → Set
-            q0 = true;
-            q1 = false;
-        } else if (m_lastK) {
+            q0 = Status::Active;
+            q1 = Status::Inactive;
+        } else if (m_lastK == Status::Active) {
             // J=0, K=1 → Reset
-            q0 = false;
-            q1 = true;
+            q0 = Status::Inactive;
+            q1 = Status::Active;
         }
         // J=0, K=0 → Hold (no change)
     }
 
     // Asynchronous preset/clear: active-low, override clock behaviour.
-    if (!prst || !clr) {
-        q0 = !prst;
-        q1 = !clr;
+    if (prst != Status::Active || clr != Status::Active) {
+        q0 = (prst != Status::Active) ? Status::Active : Status::Inactive;
+        q1 = (clr != Status::Active) ? Status::Active : Status::Inactive;
     }
 
     // Update history after computing new state so that the current cycle's

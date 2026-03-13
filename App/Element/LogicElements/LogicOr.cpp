@@ -3,8 +3,6 @@
 
 #include "App/Element/LogicElements/LogicOr.h"
 
-#include <functional>
-
 LogicOr::LogicOr(const int inputSize)
     : LogicElement(inputSize, 1)
 {
@@ -16,7 +14,8 @@ void LogicOr::updateLogic()
         return;
     }
 
-    // Identity for OR is false; any true input will propagate through the fold.
-    const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_or<>());
-    setOutputValue(result);
+    // Output is Active when at least one input is Active.
+    const bool result = std::any_of(inputs().cbegin(), inputs().cend(),
+                                    [](Status s) { return s == Status::Active; });
+    setOutputValue(result ? Status::Active : Status::Inactive);
 }

@@ -3,8 +3,6 @@
 
 #include "App/Element/LogicElements/LogicXor.h"
 
-#include <functional>
-
 LogicXor::LogicXor(const int inputSize)
     : LogicElement(inputSize, 1)
 {
@@ -16,9 +14,9 @@ void LogicXor::updateLogic()
         return;
     }
 
-    // XOR fold with identity=false; for n inputs this computes odd-parity
-    // (true when an odd number of inputs are high), which generalises the
-    // 2-input XOR definition consistently across all gate widths.
-    const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_xor<>());
-    setOutputValue(result);
+    // XOR: odd-parity detector — Active when an odd number of inputs are Active.
+    // This generalises the 2-input XOR definition consistently across all gate widths.
+    const int activeCount = std::count_if(inputs().cbegin(), inputs().cend(),
+                                          [](Status s) { return s == Status::Active; });
+    setOutputValue((activeCount % 2 != 0) ? Status::Active : Status::Inactive);
 }

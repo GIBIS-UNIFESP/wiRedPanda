@@ -28,7 +28,7 @@ void TestElementMapping::testSimpleElementMapping()
     ElementMapping mapping(elements);
 
     // Verify mapping created successfully
-    verifyMappingCreated(elements);
+    verifyMappingCreated(mapping);
 }
 
 void TestElementMapping::testDisconnectedElementHandling()
@@ -44,7 +44,7 @@ void TestElementMapping::testDisconnectedElementHandling()
     ElementMapping mapping(elements);
 
     // Mapping should complete without throwing
-    verifyMappingCreated(elements);
+    verifyMappingCreated(mapping);
 }
 
 void TestElementMapping::testDefaultVCCGNDConnections()
@@ -60,15 +60,15 @@ void TestElementMapping::testDefaultVCCGNDConnections()
     ElementMapping mapping(elements);
 
     // Verify mapping handles VCC/GND
-    verifyMappingCreated(elements);
+    verifyMappingCreated(mapping);
 }
 
 void TestElementMapping::testICInputOutputMapping()
 {
-    // Test mapping of IC input and output connections
+    // An unloaded IC has no inner circuit, no ports, and no logicCreator — it
+    // is excluded from the simulation graph just like decorative elements.
     auto scene = std::make_unique<Scene>();
 
-    // Create an IC element
     auto *ic = ElementFactory::buildElement(ElementType::IC);
     QVERIFY2(ic != nullptr, "ElementFactory failed to build IC element");
 
@@ -78,11 +78,9 @@ void TestElementMapping::testICInputOutputMapping()
     auto elements = scene->elements();
     QCOMPARE(elements.size(), 1);
 
-    // Create mapping - should handle IC port mappings
+    // Mapping should complete without throwing and produce no logic elements.
     ElementMapping mapping(elements);
-
-    // Verify mapping created
-    verifyMappingCreated(elements);
+    QVERIFY2(mapping.logicElms().isEmpty(), "unloaded IC should produce no logic elements");
 }
 
 // ============================================================
@@ -147,16 +145,9 @@ std::unique_ptr<Scene> TestElementMapping::createCircuitWithVCCGND()
     return scene;
 }
 
-void TestElementMapping::verifyMappingCreated(const QVector<GraphicElement *> &elements)
+void TestElementMapping::verifyMappingCreated(const ElementMapping &mapping)
 {
-    // Verify that mapping was created successfully
-    // (If we get here without exception, mapping was created)
-    QVERIFY2(!elements.isEmpty(), "element list must not be empty before mapping");
-
-    // Create mapping to verify it initializes without exceptions
-    ElementMapping mapping(elements);
-    auto logicElms = mapping.logicElms();
-    QVERIFY2(!logicElms.isEmpty(), "mapping produced no logic elements");
+    QVERIFY2(!mapping.logicElms().isEmpty(), "mapping produced no logic elements");
 }
 
 void TestElementMapping::testGenerateMapWithIC()
@@ -422,4 +413,164 @@ void TestElementMapping::testApplyConnectionsDefaultValues()
 
     // Verify mapping created successfully with default values applied
     QCOMPARE(scene->elements().size(), 3);
+}
+
+// ============================================================
+// Refactor Coverage Tests
+// ============================================================
+
+/**
+ * Test: Line and Text elements are decorative and must not produce logic elements.
+ * After Phase 5 of the LogicElement refactor, decorative elements register no
+ * logicCreator, so ElementMapping skips them entirely.
+ */
+void TestElementMapping::testDecorativeElementsExcluded()
+{
+    auto scene = std::make_unique<Scene>();
+
+    auto *line = ElementFactory::buildElement(ElementType::Line);
+    auto *text = ElementFactory::buildElement(ElementType::Text);
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    QVERIFY2(line != nullptr, "ElementFactory failed to build Line element");
+    QVERIFY2(text != nullptr, "ElementFactory failed to build Text element");
+    QVERIFY2(andGate != nullptr, "ElementFactory failed to build And element");
+
+    scene->addItem(line);
+    scene->addItem(text);
+    scene->addItem(andGate);
+    line->setPos(0, 0);
+    text->setPos(100, 0);
+    andGate->setPos(200, 0);
+
+    ElementMapping mapping(scene->elements());
+
+    // AND gate produces exactly one logic element; Line and Text contribute none.
+    QCOMPARE(mapping.logicElms().size(), 1);
+}
+
+/**
+ * Test: After sort(), elements closer to the input (sources) have strictly
+ * higher priority than elements closer to the output (sinks).
+ * Circuit: InputButton → NOT → LED  (priorities: 3 > 2 > 1).
+ */
+void TestElementMapping::testPriorityOrderingIsTopological()
+{
+    auto scene = std::make_unique<Scene>();
+
+    auto *input = ElementFactory::buildElement(ElementType::InputButton);
+    auto *notGate = ElementFactory::buildElement(ElementType::Not);
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    QVERIFY2(input != nullptr, "ElementFactory failed to build InputButton element");
+    QVERIFY2(notGate != nullptr, "ElementFactory failed to build Not element");
+    QVERIFY2(led != nullptr, "ElementFactory failed to build Led element");
+
+    scene->addItem(input);
+    scene->addItem(notGate);
+    scene->addItem(led);
+    input->setPos(0, 100);
+    notGate->setPos(100, 100);
+    led->setPos(200, 100);
+
+    auto *conn1 = new QNEConnection();
+    conn1->setStartPort(input->outputPort(0));
+    conn1->setEndPort(notGate->inputPort(0));
+    scene->addItem(conn1);
+
+    auto *conn2 = new QNEConnection();
+    conn2->setStartPort(notGate->outputPort(0));
+    conn2->setEndPort(led->inputPort(0));
+    scene->addItem(conn2);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    const int inputPriority = mapping.priority(input->logic());
+    const int gatePriority  = mapping.priority(notGate->logic());
+    const int ledPriority   = mapping.priority(led->logic());
+
+    QVERIFY2(inputPriority > gatePriority,
+             "InputButton must have higher priority than NOT gate");
+    QVERIFY2(gatePriority > ledPriority,
+             "NOT gate must have higher priority than LED");
+}
+
+/**
+ * Test: After ElementMapping is constructed, every non-decorative element
+ * has logic() set, and each of its ports points back to the same logic element.
+ * This verifies the createLogicElements() + bindPorts() two-step (Phase 7).
+ */
+void TestElementMapping::testPortsHaveLogicAfterMapping()
+{
+    auto scene = std::make_unique<Scene>();
+
+    auto *notGate = ElementFactory::buildElement(ElementType::Not);
+    QVERIFY2(notGate != nullptr, "ElementFactory failed to build Not element");
+    scene->addItem(notGate);
+    notGate->setPos(0, 0);
+
+    ElementMapping mapping(scene->elements());
+
+    QVERIFY2(notGate->logic() != nullptr, "NOT gate must have logic assigned after mapping");
+
+    auto *inPort  = notGate->inputPort(0);
+    auto *outPort = notGate->outputPort(0);
+    QVERIFY2(inPort->logic()  != nullptr, "Input port must have logic assigned");
+    QVERIFY2(outPort->logic() != nullptr, "Output port must have logic assigned");
+    QCOMPARE(inPort->logic(),  notGate->logic());
+    QCOMPARE(outPort->logic(), notGate->logic());
+}
+
+/**
+ * Test: The logic element count equals exactly the number of non-decorative
+ * elements in the scene. Line and Text elements must not contribute.
+ */
+void TestElementMapping::testLogicElementCountMatchesNonDecorativeElements()
+{
+    auto scene = std::make_unique<Scene>();
+
+    // 3 non-decorative + 2 decorative
+    auto *input   = ElementFactory::buildElement(ElementType::InputButton);
+    auto *notGate = ElementFactory::buildElement(ElementType::Not);
+    auto *led     = ElementFactory::buildElement(ElementType::Led);
+    auto *line    = ElementFactory::buildElement(ElementType::Line);
+    auto *text    = ElementFactory::buildElement(ElementType::Text);
+
+    scene->addItem(input);
+    scene->addItem(notGate);
+    scene->addItem(led);
+    scene->addItem(line);
+    scene->addItem(text);
+
+    QCOMPARE(scene->elements().size(), 5);
+
+    ElementMapping mapping(scene->elements());
+
+    QCOMPARE(mapping.logicElms().size(), 3);
+}
+
+/**
+ * Test: Unconnected optional inputs receive a default predecessor (globalVCC
+ * or globalGND) from applyConnection(). DFlipFlop PRESET and CLEAR are
+ * optional, default to Active (active-low = not asserted). After mapping,
+ * both must have a non-null predecessor in their inputPairs.
+ */
+void TestElementMapping::testDefaultVCCAppliedToOptionalInputs()
+{
+    auto scene = std::make_unique<Scene>();
+
+    auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
+    QVERIFY2(dff != nullptr, "ElementFactory failed to build DFlipFlop element");
+    scene->addItem(dff);
+    dff->setPos(0, 0);
+
+    ElementMapping mapping(scene->elements());
+
+    auto *logic = dff->logic();
+    QVERIFY2(logic != nullptr, "DFlipFlop must have logic assigned after mapping");
+
+    // inputPairs indices: 0=D, 1=CLK, 2=PRESET(optional), 3=CLEAR(optional)
+    QVERIFY2(logic->inputPairs().at(2).logic != nullptr,
+             "PRESET port must be connected to globalVCC by default");
+    QVERIFY2(logic->inputPairs().at(3).logic != nullptr,
+             "CLEAR port must be connected to globalVCC by default");
 }

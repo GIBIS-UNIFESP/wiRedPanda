@@ -134,7 +134,7 @@ void TestFeedback::testPureCombinationalCircuit()
     // Verify no feedback loops exist
     bool found = false;
     for (auto *elem : scene.elements()) {
-        if (elem->logic() && elem->logic()->inFeedbackLoop()) {
+        if (elem->logic() && sim.isInFeedbackLoop(elem->logic())) {
             found = true;
             break;
         }
@@ -245,7 +245,7 @@ void TestFeedback::testWarningMessageContent()
     // Verify the circuit has feedback elements
     bool found = false;
     for (auto *elem : scene->elements()) {
-        if (elem->logic() && elem->logic()->inFeedbackLoop()) {
+        if (elem->logic() && sim.isInFeedbackLoop(elem->logic())) {
             found = true;
             break;
         }
@@ -462,11 +462,11 @@ void TestFeedback::testAllCycleNodesMarked()
             continue;
         }
         if (elem->elementType() == ElementType::InputSwitch) {
-            QVERIFY2(!elem->logic()->inFeedbackLoop(),
+            QVERIFY2(!sim.isInFeedbackLoop(elem->logic()),
                      "Input switch should NOT be in feedback loop");
             ++nonFeedbackCount;
         } else if (elem->elementType() == ElementType::Nand) {
-            QVERIFY2(elem->logic()->inFeedbackLoop(),
+            QVERIFY2(sim.isInFeedbackLoop(elem->logic()),
                      "NAND gate in SR latch cycle should be in feedback loop");
             ++feedbackCount;
         }
@@ -737,7 +737,7 @@ void TestFeedback::verifyConvergence(Scene *scene, bool shouldConverge)
     if (shouldConverge) {
         // For converging circuits, verify outputs are stable
         // Snapshot all logic element outputs
-        QHash<LogicElement *, bool> snapshot;
+        QHash<LogicElement *, Status> snapshot;
         for (auto *elem : scene->elements()) {
             if (elem->logic()) {
                 snapshot[elem->logic()] = elem->logic()->outputValue(0);
@@ -750,8 +750,8 @@ void TestFeedback::verifyConvergence(Scene *scene, bool shouldConverge)
         // Verify outputs haven't changed
         for (auto *elem : scene->elements()) {
             if (elem->logic()) {
-                bool currentValue = elem->logic()->outputValue(0);
-                bool snapshotValue = snapshot.value(elem->logic(), currentValue);
+                Status currentValue = elem->logic()->outputValue(0);
+                Status snapshotValue = snapshot.value(elem->logic(), currentValue);
                 QCOMPARE(currentValue, snapshotValue);
             }
         }
@@ -769,7 +769,7 @@ void TestFeedback::verifyFeedbackDetection(Scene *scene)
     // Verify that at least one element is in a feedback loop
     bool found = false;
     for (auto *elem : scene->elements()) {
-        if (elem->logic() && elem->logic()->inFeedbackLoop()) {
+        if (elem->logic() && sim.isInFeedbackLoop(elem->logic())) {
             found = true;
             break;
         }
@@ -789,7 +789,7 @@ void TestFeedback::verifyStableState(Scene *scene)
     sim.update();
 
     // Snapshot all logic element outputs
-    QHash<LogicElement *, bool> snapshot;
+    QHash<LogicElement *, Status> snapshot;
     for (auto *elem : elements) {
         if (elem->logic()) {
             snapshot[elem->logic()] = elem->logic()->outputValue(0);
@@ -802,8 +802,8 @@ void TestFeedback::verifyStableState(Scene *scene)
     // Verify outputs haven't changed (circuit is stable)
     for (auto *elem : elements) {
         if (elem->logic()) {
-            bool currentValue = elem->logic()->outputValue(0);
-            bool snapshotValue = snapshot.value(elem->logic(), currentValue);
+            Status currentValue = elem->logic()->outputValue(0);
+            Status snapshotValue = snapshot.value(elem->logic(), currentValue);
             QCOMPARE(currentValue, snapshotValue);
         }
     }

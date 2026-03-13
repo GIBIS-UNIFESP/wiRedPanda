@@ -6,12 +6,12 @@
 #include <QTest>
 
 #include "App/Element/LogicElements/LogicAnd.h"
-#include "App/Element/LogicElements/LogicInput.h"
 #include "App/Element/LogicElements/LogicNode.h"
+#include "App/Element/LogicElements/LogicSource.h"
 
 void TestLogicNode::init()
 {
-    std::generate(m_inputs.begin(), m_inputs.end(), [] { return new LogicInput(); });
+    std::generate(m_inputs.begin(), m_inputs.end(), [] { return new LogicSource(); });
 }
 
 void TestLogicNode::cleanup()
@@ -33,13 +33,13 @@ void TestLogicNode::testLogicNodeChainPropagation()
     n1.updateLogic();
     n2.updateLogic();
     n3.updateLogic();
-    QCOMPARE(n3.outputValue(), true);
+    QCOMPARE(n3.outputValue(), Status::Active);
 
     m_inputs.at(0)->setOutputValue(false);
     n1.updateLogic();
     n2.updateLogic();
     n3.updateLogic();
-    QCOMPARE(n3.outputValue(), false);
+    QCOMPARE(n3.outputValue(), Status::Inactive);
 }
 
 void TestLogicNode::testLogicNodeFanOut()
@@ -62,14 +62,14 @@ void TestLogicNode::testLogicNodeFanOut()
     node.updateLogic();
     and1.updateLogic();
     and2.updateLogic();
-    QCOMPARE(and1.outputValue(), true);
-    QCOMPARE(and2.outputValue(), true);
+    QCOMPARE(and1.outputValue(), Status::Active);
+    QCOMPARE(and2.outputValue(), Status::Active);
 
     // Drive node LOW → both AND gates go LOW
     m_inputs.at(0)->setOutputValue(false);
     node.updateLogic();
     and1.updateLogic();
     and2.updateLogic();
-    QCOMPARE(and1.outputValue(), false);
-    QCOMPARE(and2.outputValue(), false);
+    QCOMPARE(and1.outputValue(), Status::Inactive);
+    QCOMPARE(and2.outputValue(), Status::Inactive);
 }

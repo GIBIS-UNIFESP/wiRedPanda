@@ -15,7 +15,7 @@
 
 class InputSwitch;
 class LogicElement;
-class LogicInput;
+class LogicSource;
 class QNEConnection;
 class Simulation;
 
@@ -57,7 +57,7 @@ QVector<InputSwitch *> createSwitches(int count);
  * @param count Number of inputs to create
  * @return Vector of logic input pointers
  */
-QVector<LogicInput *> createLogicInputs(int count);
+QVector<LogicSource *> createLogicSources(int count);
 
 /**
  * @brief Set values on multiple input switches
@@ -71,7 +71,7 @@ void setInputValues(const QVector<InputSwitch *> &switches, const QVector<bool> 
  * @param inputs Vector of logic inputs to set
  * @param values Boolean values to set (must match inputs size)
  */
-void setLogicInputValues(const QVector<LogicInput *> &inputs, const QVector<bool> &values);
+void setLogicSourceValues(const QVector<LogicSource *> &inputs, const QVector<bool> &values);
 
 /**
  * @brief Verify a logic element against a truth table
@@ -86,7 +86,7 @@ void setLogicInputValues(const QVector<LogicInput *> &inputs, const QVector<bool
  * @param numOutputs Number of outputs to verify (defaults to 1)
  */
 void verifyTruthTable(LogicElement *element,
-                      const QVector<LogicInput *> &inputs,
+                      const QVector<LogicSource *> &inputs,
                       const QVector<QVector<bool>> &truthTable,
                       int numOutputs = 1);
 

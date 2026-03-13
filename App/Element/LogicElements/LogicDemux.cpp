@@ -26,18 +26,18 @@ void LogicDemux::updateLogic()
         return;
     }
 
-    const bool data = m_inputValues.at(0);
+    const Status data = inputs().at(0);
 
     // Decode select lines to get the index of the selected output
     int selectValue = 0;
     for (int i = 0; i < m_numSelectLines; i++) {
-        if (m_inputValues.at(1 + i)) {
+        if (inputs().at(1 + i) == Status::Active) {
             selectValue |= (1 << i);
         }
     }
 
-    // Set all outputs to false except the selected one
+    // Set all outputs to Inactive except the selected one which passes data through
     for (int i = 0; i < m_numOutputs; i++) {
-        setOutputValue(i, (i == selectValue) ? data : false);
+        setOutputValue(i, (i == selectValue) ? data : Status::Inactive);
     }
 }

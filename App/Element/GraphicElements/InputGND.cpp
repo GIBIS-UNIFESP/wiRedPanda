@@ -4,7 +4,7 @@
 #include "App/Element/GraphicElements/InputGND.h"
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicInput.h"
+#include "App/Element/LogicElements/LogicSource.h"
 
 template<>
 struct ElementInfo<InputGnd> {
@@ -39,7 +39,7 @@ struct ElementInfo<InputGnd> {
         meta.trContext = "InputGnd";
         // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Input/0.svg"});
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicInput>(false); };
+        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicSource>(false); };
         return meta;
     }
 

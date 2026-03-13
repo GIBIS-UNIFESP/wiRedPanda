@@ -7,7 +7,6 @@
 #include "App/Element/LogicElements/LogicDemux.h"
 #include "App/Element/LogicElements/LogicDFlipFlop.h"
 #include "App/Element/LogicElements/LogicDLatch.h"
-#include "App/Element/LogicElements/LogicInput.h"
 #include "App/Element/LogicElements/LogicJKFlipFlop.h"
 #include "App/Element/LogicElements/LogicMux.h"
 #include "App/Element/LogicElements/LogicNand.h"
@@ -15,6 +14,8 @@
 #include "App/Element/LogicElements/LogicNor.h"
 #include "App/Element/LogicElements/LogicNot.h"
 #include "App/Element/LogicElements/LogicOr.h"
+#include "App/Element/LogicElements/LogicSink.h"
+#include "App/Element/LogicElements/LogicSource.h"
 #include "App/Element/LogicElements/LogicSRFlipFlop.h"
 #include "App/Element/LogicElements/LogicSRLatch.h"
 #include "App/Element/LogicElements/LogicTFlipFlop.h"
@@ -24,7 +25,7 @@
 
 void TestLogicElements::init()
 {
-    std::generate(m_inputs.begin(), m_inputs.end(), [] { return new LogicInput(); });
+    std::generate(m_inputs.begin(), m_inputs.end(), [] { return new LogicSource(); });
 }
 
 void TestLogicElements::cleanup()
@@ -53,7 +54,7 @@ void TestLogicElements::testLogicNode()
     m_inputs.at(0)->setOutputValue(input);
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 void TestLogicElements::testLogicAnd_data()
@@ -83,7 +84,7 @@ void TestLogicElements::testLogicAnd()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 void TestLogicElements::testLogicOr_data()
@@ -113,17 +114,89 @@ void TestLogicElements::testLogicOr()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
-void TestLogicElements::testLogicInput()
+void TestLogicElements::testLogicSource()
 {
-    LogicInput elm;
-    QCOMPARE(elm.outputValue(), false);
+    LogicSource elm;
+    QCOMPARE(elm.outputValue() == Status::Active, false);
     elm.setOutputValue(true);
-    QCOMPARE(elm.outputValue(), true);
+    QCOMPARE(elm.outputValue() == Status::Active, true);
     elm.setOutputValue(false);
-    QCOMPARE(elm.outputValue(), false);
+    QCOMPARE(elm.outputValue() == Status::Active, false);
+}
+
+/**
+ * Test: LogicSource with multiple outputs — each output is independently
+ * settable and readable. The constructor default applies only to output 0;
+ * remaining outputs start Inactive.
+ */
+void TestLogicElements::testLogicSourceMultiOutput()
+{
+    LogicSource src(true, 4);  // output 0 = Active, outputs 1-3 = Inactive
+
+    QCOMPARE(src.outputValue(0), Status::Active);
+    QCOMPARE(src.outputValue(1), Status::Inactive);
+    QCOMPARE(src.outputValue(2), Status::Inactive);
+    QCOMPARE(src.outputValue(3), Status::Inactive);
+
+    // Each output is independently settable
+    src.setOutputValue(1, true);
+    src.setOutputValue(3, Status::Active);
+
+    QCOMPARE(src.outputValue(0), Status::Active);
+    QCOMPARE(src.outputValue(1), Status::Active);
+    QCOMPARE(src.outputValue(2), Status::Inactive);
+    QCOMPARE(src.outputValue(3), Status::Active);
+
+    // Clearing one does not affect others
+    src.setOutputValue(0, false);
+    QCOMPARE(src.outputValue(0), Status::Inactive);
+    QCOMPARE(src.outputValue(1), Status::Active);  // unchanged
+}
+
+/**
+ * Test: LogicSink mirrors each input to the matching output so the display
+ * layer can query outputValue(i) without traversing the graph.
+ * Also verifies that Invalid on any input propagates to all outputs.
+ */
+void TestLogicElements::testLogicSink()
+{
+    LogicSink sink(3);
+    LogicSource in0, in1, in2;
+
+    sink.connectPredecessor(0, &in0, 0);
+    sink.connectPredecessor(1, &in1, 0);
+    sink.connectPredecessor(2, &in2, 0);
+
+    // All Active
+    in0.setOutputValue(true);
+    in1.setOutputValue(true);
+    in2.setOutputValue(true);
+    sink.updateLogic();
+    QCOMPARE(sink.outputValue(0), Status::Active);
+    QCOMPARE(sink.outputValue(1), Status::Active);
+    QCOMPARE(sink.outputValue(2), Status::Active);
+
+    // Mixed Active / Inactive
+    in0.setOutputValue(true);
+    in1.setOutputValue(false);
+    in2.setOutputValue(true);
+    sink.updateLogic();
+    QCOMPARE(sink.outputValue(0), Status::Active);
+    QCOMPARE(sink.outputValue(1), Status::Inactive);
+    QCOMPARE(sink.outputValue(2), Status::Active);
+
+    // Null predecessor → all outputs Invalid
+    LogicSink sinkPartial(2);
+    LogicSource onlyInput;
+    sinkPartial.connectPredecessor(0, &onlyInput, 0);
+    // port 1 left null
+    onlyInput.setOutputValue(true);
+    sinkPartial.updateLogic();
+    QCOMPARE(sinkPartial.outputValue(0), Status::Invalid);
+    QCOMPARE(sinkPartial.outputValue(1), Status::Invalid);
 }
 
 void TestLogicElements::testLogicMux_data()
@@ -161,7 +234,7 @@ void TestLogicElements::testLogicMux()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 void TestLogicElements::testLogicDemux_data()
@@ -193,8 +266,8 @@ void TestLogicElements::testLogicDemux()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(0), out0);
-    QCOMPARE(elm.outputValue(1), out1);
+    QCOMPARE(elm.outputValue(0) == Status::Active, out0);
+    QCOMPARE(elm.outputValue(1) == Status::Active, out1);
 }
 
 void TestLogicElements::testLogicDFlipFlop_data()
@@ -249,8 +322,8 @@ void TestLogicElements::testLogicDFlipFlop()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(0), expectedQ);
-    QCOMPARE(elm.outputValue(1), expectedNotQ);
+    QCOMPARE(elm.outputValue(0) == Status::Active, expectedQ);
+    QCOMPARE(elm.outputValue(1) == Status::Active, expectedNotQ);
 }
 
 void TestLogicElements::testLogicDLatch_data()
@@ -287,8 +360,8 @@ void TestLogicElements::testLogicDLatch()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(0), expectedQ);
-    QCOMPARE(elm.outputValue(1), !expectedQ);
+    QCOMPARE(elm.outputValue(0) == Status::Active, expectedQ);
+    QCOMPARE(elm.outputValue(1) == Status::Active, !expectedQ);
 }
 
 void TestLogicElements::testLogicJKFlipFlop_data()
@@ -358,8 +431,8 @@ void TestLogicElements::testLogicJKFlipFlop()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(0), expectedQ);
-    QCOMPARE(elm.outputValue(1), expectedNotQ);
+    QCOMPARE(elm.outputValue(0) == Status::Active, expectedQ);
+    QCOMPARE(elm.outputValue(1) == Status::Active, expectedNotQ);
 }
 
 void TestLogicElements::testLogicSRFlipFlop_data()
@@ -446,8 +519,8 @@ void TestLogicElements::testLogicSRFlipFlop()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(0), expectedQ);
-    QCOMPARE(elm.outputValue(1), expectedNotQ);
+    QCOMPARE(elm.outputValue(0) == Status::Active, expectedQ);
+    QCOMPARE(elm.outputValue(1) == Status::Active, expectedNotQ);
 }
 
 void TestLogicElements::testLogicTFlipFlop_data()
@@ -513,8 +586,8 @@ void TestLogicElements::testLogicTFlipFlop()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(0), expectedQ);
-    QCOMPARE(elm.outputValue(1), expectedNotQ);
+    QCOMPARE(elm.outputValue(0) == Status::Active, expectedQ);
+    QCOMPARE(elm.outputValue(1) == Status::Active, expectedNotQ);
 }
 
 void TestLogicElements::testLogicXnor_data()
@@ -544,7 +617,7 @@ void TestLogicElements::testLogicXnor()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 void TestLogicElements::testLogicNot_data()
@@ -568,7 +641,7 @@ void TestLogicElements::testLogicNot()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 // Comprehensive circuit-context test: NOT gate alone in an isolated circuit
@@ -592,7 +665,7 @@ void TestLogicElements::testNotGateViaBuilder()
     m_inputs.at(0)->setOutputValue(input);
     notGate.updateLogic();
 
-    QCOMPARE(notGate.outputValue(), expected);
+    QCOMPARE(notGate.outputValue() == Status::Active, expected);
 }
 
 // Comprehensive circuit-context test: NOT gate connected to AND gate (like in decoder)
@@ -638,10 +711,10 @@ void TestLogicElements::testNotGateInAnd()
     m_inputs.at(1)->setOutputValue(input1);
 
     invGate.updateLogic();
-    QCOMPARE(invGate.outputValue(), !input1);
+    QCOMPARE(invGate.outputValue() == Status::Active, !input1);
 
     andGate.updateLogic();
-    QCOMPARE(andGate.outputValue(), expectedAndOutput);
+    QCOMPARE(andGate.outputValue() == Status::Active, expectedAndOutput);
 }
 
 void TestLogicElements::testLogicNand_data()
@@ -671,7 +744,7 @@ void TestLogicElements::testLogicNand()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 void TestLogicElements::testLogicNor_data()
@@ -701,7 +774,7 @@ void TestLogicElements::testLogicNor()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 void TestLogicElements::testLogicXor_data()
@@ -731,7 +804,7 @@ void TestLogicElements::testLogicXor()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 void TestLogicElements::testLogicSRLatch_data()
@@ -766,8 +839,8 @@ void TestLogicElements::testLogicSRLatch()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(0), expectedQ);
-    QCOMPARE(elm.outputValue(1), !expectedQ);
+    QCOMPARE(elm.outputValue(0) == Status::Active, expectedQ);
+    QCOMPARE(elm.outputValue(1) == Status::Active, !expectedQ);
 }
 
 void TestLogicElements::testLogic3InputAnd_data()
@@ -806,7 +879,7 @@ void TestLogicElements::testLogic3InputAnd()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 void TestLogicElements::testLogic3InputOr_data()
@@ -845,7 +918,7 @@ void TestLogicElements::testLogic3InputOr()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 void TestLogicElements::testLogic4InputAnd_data()
@@ -896,7 +969,7 @@ void TestLogicElements::testLogic4InputAnd()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 void TestLogicElements::testLogic4InputOr_data()
@@ -947,7 +1020,7 @@ void TestLogicElements::testLogic4InputOr()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 void TestLogicElements::testLogic3InputXor_data()
@@ -989,7 +1062,7 @@ void TestLogicElements::testLogic3InputXor()
     xor1.updateLogic();
     xor2.updateLogic();
 
-    QCOMPARE(xor2.outputValue(), expected);
+    QCOMPARE(xor2.outputValue() == Status::Active, expected);
 }
 
 void TestLogicElements::testLogic3InputXnor_data()
@@ -1032,7 +1105,7 @@ void TestLogicElements::testLogic3InputXnor()
     xnor1.updateLogic();
     xnor2.updateLogic();
 
-    QCOMPARE(xnor2.outputValue(), expected);
+    QCOMPARE(xnor2.outputValue() == Status::Active, expected);
 }
 
 /**
@@ -1066,7 +1139,7 @@ void TestLogicElements::testLogic5InputAnd()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 /**
@@ -1099,7 +1172,7 @@ void TestLogicElements::testLogic5InputOr()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 /**
@@ -1132,7 +1205,7 @@ void TestLogicElements::testLogic5InputNand()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 /**
@@ -1165,7 +1238,7 @@ void TestLogicElements::testLogic5InputNor()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 /**
@@ -1205,7 +1278,7 @@ void TestLogicElements::testLogic8InputAnd()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 /**
@@ -1245,7 +1318,7 @@ void TestLogicElements::testLogic8InputOr()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 /**
@@ -1284,7 +1357,7 @@ void TestLogicElements::testLogic8InputNand()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 /**
@@ -1324,12 +1397,12 @@ void TestLogicElements::testLogic8InputNor()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }
 
 /**
  * Test: Fan-out - one output driving multiple inputs
- * Verifies that a single LogicInput can successfully drive multiple gate inputs
+ * Verifies that a single LogicSource can successfully drive multiple gate inputs
  */
 void TestLogicElements::testFanOut_data()
 {
@@ -1352,8 +1425,8 @@ void TestLogicElements::testFanOut()
     QFETCH(bool, expectedOr);
     QFETCH(bool, expectedXor);
 
-    // Single LogicInput drives 3 different gates (fan-out test)
-    LogicInput source;
+    // Single LogicSource drives 3 different gates (fan-out test)
+    LogicSource source;
     LogicAnd andGate(2);
     LogicOr orGate(2);
     LogicXor xorGate(2);
@@ -1377,9 +1450,9 @@ void TestLogicElements::testFanOut()
     xorGate.updateLogic();
 
     // Verify all gates receive the same signal correctly
-    QCOMPARE(andGate.outputValue(), expectedAnd);
-    QCOMPARE(orGate.outputValue(), expectedOr);
-    QCOMPARE(xorGate.outputValue(), expectedXor);
+    QCOMPARE(andGate.outputValue() == Status::Active, expectedAnd);
+    QCOMPARE(orGate.outputValue() == Status::Active, expectedOr);
+    QCOMPARE(xorGate.outputValue() == Status::Active, expectedXor);
 }
 
 /**
@@ -1416,5 +1489,5 @@ void TestLogicElements::testLogic6InputAnd()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue(), expected);
+    QCOMPARE(elm.outputValue() == Status::Active, expected);
 }

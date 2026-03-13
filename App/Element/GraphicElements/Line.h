@@ -13,7 +13,7 @@
  * \class Line
  * \brief Decorative line element used for annotating circuit diagrams.
  *
- * \details Has no ports and no simulation logic (LogicNone).
+ * \details Has no ports and is excluded from simulation.
  */
 class Line : public GraphicElement
 {

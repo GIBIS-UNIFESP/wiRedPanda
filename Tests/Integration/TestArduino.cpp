@@ -2091,9 +2091,7 @@ QVector<ArduinoCodeGen::TestVector> TestArduino::generateTruthTable(
     mapping.sort();
 
     // Skip circuits with feedback loops — single-pass propagation is not valid for them
-    const bool hasFeedback = std::any_of(mapping.logicElms().begin(), mapping.logicElms().end(),
-                                         [](const auto &logic) { return logic && logic->inFeedbackLoop(); });
-    if (hasFeedback) {
+    if (mapping.hasFeedbackElements()) {
         return {};
     }
 
@@ -2124,7 +2122,7 @@ QVector<ArduinoCodeGen::TestVector> TestArduino::generateTruthTable(
         entry.outputs.resize(outputs.size());
         for (int k = 0; k < outputs.size(); ++k) {
             if (outputs[k].elm->logic()) {
-                entry.outputs[k] = outputs[k].elm->logic()->outputValue(outputs[k].portIndex);
+                entry.outputs[k] = outputs[k].elm->logic()->outputValue(outputs[k].portIndex) == Status::Active;
             }
         }
         table.append(entry);
