@@ -13,7 +13,6 @@
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/InputGND.h"
 #include "App/Element/GraphicElements/InputVCC.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Workspace.h"
@@ -197,9 +196,7 @@ void TestBuzzer::testLoadVersionOld()
     // Load an actual old format file (v4.0.0-rc2 uses version < 4.1 format)
     QString filePath = TestUtils::backwardCompatibilityDir() + "v4.0.0-rc2/notes.panda";
 
-    // Set working directory for relative file references within the panda file
     QFileInfo fileInfo(filePath);
-    GlobalProperties::currentDir = fileInfo.absolutePath();
 
     QFile pandaFile(filePath);
     QVERIFY2(pandaFile.open(QIODevice::ReadOnly),
@@ -211,7 +208,7 @@ void TestBuzzer::testLoadVersionOld()
 
     try {
         QVersionNumber version = Serialization::readPandaHeader(stream);
-        workspace.load(stream, version);
+        workspace.load(stream, version, fileInfo.absolutePath());
 
         // Verify that buzzers loaded successfully from old format
         const auto elements = workspace.scene()->elements();
@@ -252,8 +249,9 @@ void TestBuzzer::testLoadVersionNew()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
+    SerializationContext context{portMap, AppVersion::current, {}};
 
-    buzzer2->load(loadStream, portMap, AppVersion::current);
+    buzzer2->load(loadStream, context);
 
     // Audio note should be loaded
     QCOMPARE(buzzer2->audio(), QString("E6"));

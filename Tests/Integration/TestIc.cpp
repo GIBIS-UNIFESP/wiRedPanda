@@ -16,7 +16,6 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Element/LogicElements/LogicElement.h"
-#include "App/GlobalProperties.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/ElementMapping.h"
 #include "Tests/Common/TestUtils.h"
@@ -24,9 +23,6 @@
 void TestIC::initTestCase()
 {
     // Initialize test environment
-    // Set up the examples directory for IC file resolution
-    const QString examplesDir = TestUtils::examplesDir();
-    GlobalProperties::currentDir = examplesDir;
 }
 
 // Port Mapping Tests
@@ -234,10 +230,6 @@ void TestIC::testICSaveLoad()
 
     // Step 3: Load workspace from saved file
     WorkSpace workspace2;
-
-    // Set current directory so IC can find its referenced file (jkflipflop.panda)
-    const QString examplesDir = TestUtils::examplesDir();
-    GlobalProperties::currentDir = examplesDir;
 
     try {
         workspace2.load(tempPath);
@@ -605,7 +597,6 @@ void TestIC::testICFileDependencyResolution()
 
     // Use examples directory to ensure IC file can find dependencies
     const QString examplesDir = TestUtils::examplesDir();
-    GlobalProperties::currentDir = examplesDir;
 
     auto *ic = new IC();
     scene->addItem(ic);
@@ -613,7 +604,7 @@ void TestIC::testICFileDependencyResolution()
     const QString icFile = examplesDir + "/jkflipflop.panda";
 
     try {
-        ic->loadFile(icFile);
+        ic->loadFile(icFile, examplesDir);
 
         // Verify IC loaded successfully
         QVERIFY2(ic->inputSize() > 0 || ic->outputSize() > 0,

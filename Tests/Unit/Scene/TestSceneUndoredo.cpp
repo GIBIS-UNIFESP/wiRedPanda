@@ -9,7 +9,6 @@
 #include <QUndoCommand>
 
 #include "App/Element/ElementFactory.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Commands.h"
@@ -19,7 +18,6 @@
 void TestSceneUndoredo::initTestCase()
 {
     QVERIFY(m_tempDir.isValid());
-    GlobalProperties::currentDir = m_tempDir.path();
 }
 
 void TestSceneUndoredo::testReceiveCommand()

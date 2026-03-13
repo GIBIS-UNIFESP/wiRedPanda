@@ -17,7 +17,6 @@
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/Xor.h"
 #include "App/Element/IC.h"
-#include "App/GlobalProperties.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -72,10 +71,8 @@ inline std::unique_ptr<WorkSpace> buildProgramCounter8bit(InputSwitch* loadValue
     QString absoluteIcPath = icFileInfo.absoluteFilePath();
     QString icComponentsDir = icFileInfo.absolutePath();
 
-    // Set GlobalProperties::currentDir to IC components directory for nested IC resolution
-    GlobalProperties::currentDir = icComponentsDir;
     try {
-        pcIC->loadFile(absoluteIcPath);
+        pcIC->loadFile(absoluteIcPath, icComponentsDir);
     } catch (const Pandaception &e) {
         throw std::runtime_error(QString("Failed to load ProgramCounter8bit IC: %1").arg(e.what()).toStdString());
     }
@@ -196,13 +193,11 @@ inline std::unique_ptr<WorkSpace> buildInstructionDecoder4to16(InputSwitch* opco
         throw std::runtime_error(QString("Decoder4to16 IC not found at: %1").arg(icFilePath).toStdString());
     }
 
-    // Set GlobalProperties::currentDir for nested IC resolution
     QString absoluteIcPath = fileInfo.absoluteFilePath();
     QString icComponentsDir = fileInfo.absolutePath();
 
-    GlobalProperties::currentDir = icComponentsDir;
     try {
-        decoder->loadFile(absoluteIcPath);
+        decoder->loadFile(absoluteIcPath, icComponentsDir);
     } catch (const Pandaception &e) {
         throw std::runtime_error(QString("Failed to load Decoder4to16 IC: %1").arg(e.what()).toStdString());
     }
@@ -413,14 +408,12 @@ inline std::unique_ptr<WorkSpace> buildALU8bit(InputSwitch* a[8],
             throw std::runtime_error(QString("ALUSelector5way IC file not found at: %1").arg(icFilePath).toStdString());
         }
 
-        // Set GlobalProperties::currentDir for nested IC resolution
+        // Load IC definition from file
         QString absoluteIcPath = fileInfo.absoluteFilePath();
         QString icComponentsDir = fileInfo.absolutePath();
 
-        GlobalProperties::currentDir = icComponentsDir;
-        // Load IC definition from file
         try {
-            selector->loadFile(absoluteIcPath);
+            selector->loadFile(absoluteIcPath, icComponentsDir);
         } catch (const Pandaception &e) {
             throw std::runtime_error(QString("Failed to load ALUSelector5way IC for bit %1: %2")
                                     .arg(i)
@@ -778,14 +771,12 @@ inline std::unique_ptr<WorkSpace> buildDecoder3to8Debug(InputSwitch* addr[3],
         throw std::runtime_error(QString("Decoder3to8 IC file not found at: %1").arg(icFilePath).toStdString());
     }
 
-    // Set GlobalProperties::currentDir for nested IC resolution
+    // Load IC definition from file
     QString absoluteIcPath = fileInfo.absoluteFilePath();
     QString icComponentsDir = fileInfo.absolutePath();
 
-    GlobalProperties::currentDir = icComponentsDir;
-    // Load IC definition from file
     try {
-        decoder->loadFile(absoluteIcPath);
+        decoder->loadFile(absoluteIcPath, icComponentsDir);
     } catch (const Pandaception &e) {
         throw std::runtime_error(QString("Failed to load decoder IC: %1").arg(e.what()).toStdString());
     }
@@ -947,13 +938,11 @@ inline std::unique_ptr<WorkSpace> buildRegisterBank8x8(InputSwitch* writeAddr[3]
         throw std::runtime_error(QString("ClockGatedDecoder IC file not found at: %1").arg(decoderPath).toStdString());
     }
 
-    // Set GlobalProperties::currentDir for nested IC resolution
     QString absoluteDecoderPath = decoderInfo.absoluteFilePath();
     QString decoderComponentsDir = decoderInfo.absolutePath();
 
-    GlobalProperties::currentDir = decoderComponentsDir;
     try {
-        clockGatedDecoder->loadFile(absoluteDecoderPath);
+        clockGatedDecoder->loadFile(absoluteDecoderPath, decoderComponentsDir);
     } catch (const Pandaception &e) {
         throw std::runtime_error(QString("Failed to load ClockGatedDecoder IC: %1").arg(e.what()).toStdString());
     }
@@ -985,9 +974,8 @@ inline std::unique_ptr<WorkSpace> buildRegisterBank8x8(InputSwitch* writeAddr[3]
         QString absoluteRegPath = regInfo.absoluteFilePath();
         QString regComponentsDir = regInfo.absolutePath();
 
-        GlobalProperties::currentDir = regComponentsDir;
         try {
-            registerIC->loadFile(absoluteRegPath);
+            registerIC->loadFile(absoluteRegPath, regComponentsDir);
         } catch (const Pandaception &e) {
             throw std::runtime_error(QString("Failed to load Register8bit IC for register %1: %2")
                                     .arg(r)
@@ -1168,13 +1156,12 @@ inline std::unique_ptr<WorkSpace> buildMemoryInterface(InputSwitch* address[8],
             throw std::runtime_error(QString("Multiplexer8to1 IC not found: %1").arg(context).toStdString());
         }
 
-        // Set GlobalProperties::currentDir for nested IC resolution
+        // Load IC definition from file
         QString absoluteMuxPath = muxFileInfo.absoluteFilePath();
         QString muxComponentsDir = muxFileInfo.absolutePath();
 
-        GlobalProperties::currentDir = muxComponentsDir;
         try {
-            mux->loadFile(absoluteMuxPath);
+            mux->loadFile(absoluteMuxPath, muxComponentsDir);
         } catch (const Pandaception &e) {
             throw std::runtime_error(QString("Failed to load Multiplexer8to1 IC (%1): %2")
                                     .arg(context).arg(e.what()).toStdString());

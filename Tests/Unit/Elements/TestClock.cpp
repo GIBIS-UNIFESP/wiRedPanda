@@ -367,7 +367,8 @@ void TestClock::testLoadVersionOld()
     QMap<quint64, QNEPort *> portMap;
 
     // This doesn't crash despite format mismatch (graceful degradation)
-    clock2->load(loadStream, portMap, QVersionNumber(3, 0));
+    SerializationContext contextOld{portMap, QVersionNumber(3, 0), {}};
+    clock2->load(loadStream, contextOld);
 
     // Due to format mismatch, frequency remains at default (setFrequency never called with valid value)
     QCOMPARE(clock2->frequency(), 1.0f);
@@ -389,8 +390,9 @@ void TestClock::testLoadVersionNew()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
+    SerializationContext contextNew{portMap, QVersionNumber(4, 1), {}};
 
-    clock2->load(loadStream, portMap, QVersionNumber(4, 1));
+    clock2->load(loadStream, contextNew);
 
     // Frequency should be loaded correctly
     QCOMPARE(clock2->frequency(), 10.0f);
@@ -413,8 +415,9 @@ void TestClock::testLoadVersionVeryOld()
 
     QDataStream readStream(data);
     QMap<quint64, QNEPort *> portMap;
+    SerializationContext contextVeryOld{portMap, QVersionNumber(1, 0), {}};
 
-    clock->load(readStream, portMap, QVersionNumber(1, 0));
+    clock->load(readStream, contextVeryOld);
 
     // Should not crash, frequency/delay remain at defaults
     QCOMPARE(clock->frequency(), 1.0f);  // Default

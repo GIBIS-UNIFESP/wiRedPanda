@@ -11,7 +11,6 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
-#include "App/GlobalProperties.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
@@ -70,13 +69,11 @@ void TestComponents::testIC()
     QVERIFY2(QFile::exists(icFile),
              qPrintable(QString("Test IC file not found: %1").arg(icFile)));
 
-    GlobalProperties::currentDir = examplesPath;
-
     auto *ic = new IC();
 
     // Load file with error handling
     try {
-        ic->loadFile(icFile);
+        ic->loadFile(icFile, examplesPath);
     } catch (const std::exception &e) {
         QFAIL(qPrintable(QString("Failed to load IC file: %1").arg(e.what())));
     }
@@ -175,12 +172,11 @@ void TestComponents::testICs()
 
     int loadedCount = 0;
     for (const auto &fileInfo : files) {
-        GlobalProperties::currentDir = fileInfo.absolutePath();
         IC ic;
 
         // Load file with error handling
         try {
-            ic.loadFile(fileInfo.absoluteFilePath());
+            ic.loadFile(fileInfo.absoluteFilePath(), fileInfo.absolutePath());
             loadedCount++;
         } catch (const std::exception &e) {
             QFAIL(qPrintable(QString("Failed to load IC file %1: %2")

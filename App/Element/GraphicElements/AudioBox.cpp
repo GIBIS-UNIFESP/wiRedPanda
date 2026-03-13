@@ -204,22 +204,22 @@ void AudioBox::save(QDataStream &stream) const
     stream << map;
 }
 
-void AudioBox::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
+void AudioBox::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, portMap, version);
+    GraphicElement::load(stream, context);
 
-    if (version < Versions::V_2_4) {
+    if (context.version < Versions::V_2_4) {
         // Audio was added in v2.4; nothing to read for earlier files
         return;
     }
 
-    if (version < Versions::V_4_1) {
+    if (context.version < Versions::V_4_1) {
         // v2.4–4.0 stored the path as a bare QString
         QString audio; stream >> audio;
         setAudio(audio);
     }
 
-    if (version >= Versions::V_4_1) {
+    if (context.version >= Versions::V_4_1) {
         // v4.1+ uses a key-value map for forward-compatible extensibility
         QMap<QString, QVariant> map; stream >> map;
 

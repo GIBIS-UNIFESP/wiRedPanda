@@ -121,7 +121,7 @@ void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &
     }
 }
 
-QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quint64, QNEPort *> portMap, const QVersionNumber version)
+QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, SerializationContext &context)
 {
     // portMap maps the raw pointer value (quint64) that was stored at save time to
     // the newly allocated QNEPort object at load time.  Raw pointer values are used
@@ -156,7 +156,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
 
             auto *elm = ElementFactory::buildElement(elmType);
             itemList.append(elm);
-            elm->load(stream, portMap, version);
+            elm->load(stream, context);
 
             // Check stream integrity after element load
             if (stream.status() != QDataStream::Ok) {
@@ -172,7 +172,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, QMap<quin
             auto *conn = new QNEConnection();
 
             qCDebug(three) << "Loading connection.";
-            conn->load(stream, portMap);
+            conn->load(stream, context);
 
             // Check stream integrity after connection load
             if (stream.status() != QDataStream::Ok) {

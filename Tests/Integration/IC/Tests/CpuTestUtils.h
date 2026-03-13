@@ -11,7 +11,6 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/GlobalProperties.h"
 #include "Tests/Common/TestUtils.h"
 
 /**
@@ -83,10 +82,8 @@ inline IC* loadBuildingBlockIC(const QString &filename) {
     QString absoluteIcPath = TestUtils::cpuComponentsDir() + filename;
     QString icDirectory = QFileInfo(absoluteIcPath).absolutePath();
 
-    // Set working directory to the IC's own directory for nested IC resolution
-    GlobalProperties::currentDir = icDirectory;
     try {
-        ic->loadFile(absoluteIcPath);
+        ic->loadFile(absoluteIcPath, icDirectory);
     } catch (const Pandaception &e) {
         throw std::runtime_error(
             QString("Failed to load IC %1: %2").arg(filename, e.what()).toStdString()

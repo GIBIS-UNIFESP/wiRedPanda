@@ -6,7 +6,6 @@
 #include <QTemporaryDir>
 
 #include "App/Element/ElementFactory.h"
-#include "App/GlobalProperties.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Scene.h"
 #include "Tests/Common/TestUtils.h"
@@ -15,7 +14,6 @@ void TestSceneConnections::initTestCase()
 {
     // Initialize test environment
     QVERIFY(m_tempDir.isValid());
-    GlobalProperties::currentDir = m_tempDir.path();
 }
 
 void TestSceneConnections::init()
