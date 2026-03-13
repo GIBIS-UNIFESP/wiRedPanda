@@ -8,7 +8,6 @@
 #include <QFile>
 #include <QFileInfo>
 
-#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 
 StandardValidator StandardValidator::s_instance;
@@ -128,12 +127,6 @@ bool StandardValidator::validateElementId(int elementId,
 {
     if (elementId <= 0) {
         errorMessage = QString("Parameter '%1' must be a positive integer (got %2)").arg(paramName).arg(elementId);
-        return false;
-    }
-
-    auto *item = ElementFactory::itemById(elementId);
-    if (!item) {
-        errorMessage = QString("Element not found: %1").arg(elementId);
         return false;
     }
 

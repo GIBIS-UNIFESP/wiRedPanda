@@ -12,6 +12,7 @@
 #include <QMenu>
 
 #include "App/Core/Common.h"
+#include "App/Core/ItemWithId.h"
 #include "App/Core/Priorities.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
@@ -51,6 +52,84 @@ Scene::Scene(QObject *parent)
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &Scene::updateTheme);
     // Emit autosave signal only after each undo-stack index change (not on every internal state update)
     connect(&m_undoStack,              &QUndoStack::indexChanged,   this, &Scene::checkUpdateRequest);
+}
+
+void Scene::addItem(QGraphicsItem *item)
+{
+    if (!item) {
+        return;
+    }
+    QGraphicsScene::addItem(item);
+    if (auto *iwid = dynamic_cast<ItemWithId *>(item)) {
+        if (iwid->id() < 0) {
+            // Unassigned item: give it the next scene-local ID
+            iwid->setId(nextId());
+        } else {
+            // Pre-assigned item (restored by updateItemId for undo/redo): preserve it
+            setLastId(iwid->id());
+        }
+        registerItem(iwid);
+    }
+}
+
+void Scene::removeItem(QGraphicsItem *item)
+{
+    if (!item) {
+        return;
+    }
+    if (auto *iwid = dynamic_cast<ItemWithId *>(item)) {
+        unregisterItem(iwid);
+    }
+    QGraphicsScene::removeItem(item);
+}
+
+ItemWithId *Scene::itemById(const int id) const
+{
+    return m_elementRegistry.value(id, nullptr);
+}
+
+bool Scene::contains(const int id) const
+{
+    return m_elementRegistry.contains(id);
+}
+
+int Scene::lastId() const
+{
+    return m_lastId;
+}
+
+void Scene::setLastId(const int newLastId)
+{
+    m_lastId = qMax(m_lastId, newLastId);
+}
+
+int Scene::nextId()
+{
+    return ++m_lastId;
+}
+
+void Scene::updateItemId(ItemWithId *item, const int newId)
+{
+    // Called before addItem() to pre-assign a specific ID (undo/redo restore path).
+    // The item is not yet in the registry; addItem() will preserve this positive ID.
+    item->setId(newId);
+    setLastId(newId);
+}
+
+void Scene::registerItem(ItemWithId *item)
+{
+    if (!item) {
+        return;
+    }
+    m_elementRegistry[item->id()] = item;
+}
+
+void Scene::unregisterItem(ItemWithId *item)
+{
+    if (!item) {
+        return;
+    }
+    m_elementRegistry.remove(item->id());
 }
 
 void Scene::checkUpdateRequest()
@@ -260,7 +339,7 @@ void Scene::resizeScene()
 
 QNEConnection *Scene::editedConnection() const
 {
-    return dynamic_cast<QNEConnection *>(ElementFactory::itemById(m_editedConnectionId));
+    return dynamic_cast<QNEConnection *>(itemById(m_editedConnectionId));
 }
 
 void Scene::deleteEditedConnection()
@@ -779,7 +858,7 @@ void Scene::setHoverPort(QNEPort *port)
 
     // Store element ID + port index rather than raw pointers so the hover state
     // remains valid across undo/redo operations that may recreate the element
-    if (hoverElm && ElementFactory::contains(hoverElm->id())) {
+    if (hoverElm && this->contains(hoverElm->id())) {
         m_hoverPortElmId = hoverElm->id();
 
         // Encode inputs first (indices 0..inputSize-1), then outputs (inputSize..total-1)
@@ -800,7 +879,7 @@ QNEPort *Scene::hoverPort()
 {
     QNEPort *hoverPort = nullptr;
 
-    if (auto *hoverElm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(m_hoverPortElmId))) {
+    if (auto *hoverElm = dynamic_cast<GraphicElement *>(itemById(m_hoverPortElmId))) {
         if (m_hoverPortNumber < hoverElm->inputSize()) {
             hoverPort = hoverElm->inputPort(m_hoverPortNumber);
         } else if (((m_hoverPortNumber - hoverElm->inputSize()) < hoverElm->outputSize())) {

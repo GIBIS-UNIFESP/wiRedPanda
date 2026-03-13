@@ -347,9 +347,9 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
             // New format: direct serial ID
             serialId = input.value("serialId").toULongLong();
         } else {
-            // Old format: calculate serial ID deterministically
-            // Use same algorithm as save: (elementId << 16) | portIndex
-            serialId = (id() << 16) | (port & 0xFFFF);
+            // Old format fallback: use context.nextLocalId as element basis so that
+            // serialIds remain unique even when element IDs are -1 (unassigned).
+            serialId = (static_cast<quint64>(context.nextLocalId) << 16) | (port & 0xFFFF);
         }
 
         if (port < m_inputPorts.size()) {
@@ -401,9 +401,9 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
             // New format: direct serial ID
             serialId = output.value("serialId").toULongLong();
         } else {
-            // Old format: calculate serial ID deterministically
-            // Use same algorithm as save: (elementId << 16) | (inputCount + portIndex)
-            serialId = (id() << 16) | ((m_inputPorts.size() + port) & 0xFFFF);
+            // Old format fallback: use context.nextLocalId as element basis so that
+            // serialIds remain unique even when element IDs are -1 (unassigned).
+            serialId = (static_cast<quint64>(context.nextLocalId) << 16) | ((m_inputPorts.size() + port) & 0xFFFF);
         }
 
         if (port < m_outputPorts.size()) {
@@ -464,6 +464,10 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
         );
 
     refresh();
+
+    // Advance the per-element counter so that the next element's fallback serialIds
+    // use a different base (only relevant for V4.1.9–V4.3 files lacking serialId keys).
+    ++context.nextLocalId;
 }
 
 void GraphicElement::loadPos(QDataStream &stream)

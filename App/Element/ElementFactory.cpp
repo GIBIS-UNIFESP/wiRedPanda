@@ -78,41 +78,6 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
     return it.value()();
 }
 
-ItemWithId *ElementFactory::itemById(const int id)
-{
-    return instance().m_map.contains(id) ? instance().m_map.value(id) : nullptr;
-}
-
-bool ElementFactory::contains(const int id)
-{
-    return instance().m_map.contains(id);
-}
-
-void ElementFactory::addItem(ItemWithId *item)
-{
-    if (item) {
-        // Assign the next monotonically increasing ID; IDs are never reused, so
-        // a stale reference to an old ID will simply not find anything in the map.
-        item->setId(instance().nextId());
-        instance().m_map[item->id()] = item;
-    }
-}
-
-void ElementFactory::removeItem(ItemWithId *item)
-{
-    instance().m_map.remove(item->id());
-}
-
-void ElementFactory::updateItemId(ItemWithId *item, const int newId)
-{
-    // Used by MorphCommand to preserve the logical identity of an element across
-    // a type change: the old pointer is gone but the ID stays the same so that
-    // undo/redo can locate the replacement element by ID.
-    instance().m_map.remove(item->id());
-    instance().m_map[newId] = item;
-    item->setId(newId);
-}
-
 void ElementFactory::registerCreator(ElementType type, std::function<GraphicElement *()> creator)
 {
     instance().m_creatorMap[type] = std::move(creator);
@@ -121,14 +86,4 @@ void ElementFactory::registerCreator(ElementType type, std::function<GraphicElem
 bool ElementFactory::hasCreator(ElementType type)
 {
     return instance().m_creatorMap.contains(type);
-}
-
-int ElementFactory::nextId()
-{
-    return ++m_lastId;
-}
-
-void ElementFactory::setLastId(const int newLastId)
-{
-    instance().m_lastId = newLastId;
 }
