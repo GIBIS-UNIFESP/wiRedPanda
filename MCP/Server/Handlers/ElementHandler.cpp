@@ -143,7 +143,7 @@ QJsonObject ElementHandler::handleDeleteElement(const QJsonObject &params, const
         return createErrorResponse(errorMsg, requestId);
     }
 
-    auto *item = ElementFactory::itemById(elementId);
+    auto *item = getCurrentScene()->itemById(elementId);
 
     auto *element = dynamic_cast<GraphicElement *>(item);
     if (!element) {
@@ -224,7 +224,7 @@ QJsonObject ElementHandler::handleMoveElement(const QJsonObject &params, const Q
         return createErrorResponse(errorMsg, requestId);
     }
 
-    auto *item = ElementFactory::itemById(elementId);
+    auto *item = getCurrentScene()->itemById(elementId);
 
     auto *element = dynamic_cast<GraphicElement *>(item);
     if (!element) {
@@ -269,7 +269,7 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
 
     int elementId = params.value("element_id").toInt();
 
-    auto *item = ElementFactory::itemById(elementId);
+    auto *item = getCurrentScene()->itemById(elementId);
     if (!item) {
         return createErrorResponse(QString("Element not found: %1").arg(elementId), requestId);
     }
@@ -388,7 +388,7 @@ QJsonObject ElementHandler::handleSetInputValue(const QJsonObject &params, const
         return createErrorResponse(errorMsg, requestId);
     }
 
-    auto *item = ElementFactory::itemById(elementId);
+    auto *item = getCurrentScene()->itemById(elementId);
 
     auto *element = dynamic_cast<GraphicElement *>(item);
     if (!element) {
@@ -429,7 +429,7 @@ QJsonObject ElementHandler::handleGetOutputValue(const QJsonObject &params, cons
         return createErrorResponse(errorMsg, requestId);
     }
 
-    auto *item = ElementFactory::itemById(elementId);
+    auto *item = getCurrentScene()->itemById(elementId);
 
     auto *element = dynamic_cast<GraphicElement *>(item);
     if (!element) {
@@ -488,7 +488,7 @@ QJsonObject ElementHandler::handleRotateElement(const QJsonObject &params, const
         return createErrorResponse(errorMsg, requestId);
     }
 
-    auto *item = ElementFactory::itemById(elementId);
+    auto *item = getCurrentScene()->itemById(elementId);
     auto *element = dynamic_cast<GraphicElement *>(item);
     if (!element) {
         return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);
@@ -547,7 +547,7 @@ QJsonObject ElementHandler::handleFlipElement(const QJsonObject &params, const Q
         return createErrorResponse(errorMsg, requestId);
     }
 
-    auto *item = ElementFactory::itemById(elementId);
+    auto *item = getCurrentScene()->itemById(elementId);
     auto *element = dynamic_cast<GraphicElement *>(item);
     if (!element) {
         return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);
@@ -620,7 +620,7 @@ QJsonObject ElementHandler::handleChangeInputSize(const QJsonObject &params, con
         return createErrorResponse(errorMsg, requestId);
     }
 
-    auto *item = ElementFactory::itemById(elementId);
+    auto *item = getCurrentScene()->itemById(elementId);
     auto *element = dynamic_cast<GraphicElement *>(item);
     if (!element) {
         return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);
@@ -668,7 +668,7 @@ QJsonObject ElementHandler::handleChangeOutputSize(const QJsonObject &params, co
         return createErrorResponse(errorMsg, requestId);
     }
 
-    auto *item = ElementFactory::itemById(elementId);
+    auto *item = getCurrentScene()->itemById(elementId);
     auto *element = dynamic_cast<GraphicElement *>(item);
     if (!element) {
         return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);
@@ -716,7 +716,7 @@ QJsonObject ElementHandler::handleToggleTruthTableOutput(const QJsonObject &para
         return createErrorResponse(errorMsg, requestId);
     }
 
-    auto *item = ElementFactory::itemById(elementId);
+    auto *item = getCurrentScene()->itemById(elementId);
     if (!item) {
         return createErrorResponse(QString("Item %1 not found").arg(elementId), requestId);
     }
@@ -793,7 +793,7 @@ QJsonObject ElementHandler::handleMorphElement(const QJsonObject &params, const 
             return createErrorResponse(errorMsg, requestId);
         }
 
-        auto *item = ElementFactory::itemById(elementId);
+        auto *item = getCurrentScene()->itemById(elementId);
         auto *element = dynamic_cast<GraphicElement *>(item);
         if (!element) {
             return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);

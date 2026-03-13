@@ -23,10 +23,12 @@ private slots:
     void testTextToType();
     void testTypeToTextBidirectional();
 
-    // Registry Management (3 tests)
+    // Registry Management (5 tests)
     void testItemRegistry();
     void testUniqueIdAssignment();
     void testMetadataRegistry();
+    void testCrossSceneIsolation();
+    void testSceneCounterIndependence();
 
     // Completeness Tests (1 test)
     void testAllElementTypesRegistered();

@@ -162,7 +162,7 @@ bool BaseHandler::validateElementId(int elementId, const QString &paramName, QSt
         return false;
     }
 
-    auto *item = ElementFactory::itemById(elementId);
+    auto *item = getCurrentScene()->itemById(elementId);
     if (!item) {
         errorMsg = QString("Element not found: %1").arg(elementId);
         return false;

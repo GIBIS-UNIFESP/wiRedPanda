@@ -3,16 +3,12 @@
 
 #include "App/Core/ItemWithId.h"
 
-#include "App/Element/ElementFactory.h"
-
 ItemWithId::ItemWithId()
 {
-    ElementFactory::addItem(this);
 }
 
 ItemWithId::~ItemWithId()
 {
-    ElementFactory::removeItem(this);
 }
 
 int ItemWithId::id() const

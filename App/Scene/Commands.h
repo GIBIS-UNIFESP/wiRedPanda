@@ -15,16 +15,16 @@
 class QNEConnection;
 
 namespace CommandUtils {
-    // Element/Connection lookup
-    GraphicElement *findElm(const int id);
-    QNEConnection *findConn(const int id);
-    const QList<GraphicElement *> findElements(const QList<int> &ids);
-    const QList<QGraphicsItem *> findItems(const QList<int> &ids);
+    // Element/Connection lookup (scene-scoped)
+    GraphicElement *findElm(Scene *scene, const int id);
+    QNEConnection *findConn(Scene *scene, const int id);
+    const QList<GraphicElement *> findElements(Scene *scene, const QList<int> &ids);
+    const QList<QGraphicsItem *> findItems(Scene *scene, const QList<int> &ids);
 
     // Serialization helpers
     const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const QList<int> &ids, QList<int> &otherIds);
     const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> &ids, QList<int> &otherIds);
-    void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const QList<int> &otherIds);
+    void saveItems(Scene *scene, QByteArray &itemData, const QList<QGraphicsItem *> &items, const QList<int> &otherIds);
 
     // Scene operations
     void addItems(Scene *scene, const QList<QGraphicsItem *> &items);

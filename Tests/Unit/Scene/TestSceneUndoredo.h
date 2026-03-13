@@ -83,6 +83,9 @@ private slots:
     // QUndoStack clean state (save-dirty tracking)
     void testUndoStackCleanState();
 
+    // Multi-workspace isolation (cross-tab regression tests)
+    void testCrossTabIdIsolation();
+
 private:
     QTemporaryDir m_tempDir;
 };

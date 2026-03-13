@@ -8,26 +8,21 @@
 #pragma once
 
 #include <functional>
-#include <memory>
 
-#include <QGraphicsItem>
 #include <QMap>
 
 #include "App/Core/Enums.h"
 
 class GraphicElement;
-class ItemWithId;
-class LogicElement;
-class QNEConnection;
 
 /**
  * \class ElementFactory
- * \brief Factory and registry for circuit elements.
+ * \brief Factory for circuit elements.
  *
- * The ElementFactory class is a singleton that handles the creation and
- * tracking of all circuit elements. It provides methods to build graphic
- * elements, maintains a registry of all elements by ID, and
- * provides access to element properties.
+ * The ElementFactory class is a singleton that handles the creation of
+ * circuit elements and provides type conversion utilities. ID management
+ * has been moved to Scene, which assigns IDs when items are added via
+ * Scene::addItem().
  */
 class ElementFactory : public QObject
 {
@@ -46,28 +41,8 @@ public:
     /// Constructs and returns a new graphic element of the given \a type.
     static GraphicElement *buildElement(const ElementType type);
 
-    // --- Item registry ---
-
-    /// Returns the item with the given \a id, or \c nullptr if not found.
-    static ItemWithId *itemById(const int id);
-
-    /// Returns \c true if an item with \a id is registered.
-    static bool contains(const int id);
-
     /// Returns \c true if a creator function is registered for \a type.
     static bool hasCreator(ElementType type);
-
-    /// Registers \a item in the scene's ID map.
-    static void addItem(ItemWithId *item);
-
-    /// Removes \a item from the ID→item map.
-    static void removeItem(ItemWithId *item);
-
-    /// Sets the counter used to issue new IDs.
-    static void setLastId(const int newLastId);
-
-    /// Changes the registry entry for \a item to \a newId.
-    static void updateItemId(ItemWithId *item, const int newId);
 
     /// Registers a creator lambda for \a type, used by buildElement().
     static void registerCreator(ElementType type, std::function<GraphicElement *()> creator);
@@ -90,9 +65,5 @@ public:
     static QPixmap pixmap(const ElementType type);
 
 private:
-    int nextId();
-
-    QMap<int, ItemWithId *> m_map;
     QMap<ElementType, std::function<GraphicElement *()>> m_creatorMap;
-    int m_lastId = 0;
 };
