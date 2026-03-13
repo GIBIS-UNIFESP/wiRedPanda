@@ -1163,3 +1163,35 @@ void TestSceneUndoredo::testCrossTabIdIsolation()
         QVERIFY2(inB != e, "sceneB registry must not contain sceneA's elements");
     }
 }
+
+void TestSceneUndoredo::testContextDirectoryPerTab()
+{
+    // Regression test for the autosave context-directory leak.
+    // Before the fix, Workspace::autosave() set Serialization::contextDir to the
+    // autosave temp directory and never restored it. This caused IC relative-path
+    // resolution to fail in other open workspaces after the first autosave.
+    //
+    // The fix: save and restore Serialization::contextDir around the autosave write.
+
+    const QString savedForTest = Serialization::contextDir;
+
+    // Simulate a "currently active workspace" context directory
+    const QString circuitDir = m_tempDir.path() + "/my_project";
+    QDir().mkpath(circuitDir);
+    Serialization::contextDir = circuitDir;
+
+    {
+        WorkSpace ws;
+        // Push a command to dirty the undo stack, which triggers the autosave
+        // signal chain: indexChanged → checkUpdateRequest → circuitHasChanged → autosave()
+        auto *elm = ElementFactory::buildElement(ElementType::And);
+        ws.scene()->receiveCommand(new AddItemsCommand({elm}, ws.scene()));
+        // The signal chain is synchronous (direct connections, same thread),
+        // so autosave() has already run by this point.
+    }
+
+    // contextDir must be restored to what it was before the WorkSpace did its autosave
+    QCOMPARE(Serialization::contextDir, circuitDir);
+
+    Serialization::contextDir = savedForTest;
+}

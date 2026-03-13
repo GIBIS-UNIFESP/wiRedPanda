@@ -85,6 +85,7 @@ private slots:
 
     // Multi-workspace isolation (cross-tab regression tests)
     void testCrossTabIdIsolation();
+    void testContextDirectoryPerTab();
 
 private:
     QTemporaryDir m_tempDir;
