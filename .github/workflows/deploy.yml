@@ -122,8 +122,7 @@ jobs:
         mkdir -p appimage/usr/bin \
                  appimage/usr/lib \
                  appimage/usr/share/applications \
-                 appimage/usr/share/icons/hicolor/scalable/apps \
-                 appimage/usr/share/icons/hicolor/256x256/apps
+                 appimage/usr/share/icons/hicolor/scalable/apps
 
         cp build/wiredpanda appimage/usr/bin/
         cp build/crashpad_handler appimage/usr/bin/
@@ -132,8 +131,9 @@ jobs:
         cp App/Resources/Freedesktop/wiredpanda.desktop appimage/usr/share/applications/wiredpanda.desktop
         sed -i "s/@VERSION@/$VERSION/g;s/@PROJECT_VERSION@/$VERSION/g" appimage/usr/share/applications/wiredpanda.desktop
 
+        # Only the SVG is placed here; go-appimage converts it to a proper 256x256
+        # PNG for .DirIcon. wpanda.png in Logos/ is only 64x64 and must not be used.
         cp App/Resources/Assets/Logos/wpanda.svg appimage/usr/share/icons/hicolor/scalable/apps/wpanda.svg
-        cp App/Resources/Assets/Logos/wpanda.png appimage/usr/share/icons/hicolor/256x256/apps/wpanda.png
 
         wget -q "https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous \
           -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)" \
