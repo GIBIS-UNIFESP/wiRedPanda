@@ -9,7 +9,6 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/GraphicElements/Not.h"
-#include "App/GlobalProperties.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 

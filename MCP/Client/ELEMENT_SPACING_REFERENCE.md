@@ -30,7 +30,7 @@
 
 ### Base Grid Metrics
 
-From `/workspace/app/globalproperties.h`:
+From `App/Scene/Scene.h`:
 
 | Property | Value | Purpose |
 |----------|-------|---------|

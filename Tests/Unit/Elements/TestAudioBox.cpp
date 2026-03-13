@@ -14,7 +14,6 @@
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/InputGND.h"
 #include "App/Element/GraphicElements/InputVCC.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Workspace.h"
