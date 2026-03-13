@@ -176,6 +176,16 @@ void QNEPort::setRequired(const bool required)
     setDefaultStatus(required ? Status::Invalid : Status::Inactive);
 }
 
+void QNEPort::setSerialId(quint64 serialId)
+{
+    m_serialId = serialId;
+}
+
+quint64 QNEPort::serialId() const
+{
+    return m_serialId;
+}
+
 Status QNEPort::status() const
 {
     return m_status;
