@@ -6,7 +6,11 @@
 #endif
 
 #include <QCommandLineParser>
+#include <QDir>
+#include <QFile>
 #include <QMessageBox>
+#include <QRegularExpression>
+#include <QStandardPaths>
 
 #ifdef HAVE_SENTRY
 #include <QScopeGuard>
@@ -89,10 +93,60 @@ int main(int argc, char *argv[])
     app.setOrganizationName("GIBIS-UNIFESP");
     app.setApplicationName("wiRedPanda");
     app.setApplicationVersion(APP_VERSION);
+    app.setDesktopFileName("wiredpanda");
     // Fusion style provides a consistent cross-platform look and is required for
     // the custom theme colours defined in ThemeManager to render correctly on all OSes
     app.setStyle("Fusion");
     app.setWindowIcon(QIcon(":/Interface/Toolbar/wpanda.svg"));
+
+#ifdef Q_OS_LINUX
+    // When running as an AppImage, the Wayland compositor resolves the window icon
+    // by looking up the desktop file for the app_id ("wiredpanda") in the system's
+    // XDG_DATA_DIRS — it does not see the AppImage's internal share directory.
+    // Self-registering the desktop file and icon to ~/.local/share/ makes the icon
+    // visible to the compositor without requiring appimaged or manual installation.
+    {
+        const QString appImagePath = qEnvironmentVariable("APPIMAGE");
+        const QString appDir = qEnvironmentVariable("APPDIR");
+        const QString localShare = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+        const QString appsDir = localShare + "/applications";
+        const QString desktopDst = appsDir + "/wiredpanda.desktop";
+
+        if (!appImagePath.isEmpty() && !appDir.isEmpty()) {
+            // Re-register whenever the AppImage path has changed or the entry is missing.
+            bool needsUpdate = !QFile::exists(desktopDst);
+            if (!needsUpdate) {
+                QFile f(desktopDst);
+                if (f.open(QIODevice::ReadOnly))
+                    needsUpdate = !QString::fromUtf8(f.readAll()).contains(appImagePath);
+            }
+
+            if (needsUpdate) {
+                QFile src(appDir + "/usr/share/applications/wiredpanda.desktop");
+                if (src.open(QIODevice::ReadOnly)) {
+                    QString content = QString::fromUtf8(src.readAll());
+                    content.replace(QRegularExpression("^Exec=.*$", QRegularExpression::MultilineOption),
+                                    "Exec=\"" + appImagePath + "\" %F");
+                    QDir().mkpath(appsDir);
+                    QFile dst(desktopDst);
+                    if (dst.open(QIODevice::WriteOnly | QIODevice::Truncate))
+                        dst.write(content.toUtf8());
+                }
+
+                const QString iconsDir = localShare + "/icons/hicolor/scalable/apps";
+                QDir().mkpath(iconsDir);
+                const QString iconDst = iconsDir + "/wpanda.svg";
+                QFile::remove(iconDst);
+                QFile::copy(appDir + "/usr/share/icons/hicolor/scalable/apps/wpanda.svg", iconDst);
+            }
+        } else if (QFile::exists(desktopDst)) {
+            // Not running as AppImage — remove stale self-registered desktop entry
+            // left by a previous AppImage run, so it doesn't shadow the system-wide
+            // entry installed by cmake --install.
+            QFile::remove(desktopDst);
+        }
+    }
+#endif
 
     try {
         QCommandLineParser parser;
