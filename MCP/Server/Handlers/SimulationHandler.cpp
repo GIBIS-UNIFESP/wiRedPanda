@@ -12,7 +12,6 @@
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/IC.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
@@ -351,18 +350,9 @@ QJsonObject SimulationHandler::handleInstantiateIC(const QJsonObject &params, co
 
         auto *ic = new IC();
 
-        // Set working directory to IC's directory for nested IC resolution
-        QString originalDir = GlobalProperties::currentDir;
-        QString icDirectory = QFileInfo(fullPath).absolutePath();
-        GlobalProperties::currentDir = icDirectory;
+        const QString icDirectory = QFileInfo(fullPath).absolutePath();
 
-        try {
-            ic->loadFile(fullPath);
-            GlobalProperties::currentDir = originalDir;
-        } catch (...) {
-            GlobalProperties::currentDir = originalDir;
-            throw;
-        }
+        ic->loadFile(fullPath, icDirectory);
 
         ic->setPos(x, y);
         ic->setLabel(label);
@@ -421,7 +411,7 @@ QJsonObject SimulationHandler::handleListICs(const QJsonObject &, const QJsonVal
 
                     try {
                         IC tempIC;
-                        tempIC.loadFile(fileInfo.absoluteFilePath());
+                        tempIC.loadFile(fileInfo.absoluteFilePath(), fileInfo.absolutePath());
                         icInfo["input_count"] = tempIC.inputSize();
                         icInfo["output_count"] = tempIC.outputSize();
                         icInfo["has_valid_definition"] = true;

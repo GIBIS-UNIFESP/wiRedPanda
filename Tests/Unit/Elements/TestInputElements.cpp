@@ -160,7 +160,8 @@ void TestInputElements::testInputSwitchLoadOldVersion()
 
     // For versions < 4.1, load reads isOn and potentially locked from stream
     // The test verifies the load mechanism doesn't crash and loads a valid element
-    inputSwitch2->load(loadStream, portMap, QVersionNumber(3, 0));
+    SerializationContext context{portMap, QVersionNumber(3, 0), {}};
+    inputSwitch2->load(loadStream, context);
 
     // Verify the element is in a valid state after loading
     QVERIFY2(inputSwitch2->outputSize() >= 1, "InputSwitch must have at least 1 output after load");
@@ -183,8 +184,9 @@ void TestInputElements::testInputSwitchLoadNewVersion()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
+    SerializationContext context{portMap, QVersionNumber(4, 1), {}};
 
-    inputSwitch2->load(loadStream, portMap, QVersionNumber(4, 1));
+    inputSwitch2->load(loadStream, context);
 
     // State should be preserved
     QVERIFY(inputSwitch2->isOn());
@@ -367,8 +369,9 @@ void TestInputElements::testInputButtonLoadOldVersion()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
+    SerializationContext context{portMap, QVersionNumber(3, 5), {}};
 
-    inputButton2->load(loadStream, portMap, QVersionNumber(3, 5));
+    inputButton2->load(loadStream, context);
 
     // Verify the element is in a valid state after loading
     QVERIFY2(inputButton2->outputSize() >= 1, "InputButton must have at least 1 output after load");
@@ -391,8 +394,9 @@ void TestInputElements::testInputButtonLoadNewVersion()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
+    SerializationContext context{portMap, QVersionNumber(4, 1), {}};
 
-    inputButton2->load(loadStream, portMap, QVersionNumber(4, 1));
+    inputButton2->load(loadStream, context);
 
     // Verify the element is in a valid state after loading
     QVERIFY2(inputButton2->outputSize() >= 1, "InputButton must have at least 1 output after load");

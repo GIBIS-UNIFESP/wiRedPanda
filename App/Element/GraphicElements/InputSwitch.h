@@ -52,7 +52,7 @@ public:
     // --- Serialization ---
 
     /// \reimp
-    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
+    void load(QDataStream &stream, SerializationContext &context) override;
     /// \reimp
     void save(QDataStream &stream) const override;
 

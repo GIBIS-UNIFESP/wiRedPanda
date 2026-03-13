@@ -12,7 +12,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
@@ -89,42 +88,42 @@ void IC::save(QDataStream &stream) const
     stream << map;
 }
 
-void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
+void IC::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, portMap, version);
+    GraphicElement::load(stream, context);
 
-    if ((Versions::V_1_2 <= version) && (version < Versions::V_4_1)) {
+    if ((Versions::V_1_2 <= context.version) && (context.version < Versions::V_4_1)) {
         stream >> m_file;
 
         // For tests with old files containing absolute paths, strip to filename only
         m_file = QFileInfo(m_file).fileName();
 
-        if (IC::needToCopyFiles) {
-            copyFile();
+        if (context.copyOperation.needed) {
+            copyFile(context.copyOperation);
         }
 
-        loadFile(m_file);
+        loadFile(m_file, context.contextDir);
     }
 
-    if (version >= Versions::V_4_1) {
+    if (context.version >= Versions::V_4_1) {
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("fileName")) {
             m_file = map.value("fileName").toString();
 
-            if (IC::needToCopyFiles) {
-                copyFile();
+            if (context.copyOperation.needed) {
+                copyFile(context.copyOperation);
             }
 
-            loadFile(m_file);
+            loadFile(m_file, context.contextDir);
         }
     }
 }
 
-void IC::copyFile()
+void IC::copyFile(const CopyOperation &op)
 {
-    const QString srcPath = IC::srcPath_ + "/" + m_file;
-    const QString destPath = IC::destPath_ + "/" + m_file;
+    const QString srcPath = op.srcPath + "/" + m_file;
+    const QString destPath = op.destPath + "/" + m_file;
 
     QFile destFile;
 
@@ -163,7 +162,7 @@ void IC::loadOutputs()
     qCDebug(three) << "IC " << m_file << " -> Outputs. min: " << minOutputSize() << ", max: " << maxOutputSize() << ", current: " << outputSize() << ", m_outputs: " << m_outputPorts.size();
 }
 
-void IC::loadFile(const QString &fileName)
+void IC::loadFile(const QString &fileName, const QString &contextDir)
 {
     qCDebug(zero) << "Reading IC.";
 
@@ -178,12 +177,12 @@ void IC::loadFile(const QString &fileName)
 
     QFileInfo fileInfo;
 
-    // Always combine with currentDir for cross-platform compatibility.
+    // Always combine with contextDir for cross-platform compatibility.
     // QFileInfo::isAbsolute() is not cross-platform: it only recognizes paths as absolute
     // on the current OS. A Linux system cannot recognize Windows paths as absolute, causing
     // incorrect resolution when loading files saved on a different platform. Since filenames
-    // are extracted from old files regardless of their original OS, always combine with currentDir.
-    fileInfo.setFile(QDir(GlobalProperties::currentDir), fileName);
+    // are extracted from old files regardless of their original OS, always combine with contextDir.
+    fileInfo.setFile(QDir(contextDir), fileName);
 
     if (!fileInfo.exists() || !fileInfo.isFile()) {
         throw PANDACEPTION("%1 not found.", fileInfo.absoluteFilePath());
@@ -206,7 +205,9 @@ void IC::loadFile(const QString &fileName)
     Serialization::loadDolphinFileName(stream, version);
     Serialization::loadRect(stream, version);
 
-    const auto items = Serialization::deserialize(stream, {}, version);
+    QMap<quint64, QNEPort *> portMap;
+    SerializationContext subCtx{portMap, version, fileInfo.absolutePath()};
+    const auto items = Serialization::deserialize(stream, subCtx);
 
     for (auto *item : items) {
         if (item->type() != GraphicElement::Type) {
@@ -451,8 +452,6 @@ void IC::refresh()
 
 void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
 {
-    IC::needToCopyFiles = true;
-
     QFile destFile;
 
     if (!QFile::exists(destPath.absoluteFilePath()) && !destFile.copy(srcPath.absoluteFilePath(), destPath.absoluteFilePath())) {
@@ -470,13 +469,10 @@ void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
     Serialization::loadDolphinFileName(stream, version);
     Serialization::loadRect(stream, version);
 
-    IC::srcPath_ = srcPath.absolutePath();
-    IC::destPath_ = destPath.absolutePath();
-    Serialization::deserialize(stream, {}, version);
-
-    IC::needToCopyFiles = false;
-    IC::srcPath_.clear();
-    IC::destPath_.clear();
+    QMap<quint64, QNEPort *> portMap;
+    CopyOperation copyOp{srcPath.absolutePath(), destPath.absolutePath(), true};
+    SerializationContext context{portMap, version, destPath.absolutePath(), copyOp};
+    Serialization::deserialize(stream, context);
 }
 
 LogicElement *IC::getInputLogic(int portIndex) const

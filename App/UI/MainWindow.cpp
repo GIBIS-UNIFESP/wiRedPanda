@@ -1985,7 +1985,7 @@ void MainWindow::on_pushButtonAddIC_clicked()
     // Copy the chosen .panda file (and any ICs it depends on transitively)
     // into the project's directory so that relative paths work when reopened.
     for (const auto &file : files) {
-        QFileInfo destPath(GlobalProperties::currentDir + "/" + QFileInfo(file).fileName());
+        QFileInfo destPath(currentDir().absolutePath() + "/" + QFileInfo(file).fileName());
         IC::copyFiles(QFileInfo(file), destPath);
     }
 
@@ -2019,7 +2019,7 @@ void MainWindow::removeICFile(const QString &icFileName)
         }
     }
 
-    QFile file(GlobalProperties::currentDir + "/" + icFileName);
+    QFile file(currentDir().absolutePath() + "/" + icFileName);
 
     if (!file.remove()) {
         throw PANDACEPTION("Error removing file: %1", file.errorString());

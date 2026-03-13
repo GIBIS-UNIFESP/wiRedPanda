@@ -9,7 +9,6 @@
 #include <QTemporaryFile>
 
 #include "App/Element/ElementFactory.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -18,7 +17,6 @@ void TestWorkspaceFileops::initTestCase()
 {
     // Initialize test environment
     QVERIFY2(m_tempDir.isValid(), "Member temporary directory creation failed");
-    GlobalProperties::currentDir = m_tempDir.path();
 }
 
 void TestWorkspaceFileops::init()

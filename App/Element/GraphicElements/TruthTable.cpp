@@ -211,11 +211,11 @@ void TruthTable::save(QDataStream &stream) const
     stream << map;
 }
 
-void TruthTable::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
+void TruthTable::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, portMap, version);
+    GraphicElement::load(stream, context);
 
-    if (version >= Versions::V_4_2) {
+    if (context.version >= Versions::V_4_2) {
         // Truth-table key (the output bit-array) was first serialized in v4.2
         QMap<QString, QVariant> map; stream >> map;
 

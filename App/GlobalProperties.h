@@ -3,14 +3,9 @@
 
 #pragma once
 
-#include <QString>
-
 class GlobalProperties
 {
 public:
-    // --- Runtime State ---
-
-    inline static QString currentDir = {};
     inline static bool interactiveMode = true;
     inline static const int maxRecentFiles = 10;
 };

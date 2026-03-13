@@ -198,9 +198,9 @@ void Display7::save(QDataStream &stream) const
     stream << map;
 }
 
-void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
+void Display7::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, portMap, version);
+    GraphicElement::load(stream, context);
     /*
      * 0, 7, 2, 1, 3, 4, 5, 6
      * 7, 5, 4, 2, 1, 4, 6, 3, 0
@@ -208,7 +208,7 @@ void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, cons
      * 2, 1, 4, 5, 0, 7, 3, 6
      */
 
-    if (version < Versions::V_1_6) {
+    if (context.version < Versions::V_1_6) {
         // The pin-to-segment mapping changed at v1.6. The permutation
         // order[i] = j means "the port that was at index i in the old file
         // should now live at index j in the canonical layout."
@@ -225,7 +225,7 @@ void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, cons
         updatePortsProperties();
     }
 
-    if (version < Versions::V_1_7) {
+    if (context.version < Versions::V_1_7) {
         // A second pin-order change occurred at v1.7, requiring another permutation
         // applied on top of whatever v1.6 remapping already happened.
         qCDebug(zero) << "Remapping inputs.";
@@ -240,13 +240,13 @@ void Display7::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, cons
         updatePortsProperties();
     }
 
-    if ((Versions::V_3_1 <= version) && (version < Versions::V_4_1)) {
+    if ((Versions::V_3_1 <= context.version) && (context.version < Versions::V_4_1)) {
         // v3.1–4.0 stored color as a bare QString
         QString color_; stream >> color_;
         setColor(color_);
     }
 
-    if (version >= Versions::V_4_1) {
+    if (context.version >= Versions::V_4_1) {
         // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 

@@ -6,7 +6,6 @@
 #include <QDir>
 #include <QTemporaryFile>
 
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Workspace.h"
@@ -31,7 +30,6 @@ void TestFiles::testFiles()
     QFETCH(QString, filePath);
 
     QFileInfo fileInfo(filePath);
-    GlobalProperties::currentDir = fileInfo.absolutePath();
 
     WorkSpace workspace;
     QVERIFY2(fileInfo.exists(), qPrintable(QString("File %1 does not exist").arg(filePath)));
@@ -43,7 +41,7 @@ void TestFiles::testFiles()
 
     QDataStream stream(&pandaFile);
     QVersionNumber version = Serialization::readPandaHeader(stream);
-    workspace.load(stream, version);
+    workspace.load(stream, version, fileInfo.absolutePath());
     const auto items = workspace.scene()->items();
 
     // Verify connections have valid structure
@@ -79,7 +77,7 @@ void TestFiles::testFiles()
     WorkSpace workspaceReload;
     QDataStream stream3(&pandaFile2);
     QVersionNumber version3 = Serialization::readPandaHeader(stream3);
-    workspaceReload.load(stream3, version3);
+    workspaceReload.load(stream3, version3, fileInfo.absolutePath());
     QVERIFY2(!workspaceReload.scene()->items().isEmpty(),
              qPrintable(QString("Round-trip failed for %1: scene is empty").arg(fileInfo.baseName())));
     QVERIFY2(workspaceReload.scene()->items().size() == originalItemCount,
@@ -113,7 +111,6 @@ void TestFiles::testBackwardCompatibility()
     QFETCH(QString, filename);
 
     QFileInfo fileInfo(filename);
-    GlobalProperties::currentDir = fileInfo.absolutePath();
 
     try {
         // Load file
@@ -123,7 +120,7 @@ void TestFiles::testBackwardCompatibility()
 
         QDataStream stream(&file);
         QVersionNumber version = Serialization::readPandaHeader(stream);
-        workspace.load(stream, version);
+        workspace.load(stream, version, fileInfo.absolutePath());
 
         // Verify circuit loaded successfully with non-empty, non-Unknown elements
         auto elements = workspace.scene()->elements();
@@ -164,7 +161,7 @@ void TestFiles::testBackwardCompatibility()
         WorkSpace workspaceReload;
         QDataStream reloadStream(&reloadFile);
         QVersionNumber reloadVersion = Serialization::readPandaHeader(reloadStream);
-        workspaceReload.load(reloadStream, reloadVersion);
+        workspaceReload.load(reloadStream, reloadVersion, fileInfo.absolutePath());
 
         QVERIFY2(workspaceReload.scene()->items().size() == originalItemCount,
             qPrintable(QString("Round-trip changed item count for %1: %2 → %3")

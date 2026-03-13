@@ -9,7 +9,10 @@
 
 #include <QCoreApplication>
 #include <QMap>
+#include <QString>
 #include <QVersionNumber>
+
+#include "App/IO/SerializationContext.h"
 
 class QGraphicsItem;
 class QNEPort;
@@ -19,13 +22,18 @@ class QNEPort;
  * \brief Static utility class for reading and writing circuit and waveform files.
  *
  * \details All I/O passes through a QDataStream; the format is versioned using a
- * magic header followed by the version number.
+ * magic header followed by the version number.  The context object carries per-load
+ * state (port map, version, IC directory, optional copy-operation) so that element
+ * implementations receive everything they need without global variables.
  */
 class Serialization
 {
     Q_DECLARE_TR_FUNCTIONS(Serialization)
 
 public:
+    /// Directory of the project file currently being serialized (used by elements during save).
+    inline static QString contextDir = {};
+
     /**
      * \brief Serializes \a items to \a stream in the current .panda binary format.
      * \param items Items to serialize (graphic elements and connections).
@@ -39,7 +47,7 @@ public:
      * \param context Per-load context (portMap, version, contextDir, copyOperation).
      * \return List of deserialized QGraphicsItems ready to be added to a scene.
      */
-    static QList<QGraphicsItem *> deserialize(QDataStream &stream, QMap<quint64, QNEPort *> portMap, const QVersionNumber version);
+    static QList<QGraphicsItem *> deserialize(QDataStream &stream, SerializationContext &context);
 
     // --- View Serialization ---
 

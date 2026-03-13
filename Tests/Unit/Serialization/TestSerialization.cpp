@@ -15,7 +15,6 @@
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/IC.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
@@ -300,8 +299,6 @@ void TestSerialization::testICSerializationBasic()
     // Load an example IC file
     QFileInfo exampleFile(TestUtils::examplesDir() + "ic.panda");
 
-    GlobalProperties::currentDir = exampleFile.absolutePath();
-
     // Load the file
     WorkSpace workspace;
     QFile file(exampleFile.absoluteFilePath());
@@ -311,7 +308,7 @@ void TestSerialization::testICSerializationBasic()
 
     QDataStream stream(&file);
     QVersionNumber version = Serialization::readPandaHeader(stream);
-    workspace.load(stream, version);
+    workspace.load(stream, version, exampleFile.absolutePath());
     file.close();
 
     // Verify circuit loaded successfully without errors

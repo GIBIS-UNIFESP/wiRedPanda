@@ -16,6 +16,7 @@
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
 
+struct SerializationContext;
 class QNEInputPort;
 class QNEOutputPort;
 class QNEPort;
@@ -95,8 +96,8 @@ public:
 
     // --- Serialization ---
 
-    /// Deserializes the connection from \a stream, resolving ports via \a portMap.
-    void load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap = {});
+    /// Deserializes the connection from \a stream, resolving ports via \a context.
+    void load(QDataStream &stream, SerializationContext &context);
     /// Serializes the connection endpoints to \a stream.
     void save(QDataStream &stream) const;
 
