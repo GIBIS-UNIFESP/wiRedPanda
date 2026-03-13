@@ -322,6 +322,12 @@ void WorkSpace::autosave()
     }
 
     QString autosaveFileName = m_autosaveFile.fileName();
+
+    // Save and restore contextDir so that autosaving to a temp directory does not
+    // leave Serialization::contextDir pointing at the autosave location. Without
+    // this, IC relative-path resolution in other open workspaces would silently
+    // use the wrong base directory after the first autosave.
+    const QString savedContextDir = Serialization::contextDir;
     Serialization::contextDir = path.absolutePath();
 
     qCDebug(three) << "Writing to autosave file.";
@@ -329,6 +335,8 @@ void WorkSpace::autosave()
     Serialization::writePandaHeader(stream);
     save(stream);
     m_autosaveFile.close();
+
+    Serialization::contextDir = savedContextDir;
 
     autosaves.append(autosaveFileName);
     Settings::setAutosaveFiles(autosaves);
