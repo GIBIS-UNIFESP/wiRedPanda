@@ -74,6 +74,12 @@ private slots:
     void testConnectionWithDeletedPorts();
     void testMalformedConnectionData();
 
+    // Wireless node serialization (4 tests)
+    void testWirelessTxNodePreservedInScene();
+    void testWirelessRxNodePreservedInScene();
+    void testWirelessPairCircuit();
+    void testWirelessNoneNodeInScene();
+
 private:
     // Helper methods
     QByteArray saveToMemory(WorkSpace &workspace);

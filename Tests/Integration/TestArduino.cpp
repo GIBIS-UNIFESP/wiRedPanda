@@ -27,6 +27,7 @@ QString TestArduino::s_cliCachePath;
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Workspace.h"
@@ -1678,6 +1679,44 @@ void TestArduino::testNodeElementGeneration()
     QVERIFY2(nodeAssign.match(code.content).hasMatch(),
              "Node should generate a simple pass-through assignment");
 
+    qDeleteAll(elements);
+}
+
+void TestArduino::testWirelessNodeGeneration()
+{
+    // A Tx and Rx node pair on the same channel — the Rx output variable should be
+    // assigned from whatever drives the Tx input, not from LOW (the default for
+    // unconnected ports).
+    auto *sw = new InputSwitch();
+    auto *txNode = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    QVERIFY(txNode);
+    txNode->setLabel("CLK");
+    txNode->setWirelessMode(WirelessMode::Tx);
+
+    auto *rxNode = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    QVERIFY(rxNode);
+    rxNode->setLabel("CLK");
+    rxNode->setWirelessMode(WirelessMode::Rx);
+
+    auto *led = new Led();
+
+    // Physical wire: InputSwitch → Tx node, Rx node → LED
+    auto *conn1 = createConnection(sw, 0, txNode, 0);
+    auto *conn2 = createConnection(rxNode, 0, led, 0);
+
+    QVector<GraphicElement *> elements{sw, txNode, rxNode, led};
+    auto code = generateFromElements(elements);
+    QVERIFY2(code.success, "Wireless node generation should succeed");
+
+    // Assignments in computeLogic() are indented with 4 spaces; declarations start
+    // with 'bool'. The pattern below matches only indented node assignments to LOW,
+    // so it cannot false-positive on 'bool aux_node_X = LOW;' declarations.
+    QRegularExpression nodeAssignLow(R"(\n    aux_node\w*\s*=\s*LOW;)");
+    QVERIFY2(!nodeAssignLow.match(code.content).hasMatch(),
+             "Wireless Rx node should not produce LOW assignment in computeLogic");
+
+    delete conn1;
+    delete conn2;
     qDeleteAll(elements);
 }
 

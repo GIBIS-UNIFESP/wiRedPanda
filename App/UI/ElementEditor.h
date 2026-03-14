@@ -118,13 +118,14 @@ private:
     bool m_isUpdatingSkin = false;
 
     // Placeholder strings for multi-selection display
-    QString m_manyAudios   = tr("<Many sounds>");
-    QString m_manyColors   = tr("<Many colors>");
-    QString m_manyDelay    = tr("<Many values>");
-    QString m_manyFreq     = tr("<Many values>");
-    QString m_manyIS       = tr("<Many values>");
-    QString m_manyLabels   = tr("<Many labels>");
-    QString m_manyOS       = tr("<Many values>");
-    QString m_manyOV       = tr("<Many values>");
-    QString m_manyTriggers = tr("<Many triggers>");
+    QString m_manyAudios        = tr("<Many sounds>");
+    QString m_manyColors        = tr("<Many colors>");
+    QString m_manyDelay         = tr("<Many values>");
+    QString m_manyFreq          = tr("<Many values>");
+    QString m_manyIS            = tr("<Many values>");
+    QString m_manyLabels        = tr("<Many labels>");
+    QString m_manyOS            = tr("<Many values>");
+    QString m_manyOV            = tr("<Many values>");
+    QString m_manyTriggers      = tr("<Many triggers>");
+    QString m_manyWirelessModes = tr("<Many modes>");
 };

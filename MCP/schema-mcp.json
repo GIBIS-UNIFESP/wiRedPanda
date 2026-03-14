@@ -1477,6 +1477,12 @@
                 },
                 "rotation": {
                   "type": "number"
+                },
+                "wireless_mode": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 2,
+                  "description": "Wireless routing mode: 0=None, 1=Tx, 2=Rx (Node elements only)"
                 }
               },
               "required": [

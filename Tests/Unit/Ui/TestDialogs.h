@@ -27,4 +27,13 @@ private slots:
     void testLengthDialogMinLength();
     void testLengthDialogMaxLength();
     void testLengthDialogRange();
+
+    // ============================================================
+    // ElementEditor — Wireless Tx duplicate-label rejection (5 tests)
+    // ============================================================
+    void testElementEditorRejectsDuplicateTxLabel();
+    void testElementEditorAllowsUniqueTxLabel();
+    void testElementEditorRejectsModeChangeToDuplicateTx();
+    void testElementEditorAllowsSelfRelabelTx();
+    void testElementEditorAllowsRxWithDuplicateLabel();
 };

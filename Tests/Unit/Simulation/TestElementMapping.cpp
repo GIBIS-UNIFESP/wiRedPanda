@@ -6,6 +6,7 @@
 #include <QTest>
 
 #include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/ElementMapping.h"
@@ -573,4 +574,697 @@ void TestElementMapping::testDefaultVCCAppliedToOptionalInputs()
              "PRESET port must be connected to globalVCC by default");
     QVERIFY2(logic->inputPairs().at(3).logic != nullptr,
              "CLEAR port must be connected to globalVCC by default");
+}
+
+// ============================================================
+// Wireless Connection Tests
+// ============================================================
+
+void TestElementMapping::testWirelessRxConnectedToTx()
+{
+    auto scene = std::make_unique<Scene>();
+
+    auto *txNode = ElementFactory::buildElement(ElementType::Node);
+    auto *rxNode = ElementFactory::buildElement(ElementType::Node);
+    auto *src = ElementFactory::buildElement(ElementType::InputButton);
+
+    QVERIFY(txNode && rxNode && src);
+    scene->addItem(txNode);
+    scene->addItem(rxNode);
+    scene->addItem(src);
+
+    txNode->setPos(100, 100);
+    rxNode->setPos(300, 100);
+    src->setPos(0, 100);
+
+    auto *txN = qobject_cast<Node *>(txNode);
+    auto *rxN = qobject_cast<Node *>(rxNode);
+    QVERIFY(txN && rxN);
+
+    txN->setLabel("CLK");
+    txN->setWirelessMode(WirelessMode::Tx);
+    rxN->setLabel("CLK");
+    rxN->setWirelessMode(WirelessMode::Rx);
+
+    // Wire src → txNode physically
+    auto *conn = new QNEConnection();
+    conn->setStartPort(src->outputPort(0));
+    conn->setEndPort(txNode->inputPort(0));
+    scene->addItem(conn);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    // Rx's logic input 0 must point to Tx's logic element (not GND)
+    auto *rxLogic = rxN->logic();
+    QVERIFY(rxLogic != nullptr);
+    const auto &pairs = rxLogic->inputPairs();
+    QVERIFY(!pairs.isEmpty());
+    QCOMPARE(pairs.at(0).logic, txN->logic());
+}
+
+void TestElementMapping::testWirelessRxNoMatchFallsToGnd()
+{
+    auto scene = std::make_unique<Scene>();
+
+    auto *rxNode = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(rxNode);
+    scene->addItem(rxNode);
+    rxNode->setPos(100, 100);
+
+    auto *rxN = qobject_cast<Node *>(rxNode);
+    QVERIFY(rxN);
+    rxN->setLabel("MISSING");
+    rxN->setWirelessMode(WirelessMode::Rx);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    // No matching Tx: logic must still have a valid (GND) predecessor — element is valid
+    auto *rxLogic = rxN->logic();
+    QVERIFY(rxLogic != nullptr);
+    const auto &pairs = rxLogic->inputPairs();
+    QVERIFY(!pairs.isEmpty());
+    QVERIFY(pairs.at(0).logic != nullptr);   // GND, not null
+}
+
+void TestElementMapping::testWirelessFanOut()
+{
+    auto scene = std::make_unique<Scene>();
+
+    auto *src = ElementFactory::buildElement(ElementType::InputButton);
+    auto *txNode = ElementFactory::buildElement(ElementType::Node);
+    auto *rx1 = ElementFactory::buildElement(ElementType::Node);
+    auto *rx2 = ElementFactory::buildElement(ElementType::Node);
+    auto *rx3 = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(src && txNode && rx1 && rx2 && rx3);
+
+    scene->addItem(src);
+    scene->addItem(txNode);
+    scene->addItem(rx1);
+    scene->addItem(rx2);
+    scene->addItem(rx3);
+
+    src->setPos(0, 100);
+    txNode->setPos(100, 100);
+    rx1->setPos(300, 50);
+    rx2->setPos(300, 100);
+    rx3->setPos(300, 150);
+
+    auto *txN = qobject_cast<Node *>(txNode);
+    txN->setLabel("BUS");
+    txN->setWirelessMode(WirelessMode::Tx);
+    for (auto *rx : {rx1, rx2, rx3}) {
+        auto *rxN = qobject_cast<Node *>(rx);
+        rxN->setLabel("BUS");
+        rxN->setWirelessMode(WirelessMode::Rx);
+    }
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(src->outputPort(0));
+    conn->setEndPort(txNode->inputPort(0));
+    scene->addItem(conn);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    LogicElement *txLogic = txN->logic();
+    QVERIFY(txLogic != nullptr);
+
+    for (auto *rx : {rx1, rx2, rx3}) {
+        auto *rxN = qobject_cast<Node *>(rx);
+        auto *rxLogic = rxN->logic();
+        QVERIFY(rxLogic != nullptr);
+        QCOMPARE(rxLogic->inputPairs().at(0).logic, txLogic);
+    }
+}
+
+void TestElementMapping::testDuplicateTxDoesNotCrash()
+{
+    auto scene = std::make_unique<Scene>();
+
+    auto *src1 = ElementFactory::buildElement(ElementType::InputButton);
+    auto *src2 = ElementFactory::buildElement(ElementType::InputButton);
+    auto *tx1 = ElementFactory::buildElement(ElementType::Node);
+    auto *tx2 = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(src1 && src2 && tx1 && tx2);
+
+    scene->addItem(src1);
+    scene->addItem(src2);
+    scene->addItem(tx1);
+    scene->addItem(tx2);
+
+    src1->setPos(0, 0);
+    src2->setPos(0, 100);
+    tx1->setPos(100, 0);
+    tx2->setPos(100, 100);
+
+    for (auto *tx : {tx1, tx2}) {
+        auto *txN = qobject_cast<Node *>(tx);
+        txN->setLabel("DUPE");
+        txN->setWirelessMode(WirelessMode::Tx);
+    }
+
+    auto *c1 = new QNEConnection();
+    c1->setStartPort(src1->outputPort(0));
+    c1->setEndPort(tx1->inputPort(0));
+    scene->addItem(c1);
+
+    auto *c2 = new QNEConnection();
+    c2->setStartPort(src2->outputPort(0));
+    c2->setEndPort(tx2->inputPort(0));
+    scene->addItem(c2);
+
+    // Must not crash or assert — duplicate Tx is a user error but must be handled gracefully.
+    // connectWirelessElements() inserts into a QHash keyed by label; the second Tx overwrites
+    // the first, so no Rx is connected to both simultaneously.
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(rx);
+    scene->addItem(rx);
+    rx->setPos(200, 50);
+    auto *rxN = qobject_cast<Node *>(rx);
+    rxN->setLabel("DUPE");
+    rxN->setWirelessMode(WirelessMode::Rx);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+    QVERIFY(!mapping.logicElms().isEmpty());
+
+    // Rx must be connected to exactly one of the two Tx logic elements — not to null
+    auto *rxLogic = rxN->logic();
+    QVERIFY(rxLogic != nullptr);
+    const auto &pairs = rxLogic->inputPairs();
+    QVERIFY(!pairs.isEmpty());
+    LogicElement *winner = pairs.at(0).logic;
+    QVERIFY(winner != nullptr);
+    QVERIFY(winner == qobject_cast<Node *>(tx1)->logic() || winner == qobject_cast<Node *>(tx2)->logic());
+}
+
+void TestElementMapping::testWirelessEmptyLabelNotMatched()
+{
+    // Tx and Rx nodes with empty labels must NOT be paired by connectWirelessElements()
+    // because the guard `elm->label().isEmpty()` skips both; the Rx must fall back to GND.
+    auto scene = std::make_unique<Scene>();
+
+    auto *txNode = ElementFactory::buildElement(ElementType::Node);
+    auto *rxNode = ElementFactory::buildElement(ElementType::Node);
+    auto *src    = ElementFactory::buildElement(ElementType::InputButton);
+    QVERIFY(txNode && rxNode && src);
+    scene->addItem(src);
+    scene->addItem(txNode);
+    scene->addItem(rxNode);
+
+    auto *txN = qobject_cast<Node *>(txNode);
+    auto *rxN = qobject_cast<Node *>(rxNode);
+    QVERIFY(txN && rxN);
+
+    // Both nodes have mode set but NO label — connectWirelessElements() must skip them
+    txN->setWirelessMode(WirelessMode::Tx);
+    rxN->setWirelessMode(WirelessMode::Rx);
+    // labels remain empty (default)
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(src->outputPort(0));
+    conn->setEndPort(txNode->inputPort(0));
+    scene->addItem(conn);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    // Rx must NOT be wired to Tx — it must have a valid (GND) predecessor, not the Tx logic
+    auto *rxLogic = rxN->logic();
+    QVERIFY(rxLogic != nullptr);
+    const auto &pairs = rxLogic->inputPairs();
+    QVERIFY(!pairs.isEmpty());
+    QVERIFY(pairs.at(0).logic != txN->logic());   // GND, not the empty-label Tx
+    QVERIFY(pairs.at(0).logic != nullptr);        // valid GND reference
+}
+
+void TestElementMapping::testWirelessTxAloneDoesNotCrash()
+{
+    // A Tx node with no matching Rx must not crash or produce invalid state.
+    auto scene = std::make_unique<Scene>();
+
+    auto *src    = ElementFactory::buildElement(ElementType::InputButton);
+    auto *txNode = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(src && txNode);
+    scene->addItem(src);
+    scene->addItem(txNode);
+
+    auto *txN = qobject_cast<Node *>(txNode);
+    QVERIFY(txN);
+    txN->setLabel(QStringLiteral("ORPHAN"));
+    txN->setWirelessMode(WirelessMode::Tx);
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(src->outputPort(0));
+    conn->setEndPort(txNode->inputPort(0));
+    scene->addItem(conn);
+
+    // No Rx with label "ORPHAN" — connectWirelessElements() just builds an empty txMap entry
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    // Tx logic must be valid and the mapping must have produced logic elements
+    QVERIFY(txN->logic() != nullptr);
+    QVERIFY(!mapping.logicElms().isEmpty());
+}
+
+void TestElementMapping::testWirelessMultipleChannels()
+{
+    // Two independent wireless channels ("CLK" and "DATA") in the same scene must
+    // not cross-connect: RxCLK→TxCLK and RxDATA→TxDATA, not each other.
+    auto scene = std::make_unique<Scene>();
+
+    auto *srcClk  = ElementFactory::buildElement(ElementType::InputButton);
+    auto *srcData = ElementFactory::buildElement(ElementType::InputButton);
+    auto *txClk   = ElementFactory::buildElement(ElementType::Node);
+    auto *txData  = ElementFactory::buildElement(ElementType::Node);
+    auto *rxClk   = ElementFactory::buildElement(ElementType::Node);
+    auto *rxData  = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(srcClk && srcData && txClk && txData && rxClk && rxData);
+
+    for (auto *elm : {srcClk, srcData, txClk, txData, rxClk, rxData})
+        scene->addItem(elm);
+
+    auto *txClkN  = qobject_cast<Node *>(txClk);
+    auto *txDataN = qobject_cast<Node *>(txData);
+    auto *rxClkN  = qobject_cast<Node *>(rxClk);
+    auto *rxDataN = qobject_cast<Node *>(rxData);
+    QVERIFY(txClkN && txDataN && rxClkN && rxDataN);
+
+    txClkN->setLabel("CLK");   txClkN->setWirelessMode(WirelessMode::Tx);
+    txDataN->setLabel("DATA"); txDataN->setWirelessMode(WirelessMode::Tx);
+    rxClkN->setLabel("CLK");   rxClkN->setWirelessMode(WirelessMode::Rx);
+    rxDataN->setLabel("DATA"); rxDataN->setWirelessMode(WirelessMode::Rx);
+
+    auto *c1 = new QNEConnection();
+    c1->setStartPort(srcClk->outputPort(0));
+    c1->setEndPort(txClk->inputPort(0));
+    scene->addItem(c1);
+
+    auto *c2 = new QNEConnection();
+    c2->setStartPort(srcData->outputPort(0));
+    c2->setEndPort(txData->inputPort(0));
+    scene->addItem(c2);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    // Each Rx must be wired to its own Tx, not to the other channel's Tx
+    QCOMPARE(rxClkN->logic()->inputPairs().at(0).logic,  txClkN->logic());
+    QCOMPARE(rxDataN->logic()->inputPairs().at(0).logic, txDataN->logic());
+    QVERIFY(rxClkN->logic()->inputPairs().at(0).logic  != txDataN->logic());
+    QVERIFY(rxDataN->logic()->inputPairs().at(0).logic != txClkN->logic());
+}
+
+void TestElementMapping::testWirelessRxPhysicalWireOverriddenByTx()
+{
+    // An Rx node that also has a physical wire attached must end up driven by the
+    // Tx logic, not by the physical source.  connectWirelessElements() runs after
+    // connectElements() and overwrites the predecessor set by the physical wire.
+    auto scene = std::make_unique<Scene>();
+
+    auto *srcTx      = ElementFactory::buildElement(ElementType::InputButton);  // drives Tx
+    auto *srcPhysRx  = ElementFactory::buildElement(ElementType::InputButton);  // physical wire to Rx
+    auto *txNode     = ElementFactory::buildElement(ElementType::Node);
+    auto *rxNode     = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(srcTx && srcPhysRx && txNode && rxNode);
+
+    scene->addItem(srcTx);
+    scene->addItem(srcPhysRx);
+    scene->addItem(txNode);
+    scene->addItem(rxNode);
+
+    auto *txN = qobject_cast<Node *>(txNode);
+    auto *rxN = qobject_cast<Node *>(rxNode);
+    QVERIFY(txN && rxN);
+
+    txN->setLabel("SIG"); txN->setWirelessMode(WirelessMode::Tx);
+    rxN->setLabel("SIG"); rxN->setWirelessMode(WirelessMode::Rx);
+
+    // Physical wire: srcTx → txNode
+    auto *c1 = new QNEConnection();
+    c1->setStartPort(srcTx->outputPort(0));
+    c1->setEndPort(txNode->inputPort(0));
+    scene->addItem(c1);
+
+    // Physical wire: srcPhysRx → rxNode (this connection will be overridden wirelessly)
+    auto *c2 = new QNEConnection();
+    c2->setStartPort(srcPhysRx->outputPort(0));
+    c2->setEndPort(rxNode->inputPort(0));
+    scene->addItem(c2);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    // Wireless overrides physical: Rx must point to Tx, not to srcPhysRx
+    const auto &pairs = rxN->logic()->inputPairs();
+    QVERIFY(!pairs.isEmpty());
+    QCOMPARE(pairs.at(0).logic, txN->logic());
+    QVERIFY(pairs.at(0).logic != srcPhysRx->logic());
+}
+
+void TestElementMapping::testWirelessLabelCaseSensitive()
+{
+    // "CLK" (Tx) and "clk" (Rx) must NOT be paired — label matching is case-sensitive.
+    auto scene = std::make_unique<Scene>();
+
+    auto *src    = ElementFactory::buildElement(ElementType::InputButton);
+    auto *txNode = ElementFactory::buildElement(ElementType::Node);
+    auto *rxNode = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(src && txNode && rxNode);
+    scene->addItem(src);
+    scene->addItem(txNode);
+    scene->addItem(rxNode);
+
+    auto *txN = qobject_cast<Node *>(txNode);
+    auto *rxN = qobject_cast<Node *>(rxNode);
+    QVERIFY(txN && rxN);
+
+    txN->setLabel("CLK");  txN->setWirelessMode(WirelessMode::Tx);
+    rxN->setLabel("clk");  rxN->setWirelessMode(WirelessMode::Rx);  // different case
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(src->outputPort(0));
+    conn->setEndPort(txNode->inputPort(0));
+    scene->addItem(conn);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    // "CLK" != "clk" → Rx must NOT connect to Tx; must have a valid GND fallback
+    const auto &pairs = rxN->logic()->inputPairs();
+    QVERIFY(!pairs.isEmpty());
+    QVERIFY(pairs.at(0).logic != txN->logic());
+    QVERIFY(pairs.at(0).logic != nullptr);
+}
+
+void TestElementMapping::testWirelessSignalPropagation()
+{
+    // After sort(), driving the Tx logic HIGH must propagate through the wireless
+    // connection so that the Rx logic output is also HIGH, and vice versa.
+    auto scene = std::make_unique<Scene>();
+
+    auto *src    = ElementFactory::buildElement(ElementType::InputButton);
+    auto *txNode = ElementFactory::buildElement(ElementType::Node);
+    auto *rxNode = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(src && txNode && rxNode);
+    scene->addItem(src);
+    scene->addItem(txNode);
+    scene->addItem(rxNode);
+
+    auto *txN = qobject_cast<Node *>(txNode);
+    auto *rxN = qobject_cast<Node *>(rxNode);
+    QVERIFY(txN && rxN);
+
+    txN->setLabel("SIG"); txN->setWirelessMode(WirelessMode::Tx);
+    rxN->setLabel("SIG"); rxN->setWirelessMode(WirelessMode::Rx);
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(src->outputPort(0));
+    conn->setEndPort(txNode->inputPort(0));
+    scene->addItem(conn);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    // Drive the source HIGH and run one simulation tick
+    src->logic()->setOutputValue(true);
+    for (const auto &logicElm : mapping.logicElms()) {
+        logicElm->updateLogic();
+    }
+    QCOMPARE(rxN->logic()->outputValue(), Status::Active);
+
+    // Drive LOW and re-verify
+    src->logic()->setOutputValue(false);
+    for (const auto &logicElm : mapping.logicElms()) {
+        logicElm->updateLogic();
+    }
+    QCOMPARE(rxN->logic()->outputValue(), Status::Inactive);
+}
+
+void TestElementMapping::testWirelessNoneModeNodeIgnored()
+{
+    // A Node in None mode (default) with a matching label must NOT be registered as
+    // a Tx source — connectWirelessElements() only processes WirelessMode::Tx nodes.
+    auto scene = std::make_unique<Scene>();
+
+    auto *src      = ElementFactory::buildElement(ElementType::InputButton);
+    auto *noneNode = ElementFactory::buildElement(ElementType::Node);  // WirelessMode::None
+    auto *rxNode   = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(src && noneNode && rxNode);
+    scene->addItem(src);
+    scene->addItem(noneNode);
+    scene->addItem(rxNode);
+
+    auto *noneN = qobject_cast<Node *>(noneNode);
+    auto *rxN   = qobject_cast<Node *>(rxNode);
+    QVERIFY(noneN && rxN);
+
+    noneN->setLabel("SIG");                          // same label, but mode = None
+    rxN->setLabel("SIG");
+    rxN->setWirelessMode(WirelessMode::Rx);
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(src->outputPort(0));
+    conn->setEndPort(noneNode->inputPort(0));
+    scene->addItem(conn);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    // None-mode node must not be treated as Tx — Rx falls back to GND
+    const auto &pairs = rxN->logic()->inputPairs();
+    QVERIFY(!pairs.isEmpty());
+    QVERIFY(pairs.at(0).logic != noneN->logic());
+    QVERIFY(pairs.at(0).logic != nullptr);
+}
+
+void TestElementMapping::testWirelessRxMismatchLabelFallsToGnd()
+{
+    // Rx "FOO" must not be driven by Tx "BAR" — mismatched labels must never connect.
+    auto scene = std::make_unique<Scene>();
+
+    auto *src    = ElementFactory::buildElement(ElementType::InputButton);
+    auto *txNode = ElementFactory::buildElement(ElementType::Node);
+    auto *rxNode = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(src && txNode && rxNode);
+    scene->addItem(src);
+    scene->addItem(txNode);
+    scene->addItem(rxNode);
+
+    auto *txN = qobject_cast<Node *>(txNode);
+    auto *rxN = qobject_cast<Node *>(rxNode);
+    QVERIFY(txN && rxN);
+
+    txN->setLabel("BAR"); txN->setWirelessMode(WirelessMode::Tx);
+    rxN->setLabel("FOO"); rxN->setWirelessMode(WirelessMode::Rx);
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(src->outputPort(0));
+    conn->setEndPort(txNode->inputPort(0));
+    scene->addItem(conn);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    // "FOO" != "BAR" → Rx must fall back to GND, not connect to Tx
+    const auto &pairs = rxN->logic()->inputPairs();
+    QVERIFY(!pairs.isEmpty());
+    QVERIFY(pairs.at(0).logic != txN->logic());
+    QVERIFY(pairs.at(0).logic != nullptr);
+}
+
+void TestElementMapping::testWirelessCircuitWithGate()
+{
+    // Full circuit: Switch → TxNode -[wireless]-> RxNode → AND(input 0)
+    //               VCC → AND(input 1)
+    // After sort() and one tick, driving the switch HIGH must make the AND output HIGH.
+    auto scene = std::make_unique<Scene>();
+
+    auto *sw      = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *txNode  = ElementFactory::buildElement(ElementType::Node);
+    auto *rxNode  = ElementFactory::buildElement(ElementType::Node);
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    auto *vcc     = ElementFactory::buildElement(ElementType::InputVcc);
+    QVERIFY(sw && txNode && rxNode && andGate && vcc);
+
+    for (auto *elm : {sw, txNode, rxNode, andGate, vcc})
+        scene->addItem(elm);
+
+    auto *txN = qobject_cast<Node *>(txNode);
+    auto *rxN = qobject_cast<Node *>(rxNode);
+    QVERIFY(txN && rxN);
+    txN->setLabel("D"); txN->setWirelessMode(WirelessMode::Tx);
+    rxN->setLabel("D"); rxN->setWirelessMode(WirelessMode::Rx);
+
+    // sw → txNode
+    auto *c1 = new QNEConnection();
+    c1->setStartPort(sw->outputPort(0));
+    c1->setEndPort(txNode->inputPort(0));
+    scene->addItem(c1);
+
+    // rxNode → AND input 0
+    auto *c2 = new QNEConnection();
+    c2->setStartPort(rxNode->outputPort(0));
+    c2->setEndPort(andGate->inputPort(0));
+    scene->addItem(c2);
+
+    // vcc → AND input 1
+    auto *c3 = new QNEConnection();
+    c3->setStartPort(vcc->outputPort(0));
+    c3->setEndPort(andGate->inputPort(1));
+    scene->addItem(c3);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    // Drive switch HIGH → AND output must be HIGH
+    sw->logic()->setOutputValue(true);
+    for (const auto &logicElm : mapping.logicElms())
+        logicElm->updateLogic();
+    QCOMPARE(andGate->logic()->outputValue(), Status::Active);
+
+    // Drive switch LOW → AND output must be LOW
+    sw->logic()->setOutputValue(false);
+    for (const auto &logicElm : mapping.logicElms())
+        logicElm->updateLogic();
+    QCOMPARE(andGate->logic()->outputValue(), Status::Inactive);
+}
+
+void TestElementMapping::testWirelessFanOutSignalValues()
+{
+    // Fan-out: one Tx drives three Rx nodes.
+    // After sort() and one tick, all Rx outputs must match the Tx input value.
+    auto scene = std::make_unique<Scene>();
+
+    auto *sw     = ElementFactory::buildElement(ElementType::InputButton);
+    auto *txNode = ElementFactory::buildElement(ElementType::Node);
+    auto *rx1    = ElementFactory::buildElement(ElementType::Node);
+    auto *rx2    = ElementFactory::buildElement(ElementType::Node);
+    auto *rx3    = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(sw && txNode && rx1 && rx2 && rx3);
+
+    for (auto *elm : {sw, txNode, rx1, rx2, rx3})
+        scene->addItem(elm);
+
+    auto *txN = qobject_cast<Node *>(txNode);
+    QVERIFY(txN);
+    txN->setLabel("BUS"); txN->setWirelessMode(WirelessMode::Tx);
+    for (auto *rx : {rx1, rx2, rx3}) {
+        auto *rxN = qobject_cast<Node *>(rx);
+        rxN->setLabel("BUS"); rxN->setWirelessMode(WirelessMode::Rx);
+    }
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(sw->outputPort(0));
+    conn->setEndPort(txNode->inputPort(0));
+    scene->addItem(conn);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    // Drive HIGH → all three Rx outputs HIGH
+    sw->logic()->setOutputValue(true);
+    for (const auto &logicElm : mapping.logicElms())
+        logicElm->updateLogic();
+    for (auto *rx : {rx1, rx2, rx3}) {
+        QCOMPARE(qobject_cast<Node *>(rx)->logic()->outputValue(), Status::Active);
+    }
+
+    // Drive LOW → all three Rx outputs LOW
+    sw->logic()->setOutputValue(false);
+    for (const auto &logicElm : mapping.logicElms())
+        logicElm->updateLogic();
+    for (auto *rx : {rx1, rx2, rx3}) {
+        QCOMPARE(qobject_cast<Node *>(rx)->logic()->outputValue(), Status::Inactive);
+    }
+}
+
+void TestElementMapping::testWirelessPriorityOrderingAfterSort()
+{
+    // After sort(), the Tx node must have higher priority than the Rx node that
+    // depends on it wirelessly.  This verifies that connectWirelessElements()
+    // correctly registers the wireless dependency so the topological sort can
+    // order Tx before Rx.
+    auto scene = std::make_unique<Scene>();
+
+    auto *src    = ElementFactory::buildElement(ElementType::InputButton);
+    auto *txNode = ElementFactory::buildElement(ElementType::Node);
+    auto *rxNode = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(src && txNode && rxNode);
+
+    scene->addItem(src);
+    scene->addItem(txNode);
+    scene->addItem(rxNode);
+
+    auto *txN = qobject_cast<Node *>(txNode);
+    auto *rxN = qobject_cast<Node *>(rxNode);
+    QVERIFY(txN && rxN);
+
+    txN->setLabel("SIG"); txN->setWirelessMode(WirelessMode::Tx);
+    rxN->setLabel("SIG"); rxN->setWirelessMode(WirelessMode::Rx);
+
+    // src → txNode (physical wire drives the Tx channel)
+    auto *conn = new QNEConnection();
+    conn->setStartPort(src->outputPort(0));
+    conn->setEndPort(txNode->inputPort(0));
+    scene->addItem(conn);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    const int txPriority = mapping.priority(txN->logic());
+    const int rxPriority = mapping.priority(rxN->logic());
+    QVERIFY2(txPriority > rxPriority,
+             "Tx node must have higher priority than the Rx node it drives wirelessly");
+}
+
+void TestElementMapping::testWirelessFeedbackLoopDetected()
+{
+    // A feedback cycle created through a wireless channel must be identified by
+    // hasFeedbackElements() / isInFeedbackLoop() after sort().
+    //
+    // Circuit topology:
+    //   Rx → NOT gate → Tx -[wireless label "FB"]-> Rx
+    //
+    // The wireless link from Tx back to Rx closes a 3-element cycle.
+    auto scene = std::make_unique<Scene>();
+
+    auto *txNode  = ElementFactory::buildElement(ElementType::Node);
+    auto *rxNode  = ElementFactory::buildElement(ElementType::Node);
+    auto *notGate = ElementFactory::buildElement(ElementType::Not);
+    QVERIFY(txNode && rxNode && notGate);
+
+    scene->addItem(txNode);
+    scene->addItem(rxNode);
+    scene->addItem(notGate);
+
+    auto *txN = qobject_cast<Node *>(txNode);
+    auto *rxN = qobject_cast<Node *>(rxNode);
+    QVERIFY(txN && rxN);
+
+    txN->setLabel("FB"); txN->setWirelessMode(WirelessMode::Tx);
+    rxN->setLabel("FB"); rxN->setWirelessMode(WirelessMode::Rx);
+
+    // Rx output → NOT gate input
+    auto *c1 = new QNEConnection();
+    c1->setStartPort(rxNode->outputPort(0));
+    c1->setEndPort(notGate->inputPort(0));
+    scene->addItem(c1);
+
+    // NOT gate output → Tx input (physical)
+    auto *c2 = new QNEConnection();
+    c2->setStartPort(notGate->outputPort(0));
+    c2->setEndPort(txNode->inputPort(0));
+    scene->addItem(c2);
+
+    ElementMapping mapping(scene->elements());
+    mapping.sort();
+
+    QVERIFY(mapping.hasFeedbackElements());
+    QVERIFY(mapping.isInFeedbackLoop(txN->logic()));
+    QVERIFY(mapping.isInFeedbackLoop(rxN->logic()));
+    QVERIFY(mapping.isInFeedbackLoop(notGate->logic()));
 }

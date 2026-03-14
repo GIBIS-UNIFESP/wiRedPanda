@@ -16,6 +16,7 @@ ElementMapping::ElementMapping(const QVector<GraphicElement *> &elements)
     generateMap();
     qCDebug(three) << "Connect.";
     connectElements();
+    connectWirelessElements();
 }
 
 void ElementMapping::generateMap()
@@ -32,6 +33,37 @@ void ElementMapping::connectElements()
         for (auto *inputPort : elm->inputs()) {
             applyConnection(inputPort);
         }
+    }
+}
+
+void ElementMapping::connectWirelessElements()
+{
+    // Build a map from channel label to the Tx node's LogicElement.
+    // If two Tx nodes share the same label the first registered wins and a warning is emitted.
+    QHash<QString, LogicElement *> txMap;
+    for (auto *elm : std::as_const(m_elements)) {
+        if (elm->wirelessMode() != WirelessMode::Tx || elm->label().isEmpty() || !elm->logic()) {
+            continue;
+        }
+        if (txMap.contains(elm->label())) {
+            qCWarning(zero) << "Duplicate wireless Tx label:" << elm->label() << "— second transmitter ignored.";
+        } else {
+            txMap.insert(elm->label(), elm->logic());
+        }
+    }
+
+    // Wire each Rx node's LogicNode input to the matching Tx LogicNode output.
+    // connectPredecessor() overwrites whatever applyConnection() set (GND fallback via
+    // setRequired(false)), so the topological sort will see the true wireless dependency.
+    for (auto *elm : std::as_const(m_elements)) {
+        if (elm->wirelessMode() != WirelessMode::Rx || elm->label().isEmpty() || !elm->logic()) {
+            continue;
+        }
+        if (auto *txLogic = txMap.value(elm->label(), nullptr)) {
+            elm->logic()->connectPredecessor(0, txLogic, 0);
+        }
+        // No matching Tx: applyConnection() already wired this port to GND (setRequired(false)),
+        // so the element is valid and outputs logic 0.
     }
 }
 

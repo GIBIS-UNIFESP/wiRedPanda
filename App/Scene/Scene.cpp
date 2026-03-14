@@ -262,6 +262,17 @@ QVector<GraphicElement *> Scene::sortByTopology(QVector<GraphicElement *> elemen
     return elements;
 }
 
+QHash<QString, QNEInputPort *> Scene::wirelessTxInputPorts(const QVector<GraphicElement *> &elements)
+{
+    QHash<QString, QNEInputPort *> txMap;
+    for (auto *elm : elements) {
+        if (elm->wirelessMode() == WirelessMode::Tx && !elm->label().isEmpty() && elm->inputPort(0)) {
+            txMap.insert(elm->label(), elm->inputPort(0));
+        }
+    }
+    return txMap;
+}
+
 const QVector<QNEConnection *> Scene::connections()
 {
     const auto items_ = items();
@@ -392,6 +403,30 @@ QUndoStack *Scene::undoStack()
     return &m_undoStack;
 }
 
+bool Scene::isConnectionAllowed(QNEOutputPort *startPort, QNEInputPort *endPort)
+{
+    if (!startPort || !endPort) {
+        return false;
+    }
+    if (startPort->graphicElement() == endPort->graphicElement()) {
+        return false;  // self-loop
+    }
+    if (startPort->isConnected(endPort)) {
+        return false;  // duplicate
+    }
+    // Rx nodes receive their signal over the air; a physical wire on the input
+    // port would be silently overridden by the simulation (tunnel convention).
+    if (auto *elm = endPort->graphicElement(); elm && elm->wirelessMode() == WirelessMode::Rx) {
+        return false;
+    }
+    // Tx nodes are dead-end transmitters; their output port drives the wireless
+    // channel only — no physical wire should bypass the channel (tunnel convention).
+    if (auto *elm = startPort->graphicElement(); elm && elm->wirelessMode() == WirelessMode::Tx) {
+        return false;
+    }
+    return true;
+}
+
 void Scene::makeConnection(QNEConnection *connection)
 {
     auto *port = qgraphicsitem_cast<QNEPort *>(itemAt(m_mousePos));
@@ -419,9 +454,7 @@ void Scene::makeConnection(QNEConnection *connection)
     }
 
     /* Verifying if the connection is valid. */
-    // Self-loops (same element on both ends) and duplicate connections are forbidden
-    if ((startPort->graphicElement() != endPort->graphicElement()) && !startPort->isConnected(endPort)) {
-        /* Making connection. */
+    if (isConnectionAllowed(startPort, endPort)) {
         connection->setStartPort(startPort);
         connection->setEndPort(endPort);
         receiveCommand(new AddItemsCommand({connection}, this));

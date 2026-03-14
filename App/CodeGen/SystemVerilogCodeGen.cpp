@@ -15,6 +15,7 @@
 #include "App/Element/LogicElements/LogicTruthTable.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Scene/Scene.h"
 
 SystemVerilogCodeGen::SystemVerilogCodeGen(const QString &fileName, const QVector<GraphicElement *> &elements)
     : m_file(fileName)
@@ -116,6 +117,14 @@ QString SystemVerilogCodeGen::otherPortNameImpl(QNEPort *port, QSet<QNEPort *> &
     if (port->connections().isEmpty()) {
         QString mapped = m_varMap.value(port);
         if (!mapped.isEmpty()) return mapped;
+        // Wireless Rx: resolve via the Tx node's input (what drives the transmitter)
+        auto *elm = port->graphicElement();
+        if (elm && elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
+            auto *txInputPort = m_txInputPorts.value(elm->label(), nullptr);
+            if (txInputPort) {
+                return otherPortNameImpl(txInputPort, visited);
+            }
+        }
         return highLow(port->defaultValue());
     }
 
@@ -653,6 +662,8 @@ bool SystemVerilogCodeGen::emitBehavioralICModule(ICModuleInfo &info)
 
 void SystemVerilogCodeGen::generate()
 {
+    m_txInputPorts = Scene::wirelessTxInputPorts(m_elements);
+
     m_stream << "// ==================================================================== //" << Qt::endl;
     m_stream << "// ======= This code was generated automatically by wiRedPanda ======== //" << Qt::endl;
     m_stream << "// ==================================================================== //" << Qt::endl;

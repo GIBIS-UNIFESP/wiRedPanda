@@ -140,6 +140,7 @@ private slots:
 
     void testDeeplyNestedElementNaming();
     void testNodeElementGeneration();
+    void testWirelessNodeGeneration();
     void testMuxDemuxIntegration();
 
     void testMultipleClocksInCircuit();

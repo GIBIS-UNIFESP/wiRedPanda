@@ -664,6 +664,7 @@ add_test(NAME TestElementLabel COMMAND test_wiredpanda TestElementLabel WORKING_
 add_test(NAME TestElementProperties COMMAND test_wiredpanda TestElementProperties WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFeatures COMMAND test_wiredpanda TestFeatures WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestGeometry COMMAND test_wiredpanda TestGeometry WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestWirelessNode COMMAND test_wiredpanda TestWirelessNode WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestGraphicelementAdvanced COMMAND test_wiredpanda TestGraphicelementAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestInputElements COMMAND test_wiredpanda TestInputElements WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestInputRotary COMMAND test_wiredpanda TestInputRotary WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -745,7 +746,7 @@ endforeach()
 foreach(TEST TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocksAdvanced
         TestComponents TestDisplays TestElementLabel TestElementProperties TestFeatures
         TestGeometry TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED
-        TestLogicGates TestMultiplexing TestSequentialLogic TestTruthTable)
+        TestLogicGates TestMultiplexing TestSequentialLogic TestTruthTable TestWirelessNode)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
 

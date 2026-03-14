@@ -22,15 +22,16 @@
 struct PropertyDescriptor {
     /// Identifies which property this descriptor represents.
     enum class Type {
-        Label,       ///< User-visible text label.
-        Color,       ///< Color selection (LEDs, displays).
-        Frequency,   ///< Clock oscillation frequency in Hz.
-        Delay,       ///< Phase delay as fraction of the clock period.
-        Audio,       ///< Audio note selection (buzzer tone).
-        AudioBox,    ///< AudioBox file selection dialog.
-        Trigger,     ///< Keyboard trigger shortcut.
-        TruthTable,  ///< Editable truth table dialog.
-        Skin,        ///< Custom pixmap skin selection.
+        Label,        ///< User-visible text label.
+        Color,        ///< Color selection (LEDs, displays).
+        Frequency,    ///< Clock oscillation frequency in Hz.
+        Delay,        ///< Phase delay as fraction of the clock period.
+        Audio,        ///< Audio note selection (buzzer tone).
+        AudioBox,     ///< AudioBox file selection dialog.
+        Trigger,      ///< Keyboard trigger shortcut.
+        TruthTable,   ///< Editable truth table dialog.
+        Skin,         ///< Custom pixmap skin selection.
+        WirelessMode, ///< Wireless routing mode (None / Tx / Rx) — Node elements only.
     };
 
     Type type; ///< Which property this descriptor represents.

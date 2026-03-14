@@ -11,9 +11,12 @@
 #include <QTextStream>
 
 #include "App/CodeGen/SystemVerilogCodeGen.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
+#include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "Tests/Common/TestUtils.h"
@@ -483,6 +486,77 @@ void TestSystemVerilogExport::initTestCase()
 void TestSystemVerilogExport::cleanupTestCase()
 {
     // Cleanup after all tests
+}
+
+void TestSystemVerilogExport::testWirelessNodeGeneration()
+{
+    // A Tx and Rx node pair on the same channel. In SystemVerilog, node expressions
+    // are inlined, so the Rx node's expression should resolve to the InputSwitch
+    // signal rather than the default 1'b0.
+    auto *sw = new InputSwitch();
+    auto *txNode = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    QVERIFY(txNode);
+    txNode->setLabel("CLK");
+    txNode->setWirelessMode(WirelessMode::Tx);
+
+    auto *rxNode = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    QVERIFY(rxNode);
+    rxNode->setLabel("CLK");
+    rxNode->setWirelessMode(WirelessMode::Rx);
+
+    auto *led = new Led();
+
+    // Physical wire: InputSwitch → Tx node, Rx node → LED
+    auto *swOut = sw->outputPort(0);
+    auto *txIn = txNode->inputPort(0);
+    auto *conn1 = new QNEConnection();
+    conn1->setStartPort(swOut);
+    conn1->setEndPort(txIn);
+
+    auto *rxOut = rxNode->outputPort(0);
+    auto *ledIn = led->inputPort(0);
+    auto *conn2 = new QNEConnection();
+    conn2->setStartPort(rxOut);
+    conn2->setEndPort(ledIn);
+
+    QVector<GraphicElement *> elements{sw, txNode, rxNode, led};
+
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    QString verilogPath = tempDir.filePath("test_wireless.sv");
+
+    SystemVerilogCodeGen generator(verilogPath, elements);
+    try {
+        generator.generate();
+    } catch (...) {
+        QFAIL("SystemVerilog generation threw an exception for wireless circuit");
+    }
+
+    QFile file(verilogPath);
+    QVERIFY2(file.open(QIODevice::ReadOnly | QIODevice::Text),
+             "Generated SystemVerilog file should be readable");
+    const QString content = QString::fromUtf8(file.readAll());
+    file.close();
+
+    QVERIFY2(!content.isEmpty(), "Generated SystemVerilog should not be empty");
+
+    // The output assignment section has the format:
+    //   assign <output_var> = <expr>;
+    // With wireless resolution, <expr> should be the InputSwitch signal name, not 1'b0.
+    const int outputSection = content.indexOf("// Writing output data. //");
+    QVERIFY2(outputSection >= 0, "Generated SV should contain output data section");
+    const QString outputCode = content.mid(outputSection);
+
+    QRegularExpression outputLow(R"(assign\s+\w+\s*=\s*1'b0;)");
+    QVERIFY2(!outputLow.match(outputCode).hasMatch(),
+             "Wireless Rx node should not result in 1'b0 in the LED output assignment");
+
+    delete conn1;
+    delete conn2;
+    delete sw;
+    delete txNode;
+    delete rxNode;
+    delete led;
 }
 
 bool TestSystemVerilogExport::validateWithIverilog(const QString &verilogFile)

@@ -77,6 +77,9 @@ private:
     // --- Connection setup ---
 
     void connectElements();
+    /// Overrides physical predecessors on Rx nodes with their matching Tx node.
+    /// Must be called after connectElements() so wireless always wins, and before sort().
+    void connectWirelessElements();
     void applyConnection(QNEInputPort *inputPort);
 
     // --- Sorting ---

@@ -13,6 +13,7 @@
 
 class GraphicElement;
 class IC;
+class QNEInputPort;
 class QNEPort;
 
 /**
@@ -135,6 +136,7 @@ private:
 
     QFile m_file;
     QHash<QNEPort *, QString> m_varMap;
+    QHash<QString, QNEInputPort *> m_txInputPorts;
     QStringList m_availablePins;
     QStringList m_declaredVariables;
     QTextStream m_stream;

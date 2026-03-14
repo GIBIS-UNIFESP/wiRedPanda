@@ -310,6 +310,9 @@ class SetElementPropertiesCommand(MCPCommand):
         color: Optional[str] = Field(default=None)
         frequency: Optional[Annotated[float, Field(ge=0)]] = None
         rotation: Optional[float] = Field(default=None)
+        wireless_mode: Optional[Annotated[int, Field(ge=0, le=2)]] = Field(
+            default=None, description="Wireless mode: 0=None, 1=Tx, 2=Rx (Node elements only)"
+        )
 
         model_config = ConfigDict(extra="forbid")
 
