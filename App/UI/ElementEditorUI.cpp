@@ -195,6 +195,17 @@ void ElementEditor_Ui::setupUi(QWidget *ElementEditor)
     sliderDelay->setTickInterval(1);
     gridLayout_2->addWidget(sliderDelay, 6, 1, 1, 1);
 
+    labelWirelessMode = new QLabel(groupBox);
+    labelWirelessMode->setObjectName("labelWirelessMode");
+    gridLayout_2->addWidget(labelWirelessMode, 11, 0, 1, 1);
+
+    comboBoxWirelessMode = new QComboBox(groupBox);
+    comboBoxWirelessMode->setObjectName("comboBoxWirelessMode");
+    for (int i = 0; i < 3; ++i) {
+        comboBoxWirelessMode->addItem(QString());
+    }
+    gridLayout_2->addWidget(comboBoxWirelessMode, 11, 1, 1, 1);
+
     gridLayout->addWidget(groupBox, 0, 0, 1, 1);
 
     retranslateUi(ElementEditor);
@@ -235,5 +246,9 @@ void ElementEditor_Ui::retranslateUi(QWidget *ElementEditor)
     labelLocked->setText(QCoreApplication::translate("ElementEditor", "Locked:"));
     labelAudio->setText(QCoreApplication::translate("ElementEditor", "Audio:"));
     labelDelay->setText(QCoreApplication::translate("ElementEditor", "Delay:"));
+    labelWirelessMode->setText(QCoreApplication::translate("ElementEditor", "Wireless:"));
+    comboBoxWirelessMode->setItemText(0, QCoreApplication::translate("ElementEditor", "None"));
+    comboBoxWirelessMode->setItemText(1, QCoreApplication::translate("ElementEditor", "Transmit (Tx)"));
+    comboBoxWirelessMode->setItemText(2, QCoreApplication::translate("ElementEditor", "Receive (Rx)"));
 }
 

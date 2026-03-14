@@ -57,6 +57,10 @@ private slots:
 
     // UpdateCommand
     void testUpdateCommandUndoRedo();
+    void testUpdateCommandWirelessModeUndoRedo();
+    void testUpdateCommandRxModeIsRequired();
+    void testWirelessModeUndoRestoresConnection();
+    void testWirelessRxModeUndoRestoresConnection();
 
     // Edge cases
     void testNewOperationClearsRedoStack();

@@ -39,6 +39,11 @@ private slots:
     // Serialization (1 test)
     void testPropertiesSaveLoad();
 
+    // Wireless Mode Tests (3 tests)
+    void testWirelessModeProperty();
+    void testWirelessModePortRequired();
+    void testNodeHasLabel();
+
     // Port Access Tests (8 tests)
     void testInputPortByIndexValid();
     void testInputPortByIndexInvalid();

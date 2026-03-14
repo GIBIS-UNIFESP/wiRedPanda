@@ -41,6 +41,24 @@ private slots:
     // Connection Application (1 test)
     void testApplyConnectionsDefaultValues();
 
+    // Wireless Connection Tests (16 tests)
+    void testWirelessRxConnectedToTx();
+    void testWirelessRxNoMatchFallsToGnd();
+    void testWirelessFanOut();
+    void testDuplicateTxDoesNotCrash();
+    void testWirelessEmptyLabelNotMatched();
+    void testWirelessTxAloneDoesNotCrash();
+    void testWirelessMultipleChannels();
+    void testWirelessRxPhysicalWireOverriddenByTx();
+    void testWirelessLabelCaseSensitive();
+    void testWirelessSignalPropagation();
+    void testWirelessNoneModeNodeIgnored();
+    void testWirelessRxMismatchLabelFallsToGnd();
+    void testWirelessCircuitWithGate();
+    void testWirelessFanOutSignalValues();
+    void testWirelessPriorityOrderingAfterSort();
+    void testWirelessFeedbackLoopDetected();
+
     // Refactor coverage tests
     void testDecorativeElementsExcluded();
     void testPriorityOrderingIsTopological();

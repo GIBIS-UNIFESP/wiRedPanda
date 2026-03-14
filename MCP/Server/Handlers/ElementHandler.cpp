@@ -11,6 +11,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEPort.h"
@@ -357,6 +358,23 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
         newProperties["rotation"] = newRotation;
 
         element->setRotation(newRotation);
+    }
+
+    // Wireless mode is only meaningful for Node elements; non-Nodes are silently ignored.
+    if (params.contains("wireless_mode")) {
+        if (auto *node = qobject_cast<Node *>(element)) {
+            int modeInt = params.value("wireless_mode").toInt();
+            if (modeInt < 0 || modeInt > 2) {
+                return createErrorResponse("Invalid wireless_mode. Must be 0 (None), 1 (Tx), or 2 (Rx)", requestId);
+            }
+            auto oldMode = static_cast<int>(node->wirelessMode());
+            auto newMode = static_cast<WirelessMode>(modeInt);
+
+            oldProperties["wireless_mode"] = oldMode;
+            newProperties["wireless_mode"] = modeInt;
+
+            node->setWirelessMode(newMode);
+        }
     }
 
     // Push an undo command so Ctrl+Z in the GUI can revert MCP-applied property changes.

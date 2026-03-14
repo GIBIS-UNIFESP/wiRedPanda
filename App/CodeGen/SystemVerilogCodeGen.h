@@ -15,6 +15,7 @@
 
 class GraphicElement;
 class IC;
+class QNEInputPort;
 class QNEPort;
 
 /// Holds the mapping between a circuit pin and its generated SystemVerilog signal name.
@@ -97,6 +98,7 @@ private:
 
     QFile m_file;
     QHash<QNEPort *, QString> m_varMap;
+    QHash<QString, QNEInputPort *> m_txInputPorts;
     QHash<QString, ICModuleInfo> m_icModules;
     QHash<IC *, QString> m_instanceNames;
     QStringList m_availablePins;

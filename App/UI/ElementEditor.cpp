@@ -10,14 +10,17 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QImageReader>
+#include <QMessageBox>
 
 #include "App/Core/Common.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/InputRotary.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
+#include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/UI/ElementContextMenu.h"
@@ -52,6 +55,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_ui->comboBoxValue->installEventFilter(m_tabNavigator);
     m_ui->sliderDelay->installEventFilter(m_tabNavigator);
     m_ui->doubleSpinBoxFrequency->installEventFilter(m_tabNavigator);
+    m_ui->comboBoxWirelessMode->installEventFilter(m_tabNavigator);
     m_ui->lineEditElementLabel->installEventFilter(m_tabNavigator);
     m_ui->lineEditTrigger->installEventFilter(m_tabNavigator);
     // The truth table editor is a floating dialog rather than embedded in the
@@ -74,6 +78,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->comboBoxValue,          &QComboBox::currentTextChanged,                   this, &ElementEditor::outputValueChanged);
     connect(m_ui->sliderDelay,            qOverload<int>(&QSlider::valueChanged),           this, &ElementEditor::apply);
     connect(m_ui->doubleSpinBoxFrequency, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ElementEditor::apply);
+    connect(m_ui->comboBoxWirelessMode,   qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
     connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::apply);
     connect(m_ui->lineEditTrigger,        &QLineEdit::textChanged,                          this, &ElementEditor::triggerChanged);
     connect(m_ui->pushButtonAudioBox,     &QPushButton::clicked,                            this, &ElementEditor::audioBox);
@@ -383,6 +388,20 @@ void ElementEditor::applyCapabilitiesToUi()
     /* Skin */
     m_ui->pushButtonChangeSkin->setVisible(c.canChangeSkin);
     m_ui->pushButtonDefaultSkin->setVisible(c.canChangeSkin);
+
+    /* Wireless mode — Node elements only */
+    setSection(c.hasWirelessMode, m_ui->labelWirelessMode, m_ui->comboBoxWirelessMode);
+    if (c.hasWirelessMode && !m_elements.isEmpty()) {
+        auto *first = qobject_cast<Node *>(m_elements.constFirst());
+        const bool sameMode = std::all_of(m_elements.cbegin(), m_elements.cend(), [&](GraphicElement *elm) {
+            const auto *n = qobject_cast<Node *>(elm);
+            return n && n->wirelessMode() == first->wirelessMode();
+        });
+        if (prepareCombo(m_ui->comboBoxWirelessMode, true, sameMode, m_manyWirelessModes) && first) {
+            QSignalBlocker blocker(m_ui->comboBoxWirelessMode);
+            m_ui->comboBoxWirelessMode->setCurrentIndex(static_cast<int>(first->wirelessMode()));
+        }
+    }
 }
 
 void ElementEditor::selectionChanged()
@@ -429,6 +448,13 @@ void ElementEditor::applyProperty(GraphicElement *elm, PropertyDescriptor::Type 
             elm->setSkin(m_isDefaultSkin, m_skinName);
         }
         break;
+    case PropertyDescriptor::Type::WirelessMode:
+        if (m_ui->comboBoxWirelessMode->currentText() != m_manyWirelessModes) {
+            if (auto *node = qobject_cast<Node *>(elm)) {
+                node->setWirelessMode(static_cast<WirelessMode>(m_ui->comboBoxWirelessMode->currentIndex()));
+            }
+        }
+        break;
     case PropertyDescriptor::Type::AudioBox:
     case PropertyDescriptor::Type::TruthTable:
         // Managed by their own dialogs (audioBox() / truthTable()); not applied here.
@@ -442,6 +468,65 @@ void ElementEditor::apply()
 
     if (m_elements.isEmpty() || !isEnabled()) {
         return;
+    }
+
+    // Reject label changes that would create a duplicate wireless Tx channel.
+    // A Tx node's label is its channel name — two Tx nodes on the same label
+    // means one silently receives no signal, which is always a user error.
+    if (m_scene && m_caps.hasWirelessMode) {
+        const QString newLabel = m_ui->lineEditElementLabel->text();
+        const bool labelChanging = (newLabel != m_manyLabels);
+        const WirelessMode newMode = static_cast<WirelessMode>(m_ui->comboBoxWirelessMode->currentIndex());
+        const bool modeChanging = (m_ui->comboBoxWirelessMode->currentText() != m_manyWirelessModes);
+
+        for (auto *elm : std::as_const(m_elements)) {
+            auto *node = qobject_cast<Node *>(elm);
+            if (!node) continue;
+
+            const QString candidateLabel = labelChanging ? newLabel : node->label();
+            const WirelessMode candidateMode = modeChanging ? newMode : node->wirelessMode();
+
+            if (candidateMode != WirelessMode::Tx || candidateLabel.isEmpty()) continue;
+
+            for (auto *other : m_scene->elements()) {
+                if (other == elm) continue;
+                auto *otherNode = qobject_cast<Node *>(other);
+                if (!otherNode || otherNode->wirelessMode() != WirelessMode::Tx) continue;
+                if (otherNode->label() == candidateLabel) {
+                    QMessageBox::warning(this,
+                        tr("Duplicate Wireless Channel"),
+                        tr("A Tx node with label \"%1\" already exists.\n"
+                           "Each wireless channel must have a unique label.").arg(candidateLabel));
+                    update();
+                    return;
+                }
+            }
+        }
+    }
+
+    // Collect connections that will be severed by wireless mode changes.
+    // setWirelessMode() hides the replaced port but does not delete connections
+    // itself — that is handled here via DeleteItemsCommand so undo can restore them.
+    QList<QGraphicsItem *> wirelessConnsToDelete;
+    if (m_scene && m_caps.hasWirelessMode) {
+        const WirelessMode newMode = static_cast<WirelessMode>(m_ui->comboBoxWirelessMode->currentIndex());
+        const bool modeChanging = (m_ui->comboBoxWirelessMode->currentText() != m_manyWirelessModes);
+
+        if (modeChanging) {
+            for (auto *elm : std::as_const(m_elements)) {
+                auto *node = qobject_cast<Node *>(elm);
+                if (!node) continue;
+
+                QNEPort *port = (newMode == WirelessMode::Rx) ? static_cast<QNEPort *>(node->inputPort())
+                             : (newMode == WirelessMode::Tx) ? static_cast<QNEPort *>(node->outputPort())
+                             : nullptr;
+                if (port) {
+                    for (auto *conn : port->connections()) {
+                        wirelessConnsToDelete.append(static_cast<QGraphicsItem *>(conn));
+                    }
+                }
+            }
+        }
     }
 
     // Snapshot current state into oldData before modifying anything.
@@ -463,7 +548,19 @@ void ElementEditor::apply()
         m_isUpdatingSkin = false;
     }
 
-    emit sendCommand(new UpdateCommand(m_elements, oldData, m_scene));
+    // When wireless mode changes sever connections, group the property update
+    // and connection deletion into a single macro so undo restores both.
+    const bool needsMacro = !wirelessConnsToDelete.isEmpty();
+    if (needsMacro) {
+        m_scene->undoStack()->beginMacro(tr("Change wireless mode"));
+    }
+
+    m_scene->receiveCommand(new UpdateCommand(m_elements, oldData, m_scene));
+
+    if (needsMacro) {
+        m_scene->receiveCommand(new DeleteItemsCommand(wirelessConnsToDelete, m_scene));
+        m_scene->undoStack()->endMacro();
+    }
 }
 
 void ElementEditor::inputIndexChanged(const int index)

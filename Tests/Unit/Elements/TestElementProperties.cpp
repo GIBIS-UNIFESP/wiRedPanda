@@ -11,6 +11,7 @@
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
 #include "App/IO/Serialization.h"
@@ -624,4 +625,61 @@ void TestElementProperties::testPortListIntegrity()
     // Verify no cross-contamination between elements
     QVERIFY(andGate.inputPort(0) != orGate.inputPort(0));
     QVERIFY(notGate.inputPort(0) != andGate.inputPort(0));
+}
+
+// ============================================================================
+// Wireless Mode Tests
+// ============================================================================
+
+void TestElementProperties::testWirelessModeProperty()
+{
+    // hasWirelessMode() must return true for Node and false for all other elements.
+    Node node;
+    QVERIFY(node.hasWirelessMode());
+    QCOMPARE(node.wirelessMode(), WirelessMode::None);
+
+    And andGate;
+    QVERIFY(!andGate.hasWirelessMode());
+
+    // Tx and Rx transitions on a Node
+    node.setWirelessMode(WirelessMode::Tx);
+    QCOMPARE(node.wirelessMode(), WirelessMode::Tx);
+
+    node.setWirelessMode(WirelessMode::Rx);
+    QCOMPARE(node.wirelessMode(), WirelessMode::Rx);
+
+    node.setWirelessMode(WirelessMode::None);
+    QCOMPARE(node.wirelessMode(), WirelessMode::None);
+}
+
+void TestElementProperties::testWirelessModePortRequired()
+{
+    // isRequired() on the input port must track the wireless mode:
+    //   None → required, Tx → required, Rx → NOT required.
+    Node node;
+    QVERIFY(node.inputPort()->isRequired());
+
+    node.setWirelessMode(WirelessMode::Tx);
+    QVERIFY(node.inputPort()->isRequired());   // Tx still needs a physical driver
+
+    node.setWirelessMode(WirelessMode::Rx);
+    QVERIFY(!node.inputPort()->isRequired());  // Rx receives wirelessly
+
+    node.setWirelessMode(WirelessMode::None);
+    QVERIFY(node.inputPort()->isRequired());   // restored to normal
+}
+
+void TestElementProperties::testNodeHasLabel()
+{
+    // Node::hasLabel must be true — the label is the wireless channel name.
+    Node node;
+    QVERIFY(node.hasLabel());
+
+    node.setLabel("CHANNEL_X");
+    QCOMPARE(node.label(), QStringLiteral("CHANNEL_X"));
+
+    // Label is independent of wireless mode
+    node.setWirelessMode(WirelessMode::Tx);
+    QCOMPARE(node.label(), QStringLiteral("CHANNEL_X"));
+    QVERIFY(node.hasLabel());
 }

@@ -30,6 +30,10 @@ private slots:
     void testConnectionStatusTracking();
     void testConnectionRemovalUpdatesCounters();
 
+    // Wireless port semantics (2 tests)
+    void testWirelessRxPortIsNotRequired();
+    void testWirelessNoneModeNodePortIsRequired();
+
 private:
     QTemporaryDir m_tempDir;
 };

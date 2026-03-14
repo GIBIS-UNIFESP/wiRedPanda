@@ -255,6 +255,16 @@ void GraphicElement::load(QDataStream &stream, SerializationContext &context)
     qCDebug(four) << "Finished loading element.";
 }
 
+WirelessMode GraphicElement::wirelessMode() const
+{
+    return WirelessMode::None;
+}
+
+bool GraphicElement::hasWirelessMode() const
+{
+    return false;
+}
+
 void GraphicElement::loadOldFormat(QDataStream &stream, SerializationContext &context)
 {
     loadPos(stream);
@@ -1169,7 +1179,8 @@ QList<PropertyDescriptor> GraphicElement::editableProperties() const
     if (hasAudioBox())   props.append({PropertyDescriptor::Type::AudioBox});
     if (hasTrigger())    props.append({PropertyDescriptor::Type::Trigger});
     if (hasTruthTable()) props.append({PropertyDescriptor::Type::TruthTable});
-    if (canChangeSkin()) props.append({PropertyDescriptor::Type::Skin});
+    if (canChangeSkin())    props.append({PropertyDescriptor::Type::Skin});
+    if (hasWirelessMode())  props.append({PropertyDescriptor::Type::WirelessMode});
     return props;
 }
 

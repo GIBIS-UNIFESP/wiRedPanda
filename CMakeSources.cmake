@@ -368,6 +368,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestWirelessNode.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicelementAdvanced.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputElements.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputRotary.cpp
@@ -506,6 +507,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestWirelessNode.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicelementAdvanced.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputElements.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputRotary.h

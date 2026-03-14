@@ -448,6 +448,14 @@ class MCPTestOrchestrator:
         except ImportError as e:
             print(f"⚠️  Could not load NegativeCaseTests: {e}")
 
+        try:
+            from tests.test_wireless_node import WirelessNodeTests
+
+            self.categories.append(WirelessNodeTests(self._runner))
+            print("📦 Loaded WirelessNodeTests")
+        except ImportError as e:
+            print(f"⚠️  Could not load WirelessNodeTests: {e}")
+
     async def run_all_tests(self) -> bool:
         """Run all test categories
 

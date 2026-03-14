@@ -32,6 +32,7 @@ struct SelectionCapabilities {
     bool hasFrequency        = false;
     bool hasLabel            = false;
     bool hasOnlyInputs       = false;
+    bool hasWirelessMode     = false;
     bool hasTrigger          = false;
     bool hasTruthTable       = false;
 

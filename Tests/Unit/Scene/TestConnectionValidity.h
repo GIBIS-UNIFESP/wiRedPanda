@@ -13,7 +13,7 @@ class TestConnectionValidity : public QObject
 private slots:
     void initTestCase();
 
-    // Connection Validity Tests (8 tests)
+    // Connection Validity Tests (11 tests)
     void testConnectionStatusValid();
     void testConnectionStatusInvalid();
     void testPortDeletionDeletesConnection();
@@ -22,6 +22,11 @@ private slots:
     void testConnectionWithDisconnectedPorts();
     void testInputPortWithMultipleConnections();
     void testOutputPortWithMultipleConnections();
+
+    // Wireless connection guard (3 tests)
+    void testIsConnectionAllowedRejectsRxPort();
+    void testIsConnectionAllowedRejectsTxOutputPort();
+    void testIsConnectionAllowedPermitsNonePort();
 
 private:
     QTemporaryDir m_tempDir;
