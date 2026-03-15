@@ -23,10 +23,16 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         qt: [6.2.4, 6.8.3, 6.10.3]
+        cmake_args: ['']
+        include:
+          - os: ubuntu-latest
+            qt: '6.8.3'
+            cmake_args: '-DENABLE_UNITY=OFF -DENABLE_PCH=OFF'
 
 # =================================
 
     runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} Qt${{ matrix.qt }}${{ matrix.cmake_args != '' && ' (no unity/PCH)' || '' }}
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
 
     steps:
@@ -46,7 +52,7 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1
       with:
-        key: ${{ matrix.os }}-${{ matrix.qt }}
+        key: ${{ matrix.os }}-${{ matrix.qt }}${{ matrix.cmake_args != '' && '-no-unity' || '' }}
 
     - name: Setup Windows MSVC Toolchain
       if: runner.os == 'Windows'
@@ -56,7 +62,7 @@ jobs:
 
     - name: Build
       run: |
-        cmake --preset release
+        cmake --preset release ${{ matrix.cmake_args }}
         cmake --build --preset release
 
     - name: Test
@@ -70,7 +76,7 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v6
       with:
-        name: build-logs-${{ matrix.os }}-${{ matrix.qt }}
+        name: build-logs-${{ matrix.os }}-${{ matrix.qt }}${{ matrix.cmake_args != '' && '-no-unity' || '' }}
         path: |
           build/CMakeCache.txt
           build/CMakeFiles/CMakeOutput.log
