@@ -9,12 +9,15 @@
 #include <QUndoCommand>
 
 #include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/Simulation/Simulation.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestSceneUndoredo::initTestCase()
@@ -1434,4 +1437,295 @@ void TestSceneUndoredo::testContextDirectoryPerTab()
     QCOMPARE(Serialization::contextDir, circuitDir);
 
     Serialization::contextDir = savedForTest;
+}
+
+// ─── Serialization::serialize portMap collision regression ────────────────
+//
+// Regression tests for the bug where Serialization::serialize() assigned
+// sequential temp IDs starting from 1 to ALL elements, including those that
+// already had valid positive scene IDs. In CommandUtils::saveItems(), the
+// "other" elements (those that stay in the scene) are written to the same
+// stream BEFORE serialize() is called, using their real IDs. When a deleted
+// element received temp ID=1 it would collide with the "other" element whose
+// real ID was also 1, corrupting the portMap on the subsequent load (undo).
+// The fix: only assign temp IDs to elements with id <= 0; elements with
+// valid positive IDs keep them unchanged.
+
+void TestSceneUndoredo::testDeleteUndoConnectionsReattachedCorrectly()
+{
+    // Structural check: after delete + undo, each restored connection must
+    // reference the correct GraphicElement at both endpoints.
+    //
+    // Bug scenario: swIn(ID=1) → AND(ID=2) → LED(ID=3).
+    // DeleteItemsCommand removes AND; "others" are swIn and LED.
+    // On undo, Serialization::serialize() used to give AND temp ID=1,
+    // colliding with swIn's serialId. The portMap resolver then found
+    // AND.in[0] instead of swIn.out[0] as the start-port of conn1.
+
+    Scene scene;
+
+    auto *swIn = new InputSwitch();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    auto *led = new Led();
+    swIn->setPos(0, 0);
+    andGate->setPos(96, 0);
+    led->setPos(192, 0);
+    scene.addItem(swIn);   // ID=1
+    scene.addItem(andGate); // ID=2
+    scene.addItem(led);    // ID=3
+
+    auto *conn1 = new QNEConnection();
+    conn1->setStartPort(swIn->outputPort(0));
+    conn1->setEndPort(andGate->inputPort(0));
+    scene.addItem(conn1);
+
+    auto *conn2 = new QNEConnection();
+    conn2->setStartPort(andGate->outputPort(0));
+    conn2->setEndPort(led->inputPort(0));
+    scene.addItem(conn2);
+
+    // Capture the IDs of the elements we expect to survive the undo
+    const int swInId = swIn->id();
+    const int ledId = led->id();
+
+    // Delete AND gate and its two connections
+    andGate->setSelected(true);
+    scene.deleteAction();
+    QCOMPARE(scene.elements().size(), 2);
+
+    // Undo — AND and both connections must come back
+    scene.undoStack()->undo();
+    QCOMPARE(scene.elements().size(), 3);
+
+    // Retrieve elements by ID (pointers may have been recreated)
+    auto *swInAfter  = dynamic_cast<GraphicElement *>(scene.itemById(swInId));
+    auto *ledAfter   = dynamic_cast<GraphicElement *>(scene.itemById(ledId));
+    QVERIFY2(swInAfter != nullptr, "swIn must still be in scene after undo");
+    QVERIFY2(ledAfter  != nullptr, "LED must still be in scene after undo");
+
+    // AND gate must have exactly one connection on each port
+    // (find it via the switch's output connection)
+    QVERIFY2(!swInAfter->outputPort(0)->connections().isEmpty(),
+             "swIn.out[0] must be connected after undo");
+    auto *restoredConn1 = swInAfter->outputPort(0)->connections().first();
+
+    // The connection that starts at swIn.out[0] must end at AND.in[0] —
+    // before the fix it ended at AND.in[0] using AND's portMap slot
+    // overwriting swIn's, which self-looped the connection.
+    auto *andEnd = restoredConn1->endPort();
+    QVERIFY2(andEnd != nullptr, "conn1 must have a valid end port");
+    auto *andAfter = andEnd->graphicElement();
+    QVERIFY2(andAfter != nullptr, "conn1 end port must reference an element");
+    QVERIFY2(andAfter != swInAfter, "conn1 must NOT self-loop back to swIn");
+    QVERIFY2(andAfter != ledAfter,  "conn1 must NOT jump straight to LED");
+
+    // The AND gate's output must lead to LED
+    QVERIFY2(!andAfter->outputPort(0)->connections().isEmpty(),
+             "AND.out[0] must be connected after undo");
+    auto *restoredConn2 = andAfter->outputPort(0)->connections().first();
+    QCOMPARE(restoredConn2->endPort()->graphicElement(), ledAfter);
+}
+
+void TestSceneUndoredo::testDeleteUndoRedoConnectionCountStable()
+{
+    // After any number of delete/undo/redo cycles, the total connection
+    // count in the scene must return to its original value on every undo.
+
+    Scene scene;
+
+    auto *swA = new InputSwitch();
+    auto *swB = new InputSwitch();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    auto *led = new Led();
+    swA->setPos(0, 0);
+    swB->setPos(0, 48);
+    andGate->setPos(96, 0);
+    led->setPos(192, 0);
+    scene.addItem(swA);
+    scene.addItem(swB);
+    scene.addItem(andGate);
+    scene.addItem(led);
+
+    auto *c1 = new QNEConnection();
+    c1->setStartPort(swA->outputPort(0));
+    c1->setEndPort(andGate->inputPort(0));
+    scene.addItem(c1);
+
+    auto *c2 = new QNEConnection();
+    c2->setStartPort(swB->outputPort(0));
+    c2->setEndPort(andGate->inputPort(1));
+    scene.addItem(c2);
+
+    auto *c3 = new QNEConnection();
+    c3->setStartPort(andGate->outputPort(0));
+    c3->setEndPort(led->inputPort(0));
+    scene.addItem(c3);
+
+    // Helper: count live connections by scanning all element ports
+    auto countConnections = [&]() {
+        int n = 0;
+        QSet<QNEConnection *> seen;
+        for (auto *elm : scene.elements()) {
+            for (auto *port : elm->outputs()) {
+                for (auto *conn : port->connections()) {
+                    if (!seen.contains(conn)) { seen.insert(conn); ++n; }
+                }
+            }
+        }
+        return n;
+    };
+
+    QCOMPARE(scene.elements().size(), 4);
+    QCOMPARE(countConnections(), 3);
+
+    const int andId = andGate->id();
+
+    // Three delete/undo/redo cycles — connection count must be stable.
+    // Note: after each undo the AND gate is re-created from serialized data,
+    // so the original pointer is stale — always look it up by ID.
+    for (int cycle = 0; cycle < 3; ++cycle) {
+        auto *and_ = dynamic_cast<GraphicElement *>(scene.itemById(andId));
+        QVERIFY2(and_ != nullptr, "AND gate must be in scene at start of cycle");
+
+        and_->setSelected(true);
+        scene.deleteAction();
+        QCOMPARE(scene.elements().size(), 3); // swA, swB, LED remain
+        QCOMPARE(countConnections(), 0);      // AND's 3 connections removed
+
+        scene.undoStack()->undo();
+        QCOMPARE(scene.elements().size(), 4);
+        QCOMPARE(countConnections(), 3);
+
+        scene.undoStack()->redo();
+        QCOMPARE(scene.elements().size(), 3);
+        QCOMPARE(countConnections(), 0);
+
+        scene.undoStack()->undo();
+        QCOMPARE(scene.elements().size(), 4);
+        QCOMPARE(countConnections(), 3);
+    }
+}
+
+void TestSceneUndoredo::testDeleteChainMiddleUndoRestoresTopology()
+{
+    // Three-element chain: sw → NOT → LED
+    // Deleting NOT severs both connections; undo must restore both links
+    // and the portMap must map each connection to the correct port objects.
+
+    Scene scene;
+
+    auto *sw  = new InputSwitch();
+    auto *notGate = ElementFactory::buildElement(ElementType::Not);
+    auto *led = new Led();
+    sw->setPos(0, 0);
+    notGate->setPos(96, 0);
+    led->setPos(192, 0);
+    scene.addItem(sw);
+    scene.addItem(notGate);
+    scene.addItem(led);
+
+    const int swId  = sw->id();
+    const int notId = notGate->id();
+    const int ledId = led->id();
+
+    auto *cIn = new QNEConnection();
+    cIn->setStartPort(sw->outputPort(0));
+    cIn->setEndPort(notGate->inputPort(0));
+    scene.addItem(cIn);
+
+    auto *cOut = new QNEConnection();
+    cOut->setStartPort(notGate->outputPort(0));
+    cOut->setEndPort(led->inputPort(0));
+    scene.addItem(cOut);
+
+    QCOMPARE(scene.elements().size(), 3);
+
+    // Delete NOT (middle of chain)
+    notGate->setSelected(true);
+    scene.deleteAction();
+    QCOMPARE(scene.elements().size(), 2); // sw + LED remain
+
+    // Undo — NOT and both connections restored
+    scene.undoStack()->undo();
+    QCOMPARE(scene.elements().size(), 3);
+
+    auto *swR   = dynamic_cast<GraphicElement *>(scene.itemById(swId));
+    auto *notR  = dynamic_cast<GraphicElement *>(scene.itemById(notId));
+    auto *ledR  = dynamic_cast<GraphicElement *>(scene.itemById(ledId));
+    QVERIFY(swR  != nullptr);
+    QVERIFY(notR != nullptr);
+    QVERIFY(ledR != nullptr);
+
+    // sw.out[0] → NOT.in[0]
+    QVERIFY2(!swR->outputPort(0)->connections().isEmpty(),
+             "sw.out[0] must be reconnected after undo");
+    auto *restoredIn = swR->outputPort(0)->connections().first();
+    QCOMPARE(restoredIn->endPort()->graphicElement(), notR);
+
+    // NOT.out[0] → LED.in[0]
+    QVERIFY2(!notR->outputPort(0)->connections().isEmpty(),
+             "NOT.out[0] must be reconnected after undo");
+    auto *restoredOut = notR->outputPort(0)->connections().first();
+    QCOMPARE(restoredOut->endPort()->graphicElement(), ledR);
+
+    // LED.in[0] must have exactly one connection (not duplicated or missing)
+    QCOMPARE(ledR->inputPort(0)->connections().size(), 1);
+}
+
+void TestSceneUndoredo::testDeleteUndoSimulationCorrectness()
+{
+    // End-to-end simulation check: delete the AND gate that drives a LED,
+    // undo the deletion, then verify the AND gate truth table through the
+    // restored connections.  This is the exact scenario that was silently
+    // broken by the portMap key collision in Serialization::serialize().
+
+    WorkSpace ws;
+    Serialization::contextDir = m_tempDir.path();
+
+    auto *swA     = new InputSwitch();
+    auto *swB     = new InputSwitch();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    auto *led     = new Led();
+    swA->setPos(0,  0);
+    swB->setPos(0, 48);
+    andGate->setPos(96, 0);
+    led->setPos(192, 0);
+
+    CircuitBuilder builder(ws.scene());
+    builder.add(swA, swB, andGate, led);
+    builder.connect(swA, 0, andGate, 0);
+    builder.connect(swB, 0, andGate, 1);
+    builder.connect(andGate, 0, led, 0);
+    builder.initSimulation();
+
+    // Capture the AND gate's ID before deletion (pointer becomes invalid after undo)
+    const int andId = andGate->id();
+
+    // Delete AND gate
+    andGate->setSelected(true);
+    ws.scene()->deleteAction();
+    QCOMPARE(ws.scene()->elements().size(), 3); // swA, swB, LED
+
+    // Undo
+    ws.scene()->undoStack()->undo();
+    QCOMPARE(ws.scene()->elements().size(), 4);
+    QVERIFY2(ws.scene()->itemById(andId) != nullptr, "AND gate must be back after undo");
+
+    // Re-initialize simulation with the restored topology
+    auto *sim = ws.simulation();
+    sim->initialize();
+
+    // Verify AND truth table through simulation
+    const QVector<QPair<QPair<bool, bool>, bool>> table = {
+        {{false, false}, false},
+        {{false, true},  false},
+        {{true,  false}, false},
+        {{true,  true},  true},
+    };
+    for (const auto &row : table) {
+        swA->setOn(row.first.first);
+        swB->setOn(row.first.second);
+        sim->update();
+        QCOMPARE(TestUtils::getInputStatus(led), row.second);
+    }
 }

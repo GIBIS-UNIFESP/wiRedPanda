@@ -1336,3 +1336,104 @@ void TestSerialization::testWirelessNoneNodeInScene()
     QCOMPARE(loaded->wirelessMode(), WirelessMode::None);
     QVERIFY(loaded->inputPort()->isRequired());
 }
+
+// ============================================================================
+// Versioned backup utility — Serialization::createVersionedBackup
+// ============================================================================
+
+void TestSerialization::testVersionedBackupNamingPattern()
+{
+    // Verify that createVersionedBackup(path, version) produces a sidecar file
+    // named  <basename>.v<major>.<minor>[.<patch>].<suffix>
+    // e.g. "mycircuit.panda" + v4.2  → "mycircuit.v4.2.panda"
+
+    QVERIFY2(m_tempDir.isValid(), "Temp dir must be valid");
+
+    const QString original = m_tempDir.path() + "/mycircuit.panda";
+    { QFile f(original); QVERIFY(f.open(QIODevice::WriteOnly)); f.write("test"); }
+
+    Serialization::createVersionedBackup(original, QVersionNumber(4, 2));
+
+    const QString expected = m_tempDir.path() + "/mycircuit.v4.2.panda";
+    QVERIFY2(QFile::exists(expected),
+             qPrintable("Backup file not found at expected path: " + expected));
+}
+
+void TestSerialization::testVersionedBackupIsIdempotent()
+{
+    // Calling createVersionedBackup twice must not overwrite the existing backup.
+    // The backup file's byte content must be identical to the original at the
+    // time of the first call, regardless of any subsequent changes to the original.
+
+    QVERIFY2(m_tempDir.isValid(), "Temp dir must be valid");
+
+    const QString original = m_tempDir.path() + "/idempotent.panda";
+    { QFile f(original); QVERIFY(f.open(QIODevice::WriteOnly)); f.write("first-content"); }
+
+    Serialization::createVersionedBackup(original, QVersionNumber(4, 1));
+
+    const QString backup = m_tempDir.path() + "/idempotent.v4.1.panda";
+    QVERIFY2(QFile::exists(backup), "Backup must exist after first call");
+
+    // Overwrite the original with different content
+    { QFile f(original); QVERIFY(f.open(QIODevice::WriteOnly)); f.write("second-content"); }
+
+    // Second call — backup must NOT be overwritten
+    Serialization::createVersionedBackup(original, QVersionNumber(4, 1));
+
+    QFile bf(backup);
+    QVERIFY(bf.open(QIODevice::ReadOnly));
+    QCOMPARE(bf.readAll(), QByteArray("first-content"));
+}
+
+void TestSerialization::testVersionedBackupPreservesOriginal()
+{
+    // After createVersionedBackup, the original file must be byte-for-byte unchanged.
+
+    QVERIFY2(m_tempDir.isValid(), "Temp dir must be valid");
+
+    const QByteArray originalContent = "original-data-must-survive";
+    const QString original = m_tempDir.path() + "/preserve.panda";
+    { QFile f(original); QVERIFY(f.open(QIODevice::WriteOnly)); f.write(originalContent); }
+
+    Serialization::createVersionedBackup(original, QVersionNumber(3, 1));
+
+    QFile f(original);
+    QVERIFY(f.open(QIODevice::ReadOnly));
+    QCOMPARE(f.readAll(), originalContent);
+}
+
+void TestSerialization::testVersionedBackupMultiVersions()
+{
+    // Different old versions produce different backup files in the same directory;
+    // each backup has the correct content for its respective version.
+
+    QVERIFY2(m_tempDir.isValid(), "Temp dir must be valid");
+
+    const QString original = m_tempDir.path() + "/multi.panda";
+
+    // Write v4.1 content and back it up
+    const QByteArray content41 = "content-v4.1";
+    { QFile f(original); QVERIFY(f.open(QIODevice::WriteOnly)); f.write(content41); }
+    Serialization::createVersionedBackup(original, QVersionNumber(4, 1));
+
+    // Write v4.2 content and back it up
+    const QByteArray content42 = "content-v4.2";
+    { QFile f(original); QVERIFY(f.open(QIODevice::WriteOnly)); f.write(content42); }
+    Serialization::createVersionedBackup(original, QVersionNumber(4, 2));
+
+    // Both backup files must exist and contain the correct content
+    const QString backup41 = m_tempDir.path() + "/multi.v4.1.panda";
+    const QString backup42 = m_tempDir.path() + "/multi.v4.2.panda";
+
+    QVERIFY2(QFile::exists(backup41), "v4.1 backup must exist");
+    QVERIFY2(QFile::exists(backup42), "v4.2 backup must exist");
+
+    QFile f41(backup41);
+    QVERIFY(f41.open(QIODevice::ReadOnly));
+    QCOMPARE(f41.readAll(), content41);
+
+    QFile f42(backup42);
+    QVERIFY(f42.open(QIODevice::ReadOnly));
+    QCOMPARE(f42.readAll(), content42);
+}
