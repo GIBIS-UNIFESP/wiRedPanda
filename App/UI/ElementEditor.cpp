@@ -6,6 +6,8 @@
 #include <cmath>
 
 #include <QDebug>
+#include <QDir>
+#include <QFile>
 #include <QFileDialog>
 #include <QImageReader>
 
@@ -652,8 +654,25 @@ void ElementEditor::audioBox()
     const QString filePath = QFileDialog::getOpenFileName(this, tr("Select any audio"),
                                                     QString(), tr("Audio (*.mp3 *.mp4 *.wav *.ogg)"));
 
-    audiobox->setAudio(filePath);
-    m_ui->lineCurrentAudioBox->setText(QFileInfo(filePath).fileName());
+    if (filePath.isEmpty()) {
+        return;
+    }
+
+    // Mirror the skin-copy pattern: if the chosen file lives outside the project
+    // directory, copy it alongside the .panda file so the project is self-contained.
+    QFileInfo fileInfo(filePath);
+    QString audioPath = filePath;
+    if (!Serialization::contextDir.isEmpty() &&
+        (fileInfo.absoluteDir() != QDir(Serialization::contextDir))) {
+        const QString dest = Serialization::contextDir + "/" + fileInfo.fileName();
+        if (!QFile::exists(dest)) {
+            QFile::copy(filePath, dest);
+        }
+        audioPath = fileInfo.fileName();  // store only filename; resolved on load
+    }
+
+    audiobox->setAudio(audioPath);
+    m_ui->lineCurrentAudioBox->setText(fileInfo.fileName());
 }
 
 void ElementEditor::defaultSkin()
