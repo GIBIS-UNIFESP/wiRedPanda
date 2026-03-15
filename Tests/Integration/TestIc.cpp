@@ -6,9 +6,11 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QTemporaryDir>
 #include <QTemporaryFile>
 #include <QTime>
 
+#include "App/Core/Application.h"
 #include "App/Core/Enums.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Clock.h"
@@ -16,8 +18,11 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Element/LogicElements/LogicElement.h"
+#include "App/IO/Serialization.h"
+#include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/ElementMapping.h"
+#include "App/Versions.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestIC::initTestCase()
@@ -628,4 +633,200 @@ void TestIC::testICFileDependencyResolution()
     } catch (const Pandaception &ex) {
         QFAIL(qPrintable(QString("IC file dependency resolution failed: %1").arg(ex.what())));
     }
+}
+
+// Helper: load a .panda file into a fresh WorkSpace and return the number of distinct
+// GraphicElement objects that participate in at least one connection.
+//
+// This metric catches the migration bug where all element IDs are serialized as -1,
+// causing portMap key collisions on reload: all connections end up referencing the same
+// 1-2 elements rather than being distributed across the full circuit.  A simple
+// connection-count check would miss this because the total count stays the same.
+//
+// WorkSpace manages item ownership, making cleanup safe for IC-containing files.
+static int countConnectedElementsViaWorkspace(const QString &filePath)
+{
+    try {
+        WorkSpace ws;
+        ws.load(filePath);
+
+        QSet<GraphicElement *> connectedElements;
+        for (auto *conn : TestUtils::getConnections(ws.scene())) {
+            if (conn->startPort() && conn->startPort()->graphicElement()) {
+                connectedElements.insert(conn->startPort()->graphicElement());
+            }
+            if (conn->endPort() && conn->endPort()->graphicElement()) {
+                connectedElements.insert(conn->endPort()->graphicElement());
+            }
+        }
+        return connectedElements.size();
+    } catch (...) {
+        return -1;
+    }
+}
+
+void TestIC::testICMigrationPreservesConnections()
+{
+    // Copy all V4.2.0 backward-compat files to a temporary directory so the originals
+    // are never modified by this test
+    const QString srcDir = TestUtils::backwardCompatibilityDir() + "v4.2.0/";
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+
+    QDir src(srcDir);
+    for (const QString &fileName : src.entryList(QStringList{"*.panda"}, QDir::Files)) {
+        QVERIFY(QFile::copy(srcDir + fileName, tempDir.path() + "/" + fileName));
+    }
+
+    // Count connections in key sub-circuit files BEFORE migration.
+    // migrationEnabled is false here (set by TestUtils::setupTestEnvironment),
+    // so loading these files for counting won't trigger migration.
+    const QString dflipPath = tempDir.path() + "/dflipflop.panda";
+    const QString jkPath    = tempDir.path() + "/jkflipflop.panda";
+
+    const int dflipBefore = countConnectedElementsViaWorkspace(dflipPath);
+    const int jkBefore    = countConnectedElementsViaWorkspace(jkPath);
+
+    QVERIFY2(dflipBefore > 1, "dflipflop.panda should have multiple connected elements before migration");
+    QVERIFY2(jkBefore    > 1, "jkflipflop.panda should have multiple connected elements before migration");
+
+    // Enable migration without interactiveMode — no QMessageBox dialogs will appear
+    Application::migrationEnabled = true;
+
+    try {
+        // Loading ic.panda triggers recursive IC loading, which migrates every
+        // referenced sub-circuit file (including dflipflop.panda and jkflipflop.panda)
+        WorkSpace workspace;
+        workspace.load(tempDir.path() + "/ic.panda");
+    } catch (const std::exception &e) {
+        Application::migrationEnabled = false;
+        QFAIL(qPrintable(QString("Failed to load ic.panda during migration test: %1").arg(e.what())));
+    }
+
+    Application::migrationEnabled = false;
+
+    // Recount connections in the now-migrated files — must match the originals exactly.
+    // If the migration serialized connections with corrupt IDs (the bug this test guards
+    // against), QNEConnection::load() silently drops them, so the count would be lower.
+    const int dflipAfter = countConnectedElementsViaWorkspace(dflipPath);
+    const int jkAfter    = countConnectedElementsViaWorkspace(jkPath);
+
+    QCOMPARE(dflipAfter, dflipBefore);
+    QCOMPARE(jkAfter,    jkBefore);
+}
+
+void TestIC::testICFileMigrationCreatesBackup()
+{
+    // When IC::loadFile() migrates a sub-circuit file it must create a versioned
+    // backup named  <basename>.v<old-version>.panda  in the same directory.
+
+    const QString srcDir = TestUtils::backwardCompatibilityDir() + "v4.2.0/";
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+
+    // Copy dflipflop.panda (a standalone sub-circuit that is itself old-format)
+    const QString subName = "dflipflop.panda";
+    const QString subDst  = tempDir.path() + "/" + subName;
+    QVERIFY(QFile::copy(srcDir + subName, subDst));
+
+    // Verify the file is actually old-format (version < 4.4.0) before migrating
+    {
+        QFile f(subDst); QVERIFY(f.open(QIODevice::ReadOnly));
+        QDataStream s(&f);
+        const QVersionNumber v = Serialization::readPandaHeader(s);
+        QVERIFY2(v < AppVersion::current, "Fixture must be older than current version for this test");
+    }
+
+    // Load the sub-circuit via IC::loadFile() with migration enabled
+    Application::migrationEnabled = true;
+    IC ic;
+    try {
+        ic.loadFile(subName, tempDir.path());
+    } catch (...) {
+        Application::migrationEnabled = false;
+        QFAIL("IC::loadFile should not throw on a valid old-format file");
+    }
+    Application::migrationEnabled = false;
+
+    // Backup must exist — name contains the old version string
+    const QStringList backups = QDir(tempDir.path()).entryList(
+        QStringList{"dflipflop.v*.panda"}, QDir::Files);
+    QVERIFY2(!backups.isEmpty(),
+             "A versioned backup must be created when the IC file is migrated");
+
+    // There must be exactly one backup (one original version)
+    QCOMPARE(backups.size(), 1);
+}
+
+void TestIC::testICFileMigrationUpdatesSubcircuitVersion()
+{
+    // After IC::loadFile() migrates a sub-circuit file, re-reading its header
+    // must return AppVersion::current.
+
+    const QString srcDir = TestUtils::backwardCompatibilityDir() + "v4.2.0/";
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+
+    const QString subName = "dlatch.panda";
+    const QString subDst  = tempDir.path() + "/" + subName;
+    QVERIFY(QFile::copy(srcDir + subName, subDst));
+
+    Application::migrationEnabled = true;
+    IC ic;
+    try {
+        ic.loadFile(subName, tempDir.path());
+    } catch (...) {
+        Application::migrationEnabled = false;
+        QFAIL("IC::loadFile should not throw on a valid old-format file");
+    }
+    Application::migrationEnabled = false;
+
+    // The sub-circuit file must now carry the current version
+    QFile file(subDst);
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    QDataStream stream(&file);
+    const QVersionNumber versionAfter = Serialization::readPandaHeader(stream);
+    QCOMPARE(versionAfter, AppVersion::current);
+}
+
+void TestIC::testICFileMigrationDisabledSkips()
+{
+    // With Application::migrationEnabled=false, IC::loadFile() must not create any backup
+    // and must not modify the sub-circuit file.
+
+    const QString srcDir = TestUtils::backwardCompatibilityDir() + "v4.2.0/";
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+
+    // Copy all v4.2.0 files so that cross-file IC references resolve correctly
+    QDir src(srcDir);
+    for (const QString &name : src.entryList(QStringList{"*.panda"}, QDir::Files)) {
+        QVERIFY(QFile::copy(srcDir + name, tempDir.path() + "/" + name));
+    }
+
+    const QString subName = "jkflipflop.panda";
+    const QString subDst  = tempDir.path() + "/" + subName;
+
+    // Capture bytes before load
+    QFile f(subDst); QVERIFY(f.open(QIODevice::ReadOnly));
+    const QByteArray originalBytes = f.readAll();
+    f.close();
+
+    QVERIFY2(!Application::migrationEnabled, "Migration must be disabled in tests by default");
+
+    IC ic;
+    try {
+        ic.loadFile(subName, tempDir.path());
+    } catch (...) {
+        QFAIL("IC::loadFile should not throw on a valid old-format file");
+    }
+
+    // No backup file must exist
+    const QStringList backups = QDir(tempDir.path()).entryList(
+        QStringList{"jkflipflop.v*.panda"}, QDir::Files);
+    QVERIFY2(backups.isEmpty(), "No backup must be created when migration is disabled");
+
+    // Original file must be byte-for-byte unchanged
+    QFile f2(subDst); QVERIFY(f2.open(QIODevice::ReadOnly));
+    QCOMPARE(f2.readAll(), originalBytes);
 }

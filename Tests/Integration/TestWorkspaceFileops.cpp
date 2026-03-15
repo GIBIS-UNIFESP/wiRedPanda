@@ -3,15 +3,33 @@
 
 #include "Tests/Integration/TestWorkspaceFileops.h"
 
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 
+#include "App/Core/Application.h"
 #include "App/Element/ElementFactory.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Workspace.h"
+#include "App/Versions.h"
 #include "Tests/Common/TestUtils.h"
+
+/// Write a minimal but parseable .panda file at \a path using the given \a version
+/// as the format version in the header (no elements, no connections).
+static void writeMinimalOldFormatFile(const QString &path, const QVersionNumber &version)
+{
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::WriteOnly));
+    QDataStream stream(&file);
+    stream.setVersion(QDataStream::Qt_5_12);
+    stream << Serialization::MAGIC_HEADER_CIRCUIT;
+    stream << version;
+    stream << QString();  // dolphin filename field
+    stream << QRectF();   // scene rect field
+    // No elements — empty but fully valid circuit
+}
 
 void TestWorkspaceFileops::initTestCase()
 {
@@ -512,4 +530,152 @@ void TestWorkspaceFileops::testFileInfoAfterCreation()
     // absoluteFilePath() must return a non-null string even for empty fileInfo
     QString absolutePath = fileInfo.absoluteFilePath();
     QVERIFY2(!absolutePath.isNull(), "Absolute path should not be null");
+}
+
+// ─── Auto-migration: WorkSpace::load ─────────────────────────────────────
+
+void TestWorkspaceFileops::testMigrationDisabledSkipsBackupAndResave()
+{
+    // With Application::migrationEnabled=false, loading an old-format file must:
+    //   (a) not create any backup sidecar, and
+    //   (b) not re-save (overwrite) the original file.
+
+    QVERIFY2(m_tempDir.isValid(), "Temp dir must be valid");
+    const QString path = m_tempDir.path() + "/old_disabled.panda";
+
+    writeMinimalOldFormatFile(path, Versions::V_4_2);
+
+    // Capture bytes before load
+    QFile f(path);
+    QVERIFY(f.open(QIODevice::ReadOnly));
+    const QByteArray originalBytes = f.readAll();
+    f.close();
+
+    // Application::migrationEnabled defaults to false in test environment
+    QVERIFY2(!Application::migrationEnabled, "Migration must be disabled in tests");
+
+    WorkSpace ws;
+    ws.load(path);
+
+    // No backup file (name pattern: old_disabled.v4.2.panda)
+    const QString backupPath = m_tempDir.path() + "/old_disabled.v4.2.panda";
+    QVERIFY2(!QFile::exists(backupPath), "No backup must be created when migration is disabled");
+
+    // Original file must be byte-for-byte unchanged
+    QFile f2(path);
+    QVERIFY(f2.open(QIODevice::ReadOnly));
+    QCOMPARE(f2.readAll(), originalBytes);
+}
+
+void TestWorkspaceFileops::testMigrationEnabledCreatesBackup()
+{
+    // With Application::migrationEnabled=true, loading an old-format file must create a
+    // versioned backup named <basename>.v<old-version>.panda.
+
+    QVERIFY2(m_tempDir.isValid(), "Temp dir must be valid");
+    const QString path = m_tempDir.path() + "/old_enabled.panda";
+
+    writeMinimalOldFormatFile(path, Versions::V_4_2);
+
+    // Capture original bytes for comparison
+    QFile f(path);
+    QVERIFY(f.open(QIODevice::ReadOnly));
+    const QByteArray originalBytes = f.readAll();
+    f.close();
+
+    Application::migrationEnabled = true;
+    WorkSpace ws;
+    try {
+        ws.load(path);
+    } catch (...) {
+        Application::migrationEnabled = false;
+        QFAIL("load() must not throw for a valid (empty) old-format file");
+    }
+    Application::migrationEnabled = false;
+
+    // Backup must exist
+    const QString backupPath = m_tempDir.path() + "/old_enabled.v4.2.panda";
+    QVERIFY2(QFile::exists(backupPath),
+             qPrintable("Backup file not found: " + backupPath));
+
+    // Backup must have the same content as the original BEFORE migration
+    QFile bf(backupPath);
+    QVERIFY(bf.open(QIODevice::ReadOnly));
+    QCOMPARE(bf.readAll(), originalBytes);
+}
+
+void TestWorkspaceFileops::testMigrationUpdatesFileVersion()
+{
+    // After migration, the original file must be re-saved in the current format:
+    // reading its header back must produce AppVersion::current.
+
+    QVERIFY2(m_tempDir.isValid(), "Temp dir must be valid");
+    const QString path = m_tempDir.path() + "/old_resaved.panda";
+
+    writeMinimalOldFormatFile(path, Versions::V_4_2);
+
+    Application::migrationEnabled = true;
+    WorkSpace ws;
+    try {
+        ws.load(path);
+    } catch (...) {
+        Application::migrationEnabled = false;
+        QFAIL("load() must not throw for a valid (empty) old-format file");
+    }
+    Application::migrationEnabled = false;
+
+    // Re-open the original file and verify it now carries the current version
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    QDataStream stream(&file);
+    const QVersionNumber versionAfter = Serialization::readPandaHeader(stream);
+
+    QCOMPARE(versionAfter, AppVersion::current);
+}
+
+void TestWorkspaceFileops::testMigrationCurrentVersionSkips()
+{
+    // Loading a current-format file with migration enabled must NOT create a
+    // backup (there is nothing to migrate).
+
+    QVERIFY2(m_tempDir.isValid(), "Temp dir must be valid");
+    const QString path = m_tempDir.path() + "/current_format.panda";
+
+    // Save a workspace so the file is in current format
+    {
+        WorkSpace ws;
+        auto *elm = ElementFactory::buildElement(ElementType::And);
+        ws.scene()->addItem(elm);
+        ws.save(path);
+    }
+
+    // Verify the file is already at the current version
+    {
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::ReadOnly));
+        QDataStream stream(&file);
+        QCOMPARE(Serialization::readPandaHeader(stream), AppVersion::current);
+    }
+
+    Application::migrationEnabled = true;
+    WorkSpace ws2;
+    try {
+        ws2.load(path);
+    } catch (...) {
+        Application::migrationEnabled = false;
+        QFAIL("load() must not throw for a current-format file");
+    }
+    Application::migrationEnabled = false;
+
+    // No backup file should exist — version matched, no migration triggered
+    // The backup pattern would be e.g. current_format.v4.4.panda
+    const QString backupPattern = m_tempDir.path() + "/current_format.v"
+        + AppVersion::current.toString() + ".panda";
+    QVERIFY2(!QFile::exists(backupPattern),
+             "No backup must be created for a current-version file");
+
+    // Also check that no .panda file other than the original was created
+    const QStringList backups = QDir(m_tempDir.path()).entryList(
+        QStringList{"current_format.v*.panda"}, QDir::Files);
+    QVERIFY2(backups.isEmpty(), "No versioned backup should be created for a current-format file");
 }

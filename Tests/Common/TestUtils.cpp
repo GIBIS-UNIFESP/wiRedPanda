@@ -22,7 +22,8 @@ void setupTestEnvironment()
     qputenv("QT_QPA_PLATFORM", "offscreen");
 #endif
     Comment::setVerbosity(-1);
-    Application::interactiveMode = false;  // Suppress dialogs during headless test execution
+    Application::interactiveMode = false;   // Suppress UI dialogs in tests
+    Application::migrationEnabled = false;  // Preserve backward-compatibility test files as-is
 }
 
 void configureApp()

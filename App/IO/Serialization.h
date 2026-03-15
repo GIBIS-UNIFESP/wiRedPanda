@@ -87,6 +87,17 @@ public:
      */
     static void writePandaHeader(QDataStream &stream);
 
+    /**
+     * \brief Copies \a fileName to a versioned sidecar before overwriting it during migration.
+     * \param fileName Absolute path of the file to back up.
+     * \param version  The old file-format version (used to build the sidecar name).
+     *
+     * \details The backup name has the form \c basename.vX.Y.Z.ext (e.g. \c ic.v4.1.panda).
+     * If a backup with that name already exists it is left untouched.
+     * Silently logs a warning if the copy fails; does not throw.
+     */
+    static void createVersionedBackup(const QString &fileName, const QVersionNumber &version);
+
     // --- Magic Headers ---
 
     constexpr static quint32 MAGIC_HEADER_CIRCUIT = 0x57504346; // "WPCF" (wiRedPanda Circuit File)
