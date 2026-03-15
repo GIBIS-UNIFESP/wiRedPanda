@@ -58,9 +58,10 @@ export PATH
 ### Build process
 
 **Requirements**: Install Ninja build system:
-- Windows: `choco install ninja` or `scoop install ninja`
-- Linux: `apt install ninja-build` or `yum install ninja-build`
-- macOS: `brew install ninja`
+
+* Windows: `choco install ninja` or `scoop install ninja`
+* Linux: `apt install ninja-build` or `yum install ninja-build`
+* macOS: `brew install ninja`
 
 **Build commands (all platforms):**
 

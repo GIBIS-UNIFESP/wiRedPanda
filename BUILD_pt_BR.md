@@ -59,9 +59,10 @@ export PATH
 ### Processo de compilação
 
 **Requisitos**: Instale o sistema de compilação Ninja:
-- Windows: `choco install ninja` ou `scoop install ninja`
-- Linux: `apt install ninja-build` ou `yum install ninja-build`
-- macOS: `brew install ninja`
+
+* Windows: `choco install ninja` ou `scoop install ninja`
+* Linux: `apt install ninja-build` ou `yum install ninja-build`
+* macOS: `brew install ninja`
 
 **Comandos de compilação (todas as plataformas):**
 
