@@ -24,7 +24,7 @@ The test suite is organized into multiple categories to ensure correctness at di
 
 ## Directory Structure
 
-```
+```text
 Tests/
 ├── Integration/              # Full circuit and system integration tests
 │   ├── IC/Tests/             # Hierarchical IC test suite (69 tests)
@@ -78,6 +78,7 @@ Tests/
 The integration test suite includes 69 tests organized hierarchically by circuit complexity, enabling systematic validation of the simulator's ability to handle increasingly complex nested IC structures.
 
 ### Level 1: Basic Sequential Elements (4 tests)
+
 - D Flip-Flop
 - JK Flip-Flop
 - SR Latch
@@ -86,6 +87,7 @@ The integration test suite includes 69 tests organized hierarchically by circuit
 Basic state-holding elements that form the foundation of sequential logic.
 
 ### Level 2: Combinational Circuits (12 tests)
+
 - Half Adder (1-bit)
 - Full Adder (1-bit)
 - Decoders (2-to-4, 3-to-8, 4-to-16)
@@ -96,6 +98,7 @@ Basic state-holding elements that form the foundation of sequential logic.
 Pure logic circuits without state, used as building blocks for higher levels.
 
 ### Level 3: Mid-Complexity Circuits (5 tests)
+
 - 1-bit Register
 - 4-bit Comparator (equality)
 - 4-bit Comparator (full comparison)
@@ -105,6 +108,7 @@ Pure logic circuits without state, used as building blocks for higher levels.
 Combinations of Level 2 circuits with additional control logic.
 
 ### Level 4: Complex Circuits (13 tests)
+
 - 4-bit Binary Counter
 - 4-bit Johnson Counter
 - 4-bit Ring Counter
@@ -118,6 +122,7 @@ Combinations of Level 2 circuits with additional control logic.
 Multi-bit circuits combining arithmetic, memory, and control elements.
 
 ### Level 5: Advanced Building Blocks (11 tests)
+
 - 4-bit Loadable Counter
 - 4-bit Up/Down Counter
 - 4-bit Modulo Counter
@@ -130,6 +135,7 @@ Multi-bit circuits combining arithmetic, memory, and control elements.
 Complex building blocks used in CPU design with advanced control logic.
 
 ### Level 6: Multi-bit Components (8 tests)
+
 - 8-bit ALU
 - 8-bit Register
 - 8-bit Ripple Adder
@@ -142,6 +148,7 @@ Complex building blocks used in CPU design with advanced control logic.
 Scaled-up versions of Level 4-5 components for 8-bit data paths.
 
 ### Level 7: CPU Subcomponents (8 tests)
+
 - 8-bit Flag Register
 - 8-bit Instruction Register
 - 8-bit Instruction Decoder
@@ -154,6 +161,7 @@ Scaled-up versions of Level 4-5 components for 8-bit data paths.
 Individual CPU pipeline components designed for integration.
 
 ### Level 8: CPU Pipeline Stages (4 tests)
+
 - Fetch Stage
 - Decode Stage
 - Execute Stage
@@ -162,6 +170,7 @@ Individual CPU pipeline components designed for integration.
 Complete processor pipeline stages ready for multi-cycle CPU assembly.
 
 ### Level 9: Full CPU Implementations (4 tests)
+
 - 8-bit Single-Cycle CPU
 - 8-bit Multi-Cycle CPU
 - 16-bit RISC CPU
@@ -172,16 +181,19 @@ Complete working CPU implementations demonstrating the entire test hierarchy.
 ## Running Tests
 
 ### Run All Tests
+
 ```bash
 ctest --preset debug
 ```
 
 ### Run Tests with Verbose Output
+
 ```bash
 ctest --preset debug --verbose
 ```
 
 ### Run Tests in Parallel
+
 ```bash
 ctest --preset debug --parallel 4
 ```
@@ -189,17 +201,20 @@ ctest --preset debug --parallel 4
 All tests are properly isolated and safe to run in parallel. A 4-core parallel run completes in ~135 seconds.
 
 ### Run Specific Test Class
+
 ```bash
 ./build/test_wiredpanda TestClassName
 ```
 
 ### Run Tests Matching a Pattern
+
 ```bash
 ctest --preset debug -R "Level2"  # Run all Level 2 tests
 ctest --preset debug -R "TestIC"  # Run all IC tests
 ```
 
 ### Run with Coverage Analysis
+
 ```bash
 cmake --preset coverage
 cmake --build --preset coverage
@@ -207,6 +222,7 @@ ctest --preset debug
 ```
 
 ### Run with Sanitizers
+
 ```bash
 # Address Sanitizer (detects memory issues)
 cmake --preset asan
@@ -229,6 +245,7 @@ The IC hierarchy tests use `CpuTestUtils::loadBuildingBlockIC()` to load pre-bui
 - **Functional verification**: Complete input-output truth table validation
 
 Example test pattern:
+
 ```cpp
 void TestLevel2HalfAdder::testHalfAdderTruthTable()
 {
@@ -249,6 +266,7 @@ void TestLevel2HalfAdder::testHalfAdderTruthTable()
 ### Unit Tests
 
 Unit tests validate individual components:
+
 - **Commands**: Undo/Redo functionality (FlipCommand, MorphCommand, ChangeInputSizeCommand, etc.)
 - **Elements**: Individual element behavior (AND, OR, NOT, flip-flops, etc.)
 - **Factory**: Element creation and type management
@@ -272,6 +290,7 @@ Unit tests validate individual components:
 ### Backward Compatibility Tests
 
 Located in `Tests/BackwardCompatibility/`, these directories contain .panda files from various wiRedPanda versions:
+
 - 1.8-Beta, 1.9.1
 - 2.0-Beta, 2.1-RC
 - V2.3, V2.3.3
@@ -286,6 +305,7 @@ These ensure that the simulator correctly loads and handles files from all previ
 ### TestUtils (Common/TestUtils.h/cpp)
 
 Provides the test environment setup and common helpers:
+
 - `setupTestEnvironment()`: Initialize Qt, graphics system, and global properties
 - `configureApp()`: Configure application metadata
 - `createWorkspace()`: Create isolated test workspace
@@ -295,6 +315,7 @@ Provides the test environment setup and common helpers:
 ### CpuTestUtils (Integration/IC/Tests/CpuTestUtils.h/cpp)
 
 Specialized utilities for IC and CPU testing:
+
 - `loadBuildingBlockIC()`: Load pre-built circuit files
 - Truth table generation and validation
 - Pin connection helpers
@@ -303,6 +324,7 @@ Specialized utilities for IC and CPU testing:
 ### CircuitBuilder
 
 A fluent helper class for constructing test circuits:
+
 ```cpp
 CircuitBuilder builder(workspace.scene());
 builder.add(&switch1, &switch2, &element, &led);
@@ -321,6 +343,7 @@ The test environment is automatically configured by `TestUtils::setupTestEnviron
 ## Test Patterns and Best Practices
 
 ### Circuit Testing Pattern
+
 1. Create isolated `WorkSpace` instance
 2. Use `CircuitBuilder` to construct test circuit
 3. Load pre-built ICs with `CpuTestUtils::loadBuildingBlockIC()`
@@ -329,7 +352,9 @@ The test environment is automatically configured by `TestUtils::setupTestEnviron
 6. Verify outputs with assertions
 
 ### Truth Table Validation
+
 Tests systematically verify all possible input combinations:
+
 ```cpp
 for (int i = 0; i < 4; ++i) {  // 2^2 inputs
     // Set inputs based on binary representation of i
@@ -340,6 +365,7 @@ for (int i = 0; i < 4; ++i) {  // 2^2 inputs
 ```
 
 ### Hierarchical Testing
+
 Higher-level tests may load lower-level ICs as components, validating both the IC and its proper integration into larger circuits.
 
 ## Test Infrastructure
@@ -347,6 +373,7 @@ Higher-level tests may load lower-level ICs as components, validating both the I
 ### Test Compilation
 
 Tests are compiled as a single executable `test_wiredpanda` with multiple test classes:
+
 ```bash
 cmake --build --preset debug
 ```
@@ -354,6 +381,7 @@ cmake --build --preset debug
 ### Test Execution Framework
 
 Uses **Qt Test Framework** for test execution:
+
 - Per-class `initTestCase()` and `cleanupTestCase()`
 - Per-test `cleanup()` for isolation
 - QCOMPARE, QVERIFY for assertions
@@ -362,6 +390,7 @@ Uses **Qt Test Framework** for test execution:
 ### Continuous Integration
 
 Tests are executed in CI/CD pipeline (see `.github/workflows/`):
+
 - Run on each commit
 - Validate all platforms (Linux, Windows, macOS)
 - Generate coverage reports with `--coverage` preset
@@ -370,22 +399,26 @@ Tests are executed in CI/CD pipeline (see `.github/workflows/`):
 ## Debugging Tests
 
 ### Run Single Test
+
 ```bash
 ./build/test_wiredpanda TestClassName::testMethodName
 ```
 
 ### Verbose Output
+
 ```bash
 ctest --preset debug --verbose -R TestName
 ```
 
 ### Debug in GDB
+
 ```bash
 gdb ./build/test_wiredpanda
 (gdb) run TestClassName::testMethodName
 ```
 
 ### Memory Leak Detection
+
 ```bash
 cmake --preset asan
 cmake --build --preset asan
@@ -395,6 +428,7 @@ ctest --preset debug -R "TestName"
 ## Adding New Tests
 
 ### Create Test Class
+
 1. Create `.h` and `.cpp` files in appropriate `Tests/` subdirectory
 2. Inherit from `QObject`
 3. Define test methods as private slots
@@ -418,6 +452,7 @@ private slots:
 ### Register Test in CMakeLists.txt
 
 Add to `Tests/CMakeLists.txt`:
+
 ```cmake
 qt6_add_executable(test_wiredpanda
     # ... existing tests ...
@@ -429,6 +464,7 @@ qt_add_test(test_wiredpanda NAME TestLevel10NewCircuit)
 ```
 
 ### Use Test Utilities
+
 ```cpp
 void TestLevel10NewCircuit::testNewCircuitBehavior()
 {
@@ -453,11 +489,13 @@ The TestArduino suite uses **expected file comparison** instead of arduino-cli c
 ### Regenerating Expected Files
 
 If Arduino codegen changes, regenerate expected files:
+
 ```bash
 GENERATE_EXPECTED_ARDUINO=1 ./build/test_wiredpanda TestArduino
 ```
 
 This:
+
 - Generates all 24 expected .ino files in `Tests/Integration/Arduino/`
 - Tests pass and files are automatically saved
 - Commit the updated files to git
@@ -485,6 +523,7 @@ This:
 ## Contributing
 
 When adding new tests:
+
 1. Follow the hierarchical level organization for IC tests
 2. Use `CircuitBuilder` for consistency
 3. Test complete truth tables for combinational circuits

@@ -111,6 +111,7 @@ class CircuitTestSuite:
 ## Current Architecture Benefits
 
 ### **Type Safety & Validation**
+
 - **Runtime Validation**: Comprehensive beartype + pydantic validation at all interface boundaries
 - **Compile-Time Checking**: Full mypy compatibility with strict type checking
 - **Parameter Validation**: JSON-RPC 2.0 schema validation with detailed error reporting
@@ -118,6 +119,7 @@ class CircuitTestSuite:
 - **Error Handling**: Structured exception handling with detailed context
 
 ### **Modern Async Performance**
+
 - **Event-Driven I/O**: Complete async/await patterns replacing blocking operations
 - **Concurrent Testing**: Parallel test execution with proper resource management
 - **Resource Management**: Automatic cleanup with context managers and proper teardown
@@ -125,6 +127,7 @@ class CircuitTestSuite:
 - **Process Management**: Robust subprocess handling with signal management
 
 ### **Developer Experience**
+
 - **Clear API**: Well-documented async interfaces with comprehensive type hints
 - **Comprehensive Coverage**: 8,400+ lines of tests covering all MCP functionality
 - **Fast Feedback**: Sub-second test execution for individual test components

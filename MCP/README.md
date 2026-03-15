@@ -148,7 +148,7 @@ with WiredPandaBridge() as bridge:
 ### Circuit Management
 
 | Command | Description |
-|---------|-------------|
+| --- | --- |
 | `new_circuit` | Create new empty circuit |
 | `load_circuit` | Load from .panda file |
 | `save_circuit` | Save to .panda file |
@@ -156,7 +156,7 @@ with WiredPandaBridge() as bridge:
 ### Element Operations
 
 | Command | Description |
-|---------|-------------|
+| --- | --- |
 | `create_element` | Create circuit element |
 | `delete_element` | Delete element |
 | `list_elements` | List all elements |
@@ -166,14 +166,14 @@ with WiredPandaBridge() as bridge:
 ### Circuit Connections
 
 | Command | Description |
-|---------|-------------|
+| --- | --- |
 | `connect_elements` | Connect element ports |
 | `disconnect_elements` | Disconnect elements |
 
 ### Simulation Control
 
 | Command | Description |
-|---------|-------------|
+| --- | --- |
 | `simulation_control` | Start/stop/restart simulation |
 | `set_input_value` | Set input element values |
 | `get_output_value` | Read output values |
@@ -181,7 +181,7 @@ with WiredPandaBridge() as bridge:
 ### Export & Analysis
 
 | Command | Description |
-|---------|-------------|
+| --- | --- |
 | `export_image` | Export circuit as image |
 | `create_waveform` | Set up waveform analysis |
 | `export_waveform` | Export timing data |
@@ -189,7 +189,7 @@ with WiredPandaBridge() as bridge:
 ### Hierarchical Design
 
 | Command | Description |
-|---------|-------------|
+| --- | --- |
 | `create_ic` | Create IC from circuit |
 | `instantiate_ic` | Place IC instance |
 | `list_ics` | List available ICs |

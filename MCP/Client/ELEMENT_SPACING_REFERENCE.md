@@ -33,7 +33,7 @@
 From `App/Scene/Scene.h`:
 
 | Property | Value | Purpose |
-|----------|-------|---------|
+| --- | --- | --- |
 | Grid Size | 16 pixels | Base grid unit for snapping |
 | Half Step | 8 pixels | Port vertical spacing |
 | Port Radius | 5 pixels | Visual size of connection point |
@@ -44,6 +44,7 @@ From `App/Scene/Scene.h`:
 **Most elements:** 64×64 pixels (including all gates, inputs, memory elements, displays)
 
 **Exceptions:**
+
 - Node: 32×32 pixels (smaller junction point)
 - Buzzer: 68.27×68.27 pixels (slightly larger)
 - AudioBox: 68.27×68.27 pixels (slightly larger)
@@ -51,11 +52,12 @@ From `App/Scene/Scene.h`:
 
 ### Bounding Rectangle Calculation
 
-```
+```text
 BoundingRect = Pixmap Rectangle ∪ Ports Bounding Rectangle
 ```
 
 The visual bounding box of an element expands to include:
+
 1. The base pixmap (64×64 in most cases)
 2. All input/output ports and their labels
 
@@ -68,7 +70,7 @@ The visual bounding box of an element expands to include:
 #### Clock
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 64×64 pixels |
 | **Ports** | 0 inputs, 1 output |
 | **Port Position** | Output: (64, 32) |
@@ -78,7 +80,7 @@ The visual bounding box of an element expands to include:
 #### InputButton, InputSwitch
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 64×64 pixels |
 | **Ports** | 0 inputs, 1 output |
 | **Port Position** | Output: (64, 32) |
@@ -88,7 +90,7 @@ The visual bounding box of an element expands to include:
 #### InputRotary
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 64×64 pixels |
 | **Ports** | 0 inputs, 8-16 outputs (variable) |
 | **Port Positions** | Multiple outputs, distributed around element |
@@ -98,7 +100,7 @@ The visual bounding box of an element expands to include:
 #### InputVcc (Power High) & InputGnd (Ground/Low)
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 64×64 pixels |
 | **Ports** | 0 inputs, 1 output |
 | **Port Position** | Output: (64, 32) |
@@ -112,7 +114,7 @@ The visual bounding box of an element expands to include:
 #### AND, OR, NAND, NOR, XOR, XNOR
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 64×64 pixels |
 | **Ports** | 2-8 inputs (configurable), 1 output |
 | **Input Positions** | Left side: x=0, spaced 16 pixels apart |
@@ -121,6 +123,7 @@ The visual bounding box of an element expands to include:
 | **Bounding Box** | Depends on input count |
 
 **Vertical Spacing Formula:**
+
 - Center Y = 32 pixels (middle of 64×64)
 - Spacing = 16 pixels per port (2 × step)
 - Start Y = 32 - (numInputs × 8) + 8
@@ -128,7 +131,7 @@ The visual bounding box of an element expands to include:
 #### NOT Gate
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 64×64 pixels |
 | **Ports** | 1 input, 1 output |
 | **Input Position** | (0, 32) |
@@ -143,7 +146,7 @@ The visual bounding box of an element expands to include:
 #### D Flip-Flop, D Latch, SR Flip-Flop, T Flip-Flop
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 64×64 pixels |
 | **Ports** | 2 inputs, 2 outputs (typical) |
 | **Input Positions** | (0, 24) and (0, 40) |
@@ -154,7 +157,7 @@ The visual bounding box of an element expands to include:
 #### JK Flip-Flop
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 64×64 pixels |
 | **Ports** | 3 inputs (J, K, CLK), 2 outputs (Q, Q') |
 | **Input Positions** | (0, 16), (0, 32), (0, 48) |
@@ -169,7 +172,7 @@ The visual bounding box of an element expands to include:
 #### Multiplexer (Mux)
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 64×64 pixels |
 | **Ports** | 3-11 inputs total (data + select), 1 output |
 | **Data Input Positions** | Left: x=16, spaced vertically |
@@ -180,7 +183,7 @@ The visual bounding box of an element expands to include:
 #### Demultiplexer (Demux)
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 64×64 pixels |
 | **Ports** | 2-4 inputs total (data + select), 2-8 outputs |
 | **Data Input Position** | (16, 32) - single data line |
@@ -195,7 +198,7 @@ The visual bounding box of an element expands to include:
 #### LED
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 64×64 pixels |
 | **Ports** | 1-4 inputs (configurable), 0 outputs |
 | **Input Positions** | Left side: x=0, spaced 16 pixels apart |
@@ -205,7 +208,7 @@ The visual bounding box of an element expands to include:
 #### Buzzer, AudioBox
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 68.27×68.27 pixels |
 | **Ports** | 1-4 inputs, 0 outputs |
 | **Input Positions** | Left side: x=0, spaced 16 pixels apart |
@@ -215,7 +218,7 @@ The visual bounding box of an element expands to include:
 #### 7/14/16-Segment Display
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 64×64 pixels (base) |
 | **Ports** | 7/14/16 inputs (fixed), 0 outputs |
 | **Input Positions** | 3-4 per side (left & right) |
@@ -229,7 +232,7 @@ The visual bounding box of an element expands to include:
 #### Node (Wire Junction)
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 32×32 pixels (smallest) |
 | **Ports** | 1 input, 1 output |
 | **Input Position** | (0, 16) |
@@ -240,7 +243,7 @@ The visual bounding box of an element expands to include:
 #### Truth Table
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 64×64 pixels (base, expands with ports) |
 | **Ports** | 1-8 inputs, 1-16 outputs (variable) |
 | **Input Positions** | Left side: x=0, spaced 16 pixels |
@@ -251,7 +254,7 @@ The visual bounding box of an element expands to include:
 #### Text, Line
 
 | Property | Value |
-|----------|-------|
+| --- | --- |
 | **Size** | 64×64 pixels |
 | **Ports** | 0 inputs, 0 outputs |
 | **Rotating** | Yes |
@@ -278,7 +281,7 @@ from element_spacing import (
 ### Key Constants Reference
 
 | Constant | Value | Usage |
-|----------|-------|-------|
+| --- | --- | --- |
 | `MIN_SAFE_SPACING` | 96px | Minimum safe distance between element centers |
 | `VERTICAL_INPUT_SPACING` | 96px | Between vertically stacked inputs |
 | `HORIZONTAL_GATE_SPACING` | 104px | Between horizontally placed gates |
@@ -309,18 +312,21 @@ from element_spacing import (
 ### 📍 Quick Position Patterns
 
 #### Pattern A: Horizontal Row (Inputs or Gates)
+
 ```python
 x_pos = base_x + i * HORIZONTAL_GATE_SPACING
 # Creates: 50, 154, 258, 362, ... (104px apart)
 ```
 
 #### Pattern B: Vertical Column (Inputs or Gates)
+
 ```python
 y_pos = base_y + i * VERTICAL_STAGE_SPACING
 # Creates: 100, 204, 308, 412, ... (104px apart)
 ```
 
 #### Pattern C: Multi-Stage Flow (Left→Right)
+
 ```python
 input_x = 50.0
 gate_x = input_x + HORIZONTAL_GATE_SPACING
@@ -329,6 +335,7 @@ output_x = gate_x + HORIZONTAL_GATE_SPACING
 ```
 
 #### Pattern D: 2×2 Grid (4 elements)
+
 ```python
 positions = calculate_grid_positions(
     num_elements=4, cols=2,
@@ -344,6 +351,7 @@ positions = calculate_grid_positions(
 ## Implementation Templates
 
 ### Template 1: Vertical Inputs
+
 ```python
 from element_spacing import VERTICAL_STAGE_SPACING
 
@@ -357,6 +365,7 @@ for i in range(num_inputs):
 ```
 
 ### Template 2: Horizontal Gates
+
 ```python
 from element_spacing import HORIZONTAL_GATE_SPACING
 
@@ -370,6 +379,7 @@ for i in range(num_gates):
 ```
 
 ### Template 3: 2×2 Grid
+
 ```python
 from element_spacing import calculate_grid_positions
 
@@ -425,6 +435,7 @@ for (int i = 0; i < numOutputs; i++) {
 ### Label Positioning
 
 **Default:**
+
 - Position: y = 64 (directly below element)
 - Font: SansSerif, Bold
 - Alignment: Centered horizontally on element
@@ -437,7 +448,7 @@ for (int i = 0; i < numOutputs; i++) {
 ### Min/Max Input/Output Constraints
 
 | Element | Min In | Max In | Min Out | Max Out |
-|---------|--------|--------|---------|---------|
+| --- | --- | --- | --- | --- |
 | And/Or/Nand/Nor/Xor/Xnor | 2 | 8 | 1 | 1 |
 | Not | 1 | 1 | 1 | 1 |
 | D Flip-Flop | 2 | 2 | 2 | 2 |
@@ -483,10 +494,12 @@ for (int i = 0; i < numOutputs; i++) {
 **When updating a generator with proper spacing, tests may need refactoring.**
 
 The IC class sorts input/output ports by element position (Y coordinate first, then X). This means:
+
 - Tests using hardcoded port indices **will break** if element positions change
 - **Solution:** Use label-based connections instead of hardcoded indices
 
 **Key Change Pattern:**
+
 ```cpp
 // Before (breaks with position changes)
 builder.connect(data[i], 0, mux, i);
