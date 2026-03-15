@@ -63,7 +63,7 @@ jobs:
     - name: Test
       timeout-minutes: 10
       run: |
-        ctest --preset release
+        ctest --preset release -V
 
     - name: Upload build artifacts on failure
       if: failure()
