@@ -21,6 +21,7 @@ Binários compilados para Windows, Linux e macOS estão disponíveis na [página
 ## Compilação
 
 **Requisitos**:
+
 - CMake 3.16+
 - Qt 5.15+ ou Qt 6.2+ (com módulos Multimedia, Svg)
 - Compilador C++ com suporte a C++20
