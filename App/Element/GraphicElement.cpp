@@ -649,6 +649,15 @@ void GraphicElement::loadPixmapSkinNames(QDataStream &stream, SerializationConte
         qCDebug(four) << tr("Loading pixmap skin names.");
         quint64 outputSize; stream >> outputSize;
 
+        if (m_elementType == ElementType::IC) {
+            // IC paints itself procedurally and has no skin slots.
+            // Drain the saved skin names from old file formats to keep the stream position valid.
+            for (quint64 i = 0; i < outputSize; ++i) {
+                QString discarded; stream >> discarded;
+            }
+            return;
+        }
+
         for (size_t skin = 0; skin < outputSize; ++skin) {
             loadPixmapSkinName(stream, static_cast<int>(skin), context.contextDir);
         }
@@ -667,7 +676,8 @@ void GraphicElement::loadPixmapSkinName(QDataStream &stream, const int skin, con
     QString name; stream >> name;
 
     if (skin >= m_alternativeSkins.size()) {
-        qCDebug(zero) << "Could not load some of the skins.";
+        throw PANDACEPTION("Skin index %1 out of range (size=%2) for skin name \"%3\" — stream may be corrupt",
+                           QString::number(skin), QString::number(m_alternativeSkins.size()), name);
     }
 
     // Only override the alternative skin if it is a filesystem path; resource
