@@ -21,6 +21,7 @@ Compiled binaries for Windows, Linux and macOS are available on the [releases pa
 ## Building
 
 **Requirements**:
+
 - CMake 3.16+
 - Qt 5.15+ or Qt 6.2+ (with Multimedia, Svg modules)
 - C++ compiler with C++20 support
