@@ -50,7 +50,7 @@ jobs:
     - name: Test
       timeout-minutes: 10
       run: |
-        ctest --preset release
+        ctest --preset release -V
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
