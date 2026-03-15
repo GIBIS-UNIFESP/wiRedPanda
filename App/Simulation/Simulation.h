@@ -79,6 +79,10 @@ public:
     /// Executes one simulation step (used by tests to advance the simulation manually).
     void update();
 
+signals:
+    /// Emitted (at most once per initialize()) when a feedback circuit fails to converge.
+    void simulationWarning(const QString &message);
+
 private:
     Q_DISABLE_COPY(Simulation)
 
@@ -105,4 +109,5 @@ private:
 
     bool m_hasFeedbackElements = false;
     bool m_initialized = false;
+    bool m_convergenceWarned = false;
 };

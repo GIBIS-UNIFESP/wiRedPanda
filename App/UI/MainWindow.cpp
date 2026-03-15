@@ -883,8 +883,9 @@ void MainWindow::disconnectTab()
     qCDebug(zero) << "Stopping simulation.";
     m_currentTab->simulation()->stop();
 
-    qCDebug(zero) << "Disconnecting zoom from UI.";
-    disconnect(m_currentTab->view(), &GraphicsView::zoomChanged, this, &MainWindow::zoomChanged);
+    qCDebug(zero) << "Disconnecting zoom and simulation signals from UI.";
+    disconnect(m_currentTab->view(),       &GraphicsView::zoomChanged,        this, &MainWindow::zoomChanged);
+    disconnect(m_currentTab->simulation(), &Simulation::simulationWarning,    this, nullptr);
 
     qCDebug(zero) << "Removing undo and redo actions from UI menu.";
     removeUndoRedoMenu();
@@ -901,6 +902,9 @@ void MainWindow::connectTab()
     m_ui->elementEditor->setScene(m_currentTab->scene());
 
     connect(m_currentTab->view(),       &GraphicsView::zoomChanged, this,                  &MainWindow::zoomChanged);
+    connect(m_currentTab->simulation(), &Simulation::simulationWarning, this, [this](const QString &msg) {
+        m_ui->statusBar->showMessage(msg, 8000);
+    });
     if (m_ui->actionPlay->isChecked()) {
         qCDebug(zero) << "Restarting simulation.";
         m_currentTab->simulation()->start();
