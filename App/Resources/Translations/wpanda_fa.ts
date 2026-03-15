@@ -4,7 +4,7 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="221"/>
+        <location filename="../../Scene/Commands.cpp" line="241"/>
         <source>Add %1 elements</source>
         <translation>افزودن %1 عنصر</translation>
     </message>
@@ -12,465 +12,503 @@
 <context>
     <name>And</name>
     <message>
-        <location filename="../../element/and.cpp" line="9"/>
-        <source>And</source>
+        <location filename="../../Element/GraphicElements/And.cpp" line="26"/>
+        <source>AND</source>
         <translation>و</translation>
     </message>
     <message>
-        <location filename="../../element/and.cpp" line="9"/>
-        <source>AND</source>
+        <location filename="../../Element/GraphicElements/And.cpp" line="27"/>
+        <source>And</source>
         <translation>و</translation>
     </message>
 </context>
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../application.cpp" line="22"/>
+        <location filename="../../Core/Application.cpp" line="35"/>
         <source>Error!</source>
         <translation>خطا!</translation>
     </message>
 </context>
 <context>
+    <name>ArduinoCodeGen</name>
+    <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
+        <source>Could not open file for writing: %1</source>
+        <translation>فایل برای نوشتن باز نشد: %1</translation>
+    </message>
+    <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="208"/>
+        <source>Not enough pins available for all input elements</source>
+        <translation>پین‌های کافی برای تمام عناصر ورودی موجود نیست</translation>
+    </message>
+    <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="235"/>
+        <source>Not enough pins available for all rotary switch positions</source>
+        <translation>پین‌های کافی برای تمام موقعیت‌های کلید چرخشی موجود نیست</translation>
+    </message>
+    <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="270"/>
+        <source>Not enough pins available for all output elements</source>
+        <translation>پین‌های کافی برای تمام عناصر خروجی موجود نیست</translation>
+    </message>
+    <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="543"/>
+        <source>Element type not supported: %1</source>
+        <translation>نوع عنصر پشتیبانی نمی‌شود: %1</translation>
+    </message>
+    <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="714"/>
+        <source>Output variable not mapped for TruthTable: %1</source>
+        <translation>متغیر خروجی برای جدول درستی نگاشت نشده: %1</translation>
+    </message>
+    <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="981"/>
+        <source>Could not open testbench file: %1</source>
+        <translation>فایل تست‌بنچ باز نشد: %1</translation>
+    </message>
+</context>
+<context>
     <name>AudioBox</name>
     <message>
-        <location filename="../../element/audiobox.cpp" line="17"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="48"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="49"/>
         <source>Audio Box</source>
         <translation>جعبه صوتی</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="122"/>
+        <source>File does not exist</source>
+        <translation>فایل وجود ندارد</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="123"/>
+        <source>File is not readable</source>
+        <translation>فایل قابل خواندن نیست</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="125"/>
+        <source>Couldn&apos;t load audio: %1 (%2)</source>
+        <translation>صدا بارگذاری نشد: %1 (%2)</translation>
     </message>
 </context>
 <context>
     <name>BewavedDolphin</name>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="233"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="243"/>
         <source>MainWindow</source>
         <translation>پنجره اصلی</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="287"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="297"/>
         <source>toolBar</source>
         <translation>نوار ابزار</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="288"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="298"/>
         <source>File</source>
         <translation>فایل</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="289"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="299"/>
         <source>Help</source>
         <translation>راهنما</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="290"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="300"/>
         <source>Edit</source>
         <translation>ویرایش</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="291"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="301"/>
         <source>View</source>
         <translation>نمایش</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="234"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="244"/>
         <source>About</source>
         <translation>درباره</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="235"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="245"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="236"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="246"/>
         <source>Load</source>
         <translation>بارگذاری</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="237"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="247"/>
         <source>Ctrl+L</source>
         <translation>Ctrl+L</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="238"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="248"/>
         <source>Exit</source>
         <translation>خروج</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="239"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="249"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="240"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="250"/>
         <source>Combinational</source>
         <translation>ترکیبی</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="241"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="251"/>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1395"/>
-        <location filename="../../bewaveddolphin_ui.cpp" line="242"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1296"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="252"/>
         <source>Export to PDF</source>
         <translation>صادرات به PDF</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="243"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="253"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="244"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="254"/>
         <source>Save</source>
         <translation>ذخیره</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="245"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="255"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="246"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="256"/>
         <source>Save As...</source>
         <translation>ذخیره به عنوان...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="247"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="257"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="248"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="258"/>
         <source>Copy</source>
         <translation>کپی</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="249"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="259"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="250"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="260"/>
         <source>Paste</source>
         <translation>چسباندن</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="251"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="261"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="252"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="262"/>
         <source>Set to 0</source>
         <translation>تنظیم به 0</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="253"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="263"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="255"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="265"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="260"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="270"/>
         <source>Space</source>
         <translation>فاصله</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="273"/>
-        <location filename="../../bewaveddolphin_ui.cpp" line="274"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="283"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="284"/>
         <source>Fit to screen</source>
         <translation>تنظیم با صفحه</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="282"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="292"/>
         <source>Show Numbers</source>
         <translation>نمایش اعداد</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="283"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="293"/>
         <source>Show Waveforms</source>
         <translation>نمایش شکل موج</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="284"/>
-        <location filename="../../bewaveddolphin_ui.cpp" line="285"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="294"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="295"/>
         <source>AutoCrop</source>
         <translation>برش اتوماتیک</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="286"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="296"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="254"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="264"/>
         <source>Set to 1</source>
         <translation>تنظیم به 1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="256"/>
-        <location filename="../../bewaveddolphin_ui.cpp" line="257"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="266"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="267"/>
         <source>Set clock frequency</source>
         <translation>تنظیم فرکانس ساعت</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="258"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="268"/>
         <source>Alt+W</source>
         <translation>Alt+W</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="259"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="269"/>
         <source>Invert</source>
         <translation>معکوس</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="261"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="271"/>
         <source>Merge</source>
         <translation>ادغام</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="262"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="272"/>
         <source>Split</source>
         <translation>تقسیم</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="263"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="273"/>
         <source>Export to PNG</source>
         <translation>صادرات به PNG</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="264"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="274"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="265"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="275"/>
         <source>Set Length</source>
         <translation>تنظیم طول</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="266"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="276"/>
         <source>Alt+L</source>
         <translation>Alt+L</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="267"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="277"/>
         <source>About Qt</source>
         <translation>درباره Qt</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="268"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="278"/>
         <source>Ctrl+Shift+H</source>
         <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="269"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="279"/>
         <source>Zoom In</source>
         <translation>بزرگنمایی</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="270"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="280"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="271"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="281"/>
         <source>Zoom Out</source>
         <translation>کوچکنمایی</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="272"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="282"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="275"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="285"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="276"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="286"/>
         <source>Reset Zoom</source>
         <translation>بازنشانی زوم</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="277"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="287"/>
         <source>Ctrl+Home</source>
         <translation>Ctrl+Home</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="278"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="288"/>
         <source>Clear</source>
         <translation>پاک کردن</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="279"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="289"/>
         <source>Alt+X</source>
         <translation>Alt+X</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="280"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="290"/>
         <source>Cut</source>
         <translation>برش</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin_ui.cpp" line="281"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="291"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="143"/>
-        <location filename="../../bewaveddolphin.cpp" line="215"/>
-        <location filename="../../bewaveddolphin.cpp" line="1117"/>
-        <location filename="../../bewaveddolphin.cpp" line="1269"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="59"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="123"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1054"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1191"/>
         <source>beWavedDolphin Simulator</source>
         <translation>شبیه‌ساز beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="535"/>
-        <location filename="../../bewaveddolphin.cpp" line="1183"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="485"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1103"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="536"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="486"/>
         <source>Save simulation before closing?</source>
         <translation>آیا شبیه‌سازی قبل از بستن ذخیره شود؟</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1184"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1104"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>آیا می‌خواهید این فایل beWavedDolphin را به فایل جاری wiRedPanda پیوند دهید و آن را ذخیره کنید؟</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1084"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1018"/>
         <source>Save File as...</source>
         <translation>ذخیره فایل به عنوان...</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1087"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1022"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>فایل‌های CSV (*.csv);;Dolphin فایل‌ها (*.dolphin);;همه فایل‌های پشتیبانی شده (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1088"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1023"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Dolphin فایل‌ها (*.dolphin);;فایل‌های CSV (*.csv);;همه فایل‌های پشتیبانی شده (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1075"/>
-        <location filename="../../bewaveddolphin.cpp" line="1118"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1009"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1055"/>
         <source>Saved file successfully.</source>
         <translation>فایل با موفقیت ذخیره شد.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="245"/>
-        <location filename="../../bewaveddolphin.cpp" line="256"/>
-        <location filename="../../bewaveddolphin.cpp" line="266"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="158"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="170"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="180"/>
         <source></source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="299"/>
-        <location filename="../../bewaveddolphin.cpp" line="326"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="213"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="243"/>
         <source>Could not load enough elements for the simulation.</source>
         <translation>عناصر کافی برای شبیه‌سازی بارگذاری نشد.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="508"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="450"/>
         <source>Waveform would be too big! Resetting zoom.</source>
         <translation>شکل موج بیش از حد بزرگ خواهد بود! بازنشانی زوم.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="775"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="685"/>
         <source>No cells selected.</source>
         <translation>هیچ سلولی انتخاب نشده است.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1127"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1066"/>
         <source>Error opening file: %1</source>
         <translation>خطا در باز کردن فایل: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1141"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1080"/>
         <source>Error saving file: %1</source>
         <translation>خطا در ذخیره فایل: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1211"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1133"/>
         <source>Open File</source>
         <translation>باز کردن فایل</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1213"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1135"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>همه فایل‌های پشتیبانی شده (*.dolphin *.csv);;Dolphin فایل‌ها (*.dolphin);;فایل‌های CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1229"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1151"/>
         <source>File loaded successfully.</source>
         <translation>فایل با موفقیت بارگذاری شد.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1244"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1166"/>
         <source>Could not open file in ReadOnly mode: %1</source>
         <translation>امکان باز کردن فایل در حالت فقط خواندنی وجود ندارد: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1263"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1185"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>فرمت پشتیبانی نمی‌شود. امکان باز کردن فایل وجود ندارد: %1</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1282"/>
-        <location filename="../../bewaveddolphin.cpp" line="1313"/>
-        <source>Invalid number of columns.</source>
-        <translation>تعداد ستون‌ها نامعتبر است.</translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="1303"/>
-        <source>Invalid CSV format: insufficient data.</source>
-        <translation>فرمت CSV نامعتبر: داده‌های ناکافی.</translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="1322"/>
-        <source>Invalid CSV format: expected %1 elements, got %2.</source>
-        <translation>فرمت CSV نامعتبر: %1 عنصر انتظار می‌رفت، %2 دریافت شد.</translation>
-    </message>
-    <message>
-        <location filename="../../bewaveddolphin.cpp" line="1371"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1265"/>
         <source>Export to Image</source>
         <translation>صادرات به تصویر</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1371"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1265"/>
         <source>PNG files (*.png)</source>
         <translation>فایل‌های PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1395"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1296"/>
         <source>PDF files (*.pdf)</source>
         <translation>فایل‌های PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1414"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1316"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>امکان چاپ این مدار به PDF وجود ندارد.</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="1425"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1328"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin یک شبیه‌ساز شکل موج برای نرم‌افزار wiRedPanda است که توسط دانشگاه فدرال سائوپائولو توسعه یافته است. این پروژه برای کمک به دانش‌آموزان در یادگیری مدارهای منطقی ایجاد شده است.&lt;/p&gt;&lt;p&gt;نسخه نرم‌افزار: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;سازندگان:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; پروفسور فابیو کاپابیانکو، دکتری &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin در حال حاضر توسط پروفسور فابیو کاپابیانکو، دکتری و دانش‌آموزانش نگهداری می‌شود&lt;/p&gt;&lt;p&gt; لطفاً در صورت یافتن اشکال یا تمایل به پیاده‌سازی قابلیت جدید، گزارشی در صفحه GitHub ما ثبت کنید.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;از وب‌سایت ما دیدن کنید!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../bewaveddolphin.cpp" line="221"/>
-        <location filename="../../bewaveddolphin.cpp" line="1237"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="131"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1159"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>فایل &quot;%1&quot; وجود ندارد!</translation>
     </message>
@@ -478,20 +516,20 @@
 <context>
     <name>Buzzer</name>
     <message>
-        <location filename="../../element/buzzer.cpp" line="19"/>
-        <source>Buzzer</source>
-        <translation>زنگ</translation>
-    </message>
-    <message>
-        <location filename="../../element/buzzer.cpp" line="19"/>
+        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="47"/>
         <source>BUZZER</source>
         <translation>بوق</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="48"/>
+        <source>Buzzer</source>
+        <translation>زنگ</translation>
     </message>
 </context>
 <context>
     <name>ChangeInputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="710"/>
+        <location filename="../../Scene/Commands.cpp" line="841"/>
         <source>Change input size to %1</source>
         <translation>تغییر اندازه ورودی به %1</translation>
     </message>
@@ -499,7 +537,7 @@
 <context>
     <name>ChangeOutputSizeCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="801"/>
+        <location filename="../../Scene/Commands.cpp" line="951"/>
         <source>Change output size to %1</source>
         <translation>تغییر اندازه خروجی به %1</translation>
     </message>
@@ -507,66 +545,53 @@
 <context>
     <name>Clock</name>
     <message>
-        <location filename="../../element/clock.cpp" line="14"/>
-        <source>Clock</source>
-        <translation>ساعت</translation>
-    </message>
-    <message>
-        <location filename="../../element/clock.cpp" line="14"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="41"/>
         <source>CLOCK SIGNAL</source>
         <translation>سیگنال ساعت</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="42"/>
+        <source>Clock</source>
+        <translation>ساعت</translation>
     </message>
 </context>
 <context>
     <name>ClockDialog</name>
     <message>
-        <location filename="../../clockdialog_ui.cpp" line="67"/>
+        <location filename="../../UI/ClockDialogUI.cpp" line="74"/>
         <source>Dialog</source>
         <translation>دیالوگ</translation>
     </message>
     <message>
-        <location filename="../../clockdialog_ui.cpp" line="70"/>
+        <location filename="../../UI/ClockDialogUI.cpp" line="77"/>
         <source>2</source>
         <translation>2</translation>
     </message>
     <message>
-        <location filename="../../clockdialog_ui.cpp" line="68"/>
+        <location filename="../../UI/ClockDialogUI.cpp" line="75"/>
         <source>Clock Frequency</source>
         <translation>فرکانس ساعت</translation>
     </message>
     <message>
-        <location filename="../../clockdialog_ui.cpp" line="69"/>
+        <location filename="../../UI/ClockDialogUI.cpp" line="76"/>
         <source>1024</source>
         <translation>1024</translation>
     </message>
     <message>
-        <location filename="../../clockdialog.cpp" line="15"/>
+        <location filename="../../UI/ClockDialog.cpp" line="17"/>
         <source>Clock Frequency Selection</source>
         <translation>انتخاب فرکانس ساعت</translation>
     </message>
 </context>
 <context>
-    <name>CodeGenerator</name>
-    <message>
-        <location filename="../../arduino/codegenerator.cpp" line="268"/>
-        <source>IC element not supported: %1</source>
-        <translation>عنصر IC پشتیبانی نمی‌شود: %1</translation>
-    </message>
-    <message>
-        <location filename="../../arduino/codegenerator.cpp" line="444"/>
-        <source>Element type not supported: %1</source>
-        <translation>نوع عنصر پشتیبانی نمی‌شود: %1</translation>
-    </message>
-</context>
-<context>
     <name>DFlipFlop</name>
     <message>
-        <location filename="../../element/dflipflop.cpp" line="10"/>
+        <location filename="../../Element/GraphicElements/DFlipFlop.cpp" line="36"/>
         <source>D-FLIP-FLOP</source>
         <translation>فلیپ‌فلاپ D</translation>
     </message>
     <message>
-        <location filename="../../element/dflipflop.cpp" line="10"/>
+        <location filename="../../Element/GraphicElements/DFlipFlop.cpp" line="37"/>
         <source>D-Flip-Flop</source>
         <translation>فلیپ‌فلاپ D</translation>
     </message>
@@ -574,20 +599,20 @@
 <context>
     <name>DLatch</name>
     <message>
-        <location filename="../../element/dlatch.cpp" line="10"/>
-        <source>D-Latch</source>
+        <location filename="../../Element/GraphicElements/DLatch.cpp" line="36"/>
+        <source>D-LATCH</source>
         <translation>قفل D</translation>
     </message>
     <message>
-        <location filename="../../element/dlatch.cpp" line="10"/>
-        <source>D-LATCH</source>
+        <location filename="../../Element/GraphicElements/DLatch.cpp" line="37"/>
+        <source>D-Latch</source>
         <translation>قفل D</translation>
     </message>
 </context>
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="248"/>
+        <location filename="../../Scene/Commands.cpp" line="271"/>
         <source>Delete %1 elements</source>
         <translation>حذف %1 عنصر</translation>
     </message>
@@ -595,100 +620,100 @@
 <context>
     <name>Demux</name>
     <message>
-        <location filename="../../element/demux.cpp" line="10"/>
-        <source>Demux</source>
+        <location filename="../../Element/GraphicElements/Demux.cpp" line="41"/>
+        <source>DEMULTIPLEXER</source>
         <translation>دی مالتی پلکسر</translation>
     </message>
     <message>
-        <location filename="../../element/demux.cpp" line="10"/>
-        <source>DEMULTIPLEXER</source>
+        <location filename="../../Element/GraphicElements/Demux.cpp" line="42"/>
+        <source>Demux</source>
         <translation>دی مالتی پلکسر</translation>
     </message>
 </context>
 <context>
     <name>Display14</name>
     <message>
-        <location filename="../../element/display_14.cpp" line="13"/>
-        <source>14-SEGMENT DISPLAY</source>
-        <translation>نمایشگر ۱۴ بخشی</translation>
-    </message>
-    <message>
-        <location filename="../../element/display_14.cpp" line="13"/>
-        <source>14-Segment Display</source>
-        <translation>نمایشگر 14 بخشی</translation>
-    </message>
-    <message>
-        <location filename="../../element/display_14.cpp" line="87"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="124"/>
         <source>middle left horizontal</source>
         <translation>افقی وسط چپ</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="88"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="125"/>
         <source>upper left vertical</source>
         <translation>عمودی بالا چپ</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="89"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="126"/>
         <source>lower left vertical</source>
         <translation>عمودی پایین چپ</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="92"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="129"/>
         <source>upper right vertical</source>
         <translation>عمودی بالا راست</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="94"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="131"/>
         <source>lower right vertical</source>
         <translation>عمودی پایین راست</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="95"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="132"/>
         <source>middle right horizontal</source>
         <translation>افقی وسط راست</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="96"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="133"/>
         <source>upper left diagonal</source>
         <translation>قطری بالا چپ</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="97"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="134"/>
         <source>upper center vertical</source>
         <translation>عمودی بالا وسط</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="98"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="135"/>
         <source>upper right diagonal</source>
         <translation>قطری بالا راست</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="99"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="136"/>
         <source>lower right diagonal</source>
         <translation>قطری پایین راست</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="100"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="137"/>
         <source>lower center vertical</source>
         <translation>عمودی پایین وسط</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="101"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="138"/>
         <source>lower left diagonal</source>
         <translation>قطری پایین چپ</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="90"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="127"/>
         <source>bottom</source>
         <translation>پایین</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="91"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="41"/>
+        <source>14-SEGMENT DISPLAY</source>
+        <translation>نمایشگر ۱۴ بخشی</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="42"/>
+        <source>14-Segment Display</source>
+        <translation>نمایشگر 14 بخشی</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="128"/>
         <source>top</source>
         <translation>بالا</translation>
     </message>
     <message>
-        <location filename="../../element/display_14.cpp" line="93"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="130"/>
         <source>dot</source>
         <translation>نقطه</translation>
     </message>
@@ -696,93 +721,93 @@
 <context>
     <name>Display16</name>
     <message>
-        <location filename="../../element/display_16.cpp" line="13"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="41"/>
         <source>16-SEGMENT DISPLAY</source>
         <translation>نمایشگر ۱۶ بخشی</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="13"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="42"/>
         <source>16-Segment Display</source>
         <translation>نمایشگر 16 بخشی</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="93"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="133"/>
         <source>middle left horizontal</source>
         <translation>افقی وسط چپ</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="94"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="134"/>
         <source>upper left vertical</source>
         <translation>عمودی بالا چپ</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="95"/>
-        <location filename="../../element/display_16.cpp" line="109"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="135"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="149"/>
         <source>lower left vertical</source>
         <translation>عمودی پایین چپ</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="96"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="136"/>
         <source>bottom left horizontal</source>
         <translation>افقی پایین چپ</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="97"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="137"/>
         <source>bottom right horizontal</source>
         <translation>افقی پایین راست</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="98"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="138"/>
         <source>top left horizontal</source>
         <translation>افقی بالا چپ</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="99"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="139"/>
         <source>top right horizontal</source>
         <translation>افقی بالا راست</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="100"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="140"/>
         <source>upper right vertical</source>
         <translation>عمودی بالا راست</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="102"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="142"/>
         <source>lower right vertical</source>
         <translation>عمودی پایین راست</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="103"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="143"/>
         <source>middle right horizontal</source>
         <translation>افقی وسط راست</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="104"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="144"/>
         <source>upper left diagonal</source>
         <translation>قطری بالا چپ</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="105"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="145"/>
         <source>upper center vertical</source>
         <translation>عمودی بالا وسط</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="106"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="146"/>
         <source>upper right diagonal</source>
         <translation>قطری بالا راست</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="107"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="147"/>
         <source>lower right diagonal</source>
         <translation>قطری پایین راست</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="108"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="148"/>
         <source>lower center vertical</source>
         <translation>عمودی پایین وسط</translation>
     </message>
     <message>
-        <location filename="../../element/display_16.cpp" line="101"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="141"/>
         <source>dot</source>
         <translation>نقطه</translation>
     </message>
@@ -790,52 +815,52 @@
 <context>
     <name>Display7</name>
     <message>
-        <location filename="../../element/display_7.cpp" line="14"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="42"/>
         <source>7-SEGMENT DISPLAY</source>
         <translation>نمایشگر ۷ بخشی</translation>
     </message>
     <message>
-        <location filename="../../element/display_7.cpp" line="14"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="43"/>
         <source>7-Segment Display</source>
         <translation>نمایشگر 7 بخشی</translation>
     </message>
     <message>
-        <location filename="../../element/display_7.cpp" line="98"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
         <source>middle</source>
         <translation>وسط</translation>
     </message>
     <message>
-        <location filename="../../element/display_7.cpp" line="99"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
         <source>upper left</source>
         <translation>بالا چپ</translation>
     </message>
     <message>
-        <location filename="../../element/display_7.cpp" line="100"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
         <source>lower left</source>
         <translation>پایین چپ</translation>
     </message>
     <message>
-        <location filename="../../element/display_7.cpp" line="101"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
         <source>bottom</source>
         <translation>پایین</translation>
     </message>
     <message>
-        <location filename="../../element/display_7.cpp" line="102"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
         <source>top</source>
         <translation>بالا</translation>
     </message>
     <message>
-        <location filename="../../element/display_7.cpp" line="103"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
         <source>upper right</source>
         <translation>بالا راست</translation>
     </message>
     <message>
-        <location filename="../../element/display_7.cpp" line="104"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="148"/>
         <source>dot</source>
         <translation>نقطه</translation>
     </message>
     <message>
-        <location filename="../../element/display_7.cpp" line="105"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="149"/>
         <source>lower right</source>
         <translation>پایین راست</translation>
     </message>
@@ -843,286 +868,249 @@
 <context>
     <name>ElementEditor</name>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="197"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="218"/>
         <source>Form</source>
         <translation>فرم</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="198"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="219"/>
         <source>Title</source>
         <translation>عنوان</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="221"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="242"/>
         <source>Inputs:</source>
         <translation>ورودی‌ها:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="215"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="236"/>
         <source>Value:</source>
         <translation>مقدار:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="223"/>
-        <location filename="../../elementeditor_ui.cpp" line="227"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="244"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="247"/>
         <source>Audio:</source>
         <translation>صدا:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="220"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="241"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="210"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="231"/>
         <source>Trigger:</source>
         <translation>ماشه:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="225"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="245"/>
         <source>Outputs:</source>
         <translation>خروجی‌ها:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="218"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="239"/>
         <source>Frequency:</source>
         <translation>فرکانس:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="209"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="230"/>
         <source>Label:</source>
         <translation>برچسب:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="219"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="240"/>
         <source>Color:</source>
         <translation>رنگ:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="211"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="232"/>
         <source>TruthTable</source>
         <translation>جدول حقیقت</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="199"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="220"/>
         <source>C6</source>
         <translation>C6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="200"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="221"/>
         <source>D6</source>
         <translation>D6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="201"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="222"/>
         <source>E6</source>
         <translation>E6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="202"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="223"/>
         <source>F6</source>
         <translation>F6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="203"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="224"/>
         <source>G6</source>
         <translation>G6</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="204"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="225"/>
         <source>A7</source>
         <translation>A7</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="205"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="226"/>
         <source>B7</source>
         <translation>B7</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="206"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="227"/>
         <source>C7</source>
         <translation>C7</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="217"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="238"/>
         <source> Hz</source>
         <translation> Hz</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="228"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="248"/>
         <source>Delay:</source>
         <translation>تاخیر:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="93"/>
-        <location filename="../../elementeditor_ui.cpp" line="212"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="249"/>
+        <source>Wireless:</source>
+        <translation>بی‌سیم:</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditorUI.cpp" line="250"/>
+        <source>None</source>
+        <translation>هیچ‌کدام</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditorUI.cpp" line="251"/>
+        <source>Transmit (Tx)</source>
+        <translation>ارسال (Tx)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditorUI.cpp" line="252"/>
+        <source>Receive (Rx)</source>
+        <translation>دریافت (Rx)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditorUI.cpp" line="233"/>
         <source>Change skin to ...</source>
         <translation>تغییر پوسته به ...</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="213"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="234"/>
         <source>Default</source>
         <translation>پیش‌فرض</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="226"/>
+        <location filename="../../UI/ElementEditorUI.cpp" line="246"/>
         <source>Locked:</source>
         <translation>قفل شده:</translation>
     </message>
     <message>
-        <location filename="../../elementeditor_ui.cpp" line="224"/>
-        <source>Priority:</source>
-        <translation>اولویت:</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="94"/>
-        <source>Change color to...</source>
-        <translation>تغییر رنگ به...</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="95"/>
-        <source>Change frequency</source>
-        <translation>تغییر فرکانس</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="96"/>
-        <source>Morph to...</source>
-        <translation>تغییر شکل به...</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="98"/>
-        <source>Rename</source>
-        <translation>تغییر نام</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="99"/>
-        <source>Set skin to default</source>
-        <translation>تنظیم پوسته به پیش‌فرض</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="100"/>
-        <source>Rotate left</source>
-        <translation>چرخش به چپ</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="101"/>
-        <source>Rotate right</source>
-        <translation>چرخش به راست</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="102"/>
-        <source>Change trigger</source>
-        <translation>تغییر ماشه</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="97"/>
-        <source>Change priority</source>
-        <translation>تغییر اولویت</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="50"/>
+        <location filename="../../UI/ElementEditor.cpp" line="65"/>
         <source>Truth Table</source>
         <translation>جدول حقیقت</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="222"/>
-        <location filename="../../elementeditor.cpp" line="295"/>
-        <source>Copy</source>
-        <translation>کپی</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="223"/>
-        <location filename="../../elementeditor.cpp" line="295"/>
-        <source>Cut</source>
-        <translation>برش</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="229"/>
-        <location filename="../../elementeditor.cpp" line="295"/>
-        <source>Delete</source>
-        <translation>حذف</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="299"/>
-        <source>Unknown context menu option.</source>
-        <translation>گزینه منوی متنی نامعلوم.</translation>
-    </message>
-    <message>
-        <location filename="../../elementeditor.cpp" line="323"/>
+        <location filename="../../UI/ElementEditor.cpp" line="153"/>
         <source>Open File</source>
         <translation>باز کردن فایل</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="368"/>
+        <location filename="../../UI/ElementEditor.cpp" line="202"/>
         <source>Green</source>
         <translation>سبز</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="369"/>
+        <location filename="../../UI/ElementEditor.cpp" line="203"/>
         <source>Blue</source>
         <translation>آبی</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="370"/>
+        <location filename="../../UI/ElementEditor.cpp" line="204"/>
         <source>Purple</source>
         <translation>بنفش</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="985"/>
+        <location filename="../../UI/ElementEditor.cpp" line="497"/>
+        <source>Duplicate Wireless Channel</source>
+        <translation>کانال بی‌سیم تکراری</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditor.cpp" line="498"/>
+        <source>A Tx node with label &quot;%1&quot; already exists.
+Each wireless channel must have a unique label.</source>
+        <translation>یک گره Tx با برچسب &quot;%1&quot; از قبل وجود دارد.
+هر کانال بی‌سیم باید برچسب منحصر به فردی داشته باشد.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditor.cpp" line="555"/>
+        <source>Change wireless mode</source>
+        <translation>تغییر حالت بی‌سیم</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditor.cpp" line="751"/>
         <source>Select any audio</source>
         <translation>انتخاب هر صدایی</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="986"/>
+        <location filename="../../UI/ElementEditor.cpp" line="752"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>فایل‌های صوتی (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="367"/>
+        <location filename="../../UI/ElementEditor.cpp" line="201"/>
         <source>Red</source>
         <translation>قرمز</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="325"/>
+        <location filename="../../UI/ElementEditor.cpp" line="155"/>
         <source>Images</source>
         <translation>تصاویر</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.cpp" line="366"/>
+        <location filename="../../UI/ElementEditor.cpp" line="200"/>
         <source>White</source>
         <translation>سفید</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="69"/>
+        <location filename="../../UI/ElementEditor.h" line="121"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;صداهای متعدد&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="70"/>
+        <location filename="../../UI/ElementEditor.h" line="122"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;رنگ‌های متعدد&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="71"/>
-        <location filename="../../elementeditor.h" line="72"/>
-        <location filename="../../elementeditor.h" line="73"/>
-        <location filename="../../elementeditor.h" line="75"/>
-        <location filename="../../elementeditor.h" line="76"/>
+        <location filename="../../UI/ElementEditor.h" line="123"/>
+        <location filename="../../UI/ElementEditor.h" line="124"/>
+        <location filename="../../UI/ElementEditor.h" line="125"/>
+        <location filename="../../UI/ElementEditor.h" line="127"/>
+        <location filename="../../UI/ElementEditor.h" line="128"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;مقادیر متعدد&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="74"/>
+        <location filename="../../UI/ElementEditor.h" line="126"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;برچسب‌های متعدد&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="77"/>
-        <source>&lt;Many priorities&gt;</source>
-        <translation>&lt;اولویت‌های متعدد&gt;</translation>
+        <location filename="../../UI/ElementEditor.h" line="130"/>
+        <source>&lt;Many modes&gt;</source>
+        <translation>&lt;حالت‌های متعدد&gt;</translation>
     </message>
     <message>
-        <location filename="../../elementeditor.h" line="78"/>
+        <location filename="../../UI/ElementEditor.h" line="129"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;محرک‌های متعدد&gt;</translation>
     </message>
@@ -1130,45 +1118,30 @@
 <context>
     <name>ElementFactory</name>
     <message>
-        <location filename="../../elementfactory.cpp" line="55"/>
+        <location filename="../../Element/ElementFactory.cpp" line="38"/>
         <source>MULTIPLE TYPES</source>
         <translation>انواع متعدد</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="64"/>
+        <location filename="../../Element/ElementFactory.cpp" line="48"/>
         <source>Unknown</source>
         <translation>نامعلوم</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="84"/>
-        <source>Unknown type 1: %1</source>
-        <translation>نوع نامعلوم 1: %1</translation>
+        <location filename="../../Element/ElementFactory.cpp" line="69"/>
+        <source>Unknown element type: %1</source>
+        <translation>نوع عنصر ناشناخته: %1</translation>
     </message>
     <message>
-        <location filename="../../elementfactory.cpp" line="91"/>
+        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
         <translation>نوع نامعلوم: %1</translation>
-    </message>
-    <message>
-        <location filename="../../elementfactory.cpp" line="99"/>
-        <source>Unknown type 2: %1</source>
-        <translation>نوع نامعلوم 2: %1</translation>
-    </message>
-    <message>
-        <location filename="../../elementfactory.cpp" line="187"/>
-        <source>Failed to cast element to TruthTable</source>
-        <translation>تبدیل عنصر به TruthTable ناموفق بود</translation>
-    </message>
-    <message>
-        <location filename="../../elementfactory.cpp" line="197"/>
-        <source>Not implemented yet: %1</source>
-        <translation>هنوز پیاده‌سازی نشده: %1</translation>
     </message>
 </context>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="653"/>
+        <location filename="../../Scene/Commands.cpp" line="774"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>انعکاس %1 عنصر در محور %2</translation>
     </message>
@@ -1176,34 +1149,52 @@
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../graphicelement.cpp" line="100"/>
+        <location filename="../../Element/GraphicElement.cpp" line="118"/>
         <source>File does not exist</source>
         <translation>فایل وجود ندارد</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="102"/>
+        <location filename="../../Element/GraphicElement.cpp" line="120"/>
         <source>File is not readable</source>
         <translation>فایل خواندنی نیست</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="103"/>
+        <location filename="../../Element/GraphicElement.cpp" line="121"/>
         <source>Unknown reason</source>
         <translation>دلیل نامعلوم</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="107"/>
+        <location filename="../../Element/GraphicElement.cpp" line="126"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>امکان بارگذاری تصویر وجود ندارد: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="440"/>
-        <location filename="../../graphicelement.cpp" line="514"/>
-        <location filename="../../graphicelement.cpp" line="548"/>
-        <source>Corrupted DataStream!</source>
-        <translation>جریان داده خراب!</translation>
+        <location filename="../../Element/GraphicElement.cpp" line="297"/>
+        <source>Stream error reading element properties at position %1</source>
+        <translation>خطای جریان در خواندن ویژگی‌های عنصر در موقعیت %1</translation>
     </message>
     <message>
-        <location filename="../../graphicelement.cpp" line="544"/>
+        <location filename="../../Element/GraphicElement.cpp" line="345"/>
+        <source>Stream error reading input ports at position %1</source>
+        <translation>خطای جریان در خواندن درگاه‌های ورودی در موقعیت %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElement.cpp" line="399"/>
+        <source>Stream error reading output ports at position %1</source>
+        <translation>خطای جریان در خواندن درگاه‌های خروجی در موقعیت %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElement.cpp" line="453"/>
+        <source>Stream error reading skins at position %1</source>
+        <translation>خطای جریان در خواندن پوسته‌ها در موقعیت %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElement.cpp" line="689"/>
+        <source>Skin index %1 out of range (size=%2) for skin name &quot;%3&quot; — stream may be corrupt</source>
+        <translation>شاخص پوسته %1 خارج از محدوده (اندازه=%2) برای نام پوسته &quot;%3&quot; — جریان ممکن است خراب باشد</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElement.cpp" line="659"/>
         <source>Loading pixmap skin names.</source>
         <translation>بارگذاری نام‌های پوسته تصویری.</translation>
     </message>
@@ -1211,42 +1202,52 @@
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../ic.cpp" line="21"/>
-        <source>IC</source>
-        <translation>مدار یکپارچه</translation>
-    </message>
-    <message>
-        <location filename="../../ic.cpp" line="21"/>
+        <location filename="../../Element/IC.cpp" line="49"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>مدار یکپارچه</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="97"/>
-        <location filename="../../ic.cpp" line="424"/>
+        <location filename="../../Element/IC.cpp" line="50"/>
+        <source>IC</source>
+        <translation>IC</translation>
+    </message>
+    <message>
+        <location filename="../../Element/IC.cpp" line="130"/>
+        <location filename="../../Element/IC.cpp" line="504"/>
         <source>Error copying file: %1</source>
         <translation>خطا در کپی کردن فایل: %1</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="154"/>
+        <location filename="../../Element/IC.cpp" line="187"/>
         <source>%1 not found.</source>
         <translation>%1 یافت نشد.</translation>
     </message>
     <message>
-        <location filename="../../ic.cpp" line="166"/>
-        <location filename="../../ic.cpp" line="430"/>
+        <location filename="../../Element/IC.cpp" line="199"/>
+        <location filename="../../Element/IC.cpp" line="510"/>
         <source>Error opening file: %1</source>
         <translation>خطا در باز کردن فایل: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/IC.cpp" line="244"/>
+        <source>IC migration: cannot open file for writing: %1</source>
+        <translation>مهاجرت IC: امکان باز کردن فایل برای نوشتن وجود ندارد: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/IC.cpp" line="252"/>
+        <source>IC migration: failed to commit re-saved file: %1</source>
+        <translation>مهاجرت IC: ذخیره مجدد فایل با شکست مواجه شد: %1</translation>
     </message>
 </context>
 <context>
     <name>InputButton</name>
     <message>
-        <location filename="../../element/inputbutton.cpp" line="12"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="39"/>
         <source>PUSH BUTTON</source>
         <translation>دکمه فشاری</translation>
     </message>
     <message>
-        <location filename="../../element/inputbutton.cpp" line="12"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="40"/>
         <source>Push Button</source>
         <translation>دکمه فشاری</translation>
     </message>
@@ -1254,46 +1255,47 @@
 <context>
     <name>InputGnd</name>
     <message>
-        <location filename="../../element/inputgnd.cpp" line="9"/>
-        <source>GND</source>
+        <location filename="../../Element/GraphicElements/InputGND.cpp" line="37"/>
+        <source>GROUND</source>
         <translation>زمین</translation>
     </message>
     <message>
-        <location filename="../../element/inputgnd.cpp" line="9"/>
-        <source>GROUND</source>
+        <location filename="../../Element/GraphicElements/InputGND.cpp" line="38"/>
+        <source>GND</source>
         <translation>زمین</translation>
     </message>
 </context>
 <context>
     <name>InputRotary</name>
     <message>
-        <location filename="../../element/inputrotary.cpp" line="13"/>
-        <source>Rotary Switch</source>
+        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="40"/>
+        <source>ROTARY SWITCH</source>
         <translation>کلید چرخشی</translation>
     </message>
     <message>
-        <location filename="../../element/inputrotary.cpp" line="13"/>
-        <source>ROTARY SWITCH</source>
+        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="41"/>
+        <source>Rotary Switch</source>
         <translation>کلید چرخشی</translation>
     </message>
 </context>
 <context>
     <name>InputSwitch</name>
     <message>
-        <location filename="../../element/inputswitch.cpp" line="12"/>
-        <source>Input Switch</source>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="39"/>
+        <source>INPUT SWITCH</source>
         <translation>کلید ورودی</translation>
     </message>
     <message>
-        <location filename="../../element/inputswitch.cpp" line="12"/>
-        <source>INPUT SWITCH</source>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="40"/>
+        <source>Input Switch</source>
         <translation>کلید ورودی</translation>
     </message>
 </context>
 <context>
     <name>InputVcc</name>
     <message>
-        <location filename="../../element/inputvcc.cpp" line="10"/>
+        <location filename="../../Element/GraphicElements/InputVCC.cpp" line="37"/>
+        <location filename="../../Element/GraphicElements/InputVCC.cpp" line="38"/>
         <source>VCC</source>
         <translation>VCC</translation>
     </message>
@@ -1301,12 +1303,12 @@
 <context>
     <name>JKFlipFlop</name>
     <message>
-        <location filename="../../element/jkflipflop.cpp" line="10"/>
+        <location filename="../../Element/GraphicElements/JKFlipFlop.cpp" line="36"/>
         <source>JK-FLIP-FLOP</source>
         <translation>JK-FLIP-FLOP</translation>
     </message>
     <message>
-        <location filename="../../element/jkflipflop.cpp" line="10"/>
+        <location filename="../../Element/GraphicElements/JKFlipFlop.cpp" line="37"/>
         <source>JK-Flip-Flop</source>
         <translation>JK-Flip-Flop</translation>
     </message>
@@ -1314,7 +1316,8 @@
 <context>
     <name>Led</name>
     <message>
-        <location filename="../../element/led.cpp" line="12"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="39"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="40"/>
         <source>LED</source>
         <translation>LED</translation>
     </message>
@@ -1322,27 +1325,27 @@
 <context>
     <name>LengthDialog</name>
     <message>
-        <location filename="../../lengthdialog_ui.cpp" line="69"/>
+        <location filename="../../UI/LengthDialogUI.cpp" line="74"/>
         <source>Dialog</source>
         <translation>دیالوگ</translation>
     </message>
     <message>
-        <location filename="../../lengthdialog_ui.cpp" line="70"/>
+        <location filename="../../UI/LengthDialogUI.cpp" line="75"/>
         <source>2</source>
         <translation>2</translation>
     </message>
     <message>
-        <location filename="../../lengthdialog_ui.cpp" line="71"/>
+        <location filename="../../UI/LengthDialogUI.cpp" line="76"/>
         <source>Simulation Length</source>
         <translation>طول شبیه‌سازی</translation>
     </message>
     <message>
-        <location filename="../../lengthdialog_ui.cpp" line="72"/>
+        <location filename="../../UI/LengthDialogUI.cpp" line="77"/>
         <source>2048</source>
         <translation>2048</translation>
     </message>
     <message>
-        <location filename="../../lengthdialog.cpp" line="15"/>
+        <location filename="../../UI/LengthDialog.cpp" line="17"/>
         <source>Simulation Length Selection</source>
         <translation>انتخاب طول شبیه‌سازی</translation>
     </message>
@@ -1350,680 +1353,730 @@
 <context>
     <name>Line</name>
     <message>
-        <location filename="../../element/line.cpp" line="9"/>
-        <source>Line</source>
+        <location filename="../../Element/GraphicElements/Line.cpp" line="35"/>
+        <source>LINE</source>
         <translation>خط</translation>
     </message>
     <message>
-        <location filename="../../element/line.cpp" line="9"/>
-        <source>LINE</source>
+        <location filename="../../Element/GraphicElements/Line.cpp" line="36"/>
+        <source>Line</source>
         <translation>خط</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="681"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="713"/>
         <source>Inputs/Outputs</source>
         <translation>ورودی‌ها/خروجی‌ها</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="683"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="715"/>
         <source>Gates</source>
         <translation>دروازه‌ها</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="685"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="717"/>
         <source>Combinational</source>
         <translation>ترکیبی</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="687"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="719"/>
         <source>Memory</source>
         <translation>حافظه</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="691"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="723"/>
         <source>Integrated Circuits</source>
         <translation>مدارهای یکپارچه</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="688"/>
-        <source>Add IC files</source>
-        <translation>افزودن فایل‌های IC</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow_ui.cpp" line="689"/>
-        <source>Remove IC</source>
-        <translation>حذف IC</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow_ui.cpp" line="693"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="725"/>
         <source>Miscellaneous</source>
         <translation>متفرقه</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="695"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="727"/>
         <source>Search:</source>
         <translation>جستجو:</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="696"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="728"/>
         <source>&amp;File</source>
         <translation>&amp;فایل</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="697"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="729"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;فایل‌های اخیر:</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="698"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="730"/>
         <source>&amp;Edit</source>
         <translation>&amp;ویرایش</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="699"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="731"/>
         <source>&amp;Help</source>
         <translation>&amp;راهنما</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="700"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="732"/>
         <source>&amp;Help Translate</source>
         <translation>&amp;کمک به ترجمه</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="701"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="733"/>
         <source>&amp;View</source>
         <translation>&amp;نمایش</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="702"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="734"/>
         <source>&amp;Theme</source>
         <translation>&amp;تم</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="703"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="735"/>
         <source>&amp;Language</source>
         <translation>&amp;زبان</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="704"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="736"/>
         <source>Sim&amp;ulation</source>
         <translation>شبیه‌&amp;سازی</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="705"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="737"/>
         <source>Examples</source>
         <translation>نمونه‌ها</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="604"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="633"/>
         <source>&amp;Open...</source>
         <translation>&amp;باز کردن...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="605"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="634"/>
         <source>Open</source>
         <translation>باز کردن</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="606"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="635"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="607"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="636"/>
         <source>&amp;Save</source>
         <translation>&amp;ذخیره</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="608"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="637"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="609"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="638"/>
         <source>Save &amp;As...</source>
         <translation>ذخیره &amp;به نام...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="610"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="639"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="611"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="640"/>
         <source>Cu&amp;t</source>
         <translation>ب&amp;رش</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="612"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="641"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="613"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="642"/>
         <source>&amp;Copy</source>
         <translation>&amp;کپی</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="614"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="643"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="615"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="644"/>
         <source>&amp;Paste</source>
         <translation>&amp;چسباندن</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="616"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="645"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="617"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="646"/>
         <source>&amp;Delete</source>
         <translation>&amp;حذف</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="618"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="647"/>
         <source>Del</source>
         <translation>حذف</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="619"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="648"/>
         <source>&amp;New</source>
         <translation>&amp;جدید</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="620"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="649"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="621"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="650"/>
         <source>Zoom &amp;in</source>
         <translation>بزرگ‌&amp;نمایی</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="622"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="651"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="623"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="652"/>
         <source>Zoom &amp;out</source>
         <translation>کوچک‌&amp;نمایی</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="624"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="653"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="625"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="654"/>
         <source>&amp;Wires</source>
         <translation>&amp;سیم‌ها</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="626"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="655"/>
         <source>Ctrl+1</source>
         <translation>Ctrl+1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="627"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="656"/>
         <source>&amp;Gates</source>
         <translation>&amp;دروازه‌ها</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="628"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="657"/>
         <source>Ctrl+2</source>
         <translation>Ctrl+2</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="629"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="658"/>
         <source>&amp;About</source>
         <translation>&amp;درباره</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="630"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="659"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="631"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="660"/>
         <source>&amp;Exit</source>
         <translation>&amp;خروج</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="632"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="661"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="633"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="662"/>
         <source>R&amp;otate right</source>
         <translation>چر&amp;خش به راست</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="634"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="663"/>
         <source>Ctrl+R</source>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="635"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="664"/>
         <source>Rotate &amp;left</source>
         <translation>چرخش به &amp;چپ</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="636"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="665"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="637"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="666"/>
         <source>About &amp;Qt</source>
         <translation>درباره &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="638"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="667"/>
         <source>&amp;Select all</source>
         <translation>&amp;انتخاب همه</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="639"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="668"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="640"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="669"/>
         <source>Re&amp;load File</source>
         <translation>بارگی&amp;ری مجدد فایل</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="641"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="670"/>
         <source>Ctrl+F5</source>
         <translation>Ctrl+F5</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="642"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="671"/>
         <source>E&amp;xport to Arduino</source>
         <translation>ص&amp;ادرات به Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="643"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="672"/>
         <source>Ctrl+Alt+I</source>
         <translation>Ctrl+Alt+I</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="644"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="673"/>
+        <source>Export to &amp;SystemVerilog</source>
+        <translation>صدور به &amp;SystemVerilog</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="674"/>
+        <source>Ctrl+Alt+O</source>
+        <translation>Ctrl+Alt+O</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="675"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;بازنشانی زوم</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="645"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="676"/>
         <source>Ctrl+0</source>
         <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="646"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="677"/>
         <source>Export to &amp;PDF</source>
         <translation>صادرات به &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="647"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="678"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="648"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="679"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;پخش/توقف</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="649"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="680"/>
         <source>Play or Pause simulation.</source>
         <translation>پخش یا مکث شبیه‌سازی.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="650"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="681"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="651"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="682"/>
         <source>&amp;Rename</source>
         <translation>&amp;تغییر نام</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="652"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="683"/>
         <source>F2</source>
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="653"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="684"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>تغیی&amp;ر محرک</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="654"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="685"/>
         <source>F3</source>
         <translation>F3</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="655"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="686"/>
         <source>Cl&amp;ear selection</source>
         <translation>پا&amp;ک کردن انتخاب</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="656"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="687"/>
         <source>Esc</source>
         <translation>Esc</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="657"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="688"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;حالت سریع</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="658"/>
-        <source>&amp;Panda Light</source>
-        <translation>&amp;پاندا روشن</translation>
+        <location filename="../../UI/MainWindowUI.cpp" line="689"/>
+        <source>&amp;System</source>
+        <translation>&amp;سیستم</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="659"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="690"/>
+        <source>Panda &amp;Light</source>
+        <translation>Panda &amp;روشن</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="691"/>
         <source>Panda &amp;Dark</source>
         <translation>پاندا &amp;تیره</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="660"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="692"/>
         <source>&amp;Waveform</source>
         <translation>&amp;شکل موج</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="661"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="693"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="662"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="694"/>
         <source>Export to &amp;Image</source>
         <translation>صادرات به &amp;تصویر</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="663"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="695"/>
         <source>Ctrl+E</source>
         <translation>Ctrl+E</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="664"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="696"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;چرخش افقی</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="665"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="697"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="666"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="698"/>
         <source>Flip &amp;vertically</source>
         <translation>چرخش &amp;عمودی</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="667"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="699"/>
         <source>F&amp;ullscreen</source>
         <translation>تمام &amp;صفحه</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="668"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="700"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1722"/>
-        <location filename="../../mainwindow_ui.cpp" line="669"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="720"/>
+        <source>Add IC files</source>
+        <translation>افزودن فایل‌های IC</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="721"/>
+        <source>Remove IC</source>
+        <translation>حذف IC</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="1402"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="701"/>
         <source>Mute</source>
         <translation>بی‌صدا</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="670"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="702"/>
         <source>Mutes and unmutes circuit buzzers</source>
         <translation>قطع و وصل صدای زنگ‌های مدار</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="671"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="703"/>
         <source>Ctrl+M</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="672"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="704"/>
         <source>Labels under icons</source>
         <translation>برچسب‌ها زیر آیکون‌ها</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="673"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="705"/>
         <source>About this version</source>
         <translation>درباره این نسخه</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="674"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="706"/>
         <source>&amp;Restart</source>
         <translation>&amp;راه‌اندازی مجدد</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="675"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="707"/>
         <source>Restart simulation.</source>
         <translation>راه‌اندازی مجدد شبیه‌سازی.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="676"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="708"/>
         <source>Background Simulation</source>
         <translation>شبیه‌سازی پس‌زمینه</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="569"/>
-        <location filename="../../mainwindow_ui.cpp" line="677"/>
+        <location filename="../../UI/MainWindow.cpp" line="641"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="709"/>
         <source>Shortcuts and Tips</source>
         <translation>میانبرها و نکات</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="678"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="710"/>
         <source>Report Translation Error</source>
         <translation>گزارش خطای ترجمه</translation>
     </message>
     <message>
-        <location filename="../../mainwindow_ui.cpp" line="679"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="711"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>خطاهای ترجمه را گزارش دهید یا در بهبود ترجمه‌ها در Weblate کمک کنید</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="269"/>
+        <location filename="../../UI/MainWindow.cpp" line="301"/>
         <source>Error!</source>
         <translation>خطا!</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="294"/>
-        <location filename="../../mainwindow.cpp" line="430"/>
-        <location filename="../../mainwindow.cpp" line="699"/>
-        <location filename="../../mainwindow.cpp" line="1251"/>
+        <location filename="../../UI/MainWindow.cpp" line="329"/>
+        <location filename="../../UI/MainWindow.cpp" line="499"/>
+        <location filename="../../UI/MainWindow.cpp" line="777"/>
+        <location filename="../../UI/MainWindow.cpp" line="1225"/>
         <source>New Project</source>
         <translation>پروژه جدید</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="354"/>
+        <location filename="../../UI/MainWindow.cpp" line="397"/>
         <source>File saved successfully.</source>
         <translation>فایل با موفقیت ذخیره شد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="373"/>
-        <source>Don&apos;t show this again.</source>
-        <translation>دیگر نشان نده.</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="413"/>
+        <location filename="../../UI/MainWindow.cpp" line="480"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>فایل ذخیره نشد. با وجود این زبانه بسته شود؟</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="432"/>
+        <location filename="../../UI/MainWindow.cpp" line="501"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> تغییر کرده است.
 آیا می‌خواهید تغییرات را ذخیره کنید؟</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="470"/>
+        <location filename="../../UI/MainWindow.cpp" line="539"/>
         <source>File loaded successfully.</source>
         <translation>فایل با موفقیت بارگذاری شد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="489"/>
-        <location filename="../../mainwindow.cpp" line="1765"/>
+        <location filename="../../UI/MainWindow.cpp" line="558"/>
+        <location filename="../../UI/MainWindow.cpp" line="1450"/>
         <source>Open File</source>
         <translation>باز کردن فایل</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="489"/>
-        <location filename="../../mainwindow.cpp" line="510"/>
-        <location filename="../../mainwindow.cpp" line="530"/>
+        <location filename="../../UI/MainWindow.cpp" line="558"/>
+        <location filename="../../UI/MainWindow.cpp" line="580"/>
+        <location filename="../../UI/MainWindow.cpp" line="600"/>
         <source>Panda files (*.panda)</source>
         <translation>فایل‌های Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="510"/>
-        <location filename="../../mainwindow.cpp" line="530"/>
+        <location filename="../../UI/MainWindow.cpp" line="580"/>
+        <location filename="../../UI/MainWindow.cpp" line="600"/>
         <source>Save File as ...</source>
         <translation>ذخیره فایل به نام ...</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="622"/>
+        <location filename="../../UI/MainWindow.cpp" line="698"/>
         <source>Exit </source>
         <translation>خروج </translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="623"/>
+        <location filename="../../UI/MainWindow.cpp" line="699"/>
         <source>Are you sure?</source>
         <translation>آیا مطمئن هستید؟</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="795"/>
+        <location filename="../../UI/MainWindow.cpp" line="833"/>
         <source>Error</source>
         <translation>خطا</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="381"/>
-        <source>wiRedPanda version &gt;= 4.0 is not 100% compatible with previous versions.
-To open old version projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be moved to the same directory as the main project file.
-wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
-You have to save new projects before accessing ICs and skins, or running beWavedDolphin simulations.</source>
-        <translation>نسخه wiRedPanda &gt;= 4.0 صد درصد با نسخه‌های قبلی سازگار نیست.
-برای باز کردن پروژه‌های نسخه قدیمی که شامل IC ها (یا جعبه‌ها)، پوسته‌ها و/یا شبیه‌سازی‌های beWavedDolphin هستند، فایل‌هایشان باید به همان دایرکتوری فایل اصلی پروژه منتقل شوند.
-wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر موجود در همان دایرکتوری پروژه فعلی را به عنوان IC در تب ویرایشگر فهرست خواهد کرد.
-قبل از دسترسی به IC ها و پوسته‌ها، یا اجرای شبیه‌سازی‌های beWavedDolphin، باید پروژه‌های جدید را ذخیره کنید.</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="550"/>
+        <location filename="../../UI/MainWindow.cpp" line="622"/>
         <source>&lt;p&gt;wiRedPanda is a software developed by the students of the Federal University of São Paulo. This project was created in order to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda نرم‌افزاری است که توسط دانشجویان دانشگاه فدرال سائوپائولو توسعه یافته است. این پروژه برای کمک به دانشجویان در یادگیری مدارهای منطقی ایجاد شده است.&lt;/p&gt;&lt;p&gt;نسخه نرم‌افزار: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;سازندگان:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda در حال حاضر توسط Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves و Maycon A. Santana نگهداری می‌شود.&lt;/p&gt;&lt;p&gt; لطفاً در صفحه GitHub ما گزارشی ارسال کنید اگر اشکالی یافت شود یا اگر می‌خواهید عملکرد جدیدی پیاده‌سازی شود.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;از وب‌سایت ما دیدن کنید!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="570"/>
+        <location filename="../../UI/MainWindow.cpp" line="642"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double click in a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;میانبرهای بوم&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : بزرگنمایی &lt;/li&gt;&lt;li&gt; Ctrl+- : کوچکنمایی &lt;/li&gt;&lt;li&gt; Ctrl+1 : مخفی/نمایش سیم‌ها &lt;/li&gt;&lt;li&gt; Ctrl+2 : مخفی/نمایش دروازه‌ها &lt;/li&gt;&lt;li&gt; Ctrl+F : جستجوی المان‌ها &lt;/li&gt;&lt;li&gt; Ctrl+W : باز کردن beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : ذخیره پروژه &lt;/li&gt;&lt;li&gt; Ctrl+Q : خروج از wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : شروع/توقف شبیه‌سازی &lt;/li&gt;&lt;li&gt; [ : خاصیت اولیه قبلی المان &lt;/li&gt;&lt;li&gt; ] : خاصیت اولیه بعدی المان &lt;/li&gt;&lt;li&gt; { : خاصیت ثانویه قبلی المان &lt;/li&gt;&lt;li&gt; } : خاصیت ثانویه بعدی المان &lt;/li&gt;&lt;li&gt; &amp;lt; : تبدیل به المان قبلی &lt;/li&gt;&lt;li&gt; &amp;gt; : تبدیل به المان بعدی &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;نکات عمومی&lt;/h1&gt;&lt;p&gt;برای ایجاد گره روی سیم دوبار کلیک کنید&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1000"/>
-        <location filename="../../mainwindow.cpp" line="1027"/>
+        <location filename="../../UI/MainWindow.cpp" line="961"/>
+        <location filename="../../UI/MainWindow.cpp" line="992"/>
+        <location filename="../../UI/MainWindow.cpp" line="1017"/>
         <source>Missing file name.</source>
         <translation>نام فایل موجود نیست.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1006"/>
+        <location filename="../../UI/MainWindow.cpp" line="967"/>
+        <location filename="../../UI/MainWindow.cpp" line="998"/>
         <source>The .panda file is empty.</source>
         <translation>فایل .panda خالی است.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1019"/>
+        <location filename="../../UI/MainWindow.cpp" line="980"/>
         <source>Arduino code successfully generated.</source>
         <translation>کد Arduino با موفقیت تولید شد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1054"/>
+        <location filename="../../UI/MainWindow.cpp" line="1044"/>
         <source>Generate Arduino Code</source>
         <translation>تولید کد Arduino</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1054"/>
+        <location filename="../../UI/MainWindow.cpp" line="1044"/>
         <source>Arduino file (*.ino)</source>
         <translation>فایل Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1156"/>
+        <location filename="../../UI/MainWindow.cpp" line="1164"/>
         <source>Export to PDF</source>
         <translation>صادرات به PDF</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1156"/>
+        <location filename="../../UI/MainWindow.cpp" line="1164"/>
         <source>PDF files (*.pdf)</source>
         <translation>فایل‌های PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1174"/>
-        <source>Could not print this circuit to PDF.</source>
-        <translation>امکان چاپ این مدار به PDF وجود ندارد.</translation>
+        <location filename="../../UI/MainWindow.cpp" line="417"/>
+        <source>Update Available</source>
+        <translation>به‌روزرسانی موجود</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1181"/>
-        <location filename="../../mainwindow.cpp" line="1219"/>
+        <location filename="../../UI/MainWindow.cpp" line="423"/>
+        <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
+        <translation>&lt;b&gt;wiRedPanda %1 موجود است.&lt;/b&gt;&lt;br&gt;&lt;br&gt;شما در حال اجرای نسخه %2 هستید.&lt;br&gt;برای دانلود نسخه جدید از صفحه انتشار بازدید کنید.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="432"/>
+        <source>Don&apos;t notify me about this version again</source>
+        <translation>دیگر درباره این نسخه اطلاع نده</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="436"/>
+        <source>Download</source>
+        <translation>دانلود</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="459"/>
+        <source>wiRedPanda %1
+
+This version includes automatic migration of older project files.
+When you open a project file older than the current version, it will be automatically upgraded to the current format and a versioned backup will be created.
+
+To open projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, their files must be in the same directory as the main project file.
+wiRedPanda %1 will automatically list all other .panda files located in the same directory of the current project as ICs in the editor tab.
+You have to save new projects before accessing ICs and skins, or running beWavedDolphin simulations.</source>
+        <translation>wiRedPanda %1
+
+این نسخه شامل مهاجرت خودکار فایل‌های پروژه قدیمی‌تر است.
+وقتی فایل پروژه‌ای قدیمی‌تر از نسخه فعلی را باز می‌کنید، به‌طور خودکار به قالب فعلی ارتقا می‌یابد و یک نسخه پشتیبان شماره‌گذاری‌شده ایجاد می‌شود.
+
+برای باز کردن پروژه‌هایی که شامل IC (یا جعبه)، پوسته‌ها و/یا شبیه‌سازی‌های beWavedDolphin هستند، فایل‌های آنها باید در همان دایرکتوری فایل اصلی پروژه باشند.
+wiRedPanda %1 به‌طور خودکار تمام فایل‌های .panda دیگر در همان دایرکتوری پروژه فعلی را به‌عنوان IC در برگه ویرایشگر فهرست می‌کند.
+باید پروژه‌های جدید را قبل از دسترسی به IC و پوسته‌ها یا اجرای شبیه‌سازی‌های beWavedDolphin ذخیره کنید.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="1009"/>
+        <source>SystemVerilog code successfully generated.</source>
+        <translation>کد SystemVerilog با موفقیت تولید شد.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="1063"/>
+        <source>Generate SystemVerilog Code</source>
+        <translation>تولید کد SystemVerilog</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="1063"/>
+        <source>SystemVerilog file (*.sv)</source>
+        <translation>فایل SystemVerilog (*.sv)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="1175"/>
+        <location filename="../../UI/MainWindow.cpp" line="1200"/>
         <source>Exported file successfully.</source>
         <translation>فایل با موفقیت صادر شد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1200"/>
+        <location filename="../../UI/MainWindow.cpp" line="1189"/>
         <source>Export to Image</source>
         <translation>صادرات به تصویر</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1200"/>
+        <location filename="../../UI/MainWindow.cpp" line="1189"/>
         <source>PNG files (*.png)</source>
         <translation>فایل‌های PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1722"/>
+        <location filename="../../UI/MainWindow.cpp" line="1402"/>
         <source>Unmute</source>
         <translation>برگرداندن صدا</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1761"/>
+        <location filename="../../UI/MainWindow.cpp" line="1446"/>
         <source>Save file first.</source>
         <translation>ابتدا فایل را ذخیره کنید.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1767"/>
+        <location filename="../../UI/MainWindow.cpp" line="1452"/>
         <source>Panda (*.panda)</source>
         <translation>پاندا (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1779"/>
-        <location filename="../../mainwindow.cpp" line="1791"/>
+        <location filename="../../UI/MainWindow.cpp" line="1464"/>
+        <location filename="../../UI/MainWindow.cpp" line="1478"/>
         <source>Info</source>
         <translation>اطلاعات</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1779"/>
+        <location filename="../../UI/MainWindow.cpp" line="1464"/>
         <source>Selected files (and their dependencies) will be copied to current file folder.</source>
         <translation>فایل‌های انتخاب شده (و وابستگی‌هایشان) به پوشه فایل فعلی کپی خواهند شد.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1791"/>
+        <location filename="../../UI/MainWindow.cpp" line="1478"/>
         <source>Drag here to remove.</source>
         <translation>برای حذف به اینجا بکشید.</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="1814"/>
+        <location filename="../../UI/MainWindow.cpp" line="1504"/>
         <source>Error removing file: %1</source>
         <translation>خطا در حذف فایل: %1</translation>
     </message>
@@ -2031,7 +2084,7 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="547"/>
+        <location filename="../../Scene/Commands.cpp" line="602"/>
         <source>Morph %1 elements to %2</source>
         <translation>تبدیل %1 عنصر به %2</translation>
     </message>
@@ -2039,7 +2092,7 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="346"/>
+        <location filename="../../Scene/Commands.cpp" line="371"/>
         <source>Move elements</source>
         <translation>جابه‌جایی عناصر</translation>
     </message>
@@ -2047,93 +2100,164 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>Mux</name>
     <message>
-        <location filename="../../element/mux.cpp" line="10"/>
-        <source>Mux</source>
+        <location filename="../../Element/GraphicElements/Mux.cpp" line="41"/>
+        <source>MULTIPLEXER</source>
         <translation>مالتی پلکسر</translation>
     </message>
     <message>
-        <location filename="../../element/mux.cpp" line="10"/>
-        <source>MULTIPLEXER</source>
+        <location filename="../../Element/GraphicElements/Mux.cpp" line="42"/>
+        <source>Mux</source>
         <translation>مالتی پلکسر</translation>
     </message>
 </context>
 <context>
     <name>Nand</name>
     <message>
-        <location filename="../../element/nand.cpp" line="9"/>
-        <source>Nand</source>
-        <translation>Nand</translation>
-    </message>
-    <message>
-        <location filename="../../element/nand.cpp" line="9"/>
+        <location filename="../../Element/GraphicElements/Nand.cpp" line="26"/>
         <source>NAND</source>
         <translation>NAND</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Nand.cpp" line="27"/>
+        <source>Nand</source>
+        <translation>Nand</translation>
     </message>
 </context>
 <context>
     <name>Node</name>
     <message>
-        <location filename="../../element/node.cpp" line="10"/>
-        <source>Node</source>
+        <location filename="../../Element/GraphicElements/Node.cpp" line="36"/>
+        <source>NODE</source>
         <translation>گره</translation>
     </message>
     <message>
-        <location filename="../../element/node.cpp" line="10"/>
-        <source>NODE</source>
+        <location filename="../../Element/GraphicElements/Node.cpp" line="37"/>
+        <source>Node</source>
         <translation>گره</translation>
     </message>
 </context>
 <context>
     <name>Nor</name>
     <message>
-        <location filename="../../element/nor.cpp" line="9"/>
-        <source>Nor</source>
-        <translation>Nor</translation>
-    </message>
-    <message>
-        <location filename="../../element/nor.cpp" line="9"/>
+        <location filename="../../Element/GraphicElements/Nor.cpp" line="26"/>
         <source>NOR</source>
         <translation>NOR</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Nor.cpp" line="27"/>
+        <source>Nor</source>
+        <translation>Nor</translation>
     </message>
 </context>
 <context>
     <name>Not</name>
     <message>
-        <location filename="../../element/not.cpp" line="9"/>
-        <source>Not</source>
+        <location filename="../../Element/GraphicElements/Not.cpp" line="26"/>
+        <source>NOT</source>
         <translation>نه</translation>
     </message>
     <message>
-        <location filename="../../element/not.cpp" line="9"/>
-        <source>NOT</source>
+        <location filename="../../Element/GraphicElements/Not.cpp" line="27"/>
+        <source>Not</source>
         <translation>نه</translation>
     </message>
 </context>
 <context>
     <name>Or</name>
     <message>
-        <location filename="../../element/or.cpp" line="9"/>
-        <source>Or</source>
+        <location filename="../../Element/GraphicElements/Or.cpp" line="26"/>
+        <source>OR</source>
         <translation>یا</translation>
     </message>
     <message>
-        <location filename="../../element/or.cpp" line="9"/>
-        <source>OR</source>
+        <location filename="../../Element/GraphicElements/Or.cpp" line="27"/>
+        <source>Or</source>
         <translation>یا</translation>
+    </message>
+</context>
+<context>
+    <name>QNEConnection</name>
+    <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="192"/>
+        <source>Stream error reading connection port IDs at offset %1</source>
+        <translation>خطای جریان در خواندن شناسه‌های درگاه اتصال در افست %1</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../main.cpp" line="185"/>
+        <location filename="../../Main.cpp" line="314"/>
         <source>Error!</source>
         <translation>خطا!</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="44"/>
+        <source>Change skin to ...</source>
+        <translation>تغییر پوسته به...</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="45"/>
+        <source>Change color to...</source>
+        <translation>تغییر رنگ به...</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="46"/>
+        <source>Change frequency</source>
+        <translation>تغییر فرکانس</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="47"/>
+        <source>Morph to...</source>
+        <translation>تبدیل به...</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="48"/>
+        <source>Rename</source>
+        <translation>تغییر نام</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="49"/>
+        <source>Set skin to default</source>
+        <translation>بازنشانی پوسته به پیش‌فرض</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="50"/>
+        <source>Rotate left</source>
+        <translation>چرخش به چپ</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="51"/>
+        <source>Rotate right</source>
+        <translation>چرخش به راست</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="52"/>
+        <source>Change trigger</source>
+        <translation>تغییر ماشه</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="165"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="211"/>
+        <source>Copy</source>
+        <translation>کپی</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="166"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="211"/>
+        <source>Cut</source>
+        <translation>برش</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="171"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="211"/>
+        <source>Delete</source>
+        <translation>حذف</translation>
     </message>
 </context>
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="274"/>
+        <location filename="../../Scene/Commands.cpp" line="297"/>
         <source>Rotate %1 degrees</source>
         <translation>چرخش %1 درجه</translation>
     </message>
@@ -2141,12 +2265,12 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>SRFlipFlop</name>
     <message>
-        <location filename="../../element/srflipflop.cpp" line="10"/>
+        <location filename="../../Element/GraphicElements/SRFlipFlop.cpp" line="36"/>
         <source>SR-FLIP-FLOP</source>
         <translation>SR-FLIP-FLOP</translation>
     </message>
     <message>
-        <location filename="../../element/srflipflop.cpp" line="10"/>
+        <location filename="../../Element/GraphicElements/SRFlipFlop.cpp" line="37"/>
         <source>SR-Flip-Flop</source>
         <translation>SR-Flip-Flop</translation>
     </message>
@@ -2154,12 +2278,12 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>SRLatch</name>
     <message>
-        <location filename="../../element/srlatch.cpp" line="10"/>
+        <location filename="../../Element/GraphicElements/SRLatch.cpp" line="36"/>
         <source>SR-LATCH</source>
         <translation>SR-LATCH</translation>
     </message>
     <message>
-        <location filename="../../element/srlatch.cpp" line="10"/>
+        <location filename="../../Element/GraphicElements/SRLatch.cpp" line="37"/>
         <source>SR-Latch</source>
         <translation>SR-Latch</translation>
     </message>
@@ -2167,17 +2291,17 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../scene.cpp" line="35"/>
+        <location filename="../../Scene/Scene.cpp" line="41"/>
         <source>&amp;Undo</source>
         <translation>&amp;برگردان</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="39"/>
+        <location filename="../../Scene/Scene.cpp" line="45"/>
         <source>&amp;Redo</source>
         <translation>&amp;انجام مجدد</translation>
     </message>
     <message>
-        <location filename="../../scene.cpp" line="779"/>
+        <location filename="../../Scene/Scene.cpp" line="999"/>
         <source>Paste</source>
         <translation>چسباندن</translation>
     </message>
@@ -2185,60 +2309,106 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../serialization.cpp" line="47"/>
-        <location filename="../../serialization.cpp" line="56"/>
-        <location filename="../../serialization.cpp" line="88"/>
+        <location filename="../../IO/Serialization.cpp" line="58"/>
+        <location filename="../../IO/Serialization.cpp" line="69"/>
+        <location filename="../../IO/Serialization.cpp" line="103"/>
         <source>Invalid file format.</source>
         <translation>فرمت فایل نامعتبر.</translation>
     </message>
     <message>
-        <location filename="../../serialization.cpp" line="139"/>
+        <location filename="../../IO/Serialization.cpp" line="190"/>
+        <source>Stream error reading type tag at position %1: status %2</source>
+        <translation>خطای جریان در خواندن برچسب نوع در موقعیت %1: وضعیت %2</translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="202"/>
+        <source>Stream error reading element type at position %1: status %2</source>
+        <translation>خطای جریان در خواندن نوع عنصر در موقعیت %1: وضعیت %2</translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="212"/>
+        <source>Stream error loading element at position %1: status %2</source>
+        <translation>خطای جریان در بارگذاری عنصر در موقعیت %1: وضعیت %2</translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="228"/>
+        <source>Stream error loading connection at position %1: status %2</source>
+        <translation>خطای جریان در بارگذاری اتصال در موقعیت %1: وضعیت %2</translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="238"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>نوع نامعتبر. داده‌ها احتمالاً خراب هستند.</translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="290"/>
+        <source>Failed to create versioned backup: %1</source>
+        <translation>ایجاد نسخه پشتیبان نسخه‌بندی شده با شکست مواجه شد: %1</translation>
+    </message>
+</context>
+<context>
+    <name>Simulation</name>
+    <message>
+        <location filename="../../Simulation/Simulation.cpp" line="239"/>
+        <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
+        <translation>هشدار: مدار بازخورد همگرا نشد — مدار ممکن است در حال نوسان باشد.</translation>
     </message>
 </context>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="444"/>
+        <location filename="../../Scene/Commands.cpp" line="480"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>پورت‌های اتصال نامعتبر در سازنده SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="450"/>
+        <location filename="../../Scene/Commands.cpp" line="486"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>عناصر گرافیکی نامعتبر در سازنده SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="461"/>
+        <location filename="../../Scene/Commands.cpp" line="509"/>
         <source>Wire split</source>
         <translation>تقسیم سیم</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="484"/>
+        <location filename="../../Scene/Commands.cpp" line="534"/>
         <source>Error trying to redo %1</source>
         <translation>خطا در تلاش برای انجام مجدد %1</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="492"/>
+        <location filename="../../Scene/Commands.cpp" line="542"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>خطا: endPort در SplitCommand::redo() خالی است</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="518"/>
+        <location filename="../../Scene/Commands.cpp" line="569"/>
         <source>Error trying to undo %1</source>
         <translation>خطا در تلاش برای برگرداندن %1</translation>
     </message>
 </context>
 <context>
+    <name>SystemVerilogCodeGen</name>
+    <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1355"/>
+        <source>Output variable not mapped for TruthTable: %1</source>
+        <translation>متغیر خروجی برای جدول درستی نگاشت نشده: %1</translation>
+    </message>
+    <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1405"/>
+        <source>Element type not supported: %1</source>
+        <translation>نوع عنصر پشتیبانی نمی‌شود: %1</translation>
+    </message>
+</context>
+<context>
     <name>TFlipFlop</name>
     <message>
-        <location filename="../../element/tflipflop.cpp" line="10"/>
+        <location filename="../../Element/GraphicElements/TFlipFlop.cpp" line="36"/>
         <source>T-FLIP-FLOP</source>
         <translation>T-FLIP-FLOP</translation>
     </message>
     <message>
-        <location filename="../../element/tflipflop.cpp" line="10"/>
+        <location filename="../../Element/GraphicElements/TFlipFlop.cpp" line="37"/>
         <source>T-Flip-Flop</source>
         <translation>T-Flip-Flop</translation>
     </message>
@@ -2246,26 +2416,26 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>Text</name>
     <message>
-        <location filename="../../element/text.cpp" line="9"/>
-        <source>Text</source>
+        <location filename="../../Element/GraphicElements/Text.cpp" line="34"/>
+        <source>TEXT</source>
         <translation>متن</translation>
     </message>
     <message>
-        <location filename="../../element/text.cpp" line="9"/>
-        <source>TEXT</source>
+        <location filename="../../Element/GraphicElements/Text.cpp" line="35"/>
+        <source>Text</source>
         <translation>متن</translation>
     </message>
 </context>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="889"/>
+        <location filename="../../Scene/Commands.cpp" line="1050"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>تغییر وضعیت خروجی جدول صحت در موقعیت: %1</translation>
     </message>
     <message>
-        <location filename="../../commands.cpp" line="898"/>
-        <location filename="../../commands.cpp" line="912"/>
+        <location filename="../../Scene/Commands.cpp" line="1059"/>
+        <location filename="../../Scene/Commands.cpp" line="1075"/>
         <source>Could not find truthtable element!</source>
         <translation>عنصر جدول صحت یافت نشد!</translation>
     </message>
@@ -2273,7 +2443,7 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>TrashButton</name>
     <message>
-        <location filename="../../trashbutton.cpp" line="32"/>
+        <location filename="../../UI/TrashButton.cpp" line="38"/>
         <source>File will be deleted. Are you sure?</source>
         <translation>فایل حذف خواهد شد. آیا مطمئن هستید؟</translation>
     </message>
@@ -2281,12 +2451,12 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>TruthTable</name>
     <message>
-        <location filename="../../element/truth_table.cpp" line="13"/>
+        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="41"/>
         <source>TRUTH TABLE</source>
         <translation>جدول صحت</translation>
     </message>
     <message>
-        <location filename="../../element/truth_table.cpp" line="13"/>
+        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="42"/>
         <source>Truth Table</source>
         <translation>جدول حقیقت</translation>
     </message>
@@ -2294,7 +2464,7 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../commands.cpp" line="387"/>
+        <location filename="../../Scene/Commands.cpp" line="416"/>
         <source>Update %1 elements</source>
         <translation>به‌روزرسانی %1 عنصر</translation>
     </message>
@@ -2302,37 +2472,37 @@ wiRedPanda %1 بطور خودکار تمام فایل‌های .panda دیگر �
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../workspace.cpp" line="76"/>
+        <location filename="../../Scene/Workspace.cpp" line="82"/>
         <source>Save File</source>
         <translation>ذخیره فایل</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="76"/>
+        <location filename="../../Scene/Workspace.cpp" line="82"/>
         <source>Panda files (*.panda)</source>
         <translation>فایل‌های Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="94"/>
+        <location filename="../../Scene/Workspace.cpp" line="102"/>
         <source>Error opening file: %1</source>
         <translation>خطا در باز کردن فایل: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="104"/>
+        <location filename="../../Scene/Workspace.cpp" line="112"/>
         <source>Could not save file: %1</source>
         <translation>امکان ذخیره فایل وجود ندارد: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="140"/>
+        <location filename="../../Scene/Workspace.cpp" line="153"/>
         <source>This file does not exist: %1</source>
         <translation>این فایل وجود ندارد: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="150"/>
+        <location filename="../../Scene/Workspace.cpp" line="163"/>
         <source>Could not open file: %1</source>
         <translation>امکان باز کردن فایل وجود ندارد: %1</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="171"/>
+        <location filename="../../Scene/Workspace.cpp" line="197"/>
         <source>Warning! Your wiRedPanda (Version: %1) is possibly out of date.
 The file you are opening was saved with version (%2).
 Please check for updates if the file does not load correctly.</source>
@@ -2341,101 +2511,113 @@ Please check for updates if the file does not load correctly.</source>
 لطفاً در صورت عدم بارگیری صحیح فایل، به‌روزرسانی‌ها را بررسی کنید.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="175"/>
+        <location filename="../../Scene/Workspace.cpp" line="201"/>
         <source>Newer version file.</source>
         <translation>فایل نسخه جدیدتر.</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="179"/>
-        <source>Old version file.</source>
-        <translation>فایل نسخه قدیمی.</translation>
+        <location filename="../../Scene/Workspace.cpp" line="204"/>
+        <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
+A backup of the original file has been created with name: %3</source>
+        <translation>این فایل در قالب قدیمی‌تر (نسخه %1) است و به‌طور خودکار به قالب فعلی (نسخه %2) ارتقا خواهد یافت.
+نسخه پشتیبان از فایل اصلی با نام ایجاد شده است: %3</translation>
     </message>
     <message>
-        <location filename="../../workspace.cpp" line="290"/>
+        <location filename="../../Scene/Workspace.cpp" line="207"/>
+        <source>File upgraded.</source>
+        <translation>فایل ارتقا یافت.</translation>
+    </message>
+    <message>
+        <location filename="../../Scene/Workspace.cpp" line="334"/>
         <source>Error opening autosave file: %1</source>
         <translation>خطا در باز کردن فایل ذخیره خودکار: %1</translation>
-    </message>
-    <message>
-        <location filename="../../workspace.cpp" line="177"/>
-        <source>Warning! This is an old version wiRedPanda project file (version &lt; 4.0). To open it correctly, save all the ICs and skins in the main project directory.</source>
-        <translation>هشدار! این یک فایل پروژه wiRedPanda نسخه قدیمی است (نسخه &lt; 4.0). برای باز کردن صحیح، همه IC ها و پوسته ها را در دایرکتوری اصلی پروژه ذخیره کنید.</translation>
     </message>
 </context>
 <context>
     <name>Xnor</name>
     <message>
-        <location filename="../../element/xnor.cpp" line="9"/>
-        <source>Xnor</source>
-        <translation>Xnor</translation>
-    </message>
-    <message>
-        <location filename="../../element/xnor.cpp" line="9"/>
+        <location filename="../../Element/GraphicElements/Xnor.cpp" line="26"/>
         <source>XNOR</source>
         <translation>XNOR</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Xnor.cpp" line="27"/>
+        <source>Xnor</source>
+        <translation>Xnor</translation>
     </message>
 </context>
 <context>
     <name>Xor</name>
     <message>
-        <location filename="../../element/xor.cpp" line="9"/>
-        <source>Xor</source>
-        <translation>Xor</translation>
-    </message>
-    <message>
-        <location filename="../../element/xor.cpp" line="9"/>
+        <location filename="../../Element/GraphicElements/Xor.cpp" line="26"/>
         <source>XOR</source>
         <translation>XOR</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Xor.cpp" line="27"/>
+        <source>Xor</source>
+        <translation>Xor</translation>
     </message>
 </context>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../main.cpp" line="90"/>
+        <location filename="../../Main.cpp" line="178"/>
         <source>Circuit file to open.</source>
         <translation>فایل مداری برای باز کردن.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="94"/>
+        <location filename="../../Main.cpp" line="182"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>سطح جزئیات 0 تا 5، به طور پیش‌فرض غیرفعال.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="95"/>
+        <location filename="../../Main.cpp" line="183"/>
         <source>verbosity level</source>
         <translation>سطح جزئیات</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="100"/>
+        <location filename="../../Main.cpp" line="188"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>صادرات مدار به &lt;فایل-آردوینو&gt;.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="112"/>
+        <location filename="../../Main.cpp" line="200"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>صادرات مدار به فایل متنی شکل موج، خواندن ورودی از ترمینال.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="117"/>
+        <location filename="../../Main.cpp" line="205"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>هنگام استفاده با -c/--terminal، اجرا را مسدود کن اگر مدار شامل جداول صحت باشد.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="166"/>
+        <location filename="../../Main.cpp" line="211"/>
+        <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
+        <translation>اجرا در حالت MCP (Model Context Protocol) برای کنترل برنامه‌ای.</translation>
+    </message>
+    <message>
+        <location filename="../../Main.cpp" line="216"/>
+        <source>Run MCP mode with a visible GUI window.</source>
+        <translation>اجرای حالت MCP با پنجره GUI قابل مشاهده.</translation>
+    </message>
+    <message>
+        <location filename="../../Main.cpp" line="274"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>خطا: مدار شامل عناصر جدول صحت است.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="101"/>
+        <location filename="../../Main.cpp" line="189"/>
         <source>arduino file</source>
         <translation>فایل arduino</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="106"/>
+        <location filename="../../Main.cpp" line="194"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>صادرات مدار به فایل متنی شکل موج.</translation>
     </message>
     <message>
-        <location filename="../../main.cpp" line="107"/>
+        <location filename="../../Main.cpp" line="195"/>
         <source>waveform input text file</source>
         <translation>فایل متنی ورودی موج</translation>
     </message>

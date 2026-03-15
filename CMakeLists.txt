@@ -228,7 +228,7 @@ file(GLOB_RECURSE TS_FILES App/Resources/Translations/wpanda_*.ts)
 if(Qt6LinguistTools_FOUND)
     # Custom target to update translation source files
     add_custom_target(lupdate
-        COMMAND Qt6::lupdate -tr-function-alias tr+=PANDACEPTION -extensions cpp,h,ui -I ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES}
+        COMMAND Qt6::lupdate -tr-function-alias tr+=PANDACEPTION -extensions cpp,h,ui -I ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES} -no-obsolete
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         COMMENT "Updating translation source files"
     )
