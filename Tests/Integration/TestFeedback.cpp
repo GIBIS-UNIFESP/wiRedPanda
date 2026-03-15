@@ -259,8 +259,7 @@ void TestFeedback::testSimulationContinuesAfterNonConvergence()
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
 
-    // Ignore non-convergence warnings
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
+    // Ignore non-convergence warning (throttled to once per initialize())
     QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
 
     Simulation sim(scene.get());
