@@ -47,10 +47,12 @@ private slots:
 
     // ChangeInputSizeCommand edge cases
     void testDecreaseInputSizeMultipleConnections();
+    void testDecreaseInputSizeRestoresConnectionWithOriginalId();
 
     // ChangeOutputSizeCommand
     void testChangeOutputSizeUndoRedo();
     void testChangeOutputSizeMultipleElements();
+    void testDecreaseOutputSizeRestoresConnectionWithOriginalId();
 
     // SplitCommand
     void testSplitConnectionCreatesNode();

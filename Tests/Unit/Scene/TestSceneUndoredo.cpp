@@ -592,6 +592,62 @@ void TestSceneUndoredo::testDecreaseInputSizeMultipleConnections()
     QCOMPARE(elm->inputSize(), 2);
 }
 
+void TestSceneUndoredo::testDecreaseInputSizeRestoresConnectionWithOriginalId()
+{
+    // Connections severed by ChangeInputSizeCommand must be restored with their
+    // original scene ID on undo, so that other undo commands (e.g.
+    // DeleteItemsCommand) that stored that ID can still find them.
+    Scene scene;
+
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    scene.addItem(andGate);
+    scene.addItem(sw);
+    const int andId = andGate->id();
+
+    andGate->setInputSize(3);
+    auto *conn = new QNEConnection();
+    conn->setStartPort(sw->outputPort(0));
+    conn->setEndPort(andGate->inputPort(2));
+    scene.addItem(conn);
+    const int originalConnId = conn->id();
+    QVERIFY(originalConnId > 0);
+
+    auto countSceneConnections = [&]() {
+        int n = 0;
+        for (auto *item : scene.items()) {
+            if (qgraphicsitem_cast<QNEConnection *>(item)) { ++n; }
+        }
+        return n;
+    };
+    QCOMPARE(countSceneConnections(), 1);
+
+    // Reduce to 2 inputs — connection on port 2 is severed
+    scene.undoStack()->push(new ChangeInputSizeCommand({andGate}, 2, &scene));
+    QVERIFY(scene.itemById(originalConnId) == nullptr);
+    QCOMPARE(countSceneConnections(), 0);
+
+    // Undo: connection must come back with its original ID
+    scene.undoStack()->undo();
+    auto *restoredConn = dynamic_cast<QNEConnection *>(scene.itemById(originalConnId));
+    QVERIFY2(restoredConn != nullptr, "Connection must be findable by its original ID after undo");
+    auto *elm = dynamic_cast<GraphicElement *>(scene.itemById(andId));
+    QVERIFY(!elm->inputPort(2)->connections().isEmpty());
+    QCOMPARE(restoredConn->endPort()->graphicElement()->id(), andId);
+    QCOMPARE(restoredConn->endPort()->index(), 2);
+    QCOMPARE(countSceneConnections(), 1);
+
+    // Redo: severed again, ID freed
+    scene.undoStack()->redo();
+    QVERIFY(scene.itemById(originalConnId) == nullptr);
+    QCOMPARE(countSceneConnections(), 0);
+
+    // Undo once more: ID stable across cycles
+    scene.undoStack()->undo();
+    QVERIFY2(scene.itemById(originalConnId) != nullptr, "ID must be stable across undo/redo cycles");
+    QCOMPARE(countSceneConnections(), 1);
+}
+
 // ─── ChangeOutputSizeCommand ──────────────────────────────────────────────
 
 void TestSceneUndoredo::testChangeOutputSizeUndoRedo()
@@ -665,6 +721,60 @@ void TestSceneUndoredo::testChangeOutputSizeMultipleElements()
     scene.undoStack()->redo();
     QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id1))->outputSize(), 2);
     QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id2))->outputSize(), 2);
+}
+
+void TestSceneUndoredo::testDecreaseOutputSizeRestoresConnectionWithOriginalId()
+{
+    // Same as the input-size ID test but for ChangeOutputSizeCommand.
+    Scene scene;
+
+    auto *demux = ElementFactory::buildElement(ElementType::Demux);
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    scene.addItem(demux);
+    scene.addItem(led);
+    const int demuxId = demux->id();
+
+    demux->setOutputSize(4);
+    auto *conn = new QNEConnection();
+    conn->setStartPort(demux->outputPort(2));
+    conn->setEndPort(led->inputPort(0));
+    scene.addItem(conn);
+    const int originalConnId = conn->id();
+    QVERIFY(originalConnId > 0);
+
+    auto countSceneConnections = [&]() {
+        int n = 0;
+        for (auto *item : scene.items()) {
+            if (qgraphicsitem_cast<QNEConnection *>(item)) { ++n; }
+        }
+        return n;
+    };
+    QCOMPARE(countSceneConnections(), 1);
+
+    // Reduce to 2 outputs — connection on port 2 is severed
+    scene.undoStack()->push(new ChangeOutputSizeCommand({demux}, 2, &scene));
+    QVERIFY(scene.itemById(originalConnId) == nullptr);
+    QCOMPARE(countSceneConnections(), 0);
+
+    // Undo: connection must come back with its original ID
+    scene.undoStack()->undo();
+    auto *restoredConn = dynamic_cast<QNEConnection *>(scene.itemById(originalConnId));
+    QVERIFY2(restoredConn != nullptr, "Connection must be findable by its original ID after undo");
+    auto *elm = dynamic_cast<GraphicElement *>(scene.itemById(demuxId));
+    QVERIFY(!elm->outputPort(2)->connections().isEmpty());
+    QCOMPARE(restoredConn->startPort()->graphicElement()->id(), demuxId);
+    QCOMPARE(restoredConn->startPort()->index(), 2);
+    QCOMPARE(countSceneConnections(), 1);
+
+    // Redo: severed again
+    scene.undoStack()->redo();
+    QVERIFY(scene.itemById(originalConnId) == nullptr);
+    QCOMPARE(countSceneConnections(), 0);
+
+    // Undo once more: ID stable across cycles
+    scene.undoStack()->undo();
+    QVERIFY2(scene.itemById(originalConnId) != nullptr, "ID must be stable across undo/redo cycles");
+    QCOMPARE(countSceneConnections(), 1);
 }
 
 // ─── SplitCommand ─────────────────────────────────────────────────────────
