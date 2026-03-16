@@ -62,6 +62,8 @@ jobs:
 
     - name: Test
       timeout-minutes: 10
+      env:
+        QT_FORCE_STDERR_LOGGING: 1
       run: |
         ctest --preset release -V
 
