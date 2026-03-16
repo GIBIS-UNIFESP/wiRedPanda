@@ -87,6 +87,7 @@ public:
     QAction *actionLabelsUnderIcons = nullptr;
     QAction *actionLightTheme = nullptr;
     QAction *actionDarkTheme = nullptr;
+    QAction *actionSystemTheme = nullptr;
 
     // Simulation actions
     QAction *actionPlay = nullptr;
