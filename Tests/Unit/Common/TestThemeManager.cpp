@@ -21,7 +21,7 @@ void TestThemeManager::testDefaultThemeInitialization()
 {
     // Test that theme initializes to a valid default
     Theme currentTheme = ThemeManager::theme();
-    QVERIFY(currentTheme == Theme::Light || currentTheme == Theme::Dark);
+    QVERIFY(currentTheme == Theme::Light || currentTheme == Theme::Dark || currentTheme == Theme::System);
 
     // Should have valid attributes
     ThemeAttributes attrs = ThemeManager::attributes();

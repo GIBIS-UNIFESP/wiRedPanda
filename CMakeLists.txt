@@ -65,6 +65,23 @@ if((QT_VERSION_MAJOR EQUAL 5 AND Qt5_VERSION VERSION_LESS 5.15) OR
     message(FATAL_ERROR "Minimum required Qt version is 5.15 for Qt5 or 6.2 for Qt6.")
 endif()
 
+# D-Bus is needed on Linux for OS color-scheme detection (freedesktop portal).
+if(UNIX AND NOT APPLE AND NOT EMSCRIPTEN)
+    if(QT_VERSION_MAJOR EQUAL 6)
+        find_package(Qt6 COMPONENTS DBus QUIET)
+        if(Qt6DBus_FOUND)
+            list(APPEND QT_LIBS Qt6::DBus)
+            add_compile_definitions(HAVE_QTDBUS)
+        endif()
+    else()
+        find_package(Qt5 COMPONENTS DBus QUIET)
+        if(Qt5DBus_FOUND)
+            list(APPEND QT_LIBS Qt5::DBus)
+            add_compile_definitions(HAVE_QTDBUS)
+        endif()
+    endif()
+endif()
+
 add_compile_definitions(
     APP_VERSION="${PROJECT_VERSION}"
     QT_DEPRECATED_WARNINGS
