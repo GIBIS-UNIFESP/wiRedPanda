@@ -258,6 +258,7 @@ private:
     void resizeScene();
     void rotate(const int angle);
     void setDots(const QPen &dots);
+    void rebuildDotTile();
     void setEditedConnection(QNEConnection *connection);
     void setHoverPort(QNEPort *port);
     void startNewConnection(QNEInputPort *endPort);
@@ -289,6 +290,7 @@ private:
 
     // Rendering
     QPen m_dots;
+    QPixmap m_dotTile;
     QGraphicsRectItem m_selectionRect;
 
     // Mouse / interaction state

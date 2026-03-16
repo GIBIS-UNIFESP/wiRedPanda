@@ -145,29 +145,32 @@ void Scene::checkUpdateRequest()
 void Scene::drawBackground(QPainter *painter, const QRectF &rect)
 {
     // m11() is the X-axis scale factor of the view transform; below 0.3 the grid dots
-    // would be sub-pixel and invisible anyway, so skip the per-pixel loop for performance
+    // would be sub-pixel and invisible anyway, so skip the tiled draw for performance
     if (view() and view()->transform().m11() < 0.3) {
         return;
     }
 
-    painter->setRenderHint(QPainter::Antialiasing, true);
     QGraphicsScene::drawBackground(painter, rect);
 
     const int left = static_cast<int>(rect.left()) - (static_cast<int>(rect.left()) % gridSize);
     const int top = static_cast<int>(rect.top()) - (static_cast<int>(rect.top()) % gridSize);
-    painter->setPen(m_dots);
 
-    // TODO: replace this with a QPixmap for better performance
-    for (int x = left; x < rect.right(); x += gridSize) {
-        for (int y = top; y < rect.bottom(); y += gridSize) {
-            painter->drawPoint(x, y);
-        }
-    }
+    painter->drawTiledPixmap(QRectF(left, top, rect.right() - left, rect.bottom() - top), m_dotTile);
 }
 
 void Scene::setDots(const QPen &dots)
 {
     m_dots = dots;
+    rebuildDotTile();
+}
+
+void Scene::rebuildDotTile()
+{
+    m_dotTile = QPixmap(gridSize, gridSize);
+    m_dotTile.fill(Qt::transparent);
+    QPainter tilePainter(&m_dotTile);
+    tilePainter.setPen(m_dots);
+    tilePainter.drawPoint(0, 0);
 }
 
 Simulation *Scene::simulation()
