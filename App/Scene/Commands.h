@@ -263,13 +263,30 @@ public:
 
 private:
     // --- Helpers ---
-    void transferConnections(const QList<GraphicElement *> &from, const QList<GraphicElement *> &to);
+
+    /// Describes a connection that was deleted because its port was removed during a morph.
+    struct DeletedConnectionInfo {
+        int connectionId;     ///< Original scene ID of the connection; restored via updateItemId() on undo so that any undo command holding this ID (e.g. DeleteItemsCommand) can still find it.
+        int morphedElementId; ///< ID of the morphed element (stable across undo/redo via updateItemId).
+        int portIndex;        ///< Port index on the morphed element.
+        bool isInput;         ///< True if the port was an input port.
+        int otherElementId;   ///< ID of the element on the other end.
+        int otherPortIndex;   ///< Port index on the other element.
+    };
+
+    /**
+     * \brief Transfers wires from \a from to \a to, swapping element references.
+     * \param deleted If non-null, records connections that were deleted (port beyond new element's range).
+     */
+    void transferConnections(const QList<GraphicElement *> &from, const QList<GraphicElement *> &to,
+                             QList<DeletedConnectionInfo> *deleted = nullptr);
 
     // --- Members ---
     ElementType m_newType;
     QList<ElementType> m_types;
     QList<int> m_ids;
     Scene *m_scene;
+    QList<DeletedConnectionInfo> m_deletedConnections; ///< Connections deleted during the last redo(); restored on undo().
 };
 
 /**
