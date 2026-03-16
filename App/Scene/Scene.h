@@ -9,18 +9,12 @@
 
 #include <QElapsedTimer>
 #include <QGraphicsScene>
-#include <QHash>
 #include <QMap>
 #include <QMimeData>
 #include <QUndoCommand>
 #include <QVersionNumber>
 
-#include "App/Element/ICRegistry.h"
 #include "App/Nodes/QNEPort.h"
-#include "App/Scene/ClipboardManager.h"
-#include "App/Scene/ConnectionManager.h"
-#include "App/Scene/PropertyShortcutHandler.h"
-#include "App/Scene/VisibilityManager.h"
 #include "App/Simulation/Simulation.h"
 
 class GraphicElement;
@@ -28,7 +22,6 @@ class GraphicsView;
 class ItemWithId;
 class QNEConnection;
 class QPainter;
-struct SerializationContext;
 
 /**
  * \class Scene
@@ -51,16 +44,13 @@ public:
     /// \brief Removes \a item from the scene and unregisters it from the per-scene ID registry.
     void removeItem(QGraphicsItem *item);
 
-    /// Tightens the scene rect to item bounds while preserving the viewport position.
-    void resizeScene();
-
     // --- Per-Scene Element Registry ---
 
     /// Returns the item registered under \a id, or nullptr if not found.
-    [[nodiscard]] ItemWithId *itemById(int id) const;
+    ItemWithId *itemById(int id) const;
 
     /// Returns true if an item with \a id is registered in this scene.
-    [[nodiscard]] bool contains(int id) const;
+    bool contains(int id) const;
 
     /// Returns the current highest ID in use by this scene.
     int lastId() const;
@@ -93,14 +83,17 @@ public:
     /// Sets the GraphicsView that displays this scene to \a view.
     void setView(GraphicsView *view);
 
-    /// Shows or hides gate elements. Delegates to VisibilityManager.
-    void showGates(bool checked);
+    /**
+     * \brief Shows or hides gate elements.
+     * \param checked \c true to show gates.
+     */
+    void showGates(const bool checked);
 
-    /// Shows or hides connection wires. Delegates to VisibilityManager.
-    void showWires(bool checked);
-
-    /// Returns the visibility manager for this scene.
-    VisibilityManager *visibilityManager() { return &m_visibilityManager; }
+    /**
+     * \brief Shows or hides connection wires.
+     * \param checked \c true to show wires.
+     */
+    void showWires(const bool checked);
 
     // --- Element Access / Queries ---
 
@@ -118,44 +111,8 @@ public:
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
     /// Returns \a elements sorted in topological dependency order (inputs first).
     static QVector<GraphicElement *> sortByTopology(QVector<GraphicElement *> elements);
-    /**
-     * \brief Returns a map from wireless channel label to the Tx node's input port.
-     * \details Scans \a elements for nodes in WirelessMode::Tx, keyed by label.
-     * If two Tx nodes share the same label the first one wins.  Used by codegens
-     * to resolve Rx node signals without duplicating the wireless scan.
-     */
-    static QHash<QString, QNEInputPort *> wirelessTxInputPorts(const QVector<GraphicElement *> &elements);
     /// Returns all visible (non-hidden) graphic elements in the scene.
     const QVector<GraphicElement *> visibleElements() const;
-
-    /**
-     * \brief Returns \c true if a wire from \a startPort to \a endPort is permitted.
-     * \details Delegates to ConnectionManager::isConnectionAllowed().
-     */
-    static bool isConnectionAllowed(QNEOutputPort *startPort, QNEInputPort *endPort);
-
-    // --- Connection Manager ---
-
-    /// Returns the connection manager that handles wire creation, deletion, and hover feedback.
-    ConnectionManager *connectionManager() { return &m_connectionManager; }
-
-    // --- Clipboard Manager ---
-
-    /// Returns the clipboard manager that handles copy, cut, paste and clone-drag.
-    ClipboardManager *clipboardManager() { return &m_clipboardManager; }
-
-    // --- Property Shortcut Handler ---
-
-    /// Returns the handler for keyboard shortcuts that cycle element properties.
-    PropertyShortcutHandler *propertyShortcutHandler() { return &m_propertyShortcutHandler; }
-
-    // --- Hit-testing ---
-
-    /// Returns the topmost item at \a pos, prioritising ports over elements.
-    QGraphicsItem *itemAt(QPointF pos);
-
-    /// Returns the last known mouse position in scene coordinates.
-    [[nodiscard]] QPointF mousePos() const { return m_mousePos; }
 
     // --- Adding Items ---
 
@@ -221,23 +178,6 @@ public:
     /// Marks the simulation mapping as stale so it is rebuilt on the next tick.
     void setCircuitUpdateRequired();
 
-    // --- Context Directory ---
-
-    /// Returns the directory of the .panda file associated with this scene.
-    QString contextDir() const { return m_contextDir; }
-    /// Sets the directory of the .panda file associated with this scene.
-    void setContextDir(const QString &dir) { m_contextDir = dir; }
-    /// Returns the context directory for \a item: from its Scene if available, else the global fallback.
-    static QString resolveContextDir(const QGraphicsItem *item);
-
-    // --- IC Registry ---
-
-    /// Returns the IC definition registry for this scene.
-    ICRegistry *icRegistry() { return &m_icRegistry; }
-
-    /// Creates a deserialization context with the scene's contextDir and blob registry.
-    SerializationContext deserializationContext(QMap<quint64, QNEPort *> &portMap, const QVersionNumber &version);
-
     // --- Autosave ---
 
     /// Schedules an autosave of the current circuit state.
@@ -247,11 +187,6 @@ public:
 
     /// Propagates the current theme to all elements and connections.
     void updateTheme();
-
-    // --- Retranslation ---
-
-    /// Updates undo/redo action text to reflect the current UI language.
-    void retranslateUi();
 
     // --- Event Filter ---
 
@@ -276,12 +211,6 @@ signals:
      * \param element The TruthTable element that changed.
      */
     void truthTableElementChanged(GraphicElement *element);
-
-    /// Emitted when an IC element is double-clicked to request opening its sub-circuit.
-    void icOpenRequested(int elementId, const QString &blobName, const QString &filePath);
-
-    /// Emitted when a TruthTable element is double-clicked to request opening its editor.
-    void openTruthTableRequested();
 
 protected:
     // --- Qt event overrides ---
@@ -308,23 +237,32 @@ protected:
 private:
     // --- Helpers ---
 
-    /// Returns \c true if \a mimeData contains any recognised wiRedPanda drop format.
-    static bool isSupportedDropFormat(const QMimeData *mimeData);
+    static void copy(const QList<QGraphicsItem *> &items, QDataStream &stream);
 
-    /// Handles a new-element drop from the toolbox palette.
-    void handleNewElementDrop(QGraphicsSceneDragDropEvent *event);
-    /// Handles a clone drag (Ctrl+drag of an existing selection).
-    void handleCloneDrag(QGraphicsSceneDragDropEvent *event);
-
+    QGraphicsItem *itemAt(const QPointF pos);
     QList<QGraphicsItem *> itemsAt(const QPointF pos);
+    QNEConnection *editedConnection() const;
+    QNEPort *hoverPort();
     const QVector<QNEConnection *> connections();
     void checkUpdateRequest();
+    void cloneDrag(const QPointF mousePos);
     void contextMenu(const QPoint screenPos);
-    void updateUndoText(const QString &text);
-    void updateRedoText(const QString &text);
+    void cut(const QList<QGraphicsItem *> &items, QDataStream &stream);
+    void deleteEditedConnection();
+    void detachConnection(QNEInputPort *endPort);
     void drawBackground(QPainter *painter, const QRectF &rect) override;
+    void handleHoverPort();
+    void makeConnection(QNEConnection *connection);
+    void paste(QDataStream &stream, const QVersionNumber &version);
+    void releaseHoverPort();
+    void resizeScene();
     void rotate(const int angle);
     void setDots(const QPen &dots);
+    void rebuildDotTile();
+    void setEditedConnection(QNEConnection *connection);
+    void setHoverPort(QNEPort *port);
+    void startNewConnection(QNEInputPort *endPort);
+    void startNewConnection(QNEOutputPort *startPort);
     void startSelectionRect();
 
     /// Registers \a item's current ID in the scene registry. Called by addItem().
@@ -352,6 +290,7 @@ private:
 
     // Rendering
     QPen m_dots;
+    QPixmap m_dotTile;
     QGraphicsRectItem m_selectionRect;
 
     // Mouse / interaction state
@@ -362,27 +301,18 @@ private:
     QList<QPointF> m_oldPositions;
     bool m_draggingElement = false;
     bool m_markingSelectionBox = false;
-    bool m_handlingMouseMove = false;
 
-    // Context directory (directory of the .panda file owning this scene)
-    QString m_contextDir;
-
-    // IC definition registry (caches definitions, manages file watching)
-    ICRegistry m_icRegistry{this};
+    // Visibility flags
+    bool m_showGates = true;
+    bool m_showWires = true;
 
     // Autosave
     bool m_autosaveRequired = false;
 
-    // Connection editing (delegated to ConnectionManager)
-    ConnectionManager m_connectionManager{this};
+    // Connection editing
+    int m_editedConnectionId = 0;
 
-    // Clipboard operations (delegated to ClipboardManager)
-    ClipboardManager m_clipboardManager{this};
-
-    // Property shortcut dispatch (delegated to PropertyShortcutHandler)
-    PropertyShortcutHandler m_propertyShortcutHandler{this};
-
-    // Visibility control (delegated to VisibilityManager)
-    VisibilityManager m_visibilityManager{this};
+    // Hover port tracking
+    int m_hoverPortElmId = 0;
+    int m_hoverPortNumber = 0;
 };
-

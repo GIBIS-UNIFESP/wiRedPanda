@@ -4,45 +4,26 @@
 #include "App/Scene/Scene.h"
 
 #include <algorithm>
-#include <cmath>
 
 #include <QClipboard>
 #include <QDrag>
 #include <QGraphicsSceneDragDropEvent>
 #include <QKeyEvent>
 #include <QMenu>
-#include <QScrollBar>
 
 #include "App/Core/Common.h"
 #include "App/Core/ItemWithId.h"
-#include "App/Core/MimeTypes.h"
 #include "App/Core/Priorities.h"
-#include "App/Core/SentryHelpers.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/Buzzer.h"
-#include "App/Element/GraphicElements/TruthTable.h"
-#include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
-
-QString Scene::resolveContextDir(const QGraphicsItem *item)
-{
-    if (auto *s = dynamic_cast<Scene *>(item->scene())) {
-        return s->contextDir();
-    }
-    // Element not yet added to a scene (mid-deserialization): use the
-    // contextDir stored on the element during load().
-    if (auto *ge = dynamic_cast<const GraphicElement *>(item)) {
-        return ge->loadContextDir();
-    }
-    return {};
-}
 
 Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)
@@ -57,21 +38,13 @@ Scene::Scene(QObject *parent)
     m_selectionRect.setFlag(QGraphicsItem::ItemIsSelectable, false);
     addItem(&m_selectionRect);
 
-    m_undoAction = new QAction(tr("&Undo"), this);
-    m_undoAction->setEnabled(false);
+    m_undoAction = undoStack()->createUndoAction(this, tr("&Undo"));
     m_undoAction->setIcon(QIcon(":/Interface/Toolbar/undo.svg"));
     m_undoAction->setShortcut(QKeySequence::Undo);
-    connect(&m_undoStack, &QUndoStack::canUndoChanged, m_undoAction, &QAction::setEnabled);
-    connect(&m_undoStack, &QUndoStack::undoTextChanged, this, &Scene::updateUndoText);
-    connect(m_undoAction, &QAction::triggered, &m_undoStack, &QUndoStack::undo);
 
-    m_redoAction = new QAction(tr("&Redo"), this);
-    m_redoAction->setEnabled(false);
+    m_redoAction = undoStack()->createRedoAction(this, tr("&Redo"));
     m_redoAction->setIcon(QIcon(":/Interface/Toolbar/redo.svg"));
     m_redoAction->setShortcut(QKeySequence::Redo);
-    connect(&m_undoStack, &QUndoStack::canRedoChanged, m_redoAction, &QAction::setEnabled);
-    connect(&m_undoStack, &QUndoStack::redoTextChanged, this, &Scene::updateRedoText);
-    connect(m_redoAction, &QAction::triggered, &m_undoStack, &QUndoStack::redo);
 
     // Used to throttle expensive operations during drag (e.g., ensureVisible)
     m_timer.start();
@@ -79,16 +52,6 @@ Scene::Scene(QObject *parent)
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &Scene::updateTheme);
     // Emit autosave signal only after each undo-stack index change (not on every internal state update)
     connect(&m_undoStack,              &QUndoStack::indexChanged,   this, &Scene::checkUpdateRequest);
-}
-
-void Scene::checkUpdateRequest()
-{
-    // Coalesces multiple rapid undo-stack changes into a single autosave signal:
-    // the flag is set by setCircuitUpdateRequired() and cleared here after emitting.
-    if (m_autosaveRequired) {
-        emit circuitHasChanged();
-        m_autosaveRequired = false;
-    }
 }
 
 void Scene::addItem(QGraphicsItem *item)
@@ -106,24 +69,6 @@ void Scene::addItem(QGraphicsItem *item)
             setLastId(iwid->id());
         }
         registerItem(iwid);
-    }
-
-    // Register element-type-specific hooks
-    if (item->type() == GraphicElement::Type) {
-        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-        if (!elm) {
-            return;
-        }
-        if (elm->elementType() == ElementType::IC) {
-            auto *ic = static_cast<IC *>(elm);
-            if (!ic->file().isEmpty()) {
-                m_icRegistry.watchFile(ic->file());
-            }
-            connect(ic, &IC::requestOpenSubCircuit, this, &Scene::icOpenRequested);
-        } else if (elm->elementType() == ElementType::TruthTable) {
-            auto *tt = static_cast<TruthTable *>(elm);
-            connect(tt, &TruthTable::requestOpenTruthTableEditor, this, &Scene::openTruthTableRequested);
-        }
     }
 }
 
@@ -187,45 +132,45 @@ void Scene::unregisterItem(ItemWithId *item)
     m_elementRegistry.remove(item->id());
 }
 
-SerializationContext Scene::deserializationContext(QMap<quint64, QNEPort *> &portMap, const QVersionNumber &version)
+void Scene::checkUpdateRequest()
 {
-    SerializationContext context{portMap, version, contextDir()};
-    context.blobRegistry = &m_icRegistry.blobMapRef();
-    return context;
+    // Coalesces multiple rapid undo-stack changes into a single autosave signal:
+    // the flag is set by setCircuitUpdateRequired() and cleared here after emitting.
+    if (m_autosaveRequired) {
+        emit circuitHasChanged();
+        m_autosaveRequired = false;
+    }
 }
 
 void Scene::drawBackground(QPainter *painter, const QRectF &rect)
 {
     // m11() is the X-axis scale factor of the view transform; below 0.3 the grid dots
-    // would be sub-pixel and invisible anyway, so skip drawing for performance
+    // would be sub-pixel and invisible anyway, so skip the tiled draw for performance
     if (view() and view()->transform().m11() < 0.3) {
         return;
     }
 
     QGraphicsScene::drawBackground(painter, rect);
 
-    const int left = static_cast<int>(std::floor(rect.left() / gridSize)) * gridSize;
-    const int top = static_cast<int>(std::floor(rect.top() / gridSize)) * gridSize;
-    const int right = static_cast<int>(std::ceil(rect.right() / gridSize)) * gridSize;
-    const int bottom = static_cast<int>(std::ceil(rect.bottom() / gridSize)) * gridSize;
+    const int left = static_cast<int>(rect.left()) - (static_cast<int>(rect.left()) % gridSize);
+    const int top = static_cast<int>(rect.top()) - (static_cast<int>(rect.top()) % gridSize);
 
-    painter->setPen(m_dots);
-
-    QVector<QPoint> points;
-    points.reserve(((right - left) / gridSize + 1) * ((bottom - top) / gridSize + 1));
-
-    for (int x = left; x <= right; x += gridSize) {
-        for (int y = top; y <= bottom; y += gridSize) {
-            points.append(QPoint(x, y));
-        }
-    }
-
-    painter->drawPoints(points.data(), static_cast<int>(points.size()));
+    painter->drawTiledPixmap(QRectF(left, top, rect.right() - left, rect.bottom() - top), m_dotTile);
 }
 
 void Scene::setDots(const QPen &dots)
 {
     m_dots = dots;
+    rebuildDotTile();
+}
+
+void Scene::rebuildDotTile()
+{
+    m_dotTile = QPixmap(gridSize, gridSize);
+    m_dotTile.fill(Qt::transparent);
+    QPainter tilePainter(&m_dotTile);
+    tilePainter.setPen(m_dots);
+    tilePainter.drawPoint(0, 0);
 }
 
 Simulation *Scene::simulation()
@@ -242,18 +187,13 @@ void Scene::setCircuitUpdateRequired()
 {
     // Re-applying visibility ensures newly-added ports/wires respect the current
     // show/hide state; without this, ports on fresh elements would always appear visible
-    m_visibilityManager.reapply();
+    showWires(m_showWires);
+    showGates(m_showGates);
 
     update();
 
-    // Re-initialize topological sort and simulation graph after any structural change.
-    // If initialize() bails (e.g. the scene dropped to just the border rect), it left
-    // the hot-path vectors empty but didn't touch m_initialized — bring the flag into
-    // sync so the next tick treats the scene as uninitialised rather than trusting a
-    // stale "already done" marker against empty vectors.
-    if (!m_simulation.initialize()) {
-        m_simulation.restart();
-    }
+    // Re-initialize topological sort and simulation graph after any structural change
+    m_simulation.initialize();
 
     m_autosaveRequired = true;
 }
@@ -322,19 +262,6 @@ QVector<GraphicElement *> Scene::sortByTopology(QVector<GraphicElement *> elemen
     return elements;
 }
 
-QHash<QString, QNEInputPort *> Scene::wirelessTxInputPorts(const QVector<GraphicElement *> &elements)
-{
-    QHash<QString, QNEInputPort *> txMap;
-    for (auto *elm : elements) {
-        if (elm->wirelessMode() == WirelessMode::Tx && !elm->label().isEmpty() && elm->inputPort(0)) {
-            if (!txMap.contains(elm->label())) {
-                txMap.insert(elm->label(), elm->inputPort(0));
-            }
-        }
-    }
-    return txMap;
-}
-
 const QVector<QNEConnection *> Scene::connections()
 {
     const auto items_ = items();
@@ -378,14 +305,7 @@ QGraphicsItem *Scene::itemAt(const QPointF pos)
         }
     }
 
-    // Elements take priority over connections since they render above wires
-    for (auto *item : std::as_const(items_)) {
-        if (item->type() == GraphicElement::Type) {
-            return item;
-        }
-    }
-
-    // Return any remaining custom item (connections, etc.)
+    // Return any custom item (UserType < type); ignores built-in Qt items
     for (auto *item : std::as_const(items_)) {
         if (item->type() > QGraphicsItem::UserType) {
             return item;
@@ -405,46 +325,66 @@ QList<QGraphicsItem *> Scene::itemsAt(const QPointF pos)
 
 void Scene::receiveCommand(QUndoCommand *cmd)
 {
-    sentryBreadcrumb("command", QStringLiteral("Command: %1").arg(cmd->text()));
     m_undoStack.push(cmd);
     update();
 }
 
 void Scene::resizeScene()
 {
-    const auto bounds = itemsBoundingRect();
+    setSceneRect(itemsBoundingRect());
 
-    if (m_draggingElement) {
-        // While dragging, only expand the scene rect (union with current rect).
-        // Never shrink during drag — shrinking shifts the viewport origin and
-        // causes jarring visual jumps as the scene rect chases the items.
-        setSceneRect(sceneRect().united(bounds));
-    } else {
-        // Tighten to item bounds, but ensure the scene rect stays larger than the
-        // viewport. When the scene rect is smaller than (or barely larger than) the
-        // viewport, Qt re-centers it, causing a visual jump. Adding margins ensures
-        // enough scrollbar range to preserve the exact scroll position.
-        auto tightRect = bounds;
-        const auto viewList = views();
-        if (!viewList.isEmpty()) {
-            auto *view = viewList.first();
-            constexpr qreal margin = 100.0;
-            const auto visibleScene = view->mapToScene(view->viewport()->rect()).boundingRect()
-                                         .adjusted(-margin, -margin, margin, margin);
-            tightRect = tightRect.united(visibleScene);
+    // if (auto *item = itemAt(m_mousePos); item && (m_timer.elapsed() > 100) && m_draggingElement) {
+    //     // FIXME: sometimes this goes into a infinite loop and crashes
+    //     item->ensureVisible();
+    //     m_timer.restart();
+    // }
+}
 
-            // Preserve exact scrollbar positions across the scene rect change.
-            // centerOn() converts scene floats to integer pixels, causing 1px
-            // drift — saving/restoring scrollbar values avoids the rounding.
-            const int hVal = view->horizontalScrollBar()->value();
-            const int vVal = view->verticalScrollBar()->value();
-            setSceneRect(tightRect);
-            view->horizontalScrollBar()->setValue(hVal);
-            view->verticalScrollBar()->setValue(vVal);
-        } else {
-            setSceneRect(tightRect);
-        }
+QNEConnection *Scene::editedConnection() const
+{
+    return dynamic_cast<QNEConnection *>(itemById(m_editedConnectionId));
+}
+
+void Scene::deleteEditedConnection()
+{
+    if (auto *connection = editedConnection()) {
+        removeItem(connection);
+        delete connection;
     }
+
+    setEditedConnection(nullptr);
+}
+
+void Scene::setEditedConnection(QNEConnection *connection)
+{
+    if (connection) {
+        connection->setFocus();
+        m_editedConnectionId = connection->id();
+    } else {
+        m_editedConnectionId = 0;
+    }
+}
+
+void Scene::startNewConnection(QNEInputPort *endPort)
+{
+    auto *connection = new QNEConnection();
+    connection->setEndPort(endPort);
+    connection->setStartPos(m_mousePos);
+
+    addItem(connection);
+    setEditedConnection(connection);
+    connection->updatePath();
+}
+
+void Scene::startNewConnection(QNEOutputPort *startPort)
+{
+    auto *connection = new QNEConnection();
+    connection->setStartPort(startPort);
+    connection->setEndPos(m_mousePos);
+
+    addItem(connection);
+    setEditedConnection(connection);
+    connection->updatePath();
 }
 
 QUndoStack *Scene::undoStack()
@@ -452,22 +392,257 @@ QUndoStack *Scene::undoStack()
     return &m_undoStack;
 }
 
-bool Scene::isConnectionAllowed(QNEOutputPort *startPort, QNEInputPort *endPort)
+void Scene::makeConnection(QNEConnection *connection)
 {
-    return ConnectionManager::isConnectionAllowed(startPort, endPort);
+    auto *port = qgraphicsitem_cast<QNEPort *>(itemAt(m_mousePos));
+
+    if (!port || !connection) {
+        return;
+    }
+
+    /* The mouse is released over a QNEPort. */
+    QNEOutputPort *startPort = nullptr;
+    QNEInputPort *endPort = nullptr;
+
+    // A wire being dragged from an output needs the drop target to be an input, and vice versa.
+    // The dynamic_cast returns nullptr if the port type doesn't match, which is caught below.
+    if (connection->startPort() != nullptr) {
+        startPort = connection->startPort();
+        endPort = dynamic_cast<QNEInputPort *>(port);
+    } else if (connection->endPort() != nullptr) {
+        startPort = dynamic_cast<QNEOutputPort *>(port);
+        endPort = connection->endPort();
+    }
+
+    if (!startPort || !endPort) {
+        return;
+    }
+
+    /* Verifying if the connection is valid. */
+    // Self-loops (same element on both ends) and duplicate connections are forbidden
+    if ((startPort->graphicElement() != endPort->graphicElement()) && !startPort->isConnected(endPort)) {
+        /* Making connection. */
+        connection->setStartPort(startPort);
+        connection->setEndPort(endPort);
+        receiveCommand(new AddItemsCommand({connection}, this));
+        setEditedConnection(nullptr);
+    } else {
+        deleteEditedConnection();
+    }
 }
 
-void Scene::prevMainPropShortcut() { m_propertyShortcutHandler.prevMainProperty(); }
+void Scene::detachConnection(QNEInputPort *endPort)
+{
+    const auto connections = endPort->connections();
+    if (connections.isEmpty()) {
+        return;
+    }
+    // Take the last connection — an input port normally has at most one, but
+    // .last() is the safe choice if the model ever allows multiple
+    auto *connection = connections.last();
 
-void Scene::nextMainPropShortcut() { m_propertyShortcutHandler.nextMainProperty(); }
+    if (auto *startPort = connection->startPort()) {
+        // Delete the existing wire, then immediately start a new in-progress wire
+        // anchored to the same output port, so the user can re-route it
+        receiveCommand(new DeleteItemsCommand({connection}, this));
+        startNewConnection(startPort);
+    }
+}
 
-void Scene::prevSecndPropShortcut() { m_propertyShortcutHandler.prevSecondaryProperty(); }
+void Scene::prevMainPropShortcut()
+{
+    // Keyboard shortcut to decrement the "primary" configurable property of each
+    // selected element: input count for logic gates, output count for rotary inputs,
+    // clock frequency (step 0.5 Hz), buzzer audio, or display color
+    for (auto *element : selectedElements()) {
+        switch (element->elementType()) {
+        // Logic Elements
+        case ElementType::And:
+        case ElementType::Or:
+        case ElementType::Nand:
+        case ElementType::Nor:
+        case ElementType::Xor:
+        case ElementType::Xnor:
+        // Output and truthtable
+        case ElementType::Led:
+        case ElementType::TruthTable:
+            if (element->inputSize() > element->minInputSize())
+                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element},
+                                                          element->inputSize() - 1, this));
+            break;
 
-void Scene::nextSecndPropShortcut() { m_propertyShortcutHandler.nextSecondaryProperty(); }
+        // Input ports
+        case ElementType::InputRotary:
+            if (element->outputSize() > element->minOutputSize())
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
+                                                           element->outputSize() - 1, this));
+            break;
 
-void Scene::nextElm() { m_propertyShortcutHandler.nextElement(); }
+        case ElementType::Clock:
+            if (element->hasFrequency())
+                element->setFrequency(element->frequency() - 0.5f);
+            break;
 
-void Scene::prevElm() { m_propertyShortcutHandler.prevElement(); }
+        case ElementType::Buzzer:
+            if (element->hasAudio())
+                element->setAudio(element->previousAudio());
+            break;
+
+        case ElementType::Display16:
+        case ElementType::Display14:
+        case ElementType::Display7:
+            if (element->hasColors())
+                element->setColor(element->previousColor());
+            break;
+
+        default: // Not implemented
+            break;
+        }
+
+        // Toggling selection off and on forces the property inspector to refresh
+        element->setSelected(false);
+        element->setSelected(true);
+    }
+}
+
+void Scene::nextMainPropShortcut()
+{
+    // Mirror of prevMainPropShortcut() — increments the same per-type primary property
+    for (auto *element : selectedElements()) {
+        switch (element->elementType()) {
+        // Logic Elements
+        case ElementType::And:
+        case ElementType::Or:
+        case ElementType::Nand:
+        case ElementType::Nor:
+        case ElementType::Xor:
+        case ElementType::Xnor:
+        // Output and truthtable
+        case ElementType::Led:
+        case ElementType::TruthTable:
+            if (element->inputSize() < element->maxInputSize())
+                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element},
+                                                          element->inputSize() + 1, this));
+            break;
+
+        // Input ports
+        case ElementType::InputRotary:
+            if (element->outputSize() < element->maxOutputSize())
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
+                                                           element->outputSize() + 1, this));
+            break;
+
+        case ElementType::Clock:
+            if (element->hasFrequency())
+                element->setFrequency(element->frequency() + 0.5f);
+            break;
+
+        case ElementType::Buzzer:
+            if (element->hasAudio())
+                element->setAudio(element->nextAudio());
+            break;
+
+        case ElementType::Display14:
+        case ElementType::Display7:
+            if (element->hasColors())
+                element->setColor(element->nextColor());
+            break;
+
+        default: // Not implemented
+            break;
+        }
+
+        element->setSelected(false);
+        element->setSelected(true);
+    }
+}
+
+void Scene::prevSecndPropShortcut()
+{
+    for (auto *element : selectedElements()) {
+        switch (element->elementType()) {
+        case ElementType::TruthTable:
+            if (element->outputSize() > element->minOutputSize())
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
+                                                           element->outputSize() - 1, this));
+            break;
+
+        case ElementType::Led:
+            if (element->hasColors())
+                element->setColor(element->previousColor());
+            break;
+
+        default:
+            break;
+        }
+
+        element->setSelected(false);
+        element->setSelected(true);
+    }
+}
+
+void Scene::nextSecndPropShortcut()
+{
+    for (auto *element : selectedElements()) {
+        switch (element->elementType()) {
+        case ElementType::TruthTable:
+            if (element->outputSize() < element->maxOutputSize())
+                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
+                                                           element->outputSize() + 1, this));
+            break;
+
+        case ElementType::Led:
+            if (element->hasColors())
+                element->setColor(element->nextColor());
+            break;
+
+        default:
+            break;
+        }
+
+        element->setSelected(false);
+        element->setSelected(true);
+    }
+}
+
+void Scene::nextElm()
+{
+    for (auto *element : selectedElements()) {
+        const QPointF elmPosition = element->scenePos();
+        auto nextType = Enums::nextElmType(element->elementType());
+
+        // ElementType::Unknown signals there is no "next" in the cycle for this type
+        if (nextType == ElementType::Unknown) { continue; }
+
+        receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
+                       Enums::nextElmType(element->elementType()), this));
+
+        // MorphCommand replaces the element in-place; re-select via position because
+        // the old pointer is now invalid after the command's redo()
+        auto *item = itemAt(elmPosition);
+        if (item) {
+            item->setSelected(true);
+        }
+    }
+}
+
+void Scene::prevElm()
+{
+    for (auto *element : selectedElements()) {
+        const QPointF elmPosition = element->scenePos();
+        auto prevType = Enums::prevElmType(element->elementType());
+
+        if (prevType == ElementType::Unknown) { continue; }
+
+        receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
+                                        Enums::prevElmType(element->elementType()), this));
+
+        auto *item = itemAt(elmPosition);
+        if (item) {
+            item->setSelected(true);
+        }
+    }
+}
 
 void Scene::updateTheme()
 {
@@ -506,12 +681,220 @@ QList<QGraphicsItem *> Scene::items(const QRectF &rect, Qt::ItemSelectionMode mo
 
 void Scene::showGates(const bool checked)
 {
-    m_visibilityManager.showGates(checked);
+    m_showGates = checked;
+    const auto items_ = items();
+
+    for (auto *item : items_) {
+        if (item->type() == GraphicElement::Type) {
+            auto *element = qgraphicsitem_cast<GraphicElement *>(item);
+            if (!element) {
+                continue;
+            }
+            const auto group = element->elementGroup();
+
+            // Only hide/show internal logic gates; Input, Output and Other elements
+            // (e.g., labels, ICs) are always kept visible regardless of this toggle
+            if ((group != ElementGroup::Input) && (group != ElementGroup::Output) && (group != ElementGroup::Other)) {
+                item->setVisible(checked);
+            }
+        }
+    }
 }
 
 void Scene::showWires(const bool checked)
 {
-    m_visibilityManager.showWires(checked);
+    m_showWires = checked;
+    const auto items_ = items();
+
+    for (auto *item : items_) {
+        if (item->type() == QNEConnection::Type) {
+            item->setVisible(checked);
+            continue;
+        }
+
+        if (item->type() == GraphicElement::Type) {
+            auto *element = qgraphicsitem_cast<GraphicElement *>(item);
+
+            // Node elements are purely wire-routing helpers with no logical function;
+            // hiding wires should hide nodes too since they're meaningless without wires
+            if (element->elementType() == ElementType::Node) {
+                element->setVisible(checked);
+            } else {
+                // For other elements, hide only their port handles (the connectable dots),
+                // not the element body itself, so the gate symbols remain visible
+                for (auto *inputPort : element->inputs()) {
+                    inputPort->setVisible(checked);
+                }
+
+                for (auto *outputPort : element->outputs()) {
+                    outputPort->setVisible(checked);
+                }
+            }
+        }
+    }
+}
+
+void Scene::cloneDrag(const QPointF mousePos)
+{
+    qCDebug(zero) << "Ctrl + Drag action triggered.";
+    const auto selectedElements_ = selectedElements();
+
+    if (selectedElements_.isEmpty()) {
+        return;
+    }
+
+    // --- Build drag pixmap ---
+    // Temporarily hide non-selected items so the rendered image shows only
+    // the selection, giving the drag ghost the correct visual appearance
+    const auto items_ = items();
+
+    for (auto *item : items_) {
+        if (((item->type() == GraphicElement::Type) || (item->type() == QNEConnection::Type)) && !item->isSelected()) {
+            item->hide();
+        }
+    }
+
+    QRectF rect;
+
+    for (auto *element : selectedElements_) {
+        rect = rect.united(element->sceneBoundingRect());
+    }
+
+    // 8px padding avoids clipping port handles at the bounding-rect edges
+    rect = rect.adjusted(-8, -8, 8, 8);
+
+    auto mappedSize = m_view->transform().mapRect(rect).size().toSize();
+    QImage image(mappedSize, QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::transparent);
+
+    QPainter painter(&image);
+    // Opacity 0 makes the ghost transparent; the drag cursor shape still appears
+    painter.setOpacity(0.0);
+    QRectF target = image.rect();
+    QRectF source = rect;
+    render(&painter, target, source);
+
+    // Restore hidden items before the drag begins so the scene looks normal
+    for (auto *item : items_) {
+        if (((item->type() == GraphicElement::Type) || (item->type() == QNEConnection::Type)) && !item->isSelected()) {
+            item->show();
+        }
+    }
+
+    // --- Serialize selection for drop target ---
+    QByteArray itemData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    // Embed the mouse-press position so the drop handler can compute the correct offset
+    stream << mousePos;
+    copy(selectedItems(), stream);
+
+    auto *mimeData = new QMimeData();
+    mimeData->setData("application/x-wiredpanda-cloneDrag", itemData);
+
+    auto *drag = new QDrag(this);
+    drag->setMimeData(mimeData);
+    drag->setPixmap(QPixmap::fromImage(image));
+    // Hot-spot aligns the drag image to the original element positions under the cursor
+    QPointF offset = m_view->transform().map(mousePos - rect.topLeft());
+    drag->setHotSpot(offset.toPoint());
+    drag->exec(Qt::CopyAction, Qt::CopyAction);
+}
+
+void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream)
+{
+    // Compute the centroid of all selected elements (not connections) so that
+    // paste() can place the clipboard contents relative to the cursor position
+    QPointF center(0.0, 0.0);
+    int itemsQuantity = 0;
+
+    for (auto *item : items) {
+        if (item->type() == GraphicElement::Type) {
+            center += item->pos();
+            ++itemsQuantity;
+        }
+    }
+
+    stream << center / static_cast<qreal>(itemsQuantity);
+    Serialization::serialize(items, stream);
+}
+
+void Scene::handleHoverPort()
+{
+    auto *port = qgraphicsitem_cast<QNEPort *>(itemAt(m_mousePos));
+    auto *hoverPort_ = hoverPort();
+
+    if (hoverPort_ && (hoverPort_ != port)) {
+        releaseHoverPort();
+    }
+
+    if (port) {
+        auto *editedConn = editedConnection();
+        releaseHoverPort();
+        setHoverPort(port);
+
+        if (editedConn && editedConn->startPort() && (editedConn->startPort()->isOutput() == port->isOutput())) {
+            m_view->viewport()->setCursor(Qt::ForbiddenCursor);
+        }
+    }
+}
+
+void Scene::releaseHoverPort()
+{
+    if (auto *hoverPort_ = hoverPort()) {
+        hoverPort_->hoverLeave();
+        setHoverPort(nullptr);
+        m_view->viewport()->unsetCursor();
+    }
+}
+
+void Scene::setHoverPort(QNEPort *port)
+{
+    if (!port) {
+        m_hoverPortElmId = 0;
+        m_hoverPortNumber = 0;
+        return;
+    }
+
+    port->hoverEnter();
+    auto *hoverElm = port->graphicElement();
+
+    // Store element ID + port index rather than raw pointers so the hover state
+    // remains valid across undo/redo operations that may recreate the element
+    if (hoverElm && this->contains(hoverElm->id())) {
+        m_hoverPortElmId = hoverElm->id();
+
+        // Encode inputs first (indices 0..inputSize-1), then outputs (inputSize..total-1)
+        // so a single integer uniquely identifies any port on an element
+        for (int i = 0; i < (hoverElm->inputSize() + hoverElm->outputSize()); ++i) {
+            if (i < hoverElm->inputSize()) {
+                if (port == hoverElm->inputPort(i)) {
+                    m_hoverPortNumber = i;
+                }
+            } else if (port == hoverElm->outputPort(i - hoverElm->inputSize())) {
+                m_hoverPortNumber = i;
+            }
+        }
+    }
+}
+
+QNEPort *Scene::hoverPort()
+{
+    QNEPort *hoverPort = nullptr;
+
+    if (auto *hoverElm = dynamic_cast<GraphicElement *>(itemById(m_hoverPortElmId))) {
+        if (m_hoverPortNumber < hoverElm->inputSize()) {
+            hoverPort = hoverElm->inputPort(m_hoverPortNumber);
+        } else if (((m_hoverPortNumber - hoverElm->inputSize()) < hoverElm->outputSize())) {
+            hoverPort = hoverElm->outputPort(m_hoverPortNumber - hoverElm->inputSize());
+        }
+    }
+
+    if (!hoverPort) {
+        setHoverPort(nullptr);
+    }
+
+    return hoverPort;
 }
 
 void Scene::startSelectionRect()
@@ -543,24 +926,6 @@ QAction *Scene::redoAction() const
     return m_redoAction;
 }
 
-void Scene::retranslateUi()
-{
-    updateUndoText(m_undoStack.undoText());
-    updateRedoText(m_undoStack.redoText());
-}
-
-void Scene::updateUndoText(const QString &text)
-{
-    const QString prefix = tr("&Undo");
-    m_undoAction->setText(text.isEmpty() ? prefix : prefix + QLatin1Char(' ') + text);
-}
-
-void Scene::updateRedoText(const QString &text)
-{
-    const QString prefix = tr("&Redo");
-    m_redoAction->setText(text.isEmpty() ? prefix : prefix + QLatin1Char(' ') + text);
-}
-
 void Scene::contextMenu(const QPoint screenPos)
 {
     if (auto *item = itemAt(m_mousePos)) {
@@ -580,7 +945,7 @@ void Scene::contextMenu(const QPoint screenPos)
         auto *pasteAction = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/paste.svg")), tr("Paste"));
         const auto *mimeData = QApplication::clipboard()->mimeData();
 
-        if (mimeData->hasFormat(MimeType::ClipboardLegacy)) {
+        if (mimeData->hasFormat("wpanda/copydata")) {
             connect(pasteAction, &QAction::triggered, this, &Scene::pasteAction);
         } else {
             pasteAction->setEnabled(false);
@@ -592,25 +957,94 @@ void Scene::contextMenu(const QPoint screenPos)
 
 void Scene::copyAction()
 {
-    sentryBreadcrumb("clipboard", QStringLiteral("Copy"));
-    m_clipboardManager.copy();
+    if (selectedElements().empty()) {
+        QApplication::clipboard()->clear();
+        return;
+    }
+
+    QByteArray itemData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    copy(selectedItems(), stream);
+
+    auto *mimeData = new QMimeData();
+    mimeData->setData("application/x-wiredpanda-clipboard", itemData);
+
+    QApplication::clipboard()->setMimeData(mimeData);
 }
 
 void Scene::cutAction()
 {
-    sentryBreadcrumb("clipboard", QStringLiteral("Cut"));
-    m_clipboardManager.cut();
+    if (selectedElements().isEmpty()) {
+        QApplication::clipboard()->clear();
+        return;
+    }
+
+    QByteArray itemData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    cut(selectedItems(), stream);
+
+    auto *mimeData = new QMimeData();
+    mimeData->setData("application/x-wiredpanda-clipboard", itemData);
+
+    QApplication::clipboard()->setMimeData(mimeData);
 }
 
 void Scene::pasteAction()
 {
-    sentryBreadcrumb("clipboard", QStringLiteral("Paste"));
-    m_clipboardManager.paste();
+    const auto *mimeData = QApplication::clipboard()->mimeData();
+
+    QByteArray itemData;
+
+    if (mimeData->hasFormat("wpanda/copydata")) {
+        itemData = mimeData->data("wpanda/copydata");
+    }
+
+    if (mimeData->hasFormat("application/x-wiredpanda-clipboard")) {
+        itemData = mimeData->data("application/x-wiredpanda-clipboard");
+    }
+
+    if (!itemData.isEmpty()) {
+        QDataStream stream(&itemData, QIODevice::ReadOnly);
+        QVersionNumber version = Serialization::readPandaHeader(stream);
+        paste(stream, version);
+    }
+}
+
+void Scene::paste(QDataStream &stream, const QVersionNumber &version)
+{
+    clearSelection();
+
+    QPointF center; stream >> center;
+
+    QMap<quint64, QNEPort *> portMap;
+    SerializationContext context{portMap, version, Serialization::contextDir};
+    const auto itemList = Serialization::deserialize(stream, context);
+    // Shift pasted elements so their centroid lands at the cursor position,
+    // then nudge 32 px diagonally so repeated pastes are visually offset and
+    // don't completely overlap the original selection.
+    const QPointF offset = m_mousePos - center - QPointF(32.0, 32.0);
+
+    receiveCommand(new AddItemsCommand(itemList, this));
+
+    for (auto *item : itemList) {
+        if (item->type() == GraphicElement::Type) {
+            item->setPos((item->pos() + offset));
+        }
+    }
+
+    resizeScene();
+}
+
+void Scene::cut(const QList<QGraphicsItem *> &items, QDataStream &stream)
+{
+    copy(items, stream);
+    deleteAction();
 }
 
 void Scene::deleteAction()
 {
-    sentryBreadcrumb("ui", QStringLiteral("Delete"));
     const auto selectedItems_ = selectedItems();
     // Clear selection before the command so that the scene's selectedItems()
     // list is empty during the command's redo() — avoids double-processing
@@ -634,13 +1068,11 @@ void Scene::selectAll()
 
 void Scene::rotateRight()
 {
-    sentryBreadcrumb("ui", QStringLiteral("Rotate right"));
     rotate(90);
 }
 
 void Scene::rotateLeft()
 {
-    sentryBreadcrumb("ui", QStringLiteral("Rotate left"));
     rotate(-90);
 }
 
@@ -667,17 +1099,15 @@ void Scene::mute(const bool mute)
 
 void Scene::flipHorizontally()
 {
-    sentryBreadcrumb("ui", QStringLiteral("Flip horizontal"));
     const auto elements_ = selectedElements();
 
-    if (!elements_.isEmpty()) {
+    if (elements_.isEmpty()) {
         receiveCommand(new FlipCommand(elements_, 0, this));
     }
 }
 
 void Scene::flipVertically()
 {
-    sentryBreadcrumb("ui", QStringLiteral("Flip vertical"));
     const auto elements_ = selectedElements();
 
     if (!elements_.isEmpty()) {
@@ -685,18 +1115,14 @@ void Scene::flipVertically()
     }
 }
 
-bool Scene::isSupportedDropFormat(const QMimeData *mimeData)
-{
-    const auto &formats = mimeData->formats();
-    return formats.contains(MimeType::DragDropLegacy)
-           || formats.contains(MimeType::CloneDragLegacy)
-           || formats.contains(MimeType::DragDrop)
-           || formats.contains(MimeType::CloneDrag);
-}
-
 void Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
-    if (isSupportedDropFormat(event->mimeData())) {
+    const auto formats = event->mimeData()->formats();
+
+    if (formats.contains("wpanda/x-dnditemdata")
+        || formats.contains("wpanda/ctrlDragData")
+        || formats.contains("application/x-wiredpanda-dragdrop")
+        || formats.contains("application/x-wiredpanda-cloneDrag")) {
         event->accept();
         return;
     }
@@ -706,7 +1132,12 @@ void Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 
 void Scene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
-    if (isSupportedDropFormat(event->mimeData())) {
+    const auto formats = event->mimeData()->formats();
+
+    if (formats.contains("wpanda/x-dnditemdata")
+        || formats.contains("wpanda/ctrlDragData")
+        || formats.contains("application/x-wiredpanda-dragdrop")
+        || formats.contains("application/x-wiredpanda-cloneDrag")) {
         event->accept();
         return;
     }
@@ -714,109 +1145,87 @@ void Scene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
     QGraphicsScene::dragMoveEvent(event);
 }
 
-void Scene::handleNewElementDrop(QGraphicsSceneDragDropEvent *event)
-{
-    // Both MIME types carry the same payload; the newer format has a namespaced key
-    QByteArray itemData;
-
-    if (event->mimeData()->hasFormat(MimeType::DragDropLegacy)) {
-        itemData = event->mimeData()->data(MimeType::DragDropLegacy);
-    }
-
-    if (event->mimeData()->hasFormat(MimeType::DragDrop)) {
-        itemData = event->mimeData()->data(MimeType::DragDrop);
-    }
-
-    QDataStream stream(&itemData, QIODevice::ReadOnly);
-    Serialization::readPandaHeader(stream);
-
-    QPoint offset;      stream >> offset;
-    ElementType type;   stream >> type;
-    QString icFileName; stream >> icFileName;
-
-    bool isEmbedded = false;
-    QString blobName;
-    if (!stream.atEnd()) { stream >> isEmbedded; }
-    if (!stream.atEnd()) { stream >> blobName; }
-
-    // Subtract the drag offset so the element lands under the original grab point
-    QPointF pos = event->scenePos() - offset;
-    qCDebug(zero) << type << " at position: " << pos.x() << ", " << pos.y() << ", label: " << icFileName;
-
-    auto *element = ElementFactory::buildElement(type);
-    qCDebug(zero) << "Valid element.";
-
-    if (isEmbedded && type == ElementType::IC) {
-        if (!m_icRegistry.initEmbeddedIC(static_cast<IC *>(element), blobName)) {
-            delete element;
-            return;
-        }
-    } else {
-        element->loadFromDrop(icFileName, contextDir());
-    }
-
-    qCDebug(zero) << "Adding the element to the scene.";
-    receiveCommand(new AddItemsCommand({element}, this));
-
-    qCDebug(zero) << "Cleaning the selection.";
-    clearSelection();
-
-    qCDebug(zero) << "Setting created element as selected.";
-    element->setSelected(true);
-
-    qCDebug(zero) << "Adjusting the position of the element.";
-    element->setPos(pos);
-}
-
-void Scene::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
-{
-    QByteArray itemData;
-
-    if (event->mimeData()->hasFormat(MimeType::CloneDragLegacy)) {
-        itemData = event->mimeData()->data(MimeType::CloneDragLegacy);
-    }
-
-    if (event->mimeData()->hasFormat(MimeType::CloneDrag)) {
-        itemData = event->mimeData()->data(MimeType::CloneDrag);
-    }
-
-    QDataStream stream(&itemData, QIODevice::ReadOnly);
-    QVersionNumber version = Serialization::readPandaHeader(stream);
-
-    // offset = mouse position at drag-start; recompute drop offset from current position
-    QPointF offset; stream >> offset;
-    QPointF ctr;    stream >> ctr;
-    offset = event->scenePos() - offset;
-
-    QMap<quint64, QNEPort *> portMap;
-    auto context = deserializationContext(portMap, version);
-    const auto itemList = Serialization::deserialize(stream, context);
-
-    receiveCommand(new AddItemsCommand(itemList, this));
-    clearSelection();
-
-    for (auto *item : itemList) {
-        if (item->type() == GraphicElement::Type) {
-            item->setPos((item->pos() + offset));
-            item->setSelected(true);
-        }
-    }
-
-    resizeScene();
-}
-
 void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
-    sentryBreadcrumb("ui", QStringLiteral("Drop event"));
+    // --- New element drop from toolbox ---
+    // Both MIME types carry the same payload; the newer format has a namespaced key
+    if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")
+        || event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
+        QByteArray itemData;
 
-    if (event->mimeData()->hasFormat(MimeType::DragDropLegacy)
-        || event->mimeData()->hasFormat(MimeType::DragDrop)) {
-        handleNewElementDrop(event);
+        if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")) {
+            itemData = event->mimeData()->data("wpanda/x-dnditemdata");
+        }
+
+        if (event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
+            itemData = event->mimeData()->data("application/x-wiredpanda-dragdrop");
+        }
+
+        QDataStream stream(&itemData, QIODevice::ReadOnly);
+        Serialization::readPandaHeader(stream);
+
+        QPoint offset;      stream >> offset;
+        ElementType type;   stream >> type;
+        QString icFileName; stream >> icFileName;
+
+        // Subtract the drag offset so the element lands under the original grab point
+        QPointF pos = event->scenePos() - offset;
+        qCDebug(zero) << type << " at position: " << pos.x() << ", " << pos.y() << ", label: " << icFileName;
+
+        auto *element = ElementFactory::buildElement(type);
+        qCDebug(zero) << "Valid element.";
+
+        element->loadFromDrop(icFileName, Serialization::contextDir);
+
+        qCDebug(zero) << "Adding the element to the scene.";
+        receiveCommand(new AddItemsCommand({element}, this));
+
+        qCDebug(zero) << "Cleaning the selection.";
+        clearSelection();
+
+        qCDebug(zero) << "Setting created element as selected.";
+        element->setSelected(true);
+
+        qCDebug(zero) << "Adjusting the position of the element.";
+        element->setPos(pos);
     }
 
-    if (event->mimeData()->hasFormat(MimeType::CloneDragLegacy)
-        || event->mimeData()->hasFormat(MimeType::CloneDrag)) {
-        handleCloneDrag(event);
+    // --- Clone drag (Ctrl+drag of existing selection) ---
+    if (event->mimeData()->hasFormat("wpanda/ctrlDragData")
+        || event->mimeData()->hasFormat("application/x-wiredpanda-cloneDrag")) {
+        QByteArray itemData;
+
+        if (event->mimeData()->hasFormat("wpanda/ctrlDragData")) {
+            itemData = event->mimeData()->data("wpanda/ctrlDragData");
+        }
+
+        if (event->mimeData()->hasFormat("application/x-wiredpanda-cloneDrag")) {
+            itemData = event->mimeData()->data("application/x-wiredpanda-cloneDrag");
+        }
+
+        QDataStream stream(&itemData, QIODevice::ReadOnly);
+        QVersionNumber version = Serialization::readPandaHeader(stream);
+
+        // offset = mouse position at drag-start; recompute drop offset from current position
+        QPointF offset; stream >> offset;
+        QPointF ctr;    stream >> ctr;
+        offset = event->scenePos() - offset;
+
+        QMap<quint64, QNEPort *> portMap;
+        SerializationContext context{portMap, version, Serialization::contextDir};
+        const auto itemList = Serialization::deserialize(stream, context);
+
+        receiveCommand(new AddItemsCommand(itemList, this));
+        clearSelection();
+
+        for (auto *item : itemList) {
+            if (item->type() == GraphicElement::Type) {
+                item->setPos((item->pos() + offset));
+                item->setSelected(true);
+            }
+        }
+
+        resizeScene();
     }
 
     QGraphicsScene::dropEvent(event);
@@ -871,7 +1280,7 @@ bool Scene::eventFilter(QObject *watched, QEvent *event)
         if ((mouseEvent->button() == Qt::LeftButton) && mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
             if (auto *item = itemAt(mouseEvent->scenePos()); item && ((item->type() == GraphicElement::Type) || (item->type() == QNEConnection::Type))) {
                 item->setSelected(true);
-                m_clipboardManager.cloneDrag(mouseEvent->scenePos());
+                cloneDrag(mouseEvent->scenePos());
                 return true;
             }
         }
@@ -883,7 +1292,7 @@ bool Scene::eventFilter(QObject *watched, QEvent *event)
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     m_mousePos = event->scenePos();
-    m_connectionManager.updateHover(m_mousePos);
+    handleHoverPort();
 
     auto *item = itemAt(m_mousePos);
 
@@ -904,9 +1313,6 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
 
             m_draggingElement = ((item->type() == GraphicElement::Type) && !selectedElements_.isEmpty());
-            if (m_draggingElement) {
-                sentryBreadcrumb("ui", QStringLiteral("Drag started: %1 element(s)").arg(selectedElements_.size()));
-            }
 
             // Snapshot positions now; MoveCommand compares these against release-time positions
             m_movedElements.clear();
@@ -922,29 +1328,31 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         if (item->type() == QNEPort::Type) {
             /* When the mouse is pressed over an connected input port, the line
              * is disconnected and can be connected to another port. */
-            if (m_connectionManager.hasEditedConnection()) {
+            if (auto *connection = editedConnection()) {
                 // An in-progress wire exists; try to complete it at this port
-                m_connectionManager.tryComplete(m_mousePos);
+                makeConnection(connection);
                 return;
             }
 
             auto *pressedPort = qgraphicsitem_cast<QNEPort *>(item);
 
             if (auto *startPort = dynamic_cast<QNEOutputPort *>(pressedPort)) {
-                m_connectionManager.startFromOutput(startPort);
+                startNewConnection(startPort);
                 return;
             }
 
             if (auto *endPort = dynamic_cast<QNEInputPort *>(pressedPort)) {
                 // Empty input port: begin a new wire; occupied port: detach the existing wire
-                endPort->connections().isEmpty() ? m_connectionManager.startFromInput(endPort) : m_connectionManager.detach(endPort);
+                endPort->connections().isEmpty() ? startNewConnection(endPort) : detachConnection(endPort);
                 return;
             }
         }
     }
 
     // Clicking on empty space while a wire is being drawn cancels it
-        m_connectionManager.cancel();
+    if (editedConnection()) {
+        deleteEditedConnection();
+    }
 
     if (!item && (event->button() == Qt::LeftButton)) {
         startSelectionRect();
@@ -952,7 +1360,6 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     if (event->button() == Qt::RightButton) {
         contextMenu(event->screenPos());
-        return;
     }
 
     QGraphicsScene::mousePressEvent(event);
@@ -960,38 +1367,32 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    // Guard against re-entrant calls. When ensureVisible() scrolls the viewport,
-    // Qt synchronously calls scrollContentsBy() → replayLastMouseEvent() →
-    // mouseMoveEvent() before ensureVisible() returns. At a viewport corner,
-    // scrolling to satisfy the H-margin violates the V-margin, so the replay
-    // triggers another ensureVisible() that does the opposite, oscillating
-    // until a stack overflow. Dropping the re-entrant call breaks the loop.
-    if (m_handlingMouseMove) {
-        return;
-    }
-    m_handlingMouseMove = true;
-    const auto resetFlag = qScopeGuard([this] { m_handlingMouseMove = false; });
-
     m_mousePos = event->scenePos();
-    m_connectionManager.updateHover(m_mousePos);
+    handleHoverPort();
 
-    // Expand scene rect while dragging so elements can be moved beyond the current boundary,
-    // and auto-scroll the viewport to follow the cursor.
+    // Expand scene rect while dragging so elements can be moved beyond the current boundary
     if (m_draggingElement) {
         resizeScene();
-
-        if (m_timer.elapsed() > 50) {
-            const auto viewList = views();
-            if (!viewList.isEmpty()) {
-                viewList.first()->ensureVisible(m_mousePos.x(), m_mousePos.y(), 1, 1, 50, 50);
-            }
-            m_timer.restart();
-        }
     }
 
     // --- In-progress wire routing ---
-    if (m_connectionManager.hasEditedConnection()) {
-        m_connectionManager.updateEditedEnd(m_mousePos);
+    if (auto *connection = editedConnection()) {
+        if (connection->startPort()) {
+            // Wire anchored at start: free end follows the mouse
+            connection->setEndPos(m_mousePos);
+            connection->updatePath();
+            return;
+        }
+
+        if (connection->endPort()) {
+            // Wire anchored at end (dragged from input): free start follows the mouse
+            connection->setStartPos(m_mousePos);
+            connection->updatePath();
+            return;
+        }
+
+        // Connection lost both ports (e.g., element deleted mid-drag) — clean up
+        deleteEditedConnection();
         return;
     }
 
@@ -1010,29 +1411,20 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (m_draggingElement && (event->button() == Qt::LeftButton)) {
-        bool moved = false;
-
         if (!m_movedElements.empty()) {
             // Only push a MoveCommand if at least one element actually changed position;
             // avoids polluting the undo stack with no-op moves (e.g., click without drag)
-            moved = std::any_of(m_movedElements.cbegin(), m_movedElements.cend(), [this](auto *elm) {
+            const bool valid = std::any_of(m_movedElements.cbegin(), m_movedElements.cend(), [this](auto *elm) {
                 return (elm->pos() != m_oldPositions.at(m_movedElements.indexOf(elm)));
             });
 
-            if (moved) {
+            if (valid) {
                 receiveCommand(new MoveCommand(m_movedElements, m_oldPositions, this));
             }
         }
 
-        sentryBreadcrumb("ui", moved ? QStringLiteral("Drag ended: moved") : QStringLiteral("Drag ended: no move"));
         m_draggingElement = false;
         m_movedElements.clear();
-
-        // Only tighten scene rect after an actual drag; a click-without-move
-        // should not trigger a rect change that could shift the viewport.
-        if (moved) {
-            resizeScene();
-        }
     }
 
     m_selectionRect.hide();
@@ -1040,8 +1432,8 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
     // Complete an in-progress wire on mouse release (when no button is held)
     // — this handles the drag-to-connect gesture (press output → drag → release on input)
-    if (m_connectionManager.hasEditedConnection() && (event->buttons() == Qt::NoButton)) {
-        m_connectionManager.tryComplete(m_mousePos);
+    if (auto *connection = editedConnection(); connection && (event->buttons() == Qt::NoButton)) {
+        makeConnection(connection);
         return;
     }
 
@@ -1065,9 +1457,7 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void Scene::addItem(QMimeData *mimeData)
 {
-    QByteArray itemData = mimeData->hasFormat(MimeType::DragDrop)
-        ? mimeData->data(MimeType::DragDrop)
-        : mimeData->data(MimeType::DragDropLegacy);
+    QByteArray itemData = mimeData->data("wpanda/x-dnditemdata");
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     Serialization::readPandaHeader(stream);
 
@@ -1075,22 +1465,10 @@ void Scene::addItem(QMimeData *mimeData)
     ElementType type;   stream >> type;
     QString icFileName; stream >> icFileName;
 
-    bool isEmbedded = false;
-    QString blobName;
-    if (!stream.atEnd()) { stream >> isEmbedded; }
-    if (!stream.atEnd()) { stream >> blobName; }
-
     auto *element = ElementFactory::buildElement(type);
     qCDebug(zero) << "Valid element.";
 
-    if (isEmbedded && type == ElementType::IC) {
-        if (!m_icRegistry.initEmbeddedIC(static_cast<IC *>(element), blobName)) {
-            delete element;
-            return;
-        }
-    } else {
-        element->loadFromDrop(icFileName, contextDir());
-    }
+    element->loadFromDrop(icFileName, Serialization::contextDir);
 
     qCDebug(zero) << "Adding the element to the scene.";
     receiveCommand(new AddItemsCommand({element}, this));
@@ -1103,4 +1481,3 @@ void Scene::addItem(QMimeData *mimeData)
 
     mimeData->deleteLater();
 }
-
