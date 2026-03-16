@@ -5,6 +5,7 @@
 
 #include <algorithm>
 
+#include <QApplication>
 #include <QClipboard>
 #include <QDrag>
 #include <QGraphicsSceneDragDropEvent>

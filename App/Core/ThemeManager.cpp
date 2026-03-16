@@ -4,7 +4,9 @@
 #include "App/Core/ThemeManager.h"
 
 #include <QDebug>
+#include <QPalette>
 
+#include "App/Core/Application.h"
 #include "App/Core/Settings.h"
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
@@ -79,11 +81,27 @@ void ThemeAttributes::setTheme(const Theme theme)
         m_connectionSelected = m_selectionPen;
 
 #ifndef Q_OS_MAC
-        // Start from the platform default palette so that unset roles (e.g. scroll bars,
-        // dialog backgrounds) keep their native appearance; only override AlternateBase
-        // to give table/list rows a subtle banding colour
-        QPalette lightPalette = m_defaultPalette;
-        lightPalette.setColor(QPalette::AlternateBase, QColor(233, 231, 227)); // light grey for alternating rows
+        // Build an explicit light palette from scratch rather than relying on
+        // m_defaultPalette.  The captured default can be a dark palette when the
+        // OS is in dark mode, and on Qt 6.8+ setColorScheme() and setPalette()
+        // can conflict if the palette doesn't match the requested color scheme.
+        QPalette lightPalette;
+        lightPalette.setColor(QPalette::Window, QColor(239, 239, 239));
+        lightPalette.setColor(QPalette::WindowText, Qt::black);
+        lightPalette.setColor(QPalette::Base, Qt::white);
+        lightPalette.setColor(QPalette::AlternateBase, QColor(233, 231, 227));
+        lightPalette.setColor(QPalette::ToolTipBase, Qt::white);
+        lightPalette.setColor(QPalette::ToolTipText, Qt::black);
+        lightPalette.setColor(QPalette::Text, Qt::black);
+        lightPalette.setColor(QPalette::Button, QColor(239, 239, 239));
+        lightPalette.setColor(QPalette::ButtonText, Qt::black);
+        lightPalette.setColor(QPalette::BrightText, Qt::red);
+        lightPalette.setColor(QPalette::Link, QColor(42, 130, 218));
+        lightPalette.setColor(QPalette::Highlight, QColor(42, 130, 218));
+        lightPalette.setColor(QPalette::HighlightedText, Qt::white);
+        lightPalette.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(160, 160, 160));
+        lightPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(160, 160, 160));
+        lightPalette.setColor(QPalette::Disabled, QPalette::Text, QColor(160, 160, 160));
 
         Application::instance()->setPalette(lightPalette);
 #endif
