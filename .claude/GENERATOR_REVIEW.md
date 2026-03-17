@@ -7,8 +7,8 @@ and event-driven simulation engine (commit `6926d4216`).
 
 ## Key Simulation Changes Checked Against
 
-1. **4-state logic**: Invalid/Inactive/Active/Error — unconnected inputs are `Invalid`, not `Inactive`
-2. **Async preset/clear**: triggers on `== Inactive`, not `!= Active` — `Invalid` no longer activates preset/clear
+1. **4-state logic**: Unknown/Inactive/Active/Error — unconnected inputs are `Unknown`, not `Inactive`
+2. **Async preset/clear**: triggers on `== Inactive`, not `!= Active` — `Unknown` no longer activates preset/clear
 3. **Event-driven FIFO**: blocking propagation, no topological sort
 4. **GND/VCC are graph elements**: shared across IC nesting levels
 5. **Flip-flop semantics**: read current inputs at clock edge (no `m_lastValue`)
@@ -20,8 +20,8 @@ Two kinds of "unconnected" ports behave differently under 4-state:
 
 - **IC input ports** (InputSwitch inside sub-IC): retain their default value (0/Inactive) when
   not connected from the parent. The InputSwitch is a valid source element. **Not affected by 4-state.**
-- **Primitive gate input ports** (e.g., DFlipFlop ~Preset/~Clear): become `Invalid` when unconnected.
-  Under the new `== Inactive` check, `Invalid` won't trigger preset/clear. **Functionally safe but not robust.**
+- **Primitive gate input ports** (e.g., DFlipFlop ~Preset/~Clear): become `Unknown` when unconnected.
+  Under the new `== Inactive` check, `Unknown` won't trigger preset/clear. **Functionally safe but not robust.**
 
 This distinction means unconnected IC ports (like adder B[1-7] in program counters)
 are NOT bugs — they default to 0 via their internal InputSwitch.
@@ -42,7 +42,7 @@ are NOT bugs — they default to 0 via their internal InputSwitch.
 ### STYLE — Wire Vcc to Primitive DFlipFlop Async Ports
 
 These 5 generators use **primitive DFlipFlop** elements with `~Preset` and/or `~Clear` left
-unconnected. Under 4-state, `Invalid != Inactive` so preset/clear won't false-trigger —
+unconnected. Under 4-state, `Unknown != Inactive` so preset/clear won't false-trigger —
 FFs work correctly. However, wiring Vcc to unused async ports is best practice and
 consistent with the pattern used in updated counters and other generators.
 
