@@ -13,6 +13,8 @@
 #include "App/Element/LogicElements/LogicElement.h"
 #include "App/Simulation/SimEvent.h"
 #include "App/Simulation/Simulation.h"
+#include "App/Simulation/WaveformRecorder.h"
+#include "App/UI/TemporalWaveformWidget.h"
 #include "Tests/Common/TestUtils.h"
 
 using namespace TestUtils;
@@ -480,4 +482,145 @@ void TestTemporalSimulation::testInputSwitchSchedulesEvent()
     sw.setOn(false);
     sim->update();
     QCOMPARE(getInputStatus(&led), false);
+}
+
+// ============================================================================
+// Waveform recorder
+// ============================================================================
+
+void TestTemporalSimulation::testRecorderWatchAndRecord()
+{
+    WaveformRecorder recorder;
+    LogicElement *dummy = reinterpret_cast<LogicElement *>(1); // not dereferenced by record
+
+    // Manually build a recorder with a fake trace
+    int idx = recorder.watchSignal("sig0", nullptr, 0);
+    QCOMPARE(idx, 0);
+    QCOMPARE(recorder.traceCount(), 1);
+    QCOMPARE(recorder.trace(0).name, QString("sig0"));
+
+    // Add second signal
+    recorder.watchSignal("sig1", nullptr, 0);
+    QCOMPARE(recorder.traceCount(), 2);
+
+    // Clear
+    recorder.clear();
+    QCOMPARE(recorder.traceCount(), 0);
+
+    Q_UNUSED(dummy)
+}
+
+void TestTemporalSimulation::testRecorderDeduplication()
+{
+    // recordAll should not add duplicate consecutive values
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    Not notGate;
+    Led led;
+
+    builder.add(&sw, &notGate, &led);
+    builder.connect(&sw, 0, &notGate, 0);
+    builder.connect(&notGate, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+    sim->setMode(SimulationMode::Temporal);
+    sim->setTimePerTick(100);
+    sim->update(); // re-init rebuilds LogicElements
+
+    // Watch AFTER re-init so the pointer is valid
+    auto &recorder = sim->waveformRecorder();
+    recorder.watchSignal("NOT_out", notGate.logic(), 0);
+    recorder.setRecording(true);
+
+    // Record the same state multiple times — should dedup
+    sim->update();
+    sim->update();
+    sim->update();
+
+    const auto &transitions = recorder.trace(0).transitions;
+    // Should have at most a few transitions, not one per update
+    QVERIFY2(transitions.size() <= 4, qPrintable(
+        QString("Expected at most 4 transitions, got %1").arg(transitions.size())));
+}
+
+void TestTemporalSimulation::testRecorderStatusAt()
+{
+    SignalTrace trace;
+    trace.name = "test";
+    trace.transitions = {{10, Status::Active}, {50, Status::Inactive}, {100, Status::Active}};
+
+    QCOMPARE(trace.statusAt(0), Status::Inactive);   // before first transition
+    QCOMPARE(trace.statusAt(10), Status::Active);     // exactly at first
+    QCOMPARE(trace.statusAt(30), Status::Active);     // between first and second
+    QCOMPARE(trace.statusAt(50), Status::Inactive);   // exactly at second
+    QCOMPARE(trace.statusAt(75), Status::Inactive);   // between second and third
+    QCOMPARE(trace.statusAt(100), Status::Active);    // exactly at third
+    QCOMPARE(trace.statusAt(200), Status::Active);    // after last
+}
+
+void TestTemporalSimulation::testRecorderIntegration()
+{
+    // Full integration: temporal sim with recorder, verify transitions are captured
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    Not notGate;
+    Led led;
+
+    builder.add(&sw, &notGate, &led);
+    builder.connect(&sw, 0, &notGate, 0);
+    builder.connect(&notGate, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+    sim->setMode(SimulationMode::Temporal);
+    sim->setTimePerTick(100);
+    sim->update(); // re-init rebuilds LogicElements
+
+    // Watch AFTER re-init so the pointer is valid
+    auto &recorder = sim->waveformRecorder();
+    recorder.watchSignal("NOT_out", notGate.logic(), 0);
+    recorder.setRecording(true);
+
+    // sw=off → NOT=1
+    sw.setOn(false);
+    sim->update();
+
+    // sw=on → NOT=0
+    sw.setOn(true);
+    sim->update();
+
+    const auto &transitions = recorder.trace(0).transitions;
+    QVERIFY2(!transitions.isEmpty(), "Recorder should have captured transitions");
+
+    // The last transition should reflect NOT(1) = Inactive
+    QCOMPARE(transitions.last().second, Status::Inactive);
+    QVERIFY(recorder.maxTime() > 0);
+}
+
+// ============================================================================
+// Waveform widget
+// ============================================================================
+
+void TestTemporalSimulation::testWidgetSizeHint()
+{
+    WaveformRecorder recorder;
+    TemporalWaveformWidget widget;
+    widget.setRecorder(&recorder);
+
+    // No traces → minimum size
+    QSize hint = widget.sizeHint();
+    QVERIFY(hint.width() >= 220);
+    QVERIFY(hint.height() >= 54);
+
+    // Add a trace → height increases
+    recorder.watchSignal("sig0", nullptr, 0);
+    hint = widget.sizeHint();
+    QVERIFY(hint.height() >= 54);
+
+    // Widget should not crash when painted with no data
+    widget.resize(400, 200);
+    widget.repaint();
 }

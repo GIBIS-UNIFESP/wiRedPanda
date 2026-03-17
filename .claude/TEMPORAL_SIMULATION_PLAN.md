@@ -103,7 +103,58 @@ Built in `ElementMapping::sortLogicElements()` using two passes:
 
 ### Phase 7: Waveform Visualization (not started, future)
 
-Timing diagram view recording `QVector<QPair<SimTime, Status>>` per watched signal. ~500 lines. This is the primary user-facing value of temporal simulation.
+#### Approach: Extend BeWavedDolphin
+
+A full waveform viewer already exists: **BeWavedDolphin** (`App/BeWavedDolphin/`, 2,452 lines, 12 source files). It's a mature waveform editor/analyzer with signal rendering, zoom/scroll, export (PNG/PDF/CSV), and `.dolphin` file persistence.
+
+However, BeWavedDolphin is an **active simulation driver** — it paints input waveforms, then sweeps column-by-column calling `sim->update()`. Temporal mode needs **passive recording** during live simulation.
+
+| Aspect | BeWavedDolphin (current) | Temporal mode needs |
+|--------|-------------------------|-------------------|
+| Time model | Discrete columns (user-defined steps) | Continuous nanoseconds (`SimTime`) |
+| Simulation | Drives `sim->update()` per column | Passively records during live `updateTemporal()` |
+| Input control | User paints input waveforms, then runs | Live circuit interaction |
+| Resolution | 1 column = 1 sim cycle | Nanosecond-level transitions |
+| Display | 8 SVG pixmaps (high/low/edges) | Similar, but time-proportional spacing |
+
+**Reusable components:**
+- `SignalDelegate` — waveform pixmap rendering (blue inputs, green outputs, edge detection)
+- `WaveformView` — QGraphicsView with zoom/scroll
+- `DolphinSerializer` — export to `.dolphin`/`.csv`/PNG/PDF
+- Table-based UI layout (rows = signals, columns = time)
+- `BeWavedDolphinUI` — toolbar, menus, keyboard shortcuts
+
+**New code needed (~200 lines):**
+1. `recordFromTemporalSim()` — hook into the temporal engine to capture `(SimTime, Status)` transitions per watched signal during live simulation
+2. Time quantization — convert continuous `SimTime` transitions to discrete column indices for the existing `SignalModel` (pixels-per-nanosecond scaling)
+3. Live append — as simulation advances, append new columns to the right edge of the table (ring buffer or auto-scroll)
+4. Mode toggle — keep existing manual-input mode for functional simulation; add passive-recording mode for temporal simulation
+
+**Key files to modify:**
+- `App/BeWavedDolphin/BeWavedDolphin.h/.cpp` — add recording mode and temporal hooks
+- `App/BeWavedDolphin/SignalModel.h/.cpp` — support dynamic column append
+- `App/Simulation/Simulation.cpp` — emit signal on transition (or callback) for recording
+
+This approach is ~200 lines vs ~500 for a new widget from scratch, and inherits all existing display/export/persistence infrastructure.
+
+#### Chosen approach: Standalone TemporalWaveformWidget
+
+A new purpose-built widget for temporal simulation, independent of BeWavedDolphin. Rationale: BeWavedDolphin is an active simulation driver with a fundamentally different time model (discrete columns). Adapting it would couple two unrelated time models. A standalone widget is cleaner and avoids polluting BeWavedDolphin's existing (working) codebase.
+
+**New files:**
+- `App/Simulation/WaveformRecorder.h` — per-signal transition recording (`QVector<QPair<SimTime, Status>>`)
+- `App/Widgets/TemporalWaveformWidget.h/.cpp` — QWidget with custom `paintEvent()` drawing timing diagrams
+
+**Recording mechanism:**
+- `WaveformRecorder` stores a list of `SignalTrace` objects, each with a name and a vector of `(SimTime, Status)` transitions
+- Hooked into `Simulation::updateTemporal()` — after each event where `outputChanged()`, record new output values for watched signals
+- Watched signals selected by `LogicElement*` + port index
+
+**Display:**
+- Horizontal time axis (nanoseconds), vertical signal traces
+- Each trace: horizontal lines at HIGH/LOW with vertical edges at transitions
+- Scrollable (QScrollArea) and zoomable (pixels-per-nanosecond scale factor)
+- Signal names on the left, time ruler on top
 
 ### Per-Type Default Delays (assigned)
 

@@ -16,6 +16,7 @@
 #include <QTimer>
 
 #include "App/Simulation/SimEvent.h"
+#include "App/Simulation/WaveformRecorder.h"
 
 /// Selects the simulation evaluation strategy.
 enum class SimulationMode {
@@ -107,6 +108,12 @@ public:
 
     /// Returns the current time-per-tick setting.
     SimTime timePerTick() const { return m_timePerTick; }
+
+    // --- Waveform recording ---
+
+    /// Returns the waveform recorder (for adding watches and reading traces).
+    WaveformRecorder &waveformRecorder() { return m_recorder; }
+    const WaveformRecorder &waveformRecorder() const { return m_recorder; }
 
     // --- Initialization ---
 
@@ -212,6 +219,7 @@ private:
     SimulationMode m_mode = SimulationMode::Functional;
     EventQueue m_eventQueue;
     SimTime m_currentTime = 0;
-    SimTime m_timePerTick = 1'000'000; ///< 1 ms in nanoseconds.
+    SimTime m_timePerTick = 1'000'000; ///< 1 ms in nanoseconds (1x speed).
+    WaveformRecorder m_recorder;
 };
 
