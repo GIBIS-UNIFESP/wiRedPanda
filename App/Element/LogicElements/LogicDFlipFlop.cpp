@@ -24,12 +24,14 @@ void LogicDFlipFlop::updateLogic()
     const Status prst = inputs().at(2);
     const Status clr = inputs().at(3);
 
-    // On the rising clock edge, capture the current D value.  The event-driven
-    // engine guarantees D has settled before the flip-flop evaluates (predecessors
-    // commit in earlier delta cycles).
+    // On the rising clock edge, capture m_lastValue (D from before the current
+    // event batch).  In the blocking FIFO engine, multiple flip-flops sharing
+    // the same clock are queued together.  Without m_lastValue, each flip-flop
+    // would see the preceding flip-flop's already-updated Q, causing shift
+    // registers to cascade all stages in one clock cycle.
     if (clk == Status::Active && m_lastClk != Status::Active) {
-        q0 = D;
-        q1 = (D == Status::Active) ? Status::Inactive : Status::Active;
+        q0 = m_lastValue;
+        q1 = (m_lastValue == Status::Active) ? Status::Inactive : Status::Active;
     }
 
     // Asynchronous preset/clear: active-low.  Only trigger on specifically
@@ -40,6 +42,7 @@ void LogicDFlipFlop::updateLogic()
     }
 
     m_lastClk = clk;
+    m_lastValue = D;
 
     setOutputValue(0, q0);
     setOutputValue(1, q1);

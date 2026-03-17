@@ -24,9 +24,9 @@ void LogicTFlipFlop::updateLogic()
     const Status prst = inputs().at(2);
     const Status clr = inputs().at(3);
 
-    // Rising-edge detection: current T read directly.
+    // Rising-edge detection: use m_lastT to prevent cascade.
     if (clk == Status::Active && m_lastClk != Status::Active) {
-        if (T == Status::Active) {
+        if (m_lastT == Status::Active) {
             q0 = (q0 == Status::Active) ? Status::Inactive : Status::Active;
             q1 = (q1 == Status::Active) ? Status::Inactive : Status::Active;
         }
@@ -40,6 +40,7 @@ void LogicTFlipFlop::updateLogic()
     }
 
     m_lastClk = clk;
+    m_lastT = T;
 
     setOutputValue(0, q0);
     setOutputValue(1, q1);

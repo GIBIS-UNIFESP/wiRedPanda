@@ -25,14 +25,14 @@ void LogicSRFlipFlop::updateLogic()
     const Status prst = inputs().at(3);
     const Status clr = inputs().at(4);
 
-    // Rising-edge detection: current S/R read directly.
+    // Rising-edge detection: use m_lastS/m_lastR to prevent cascade.
     if (clk == Status::Active && m_lastClk != Status::Active) {
-        if (s == Status::Active && r == Status::Active) {
+        if (m_lastS == Status::Active && m_lastR == Status::Active) {
             q0 = Status::Active;
             q1 = Status::Active;
-        } else if (s != r) {
-            q0 = s;
-            q1 = r;
+        } else if (m_lastS != m_lastR) {
+            q0 = m_lastS;
+            q1 = m_lastR;
         }
         // S=R=0 → hold; q0/q1 already retain the previous state.
     }
@@ -44,6 +44,8 @@ void LogicSRFlipFlop::updateLogic()
     }
 
     m_lastClk = clk;
+    m_lastS = s;
+    m_lastR = r;
 
     setOutputValue(0, q0);
     setOutputValue(1, q1);

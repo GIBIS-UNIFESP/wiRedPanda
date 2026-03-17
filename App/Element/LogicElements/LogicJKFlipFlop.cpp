@@ -25,15 +25,15 @@ void LogicJKFlipFlop::updateLogic()
     const Status prst = inputs().at(3);
     const Status clr = inputs().at(4);
 
-    // Rising-edge detection; current J/K read directly (event-driven engine
-    // guarantees predecessors have committed before this element evaluates).
+    // Rising-edge detection; use m_lastJ/m_lastK (sampled before the current
+    // event batch) to prevent cascade in multi-flip-flop circuits sharing a clock.
     if (clk == Status::Active && m_lastClk != Status::Active) {
-        if (j == Status::Active && k == Status::Active) {
+        if (m_lastJ == Status::Active && m_lastK == Status::Active) {
             std::swap(q0, q1);
-        } else if (j == Status::Active) {
+        } else if (m_lastJ == Status::Active) {
             q0 = Status::Active;
             q1 = Status::Inactive;
-        } else if (k == Status::Active) {
+        } else if (m_lastK == Status::Active) {
             q0 = Status::Inactive;
             q1 = Status::Active;
         }
@@ -47,6 +47,8 @@ void LogicJKFlipFlop::updateLogic()
     }
 
     m_lastClk = clk;
+    m_lastJ = j;
+    m_lastK = k;
 
     setOutputValue(0, q0);
     setOutputValue(1, q1);

@@ -52,11 +52,12 @@ void TestComponents::testICData(IC *ic)
     QCOMPARE(ic->inputPort(3)->isRequired(), false);
     QCOMPARE(ic->inputPort(4)->isRequired(), false);
 
-    QCOMPARE(ic->inputPort(0)->status(), Status::Active);
-    QCOMPARE(ic->inputPort(1)->status(), Status::Active);
-    QCOMPARE(ic->inputPort(2)->status(), Status::Unknown);
-    QCOMPARE(ic->inputPort(3)->status(), Status::Active);
-    QCOMPARE(ic->inputPort(4)->status(), Status::Active);
+    // Port order: -Preset(ON), J(OFF), Clock(required), K(ON), -Clear(ON)
+    QCOMPARE(ic->inputPort(0)->status(), Status::Active);    // -Preset = ON (deasserted)
+    QCOMPARE(ic->inputPort(1)->status(), Status::Inactive);  // J = OFF
+    QCOMPARE(ic->inputPort(2)->status(), Status::Unknown);   // Clock = required, unconnected
+    QCOMPARE(ic->inputPort(3)->status(), Status::Active);    // K = ON
+    QCOMPARE(ic->inputPort(4)->status(), Status::Active);    // -Clear = ON (deasserted)
 }
 
 void TestComponents::testIC()
