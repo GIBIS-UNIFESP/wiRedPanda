@@ -29,7 +29,7 @@ lcov --remove coverage.info \
     --output-file coverage_filtered.info --ignore-errors inconsistent,unused
 
 # Generate HTML report with dark theme
-genhtml coverage_filtered.info --output-directory coverage_html --css-file ../Scripts/lcov-dark-theme.css
+genhtml coverage_filtered.info --output-directory coverage_html --dark-mode
 
 echo "✅ Coverage report generated!"
 echo "📂 Open coverage_html/index.html in your browser to view the report"
