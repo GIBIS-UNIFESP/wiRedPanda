@@ -13,10 +13,6 @@
 
 #include "App/Element/GraphicElement.h"
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QMediaPlaylist>
-#endif
-
 /**
  * \class AudioBox
  * \brief Audio output element that streams an external audio file when its input is logic-1.
@@ -69,9 +65,6 @@ private:
     QAudioOutput *m_audioOutput = nullptr;
     QFileInfo m_audio;
     QMediaPlayer *m_player = nullptr;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QMediaPlaylist *m_playlist = nullptr;
-#endif
 
     bool m_hasOutputDevice = false;
     bool m_isPlaying = false;

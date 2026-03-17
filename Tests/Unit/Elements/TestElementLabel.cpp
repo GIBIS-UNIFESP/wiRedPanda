@@ -19,7 +19,7 @@
 void TestElementLabel::testConstructorWithPixmapPointer()
 {
     QPixmap pixmap = ElementFactory::pixmap(ElementType::And);
-    ElementLabel label(&pixmap, ElementType::And, "");
+    ElementLabel label(pixmap, ElementType::And, "");
 
     QCOMPARE(label.elementType(), ElementType::And);
     QVERIFY(!label.pixmap().isNull());

@@ -125,11 +125,7 @@ QString LanguageManager::displayName(const QString &langCode) const
     QString name = locale.nativeLanguageName();
 
     if (langCode.contains('_')) {
-#if QT_VERSION < QT_VERSION_CHECK(6, 2, 0)
-        const QString country = locale.nativeCountryName();
-#else
         const QString country = locale.nativeTerritoryName();
-#endif
         if (!country.isEmpty() && country != name) {
             name += QString(" (%1)").arg(country);
         }

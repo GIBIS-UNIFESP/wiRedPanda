@@ -138,7 +138,7 @@ class MCPInfrastructure:
             print(f"❌ Failed to start MCP process: {e}")
             if sys.platform != "win32":
                 print("   Common fixes for Linux:")
-                print("   - Install Qt5: sudo apt-get install qt5-default")
+                print("   - Install Qt6: sudo apt-get install qt6-base-dev")
                 print("   - Set headless mode: export QT_QPA_PLATFORM=offscreen")
                 print("   - Make executable: chmod +x {executable_path}")
             return False

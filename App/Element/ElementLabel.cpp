@@ -12,12 +12,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/IO/Serialization.h"
 
-ElementLabel::ElementLabel(const QPixmap *pixmap, ElementType type, const QString &icFileName, QWidget *parent)
-    : ElementLabel(*pixmap, type, icFileName, parent)
-{
-    // for compiling on Qt versions < 5.15
-}
-
 ElementLabel::ElementLabel(const QPixmap &pixmap, ElementType type, const QString &icFileName, QWidget *parent)
     : QFrame(parent)
     , m_elementType(type)
