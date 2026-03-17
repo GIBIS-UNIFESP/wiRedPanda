@@ -47,6 +47,13 @@ public:
     /// Returns the number of output ports.
     int outputSize() const;
 
+    // --- Change tracking ---
+
+    /// Returns \c true if any output changed during the last updateLogic() call.
+    bool outputChanged() const { return m_outputChanged; }
+    /// Clears the output-changed flag (call before updateLogic() to prepare for change detection).
+    void clearOutputChanged() { m_outputChanged = false; }
+
     // --- Logic ---
 
     const QVector<InputPair> &inputPairs() const;
@@ -98,4 +105,5 @@ private:
     QVector<InputPair> m_inputPairs;
     QVector<Status> m_inputValues; ///< Cached input values refreshed each simulation step.
     QVector<Status> m_outputValues;
+    bool m_outputChanged = false; ///< Set by setOutputValue() when an output actually changes.
 };

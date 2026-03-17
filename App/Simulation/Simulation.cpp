@@ -189,50 +189,22 @@ void Simulation::updateWithIterativeSettling()
     const int maxIterations = 10;
     const auto &logicElements = m_elmMapping->logicElms();
 
-    // Snapshot outputs before the first pass so the convergence check on
-    // iteration 0 has valid "previous" values to compare against.
-    for (int i = 0; i < logicElements.size(); ++i) {
-        auto &logic = logicElements[i];
-        if (!logic) {
-            continue;
-        }
-        for (int j = 0; j < m_previousOutputs[i].size(); ++j) {
-            m_previousOutputs[i][j] = logic->outputValue(j);
-        }
-    }
-
     for (int iteration = 0; iteration < maxIterations; ++iteration) {
-        // Update all logic elements
         for (auto &logic : logicElements) {
             if (logic) {
+                logic->clearOutputChanged();
                 logic->updateLogic();
             }
         }
 
-        // Check for convergence (no output changes)
-        bool converged = true;
-        for (int i = 0; i < logicElements.size(); ++i) {
-            auto &logic = logicElements[i];
-            if (!logic) {
-                continue;
-            }
-
-            // Check all outputs for convergence
-            for (int j = 0; j < logic->outputSize(); ++j) {
-                Status currentOutput = logic->outputValue(j);
-                if (m_previousOutputs[i][j] != currentOutput) {
-                    converged = false;
-                    m_previousOutputs[i][j] = currentOutput;
-                }
-            }
-        }
+        // Check for convergence: no element changed any output this pass.
+        const bool converged = std::none_of(logicElements.cbegin(), logicElements.cend(),
+            [](const auto &logic) { return logic && logic->outputChanged(); });
 
         if (converged) {
-            // Circuit has stabilized, no need for more iterations
             break;
         }
 
-        // If we're on the last iteration without convergence, warn the user once.
         if (iteration == maxIterations - 1 && !m_convergenceWarned) {
             m_convergenceWarned = true;
             qDebug() << "Feedback circuit did not converge after" << maxIterations << "iterations";
@@ -341,16 +313,7 @@ bool Simulation::initialize()
     qCDebug(two) << "Sorting.";
     m_elmMapping->sort();
 
-    // Cache feedback flag and pre-allocate previousOutputs for iterative settling
-    const auto &logicElms = m_elmMapping->logicElms();
     m_hasFeedbackElements = m_elmMapping->hasFeedbackElements();
-
-    m_previousOutputs.resize(logicElms.size());
-    for (int i = 0; i < logicElms.size(); ++i) {
-        if (logicElms[i]) {
-            m_previousOutputs[i].resize(logicElms[i]->outputSize());
-        }
-    }
 
     m_initialized = true;
 
