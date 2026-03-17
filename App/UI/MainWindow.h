@@ -10,6 +10,7 @@
 #include <memory>
 
 #include <QDir>
+#include <QDockWidget>
 #include <QMainWindow>
 #include <QSpacerItem>
 #include <QTimer>
@@ -20,6 +21,7 @@
 class ElementLabel;
 class ElementPalette;
 class IC;
+class TemporalWaveformWidget;
 class LanguageManager;
 class QShortcut;
 class RecentFiles;
@@ -261,6 +263,9 @@ private:
     void on_comboSimMode_currentIndexChanged(int index);
     void on_comboSimSpeed_currentIndexChanged(int index);
     void updateSimTimeLabel();
+    void toggleTemporalWaveformDock();
+    void watchAllSignals();
+    void clearWatchedSignals();
     void on_actionReloadFile_triggered();
     void on_actionReportTranslationError_triggered();
     void on_actionResetZoom_triggered() const;
@@ -315,6 +320,7 @@ private:
 
     QTimer m_simTimeTimer; ///< Periodic timer to update the simulation time label.
 
+<<<<<<< HEAD
     // Scene-level shortcuts created once in setupShortcuts(), reconnected on tab switch.
     QShortcut *m_prevMainPropShortcut  = nullptr;
     QShortcut *m_nextMainPropShortcut  = nullptr;
@@ -322,5 +328,9 @@ private:
     QShortcut *m_nextSecndPropShortcut = nullptr;
     QShortcut *m_changePrevElmShortcut = nullptr;
     QShortcut *m_changeNextElmShortcut = nullptr;
+=======
+    QDockWidget *m_waveformDock = nullptr;
+    TemporalWaveformWidget *m_waveformWidget = nullptr;
+>>>>>>> e382dc1d3 (feat: add temporal waveform dock with Watch All / Clear / zoom controls)
 };
 
