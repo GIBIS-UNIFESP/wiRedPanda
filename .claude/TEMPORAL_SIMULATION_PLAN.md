@@ -12,11 +12,12 @@ Add an event-driven temporal simulation mode to wiRedPanda with configurable pro
 |-------|-------------|--------|--------|
 | Pre-work | Output change tracking in LogicElement | **Done** | `a9643d665` |
 | 1 | Event Queue Infrastructure | **Done** | `711cf5c6b` |
-| 2 | LogicElement Delay Support | **Done** (field added, defaults not yet assigned) | `711cf5c6b` |
+| 2 | LogicElement Delay Support | **Done** | `711cf5c6b`, delays assigned next commit |
 | 6 | Successor Scheduling | **Done** | `711cf5c6b` |
 | 3 | Temporal Simulation Engine | **Done** | `711cf5c6b` |
 | 4 | Clock Element Temporal Mode | **Done** | `711cf5c6b` |
 | 5 | Input Element Temporal Mode | **Done** | `711cf5c6b` |
+| Tests | Temporal simulation test suite (17 tests) | **Done** | next commit |
 | 8 | UI Integration | Not started | — |
 | 7 | Waveform Visualization | Not started | — |
 
@@ -104,9 +105,9 @@ Built in `ElementMapping::sortLogicElements()` using two passes:
 
 Timing diagram view recording `QVector<QPair<SimTime, Status>>` per watched signal. ~500 lines. This is the primary user-facing value of temporal simulation.
 
-### Per-Type Default Delays (not yet assigned)
+### Per-Type Default Delays (assigned)
 
-The `m_propagationDelay` field exists but defaults to 0 for all elements. Setting type-specific defaults can be done in the `logicCreator` lambda of each `ElementInfo<T>` specialization:
+Each element's `logicCreator` lambda in `ElementInfo<T>` calls `setPropagationDelay()` after creation. 16 element types have non-zero defaults; sources, sinks, and nodes remain at 0.
 
 | Element | Default delay | Rationale |
 |---------|--------------|-----------|
@@ -126,6 +127,19 @@ The `m_propagationDelay` field exists but defaults to 0 for all elements. Settin
 | LogicNode | 0 ns | Wire passthrough (IC boundary) |
 | LogicSource | 0 ns | Constant |
 | LogicSink | 0 ns | Terminal |
+
+### Test Coverage
+
+`Tests/Unit/Simulation/TestTemporalSimulation.cpp` — 17 tests covering:
+
+- **EventQueue** (3): ordering, same-time FIFO, clear
+- **LogicElement delay** (2): default delays assigned, zero-delay elements
+- **Successor tracking** (1): lists built correctly after init
+- **Mode switching** (2): default is Functional, setMode restarts
+- **Zero-delay equivalence** (3): AND gate, cascaded gates, SR latch feedback
+- **Propagation delays** (2): NOT gate delay, chained cumulative delay
+- **Clock scheduling** (1): clock edges scheduled and toggle correctly
+- **Input change detection** (1): InputSwitch toggle propagates in temporal mode
 
 ---
 
