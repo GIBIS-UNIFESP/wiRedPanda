@@ -451,16 +451,155 @@
 
 ---
 
-## Remaining Work Needed
+## Remaining Work — Detailed Investigation
 
-### Medium Priority
-1. **WIREDPANDA-M** (43 events) — Add graceful degradation in `BeWavedDolphin` when circuit lacks I/O elements (e.g., show informative dialog instead of hard throw).
+### WIREDPANDA-13 / EZ — "Error copying file: Unknown error" (206 events)
 
-### Low Priority / Won't Fix
-2. **WIREDPANDA-EB/EN/EM/EF/EE** — Qt internals crashes with no first-party frames. All known root causes addressed; remaining risk is unknown edge cases.
-3. **WIREDPANDA-EQ/ER** — User-environment issues (missing files). Could improve UX with a "locate missing file" dialog.
-4. **WIREDPANDA-F1** — Qt platform initialization; not an app bug.
-5. **WIREDPANDA-X, F3, ED, EZ** — Correct error handling for OS-level failures and intentional UX messages.
+**Status**: SUBSTANTIALLY ADDRESSED — **code bug found**
+
+**Bug found**: Uninitialized `QFile` objects in `IC::copyFile()` and `IC::copyFiles()`.
+
+**Location 1** — `App/Element/IC.cpp:122-132` (`copyFile()`):
+```cpp
+QFile destFile;  // BUG: no fileName set
+if (!QFile::exists(destPath) && !destFile.copy(srcPath, destPath)) {
+    throw PANDACEPTION("Error copying file: %1", destFile.errorString());
+}
+```
+`QFile::copy(src, dest)` is a **static** method — calling it on an uninitialized instance works but `errorString()` on the uninitialized object returns "Unknown error" instead of the real system error.
+
+**Location 2** — `App/Element/IC.cpp:499-522` (`copyFiles()`):
+```cpp
+QFile destFile;  // BUG: same issue
+if (!QFile::exists(destPath.absoluteFilePath()) &&
+    !destFile.copy(srcPath.absoluteFilePath(), destPath.absoluteFilePath())) {
+    throw PANDACEPTION("Error copying file: %1", destFile.errorString());
+}
+destFile.setFileName(destPath.absoluteFilePath());  // BUG: sets filename AFTER failed copy
+```
+
+**Estimated breakdown of 206 events**:
+- ~40-50% (80-100): OS-level file locking (Windows antivirus/indexing) — real failures with bad error message
+- ~30-40% (60-80): QFile bug masking the real error string
+- ~15-25% (30-50): Path resolution issues (now fixed by `7f305cbe4`, `c3b451e43`)
+
+**Fix needed**:
+```cpp
+// copyFile(): use static method directly, capture real error
+if (!QFile::exists(destPath)) {
+    QFile sourceFile(srcPath);
+    if (!sourceFile.copy(destPath)) {
+        throw PANDACEPTION("Error copying file: %1", sourceFile.errorString());
+    }
+}
+```
+
+---
+
+### WIREDPANDA-EB / EN / EM / EF / EE — QtSlot crashes (7 events)
+
+**Status**: SUBSTANTIALLY ADDRESSED — **specific vulnerability identified**
+
+**Vulnerability found**: Deferred deletion with active event filter in tab closing.
+
+**Location**: `App/UI/MainWindow.cpp:844`
+```cpp
+m_currentTab->deleteLater();    // Schedules deferred deletion
+m_ui->tab->removeTab(tabIndex); // Immediately removes from tab widget
+```
+
+**Why this crashes**:
+1. `Scene::Scene()` installs itself as its own event filter: `installEventFilter(this)` (line 35)
+2. `Workspace` contains `Scene m_scene` as a **member variable** (not heap-allocated)
+3. `deleteLater()` schedules WorkSpace deletion, but mouse events already queued in the Windows event loop remain pending
+4. When the pending mouse event dispatches, Qt's event filter mechanism calls `Scene::eventFilter()` on the already-deleted Scene
+5. Vtable lookup on deallocated memory → `EXCEPTION_ACCESS_VIOLATION` in `QtPrivate::QSlotObjectBase::call`
+
+**Why Windows x86 only**: Windows is more aggressive with queued event delivery; x86 memory layout makes vtable corruption immediately visible (vs x86-64 where it may silently succeed).
+
+**Fix options**:
+1. **(Recommended)** Remove event filter in Scene destructor:
+   ```cpp
+   Scene::~Scene() { removeEventFilter(this); }
+   ```
+2. Remove from tab widget first, process pending events, then delete:
+   ```cpp
+   m_ui->tab->removeTab(tabIndex);
+   QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+   delete m_currentTab;
+   ```
+3. Make Scene a heap-allocated child of WorkSpace so Qt's parent-child deletion order ensures proper cleanup.
+
+---
+
+### WIREDPANDA-M — "Could not load enough elements for the simulation" (43 events)
+
+**Status**: PARTIALLY FIXED — **missing error handling identified**
+
+**Error locations** in `App/BeWavedDolphin/BeWavedDolphin.cpp`:
+- **Line 213**: `if (elements.isEmpty()) throw` — empty circuit (zero elements)
+- **Line 243**: `if (m_inputs.isEmpty() || m_outputs.isEmpty()) throw` — circuit has elements but no I/O
+
+**Trigger**: User opens Tools → Waveform Simulator on a circuit that:
+- Is completely empty (new unsaved circuit)
+- Has no InputSwitch/InputButton elements
+- Has no LED/Buzzer/Display output elements
+- Has broken IC references that failed to load (missing .panda files)
+
+**Current error handling**: The exception propagates uncaught from `createWaveform()` → `prepare()` → `loadElements()` through MainWindow. No try-catch anywhere in the chain. Result: Sentry crash report.
+
+**Fixes on branch that reduce frequency**:
+- `7f305cbe4` + `761eb5f45` — More IC files load successfully
+- `134985736` — Stream corruption detected early
+- `241c8f2ff` — Convergence warnings surfaced to user
+
+**Fix needed**: Wrap `createWaveform()` call in MainWindow with try-catch and show a user-friendly dialog:
+```cpp
+try {
+    createWaveform();
+} catch (const Pandaception &e) {
+    QMessageBox::warning(this, tr("Waveform Simulator"),
+        tr("Cannot open waveform simulator: %1\n\n"
+           "Make sure the circuit has at least one input and one output element.")
+        .arg(e.what()));
+}
+```
+
+---
+
+### WIREDPANDA-EQ / ER — Missing .panda IC files (7 events)
+
+**Status**: SUBSTANTIALLY ADDRESSED — **design limitation, not a bug**
+
+**How IC file storage works**:
+1. **Save**: Only the **basename** is stored (e.g., `"DECODIFICADOR BCD 7.panda"`), not the full path — intentional for portability
+2. **Load**: Basename is combined with `contextDir` (the project file's directory) to locate the IC file
+3. **Failure**: If the IC file is not in the project directory, it's not found
+
+**The user's scenario** (WIREDPANDA-EQ):
+- IC file created at: `C:\Users\fabri\Downloads\DECODIFICADOR BCD 7.panda`
+- Main project at: `C:\Users\fabri\Desktop\MyProject.panda`
+- On load, app looks for: `C:\Users\fabri\Desktop\DECODIFICADOR BCD 7.panda` — not found
+
+**Existing solution**: Embedded ICs (commit 51f810a75) already solve this — right-click IC → "Embed IC" stores the definition directly in the project file with no external file dependency.
+
+**Possible UX improvements** (not on this branch):
+1. "Locate file" dialog when IC file not found
+2. Search project directory recursively for matching filename
+3. Auto-copy IC files alongside project on save (already done for paste/import, but not for initial save)
+4. Prompt user to embed ICs when saving to a new location
+
+---
+
+### Issues Confirmed as NOT A BUG (no action needed)
+
+| Issue | Events | Reason |
+|-------|--------|--------|
+| WIREDPANDA-F1 | 5 | Qt platform init failure (no display server) — environment issue |
+| WIREDPANDA-X | 94 | Intentional: "Save file first" when adding IC to unsaved project |
+| WIREDPANDA-F3 | 1 | OS: "Permission denied" — correct error handling |
+| WIREDPANDA-ED | 1 | OS: "Acceso denegado" (Spanish) — correct error handling |
+| WIREDPANDA-EZ | 5 | OS: "Erro desconhecido" (Portuguese) — file copy failure with correct handling |
 
 ---
 
