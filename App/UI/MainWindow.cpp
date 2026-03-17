@@ -23,6 +23,7 @@
 #include <QPushButton>
 #include <QSaveFile>
 #include <QScrollArea>
+#include <QScrollBar>
 #include <QShortcut>
 #include <QTemporaryFile>
 #include <QVBoxLayout>
@@ -1406,8 +1407,18 @@ void MainWindow::toggleTemporalWaveformDock()
         // Sync dock visibility with the menu action
         connect(m_waveformDock, &QDockWidget::visibilityChanged, m_ui->actionTemporalWaveform, &QAction::setChecked);
 
-        // Repaint waveform every 100ms while visible
-        connect(&m_simTimeTimer, &QTimer::timeout, m_waveformWidget, QOverload<>::of(&QWidget::update));
+        // Repaint waveform every 100ms and auto-scroll to follow new data.
+        connect(&m_simTimeTimer, &QTimer::timeout, this, [this, scrollArea]() {
+            if (!m_waveformWidget->isVisible()) {
+                return;
+            }
+            m_waveformWidget->update();
+            // Auto-scroll to the right edge so the latest data is visible.
+            auto *hBar = scrollArea->horizontalScrollBar();
+            if (hBar) {
+                hBar->setValue(hBar->maximum());
+            }
+        });
     }
 
     m_waveformDock->setVisible(m_ui->actionTemporalWaveform->isChecked());
