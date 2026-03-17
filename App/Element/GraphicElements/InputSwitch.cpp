@@ -7,7 +7,10 @@
 
 #include "App/Element/ElementInfo.h"
 #include "App/Element/LogicElements/LogicSource.h"
+#include "App/IO/Serialization.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Scene/Commands.h"
+#include "App/Scene/Scene.h"
 #include "App/Versions.h"
 
 template<>
@@ -91,7 +94,18 @@ void InputSwitch::setOn(const bool value, const int port)
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!m_locked && (event->button() == Qt::LeftButton)) {
+        // Snapshot state before toggle so the undo stack can restore it.
+        QByteArray oldData;
+        QDataStream stream(&oldData, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        save(stream);
+
         setOn(!m_isOn);
+
+        if (auto *s = qobject_cast<Scene *>(scene())) {
+            s->receiveCommand(new UpdateCommand({this}, oldData, s));
+        }
+
         event->accept();
     }
 
