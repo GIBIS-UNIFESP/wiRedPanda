@@ -5,21 +5,32 @@
 
 #include <QGraphicsSceneMouseEvent>
 
-#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/IO/SerializationContext.h"
-#include "App/IO/VersionInfo.h"
+#include "App/Element/LogicElements/LogicSource.h"
+#include "App/IO/Serialization.h"
+#include "App/Nodes/QNEPort.h"
+#include "App/Scene/Commands.h"
+#include "App/Scene/Scene.h"
+#include "App/Versions.h"
 
 template<>
 struct ElementInfo<InputSwitch> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::InputSwitch,
         .group = ElementGroup::Input,
+        .minInputSize = 0,
+        .maxInputSize = 0,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeAppearance = true,
+        .canChangeSkin = true,
+        .hasColors = false,
+        .hasAudio = false,
+        .hasAudioBox = false,
         .hasTrigger = true,
+        .hasFrequency = false,
+        .hasDelay = false,
         .hasLabel = true,
+        .hasTruthTable = false,
         .rotatable = false,
     };
     static_assert(validate(constraints));
@@ -31,10 +42,11 @@ struct ElementInfo<InputSwitch> {
         meta.titleText = QT_TRANSLATE_NOOP("InputSwitch", "INPUT SWITCH");
         meta.translatedName = QT_TRANSLATE_NOOP("InputSwitch", "Input Switch");
         meta.trContext = "InputSwitch";
-        meta.defaultAppearances = QStringList({
+        meta.defaultSkins = QStringList({
             ":/Components/Input/switchOff.svg",
             ":/Components/Input/switchOn.svg",
         });
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicSource>(false, elm->outputSize()); };
         return meta;
     }
 
@@ -70,10 +82,30 @@ void InputSwitch::setOn()
     InputSwitch::setOn(!isOn());
 }
 
+void InputSwitch::setOn(const bool value, const int port)
+{
+    Q_UNUSED(port)
+    m_isOn = value;
+    // Pixmap index 0 = switch-off SVG, index 1 = switch-on SVG (matches bool→int cast)
+    setPixmap(static_cast<int>(m_isOn));
+    outputPort()->setStatus(static_cast<Status>(m_isOn));
+}
+
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!m_locked && (event->button() == Qt::LeftButton)) {
+        // Snapshot state before toggle so the undo stack can restore it.
+        QByteArray oldData;
+        QDataStream stream(&oldData, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        save(stream);
+
         setOn(!m_isOn);
+
+        if (auto *s = qobject_cast<Scene *>(scene())) {
+            s->receiveCommand(new UpdateCommand({this}, oldData, s));
+        }
+
         event->accept();
     }
 
@@ -95,16 +127,16 @@ void InputSwitch::load(QDataStream &stream, SerializationContext &context)
 {
     GraphicElement::load(stream, context);
 
-    if (!VersionInfo::hasQMapFormat(context.version)) {
+    if (context.version < Versions::V_4_1) {
         // v1.x–4.0 stored isOn as a bare bool; locked flag added in v3.1
         stream >> m_isOn;
 
-        if (VersionInfo::hasLockState(context.version)) {
+        if (context.version >= Versions::V_3_1) {
             stream >> m_locked;
         }
     }
 
-    if (VersionInfo::hasQMapFormat(context.version)) {
+    if (context.version >= Versions::V_4_1) {
         // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 
@@ -121,8 +153,14 @@ void InputSwitch::load(QDataStream &stream, SerializationContext &context)
     setOn(m_isOn);
 }
 
-QList<QPair<int, QString>> InputSwitch::appearanceStates() const
+void InputSwitch::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    return {{0, tr("Off")}, {1, tr("On")}};
-}
+    if (defaultSkin) {
+        m_alternativeSkins = m_defaultSkins;
+    } else {
+        m_alternativeSkins[static_cast<int>(m_isOn)] = fileName;
+    }
 
+    m_usingDefaultSkin = defaultSkin;
+    setPixmap(static_cast<int>(m_isOn));
+}
