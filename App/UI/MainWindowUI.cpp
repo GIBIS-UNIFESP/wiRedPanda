@@ -551,6 +551,35 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     mainToolBar->addAction(actionPlay);
     mainToolBar->addAction(actionRestart);
     mainToolBar->addAction(actionWaveform);
+    mainToolBar->addSeparator();
+
+    // Temporal simulation mode controls
+    comboSimMode = new QComboBox(MainWindow);
+    comboSimMode->setObjectName("comboSimMode");
+    comboSimMode->addItem(QString(), 0); // Functional — index 0
+    comboSimMode->addItem(QString(), 1); // Temporal — index 1
+    comboSimMode->setCurrentIndex(0);
+    comboSimMode->setToolTip(QString());
+    mainToolBar->addWidget(comboSimMode);
+
+    comboSimSpeed = new QComboBox(MainWindow);
+    comboSimSpeed->setObjectName("comboSimSpeed");
+    comboSimSpeed->addItem("0.1x", 100'000);
+    comboSimSpeed->addItem("0.5x", 500'000);
+    comboSimSpeed->addItem("1x",   1'000'000);
+    comboSimSpeed->addItem("2x",   2'000'000);
+    comboSimSpeed->addItem("5x",   5'000'000);
+    comboSimSpeed->addItem("10x",  10'000'000);
+    comboSimSpeed->addItem("100x", 100'000'000);
+    comboSimSpeed->setCurrentIndex(2); // 1x
+    comboSimSpeed->setVisible(false);
+    mainToolBar->addWidget(comboSimSpeed);
+
+    labelSimTime = new QLabel(MainWindow);
+    labelSimTime->setObjectName("labelSimTime");
+    labelSimTime->setMinimumWidth(100);
+    labelSimTime->setVisible(false);
+    mainToolBar->addWidget(labelSimTime);
     menuBar->addAction(menuFile->menuAction());
     menuBar->addAction(menuEdit->menuAction());
     menuBar->addAction(menuView->menuAction());
@@ -735,4 +764,8 @@ void MainWindowUi::retranslateUi()
     menuLanguage->setTitle(QCoreApplication::translate("MainWindow", "&Language"));
     menuSimulation->setTitle(QCoreApplication::translate("MainWindow", "Sim&ulation"));
     menuExamples->setTitle(QCoreApplication::translate("MainWindow", "Examples"));
+    comboSimMode->setItemText(0, QCoreApplication::translate("MainWindow", "Functional"));
+    comboSimMode->setItemText(1, QCoreApplication::translate("MainWindow", "Temporal"));
+    comboSimMode->setToolTip(QCoreApplication::translate("MainWindow", "Simulation mode"));
+    labelSimTime->setText(QCoreApplication::translate("MainWindow", "0 ns"));
 }

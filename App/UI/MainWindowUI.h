@@ -24,6 +24,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QLineEdit>
+#include <QComboBox>
 #include <QToolBar>
 #include <QStatusBar>
 #include <QMenuBar>
@@ -194,6 +195,12 @@ public:
 
     QToolBar *mainToolBar = nullptr;
     QStatusBar *statusBar = nullptr;
+
+    // --- Temporal simulation controls ---
+
+    QComboBox *comboSimMode = nullptr;   ///< Functional / Temporal selector.
+    QComboBox *comboSimSpeed = nullptr;  ///< Speed multiplier (temporal mode only).
+    QLabel *labelSimTime = nullptr;      ///< Current simulation time display.
 
     // --- Menu Bar & Menus ---
 

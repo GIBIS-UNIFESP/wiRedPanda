@@ -82,6 +82,11 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     qCDebug(zero) << "Setting connections";
     setupConnections();
 
+    // Periodic timer to update the simulation time label in temporal mode.
+    m_simTimeTimer.setInterval(100);
+    connect(&m_simTimeTimer, &QTimer::timeout, this, &MainWindow::updateSimTimeLabel);
+    m_simTimeTimer.start();
+
     qCDebug(zero) << "Checking playing simulation.";
     // Start simulation running by default so the circuit is live on open.
     m_ui->actionPlay->setChecked(true);
@@ -256,6 +261,8 @@ void MainWindow::setupConnections()
     connect(m_ui->actionSelectAll,             &QAction::triggered,       this,                &MainWindow::on_actionSelectAll_triggered);
     connect(m_ui->actionShortcutsAndTips,      &QAction::triggered,       this,                &MainWindow::on_actionShortcuts_and_Tips_triggered);
     connect(m_ui->actionWaveform,              &QAction::triggered,       this,                &MainWindow::on_actionWaveform_triggered);
+    connect(m_ui->comboSimMode,  QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_comboSimMode_currentIndexChanged);
+    connect(m_ui->comboSimSpeed, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_comboSimSpeed_currentIndexChanged);
     connect(m_ui->actionWires,                 &QAction::triggered,       this,                &MainWindow::on_actionWires_triggered);
     connect(m_ui->actionZoomIn,                &QAction::triggered,       this,                &MainWindow::on_actionZoomIn_triggered);
     connect(m_ui->actionZoomOut,               &QAction::triggered,       this,                &MainWindow::on_actionZoomOut_triggered);
@@ -1289,6 +1296,55 @@ void MainWindow::on_actionRestart_triggered()
     }
 
     m_currentTab->simulation()->restart();
+}
+
+void MainWindow::on_comboSimMode_currentIndexChanged(int index)
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    const auto mode = (index == 1) ? SimulationMode::Temporal : SimulationMode::Functional;
+    m_currentTab->simulation()->setMode(mode);
+
+    const bool temporal = (mode == SimulationMode::Temporal);
+    m_ui->comboSimSpeed->setVisible(temporal);
+    m_ui->labelSimTime->setVisible(temporal);
+
+    if (temporal) {
+        // Apply the current speed setting
+        on_comboSimSpeed_currentIndexChanged(m_ui->comboSimSpeed->currentIndex());
+        m_ui->labelSimTime->setText(tr("0 ns"));
+    }
+}
+
+void MainWindow::on_comboSimSpeed_currentIndexChanged(int index)
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    const SimTime nsPerTick = m_ui->comboSimSpeed->itemData(index).toULongLong();
+    m_currentTab->simulation()->setTimePerTick(nsPerTick);
+}
+
+void MainWindow::updateSimTimeLabel()
+{
+    if (!m_currentTab || !m_ui->labelSimTime->isVisible()) {
+        return;
+    }
+
+    const SimTime ns = m_currentTab->simulation()->currentTime();
+
+    QString text;
+    if (ns >= 1'000'000'000) {
+        text = QString::number(static_cast<double>(ns) / 1'000'000.0, 'f', 2) + " ms";
+    } else if (ns >= 1'000'000) {
+        text = QString::number(static_cast<double>(ns) / 1'000.0, 'f', 2) + QString::fromUtf8(" \xC2\xB5s");
+    } else {
+        text = QString::number(ns) + " ns";
+    }
+    m_ui->labelSimTime->setText(text);
 }
 
 void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout)

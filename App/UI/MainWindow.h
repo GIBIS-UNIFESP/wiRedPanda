@@ -12,6 +12,7 @@
 #include <QDir>
 #include <QMainWindow>
 #include <QSpacerItem>
+#include <QTimer>
 #include <QUrl>
 
 #include "App/UI/MainWindowUI.h"
@@ -228,6 +229,9 @@ private:
     void on_actionNew_triggered();
     void on_actionOpen_triggered();
     void on_actionPlay_toggled(const bool checked);
+    void on_comboSimMode_currentIndexChanged(int index);
+    void on_comboSimSpeed_currentIndexChanged(int index);
+    void updateSimTimeLabel();
     void on_actionReloadFile_triggered();
     void on_actionReportTranslationError_triggered();
     void on_actionResetZoom_triggered() const;
@@ -272,4 +276,5 @@ private:
 
     WorkSpace *m_currentTab = nullptr;
     int m_tabIndex = -1;
+    QTimer m_simTimeTimer; ///< Periodic timer to update the simulation time label.
 };
