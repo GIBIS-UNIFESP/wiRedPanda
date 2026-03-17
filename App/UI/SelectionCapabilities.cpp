@@ -20,7 +20,7 @@ SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &element
 
     // Start all flags true; AND-reduce over the selection below.
     c.hasAudioBox = c.hasAudio = c.hasColors = c.hasDelay = c.hasElements = true;
-    c.hasFrequency = c.hasLabel = c.hasOnlyInputs = c.hasWirelessMode = c.hasTrigger = c.hasTruthTable = true;
+    c.hasFrequency = c.hasLabel = c.hasOnlyInputs = c.hasLatchedValue = c.hasWirelessMode = c.hasTrigger = c.hasTruthTable = true;
     c.canChangeSkin = c.canMorph = true;
     c.hasSameAudio = c.hasSameColors = c.hasSameDelay = c.hasSameFrequency = true;
     c.hasSameInputSize = c.hasSameLabel = c.hasSameOutputSize = true;
@@ -72,7 +72,8 @@ SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &element
         bool sameElementGroup  = (group == firstGroup);
         sameElementGroup |= (group == ElementGroup::Input       && firstGroup == ElementGroup::StaticInput);
         sameElementGroup |= (group == ElementGroup::StaticInput && firstGroup == ElementGroup::Input);
-        c.hasOnlyInputs &= (group == ElementGroup::Input);
+        c.hasOnlyInputs  &= (group == ElementGroup::Input);
+        c.hasLatchedValue &= (group == ElementGroup::Input) && (elm->elementType() != ElementType::InputButton);
         c.canMorph      &= sameElementGroup;
     }
 

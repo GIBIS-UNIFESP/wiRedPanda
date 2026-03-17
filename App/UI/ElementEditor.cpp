@@ -338,10 +338,10 @@ void ElementEditor::applyCapabilitiesToUi()
         if (idx >= 0) { m_ui->comboBoxOutputSize->setCurrentIndex(idx); }
     }
 
-    /* Output value */
+    /* Output value (hidden for momentary inputs like InputButton) */
     m_ui->comboBoxValue->clear();
-    setSection(c.hasOnlyInputs, m_ui->labelValue, m_ui->comboBoxValue);
-    if (c.hasOnlyInputs) {
+    setSection(c.hasLatchedValue, m_ui->labelValue, m_ui->comboBoxValue);
+    if (c.hasLatchedValue) {
         // Binary inputs have outputSize == 1 but must offer values 0 and 1,
         // so bump the upper bound to 2 in that case.
         int maxOut = c.maxCurrentOutputSize;
@@ -350,7 +350,7 @@ void ElementEditor::applyCapabilitiesToUi()
             m_ui->comboBoxValue->addItem(QString::number(val), val);
         }
     }
-    if (prepareCombo(m_ui->comboBoxValue, c.hasOnlyInputs, c.hasSameOutputValue, m_manyOV)) {
+    if (prepareCombo(m_ui->comboBoxValue, c.hasLatchedValue, c.hasSameOutputValue, m_manyOV)) {
         m_ui->comboBoxValue->setCurrentText(QString::number(firstInput->outputValue()));
     }
 
