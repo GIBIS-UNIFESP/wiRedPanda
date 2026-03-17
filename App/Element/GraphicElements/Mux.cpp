@@ -42,7 +42,7 @@ struct ElementInfo<Mux> {
         meta.translatedName = QT_TRANSLATE_NOOP("Mux", "Mux");
         meta.trContext = "Mux";
         meta.defaultSkins = QStringList({":/Components/Logic/mux.svg"});
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicMux>(elm->inputSize()); };
+        meta.logicCreator = [](GraphicElement *elm) { auto e = std::make_shared<LogicMux>(elm->inputSize()); e->setPropagationDelay(20); return e; };
         return meta;
     }
 

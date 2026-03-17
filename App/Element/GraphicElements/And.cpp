@@ -31,7 +31,7 @@ struct ElementInfo<And> {
         // m_alternativeSkins starts as a copy of m_defaultSkins; the user can replace
         // entries in m_alternativeSkins without losing the originals in m_defaultSkins.
         meta.defaultSkins = QStringList({":/Components/Logic/and.svg"});
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicAnd>(elm->inputSize()); };
+        meta.logicCreator = [](GraphicElement *elm) { auto e = std::make_shared<LogicAnd>(elm->inputSize()); e->setPropagationDelay(10); return e; };
         return meta;
     }
 

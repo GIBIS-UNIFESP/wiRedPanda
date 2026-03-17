@@ -28,7 +28,7 @@ struct ElementInfo<Xnor> {
         meta.trContext = "Xnor";
         // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Logic/xnor.svg"});
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicXnor>(elm->inputSize()); };
+        meta.logicCreator = [](GraphicElement *elm) { auto e = std::make_shared<LogicXnor>(elm->inputSize()); e->setPropagationDelay(15); return e; };
         return meta;
     }
 

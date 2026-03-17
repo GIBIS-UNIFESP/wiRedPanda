@@ -42,7 +42,7 @@ struct ElementInfo<Demux> {
         meta.translatedName = QT_TRANSLATE_NOOP("Demux", "Demux");
         meta.trContext = "Demux";
         meta.defaultSkins = QStringList({":/Components/Logic/demux.svg"});
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicDemux>(elm->outputSize()); };
+        meta.logicCreator = [](GraphicElement *elm) { auto e = std::make_shared<LogicDemux>(elm->outputSize()); e->setPropagationDelay(20); return e; };
         return meta;
     }
 

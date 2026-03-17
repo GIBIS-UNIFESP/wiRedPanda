@@ -28,7 +28,7 @@ struct ElementInfo<Xor> {
         meta.trContext = "Xor";
         // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Logic/xor.svg"});
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicXor>(elm->inputSize()); };
+        meta.logicCreator = [](GraphicElement *elm) { auto e = std::make_shared<LogicXor>(elm->inputSize()); e->setPropagationDelay(15); return e; };
         return meta;
     }
 

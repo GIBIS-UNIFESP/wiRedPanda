@@ -28,7 +28,7 @@ struct ElementInfo<Not> {
         meta.trContext = "Not";
         // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Logic/not.svg"});
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicNot>(); };
+        meta.logicCreator = [](GraphicElement *) { auto e = std::make_shared<LogicNot>(); e->setPropagationDelay(5); return e; };
         return meta;
     }
 

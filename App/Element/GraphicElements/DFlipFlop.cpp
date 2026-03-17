@@ -37,7 +37,7 @@ struct ElementInfo<DFlipFlop> {
         meta.translatedName = QT_TRANSLATE_NOOP("DFlipFlop", "D-Flip-Flop");
         meta.trContext = "DFlipFlop";
         meta.defaultSkins = QStringList({":/Components/Memory/Dark/D-flipflop.svg"});
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicDFlipFlop>(); };
+        meta.logicCreator = [](GraphicElement *) { auto e = std::make_shared<LogicDFlipFlop>(); e->setPropagationDelay(10); return e; };
         return meta;
     }
 

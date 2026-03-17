@@ -37,7 +37,7 @@ struct ElementInfo<SRLatch> {
         meta.translatedName = QT_TRANSLATE_NOOP("SRLatch", "SR-Latch");
         meta.trContext = "SRLatch";
         meta.defaultSkins = QStringList({":/Components/Memory/Dark/SR-latch.svg"});
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicSRLatch>(); };
+        meta.logicCreator = [](GraphicElement *) { auto e = std::make_shared<LogicSRLatch>(); e->setPropagationDelay(8); return e; };
         return meta;
     }
 

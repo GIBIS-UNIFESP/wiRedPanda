@@ -28,7 +28,7 @@ struct ElementInfo<Nor> {
         meta.trContext = "Nor";
         // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Logic/nor.svg"});
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicNor>(elm->inputSize()); };
+        meta.logicCreator = [](GraphicElement *elm) { auto e = std::make_shared<LogicNor>(elm->inputSize()); e->setPropagationDelay(8); return e; };
         return meta;
     }
 

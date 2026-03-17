@@ -37,7 +37,7 @@ struct ElementInfo<JKFlipFlop> {
         meta.translatedName = QT_TRANSLATE_NOOP("JKFlipFlop", "JK-Flip-Flop");
         meta.trContext = "JKFlipFlop";
         meta.defaultSkins = QStringList({":/Components/Memory/Dark/JK-flipflop.svg"});
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicJKFlipFlop>(); };
+        meta.logicCreator = [](GraphicElement *) { auto e = std::make_shared<LogicJKFlipFlop>(); e->setPropagationDelay(12); return e; };
         return meta;
     }
 

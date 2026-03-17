@@ -47,7 +47,7 @@ struct ElementInfo<TruthTable> {
             if (!truthTable) {
                 throw PANDACEPTION_WITH_CONTEXT("TruthTable", "Failed to cast element to TruthTable");
             }
-            return std::make_shared<LogicTruthTable>(elm->inputSize(), elm->outputSize(), truthTable->key());
+            auto e = std::make_shared<LogicTruthTable>(elm->inputSize(), elm->outputSize(), truthTable->key()); e->setPropagationDelay(25); return e;
         };
         return meta;
     }

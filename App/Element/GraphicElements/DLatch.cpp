@@ -38,7 +38,7 @@ struct ElementInfo<DLatch> {
         meta.trContext = "DLatch";
         // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Memory/Dark/D-latch.svg"});
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicDLatch>(); };
+        meta.logicCreator = [](GraphicElement *) { auto e = std::make_shared<LogicDLatch>(); e->setPropagationDelay(8); return e; };
         return meta;
     }
 

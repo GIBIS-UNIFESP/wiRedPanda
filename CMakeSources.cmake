@@ -393,6 +393,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSerialization.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestElementMapping.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestTemporalSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestDialogs.cpp
 )
 
@@ -532,6 +533,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSerialization.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestElementMapping.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestTemporalSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestDialogs.h
 )
 

@@ -154,6 +154,7 @@
 // unit/simulation
 #include "Tests/Unit/Simulation/TestElementMapping.h"
 #include "Tests/Unit/Simulation/TestSimulationBlocker.h"
+#include "Tests/Unit/Simulation/TestTemporalSimulation.h"
 // unit/ui
 #include "Tests/Unit/Ui/TestDialogs.h"
 
@@ -295,6 +296,7 @@ int main(int argc, char **argv)
         {"TestSerialization", []() -> QObject * { return new TestSerialization; }},
         {"TestElementMapping", []() -> QObject * { return new TestElementMapping; }},
         {"TestSimulationBlocker", []() -> QObject * { return new TestSimulationBlocker; }},
+        {"TestTemporalSimulation", []() -> QObject * { return new TestTemporalSimulation; }},
         {"TestDialogs", []() -> QObject * { return new TestDialogs; }},
     });
 }

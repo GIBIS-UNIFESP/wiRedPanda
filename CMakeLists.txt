@@ -630,6 +630,7 @@ add_test(NAME TestSceneUndoredo COMMAND test_wiredpanda TestSceneUndoredo WORKIN
 add_test(NAME TestSerialization COMMAND test_wiredpanda TestSerialization WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementMapping COMMAND test_wiredpanda TestElementMapping WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulationBlocker COMMAND test_wiredpanda TestSimulationBlocker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestTemporalSimulation COMMAND test_wiredpanda TestTemporalSimulation WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDialogs COMMAND test_wiredpanda TestDialogs WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
@@ -705,7 +706,7 @@ foreach(TEST TestConnectionSerialization TestConnectionValidity TestConnections 
 endforeach()
 
 # Serialization and Command Tests - Integration category
-foreach(TEST TestSerialization TestElementMapping TestSimulationBlocker TestDialogs)
+foreach(TEST TestSerialization TestElementMapping TestSimulationBlocker TestTemporalSimulation TestDialogs)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
