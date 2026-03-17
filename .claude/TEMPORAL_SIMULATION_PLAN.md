@@ -8,18 +8,21 @@ Add an event-driven temporal simulation mode to wiRedPanda with configurable pro
 
 ## Implementation Status
 
+All phases complete.
+
 | Phase | Description | Status | Commit |
 |-------|-------------|--------|--------|
 | Pre-work | Output change tracking in LogicElement | **Done** | `a9643d665` |
 | 1 | Event Queue Infrastructure | **Done** | `711cf5c6b` |
-| 2 | LogicElement Delay Support | **Done** | `711cf5c6b`, delays assigned next commit |
+| 2 | LogicElement Delay Support + per-type defaults | **Done** | `711cf5c6b`, `6721d093f` |
 | 6 | Successor Scheduling | **Done** | `711cf5c6b` |
 | 3 | Temporal Simulation Engine | **Done** | `711cf5c6b` |
 | 4 | Clock Element Temporal Mode | **Done** | `711cf5c6b` |
 | 5 | Input Element Temporal Mode | **Done** | `711cf5c6b` |
-| Tests | Temporal simulation test suite (17 tests) | **Done** | next commit |
-| 8 | UI Integration | Not started | — |
-| 7 | Waveform Visualization | Not started | — |
+| 7 | Waveform Visualization (standalone widget) | **Done** | `863e4184e` |
+| 8 | UI Integration (toolbar + waveform dock) | **Done** | `b5212c10c`, `85ae797ba` |
+| Tests | 22 tests in TestTemporalSimulation | **Done** | `6721d093f`, `863e4184e` |
+| Bug fixes | Clock icon, tab sync, code review (10 bugs) | **Done** | `e64b8c60e`, `2a435fdf2`, `cf9be05be`, `c32c57ffe` |
 
 ---
 
@@ -34,7 +37,7 @@ enum class SimulationMode { Functional, Temporal };
 - **Functional** (default): Zero-delay, topological-sort single pass — original behaviour, untouched.
 - **Temporal**: Event-driven with per-element propagation delays via inertial delay model.
 
-Mode is selected via `Simulation::setMode()`. Switching mode resets simulation time and clears the event queue.
+Mode is selected via toolbar ComboBox or `Simulation::setMode()`. Switching mode resets simulation time, clears the event queue, and invalidates the waveform recorder.
 
 ### Key Files
 
@@ -43,10 +46,14 @@ Mode is selected via `Simulation::setMode()`. Switching mode resets simulation t
 | `App/Simulation/SimTime.h` | `using SimTime = uint64_t` (nanoseconds) |
 | `App/Simulation/SimEvent.h` | `SimEvent{time, target}` struct + `EventQueue` min-heap |
 | `App/Simulation/Simulation.h/.cpp` | Mode dispatch, `updateFunctional()`, `updateTemporal()`, `refreshVisuals()` |
-| `App/Element/LogicElements/LogicElement.h` | `InputPair`, `OutputPair`, `m_propagationDelay`, `m_successors`, `m_outputChanged` |
+| `App/Simulation/WaveformRecorder.h` | `SignalTrace` + `WaveformRecorder` (per-signal transition recording) |
 | `App/Simulation/ElementMapping.cpp` | Builds port-granular successor lists in `sortLogicElements()` |
+| `App/Element/LogicElements/LogicElement.h` | `InputPair`, `OutputPair`, `m_propagationDelay`, `m_successors`, `m_outputChanged` |
 | `App/Element/GraphicElements/Clock.h/.cpp` | `scheduleEdges()`, `resetTemporalClock()` |
-| `App/Element/GraphicElementInput.h` | `scheduleIfChanged()` with `m_lastScheduled` tracking |
+| `App/Element/GraphicElementInput.h` | `scheduleIfChanged()`, `resetScheduledState()`, `m_lastScheduled` |
+| `App/UI/TemporalWaveformWidget.h/.cpp` | Timing diagram widget with custom `paintEvent()`, zoom, time ruler |
+| `App/UI/MainWindowUI.h/.cpp` | Mode ComboBox, speed ComboBox, sim time label in toolbar |
+| `App/UI/MainWindow.h/.cpp` | Mode switching, waveform dock, Watch All / Clear, tab sync |
 
 ### Delay Model: Inertial Delay (Option B)
 
@@ -59,20 +66,24 @@ Events carry only `{time, target}` — no value. When an event fires, the target
 ```
 updateTemporal():
   1. Schedule clock edge events within [currentTime, targetTime]
+     - Advance past stale edges before scheduling (prevents burst after pause)
   2. Detect user input changes → schedule immediate successor events
   3. Process events from queue up to targetTime:
      - All events at same timestamp = one delta cycle
-     - Clock events: toggle LogicSource output directly (bypass updateLogic)
+     - Delta cycles repeat at same timestamp until no new same-time events
+     - Clock events: clearOutputChanged → toggle LogicSource directly
      - Other events: clearOutputChanged → updateLogic
      - If output changed: schedule successors at currentTime + successor.delay
-     - Delta cycle cap: 1000 (warns on overflow)
-  4. Advance currentTime to targetTime
-  5. refreshVisuals() — same as functional mode
+     - Delta cycle cap: 1000 per timestamp, 100000 total events per tick
+  4. Record waveform transitions after each timestamp settles
+  5. Sync clock graphic state (m_isOn + pixmap) from logic output
+  6. Advance currentTime to targetTime
+  7. refreshVisuals() — same as functional mode
 ```
 
 ### Clock Events in Temporal Mode
 
-Clock elements use `LogicSource` which resets to its initial value on `updateLogic()`. The temporal engine detects clock events by checking `propagationDelay() == 0 && outputSize() == 1 && inputPairs().isEmpty()` and toggles the output directly instead of calling `updateLogic()`.
+Clock elements use `LogicSource` which resets to its initial value on `updateLogic()`. The temporal engine detects clock events by checking `propagationDelay() == 0 && outputSize() == 1 && inputPairs().isEmpty()` and toggles the output directly instead of calling `updateLogic()`. After the event loop, `Clock::setOn()` syncs the graphic pixmap from the logic state.
 
 ### Successor Tracking
 
@@ -80,85 +91,39 @@ Built in `ElementMapping::sortLogicElements()` using two passes:
 1. **Init pass**: `initSuccessors(outputSize())` for all elements in `m_logicElms`, plus `m_globalVCC`/`m_globalGND`.
 2. **Build pass**: For each element's input pair `{predecessor, outPort}`, call `predecessor->addSuccessor(outPort, {element, inIdx})`. Predecessors not in `m_logicElms` (e.g., IC-internal globalVCC/GND) get lazy-initialized.
 
-### Implementation Pitfall Found During Development
+### Waveform Recording
 
-**IC-internal VCC/GND predecessors**: When ICs are flattened, their internal `ElementMapping` creates its own `m_globalVCC`/`m_globalGND` LogicSource instances. These end up as predecessors of elements in the outer `m_logicElms`, but they are NOT in `m_logicElms` themselves. The successor-building code must lazily initialize their successor storage when encountered, or the `addSuccessor()` call will index into an empty vector and crash.
+`WaveformRecorder` stores `SignalTrace` objects, each with a name, `LogicElement*` + port index, and a deduplicating `QVector<QPair<SimTime, Status>>`. Recording is hooked into `updateTemporal()` after each timestamp settles. The recorder is cleared on `restart()` and `setMode()` to prevent dangling pointers when `ElementMapping` is rebuilt.
+
+### UI Integration
+
+- **Toolbar**: Mode ComboBox (Functional/Temporal), speed ComboBox (0.1x–100x, hidden in Functional), sim time label (auto-formatted ns/µs/ms, updated every 100ms)
+- **Waveform dock**: Bottom dock widget toggled via Simulation → "Temporal Waveform" menu. Contains Watch All / Clear buttons and +/−/Fit zoom controls around a `TemporalWaveformWidget` in a QScrollArea.
+- **Tab sync**: `connectTab()` applies the current ComboBox mode/speed to new tabs so opening files respects the UI state.
 
 ---
 
-## Remaining Work
+## Pitfalls Discovered During Development
 
-### Phase 8: UI Integration (not started)
+1. **IC-internal VCC/GND predecessors**: Flattened ICs create internal `m_globalVCC`/`m_globalGND` that aren't in `m_logicElms`. Successor-building must lazy-init their storage.
 
-**What's needed:**
-- Mode selector in toolbar: ComboBox or toggle "Functional" / "Temporal"
-- Speed control for temporal mode: 1x, 2x, 5x, 10x, 50x, 100x, Max
-- SimTime display label (visible in temporal mode): "Sim: 1.234 µs"
-- Per-element delay editing in `ElementEditor` (optional, advanced)
+2. **QToolBar widget visibility**: `QToolBar::addWidget()` wraps widgets in `QWidgetAction`. Must toggle the action's visibility, not the widget's.
 
-**Where to integrate:**
-- `MainWindow` has play/pause/stop buttons; `Scene` owns `Simulation`
-- Mode stored in application settings (`QSettings`), not in `.panda` files
-- `setMode()` already handles restart; UI just calls it
+3. **Clock graphic desync**: Temporal event loop toggles `LogicSource` directly, bypassing `Clock::setOn()`. Must sync `m_isOn` + pixmap after the event loop.
 
-### Phase 7: Waveform Visualization (not started, future)
+4. **New tab mode desync**: New `Simulation` objects default to Functional. Must apply ComboBox state in `connectTab()`.
 
-#### Approach: Extend BeWavedDolphin
+5. **Dangling recorder pointers**: `WaveformRecorder` stores raw `LogicElement*` that become invalid when `ElementMapping` is rebuilt. Must clear recorder on restart/mode-switch. Watches must be set up AFTER `setMode()` + `update()`.
 
-A full waveform viewer already exists: **BeWavedDolphin** (`App/BeWavedDolphin/`, 2,452 lines, 12 source files). It's a mature waveform editor/analyzer with signal rendering, zoom/scroll, export (PNG/PDF/CSV), and `.dolphin` file persistence.
+6. **Clock negative phase delay**: `m_delay` can be negative. `resetTemporalClock` must use signed arithmetic to avoid unsigned underflow.
 
-However, BeWavedDolphin is an **active simulation driver** — it paints input waveforms, then sweeps column-by-column calling `sim->update()`. Temporal mode needs **passive recording** during live simulation.
+7. **Stale m_lastScheduled**: `GraphicElementInput::m_lastScheduled` persists across restarts. Must call `resetScheduledState()` during temporal init.
 
-| Aspect | BeWavedDolphin (current) | Temporal mode needs |
-|--------|-------------------------|-------------------|
-| Time model | Discrete columns (user-defined steps) | Continuous nanoseconds (`SimTime`) |
-| Simulation | Drives `sim->update()` per column | Passively records during live `updateTemporal()` |
-| Input control | User paints input waveforms, then runs | Live circuit interaction |
-| Resolution | 1 column = 1 sim cycle | Nanosecond-level transitions |
-| Display | 8 SVG pixmaps (high/low/edges) | Similar, but time-proportional spacing |
+---
 
-**Reusable components:**
-- `SignalDelegate` — waveform pixmap rendering (blue inputs, green outputs, edge detection)
-- `WaveformView` — QGraphicsView with zoom/scroll
-- `DolphinSerializer` — export to `.dolphin`/`.csv`/PNG/PDF
-- Table-based UI layout (rows = signals, columns = time)
-- `BeWavedDolphinUI` — toolbar, menus, keyboard shortcuts
+## Per-Type Default Delays
 
-**New code needed (~200 lines):**
-1. `recordFromTemporalSim()` — hook into the temporal engine to capture `(SimTime, Status)` transitions per watched signal during live simulation
-2. Time quantization — convert continuous `SimTime` transitions to discrete column indices for the existing `SignalModel` (pixels-per-nanosecond scaling)
-3. Live append — as simulation advances, append new columns to the right edge of the table (ring buffer or auto-scroll)
-4. Mode toggle — keep existing manual-input mode for functional simulation; add passive-recording mode for temporal simulation
-
-**Key files to modify:**
-- `App/BeWavedDolphin/BeWavedDolphin.h/.cpp` — add recording mode and temporal hooks
-- `App/BeWavedDolphin/SignalModel.h/.cpp` — support dynamic column append
-- `App/Simulation/Simulation.cpp` — emit signal on transition (or callback) for recording
-
-This approach is ~200 lines vs ~500 for a new widget from scratch, and inherits all existing display/export/persistence infrastructure.
-
-#### Chosen approach: Standalone TemporalWaveformWidget
-
-A new purpose-built widget for temporal simulation, independent of BeWavedDolphin. Rationale: BeWavedDolphin is an active simulation driver with a fundamentally different time model (discrete columns). Adapting it would couple two unrelated time models. A standalone widget is cleaner and avoids polluting BeWavedDolphin's existing (working) codebase.
-
-**New files:**
-- `App/Simulation/WaveformRecorder.h` — per-signal transition recording (`QVector<QPair<SimTime, Status>>`)
-- `App/Widgets/TemporalWaveformWidget.h/.cpp` — QWidget with custom `paintEvent()` drawing timing diagrams
-
-**Recording mechanism:**
-- `WaveformRecorder` stores a list of `SignalTrace` objects, each with a name and a vector of `(SimTime, Status)` transitions
-- Hooked into `Simulation::updateTemporal()` — after each event where `outputChanged()`, record new output values for watched signals
-- Watched signals selected by `LogicElement*` + port index
-
-**Display:**
-- Horizontal time axis (nanoseconds), vertical signal traces
-- Each trace: horizontal lines at HIGH/LOW with vertical edges at transitions
-- Scrollable (QScrollArea) and zoomable (pixels-per-nanosecond scale factor)
-- Signal names on the left, time ruler on top
-
-### Per-Type Default Delays (assigned)
-
-Each element's `logicCreator` lambda in `ElementInfo<T>` calls `setPropagationDelay()` after creation. 16 element types have non-zero defaults; sources, sinks, and nodes remain at 0.
+Each element's `logicCreator` lambda calls `setPropagationDelay()` after creation. 16 element types have non-zero defaults.
 
 | Element | Default delay | Rationale |
 |---------|--------------|-----------|
@@ -179,9 +144,11 @@ Each element's `logicCreator` lambda in `ElementInfo<T>` calls `setPropagationDe
 | LogicSource | 0 ns | Constant |
 | LogicSink | 0 ns | Terminal |
 
-### Test Coverage
+---
 
-`Tests/Unit/Simulation/TestTemporalSimulation.cpp` — 17 tests covering:
+## Test Coverage
+
+`Tests/Unit/Simulation/TestTemporalSimulation.cpp` — 22 tests:
 
 - **EventQueue** (3): ordering, same-time FIFO, clear
 - **LogicElement delay** (2): default delays assigned, zero-delay elements
@@ -191,15 +158,38 @@ Each element's `logicCreator` lambda in `ElementInfo<T>` calls `setPropagationDe
 - **Propagation delays** (2): NOT gate delay, chained cumulative delay
 - **Clock scheduling** (1): clock edges scheduled and toggle correctly
 - **Input change detection** (1): InputSwitch toggle propagates in temporal mode
+- **Waveform recorder** (4): watch/record, deduplication, statusAt binary search, full integration
+- **Waveform widget** (1): sizeHint and paint without crash
+- **Existing tests**: All 135 pre-existing tests pass unmodified (functional mode untouched)
 
 ---
 
-## Open Questions
+## BeWavedDolphin Alternative (documented, not used)
 
-1. **Transport delay**: Should we add `inputIndex` + `value` fields to `SimEvent` for future transport delay support, even if unused by inertial delay?
+A full waveform viewer already exists: **BeWavedDolphin** (`App/BeWavedDolphin/`, 2,452 lines, 12 source files). It's a mature waveform editor/analyzer with signal rendering, zoom/scroll, export (PNG/PDF/CSV), and `.dolphin` file persistence.
 
-2. **Clock detection heuristic**: Current temporal engine detects clock LogicSource events by `delay==0 && outputSize==1 && inputPairs.empty()`. Would a `LogicClock` subclass be cleaner?
+However, BeWavedDolphin is an **active simulation driver** — it paints input waveforms, then sweeps column-by-column calling `sim->update()`. Temporal mode needs **passive recording** during live simulation.
 
-3. **Waveform viewer timing**: Should it be implemented alongside the UI integration, or deferred further?
+| Aspect | BeWavedDolphin (current) | Temporal mode needs |
+|--------|-------------------------|-------------------|
+| Time model | Discrete columns (user-defined steps) | Continuous nanoseconds (`SimTime`) |
+| Simulation | Drives `sim->update()` per column | Passively records during live `updateTemporal()` |
+| Input control | User paints input waveforms, then runs | Live circuit interaction |
+| Resolution | 1 column = 1 sim cycle | Nanosecond-level transitions |
+| Display | 8 SVG pixmaps (high/low/edges) | Similar, but time-proportional spacing |
 
-4. **Per-element delay editing**: Should users be able to customize individual gate delays in temporal mode, or only use type defaults?
+A standalone `TemporalWaveformWidget` was chosen to avoid coupling two unrelated time models. If BeWavedDolphin integration is desired in the future, the reusable components are: `SignalDelegate`, `WaveformView`, `DolphinSerializer`, and the table-based UI layout.
+
+---
+
+## Future Enhancements
+
+1. **Transport delay**: Add `inputIndex` + `value` fields to `SimEvent` so elements see the value at scheduling time rather than evaluation time. Enables glitch-visible simulation.
+
+2. **LogicClock subclass**: Replace the clock detection heuristic (`delay==0 && outputSize==1 && inputPairs.empty()`) with a proper `LogicClock` that handles toggling in `updateLogic()`.
+
+3. **Per-element delay editing**: Add a delay field to `ElementEditor` (visible in temporal mode) so users can customize individual gate delays.
+
+4. **Waveform export**: Add PNG/CSV export to the waveform dock (can reuse `DolphinSerializer` patterns).
+
+5. **Signal selection via context menu**: Right-click on element → "Watch signal" / "Unwatch signal" for fine-grained waveform control instead of Watch All.
