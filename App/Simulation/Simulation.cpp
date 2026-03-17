@@ -56,6 +56,12 @@ void Simulation::update()
         return;
     }
 
+    // Temporal mode uses an event-driven engine with propagation delays.
+    if (m_mode == SimulationMode::Temporal) {
+        updateTemporal();
+        return;
+    }
+
     // Clock elements are the only truly time-driven components; all other logic
     // is combinational and responds immediately to their values.
     if (m_timer.isActive()) {
@@ -222,6 +228,115 @@ void Simulation::setUserMuted(const bool muted)
 bool Simulation::isUserMuted() const
 {
     return m_userMuted;
+}
+
+// --- Simulation Mode ---
+
+void Simulation::setMode(SimulationMode mode)
+{
+    m_mode = mode;
+    if (mode == SimulationMode::Temporal) {
+        m_eventQueue.clear();
+        m_currentTime = 0;
+    }
+}
+
+// --- Temporal Engine ---
+
+void Simulation::updateTemporal()
+{
+    const SimTime targetTime = m_currentTime + m_timePerTick;
+
+    // Schedule clock edge events within this time window.
+    for (auto *clock : std::as_const(m_clocks)) {
+        if (clock) {
+            clock->scheduleEdges(m_eventQueue, m_currentTime, targetTime);
+        }
+    }
+
+    // Detect user input changes and inject immediate events.
+    for (auto *inputElm : std::as_const(m_inputs)) {
+        if (inputElm) {
+            inputElm->scheduleIfChanged(m_eventQueue, m_currentTime);
+        }
+    }
+
+    // Process events up to targetTime.
+    const int maxDeltaCycles = 1000;
+    int deltaCycles = 0;
+
+    while (!m_eventQueue.empty() && m_eventQueue.nextTime() <= targetTime) {
+        const SimTime eventTime = m_eventQueue.nextTime();
+        m_currentTime = eventTime;
+
+        // Process all events at this exact timestamp (one delta cycle).
+        while (!m_eventQueue.empty() && m_eventQueue.nextTime() == eventTime) {
+            auto event = m_eventQueue.pop();
+            if (!event.target) {
+                continue;
+            }
+
+            // Input-only elements (clocks) are toggled directly.
+            if (event.target->inputSize() == 0) {
+                const auto current = event.target->outputValue(0);
+                event.target->setOutputValue(current == Status::Active ? Status::Inactive : Status::Active);
+            } else {
+                event.target->clearOutputChanged();
+                event.target->updateLogic();
+            }
+
+            if (event.target->outputChanged()) {
+                scheduleSuccessors(event.target);
+            }
+        }
+
+        if (++deltaCycles > maxDeltaCycles) {
+            if (!m_convergenceWarned) {
+                m_convergenceWarned = true;
+                emit simulationWarning(tr("Warning: temporal simulation delta cycle limit exceeded — possible oscillation."));
+            }
+            break;
+        }
+    }
+
+    m_currentTime = targetTime;
+    refreshVisuals();
+}
+
+void Simulation::scheduleSuccessors(GraphicElement *source)
+{
+    for (int outIdx = 0; outIdx < source->outputSize(); ++outIdx) {
+        auto *outPort = source->outputPort(outIdx);
+        if (!outPort) {
+            continue;
+        }
+        for (auto *conn : outPort->connections()) {
+            if (auto *inPort = conn ? conn->endPort() : nullptr) {
+                if (auto *succ = inPort->graphicElement()) {
+                    SimEvent ev;
+                    ev.time = m_currentTime + succ->propagationDelay();
+                    ev.target = succ;
+                    m_eventQueue.schedule(ev);
+                }
+            }
+        }
+    }
+}
+
+void Simulation::refreshVisuals()
+{
+    for (auto *connection : std::as_const(m_connections)) {
+        updatePort(connection->startPort());
+    }
+    for (auto *outputElm : std::as_const(m_outputs)) {
+        if (outputElm) {
+            for (auto *inputPort : outputElm->inputs()) {
+                if (inputPort) {
+                    updatePort(inputPort);
+                }
+            }
+        }
+    }
 }
 
 void Simulation::updateWithIterativeSettling()

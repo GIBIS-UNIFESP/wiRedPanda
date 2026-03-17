@@ -8,6 +8,9 @@
 #pragma once
 
 #include "App/Element/GraphicElement.h"
+#include "App/Nodes/QNEConnection.h"
+#include "App/Nodes/QNEPort.h"
+#include "App/Simulation/SimEvent.h"
 
 /**
  * \class GraphicElementInput
@@ -67,10 +70,6 @@ public:
     virtual void setOn(const bool value, const int port = 0);
 
     /// Applies a custom appearance image indexed by the current on/off state.
-    ///
-    /// Default implementation updates \a m_alternativeAppearances at the slot
-    /// corresponding to m_isOn (index 0 = off, 1 = on).  Override when the
-    /// element uses a different slot scheme (e.g. InputRotary always uses slot 0).
     void setAppearance(const bool defaultAppearance, const QString &fileName) override;
 
     /**
@@ -79,16 +78,22 @@ public:
      */
     void setLocked(const bool locked) { m_locked = locked; }
 
-    // --- Updates ---
+    // --- Updates (functional mode) ---
 
-    /// Propagates the current on/off state of each output to the backing logic element.
+    /// Propagates the current on/off state of each output to the simulation layer.
     void updateOutputs();
+
+    // --- Updates (temporal mode) ---
+
+    /// Schedules events for any output ports whose value changed since the last call.
+    void scheduleIfChanged(EventQueue &queue, SimTime now);
 
 protected:
     // --- Members ---
 
     bool m_isOn = false;
     bool m_locked = false;
+    QVector<Status> m_lastScheduled; ///< Tracks last-scheduled value per output port (temporal mode).
 };
 
 inline void GraphicElementInput::updateOutputs()
@@ -100,3 +105,35 @@ inline void GraphicElementInput::updateOutputs()
     }
 }
 
+inline void GraphicElementInput::scheduleIfChanged(EventQueue &queue, SimTime now)
+{
+    // Lazy initialization: size the tracking vector on first call.
+    if (m_lastScheduled.size() != outputSize()) {
+        m_lastScheduled.fill(Status::Unknown, outputSize());
+    }
+
+    for (int portIndex = 0; portIndex < outputSize(); ++portIndex) {
+        const Status newVal = isOn(portIndex) ? Status::Active : Status::Inactive;
+        if (newVal != m_lastScheduled[portIndex]) {
+            // Write the new output value directly so successors see it when evaluated.
+            setOutputValue(portIndex, newVal);
+            m_lastScheduled[portIndex] = newVal;
+
+            // Schedule re-evaluation of all elements connected to this output port.
+            auto *outPort = outputPort(portIndex);
+            if (!outPort) {
+                continue;
+            }
+            for (auto *conn : outPort->connections()) {
+                if (auto *inPort = conn ? conn->endPort() : nullptr) {
+                    if (auto *succ = inPort->graphicElement()) {
+                        SimEvent ev;
+                        ev.time = now + succ->propagationDelay();
+                        ev.target = succ;
+                        queue.schedule(ev);
+                    }
+                }
+            }
+        }
+    }
+}

@@ -9,6 +9,7 @@
 #include "App/Element/ElementInfo.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
+#include "App/Simulation/SimEvent.h"
 
 using namespace std::chrono_literals;
 
@@ -205,3 +206,30 @@ QList<QPair<int, QString>> Clock::appearanceStates() const
     return {{0, tr("Low")}, {1, tr("High")}};
 }
 
+
+void Clock::resetTemporalClock(SimTime simTime)
+{
+    setOn();
+    m_halfPeriodNs = static_cast<SimTime>(m_interval.count()) * 1000;
+
+    const SimTime fullPeriodNs = m_halfPeriodNs * 2;
+    const auto delayNs = static_cast<SimTime>(m_delay * static_cast<double>(fullPeriodNs));
+    m_nextEdgeSimTime = simTime + m_halfPeriodNs + delayNs;
+}
+
+void Clock::scheduleEdges(EventQueue &queue, SimTime from, SimTime to)
+{
+    Q_UNUSED(from)
+
+    if (m_locked || m_halfPeriodNs == 0) {
+        return;
+    }
+
+    while (m_nextEdgeSimTime <= to) {
+        SimEvent ev;
+        ev.time = m_nextEdgeSimTime;
+        ev.target = this;
+        queue.schedule(ev);
+        m_nextEdgeSimTime += m_halfPeriodNs;
+    }
+}

@@ -16,6 +16,7 @@
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Element/PropertyDescriptor.h"
+#include "App/Simulation/SimTime.h"
 
 struct SerializationContext;
 
@@ -228,6 +229,15 @@ public:
 
     /// Returns the name of the previous color in the element's color list.
     QString previousColor() const;
+
+    // --- Temporal Simulation: Propagation Delay ---
+
+    /// Returns this element's propagation delay in nanoseconds for temporal simulation.
+    /// Subclasses may override; default is 10 ns (generic gate delay).
+    virtual SimTime propagationDelay() const { return m_propagationDelay; }
+
+    /// Sets the propagation delay in nanoseconds (used by temporal simulation).
+    void setPropagationDelay(SimTime ns) { m_propagationDelay = ns; }
 
     // --- Frequency & Delay ---
 
@@ -652,6 +662,8 @@ private:
     QVector<Status> m_simInputValues;
     QVector<Status> m_simOutputValues;
     bool m_simOutputChanged = false;
+
+    SimTime m_propagationDelay = 10; ///< Propagation delay in ns for temporal simulation (default 10 ns).
 
     // --- Members: Trigger & Label ---
 

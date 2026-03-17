@@ -15,6 +15,14 @@
 #include <QSet>
 #include <QTimer>
 
+#include "App/Simulation/SimEvent.h"
+
+/// Selects the simulation evaluation strategy.
+enum class SimulationMode {
+    Functional, ///< Zero-delay, topological-sort pass (default).
+    Temporal,   ///< Event-driven with per-element propagation delays.
+};
+
 class Clock;
 class GraphicElement;
 class GraphicElementInput;
@@ -81,6 +89,25 @@ public:
     /// Returns \c true if \a element is part of a combinational feedback loop.
     bool isInFeedbackLoop(const GraphicElement *element) const;
 
+    // --- Simulation Mode ---
+
+    /// Returns the current simulation mode.
+    SimulationMode mode() const { return m_mode; }
+
+    /// Switches the simulation mode.  Takes effect on the next restart/initialize().
+    void setMode(SimulationMode mode);
+
+    // --- Temporal Mode ---
+
+    /// Returns the current simulation time in nanoseconds (temporal mode only).
+    SimTime currentTime() const { return m_currentTime; }
+
+    /// Sets how many nanoseconds advance per 1 ms wall-clock tick (default 1 ms = 1 000 000 ns).
+    void setTimePerTick(SimTime ns) { m_timePerTick = ns; }
+
+    /// Returns the current time-per-tick setting.
+    SimTime timePerTick() const { return m_timePerTick; }
+
     // --- Initialization ---
 
     /**
@@ -143,6 +170,12 @@ private:
     void updateWithIterativeSettling();
     void sortSimElements(const QVector<GraphicElement *> &elements);
 
+    // --- Temporal engine helpers ---
+
+    void updateTemporal();
+    void scheduleSuccessors(GraphicElement *source);
+    void refreshVisuals();
+
     // --- Members: Timer & element lists ---
 
     QTimer m_timer;
@@ -173,5 +206,12 @@ private:
     QHash<const GraphicElement *, int> m_simPriorities;
     QSet<const GraphicElement *> m_simFeedbackNodes;
     bool m_simHasFeedbackElements = false;
+
+    // --- Members: Temporal engine ---
+
+    SimulationMode m_mode = SimulationMode::Functional;
+    EventQueue m_eventQueue;
+    SimTime m_currentTime = 0;
+    SimTime m_timePerTick = 1'000'000; ///< 1 ms in nanoseconds.
 };
 
