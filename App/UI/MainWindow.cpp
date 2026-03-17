@@ -1325,7 +1325,7 @@ void MainWindow::on_comboSimMode_currentIndexChanged(int index)
     m_ui->actionSimTime->setVisible(temporal);
 
     if (temporal) {
-        // Apply the current speed setting
+        // Apply the current speed setting and auto-adapt waveform zoom.
         on_comboSimSpeed_currentIndexChanged(m_ui->comboSimSpeed->currentIndex());
         m_ui->labelSimTime->setText(tr("0 ns"));
     }
@@ -1339,6 +1339,17 @@ void MainWindow::on_comboSimSpeed_currentIndexChanged(int index)
 
     const SimTime nsPerTick = m_ui->comboSimSpeed->itemData(index).toULongLong();
     m_currentTab->simulation()->setTimePerTick(nsPerTick);
+
+    // Auto-adapt waveform zoom so ~5 seconds of wall-clock time fits the visible width.
+    // At 1000 ticks/sec, 5 seconds = 5000 ticks worth of sim time.
+    if (m_waveformWidget) {
+        const double simNsPerWallSec = nsPerTick * 1000.0; // ticks/sec = 1000 (1ms timer)
+        const double visibleSimNs = simNsPerWallSec * 5.0; // 5 seconds of wall time
+        const int availableWidth = m_waveformWidget->width() - 120; // LABEL_WIDTH
+        if (availableWidth > 0 && visibleSimNs > 0) {
+            m_waveformWidget->setPixelsPerNs(availableWidth / visibleSimNs);
+        }
+    }
 }
 
 void MainWindow::updateSimTimeLabel()
@@ -1457,6 +1468,9 @@ void MainWindow::watchAllSignals()
 
     recorder.setRecording(true);
     m_waveformWidget->setRecorder(&recorder);
+
+    // Apply zoom matching the current speed setting.
+    on_comboSimSpeed_currentIndexChanged(m_ui->comboSimSpeed->currentIndex());
     m_waveformWidget->update();
 }
 
