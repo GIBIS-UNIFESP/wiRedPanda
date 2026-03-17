@@ -1297,6 +1297,14 @@ void MainWindow::connectTab()
         }
     });
 
+    // Apply the current UI mode/speed to the new tab's simulation.
+    if (m_ui->comboSimMode) {
+        const auto mode = (m_ui->comboSimMode->currentIndex() == 1) ? SimulationMode::Temporal : SimulationMode::Functional;
+        if (m_currentTab->simulation()->mode() != mode) {
+            m_currentTab->simulation()->setMode(mode);
+        }
+    }
+
     if (m_ui->actionPlay->isChecked()) {
         qCDebug(zero) << "Restarting simulation.";
         m_currentTab->simulation()->start();
