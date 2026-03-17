@@ -166,6 +166,16 @@ void Simulation::updateTemporal()
     }
 
     m_currentTime = targetTime;
+
+    // Sync clock graphic elements with their logic output so the icon updates.
+    // In temporal mode the event loop toggles LogicSource directly, bypassing
+    // Clock::setOn(), so m_isOn and the pixmap fall out of sync.
+    for (auto *clock : std::as_const(m_clocks)) {
+        if (clock && clock->logic()) {
+            clock->setOn(clock->logic()->outputValue() == Status::Active);
+        }
+    }
+
     refreshVisuals();
 }
 
