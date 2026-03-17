@@ -19,7 +19,12 @@ bool LogicElement::updateInputs()
         if (val == Status::Invalid) {
             // An unconnected (null) predecessor makes all outputs Invalid; the
             // simulation cannot compute a meaningful result from incomplete data.
-            std::fill(m_outputValues.begin(), m_outputValues.end(), Status::Invalid);
+            for (auto &out : m_outputValues) {
+                if (out != Status::Invalid) {
+                    m_outputChanged = true;
+                }
+                out = Status::Invalid;
+            }
             return false;
         }
         m_inputValues[index] = val;
@@ -45,6 +50,9 @@ void LogicElement::connectPredecessor(const int index, LogicElement *logic, cons
 
 void LogicElement::setOutputValue(const int index, const Status value)
 {
+    if (m_outputValues[index] != value) {
+        m_outputChanged = true;
+    }
     m_outputValues[index] = value;
 }
 

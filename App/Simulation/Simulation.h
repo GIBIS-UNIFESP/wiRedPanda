@@ -95,7 +95,6 @@ private:
     QVector<GraphicElement *> m_outputs;
     QVector<GraphicElementInput *> m_inputs;
     QVector<QNEConnection *> m_connections;
-    QVector<QVector<Status>> m_previousOutputs;
 
     // --- Members: Scene & mapping ---
 
