@@ -117,9 +117,11 @@ void Simulation::updateTemporal()
         }
     }
 
-    // Process events up to targetTime.
-    // The delta cycle limit detects oscillation: if events at the SAME timestamp
-    // keep re-scheduling events at that same timestamp, we cap the loop.
+    // Process events up to targetTime using two-phase (non-blocking) delta
+    // cycles.  Within each delta cycle every element evaluates against the
+    // pre-commit snapshot (via prepareForEvaluation / deferOutputs), then all
+    // results are committed simultaneously.  This eliminates evaluation-order
+    // dependence — the same approach used by VHDL/Verilog simulators.
     const int maxDeltaCycles = 1000;
     int totalEvents = 0;
     const int maxTotalEvents = 100000;
@@ -128,19 +130,27 @@ void Simulation::updateTemporal()
         const SimTime eventTime = m_eventQueue.nextTime();
         m_currentTime = eventTime;
 
-        // Process all events at this exact timestamp.  If processing generates
-        // new events at the same timestamp (zero-delay feedback), iterate as
-        // delta cycles until stable or the cap is reached.
         int deltaCycles = 0;
-        do {
-            bool anyScheduled = false;
+        bool anyChanged = true;
+
+        while (anyChanged && !m_eventQueue.empty() && m_eventQueue.nextTime() == eventTime
+               && deltaCycles < maxDeltaCycles) {
+
+            // ── Phase 1: Evaluate ──
+            // Each element evaluates at most once per delta cycle (deduplicated).
+            // Outputs are written to a pending buffer; live values are restored
+            // so that other elements in the same delta cycle read pre-commit state.
+            QVector<LogicElement *> evaluated;
+            QSet<LogicElement *> seen;
+
             while (!m_eventQueue.empty() && m_eventQueue.nextTime() == eventTime) {
                 auto event = m_eventQueue.pop();
-                if (!event.target) {
+                if (!event.target || seen.contains(event.target)) {
                     continue;
                 }
+                seen.insert(event.target);
 
-                event.target->clearOutputChanged();
+                event.target->prepareForEvaluation();
 
                 // Clock events toggle the source output directly since
                 // LogicSource::updateLogic() would reset it to its initial value.
@@ -152,21 +162,27 @@ void Simulation::updateTemporal()
                     event.target->updateLogic();
                 }
 
-                if (event.target->outputChanged()) {
-                    scheduleSuccessors(event.target);
-                    anyScheduled = true;
-                }
+                event.target->deferOutputs();
+                evaluated.append(event.target);
 
                 if (++totalEvents > maxTotalEvents) {
                     break;
                 }
             }
 
-            if (!anyScheduled) {
-                break;
+            // ── Phase 2: Commit & schedule ──
+            // Apply all pending outputs simultaneously, then schedule successors
+            // for elements whose outputs actually changed.
+            anyChanged = false;
+            for (auto *elm : std::as_const(evaluated)) {
+                if (elm->commitOutputs()) {
+                    scheduleSuccessors(elm);
+                    anyChanged = true;
+                }
             }
-        } while (!m_eventQueue.empty() && m_eventQueue.nextTime() == eventTime
-                 && ++deltaCycles < maxDeltaCycles);
+
+            ++deltaCycles;
+        }
 
         // Record waveform transitions after this timestamp settles.
         if (m_recorder.isRecording()) {

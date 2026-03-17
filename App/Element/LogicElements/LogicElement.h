@@ -84,6 +84,15 @@ public:
     /// Clears the output-changed flag (call before updateLogic() to prepare for change detection).
     void clearOutputChanged() { m_outputChanged = false; }
 
+    // --- Non-blocking assignment (two-phase delta cycles) ---
+
+    /// Saves current outputs and clears the changed flag before evaluation.
+    void prepareForEvaluation();
+    /// Captures computed outputs into the pending buffer and restores pre-evaluation values.
+    void deferOutputs();
+    /// Applies pending outputs to live values.  Returns \c true if any output actually changed.
+    bool commitOutputs();
+
     // --- Logic ---
 
     const QVector<InputPair> &inputPairs() const;
@@ -136,6 +145,8 @@ private:
     QVector<Status> m_inputValues;  ///< Cached input values refreshed each simulation step.
     QVector<Status> m_outputValues;
     QVector<QVector<OutputPair>> m_successors; ///< [outputIndex] → list of successor (element, inputPort) pairs.
-    SimTime m_propagationDelay = 0; ///< Propagation delay in nanoseconds (0 = instant).
-    bool m_outputChanged = false;   ///< Set by setOutputValue() when an output actually changes.
+    QVector<Status> m_pendingOutputs; ///< Deferred output buffer for non-blocking assignment.
+    QVector<Status> m_savedOutputs;   ///< Snapshot for restore during deferOutputs().
+    SimTime m_propagationDelay = 0;   ///< Propagation delay in nanoseconds (0 = instant).
+    bool m_outputChanged = false;     ///< Set by setOutputValue() when an output actually changes.
 };

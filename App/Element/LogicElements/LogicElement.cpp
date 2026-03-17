@@ -7,6 +7,8 @@ LogicElement::LogicElement(const int inputSize, const int outputSize)
     : m_inputPairs(inputSize, {})
     , m_inputValues(inputSize, Status::Inactive)
     , m_outputValues(outputSize, Status::Inactive)
+    , m_pendingOutputs(outputSize, Status::Inactive)
+    , m_savedOutputs(outputSize, Status::Inactive)
 {
 }
 
@@ -77,4 +79,32 @@ Status LogicElement::inputValue(const int index) const
     }
     int port = m_inputPairs.at(index).port;
     return pred->outputValue(port);
+}
+
+// ============================================================================
+// Non-blocking assignment (two-phase delta cycles)
+// ============================================================================
+
+void LogicElement::prepareForEvaluation()
+{
+    m_savedOutputs = m_outputValues;
+    m_outputChanged = false;
+}
+
+void LogicElement::deferOutputs()
+{
+    m_pendingOutputs = m_outputValues;  // capture what updateLogic() computed
+    m_outputValues = m_savedOutputs;    // restore pre-evaluation values
+}
+
+bool LogicElement::commitOutputs()
+{
+    m_outputChanged = false;
+    for (int i = 0; i < m_outputValues.size(); ++i) {
+        if (m_outputValues[i] != m_pendingOutputs[i]) {
+            m_outputValues[i] = m_pendingOutputs[i];
+            m_outputChanged = true;
+        }
+    }
+    return m_outputChanged;
 }
