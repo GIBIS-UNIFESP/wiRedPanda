@@ -3,6 +3,8 @@
 
 #include "App/Element/LogicElements/LogicXor.h"
 
+#include "App/Core/StatusOps.h"
+
 LogicXor::LogicXor(const int inputSize)
     : LogicElement(inputSize, 1)
 {
@@ -14,9 +16,5 @@ void LogicXor::updateLogic()
         return;
     }
 
-    // XOR: odd-parity detector — Active when an odd number of inputs are Active.
-    // This generalises the 2-input XOR definition consistently across all gate widths.
-    const int activeCount = std::count_if(inputs().cbegin(), inputs().cend(),
-                                          [](Status s) { return s == Status::Active; });
-    setOutputValue((activeCount % 2 != 0) ? Status::Active : Status::Inactive);
+    setOutputValue(StatusOps::statusXorAll(inputs()));
 }

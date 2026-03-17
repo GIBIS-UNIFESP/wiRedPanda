@@ -44,8 +44,8 @@ void TestLogicElementsErrors::testInvalidInputPortIndex()
 }
 
 /**
- * Test: An unconnected predecessor (nullptr) propagates Invalid through the gate.
- * A null input port means the circuit is incomplete, which is reflected as Invalid
+ * Test: An unconnected predecessor (nullptr) propagates Unknown through the gate.
+ * A null input port means the circuit is incomplete, which is reflected as Unknown
  * on all outputs — regardless of the connected inputs' values.
  */
 void TestLogicElementsErrors::testNullPredecessor()
@@ -57,11 +57,11 @@ void TestLogicElementsErrors::testNullPredecessor()
 
     input.setOutputValue(true);
     andGate.updateLogic();
-    QCOMPARE(andGate.outputValue(), Status::Invalid);  // null port 1 → Invalid
+    QCOMPARE(andGate.outputValue(), Status::Unknown);  // null port 1 → Unknown
 
     input.setOutputValue(false);
     andGate.updateLogic();
-    QCOMPARE(andGate.outputValue(), Status::Invalid);  // null port 1 → Invalid
+    QCOMPARE(andGate.outputValue(), Status::Unknown);  // null port 1 → Unknown
 
     // 2-input OR: connect port 0, leave port 1 null
     LogicOr orGate(2);
@@ -69,11 +69,11 @@ void TestLogicElementsErrors::testNullPredecessor()
 
     input.setOutputValue(true);
     orGate.updateLogic();
-    QCOMPARE(orGate.outputValue(), Status::Invalid);  // null port 1 → Invalid
+    QCOMPARE(orGate.outputValue(), Status::Unknown);  // null port 1 → Unknown
 
     input.setOutputValue(false);
     orGate.updateLogic();
-    QCOMPARE(orGate.outputValue(), Status::Invalid);  // null port 1 → Invalid
+    QCOMPARE(orGate.outputValue(), Status::Unknown);  // null port 1 → Unknown
 }
 
 /**
@@ -83,20 +83,20 @@ void TestLogicElementsErrors::testNullPredecessor()
  */
 void TestLogicElementsErrors::testDisconnectedInput()
 {
-    // AND with no predecessors connected → Invalid
+    // AND with no predecessors connected → Unknown
     LogicAnd andGate(2);
     andGate.updateLogic();
-    QCOMPARE(andGate.outputValue(), Status::Invalid);
+    QCOMPARE(andGate.outputValue(), Status::Unknown);
 
-    // OR with no predecessors connected → Invalid
+    // OR with no predecessors connected → Unknown
     LogicOr orGate(2);
     orGate.updateLogic();
-    QCOMPARE(orGate.outputValue(), Status::Invalid);
+    QCOMPARE(orGate.outputValue(), Status::Unknown);
 
-    // NOT with no predecessor connected → Invalid
+    // NOT with no predecessor connected → Unknown
     LogicNot notGate;
     notGate.updateLogic();
-    QCOMPARE(notGate.outputValue(), Status::Invalid);
+    QCOMPARE(notGate.outputValue(), Status::Unknown);
 }
 
 /**
@@ -152,19 +152,19 @@ void TestLogicElementsErrors::testRapidStateChanges()
 }
 
 /**
- * Test: A gate with null predecessors produces Invalid outputs automatically.
+ * Test: A gate with null predecessors produces Unknown outputs automatically.
  * No explicit validate() call is needed — invalidity flows through the value
- * system: null predecessor → inputValue() returns Invalid → all outputs set Invalid.
+ * system: null predecessor → inputValue() returns Unknown → all outputs set Unknown.
  */
 void TestLogicElementsErrors::testUnconnectedGate()
 {
     LogicAnd gate(2);
     gate.updateLogic();
-    QCOMPARE(gate.outputValue(), Status::Invalid);  // null predecessors → Invalid
+    QCOMPARE(gate.outputValue(), Status::Unknown);  // null predecessors → Unknown
 
     LogicNot notGate;
     notGate.updateLogic();
-    QCOMPARE(notGate.outputValue(), Status::Invalid);  // null predecessor → Invalid
+    QCOMPARE(notGate.outputValue(), Status::Unknown);  // null predecessor → Unknown
 }
 
 /**
@@ -263,8 +263,12 @@ void TestLogicElementsErrors::testConnectionCycles()
     // Self-loop: NOT gate's output feeds back to its own input
     notGate.connectPredecessor(0, &notGate, 0);
 
-    // Initial output is false
-    QCOMPARE(notGate.outputValue() == Status::Active, false);
+    // Initial output is Unknown (uninitialized 4-state logic).
+    // NOT(Unknown) = Unknown, so the self-loop stays stuck without seeding.
+    QCOMPARE(notGate.outputValue(), Status::Unknown);
+
+    // Seed with a known value to break the Unknown fixed point.
+    notGate.setOutputValue(0, Status::Inactive);
 
     // Each call reads the current (stale) output and inverts it
     notGate.updateLogic();
@@ -319,43 +323,43 @@ void TestLogicElementsErrors::testGateWithZeroInputs()
 }
 
 /**
- * Test: Status::Invalid propagates downstream through a chain of gates.
- * A gate with a null input produces Invalid. A downstream gate reading
+ * Test: Status::Unknown propagates downstream through a chain of gates.
+ * A gate with a null input produces Unknown. A downstream gate reading
  * that Invalid output must also produce Invalid — no gate should silently
- * convert Invalid into Active or Inactive.
+ * convert Unknown into Active or Inactive.
  */
 void TestLogicElementsErrors::testInvalidPropagatesChain()
 {
-    // AND with one null input → outputs Invalid
+    // AND with one null input → outputs Unknown
     LogicAnd andGate(2);
     LogicNot notGate;
     LogicSource input;
 
     andGate.connectPredecessor(0, &input, 0);
-    // port 1 is left null → AND will produce Invalid
+    // port 1 is left null → AND will produce Unknown
     notGate.connectPredecessor(0, &andGate, 0);
 
     input.setOutputValue(true);
     andGate.updateLogic();
-    QCOMPARE(andGate.outputValue(), Status::Invalid);  // null port → Invalid
+    QCOMPARE(andGate.outputValue(), Status::Unknown);  // null port → Unknown
 
     notGate.updateLogic();
-    QCOMPARE(notGate.outputValue(), Status::Invalid);  // Invalid propagates downstream
+    QCOMPARE(notGate.outputValue(), Status::Unknown);  // Unknown propagates downstream
 
     // Confirm it's not specific to true input: same with false
     input.setOutputValue(false);
     andGate.updateLogic();
-    QCOMPARE(andGate.outputValue(), Status::Invalid);
+    QCOMPARE(andGate.outputValue(), Status::Unknown);
 
     notGate.updateLogic();
-    QCOMPARE(notGate.outputValue(), Status::Invalid);
+    QCOMPARE(notGate.outputValue(), Status::Unknown);
 }
 
 /**
  * Test: setOutputValue(bool) convenience overload maps correctly to Status.
  * true  → Status::Active
  * false → Status::Inactive
- * Neither produces Status::Invalid — this overload is the UI→simulation
+ * Neither produces Status::Unknown — this overload is the UI→simulation
  * boundary where a switch is inherently on or off, never invalid.
  */
 void TestLogicElementsErrors::testBoolOverloadMapsToStatus()
@@ -376,7 +380,7 @@ void TestLogicElementsErrors::testBoolOverloadMapsToStatus()
     src.setOutputValue(1, false);
     QCOMPARE(src.outputValue(1), Status::Inactive);
 
-    // Neither overload can produce Invalid
-    QVERIFY(src.outputValue(0) != Status::Invalid);
-    QVERIFY(src.outputValue(1) != Status::Invalid);
+    // Neither overload can produce Unknown
+    QVERIFY(src.outputValue(0) != Status::Unknown);
+    QVERIFY(src.outputValue(1) != Status::Unknown);
 }

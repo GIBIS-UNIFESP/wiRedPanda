@@ -28,15 +28,21 @@ void LogicDemux::updateLogic()
 
     const Status data = inputs().at(0);
 
-    // Decode select lines to get the index of the selected output
     int selectValue = 0;
     for (int i = 0; i < m_numSelectLines; i++) {
-        if (inputs().at(1 + i) == Status::Active) {
+        const Status sel = inputs().at(1 + i);
+        if (sel != Status::Active && sel != Status::Inactive) {
+            const Status err = (sel == Status::Error) ? Status::Error : Status::Unknown;
+            for (int j = 0; j < m_numOutputs; j++) {
+                setOutputValue(j, err);
+            }
+            return;
+        }
+        if (sel == Status::Active) {
             selectValue |= (1 << i);
         }
     }
 
-    // Set all outputs to Inactive except the selected one which passes data through
     for (int i = 0; i < m_numOutputs; i++) {
         setOutputValue(i, (i == selectValue) ? data : Status::Inactive);
     }

@@ -25,35 +25,25 @@ void LogicSRFlipFlop::updateLogic()
     const Status prst = inputs().at(3);
     const Status clr = inputs().at(4);
 
-    // Rising-edge detection: latch the S/R values from the previous cycle
-    // (m_lastS, m_lastR) to correctly model setup-time semantics — the data
-    // inputs must be stable before the clock edge.
+    // Rising-edge detection: current S/R read directly.
     if (clk == Status::Active && m_lastClk != Status::Active) {
-        if (m_lastS == Status::Active && m_lastR == Status::Active) {
-            // S=R=1 is the forbidden/undefined state in a real SR flip-flop;
-            // here it forces both outputs high to give a deterministic result
-            // instead of leaving the simulation in an undefined value.
+        if (s == Status::Active && r == Status::Active) {
             q0 = Status::Active;
             q1 = Status::Active;
-        } else if (m_lastS != m_lastR) {
-            // Normal SR behaviour: S sets (Q=1, Q'=0), R resets (Q=0, Q'=1).
-            q0 = m_lastS;
-            q1 = m_lastR;
+        } else if (s != r) {
+            q0 = s;
+            q1 = r;
         }
         // S=R=0 → hold; q0/q1 already retain the previous state.
     }
 
-    // Asynchronous preset/clear override the clocked state: active-low signals
-    // (asserted when the input is Inactive) take priority over the clock edge.
-    if (prst != Status::Active || clr != Status::Active) {
-        q0 = (prst != Status::Active) ? Status::Active : Status::Inactive;
-        q1 = (clr != Status::Active) ? Status::Active : Status::Inactive;
+    // Asynchronous preset/clear: active-low.  Only trigger on Inactive.
+    if (prst == Status::Inactive || clr == Status::Inactive) {
+        q0 = (prst == Status::Inactive) ? Status::Active : Status::Inactive;
+        q1 = (clr == Status::Inactive) ? Status::Active : Status::Inactive;
     }
 
-    // Record clock level after output computation so next call detects the edge.
     m_lastClk = clk;
-    m_lastS = s;
-    m_lastR = r;
 
     setOutputValue(0, q0);
     setOutputValue(1, q1);

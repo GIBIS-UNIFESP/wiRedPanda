@@ -3,6 +3,8 @@
 
 #include "App/Element/LogicElements/LogicOr.h"
 
+#include "App/Core/StatusOps.h"
+
 LogicOr::LogicOr(const int inputSize)
     : LogicElement(inputSize, 1)
 {
@@ -14,8 +16,5 @@ void LogicOr::updateLogic()
         return;
     }
 
-    // Output is Active when at least one input is Active.
-    const bool result = std::any_of(inputs().cbegin(), inputs().cend(),
-                                    [](Status s) { return s == Status::Active; });
-    setOutputValue(result ? Status::Active : Status::Inactive);
+    setOutputValue(StatusOps::statusOrAll(inputs()));
 }

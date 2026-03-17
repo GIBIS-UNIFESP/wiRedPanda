@@ -3,6 +3,8 @@
 
 #include "App/Element/LogicElements/LogicNot.h"
 
+#include "App/Core/StatusOps.h"
+
 LogicNot::LogicNot()
     : LogicElement(1, 1)
 {
@@ -14,5 +16,5 @@ void LogicNot::updateLogic()
         return;
     }
 
-    setOutputValue(inputs().at(0) == Status::Active ? Status::Inactive : Status::Active);
+    setOutputValue(StatusOps::statusNot(inputs().at(0)));
 }

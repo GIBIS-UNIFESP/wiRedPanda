@@ -3,6 +3,8 @@
 
 #include "App/Element/LogicElements/LogicAnd.h"
 
+#include "App/Core/StatusOps.h"
+
 LogicAnd::LogicAnd(const int inputSize)
     : LogicElement(inputSize, 1)
 {
@@ -14,8 +16,5 @@ void LogicAnd::updateLogic()
         return;
     }
 
-    // Output is Active only when every input is Active.
-    const bool result = std::all_of(inputs().cbegin(), inputs().cend(),
-                                    [](Status s) { return s == Status::Active; });
-    setOutputValue(result ? Status::Active : Status::Inactive);
+    setOutputValue(StatusOps::statusAndAll(inputs()));
 }

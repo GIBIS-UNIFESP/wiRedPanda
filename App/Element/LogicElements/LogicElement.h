@@ -24,6 +24,16 @@ struct InputPair
 };
 
 /**
+ * \struct OutputPair
+ * \brief Links an output port of one LogicElement to an input slot of another.
+ */
+struct OutputPair
+{
+    LogicElement *logic = nullptr; ///< Successor logic element.
+    int inputPort = 0;             ///< Input port index on the successor.
+};
+
+/**
  * \class LogicElement
  * \brief Represent logic elements in the simulation layer.
  */
@@ -46,6 +56,17 @@ public:
     Status outputValue(const int index = 0) const;
     /// Returns the number of output ports.
     int outputSize() const;
+
+    // --- Successor tracking ---
+
+    /// Returns the successor list for output port \a outputIndex.
+    const QVector<OutputPair> &successors(const int outputIndex) const { return m_successors[outputIndex]; }
+    /// Returns the number of output-port successor lists.
+    int successorGroupCount() const { return m_successors.size(); }
+    /// Initializes successor storage for \a count output ports. Called by ElementMapping.
+    void initSuccessors(const int count) { m_successors.resize(count); }
+    /// Appends a successor to output port \a outputIndex. Called by ElementMapping.
+    void addSuccessor(const int outputIndex, const OutputPair &pair) { m_successors[outputIndex].append(pair); }
 
     // --- Change tracking ---
 
@@ -80,8 +101,8 @@ protected:
     /**
      * \brief Snapshots each predecessor's output into the input cache.
      *
-     * If any predecessor output is Invalid (unconnected port), all outputs are
-     * set to Invalid and the method returns \c false so that \c updateLogic()
+     * If any predecessor output is Unknown (unconnected port), all outputs are
+     * set to Unknown and the method returns \c false so that \c updateLogic()
      * implementations can perform an early return without computing a result
      * from incomplete data.
      *
@@ -103,7 +124,8 @@ private:
     // --- Members ---
 
     QVector<InputPair> m_inputPairs;
-    QVector<Status> m_inputValues; ///< Cached input values refreshed each simulation step.
+    QVector<Status> m_inputValues;  ///< Cached input values refreshed each simulation step.
     QVector<Status> m_outputValues;
-    bool m_outputChanged = false; ///< Set by setOutputValue() when an output actually changes.
+    QVector<QVector<OutputPair>> m_successors; ///< [outputIndex] → list of successor (element, inputPort) pairs.
+    bool m_outputChanged = false;     ///< Set by setOutputValue() when an output actually changes.
 };

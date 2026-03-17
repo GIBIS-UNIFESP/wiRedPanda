@@ -35,6 +35,4 @@ private:
     // --- Members ---
 
     Status m_lastClk = Status::Inactive;
-    Status m_lastJ = Status::Active;
-    Status m_lastK = Status::Active;
 };

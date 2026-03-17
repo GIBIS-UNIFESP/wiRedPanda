@@ -40,8 +40,12 @@ public:
     /**
      * \brief Constructs and initializes the mapping from \a elements.
      * \param elements All graphic elements currently in the scene.
+     * \param gnd  Optional shared GND source; created internally if null.
+     * \param vcc  Optional shared VCC source; created internally if null.
      */
-    explicit ElementMapping(const QVector<GraphicElement *> &elements);
+    explicit ElementMapping(const QVector<GraphicElement *> &elements,
+                            std::shared_ptr<LogicSource> gnd = {},
+                            std::shared_ptr<LogicSource> vcc = {});
 
     /// Destructor.
     ~ElementMapping() = default;
@@ -88,8 +92,8 @@ private:
 
     // --- Members ---
 
-    LogicSource m_globalGND{false};
-    LogicSource m_globalVCC{true};
+    std::shared_ptr<LogicSource> m_globalGND;
+    std::shared_ptr<LogicSource> m_globalVCC;
     QVector<GraphicElement *> m_elements;
     QVector<std::shared_ptr<LogicElement>> m_logicElms;
     QHash<const LogicElement *, int> m_priorities;

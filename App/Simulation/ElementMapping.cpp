@@ -6,14 +6,29 @@
 #include "App/Core/Common.h"
 #include "App/Core/Priorities.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/IC.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 
-ElementMapping::ElementMapping(const QVector<GraphicElement *> &elements)
-    : m_elements(elements)
+ElementMapping::ElementMapping(const QVector<GraphicElement *> &elements,
+                               std::shared_ptr<LogicSource> gnd,
+                               std::shared_ptr<LogicSource> vcc)
+    : m_globalGND(gnd ? std::move(gnd) : std::make_shared<LogicSource>(false))
+    , m_globalVCC(vcc ? std::move(vcc) : std::make_shared<LogicSource>(true))
+    , m_elements(elements)
 {
+    // If we created GND ourselves, we're the sole owner (use_count == 1).
+    // If shared from a parent mapping, the parent also holds a reference.
+    const bool ownsGlobalSources = (m_globalGND.use_count() == 1);
+
     qCDebug(three) << "Generate Map.";
     generateMap();
+    // Only the top-level mapping owns the GND/VCC elements in m_logicElms.
+    // Nested IC mappings share the same instances via the gnd/vcc parameters.
+    if (ownsGlobalSources) {
+        m_logicElms.append(m_globalGND);
+        m_logicElms.append(m_globalVCC);
+    }
     qCDebug(three) << "Connect.";
     connectElements();
     connectWirelessElements();
@@ -22,6 +37,12 @@ ElementMapping::ElementMapping(const QVector<GraphicElement *> &elements)
 void ElementMapping::generateMap()
 {
     for (auto *elm : std::as_const(m_elements)) {
+        // Pass shared GND/VCC to IC elements so the entire graph uses one pair.
+        if (elm->elementType() == ElementType::IC) {
+            if (auto *ic = dynamic_cast<IC *>(elm)) {
+                ic->setGlobalSources(m_globalGND, m_globalVCC);
+            }
+        }
         m_logicElms.append(elm->createLogicElements());
         elm->bindPorts();
     }
@@ -79,7 +100,7 @@ void ElementMapping::applyConnection(QNEInputPort *inputPort)
     const auto connections = inputPort->connections();
 
     if ((connections.size() == 0) && !inputPort->isRequired()) {
-        auto *predecessorLogic = (inputPort->defaultValue() == Status::Active) ? &m_globalVCC : &m_globalGND;
+        auto *predecessorLogic = (inputPort->defaultValue() == Status::Active) ? m_globalVCC.get() : m_globalGND.get();
         currentLogic->connectPredecessor(inputIndex, predecessorLogic, 0);
     }
 
@@ -125,15 +146,36 @@ void ElementMapping::sortLogicElements()
     QVector<LogicElement *> rawPtrs;
     rawPtrs.reserve(m_logicElms.size());
 
+    // First pass: initialize successor storage for every element.
+    for (const auto &logic : std::as_const(m_logicElms)) {
+        if (logic) {
+            logic->initSuccessors(logic->outputSize());
+        }
+    }
+
+    // Second pass: build both element-level and port-granular successor maps.
     for (const auto &logic : std::as_const(m_logicElms)) {
         if (!logic) {
             continue;
         }
         rawPtrs.append(logic.get());
-        for (const auto &pair : logic->inputPairs()) {
-            if (pair.logic && !successors[pair.logic].contains(logic.get())) {
+
+        for (int inIdx = 0; inIdx < logic->inputPairs().size(); ++inIdx) {
+            const auto &pair = logic->inputPairs()[inIdx];
+            if (!pair.logic) {
+                continue;
+            }
+
+            // Element-level successor map (for topological sort / priority).
+            if (!successors[pair.logic].contains(logic.get())) {
                 successors[pair.logic].append(logic.get());
             }
+
+            // Port-granular successor list (for event-driven scheduling).
+            if (pair.logic->successorGroupCount() == 0) {
+                pair.logic->initSuccessors(pair.logic->outputSize());
+            }
+            pair.logic->addSuccessor(pair.port, {logic.get(), inIdx});
         }
     }
 
@@ -159,3 +201,4 @@ const QVector<std::shared_ptr<LogicElement>> &ElementMapping::logicElms() const
 {
     return m_logicElms;
 }
+

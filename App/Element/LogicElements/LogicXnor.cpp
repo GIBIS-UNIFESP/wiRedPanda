@@ -3,6 +3,8 @@
 
 #include "App/Element/LogicElements/LogicXnor.h"
 
+#include "App/Core/StatusOps.h"
+
 LogicXnor::LogicXnor(const int inputSize)
     : LogicElement(inputSize, 1)
 {
@@ -14,9 +16,5 @@ void LogicXnor::updateLogic()
         return;
     }
 
-    // XNOR: even-parity detector — Active when an even number of inputs are Active.
-    // This is the standard n-input XNOR convention used in this simulator.
-    const int activeCount = std::count_if(inputs().cbegin(), inputs().cend(),
-                                          [](Status s) { return s == Status::Active; });
-    setOutputValue((activeCount % 2 == 0) ? Status::Active : Status::Inactive);
+    setOutputValue(StatusOps::statusNot(StatusOps::statusXorAll(inputs())));
 }

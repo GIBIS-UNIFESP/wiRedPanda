@@ -389,12 +389,12 @@ void TestIC::testICStatusPropagation()
     bool ledStateSecondOff = TestUtils::getInputStatus(&outputLed);
     QCOMPARE(ledStateSecondOff, ledStateWhenSwitchOff);
 
-    // Test 4: With only 1 of 5 IC inputs connected, the remaining predecessors are null.
-    // Since Phase 4 (Status unification), null predecessors propagate Status::Invalid through
-    // the entire chain — both IC outputs report Invalid (neither is Active).
-    // Verifying both outputs are consistently non-Active (Invalid state).
-    QCOMPARE(TestUtils::getOutputStatus(ic, 0), false);
-    QCOMPARE(TestUtils::getOutputStatus(ic, 1), false);
+    // Test 4: With only 1 of 5 IC inputs connected, the remaining inputs get
+    // null predecessors (Unknown).  With 4-state domination rules, gates can
+    // still produce defined outputs (e.g. AND(0,?)=0).  Verify the two IC
+    // outputs are complementary (one Active, the other Inactive — a valid
+    // flip-flop state) rather than both Unknown.
+    QVERIFY(TestUtils::getOutputStatus(ic, 0) != TestUtils::getOutputStatus(ic, 1));
 }
 
 void TestIC::testICRequiredPorts()
@@ -425,7 +425,7 @@ void TestIC::testICRequiredPorts()
         QVERIFY2(port != nullptr, qPrintable(QString("Input port %1 should exist").arg(i)));
 
         // Check port status
-        if (port->status() == Status::Invalid) {
+        if (port->status() == Status::Unknown) {
             invalidCount++;
             // Skip further checks for invalid ports
             continue;
@@ -468,7 +468,7 @@ void TestIC::testICDefaultValues()
         if (port->connections().empty() && !port->isRequired()) {
             // Port should have a defined default status (Inactive or Active)
             const auto status = port->status();
-            QVERIFY2(status != Status::Invalid, "Port status should be valid");
+            QVERIFY2(status != Status::Unknown, "Port status should be valid");
         }
     }
 }

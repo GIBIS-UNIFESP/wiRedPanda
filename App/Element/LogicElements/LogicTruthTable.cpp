@@ -16,6 +16,18 @@ void LogicTruthTable::updateLogic()
         return;
     }
 
+    // Truth table lookup requires all inputs known.
+    const bool allKnown = std::all_of(inputs().cbegin(), inputs().cend(),
+                                      [](Status s) { return s == Status::Active || s == Status::Inactive; });
+    if (!allKnown) {
+        const bool hasError = std::any_of(inputs().cbegin(), inputs().cend(),
+                                          [](Status s) { return s == Status::Error; });
+        for (int i = 0; i < m_nOutputs; ++i) {
+            setOutputValue(i, hasError ? Status::Error : Status::Unknown);
+        }
+        return;
+    }
+
     for (int i = 0; i < this->m_nOutputs; ++i) {
         // Convert the input bit vector to a row index by concatenating "0"/"1"
         // characters and parsing as a binary number; this gives the row of the

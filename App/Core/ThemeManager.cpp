@@ -208,14 +208,14 @@ void ThemeAttributes::setTheme(const Theme theme)
     // Port brushes mirror the wire colours for consistency so users can visually
     // correlate a wire's colour with the port it connects to.
     // Output ports use a distinct pink/red hue to visually distinguish them from input ports.
-    m_portInvalidBrush = m_connectionInvalid;
+    m_portUnknownBrush = m_connectionUnknown;
     m_portInactiveBrush = m_connectionInactive;
     m_portActiveBrush = m_connectionActive;
     m_portOutputBrush = QColor(243, 83, 105); // vivid rose-pink for output ports
 
     // Port pen colours are theme-invariant (always black/darkRed) because they are drawn
     // as outlines on top of the brush fill and need consistent contrast
-    m_portInvalidPen = QColor(Qt::red);
+    m_portUnknownPen = QColor(Qt::gray);
     m_portInactivePen = QColor(Qt::black);
     m_portActivePen = QColor(Qt::black);
     m_portOutputPen = QColor(Qt::darkRed);

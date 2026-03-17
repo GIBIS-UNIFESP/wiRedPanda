@@ -3,6 +3,8 @@
 
 #include "App/Element/LogicElements/LogicNand.h"
 
+#include "App/Core/StatusOps.h"
+
 LogicNand::LogicNand(const int inputSize)
     : LogicElement(inputSize, 1)
 {
@@ -14,8 +16,5 @@ void LogicNand::updateLogic()
         return;
     }
 
-    // NAND: Active only when NOT all inputs are Active (inversion of AND).
-    const bool allActive = std::all_of(inputs().cbegin(), inputs().cend(),
-                                       [](Status s) { return s == Status::Active; });
-    setOutputValue(allActive ? Status::Inactive : Status::Active);
+    setOutputValue(StatusOps::statusNot(StatusOps::statusAndAll(inputs())));
 }

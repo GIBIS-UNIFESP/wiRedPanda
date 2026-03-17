@@ -194,7 +194,7 @@ void TestThemeManager::testLightThemeConnectionColors()
     QVERIFY(attrs.m_connectionInactive.isValid());
     QVERIFY(attrs.m_connectionActive.isValid());
     QVERIFY(attrs.m_connectionSelected.isValid());
-    QVERIFY(attrs.m_connectionInvalid.isValid());
+    QVERIFY(attrs.m_connectionUnknown.isValid());
 
     // Inactive should be dark green, active should be bright green
     // These specific values come from the implementation
@@ -213,12 +213,12 @@ void TestThemeManager::testLightThemePortColors()
     QVERIFY(attrs.m_portInactiveBrush.isValid());
     QVERIFY(attrs.m_portActiveBrush.isValid());
     QVERIFY(attrs.m_portOutputBrush.isValid());
-    QVERIFY(attrs.m_portInvalidBrush.isValid());
+    QVERIFY(attrs.m_portUnknownBrush.isValid());
 
     QVERIFY(attrs.m_portInactivePen.isValid());
     QVERIFY(attrs.m_portActivePen.isValid());
     QVERIFY(attrs.m_portOutputPen.isValid());
-    QVERIFY(attrs.m_portInvalidPen.isValid());
+    QVERIFY(attrs.m_portUnknownPen.isValid());
 
     // Hover port should be yellow
     QVERIFY(attrs.m_portHoverPort.isValid());
@@ -287,7 +287,7 @@ void TestThemeManager::testDarkThemeConnectionColors()
     QVERIFY(attrs.m_connectionInactive.isValid());
     QVERIFY(attrs.m_connectionActive.isValid());
     QVERIFY(attrs.m_connectionSelected.isValid());
-    QVERIFY(attrs.m_connectionInvalid.isValid());
+    QVERIFY(attrs.m_connectionUnknown.isValid());
 
     // Dark theme uses cyan/turquoise tones for connections
     // Inactive should be a darker cyan (greenish, not red)
@@ -312,12 +312,12 @@ void TestThemeManager::testDarkThemePortColors()
     QVERIFY(attrs.m_portInactiveBrush.isValid());
     QVERIFY(attrs.m_portActiveBrush.isValid());
     QVERIFY(attrs.m_portOutputBrush.isValid());
-    QVERIFY(attrs.m_portInvalidBrush.isValid());
+    QVERIFY(attrs.m_portUnknownBrush.isValid());
 
     QVERIFY(attrs.m_portInactivePen.isValid());
     QVERIFY(attrs.m_portActivePen.isValid());
     QVERIFY(attrs.m_portOutputPen.isValid());
-    QVERIFY(attrs.m_portInvalidPen.isValid());
+    QVERIFY(attrs.m_portUnknownPen.isValid());
 
     // Hover port should still be yellow
     QVERIFY(attrs.m_portHoverPort.isValid());

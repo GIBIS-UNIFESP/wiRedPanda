@@ -1093,13 +1093,13 @@ bool GraphicElement::isValid()
                                    [](auto *input) { return input->isValid(); });
 
     if (!valid) {
-        // Propagate invalid status downstream so the visual chain shows where validity breaks
+        // Propagate Unknown status downstream so the visual chain shows where validity breaks
         for (auto *output : std::as_const(m_outputPorts)) {
             for (auto *conn : output->connections()) {
-                conn->setStatus(Status::Invalid);
+                conn->setStatus(Status::Unknown);
 
                 if (auto *port = conn->otherPort(output)) {
-                    port->setStatus(Status::Invalid);
+                    port->setStatus(Status::Unknown);
                 }
             }
         }

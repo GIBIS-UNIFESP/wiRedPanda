@@ -24,25 +24,22 @@ void LogicTFlipFlop::updateLogic()
     const Status prst = inputs().at(2);
     const Status clr = inputs().at(3);
 
-    // Rising-edge detection: T is sampled one cycle early (m_lastValue) to model
-    // setup time — the T input must be stable before the clock edge fires.
+    // Rising-edge detection: current T read directly.
     if (clk == Status::Active && m_lastClk != Status::Active) {
-        if (m_lastValue == Status::Active) {
-            // T=1 on previous cycle → toggle both complementary outputs.
+        if (T == Status::Active) {
             q0 = (q0 == Status::Active) ? Status::Inactive : Status::Active;
             q1 = (q1 == Status::Active) ? Status::Inactive : Status::Active;
         }
         // T=0 → hold
     }
 
-    // Asynchronous preset/clear: active-low, take effect immediately.
-    if (prst != Status::Active || clr != Status::Active) {
-        q0 = (prst != Status::Active) ? Status::Active : Status::Inactive;
-        q1 = (clr != Status::Active) ? Status::Active : Status::Inactive;
+    // Asynchronous preset/clear: active-low.  Only trigger on Inactive.
+    if (prst == Status::Inactive || clr == Status::Inactive) {
+        q0 = (prst == Status::Inactive) ? Status::Active : Status::Inactive;
+        q1 = (clr == Status::Inactive) ? Status::Active : Status::Inactive;
     }
 
     m_lastClk = clk;
-    m_lastValue = T;
 
     setOutputValue(0, q0);
     setOutputValue(1, q1);

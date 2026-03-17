@@ -4,6 +4,7 @@
 #include "App/Simulation/Simulation.h"
 
 #include <QGraphicsView>
+#include <QSet>
 
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
@@ -19,64 +20,119 @@ Simulation::Simulation(Scene *scene)
     : QObject(scene)
     , m_scene(scene)
 {
-    // 1ms tick drives the simulation at ~1000 steps/second — fast enough for
-    // human perception while keeping CPU load predictable.
     m_timer.setInterval(1ms);
     connect(&m_timer, &QTimer::timeout, this, &Simulation::update);
 }
 
+// ============================================================================
+// Update: generate events, process delta cycles, refresh visuals
+// ============================================================================
+
 void Simulation::update()
 {
-    // Lazily build the simulation layer on the first tick after a restart so
-    // that circuit edits made while stopped are always reflected when the
-    // simulation resumes.
     if (!m_initialized && !initialize()) {
         return;
     }
 
-    // Clock elements are the only truly time-driven components; all other logic
-    // is combinational and responds immediately to their values.
+    // --- Generate events from clocks ---
     if (m_timer.isActive()) {
         const auto globalTime = std::chrono::steady_clock::now();
-
         for (auto *clock : std::as_const(m_clocks)) {
             if (clock) {
                 clock->updateClock(globalTime);
-            }
-        }
-    }
-
-    // Phase 1: propagate user-controlled inputs (switches, buttons, etc.)
-    for (auto *inputElm : std::as_const(m_inputs)) {
-        if (inputElm) {
-            inputElm->updateOutputs();
-        }
-    }
-
-    if (m_hasFeedbackElements) {
-        // Use iterative settling for circuits with feedback loops.
-        // A single topological pass is insufficient when a gate's output feeds
-        // back into an earlier stage; iterations continue until stable or the
-        // cap is reached.
-        updateWithIterativeSettling();
-    } else {
-        // Phase 2: update all logic elements in topologically sorted order so
-        // every gate sees its inputs before computing its output.
-        if (m_elmMapping) {
-            for (auto &logic : m_elmMapping->logicElms()) {
-                if (logic) {
-                    logic->updateLogic();
+                // If the clock's logic output changed, schedule its successors.
+                if (clock->logic() && clock->logic()->outputChanged()) {
+                    clock->logic()->clearOutputChanged();
+                    m_pendingSchedule.append(clock->logic());
                 }
             }
         }
     }
 
-    // Phase 3: push computed logic values onto the wire (QNEOutputPort) visuals
+    // --- Generate events from user inputs ---
+    for (auto *inputElm : std::as_const(m_inputs)) {
+        if (inputElm) {
+            inputElm->updateOutputs();
+            if (inputElm->logic() && inputElm->logic()->outputChanged()) {
+                inputElm->logic()->clearOutputChanged();
+                m_pendingSchedule.append(inputElm->logic());
+            }
+        }
+    }
+
+    // --- Process all pending events (blocking FIFO) ---
+    processEvents();
+
+    // --- Refresh visuals ---
+    refreshVisuals();
+}
+
+// ============================================================================
+// Event-driven engine: blocking FIFO evaluation
+// ============================================================================
+
+void Simulation::processEvents()
+{
+    if (!m_elmMapping) {
+        return;
+    }
+
+    // Seed the work queue: collect successors of all elements whose outputs
+    // changed (from clock toggles and input updates).
+    QVector<LogicElement *> queue;
+    for (auto *source : std::as_const(m_pendingSchedule)) {
+        for (int outIdx = 0; outIdx < source->outputSize(); ++outIdx) {
+            for (const auto &succ : source->successors(outIdx)) {
+                queue.append(succ.logic);
+            }
+        }
+    }
+    m_pendingSchedule.clear();
+
+    // Blocking event-driven: process elements one at a time in FIFO order.
+    // Each element evaluates and immediately updates its outputs (blocking).
+    // If an output changed, its successors are appended to the back of the
+    // queue.  FIFO ordering naturally breaks symmetry in feedback circuits —
+    // whichever gate is scheduled first evaluates first and "wins."
+    // Evaluation order breaks symmetry in cross-coupled feedback circuits.
+    const int maxEvents = 100000;
+    int processed = 0;
+
+    while (!queue.isEmpty() && processed < maxEvents) {
+        auto *elm = queue.takeFirst();
+        if (!elm) {
+            continue;
+        }
+
+        elm->clearOutputChanged();
+        elm->updateLogic();
+        ++processed;
+
+        if (elm->outputChanged()) {
+            for (int outIdx = 0; outIdx < elm->outputSize(); ++outIdx) {
+                for (const auto &succ : elm->successors(outIdx)) {
+                    queue.append(succ.logic);
+                }
+            }
+        }
+    }
+
+    if (processed >= maxEvents && !m_convergenceWarned) {
+        m_convergenceWarned = true;
+        emit simulationWarning(tr("Warning: simulation event limit exceeded — possible oscillation."));
+    }
+}
+
+// ============================================================================
+// Visual refresh
+// ============================================================================
+
+void Simulation::refreshVisuals()
+{
     for (auto *connection : std::as_const(m_connections)) {
         updatePort(connection->startPort());
     }
 
-    // Phase 4: refresh output element visuals (LEDs, buzzers, etc.) using their input ports
     for (auto *outputElm : std::as_const(m_outputs)) {
         if (outputElm) {
             for (auto *inputPort : outputElm->inputs()) {
@@ -96,7 +152,7 @@ void Simulation::updatePort(QNEOutputPort *port)
 
     auto *logic = port->logic();
     if (!logic) {
-        port->setStatus(Status::Invalid);
+        port->setStatus(Status::Unknown);
         return;
     }
 
@@ -110,28 +166,24 @@ void Simulation::updatePort(QNEInputPort *port)
         return;
     }
 
-    // Phase 3 already set every QNEOutputPort's status from the logic values.
-    // Propagate that already-computed status forward rather than re-traversing
-    // the logic graph via logic->inputValue().
-    // For unconnected optional ports, fall back to the port's declared default
-    // (mirrors the globalVCC/globalGND predecessor set in ElementMapping::applyConnection).
     const auto &conns = port->connections();
     const Status status = (!conns.isEmpty() && conns.first()->startPort())
                               ? conns.first()->startPort()->status()
                               : port->defaultValue();
     port->setStatus(status);
 
-    // Output elements (LEDs, buzzers) need an explicit repaint to show the new state.
     auto *elm = port->graphicElement();
     if (elm && elm->elementGroup() == ElementGroup::Output) {
         elm->refresh();
     }
 }
 
+// ============================================================================
+// Control
+// ============================================================================
+
 void Simulation::restart()
 {
-    // Clearing the flag causes the next update() call to rebuild the entire
-    // element mapping, effectively resetting all logic state to its default.
     m_initialized = false;
 }
 
@@ -160,8 +212,6 @@ void Simulation::start()
     if (!m_initialized) {
         initialize();
     } else {
-        // After a pause the wall clock has advanced, so clocks must be reset
-        // to "now" — otherwise they would fire many missed ticks immediately.
         const auto globalTime = std::chrono::steady_clock::now();
         for (auto *clock : std::as_const(m_clocks)) {
             if (clock) {
@@ -177,44 +227,9 @@ void Simulation::start()
     qCDebug(zero) << "Simulation started.";
 }
 
-void Simulation::updateWithIterativeSettling()
-{
-    if (!m_elmMapping) {
-        return;
-    }
-
-    // 10 passes is enough for any realistic SR/JK feedback depth; circuits that
-    // genuinely oscillate (e.g. a ring oscillator) won't converge and we log a
-    // warning on the last iteration rather than looping forever.
-    const int maxIterations = 10;
-    const auto &logicElements = m_elmMapping->logicElms();
-
-    for (int iteration = 0; iteration < maxIterations; ++iteration) {
-        // Update all logic elements
-        for (auto &logic : logicElements) {
-            if (logic) {
-                logic->clearOutputChanged();
-                logic->updateLogic();
-            }
-        }
-
-        // Check for convergence: no element changed any output this pass.
-        const bool converged = std::none_of(logicElements.cbegin(), logicElements.cend(),
-            [](const auto &logic) { return logic && logic->outputChanged(); });
-
-        if (converged) {
-            // Circuit has stabilized, no need for more iterations
-            break;
-        }
-
-        // If we're on the last iteration without convergence, warn the user once.
-        if (iteration == maxIterations - 1 && !m_convergenceWarned) {
-            m_convergenceWarned = true;
-            qDebug() << "Feedback circuit did not converge after" << maxIterations << "iterations";
-            emit simulationWarning(tr("Warning: feedback circuit did not converge — the circuit may be oscillating."));
-        }
-    }
-}
+// ============================================================================
+// Initialization
+// ============================================================================
 
 bool Simulation::initialize()
 {
@@ -222,34 +237,26 @@ bool Simulation::initialize()
         return false;
     }
 
-    // Rebuild all four categorised lists from scratch so stale pointers from
-    // a previous circuit state don't linger after undo/redo or file load.
     m_convergenceWarned = false;
     m_clocks.clear();
     m_outputs.clear();
     m_inputs.clear();
     m_connections.clear();
+    m_pendingSchedule.clear();
 
     QVector<GraphicElement *> elements;
     auto items = m_scene->items();
 
-    // Sort items by position coordinates for consistent ordering between runs.
-    // QGraphicsScene::items() returns items in an unspecified Z/stacking order;
-    // stabilising on (Y, X) gives deterministic wire-update sequences across
-    // sessions and makes test results reproducible.
     std::stable_sort(items.begin(), items.end(), [](const auto &a, const auto &b) {
         if (!a || !b) {
             return a != nullptr;
         }
-        // Sort by Y coordinate first, then X coordinate for consistent 2D ordering
         if (qFuzzyCompare(a->y(), b->y())) {
             return a->x() < b->x();
         }
         return a->y() < b->y();
     });
 
-    // A scene with only one item is the scene border/background rectangle;
-    // there is no circuit yet, so building an element mapping would be pointless.
     if (items.size() == 1) {
         return false;
     }
@@ -305,8 +312,6 @@ bool Simulation::initialize()
     }
 
     qCDebug(two) << "Recreating mapping for simulation.";
-    // ElementMapping builds logic nodes and wires their predecessors; sort()
-    // then assigns priorities and validates each node in topological order.
     m_elmMapping = std::make_unique<ElementMapping>(elements);
 
     if (!m_elmMapping) {
@@ -316,9 +321,18 @@ bool Simulation::initialize()
     qCDebug(two) << "Sorting.";
     m_elmMapping->sort();
 
-    m_hasFeedbackElements = m_elmMapping->hasFeedbackElements();
-
     m_initialized = true;
+
+    // Schedule any logic elements whose outputs already differ from Unknown
+    // (e.g. GND/VCC sources at all IC nesting levels).  They are normal graph
+    // elements in m_logicElms, so processEvents() will propagate to their
+    // successors on the first update() call.
+    for (const auto &elm : m_elmMapping->logicElms()) {
+        if (elm && elm->outputChanged()) {
+            elm->clearOutputChanged();
+            m_pendingSchedule.append(elm.get());
+        }
+    }
 
     qCDebug(zero) << "Finished simulation layer.";
     return true;

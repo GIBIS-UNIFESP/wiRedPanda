@@ -104,9 +104,9 @@ void QNEPort::updateConnections()
     }
 
     // A port that violates its validity constraints (e.g. required but unconnected) must
-    // show the invalid status regardless of any incoming signal
+    // show the Unknown status regardless of any incoming signal
     if (!isValid()) {
-        setStatus(Status::Invalid);
+        setStatus(Status::Unknown);
         return;
     }
 
@@ -182,9 +182,9 @@ bool QNEPort::isRequired() const
 void QNEPort::setRequired(const bool required)
 {
     m_required = required;
-    // Required ports default to Invalid when unconnected so the element (and its downstream
-    // chain) immediately shows an error rather than silently using a zero/low default
-    setDefaultStatus(required ? Status::Invalid : Status::Inactive);
+    // Required ports default to Unknown when unconnected so the element (and its downstream
+    // chain) immediately shows an unresolved state rather than silently using a zero/low default
+    setDefaultStatus(required ? Status::Unknown : Status::Inactive);
 }
 
 void QNEPort::setSerialId(quint64 serialId)
@@ -252,16 +252,16 @@ void QNEInputPort::setStatus(const Status status)
         return;
     }
 
-    // If the port itself is invalid (e.g. required but unconnected), clamp to Invalid
+    // If the port itself is invalid (e.g. required but unconnected), clamp to Unknown
     // regardless of whatever signal status is being pushed in from a connected wire
-    m_status = QNEInputPort::isValid() ? status : Status::Invalid;
+    m_status = QNEInputPort::isValid() ? status : Status::Unknown;
 
     const auto theme = ThemeManager::attributes();
 
     switch (m_status) {
-    case Status::Invalid: {
-        setPen(theme.m_portInvalidPen);
-        setCurrentBrush(theme.m_portInvalidBrush);
+    case Status::Unknown: {
+        setPen(theme.m_portUnknownPen);
+        setCurrentBrush(theme.m_portUnknownBrush);
         break;
     }
     case Status::Inactive: {
@@ -274,12 +274,11 @@ void QNEInputPort::setStatus(const Status status)
         setCurrentBrush(theme.m_portActiveBrush);
         break;
     }
-
-    default:
-        // Handle unexpected status values gracefully - fallback to Invalid
-        setPen(theme.m_portInvalidPen);
-        setCurrentBrush(theme.m_portInvalidBrush);
+    case Status::Error: {
+        setPen(theme.m_portErrorPen);
+        setCurrentBrush(theme.m_portErrorBrush);
         break;
+    }
     }
 }
 
@@ -356,7 +355,7 @@ bool QNEOutputPort::isValid() const
 {
     // An output port is valid as long as its driving logic element is valid;
     // it has no connectivity constraints (fan-out is unrestricted)
-    return (m_status != Status::Invalid);
+    return (m_status != Status::Unknown);
 }
 
 void QNEOutputPort::updateTheme()

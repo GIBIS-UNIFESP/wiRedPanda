@@ -71,15 +71,16 @@ void TestLevel9MultiCycleCPU8Bit::testCycleCounter_data()
     QTest::addColumn<int>("expectedCounter");
     QTest::addColumn<int>("expectedPC");
 
-    // Test cycle counter sequence: 00 -> 01 -> 10 -> 11 -> 00 (repeats)
-    // With clock gating, PC only increments on cycle 0 (Fetch)
+    // Cycle counter advances on falling edge (inverted clock), stage gates
+    // fire on rising edge.  PC increments during each Fetch phase (counter=00).
+    // First fetch fires on clock 1, so PC=1 after 1 clock.
     QTest::newRow("initial (00, PC=0)") << 0 << 0x0 << 0x0;
-    QTest::newRow("cycle 1 (01, PC=0)") << 1 << 0x1 << 0x0;  // Decode: PC stays same
-    QTest::newRow("cycle 2 (10, PC=0)") << 2 << 0x2 << 0x0;  // Execute: PC stays same
-    QTest::newRow("cycle 3 (11, PC=0)") << 3 << 0x3 << 0x0;  // Memory: PC stays same
-    QTest::newRow("cycle 4 (00, PC=1)") << 4 << 0x0 << 0x1;  // Back to Fetch: PC increments
-    QTest::newRow("cycle 5 (01, PC=1)") << 5 << 0x1 << 0x1;  // Decode: PC stays same
-    QTest::newRow("after 8 cycles (00, PC=2)") << 8 << 0x0 << 0x2;  // 2 complete instructions
+    QTest::newRow("cycle 1 (01, PC=1)") << 1 << 0x1 << 0x1;  // Fetch: PC increments
+    QTest::newRow("cycle 2 (10, PC=1)") << 2 << 0x2 << 0x1;  // Decode: PC stays
+    QTest::newRow("cycle 3 (11, PC=1)") << 3 << 0x3 << 0x1;  // Execute: PC stays
+    QTest::newRow("cycle 4 (00, PC=1)") << 4 << 0x0 << 0x1;  // Memory + counter wraps
+    QTest::newRow("cycle 5 (01, PC=2)") << 5 << 0x1 << 0x2;  // 2nd Fetch: PC increments
+    QTest::newRow("after 8 cycles (00, PC=2)") << 8 << 0x0 << 0x2;  // 2 complete sequences
 }
 
 void TestLevel9MultiCycleCPU8Bit::testCycleCounter()

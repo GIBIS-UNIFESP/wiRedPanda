@@ -80,6 +80,9 @@ public:
     const QVector<QNEPort *> &icInputs() const { return m_icInputs; }
     const QVector<QNEPort *> &icOutputs() const { return m_icOutputs; }
 
+    /// Set shared GND/VCC sources from parent mapping (avoids per-IC duplicates).
+    void setGlobalSources(std::shared_ptr<LogicSource> gnd, std::shared_ptr<LogicSource> vcc);
+
     // --- Visual ---
 
     /// \reimp
@@ -128,6 +131,11 @@ private:
     // --- Visual helpers ---
 
     void generatePixmap();
+
+    // --- Global sources (shared from parent mapping) ---
+
+    std::shared_ptr<LogicSource> m_sharedGND;
+    std::shared_ptr<LogicSource> m_sharedVCC;
 
     // --- Members ---
 

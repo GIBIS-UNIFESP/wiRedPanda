@@ -5,7 +5,7 @@
 """
 Create 4-bit Up/Down Counter IC
 
-Inputs: CLK (Clock), Direction (0=Count Down, 1=Count Up), Enable
+Inputs: CLK (Clock), RST (Reset - active LOW), Direction (0=Count Down, 1=Count Up), Enable
 Outputs: Q[0-3] (4-bit count value)
 
 Architecture (built from level1_d_flip_flop ICs):
@@ -57,20 +57,24 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
         if clk_id is None:
             return False
 
-        direction_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "Direction")
+        rst_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "RST")
+        if rst_id is None:
+            return False
+
+        direction_id = await self.create_element("InputSwitch", input_x, 100.0 + (2 * VERTICAL_STAGE_SPACING), "Direction")
         if direction_id is None:
             return False
 
-        enable_id = await self.create_element("InputSwitch", input_x, 100.0 + (2 * VERTICAL_STAGE_SPACING), "Enable")
+        enable_id = await self.create_element("InputSwitch", input_x, 100.0 + (3 * VERTICAL_STAGE_SPACING), "Enable")
         if enable_id is None:
             return False
 
-        # Create Vcc element for Preset/Clear inactive state
-        vcc_id = await self.create_element("InputVcc", input_x, 100.0 + (3 * VERTICAL_STAGE_SPACING), "Vcc")
+        # Create Vcc element for Preset inactive state
+        vcc_id = await self.create_element("InputVcc", input_x, 100.0 + (4 * VERTICAL_STAGE_SPACING), "Vcc")
         if vcc_id is None:
             return False
 
-        await self.log("  Created inputs: CLK, Direction, Enable, Vcc")
+        await self.log("  Created inputs: CLK, RST, Direction, Enable, Vcc")
 
         # ========== Create NOT gates for Q outputs (used by both inc and dec) ==========
         not_q_ids = []
@@ -226,12 +230,12 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
             if not await self.connect(clk_id, dff_ids[i], target_port_label="Clock"):
                 return False
 
-        # ========== Connect Preset and Clear to Vcc ==========
+        # ========== Connect Preset to Vcc (inactive), Clear to RST ==========
         for i in range(4):
             if not await self.connect(vcc_id, dff_ids[i], target_port_label="Preset"):
                 return False
 
-            if not await self.connect(vcc_id, dff_ids[i], target_port_label="Clear"):
+            if not await self.connect(rst_id, dff_ids[i], target_port_label="Clear"):
                 return False
 
         # ========== Connect FF outputs to LEDs and NOT gates ==========

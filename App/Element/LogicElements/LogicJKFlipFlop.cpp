@@ -25,34 +25,28 @@ void LogicJKFlipFlop::updateLogic()
     const Status prst = inputs().at(3);
     const Status clr = inputs().at(4);
 
-    // Rising-edge detection; inputs sampled from the previous cycle (setup time).
+    // Rising-edge detection; current J/K read directly (event-driven engine
+    // guarantees predecessors have committed before this element evaluates).
     if (clk == Status::Active && m_lastClk != Status::Active) {
-        if (m_lastJ == Status::Active && m_lastK == Status::Active) {
-            // J=K=1 → Toggle: swap Q and Q' outputs
+        if (j == Status::Active && k == Status::Active) {
             std::swap(q0, q1);
-        } else if (m_lastJ == Status::Active) {
-            // J=1, K=0 → Set
+        } else if (j == Status::Active) {
             q0 = Status::Active;
             q1 = Status::Inactive;
-        } else if (m_lastK == Status::Active) {
-            // J=0, K=1 → Reset
+        } else if (k == Status::Active) {
             q0 = Status::Inactive;
             q1 = Status::Active;
         }
         // J=0, K=0 → Hold (no change)
     }
 
-    // Asynchronous preset/clear: active-low, override clock behaviour.
-    if (prst != Status::Active || clr != Status::Active) {
-        q0 = (prst != Status::Active) ? Status::Active : Status::Inactive;
-        q1 = (clr != Status::Active) ? Status::Active : Status::Inactive;
+    // Asynchronous preset/clear: active-low.  Only trigger on Inactive.
+    if (prst == Status::Inactive || clr == Status::Inactive) {
+        q0 = (prst == Status::Inactive) ? Status::Active : Status::Inactive;
+        q1 = (clr == Status::Inactive) ? Status::Active : Status::Inactive;
     }
 
-    // Update history after computing new state so that the current cycle's
-    // values become "previous cycle" for the next rising-edge evaluation.
     m_lastClk = clk;
-    m_lastK = k;
-    m_lastJ = j;
 
     setOutputValue(0, q0);
     setOutputValue(1, q1);

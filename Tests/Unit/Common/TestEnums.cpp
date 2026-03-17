@@ -274,7 +274,7 @@ void TestEnums::testStreamRoundTrip()
 void TestEnums::testStatusEnumValues()
 {
     // Test Status enum values
-    Status invalid = Status::Invalid;
+    Status invalid = Status::Unknown;
     Status inactive = Status::Inactive;
     Status active = Status::Active;
 
@@ -288,7 +288,7 @@ void TestEnums::testStatusEnumToString()
     // Test Status enum has proper Q_ENUM support
     Status active = Status::Active;
     Status inactive = Status::Inactive;
-    Status invalid = Status::Invalid;
+    Status invalid = Status::Unknown;
 
     // These should be convertible to strings via QVariant
     QVariant varActive = QVariant::fromValue(active);

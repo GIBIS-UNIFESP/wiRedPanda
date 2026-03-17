@@ -79,15 +79,18 @@ void TestLevel6StackMemoryInterface::testStackMemoryInterface()
 
     auto *simulation = builder.initSimulation();
 
-    // Initialize
+    // Initialize and reset stack pointer to 0xFF
     clk.setOn(false);
     enable.setOn(true);
     spLoad.setOn(false);
     spPush.setOn(false);
     spPop.setOn(false);
-    spReset.setOn(false);
+    spReset.setOn(true);        // Assert SP reset (loads 0xFF)
     memWrite.setOn(false);
     memRead.setOn(false);
+    simulation->update();
+    TestUtils::clockCycle(simulation, &clk);  // Clock in reset value
+    spReset.setOn(false);       // Release reset
     simulation->update();
 
     // Set address select (0=use Address input, 1=use SP)

@@ -159,7 +159,7 @@ void TestLogicElements::testLogicSourceMultiOutput()
 /**
  * Test: LogicSink mirrors each input to the matching output so the display
  * layer can query outputValue(i) without traversing the graph.
- * Also verifies that Invalid on any input propagates to all outputs.
+ * Also verifies that Unknown on any input propagates to all outputs.
  */
 void TestLogicElements::testLogicSink()
 {
@@ -188,15 +188,15 @@ void TestLogicElements::testLogicSink()
     QCOMPARE(sink.outputValue(1), Status::Inactive);
     QCOMPARE(sink.outputValue(2), Status::Active);
 
-    // Null predecessor → all outputs Invalid
+    // Null predecessor → all outputs Unknown
     LogicSink sinkPartial(2);
     LogicSource onlyInput;
     sinkPartial.connectPredecessor(0, &onlyInput, 0);
     // port 1 left null
     onlyInput.setOutputValue(true);
     sinkPartial.updateLogic();
-    QCOMPARE(sinkPartial.outputValue(0), Status::Invalid);
-    QCOMPARE(sinkPartial.outputValue(1), Status::Invalid);
+    QCOMPARE(sinkPartial.outputValue(0), Status::Unknown);
+    QCOMPARE(sinkPartial.outputValue(1), Status::Unknown);
 }
 
 void TestLogicElements::testLogicMux_data()

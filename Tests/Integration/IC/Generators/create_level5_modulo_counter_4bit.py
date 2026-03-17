@@ -5,7 +5,7 @@
 """
 Create 4-bit Modulo-N Counter IC
 
-Inputs: CLK (Clock), Modulo[0-3] (4-bit modulo value)
+Inputs: CLK (Clock), RST (Reset - active LOW), Modulo[0-3] (4-bit modulo value)
 Outputs: Q[0-3] (4-bit count value), Overflow (pulse when count wraps)
 
 Architecture (built from level1_d_flip_flop ICs):
@@ -45,6 +45,10 @@ class ModuloCounter4BitBuilder(ICBuilderBase):
         if clk_id is None:
             return False
 
+        rst_id = await self.create_element("InputSwitch", input_x, 100.0 + (0.5 * VERTICAL_STAGE_SPACING), "RST")
+        if rst_id is None:
+            return False
+
         # Create Modulo inputs (4-bit)
         modulo_ids = []
         for i in range(4):
@@ -58,7 +62,7 @@ class ModuloCounter4BitBuilder(ICBuilderBase):
         if vcc_id is None:
             return False
 
-        await self.log("  Created inputs: CLK, Modulo[0-3], Vcc")
+        await self.log("  Created inputs: CLK, RST, Modulo[0-3], Vcc")
 
         # ========== Create NOT gates for Q outputs ==========
         not_q_ids = []
@@ -179,12 +183,12 @@ class ModuloCounter4BitBuilder(ICBuilderBase):
             if not await self.connect(clk_id, dff_ids[i], target_port_label="Clock"):
                 return False
 
-        # ========== Connect Preset and Clear to Vcc ==========
+        # ========== Connect Preset to Vcc (inactive), Clear to RST ==========
         for i in range(4):
             if not await self.connect(vcc_id, dff_ids[i], target_port_label="Preset"):
                 return False
 
-            if not await self.connect(vcc_id, dff_ids[i], target_port_label="Clear"):
+            if not await self.connect(rst_id, dff_ids[i], target_port_label="Clear"):
                 return False
 
         # ========== Connect FF outputs to LEDs and NOT gates ==========

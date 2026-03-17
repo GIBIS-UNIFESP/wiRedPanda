@@ -6,7 +6,7 @@
 LogicElement::LogicElement(const int inputSize, const int outputSize)
     : m_inputPairs(inputSize, {})
     , m_inputValues(inputSize, Status::Inactive)
-    , m_outputValues(outputSize, Status::Inactive)
+    , m_outputValues(outputSize, Status::Unknown)
 {
 }
 
@@ -14,16 +14,18 @@ bool LogicElement::updateInputs()
 {
     // Snapshot predecessor outputs into m_inputValues so that updateLogic()
     // can read a consistent view even when predecessor values change mid-cycle.
+    //
+    // Only truly unconnected inputs (null predecessor) cause an early return.
+    // Unknown/Error values from connected predecessors are passed through so
+    // each gate can apply its own domination rules.
     for (int index = 0; index < m_inputPairs.size(); ++index) {
         const Status val = inputValue(index);
-        if (val == Status::Invalid) {
-            // An unconnected (null) predecessor makes all outputs Invalid; the
-            // simulation cannot compute a meaningful result from incomplete data.
+        if (val == Status::Unknown && !m_inputPairs.at(index).logic) {
             for (auto &out : m_outputValues) {
-                if (out != Status::Invalid) {
+                if (out != Status::Unknown) {
                     m_outputChanged = true;
                 }
-                out = Status::Invalid;
+                out = Status::Unknown;
             }
             return false;
         }
@@ -70,10 +72,10 @@ Status LogicElement::inputValue(const int index) const
 {
     // Traverse one edge of the logic graph: read the output of the predecessor
     // element at the specific port that drives this input slot.
-    // A null predecessor (unconnected input port) returns Invalid.
+    // A null predecessor (unconnected input port) returns Unknown.
     auto *pred = m_inputPairs.at(index).logic;
     if (!pred) {
-        return Status::Invalid;
+        return Status::Unknown;
     }
     int port = m_inputPairs.at(index).port;
     return pred->outputValue(port);

@@ -40,11 +40,14 @@ void TestFeedback::testDLatchWithFeedback()
 
 void TestFeedback::testRingOscillatorNonConvergence()
 {
-    // Ring oscillator (odd number of inverters) cannot converge
+    // Ring oscillator (odd number of inverters) with 4-state logic:
+    // All gates start at Unknown and NOT(Unknown)=Unknown, so the ring
+    // is at a fixed point and does NOT oscillate.  Verify feedback
+    // detection still identifies the loop.
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
 
-    verifyConvergence(scene.get(), false);
+    verifyFeedbackDetection(scene.get());
 }
 
 void TestFeedback::testSetResetPriorityInSRLatch()
@@ -160,8 +163,8 @@ void TestFeedback::testIterationCountVerification()
 void TestFeedback::testConvergenceSpeedVariation()
 {
     // Different circuits should converge in different numbers of iterations
-    std::unique_ptr<Scene> scene1(createSRLatchFromNAND());      // Should converge quickly (2-3 iterations)
-    std::unique_ptr<Scene> scene2(createRingOscillator());        // Should NOT converge (need 10 iterations + warning)
+    std::unique_ptr<Scene> scene1(createSRLatchFromNAND());      // Should converge quickly
+    std::unique_ptr<Scene> scene2(createRingOscillator());        // Stays at Unknown fixed point (4-state)
 
     QVERIFY2(scene1 != nullptr, "Failed to create first scene");
     QVERIFY2(scene2 != nullptr, "Failed to create second scene");
@@ -172,9 +175,9 @@ void TestFeedback::testConvergenceSpeedVariation()
     sim1.update();
     verifyStableState(scene1.get());
 
-    // Ring oscillator should warn about non-convergence
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
+    // Ring oscillator with 4-state logic stays at Unknown (no events).
     sim2.update();
+    verifyFeedbackDetection(scene2.get());
 }
 
 // ============================================================
@@ -183,25 +186,22 @@ void TestFeedback::testConvergenceSpeedVariation()
 
 void TestFeedback::testRingOscillatorWarningAfterMaxIterations()
 {
-    // Ring oscillator should warn after max iterations (10)
+    // Ring oscillator with 4-state logic stays at Unknown (fixed point).
+    // Verify feedback detection still works.
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
 
-    // Odd-length ring cannot converge, should warn
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
-
     Simulation sim(scene.get());
     sim.update();
+
+    verifyFeedbackDetection(scene.get());
 }
 
 void TestFeedback::testOddLengthInverterChainFeedback()
 {
-    // Odd-length inverter chain (feedback loop) cannot stabilize
+    // Odd-length inverter chain (feedback loop) stays at Unknown with 4-state logic.
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
-
-    // Odd-length ring cannot converge
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
 
     Simulation sim(scene.get());
     sim.update();
@@ -232,12 +232,10 @@ void TestFeedback::testConflictingFeedbackSignals()
 
 void TestFeedback::testWarningMessageContent()
 {
-    // Verify warning message for non-converging circuits
+    // With 4-state logic, ring oscillators stay at Invalid (no events/warnings).
+    // Verify feedback detection still works.
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
-
-    // Ring oscillator should warn about non-convergence
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*Feedback circuit did not converge.*"));
 
     Simulation sim(scene.get());
     sim.update();
@@ -255,16 +253,13 @@ void TestFeedback::testWarningMessageContent()
 
 void TestFeedback::testSimulationContinuesAfterNonConvergence()
 {
-    // Simulation should continue even if feedback loop doesn't converge
+    // Simulation should continue running for undriven ring oscillators
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
 
-    // Ignore non-convergence warning (throttled to once per initialize())
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
-
     Simulation sim(scene.get());
 
-    // Should not throw, should continue
+    // Should not throw, should continue (ring stays at Unknown, no events)
     sim.update();
     sim.update();  // Multiple updates should work
 
@@ -345,12 +340,10 @@ void TestFeedback::testMultipleIndependentFeedbackLoops()
 
 void TestFeedback::testNestedFeedbackLoops()
 {
-    // Feedback loops (3-NOT ring - odd length, non-converging)
+    // Feedback loops (3-NOT ring - odd length).
+    // With 4-state logic, stays at Unknown fixed point.
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
-
-    // Odd-length ring cannot converge
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
 
     Simulation sim(scene.get());
     sim.update();
@@ -389,9 +382,7 @@ void TestFeedback::testSingleElementFeedback()
     conn->setStartPort(notGate->outputPort(0));
     conn->setEndPort(notGate->inputPort(0));
 
-    // Single NOT self-loop cannot converge
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
-
+    // With 4-state logic, NOT(Unknown)=Unknown — no oscillation.
     Simulation sim(&scene);
     sim.update();
 
@@ -400,12 +391,10 @@ void TestFeedback::testSingleElementFeedback()
 
 void TestFeedback::testFeedbackThroughMultipleElementTypes()
 {
-    // Feedback path through multiple element types (3-NOT ring - odd length, non-converging)
+    // Feedback path through multiple element types (3-NOT ring - odd length).
+    // With 4-state logic, stays at Unknown fixed point.
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
-
-    // Odd-length ring cannot converge
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
 
     Simulation sim(scene.get());
     sim.update();
@@ -724,11 +713,6 @@ Scene *TestFeedback::createDeepCircuit()
 void TestFeedback::verifyConvergence(Scene *scene, bool shouldConverge)
 {
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
-
-    if (!shouldConverge) {
-        // Non-converging circuits will print a debug warning
-        QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
-    }
 
     Simulation sim(scene);
     sim.update();

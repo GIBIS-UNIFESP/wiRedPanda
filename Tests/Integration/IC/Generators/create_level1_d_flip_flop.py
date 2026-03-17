@@ -5,31 +5,34 @@
 """
 Create D Flip-Flop IC with Preset and Clear
 
-Inputs: D (Data), Clock, Preset (active LOW), Clear (active LOW)
-Outputs: Q, Q_bar
+Standard master-slave D flip-flop (textbook design):
 
-Circuit:
-- Master-Slave configuration using two D latches
-- Master latch active on clock low
-- Slave latch active on clock high
-- Ensures output changes only on clock edge
-- Preset/Clear override normal operation (asynchronous)
+  INPUT GATING (AND gates, active when CLK=0):
+    AND_S = D     AND NOT_CLK   → S_master
+    AND_R = NOT_D AND NOT_CLK   → R_master
 
-Implementation:
-- 1 NOT gate (invert clock for master/slave control)
-- 2 NOT gates (invert Preset and Clear for OR logic)
-- 2 OR gates (combine Preset/Clear with S/R signals)
-- 2 D Latches (master and slave)
+  MASTER NOR SR LATCH (transparent when CLK=0):
+    NOR_Q_m    = NOR(R_master, Q_bar_m, NOT_CLEAR)    → Q_master
+    NOR_Qbar_m = NOR(S_master, Q_m,     NOT_PRESET)   → Q_bar_master
 
-D Flip-Flop behavior:
-- Output changes on rising edge of clock
-- Input D sampled and captured on clock edge
-- Output stable during clock cycle
-- Preset (active LOW): Forces Q=1, Q_bar=0
-- Clear (active LOW): Forces Q=0, Q_bar=1
+  CLOCK INVERTER:
+    NOT_CLK = NOT(CLK)
 
-Usage:
-    python create_d_flip_flop.py
+  SLAVE GATING (AND gates, active when CLK=1):
+    AND_S_slave = Q_master     AND CLK   → S_slave
+    AND_R_slave = Q_bar_master AND CLK   → R_slave
+
+  SLAVE NOR SR LATCH (transparent when CLK=1):
+    NOR_Q_s    = NOR(R_slave_or, Q_bar_s)   → Q       (final output)
+    NOR_Qbar_s = NOR(S_slave_or, Q_s)       → Q_bar   (final output)
+
+  PRESET/CLEAR INJECTION (OR gates into slave):
+    S_slave_or = S_slave OR NOT(Preset)   → forces Q_bar_s=0 → Q=1
+    R_slave_or = R_slave OR NOT(Clear)    → forces Q_s=0    → Q=0
+
+Timing: positive-edge triggered (captures on CLK 0→1).
+  CLK=0: master transparent (follows D), slave latched.
+  CLK=1: master latched, slave transparent (copies master).
 """
 
 import asyncio
@@ -45,257 +48,159 @@ class DFlipFlopBuilder(ICBuilderBase):
     """Builder for D Flip-Flop IC using master-slave latches"""
 
     async def create(self) -> bool:
-        """Create the D Flip-Flop IC"""
         await self.begin_build("D Flip-Flop")
 
-        # Create new circuit
         if not await self.create_new_circuit():
             return False
 
-        # Position calculation with proper spacing (8 stages horizontally)
+        HS = HORIZONTAL_GATE_SPACING
+        VS = VERTICAL_STAGE_SPACING
+
         input_x = 50.0
-        not_clk_x = input_x + HORIZONTAL_GATE_SPACING
-        master_not_x = not_clk_x + HORIZONTAL_GATE_SPACING
-        master_and_x = master_not_x + HORIZONTAL_GATE_SPACING
-        master_nor_x = master_and_x + HORIZONTAL_GATE_SPACING
-        slave_not_x = master_nor_x + HORIZONTAL_GATE_SPACING
-        slave_and_x = slave_not_x + HORIZONTAL_GATE_SPACING
-        slave_nor_x = slave_and_x + HORIZONTAL_GATE_SPACING
-        output_x = slave_nor_x + HORIZONTAL_GATE_SPACING
+        not_x = input_x + HS
+        and_master_x = not_x + HS
+        master_nor_x = and_master_x + HS
+        and_slave_x = master_nor_x + HS
+        or_slave_x = and_slave_x + HS
+        slave_nor_x = or_slave_x + HS
+        output_x = slave_nor_x + HS
 
-        top_y = 100.0
-        bottom_y = top_y + VERTICAL_STAGE_SPACING
+        row1_y = 100.0                  # S path (D / set)
+        row2_y = row1_y + VS            # R path (NOT D / reset)
+        clk_y = row2_y + VS             # Clock
+        preset_y = clk_y + VS           # Preset
+        clear_y = preset_y + VS         # Clear
 
-        # Create input switches for D and Clock
-        input_d_id = await self.create_element("InputSwitch", input_x, top_y, "D")
-        if input_d_id is None:
-            return False
-        await self.log(f"  ✓ Created input D (id={input_d_id})")
+        # ========== Helper ==========
+        async def mk(etype, x, y, label, input_size=None):
+            r = await self.mcp.send_command("create_element", {
+                "type": etype, "x": x, "y": y, "label": label
+            })
+            if not r or not r.success:
+                print(f"❌ Failed to create {label}")
+                return None
+            eid = r.result.get('element_id')
+            self.element_count += 1
+            if input_size is not None:
+                r2 = await self.mcp.send_command("set_element_properties", {
+                    "element_id": eid, "input_size": input_size
+                })
+                if not r2 or not r2.success:
+                    print(f"❌ Failed to resize {label} to {input_size} inputs")
+                    return None
+            return eid
 
-        input_clk_id = await self.create_element("InputSwitch", input_x, bottom_y, "Clock")
-        if input_clk_id is None:
-            return False
-        await self.log(f"  ✓ Created input Clock (id={input_clk_id})")
+        async def conn(src, sp, tgt, tp, desc=""):
+            r = await self.mcp.send_command("connect_elements", {
+                "source_id": src, "source_port": sp,
+                "target_id": tgt, "target_port": tp
+            })
+            if not r or not r.success:
+                print(f"❌ Failed to connect: {desc}")
+                return False
+            self.connection_count += 1
+            return True
 
-        # Create PRESET input (active LOW)
-        input_preset_id = await self.create_element("InputSwitch", input_x, bottom_y + VERTICAL_STAGE_SPACING, "Preset")
-        if input_preset_id is None:
-            return False
-        await self.log(f"  ✓ Created input Preset (id={input_preset_id})")
+        # ========== Create elements ==========
 
-        # Create CLEAR input (active LOW)
-        input_clear_id = await self.create_element("InputSwitch", input_x, bottom_y + (2 * VERTICAL_STAGE_SPACING), "Clear")
-        if input_clear_id is None:
-            return False
-        await self.log(f"  ✓ Created input Clear (id={input_clear_id})")
+        # Inputs
+        d_id     = await mk("InputSwitch", input_x, row1_y, "D")
+        clk_id   = await mk("InputSwitch", input_x, clk_y, "Clock")
+        prst_id  = await mk("InputSwitch", input_x, preset_y, "Preset")
+        clr_id   = await mk("InputSwitch", input_x, clear_y, "Clear")
 
-        # Create NOT gate to invert clock
-        not_id = await self.create_element("Not", not_clk_x, bottom_y, "not_clk")
-        if not_id is None:
-            return False
-        await self.log(f"  ✓ Created NOT gate (id={not_id})")
+        # Inverters
+        not_d_id    = await mk("Not", not_x, row2_y, "not_d")
+        not_clk_id  = await mk("Not", not_x, clk_y, "not_clk")
+        not_prst_id = await mk("Not", not_x, preset_y, "not_preset")
+        not_clr_id  = await mk("Not", not_x, clear_y, "not_clear")
 
-        # ========== Preset/Clear Control Logic ==========
+        # Master input gating: AND_S = D · CLK, AND_R = NOT_D · CLK
+        and_s_id = await mk("And", and_master_x, row1_y, "and_master_s")
+        and_r_id = await mk("And", and_master_x, row2_y, "and_master_r")
 
-        # NOT gate to invert Preset
-        not_preset_id = await self.create_element("Not", not_clk_x, bottom_y + VERTICAL_STAGE_SPACING, "not_preset")
-        if not_preset_id is None:
-            return False
+        # Master NOR SR latch: 3-input (gate, feedback, async clear/preset)
+        m_nor_q_id    = await mk("Nor", master_nor_x, row1_y, "master_nor_q", input_size=3)
+        m_nor_qbar_id = await mk("Nor", master_nor_x, row2_y, "master_nor_qbar", input_size=3)
 
-        # NOT gate to invert Clear
-        not_clear_id = await self.create_element("Not", not_clk_x, bottom_y + (2 * VERTICAL_STAGE_SPACING), "not_clear")
-        if not_clear_id is None:
-            return False
+        # Slave gating: AND_S_slave = Q_master · CLK_bar, AND_R_slave = Q_bar_master · CLK_bar
+        and_ss_id = await mk("And", and_slave_x, row1_y, "and_slave_s")
+        and_sr_id = await mk("And", and_slave_x, row2_y, "and_slave_r")
 
-        # OR gate for S (slave_and1 OR NOT(clear))
-        or_s_id = await self.create_element("Or", master_not_x, bottom_y + (2 * VERTICAL_STAGE_SPACING), "or_s")
-        if or_s_id is None:
-            return False
+        # OR gates for preset/clear injection into slave
+        or_s_id = await mk("Or", or_slave_x, row1_y, "or_slave_s")
+        or_r_id = await mk("Or", or_slave_x, row2_y, "or_slave_r")
 
-        # OR gate for R (slave_and2 OR NOT(preset))
-        or_r_id = await self.create_element("Or", master_not_x, bottom_y + (3 * VERTICAL_STAGE_SPACING), "or_r")
-        if or_r_id is None:
-            return False
+        # Slave NOR SR latch: 2-input
+        s_nor_q_id    = await mk("Nor", slave_nor_x, row1_y, "slave_nor_q")
+        s_nor_qbar_id = await mk("Nor", slave_nor_x, row2_y, "slave_nor_qbar")
 
-        # Connect Preset to NOT gate
-        if not await self.connect(input_preset_id, not_preset_id):
-            return False
+        # Outputs
+        q_id    = await mk("Led", output_x, row1_y, "Q")
+        qbar_id = await mk("Led", output_x, row2_y, "Q_bar")
 
-        # Connect Clear to NOT gate
-        if not await self.connect(input_clear_id, not_clear_id):
-            return False
-
-        # ========== Master Latch Components ==========
-
-        # Master NOT gate to invert D
-        master_not_id = await self.create_element("Not", master_not_x, top_y, "master_not_d")
-        if master_not_id is None:
-            return False
-
-        # Master AND1: D AND NOT Clock -> S
-        master_and1_id = await self.create_element("And", master_and_x, top_y, "master_and_s")
-        if master_and1_id is None:
-            return False
-
-        # Master AND2: NOT D AND NOT Clock -> R
-        master_and2_id = await self.create_element("And", master_and_x, bottom_y, "master_and_r")
-        if master_and2_id is None:
-            return False
-
-        # Master NOR1: (S, Q_bar) -> Qm
-        master_nor1_id = await self.create_element("Nor", master_nor_x, top_y, "master_nor_q")
-        if master_nor1_id is None:
+        if None in (d_id, clk_id, prst_id, clr_id, not_d_id, not_clk_id,
+                    not_prst_id, not_clr_id, and_s_id, and_r_id,
+                    m_nor_q_id, m_nor_qbar_id, and_ss_id, and_sr_id,
+                    or_s_id, or_r_id, s_nor_q_id, s_nor_qbar_id, q_id, qbar_id):
             return False
 
-        # Master NOR2: (R, Q) -> Qm_bar
-        master_nor2_id = await self.create_element("Nor", master_nor_x, bottom_y, "master_nor_qbar")
-        if master_nor2_id is None:
-            return False
+        # ========== Wiring ==========
 
-        # ========== Slave Latch Components ==========
+        # Inverters
+        if not await conn(d_id, 0, not_d_id, 0, "D→NOT_D"): return False
+        if not await conn(clk_id, 0, not_clk_id, 0, "CLK→NOT_CLK"): return False
+        if not await conn(prst_id, 0, not_prst_id, 0, "Preset→NOT"): return False
+        if not await conn(clr_id, 0, not_clr_id, 0, "Clear→NOT"): return False
 
-        # Slave NOT gate to invert Qm
-        slave_not_id = await self.create_element("Not", slave_not_x, top_y, "slave_not_qm")
-        if slave_not_id is None:
-            return False
+        # Master input gating: AND_S = D · NOT_CLK (transparent when CLK=0)
+        if not await conn(d_id, 0, and_s_id, 0, "D→AND_S"): return False
+        if not await conn(not_clk_id, 0, and_s_id, 1, "NOT_CLK→AND_S"): return False
 
-        # Slave AND1: Qm AND Clock -> S
-        slave_and1_id = await self.create_element("And", slave_and_x, top_y, "slave_and_s")
-        if slave_and1_id is None:
-            return False
+        # Master input gating: AND_R = NOT_D · NOT_CLK
+        if not await conn(not_d_id, 0, and_r_id, 0, "NOT_D→AND_R"): return False
+        if not await conn(not_clk_id, 0, and_r_id, 1, "NOT_CLK→AND_R"): return False
 
-        # Slave AND2: Qm_bar AND Clock -> R
-        slave_and2_id = await self.create_element("And", slave_and_x, bottom_y, "slave_and_r")
-        if slave_and2_id is None:
-            return False
+        # Master NOR Q = NOR(R_master, Q_bar_master, NOT_CLEAR)
+        if not await conn(and_r_id, 0, m_nor_q_id, 0, "AND_R→NOR_Q_m"): return False
+        if not await conn(m_nor_qbar_id, 0, m_nor_q_id, 1, "Q'_m→NOR_Q_m"): return False
+        if not await conn(not_clr_id, 0, m_nor_q_id, 2, "NOT_CLR→NOR_Q_m"): return False
 
-        # Slave NOR1: (S, Q_bar) -> Q
-        slave_nor1_id = await self.create_element("Nor", slave_nor_x, top_y, "slave_nor_q")
-        if slave_nor1_id is None:
-            return False
+        # Master NOR Q_bar = NOR(S_master, Q_master, NOT_PRESET)
+        if not await conn(and_s_id, 0, m_nor_qbar_id, 0, "AND_S→NOR_Q'_m"): return False
+        if not await conn(m_nor_q_id, 0, m_nor_qbar_id, 1, "Q_m→NOR_Q'_m"): return False
+        if not await conn(not_prst_id, 0, m_nor_qbar_id, 2, "NOT_PRST→NOR_Q'_m"): return False
 
-        # Slave NOR2: (R, Q) -> Q_bar
-        slave_nor2_id = await self.create_element("Nor", slave_nor_x, bottom_y, "slave_nor_qbar")
-        if slave_nor2_id is None:
-            return False
+        # Slave gating: AND_S_slave = Q_master · CLK (transparent when CLK=1)
+        if not await conn(m_nor_q_id, 0, and_ss_id, 0, "Q_m→AND_SS"): return False
+        if not await conn(clk_id, 0, and_ss_id, 1, "CLK→AND_SS"): return False
 
-        # Create output LEDs
-        q_id = await self.create_element("Led", output_x, top_y, "Q")
-        if q_id is None:
-            return False
+        # Slave gating: AND_R_slave = Q_bar_master · CLK
+        if not await conn(m_nor_qbar_id, 0, and_sr_id, 0, "Q'_m→AND_SR"): return False
+        if not await conn(clk_id, 0, and_sr_id, 1, "CLK→AND_SR"): return False
 
-        qbar_id = await self.create_element("Led", output_x, bottom_y, "Q_bar")
-        if qbar_id is None:
-            return False
+        # OR gates for preset/clear injection
+        # or_s = AND_S_slave OR NOT_PRESET → drives slave NOR_Qbar
+        if not await conn(and_ss_id, 0, or_s_id, 0, "AND_SS→OR_S"): return False
+        if not await conn(not_prst_id, 0, or_s_id, 1, "NOT_PRST→OR_S"): return False
 
-        # ========== Connect clock inversion ==========
+        # or_r = AND_R_slave OR NOT_CLEAR → drives slave NOR_Q
+        if not await conn(and_sr_id, 0, or_r_id, 0, "AND_SR→OR_R"): return False
+        if not await conn(not_clr_id, 0, or_r_id, 1, "NOT_CLR→OR_R"): return False
 
-        if not await self.connect(input_clk_id, not_id):
-            return False
+        # Slave NOR Q = NOR(or_r, Q_bar_slave)
+        if not await conn(or_r_id, 0, s_nor_q_id, 0, "OR_R→NOR_Q_s"): return False
+        if not await conn(s_nor_qbar_id, 0, s_nor_q_id, 1, "Q'_s→NOR_Q_s"): return False
 
-        # ========== Connect Master Latch ==========
+        # Slave NOR Q_bar = NOR(or_s, Q_slave)
+        if not await conn(or_s_id, 0, s_nor_qbar_id, 0, "OR_S→NOR_Q'_s"): return False
+        if not await conn(s_nor_q_id, 0, s_nor_qbar_id, 1, "Q_s→NOR_Q'_s"): return False
 
-        # Connect D to master NOT
-        if not await self.connect(input_d_id, master_not_id):
-            return False
+        # Outputs
+        if not await conn(s_nor_q_id, 0, q_id, 0, "Q_s→Q_LED"): return False
+        if not await conn(s_nor_qbar_id, 0, qbar_id, 0, "Q'_s→Q'_LED"): return False
 
-        # Connect D to master AND1
-        if not await self.connect(input_d_id, master_and1_id):
-            return False
-
-        # Connect NOT Clock to master AND1
-        if not await self.connect(not_id, master_and1_id, target_port=1):
-            return False
-
-        # Connect master NOT to master AND2
-        if not await self.connect(master_not_id, master_and2_id):
-            return False
-
-        # Connect NOT Clock to master AND2
-        if not await self.connect(not_id, master_and2_id, target_port=1):
-            return False
-
-        # Connect master AND2 to master NOR1 (R to NOR1)
-        if not await self.connect(master_and2_id, master_nor1_id):
-            return False
-
-        # Connect master NOR2 to master NOR1 (feedback)
-        if not await self.connect(master_nor2_id, master_nor1_id, target_port=1):
-            return False
-
-        # Connect master AND1 to master NOR2 (S to NOR2)
-        if not await self.connect(master_and1_id, master_nor2_id):
-            return False
-
-        # Connect master NOR1 to master NOR2 (feedback)
-        if not await self.connect(master_nor1_id, master_nor2_id, target_port=1):
-            return False
-
-        # ========== Connect Slave Latch ==========
-
-        # Connect master NOR1 to slave NOT
-        if not await self.connect(master_nor1_id, slave_not_id):
-            return False
-
-        # Connect master NOR1 to slave AND1
-        if not await self.connect(master_nor1_id, slave_and1_id):
-            return False
-
-        # Connect Clock to slave AND1
-        if not await self.connect(input_clk_id, slave_and1_id, target_port=1):
-            return False
-
-        # Connect slave NOT to slave AND2
-        if not await self.connect(slave_not_id, slave_and2_id):
-            return False
-
-        # Connect Clock to slave AND2
-        if not await self.connect(input_clk_id, slave_and2_id, target_port=1):
-            return False
-
-        # Connect slave AND2 to OR S gate (input 0)
-        if not await self.connect(slave_and2_id, or_s_id):
-            return False
-
-        # Connect NOT Preset to OR R gate (input 1)
-        if not await self.connect(not_preset_id, or_r_id, target_port=1):
-            return False
-
-        # Connect OR R to slave NOR2 (R forces Q_bar=0 to make Q=1)
-        if not await self.connect(or_r_id, slave_nor2_id):
-            return False
-
-        # Connect slave NOR2 to slave NOR1 (feedback)
-        if not await self.connect(slave_nor2_id, slave_nor1_id, target_port=1):
-            return False
-
-        # Connect slave AND1 to OR R gate (input 0)
-        if not await self.connect(slave_and1_id, or_r_id):
-            return False
-
-        # Connect NOT Clear to OR S gate (input 1)
-        if not await self.connect(not_clear_id, or_s_id, target_port=1):
-            return False
-
-        # Connect OR S to slave NOR1 (S forces Q=0 to make Q_bar=1)
-        if not await self.connect(or_s_id, slave_nor1_id):
-            return False
-
-        # Connect slave NOR1 to slave NOR2 (feedback)
-        if not await self.connect(slave_nor1_id, slave_nor2_id, target_port=1):
-            return False
-
-        # ========== Connect final outputs ==========
-
-        # Connect slave NOR1 to Q LED
-        if not await self.connect(slave_nor1_id, q_id):
-            return False
-
-        # Connect slave NOR2 to Q_bar LED
-        if not await self.connect(slave_nor2_id, qbar_id):
-            return False
-
-        # Save circuit as IC
+        # Save
         output_file = str(IC_COMPONENTS_DIR / "level1_d_flip_flop.panda")
         if not await self.save_circuit(output_file):
             return False
@@ -306,7 +211,6 @@ class DFlipFlopBuilder(ICBuilderBase):
 
 
 async def build(mcp) -> bool:
-    """Entry point for the builder"""
     builder = DFlipFlopBuilder(mcp, verbose=True)
     return await builder.create()
 

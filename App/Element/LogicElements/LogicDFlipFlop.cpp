@@ -24,26 +24,22 @@ void LogicDFlipFlop::updateLogic()
     const Status prst = inputs().at(2);
     const Status clr = inputs().at(3);
 
-    // On the rising clock edge, capture the D value from the previous simulation
-    // cycle (m_lastValue) to simulate setup-time semantics: D must be stable
-    // before the clock edge for the value to be reliably latched.
+    // On the rising clock edge, capture the current D value.  The event-driven
+    // engine guarantees D has settled before the flip-flop evaluates (predecessors
+    // commit in earlier delta cycles).
     if (clk == Status::Active && m_lastClk != Status::Active) {
-        q0 = m_lastValue;
-        q1 = (m_lastValue == Status::Active) ? Status::Inactive : Status::Active;
+        q0 = D;
+        q1 = (D == Status::Active) ? Status::Inactive : Status::Active;
     }
 
-    // Asynchronous preset/clear override the clocked state; active-low signals.
-    if (prst != Status::Active || clr != Status::Active) {
-        // When both are asserted simultaneously (S=R=1 in underlying NOR latch),
-        // both outputs are forced high — the metastable/forbidden state is
-        // represented explicitly rather than left undefined.
-        q0 = (prst != Status::Active) ? Status::Active : Status::Inactive;
-        q1 = (clr != Status::Active) ? Status::Active : Status::Inactive;
+    // Asynchronous preset/clear: active-low.  Only trigger on specifically
+    // asserted (Inactive); Unknown/Error must not falsely activate the override.
+    if (prst == Status::Inactive || clr == Status::Inactive) {
+        q0 = (prst == Status::Inactive) ? Status::Active : Status::Inactive;
+        q1 = (clr == Status::Inactive) ? Status::Active : Status::Inactive;
     }
 
-    // Store current clock and data for next cycle's edge detection.
     m_lastClk = clk;
-    m_lastValue = D;
 
     setOutputValue(0, q0);
     setOutputValue(1, q1);

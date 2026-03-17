@@ -33,7 +33,7 @@ void TestConnections::testCreateConnection()
 
     QVERIFY(conn->startPort() == nullptr);
     QVERIFY(conn->endPort() == nullptr);
-    QCOMPARE(conn->status(), Status::Invalid);
+    QCOMPARE(conn->status(), Status::Unknown);
 }
 
 void TestConnections::testSetPorts()
@@ -414,7 +414,7 @@ void TestConnections::testMultiConnectionStatus()
 
 void TestConnections::testInvalidPortStatus()
 {
-    // Test that invalid port (multiple connections) forces Invalid status
+    // Test that invalid port (multiple connections) forces Unknown status
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
@@ -437,14 +437,14 @@ void TestConnections::testInvalidPortStatus()
 
     QCOMPARE(andGate->inputPort(0)->status(), Status::Active);
 
-    // Second connection - should force Invalid (multiple connections to input)
+    // Second connection - should force Unknown (multiple connections to input)
     auto conn2 = std::make_unique<QNEConnection>();
     conn2->setStartPort(sw2->outputPort());
     conn2->setEndPort(andGate->inputPort(0));
     scene->addItem(conn2.get());
 
-    // Port validation fails, status forced to Invalid
-    QCOMPARE(andGate->inputPort(0)->status(), Status::Invalid);
+    // Port validation fails, status forced to Unknown
+    QCOMPARE(andGate->inputPort(0)->status(), Status::Unknown);
 }
 
 // ============================================================================

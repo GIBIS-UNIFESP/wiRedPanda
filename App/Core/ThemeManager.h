@@ -45,23 +45,26 @@ public:
 
     // --- Members: Connection Colors ---
 
-    QColor m_connectionInvalid = QColor(Qt::red);
+    QColor m_connectionUnknown = QColor(Qt::gray);
     QColor m_connectionInactive;
     QColor m_connectionActive;
+    QColor m_connectionError = QColor(Qt::red);
     QColor m_connectionSelected;
 
     // --- Members: Port Brush Colors ---
 
-    QColor m_portInvalidBrush;
+    QColor m_portUnknownBrush;
     QColor m_portInactiveBrush;
     QColor m_portActiveBrush;
+    QColor m_portErrorBrush = QColor(Qt::red);
     QColor m_portOutputBrush;
 
     // --- Members: Port Pen Colors ---
 
-    QColor m_portInvalidPen;
+    QColor m_portUnknownPen;
     QColor m_portInactivePen;
     QColor m_portActivePen;
+    QColor m_portErrorPen = QColor(Qt::darkRed);
     QColor m_portOutputPen;
 
     // --- Members: Port Hover ---

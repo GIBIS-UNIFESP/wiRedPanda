@@ -23,6 +23,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 
 struct UpDownCounterSetup {
     InputSwitch clk;
+    InputSwitch rst;
     InputSwitch dir;
     InputSwitch en;
     Led counterOut[4];
@@ -34,12 +35,13 @@ static Simulation *buildUpDownCounterCircuit(WorkSpace &workspace, UpDownCounter
 
     IC *udcIC = loadBuildingBlockIC("level5_up_down_counter_4bit.panda");
 
-    builder.add(&s.clk, &s.dir, &s.en, udcIC);
+    builder.add(&s.clk, &s.rst, &s.dir, &s.en, udcIC);
     for (int i = 0; i < 4; ++i) {
         builder.add(&s.counterOut[i]);
     }
 
     builder.connect(&s.clk, 0, udcIC, "CLK");
+    builder.connect(&s.rst, 0, udcIC, "RST");
     builder.connect(&s.dir, 0, udcIC, "Direction");
     builder.connect(&s.en, 0, udcIC, "Enable");
     for (int i = 0; i < 4; ++i) {
@@ -58,13 +60,14 @@ static int readCounterValue(UpDownCounterSetup &s)
 
 static void initializeCounterToValue(Simulation *simulation, UpDownCounterSetup &s, int targetValue)
 {
-    // IC D flip-flops initialize to Q=1 (NOR latch default), so counter starts at 0xF.
-    // One clock cycle advances 0xF -> 0x0 to reset the counter.
+    // Reset counter to 0 via active-LOW RST
     s.clk.setOn(false);
-    s.en.setOn(true);
-    s.dir.setOn(true);  // Up direction
+    s.rst.setOn(false);         // Assert reset
     simulation->update();
-    clockCycle(simulation, &s.clk);
+    s.rst.setOn(true);          // Release reset
+    s.en.setOn(true);
+    s.dir.setOn(true);          // Up direction
+    simulation->update();
 
     // Count up to target value from 0
     for (int i = 0; i < targetValue; ++i) {

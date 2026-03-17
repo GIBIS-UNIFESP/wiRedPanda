@@ -94,7 +94,7 @@ void Node::setWirelessMode(WirelessMode mode)
     // Rx nodes receive their signal wirelessly; no physical wire required on the input port.
     // Tx nodes and plain nodes still need a physical wire driving them.
     // Guard: setRequired() calls setDefaultStatus() which immediately forces the port to
-    // Invalid, causing a visible red flash until the simulation runs. Skip if unchanged.
+    // Unknown, causing a visible gray flash until the simulation runs. Skip if unchanged.
     const bool inputRequired = (mode != WirelessMode::Rx);
     if (inputPort()->isRequired() != inputRequired) {
         inputPort()->setRequired(inputRequired);

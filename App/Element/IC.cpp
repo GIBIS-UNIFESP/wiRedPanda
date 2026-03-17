@@ -484,11 +484,18 @@ void IC::loadOutputsLabels()
     }
 }
 
+void IC::setGlobalSources(std::shared_ptr<LogicSource> gnd, std::shared_ptr<LogicSource> vcc)
+{
+    m_sharedGND = std::move(gnd);
+    m_sharedVCC = std::move(vcc);
+}
+
 const QVector<std::shared_ptr<LogicElement>> IC::generateMap()
 {
     // Build a fresh ElementMapping each time the IC is wired into the simulation;
-    // the previous mapping is automatically released by the unique_ptr assignment
-    m_mapping = std::make_unique<ElementMapping>(m_icElements);
+    // the previous mapping is automatically released by the unique_ptr assignment.
+    // Share the parent's GND/VCC sources so the entire graph uses one pair.
+    m_mapping = std::make_unique<ElementMapping>(m_icElements, m_sharedGND, m_sharedVCC);
     return m_mapping->logicElms();
 }
 

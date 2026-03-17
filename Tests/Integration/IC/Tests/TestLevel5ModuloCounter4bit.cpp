@@ -25,14 +25,13 @@ void TestLevel5ModuloCounter4Bit::cleanup()
 {
 }
 
-// Helper to initialize modulo counter from its default state
-static void resetModuloCounter(Simulation *simulation, InputSwitch &clk)
+// Pulse the active-LOW reset to clear the counter to 0
+static void resetModuloCounter(Simulation *simulation, InputSwitch &rst)
 {
-    // IC D flip-flops initialize to Q=1 (NOR latch default), so counter starts at 0xF.
-    // One clock cycle advances 0xF -> 0x0 to reset the counter.
-    clk.setOn(false);
+    rst.setOn(false);           // Assert reset (active-LOW)
     simulation->update();
-    clockCycle(simulation, &clk);
+    rst.setOn(true);            // Release reset
+    simulation->update();
 }
 
 void TestLevel5ModuloCounter4Bit::testModuloCounter_data()
@@ -57,7 +56,7 @@ void TestLevel5ModuloCounter4Bit::testModuloCounter()
     CircuitBuilder builder(workspace.scene());
 
     // Input controls
-    InputSwitch clk;
+    InputSwitch clk, rst;
     InputSwitch moduloIn[4];
 
     // Output LEDs
@@ -68,7 +67,7 @@ void TestLevel5ModuloCounter4Bit::testModuloCounter()
     IC *mcIC = loadBuildingBlockIC("level5_modulo_counter_4bit.panda");
 
     // Add elements
-    builder.add(&clk, mcIC);
+    builder.add(&clk, &rst, mcIC);
     for (int i = 0; i < 4; ++i) {
         builder.add(&moduloIn[i], &counterOut[i]);
     }
@@ -76,6 +75,7 @@ void TestLevel5ModuloCounter4Bit::testModuloCounter()
 
     // Connect inputs
     builder.connect(&clk, 0, mcIC, "CLK");
+    builder.connect(&rst, 0, mcIC, "RST");
     for (int i = 0; i < 4; ++i) {
         builder.connect(&moduloIn[i], 0, mcIC, QString("Modulo[%1]").arg(i));
     }
@@ -88,14 +88,16 @@ void TestLevel5ModuloCounter4Bit::testModuloCounter()
 
     auto *simulation = builder.initSimulation();
 
-    // Set modulo value
+    // Set modulo value and reset counter
     for (int i = 0; i < 4; ++i) {
         moduloIn[i].setOn((modulo >> i) & 1);
     }
+    rst.setOn(true);            // Deassert reset initially
+    clk.setOn(false);
     simulation->update();
 
-    // Reset counter from default 0xF to 0
-    resetModuloCounter(simulation, clk);
+    // Reset counter to 0
+    resetModuloCounter(simulation, rst);
 
     // Run counter for specified cycles
     for (int cycle = 0; cycle < cycles; ++cycle) {

@@ -56,8 +56,8 @@ void TestLevel4BinaryCounter4Bit::testBinaryCounter()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    // Clock input
-    InputSwitch clk;
+    // Inputs
+    InputSwitch clk, rst;
 
     // Output LEDs
     Led counterOut[4];
@@ -66,13 +66,14 @@ void TestLevel4BinaryCounter4Bit::testBinaryCounter()
     IC *counterIC = loadBuildingBlockIC("level4_binary_counter_4bit.panda");
 
     // Add elements
-    builder.add(&clk, counterIC);
+    builder.add(&clk, &rst, counterIC);
     for (int i = 0; i < 4; ++i) {
         builder.add(&counterOut[i]);
     }
 
-    // Connect clock
+    // Connect inputs
     builder.connect(&clk, 0, counterIC, "CLK");
+    builder.connect(&rst, 0, counterIC, "RST");
 
     // Connect counter outputs
     for (int i = 0; i < 4; ++i) {
@@ -82,17 +83,17 @@ void TestLevel4BinaryCounter4Bit::testBinaryCounter()
 
     auto *simulation = builder.initSimulation();
 
+    // Reset counter to 0 (RST is active-LOW)
     clk.setOn(false);
+    rst.setOn(false);           // Assert reset
+    simulation->update();
+    rst.setOn(true);            // Release reset
     simulation->update();
 
     // Run counter for specified cycles
     for (int cycle = 0; cycle < numCycles; ++cycle) {
-        // Complete clock pulse (rising + falling edge)
         TestUtils::clockCycle(simulation, &clk);
     }
-
-    // Extra clock cycle to allow IC outputs to fully propagate
-    TestUtils::clockCycle(simulation, &clk);
 
     // Read counter value
     int result = TestUtils::readMultiBitOutput(QVector<GraphicElement *>({

@@ -81,7 +81,8 @@ void TestElementMapping::testICInputOutputMapping()
 
     // Mapping should complete without throwing and produce no logic elements.
     ElementMapping mapping(elements);
-    QVERIFY2(mapping.logicElms().isEmpty(), "unloaded IC should produce no logic elements");
+    // 2 elements: the global GND and VCC sources (shared across all IC levels).
+    QCOMPARE(mapping.logicElms().size(), 2);
 }
 
 // ============================================================
@@ -445,8 +446,9 @@ void TestElementMapping::testDecorativeElementsExcluded()
 
     ElementMapping mapping(scene->elements());
 
-    // AND gate produces exactly one logic element; Line and Text contribute none.
-    QCOMPARE(mapping.logicElms().size(), 1);
+    // AND gate produces 1 logic element; Line and Text contribute none.
+    // +2 for the global GND/VCC sources always present in every mapping.
+    QCOMPARE(mapping.logicElms().size(), 1 + 2);
 }
 
 /**
@@ -546,7 +548,8 @@ void TestElementMapping::testLogicElementCountMatchesNonDecorativeElements()
 
     ElementMapping mapping(scene->elements());
 
-    QCOMPARE(mapping.logicElms().size(), 3);
+    // 3 logic-producing elements + 2 global GND/VCC sources
+    QCOMPARE(mapping.logicElms().size(), 3 + 2);
 }
 
 /**
