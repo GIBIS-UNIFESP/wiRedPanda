@@ -10,6 +10,7 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QScrollBar>
 
 #include "App/Core/Common.h"
 #include "App/Core/ItemWithId.h"
@@ -342,13 +343,38 @@ void Scene::receiveCommand(QUndoCommand *cmd)
 
 void Scene::resizeScene()
 {
-    setSceneRect(itemsBoundingRect());
+    const auto bounds = itemsBoundingRect();
 
-    // if (auto *item = itemAt(m_mousePos); item && (m_timer.elapsed() > 100) && m_draggingElement) {
-    //     // FIXME: sometimes this goes into a infinite loop and crashes
-    //     item->ensureVisible();
-    //     m_timer.restart();
-    // }
+    if (m_draggingElement) {
+        // While dragging, only expand the scene rect (union with current rect).
+        // Never shrink during drag — shrinking shifts the viewport origin and
+        // causes jarring visual jumps as the scene rect chases the items.
+        setSceneRect(sceneRect().united(bounds));
+    } else {
+        // Tighten to item bounds, but ensure the scene rect stays larger than the
+        // viewport. When the scene rect is smaller than (or barely larger than) the
+        // viewport, Qt re-centers it, causing a visual jump. Adding margins ensures
+        // enough scrollbar range to preserve the exact scroll position.
+        auto tightRect = bounds;
+        const auto viewList = views();
+        if (!viewList.isEmpty()) {
+            auto *view = viewList.first();
+            constexpr qreal margin = 100.0;
+            const auto visibleScene = view->mapToScene(view->viewport()->rect()).boundingRect()
+                                         .adjusted(-margin, -margin, margin, margin);
+            tightRect = tightRect.united(visibleScene);
+
+            // Preserve exact scrollbar positions to avoid sub-pixel rounding
+            // shifts that centerOn() introduces.
+            const int hVal = view->horizontalScrollBar()->value();
+            const int vVal = view->verticalScrollBar()->value();
+            setSceneRect(tightRect);
+            view->horizontalScrollBar()->setValue(hVal);
+            view->verticalScrollBar()->setValue(vVal);
+        } else {
+            setSceneRect(tightRect);
+        }
+    }
 }
 
 QNEConnection *Scene::editedConnection() const
@@ -1403,9 +1429,18 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     m_mousePos = event->scenePos();
     handleHoverPort();
 
-    // Expand scene rect while dragging so elements can be moved beyond the current boundary
+    // Expand scene rect while dragging so elements can be moved beyond the current boundary,
+    // and auto-scroll the viewport to follow the cursor.
     if (m_draggingElement) {
         resizeScene();
+
+        if (m_timer.elapsed() > 50) {
+            const auto viewList = views();
+            if (!viewList.isEmpty()) {
+                viewList.first()->ensureVisible(m_mousePos.x(), m_mousePos.y(), 1, 1, 50, 50);
+            }
+            m_timer.restart();
+        }
     }
 
     // --- In-progress wire routing ---
@@ -1458,6 +1493,7 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
         m_draggingElement = false;
         m_movedElements.clear();
+        resizeScene();
     }
 
     m_selectionRect.hide();

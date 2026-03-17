@@ -45,6 +45,9 @@ public:
     /// \brief Removes \a item from the scene and unregisters it from the per-scene ID registry.
     void removeItem(QGraphicsItem *item);
 
+    /// Tightens the scene rect to item bounds while preserving the viewport position.
+    void resizeScene();
+
     // --- Per-Scene Element Registry ---
 
     /// Returns the item registered under \a id, or nullptr if not found.
@@ -275,7 +278,6 @@ private:
     void makeConnection(QNEConnection *connection);
     void paste(QDataStream &stream, const QVersionNumber &version);
     void releaseHoverPort();
-    void resizeScene();
     void rotate(const int angle);
     void setDots(const QPen &dots);
     void rebuildDotTile();
