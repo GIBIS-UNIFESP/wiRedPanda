@@ -75,7 +75,7 @@ void ElementMapping::connectWirelessElements()
 
     // Wire each Rx node's LogicNode input to the matching Tx LogicNode output.
     // connectPredecessor() overwrites whatever applyConnection() set (GND fallback via
-    // setRequired(false)), so the topological sort will see the true wireless dependency.
+    // setRequired(false)), so the successor graph will see the true wireless dependency.
     for (auto *elm : std::as_const(m_elements)) {
         if (elm->wirelessMode() != WirelessMode::Rx || elm->label().isEmpty() || !elm->logic()) {
             continue;
@@ -120,11 +120,6 @@ void ElementMapping::applyConnection(QNEInputPort *inputPort)
     }
 }
 
-int ElementMapping::priority(const LogicElement *logic) const
-{
-    return m_priorities.value(logic, -1);
-}
-
 bool ElementMapping::isInFeedbackLoop(const LogicElement *logic) const
 {
     return m_feedbackNodes.contains(logic);
@@ -135,12 +130,12 @@ bool ElementMapping::hasFeedbackElements() const
     return !m_feedbackNodes.isEmpty();
 }
 
-void ElementMapping::sort()
+void ElementMapping::buildGraph()
 {
-    sortLogicElements();
+    buildSuccessorGraph();
 }
 
-void ElementMapping::sortLogicElements()
+void ElementMapping::buildSuccessorGraph()
 {
     QHash<LogicElement *, QVector<LogicElement *>> successors;
     QVector<LogicElement *> rawPtrs;
@@ -153,7 +148,7 @@ void ElementMapping::sortLogicElements()
         }
     }
 
-    // Second pass: build both element-level and port-granular successor maps.
+    // Second pass: build element-level and port-granular successor maps.
     for (const auto &logic : std::as_const(m_logicElms)) {
         if (!logic) {
             continue;
@@ -166,7 +161,7 @@ void ElementMapping::sortLogicElements()
                 continue;
             }
 
-            // Element-level successor map (for topological sort / priority).
+            // Element-level successor map (for feedback detection).
             if (!successors[pair.logic].contains(logic.get())) {
                 successors[pair.logic].append(logic.get());
             }
@@ -179,22 +174,14 @@ void ElementMapping::sortLogicElements()
         }
     }
 
-    QHash<LogicElement *, int> priorities;
-    calculatePriorities(rawPtrs, successors, priorities);
     const auto feedbackElements = findFeedbackNodes(rawPtrs, successors);
 
-    m_priorities.clear();
     m_feedbackNodes.clear();
     for (const auto &logic : std::as_const(m_logicElms)) {
-        m_priorities[logic.get()] = priorities.value(logic.get(), -1);
         if (feedbackElements.contains(logic.get())) {
             m_feedbackNodes.insert(logic.get());
         }
     }
-
-    std::stable_sort(m_logicElms.begin(), m_logicElms.end(), [this](const auto &logic1, const auto &logic2) {
-        return m_priorities.value(logic1.get(), -1) > m_priorities.value(logic2.get(), -1);
-    });
 }
 
 const QVector<std::shared_ptr<LogicElement>> &ElementMapping::logicElms() const

@@ -318,8 +318,8 @@ bool Simulation::initialize()
         return false;
     }
 
-    qCDebug(two) << "Sorting.";
-    m_elmMapping->sort();
+    qCDebug(two) << "Building successor graph.";
+    m_elmMapping->buildGraph();
 
     m_initialized = true;
 

@@ -34,7 +34,7 @@ private slots:
     void testApplyConnectionsWithIC();
     void testICElementSorting();
 
-    // Element Sorting Tests (2 tests)
+    // Graph Building Tests (2 tests)
     void testSortLogicElementsByPriority();
     void testMixedElementTypesSorting();
 
@@ -56,12 +56,10 @@ private slots:
     void testWirelessRxMismatchLabelFallsToGnd();
     void testWirelessCircuitWithGate();
     void testWirelessFanOutSignalValues();
-    void testWirelessPriorityOrderingAfterSort();
     void testWirelessFeedbackLoopDetected();
 
     // Refactor coverage tests
     void testDecorativeElementsExcluded();
-    void testPriorityOrderingIsTopological();
     void testPortsHaveLogicAfterMapping();
     void testLogicElementCountMatchesNonDecorativeElements();
     void testDefaultVCCAppliedToOptionalInputs();

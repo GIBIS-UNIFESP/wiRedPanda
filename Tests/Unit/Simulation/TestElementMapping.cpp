@@ -456,47 +456,6 @@ void TestElementMapping::testDecorativeElementsExcluded()
  * higher priority than elements closer to the output (sinks).
  * Circuit: InputButton → NOT → LED  (priorities: 3 > 2 > 1).
  */
-void TestElementMapping::testPriorityOrderingIsTopological()
-{
-    auto scene = std::make_unique<Scene>();
-
-    auto *input = ElementFactory::buildElement(ElementType::InputButton);
-    auto *notGate = ElementFactory::buildElement(ElementType::Not);
-    auto *led = ElementFactory::buildElement(ElementType::Led);
-    QVERIFY2(input != nullptr, "ElementFactory failed to build InputButton element");
-    QVERIFY2(notGate != nullptr, "ElementFactory failed to build Not element");
-    QVERIFY2(led != nullptr, "ElementFactory failed to build Led element");
-
-    scene->addItem(input);
-    scene->addItem(notGate);
-    scene->addItem(led);
-    input->setPos(0, 100);
-    notGate->setPos(100, 100);
-    led->setPos(200, 100);
-
-    auto *conn1 = new QNEConnection();
-    conn1->setStartPort(input->outputPort(0));
-    conn1->setEndPort(notGate->inputPort(0));
-    scene->addItem(conn1);
-
-    auto *conn2 = new QNEConnection();
-    conn2->setStartPort(notGate->outputPort(0));
-    conn2->setEndPort(led->inputPort(0));
-    scene->addItem(conn2);
-
-    ElementMapping mapping(scene->elements());
-    mapping.sort();
-
-    const int inputPriority = mapping.priority(input->logic());
-    const int gatePriority  = mapping.priority(notGate->logic());
-    const int ledPriority   = mapping.priority(led->logic());
-
-    QVERIFY2(inputPriority > gatePriority,
-             "InputButton must have higher priority than NOT gate");
-    QVERIFY2(gatePriority > ledPriority,
-             "NOT gate must have higher priority than LED");
-}
-
 /**
  * Test: After ElementMapping is constructed, every non-decorative element
  * has logic() set, and each of its ports points back to the same logic element.
@@ -616,7 +575,7 @@ void TestElementMapping::testWirelessRxConnectedToTx()
     scene->addItem(conn);
 
     ElementMapping mapping(scene->elements());
-    mapping.sort();
+    mapping.buildGraph();
 
     // Rx's logic input 0 must point to Tx's logic element (not GND)
     auto *rxLogic = rxN->logic();
@@ -641,7 +600,7 @@ void TestElementMapping::testWirelessRxNoMatchFallsToGnd()
     rxN->setWirelessMode(WirelessMode::Rx);
 
     ElementMapping mapping(scene->elements());
-    mapping.sort();
+    mapping.buildGraph();
 
     // No matching Tx: logic must still have a valid (GND) predecessor — element is valid
     auto *rxLogic = rxN->logic();
@@ -689,7 +648,7 @@ void TestElementMapping::testWirelessFanOut()
     scene->addItem(conn);
 
     ElementMapping mapping(scene->elements());
-    mapping.sort();
+    mapping.buildGraph();
 
     LogicElement *txLogic = txN->logic();
     QVERIFY(txLogic != nullptr);
@@ -750,7 +709,7 @@ void TestElementMapping::testDuplicateTxDoesNotCrash()
     rxN->setWirelessMode(WirelessMode::Rx);
 
     ElementMapping mapping(scene->elements());
-    mapping.sort();
+    mapping.buildGraph();
     QVERIFY(!mapping.logicElms().isEmpty());
 
     // Rx must be connected to exactly one of the two Tx logic elements — not to null
@@ -792,7 +751,7 @@ void TestElementMapping::testWirelessEmptyLabelNotMatched()
     scene->addItem(conn);
 
     ElementMapping mapping(scene->elements());
-    mapping.sort();
+    mapping.buildGraph();
 
     // Rx must NOT be wired to Tx — it must have a valid (GND) predecessor, not the Tx logic
     auto *rxLogic = rxN->logic();
@@ -826,7 +785,7 @@ void TestElementMapping::testWirelessTxAloneDoesNotCrash()
 
     // No Rx with label "ORPHAN" — connectWirelessElements() just builds an empty txMap entry
     ElementMapping mapping(scene->elements());
-    mapping.sort();
+    mapping.buildGraph();
 
     // Tx logic must be valid and the mapping must have produced logic elements
     QVERIFY(txN->logic() != nullptr);
@@ -872,7 +831,7 @@ void TestElementMapping::testWirelessMultipleChannels()
     scene->addItem(c2);
 
     ElementMapping mapping(scene->elements());
-    mapping.sort();
+    mapping.buildGraph();
 
     // Each Rx must be wired to its own Tx, not to the other channel's Tx
     QCOMPARE(rxClkN->logic()->inputPairs().at(0).logic,  txClkN->logic());
@@ -919,7 +878,7 @@ void TestElementMapping::testWirelessRxPhysicalWireOverriddenByTx()
     scene->addItem(c2);
 
     ElementMapping mapping(scene->elements());
-    mapping.sort();
+    mapping.buildGraph();
 
     // Wireless overrides physical: Rx must point to Tx, not to srcPhysRx
     const auto &pairs = rxN->logic()->inputPairs();
@@ -954,7 +913,7 @@ void TestElementMapping::testWirelessLabelCaseSensitive()
     scene->addItem(conn);
 
     ElementMapping mapping(scene->elements());
-    mapping.sort();
+    mapping.buildGraph();
 
     // "CLK" != "clk" → Rx must NOT connect to Tx; must have a valid GND fallback
     const auto &pairs = rxN->logic()->inputPairs();
@@ -990,7 +949,7 @@ void TestElementMapping::testWirelessSignalPropagation()
     scene->addItem(conn);
 
     ElementMapping mapping(scene->elements());
-    mapping.sort();
+    mapping.buildGraph();
 
     // Drive the source HIGH and run one simulation tick
     src->logic()->setOutputValue(true);
@@ -1035,7 +994,7 @@ void TestElementMapping::testWirelessNoneModeNodeIgnored()
     scene->addItem(conn);
 
     ElementMapping mapping(scene->elements());
-    mapping.sort();
+    mapping.buildGraph();
 
     // None-mode node must not be treated as Tx — Rx falls back to GND
     const auto &pairs = rxN->logic()->inputPairs();
@@ -1070,7 +1029,7 @@ void TestElementMapping::testWirelessRxMismatchLabelFallsToGnd()
     scene->addItem(conn);
 
     ElementMapping mapping(scene->elements());
-    mapping.sort();
+    mapping.buildGraph();
 
     // "FOO" != "BAR" → Rx must fall back to GND, not connect to Tx
     const auto &pairs = rxN->logic()->inputPairs();
@@ -1121,25 +1080,40 @@ void TestElementMapping::testWirelessCircuitWithGate()
     scene->addItem(c3);
 
     ElementMapping mapping(scene->elements());
-    mapping.sort();
+    mapping.buildGraph();
+
+    // Helper: iterate until no output changes (convergence).
+    auto settle = [&mapping]() {
+        for (int pass = 0; pass < 10; ++pass) {
+            bool changed = false;
+            for (const auto &logicElm : mapping.logicElms()) {
+                logicElm->clearOutputChanged();
+                logicElm->updateLogic();
+                if (logicElm->outputChanged()) {
+                    changed = true;
+                }
+            }
+            if (!changed) {
+                break;
+            }
+        }
+    };
 
     // Drive switch HIGH → AND output must be HIGH
     sw->logic()->setOutputValue(true);
-    for (const auto &logicElm : mapping.logicElms())
-        logicElm->updateLogic();
+    settle();
     QCOMPARE(andGate->logic()->outputValue(), Status::Active);
 
     // Drive switch LOW → AND output must be LOW
     sw->logic()->setOutputValue(false);
-    for (const auto &logicElm : mapping.logicElms())
-        logicElm->updateLogic();
+    settle();
     QCOMPARE(andGate->logic()->outputValue(), Status::Inactive);
 }
 
 void TestElementMapping::testWirelessFanOutSignalValues()
 {
     // Fan-out: one Tx drives three Rx nodes.
-    // After sort() and one tick, all Rx outputs must match the Tx input value.
+    // After buildGraph() and convergence, all Rx outputs must match the Tx input value.
     auto scene = std::make_unique<Scene>();
 
     auto *sw     = ElementFactory::buildElement(ElementType::InputButton);
@@ -1166,68 +1140,44 @@ void TestElementMapping::testWirelessFanOutSignalValues()
     scene->addItem(conn);
 
     ElementMapping mapping(scene->elements());
-    mapping.sort();
+    mapping.buildGraph();
+
+    // Helper: iterate until convergence.
+    auto settle = [&mapping]() {
+        for (int pass = 0; pass < 10; ++pass) {
+            bool changed = false;
+            for (const auto &logicElm : mapping.logicElms()) {
+                logicElm->clearOutputChanged();
+                logicElm->updateLogic();
+                if (logicElm->outputChanged()) {
+                    changed = true;
+                }
+            }
+            if (!changed) {
+                break;
+            }
+        }
+    };
 
     // Drive HIGH → all three Rx outputs HIGH
     sw->logic()->setOutputValue(true);
-    for (const auto &logicElm : mapping.logicElms())
-        logicElm->updateLogic();
+    settle();
     for (auto *rx : {rx1, rx2, rx3}) {
         QCOMPARE(qobject_cast<Node *>(rx)->logic()->outputValue(), Status::Active);
     }
 
     // Drive LOW → all three Rx outputs LOW
     sw->logic()->setOutputValue(false);
-    for (const auto &logicElm : mapping.logicElms())
-        logicElm->updateLogic();
+    settle();
     for (auto *rx : {rx1, rx2, rx3}) {
         QCOMPARE(qobject_cast<Node *>(rx)->logic()->outputValue(), Status::Inactive);
     }
 }
 
-void TestElementMapping::testWirelessPriorityOrderingAfterSort()
-{
-    // After sort(), the Tx node must have higher priority than the Rx node that
-    // depends on it wirelessly.  This verifies that connectWirelessElements()
-    // correctly registers the wireless dependency so the topological sort can
-    // order Tx before Rx.
-    auto scene = std::make_unique<Scene>();
-
-    auto *src    = ElementFactory::buildElement(ElementType::InputButton);
-    auto *txNode = ElementFactory::buildElement(ElementType::Node);
-    auto *rxNode = ElementFactory::buildElement(ElementType::Node);
-    QVERIFY(src && txNode && rxNode);
-
-    scene->addItem(src);
-    scene->addItem(txNode);
-    scene->addItem(rxNode);
-
-    auto *txN = qobject_cast<Node *>(txNode);
-    auto *rxN = qobject_cast<Node *>(rxNode);
-    QVERIFY(txN && rxN);
-
-    txN->setLabel("SIG"); txN->setWirelessMode(WirelessMode::Tx);
-    rxN->setLabel("SIG"); rxN->setWirelessMode(WirelessMode::Rx);
-
-    // src → txNode (physical wire drives the Tx channel)
-    auto *conn = new QNEConnection();
-    conn->setStartPort(src->outputPort(0));
-    conn->setEndPort(txNode->inputPort(0));
-    scene->addItem(conn);
-
-    ElementMapping mapping(scene->elements());
-    mapping.sort();
-
-    const int txPriority = mapping.priority(txN->logic());
-    const int rxPriority = mapping.priority(rxN->logic());
-    QVERIFY2(txPriority > rxPriority,
-             "Tx node must have higher priority than the Rx node it drives wirelessly");
-}
-
 void TestElementMapping::testWirelessFeedbackLoopDetected()
 {
     // A feedback cycle created through a wireless channel must be identified by
-    // hasFeedbackElements() / isInFeedbackLoop() after sort().
+    // hasFeedbackElements() / isInFeedbackLoop() after buildGraph().
     //
     // Circuit topology:
     //   Rx → NOT gate → Tx -[wireless label "FB"]-> Rx
@@ -1264,7 +1214,7 @@ void TestElementMapping::testWirelessFeedbackLoopDetected()
     scene->addItem(c2);
 
     ElementMapping mapping(scene->elements());
-    mapping.sort();
+    mapping.buildGraph();
 
     QVERIFY(mapping.hasFeedbackElements());
     QVERIFY(mapping.isInFeedbackLoop(txN->logic()));

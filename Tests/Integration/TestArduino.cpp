@@ -2127,7 +2127,7 @@ QVector<ArduinoCodeGen::TestVector> TestArduino::generateTruthTable(
     }
 
     ElementMapping mapping(elements);
-    mapping.sort();
+    mapping.buildGraph();
 
     // Skip circuits with feedback loops — single-pass propagation is not valid for them
     if (mapping.hasFeedbackElements()) {

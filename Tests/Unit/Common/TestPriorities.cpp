@@ -11,12 +11,10 @@
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
-// Priority Calculation Tests
+// Priority Calculation Tests — used by Scene::sortByTopology for codegen
 
 void TestPriorities::testPriorityBasic()
 {
-    // Test: Priority is calculated based on distance from outputs
-    // SW → AND → LED: LED=1, AND=2, SW=3
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
@@ -47,25 +45,13 @@ void TestPriorities::testPriorityBasic()
     QHash<GraphicElement *, int> priorities;
     calculatePriorities(elements, successors, priorities);
 
-    int swPriority = priorities.value(&sw);
-    int andPriority = priorities.value(&andGate);
-    int ledPriority = priorities.value(&led);
-
-    // Priority = max(successor priorities) + 1
-    // LED (output, no successors): max=0 → priority 1
-    // AND (successor: LED, priority 1): max=1 → priority 2
-    // SW (successor: AND, priority 2): max=2 → priority 3
-    QCOMPARE(ledPriority, 1);
-    QCOMPARE(andPriority, 2);
-    QCOMPARE(swPriority, 3);
+    QCOMPARE(priorities.value(&led), 1);
+    QCOMPARE(priorities.value(&andGate), 2);
+    QCOMPARE(priorities.value(&sw), 3);
 }
 
 void TestPriorities::testPriorityMemoization()
 {
-    // Test: Priority memoization - same element shouldn't recalculate
-    // Create: SW1 → AND → LED
-    //         SW2 ↗
-    // Both SW1 and SW2 connect to AND, so AND's priority calculated only once
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
@@ -98,14 +84,8 @@ void TestPriorities::testPriorityMemoization()
     QHash<GraphicElement *, int> priorities;
     calculatePriorities(elements, successors, priorities);
 
-    int sw1Priority = priorities.value(&sw1);
-    int sw2Priority = priorities.value(&sw2);
-
-    // AND's priority should be computed
     QVERIFY(priorities.contains(&andGate));
-
-    // SW1 and SW2 should have same priority (same distance to outputs)
-    QCOMPARE(sw1Priority, sw2Priority);
+    QCOMPARE(priorities.value(&sw1), priorities.value(&sw2));
 }
 
 // Feedback Detection Tests

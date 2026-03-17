@@ -28,7 +28,7 @@ class Scene;
  * \details The simulation runs a 1 ms periodic QTimer.  On each tick it
  * generates events from clock toggles and input changes, then processes
  * them through a blocking FIFO queue until the circuit settles.
- * FIFO ordering breaks feedback symmetry without topological sorting.
+ * FIFO ordering breaks feedback symmetry naturally.
  */
 class Simulation : public QObject
 {

@@ -11,7 +11,7 @@ class TestPriorities : public QObject
 
 private slots:
 
-    // Priority Calculation Tests (2 tests)
+    // Priority Calculation Tests (2 tests) — used by Scene::sortByTopology for codegen
     void testPriorityBasic();
     void testPriorityMemoization();
 

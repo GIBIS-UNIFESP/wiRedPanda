@@ -619,17 +619,15 @@ void TestSimulation::testElementMappingStability()
         auto elements = scene->elements();
         ElementMapping mapping(elements);
 
-        // The constructor triggers priority calculation and sorting
-        mapping.sort();
+        mapping.buildGraph();
         const auto &logicElements = mapping.logicElms();
 
         // Store structural properties to verify consistent ordering
         QVector<QPair<int, int>> elementProperties;
         for (const auto &logicPtr : logicElements) {
-            // Store priority and output size as stable comparison
-            int priority = mapping.priority(logicPtr.get());
+            int inputSize = logicPtr->inputPairs().size();
             int outputSize = logicPtr->outputSize();
-            elementProperties.append(QPair<int, int>(priority, outputSize));
+            elementProperties.append(QPair<int, int>(inputSize, outputSize));
         }
 
         mappingResults.append(elementProperties);

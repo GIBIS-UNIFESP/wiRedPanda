@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief Graph algorithms for topological priority assignment and cycle detection.
+ * \brief Graph algorithms: topological priority (for code generation) and
+ *        cycle detection via Tarjan's SCC (for simulation feedback analysis).
  */
 
 #pragma once
@@ -16,7 +17,8 @@
  * \brief Iterative depth-first priority calculation for directed graphs.
  *
  * Assigns each node a priority equal to its longest path to a sink plus one.
- * Detects feedback loops internally to break cycles during traversal.
+ * Used by Scene::sortByTopology() for code-generation ordering; NOT used by
+ * the event-driven simulation engine (which uses FIFO scheduling instead).
  *
  * \param elements       All nodes to process.
  * \param successors     Adjacency list (node -> its successors).
@@ -69,14 +71,6 @@ void calculatePriorities(
                 }
             }
 
-            // Assign priority when all successors are computed, OR when a
-            // feedback loop is detected.  The early assignment on feedback is
-            // intentional: it gives feedback-loop nodes a *lower* priority
-            // (based only on already-computed successors) so the simulation
-            // processes them *after* their non-cyclic inputs.  Because
-            // LogicElement::updateLogic() reads live predecessor outputs,
-            // processing feedback nodes late ensures they see fresh values
-            // from the current iteration rather than stale ones.
             if (allProcessed || hasFeedbackLoop) {
                 outPriorities[current] = maxSuccessorPriority + 1;
                 stack.pop();

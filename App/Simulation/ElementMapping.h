@@ -30,7 +30,8 @@ class QNEPort;
  * \details During construction, ElementMapping calls generateMap() to create
  * shared_ptr<LogicElement> instances for every graphic element, then
  * connectElements() wires them according to the QNEConnection topology.
- * sort() assigns topological priorities for deterministic update ordering.
+ * buildGraph() builds port-granular successor lists for event-driven
+ * scheduling and detects feedback loops via Tarjan's SCC algorithm.
  */
 class ElementMapping
 {
@@ -55,10 +56,7 @@ public:
     /// Returns the ordered vector of logic elements.
     const QVector<std::shared_ptr<LogicElement>> &logicElms() const;
 
-    // --- Topology queries ---
-
-    /// Returns the topological priority for \a logic (-1 if unknown).
-    int priority(const LogicElement *logic) const;
+    // --- Graph queries ---
 
     /// Returns \c true if \a logic participates in a combinational feedback loop.
     bool isInFeedbackLoop(const LogicElement *logic) const;
@@ -66,10 +64,10 @@ public:
     /// Returns \c true if any logic element in the mapping is part of a feedback loop.
     bool hasFeedbackElements() const;
 
-    // --- Topology ---
+    // --- Graph building ---
 
-    /// Topologically sorts the logic elements by priority.
-    void sort();
+    /// Builds port-granular successor lists and detects feedback loops.
+    void buildGraph();
 
 private:
     Q_DISABLE_COPY(ElementMapping)
@@ -82,13 +80,13 @@ private:
 
     void connectElements();
     /// Overrides physical predecessors on Rx nodes with their matching Tx node.
-    /// Must be called after connectElements() so wireless always wins, and before sort().
+    /// Must be called after connectElements() so wireless always wins, and before buildGraph().
     void connectWirelessElements();
     void applyConnection(QNEInputPort *inputPort);
 
-    // --- Sorting ---
+    // --- Graph building ---
 
-    void sortLogicElements();
+    void buildSuccessorGraph();
 
     // --- Members ---
 
@@ -96,6 +94,5 @@ private:
     std::shared_ptr<LogicSource> m_globalVCC;
     QVector<GraphicElement *> m_elements;
     QVector<std::shared_ptr<LogicElement>> m_logicElms;
-    QHash<const LogicElement *, int> m_priorities;
     QSet<const LogicElement *> m_feedbackNodes;
 };
