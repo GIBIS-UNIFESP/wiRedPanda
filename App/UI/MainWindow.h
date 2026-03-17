@@ -10,6 +10,7 @@
 #include <memory>
 
 #include <QDir>
+#include <QDockWidget>
 #include <QMainWindow>
 #include <QSpacerItem>
 #include <QTimer>
@@ -19,6 +20,7 @@
 
 class ElementLabel;
 class ElementPalette;
+class TemporalWaveformWidget;
 class LanguageManager;
 class RecentFiles;
 class WorkSpace;
@@ -232,6 +234,9 @@ private:
     void on_comboSimMode_currentIndexChanged(int index);
     void on_comboSimSpeed_currentIndexChanged(int index);
     void updateSimTimeLabel();
+    void toggleTemporalWaveformDock();
+    void watchAllSignals();
+    void clearWatchedSignals();
     void on_actionReloadFile_triggered();
     void on_actionReportTranslationError_triggered();
     void on_actionResetZoom_triggered() const;
@@ -277,4 +282,7 @@ private:
     WorkSpace *m_currentTab = nullptr;
     int m_tabIndex = -1;
     QTimer m_simTimeTimer; ///< Periodic timer to update the simulation time label.
+
+    QDockWidget *m_waveformDock = nullptr;
+    TemporalWaveformWidget *m_waveformWidget = nullptr;
 };

@@ -166,6 +166,9 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionReportTranslationError = new QAction(MainWindow);
     actionReportTranslationError->setObjectName("actionReportTranslationError");
     actionReportTranslationError->setIcon(QIcon(":/Interface/Toolbar/help.svg"));
+    actionTemporalWaveform = new QAction(MainWindow);
+    actionTemporalWaveform->setObjectName("actionTemporalWaveform");
+    actionTemporalWaveform->setCheckable(true);
     centralWidget = new QWidget(MainWindow);
     centralWidget->setObjectName("centralWidget");
     gridLayout_8 = new QGridLayout(centralWidget);
@@ -645,6 +648,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuSimulation->addAction(actionWaveform);
     menuSimulation->addAction(actionMute);
     menuSimulation->addSeparator();
+    menuSimulation->addAction(actionTemporalWaveform);
     menuSimulation->addAction(actionBackground_Simulation);
 
     retranslateUi();
@@ -764,6 +768,7 @@ void MainWindowUi::retranslateUi()
     menuLanguage->setTitle(QCoreApplication::translate("MainWindow", "&Language"));
     menuSimulation->setTitle(QCoreApplication::translate("MainWindow", "Sim&ulation"));
     menuExamples->setTitle(QCoreApplication::translate("MainWindow", "Examples"));
+    actionTemporalWaveform->setText(QCoreApplication::translate("MainWindow", "Temporal &Waveform"));
     comboSimMode->setItemText(0, QCoreApplication::translate("MainWindow", "Functional"));
     comboSimMode->setItemText(1, QCoreApplication::translate("MainWindow", "Temporal"));
     comboSimMode->setToolTip(QCoreApplication::translate("MainWindow", "Simulation mode"));

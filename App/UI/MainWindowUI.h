@@ -96,6 +96,7 @@ public:
     QAction *actionMute = nullptr;
     QAction *actionRestart = nullptr;
     QAction *actionBackground_Simulation = nullptr;
+    QAction *actionTemporalWaveform = nullptr;
 
     // Export actions
     QAction *actionExportToArduino = nullptr;

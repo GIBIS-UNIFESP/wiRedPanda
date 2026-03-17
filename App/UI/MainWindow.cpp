@@ -22,6 +22,7 @@
 #include <QPixmapCache>
 #include <QPushButton>
 #include <QSaveFile>
+#include <QScrollArea>
 #include <QShortcut>
 #include <QTemporaryFile>
 #include <QVBoxLayout>
@@ -45,6 +46,7 @@
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
+#include "App/UI/TemporalWaveformWidget.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/UI/CircuitExporter.h"
 #include "App/UI/ElementPalette.h"
@@ -263,6 +265,7 @@ void MainWindow::setupConnections()
     connect(m_ui->actionWaveform,              &QAction::triggered,       this,                &MainWindow::on_actionWaveform_triggered);
     connect(m_ui->comboSimMode,  QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_comboSimMode_currentIndexChanged);
     connect(m_ui->comboSimSpeed, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_comboSimSpeed_currentIndexChanged);
+    connect(m_ui->actionTemporalWaveform, &QAction::toggled, this, &MainWindow::toggleTemporalWaveformDock);
     connect(m_ui->actionWires,                 &QAction::triggered,       this,                &MainWindow::on_actionWires_triggered);
     connect(m_ui->actionZoomIn,                &QAction::triggered,       this,                &MainWindow::on_actionZoomIn_triggered);
     connect(m_ui->actionZoomOut,               &QAction::triggered,       this,                &MainWindow::on_actionZoomOut_triggered);
@@ -1345,6 +1348,106 @@ void MainWindow::updateSimTimeLabel()
         text = QString::number(ns) + " ns";
     }
     m_ui->labelSimTime->setText(text);
+}
+
+void MainWindow::toggleTemporalWaveformDock()
+{
+    if (!m_waveformDock) {
+        // Create the dock widget on first use.
+        m_waveformDock = new QDockWidget(tr("Temporal Waveform"), this);
+        m_waveformDock->setObjectName("temporalWaveformDock");
+
+        auto *container = new QWidget(m_waveformDock);
+        auto *layout = new QVBoxLayout(container);
+        layout->setContentsMargins(0, 0, 0, 0);
+
+        // Toolbar row
+        auto *toolbar = new QHBoxLayout();
+        auto *btnWatch = new QPushButton(tr("Watch All"), container);
+        auto *btnClear = new QPushButton(tr("Clear"), container);
+        auto *btnZoomIn = new QPushButton(tr("+"), container);
+        auto *btnZoomOut = new QPushButton(tr("-"), container);
+        auto *btnFit = new QPushButton(tr("Fit"), container);
+        btnWatch->setToolTip(tr("Watch all output signals in the circuit"));
+        btnClear->setToolTip(tr("Remove all watched signals"));
+        toolbar->addWidget(btnWatch);
+        toolbar->addWidget(btnClear);
+        toolbar->addStretch();
+        toolbar->addWidget(btnZoomOut);
+        toolbar->addWidget(btnZoomIn);
+        toolbar->addWidget(btnFit);
+        layout->addLayout(toolbar);
+
+        // Waveform widget inside a scroll area
+        auto *scrollArea = new QScrollArea(container);
+        scrollArea->setWidgetResizable(true);
+        m_waveformWidget = new TemporalWaveformWidget(scrollArea);
+        scrollArea->setWidget(m_waveformWidget);
+        layout->addWidget(scrollArea);
+
+        m_waveformDock->setWidget(container);
+        addDockWidget(Qt::BottomDockWidgetArea, m_waveformDock);
+
+        connect(btnWatch, &QPushButton::clicked, this, &MainWindow::watchAllSignals);
+        connect(btnClear, &QPushButton::clicked, this, &MainWindow::clearWatchedSignals);
+        connect(btnZoomIn, &QPushButton::clicked, m_waveformWidget, &TemporalWaveformWidget::zoomIn);
+        connect(btnZoomOut, &QPushButton::clicked, m_waveformWidget, &TemporalWaveformWidget::zoomOut);
+        connect(btnFit, &QPushButton::clicked, m_waveformWidget, &TemporalWaveformWidget::zoomFit);
+
+        // Sync dock visibility with the menu action
+        connect(m_waveformDock, &QDockWidget::visibilityChanged, m_ui->actionTemporalWaveform, &QAction::setChecked);
+
+        // Repaint waveform every 100ms while visible
+        connect(&m_simTimeTimer, &QTimer::timeout, m_waveformWidget, QOverload<>::of(&QWidget::update));
+    }
+
+    m_waveformDock->setVisible(m_ui->actionTemporalWaveform->isChecked());
+}
+
+void MainWindow::watchAllSignals()
+{
+    if (!m_currentTab || !m_waveformWidget) {
+        return;
+    }
+
+    auto *sim = m_currentTab->simulation();
+    auto &recorder = sim->waveformRecorder();
+    recorder.clear();
+
+    // Watch all elements that have logic and output ports
+    for (auto *elm : m_currentTab->scene()->elements()) {
+        if (!elm || !elm->logic()) {
+            continue;
+        }
+        // Skip LogicSource (inputs/VCC/GND) and LogicSink (outputs) — watch logic gates and flip-flops
+        if (elm->logic()->propagationDelay() > 0) {
+            const QString name = elm->label().isEmpty()
+                                     ? ElementFactory::translatedName(elm->elementType())
+                                     : elm->label();
+            for (int port = 0; port < elm->logic()->outputSize(); ++port) {
+                const QString portSuffix = (elm->logic()->outputSize() > 1)
+                                               ? QString(" [%1]").arg(port)
+                                               : QString();
+                recorder.watchSignal(name + portSuffix, elm->logic(), port);
+            }
+        }
+    }
+
+    recorder.setRecording(true);
+    m_waveformWidget->setRecorder(&recorder);
+    m_waveformWidget->update();
+}
+
+void MainWindow::clearWatchedSignals()
+{
+    if (!m_currentTab || !m_waveformWidget) {
+        return;
+    }
+
+    auto &recorder = m_currentTab->simulation()->waveformRecorder();
+    recorder.setRecording(false);
+    recorder.clear();
+    m_waveformWidget->update();
 }
 
 void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout)
