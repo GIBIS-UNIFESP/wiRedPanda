@@ -575,14 +575,14 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     comboSimSpeed->addItem("10x",  10'000'000);
     comboSimSpeed->addItem("100x", 100'000'000);
     comboSimSpeed->setCurrentIndex(2); // 1x
-    comboSimSpeed->setVisible(false);
-    mainToolBar->addWidget(comboSimSpeed);
+    actionSimSpeed = mainToolBar->addWidget(comboSimSpeed);
+    actionSimSpeed->setVisible(false);
 
     labelSimTime = new QLabel(MainWindow);
     labelSimTime->setObjectName("labelSimTime");
     labelSimTime->setMinimumWidth(100);
-    labelSimTime->setVisible(false);
-    mainToolBar->addWidget(labelSimTime);
+    actionSimTime = mainToolBar->addWidget(labelSimTime);
+    actionSimTime->setVisible(false);
     menuBar->addAction(menuFile->menuAction());
     menuBar->addAction(menuEdit->menuAction());
     menuBar->addAction(menuView->menuAction());

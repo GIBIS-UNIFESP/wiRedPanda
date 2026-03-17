@@ -1311,8 +1311,8 @@ void MainWindow::on_comboSimMode_currentIndexChanged(int index)
     m_currentTab->simulation()->setMode(mode);
 
     const bool temporal = (mode == SimulationMode::Temporal);
-    m_ui->comboSimSpeed->setVisible(temporal);
-    m_ui->labelSimTime->setVisible(temporal);
+    m_ui->actionSimSpeed->setVisible(temporal);
+    m_ui->actionSimTime->setVisible(temporal);
 
     if (temporal) {
         // Apply the current speed setting
@@ -1333,7 +1333,7 @@ void MainWindow::on_comboSimSpeed_currentIndexChanged(int index)
 
 void MainWindow::updateSimTimeLabel()
 {
-    if (!m_currentTab || !m_ui->labelSimTime->isVisible()) {
+    if (!m_currentTab || !m_ui->actionSimTime->isVisible()) {
         return;
     }
 
