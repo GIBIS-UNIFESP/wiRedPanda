@@ -452,7 +452,7 @@ void UpdateCommand::undo()
     // (via Application::notify + QMessageBox nested event loop) would fault.
     SimulationBlocker blocker(m_scene->simulation());
     loadData(m_oldData);
-    m_scene->setCircuitUpdateRequired();
+    m_scene->setPropertyUpdateRequired();
 }
 
 void UpdateCommand::redo()
@@ -460,7 +460,7 @@ void UpdateCommand::redo()
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
     loadData(m_newData);
-    m_scene->setCircuitUpdateRequired();
+    m_scene->setPropertyUpdateRequired();
 }
 
 void UpdateCommand::loadData(QByteArray &itemData)
