@@ -1345,7 +1345,7 @@ void MainWindow::on_comboSimSpeed_currentIndexChanged(int index)
     if (m_waveformWidget) {
         const double simNsPerWallSec = nsPerTick * 1000.0; // ticks/sec = 1000 (1ms timer)
         const double visibleSimNs = simNsPerWallSec * 5.0; // 5 seconds of wall time
-        const int availableWidth = m_waveformWidget->width() - 120; // LABEL_WIDTH
+        const int availableWidth = m_waveformWidget->width();
         if (availableWidth > 0 && visibleSimNs > 0) {
             m_waveformWidget->setPixelsPerNs(availableWidth / visibleSimNs);
         }
@@ -1399,12 +1399,21 @@ void MainWindow::toggleTemporalWaveformDock()
         toolbar->addWidget(btnFit);
         layout->addLayout(toolbar);
 
-        // Waveform widget inside a scroll area
+        // Label column (fixed) + waveform (scrollable) side by side.
+        auto *waveformRow = new QHBoxLayout();
+        waveformRow->setSpacing(0);
+
+        m_labelWidget = new WaveformLabelWidget(container);
+        waveformRow->addWidget(m_labelWidget);
+
         auto *scrollArea = new QScrollArea(container);
         scrollArea->setWidgetResizable(true);
+        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         m_waveformWidget = new TemporalWaveformWidget(scrollArea);
         scrollArea->setWidget(m_waveformWidget);
-        layout->addWidget(scrollArea);
+        waveformRow->addWidget(scrollArea);
+
+        layout->addLayout(waveformRow);
 
         m_waveformDock->setWidget(container);
         addDockWidget(Qt::BottomDockWidgetArea, m_waveformDock);
@@ -1423,8 +1432,8 @@ void MainWindow::toggleTemporalWaveformDock()
             if (!m_waveformWidget->isVisible()) {
                 return;
             }
+            m_labelWidget->update();
             m_waveformWidget->update();
-            // Auto-scroll to the right edge so the latest data is visible.
             auto *hBar = scrollArea->horizontalScrollBar();
             if (hBar) {
                 hBar->setValue(hBar->maximum());
@@ -1468,6 +1477,7 @@ void MainWindow::watchAllSignals()
 
     recorder.setRecording(true);
     m_waveformWidget->setRecorder(&recorder);
+    m_labelWidget->setRecorder(&recorder);
 
     // Apply zoom matching the current speed setting.
     on_comboSimSpeed_currentIndexChanged(m_ui->comboSimSpeed->currentIndex());

@@ -8,6 +8,53 @@
 
 #include "App/Simulation/WaveformRecorder.h"
 
+// ============================================================================
+// WaveformLabelWidget — fixed signal name column
+// ============================================================================
+
+WaveformLabelWidget::WaveformLabelWidget(QWidget *parent)
+    : QWidget(parent)
+{
+    setFixedWidth(LABEL_WIDTH);
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+}
+
+QSize WaveformLabelWidget::sizeHint() const
+{
+    const int traceCount = m_recorder ? m_recorder->traceCount() : 0;
+    const int h = RULER_HEIGHT + traceCount * (TRACE_HEIGHT + TRACE_MARGIN);
+    return {LABEL_WIDTH, qMax(h, RULER_HEIGHT + TRACE_HEIGHT)};
+}
+
+void WaveformLabelWidget::paintEvent(QPaintEvent *event)
+{
+    Q_UNUSED(event)
+
+    QPainter painter(this);
+    painter.fillRect(rect(), palette().base());
+
+    if (!m_recorder || m_recorder->traceCount() == 0) {
+        return;
+    }
+
+    // Empty ruler area to align with the waveform ruler
+    painter.fillRect(0, 0, LABEL_WIDTH, RULER_HEIGHT, palette().window());
+
+    for (int i = 0; i < m_recorder->traceCount(); ++i) {
+        const int y = RULER_HEIGHT + i * (TRACE_HEIGHT + TRACE_MARGIN);
+
+        painter.fillRect(0, y, LABEL_WIDTH - 2, TRACE_HEIGHT, palette().alternateBase());
+        painter.setPen(palette().color(QPalette::Text));
+        painter.drawText(QRect(4, y, LABEL_WIDTH - 8, TRACE_HEIGHT),
+                         Qt::AlignVCenter | Qt::AlignRight,
+                         m_recorder->trace(i).name);
+    }
+}
+
+// ============================================================================
+// TemporalWaveformWidget — scrollable waveform traces
+// ============================================================================
+
 TemporalWaveformWidget::TemporalWaveformWidget(QWidget *parent)
     : QWidget(parent)
 {
@@ -41,7 +88,7 @@ void TemporalWaveformWidget::zoomFit()
     if (maxTime == 0) {
         return;
     }
-    const int availableWidth = width() - LABEL_WIDTH;
+    const int availableWidth = width();
     if (availableWidth <= 0) {
         return;
     }
@@ -53,17 +100,17 @@ QSize TemporalWaveformWidget::sizeHint() const
     const int traceCount = m_recorder ? m_recorder->traceCount() : 0;
     const int h = RULER_HEIGHT + traceCount * (TRACE_HEIGHT + TRACE_MARGIN);
 
-    int w = LABEL_WIDTH + 400; // default width
+    int w = 400;
     if (m_recorder && m_recorder->maxTime() > 0) {
         const double pixels = m_recorder->maxTime() * m_pixelsPerNs;
-        w = LABEL_WIDTH + static_cast<int>(qMin(pixels, static_cast<double>(INT_MAX - LABEL_WIDTH - 20))) + 20;
+        w = static_cast<int>(qMin(pixels, static_cast<double>(INT_MAX - 20))) + 20;
     }
-    return {qMax(w, LABEL_WIDTH + 100), qMax(h, RULER_HEIGHT + TRACE_HEIGHT)};
+    return {qMax(w, 100), qMax(h, RULER_HEIGHT + TRACE_HEIGHT)};
 }
 
 QSize TemporalWaveformWidget::minimumSizeHint() const
 {
-    return {LABEL_WIDTH + 100, RULER_HEIGHT + TRACE_HEIGHT};
+    return {100, RULER_HEIGHT + TRACE_HEIGHT};
 }
 
 // ============================================================================
@@ -83,7 +130,6 @@ void TemporalWaveformWidget::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, false);
 
-    // Background
     painter.fillRect(rect(), palette().base());
 
     if (!m_recorder || m_recorder->traceCount() == 0) {
@@ -92,32 +138,17 @@ void TemporalWaveformWidget::paintEvent(QPaintEvent *event)
         return;
     }
 
-    const int x0 = LABEL_WIDTH;
-    const int traceWidth = width() - LABEL_WIDTH;
-    const SimTime maxTime = m_recorder->maxTime();
-    const SimTime visibleStart = 0; // TODO: scroll offset
+    const int traceWidth = width();
+    const SimTime visibleStart = 0;
     const SimTime visibleEnd = (traceWidth > 0 && m_pixelsPerNs > 0)
                                    ? static_cast<SimTime>(traceWidth / m_pixelsPerNs)
-                                   : maxTime;
+                                   : 0;
 
-    // Time ruler
-    drawTimeRuler(painter, x0, traceWidth, visibleStart, visibleEnd);
+    drawTimeRuler(painter, traceWidth, visibleStart, visibleEnd);
 
-    // Signal traces
     for (int i = 0; i < m_recorder->traceCount(); ++i) {
         const int y = RULER_HEIGHT + i * (TRACE_HEIGHT + TRACE_MARGIN);
-
-        // Label background
-        painter.fillRect(0, y, LABEL_WIDTH - 2, TRACE_HEIGHT, palette().alternateBase());
-
-        // Label text
-        painter.setPen(palette().color(QPalette::Text));
-        painter.drawText(QRect(4, y, LABEL_WIDTH - 8, TRACE_HEIGHT),
-                         Qt::AlignVCenter | Qt::AlignRight,
-                         m_recorder->trace(i).name);
-
-        // Trace
-        drawTrace(painter, i, x0, y, traceWidth, TRACE_HEIGHT, visibleStart, visibleEnd);
+        drawTrace(painter, i, y, traceWidth, TRACE_HEIGHT, visibleStart, visibleEnd);
     }
 }
 
@@ -125,21 +156,19 @@ void TemporalWaveformWidget::paintEvent(QPaintEvent *event)
 // Time ruler
 // ============================================================================
 
-void TemporalWaveformWidget::drawTimeRuler(QPainter &painter, int x0, int traceWidth,
+void TemporalWaveformWidget::drawTimeRuler(QPainter &painter, int traceWidth,
                                            SimTime visibleStart, SimTime visibleEnd)
 {
-    painter.fillRect(x0, 0, traceWidth, RULER_HEIGHT, palette().window());
+    painter.fillRect(0, 0, traceWidth, RULER_HEIGHT, palette().window());
     painter.setPen(palette().color(QPalette::Text));
 
     if (visibleEnd <= visibleStart || m_pixelsPerNs <= 0) {
         return;
     }
 
-    // Choose a tick interval that gives ~80-150 pixel spacing
     const double targetPixelSpacing = 100.0;
     double rawInterval = targetPixelSpacing / m_pixelsPerNs;
 
-    // Round to a "nice" number: 1, 2, 5, 10, 20, 50, 100, ...
     double magnitude = 1.0;
     while (magnitude * 10 < rawInterval) { magnitude *= 10; }
     double niceInterval;
@@ -154,21 +183,19 @@ void TemporalWaveformWidget::drawTimeRuler(QPainter &painter, int x0, int traceW
     const auto tickInterval = static_cast<SimTime>(qMax(niceInterval, 1.0));
     const SimTime firstTick = (visibleStart / tickInterval) * tickInterval;
 
-    // Choose unit label based on tick interval magnitude.
-    // SimTime is in nanoseconds: 1 µs = 1000 ns, 1 ms = 1'000'000 ns.
     const char *unit = "ns";
     double unitDiv = 1.0;
     if (tickInterval >= 1'000'000) {
         unit = "ms";
         unitDiv = 1'000'000.0;
     } else if (tickInterval >= 1'000) {
-        unit = "\xC2\xB5s"; // µs in UTF-8
+        unit = "\xC2\xB5s";
         unitDiv = 1'000.0;
     }
 
     for (SimTime t = firstTick; t <= visibleEnd; t += tickInterval) {
-        const int x = timeToX(t, visibleStart, x0);
-        if (x < x0 || x > x0 + traceWidth) {
+        const int x = timeToX(t, visibleStart);
+        if (x < 0 || x > traceWidth) {
             continue;
         }
         painter.drawLine(x, RULER_HEIGHT - 6, x, RULER_HEIGHT);
@@ -177,47 +204,41 @@ void TemporalWaveformWidget::drawTimeRuler(QPainter &painter, int x0, int traceW
         painter.drawText(x + 2, RULER_HEIGHT - 8, label);
     }
 
-    // Bottom line
-    painter.drawLine(x0, RULER_HEIGHT, x0 + traceWidth, RULER_HEIGHT);
+    painter.drawLine(0, RULER_HEIGHT, traceWidth, RULER_HEIGHT);
 }
 
 // ============================================================================
 // Signal trace
 // ============================================================================
 
-void TemporalWaveformWidget::drawTrace(QPainter &painter, int traceIndex, int x0, int y0,
-                                       int traceWidth, int height, SimTime visibleStart, SimTime visibleEnd)
+void TemporalWaveformWidget::drawTrace(QPainter &painter, int traceIndex, int y0,
+                                       int traceWidth, int height,
+                                       SimTime visibleStart, SimTime visibleEnd)
 {
     const auto &trace = m_recorder->trace(traceIndex);
     const auto &transitions = trace.transitions;
 
-    // Trace background with subtle grid line
     painter.setPen(QPen(palette().color(QPalette::Mid), 1, Qt::DotLine));
-    painter.drawLine(x0, y0 + height, x0 + traceWidth, y0 + height);
+    painter.drawLine(0, y0 + height, traceWidth, y0 + height);
 
     if (transitions.isEmpty()) {
-        // No data — draw a flat inactive line
         painter.setPen(QPen(QColor(100, 100, 100), 2));
-        painter.drawLine(x0, y0 + LOW_Y_OFFSET, x0 + traceWidth, y0 + LOW_Y_OFFSET);
+        painter.drawLine(0, y0 + LOW_Y_OFFSET, traceWidth, y0 + LOW_Y_OFFSET);
         return;
     }
 
-    // Choose color: green for output elements, blue for inputs
     const QColor signalColor = (trace.logic && trace.logic->propagationDelay() > 0)
-                                   ? QColor(0, 180, 0)   // green (logic gates / outputs)
-                                   : QColor(0, 100, 220); // blue (inputs / sources)
+                                   ? QColor(0, 180, 0)
+                                   : QColor(0, 100, 220);
     painter.setPen(QPen(signalColor, 2));
 
-    // Draw each segment between transitions
     auto yForStatus = [&](Status s) -> int {
         return y0 + (s == Status::Active ? HIGH_Y_OFFSET : LOW_Y_OFFSET);
     };
 
-    // Initial segment: from visibleStart to first transition
     Status currentStatus = Status::Inactive;
     SimTime currentTime = visibleStart;
 
-    // Find the status at visibleStart
     if (visibleStart >= transitions.first().first) {
         currentStatus = trace.statusAt(visibleStart);
     }
@@ -232,16 +253,14 @@ void TemporalWaveformWidget::drawTrace(QPainter &painter, int traceIndex, int x0
             continue;
         }
 
-        // Horizontal line from current to transition
-        const int xFrom = timeToX(qMax(currentTime, visibleStart), visibleStart, x0);
-        const int xTo = timeToX(tTime, visibleStart, x0);
+        const int xFrom = timeToX(qMax(currentTime, visibleStart), visibleStart);
+        const int xTo = timeToX(tTime, visibleStart);
         const int yCurrent = yForStatus(currentStatus);
 
         if (xTo > xFrom) {
             painter.drawLine(xFrom, yCurrent, xTo, yCurrent);
         }
 
-        // Vertical edge
         if (tStatus != currentStatus) {
             const int yNew = yForStatus(tStatus);
             painter.drawLine(xTo, yCurrent, xTo, yNew);
@@ -251,9 +270,8 @@ void TemporalWaveformWidget::drawTrace(QPainter &painter, int traceIndex, int x0
         currentTime = tTime;
     }
 
-    // Final segment: from last transition to visibleEnd
-    const int xFrom = timeToX(qMax(currentTime, visibleStart), visibleStart, x0);
-    const int xEnd = x0 + traceWidth;
+    const int xFrom = timeToX(qMax(currentTime, visibleStart), visibleStart);
+    const int xEnd = traceWidth;
     if (xEnd > xFrom) {
         painter.drawLine(xFrom, yForStatus(currentStatus), xEnd, yForStatus(currentStatus));
     }
@@ -263,10 +281,10 @@ void TemporalWaveformWidget::drawTrace(QPainter &painter, int traceIndex, int x0
 // Coordinate conversion
 // ============================================================================
 
-int TemporalWaveformWidget::timeToX(SimTime time, SimTime visibleStart, int x0) const
+int TemporalWaveformWidget::timeToX(SimTime time, SimTime visibleStart) const
 {
     const double pixels = (time - visibleStart) * m_pixelsPerNs;
-    return x0 + static_cast<int>(qBound(-1e8, pixels, 1e8));
+    return static_cast<int>(qBound(-1e8, pixels, 1e8));
 }
 
 // ============================================================================

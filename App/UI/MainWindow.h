@@ -21,6 +21,7 @@
 class ElementLabel;
 class ElementPalette;
 class TemporalWaveformWidget;
+class WaveformLabelWidget;
 class LanguageManager;
 class RecentFiles;
 class WorkSpace;
@@ -284,5 +285,6 @@ private:
     QTimer m_simTimeTimer; ///< Periodic timer to update the simulation time label.
 
     QDockWidget *m_waveformDock = nullptr;
+    WaveformLabelWidget *m_labelWidget = nullptr;
     TemporalWaveformWidget *m_waveformWidget = nullptr;
 };
