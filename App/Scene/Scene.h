@@ -200,6 +200,8 @@ public:
     Simulation *simulation();
     /// Marks the simulation mapping as stale so it is rebuilt on the next tick.
     void setCircuitUpdateRequired();
+    /// Refreshes visuals and marks dirty without reinitializing the simulation.
+    void setPropertyUpdateRequired();
 
     // --- Autosave ---
 

@@ -187,15 +187,20 @@ void Scene::setAutosaveRequired()
 
 void Scene::setCircuitUpdateRequired()
 {
+    setPropertyUpdateRequired();
+
+    // Re-initialize simulation graph after structural changes (add/delete/reconnect).
+    m_simulation.initialize();
+}
+
+void Scene::setPropertyUpdateRequired()
+{
     // Re-applying visibility ensures newly-added ports/wires respect the current
     // show/hide state; without this, ports on fresh elements would always appear visible
     showWires(m_showWires);
     showGates(m_showGates);
 
     update();
-
-    // Re-initialize topological sort and simulation graph after any structural change
-    m_simulation.initialize();
 
     m_autosaveRequired = true;
 }

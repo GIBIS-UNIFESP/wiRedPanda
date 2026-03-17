@@ -420,14 +420,14 @@ void UpdateCommand::undo()
 {
     qCDebug(zero) << text();
     loadData(m_oldData);
-    m_scene->setCircuitUpdateRequired();
+    m_scene->setPropertyUpdateRequired();
 }
 
 void UpdateCommand::redo()
 {
     qCDebug(zero) << text();
     loadData(m_newData);
-    m_scene->setCircuitUpdateRequired();
+    m_scene->setPropertyUpdateRequired();
 }
 
 void UpdateCommand::loadData(QByteArray &itemData)
