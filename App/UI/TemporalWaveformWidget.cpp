@@ -55,7 +55,8 @@ QSize TemporalWaveformWidget::sizeHint() const
 
     int w = LABEL_WIDTH + 400; // default width
     if (m_recorder && m_recorder->maxTime() > 0) {
-        w = LABEL_WIDTH + static_cast<int>(m_recorder->maxTime() * m_pixelsPerNs) + 20;
+        const double pixels = m_recorder->maxTime() * m_pixelsPerNs;
+        w = LABEL_WIDTH + static_cast<int>(qMin(pixels, static_cast<double>(INT_MAX - LABEL_WIDTH - 20))) + 20;
     }
     return {qMax(w, LABEL_WIDTH + 100), qMax(h, RULER_HEIGHT + TRACE_HEIGHT)};
 }
@@ -147,14 +148,15 @@ void TemporalWaveformWidget::drawTimeRuler(QPainter &painter, int x0, int traceW
     const auto tickInterval = static_cast<SimTime>(qMax(niceInterval, 1.0));
     const SimTime firstTick = (visibleStart / tickInterval) * tickInterval;
 
-    // Choose unit label
+    // Choose unit label based on tick interval magnitude.
+    // SimTime is in nanoseconds: 1 µs = 1000 ns, 1 ms = 1'000'000 ns.
     const char *unit = "ns";
     double unitDiv = 1.0;
-    if (tickInterval >= 1'000'000'000) {
+    if (tickInterval >= 1'000'000) {
         unit = "ms";
         unitDiv = 1'000'000.0;
-    } else if (tickInterval >= 1'000'000) {
-        unit = "µs";
+    } else if (tickInterval >= 1'000) {
+        unit = "\xC2\xB5s"; // µs in UTF-8
         unitDiv = 1'000.0;
     }
 
@@ -257,7 +259,8 @@ void TemporalWaveformWidget::drawTrace(QPainter &painter, int traceIndex, int x0
 
 int TemporalWaveformWidget::timeToX(SimTime time, SimTime visibleStart, int x0) const
 {
-    return x0 + static_cast<int>((time - visibleStart) * m_pixelsPerNs);
+    const double pixels = (time - visibleStart) * m_pixelsPerNs;
+    return x0 + static_cast<int>(qBound(-1e8, pixels, 1e8));
 }
 
 // ============================================================================

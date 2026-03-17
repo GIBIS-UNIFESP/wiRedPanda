@@ -5,11 +5,11 @@
 
 #include <chrono>
 
-#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/IO/SerializationContext.h"
-#include "App/IO/VersionInfo.h"
+#include "App/Element/LogicElements/LogicSource.h"
+#include "App/Nodes/QNEPort.h"
 #include "App/Simulation/SimEvent.h"
+#include "App/Versions.h"
 
 using namespace std::chrono_literals;
 
@@ -18,12 +18,19 @@ struct ElementInfo<Clock> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Clock,
         .group = ElementGroup::Input,
+        .minInputSize = 0,
+        .maxInputSize = 0,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeAppearance = true,
+        .canChangeSkin = true,
+        .hasColors = false,
+        .hasAudio = false,
+        .hasAudioBox = false,
+        .hasTrigger = false,
         .hasFrequency = true,
         .hasDelay = true,
         .hasLabel = true,
+        .hasTruthTable = false,
         .rotatable = false,
     };
     static_assert(validate(constraints));
@@ -35,10 +42,11 @@ struct ElementInfo<Clock> {
         meta.titleText = QT_TRANSLATE_NOOP("Clock", "CLOCK SIGNAL");
         meta.translatedName = QT_TRANSLATE_NOOP("Clock", "Clock");
         meta.trContext = "Clock";
-        meta.defaultAppearances = QStringList({
+        meta.defaultSkins = QStringList({
             ":/Components/Input/clock0.svg",
             ":/Components/Input/clock1.svg",
         });
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicSource>(false, elm->outputSize()); };
         return meta;
     }
 
@@ -92,6 +100,15 @@ void Clock::setOn()
     Clock::setOn(true);
 }
 
+void Clock::setOn(const bool value, const int port)
+{
+    Q_UNUSED(port)
+    m_isOn = value;
+    // Pixmap index 0 = clock-low SVG, index 1 = clock-high SVG (matches bool→int cast)
+    setPixmap(static_cast<int>(m_isOn));
+    outputPort()->setStatus(static_cast<Status>(m_isOn));
+}
+
 void Clock::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
@@ -108,33 +125,33 @@ void Clock::load(QDataStream &stream, SerializationContext &context)
 {
     GraphicElement::load(stream, context);
 
-    if (!VersionInfo::hasClock(context.version)) {
+    if (context.version < Versions::V_1_1) {
         // Clock serialization was introduced in v1.1; nothing to read in earlier files
         return;
     }
 
-    if (!VersionInfo::hasQMapFormat(context.version)) {
+    if (context.version < Versions::V_4_1) {
         // v1.1–4.0 stored frequency as a bare float; locked state added in v3.1
         float freq; stream >> freq;
-        setFrequency(static_cast<double>(freq));
+        setFrequency(freq);
 
-        if (VersionInfo::hasLockState(context.version)) {
+        if (context.version >= Versions::V_3_1) {
             stream >> m_locked;
         }
     }
 
-    if (VersionInfo::hasQMapFormat(context.version)) {
+    if (context.version >= Versions::V_4_1) {
         // v4.1+ uses a key-value map so new properties can be added without breaking old files
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("frequency")) {
-            setFrequency(map.value("frequency").toDouble());
+            setFrequency(map.value("frequency").toFloat());
         }
 
         if (map.contains("delay")) {
-            double delayValue = map.value("delay").toDouble();
+            float delayValue = map.value("delay").toFloat();
 
-            if (!VersionInfo::hasDelayFix(context.version)) {
+            if (context.version < Versions::V_4_3) {
                 // Discard old delay data from versions < 4.3
                 // The old implementation was incorrect and incompatible with the new period-fraction format
             } else {
@@ -148,12 +165,12 @@ void Clock::load(QDataStream &stream, SerializationContext &context)
     }
 }
 
-double Clock::frequency() const
+float Clock::frequency() const
 {
-    return m_frequency;
+    return static_cast<float>(m_frequency);
 }
 
-void Clock::setFrequency(const double freq)
+void Clock::setFrequency(const float freq)
 {
     if (qFuzzyIsNull(freq)) {
         return;
@@ -169,17 +186,17 @@ void Clock::setFrequency(const double freq)
     }
 
     m_interval = auxInterval;
-    m_frequency = freq;
+    m_frequency = static_cast<double>(freq);
 }
 
-double Clock::delay() const
+float Clock::delay() const
 {
-    return m_delay;
+    return static_cast<float>(m_delay);
 }
 
-void Clock::setDelay(const double delay)
+void Clock::setDelay(const float delay)
 {
-    m_delay = delay;
+    m_delay = static_cast<double>(delay);
 }
 
 void Clock::resetClock(std::chrono::steady_clock::time_point globalTime)
@@ -191,9 +208,40 @@ void Clock::resetClock(std::chrono::steady_clock::time_point globalTime)
     // Shifting m_startTime backward by the delay fraction effectively phase-shifts the waveform.
     // Full period is 2 * m_interval (since m_interval is the half-period).
     const auto fullPeriod = 2 * m_interval;
-    const auto delayMicroseconds = static_cast<std::chrono::microseconds::rep>(-m_delay * static_cast<double>(fullPeriod.count()));
+    const auto delayMicroseconds = static_cast<std::chrono::microseconds::rep>(-m_delay * fullPeriod.count());
     m_startTime = globalTime;
     m_startTime -= std::chrono::microseconds(delayMicroseconds);
+}
+
+void Clock::resetTemporalClock(SimTime simTime)
+{
+    setOn();
+    m_halfPeriodNs = static_cast<SimTime>(m_interval.count()) * 1000;
+
+    // Apply phase delay: shift the first edge by delay fraction of the full period.
+    // m_delay can be negative (-1 to 1), so compute in signed arithmetic first.
+    const auto fullPeriodNs = static_cast<double>(m_halfPeriodNs * 2);
+    const auto delayNs = static_cast<int64_t>(m_delay * fullPeriodNs);
+    const auto baseEdge = static_cast<int64_t>(simTime + m_halfPeriodNs);
+    m_nextEdgeSimTime = static_cast<SimTime>(qMax(baseEdge + delayNs, static_cast<int64_t>(simTime)));
+}
+
+void Clock::scheduleEdges(EventQueue &queue, SimTime from, SimTime to)
+{
+    if (m_locked || m_halfPeriodNs == 0) {
+        return;
+    }
+
+    // Advance past any edges that are before the current window to avoid
+    // burst-firing stale events after a pause/resume.
+    while (m_nextEdgeSimTime < from) {
+        m_nextEdgeSimTime += m_halfPeriodNs;
+    }
+
+    while (m_nextEdgeSimTime <= to) {
+        queue.schedule({m_nextEdgeSimTime, logic()});
+        m_nextEdgeSimTime += m_halfPeriodNs;
+    }
 }
 
 QString Clock::genericProperties()
@@ -201,35 +249,14 @@ QString Clock::genericProperties()
     return QString::number(frequency()) + " Hz";
 }
 
-QList<QPair<int, QString>> Clock::appearanceStates() const
+void Clock::setSkin(const bool defaultSkin, const QString &fileName)
 {
-    return {{0, tr("Low")}, {1, tr("High")}};
-}
-
-
-void Clock::resetTemporalClock(SimTime simTime)
-{
-    setOn();
-    m_halfPeriodNs = static_cast<SimTime>(m_interval.count()) * 1000;
-
-    const SimTime fullPeriodNs = m_halfPeriodNs * 2;
-    const auto delayNs = static_cast<SimTime>(m_delay * static_cast<double>(fullPeriodNs));
-    m_nextEdgeSimTime = simTime + m_halfPeriodNs + delayNs;
-}
-
-void Clock::scheduleEdges(EventQueue &queue, SimTime from, SimTime to)
-{
-    Q_UNUSED(from)
-
-    if (m_locked || m_halfPeriodNs == 0) {
-        return;
+    if (defaultSkin) {
+        m_alternativeSkins = m_defaultSkins;
+    } else {
+        m_alternativeSkins[static_cast<int>(m_isOn)] = fileName;
     }
 
-    while (m_nextEdgeSimTime <= to) {
-        SimEvent ev;
-        ev.time = m_nextEdgeSimTime;
-        ev.target = this;
-        queue.schedule(ev);
-        m_nextEdgeSimTime += m_halfPeriodNs;
-    }
+    m_usingDefaultSkin = defaultSkin;
+    setPixmap(static_cast<int>(m_isOn));
 }
