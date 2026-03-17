@@ -3,6 +3,7 @@
 
 #include "App/UI/ElementPalette.h"
 
+#include <QDir>
 #include <QIcon>
 #include <QLayout>
 #include <QLineEdit>

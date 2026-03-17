@@ -8,6 +8,7 @@
 
 #include <QBrush>
 #include <QDebug>
+#include <QIODevice>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
