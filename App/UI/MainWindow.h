@@ -22,6 +22,7 @@ class ElementLabel;
 class ElementPalette;
 class IC;
 class TemporalWaveformWidget;
+class WaveformLabelWidget;
 class LanguageManager;
 class QShortcut;
 class RecentFiles;
@@ -330,6 +331,7 @@ private:
     QShortcut *m_changeNextElmShortcut = nullptr;
 =======
     QDockWidget *m_waveformDock = nullptr;
+    WaveformLabelWidget *m_labelWidget = nullptr;
     TemporalWaveformWidget *m_waveformWidget = nullptr;
 >>>>>>> e382dc1d3 (feat: add temporal waveform dock with Watch All / Clear / zoom controls)
 };
