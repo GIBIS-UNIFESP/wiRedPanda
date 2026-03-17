@@ -184,12 +184,18 @@ A standalone `TemporalWaveformWidget` was chosen to avoid coupling two unrelated
 
 ## Future Enhancements
 
-1. **Transport delay**: Add `inputIndex` + `value` fields to `SimEvent` so elements see the value at scheduling time rather than evaluation time. Enables glitch-visible simulation.
+1. **Unified engine** (attempted, deferred): Replacing `updateFunctional()` with the event engine at zero delays was attempted but failed. The `m_lastValue` pattern in flip-flops (DFlipFlop, JKFlipFlop, TFlipFlop, SRFlipFlop) captures data from the *previous* `updateLogic()` call to model setup time. This assumes every-tick evaluation. In the event engine, `m_lastValue` becomes stale when no events target the flip-flop. Removing `m_lastValue` and reading current inputs breaks circuits where D and CLK change in the same delta cycle (zero delay), because the flip-flop sees the new D instead of the pre-edge D. Proper fix options:
+   - **Two-phase event processing**: Process data-path events before clock-path events within each delta cycle, so `m_lastValue` is fresh when the clock edge fires.
+   - **Minimum clock-path delay**: Add a 1ns delay to clock inputs so the flip-flop always evaluates D before CLK, even at "zero" delay.
+   - **Transport delay on data inputs**: Carry values in events so the flip-flop sees the D value at scheduling time.
+   All options require significant refactoring of either the event loop or the flip-flop logic. The current dual-engine approach (functional = topological sort, temporal = events) works correctly for both modes.
 
-2. **LogicClock subclass**: Replace the clock detection heuristic (`delay==0 && outputSize==1 && inputPairs.empty()`) with a proper `LogicClock` that handles toggling in `updateLogic()`.
+2. **Transport delay**: Add `inputIndex` + `value` fields to `SimEvent` so elements see the value at scheduling time rather than evaluation time. Enables glitch-visible simulation.
 
-3. **Per-element delay editing**: Add a delay field to `ElementEditor` (visible in temporal mode) so users can customize individual gate delays.
+3. **LogicClock subclass**: Replace the clock detection heuristic (`delay==0 && outputSize==1 && inputPairs.empty()`) with a proper `LogicClock` that handles toggling in `updateLogic()`.
 
-4. **Waveform export**: Add PNG/CSV export to the waveform dock (can reuse `DolphinSerializer` patterns).
+4. **Per-element delay editing**: Add a delay field to `ElementEditor` (visible in temporal mode) so users can customize individual gate delays.
 
-5. **Signal selection via context menu**: Right-click on element → "Watch signal" / "Unwatch signal" for fine-grained waveform control instead of Watch All.
+5. **Waveform export**: Add PNG/CSV export to the waveform dock (can reuse `DolphinSerializer` patterns).
+
+6. **Signal selection via context menu**: Right-click on element → "Watch signal" / "Unwatch signal" for fine-grained waveform control instead of Watch All.
