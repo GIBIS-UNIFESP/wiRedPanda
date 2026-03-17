@@ -6,12 +6,8 @@
 #include <QAudio>
 #include <QDebug>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QAudioDeviceInfo>
-#else
 #include <QAudioDevice>
 #include <QMediaDevices>
-#endif
 
 #include "App/Element/ElementInfo.h"
 #include "App/Element/LogicElements/LogicSink.h"
@@ -70,11 +66,7 @@ Buzzer::Buzzer(QGraphicsItem *parent)
 
     // Check for audio hardware once at construction; subsequent audio calls are
     // guarded by m_hasOutputDevice to allow headless/CI operation without warnings.
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_hasOutputDevice = !QAudioDeviceInfo::defaultOutputDevice().deviceName().isEmpty();
-#else
     m_hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
-#endif
 
     if (m_hasOutputDevice) {
         m_audio = new QSoundEffect(this);
@@ -108,11 +100,7 @@ void Buzzer::setAudio(const QString &note)
     }
 
     // Volume at 35% to avoid startling users; WAV files reside in Qt resources
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_audio->setVolume(0.35);
-#else
     m_audio->setVolume(0.35f);
-#endif
 
     m_audio->setSource(QUrl::fromLocalFile(":/Components/Output/Audio/" + note + ".wav"));
     m_audio->setLoopCount(QSoundEffect::Infinite); // TODO: fix audio clipping when repeating

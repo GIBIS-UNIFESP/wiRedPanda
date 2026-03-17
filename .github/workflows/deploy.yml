@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        qt: [5.15.2, 6.10.2]
+        qt: [6.10.2]
 
 # =================================
 
@@ -84,7 +84,7 @@ jobs:
         version: ${{ matrix.qt }}
         cache: true
         aqtversion: ==3.*
-        modules: ${{ startsWith(matrix.qt, '6') && 'qtmultimedia qtimageformats debug_info' || 'debug_info' }}
+        modules: qtmultimedia qtimageformats debug_info
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1

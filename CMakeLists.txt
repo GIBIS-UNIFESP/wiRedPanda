@@ -10,11 +10,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 set(CMAKE_BUILD_RPATH_USE_ORIGIN TRUE)
 
-# Qt version selection: "auto" (default), "5", or "6"
-set(QT_VERSION "auto" CACHE STRING "Qt version to use: auto (default), 5, or 6")
-set_property(CACHE QT_VERSION PROPERTY STRINGS "auto" "5" "6")
-message(STATUS "Qt version selection: ${QT_VERSION}")
-
 # Generate compilation database for clazy and clang-tools
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -29,63 +24,26 @@ set(CMAKE_AUTORCC ON)
 
 if(EMSCRIPTEN)
     find_package(Qt6 6.9 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test)
-    set(QT_VERSION_MAJOR 6)
-    set(QT_LIBS Qt6::Core Qt6::Gui Qt6::Network Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
 else()
-    if(QT_VERSION STREQUAL "5")
-        # Force Qt5
-        find_package(Qt5 5.15 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test)
-        set(QT_VERSION_MAJOR 5)
-        set(QT_LIBS Qt5::Core Qt5::Gui Qt5::Network Qt5::PrintSupport Qt5::Multimedia Qt5::Widgets Qt5::Svg Qt5::Test)
-        message(STATUS "Using Qt5 (forced)")
-    elseif(QT_VERSION STREQUAL "6")
-        # Force Qt6
-        find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test)
-        set(QT_VERSION_MAJOR 6)
-        set(QT_LIBS Qt6::Core Qt6::Gui Qt6::Network Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
-        message(STATUS "Using Qt6 (forced)")
-    else()
-        # Auto-detect: prefer Qt6, fallback to Qt5
-        find_package(Qt6 6.2 QUIET COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test)
-        if(Qt6_FOUND)
-            set(QT_VERSION_MAJOR 6)
-            set(QT_LIBS Qt6::Core Qt6::Gui Qt6::Network Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
-            message(STATUS "Auto-detected Qt6")
-        else()
-            find_package(Qt5 5.15 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test)
-            set(QT_VERSION_MAJOR 5)
-            set(QT_LIBS Qt5::Core Qt5::Gui Qt5::Network Qt5::PrintSupport Qt5::Multimedia Qt5::Widgets Qt5::Svg Qt5::Test)
-            message(STATUS "Auto-detected Qt5 (Qt6 not found)")
-        endif()
-    endif()
+    find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test)
 endif()
 
-if((QT_VERSION_MAJOR EQUAL 5 AND Qt5_VERSION VERSION_LESS 5.15) OR
-   (QT_VERSION_MAJOR EQUAL 6 AND Qt6_VERSION VERSION_LESS 6.2))
-    message(FATAL_ERROR "Minimum required Qt version is 5.15 for Qt5 or 6.2 for Qt6.")
-endif()
+set(QT_VERSION_MAJOR 6)
+set(QT_LIBS Qt6::Core Qt6::Gui Qt6::Network Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
 
 # D-Bus is needed on Linux for OS color-scheme detection (freedesktop portal).
 if(UNIX AND NOT APPLE AND NOT EMSCRIPTEN)
-    if(QT_VERSION_MAJOR EQUAL 6)
-        find_package(Qt6 COMPONENTS DBus QUIET)
-        if(Qt6DBus_FOUND)
-            list(APPEND QT_LIBS Qt6::DBus)
-            add_compile_definitions(HAVE_QTDBUS)
-        endif()
-    else()
-        find_package(Qt5 COMPONENTS DBus QUIET)
-        if(Qt5DBus_FOUND)
-            list(APPEND QT_LIBS Qt5::DBus)
-            add_compile_definitions(HAVE_QTDBUS)
-        endif()
+    find_package(Qt6 COMPONENTS DBus QUIET)
+    if(Qt6DBus_FOUND)
+        list(APPEND QT_LIBS Qt6::DBus)
+        add_compile_definitions(HAVE_QTDBUS)
     endif()
 endif()
 
 add_compile_definitions(
     APP_VERSION="${PROJECT_VERSION}"
     QT_DEPRECATED_WARNINGS
-    QT_DISABLE_DEPRECATED_BEFORE=0x060000
+    QT_DISABLE_DEPRECATED_BEFORE=0x060200
     QT_MESSAGELOGCONTEXT
 )
 
@@ -186,11 +144,7 @@ if(NOT MSVC)
     endif()
 endif()
 
-if(QT_VERSION_MAJOR EQUAL 5)
-    set(CMAKE_OSX_ARCHITECTURES x86_64)
-else()
-    set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
-endif()
+set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 
 # FetchContent for external dependencies
 include(FetchContent)
@@ -239,43 +193,23 @@ file(GLOB_RECURSE TS_FILES App/Resources/Translations/wpanda_*.ts)
 set(QM_FILES)
 
 # Create QM files in source directory so QRC can find them
-if(QT_VERSION_MAJOR EQUAL 5)
-    find_package(Qt5LinguistTools QUIET)
-    if(Qt5LinguistTools_FOUND)
-        foreach(ts_file ${TS_FILES})
-            get_filename_component(qm_file ${ts_file} NAME_WE)
-            get_filename_component(ts_dir ${ts_file} DIRECTORY)
-            set(qm_path ${ts_dir}/${qm_file}.qm)
-            add_custom_command(
-                OUTPUT ${qm_path}
-                COMMAND ${Qt5_LRELEASE_EXECUTABLE} ${ts_file} -qm ${qm_path}
-                DEPENDS ${ts_file}
-                COMMENT "Compiling ${qm_file}.qm"
-                VERBATIM
-            )
-            list(APPEND QM_FILES ${qm_path})
-        endforeach()
-    endif()
-    qt5_add_resources(RESOURCES_RCC ${RESOURCES})
-else()
-    find_package(Qt6LinguistTools QUIET)
-    if(Qt6LinguistTools_FOUND)
-        foreach(ts_file ${TS_FILES})
-            get_filename_component(qm_file ${ts_file} NAME_WE)
-            get_filename_component(ts_dir ${ts_file} DIRECTORY)
-            set(qm_path ${ts_dir}/${qm_file}.qm)
-            add_custom_command(
-                OUTPUT ${qm_path}
-                COMMAND Qt6::lrelease ${ts_file} -qm ${qm_path}
-                DEPENDS ${ts_file}
-                COMMENT "Compiling ${qm_file}.qm"
-                VERBATIM
-            )
-            list(APPEND QM_FILES ${qm_path})
-        endforeach()
-    endif()
-    qt6_add_resources(RESOURCES_RCC ${RESOURCES})
+find_package(Qt6LinguistTools QUIET)
+if(Qt6LinguistTools_FOUND)
+    foreach(ts_file ${TS_FILES})
+        get_filename_component(qm_file ${ts_file} NAME_WE)
+        get_filename_component(ts_dir ${ts_file} DIRECTORY)
+        set(qm_path ${ts_dir}/${qm_file}.qm)
+        add_custom_command(
+            OUTPUT ${qm_path}
+            COMMAND Qt6::lrelease ${ts_file} -qm ${qm_path}
+            DEPENDS ${ts_file}
+            COMMENT "Compiling ${qm_file}.qm"
+            VERBATIM
+        )
+        list(APPEND QM_FILES ${qm_path})
+    endforeach()
 endif()
+qt6_add_resources(RESOURCES_RCC ${RESOURCES})
 
 add_library(wiredpanda_resources OBJECT ${RESOURCES_RCC})
 set_target_properties(wiredpanda_resources PROPERTIES UNITY_BUILD OFF)
@@ -291,21 +225,13 @@ include_directories(
 file(GLOB_RECURSE TS_FILES App/Resources/Translations/wpanda_*.ts)
 
 # Custom targets for translation management
-if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
+if(Qt6LinguistTools_FOUND)
     # Custom target to update translation source files
-    if(QT_VERSION_MAJOR EQUAL 5)
-        add_custom_target(lupdate
-            COMMAND Qt5::lupdate -tr-function-alias tr+=PANDACEPTION -extensions cpp,h,ui -I ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES}
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            COMMENT "Updating translation source files"
-        )
-    else()
-        add_custom_target(lupdate
-            COMMAND Qt6::lupdate -tr-function-alias tr+=PANDACEPTION -extensions cpp,h,ui -I ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES}
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            COMMENT "Updating translation source files"
-        )
-    endif()
+    add_custom_target(lupdate
+        COMMAND Qt6::lupdate -tr-function-alias tr+=PANDACEPTION -extensions cpp,h,ui -I ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Updating translation source files"
+    )
 
     # Custom target to compile translation files
     add_custom_target(lrelease
@@ -475,7 +401,7 @@ if(WIN32)
 endif()
 
 # Ensure translations are compiled before building the main executable
-if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
+if(Qt6LinguistTools_FOUND)
     add_dependencies(wiredpanda lrelease)
 endif()
 

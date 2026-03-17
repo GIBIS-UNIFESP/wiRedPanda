@@ -3,12 +3,8 @@
 
 #include "App/Element/GraphicElements/AudioBox.h"
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QAudioDeviceInfo>
-#else
 #include <QAudioDevice>
 #include <QMediaDevices>
-#endif
 
 #include <QDir>
 
@@ -71,21 +67,13 @@ AudioBox::AudioBox(QGraphicsItem *parent)
 
     // Detect audio hardware at construction time; all subsequent audio calls are
     // guarded by m_hasOutputDevice so the element works silently in headless/CI environments.
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_hasOutputDevice = !QAudioDeviceInfo::defaultOutputDevice().deviceName().isEmpty();
-#else
     m_hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
-#endif
 
     m_audio.setFile(":/Components/Output/Audio/wiredpanda.wav");
 
     if (m_hasOutputDevice) {
         m_player = new QMediaPlayer(this);
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        m_playlist = new QMediaPlaylist(this);
-#else
         m_audioOutput = new QAudioOutput(this);
-#endif
     }
 }
 
@@ -138,19 +126,10 @@ void AudioBox::setAudio(const QString &audioPath)
         ? QUrl(resolvedPath)
         : QUrl::fromLocalFile(resolvedPath);
 
-    // Volume is set at 50% (Qt5: integer 0-100, Qt6: float 0.0-1.0)
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_player->setVolume(50);
-    m_playlist->clear();
-    m_playlist->addMedia(mediaUrl);
-    m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
-    m_player->setPlaylist(m_playlist);
-#else
     m_audioOutput->setVolume(0.5f);
     m_player->setAudioOutput(m_audioOutput);
     m_player->setSource(mediaUrl);
     m_player->setLoops(QMediaPlayer::Infinite);
-#endif
 
     // If already playing, restart playback with the new audio immediately
     if (m_isPlaying) {
@@ -180,11 +159,7 @@ void AudioBox::mute(const bool mute)
         return;
     }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_player->setMuted(mute);
-#else
     m_audioOutput->setMuted(mute);
-#endif
 }
 
 void AudioBox::play()

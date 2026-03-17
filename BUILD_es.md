@@ -2,10 +2,7 @@
 
 ## En Windows
 
-Para Qt5 seleccione esto:
-![qt5](https://github.com/user-attachments/assets/e6bfca48-7b4b-444f-9ad3-76c157a9036a)
-
-O para Qt6 selecciona estos:
+Seleccione estos componentes de Qt6:
 ![qt6](https://github.com/user-attachments/assets/aedc8749-8b5c-4f4d-9c65-651b703dccea)
 
 Luego abra CMakeLists.txt en Qt Creator y presione Ctrl+R para compilar y ejecutar.
@@ -14,37 +11,35 @@ Luego abra CMakeLists.txt en Qt Creator y presione Ctrl+R para compilar y ejecut
 
 ### Dependencias
 
-Se necesita Qt 5.15.0+ o 6.2.0+ y el módulo QtMultimedia para compilar.
-
-En distribuciones como Arch Linux, Gentoo, Manjaro, Debian, etc., Qt 5.15+ se puede instalar desde los repositorios estándar.
+Se necesita Qt 6.2.0+ y el módulo QtMultimedia para compilar.
 
 * Debian/Ubuntu
 
 ```bash
-sudo apt install build-essential qtbase5-dev qtmultimedia5-dev libqt5svg5-dev
+sudo apt install build-essential qt6-base-dev qt6-multimedia-dev libqt6svg6-dev
 ```
 
 * Basado en Arch Linux
 
 ```bash
-sudo pacman -S base-devel qt5-base qt5-multimedia qt5-svg
+sudo pacman -S base-devel qt6-base qt6-multimedia qt6-svg
 ```
 
 * macOS
 
 ```bash
-brew install qt5
+brew install qt6
 ```
 
 * Otros
 
-Qt5 se puede instalar directamente desde el
+Qt6 se puede instalar directamente desde el
 [sitio web de Qt](https://www.qt.io/download), desde instaladores no oficiales
 como [aqtinstall](https://github.com/miurahr/aqtinstall), desde repositorios
 mantenidos por la comunidad o
-[construidos desde la fuente](https://wiki.qt.io/Building_Qt_5_from_Git).
+[construidos desde la fuente](https://wiki.qt.io/Building_Qt_6_from_Git).
 
-Así es como se podría usar aqtinstall para instalar Qt 5.15.2 en una
+Así es como se podría usar aqtinstall para instalar Qt 6.8.3 en una
 distribución basada en Debian.
 
 ```bash
@@ -52,8 +47,8 @@ sudo apt-get update
 sudo apt-get install libgl1-mesa-dev libxcb-xinerama0 libpulse-dev git python3 python3-pip python3-venv -y
 python3 -m venv ~/venv
 ~/venv/bin/pip install aqtinstall==3.*
-~/venv/bin/aqt install-qt linux desktop 5.15.2 --outputdir ~/Qt
-PATH=~/Qt/5.15.2/gcc_64/bin:$PATH
+~/venv/bin/aqt install-qt linux desktop 6.8.3 --outputdir ~/Qt
+PATH=~/Qt/6.8.3/gcc_64/bin:$PATH
 export PATH
 ```
 
