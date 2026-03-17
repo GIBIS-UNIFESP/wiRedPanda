@@ -4,19 +4,15 @@
 #include "App/Simulation/Simulation.h"
 
 #include <QGraphicsView>
-#include <QGuiApplication>
-#include <QScreen>
+#include <QSet>
 
-#include "App/Core/Application.h"
 #include "App/Core/Common.h"
-#include "App/Core/Priorities.h"
-#include "App/Core/SentryHelpers.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/IC.h"
 #include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
+#include "App/Simulation/ElementMapping.h"
 
 using namespace std::chrono_literals;
 
@@ -24,87 +20,119 @@ Simulation::Simulation(Scene *scene)
     : QObject(scene)
     , m_scene(scene)
 {
-    // 1ms tick drives the simulation at ~1000 steps/second — fast enough for
-    // human perception while keeping CPU load predictable.
     m_timer.setInterval(1ms);
     connect(&m_timer, &QTimer::timeout, this, &Simulation::update);
-
-    // Derive the visual refresh interval from the monitor's refresh rate so
-    // we match the display without wasting repaints.  Falls back to 60 Hz.
-    if (auto *screen = QGuiApplication::primaryScreen()) {
-        const qreal hz = screen->refreshRate();
-        if (hz > 0) {
-            m_visualTickInterval = qMax(1, static_cast<int>(1000.0 / hz));
-        }
-    }
 }
 
-void Simulation::setVisualThrottleEnabled(bool enabled)
-{
-    m_visualThrottleEnabled = enabled;
-    if (enabled) {
-        m_visualTickCount = 0; // start fresh so throttle resumes cleanly
-    }
-}
+// ============================================================================
+// Update: generate events, process delta cycles, refresh visuals
+// ============================================================================
 
 void Simulation::update()
 {
-    // Lazily build the simulation layer on the first tick after a restart so
-    // that circuit edits made while stopped are always reflected when the
-    // simulation resumes.
     if (!m_initialized && !initialize()) {
         return;
     }
 
-    // Clock elements are the only truly time-driven components; all other logic
-    // is combinational and responds immediately to their values.
+    // --- Generate events from clocks ---
     if (m_timer.isActive()) {
         const auto globalTime = std::chrono::steady_clock::now();
-
         for (auto *clock : std::as_const(m_clocks)) {
             if (clock) {
                 clock->updateClock(globalTime);
+                // If the clock's logic output changed, schedule its successors.
+                if (clock->logic() && clock->logic()->outputChanged()) {
+                    clock->logic()->clearOutputChanged();
+                    m_pendingSchedule.append(clock->logic());
+                }
             }
         }
     }
 
-    // Phase 1: propagate user-controlled inputs (switches, buttons, etc.)
+    // --- Generate events from user inputs ---
     for (auto *inputElm : std::as_const(m_inputs)) {
         if (inputElm) {
             inputElm->updateOutputs();
-        }
-    }
-
-    // Phase 2: update all GraphicElements in topological order
-    if (m_simHasFeedbackElements) {
-        // Use iterative settling for circuits with feedback loops.
-        updateWithIterativeSettling();
-    } else {
-        // Phase 2: update all logic elements in topologically sorted order so
-        // every gate sees its inputs before computing its output.
-        for (auto *element : std::as_const(m_sortedElements)) {
-            if (element) {
-                element->updateLogic();
+            if (inputElm->logic() && inputElm->logic()->outputChanged()) {
+                inputElm->logic()->clearOutputChanged();
+                m_pendingSchedule.append(inputElm->logic());
             }
         }
     }
 
-    // Visual updates only need to run at display-refresh rate (~5 fps),
-    // not at simulation rate (1000 Hz).  Skip phases 3-4 on most ticks
-    // to avoid dirtying QGraphicsItems that will be overwritten before
-    // the next repaint.  In non-interactive (test) mode, always update
-    // so that tests see immediate visual state after each step.
-    if (m_visualThrottleEnabled && Application::interactiveMode && ++m_visualTickCount < m_visualTickInterval) {
+    // --- Process all pending events (blocking FIFO) ---
+    processEvents();
+
+    // --- Refresh visuals ---
+    refreshVisuals();
+}
+
+// ============================================================================
+// Event-driven engine: blocking FIFO evaluation
+// ============================================================================
+
+void Simulation::processEvents()
+{
+    if (!m_elmMapping) {
         return;
     }
-    m_visualTickCount = 0;
 
-    // Phase 3: push computed logic values onto the wire (QNEOutputPort) visuals
+    // Seed the work queue: collect successors of all elements whose outputs
+    // changed (from clock toggles and input updates).
+    QVector<LogicElement *> queue;
+    for (auto *source : std::as_const(m_pendingSchedule)) {
+        for (int outIdx = 0; outIdx < source->outputSize(); ++outIdx) {
+            for (const auto &succ : source->successors(outIdx)) {
+                queue.append(succ.logic);
+            }
+        }
+    }
+    m_pendingSchedule.clear();
+
+    // Blocking event-driven: process elements one at a time in FIFO order.
+    // Each element evaluates and immediately updates its outputs (blocking).
+    // If an output changed, its successors are appended to the back of the
+    // queue.  FIFO ordering naturally breaks symmetry in feedback circuits —
+    // whichever gate is scheduled first evaluates first and "wins."
+    // Evaluation order breaks symmetry in cross-coupled feedback circuits.
+    const int maxEvents = 100000;
+    int processed = 0;
+
+    while (!queue.isEmpty() && processed < maxEvents) {
+        auto *elm = queue.takeFirst();
+        if (!elm) {
+            continue;
+        }
+
+        elm->clearOutputChanged();
+        elm->updateLogic();
+        ++processed;
+
+        if (elm->outputChanged()) {
+            for (int outIdx = 0; outIdx < elm->outputSize(); ++outIdx) {
+                for (const auto &succ : elm->successors(outIdx)) {
+                    queue.append(succ.logic);
+                }
+            }
+        }
+    }
+
+    if (processed >= maxEvents && !m_convergenceWarned) {
+        m_convergenceWarned = true;
+        emit simulationWarning(tr("Warning: simulation event limit exceeded — possible oscillation."));
+    }
+}
+
+// ============================================================================
+// Visual refresh
+// ============================================================================
+
+void Simulation::refreshVisuals()
+{
     for (auto *connection : std::as_const(m_connections)) {
         updatePort(connection->startPort());
     }
 
-    // Phase 4: refresh output element visuals (LEDs, buzzers, etc.) using their input ports
     for (auto *outputElm : std::as_const(m_outputs)) {
         if (outputElm) {
             for (auto *inputPort : outputElm->inputs()) {
@@ -122,13 +150,14 @@ void Simulation::updatePort(QNEOutputPort *port)
         return;
     }
 
-    auto *element = port->graphicElement();
-    if (!element) {
+    auto *logic = port->logic();
+    if (!logic) {
         port->setStatus(Status::Unknown);
         return;
     }
 
-    port->setStatus(element->outputValue(port->index()));
+    int outputIndex = port->logicIndex();
+    port->setStatus(logic->outputValue(outputIndex));
 }
 
 void Simulation::updatePort(QNEInputPort *port)
@@ -143,28 +172,19 @@ void Simulation::updatePort(QNEInputPort *port)
                               : port->defaultValue();
     port->setStatus(status);
 
-    // Output elements (LEDs, buzzers) need an explicit repaint to show the new state.
     auto *elm = port->graphicElement();
     if (elm && elm->elementGroup() == ElementGroup::Output) {
         elm->refresh();
     }
 }
 
+// ============================================================================
+// Control
+// ============================================================================
+
 void Simulation::restart()
 {
-    // Invalidate the cached topology. Clearing the flag alone is not
-    // enough: update() iterates m_sortedElements/m_connections/m_clocks/
-    // m_inputs/m_outputs before a re-initialize can run (for instance when
-    // Application::notify() spins a QMessageBox nested event loop), and
-    // any entry that refers to an element we've already freed faults on
-    // its vtable read. Drop every reference so the next tick's
-    // initialize() can rebuild them cleanly.
     m_initialized = false;
-    m_sortedElements.clear();
-    m_connections.clear();
-    m_clocks.clear();
-    m_inputs.clear();
-    m_outputs.clear();
 }
 
 bool Simulation::isRunning()
@@ -172,14 +192,13 @@ bool Simulation::isRunning()
     return m_timer.isActive();
 }
 
-bool Simulation::isInFeedbackLoop(const GraphicElement *element) const
+bool Simulation::isInFeedbackLoop(const LogicElement *logic) const
 {
-    return m_simFeedbackNodes.contains(element);
+    return m_elmMapping && m_elmMapping->isInFeedbackLoop(logic);
 }
 
 void Simulation::stop()
 {
-    sentryBreadcrumb("simulation", QStringLiteral("Simulation stopped"));
     m_timer.stop();
     if (m_scene) {
         m_scene->mute(true);
@@ -188,14 +207,11 @@ void Simulation::stop()
 
 void Simulation::start()
 {
-    sentryBreadcrumb("simulation", QStringLiteral("Simulation started"));
     qCDebug(zero) << "Starting simulation.";
 
     if (!m_initialized) {
         initialize();
     } else {
-        // After a pause the wall clock has advanced, so clocks must be reset
-        // to "now" — otherwise they would fire many missed ticks immediately.
         const auto globalTime = std::chrono::steady_clock::now();
         for (auto *clock : std::as_const(m_clocks)) {
             if (clock) {
@@ -206,32 +222,14 @@ void Simulation::start()
 
     m_timer.start();
     if (m_scene) {
-        m_scene->mute(m_userMuted);
+        m_scene->mute(false);
     }
     qCDebug(zero) << "Simulation started.";
 }
 
-void Simulation::setUserMuted(const bool muted)
-{
-    m_userMuted = muted;
-    if (m_scene) {
-        m_scene->mute(muted);
-    }
-}
-
-bool Simulation::isUserMuted() const
-{
-    return m_userMuted;
-}
-
-void Simulation::updateWithIterativeSettling()
-{
-    if (!iterativeSettle(m_sortedElements) && !m_convergenceWarned) {
-        m_convergenceWarned = true;
-        qDebug() << "Feedback circuit did not converge after 10 iterations";
-        emit simulationWarning(tr("Warning: feedback circuit did not converge — the circuit may be oscillating."));
-    }
-}
+// ============================================================================
+// Initialization
+// ============================================================================
 
 bool Simulation::initialize()
 {
@@ -239,35 +237,26 @@ bool Simulation::initialize()
         return false;
     }
 
-    // Rebuild all categorised lists from scratch so stale pointers from
-    // a previous circuit state don't linger after undo/redo or file load.
     m_convergenceWarned = false;
     m_clocks.clear();
     m_outputs.clear();
     m_inputs.clear();
     m_connections.clear();
-    m_sortedElements.clear();
+    m_pendingSchedule.clear();
 
     QVector<GraphicElement *> elements;
     auto items = m_scene->items();
 
-    // Sort items by position coordinates for consistent ordering between runs.
-    // QGraphicsScene::items() returns items in an unspecified Z/stacking order;
-    // stabilising on (Y, X) gives deterministic wire-update sequences across
-    // sessions and makes test results reproducible.
     std::stable_sort(items.begin(), items.end(), [](const auto &a, const auto &b) {
         if (!a || !b) {
             return a != nullptr;
         }
-        // Sort by Y coordinate first, then X coordinate for consistent 2D ordering
         if (qFuzzyCompare(a->y(), b->y())) {
             return a->x() < b->x();
         }
         return a->y() < b->y();
     });
 
-    // A scene with only one item is the scene border/background rectangle;
-    // there is no circuit yet, so building a simulation graph would be pointless.
     if (items.size() == 1) {
         return false;
     }
@@ -322,180 +311,29 @@ bool Simulation::initialize()
         return false;
     }
 
-    // Initialize simulation vectors on all scene-level elements
-    for (auto *elm : std::as_const(elements)) {
-        elm->initSimulationVectors(elm->inputSize(), elm->outputSize());
+    qCDebug(two) << "Recreating mapping for simulation.";
+    m_elmMapping = std::make_unique<ElementMapping>(elements);
+
+    if (!m_elmMapping) {
+        return false;
     }
 
-    // Build connection graph
-    buildConnectionGraph(elements);
-    connectWirelessElements(elements);
-
-    // Initialize IC internal simulation graphs
-    for (auto *elm : std::as_const(elements)) {
-        if (elm->elementType() == ElementType::IC) {
-            static_cast<IC *>(elm)->initializeSimulation();
-        }
-    }
-
-    // Topological sort with feedback detection
-    sortSimElements(elements);
+    qCDebug(two) << "Sorting.";
+    m_elmMapping->sort();
 
     m_initialized = true;
+
+    // Schedule any logic elements whose outputs already differ from Unknown
+    // (e.g. GND/VCC sources at all IC nesting levels).  They are normal graph
+    // elements in m_logicElms, so processEvents() will propagate to their
+    // successors on the first update() call.
+    for (const auto &elm : m_elmMapping->logicElms()) {
+        if (elm && elm->outputChanged()) {
+            elm->clearOutputChanged();
+            m_pendingSchedule.append(elm.get());
+        }
+    }
 
     qCDebug(zero) << "Finished simulation layer.";
     return true;
 }
-
-// --- Simulation graph building ---
-
-void Simulation::buildConnectionGraph(const QVector<GraphicElement *> &elements)
-{
-    for (auto *elm : std::as_const(elements)) {
-        for (int i = 0; i < elm->inputSize(); ++i) {
-            auto *inputPort = elm->inputPort(i);
-            const auto &connections = inputPort->connections();
-
-            if (connections.size() == 1) {
-                auto *connection = connections.constFirst();
-                if (!connection) {
-                    continue;
-                }
-                if (auto *outputPort = connection->startPort()) {
-                    auto *sourceElement = outputPort->graphicElement();
-                    if (sourceElement) {
-                        elm->connectPredecessor(i, sourceElement, outputPort->index());
-                    }
-                }
-            }
-        }
-    }
-}
-
-void Simulation::connectWirelessElements(const QVector<GraphicElement *> &elements)
-{
-    const auto txMap = buildTxMap(elements);
-
-    // Wire each Rx node's input to the matching Tx node's output.
-    // connectPredecessor() overwrites whatever buildConnectionGraph() set,
-    // so the topological sort will see the true wireless dependency.
-    for (auto *elm : std::as_const(elements)) {
-        if (elm->wirelessMode() != WirelessMode::Rx || elm->label().isEmpty()) {
-            continue;
-        }
-        if (auto *txElement = txMap.value(elm->label(), nullptr)) {
-            elm->connectPredecessor(0, txElement, 0);
-        }
-    }
-}
-
-QHash<QString, GraphicElement *> Simulation::buildTxMap(const QVector<GraphicElement *> &elements)
-{
-    QHash<QString, GraphicElement *> txMap;
-    for (auto *elm : std::as_const(elements)) {
-        if (elm->wirelessMode() == WirelessMode::Tx && !elm->label().isEmpty()) {
-            if (!txMap.contains(elm->label())) {
-                txMap.insert(elm->label(), elm);
-            }
-        }
-    }
-    return txMap;
-}
-
-QHash<GraphicElement *, QVector<GraphicElement *>> Simulation::buildSuccessorGraph(
-    const QVector<GraphicElement *> &elements,
-    const QHash<QString, GraphicElement *> &txMap)
-{
-    QHash<GraphicElement *, QVector<GraphicElement *>> successors;
-
-    // Build successor edges from physical connections
-    for (auto *elm : std::as_const(elements)) {
-        for (auto *outputPort : elm->outputs()) {
-            for (auto *conn : outputPort->connections()) {
-                if (auto *endPort = conn->endPort()) {
-                    auto *successor = endPort->graphicElement();
-                    if (successor && !successors[elm].contains(successor)) {
-                        successors[elm].append(successor);
-                    }
-                }
-            }
-        }
-    }
-
-    // Add wireless Tx→Rx edges.
-    // connectWirelessElements() already set predecessors for simulation input routing,
-    // but those don't create QNEConnection objects, so the connection-walking loop above
-    // doesn't see wireless dependencies.  We must add them explicitly here for correct
-    // topological ordering.
-    for (auto *elm : std::as_const(elements)) {
-        if (elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
-            if (auto *tx = txMap.value(elm->label(), nullptr)) {
-                if (!successors[tx].contains(elm)) {
-                    successors[tx].append(elm);
-                }
-            }
-        }
-    }
-
-    return successors;
-}
-
-Simulation::SortResult Simulation::topologicalSort(
-    const QVector<GraphicElement *> &elements,
-    const QHash<GraphicElement *, QVector<GraphicElement *>> &successors)
-{
-    SortResult result;
-
-    QVector<GraphicElement *> rawPtrs(elements);
-    calculatePriorities(rawPtrs, successors, result.priorities);
-    result.feedbackNodes = findFeedbackNodes(rawPtrs, successors);
-
-    result.sorted = elements;
-    std::stable_sort(result.sorted.begin(), result.sorted.end(),
-        [&result](const auto *a, const auto *b) {
-            return result.priorities.value(const_cast<GraphicElement *>(a), -1)
-                 > result.priorities.value(const_cast<GraphicElement *>(b), -1);
-        });
-
-    return result;
-}
-
-bool Simulation::iterativeSettle(const QVector<GraphicElement *> &elements, const int maxIterations)
-{
-    for (int iteration = 0; iteration < maxIterations; ++iteration) {
-        for (auto *element : std::as_const(elements)) {
-            if (!element) {
-                continue;
-            }
-            element->clearOutputChanged();
-            element->updateLogic();
-        }
-
-        const bool converged = std::none_of(elements.cbegin(), elements.cend(),
-            [](const auto *element) { return element && element->outputChanged(); });
-
-        if (converged) {
-            return true;
-        }
-    }
-    return false;
-}
-
-void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
-{
-    const auto txMap = buildTxMap(elements);
-    const auto successors = buildSuccessorGraph(elements, txMap);
-    const auto result = topologicalSort(elements, successors);
-
-    m_simPriorities.clear();
-    m_simFeedbackNodes.clear();
-    for (auto *elm : std::as_const(elements)) {
-        m_simPriorities[elm] = result.priorities.value(elm, -1);
-        if (result.feedbackNodes.contains(elm)) {
-            m_simFeedbackNodes.insert(elm);
-        }
-    }
-    m_simHasFeedbackElements = !m_simFeedbackNodes.isEmpty();
-    m_sortedElements = result.sorted;
-}
-

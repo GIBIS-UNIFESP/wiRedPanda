@@ -5,18 +5,19 @@
 """
 Create 4-bit Binary Counter IC
 
-Inputs: CLK (Clock)
+Inputs: CLK (Clock), RST (Reset - active LOW)
 Outputs: Q[0:3] (Counter Output, 0-15)
 
 Circuit:
 - 4 D flip-flops for counter state (4-bit value)
 - Ripple-carry increment logic using AND/OR gates
 - NOT gates for signal inversion
+- Active-low reset clears all flip-flops to 0
 
 Binary Counter behavior (0→1→2→...→15→0):
 - Increments by 1 on each clock rising edge
 - Wraps around from 15 to 0
-- No load/reset controls for simplicity
+- RST=LOW clears counter to 0 (async)
 
 Implementation:
 - 4 D Flip-Flops (DFlipFlop)
@@ -53,18 +54,23 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         if not await self.create_new_circuit():
             return False
 
-        # Create clock input
+        # Create inputs
         input_x = 50.0
         clk_id = await self.create_element("InputSwitch", input_x, 100.0, "CLK")
         if clk_id is None:
             return False
         await self.log(f"  ✓ Created input CLK")
 
-        # Create Vcc element for Preset/Clear inactive state
-        vcc_id = await self.create_element("InputVcc", input_x, 140.0, "Vcc")
+        rst_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "RST")
+        if rst_id is None:
+            return False
+        await self.log(f"  ✓ Created input RST (active-LOW)")
+
+        # Create Vcc element for Preset inactive state
+        vcc_id = await self.create_element("InputVcc", input_x, 140.0 + VERTICAL_STAGE_SPACING, "Vcc")
         if vcc_id is None:
             return False
-        await self.log(f"  ✓ Created Vcc for inactive Preset/Clear")
+        await self.log(f"  ✓ Created Vcc for inactive Preset")
 
         # Create NOT gates for each Q output (stage 1)
         not_q_ids = []
@@ -143,14 +149,14 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
             if not await self.connect(clk_id, dff_ids[i], target_port_label="Clock"):
                 return False
 
-        # ========== Connect Preset and Clear to inactive state (Vcc) ==========
+        # ========== Connect Preset to Vcc (inactive) and Clear to RST ==========
         for i in range(4):
             # Connect Preset to Vcc (active-LOW, so Vcc=1 keeps it inactive)
             if not await self.connect(vcc_id, dff_ids[i], target_port_label="Preset"):
                 return False
 
-            # Connect Clear to Vcc (active-LOW, so Vcc=1 keeps it inactive)
-            if not await self.connect(vcc_id, dff_ids[i], target_port_label="Clear"):
+            # Connect Clear to RST (active-LOW: RST=0 clears all FFs to Q=0)
+            if not await self.connect(rst_id, dff_ids[i], target_port_label="Clear"):
                 return False
 
         # ========== Connect FF outputs to LEDs and NOT gates ==========

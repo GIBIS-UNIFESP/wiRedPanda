@@ -109,14 +109,24 @@ class AdvancedSequentialLogicTests(MCPTestBase):
         outputs = [mapping[8], mapping[9]]  # Q, ~Q
         clock_id = mapping[3]  # Enable
 
-        # SR Latch state table with Enable
+        # SR Latch state table with Enable.
+        # With 4-state logic, NOR latches start at Unknown and must be
+        # explicitly reset before testing.  Start with a Reset to establish
+        # a known Q=0, Q'=1 state.
         sr_latch_state_table = [
             {
-                "description": "Initial state - Enable low (no change)",
-                "inputs": [False, False],
-                "outputs": [False, True],  # Assume initial state Q=0, ~Q=1
+                "description": "Reset to known state - S=0, R=1, EN=1",
+                "inputs": [False, True],
+                "outputs": [False, True],  # Q=0, ~Q=1 (Reset state)
                 "clock_edge": "level",
-                "clock_level": False,
+                "clock_level": True,
+            },
+            {
+                "description": "Hold state - S=0, R=0, EN=1",
+                "inputs": [False, False],
+                "outputs": [False, True],  # Q=0, ~Q=1 (Hold previous)
+                "clock_edge": "level",
+                "clock_level": True,
             },
             {
                 "description": "Set operation - S=1, R=0, EN=1",
@@ -126,7 +136,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                 "clock_level": True,
             },
             {
-                "description": "Hold state - S=0, R=0, EN=1",
+                "description": "Hold after set - S=0, R=0, EN=1",
                 "inputs": [False, False],
                 "outputs": [True, False],  # Q=1, ~Q=0 (Hold previous)
                 "clock_edge": "level",

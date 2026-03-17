@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief Synchronous cycle-based simulation engine with event-driven clock support.
+ * \brief Event-driven simulation engine with blocking FIFO evaluation.
  */
 
 #pragma once
@@ -10,14 +10,12 @@
 #include <memory>
 
 #include <QGraphicsItem>
-#include <QHash>
 #include <QObject>
-#include <QSet>
 #include <QTimer>
 
-class Clock;
-class GraphicElement;
-class GraphicElementInput;
+#include "App/Simulation/ElementMapping.h"
+
+class LogicElement;
 class QNEConnection;
 class QNEInputPort;
 class QNEOutputPort;
@@ -27,123 +25,56 @@ class Scene;
  * \class Simulation
  * \brief Manages the digital circuit simulation loop.
  *
- * \details The simulation runs a 1 ms periodic QTimer.  On each tick it:
- * 1. Updates all GraphicElementInput outputs (including clocks).
- * 2. Calls updateLogic() on all elements in priority order.
- * 3. Propagates values through connections to output elements.
- *
- * Feedback loops are detected during initialization and handled with an
- * iterative settling algorithm.
+ * \details The simulation runs a 1 ms periodic QTimer.  On each tick it
+ * generates events from clock toggles and input changes, then processes
+ * them through a blocking FIFO queue until the circuit settles.
+ * FIFO ordering breaks feedback symmetry without topological sorting.
  */
 class Simulation : public QObject
 {
     Q_OBJECT
 
-    friend class TestDanglingPointer;
-
 public:
     // --- Lifecycle ---
 
-    /**
-     * \brief Constructs a Simulation bound to \a scene.
-     * \param scene Scene whose elements will be simulated.
-     */
     explicit Simulation(Scene *scene);
-
-    /// Destructor; stops the simulation timer.
     ~Simulation() override = default;
 
     // --- Control ---
 
-    /// Starts the 1 ms simulation timer.
     void start();
-
-    /// Stops the simulation timer.
     void stop();
-
-    /// Sets whether the user has explicitly muted audio; persists across stop/start cycles.
-    void setUserMuted(bool muted);
-
-    /// Returns \c true if the user has explicitly muted audio.
-    bool isUserMuted() const;
-
-    /// Invalidates the cached simulation topology: clears m_initialized
-    /// and the hot-path element/connection vectors so no stale reference
-    /// can be dereferenced on subsequent ticks. The next update() call
-    /// re-runs initialize(). The QTimer's run state (running/stopped) is
-    /// preserved — callers who also want to pause should use
-    /// SimulationBlocker.
     void restart();
-
-    /// Returns \c true if the simulation timer is currently running.
     bool isRunning();
 
-    /// Returns \c true if \a element is part of a combinational feedback loop.
-    bool isInFeedbackLoop(const GraphicElement *element) const;
+    /// Returns \c true if \a logic is part of a combinational feedback loop.
+    bool isInFeedbackLoop(const LogicElement *logic) const;
 
     // --- Initialization ---
 
-    /**
-     * \brief Builds the simulation graph from the current scene elements.
-     * \return \c true if initialization succeeded (all elements are valid).
-     */
     bool initialize();
 
     // --- Step ---
 
-    /// Executes one simulation step (used by tests to advance the simulation manually).
     void update();
 
-    /// Enables or disables the visual refresh throttle.
-    /// When disabled, phases 3–4 run on every update() call regardless of tick count.
-    /// \sa SimulationThrottleDisabler
-    void setVisualThrottleEnabled(bool enabled);
-
-    // --- Static graph building (used by IC::initializeSimulation too) ---
-
-    static void buildConnectionGraph(const QVector<GraphicElement *> &elements);
-    /// Overrides physical predecessors on Rx nodes with their matching Tx node.
-    /// Must be called after buildConnectionGraph() so wireless always wins, and before sort().
-    static void connectWirelessElements(const QVector<GraphicElement *> &elements);
-
-    /// Builds a label→element map for wireless Tx nodes. First Tx per label wins.
-    static QHash<QString, GraphicElement *> buildTxMap(const QVector<GraphicElement *> &elements);
-
-    /// Builds a successor adjacency list from connection graph + wireless Tx→Rx edges.
-    static QHash<GraphicElement *, QVector<GraphicElement *>> buildSuccessorGraph(
-        const QVector<GraphicElement *> &elements,
-        const QHash<QString, GraphicElement *> &txMap);
-
-    /// Result of topological sort with feedback detection.
-    struct SortResult {
-        QVector<GraphicElement *> sorted;                ///< Elements in priority order (highest first).
-        QHash<GraphicElement *, int> priorities;          ///< Priority per element.
-        QSet<GraphicElement *> feedbackNodes;             ///< Elements in feedback loops.
-    };
-
-    /// Topologically sorts elements using the successor graph, detects feedback loops.
-    static SortResult topologicalSort(const QVector<GraphicElement *> &elements,
-                                      const QHash<GraphicElement *, QVector<GraphicElement *>> &successors);
-
-    /// Runs updateLogic() iteratively on \a elements until outputs converge or \a maxIterations is reached.
-    /// \return \c true if the circuit converged.
-    static bool iterativeSettle(const QVector<GraphicElement *> &elements, int maxIterations = 10);
-
 signals:
-    /// Emitted (at most once per initialize()) when a feedback circuit fails to converge.
     void simulationWarning(const QString &message);
 
 private:
     Q_DISABLE_COPY(Simulation)
 
-    // --- Helpers ---
+    // --- Event-driven engine ---
+
+    void processEvents();
+
+    // --- Visual refresh ---
 
     static void updatePort(QNEInputPort *port);
     static void updatePort(QNEOutputPort *port);
-    void updateWithIterativeSettling();
-    void sortSimElements(const QVector<GraphicElement *> &elements);
+    void refreshVisuals();
 
-    // --- Members: Timer & element lists ---
+    // --- Members ---
 
     QTimer m_timer;
     QVector<Clock *> m_clocks;
@@ -151,27 +82,12 @@ private:
     QVector<GraphicElementInput *> m_inputs;
     QVector<QNEConnection *> m_connections;
 
-    // --- Members: Scene & state ---
-
     Scene *m_scene;
+    std::unique_ptr<ElementMapping> m_elmMapping;
 
-    // --- Members: State flags ---
+    /// Elements whose outputs changed and whose successors need scheduling.
+    QVector<LogicElement *> m_pendingSchedule;
 
     bool m_initialized = false;
     bool m_convergenceWarned = false;
-    bool m_userMuted = false;
-
-    // --- Members: Visual refresh throttle ---
-
-    int m_visualTickCount = 0;
-    int m_visualTickInterval = 16;    ///< Visual update every N simulation ticks (derived from monitor refresh rate, default ~60 fps).
-    bool m_visualThrottleEnabled = true; ///< When false, phases 3–4 always run (used by SimulationThrottleDisabler).
-
-    // --- Members: Direct simulation graph ---
-
-    QVector<GraphicElement *> m_sortedElements;
-    QHash<const GraphicElement *, int> m_simPriorities;
-    QSet<const GraphicElement *> m_simFeedbackNodes;
-    bool m_simHasFeedbackElements = false;
 };
-

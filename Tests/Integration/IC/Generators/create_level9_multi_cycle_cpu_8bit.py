@@ -144,12 +144,21 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
             return False
         await self.log("  ✓ Instantiated Register File")
 
-        # ---- Connect Clock to cycle counter flip-flops ----
+        # ---- Connect inverted clock to cycle counter flip-flops ----
+        # The counter advances on the FALLING edge of the system clock so its
+        # outputs are stable before the next rising edge fires the stage gates.
+        counter_clk_not_id = await self.create_element("Not", 125.0, counter_y, "CounterClkNot")
+        if counter_clk_not_id is None:
+            return False
+
+        if not await self.connect(clock_id, counter_clk_not_id):
+            return False
+
         for i, ff_id in enumerate(counter_ids):
-            if not await self.connect(clock_id, ff_id, target_port_label="Clock"):
+            if not await self.connect(counter_clk_not_id, ff_id, target_port_label="Clock"):
                 return False
 
-        await self.log("  ✓ Connected Clock to cycle counter")
+        await self.log("  ✓ Connected inverted Clock to cycle counter")
 
         # ---- Create clock gating logic for each stage ----
         # For proper multi-cycle operation, each stage gets clock only on its designated cycle:

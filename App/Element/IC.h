@@ -79,6 +79,9 @@ public:
     /// Scans \a elements for Input/Output groups, sorts by Y/X position, and builds labels.
     static PortMetadata buildPortMetadata(const QVector<GraphicElement *> &elements);
 
+    /// Set shared GND/VCC sources from parent mapping (avoids per-IC duplicates).
+    void setGlobalSources(std::shared_ptr<LogicSource> gnd, std::shared_ptr<LogicSource> vcc);
+
     // --- Visual ---
 
     /// \reimp Simulates the IC's internal circuit and propagates results.
@@ -130,6 +133,11 @@ private:
     // --- Visual helpers ---
 
     void generatePixmap();
+
+    // --- Global sources (shared from parent mapping) ---
+
+    std::shared_ptr<LogicSource> m_sharedGND;
+    std::shared_ptr<LogicSource> m_sharedVCC;
 
     // --- Members ---
 
