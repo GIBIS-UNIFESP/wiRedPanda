@@ -8,6 +8,9 @@
 #pragma once
 
 #include "App/Element/GraphicElementInput.h"
+#include "App/Simulation/SimTime.h"
+
+class EventQueue;
 
 /**
  * \class Clock
@@ -51,12 +54,19 @@ public:
     /// Sets the clock phase delay to \a delay (fraction of period).
     void setDelay(const float delay) override;
 
-    // --- Simulation ---
+    // --- Simulation (functional mode) ---
 
     /// Resets the clock phase reference to \a globalTime.
     void resetClock(std::chrono::steady_clock::time_point globalTime);
     /// Advances the clock state based on elapsed time since \a globalTime.
     void updateClock(std::chrono::steady_clock::time_point globalTime);
+
+    // --- Simulation (temporal mode) ---
+
+    /// Resets temporal clock state, computing the first edge time from \a simTime.
+    void resetTemporalClock(SimTime simTime);
+    /// Schedules toggle events into \a queue for all edges in [\a from, \a to].
+    void scheduleEdges(EventQueue &queue, SimTime from, SimTime to);
 
     // --- Visual ---
 
@@ -78,4 +88,8 @@ private:
     double m_frequency = 0;
     std::chrono::microseconds m_interval;
     std::chrono::steady_clock::time_point m_startTime;
+
+    // Temporal mode state
+    SimTime m_halfPeriodNs = 0;    ///< Half-period in nanoseconds for temporal scheduling.
+    SimTime m_nextEdgeSimTime = 0; ///< Next toggle time in simulation nanoseconds.
 };

@@ -121,19 +121,49 @@ void ElementMapping::sort()
 
 void ElementMapping::sortLogicElements()
 {
+    // Initialize successor storage for the global VCC/GND sources — they are
+    // not in m_logicElms but can be predecessors of many elements.
+    m_globalVCC.initSuccessors(m_globalVCC.outputSize());
+    m_globalGND.initSuccessors(m_globalGND.outputSize());
+
     QHash<LogicElement *, QVector<LogicElement *>> successors;
     QVector<LogicElement *> rawPtrs;
     rawPtrs.reserve(m_logicElms.size());
 
+    // First pass: initialize successor storage for every element so that
+    // addSuccessor() in the second pass never indexes an un-sized vector.
+    for (const auto &logic : std::as_const(m_logicElms)) {
+        if (logic) {
+            logic->initSuccessors(logic->outputSize());
+        }
+    }
+
+    // Second pass: build predecessor-to-successor mappings.
     for (const auto &logic : std::as_const(m_logicElms)) {
         if (!logic) {
             continue;
         }
         rawPtrs.append(logic.get());
-        for (const auto &pair : logic->inputPairs()) {
-            if (pair.logic && !successors[pair.logic].contains(logic.get())) {
+
+        for (int inIdx = 0; inIdx < logic->inputPairs().size(); ++inIdx) {
+            const auto &pair = logic->inputPairs()[inIdx];
+            if (!pair.logic) {
+                continue;
+            }
+
+            // Element-level successor map (for topological sort / priority calculation).
+            if (!successors[pair.logic].contains(logic.get())) {
                 successors[pair.logic].append(logic.get());
             }
+
+            // Port-granular successor list (for temporal event scheduling).
+            // The predecessor may be an external element (e.g., IC-internal
+            // globalVCC/GND) not in m_logicElms; lazily initialize its
+            // successor storage if it hasn't been done yet.
+            if (pair.logic->successorGroupCount() == 0) {
+                pair.logic->initSuccessors(pair.logic->outputSize());
+            }
+            pair.logic->addSuccessor(pair.port, {logic.get(), inIdx});
         }
     }
 

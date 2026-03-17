@@ -10,6 +10,7 @@
 #include <QVector>
 
 #include "App/Core/Enums.h"
+#include "App/Simulation/SimTime.h"
 
 class LogicElement;
 
@@ -21,6 +22,16 @@ struct InputPair
 {
     LogicElement *logic = nullptr; ///< Predecessor logic element.
     int port = 0;                  ///< Output port index on the predecessor.
+};
+
+/**
+ * \struct OutputPair
+ * \brief Links an output port of one LogicElement to an input slot of another.
+ */
+struct OutputPair
+{
+    LogicElement *logic = nullptr; ///< Successor logic element.
+    int inputPort = 0;             ///< Input port index on the successor.
 };
 
 /**
@@ -46,6 +57,25 @@ public:
     Status outputValue(const int index = 0) const;
     /// Returns the number of output ports.
     int outputSize() const;
+
+    // --- Propagation delay ---
+
+    /// Returns the propagation delay in nanoseconds (0 = instant, used in functional mode).
+    SimTime propagationDelay() const { return m_propagationDelay; }
+    /// Sets the propagation delay in nanoseconds.
+    void setPropagationDelay(const SimTime ns) { m_propagationDelay = ns; }
+
+    // --- Successor tracking ---
+
+    /// Returns the successor list for output port \a outputIndex.
+    const QVector<OutputPair> &successors(const int outputIndex) const { return m_successors[outputIndex]; }
+    /// Returns the number of output-port successor lists.
+    int successorGroupCount() const { return m_successors.size(); }
+
+    /// Initializes successor storage for \a count output ports.  Called by ElementMapping.
+    void initSuccessors(const int count) { m_successors.resize(count); }
+    /// Appends a successor to output port \a outputIndex.  Called by ElementMapping.
+    void addSuccessor(const int outputIndex, const OutputPair &pair) { m_successors[outputIndex].append(pair); }
 
     // --- Change tracking ---
 
@@ -103,7 +133,9 @@ private:
     // --- Members ---
 
     QVector<InputPair> m_inputPairs;
-    QVector<Status> m_inputValues; ///< Cached input values refreshed each simulation step.
+    QVector<Status> m_inputValues;  ///< Cached input values refreshed each simulation step.
     QVector<Status> m_outputValues;
-    bool m_outputChanged = false; ///< Set by setOutputValue() when an output actually changes.
+    QVector<QVector<OutputPair>> m_successors; ///< [outputIndex] → list of successor (element, inputPort) pairs.
+    SimTime m_propagationDelay = 0; ///< Propagation delay in nanoseconds (0 = instant).
+    bool m_outputChanged = false;   ///< Set by setOutputValue() when an output actually changes.
 };

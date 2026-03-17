@@ -8,6 +8,7 @@
 #include "App/Element/ElementInfo.h"
 #include "App/Element/LogicElements/LogicSource.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Simulation/SimEvent.h"
 #include "App/Versions.h"
 
 using namespace std::chrono_literals;
@@ -210,6 +211,31 @@ void Clock::resetClock(std::chrono::steady_clock::time_point globalTime)
     const auto delayMicroseconds = static_cast<std::chrono::microseconds::rep>(-m_delay * fullPeriod.count());
     m_startTime = globalTime;
     m_startTime -= std::chrono::microseconds(delayMicroseconds);
+}
+
+void Clock::resetTemporalClock(SimTime simTime)
+{
+    setOn();
+    m_halfPeriodNs = static_cast<SimTime>(m_interval.count()) * 1000;
+
+    // Apply phase delay: shift the first edge forward by delay fraction of the full period.
+    const SimTime fullPeriodNs = m_halfPeriodNs * 2;
+    const auto delayNs = static_cast<SimTime>(m_delay * static_cast<double>(fullPeriodNs));
+    m_nextEdgeSimTime = simTime + m_halfPeriodNs + delayNs;
+}
+
+void Clock::scheduleEdges(EventQueue &queue, SimTime from, SimTime to)
+{
+    Q_UNUSED(from)
+
+    if (m_locked || m_halfPeriodNs == 0) {
+        return;
+    }
+
+    while (m_nextEdgeSimTime <= to) {
+        queue.schedule({m_nextEdgeSimTime, logic()});
+        m_nextEdgeSimTime += m_halfPeriodNs;
+    }
 }
 
 QString Clock::genericProperties()

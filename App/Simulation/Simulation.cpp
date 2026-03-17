@@ -25,6 +25,10 @@ Simulation::Simulation(Scene *scene)
     connect(&m_timer, &QTimer::timeout, this, &Simulation::update);
 }
 
+// ============================================================================
+// Update dispatch
+// ============================================================================
+
 void Simulation::update()
 {
     // Lazily build the simulation layer on the first tick after a restart so
@@ -34,6 +38,19 @@ void Simulation::update()
         return;
     }
 
+    if (m_mode == SimulationMode::Temporal) {
+        updateTemporal();
+    } else {
+        updateFunctional();
+    }
+}
+
+// ============================================================================
+// Functional mode (zero-delay, topological sort) — original behaviour
+// ============================================================================
+
+void Simulation::updateFunctional()
+{
     // Clock elements are the only truly time-driven components; all other logic
     // is combinational and responds immediately to their values.
     if (m_timer.isActive()) {
@@ -71,12 +88,104 @@ void Simulation::update()
         }
     }
 
-    // Phase 3: push computed logic values onto the wire (QNEOutputPort) visuals
+    refreshVisuals();
+}
+
+// ============================================================================
+// Temporal mode (event-driven with propagation delays)
+// ============================================================================
+
+void Simulation::updateTemporal()
+{
+    if (!m_elmMapping) {
+        return;
+    }
+
+    const SimTime targetTime = m_currentTime + m_timePerTick;
+
+    // Schedule clock edge events within this time window.
+    for (auto *clock : std::as_const(m_clocks)) {
+        if (clock) {
+            clock->scheduleEdges(m_eventQueue, m_currentTime, targetTime);
+        }
+    }
+
+    // Detect user input changes and inject immediate events.
+    for (auto *inputElm : std::as_const(m_inputs)) {
+        if (inputElm) {
+            inputElm->scheduleIfChanged(m_eventQueue, m_currentTime);
+        }
+    }
+
+    // Process events up to targetTime.
+    const int maxDeltaCycles = 1000;
+    int deltaCycles = 0;
+
+    while (!m_eventQueue.empty() && m_eventQueue.nextTime() <= targetTime) {
+        const SimTime eventTime = m_eventQueue.nextTime();
+        m_currentTime = eventTime;
+
+        // Process all events at this exact timestamp (one delta cycle).
+        while (!m_eventQueue.empty() && m_eventQueue.nextTime() == eventTime) {
+            auto event = m_eventQueue.pop();
+            if (!event.target) {
+                continue;
+            }
+
+            // Clock events toggle the source output directly since
+            // LogicSource::updateLogic() would reset it to its initial value.
+            if (event.target->propagationDelay() == 0 && event.target->outputSize() == 1
+                && event.target->inputPairs().isEmpty()) {
+                // This is a LogicSource (clock or constant) — toggle its output.
+                const auto current = event.target->outputValue();
+                event.target->setOutputValue(current == Status::Active ? Status::Inactive : Status::Active);
+            } else {
+                event.target->clearOutputChanged();
+                event.target->updateLogic();
+            }
+
+            // Only propagate to successors if the element's output actually changed.
+            if (event.target->outputChanged()) {
+                scheduleSuccessors(event.target);
+            }
+        }
+
+        if (++deltaCycles > maxDeltaCycles) {
+            if (!m_convergenceWarned) {
+                m_convergenceWarned = true;
+                qDebug() << "Temporal simulation: delta cycle limit exceeded at time" << m_currentTime << "ns";
+                emit simulationWarning(tr("Warning: temporal simulation delta cycle limit exceeded — possible oscillation."));
+            }
+            break;
+        }
+    }
+
+    m_currentTime = targetTime;
+    refreshVisuals();
+}
+
+void Simulation::scheduleSuccessors(LogicElement *source)
+{
+    for (int outIdx = 0; outIdx < source->outputSize(); ++outIdx) {
+        for (const auto &succ : source->successors(outIdx)) {
+            const SimTime delay = succ.logic->propagationDelay();
+            m_eventQueue.schedule({m_currentTime + delay, succ.logic});
+        }
+    }
+}
+
+// ============================================================================
+// Visual refresh (shared by both modes)
+// ============================================================================
+
+void Simulation::refreshVisuals()
+{
+    // Push computed logic values onto the wire (QNEOutputPort) visuals.
     for (auto *connection : std::as_const(m_connections)) {
         updatePort(connection->startPort());
     }
 
-    // Phase 4: refresh output element visuals (LEDs, buzzers, etc.) using their input ports
+    // Refresh output element visuals (LEDs, buzzers, etc.) using their input ports.
     for (auto *outputElm : std::as_const(m_outputs)) {
         if (outputElm) {
             for (auto *inputPort : outputElm->inputs()) {
@@ -87,6 +196,10 @@ void Simulation::update()
         }
     }
 }
+
+// ============================================================================
+// Port update helpers
+// ============================================================================
 
 void Simulation::updatePort(QNEOutputPort *port)
 {
@@ -128,54 +241,9 @@ void Simulation::updatePort(QNEInputPort *port)
     }
 }
 
-void Simulation::restart()
-{
-    // Clearing the flag causes the next update() call to rebuild the entire
-    // element mapping, effectively resetting all logic state to its default.
-    m_initialized = false;
-}
-
-bool Simulation::isRunning()
-{
-    return m_timer.isActive();
-}
-
-bool Simulation::isInFeedbackLoop(const LogicElement *logic) const
-{
-    return m_elmMapping && m_elmMapping->isInFeedbackLoop(logic);
-}
-
-void Simulation::stop()
-{
-    m_timer.stop();
-    if (m_scene) {
-        m_scene->mute(true);
-    }
-}
-
-void Simulation::start()
-{
-    qCDebug(zero) << "Starting simulation.";
-
-    if (!m_initialized) {
-        initialize();
-    } else {
-        // After a pause the wall clock has advanced, so clocks must be reset
-        // to "now" — otherwise they would fire many missed ticks immediately.
-        const auto globalTime = std::chrono::steady_clock::now();
-        for (auto *clock : std::as_const(m_clocks)) {
-            if (clock) {
-                clock->resetClock(globalTime);
-            }
-        }
-    }
-
-    m_timer.start();
-    if (m_scene) {
-        m_scene->mute(false);
-    }
-    qCDebug(zero) << "Simulation started.";
-}
+// ============================================================================
+// Iterative settling (functional mode, feedback loops only)
+// ============================================================================
 
 void Simulation::updateWithIterativeSettling()
 {
@@ -213,6 +281,74 @@ void Simulation::updateWithIterativeSettling()
     }
 }
 
+// ============================================================================
+// Mode control
+// ============================================================================
+
+void Simulation::setMode(SimulationMode mode)
+{
+    if (m_mode == mode) {
+        return;
+    }
+    m_mode = mode;
+    m_currentTime = 0;
+    m_eventQueue.clear();
+    restart();
+}
+
+void Simulation::restart()
+{
+    // Clearing the flag causes the next update() call to rebuild the entire
+    // element mapping, effectively resetting all logic state to its default.
+    m_initialized = false;
+}
+
+bool Simulation::isRunning()
+{
+    return m_timer.isActive();
+}
+
+bool Simulation::isInFeedbackLoop(const LogicElement *logic) const
+{
+    return m_elmMapping && m_elmMapping->isInFeedbackLoop(logic);
+}
+
+void Simulation::stop()
+{
+    m_timer.stop();
+    if (m_scene) {
+        m_scene->mute(true);
+    }
+}
+
+void Simulation::start()
+{
+    qCDebug(zero) << "Starting simulation.";
+
+    if (!m_initialized) {
+        initialize();
+    } else if (m_mode == SimulationMode::Functional) {
+        // After a pause the wall clock has advanced, so clocks must be reset
+        // to "now" — otherwise they would fire many missed ticks immediately.
+        const auto globalTime = std::chrono::steady_clock::now();
+        for (auto *clock : std::as_const(m_clocks)) {
+            if (clock) {
+                clock->resetClock(globalTime);
+            }
+        }
+    }
+
+    m_timer.start();
+    if (m_scene) {
+        m_scene->mute(false);
+    }
+    qCDebug(zero) << "Simulation started.";
+}
+
+// ============================================================================
+// Initialization
+// ============================================================================
+
 bool Simulation::initialize()
 {
     if (!m_scene) {
@@ -226,6 +362,7 @@ bool Simulation::initialize()
     m_outputs.clear();
     m_inputs.clear();
     m_connections.clear();
+    m_eventQueue.clear();
 
     QVector<GraphicElement *> elements;
     auto items = m_scene->items();
@@ -278,7 +415,11 @@ bool Simulation::initialize()
                 auto *clock = qobject_cast<Clock *>(element);
                 if (clock) {
                     m_clocks.append(clock);
-                    clock->resetClock(globalTime);
+                    if (m_mode == SimulationMode::Functional) {
+                        clock->resetClock(globalTime);
+                    } else {
+                        clock->resetTemporalClock(m_currentTime);
+                    }
                 }
             }
 
@@ -314,6 +455,19 @@ bool Simulation::initialize()
     m_elmMapping->sort();
 
     m_hasFeedbackElements = m_elmMapping->hasFeedbackElements();
+
+    // In temporal mode, seed the event queue with initial input values so
+    // the circuit settles to its initial state.
+    if (m_mode == SimulationMode::Temporal) {
+        for (auto *inputElm : std::as_const(m_inputs)) {
+            if (inputElm) {
+                inputElm->updateOutputs();
+                if (inputElm->logic()) {
+                    scheduleSuccessors(inputElm->logic());
+                }
+            }
+        }
+    }
 
     m_initialized = true;
 
