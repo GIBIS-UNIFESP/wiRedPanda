@@ -74,6 +74,12 @@ void TemporalWaveformWidget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
 
+    // Resize to fit content so the parent QScrollArea shows scrollbars.
+    const QSize hint = sizeHint();
+    if (hint != size()) {
+        setMinimumSize(hint);
+    }
+
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, false);
 
