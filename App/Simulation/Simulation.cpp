@@ -118,44 +118,62 @@ void Simulation::updateTemporal()
     }
 
     // Process events up to targetTime.
+    // The delta cycle limit detects oscillation: if events at the SAME timestamp
+    // keep re-scheduling events at that same timestamp, we cap the loop.
     const int maxDeltaCycles = 1000;
-    int deltaCycles = 0;
+    int totalEvents = 0;
+    const int maxTotalEvents = 100000;
 
     while (!m_eventQueue.empty() && m_eventQueue.nextTime() <= targetTime) {
         const SimTime eventTime = m_eventQueue.nextTime();
         m_currentTime = eventTime;
 
-        // Process all events at this exact timestamp (one delta cycle).
-        while (!m_eventQueue.empty() && m_eventQueue.nextTime() == eventTime) {
-            auto event = m_eventQueue.pop();
-            if (!event.target) {
-                continue;
-            }
+        // Process all events at this exact timestamp.  If processing generates
+        // new events at the same timestamp (zero-delay feedback), iterate as
+        // delta cycles until stable or the cap is reached.
+        int deltaCycles = 0;
+        do {
+            bool anyScheduled = false;
+            while (!m_eventQueue.empty() && m_eventQueue.nextTime() == eventTime) {
+                auto event = m_eventQueue.pop();
+                if (!event.target) {
+                    continue;
+                }
 
-            // Clock events toggle the source output directly since
-            // LogicSource::updateLogic() would reset it to its initial value.
-            if (event.target->propagationDelay() == 0 && event.target->outputSize() == 1
-                && event.target->inputPairs().isEmpty()) {
-                // This is a LogicSource (clock or constant) — toggle its output.
-                const auto current = event.target->outputValue();
-                event.target->setOutputValue(current == Status::Active ? Status::Inactive : Status::Active);
-            } else {
                 event.target->clearOutputChanged();
-                event.target->updateLogic();
+
+                // Clock events toggle the source output directly since
+                // LogicSource::updateLogic() would reset it to its initial value.
+                if (event.target->propagationDelay() == 0 && event.target->outputSize() == 1
+                    && event.target->inputPairs().isEmpty()) {
+                    const auto current = event.target->outputValue();
+                    event.target->setOutputValue(current == Status::Active ? Status::Inactive : Status::Active);
+                } else {
+                    event.target->updateLogic();
+                }
+
+                if (event.target->outputChanged()) {
+                    scheduleSuccessors(event.target);
+                    anyScheduled = true;
+                }
+
+                if (++totalEvents > maxTotalEvents) {
+                    break;
+                }
             }
 
-            // Only propagate to successors if the element's output actually changed.
-            if (event.target->outputChanged()) {
-                scheduleSuccessors(event.target);
+            if (!anyScheduled) {
+                break;
             }
-        }
+        } while (!m_eventQueue.empty() && m_eventQueue.nextTime() == eventTime
+                 && ++deltaCycles < maxDeltaCycles);
 
-        // Record waveform transitions after each delta cycle settles.
+        // Record waveform transitions after this timestamp settles.
         if (m_recorder.isRecording()) {
             m_recorder.recordAll(eventTime);
         }
 
-        if (++deltaCycles > maxDeltaCycles) {
+        if (deltaCycles >= maxDeltaCycles || totalEvents > maxTotalEvents) {
             if (!m_convergenceWarned) {
                 m_convergenceWarned = true;
                 qDebug() << "Temporal simulation: delta cycle limit exceeded at time" << m_currentTime << "ns";
@@ -316,6 +334,16 @@ void Simulation::restart()
     // Clearing the flag causes the next update() call to rebuild the entire
     // element mapping, effectively resetting all logic state to its default.
     m_initialized = false;
+
+    if (m_mode == SimulationMode::Temporal) {
+        m_currentTime = 0;
+        m_eventQueue.clear();
+    }
+
+    // Recorder holds raw LogicElement pointers that become dangling when
+    // ElementMapping is rebuilt.  Stop recording and invalidate all traces.
+    m_recorder.setRecording(false);
+    m_recorder.clear();
 }
 
 bool Simulation::isRunning()
@@ -471,11 +499,12 @@ bool Simulation::initialize()
 
     m_hasFeedbackElements = m_elmMapping->hasFeedbackElements();
 
-    // In temporal mode, seed the event queue with initial input values so
-    // the circuit settles to its initial state.
+    // In temporal mode, reset input tracking and seed the event queue with
+    // initial input values so the circuit settles to its initial state.
     if (m_mode == SimulationMode::Temporal) {
         for (auto *inputElm : std::as_const(m_inputs)) {
             if (inputElm) {
+                inputElm->resetScheduledState();
                 inputElm->updateOutputs();
                 if (inputElm->logic()) {
                     scheduleSuccessors(inputElm->logic());

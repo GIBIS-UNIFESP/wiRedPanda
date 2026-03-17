@@ -218,18 +218,24 @@ void Clock::resetTemporalClock(SimTime simTime)
     setOn();
     m_halfPeriodNs = static_cast<SimTime>(m_interval.count()) * 1000;
 
-    // Apply phase delay: shift the first edge forward by delay fraction of the full period.
-    const SimTime fullPeriodNs = m_halfPeriodNs * 2;
-    const auto delayNs = static_cast<SimTime>(m_delay * static_cast<double>(fullPeriodNs));
-    m_nextEdgeSimTime = simTime + m_halfPeriodNs + delayNs;
+    // Apply phase delay: shift the first edge by delay fraction of the full period.
+    // m_delay can be negative (-1 to 1), so compute in signed arithmetic first.
+    const auto fullPeriodNs = static_cast<double>(m_halfPeriodNs * 2);
+    const auto delayNs = static_cast<int64_t>(m_delay * fullPeriodNs);
+    const auto baseEdge = static_cast<int64_t>(simTime + m_halfPeriodNs);
+    m_nextEdgeSimTime = static_cast<SimTime>(qMax(baseEdge + delayNs, static_cast<int64_t>(simTime)));
 }
 
 void Clock::scheduleEdges(EventQueue &queue, SimTime from, SimTime to)
 {
-    Q_UNUSED(from)
-
     if (m_locked || m_halfPeriodNs == 0) {
         return;
+    }
+
+    // Advance past any edges that are before the current window to avoid
+    // burst-firing stale events after a pause/resume.
+    while (m_nextEdgeSimTime < from) {
+        m_nextEdgeSimTime += m_halfPeriodNs;
     }
 
     while (m_nextEdgeSimTime <= to) {

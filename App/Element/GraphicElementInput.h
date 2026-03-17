@@ -72,6 +72,9 @@ public:
     /// Schedules events for any output ports whose value changed since the last call.
     void scheduleIfChanged(EventQueue &queue, SimTime now);
 
+    /// Resets the last-scheduled tracking so the next scheduleIfChanged() detects all ports as changed.
+    void resetScheduledState() { m_lastScheduled.clear(); }
+
 protected:
     // --- Members ---
 
