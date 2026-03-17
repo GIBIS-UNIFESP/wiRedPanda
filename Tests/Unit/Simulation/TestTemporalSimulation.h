@@ -44,4 +44,13 @@ private slots:
 
     // --- Temporal engine: input change detection ---
     void testInputSwitchSchedulesEvent();
+
+    // --- Waveform recorder ---
+    void testRecorderWatchAndRecord();
+    void testRecorderDeduplication();
+    void testRecorderStatusAt();
+    void testRecorderIntegration();
+
+    // --- Waveform widget ---
+    void testWidgetSizeHint();
 };

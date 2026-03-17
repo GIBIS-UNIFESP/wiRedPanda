@@ -150,6 +150,11 @@ void Simulation::updateTemporal()
             }
         }
 
+        // Record waveform transitions after each delta cycle settles.
+        if (m_recorder.isRecording()) {
+            m_recorder.recordAll(eventTime);
+        }
+
         if (++deltaCycles > maxDeltaCycles) {
             if (!m_convergenceWarned) {
                 m_convergenceWarned = true;

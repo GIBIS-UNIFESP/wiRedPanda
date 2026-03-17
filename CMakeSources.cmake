@@ -97,6 +97,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/TemporalWaveformWidget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/HandlerFactory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.cpp
@@ -201,6 +202,9 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/ElementMapping.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimEvent.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimTime.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/WaveformRecorder.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.h
@@ -216,6 +220,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/TemporalWaveformWidget.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/HandlerFactory.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.h
