@@ -28,11 +28,14 @@ jobs:
           - os: ubuntu-latest
             qt: '6.8.3'
             cmake_args: '-DENABLE_UNITY=OFF -DENABLE_PCH=OFF'
+          - os: ubuntu-latest
+            qt: '6.8.3'
+            cmake_args: '-DUNITY_BUILD_BATCH_SIZE=1000'
 
 # =================================
 
     runs-on: ${{ matrix.os }}
-    name: ${{ matrix.os }} Qt${{ matrix.qt }}${{ matrix.cmake_args != '' && ' (no unity/PCH)' || '' }}
+    name: ${{ matrix.os }} Qt${{ matrix.qt }}${{ contains(matrix.cmake_args, 'ENABLE_UNITY=OFF') && ' (no unity/PCH)' || contains(matrix.cmake_args, 'BATCH_SIZE=1000') && ' (mega unity)' || '' }}
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
 
     steps:
@@ -52,7 +55,7 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1
       with:
-        key: ${{ matrix.os }}-${{ matrix.qt }}${{ matrix.cmake_args != '' && '-no-unity' || '' }}
+        key: ${{ matrix.os }}-${{ matrix.qt }}${{ contains(matrix.cmake_args, 'ENABLE_UNITY=OFF') && '-no-unity' || contains(matrix.cmake_args, 'BATCH_SIZE=1000') && '-mega-unity' || '' }}
 
     - name: Setup Windows MSVC Toolchain
       if: runner.os == 'Windows'
@@ -76,7 +79,7 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v6
       with:
-        name: build-logs-${{ matrix.os }}-${{ matrix.qt }}${{ matrix.cmake_args != '' && '-no-unity' || '' }}
+        name: build-logs-${{ matrix.os }}-${{ matrix.qt }}${{ contains(matrix.cmake_args, 'ENABLE_UNITY=OFF') && '-no-unity' || contains(matrix.cmake_args, 'BATCH_SIZE=1000') && '-mega-unity' || '' }}
         path: |
           build/CMakeCache.txt
           build/CMakeFiles/CMakeOutput.log
