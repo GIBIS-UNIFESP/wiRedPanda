@@ -143,7 +143,7 @@ void InputRotary::updatePortsProperties()
         // For unhandled sizes, use a simple default positioning
         for (int i = 0; i < outputSize(); ++i) {
             outputPort(i)->setPos(32, i * 16);
-            outputPort(i)->setName(QString::number(i));
+            outputPort(i)->setName(QString::number(i + 1));
         }
         break;
     }
