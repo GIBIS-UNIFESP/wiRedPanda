@@ -367,7 +367,7 @@ void MainWindow::addUndoRedoMenu()
     // Insert before position 0 then before the new position 1 so undo appears
     // first, redo second — above the separator that already exists in menuEdit.
     m_ui->menuEdit->insertAction(actions.at(0), scene->undoAction());
-    m_ui->menuEdit->insertAction(actions.at(1), scene->redoAction());
+    m_ui->menuEdit->insertAction(m_ui->menuEdit->actions().at(1), scene->redoAction());
 }
 
 void MainWindow::setFastMode(const bool fastMode)
