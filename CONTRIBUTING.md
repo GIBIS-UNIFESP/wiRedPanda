@@ -85,7 +85,7 @@ If you prefer local development, see our detailed [BUILD.md](BUILD.md) instructi
 
 ```bash
 # Install dependencies (example for Ubuntu)
-sudo apt install build-essential qtbase5-dev qtmultimedia5-dev libqt5svg5-dev
+sudo apt install build-essential qt6-base-dev qt6-multimedia-dev libqt6svg6-dev
 
 # Clone and build
 git clone https://github.com/GIBIS-UNIFESP/wiRedPanda.git

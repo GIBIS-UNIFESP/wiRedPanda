@@ -16,29 +16,17 @@ set(CMAKE_AUTORCC ON)
 
 if(EMSCRIPTEN)
     find_package(Qt6 6.9 REQUIRED COMPONENTS Core Gui PrintSupport Multimedia Widgets Svg Test)
-    set(QT_VERSION_MAJOR 6)
-    set(QT_LIBS Qt6::Core Qt6::Gui Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
 else()
-    find_package(Qt6 6.2 QUIET COMPONENTS Core Gui PrintSupport Multimedia Widgets Svg Test)
-    if(Qt6_FOUND)
-        set(QT_VERSION_MAJOR 6)
-        set(QT_LIBS Qt6::Core Qt6::Gui Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
-    else()
-        find_package(Qt5 5.15 REQUIRED COMPONENTS Core Gui PrintSupport Multimedia Widgets Svg Test)
-        set(QT_VERSION_MAJOR 5)
-        set(QT_LIBS Qt5::Core Qt5::Gui Qt5::PrintSupport Qt5::Multimedia Qt5::Widgets Qt5::Svg Qt5::Test)
-    endif()
+    find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui PrintSupport Multimedia Widgets Svg Test)
 endif()
 
-if((QT_VERSION_MAJOR EQUAL 5 AND Qt5_VERSION VERSION_LESS 5.15) OR
-   (QT_VERSION_MAJOR EQUAL 6 AND Qt6_VERSION VERSION_LESS 6.2))
-    message(FATAL_ERROR "Minimum required Qt version is 5.15 for Qt5 or 6.2 for Qt6.")
-endif()
+set(QT_VERSION_MAJOR 6)
+set(QT_LIBS Qt6::Core Qt6::Gui Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
 
 add_compile_definitions(
     APP_VERSION="${PROJECT_VERSION}"
     QT_DEPRECATED_WARNINGS
-    QT_DISABLE_DEPRECATED_BEFORE=0x060000
+    QT_DISABLE_DEPRECATED_BEFORE=0x060200
     QT_MESSAGELOGCONTEXT
 )
 
@@ -104,11 +92,7 @@ if(NOT MSVC)
     endif()
 endif()
 
-if(QT_VERSION_MAJOR EQUAL 5)
-    set(CMAKE_OSX_ARCHITECTURES x86_64)
-else()
-    set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
-endif()
+set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 
 # WebAssembly specific configuration
 if(EMSCRIPTEN)
@@ -131,43 +115,23 @@ file(GLOB_RECURSE TS_FILES App/Resources/Translations/wpanda_*.ts)
 set(QM_FILES)
 
 # Create QM files in source directory so QRC can find them
-if(QT_VERSION_MAJOR EQUAL 5)
-    find_package(Qt5LinguistTools QUIET)
-    if(Qt5LinguistTools_FOUND)
-        foreach(ts_file ${TS_FILES})
-            get_filename_component(qm_file ${ts_file} NAME_WE)
-            get_filename_component(ts_dir ${ts_file} DIRECTORY)
-            set(qm_path ${ts_dir}/${qm_file}.qm)
-            add_custom_command(
-                OUTPUT ${qm_path}
-                COMMAND ${Qt5_LRELEASE_EXECUTABLE} ${ts_file} -qm ${qm_path}
-                DEPENDS ${ts_file}
-                COMMENT "Compiling ${qm_file}.qm"
-                VERBATIM
-            )
-            list(APPEND QM_FILES ${qm_path})
-        endforeach()
-    endif()
-    qt5_add_resources(RESOURCES_RCC ${RESOURCES})
-else()
-    find_package(Qt6LinguistTools QUIET)
-    if(Qt6LinguistTools_FOUND)
-        foreach(ts_file ${TS_FILES})
-            get_filename_component(qm_file ${ts_file} NAME_WE)
-            get_filename_component(ts_dir ${ts_file} DIRECTORY)
-            set(qm_path ${ts_dir}/${qm_file}.qm)
-            add_custom_command(
-                OUTPUT ${qm_path}
-                COMMAND Qt6::lrelease ${ts_file} -qm ${qm_path}
-                DEPENDS ${ts_file}
-                COMMENT "Compiling ${qm_file}.qm"
-                VERBATIM
-            )
-            list(APPEND QM_FILES ${qm_path})
-        endforeach()
-    endif()
-    qt6_add_resources(RESOURCES_RCC ${RESOURCES})
+find_package(Qt6LinguistTools QUIET)
+if(Qt6LinguistTools_FOUND)
+    foreach(ts_file ${TS_FILES})
+        get_filename_component(qm_file ${ts_file} NAME_WE)
+        get_filename_component(ts_dir ${ts_file} DIRECTORY)
+        set(qm_path ${ts_dir}/${qm_file}.qm)
+        add_custom_command(
+            OUTPUT ${qm_path}
+            COMMAND Qt6::lrelease ${ts_file} -qm ${qm_path}
+            DEPENDS ${ts_file}
+            COMMENT "Compiling ${qm_file}.qm"
+            VERBATIM
+        )
+        list(APPEND QM_FILES ${qm_path})
+    endforeach()
 endif()
+qt6_add_resources(RESOURCES_RCC ${RESOURCES})
 
 include_directories(
     ${CMAKE_BINARY_DIR}
@@ -180,21 +144,13 @@ include_directories(
 file(GLOB_RECURSE TS_FILES App/Resources/Translations/wpanda_*.ts)
 
 # Custom targets for translation management
-if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
+if(Qt6LinguistTools_FOUND)
     # Custom target to update translation source files
-    if(QT_VERSION_MAJOR EQUAL 5)
-        add_custom_target(lupdate
-            COMMAND Qt5::lupdate -tr-function-alias tr+=PANDACEPTION -extensions cpp,h,ui -I ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES}
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            COMMENT "Updating translation source files"
-        )
-    else()
-        add_custom_target(lupdate
-            COMMAND Qt6::lupdate -tr-function-alias tr+=PANDACEPTION -extensions cpp,h,ui -I ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES}
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            COMMENT "Updating translation source files"
-        )
-    endif()
+    add_custom_target(lupdate
+        COMMAND Qt6::lupdate -tr-function-alias tr+=PANDACEPTION -extensions cpp,h,ui -I ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Updating translation source files"
+    )
 
     # Custom target to compile translation files
     add_custom_target(lrelease
@@ -322,7 +278,7 @@ if(WIN32)
 endif()
 
 # Ensure translations are compiled before building the main executable
-if(Qt5LinguistTools_FOUND OR Qt6LinguistTools_FOUND)
+if(Qt6LinguistTools_FOUND)
     add_dependencies(wiredpanda lrelease)
 endif()
 

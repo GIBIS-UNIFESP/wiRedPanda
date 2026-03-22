@@ -94,7 +94,7 @@
             "generator": "Visual Studio 17 2022",
             "binaryDir": "build",
             "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "C:/Qt/6.9.2/msvc2022_64",
+                "CMAKE_PREFIX_PATH": "C:/Qt/6.9.3/msvc2022_64",
                 "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
             },

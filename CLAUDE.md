@@ -174,7 +174,7 @@ The simulation accurately represents **ideal digital logic behavior** while deli
 - **Ubuntu 22.04 LTS** based development environment
 - **Location**: `.devcontainer/` directory with full configuration
 - **Features**:
-  - Qt 5.15 development environment
+  - Qt 6.2+ development environment
   - CMake and build tools pre-configured
   - VS Code extensions for C++/Qt development
 - **Usage**: Open project in VS Code and select "Reopen in Container"

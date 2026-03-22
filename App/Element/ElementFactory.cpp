@@ -90,15 +90,6 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
     // Each GraphicElement subclass is registered with Q_DECLARE_METATYPE and
     // qRegisterMetaType so that QMetaType can instantiate it by name without a
     // manual switch/case.  typeToText() produces the exact string used at registration.
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    const int id = QMetaType::type(typeToText(type).toLatin1());
-
-    if (id == QMetaType::UnknownType) {
-        throw PANDACEPTION("Unknown type: %1", typeToText(type));
-    }
-
-    auto *elm = static_cast<GraphicElement *>(QMetaType::create(id));
-#else
     // Qt 6 replaced the integer-based API with QMetaType value objects.
     const auto metaType = QMetaType::fromName(typeToText(type).toLatin1());
 
@@ -107,7 +98,6 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
     }
 
     auto *elm = static_cast<GraphicElement *>(metaType.create());
-#endif
 
     return elm;
 }

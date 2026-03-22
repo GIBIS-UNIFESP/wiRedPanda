@@ -1522,11 +1522,7 @@ QString MainWindow::getLanguageDisplayName(const QString &langCode) const
 
     // If we have a country-specific variant, add the country name
     if (langCode.contains('_') || langCode == "pt_BR") {
-#if QT_VERSION < QT_VERSION_CHECK(6, 2, 0)
-        QString nativeCountryName = locale.nativeCountryName();
-#else
         QString nativeCountryName = locale.nativeTerritoryName();
-#endif
         if (!nativeCountryName.isEmpty() && nativeCountryName != nativeName) {
             nativeName += QString(" (%1)").arg(nativeCountryName);
         }
@@ -1606,11 +1602,7 @@ QString MainWindow::getLanguageFlagIcon(const QString &langCode) const
     };
 
     // Get the flag for the locale's country
-#if QT_VERSION < QT_VERSION_CHECK(6, 2, 0)
-    QString flagIcon = countryToFlag.value(locale.country(), ":/Interface/Locale/default.svg");
-#else
     QString flagIcon = countryToFlag.value(locale.territory(), ":/Interface/Locale/default.svg");
-#endif
 
     // Fallback for languages where Qt might not detect the country correctly
     if (flagIcon == ":/Interface/Locale/default.svg") {

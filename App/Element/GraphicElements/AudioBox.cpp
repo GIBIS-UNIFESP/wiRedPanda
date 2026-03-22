@@ -3,15 +3,11 @@
 
 #include "App/Element/GraphicElements/AudioBox.h"
 
-#include "App/GlobalProperties.h"
-#include "App/Nodes/QNEPort.h"
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QAudioDeviceInfo>
-#else
 #include <QAudioDevice>
 #include <QMediaDevices>
-#endif
+
+#include "App/GlobalProperties.h"
+#include "App/Nodes/QNEPort.h"
 
 AudioBox::AudioBox(QGraphicsItem *parent)
     : GraphicElement(ElementType::AudioBox, ElementGroup::Output, ":/Components/Output/AudioBox/audioboxOff.svg", tr("Audio Box"), tr("Audio Box"), 1, 1, 0, 0, parent)
@@ -36,19 +32,11 @@ AudioBox::AudioBox(QGraphicsItem *parent)
     setHasLabel(true);
     setRotatable(true);
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_hasOutputDevice = !QAudioDeviceInfo::defaultOutputDevice().deviceName().isEmpty();
-#else
     m_hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
-#endif
 
     if (m_hasOutputDevice) {
         m_player = new QMediaPlayer(this);
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        m_playlist = new QMediaPlaylist(this);
-#else
         m_audioOutput = new QAudioOutput(this);
-#endif
         m_audio = new QFileInfo();
         AudioBox::setAudio("qrc:/Components/Output/Audio/wiredpanda.wav");
     }
@@ -74,19 +62,10 @@ void AudioBox::setAudio(const QString &audioPath)
 
     m_audio->setFile(audioPath);
 
-    // Volume is set at 50% (Qt5: integer 0-100, Qt6: float 0.0-1.0)
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_player->setVolume(50);
-    m_playlist->clear();
-    m_playlist->addMedia(QUrl(audioPath));
-    m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
-    m_player->setPlaylist(m_playlist);
-#else
     m_audioOutput->setVolume(0.5f);
     m_player->setAudioOutput(m_audioOutput);
     m_player->setSource(QUrl(audioPath));
     m_player->setLoops(QMediaPlayer::Infinite);
-#endif
 
     // If already playing, restart playback with the new audio immediately
     if (m_isPlaying) {
@@ -105,11 +84,7 @@ void AudioBox::mute(const bool mute)
         return;
     }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_player->setMuted(mute);
-#else
     m_audioOutput->setMuted(mute);
-#endif
 }
 
 void AudioBox::play()
