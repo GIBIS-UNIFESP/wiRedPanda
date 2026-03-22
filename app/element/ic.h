@@ -23,8 +23,6 @@ public:
     static void copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath);
 
     const QVector<std::shared_ptr<LogicElement>> generateMap();
-    LogicElement *inputLogic(const int index);
-    LogicElement *outputLogic(const int index);
     void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
     void loadFile(const QString &fileName);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
@@ -52,6 +50,8 @@ private:
     inline static QString srcPath_;
     inline static bool needToCopyFiles = false;
 
+    LogicElement *inputLogic(int index);
+    LogicElement *outputLogic(int index);
     void copyFile();
     void generatePixmap();
     void loadInputElement(GraphicElement *elm);
