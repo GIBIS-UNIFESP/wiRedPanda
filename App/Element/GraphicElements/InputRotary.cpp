@@ -294,7 +294,7 @@ void InputRotary::setSkin(const bool defaultSkin, const QString &fileName)
 
 int InputRotary::outputSize() const
 {
-    return outputs().size();
+    return static_cast<int>(outputs().size());
 }
 
 int InputRotary::outputValue() const

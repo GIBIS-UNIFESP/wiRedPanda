@@ -111,9 +111,9 @@ void IC::loadInputs()
 {
     // Lock port count to exactly the number of inputs found in the sub-circuit file;
     // min == max == actual count prevents the user from adding/removing IC input ports
-    setMaxInputSize(m_icInputs.size());
-    setMinInputSize(m_icInputs.size());
-    setInputSize(m_icInputs.size());
+    setMaxInputSize(static_cast<int>(m_icInputs.size()));
+    setMinInputSize(static_cast<int>(m_icInputs.size()));
+    setInputSize(static_cast<int>(m_icInputs.size()));
     qCDebug(three) << "IC " << m_file << " -> Inputs. min: " << minInputSize() << ", max: " << maxInputSize() << ", current: " << inputSize() << ", m_inputs: " << m_inputPorts.size();
 
     // Mirror the required/default-status from the sub-circuit's input elements so that
@@ -131,9 +131,9 @@ void IC::loadOutputs()
 {
     // Same port-count locking as loadInputs; outputs are always driven so
     // required/defaultStatus mirroring is not needed here
-    setMaxOutputSize(m_icOutputs.size());
-    setMinOutputSize(m_icOutputs.size());
-    setOutputSize(m_icOutputs.size());
+    setMaxOutputSize(static_cast<int>(m_icOutputs.size()));
+    setMinOutputSize(static_cast<int>(m_icOutputs.size()));
+    setOutputSize(static_cast<int>(m_icOutputs.size()));
 
     for (int outputIndex = 0; outputIndex < m_icOutputs.size(); ++outputIndex) {
         auto *outPort = outputPort(outputIndex);
