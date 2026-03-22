@@ -571,3 +571,8 @@ void IC::setOutputPortName(int port, const QString &name)
     }
 }
 
+void IC::loadFromDrop(const QString &fileName)
+{
+    loadFile(fileName);
+}
+

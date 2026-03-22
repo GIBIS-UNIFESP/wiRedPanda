@@ -90,6 +90,7 @@ public:
      * \param name New port name.
      */
     void setOutputPortName(int port, const QString &name) override;
+    void loadFromDrop(const QString &fileName) override;
 
     // --- Visual ---
 

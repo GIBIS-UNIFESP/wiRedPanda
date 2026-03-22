@@ -326,6 +326,9 @@ public:
     /// Sets the name of output \a port to \a name (only for elements that support it).
     virtual void setOutputPortName(int port, const QString &name);
 
+    /// Polymorphic interface for drag-drop initialization (replaces elementType() == IC checks).
+    virtual void loadFromDrop(const QString &fileName);
+
     // --- Virtual Methods ---
 
     /// Returns a string encoding element-specific properties for serialization or display.
