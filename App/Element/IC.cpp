@@ -6,6 +6,8 @@
 #include <QDir>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+#include <QScopeGuard>
+#include <QSet>
 #include <QStyleOptionGraphicsItem>
 
 #include "App/Core/Application.h"
@@ -145,6 +147,9 @@ void IC::loadOutputs()
     qCDebug(three) << "IC " << m_file << " -> Outputs. min: " << minOutputSize() << ", max: " << maxOutputSize() << ", current: " << outputSize() << ", m_outputs: " << m_outputPorts.size();
 }
 
+/// Files currently being loaded (cycle detection for circular IC references).
+static QSet<QString> s_loadingFiles;
+
 void IC::loadFile(const QString &fileName)
 {
     qCDebug(zero) << "Reading IC.";
@@ -172,6 +177,15 @@ void IC::loadFile(const QString &fileName)
     if (!fileInfo.exists() || !fileInfo.isFile()) {
         throw PANDACEPTION("%1 not found.", fileInfo.absoluteFilePath());
     }
+
+    // Cycle detection: if this file is already being loaded up the call stack,
+    // a circular IC reference exists (A→B→A→…). Throw instead of stack-overflowing.
+    const QString canonicalPath = fileInfo.canonicalFilePath();
+    if (s_loadingFiles.contains(canonicalPath)) {
+        throw PANDACEPTION("Circular IC reference detected: %1", canonicalPath);
+    }
+    s_loadingFiles.insert(canonicalPath);
+    auto removeGuard = qScopeGuard([&] { s_loadingFiles.remove(canonicalPath); });
 
     // Register with the file watcher after resolution so the absolute path is used;
     // the watcher callback will trigger a reload if the file changes on disk
