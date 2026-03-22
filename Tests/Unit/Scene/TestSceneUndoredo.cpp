@@ -539,6 +539,54 @@ void TestSceneUndoredo::testDecreaseInputSizeRemovesConnection()
     QCOMPARE(elm->inputSize(), 2);
 }
 
+void TestSceneUndoredo::testDecreaseInputSizeMultipleConnections()
+{
+    Scene scene;
+
+    // AND gate with 4 inputs, switches connected to ports 2 and 3
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
+    scene.addItem(andGate);
+    scene.addItem(sw1);
+    scene.addItem(sw2);
+    const int andId = andGate->id();
+
+    andGate->setInputSize(4);
+    QCOMPARE(andGate->inputSize(), 4);
+
+    auto *conn1 = new QNEConnection();
+    conn1->setStartPort(sw1->outputPort(0));
+    conn1->setEndPort(andGate->inputPort(2));
+    scene.addItem(conn1);
+
+    auto *conn2 = new QNEConnection();
+    conn2->setStartPort(sw2->outputPort(0));
+    conn2->setEndPort(andGate->inputPort(3));
+    scene.addItem(conn2);
+
+    QVERIFY(!andGate->inputPort(2)->connections().isEmpty());
+    QVERIFY(!andGate->inputPort(3)->connections().isEmpty());
+
+    // Reduce from 4 to 2 — removes both connections
+    scene.undoStack()->push(new ChangeInputSizeCommand({andGate}, 2, &scene));
+
+    auto *elm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId));
+    QCOMPARE(elm->inputSize(), 2);
+
+    // Undo — both connections restored
+    scene.undoStack()->undo();
+    elm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId));
+    QCOMPARE(elm->inputSize(), 4);
+    QVERIFY(!elm->inputPort(2)->connections().isEmpty());
+    QVERIFY(!elm->inputPort(3)->connections().isEmpty());
+
+    // Redo — back to 2
+    scene.undoStack()->redo();
+    elm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId));
+    QCOMPARE(elm->inputSize(), 2);
+}
+
 // ─── ChangeOutputSizeCommand ──────────────────────────────────────────────
 
 void TestSceneUndoredo::testChangeOutputSizeUndoRedo()
@@ -566,6 +614,52 @@ void TestSceneUndoredo::testChangeOutputSizeUndoRedo()
 
     scene.undoStack()->redo();
     QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id))->outputSize(), 2);
+}
+
+void TestSceneUndoredo::testChangeOutputSizeMultipleElements()
+{
+    Scene scene;
+
+    // Two demuxes: one with a connection on port 2, one without
+    auto *demux1 = ElementFactory::buildElement(ElementType::Demux);
+    auto *demux2 = ElementFactory::buildElement(ElementType::Demux);
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    scene.addItem(demux1);
+    scene.addItem(demux2);
+    scene.addItem(led);
+    const int id1 = demux1->id();
+    const int id2 = demux2->id();
+
+    demux1->setOutputSize(4);
+    demux2->setOutputSize(4);
+
+    // Connect only demux1's port 2 to LED
+    auto *conn = new QNEConnection();
+    conn->setStartPort(demux1->outputPort(2));
+    conn->setEndPort(led->inputPort(0));
+    scene.addItem(conn);
+
+    QVERIFY(!demux1->outputPort(2)->connections().isEmpty());
+    QVERIFY(demux2->outputPort(2)->connections().isEmpty());
+
+    // Reduce both from 4 to 2 — demux1 loses 1 connection, demux2 loses 0
+    scene.undoStack()->push(new ChangeOutputSizeCommand({demux1, demux2}, 2, &scene));
+
+    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1))->outputSize(), 2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2))->outputSize(), 2);
+
+    // Undo — both restored to 4, demux1's connection restored
+    scene.undoStack()->undo();
+    auto *elm1 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1));
+    auto *elm2 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2));
+    QCOMPARE(elm1->outputSize(), 4);
+    QCOMPARE(elm2->outputSize(), 4);
+    QVERIFY(!elm1->outputPort(2)->connections().isEmpty());
+
+    // Redo — back to 2
+    scene.undoStack()->redo();
+    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1))->outputSize(), 2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2))->outputSize(), 2);
 }
 
 // ─── SplitCommand ─────────────────────────────────────────────────────────
