@@ -38,5 +38,14 @@ private slots:
     void testICNestedCircuitPortMapping();
     void testICNestedCircuitSignalPropagation();
     void testICFileDependencyResolution();
+
+    // Cross-platform path resolution
+    void testICLoadWithRelativePath();
+    void testICLoadWithRelativeSubfolderPath();
+    void testICLoadWithSameOsAbsolutePath();
+    void testICLoadWithForeignAbsolutePathForwardSlash();
+    void testICLoadWithForeignAbsolutePathBackslash();
+    void testICLoadWithForeignAbsolutePathMixedSlashes();
+    void testICLoadWithNonExistentFileFallback();
 };
 

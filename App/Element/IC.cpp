@@ -67,9 +67,11 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVer
         // v1.2–4.0 stored the IC filename as a bare QString (could be absolute path in old files)
         stream >> m_file;
 
-        // For tests with old files containing absolute paths, strip to filename only
+        // For tests with old files containing absolute paths, strip to filename only.
+        // Normalize backslashes first — QFileInfo::fileName() doesn't treat '\' as a
+        // separator on Unix, so a Windows path like "C:\...\sub.panda" would be kept as-is.
         if (GlobalProperties::testMode) {
-            m_file = QFileInfo(m_file).fileName();
+            m_file = QFileInfo(QString(m_file).replace('\\', '/')).fileName();
         }
 
         if (IC::needToCopyFiles) {
@@ -157,13 +159,14 @@ void IC::loadFile(const QString &fileName)
 
     // --- Resolve file path ---
 
-    QFileInfo fileInfo;
+    // Try the full path combined with currentDir first (handles relative paths
+    // and same-OS absolute paths). If not found, fall back to just the filename
+    // resolved against currentDir — this handles cross-platform absolute paths
+    // from old .panda files (e.g. a Windows "C:\...\sub.panda" opened on Linux).
+    QFileInfo fileInfo(QDir(GlobalProperties::currentDir), fileName);
 
-    // Fix for double path concatenation bug: check if fileName is already absolute
-    if (QFileInfo(fileName).isAbsolute()) {
-        fileInfo.setFile(fileName);  // Use as-is if absolute path
-    } else {
-        fileInfo.setFile(QDir(GlobalProperties::currentDir), fileName);  // Combine if relative path
+    if (!fileInfo.exists() || !fileInfo.isFile()) {
+        fileInfo.setFile(QDir(GlobalProperties::currentDir), QFileInfo(QString(fileName).replace('\\', '/')).fileName());
     }
 
     if (!fileInfo.exists() || !fileInfo.isFile()) {

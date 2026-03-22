@@ -41,5 +41,13 @@ private slots:
 
     // Basic InputSwitch test (migrated from testelements)
     void testInputSwitch();
+
+    // Cross-platform path resolution
+    void testSkinWithRelativePath();
+    void testSkinWithSameOsAbsolutePath();
+    void testSkinWithForeignAbsolutePathForwardSlash();
+    void testSkinWithForeignAbsolutePathBackslash();
+    void testSkinWithForeignAbsolutePathMixedSlashes();
+    void testSkinWithNonExistentFileFallback();
 };
 

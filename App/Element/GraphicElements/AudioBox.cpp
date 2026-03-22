@@ -4,8 +4,10 @@
 #include "App/Element/GraphicElements/AudioBox.h"
 
 #include <QAudioDevice>
+#include <QDir>
 #include <QMediaDevices>
 
+#include "App/Core/Common.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
 
@@ -60,17 +62,41 @@ void AudioBox::setAudio(const QString &audioPath)
         return;
     }
 
-    // Always store the audio path for testability
-    m_audio.setFile(audioPath);
+    // Qt resource paths start with ":/"; anything else is a filesystem path
+    // relative to the project's working directory (where the .panda file lives).
+    // Try the path as-is against currentDir first; if not found, fall back to
+    // just the filename — handles cross-platform absolute paths from old files.
+    QString path = audioPath;
+    if (!path.startsWith(":/")) {
+        const QDir dir(GlobalProperties::currentDir);
+        const QString resolved = dir.filePath(path);
+
+        if (!QFileInfo::exists(resolved)) {
+            path = dir.filePath(QFileInfo(QString(path).replace('\\', '/')).fileName());
+        } else {
+            path = resolved;
+        }
+
+        const QFileInfo info(path);
+        if (!info.exists() || !info.isReadable()) {
+            const QString reason = !info.exists()
+                                       ? tr("File does not exist")
+                                       : tr("File is not readable");
+            qCDebug(zero) << "Problem loading audio path:" << path;
+            throw PANDACEPTION("Couldn't load audio: %1 (%2)", path, reason);
+        }
+    }
+
+    m_audio.setFile(path);
 
     // Only set up hardware if device is available
     if (!m_hasOutputDevice) {
         return;
     }
 
-    const QUrl mediaUrl = audioPath.startsWith(":/")
-        ? QUrl("qrc" + audioPath)
-        : QUrl::fromLocalFile(audioPath);
+    const QUrl mediaUrl = path.startsWith(":/")
+        ? QUrl("qrc" + path)
+        : QUrl::fromLocalFile(path);
 
     m_audioOutput->setVolume(0.5f);
     m_player->setAudioOutput(m_audioOutput);
@@ -145,8 +171,19 @@ void AudioBox::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
 
+    QString audioPath = m_audio.filePath();
+
+    // Store only the bare filename when the audio file lives inside the project
+    // directory, so the project remains portable across machines and platforms.
+    if (!audioPath.startsWith(":/")) {
+        QFileInfo info(audioPath);
+        if (info.absoluteDir() == QDir(GlobalProperties::currentDir)) {
+            audioPath = info.fileName();
+        }
+    }
+
     QMap<QString, QVariant> map;
-    map.insert("audiobox", m_audio.filePath());
+    map.insert("audiobox", audioPath);
 
     stream << map;
 }

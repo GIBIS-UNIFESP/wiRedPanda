@@ -103,8 +103,17 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
 
     // Qt resource paths start with ":/"; anything else is a filesystem path
     // relative to the project's working directory (where the .panda file lives).
+    // Try the path as-is against currentDir first; if not found, fall back to
+    // just the filename — handles cross-platform absolute paths from old files.
     if (not path.startsWith(":/")) {
-        path.prepend(GlobalProperties::currentDir + "/");
+        const QDir dir(GlobalProperties::currentDir);
+        const QString resolved = dir.filePath(path);
+
+        if (!QFileInfo::exists(resolved)) {
+            path = dir.filePath(QFileInfo(QString(path).replace('\\', '/')).fileName());
+        } else {
+            path = resolved;
+        }
     }
 
     if (!m_pixmap.load(path)) {
