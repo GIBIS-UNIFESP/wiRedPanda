@@ -21,7 +21,7 @@ This directory contains the configuration for a streamlined containerized develo
 ### Development Tools
 - **Build System**: CMake 3.22+ with Ninja generator
 - **Compiler**: GCC 11+ with C++20 support
-- **Qt Framework**: Qt 5.15 with core, widgets, multimedia, SVG modules
+- **Qt Framework**: Qt 6.2+ with core, widgets, multimedia, SVG modules
 - **Performance**: Mold linker and ccache for faster builds
 - **Shell**: Zsh with Oh My Zsh for enhanced terminal experience
 - **AI Assistant**: Claude Code CLI for AI-powered development assistance
@@ -96,7 +96,7 @@ The container is configured to run in **offscreen mode** automatically (via test
 - Try rebuilding: "Dev Containers: Rebuild Container"
 
 ### Build Failures
-- Check Qt installation: `qt5-qmake --version`
+- Check Qt installation: `qmake6 --version`
 - Verify CMake configuration: `cd build && cmake ..`
 - Clean build: `rm -rf build && mkdir build`
 
