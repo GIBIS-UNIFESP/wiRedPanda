@@ -83,6 +83,9 @@ private slots:
     // QUndoStack clean state (save-dirty tracking)
     void testUndoStackCleanState();
 
+    // Autosave context directory isolation
+    void testContextDirectoryPerTab();
+
 private:
     QTemporaryDir m_tempDir;
 };
