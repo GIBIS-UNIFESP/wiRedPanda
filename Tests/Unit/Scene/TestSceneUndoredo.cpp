@@ -9,6 +9,8 @@
 #include <QUndoCommand>
 
 #include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElements/Display14.h"
+#include "App/Element/GraphicElements/Display7.h"
 #include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
@@ -1062,6 +1064,207 @@ void TestSceneUndoredo::testMorphMultipleElements()
     scene.undoStack()->redo();
     QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId))->elementType(), ElementType::Xor);
     QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(orId))->elementType(), ElementType::Xor);
+}
+
+void TestSceneUndoredo::testMorphDisplay14ToDisplay7RemovesDanglingConnection()
+{
+    // Regression: morphing Display14 (15 inputs) to Display7 (8 inputs) must delete
+    // any QNEConnection whose target port no longer exists on the new element, and
+    // undo must restore that connection on the recreated Display14.
+    Scene scene;
+
+    auto *disp14 = new Display14();
+    auto *sw     = ElementFactory::buildElement(ElementType::InputSwitch);
+    scene.addItem(disp14);
+    scene.addItem(sw);
+    const int dispId = disp14->id();
+    const int swId   = sw->id();
+
+    // Display14 has 15 inputs (ports 0-14); connect to the last one
+    QCOMPARE(disp14->inputSize(), 15);
+    auto *conn = new QNEConnection();
+    conn->setStartPort(sw->outputPort(0));
+    conn->setEndPort(disp14->inputPort(14));
+    scene.addItem(conn);
+
+    QVERIFY(!disp14->inputPort(14)->connections().isEmpty());
+
+    auto countSceneConnections = [&]() {
+        int n = 0;
+        for (auto *item : scene.items()) {
+            if (qgraphicsitem_cast<QNEConnection *>(item)) { ++n; }
+        }
+        return n;
+    };
+    QCOMPARE(countSceneConnections(), 1);
+
+    // ── redo ──────────────────────────────────────────────────────────────
+    scene.undoStack()->push(new MorphCommand({disp14}, ElementType::Display7, &scene));
+
+    auto *disp7 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(dispId));
+    QVERIFY(disp7 != nullptr);
+    QCOMPARE(disp7->elementType(), ElementType::Display7);
+    QCOMPARE(disp7->inputSize(), 8);
+    QCOMPARE(countSceneConnections(), 0);
+    QVERIFY(sw->outputPort(0)->connections().isEmpty());
+
+    // ── undo: Display14 restored, wire on port 14 must come back ──────────
+    scene.undoStack()->undo();
+
+    auto *restored14 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(dispId));
+    QVERIFY(restored14 != nullptr);
+    QCOMPARE(restored14->elementType(), ElementType::Display14);
+    QCOMPARE(restored14->inputSize(), 15);
+    QCOMPARE(countSceneConnections(), 1);
+    QVERIFY(!restored14->inputPort(14)->connections().isEmpty());
+    QCOMPARE(restored14->inputPort(14)->connections().constFirst()->startPort()->graphicElement()->id(), swId);
+
+    // ── redo again: connection deleted once more, no dangling wire ─────────
+    scene.undoStack()->redo();
+
+    auto *redisp7 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(dispId));
+    QVERIFY(redisp7 != nullptr);
+    QCOMPARE(redisp7->elementType(), ElementType::Display7);
+    QCOMPARE(countSceneConnections(), 0);
+    for (auto *item : scene.items()) {
+        if (auto *c = qgraphicsitem_cast<QNEConnection *>(item)) {
+            QVERIFY(c->startPort() != nullptr);
+            QVERIFY(c->endPort()   != nullptr);
+        }
+    }
+}
+
+void TestSceneUndoredo::testMorphToFewerPortsAllDroppedConnectionsRemoved()
+{
+    // When morphing to an element with fewer ports, ALL connections on removed
+    // ports must be deleted, while connections on preserved ports are kept.
+    Scene scene;
+
+    auto *disp14 = new Display14();
+    scene.addItem(disp14);
+    const int dispId = disp14->id();
+    QCOMPARE(disp14->inputSize(), 15);
+
+    // Wire up three switches to three different ports:
+    //   sw0 → port 0  (preserved: Display7 also has port 0)
+    //   sw7 → port 7  (preserved: Display7 has ports 0-7)
+    //   sw14 → port 14 (dropped: Display7 only has ports 0-7)
+    auto *sw0  = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw7  = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw14 = ElementFactory::buildElement(ElementType::InputSwitch);
+    scene.addItem(sw0);
+    scene.addItem(sw7);
+    scene.addItem(sw14);
+
+    auto *c0 = new QNEConnection();
+    c0->setStartPort(sw0->outputPort(0));
+    c0->setEndPort(disp14->inputPort(0));
+    scene.addItem(c0);
+
+    auto *c7 = new QNEConnection();
+    c7->setStartPort(sw7->outputPort(0));
+    c7->setEndPort(disp14->inputPort(7));
+    scene.addItem(c7);
+
+    auto *c14 = new QNEConnection();
+    c14->setStartPort(sw14->outputPort(0));
+    c14->setEndPort(disp14->inputPort(14));
+    scene.addItem(c14);
+
+    auto countSceneConnections = [&]() {
+        int n = 0;
+        for (auto *item : scene.items()) {
+            if (qgraphicsitem_cast<QNEConnection *>(item)) {
+                ++n;
+            }
+        }
+        return n;
+    };
+    QCOMPARE(countSceneConnections(), 3);
+
+    const int sw0Id  = sw0->id();
+    const int sw7Id  = sw7->id();
+    const int sw14Id = sw14->id();
+
+    // ── redo ──────────────────────────────────────────────────────────────
+    scene.undoStack()->push(new MorphCommand({disp14}, ElementType::Display7, &scene));
+
+    auto *disp7 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(dispId));
+    QVERIFY(disp7 != nullptr);
+    QCOMPARE(disp7->elementType(), ElementType::Display7);
+    QCOMPARE(disp7->inputSize(), 8);
+
+    // Connections on ports 0 and 7 must survive; connection on port 14 must be gone
+    QCOMPARE(countSceneConnections(), 2);
+    QVERIFY(!disp7->inputPort(0)->connections().isEmpty());
+    QVERIFY(!disp7->inputPort(7)->connections().isEmpty());
+    QVERIFY(sw14->outputPort(0)->connections().isEmpty());
+    for (auto *item : scene.items()) {
+        if (auto *c = qgraphicsitem_cast<QNEConnection *>(item)) {
+            QVERIFY(c->startPort() != nullptr);
+            QVERIFY(c->endPort()   != nullptr);
+        }
+    }
+
+    // ── undo: Display14 restored, all three connections must be back ───────
+    scene.undoStack()->undo();
+
+    auto *restored14 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(dispId));
+    QVERIFY(restored14 != nullptr);
+    QCOMPARE(restored14->elementType(), ElementType::Display14);
+    QCOMPARE(restored14->inputSize(), 15);
+    QCOMPARE(countSceneConnections(), 3);
+    QVERIFY(!restored14->inputPort(0)->connections().isEmpty());
+    QVERIFY(!restored14->inputPort(7)->connections().isEmpty());
+    QVERIFY(!restored14->inputPort(14)->connections().isEmpty());
+    QCOMPARE(restored14->inputPort(0)->connections().constFirst()->startPort()->graphicElement()->id(),  sw0Id);
+    QCOMPARE(restored14->inputPort(7)->connections().constFirst()->startPort()->graphicElement()->id(),  sw7Id);
+    QCOMPARE(restored14->inputPort(14)->connections().constFirst()->startPort()->graphicElement()->id(), sw14Id);
+}
+
+void TestSceneUndoredo::testMorphUndoRestoresConnectionWithOriginalId()
+{
+    // After MorphCommand::undo() restores a deleted connection, the connection must
+    // get back its original scene ID so that any undo command that stored that ID
+    // (e.g. DeleteItemsCommand) can still find it via scene->itemById().
+    Scene scene;
+
+    auto *disp14 = new Display14();
+    auto *sw     = ElementFactory::buildElement(ElementType::InputSwitch);
+    scene.addItem(disp14);
+    scene.addItem(sw);
+    const int dispId = disp14->id();
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(sw->outputPort(0));
+    conn->setEndPort(disp14->inputPort(14));
+    scene.addItem(conn);
+    const int originalConnId = conn->id();
+    QVERIFY(originalConnId > 0);
+
+    // Morph Display14 → Display7: connection on port 14 is deleted
+    scene.undoStack()->push(new MorphCommand({disp14}, ElementType::Display7, &scene));
+    QVERIFY(ElementFactory::itemById(originalConnId) == nullptr);
+
+    // Undo: connection must come back with its original ID
+    scene.undoStack()->undo();
+
+    auto *restored14 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(dispId));
+    QVERIFY(restored14 != nullptr);
+    QCOMPARE(restored14->elementType(), ElementType::Display14);
+
+    auto *restoredConn = dynamic_cast<QNEConnection *>(ElementFactory::itemById(originalConnId));
+    QVERIFY2(restoredConn != nullptr, "Connection must be findable by its original ID after undo");
+    QCOMPARE(restoredConn->endPort()->graphicElement()->id(), dispId);
+    QCOMPARE(restoredConn->endPort()->index(), 14);
+
+    // Redo: connection deleted again, same original ID slot freed
+    scene.undoStack()->redo();
+    QVERIFY(ElementFactory::itemById(originalConnId) == nullptr);
+
+    // Undo once more: ID is stable across repeated undo/redo cycles
+    scene.undoStack()->undo();
+    QVERIFY2(ElementFactory::itemById(originalConnId) != nullptr, "ID must be stable across undo/redo cycles");
 }
 
 // ─── QUndoStack clean state ───────────────────────────────────────────────
