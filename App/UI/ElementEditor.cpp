@@ -944,7 +944,7 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
                     return elm1->pos().rx() < elm2->pos().rx();
                 });
 
-                const int elmPos = elements.indexOf(elm);
+                const int elmPos = static_cast<int>(elements.indexOf(elm));
                 qCDebug(zero) << "Pos = " << elmPos << " from " << elements.size();
                 int step = 1;
 
@@ -957,12 +957,12 @@ bool ElementEditor::eventFilter(QObject *obj, QEvent *event)
                 // setCurrentElements() potentially hides/disables it.
                 auto *widget = qobject_cast<QWidget *>(obj);
                 // +elements.size() before the mod avoids negative modulo for step=-1.
-                int pos = (elements.size() + elmPos + step) % elements.size();
+                int pos = static_cast<int>((elements.size() + elmPos + step) % elements.size());
 
                 // Advance until we find an element whose editor field is actually
                 // enabled (some elements don't expose the field that currently
                 // has focus, so we skip them).
-                for (; pos != elmPos; pos = ((elements.size() + pos + step) % elements.size())) {
+                for (; pos != elmPos; pos = static_cast<int>((elements.size() + pos + step) % elements.size())) {
                     qCDebug(zero) << "Pos = " << pos;
                     elm = elements.at(pos);
 

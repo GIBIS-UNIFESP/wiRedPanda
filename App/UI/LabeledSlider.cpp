@@ -81,7 +81,7 @@ void LabeledSlider::paintEvent(QPaintEvent *event)
             } else if (periodFraction == -0.5f) {
                 labelText = "-1/2";
             } else {
-                labelText = QString::number(periodFraction, 'f', 3);
+                labelText = QString::number(static_cast<double>(periodFraction), 'f', 3);
             }
 
             const QFontMetrics metrics(font());

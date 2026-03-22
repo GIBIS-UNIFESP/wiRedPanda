@@ -94,7 +94,7 @@ int Led::colorIndex()
     std::bitset<4> indexBit;
 
     for (int i = 0; i < inputSize(); ++i) {
-        indexBit[static_cast<std::size_t>(i)] = static_cast<bool>(inputPort(i)->status() == Status::Active);
+        indexBit[static_cast<std::size_t>(i)] = (inputPort(i)->status() == Status::Active);
     }
 
     const int index = static_cast<int>(indexBit.to_ulong());

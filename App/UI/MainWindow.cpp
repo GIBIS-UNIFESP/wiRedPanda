@@ -793,7 +793,7 @@ void MainWindow::updateICList()
 
         // Skip hidden files (names starting with '.') — these are typically
         // autosave/temporary files, not user-created ICs.
-        for (int i = files.size() - 1; i >= 0; --i) {
+        for (int i = static_cast<int>(files.size()) - 1; i >= 0; --i) {
             if (files.at(i).at(0) == '.') {
                 files.removeAt(i);
             }
@@ -1181,7 +1181,7 @@ void MainWindow::zoomChanged()
 void MainWindow::updateRecentFileActions()
 {
     const auto files = m_recentFiles->recentFiles();
-    const int numRecentFiles = qMin(files.size(), GlobalProperties::maxRecentFiles);
+    const int numRecentFiles = static_cast<int>(qMin(files.size(), GlobalProperties::maxRecentFiles));
 
     if (numRecentFiles > 0) {
         m_ui->menuRecentFiles->setEnabled(true);
