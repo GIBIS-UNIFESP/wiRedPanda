@@ -52,8 +52,8 @@ public:
     QFileInfo fileInfo();
     /// Loads a circuit from the file at \a fileName.
     void load(const QString &fileName);
-    /// Loads a circuit from \a stream using the given format \a number.
-    void load(QDataStream &stream, QVersionNumber number);
+    /// Loads a circuit from \a stream using the given format \a version.
+    void load(QDataStream &stream, const QVersionNumber &version);
     /// Saves the current circuit to \a fileName.
     void save(const QString &fileName);
     /// Saves the current circuit to \a stream.

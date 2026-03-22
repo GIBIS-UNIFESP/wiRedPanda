@@ -602,7 +602,7 @@ QList<QGraphicsItem *> Scene::items(Qt::SortOrder order) const
     return QGraphicsScene::items(order);
 }
 
-QList<QGraphicsItem *> Scene::items(const QPointF &pos, Qt::ItemSelectionMode mode, Qt::SortOrder order, const QTransform &deviceTransform) const
+QList<QGraphicsItem *> Scene::items(QPointF pos, Qt::ItemSelectionMode mode, Qt::SortOrder order, const QTransform &deviceTransform) const
 {
     return QGraphicsScene::items(pos, mode, order, deviceTransform);
 }
@@ -945,7 +945,7 @@ void Scene::pasteAction()
     }
 }
 
-void Scene::paste(QDataStream &stream, QVersionNumber version)
+void Scene::paste(QDataStream &stream, const QVersionNumber &version)
 {
     clearSelection();
 
@@ -1206,7 +1206,7 @@ bool Scene::eventFilter(QObject *watched, QEvent *event)
         // path instead, which is what users expect from a design tool.
         if (mouseEvent->modifiers().testFlag(Qt::ShiftModifier)) {
             mouseEvent->setModifiers(Qt::ControlModifier);
-            return false;
+            return QGraphicsScene::eventFilter(watched, event);
         }
 
         // Intercept Ctrl+Left-click on an element to begin a clone-drag instead of

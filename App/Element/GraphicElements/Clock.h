@@ -54,9 +54,9 @@ public:
     // --- Simulation ---
 
     /// Resets the clock phase reference to \a globalTime.
-    void resetClock(const std::chrono::steady_clock::time_point &globalTime);
+    void resetClock(std::chrono::steady_clock::time_point globalTime);
     /// Advances the clock state based on elapsed time since \a globalTime.
-    void updateClock(const std::chrono::steady_clock::time_point &globalTime);
+    void updateClock(std::chrono::steady_clock::time_point globalTime);
 
     // --- Visual ---
 
