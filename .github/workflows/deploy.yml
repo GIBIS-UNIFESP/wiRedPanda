@@ -129,6 +129,8 @@ jobs:
         cp build/crashpad_handler appimage/usr/bin/
         cp thirdparty/sentry/lib/libsentry.so appimage/usr/lib/
 
+        cp -r Examples appimage/usr/share/wiredpanda/Examples
+
         cp App/Resources/Freedesktop/wiredpanda.desktop appimage/usr/share/applications/wiredpanda.desktop
         sed -i "s/@VERSION@/$VERSION/g;s/@PROJECT_VERSION@/$VERSION/g" appimage/usr/share/applications/wiredpanda.desktop
 
@@ -252,6 +254,13 @@ jobs:
         # Check dependencies are reasonable
         echo "✓ Executable dependencies (sample):"
         ldd squashfs-root/usr/bin/wiredpanda | head -10 | grep -v "not found" || echo "Some dependencies missing (may be normal)"
+
+        if [ -d "squashfs-root/usr/share/wiredpanda/Examples" ]; then
+          EXAMPLE_COUNT=$(find squashfs-root/usr/share/wiredpanda/Examples -name "*.panda" | wc -l)
+          echo "✓ Examples directory present with $EXAMPLE_COUNT files"
+        else
+          echo "Warning: Examples directory missing"
+        fi
 
         echo "AppImage build quality validation completed successfully"
 
@@ -466,8 +475,10 @@ jobs:
         cmake --build --preset sentry-breakpad
         mkdir -p build/wiredpanda.app/Contents/MacOS
         mkdir -p build/wiredpanda.app/Contents/Frameworks
+        mkdir -p build/wiredpanda.app/Contents/Resources
         # Copy the main executable to the app bundle
         cp build/wiredpanda build/wiredpanda.app/Contents/MacOS/
+        cp -r Examples build/wiredpanda.app/Contents/Resources/Examples
         # Note: breakpad backend doesn't generate crashpad_handler (in-process crash handling)
         cp thirdparty/sentry/lib/libsentry.dylib build/wiredpanda.app/Contents/Frameworks/
 
@@ -579,6 +590,14 @@ jobs:
         if [ ! -f "build/wiredpanda.app/Contents/MacOS/wiredpanda" ]; then
           echo "Error: wiredpanda executable not found in app bundle"
           exit 1
+        fi
+
+        # Verify Examples are included in app bundle
+        if [ -d "build/wiredpanda.app/Contents/Resources/Examples" ]; then
+          EXAMPLE_COUNT=$(find build/wiredpanda.app/Contents/Resources/Examples -name "*.panda" | wc -l)
+          echo "✓ Examples directory present with $EXAMPLE_COUNT files"
+        else
+          echo "Warning: Examples directory missing from app bundle"
         fi
 
         # Verify required Sentry files are included (breakpad backend)
