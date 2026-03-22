@@ -308,6 +308,11 @@ void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     qApp->mainWindow()->loadPandaFile(m_file);
 }
 
+QRectF IC::boundingRect() const
+{
+    return portsBoundingRect().united(QRectF(0, 0, 64, 64));
+}
+
 void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(widget)
@@ -317,7 +322,7 @@ void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidge
         painter->save();
         painter->setBrush(m_selectionBrush);
         painter->setPen(QPen(m_selectionPen, 0.5, Qt::SolidLine));
-        painter->drawRoundedRect(portsBoundingRect().united(QRectF(0, 0, 64, 64)), 5, 5);
+        painter->drawRoundedRect(boundingRect(), 5, 5);
         painter->restore();
     }
 

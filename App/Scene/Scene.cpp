@@ -1287,6 +1287,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     if (event->button() == Qt::RightButton) {
         contextMenu(event->screenPos());
+        return;
     }
 
     QGraphicsScene::mousePressEvent(event);
