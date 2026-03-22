@@ -864,11 +864,12 @@ void ChangeInputSizeCommand::redo()
         for (int port = m_newInputSize; port < elm->inputSize(); ++port) {
             while (!elm->inputPort(port)->connections().isEmpty()) {
                 auto *conn = elm->inputPort(port)->connections().constFirst();
+                stream << conn->id();
                 conn->save(stream);
+                conn->setStartPort(nullptr);
+                conn->setEndPort(nullptr);
                 m_scene->removeItem(conn);
-                auto *outputPort = conn->startPort();
-                elm->inputPort(port)->disconnect(conn);
-                outputPort->disconnect(conn);
+                delete conn;
             }
         }
 
@@ -905,8 +906,10 @@ void ChangeInputSizeCommand::undo()
     for (auto *elm : elements) {
         int connCount; stream >> connCount;
         for (int i = 0; i < connCount; ++i) {
+            int connId; stream >> connId;
             auto *conn = new QNEConnection();
             conn->load(stream, portMap);
+            ElementFactory::updateItemId(conn, connId);
             m_scene->addItem(conn);
         }
 
@@ -966,11 +969,12 @@ void ChangeOutputSizeCommand::redo()
         for (int port = m_newOutputSize; port < elm->outputSize(); ++port) {
             while (!elm->outputPort(port)->connections().isEmpty()) {
                 auto *conn = elm->outputPort(port)->connections().constFirst();
+                stream << conn->id();
                 conn->save(stream);
+                conn->setStartPort(nullptr);
+                conn->setEndPort(nullptr);
                 m_scene->removeItem(conn);
-                auto *inputPort = conn->endPort();
-                elm->outputPort(port)->disconnect(conn);
-                inputPort->disconnect(conn);
+                delete conn;
             }
         }
 
@@ -1005,8 +1009,10 @@ void ChangeOutputSizeCommand::undo()
     for (auto *elm : elements) {
         int connCount; stream >> connCount;
         for (int i = 0; i < connCount; ++i) {
+            int connId; stream >> connId;
             auto *conn = new QNEConnection();
             conn->load(stream, portMap);
+            ElementFactory::updateItemId(conn, connId);
             m_scene->addItem(conn);
         }
 
