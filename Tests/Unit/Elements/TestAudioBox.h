@@ -40,5 +40,14 @@ private slots:
     void testSaveAudioPath();
     void testLoadVersionOld();
     void testLoadVersionNew();
+
+    // Cross-platform path resolution
+    void testSetAudioWithRelativePath();
+    void testSetAudioWithSameOsAbsolutePath();
+    void testSetAudioWithForeignAbsolutePathForwardSlash();
+    void testSetAudioWithForeignAbsolutePathBackslash();
+    void testSetAudioWithForeignAbsolutePathMixedSlashes();
+    void testSetAudioWithNonExistentFileFallback();
+    void testSaveStoresFilenameOnlyInProjectDir();
 };
 
