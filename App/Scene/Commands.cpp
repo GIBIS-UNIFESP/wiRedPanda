@@ -696,6 +696,7 @@ void MorphCommand::transferConnections(const QList<GraphicElement *> &from, cons
                     auto *newPort = newElm->inputPort(port);
                     if (newPort) {
                         conn->setEndPort(newPort);
+                        conn->setHighLight(false);
                     } else {
                         // Port no longer exists on the morphed element — record before deleting
                         if (deleted && conn->startPort() && conn->startPort()->graphicElement()) {
@@ -717,6 +718,7 @@ void MorphCommand::transferConnections(const QList<GraphicElement *> &from, cons
                     auto *newPort = newElm->outputPort(port);
                     if (newPort) {
                         conn->setStartPort(newPort);
+                        conn->setHighLight(false);
                     } else {
                         // Port no longer exists on the morphed element — record before deleting
                         if (deleted && conn->endPort() && conn->endPort()->graphicElement()) {
