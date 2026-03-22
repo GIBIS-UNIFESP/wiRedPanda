@@ -159,12 +159,12 @@ void IC::loadFile(const QString &fileName)
 
     QFileInfo fileInfo;
 
-    // Fix for double path concatenation bug: check if fileName is already absolute
-    if (QFileInfo(fileName).isAbsolute()) {
-        fileInfo.setFile(fileName);  // Use as-is if absolute path
-    } else {
-        fileInfo.setFile(QDir(GlobalProperties::currentDir), fileName);  // Combine if relative path
-    }
+    // Always combine with currentDir for cross-platform compatibility.
+    // QFileInfo::isAbsolute() is not cross-platform: it only recognizes paths as absolute
+    // on the current OS. A Linux system cannot recognize Windows paths as absolute, causing
+    // incorrect resolution when loading files saved on a different platform. Since filenames
+    // are extracted from old files regardless of their original OS, always combine with currentDir.
+    fileInfo.setFile(QDir(GlobalProperties::currentDir), fileName);
 
     if (!fileInfo.exists() || !fileInfo.isFile()) {
         throw PANDACEPTION("%1 not found.", fileInfo.absoluteFilePath());
