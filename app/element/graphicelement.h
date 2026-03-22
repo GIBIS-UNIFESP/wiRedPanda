@@ -131,7 +131,6 @@ public:
     void setLabel(const QString &label);
     void setLogic(LogicElement *newLogic);
     void setOutputSize(const int size);
-    void setOutputs(const QVector<QNEOutputPort *> &outputs);
     void setPixmap(const QString &pixmapPath);
     void setPixmap(const int index);
     void setPortName(const QString &name);

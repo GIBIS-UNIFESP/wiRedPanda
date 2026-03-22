@@ -118,11 +118,6 @@ const QVector<QNEOutputPort *> &GraphicElement::outputs() const
     return m_outputPorts;
 }
 
-void GraphicElement::setOutputs(const QVector<QNEOutputPort *> &outputs)
-{
-    m_outputPorts = outputs;
-}
-
 QNEInputPort *GraphicElement::inputPort(const int index)
 {
     if (index < 0 || index >= m_inputPorts.size()) {
