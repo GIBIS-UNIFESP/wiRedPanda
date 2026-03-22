@@ -323,6 +323,12 @@ void WorkSpace::autosave()
     }
 
     QString autosaveFileName = m_autosaveFile.fileName();
+
+    // Save and restore currentDir so that autosaving to a temp directory does not
+    // leave GlobalProperties::currentDir pointing at the autosave location. Without
+    // this, IC relative-path resolution in other open workspaces would silently
+    // use the wrong base directory after the first autosave.
+    const QString savedCurrentDir = GlobalProperties::currentDir;
     GlobalProperties::currentDir = path.absolutePath();
 
     qCDebug(three) << "Writing to autosave file.";
@@ -330,6 +336,8 @@ void WorkSpace::autosave()
     Serialization::writePandaHeader(stream);
     save(stream);
     m_autosaveFile.close();
+
+    GlobalProperties::currentDir = savedCurrentDir;
 
     autosaves.append(autosaveFileName);
     Settings::setValue("autosaveFile", autosaves);
