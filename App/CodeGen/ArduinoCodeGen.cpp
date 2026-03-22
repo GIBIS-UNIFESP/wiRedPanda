@@ -56,7 +56,8 @@ static inline QString highLow(const Status val)
 
 QString ArduinoCodeGen::removeForbiddenChars(const QString &input)
 {
-    return input.toLower().trimmed().replace(' ', '_').replace('-', '_').replace(QRegularExpression("\\W"), "");
+    static const QRegularExpression re("\\W");
+    return input.toLower().trimmed().replace(' ', '_').replace('-', '_').remove(re);
 }
 
 QString ArduinoCodeGen::otherPortName(QNEPort *port)

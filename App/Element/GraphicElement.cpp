@@ -421,7 +421,7 @@ void GraphicElement::loadPos(QDataStream &stream)
     setPos(pos);
 }
 
-void GraphicElement::loadRotation(QDataStream &stream, const QVersionNumber version)
+void GraphicElement::loadRotation(QDataStream &stream, const QVersionNumber &version)
 {
     qreal angle; stream >> angle;
     m_angle = angle;
@@ -445,7 +445,7 @@ void GraphicElement::loadRotation(QDataStream &stream, const QVersionNumber vers
     }
 }
 
-void GraphicElement::loadLabel(QDataStream &stream, const QVersionNumber version)
+void GraphicElement::loadLabel(QDataStream &stream, const QVersionNumber &version)
 {
     if (version >= VERSION("1.2")) {
         QString labelText; stream >> labelText;
@@ -453,7 +453,7 @@ void GraphicElement::loadLabel(QDataStream &stream, const QVersionNumber version
     }
 }
 
-void GraphicElement::loadPortsSize(QDataStream &stream, const QVersionNumber version)
+void GraphicElement::loadPortsSize(QDataStream &stream, const QVersionNumber &version)
 {
     if (version >= VERSION("1.3")) {
         quint64 minInputSize;  stream >> minInputSize;
@@ -477,7 +477,7 @@ void GraphicElement::loadPortsSize(QDataStream &stream, const QVersionNumber ver
     }
 }
 
-void GraphicElement::loadTrigger(QDataStream &stream, const QVersionNumber version)
+void GraphicElement::loadTrigger(QDataStream &stream, const QVersionNumber &version)
 {
     if (version >= VERSION("1.9")) {
         QKeySequence trigger; stream >> trigger;
@@ -485,7 +485,7 @@ void GraphicElement::loadTrigger(QDataStream &stream, const QVersionNumber versi
     }
 }
 
-void GraphicElement::loadPriority(QDataStream &stream, const QVersionNumber version)
+void GraphicElement::loadPriority(QDataStream &stream, const QVersionNumber &version)
 {
     if (version >= VERSION("4.01")) {
         quint64 priority; stream >> priority;

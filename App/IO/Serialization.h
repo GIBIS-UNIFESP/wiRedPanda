@@ -45,12 +45,12 @@ public:
     // --- View Serialization ---
 
     /// Returns the canvas viewport rectangle from the last saved session.
-    static QRectF loadRect(QDataStream &stream, const QVersionNumber version);
+    static QRectF loadRect(QDataStream &stream, const QVersionNumber &version);
 
     // --- Waveform Serialization ---
 
     /// Returns the BeWavedDolphin waveform file name stored in \a stream at \a version.
-    static QString loadDolphinFileName(QDataStream &stream, const QVersionNumber version);
+    static QString loadDolphinFileName(QDataStream &stream, const QVersionNumber &version);
 
     // --- Utility ---
 
