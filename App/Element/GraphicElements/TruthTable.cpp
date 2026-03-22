@@ -28,7 +28,6 @@ TruthTable::TruthTable(QGraphicsItem *parent)
     m_key.resize(2048);
     m_key.fill(0);
     TruthTable::updatePortsProperties();
-    TruthTable::generatePixmap();
 }
 
 void TruthTable::updatePortsProperties()
@@ -82,6 +81,11 @@ void TruthTable::updatePortsProperties()
             ++index;
         }
     }
+
+    const qreal bottom = portsBoundingRect().united(QRectF(0, 0, 64, 64)).bottom();
+    m_label->setPos(30, bottom + 5);
+
+    generatePixmap();
 }
 
 void TruthTable::generatePixmap()
@@ -137,11 +141,6 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     Q_UNUSED(widget)
     Q_UNUSED(option)
 
-    // updatePortsProperties() is called here because port count can change between
-    // paints (e.g. via undo/redo), and port positions must be in sync before the
-    // body pixmap is regenerated below.
-    TruthTable::updatePortsProperties();
-
     if (isSelected()) {
         painter->save();
         painter->setBrush(m_selectionBrush);
@@ -151,12 +150,6 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
         painter->restore();
     }
 
-    // Reposition the label below the actual body (which may be taller than 64px with many ports)
-    const qreal bottom = portsBoundingRect().united(QRectF(0, 0, 64, 64)).bottom();
-    m_label->setPos(30, bottom + 5);
-
-    // Regenerate on every paint so the body height tracks the current port count
-    generatePixmap();
     painter->drawPixmap(boundingRect().topLeft(), pixmap());
 }
 
