@@ -165,6 +165,12 @@ void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &po
     quint64 ptr1; stream >> ptr1;
     quint64 ptr2; stream >> ptr2;
 
+    // Check stream integrity after reading port IDs
+    if (stream.status() != QDataStream::Ok) {
+        throw PANDACEPTION("Stream error reading connection port IDs at offset %1",
+                          stream.device()->pos());
+    }
+
     if (portMap.isEmpty()) {
         // No portMap means this is an in-process clipboard paste: the stored integers
         // ARE still valid pointer addresses because no process restart occurred.
