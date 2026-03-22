@@ -35,8 +35,31 @@ add_compile_definitions(
 
 if(MSVC)
     add_compile_options(/W4 /external:W0 /permissive-)
-else()
-    add_compile_options(-Wall -Wextra -Wpedantic)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(
+        -Wall -Wextra -Wpedantic
+        -Wconversion -Wsign-conversion
+        -Wshadow
+        -Wnon-virtual-dtor
+        -Woverloaded-virtual
+        -Wimplicit-fallthrough
+        -Wnull-dereference
+        -Wold-style-cast
+        -Wformat=2
+        -Wcast-align
+        -Wdouble-promotion
+        -Wundef
+        -Wextra-semi
+    )
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        add_compile_options(
+            -Wduplicated-cond
+            -Wduplicated-branches
+            -Wlogical-op
+            -Wuseless-cast
+            -Wsuggest-override
+        )
+    endif()
 endif()
 
 find_program(MOLD_BIN mold)

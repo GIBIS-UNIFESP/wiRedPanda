@@ -178,14 +178,14 @@ void Clock::resetClock(const std::chrono::steady_clock::time_point &globalTime)
     // Shifting m_startTime backward by the delay fraction effectively phase-shifts the waveform.
     // Full period is 2 * m_interval (since m_interval is the half-period).
     const auto fullPeriod = 2 * m_interval;
-    const auto delayMicroseconds = static_cast<std::chrono::microseconds::rep>(-m_delay * fullPeriod.count());
+    const auto delayMicroseconds = static_cast<std::chrono::microseconds::rep>(-m_delay * static_cast<double>(fullPeriod.count()));
     m_startTime = globalTime;
     m_startTime -= std::chrono::microseconds(delayMicroseconds);
 }
 
 QString Clock::genericProperties()
 {
-    return QString::number(frequency()) + " Hz";
+    return QString::number(static_cast<double>(frequency())) + " Hz";
 }
 
 void Clock::setSkin(const bool defaultSkin, const QString &fileName)

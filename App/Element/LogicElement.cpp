@@ -62,7 +62,7 @@ bool LogicElement::inFeedbackLoop() const
 
 int LogicElement::outputSize() const
 {
-    return m_outputValues.size();
+    return static_cast<int>(m_outputValues.size());
 }
 
 void LogicElement::connectPredecessor(const int index, LogicElement *logic, const int port)

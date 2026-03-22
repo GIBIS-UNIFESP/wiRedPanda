@@ -387,7 +387,7 @@ void BewavedDolphin::loadNewTable()
     // Rows = total signals (inputs + outputs); columns = simulation length in time steps.
     // inputLabels.size() is passed as the input count so SignalModel can distinguish
     // editable input rows from read-only output rows.
-    m_model = new SignalModel(inputLabels.size(), inputLabels.size() + outputLabels.size(), m_length, this);
+    m_model = new SignalModel(static_cast<int>(inputLabels.size()), static_cast<int>(inputLabels.size() + outputLabels.size()), m_length, this);
     m_signalTableView->setModel(m_model);
 
     // Input rows come first, then output rows — the split point is inputLabels.size()
@@ -553,11 +553,14 @@ void BewavedDolphin::restoreInputs()
     // boolean snapshot taken before the sweep; fine-grained per-port restore is not needed
     // because the live simulation re-computes port values on the next tick anyway.
     for (int index = 0; index < m_inputs.size(); ++index) {
-        for (int port = 0; port < m_inputs.value(index)->outputSize(); ++port) {
-            auto *input = m_inputs.at(index);
+        auto *input = m_inputs.at(index);
+        if (!input) {
+            continue;
+        }
+        for (int port = 0; port < input->outputSize(); ++port) {
             const bool oldValue = static_cast<bool>(m_oldInputValues.at(index));
 
-            if (m_inputs.value(index)->outputSize() > 1) {
+            if (input->outputSize() > 1) {
                 input->setOn(oldValue, port);
             } else {
                 input->setOn(oldValue);
@@ -775,7 +778,7 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
 
     stream << "\n";
 
-    for (int row = m_inputs.size(); row < m_model->rowCount(); ++row) {
+    for (int row = static_cast<int>(m_inputs.size()); row < m_model->rowCount(); ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
             stream << m_model->item(row, col)->text();
         }
@@ -1111,7 +1114,7 @@ void BewavedDolphin::copy(const QItemSelection &ranges, QDataStream &stream)
     const int firstRow = sectionFirstRow(ranges);
     const int firstCol = sectionFirstColumn(ranges);
     const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
-    stream << static_cast<qint64>(itemList.size());
+    stream << itemList.size();
 
     for (const auto &item : itemList) {
         const int row = item.row();
@@ -1482,7 +1485,7 @@ void BewavedDolphin::load(QFile &file)
     // Validate before indexing to avoid out-of-bounds access on corrupt files
     const int expectedSize = 2 + rows * cols;
     if (wordList.size() < expectedSize) {
-        throw PANDACEPTION("Invalid CSV format: expected %1 elements, got %2.", expectedSize, wordList.size());
+        throw PANDACEPTION("Invalid CSV format: expected %1 elements, got %2.", expectedSize, static_cast<int>(wordList.size()));
     }
 
     // Values are stored row-major in the CSV: index = 2 + row*cols + col

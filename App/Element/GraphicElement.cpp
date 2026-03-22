@@ -773,7 +773,7 @@ void GraphicElement::updatePortsProperties()
     if (!m_inputPorts.isEmpty()) {
         // Centre the port column vertically around y=32 (the mid-point of a 64 px body).
         // The first port starts at 32 - (count-1)*step so all ports are symmetrically distributed.
-        int y = 32 - (m_inputPorts.size() * step) + step;
+        int y = 32 - (static_cast<int>(m_inputPorts.size()) * step) + step;
 
         for (auto *port : std::as_const(m_inputPorts)) {
             qCDebug(five) << "Setting input at " << 0 << ", " << y;
@@ -799,7 +799,7 @@ void GraphicElement::updatePortsProperties()
     }
 
     if (!m_outputPorts.isEmpty()) {
-        int y = 32 - (m_outputPorts.size() * step) + step;
+        int y = 32 - (static_cast<int>(m_outputPorts.size()) * step) + step;
 
         for (auto *port : std::as_const(m_outputPorts)) {
             qCDebug(five) << "Setting output at " << 64 << ", " << y;
@@ -1149,7 +1149,7 @@ int GraphicElement::minOutputSize() const
 
 int GraphicElement::inputSize() const
 {
-    return m_inputPorts.size();
+    return static_cast<int>(m_inputPorts.size());
 }
 
 void GraphicElement::setInputSize(const int size)
@@ -1170,7 +1170,7 @@ void GraphicElement::setInputSize(const int size)
 
 int GraphicElement::outputSize() const
 {
-    return m_outputPorts.size();
+    return static_cast<int>(m_outputPorts.size());
 }
 
 int GraphicElement::priority() const
@@ -1334,9 +1334,11 @@ QDataStream &operator<<(QDataStream &stream, const GraphicElement *item)
 {
     qCDebug(four) << "Writing element.";
     const auto *elm = qgraphicsitem_cast<const GraphicElement *>(item);
-    stream << GraphicElement::Type;
-    stream << elm->elementType();
-    elm->save(stream);
+    if (elm) {
+        stream << GraphicElement::Type;
+        stream << elm->elementType();
+        elm->save(stream);
+    }
     return stream;
 }
 

@@ -38,7 +38,7 @@ void TestIcons::testIcons()
 
         const auto pixmap = ElementFactory::pixmap(type);
         const auto text = ElementFactory::typeToText(type);
-        QVERIFY2(!pixmap.isNull(), QString(text + " pixmap not found.").toUtf8());
+        QVERIFY2(!pixmap.isNull(), (text + " pixmap not found.").toUtf8());
     }
 }
 
