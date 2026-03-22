@@ -154,6 +154,7 @@ private:
     bool m_hasFrequency = false;
     bool m_hasLabel = false;
     bool m_hasOnlyInputs = false;
+    bool m_hasLatchedValue = false;
     bool m_hasRotation = false;
     bool m_hasTrigger = false;
     bool m_hasTruthTable = false;
