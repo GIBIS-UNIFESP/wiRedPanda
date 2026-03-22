@@ -44,11 +44,6 @@ IC::IC(QGraphicsItem *parent)
     });
 }
 
-IC::~IC()
-{
-    delete m_mapping;
-}
-
 void IC::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
@@ -65,8 +60,8 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVer
 {
     GraphicElement::load(stream, portMap, version);
 
+    // Old format (V_1_2 to V_4_1): IC file path was written as a plain QString
     if ((VERSION("1.2") <= version) && (version < VERSION("4.1"))) {
-        // v1.2–4.0 stored the IC filename as a bare QString (could be absolute path in old files)
         stream >> m_file;
 
         // For tests with old files containing absolute paths, strip to filename only.
@@ -83,8 +78,8 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVer
         loadFile(m_file);
     }
 
+    // New format (V_4_1+): IC data stored in a QMap for extensibility
     if (version >= VERSION("4.1")) {
-        // v4.1+ uses a key-value map; stores base filename only (path resolved at load time)
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("fileName")) {
@@ -484,7 +479,9 @@ void IC::loadOutputsLabels()
 
 const QVector<std::shared_ptr<LogicElement>> IC::generateMap()
 {
-    m_mapping = new ElementMapping(m_icElements);
+    // Build a fresh ElementMapping each time the IC is wired into the simulation;
+    // the previous mapping is automatically released by the unique_ptr assignment
+    m_mapping = std::make_unique<ElementMapping>(m_icElements);
     return m_mapping->logicElms();
 }
 
@@ -530,12 +527,12 @@ void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
 
 LogicElement *IC::getInputLogic(int portIndex) const
 {
-    return const_cast<IC*>(this)->inputLogic(portIndex);
+    return const_cast<IC *>(this)->inputLogic(portIndex);
 }
 
 LogicElement *IC::getOutputLogic(int portIndex) const
 {
-    return const_cast<IC*>(this)->outputLogic(portIndex);
+    return const_cast<IC *>(this)->outputLogic(portIndex);
 }
 
 int IC::getInputIndexForPort(int portIndex) const
