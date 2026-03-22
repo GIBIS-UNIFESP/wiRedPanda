@@ -15,25 +15,26 @@
 
 class QNEConnection;
 
-// --- Helper Functions: Item Lookup ---
+namespace CommandUtils {
+    // Element/Connection lookup
+    GraphicElement *findElm(const int id);
+    QNEConnection *findConn(const int id);
+    const QList<GraphicElement *> findElements(const QList<int> &ids);
+    const QList<QGraphicsItem *> findItems(const QList<int> &ids);
 
-GraphicElement *findElm(const int id);
-QNEConnection *findConn(const int id);
-const QList<GraphicElement *> findElements(const QList<int> &ids);
-const QList<QGraphicsItem *> findItems(const QList<int> &ids);
+    // Serialization helpers
+    const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const QList<int> &ids, QList<int> &otherIds);
+    const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> &ids, QList<int> &otherIds);
+    void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const QList<int> &otherIds);
 
-// --- Helper Functions: Item Loading & Storage ---
+    // Scene operations
+    void addItems(Scene *scene, const QList<QGraphicsItem *> &items);
+    void deleteItems(Scene *scene, const QList<QGraphicsItem *> &items);
 
-const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const QList<int> &ids, QList<int> &otherIds);
-const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> &ids, QList<int> &otherIds);
-void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const QList<int> &otherIds);
-void storeIds(const QList<QGraphicsItem *> &items, QList<int> &ids);
-void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &ids, QList<int> &otherIds);
-
-// --- Helper Functions: Item Management ---
-
-void addItems(Scene *scene, const QList<QGraphicsItem *> &items);
-void deleteItems(Scene *scene, const QList<QGraphicsItem *> &items);
+    // ID management
+    void storeIds(const QList<QGraphicsItem *> &items, QList<int> &ids);
+    void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &ids, QList<int> &otherIds);
+}
 
 /**
  * \class AddItemsCommand
