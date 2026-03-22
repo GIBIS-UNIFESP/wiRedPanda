@@ -173,17 +173,37 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     QPixmapCache::setCacheLimit(100000);
 
     qCDebug(zero) << "Adding examples to menu";
-    QDir examplesDir("Examples");
 
-    if (examplesDir.exists()) {
-        const auto entryList = examplesDir.entryList({"*.panda"}, QDir::Files);
+    const QString appDir = QCoreApplication::applicationDirPath();
+
+    const QStringList searchPaths = {
+        appDir + "/Examples",                       // Windows / dev builds
+#ifdef Q_OS_MACOS
+        appDir + "/../Resources/Examples",          // macOS app bundle
+#endif
+#ifdef Q_OS_LINUX
+        qEnvironmentVariable("APPDIR") + "/usr/share/wiredpanda/Examples",  // AppImage
+#endif
+        QStringLiteral("Examples"),                 // CWD fallback (development)
+    };
+
+    QString examplesPath;
+    for (const auto &path : searchPaths) {
+        if (!path.isEmpty() && QDir(path).exists()) {
+            examplesPath = path;
+            break;
+        }
+    }
+
+    if (!examplesPath.isEmpty()) {
+        const auto entryList = QDir(examplesPath).entryList({"*.panda"}, QDir::Files);
 
         for (const auto &entry : entryList) {
             auto *action = new QAction(entry);
 
-            connect(action, &QAction::triggered, this, [this] {
+            connect(action, &QAction::triggered, this, [this, examplesPath] {
                 if (auto *senderAction = qobject_cast<QAction *>(sender())) {
-                    loadPandaFile("Examples/" + senderAction->text());
+                    loadPandaFile(examplesPath + "/" + senderAction->text());
                 }
             });
 
