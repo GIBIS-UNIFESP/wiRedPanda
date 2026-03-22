@@ -1074,7 +1074,7 @@ void MainWindow::on_lineEditSearch_returnPressed()
 
     auto allLabels = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
 
-    for (auto *label : allLabels) {
+    for (auto *label : std::as_const(allLabels)) {
         if (label->isVisible()) {
             m_currentTab->scene()->addItem(label->mimeData());
             m_ui->lineEditSearch->clear();
@@ -1475,7 +1475,7 @@ QStringList MainWindow::getAvailableLanguages() const
     if (translationsDir.exists()) {
         QStringList qmFiles = translationsDir.entryList({"wpanda_*.qm"}, QDir::Files);
 
-        for (const QString &file : qmFiles) {
+        for (const QString &file : std::as_const(qmFiles)) {
             // Extract language code from filename (e.g., "wpanda_fr.qm" -> "fr")
             QString langCode = file;
             langCode.remove("wpanda_");

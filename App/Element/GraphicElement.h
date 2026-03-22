@@ -520,16 +520,16 @@ private:
     void loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
     void loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port);
     void loadOutputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
-    void loadPortsSize(QDataStream &stream, const QVersionNumber version);
+    void loadPortsSize(QDataStream &stream, const QVersionNumber &version);
 
     // --- Property Loading ---
 
-    void loadLabel(QDataStream &stream, const QVersionNumber version);
+    void loadLabel(QDataStream &stream, const QVersionNumber &version);
     void loadPixmapSkinName(QDataStream &stream, const int skin);
     void loadPixmapSkinNames(QDataStream &stream, const QVersionNumber version);
-    void loadPriority(QDataStream &stream, const QVersionNumber version);
-    void loadRotation(QDataStream &stream, const QVersionNumber version);
-    void loadTrigger(QDataStream &stream, const QVersionNumber version);
+    void loadPriority(QDataStream &stream, const QVersionNumber &version);
+    void loadRotation(QDataStream &stream, const QVersionNumber &version);
+    void loadTrigger(QDataStream &stream, const QVersionNumber &version);
 
     // --- Display & Interaction ---
 
