@@ -96,6 +96,7 @@
 #include <QScopeGuard>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QSet>
 #include <QSettings>
 #include <QShortcut>
 #include <QSignalSpy>
