@@ -93,6 +93,8 @@ public:
     // --- Visual ---
 
     /// \reimp
+    QRectF boundingRect() const override;
+    /// \reimp
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     /// \reimp
     void refresh() override;
