@@ -197,7 +197,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     const auto items = Serialization::deserialize(stream, portMap, version);
 
     if (items.size() != ids.size()) {
-        throw PANDACEPTION_WITH_CONTEXT("commands", "One or more elements were not found on scene. Expected %1, found %2.", ids.size(), items.size());
+        throw PANDACEPTION_WITH_CONTEXT("commands", "One or more elements were not found on scene. Expected %1, found %2.", static_cast<int>(ids.size()), static_cast<int>(items.size()));
     }
 
     // Re-assign the original IDs so undo/redo chains that store IDs remain valid

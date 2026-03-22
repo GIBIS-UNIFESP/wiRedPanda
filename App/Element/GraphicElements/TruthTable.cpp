@@ -43,7 +43,7 @@ void TruthTable::updatePortsProperties()
         // add one step back so the first port lands at the right offset.
         // Total height of n ports at 2*step pitch = n * 2*step; half = n*step.
         // e.g. 4 inputs → y_start = 32 - 4*8 + 8 = 8; ports at y=8,24,40,56
-        int y = 32 - (m_inputPorts.size() * step) + step;
+        int y = 32 - (static_cast<int>(m_inputPorts.size()) * step) + step;
 
         for (auto *port : std::as_const(m_inputPorts)) {
 
@@ -65,7 +65,7 @@ void TruthTable::updatePortsProperties()
 
     if (!m_outputPorts.isEmpty()) {
         // Same centering formula as inputs; output column is on the right edge (x=64)
-        int y = 32 - (m_outputPorts.size() * step) + step;
+        int y = 32 - (static_cast<int>(m_outputPorts.size()) * step) + step;
 
         for (auto *port : std::as_const(m_outputPorts)) {
 
