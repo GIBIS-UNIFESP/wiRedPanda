@@ -79,6 +79,9 @@ private slots:
 
     // Additional MorphCommand edge cases
     void testMorphMultipleElements();          // morph AND+OR→Xor simultaneously
+    void testMorphDisplay14ToDisplay7RemovesDanglingConnection(); // regression: wire on dropped port must be deleted
+    void testMorphToFewerPortsAllDroppedConnectionsRemoved();     // all connections on removed ports deleted
+    void testMorphUndoRestoresConnectionWithOriginalId();         // restored connection keeps its scene ID
 
     // QUndoStack clean state (save-dirty tracking)
     void testUndoStackCleanState();
