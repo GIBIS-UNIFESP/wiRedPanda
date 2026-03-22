@@ -303,7 +303,7 @@ void IC::generatePixmap()
 void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     event->accept();
-    qApp->mainWindow()->loadPandaFile(m_file);
+    Application::instance()->mainWindow()->loadPandaFile(m_file);
 }
 
 QRectF IC::boundingRect() const

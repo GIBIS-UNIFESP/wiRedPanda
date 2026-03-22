@@ -11,11 +11,6 @@
 
 #include "App/UI/MainWindow.h"
 
-#if defined(qApp)
-#undef qApp
-#endif
-#define qApp (qobject_cast<Application *>(QCoreApplication::instance()))
-
 /**
  * \class Application
  * \brief Custom QApplication that wraps event dispatch with exception handling.
@@ -35,6 +30,12 @@ public:
      * \param argv Argument vector.
      */
     Application(int &argc, char **argv);
+
+    /**
+     * \brief Returns the application instance cast to Application*.
+     * \return Pointer to the Application instance, or nullptr if not available.
+     */
+    static Application *instance();
 
     /// Destructor.
     ~Application() override = default;
