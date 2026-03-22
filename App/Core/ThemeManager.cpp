@@ -68,7 +68,9 @@ void ThemeAttributes::setTheme(const Theme theme)
         // Qt 6.8+ honours the color scheme hint at the platform level,
         // enabling OS-native light/dark integration for system controls.
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
-        qApp->styleHints()->setColorScheme(Qt::ColorScheme::Light);
+        if (Application::instance()) {
+            Application::instance()->styleHints()->setColorScheme(Qt::ColorScheme::Light);
+        }
 #endif
 
         m_sceneBgBrush = QColor(255, 255, 230); // warm off-white (slight yellow tint); less eye-strain than pure white
@@ -90,7 +92,9 @@ void ThemeAttributes::setTheme(const Theme theme)
         QPalette lightPalette = m_defaultPalette;
         lightPalette.setColor(QPalette::AlternateBase, QColor(233, 231, 227)); // light grey for alternating rows
 
-        qApp->setPalette(lightPalette);
+        if (Application::instance()) {
+            Application::instance()->setPalette(lightPalette);
+        }
 #endif
 
         break;
@@ -98,7 +102,9 @@ void ThemeAttributes::setTheme(const Theme theme)
 
     case Theme::Dark: {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
-        qApp->styleHints()->setColorScheme(Qt::ColorScheme::Dark);
+        if (Application::instance()) {
+            Application::instance()->styleHints()->setColorScheme(Qt::ColorScheme::Dark);
+        }
 #endif
 
         m_sceneBgBrush = QColor(64, 69, 82); // dark blue-grey slate; chosen to provide sufficient luminance
@@ -142,8 +148,8 @@ void ThemeAttributes::setTheme(const Theme theme)
         darkPalette.setColor(QPalette::Disabled, QPalette::Base, QColor(120, 120, 120));
         darkPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(120, 120, 120));
 
-        if (qApp) {
-            qApp->setPalette(darkPalette);
+        if (Application::instance()) {
+            Application::instance()->setPalette(darkPalette);
         }
 #endif
 
@@ -160,8 +166,8 @@ void ThemeAttributes::setTheme(const Theme theme)
     // Force a consistent tooltip style on both themes; without this, Windows/Linux
     // style sheets would show platform-default tooltips that are illegible on dark
     // backgrounds.  The #2a82da background matches QPalette::Highlight above.
-    if (qApp) {
-        qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
+    if (Application::instance()) {
+        Application::instance()->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
     }
 #endif
 
