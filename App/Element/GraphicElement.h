@@ -520,21 +520,21 @@ private:
     /// Reads all output ports from \a stream.
     void loadOutputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
     /// Reads and applies input/output port counts from \a stream, clamped to current constraints.
-    void loadPortsSize(QDataStream &stream, const QVersionNumber version);
+    void loadPortsSize(QDataStream &stream, const QVersionNumber &version);
 
     // --- Property Loading ---
 
     /// Reads the element label from \a stream (format depends on \a version).
-    void loadLabel(QDataStream &stream, const QVersionNumber version);
+    void loadLabel(QDataStream &stream, const QVersionNumber &version);
     /// Reads and applies a single skin path at index \a skin from \a stream.
     void loadPixmapSkinName(QDataStream &stream, const int skin);
     /// Reads and applies all skin paths from \a stream.
     void loadPixmapSkinNames(QDataStream &stream, const QVersionNumber version);
-    void loadPriority(QDataStream &stream, const QVersionNumber version);
+    void loadPriority(QDataStream &stream, const QVersionNumber &version);
     /// Reads and applies the element rotation from \a stream.
-    void loadRotation(QDataStream &stream, const QVersionNumber version);
+    void loadRotation(QDataStream &stream, const QVersionNumber &version);
     /// Reads and applies the keyboard trigger from \a stream.
-    void loadTrigger(QDataStream &stream, const QVersionNumber version);
+    void loadTrigger(QDataStream &stream, const QVersionNumber &version);
 
     // --- Display & Interaction ---
 

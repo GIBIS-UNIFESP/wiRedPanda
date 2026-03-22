@@ -70,7 +70,7 @@ public:
     /// \reimp
     QList<QGraphicsItem *> items(Qt::SortOrder order = Qt::AscendingOrder) const;
     /// \reimp
-    QList<QGraphicsItem *> items(const QPointF &pos, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::AscendingOrder, const QTransform &deviceTransform = QTransform()) const;
+    QList<QGraphicsItem *> items(QPointF pos, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::AscendingOrder, const QTransform &deviceTransform = QTransform()) const;
     /// \reimp
     QList<QGraphicsItem *> items(const QRectF &rect, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::AscendingOrder, const QTransform &deviceTransform = QTransform()) const;
     /// Returns the list of currently selected graphic elements.
@@ -215,7 +215,7 @@ private:
     void drawBackground(QPainter *painter, const QRectF &rect) override;
     void handleHoverPort();
     void makeConnection(QNEConnection *connection);
-    void paste(QDataStream &stream, QVersionNumber version);
+    void paste(QDataStream &stream, const QVersionNumber &version);
     void releaseHoverPort();
     void rotate(const int angle);
     void setDots(const QPen &dots);
