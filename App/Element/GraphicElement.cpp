@@ -281,6 +281,12 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
 {
     QMap<QString, QVariant> map; stream >> map;
 
+    // Check stream integrity after reading element properties map
+    if (stream.status() != QDataStream::Ok) {
+        throw PANDACEPTION("Stream error reading element properties at position %1",
+                          stream.device()->pos());
+    }
+
     if (map.contains("pos")) {
         setPos(map.value("pos").toPointF());
     }
@@ -326,6 +332,13 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     // -------------------------------------------
 
     QList<QMap<QString, QVariant>> inputMap; stream >> inputMap;
+
+    // Check stream integrity after reading input ports map
+    if (stream.status() != QDataStream::Ok) {
+        throw PANDACEPTION("Stream error reading input ports at position %1",
+                          stream.device()->pos());
+    }
+
     int port = 0;
 
     for (const auto &input : std::as_const(inputMap)) {
@@ -350,6 +363,13 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     // -------------------------------------------
 
     QList<QMap<QString, QVariant>> outputMap; stream >> outputMap;
+
+    // Check stream integrity after reading output ports map
+    if (stream.status() != QDataStream::Ok) {
+        throw PANDACEPTION("Stream error reading output ports at position %1",
+                          stream.device()->pos());
+    }
+
     port = 0;
 
     for (const auto &output : std::as_const(outputMap)) {
@@ -374,6 +394,13 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
     // -------------------------------------------
 
     QList<QMap<QString, QVariant>> skinsMap; stream >> skinsMap;
+
+    // Check stream integrity after reading skins map
+    if (stream.status() != QDataStream::Ok) {
+        throw PANDACEPTION("Stream error reading skins at position %1",
+                          stream.device()->pos());
+    }
+
     int skin = 0;
 
     for (const auto &skinName : std::as_const(skinsMap)) {
