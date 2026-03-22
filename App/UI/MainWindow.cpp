@@ -511,6 +511,9 @@ void MainWindow::loadPandaFile(const QString &fileName)
     createNewTab();
     qCDebug(zero) << "Loading in editor.";
     m_currentTab->load(fileName);
+    // Tighten the scene rect to the loaded items immediately so subsequent
+    // interactions (selection, drag release) don't cause a viewport jump.
+    m_currentTab->scene()->resizeScene();
     updateICList();
     m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
 }
