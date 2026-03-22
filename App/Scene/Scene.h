@@ -45,6 +45,9 @@ public:
 
     // --- View / Display Management ---
 
+    /// Tightens the scene rect to item bounds while preserving the viewport position.
+    void resizeScene();
+
     /// Returns the GraphicsView currently displaying this scene.
     GraphicsView *view() const;
     /// Sets the GraphicsView that displays this scene to \a view.
@@ -214,7 +217,6 @@ private:
     void makeConnection(QNEConnection *connection);
     void paste(QDataStream &stream, QVersionNumber version);
     void releaseHoverPort();
-    void resizeScene();
     void rotate(const int angle);
     void setDots(const QPen &dots);
     void setEditedConnection(QNEConnection *connection);

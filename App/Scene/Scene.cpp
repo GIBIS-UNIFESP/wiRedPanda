@@ -11,6 +11,7 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QScrollBar>
 
 #include "App/Core/Common.h"
 #include "App/Core/ThemeManager.h"
@@ -230,13 +231,39 @@ void Scene::receiveCommand(QUndoCommand *cmd)
 
 void Scene::resizeScene()
 {
-    setSceneRect(itemsBoundingRect());
+    const auto bounds = itemsBoundingRect();
 
-    // if (auto *item = itemAt(m_mousePos); item && (m_timer.elapsed() > 100) && m_draggingElement) {
-    //     // FIXME: sometimes this goes into a infinite loop and crashes
-    //     item->ensureVisible();
-    //     m_timer.restart();
-    // }
+    if (m_draggingElement) {
+        // While dragging, only expand the scene rect (union with current rect).
+        // Never shrink during drag — shrinking shifts the viewport origin and
+        // causes jarring visual jumps as the scene rect chases the items.
+        setSceneRect(sceneRect().united(bounds));
+    } else {
+        // Tighten to item bounds, but ensure the scene rect stays larger than the
+        // viewport. When the scene rect is smaller than (or barely larger than) the
+        // viewport, Qt re-centers it, causing a visual jump. Adding margins ensures
+        // enough scrollbar range to preserve the exact scroll position.
+        auto tightRect = bounds;
+        const auto viewList = views();
+        if (!viewList.isEmpty()) {
+            auto *view = viewList.first();
+            constexpr qreal margin = 100.0;
+            const auto visibleScene = view->mapToScene(view->viewport()->rect()).boundingRect()
+                                         .adjusted(-margin, -margin, margin, margin);
+            tightRect = tightRect.united(visibleScene);
+
+            // Preserve exact scrollbar positions across the scene rect change.
+            // centerOn() converts scene floats to integer pixels, causing 1px
+            // drift — saving/restoring scrollbar values avoids the rounding.
+            const int hVal = view->horizontalScrollBar()->value();
+            const int vVal = view->verticalScrollBar()->value();
+            setSceneRect(tightRect);
+            view->horizontalScrollBar()->setValue(hVal);
+            view->verticalScrollBar()->setValue(vVal);
+        } else {
+            setSceneRect(tightRect);
+        }
+    }
 }
 
 QNEConnection *Scene::editedConnection() const
@@ -931,7 +958,8 @@ void Scene::paste(QDataStream &stream, QVersionNumber version)
         }
     }
 
-    resizeScene();
+    // Only expand to fit pasted items; never shrink, which would shift the viewport.
+    setSceneRect(sceneRect().united(itemsBoundingRect()));
 }
 
 void Scene::cut(const QList<QGraphicsItem *> &items, QDataStream &stream)
@@ -1269,9 +1297,18 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     m_mousePos = event->scenePos();
     handleHoverPort();
 
-    // Expand scene rect while dragging so elements can be moved beyond the current boundary
+    // Expand scene rect while dragging so elements can be moved beyond the current boundary,
+    // and auto-scroll the viewport to follow the cursor.
     if (m_draggingElement) {
         resizeScene();
+
+        if (m_timer.elapsed() > 50) {
+            const auto viewList = views();
+            if (!viewList.isEmpty()) {
+                viewList.first()->ensureVisible(m_mousePos.x(), m_mousePos.y(), 1, 1, 50, 50);
+            }
+            m_timer.restart();
+        }
     }
 
     // --- In-progress wire routing ---
@@ -1310,20 +1347,28 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (m_draggingElement && (event->button() == Qt::LeftButton)) {
+        bool moved = false;
+
         if (!m_movedElements.empty()) {
             // Only push a MoveCommand if at least one element actually changed position;
             // avoids polluting the undo stack with no-op moves (e.g., click without drag)
-            const bool valid = std::any_of(m_movedElements.cbegin(), m_movedElements.cend(), [this](auto *elm) {
+            moved = std::any_of(m_movedElements.cbegin(), m_movedElements.cend(), [this](auto *elm) {
                 return (elm->pos() != m_oldPositions.at(m_movedElements.indexOf(elm)));
             });
 
-            if (valid) {
+            if (moved) {
                 receiveCommand(new MoveCommand(m_movedElements, m_oldPositions, this));
             }
         }
 
         m_draggingElement = false;
         m_movedElements.clear();
+
+        // Only tighten scene rect after an actual drag; a click-without-move
+        // should not trigger a rect change that could shift the viewport.
+        if (moved) {
+            resizeScene();
+        }
     }
 
     m_selectionRect.hide();

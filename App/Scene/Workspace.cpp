@@ -7,6 +7,7 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QSaveFile>
+#include <QScrollBar>
 #include <QStandardPaths>
 #include <QTemporaryFile>
 
@@ -28,6 +29,10 @@ WorkSpace::WorkSpace(QWidget *parent)
     m_scene.setSceneRect(m_view.rect());
     setLayout(new QHBoxLayout());
     layout()->addWidget(&m_view);
+
+    // Adjust the scene rect after every zoom so that all items remain reachable
+    // via panning, even when zoomed in very close
+    connect(&m_view, &GraphicsView::zoomChanged, &m_scene, &Scene::resizeScene);
 
     // Trigger autosave on every change; autosave() checks the undo stack cleanliness
     // before actually writing to disk
@@ -102,7 +107,26 @@ void WorkSpace::save(const QString &fileName)
         throw PANDACEPTION("Error opening file: %1", saveFile.errorString());
     }
 
-    m_scene.setSceneRect(m_scene.itemsBoundingRect());
+    // Set scene rect with same logic as resizeScene() to avoid viewport jump on element selection.
+    // Tighten to item bounds with margins and visible viewport to ensure consistent scrollbar behavior.
+    auto bounds = m_scene.itemsBoundingRect();
+    auto tightRect = bounds;
+    const auto viewList = m_scene.views();
+    if (!viewList.isEmpty()) {
+        auto *view = viewList.first();
+        constexpr qreal margin = 100.0;
+        const auto visibleScene = view->mapToScene(view->viewport()->rect()).boundingRect()
+                                     .adjusted(-margin, -margin, margin, margin);
+        tightRect = tightRect.united(visibleScene);
+
+        const int hVal = view->horizontalScrollBar()->value();
+        const int vVal = view->verticalScrollBar()->value();
+        m_scene.setSceneRect(tightRect);
+        view->horizontalScrollBar()->setValue(hVal);
+        view->verticalScrollBar()->setValue(vVal);
+    } else {
+        m_scene.setSceneRect(tightRect);
+    }
 
     QDataStream stream(&saveFile);
     Serialization::writePandaHeader(stream);
