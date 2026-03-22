@@ -72,6 +72,8 @@ public:
     /// \reimp
     int getOutputIndexForPort(int portIndex) const override;
 
+    void loadFromDrop(const QString &fileName) override;
+
     // --- Visual ---
 
     /// \reimp

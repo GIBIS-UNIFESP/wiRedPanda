@@ -1343,6 +1343,11 @@ void GraphicElement::retranslate()
     setToolTip(m_translatedName);
 }
 
+void GraphicElement::loadFromDrop(const QString &fileName)
+{
+    Q_UNUSED(fileName)
+}
+
 QDataStream &operator<<(QDataStream &stream, const GraphicElement *item)
 {
     qCDebug(four) << "Writing element.";

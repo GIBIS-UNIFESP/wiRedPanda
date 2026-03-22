@@ -315,6 +315,9 @@ public:
      */
     virtual QVector<std::shared_ptr<LogicElement>> getLogicElementsForMapping();
 
+    /// Polymorphic interface for drag-drop initialization (replaces elementType() == IC checks).
+    virtual void loadFromDrop(const QString &fileName);
+
     // --- Virtual Methods ---
 
     /// Returns a string encoding element-specific properties for serialization or display.
