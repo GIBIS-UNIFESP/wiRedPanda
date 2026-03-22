@@ -781,6 +781,10 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 
 void MainWindow::on_actionSelectAll_triggered()
 {
+    if (!m_currentTab) {
+        return;
+    }
+
     m_currentTab->scene()->selectAll();
 }
 
