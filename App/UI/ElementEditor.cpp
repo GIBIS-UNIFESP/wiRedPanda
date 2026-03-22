@@ -433,7 +433,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     // All flags start false; if elements is non-empty, they are set true and
     // then AND-reduced over the selection below.
     m_hasAudioBox = m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_hasDelay = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = false;
-    m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameDelay = m_hasSameAudio = m_hasOnlyInputs = false;
+    m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameDelay = m_hasSameAudio = m_hasOnlyInputs = m_hasLatchedValue = false;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = false;
     m_canChangeSkin = m_hasSamePriority = false;
     m_hasElements = false;
@@ -447,7 +447,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
     bool sameCheckState = true;
     // Start all capabilities as true; each element in the loop ANDs them down.
     m_hasTruthTable = m_hasLabel = m_hasColors = m_hasAudio = m_hasFrequency = m_hasDelay = m_canChangeInputSize = m_canChangeOutputSize = m_hasTrigger = true;
-    m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameDelay = m_hasSameAudio = m_hasOnlyInputs = true;
+    m_hasRotation = m_hasSameLabel = m_hasSameColors = m_hasSameFrequency = m_hasSameDelay = m_hasSameAudio = m_hasOnlyInputs = m_hasLatchedValue = true;
     m_hasSameInputSize = m_hasSameOutputSize = m_hasSameOutputValue = m_hasSameTrigger = m_canMorph = m_hasSameType = true;
     m_canChangeSkin = m_hasSamePriority = true;
     m_hasElements = true;
@@ -515,6 +515,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         sameElementGroup |= (group == ElementGroup::Input && (firstGroup == ElementGroup::StaticInput));
         sameElementGroup |= (group == ElementGroup::StaticInput && (firstGroup == ElementGroup::Input));
         m_hasOnlyInputs &= (group == ElementGroup::Input);
+        m_hasLatchedValue &= (group == ElementGroup::Input) && (elm->elementType() != ElementType::InputButton);
         m_canMorph &= sameElementGroup;
     }
 
@@ -704,13 +705,13 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         }
     }
 
-    /* Output value */
+    /* Output value (hidden for momentary inputs like InputButton) */
     m_ui->comboBoxValue->clear();
-    m_ui->labelValue->setVisible(m_hasOnlyInputs);
-    m_ui->comboBoxValue->setVisible(m_hasOnlyInputs);
-    m_ui->comboBoxValue->setEnabled(m_hasOnlyInputs);
+    m_ui->labelValue->setVisible(m_hasLatchedValue);
+    m_ui->comboBoxValue->setVisible(m_hasLatchedValue);
+    m_ui->comboBoxValue->setEnabled(m_hasLatchedValue);
 
-    if (m_hasOnlyInputs) {
+    if (m_hasLatchedValue) {
         // Binary inputs have outputSize == 1 but must offer values 0 and 1,
         // so bump the upper bound to 2 in that case.
         if (maxCurrentOutputSize == 1) {
@@ -726,7 +727,7 @@ void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
         m_ui->comboBoxValue->addItem(m_manyOV);
     }
 
-    if (m_hasOnlyInputs) {
+    if (m_hasLatchedValue) {
         if (m_hasSameOutputValue) {
             m_ui->comboBoxValue->removeItem(m_ui->comboBoxValue->findText(m_manyOV));
             QString outputValue = QString::number(firstInput->outputValue());
