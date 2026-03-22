@@ -45,7 +45,6 @@ public:
 
     GraphicElement *graphicElement() const;
     LogicElement *logic() const;
-    QBrush currentBrush() const;
     QString name() const;
     Status defaultValue() const;
     Status status() const;
@@ -84,6 +83,9 @@ protected:
     int m_index = 0;
     int m_margin = 2;
     int m_radius = 5;
+
+private:
+    QBrush currentBrush() const;
 };
 
 class QNEInputPort : public QNEPort

@@ -34,7 +34,6 @@ private:
     void connectElements();
     void generateLogic(GraphicElement *elm);
     void generateMap();
-    void setDefaultValue(GraphicElement *elm, QNEPort *in);
     void sortLogicElements();
     void validateElements();
 
