@@ -4,17 +4,12 @@
 #include "App/Element/GraphicElements/Buzzer.h"
 
 #include <QAudio>
+#include <QAudioDevice>
+#include <QDebug>
+#include <QMediaDevices>
 
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QAudioDeviceInfo>
-#else
-#include <QAudioDevice>
-#include <QMediaDevices>
-#endif
-#include <QDebug>
 
 Buzzer::Buzzer(QGraphicsItem *parent)
     : GraphicElement(ElementType::Buzzer, ElementGroup::Output, ":/Components/Output/Buzzer/BuzzerOff.svg", tr("BUZZER"), tr("Buzzer"), 1, 1, 0, 0, parent)
@@ -40,11 +35,7 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     setHasLabel(true);
     setRotatable(false);
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_hasOutputDevice = !QAudioDeviceInfo::defaultOutputDevice().deviceName().isEmpty();
-#else
     m_hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
-#endif
 
     if (m_hasOutputDevice) {
         m_audio = new QSoundEffect(this);
@@ -78,11 +69,7 @@ void Buzzer::setAudio(const QString &note)
     }
 
     // Volume at 35% to avoid startling users; WAV files reside in Qt resources
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_audio->setVolume(0.35);
-#else
     m_audio->setVolume(0.35f);
-#endif
 
     m_audio->setSource(QUrl::fromLocalFile(":/Components/Output/Audio/" + note + ".wav"));
     m_audio->setLoopCount(QSoundEffect::Infinite); // TODO: fix audio clipping when repeating

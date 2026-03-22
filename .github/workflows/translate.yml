@@ -48,7 +48,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: 6.9.0
+          version: 6.9.3
           cache: false
           aqtversion: ==3.*
           modules: qtmultimedia qtimageformats
@@ -131,7 +131,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: 6.9.0
+          version: 6.9.3
           cache: false
           aqtversion: ==3.*
           modules: qtmultimedia qtimageformats
@@ -235,7 +235,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: 6.9.0
+          version: 6.9.3
           cache: false
           aqtversion: ==3.*
           modules: qtmultimedia qtimageformats

@@ -27,15 +27,6 @@ class ElementLabel : public QFrame
 
 public:
     /**
-     * \brief Constructs an ElementLabel from a pixmap pointer.
-     * \param pixmap     Icon image (pointer variant).
-     * \param type       Element type identifier.
-     * \param icFileName IC file path (empty for built-in elements).
-     * \param parent     Optional parent widget.
-     */
-    explicit ElementLabel(const QPixmap *pixmap, ElementType type, const QString &icFileName, QWidget *parent = nullptr);
-
-    /**
      * \brief Constructs an ElementLabel from a pixmap.
      * \param pixmap     Icon image.
      * \param type       Element type identifier.

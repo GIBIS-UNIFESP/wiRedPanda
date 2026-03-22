@@ -85,11 +85,6 @@ int main(int argc, char *argv[])
     }
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-#endif
-
     Application app(argc, argv);
     app.setOrganizationName("GIBIS-UNIFESP");
     app.setApplicationName("wiRedPanda");

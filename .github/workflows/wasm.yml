@@ -24,7 +24,7 @@ jobs:
     - name: Setup Qt for WASM
       uses: jurplel/install-qt-action@v4
       with:
-        version: 6.9.0
+        version: 6.9.3
         host: all_os
         target: wasm
         arch: wasm_multithread
