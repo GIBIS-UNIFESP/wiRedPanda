@@ -4,6 +4,7 @@
 #include "App/Scene/Scene.h"
 
 #include <algorithm>
+#include <cmath>
 
 #include <QClipboard>
 #include <QDrag>
@@ -66,27 +67,31 @@ void Scene::checkUpdateRequest()
 void Scene::drawBackground(QPainter *painter, const QRectF &rect)
 {
     // m11() is the X-axis scale factor of the view transform; below 0.3 the grid dots
-    // would be sub-pixel and invisible anyway, so skip the per-pixel loop for performance
+    // would be sub-pixel and invisible anyway, so skip drawing for performance
     if (view() and view()->transform().m11() < 0.3) {
         return;
     }
 
-    painter->setRenderHint(QPainter::Antialiasing, true);
     QGraphicsScene::drawBackground(painter, rect);
 
-    // Align the dot grid to the nearest gridSize boundary so dots don't drift
-    // as the viewport scrolls — the modulo brings the start point back to a grid line
     const int gridSize = GlobalProperties::gridSize;
-    const int left = static_cast<int>(rect.left()) - (static_cast<int>(rect.left()) % gridSize);
-    const int top = static_cast<int>(rect.top()) - (static_cast<int>(rect.top()) % gridSize);
+    const int left = static_cast<int>(std::floor(rect.left() / gridSize)) * gridSize;
+    const int top = static_cast<int>(std::floor(rect.top() / gridSize)) * gridSize;
+    const int right = static_cast<int>(std::ceil(rect.right() / gridSize)) * gridSize;
+    const int bottom = static_cast<int>(std::ceil(rect.bottom() / gridSize)) * gridSize;
+
     painter->setPen(m_dots);
 
-    // TODO: replace this with a QPixmap for better performance
-    for (int x = left; x < rect.right(); x += gridSize) {
-        for (int y = top; y < rect.bottom(); y += gridSize) {
-            painter->drawPoint(x, y);
+    QVector<QPoint> points;
+    points.reserve(((right - left) / gridSize + 1) * ((bottom - top) / gridSize + 1));
+
+    for (int x = left; x <= right; x += gridSize) {
+        for (int y = top; y <= bottom; y += gridSize) {
+            points.append(QPoint(x, y));
         }
     }
+
+    painter->drawPoints(points.data(), static_cast<int>(points.size()));
 }
 
 void Scene::setDots(const QPen &dots)
