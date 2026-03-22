@@ -26,6 +26,7 @@ class ElementTransformationTests(MCPTestBase):
             self.test_rotate_element,
             self.test_flip_element,
             self.test_morph_element,
+            self.test_morph_display14_to_display7_removes_dangling_connections,
             self.test_change_input_size,
             self.test_change_output_size,
             self.test_toggle_truth_table_output,
@@ -249,6 +250,93 @@ class ElementTransformationTests(MCPTestBase):
             "morph_element", {"element_ids": [], "target_type": "And"}
         )
         all_passed &= await self.assert_failure(resp, "Morph with empty element_ids")
+
+        return all_passed
+
+    @beartype
+    async def test_morph_display14_to_display7_removes_dangling_connections(self) -> bool:
+        """Regression test: morphing Display14 to Display7 must remove connections on dropped ports.
+
+        Bug: When Display14 (15 inputs) is morphed to Display7 (8 inputs), connections
+        wired to ports 8-14 are not removed — the wire remains but the port is gone.
+        """
+        print("\n=== Morph Display14->Display7: dangling connection cleanup ===")
+        self.set_test_context("test_morph_display14_to_display7_removes_dangling_connections")
+
+        all_passed: bool = True
+
+        # Create a Display14 (15 inputs: 14 segments + decimal point, ports 0-14)
+        resp = await self.send_command(
+            "create_element", {"type": "Display14", "x": 300, "y": 200, "label": "Disp14"}
+        )
+        disp14_id = await self.validate_element_creation_response(resp, "Create Display14")
+        if disp14_id is None:
+            return False
+
+        # Create an InputSwitch to drive the last port of the Display14
+        resp = await self.send_command(
+            "create_element", {"type": "InputSwitch", "x": 100, "y": 200, "label": "Sw"}
+        )
+        sw_id = await self.validate_element_creation_response(resp, "Create InputSwitch")
+        if sw_id is None:
+            return False
+
+        # Connect the switch output (port 0) to the LAST input port of Display14 (port 14)
+        resp = await self.send_command(
+            "connect_elements",
+            {"source_id": sw_id, "source_port": 0, "target_id": disp14_id, "target_port": 14},
+        )
+        all_passed &= await self.assert_success(resp, "Connect switch to Display14 port 14")
+
+        # Verify the connection exists before morph
+        resp = await self.send_command("list_connections", {})
+        result = await self.assert_success_and_get_result(resp, "List connections before morph")
+        if result:
+            connections_before = result.get("connections", [])
+            if len(connections_before) == 1:
+                self.infrastructure.output.success(
+                    "Connection to Display14 port 14 confirmed before morph"
+                )
+            else:
+                print(f"Expected 1 connection before morph, got {len(connections_before)}")
+                all_passed = False
+        else:
+            all_passed = False
+
+        # Morph Display14 -> Display7 (8 inputs: 7 segments + decimal point, ports 0-7)
+        # Ports 8-14 are removed; the connection to port 14 must be cleaned up
+        resp = await self.send_command(
+            "morph_element", {"element_ids": [disp14_id], "target_type": "Display7"}
+        )
+        result = await self.assert_success_and_get_result(resp, "Morph Display14 to Display7")
+        if result is None:
+            return False
+
+        if result.get("target_type") == "Display7":
+            self.infrastructure.output.success("Morph: target_type is Display7")
+        else:
+            print(f"Morph: expected target_type='Display7', got {result.get('target_type')}")
+            all_passed = False
+
+        # After morph, the connection to the removed port must no longer exist
+        resp = await self.send_command("list_connections", {})
+        result = await self.assert_success_and_get_result(
+            resp, "List connections after morph (expect 0)"
+        )
+        if result:
+            connections_after = result.get("connections", [])
+            if len(connections_after) == 0:
+                self.infrastructure.output.success(
+                    "Dangling connection correctly removed after morph"
+                )
+            else:
+                print(
+                    f"BUG: {len(connections_after)} dangling connection(s) remain after morph "
+                    f"to Display7 — port was removed but wire was not"
+                )
+                all_passed = False
+        else:
+            all_passed = False
 
         return all_passed
 
