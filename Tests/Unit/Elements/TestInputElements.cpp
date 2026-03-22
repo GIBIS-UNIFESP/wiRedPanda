@@ -6,10 +6,14 @@
 #include <memory>
 
 #include <QDataStream>
+#include <QDir>
+#include <QFile>
+#include <QTemporaryDir>
 #include <QTest>
 
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/GlobalProperties.h"
 #include "Tests/Common/TestUtils.h"
 
 // ============================================================================
@@ -480,5 +484,150 @@ void TestInputElements::testInputSwitch()
     elm.setOn(false);
     QCOMPARE(elm.isOn(), false);
     QCOMPARE(elm.outputPort()->status(), Status::Inactive);
+}
+
+void TestInputElements::testSkinWithRelativePath()
+{
+    // Bare filename resolved against currentDir
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+
+    const QString skinFileName = "custom_skin.svg";
+    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
+
+    const QString savedDir = GlobalProperties::currentDir;
+    GlobalProperties::currentDir = tempDir.path();
+
+    InputSwitch inputSwitch;
+
+    bool threw = false;
+    try {
+        inputSwitch.setSkin(false, skinFileName);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+
+    QVERIFY2(!threw, "setSkin should resolve relative filename against currentDir");
+    GlobalProperties::currentDir = savedDir;
+}
+
+void TestInputElements::testSkinWithSameOsAbsolutePath()
+{
+    // Absolute path on the current OS — resolved directly
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+
+    const QString skinFileName = "custom_skin.svg";
+    const QString skinFullPath = tempDir.path() + "/" + skinFileName;
+    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", skinFullPath));
+
+    const QString savedDir = GlobalProperties::currentDir;
+    GlobalProperties::currentDir = "/some/unrelated/directory";
+
+    InputSwitch inputSwitch;
+
+    bool threw = false;
+    try {
+        inputSwitch.setSkin(false, skinFullPath);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+
+    QVERIFY2(!threw, "setSkin should resolve same-OS absolute path directly");
+    GlobalProperties::currentDir = savedDir;
+}
+
+void TestInputElements::testSkinWithForeignAbsolutePathForwardSlash()
+{
+    // Windows-style path with forward slashes on Linux
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+
+    const QString skinFileName = "custom_skin.svg";
+    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
+
+    const QString savedDir = GlobalProperties::currentDir;
+    GlobalProperties::currentDir = tempDir.path();
+
+    InputSwitch inputSwitch;
+
+    bool threw = false;
+    try {
+        inputSwitch.setSkin(false, "C:/Users/alice/project/" + skinFileName);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+
+    QVERIFY2(!threw, "setSkin should resolve foreign path with forward slashes via filename fallback");
+    GlobalProperties::currentDir = savedDir;
+}
+
+void TestInputElements::testSkinWithForeignAbsolutePathBackslash()
+{
+    // Windows-style path with backslashes on Linux
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+
+    const QString skinFileName = "custom_skin.svg";
+    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
+
+    const QString savedDir = GlobalProperties::currentDir;
+    GlobalProperties::currentDir = tempDir.path();
+
+    InputSwitch inputSwitch;
+
+    bool threw = false;
+    try {
+        inputSwitch.setSkin(false, "C:\\Users\\alice\\project\\" + skinFileName);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+
+    QVERIFY2(!threw, "setSkin should resolve foreign path with backslashes via filename fallback");
+    GlobalProperties::currentDir = savedDir;
+}
+
+void TestInputElements::testSkinWithForeignAbsolutePathMixedSlashes()
+{
+    // Windows-style path with mixed forward and backslashes
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+
+    const QString skinFileName = "custom_skin.svg";
+    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
+
+    const QString savedDir = GlobalProperties::currentDir;
+    GlobalProperties::currentDir = tempDir.path();
+
+    InputSwitch inputSwitch;
+
+    bool threw = false;
+    try {
+        inputSwitch.setSkin(false, "C:\\Users/alice\\project/" + skinFileName);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+
+    QVERIFY2(!threw, "setSkin should resolve foreign path with mixed slashes via filename fallback");
+    GlobalProperties::currentDir = savedDir;
+}
+
+void TestInputElements::testSkinWithNonExistentFileFallback()
+{
+    // Both full path and filename fallback fail — should throw Pandaception
+    const QString savedDir = GlobalProperties::currentDir;
+    GlobalProperties::currentDir = "/some/empty/directory";
+
+    InputSwitch inputSwitch;
+
+    bool threw = false;
+    try {
+        inputSwitch.setSkin(false, "C:\\Users\\alice\\project\\nonexistent_skin_12345.svg");
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+
+    QVERIFY2(threw, "setSkin should throw when neither full path nor filename fallback resolves");
+    GlobalProperties::currentDir = savedDir;
 }
 

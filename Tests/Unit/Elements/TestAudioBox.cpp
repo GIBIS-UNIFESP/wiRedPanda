@@ -258,3 +258,161 @@ void TestAudioBox::testLoadVersionNew()
     QCOMPARE(audioBox2->audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
 }
 
+void TestAudioBox::testSetAudioWithRelativePath()
+{
+    // Bare filename resolved against currentDir
+    QTemporaryFile tempFile;
+    QVERIFY(tempFile.open());
+    tempFile.write("DUMMY AUDIO DATA");
+    tempFile.close();
+
+    const QFileInfo tempInfo(tempFile.fileName());
+    const QString savedDir = GlobalProperties::currentDir;
+    GlobalProperties::currentDir = tempInfo.absolutePath();
+
+    AudioBox audioBox;
+    audioBox.setAudio(tempInfo.fileName());
+
+    QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
+    GlobalProperties::currentDir = savedDir;
+}
+
+void TestAudioBox::testSetAudioWithSameOsAbsolutePath()
+{
+    // Absolute path on the current OS — resolved directly
+    QTemporaryFile tempFile;
+    QVERIFY(tempFile.open());
+    tempFile.write("DUMMY AUDIO DATA");
+    tempFile.close();
+
+    const QFileInfo tempInfo(tempFile.fileName());
+    const QString savedDir = GlobalProperties::currentDir;
+    GlobalProperties::currentDir = "/some/unrelated/directory";
+
+    AudioBox audioBox;
+    audioBox.setAudio(tempInfo.absoluteFilePath());
+
+    QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
+    GlobalProperties::currentDir = savedDir;
+}
+
+void TestAudioBox::testSetAudioWithForeignAbsolutePathForwardSlash()
+{
+    // Windows-style path with forward slashes on Linux
+    QTemporaryFile tempFile;
+    QVERIFY(tempFile.open());
+    tempFile.write("DUMMY AUDIO DATA");
+    tempFile.close();
+
+    const QFileInfo tempInfo(tempFile.fileName());
+    const QString savedDir = GlobalProperties::currentDir;
+    GlobalProperties::currentDir = tempInfo.absolutePath();
+
+    AudioBox audioBox;
+    audioBox.setAudio("C:/Users/alice/project/" + tempInfo.fileName());
+
+    QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
+    GlobalProperties::currentDir = savedDir;
+}
+
+void TestAudioBox::testSetAudioWithForeignAbsolutePathBackslash()
+{
+    // Windows-style path with backslashes on Linux
+    QTemporaryFile tempFile;
+    QVERIFY(tempFile.open());
+    tempFile.write("DUMMY AUDIO DATA");
+    tempFile.close();
+
+    const QFileInfo tempInfo(tempFile.fileName());
+    const QString savedDir = GlobalProperties::currentDir;
+    GlobalProperties::currentDir = tempInfo.absolutePath();
+
+    AudioBox audioBox;
+    audioBox.setAudio("C:\\Users\\alice\\project\\" + tempInfo.fileName());
+
+    QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
+    GlobalProperties::currentDir = savedDir;
+}
+
+void TestAudioBox::testSetAudioWithForeignAbsolutePathMixedSlashes()
+{
+    // Windows-style path with mixed forward and backslashes
+    QTemporaryFile tempFile;
+    QVERIFY(tempFile.open());
+    tempFile.write("DUMMY AUDIO DATA");
+    tempFile.close();
+
+    const QFileInfo tempInfo(tempFile.fileName());
+    const QString savedDir = GlobalProperties::currentDir;
+    GlobalProperties::currentDir = tempInfo.absolutePath();
+
+    AudioBox audioBox;
+    audioBox.setAudio("C:\\Users/alice\\project/" + tempInfo.fileName());
+
+    QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
+    GlobalProperties::currentDir = savedDir;
+}
+
+void TestAudioBox::testSetAudioWithNonExistentFileFallback()
+{
+    // Both full path and filename fallback fail — should throw Pandaception
+    const QString savedDir = GlobalProperties::currentDir;
+    GlobalProperties::currentDir = "/some/empty/directory";
+
+    AudioBox audioBox;
+
+    bool threw = false;
+    try {
+        audioBox.setAudio("C:\\Users\\alice\\project\\nonexistent_audio_12345.wav");
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+
+    QVERIFY2(threw, "setAudio should throw when neither full path nor filename fallback resolves");
+    GlobalProperties::currentDir = savedDir;
+}
+
+void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
+{
+    // When the audio file lives inside the project directory, save() should
+    // store only the bare filename for portability
+    QTemporaryFile tempFile;
+    QVERIFY(tempFile.open());
+    tempFile.write("DUMMY AUDIO DATA");
+    tempFile.close();
+
+    const QFileInfo tempInfo(tempFile.fileName());
+    const QString savedDir = GlobalProperties::currentDir;
+    GlobalProperties::currentDir = tempInfo.absolutePath();
+
+    AudioBox audioBox;
+    audioBox.setAudio(tempInfo.fileName());
+
+    // Verify internal state stores the full resolved path
+    QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
+
+    // Save and read back the serialized audio path
+    QByteArray data;
+    QDataStream saveStream(&data, QIODevice::WriteOnly);
+    audioBox.save(saveStream);
+
+    // Skip past the GraphicElement base data to reach the AudioBox map.
+    // GraphicElement::save writes: QMap (properties), QList<QMap> (inputs),
+    // QList<QMap> (outputs), QList<QMap> (skins). Then AudioBox::save adds its QMap.
+    QDataStream loadStream(data);
+    QMap<QString, QVariant> map;
+    QList<QMap<QString, QVariant>> listMap;
+
+    loadStream >> map;      // GraphicElement's properties map
+    loadStream >> listMap;  // input ports
+    loadStream >> listMap;  // output ports
+    loadStream >> listMap;  // skins
+    loadStream >> map;      // AudioBox's map
+
+    QVERIFY2(map.contains("audiobox"), "Saved data should contain 'audiobox' key");
+    const QString savedPath = map.value("audiobox").toString();
+    QCOMPARE(savedPath, tempInfo.fileName());
+
+    GlobalProperties::currentDir = savedDir;
+}
+

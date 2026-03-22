@@ -635,3 +635,152 @@ void TestIC::testICFileDependencyResolution()
     }
 }
 
+void TestIC::testICLoadWithRelativePath()
+{
+    // Bare filename resolved against currentDir — the normal case for modern files
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    GlobalProperties::currentDir = TestUtils::examplesDir();
+
+    auto *ic = new IC();
+    scene->addItem(ic);
+
+    try {
+        ic->loadFile("jkflipflop.panda");
+    } catch (const Pandaception &ex) {
+        QFAIL(qPrintable(QString("Relative path should resolve against currentDir: %1").arg(ex.what())));
+    }
+
+    QVERIFY2(ic->inputSize() > 0, "IC should have loaded ports");
+    QVERIFY2(ic->outputSize() > 0, "IC should have loaded ports");
+}
+
+void TestIC::testICLoadWithRelativeSubfolderPath()
+{
+    // Relative path with a subdirectory component: currentDir is the parent
+    // of Examples/, and the path is "Examples/jkflipflop.panda".
+    // Use input.panda (no nested IC deps) to avoid nested resolution issues.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    const QDir examplesDir(TestUtils::examplesDir());
+    GlobalProperties::currentDir = examplesDir.absolutePath() + "/..";
+
+    auto *ic = new IC();
+    scene->addItem(ic);
+
+    try {
+        ic->loadFile("Examples/input.panda");
+    } catch (const Pandaception &ex) {
+        QFAIL(qPrintable(QString("Relative subfolder path should resolve: %1").arg(ex.what())));
+    }
+
+    QVERIFY2(ic->inputSize() > 0 || ic->outputSize() > 0, "IC should have loaded ports");
+}
+
+void TestIC::testICLoadWithSameOsAbsolutePath()
+{
+    // Absolute path on the current OS — QDir::filePath() ignores the base.
+    // currentDir must still point at the right place for nested IC deps.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    GlobalProperties::currentDir = TestUtils::examplesDir();
+
+    auto *ic = new IC();
+    scene->addItem(ic);
+
+    const QString absPath = QFileInfo(TestUtils::examplesDir() + "jkflipflop.panda").absoluteFilePath();
+
+    try {
+        ic->loadFile(absPath);
+    } catch (const Pandaception &ex) {
+        QFAIL(qPrintable(QString("Same-OS absolute path should resolve directly: %1").arg(ex.what())));
+    }
+
+    QVERIFY2(ic->inputSize() > 0, "IC should have loaded ports");
+    QVERIFY2(ic->outputSize() > 0, "IC should have loaded ports");
+}
+
+void TestIC::testICLoadWithForeignAbsolutePathForwardSlash()
+{
+    // Windows-style path with forward slashes on Linux — not recognized as
+    // absolute, but QFileInfo::fileName() handles '/' correctly on all OSes
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    GlobalProperties::currentDir = TestUtils::examplesDir();
+
+    auto *ic = new IC();
+    scene->addItem(ic);
+
+    try {
+        ic->loadFile("C:/Users/alice/project/jkflipflop.panda");
+    } catch (const Pandaception &ex) {
+        QFAIL(qPrintable(QString("Foreign path with forward slashes should fallback to filename: %1").arg(ex.what())));
+    }
+
+    QVERIFY2(ic->inputSize() > 0, "IC should have loaded ports");
+    QVERIFY2(ic->outputSize() > 0, "IC should have loaded ports");
+}
+
+void TestIC::testICLoadWithForeignAbsolutePathBackslash()
+{
+    // Windows-style path with backslashes on Linux — backslash is not a path
+    // separator on Unix, so the fallback must normalize before extracting filename
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    GlobalProperties::currentDir = TestUtils::examplesDir();
+
+    auto *ic = new IC();
+    scene->addItem(ic);
+
+    try {
+        ic->loadFile("C:\\Users\\alice\\project\\jkflipflop.panda");
+    } catch (const Pandaception &ex) {
+        QFAIL(qPrintable(QString("Foreign path with backslashes should fallback to filename: %1").arg(ex.what())));
+    }
+
+    QVERIFY2(ic->inputSize() > 0, "IC should have loaded ports");
+    QVERIFY2(ic->outputSize() > 0, "IC should have loaded ports");
+}
+
+void TestIC::testICLoadWithForeignAbsolutePathMixedSlashes()
+{
+    // Windows-style path with mixed forward and backslashes — the backslash
+    // normalization must handle both separator styles in a single path
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    GlobalProperties::currentDir = TestUtils::examplesDir();
+
+    auto *ic = new IC();
+    scene->addItem(ic);
+
+    try {
+        ic->loadFile("C:\\Users/alice\\project/jkflipflop.panda");
+    } catch (const Pandaception &ex) {
+        QFAIL(qPrintable(QString("Foreign path with mixed slashes should fallback to filename: %1").arg(ex.what())));
+    }
+
+    QVERIFY2(ic->inputSize() > 0, "IC should have loaded ports");
+    QVERIFY2(ic->outputSize() > 0, "IC should have loaded ports");
+}
+
+void TestIC::testICLoadWithNonExistentFileFallback()
+{
+    // Both full path and filename fallback fail — should throw Pandaception
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    GlobalProperties::currentDir = TestUtils::examplesDir();
+
+    auto *ic = new IC();
+    scene->addItem(ic);
+
+    bool threw = false;
+    try {
+        ic->loadFile("C:\\Users\\alice\\project\\nonexistent_ic_12345.panda");
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+
+    QVERIFY2(threw, "loadFile should throw when neither full path nor filename fallback resolves");
+}
+
