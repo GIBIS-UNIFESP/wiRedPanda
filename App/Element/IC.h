@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include <QFileInfo>
 #include <QFileSystemWatcher>
 
@@ -32,8 +34,7 @@ public:
     /// Constructs an IC element without loading a file.
     explicit IC(QGraphicsItem *parent = nullptr);
 
-    /// Destructor; releases the internal ElementMapping.
-    ~IC() override;
+    ~IC() override = default;
 
     /// Copy-constructs by delegating to the parent item constructor.
     IC(const IC &other) : IC(other.parentItem()) {}
@@ -145,7 +146,7 @@ private:
 
     // --- Members ---
 
-    ElementMapping *m_mapping = nullptr;
+    std::unique_ptr<ElementMapping> m_mapping;
     QFileSystemWatcher m_fileWatcher;
     QString m_file;
     QVector<GraphicElement *> m_icElements;
