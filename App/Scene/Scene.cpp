@@ -19,7 +19,6 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/Buzzer.h"
-#include "App/Element/IC.h"
 #include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
@@ -1107,11 +1106,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         auto *element = ElementFactory::buildElement(type);
         qCDebug(zero) << "Valid element.";
 
-        if (element->elementType() == ElementType::IC) {
-            if (auto *ic = qobject_cast<IC *>(element)) {
-                ic->loadFile(icFileName);
-            }
-        }
+        element->loadFromDrop(icFileName);
 
         qCDebug(zero) << "Adding the element to the scene.";
         receiveCommand(new AddItemsCommand({element}, this));
@@ -1420,11 +1415,7 @@ void Scene::addItem(QMimeData *mimeData)
     auto *element = ElementFactory::buildElement(type);
     qCDebug(zero) << "Valid element.";
 
-    if (element->elementType() == ElementType::IC) {
-        if (auto *ic = qobject_cast<IC *>(element)) {
-            ic->loadFile(icFileName);
-        }
-    }
+    element->loadFromDrop(icFileName);
 
     qCDebug(zero) << "Adding the element to the scene.";
     receiveCommand(new AddItemsCommand({element}, this));
