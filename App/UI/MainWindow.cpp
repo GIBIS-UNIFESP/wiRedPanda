@@ -156,6 +156,9 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     qCDebug(zero) << "Window title.";
     setWindowTitle("wiRedPanda " APP_VERSION);
 
+    // Create shortcuts before the first tab so connectTab() can wire them up.
+    setupShortcuts();
+
     qCDebug(zero) << "Building a new tab.";
     createNewTab();
 
@@ -216,26 +219,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
         m_ui->menuExamples->menuAction()->setVisible(false);
     }
 
-    // --- Scene-level keyboard shortcuts ---
-    // These are not in the menu bar, so they live here as QShortcut objects.
-    // [ / ] cycle a selected element's primary property (e.g. input size).
-    // { / } cycle a secondary property; < / > morph through element variants.
-    auto *searchShortcut = new QShortcut(QKeySequence("Ctrl+F"), this);
-    auto *prevMainPropShortcut = new QShortcut(QKeySequence("["), this);
-    auto *nextMainPropShortcut = new QShortcut(QKeySequence("]"), this);
-    auto *prevSecndPropShortcut = new QShortcut(QKeySequence("{"), this);
-    auto *nextSecndPropShortcut = new QShortcut(QKeySequence("}"), this);
-    auto *changePrevElmShortcut = new QShortcut(QKeySequence("<"), this);
-    auto *changeNextElmShortcut = new QShortcut(QKeySequence(">"), this);
-
-    connect(searchShortcut,               &QShortcut::activated,      m_ui->lineEditSearch,  qOverload<>(&QWidget::setFocus));
-    connect(prevMainPropShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::prevMainPropShortcut);
-    connect(nextMainPropShortcut,         &QShortcut::activated,      m_currentTab->scene(), &Scene::nextMainPropShortcut);
-    connect(prevSecndPropShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevSecndPropShortcut);
-    connect(nextSecndPropShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextSecndPropShortcut);
-    connect(changePrevElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::prevElm);
-    connect(changeNextElmShortcut,        &QShortcut::activated,      m_currentTab->scene(), &Scene::nextElm);
-
     qCDebug(zero) << "Setting connections";
     connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,          &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
@@ -277,6 +260,22 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_ui->pushButtonAddIC,        &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
     connect(m_ui->pushButtonRemoveIC,     &QPushButton::clicked,      this,                &MainWindow::on_pushButtonRemoveIC_clicked);
     connect(m_ui->pushButtonRemoveIC,     &TrashButton::removeICFile, this,                &MainWindow::removeICFile);
+}
+
+void MainWindow::setupShortcuts()
+{
+    // [ / ] cycle a selected element's primary property (e.g. input size).
+    // { / } cycle a secondary property; < / > morph through element variants.
+    // Scene connections are made in connectTab() so they follow the active tab.
+    auto *searchShortcut = new QShortcut(QKeySequence("Ctrl+F"), this);
+    m_prevMainPropShortcut  = new QShortcut(QKeySequence("["), this);
+    m_nextMainPropShortcut  = new QShortcut(QKeySequence("]"), this);
+    m_prevSecndPropShortcut = new QShortcut(QKeySequence("{"), this);
+    m_nextSecndPropShortcut = new QShortcut(QKeySequence("}"), this);
+    m_changePrevElmShortcut = new QShortcut(QKeySequence("<"), this);
+    m_changeNextElmShortcut = new QShortcut(QKeySequence(">"), this);
+
+    connect(searchShortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
 }
 
 MainWindow::~MainWindow()
@@ -907,6 +906,14 @@ void MainWindow::disconnectTab()
     qCDebug(zero) << "Disconnecting zoom from UI.";
     disconnect(m_currentTab->view(), &GraphicsView::zoomChanged, this, &MainWindow::zoomChanged);
 
+    qCDebug(zero) << "Disconnecting scene shortcuts from previous tab.";
+    disconnect(m_prevMainPropShortcut,  nullptr, m_currentTab->scene(), nullptr);
+    disconnect(m_nextMainPropShortcut,  nullptr, m_currentTab->scene(), nullptr);
+    disconnect(m_prevSecndPropShortcut, nullptr, m_currentTab->scene(), nullptr);
+    disconnect(m_nextSecndPropShortcut, nullptr, m_currentTab->scene(), nullptr);
+    disconnect(m_changePrevElmShortcut, nullptr, m_currentTab->scene(), nullptr);
+    disconnect(m_changeNextElmShortcut, nullptr, m_currentTab->scene(), nullptr);
+
     qCDebug(zero) << "Removing undo and redo actions from UI menu.";
     removeUndoRedoMenu();
 
@@ -937,6 +944,13 @@ void MainWindow::connectTab()
     connect(m_ui->actionCut,            &QAction::triggered,        m_currentTab->scene(), &Scene::cutAction);
     connect(m_ui->actionDelete,         &QAction::triggered,        m_currentTab->scene(), &Scene::deleteAction);
     connect(m_ui->actionPaste,          &QAction::triggered,        m_currentTab->scene(), &Scene::pasteAction);
+
+    connect(m_prevMainPropShortcut,  &QShortcut::activated, m_currentTab->scene(), &Scene::prevMainPropShortcut);
+    connect(m_nextMainPropShortcut,  &QShortcut::activated, m_currentTab->scene(), &Scene::nextMainPropShortcut);
+    connect(m_prevSecndPropShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::prevSecndPropShortcut);
+    connect(m_nextSecndPropShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::nextSecndPropShortcut);
+    connect(m_changePrevElmShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::prevElm);
+    connect(m_changeNextElmShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::nextElm);
 
     if (m_ui->actionPlay->isChecked()) {
         qCDebug(zero) << "Restarting simulation.";

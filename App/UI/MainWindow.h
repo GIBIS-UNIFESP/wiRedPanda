@@ -17,6 +17,7 @@
 #include "App/UI/MainWindowUI.h"
 
 class ElementLabel;
+class QShortcut;
 class RecentFiles;
 class WorkSpace;
 
@@ -148,6 +149,8 @@ private:
     /// Removes undo and redo of current tab from the UI menu.
     void removeUndoRedoMenu();
 
+    void setupShortcuts();
+
     /// Function used to disconnect elements of current tab, to safely change or close a tab.
     void disconnectTab();
 
@@ -252,5 +255,13 @@ private:
     WorkSpace *m_currentTab = nullptr;
     int m_tabIndex = -1;
     int m_lastTabIndex = -1;
+
+    // Scene-level shortcuts created once in setupShortcuts(), reconnected on tab switch.
+    QShortcut *m_prevMainPropShortcut  = nullptr;
+    QShortcut *m_nextMainPropShortcut  = nullptr;
+    QShortcut *m_prevSecndPropShortcut = nullptr;
+    QShortcut *m_nextSecndPropShortcut = nullptr;
+    QShortcut *m_changePrevElmShortcut = nullptr;
+    QShortcut *m_changeNextElmShortcut = nullptr;
 };
 
