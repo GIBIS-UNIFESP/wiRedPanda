@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
+#include <QIODevice>
 #include <QPainter>
 #include <QPen>
 #include <QStyleOptionGraphicsItem>

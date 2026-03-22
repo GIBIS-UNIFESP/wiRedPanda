@@ -8,6 +8,7 @@
 #endif
 
 #include <QActionGroup>
+#include <QApplication>
 #include <QCheckBox>
 #include <QCloseEvent>
 #include <QDebug>

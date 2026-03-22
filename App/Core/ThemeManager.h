@@ -9,9 +9,6 @@
 
 #include <QColor>
 #include <QObject>
-#include <QPalette>
-
-#include "App/Core/Application.h"
 
 /// Enumeration of available application themes.
 enum class Theme { Light, Dark };
@@ -70,9 +67,6 @@ public:
     // --- Members: Port Hover ---
 
     QColor m_portHoverPort;
-
-private:
-    QPalette const m_defaultPalette = qApp->palette();
 };
 
 /**
