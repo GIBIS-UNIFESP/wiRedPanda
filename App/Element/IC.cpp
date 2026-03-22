@@ -555,3 +555,8 @@ QVector<std::shared_ptr<LogicElement>> IC::getLogicElementsForMapping()
     return generateMap();
 }
 
+void IC::loadFromDrop(const QString &fileName)
+{
+    loadFile(fileName);
+}
+
