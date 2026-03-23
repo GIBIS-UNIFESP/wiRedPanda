@@ -16,7 +16,8 @@
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Element/PropertyDescriptor.h"
-#include "App/IO/SerializationContext.h"
+
+struct SerializationContext;
 
 class GraphicElement;
 class QNEInputPort;

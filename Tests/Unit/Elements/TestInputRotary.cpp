@@ -10,6 +10,7 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputRotary.h"
+#include "App/IO/SerializationContext.h"
 #include "App/Nodes/QNEPort.h"
 #include "Tests/Common/TestUtils.h"
 

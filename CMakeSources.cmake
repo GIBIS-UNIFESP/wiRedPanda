@@ -46,6 +46,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/TruthTable.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xnor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
