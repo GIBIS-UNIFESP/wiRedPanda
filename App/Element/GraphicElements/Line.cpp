@@ -3,6 +3,7 @@
 
 #include "App/Element/GraphicElements/Line.h"
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
 template<>
@@ -23,7 +24,9 @@ struct ElementInfo<Line> {
         meta.titleText = QT_TRANSLATE_NOOP("Line", "LINE");
         meta.translatedName = QT_TRANSLATE_NOOP("Line", "Line");
         meta.trContext = "Line";
+        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Misc/line.svg"});
+        // Line is decorative and excluded from simulation.
         return meta;
     }
 

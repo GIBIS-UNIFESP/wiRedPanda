@@ -3,6 +3,7 @@
 
 #include "App/Element/GraphicElements/Text.h"
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
 template<>
@@ -28,6 +29,7 @@ struct ElementInfo<Text> {
             ":/Components/Misc/no_text.png",
             ":/Components/Misc/text.png",
         });
+        // Text is decorative and excluded from simulation.
         return meta;
     }
 

@@ -3,6 +3,7 @@
 
 #include "App/Element/GraphicElements/Node.h"
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Nodes/QNEPort.h"
 

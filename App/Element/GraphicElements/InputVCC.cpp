@@ -3,6 +3,7 @@
 
 #include "App/Element/GraphicElements/InputVCC.h"
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Nodes/QNEPort.h"
 
@@ -26,6 +27,7 @@ struct ElementInfo<InputVcc> {
         meta.titleText = QT_TRANSLATE_NOOP("InputVcc", "VCC");
         meta.translatedName = QT_TRANSLATE_NOOP("InputVcc", "VCC");
         meta.trContext = "InputVcc";
+        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Input/1.svg"});
         return meta;
     }

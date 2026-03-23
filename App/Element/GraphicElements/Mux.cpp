@@ -7,6 +7,7 @@
 
 #include <QPainter>
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
