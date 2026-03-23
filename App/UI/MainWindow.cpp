@@ -275,11 +275,20 @@ void MainWindow::setupConnections()
 
     // These edit actions always delegate to the current tab's scene, so they
     // never need to be rewired on tab switch.
-    connect(m_ui->actionClearSelection, &QAction::triggered, this, [this] { if (m_currentTab) m_currentTab->scene()->clearSelection(); });
-    connect(m_ui->actionCopy,           &QAction::triggered, this, [this] { if (m_currentTab) m_currentTab->scene()->copyAction(); });
-    connect(m_ui->actionCut,            &QAction::triggered, this, [this] { if (m_currentTab) m_currentTab->scene()->cutAction(); });
-    connect(m_ui->actionDelete,         &QAction::triggered, this, [this] { if (m_currentTab) m_currentTab->scene()->deleteAction(); });
-    connect(m_ui->actionPaste,          &QAction::triggered, this, [this] { if (m_currentTab) m_currentTab->scene()->pasteAction(); });
+    connectSceneAction(m_ui->actionClearSelection, &Scene::clearSelection);
+    connectSceneAction(m_ui->actionCopy,           &Scene::copyAction);
+    connectSceneAction(m_ui->actionCut,            &Scene::cutAction);
+    connectSceneAction(m_ui->actionDelete,         &Scene::deleteAction);
+    connectSceneAction(m_ui->actionPaste,          &Scene::pasteAction);
+}
+
+void MainWindow::connectSceneAction(QAction *action, void (Scene::*method)())
+{
+    connect(action, &QAction::triggered, this, [this, method] {
+        if (m_currentTab) {
+            (m_currentTab->scene()->*method)();
+        }
+    });
 }
 
 MainWindow::~MainWindow()
