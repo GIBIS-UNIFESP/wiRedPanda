@@ -4,7 +4,6 @@
 #pragma once
 
 #include "App/Core/Enums.h"
-#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementMetadata.h"
 
 /*!

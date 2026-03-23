@@ -3,6 +3,7 @@
 
 #include "App/Element/GraphicElements/Not.h"
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
 template<>

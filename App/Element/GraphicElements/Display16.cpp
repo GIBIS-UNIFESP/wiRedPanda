@@ -5,6 +5,7 @@
 
 #include <QPainter>
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/IO/SerializationContext.h"
@@ -73,6 +74,10 @@ struct ElementInfo<Display16> {
 Display16::Display16(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display16, parent)
 {
+    // Each of the 16 segments plus the decimal point (dp) is stored as 5 color
+    // variants. Indices match the defaultSkins list: skin[0]=off background,
+    // skins[1..17]=individual segment images, all in white initially.
+    // Display7::convertAllColors() recolors them in-place (see Display7.cpp).
     a1 = QVector<QPixmap>(5, m_defaultSkins.at(1));
     a2 = QVector<QPixmap>(5, m_defaultSkins.at(2));
     b  = QVector<QPixmap>(5, m_defaultSkins.at(3));

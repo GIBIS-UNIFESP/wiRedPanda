@@ -6,6 +6,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
@@ -59,7 +60,9 @@ InputRotary::InputRotary(QGraphicsItem *parent)
 {
     m_rotary = m_defaultSkins.at(0);
     m_arrow  = m_defaultSkins.at(1);
+
     setLocked(false);
+
     InputRotary::updatePortsProperties();
 }
 

@@ -3,6 +3,7 @@
 
 #include "App/Element/GraphicElements/InputGND.h"
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
 template<>
@@ -36,6 +37,7 @@ struct ElementInfo<InputGnd> {
         meta.titleText = QT_TRANSLATE_NOOP("InputGnd", "GROUND");
         meta.translatedName = QT_TRANSLATE_NOOP("InputGnd", "GND");
         meta.trContext = "InputGnd";
+        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Input/0.svg"});
         return meta;
     }
