@@ -40,6 +40,12 @@ private slots:
     void testLastIdPersistenceOnLoad();
     void testFileInfoAfterCreation();
 
+    // Auto-migration: WorkSpace::load with Application::migrationEnabled
+    void testMigrationDisabledSkipsBackupAndResave();  // no backup, file unchanged when disabled
+    void testMigrationEnabledCreatesBackup();          // backup created with correct name + content
+    void testMigrationUpdatesFileVersion();            // original file re-saved at current version
+    void testMigrationCurrentVersionSkips();           // already-current file: no backup created
+
 private:
     QTemporaryDir m_tempDir;
 };

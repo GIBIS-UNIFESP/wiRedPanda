@@ -38,5 +38,11 @@ private slots:
     void testICNestedCircuitPortMapping();
     void testICNestedCircuitSignalPropagation();
     void testICFileDependencyResolution();
+
+    // Migration (4 tests)
+    void testICMigrationPreservesConnections();
+    void testICFileMigrationCreatesBackup();         // old sub-circuit file gets versioned backup
+    void testICFileMigrationUpdatesSubcircuitVersion(); // sub-circuit re-saved at current version
+    void testICFileMigrationDisabledSkips();         // no backup when migration disabled
 };
 

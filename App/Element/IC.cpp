@@ -7,6 +7,7 @@
 #include <QFileInfo>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+#include <QSaveFile>
 #include <QScopeGuard>
 #include <QSet>
 #include <QStyleOptionGraphicsItem>
@@ -242,6 +243,41 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
     QMap<quint64, QNEPort *> portMap;
     SerializationContext subCtx{portMap, preamble.version, fileInfo.absolutePath()};
     const auto items = Serialization::deserialize(stream, subCtx);
+    file.close(); // must be closed before QSaveFile can write on Windows (mandatory file locking)
+
+    // Migrate the IC file to the current format if it is outdated.
+    // This must happen here, before the element-processing loop below deletes
+    // the input/output proxy elements (loadInputElement/loadOutputElement call
+    // delete elm), so that items is still fully valid for re-serialization.
+    const bool needsMigration = (preamble.version < AppVersion::current) && Application::migrationEnabled;
+    if (needsMigration) {
+        Serialization::createVersionedBackup(fileInfo.absoluteFilePath(), preamble.version);
+
+        // Remove the file from the watcher before writing so that QSaveFile::commit()
+        // does not trigger a spurious fileChanged hot-reload on this IC element while
+        // its items are still being processed below.  Re-add afterwards so future
+        // user edits are still detected.
+        m_fileWatcher.removePath(fileInfo.absoluteFilePath());
+        auto restoreMigrationState = qScopeGuard([&] {
+            m_fileWatcher.addPath(fileInfo.absoluteFilePath());
+        });
+
+        // Serialization::serialize() assigns sequential local IDs internally before
+        // calling save(), then restores the originals.  Elements deserialized with
+        // id=-1 are therefore safe to re-serialize without any extra bookkeeping here.
+        QSaveFile saveFile(fileInfo.absoluteFilePath());
+        if (!saveFile.open(QIODevice::WriteOnly)) {
+            throw PANDACEPTION("IC migration: cannot open file for writing: %1", fileInfo.absoluteFilePath());
+        }
+        QDataStream outStream(&saveFile);
+        Serialization::writePandaHeader(outStream);
+        outStream << QString();   // dolphin file name — not used by IC sub-circuit files
+        outStream << QRectF();    // scene rect — recomputed from content on next load
+        Serialization::serialize(items, outStream);
+        if (!saveFile.commit()) {
+            throw PANDACEPTION("IC migration: failed to commit re-saved file: %1", fileInfo.absoluteFilePath());
+        }
+    }
 
     for (auto *item : items) {
         if (item->type() != GraphicElement::Type) {
@@ -260,8 +296,6 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
         default:                   m_icElements.append(elm); break;
         }
     }
-
-    file.close();
 
     // --- Build sorted, labelled port lists ---
 

@@ -90,6 +90,7 @@ private:
     // --- Internal methods ---
 
     void autosave();
+    void createVersionedBackup(const QString &fileName, const QVersionNumber &version);
     void setAutosaveFileName();
 
     /// Atomically sets m_fileInfo and the scene's contextDir from \a filePath.
