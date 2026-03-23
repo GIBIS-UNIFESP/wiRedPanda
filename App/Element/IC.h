@@ -12,6 +12,7 @@
 #include <QSet>
 
 #include "App/Element/GraphicElement.h"
+#include "App/IO/SerializationContext.h"
 
 /**
  * \class IC

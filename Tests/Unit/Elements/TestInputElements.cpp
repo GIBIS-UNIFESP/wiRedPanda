@@ -10,6 +10,8 @@
 
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/IO/SerializationContext.h"
+#include "App/IO/SerializationContext.h"
 #include "Tests/Common/TestUtils.h"
 
 // ============================================================================
@@ -184,6 +186,7 @@ void TestInputElements::testInputSwitchLoadNewVersion()
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
     SerializationContext context{portMap, QVersionNumber(4, 1), {}};
+
     inputSwitch2->load(loadStream, context);
 
     // State should be preserved
@@ -368,6 +371,7 @@ void TestInputElements::testInputButtonLoadOldVersion()
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
     SerializationContext context{portMap, QVersionNumber(3, 5), {}};
+
     inputButton2->load(loadStream, context);
 
     // Verify the element is in a valid state after loading
@@ -392,6 +396,7 @@ void TestInputElements::testInputButtonLoadNewVersion()
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
     SerializationContext context{portMap, QVersionNumber(4, 1), {}};
+
     inputButton2->load(loadStream, context);
 
     // Verify the element is in a valid state after loading
