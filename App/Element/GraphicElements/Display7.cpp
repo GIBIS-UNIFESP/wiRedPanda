@@ -7,6 +7,7 @@
 #include <QPixmap>
 
 #include "App/Core/Common.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"

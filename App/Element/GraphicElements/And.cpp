@@ -5,6 +5,7 @@
 
 #include <functional>
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
 template<>
