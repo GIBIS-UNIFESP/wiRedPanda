@@ -333,7 +333,7 @@ void BewavedDolphin::loadElements()
 
     // Topological sort ensures inputs are visited before the logic elements that depend on them,
     // giving a stable traversal order that matches the simulation update sequence
-    const auto elements = Common::sortGraphicElements(m_externalScene->elements());
+    const auto elements = m_externalScene->elements();
 
     if (elements.isEmpty()) {
         throw PANDACEPTION("Could not load enough elements for the simulation.");

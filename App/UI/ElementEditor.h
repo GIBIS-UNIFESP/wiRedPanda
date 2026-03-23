@@ -65,8 +65,6 @@ public:
     void truthTable();
     /// Applies the chosen skin to the selected element(s).
     void updateElementSkin();
-    /// Applies the priority value from the spin box to the selected element(s).
-    void updatePriorityAction();
 
     // --- Context Menu ---
 
@@ -108,7 +106,6 @@ private:
 
     // Skin helpers
     void updateSkins();
-    void priorityChanged(const int value);
 
     // --- Members ---
 
@@ -168,7 +165,6 @@ private:
     bool m_hasSameLabel = false;
     bool m_hasSameOutputSize = false;
     bool m_hasSameOutputValue = false;
-    bool m_hasSamePriority = false;
     bool m_hasSameTrigger = false;
     bool m_hasSameType = false;
 };

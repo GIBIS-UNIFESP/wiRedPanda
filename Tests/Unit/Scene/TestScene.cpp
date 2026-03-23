@@ -8,7 +8,6 @@
 #include <QClipboard>
 #include <QTest>
 
-#include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/And.h"
@@ -1235,7 +1234,7 @@ void TestScene::testSortSimpleChain()
     QVector<GraphicElement *> elements{&sw, &andGate, &led};
 
     // Sort elements
-    auto sorted = Common::sortGraphicElements(elements);
+    auto sorted = Scene::sortByTopology(elements);
 
     // Verify all elements are present
     QCOMPARE(sorted.size(), 3);
@@ -1291,7 +1290,7 @@ void TestScene::testSortMultipleChains()
     QVector<GraphicElement *> elements{&sw1, &sw2, &andGate, &orGate, &led1, &led2};
 
     // Sort elements
-    auto sorted = Common::sortGraphicElements(elements);
+    auto sorted = Scene::sortByTopology(elements);
 
     // Verify all elements are present
     QCOMPARE(sorted.size(), 6);
@@ -1341,7 +1340,7 @@ void TestScene::testSortCycleDetection()
     QVector<GraphicElement *> elements{&sw, &andGate, &orGate};
 
     // Sort should handle cycle without hanging
-    auto sorted = Common::sortGraphicElements(elements);
+    auto sorted = Scene::sortByTopology(elements);
 
     // Verify all elements are present (no crash or infinite loop)
     QCOMPARE(sorted.size(), 3);
@@ -1391,7 +1390,7 @@ void TestScene::testSortDisconnectedComponents()
     QVector<GraphicElement *> elements{&sw1, &sw2, &andGate, &led};
 
     // Sort should handle disconnected components
-    auto sorted = Common::sortGraphicElements(elements);
+    auto sorted = Scene::sortByTopology(elements);
 
     // All elements should be present
     QCOMPARE(sorted.size(), 4);
