@@ -102,20 +102,20 @@ void InputSwitch::save(QDataStream &stream) const
     stream << map;
 }
 
-void InputSwitch::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
+void InputSwitch::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, portMap, version);
+    GraphicElement::load(stream, context);
 
-    if (version < Versions::V_4_1) {
+    if (context.version < Versions::V_4_1) {
         // v1.x–4.0 stored isOn as a bare bool; locked flag added in v3.1
         stream >> m_isOn;
 
-        if (version >= Versions::V_3_1) {
+        if (context.version >= Versions::V_3_1) {
             stream >> m_locked;
         }
     }
 
-    if (version >= Versions::V_4_1) {
+    if (context.version >= Versions::V_4_1) {
         // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 

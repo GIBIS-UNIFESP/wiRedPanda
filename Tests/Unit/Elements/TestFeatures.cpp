@@ -9,13 +9,11 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
-#include "App/GlobalProperties.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestFeatures::initTestCase()
 {
     QVERIFY(m_tempDir.isValid());
-    GlobalProperties::currentDir = m_tempDir.path();
 }
 
 void TestFeatures::testAndGateFeatures()

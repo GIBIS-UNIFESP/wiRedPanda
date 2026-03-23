@@ -4,6 +4,7 @@
 #include "App/Element/IC.h"
 
 #include <QDir>
+#include <QFileInfo>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QScopeGuard>
@@ -14,7 +15,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
@@ -60,7 +60,7 @@ IC::IC(QGraphicsItem *parent)
     // an edited sub-circuit), reload the IC definition and restart the simulation so the
     // parent circuit immediately reflects the updated internals
     connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, [this](const QString &filePath) {
-        loadFile(filePath);
+        loadFile(filePath, QFileInfo(filePath).absolutePath());
 
         if (auto *scene_ = qobject_cast<Scene *>(scene())) {
             scene_->simulation()->restart();
@@ -80,12 +80,12 @@ void IC::save(QDataStream &stream) const
     stream << map;
 }
 
-void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
+void IC::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, portMap, version);
+    GraphicElement::load(stream, context);
 
     // Old format (V_1_2 to V_4_1): IC file path was written as a plain QString
-    if ((Versions::V_1_2 <= version) && (version < Versions::V_4_1)) {
+    if ((Versions::V_1_2 <= context.version) && (context.version < Versions::V_4_1)) {
         stream >> m_file;
 
         // Old files may have stored absolute paths from the original machine; keep only the
@@ -94,33 +94,33 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVer
         // separator on Unix, so a Windows path like "C:\...\sub.panda" would be kept as-is.
         m_file = QFileInfo(QString(m_file).replace('\\', '/')).fileName();
 
-        if (IC::needToCopyFiles) {
-            copyFile();
+        if (context.copyOperation.needed) {
+            copyFile(context.copyOperation);
         }
 
-        loadFile(m_file);
+        loadFile(m_file, context.contextDir);
     }
 
     // New format (V_4_1+): IC data stored in a QMap for extensibility
-    if (version >= Versions::V_4_1) {
+    if (context.version >= Versions::V_4_1) {
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("fileName")) {
             m_file = map.value("fileName").toString();
 
-            if (IC::needToCopyFiles) {
-                copyFile();
+            if (context.copyOperation.needed) {
+                copyFile(context.copyOperation);
             }
 
-            loadFile(m_file);
+            loadFile(m_file, context.contextDir);
         }
     }
 }
 
-void IC::copyFile()
+void IC::copyFile(const CopyOperation &op)
 {
-    const QString srcPath = IC::srcPath_ + "/" + m_file;
-    const QString destPath = IC::destPath_ + "/" + m_file;
+    const QString srcPath = op.srcPath + "/" + m_file;
+    const QString destPath = op.destPath + "/" + m_file;
 
     QFile destFile;
 
@@ -168,7 +168,7 @@ void IC::loadOutputs()
 /// Files currently being loaded (cycle detection for circular IC references).
 static QSet<QString> s_loadingFiles;
 
-void IC::loadFile(const QString &fileName)
+void IC::loadFile(const QString &fileName, const QString &contextDir)
 {
     qCDebug(zero) << "Reading IC.";
 
@@ -182,14 +182,14 @@ void IC::loadFile(const QString &fileName)
 
     // --- Resolve file path ---
 
-    // Try the full path combined with currentDir first (handles relative paths
+    // Try the full path combined with contextDir first (handles relative paths
     // and same-OS absolute paths). If not found, fall back to just the filename
-    // resolved against currentDir — this handles cross-platform absolute paths
+    // resolved against contextDir — this handles cross-platform absolute paths
     // from old .panda files (e.g. a Windows "C:\...\sub.panda" opened on Linux).
-    QFileInfo fileInfo(QDir(GlobalProperties::currentDir), fileName);
+    QFileInfo fileInfo(QDir(contextDir), fileName);
 
     if (!fileInfo.exists() || !fileInfo.isFile()) {
-        fileInfo.setFile(QDir(GlobalProperties::currentDir), QFileInfo(QString(fileName).replace('\\', '/')).fileName());
+        fileInfo.setFile(QDir(contextDir), QFileInfo(QString(fileName).replace('\\', '/')).fileName());
     }
 
     if (!fileInfo.exists() || !fileInfo.isFile()) {
@@ -224,7 +224,9 @@ void IC::loadFile(const QString &fileName)
     Serialization::loadDolphinFileName(stream, version);
     Serialization::loadRect(stream, version);
 
-    const auto items = Serialization::deserialize(stream, {}, version);
+    QMap<quint64, QNEPort *> portMap;
+    SerializationContext subCtx{portMap, version, fileInfo.absolutePath()};
+    const auto items = Serialization::deserialize(stream, subCtx);
 
     for (auto *item : items) {
         if (item->type() != GraphicElement::Type) {
@@ -514,8 +516,6 @@ void IC::refresh()
 
 void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
 {
-    IC::needToCopyFiles = true;
-
     QFile destFile;
 
     // Skip the copy if the destination already exists (e.g. two ICs reference the same file)
@@ -536,16 +536,10 @@ void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
     Serialization::loadDolphinFileName(stream, version);
     Serialization::loadRect(stream, version);
 
-    // Set the global src/dest paths before deserialization so that any IC elements
-    // encountered while parsing can call copyFile() with the correct directories
-    IC::srcPath_ = srcPath.absolutePath();
-    IC::destPath_ = destPath.absolutePath();
-    Serialization::deserialize(stream, {}, version);
-
-    // Clear after deserialization to prevent stale paths from affecting later operations
-    IC::needToCopyFiles = false;
-    IC::srcPath_.clear();
-    IC::destPath_.clear();
+    QMap<quint64, QNEPort *> portMap;
+    CopyOperation copyOp{srcPath.absolutePath(), destPath.absolutePath(), true};
+    SerializationContext context{portMap, version, destPath.absolutePath(), copyOp};
+    Serialization::deserialize(stream, context);
 }
 
 LogicElement *IC::getInputLogic(int portIndex) const
@@ -578,8 +572,8 @@ QVector<std::shared_ptr<LogicElement>> IC::getLogicElementsForMapping()
     return generateMap();
 }
 
-void IC::loadFromDrop(const QString &fileName)
+void IC::loadFromDrop(const QString &fileName, const QString &contextDir)
 {
-    loadFile(fileName);
+    loadFile(fileName, contextDir);
 }
 

@@ -17,6 +17,7 @@
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Element/LogicElement.h"
+#include "App/IO/SerializationContext.h"
 
 class GraphicElement;
 class QNEInputPort;
@@ -68,11 +69,9 @@ public:
 
     /**
      * \brief Loads the graphic element through a binary data stream.
-     * \param stream Binary data stream to read from.
-     * \param portMap receives a reference to each input and output port.
-     * \param version File format version for backward compatibility.
+     * \param context carries portMap, version, contextDir and optional copy-operation state.
      */
-    virtual void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version);
+    virtual void load(QDataStream &stream, SerializationContext &context);
 
     // --- Port Management ---
 
@@ -292,7 +291,7 @@ public:
     virtual QVector<std::shared_ptr<LogicElement>> getLogicElementsForMapping();
 
     /// Polymorphic interface for drag-drop initialization (replaces elementType() == IC checks).
-    virtual void loadFromDrop(const QString &fileName);
+    virtual void loadFromDrop(const QString &fileName, const QString &contextDir);
 
     // --- Virtual Methods ---
 
@@ -444,17 +443,16 @@ private:
     /// Erases \a deletedPort's serial-ID entry from \a portMap during deserialization.
     static void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);
     /// Removes input ports beyond \a inputSize_ (used when the loaded port count exceeds current limits).
-    void removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap);
+    void removeSurplusInputs(const quint64 inputSize_, SerializationContext &context);
     /// Removes output ports beyond \a outputSize_ (used when the loaded port count exceeds current limits).
-    void removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap);
+    void removeSurplusOutputs(const quint64 outputSize_, SerializationContext &context);
 
-    /// functions to load GraphicElement atributes through a binary data stream
     // --- Serialization Helpers ---
 
     /// Deserializes element state from the V4.6+ binary format.
-    void loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
+    void loadNewFormat(QDataStream &stream, SerializationContext &context);
     /// Deserializes element state from pre-V4.6 binary formats.
-    void loadOldFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version);
+    void loadOldFormat(QDataStream &stream, SerializationContext &context);
 
     // --- Position Loading ---
 
@@ -464,13 +462,13 @@ private:
     // --- Port Loading ---
 
     /// Reads a single input port at \a port index from \a stream.
-    void loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port);
+    void loadInputPort(QDataStream &stream, SerializationContext &context, const int port);
     /// Reads all input ports from \a stream.
-    void loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
+    void loadInputPorts(QDataStream &stream, SerializationContext &context);
     /// Reads a single output port at \a port index from \a stream.
-    void loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port);
+    void loadOutputPort(QDataStream &stream, SerializationContext &context, const int port);
     /// Reads all output ports from \a stream.
-    void loadOutputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
+    void loadOutputPorts(QDataStream &stream, SerializationContext &context);
     /// Reads and applies input/output port counts from \a stream, clamped to current constraints.
     void loadPortsSize(QDataStream &stream, const QVersionNumber &version);
 
@@ -479,9 +477,9 @@ private:
     /// Reads the element label from \a stream (format depends on \a version).
     void loadLabel(QDataStream &stream, const QVersionNumber &version);
     /// Reads and applies a single skin path at index \a skin from \a stream.
-    void loadPixmapSkinName(QDataStream &stream, const int skin);
+    void loadPixmapSkinName(QDataStream &stream, const int skin, const QString &contextDir);
     /// Reads and applies all skin paths from \a stream.
-    void loadPixmapSkinNames(QDataStream &stream, const QVersionNumber version);
+    void loadPixmapSkinNames(QDataStream &stream, SerializationContext &context);
     void loadPriority(QDataStream &stream, const QVersionNumber &version);
     /// Reads and applies the element rotation from \a stream.
     void loadRotation(QDataStream &stream, const QVersionNumber &version);

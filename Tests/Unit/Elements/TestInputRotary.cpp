@@ -385,7 +385,8 @@ void TestInputRotary::testLoadCurrentPort()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
-    rotary2->load(loadStream, portMap, QVersionNumber(4, 1));
+    SerializationContext context{portMap, QVersionNumber(4, 1), {}};
+    rotary2->load(loadStream, context);
 
     // Verify port was loaded correctly
     QCOMPARE(rotary2->outputValue(), 1);
@@ -413,7 +414,8 @@ void TestInputRotary::testSaveLoadPreservesState()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
-    rotary2->load(loadStream, portMap, QVersionNumber(4, 1));
+    SerializationContext context{portMap, QVersionNumber(4, 1), {}};
+    rotary2->load(loadStream, context);
 
     // Verify state preserved
     QCOMPARE(rotary2->outputValue(), testPort);

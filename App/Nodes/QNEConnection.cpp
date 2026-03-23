@@ -16,6 +16,7 @@
 
 #include "App/Core/Common.h"
 #include "App/Core/ThemeManager.h"
+#include "App/IO/SerializationContext.h"
 #include "App/Nodes/QNEPort.h"
 
 static const int s_connectionMetatypeId = qRegisterMetaType<QNEConnection>();
@@ -162,10 +163,12 @@ void QNEConnection::save(QDataStream &stream) const
     stream << reinterpret_cast<quint64>(m_endPort);
 }
 
-void QNEConnection::load(QDataStream &stream, const QMap<quint64, QNEPort *> &portMap)
+void QNEConnection::load(QDataStream &stream, SerializationContext &context)
 {
     quint64 ptr1; stream >> ptr1;
     quint64 ptr2; stream >> ptr2;
+
+    const auto &portMap = context.portMap;
 
     // Check stream integrity after reading port IDs
     if (stream.status() != QDataStream::Ok) {

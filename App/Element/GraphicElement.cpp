@@ -18,7 +18,7 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementMetadata.h"
-#include "App/GlobalProperties.h"
+#include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
@@ -117,10 +117,10 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
 
     // Qt resource paths start with ":/"; anything else is a filesystem path
     // relative to the project's working directory (where the .panda file lives).
-    // Try the path as-is against currentDir first; if not found, fall back to
+    // Try the path as-is against contextDir first; if not found, fall back to
     // just the filename — handles cross-platform absolute paths from old files.
-    if (not path.startsWith(":/")) {
-        const QDir dir(GlobalProperties::currentDir);
+    if (!path.startsWith(":/")) {
+        const QDir dir(Serialization::contextDir);
         const QString resolved = dir.filePath(path);
 
         if (!QFileInfo::exists(resolved)) {
@@ -231,8 +231,8 @@ void GraphicElement::save(QDataStream &stream) const
 
         // When a custom skin lives outside the project directory, copy it alongside
         // the .panda file so the project remains self-contained when moved or shared.
-        if (!skinName.startsWith(":/") && (fileInfo.absoluteDir() != GlobalProperties::currentDir)) {
-            const QString newFile = GlobalProperties::currentDir + "/" + fileInfo.fileName();
+        if (!skinName.startsWith(":/") && (fileInfo.absoluteDir() != QDir(Serialization::contextDir))) {
+            const QString newFile = Serialization::contextDir + "/" + fileInfo.fileName();
             QFile::copy(skinName, newFile);
             // Store only the bare filename; the project dir is prepended on load.
             skinName2 = fileInfo.fileName();
@@ -253,13 +253,13 @@ void GraphicElement::save(QDataStream &stream) const
     qCDebug(four) << "Finished saving element.";
 }
 
-void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
+void GraphicElement::load(QDataStream &stream, SerializationContext &context)
 {
     qCDebug(four) << "Loading element. Type: " << objectName();
 
     // Files before 4.1 used a flat sequential binary format; 4.1+ use a keyed QMap
     // format that tolerates fields being added or reordered in future versions.
-    (version < Versions::V_4_1) ? loadOldFormat(stream, portMap, version) : loadNewFormat(stream, portMap);
+    (context.version < Versions::V_4_1) ? loadOldFormat(stream, context) : loadNewFormat(stream, context);
 
     qCDebug(four) << "Updating port positions.";
     updatePortsProperties();
@@ -270,28 +270,28 @@ void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap
     qCDebug(four) << "Finished loading element.";
 }
 
-void GraphicElement::loadOldFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
+void GraphicElement::loadOldFormat(QDataStream &stream, SerializationContext &context)
 {
     loadPos(stream);
-    loadRotation(stream, version);
+    loadRotation(stream, context.version);
     /* <Version1.2> */
-    loadLabel(stream, version);
+    loadLabel(stream, context.version);
     /* <\Version1.2> */
     /* <Version1.3> */
-    loadPortsSize(stream, version);
+    loadPortsSize(stream, context.version);
     /* <\Version1.3> */
     /* <Version1.9> */
-    loadTrigger(stream, version);
+    loadTrigger(stream, context.version);
     /* <\Version4.01> */
-    loadPriority(stream, version);
+    loadPriority(stream, context.version);
     /* <\Version1.9> */
-    loadInputPorts(stream, portMap);
-    loadOutputPorts(stream, portMap);
+    loadInputPorts(stream, context);
+    loadOutputPorts(stream, context);
     /* <\Version2.7> */
-    loadPixmapSkinNames(stream, version);
+    loadPixmapSkinNames(stream, context);
 }
 
-void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap)
+void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &context)
 {
     QMap<QString, QVariant> map; stream >> map;
 
@@ -363,12 +363,12 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
             addPort(name, false);
         }
 
-        portMap[ptr] = m_inputPorts.value(port);
+        context.portMap[ptr] = m_inputPorts.value(port);
 
         ++port;
     }
 
-    removeSurplusInputs(static_cast<quint64>(inputMap.size()), portMap);
+    removeSurplusInputs(static_cast<quint64>(inputMap.size()), context);
 
     // -------------------------------------------
 
@@ -390,12 +390,12 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
             addPort(name, true);
         }
 
-        portMap[ptr] = m_outputPorts.value(port);
+        context.portMap[ptr] = m_outputPorts.value(port);
 
         ++port;
     }
 
-    removeSurplusOutputs(static_cast<quint64>(outputMap.size()), portMap);
+    removeSurplusOutputs(static_cast<quint64>(outputMap.size()), context);
 
     // -------------------------------------------
 
@@ -413,7 +413,11 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         const QString name = skinName.value("skinName").toString();
 
         if (!name.startsWith(":/")) {
-            m_alternativeSkins[skin] = name;
+            if (!context.contextDir.isEmpty() && QDir::isRelativePath(name)) {
+                m_alternativeSkins[skin] = context.contextDir + "/" + name;
+            } else {
+                m_alternativeSkins[skin] = name;
+            }
         }
 
         ++skin;
@@ -507,19 +511,19 @@ void GraphicElement::loadPriority(QDataStream &stream, const QVersionNumber &ver
     }
 }
 
-void GraphicElement::loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap)
+void GraphicElement::loadInputPorts(QDataStream &stream, SerializationContext &context)
 {
     qCDebug(four) << "Loading input ports.";
     quint64 inputSize; stream >> inputSize;
 
     for (size_t port = 0; port < inputSize; ++port) {
-        loadInputPort(stream, portMap, static_cast<int>(port));
+        loadInputPort(stream, context, static_cast<int>(port));
     }
 
-    removeSurplusInputs(inputSize, portMap);
+    removeSurplusInputs(inputSize, context);
 }
 
-void GraphicElement::loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port)
+void GraphicElement::loadInputPort(QDataStream &stream, SerializationContext &context, const int port)
 {
     quint64 ptr;  stream >> ptr;
     QString name; stream >> name;
@@ -529,28 +533,28 @@ void GraphicElement::loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *>
         addPort(name, false);
     }
 
-    portMap[ptr] = m_inputPorts.value(port);
+    context.portMap[ptr] = m_inputPorts.value(port);
 }
 
-void GraphicElement::removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap)
+void GraphicElement::removeSurplusInputs(const quint64 inputSize_, SerializationContext &context)
 {
     // The element may have been constructed with more ports than are stored in the file
     // (e.g. default constructor creates minInputSize ports).  Trim the excess from the end,
     // but never go below minInputSize to avoid leaving an unusable element.
     while ((inputSize() > static_cast<int>(inputSize_)) && (inputSize_ >= m_minInputSize)) {
         auto *deletedPort = m_inputPorts.constLast();
-        removePortFromMap(deletedPort, portMap);
+        removePortFromMap(deletedPort, context.portMap);
         delete deletedPort;
         m_inputPorts.removeLast();
     }
 }
 
-void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap)
+void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, SerializationContext &context)
 {
     // Same trimming logic as removeSurplusInputs, applied to output ports
     while ((outputSize() > static_cast<int>(outputSize_)) && (outputSize_ >= m_minOutputSize)) {
         auto *deletedPort = m_outputPorts.constLast();
-        removePortFromMap(deletedPort, portMap);
+        removePortFromMap(deletedPort, context.portMap);
         delete deletedPort;
         m_outputPorts.removeLast();
     }
@@ -577,19 +581,19 @@ void GraphicElement::removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPo
     }
 }
 
-void GraphicElement::loadOutputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap)
+void GraphicElement::loadOutputPorts(QDataStream &stream, SerializationContext &context)
 {
     qCDebug(four) << "Loading output ports.";
     quint64 outputSize; stream >> outputSize;
 
     for (size_t port = 0; port < outputSize; ++port) {
-        loadOutputPort(stream, portMap, static_cast<int>(port));
+        loadOutputPort(stream, context, static_cast<int>(port));
     }
 
-    removeSurplusOutputs(outputSize, portMap);
+    removeSurplusOutputs(outputSize, context);
 }
 
-void GraphicElement::loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port)
+void GraphicElement::loadOutputPort(QDataStream &stream, SerializationContext &context, const int port)
 {
     quint64 ptr;  stream >> ptr;
     QString name; stream >> name;
@@ -599,12 +603,12 @@ void GraphicElement::loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *
         addPort(name, true);
     }
 
-    portMap[ptr] = m_outputPorts.value(port);
+    context.portMap[ptr] = m_outputPorts.value(port);
 }
 
-void GraphicElement::loadPixmapSkinNames(QDataStream &stream, const QVersionNumber version)
+void GraphicElement::loadPixmapSkinNames(QDataStream &stream, SerializationContext &context)
 {
-    if (version >= Versions::V_2_7) {
+    if (context.version >= Versions::V_2_7) {
         qCDebug(four) << tr("Loading pixmap skin names.");
         quint64 outputSize; stream >> outputSize;
 
@@ -618,7 +622,7 @@ void GraphicElement::loadPixmapSkinNames(QDataStream &stream, const QVersionNumb
         }
 
         for (size_t skin = 0; skin < outputSize; ++skin) {
-            loadPixmapSkinName(stream, static_cast<int>(skin));
+            loadPixmapSkinName(stream, static_cast<int>(skin), context.contextDir);
         }
 
         m_usingDefaultSkin = std::equal(
@@ -630,7 +634,7 @@ void GraphicElement::loadPixmapSkinNames(QDataStream &stream, const QVersionNumb
     }
 }
 
-void GraphicElement::loadPixmapSkinName(QDataStream &stream, const int skin)
+void GraphicElement::loadPixmapSkinName(QDataStream &stream, const int skin, const QString &contextDir)
 {
     QString name; stream >> name;
 
@@ -643,7 +647,11 @@ void GraphicElement::loadPixmapSkinName(QDataStream &stream, const int skin)
     // paths (":/...") are always available and should not be replaced by the
     // potentially missing saved path from an older project file.
     if (!name.startsWith(":/")) {
-        m_alternativeSkins[skin] = name;
+        if (!contextDir.isEmpty() && QDir::isRelativePath(name)) {
+            m_alternativeSkins[skin] = contextDir + "/" + name;
+        } else {
+            m_alternativeSkins[skin] = name;
+        }
     }
 }
 
@@ -1299,9 +1307,10 @@ void GraphicElement::retranslate()
     setToolTip(m_translatedName);
 }
 
-void GraphicElement::loadFromDrop(const QString &fileName)
+void GraphicElement::loadFromDrop(const QString &fileName, const QString &contextDir)
 {
     Q_UNUSED(fileName)
+    Q_UNUSED(contextDir)
 }
 
 QDataStream &operator<<(QDataStream &stream, const GraphicElement *item)
