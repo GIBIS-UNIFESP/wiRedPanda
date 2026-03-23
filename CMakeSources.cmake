@@ -1,6 +1,10 @@
 set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphin.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphinUI.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveformView.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/ArduinoCodeGen.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Common.cpp
@@ -82,6 +86,10 @@ set(SOURCES
 set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphin.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphinUI.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveformView.h
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/ArduinoCodeGen.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Common.h
