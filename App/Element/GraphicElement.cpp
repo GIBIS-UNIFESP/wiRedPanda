@@ -1266,28 +1266,6 @@ void GraphicElement::setDelay(const float delay)
     Q_UNUSED(delay)
 }
 
-LogicElement *GraphicElement::getInputLogic(int portIndex) const
-{
-    Q_UNUSED(portIndex)
-    return logic();
-}
-
-LogicElement *GraphicElement::getOutputLogic(int portIndex) const
-{
-    Q_UNUSED(portIndex)
-    return logic();
-}
-
-int GraphicElement::getInputIndexForPort(int portIndex) const
-{
-    return portIndex;
-}
-
-int GraphicElement::getOutputIndexForPort(int portIndex) const
-{
-    return portIndex;
-}
-
 QVector<std::shared_ptr<LogicElement>> GraphicElement::getLogicElementsForMapping()
 {
     // Wrap the raw pointer in a non-owning shared_ptr (no-op deleter) so the logic mapping

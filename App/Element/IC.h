@@ -29,6 +29,7 @@ class IC : public GraphicElement
     Q_OBJECT
 
     friend class ArduinoCodeGen;
+    friend class TestIC;
 
 public:
     /// Constructs an IC element without loading a file.
@@ -54,23 +55,8 @@ public:
      * \brief Builds and returns the flat LogicElement mapping for simulation.
      * \return Vector of shared_ptr LogicElements representing the IC's internals.
      */
-    const QVector<std::shared_ptr<LogicElement>> generateMap();
     /// \reimp
     QVector<std::shared_ptr<LogicElement>> getLogicElementsForMapping() override;
-
-    // --- Logic access ---
-
-    /// \reimp
-    LogicElement *getInputLogic(int portIndex) const override;
-    /// \reimp
-    LogicElement *getOutputLogic(int portIndex) const override;
-
-    // --- Port information ---
-
-    /// \reimp
-    int getInputIndexForPort(int portIndex) const override;
-    /// \reimp
-    int getOutputIndexForPort(int portIndex) const override;
 
     // --- Port naming ---
 
@@ -122,9 +108,13 @@ private:
 
     // --- File copy helper ---
 
+    void copyFile(const CopyOperation &op);
+    const QVector<std::shared_ptr<LogicElement>> generateMap();
+
+    // --- Logic access ---
+
     LogicElement *inputLogic(int index);
     LogicElement *outputLogic(int index);
-    void copyFile(const CopyOperation &op);
 
     // --- Loading helpers ---
 

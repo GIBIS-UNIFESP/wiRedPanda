@@ -51,6 +51,8 @@ public:
 
     /// Returns the LogicElement associated with this port.
     LogicElement *logic() const;
+    int logicIndex() const;
+    void setPortLogic(LogicElement *logic, int index);
 
     // --- Identity & Status ---
 
@@ -161,6 +163,8 @@ protected:
     // --- Members ---
 
     GraphicElement *m_graphicElement = nullptr;
+    LogicElement *m_logic = nullptr;
+    int m_logicIndex = 0;
     QBrush m_currentBrush;
     QGraphicsTextItem *m_label = new QGraphicsTextItem(this); ///< Child text item displaying the port name label.
     QList<QNEConnection *> m_connections; // use smart pointers

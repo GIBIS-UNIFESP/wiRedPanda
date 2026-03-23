@@ -94,22 +94,13 @@ void Simulation::updatePort(QNEOutputPort *port)
         return;
     }
 
-    auto *elm = port->graphicElement();
-    if (!elm) {
-        return;
-    }
-    auto *logic = elm->getOutputLogic(port->index());
+    auto *logic = port->logic();
     if (!logic) {
-        // No logic node means the element isn't mapped (e.g. mid-deletion);
-        // mark the port invalid so connected wires show the error colour.
         port->setStatus(Status::Invalid);
         return;
     }
 
-    // getOutputIndexForPort translates the visible port number to the index
-    // inside the LogicElement's output array (they differ for ICs that expose
-    // multiple outputs from a single logic node).
-    int outputIndex = elm->getOutputIndexForPort(port->index());
+    int outputIndex = port->logicIndex();
     port->setStatus(logic->isValid() ? static_cast<Status>(logic->outputValue(outputIndex)) : Status::Invalid);
 }
 

@@ -264,22 +264,6 @@ public:
     /// Returns \c true if the element is fully initialised and connected correctly.
     bool isValid();
 
-    // --- Polymorphic Logic Element Interface ---
-
-    /// Polymorphic interface for logic element access (eliminates manual IC type checking)
-    virtual LogicElement *getInputLogic(int portIndex) const;
-
-    /// Returns the logic element that drives output \a portIndex.
-    virtual LogicElement *getOutputLogic(int portIndex) const;
-
-    // --- Polymorphic Port Index Interface ---
-
-    /// Polymorphic interface for getting the correct input/output indices for ports
-    virtual int getInputIndexForPort(int portIndex) const;
-
-    /// Returns the logic-element output index corresponding to \a portIndex.
-    virtual int getOutputIndexForPort(int portIndex) const;
-
     // --- Polymorphic Element Mapping Interface ---
 
     /**
