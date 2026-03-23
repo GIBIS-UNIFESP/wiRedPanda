@@ -9,6 +9,7 @@
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/LogicElements/LogicOutput.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Versions.h"
 
 template<>
 struct ElementInfo<Display16> {
@@ -202,13 +203,13 @@ void Display16::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, con
 {
     GraphicElement::load(stream, portMap, version);
 
-    if ((VERSION("3.1") <= version) && (version < VERSION("4.1"))) {
+    if ((Versions::V_3_1 <= version) && (version < Versions::V_4_1)) {
         // v3.1–4.0 stored color as a bare QString
         QString color_; stream >> color_;
         setColor(color_);
     }
 
-    if (version >= VERSION("4.1")) {
+    if (version >= Versions::V_4_1) {
         // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 

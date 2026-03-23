@@ -19,6 +19,7 @@
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
+#include "App/Versions.h"
 
 template<>
 struct ElementInfo<IC> {
@@ -97,7 +98,7 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVer
     GraphicElement::load(stream, portMap, version);
 
     // Old format (V_1_2 to V_4_1): IC file path was written as a plain QString
-    if ((VERSION("1.2") <= version) && (version < VERSION("4.1"))) {
+    if ((Versions::V_1_2 <= version) && (version < Versions::V_4_1)) {
         stream >> m_file;
 
         // For tests with old files containing absolute paths, strip to filename only
@@ -113,7 +114,7 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVer
     }
 
     // New format (V_4_1+): IC data stored in a QMap for extensibility
-    if (version >= VERSION("4.1")) {
+    if (version >= Versions::V_4_1) {
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("fileName")) {
