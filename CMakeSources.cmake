@@ -55,6 +55,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ConnectionManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PropertyShortcutHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.cpp
@@ -151,6 +152,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ConnectionManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PropertyShortcutHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h

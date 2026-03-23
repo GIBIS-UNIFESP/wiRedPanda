@@ -17,6 +17,7 @@
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/ConnectionManager.h"
+#include "App/Scene/PropertyShortcutHandler.h"
 #include "App/Simulation/Simulation.h"
 
 class GraphicElement;
@@ -130,6 +131,11 @@ public:
 
     /// Returns the clipboard manager that handles copy, cut, paste and clone-drag.
     ClipboardManager *clipboardManager() { return &m_clipboardManager; }
+
+    // --- Property Shortcut Handler ---
+
+    /// Returns the handler for keyboard shortcuts that cycle element properties.
+    PropertyShortcutHandler *propertyShortcutHandler() { return &m_propertyShortcutHandler; }
 
     // --- Hit-testing ---
 
@@ -330,5 +336,8 @@ private:
 
     // Clipboard operations (delegated to ClipboardManager)
     ClipboardManager m_clipboardManager{this};
+
+    // Property shortcut dispatch (delegated to PropertyShortcutHandler)
+    PropertyShortcutHandler m_propertyShortcutHandler{this};
 };
 
