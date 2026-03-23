@@ -98,6 +98,7 @@
 #include <QPoint>
 #include <QPointF>
 #include <QPrinter>
+#include <QProcess>
 #include <QPushButton>
 #include <QRectF>
 #include <QRegularExpression>

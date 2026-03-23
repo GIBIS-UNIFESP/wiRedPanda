@@ -279,6 +279,9 @@ public:
     /// Returns the simulation output value on port \a index.
     bool outputValue(const int index = 0) const;
 
+    /// Returns the simulation input value on port \a index.
+    bool inputValue(const int index = 0) const;
+
     /// Returns the number of simulation output slots.
     int simOutputSize() const;
 

@@ -13,7 +13,10 @@
 #include <QTextStream>
 #include <QVector>
 
+#include "App/Core/Enums.h"
+
 class GraphicElement;
+class IC;
 class QNEPort;
 
 /**
@@ -50,6 +53,19 @@ public:
 };
 
 /**
+ * \struct ArduinoBoardConfig
+ * \brief Describes an Arduino board's available GPIO pins.
+ */
+struct ArduinoBoardConfig
+{
+    QString name;          ///< Board name (e.g. "Arduino Uno").
+    QStringList availablePins; ///< Ordered list of usable pin labels.
+    QString description;   ///< Human-readable board description.
+    /// Returns the total number of available pins.
+    int maxPins() const { return static_cast<int>(availablePins.size()); }
+};
+
+/**
  * \class ArduinoCodeGen
  * \brief Generates an Arduino sketch from a flattened list of circuit elements.
  *
@@ -64,6 +80,14 @@ public:
     // --- Lifecycle ---
 
     /**
+     * \brief Describes a single test vector for testbench generation.
+     */
+    struct TestVector {
+        QVector<bool> inputs;   ///< Input pin values.
+        QVector<bool> outputs;  ///< Expected output pin values.
+    };
+
+    /**
      * \brief Constructs the code generator targeting \a fileName.
      * \param fileName  Output file path for the generated sketch.
      * \param elements  Ordered list of graphic elements to translate.
@@ -74,15 +98,46 @@ public:
 
     /// Generates the Arduino sketch and writes it to the output file.
     void generate();
+    void generateTestbench(const QString &tbFileName, const QVector<TestVector> &vectors);
 
 private:
     // --- String Utilities ---
 
+    /// Returns "HIGH" or "LOW" for Active/Inactive status values.
+    static QString highLow(Status val);
+    /// Replaces accented characters with their ASCII equivalents.
+    static QString stripAccents(const QString &input);
     /// Strips characters that are illegal in C++ identifiers.
     static QString removeForbiddenChars(const QString &input);
+    /// Returns \c true if \a name collides with an Arduino built-in identifier.
+    static bool isArduinoReserved(const QString &name);
 
+    // --- Board Selection ---
+
+    /// Returns a board configuration with at least \a requiredPins available GPIO pins.
+    ArduinoBoardConfig selectBoard(int requiredPins);
+    /// Returns the list of known Arduino board configurations.
+    QVector<ArduinoBoardConfig> getAvailableBoards();
+
+    // --- Signal Name Resolution ---
+
+    /// Builds a nested ternary expression for multiplexer select lines starting at \a startIndex.
+    QString buildSelectExpression(GraphicElement *elm, int startIndex, int numSelectLines);
     /// Returns the variable name of the signal driving \a port.
     QString otherPortName(QNEPort *port);
+    QString otherPortNameImpl(QNEPort *port, QSet<QNEPort *> &visited);
+    void emitFlipFlopBlock(GraphicElement *elm, const QString &typeName, const QString &firstOut,
+                           const QString &secondOut, int clockInputIndex, int presetInputIndex,
+                           int clearInputIndex, const std::function<void()> &normalLogic);
+    void emitDFlipFlop(GraphicElement *elm, const QString &firstOut);
+    void emitDLatch(GraphicElement *elm, const QString &firstOut);
+    void emitJKFlipFlop(GraphicElement *elm, const QString &firstOut);
+    void emitSRFlipFlop(GraphicElement *elm, const QString &firstOut);
+    void emitTFlipFlop(GraphicElement *elm, const QString &firstOut);
+    void emitSRLatch(GraphicElement *elm, const QString &firstOut);
+    void emitMux(GraphicElement *elm);
+    void emitDemux(GraphicElement *elm);
+    void emitTruthTable(GraphicElement *elm);
     void assignLogicOperator(GraphicElement *elm);
 
     // --- Variable / Declaration Emission ---
@@ -92,10 +147,11 @@ private:
     /// Emits `bool` declarations for auxiliary internal variables.
     void declareAuxVariables();
     /// Recursive helper: emits auxiliary variable declarations for \a elements.
-    void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox = false);
+    void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox = false, const QString &icPrefix = {});
     void declareInputs();
     /// Emits `pinMode(OUTPUT)` calls and variable declarations for circuit outputs.
     void declareOutputs();
+    void emitComputeLogicFunction();
     void loop();
     /// Emits the `setup()` function: pin modes and serial initialization.
     void setup();
@@ -105,10 +161,12 @@ private:
     QFile m_file;                              ///< Output file handle.
     QHash<QNEPort *, QString> m_varMap;        ///< Port → generated variable name mapping.
     QStringList m_availablePins;               ///< Remaining unassigned GPIO pin labels.
+    QStringList m_declaredVariables;           ///< Names of already-declared variables (duplicate guard).
     QTextStream m_stream;                      ///< Text stream writing to m_file.
     QVector<MappedPin> m_inputMap;             ///< Final input pin mappings.
     QVector<MappedPin> m_outputMap;            ///< Final output pin mappings.
     const QVector<GraphicElement *> m_elements; ///< Topologically sorted circuit elements.
-    int m_globalCounter = 1;                   ///< Monotonic counter for unique variable names.
+    IC *m_currentIC = nullptr;                 ///< IC currently being flattened (null at top level).
+    ArduinoBoardConfig m_selectedBoard;        ///< Board configuration selected during generation.
 };
 

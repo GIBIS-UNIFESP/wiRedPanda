@@ -742,6 +742,14 @@ bool GraphicElement::outputValue(const int index) const
     return m_simOutputValues.at(index);
 }
 
+bool GraphicElement::inputValue(const int index) const
+{
+    if (index >= m_simInputValues.size()) {
+        return false;
+    }
+    return m_simInputValues.at(index);
+}
+
 int GraphicElement::simOutputSize() const
 {
     return static_cast<int>(m_simOutputValues.size());

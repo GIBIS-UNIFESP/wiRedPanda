@@ -276,7 +276,10 @@ Unit tests validate individual components:
 
 ### Other Integration Tests
 
-- **TestArduino**: Arduino code generation for circuits
+- **TestArduino**: Arduino code generation for circuits (88 tests with expected file comparison)
+  - Generates and validates Arduino sketches for 24 level 1-4 IC test cases
+  - Uses expected file comparison for 5x faster execution (~8s vs ~47s)
+  - See "Arduino Test Optimization" section below
 - **TestFeedback**: Feedback loops and cycle detection
 - **TestFiles**: Circuit file loading and saving
 - **TestIc**: IC hierarchy creation and simulation
@@ -473,12 +476,42 @@ void TestLevel10NewCircuit::testNewCircuitBehavior()
 }
 ```
 
+## Arduino Test Optimization
+
+The TestArduino suite uses **expected file comparison** instead of arduino-cli compilation for 5x faster execution:
+
+### How It Works
+
+1. **Expected files**: 24 pre-generated Arduino sketches stored in `Tests/Integration/Arduino/`
+2. **Normal runs**: Compare generated code against expected files (instant, no compilation)
+3. **First-time or regeneration**: Fall back to arduino-cli validation if expected files don't exist
+
+### Regenerating Expected Files
+
+If Arduino codegen changes, regenerate expected files:
+
+```bash
+GENERATE_EXPECTED_ARDUINO=1 ./build/test_wiredpanda TestArduino
+```
+
+This:
+
+- Generates all 24 expected .ino files in `Tests/Integration/Arduino/`
+- Tests pass and files are automatically saved
+- Commit the updated files to git
+
+### Performance Impact
+
+- **Before**: ~47 seconds (arduino-cli compilation for each of 24 test cases)
+- **After**: ~8 seconds (file comparison, no compilation)
+- **Improvement**: 5.8x faster
+
 ## Performance Considerations
 
 - **Fast tests**: Unit tests and logic tests execute in milliseconds
 - **Medium tests**: IC hierarchy tests execute in seconds (complex circuits)
 - **Slow tests**: CPU integration and memory interface tests may take 10-20 seconds
-- **Parallel execution**: Use `--parallel N` for faster overall execution (~135s with 4 workers)
+- **Arduino tests**: TestArduino runs in ~8 seconds using expected file comparison (5x faster than arduino-cli compilation)
 
 ## Known Limitations
 
