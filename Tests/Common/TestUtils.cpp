@@ -9,7 +9,7 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/LogicElement.h"
-#include "App/Element/LogicElements/LogicInput.h"
+#include "App/Element/LogicElements/LogicSource.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Simulation/Simulation.h"
@@ -46,11 +46,11 @@ QVector<InputSwitch *> createSwitches(int count)
     return switches;
 }
 
-QVector<LogicInput *> createLogicInputs(int count)
+QVector<LogicSource *> createLogicSources(int count)
 {
-    QVector<LogicInput *> inputs(count);
+    QVector<LogicSource *> inputs(count);
     for (int i = 0; i < count; ++i) {
-        inputs[i] = new LogicInput();
+        inputs[i] = new LogicSource();
     }
     return inputs;
 }
@@ -67,7 +67,7 @@ void setInputValues(const QVector<InputSwitch *> &switches, const QVector<bool> 
     }
 }
 
-void setLogicInputValues(const QVector<LogicInput *> &inputs, const QVector<bool> &values)
+void setLogicSourceValues(const QVector<LogicSource *> &inputs, const QVector<bool> &values)
 {
     QVERIFY2(inputs.size() == values.size(), "Number of inputs must match number of values");
     for (int i = 0; i < inputs.size(); ++i) {
@@ -76,7 +76,7 @@ void setLogicInputValues(const QVector<LogicInput *> &inputs, const QVector<bool
 }
 
 void verifyTruthTable(LogicElement *element,
-                      const QVector<LogicInput *> &inputs,
+                      const QVector<LogicSource *> &inputs,
                       const QVector<QVector<bool>> &truthTable,
                       int numOutputs)
 {

@@ -7,7 +7,7 @@
 #include <QPainter>
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicInput.h"
+#include "App/Element/LogicElements/LogicSource.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Versions.h"
 
@@ -44,7 +44,7 @@ struct ElementInfo<InputRotary> {
             ":/Components/Input/rotary.svg",
             ":/Components/Input/rotary_arrow.svg",
         });
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicInput>(false, elm->outputSize()); };
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicSource>(false, elm->outputSize()); };
         return meta;
     }
 

@@ -28,65 +28,40 @@ struct InputPair
 class LogicElement
 {
 public:
-    /**
-     * \brief Constructs a logic element with \a inputSize inputs and \a outputSize outputs.
-     * \param inputSize  Number of input slots.
-     * \param outputSize Number of output slots.
-     */
     explicit LogicElement(const int inputSize, const int outputSize);
 
-    /// Virtual destructor.
     virtual ~LogicElement() = default;
 
-    // --- Validity & Feedback ---
+    // --- Validity ---
 
-    /// Returns \c true if all required input ports are connected.
     bool isValid() const;
-    /// Returns \c true if this element is part of a combinational feedback loop.
-    bool inFeedbackLoop() const;
-    /// Recomputes and caches the validity state.
     void validate();
 
     // --- I/O Values ---
 
-    /// Returns the current logic value on input port \a index.
     bool inputValue(const int index = 0) const;
-    /// Returns the current logic value on output port \a index.
     bool outputValue(const int index = 0) const;
-    /// Returns the number of output ports.
     int outputSize() const;
 
-    // --- Priority & Logic ---
+    // --- Logic ---
 
-    /// Returns the cached topological priority (higher = closer to inputs, updated first).
-    int priority() const;
     const QVector<InputPair> &inputPairs() const;
     virtual void updateLogic() = 0;
 
     // --- Connection management ---
 
-    /** \brief Connects input \a index of this element to output \a port of \a logic. */
     void connectPredecessor(const int index, LogicElement *logic, const int port);
-    /// Marks this element as participating (or not) in a feedback loop.
-    void setInFeedbackLoop(const bool inLoop);
 
     // --- Output setting ---
 
-    /// Sets all output ports to \a value.
     void setOutputValue(const bool value);
-    /// Sets output port \a index to \a value.
     void setOutputValue(const int index, const bool value);
-    /// Sets the topological priority for this element.
-    void setPriority(const int priority);
 
 protected:
-    /**
-     * \brief Copies each predecessor's output into m_inputValues.
-     * \return \c true if all inputs were successfully read.
-     */
     bool updateInputs();
 
-    QVector<bool> m_inputValues; ///< Cached input values refreshed each simulation step.
+    /// Read-only view of the cached input values for use by subclass updateLogic().
+    const QVector<bool> &inputs() const { return m_inputValues; }
 
 private:
     Q_DISABLE_COPY(LogicElement)
@@ -94,9 +69,8 @@ private:
     // --- Members ---
 
     QVector<InputPair> m_inputPairs;
+    QVector<bool> m_inputValues;
     QVector<bool> m_outputValues;
-    bool m_inFeedbackLoop = false;
     bool m_isValid = true;
-    int m_priority = -1;
 };
 

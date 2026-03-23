@@ -19,8 +19,8 @@ void LogicDLatch::updateLogic()
 
     bool q0 = outputValue(0);
     bool q1 = outputValue(1);
-    const bool D = m_inputValues.at(0);
-    const bool enable = m_inputValues.at(1);
+    const bool D = inputs().at(0);
+    const bool enable = inputs().at(1);
 
     // Level-sensitive latch: transparent when Enable is high — outputs follow D
     // continuously.  When Enable is low the state is held (no change).

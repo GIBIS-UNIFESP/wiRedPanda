@@ -19,8 +19,8 @@ void LogicSRLatch::updateLogic()
 
     bool q0 = outputValue(0);
     bool q1 = outputValue(1);
-    const bool S = m_inputValues.at(0);
-    const bool R = m_inputValues.at(1);
+    const bool S = inputs().at(0);
+    const bool R = inputs().at(1);
 
     // Level-sensitive SR latch — outputs update continuously while inputs are held.
     if (S && R) {

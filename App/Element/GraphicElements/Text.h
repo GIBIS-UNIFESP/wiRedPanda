@@ -13,7 +13,7 @@
  * \class Text
  * \brief Free-text annotation element used for labelling circuit diagrams.
  *
- * \details Has no ports and no simulation logic (LogicNone).
+ * \details Has no ports and is excluded from simulation.
  */
 class Text : public GraphicElement
 {

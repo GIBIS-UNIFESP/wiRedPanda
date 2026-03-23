@@ -19,10 +19,10 @@ void LogicDFlipFlop::updateLogic()
 
     bool q0 = outputValue(0);
     bool q1 = outputValue(1);
-    const bool D = m_inputValues.at(0);
-    const bool clk = m_inputValues.at(1);
-    const bool prst = m_inputValues.at(2);
-    const bool clr = m_inputValues.at(3);
+    const bool D = inputs().at(0);
+    const bool clk = inputs().at(1);
+    const bool prst = inputs().at(2);
+    const bool clr = inputs().at(3);
 
     // On the rising clock edge, capture the D value from the previous simulation
     // cycle (m_lastValue) to simulate setup-time semantics: D must be stable
