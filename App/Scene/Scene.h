@@ -15,6 +15,7 @@
 #include <QVersionNumber>
 
 #include "App/Nodes/QNEPort.h"
+#include "App/Scene/ClipboardManager.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Simulation/Simulation.h"
 
@@ -124,6 +125,11 @@ public:
 
     /// Returns the connection manager that handles wire creation, deletion, and hover feedback.
     ConnectionManager *connectionManager() { return &m_connectionManager; }
+
+    // --- Clipboard Manager ---
+
+    /// Returns the clipboard manager that handles copy, cut, paste and clone-drag.
+    ClipboardManager *clipboardManager() { return &m_clipboardManager; }
 
     // --- Hit-testing ---
 
@@ -265,16 +271,11 @@ protected:
 private:
     // --- Helpers ---
 
-    static void copy(const QList<QGraphicsItem *> &items, QDataStream &stream);
-
     QList<QGraphicsItem *> itemsAt(const QPointF pos);
     const QVector<QNEConnection *> connections();
     void checkUpdateRequest();
-    void cloneDrag(const QPointF mousePos);
     void contextMenu(const QPoint screenPos);
-    void cut(const QList<QGraphicsItem *> &items, QDataStream &stream);
     void drawBackground(QPainter *painter, const QRectF &rect) override;
-    void paste(QDataStream &stream, const QVersionNumber &version);
     void rotate(const int angle);
     void setDots(const QPen &dots);
     void startSelectionRect();
@@ -326,5 +327,8 @@ private:
 
     // Connection editing (delegated to ConnectionManager)
     ConnectionManager m_connectionManager{this};
+
+    // Clipboard operations (delegated to ClipboardManager)
+    ClipboardManager m_clipboardManager{this};
 };
 
