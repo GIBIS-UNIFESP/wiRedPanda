@@ -76,6 +76,12 @@ QString backwardCompatibilityDir();
 QString cpuComponentsDir();
 
 /**
+ * @brief Get the path to expected Arduino output directory
+ * @return QString path to Integration/Arduino/
+ */
+QString arduinoExpectedDir();
+
+/**
  * @brief Delete all items in a container
  * @param container Container of pointers to delete
  */
