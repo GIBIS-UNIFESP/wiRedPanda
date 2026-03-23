@@ -130,7 +130,7 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     centralwidget = new QWidget(BewavedDolphin);
     centralwidget->setObjectName("centralwidget");
     // Maximum size policy prevents the central widget from expanding beyond its content,
-    // letting the DolphinGraphicsView (added later) control the window's actual dimensions
+    // letting the WaveformView (added later) control the window's actual dimensions
     QSizePolicy sizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);

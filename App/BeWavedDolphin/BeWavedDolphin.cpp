@@ -18,7 +18,7 @@
 #include <QSaveFile>
 #include <QTextStream>
 
-#include "App/BeWavedDolphin/BeWavedDolphinUI.h"
+#include "App/BeWavedDolphin/Serializer.h"
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Settings.h"
@@ -32,115 +32,10 @@
 #include "App/UI/LengthDialog.h"
 #include "App/UI/MainWindow.h"
 
-SignalModel::SignalModel(const int inputs, const int rows, const int columns, QObject *parent)
-    : QStandardItemModel(rows, columns, parent)
-    // m_inputCount separates input rows (editable by the user) from output rows
-    // (computed by the simulation); it is the boundary index used by BewavedDolphin::paste()
-    , m_inputCount(inputs)
-{
-}
-
-Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
-{
-    Q_UNUSED(index)
-    // Cells are read-only in the model; editing is done programmatically via createElement()
-    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-}
-
-SignalDelegate::SignalDelegate(QObject *parent)
-    : QItemDelegate(parent)
-{
-}
-
-void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-{
-    QVariant value = index.data(Qt::DecorationRole);
-
-    // In waveform (Line) mode, cells store a QPixmap representing the signal segment
-    // (low, high, rising, falling). In Number mode there is no pixmap, so we fall through.
-    if (value.canConvert<QPixmap>()) {
-        QPixmap pixmap = qvariant_cast<QPixmap>(value);
-
-        QRect cellRect = option.rect;
-        QSize targetSize = cellRect.size();
-        // Stretch the pre-rendered SVG pixmap to fill the cell so waveforms tile seamlessly
-        QPixmap scaledPixmap = pixmap.scaled(targetSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-
-        // Draw the selection highlight behind the waveform image rather than over it
-        if (option.state & QStyle::State_Selected) {
-            painter->fillRect(option.rect, option.palette.highlight());
-        }
-
-        int x = option.rect.x() + (option.rect.width() - scaledPixmap.width()) / 2;
-        int y = option.rect.y() + (option.rect.height() - scaledPixmap.height()) / 2;
-
-        painter->drawPixmap(x, y, scaledPixmap);
-
-        return;
-    }
-
-    // Number mode: delegate to the standard item delegate to render the "0"/"1" text
-    QItemDelegate::paint(painter, option, index);
-}
-
-DolphinGraphicsView::DolphinGraphicsView(QWidget *parent)
-    : GraphicsView(parent) {}
-
-bool DolphinGraphicsView::canZoomOut() const
-{
-    // Level 0 is the baseline (reset) zoom; don't allow zooming below it
-    return m_zoomLevel > 0;
-}
-
-bool DolphinGraphicsView::canZoomIn() const
-{
-    // Cap at 6 discrete steps to prevent the waveform from becoming too large to render
-    return m_zoomLevel < 6;
-}
-
-void DolphinGraphicsView::zoomIn()
-{
-    ++m_zoomLevel;
-    emit zoomChanged();
-}
-
-void DolphinGraphicsView::zoomOut()
-{
-    --m_zoomLevel;
-    emit zoomChanged();
-}
-
-void DolphinGraphicsView::resetZoom()
-{
-    m_zoomLevel = 0;
-    emit zoomChanged();
-}
-
-void DolphinGraphicsView::wheelEvent(QWheelEvent *event)
-{
-    const int zoomDirection = event->angleDelta().y();
-
-    // When redirect is enabled, the actual scaling is handled by BewavedDolphin
-    // (which also resizes the table columns). Without redirect, the view scales itself.
-    if (zoomDirection > 0 && canZoomIn()) {
-        if (m_redirectZoom) {
-            emit scaleIn();
-        } else {
-            zoomIn();
-        }
-    } else if (zoomDirection < 0 && canZoomOut()) {
-        if (m_redirectZoom) {
-            emit scaleOut();
-        } else {
-            zoomOut();
-        }
-    }
-
-    // Keep the waveform centered under the cursor rather than jumping to the scene origin
-    centerOn(QCursor::pos());
-
-    event->accept();
-}
+static constexpr int    kDefaultColumnWidth = 49;    ///<  Per-column pixel width at reset zoom.
+static constexpr int    kMaxSimLength       = 2048;  ///<  Maximum allowed simulation length.
+static constexpr int    kMaxScenePixels     = 4000;  ///<  Scene size limit before forced zoom reset.
+static constexpr double kZoomStep           = 1.25;  ///<  Multiplicative factor per zoom step.
 
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)
     : QMainWindow(parent)
@@ -165,8 +60,9 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
     restoreGeometry(Settings::dolphinGeometry());
 
-    // Custom delegate renders SVG waveform segments instead of plain text in Line mode
-    m_signalTableView->setItemDelegate(new SignalDelegate(this));
+    // The delegate owns and renders the waveform pixmaps
+    m_delegate = new SignalDelegate(this);
+    m_signalTableView->setItemDelegate(m_delegate);
 
     // Embed the QTableView inside a QGraphicsScene so the whole waveform can be
     // uniformly scaled via the scene's transform without resizing individual rows/cols
@@ -182,10 +78,8 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
     m_ui->mainToolBar->setToolButtonStyle(Settings::labelsUnderIcons() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
-    loadPixmaps();
-
-    connect(&m_view,                   &DolphinGraphicsView::scaleIn,  this, &BewavedDolphin::on_actionZoomIn_triggered);
-    connect(&m_view,                   &DolphinGraphicsView::scaleOut, this, &BewavedDolphin::on_actionZoomOut_triggered);
+    connect(&m_view,                   &WaveformView::scaleIn,         this, &BewavedDolphin::on_actionZoomIn_triggered);
+    connect(&m_view,                   &WaveformView::scaleOut,        this, &BewavedDolphin::on_actionZoomOut_triggered);
     connect(m_ui->actionAbout,         &QAction::triggered,            this, &BewavedDolphin::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,       &QAction::triggered,            this, &BewavedDolphin::on_actionAboutQt_triggered);
     connect(m_ui->actionClear,         &QAction::triggered,            this, &BewavedDolphin::on_actionClear_triggered);
@@ -216,24 +110,6 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 BewavedDolphin::~BewavedDolphin()
 {
     Settings::setDolphinGeometry(saveGeometry());
-}
-
-void BewavedDolphin::loadPixmaps()
-{
-    // Pre-render waveform segment SVGs to pixmaps once at startup.
-    // Green = output rows, Blue = input rows. 100x38 is the baseline cell size
-    // (matching the default column width of 49px × row height ≈ 38px) so the SVGs
-    // are rasterised at a resolution that avoids blurring at the default zoom level.
-    // The delegate stretches these pixmaps to fit the actual cell at render time.
-    m_lowGreen = QPixmap(":/Interface/Dolphin/low_green.svg").scaled(100, 38);
-    m_highGreen = QPixmap(":/Interface/Dolphin/high_green.svg").scaled(100, 38);
-    m_fallingGreen = QPixmap(":/Interface/Dolphin/falling_green.svg").scaled(100, 38);
-    m_risingGreen = QPixmap(":/Interface/Dolphin/rising_green.svg").scaled(100, 38);
-
-    m_lowBlue = QPixmap(":/Interface/Dolphin/low_blue.svg").scaled(100, 38);
-    m_highBlue = QPixmap(":/Interface/Dolphin/high_blue.svg").scaled(100, 38);
-    m_fallingBlue = QPixmap(":/Interface/Dolphin/falling_blue.svg").scaled(100, 38);
-    m_risingBlue = QPixmap(":/Interface/Dolphin/rising_blue.svg").scaled(100, 38);
 }
 
 void BewavedDolphin::createWaveform(const QString &fileName)
@@ -288,9 +164,7 @@ void BewavedDolphin::loadFromTerminal()
         rows = m_inputPorts;
     }
 
-    // 2 is the minimum meaningful simulation (need at least two time steps);
-    // 2048 is the maximum simulation length enforced throughout the app
-    if ((cols < 2) || (cols > 2048)) {
+    if ((cols < 2) || (cols > kMaxSimLength)) {
         throw PANDACEPTION("");
     }
 
@@ -331,17 +205,13 @@ void BewavedDolphin::loadElements()
     m_outputs.clear();
     m_inputPorts = 0;
 
-    // Topological sort ensures inputs are visited before the logic elements that depend on them,
-    // giving a stable traversal order that matches the simulation update sequence
     const auto elements = m_externalScene->elements();
 
     if (elements.isEmpty()) {
-        throw PANDACEPTION("Could not load enough elements for the simulation.");
+        throw PANDACEPTION("The circuit is empty. Add input and output elements to generate a waveform.");
     }
 
     for (auto *elm : elements) {
-        // GraphicElement::Type is the QGraphicsItem type tag; non-graphic items (ports,
-        // connections) share the scene and must be skipped here
         if (!elm || (elm->type() != GraphicElement::Type)) {
             continue;
         }
@@ -367,8 +237,16 @@ void BewavedDolphin::loadElements()
         return QString::compare(elm1->label(), elm2->label(), Qt::CaseInsensitive) < 0;
     });
 
-    if (m_inputs.isEmpty() || m_outputs.isEmpty()) {
-        throw PANDACEPTION("Could not load enough elements for the simulation.");
+    if (m_inputs.isEmpty() && m_outputs.isEmpty()) {
+        throw PANDACEPTION("The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.");
+    }
+
+    if (m_inputs.isEmpty()) {
+        throw PANDACEPTION("The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.");
+    }
+
+    if (m_outputs.isEmpty()) {
+        throw PANDACEPTION("The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.");
     }
 }
 
@@ -384,9 +262,7 @@ void BewavedDolphin::loadNewTable()
 
     qCDebug(zero) << "Num iter = " << m_length;
 
-    // Rows = total signals (inputs + outputs); columns = simulation length in time steps.
-    // inputLabels.size() is passed as the input count so SignalModel can distinguish
-    // editable input rows from read-only output rows.
+    // Rows = total signals (inputs + outputs); columns = simulation length in time steps
     m_model = new SignalModel(static_cast<int>(inputLabels.size()), static_cast<int>(inputLabels.size() + outputLabels.size()), m_length, this);
     m_signalTableView->setModel(m_model);
 
@@ -400,9 +276,7 @@ void BewavedDolphin::loadNewTable()
     m_signalTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
     m_signalTableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
 
-    // Start at minimum width of 1px so the table does not try to pre-allocate a wide
-    // layout before zoom is applied; on_actionResetZoom_triggered() immediately sets
-    // each column to 49px, which is the baseline width matching the 100×38 pixmaps
+    // Start at minimum width of 1px; zoom actions then set per-column widths to 49px
     m_signalTableView->horizontalHeader()->setDefaultSectionSize(1);
 
     qCDebug(zero) << "Inputs: " << inputLabels.size() << ", outputs: " << outputLabels.size();
@@ -549,9 +423,6 @@ void BewavedDolphin::restoreInputs()
 
     // Uses m_oldInputValues captured at loadSignals() time. Note that index maps to
     // the element level, not the port level — multi-port inputs share the same saved value.
-    // This means a rotary encoder with N output ports restores all ports to the single
-    // boolean snapshot taken before the sweep; fine-grained per-port restore is not needed
-    // because the live simulation re-computes port values on the next tick anyway.
     for (int index = 0; index < m_inputs.size(); ++index) {
         auto *input = m_inputs.at(index);
         if (!input) {
@@ -577,25 +448,28 @@ void BewavedDolphin::resizeEvent(QResizeEvent *event)
 
 void BewavedDolphin::resizeScene()
 {
-    const int newWidth = m_ui->centralwidget->width();
+    const int newWidth  = m_ui->centralwidget->width();
     // Subtract 2px to avoid a persistent vertical scrollbar appearing at the boundary
     const int newHeight = m_ui->centralwidget->height() - 2;
 
-    // 4000px is a practical upper bound; beyond this Qt rendering becomes unreliable
-    // and memory usage spikes. Reset zoom to recover a safe state.
-    if (newWidth > 4000 or newHeight > 4000) {
+    // kMaxScenePixels is a practical upper bound; beyond this Qt rendering becomes
+    // unreliable and memory usage spikes. Reset zoom to recover a safe state.
+    if (newWidth > kMaxScenePixels || newHeight > kMaxScenePixels) {
         on_actionResetZoom_triggered();
         throw PANDACEPTION("Waveform would be too big! Resetting zoom.");
     }
 
-    // The QTableView lives inside a QGraphicsProxyWidget which is then scaled by
-    // m_scale via the QGraphicsView transform.  To make the scaled proxy fill the
-    // viewport, the proxy's logical size must be (viewport_size / m_scale).
-    // The additional 0.8 factor leaves ~20% breathing room for the vertical header
-    // and avoids a last-pixel scrollbar from appearing at the boundary.
-    m_signalTableView->resize(static_cast<int>(newWidth / (m_scale * 0.8)),
-                              static_cast<int>(newHeight / (m_scale * 0.8)));
+    setTableViewSize(newWidth, newHeight);
     m_scene->setSceneRect(m_scene->itemsBoundingRect());
+}
+
+void BewavedDolphin::setTableViewSize(const int width, const int height)
+{
+    // Divide by (m_scale * m_scaleFactor) so that when the scene applies its m_scale transform,
+    // the resulting visible widget fills the central widget at ~80% of available space,
+    // leaving room for the vertical header and a small margin
+    m_signalTableView->resize(static_cast<int>(width  / (m_scale * m_scaleFactor)),
+                              static_cast<int>(height / (m_scale * m_scaleFactor)));
 }
 
 void BewavedDolphin::on_actionExit_triggered()
@@ -633,21 +507,15 @@ bool BewavedDolphin::checkSave()
 
 void BewavedDolphin::createElement(const int row, const int col, const int value, const bool isInput, const bool changeNext)
 {
-    (value == 0) ? createZeroElement(row, col, isInput, changeNext)
-                 : createOneElement(row, col, isInput, changeNext);
+    setCellValue(row, col, value, isInput, changeNext);
 }
 
-void BewavedDolphin::createZeroElement(const int row, const int col, const bool isInput, const bool changeNext)
+void BewavedDolphin::setCellValue(const int row, const int col, const int value, const bool isInput, const bool changeNext)
 {
     const auto index = m_model->index(row, col);
-
-    // Capture the old value before overwriting so we know whether the next cell's
-    // transition type (rising/falling) needs to be updated
-    qCDebug(three) << "Getting current value to check if need to refresh next cell";
     const int currentValue = index.data().toInt();
 
-    qCDebug(three) << "Changing current item.";
-    m_model->setData(index, 0, Qt::DisplayRole);
+    m_model->setData(index, value, Qt::DisplayRole);
 
     if (m_type == PlotType::Number) {
         m_model->setData(index, static_cast<uint>(Qt::AlignCenter), Qt::TextAlignmentRole);
@@ -657,79 +525,19 @@ void BewavedDolphin::createZeroElement(const int row, const int col, const bool 
         m_model->setData(index, static_cast<uint>(Qt::AlignLeft), Qt::TextAlignmentRole);
 
         const auto previousIndex = index.siblingAtColumn(col - 1);
-        const bool hasPreviousItem = previousIndex.isValid();
-        const bool isPreviousHigh = hasPreviousItem ? previousIndex.data().toInt() == 1 : false;
+        const bool hasPrev  = previousIndex.isValid();
+        const int prevValue = hasPrev ? previousIndex.data().toInt() : 0;
 
-        // A 0 cell preceded by a 1 needs the falling-edge segment; otherwise flat-low
-        if (isInput) {
-            m_model->setData(index,
-                             hasPreviousItem && isPreviousHigh ? m_fallingBlue : m_lowBlue,
-                             Qt::DecorationRole);
-        } else {
-            m_model->setData(index,
-                             hasPreviousItem && isPreviousHigh ? m_fallingGreen : m_lowGreen,
-                             Qt::DecorationRole);
-        }
+        m_model->setData(index, m_delegate->pixmapFor(value, isInput, hasPrev, prevValue), Qt::DecorationRole);
 
         if (!changeNext) {
             return;
         }
 
-        // If this cell changed from 1 to 0, the next cell's leading-edge type may have
-        // changed (e.g. from flat-high to rising), so refresh it recursively
+        // If the value changed, the next cell's edge type (rising/falling) may have changed too
         const auto nextIndex = m_model->index(row, col + 1);
-
-        if (nextIndex.isValid() && (currentValue == 1)) {
-            qCDebug(three) << "Changing next item.";
-            createElement(row, col + 1, nextIndex.data().toInt(), isInput, false);
-        }
-    }
-}
-
-void BewavedDolphin::createOneElement(const int row, const int col, const bool isInput, const bool changeNext)
-{
-    const auto index = m_model->index(row, col);
-
-    // Capture the old value before overwriting so we know whether the next cell's
-    // transition type needs to be updated
-    qCDebug(three) << "Getting current value to check if need to refresh next cell";
-    const int currentValue = index.data().toInt();
-
-    qCDebug(three) << "Changing current item.";
-    m_model->setData(index, 1, Qt::DisplayRole);
-
-    if (m_type == PlotType::Number) {
-        m_model->setData(index, static_cast<uint>(Qt::AlignCenter), Qt::TextAlignmentRole);
-    }
-
-    if (m_type == PlotType::Line) {
-        m_model->setData(index, static_cast<uint>(Qt::AlignLeft), Qt::TextAlignmentRole);
-
-        const auto previousIndex = index.siblingAtColumn(col - 1);
-        const bool hasPreviousItem = previousIndex.isValid();
-        const bool isPreviousLow = hasPreviousItem ? previousIndex.data().toInt() == 0 : false;
-
-        // A 1 cell preceded by a 0 needs the rising-edge segment; otherwise flat-high
-        if (isInput) {
-            m_model->setData(index,
-                             hasPreviousItem && isPreviousLow ? m_risingBlue : m_highBlue,
-                             Qt::DecorationRole);
-        } else {
-            m_model->setData(index,
-                             hasPreviousItem && isPreviousLow ? m_risingGreen : m_highGreen,
-                             Qt::DecorationRole);
-        }
-
-        if (!changeNext) {
-            return;
-        }
-
-        // If this cell changed from 0 to 1, the next cell may have become a falling edge
-        const auto nextIndex = m_model->index(row, col + 1);
-
-        if (nextIndex.isValid() && (currentValue == 0)) {
-            qCDebug(three) << "Changing next item.";
-            createElement(row, col + 1, nextIndex.data().toInt(), isInput, false);
+        if (nextIndex.isValid() && (currentValue != value)) {
+            setCellValue(row, col + 1, nextIndex.data().toInt(), isInput, false);
         }
     }
 }
@@ -791,21 +599,15 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
 bool BewavedDolphin::exportToPng(const QString &filename)
 {
     try {
-        // Calculate dimensions based on actual waveform data
-        const int timeSteps = m_model->columnCount();
+        const int timeSteps   = m_model->columnCount();
         const int signalCount = m_model->rowCount();
 
-        // Use reasonable cell dimensions for waveform visibility
-        const int cellWidth = 50;   // pixels per time step
-        const int cellHeight = 40;  // pixels per signal
-        const int padding = 100;    // extra space for labels and margins
+        // Fixed cell size chosen to ensure waveform SVG segments are legible at 1:1 zoom
+        const int cellWidth  = 50;   // pixels per time step
+        const int cellHeight = 40;   // pixels per signal
+        const int padding    = 100;  // extra space for labels and margins
 
-        const int calculatedWidth = (timeSteps * cellWidth) + padding;
-        const int calculatedHeight = (signalCount * cellHeight) + padding;
-
-        // Apply the same scaling logic as resizeScene()
-        m_signalTableView->resize(static_cast<int>(calculatedWidth / (m_scale * 0.8)),
-                                  static_cast<int>(calculatedHeight / (m_scale * 0.8)));
+        setTableViewSize((timeSteps * cellWidth) + padding, (signalCount * cellHeight) + padding);
         m_scene->setSceneRect(m_scene->itemsBoundingRect());
 
         return exportWaveformToPng(filename);
@@ -820,10 +622,7 @@ void BewavedDolphin::on_actionSetTo0_triggered()
     const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
 
     for (const auto &item : itemList) {
-        const int row = item.row();
-        const int col = item.column();
-        qCDebug(zero) << "Editing value.";
-        createZeroElement(row, col);
+        setCellValue(item.row(), item.column(), 0);
     }
 
     m_edited = true;
@@ -833,14 +632,11 @@ void BewavedDolphin::on_actionSetTo0_triggered()
 
 void BewavedDolphin::on_actionSetTo1_triggered()
 {
-    qCDebug(zero) << "Pressed 0.";
+    qCDebug(zero) << "Pressed 1.";
     const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
 
     for (const auto &item : itemList) {
-        const int row = item.row();
-        const int col = item.column();
-        qCDebug(zero) << "Editing value.";
-        createOneElement(row, col);
+        setCellValue(item.row(), item.column(), 1);
     }
 
     m_edited = true;
@@ -854,12 +650,8 @@ void BewavedDolphin::on_actionInvert_triggered()
     const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
 
     for (const auto &item : itemList) {
-        const int row = item.row();
-        const int col = item.column();
-        int value = m_model->index(row, col, QModelIndex()).data().toInt();
-        value = (value + 1) % 2;
-        qCDebug(zero) << "Editing value.";
-        createElement(row, col, value);
+        const int value = (m_model->index(item.row(), item.column(), QModelIndex()).data().toInt() + 1) % 2;
+        setCellValue(item.row(), item.column(), value);
     }
 
     m_edited = true;
@@ -902,9 +694,8 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
         throw PANDACEPTION("No cells selected.");
     }
 
-    // Anchor the clock phase to the leftmost selected column so the generated
-    // waveform always starts with a LOW edge at the beginning of the selection,
-    // regardless of where in the overall timeline the selection starts
+    // Anchor the clock phase to the leftmost selected column so the waveform
+    // starts at 0 regardless of where in the timeline the selection begins
     const int firstCol = sectionFirstColumn(ranges);
 
     qCDebug(zero) << "Setting the signal according to its column and clock period.";
@@ -917,18 +708,13 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
 
     m_clockPeriod = clockPeriod;
 
-    // First half of each period is LOW, second half is HIGH (fixed 50% duty cycle).
-    // Integer division is intentional: odd periods round down, so the LOW half is
-    // one step shorter than the HIGH half — acceptable for waveform visualisation.
+    // First half of each period is LOW, second half is HIGH (50% duty cycle)
     const int halfClockPeriod = clockPeriod / 2;
     const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
 
     for (const auto &item : itemList) {
-        const int row = item.row();
-        const int col = item.column();
-        const int value = ((col - firstCol) % clockPeriod < halfClockPeriod ? 0 : 1);
-        qCDebug(zero) << "Editing value.";
-        createElement(row, col, value);
+        const int value = ((item.column() - firstCol) % clockPeriod < halfClockPeriod ? 0 : 1);
+        setCellValue(item.row(), item.column(), value);
     }
 
     m_edited = true;
@@ -939,31 +725,26 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
 void BewavedDolphin::on_actionCombinational_triggered()
 {
     // Ensure the table is at least as long as the full truth table (2^n columns)
-    const int truthTableSize = static_cast<int>(std::min(2048., std::pow(2, m_inputPorts)));
+    const int truthTableSize = static_cast<int>(std::min(static_cast<double>(kMaxSimLength), std::pow(2, m_inputPorts)));
 
     if (m_length < truthTableSize) {
         setLength(truthTableSize, false);
     }
 
-    // Generate a standard binary counting pattern: the least-significant input (row 0)
-    // toggles every column (period 2), row 1 toggles every 2 columns (period 4), etc.
-    // This enumerates all 2^n input combinations in ascending binary order, which is
-    // equivalent to a binary truth table with LSB on the first row.
+    // Generate Gray-code-like input patterns: row 0 toggles every 1 column (period=2),
+    // row 1 every 2 columns (period=4), etc. Together they enumerate all input combinations.
     qCDebug(zero) << "Setting the signal according to its columns and clock period.";
     int halfClockPeriod = 1;
-    int clockPeriod = 2;
+    int clockPeriod     = 2;
 
     for (int row = 0; row < m_inputPorts; ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
-            const int value = (col % clockPeriod < halfClockPeriod ? 0 : 1);
-            createElement(row, col, value);
+            setCellValue(row, col, (col % clockPeriod < halfClockPeriod ? 0 : 1));
         }
 
-        // Double the period for each successive input bit so each row toggles half as
-        // often as the previous one.  524288 / 1048576 are 2^19 / 2^20 — chosen so that
-        // 2*clockPeriod can never overflow a 32-bit int even after many doublings.
+        // Double the period for each successive input bit; cap at max int-safe values
         halfClockPeriod = std::min(clockPeriod, 524288);
-        clockPeriod = std::min(2 * clockPeriod, 1048576);
+        clockPeriod     = std::min(2 * clockPeriod, 1048576);
     }
 
     m_edited = true;
@@ -1002,9 +783,8 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
         return;
     }
 
-    // Growing: new input columns must be explicitly filled with zeros because
-    // QStandardItemModel::setColumnCount leaves new cells as null QStandardItems;
-    // output columns are populated by run() and don't need pre-filling
+    // Growing: new input columns must be explicitly filled with zeros; output columns
+    // are populated by run() and don't need pre-filling
     qCDebug(zero) << "Increasing the simulation length.";
     const int oldLength = m_model->columnCount();
     m_model->setColumnCount(simLength);
@@ -1012,8 +792,7 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
     for (int row = 0; row < m_inputPorts; ++row) {
         for (int col = oldLength; col < simLength; ++col) {
             // changeNext=false: avoid cascading into further new (still unset) cells
-            // which would attempt to read a null QStandardItem and crash
-            createZeroElement(row, col, true, false);
+            setCellValue(row, col, 0, true, false);
         }
     }
 
@@ -1055,14 +834,10 @@ void BewavedDolphin::on_actionZoomIn_triggered()
 void BewavedDolphin::on_actionResetZoom_triggered()
 {
     m_view.resetZoom();
-    // 1.25 is the base zoom scale factor — each zoom step multiplies/divides by this value.
-    // Resetting m_scale here keeps it consistent with m_view's internal zoom level (0).
-    // 49px is the column width that produces natural proportions for the 100×38 pixmaps
-    // when rendered through a 1.25× transform.
-    m_scale = 1.25;
+    m_scale = kZoomStep;
 
     for (int col = 0; col < m_signalTableView->model()->columnCount(); ++col) {
-        m_signalTableView->setColumnWidth(col, 49);
+        m_signalTableView->setColumnWidth(col, kDefaultColumnWidth);
     }
 
     resizeScene();
@@ -1079,25 +854,24 @@ void BewavedDolphin::on_actionFitScreen_triggered()
 {
     // First undo the current scale transform so the measurements below are in logical pixels
     m_view.scale(1.0 / m_scale, 1.0 / m_scale);
-    // Compute the scale needed to fit all columns and all rows within the current view.
-    // horizontalHeader()->length() gives the total pixel width of all column sections.
-    // We add one extra columnWidth(0) / rowHeight(0) to account for the header section
-    // itself (vertical header width / horizontal header height) which is not included in
-    // the body length() value.  The +10 on the height is a small guard against the
-    // horizontal scrollbar appearing when both axes are exactly at the boundary.
+    // Compute the scale needed to fit all columns and all rows within the current view
     const double wScale = static_cast<double>(m_view.width()) / (m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0));
     const double hScale = static_cast<double>(m_view.height()) / (m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10);
     // Use the smaller scale so neither axis overflows the view
     m_scale = std::min(wScale, hScale);
     m_view.scale(1.0 * m_scale, 1.0 * m_scale);
+    // FitScreen sets an arbitrary transform, so reset the discrete level to 0
+    // so canZoomIn/Out limits are correct for subsequent zoom actions
+    m_view.resetZoom();
     resizeScene();
+    zoomChanged();
 }
 
 void BewavedDolphin::on_actionClear_triggered()
 {
     for (int row = 0; row < m_inputPorts; ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
-            createZeroElement(row, col);
+            setCellValue(row, col, 0);
         }
     }
 
@@ -1143,13 +917,11 @@ void BewavedDolphin::copy(const QItemSelection &ranges, QDataStream &stream)
     stream << itemList.size();
 
     for (const auto &item : itemList) {
-        const int row = item.row();
-        const int col = item.column();
-        const int data_ = m_model->index(row, col).data().toInt();
+        const int data_ = m_model->index(item.row(), item.column()).data().toInt();
         // Store offsets relative to the selection origin so paste can re-anchor
         // the data at any target cell regardless of absolute position
-        stream << static_cast<qint64>(row - firstRow);
-        stream << static_cast<qint64>(col - firstCol);
+        stream << static_cast<qint64>(item.row() - firstRow);
+        stream << static_cast<qint64>(item.column() - firstCol);
         stream << static_cast<qint64>(data_);
     }
 }
@@ -1193,9 +965,8 @@ void BewavedDolphin::on_actionPaste_triggered()
     const auto *mimeData = QApplication::clipboard()->mimeData();
     QByteArray itemData;
 
-    // Support both the legacy "bdolphin/copydata" MIME type (used before the format
-    // was renamed) and the current one, so clipboard data from older app versions
-    // can still be pasted.  The current format takes precedence if both are present.
+    // Support both the legacy "bdolphin/copydata" MIME type and the current one,
+    // so files or clipboard data from older versions of the app can still be pasted
     if (mimeData->hasFormat("bdolphin/copydata")) {
         itemData = mimeData->data("bdolphin/copydata");
     }
@@ -1219,8 +990,8 @@ void BewavedDolphin::paste(const QItemSelection &ranges, QDataStream &stream)
     quint64 itemListSize; stream >> itemListSize;
 
     for (int i = 0; i < static_cast<int>(itemListSize); ++i) {
-        quint64 row;  stream >> row;
-        quint64 col;  stream >> col;
+        quint64 row;   stream >> row;
+        quint64 col;   stream >> col;
         quint64 data_; stream >> data_;
         // Re-anchor the stored relative offsets to the paste-target cell
         const int newRow = static_cast<int>(static_cast<quint64>(firstRow) + row);
@@ -1229,7 +1000,7 @@ void BewavedDolphin::paste(const QItemSelection &ranges, QDataStream &stream)
         // Silently drop cells that land outside the input rows or past the simulation length;
         // output rows are never editable
         if ((newRow < m_inputPorts) && (newCol < m_model->columnCount())) {
-            createElement(newRow, newCol, static_cast<int>(data_));
+            setCellValue(newRow, newCol, static_cast<int>(data_));
         }
     }
 
@@ -1322,44 +1093,18 @@ void BewavedDolphin::save(const QString &fileName)
 void BewavedDolphin::save(QDataStream &stream)
 {
     qCDebug(zero) << "Serializing data into data stream.";
-    // .dolphin binary layout: header | inputPortCount | columnCount | values (col-major, inputs only).
-    // Only input rows are stored because output rows are always fully determined by run();
-    // this also keeps file size small when the circuit has many outputs.
-    // qint64 is used for all numeric fields to ensure the format is stable across
-    // 32-bit and 64-bit builds regardless of sizeof(int).
-    stream << static_cast<qint64>(m_inputPorts);
-    stream << static_cast<qint64>(m_model->columnCount());
-
-    for (int col = 0; col < m_model->columnCount(); ++col) {
-        for (int row = 0; row < m_inputPorts; ++row) {
-            const int val = m_model->index(row, col).data().toInt();
-            stream << static_cast<qint64>(val);
-        }
-    }
+    DolphinSerializer::saveBinary(stream, m_model, m_inputPorts);
 }
 
 void BewavedDolphin::save(QSaveFile &file)
 {
-    // CSV format: first line is "rows,cols,"; subsequent lines are comma-separated row values
-    // Both input and output rows are written so the CSV is human-readable without re-running
-    file.write(QString::number(m_model->rowCount()).toUtf8());
-    file.write(",");
-    file.write(QString::number(m_model->columnCount()).toUtf8());
-    file.write(",\n");
-
-    for (int row = 0; row < m_model->rowCount(); ++row) {
-        for (int col = 0; col < m_model->columnCount(); ++col) {
-            const QString val = m_model->index(row, col).data().toString();
-            file.write(val.toUtf8());
-            file.write(",");
-        }
-
-        file.write("\n");
-    }
+    DolphinSerializer::saveCSV(file, m_model);
 }
 
 void BewavedDolphin::associateToWiRedPanda(const QString &fileName)
 {
+    // Only prompt when the file is new (not already linked) and we are in interactive mode;
+    // non-interactive (command-line / test) sessions skip the dialog entirely
     if ((m_mainWindow->dolphinFileName() != fileName) && Application::interactiveMode) {
         const auto reply =
             QMessageBox::question(
@@ -1457,27 +1202,13 @@ void BewavedDolphin::load(const QString &fileName)
 
 void BewavedDolphin::load(QDataStream &stream)
 {
-    qint64 rows; stream >> rows;
-    qint64 cols; stream >> cols;
-
-    // If the saved file has more input rows than the current circuit, ignore the excess
-    if (rows > m_inputPorts) {
-        rows = m_inputPorts;
-    }
-
-    if ((cols < 2) || (cols > 2048)) {
-        throw PANDACEPTION("Invalid number of columns.");
-    }
-
-    // Resize the table to match the file (runSimulation=false: run() is called below)
-    setLength(static_cast<int>(cols), false);
+    const auto loadedData = DolphinSerializer::loadBinary(stream, m_inputPorts);
+    setLength(loadedData.columns, false);
     qCDebug(zero) << "Update table.";
 
-    // Data is stored col-major in the .dolphin binary format
-    for (int col = 0; col < cols; ++col) {
-        for (int row = 0; row < rows; ++row) {
-            qint64 value; stream >> value;
-            createElement(row, col, static_cast<int>(value), true);
+    for (int row = 0; row < loadedData.inputPorts; ++row) {
+        for (int col = 0; col < loadedData.columns; ++col) {
+            setCellValue(row, col, loadedData.values[row * loadedData.columns + col], true);
         }
     }
 
@@ -1486,39 +1217,13 @@ void BewavedDolphin::load(QDataStream &stream)
 
 void BewavedDolphin::load(QFile &file)
 {
-    // CSV is a single flat comma-separated string: "rows,cols,v00,v01,...,v(rows-1)(cols-1),"
-    // (trailing comma on each row is tolerated; split(',') produces a trailing empty element)
-    const QByteArray content = file.readAll();
-    const auto wordList(content.split(','));
-    if (wordList.size() < 2) {
-        throw PANDACEPTION("Invalid CSV format: insufficient data.");
-    }
-    int rows = wordList.at(0).toInt();
-    const int cols = wordList.at(1).toInt();
-
-    if (rows > m_inputPorts) {
-        rows = m_inputPorts;
-    }
-
-    if ((cols < 2) || (cols > 2048)) {
-        throw PANDACEPTION("Invalid number of columns.");
-    }
-
-    setLength(cols, false);
-
+    const auto loadedData = DolphinSerializer::loadCSV(file, m_inputPorts);
+    setLength(loadedData.columns, false);
     qCDebug(zero) << "Update table.";
 
-    // Validate before indexing to avoid out-of-bounds access on corrupt files
-    const int expectedSize = 2 + rows * cols;
-    if (wordList.size() < expectedSize) {
-        throw PANDACEPTION("Invalid CSV format: expected %1 elements, got %2.", expectedSize, static_cast<int>(wordList.size()));
-    }
-
-    // Values are stored row-major in the CSV: index = 2 + row*cols + col
-    for (int row = 0; row < rows; ++row) {
-        for (int col = 0; col < cols; ++col) {
-            int value = wordList.at(2 + col + row * cols).toInt();
-            createElement(row, col, value, true);
+    for (int row = 0; row < loadedData.inputPorts; ++row) {
+        for (int col = 0; col < loadedData.columns; ++col) {
+            setCellValue(row, col, loadedData.values[row * loadedData.columns + col], true);
         }
     }
 
@@ -1529,19 +1234,18 @@ void BewavedDolphin::on_actionShowNumbers_triggered()
 {
     m_type = PlotType::Number;
 
-    // Clear the DecorationRole pixmaps that Line mode stored in each cell; if not
-    // cleared, SignalDelegate::paint() would still render the old waveform image
-    // behind (or on top of) the numeric "0"/"1" text produced by the base delegate
+    // Clear the DecorationRole pixmaps that the Line mode sets; if left, the delegate
+    // would paint the waveform image on top of the numeric text
     for (int row = 0; row < m_model->rowCount(); ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
             m_model->setData(m_model->index(row, col), QVariant(), Qt::DecorationRole);
         }
     }
 
-    // Re-apply input cells through createElement so alignment roles are set for Number mode
+    // Re-apply input cells through setCellValue so alignment roles are set for Number mode
     for (int row = 0; row < m_inputPorts; ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
-            createElement(row, col, m_model->index(row, col).data().toInt());
+            setCellValue(row, col, m_model->index(row, col).data().toInt());
         }
     }
 
@@ -1557,7 +1261,7 @@ void BewavedDolphin::on_actionShowWaveforms_triggered()
     // for the current value sequence; output cells are refreshed by run() below
     for (int row = 0; row < m_inputPorts; ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
-            createElement(row, col, m_model->index(row, col).data().toInt());
+            setCellValue(row, col, m_model->index(row, col).data().toInt());
         }
     }
 
@@ -1582,7 +1286,7 @@ void BewavedDolphin::on_actionExportToPng_triggered()
 
 bool BewavedDolphin::exportWaveformToPng(const QString &filename)
 {
-    QRectF sceneRect = m_scene->sceneRect();
+    const QRectF sceneRect = m_scene->sceneRect();
     // Create a pixmap exactly the size of the scene so there is no blank padding
     QPixmap pixmap(sceneRect.size().toSize());
 
@@ -1621,8 +1325,7 @@ void BewavedDolphin::on_actionExportToPdf_triggered()
         throw PANDACEPTION("Could not print this circuit to PDF.");
     }
 
-    // Expand the source rect by 64px on each side to add a visible margin around the
-    // waveform in the PDF; without this the header labels would be clipped at the edge
+    // Expand the source rect by 64px on each side to add a small margin around the waveform
     m_scene->render(&painter, QRectF(), m_scene->sceneRect().adjusted(-64, -64, 64, 64));
     painter.end();
 }
