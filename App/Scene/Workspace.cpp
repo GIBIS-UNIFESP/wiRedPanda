@@ -99,8 +99,7 @@ void WorkSpace::save(const QString &fileName)
         fileName_.append(".panda");
     }
 
-    m_scene.setContextDir(QFileInfo(fileName_).absolutePath());
-    m_fileInfo = QFileInfo(fileName_);
+    setCurrentFile(fileName_);
 
     // QSaveFile writes to a temp file and commits atomically, preventing data loss
     // if the process is interrupted during a write
@@ -180,8 +179,7 @@ void WorkSpace::load(const QString &fileName)
         throw PANDACEPTION("This file does not exist: %1", fileName);
     }
 
-    m_scene.setContextDir(QFileInfo(fileName).absolutePath());
-    m_fileInfo = QFileInfo(fileName);
+    setCurrentFile(fileName);
 
     qCDebug(zero) << "File exists.";
 
@@ -370,5 +368,11 @@ void WorkSpace::autosave()
 void WorkSpace::setAutosaveFile()
 {
     m_autosaveFile.setFileName(m_fileInfo.filePath());
+}
+
+void WorkSpace::setCurrentFile(const QString &filePath)
+{
+    m_fileInfo = QFileInfo(filePath);
+    m_scene.setContextDir(m_fileInfo.absolutePath());
 }
 
