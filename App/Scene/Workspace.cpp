@@ -187,7 +187,18 @@ void WorkSpace::load(const QString &fileName)
 
     QDataStream stream(&file);
     QVersionNumber version = Serialization::readPandaHeader(stream);
+
+    bool needsMigration = (version < AppVersion::current) && Application::migrationEnabled;
+    if (needsMigration) {
+        createVersionedBackup(fileName, version);
+    }
+
     load(stream, version, QFileInfo(fileName).absolutePath());
+    file.close();
+
+    if (needsMigration) {
+        save(fileName);  // Re-save in new format
+    }
 
     emit fileChanged(m_fileInfo);
 }
@@ -210,10 +221,12 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
                          "Please check for updates if the file does not load correctly.")
                           .arg(progVersion, fileVersion);
             QMessageBox::warning(this, tr("Newer version file."), message);
-        } else if (version < Versions::V_4_0) {
-            const QString message = tr("Warning! This is an old version wiRedPanda project file (version < 4.0). "
-                         "To open it correctly, save all the ICs and skins in the main project directory.");
-            QMessageBox::warning(this, tr("Old version file."), message);
+        } else if (version < AppVersion::current) {
+            const QString backupFileName = m_fileInfo.completeBaseName() + ".v" + version.toString() + "." + m_fileInfo.suffix();
+            const QString message = tr("This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).\n"
+                         "A backup of the original file has been created with name: %3")
+                         .arg(version.toString(), AppVersion::current.toString(), backupFileName);
+            QMessageBox::information(this, tr("File upgraded."), message);
         }
     }
 
@@ -365,5 +378,10 @@ void WorkSpace::setCurrentFile(const QString &filePath)
 {
     m_fileInfo = QFileInfo(filePath);
     m_scene.setContextDir(m_fileInfo.absolutePath());
+}
+
+void WorkSpace::createVersionedBackup(const QString &fileName, const QVersionNumber &version)
+{
+    Serialization::createVersionedBackup(fileName, version);
 }
 

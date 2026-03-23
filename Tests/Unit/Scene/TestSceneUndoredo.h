@@ -94,6 +94,12 @@ private slots:
     // Autosave context directory isolation
     void testContextDirectoryPerTab();
 
+    // Serialization::serialize portMap collision regression
+    void testDeleteUndoConnectionsReattachedCorrectly();  // port endpoints point to correct elements
+    void testDeleteUndoRedoConnectionCountStable();       // connection count stable across cycles
+    void testDeleteChainMiddleUndoRestoresTopology();     // A→B→C: delete B, undo, verify chain
+    void testDeleteUndoSimulationCorrectness();           // AND gate truth table survives delete+undo
+
 private:
     QTemporaryDir m_tempDir;
 };
