@@ -5,7 +5,6 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Common.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Enums.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.cpp

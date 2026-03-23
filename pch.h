@@ -67,6 +67,7 @@
 #include <QKeySequence>
 #include <QLabel>
 #include <QLineEdit>
+#include <QList>
 #include <QLocale>
 #include <QLoggingCategory>
 #include <QMainWindow>

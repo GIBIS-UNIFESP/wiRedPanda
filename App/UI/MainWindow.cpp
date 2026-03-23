@@ -968,10 +968,6 @@ void MainWindow::connectTab()
     // Synchronise zoom button state to the newly visible tab's zoom level.
     m_ui->actionZoomIn->setEnabled(m_currentTab->view()->canZoomIn());
     m_ui->actionZoomOut->setEnabled(m_currentTab->view()->canZoomOut());
-
-    // Keep the global ID counter ahead of the highest ID already used in this
-    // scene so that new elements receive unique IDs.
-    ElementFactory::setLastId(m_currentTab->lastId());
 }
 
 WorkSpace *MainWindow::currentTab() const
