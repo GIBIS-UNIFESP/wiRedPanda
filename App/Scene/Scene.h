@@ -18,6 +18,7 @@
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/PropertyShortcutHandler.h"
+#include "App/Scene/VisibilityManager.h"
 #include "App/Simulation/Simulation.h"
 
 class GraphicElement;
@@ -89,17 +90,14 @@ public:
     /// Sets the GraphicsView that displays this scene to \a view.
     void setView(GraphicsView *view);
 
-    /**
-     * \brief Shows or hides gate elements.
-     * \param checked \c true to show gates.
-     */
-    void showGates(const bool checked);
+    /// Shows or hides gate elements. Delegates to VisibilityManager.
+    void showGates(bool checked);
 
-    /**
-     * \brief Shows or hides connection wires.
-     * \param checked \c true to show wires.
-     */
-    void showWires(const bool checked);
+    /// Shows or hides connection wires. Delegates to VisibilityManager.
+    void showWires(bool checked);
+
+    /// Returns the visibility manager for this scene.
+    VisibilityManager *visibilityManager() { return &m_visibilityManager; }
 
     // --- Element Access / Queries ---
 
@@ -321,10 +319,6 @@ private:
     bool m_draggingElement = false;
     bool m_markingSelectionBox = false;
 
-    // Visibility flags
-    bool m_showGates = true;
-    bool m_showWires = true;
-
     // Context directory (directory of the .panda file owning this scene)
     QString m_contextDir;
 
@@ -339,5 +333,8 @@ private:
 
     // Property shortcut dispatch (delegated to PropertyShortcutHandler)
     PropertyShortcutHandler m_propertyShortcutHandler{this};
+
+    // Visibility control (delegated to VisibilityManager)
+    VisibilityManager m_visibilityManager{this};
 };
 
