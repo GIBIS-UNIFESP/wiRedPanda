@@ -189,7 +189,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QMap<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, version, Serialization::contextDir};
+    SerializationContext context{portMap, version, scene->contextDir()};
 
     for (auto *elm : findElements(otherIds)) {
         elm->load(stream, context);
@@ -439,7 +439,7 @@ void UpdateCommand::loadData(QByteArray &itemData)
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QMap<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, version, Serialization::contextDir};
+    SerializationContext context{portMap, version, m_scene->contextDir()};
 
     for (auto *elm : elements) {
         elm->load(stream, context);
@@ -904,7 +904,7 @@ void ChangeInputSizeCommand::undo()
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QMap<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, version, Serialization::contextDir};
+    SerializationContext context{portMap, version, m_scene->contextDir()};
 
     // Restore element and upstream element state first (expands port count back),
     // then reconstruct the connection objects that were severed during redo()
@@ -1010,7 +1010,7 @@ void ChangeOutputSizeCommand::undo()
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QMap<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, version, Serialization::contextDir};
+    SerializationContext context{portMap, version, m_scene->contextDir()};
 
     for (auto *elm : serializationOrder) {
         elm->load(stream, context);

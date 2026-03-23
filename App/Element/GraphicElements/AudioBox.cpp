@@ -9,8 +9,8 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementInfo.h"
-#include "App/IO/Serialization.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Scene/Scene.h"
 #include "App/Versions.h"
 
 template<>
@@ -89,7 +89,7 @@ void AudioBox::setAudio(const QString &audioPath)
     // just the filename — handles cross-platform absolute paths from old files.
     QString path = audioPath;
     if (!path.startsWith(":/")) {
-        const QDir dir(Serialization::contextDir);
+        const QDir dir(Scene::resolveContextDir(this));
         const QString resolved = dir.filePath(path);
 
         if (!QFileInfo::exists(resolved)) {
@@ -198,7 +198,7 @@ void AudioBox::save(QDataStream &stream) const
     // directory, so the project remains portable across machines and platforms.
     if (!audioPath.startsWith(":/")) {
         QFileInfo info(audioPath);
-        if (info.absoluteDir() == QDir(Serialization::contextDir)) {
+        if (info.absoluteDir() == QDir(Scene::resolveContextDir(this))) {
             audioPath = info.fileName();
         }
     }

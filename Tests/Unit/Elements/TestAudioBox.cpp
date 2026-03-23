@@ -269,14 +269,14 @@ void TestAudioBox::testSetAudioWithRelativePath()
     tempFile.close();
 
     const QFileInfo tempInfo(tempFile.fileName());
-    const QString savedDir = Serialization::contextDir;
-    Serialization::contextDir = tempInfo.absolutePath();
+    WorkSpace workspace;
+    workspace.scene()->setContextDir(tempInfo.absolutePath());
 
-    AudioBox audioBox;
-    audioBox.setAudio(tempInfo.fileName());
+    auto *audioBox = new AudioBox();
+    workspace.scene()->addItem(audioBox);
+    audioBox->setAudio(tempInfo.fileName());
 
-    QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
-    Serialization::contextDir = savedDir;
+    QCOMPARE(audioBox->audio(), tempInfo.absoluteFilePath());
 }
 
 void TestAudioBox::testSetAudioWithSameOsAbsolutePath()
@@ -288,14 +288,14 @@ void TestAudioBox::testSetAudioWithSameOsAbsolutePath()
     tempFile.close();
 
     const QFileInfo tempInfo(tempFile.fileName());
-    const QString savedDir = Serialization::contextDir;
-    Serialization::contextDir = "/some/unrelated/directory";
+    WorkSpace workspace;
+    workspace.scene()->setContextDir("/some/unrelated/directory");
 
-    AudioBox audioBox;
-    audioBox.setAudio(tempInfo.absoluteFilePath());
+    auto *audioBox = new AudioBox();
+    workspace.scene()->addItem(audioBox);
+    audioBox->setAudio(tempInfo.absoluteFilePath());
 
-    QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
-    Serialization::contextDir = savedDir;
+    QCOMPARE(audioBox->audio(), tempInfo.absoluteFilePath());
 }
 
 void TestAudioBox::testSetAudioWithForeignAbsolutePathForwardSlash()
@@ -307,14 +307,14 @@ void TestAudioBox::testSetAudioWithForeignAbsolutePathForwardSlash()
     tempFile.close();
 
     const QFileInfo tempInfo(tempFile.fileName());
-    const QString savedDir = Serialization::contextDir;
-    Serialization::contextDir = tempInfo.absolutePath();
+    WorkSpace workspace;
+    workspace.scene()->setContextDir(tempInfo.absolutePath());
 
-    AudioBox audioBox;
-    audioBox.setAudio("C:/Users/alice/project/" + tempInfo.fileName());
+    auto *audioBox = new AudioBox();
+    workspace.scene()->addItem(audioBox);
+    audioBox->setAudio("C:/Users/alice/project/" + tempInfo.fileName());
 
-    QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
-    Serialization::contextDir = savedDir;
+    QCOMPARE(audioBox->audio(), tempInfo.absoluteFilePath());
 }
 
 void TestAudioBox::testSetAudioWithForeignAbsolutePathBackslash()
@@ -326,14 +326,14 @@ void TestAudioBox::testSetAudioWithForeignAbsolutePathBackslash()
     tempFile.close();
 
     const QFileInfo tempInfo(tempFile.fileName());
-    const QString savedDir = Serialization::contextDir;
-    Serialization::contextDir = tempInfo.absolutePath();
+    WorkSpace workspace;
+    workspace.scene()->setContextDir(tempInfo.absolutePath());
 
-    AudioBox audioBox;
-    audioBox.setAudio("C:\\Users\\alice\\project\\" + tempInfo.fileName());
+    auto *audioBox = new AudioBox();
+    workspace.scene()->addItem(audioBox);
+    audioBox->setAudio("C:\\Users\\alice\\project\\" + tempInfo.fileName());
 
-    QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
-    Serialization::contextDir = savedDir;
+    QCOMPARE(audioBox->audio(), tempInfo.absoluteFilePath());
 }
 
 void TestAudioBox::testSetAudioWithForeignAbsolutePathMixedSlashes()
@@ -345,33 +345,33 @@ void TestAudioBox::testSetAudioWithForeignAbsolutePathMixedSlashes()
     tempFile.close();
 
     const QFileInfo tempInfo(tempFile.fileName());
-    const QString savedDir = Serialization::contextDir;
-    Serialization::contextDir = tempInfo.absolutePath();
+    WorkSpace workspace;
+    workspace.scene()->setContextDir(tempInfo.absolutePath());
 
-    AudioBox audioBox;
-    audioBox.setAudio("C:\\Users/alice\\project/" + tempInfo.fileName());
+    auto *audioBox = new AudioBox();
+    workspace.scene()->addItem(audioBox);
+    audioBox->setAudio("C:\\Users/alice\\project/" + tempInfo.fileName());
 
-    QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
-    Serialization::contextDir = savedDir;
+    QCOMPARE(audioBox->audio(), tempInfo.absoluteFilePath());
 }
 
 void TestAudioBox::testSetAudioWithNonExistentFileFallback()
 {
     // Both full path and filename fallback fail — should throw Pandaception
-    const QString savedDir = Serialization::contextDir;
-    Serialization::contextDir = "/some/empty/directory";
+    WorkSpace workspace;
+    workspace.scene()->setContextDir("/some/empty/directory");
 
-    AudioBox audioBox;
+    auto *audioBox = new AudioBox();
+    workspace.scene()->addItem(audioBox);
 
     bool threw = false;
     try {
-        audioBox.setAudio("C:\\Users\\alice\\project\\nonexistent_audio_12345.wav");
+        audioBox->setAudio("C:\\Users\\alice\\project\\nonexistent_audio_12345.wav");
     } catch (const Pandaception &) {
         threw = true;
     }
 
     QVERIFY2(threw, "setAudio should throw when neither full path nor filename fallback resolves");
-    Serialization::contextDir = savedDir;
 }
 
 void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
@@ -384,19 +384,20 @@ void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
     tempFile.close();
 
     const QFileInfo tempInfo(tempFile.fileName());
-    const QString savedDir = Serialization::contextDir;
-    Serialization::contextDir = tempInfo.absolutePath();
+    WorkSpace workspace;
+    workspace.scene()->setContextDir(tempInfo.absolutePath());
 
-    AudioBox audioBox;
-    audioBox.setAudio(tempInfo.fileName());
+    auto *audioBox = new AudioBox();
+    workspace.scene()->addItem(audioBox);
+    audioBox->setAudio(tempInfo.fileName());
 
     // Verify internal state stores the full resolved path
-    QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
+    QCOMPARE(audioBox->audio(), tempInfo.absoluteFilePath());
 
     // Save and read back the serialized audio path
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    audioBox.save(saveStream);
+    audioBox->save(saveStream);
 
     // Skip past the GraphicElement base data to reach the AudioBox map.
     // GraphicElement::save writes: QMap (properties), QList<QMap> (inputs),
@@ -414,7 +415,5 @@ void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
     QVERIFY2(map.contains("audiobox"), "Saved data should contain 'audiobox' key");
     const QString savedPath = map.value("audiobox").toString();
     QCOMPARE(savedPath, tempInfo.fileName());
-
-    Serialization::contextDir = savedDir;
 }
 
