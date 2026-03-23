@@ -27,7 +27,7 @@ class IC : public GraphicElement
 {
     Q_OBJECT
 
-    friend class ArduinoCodeGen;
+    friend class TestArduino;
     friend class TestIC;
 
 public:
@@ -75,6 +75,11 @@ public:
      */
     void setOutputPortName(int port, const QString &name) override;
     void loadFromDrop(const QString &fileName, const QString &contextDir) override;
+
+    const QString &icFile() const { return m_file; }
+    const QVector<GraphicElement *> &icElements() const { return m_icElements; }
+    const QVector<QNEPort *> &icInputs() const { return m_icInputs; }
+    const QVector<QNEPort *> &icOutputs() const { return m_icOutputs; }
 
     // --- Visual ---
 
