@@ -725,9 +725,8 @@ QJsonObject ElementHandler::handleToggleTruthTableOutput(const QJsonObject &para
     }
 
     try {
-        // Use ToggleTruthTableOutputCommand for undo/redo support
-        // Note: ElementEditor parameter is nullptr for MCP usage
-        scene->receiveCommand(new ToggleTruthTableOutputCommand(truthTable, position, scene, nullptr));
+        // ToggleTruthTableOutputCommand flips one cell in the truth table's output column.
+        scene->receiveCommand(new ToggleTruthTableOutputCommand(truthTable, position, scene));
     } catch (const std::exception &e) {
         return createErrorResponse(QString("Failed to toggle truth table output: %1").arg(e.what()), requestId);
     } catch (...) {

@@ -11,7 +11,6 @@
 
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/Scene.h"
-#include "App/UI/ElementEditor.h"
 
 class QNEConnection;
 
@@ -401,13 +400,12 @@ class ToggleTruthTableOutputCommand : public QUndoCommand
 public:
     /**
      * \brief Constructs the toggle command.
-     * \param element       TruthTable element to modify.
-     * \param pos           Flat index of the bit to toggle in the proposition array.
-     * \param scene         Target scene.
-     * \param ElementEditor Optional element editor to refresh (may be nullptr).
-     * \param parent        Optional parent undo command.
+     * \param element TruthTable element to modify.
+     * \param pos     Flat index of the bit to toggle in the proposition array.
+     * \param scene   Target scene.
+     * \param parent  Optional parent undo command.
      */
-    explicit ToggleTruthTableOutputCommand(GraphicElement *element, int pos, Scene *scene, ElementEditor *ElementEditor, QUndoCommand *parent = nullptr);
+    explicit ToggleTruthTableOutputCommand(GraphicElement *element, int pos, Scene *scene, QUndoCommand *parent = nullptr);
 
     /// Toggles the bit at \a pos.
     void redo() override;
@@ -416,8 +414,6 @@ public:
     void undo() override;
 
 private:
-    // --- Members ---
-    ElementEditor *m_elementeditor;
     Scene *m_scene;
     int m_id;
     int m_pos;
