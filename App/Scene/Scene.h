@@ -150,6 +150,15 @@ public:
     /// Marks the simulation mapping as stale so it is rebuilt on the next tick.
     void setCircuitUpdateRequired();
 
+    // --- Context Directory ---
+
+    /// Returns the directory of the .panda file associated with this scene.
+    QString contextDir() const { return m_contextDir; }
+    /// Sets the directory of the .panda file associated with this scene.
+    void setContextDir(const QString &dir) { m_contextDir = dir; }
+    /// Returns the context directory for \a item: from its Scene if available, else the global fallback.
+    static QString resolveContextDir(const QGraphicsItem *item);
+
     // --- Autosave ---
 
     /// Schedules an autosave of the current circuit state.
@@ -258,6 +267,9 @@ private:
     // Visibility flags
     bool m_showGates = true;
     bool m_showWires = true;
+
+    // Context directory (directory of the .panda file owning this scene)
+    QString m_contextDir;
 
     // Autosave
     bool m_autosaveRequired = false;

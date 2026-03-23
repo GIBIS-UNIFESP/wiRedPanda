@@ -31,8 +31,6 @@ class Serialization
     Q_DECLARE_TR_FUNCTIONS(Serialization)
 
 public:
-    /// Directory of the project file currently being serialized (used by elements during save).
-    inline static QString contextDir = {};
     /**
      * \brief Serializes \a items to \a stream in the current .panda binary format.
      * \param items Items to serialize (graphic elements and connections).

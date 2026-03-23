@@ -694,6 +694,7 @@ void TestIC::testICLoadWithForeignAbsolutePathMixedSlashes()
     // normalization must handle both separator styles in a single path
     WorkSpace workspace;
     auto *scene = workspace.scene();
+
     const QString examplesDir = TestUtils::examplesDir();
 
     auto *ic = new IC();
@@ -714,6 +715,7 @@ void TestIC::testICLoadWithNonExistentFileFallback()
     // Both full path and filename fallback fail — should throw Pandaception
     WorkSpace workspace;
     auto *scene = workspace.scene();
+
     const QString examplesDir = TestUtils::examplesDir();
 
     auto *ic = new IC();

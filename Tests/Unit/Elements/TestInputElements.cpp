@@ -14,6 +14,7 @@
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/Serialization.h"
+#include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
 // ============================================================================
@@ -499,20 +500,20 @@ void TestInputElements::testSkinWithRelativePath()
     const QString skinFileName = "custom_skin.svg";
     QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
 
-    const QString savedDir = Serialization::contextDir;
-    Serialization::contextDir = tempDir.path();
+    WorkSpace workspace;
+    workspace.scene()->setContextDir(tempDir.path());
 
-    InputSwitch inputSwitch;
+    auto *inputSwitch = new InputSwitch();
+    workspace.scene()->addItem(inputSwitch);
 
     bool threw = false;
     try {
-        inputSwitch.setSkin(false, skinFileName);
+        inputSwitch->setSkin(false, skinFileName);
     } catch (const Pandaception &) {
         threw = true;
     }
 
     QVERIFY2(!threw, "setSkin should resolve relative filename against currentDir");
-    Serialization::contextDir = savedDir;
 }
 
 void TestInputElements::testSkinWithSameOsAbsolutePath()
@@ -525,20 +526,20 @@ void TestInputElements::testSkinWithSameOsAbsolutePath()
     const QString skinFullPath = tempDir.path() + "/" + skinFileName;
     QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", skinFullPath));
 
-    const QString savedDir = Serialization::contextDir;
-    Serialization::contextDir = "/some/unrelated/directory";
+    WorkSpace workspace;
+    workspace.scene()->setContextDir("/some/unrelated/directory");
 
-    InputSwitch inputSwitch;
+    auto *inputSwitch = new InputSwitch();
+    workspace.scene()->addItem(inputSwitch);
 
     bool threw = false;
     try {
-        inputSwitch.setSkin(false, skinFullPath);
+        inputSwitch->setSkin(false, skinFullPath);
     } catch (const Pandaception &) {
         threw = true;
     }
 
     QVERIFY2(!threw, "setSkin should resolve same-OS absolute path directly");
-    Serialization::contextDir = savedDir;
 }
 
 void TestInputElements::testSkinWithForeignAbsolutePathForwardSlash()
@@ -550,20 +551,20 @@ void TestInputElements::testSkinWithForeignAbsolutePathForwardSlash()
     const QString skinFileName = "custom_skin.svg";
     QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
 
-    const QString savedDir = Serialization::contextDir;
-    Serialization::contextDir = tempDir.path();
+    WorkSpace workspace;
+    workspace.scene()->setContextDir(tempDir.path());
 
-    InputSwitch inputSwitch;
+    auto *inputSwitch = new InputSwitch();
+    workspace.scene()->addItem(inputSwitch);
 
     bool threw = false;
     try {
-        inputSwitch.setSkin(false, "C:/Users/alice/project/" + skinFileName);
+        inputSwitch->setSkin(false, "C:/Users/alice/project/" + skinFileName);
     } catch (const Pandaception &) {
         threw = true;
     }
 
     QVERIFY2(!threw, "setSkin should resolve foreign path with forward slashes via filename fallback");
-    Serialization::contextDir = savedDir;
 }
 
 void TestInputElements::testSkinWithForeignAbsolutePathBackslash()
@@ -575,20 +576,20 @@ void TestInputElements::testSkinWithForeignAbsolutePathBackslash()
     const QString skinFileName = "custom_skin.svg";
     QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
 
-    const QString savedDir = Serialization::contextDir;
-    Serialization::contextDir = tempDir.path();
+    WorkSpace workspace;
+    workspace.scene()->setContextDir(tempDir.path());
 
-    InputSwitch inputSwitch;
+    auto *inputSwitch = new InputSwitch();
+    workspace.scene()->addItem(inputSwitch);
 
     bool threw = false;
     try {
-        inputSwitch.setSkin(false, "C:\\Users\\alice\\project\\" + skinFileName);
+        inputSwitch->setSkin(false, "C:\\Users\\alice\\project\\" + skinFileName);
     } catch (const Pandaception &) {
         threw = true;
     }
 
     QVERIFY2(!threw, "setSkin should resolve foreign path with backslashes via filename fallback");
-    Serialization::contextDir = savedDir;
 }
 
 void TestInputElements::testSkinWithForeignAbsolutePathMixedSlashes()
@@ -600,38 +601,38 @@ void TestInputElements::testSkinWithForeignAbsolutePathMixedSlashes()
     const QString skinFileName = "custom_skin.svg";
     QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
 
-    const QString savedDir = Serialization::contextDir;
-    Serialization::contextDir = tempDir.path();
+    WorkSpace workspace;
+    workspace.scene()->setContextDir(tempDir.path());
 
-    InputSwitch inputSwitch;
+    auto *inputSwitch = new InputSwitch();
+    workspace.scene()->addItem(inputSwitch);
 
     bool threw = false;
     try {
-        inputSwitch.setSkin(false, "C:\\Users/alice\\project/" + skinFileName);
+        inputSwitch->setSkin(false, "C:\\Users/alice\\project/" + skinFileName);
     } catch (const Pandaception &) {
         threw = true;
     }
 
     QVERIFY2(!threw, "setSkin should resolve foreign path with mixed slashes via filename fallback");
-    Serialization::contextDir = savedDir;
 }
 
 void TestInputElements::testSkinWithNonExistentFileFallback()
 {
     // Both full path and filename fallback fail — should throw Pandaception
-    const QString savedDir = Serialization::contextDir;
-    Serialization::contextDir = "/some/empty/directory";
+    WorkSpace workspace;
+    workspace.scene()->setContextDir("/some/empty/directory");
 
-    InputSwitch inputSwitch;
+    auto *inputSwitch = new InputSwitch();
+    workspace.scene()->addItem(inputSwitch);
 
     bool threw = false;
     try {
-        inputSwitch.setSkin(false, "C:\\Users\\alice\\project\\nonexistent_skin_12345.svg");
+        inputSwitch->setSkin(false, "C:\\Users\\alice\\project\\nonexistent_skin_12345.svg");
     } catch (const Pandaception &) {
         threw = true;
     }
 
     QVERIFY2(threw, "setSkin should throw when neither full path nor filename fallback resolves");
-    Serialization::contextDir = savedDir;
 }
 
