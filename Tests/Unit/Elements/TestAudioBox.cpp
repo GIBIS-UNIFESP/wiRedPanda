@@ -14,7 +14,6 @@
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/InputGND.h"
 #include "App/Element/GraphicElements/InputVCC.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Workspace.h"
@@ -233,6 +232,7 @@ void TestAudioBox::testLoadVersionOld()
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
     SerializationContext context{portMap, AppVersion::current, {}};
+
     audioBox2->load(loadStream, context);
 
     // Audio path should be loaded correctly
@@ -255,6 +255,7 @@ void TestAudioBox::testLoadVersionNew()
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
     SerializationContext context{portMap, AppVersion::current, {}};
+
     audioBox2->load(loadStream, context);
 
     // Audio path should be loaded

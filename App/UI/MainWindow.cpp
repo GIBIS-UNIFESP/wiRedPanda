@@ -40,7 +40,6 @@
 #include "App/Element/ElementLabel.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/IC.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/RecentFiles.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Workspace.h"
@@ -1225,7 +1224,7 @@ void MainWindow::zoomChanged()
 void MainWindow::updateRecentFileActions()
 {
     const auto files = m_recentFiles->recentFiles();
-    const int numRecentFiles = static_cast<int>(qMin(files.size(), GlobalProperties::maxRecentFiles));
+    const int numRecentFiles = static_cast<int>(qMin(files.size(), RecentFiles::maxFiles));
 
     if (numRecentFiles > 0) {
         m_ui->menuRecentFiles->setEnabled(true);
@@ -1243,7 +1242,7 @@ void MainWindow::updateRecentFileActions()
         actions.at(i)->setVisible(true);
     }
 
-    for (int i = numRecentFiles; i < GlobalProperties::maxRecentFiles; ++i) {
+    for (int i = numRecentFiles; i < RecentFiles::maxFiles; ++i) {
         actions.at(i)->setVisible(false);
     }
 }
@@ -1259,7 +1258,7 @@ void MainWindow::createRecentFileActions()
 {
     m_ui->menuRecentFiles->clear();
 
-    for (int i = 0; i < GlobalProperties::maxRecentFiles; ++i) {
+    for (int i = 0; i < RecentFiles::maxFiles; ++i) {
         auto *action = new QAction(this);
         action->setVisible(false);
         connect(action, &QAction::triggered, this, &MainWindow::openRecentFile);
