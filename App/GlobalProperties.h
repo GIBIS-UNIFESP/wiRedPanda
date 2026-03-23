@@ -12,10 +12,6 @@ public:
 
     inline static QString currentDir = {};
     inline static bool interactiveMode = true;
-
-    // --- Application Constants ---
-
-    inline static const int gridSize = 16;
     inline static const int maxRecentFiles = 10;
 };
 

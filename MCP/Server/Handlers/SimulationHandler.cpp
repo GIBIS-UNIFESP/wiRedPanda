@@ -335,7 +335,7 @@ QJsonObject SimulationHandler::handleInstantiateIC(const QJsonObject &params, co
     }
 
     QString icName = params.value("ic_name").toString();
-    const int snap = GlobalProperties::gridSize / 2;
+    const int snap = Scene::gridSize / 2;
     int x = qRound(params.value("x").toDouble() / snap) * snap;
     int y = qRound(params.value("y").toDouble() / snap) * snap;
     QString label = params.value("label").toString(icName);

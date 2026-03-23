@@ -9,8 +9,8 @@
 
 #include "App/Element/ElementInfo.h"
 #include "App/Element/LogicElements/LogicDemux.h"
-#include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Scene/Scene.h"
 
 template<>
 struct ElementInfo<Demux> {
@@ -90,7 +90,7 @@ void Demux::updatePortsProperties()
         numSelectLines++;
     }
 
-    const int step = GlobalProperties::gridSize / 2; // 8
+    const int step = Scene::gridSize / 2; // 8
 
     // Calculate element height to fit all output ports with padding
     int outputPortsSpan = (outputSize() - 1) * step * 2;
