@@ -16,9 +16,9 @@
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
+#include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Simulation/SimulationBlocker.h"
-#include "App/Versions.h"
 
 WorkSpace::WorkSpace(QWidget *parent)
     : QWidget(parent)

@@ -7,8 +7,8 @@
 #include <QPainter>
 
 #include "App/Element/ElementInfo.h"
+#include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
-#include "App/Versions.h"
 
 template<>
 struct ElementInfo<InputRotary> {
@@ -282,16 +282,16 @@ void InputRotary::load(QDataStream &stream, SerializationContext &context)
 {
     GraphicElement::load(stream, context);
 
-    if (context.version < Versions::V_4_1) {
+    if (!VersionInfo::hasQMapFormat(context.version)) {
         // v1.x–4.0 stored currentPort as a bare int; locked added in v3.1
         stream >> m_currentPort;
 
-        if (context.version >= Versions::V_3_1) {
+        if (VersionInfo::hasLockState(context.version)) {
             stream >> m_locked;
         }
     }
 
-    if (context.version >= Versions::V_4_1) {
+    if (VersionInfo::hasQMapFormat(context.version)) {
         // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 

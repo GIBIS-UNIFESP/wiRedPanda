@@ -8,8 +8,8 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementInfo.h"
+#include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
-#include "App/Versions.h"
 
 template<>
 struct ElementInfo<Display7> {
@@ -205,7 +205,7 @@ void Display7::load(QDataStream &stream, SerializationContext &context)
      * 2, 1, 4, 5, 0, 7, 3, 6
      */
 
-    if (context.version < Versions::V_1_6) {
+    if (!VersionInfo::hasDisplay7Color(context.version)) {
         // The pin-to-segment mapping changed at v1.6. The permutation
         // order[i] = j means "the port that was at index i in the old file
         // should now live at index j in the canonical layout."
@@ -222,7 +222,7 @@ void Display7::load(QDataStream &stream, SerializationContext &context)
         updatePortsProperties();
     }
 
-    if (context.version < Versions::V_1_7) {
+    if (!VersionInfo::hasDisplay7ExtColor(context.version)) {
         // A second pin-order change occurred at v1.7, requiring another permutation
         // applied on top of whatever v1.6 remapping already happened.
         qCDebug(zero) << "Remapping inputs.";
@@ -237,13 +237,13 @@ void Display7::load(QDataStream &stream, SerializationContext &context)
         updatePortsProperties();
     }
 
-    if ((Versions::V_3_1 <= context.version) && (context.version < Versions::V_4_1)) {
+    if ((VersionInfo::hasLockState(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
         // v3.1–4.0 stored color as a bare QString
         QString color_; stream >> color_;
         setColor(color_);
     }
 
-    if (context.version >= Versions::V_4_1) {
+    if (VersionInfo::hasQMapFormat(context.version)) {
         // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 

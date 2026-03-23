@@ -6,8 +6,8 @@
 #include <chrono>
 
 #include "App/Element/ElementInfo.h"
+#include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
-#include "App/Versions.h"
 
 using namespace std::chrono_literals;
 
@@ -121,22 +121,22 @@ void Clock::load(QDataStream &stream, SerializationContext &context)
 {
     GraphicElement::load(stream, context);
 
-    if (context.version < Versions::V_1_1) {
+    if (!VersionInfo::hasClock(context.version)) {
         // Clock serialization was introduced in v1.1; nothing to read in earlier files
         return;
     }
 
-    if (context.version < Versions::V_4_1) {
+    if (!VersionInfo::hasQMapFormat(context.version)) {
         // v1.1–4.0 stored frequency as a bare float; locked state added in v3.1
         float freq; stream >> freq;
         setFrequency(freq);
 
-        if (context.version >= Versions::V_3_1) {
+        if (VersionInfo::hasLockState(context.version)) {
             stream >> m_locked;
         }
     }
 
-    if (context.version >= Versions::V_4_1) {
+    if (VersionInfo::hasQMapFormat(context.version)) {
         // v4.1+ uses a key-value map so new properties can be added without breaking old files
         QMap<QString, QVariant> map; stream >> map;
 
@@ -147,7 +147,7 @@ void Clock::load(QDataStream &stream, SerializationContext &context)
         if (map.contains("delay")) {
             float delayValue = map.value("delay").toFloat();
 
-            if (context.version < Versions::V_4_3) {
+            if (!VersionInfo::hasDelayFix(context.version)) {
                 // Discard old delay data from versions < 4.3
                 // The old implementation was incorrect and incompatible with the new period-fraction format
             } else {

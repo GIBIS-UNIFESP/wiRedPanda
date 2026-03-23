@@ -9,9 +9,9 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementInfo.h"
+#include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
-#include "App/Versions.h"
 
 template<>
 struct ElementInfo<AudioBox> {
@@ -217,18 +217,18 @@ void AudioBox::load(QDataStream &stream, SerializationContext &context)
 {
     GraphicElement::load(stream, context);
 
-    if (context.version < Versions::V_2_4) {
+    if (!VersionInfo::hasAudio(context.version)) {
         // Audio was added in v2.4; nothing to read for earlier files
         return;
     }
 
-    if (context.version < Versions::V_4_1) {
+    if (!VersionInfo::hasQMapFormat(context.version)) {
         // v2.4–4.0 stored the path as a bare QString
         QString audio; stream >> audio;
         setAudio(audio);
     }
 
-    if (context.version >= Versions::V_4_1) {
+    if (VersionInfo::hasQMapFormat(context.version)) {
         // v4.1+ uses a key-value map for forward-compatible extensibility
         QMap<QString, QVariant> map; stream >> map;
 

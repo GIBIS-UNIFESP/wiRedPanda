@@ -7,8 +7,8 @@
 
 #include "App/Element/ElementInfo.h"
 #include "App/Element/GraphicElements/Display7.h"
+#include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
-#include "App/Versions.h"
 
 template<>
 struct ElementInfo<Display16> {
@@ -201,13 +201,13 @@ void Display16::load(QDataStream &stream, SerializationContext &context)
 {
     GraphicElement::load(stream, context);
 
-    if ((Versions::V_3_1 <= context.version) && (context.version < Versions::V_4_1)) {
+    if ((VersionInfo::hasLockState(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
         // v3.1–4.0 stored color as a bare QString
         QString color_; stream >> color_;
         setColor(color_);
     }
 
-    if (context.version >= Versions::V_4_1) {
+    if (VersionInfo::hasQMapFormat(context.version)) {
         // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 

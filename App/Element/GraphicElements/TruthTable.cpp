@@ -7,9 +7,9 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementInfo.h"
+#include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
-#include "App/Versions.h"
 
 template<>
 struct ElementInfo<TruthTable> {
@@ -205,7 +205,7 @@ void TruthTable::load(QDataStream &stream, SerializationContext &context)
 {
     GraphicElement::load(stream, context);
 
-    if (context.version >= Versions::V_4_2) {
+    if (VersionInfo::hasTruthTableData(context.version)) {
         // Truth-table key (the output bit-array) was first serialized in v4.2
         QMap<QString, QVariant> map; stream >> map;
 
