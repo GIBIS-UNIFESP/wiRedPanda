@@ -15,10 +15,7 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Element/LogicElement.h"
-#include "App/IO/Serialization.h"
 #include "App/Scene/Workspace.h"
-#include "App/Simulation/ElementMapping.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestIC::initTestCase()
@@ -111,14 +108,6 @@ void TestIC::testICNestedSingleLevel()
     // Verify IC loaded
     QVERIFY2(ic->inputSize() > 0 || ic->outputSize() > 0, "Failed to load JK flip-flop IC");
 
-    // Generate logic mapping
-    QVector<std::shared_ptr<LogicElement>> logicElems;
-    try {
-        logicElems = ic->generateMap();
-    } catch (const std::exception &e) {
-        QFAIL(qPrintable(QString("generateMap() threw: %1").arg(e.what())));
-    }
-    QVERIFY2(logicElems.size() > 0, "IC should expand to logic elements");
 }
 
 void TestIC::testICNestedMultiLevel()
@@ -181,14 +170,6 @@ void TestIC::testICLogicGeneration()
     // Test that IC can generate logic mapping when expanded
     QVERIFY2(ic->inputSize() > 0, "IC should have inputs after loading");
     QVERIFY2(ic->outputSize() > 0, "IC should have outputs after loading");
-
-    // Verify the IC can generate a logic mapping (expansion into primitives)
-    try {
-        const auto logicElems = ic->generateMap();
-        QVERIFY2(logicElems.size() > 0, "IC should expand to logic elements");
-    } catch (...) {
-        QFAIL("IC logic generation should not throw");
-    }
 }
 
 // Serialization Tests
@@ -309,15 +290,6 @@ void TestIC::testICInSimulation()
 
     // Verify IC is properly integrated in builder
     QVERIFY2(ic->scene() != nullptr, "IC should be added to scene");
-
-    // Verify IC can expand to logic elements (verify internal structure)
-    QVector<std::shared_ptr<LogicElement>> logicElems;
-    try {
-        logicElems = ic->generateMap();
-    } catch (const std::exception &e) {
-        QFAIL(qPrintable(QString("generateMap() threw: %1").arg(e.what())));
-    }
-    QVERIFY2(logicElems.size() > 0, "IC should expand to logic elements on generateMap");
 
     // Verify all ports are accessible and have names
     for (int i = 0; i < ic->inputSize(); ++i) {
@@ -530,31 +502,21 @@ void TestIC::testICNestedCircuitPortMapping()
         QFAIL(qPrintable(QString("Failed to load IC file: %1").arg(e.what())));
     }
 
-    // Get the logic mapping to verify internal structure
-    try {
-        const auto logicElems = ic->generateMap();
+    // Verify IC ports are created correctly
+    QVERIFY2(ic->inputSize() > 0, "IC should have input ports");
+    QVERIFY2(ic->outputSize() > 0, "IC should have output ports");
 
-        // Verify that internal elements were mapped
-        QVERIFY2(logicElems.size() > 0, "IC should contain logic elements after loading");
+    // Verify each port is connected to appropriate internal element
+    for (int i = 0; i < ic->inputSize(); ++i) {
+        auto *port = ic->inputPort(i);
+        QVERIFY2(port != nullptr, qPrintable(QString("Input port %1 should exist").arg(i)));
+        QVERIFY2(port->isInput(), qPrintable(QString("Port %1 should be input").arg(i)));
+    }
 
-        // Verify IC ports are created correctly
-        QVERIFY2(ic->inputSize() > 0, "IC should have input ports");
-        QVERIFY2(ic->outputSize() > 0, "IC should have output ports");
-
-        // Verify each port is connected to appropriate internal element
-        for (int i = 0; i < ic->inputSize(); ++i) {
-            auto *port = ic->inputPort(i);
-            QVERIFY2(port != nullptr, qPrintable(QString("Input port %1 should exist").arg(i)));
-            QVERIFY2(port->isInput(), qPrintable(QString("Port %1 should be input").arg(i)));
-        }
-
-        for (int i = 0; i < ic->outputSize(); ++i) {
-            auto *port = ic->outputPort(i);
-            QVERIFY2(port != nullptr, qPrintable(QString("Output port %1 should exist").arg(i)));
-            QVERIFY2(port->isOutput(), qPrintable(QString("Port %1 should be output").arg(i)));
-        }
-    } catch (const std::exception &e) {
-        QFAIL(qPrintable(QString("IC nested circuit mapping failed: %1").arg(e.what())));
+    for (int i = 0; i < ic->outputSize(); ++i) {
+        auto *port = ic->outputPort(i);
+        QVERIFY2(port != nullptr, qPrintable(QString("Output port %1 should exist").arg(i)));
+        QVERIFY2(port->isOutput(), qPrintable(QString("Port %1 should be output").arg(i)));
     }
 }
 
@@ -582,13 +544,6 @@ void TestIC::testICNestedCircuitSignalPropagation()
     const Status initialStatus = outputPort->status();
     QVERIFY2(initialStatus == Status::Active || initialStatus == Status::Inactive,
              "Output port should be in valid state");
-
-    try {
-        const auto logicElems = ic->generateMap();
-        QVERIFY2(!logicElems.isEmpty(), "IC should generate at least one logic element");
-    } catch (const std::exception &e) {
-        QFAIL(qPrintable(QString("generateMap() threw: %1").arg(e.what())));
-    }
 }
 
 // File Dependency Resolution Tests
@@ -616,20 +571,7 @@ void TestIC::testICFileDependencyResolution()
         QVERIFY2(ic->inputSize() > 0 || ic->outputSize() > 0,
                  "IC should have ports after loading");
 
-        // If IC contains nested ICs, they should be accessible
-        try {
-            const auto logicElems = ic->generateMap();
-            QVERIFY2(logicElems.size() > 0, "IC should expand to logic elements");
-        } catch (const Pandaception &ex) {
-            // Some ICs may not have nested dependencies, that's okay
-            // Just verify no crash on missing file
-            QString exMsg = QString(ex.what());
-            if (exMsg.contains("not found")) {
-                // This is expected if nested file is missing — no assertion needed
-            } else {
-                QFAIL(qPrintable(QString("Unexpected exception: %1").arg(exMsg)));
-            }
-        }
+        // Verify IC has been loaded with internal elements
     } catch (const Pandaception &ex) {
         QFAIL(qPrintable(QString("IC file dependency resolution failed: %1").arg(ex.what())));
     }

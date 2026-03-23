@@ -7,7 +7,6 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicTruthTable.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
 #include "App/Versions.h"
@@ -35,13 +34,6 @@ struct ElementInfo<TruthTable> {
         meta.translatedName = QT_TRANSLATE_NOOP("TruthTable", "Truth Table");
         meta.trContext = "TruthTable";
         meta.defaultSkins = QStringList({":/Components/Logic/truthtable-rotated.svg"});
-        meta.logicCreator = [](GraphicElement *elm) {
-            auto *truthTable = qobject_cast<TruthTable *>(elm);
-            if (!truthTable) {
-                throw PANDACEPTION_WITH_CONTEXT("TruthTable", "Failed to cast element to TruthTable");
-            }
-            return std::make_shared<LogicTruthTable>(elm->inputSize(), elm->outputSize(), truthTable->key());
-        };
         return meta;
     }
 
@@ -213,6 +205,22 @@ void TruthTable::load(QDataStream &stream, SerializationContext &context)
         if (map.contains("key")) {
             setkey(map.value("key").toBitArray());
         }
+    }
+}
+
+void TruthTable::updateLogic()
+{
+    if (!updateInputs()) {
+        return;
+    }
+    for (int i = 0; i < outputSize(); ++i) {
+        const auto pos = std::accumulate(simInputs().cbegin(), simInputs().cend(), QString(""),
+                                         [](QString acc, bool b) {
+                                             acc += (b == 1) ? '1' : '0';
+                                             return acc;
+                                         }).toUInt(nullptr, 2);
+        const bool result = m_key.at(static_cast<qsizetype>(256 * i) + static_cast<qsizetype>(pos));
+        setOutputValue(i, result);
     }
 }
 

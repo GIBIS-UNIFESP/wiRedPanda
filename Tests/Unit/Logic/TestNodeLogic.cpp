@@ -1,30 +1,37 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Unit/Logic/TestLogicNode.h"
+#include "Tests/Unit/Logic/TestNodeLogic.h"
 
 #include <QTest>
 
-#include "App/Element/LogicElements/LogicAnd.h"
-#include "App/Element/LogicElements/LogicNode.h"
-#include "App/Element/LogicElements/LogicSource.h"
+#include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/InputVCC.h"
+#include "App/Element/GraphicElements/Node.h"
 
-void TestLogicNode::init()
+static void initNodeSrc(GraphicElement &elm) { elm.initSimulationVectors(0, 1); }
+static void initNodeElm(GraphicElement &elm) { elm.initSimulationVectors(elm.inputSize(), elm.outputSize()); }
+
+void TestNodeLogic::init()
 {
-    std::generate(m_inputs.begin(), m_inputs.end(), [] { return new LogicSource(); });
+    std::generate(m_inputs.begin(), m_inputs.end(), [] {
+        auto *src = new InputVcc();
+        initNodeSrc(*src);
+        return src;
+    });
 }
 
-void TestLogicNode::cleanup()
+void TestNodeLogic::cleanup()
 {
     qDeleteAll(m_inputs);
     m_inputs.fill(nullptr);
 }
 
-void TestLogicNode::testLogicNodeChainPropagation()
+void TestNodeLogic::testNodeChainPropagation()
 {
-    // Three LogicNodes in series: input → n1 → n2 → n3
-    // Signal must propagate all the way through on every tick.
-    LogicNode n1, n2, n3;
+    // Three Nodes in series: input -> n1 -> n2 -> n3
+    Node n1, n2, n3;
+    initNodeElm(n1); initNodeElm(n2); initNodeElm(n3);
     n1.connectPredecessor(0, m_inputs.at(0), 0);
     n2.connectPredecessor(0, &n1, 0);
     n3.connectPredecessor(0, &n2, 0);
@@ -42,13 +49,11 @@ void TestLogicNode::testLogicNodeChainPropagation()
     QCOMPARE(n3.outputValue(), false);
 }
 
-void TestLogicNode::testLogicNodeFanOut()
+void TestNodeLogic::testNodeFanOut()
 {
-    // One LogicNode feeds two AND gates.
-    // When the node is HIGH and both ANDs have their second input HIGH, all AND outputs must be HIGH.
-    // Driving the node LOW must pull all AND outputs LOW regardless of the second inputs.
-    LogicNode node;
-    LogicAnd and1(2), and2(2);
+    Node node;
+    And and1, and2;
+    initNodeElm(node); initNodeElm(and1); initNodeElm(and2);
 
     node.connectPredecessor(0, m_inputs.at(0), 0);
     and1.connectPredecessor(0, &node, 0);
@@ -65,7 +70,7 @@ void TestLogicNode::testLogicNodeFanOut()
     QCOMPARE(and1.outputValue(), true);
     QCOMPARE(and2.outputValue(), true);
 
-    // Drive node LOW → both AND gates go LOW
+    // Drive node LOW -> both AND gates go LOW
     m_inputs.at(0)->setOutputValue(false);
     node.updateLogic();
     and1.updateLogic();

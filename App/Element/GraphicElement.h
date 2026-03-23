@@ -7,8 +7,6 @@
 
 #pragma once
 
-#include <memory>
-
 #include <QBitArray>
 #include <QGraphicsItem>
 #include <QKeySequence>
@@ -16,7 +14,6 @@
 
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
-#include "App/Element/LogicElement.h"
 #include "App/IO/SerializationContext.h"
 
 class GraphicElement;
@@ -91,9 +88,6 @@ public:
 
     /// Returns the type identifier for this element.
     ElementType elementType() const;
-
-    /// Returns the logic element that backs this graphic element.
-    LogicElement *logic() const;
 
     // --- Port Access ---
 
@@ -261,18 +255,37 @@ public:
     /// Returns \c true if the element is fully initialised and connected correctly.
     bool isValid();
 
-    // --- Polymorphic Element Mapping Interface ---
+    // --- Direct Simulation Interface ---
 
     /**
-     * \brief Creates and returns the LogicElement instances for this element.
-     * \details The default implementation uses the element's registered logicCreator.
-     * Decorative elements (no logicCreator) return an empty vector.
-     * IC elements override this to return their full set of internal logic elements.
+     * \brief Computes this element's output values from its current inputs.
+     * \details Override in subclasses to implement element-specific logic.
      */
-    virtual QVector<std::shared_ptr<LogicElement>> createLogicElements();
+    virtual void updateLogic();
 
-    /// Binds this element's graphic ports to their corresponding logic elements.
-    virtual void bindPorts();
+    /// Returns the simulation output value on port \a index.
+    bool outputValue(const int index = 0) const;
+
+    /// Returns the number of simulation output slots.
+    int simOutputSize() const;
+
+    /// Sets simulation output port \a index to \a value.
+    void setOutputValue(const int index, const bool value);
+
+    /// Sets simulation output port 0 to \a value.
+    void setOutputValue(const bool value);
+
+    /// Connects simulation input \a inputIndex to output \a outputPort of \a source element.
+    void connectPredecessor(const int inputIndex, GraphicElement *source, const int outputPort);
+
+    /// Returns \c true if any simulation output changed since the last query (and resets the flag).
+    bool outputChanged() const { return m_simOutputChanged; }
+
+    /// Clears the simulation output-changed flag.
+    void clearOutputChanged() { m_simOutputChanged = false; }
+
+    /// Allocates simulation I/O vectors with \a inputs inputs and \a outputs outputs.
+    void initSimulationVectors(const int inputCount, const int outputCount);
 
     /// Polymorphic interface for drag-drop initialization (replaces elementType() == IC checks).
     virtual void loadFromDrop(const QString &fileName, const QString &contextDir);
@@ -314,9 +327,6 @@ public:
 
     /// Replaces the input port vector with \a inputs.
     void setInputs(const QVector<QNEInputPort *> &inputs);
-
-    /// Assigns \a newLogic as the backing logic element.
-    void setLogic(LogicElement *newLogic);
 
     /// Sets the object name of all ports to \a name for identification.
     void setPortName(const QString &name);
@@ -409,6 +419,17 @@ protected:
     QString m_translatedName; ///< Translated element name used as tooltip and port object name.
     bool m_usingDefaultSkin = true; ///< True when the active skin matches the built-in default skins.
 
+    // --- Direct Simulation Helpers ---
+
+    /// Snapshots predecessor outputs into the input cache. Returns false if any predecessor is null.
+    bool updateInputs();
+
+    /// Read-only view of the cached simulation input values.
+    const QVector<bool> &simInputs() const { return m_simInputValues; }
+
+    /// Read-only view of the current simulation output values.
+    const QVector<bool> &simOutputs() const { return m_simOutputValues; }
+
 private:
     // --- Port Management Helpers ---
 
@@ -480,7 +501,18 @@ private:
 
     ElementGroup m_elementGroup = ElementGroup::Unknown;
     ElementType m_elementType = ElementType::Unknown;
-    LogicElement *m_logic = nullptr;
+
+    // --- Members: Direct Simulation ---
+
+    struct SimPredecessor {
+        GraphicElement *element = nullptr;
+        int outputPort = 0;
+    };
+
+    QVector<SimPredecessor> m_simPredecessors;
+    QVector<bool> m_simInputValues;
+    QVector<bool> m_simOutputValues;
+    bool m_simOutputChanged = false;
 
     // --- Members: Trigger & Label ---
 

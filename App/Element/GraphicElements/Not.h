@@ -20,5 +20,8 @@ class Not : public GraphicElement
 public:
     /// Constructs a Not gate element.
     explicit Not(QGraphicsItem *parent = nullptr);
+
+    /// Sets output to the logical NOT of the single input.
+    void updateLogic() override;
 };
 

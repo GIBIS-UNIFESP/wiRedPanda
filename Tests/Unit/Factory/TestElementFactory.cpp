@@ -77,7 +77,6 @@ void TestElementFactory::testBuildElementInvalidType()
 
 void TestElementFactory::testMetadataLogicCreator()
 {
-    // Test logic element creation via metadata logicCreator for various element types
     const QVector<ElementType> typesToTest{
         ElementType::And, ElementType::Or, ElementType::Not,
         ElementType::Nand, ElementType::Nor, ElementType::Xor
@@ -86,13 +85,6 @@ void TestElementFactory::testMetadataLogicCreator()
     for (const auto type : typesToTest) {
         auto *graphicElem = ElementFactory::buildElement(type);
         QVERIFY2(graphicElem != nullptr, qPrintable(QString("Failed to build graphic element: %1").arg(ElementFactory::typeToText(type))));
-
-        const auto &meta = ElementMetadataRegistry::metadata(type);
-        QVERIFY2(meta.logicCreator != nullptr, qPrintable(QString("%1 should have a logicCreator").arg(ElementFactory::typeToText(type))));
-
-        auto logicElem = meta.logicCreator(graphicElem);
-        QVERIFY2(logicElem != nullptr, qPrintable(QString("Failed to create logic element: %1").arg(ElementFactory::typeToText(type))));
-        QVERIFY2(logicElem.use_count() > 0, "Logic element should have valid reference count");
 
         delete graphicElem;
     }

@@ -7,15 +7,15 @@
 
 #pragma once
 
-#include <memory>
-
 #include <QGraphicsItem>
+#include <QHash>
 #include <QObject>
+#include <QSet>
 #include <QTimer>
 
-#include "App/Simulation/ElementMapping.h"
-
-class LogicElement;
+class Clock;
+class GraphicElement;
+class GraphicElementInput;
 class QNEConnection;
 class QNEInputPort;
 class QNEOutputPort;
@@ -27,7 +27,7 @@ class Scene;
  *
  * \details The simulation runs a 1 ms periodic QTimer.  On each tick it:
  * 1. Updates all GraphicElementInput outputs (including clocks).
- * 2. Calls updateLogic() on all LogicElements in priority order.
+ * 2. Calls updateLogic() on all elements in priority order.
  * 3. Propagates values through connections to output elements.
  *
  * Feedback loops are detected during initialization and handled with an
@@ -63,13 +63,13 @@ public:
     /// Returns \c true if the simulation timer is currently running.
     bool isRunning();
 
-    /// Returns \c true if \a logic is part of a combinational feedback loop.
-    bool isInFeedbackLoop(const LogicElement *logic) const;
+    /// Returns \c true if \a element is part of a combinational feedback loop.
+    bool isInFeedbackLoop(const GraphicElement *element) const;
 
     // --- Initialization ---
 
     /**
-     * \brief Builds the ElementMapping from the current scene elements.
+     * \brief Builds the simulation graph from the current scene elements.
      * \return \c true if initialization succeeded (all elements are valid).
      */
     bool initialize();
@@ -79,6 +79,10 @@ public:
     /// Executes one simulation step (used by tests to advance the simulation manually).
     void update();
 
+    // --- Static graph building (used by IC::initializeSimulation too) ---
+
+    static void buildConnectionGraph(const QVector<GraphicElement *> &elements);
+
 private:
     Q_DISABLE_COPY(Simulation)
 
@@ -87,6 +91,7 @@ private:
     static void updatePort(QNEInputPort *port);
     static void updatePort(QNEOutputPort *port);
     void updateWithIterativeSettling();
+    void sortSimElements(const QVector<GraphicElement *> &elements);
 
     // --- Members: Timer & element lists ---
 
@@ -95,15 +100,15 @@ private:
     QVector<GraphicElement *> m_outputs;
     QVector<GraphicElementInput *> m_inputs;
     QVector<QNEConnection *> m_connections;
+    QVector<GraphicElement *> m_sortedElements;
 
-    // --- Members: Scene & mapping ---
+    // --- Members: Scene & state ---
 
     Scene *m_scene;
-    std::unique_ptr<ElementMapping> m_elmMapping;
 
-    // --- Members: State flags ---
-
-    bool m_hasFeedbackElements = false;
+    QHash<const GraphicElement *, int> m_simPriorities;
+    QSet<const GraphicElement *> m_simFeedbackNodes;
+    bool m_simHasFeedbackElements = false;
     bool m_initialized = false;
 };
 

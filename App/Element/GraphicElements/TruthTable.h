@@ -14,8 +14,7 @@
  * \brief Programmable truth-table element with configurable inputs and outputs.
  *
  * \details The truth table is stored as a flat QBitArray (the key).  Clicking a
- * cell in the editor dialog toggles the corresponding output bit.  The resulting
- * LogicTruthTable implements the simulation behaviour.
+ * cell in the editor dialog toggles the corresponding output bit.
  */
 class TruthTable : public GraphicElement
 {
@@ -40,6 +39,9 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     /// Forces a repaint of the element.
     void update();
+
+    /// Looks up the current input pattern in the truth table and drives outputs.
+    void updateLogic() override;
 
     /// Resizes the truth-table key when input or output count changes.
     void updatePortsProperties() override;
