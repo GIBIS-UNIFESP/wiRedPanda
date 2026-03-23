@@ -43,6 +43,9 @@ public:
     /// \reimp
     void setSkin(const bool useDefaultSkin, const QString &fileName) override;
 
+    /// Propagates input values to matching outputs.
+    void updateLogic() override;
+
     /// Updates port positions when input count changes.
     void updatePortsProperties() override;
 

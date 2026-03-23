@@ -13,12 +13,14 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/Priorities.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
+#include "App/Simulation/Simulation.h"
 #include "App/Versions.h"
 
 template<>
@@ -66,6 +68,11 @@ IC::IC(QGraphicsItem *parent)
             scene_->simulation()->restart();
         }
     });
+}
+
+IC::~IC()
+{
+    qDeleteAll(m_icElements);
 }
 
 void IC::save(QDataStream &stream) const
@@ -450,16 +457,6 @@ void IC::sortPorts(QVector<QNEPort *> &map)
     std::stable_sort(map.begin(), map.end(), comparePorts);
 }
 
-LogicElement *IC::inputLogic(const int index)
-{
-    return m_icInputs.at(index)->logic();
-}
-
-LogicElement *IC::outputLogic(const int index)
-{
-    return m_icOutputs.at(index)->logic();
-}
-
 void IC::loadInputsLabels()
 {
     for (int portIndex = 0; portIndex < m_icInputs.size(); ++portIndex) {
@@ -502,12 +499,121 @@ void IC::loadOutputsLabels()
     }
 }
 
-const QVector<std::shared_ptr<LogicElement>> IC::generateMap()
+void IC::initializeSimulation()
 {
-    // Build a fresh ElementMapping each time the IC is wired into the simulation;
-    // the previous mapping is automatically released by the unique_ptr assignment
-    m_mapping = std::make_unique<ElementMapping>(m_icElements);
-    return m_mapping->logicElms();
+    m_simSortedElements.clear();
+    m_boundaryInputElements.clear();
+    m_internalHasFeedback = false;
+
+    if (m_icElements.isEmpty()) {
+        return;
+    }
+
+    // Initialize simulation vectors on all internal elements
+    for (auto *elm : std::as_const(m_icElements)) {
+        elm->initSimulationVectors(elm->inputSize(), elm->outputSize());
+    }
+
+    // Build connection graph from internal QNEConnections
+    Simulation::buildConnectionGraph(m_icElements);
+
+    // Initialize nested ICs recursively
+    for (auto *elm : std::as_const(m_icElements)) {
+        if (elm->elementType() == ElementType::IC) {
+            static_cast<IC *>(elm)->initializeSimulation();
+        }
+    }
+
+    // Record boundary input elements (driven externally, should not run updateLogic)
+    for (auto *port : std::as_const(m_icInputs)) {
+        if (auto *elm = port->graphicElement()) {
+            m_boundaryInputElements.insert(elm);
+        }
+    }
+
+    // Topological sort of internal elements
+    QHash<GraphicElement *, QVector<GraphicElement *>> successors;
+    for (auto *elm : std::as_const(m_icElements)) {
+        for (auto *outputPort : elm->outputs()) {
+            for (auto *conn : outputPort->connections()) {
+                if (auto *endPort = conn->endPort()) {
+                    auto *successor = endPort->graphicElement();
+                    if (successor && m_icElements.contains(successor)
+                        && !successors[elm].contains(successor)) {
+                        successors[elm].append(successor);
+                    }
+                }
+            }
+        }
+    }
+
+    QHash<GraphicElement *, int> priorities;
+    calculatePriorities(m_icElements, successors, priorities);
+
+    const auto feedbackElements = findFeedbackNodes(m_icElements, successors);
+    m_internalHasFeedback = !feedbackElements.isEmpty();
+
+    m_simSortedElements = m_icElements;
+    std::stable_sort(m_simSortedElements.begin(), m_simSortedElements.end(),
+        [&priorities](const auto *a, const auto *b) {
+            return priorities.value(const_cast<GraphicElement *>(a), -1)
+                 > priorities.value(const_cast<GraphicElement *>(b), -1);
+        });
+}
+
+void IC::updateLogic()
+{
+    if (m_simSortedElements.isEmpty()) {
+        return;
+    }
+
+    // Push external input values to boundary input nodes' GraphicElement outputs.
+    // Boundary input nodes are Nodes whose input port is in m_icInputs.
+    // We set their output value directly and skip them in the update loop.
+    updateInputs();
+    for (int i = 0; i < static_cast<int>(simInputs().size()) && i < m_icInputs.size(); ++i) {
+        auto *internalElm = m_icInputs.at(i)->graphicElement();
+        if (internalElm) {
+            internalElm->setOutputValue(0, simInputs().at(i));
+        }
+    }
+
+    // Run internal elements in topological order, skipping boundary input nodes.
+    // Use iterative settling if internal feedback loops exist (e.g., gate-level SR latches).
+    if (m_internalHasFeedback) {
+        const int maxIterations = 10;
+        for (int iteration = 0; iteration < maxIterations; ++iteration) {
+            for (auto *element : std::as_const(m_simSortedElements)) {
+                if (element && !m_boundaryInputElements.contains(element)) {
+                    element->clearOutputChanged();
+                    element->updateLogic();
+                }
+            }
+            const bool converged = std::none_of(
+                m_simSortedElements.cbegin(), m_simSortedElements.cend(),
+                [this](const auto *element) {
+                    return element && !m_boundaryInputElements.contains(const_cast<GraphicElement *>(element))
+                           && element->outputChanged();
+                });
+            if (converged) {
+                break;
+            }
+        }
+    } else {
+        for (auto *element : std::as_const(m_simSortedElements)) {
+            if (element && !m_boundaryInputElements.contains(element)) {
+                element->updateLogic();
+            }
+        }
+    }
+
+    // Copy internal boundary outputs to IC external outputs
+    for (int i = 0; i < simOutputSize() && i < m_icOutputs.size(); ++i) {
+        auto *internalElm = m_icOutputs.at(i)->graphicElement();
+        if (internalElm) {
+            setOutputValue(i, internalElm->outputValue(0));
+        }
+    }
 }
 
 void IC::refresh()
@@ -540,21 +646,6 @@ void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
     CopyOperation copyOp{srcPath.absolutePath(), destPath.absolutePath(), true};
     SerializationContext context{portMap, version, destPath.absolutePath(), copyOp};
     Serialization::deserialize(stream, context);
-}
-
-QVector<std::shared_ptr<LogicElement>> IC::createLogicElements()
-{
-    return generateMap();
-}
-
-void IC::bindPorts()
-{
-    for (int i = 0; i < inputSize(); ++i) {
-        inputPort(i)->setPortLogic(inputLogic(i), 0);
-    }
-    for (int i = 0; i < outputSize(); ++i) {
-        outputPort(i)->setPortLogic(outputLogic(i), 0);
-    }
 }
 
 void IC::loadFromDrop(const QString &fileName, const QString &contextDir)

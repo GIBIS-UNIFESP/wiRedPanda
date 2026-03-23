@@ -14,8 +14,6 @@
 #include "App/Scene/Workspace.h"
 
 class InputSwitch;
-class LogicElement;
-class LogicSource;
 class QNEConnection;
 class Simulation;
 
@@ -52,33 +50,12 @@ std::unique_ptr<WorkSpace> createWorkspace();
  */
 QVector<InputSwitch *> createSwitches(int count);
 
-QVector<LogicSource *> createLogicSources(int count);
-
 /**
  * @brief Set values on multiple input switches
  * @param switches Vector of switches to set
  * @param values Boolean values to set (must match switches size)
  */
 void setInputValues(const QVector<InputSwitch *> &switches, const QVector<bool> &values);
-
-void setLogicSourceValues(const QVector<LogicSource *> &inputs, const QVector<bool> &values);
-
-/**
- * @brief Verify a logic element against a truth table
- *
- * Each row in the truth table should contain:
- * - Input values (matching the number of connected inputs)
- * - Expected output values
- *
- * @param element The logic element to test
- * @param inputs Vector of logic inputs connected to the element
- * @param truthTable 2D vector where each row is {in1, in2, ..., out1, out2, ...}
- * @param numOutputs Number of outputs to verify (defaults to 1)
- */
-void verifyTruthTable(LogicElement *element,
-                      const QVector<LogicSource *> &inputs,
-                      const QVector<QVector<bool>> &truthTable,
-                      int numOutputs = 1);
 
 /**
  * @brief Get the path to the examples directory

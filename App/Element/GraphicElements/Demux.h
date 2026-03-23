@@ -37,6 +37,9 @@ public:
     /// Recalculates port positions for the current port count.
     void updatePortsProperties() override;
 
+    /// Routes the data input to the output selected by the select lines.
+    void updateLogic() override;
+
 private:
     void generatePixmap();
 

@@ -1,39 +1,47 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Unit/Logic/TestLogicElements.h"
+#include "Tests/Unit/Logic/TestElementLogic.h"
 
-#include "App/Element/LogicElements/LogicAnd.h"
-#include "App/Element/LogicElements/LogicDemux.h"
-#include "App/Element/LogicElements/LogicDFlipFlop.h"
-#include "App/Element/LogicElements/LogicDLatch.h"
-#include "App/Element/LogicElements/LogicJKFlipFlop.h"
-#include "App/Element/LogicElements/LogicMux.h"
-#include "App/Element/LogicElements/LogicNand.h"
-#include "App/Element/LogicElements/LogicNode.h"
-#include "App/Element/LogicElements/LogicNor.h"
-#include "App/Element/LogicElements/LogicNot.h"
-#include "App/Element/LogicElements/LogicOr.h"
-#include "App/Element/LogicElements/LogicSource.h"
-#include "App/Element/LogicElements/LogicSRFlipFlop.h"
-#include "App/Element/LogicElements/LogicSRLatch.h"
-#include "App/Element/LogicElements/LogicTFlipFlop.h"
-#include "App/Element/LogicElements/LogicXnor.h"
-#include "App/Element/LogicElements/LogicXor.h"
+#include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/Demux.h"
+#include "App/Element/GraphicElements/DFlipFlop.h"
+#include "App/Element/GraphicElements/DLatch.h"
+#include "App/Element/GraphicElements/InputVCC.h"
+#include "App/Element/GraphicElements/JKFlipFlop.h"
+#include "App/Element/GraphicElements/Led.h"
+#include "App/Element/GraphicElements/Mux.h"
+#include "App/Element/GraphicElements/Nand.h"
+#include "App/Element/GraphicElements/Node.h"
+#include "App/Element/GraphicElements/Nor.h"
+#include "App/Element/GraphicElements/Not.h"
+#include "App/Element/GraphicElements/Or.h"
+#include "App/Element/GraphicElements/SRFlipFlop.h"
+#include "App/Element/GraphicElements/SRLatch.h"
+#include "App/Element/GraphicElements/TFlipFlop.h"
+#include "App/Element/GraphicElements/Xnor.h"
+#include "App/Element/GraphicElements/Xor.h"
 #include "Tests/Common/TestUtils.h"
 
-void TestLogicElements::init()
+static void initTESrc(GraphicElement &elm) { elm.initSimulationVectors(0, 1); }
+static void initTEElm(GraphicElement &elm) { elm.initSimulationVectors(elm.inputSize(), elm.outputSize()); }
+
+void TestElementLogic::init()
 {
-    std::generate(m_inputs.begin(), m_inputs.end(), [] { return new LogicSource(); });
+    std::generate(m_inputs.begin(), m_inputs.end(), [] {
+        auto *src = new InputVcc();
+        initTESrc(*src);
+        return src;
+    });
 }
 
-void TestLogicElements::cleanup()
+void TestElementLogic::cleanup()
 {
     qDeleteAll(m_inputs);
     m_inputs.fill(nullptr);
 }
 
-void TestLogicElements::testLogicNode_data()
+void TestElementLogic::testNode_data()
 {
     QTest::addColumn<bool>("input");
     QTest::addColumn<bool>("expected");
@@ -42,12 +50,12 @@ void TestLogicElements::testLogicNode_data()
     QTest::newRow("input 0 -> output 0") << false << false;
 }
 
-void TestLogicElements::testLogicNode()
+void TestElementLogic::testNode()
 {
     QFETCH(bool, input);
     QFETCH(bool, expected);
 
-    LogicNode elm;
+    Node elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
 
     m_inputs.at(0)->setOutputValue(input);
@@ -56,7 +64,7 @@ void TestLogicElements::testLogicNode()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-void TestLogicElements::testLogicAnd_data()
+void TestElementLogic::testAnd_data()
 {
     QTest::addColumn<bool>("input1");
     QTest::addColumn<bool>("input2");
@@ -68,13 +76,13 @@ void TestLogicElements::testLogicAnd_data()
     QTest::newRow("0 AND 0 = 0") << false << false << false;
 }
 
-void TestLogicElements::testLogicAnd()
+void TestElementLogic::testAnd()
 {
     QFETCH(bool, input1);
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    LogicAnd elm(2);
+    And elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -86,7 +94,7 @@ void TestLogicElements::testLogicAnd()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-void TestLogicElements::testLogicOr_data()
+void TestElementLogic::testOr_data()
 {
     QTest::addColumn<bool>("input1");
     QTest::addColumn<bool>("input2");
@@ -98,13 +106,13 @@ void TestLogicElements::testLogicOr_data()
     QTest::newRow("0 OR 0 = 0") << false << false << false;
 }
 
-void TestLogicElements::testLogicOr()
+void TestElementLogic::testOr()
 {
     QFETCH(bool, input1);
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    LogicOr elm(2);
+    Or elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -116,17 +124,18 @@ void TestLogicElements::testLogicOr()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-void TestLogicElements::testLogicSource()
+void TestElementLogic::testSource()
 {
-    LogicSource elm;
-    QCOMPARE(elm.outputValue(), false);
-    elm.setOutputValue(true);
+    InputVcc elm; initTESrc(elm);
+    // InputVcc defaults to true (VCC = always high) via initSimulationDefaults
     QCOMPARE(elm.outputValue(), true);
     elm.setOutputValue(false);
     QCOMPARE(elm.outputValue(), false);
+    elm.setOutputValue(true);
+    QCOMPARE(elm.outputValue(), true);
 }
 
-void TestLogicElements::testLogicMux_data()
+void TestElementLogic::testMux_data()
 {
     QTest::addColumn<bool>("in0");
     QTest::addColumn<bool>("in1");
@@ -143,14 +152,14 @@ void TestLogicElements::testLogicMux_data()
     QTest::newRow("in0=1, in1=1, sel=1 -> 1") << true << true << true << true;
 }
 
-void TestLogicElements::testLogicMux()
+void TestElementLogic::testMux()
 {
     QFETCH(bool, in0);
     QFETCH(bool, in1);
     QFETCH(bool, sel);
     QFETCH(bool, expected);
 
-    LogicMux elm;
+    Mux elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -164,7 +173,7 @@ void TestLogicElements::testLogicMux()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-void TestLogicElements::testLogicDemux_data()
+void TestElementLogic::testDemux_data()
 {
     QTest::addColumn<bool>("input");
     QTest::addColumn<bool>("sel");
@@ -177,14 +186,14 @@ void TestLogicElements::testLogicDemux_data()
     QTest::newRow("in=1, sel=1 -> out0=0, out1=1") << true << true << false << true;
 }
 
-void TestLogicElements::testLogicDemux()
+void TestElementLogic::testDemux()
 {
     QFETCH(bool, input);
     QFETCH(bool, sel);
     QFETCH(bool, out0);
     QFETCH(bool, out1);
 
-    LogicDemux elm;
+    Demux elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -197,7 +206,7 @@ void TestLogicElements::testLogicDemux()
     QCOMPARE(elm.outputValue(1), out1);
 }
 
-void TestLogicElements::testLogicDFlipFlop_data()
+void TestElementLogic::testDFlipFlop_data()
 {
     QTest::addColumn<bool>("lastClk");
     QTest::addColumn<bool>("data");
@@ -216,7 +225,7 @@ void TestLogicElements::testLogicDFlipFlop_data()
     QTest::newRow("Clk down D=1 maintain") << true << true << false << true << true << true << false;
 }
 
-void TestLogicElements::testLogicDFlipFlop()
+void TestElementLogic::testDFlipFlop()
 {
     QFETCH(bool, lastClk);
     QFETCH(bool, data);
@@ -226,7 +235,7 @@ void TestLogicElements::testLogicDFlipFlop()
     QFETCH(bool, expectedQ);
     QFETCH(bool, expectedNotQ);
 
-    LogicDFlipFlop elm;
+    DFlipFlop elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -253,7 +262,7 @@ void TestLogicElements::testLogicDFlipFlop()
     QCOMPARE(elm.outputValue(1), expectedNotQ);
 }
 
-void TestLogicElements::testLogicDLatch_data()
+void TestElementLogic::testDLatch_data()
 {
     QTest::addColumn<bool>("data");
     QTest::addColumn<bool>("enable");
@@ -268,14 +277,14 @@ void TestLogicElements::testLogicDLatch_data()
     QTest::newRow("D=1, E=1, prev=X -> Q=1") << true << true << false << true;
 }
 
-void TestLogicElements::testLogicDLatch()
+void TestElementLogic::testDLatch()
 {
     QFETCH(bool, data);
     QFETCH(bool, enable);
     QFETCH(bool, prevState);
     QFETCH(bool, expectedQ);
 
-    LogicDLatch elm;
+    DLatch elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -291,7 +300,7 @@ void TestLogicElements::testLogicDLatch()
     QCOMPARE(elm.outputValue(1), !expectedQ);
 }
 
-void TestLogicElements::testLogicJKFlipFlop_data()
+void TestElementLogic::testJKFlipFlop_data()
 {
     QTest::addColumn<bool>("lastClk");
     QTest::addColumn<bool>("j");
@@ -318,7 +327,7 @@ void TestLogicElements::testLogicJKFlipFlop_data()
     QTest::newRow("Clk up J=0 K=0 (1)") << false << false << true << false << true << true << true << true << false;
 }
 
-void TestLogicElements::testLogicJKFlipFlop()
+void TestElementLogic::testJKFlipFlop()
 {
     QFETCH(bool, lastClk);
     QFETCH(bool, j);
@@ -330,7 +339,7 @@ void TestLogicElements::testLogicJKFlipFlop()
     QFETCH(bool, expectedQ);
     QFETCH(bool, expectedNotQ);
 
-    LogicJKFlipFlop elm;
+    JKFlipFlop elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -362,7 +371,7 @@ void TestLogicElements::testLogicJKFlipFlop()
     QCOMPARE(elm.outputValue(1), expectedNotQ);
 }
 
-void TestLogicElements::testLogicSRFlipFlop_data()
+void TestElementLogic::testSRFlipFlop_data()
 {
     QTest::addColumn<bool>("lastClk");
     QTest::addColumn<bool>("s");
@@ -404,7 +413,7 @@ void TestLogicElements::testLogicSRFlipFlop_data()
     QTest::newRow("Not permitted (0,1,1,1) st1") << false << true << true << true << true << true << true << true << true;
 }
 
-void TestLogicElements::testLogicSRFlipFlop()
+void TestElementLogic::testSRFlipFlop()
 {
     QFETCH(bool, lastClk);
     QFETCH(bool, s);
@@ -416,7 +425,7 @@ void TestLogicElements::testLogicSRFlipFlop()
     QFETCH(bool, expectedQ);
     QFETCH(bool, expectedNotQ);
 
-    LogicSRFlipFlop elm;
+    SRFlipFlop elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -450,7 +459,7 @@ void TestLogicElements::testLogicSRFlipFlop()
     QCOMPARE(elm.outputValue(1), expectedNotQ);
 }
 
-void TestLogicElements::testLogicTFlipFlop_data()
+void TestElementLogic::testTFlipFlop_data()
 {
     QTest::addColumn<bool>("lastClk");
     QTest::addColumn<bool>("t");
@@ -477,7 +486,7 @@ void TestLogicElements::testLogicTFlipFlop_data()
     QTest::newRow("Clear and Preset=false") << true << false << true << false << false << true << true << true;
 }
 
-void TestLogicElements::testLogicTFlipFlop()
+void TestElementLogic::testTFlipFlop()
 {
     QFETCH(bool, lastClk);
     QFETCH(bool, t);
@@ -488,7 +497,7 @@ void TestLogicElements::testLogicTFlipFlop()
     QFETCH(bool, expectedQ);
     QFETCH(bool, expectedNotQ);
 
-    LogicTFlipFlop elm;
+    TFlipFlop elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -517,7 +526,7 @@ void TestLogicElements::testLogicTFlipFlop()
     QCOMPARE(elm.outputValue(1), expectedNotQ);
 }
 
-void TestLogicElements::testLogicXnor_data()
+void TestElementLogic::testXnor_data()
 {
     QTest::addColumn<bool>("input1");
     QTest::addColumn<bool>("input2");
@@ -529,13 +538,13 @@ void TestLogicElements::testLogicXnor_data()
     QTest::newRow("0 XNOR 0 = 1") << false << false << true;
 }
 
-void TestLogicElements::testLogicXnor()
+void TestElementLogic::testXnor()
 {
     QFETCH(bool, input1);
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    LogicXnor elm(2);
+    Xnor elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -547,7 +556,7 @@ void TestLogicElements::testLogicXnor()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-void TestLogicElements::testLogicNot_data()
+void TestElementLogic::testNot_data()
 {
     QTest::addColumn<bool>("input");
     QTest::addColumn<bool>("expected");
@@ -556,12 +565,12 @@ void TestLogicElements::testLogicNot_data()
     QTest::newRow("NOT 0 = 1") << false << true;
 }
 
-void TestLogicElements::testLogicNot()
+void TestElementLogic::testNot()
 {
     QFETCH(bool, input);
     QFETCH(bool, expected);
 
-    LogicNot elm;
+    Not elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
 
     m_inputs.at(0)->setOutputValue(input);
@@ -572,7 +581,7 @@ void TestLogicElements::testLogicNot()
 }
 
 // Comprehensive circuit-context test: NOT gate alone in an isolated circuit
-void TestLogicElements::testNotGateViaBuilder_data()
+void TestElementLogic::testNotGateViaBuilder_data()
 {
     QTest::addColumn<bool>("input");
     QTest::addColumn<bool>("expected");
@@ -581,12 +590,12 @@ void TestLogicElements::testNotGateViaBuilder_data()
     QTest::newRow("NOT gate input=0 (LOW) -> output=1 (HIGH)") << false << true;
 }
 
-void TestLogicElements::testNotGateViaBuilder()
+void TestElementLogic::testNotGateViaBuilder()
 {
     QFETCH(bool, input);
     QFETCH(bool, expected);
 
-    LogicNot notGate;
+    Not notGate; initTEElm(notGate);
     notGate.connectPredecessor(0, m_inputs.at(0), 0);
 
     m_inputs.at(0)->setOutputValue(input);
@@ -596,30 +605,20 @@ void TestLogicElements::testNotGateViaBuilder()
 }
 
 // Comprehensive circuit-context test: NOT gate connected to AND gate (like in decoder)
-void TestLogicElements::testNotGateInAnd_data()
+void TestElementLogic::testNotGateInAnd_data()
 {
     QTest::addColumn<bool>("input0");
     QTest::addColumn<bool>("input1");
     QTest::addColumn<bool>("expectedNotInput0");
     QTest::addColumn<bool>("expectedAndOutput");
 
-    // AND gate: output = input0 AND input1
-    // Here we use: input0 = true, and input1 comes from NOT gate inverting input1_raw
-    // So: output = input0 AND (NOT input1_raw)
-    // If input0=1 and input1_raw=0 (inverted to 1): output = 1 AND 1 = 1
     QTest::newRow("AND(1, NOT(0)) = AND(1, 1) = 1") << true << false << true << true;
-
-    // If input0=1 and input1_raw=1 (inverted to 0): output = 1 AND 0 = 0
     QTest::newRow("AND(1, NOT(1)) = AND(1, 0) = 0") << true << true << false << false;
-
-    // If input0=0 and input1_raw=0 (inverted to 1): output = 0 AND 1 = 0
     QTest::newRow("AND(0, NOT(0)) = AND(0, 1) = 0") << false << false << true << false;
-
-    // If input0=0 and input1_raw=1 (inverted to 0): output = 0 AND 0 = 0
     QTest::newRow("AND(0, NOT(1)) = AND(0, 0) = 0") << false << true << false << false;
 }
 
-void TestLogicElements::testNotGateInAnd()
+void TestElementLogic::testNotGateInAnd()
 {
     QFETCH(bool, input0);
     QFETCH(bool, input1);
@@ -627,10 +626,10 @@ void TestLogicElements::testNotGateInAnd()
     Q_UNUSED(expectedNotInput0);  // Using for clarity in test data
     QFETCH(bool, expectedAndOutput);
 
-    LogicNot invGate;
+    Not invGate; initTEElm(invGate);
     invGate.connectPredecessor(0, m_inputs.at(1), 0);
 
-    LogicAnd andGate(2);
+    And andGate; initTEElm(andGate);
     andGate.connectPredecessor(0, m_inputs.at(0), 0);
     andGate.connectPredecessor(1, &invGate, 0);
 
@@ -644,7 +643,7 @@ void TestLogicElements::testNotGateInAnd()
     QCOMPARE(andGate.outputValue(), expectedAndOutput);
 }
 
-void TestLogicElements::testLogicNand_data()
+void TestElementLogic::testNand_data()
 {
     QTest::addColumn<bool>("input1");
     QTest::addColumn<bool>("input2");
@@ -656,13 +655,13 @@ void TestLogicElements::testLogicNand_data()
     QTest::newRow("0 NAND 0 = 1") << false << false << true;
 }
 
-void TestLogicElements::testLogicNand()
+void TestElementLogic::testNand()
 {
     QFETCH(bool, input1);
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    LogicNand elm(2);
+    Nand elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -674,7 +673,7 @@ void TestLogicElements::testLogicNand()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-void TestLogicElements::testLogicNor_data()
+void TestElementLogic::testNor_data()
 {
     QTest::addColumn<bool>("input1");
     QTest::addColumn<bool>("input2");
@@ -686,13 +685,13 @@ void TestLogicElements::testLogicNor_data()
     QTest::newRow("0 NOR 0 = 1") << false << false << true;
 }
 
-void TestLogicElements::testLogicNor()
+void TestElementLogic::testNor()
 {
     QFETCH(bool, input1);
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    LogicNor elm(2);
+    Nor elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -704,7 +703,7 @@ void TestLogicElements::testLogicNor()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-void TestLogicElements::testLogicXor_data()
+void TestElementLogic::testXor_data()
 {
     QTest::addColumn<bool>("input1");
     QTest::addColumn<bool>("input2");
@@ -716,13 +715,13 @@ void TestLogicElements::testLogicXor_data()
     QTest::newRow("1 XOR 1 = 0") << true << true << false;
 }
 
-void TestLogicElements::testLogicXor()
+void TestElementLogic::testXor()
 {
     QFETCH(bool, input1);
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    LogicXor elm(2);
+    Xor elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -734,7 +733,7 @@ void TestLogicElements::testLogicXor()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-void TestLogicElements::testLogicSRLatch_data()
+void TestElementLogic::testSRLatch_data()
 {
     QTest::addColumn<bool>("set");
     QTest::addColumn<bool>("reset");
@@ -747,14 +746,14 @@ void TestLogicElements::testLogicSRLatch_data()
     QTest::newRow("S=0, R=1, prev=X -> Q=0") << false << true << false << false;
 }
 
-void TestLogicElements::testLogicSRLatch()
+void TestElementLogic::testSRLatch()
 {
     QFETCH(bool, set);
     QFETCH(bool, reset);
     QFETCH(bool, prevState);
     QFETCH(bool, expectedQ);
 
-    LogicSRLatch elm;
+    SRLatch elm; initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -770,14 +769,13 @@ void TestLogicElements::testLogicSRLatch()
     QCOMPARE(elm.outputValue(1), !expectedQ);
 }
 
-void TestLogicElements::testLogic3InputAnd_data()
+void TestElementLogic::test3InputAnd_data()
 {
     QTest::addColumn<bool>("input1");
     QTest::addColumn<bool>("input2");
     QTest::addColumn<bool>("input3");
     QTest::addColumn<bool>("expected");
 
-    // 3-input AND: Output=1 only when all inputs are 1
     QTest::newRow("0 AND 0 AND 0 = 0") << false << false << false << false;
     QTest::newRow("0 AND 0 AND 1 = 0") << false << false << true << false;
     QTest::newRow("0 AND 1 AND 0 = 0") << false << true << false << false;
@@ -788,14 +786,14 @@ void TestLogicElements::testLogic3InputAnd_data()
     QTest::newRow("1 AND 1 AND 1 = 1") << true << true << true << true;
 }
 
-void TestLogicElements::testLogic3InputAnd()
+void TestElementLogic::test3InputAnd()
 {
     QFETCH(bool, input1);
     QFETCH(bool, input2);
     QFETCH(bool, input3);
     QFETCH(bool, expected);
 
-    LogicAnd elm(3);
+    And elm; elm.setInputSize(3); initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -809,14 +807,13 @@ void TestLogicElements::testLogic3InputAnd()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-void TestLogicElements::testLogic3InputOr_data()
+void TestElementLogic::test3InputOr_data()
 {
     QTest::addColumn<bool>("input1");
     QTest::addColumn<bool>("input2");
     QTest::addColumn<bool>("input3");
     QTest::addColumn<bool>("expected");
 
-    // 3-input OR: Output=0 only when all inputs are 0
     QTest::newRow("0 OR 0 OR 0 = 0") << false << false << false << false;
     QTest::newRow("0 OR 0 OR 1 = 1") << false << false << true << true;
     QTest::newRow("0 OR 1 OR 0 = 1") << false << true << false << true;
@@ -827,14 +824,14 @@ void TestLogicElements::testLogic3InputOr_data()
     QTest::newRow("1 OR 1 OR 1 = 1") << true << true << true << true;
 }
 
-void TestLogicElements::testLogic3InputOr()
+void TestElementLogic::test3InputOr()
 {
     QFETCH(bool, input1);
     QFETCH(bool, input2);
     QFETCH(bool, input3);
     QFETCH(bool, expected);
 
-    LogicOr elm(3);
+    Or elm; elm.setInputSize(3); initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -848,7 +845,7 @@ void TestLogicElements::testLogic3InputOr()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-void TestLogicElements::testLogic4InputAnd_data()
+void TestElementLogic::test4InputAnd_data()
 {
     QTest::addColumn<bool>("input1");
     QTest::addColumn<bool>("input2");
@@ -856,7 +853,6 @@ void TestLogicElements::testLogic4InputAnd_data()
     QTest::addColumn<bool>("input4");
     QTest::addColumn<bool>("expected");
 
-    // 4-input AND: Output=1 only when all inputs are 1 (16 cases)
     QTest::newRow("0 AND 0 AND 0 AND 0 = 0") << false << false << false << false << false;
     QTest::newRow("0 AND 0 AND 0 AND 1 = 0") << false << false << false << true << false;
     QTest::newRow("0 AND 0 AND 1 AND 0 = 0") << false << false << true << false << false;
@@ -875,7 +871,7 @@ void TestLogicElements::testLogic4InputAnd_data()
     QTest::newRow("1 AND 1 AND 1 AND 1 = 1") << true << true << true << true << true;
 }
 
-void TestLogicElements::testLogic4InputAnd()
+void TestElementLogic::test4InputAnd()
 {
     QFETCH(bool, input1);
     QFETCH(bool, input2);
@@ -883,7 +879,7 @@ void TestLogicElements::testLogic4InputAnd()
     QFETCH(bool, input4);
     QFETCH(bool, expected);
 
-    LogicAnd elm(4);
+    And elm; elm.setInputSize(4); initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -899,7 +895,7 @@ void TestLogicElements::testLogic4InputAnd()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-void TestLogicElements::testLogic4InputOr_data()
+void TestElementLogic::test4InputOr_data()
 {
     QTest::addColumn<bool>("input1");
     QTest::addColumn<bool>("input2");
@@ -907,7 +903,6 @@ void TestLogicElements::testLogic4InputOr_data()
     QTest::addColumn<bool>("input4");
     QTest::addColumn<bool>("expected");
 
-    // 4-input OR: Output=0 only when all inputs are 0 (16 cases)
     QTest::newRow("0 OR 0 OR 0 OR 0 = 0") << false << false << false << false << false;
     QTest::newRow("0 OR 0 OR 0 OR 1 = 1") << false << false << false << true << true;
     QTest::newRow("0 OR 0 OR 1 OR 0 = 1") << false << false << true << false << true;
@@ -926,7 +921,7 @@ void TestLogicElements::testLogic4InputOr_data()
     QTest::newRow("1 OR 1 OR 1 OR 1 = 1") << true << true << true << true << true;
 }
 
-void TestLogicElements::testLogic4InputOr()
+void TestElementLogic::test4InputOr()
 {
     QFETCH(bool, input1);
     QFETCH(bool, input2);
@@ -934,7 +929,7 @@ void TestLogicElements::testLogic4InputOr()
     QFETCH(bool, input4);
     QFETCH(bool, expected);
 
-    LogicOr elm(4);
+    Or elm; elm.setInputSize(4); initTEElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -950,14 +945,13 @@ void TestLogicElements::testLogic4InputOr()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-void TestLogicElements::testLogic3InputXor_data()
+void TestElementLogic::test3InputXor_data()
 {
     QTest::addColumn<bool>("input1");
     QTest::addColumn<bool>("input2");
     QTest::addColumn<bool>("input3");
     QTest::addColumn<bool>("expected");
 
-    // 3-input XOR: Output=1 when odd number of inputs are 1
     QTest::newRow("0 XOR 0 XOR 0 = 0") << false << false << false << false;
     QTest::newRow("0 XOR 0 XOR 1 = 1") << false << false << true << true;
     QTest::newRow("0 XOR 1 XOR 0 = 1") << false << true << false << true;
@@ -968,7 +962,7 @@ void TestLogicElements::testLogic3InputXor_data()
     QTest::newRow("1 XOR 1 XOR 1 = 1") << true << true << true << true;
 }
 
-void TestLogicElements::testLogic3InputXor()
+void TestElementLogic::test3InputXor()
 {
     QFETCH(bool, input1);
     QFETCH(bool, input2);
@@ -976,7 +970,7 @@ void TestLogicElements::testLogic3InputXor()
     QFETCH(bool, expected);
 
     // Use 2-input XOR gates to simulate 3-input: (a XOR b) XOR c
-    LogicXor xor1(2), xor2(2);
+    Xor xor1, xor2; initTEElm(xor1); initTEElm(xor2);
     xor1.connectPredecessor(0, m_inputs.at(0), 0);
     xor1.connectPredecessor(1, m_inputs.at(1), 0);
     xor2.connectPredecessor(0, &xor1, 0);
@@ -992,15 +986,13 @@ void TestLogicElements::testLogic3InputXor()
     QCOMPARE(xor2.outputValue(), expected);
 }
 
-void TestLogicElements::testLogic3InputXnor_data()
+void TestElementLogic::test3InputXnor_data()
 {
     QTest::addColumn<bool>("input1");
     QTest::addColumn<bool>("input2");
     QTest::addColumn<bool>("input3");
     QTest::addColumn<bool>("expected");
 
-    // 3-input XNOR: Cascaded (a XNOR b) XNOR c
-    // Tests cascaded XNOR behavior: (a==b) == c
     QTest::newRow("0 XNOR 0 XNOR 0 = 0") << false << false << false << false;
     QTest::newRow("0 XNOR 0 XNOR 1 = 1") << false << false << true << true;
     QTest::newRow("0 XNOR 1 XNOR 0 = 1") << false << true << false << true;
@@ -1011,7 +1003,7 @@ void TestLogicElements::testLogic3InputXnor_data()
     QTest::newRow("1 XNOR 1 XNOR 1 = 1") << true << true << true << true;
 }
 
-void TestLogicElements::testLogic3InputXnor()
+void TestElementLogic::test3InputXnor()
 {
     QFETCH(bool, input1);
     QFETCH(bool, input2);
@@ -1019,7 +1011,7 @@ void TestLogicElements::testLogic3InputXnor()
     QFETCH(bool, expected);
 
     // Use 2-input XNOR gates to simulate 3-input: (a XNOR b) XNOR c
-    LogicXnor xnor1(2), xnor2(2);
+    Xnor xnor1, xnor2; initTEElm(xnor1); initTEElm(xnor2);
     xnor1.connectPredecessor(0, m_inputs.at(0), 0);
     xnor1.connectPredecessor(1, m_inputs.at(1), 0);
     xnor2.connectPredecessor(0, &xnor1, 0);
@@ -1035,27 +1027,23 @@ void TestLogicElements::testLogic3InputXnor()
     QCOMPARE(xnor2.outputValue(), expected);
 }
 
-/**
- * Test: 5-input AND gate - exhaustive truth table (32 cases)
- */
-void TestLogicElements::testLogic5InputAnd_data()
+void TestElementLogic::test5InputAnd_data()
 {
     QTest::addColumn<int>("value");
     QTest::addColumn<bool>("expected");
 
-    // All 32 combinations from 0 to 31
     for (int i = 0; i < 32; ++i) {
         bool expected = (i == 31);  // Only all-1s = 1
         QTest::newRow(QString("5AND case %1").arg(i).toLatin1().data()) << i << expected;
     }
 }
 
-void TestLogicElements::testLogic5InputAnd()
+void TestElementLogic::test5InputAnd()
 {
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    LogicAnd elm(5);
+    And elm; elm.setInputSize(5); initTEElm(elm);
     for (int i = 0; i < 5; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1069,10 +1057,7 @@ void TestLogicElements::testLogic5InputAnd()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-/**
- * Test: 5-input OR gate - exhaustive truth table (32 cases)
- */
-void TestLogicElements::testLogic5InputOr_data()
+void TestElementLogic::test5InputOr_data()
 {
     QTest::addColumn<int>("value");
     QTest::addColumn<bool>("expected");
@@ -1083,12 +1068,12 @@ void TestLogicElements::testLogic5InputOr_data()
     }
 }
 
-void TestLogicElements::testLogic5InputOr()
+void TestElementLogic::test5InputOr()
 {
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    LogicOr elm(5);
+    Or elm; elm.setInputSize(5); initTEElm(elm);
     for (int i = 0; i < 5; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1102,10 +1087,7 @@ void TestLogicElements::testLogic5InputOr()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-/**
- * Test: 5-input NAND gate - exhaustive truth table (32 cases)
- */
-void TestLogicElements::testLogic5InputNand_data()
+void TestElementLogic::test5InputNand_data()
 {
     QTest::addColumn<int>("value");
     QTest::addColumn<bool>("expected");
@@ -1116,12 +1098,12 @@ void TestLogicElements::testLogic5InputNand_data()
     }
 }
 
-void TestLogicElements::testLogic5InputNand()
+void TestElementLogic::test5InputNand()
 {
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    LogicNand elm(5);
+    Nand elm; elm.setInputSize(5); initTEElm(elm);
     for (int i = 0; i < 5; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1135,10 +1117,7 @@ void TestLogicElements::testLogic5InputNand()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-/**
- * Test: 5-input NOR gate - exhaustive truth table (32 cases)
- */
-void TestLogicElements::testLogic5InputNor_data()
+void TestElementLogic::test5InputNor_data()
 {
     QTest::addColumn<int>("value");
     QTest::addColumn<bool>("expected");
@@ -1149,12 +1128,12 @@ void TestLogicElements::testLogic5InputNor_data()
     }
 }
 
-void TestLogicElements::testLogic5InputNor()
+void TestElementLogic::test5InputNor()
 {
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    LogicNor elm(5);
+    Nor elm; elm.setInputSize(5); initTEElm(elm);
     for (int i = 0; i < 5; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1168,15 +1147,11 @@ void TestLogicElements::testLogic5InputNor()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-/**
- * Test: 8-input AND gate - strategic test cases
- */
-void TestLogicElements::testLogic8InputAnd_data()
+void TestElementLogic::test8InputAnd_data()
 {
     QTest::addColumn<int>("value");
     QTest::addColumn<bool>("expected");
 
-    // Strategic cases for 8-input AND
     QTest::newRow("all 0s") << 0 << false;
     QTest::newRow("all 1s") << 255 << true;
     QTest::newRow("first 1 only") << 1 << false;
@@ -1189,12 +1164,12 @@ void TestLogicElements::testLogic8InputAnd_data()
     QTest::newRow("high 4 bits") << 0xF0 << false;       // 11110000
 }
 
-void TestLogicElements::testLogic8InputAnd()
+void TestElementLogic::test8InputAnd()
 {
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    LogicAnd elm(8);
+    And elm; elm.setInputSize(8); initTEElm(elm);
     for (int i = 0; i < 8; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1208,15 +1183,11 @@ void TestLogicElements::testLogic8InputAnd()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-/**
- * Test: 8-input OR gate - strategic test cases
- */
-void TestLogicElements::testLogic8InputOr_data()
+void TestElementLogic::test8InputOr_data()
 {
     QTest::addColumn<int>("value");
     QTest::addColumn<bool>("expected");
 
-    // Strategic cases for 8-input OR
     QTest::newRow("all 0s") << 0 << false;
     QTest::newRow("all 1s") << 255 << true;
     QTest::newRow("first 1 only") << 1 << true;
@@ -1229,12 +1200,12 @@ void TestLogicElements::testLogic8InputOr_data()
     QTest::newRow("single middle bit") << 0x10 << true;  // 00010000
 }
 
-void TestLogicElements::testLogic8InputOr()
+void TestElementLogic::test8InputOr()
 {
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    LogicOr elm(8);
+    Or elm; elm.setInputSize(8); initTEElm(elm);
     for (int i = 0; i < 8; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1248,15 +1219,11 @@ void TestLogicElements::testLogic8InputOr()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-/**
- * Test: 8-input NAND gate - strategic test cases
- */
-void TestLogicElements::testLogic8InputNand_data()
+void TestElementLogic::test8InputNand_data()
 {
     QTest::addColumn<int>("value");
     QTest::addColumn<bool>("expected");
 
-    // Strategic cases for 8-input NAND (inverted AND)
     QTest::newRow("all 0s") << 0 << true;
     QTest::newRow("all 1s") << 255 << false;
     QTest::newRow("first 1 only") << 1 << true;
@@ -1268,12 +1235,12 @@ void TestLogicElements::testLogic8InputNand_data()
     QTest::newRow("low 4 bits") << 0x0F << true;         // 00001111
 }
 
-void TestLogicElements::testLogic8InputNand()
+void TestElementLogic::test8InputNand()
 {
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    LogicNand elm(8);
+    Nand elm; elm.setInputSize(8); initTEElm(elm);
     for (int i = 0; i < 8; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1287,15 +1254,11 @@ void TestLogicElements::testLogic8InputNand()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-/**
- * Test: 8-input NOR gate - strategic test cases
- */
-void TestLogicElements::testLogic8InputNor_data()
+void TestElementLogic::test8InputNor_data()
 {
     QTest::addColumn<int>("value");
     QTest::addColumn<bool>("expected");
 
-    // Strategic cases for 8-input NOR (inverted OR)
     QTest::newRow("all 0s") << 0 << true;
     QTest::newRow("all 1s") << 255 << false;
     QTest::newRow("first 1 only") << 1 << false;
@@ -1305,15 +1268,15 @@ void TestLogicElements::testLogic8InputNor_data()
     QTest::newRow("last 1 only") << 128 << false;
     QTest::newRow("alternating even") << 0x55 << false;  // 01010101
     QTest::newRow("alternating odd") << 0xAA << false;   // 10101010
-    QTest::newRow("single middle bit") << 0x10 << false; // 00010000
+    QTest::newRow("single middle bit") << 0x10 << false;  // 00010000
 }
 
-void TestLogicElements::testLogic8InputNor()
+void TestElementLogic::test8InputNor()
 {
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    LogicNor elm(8);
+    Nor elm; elm.setInputSize(8); initTEElm(elm);
     for (int i = 0; i < 8; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1327,38 +1290,29 @@ void TestLogicElements::testLogic8InputNor()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-/**
- * Test: Fan-out - one output driving multiple inputs
- * Verifies that a single LogicSource can successfully drive multiple gate inputs
- */
-void TestLogicElements::testFanOut_data()
+void TestElementLogic::testFanOut_data()
 {
     QTest::addColumn<bool>("inputValue");
     QTest::addColumn<bool>("expectedAnd");
     QTest::addColumn<bool>("expectedOr");
     QTest::addColumn<bool>("expectedXor");
 
-    // When input is 0: AND(0,0)=0, OR(0,0)=0, XOR(0,0)=0
     QTest::newRow("all gates input=0") << false << false << false << false;
-
-    // When input is 1: AND(1,1)=1, OR(1,1)=1, XOR(1,1)=0
     QTest::newRow("all gates input=1") << true << true << true << false;
 }
 
-void TestLogicElements::testFanOut()
+void TestElementLogic::testFanOut()
 {
     QFETCH(bool, inputValue);
     QFETCH(bool, expectedAnd);
     QFETCH(bool, expectedOr);
     QFETCH(bool, expectedXor);
 
-    // Single LogicSource drives 3 different gates (fan-out test)
-    LogicSource source;
-    LogicAnd andGate(2);
-    LogicOr orGate(2);
-    LogicXor xorGate(2);
+    InputVcc source; initTESrc(source);
+    And andGate; initTEElm(andGate);
+    Or orGate; initTEElm(orGate);
+    Xor xorGate; initTEElm(xorGate);
 
-    // Connect same source to all three gates
     andGate.connectPredecessor(0, &source, 0);
     andGate.connectPredecessor(1, &source, 0);
 
@@ -1368,44 +1322,36 @@ void TestLogicElements::testFanOut()
     xorGate.connectPredecessor(0, &source, 0);
     xorGate.connectPredecessor(1, &source, 0);
 
-    // Set input value
     source.setOutputValue(inputValue);
 
-    // Update all gates
     andGate.updateLogic();
     orGate.updateLogic();
     xorGate.updateLogic();
 
-    // Verify all gates receive the same signal correctly
     QCOMPARE(andGate.outputValue(), expectedAnd);
     QCOMPARE(orGate.outputValue(), expectedOr);
     QCOMPARE(xorGate.outputValue(), expectedXor);
 }
 
-/**
- * Test: 6-input AND gate
- * Fills coverage gap between 5-input and 8-input tests
- */
-void TestLogicElements::testLogic6InputAnd_data()
+void TestElementLogic::test6InputAnd_data()
 {
     QTest::addColumn<int>("value");
     QTest::addColumn<bool>("expected");
 
-    // Key cases for 6-input AND: only all-1s = 1, rest = 0
     QTest::newRow("all 0s") << 0 << false;
-    QTest::newRow("all 1s") << 63 << true;  // 0b111111 = 63
-    QTest::newRow("5 set, last 0") << 31 << false;  // 0b011111
-    QTest::newRow("last 5 set, first 0") << 62 << false;  // 0b111110
-    QTest::newRow("alternating 01") << 0x15 << false;  // 0b010101
-    QTest::newRow("alternating 10") << 0x2A << false;  // 0b101010
+    QTest::newRow("all 1s") << 63 << true;
+    QTest::newRow("5 set, last 0") << 31 << false;
+    QTest::newRow("last 5 set, first 0") << 62 << false;
+    QTest::newRow("alternating 01") << 0x15 << false;
+    QTest::newRow("alternating 10") << 0x2A << false;
 }
 
-void TestLogicElements::testLogic6InputAnd()
+void TestElementLogic::test6InputAnd()
 {
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    LogicAnd elm(6);
+    And elm; elm.setInputSize(6); initTEElm(elm);
     for (int i = 0; i < 6; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }

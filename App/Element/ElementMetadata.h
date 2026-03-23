@@ -8,7 +8,6 @@
 #pragma once
 
 #include <functional>
-#include <memory>
 
 #include <QMap>
 #include <QString>
@@ -16,16 +15,14 @@
 
 #include "App/Core/Enums.h"
 
-class LogicElement;
-
 /**
  * \struct ElementMetadata
  * \brief Compile-time-registered properties for one element type.
  *
  * \details Each element .cpp registers one instance via an ElementInfo<T>
  * specialization.  All fields are populated at static-initialization time
- * (before QApplication) except \c pixmapPath and \c logicCreator, which are
- * callables invoked lazily at construction/simulation time.
+ * (before QApplication) except \c pixmapPath, which is a callable invoked
+ * lazily at construction time.
  */
 struct ElementMetadata {
     ElementType type = ElementType::Unknown;   ///< Unique element type identifier.
@@ -62,11 +59,6 @@ struct ElementMetadata {
     bool hasLabel = false;      ///< True if the element supports a user-editable label.
     bool hasTruthTable = false; ///< True if the element has an editable truth table.
     bool rotatable = true;      ///< True if the user can rotate this element.
-
-    // --- Logic element creator ---
-
-    /// Factory callable for the element's LogicElement — null for IC only.
-    std::function<std::shared_ptr<LogicElement>(GraphicElement *)> logicCreator;
 };
 
 /**

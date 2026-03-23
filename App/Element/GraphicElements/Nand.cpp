@@ -3,8 +3,9 @@
 
 #include "App/Element/GraphicElements/Nand.h"
 
+#include <functional>
+
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicNand.h"
 
 template<>
 struct ElementInfo<Nand> {
@@ -28,7 +29,6 @@ struct ElementInfo<Nand> {
         meta.trContext = "Nand";
         // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Logic/nand.svg"});
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicNand>(elm->inputSize()); };
         return meta;
     }
 
@@ -43,5 +43,14 @@ Nand::Nand(QGraphicsItem *parent)
     : GraphicElement(ElementType::Nand, parent)
 {
     // Skip full initialisation when building a property-probe instance (see ElementFactory).
+}
+
+void Nand::updateLogic()
+{
+    if (!updateInputs()) {
+        return;
+    }
+    const auto result = std::accumulate(simInputs().cbegin(), simInputs().cend(), true, std::bit_and<>());
+    setOutputValue(!result);
 }
 

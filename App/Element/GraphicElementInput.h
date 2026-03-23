@@ -77,7 +77,9 @@ protected:
 inline void GraphicElementInput::updateOutputs()
 {
     for (int portIndex = 0; portIndex < outputSize(); ++portIndex) {
-        logic()->setOutputValue(portIndex, isOn(portIndex));
+        if (portIndex < simOutputSize()) {
+            setOutputValue(portIndex, isOn(portIndex));
+        }
     }
 }
 

@@ -6,19 +6,19 @@
 #include <QObject>
 #include <QVector>
 
-class LogicSource;
+class InputVcc;
 
-class TestLogicNode : public QObject
+class TestNodeLogic : public QObject
 {
     Q_OBJECT
 
 private slots:
     void cleanup();
     void init();
-    void testLogicNodeChainPropagation();
-    void testLogicNodeFanOut();
+    void testNodeChainPropagation();
+    void testNodeFanOut();
 
 private:
-    QVector<LogicSource *> m_inputs{8};
+    QVector<InputVcc *> m_inputs{8};
 };
 

@@ -4,7 +4,6 @@
 #include "App/Element/GraphicElements/InputVCC.h"
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicSource.h"
 #include "App/Nodes/QNEPort.h"
 
 template<>
@@ -28,7 +27,6 @@ struct ElementInfo<InputVcc> {
         meta.translatedName = QT_TRANSLATE_NOOP("InputVcc", "VCC");
         meta.trContext = "InputVcc";
         meta.defaultSkins = QStringList({":/Components/Input/1.svg"});
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicSource>(true); };
         return meta;
     }
 
@@ -42,8 +40,8 @@ struct ElementInfo<InputVcc> {
 InputVcc::InputVcc(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputVcc, parent)
 {
-    // VCC always outputs logic HIGH; set the port status at construction so the
-    // visual wire colour is correct before the first simulation tick runs.
-    m_outputPorts.constFirst()->setStatus(Status::Active);
+    // VCC always outputs logic HIGH; set the port default so both the visual
+    // wire colour and the simulation output vector are correct from the start.
+    m_outputPorts.constFirst()->setDefaultStatus(Status::Active);
 }
 

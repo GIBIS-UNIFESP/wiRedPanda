@@ -346,37 +346,3 @@ void TestGraphicelementAdvanced::testElementPositionPersistence()
     QCOMPARE(elem->pos(), pos);
 }
 
-// ============================================================================
-// Logic Element Binding Tests
-// ============================================================================
-
-void TestGraphicelementAdvanced::testSetLogicElement()
-{
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
-    QVERIFY(elem != nullptr);
-
-    // Logic element should be null before ElementMapping is created
-    auto *logic = elem->logic();
-    QVERIFY(logic == nullptr);
-}
-
-void TestGraphicelementAdvanced::testGetLogicElement()
-{
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Or));
-    QVERIFY(elem != nullptr);
-
-    // Logic element should be null before ElementMapping is created
-    auto *logic = elem->logic();
-    QVERIFY(logic == nullptr);
-}
-
-void TestGraphicelementAdvanced::testLogicElementNullPointer()
-{
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputButton));
-    QVERIFY(elem != nullptr);
-
-    // Input elements typically don't have logic elements
-    auto *logic = elem->logic();
-    QVERIFY(logic == nullptr);
-}
-

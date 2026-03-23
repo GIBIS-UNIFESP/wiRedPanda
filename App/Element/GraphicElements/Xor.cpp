@@ -3,8 +3,9 @@
 
 #include "App/Element/GraphicElements/Xor.h"
 
+#include <functional>
+
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicXor.h"
 
 template<>
 struct ElementInfo<Xor> {
@@ -28,7 +29,6 @@ struct ElementInfo<Xor> {
         meta.trContext = "Xor";
         // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Logic/xor.svg"});
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicXor>(elm->inputSize()); };
         return meta;
     }
 
@@ -43,5 +43,14 @@ Xor::Xor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Xor, parent)
 {
     // Skip full initialisation when building a property-probe instance (see ElementFactory).
+}
+
+void Xor::updateLogic()
+{
+    if (!updateInputs()) {
+        return;
+    }
+    const auto result = std::accumulate(simInputs().cbegin(), simInputs().cend(), false, std::bit_xor<>());
+    setOutputValue(result);
 }
 

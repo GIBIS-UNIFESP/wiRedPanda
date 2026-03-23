@@ -5,7 +5,7 @@
 
 #include <QObject>
 
-class TestLogicElementsErrors : public QObject
+class TestElementLogicErrors : public QObject
 {
     Q_OBJECT
 
