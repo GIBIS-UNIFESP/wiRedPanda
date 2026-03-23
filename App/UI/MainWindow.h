@@ -183,6 +183,9 @@ private:
     void disconnectTab();
     void connectTab();
 
+    /// Connects \a action to \a method on the current tab's scene (guarded by m_currentTab check).
+    void connectSceneAction(QAction *action, void (Scene::*method)());
+
     // --- File Helpers ---
 
     bool hasModifiedFiles();
