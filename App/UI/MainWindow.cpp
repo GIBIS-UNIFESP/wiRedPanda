@@ -12,14 +12,19 @@
 #include <QCloseEvent>
 #include <QDebug>
 #include <QDesktopServices>
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QFileDialog>
+#include <QLabel>
 #include <QLocale>
 #include <QLoggingCategory>
 #include <QMessageBox>
 #include <QPixmapCache>
+#include <QPushButton>
 #include <QSaveFile>
 #include <QShortcut>
 #include <QTemporaryFile>
+#include <QVBoxLayout>
 
 #ifdef Q_OS_MAC
 #include <QSvgRenderer>
@@ -31,6 +36,7 @@
 #include "App/Core/Common.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
+#include "App/Core/UpdateChecker.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
 #include "App/Element/IC.h"
@@ -420,6 +426,48 @@ void MainWindow::show()
     qCDebug(zero) << "Checking for autosave file recovery.";
     loadAutosaveFiles();
 
+    if (Application::interactiveMode) {
+        auto *updateChecker = new UpdateChecker(this);
+        connect(updateChecker, &UpdateChecker::updateAvailable, this, &MainWindow::showUpdateDialog);
+        updateChecker->checkForUpdates();
+    }
+}
+
+void MainWindow::showUpdateDialog(const QString &latestVersion, const QUrl &releaseUrl)
+{
+    QDialog dialog(this);
+    dialog.setWindowTitle(tr("Update Available"));
+    dialog.setWindowModality(Qt::WindowModal);
+
+    auto *layout = new QVBoxLayout(&dialog);
+
+    auto *label = new QLabel(
+        tr("<b>wiRedPanda %1 is available.</b><br><br>"
+           "You are currently running version %2.<br>"
+           "Visit the release page to download the new version.")
+            .arg(latestVersion, APP_VERSION),
+        &dialog);
+    label->setTextFormat(Qt::RichText);
+    label->setWordWrap(true);
+    layout->addWidget(label);
+
+    auto *skipCheckBox = new QCheckBox(tr("Don't notify me about this version again"), &dialog);
+    layout->addWidget(skipCheckBox);
+
+    auto *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, &dialog);
+    auto *downloadButton = buttonBox->addButton(tr("Download"), QDialogButtonBox::AcceptRole);
+    connect(downloadButton, &QPushButton::clicked, &dialog, [&releaseUrl, &dialog] {
+        QDesktopServices::openUrl(releaseUrl);
+        dialog.accept();
+    });
+    connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+    layout->addWidget(buttonBox);
+
+    dialog.exec();
+
+    if (skipCheckBox->isChecked()) {
+        Settings::setUpdateCheckSkippedVersion(latestVersion);
+    }
 }
 
 void MainWindow::aboutThisVersion()

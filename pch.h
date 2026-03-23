@@ -30,6 +30,7 @@
 #include <QCoreApplication>
 #include <QCursor>
 #include <QDataStream>
+#include <QDate>
 #include <QDebug>
 #include <QDesktopServices>
 #include <QDialog>
@@ -83,6 +84,9 @@
 #include <QMetaEnum>
 #include <QMimeData>
 #include <QMouseEvent>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QObject>
 #include <QPageLayout>
 #include <QPageSize>
@@ -138,6 +142,7 @@
 #include <QTranslator>
 #include <QUndoCommand>
 #include <QUndoStack>
+#include <QUrl>
 #include <QVBoxLayout>
 #include <QVariant>
 #include <QVector>

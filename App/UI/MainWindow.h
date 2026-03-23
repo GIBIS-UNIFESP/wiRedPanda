@@ -12,6 +12,7 @@
 #include <QDir>
 #include <QMainWindow>
 #include <QSpacerItem>
+#include <QUrl>
 
 #include "App/UI/MainWindowUI.h"
 
@@ -194,6 +195,7 @@ private:
     void updateRecentFileActions();
     void openRecentFile();
     void removeICFile(const QString &icFileName);
+    void showUpdateDialog(const QString &latestVersion, const QUrl &releaseUrl);
 
     // --- Settings & Theme ---
 

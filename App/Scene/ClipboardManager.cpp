@@ -9,6 +9,7 @@
 #include <QMimeData>
 #include <QPainter>
 
+#include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
