@@ -5,13 +5,17 @@
 
 #include <memory>
 
+#include <QList>
 #include <QMetaEnum>
+#include <QSet>
+#include <QString>
 
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementMetadata.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Scene/Scene.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestElementFactory::initTestCase()
@@ -77,6 +81,7 @@ void TestElementFactory::testBuildElementInvalidType()
 
 void TestElementFactory::testMetadataLogicCreator()
 {
+    // Verify elements can be built and have correct metadata type
     const QVector<ElementType> typesToTest{
         ElementType::And, ElementType::Or, ElementType::Not,
         ElementType::Nand, ElementType::Nor, ElementType::Xor
@@ -85,6 +90,9 @@ void TestElementFactory::testMetadataLogicCreator()
     for (const auto type : typesToTest) {
         auto *graphicElem = ElementFactory::buildElement(type);
         QVERIFY2(graphicElem != nullptr, qPrintable(QString("Failed to build graphic element: %1").arg(ElementFactory::typeToText(type))));
+
+        const auto &meta = ElementMetadataRegistry::metadata(type);
+        QVERIFY2(meta.type == type, "Metadata type should match requested type");
 
         delete graphicElem;
     }
@@ -156,34 +164,42 @@ void TestElementFactory::testTypeToTextBidirectional()
 
 void TestElementFactory::testItemRegistry()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    Scene scene;
+    auto *elem = ElementFactory::buildElement(ElementType::And);
     QVERIFY(elem != nullptr);
 
-    // Verify element has ID
-    const int id = elem->id();
-    QVERIFY2(id > 0, "Element ID should be positive");
+    // Before adding to scene, ID is -1 (unassigned)
+    QCOMPARE(elem->id(), -1);
 
-    // Verify registry contains item
-    QVERIFY2(ElementFactory::contains(id), qPrintable(QString("Registry missing ID: %1").arg(id)));
-    QCOMPARE(ElementFactory::itemById(id), elem.get());
+    scene.addItem(elem);
+    const int id = elem->id();
+    QVERIFY2(id > 0, "Element ID should be positive after adding to scene");
+
+    // Verify scene registry contains item
+    QVERIFY2(scene.contains(id), qPrintable(QString("Registry missing ID: %1").arg(id)));
+    QCOMPARE(scene.itemById(id), elem);
 
     // Remove and verify
-    elem.reset();  // Destructor calls removeItem()
-    QVERIFY2(!ElementFactory::contains(id), "Item should be removed from registry after deletion");
+    scene.removeItem(elem);
+    QVERIFY2(!scene.contains(id), "Item should be removed from registry after removal from scene");
+    delete elem;
 }
 
 void TestElementFactory::testUniqueIdAssignment()
 {
+    Scene scene;
     QSet<int> ids;
     QVector<GraphicElement *> elements;
 
-    // Create multiple elements
+    // Create elements and add to scene to get IDs
     for (int i = 0; i < 20; ++i) {
         auto *elem = ElementFactory::buildElement(ElementType::Node);
         QVERIFY(elem != nullptr);
+        scene.addItem(elem);
         elements.append(elem);
 
         const int id = elem->id();
+        QVERIFY2(id > 0, "ID should be positive after adding to scene");
         QVERIFY2(!ids.contains(id), qPrintable(QString("Duplicate ID assigned: %1").arg(id)));
         ids.insert(id);
     }
@@ -193,6 +209,79 @@ void TestElementFactory::testUniqueIdAssignment()
 
     // Cleanup
     qDeleteAll(elements);
+}
+
+void TestElementFactory::testCrossSceneIsolation()
+{
+    // Core regression test for the per-scene ID refactoring.
+    // Each scene has its own counter starting from 1, so two scenes will assign
+    // the SAME numeric IDs to different elements. The isolation guarantee is:
+    //   (a) A scene returns only ITS OWN element for a given ID.
+    //   (b) A scene returns null for IDs that only exist in another scene.
+    Scene scene1;
+    Scene scene2;
+
+    // Add two elements to scene1 (IDs 1 and 2)
+    auto *e1a = ElementFactory::buildElement(ElementType::And);
+    auto *e1b = ElementFactory::buildElement(ElementType::And);
+    scene1.addItem(e1a);
+    scene1.addItem(e1b);
+
+    // Add one element to scene2 — its ID will also be 1 (independent counter)
+    auto *e2a = ElementFactory::buildElement(ElementType::Or);
+    scene2.addItem(e2a);
+
+    const int s1_id1 = e1a->id(); // 1
+    const int s1_id2 = e1b->id(); // 2
+    const int s2_id1 = e2a->id(); // 1 (same numeric value, different scene)
+
+    QCOMPARE(s1_id1, 1);
+    QCOMPARE(s1_id2, 2);
+    QCOMPARE(s2_id1, 1); // IDs collide by design — independent counters
+
+    // (a) Each scene resolves its own ID to its own element
+    QCOMPARE(scene1.itemById(s1_id1), e1a);
+    QCOMPARE(scene1.itemById(s1_id2), e1b);
+    QCOMPARE(scene2.itemById(s2_id1), e2a);
+
+    // (a) scene1 resolves ID 1 to e1a, NOT to e2a
+    QVERIFY2(scene1.itemById(1) != e2a,
+             "scene1 must resolve ID 1 to its own element, not scene2's");
+
+    // (a) scene2 resolves ID 1 to e2a, NOT to e1a
+    QVERIFY2(scene2.itemById(1) != e1a,
+             "scene2 must resolve ID 1 to its own element, not scene1's");
+
+    // (b) scene2 returns null for ID 2 which only exists in scene1
+    QVERIFY2(scene2.itemById(s1_id2) == nullptr,
+             "scene2 must return null for IDs that only exist in scene1");
+}
+
+void TestElementFactory::testSceneCounterIndependence()
+{
+    // Each scene maintains its own monotonic ID counter starting from 1.
+    // Adding elements to scene1 must not advance scene2's counter.
+    Scene scene1;
+    Scene scene2;
+
+    // Add several elements to scene1
+    QVector<GraphicElement *> s1elements;
+    for (int i = 0; i < 5; ++i) {
+        auto *e = ElementFactory::buildElement(ElementType::And);
+        scene1.addItem(e);
+        s1elements.append(e);
+    }
+
+    // scene1 counter is at 5; scene2 counter is still at 0
+    auto *elm2 = ElementFactory::buildElement(ElementType::Or);
+    scene2.addItem(elm2);
+
+    // scene2 should start its own counter from 1, not from 6
+    QCOMPARE(elm2->id(), 1);
+
+    // Cleanup
+    qDeleteAll(s1elements);
+    delete elm2;
 }
 
 void TestElementFactory::testMetadataRegistry()
@@ -244,9 +333,11 @@ void TestElementFactory::testAllElementTypesRegistered()
             continue;  // deprecated: JKLatch element no longer exists, kept for backward compatibility
         }
 
+        // Verify metadata is registered
         QVERIFY2(ElementMetadataRegistry::hasMetadata(type),
                  qPrintable(QString("Missing ElementInfo<> for %1").arg(metaEnum.key(i))));
 
+        // Verify factory creator is registered
         QVERIFY2(ElementFactory::hasCreator(type),
                  qPrintable(QString("Missing factory creator for %1").arg(metaEnum.key(i))));
     }

@@ -105,13 +105,13 @@ const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList
     return elements + connections;
 }
 
-const QList<QGraphicsItem *> findItems(const QList<int> &ids)
+const QList<QGraphicsItem *> findItems(Scene *scene, const QList<int> &ids)
 {
     QList<QGraphicsItem *> items;
     items.reserve(ids.size());
 
     for (const int id : ids) {
-        if (auto *item = dynamic_cast<QGraphicsItem *>(ElementFactory::itemById(id))) {
+        if (auto *item = dynamic_cast<QGraphicsItem *>(scene->itemById(id))) {
             items.append(item);
         }
     }
@@ -123,13 +123,13 @@ const QList<QGraphicsItem *> findItems(const QList<int> &ids)
     return items;
 }
 
-const QList<GraphicElement *> findElements(const QList<int> &ids)
+const QList<GraphicElement *> findElements(Scene *scene, const QList<int> &ids)
 {
     QList<GraphicElement *> items;
     items.reserve(ids.size());
 
     for (const int id : ids) {
-        if (auto *item = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id))) {
+        if (auto *item = dynamic_cast<GraphicElement *>(scene->itemById(id))) {
             items.append(item);
         }
     }
@@ -141,23 +141,23 @@ const QList<GraphicElement *> findElements(const QList<int> &ids)
     return items;
 }
 
-QNEConnection *findConn(const int id)
+QNEConnection *findConn(Scene *scene, const int id)
 {
-    return dynamic_cast<QNEConnection *>(ElementFactory::itemById(id));
+    return dynamic_cast<QNEConnection *>(scene->itemById(id));
 }
 
-GraphicElement *findElm(const int id)
+GraphicElement *findElm(Scene *scene, const int id)
 {
-    return dynamic_cast<GraphicElement *>(ElementFactory::itemById(id));
+    return dynamic_cast<GraphicElement *>(scene->itemById(id));
 }
 
-void saveItems(QByteArray &itemData, const QList<QGraphicsItem *> &items, const QList<int> &otherIds)
+void saveItems(Scene *scene, QByteArray &itemData, const QList<QGraphicsItem *> &items, const QList<int> &otherIds)
 {
     itemData.clear();
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
 
-    const auto others = findElements(otherIds);
+    const auto others = CommandUtils::findElements(scene, otherIds);
 
     for (auto *elm : others) {
         elm->save(stream);
@@ -191,7 +191,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     QMap<quint64, QNEPort *> portMap;
     SerializationContext context{portMap, version, scene->contextDir()};
 
-    for (auto *elm : findElements(otherIds)) {
+    for (auto *elm : CommandUtils::findElements(scene, otherIds)) {
         elm->load(stream, context);
     }
 
@@ -206,7 +206,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     // Re-assign the original IDs so undo/redo chains that store IDs remain valid
     for (int i = 0; i < items.size(); ++i) {
         if (auto *itemId = dynamic_cast<ItemWithId *>(items.at(i))) {
-            ElementFactory::updateItemId(itemId, ids.at(i));
+            scene->updateItemId(itemId, ids.at(i));
         }
     }
 
@@ -231,8 +231,11 @@ AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &items, Scene *sce
 {
     // Simulation must be paused while items are added to avoid a partial-topology update
     SimulationBlocker blocker(m_scene->simulation());
-    // Note: QUndoStack::push() calls redo() immediately after construction, so
-    // the constructor itself acts as the first redo — items are added here, not later.
+    // Add items to scene first so they receive positive scene-local IDs before
+    // loadList captures them in storeIds. Items already in scene are skipped.
+    CommandUtils::addItems(m_scene, items);
+    // Collect canonical list (elements + attached wires) and store their IDs.
+    // The second addItems call handles any wires discovered via port traversal.
     const auto items_ = CommandUtils::loadList(items, m_ids, m_otherIds);
     CommandUtils::addItems(m_scene, items_);
     setText(tr("Add %1 elements").arg(items_.size()));
@@ -242,8 +245,8 @@ void AddItemsCommand::undo()
 {
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
-    const auto items = CommandUtils::findItems(m_ids);
-    CommandUtils::saveItems(m_itemData, items, m_otherIds);
+    const auto items = CommandUtils::findItems(m_scene, m_ids);
+    CommandUtils::saveItems(m_scene, m_itemData, items, m_otherIds);
     CommandUtils::deleteItems(m_scene, items);
     m_scene->setCircuitUpdateRequired();
 }
@@ -280,8 +283,8 @@ void DeleteItemsCommand::redo()
 {
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
-    const auto items = CommandUtils::findItems(m_ids);
-    CommandUtils::saveItems(m_itemData, items, m_otherIds);
+    const auto items = CommandUtils::findItems(m_scene, m_ids);
+    CommandUtils::saveItems(m_scene, m_itemData, items, m_otherIds);
     CommandUtils::deleteItems(m_scene, items);
     m_scene->setCircuitUpdateRequired();
 }
@@ -305,7 +308,7 @@ RotateCommand::RotateCommand(const QList<GraphicElement *> &items, const int ang
 void RotateCommand::undo()
 {
     qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_ids);
+    const auto elements = CommandUtils::findElements(m_scene, m_ids);
 
     for (int i = 0; i < elements.size(); ++i) {
         auto *elm = elements.at(i);
@@ -321,7 +324,7 @@ void RotateCommand::undo()
 void RotateCommand::redo()
 {
     qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_ids);
+    const auto elements = CommandUtils::findElements(m_scene, m_ids);
     double cx = 0;
     double cy = 0;
     int sz = 0;
@@ -371,7 +374,7 @@ MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPoint
 void MoveCommand::undo()
 {
     qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_ids);
+    const auto elements = CommandUtils::findElements(m_scene, m_ids);
 
     for (int i = 0; i < elements.size(); ++i) {
         elements.at(i)->setPos(m_oldPositions.at(i));
@@ -383,7 +386,7 @@ void MoveCommand::undo()
 void MoveCommand::redo()
 {
     qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_ids);
+    const auto elements = CommandUtils::findElements(m_scene, m_ids);
 
     for (int i = 0; i < elements.size(); ++i) {
         elements.at(i)->setPos(m_newPositions.at(i));
@@ -429,7 +432,7 @@ void UpdateCommand::redo()
 
 void UpdateCommand::loadData(QByteArray &itemData)
 {
-    const auto elements = CommandUtils::findElements(m_ids);
+    const auto elements = CommandUtils::findElements(m_scene, m_ids);
 
     if (elements.isEmpty()) {
         return;
@@ -487,13 +490,21 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     m_elm2Id = endElement->id();
 
     m_c1Id = conn->id();
-    // Pre-allocate a second QNEConnection solely to claim a unique ID from ElementFactory
-    // before the constructor returns.  The object is immediately orphaned (no scene or
-    // parent), but its ID is registered and will be reused by redo() so that the split
-    // wire's second segment always has the same stable ID across multiple undo/redo cycles.
-    m_c2Id = (new QNEConnection())->id();
 
+    // Reserve a stable ID for the second wire segment (conn2) by briefly registering
+    // it in the scene so it receives a real scene-local ID, then removing it.
+    // redo() will recreate conn2 using updateItemId() to restore this same ID.
+    auto *conn2 = new QNEConnection();
+    m_scene->addItem(conn2);
+    m_c2Id = conn2->id();
+    m_scene->removeItem(conn2);
+    delete conn2;
+
+    // Reserve a stable ID for the node the same way.
+    m_scene->addItem(node);
     m_nodeId = node->id();
+    m_scene->removeItem(node);
+    delete node;
 
     setText(tr("Wire split"));
 }
@@ -501,22 +512,22 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
 void SplitCommand::redo()
 {
     qCDebug(zero) << text();
-    auto *conn1 = CommandUtils::findConn(m_c1Id);
-    auto *conn2 = CommandUtils::findConn(m_c2Id);
-    auto *node = CommandUtils::findElm(m_nodeId);
-    auto *elm1 = CommandUtils::findElm(m_elm1Id);
-    auto *elm2 = CommandUtils::findElm(m_elm2Id);
+    auto *conn1 = CommandUtils::findConn(m_scene, m_c1Id);
+    auto *conn2 = CommandUtils::findConn(m_scene, m_c2Id);
+    auto *node = CommandUtils::findElm(m_scene, m_nodeId);
+    auto *elm1 = CommandUtils::findElm(m_scene, m_elm1Id);
+    auto *elm2 = CommandUtils::findElm(m_scene, m_elm2Id);
 
     // After undo(), conn2 and node were deleted; recreate them with the same
     // stable IDs so subsequent redo() calls find them correctly via findConn/findElm
     if (!conn2) {
         conn2 = new QNEConnection();
-        ElementFactory::updateItemId(conn2, m_c2Id);
+        m_scene->updateItemId(conn2, m_c2Id);
     }
 
     if (!node) {
         node = ElementFactory::buildElement(ElementType::Node);
-        ElementFactory::updateItemId(node, m_nodeId);
+        m_scene->updateItemId(node, m_nodeId);
     }
 
     if (!conn1 || !conn2 || !elm1 || !elm2 || !node) {
@@ -548,11 +559,11 @@ void SplitCommand::redo()
 void SplitCommand::undo()
 {
     qCDebug(zero) << text();
-    auto *conn1 = CommandUtils::findConn(m_c1Id);
-    auto *conn2 = CommandUtils::findConn(m_c2Id);
-    auto *node = CommandUtils::findElm(m_nodeId);
-    auto *elm1 = CommandUtils::findElm(m_elm1Id);
-    auto *elm2 = CommandUtils::findElm(m_elm2Id);
+    auto *conn1 = CommandUtils::findConn(m_scene, m_c1Id);
+    auto *conn2 = CommandUtils::findConn(m_scene, m_c2Id);
+    auto *node = CommandUtils::findElm(m_scene, m_nodeId);
+    auto *elm1 = CommandUtils::findElm(m_scene, m_elm1Id);
+    auto *elm2 = CommandUtils::findElm(m_scene, m_elm2Id);
 
     if (!conn1 || !conn2 || !elm1 || !elm2 || !node) {
         throw PANDACEPTION("Error trying to undo %1", text());
@@ -594,7 +605,7 @@ MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType 
 void MorphCommand::undo()
 {
     qCDebug(zero) << text();
-    auto newElms = CommandUtils::findElements(m_ids);
+    auto newElms = CommandUtils::findElements(m_scene, m_ids);
     decltype(newElms) oldElms;
     oldElms.reserve(m_ids.size());
 
@@ -608,8 +619,8 @@ void MorphCommand::undo()
     // By this point transferConnections has already placed the restored elements in the
     // scene under their original IDs, so itemById() resolves correctly.
     for (const auto &info : std::as_const(m_deletedConnections)) {
-        auto *morphedElm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(info.morphedElementId));
-        auto *otherElm   = dynamic_cast<GraphicElement *>(ElementFactory::itemById(info.otherElementId));
+        auto *morphedElm = dynamic_cast<GraphicElement *>(m_scene->itemById(info.morphedElementId));
+        auto *otherElm   = dynamic_cast<GraphicElement *>(m_scene->itemById(info.otherElementId));
         if (!morphedElm || !otherElm) {
             continue;
         }
@@ -624,7 +635,7 @@ void MorphCommand::undo()
         }
         // Restore the original ID so any undo command that stored this connection's
         // ID (e.g. DeleteItemsCommand) can still find it via scene->itemById().
-        ElementFactory::updateItemId(conn, info.connectionId);
+        m_scene->updateItemId(conn, info.connectionId);
         m_scene->addItem(conn);
     }
 
@@ -634,7 +645,7 @@ void MorphCommand::undo()
 void MorphCommand::redo()
 {
     qCDebug(zero) << text();
-    auto oldElms = CommandUtils::findElements(m_ids);
+    auto oldElms = CommandUtils::findElements(m_scene, m_ids);
     decltype(oldElms) newElms;
     newElms.reserve(m_ids.size());
 
@@ -746,7 +757,7 @@ void MorphCommand::transferConnections(const QList<GraphicElement *> &from, cons
         m_scene->removeItem(oldElm);
         delete oldElm;
 
-        ElementFactory::updateItemId(newElm, oldId);
+        m_scene->updateItemId(newElm, oldId);
         m_scene->addItem(newElm);
         newElm->updatePortsProperties();
     }
@@ -797,7 +808,7 @@ void FlipCommand::undo()
 void FlipCommand::redo()
 {
     qCDebug(zero) << text();
-    for (auto *elm : CommandUtils::findElements(m_ids)) {
+    for (auto *elm : CommandUtils::findElements(m_scene, m_ids)) {
         auto pos = elm->pos();
 
         // axis == 0: mirror across the vertical axis (flip horizontally)
@@ -835,7 +846,7 @@ ChangeInputSizeCommand::ChangeInputSizeCommand(const QList<GraphicElement *> &el
 void ChangeInputSizeCommand::redo()
 {
     qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_ids);
+    const auto elements = CommandUtils::findElements(m_scene, m_ids);
 
     // --- Snapshot current state before shrinking ---
     // Save element state and the state of any elements on the other end of
@@ -897,8 +908,8 @@ void ChangeInputSizeCommand::redo()
 void ChangeInputSizeCommand::undo()
 {
     qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_ids);
-    const auto serializationOrder = CommandUtils::findElements(m_order);
+    const auto elements = CommandUtils::findElements(m_scene, m_ids);
+    const auto serializationOrder = CommandUtils::findElements(m_scene, m_order);
 
     QDataStream stream(&m_oldData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
@@ -918,7 +929,7 @@ void ChangeInputSizeCommand::undo()
             int connId; stream >> connId;
             auto *conn = new QNEConnection();
             conn->load(stream, context);
-            ElementFactory::updateItemId(conn, connId);
+            m_scene->updateItemId(conn, connId);
             m_scene->addItem(conn);
         }
 
@@ -945,7 +956,7 @@ ChangeOutputSizeCommand::ChangeOutputSizeCommand(const QList<GraphicElement *> &
 void ChangeOutputSizeCommand::redo()
 {
     qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_ids);
+    const auto elements = CommandUtils::findElements(m_scene, m_ids);
 
     QList<GraphicElement *> serializationOrder;
     serializationOrder.reserve(elements.size());
@@ -1003,8 +1014,8 @@ void ChangeOutputSizeCommand::redo()
 void ChangeOutputSizeCommand::undo()
 {
     qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_ids);
-    const auto serializationOrder = CommandUtils::findElements(m_order);
+    const auto elements = CommandUtils::findElements(m_scene, m_ids);
+    const auto serializationOrder = CommandUtils::findElements(m_scene, m_order);
 
     QDataStream stream(&m_oldData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
@@ -1022,7 +1033,7 @@ void ChangeOutputSizeCommand::undo()
             int connId; stream >> connId;
             auto *conn = new QNEConnection();
             conn->load(stream, context);
-            ElementFactory::updateItemId(conn, connId);
+            m_scene->updateItemId(conn, connId);
             m_scene->addItem(conn);
         }
 
@@ -1046,7 +1057,7 @@ void ToggleTruthTableOutputCommand::redo()
 {
     qCDebug(zero) << text();
 
-    auto *truthtable = qobject_cast<TruthTable *>(CommandUtils::findElm(m_id));
+    auto *truthtable = qobject_cast<TruthTable *>(CommandUtils::findElm(m_scene, m_id));
 
     if (!truthtable) throw PANDACEPTION("Could not find truthtable element!");
 
@@ -1064,7 +1075,7 @@ void ToggleTruthTableOutputCommand::undo()
 {
     qCDebug(zero) << text();
 
-    auto *truthtable = qobject_cast<TruthTable *>(CommandUtils::findElm(m_id));
+    auto *truthtable = qobject_cast<TruthTable *>(CommandUtils::findElm(m_scene, m_id));
 
     if (!truthtable) throw PANDACEPTION("Could not find truthtable element!");
 

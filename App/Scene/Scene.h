@@ -9,6 +9,7 @@
 
 #include <QElapsedTimer>
 #include <QGraphicsScene>
+#include <QMap>
 #include <QMimeData>
 #include <QUndoCommand>
 #include <QVersionNumber>
@@ -18,6 +19,7 @@
 
 class GraphicElement;
 class GraphicsView;
+class ItemWithId;
 class QNEConnection;
 class QPainter;
 
@@ -36,14 +38,43 @@ class Scene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    using QGraphicsScene::addItem;
-
     static constexpr int gridSize = 16; ///< Scene grid unit in pixels (elements snap to gridSize/2).
 
     // --- Lifecycle ---
 
     /// Constructs a Scene and initialises the undo stack and simulation.
     explicit Scene(QObject *parent = nullptr);
+
+    /// \brief Adds \a item to the scene and registers it in the per-scene ID registry.
+    void addItem(QGraphicsItem *item);
+
+    /// \brief Removes \a item from the scene and unregisters it from the per-scene ID registry.
+    void removeItem(QGraphicsItem *item);
+
+    // --- Per-Scene Element Registry ---
+
+    /// Returns the item registered under \a id, or nullptr if not found.
+    [[nodiscard]] ItemWithId *itemById(int id) const;
+
+    /// Returns true if an item with \a id is registered in this scene.
+    [[nodiscard]] bool contains(int id) const;
+
+    /// Returns the current highest ID in use by this scene.
+    int lastId() const;
+
+    /// Advances the scene's ID counter to at least \a newLastId.
+    void setLastId(int newLastId);
+
+    /// Returns the next available scene-local ID (does not assign it).
+    int nextId();
+
+    /**
+     * \brief Reassigns the ID of \a item to \a newId without adding it to the scene.
+     * \details Used by undo/redo commands (loadItems, SplitCommand, MorphCommand) to
+     * restore an element's original ID before calling addItem(). The item must NOT
+     * be in the scene registry yet when this is called.
+     */
+    void updateItemId(ItemWithId *item, int newId);
 
     // --- View / Display Management ---
 
@@ -238,6 +269,11 @@ private:
     void startNewConnection(QNEOutputPort *startPort);
     void startSelectionRect();
 
+    /// Registers \a item's current ID in the scene registry. Called by addItem().
+    void registerItem(ItemWithId *item);
+    /// Removes \a item's ID from the scene registry. Called by removeItem().
+    void unregisterItem(ItemWithId *item);
+
     // --- Members ---
 
     // View
@@ -250,6 +286,10 @@ private:
 
     // Simulation
     Simulation m_simulation;
+
+    // Element ID registry (per-scene)
+    QMap<int, ItemWithId *> m_elementRegistry;
+    int m_lastId = 0;
 
     // Rendering
     QPen m_dots;
