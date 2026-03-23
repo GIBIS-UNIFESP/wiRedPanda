@@ -6,7 +6,6 @@
 class GlobalProperties
 {
 public:
-    inline static bool interactiveMode = true;
     inline static const int maxRecentFiles = 10;
 };
 

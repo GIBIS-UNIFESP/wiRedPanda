@@ -301,7 +301,7 @@ void MainWindow::loadAutosaveFiles()
         try {
             loadPandaFile(*it);
         } catch (const std::exception &e) {
-            if (GlobalProperties::interactiveMode) {
+            if (Application::interactiveMode) {
                 QMessageBox::critical(nullptr, tr("Error!"), e.what());
             }
             qCDebug(zero) << "Removing autosave file that is corrupted.";
