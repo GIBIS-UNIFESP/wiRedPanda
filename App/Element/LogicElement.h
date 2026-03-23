@@ -43,6 +43,13 @@ public:
     bool outputValue(const int index = 0) const;
     int outputSize() const;
 
+    // --- Change tracking ---
+
+    /// Returns \c true if any output changed during the last updateLogic() call.
+    bool outputChanged() const { return m_outputChanged; }
+    /// Clears the output-changed flag (call before updateLogic() to prepare for change detection).
+    void clearOutputChanged() { m_outputChanged = false; }
+
     // --- Logic ---
 
     const QVector<InputPair> &inputPairs() const;
@@ -71,6 +78,7 @@ private:
     QVector<InputPair> m_inputPairs;
     QVector<bool> m_inputValues;
     QVector<bool> m_outputValues;
+    bool m_outputChanged = false; ///< Set by setOutputValue() when an output actually changes.
     bool m_isValid = true;
 };
 
