@@ -542,34 +542,18 @@ void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
     Serialization::deserialize(stream, context);
 }
 
-LogicElement *IC::getInputLogic(int portIndex) const
-{
-    return const_cast<IC *>(this)->inputLogic(portIndex);
-}
-
-LogicElement *IC::getOutputLogic(int portIndex) const
-{
-    return const_cast<IC *>(this)->outputLogic(portIndex);
-}
-
-int IC::getInputIndexForPort(int portIndex) const
-{
-    Q_UNUSED(portIndex)
-    // Each IC input is represented by a single-output Node element; the driven port
-    // is always the first (and only) output, so the index into the logic element is always 0
-    return 0;
-}
-
-int IC::getOutputIndexForPort(int portIndex) const
-{
-    Q_UNUSED(portIndex)
-    // Same reasoning as getInputIndexForPort: each IC output is a Node with one output port
-    return 0;
-}
-
 QVector<std::shared_ptr<LogicElement>> IC::getLogicElementsForMapping()
 {
-    return generateMap();
+    auto logicElms = generateMap();
+
+    for (int i = 0; i < inputSize(); ++i) {
+        inputPort(i)->setPortLogic(inputLogic(i), 0);
+    }
+    for (int i = 0; i < outputSize(); ++i) {
+        outputPort(i)->setPortLogic(outputLogic(i), 0);
+    }
+
+    return logicElms;
 }
 
 void IC::loadFromDrop(const QString &fileName, const QString &contextDir)
