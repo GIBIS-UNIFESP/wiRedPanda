@@ -316,22 +316,6 @@ bool Simulation::initialize()
         }
     }
 
-    // Primary sort: user-assigned priority (higher value = evaluated earlier).
-    // Secondary sort: position, for a stable deterministic order when priorities
-    // are equal — important so test replays give the same output every run.
-    std::stable_sort(elements.begin(), elements.end(), [](const auto &a, const auto &b) {
-        if (!a || !b) {
-            return a != nullptr; // Put null elements at the end
-        }
-        if (a->priority() == b->priority()) {
-            if (qFuzzyCompare(a->y(), b->y())) {
-                return a->x() < b->x();
-            }
-            return a->y() < b->y();
-        }
-        return a->priority() > b->priority();
-    });
-
     qCDebug(zero) << "Elements read: " << elements.size();
 
     if (elements.empty()) {

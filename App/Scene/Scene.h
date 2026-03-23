@@ -81,6 +81,8 @@ public:
     const QVector<GraphicElement *> elements() const;
     /// Returns all graphic elements within \a rect.
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
+    /// Returns \a elements sorted in topological dependency order (inputs first).
+    static QVector<GraphicElement *> sortByTopology(QVector<GraphicElement *> elements);
     /// Returns all visible (non-hidden) graphic elements in the scene.
     const QVector<GraphicElement *> visibleElements() const;
 

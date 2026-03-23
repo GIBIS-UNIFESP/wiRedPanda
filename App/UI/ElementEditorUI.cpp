@@ -156,10 +156,6 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     labelAudioBox->setObjectName("labelAudioBox");
     gridLayout_2->addWidget(labelAudioBox, 9, 0, 1, 1);
 
-    labelPriority = new QLabel(groupBox);
-    labelPriority->setObjectName("labelPriority");
-    gridLayout_2->addWidget(labelPriority, 11, 0, 1, 1);
-
     comboBoxValue = new QComboBox(groupBox);
     comboBoxValue->setObjectName("comboBoxValue");
     gridLayout_2->addWidget(comboBoxValue, 3, 1, 1, 1);
@@ -167,13 +163,6 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     comboBoxOutputSize = new QComboBox(groupBox);
     comboBoxOutputSize->setObjectName("comboBoxOutputSize");
     gridLayout_2->addWidget(comboBoxOutputSize, 2, 1, 1, 1);
-
-    // Priority range 0–9 matches GraphicElement::minPriority/maxPriority;
-    // higher priority elements are evaluated first by the topological sorter.
-    spinBoxPriority = new QSpinBox(groupBox);
-    spinBoxPriority->setObjectName("spinBoxPriority");
-    spinBoxPriority->setMaximum(9);
-    gridLayout_2->addWidget(spinBoxPriority, 11, 1, 1, 1);
 
     labelOutputs = new QLabel(groupBox);
     labelOutputs->setObjectName("labelOutputs");
@@ -242,7 +231,6 @@ void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
     labelInputs->setText(QCoreApplication::translate("ElementEditor", "Inputs:"));
     comboBoxColor->setCurrentText(QString());
     labelAudioBox->setText(QCoreApplication::translate("ElementEditor", "Audio:"));
-    labelPriority->setText(QCoreApplication::translate("ElementEditor", "Priority:"));
     labelOutputs->setText(QCoreApplication::translate("ElementEditor", "Outputs:"));
     labelLocked->setText(QCoreApplication::translate("ElementEditor", "Locked:"));
     labelAudio->setText(QCoreApplication::translate("ElementEditor", "Audio:"));

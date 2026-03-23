@@ -95,9 +95,6 @@ public:
     /// Returns the logic element that backs this graphic element.
     LogicElement *logic() const;
 
-    /// Returns the topological-sort priority of this element.
-    int priority() const;
-
     // --- Port Access ---
 
     /// Returns the input port at \a index (default 0).
@@ -321,9 +318,6 @@ public:
     /// Sets the object name of all ports to \a name for identification.
     void setPortName(const QString &name);
 
-    /// Sets the topological-sort priority to \a value.
-    void setPriority(const int value);
-
     // --- Theme ---
 
     /// Updates the element's visual theme according to the current dark/light palette.
@@ -464,7 +458,6 @@ private:
     void loadPixmapSkinName(QDataStream &stream, const int skin, const QString &contextDir);
     /// Reads and applies all skin paths from \a stream.
     void loadPixmapSkinNames(QDataStream &stream, SerializationContext &context);
-    void loadPriority(QDataStream &stream, const QVersionNumber &version);
     /// Reads and applies the element rotation from \a stream.
     void loadRotation(QDataStream &stream, const QVersionNumber &version);
     /// Reads and applies the keyboard trigger from \a stream.
@@ -485,7 +478,6 @@ private:
     ElementGroup m_elementGroup = ElementGroup::Unknown;
     ElementType m_elementType = ElementType::Unknown;
     LogicElement *m_logic = nullptr;
-    quint64 m_priority = 0;
 
     // --- Members: Trigger & Label ---
 

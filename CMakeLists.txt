@@ -619,6 +619,7 @@ add_test(NAME TestLogicNode COMMAND test_wiredpanda TestLogicNode WORKING_DIRECT
 add_test(NAME TestMUXDEMUXComprehensive COMMAND test_wiredpanda TestMUXDEMUXComprehensive WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMemorySettlingTime COMMAND test_wiredpanda TestMemorySettlingTime WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMultiplexing COMMAND test_wiredpanda TestMultiplexing WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestPriorities COMMAND test_wiredpanda TestPriorities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRAMCell1Bit COMMAND test_wiredpanda TestRAMCell1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRecentFiles COMMAND test_wiredpanda TestRecentFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestScene COMMAND test_wiredpanda TestScene WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -718,7 +719,8 @@ foreach(TEST TestSerialization TestElementMapping TestSimulationBlocker TestDial
 endforeach()
 
 # Core Functionality Tests - Unit category
-foreach(TEST TestCommands TestCommon TestEnums TestRecentFiles TestSettings TestThemeManager)
+foreach(TEST TestCommands TestCommon TestEnums TestPriorities TestRecentFiles TestSettings
+        TestThemeManager)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
 
