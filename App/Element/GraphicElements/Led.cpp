@@ -6,8 +6,8 @@
 #include <bitset>
 
 #include "App/Element/ElementInfo.h"
+#include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
-#include "App/Versions.h"
 
 template<>
 struct ElementInfo<Led> {
@@ -183,13 +183,13 @@ void Led::load(QDataStream &stream, SerializationContext &context)
 {
     GraphicElement::load(stream, context);
 
-    if ((Versions::V_1_1 <= context.version) && (context.version < Versions::V_4_1)) {
+    if ((VersionInfo::hasClock(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
         // v1.1–4.0 stored color as a bare QString
         QString color_; stream >> color_;
         setColor(color_);
     }
 
-    if (context.version >= Versions::V_4_1) {
+    if (VersionInfo::hasQMapFormat(context.version)) {
         // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 

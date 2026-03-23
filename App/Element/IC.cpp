@@ -17,11 +17,11 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/Serialization.h"
+#include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
-#include "App/Versions.h"
 
 template<>
 struct ElementInfo<IC> {
@@ -92,7 +92,7 @@ void IC::load(QDataStream &stream, SerializationContext &context)
     GraphicElement::load(stream, context);
 
     // Old format (V_1_2 to V_4_1): IC file path was written as a plain QString
-    if ((Versions::V_1_2 <= context.version) && (context.version < Versions::V_4_1)) {
+    if ((VersionInfo::hasLabels(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
         stream >> m_file;
 
         // Old files may have stored absolute paths from the original machine; keep only the
@@ -109,7 +109,7 @@ void IC::load(QDataStream &stream, SerializationContext &context)
     }
 
     // New format (V_4_1+): IC data stored in a QMap for extensibility
-    if (context.version >= Versions::V_4_1) {
+    if (VersionInfo::hasQMapFormat(context.version)) {
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("fileName")) {

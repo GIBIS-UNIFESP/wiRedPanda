@@ -9,8 +9,8 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
+#include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEConnection.h"
-#include "App/Versions.h"
 
 void Serialization::writePandaHeader(QDataStream &stream)
 {
@@ -204,13 +204,13 @@ QString Serialization::loadDolphinFileName(QDataStream &stream, const QVersionNu
 {
     QString filename;
 
-    if (version >= Versions::V_3_0) {
+    if (VersionInfo::hasDolphinFilename(version)) {
         stream >> filename;
 
         // Versions 3.0–3.2 used the sentinel string "none" instead of an empty
         // QString to indicate that no waveform file was associated; normalize it here
         // so callers can simply check isEmpty()
-        if ((version < Versions::V_3_3) && (filename == "none")) {
+        if ((!VersionInfo::hasDolphinSentinelFix(version)) && (filename == "none")) {
             filename.clear();
         }
     }
@@ -225,7 +225,7 @@ QRectF Serialization::loadRect(QDataStream &stream, const QVersionNumber &versio
 
     // The stored rect is always discarded by the caller (WorkSpace recomputes it from
     // items after load), but it must still be read to advance the stream past this field
-    if (version >= Versions::V_1_4) {
+    if (VersionInfo::hasSceneRect(version)) {
         stream >> rect;
     }
 
