@@ -92,6 +92,9 @@ private:
     void autosave();
     void setAutosaveFileName();
 
+    /// Atomically sets m_fileInfo and the scene's contextDir from \a filePath.
+    void setCurrentFile(const QString &filePath);
+
     // --- Members ---
 
     GraphicsView m_view;
