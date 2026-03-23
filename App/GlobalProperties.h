@@ -11,8 +11,7 @@ public:
     // --- Runtime State ---
 
     inline static QString currentDir = {};
-    inline static bool verbose = true;
-    inline static bool testMode = false;
+    inline static bool interactiveMode = true;
 
     // --- Application Constants ---
 
