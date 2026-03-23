@@ -107,15 +107,22 @@ void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &
     // Elements must be written before connections because deserialization reads
     // elements first to build the port map, then resolves connection endpoints
     // using that map.  Reversing the order would cause every connection load to fail.
+    // Serialize all graphic elements (gates, inputs, outputs, ICs)
+    // Type tag written here at serialization layer for symmetry with deserialize()
     for (auto *item : items) {
         if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
-            stream << element;
+            stream << static_cast<int>(GraphicElement::Type);
+            stream << element->elementType();
+            element->save(stream);
         }
     }
 
+    // Serialize all connections (wires)
+    // Type tag written here at serialization layer for symmetry with deserialize()
     for (auto *item : items) {
         if (auto *connection = qgraphicsitem_cast<QNEConnection *>(item)) {
-            stream << connection;
+            stream << static_cast<int>(QNEConnection::Type);
+            connection->save(stream);
         }
     }
 }
