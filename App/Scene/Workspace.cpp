@@ -71,7 +71,7 @@ void WorkSpace::save(const QString &fileName)
 
     qCDebug(zero) << "FileName: " << fileName_;
     qCDebug(zero) << "Getting autosave settings info.";
-    QStringList autosaves = Settings::value("autosaveFile").toStringList();
+    QStringList autosaves = Settings::autosaveFiles();
     qCDebug(zero) << "All auto save file names before save: " << autosaves;
 
     QString autosaveFileName;
@@ -141,14 +141,14 @@ void WorkSpace::save(const QString &fileName)
     if (!autosaveFileName.isEmpty()) {
         qCDebug(zero) << "Remove from autosave list recovered file that has been saved.";
         autosaves.removeAll(autosaveFileName);
-        Settings::setValue("autosaveFile", autosaves);
+        Settings::setAutosaveFiles(autosaves);
         qCDebug(zero) << "All auto save file names after removing recovered: " << autosaves;
     }
 
     if (m_autosaveFile.exists()) {
         qCDebug(zero) << "Remove autosave from settings and delete it.";
         autosaves.removeAll(m_autosaveFile.fileName());
-        Settings::setValue("autosaveFile", autosaves);
+        Settings::setAutosaveFiles(autosaves);
         m_autosaveFile.remove();
         qCDebug(zero) << "All auto save file names after removing autosave: " << autosaves;
     }
@@ -286,7 +286,7 @@ void WorkSpace::setLastId(int newLastId)
 void WorkSpace::autosave()
 {
     qCDebug(two) << "Starting autosave.";
-    QStringList autosaves = Settings::value("autosaveFile").toStringList();
+    QStringList autosaves = Settings::autosaveFiles();
     qCDebug(three) << "All auto save file names before autosaving: " << autosaves;
 
     qCDebug(zero) << "Checking if autosave file exists and if it contains current project file. If so, remove autosave file from it.";
@@ -296,7 +296,7 @@ void WorkSpace::autosave()
     if (!m_autosaveFile.fileName().isEmpty() && autosaves.contains(m_autosaveFile.fileName())) {
         qCDebug(three) << "Removing current autosave file name.";
         autosaves.removeAll(m_autosaveFile.fileName());
-        Settings::setValue("autosaveFile", autosaves);
+        Settings::setAutosaveFiles(autosaves);
     }
 
     qCDebug(zero) << "All auto save file names after possibly removing autosave: " << autosaves;
@@ -362,7 +362,7 @@ void WorkSpace::autosave()
     GlobalProperties::currentDir = savedCurrentDir;
 
     autosaves.append(autosaveFileName);
-    Settings::setValue("autosaveFile", autosaves);
+    Settings::setAutosaveFiles(autosaves);
 
     qCDebug(three) << "All auto save file names after adding autosave: " << autosaves;
 

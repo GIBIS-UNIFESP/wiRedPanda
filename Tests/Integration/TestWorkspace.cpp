@@ -71,7 +71,7 @@ void TestWorkspace::testAutosaveTriggersOnCircuitChange()
     QVERIFY2(undoStack->isClean(), "Undo stack should be in clean state");
 
     // Get initial autosave list
-    QStringList autosavesBefore = Settings::value("autosaveFile").toStringList();
+    QStringList autosavesBefore = Settings::autosaveFiles();
 
     // Trigger circuit change via command to make undo stack dirty
     QUndoCommand *addCommand = new QUndoCommand("Add element");
@@ -82,7 +82,7 @@ void TestWorkspace::testAutosaveTriggersOnCircuitChange()
     QVERIFY2(!undoStack->isClean(), "Undo stack should be dirty after circuit change");
 
     // When circuit changes, autosave should be triggered
-    QStringList autosavesAfter = Settings::value("autosaveFile").toStringList();
+    QStringList autosavesAfter = Settings::autosaveFiles();
     // After making undo stack dirty, autosaves should be recorded or list should be valid
     QVERIFY2(autosavesAfter.count() >= autosavesBefore.count(),
              "Autosave should be triggered when circuit changes");
@@ -117,13 +117,13 @@ void TestWorkspace::testAutosaveUpdatesSettings()
     GlobalProperties::currentDir = tempDir.path();
 
     // Clear settings before test to ensure clean state
-    Settings::remove("autosaveFile");
+    Settings::setAutosaveFiles({});
 
     WorkSpace workspace;
     Scene *scene = workspace.scene();
 
     // Get initial autosave list
-    QStringList autosaveBefore = Settings::value("autosaveFile").toStringList();
+    QStringList autosaveBefore = Settings::autosaveFiles();
 
     // Add element to trigger autosave via undo stack
     QList<QGraphicsItem *> items;
@@ -137,7 +137,7 @@ void TestWorkspace::testAutosaveUpdatesSettings()
     QTest::qWait(100);
 
     // Verify autosave was recorded in settings
-    QStringList autosaveAfter = Settings::value("autosaveFile").toStringList();
+    QStringList autosaveAfter = Settings::autosaveFiles();
     QVERIFY2(autosaveAfter.count() > autosaveBefore.count(),
             "Adding element should trigger autosave and update settings");
 }
@@ -154,7 +154,7 @@ void TestWorkspace::testAutosaveAfterElementAdd()
     auto *undoStack = scene->undoStack();
 
     // Clear autosave settings before test
-    Settings::remove("autosaveFile");
+    Settings::setAutosaveFiles({});
 
     // Add an element to make the circuit dirty and trigger autosave
     QList<QGraphicsItem *> items;
@@ -169,7 +169,7 @@ void TestWorkspace::testAutosaveAfterElementAdd()
     QTest::qWait(100);
 
     // After autosave should have been triggered, Settings should have autosave entry
-    QStringList autosaves = Settings::value("autosaveFile").toStringList();
+    QStringList autosaves = Settings::autosaveFiles();
     QVERIFY2(autosaves.count() > 0, "Adding an element should trigger autosave and update settings");
 }
 
@@ -222,7 +222,7 @@ void TestWorkspace::testAutosaveSignalEmitted()
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
     GlobalProperties::currentDir = tempDir.path();
-    Settings::remove("autosaveFile");
+    Settings::setAutosaveFiles({});
 
     WorkSpace workspace;
     Scene *scene = workspace.scene();
@@ -253,7 +253,7 @@ void TestWorkspace::testMultipleAutosavesUpdateSettings()
     GlobalProperties::currentDir = tempDir.path();
 
     // Clear settings before test
-    Settings::remove("autosaveFile");
+    Settings::setAutosaveFiles({});
 
     // Create first workspace and trigger autosave with actual element
     {
@@ -268,7 +268,7 @@ void TestWorkspace::testMultipleAutosavesUpdateSettings()
         QTest::qWait(50);
     }
 
-    QStringList autosavedAfterFirst = Settings::value("autosaveFile").toStringList();
+    QStringList autosavedAfterFirst = Settings::autosaveFiles();
     // After first workspace with element, autosaves should be recorded
     QVERIFY2(autosavedAfterFirst.count() > 0,
             "Settings should record autosave files after circuit changes");
@@ -287,7 +287,7 @@ void TestWorkspace::testMultipleAutosavesUpdateSettings()
     }
 
     // Verify Settings tracks multiple autosaves - should have increased after second workspace
-    QStringList autosaves = Settings::value("autosaveFile").toStringList();
+    QStringList autosaves = Settings::autosaveFiles();
     // Settings should have recorded autosaves (at least one)
     QVERIFY2(autosaves.count() > 0,
             "Settings should record at least one autosave file");
@@ -307,7 +307,7 @@ void TestWorkspace::testAutosaveFileCreatedInAppData()
     undoStack->push(new QUndoCommand("Add element"));
 
     // Get the autosave files list from Settings
-    QStringList autosaves = Settings::value("autosaveFile").toStringList();
+    QStringList autosaves = Settings::autosaveFiles();
 
     // For new (unsaved) project, autosave should be in AppData/autosaves directory
     // Verify each autosave contains expected path pattern (if any were created)
@@ -334,7 +334,7 @@ void TestWorkspace::testAutosaveFileNameFormatNewProject()
     undoStack->push(new QUndoCommand("Add element"));
 
     // Get autosave files
-    QStringList autosaves = Settings::value("autosaveFile").toStringList();
+    QStringList autosaves = Settings::autosaveFiles();
 
     // For new projects, autosave filename should follow .XXXXXX.panda pattern (if any were created)
     for (const QString &autosave : std::as_const(autosaves)) {
@@ -409,7 +409,7 @@ void TestWorkspace::testAutosaveFileRandomSuffixGeneration()
     // Verify that different workspaces create autosave files with different random suffixes
     // This prevents collisions when multiple projects are unsaved
 
-    Settings::remove("autosaveFile");
+    Settings::setAutosaveFiles({});
 
     // Create first workspace with actual element
     QString autosave1;
@@ -430,7 +430,7 @@ void TestWorkspace::testAutosaveFileRandomSuffixGeneration()
         QCoreApplication::processEvents();
         QTest::qWait(100);
 
-        QStringList autosaves = Settings::value("autosaveFile").toStringList();
+        QStringList autosaves = Settings::autosaveFiles();
         QVERIFY2(!autosaves.isEmpty(), "First workspace should create autosave file in settings");
 
         autosave1 = autosaves.first();
@@ -464,7 +464,7 @@ void TestWorkspace::testAutosaveFileRandomSuffixGeneration()
         QCoreApplication::processEvents();
         QTest::qWait(100);
 
-        QStringList autosaves = Settings::value("autosaveFile").toStringList();
+        QStringList autosaves = Settings::autosaveFiles();
         QVERIFY2(autosaves.count() >= 1, "Second workspace should have autosave files");
 
         // Get the latest autosave (if multiple exist)
@@ -496,7 +496,7 @@ void TestWorkspace::testAutosavePathCreatedIfNotExists()
 {
     // Verify that autosave directory and files are created when circuit is modified
 
-    Settings::remove("autosaveFile");
+    Settings::setAutosaveFiles({});
 
     // Create and modify workspace to trigger autosave
     {
@@ -517,7 +517,7 @@ void TestWorkspace::testAutosavePathCreatedIfNotExists()
         QTest::qWait(100);
 
         // Verify autosave was triggered (check BEFORE workspace destruction)
-        QStringList autosaves = Settings::value("autosaveFile").toStringList();
+        QStringList autosaves = Settings::autosaveFiles();
         QVERIFY2(!autosaves.isEmpty(), "Modification should trigger autosave");
 
         QString autosaveFile = autosaves.first();
@@ -541,7 +541,7 @@ void TestWorkspace::testAutosavePathCreatedIfNotExists()
 void TestWorkspace::testAutosaveFileExtensionCorrect()
 {
     // Verify that all autosave files use the correct .panda extension
-    Settings::remove("autosaveFile");
+    Settings::setAutosaveFiles({});
 
     // Create workspace and trigger autosave with actual modification
     {
@@ -562,7 +562,7 @@ void TestWorkspace::testAutosaveFileExtensionCorrect()
         QTest::qWait(100);
 
         // Verify autosave was triggered (check BEFORE workspace destruction)
-        QStringList autosaves = Settings::value("autosaveFile").toStringList();
+        QStringList autosaves = Settings::autosaveFiles();
         QVERIFY2(!autosaves.isEmpty(), "Autosave should be triggered by element addition");
 
         // Verify ALL autosave files have correct extension and valid content
@@ -637,7 +637,7 @@ void TestWorkspace::testAutosaveInAppDataForNewProject()
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
     GlobalProperties::currentDir = tempDir.path();
-    Settings::remove("autosaveFile");
+    Settings::setAutosaveFiles({});
 
     WorkSpace workspace;
     Scene *scene = workspace.scene();
@@ -655,7 +655,7 @@ void TestWorkspace::testAutosaveInAppDataForNewProject()
 
     // For new (unsaved) project, autosave should be in AppData/autosaves or similar location
     // The path should NOT be in the currentDir for a new project
-    QStringList autosaves = Settings::value("autosaveFile").toStringList();
+    QStringList autosaves = Settings::autosaveFiles();
     QVERIFY2(!autosaves.isEmpty(), "New project should create autosave file");
 
     // Verify autosave file exists (wait for async writes)
@@ -676,7 +676,7 @@ void TestWorkspace::testAutosaveFileTemplatePattern()
     workspace.scene()->undoStack()->push(new QUndoCommand("Add element"));
 
     // Check autosave pattern
-    QStringList autosaves = Settings::value("autosaveFile").toStringList();
+    QStringList autosaves = Settings::autosaveFiles();
 
     for (const QString &autosave : std::as_const(autosaves)) {
         // All entries should be non-empty
@@ -699,14 +699,14 @@ void TestWorkspace::testMultipleAutosaveFilesNonConflicting()
 
     GlobalProperties::currentDir = tempDir.path();
 
-    Settings::remove("autosaveFile");
+    Settings::setAutosaveFiles({});
 
     QString autosave1;
     {
         WorkSpace ws1;
         ws1.scene()->undoStack()->push(new QUndoCommand("Add element 1"));
 
-        QStringList autosaves = Settings::value("autosaveFile").toStringList();
+        QStringList autosaves = Settings::autosaveFiles();
         if (!autosaves.isEmpty()) {
             autosave1 = autosaves.first();
         }
@@ -717,7 +717,7 @@ void TestWorkspace::testMultipleAutosaveFilesNonConflicting()
         WorkSpace ws2;
         ws2.scene()->undoStack()->push(new QUndoCommand("Add element 2"));
 
-        QStringList autosaves = Settings::value("autosaveFile").toStringList();
+        QStringList autosaves = Settings::autosaveFiles();
         if (!autosaves.isEmpty()) {
             autosave2 = (autosaves.count() >= 2) ? autosaves.last() : autosaves.first();
         }
@@ -736,7 +736,7 @@ void TestWorkspace::testAutosaveFilePermissions()
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
     GlobalProperties::currentDir = tempDir.path();
-    Settings::remove("autosaveFile");
+    Settings::setAutosaveFiles({});
 
     WorkSpace workspace;
     Scene *scene = workspace.scene();
@@ -753,7 +753,7 @@ void TestWorkspace::testAutosaveFilePermissions()
     QTest::qWait(100);
 
     // Check autosave file permissions
-    QStringList autosaves = Settings::value("autosaveFile").toStringList();
+    QStringList autosaves = Settings::autosaveFiles();
     QVERIFY2(!autosaves.isEmpty(), "Workspace should create autosave file");
 
     QString autosavePath = autosaves.first();
@@ -817,7 +817,7 @@ void TestWorkspace::testAutosaveRemovedFromSettingsOnSave()
     scene->addItem(led);
 
     // Get initial autosave list
-    QStringList autosavesBefore = Settings::value("autosaveFile").toStringList();
+    QStringList autosavesBefore = Settings::autosaveFiles();
     int countBefore = static_cast<int>(autosavesBefore.count());
 
     try {
@@ -825,7 +825,7 @@ void TestWorkspace::testAutosaveRemovedFromSettingsOnSave()
         workspace.save(saveFile);
 
         // Get autosave list after save
-        QStringList autosavesAfter = Settings::value("autosaveFile").toStringList();
+        QStringList autosavesAfter = Settings::autosaveFiles();
 
         // Autosave count should be same or less after explicit save
         QVERIFY2(autosavesAfter.count() <= countBefore, "Autosave count should not increase when autosave is disabled");
@@ -840,7 +840,7 @@ void TestWorkspace::testRecoveredFileRemovedFromSettings()
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
     GlobalProperties::currentDir = tempDir.path();
-    Settings::remove("autosaveFile");
+    Settings::setAutosaveFiles({});
 
     QString recoveryFile = tempDir.filePath("recovery.panda");
 
@@ -940,7 +940,7 @@ void TestWorkspace::testAutosaveListCorrectAfterCleanup()
         workspace.save(saveFile);
 
         // Verify autosave settings list is correct
-        QStringList autosaves = Settings::value("autosaveFile").toStringList();
+        QStringList autosaves = Settings::autosaveFiles();
         // Should not contain the saved file
         QVERIFY2(!autosaves.contains(saveFile), "Deleted autosave file should be removed from list");
     } catch (const Pandaception &) {
@@ -985,7 +985,7 @@ void TestWorkspace::testAutosaveCleanupWithEmptySettings()
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
     GlobalProperties::currentDir = tempDir.path();
-    Settings::remove("autosaveFile");
+    Settings::setAutosaveFiles({});
 
     QString saveFile = tempDir.filePath("test.panda");
 
@@ -1002,7 +1002,7 @@ void TestWorkspace::testAutosaveCleanupWithEmptySettings()
     QCoreApplication::processEvents();
     QTest::qWait(50);
 
-    QStringList autosavesBefore = Settings::value("autosaveFile").toStringList();
+    QStringList autosavesBefore = Settings::autosaveFiles();
 
     try {
         // Save explicitly to proper file
@@ -1010,7 +1010,7 @@ void TestWorkspace::testAutosaveCleanupWithEmptySettings()
 
         // After explicit save, autosaves should be cleaned/managed
         // The saved file should now be the current file (not autosave)
-        QStringList autosavesAfter = Settings::value("autosaveFile").toStringList();
+        QStringList autosavesAfter = Settings::autosaveFiles();
         // After explicit save, autosaves should be cleared
         QVERIFY2(autosavesAfter.count() <= autosavesBefore.count(),
                 "Autosave files should be cleaned after explicit save");
