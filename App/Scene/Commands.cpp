@@ -223,6 +223,30 @@ void deleteItems(Scene *scene, const QList<QGraphicsItem *> &items)
     }
 }
 
+void drainPortConnections(GraphicElement *elm, int fromPort, int toPort,
+                          bool isInput, QDataStream &stream, Scene *scene)
+{
+    int connCount = 0;
+    for (int port = fromPort; port < toPort; ++port) {
+        QNEPort *p = isInput ? static_cast<QNEPort *>(elm->inputPort(port)) : static_cast<QNEPort *>(elm->outputPort(port));
+        connCount += static_cast<int>(p->connections().size());
+    }
+    stream << connCount;
+
+    for (int port = fromPort; port < toPort; ++port) {
+        QNEPort *p = isInput ? static_cast<QNEPort *>(elm->inputPort(port)) : static_cast<QNEPort *>(elm->outputPort(port));
+        while (!p->connections().isEmpty()) {
+            auto *conn = p->connections().constFirst();
+            stream << conn->id();
+            conn->save(stream);
+            conn->setStartPort(nullptr);
+            conn->setEndPort(nullptr);
+            scene->removeItem(conn);
+            delete conn;
+        }
+    }
+}
+
 }  // namespace CommandUtils
 
 AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &items, Scene *scene, QUndoCommand *parent)
@@ -873,25 +897,7 @@ void ChangeInputSizeCommand::redo()
     }
 
     for (auto *elm : elements) {
-        // Count connections first, write count before connection data
-        int connCount = 0;
-        for (int port = m_newInputSize; port < elm->inputSize(); ++port) {
-            connCount += static_cast<int>(elm->inputPort(port)->connections().size());
-        }
-        stream << connCount;
-
-        for (int port = m_newInputSize; port < elm->inputSize(); ++port) {
-            while (!elm->inputPort(port)->connections().isEmpty()) {
-                auto *conn = elm->inputPort(port)->connections().constFirst();
-                stream << conn->id();
-                conn->save(stream);
-                conn->setStartPort(nullptr);
-                conn->setEndPort(nullptr);
-                m_scene->removeItem(conn);
-                delete conn;
-            }
-        }
-
+        CommandUtils::drainPortConnections(elm, m_newInputSize, elm->inputSize(), true, stream, m_scene);
         elm->setInputSize(m_newInputSize);
     }
 
@@ -979,25 +985,7 @@ void ChangeOutputSizeCommand::redo()
     }
 
     for (auto *elm : elements) {
-        // Count connections first, write count before connection data
-        int connCount = 0;
-        for (int port = m_newOutputSize; port < elm->outputSize(); ++port) {
-            connCount += static_cast<int>(elm->outputPort(port)->connections().size());
-        }
-        stream << connCount;
-
-        for (int port = m_newOutputSize; port < elm->outputSize(); ++port) {
-            while (!elm->outputPort(port)->connections().isEmpty()) {
-                auto *conn = elm->outputPort(port)->connections().constFirst();
-                stream << conn->id();
-                conn->save(stream);
-                conn->setStartPort(nullptr);
-                conn->setEndPort(nullptr);
-                m_scene->removeItem(conn);
-                delete conn;
-            }
-        }
-
+        CommandUtils::drainPortConnections(elm, m_newOutputSize, elm->outputSize(), false, stream, m_scene);
         elm->setOutputSize(m_newOutputSize);
         elm->setSelected(true);
     }

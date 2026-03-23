@@ -30,6 +30,10 @@ namespace CommandUtils {
     void addItems(Scene *scene, const QList<QGraphicsItem *> &items);
     void deleteItems(Scene *scene, const QList<QGraphicsItem *> &items);
 
+    /// Saves and deletes connections on ports in range [fromPort, toPort).
+    void drainPortConnections(GraphicElement *elm, int fromPort, int toPort,
+                              bool isInput, QDataStream &stream, Scene *scene);
+
     // ID management
     void storeIds(const QList<QGraphicsItem *> &items, QList<int> &ids);
     void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &ids, QList<int> &otherIds);
