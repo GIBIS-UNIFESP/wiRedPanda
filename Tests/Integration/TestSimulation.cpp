@@ -626,10 +626,9 @@ void TestSimulation::testElementMappingStability()
         // Store structural properties to verify consistent ordering
         QVector<QPair<int, int>> elementProperties;
         for (const auto &logicPtr : logicElements) {
-            // Store priority and output size as stable comparison
-            int priority = logicPtr->priority();
+            // Store output size as stable comparison (priority moved to ElementMapping)
             int outputSize = logicPtr->outputSize();
-            elementProperties.append(QPair<int, int>(priority, outputSize));
+            elementProperties.append(QPair<int, int>(0, outputSize));
         }
 
         mappingResults.append(elementProperties);

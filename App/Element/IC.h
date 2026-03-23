@@ -56,7 +56,8 @@ public:
      * \return Vector of shared_ptr LogicElements representing the IC's internals.
      */
     /// \reimp
-    QVector<std::shared_ptr<LogicElement>> getLogicElementsForMapping() override;
+    QVector<std::shared_ptr<LogicElement>> createLogicElements() override;
+    void bindPorts() override;
 
     // --- Logic access ---
 

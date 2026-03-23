@@ -9,7 +9,7 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicOutput.h"
+#include "App/Element/LogicElements/LogicSink.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Versions.h"
@@ -38,7 +38,7 @@ struct ElementInfo<AudioBox> {
             ":/Components/Output/AudioBox/audioboxOff.svg",
             ":/Components/Output/AudioBox/audioboxOn.svg",
         });
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicOutput>(elm->inputSize()); };
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicSink>(elm->inputSize()); };
         return meta;
     }
 

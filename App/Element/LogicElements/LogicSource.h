@@ -10,27 +10,27 @@
 #include "App/Element/LogicElement.h"
 
 /**
- * \class LogicInput
+ * \class LogicSource
  * \brief Logic element that drives one or more constant or controlled output values.
  *
  * \details Used for static drivers (VCC = true, GND = false) as well as
  * user-controlled switches and buttons.  The associated GraphicElementInput
  * calls setOutputValue() directly to push state changes into the simulation.
  */
-class LogicInput : public LogicElement
+class LogicSource : public LogicElement
 {
 public:
     /**
-     * \brief Constructs a LogicInput with a fixed \a defaultValue on all outputs.
+     * \brief Constructs a LogicSource with a fixed \a defaultValue on all outputs.
      * \param defaultValue Initial output value (true = logic-1, false = logic-0).
      * \param nOutputs     Number of output ports (default 1).
      */
-    explicit LogicInput(const bool defaultValue = false, const int nOutputs = 1);
+    explicit LogicSource(const bool defaultValue = false, const int nOutputs = 1);
 
     /// No-op: input values are driven externally via setOutputValue().
     void updateLogic() override;
 
 private:
-    Q_DISABLE_COPY(LogicInput)
+    Q_DISABLE_COPY(LogicSource)
 };
 

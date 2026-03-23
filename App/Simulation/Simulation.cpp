@@ -136,6 +136,11 @@ void Simulation::restart()
     m_initialized = false;
 }
 
+bool Simulation::isInFeedbackLoop(const LogicElement *logic) const
+{
+    return m_elmMapping && m_elmMapping->isInFeedbackLoop(logic);
+}
+
 bool Simulation::isRunning()
 {
     return m_timer.isActive();
@@ -336,9 +341,7 @@ bool Simulation::initialize()
 
     // Cache feedback flag and pre-allocate previousOutputs for iterative settling
     const auto &logicElms = m_elmMapping->logicElms();
-    m_hasFeedbackElements = std::any_of(logicElms.begin(), logicElms.end(), [](const auto &logic) {
-        return logic && logic->inFeedbackLoop();
-    });
+    m_hasFeedbackElements = m_elmMapping->hasFeedbackElements();
 
     m_previousOutputs.resize(logicElms.size());
     for (int i = 0; i < logicElms.size(); ++i) {

@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QVector>
 
-class LogicInput;
+class LogicSource;
 
 class TestLogicNode : public QObject
 {
@@ -19,6 +19,6 @@ private slots:
     void testLogicNodeFanOut();
 
 private:
-    QVector<LogicInput *> m_inputs{8};
+    QVector<LogicSource *> m_inputs{8};
 };
 
