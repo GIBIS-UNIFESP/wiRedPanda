@@ -88,12 +88,11 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVer
     if ((Versions::V_1_2 <= version) && (version < Versions::V_4_1)) {
         stream >> m_file;
 
-        // For tests with old files containing absolute paths, strip to filename only.
+        // Old files may have stored absolute paths from the original machine; keep only the
+        // filename so we can resolve it relative to the current context directory.
         // Normalize backslashes first — QFileInfo::fileName() doesn't treat '\' as a
         // separator on Unix, so a Windows path like "C:\...\sub.panda" would be kept as-is.
-        if (GlobalProperties::testMode) {
-            m_file = QFileInfo(QString(m_file).replace('\\', '/')).fileName();
-        }
+        m_file = QFileInfo(QString(m_file).replace('\\', '/')).fileName();
 
         if (IC::needToCopyFiles) {
             copyFile();
