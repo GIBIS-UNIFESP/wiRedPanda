@@ -417,12 +417,6 @@ void MainWindow::show()
 {
     QMainWindow::show();
 
-    // Recovery is deferred to show() so that the window is fully visible
-    // before any blocking message boxes are presented to the user.
-    if (!Settings::hideV4Warning()) {
-        aboutThisVersion();
-    }
-
     qCDebug(zero) << "Checking for autosave file recovery.";
     loadAutosaveFiles();
 
@@ -430,39 +424,24 @@ void MainWindow::show()
 
 void MainWindow::aboutThisVersion()
 {
-    qCDebug(zero) << "'hideV4Warning' message box.";
-
-    auto *checkBox = new QCheckBox(tr("Don't show this again."));
-
     QMessageBox msgBox;
     msgBox.setParent(this);
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setIcon(QMessageBox::Icon::Information);
     msgBox.setWindowTitle("wiRedPanda " APP_VERSION);
     msgBox.setText(
-        tr("wiRedPanda version >= 4.0 is not 100% compatible with previous versions.\n"
-           "To open old version projects containing ICs (or boxes), skins, and/or "
-           "beWavedDolphin simulations, their files must be moved to the same directory "
-           "as the main project file.\n"
+        tr("wiRedPanda %1\n\n"
+           "This version includes automatic migration of older project files.\n"
+           "When you open a project file older than the current version, it will be automatically "
+           "upgraded to the current format and a versioned backup will be created.\n\n"
+           "To open projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, "
+           "their files must be in the same directory as the main project file.\n"
            "wiRedPanda %1 will automatically list all other .panda files located "
            "in the same directory of the current project as ICs in the editor tab.\n"
            "You have to save new projects before accessing ICs and skins, or running "
            "beWavedDolphin simulations.").arg(APP_VERSION));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Ok);
-    msgBox.setCheckBox(checkBox);
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 7, 0)
-    connect(checkBox, &QCheckBox::stateChanged, this, [](int state) {
-#else
-    connect(checkBox, &QCheckBox::checkStateChanged, this, [](int state) {
-#endif
-        if (static_cast<Qt::CheckState>(state) == Qt::CheckState::Checked) {
-            Settings::setHideV4Warning(true);
-        } else {
-            Settings::setHideV4Warning(false);
-        }
-    });
 
     msgBox.exec();
 }

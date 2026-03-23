@@ -23,7 +23,8 @@ void setupTestEnvironment()
     qputenv("QT_IM_MODULES", "none");
 #endif
     Comment::setVerbosity(-1);
-    Application::interactiveMode = false;  // Suppress dialogs during headless test execution
+    Application::interactiveMode = false;   // Suppress UI dialogs in tests
+    Application::migrationEnabled = false;  // Preserve backward-compatibility test files as-is
 }
 
 void configureApp()

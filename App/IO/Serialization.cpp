@@ -4,7 +4,10 @@
 #include "App/IO/Serialization.h"
 
 #include <QApplication>
+#include <QFile>
+#include <QFileInfo>
 #include <QIODevice>
+#include <QScopeGuard>
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
@@ -104,6 +107,46 @@ void Serialization::readDolphinHeader(QDataStream &stream)
 
 void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &stream)
 {
+    // Port serial IDs are computed as (elementId << 16) | portIndex by both
+    // GraphicElement::save() and QNEConnection::save(). Elements with id=-1
+    // (the unassigned sentinel) would all produce the same keys, causing portMap
+    // collisions on the next load and destroying connection topology.
+    //
+    // Only elements with id <= 0 need a temporary replacement ID. Elements that
+    // already have a valid positive scene ID must keep it: callers such as
+    // CommandUtils::saveItems() write "other" elements into the same stream
+    // before calling serialize(), and reassigning those already-used IDs to
+    // items in this list creates portMap key collisions on load.
+    //
+    // Temp IDs start above the highest positive ID already present in items so
+    // they cannot collide with any valid ID in the list.
+    QList<QPair<GraphicElement *, int>> savedIds;
+    int localId = 0;
+    for (auto *item : items) {
+        if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
+            if (ge->id() > localId) {
+                localId = ge->id();
+            }
+        }
+    }
+    for (auto *item : items) {
+        if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
+            if (ge->id() <= 0) {
+                savedIds.append({ge, ge->id()});
+                ge->setId(++localId);
+            }
+        }
+    }
+
+    // Restore original IDs on scope exit, even if an exception escapes below.
+    // Without this guard, a thrown exception would leave elements with sequential
+    // IDs instead of their original values, causing ID collisions on scene insertion.
+    auto restoreIds = qScopeGuard([&savedIds] {
+        for (const auto &[ge, id] : savedIds) {
+            ge->setId(id);
+        }
+    });
+
     // Elements must be written before connections because deserialization reads
     // elements first to build the port map, then resolves connection endpoints
     // using that map.  Reversing the order would cause every connection load to fail.
@@ -230,6 +273,23 @@ QRectF Serialization::loadRect(QDataStream &stream, const QVersionNumber &versio
     }
 
     return rect;
+}
+
+void Serialization::createVersionedBackup(const QString &fileName, const QVersionNumber &version)
+{
+    QFileInfo info(fileName);
+    const QString backupName = info.absolutePath() + "/"
+        + info.completeBaseName()
+        + ".v" + version.toString()
+        + "." + info.suffix();
+
+    if (!QFile::exists(backupName)) {
+        if (QFile::copy(fileName, backupName)) {
+            qCDebug(three) << "Created versioned backup: " << backupName;
+        } else {
+            throw PANDACEPTION("Failed to create versioned backup: %1", backupName);
+        }
+    }
 }
 
 Serialization::Preamble Serialization::readPreamble(QDataStream &stream)
