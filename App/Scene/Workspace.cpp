@@ -10,11 +10,11 @@
 #include <QStandardPaths>
 #include <QTemporaryFile>
 
+#include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Settings.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Nodes/QNEPort.h"
@@ -203,7 +203,7 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
     qCDebug(zero) << "Stopped simulation.";
     qCDebug(zero) << "Version: " << version;
 
-    if (GlobalProperties::interactiveMode) {
+    if (Application::interactiveMode) {
         if (version > AppVersion::current) {
             const QString progVersion = AppVersion::current.toString();
             const QString fileVersion = version.toString();

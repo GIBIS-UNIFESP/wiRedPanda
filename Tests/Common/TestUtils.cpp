@@ -5,11 +5,11 @@
 
 #include <QTest>
 
+#include "App/Core/Application.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/LogicElement.h"
 #include "App/Element/LogicElements/LogicInput.h"
-#include "App/GlobalProperties.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Simulation/Simulation.h"
@@ -22,7 +22,7 @@ void setupTestEnvironment()
     qputenv("QT_QPA_PLATFORM", "offscreen");
 #endif
     Comment::setVerbosity(-1);
-    GlobalProperties::interactiveMode = false;  // Suppress dialogs during headless test execution
+    Application::interactiveMode = false;  // Suppress dialogs during headless test execution
 }
 
 void configureApp()
