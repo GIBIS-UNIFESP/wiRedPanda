@@ -101,10 +101,9 @@ void IC::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVer
     if ((Versions::V_1_2 <= version) && (version < Versions::V_4_1)) {
         stream >> m_file;
 
-        // For tests with old files containing absolute paths, strip to filename only
-        if (GlobalProperties::testMode) {
-            m_file = QFileInfo(m_file).fileName();
-        }
+        // Old files may have stored absolute paths from the original machine; keep only the
+        // filename so we can resolve it relative to the current context directory
+        m_file = QFileInfo(m_file).fileName();
 
         if (IC::needToCopyFiles) {
             copyFile();
