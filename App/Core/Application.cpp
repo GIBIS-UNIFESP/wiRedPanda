@@ -6,7 +6,6 @@
 #include <QMessageBox>
 
 #include "App/Core/Common.h"
-#include "App/GlobalProperties.h"
 
 #ifdef HAVE_SENTRY
 #include "thirdparty/sentry/include/sentry.h"
@@ -32,7 +31,7 @@ bool Application::notify(QObject *receiver, QEvent *event)
     try {
         done = QApplication::notify(receiver, event);
     } catch (const std::exception &e) {
-        if (GlobalProperties::interactiveMode) {
+        if (Application::interactiveMode) {
             QMessageBox::critical(mainWindow(), tr("Error!"), e.what());
         }
 #ifdef HAVE_SENTRY
