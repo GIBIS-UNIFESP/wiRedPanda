@@ -10,6 +10,7 @@
 #include <QTest>
 
 #include "App/Element/GraphicElements/Led.h"
+#include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -430,6 +431,7 @@ void TestLED::testLoadColorNewVersion()
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
     SerializationContext context{portMap, QVersionNumber(4, 1), {}};
+
     led2->load(loadStream, context);
 
     // Color should be loaded correctly
