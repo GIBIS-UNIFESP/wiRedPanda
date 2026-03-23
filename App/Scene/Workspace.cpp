@@ -14,7 +14,6 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Settings.h"
-#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -43,9 +42,7 @@ WorkSpace::WorkSpace(QWidget *parent)
 
     setAutosaveFileName();
 
-    // Ensure the global element-ID counter starts at least at the workspace's last known ID
-    // so that a new WorkSpace in the same process session doesn't reuse existing IDs
-    ElementFactory::setLastId(m_lastId);
+    m_scene.setLastId(m_lastId);
 }
 
 Scene *WorkSpace::scene()
@@ -237,15 +234,9 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
 
     for (auto *item : items) {
         m_scene.addItem(item);
-
-        // Track the highest element ID seen so that newly created elements
-        // will receive IDs that don't collide with those just loaded
-        if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
-            m_lastId = qMax(m_lastId, ge->id());
-        }
     }
 
-    ElementFactory::setLastId(m_lastId);
+    m_scene.setLastId(m_lastId);
 
     m_scene.setSceneRect(m_scene.itemsBoundingRect());
 

@@ -15,6 +15,7 @@
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
+#include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestSceneUndoredo::initTestCase()
@@ -156,7 +157,7 @@ void TestSceneUndoredo::testDeleteElementAndUndo()
     // Undo → element restored
     scene.undoStack()->undo();
     QCOMPARE(scene.elements().size(), 1);
-    QVERIFY(ElementFactory::itemById(elmId) != nullptr);
+    QVERIFY(scene.itemById(elmId) != nullptr);
 
     // Redo → element deleted again
     scene.undoStack()->redo();
@@ -212,11 +213,11 @@ void TestSceneUndoredo::testRotateSingleElement()
 
     scene.undoStack()->push(new RotateCommand({elm}, 90, &scene));
 
-    auto *after = dynamic_cast<GraphicElement *>(ElementFactory::itemById(elmId));
+    auto *after = dynamic_cast<GraphicElement *>(scene.itemById(elmId));
     QCOMPARE(after->rotation(), 90.0);
 
     scene.undoStack()->undo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(elmId))->rotation(), 0.0);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(elmId))->rotation(), 0.0);
 }
 
 void TestSceneUndoredo::testRotateUndoRedo()
@@ -228,13 +229,13 @@ void TestSceneUndoredo::testRotateUndoRedo()
     const int elmId = elm->id();
 
     scene.undoStack()->push(new RotateCommand({elm}, 90, &scene));
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(elmId))->rotation(), 90.0);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(elmId))->rotation(), 90.0);
 
     scene.undoStack()->undo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(elmId))->rotation(), 0.0);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(elmId))->rotation(), 0.0);
 
     scene.undoStack()->redo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(elmId))->rotation(), 90.0);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(elmId))->rotation(), 90.0);
 }
 
 void TestSceneUndoredo::testRotateAccumulates()
@@ -247,17 +248,17 @@ void TestSceneUndoredo::testRotateAccumulates()
 
     // Two 90° rotations = 180° total
     scene.undoStack()->push(new RotateCommand({elm}, 90, &scene));
-    elm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(elmId));
+    elm = dynamic_cast<GraphicElement *>(scene.itemById(elmId));
     scene.undoStack()->push(new RotateCommand({elm}, 90, &scene));
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(elmId))->rotation(), 180.0);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(elmId))->rotation(), 180.0);
 
     // Undo second → 90°
     scene.undoStack()->undo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(elmId))->rotation(), 90.0);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(elmId))->rotation(), 90.0);
 
     // Undo first → 0°
     scene.undoStack()->undo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(elmId))->rotation(), 0.0);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(elmId))->rotation(), 0.0);
 }
 
 // ─── MoveCommand ──────────────────────────────────────────────────────────
@@ -278,13 +279,13 @@ void TestSceneUndoredo::testMoveSingleElement()
 
     scene.undoStack()->push(new MoveCommand({elm}, {oldPos}, &scene));
 
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(elmId))->pos(), newPos);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(elmId))->pos(), newPos);
 
     scene.undoStack()->undo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(elmId))->pos(), oldPos);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(elmId))->pos(), oldPos);
 
     scene.undoStack()->redo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(elmId))->pos(), newPos);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(elmId))->pos(), newPos);
 }
 
 void TestSceneUndoredo::testMoveMultipleElements()
@@ -310,16 +311,16 @@ void TestSceneUndoredo::testMoveMultipleElements()
 
     scene.undoStack()->push(new MoveCommand({elm1, elm2}, {old1, old2}, &scene));
 
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1))->pos(), new1);
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2))->pos(), new2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id1))->pos(), new1);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id2))->pos(), new2);
 
     scene.undoStack()->undo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1))->pos(), old1);
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2))->pos(), old2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id1))->pos(), old1);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id2))->pos(), old2);
 
     scene.undoStack()->redo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1))->pos(), new1);
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2))->pos(), new2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id1))->pos(), new1);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id2))->pos(), new2);
 }
 
 // ─── FlipCommand ──────────────────────────────────────────────────────────
@@ -344,18 +345,18 @@ void TestSceneUndoredo::testFlipHorizontalUndoRedo()
     // elm1 → x1+(x2-x1) = x2; elm2 → x1+(x2-x2) = x1
     scene.undoStack()->push(new FlipCommand({elm1, elm2}, 0, &scene));
 
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1))->pos().x(), x2);
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2))->pos().x(), x1);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id1))->pos().x(), x2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id2))->pos().x(), x1);
 
     // undo() calls redo() — flip is involution for positions
     scene.undoStack()->undo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1))->pos().x(), x1);
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2))->pos().x(), x2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id1))->pos().x(), x1);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id2))->pos().x(), x2);
 
     // redo() → flip again
     scene.undoStack()->redo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1))->pos().x(), x2);
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2))->pos().x(), x1);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id1))->pos().x(), x2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id2))->pos().x(), x1);
 }
 
 void TestSceneUndoredo::testFlipVerticalUndoRedo()
@@ -377,13 +378,13 @@ void TestSceneUndoredo::testFlipVerticalUndoRedo()
     // Vertical flip (axis=1): minY=y1, maxY=y2
     scene.undoStack()->push(new FlipCommand({elm1, elm2}, 1, &scene));
 
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1))->pos().y(), y2);
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2))->pos().y(), y1);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id1))->pos().y(), y2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id2))->pos().y(), y1);
 
     // undo() calls redo() — flip back
     scene.undoStack()->undo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1))->pos().y(), y1);
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2))->pos().y(), y2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id1))->pos().y(), y1);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id2))->pos().y(), y2);
 }
 
 // ─── MorphCommand ─────────────────────────────────────────────────────────
@@ -396,24 +397,24 @@ void TestSceneUndoredo::testMorphTypeChange()
     scene.addItem(andGate);
     const int id = andGate->id();
 
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id))->elementType(), ElementType::And);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id))->elementType(), ElementType::And);
 
     // Push MorphCommand AND → OR; redo() is called immediately, andGate pointer becomes invalid
     scene.undoStack()->push(new MorphCommand({andGate}, ElementType::Or, &scene));
 
-    auto *morphed = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id));
+    auto *morphed = dynamic_cast<GraphicElement *>(scene.itemById(id));
     QVERIFY(morphed != nullptr);
     QCOMPARE(morphed->elementType(), ElementType::Or);
 
     // Undo → back to AND
     scene.undoStack()->undo();
-    auto *restored = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id));
+    auto *restored = dynamic_cast<GraphicElement *>(scene.itemById(id));
     QVERIFY(restored != nullptr);
     QCOMPARE(restored->elementType(), ElementType::And);
 
     // Redo → OR again
     scene.undoStack()->redo();
-    auto *redone = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id));
+    auto *redone = dynamic_cast<GraphicElement *>(scene.itemById(id));
     QVERIFY(redone != nullptr);
     QCOMPARE(redone->elementType(), ElementType::Or);
 }
@@ -430,14 +431,14 @@ void TestSceneUndoredo::testMorphPreservesLabel()
 
     scene.undoStack()->push(new MorphCommand({sw}, ElementType::InputButton, &scene));
 
-    auto *morphed = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id));
+    auto *morphed = dynamic_cast<GraphicElement *>(scene.itemById(id));
     QVERIFY(morphed != nullptr);
     QCOMPARE(morphed->elementType(), ElementType::InputButton);
     QCOMPARE(morphed->label(), QString("testLabel"));
 
     // Undo → InputSwitch with label preserved
     scene.undoStack()->undo();
-    auto *restored = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id));
+    auto *restored = dynamic_cast<GraphicElement *>(scene.itemById(id));
     QVERIFY(restored != nullptr);
     QCOMPARE(restored->elementType(), ElementType::InputSwitch);
     QCOMPARE(restored->label(), QString("testLabel"));
@@ -462,7 +463,7 @@ void TestSceneUndoredo::testMorphPreservesConnections()
     scene.undoStack()->push(new MorphCommand({andGate}, ElementType::Or, &scene));
 
     // The OR element (with same ID) should have its output connected to LED
-    auto *morphed = dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId));
+    auto *morphed = dynamic_cast<GraphicElement *>(scene.itemById(andId));
     QVERIFY(morphed != nullptr);
     QCOMPARE(morphed->elementType(), ElementType::Or);
     QVERIFY(!morphed->outputPort(0)->connections().isEmpty());
@@ -470,7 +471,7 @@ void TestSceneUndoredo::testMorphPreservesConnections()
 
     // Undo → AND gate with connection restored
     scene.undoStack()->undo();
-    auto *restored = dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId));
+    auto *restored = dynamic_cast<GraphicElement *>(scene.itemById(andId));
     QVERIFY(restored != nullptr);
     QCOMPARE(restored->elementType(), ElementType::And);
     QVERIFY(!restored->outputPort(0)->connections().isEmpty());
@@ -489,13 +490,13 @@ void TestSceneUndoredo::testIncreaseInputSize()
 
     scene.undoStack()->push(new ChangeInputSizeCommand({andGate}, 3, &scene));
 
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id))->inputSize(), 3);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id))->inputSize(), 3);
 
     scene.undoStack()->undo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id))->inputSize(), 2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id))->inputSize(), 2);
 
     scene.undoStack()->redo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id))->inputSize(), 3);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id))->inputSize(), 3);
 }
 
 void TestSceneUndoredo::testDecreaseInputSizeRemovesConnection()
@@ -523,19 +524,19 @@ void TestSceneUndoredo::testDecreaseInputSizeRemovesConnection()
     // Reduce from 3 to 2 inputs via command → removes connection from port 2
     scene.undoStack()->push(new ChangeInputSizeCommand({andGate}, 2, &scene));
 
-    auto *elm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId));
+    auto *elm = dynamic_cast<GraphicElement *>(scene.itemById(andId));
     QCOMPARE(elm->inputSize(), 2);
     // Port 2 no longer exists after reduction
 
     // Undo → inputSize restored to 3, connection restored on port 2
     scene.undoStack()->undo();
-    elm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId));
+    elm = dynamic_cast<GraphicElement *>(scene.itemById(andId));
     QCOMPARE(elm->inputSize(), 3);
     QVERIFY(!elm->inputPort(2)->connections().isEmpty());
 
     // Redo → reduce to 2 again
     scene.undoStack()->redo();
-    elm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId));
+    elm = dynamic_cast<GraphicElement *>(scene.itemById(andId));
     QCOMPARE(elm->inputSize(), 2);
 }
 
@@ -571,19 +572,19 @@ void TestSceneUndoredo::testDecreaseInputSizeMultipleConnections()
     // Reduce from 4 to 2 — removes both connections
     scene.undoStack()->push(new ChangeInputSizeCommand({andGate}, 2, &scene));
 
-    auto *elm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId));
+    auto *elm = dynamic_cast<GraphicElement *>(scene.itemById(andId));
     QCOMPARE(elm->inputSize(), 2);
 
     // Undo — both connections restored
     scene.undoStack()->undo();
-    elm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId));
+    elm = dynamic_cast<GraphicElement *>(scene.itemById(andId));
     QCOMPARE(elm->inputSize(), 4);
     QVERIFY(!elm->inputPort(2)->connections().isEmpty());
     QVERIFY(!elm->inputPort(3)->connections().isEmpty());
 
     // Redo — back to 2
     scene.undoStack()->redo();
-    elm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId));
+    elm = dynamic_cast<GraphicElement *>(scene.itemById(andId));
     QCOMPARE(elm->inputSize(), 2);
 }
 
@@ -619,14 +620,14 @@ void TestSceneUndoredo::testDecreaseInputSizeRestoresConnectionWithOriginalId()
 
     // Reduce to 2 inputs — connection on port 2 is severed
     scene.undoStack()->push(new ChangeInputSizeCommand({andGate}, 2, &scene));
-    QVERIFY(ElementFactory::itemById(originalConnId) == nullptr);
+    QVERIFY(scene.itemById(originalConnId) == nullptr);
     QCOMPARE(countSceneConnections(), 0);
 
     // Undo: connection must come back with its original ID
     scene.undoStack()->undo();
-    auto *restoredConn = dynamic_cast<QNEConnection *>(ElementFactory::itemById(originalConnId));
+    auto *restoredConn = dynamic_cast<QNEConnection *>(scene.itemById(originalConnId));
     QVERIFY2(restoredConn != nullptr, "Connection must be findable by its original ID after undo");
-    auto *elm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId));
+    auto *elm = dynamic_cast<GraphicElement *>(scene.itemById(andId));
     QVERIFY(!elm->inputPort(2)->connections().isEmpty());
     QCOMPARE(restoredConn->endPort()->graphicElement()->id(), andId);
     QCOMPARE(restoredConn->endPort()->index(), 2);
@@ -634,12 +635,12 @@ void TestSceneUndoredo::testDecreaseInputSizeRestoresConnectionWithOriginalId()
 
     // Redo: severed again, ID freed
     scene.undoStack()->redo();
-    QVERIFY(ElementFactory::itemById(originalConnId) == nullptr);
+    QVERIFY(scene.itemById(originalConnId) == nullptr);
     QCOMPARE(countSceneConnections(), 0);
 
     // Undo once more: ID stable across cycles
     scene.undoStack()->undo();
-    QVERIFY2(ElementFactory::itemById(originalConnId) != nullptr, "ID must be stable across undo/redo cycles");
+    QVERIFY2(scene.itemById(originalConnId) != nullptr, "ID must be stable across undo/redo cycles");
     QCOMPARE(countSceneConnections(), 1);
 }
 
@@ -663,13 +664,13 @@ void TestSceneUndoredo::testChangeOutputSizeUndoRedo()
     // Reduce from 4 to 2 via command
     scene.undoStack()->push(new ChangeOutputSizeCommand({demux}, 2, &scene));
 
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id))->outputSize(), 2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id))->outputSize(), 2);
 
     scene.undoStack()->undo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id))->outputSize(), 4);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id))->outputSize(), 4);
 
     scene.undoStack()->redo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id))->outputSize(), 2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id))->outputSize(), 2);
 }
 
 void TestSceneUndoredo::testChangeOutputSizeMultipleElements()
@@ -701,21 +702,21 @@ void TestSceneUndoredo::testChangeOutputSizeMultipleElements()
     // Reduce both from 4 to 2 — demux1 loses 1 connection, demux2 loses 0
     scene.undoStack()->push(new ChangeOutputSizeCommand({demux1, demux2}, 2, &scene));
 
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1))->outputSize(), 2);
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2))->outputSize(), 2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id1))->outputSize(), 2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id2))->outputSize(), 2);
 
     // Undo — both restored to 4, demux1's connection restored
     scene.undoStack()->undo();
-    auto *elm1 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1));
-    auto *elm2 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2));
+    auto *elm1 = dynamic_cast<GraphicElement *>(scene.itemById(id1));
+    auto *elm2 = dynamic_cast<GraphicElement *>(scene.itemById(id2));
     QCOMPARE(elm1->outputSize(), 4);
     QCOMPARE(elm2->outputSize(), 4);
     QVERIFY(!elm1->outputPort(2)->connections().isEmpty());
 
     // Redo — back to 2
     scene.undoStack()->redo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1))->outputSize(), 2);
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2))->outputSize(), 2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id1))->outputSize(), 2);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id2))->outputSize(), 2);
 }
 
 void TestSceneUndoredo::testDecreaseOutputSizeRestoresConnectionWithOriginalId()
@@ -748,14 +749,14 @@ void TestSceneUndoredo::testDecreaseOutputSizeRestoresConnectionWithOriginalId()
 
     // Reduce to 2 outputs — connection on port 2 is severed
     scene.undoStack()->push(new ChangeOutputSizeCommand({demux}, 2, &scene));
-    QVERIFY(ElementFactory::itemById(originalConnId) == nullptr);
+    QVERIFY(scene.itemById(originalConnId) == nullptr);
     QCOMPARE(countSceneConnections(), 0);
 
     // Undo: connection must come back with its original ID
     scene.undoStack()->undo();
-    auto *restoredConn = dynamic_cast<QNEConnection *>(ElementFactory::itemById(originalConnId));
+    auto *restoredConn = dynamic_cast<QNEConnection *>(scene.itemById(originalConnId));
     QVERIFY2(restoredConn != nullptr, "Connection must be findable by its original ID after undo");
-    auto *elm = dynamic_cast<GraphicElement *>(ElementFactory::itemById(demuxId));
+    auto *elm = dynamic_cast<GraphicElement *>(scene.itemById(demuxId));
     QVERIFY(!elm->outputPort(2)->connections().isEmpty());
     QCOMPARE(restoredConn->startPort()->graphicElement()->id(), demuxId);
     QCOMPARE(restoredConn->startPort()->index(), 2);
@@ -763,12 +764,12 @@ void TestSceneUndoredo::testDecreaseOutputSizeRestoresConnectionWithOriginalId()
 
     // Redo: severed again
     scene.undoStack()->redo();
-    QVERIFY(ElementFactory::itemById(originalConnId) == nullptr);
+    QVERIFY(scene.itemById(originalConnId) == nullptr);
     QCOMPARE(countSceneConnections(), 0);
 
     // Undo once more: ID stable across cycles
     scene.undoStack()->undo();
-    QVERIFY2(ElementFactory::itemById(originalConnId) != nullptr, "ID must be stable across undo/redo cycles");
+    QVERIFY2(scene.itemById(originalConnId) != nullptr, "ID must be stable across undo/redo cycles");
     QCOMPARE(countSceneConnections(), 1);
 }
 
@@ -837,15 +838,15 @@ void TestSceneUndoredo::testUpdateCommandUndoRedo()
     scene.undoStack()->push(new UpdateCommand({sw}, oldData, &scene));
 
     // redo() called on push → loads new state (newLabel)
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id))->label(), QString("newLabel"));
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id))->label(), QString("newLabel"));
 
     // undo() → loads old state (oldLabel)
     scene.undoStack()->undo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id))->label(), QString("oldLabel"));
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id))->label(), QString("oldLabel"));
 
     // redo() → loads new state (newLabel)
     scene.undoStack()->redo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(id))->label(), QString("newLabel"));
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id))->label(), QString("newLabel"));
 }
 
 // ─── Edge cases ───────────────────────────────────────────────────────────
@@ -931,7 +932,7 @@ void TestSceneUndoredo::testFlipRotationChanges()
     const int id2 = elm2->id();
 
     auto getRotation = [&](int id) {
-        return dynamic_cast<GraphicElement *>(ElementFactory::itemById(id))->rotation();
+        return dynamic_cast<GraphicElement *>(scene.itemById(id))->rotation();
     };
 
     QCOMPARE(getRotation(id1), 0.0);
@@ -977,8 +978,8 @@ void TestSceneUndoredo::testFlipNonRotatableElement()
     // Horizontal flip: positions swap
     scene.undoStack()->push(new FlipCommand({sw1, sw2}, 0, &scene));
 
-    auto *e1 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1));
-    auto *e2 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2));
+    auto *e1 = dynamic_cast<GraphicElement *>(scene.itemById(id1));
+    auto *e2 = dynamic_cast<GraphicElement *>(scene.itemById(id2));
     QCOMPARE(e1->pos().x(), x2);
     QCOMPARE(e2->pos().x(), x1);
 
@@ -1012,7 +1013,7 @@ void TestSceneUndoredo::testFlipSingleElementPositionUnchanged()
     // Formula: x_new = minX + (maxX - x) = x + (x - x) = x  → position unchanged
     scene.undoStack()->push(new FlipCommand({elm}, 0, &scene));
 
-    auto *e = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id));
+    auto *e = dynamic_cast<GraphicElement *>(scene.itemById(id));
     QCOMPARE(e->pos(), originalPos);    // position unchanged (degenerate case)
     QCOMPARE(e->rotation(), 180.0);    // but rotation changes
 
@@ -1044,8 +1045,8 @@ void TestSceneUndoredo::testRotateMultipleElementsPositionsChange()
 
     scene.undoStack()->push(new RotateCommand({elm1, elm2}, 90, &scene));
 
-    auto *e1 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id1));
-    auto *e2 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(id2));
+    auto *e1 = dynamic_cast<GraphicElement *>(scene.itemById(id1));
+    auto *e2 = dynamic_cast<GraphicElement *>(scene.itemById(id2));
 
     // Positions must change (both elements move away from their original positions)
     QVERIFY(e1->pos() != origPos1);
@@ -1152,8 +1153,8 @@ void TestSceneUndoredo::testMorphMultipleElements()
     scene.undoStack()->push(new MorphCommand({andGate, orGate}, ElementType::Xor, &scene));
 
     // Both elements now Xor (same IDs preserved)
-    auto *m1 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId));
-    auto *m2 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(orId));
+    auto *m1 = dynamic_cast<GraphicElement *>(scene.itemById(andId));
+    auto *m2 = dynamic_cast<GraphicElement *>(scene.itemById(orId));
     QVERIFY(m1 != nullptr);
     QVERIFY(m2 != nullptr);
     QCOMPARE(m1->elementType(), ElementType::Xor);
@@ -1161,8 +1162,8 @@ void TestSceneUndoredo::testMorphMultipleElements()
 
     // Undo → AND and OR restored respectively
     scene.undoStack()->undo();
-    auto *r1 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId));
-    auto *r2 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(orId));
+    auto *r1 = dynamic_cast<GraphicElement *>(scene.itemById(andId));
+    auto *r2 = dynamic_cast<GraphicElement *>(scene.itemById(orId));
     QVERIFY(r1 != nullptr);
     QVERIFY(r2 != nullptr);
     QCOMPARE(r1->elementType(), ElementType::And);
@@ -1170,8 +1171,8 @@ void TestSceneUndoredo::testMorphMultipleElements()
 
     // Redo → both Xor again
     scene.undoStack()->redo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(andId))->elementType(), ElementType::Xor);
-    QCOMPARE(dynamic_cast<GraphicElement *>(ElementFactory::itemById(orId))->elementType(), ElementType::Xor);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(andId))->elementType(), ElementType::Xor);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(orId))->elementType(), ElementType::Xor);
 }
 
 void TestSceneUndoredo::testMorphDisplay14ToDisplay7RemovesDanglingConnection()
@@ -1209,7 +1210,7 @@ void TestSceneUndoredo::testMorphDisplay14ToDisplay7RemovesDanglingConnection()
     // ── redo ──────────────────────────────────────────────────────────────
     scene.undoStack()->push(new MorphCommand({disp14}, ElementType::Display7, &scene));
 
-    auto *disp7 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(dispId));
+    auto *disp7 = dynamic_cast<GraphicElement *>(scene.itemById(dispId));
     QVERIFY(disp7 != nullptr);
     QCOMPARE(disp7->elementType(), ElementType::Display7);
     QCOMPARE(disp7->inputSize(), 8);
@@ -1219,7 +1220,7 @@ void TestSceneUndoredo::testMorphDisplay14ToDisplay7RemovesDanglingConnection()
     // ── undo: Display14 restored, wire on port 14 must come back ──────────
     scene.undoStack()->undo();
 
-    auto *restored14 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(dispId));
+    auto *restored14 = dynamic_cast<GraphicElement *>(scene.itemById(dispId));
     QVERIFY(restored14 != nullptr);
     QCOMPARE(restored14->elementType(), ElementType::Display14);
     QCOMPARE(restored14->inputSize(), 15);
@@ -1230,7 +1231,7 @@ void TestSceneUndoredo::testMorphDisplay14ToDisplay7RemovesDanglingConnection()
     // ── redo again: connection deleted once more, no dangling wire ─────────
     scene.undoStack()->redo();
 
-    auto *redisp7 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(dispId));
+    auto *redisp7 = dynamic_cast<GraphicElement *>(scene.itemById(dispId));
     QVERIFY(redisp7 != nullptr);
     QCOMPARE(redisp7->elementType(), ElementType::Display7);
     QCOMPARE(countSceneConnections(), 0);
@@ -1297,7 +1298,7 @@ void TestSceneUndoredo::testMorphToFewerPortsAllDroppedConnectionsRemoved()
     // ── redo ──────────────────────────────────────────────────────────────
     scene.undoStack()->push(new MorphCommand({disp14}, ElementType::Display7, &scene));
 
-    auto *disp7 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(dispId));
+    auto *disp7 = dynamic_cast<GraphicElement *>(scene.itemById(dispId));
     QVERIFY(disp7 != nullptr);
     QCOMPARE(disp7->elementType(), ElementType::Display7);
     QCOMPARE(disp7->inputSize(), 8);
@@ -1317,7 +1318,7 @@ void TestSceneUndoredo::testMorphToFewerPortsAllDroppedConnectionsRemoved()
     // ── undo: Display14 restored, all three connections must be back ───────
     scene.undoStack()->undo();
 
-    auto *restored14 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(dispId));
+    auto *restored14 = dynamic_cast<GraphicElement *>(scene.itemById(dispId));
     QVERIFY(restored14 != nullptr);
     QCOMPARE(restored14->elementType(), ElementType::Display14);
     QCOMPARE(restored14->inputSize(), 15);
@@ -1352,27 +1353,27 @@ void TestSceneUndoredo::testMorphUndoRestoresConnectionWithOriginalId()
 
     // Morph Display14 → Display7: connection on port 14 is deleted
     scene.undoStack()->push(new MorphCommand({disp14}, ElementType::Display7, &scene));
-    QVERIFY(ElementFactory::itemById(originalConnId) == nullptr);
+    QVERIFY(scene.itemById(originalConnId) == nullptr);
 
     // Undo: connection must come back with its original ID
     scene.undoStack()->undo();
 
-    auto *restored14 = dynamic_cast<GraphicElement *>(ElementFactory::itemById(dispId));
+    auto *restored14 = dynamic_cast<GraphicElement *>(scene.itemById(dispId));
     QVERIFY(restored14 != nullptr);
     QCOMPARE(restored14->elementType(), ElementType::Display14);
 
-    auto *restoredConn = dynamic_cast<QNEConnection *>(ElementFactory::itemById(originalConnId));
+    auto *restoredConn = dynamic_cast<QNEConnection *>(scene.itemById(originalConnId));
     QVERIFY2(restoredConn != nullptr, "Connection must be findable by its original ID after undo");
     QCOMPARE(restoredConn->endPort()->graphicElement()->id(), dispId);
     QCOMPARE(restoredConn->endPort()->index(), 14);
 
     // Redo: connection deleted again, same original ID slot freed
     scene.undoStack()->redo();
-    QVERIFY(ElementFactory::itemById(originalConnId) == nullptr);
+    QVERIFY(scene.itemById(originalConnId) == nullptr);
 
     // Undo once more: ID is stable across repeated undo/redo cycles
     scene.undoStack()->undo();
-    QVERIFY2(ElementFactory::itemById(originalConnId) != nullptr, "ID must be stable across undo/redo cycles");
+    QVERIFY2(scene.itemById(originalConnId) != nullptr, "ID must be stable across undo/redo cycles");
 }
 
 // ─── QUndoStack clean state ───────────────────────────────────────────────
@@ -1412,6 +1413,68 @@ void TestSceneUndoredo::testUndoStackCleanState()
     // Undo back to clean marker position → clean again
     scene.undoStack()->undo();
     QVERIFY(scene.undoStack()->isClean());
+}
+
+// ─── Multi-workspace cross-tab isolation ──────────────────────────────────
+
+void TestSceneUndoredo::testCrossTabIdIsolation()
+{
+    // After the per-scene ID refactoring each WorkSpace owns an independent
+    // Scene with its own ID counter starting at 1. Elements in different tabs
+    // share the same numeric IDs but live in separate registries, so there is
+    // no cross-tab ID collision or registry overwrite.
+
+    WorkSpace wsA;
+    WorkSpace wsB;
+
+    auto *sceneA = wsA.scene();
+    auto *sceneB = wsB.scene();
+
+    // Add elements to workspace A — gets IDs 1..5 in sceneA
+    QList<GraphicElement *> elemsA;
+    for (int i = 0; i < 5; ++i) {
+        auto *gate = ElementFactory::buildElement(ElementType::And);
+        sceneA->addItem(gate);
+        QVERIFY2(gate->id() > 0, "sceneA element should have positive ID");
+        elemsA.append(gate);
+    }
+
+    // Add elements to workspace B — also gets IDs 1..5 in sceneB (independent counter)
+    QList<GraphicElement *> elemsB;
+    for (int i = 0; i < 5; ++i) {
+        auto *gate = ElementFactory::buildElement(ElementType::And);
+        sceneB->addItem(gate);
+        QVERIFY2(gate->id() > 0, "sceneB element should have positive ID");
+        elemsB.append(gate);
+    }
+
+    // IDs in both scenes start from 1 — by design (independent counters)
+    QCOMPARE(elemsA.first()->id(), 1);
+    QCOMPARE(elemsB.first()->id(), 1);
+
+    // sceneA resolves its elements correctly
+    for (auto *e : elemsA) {
+        auto *found = dynamic_cast<GraphicElement *>(sceneA->itemById(e->id()));
+        QVERIFY2(found == e, "sceneA must resolve each ID to its own element");
+    }
+
+    // sceneB resolves its elements correctly
+    for (auto *e : elemsB) {
+        auto *found = dynamic_cast<GraphicElement *>(sceneB->itemById(e->id()));
+        QVERIFY2(found == e, "sceneB must resolve each ID to its own element");
+    }
+
+    // sceneA must not return sceneB's elements (registries are independent)
+    for (auto *e : elemsB) {
+        auto *inA = sceneA->itemById(e->id());
+        QVERIFY2(inA != e, "sceneA registry must not contain sceneB's elements");
+    }
+
+    // sceneB must not return sceneA's elements
+    for (auto *e : elemsA) {
+        auto *inB = sceneB->itemById(e->id());
+        QVERIFY2(inB != e, "sceneB registry must not contain sceneA's elements");
+    }
 }
 
 void TestSceneUndoredo::testContextDirectoryPerTab()
