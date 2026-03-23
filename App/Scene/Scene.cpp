@@ -391,113 +391,9 @@ void Scene::resizeScene()
     }
 }
 
-QNEConnection *Scene::editedConnection() const
-{
-    return dynamic_cast<QNEConnection *>(itemById(m_editedConnectionId));
-}
-
-void Scene::deleteEditedConnection()
-{
-    if (auto *connection = editedConnection()) {
-        removeItem(connection);
-        delete connection;
-    }
-
-    setEditedConnection(nullptr);
-}
-
-void Scene::setEditedConnection(QNEConnection *connection)
-{
-    if (connection) {
-        connection->setFocus();
-        m_editedConnectionId = connection->id();
-    } else {
-        m_editedConnectionId = 0;
-    }
-}
-
-void Scene::startNewConnection(QNEInputPort *endPort)
-{
-    auto *connection = new QNEConnection();
-    connection->setEndPort(endPort);
-    connection->setStartPos(m_mousePos);
-
-    addItem(connection);
-    setEditedConnection(connection);
-    connection->updatePath();
-}
-
-void Scene::startNewConnection(QNEOutputPort *startPort)
-{
-    auto *connection = new QNEConnection();
-    connection->setStartPort(startPort);
-    connection->setEndPos(m_mousePos);
-
-    addItem(connection);
-    setEditedConnection(connection);
-    connection->updatePath();
-}
-
 QUndoStack *Scene::undoStack()
 {
     return &m_undoStack;
-}
-
-void Scene::makeConnection(QNEConnection *connection)
-{
-    auto *port = qgraphicsitem_cast<QNEPort *>(itemAt(m_mousePos));
-
-    if (!port || !connection) {
-        return;
-    }
-
-    /* The mouse is released over a QNEPort. */
-    QNEOutputPort *startPort = nullptr;
-    QNEInputPort *endPort = nullptr;
-
-    // A wire being dragged from an output needs the drop target to be an input, and vice versa.
-    // The dynamic_cast returns nullptr if the port type doesn't match, which is caught below.
-    if (connection->startPort() != nullptr) {
-        startPort = connection->startPort();
-        endPort = dynamic_cast<QNEInputPort *>(port);
-    } else if (connection->endPort() != nullptr) {
-        startPort = dynamic_cast<QNEOutputPort *>(port);
-        endPort = connection->endPort();
-    }
-
-    if (!startPort || !endPort) {
-        return;
-    }
-
-    /* Verifying if the connection is valid. */
-    // Self-loops (same element on both ends) and duplicate connections are forbidden
-    if ((startPort->graphicElement() != endPort->graphicElement()) && !startPort->isConnected(endPort)) {
-        /* Making connection. */
-        connection->setStartPort(startPort);
-        connection->setEndPort(endPort);
-        receiveCommand(new AddItemsCommand({connection}, this));
-        setEditedConnection(nullptr);
-    } else {
-        deleteEditedConnection();
-    }
-}
-
-void Scene::detachConnection(QNEInputPort *endPort)
-{
-    const auto connections = endPort->connections();
-    if (connections.isEmpty()) {
-        return;
-    }
-    // Take the last connection — an input port normally has at most one, but
-    // .last() is the safe choice if the model ever allows multiple
-    auto *connection = connections.last();
-
-    if (auto *startPort = connection->startPort()) {
-        // Delete the existing wire, then immediately start a new in-progress wire
-        // anchored to the same output port, so the user can re-route it
-        receiveCommand(new DeleteItemsCommand({connection}, this));
-        startNewConnection(startPort);
-    }
 }
 
 void Scene::prevMainPropShortcut()
@@ -868,84 +764,6 @@ void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream)
 
     stream << center / static_cast<qreal>(itemsQuantity);
     Serialization::serialize(items, stream);
-}
-
-void Scene::handleHoverPort()
-{
-    auto *port = qgraphicsitem_cast<QNEPort *>(itemAt(m_mousePos));
-    auto *hoverPort_ = hoverPort();
-
-    if (hoverPort_ && (hoverPort_ != port)) {
-        releaseHoverPort();
-    }
-
-    if (port) {
-        auto *editedConn = editedConnection();
-        releaseHoverPort();
-        setHoverPort(port);
-
-        if (editedConn && editedConn->startPort() && (editedConn->startPort()->isOutput() == port->isOutput())) {
-            m_view->viewport()->setCursor(Qt::ForbiddenCursor);
-        }
-    }
-}
-
-void Scene::releaseHoverPort()
-{
-    if (auto *hoverPort_ = hoverPort()) {
-        hoverPort_->hoverLeave();
-        setHoverPort(nullptr);
-        m_view->viewport()->unsetCursor();
-    }
-}
-
-void Scene::setHoverPort(QNEPort *port)
-{
-    if (!port) {
-        m_hoverPortElmId = 0;
-        m_hoverPortNumber = 0;
-        return;
-    }
-
-    port->hoverEnter();
-    auto *hoverElm = port->graphicElement();
-
-    // Store element ID + port index rather than raw pointers so the hover state
-    // remains valid across undo/redo operations that may recreate the element
-    if (hoverElm && this->contains(hoverElm->id())) {
-        m_hoverPortElmId = hoverElm->id();
-
-        // Encode inputs first (indices 0..inputSize-1), then outputs (inputSize..total-1)
-        // so a single integer uniquely identifies any port on an element
-        for (int i = 0; i < (hoverElm->inputSize() + hoverElm->outputSize()); ++i) {
-            if (i < hoverElm->inputSize()) {
-                if (port == hoverElm->inputPort(i)) {
-                    m_hoverPortNumber = i;
-                }
-            } else if (port == hoverElm->outputPort(i - hoverElm->inputSize())) {
-                m_hoverPortNumber = i;
-            }
-        }
-    }
-}
-
-QNEPort *Scene::hoverPort()
-{
-    QNEPort *hoverPort = nullptr;
-
-    if (auto *hoverElm = dynamic_cast<GraphicElement *>(itemById(m_hoverPortElmId))) {
-        if (m_hoverPortNumber < hoverElm->inputSize()) {
-            hoverPort = hoverElm->inputPort(m_hoverPortNumber);
-        } else if (((m_hoverPortNumber - hoverElm->inputSize()) < hoverElm->outputSize())) {
-            hoverPort = hoverElm->outputPort(m_hoverPortNumber - hoverElm->inputSize());
-        }
-    }
-
-    if (!hoverPort) {
-        setHoverPort(nullptr);
-    }
-
-    return hoverPort;
 }
 
 void Scene::startSelectionRect()
@@ -1344,7 +1162,7 @@ bool Scene::eventFilter(QObject *watched, QEvent *event)
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     m_mousePos = event->scenePos();
-    handleHoverPort();
+    m_connectionManager.updateHover(m_mousePos);
 
     auto *item = itemAt(m_mousePos);
 
@@ -1380,31 +1198,29 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         if (item->type() == QNEPort::Type) {
             /* When the mouse is pressed over an connected input port, the line
              * is disconnected and can be connected to another port. */
-            if (auto *connection = editedConnection()) {
+            if (m_connectionManager.editedConnection()) {
                 // An in-progress wire exists; try to complete it at this port
-                makeConnection(connection);
+                m_connectionManager.tryComplete(m_mousePos);
                 return;
             }
 
             auto *pressedPort = qgraphicsitem_cast<QNEPort *>(item);
 
             if (auto *startPort = dynamic_cast<QNEOutputPort *>(pressedPort)) {
-                startNewConnection(startPort);
+                m_connectionManager.startFromOutput(startPort);
                 return;
             }
 
             if (auto *endPort = dynamic_cast<QNEInputPort *>(pressedPort)) {
                 // Empty input port: begin a new wire; occupied port: detach the existing wire
-                endPort->connections().isEmpty() ? startNewConnection(endPort) : detachConnection(endPort);
+                endPort->connections().isEmpty() ? m_connectionManager.startFromInput(endPort) : m_connectionManager.detach(endPort);
                 return;
             }
         }
     }
 
     // Clicking on empty space while a wire is being drawn cancels it
-    if (editedConnection()) {
-        deleteEditedConnection();
-    }
+        m_connectionManager.cancel();
 
     if (!item && (event->button() == Qt::LeftButton)) {
         startSelectionRect();
@@ -1421,7 +1237,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     m_mousePos = event->scenePos();
-    handleHoverPort();
+    m_connectionManager.updateHover(m_mousePos);
 
     // Expand scene rect while dragging so elements can be moved beyond the current boundary,
     // and auto-scroll the viewport to follow the cursor.
@@ -1438,23 +1254,8 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 
     // --- In-progress wire routing ---
-    if (auto *connection = editedConnection()) {
-        if (connection->startPort()) {
-            // Wire anchored at start: free end follows the mouse
-            connection->setEndPos(m_mousePos);
-            connection->updatePath();
-            return;
-        }
-
-        if (connection->endPort()) {
-            // Wire anchored at end (dragged from input): free start follows the mouse
-            connection->setStartPos(m_mousePos);
-            connection->updatePath();
-            return;
-        }
-
-        // Connection lost both ports (e.g., element deleted mid-drag) — clean up
-        deleteEditedConnection();
+    if (m_connectionManager.hasEditedConnection()) {
+        m_connectionManager.updateEditedEnd(m_mousePos);
         return;
     }
 
@@ -1502,8 +1303,8 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
     // Complete an in-progress wire on mouse release (when no button is held)
     // — this handles the drag-to-connect gesture (press output → drag → release on input)
-    if (auto *connection = editedConnection(); connection && (event->buttons() == Qt::NoButton)) {
-        makeConnection(connection);
+    if (m_connectionManager.hasEditedConnection() && (event->buttons() == Qt::NoButton)) {
+        m_connectionManager.tryComplete(m_mousePos);
         return;
     }
 

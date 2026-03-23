@@ -15,6 +15,7 @@
 #include <QVersionNumber>
 
 #include "App/Nodes/QNEPort.h"
+#include "App/Scene/ConnectionManager.h"
 #include "App/Simulation/Simulation.h"
 
 class GraphicElement;
@@ -116,6 +117,21 @@ public:
     static QVector<GraphicElement *> sortByTopology(QVector<GraphicElement *> elements);
     /// Returns all visible (non-hidden) graphic elements in the scene.
     const QVector<GraphicElement *> visibleElements() const;
+
+    // --- Adding Items ---
+
+    // --- Connection Manager ---
+
+    /// Returns the connection manager that handles wire creation, deletion, and hover feedback.
+    ConnectionManager *connectionManager() { return &m_connectionManager; }
+
+    // --- Hit-testing ---
+
+    /// Returns the topmost item at \a pos, prioritising ports over elements.
+    QGraphicsItem *itemAt(QPointF pos);
+
+    /// Returns the last known mouse position in scene coordinates.
+    [[nodiscard]] QPointF mousePos() const { return m_mousePos; }
 
     // --- Adding Items ---
 
@@ -251,28 +267,16 @@ private:
 
     static void copy(const QList<QGraphicsItem *> &items, QDataStream &stream);
 
-    QGraphicsItem *itemAt(const QPointF pos);
     QList<QGraphicsItem *> itemsAt(const QPointF pos);
-    QNEConnection *editedConnection() const;
-    QNEPort *hoverPort();
     const QVector<QNEConnection *> connections();
     void checkUpdateRequest();
     void cloneDrag(const QPointF mousePos);
     void contextMenu(const QPoint screenPos);
     void cut(const QList<QGraphicsItem *> &items, QDataStream &stream);
-    void deleteEditedConnection();
-    void detachConnection(QNEInputPort *endPort);
     void drawBackground(QPainter *painter, const QRectF &rect) override;
-    void handleHoverPort();
-    void makeConnection(QNEConnection *connection);
     void paste(QDataStream &stream, const QVersionNumber &version);
-    void releaseHoverPort();
     void rotate(const int angle);
     void setDots(const QPen &dots);
-    void setEditedConnection(QNEConnection *connection);
-    void setHoverPort(QNEPort *port);
-    void startNewConnection(QNEInputPort *endPort);
-    void startNewConnection(QNEOutputPort *startPort);
     void startSelectionRect();
 
     /// Registers \a item's current ID in the scene registry. Called by addItem().
@@ -320,11 +324,7 @@ private:
     // Autosave
     bool m_autosaveRequired = false;
 
-    // Connection editing
-    int m_editedConnectionId = 0;
-
-    // Hover port tracking
-    int m_hoverPortElmId = 0;
-    int m_hoverPortNumber = 0;
+    // Connection editing (delegated to ConnectionManager)
+    ConnectionManager m_connectionManager{this};
 };
 
