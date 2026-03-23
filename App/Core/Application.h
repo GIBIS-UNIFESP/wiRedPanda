@@ -56,6 +56,9 @@ public:
      */
     void setMainWindow(MainWindow *mainWindow);
 
+    /// When false, suppresses informational dialogs (e.g. version-mismatch warnings).
+    inline static bool interactiveMode = true;
+
 private:
     Q_DISABLE_COPY(Application)
 
