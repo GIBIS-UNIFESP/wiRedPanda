@@ -45,6 +45,9 @@ void LogicElement::connectPredecessor(const int index, LogicElement *logic, cons
 
 void LogicElement::setOutputValue(const int index, const bool value)
 {
+    if (m_outputValues[index] != value) {
+        m_outputChanged = true;
+    }
     m_outputValues[index] = value;
 }
 
