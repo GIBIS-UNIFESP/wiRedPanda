@@ -11,7 +11,6 @@ void TestThemeManager::cleanup()
 {
     // Restore to default theme after each test
     ThemeManager::setTheme(Theme::Light);
-    Settings::remove("theme");
 }
 
 // ============================================================
@@ -37,14 +36,14 @@ void TestThemeManager::testLoadThemeFromSettings()
     QCOMPARE(ThemeManager::theme(), Theme::Dark);
 
     // Verify it's stored in Settings
-    int savedTheme = Settings::value("theme").toInt();
+    int savedTheme = static_cast<int>(Settings::theme());
     QCOMPARE(savedTheme, static_cast<int>(Theme::Dark));
 
     // Reset to Light
     ThemeManager::setTheme(Theme::Light);
     QCOMPARE(ThemeManager::theme(), Theme::Light);
 
-    savedTheme = Settings::value("theme").toInt();
+    savedTheme = static_cast<int>(Settings::theme());
     QCOMPARE(savedTheme, static_cast<int>(Theme::Light));
 }
 
@@ -55,7 +54,7 @@ void TestThemeManager::testThemePersistence()
     QCOMPARE(ThemeManager::theme(), Theme::Dark);
 
     int darkValue = static_cast<int>(Theme::Dark);
-    int savedValue = Settings::value("theme").toInt();
+    int savedValue = static_cast<int>(Settings::theme());
     QCOMPARE(savedValue, darkValue);
 
     // Switch back to Light
@@ -63,7 +62,7 @@ void TestThemeManager::testThemePersistence()
     QCOMPARE(ThemeManager::theme(), Theme::Light);
 
     int lightValue = static_cast<int>(Theme::Light);
-    savedValue = Settings::value("theme").toInt();
+    savedValue = static_cast<int>(Settings::theme());
     QCOMPARE(savedValue, lightValue);
 }
 
