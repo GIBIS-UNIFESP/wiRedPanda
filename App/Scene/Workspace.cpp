@@ -228,7 +228,7 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
         m_scene.setContextDir(contextDir);
     }
     QMap<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, version, contextDir};
+    auto context = m_scene.deserializationContext(portMap, version);
     const auto items = Serialization::deserialize(stream, context);
     qCDebug(zero) << "Finished loading items.";
 
