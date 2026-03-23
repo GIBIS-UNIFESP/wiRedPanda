@@ -17,6 +17,14 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+/**
+ * \class BewavedDolphinUi
+ * \brief Hand-written UI descriptor for the BeWavedDolphin main window.
+ *
+ * \details Replaces the Qt Designer .ui workflow.  Call setupUi() once after
+ * construction to build the widget hierarchy, and retranslateUi() whenever the
+ * application language changes.
+ */
 class BewavedDolphinUi
 {
 public:
