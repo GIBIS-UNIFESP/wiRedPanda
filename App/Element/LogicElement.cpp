@@ -3,10 +3,6 @@
 
 #include "App/Element/LogicElement.h"
 
-#include <QHash>
-#include <QMap>
-#include <QStack>
-
 LogicElement::LogicElement(const int inputSize, const int outputSize)
     : m_inputValues(inputSize, false)
     , m_inputPairs(inputSize, {})
@@ -59,6 +55,11 @@ void LogicElement::connectPredecessor(const int index, LogicElement *logic, cons
     m_inputPairs[index] = {logic, port};
 }
 
+void LogicElement::setInFeedbackLoop(const bool inLoop)
+{
+    m_inFeedbackLoop = inLoop;
+}
+
 void LogicElement::setOutputValue(const int index, const bool value)
 {
     m_outputValues[index] = value;
@@ -69,61 +70,15 @@ void LogicElement::setOutputValue(const bool value)
     setOutputValue(0, value);
 }
 
+void LogicElement::setPriority(const int priority)
+{
+    m_priority = priority;
+}
+
 void LogicElement::validate()
 {
     m_isValid = std::all_of(m_inputPairs.cbegin(), m_inputPairs.cend(),
                             [](const auto &pair) { return pair.logic != nullptr; });
-}
-
-int LogicElement::calculatePriority(const QHash<LogicElement *, QVector<LogicElement *>> &successors)
-{
-    QStack<LogicElement *> stack;
-    QMap<LogicElement *, bool> inStack;
-
-    stack.push(this);
-    inStack[this] = true;
-
-    while (!stack.isEmpty()) {
-        auto *current = stack.top();
-
-        if (current->m_priority != -1) {
-            stack.pop();
-            inStack[current] = false;
-            continue;
-        }
-
-        bool allProcessed = true;
-        int maxSuccessorPriority = 0;
-        bool hasFeedbackLoop = false;
-
-        const auto it = successors.find(current);
-        if (it != successors.end()) {
-            for (auto *logic : *it) {
-                if (logic->m_priority == -1) {
-                    if (!inStack[logic]) {
-                        stack.push(logic);
-                        inStack[logic] = true;
-                        allProcessed = false;
-                    } else {
-                        hasFeedbackLoop = true;
-                    }
-                }
-
-                if (logic->m_priority != -1) {
-                    maxSuccessorPriority = qMax(maxSuccessorPriority, logic->m_priority);
-                }
-            }
-        }
-
-        if (allProcessed || hasFeedbackLoop) {
-            current->m_priority = maxSuccessorPriority + 1;
-            current->m_inFeedbackLoop = hasFeedbackLoop;
-            stack.pop();
-            inStack[current] = false;
-        }
-    }
-
-    return m_priority;
 }
 
 bool LogicElement::outputValue(const int index) const

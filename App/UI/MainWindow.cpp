@@ -1139,8 +1139,6 @@ void MainWindow::exportToArduino(QString fileName)
         fileName.append(".ino");
     }
 
-    elements = Common::sortGraphicElements(elements);
-
     ArduinoCodeGen arduino(QDir::home().absoluteFilePath(fileName), elements);
     arduino.generate();
     m_ui->statusBar->showMessage(tr("Arduino code successfully generated."), 4000);

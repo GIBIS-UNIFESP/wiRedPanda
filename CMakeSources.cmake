@@ -106,6 +106,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Common.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Enums.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/Priorities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.h
@@ -328,6 +329,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Commands/TestCommands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestCommon.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestEnums.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestPriorities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestRecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestSettings.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestThemeManager.cpp
@@ -468,6 +470,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Commands/TestCommands.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestCommon.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestEnums.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestPriorities.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestRecentFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestSettings.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestThemeManager.h

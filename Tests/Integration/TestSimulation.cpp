@@ -15,6 +15,7 @@
 #include "App/Element/GraphicElements/SRLatch.h"
 #include "App/Element/GraphicElements/Xor.h"
 #include "App/Nodes/QNEConnection.h"
+#include "App/Scene/Scene.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::getInputStatus;
@@ -33,7 +34,7 @@ void TestSimulation::testTopologicalSorting()
     builder.connect(&button2, 0, &andItem, 1);
     builder.connect(&andItem, 0, &led, 0);
 
-    const auto elements(Common::sortGraphicElements(workspace.scene()->elements()));
+    const auto elements(Scene::sortByTopology(workspace.scene()->elements()));
 
     // Inputs should come first
     QVERIFY2((elements.at(0) == &button1) || (elements.at(1) == &button1),
@@ -380,7 +381,7 @@ void TestSimulation::testElementProcessingOrderConsistency()
         conn7.setEndPort(led.inputPort());
 
         // Get element processing order and extract element IDs
-        const auto elements = Common::sortGraphicElements(scene->elements());
+        const auto elements = Scene::sortByTopology(scene->elements());
         QVector<int> ids;
         for (auto *elem : elements) {
             ids.append(elem->id());

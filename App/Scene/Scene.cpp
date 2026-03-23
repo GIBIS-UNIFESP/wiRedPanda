@@ -14,6 +14,7 @@
 #include <QScrollBar>
 
 #include "App/Core/Common.h"
+#include "App/Core/Priorities.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
@@ -142,7 +143,7 @@ const QVector<GraphicElement *> Scene::elements() const
         }
     }
 
-    return Common::sortGraphicElements(elements_);
+    return sortByTopology(elements_);
 }
 
 const QVector<GraphicElement *> Scene::elements(const QRectF &rect) const
@@ -157,7 +158,34 @@ const QVector<GraphicElement *> Scene::elements(const QRectF &rect) const
         }
     }
 
-    return Common::sortGraphicElements(elements_);
+    return sortByTopology(elements_);
+}
+
+QVector<GraphicElement *> Scene::sortByTopology(QVector<GraphicElement *> elements)
+{
+    QHash<GraphicElement *, QVector<GraphicElement *>> successors;
+    for (auto *elm : elements) {
+        for (auto *port : elm->outputs()) {
+            for (auto *conn : port->connections()) {
+                if (auto *endPort = conn->endPort()) {
+                    if (auto *successor = endPort->graphicElement()) {
+                        if (!successors[elm].contains(successor)) {
+                            successors[elm].append(successor);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    QHash<GraphicElement *, int> priorities;
+    calculatePriorities(elements, successors, priorities);
+
+    std::stable_sort(elements.begin(), elements.end(), [&priorities](const auto &e1, const auto &e2) {
+        return priorities.value(e1) > priorities.value(e2);
+    });
+
+    return elements;
 }
 
 const QVector<QNEConnection *> Scene::connections()
