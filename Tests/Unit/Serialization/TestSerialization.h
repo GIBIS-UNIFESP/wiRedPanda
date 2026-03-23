@@ -5,6 +5,7 @@
 
 #include <QByteArray>
 #include <QObject>
+#include <QTemporaryDir>
 #include <QVersionNumber>
 
 class WorkSpace;
@@ -74,10 +75,18 @@ private slots:
     void testConnectionWithDeletedPorts();
     void testMalformedConnectionData();
 
+    // Versioned backup utility (Serialization::createVersionedBackup)
+    void testVersionedBackupNamingPattern();    // backup name: basename.vX.Y.Z.ext
+    void testVersionedBackupIsIdempotent();     // second call does not overwrite existing backup
+    void testVersionedBackupPreservesOriginal();// original file content unchanged after backup
+    void testVersionedBackupMultiVersions();    // different versions produce different backup files
+
 private:
     // Helper methods
     QByteArray saveToMemory(WorkSpace &workspace);
     void loadFromMemory(WorkSpace &workspace, const QByteArray &data);
     void verifyElementEquality(GraphicElement *original, GraphicElement *loaded);
+
+    QTemporaryDir m_tempDir;
 };
 

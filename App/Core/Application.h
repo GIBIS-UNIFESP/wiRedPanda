@@ -59,6 +59,11 @@ public:
     /// When false, suppresses informational dialogs (e.g. version-mismatch warnings).
     inline static bool interactiveMode = true;
 
+    /// When true, old-format files are automatically backed up and re-saved in the current
+    /// format on load. Independent of interactiveMode so tests can enable migration
+    /// without triggering any QMessageBox dialogs.
+    inline static bool migrationEnabled = true;
+
 private:
     Q_DISABLE_COPY(Application)
 
