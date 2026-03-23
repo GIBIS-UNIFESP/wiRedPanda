@@ -1366,11 +1366,11 @@ void GraphicElement::loadFromDrop(const QString &fileName, const QString &contex
 
 QDataStream &operator<<(QDataStream &stream, const GraphicElement *item)
 {
+    // Type tags are now written by Serialization::serialize() for symmetry
+    // This is now only called from serialize(), so type is already written
     qCDebug(four) << "Writing element.";
     const auto *elm = qgraphicsitem_cast<const GraphicElement *>(item);
     if (elm) {
-        stream << GraphicElement::Type;
-        stream << elm->elementType();
         elm->save(stream);
     }
     return stream;
