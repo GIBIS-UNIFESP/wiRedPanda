@@ -58,6 +58,7 @@
 #include <QHash>
 #include <QHeaderView>
 #include <QIODevice>
+#include <QIcon>
 #include <QImageReader>
 #include <QItemDelegate>
 #include <QJsonArray>
@@ -67,6 +68,7 @@
 #include <QKeyEvent>
 #include <QKeySequence>
 #include <QLabel>
+#include <QLayout>
 #include <QLineEdit>
 #include <QList>
 #include <QLocale>
@@ -82,9 +84,10 @@
 #include <QMimeData>
 #include <QMouseEvent>
 #include <QObject>
+#include <QPageLayout>
+#include <QPageSize>
 #include <QPainter>
 #include <QPalette>
-#include <QPdfWriter>
 #include <QPen>
 #include <QPixmap>
 #include <QPixmapCache>

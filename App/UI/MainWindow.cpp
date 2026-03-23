@@ -16,14 +16,10 @@
 #include <QLocale>
 #include <QLoggingCategory>
 #include <QMessageBox>
-#include <QPdfWriter>
 #include <QPixmapCache>
-#include <QPrinter>
-#include <QResource>
 #include <QSaveFile>
 #include <QShortcut>
 #include <QTemporaryFile>
-#include <QTranslator>
 
 #ifdef Q_OS_MAC
 #include <QSvgRenderer>
@@ -37,13 +33,15 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/IC.h"
 #include "App/IO/RecentFiles.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationBlocker.h"
+#include "App/UI/CircuitExporter.h"
+#include "App/UI/ElementPalette.h"
+#include "App/UI/LanguageManager.h"
 #include "App/UI/MainWindowUI.h"
 #include "App/Versions.h"
 
@@ -59,95 +57,23 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 {
     qCDebug(zero) << "wiRedPanda Version = " APP_VERSION " OR " << AppVersion::current;
     m_ui->setupUi(this);
-
     qCDebug(zero) << "Settings fileName: " << Settings::fileName();
 
-    // --- Language / translation setup ---
-    // Get language from settings, or auto-detect from system if not set
-    QString language = Settings::language();
-    if (language.isEmpty()) {
-        // Auto-detect system language
-        QLocale systemLocale = QLocale::system();
-        QString systemLanguage = systemLocale.name(); // e.g., "en_US", "pt_BR"
-        QString baseLanguage = systemLanguage.split('_').first(); // e.g., "en", "pt"
+    // Must be created before setupLanguage/setupTheme since both may call palette methods.
+    m_palette = new ElementPalette(m_ui.get(), this);
 
-        qCDebug(zero) << "Auto-detected system locale:" << systemLanguage;
-
-        // Check if we have translation for this language
-        const auto availableLanguages = getAvailableLanguages();
-
-        // First try the full locale (e.g., "pt_BR")
-        if (availableLanguages.contains(systemLanguage)) {
-            language = systemLanguage;
-        }
-        // Then try the base language (e.g., "pt")
-        else if (availableLanguages.contains(baseLanguage)) {
-            language = baseLanguage;
-        }
-        // Fall back to English
-        else {
-            qCDebug(zero) << "No translation available for" << systemLanguage << "or" << baseLanguage << ", falling back to English";
-            language = "en";
-        }
-
-        qCDebug(zero) << "Selected language:" << language;
-    }
-
-    loadTranslation(language);
-    populateLanguageMenu();
-
-    connect(m_ui->tab, &QTabWidget::currentChanged,    this, &MainWindow::tabChanged);
-    connect(m_ui->tab, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
-
-    qCDebug(zero) << "Restoring geometry and setting zoom controls.";
-    restoreGeometry(Settings::mainWindowGeometry());
-    restoreState(Settings::mainWindowState());
-    m_ui->splitter->restoreGeometry(Settings::splitterGeometry());
-    m_ui->splitter->restoreState(Settings::splitterState());
-
-    qCDebug(zero) << "Preparing theme and UI modes.";
-    auto *themeGroup = new QActionGroup(this);
-    const auto actions = m_ui->menuTheme->actions();
-
-    for (auto *action : actions) {
-        themeGroup->addAction(action);
-    }
-
-    themeGroup->setExclusive(true);
-    connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &MainWindow::updateTheme);
-    updateTheme();
-    setFastMode(Settings::fastMode());
-    m_ui->actionLabelsUnderIcons->setChecked(Settings::labelsUnderIcons());
-    m_ui->mainToolBar->setToolButtonStyle(Settings::labelsUnderIcons() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
+    setupLanguage();
+    setupGeometry();
+    setupTheme();
 
     qCDebug(zero) << "Setting left side menus.";
-    populateLeftMenu();
-
-    // --- Left-panel tab icon setup ---
-    // Lookup by object name rather than positional index so reordering tabs doesn't break icons.
-    // Set tab icons using object name-based lookup for robustness
-    int ioTabIndex = getTabIndex("io");
-    int gatesTabIndex = getTabIndex("gates");
-    int combinationalTabIndex = getTabIndex("combinational");
-    int memoryTabIndex = getTabIndex("memory");
-    int icTabIndex = getTabIndex("ic");
-    int miscTabIndex = getTabIndex("misc");
-    int searchTabIndex = getTabIndex("search");
-
-    if (ioTabIndex != -1) m_ui->tabElements->setTabIcon(ioTabIndex, QIcon(":/Components/Input/buttonOff.svg"));
-    if (gatesTabIndex != -1) m_ui->tabElements->setTabIcon(gatesTabIndex, QIcon(":/Components/Logic/xor.svg"));
-    if (combinationalTabIndex != -1) m_ui->tabElements->setTabIcon(combinationalTabIndex, QIcon(":/Components/Logic/truthtable-rotated.svg"));
-    if (memoryTabIndex != -1) m_ui->tabElements->setTabIcon(memoryTabIndex, QIcon(DFlipFlop::pixmapPath()));
-    if (icTabIndex != -1) m_ui->tabElements->setTabIcon(icTabIndex, QIcon(":/Components/Logic/ic-panda.svg"));
-    if (miscTabIndex != -1) m_ui->tabElements->setTabIcon(miscTabIndex, QIcon(":/Components/Misc/text.png"));
-    // Search tab is a virtual tab that only becomes enabled when the user types in the search box.
-    if (searchTabIndex != -1) m_ui->tabElements->setTabEnabled(searchTabIndex, false);
+    m_palette->populate();
 
     qCDebug(zero) << "Loading recent file list.";
-    m_recentFiles = new RecentFiles(this);
-    connect(this, &MainWindow::addRecentFile, m_recentFiles, &RecentFiles::addRecentFile);
-    createRecentFileActions();
-    connect(m_recentFiles, &RecentFiles::recentFilesUpdated, this, &MainWindow::updateRecentFileActions);
+    setupRecentFiles();
+
+    qCDebug(zero) << "Setting connections";
+    setupConnections();
 
     qCDebug(zero) << "Checking playing simulation.";
     // Start simulation running by default so the circuit is live on open.
@@ -167,17 +93,81 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
         loadPandaFile(fileName);
     }
 
-    // Arduino export is experimentally disabled until the code generator is
-    // complete enough for general use.
-    qCDebug(zero) << "Disabling Arduino export.";
-    m_ui->actionExportToArduino->setEnabled(false);
-
-    // 100 000 KB — large circuits with many IC pixmaps benefit from generous caching;
-    // the default Qt limit of 10 000 KB causes frequent cache misses on complex designs.
+    // 100 000 KB cache limit — large circuits with many IC pixmaps benefit from generous caching.
     QPixmapCache::setCacheLimit(100000);
 
     qCDebug(zero) << "Adding examples to menu";
+    setupExamplesMenu();
 
+    // Scene-level shortcuts require m_currentTab (set by createNewTab above).
+    setupShortcuts();
+}
+
+void MainWindow::setupLanguage()
+{
+    m_languageManager = new LanguageManager(this);
+    connect(m_languageManager, &LanguageManager::translationChanged, this, &MainWindow::retranslateUi);
+
+    QString language = Settings::language();
+    if (language.isEmpty()) {
+        const QLocale systemLocale  = QLocale::system();
+        const QString systemLang   = systemLocale.name();
+        const QString baseLang     = systemLang.split('_').first();
+        qCDebug(zero) << "Auto-detected system locale:" << systemLang;
+
+        const auto available = m_languageManager->availableLanguages();
+        if (available.contains(systemLang)) {
+            language = systemLang;
+        } else if (available.contains(baseLang)) {
+            language = baseLang;
+        } else {
+            qCDebug(zero) << "No translation for" << systemLang << "or" << baseLang << ", falling back to English";
+            language = "en";
+        }
+        qCDebug(zero) << "Selected language:" << language;
+    }
+
+    m_languageManager->loadTranslation(language);
+    populateLanguageMenu();
+}
+
+void MainWindow::setupGeometry()
+{
+    qCDebug(zero) << "Restoring geometry and setting zoom controls.";
+    restoreGeometry(Settings::mainWindowGeometry());
+    restoreState(Settings::mainWindowState());
+    m_ui->splitter->restoreGeometry(Settings::splitterGeometry());
+    m_ui->splitter->restoreState(Settings::splitterState());
+}
+
+void MainWindow::setupTheme()
+{
+    qCDebug(zero) << "Preparing theme and UI modes.";
+    auto *themeGroup = new QActionGroup(this);
+    for (auto *action : m_ui->menuTheme->actions()) {
+        themeGroup->addAction(action);
+    }
+    themeGroup->setExclusive(true);
+
+    connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &MainWindow::updateTheme);
+    updateTheme();
+    setFastMode(Settings::fastMode());
+
+    // Restore toolbar label style from previous session.
+    m_ui->actionLabelsUnderIcons->setChecked(Settings::labelsUnderIcons());
+    m_ui->mainToolBar->setToolButtonStyle(Settings::labelsUnderIcons() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
+}
+
+void MainWindow::setupRecentFiles()
+{
+    m_recentFiles = new RecentFiles(this);
+    connect(this,          &MainWindow::addRecentFile,         m_recentFiles, &RecentFiles::addRecentFile);
+    connect(m_recentFiles, &RecentFiles::recentFilesUpdated,   this,          &MainWindow::updateRecentFileActions);
+    createRecentFileActions();
+}
+
+void MainWindow::setupExamplesMenu()
+{
     const QString appDir = QCoreApplication::applicationDirPath();
 
     const QStringList searchPaths = {
@@ -203,7 +193,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
         const auto entryList = QDir(examplesPath).entryList({"*.panda"}, QDir::Files);
 
         for (const auto &entry : entryList) {
-            auto *action = new QAction(entry);
+            auto *action = new QAction(entry, this);
 
             connect(action, &QAction::triggered, this, [this, examplesPath] {
                 if (auto *senderAction = qobject_cast<QAction *>(sender())) {
@@ -218,48 +208,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     if (m_ui->menuExamples->isEmpty()) {
         m_ui->menuExamples->menuAction()->setVisible(false);
     }
-
-    qCDebug(zero) << "Setting connections";
-    connect(m_ui->actionAbout,            &QAction::triggered,        this,                &MainWindow::on_actionAbout_triggered);
-    connect(m_ui->actionAboutQt,          &QAction::triggered,        this,                &MainWindow::on_actionAboutQt_triggered);
-    connect(m_ui->actionAboutThisVersion, &QAction::triggered,        this,                &MainWindow::aboutThisVersion);
-    connect(m_ui->actionReportTranslationError, &QAction::triggered,  this,                &MainWindow::on_actionReportTranslationError_triggered);
-    connect(m_ui->actionChangeTrigger,    &QAction::triggered,        m_ui->elementEditor, &ElementEditor::changeTriggerAction);
-    connect(m_ui->actionDarkTheme,        &QAction::triggered,        this,                &MainWindow::on_actionDarkTheme_triggered);
-    connect(m_ui->actionExit,             &QAction::triggered,        this,                &MainWindow::on_actionExit_triggered);
-    connect(m_ui->actionExportToArduino,  &QAction::triggered,        this,                &MainWindow::on_actionExportToArduino_triggered);
-    connect(m_ui->actionExportToImage,    &QAction::triggered,        this,                &MainWindow::on_actionExportToImage_triggered);
-    connect(m_ui->actionExportToPdf,      &QAction::triggered,        this,                &MainWindow::on_actionExportToPdf_triggered);
-    connect(m_ui->actionFastMode,         &QAction::triggered,        this,                &MainWindow::on_actionFastMode_triggered);
-    connect(m_ui->actionFlipHorizontally, &QAction::triggered,        this,                &MainWindow::on_actionFlipHorizontally_triggered);
-    connect(m_ui->actionFlipVertically,   &QAction::triggered,        this,                &MainWindow::on_actionFlipVertically_triggered);
-    connect(m_ui->actionFullscreen,       &QAction::triggered,        this,                &MainWindow::on_actionFullscreen_triggered);
-    connect(m_ui->actionGates,            &QAction::triggered,        this,                &MainWindow::on_actionGates_triggered);
-    connect(m_ui->actionLabelsUnderIcons, &QAction::triggered,        this,                &MainWindow::on_actionLabelsUnderIcons_triggered);
-    connect(m_ui->actionLightTheme,       &QAction::triggered,        this,                &MainWindow::on_actionLightTheme_triggered);
-    connect(m_ui->actionMute,             &QAction::triggered,        this,                &MainWindow::on_actionMute_triggered);
-    connect(m_ui->actionNew,              &QAction::triggered,        this,                &MainWindow::on_actionNew_triggered);
-    connect(m_ui->actionOpen,             &QAction::triggered,        this,                &MainWindow::on_actionOpen_triggered);
-    connect(m_ui->actionPlay,             &QAction::toggled,          this,                &MainWindow::on_actionPlay_toggled);
-    connect(m_ui->actionReloadFile,       &QAction::triggered,        this,                &MainWindow::on_actionReloadFile_triggered);
-    connect(m_ui->actionRename,           &QAction::triggered,        m_ui->elementEditor, &ElementEditor::renameAction);
-    connect(m_ui->actionResetZoom,        &QAction::triggered,        this,                &MainWindow::on_actionResetZoom_triggered);
-    connect(m_ui->actionRestart,          &QAction::triggered,        this,                &MainWindow::on_actionRestart_triggered);
-    connect(m_ui->actionRotateLeft,       &QAction::triggered,        this,                &MainWindow::on_actionRotateLeft_triggered);
-    connect(m_ui->actionRotateRight,      &QAction::triggered,        this,                &MainWindow::on_actionRotateRight_triggered);
-    connect(m_ui->actionSave,             &QAction::triggered,        this,                &MainWindow::on_actionSave_triggered);
-    connect(m_ui->actionSaveAs,           &QAction::triggered,        this,                &MainWindow::on_actionSaveAs_triggered);
-    connect(m_ui->actionSelectAll,        &QAction::triggered,        this,                &MainWindow::on_actionSelectAll_triggered);
-    connect(m_ui->actionShortcutsAndTips, &QAction::triggered,        this,                &MainWindow::on_actionShortcuts_and_Tips_triggered);
-    connect(m_ui->actionWaveform,         &QAction::triggered,        this,                &MainWindow::on_actionWaveform_triggered);
-    connect(m_ui->actionWires,            &QAction::triggered,        this,                &MainWindow::on_actionWires_triggered);
-    connect(m_ui->actionZoomIn,           &QAction::triggered,        this,                &MainWindow::on_actionZoomIn_triggered);
-    connect(m_ui->actionZoomOut,          &QAction::triggered,        this,                &MainWindow::on_actionZoomOut_triggered);
-    connect(m_ui->lineEditSearch,         &QLineEdit::returnPressed,  this,                &MainWindow::on_lineEditSearch_returnPressed);
-    connect(m_ui->lineEditSearch,         &QLineEdit::textChanged,    this,                &MainWindow::on_lineEditSearch_textChanged);
-    connect(m_ui->pushButtonAddIC,        &QPushButton::clicked,      this,                &MainWindow::on_pushButtonAddIC_clicked);
-    connect(m_ui->pushButtonRemoveIC,     &QPushButton::clicked,      this,                &MainWindow::on_pushButtonRemoveIC_clicked);
-    connect(m_ui->pushButtonRemoveIC,     &TrashButton::removeICFile, this,                &MainWindow::removeICFile);
 }
 
 void MainWindow::setupShortcuts()
@@ -276,6 +224,62 @@ void MainWindow::setupShortcuts()
     m_changeNextElmShortcut = new QShortcut(QKeySequence(">"), this);
 
     connect(searchShortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
+}
+
+void MainWindow::setupConnections()
+{
+    connect(m_ui->tab, &QTabWidget::currentChanged,    this, &MainWindow::tabChanged);
+    connect(m_ui->tab, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
+
+    connect(m_ui->actionAbout,                 &QAction::triggered,       this,                &MainWindow::on_actionAbout_triggered);
+    connect(m_ui->actionAboutQt,               &QAction::triggered,       this,                &MainWindow::on_actionAboutQt_triggered);
+    connect(m_ui->actionAboutThisVersion,      &QAction::triggered,       this,                &MainWindow::aboutThisVersion);
+    connect(m_ui->actionReportTranslationError,&QAction::triggered,       this,                &MainWindow::on_actionReportTranslationError_triggered);
+    connect(m_ui->actionChangeTrigger,         &QAction::triggered,       m_ui->elementEditor, &ElementEditor::changeTriggerAction);
+    connect(m_ui->actionDarkTheme,             &QAction::triggered,       this,                &MainWindow::on_actionDarkTheme_triggered);
+    connect(m_ui->actionExit,                  &QAction::triggered,       this,                &MainWindow::on_actionExit_triggered);
+    connect(m_ui->actionExportToArduino,       &QAction::triggered,       this,                &MainWindow::on_actionExportToArduino_triggered);
+    connect(m_ui->actionExportToImage,         &QAction::triggered,       this,                &MainWindow::on_actionExportToImage_triggered);
+    connect(m_ui->actionExportToPdf,           &QAction::triggered,       this,                &MainWindow::on_actionExportToPdf_triggered);
+    connect(m_ui->actionFastMode,              &QAction::triggered,       this,                &MainWindow::on_actionFastMode_triggered);
+    connect(m_ui->actionFlipHorizontally,      &QAction::triggered,       this,                &MainWindow::on_actionFlipHorizontally_triggered);
+    connect(m_ui->actionFlipVertically,        &QAction::triggered,       this,                &MainWindow::on_actionFlipVertically_triggered);
+    connect(m_ui->actionFullscreen,            &QAction::triggered,       this,                &MainWindow::on_actionFullscreen_triggered);
+    connect(m_ui->actionGates,                 &QAction::triggered,       this,                &MainWindow::on_actionGates_triggered);
+    connect(m_ui->actionLabelsUnderIcons,      &QAction::triggered,       this,                &MainWindow::on_actionLabelsUnderIcons_triggered);
+    connect(m_ui->actionLightTheme,            &QAction::triggered,       this,                &MainWindow::on_actionLightTheme_triggered);
+    connect(m_ui->actionMute,                  &QAction::triggered,       this,                &MainWindow::on_actionMute_triggered);
+    connect(m_ui->actionNew,                   &QAction::triggered,       this,                &MainWindow::on_actionNew_triggered);
+    connect(m_ui->actionOpen,                  &QAction::triggered,       this,                &MainWindow::on_actionOpen_triggered);
+    connect(m_ui->actionPlay,                  &QAction::toggled,         this,                &MainWindow::on_actionPlay_toggled);
+    connect(m_ui->actionReloadFile,            &QAction::triggered,       this,                &MainWindow::on_actionReloadFile_triggered);
+    connect(m_ui->actionRename,                &QAction::triggered,       m_ui->elementEditor, &ElementEditor::renameAction);
+    connect(m_ui->actionResetZoom,             &QAction::triggered,       this,                &MainWindow::on_actionResetZoom_triggered);
+    connect(m_ui->actionRestart,               &QAction::triggered,       this,                &MainWindow::on_actionRestart_triggered);
+    connect(m_ui->actionRotateLeft,            &QAction::triggered,       this,                &MainWindow::on_actionRotateLeft_triggered);
+    connect(m_ui->actionRotateRight,           &QAction::triggered,       this,                &MainWindow::on_actionRotateRight_triggered);
+    connect(m_ui->actionSave,                  &QAction::triggered,       this,                &MainWindow::on_actionSave_triggered);
+    connect(m_ui->actionSaveAs,               &QAction::triggered,       this,                &MainWindow::on_actionSaveAs_triggered);
+    connect(m_ui->actionSelectAll,             &QAction::triggered,       this,                &MainWindow::on_actionSelectAll_triggered);
+    connect(m_ui->actionShortcutsAndTips,      &QAction::triggered,       this,                &MainWindow::on_actionShortcuts_and_Tips_triggered);
+    connect(m_ui->actionWaveform,              &QAction::triggered,       this,                &MainWindow::on_actionWaveform_triggered);
+    connect(m_ui->actionWires,                 &QAction::triggered,       this,                &MainWindow::on_actionWires_triggered);
+    connect(m_ui->actionZoomIn,                &QAction::triggered,       this,                &MainWindow::on_actionZoomIn_triggered);
+    connect(m_ui->actionZoomOut,               &QAction::triggered,       this,                &MainWindow::on_actionZoomOut_triggered);
+    connect(m_palette,                         &ElementPalette::addElementRequested, this, [this](QMimeData *mimeData) {
+        if (m_currentTab) m_currentTab->scene()->addItem(mimeData);
+    });
+    connect(m_ui->pushButtonAddIC,             &QPushButton::clicked,     this,                &MainWindow::on_pushButtonAddIC_clicked);
+    connect(m_ui->pushButtonRemoveIC,          &QPushButton::clicked,     this,                &MainWindow::on_pushButtonRemoveIC_clicked);
+    connect(m_ui->pushButtonRemoveIC,          &TrashButton::removeICFile,this,                &MainWindow::removeICFile);
+
+    // These edit actions always delegate to the current tab's scene, so they
+    // never need to be rewired on tab switch.
+    connect(m_ui->actionClearSelection, &QAction::triggered, this, [this] { if (m_currentTab) m_currentTab->scene()->clearSelection(); });
+    connect(m_ui->actionCopy,           &QAction::triggered, this, [this] { if (m_currentTab) m_currentTab->scene()->copyAction(); });
+    connect(m_ui->actionCut,            &QAction::triggered, this, [this] { if (m_currentTab) m_currentTab->scene()->cutAction(); });
+    connect(m_ui->actionDelete,         &QAction::triggered, this, [this] { if (m_currentTab) m_currentTab->scene()->deleteAction(); });
+    connect(m_ui->actionPaste,          &QAction::triggered, this, [this] { if (m_currentTab) m_currentTab->scene()->pasteAction(); });
 }
 
 MainWindow::~MainWindow()
@@ -343,11 +347,14 @@ void MainWindow::removeUndoRedoMenu()
         return;
     }
 
-    // Undo and Redo are the first two actions in menuEdit (inserted by
-    // addUndoRedoMenu).  Removing index 0 twice pops them both; after the
-    // first removal the previous index 1 becomes the new index 0.
-    m_ui->menuEdit->removeAction(m_ui->menuEdit->actions().constFirst());
-    m_ui->menuEdit->removeAction(m_ui->menuEdit->actions().constFirst());
+    // The undo/redo actions are always inserted at positions 0 and 1 of menuEdit.
+    // Any fewer entries means they were never added, so nothing to remove.
+    const auto actions = m_ui->menuEdit->actions();
+    if (actions.size() < 2) {
+        return;
+    }
+    m_ui->menuEdit->removeAction(actions.at(0));
+    m_ui->menuEdit->removeAction(actions.at(1));
 }
 
 void MainWindow::addUndoRedoMenu()
@@ -393,7 +400,7 @@ void MainWindow::save(const QString &fileName)
     }
 
     m_currentTab->save(fileName);
-    updateICList();
+    m_palette->updateICList(currentFile());
     m_ui->statusBar->showMessage(tr("File saved successfully."), 4000);
 }
 
@@ -409,6 +416,7 @@ void MainWindow::show()
 
     qCDebug(zero) << "Checking for autosave file recovery.";
     loadAutosaveFiles();
+
 }
 
 void MainWindow::aboutThisVersion()
@@ -474,7 +482,7 @@ int MainWindow::confirmSave(const bool multiple)
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
     }
 
-    const QString fileName = m_currentFile.fileName().isEmpty() ? tr("New Project") : m_currentFile.fileName();
+    const QString fileName = currentFile().fileName().isEmpty() ? tr("New Project") : currentFile().fileName();
 
     msgBox.setText(fileName + tr(" has been modified.\nDo you want to save your changes?"));
     msgBox.setWindowModality(Qt::WindowModal);
@@ -513,10 +521,7 @@ void MainWindow::loadPandaFile(const QString &fileName)
     createNewTab();
     qCDebug(zero) << "Loading in editor.";
     m_currentTab->load(fileName);
-    // Tighten the scene rect to the loaded items immediately so subsequent
-    // interactions (selection, drag release) don't cause a viewport jump.
-    m_currentTab->scene()->resizeScene();
-    updateICList();
+    m_palette->updateICList(currentFile());
     m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
 }
 
@@ -535,7 +540,7 @@ void MainWindow::on_actionOpen_triggered()
     };
     QFileDialog::getOpenFileContent("Panda files (*.panda)", fileContentReady);
 #else
-    const QString path = m_currentFile.exists() ? "" : "./examples";
+    const QString path = currentFile().exists() ? "" : "./Examples";
     const QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), path, tr("Panda files (*.panda)"));
 
     if (fileName.isEmpty()) {
@@ -555,7 +560,7 @@ void MainWindow::on_actionSave_triggered()
     // TODO: if current file is autosave ask for filename
 
     // If the project has never been saved, fall through to a Save-As dialog.
-    QString fileName = m_currentFile.absoluteFilePath();
+    QString fileName = currentFile().absoluteFilePath();
 
     if (fileName.isEmpty()) {
         fileName = QFileDialog::getSaveFileName(this, tr("Save File as ..."), "", tr("Panda files (*.panda)"));
@@ -578,7 +583,7 @@ void MainWindow::on_actionSaveAs_triggered()
         return;
     }
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File as ..."), m_currentFile.absoluteFilePath(), tr("Panda files (*.panda)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File as ..."), currentFile().absoluteFilePath(), tr("Panda files (*.panda)"));
 
     if (fileName.isEmpty()) {
         return;
@@ -590,7 +595,7 @@ void MainWindow::on_actionSaveAs_triggered()
 
     // IC sub-circuit files are stored alongside the main .panda file.
     // Copy them to the new location so the saved copy is self-contained.
-    IC::copyFiles(QFileInfo(m_currentFile), QFileInfo(fileName));
+    IC::copyFiles(currentFile(), QFileInfo(fileName));
 
     // Open the new file in a fresh tab rather than just saving in-place so
     // the tab title and m_currentFile update to reflect the new path.
@@ -658,11 +663,10 @@ void MainWindow::on_actionReportTranslationError_triggered()
 
 bool MainWindow::closeFiles()
 {
-    // Close from last to first so that tab indices stay stable during iteration;
-    // removing the last tab never shifts the indices of earlier tabs.
+    // Close from last to first so that tab indices stay stable during iteration.
     while (m_ui->tab->count() != 0) {
         if (!closeTab(m_ui->tab->count() - 1)) {
-            return false; // user cancelled — abort the close sequence
+            return false;
         }
     }
     return true;
@@ -758,8 +762,6 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
         return;
     }
 
-    m_currentFile = fileInfo;
-
     QString text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
 
     // Append an asterisk to the tab title to indicate unsaved changes,
@@ -789,60 +791,6 @@ void MainWindow::on_actionSelectAll_triggered()
     }
 
     m_currentTab->scene()->selectAll();
-}
-
-void MainWindow::updateICList()
-{
-    // Remove the expanding spacer before inserting items so new labels don't
-    // push it out of place; it's re-added at the bottom after all labels.
-    m_ui->scrollAreaWidgetContents_IC->layout()->removeItem(m_ui->verticalSpacer_IC);
-
-    // Clear all existing IC labels from both the IC panel and the search panel.
-    const auto items = m_ui->scrollAreaWidgetContents_IC->findChildren<ElementLabel *>();
-
-    for (auto *item : items) {
-        item->deleteLater();
-    }
-
-    const auto items2 = m_ui->scrollAreaWidgetContents_Search->findChildren<ElementLabel *>();
-
-    for (auto *item : items2) {
-        if (item->elementType() == ElementType::IC) {
-            item->deleteLater();
-        }
-    }
-
-    if (m_currentFile.exists()) {
-        qCDebug(zero) << "Show files.";
-        QDir directory(m_currentFile.absoluteDir());
-        // Enumerate all .panda files in the same directory — they are candidate ICs.
-        QStringList files = directory.entryList({"*.panda", "*.PANDA"}, QDir::Files);
-        // Exclude the project file itself from the IC list.
-        files.removeAll(m_currentFile.fileName());
-
-        // Skip hidden files (names starting with '.') — these are typically
-        // autosave/temporary files, not user-created ICs.
-        for (int i = static_cast<int>(files.size()) - 1; i >= 0; --i) {
-            if (files.at(i).at(0) == '.') {
-                files.removeAt(i);
-            }
-        }
-
-        qCDebug(zero) << "Files: " << files.join(", ");
-        for (const QString &file : std::as_const(files)) {
-            QPixmap pixmap(":/Components/Logic/ic-panda.svg");
-
-            // Each IC needs two label instances: one for the dedicated IC tab
-            // and another mirrored into the search panel.
-            auto *item = new ElementLabel(pixmap, ElementType::IC, file, this);
-            m_ui->scrollAreaWidgetContents_IC->layout()->addWidget(item);
-
-            auto *item2 = new ElementLabel(pixmap, ElementType::IC, file, this);
-            m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(item2);
-        }
-    }
-
-    m_ui->scrollAreaWidgetContents_IC->layout()->addItem(m_ui->verticalSpacer_IC);
 }
 
 bool MainWindow::closeTab(const int tabIndex)
@@ -920,13 +868,6 @@ void MainWindow::disconnectTab()
 
     qCDebug(zero) << "Removing undo and redo actions from UI menu.";
     removeUndoRedoMenu();
-
-    disconnect(m_ui->actionClearSelection, &QAction::triggered,         m_currentTab->scene(), &Scene::clearSelection);
-    disconnect(m_ui->actionCopy,           &QAction::triggered,         m_currentTab->scene(), &Scene::copyAction);
-    disconnect(m_ui->actionCut,            &QAction::triggered,         m_currentTab->scene(), &Scene::cutAction);
-    disconnect(m_ui->actionDelete,         &QAction::triggered,         m_currentTab->scene(), &Scene::deleteAction);
-    disconnect(m_ui->actionPaste,          &QAction::triggered,         m_currentTab->scene(), &Scene::pasteAction);
-    disconnect(m_ui->elementEditor,        &ElementEditor::sendCommand, m_currentTab->scene(), &Scene::receiveCommand);
 }
 
 void MainWindow::connectTab()
@@ -934,20 +875,12 @@ void MainWindow::connectTab()
     qCDebug(zero) << "Connecting undo and redo functions to UI menu.";
     addUndoRedoMenu();
 
-    qCDebug(zero) << "Setting Panda file info.";
-    m_currentFile = m_currentTab->fileInfo();
-
-    updateICList();
+    m_palette->updateICList(currentFile());
 
     qCDebug(zero) << "Connecting current tab to element editor menu in UI.";
     m_ui->elementEditor->setScene(m_currentTab->scene());
 
     connect(m_currentTab->view(),       &GraphicsView::zoomChanged, this,                  &MainWindow::zoomChanged);
-    connect(m_ui->actionClearSelection, &QAction::triggered,        m_currentTab->scene(), &Scene::clearSelection);
-    connect(m_ui->actionCopy,           &QAction::triggered,        m_currentTab->scene(), &Scene::copyAction);
-    connect(m_ui->actionCut,            &QAction::triggered,        m_currentTab->scene(), &Scene::cutAction);
-    connect(m_ui->actionDelete,         &QAction::triggered,        m_currentTab->scene(), &Scene::deleteAction);
-    connect(m_ui->actionPaste,          &QAction::triggered,        m_currentTab->scene(), &Scene::pasteAction);
 
     connect(m_prevMainPropShortcut,  &QShortcut::activated, m_currentTab->scene(), &Scene::prevMainPropShortcut);
     connect(m_nextMainPropShortcut,  &QShortcut::activated, m_currentTab->scene(), &Scene::nextMainPropShortcut);
@@ -968,6 +901,7 @@ void MainWindow::connectTab()
     // Synchronise zoom button state to the newly visible tab's zoom level.
     m_ui->actionZoomIn->setEnabled(m_currentTab->view()->canZoomIn());
     m_ui->actionZoomOut->setEnabled(m_currentTab->view()->canZoomOut());
+
 }
 
 WorkSpace *MainWindow::currentTab() const
@@ -995,101 +929,13 @@ void MainWindow::tabChanged(const int newTabIndex)
     qCDebug(zero) << "New tab selected. Dolphin fileName: " << m_currentTab->dolphinFileName();
 }
 
-void MainWindow::on_lineEditSearch_textChanged(const QString &text)
-{
-    // Remove spacer before modifying visible items to avoid layout artefacts;
-    // it's re-added at the end.
-    m_ui->scrollAreaWidgetContents_Search->layout()->removeItem(m_ui->verticalSpacer_Search);
-
-    const int searchTabIndex = getTabIndex("search");
-
-    if (text.isEmpty()) {
-        // Restore the normal tab bar and return to the tab the user was on before
-        // they started typing.
-        m_ui->tabElements->tabBar()->show();
-        m_ui->tabElements->setCurrentIndex(m_lastTabIndex);
-        if (searchTabIndex != -1) {
-            m_ui->tabElements->setTabEnabled(searchTabIndex, false);
-        }
-
-        m_lastTabIndex = -1;
-    } else {
-        // On first keystroke, remember which tab was active so we can restore it.
-        if (m_lastTabIndex == -1) {
-            m_lastTabIndex = m_ui->tabElements->currentIndex();
-        }
-
-        // Hide the tab bar so only the unified search results are visible.
-        m_ui->tabElements->tabBar()->hide();
-        if (searchTabIndex != -1) {
-            m_ui->tabElements->setCurrentIndex(searchTabIndex);
-            m_ui->tabElements->setTabEnabled(searchTabIndex, true);
-        }
-
-        const auto allItems = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
-
-        // First pass: match by object name (e.g. "label_and", "label_or"), which
-        // prioritises exact type name hits over looser name-string matches.
-        QRegularExpression regex1(QString("^label_.*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
-        auto searchResults = m_ui->scrollArea_Search->findChildren<ElementLabel *>(regex1);
-
-        // Second pass: match by the human-readable translated element name.
-        QRegularExpression regex2(QString(".*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
-
-        for (auto *item : allItems) {
-            if (regex2.match(item->name()).hasMatch()) {
-                if (!searchResults.contains(item)) {
-                    searchResults.append(item);
-                }
-            }
-        }
-
-        // Third pass: also search IC file names — ICs share the object name
-        // "label_ic" so the regex above can't distinguish between them.
-        const auto ics = m_ui->scrollArea_Search->findChildren<ElementLabel *>("label_ic");
-
-        for (auto *ic : ics) {
-            if (regex2.match(ic->icFileName()).hasMatch()) {
-                searchResults.append(ic);
-            }
-        }
-
-        for (auto *item : allItems) {
-            item->setHidden(true);
-        }
-
-        for (auto *item : std::as_const(searchResults)) {
-            item->setVisible(true);
-        }
-    }
-
-    m_ui->scrollAreaWidgetContents_Search->layout()->addItem(m_ui->verticalSpacer_Search);
-}
-
-void MainWindow::on_lineEditSearch_returnPressed()
-{
-    if (!m_currentTab) {
-        return;
-    }
-
-    auto allLabels = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
-
-    for (auto *label : std::as_const(allLabels)) {
-        if (label->isVisible()) {
-            m_currentTab->scene()->addItem(label->mimeData());
-            m_ui->lineEditSearch->clear();
-            return;
-        }
-    }
-}
-
 void MainWindow::on_actionReloadFile_triggered()
 {
-    if (!m_currentFile.exists() || !m_currentTab) {
+    if (!currentFile().exists() || !m_currentTab) {
         return;
     }
 
-    const QString file = m_currentFile.absoluteFilePath();
+    const QString file = currentFile().absoluteFilePath();
 
     closeTab(m_tabIndex);
     loadPandaFile(file);
@@ -1105,8 +951,6 @@ void MainWindow::on_actionGates_triggered(const bool checked)
     // make no sense and should be hidden too.  Re-enable the wire toggle only when
     // gates are shown so the user can't end up with floating wires.
     m_ui->actionWires->setEnabled(checked);
-    // When hiding gates, force wires off regardless of the wire-toggle state.
-    // When showing gates, restore whatever the wire toggle was set to.
     m_currentTab->scene()->showWires(checked ? m_ui->actionWires->isChecked() : checked);
     m_currentTab->scene()->showGates(checked);
 }
@@ -1168,8 +1012,8 @@ void MainWindow::on_actionExportToArduino_triggered()
 
     QString path;
 
-    if (m_currentFile.exists()) {
-        path = m_currentFile.absolutePath();
+    if (currentFile().exists()) {
+        path = currentFile().absolutePath();
     }
 
     const QString fileName = QFileDialog::getSaveFileName(this, tr("Generate Arduino Code"), path, tr("Arduino file (*.ino)"));
@@ -1272,12 +1116,7 @@ void MainWindow::on_actionExportToPdf_triggered()
     // De-select elements so their selection handles don't appear in the export.
     m_currentTab->scene()->clearSelection();
 
-    QString path;
-
-    if (m_currentFile.exists()) {
-        path = m_currentFile.absolutePath();
-    }
-
+    const QString path    = currentFile().exists() ? currentFile().absolutePath() : QString();
     QString pdfFile = QFileDialog::getSaveFileName(this, tr("Export to PDF"), path, tr("PDF files (*.pdf)"));
 
     if (pdfFile.isEmpty()) {
@@ -1288,25 +1127,8 @@ void MainWindow::on_actionExportToPdf_triggered()
         pdfFile.append(".pdf");
     }
 
-    QPrinter printer(QPrinter::HighResolution);
-    printer.setPageSize(QPageSize(QPageSize::A4));
-    // Landscape fits most circuits better than portrait.
-    printer.setPageOrientation(QPageLayout::Orientation::Landscape);
-    printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setOutputFileName(pdfFile);
-    QPainter painter;
-
-    if (!painter.begin(&printer)) {
-        throw PANDACEPTION("Could not print this circuit to PDF.");
-    }
-
-    auto *scene = m_currentTab->scene();
-    // Add a 64 px margin around the bounding rect so elements at the edge aren't clipped.
-    scene->render(&painter, QRectF(), scene->itemsBoundingRect().adjusted(-64, -64, 64, 64));
-    painter.end();
-
+    CircuitExporter::renderToPdf(m_currentTab->scene(), pdfFile);
     m_ui->statusBar->showMessage(tr("Exported file successfully."), 4000);
-
     QDesktopServices::openUrl(QUrl::fromLocalFile(pdfFile));
 }
 
@@ -1316,14 +1138,10 @@ void MainWindow::on_actionExportToImage_triggered()
         return;
     }
 
+    // De-select elements so their selection handles don't appear in the export.
     m_currentTab->scene()->clearSelection();
 
-    QString path;
-
-    if (m_currentFile.exists()) {
-        path = m_currentFile.absolutePath();
-    }
-
+    const QString path    = currentFile().exists() ? currentFile().absolutePath() : QString();
     QString pngFile = QFileDialog::getSaveFileName(this, tr("Export to Image"), path, tr("PNG files (*.png)"));
 
     if (pngFile.isEmpty()) {
@@ -1334,20 +1152,8 @@ void MainWindow::on_actionExportToImage_triggered()
         pngFile.append(".png");
     }
 
-    // Render to a pixmap sized exactly to the circuit bounding box + 64 px margin.
-    // Antialiasing is enabled here but not in the PDF path because QPrinter
-    // already renders at high DPI.
-    QRectF rect = m_currentTab->scene()->itemsBoundingRect().adjusted(-64, -64, 64, 64);
-    QPixmap pixmap(rect.size().toSize());
-    QPainter painter;
-    painter.begin(&pixmap);
-    painter.setRenderHint(QPainter::Antialiasing);
-    m_currentTab->scene()->render(&painter, QRectF(), rect);
-    painter.end();
-    pixmap.save(pngFile);
-
+    CircuitExporter::renderToImage(m_currentTab->scene(), pngFile);
     m_ui->statusBar->showMessage(tr("Exported file successfully."), 4000);
-
     QDesktopServices::openUrl(QUrl::fromLocalFile(pngFile));
 }
 
@@ -1355,12 +1161,7 @@ void MainWindow::retranslateUi()
 {
     m_ui->retranslateUi();
     m_ui->elementEditor->retranslateUi();
-
-    const auto items = m_ui->tabElements->findChildren<ElementLabel *>();
-
-    for (auto *item : items) {
-        item->updateName();
-    }
+    m_palette->retranslateLabels();
 
     for (int index = 0; index < m_ui->tab->count(); ++index) {
         auto *workspace = qobject_cast<WorkSpace *>(m_ui->tab->widget(index));
@@ -1393,145 +1194,23 @@ void MainWindow::retranslateUi()
 
 void MainWindow::loadTranslation(const QString &language)
 {
-    if (language.isEmpty()) {
-        return;
-    }
-
-    // Persist immediately so if the app crashes during translation loading the
-    // preference is still saved for the next launch.
-    Settings::setLanguage(language);
-
-    // Always remove and recreate translators rather than calling load() on an
-    // existing one — Qt does not guarantee that a re-loaded translator emits
-    // languageChanged reliably.
-    Application::instance()->removeTranslator(m_pandaTranslator);
-    Application::instance()->removeTranslator(m_qtTranslator);
-
-    delete m_pandaTranslator;
-    delete m_qtTranslator;
-
-    m_pandaTranslator = nullptr;
-    m_qtTranslator = nullptr;
-
-    // English is the source language; no .qm file exists for it, so just
-    // retranslate the UI (which resets to the source strings).
-    if (language == "en") {
-        retranslateUi();
-        return;
-    }
-
-    // ---------------------------------------------
-
-    // Dynamic translation loading based on available files
-    QString pandaFile = QString(":/Translations/wpanda_%1.qm").arg(language);
-    QString qtFile = QString(":/Translations/qt_%1.qm").arg(language);
-
-    // Check if wiRedPanda translation exists
-    QResource pandaResource(pandaFile);
-    if (pandaResource.isValid()) {
-        m_pandaTranslator = new QTranslator(this);
-
-        if (!m_pandaTranslator->load(pandaFile) || !Application::instance()->installTranslator(m_pandaTranslator)) {
-            qCWarning(zero) << "Failed to load wiRedPanda translation for" << language << ", falling back to English";
-            delete m_pandaTranslator;
-            m_pandaTranslator = nullptr;
-            // Fallback to English
-            if (language != "en") {
-                loadTranslation("en");
-                return;
-            }
-        }
-    }
-
-    // Check if Qt translation exists
-    QResource qtResource(qtFile);
-    if (qtResource.isValid()) {
-        m_qtTranslator = new QTranslator(this);
-
-        if (!m_qtTranslator->load(qtFile) || !Application::instance()->installTranslator(m_qtTranslator)) {
-            qCWarning(zero) << "Failed to load Qt translation for" << language << ", continuing without Qt translation";
-            delete m_qtTranslator;
-            m_qtTranslator = nullptr;
-        }
-    }
-
-    retranslateUi();
-}
-
-QStringList MainWindow::getAvailableLanguages() const
-{
-    QStringList languages;
-
-    // Always include English as it's the default
-    languages << "en";
-
-    // The Qt resource system exposes ":/Translations" as a virtual directory
-    // that can be listed like a real filesystem — more robust than hardcoding a
-    // language list, and automatically picks up newly added .qm files.
-    QDir translationsDir(":/Translations");
-    if (translationsDir.exists()) {
-        QStringList qmFiles = translationsDir.entryList({"wpanda_*.qm"}, QDir::Files);
-
-        for (const QString &file : std::as_const(qmFiles)) {
-            // Extract language code from filename (e.g., "wpanda_fr.qm" -> "fr")
-            QString langCode = file;
-            langCode.remove("wpanda_");
-            langCode.remove(".qm");
-
-            // Verify the resource actually exists and is valid
-            QString resourcePath = QString(":/Translations/%1").arg(file);
-            QResource resource(resourcePath);
-
-            if (resource.isValid() && !langCode.isEmpty()) {
-                languages << langCode;
-            }
-        }
-    } else {
-        // Fallback: Try all possible language patterns if directory listing fails
-        // This covers edge cases where QDir doesn't work with Qt resources
-        const QStringList languagePatterns = {
-            "ar", "bg", "bn", "cs", "da", "de", "el", "es", "et", "fa", "fi", "fr",
-            "he", "hi", "hr", "hu", "id", "it", "ja", "ko", "lt", "lv", "ms", "nb",
-            "nl", "pl", "pt", "pt_BR", "ro", "ru", "sk", "sv", "th", "tr", "uk",
-            "vi", "zh_Hans", "zh_Hant"
-        };
-
-        for (const QString &langCode : languagePatterns) {
-            QString resourcePath = QString(":/Translations/wpanda_%1.qm").arg(langCode);
-            QResource resource(resourcePath);
-
-            if (resource.isValid()) {
-                languages << langCode;
-            }
-        }
-    }
-
-    // Remove duplicates and sort
-    languages.removeDuplicates();
-    languages.sort();
-    return languages;
+    m_languageManager->loadTranslation(language);
 }
 
 void MainWindow::populateLanguageMenu()
 {
-    // Clear existing actions from the UI menu
     m_ui->menuLanguage->clear();
 
-    const auto availableLanguages = getAvailableLanguages();
     auto *languageGroup = new QActionGroup(this);
     languageGroup->setExclusive(true);
 
-    for (const QString &langCode : availableLanguages) {
-        auto *action = new QAction(getLanguageDisplayName(langCode), this);
+    for (const QString &langCode : m_languageManager->availableLanguages()) {
+        auto *action = new QAction(m_languageManager->displayName(langCode), this);
         action->setCheckable(true);
         action->setData(langCode);
+        action->setIcon(QIcon(m_languageManager->flagIcon(langCode)));
 
-        // Set the flag icon for the language
-        action->setIcon(QIcon(getLanguageFlagIcon(langCode)));
-
-        // Check if this is the current language
-        if (langCode == Settings::language() ||
-           (langCode == "en" && Settings::language().isEmpty())) {
+        if (langCode == Settings::language() || (langCode == "en" && Settings::language().isEmpty())) {
             action->setChecked(true);
         }
 
@@ -1539,155 +1218,9 @@ void MainWindow::populateLanguageMenu()
         m_ui->menuLanguage->addAction(action);
 
         connect(action, &QAction::triggered, this, [this, langCode]() {
-            loadTranslation(langCode);
+            m_languageManager->loadTranslation(langCode);
         });
     }
-}
-
-QString MainWindow::getLanguageDisplayName(const QString &langCode) const
-{
-    // Use Qt's built-in locale system to get native language names
-    QLocale locale(langCode);
-
-    // Special handling for some language codes that need specific locales
-    if (langCode == "pt_BR") {
-        locale = QLocale(QLocale::Portuguese, QLocale::Brazil);
-    }
-
-    // Get the native language name (e.g., "Deutsch" for German)
-    QString nativeName = locale.nativeLanguageName();
-
-    // If we have a country-specific variant, add the country name
-    if (langCode.contains('_') || langCode == "pt_BR") {
-        QString nativeCountryName = locale.nativeTerritoryName();
-        if (!nativeCountryName.isEmpty() && nativeCountryName != nativeName) {
-            nativeName += QString(" (%1)").arg(nativeCountryName);
-        }
-    }
-
-    // Fallback to language code if Qt doesn't have the name
-    if (nativeName.isEmpty()) {
-        // Manual fallbacks for languages Qt might not fully support
-        static const QMap<QString, QString> fallbackNames = {
-            {"bn", "বাংলা"},
-            {"fa", "فارسی"},
-            {"he", "עברית"},
-            {"th", "ไทย"}
-        };
-        nativeName = fallbackNames.value(langCode, langCode);
-    }
-
-    // Ensure proper capitalization for the first letter
-    if (!nativeName.isEmpty() && nativeName.at(0).isLetter()) {
-        nativeName[0] = nativeName.at(0).toUpper();
-    }
-
-    return nativeName;
-}
-
-QString MainWindow::getLanguageFlagIcon(const QString &langCode) const
-{
-    // Use Qt's locale system to determine the appropriate country flag
-    QLocale locale(langCode);
-
-    // Special handling for specific language variants
-    if (langCode == "pt") {
-        locale = QLocale(QLocale::Portuguese, QLocale::Portugal);
-    }
-
-    // Map Qt country codes to our flag resource names
-    static const QMap<QLocale::Country, QString> countryToFlag = {
-        {QLocale::SaudiArabia, ":/Interface/Locale/arabic.svg"},          // Arabic
-        {QLocale::Bulgaria, ":/Interface/Locale/bulgarian.svg"},          // Bulgarian
-        {QLocale::Bangladesh, ":/Interface/Locale/bangladesh.svg"},       // Bengali
-        {QLocale::CzechRepublic, ":/Interface/Locale/czech.svg"},        // Czech
-        {QLocale::Denmark, ":/Interface/Locale/danish.svg"},             // Danish
-        {QLocale::Germany, ":/Interface/Locale/german.svg"},             // German
-        {QLocale::Greece, ":/Interface/Locale/greek.svg"},               // Greek
-        {QLocale::UnitedStates, ":/Interface/Locale/usa.svg"},           // English
-        {QLocale::Spain, ":/Interface/Locale/spanish.svg"},              // Spanish
-        {QLocale::Estonia, ":/Interface/Locale/estonian.svg"},           // Estonian
-        {QLocale::Iran, ":/Interface/Locale/iranian.svg"},               // Persian/Farsi
-        {QLocale::Finland, ":/Interface/Locale/finnish.svg"},            // Finnish
-        {QLocale::France, ":/Interface/Locale/french.svg"},              // French
-        {QLocale::Israel, ":/Interface/Locale/hebrew.svg"},              // Hebrew
-        {QLocale::India, ":/Interface/Locale/hindi.svg"},                // Hindi
-        {QLocale::Croatia, ":/Interface/Locale/croatian.svg"},           // Croatian
-        {QLocale::Hungary, ":/Interface/Locale/hungarian.svg"},          // Hungarian
-        {QLocale::Indonesia, ":/Interface/Locale/indonesian.svg"},       // Indonesian
-        {QLocale::Italy, ":/Interface/Locale/italian.svg"},              // Italian
-        {QLocale::Japan, ":/Interface/Locale/japanese.svg"},             // Japanese
-        {QLocale::SouthKorea, ":/Interface/Locale/korean.svg"},          // Korean
-        {QLocale::Lithuania, ":/Interface/Locale/lithuanian.svg"},       // Lithuanian
-        {QLocale::Latvia, ":/Interface/Locale/latvian.svg"},             // Latvian
-        {QLocale::Malaysia, ":/Interface/Locale/malaysian.svg"},         // Malay
-        {QLocale::Norway, ":/Interface/Locale/norwegian.svg"},           // Norwegian
-        {QLocale::Netherlands, ":/Interface/Locale/dutch.svg"},          // Dutch
-        {QLocale::Poland, ":/Interface/Locale/polish.svg"},              // Polish
-        {QLocale::Portugal, ":/Interface/Locale/portuguese.svg"},        // Portuguese
-        {QLocale::Brazil, ":/Interface/Locale/brasil.svg"},              // Portuguese (Brazil)
-        {QLocale::Romania, ":/Interface/Locale/romanian.svg"},           // Romanian
-        {QLocale::Russia, ":/Interface/Locale/russian.svg"},             // Russian
-        {QLocale::Slovakia, ":/Interface/Locale/slovak.svg"},            // Slovak
-        {QLocale::Sweden, ":/Interface/Locale/swedish.svg"},             // Swedish
-        {QLocale::Thailand, ":/Interface/Locale/thai.svg"},              // Thai
-        {QLocale::Turkey, ":/Interface/Locale/turkish.svg"},             // Turkish
-        {QLocale::Ukraine, ":/Interface/Locale/ukrainian.svg"},          // Ukrainian
-        {QLocale::Vietnam, ":/Interface/Locale/vietnamese.svg"},         // Vietnamese
-        {QLocale::China, ":/Interface/Locale/chinese.svg"},              // Chinese Simplified
-        {QLocale::Taiwan, ":/Interface/Locale/chinese_traditional.svg"}  // Chinese Traditional
-    };
-
-    // Get the flag for the locale's country
-    QString flagIcon = countryToFlag.value(locale.territory(), ":/Interface/Locale/default.svg");
-
-    // Fallback for languages where Qt might not detect the country correctly
-    if (flagIcon == ":/Interface/Locale/default.svg") {
-        static const QMap<QString, QString> languageFallbacks = {
-            {"ar", ":/Interface/Locale/arabic.svg"},
-            {"bg", ":/Interface/Locale/bulgarian.svg"},
-            {"bn", ":/Interface/Locale/bangladesh.svg"},
-            {"cs", ":/Interface/Locale/czech.svg"},
-            {"da", ":/Interface/Locale/danish.svg"},
-            {"de", ":/Interface/Locale/german.svg"},
-            {"el", ":/Interface/Locale/greek.svg"},
-            {"en", ":/Interface/Locale/usa.svg"},
-            {"es", ":/Interface/Locale/spanish.svg"},
-            {"et", ":/Interface/Locale/estonian.svg"},
-            {"fa", ":/Interface/Locale/iranian.svg"},
-            {"fi", ":/Interface/Locale/finnish.svg"},
-            {"fr", ":/Interface/Locale/french.svg"},
-            {"he", ":/Interface/Locale/hebrew.svg"},
-            {"hi", ":/Interface/Locale/hindi.svg"},
-            {"hr", ":/Interface/Locale/croatian.svg"},
-            {"hu", ":/Interface/Locale/hungarian.svg"},
-            {"id", ":/Interface/Locale/indonesian.svg"},
-            {"it", ":/Interface/Locale/italian.svg"},
-            {"ja", ":/Interface/Locale/japanese.svg"},
-            {"ko", ":/Interface/Locale/korean.svg"},
-            {"lt", ":/Interface/Locale/lithuanian.svg"},
-            {"lv", ":/Interface/Locale/latvian.svg"},
-            {"ms", ":/Interface/Locale/malaysian.svg"},
-            {"nb", ":/Interface/Locale/norwegian.svg"},
-            {"nl", ":/Interface/Locale/dutch.svg"},
-            {"pl", ":/Interface/Locale/polish.svg"},
-            {"pt", ":/Interface/Locale/portuguese.svg"},
-            {"pt_BR", ":/Interface/Locale/brasil.svg"},
-            {"ro", ":/Interface/Locale/romanian.svg"},
-            {"ru", ":/Interface/Locale/russian.svg"},
-            {"sk", ":/Interface/Locale/slovak.svg"},
-            {"sv", ":/Interface/Locale/swedish.svg"},
-            {"th", ":/Interface/Locale/thai.svg"},
-            {"tr", ":/Interface/Locale/turkish.svg"},
-            {"uk", ":/Interface/Locale/ukrainian.svg"},
-            {"vi", ":/Interface/Locale/vietnamese.svg"},
-            {"zh_Hans", ":/Interface/Locale/chinese.svg"},
-            {"zh_Hant", ":/Interface/Locale/chinese_traditional.svg"}
-        };
-        flagIcon = languageFallbacks.value(langCode, ":/Interface/Locale/default.svg");
-    }
-
-    return flagIcon;
 }
 
 void MainWindow::on_actionPlay_toggled(const bool checked)
@@ -1698,8 +1231,7 @@ void MainWindow::on_actionPlay_toggled(const bool checked)
 
     auto *simulation = m_currentTab->simulation();
 
-    // toggled(bool) carries the new checked state, so this is the canonical
-    // start/stop dispatch point — no separate on/off slots needed.
+    // The action is checkable; its toggled(bool) signal drives start/stop directly.
     checked ? simulation->start() : simulation->stop();
 }
 
@@ -1728,23 +1260,6 @@ void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLa
     }
 
     layout->addItem(spacer);
-}
-
-void MainWindow::populateLeftMenu()
-{
-    // Set to the first tab (Inputs/Outputs)
-    const int ioTabIndex = getTabIndex("io");
-    if (ioTabIndex != -1) {
-        m_ui->tabElements->setCurrentIndex(ioTabIndex);
-    } else {
-        // Fallback to first tab if object name not found
-        m_ui->tabElements->setCurrentIndex(0);
-    }
-    populateMenu(m_ui->verticalSpacer_InOut, {"InputVcc", "InputGnd", "InputButton", "InputSwitch", "InputRotary", "Clock", "Led", "Display7", "Display14", "Display16", "Buzzer", "AudioBox"}, m_ui->scrollAreaWidgetContents_InOut->layout());
-    populateMenu(m_ui->verticalSpacer_Gates, {"And", "Or", "Not", "Nand", "Nor", "Xor", "Xnor", "Node"}, m_ui->scrollAreaWidgetContents_Gates->layout());
-    populateMenu(m_ui->verticalSpacer_Combinational, {"TruthTable", "Mux", "Demux"}, m_ui->scrollAreaWidgetContents_Combinational->layout());
-    populateMenu(m_ui->verticalSpacer_Memory, {"DLatch", "SRLatch", "DFlipFlop", "JKFlipFlop", "TFlipFlop"}, m_ui->scrollAreaWidgetContents_Memory->layout());
-    populateMenu(m_ui->verticalSpacer_Misc, {"Text", "Line"}, m_ui->scrollAreaWidgetContents_Misc->layout());
 }
 
 void MainWindow::on_actionFastMode_triggered(const bool checked)
@@ -1787,20 +1302,7 @@ void MainWindow::updateTheme()
         break;
     }
 
-    // Memory tab icon uses DFlipFlop's SVG which differs between themes.
-    const int memoryTabIndex = getTabIndex("memory");
-    if (memoryTabIndex != -1) {
-        m_ui->tabElements->setTabIcon(memoryTabIndex, QIcon(DFlipFlop::pixmapPath()));
-    }
-
-    // Only memory element labels are theme-sensitive (their SVGs change colour);
-    // other tabs use fixed icons and don't need individual repaints.
-    const auto labels = m_ui->memory->findChildren<ElementLabel *>();
-
-    for (auto *label : labels) {
-        label->updateTheme();
-    }
-
+    m_palette->updateTheme();
     m_ui->elementEditor->updateTheme();
 }
 
@@ -1923,7 +1425,7 @@ void MainWindow::on_pushButtonAddIC_clicked()
         IC::copyFiles(QFileInfo(file), destPath);
     }
 
-    updateICList();
+    m_palette->updateICList(currentFile());
 }
 
 void MainWindow::on_pushButtonRemoveIC_clicked()
@@ -1944,8 +1446,6 @@ void MainWindow::removeICFile(const QString &icFileName)
 
     // Iterate in reverse so that removing items doesn't invalidate subsequent
     // iterators (the list is a copy, but the scene's internal container may shift).
-    // label().append(".panda").toLower() reconstructs the filename from the IC
-    // label (e.g. "adder" → "adder.panda") for comparison against icFileName.
     for (auto it = elements.rbegin(); it != elements.rend(); ++it) {
         if ((*it)->elementType() == ElementType::IC && (*it)->label().append(".panda").toLower() == icFileName) {
             m_currentTab->scene()->removeItem(*it);
@@ -1959,19 +1459,8 @@ void MainWindow::removeICFile(const QString &icFileName)
         throw PANDACEPTION("Error removing file: %1", file.errorString());
     }
 
-    updateICList();
+    m_palette->updateICList(currentFile());
     // Auto-save after removal so the scene no longer references the deleted file.
     on_actionSave_triggered();
-}
-
-int MainWindow::getTabIndex(const QString &objectName) const
-{
-    for (int i = 0; i < m_ui->tabElements->count(); ++i) {
-        QWidget *tabWidget = m_ui->tabElements->widget(i);
-        if (tabWidget && tabWidget->objectName() == objectName) {
-            return i;
-        }
-    }
-    return -1;
 }
 
