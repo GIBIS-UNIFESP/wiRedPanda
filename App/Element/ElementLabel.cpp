@@ -10,7 +10,6 @@
 #include <QMouseEvent>
 
 #include "App/Element/ElementFactory.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 
 ElementLabel::ElementLabel(const QPixmap &pixmap, ElementType type, const QString &icFileName, QWidget *parent)
