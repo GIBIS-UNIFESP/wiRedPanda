@@ -38,5 +38,9 @@ public:
 
     /// Refreshes the pixmap when the application theme changes.
     void updateTheme() override;
+    void updateLogic() override;
+private:
+    bool m_lastClk = false;
+    bool m_lastValue = true;
 };
 

@@ -16,7 +16,6 @@
 #include "App/Core/Enums.h"
 
 class GraphicElement;
-class LogicElement;
 class QNEConnection;
 class QNEPort;
 
@@ -25,9 +24,8 @@ class QNEPort;
  * \brief Abstract base class for circuit element ports (connection endpoints).
  *
  * \details A port is the small diamond/circle drawn at the edge of a graphic element
- * where wires attach.  It stores a reference to the owning GraphicElement, the
- * LogicElement slot it corresponds to, all attached QNEConnections, and its
- * current logical status.
+ * where wires attach.  It stores a reference to the owning GraphicElement,
+ * all attached QNEConnections, and its current logical status.
  *
  * Concrete subclasses QNEInputPort and QNEOutputPort differentiate direction.
  */
@@ -48,11 +46,6 @@ public:
 
     /// Returns the graphic element that owns this port.
     GraphicElement *graphicElement() const;
-
-    /// Returns the LogicElement associated with this port.
-    LogicElement *logic() const;
-    int logicIndex() const;
-    void setPortLogic(LogicElement *logic, int index);
 
     // --- Identity & Status ---
 
@@ -163,8 +156,6 @@ protected:
     // --- Members ---
 
     GraphicElement *m_graphicElement = nullptr;
-    LogicElement *m_logic = nullptr;
-    int m_logicIndex = 0;
     QBrush m_currentBrush;
     QGraphicsTextItem *m_label = new QGraphicsTextItem(this); ///< Child text item displaying the port name label.
     QList<QNEConnection *> m_connections; // use smart pointers

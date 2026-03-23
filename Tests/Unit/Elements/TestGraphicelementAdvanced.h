@@ -49,10 +49,5 @@ private slots:
     void testElementRotation();
     void testElementPosition();
     void testElementPositionPersistence();
-
-    // Logic element binding tests
-    void testSetLogicElement();
-    void testGetLogicElement();
-    void testLogicElementNullPointer();
 };
 

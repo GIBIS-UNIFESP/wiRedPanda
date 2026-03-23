@@ -30,5 +30,8 @@ public:
 
     /// Recalculates port positions for the current port count.
     void updatePortsProperties() override;
+
+    /// Copies the single input value to the single output (pass-through).
+    void updateLogic() override;
 };
 

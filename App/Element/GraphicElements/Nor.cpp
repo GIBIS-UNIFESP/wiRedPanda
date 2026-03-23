@@ -3,8 +3,9 @@
 
 #include "App/Element/GraphicElements/Nor.h"
 
+#include <functional>
+
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicNor.h"
 
 template<>
 struct ElementInfo<Nor> {
@@ -28,7 +29,6 @@ struct ElementInfo<Nor> {
         meta.trContext = "Nor";
         // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Logic/nor.svg"});
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicNor>(elm->inputSize()); };
         return meta;
     }
 
@@ -43,5 +43,14 @@ Nor::Nor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Nor, parent)
 {
     // Skip full initialisation when building a property-probe instance (see ElementFactory).
+}
+
+void Nor::updateLogic()
+{
+    if (!updateInputs()) {
+        return;
+    }
+    const auto result = std::accumulate(simInputs().cbegin(), simInputs().cend(), false, std::bit_or<>());
+    setOutputValue(!result);
 }
 

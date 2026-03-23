@@ -17,7 +17,6 @@
 
 class GraphicElement;
 class ItemWithId;
-class LogicElement;
 class QNEConnection;
 
 /**

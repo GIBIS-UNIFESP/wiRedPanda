@@ -20,5 +20,8 @@ class Nand : public GraphicElement
 public:
     /// Constructs a Nand gate element with default 2 inputs.
     explicit Nand(QGraphicsItem *parent = nullptr);
+
+    /// Sets output to the logical NAND of all inputs.
+    void updateLogic() override;
 };
 

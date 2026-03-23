@@ -34,7 +34,7 @@ private slots:
     void testElementProcessingOrderConsistency();
     void testSceneInitializationDeterminism();
     void testSimulationOutputReproducibility();
-    void testElementMappingStability();
+    void testSimulationGraphStability();
     void testCircuitWithFeedbackLoops();
 
     // Negative tests — verify graceful handling of degenerate circuit conditions

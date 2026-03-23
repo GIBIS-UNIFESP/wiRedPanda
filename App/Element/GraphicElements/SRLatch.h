@@ -38,5 +38,8 @@ public:
 
     /// Refreshes the pixmap when the application theme changes.
     void updateTheme() override;
+
+    /// Updates Q based on S and R inputs.
+    void updateLogic() override;
 };
 

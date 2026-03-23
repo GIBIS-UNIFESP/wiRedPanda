@@ -3,6 +3,7 @@
 
 #include "Tests/Integration/TestSimulation.h"
 
+#include "App/Core/Priorities.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputButton.h"
@@ -15,7 +16,9 @@
 #include "App/Element/GraphicElements/SRLatch.h"
 #include "App/Element/GraphicElements/Xor.h"
 #include "App/Nodes/QNEConnection.h"
+#include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
+#include "App/Simulation/Simulation.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::getInputStatus;
@@ -318,7 +321,7 @@ void TestSimulation::testSimulationInitialization()
 void TestSimulation::testElementProcessingOrderConsistency()
 {
     // Test that element processing order remains consistent across multiple runs
-    // This verifies our fix for std::stable_sort in ElementMapping::sortLogicElements
+    // This verifies our fix for std::stable_sort in topological sorting
     // Uses stable element IDs for comparison, not pointer addresses
 
     constexpr int NUM_RUNS = 10;
@@ -545,9 +548,9 @@ void TestSimulation::testSimulationOutputReproducibility()
     }
 }
 
-void TestSimulation::testElementMappingStability()
+void TestSimulation::testSimulationGraphStability()
 {
-    // Test ElementMapping for consistent behavior across multiple initializations
+    // Test simulation graph for consistent behavior across multiple initializations
     // This verifies our QHash -> QMap fix for deterministic iteration
 
     constexpr int NUM_RUNS = 10;
@@ -615,20 +618,34 @@ void TestSimulation::testElementMappingStability()
         connections[9]->setStartPort(not1.outputPort());
         connections[9]->setEndPort(led2.inputPort());
 
-        // Create ElementMapping and test its consistent behavior
+        // Build simulation graph and verify consistent ordering
         auto elements = scene->elements();
-        ElementMapping mapping(elements);
+        for (auto *elm : elements) {
+            elm->initSimulationVectors(elm->inputSize(), elm->outputSize());
+        }
+        Simulation::buildConnectionGraph(elements);
 
-        // The constructor triggers priority calculation and sorting
-        mapping.sort();
-        const auto &logicElements = mapping.logicElms();
+        QHash<GraphicElement *, QVector<GraphicElement *>> successors;
+        for (auto *elm : elements) {
+            for (auto *outputPort : elm->outputs()) {
+                for (auto *conn : outputPort->connections()) {
+                    if (auto *endPort = conn->endPort()) {
+                        auto *successor = endPort->graphicElement();
+                        if (successor && !successors[elm].contains(successor)) {
+                            successors[elm].append(successor);
+                        }
+                    }
+                }
+            }
+        }
+        QHash<GraphicElement *, int> priorities;
+        calculatePriorities(elements, successors, priorities);
 
-        // Store structural properties to verify consistent ordering
         QVector<QPair<int, int>> elementProperties;
-        for (const auto &logicPtr : logicElements) {
-            // Store output size as stable comparison (priority moved to ElementMapping)
-            int outputSize = logicPtr->outputSize();
-            elementProperties.append(QPair<int, int>(0, outputSize));
+        for (auto *elm : elements) {
+            int priority = priorities.value(elm, -1);
+            int outputSize = elm->outputSize();
+            elementProperties.append(QPair<int, int>(priority, outputSize));
         }
 
         mappingResults.append(elementProperties);
@@ -643,7 +660,7 @@ void TestSimulation::testElementMappingStability()
 
         for (int i = 0; i < mappingResults[0].size(); ++i) {
             if (mappingResults[run][i] != mappingResults[0][i]) {
-                QString msg = QString("ElementMapping structure mismatch at run %1, position %2: expected (%3,%4), got (%5,%6)")
+                QString msg = QString("Simulation graph mismatch at run %1, position %2: expected (%3,%4), got (%5,%6)")
                                   .arg(run).arg(i)
                                   .arg(mappingResults[0][i].first).arg(mappingResults[0][i].second)
                                   .arg(mappingResults[run][i].first).arg(mappingResults[run][i].second);
@@ -840,7 +857,7 @@ void TestSimulation::testPartiallyConnectedCircuitIsolation()
 void TestSimulation::testDanglingConnectionGraceful()
 {
     // A QNEConnection with an end port but no start port is "dangling".
-    // ElementMapping skips it (startPort() == nullptr), so the AND gate's input
+    // buildConnectionGraph() skips it (startPort() == nullptr), so the AND gate's input
     // remains unconnected → unknown logic → simulation must not crash.
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());

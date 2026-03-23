@@ -530,7 +530,8 @@ add_test(NAME TestDialogs COMMAND test_wiredpanda TestDialogs WORKING_DIRECTORY 
 add_test(NAME TestDisplays COMMAND test_wiredpanda TestDisplays WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementFactory COMMAND test_wiredpanda TestElementFactory WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementLabel COMMAND test_wiredpanda TestElementLabel WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestElementMapping COMMAND test_wiredpanda TestElementMapping WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestElementLogic COMMAND test_wiredpanda TestElementLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestElementLogicErrors COMMAND test_wiredpanda TestElementLogicErrors WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementProperties COMMAND test_wiredpanda TestElementProperties WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestEnums COMMAND test_wiredpanda TestEnums WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFeatures COMMAND test_wiredpanda TestFeatures WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -612,13 +613,11 @@ add_test(NAME TestLevel9CPU16BitRISC COMMAND test_wiredpanda TestLevel9CPU16BitR
 add_test(NAME TestLevel9FetchStage16Bit COMMAND test_wiredpanda TestLevel9FetchStage16Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel9MultiCycleCPU8Bit COMMAND test_wiredpanda TestLevel9MultiCycleCPU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel9SingleCycleCPU8Bit COMMAND test_wiredpanda TestLevel9SingleCycleCPU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLogicElements COMMAND test_wiredpanda TestLogicElements WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLogicElementsErrors COMMAND test_wiredpanda TestLogicElementsErrors WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLogicGates COMMAND test_wiredpanda TestLogicGates WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLogicNode COMMAND test_wiredpanda TestLogicNode WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestMUXDEMUXComprehensive COMMAND test_wiredpanda TestMUXDEMUXComprehensive WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMemorySettlingTime COMMAND test_wiredpanda TestMemorySettlingTime WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestMUXDEMUXComprehensive COMMAND test_wiredpanda TestMUXDEMUXComprehensive WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMultiplexing COMMAND test_wiredpanda TestMultiplexing WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestNodeLogic COMMAND test_wiredpanda TestNodeLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPriorities COMMAND test_wiredpanda TestPriorities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRAMCell1Bit COMMAND test_wiredpanda TestRAMCell1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRecentFiles COMMAND test_wiredpanda TestRecentFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -700,7 +699,7 @@ foreach(TEST TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocks
 endforeach()
 
 # Factory and Core Element Tests - Unit category
-foreach(TEST TestElementFactory TestLogicElements TestLogicElementsErrors TestLogicNode)
+foreach(TEST TestElementFactory TestElementLogic TestElementLogicErrors TestNodeLogic)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
 
@@ -714,7 +713,7 @@ endforeach()
 set_tests_properties(TestScene TestSceneUndoredo PROPERTIES RESOURCE_LOCK clipboard)
 
 # Serialization and Command Tests - Integration category
-foreach(TEST TestSerialization TestElementMapping TestSimulationBlocker TestDialogs)
+foreach(TEST TestSerialization TestSimulationBlocker TestDialogs)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 

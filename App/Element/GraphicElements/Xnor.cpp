@@ -3,8 +3,9 @@
 
 #include "App/Element/GraphicElements/Xnor.h"
 
+#include <functional>
+
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicXnor.h"
 
 template<>
 struct ElementInfo<Xnor> {
@@ -28,7 +29,6 @@ struct ElementInfo<Xnor> {
         meta.trContext = "Xnor";
         // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Logic/xnor.svg"});
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicXnor>(elm->inputSize()); };
         return meta;
     }
 
@@ -43,5 +43,14 @@ Xnor::Xnor(QGraphicsItem *parent)
     : GraphicElement(ElementType::Xnor, parent)
 {
     // Skip full initialisation when building a property-probe instance (see ElementFactory).
+}
+
+void Xnor::updateLogic()
+{
+    if (!updateInputs()) {
+        return;
+    }
+    const auto result = std::accumulate(simInputs().cbegin(), simInputs().cend(), false, std::bit_xor<>());
+    setOutputValue(!result);
 }
 
