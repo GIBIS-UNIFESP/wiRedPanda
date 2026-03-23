@@ -7,30 +7,57 @@
 #include <QPixmap>
 
 #include "App/Core/Common.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicOutput.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
 
-Display7::Display7(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Display7, ElementGroup::Output, ":/Components/Output/Counter/counter_on.svg", tr("7-SEGMENT DISPLAY"), tr("7-Segment Display"), 8, 8, 0, 0, parent)
-{
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<Display7> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::Display7,
+        .group = ElementGroup::Output,
+        .minInputSize = 8,
+        .maxInputSize = 8,
+        .canChangeSkin = true,
+        .hasColors = true,
+        .hasLabel = true,
+        .rotatable = false,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Output/Counter/counter_on.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("Display7", "7-SEGMENT DISPLAY");
+        meta.translatedName = QT_TRANSLATE_NOOP("Display7", "7-Segment Display");
+        meta.trContext = "Display7";
+        meta.defaultSkins = QStringList({
+            ":/Components/Output/Counter/counter_off.svg",
+            ":/Components/Output/Counter/counter_a.svg",
+            ":/Components/Output/Counter/counter_b.svg",
+            ":/Components/Output/Counter/counter_c.svg",
+            ":/Components/Output/Counter/counter_d.svg",
+            ":/Components/Output/Counter/counter_e.svg",
+            ":/Components/Output/Counter/counter_f.svg",
+            ":/Components/Output/Counter/counter_g.svg",
+            ":/Components/Output/Counter/counter_dp.svg",
+        });
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicOutput>(elm->inputSize()); };
+        return meta;
     }
 
-    m_defaultSkins = QStringList{
-        ":/Components/Output/Counter/counter_off.svg",
-        ":/Components/Output/Counter/counter_a.svg",
-        ":/Components/Output/Counter/counter_b.svg",
-        ":/Components/Output/Counter/counter_c.svg",
-        ":/Components/Output/Counter/counter_d.svg",
-        ":/Components/Output/Counter/counter_e.svg",
-        ":/Components/Output/Counter/counter_f.svg",
-        ":/Components/Output/Counter/counter_g.svg",
-        ":/Components/Output/Counter/counter_dp.svg",
-    };
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new Display7(); });
+        return true;
+    }();
+};
 
+Display7::Display7(QGraphicsItem *parent)
+    : GraphicElement(ElementType::Display7, parent)
+{
     qCDebug(three) << "Allocating pixmaps.";
     // Each segment is stored as a vector of 5 color variants (White, Red, Green, Blue, Purple).
     // They all start as copies of the default (white) SVG; convertAllColors() then recolors
@@ -53,11 +80,6 @@ Display7::Display7(QGraphicsItem *parent)
     convertAllColors(f);
     convertAllColors(g);
     convertAllColors(dp);
-
-    setCanChangeSkin(true);
-    setHasColors(true);
-    setHasLabel(true);
-    setRotatable(false);
 
     Display7::updatePortsProperties();
 }

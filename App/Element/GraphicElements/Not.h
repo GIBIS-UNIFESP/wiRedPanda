@@ -22,5 +22,3 @@ public:
     explicit Not(QGraphicsItem *parent = nullptr);
 };
 
-Q_DECLARE_METATYPE(Not)
-

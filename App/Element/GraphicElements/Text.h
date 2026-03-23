@@ -24,5 +24,3 @@ public:
     explicit Text(QGraphicsItem *parent = nullptr);
 };
 
-Q_DECLARE_METATYPE(Text)
-

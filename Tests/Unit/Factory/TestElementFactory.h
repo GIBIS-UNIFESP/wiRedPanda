@@ -16,7 +16,7 @@ private slots:
     void testBuildElement_data();
     void testBuildElement();
     void testBuildElementInvalidType();
-    void testBuildLogicElement();
+    void testMetadataLogicCreator();
 
     // Type Conversion (3 tests)
     void testTextToType_data();
@@ -26,6 +26,9 @@ private slots:
     // Registry Management (3 tests)
     void testItemRegistry();
     void testUniqueIdAssignment();
-    void testPropertyCaching();
+    void testMetadataRegistry();
+
+    // Completeness Tests (1 test)
+    void testAllElementTypesRegistered();
 };
 

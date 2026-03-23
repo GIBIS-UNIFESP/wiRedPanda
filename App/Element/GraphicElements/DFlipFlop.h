@@ -41,5 +41,3 @@ public:
     void updateTheme() override;
 };
 
-Q_DECLARE_METATYPE(DFlipFlop)
-

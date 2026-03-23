@@ -22,5 +22,3 @@ public:
     explicit And(QGraphicsItem *parent = nullptr);
 };
 
-Q_DECLARE_METATYPE(And)
-

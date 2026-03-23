@@ -68,5 +68,3 @@ private:
     bool m_muted = false;
 };
 
-Q_DECLARE_METATYPE(Buzzer)
-

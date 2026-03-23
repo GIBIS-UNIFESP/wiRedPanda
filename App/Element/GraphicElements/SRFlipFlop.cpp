@@ -3,24 +3,44 @@
 
 #include "App/Element/GraphicElements/SRFlipFlop.h"
 
-#include "App/GlobalProperties.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicSRFlipFlop.h"
 #include "App/Nodes/QNEPort.h"
 
-SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::SRFlipFlop, ElementGroup::Memory, pixmapPath(), tr("SR-FLIP-FLOP"), tr("SR-Flip-Flop"), 5, 5, 2, 2, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<SRFlipFlop> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::SRFlipFlop,
+        .group = ElementGroup::Memory,
+        .minInputSize = 5,
+        .maxInputSize = 5,
+        .minOutputSize = 2,
+        .maxOutputSize = 2,
+        .canChangeSkin = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return SRFlipFlop::pixmapPath(); };
+        meta.titleText = QT_TRANSLATE_NOOP("SRFlipFlop", "SR-FLIP-FLOP");
+        meta.translatedName = QT_TRANSLATE_NOOP("SRFlipFlop", "SR-Flip-Flop");
+        meta.trContext = "SRFlipFlop";
+        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicSRFlipFlop>(); };
+        return meta;
     }
 
-    // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new SRFlipFlop(); });
+        return true;
+    }();
+};
 
-    setCanChangeSkin(true);
-
+SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
+    : GraphicElement(ElementType::SRFlipFlop, parent)
+{
     // Call the most-derived override explicitly to guarantee correct port positions
     // even if a subclass overrides updatePortsProperties() further.
     SRFlipFlop::updatePortsProperties();

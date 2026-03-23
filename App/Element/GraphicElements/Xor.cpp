@@ -3,21 +3,45 @@
 
 #include "App/Element/GraphicElements/Xor.h"
 
-#include "App/GlobalProperties.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicXor.h"
 
-Xor::Xor(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Xor, ElementGroup::Gate, ":/Components/Logic/xor.svg", tr("XOR"), tr("Xor"), 2, 8, 1, 1, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<Xor> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::Xor,
+        .group = ElementGroup::Gate,
+        .minInputSize = 2,
+        .maxInputSize = 8,
+        .minOutputSize = 1,
+        .maxOutputSize = 1,
+        .canChangeSkin = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Logic/xor.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("Xor", "XOR");
+        meta.translatedName = QT_TRANSLATE_NOOP("Xor", "Xor");
+        meta.trContext = "Xor";
+        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
+        meta.defaultSkins = QStringList({":/Components/Logic/xor.svg"});
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicXor>(elm->inputSize()); };
+        return meta;
     }
 
-    // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new Xor(); });
+        return true;
+    }();
+};
 
-    setCanChangeSkin(true);
+Xor::Xor(QGraphicsItem *parent)
+    : GraphicElement(ElementType::Xor, parent)
+{
+    // Skip full initialisation when building a property-probe instance (see ElementFactory).
 }
 

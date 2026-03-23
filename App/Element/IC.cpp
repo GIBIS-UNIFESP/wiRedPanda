@@ -13,24 +13,47 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/ElementInfo.h"
 #include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
 
-IC::IC(QGraphicsItem *parent)
-    : GraphicElement(ElementType::IC, ElementGroup::IC, "", tr("INTEGRATED CIRCUIT"), tr("IC"), 0, 0, 0, 0, parent)
-{
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<IC> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::IC,
+        .group = ElementGroup::IC,
+        .hasLabel = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QString(); };
+        meta.titleText = QT_TRANSLATE_NOOP("IC", "INTEGRATED CIRCUIT");
+        meta.translatedName = QT_TRANSLATE_NOOP("IC", "IC");
+        meta.trContext = "IC";
+        meta.defaultSkins = QStringList();
+        // IC has no logicCreator — it uses generateMap() instead
+        return meta;
     }
 
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new IC(); });
+        return true;
+    }();
+};
+
+IC::IC(QGraphicsItem *parent)
+    : GraphicElement(ElementType::IC, parent)
+{
     // ICs display their label vertically alongside the chip body, matching the physical
     // convention of reading IC labels along the side of a physical DIP package
     m_label->setRotation(90);
-
-    setHasLabel(true);
 
     // Hot-reload: when the .panda file backing this IC changes on disk (e.g. the user saved
     // an edited sub-circuit), reload the IC definition and restart the simulation so the

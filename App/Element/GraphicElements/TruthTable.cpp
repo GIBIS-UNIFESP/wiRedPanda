@@ -6,25 +6,55 @@
 #include <QPainter>
 
 #include "App/Core/Common.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicTruthTable.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
 
-TruthTable::TruthTable(QGraphicsItem *parent)
-    : GraphicElement(ElementType::TruthTable, ElementGroup::IC, ":/Components/Logic/truthtable-rotated.svg", tr("TRUTH TABLE"), tr("Truth Table"), 2, 8, 1, 8, parent)
-{
-    // 2048 bits = 256 rows × 8 output columns (max: 8 inputs × 8 outputs).
-    // Laid out as [row0_out0, row0_out1, ..., row0_out7, row1_out0, ...].
-    // All outputs default to 0 (all-false table).
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<TruthTable> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::TruthTable,
+        .group = ElementGroup::IC,
+        .minInputSize = 2,
+        .maxInputSize = 8,
+        .minOutputSize = 1,
+        .maxOutputSize = 8,
+        .canChangeSkin = true,
+        .hasLabel = true,
+        .hasTruthTable = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Logic/truthtable-rotated.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("TruthTable", "TRUTH TABLE");
+        meta.translatedName = QT_TRANSLATE_NOOP("TruthTable", "Truth Table");
+        meta.trContext = "TruthTable";
+        meta.defaultSkins = QStringList({":/Components/Logic/truthtable-rotated.svg"});
+        meta.logicCreator = [](GraphicElement *elm) {
+            auto *truthTable = qobject_cast<TruthTable *>(elm);
+            if (!truthTable) {
+                throw PANDACEPTION_WITH_CONTEXT("TruthTable", "Failed to cast element to TruthTable");
+            }
+            return std::make_shared<LogicTruthTable>(elm->inputSize(), elm->outputSize(), truthTable->key());
+        };
+        return meta;
     }
 
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
-    setHasTruthTable(true);
-    setCanChangeSkin(true);
-    setHasLabel(true);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new TruthTable(); });
+        return true;
+    }();
+};
+
+TruthTable::TruthTable(QGraphicsItem *parent)
+    : GraphicElement(ElementType::TruthTable, parent)
+{
+    // 2048 bits = 256 rows × 8 output columns (max: 8 inputs × 8 outputs).
     m_key.resize(2048);
     m_key.fill(0);
     TruthTable::updatePortsProperties();

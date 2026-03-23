@@ -22,5 +22,3 @@ public:
     explicit Nand(QGraphicsItem *parent = nullptr);
 };
 
-Q_DECLARE_METATYPE(Nand)
-

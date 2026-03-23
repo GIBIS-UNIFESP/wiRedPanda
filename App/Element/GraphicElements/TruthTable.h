@@ -59,5 +59,3 @@ private:
     QBitArray m_key;
 };
 
-Q_DECLARE_METATYPE(TruthTable)
-
