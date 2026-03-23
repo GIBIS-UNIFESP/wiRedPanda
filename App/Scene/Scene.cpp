@@ -20,7 +20,6 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/Buzzer.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Commands.h"
@@ -75,7 +74,6 @@ void Scene::drawBackground(QPainter *painter, const QRectF &rect)
 
     QGraphicsScene::drawBackground(painter, rect);
 
-    const int gridSize = GlobalProperties::gridSize;
     const int left = static_cast<int>(std::floor(rect.left() / gridSize)) * gridSize;
     const int top = static_cast<int>(std::floor(rect.top() / gridSize)) * gridSize;
     const int right = static_cast<int>(std::ceil(rect.right() / gridSize)) * gridSize;

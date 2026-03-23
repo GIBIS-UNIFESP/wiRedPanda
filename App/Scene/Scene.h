@@ -38,6 +38,8 @@ class Scene : public QGraphicsScene
 public:
     using QGraphicsScene::addItem;
 
+    static constexpr int gridSize = 16; ///< Scene grid unit in pixels (elements snap to gridSize/2).
+
     // --- Lifecycle ---
 
     /// Constructs a Scene and initialises the undo stack and simulation.
