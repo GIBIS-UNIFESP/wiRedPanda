@@ -75,6 +75,11 @@ QString cpuComponentsDir()
     return QString(QUOTE(CURRENTDIR)) + "/Integration/IC/Components/";
 }
 
+QString arduinoExpectedDir()
+{
+    return QString(QUOTE(CURRENTDIR)) + "/Integration/Arduino/";
+}
+
 bool getInputStatus(GraphicElement *elm, int port)
 {
     auto *inputPort = elm->inputPort(port);
