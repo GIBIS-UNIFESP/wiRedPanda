@@ -19,11 +19,11 @@ void LogicJKFlipFlop::updateLogic()
 
     bool q0 = outputValue(0);
     bool q1 = outputValue(1);
-    const bool j = m_inputValues.at(0);
-    const bool clk = m_inputValues.at(1);
-    const bool k = m_inputValues.at(2);
-    const bool prst = m_inputValues.at(3);
-    const bool clr = m_inputValues.at(4);
+    const bool j = inputs().at(0);
+    const bool clk = inputs().at(1);
+    const bool k = inputs().at(2);
+    const bool prst = inputs().at(3);
+    const bool clr = inputs().at(4);
 
     // Rising-edge detection; inputs sampled from the previous cycle (setup time).
     if (clk && !m_lastClk) {

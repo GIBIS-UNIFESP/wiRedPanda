@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief Maps graphic elements to their logic counterparts and wires up connections.
+ * \brief Maps graphic elements to logic elements for simulation.
  */
 
 #pragma once
@@ -10,8 +10,10 @@
 #include <memory>
 
 #include <QCoreApplication>
+#include <QHash>
+#include <QSet>
 
-#include "App/Element/LogicElements/LogicInput.h"
+#include "App/Element/LogicElements/LogicSource.h"
 
 class Clock;
 class GraphicElement;
@@ -23,60 +25,47 @@ class QNEPort;
 
 /**
  * \class ElementMapping
- * \brief Builds and maintains the flat simulation graph from a scene's elements.
- *
- * \details During construction, ElementMapping calls generateMap() to create
- * shared_ptr<LogicElement> instances for every graphic element, then
- * connectElements() wires them according to the QNEConnection topology.
- * sort() assigns topological priorities for deterministic update ordering.
+ * \brief Translates a set of GraphicElements into a flat vector of LogicElements.
  */
 class ElementMapping
 {
     Q_DECLARE_TR_FUNCTIONS(ElementMapping)
 
 public:
-    /**
-     * \brief Constructs and initializes the mapping from \a elements.
-     * \param elements All graphic elements currently in the scene.
-     */
     explicit ElementMapping(const QVector<GraphicElement *> &elements);
 
-    /// Destructor.
     ~ElementMapping() = default;
 
     // --- Query ---
 
-    /// Returns the ordered vector of logic elements.
     const QVector<std::shared_ptr<LogicElement>> &logicElms() const;
+
+    // --- Topology queries ---
+
+    int priority(const LogicElement *logic) const;
+    bool isInFeedbackLoop(const LogicElement *logic) const;
+    bool hasFeedbackElements() const;
 
     // --- Topology ---
 
-    /// Topologically sorts the logic elements by priority.
     void sort();
 
 private:
     Q_DISABLE_COPY(ElementMapping)
 
-    // --- Mapping generation ---
-
     void generateMap();
-    void generateLogic(GraphicElement *elm);
-
-    // --- Connection setup ---
-
     void connectElements();
     void applyConnection(QNEInputPort *inputPort);
-
-    // --- Validation & sorting ---
-
     void validateElements();
     void sortLogicElements();
 
     // --- Members ---
 
-    LogicInput m_globalGND{false};
-    LogicInput m_globalVCC{true};
+    LogicSource m_globalGND{false};
+    LogicSource m_globalVCC{true};
     QVector<GraphicElement *> m_elements;
     QVector<std::shared_ptr<LogicElement>> m_logicElms;
+    QHash<const LogicElement *, int> m_priorities;
+    QSet<const LogicElement *> m_feedbackNodes;
 };
 

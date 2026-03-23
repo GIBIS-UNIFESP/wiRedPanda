@@ -19,7 +19,7 @@ void LogicXnor::updateLogic()
     // XOR fold with identity=false counts parity; invert for XNOR (even-parity → true).
     // For more than 2 inputs this is an odd-parity detector negated, which is the
     // standard n-input XNOR convention used in this simulator.
-    const auto result = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), false, std::bit_xor<>());
+    const auto result = std::accumulate(inputs().cbegin(), inputs().cend(), false, std::bit_xor<>());
     setOutputValue(!result);
 }
 

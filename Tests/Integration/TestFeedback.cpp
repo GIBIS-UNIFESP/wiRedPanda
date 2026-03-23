@@ -134,7 +134,7 @@ void TestFeedback::testPureCombinationalCircuit()
     // Verify no feedback loops exist
     bool found = false;
     for (auto *elem : scene.elements()) {
-        if (elem->logic() && elem->logic()->inFeedbackLoop()) {
+        if (elem->logic() && sim.isInFeedbackLoop(elem->logic())) {
             found = true;
             break;
         }
@@ -245,7 +245,7 @@ void TestFeedback::testWarningMessageContent()
     // Verify the circuit has feedback elements
     bool found = false;
     for (auto *elem : scene->elements()) {
-        if (elem->logic() && elem->logic()->inFeedbackLoop()) {
+        if (elem->logic() && sim.isInFeedbackLoop(elem->logic())) {
             found = true;
             break;
         }
@@ -462,11 +462,11 @@ void TestFeedback::testAllCycleNodesMarked()
             continue;
         }
         if (elem->elementType() == ElementType::InputSwitch) {
-            QVERIFY2(!elem->logic()->inFeedbackLoop(),
+            QVERIFY2(!sim.isInFeedbackLoop(elem->logic()),
                      "Input switch should NOT be in feedback loop");
             ++nonFeedbackCount;
         } else if (elem->elementType() == ElementType::Nand) {
-            QVERIFY2(elem->logic()->inFeedbackLoop(),
+            QVERIFY2(sim.isInFeedbackLoop(elem->logic()),
                      "NAND gate in SR latch cycle should be in feedback loop");
             ++feedbackCount;
         }
@@ -769,7 +769,7 @@ void TestFeedback::verifyFeedbackDetection(Scene *scene)
     // Verify that at least one element is in a feedback loop
     bool found = false;
     for (auto *elem : scene->elements()) {
-        if (elem->logic() && elem->logic()->inFeedbackLoop()) {
+        if (elem->logic() && sim.isInFeedbackLoop(elem->logic())) {
             found = true;
             break;
         }

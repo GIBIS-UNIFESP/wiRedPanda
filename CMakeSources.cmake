@@ -49,7 +49,6 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicDemux.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicDFlipFlop.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicDLatch.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicInput.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicJKFlipFlop.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicMux.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNand.cpp
@@ -57,7 +56,8 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNot.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicOr.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicOutput.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSink.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSource.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSRFlipFlop.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSRLatch.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicTFlipFlop.cpp
@@ -152,16 +152,15 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicDemux.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicDFlipFlop.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicDLatch.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicInput.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicJKFlipFlop.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicMux.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNand.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNode.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNone.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNot.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicOr.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicOutput.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSink.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSource.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSRFlipFlop.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSRLatch.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicTFlipFlop.h

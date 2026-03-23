@@ -19,10 +19,10 @@ void LogicTFlipFlop::updateLogic()
 
     bool q0 = outputValue(0);
     bool q1 = outputValue(1);
-    const bool T = m_inputValues.at(0);
-    const bool clk = m_inputValues.at(1);
-    const bool prst = m_inputValues.at(2);
-    const bool clr = m_inputValues.at(3);
+    const bool T = inputs().at(0);
+    const bool clk = inputs().at(1);
+    const bool prst = inputs().at(2);
+    const bool clr = inputs().at(3);
 
     // Rising-edge detection: T is sampled one cycle early (m_lastValue) to model
     // setup time — the T input must be stable before the clock edge fires.

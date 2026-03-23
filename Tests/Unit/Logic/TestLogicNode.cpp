@@ -6,12 +6,12 @@
 #include <QTest>
 
 #include "App/Element/LogicElements/LogicAnd.h"
-#include "App/Element/LogicElements/LogicInput.h"
 #include "App/Element/LogicElements/LogicNode.h"
+#include "App/Element/LogicElements/LogicSource.h"
 
 void TestLogicNode::init()
 {
-    std::generate(m_inputs.begin(), m_inputs.end(), [] { return new LogicInput(); });
+    std::generate(m_inputs.begin(), m_inputs.end(), [] { return new LogicSource(); });
 }
 
 void TestLogicNode::cleanup()

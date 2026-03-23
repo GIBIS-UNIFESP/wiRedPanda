@@ -22,7 +22,7 @@ void LogicTruthTable::updateLogic()
         // truth table that corresponds to the current input combination.
         // String-based binary conversion is used for readability; with at most
         // 8 inputs the string is at most 8 characters long, so performance is fine.
-        const auto pos = std::accumulate(m_inputValues.cbegin(), m_inputValues.cend(), QString(""),
+        const auto pos = std::accumulate(inputs().cbegin(), inputs().cend(), QString(""),
                                          [](QString acc, bool b) {
                                              acc += (b == 1) ? '1' : '0';
                                              return acc;

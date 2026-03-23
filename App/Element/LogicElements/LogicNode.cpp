@@ -16,6 +16,6 @@ void LogicNode::updateLogic()
 
     // A node is a wire junction: it exists solely to fan out a single signal to
     // multiple destinations without any logical transformation.
-    setOutputValue(m_inputValues.at(0));
+    setOutputValue(inputs().at(0));
 }
 

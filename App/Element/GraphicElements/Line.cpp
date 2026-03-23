@@ -4,7 +4,6 @@
 #include "App/Element/GraphicElements/Line.h"
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicNone.h"
 
 template<>
 struct ElementInfo<Line> {
@@ -25,7 +24,6 @@ struct ElementInfo<Line> {
         meta.translatedName = QT_TRANSLATE_NOOP("Line", "Line");
         meta.trContext = "Line";
         meta.defaultSkins = QStringList({":/Components/Misc/line.svg"});
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicNone>(); };
         return meta;
     }
 

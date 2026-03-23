@@ -26,12 +26,12 @@ void LogicDemux::updateLogic()
         return;
     }
 
-    const bool data = m_inputValues.at(0);
+    const bool data = inputs().at(0);
 
     // Decode select lines to get the index of the selected output
     int selectValue = 0;
     for (int i = 0; i < m_numSelectLines; i++) {
-        if (m_inputValues.at(1 + i)) {
+        if (inputs().at(1 + i)) {
             selectValue |= (1 << i);
         }
     }
