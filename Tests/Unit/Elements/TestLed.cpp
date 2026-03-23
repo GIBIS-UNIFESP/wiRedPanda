@@ -429,7 +429,8 @@ void TestLED::testLoadColorNewVersion()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
-    led2->load(loadStream, portMap, QVersionNumber(4, 1));
+    SerializationContext context{portMap, QVersionNumber(4, 1), {}};
+    led2->load(loadStream, context);
 
     // Color should be loaded correctly
     QCOMPARE(led2->color(), QString("Blue"));
@@ -454,7 +455,8 @@ void TestLED::testLoadColorDefault()
     QMap<quint64, QNEPort *> portMap;
     // Load with version < 1.1 - should return early, leaving color unchanged
     led.setColor("Blue");
-    led.load(loadStream, portMap, QVersionNumber(1, 0));
+    SerializationContext contextOld{portMap, QVersionNumber(1, 0), {}};
+    led.load(loadStream, contextOld);
 
     // Color should remain "Blue" because very old version returns early without loading
     QCOMPARE(led.color(), QString("Blue"));

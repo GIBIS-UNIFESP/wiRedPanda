@@ -20,6 +20,7 @@
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/IO/Serialization.h"
+#include "App/IO/SerializationContext.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
@@ -948,7 +949,9 @@ void Scene::paste(QDataStream &stream, const QVersionNumber &version)
 
     QPointF center; stream >> center;
 
-    const auto itemList = Serialization::deserialize(stream, {}, version);
+    QMap<quint64, QNEPort *> portMap;
+    SerializationContext context{portMap, version, Serialization::contextDir};
+    const auto itemList = Serialization::deserialize(stream, context);
     // Shift pasted elements so their centroid lands at the cursor position,
     // then nudge 32 px diagonally so repeated pastes are visually offset and
     // don't completely overlap the original selection.
@@ -1104,7 +1107,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         auto *element = ElementFactory::buildElement(type);
         qCDebug(zero) << "Valid element.";
 
-        element->loadFromDrop(icFileName);
+        element->loadFromDrop(icFileName, Serialization::contextDir);
 
         qCDebug(zero) << "Adding the element to the scene.";
         receiveCommand(new AddItemsCommand({element}, this));
@@ -1140,7 +1143,9 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         QPointF ctr;    stream >> ctr;
         offset = event->scenePos() - offset;
 
-        const auto itemList = Serialization::deserialize(stream, {}, version);
+        QMap<quint64, QNEPort *> portMap;
+        SerializationContext context{portMap, version, Serialization::contextDir};
+        const auto itemList = Serialization::deserialize(stream, context);
 
         receiveCommand(new AddItemsCommand(itemList, this));
         clearSelection();
@@ -1413,7 +1418,7 @@ void Scene::addItem(QMimeData *mimeData)
     auto *element = ElementFactory::buildElement(type);
     qCDebug(zero) << "Valid element.";
 
-    element->loadFromDrop(icFileName);
+    element->loadFromDrop(icFileName, Serialization::contextDir);
 
     qCDebug(zero) << "Adding the element to the scene.";
     receiveCommand(new AddItemsCommand({element}, this));

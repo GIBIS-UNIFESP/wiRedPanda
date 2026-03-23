@@ -69,7 +69,7 @@ public:
     // --- Serialization ---
 
     /// Deserializes the current port selection.
-    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
+    void load(QDataStream &stream, SerializationContext &context) override;
 
     /// Serializes the current port selection to \a stream.
     void save(QDataStream &stream) const override;

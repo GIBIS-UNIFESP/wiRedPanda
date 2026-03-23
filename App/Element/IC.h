@@ -46,7 +46,7 @@ public:
      */
     static void copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath);
     /// Loads the IC circuit from \a fileName and rebuilds the logic mapping.
-    void loadFile(const QString &fileName);
+    void loadFile(const QString &fileName, const QString &contextDir);
 
     // --- Logic mapping ---
 
@@ -72,7 +72,7 @@ public:
     /// \reimp
     int getOutputIndexForPort(int portIndex) const override;
 
-    void loadFromDrop(const QString &fileName) override;
+    void loadFromDrop(const QString &fileName, const QString &contextDir) override;
 
     // --- Visual ---
 
@@ -86,7 +86,7 @@ public:
     // --- Serialization ---
 
     /// \reimp
-    void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version) override;
+    void load(QDataStream &stream, SerializationContext &context) override;
     /// \reimp
     void save(QDataStream &stream) const override;
 
@@ -106,7 +106,7 @@ private:
 
     LogicElement *inputLogic(int index);
     LogicElement *outputLogic(int index);
-    void copyFile();
+    void copyFile(const CopyOperation &op);
 
     // --- Loading helpers ---
 
@@ -120,12 +120,6 @@ private:
     // --- Visual helpers ---
 
     void generatePixmap();
-
-    // --- Static file paths ---
-
-    inline static QString destPath_;
-    inline static QString srcPath_;
-    inline static bool needToCopyFiles = false;
 
     // --- Members ---
 

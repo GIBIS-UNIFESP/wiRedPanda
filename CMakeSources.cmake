@@ -170,6 +170,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/GlobalProperties.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/IO/SerializationContext.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEConnection.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEPort.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.h

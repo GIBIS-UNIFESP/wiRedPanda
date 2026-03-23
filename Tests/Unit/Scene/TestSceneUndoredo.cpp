@@ -11,7 +11,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display7.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Commands.h"
@@ -21,7 +20,6 @@
 void TestSceneUndoredo::initTestCase()
 {
     QVERIFY(m_tempDir.isValid());
-    GlobalProperties::currentDir = m_tempDir.path();
 }
 
 void TestSceneUndoredo::testReceiveCommand()
@@ -1419,18 +1417,18 @@ void TestSceneUndoredo::testUndoStackCleanState()
 void TestSceneUndoredo::testContextDirectoryPerTab()
 {
     // Regression test for the autosave context-directory leak.
-    // Before the fix, Workspace::autosave() set GlobalProperties::currentDir to the
+    // Before the fix, Workspace::autosave() set Serialization::contextDir to the
     // autosave temp directory and never restored it. This caused IC relative-path
     // resolution to fail in other open workspaces after the first autosave.
     //
     // The fix: save and restore GlobalProperties::currentDir around the autosave write.
 
-    const QString savedForTest = GlobalProperties::currentDir;
+    const QString savedForTest = Serialization::contextDir;
 
     // Simulate a "currently active workspace" context directory
     const QString circuitDir = m_tempDir.path() + "/my_project";
     QDir().mkpath(circuitDir);
-    GlobalProperties::currentDir = circuitDir;
+    Serialization::contextDir = circuitDir;
 
     {
         WorkSpace ws;
@@ -1442,9 +1440,9 @@ void TestSceneUndoredo::testContextDirectoryPerTab()
         // so autosave() has already run by this point.
     }
 
-    // currentDir must be restored to what it was before the WorkSpace did its autosave
-    QCOMPARE(GlobalProperties::currentDir, circuitDir);
+    // contextDir must be restored to what it was before the WorkSpace did its autosave
+    QCOMPARE(Serialization::contextDir, circuitDir);
 
-    GlobalProperties::currentDir = savedForTest;
+    Serialization::contextDir = savedForTest;
 }
 

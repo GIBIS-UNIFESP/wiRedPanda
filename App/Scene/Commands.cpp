@@ -13,6 +13,7 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
+#include "App/IO/SerializationContext.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
@@ -188,14 +189,15 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QMap<quint64, QNEPort *> portMap;
+    SerializationContext context{portMap, version, Serialization::contextDir};
 
     for (auto *elm : findElements(otherIds)) {
-        elm->load(stream, portMap, version);
+        elm->load(stream, context);
     }
 
     /* Assuming that all connections are stored after the elements, we will deserialize the elements first.
      * We will store one additional information: The element IDs! */
-    const auto items = Serialization::deserialize(stream, portMap, version);
+    const auto items = Serialization::deserialize(stream, context);
 
     if (items.size() != ids.size()) {
         throw PANDACEPTION_WITH_CONTEXT("commands", "One or more elements were not found on scene. Expected %1, found %2.", static_cast<int>(ids.size()), static_cast<int>(items.size()));
@@ -437,9 +439,10 @@ void UpdateCommand::loadData(QByteArray &itemData)
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QMap<quint64, QNEPort *> portMap;
+    SerializationContext context{portMap, version, Serialization::contextDir};
 
     for (auto *elm : elements) {
-        elm->load(stream, portMap, version);
+        elm->load(stream, context);
         elm->setSelected(true);
     }
 }
@@ -901,11 +904,12 @@ void ChangeInputSizeCommand::undo()
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QMap<quint64, QNEPort *> portMap;
+    SerializationContext context{portMap, version, Serialization::contextDir};
 
     // Restore element and upstream element state first (expands port count back),
     // then reconstruct the connection objects that were severed during redo()
     for (auto *elm : serializationOrder) {
-        elm->load(stream, portMap, version);
+        elm->load(stream, context);
     }
 
     for (auto *elm : elements) {
@@ -913,7 +917,7 @@ void ChangeInputSizeCommand::undo()
         for (int i = 0; i < connCount; ++i) {
             int connId; stream >> connId;
             auto *conn = new QNEConnection();
-            conn->load(stream, portMap);
+            conn->load(stream, context);
             ElementFactory::updateItemId(conn, connId);
             m_scene->addItem(conn);
         }
@@ -1006,9 +1010,10 @@ void ChangeOutputSizeCommand::undo()
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QMap<quint64, QNEPort *> portMap;
+    SerializationContext context{portMap, version, Serialization::contextDir};
 
     for (auto *elm : serializationOrder) {
-        elm->load(stream, portMap, version);
+        elm->load(stream, context);
     }
 
     for (auto *elm : elements) {
@@ -1016,7 +1021,7 @@ void ChangeOutputSizeCommand::undo()
         for (int i = 0; i < connCount; ++i) {
             int connId; stream >> connId;
             auto *conn = new QNEConnection();
-            conn->load(stream, portMap);
+            conn->load(stream, context);
             ElementFactory::updateItemId(conn, connId);
             m_scene->addItem(conn);
         }

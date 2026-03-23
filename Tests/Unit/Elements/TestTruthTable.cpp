@@ -288,7 +288,8 @@ void TestTruthTable::testLoadKeyVersion42()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
-    truthTable2.load(loadStream, portMap, QVersionNumber(4, 2));
+    SerializationContext context{portMap, QVersionNumber(4, 2), {}};
+    truthTable2.load(loadStream, context);
 
     // Verify key was loaded correctly
     QBitArray &loadedKey = truthTable2.key();
@@ -315,7 +316,8 @@ void TestTruthTable::testLoadKeyOldVersion()
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
     // Load with version 4.1 (less than 4.2)
-    truthTable2.load(loadStream, portMap, QVersionNumber(4, 1));
+    SerializationContext context{portMap, QVersionNumber(4, 1), {}};
+    truthTable2.load(loadStream, context);
 
     // Key should remain at default (all zeros) for old versions
     // because load() returns early when version < 4.2

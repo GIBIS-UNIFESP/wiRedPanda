@@ -10,7 +10,7 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/LogicElements/LogicOutput.h"
-#include "App/GlobalProperties.h"
+#include "App/IO/Serialization.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Versions.h"
 
@@ -87,11 +87,11 @@ void AudioBox::setAudio(const QString &audioPath)
 
     // Qt resource paths start with ":/"; anything else is a filesystem path
     // relative to the project's working directory (where the .panda file lives).
-    // Try the path as-is against currentDir first; if not found, fall back to
+    // Try the path as-is against contextDir first; if not found, fall back to
     // just the filename — handles cross-platform absolute paths from old files.
     QString path = audioPath;
     if (!path.startsWith(":/")) {
-        const QDir dir(GlobalProperties::currentDir);
+        const QDir dir(Serialization::contextDir);
         const QString resolved = dir.filePath(path);
 
         if (!QFileInfo::exists(resolved)) {
@@ -200,7 +200,7 @@ void AudioBox::save(QDataStream &stream) const
     // directory, so the project remains portable across machines and platforms.
     if (!audioPath.startsWith(":/")) {
         QFileInfo info(audioPath);
-        if (info.absoluteDir() == QDir(GlobalProperties::currentDir)) {
+        if (info.absoluteDir() == QDir(Serialization::contextDir)) {
             audioPath = info.fileName();
         }
     }
@@ -211,22 +211,22 @@ void AudioBox::save(QDataStream &stream) const
     stream << map;
 }
 
-void AudioBox::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
+void AudioBox::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, portMap, version);
+    GraphicElement::load(stream, context);
 
-    if (version < Versions::V_2_4) {
+    if (context.version < Versions::V_2_4) {
         // Audio was added in v2.4; nothing to read for earlier files
         return;
     }
 
-    if (version < Versions::V_4_1) {
+    if (context.version < Versions::V_4_1) {
         // v2.4–4.0 stored the path as a bare QString
         QString audio; stream >> audio;
         setAudio(audio);
     }
 
-    if (version >= Versions::V_4_1) {
+    if (context.version >= Versions::V_4_1) {
         // v4.1+ uses a key-value map for forward-compatible extensibility
         QMap<QString, QVariant> map; stream >> map;
 
