@@ -25,8 +25,7 @@ void setupTestEnvironment()
     qputenv("QT_IM_MODULES", "none");
 #endif
     Comment::setVerbosity(-1);
-    GlobalProperties::testMode = true;
-    GlobalProperties::verbose = false;  // Skip auto-migration to preserve backward compatibility test files
+    GlobalProperties::interactiveMode = false;  // Suppress dialogs during headless test execution
 }
 
 void configureApp()

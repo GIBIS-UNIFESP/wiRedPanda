@@ -1360,7 +1360,7 @@ void BewavedDolphin::save(QSaveFile &file)
 
 void BewavedDolphin::associateToWiRedPanda(const QString &fileName)
 {
-    if ((m_mainWindow->dolphinFileName() != fileName) && GlobalProperties::verbose) {
+    if ((m_mainWindow->dolphinFileName() != fileName) && GlobalProperties::interactiveMode) {
         const auto reply =
             QMessageBox::question(
                 this,
