@@ -40,5 +40,8 @@ struct SerializationContext {
     QString contextDir = {};
     CopyOperation copyOperation = {};
     QMap<quint64, quint64> oldPtrToSerialId = {};
+    /// Sequential counter used as the element-local basis for port serialId fallback
+    /// (V4.1.9–V4.3 files that lack the serialId key). Incremented once per element.
+    int nextLocalId = 1;
 };
 

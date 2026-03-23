@@ -74,8 +74,8 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
         return createErrorResponse(errorMsg, requestId);
     }
 
-    auto *sourceItem = ElementFactory::itemById(sourceId);
-    auto *targetItem = ElementFactory::itemById(targetId);
+    auto *sourceItem = getCurrentScene()->itemById(sourceId);
+    auto *targetItem = getCurrentScene()->itemById(targetId);
 
     auto *sourceElement = dynamic_cast<GraphicElement *>(sourceItem);
     auto *targetElement = dynamic_cast<GraphicElement *>(targetItem);
@@ -180,8 +180,8 @@ QJsonObject ConnectionHandler::handleDisconnectElements(const QJsonObject &param
         return createErrorResponse(errorMsg, requestId);
     }
 
-    auto *sourceItem = ElementFactory::itemById(sourceId);
-    auto *targetItem = ElementFactory::itemById(targetId);
+    auto *sourceItem = getCurrentScene()->itemById(sourceId);
+    auto *targetItem = getCurrentScene()->itemById(targetId);
 
     auto *sourceElement = dynamic_cast<GraphicElement *>(sourceItem);
     auto *targetElement = dynamic_cast<GraphicElement *>(targetItem);
