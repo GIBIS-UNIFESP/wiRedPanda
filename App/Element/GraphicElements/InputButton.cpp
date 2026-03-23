@@ -93,16 +93,16 @@ void InputButton::save(QDataStream &stream) const
     stream << map;
 }
 
-void InputButton::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version)
+void InputButton::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, portMap, version);
+    GraphicElement::load(stream, context);
 
-    if ((Versions::V_3_1 <= version) && (version < Versions::V_4_1)) {
+    if ((Versions::V_3_1 <= context.version) && (context.version < Versions::V_4_1)) {
         // v3.1–4.0 stored the locked flag as a bare bool
         stream >> m_locked;
     }
 
-    if (version >= Versions::V_4_1) {
+    if (context.version >= Versions::V_4_1) {
         // v4.1+ uses a key-value map
         QMap<QString, QVariant> map; stream >> map;
 

@@ -16,6 +16,8 @@
 #include "App/Element/GraphicElement.h"
 #include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
+#include "App/IO/SerializationContext.h"
+#include "App/Nodes/QNEPort.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/Versions.h"
 
@@ -96,7 +98,7 @@ void WorkSpace::save(const QString &fileName)
         fileName_.append(".panda");
     }
 
-    GlobalProperties::currentDir = QFileInfo(fileName_).absolutePath();
+    Serialization::contextDir = QFileInfo(fileName_).absolutePath();
     m_fileInfo = QFileInfo(fileName_);
 
     // QSaveFile writes to a temp file and commits atomically, preventing data loss
@@ -175,7 +177,7 @@ void WorkSpace::load(const QString &fileName)
         throw PANDACEPTION("This file does not exist: %1", fileName);
     }
 
-    GlobalProperties::currentDir = QFileInfo(fileName).absolutePath();
+    Serialization::contextDir = QFileInfo(fileName).absolutePath();
     m_fileInfo = QFileInfo(fileName);
 
     qCDebug(zero) << "File exists.";
@@ -187,12 +189,12 @@ void WorkSpace::load(const QString &fileName)
 
     QDataStream stream(&file);
     QVersionNumber version = Serialization::readPandaHeader(stream);
-    load(stream, version);
+    load(stream, version, QFileInfo(fileName).absolutePath());
 
     emit fileChanged(m_fileInfo);
 }
 
-void WorkSpace::load(QDataStream &stream, const QVersionNumber &version)
+void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const QString &contextDir)
 {
     qCDebug(zero) << "Loading file.";
     // Block simulation updates while items are being added to avoid intermediate
@@ -224,10 +226,9 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version)
     // recomputed from items after they are added because items may have moved
     // relative to the stored rect (e.g., old files with a different viewport origin).
     Serialization::loadRect(stream, version);
-    // Pass an empty portMap: the port addresses stored in the file are from the
-    // previous process run, so each element's load() rebuilds the portMap as it
-    // initialises its own ports, then connections resolve against that fresh map.
-    const auto items = Serialization::deserialize(stream, {}, version);
+    QMap<quint64, QNEPort *> portMap;
+    SerializationContext context{portMap, version, contextDir};
+    const auto items = Serialization::deserialize(stream, context);
     qCDebug(zero) << "Finished loading items.";
 
     for (auto *item : items) {
@@ -346,12 +347,12 @@ void WorkSpace::autosave()
 
     QString autosaveFileName = m_autosaveFile.fileName();
 
-    // Save and restore currentDir so that autosaving to a temp directory does not
-    // leave GlobalProperties::currentDir pointing at the autosave location. Without
+    // Save and restore contextDir so that autosaving to a temp directory does not
+    // leave Serialization::contextDir pointing at the autosave location. Without
     // this, IC relative-path resolution in other open workspaces would silently
     // use the wrong base directory after the first autosave.
-    const QString savedCurrentDir = GlobalProperties::currentDir;
-    GlobalProperties::currentDir = path.absolutePath();
+    const QString savedContextDir = Serialization::contextDir;
+    Serialization::contextDir = path.absolutePath();
 
     qCDebug(three) << "Writing to autosave file.";
     QDataStream stream(&m_autosaveFile);
@@ -359,7 +360,7 @@ void WorkSpace::autosave()
     save(stream);
     m_autosaveFile.close();
 
-    GlobalProperties::currentDir = savedCurrentDir;
+    Serialization::contextDir = savedContextDir;
 
     autosaves.append(autosaveFileName);
     Settings::setAutosaveFiles(autosaves);

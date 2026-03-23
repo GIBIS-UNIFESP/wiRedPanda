@@ -29,7 +29,7 @@ void TestWaveform::testDisplay4Bits()
     QVersionNumber version;
     try {
         version = Serialization::readPandaHeader(stream);
-        workspace.load(stream, version);
+        workspace.load(stream, version, examplesDir.absolutePath());
     } catch (const std::exception &e) {
         QFAIL(qPrintable(QString("Failed to load %1: %2").arg(fileName, e.what())));
         return;

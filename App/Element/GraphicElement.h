@@ -17,6 +17,7 @@
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Element/LogicElement.h"
+#include "App/IO/SerializationContext.h"
 
 class GraphicElement;
 class QNEInputPort;
@@ -68,11 +69,9 @@ public:
 
     /**
      * @brief Loads the graphic element through a binary data stream.
-     * @param stream Binary data stream to read from.
-     * @param portMap receives a reference to each input and output port.
-     * @param version File format version for backward compatibility.
+     * @param context carries portMap, version, contextDir and optional copy-operation state.
      */
-    virtual void load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version);
+    virtual void load(QDataStream &stream, SerializationContext &context);
 
     // --- Port Management ---
 
@@ -303,7 +302,7 @@ public:
     virtual void setOutputPortName(int port, const QString &name);
 
     /// Polymorphic interface for drag-drop initialization (replaces elementType() == IC checks).
-    virtual void loadFromDrop(const QString &fileName);
+    virtual void loadFromDrop(const QString &fileName, const QString &contextDir);
 
     // --- Virtual Methods ---
 
@@ -453,14 +452,13 @@ private:
     void addPort(const QString &name, const bool isOutput);
 
     static void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);
-    void removeSurplusInputs(const quint64 inputSize_, QMap<quint64, QNEPort *> &portMap);
-    void removeSurplusOutputs(const quint64 outputSize_, QMap<quint64, QNEPort *> &portMap);
+    void removeSurplusInputs(const quint64 inputSize_, SerializationContext &context);
+    void removeSurplusOutputs(const quint64 outputSize_, SerializationContext &context);
 
-    /// functions to load GraphicElement atributes through a binary data stream
     // --- Serialization Helpers ---
 
-    void loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
-    void loadOldFormat(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const QVersionNumber version);
+    void loadNewFormat(QDataStream &stream, SerializationContext &context);
+    void loadOldFormat(QDataStream &stream, SerializationContext &context);
 
     // --- Position Loading ---
 
@@ -468,17 +466,17 @@ private:
 
     // --- Port Loading ---
 
-    void loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port);
-    void loadInputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
-    void loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const int port);
-    void loadOutputPorts(QDataStream &stream, QMap<quint64, QNEPort *> &portMap);
+    void loadInputPort(QDataStream &stream, SerializationContext &context, const int port);
+    void loadInputPorts(QDataStream &stream, SerializationContext &context);
+    void loadOutputPort(QDataStream &stream, SerializationContext &context, const int port);
+    void loadOutputPorts(QDataStream &stream, SerializationContext &context);
     void loadPortsSize(QDataStream &stream, const QVersionNumber &version);
 
     // --- Property Loading ---
 
     void loadLabel(QDataStream &stream, const QVersionNumber &version);
-    void loadPixmapSkinName(QDataStream &stream, const int skin);
-    void loadPixmapSkinNames(QDataStream &stream, const QVersionNumber version);
+    void loadPixmapSkinName(QDataStream &stream, const int skin, const QString &contextDir);
+    void loadPixmapSkinNames(QDataStream &stream, SerializationContext &context);
     void loadPriority(QDataStream &stream, const QVersionNumber &version);
     void loadRotation(QDataStream &stream, const QVersionNumber &version);
     void loadTrigger(QDataStream &stream, const QVersionNumber &version);

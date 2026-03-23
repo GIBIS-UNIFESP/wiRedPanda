@@ -19,7 +19,6 @@
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/TruthTable.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
@@ -1146,9 +1145,9 @@ void ElementEditor::audioBox()
     // directory, copy it alongside the .panda file so the project is self-contained.
     QFileInfo fileInfo(filePath);
     QString audioPath = filePath;
-    if (!GlobalProperties::currentDir.isEmpty() &&
-        (fileInfo.absoluteDir() != QDir(GlobalProperties::currentDir))) {
-        const QString dest = GlobalProperties::currentDir + "/" + fileInfo.fileName();
+    if (!Serialization::contextDir.isEmpty() &&
+        (fileInfo.absoluteDir() != QDir(Serialization::contextDir))) {
+        const QString dest = Serialization::contextDir + "/" + fileInfo.fileName();
         if (!QFile::exists(dest)) {
             QFile::copy(filePath, dest);
         }

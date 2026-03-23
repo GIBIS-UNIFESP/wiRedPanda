@@ -9,13 +9,11 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
-#include "App/GlobalProperties.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestFeatures::initTestCase()
 {
     QVERIFY(m_tempDir.isValid());
-    GlobalProperties::currentDir = m_tempDir.path();
 }
 
 void TestFeatures::testAndGateFeatures()
@@ -183,7 +181,7 @@ void TestFeatures::testMultipleElementsFeatures()
     QVERIFY(!notGate->hasFrequency());
     QVERIFY(!notGate->hasDelay());
 
-    // Node - has label (used as wireless channel name)
+    // Node - has label (for wireless channel name), no other special features
     auto node = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(node != nullptr);
     QVERIFY(node->hasLabel());

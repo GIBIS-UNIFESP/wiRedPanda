@@ -232,7 +232,8 @@ void TestAudioBox::testLoadVersionOld()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
-    audioBox2->load(loadStream, portMap, AppVersion::current);
+    SerializationContext context{portMap, AppVersion::current, {}};
+    audioBox2->load(loadStream, context);
 
     // Audio path should be loaded correctly
     QCOMPARE(audioBox2->audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
@@ -253,7 +254,8 @@ void TestAudioBox::testLoadVersionNew()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
-    audioBox2->load(loadStream, portMap, AppVersion::current);
+    SerializationContext context{portMap, AppVersion::current, {}};
+    audioBox2->load(loadStream, context);
 
     // Audio path should be loaded
     QCOMPARE(audioBox2->audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));

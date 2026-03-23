@@ -16,7 +16,6 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Element/LogicElement.h"
-#include "App/GlobalProperties.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/ElementMapping.h"
 #include "Tests/Common/TestUtils.h"
@@ -24,7 +23,8 @@
 void TestIC::initTestCase()
 {
     // Initialize test environment
-    GlobalProperties::currentDir = TestUtils::examplesDir();
+    // Set up the examples directory for IC file resolution
+    const QString examplesDir = TestUtils::examplesDir();
 }
 
 // Port Mapping Tests
@@ -47,7 +47,7 @@ void TestIC::testICPortMapping()
 
     // Load with error handling
     try {
-        ic->loadFile(icFile);
+        ic->loadFile(icFile, QFileInfo(icFile).absolutePath());
     } catch (const std::exception &e) {
         QFAIL(qPrintable(QString("Failed to load IC file: %1").arg(e.what())));
         return;
@@ -101,7 +101,7 @@ void TestIC::testICNestedSingleLevel()
              qPrintable(QString("IC file not found: %1").arg(icFile)));
 
     try {
-        ic->loadFile(icFile);
+        ic->loadFile(icFile, QFileInfo(icFile).absolutePath());
     } catch (const std::exception &e) {
         QFAIL(qPrintable(QString("Failed to load IC file: %1").arg(e.what())));
         return;
@@ -171,7 +171,7 @@ void TestIC::testICLogicGeneration()
              qPrintable(QString("IC file not found: %1").arg(icFile)));
 
     try {
-        ic->loadFile(icFile);
+        ic->loadFile(icFile, QFileInfo(icFile).absolutePath());
     } catch (const std::exception &e) {
         QFAIL(qPrintable(QString("Failed to load IC file: %1").arg(e.what())));
         return;
@@ -204,7 +204,7 @@ void TestIC::testICSaveLoad()
     scene1->addItem(ic1);
 
     const QString icFile = TestUtils::examplesDir() + "jkflipflop.panda";
-    ic1->loadFile(icFile);
+    ic1->loadFile(icFile, QFileInfo(icFile).absolutePath());
 
     // Verify IC is properly loaded
     QVERIFY2(ic1->inputSize() > 0, "IC should have inputs after loading");
@@ -234,7 +234,7 @@ void TestIC::testICSaveLoad()
     WorkSpace workspace2;
 
     // Set current directory so IC can find its referenced file (jkflipflop.panda)
-    GlobalProperties::currentDir = TestUtils::examplesDir();
+    const QString examplesDir = TestUtils::examplesDir();
 
     try {
         workspace2.load(tempPath);
@@ -297,7 +297,7 @@ void TestIC::testICInSimulation()
 
     // Load IC and verify successful loading
     try {
-        ic->loadFile(icFile);
+        ic->loadFile(icFile, QFileInfo(icFile).absolutePath());
     } catch (const Pandaception &ex) {
         QFAIL(qPrintable(QString("Failed to load IC file: %1").arg(ex.what())));
     }
@@ -349,7 +349,7 @@ void TestIC::testICStatusPropagation()
     // Load JK flip-flop IC
     const QString icFile = TestUtils::examplesDir() + "jkflipflop.panda";
     try {
-        ic->loadFile(icFile);
+        ic->loadFile(icFile, QFileInfo(icFile).absolutePath());
     } catch (const Pandaception &ex) {
         QFAIL(qPrintable(QString("Failed to load IC file: %1").arg(ex.what())));
     }
@@ -407,7 +407,7 @@ void TestIC::testICRequiredPorts()
 
     const QString icFile = TestUtils::examplesDir() + "jkflipflop.panda";
     try {
-        ic->loadFile(icFile);
+        ic->loadFile(icFile, QFileInfo(icFile).absolutePath());
     } catch (const std::exception &e) {
         QFAIL(qPrintable(QString("Failed to load IC file: %1").arg(e.what())));
     }
@@ -456,7 +456,7 @@ void TestIC::testICDefaultValues()
 
     const QString icFile = TestUtils::examplesDir() + "jkflipflop.panda";
     try {
-        ic->loadFile(icFile);
+        ic->loadFile(icFile, QFileInfo(icFile).absolutePath());
     } catch (const std::exception &e) {
         QFAIL(qPrintable(QString("Failed to load IC file: %1").arg(e.what())));
     }
@@ -493,7 +493,7 @@ void TestIC::testICMissingFile()
     bool pandaceptionThrown = false;
     QString exceptionMessage;
     try {
-        ic->loadFile(nonExistentFile);
+        ic->loadFile(nonExistentFile, "/nonexistent/path");
     } catch (const Pandaception &ex) {
         pandaceptionThrown = true;
         exceptionMessage = ex.what();
@@ -524,7 +524,7 @@ void TestIC::testICNestedCircuitPortMapping()
 
     const QString icFile = TestUtils::examplesDir() + "jkflipflop.panda";
     try {
-        ic->loadFile(icFile);
+        ic->loadFile(icFile, QFileInfo(icFile).absolutePath());
     } catch (const std::exception &e) {
         QFAIL(qPrintable(QString("Failed to load IC file: %1").arg(e.what())));
     }
@@ -571,7 +571,7 @@ void TestIC::testICNestedCircuitSignalPropagation()
 
     const QString icFile = TestUtils::examplesDir() + "jkflipflop.panda";
     try {
-        ic->loadFile(icFile);
+        ic->loadFile(icFile, QFileInfo(icFile).absolutePath());
     } catch (const std::exception &e) {
         QFAIL(qPrintable(QString("Failed to load IC file: %1").arg(e.what())));
     }
@@ -602,7 +602,6 @@ void TestIC::testICFileDependencyResolution()
 
     // Use examples directory to ensure IC file can find dependencies
     const QString examplesDir = TestUtils::examplesDir();
-    GlobalProperties::currentDir = examplesDir;
 
     auto *ic = new IC();
     scene->addItem(ic);
@@ -610,7 +609,7 @@ void TestIC::testICFileDependencyResolution()
     const QString icFile = examplesDir + "/jkflipflop.panda";
 
     try {
-        ic->loadFile(icFile);
+        ic->loadFile(icFile, QFileInfo(icFile).absolutePath());
 
         // Verify IC loaded successfully
         QVERIFY2(ic->inputSize() > 0 || ic->outputSize() > 0,

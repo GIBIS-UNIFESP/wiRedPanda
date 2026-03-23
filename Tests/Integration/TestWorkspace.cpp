@@ -14,7 +14,6 @@
 #include "App/Core/Settings.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Workspace.h"
@@ -60,8 +59,6 @@ void TestWorkspace::testAutosaveTriggersOnCircuitChange()
 {
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
-
-    GlobalProperties::currentDir = tempDir.path();
 
     WorkSpace workspace;
     Scene *scene = workspace.scene();
@@ -114,8 +111,6 @@ void TestWorkspace::testAutosaveUpdatesSettings()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
-
     // Clear settings before test to ensure clean state
     Settings::setAutosaveFiles({});
 
@@ -147,8 +142,6 @@ void TestWorkspace::testAutosaveAfterElementAdd()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
-
     WorkSpace workspace;
     Scene *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
@@ -178,8 +171,6 @@ void TestWorkspace::testAutosaveAfterElementModify()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
-
     WorkSpace workspace;
     Scene *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
@@ -198,8 +189,6 @@ void TestWorkspace::testAutosaveAfterElementDelete()
 {
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
-
-    GlobalProperties::currentDir = tempDir.path();
 
     WorkSpace workspace;
     Scene *scene = workspace.scene();
@@ -221,7 +210,6 @@ void TestWorkspace::testAutosaveSignalEmitted()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
     Settings::setAutosaveFiles({});
 
     WorkSpace workspace;
@@ -249,8 +237,6 @@ void TestWorkspace::testMultipleAutosavesUpdateSettings()
 {
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
-
-    GlobalProperties::currentDir = tempDir.path();
 
     // Clear settings before test
     Settings::setAutosaveFiles({});
@@ -324,8 +310,6 @@ void TestWorkspace::testAutosaveFileNameFormatNewProject()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
-
     WorkSpace workspace;
     Scene *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
@@ -353,7 +337,6 @@ void TestWorkspace::testAutosaveFileNameFormatSavedProject()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
     QString testFile = tempDir.filePath("test_circuit.panda");
 
     // Create and populate workspace
@@ -606,8 +589,6 @@ void TestWorkspace::testAutosaveInCurrentDirForSavedProject()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
-
     QString testFile = tempDir.filePath("circuit.panda");
 
     WorkSpace workspace;
@@ -636,7 +617,6 @@ void TestWorkspace::testAutosaveInAppDataForNewProject()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
     Settings::setAutosaveFiles({});
 
     WorkSpace workspace;
@@ -670,8 +650,6 @@ void TestWorkspace::testAutosaveFileTemplatePattern()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
-
     WorkSpace workspace;
     workspace.scene()->undoStack()->push(new QUndoCommand("Add element"));
 
@@ -696,8 +674,6 @@ void TestWorkspace::testMultipleAutosaveFilesNonConflicting()
     // Multiple autosave files shouldn't have identical names
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
-
-    GlobalProperties::currentDir = tempDir.path();
 
     Settings::setAutosaveFiles({});
 
@@ -735,7 +711,6 @@ void TestWorkspace::testAutosaveFilePermissions()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
     Settings::setAutosaveFiles({});
 
     WorkSpace workspace;
@@ -775,8 +750,6 @@ void TestWorkspace::testAutosaveDeletedOnExplicitSave()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
-
     QString saveFile = tempDir.filePath("test.panda");
 
     WorkSpace workspace;
@@ -805,8 +778,6 @@ void TestWorkspace::testAutosaveRemovedFromSettingsOnSave()
 {
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
-
-    GlobalProperties::currentDir = tempDir.path();
 
     QString saveFile = tempDir.filePath("test.panda");
 
@@ -839,7 +810,6 @@ void TestWorkspace::testRecoveredFileRemovedFromSettings()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
     Settings::setAutosaveFiles({});
 
     QString recoveryFile = tempDir.filePath("recovery.panda");
@@ -894,8 +864,6 @@ void TestWorkspace::testAutosaveCleanupAfterSaveAs()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
-
     QString file1 = tempDir.filePath("file1.panda");
     QString file2 = tempDir.filePath("file2.panda");
 
@@ -926,8 +894,6 @@ void TestWorkspace::testAutosaveListCorrectAfterCleanup()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
-
     QString saveFile = tempDir.filePath("test.panda");
 
     WorkSpace workspace;
@@ -952,8 +918,6 @@ void TestWorkspace::testMultipleAutosavesCleanedUp()
 {
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
-
-    GlobalProperties::currentDir = tempDir.path();
 
     QString file1 = tempDir.filePath("file1.panda");
     QString file2 = tempDir.filePath("file2.panda");
@@ -984,7 +948,6 @@ void TestWorkspace::testAutosaveCleanupWithEmptySettings()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
     Settings::setAutosaveFiles({});
 
     QString saveFile = tempDir.filePath("test.panda");
@@ -1032,8 +995,6 @@ void TestWorkspace::testSaveAddsExtensionIfMissing()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    GlobalProperties::currentDir = tempDir.path();
-
     QString fileWithoutExt = tempDir.filePath("test");
     QString expectedFile = tempDir.filePath("test.panda");
 
@@ -1059,8 +1020,6 @@ void TestWorkspace::testSaveDoesNotDuplicateExtension()
 {
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
-
-    GlobalProperties::currentDir = tempDir.path();
 
     QString fileWithExt = tempDir.filePath("test.panda");
 
@@ -1130,8 +1089,6 @@ void TestWorkspace::testSaveEmptyCircuit()
 {
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
-
-    GlobalProperties::currentDir = tempDir.path();
 
     QString saveFile = tempDir.filePath("empty.panda");
 
