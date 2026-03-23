@@ -681,91 +681,6 @@ void Scene::showWires(const bool checked)
     }
 }
 
-void Scene::cloneDrag(const QPointF mousePos)
-{
-    qCDebug(zero) << "Ctrl + Drag action triggered.";
-    const auto selectedElements_ = selectedElements();
-
-    if (selectedElements_.isEmpty()) {
-        return;
-    }
-
-    // --- Build drag pixmap ---
-    // Temporarily hide non-selected items so the rendered image shows only
-    // the selection, giving the drag ghost the correct visual appearance
-    const auto items_ = items();
-
-    for (auto *item : items_) {
-        if (((item->type() == GraphicElement::Type) || (item->type() == QNEConnection::Type)) && !item->isSelected()) {
-            item->hide();
-        }
-    }
-
-    QRectF rect;
-
-    for (auto *element : selectedElements_) {
-        rect = rect.united(element->sceneBoundingRect());
-    }
-
-    // 8px padding avoids clipping port handles at the bounding-rect edges
-    rect = rect.adjusted(-8, -8, 8, 8);
-
-    auto mappedSize = m_view->transform().mapRect(rect).size().toSize();
-    QImage image(mappedSize, QImage::Format_ARGB32_Premultiplied);
-    image.fill(Qt::transparent);
-
-    QPainter painter(&image);
-    // Opacity 0 makes the ghost transparent; the drag cursor shape still appears
-    painter.setOpacity(0.0);
-    QRectF target = image.rect();
-    QRectF source = rect;
-    render(&painter, target, source);
-
-    // Restore hidden items before the drag begins so the scene looks normal
-    for (auto *item : items_) {
-        if (((item->type() == GraphicElement::Type) || (item->type() == QNEConnection::Type)) && !item->isSelected()) {
-            item->show();
-        }
-    }
-
-    // --- Serialize selection for drop target ---
-    QByteArray itemData;
-    QDataStream stream(&itemData, QIODevice::WriteOnly);
-    Serialization::writePandaHeader(stream);
-    // Embed the mouse-press position so the drop handler can compute the correct offset
-    stream << mousePos;
-    copy(selectedItems(), stream);
-
-    auto *mimeData = new QMimeData();
-    mimeData->setData("application/x-wiredpanda-cloneDrag", itemData);
-
-    auto *drag = new QDrag(this);
-    drag->setMimeData(mimeData);
-    drag->setPixmap(QPixmap::fromImage(image));
-    // Hot-spot aligns the drag image to the original element positions under the cursor
-    QPointF offset = m_view->transform().map(mousePos - rect.topLeft());
-    drag->setHotSpot(offset.toPoint());
-    drag->exec(Qt::CopyAction, Qt::CopyAction);
-}
-
-void Scene::copy(const QList<QGraphicsItem *> &items, QDataStream &stream)
-{
-    // Compute the centroid of all selected elements (not connections) so that
-    // paste() can place the clipboard contents relative to the cursor position
-    QPointF center(0.0, 0.0);
-    int itemsQuantity = 0;
-
-    for (auto *item : items) {
-        if (item->type() == GraphicElement::Type) {
-            center += item->pos();
-            ++itemsQuantity;
-        }
-    }
-
-    stream << center / static_cast<qreal>(itemsQuantity);
-    Serialization::serialize(items, stream);
-}
-
 void Scene::startSelectionRect()
 {
     m_selectionStartPoint = m_mousePos;
@@ -826,91 +741,17 @@ void Scene::contextMenu(const QPoint screenPos)
 
 void Scene::copyAction()
 {
-    if (selectedElements().empty()) {
-        QApplication::clipboard()->clear();
-        return;
-    }
-
-    QByteArray itemData;
-    QDataStream stream(&itemData, QIODevice::WriteOnly);
-    Serialization::writePandaHeader(stream);
-    copy(selectedItems(), stream);
-
-    auto *mimeData = new QMimeData();
-    mimeData->setData("application/x-wiredpanda-clipboard", itemData);
-
-    QApplication::clipboard()->setMimeData(mimeData);
+    m_clipboardManager.copy();
 }
 
 void Scene::cutAction()
 {
-    if (selectedElements().isEmpty()) {
-        QApplication::clipboard()->clear();
-        return;
-    }
-
-    QByteArray itemData;
-    QDataStream stream(&itemData, QIODevice::WriteOnly);
-    Serialization::writePandaHeader(stream);
-    cut(selectedItems(), stream);
-
-    auto *mimeData = new QMimeData();
-    mimeData->setData("application/x-wiredpanda-clipboard", itemData);
-
-    QApplication::clipboard()->setMimeData(mimeData);
+    m_clipboardManager.cut();
 }
 
 void Scene::pasteAction()
 {
-    const auto *mimeData = QApplication::clipboard()->mimeData();
-
-    QByteArray itemData;
-
-    if (mimeData->hasFormat("wpanda/copydata")) {
-        itemData = mimeData->data("wpanda/copydata");
-    }
-
-    if (mimeData->hasFormat("application/x-wiredpanda-clipboard")) {
-        itemData = mimeData->data("application/x-wiredpanda-clipboard");
-    }
-
-    if (!itemData.isEmpty()) {
-        QDataStream stream(&itemData, QIODevice::ReadOnly);
-        QVersionNumber version = Serialization::readPandaHeader(stream);
-        paste(stream, version);
-    }
-}
-
-void Scene::paste(QDataStream &stream, const QVersionNumber &version)
-{
-    clearSelection();
-
-    QPointF center; stream >> center;
-
-    QMap<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, version, contextDir()};
-    const auto itemList = Serialization::deserialize(stream, context);
-    // Shift pasted elements so their centroid lands at the cursor position,
-    // then nudge 32 px diagonally so repeated pastes are visually offset and
-    // don't completely overlap the original selection.
-    const QPointF offset = m_mousePos - center - QPointF(32.0, 32.0);
-
-    receiveCommand(new AddItemsCommand(itemList, this));
-
-    for (auto *item : itemList) {
-        if (item->type() == GraphicElement::Type) {
-            item->setPos((item->pos() + offset));
-        }
-    }
-
-    // Only expand to fit pasted items; never shrink, which would shift the viewport.
-    setSceneRect(sceneRect().united(itemsBoundingRect()));
-}
-
-void Scene::cut(const QList<QGraphicsItem *> &items, QDataStream &stream)
-{
-    copy(items, stream);
-    deleteAction();
+    m_clipboardManager.paste();
 }
 
 void Scene::deleteAction()
@@ -1150,7 +991,7 @@ bool Scene::eventFilter(QObject *watched, QEvent *event)
         if ((mouseEvent->button() == Qt::LeftButton) && mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
             if (auto *item = itemAt(mouseEvent->scenePos()); item && ((item->type() == GraphicElement::Type) || (item->type() == QNEConnection::Type))) {
                 item->setSelected(true);
-                cloneDrag(mouseEvent->scenePos());
+                m_clipboardManager.cloneDrag(mouseEvent->scenePos());
                 return true;
             }
         }

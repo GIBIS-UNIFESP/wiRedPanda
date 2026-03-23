@@ -51,6 +51,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEConnection.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEPort.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ClipboardManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ConnectionManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.cpp
@@ -146,6 +147,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/SerializationContext.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEConnection.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEPort.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ClipboardManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ConnectionManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.h
