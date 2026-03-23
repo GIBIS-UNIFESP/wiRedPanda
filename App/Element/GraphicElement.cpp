@@ -185,12 +185,13 @@ void GraphicElement::save(QDataStream &stream) const
 
     QList<QMap<QString, QVariant>> inputMap;
 
-    for (auto *port : m_inputPorts) {
+    for (int i = 0; i < m_inputPorts.size(); ++i) {
+        auto *port = m_inputPorts.at(i);
         QMap<QString, QVariant> tempMap;
-        // The raw pointer is serialised as a 64-bit integer and used only as a
-        // temporary key when reconstructing connection endpoints during load();
-        // it is never dereferenced after the save/load round-trip.
-        tempMap.insert("ptr", reinterpret_cast<quint64>(port));
+        // Generate deterministic serial ID: (elementId << 16) | portIndex
+        // Note: We calculate but don't modify port state (no side effects in save())
+        quint64 serialId = (static_cast<quint64>(id()) << 16) | static_cast<quint64>(i & 0xFFFF);
+        tempMap.insert("serialId", static_cast<quint64>(serialId));
         tempMap.insert("name", port->name());
 
         inputMap << tempMap;
@@ -202,9 +203,13 @@ void GraphicElement::save(QDataStream &stream) const
 
     QList<QMap<QString, QVariant>> outputMap;
 
-    for (auto *port : m_outputPorts) {
+    for (int i = 0; i < m_outputPorts.size(); ++i) {
+        auto *port = m_outputPorts.at(i);
         QMap<QString, QVariant> tempMap;
-        tempMap.insert("ptr", reinterpret_cast<quint64>(port));
+        // Generate deterministic serial ID: (elementId << 16) | portIndex
+        // Note: We calculate but don't modify port state (no side effects in save())
+        quint64 serialId = (static_cast<quint64>(id()) << 16) | static_cast<quint64>((m_inputPorts.size() + i) & 0xFFFF);
+        tempMap.insert("serialId", serialId);
         tempMap.insert("name", port->name());
 
         outputMap << tempMap;
@@ -347,18 +352,41 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
     int port = 0;
 
     for (const auto &input : std::as_const(inputMap)) {
-        const quint64 ptr = input.value("ptr").toULongLong();
         const QString name = input.value("name").toString();
 
-        if (port < m_inputPorts.size()) {
-            if (canSetPortNames()) {
-                setInputPortName(port, name);
-            }
+        // Support both new format (serialId) and old format (ptr)
+        quint64 serialId;
+        if (input.contains("serialId")) {
+            // New format: direct serial ID
+            serialId = input.value("serialId").toULongLong();
         } else {
-            addPort(name, false);
+            // Old format: calculate serial ID deterministically
+            // Use same algorithm as save: (elementId << 16) | portIndex
+            serialId = (static_cast<quint64>(id()) << 16) | static_cast<quint64>(port & 0xFFFF);
         }
 
-        context.portMap[ptr] = m_inputPorts.value(port);
+        if (port < m_inputPorts.size()) {
+            m_inputPorts.value(port)->setSerialId(serialId);
+            quint64 oldPtr = input.value("ptr").toULongLong();
+            // Map old pointer IDs to new serial IDs for backwards compatibility
+            if (oldPtr != 0) {
+                context.oldPtrToSerialId[oldPtr] = serialId;
+            }
+
+            if (elementType() == ElementType::IC) {
+                m_inputPorts.value(port)->setName(name);
+            }
+        } else {
+            quint64 oldPtr = input.value("ptr").toULongLong();
+            addPort(name, false);
+            m_inputPorts.value(port)->setSerialId(serialId);
+            // Map old pointer IDs to new serial IDs for backwards compatibility
+            if (oldPtr != 0) {
+                context.oldPtrToSerialId[oldPtr] = serialId;
+            }
+        }
+
+        context.portMap[serialId] = m_inputPorts.value(port);
 
         ++port;
     }
@@ -378,18 +406,41 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
     port = 0;
 
     for (const auto &output : std::as_const(outputMap)) {
-        const quint64 ptr = output.value("ptr").toULongLong();
         const QString name = output.value("name").toString();
 
-        if (port < m_outputPorts.size()) {
-            if (canSetPortNames()) {
-                setOutputPortName(port, name);
-            }
+        // Support both new format (serialId) and old format (ptr)
+        quint64 serialId;
+        if (output.contains("serialId")) {
+            // New format: direct serial ID
+            serialId = output.value("serialId").toULongLong();
         } else {
-            addPort(name, true);
+            // Old format: calculate serial ID deterministically
+            // Use same algorithm as save: (elementId << 16) | (inputCount + portIndex)
+            serialId = (static_cast<quint64>(id()) << 16) | static_cast<quint64>((m_inputPorts.size() + port) & 0xFFFF);
         }
 
-        context.portMap[ptr] = m_outputPorts.value(port);
+        if (port < m_outputPorts.size()) {
+            m_outputPorts.value(port)->setSerialId(serialId);
+            quint64 oldPtr = output.value("ptr").toULongLong();
+            // Map old pointer IDs to new serial IDs for backwards compatibility
+            if (oldPtr != 0) {
+                context.oldPtrToSerialId[oldPtr] = serialId;
+            }
+
+            if (elementType() == ElementType::IC) {
+                m_outputPorts.value(port)->setName(name);
+            }
+        } else {
+            quint64 oldPtr = output.value("ptr").toULongLong();
+            addPort(name, true);
+            m_outputPorts.value(port)->setSerialId(serialId);
+            // Map old pointer IDs to new serial IDs for backwards compatibility
+            if (oldPtr != 0) {
+                context.oldPtrToSerialId[oldPtr] = serialId;
+            }
+        }
+
+        context.portMap[serialId] = m_outputPorts.value(port);
 
         ++port;
     }
