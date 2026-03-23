@@ -157,6 +157,11 @@ void Scene::unregisterItem(ItemWithId *item)
     m_elementRegistry.remove(item->id());
 }
 
+SerializationContext Scene::deserializationContext(QMap<quint64, QNEPort *> &portMap, const QVersionNumber &version)
+{
+    return SerializationContext{portMap, version, contextDir()};
+}
+
 void Scene::drawBackground(QPainter *painter, const QRectF &rect)
 {
     // m11() is the X-axis scale factor of the view transform; below 0.3 the grid dots
@@ -694,7 +699,7 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         offset = event->scenePos() - offset;
 
         QMap<quint64, QNEPort *> portMap;
-        SerializationContext context{portMap, version, contextDir()};
+        auto context = deserializationContext(portMap, version);
         const auto itemList = Serialization::deserialize(stream, context);
 
         receiveCommand(new AddItemsCommand(itemList, this));

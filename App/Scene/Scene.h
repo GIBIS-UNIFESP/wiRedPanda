@@ -26,6 +26,7 @@ class GraphicsView;
 class ItemWithId;
 class QNEConnection;
 class QPainter;
+struct SerializationContext;
 
 /**
  * \class Scene
@@ -215,6 +216,9 @@ public:
     void setContextDir(const QString &dir) { m_contextDir = dir; }
     /// Returns the context directory for \a item: from its Scene if available, else the global fallback.
     static QString resolveContextDir(const QGraphicsItem *item);
+
+    /// Creates a deserialization context with the scene's contextDir and blob registry.
+    SerializationContext deserializationContext(QMap<quint64, QNEPort *> &portMap, const QVersionNumber &version);
 
     // --- Autosave ---
 
