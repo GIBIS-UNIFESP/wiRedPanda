@@ -23,13 +23,13 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 if(EMSCRIPTEN)
-    find_package(Qt6 6.9 REQUIRED COMPONENTS Core Gui PrintSupport Multimedia Widgets Svg Test)
+    find_package(Qt6 6.9 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test)
 else()
-    find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui PrintSupport Multimedia Widgets Svg Test)
+    find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test)
 endif()
 
 set(QT_VERSION_MAJOR 6)
-set(QT_LIBS Qt6::Core Qt6::Gui Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
+set(QT_LIBS Qt6::Core Qt6::Gui Qt6::Network Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
 
 add_compile_definitions(
     APP_VERSION="${PROJECT_VERSION}"
