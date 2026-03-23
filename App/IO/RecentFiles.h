@@ -28,6 +28,8 @@ public:
     /// Constructs the recent-files manager with \a parent.
     explicit RecentFiles(QObject *parent = nullptr);
 
+    static constexpr int maxFiles = 10;
+
     // --- Access ---
 
     /**
