@@ -1357,7 +1357,6 @@ void MainWindow::on_actionExportToImage_triggered()
 
 void MainWindow::retranslateUi()
 {
-    ElementFactory::clearCache();
     m_ui->retranslateUi();
     m_ui->elementEditor->retranslateUi();
 
@@ -1782,10 +1781,6 @@ void MainWindow::on_actionDarkTheme_triggered()
 
 void MainWindow::updateTheme()
 {
-    // Pixmaps are theme-dependent (dark/light SVG variants); clearing the cache
-    // forces each element to re-render with the new palette on next paint.
-    ElementFactory::clearCache();
-
     switch (ThemeManager::theme()) {
     case Theme::Dark:  m_ui->actionDarkTheme->setChecked(true); break;
     case Theme::Light: m_ui->actionLightTheme->setChecked(true); break;

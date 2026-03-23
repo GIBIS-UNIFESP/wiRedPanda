@@ -3,26 +3,44 @@
 
 #include "App/Element/GraphicElements/Line.h"
 
-#include "App/GlobalProperties.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicNone.h"
 
-// Line is a purely decorative element: 0 inputs and 0 outputs mean it has no
-// simulation role and is mapped to LogicNone by ElementFactory::buildLogicElement().
-// It exists so users can draw visual separators and annotation lines on the canvas.
-Line::Line(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Line, ElementGroup::Other, ":/Components/Misc/line.svg", tr("LINE"), tr("Line"), 0, 0, 0, 0, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<Line> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::Line,
+        .group = ElementGroup::Other,
+        .canChangeSkin = true,
+        // Label is enabled so users can attach a description string directly to the line.
+        .hasLabel = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Misc/line.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("Line", "LINE");
+        meta.translatedName = QT_TRANSLATE_NOOP("Line", "Line");
+        meta.trContext = "Line";
+        meta.defaultSkins = QStringList({":/Components/Misc/line.svg"});
+        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicNone>(); };
+        return meta;
     }
 
-    // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new Line(); });
+        return true;
+    }();
+};
 
-    setCanChangeSkin(true);
-    // Label is enabled so users can attach a description string directly to the line.
-    setHasLabel(true);
+// Line is a purely decorative element: 0 inputs and 0 outputs mean it has no
+// simulation role. It exists so users can draw visual separators and annotation
+// lines on the canvas.
+Line::Line(QGraphicsItem *parent)
+    : GraphicElement(ElementType::Line, parent)
+{
 }
 

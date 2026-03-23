@@ -3,24 +3,44 @@
 
 #include "App/Element/GraphicElements/SRLatch.h"
 
-#include "App/GlobalProperties.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicSRLatch.h"
 #include "App/Nodes/QNEPort.h"
 
-SRLatch::SRLatch(QGraphicsItem *parent)
-    : GraphicElement(ElementType::SRLatch, ElementGroup::Memory, pixmapPath(), tr("SR-LATCH"), tr("SR-Latch"), 2, 2, 2, 2, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<SRLatch> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::SRLatch,
+        .group = ElementGroup::Memory,
+        .minInputSize = 2,
+        .maxInputSize = 2,
+        .minOutputSize = 2,
+        .maxOutputSize = 2,
+        .canChangeSkin = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return SRLatch::pixmapPath(); };
+        meta.titleText = QT_TRANSLATE_NOOP("SRLatch", "SR-LATCH");
+        meta.translatedName = QT_TRANSLATE_NOOP("SRLatch", "SR-Latch");
+        meta.trContext = "SRLatch";
+        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicSRLatch>(); };
+        return meta;
     }
 
-    // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new SRLatch(); });
+        return true;
+    }();
+};
 
-    setCanChangeSkin(true);
-
+SRLatch::SRLatch(QGraphicsItem *parent)
+    : GraphicElement(ElementType::SRLatch, parent)
+{
     // Call the most-derived override explicitly (see SRFlipFlop.cpp for rationale).
     SRLatch::updatePortsProperties();
 }

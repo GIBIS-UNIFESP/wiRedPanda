@@ -27,5 +27,3 @@ public:
     QRectF boundingRect() const override;
 };
 
-Q_DECLARE_METATYPE(Text)
-

@@ -44,5 +44,3 @@ private:
     void setInputSize(const int size) override;
 };
 
-Q_DECLARE_METATYPE(Demux)
-

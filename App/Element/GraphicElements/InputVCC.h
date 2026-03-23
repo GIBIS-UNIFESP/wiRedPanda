@@ -22,5 +22,3 @@ public:
     explicit InputVcc(QGraphicsItem *parent = nullptr);
 };
 
-Q_DECLARE_METATYPE(InputVcc)
-

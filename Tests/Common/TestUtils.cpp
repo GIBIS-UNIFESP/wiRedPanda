@@ -24,7 +24,6 @@ void setupTestEnvironment()
     // parallel test startup, causing 8 processes to take 4s instead of 0.06s.
     qputenv("QT_IM_MODULES", "none");
 #endif
-    registerTypes();
     Comment::setVerbosity(-1);
     GlobalProperties::testMode = true;
     GlobalProperties::verbose = false;  // Skip auto-migration to preserve backward compatibility test files

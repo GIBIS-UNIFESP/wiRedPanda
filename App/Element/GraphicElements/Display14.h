@@ -64,5 +64,3 @@ private:
     int m_colorNumber = 1;
 };
 
-Q_DECLARE_METATYPE(Display14)
-

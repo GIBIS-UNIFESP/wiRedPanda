@@ -17,6 +17,9 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Nodes/QNEConnection.h"
 
+static const int s_inputPortMetatypeId = qRegisterMetaType<QNEInputPort>();
+static const int s_outputPortMetatypeId = qRegisterMetaType<QNEOutputPort>();
+
 QNEPort::QNEPort(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
 {
