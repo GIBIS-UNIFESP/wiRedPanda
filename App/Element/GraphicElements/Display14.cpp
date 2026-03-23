@@ -5,6 +5,7 @@
 
 #include <QPainter>
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/IO/SerializationContext.h"
@@ -63,6 +64,9 @@ struct ElementInfo<Display14> {
 Display14::Display14(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display14, parent)
 {
+    // Each of the 14 segments plus DP gets 5 color variants (White, Red, Green, Blue, Purple).
+    // Skin indices 1-15 map to segment SVGs in defaultSkins; skin[0] is the off background.
+    // Display7::convertAllColors() recolors the pre-rendered images pixel-by-pixel.
     a  = QVector<QPixmap>(5, m_defaultSkins.at(1));
     b  = QVector<QPixmap>(5, m_defaultSkins.at(2));
     c  = QVector<QPixmap>(5, m_defaultSkins.at(3));

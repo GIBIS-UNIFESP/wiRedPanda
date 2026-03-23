@@ -5,6 +5,7 @@
 
 #include <chrono>
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
@@ -52,6 +53,7 @@ Clock::Clock(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::Clock, parent)
 {
     m_locked = false;
+
     Clock::setFrequency(1.0);  // 1 Hz default → 500 ms half-period
     Clock::setDelay(0.0);       // no phase offset by default
     Clock::setOff();             // start LOW; resetClock() will start HIGH when simulation begins
