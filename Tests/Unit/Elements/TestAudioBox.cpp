@@ -262,7 +262,7 @@ void TestAudioBox::testLoadVersionNew()
 
 void TestAudioBox::testSetAudioWithRelativePath()
 {
-    // Bare filename resolved against currentDir
+    // Bare filename resolved against scene's contextDir
     QTemporaryFile tempFile;
     QVERIFY(tempFile.open());
     tempFile.write("DUMMY AUDIO DATA");

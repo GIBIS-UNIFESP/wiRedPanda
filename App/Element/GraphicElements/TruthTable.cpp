@@ -7,6 +7,7 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementInfo.h"
+#include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"

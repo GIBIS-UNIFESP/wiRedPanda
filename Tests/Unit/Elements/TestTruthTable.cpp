@@ -7,6 +7,7 @@
 #include <QTest>
 
 #include "App/Element/GraphicElements/TruthTable.h"
+#include "App/IO/SerializationContext.h"
 #include "Tests/Common/TestUtils.h"
 
 // ============================================================================

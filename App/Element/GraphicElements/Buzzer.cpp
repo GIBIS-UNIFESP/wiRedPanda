@@ -9,6 +9,7 @@
 #include <QMediaDevices>
 
 #include "App/Element/ElementInfo.h"
+#include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
 
