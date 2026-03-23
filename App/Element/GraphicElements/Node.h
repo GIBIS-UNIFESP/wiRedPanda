@@ -32,5 +32,3 @@ public:
     void updatePortsProperties() override;
 };
 
-Q_DECLARE_METATYPE(Node)
-

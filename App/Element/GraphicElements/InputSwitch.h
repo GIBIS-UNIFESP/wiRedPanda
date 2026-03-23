@@ -68,5 +68,3 @@ private:
     bool m_isOn = false;
 };
 
-Q_DECLARE_METATYPE(InputSwitch)
-

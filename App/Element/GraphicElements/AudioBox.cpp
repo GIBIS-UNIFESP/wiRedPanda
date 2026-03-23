@@ -8,32 +8,63 @@
 #include <QMediaDevices>
 
 #include "App/Core/Common.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicOutput.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
 
-AudioBox::AudioBox(QGraphicsItem *parent)
-    : GraphicElement(ElementType::AudioBox, ElementGroup::Output, ":/Components/Output/AudioBox/audioboxOff.svg", tr("Audio Box"), tr("Audio Box"), 1, 1, 0, 0, parent)
-{
-    if (GlobalProperties::skipInit)
-        return;
-
-    m_defaultSkins = QStringList{
-        ":/Components/Output/AudioBox/audioboxOff.svg",
-        ":/Components/Output/AudioBox/audioboxOn.svg"
+template<>
+struct ElementInfo<AudioBox> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::AudioBox,
+        .group = ElementGroup::Output,
+        .minInputSize = 1,
+        .maxInputSize = 1,
+        .minOutputSize = 0,
+        .maxOutputSize = 0,
+        .canChangeSkin = true,
+        .hasColors = false,
+        .hasAudio = false,
+        .hasAudioBox = true,
+        .hasTrigger = false,
+        .hasFrequency = false,
+        .hasDelay = false,
+        .hasLabel = true,
+        .hasTruthTable = false,
+        .rotatable = true,
     };
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static_assert(validate(constraints));
 
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Output/AudioBox/audioboxOff.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("AudioBox", "Audio Box");
+        meta.translatedName = QT_TRANSLATE_NOOP("AudioBox", "Audio Box");
+        meta.trContext = "AudioBox";
+        meta.defaultSkins = QStringList({
+            ":/Components/Output/AudioBox/audioboxOff.svg",
+            ":/Components/Output/AudioBox/audioboxOn.svg",
+        });
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicOutput>(elm->inputSize()); };
+        return meta;
+    }
+
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new AudioBox(); });
+        return true;
+    }();
+};
+
+AudioBox::AudioBox(QGraphicsItem *parent)
+    : GraphicElement(ElementType::AudioBox, parent)
+{
     // 64,34: label sits to the right of the 64×64 body, vertically centred
     m_label->setPos(64, 34);
 
     // Detect audio hardware at construction time; all subsequent audio calls are
     // guarded by m_hasOutputDevice so the element works silently in headless/CI environments.
-    setCanChangeSkin(true);
-    setHasAudioBox(true);
-    setHasLabel(true);
-    setRotatable(true);
-
     m_hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
 
     m_audio.setFile(":/Components/Output/Audio/wiredpanda.wav");

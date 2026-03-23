@@ -4,9 +4,10 @@
 #include "App/Simulation/ElementMapping.h"
 
 #include "App/Core/Common.h"
-#include "App/Element/ElementFactory.h"
+#include "App/Element/ElementMetadata.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
+#include "App/Element/LogicElements/LogicNone.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 
@@ -46,7 +47,9 @@ void ElementMapping::generateLogic(GraphicElement *elm)
 {
     // shared_ptr ownership stays in m_logicElms; the raw pointer given to elm
     // is valid for the lifetime of this ElementMapping object.
-    m_logicElms.append(ElementFactory::buildLogicElement(elm));
+    const auto &meta = ElementMetadataRegistry::metadata(elm->elementType());
+    auto logicElm = meta.logicCreator ? meta.logicCreator(elm) : std::make_shared<LogicNone>();
+    m_logicElms.append(std::move(logicElm));
     elm->setLogic(m_logicElms.last().get());
 }
 

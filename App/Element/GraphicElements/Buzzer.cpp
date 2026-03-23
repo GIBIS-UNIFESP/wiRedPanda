@@ -8,33 +8,63 @@
 #include <QDebug>
 #include <QMediaDevices>
 
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicOutput.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
 
-Buzzer::Buzzer(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Buzzer, ElementGroup::Output, ":/Components/Output/Buzzer/BuzzerOff.svg", tr("BUZZER"), tr("Buzzer"), 1, 1, 0, 0, parent)
-{
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<Buzzer> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::Buzzer,
+        .group = ElementGroup::Output,
+        .minInputSize = 1,
+        .maxInputSize = 1,
+        .minOutputSize = 0,
+        .maxOutputSize = 0,
+        .canChangeSkin = true,
+        .hasColors = false,
+        .hasAudio = true,
+        .hasAudioBox = false,
+        .hasTrigger = false,
+        .hasFrequency = false,
+        .hasDelay = false,
+        .hasLabel = true,
+        .hasTruthTable = false,
+        .rotatable = false,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Output/Buzzer/BuzzerOff.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("Buzzer", "BUZZER");
+        meta.translatedName = QT_TRANSLATE_NOOP("Buzzer", "Buzzer");
+        meta.trContext = "Buzzer";
+        meta.defaultSkins = QStringList({
+            ":/Components/Output/Buzzer/BuzzerOff.svg",
+            ":/Components/Output/Buzzer/BuzzerOn.svg",
+        });
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicOutput>(elm->inputSize()); };
+        return meta;
     }
 
-    m_defaultSkins = QStringList{
-        ":/Components/Output/Buzzer/BuzzerOff.svg",
-        ":/Components/Output/Buzzer/BuzzerOn.svg"
-    };
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new Buzzer(); });
+        return true;
+    }();
+};
 
+Buzzer::Buzzer(QGraphicsItem *parent)
+    : GraphicElement(ElementType::Buzzer, parent)
+{
     // 64,34: label sits to the right of the 64×64 body, vertically centred
     m_label->setPos(64, 34);
 
     // Check for audio hardware once at construction; subsequent audio calls are
     // guarded by m_hasOutputDevice to allow headless/CI operation without warnings.
-    setCanChangeSkin(true);
-    setHasAudio(true);
-    setHasLabel(true);
-    setRotatable(false);
-
     m_hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
 
     if (m_hasOutputDevice) {

@@ -7,22 +7,55 @@
 
 #include <QPainter>
 
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicDemux.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
 
-Demux::Demux(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Demux, ElementGroup::Mux, ":/Components/Logic/demux.svg", tr("DEMULTIPLEXER"), tr("Demux"), 2, 4, 2, 8, parent)
-{
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<Demux> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::Demux,
+        .group = ElementGroup::Mux,
+        .minInputSize = 2,
+        .maxInputSize = 4,
+        .minOutputSize = 2,
+        .maxOutputSize = 8,
+        .canChangeSkin = true,
+        .hasColors = false,
+        .hasAudio = false,
+        .hasAudioBox = false,
+        .hasTrigger = false,
+        .hasFrequency = false,
+        .hasDelay = false,
+        .hasLabel = false,
+        .hasTruthTable = false,
+        .rotatable = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Logic/demux.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("Demux", "DEMULTIPLEXER");
+        meta.translatedName = QT_TRANSLATE_NOOP("Demux", "Demux");
+        meta.trContext = "Demux";
+        meta.defaultSkins = QStringList({":/Components/Logic/demux.svg"});
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicDemux>(elm->outputSize()); };
+        return meta;
     }
 
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new Demux(); });
+        return true;
+    }();
+};
 
-    setCanChangeSkin(true);
-
+Demux::Demux(QGraphicsItem *parent)
+    : GraphicElement(ElementType::Demux, parent)
+{
     Demux::updatePortsProperties();
 }
 

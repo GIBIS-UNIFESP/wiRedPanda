@@ -157,5 +157,3 @@ private:
     QVector<QString> m_icOutputLabels;
 };
 
-Q_DECLARE_METATYPE(IC)
-

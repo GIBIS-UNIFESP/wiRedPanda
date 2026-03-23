@@ -24,5 +24,3 @@ public:
     explicit Line(QGraphicsItem *parent = nullptr);
 };
 
-Q_DECLARE_METATYPE(Line)
-

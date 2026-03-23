@@ -7,22 +7,55 @@
 
 #include <QPainter>
 
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicMux.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
 
-Mux::Mux(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Mux, ElementGroup::Mux, ":/Components/Logic/mux.svg", tr("MULTIPLEXER"), tr("Mux"), 3, 11, 1, 1, parent)
-{
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<Mux> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::Mux,
+        .group = ElementGroup::Mux,
+        .minInputSize = 3,
+        .maxInputSize = 11,
+        .minOutputSize = 1,
+        .maxOutputSize = 1,
+        .canChangeSkin = true,
+        .hasColors = false,
+        .hasAudio = false,
+        .hasAudioBox = false,
+        .hasTrigger = false,
+        .hasFrequency = false,
+        .hasDelay = false,
+        .hasLabel = false,
+        .hasTruthTable = false,
+        .rotatable = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Logic/mux.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("Mux", "MULTIPLEXER");
+        meta.translatedName = QT_TRANSLATE_NOOP("Mux", "Mux");
+        meta.trContext = "Mux";
+        meta.defaultSkins = QStringList({":/Components/Logic/mux.svg"});
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicMux>(elm->inputSize()); };
+        return meta;
     }
 
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new Mux(); });
+        return true;
+    }();
+};
 
-    setCanChangeSkin(true);
-
+Mux::Mux(QGraphicsItem *parent)
+    : GraphicElement(ElementType::Mux, parent)
+{
     Mux::updatePortsProperties();
 }
 

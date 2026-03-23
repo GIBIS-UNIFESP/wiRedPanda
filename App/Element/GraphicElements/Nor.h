@@ -22,5 +22,3 @@ public:
     explicit Nor(QGraphicsItem *parent = nullptr);
 };
 
-Q_DECLARE_METATYPE(Nor)
-

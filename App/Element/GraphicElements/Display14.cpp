@@ -5,41 +5,72 @@
 
 #include <QPainter>
 
+#include "App/Element/ElementInfo.h"
 #include "App/Element/GraphicElements/Display7.h"
-#include "App/GlobalProperties.h"
+#include "App/Element/LogicElements/LogicOutput.h"
 #include "App/Nodes/QNEPort.h"
 
-Display14::Display14(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Display14, ElementGroup::Output, ":/Components/Output/Counter/counter_14_on.svg", tr("14-SEGMENT DISPLAY"), tr("14-Segment Display"), 15, 15, 0, 0, parent)
-{
-    // Each of the 14 segments plus DP gets 5 color variants (White, Red, Green, Blue, Purple).
-    // Skin indices 1-15 map to segment SVGs in defaultSkins; skin[0] is the off background.
-    // Display7::convertAllColors() recolors the pre-rendered images pixel-by-pixel.
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<Display14> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::Display14,
+        .group = ElementGroup::Output,
+        .minInputSize = 15,
+        .maxInputSize = 15,
+        .minOutputSize = 0,
+        .maxOutputSize = 0,
+        .canChangeSkin = true,
+        .hasColors = true,
+        .hasAudio = false,
+        .hasAudioBox = false,
+        .hasTrigger = false,
+        .hasFrequency = false,
+        .hasDelay = false,
+        .hasLabel = true,
+        .hasTruthTable = false,
+        .rotatable = false,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Output/Counter/counter_14_on.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("Display14", "14-SEGMENT DISPLAY");
+        meta.translatedName = QT_TRANSLATE_NOOP("Display14", "14-Segment Display");
+        meta.trContext = "Display14";
+        meta.defaultSkins = QStringList({
+            ":/Components/Output/Counter/counter_14_off.svg",
+            ":/Components/Output/Counter/counter_a.svg",
+            ":/Components/Output/Counter/counter_b.svg",
+            ":/Components/Output/Counter/counter_c.svg",
+            ":/Components/Output/Counter/counter_d.svg",
+            ":/Components/Output/Counter/counter_e.svg",
+            ":/Components/Output/Counter/counter_f.svg",
+            ":/Components/Output/Counter/counter_g1.svg",
+            ":/Components/Output/Counter/counter_g2.svg",
+            ":/Components/Output/Counter/counter_h.svg",
+            ":/Components/Output/Counter/counter_j.svg",
+            ":/Components/Output/Counter/counter_k.svg",
+            ":/Components/Output/Counter/counter_l.svg",
+            ":/Components/Output/Counter/counter_m.svg",
+            ":/Components/Output/Counter/counter_n.svg",
+            ":/Components/Output/Counter/counter_dp.svg",
+        });
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicOutput>(elm->inputSize()); };
+        return meta;
     }
 
-    m_defaultSkins = QStringList{
-        ":/Components/Output/Counter/counter_14_off.svg",
-        ":/Components/Output/Counter/counter_a.svg",
-        ":/Components/Output/Counter/counter_b.svg",
-        ":/Components/Output/Counter/counter_c.svg",
-        ":/Components/Output/Counter/counter_d.svg",
-        ":/Components/Output/Counter/counter_e.svg",
-        ":/Components/Output/Counter/counter_f.svg",
-        ":/Components/Output/Counter/counter_g1.svg",
-        ":/Components/Output/Counter/counter_g2.svg",
-        ":/Components/Output/Counter/counter_h.svg",
-        ":/Components/Output/Counter/counter_j.svg",
-        ":/Components/Output/Counter/counter_k.svg",
-        ":/Components/Output/Counter/counter_l.svg",
-        ":/Components/Output/Counter/counter_m.svg",
-        ":/Components/Output/Counter/counter_n.svg",
-        ":/Components/Output/Counter/counter_dp.svg",
-    };
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new Display14(); });
+        return true;
+    }();
+};
 
+Display14::Display14(QGraphicsItem *parent)
+    : GraphicElement(ElementType::Display14, parent)
+{
     a  = QVector<QPixmap>(5, m_defaultSkins.at(1));
     b  = QVector<QPixmap>(5, m_defaultSkins.at(2));
     c  = QVector<QPixmap>(5, m_defaultSkins.at(3));
@@ -71,11 +102,6 @@ Display14::Display14(QGraphicsItem *parent)
     Display7::convertAllColors(m);
     Display7::convertAllColors(n);
     Display7::convertAllColors(dp);
-
-    setCanChangeSkin(true);
-    setHasColors(true);
-    setHasLabel(true);
-    setRotatable(false);
 
     Display14::updatePortsProperties();
 }

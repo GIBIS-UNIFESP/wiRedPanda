@@ -3,24 +3,54 @@
 
 #include "App/Element/GraphicElements/InputGND.h"
 
-#include "App/GlobalProperties.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicInput.h"
 
-InputGnd::InputGnd(QGraphicsItem *parent)
-    : GraphicElement(ElementType::InputGnd, ElementGroup::StaticInput, ":/Components/Input/0.svg", tr("GROUND"), tr("GND"), 0, 0, 1, 1, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<InputGnd> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::InputGnd,
+        .group = ElementGroup::StaticInput,
+        .minInputSize = 0,
+        .maxInputSize = 0,
+        .minOutputSize = 1,
+        .maxOutputSize = 1,
+        .canChangeSkin = true,
+        .hasColors = false,
+        .hasAudio = false,
+        .hasAudioBox = false,
+        .hasTrigger = false,
+        .hasFrequency = false,
+        .hasDelay = false,
+        .hasLabel = false,
+        .hasTruthTable = false,
+        // Static inputs are not rotatable as a whole; instead their output port rotates
+        // around the element centre so the wire attachment point tracks the correct position.
+        .rotatable = false,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Input/0.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("InputGnd", "GROUND");
+        meta.translatedName = QT_TRANSLATE_NOOP("InputGnd", "GND");
+        meta.trContext = "InputGnd";
+        meta.defaultSkins = QStringList({":/Components/Input/0.svg"});
+        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicInput>(false); };
+        return meta;
     }
 
-    // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new InputGnd(); });
+        return true;
+    }();
+};
 
-    setCanChangeSkin(true);
-    // Static inputs are not rotatable as a whole; instead their output port rotates
-    // around the element centre so the wire attachment point tracks the correct position.
-    setRotatable(false);
+InputGnd::InputGnd(QGraphicsItem *parent)
+    : GraphicElement(ElementType::InputGnd, parent)
+{
 }
 

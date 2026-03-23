@@ -3,21 +3,45 @@
 
 #include "App/Element/GraphicElements/Xnor.h"
 
-#include "App/GlobalProperties.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicXnor.h"
 
-Xnor::Xnor(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Xnor, ElementGroup::Gate, ":/Components/Logic/xnor.svg", tr("XNOR"), tr("Xnor"), 2, 8, 1, 1, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<Xnor> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::Xnor,
+        .group = ElementGroup::Gate,
+        .minInputSize = 2,
+        .maxInputSize = 8,
+        .minOutputSize = 1,
+        .maxOutputSize = 1,
+        .canChangeSkin = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Logic/xnor.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("Xnor", "XNOR");
+        meta.translatedName = QT_TRANSLATE_NOOP("Xnor", "Xnor");
+        meta.trContext = "Xnor";
+        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
+        meta.defaultSkins = QStringList({":/Components/Logic/xnor.svg"});
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicXnor>(elm->inputSize()); };
+        return meta;
     }
 
-    // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new Xnor(); });
+        return true;
+    }();
+};
 
-    setCanChangeSkin(true);
+Xnor::Xnor(QGraphicsItem *parent)
+    : GraphicElement(ElementType::Xnor, parent)
+{
+    // Skip full initialisation when building a property-probe instance (see ElementFactory).
 }
 

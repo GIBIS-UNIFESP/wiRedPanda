@@ -22,5 +22,3 @@ public:
     explicit Xor(QGraphicsItem *parent = nullptr);
 };
 
-Q_DECLARE_METATYPE(Xor)
-

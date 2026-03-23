@@ -18,8 +18,9 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/ThemeManager.h"
+#include "App/Element/GraphicElement.h"
 #include "App/GlobalProperties.h"
-#include "App/RegisterTypes.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
 
@@ -49,11 +50,6 @@ int main(int argc, char *argv[])
     // Make sure everything flushes
     auto sentryClose = qScopeGuard([] { sentry_close(); });
 #endif
-
-    // registerTypes() must run before QApplication construction so that Qt's
-    // meta-object system knows all custom types (e.g. ElementType, Status) when
-    // QVariant, signals/slots, or QDataStream serializers are set up.
-    registerTypes();
 
     // Disable all debug/verbose output at startup; the --verbosity option re-enables
     // it after the command-line parser runs below
@@ -128,6 +124,13 @@ int main(int argc, char *argv[])
     // the custom theme colours defined in ThemeManager to render correctly on all OSes
     app.setStyle("Fusion");
     app.setWindowIcon(QIcon(":/Interface/Toolbar/wpanda.svg"));
+
+    // Self-registering element metadata (static initialisers in each element's
+    // .cpp) may trigger ThemeManager construction before QApplication exists.
+    // When that happens the dark palette is silently dropped because
+    // Application::instance() is still null.  Re-apply the persisted theme now
+    // that the Application and Fusion style are ready.
+    ThemeManager::setTheme(ThemeManager::theme());
 
 #ifdef Q_OS_LINUX
     // When running as an AppImage, the Wayland compositor resolves the window icon
