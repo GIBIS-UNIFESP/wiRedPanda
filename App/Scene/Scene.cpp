@@ -396,200 +396,17 @@ QUndoStack *Scene::undoStack()
     return &m_undoStack;
 }
 
-void Scene::prevMainPropShortcut()
-{
-    // Keyboard shortcut to decrement the "primary" configurable property of each
-    // selected element: input count for logic gates, output count for rotary inputs,
-    // clock frequency (step 0.5 Hz), buzzer audio, or display color
-    for (auto *element : selectedElements()) {
-        switch (element->elementType()) {
-        // Logic Elements
-        case ElementType::And:
-        case ElementType::Or:
-        case ElementType::Nand:
-        case ElementType::Nor:
-        case ElementType::Xor:
-        case ElementType::Xnor:
-        // Output and truthtable
-        case ElementType::Led:
-        case ElementType::TruthTable:
-            if (element->inputSize() > element->minInputSize())
-                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element},
-                                                          element->inputSize() - 1, this));
-            break;
+void Scene::prevMainPropShortcut() { m_propertyShortcutHandler.prevMainProperty(); }
 
-        // Input ports
-        case ElementType::InputRotary:
-            if (element->outputSize() > element->minOutputSize())
-                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
-                                                           element->outputSize() - 1, this));
-            break;
+void Scene::nextMainPropShortcut() { m_propertyShortcutHandler.nextMainProperty(); }
 
-        case ElementType::Clock:
-            if (element->hasFrequency())
-                element->setFrequency(element->frequency() - 0.5f);
-            break;
+void Scene::prevSecndPropShortcut() { m_propertyShortcutHandler.prevSecondaryProperty(); }
 
-        case ElementType::Buzzer:
-            if (element->hasAudio())
-                element->setAudio(element->previousAudio());
-            break;
+void Scene::nextSecndPropShortcut() { m_propertyShortcutHandler.nextSecondaryProperty(); }
 
-        case ElementType::Display16:
-        case ElementType::Display14:
-        case ElementType::Display7:
-            if (element->hasColors())
-                element->setColor(element->previousColor());
-            break;
+void Scene::nextElm() { m_propertyShortcutHandler.nextElement(); }
 
-        default: // Not implemented
-            break;
-        }
-
-        // Toggling selection off and on forces the property inspector to refresh
-        element->setSelected(false);
-        element->setSelected(true);
-    }
-}
-
-void Scene::nextMainPropShortcut()
-{
-    // Mirror of prevMainPropShortcut() — increments the same per-type primary property
-    for (auto *element : selectedElements()) {
-        switch (element->elementType()) {
-        // Logic Elements
-        case ElementType::And:
-        case ElementType::Or:
-        case ElementType::Nand:
-        case ElementType::Nor:
-        case ElementType::Xor:
-        case ElementType::Xnor:
-        // Output and truthtable
-        case ElementType::Led:
-        case ElementType::TruthTable:
-            if (element->inputSize() < element->maxInputSize())
-                receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element},
-                                                          element->inputSize() + 1, this));
-            break;
-
-        // Input ports
-        case ElementType::InputRotary:
-            if (element->outputSize() < element->maxOutputSize())
-                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
-                                                           element->outputSize() + 1, this));
-            break;
-
-        case ElementType::Clock:
-            if (element->hasFrequency())
-                element->setFrequency(element->frequency() + 0.5f);
-            break;
-
-        case ElementType::Buzzer:
-            if (element->hasAudio())
-                element->setAudio(element->nextAudio());
-            break;
-
-        case ElementType::Display14:
-        case ElementType::Display7:
-            if (element->hasColors())
-                element->setColor(element->nextColor());
-            break;
-
-        default: // Not implemented
-            break;
-        }
-
-        element->setSelected(false);
-        element->setSelected(true);
-    }
-}
-
-void Scene::prevSecndPropShortcut()
-{
-    for (auto *element : selectedElements()) {
-        switch (element->elementType()) {
-        case ElementType::TruthTable:
-            if (element->outputSize() > element->minOutputSize())
-                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
-                                                           element->outputSize() - 1, this));
-            break;
-
-        case ElementType::Led:
-            if (element->hasColors())
-                element->setColor(element->previousColor());
-            break;
-
-        default:
-            break;
-        }
-
-        element->setSelected(false);
-        element->setSelected(true);
-    }
-}
-
-void Scene::nextSecndPropShortcut()
-{
-    for (auto *element : selectedElements()) {
-        switch (element->elementType()) {
-        case ElementType::TruthTable:
-            if (element->outputSize() < element->maxOutputSize())
-                receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
-                                                           element->outputSize() + 1, this));
-            break;
-
-        case ElementType::Led:
-            if (element->hasColors())
-                element->setColor(element->nextColor());
-            break;
-
-        default:
-            break;
-        }
-
-        element->setSelected(false);
-        element->setSelected(true);
-    }
-}
-
-void Scene::nextElm()
-{
-    for (auto *element : selectedElements()) {
-        const QPointF elmPosition = element->scenePos();
-        auto nextType = Enums::nextElmType(element->elementType());
-
-        // ElementType::Unknown signals there is no "next" in the cycle for this type
-        if (nextType == ElementType::Unknown) { continue; }
-
-        receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
-                       Enums::nextElmType(element->elementType()), this));
-
-        // MorphCommand replaces the element in-place; re-select via position because
-        // the old pointer is now invalid after the command's redo()
-        auto *item = itemAt(elmPosition);
-        if (item) {
-            item->setSelected(true);
-        }
-    }
-}
-
-void Scene::prevElm()
-{
-    for (auto *element : selectedElements()) {
-        const QPointF elmPosition = element->scenePos();
-        auto prevType = Enums::prevElmType(element->elementType());
-
-        if (prevType == ElementType::Unknown) { continue; }
-
-        receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
-                                        Enums::prevElmType(element->elementType()), this));
-
-        auto *item = itemAt(elmPosition);
-        if (item) {
-            item->setSelected(true);
-        }
-    }
-}
+void Scene::prevElm() { m_propertyShortcutHandler.prevElement(); }
 
 void Scene::updateTheme()
 {
@@ -1039,7 +856,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         if (item->type() == QNEPort::Type) {
             /* When the mouse is pressed over an connected input port, the line
              * is disconnected and can be connected to another port. */
-            if (m_connectionManager.editedConnection()) {
+            if (m_connectionManager.hasEditedConnection()) {
                 // An in-progress wire exists; try to complete it at this port
                 m_connectionManager.tryComplete(m_mousePos);
                 return;
