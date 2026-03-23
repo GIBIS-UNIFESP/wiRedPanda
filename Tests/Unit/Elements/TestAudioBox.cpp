@@ -14,7 +14,6 @@
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/InputGND.h"
 #include "App/Element/GraphicElements/InputVCC.h"
-#include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Workspace.h"
@@ -232,7 +231,8 @@ void TestAudioBox::testLoadVersionOld()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
-    audioBox2->load(loadStream, portMap, AppVersion::current);
+    SerializationContext context{portMap, AppVersion::current, {}};
+    audioBox2->load(loadStream, context);
 
     // Audio path should be loaded correctly
     QCOMPARE(audioBox2->audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
@@ -253,7 +253,8 @@ void TestAudioBox::testLoadVersionNew()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
-    audioBox2->load(loadStream, portMap, AppVersion::current);
+    SerializationContext context{portMap, AppVersion::current, {}};
+    audioBox2->load(loadStream, context);
 
     // Audio path should be loaded
     QCOMPARE(audioBox2->audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
@@ -268,14 +269,14 @@ void TestAudioBox::testSetAudioWithRelativePath()
     tempFile.close();
 
     const QFileInfo tempInfo(tempFile.fileName());
-    const QString savedDir = GlobalProperties::currentDir;
-    GlobalProperties::currentDir = tempInfo.absolutePath();
+    const QString savedDir = Serialization::contextDir;
+    Serialization::contextDir = tempInfo.absolutePath();
 
     AudioBox audioBox;
     audioBox.setAudio(tempInfo.fileName());
 
     QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
-    GlobalProperties::currentDir = savedDir;
+    Serialization::contextDir = savedDir;
 }
 
 void TestAudioBox::testSetAudioWithSameOsAbsolutePath()
@@ -287,14 +288,14 @@ void TestAudioBox::testSetAudioWithSameOsAbsolutePath()
     tempFile.close();
 
     const QFileInfo tempInfo(tempFile.fileName());
-    const QString savedDir = GlobalProperties::currentDir;
-    GlobalProperties::currentDir = "/some/unrelated/directory";
+    const QString savedDir = Serialization::contextDir;
+    Serialization::contextDir = "/some/unrelated/directory";
 
     AudioBox audioBox;
     audioBox.setAudio(tempInfo.absoluteFilePath());
 
     QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
-    GlobalProperties::currentDir = savedDir;
+    Serialization::contextDir = savedDir;
 }
 
 void TestAudioBox::testSetAudioWithForeignAbsolutePathForwardSlash()
@@ -306,14 +307,14 @@ void TestAudioBox::testSetAudioWithForeignAbsolutePathForwardSlash()
     tempFile.close();
 
     const QFileInfo tempInfo(tempFile.fileName());
-    const QString savedDir = GlobalProperties::currentDir;
-    GlobalProperties::currentDir = tempInfo.absolutePath();
+    const QString savedDir = Serialization::contextDir;
+    Serialization::contextDir = tempInfo.absolutePath();
 
     AudioBox audioBox;
     audioBox.setAudio("C:/Users/alice/project/" + tempInfo.fileName());
 
     QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
-    GlobalProperties::currentDir = savedDir;
+    Serialization::contextDir = savedDir;
 }
 
 void TestAudioBox::testSetAudioWithForeignAbsolutePathBackslash()
@@ -325,14 +326,14 @@ void TestAudioBox::testSetAudioWithForeignAbsolutePathBackslash()
     tempFile.close();
 
     const QFileInfo tempInfo(tempFile.fileName());
-    const QString savedDir = GlobalProperties::currentDir;
-    GlobalProperties::currentDir = tempInfo.absolutePath();
+    const QString savedDir = Serialization::contextDir;
+    Serialization::contextDir = tempInfo.absolutePath();
 
     AudioBox audioBox;
     audioBox.setAudio("C:\\Users\\alice\\project\\" + tempInfo.fileName());
 
     QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
-    GlobalProperties::currentDir = savedDir;
+    Serialization::contextDir = savedDir;
 }
 
 void TestAudioBox::testSetAudioWithForeignAbsolutePathMixedSlashes()
@@ -344,21 +345,21 @@ void TestAudioBox::testSetAudioWithForeignAbsolutePathMixedSlashes()
     tempFile.close();
 
     const QFileInfo tempInfo(tempFile.fileName());
-    const QString savedDir = GlobalProperties::currentDir;
-    GlobalProperties::currentDir = tempInfo.absolutePath();
+    const QString savedDir = Serialization::contextDir;
+    Serialization::contextDir = tempInfo.absolutePath();
 
     AudioBox audioBox;
     audioBox.setAudio("C:\\Users/alice\\project/" + tempInfo.fileName());
 
     QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
-    GlobalProperties::currentDir = savedDir;
+    Serialization::contextDir = savedDir;
 }
 
 void TestAudioBox::testSetAudioWithNonExistentFileFallback()
 {
     // Both full path and filename fallback fail — should throw Pandaception
-    const QString savedDir = GlobalProperties::currentDir;
-    GlobalProperties::currentDir = "/some/empty/directory";
+    const QString savedDir = Serialization::contextDir;
+    Serialization::contextDir = "/some/empty/directory";
 
     AudioBox audioBox;
 
@@ -370,7 +371,7 @@ void TestAudioBox::testSetAudioWithNonExistentFileFallback()
     }
 
     QVERIFY2(threw, "setAudio should throw when neither full path nor filename fallback resolves");
-    GlobalProperties::currentDir = savedDir;
+    Serialization::contextDir = savedDir;
 }
 
 void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
@@ -383,8 +384,8 @@ void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
     tempFile.close();
 
     const QFileInfo tempInfo(tempFile.fileName());
-    const QString savedDir = GlobalProperties::currentDir;
-    GlobalProperties::currentDir = tempInfo.absolutePath();
+    const QString savedDir = Serialization::contextDir;
+    Serialization::contextDir = tempInfo.absolutePath();
 
     AudioBox audioBox;
     audioBox.setAudio(tempInfo.fileName());
@@ -414,6 +415,6 @@ void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
     const QString savedPath = map.value("audiobox").toString();
     QCOMPARE(savedPath, tempInfo.fileName());
 
-    GlobalProperties::currentDir = savedDir;
+    Serialization::contextDir = savedDir;
 }
 

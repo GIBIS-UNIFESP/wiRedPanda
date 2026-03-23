@@ -13,7 +13,7 @@
 
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/GlobalProperties.h"
+#include "App/IO/Serialization.h"
 #include "Tests/Common/TestUtils.h"
 
 // ============================================================================
@@ -163,7 +163,8 @@ void TestInputElements::testInputSwitchLoadOldVersion()
     QMap<quint64, QNEPort *> portMap;
     // For versions < 4.1, load reads isOn and potentially locked from stream
     // The test verifies the load mechanism doesn't crash and loads a valid element
-    inputSwitch2->load(loadStream, portMap, QVersionNumber(3, 0));
+    SerializationContext context{portMap, QVersionNumber(3, 0), {}};
+    inputSwitch2->load(loadStream, context);
 
     // Verify the element is in a valid state after loading
     QVERIFY2(inputSwitch2->outputSize() >= 1, "InputSwitch must have at least 1 output after load");
@@ -186,7 +187,8 @@ void TestInputElements::testInputSwitchLoadNewVersion()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
-    inputSwitch2->load(loadStream, portMap, QVersionNumber(4, 1));
+    SerializationContext context{portMap, QVersionNumber(4, 1), {}};
+    inputSwitch2->load(loadStream, context);
 
     // State should be preserved
     QVERIFY(inputSwitch2->isOn());
@@ -369,7 +371,8 @@ void TestInputElements::testInputButtonLoadOldVersion()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
-    inputButton2->load(loadStream, portMap, QVersionNumber(3, 5));
+    SerializationContext context{portMap, QVersionNumber(3, 5), {}};
+    inputButton2->load(loadStream, context);
 
     // Verify the element is in a valid state after loading
     QVERIFY2(inputButton2->outputSize() >= 1, "InputButton must have at least 1 output after load");
@@ -392,7 +395,8 @@ void TestInputElements::testInputButtonLoadNewVersion()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
-    inputButton2->load(loadStream, portMap, QVersionNumber(4, 1));
+    SerializationContext context{portMap, QVersionNumber(4, 1), {}};
+    inputButton2->load(loadStream, context);
 
     // Verify the element is in a valid state after loading
     QVERIFY2(inputButton2->outputSize() >= 1, "InputButton must have at least 1 output after load");
@@ -495,8 +499,8 @@ void TestInputElements::testSkinWithRelativePath()
     const QString skinFileName = "custom_skin.svg";
     QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
 
-    const QString savedDir = GlobalProperties::currentDir;
-    GlobalProperties::currentDir = tempDir.path();
+    const QString savedDir = Serialization::contextDir;
+    Serialization::contextDir = tempDir.path();
 
     InputSwitch inputSwitch;
 
@@ -508,7 +512,7 @@ void TestInputElements::testSkinWithRelativePath()
     }
 
     QVERIFY2(!threw, "setSkin should resolve relative filename against currentDir");
-    GlobalProperties::currentDir = savedDir;
+    Serialization::contextDir = savedDir;
 }
 
 void TestInputElements::testSkinWithSameOsAbsolutePath()
@@ -521,8 +525,8 @@ void TestInputElements::testSkinWithSameOsAbsolutePath()
     const QString skinFullPath = tempDir.path() + "/" + skinFileName;
     QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", skinFullPath));
 
-    const QString savedDir = GlobalProperties::currentDir;
-    GlobalProperties::currentDir = "/some/unrelated/directory";
+    const QString savedDir = Serialization::contextDir;
+    Serialization::contextDir = "/some/unrelated/directory";
 
     InputSwitch inputSwitch;
 
@@ -534,7 +538,7 @@ void TestInputElements::testSkinWithSameOsAbsolutePath()
     }
 
     QVERIFY2(!threw, "setSkin should resolve same-OS absolute path directly");
-    GlobalProperties::currentDir = savedDir;
+    Serialization::contextDir = savedDir;
 }
 
 void TestInputElements::testSkinWithForeignAbsolutePathForwardSlash()
@@ -546,8 +550,8 @@ void TestInputElements::testSkinWithForeignAbsolutePathForwardSlash()
     const QString skinFileName = "custom_skin.svg";
     QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
 
-    const QString savedDir = GlobalProperties::currentDir;
-    GlobalProperties::currentDir = tempDir.path();
+    const QString savedDir = Serialization::contextDir;
+    Serialization::contextDir = tempDir.path();
 
     InputSwitch inputSwitch;
 
@@ -559,7 +563,7 @@ void TestInputElements::testSkinWithForeignAbsolutePathForwardSlash()
     }
 
     QVERIFY2(!threw, "setSkin should resolve foreign path with forward slashes via filename fallback");
-    GlobalProperties::currentDir = savedDir;
+    Serialization::contextDir = savedDir;
 }
 
 void TestInputElements::testSkinWithForeignAbsolutePathBackslash()
@@ -571,8 +575,8 @@ void TestInputElements::testSkinWithForeignAbsolutePathBackslash()
     const QString skinFileName = "custom_skin.svg";
     QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
 
-    const QString savedDir = GlobalProperties::currentDir;
-    GlobalProperties::currentDir = tempDir.path();
+    const QString savedDir = Serialization::contextDir;
+    Serialization::contextDir = tempDir.path();
 
     InputSwitch inputSwitch;
 
@@ -584,7 +588,7 @@ void TestInputElements::testSkinWithForeignAbsolutePathBackslash()
     }
 
     QVERIFY2(!threw, "setSkin should resolve foreign path with backslashes via filename fallback");
-    GlobalProperties::currentDir = savedDir;
+    Serialization::contextDir = savedDir;
 }
 
 void TestInputElements::testSkinWithForeignAbsolutePathMixedSlashes()
@@ -596,8 +600,8 @@ void TestInputElements::testSkinWithForeignAbsolutePathMixedSlashes()
     const QString skinFileName = "custom_skin.svg";
     QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
 
-    const QString savedDir = GlobalProperties::currentDir;
-    GlobalProperties::currentDir = tempDir.path();
+    const QString savedDir = Serialization::contextDir;
+    Serialization::contextDir = tempDir.path();
 
     InputSwitch inputSwitch;
 
@@ -609,14 +613,14 @@ void TestInputElements::testSkinWithForeignAbsolutePathMixedSlashes()
     }
 
     QVERIFY2(!threw, "setSkin should resolve foreign path with mixed slashes via filename fallback");
-    GlobalProperties::currentDir = savedDir;
+    Serialization::contextDir = savedDir;
 }
 
 void TestInputElements::testSkinWithNonExistentFileFallback()
 {
     // Both full path and filename fallback fail — should throw Pandaception
-    const QString savedDir = GlobalProperties::currentDir;
-    GlobalProperties::currentDir = "/some/empty/directory";
+    const QString savedDir = Serialization::contextDir;
+    Serialization::contextDir = "/some/empty/directory";
 
     InputSwitch inputSwitch;
 
@@ -628,6 +632,6 @@ void TestInputElements::testSkinWithNonExistentFileFallback()
     }
 
     QVERIFY2(threw, "setSkin should throw when neither full path nor filename fallback resolves");
-    GlobalProperties::currentDir = savedDir;
+    Serialization::contextDir = savedDir;
 }
 
