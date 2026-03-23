@@ -15,7 +15,7 @@
 
 class InputSwitch;
 class LogicElement;
-class LogicInput;
+class LogicSource;
 class QNEConnection;
 class Simulation;
 
@@ -52,7 +52,7 @@ std::unique_ptr<WorkSpace> createWorkspace();
  */
 QVector<InputSwitch *> createSwitches(int count);
 
-QVector<LogicInput *> createLogicInputs(int count);
+QVector<LogicSource *> createLogicSources(int count);
 
 /**
  * @brief Set values on multiple input switches
@@ -61,7 +61,7 @@ QVector<LogicInput *> createLogicInputs(int count);
  */
 void setInputValues(const QVector<InputSwitch *> &switches, const QVector<bool> &values);
 
-void setLogicInputValues(const QVector<LogicInput *> &inputs, const QVector<bool> &values);
+void setLogicSourceValues(const QVector<LogicSource *> &inputs, const QVector<bool> &values);
 
 /**
  * @brief Verify a logic element against a truth table
@@ -76,7 +76,7 @@ void setLogicInputValues(const QVector<LogicInput *> &inputs, const QVector<bool
  * @param numOutputs Number of outputs to verify (defaults to 1)
  */
 void verifyTruthTable(LogicElement *element,
-                      const QVector<LogicInput *> &inputs,
+                      const QVector<LogicSource *> &inputs,
                       const QVector<QVector<bool>> &truthTable,
                       int numOutputs = 1);
 

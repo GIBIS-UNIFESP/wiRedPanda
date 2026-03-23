@@ -7,7 +7,6 @@
 #include "App/Element/LogicElements/LogicDemux.h"
 #include "App/Element/LogicElements/LogicDFlipFlop.h"
 #include "App/Element/LogicElements/LogicDLatch.h"
-#include "App/Element/LogicElements/LogicInput.h"
 #include "App/Element/LogicElements/LogicJKFlipFlop.h"
 #include "App/Element/LogicElements/LogicMux.h"
 #include "App/Element/LogicElements/LogicNand.h"
@@ -15,6 +14,7 @@
 #include "App/Element/LogicElements/LogicNor.h"
 #include "App/Element/LogicElements/LogicNot.h"
 #include "App/Element/LogicElements/LogicOr.h"
+#include "App/Element/LogicElements/LogicSource.h"
 #include "App/Element/LogicElements/LogicSRFlipFlop.h"
 #include "App/Element/LogicElements/LogicSRLatch.h"
 #include "App/Element/LogicElements/LogicTFlipFlop.h"
@@ -24,7 +24,7 @@
 
 void TestLogicElements::init()
 {
-    std::generate(m_inputs.begin(), m_inputs.end(), [] { return new LogicInput(); });
+    std::generate(m_inputs.begin(), m_inputs.end(), [] { return new LogicSource(); });
 }
 
 void TestLogicElements::cleanup()
@@ -116,9 +116,9 @@ void TestLogicElements::testLogicOr()
     QCOMPARE(elm.outputValue(), expected);
 }
 
-void TestLogicElements::testLogicInput()
+void TestLogicElements::testLogicSource()
 {
-    LogicInput elm;
+    LogicSource elm;
     QCOMPARE(elm.outputValue(), false);
     elm.setOutputValue(true);
     QCOMPARE(elm.outputValue(), true);
@@ -1329,7 +1329,7 @@ void TestLogicElements::testLogic8InputNor()
 
 /**
  * Test: Fan-out - one output driving multiple inputs
- * Verifies that a single LogicInput can successfully drive multiple gate inputs
+ * Verifies that a single LogicSource can successfully drive multiple gate inputs
  */
 void TestLogicElements::testFanOut_data()
 {
@@ -1352,8 +1352,8 @@ void TestLogicElements::testFanOut()
     QFETCH(bool, expectedOr);
     QFETCH(bool, expectedXor);
 
-    // Single LogicInput drives 3 different gates (fan-out test)
-    LogicInput source;
+    // Single LogicSource drives 3 different gates (fan-out test)
+    LogicSource source;
     LogicAnd andGate(2);
     LogicOr orGate(2);
     LogicXor xorGate(2);

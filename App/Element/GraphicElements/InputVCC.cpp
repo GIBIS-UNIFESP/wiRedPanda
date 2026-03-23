@@ -4,7 +4,7 @@
 #include "App/Element/GraphicElements/InputVCC.h"
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicInput.h"
+#include "App/Element/LogicElements/LogicSource.h"
 #include "App/Nodes/QNEPort.h"
 
 template<>
@@ -28,7 +28,7 @@ struct ElementInfo<InputVcc> {
         meta.translatedName = QT_TRANSLATE_NOOP("InputVcc", "VCC");
         meta.trContext = "InputVcc";
         meta.defaultSkins = QStringList({":/Components/Input/1.svg"});
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicInput>(true); };
+        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicSource>(true); };
         return meta;
     }
 

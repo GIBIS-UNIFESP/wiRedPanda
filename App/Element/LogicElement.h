@@ -38,12 +38,10 @@ public:
     /// Virtual destructor.
     virtual ~LogicElement() = default;
 
-    // --- Validity & Feedback ---
+    // --- Validity ---
 
     /// Returns \c true if all required input ports are connected.
     bool isValid() const;
-    /// Returns \c true if this element is part of a combinational feedback loop.
-    bool inFeedbackLoop() const;
     /// Recomputes and caches the validity state.
     void validate();
 
@@ -56,10 +54,8 @@ public:
     /// Returns the number of output ports.
     int outputSize() const;
 
-    // --- Priority & Logic ---
+    // --- Logic ---
 
-    /// Returns the cached topological priority (higher = closer to inputs, updated first).
-    int priority() const;
     const QVector<InputPair> &inputPairs() const;
     virtual void updateLogic() = 0;
 
@@ -67,8 +63,6 @@ public:
 
     /** \brief Connects input \a index of this element to output \a port of \a logic. */
     void connectPredecessor(const int index, LogicElement *logic, const int port);
-    /// Marks this element as participating (or not) in a feedback loop.
-    void setInFeedbackLoop(const bool inLoop);
 
     // --- Output setting ---
 
@@ -76,8 +70,6 @@ public:
     void setOutputValue(const bool value);
     /// Sets output port \a index to \a value.
     void setOutputValue(const int index, const bool value);
-    /// Sets the topological priority for this element.
-    void setPriority(const int priority);
 
 protected:
     /**
@@ -86,7 +78,8 @@ protected:
      */
     bool updateInputs();
 
-    QVector<bool> m_inputValues; ///< Cached input values refreshed each simulation step.
+    /// Read-only view of the cached input values for use by subclass updateLogic().
+    const QVector<bool> &inputs() const { return m_inputValues; }
 
 private:
     Q_DISABLE_COPY(LogicElement)
@@ -94,9 +87,8 @@ private:
     // --- Members ---
 
     QVector<InputPair> m_inputPairs;
+    QVector<bool> m_inputValues;
     QVector<bool> m_outputValues;
-    bool m_inFeedbackLoop = false;
     bool m_isValid = true;
-    int m_priority = -1;
 };
 

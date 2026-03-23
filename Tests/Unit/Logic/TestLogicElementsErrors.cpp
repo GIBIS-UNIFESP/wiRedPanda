@@ -6,9 +6,9 @@
 #include <QtTest>
 
 #include "App/Element/LogicElements/LogicAnd.h"
-#include "App/Element/LogicElements/LogicInput.h"
 #include "App/Element/LogicElements/LogicNot.h"
 #include "App/Element/LogicElements/LogicOr.h"
+#include "App/Element/LogicElements/LogicSource.h"
 
 // ============================================================
 // Robustness Tests — Error Conditions and Boundary Behavior
@@ -23,7 +23,7 @@ void TestLogicElementsErrors::testInvalidInputPortIndex()
 {
     // 4-input AND gate: valid input port indices are 0..3
     LogicAnd gate(4);
-    LogicInput in0, in1, in2, in3;
+    LogicSource in0, in1, in2, in3;
 
     gate.connectPredecessor(0, &in0, 0);
     gate.connectPredecessor(1, &in1, 0);
@@ -51,7 +51,7 @@ void TestLogicElementsErrors::testNullPredecessor()
 {
     // 2-input AND: connect port 0, leave port 1 null
     LogicAnd andGate(2);
-    LogicInput input;
+    LogicSource input;
     andGate.connectPredecessor(0, &input, 0);
 
     input.setOutputValue(true);
@@ -105,7 +105,7 @@ void TestLogicElementsErrors::testDisconnectedInput()
 void TestLogicElementsErrors::testMultipleConnectionsSamePort()
 {
     LogicAnd gate(2);
-    LogicInput first, second, other;
+    LogicSource first, second, other;
 
     // Connect port 0 to 'first', then overwrite with 'second'
     gate.connectPredecessor(0, &first, 0);
@@ -136,7 +136,7 @@ void TestLogicElementsErrors::testMultipleConnectionsSamePort()
 void TestLogicElementsErrors::testRapidStateChanges()
 {
     LogicAnd andGate(2);
-    LogicInput input1, input2;
+    LogicSource input1, input2;
 
     andGate.connectPredecessor(0, &input1, 0);
     andGate.connectPredecessor(1, &input2, 0);
@@ -179,7 +179,7 @@ void TestLogicElementsErrors::testUnconnectedGate()
 void TestLogicElementsErrors::testDeepCascading()
 {
     // Chain: (in1 AND in2) → stage1 → AND in3 → stage2 → AND in4 → stage3
-    LogicInput in1, in2, in3, in4;
+    LogicSource in1, in2, in3, in4;
     LogicAnd stage1(2), stage2(2), stage3(2);
 
     stage1.connectPredecessor(0, &in1, 0);
@@ -243,9 +243,9 @@ void TestLogicElementsErrors::testInvalidOutputPortIndex()
     QCOMPARE(orGate.outputValue(0), false);
     QCOMPARE(notGate.outputValue(0), false);
 
-    // LogicInput supports configurable output counts
+    // LogicSource supports configurable output counts
     // Constructor sets output 0 to defaultValue; remaining outputs start false
-    LogicInput input(true, 4);  // 4 outputs: index 0 = true, indices 1-3 = false
+    LogicSource input(true, 4);  // 4 outputs: index 0 = true, indices 1-3 = false
     QCOMPARE(input.outputSize(), 4);
     QCOMPARE(input.outputValue(0), true);
     QCOMPARE(input.outputValue(3), false);  // highest valid index (outputSize() - 1)
@@ -290,7 +290,7 @@ void TestLogicElementsErrors::testConnectionCycles()
 void TestLogicElementsErrors::testInputValueBoundary()
 {
     LogicAnd gate(4);
-    LogicInput in0, in1, in2, in3;
+    LogicSource in0, in1, in2, in3;
 
     gate.connectPredecessor(0, &in0, 0);
     gate.connectPredecessor(1, &in1, 0);

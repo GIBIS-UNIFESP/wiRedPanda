@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/LogicElements/LogicInput.h"
+#include "App/Element/LogicElements/LogicSource.h"
 
-LogicInput::LogicInput(const bool defaultValue, const int nOutputs)
+LogicSource::LogicSource(const bool defaultValue, const int nOutputs)
     : LogicElement(0, nOutputs) // 0 inputs: source node, drives the graph boundary
 {
     // Primary output carries the user-controlled value; secondary outputs (used
@@ -15,7 +15,7 @@ LogicInput::LogicInput(const bool defaultValue, const int nOutputs)
     }
 }
 
-void LogicInput::updateLogic()
+void LogicSource::updateLogic()
 {
     // Intentionally empty: the output value is set externally by the UI layer
     // (e.g. when the user toggles a switch), not computed from any inputs.

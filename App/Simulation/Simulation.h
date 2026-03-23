@@ -15,6 +15,7 @@
 
 #include "App/Simulation/ElementMapping.h"
 
+class LogicElement;
 class QNEConnection;
 class QNEInputPort;
 class QNEOutputPort;
@@ -61,6 +62,9 @@ public:
 
     /// Returns \c true if the simulation timer is currently running.
     bool isRunning();
+
+    /// Returns \c true if \a logic is part of a combinational feedback loop.
+    bool isInFeedbackLoop(const LogicElement *logic) const;
 
     // --- Initialization ---
 
