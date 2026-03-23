@@ -39,7 +39,18 @@ QNEPort::QNEPort(QGraphicsItem *parent)
 
 LogicElement *QNEPort::logic() const
 {
-    return graphicElement() ? graphicElement()->logic() : nullptr;
+    return m_logic;
+}
+
+int QNEPort::logicIndex() const
+{
+    return m_logicIndex;
+}
+
+void QNEPort::setPortLogic(LogicElement *logic, int index)
+{
+    m_logic = logic;
+    m_logicIndex = index;
 }
 
 const QList<QNEConnection *> &QNEPort::connections() const

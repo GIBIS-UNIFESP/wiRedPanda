@@ -65,7 +65,7 @@ private:
     // --- Connection setup ---
 
     void connectElements();
-    void applyConnection(GraphicElement *elm, QNEInputPort *inputPort);
+    void applyConnection(QNEInputPort *inputPort);
 
     // --- Validation & sorting ---
 
