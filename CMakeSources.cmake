@@ -57,13 +57,16 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LanguageManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.cpp
@@ -148,13 +151,16 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LanguageManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.h
