@@ -19,10 +19,10 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementMetadata.h"
 #include "App/IO/SerializationContext.h"
+#include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
-#include "App/Versions.h"
 
 static const int s_graphicElementMetatypeId = qRegisterMetaType<GraphicElement>();
 
@@ -268,7 +268,7 @@ void GraphicElement::load(QDataStream &stream, SerializationContext &context)
 
     // Files before 4.1 used a flat sequential binary format; 4.1+ use a keyed QMap
     // format that tolerates fields being added or reordered in future versions.
-    (context.version < Versions::V_4_1) ? loadOldFormat(stream, context) : loadNewFormat(stream, context);
+    (!VersionInfo::hasQMapFormat(context.version)) ? loadOldFormat(stream, context) : loadNewFormat(stream, context);
 
     qCDebug(four) << "Updating port positions.";
     updatePortsProperties();
@@ -292,7 +292,7 @@ void GraphicElement::loadOldFormat(QDataStream &stream, SerializationContext &co
     /* <Version1.9> */
     loadTrigger(stream, context.version);
     /* <\Version4.01> */
-    if (context.version >= Versions::V_4_0_1) {
+    if (VersionInfo::hasUnusedPriority(context.version)) {
         quint64 unusedPriority; stream >> unusedPriority;
     }
     /* <\Version1.9> */
@@ -504,7 +504,7 @@ void GraphicElement::loadRotation(QDataStream &stream, const QVersionNumber &ver
     // In versions before 4.1 the coordinate system for inputs and outputs was
     // rotated 90° relative to the current convention.  Apply a compensating offset
     // so old files render correctly without migrating every saved angle.
-    if (version < Versions::V_4_1) {
+    if (!VersionInfo::hasQMapFormat(version)) {
         if ((m_elementGroup == ElementGroup::Input) || (m_elementGroup == ElementGroup::StaticInput)) {
             m_angle += 90;
         }
@@ -522,7 +522,7 @@ void GraphicElement::loadRotation(QDataStream &stream, const QVersionNumber &ver
 
 void GraphicElement::loadLabel(QDataStream &stream, const QVersionNumber &version)
 {
-    if (version >= Versions::V_1_2) {
+    if (VersionInfo::hasLabels(version)) {
         QString labelText; stream >> labelText;
         setLabel(labelText);
     }
@@ -530,7 +530,7 @@ void GraphicElement::loadLabel(QDataStream &stream, const QVersionNumber &versio
 
 void GraphicElement::loadPortsSize(QDataStream &stream, const QVersionNumber &version)
 {
-    if (version >= Versions::V_1_3) {
+    if (VersionInfo::hasPortSizes(version)) {
         quint64 minInputSize;  stream >> minInputSize;
         quint64 maxInputSize;  stream >> maxInputSize;
         quint64 minOutputSize; stream >> minOutputSize;
@@ -554,7 +554,7 @@ void GraphicElement::loadPortsSize(QDataStream &stream, const QVersionNumber &ve
 
 void GraphicElement::loadTrigger(QDataStream &stream, const QVersionNumber &version)
 {
-    if (version >= Versions::V_1_9) {
+    if (VersionInfo::hasTrigger(version)) {
         QKeySequence trigger; stream >> trigger;
         setTrigger(trigger);
     }
@@ -647,7 +647,7 @@ void GraphicElement::loadOutputPort(QDataStream &stream, SerializationContext &c
 
 void GraphicElement::loadPixmapSkinNames(QDataStream &stream, SerializationContext &context)
 {
-    if (context.version >= Versions::V_2_7) {
+    if (VersionInfo::hasSkinNames(context.version)) {
         qCDebug(four) << tr("Loading pixmap skin names.");
         quint64 outputSize; stream >> outputSize;
 
