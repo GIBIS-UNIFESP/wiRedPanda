@@ -18,7 +18,7 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementMetadata.h"
-#include "App/IO/Serialization.h"
+#include "App/IO/SerializationContext.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
@@ -120,7 +120,11 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
     // Try the path as-is against contextDir first; if not found, fall back to
     // just the filename — handles cross-platform absolute paths from old files.
     if (!path.startsWith(":/")) {
-        const QDir dir(Serialization::contextDir);
+        const QString contextDir = Scene::resolveContextDir(this);
+        if (contextDir.isEmpty()) {
+            return;
+        }
+        const QDir dir(contextDir);
         const QString resolved = dir.filePath(path);
 
         if (!QFileInfo::exists(resolved)) {
@@ -234,8 +238,8 @@ void GraphicElement::save(QDataStream &stream) const
 
         // When a custom skin lives outside the project directory, copy it alongside
         // the .panda file so the project remains self-contained when moved or shared.
-        if (!skinName.startsWith(":/") && (fileInfo.absoluteDir() != QDir(Serialization::contextDir))) {
-            const QString newFile = Serialization::contextDir + "/" + fileInfo.fileName();
+        if (!skinName.startsWith(":/") && (fileInfo.absoluteDir() != QDir(Scene::resolveContextDir(this)))) {
+            const QString newFile = Scene::resolveContextDir(this) + "/" + fileInfo.fileName();
             QFile::copy(skinName, newFile);
             // Store only the bare filename; the project dir is prepended on load.
             skinName2 = fileInfo.fileName();
@@ -259,6 +263,8 @@ void GraphicElement::save(QDataStream &stream) const
 void GraphicElement::load(QDataStream &stream, SerializationContext &context)
 {
     qCDebug(four) << "Loading element. Type: " << objectName();
+
+    m_contextDir = context.contextDir;
 
     // Files before 4.1 used a flat sequential binary format; 4.1+ use a keyed QMap
     // format that tolerates fields being added or reordered in future versions.

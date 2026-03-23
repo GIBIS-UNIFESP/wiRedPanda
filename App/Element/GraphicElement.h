@@ -70,6 +70,9 @@ public:
      */
     virtual void load(QDataStream &stream, SerializationContext &context);
 
+    /// Returns the context directory stored during load() for path resolution.
+    QString loadContextDir() const { return m_contextDir; }
+
     // --- Port Management ---
 
     /**
@@ -526,6 +529,12 @@ private:
     bool m_hasColors = false;
     bool m_selected = false;
     qreal m_angle = 0;
+
+    // --- Members: Context Directory ---
+
+    /// Directory of the .panda file from which this element was loaded.
+    /// Used by resolveContextDir() for elements not yet added to a scene.
+    QString m_contextDir;
 
     // --- Members: Port Size Constraints ---
 
