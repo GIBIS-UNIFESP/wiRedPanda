@@ -15,13 +15,13 @@ void TestRecentFiles::initTestCase()
 {
     // Setup before all tests
     // Clear recent files from settings to start fresh
-    Settings::remove("recentFileList");
+    Settings::setRecentFiles({});
 }
 
 void TestRecentFiles::cleanup()
 {
     // Clean up after each test
-    Settings::remove("recentFileList");
+    Settings::setRecentFiles({});
 }
 
 // ============================================================================
