@@ -8,7 +8,6 @@
 #include <QPainter>
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicMux.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
 
@@ -42,7 +41,6 @@ struct ElementInfo<Mux> {
         meta.translatedName = QT_TRANSLATE_NOOP("Mux", "Mux");
         meta.trContext = "Mux";
         meta.defaultSkins = QStringList({":/Components/Logic/mux.svg"});
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicMux>(elm->inputSize()); };
         return meta;
     }
 
@@ -159,5 +157,32 @@ void Mux::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
     }
 
     painter->drawPixmap(boundingRect().topLeft(), pixmap());
+}
+
+void Mux::updateLogic()
+{
+    if (!updateInputs()) {
+        return;
+    }
+
+    // Calculate select lines from current input count
+    int numSelectLines = 1;
+    int numDataInputs;
+    while (true) {
+        numDataInputs = inputSize() - numSelectLines;
+        if ((1 << numSelectLines) >= numDataInputs) {
+            break;
+        }
+        numSelectLines++;
+    }
+    numDataInputs = inputSize() - numSelectLines;
+
+    int selectValue = 0;
+    for (int i = 0; i < numSelectLines; i++) {
+        if (simInputs().at(numDataInputs + i)) {
+            selectValue |= (1 << i);
+        }
+    }
+    setOutputValue(simInputs().at(selectValue));
 }
 

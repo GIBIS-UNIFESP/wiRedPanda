@@ -8,8 +8,6 @@
 #include "App/Core/Application.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/LogicElement.h"
-#include "App/Element/LogicElements/LogicSource.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Simulation/Simulation.h"
@@ -46,15 +44,6 @@ QVector<InputSwitch *> createSwitches(int count)
     return switches;
 }
 
-QVector<LogicSource *> createLogicSources(int count)
-{
-    QVector<LogicSource *> inputs(count);
-    for (int i = 0; i < count; ++i) {
-        inputs[i] = new LogicSource();
-    }
-    return inputs;
-}
-
 void setInputValues(const QVector<InputSwitch *> &switches, const QVector<bool> &values)
 {
     QVERIFY2(switches.size() == values.size(), "Number of switches must match number of values");
@@ -63,54 +52,6 @@ void setInputValues(const QVector<InputSwitch *> &switches, const QVector<bool> 
             switches[i]->setOn();
         } else {
             switches[i]->setOff();
-        }
-    }
-}
-
-void setLogicSourceValues(const QVector<LogicSource *> &inputs, const QVector<bool> &values)
-{
-    QVERIFY2(inputs.size() == values.size(), "Number of inputs must match number of values");
-    for (int i = 0; i < inputs.size(); ++i) {
-        inputs[i]->setOutputValue(values[i]);
-    }
-}
-
-void verifyTruthTable(LogicElement *element,
-                      const QVector<LogicSource *> &inputs,
-                      const QVector<QVector<bool>> &truthTable,
-                      int numOutputs)
-{
-    const int numInputs = static_cast<int>(inputs.size());
-
-    for (const auto &row : truthTable) {
-        QVERIFY2(row.size() == numInputs + numOutputs,
-            qPrintable(QString("Truth table row size %1 doesn't match expected %2 (inputs %3 + outputs %4)")
-                .arg(row.size()).arg(numInputs + numOutputs).arg(numInputs).arg(numOutputs)));
-
-        // Set input values
-        for (int i = 0; i < numInputs; ++i) {
-            inputs[i]->setOutputValue(row[i]);
-        }
-
-        // Update logic
-        element->updateLogic();
-
-        // Verify outputs
-        for (int i = 0; i < numOutputs; ++i) {
-            const bool expected = row[numInputs + i];
-            const bool actual = element->outputValue(i);
-            if (actual != expected) {
-                QString msg = QString("Truth table mismatch: inputs=[");
-                for (int j = 0; j < numInputs; ++j) {
-                    msg += QString::number(row[j]);
-                    if (j < numInputs - 1) msg += ",";
-                }
-                msg += QString("], expected output[%1]=%2, got %3")
-                           .arg(i)
-                           .arg(expected)
-                           .arg(actual);
-                QFAIL(qPrintable(msg));
-            }
         }
     }
 }

@@ -44,26 +44,6 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xnor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElement.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicAnd.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicDemux.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicDFlipFlop.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicDLatch.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicJKFlipFlop.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicMux.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNand.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNode.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNor.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNot.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicOr.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSink.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSource.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSRFlipFlop.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSRLatch.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicTFlipFlop.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicTruthTable.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicXnor.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicXor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEConnection.cpp
@@ -72,7 +52,6 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/ElementMapping.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.cpp
@@ -147,26 +126,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xnor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElement.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicAnd.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicDemux.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicDFlipFlop.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicDLatch.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicJKFlipFlop.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicMux.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNand.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNode.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNor.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicNot.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicOr.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSink.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSource.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSRFlipFlop.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicSRLatch.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicTFlipFlop.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicTruthTable.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicXnor.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LogicElements/LogicXor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/SerializationContext.h
@@ -176,7 +135,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/ElementMapping.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.h
@@ -351,9 +309,9 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestSequentialLogic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestTruthTable.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Factory/TestElementFactory.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestLogicElements.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestLogicElementsErrors.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestLogicNode.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogic.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestConnections.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestConnectionSerialization.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.cpp
@@ -362,7 +320,6 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneState.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneUndoredo.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSerialization.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestElementMapping.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestDialogs.cpp
 )
@@ -493,9 +450,9 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestSequentialLogic.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestTruthTable.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Factory/TestElementFactory.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestLogicElements.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestLogicElementsErrors.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestLogicNode.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogic.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestConnections.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestConnectionSerialization.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.h
@@ -504,7 +461,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneState.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneUndoredo.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSerialization.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestElementMapping.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestDialogs.h
 )

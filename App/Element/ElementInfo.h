@@ -73,7 +73,6 @@ constexpr bool validate(const ElementConstraints &c)
  * - pixmapPath (callable)
  * - titleText, translatedName, trContext (string pointers)
  * - defaultSkins, alternativeSkins (skin lists)
- * - logicCreator (callable, or nullptr for IC)
  */
 inline ElementMetadata metadataFromConstraints(const ElementConstraints &c)
 {

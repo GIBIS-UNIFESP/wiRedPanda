@@ -3,8 +3,9 @@
 
 #include "App/Element/GraphicElements/And.h"
 
+#include <functional>
+
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicAnd.h"
 
 template<>
 struct ElementInfo<And> {
@@ -31,7 +32,6 @@ struct ElementInfo<And> {
         // m_alternativeSkins starts as a copy of m_defaultSkins; the user can replace
         // entries in m_alternativeSkins without losing the originals in m_defaultSkins.
         meta.defaultSkins = QStringList({":/Components/Logic/and.svg"});
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicAnd>(elm->inputSize()); };
         return meta;
     }
 
@@ -45,5 +45,14 @@ struct ElementInfo<And> {
 And::And(QGraphicsItem *parent)
     : GraphicElement(ElementType::And, parent)
 {
+}
+
+void And::updateLogic()
+{
+    if (!updateInputs()) {
+        return;
+    }
+    const auto result = std::accumulate(simInputs().cbegin(), simInputs().cend(), true, std::bit_and<>());
+    setOutputValue(result);
 }
 

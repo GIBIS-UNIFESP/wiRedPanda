@@ -602,16 +602,6 @@ void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, Serializati
     }
 }
 
-void GraphicElement::setLogic(LogicElement *newLogic)
-{
-    m_logic = newLogic;
-}
-
-LogicElement *GraphicElement::logic() const
-{
-    return m_logic;
-}
-
 void GraphicElement::removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap)
 {
     for (auto it = portMap.begin(); it != portMap.end();) {
@@ -1244,29 +1234,76 @@ void GraphicElement::setDelay(const float delay)
     Q_UNUSED(delay)
 }
 
-QVector<std::shared_ptr<LogicElement>> GraphicElement::createLogicElements()
+void GraphicElement::updateLogic()
 {
-    const auto &meta = ElementMetadataRegistry::metadata(elementType());
-    if (!meta.logicCreator) {
-        return {};
-    }
-    auto logicElm = meta.logicCreator(this);
-    setLogic(logicElm.get());
-    return {std::move(logicElm)};
+    // Default no-op — decorative elements (Line, Text) have no simulation behaviour.
 }
 
-void GraphicElement::bindPorts()
+bool GraphicElement::outputValue(const int index) const
 {
-    auto *logic = this->logic();
-    if (!logic) {
+    if (index >= m_simOutputValues.size()) {
+        return false;
+    }
+    return m_simOutputValues.at(index);
+}
+
+int GraphicElement::simOutputSize() const
+{
+    return static_cast<int>(m_simOutputValues.size());
+}
+
+void GraphicElement::setOutputValue(const int index, const bool value)
+{
+    if (index >= m_simOutputValues.size()) {
         return;
     }
-    for (int i = 0; i < inputSize(); ++i) {
-        inputPort(i)->setPortLogic(logic, i);
+    if (m_simOutputValues[index] != value) {
+        m_simOutputChanged = true;
     }
-    for (int i = 0; i < outputSize(); ++i) {
-        outputPort(i)->setPortLogic(logic, i);
+    m_simOutputValues[index] = value;
+}
+
+void GraphicElement::setOutputValue(const bool value)
+{
+    setOutputValue(0, value);
+}
+
+void GraphicElement::connectPredecessor(const int inputIndex, GraphicElement *source, const int outputPort)
+{
+    if (inputIndex >= m_simPredecessors.size()) {
+        return;
     }
+    m_simPredecessors[inputIndex] = {source, outputPort};
+}
+
+void GraphicElement::initSimulationVectors(const int inputCount, const int outputCount)
+{
+    m_simPredecessors.fill({}, inputCount);
+    m_simInputValues.fill(false, inputCount);
+    m_simOutputValues.resize(outputCount);
+    for (int i = 0; i < outputCount; ++i) {
+        if (i < m_outputPorts.size()) {
+            m_simOutputValues[i] = m_outputPorts.at(i)->defaultValue() == Status::Active;
+        } else {
+            m_simOutputValues[i] = false;
+        }
+    }
+    m_simOutputChanged = false;
+}
+
+bool GraphicElement::updateInputs()
+{
+    for (int i = 0; i < m_simPredecessors.size(); ++i) {
+        auto &pred = m_simPredecessors[i];
+        if (pred.element) {
+            m_simInputValues[i] = pred.element->outputValue(pred.outputPort);
+        } else if (i < inputSize()) {
+            m_simInputValues[i] = inputPort(i)->defaultValue() == Status::Active;
+        } else {
+            m_simInputValues[i] = false;
+        }
+    }
+    return true;
 }
 
 bool GraphicElement::canSetPortNames() const

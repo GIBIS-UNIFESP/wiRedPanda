@@ -3,8 +3,9 @@
 
 #include "App/Element/GraphicElements/Or.h"
 
+#include <functional>
+
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicOr.h"
 
 template<>
 struct ElementInfo<Or> {
@@ -28,7 +29,6 @@ struct ElementInfo<Or> {
         meta.trContext = "Or";
         // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Logic/or.svg"});
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicOr>(elm->inputSize()); };
         return meta;
     }
 
@@ -43,5 +43,14 @@ Or::Or(QGraphicsItem *parent)
     : GraphicElement(ElementType::Or, parent)
 {
     // Skip full initialisation when building a property-probe instance (see ElementFactory).
+}
+
+void Or::updateLogic()
+{
+    if (!updateInputs()) {
+        return;
+    }
+    const auto result = std::accumulate(simInputs().cbegin(), simInputs().cend(), false, std::bit_or<>());
+    setOutputValue(result);
 }
 

@@ -4,7 +4,6 @@
 #include "App/Element/GraphicElements/Not.h"
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicNot.h"
 
 template<>
 struct ElementInfo<Not> {
@@ -28,7 +27,6 @@ struct ElementInfo<Not> {
         meta.trContext = "Not";
         // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
         meta.defaultSkins = QStringList({":/Components/Logic/not.svg"});
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicNot>(); };
         return meta;
     }
 
@@ -43,5 +41,13 @@ Not::Not(QGraphicsItem *parent)
     : GraphicElement(ElementType::Not, parent)
 {
     // Skip full initialisation when building a property-probe instance (see ElementFactory).
+}
+
+void Not::updateLogic()
+{
+    if (!updateInputs()) {
+        return;
+    }
+    setOutputValue(!simInputs().at(0));
 }
 

@@ -8,7 +8,6 @@
 #include <QPainter>
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicDemux.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
 
@@ -42,7 +41,6 @@ struct ElementInfo<Demux> {
         meta.translatedName = QT_TRANSLATE_NOOP("Demux", "Demux");
         meta.trContext = "Demux";
         meta.defaultSkins = QStringList({":/Components/Logic/demux.svg"});
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicDemux>(elm->outputSize()); };
         return meta;
     }
 
@@ -190,5 +188,28 @@ void Demux::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     }
 
     painter->drawPixmap(boundingRect().topLeft(), pixmap());
+}
+
+void Demux::updateLogic()
+{
+    if (!updateInputs()) {
+        return;
+    }
+    const bool data = simInputs().at(0);
+
+    int numSelectLines = 1;
+    while ((1 << numSelectLines) < outputSize()) {
+        numSelectLines++;
+    }
+
+    int selectValue = 0;
+    for (int i = 0; i < numSelectLines; i++) {
+        if (simInputs().at(1 + i)) {
+            selectValue |= (1 << i);
+        }
+    }
+    for (int i = 0; i < outputSize(); i++) {
+        setOutputValue(i, (i == selectValue) && data);
+    }
 }
 

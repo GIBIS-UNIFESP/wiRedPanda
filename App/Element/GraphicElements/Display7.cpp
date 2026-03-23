@@ -8,7 +8,6 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicSink.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Versions.h"
 
@@ -52,7 +51,6 @@ struct ElementInfo<Display7> {
             ":/Components/Output/Counter/counter_g.svg",
             ":/Components/Output/Counter/counter_dp.svg",
         });
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicSink>(elm->inputSize()); };
         return meta;
     }
 

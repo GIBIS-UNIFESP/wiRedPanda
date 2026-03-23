@@ -4,7 +4,6 @@
 #include "App/Element/GraphicElements/SRLatch.h"
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicSRLatch.h"
 #include "App/Nodes/QNEPort.h"
 
 template<>
@@ -36,7 +35,6 @@ struct ElementInfo<SRLatch> {
         meta.titleText = QT_TRANSLATE_NOOP("SRLatch", "SR-LATCH");
         meta.translatedName = QT_TRANSLATE_NOOP("SRLatch", "SR-Latch");
         meta.trContext = "SRLatch";
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicSRLatch>(); };
         return meta;
     }
 
@@ -74,5 +72,29 @@ void SRLatch::updateTheme()
     // Reload the pixmap before delegating to the base class (see SRFlipFlop.cpp).
     setPixmap(pixmapPath());
     GraphicElement::updateTheme();
+}
+
+void SRLatch::updateLogic()
+{
+    if (!updateInputs()) {
+        return;
+    }
+    bool q0 = outputValue(0);
+    bool q1 = outputValue(1);
+    const bool S = simInputs().at(0);
+    const bool R = simInputs().at(1);
+
+    if (S && R) {
+        q0 = false;
+        q1 = false;
+    } else if (S) {
+        q0 = true;
+        q1 = false;
+    } else if (R) {
+        q0 = false;
+        q1 = true;
+    }
+    setOutputValue(0, q0);
+    setOutputValue(1, q1);
 }
 

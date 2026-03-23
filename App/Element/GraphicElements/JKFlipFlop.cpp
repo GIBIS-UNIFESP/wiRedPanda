@@ -4,7 +4,6 @@
 #include "App/Element/GraphicElements/JKFlipFlop.h"
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicJKFlipFlop.h"
 #include "App/Nodes/QNEPort.h"
 
 template<>
@@ -36,7 +35,6 @@ struct ElementInfo<JKFlipFlop> {
         meta.titleText = QT_TRANSLATE_NOOP("JKFlipFlop", "JK-FLIP-FLOP");
         meta.translatedName = QT_TRANSLATE_NOOP("JKFlipFlop", "JK-Flip-Flop");
         meta.trContext = "JKFlipFlop";
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicJKFlipFlop>(); };
         return meta;
     }
 
@@ -91,5 +89,40 @@ void JKFlipFlop::updateTheme()
     // Reload the pixmap before delegating to the base class (see SRFlipFlop.cpp).
     setPixmap(pixmapPath());
     GraphicElement::updateTheme();
+}
+
+void JKFlipFlop::updateLogic()
+{
+    if (!updateInputs()) {
+        return;
+    }
+    bool q0 = outputValue(0);
+    bool q1 = outputValue(1);
+    const bool j = simInputs().at(0);
+    const bool clk = simInputs().at(1);
+    const bool k = simInputs().at(2);
+    const bool prst = simInputs().at(3);
+    const bool clr = simInputs().at(4);
+
+    if (clk && !m_lastClk) {
+        if (m_lastJ && m_lastK) {
+            std::swap(q0, q1);
+        } else if (m_lastJ) {
+            q0 = true;
+            q1 = false;
+        } else if (m_lastK) {
+            q0 = false;
+            q1 = true;
+        }
+    }
+    if (!prst || !clr) {
+        q0 = !prst;
+        q1 = !clr;
+    }
+    m_lastClk = clk;
+    m_lastJ = j;
+    m_lastK = k;
+    setOutputValue(0, q0);
+    setOutputValue(1, q1);
 }
 

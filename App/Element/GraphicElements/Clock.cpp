@@ -6,7 +6,6 @@
 #include <chrono>
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicSource.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Versions.h"
 
@@ -45,7 +44,6 @@ struct ElementInfo<Clock> {
             ":/Components/Input/clock0.svg",
             ":/Components/Input/clock1.svg",
         });
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicSource>(false, elm->outputSize()); };
         return meta;
     }
 

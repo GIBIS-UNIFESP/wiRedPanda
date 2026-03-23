@@ -4,7 +4,6 @@
 #include "App/Element/GraphicElements/DFlipFlop.h"
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicDFlipFlop.h"
 #include "App/Nodes/QNEPort.h"
 
 template<>
@@ -36,7 +35,6 @@ struct ElementInfo<DFlipFlop> {
         meta.titleText = QT_TRANSLATE_NOOP("DFlipFlop", "D-FLIP-FLOP");
         meta.translatedName = QT_TRANSLATE_NOOP("DFlipFlop", "D-Flip-Flop");
         meta.trContext = "DFlipFlop";
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicDFlipFlop>(); };
         return meta;
     }
 
@@ -85,5 +83,31 @@ void DFlipFlop::updateTheme()
     // Reload the pixmap before delegating to the base class (see SRFlipFlop.cpp).
     setPixmap(pixmapPath());
     GraphicElement::updateTheme();
+}
+
+void DFlipFlop::updateLogic()
+{
+    if (!updateInputs()) {
+        return;
+    }
+    bool q0 = outputValue(0);
+    bool q1 = outputValue(1);
+    const bool D = simInputs().at(0);
+    const bool clk = simInputs().at(1);
+    const bool prst = simInputs().at(2);
+    const bool clr = simInputs().at(3);
+
+    if (clk && !m_lastClk) {
+        q0 = m_lastValue;
+        q1 = !m_lastValue;
+    }
+    if (!prst || !clr) {
+        q0 = !prst;
+        q1 = !clr;
+    }
+    m_lastClk = clk;
+    m_lastValue = D;
+    setOutputValue(0, q0);
+    setOutputValue(1, q1);
 }
 

@@ -6,7 +6,6 @@
 #include <QGraphicsSceneMouseEvent>
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicSource.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Versions.h"
 
@@ -43,7 +42,6 @@ struct ElementInfo<InputButton> {
             ":/Components/Input/buttonOff.svg",
             ":/Components/Input/buttonOn.svg",
         });
-        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicSource>(false, elm->outputSize()); };
         return meta;
     }
 

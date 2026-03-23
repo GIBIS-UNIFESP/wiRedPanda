@@ -4,7 +4,6 @@
 #include "App/Element/GraphicElements/SRFlipFlop.h"
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicSRFlipFlop.h"
 #include "App/Nodes/QNEPort.h"
 
 template<>
@@ -36,7 +35,6 @@ struct ElementInfo<SRFlipFlop> {
         meta.titleText = QT_TRANSLATE_NOOP("SRFlipFlop", "SR-FLIP-FLOP");
         meta.translatedName = QT_TRANSLATE_NOOP("SRFlipFlop", "SR-Flip-Flop");
         meta.trContext = "SRFlipFlop";
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicSRFlipFlop>(); };
         return meta;
     }
 
@@ -90,5 +88,38 @@ void SRFlipFlop::updateTheme()
     // theme-specific SVG is used before ports and colours are updated.
     setPixmap(pixmapPath());
     GraphicElement::updateTheme();
+}
+
+void SRFlipFlop::updateLogic()
+{
+    if (!updateInputs()) {
+        return;
+    }
+    bool q0 = outputValue(0);
+    bool q1 = outputValue(1);
+    const bool s = simInputs().at(0);
+    const bool clk = simInputs().at(1);
+    const bool r = simInputs().at(2);
+    const bool prst = simInputs().at(3);
+    const bool clr = simInputs().at(4);
+
+    if (clk && !m_lastClk) {
+        if (m_lastS && m_lastR) {
+            q0 = true;
+            q1 = true;
+        } else if (m_lastS != m_lastR) {
+            q0 = m_lastS;
+            q1 = m_lastR;
+        }
+    }
+    if (!prst || !clr) {
+        q0 = !prst;
+        q1 = !clr;
+    }
+    m_lastClk = clk;
+    m_lastS = s;
+    m_lastR = r;
+    setOutputValue(0, q0);
+    setOutputValue(1, q1);
 }
 

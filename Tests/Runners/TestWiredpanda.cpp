@@ -135,9 +135,9 @@
 // unit/factory
 #include "Tests/Unit/Factory/TestElementFactory.h"
 // unit/logic
-#include "Tests/Unit/Logic/TestLogicElements.h"
-#include "Tests/Unit/Logic/TestLogicElementsErrors.h"
-#include "Tests/Unit/Logic/TestLogicNode.h"
+#include "Tests/Unit/Logic/TestElementLogic.h"
+#include "Tests/Unit/Logic/TestElementLogicErrors.h"
+#include "Tests/Unit/Logic/TestNodeLogic.h"
 // unit/nodes
 #include "Tests/Unit/Nodes/TestConnectionSerialization.h"
 #include "Tests/Unit/Nodes/TestConnections.h"
@@ -150,7 +150,6 @@
 // unit/serialization
 #include "Tests/Unit/Serialization/TestSerialization.h"
 // unit/simulation
-#include "Tests/Unit/Simulation/TestElementMapping.h"
 #include "Tests/Unit/Simulation/TestSimulationBlocker.h"
 // unit/ui
 #include "Tests/Unit/Ui/TestDialogs.h"
@@ -278,9 +277,9 @@ int main(int argc, char **argv)
         {"TestSequentialLogic", []() -> QObject * { return new TestSequentialLogic; }},
         {"TestTruthTable", []() -> QObject * { return new TestTruthTable; }},
         {"TestElementFactory", []() -> QObject * { return new TestElementFactory; }},
-        {"TestLogicElements", []() -> QObject * { return new TestLogicElements; }},
-        {"TestLogicElementsErrors", []() -> QObject * { return new TestLogicElementsErrors; }},
-        {"TestLogicNode", []() -> QObject * { return new TestLogicNode; }},
+        {"TestElementLogic", []() -> QObject * { return new TestElementLogic; }},
+        {"TestElementLogicErrors", []() -> QObject * { return new TestElementLogicErrors; }},
+        {"TestNodeLogic", []() -> QObject * { return new TestNodeLogic; }},
         {"TestConnectionSerialization", []() -> QObject * { return new TestConnectionSerialization; }},
         {"TestConnections", []() -> QObject * { return new TestConnections; }},
         {"TestConnectionValidity", []() -> QObject * { return new TestConnectionValidity; }},
@@ -289,7 +288,6 @@ int main(int argc, char **argv)
         {"TestSceneState", []() -> QObject * { return new TestSceneState; }},
         {"TestSceneUndoredo", []() -> QObject * { return new TestSceneUndoredo; }},
         {"TestSerialization", []() -> QObject * { return new TestSerialization; }},
-        {"TestElementMapping", []() -> QObject * { return new TestElementMapping; }},
         {"TestSimulationBlocker", []() -> QObject * { return new TestSimulationBlocker; }},
         {"TestDialogs", []() -> QObject * { return new TestDialogs; }},
     });

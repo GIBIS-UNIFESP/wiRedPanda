@@ -4,7 +4,6 @@
 #include "App/Element/GraphicElements/Node.h"
 
 #include "App/Element/ElementInfo.h"
-#include "App/Element/LogicElements/LogicNode.h"
 #include "App/Nodes/QNEPort.h"
 
 template<>
@@ -29,7 +28,6 @@ struct ElementInfo<Node> {
         meta.translatedName = QT_TRANSLATE_NOOP("Node", "Node");
         meta.trContext = "Node";
         meta.defaultSkins = QStringList({":/Components/Logic/node.svg"});
-        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicNode>(); };
         return meta;
     }
 
@@ -58,5 +56,13 @@ void Node::updatePortsProperties()
     // they align with the horizontal wire grid (y=16 is the vertical centre).
     inputPort()->setPos(  0, 16);
     outputPort()->setPos(32, 16);
+}
+
+void Node::updateLogic()
+{
+    if (!updateInputs()) {
+        return;
+    }
+    setOutputValue(simInputs().at(0));
 }
 

@@ -7,13 +7,11 @@
 
 #pragma once
 
-#include <memory>
-
 #include <QFileInfo>
 #include <QFileSystemWatcher>
+#include <QSet>
 
 #include "App/Element/GraphicElement.h"
-#include "App/Simulation/ElementMapping.h"
 
 /**
  * \class IC
@@ -35,7 +33,7 @@ public:
     /// Constructs an IC element without loading a file.
     explicit IC(QGraphicsItem *parent = nullptr);
 
-    ~IC() override = default;
+    ~IC() override;
 
     /// Copy-constructs by delegating to the parent item constructor.
     IC(const IC &other) : IC(other.parentItem()) {}
@@ -51,13 +49,11 @@ public:
 
     // --- Logic mapping ---
 
-    /**
-     * \brief Builds and returns the flat LogicElement mapping for simulation.
-     * \return Vector of shared_ptr LogicElements representing the IC's internals.
-     */
-    /// \reimp
-    QVector<std::shared_ptr<LogicElement>> createLogicElements() override;
-    void bindPorts() override;
+    /// Initializes the internal simulation graph for this IC.
+    void initializeSimulation();
+
+    /// \reimp Updates IC outputs from its internal simulation graph.
+    void updateLogic() override;
 
     // --- Port naming ---
 
@@ -110,12 +106,6 @@ private:
     // --- File copy helper ---
 
     void copyFile(const CopyOperation &op);
-    const QVector<std::shared_ptr<LogicElement>> generateMap();
-
-    // --- Logic access ---
-
-    LogicElement *inputLogic(int index);
-    LogicElement *outputLogic(int index);
 
     // --- Loading helpers ---
 
@@ -132,7 +122,9 @@ private:
 
     // --- Members ---
 
-    std::unique_ptr<ElementMapping> m_mapping;
+    QVector<GraphicElement *> m_simSortedElements;
+    QSet<GraphicElement *> m_boundaryInputElements;
+    bool m_internalHasFeedback = false;
     QFileSystemWatcher m_fileWatcher;
     QString m_file;
     QVector<GraphicElement *> m_icElements;
