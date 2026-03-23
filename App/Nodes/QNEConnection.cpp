@@ -357,8 +357,9 @@ bool QNEConnection::sceneEvent(QEvent *event)
 
 QDataStream &operator<<(QDataStream &stream, const QNEConnection *conn)
 {
+    // Type tags are now written by Serialization::serialize() for symmetry
+    // This is now only called from serialize(), so type is already written
     qCDebug(zero) << "Writing Connection.";
-    stream << conn->type();
     conn->save(stream);
     return stream;
 }
