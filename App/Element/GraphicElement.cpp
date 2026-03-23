@@ -1160,6 +1160,21 @@ bool GraphicElement::hasAudioBox() const
     return ElementMetadataRegistry::metadata(m_elementType).hasAudioBox;
 }
 
+QList<PropertyDescriptor> GraphicElement::editableProperties() const
+{
+    QList<PropertyDescriptor> props;
+    if (hasLabel())      props.append({PropertyDescriptor::Type::Label});
+    if (hasColors())     props.append({PropertyDescriptor::Type::Color});
+    if (hasFrequency())  props.append({PropertyDescriptor::Type::Frequency});
+    if (hasDelay())      props.append({PropertyDescriptor::Type::Delay});
+    if (hasAudio())      props.append({PropertyDescriptor::Type::Audio});
+    if (hasAudioBox())   props.append({PropertyDescriptor::Type::AudioBox});
+    if (hasTrigger())    props.append({PropertyDescriptor::Type::Trigger});
+    if (hasTruthTable()) props.append({PropertyDescriptor::Type::TruthTable});
+    if (canChangeSkin()) props.append({PropertyDescriptor::Type::Skin});
+    return props;
+}
+
 bool GraphicElement::canChangeSkin() const
 {
     return ElementMetadataRegistry::metadata(m_elementType).canChangeSkin;

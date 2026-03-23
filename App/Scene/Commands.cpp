@@ -1043,13 +1043,12 @@ void ChangeOutputSizeCommand::undo()
     m_scene->setCircuitUpdateRequired();
 }
 
-ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(GraphicElement *element, int pos, Scene *scene, ElementEditor *elementeditor, QUndoCommand *parent)
+ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(GraphicElement *element, int pos, Scene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_pos(pos)
 {
     m_id = element->id();
     m_scene = scene;
-    m_elementeditor = elementeditor;
     setText(tr("Toggle TruthTable Output at position: %1").arg(m_pos));
 }
 
@@ -1061,14 +1060,10 @@ void ToggleTruthTableOutputCommand::redo()
 
     if (!truthtable) throw PANDACEPTION("Could not find truthtable element!");
 
-    // toggleBit is its own inverse: applying it a second time undoes it, so both
-    // redo() and undo() call the identical operation — no separate state capture needed
     truthtable->key().toggleBit(m_pos);
 
     m_scene->setCircuitUpdateRequired();
-    if (m_elementeditor) {
-        m_elementeditor->truthTable();
-    }
+    emit m_scene->truthTableElementChanged(truthtable);
 }
 
 void ToggleTruthTableOutputCommand::undo()
@@ -1082,8 +1077,6 @@ void ToggleTruthTableOutputCommand::undo()
     truthtable->key().toggleBit(m_pos);
 
     m_scene->setCircuitUpdateRequired();
-    if (m_elementeditor) {
-        m_elementeditor->truthTable();
-    }
+    emit m_scene->truthTableElementChanged(truthtable);
 }
 
