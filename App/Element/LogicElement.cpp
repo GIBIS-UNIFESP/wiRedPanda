@@ -19,22 +19,6 @@ bool LogicElement::isValid() const
     return m_isValid;
 }
 
-void LogicElement::clearSucessors()
-{
-    // Walk every successor and null-out any InputPair that still points back
-    // to this element, so dangling pointers can't be followed after deletion.
-    for (const auto &logic : std::as_const(m_successors)) {
-        for (auto &inputPair : logic->m_inputPairs) {
-            if (inputPair.logic == this) {
-                inputPair.logic = nullptr;
-                inputPair.port = 0;
-            }
-        }
-    }
-
-    m_successors.clear();
-}
-
 bool LogicElement::updateInputs()
 {
     if (!m_isValid) {
@@ -65,17 +49,14 @@ int LogicElement::outputSize() const
     return static_cast<int>(m_outputValues.size());
 }
 
+const QVector<InputPair> &LogicElement::inputPairs() const
+{
+    return m_inputPairs;
+}
+
 void LogicElement::connectPredecessor(const int index, LogicElement *logic, const int port)
 {
     m_inputPairs[index] = {logic, port};
-
-    // Register this element as a successor of the predecessor so that
-    // clearSuccessors() and priority propagation can traverse downstream edges.
-    // The duplicate guard prevents a second registration when multiple input
-    // slots share the same predecessor element.
-    if (!logic->m_successors.contains(this)) {
-        logic->m_successors.push_back(this);
-    }
 }
 
 void LogicElement::setOutputValue(const int index, const bool value)
@@ -90,32 +71,14 @@ void LogicElement::setOutputValue(const bool value)
 
 void LogicElement::validate()
 {
-    // An element is valid only when every input slot has a predecessor logic
-    // node; unconnected required inputs leave a null pointer and mark the
-    // element invalid so its outputs propagate Status::Invalid downstream.
     m_isValid = std::all_of(m_inputPairs.cbegin(), m_inputPairs.cend(),
-                            [](auto pair) { return pair.logic != nullptr; });
-
-    if (!m_isValid) {
-        // Propagate invalidity one level downstream; the full transitive closure
-        // is reached because each successor calls validate() in turn during the
-        // same simulation-setup pass.
-        for (auto *logic : std::as_const(m_successors)) {
-            logic->m_isValid = false;
-        }
-    }
+                            [](const auto &pair) { return pair.logic != nullptr; });
 }
 
-int LogicElement::calculatePriority()
+int LogicElement::calculatePriority(const QHash<LogicElement *, QVector<LogicElement *>> &successors)
 {
-    // Iterative post-order DFS that computes a topological depth for each node.
-    // Higher priority means the element is deeper in the DAG and must be updated
-    // later (after all its predecessors) during each simulation cycle.
-    // m_priority == -1 serves as "not yet assigned" sentinel (see header).
     QStack<LogicElement *> stack;
     QMap<LogicElement *, bool> inStack;
-    QMap<LogicElement *, int> maxPriority;   // unused bookkeeping — kept for clarity
-    QMap<LogicElement *, bool> inFeedbackLoop;
 
     stack.push(this);
     inStack[this] = true;
@@ -123,7 +86,6 @@ int LogicElement::calculatePriority()
     while (!stack.isEmpty()) {
         auto *current = stack.top();
 
-        // Already assigned on a previous visit (e.g. shared successor); skip.
         if (current->m_priority != -1) {
             stack.pop();
             inStack[current] = false;
@@ -134,41 +96,28 @@ int LogicElement::calculatePriority()
         int maxSuccessorPriority = 0;
         bool hasFeedbackLoop = false;
 
-        for (auto *logic : std::as_const(current->m_successors)) {
-            if (logic->m_priority == -1) {
-                if (!inStack[logic]) {
-                    // Successor not yet visited — push it and process first (DFS).
-                    stack.push(logic);
-                    inStack[logic] = true;
-                    allProcessed = false;
-                } else {
-                    // FEEDBACK LOOP DETECTED: successor is already in processing stack
-                    hasFeedbackLoop = true;
-                    inFeedbackLoop[current] = true;
-                    inFeedbackLoop[logic] = true;
-                    // For feedback loops, don't wait for successor priority
-                    // This breaks the circular dependency
+        const auto it = successors.find(current);
+        if (it != successors.end()) {
+            for (auto *logic : *it) {
+                if (logic->m_priority == -1) {
+                    if (!inStack[logic]) {
+                        stack.push(logic);
+                        inStack[logic] = true;
+                        allProcessed = false;
+                    } else {
+                        hasFeedbackLoop = true;
+                    }
                 }
-            }
 
-            // Only use successor priority if it's not a feedback loop
-            if (logic->m_priority != -1) {
-                maxSuccessorPriority = qMax(maxSuccessorPriority, logic->m_priority);
+                if (logic->m_priority != -1) {
+                    maxSuccessorPriority = qMax(maxSuccessorPriority, logic->m_priority);
+                }
             }
         }
 
         if (allProcessed || hasFeedbackLoop) {
-            if (hasFeedbackLoop) {
-                // Elements in feedback loops get special priority handling
-                // Set to a base priority that allows for iterative settling
-                current->m_priority = maxSuccessorPriority + 1;
-                current->m_inFeedbackLoop = true;
-            } else {
-                // Normal case: priority is one greater than the deepest successor,
-                // ensuring this element is updated before any of its dependents.
-                current->m_priority = maxSuccessorPriority + 1;
-                current->m_inFeedbackLoop = false;
-            }
+            current->m_priority = maxSuccessorPriority + 1;
+            current->m_inFeedbackLoop = hasFeedbackLoop;
             stack.pop();
             inStack[current] = false;
         }
