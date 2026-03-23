@@ -20,12 +20,6 @@ ElementMapping::ElementMapping(const QVector<GraphicElement *> &elements)
     connectElements();
 }
 
-ElementMapping::~ElementMapping()
-{
-    m_globalGND.clearSucessors();
-    m_globalVCC.clearSucessors();
-}
-
 void ElementMapping::generateMap()
 {
     for (auto *elm : std::as_const(m_elements)) {
@@ -109,8 +103,17 @@ void ElementMapping::sort()
 
 void ElementMapping::sortLogicElements()
 {
+    QHash<LogicElement *, QVector<LogicElement *>> successors;
+    for (const auto &logic : std::as_const(m_logicElms)) {
+        for (const auto &pair : logic->inputPairs()) {
+            if (pair.logic && !successors[pair.logic].contains(logic.get())) {
+                successors[pair.logic].append(logic.get());
+            }
+        }
+    }
+
     for (auto &logic : std::as_const(m_logicElms)) {
-        logic->calculatePriority();
+        logic->calculatePriority(successors);
     }
 
     // Higher priority = closer to the inputs; sort descending so inputs are
