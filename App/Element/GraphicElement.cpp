@@ -21,6 +21,7 @@
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Versions.h"
 
 static const int s_graphicElementMetatypeId = qRegisterMetaType<GraphicElement>();
 
@@ -257,7 +258,7 @@ void GraphicElement::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap
 
     // Files before 4.1 used a flat sequential binary format; 4.1+ use a keyed QMap
     // format that tolerates fields being added or reordered in future versions.
-    (version < VERSION("4.1")) ? loadOldFormat(stream, portMap, version) : loadNewFormat(stream, portMap);
+    (version < Versions::V_4_1) ? loadOldFormat(stream, portMap, version) : loadNewFormat(stream, portMap);
 
     qCDebug(four) << "Updating port positions.";
     updatePortsProperties();
@@ -441,7 +442,7 @@ void GraphicElement::loadRotation(QDataStream &stream, const QVersionNumber &ver
     // In versions before 4.1 the coordinate system for inputs and outputs was
     // rotated 90° relative to the current convention.  Apply a compensating offset
     // so old files render correctly without migrating every saved angle.
-    if (version < VERSION("4.1")) {
+    if (version < Versions::V_4_1) {
         if ((m_elementGroup == ElementGroup::Input) || (m_elementGroup == ElementGroup::StaticInput)) {
             m_angle += 90;
         }
@@ -459,7 +460,7 @@ void GraphicElement::loadRotation(QDataStream &stream, const QVersionNumber &ver
 
 void GraphicElement::loadLabel(QDataStream &stream, const QVersionNumber &version)
 {
-    if (version >= VERSION("1.2")) {
+    if (version >= Versions::V_1_2) {
         QString labelText; stream >> labelText;
         setLabel(labelText);
     }
@@ -467,7 +468,7 @@ void GraphicElement::loadLabel(QDataStream &stream, const QVersionNumber &versio
 
 void GraphicElement::loadPortsSize(QDataStream &stream, const QVersionNumber &version)
 {
-    if (version >= VERSION("1.3")) {
+    if (version >= Versions::V_1_3) {
         quint64 minInputSize;  stream >> minInputSize;
         quint64 maxInputSize;  stream >> maxInputSize;
         quint64 minOutputSize; stream >> minOutputSize;
@@ -491,7 +492,7 @@ void GraphicElement::loadPortsSize(QDataStream &stream, const QVersionNumber &ve
 
 void GraphicElement::loadTrigger(QDataStream &stream, const QVersionNumber &version)
 {
-    if (version >= VERSION("1.9")) {
+    if (version >= Versions::V_1_9) {
         QKeySequence trigger; stream >> trigger;
         setTrigger(trigger);
     }
@@ -499,7 +500,7 @@ void GraphicElement::loadTrigger(QDataStream &stream, const QVersionNumber &vers
 
 void GraphicElement::loadPriority(QDataStream &stream, const QVersionNumber &version)
 {
-    if (version >= VERSION("4.01")) {
+    if (version >= Versions::V_4_0_1) {
         quint64 priority; stream >> priority;
         setPriority(static_cast<int>(priority));
     }
@@ -602,7 +603,7 @@ void GraphicElement::loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *
 
 void GraphicElement::loadPixmapSkinNames(QDataStream &stream, const QVersionNumber version)
 {
-    if (version >= VERSION("2.7")) {
+    if (version >= Versions::V_2_7) {
         qCDebug(four) << tr("Loading pixmap skin names.");
         quint64 outputSize; stream >> outputSize;
 

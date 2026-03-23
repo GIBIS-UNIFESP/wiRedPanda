@@ -18,6 +18,7 @@
 #include "App/GlobalProperties.h"
 #include "App/IO/Serialization.h"
 #include "App/Simulation/SimulationBlocker.h"
+#include "App/Versions.h"
 
 WorkSpace::WorkSpace(QWidget *parent)
     : QWidget(parent)
@@ -204,15 +205,15 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version)
     qCDebug(zero) << "Version: " << version;
 
     if (GlobalProperties::verbose) {
-        if (version > GlobalProperties::version) {
-            const QString progVersion = GlobalProperties::version.toString();
+        if (version > AppVersion::current) {
+            const QString progVersion = AppVersion::current.toString();
             const QString fileVersion = version.toString();
             const QString message = tr("Warning! Your wiRedPanda (Version: %1) is possibly out of date.\n"
                          "The file you are opening was saved with version (%2).\n"
                          "Please check for updates if the file does not load correctly.")
                           .arg(progVersion, fileVersion);
             QMessageBox::warning(this, tr("Newer version file."), message);
-        } else if (version < VERSION("4.0")) {
+        } else if (version < Versions::V_4_0) {
             const QString message = tr("Warning! This is an old version wiRedPanda project file (version < 4.0). "
                          "To open it correctly, save all the ICs and skins in the main project directory.");
             QMessageBox::warning(this, tr("Old version file."), message);

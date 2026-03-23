@@ -9,6 +9,7 @@
 #include "App/Element/LogicElements/LogicInput.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Versions.h"
 
 using namespace std::chrono_literals;
 
@@ -116,22 +117,22 @@ void Clock::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const Q
 {
     GraphicElement::load(stream, portMap, version);
 
-    if (version < VERSION("1.1")) {
+    if (version < Versions::V_1_1) {
         // Clock serialization was introduced in v1.1; nothing to read in earlier files
         return;
     }
 
-    if (version < VERSION("4.1")) {
+    if (version < Versions::V_4_1) {
         // v1.1–4.0 stored frequency as a bare float; locked state added in v3.1
         float freq; stream >> freq;
         setFrequency(freq);
 
-        if (version >= VERSION("3.1")) {
+        if (version >= Versions::V_3_1) {
             stream >> m_locked;
         }
     }
 
-    if (version >= VERSION("4.1")) {
+    if (version >= Versions::V_4_1) {
         // v4.1+ uses a key-value map so new properties can be added without breaking old files
         QMap<QString, QVariant> map; stream >> map;
 
@@ -142,7 +143,7 @@ void Clock::load(QDataStream &stream, QMap<quint64, QNEPort *> &portMap, const Q
         if (map.contains("delay")) {
             float delayValue = map.value("delay").toFloat();
 
-            if (version < VERSION("4.3")) {
+            if (version < Versions::V_4_3) {
                 // Discard old delay data from versions < 4.3
                 // The old implementation was incorrect and incompatible with the new period-fraction format
             } else {

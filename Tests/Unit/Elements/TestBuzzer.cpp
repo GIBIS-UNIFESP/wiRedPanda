@@ -17,6 +17,7 @@
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Workspace.h"
+#include "App/Versions.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Unit/Elements/TestAudioElementHelpers.h"
 
@@ -251,7 +252,7 @@ void TestBuzzer::testLoadVersionNew()
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
 
-    buzzer2->load(loadStream, portMap, GlobalProperties::version);
+    buzzer2->load(loadStream, portMap, AppVersion::current);
 
     // Audio note should be loaded
     QCOMPARE(buzzer2->audio(), QString("E6"));
