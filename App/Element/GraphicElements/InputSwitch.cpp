@@ -5,29 +5,51 @@
 
 #include <QGraphicsSceneMouseEvent>
 
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicInput.h"
 #include "App/GlobalProperties.h"
 #include "App/Nodes/QNEPort.h"
 
-InputSwitch::InputSwitch(QGraphicsItem *parent)
-    : GraphicElementInput(ElementType::InputSwitch, ElementGroup::Input, ":/Components/Input/switchOn.svg", tr("INPUT SWITCH"), tr("Input Switch"), 0, 0, 1, 1, parent)
-{
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<InputSwitch> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::InputSwitch,
+        .group = ElementGroup::Input,
+        .minOutputSize = 1,
+        .maxOutputSize = 1,
+        .canChangeSkin = true,
+        .hasTrigger = true,
+        .hasLabel = true,
+        .rotatable = false,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Input/switchOn.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("InputSwitch", "INPUT SWITCH");
+        meta.translatedName = QT_TRANSLATE_NOOP("InputSwitch", "Input Switch");
+        meta.trContext = "InputSwitch";
+        meta.defaultSkins = QStringList({
+            ":/Components/Input/switchOff.svg",
+            ":/Components/Input/switchOn.svg",
+        });
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicInput>(false, elm->outputSize()); };
+        return meta;
     }
 
-    m_defaultSkins = QStringList{
-        ":/Components/Input/switchOff.svg",
-        ":/Components/Input/switchOn.svg",
-    };
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new InputSwitch(); });
+        return true;
+    }();
+};
 
+InputSwitch::InputSwitch(QGraphicsItem *parent)
+    : GraphicElementInput(ElementType::InputSwitch, parent)
+{
     m_locked = false;
-
-    setCanChangeSkin(true);
-    setHasLabel(true);
-    setHasTrigger(true);
-    setRotatable(false);
 }
 
 bool InputSwitch::isOn(const int port) const

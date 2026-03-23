@@ -3,21 +3,45 @@
 
 #include "App/Element/GraphicElements/Or.h"
 
-#include "App/GlobalProperties.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicOr.h"
 
-Or::Or(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Or, ElementGroup::Gate, ":/Components/Logic/or.svg", tr("OR"), tr("Or"), 2, 8, 1, 1, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<Or> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::Or,
+        .group = ElementGroup::Gate,
+        .minInputSize = 2,
+        .maxInputSize = 8,
+        .minOutputSize = 1,
+        .maxOutputSize = 1,
+        .canChangeSkin = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return QStringLiteral(":/Components/Logic/or.svg"); };
+        meta.titleText = QT_TRANSLATE_NOOP("Or", "OR");
+        meta.translatedName = QT_TRANSLATE_NOOP("Or", "Or");
+        meta.trContext = "Or";
+        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
+        meta.defaultSkins = QStringList({":/Components/Logic/or.svg"});
+        meta.logicCreator = [](GraphicElement *elm) { return std::make_shared<LogicOr>(elm->inputSize()); };
+        return meta;
     }
 
-    // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new Or(); });
+        return true;
+    }();
+};
 
-    setCanChangeSkin(true);
+Or::Or(QGraphicsItem *parent)
+    : GraphicElement(ElementType::Or, parent)
+{
+    // Skip full initialisation when building a property-probe instance (see ElementFactory).
 }
 

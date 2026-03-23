@@ -48,10 +48,6 @@ class QWidget;
 class GraphicElement : public QGraphicsObject, public ItemWithId
 {
     Q_OBJECT
-    Q_PROPERTY(QString pixmapPath MEMBER m_pixmapPath CONSTANT)
-    Q_PROPERTY(QString titleText MEMBER m_titleText CONSTANT)
-    Q_PROPERTY(QString translatedName MEMBER m_translatedName CONSTANT)
-
 public:
     // --- Type Info ---
 
@@ -62,28 +58,8 @@ public:
 
     // --- Lifecycle ---
 
-    /**
-     * \brief Constructs a fully-described graphic element.
-     * \param type           Element type enum value.
-     * \param group          Logical group the element belongs to.
-     * \param pixmapPath     Resource path of the default pixmap.
-     * \param titleText      Short title shown in UI panels.
-     * \param translatedName Human-readable translated name used as tooltip.
-     * \param minInputSize   Minimum number of input ports.
-     * \param maxInputSize   Maximum number of input ports.
-     * \param minOutputSize  Minimum number of output ports.
-     * \param maxOutputSize  Maximum number of output ports.
-     * \param parent         Optional parent graphics item.
-     */
-    explicit GraphicElement(ElementType type, ElementGroup group, const QString &pixmapPath, const QString &titleText, const QString &translatedName,
-                            const int minInputSize, const int maxInputSize, const int minOutputSize, const int maxOutputSize, QGraphicsItem *parent = nullptr);
-    explicit GraphicElement(QGraphicsItem *parent = nullptr) : QGraphicsObject(parent) {}
-
-    /**
-     * \brief Copy constructor — creates a new element parented to the same item as \a other.
-     * \param other The source element whose parent is reused.
-     */
-    GraphicElement(const GraphicElement &other) : GraphicElement(other.parentItem()) {}
+    /// Constructs a graphic element of the given \a type, fetching all properties from the metadata registry.
+    explicit GraphicElement(ElementType type, QGraphicsItem *parent = nullptr);
 
     // --- Serialization ---
 
@@ -410,35 +386,8 @@ protected:
 
     // --- Capability Setters ---
 
-    /// Sets whether the user may apply a custom skin to this element.
-    void setCanChangeSkin(const bool canChangeSkin);
-
-    /// Sets whether this element type supports audio output.
-    void setHasAudio(const bool hasAudio);
-
-    /// Sets whether this element type shows an audio selection box.
-    void setHasAudioBox(const bool hasAudioBox);
-
     /// Sets whether this element type supports color selection.
     void setHasColors(const bool hasColors);
-
-    /// Sets whether this element type exposes a configurable clock phase delay.
-    void setHasDelay(const bool hasDelay);
-
-    /// Sets whether this element type exposes a configurable clock frequency.
-    void setHasFrequency(const bool hasFrequency);
-
-    /// Sets whether this element type supports a user-editable label.
-    void setHasLabel(const bool hasLabel);
-
-    /// Sets whether this element type supports a keyboard trigger shortcut.
-    void setHasTrigger(const bool hasTrigger);
-
-    /// Sets whether this element type has an editable truth table.
-    void setHasTruthTable(const bool hasTruthTable);
-
-    /// Sets whether the user is allowed to rotate this element.
-    void setRotatable(const bool rotatable);
 
     // --- Port Size Constraint Setters ---
 
@@ -563,21 +512,9 @@ private:
 
     QString m_currentPixmapPath;
 
-    // --- Members: Capabilities (Feature Flags) ---
+    // --- Members: Capabilities & Display State ---
 
-    bool m_canChangeSkin = false;
-    bool m_hasAudio = false;
-    bool m_hasAudioBox = false;
     bool m_hasColors = false;
-    bool m_hasDelay = false;
-    bool m_hasFrequency = false;
-    bool m_hasLabel = false;
-    bool m_hasTrigger = false;
-    bool m_hasTruthTable = false;
-
-    // --- Members: Transform & Display State ---
-
-    bool m_rotatable = true;
     bool m_selected = false;
     qreal m_angle = 0;
 

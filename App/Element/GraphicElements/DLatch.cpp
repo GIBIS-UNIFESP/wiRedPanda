@@ -3,24 +3,44 @@
 
 #include "App/Element/GraphicElements/DLatch.h"
 
-#include "App/GlobalProperties.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicDLatch.h"
 #include "App/Nodes/QNEPort.h"
 
-DLatch::DLatch(QGraphicsItem *parent)
-    : GraphicElement(ElementType::DLatch, ElementGroup::Memory, pixmapPath(), tr("D-LATCH"), tr("D-Latch"), 2, 2, 2, 2, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<DLatch> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::DLatch,
+        .group = ElementGroup::Memory,
+        .minInputSize = 2,
+        .maxInputSize = 2,
+        .minOutputSize = 2,
+        .maxOutputSize = 2,
+        .canChangeSkin = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return DLatch::pixmapPath(); };
+        meta.titleText = QT_TRANSLATE_NOOP("DLatch", "D-LATCH");
+        meta.translatedName = QT_TRANSLATE_NOOP("DLatch", "D-Latch");
+        meta.trContext = "DLatch";
+        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicDLatch>(); };
+        return meta;
     }
 
-    // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new DLatch(); });
+        return true;
+    }();
+};
 
-    setCanChangeSkin(true);
-
+DLatch::DLatch(QGraphicsItem *parent)
+    : GraphicElement(ElementType::DLatch, parent)
+{
     // Call the most-derived override explicitly (see SRFlipFlop.cpp for rationale).
     DLatch::updatePortsProperties();
 }

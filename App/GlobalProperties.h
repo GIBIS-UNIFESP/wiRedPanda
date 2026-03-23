@@ -14,7 +14,6 @@ public:
     // --- Runtime State ---
 
     inline static QString currentDir = {};
-    inline static bool skipInit = false;
     inline static bool verbose = true;
     inline static bool testMode = false;
 

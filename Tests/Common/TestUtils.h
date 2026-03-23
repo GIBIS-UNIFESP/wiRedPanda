@@ -9,7 +9,7 @@
 #include <QTest>
 
 #include "App/Core/Common.h"
-#include "App/RegisterTypes.h"
+#include "App/Element/GraphicElement.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 

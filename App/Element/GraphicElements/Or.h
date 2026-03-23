@@ -22,5 +22,3 @@ public:
     explicit Or(QGraphicsItem *parent = nullptr);
 };
 
-Q_DECLARE_METATYPE(Or)
-

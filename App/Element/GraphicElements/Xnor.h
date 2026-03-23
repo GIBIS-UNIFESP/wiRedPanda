@@ -22,5 +22,3 @@ public:
     explicit Xnor(QGraphicsItem *parent = nullptr);
 };
 
-Q_DECLARE_METATYPE(Xnor)
-

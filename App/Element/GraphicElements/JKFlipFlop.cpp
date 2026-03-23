@@ -3,24 +3,44 @@
 
 #include "App/Element/GraphicElements/JKFlipFlop.h"
 
-#include "App/GlobalProperties.h"
+#include "App/Element/ElementInfo.h"
+#include "App/Element/LogicElements/LogicJKFlipFlop.h"
 #include "App/Nodes/QNEPort.h"
 
-JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::JKFlipFlop, ElementGroup::Memory, pixmapPath(), tr("JK-FLIP-FLOP"), tr("JK-Flip-Flop"), 5, 5, 2, 2, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-    if (GlobalProperties::skipInit) {
-        return;
+template<>
+struct ElementInfo<JKFlipFlop> {
+    static constexpr ElementConstraints constraints{
+        .type = ElementType::JKFlipFlop,
+        .group = ElementGroup::Memory,
+        .minInputSize = 5,
+        .maxInputSize = 5,
+        .minOutputSize = 2,
+        .maxOutputSize = 2,
+        .canChangeSkin = true,
+    };
+    static_assert(validate(constraints));
+
+    static ElementMetadata metadata()
+    {
+        auto meta = metadataFromConstraints(constraints);
+        meta.pixmapPath = []{ return JKFlipFlop::pixmapPath(); };
+        meta.titleText = QT_TRANSLATE_NOOP("JKFlipFlop", "JK-FLIP-FLOP");
+        meta.translatedName = QT_TRANSLATE_NOOP("JKFlipFlop", "JK-Flip-Flop");
+        meta.trContext = "JKFlipFlop";
+        meta.logicCreator = [](GraphicElement *) { return std::make_shared<LogicJKFlipFlop>(); };
+        return meta;
     }
 
-    // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-    m_defaultSkins << m_pixmapPath;
-    m_alternativeSkins = m_defaultSkins;
-    setPixmap(0);
+    static inline const bool registered = []() {
+        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementFactory::registerCreator(constraints.type, [] { return new JKFlipFlop(); });
+        return true;
+    }();
+};
 
-    setCanChangeSkin(true);
-
+JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
+    : GraphicElement(ElementType::JKFlipFlop, parent)
+{
     // Call the most-derived override explicitly (see SRFlipFlop.cpp for rationale).
     JKFlipFlop::updatePortsProperties();
 }

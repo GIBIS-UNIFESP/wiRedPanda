@@ -18,6 +18,8 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Nodes/QNEPort.h"
 
+static const int s_connectionMetatypeId = qRegisterMetaType<QNEConnection>();
+
 QNEConnection::QNEConnection(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
 {

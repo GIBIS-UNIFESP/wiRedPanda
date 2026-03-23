@@ -5,9 +5,12 @@
 
 #include <memory>
 
+#include <QMetaEnum>
+
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/ElementMetadata.h"
 #include "App/Element/GraphicElement.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -72,24 +75,26 @@ void TestElementFactory::testBuildElementInvalidType()
     QVERIFY2(exceptionThrown, "Expected exception for Unknown element type");
 }
 
-void TestElementFactory::testBuildLogicElement()
+void TestElementFactory::testMetadataLogicCreator()
 {
-    // Test logic element creation for various element types
+    // Test logic element creation via metadata logicCreator for various element types
     const QVector<ElementType> typesToTest{
         ElementType::And, ElementType::Or, ElementType::Not,
         ElementType::Nand, ElementType::Nor, ElementType::Xor
     };
 
     for (const auto type : typesToTest) {
-        auto graphicElem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(type));
+        auto *graphicElem = ElementFactory::buildElement(type);
         QVERIFY2(graphicElem != nullptr, qPrintable(QString("Failed to build graphic element: %1").arg(ElementFactory::typeToText(type))));
 
-        // buildLogicElement returns shared_ptr<LogicElement>, so cleanup is automatic
-        auto logicElem = ElementFactory::buildLogicElement(graphicElem.get());
-        QVERIFY2(logicElem != nullptr, qPrintable(QString("Failed to build logic element: %1").arg(ElementFactory::typeToText(type))));
+        const auto &meta = ElementMetadataRegistry::metadata(type);
+        QVERIFY2(meta.logicCreator != nullptr, qPrintable(QString("%1 should have a logicCreator").arg(ElementFactory::typeToText(type))));
 
-        // Verify logic element is properly constructed
+        auto logicElem = meta.logicCreator(graphicElem);
+        QVERIFY2(logicElem != nullptr, qPrintable(QString("Failed to create logic element: %1").arg(ElementFactory::typeToText(type))));
         QVERIFY2(logicElem.use_count() > 0, "Logic element should have valid reference count");
+
+        delete graphicElem;
     }
 }
 
@@ -198,39 +203,60 @@ void TestElementFactory::testUniqueIdAssignment()
     qDeleteAll(elements);
 }
 
-void TestElementFactory::testPropertyCaching()
+void TestElementFactory::testMetadataRegistry()
 {
-    // Test property caching for multiple element types
+    // Test that element metadata properties are non-empty and consistent
     const QVector<ElementType> typesToTest{
         ElementType::And, ElementType::Or, ElementType::Not,
         ElementType::Led, ElementType::InputSwitch, ElementType::Clock
     };
 
-    // Test 1: Properties should be retrievable and non-empty
+    // Test 1: Properties should be retrievable and non-empty via metadata registry
     for (const auto type : typesToTest) {
-        const auto props = ElementFactory::getStaticProperties(type);
-        QVERIFY2(!props.pixmapPath.isEmpty(),
+        const auto &meta = ElementMetadataRegistry::metadata(type);
+        QVERIFY2(!meta.pixmapPath().isEmpty(),
                  qPrintable(QString("%1 should have non-empty pixmap path").arg(ElementFactory::typeToText(type))));
-        QVERIFY2(!props.translatedName.isEmpty(),
+        QVERIFY2(meta.translatedName != nullptr && meta.translatedName[0] != '\0',
                  qPrintable(QString("%1 should have non-empty translated name").arg(ElementFactory::typeToText(type))));
     }
 
-    // Test 2: Repeated calls should return identical values (consistent caching)
+    // Test 2: Repeated calls return identical values (registry is stable)
     for (const auto type : typesToTest) {
-        const auto props1 = ElementFactory::getStaticProperties(type);
-        const auto props2 = ElementFactory::getStaticProperties(type);
-        QCOMPARE(props1.pixmapPath, props2.pixmapPath);
-        QCOMPARE(props1.translatedName, props2.translatedName);
+        const auto &meta1 = ElementMetadataRegistry::metadata(type);
+        const auto &meta2 = ElementMetadataRegistry::metadata(type);
+        QCOMPARE(meta1.pixmapPath(), meta2.pixmapPath());
+        QCOMPARE(meta1.translatedName, meta2.translatedName);
     }
 
-    // Test 3: Clear cache and verify properties are rebuilt correctly
-    ElementFactory::clearCache();
+    // Test 3: Factory convenience methods match metadata registry values
     for (const auto type : typesToTest) {
-        const auto propsBeforeClear = ElementFactory::getStaticProperties(type);
-        ElementFactory::clearCache();
-        const auto propsAfterClear = ElementFactory::getStaticProperties(type);
-        QCOMPARE(propsBeforeClear.pixmapPath, propsAfterClear.pixmapPath);
-        QCOMPARE(propsBeforeClear.translatedName, propsAfterClear.translatedName);
+        const auto &meta = ElementMetadataRegistry::metadata(type);
+        QCOMPARE(ElementFactory::translatedName(type), QString(meta.translatedName));
+        QCOMPARE(ElementFactory::typeToTitleText(type), QString(meta.titleText));
+    }
+}
+
+void TestElementFactory::testAllElementTypesRegistered()
+{
+    // Verify that all ElementType values (except Unknown and deprecated ones)
+    // have both metadata and factory creator registrations.
+    const QMetaEnum metaEnum = QMetaEnum::fromType<ElementType>();
+    for (int i = 0; i < metaEnum.keyCount(); ++i) {
+        const auto type = static_cast<ElementType>(metaEnum.value(i));
+
+        // Skip special cases: Unknown type and deprecated JKLatch
+        if (type == ElementType::Unknown) {
+            continue;
+        }
+        if (type == ElementType::JKLatch) {
+            continue;  // deprecated: JKLatch element no longer exists, kept for backward compatibility
+        }
+
+        QVERIFY2(ElementMetadataRegistry::hasMetadata(type),
+                 qPrintable(QString("Missing ElementInfo<> for %1").arg(metaEnum.key(i))));
+
+        QVERIFY2(ElementFactory::hasCreator(type),
+                 qPrintable(QString("Missing factory creator for %1").arg(metaEnum.key(i))));
     }
 }
 
