@@ -18,6 +18,7 @@
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Workspace.h"
+#include "App/Versions.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Unit/Elements/TestAudioElementHelpers.h"
 
@@ -231,7 +232,7 @@ void TestAudioBox::testLoadVersionOld()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
-    audioBox2->load(loadStream, portMap, GlobalProperties::version);
+    audioBox2->load(loadStream, portMap, AppVersion::current);
 
     // Audio path should be loaded correctly
     QCOMPARE(audioBox2->audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
@@ -252,7 +253,7 @@ void TestAudioBox::testLoadVersionNew()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
-    audioBox2->load(loadStream, portMap, GlobalProperties::version);
+    audioBox2->load(loadStream, portMap, AppVersion::current);
 
     // Audio path should be loaded
     QCOMPARE(audioBox2->audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));

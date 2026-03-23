@@ -189,6 +189,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Versions.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/HandlerFactory.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPValidator.h
