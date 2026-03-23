@@ -16,12 +16,7 @@ ThemeManager::ThemeManager(QObject *parent)
 {
     // Load the persisted theme preference; if not set, m_theme keeps its
     // default-initialised value (Theme::Light, as defined in the header)
-    if (Settings::contains("theme")) {
-        const int saved = Settings::value("theme").toInt();
-        if (saved >= 0 && saved <= static_cast<int>(Theme::Dark)) {
-            m_theme = static_cast<Theme>(saved);
-        }
-    }
+    m_theme = Settings::theme();
 
     // Apply the theme immediately so colours are correct before any widgets are shown
     m_attributes.setTheme(m_theme);
@@ -51,7 +46,7 @@ void ThemeManager::setTheme(const Theme theme)
 
     instance().m_theme = theme;
     // Persist so the selected theme is restored on next application launch
-    Settings::setValue("theme", static_cast<int>(theme));
+    Settings::setTheme(theme);
     // Notify all connected widgets (scene, view, etc.) to repaint with the new palette
     emit instance().themeChanged();
 }
