@@ -84,6 +84,16 @@ public:
      */
     static void writePandaHeader(QDataStream &stream);
 
+    // --- Panda Preamble ---
+
+    /// Result of reading a .panda file preamble (header + dolphin + rect).
+    struct Preamble {
+        QVersionNumber version;
+    };
+
+    /// Reads the full .panda preamble: header, dolphin filename, and rect.
+    static Preamble readPreamble(QDataStream &stream);
+
     // --- Magic Headers ---
 
     constexpr static quint32 MAGIC_HEADER_CIRCUIT = 0x57504346; // "WPCF" (wiRedPanda Circuit File)

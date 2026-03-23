@@ -232,6 +232,15 @@ QRectF Serialization::loadRect(QDataStream &stream, const QVersionNumber &versio
     return rect;
 }
 
+Serialization::Preamble Serialization::readPreamble(QDataStream &stream)
+{
+    Preamble result;
+    result.version = readPandaHeader(stream);
+    loadDolphinFileName(stream, result.version);
+    loadRect(stream, result.version);
+    return result;
+}
+
 QString Serialization::typeName(const int type) {
     // These offsets must stay in sync with the ::Type enum constants defined in
     // QNEPort, QNEConnection, and GraphicElement (all use QGraphicsItem::UserType + N)

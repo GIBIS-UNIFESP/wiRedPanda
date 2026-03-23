@@ -237,12 +237,10 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
     }
 
     QDataStream stream(&file);
-    QVersionNumber version = Serialization::readPandaHeader(stream);
-    Serialization::loadDolphinFileName(stream, version);
-    Serialization::loadRect(stream, version);
+    const auto preamble = Serialization::readPreamble(stream);
 
     QMap<quint64, QNEPort *> portMap;
-    SerializationContext subCtx{portMap, version, fileInfo.absolutePath()};
+    SerializationContext subCtx{portMap, preamble.version, fileInfo.absolutePath()};
     const auto items = Serialization::deserialize(stream, subCtx);
 
     for (auto *item : items) {
@@ -648,13 +646,11 @@ void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
     // Deserialize the copied file so that any nested ICs it references also get
     // copied transitively into the destination directory
     QDataStream stream(&destFile);
-    QVersionNumber version = Serialization::readPandaHeader(stream);
-    Serialization::loadDolphinFileName(stream, version);
-    Serialization::loadRect(stream, version);
+    const auto preamble = Serialization::readPreamble(stream);
 
     QMap<quint64, QNEPort *> portMap;
     CopyOperation copyOp{srcPath.absolutePath(), destPath.absolutePath(), true};
-    SerializationContext context{portMap, version, destPath.absolutePath(), copyOp};
+    SerializationContext context{portMap, preamble.version, destPath.absolutePath(), copyOp};
     Serialization::deserialize(stream, context);
 }
 
