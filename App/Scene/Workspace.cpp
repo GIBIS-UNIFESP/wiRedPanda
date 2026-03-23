@@ -98,7 +98,7 @@ void WorkSpace::save(const QString &fileName)
         fileName_.append(".panda");
     }
 
-    Serialization::contextDir = QFileInfo(fileName_).absolutePath();
+    m_scene.setContextDir(QFileInfo(fileName_).absolutePath());
     m_fileInfo = QFileInfo(fileName_);
 
     // QSaveFile writes to a temp file and commits atomically, preventing data loss
@@ -177,7 +177,7 @@ void WorkSpace::load(const QString &fileName)
         throw PANDACEPTION("This file does not exist: %1", fileName);
     }
 
-    Serialization::contextDir = QFileInfo(fileName).absolutePath();
+    m_scene.setContextDir(QFileInfo(fileName).absolutePath());
     m_fileInfo = QFileInfo(fileName);
 
     qCDebug(zero) << "File exists.";
@@ -226,6 +226,9 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
     // recomputed from items after they are added because items may have moved
     // relative to the stored rect (e.g., old files with a different viewport origin).
     Serialization::loadRect(stream, version);
+    if (!contextDir.isEmpty()) {
+        m_scene.setContextDir(contextDir);
+    }
     QMap<quint64, QNEPort *> portMap;
     SerializationContext context{portMap, version, contextDir};
     const auto items = Serialization::deserialize(stream, context);
@@ -347,20 +350,11 @@ void WorkSpace::autosave()
 
     QString autosaveFileName = m_autosaveFile.fileName();
 
-    // Save and restore contextDir so that autosaving to a temp directory does not
-    // leave Serialization::contextDir pointing at the autosave location. Without
-    // this, IC relative-path resolution in other open workspaces would silently
-    // use the wrong base directory after the first autosave.
-    const QString savedContextDir = Serialization::contextDir;
-    Serialization::contextDir = path.absolutePath();
-
     qCDebug(three) << "Writing to autosave file.";
     QDataStream stream(&m_autosaveFile);
     Serialization::writePandaHeader(stream);
     save(stream);
     m_autosaveFile.close();
-
-    Serialization::contextDir = savedContextDir;
 
     autosaves.append(autosaveFileName);
     Settings::setAutosaveFiles(autosaves);

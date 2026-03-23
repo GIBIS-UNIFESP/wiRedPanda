@@ -1113,9 +1113,10 @@ void ElementEditor::audioBox()
     // directory, copy it alongside the .panda file so the project is self-contained.
     QFileInfo fileInfo(filePath);
     QString audioPath = filePath;
-    if (!Serialization::contextDir.isEmpty() &&
-        (fileInfo.absoluteDir() != QDir(Serialization::contextDir))) {
-        const QString dest = Serialization::contextDir + "/" + fileInfo.fileName();
+    const QString ctxDir = m_scene ? m_scene->contextDir() : QString();
+    if (!ctxDir.isEmpty() &&
+        (fileInfo.absoluteDir() != QDir(ctxDir))) {
+        const QString dest = ctxDir + "/" + fileInfo.fileName();
         if (!QFile::exists(dest)) {
             QFile::copy(filePath, dest);
         }

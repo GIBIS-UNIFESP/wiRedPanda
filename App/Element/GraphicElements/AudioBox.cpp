@@ -9,8 +9,8 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementInfo.h"
-#include "App/IO/Serialization.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Scene/Scene.h"
 #include "App/Versions.h"
 
 template<>
@@ -97,7 +97,7 @@ void AudioBox::setAudio(const QString &audioPath)
     // Qt-resource paths (":/...") are always used as-is.
     QString resolvedPath = audioPath;
     if (!audioPath.startsWith(":/") && QDir::isRelativePath(audioPath)) {
-        resolvedPath = Serialization::contextDir + "/" + audioPath;
+        resolvedPath = Scene::resolveContextDir(this) + "/" + audioPath;
     }
 
     if (!audioPath.startsWith(":/")) {
@@ -202,7 +202,7 @@ void AudioBox::save(QDataStream &stream) const
     // directory, so the project remains portable across machines and platforms.
     if (!audioPath.startsWith(":/")) {
         QFileInfo info(audioPath);
-        if (info.absoluteDir() == QDir(Serialization::contextDir)) {
+        if (info.absoluteDir() == QDir(Scene::resolveContextDir(this))) {
             audioPath = info.fileName();
         }
     }
