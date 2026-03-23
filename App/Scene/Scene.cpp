@@ -206,8 +206,7 @@ void Scene::setCircuitUpdateRequired()
 {
     // Re-applying visibility ensures newly-added ports/wires respect the current
     // show/hide state; without this, ports on fresh elements would always appear visible
-    showWires(m_showWires);
-    showGates(m_showGates);
+    m_visibilityManager.reapply();
 
     update();
 
@@ -438,57 +437,12 @@ QList<QGraphicsItem *> Scene::items(const QRectF &rect, Qt::ItemSelectionMode mo
 
 void Scene::showGates(const bool checked)
 {
-    m_showGates = checked;
-    const auto items_ = items();
-
-    for (auto *item : items_) {
-        if (item->type() == GraphicElement::Type) {
-            auto *element = qgraphicsitem_cast<GraphicElement *>(item);
-            if (!element) {
-                continue;
-            }
-            const auto group = element->elementGroup();
-
-            // Only hide/show internal logic gates; Input, Output and Other elements
-            // (e.g., labels, ICs) are always kept visible regardless of this toggle
-            if ((group != ElementGroup::Input) && (group != ElementGroup::Output) && (group != ElementGroup::Other)) {
-                item->setVisible(checked);
-            }
-        }
-    }
+    m_visibilityManager.showGates(checked);
 }
 
 void Scene::showWires(const bool checked)
 {
-    m_showWires = checked;
-    const auto items_ = items();
-
-    for (auto *item : items_) {
-        if (item->type() == QNEConnection::Type) {
-            item->setVisible(checked);
-            continue;
-        }
-
-        if (item->type() == GraphicElement::Type) {
-            auto *element = qgraphicsitem_cast<GraphicElement *>(item);
-
-            // Node elements are purely wire-routing helpers with no logical function;
-            // hiding wires should hide nodes too since they're meaningless without wires
-            if (element->elementType() == ElementType::Node) {
-                element->setVisible(checked);
-            } else {
-                // For other elements, hide only their port handles (the connectable dots),
-                // not the element body itself, so the gate symbols remain visible
-                for (auto *inputPort : element->inputs()) {
-                    inputPort->setVisible(checked);
-                }
-
-                for (auto *outputPort : element->outputs()) {
-                    outputPort->setVisible(checked);
-                }
-            }
-        }
-    }
+    m_visibilityManager.showWires(checked);
 }
 
 void Scene::startSelectionRect()
