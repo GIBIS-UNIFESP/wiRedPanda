@@ -7,6 +7,7 @@
 
 #include "App/Core/Common.h"
 #include "App/Core/Priorities.h"
+#include "App/Core/SentryHelpers.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/IC.h"
@@ -137,6 +138,7 @@ bool Simulation::isInFeedbackLoop(const GraphicElement *element) const
 
 void Simulation::stop()
 {
+    sentryBreadcrumb("simulation", QStringLiteral("Simulation stopped"));
     m_timer.stop();
     if (m_scene) {
         m_scene->mute(true);
@@ -145,6 +147,7 @@ void Simulation::stop()
 
 void Simulation::start()
 {
+    sentryBreadcrumb("simulation", QStringLiteral("Simulation started"));
     qCDebug(zero) << "Starting simulation.";
 
     if (!m_initialized) {

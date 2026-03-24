@@ -57,26 +57,37 @@ public:
     // --- Lifecycle ---
 
     /**
-     * \brief Constructs the exception.
+     * \brief Constructs the exception with throw-site location for Sentry.
      * \param translatedMessage Localized message shown to the user.
      * \param englishMessage    English message for logging/Sentry.
+     * \param file              Source file where the exception was thrown (__FILE__).
+     * \param line              Source line where the exception was thrown (__LINE__).
      */
-    explicit Pandaception(const QString &translatedMessage, const QString &englishMessage);
+    explicit Pandaception(const QString &translatedMessage, const QString &englishMessage,
+                          const char *file = nullptr, int line = 0);
 
     // --- Message access ---
 
     /// Returns the English (non-translated) message for logging and crash reports.
     QString englishMessage() const;
 
+    /// Returns the source file where the exception was thrown, or nullptr.
+    const char *file() const;
+
+    /// Returns the source line where the exception was thrown, or 0.
+    int line() const;
+
 private:
     QString m_englishMessage; ///< English message preserved for logging.
+    const char *m_file = nullptr; ///< Source file at throw site.
+    int m_line = 0; ///< Source line at throw site.
 };
 
 // Main macro for class contexts that can use tr() - uses __VA_OPT__ for optional arguments
 #define PANDACEPTION(msg, ...) \
-    Pandaception(tr(msg) __VA_OPT__(.arg(__VA_ARGS__)), QString(msg) __VA_OPT__(.arg(__VA_ARGS__)))
+    Pandaception(tr(msg) __VA_OPT__(.arg(__VA_ARGS__)), QString(msg) __VA_OPT__(.arg(__VA_ARGS__)), __FILE__, __LINE__)
 
 // Special macro for non-class contexts - uses __VA_OPT__ for optional arguments
 #define PANDACEPTION_WITH_CONTEXT(context, msg, ...) \
-    Pandaception(QCoreApplication::translate(context, msg) __VA_OPT__(.arg(__VA_ARGS__)), QString(msg) __VA_OPT__(.arg(__VA_ARGS__)))
+    Pandaception(QCoreApplication::translate(context, msg) __VA_OPT__(.arg(__VA_ARGS__)), QString(msg) __VA_OPT__(.arg(__VA_ARGS__)), __FILE__, __LINE__)
 
