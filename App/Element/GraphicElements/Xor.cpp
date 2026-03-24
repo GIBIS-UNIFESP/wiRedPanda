@@ -3,8 +3,7 @@
 
 #include "App/Element/GraphicElements/Xor.h"
 
-#include <functional>
-
+#include "App/Core/StatusOps.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
@@ -48,10 +47,9 @@ Xor::Xor(QGraphicsItem *parent)
 
 void Xor::updateLogic()
 {
-    if (!updateInputs()) {
+    if (!simUpdateInputsAllowUnknown()) {
         return;
     }
-    const auto result = std::accumulate(simInputs().cbegin(), simInputs().cend(), false, std::bit_xor<>());
-    setOutputValue(result);
+    setOutputValue(StatusOps::statusXorAll(simInputs()));
 }
 

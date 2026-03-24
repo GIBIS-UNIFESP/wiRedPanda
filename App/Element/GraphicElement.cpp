@@ -570,10 +570,10 @@ bool GraphicElement::isValid()
         // Propagate invalid status downstream so the visual chain shows where validity breaks
         for (auto *output : std::as_const(m_outputPorts)) {
             for (auto *conn : output->connections()) {
-                conn->setStatus(Status::Invalid);
+                conn->setStatus(Status::Unknown);
 
                 if (auto *port = conn->otherPort(output)) {
-                    port->setStatus(Status::Invalid);
+                    port->setStatus(Status::Unknown);
                 }
             }
         }
@@ -734,10 +734,10 @@ void GraphicElement::updateLogic()
     // Default no-op — decorative elements (Line, Text) have no simulation behaviour.
 }
 
-bool GraphicElement::outputValue(const int index) const
+Status GraphicElement::outputValue(const int index) const
 {
     if (index >= m_simOutputValues.size()) {
-        return false;
+        return Status::Unknown;
     }
     return m_simOutputValues.at(index);
 }
@@ -747,7 +747,7 @@ bool GraphicElement::inputValue(const int index) const
     if (index >= m_simInputValues.size()) {
         return false;
     }
-    return m_simInputValues.at(index);
+    return m_simInputValues.at(index) == Status::Active;
 }
 
 int GraphicElement::simOutputSize() const
@@ -755,7 +755,7 @@ int GraphicElement::simOutputSize() const
     return static_cast<int>(m_simOutputValues.size());
 }
 
-void GraphicElement::setOutputValue(const int index, const bool value)
+void GraphicElement::setOutputValue(const int index, const Status value)
 {
     if (index >= m_simOutputValues.size()) {
         return;
@@ -766,45 +766,85 @@ void GraphicElement::setOutputValue(const int index, const bool value)
     m_simOutputValues[index] = value;
 }
 
-void GraphicElement::setOutputValue(const bool value)
+void GraphicElement::setOutputValue(const Status value)
 {
     setOutputValue(0, value);
 }
 
 void GraphicElement::connectPredecessor(const int inputIndex, GraphicElement *source, const int outputPort)
 {
-    if (inputIndex >= m_simPredecessors.size()) {
+    if (inputIndex >= m_simInputConnections.size()) {
         return;
     }
-    m_simPredecessors[inputIndex] = {source, outputPort};
+    m_simInputConnections[inputIndex] = {source, outputPort};
 }
 
 void GraphicElement::initSimulationVectors(const int inputCount, const int outputCount)
 {
-    m_simPredecessors.fill({}, inputCount);
-    m_simInputValues.fill(false, inputCount);
+    m_simInputConnections.fill({}, inputCount);
+    m_simInputValues.fill(Status::Inactive, inputCount);
     m_simOutputValues.resize(outputCount);
+    // Initialize outputs from port default statuses when they're explicitly set
+    // (e.g., flip-flop Q'=Active), otherwise default to Inactive.
+    // Using Inactive (not Unknown) ensures gate-level feedback loops can settle.
     for (int i = 0; i < outputCount; ++i) {
         if (i < m_outputPorts.size()) {
-            m_simOutputValues[i] = m_outputPorts.at(i)->defaultValue() == Status::Active;
+            const Status def = m_outputPorts.at(i)->defaultValue();
+            m_simOutputValues[i] = (def == Status::Unknown) ? Status::Inactive : def;
         } else {
-            m_simOutputValues[i] = false;
+            m_simOutputValues[i] = Status::Inactive;
         }
     }
     m_simOutputChanged = false;
 }
 
-bool GraphicElement::updateInputs()
+bool GraphicElement::simUpdateInputs()
 {
-    for (int i = 0; i < m_simPredecessors.size(); ++i) {
-        auto &pred = m_simPredecessors[i];
-        if (pred.element) {
-            m_simInputValues[i] = pred.element->outputValue(pred.outputPort);
-        } else if (i < inputSize()) {
-            m_simInputValues[i] = inputPort(i)->defaultValue() == Status::Active;
+    for (int index = 0; index < m_simInputConnections.size(); ++index) {
+        auto *pred = m_simInputConnections.at(index).sourceElement;
+        Status val;
+        if (pred) {
+            val = pred->outputValue(m_simInputConnections.at(index).sourceOutputIndex);
         } else {
-            m_simInputValues[i] = false;
+            // Unconnected input: use port's default status (replaces global GND/VCC).
+            val = (index < m_inputPorts.size()) ? m_inputPorts.at(index)->defaultValue() : Status::Unknown;
         }
+        if (val == Status::Unknown || val == Status::Error) {
+            for (auto &out : m_simOutputValues) {
+                if (out != Status::Unknown) {
+                    m_simOutputChanged = true;
+                }
+                out = Status::Unknown;
+            }
+            return false;
+        }
+        m_simInputValues[index] = val;
+    }
+    return true;
+}
+
+bool GraphicElement::simUpdateInputsAllowUnknown()
+{
+    for (int index = 0; index < m_simInputConnections.size(); ++index) {
+        auto *pred = m_simInputConnections.at(index).sourceElement;
+        Status val;
+        if (pred) {
+            val = pred->outputValue(m_simInputConnections.at(index).sourceOutputIndex);
+        } else {
+            // Unconnected input: use port's default status (replaces global GND/VCC).
+            val = (index < m_inputPorts.size()) ? m_inputPorts.at(index)->defaultValue() : Status::Unknown;
+        }
+        // Only fail if the input is truly unconnected (null predecessor) and returned Unknown.
+        if (val == Status::Unknown && !pred) {
+            for (auto &out : m_simOutputValues) {
+                if (out != Status::Unknown) {
+                    m_simOutputChanged = true;
+                }
+                out = Status::Unknown;
+            }
+            return false;
+        }
+        m_simInputValues[index] = val;
     }
     return true;
 }

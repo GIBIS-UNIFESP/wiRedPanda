@@ -40,11 +40,12 @@ void TestFeedback::testDLatchWithFeedback()
 
 void TestFeedback::testRingOscillatorNonConvergence()
 {
-    // Ring oscillator (odd number of inverters) cannot converge
+    // With 4-state logic, ring oscillators converge at Unknown
+    // (NOT(Unknown) = Unknown is a fixed point).
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
 
-    verifyConvergence(scene.get(), false);
+    verifyConvergence(scene.get(), true);
 }
 
 void TestFeedback::testSetResetPriorityInSRLatch()
@@ -172,8 +173,6 @@ void TestFeedback::testConvergenceSpeedVariation()
     sim1.update();
     verifyStableState(scene1.get());
 
-    // Ring oscillator should warn about non-convergence
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
     sim2.update();
 }
 
@@ -183,12 +182,8 @@ void TestFeedback::testConvergenceSpeedVariation()
 
 void TestFeedback::testRingOscillatorWarningAfterMaxIterations()
 {
-    // Ring oscillator should warn after max iterations (10)
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
-
-    // Odd-length ring cannot converge, should warn
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
 
     Simulation sim(scene.get());
     sim.update();
@@ -199,9 +194,6 @@ void TestFeedback::testOddLengthInverterChainFeedback()
     // Odd-length inverter chain (feedback loop) converges at Unknown in 4-state logic
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
-
-    // Odd-length ring cannot converge
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
 
     Simulation sim(scene.get());
     sim.update();
@@ -235,9 +227,6 @@ void TestFeedback::testWarningMessageContent()
     // Verify warning message for circuits that converge at Unknown
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
-
-    // Ring oscillator should warn about non-convergence
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*Feedback circuit did not converge.*"));
 
     Simulation sim(scene.get());
     sim.update();
@@ -346,9 +335,6 @@ void TestFeedback::testNestedFeedbackLoops()
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
 
-    // Odd-length ring cannot converge
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
-
     Simulation sim(scene.get());
     sim.update();
 
@@ -386,9 +372,6 @@ void TestFeedback::testSingleElementFeedback()
     conn->setStartPort(notGate->outputPort(0));
     conn->setEndPort(notGate->inputPort(0));
 
-    // Single NOT self-loop cannot converge
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
-
     Simulation sim(&scene);
     sim.update();
 
@@ -400,9 +383,6 @@ void TestFeedback::testFeedbackThroughMultipleElementTypes()
     // Feedback path through multiple element types (3-NOT ring - odd length, converges at Unknown in 4-state logic)
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
-
-    // Odd-length ring cannot converge
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
 
     Simulation sim(scene.get());
     sim.update();
@@ -730,9 +710,9 @@ void TestFeedback::verifyConvergence(Scene *scene, bool shouldConverge)
     if (shouldConverge) {
         // For converging circuits, verify outputs are stable
         // Snapshot all logic element outputs
-        QHash<GraphicElement *, bool> snapshot;
+        QHash<GraphicElement *, Status> snapshot;
         for (auto *elem : scene->elements()) {
-            if (elem) {
+            if (elem->simOutputSize() > 0) {
                 snapshot[elem] = elem->outputValue(0);
             }
         }
@@ -742,9 +722,9 @@ void TestFeedback::verifyConvergence(Scene *scene, bool shouldConverge)
 
         // Verify outputs haven't changed
         for (auto *elem : scene->elements()) {
-            if (elem) {
-                bool currentValue = elem->outputValue(0);
-                bool snapshotValue = snapshot.value(elem, currentValue);
+            if (elem->simOutputSize() > 0) {
+                Status currentValue = elem->outputValue(0);
+                Status snapshotValue = snapshot.value(elem, currentValue);
                 QCOMPARE(currentValue, snapshotValue);
             }
         }
@@ -782,9 +762,9 @@ void TestFeedback::verifyStableState(Scene *scene)
     sim.update();
 
     // Snapshot all logic element outputs
-    QHash<GraphicElement *, bool> snapshot;
+    QHash<GraphicElement *, Status> snapshot;
     for (auto *elem : elements) {
-        if (elem) {
+        if (elem->simOutputSize() > 0) {
             snapshot[elem] = elem->outputValue(0);
         }
     }
@@ -794,9 +774,9 @@ void TestFeedback::verifyStableState(Scene *scene)
 
     // Verify outputs haven't changed (circuit is stable)
     for (auto *elem : elements) {
-        if (elem) {
-            bool currentValue = elem->outputValue(0);
-            bool snapshotValue = snapshot.value(elem, currentValue);
+        if (elem->simOutputSize() > 0) {
+            Status currentValue = elem->outputValue(0);
+            Status snapshotValue = snapshot.value(elem, currentValue);
             QCOMPARE(currentValue, snapshotValue);
         }
     }

@@ -38,9 +38,11 @@ public:
 
     /// Refreshes the pixmap when the application theme changes.
     void updateTheme() override;
+
+    /// Updates output state on each rising clock edge.
     void updateLogic() override;
 private:
-    bool m_lastClk = false;
-    bool m_lastValue = true;
+    Status m_simLastClk = Status::Inactive;
+    Status m_simLastValue = Status::Active;
 };
 

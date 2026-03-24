@@ -3,8 +3,7 @@
 
 #include "App/Element/GraphicElements/Nor.h"
 
-#include <functional>
-
+#include "App/Core/StatusOps.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
@@ -48,10 +47,9 @@ Nor::Nor(QGraphicsItem *parent)
 
 void Nor::updateLogic()
 {
-    if (!updateInputs()) {
+    if (!simUpdateInputsAllowUnknown()) {
         return;
     }
-    const auto result = std::accumulate(simInputs().cbegin(), simInputs().cend(), false, std::bit_or<>());
-    setOutputValue(!result);
+    setOutputValue(StatusOps::statusNot(StatusOps::statusOrAll(simInputs())));
 }
 
