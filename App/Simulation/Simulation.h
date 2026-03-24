@@ -83,6 +83,10 @@ public:
 
     static void buildConnectionGraph(const QVector<GraphicElement *> &elements);
 
+signals:
+    /// Emitted (at most once per initialize()) when a feedback circuit fails to converge.
+    void simulationWarning(const QString &message);
+
 private:
     Q_DISABLE_COPY(Simulation)
 
@@ -100,15 +104,17 @@ private:
     QVector<GraphicElement *> m_outputs;
     QVector<GraphicElementInput *> m_inputs;
     QVector<QNEConnection *> m_connections;
-    QVector<GraphicElement *> m_sortedElements;
 
     // --- Members: Scene & state ---
 
     Scene *m_scene;
 
+    bool m_initialized = false;
+    bool m_convergenceWarned = false;
+
+    QVector<GraphicElement *> m_sortedElements;
     QHash<const GraphicElement *, int> m_simPriorities;
     QSet<const GraphicElement *> m_simFeedbackNodes;
     bool m_simHasFeedbackElements = false;
-    bool m_initialized = false;
 };
 
