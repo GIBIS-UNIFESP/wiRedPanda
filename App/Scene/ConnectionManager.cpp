@@ -182,6 +182,16 @@ bool ConnectionManager::isConnectionAllowed(QNEOutputPort *startPort, QNEInputPo
     if (startPort->isConnected(endPort)) {
         return false;  // duplicate
     }
+    // Rx nodes receive their signal over the air; a physical wire on the input
+    // port would be silently overridden by the simulation (tunnel convention).
+    if (auto *elm = endPort->graphicElement(); elm && elm->wirelessMode() == WirelessMode::Rx) {
+        return false;
+    }
+    // Tx nodes are dead-end transmitters; their output port drives the wireless
+    // channel only — no physical wire should bypass the channel (tunnel convention).
+    if (auto *elm = startPort->graphicElement(); elm && elm->wirelessMode() == WirelessMode::Tx) {
+        return false;
+    }
     return true;
 }
 

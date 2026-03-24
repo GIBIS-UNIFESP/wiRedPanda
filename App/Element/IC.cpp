@@ -559,6 +559,11 @@ void IC::initializeSimulation()
     // Build connection graph from internal QNEConnections
     Simulation::buildConnectionGraph(m_icElements);
 
+    // Wire wireless Rx predecessors to matching Tx outputs within the IC.
+    // The top-level Simulation::connectWirelessElements() only sees outer scene elements,
+    // so IC-internal wireless channels must be wired here.
+    Simulation::connectWirelessElements(m_icElements);
+
     // Initialize nested ICs recursively
     for (auto *elm : std::as_const(m_icElements)) {
         if (elm->elementType() == ElementType::IC) {
@@ -584,6 +589,29 @@ void IC::initializeSimulation()
                         && !successors[elm].contains(successor)) {
                         successors[elm].append(successor);
                     }
+                }
+            }
+        }
+    }
+
+    // Add wireless Tx→Rx edges to the successor graph.
+    // connectWirelessElements() above set predecessors for simulation input routing,
+    // but those don't create QNEConnection objects, so the connection-walking loop above
+    // doesn't see wireless dependencies.
+    // NOTE: must match connectWirelessElements() — first Tx per label wins.
+    QHash<QString, GraphicElement *> txMap;
+    for (auto *elm : std::as_const(m_icElements)) {
+        if (elm->wirelessMode() == WirelessMode::Tx && !elm->label().isEmpty()) {
+            if (!txMap.contains(elm->label())) {
+                txMap.insert(elm->label(), elm);
+            }
+        }
+    }
+    for (auto *elm : std::as_const(m_icElements)) {
+        if (elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
+            if (auto *tx = txMap.value(elm->label(), nullptr)) {
+                if (!successors[tx].contains(elm)) {
+                    successors[tx].append(elm);
                 }
             }
         }

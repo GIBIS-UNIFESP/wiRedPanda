@@ -9,6 +9,7 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Scene.h"
 #include "Tests/Common/TestUtils.h"
@@ -208,5 +209,96 @@ void TestConnectionValidity::testOutputPortWithMultipleConnections()
     // Both connections should be valid
     QVERIFY2(conn1->status() != Status::Unknown, "conn1 (and1→and2 input 0) should be valid");
     QVERIFY2(conn2->status() != Status::Unknown, "conn2 (and1→and3 input 0) should be valid");
+}
+
+void TestConnectionValidity::testIsConnectionAllowedRejectsRxPort()
+{
+    // A physical wire to an Rx wireless node's input must be rejected because the
+    // simulation would silently ignore it in favour of the wireless signal.
+    Scene scene;
+
+    auto *src  = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *rxElm = ElementFactory::buildElement(ElementType::Node);
+    scene.addItem(src);
+    scene.addItem(rxElm);
+
+    auto *node = qobject_cast<Node *>(rxElm);
+    QVERIFY(node != nullptr);
+    node->setWirelessMode(WirelessMode::Rx);
+
+    QVERIFY(!Scene::isConnectionAllowed(src->outputPort(0), node->inputPort(0)));
+}
+
+void TestConnectionValidity::testIsConnectionAllowedRejectsTxOutputPort()
+{
+    // A Tx node's output port is a dead-end transmitter (tunnel convention).
+    // No physical wire may originate from it.
+    Scene scene;
+
+    auto *txElm  = ElementFactory::buildElement(ElementType::Node);
+    auto *dstElm = ElementFactory::buildElement(ElementType::InputSwitch);
+    scene.addItem(txElm);
+    scene.addItem(dstElm);
+
+    auto *txNode = qobject_cast<Node *>(txElm);
+    QVERIFY(txNode != nullptr);
+    txNode->setWirelessMode(WirelessMode::Tx);
+
+    QVERIFY(!Scene::isConnectionAllowed(txNode->outputPort(0), dstElm->inputPort(0)));
+}
+
+void TestConnectionValidity::testIsConnectionAllowedPermitsNonePort()
+{
+    // Physical wires to/from a plain (None-mode) Node must still be allowed.
+    Scene scene;
+
+    auto *src     = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *noneElm = ElementFactory::buildElement(ElementType::Node);
+    auto *dst     = ElementFactory::buildElement(ElementType::And);
+    scene.addItem(src);
+    scene.addItem(noneElm);
+    scene.addItem(dst);
+
+    auto *noneNode = qobject_cast<Node *>(noneElm);
+    QVERIFY(noneNode != nullptr);
+
+    QVERIFY(Scene::isConnectionAllowed(src->outputPort(0), noneNode->inputPort(0)));
+    QVERIFY(Scene::isConnectionAllowed(noneNode->outputPort(0), dst->inputPort(0)));
+}
+
+void TestConnectionValidity::testIsConnectionAllowedPermitsTxInputPort()
+{
+    // A Tx node's input port must still accept physical wires — that is how
+    // the signal source is connected.  Only the output port is blocked.
+    Scene scene;
+
+    auto *src   = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *txElm = ElementFactory::buildElement(ElementType::Node);
+    scene.addItem(src);
+    scene.addItem(txElm);
+
+    auto *txNode = qobject_cast<Node *>(txElm);
+    QVERIFY(txNode != nullptr);
+    txNode->setWirelessMode(WirelessMode::Tx);
+
+    QVERIFY(Scene::isConnectionAllowed(src->outputPort(0), txNode->inputPort(0)));
+}
+
+void TestConnectionValidity::testIsConnectionAllowedPermitsRxOutputPort()
+{
+    // An Rx node's output port must accept downstream wires — that is how the
+    // wirelessly received signal is forwarded to the rest of the circuit.
+    Scene scene;
+
+    auto *rxElm = ElementFactory::buildElement(ElementType::Node);
+    auto *dst   = ElementFactory::buildElement(ElementType::Led);
+    scene.addItem(rxElm);
+    scene.addItem(dst);
+
+    auto *rxNode = qobject_cast<Node *>(rxElm);
+    QVERIFY(rxNode != nullptr);
+    rxNode->setWirelessMode(WirelessMode::Rx);
+
+    QVERIFY(Scene::isConnectionAllowed(rxNode->outputPort(0), dst->inputPort(0)));
 }
 

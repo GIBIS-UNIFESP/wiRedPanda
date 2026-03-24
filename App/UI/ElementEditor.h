@@ -126,6 +126,7 @@ private:
     QString m_manyLabels   = tr("<Many labels>");
     QString m_manyOS       = tr("<Many values>");
     QString m_manyOV       = tr("<Many values>");
-    QString m_manyTriggers = tr("<Many triggers>");
+    QString m_manyTriggers      = tr("<Many triggers>");
+    QString m_manyWirelessModes = tr("<Many modes>");
 };
 

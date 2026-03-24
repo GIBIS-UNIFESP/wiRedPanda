@@ -13,6 +13,10 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
 
+    // Wireless node codegen
+    void testWirelessNodeGeneration();
+    void testWirelessOrphanedRxCodegen();
+
     // Level 2 - Combinational circuits (all pure gates, no flip-flops)
     void testSystemVerilogExportHalfAdder();
     void testSystemVerilogExportFullAdder1Bit();

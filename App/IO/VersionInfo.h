@@ -65,5 +65,8 @@ inline bool hasTruthTableData(const QVersionNumber &v) { return v >= Versions::V
 /// V4.3: Clock delay format corrected.
 inline bool hasDelayFix(const QVersionNumber &v) { return v >= Versions::V_4_3; }
 
+/// V4.4: Node wireless mode stored in file.
+inline bool hasWirelessMode(const QVersionNumber &v) { return v >= Versions::V_4_4; }
+
 } // namespace VersionInfo
 

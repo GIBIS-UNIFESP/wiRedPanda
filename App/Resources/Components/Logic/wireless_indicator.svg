@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <!-- Origin dot at bottom-left -->
+  <circle cx="1.5" cy="14.5" r="1.5" fill="#4CAF50"/>
+  <!-- Three quarter-circle arcs centered at (1.5, 14.5), fanning upper-right -->
+  <path d="M 1.5,11 A 3.5,3.5 0 0 1 5,14.5"
+        fill="none" stroke="#4CAF50" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M 1.5,7 A 7.5,7.5 0 0 1 9,14.5"
+        fill="none" stroke="#4CAF50" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M 1.5,3 A 11.5,11.5 0 0 1 13,14.5"
+        fill="none" stroke="#4CAF50" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

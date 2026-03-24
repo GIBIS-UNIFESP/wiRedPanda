@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include <QGraphicsItem>
 #include <QHash>
 #include <QObject>
@@ -24,34 +26,66 @@ class Scene;
 /**
  * \class Simulation
  * \brief Manages the digital circuit simulation loop.
+ *
+ * \details The simulation runs a 1 ms periodic QTimer.  On each tick it:
+ * 1. Updates all GraphicElementInput outputs (including clocks).
+ * 2. Calls updateLogic() on all GraphicElements in topological order.
+ * 3. Propagates values through connections to output elements.
+ *
+ * Feedback loops are detected during initialization and handled with an
+ * iterative settling algorithm.
  */
 class Simulation : public QObject
 {
     Q_OBJECT
 
 public:
+    // --- Lifecycle ---
+
+    /**
+     * \brief Constructs a Simulation bound to \a scene.
+     * \param scene Scene whose elements will be simulated.
+     */
     explicit Simulation(Scene *scene);
 
+    /// Destructor; stops the simulation timer.
     ~Simulation() override = default;
 
     // --- Control ---
 
+    /// Starts the 1 ms simulation timer.
     void start();
+
+    /// Stops the simulation timer.
     void stop();
+
+    /// Stops and immediately restarts the simulation.
     void restart();
+
+    /// Returns \c true if the simulation timer is currently running.
     bool isRunning();
+
+    /// Returns \c true if \a element is part of a combinational feedback loop.
     bool isInFeedbackLoop(const GraphicElement *element) const;
 
     // --- Initialization ---
 
+    /**
+     * \brief Builds the simulation graph from the current scene elements.
+     * \return \c true if initialization succeeded (elements present and valid).
+     */
     bool initialize();
 
     // --- Step ---
 
+    /// Executes one simulation step (used by tests to advance the simulation manually).
     void update();
 
     // --- Static graph building (used by IC::initializeSimulation too) ---
     static void buildConnectionGraph(const QVector<GraphicElement *> &elements);
+    /// Overrides physical predecessors on Rx nodes with their matching Tx node.
+    /// Must be called after buildConnectionGraph() so wireless always wins, and before sort().
+    static void connectWirelessElements(const QVector<GraphicElement *> &elements);
 
 signals:
     /// Emitted (at most once per initialize()) when a feedback circuit fails to converge.
@@ -59,6 +93,8 @@ signals:
 
 private:
     Q_DISABLE_COPY(Simulation)
+
+    // --- Helpers ---
 
     static void updatePort(QNEInputPort *port);
     static void updatePort(QNEOutputPort *port);
@@ -73,10 +109,16 @@ private:
     QVector<GraphicElementInput *> m_inputs;
     QVector<QNEConnection *> m_connections;
 
+    // --- Members: Scene ---
+
     Scene *m_scene;
+
+    // --- Members: State flags ---
 
     bool m_initialized = false;
     bool m_convergenceWarned = false;
+
+    // --- Members: Direct simulation graph ---
 
     QVector<GraphicElement *> m_sortedElements;
     QHash<const GraphicElement *, int> m_simPriorities;
