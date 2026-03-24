@@ -21,6 +21,7 @@
 #include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Simulation/SimulationBlocker.h"
+#include "App/Versions.h"
 
 WorkSpace::WorkSpace(QWidget *parent)
     : QWidget(parent)
@@ -167,6 +168,7 @@ void WorkSpace::save(QDataStream &stream)
     // be opened automatically when the circuit is loaded.  Empty string means none.
     stream << m_dolphinFileName;
     stream << m_scene.sceneRect();
+    stream << QMap<QString, QVariant>();  // port metadata (used by IC sub-circuit files)
     Serialization::serialize(m_scene.items(), stream);
 }
 
@@ -242,6 +244,14 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
     // recomputed from items after they are added because items may have moved
     // relative to the stored rect (e.g., old files with a different viewport origin).
     Serialization::loadRect(stream, version);
+
+    // Read port metadata (introduced in V_4_5). Top-level circuits have an empty map;
+    // IC sub-circuit files store input/output count and labels here.
+    if (version >= Versions::V_4_5) {
+        QMap<QString, QVariant> portMeta;
+        stream >> portMeta;
+    }
+
     if (!contextDir.isEmpty()) {
         m_scene.setContextDir(contextDir);
     }
