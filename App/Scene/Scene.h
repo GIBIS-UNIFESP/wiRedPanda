@@ -15,6 +15,7 @@
 #include <QUndoCommand>
 #include <QVersionNumber>
 
+#include "App/Element/ICRegistry.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/ConnectionManager.h"
@@ -217,6 +218,11 @@ public:
 
     /// Returns the simulation engine associated with this scene.
     Simulation *simulation();
+
+    // --- IC Registry ---
+
+    /// Returns the IC definition registry for this scene.
+    ICRegistry *icRegistry() { return &m_icRegistry; }
     /// Marks the simulation mapping as stale so it is rebuilt on the next tick.
     void setCircuitUpdateRequired();
 
@@ -318,7 +324,8 @@ private:
     // Simulation
     Simulation m_simulation;
 
-    // Element ID registry (per-scene)
+    // Per-scene element registry (must be declared before m_selectionRect so it is
+    // initialized before the Scene constructor calls addItem(&m_selectionRect))
     QMap<int, ItemWithId *> m_elementRegistry;
     int m_lastId = 0;
 
@@ -337,6 +344,9 @@ private:
 
     // Context directory (directory of the .panda file owning this scene)
     QString m_contextDir;
+
+    // IC definition registry (caches definitions, manages file watching)
+    ICRegistry m_icRegistry{this};
 
     // Autosave
     bool m_autosaveRequired = false;

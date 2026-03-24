@@ -17,7 +17,9 @@
 #include "App/Core/Priorities.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/Element/ICDefinition.h"
 #include "App/IO/Serialization.h"
+#include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
@@ -73,15 +75,6 @@ IC::IC(QGraphicsItem *parent)
     m_label->setRotation(90);
 
     // Hot-reload: when the .panda file backing this IC changes on disk (e.g. the user saved
-    // an edited sub-circuit), reload the IC definition and restart the simulation so the
-    // parent circuit immediately reflects the updated internals
-    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this, [this](const QString &filePath) {
-        loadFile(filePath, QFileInfo(filePath).absolutePath());
-
-        if (auto *scene_ = qobject_cast<Scene *>(scene())) {
-            scene_->simulation()->restart();
-        }
-    });
 }
 
 IC::~IC()
@@ -223,9 +216,6 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
     s_loadingFiles.insert(canonicalPath);
     auto removeGuard = qScopeGuard([&] { s_loadingFiles.remove(canonicalPath); });
 
-    // Register with the file watcher after resolution so the absolute path is used;
-    // the watcher callback will trigger a reload if the file changes on disk
-    m_fileWatcher.addPath(fileInfo.absoluteFilePath());
     m_file = fileInfo.absoluteFilePath();
     setToolTip(fileInfo.fileName());
 
@@ -240,6 +230,12 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
     QDataStream stream(&file);
     const auto preamble = Serialization::readPreamble(stream);
 
+    // Read port metadata (introduced in V_4_5)
+    QMap<QString, QVariant> portMeta;
+    if (preamble.version >= Versions::V_4_5) {
+        stream >> portMeta;
+    }
+
     QMap<quint64, QNEPort *> portMap;
     SerializationContext subCtx{portMap, preamble.version, fileInfo.absolutePath()};
     const auto items = Serialization::deserialize(stream, subCtx);
@@ -253,15 +249,6 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
     if (needsMigration) {
         Serialization::createVersionedBackup(fileInfo.absoluteFilePath(), preamble.version);
 
-        // Remove the file from the watcher before writing so that QSaveFile::commit()
-        // does not trigger a spurious fileChanged hot-reload on this IC element while
-        // its items are still being processed below.  Re-add afterwards so future
-        // user edits are still detected.
-        m_fileWatcher.removePath(fileInfo.absoluteFilePath());
-        auto restoreMigrationState = qScopeGuard([&] {
-            m_fileWatcher.addPath(fileInfo.absoluteFilePath());
-        });
-
         // Serialization::serialize() assigns sequential local IDs internally before
         // calling save(), then restores the originals.  Elements deserialized with
         // id=-1 are therefore safe to re-serialize without any extra bookkeeping here.
@@ -271,14 +258,26 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
         }
         QDataStream outStream(&saveFile);
         Serialization::writePandaHeader(outStream);
-        outStream << QString();   // dolphin file name — not used by IC sub-circuit files
-        outStream << QRectF();    // scene rect — recomputed from content on next load
+        outStream << QString();            // dolphin file name
+        outStream << QRectF();             // scene rect
+        outStream << QMap<QString, QVariant>();  // port metadata (new in V_4_5)
         Serialization::serialize(items, outStream);
         if (!saveFile.commit()) {
             throw PANDACEPTION("IC migration: failed to commit re-saved file: %1", fileInfo.absoluteFilePath());
         }
     }
 
+    processLoadedItems(items);
+
+    if (label().isEmpty()) {
+        setLabel(fileInfo.baseName().toUpper());
+    }
+
+    qCDebug(zero) << "Finished reading IC.";
+}
+
+void IC::processLoadedItems(const QList<QGraphicsItem *> &items)
+{
     for (auto *item : items) {
         if (item->type() != GraphicElement::Type) {
             continue;
@@ -289,7 +288,7 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
             continue;
         }
 
-        // Input/Output elements become the IC's external ports; everything else is internal logic
+    // Input/Output elements become the IC's external ports; everything else is internal logic
         switch (elm->elementGroup()) {
         case ElementGroup::Input:  loadInputElement(elm);    break;
         case ElementGroup::Output: loadOutputElement(elm);   break;
@@ -298,7 +297,6 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
     }
 
     // --- Build sorted, labelled port lists ---
-
     m_icInputLabels = QVector<QString>(m_icInputs.size());
     m_icOutputLabels = QVector<QString>(m_icOutputs.size());
     // Sort top-to-bottom by Y position so port order on the IC body matches visual layout
@@ -310,19 +308,37 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
     loadOutputs();
 
     // --- Update visual representation ---
-
     // Default label: uppercased filename without extension (e.g. "adder.panda" → "ADDER")
-    if (label().isEmpty()) {
-        setLabel(fileInfo.baseName().toUpper());
-    }
-
-    // Position label just below the IC body, which grows with port count
     const qreal bottom = portsBoundingRect().united(QRectF(0, 0, 64, 64)).bottom();
+    // Position label just below the IC body, which grows with port count
     m_label->setPos(30, bottom + 5);
 
     generatePixmap();
+}
 
-    qCDebug(zero) << "Finished reading IC.";
+void IC::loadFromDefinition(const ICDefinition *def, const QString &contextDir)
+{
+    qCDebug(zero) << "Loading IC from definition.";
+
+    m_icInputs.clear();
+    m_icOutputs.clear();
+    setInputSize(0);
+    setOutputSize(0);
+    qDeleteAll(m_icElements);
+    m_icElements.clear();
+
+    m_definition = def;
+
+    QByteArray data(def->blobBytes());
+    QDataStream stream(&data, QIODevice::ReadOnly);
+
+    QMap<quint64, QNEPort *> portMap;
+    SerializationContext subCtx{portMap, AppVersion::current, contextDir};
+    const auto items = Serialization::deserialize(stream, subCtx);
+
+    processLoadedItems(items);
+
+    qCDebug(zero) << "Finished loading IC from definition.";
 }
 
 void IC::generatePixmap()
@@ -712,6 +728,12 @@ void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
     // copied transitively into the destination directory
     QDataStream stream(&destFile);
     const auto preamble = Serialization::readPreamble(stream);
+
+    // Read and discard port metadata (introduced in V_4_5)
+    if (preamble.version >= Versions::V_4_5) {
+        QMap<QString, QVariant> portMeta;
+        stream >> portMeta;
+    }
 
     QMap<quint64, QNEPort *> portMap;
     CopyOperation copyOp{srcPath.absolutePath(), destPath.absolutePath(), true};

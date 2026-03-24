@@ -25,6 +25,7 @@ inline const QVersionNumber V_4_1 = QVersionNumber(4, 1);
 inline const QVersionNumber V_4_2 = QVersionNumber(4, 2);
 inline const QVersionNumber V_4_3 = QVersionNumber(4, 3);
 inline const QVersionNumber V_4_4 = QVersionNumber(4, 4);
+inline const QVersionNumber V_4_5 = QVersionNumber(4, 5);
 
 } // namespace Versions
 

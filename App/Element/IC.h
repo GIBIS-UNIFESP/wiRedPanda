@@ -11,6 +11,8 @@
 #include <QFileSystemWatcher>
 #include <QSet>
 
+class ICDefinition;
+
 #include "App/Element/GraphicElement.h"
 #include "App/IO/SerializationContext.h"
 
@@ -76,6 +78,14 @@ public:
     void setOutputPortName(int port, const QString &name) override;
     void loadFromDrop(const QString &fileName, const QString &contextDir) override;
 
+    /// Loads the IC from a shared definition (deserializes blob bytes into per-instance elements).
+    void loadFromDefinition(const ICDefinition *def, const QString &contextDir);
+
+    /// Returns the current definition, or nullptr if not set.
+    const ICDefinition *definition() const { return m_definition; }
+
+    void processLoadedItems(const QList<QGraphicsItem *> &items);
+
     const QString &icFile() const { return m_file; }
     const QVector<GraphicElement *> &icElements() const { return m_icElements; }
     const QVector<QNEPort *> &icInputs() const { return m_icInputs; }
@@ -131,6 +141,7 @@ private:
     QVector<GraphicElement *> m_simSortedElements;
     QSet<GraphicElement *> m_boundaryInputElements;
     bool m_internalHasFeedback = false;
+    const ICDefinition *m_definition = nullptr;
     QFileSystemWatcher m_fileWatcher;
     QString m_file;
     QVector<GraphicElement *> m_icElements;

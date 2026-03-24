@@ -23,6 +23,7 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/Buzzer.h"
+#include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Nodes/QNEConnection.h"
@@ -96,6 +97,17 @@ void Scene::addItem(QGraphicsItem *item)
             setLastId(iwid->id());
         }
         registerItem(iwid);
+    }
+
+    // Register file-backed ICs for file watching
+    if (item->type() == GraphicElement::Type) {
+        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+            elm && elm->elementType() == ElementType::IC) {
+            auto *ic = static_cast<IC *>(elm);
+            if (!ic->icFile().isEmpty()) {
+                m_icRegistry.watchFile(ic->icFile());
+            }
+        }
     }
 }
 
