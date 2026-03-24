@@ -31,6 +31,15 @@ endif()
 set(QT_VERSION_MAJOR 6)
 set(QT_LIBS Qt6::Core Qt6::Gui Qt6::Network Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
 
+# D-Bus is needed on Linux for OS color-scheme detection (freedesktop portal).
+if(UNIX AND NOT APPLE AND NOT EMSCRIPTEN)
+    find_package(Qt6 COMPONENTS DBus QUIET)
+    if(Qt6DBus_FOUND)
+        list(APPEND QT_LIBS Qt6::DBus)
+        add_compile_definitions(HAVE_QTDBUS)
+    endif()
+endif()
+
 add_compile_definitions(
     APP_VERSION="${PROJECT_VERSION}"
     QT_DEPRECATED_WARNINGS

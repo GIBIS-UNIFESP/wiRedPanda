@@ -245,6 +245,7 @@ void MainWindow::setupConnections()
     connect(m_ui->actionReportTranslationError,&QAction::triggered,       this,                &MainWindow::on_actionReportTranslationError_triggered);
     connect(m_ui->actionChangeTrigger,         &QAction::triggered,       m_ui->elementEditor, &ElementEditor::changeTriggerAction);
     connect(m_ui->actionDarkTheme,             &QAction::triggered,       this,                &MainWindow::on_actionDarkTheme_triggered);
+    connect(m_ui->actionSystemTheme,           &QAction::triggered,       this,                &MainWindow::on_actionSystemTheme_triggered);
     connect(m_ui->actionExit,                  &QAction::triggered,       this,                &MainWindow::on_actionExit_triggered);
     connect(m_ui->actionExportToArduino,       &QAction::triggered,       this,                &MainWindow::on_actionExportToArduino_triggered);
     connect(m_ui->actionExportToSystemVerilog, &QAction::triggered,       this,                &MainWindow::on_actionExportToSystemVerilog_triggered);
@@ -1379,16 +1380,17 @@ void MainWindow::on_actionDarkTheme_triggered()
     ThemeManager::setTheme(Theme::Dark);
 }
 
+void MainWindow::on_actionSystemTheme_triggered()
+{
+    ThemeManager::setTheme(Theme::System);
+}
+
 void MainWindow::updateTheme()
 {
     switch (ThemeManager::theme()) {
-    case Theme::Dark:  m_ui->actionDarkTheme->setChecked(true); break;
-    case Theme::Light: m_ui->actionLightTheme->setChecked(true); break;
-
-    default:
-        // Handle unexpected theme values - fallback to Light theme
-        m_ui->actionLightTheme->setChecked(true);
-        break;
+    case Theme::Dark:   m_ui->actionDarkTheme->setChecked(true);   break;
+    case Theme::Light:  m_ui->actionLightTheme->setChecked(true);  break;
+    case Theme::System: m_ui->actionSystemTheme->setChecked(true); break;
     }
 
     m_palette->updateTheme();

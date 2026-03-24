@@ -659,7 +659,7 @@ void ElementEditor::update()
 
 void ElementEditor::updateTheme()
 {
-    const QString borderColor = (ThemeManager::theme() == Theme::Light) ? "216" : "66";
+    const QString borderColor = (ThemeManager::effectiveTheme() == Theme::Light) ? "216" : "66";
     const QString styleSheet =
             "QGroupBox {"
             "   border: 1px solid rgb(%1,%1,%1);"
