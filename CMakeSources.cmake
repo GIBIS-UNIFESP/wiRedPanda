@@ -11,6 +11,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Common.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Enums.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/SystemThemeDetector.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.cpp
@@ -109,6 +110,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Priorities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/StatusOps.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/SystemThemeDetector.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.h

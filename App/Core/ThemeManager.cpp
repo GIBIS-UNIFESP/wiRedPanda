@@ -4,12 +4,10 @@
 #include "App/Core/ThemeManager.h"
 
 #include <QDebug>
+#include <QStyleHints>
 
 #include "App/Core/Settings.h"
-
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
-#include <QStyleHints>
-#endif
+#include "App/Core/SystemThemeDetector.h"
 
 ThemeManager::ThemeManager(QObject *parent)
     : QObject(parent)
@@ -18,13 +16,20 @@ ThemeManager::ThemeManager(QObject *parent)
     // default-initialised value (Theme::Light, as defined in the header)
     m_theme = Settings::theme();
 
-    // Apply the theme immediately so colours are correct before any widgets are shown
-    m_attributes.setTheme(m_theme);
+    // Apply the theme immediately so colours are correct before any widgets are shown.
+    // Resolve System here directly — effectiveTheme() would re-enter instance() and deadlock
+    // because the static local is still being constructed.
+    const Theme effective = (m_theme == Theme::System) ? resolveSystemTheme() : m_theme;
+    m_attributes.setTheme(effective);
+
+    // Listen for OS color scheme changes so System theme reacts at runtime.
+    connect(&SystemThemeDetector::instance(), &SystemThemeDetector::colorSchemeChanged,
+            this, &ThemeManager::onSystemColorSchemeChanged);
 }
 
 QString ThemeManager::themePath()
 {
-    return (ThemeManager::theme() == Theme::Light) ? "Light" : "Dark";
+    return (effectiveTheme() == Theme::Light) ? "Light" : "Dark";
 }
 
 Theme ThemeManager::theme()
@@ -32,11 +37,32 @@ Theme ThemeManager::theme()
     return instance().m_theme;
 }
 
+Theme ThemeManager::effectiveTheme()
+{
+    const Theme t = instance().m_theme;
+    return (t == Theme::System) ? resolveSystemTheme() : t;
+}
+
+Theme ThemeManager::resolveSystemTheme()
+{
+    return SystemThemeDetector::isDark() ? Theme::Dark : Theme::Light;
+}
+
+void ThemeManager::onSystemColorSchemeChanged()
+{
+    if (m_theme == Theme::System) {
+        m_attributes.setTheme(resolveSystemTheme());
+        emit themeChanged();
+    }
+}
+
 void ThemeManager::setTheme(const Theme theme)
 {
+    const Theme effective = (theme == Theme::System) ? resolveSystemTheme() : theme;
+
     // Always refresh ThemeAttributes so palette and color constants are current,
     // even if the theme value itself hasn't changed (e.g. initial load).
-    instance().m_attributes.setTheme(theme);
+    instance().m_attributes.setTheme(effective);
 
     // Early-exit after refreshing attributes: don't re-emit themeChanged() or
     // re-write to settings when the theme is the same (avoids unnecessary repaints)

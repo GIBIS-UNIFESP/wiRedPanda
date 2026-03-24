@@ -214,6 +214,7 @@ private:
 
     static void on_actionDarkTheme_triggered();
     static void on_actionLightTheme_triggered();
+    static void on_actionSystemTheme_triggered();
     void on_actionAboutQt_triggered();
     void on_actionAbout_triggered();
     void on_actionExit_triggered();
