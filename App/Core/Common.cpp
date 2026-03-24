@@ -34,17 +34,30 @@ void Comment::setVerbosity(const int verbosity)
     qSetMessagePattern("%{if-debug}%{line}: %{function} => %{endif}%{message}");
 }
 
-Pandaception::Pandaception(const QString &translatedMessage, const QString &englishMessage)
+Pandaception::Pandaception(const QString &translatedMessage, const QString &englishMessage,
+                           const char *file, int line)
     // std::runtime_error carries the translated message so that what() shown in
     // the UI respects the current locale.  The English copy is kept separately
     // for crash-reporting backends (Sentry) that need a language-stable string.
     : std::runtime_error(translatedMessage.toStdString())
     , m_englishMessage(englishMessage)
+    , m_file(file)
+    , m_line(line)
 {
 }
 
 QString Pandaception::englishMessage() const
 {
     return m_englishMessage;
+}
+
+const char *Pandaception::file() const
+{
+    return m_file;
+}
+
+int Pandaception::line() const
+{
+    return m_line;
 }
 
