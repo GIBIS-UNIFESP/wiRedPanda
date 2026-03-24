@@ -80,6 +80,11 @@ QString arduinoExpectedDir()
     return QString(QUOTE(CURRENTDIR)) + "/Integration/Arduino/";
 }
 
+QString systemVerilogExpectedDir()
+{
+    return QString(QUOTE(CURRENTDIR)) + "/Integration/SystemVerilog/";
+}
+
 bool getInputStatus(GraphicElement *elm, int port)
 {
     auto *inputPort = elm->inputPort(port);
