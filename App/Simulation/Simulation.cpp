@@ -167,8 +167,11 @@ void Simulation::updateWithIterativeSettling()
             break;
         }
 
-        if (iteration == maxIterations - 1) {
-            qDebug() << "Warning: Feedback circuit did not converge after" << maxIterations << "iterations";
+        // If we're on the last iteration without convergence, warn the user once.
+        if (iteration == maxIterations - 1 && !m_convergenceWarned) {
+            m_convergenceWarned = true;
+            qDebug() << "Feedback circuit did not converge after" << maxIterations << "iterations";
+            emit simulationWarning(tr("Warning: feedback circuit did not converge — the circuit may be oscillating."));
         }
     }
 }
@@ -179,6 +182,7 @@ bool Simulation::initialize()
         return false;
     }
 
+    m_convergenceWarned = false;
     m_clocks.clear();
     m_outputs.clear();
     m_inputs.clear();
