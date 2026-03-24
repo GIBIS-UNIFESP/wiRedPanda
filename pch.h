@@ -100,6 +100,7 @@
 #include <QPrinter>
 #include <QProcess>
 #include <QPushButton>
+#include <QRandomGenerator>
 #include <QRectF>
 #include <QRegularExpression>
 #include <QResource>

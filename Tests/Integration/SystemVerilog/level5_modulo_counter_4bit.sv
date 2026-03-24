@@ -1,0 +1,245 @@
+// ==================================================================== //
+// ======= This code was generated automatically by wiRedPanda ======== //
+// ==================================================================== //
+
+
+// Behavioral module for level1_d_flip_flop (generated from level1_d_flip_flop.panda)
+module level1_d_flip_flop (
+    input d,
+    input clock,
+    input preset,
+    input clear,
+    output reg q,
+    output reg q_bar
+);
+    initial begin
+        q = 1'b1;
+        q_bar = 1'b0;
+    end
+    always @(posedge clock or negedge preset or negedge clear)
+    begin
+        if (~preset)
+        begin
+            q <= 1'b1;
+            q_bar <= 1'b0;
+        end
+        else if (~clear)
+        begin
+            q <= 1'b0;
+            q_bar <= 1'b1;
+        end
+        else
+        begin
+            q <= d;
+            q_bar <= ~d;
+        end
+    end
+endmodule
+
+// Module for Comparator (generated from level3_comparator_4bit_equality.panda)
+module level3_comparator_4bit_equality (
+    input a0,
+    input a1,
+    input a2,
+    input a3,
+    input b0,
+    input b1,
+    input b2,
+    input b3,
+    output equal
+);
+
+wire aux_xnor_1;
+wire aux_xnor_2;
+wire aux_xnor_3;
+wire aux_xnor_4;
+wire aux_and_5;
+
+// Internal logic
+assign aux_xnor_1 = ~(a0 ^ b0);
+assign aux_xnor_2 = ~(a1 ^ b1);
+assign aux_xnor_3 = ~(a2 ^ b2);
+assign aux_xnor_4 = ~(a3 ^ b3);
+assign aux_and_5 = (aux_xnor_1 & aux_xnor_2 & aux_xnor_3 & aux_xnor_4);
+
+assign equal = aux_and_5;
+endmodule
+
+// Module for LEVEL5_MODULO_COUNTER_4BIT (generated from level5_modulo_counter_4bit.panda)
+module level5_modulo_counter_4bit_ic (
+    input clk,
+    input modulo0,
+    input modulo1,
+    input modulo2,
+    input modulo3,
+    output q0,
+    output q1,
+    output q2,
+    output q3,
+    output overflow
+);
+
+wire aux_not_2;
+wire aux_not_3;
+wire aux_not_4;
+wire aux_not_5;
+wire aux_and_6;
+wire aux_and_7;
+wire aux_not_8;
+wire aux_not_9;
+wire aux_not_10;
+wire aux_and_11;
+wire aux_and_12;
+wire aux_and_13;
+wire aux_and_14;
+wire aux_and_15;
+wire aux_and_16;
+wire aux_and_17;
+wire aux_and_18;
+wire aux_or_19;
+wire aux_or_20;
+wire aux_or_21;
+wire aux_or_22;
+// IC instance: Comparator (level3_comparator_4bit_equality)
+wire w_level3_comparator_4bit_equality_inst_23_equal;
+wire aux_not_24;
+wire aux_and_25;
+wire aux_and_26;
+wire aux_and_27;
+wire aux_and_28;
+// IC instance: FF0 (level1_d_flip_flop)
+wire w_level1_d_flip_flop_inst_29_q;
+wire w_level1_d_flip_flop_inst_29_q_bar;
+// IC instance: FF1 (level1_d_flip_flop)
+wire w_level1_d_flip_flop_inst_30_q;
+wire w_level1_d_flip_flop_inst_30_q_bar;
+// IC instance: FF2 (level1_d_flip_flop)
+wire w_level1_d_flip_flop_inst_31_q;
+wire w_level1_d_flip_flop_inst_31_q_bar;
+// IC instance: FF3 (level1_d_flip_flop)
+wire w_level1_d_flip_flop_inst_32_q;
+wire w_level1_d_flip_flop_inst_32_q_bar;
+
+// Internal logic
+assign aux_not_2 = ~w_level1_d_flip_flop_inst_29_q;
+assign aux_not_3 = ~w_level1_d_flip_flop_inst_30_q;
+assign aux_not_4 = ~w_level1_d_flip_flop_inst_31_q;
+assign aux_not_5 = ~w_level1_d_flip_flop_inst_32_q;
+assign aux_and_6 = (w_level1_d_flip_flop_inst_29_q & w_level1_d_flip_flop_inst_30_q);
+assign aux_and_7 = (aux_and_6 & w_level1_d_flip_flop_inst_31_q);
+assign aux_not_8 = ~w_level1_d_flip_flop_inst_29_q;
+assign aux_not_9 = ~aux_and_6;
+assign aux_not_10 = ~aux_and_7;
+assign aux_and_11 = (aux_not_2 & 1'b1);
+assign aux_and_12 = (w_level1_d_flip_flop_inst_29_q & aux_not_8);
+assign aux_and_13 = (aux_not_3 & w_level1_d_flip_flop_inst_29_q);
+assign aux_and_14 = (w_level1_d_flip_flop_inst_30_q & aux_not_8);
+assign aux_and_15 = (aux_not_4 & aux_and_6);
+assign aux_and_16 = (w_level1_d_flip_flop_inst_31_q & aux_not_9);
+assign aux_and_17 = (aux_not_5 & aux_and_7);
+assign aux_and_18 = (w_level1_d_flip_flop_inst_32_q & aux_not_10);
+assign aux_or_19 = (aux_and_11 | aux_and_12);
+assign aux_or_20 = (aux_and_13 | aux_and_14);
+assign aux_or_21 = (aux_and_15 | aux_and_16);
+assign aux_or_22 = (aux_and_17 | aux_and_18);
+level3_comparator_4bit_equality level3_comparator_4bit_equality_inst_23 (
+    .a0(aux_or_19),
+    .a1(aux_or_20),
+    .a2(aux_or_21),
+    .a3(aux_or_22),
+    .b0(modulo0),
+    .b1(modulo1),
+    .b2(modulo2),
+    .b3(modulo3),
+    .equal(w_level3_comparator_4bit_equality_inst_23_equal)
+);
+assign aux_not_24 = ~w_level3_comparator_4bit_equality_inst_23_equal;
+assign aux_and_25 = (aux_or_19 & aux_not_24);
+assign aux_and_26 = (aux_or_20 & aux_not_24);
+assign aux_and_27 = (aux_or_21 & aux_not_24);
+assign aux_and_28 = (aux_or_22 & aux_not_24);
+level1_d_flip_flop level1_d_flip_flop_inst_29 (
+    .d(aux_and_25),
+    .clock(clk),
+    .preset(1'b1),
+    .clear(1'b1),
+    .q(w_level1_d_flip_flop_inst_29_q),
+    .q_bar(w_level1_d_flip_flop_inst_29_q_bar)
+);
+level1_d_flip_flop level1_d_flip_flop_inst_30 (
+    .d(aux_and_26),
+    .clock(clk),
+    .preset(1'b1),
+    .clear(1'b1),
+    .q(w_level1_d_flip_flop_inst_30_q),
+    .q_bar(w_level1_d_flip_flop_inst_30_q_bar)
+);
+level1_d_flip_flop level1_d_flip_flop_inst_31 (
+    .d(aux_and_27),
+    .clock(clk),
+    .preset(1'b1),
+    .clear(1'b1),
+    .q(w_level1_d_flip_flop_inst_31_q),
+    .q_bar(w_level1_d_flip_flop_inst_31_q_bar)
+);
+level1_d_flip_flop level1_d_flip_flop_inst_32 (
+    .d(aux_and_28),
+    .clock(clk),
+    .preset(1'b1),
+    .clear(1'b1),
+    .q(w_level1_d_flip_flop_inst_32_q),
+    .q_bar(w_level1_d_flip_flop_inst_32_q_bar)
+);
+
+assign q0 = w_level1_d_flip_flop_inst_29_q;
+assign q1 = w_level1_d_flip_flop_inst_30_q;
+assign q2 = w_level1_d_flip_flop_inst_31_q;
+assign q3 = w_level1_d_flip_flop_inst_32_q;
+assign overflow = w_level3_comparator_4bit_equality_inst_23_equal;
+endmodule
+
+module level5_modulo_counter_4bit (
+/* ========= Inputs ========== */
+input input_switch1,
+input input_switch2,
+input input_switch3,
+input input_switch4,
+input input_switch5,
+
+/* ========= Outputs ========== */
+output led7_1,
+output led8_1,
+output led9_1,
+output led10_1,
+output led11_1
+);
+/* ====== Aux. Variables ====== */
+// IC instance: LEVEL5_MODULO_COUNTER_4BIT (level5_modulo_counter_4bit_ic)
+wire w_level5_modulo_counter_4bit_ic_inst_1_q0;
+wire w_level5_modulo_counter_4bit_ic_inst_1_q1;
+wire w_level5_modulo_counter_4bit_ic_inst_1_q2;
+wire w_level5_modulo_counter_4bit_ic_inst_1_q3;
+wire w_level5_modulo_counter_4bit_ic_inst_1_overflow;
+
+
+// Assigning aux variables. //
+level5_modulo_counter_4bit_ic level5_modulo_counter_4bit_ic_inst_1 (
+    .clk(input_switch1),
+    .modulo0(input_switch2),
+    .modulo1(input_switch3),
+    .modulo2(input_switch4),
+    .modulo3(input_switch5),
+    .q0(w_level5_modulo_counter_4bit_ic_inst_1_q0),
+    .q1(w_level5_modulo_counter_4bit_ic_inst_1_q1),
+    .q2(w_level5_modulo_counter_4bit_ic_inst_1_q2),
+    .q3(w_level5_modulo_counter_4bit_ic_inst_1_q3),
+    .overflow(w_level5_modulo_counter_4bit_ic_inst_1_overflow)
+);
+
+// Writing output data. //
+assign led7_1 = w_level5_modulo_counter_4bit_ic_inst_1_q0;
+assign led8_1 = w_level5_modulo_counter_4bit_ic_inst_1_q1;
+assign led9_1 = w_level5_modulo_counter_4bit_ic_inst_1_q2;
+assign led10_1 = w_level5_modulo_counter_4bit_ic_inst_1_q3;
+assign led11_1 = w_level5_modulo_counter_4bit_ic_inst_1_overflow;
+endmodule

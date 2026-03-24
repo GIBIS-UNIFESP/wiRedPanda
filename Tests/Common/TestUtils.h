@@ -82,6 +82,12 @@ QString cpuComponentsDir();
 QString arduinoExpectedDir();
 
 /**
+ * @brief Get the path to expected SystemVerilog output directory
+ * @return QString path to Integration/SystemVerilog/
+ */
+QString systemVerilogExpectedDir();
+
+/**
  * @brief Delete all items in a container
  * @param container Container of pointers to delete
  */
