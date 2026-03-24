@@ -88,28 +88,29 @@ void TFlipFlop::updateTheme()
 
 void TFlipFlop::updateLogic()
 {
-    if (!updateInputs()) {
+    if (!simUpdateInputs()) {
         return;
     }
-    bool q0 = outputValue(0);
-    bool q1 = outputValue(1);
-    const bool T = simInputs().at(0);
-    const bool clk = simInputs().at(1);
-    const bool prst = simInputs().at(2);
-    const bool clr = simInputs().at(3);
+    Status q0 = simOutputs().at(0);
+    Status q1 = simOutputs().at(1);
+    const Status T = simInputs().at(0);
+    const Status clk = simInputs().at(1);
+    const Status prst = simInputs().at(2);
+    const Status clr = simInputs().at(3);
 
-    if (clk && !m_lastClk) {
-        if (m_lastValue) {
-            q0 = !q0;
-            q1 = !q1;
+    if (clk == Status::Active && m_simLastClk == Status::Inactive) {
+        if (m_simLastValue == Status::Active) {
+            q0 = (q0 == Status::Active) ? Status::Inactive : Status::Active;
+            q1 = (q1 == Status::Active) ? Status::Inactive : Status::Active;
         }
     }
-    if (!prst || !clr) {
-        q0 = !prst;
-        q1 = !clr;
+
+    if (prst == Status::Inactive || clr == Status::Inactive) {
+        q0 = (prst == Status::Inactive) ? Status::Active : Status::Inactive;
+        q1 = (clr == Status::Inactive) ? Status::Active : Status::Inactive;
     }
-    m_lastClk = clk;
-    m_lastValue = T;
+    m_simLastClk = clk;
+    m_simLastValue = T;
     setOutputValue(0, q0);
     setOutputValue(1, q1);
 }

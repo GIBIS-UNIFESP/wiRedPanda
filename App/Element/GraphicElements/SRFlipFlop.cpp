@@ -93,33 +93,34 @@ void SRFlipFlop::updateTheme()
 
 void SRFlipFlop::updateLogic()
 {
-    if (!updateInputs()) {
+    if (!simUpdateInputs()) {
         return;
     }
-    bool q0 = outputValue(0);
-    bool q1 = outputValue(1);
-    const bool s = simInputs().at(0);
-    const bool clk = simInputs().at(1);
-    const bool r = simInputs().at(2);
-    const bool prst = simInputs().at(3);
-    const bool clr = simInputs().at(4);
+    Status q0 = simOutputs().at(0);
+    Status q1 = simOutputs().at(1);
+    const Status s = simInputs().at(0);
+    const Status clk = simInputs().at(1);
+    const Status r = simInputs().at(2);
+    const Status prst = simInputs().at(3);
+    const Status clr = simInputs().at(4);
 
-    if (clk && !m_lastClk) {
-        if (m_lastS && m_lastR) {
-            q0 = true;
-            q1 = true;
-        } else if (m_lastS != m_lastR) {
-            q0 = m_lastS;
-            q1 = m_lastR;
+    if (clk == Status::Active && m_simLastClk == Status::Inactive) {
+        if (m_simLastS == Status::Active && m_simLastR == Status::Active) {
+            q0 = Status::Active;
+            q1 = Status::Active;
+        } else if (m_simLastS != m_simLastR) {
+            q0 = m_simLastS;
+            q1 = m_simLastR;
         }
     }
-    if (!prst || !clr) {
-        q0 = !prst;
-        q1 = !clr;
+
+    if (prst == Status::Inactive || clr == Status::Inactive) {
+        q0 = (prst == Status::Inactive) ? Status::Active : Status::Inactive;
+        q1 = (clr == Status::Inactive) ? Status::Active : Status::Inactive;
     }
-    m_lastClk = clk;
-    m_lastS = s;
-    m_lastR = r;
+    m_simLastClk = clk;
+    m_simLastS = s;
+    m_simLastR = r;
     setOutputValue(0, q0);
     setOutputValue(1, q1);
 }

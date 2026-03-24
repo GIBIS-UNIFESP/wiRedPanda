@@ -61,7 +61,7 @@ void Node::updatePortsProperties()
 
 void Node::updateLogic()
 {
-    if (!updateInputs()) {
+    if (!simUpdateInputsAllowUnknown()) {
         return;
     }
     setOutputValue(simInputs().at(0));

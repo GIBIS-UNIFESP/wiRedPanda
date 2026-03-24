@@ -799,7 +799,7 @@ void TestSimulation::testUnconnectedRequiredInputGraceful()
 {
     // An AND gate with no inputs connected is invalid in the logic layer.
     // The simulation must not crash, and the downstream LED must stay inactive
-    // (the invalid element and its successors receive Status::Invalid).
+    // (the unknown element and its successors receive Status::Unknown).
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
@@ -812,7 +812,7 @@ void TestSimulation::testUnconnectedRequiredInputGraceful()
     auto *sim = builder.initSimulation();
     sim->update();
 
-    // AND gate logic is unknown (required inputs unconnected); cascade invalidates LED.
+    // AND gate logic is unknown (required inputs unconnected); cascade propagates Unknown to LED.
     // LED input port receives Status::Unknown → getInputStatus returns false.
     QCOMPARE(getInputStatus(&led), false);
 

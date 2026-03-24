@@ -631,6 +631,7 @@ add_test(NAME TestSerialization COMMAND test_wiredpanda TestSerialization WORKIN
 add_test(NAME TestSettings COMMAND test_wiredpanda TestSettings WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulation COMMAND test_wiredpanda TestSimulation WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulationBlocker COMMAND test_wiredpanda TestSimulationBlocker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestStatusOps COMMAND test_wiredpanda TestStatusOps WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSystemVerilogExport COMMAND test_wiredpanda TestSystemVerilogExport WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestThemeManager COMMAND test_wiredpanda TestThemeManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestTruthTable COMMAND test_wiredpanda TestTruthTable WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -695,7 +696,7 @@ endforeach()
 foreach(TEST TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocksAdvanced
         TestComponents TestDisplays TestElementLabel TestElementProperties TestFeatures
         TestGeometry TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED
-        TestLogicGates TestMultiplexing TestSequentialLogic TestTruthTable)
+        TestLogicGates TestMultiplexing TestSequentialLogic TestStatusOps TestTruthTable)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
 

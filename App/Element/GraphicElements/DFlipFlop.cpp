@@ -88,26 +88,27 @@ void DFlipFlop::updateTheme()
 
 void DFlipFlop::updateLogic()
 {
-    if (!updateInputs()) {
+    if (!simUpdateInputs()) {
         return;
     }
-    bool q0 = outputValue(0);
-    bool q1 = outputValue(1);
-    const bool D = simInputs().at(0);
-    const bool clk = simInputs().at(1);
-    const bool prst = simInputs().at(2);
-    const bool clr = simInputs().at(3);
+    Status q0 = simOutputs().at(0);
+    Status q1 = simOutputs().at(1);
+    const Status D = simInputs().at(0);
+    const Status clk = simInputs().at(1);
+    const Status prst = simInputs().at(2);
+    const Status clr = simInputs().at(3);
 
-    if (clk && !m_lastClk) {
-        q0 = m_lastValue;
-        q1 = !m_lastValue;
+    if (clk == Status::Active && m_simLastClk == Status::Inactive) {
+        q0 = m_simLastValue;
+        q1 = (m_simLastValue == Status::Active) ? Status::Inactive : Status::Active;
     }
-    if (!prst || !clr) {
-        q0 = !prst;
-        q1 = !clr;
+
+    if (prst == Status::Inactive || clr == Status::Inactive) {
+        q0 = (prst == Status::Inactive) ? Status::Active : Status::Inactive;
+        q1 = (clr == Status::Inactive) ? Status::Active : Status::Inactive;
     }
-    m_lastClk = clk;
-    m_lastValue = D;
+    m_simLastClk = clk;
+    m_simLastValue = D;
     setOutputValue(0, q0);
     setOutputValue(1, q1);
 }

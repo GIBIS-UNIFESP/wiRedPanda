@@ -77,24 +77,25 @@ void SRLatch::updateTheme()
 
 void SRLatch::updateLogic()
 {
-    if (!updateInputs()) {
+    if (!simUpdateInputs()) {
         return;
     }
-    bool q0 = outputValue(0);
-    bool q1 = outputValue(1);
-    const bool S = simInputs().at(0);
-    const bool R = simInputs().at(1);
+    Status q0 = simOutputs().at(0);
+    Status q1 = simOutputs().at(1);
+    const Status S = simInputs().at(0);
+    const Status R = simInputs().at(1);
 
-    if (S && R) {
-        q0 = false;
-        q1 = false;
-    } else if (S) {
-        q0 = true;
-        q1 = false;
-    } else if (R) {
-        q0 = false;
-        q1 = true;
+    if (S == Status::Active && R == Status::Active) {
+        q0 = Status::Inactive;
+        q1 = Status::Inactive;
+    } else if (S == Status::Active) {
+        q0 = Status::Active;
+        q1 = Status::Inactive;
+    } else if (R == Status::Active) {
+        q0 = Status::Inactive;
+        q1 = Status::Active;
     }
+
     setOutputValue(0, q0);
     setOutputValue(1, q1);
 }

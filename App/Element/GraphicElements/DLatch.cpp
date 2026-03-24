@@ -77,18 +77,19 @@ void DLatch::updateTheme()
 
 void DLatch::updateLogic()
 {
-    if (!updateInputs()) {
+    if (!simUpdateInputs()) {
         return;
     }
-    bool q0 = outputValue(0);
-    bool q1 = outputValue(1);
-    const bool D = simInputs().at(0);
-    const bool enable = simInputs().at(1);
+    Status q0 = simOutputs().at(0);
+    Status q1 = simOutputs().at(1);
+    const Status D = simInputs().at(0);
+    const Status enable = simInputs().at(1);
 
-    if (enable) {
+    if (enable == Status::Active) {
         q0 = D;
-        q1 = !D;
+        q1 = (D == Status::Active) ? Status::Inactive : Status::Active;
     }
+
     setOutputValue(0, q0);
     setOutputValue(1, q1);
 }

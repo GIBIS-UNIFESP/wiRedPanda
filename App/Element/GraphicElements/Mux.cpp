@@ -162,7 +162,7 @@ void Mux::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
 
 void Mux::updateLogic()
 {
-    if (!updateInputs()) {
+    if (!simUpdateInputsAllowUnknown()) {
         return;
     }
 
@@ -178,9 +178,18 @@ void Mux::updateLogic()
     }
     numDataInputs = inputSize() - numSelectLines;
 
+    // If any select line is Unknown/Error, the output is indeterminate
+    for (int i = 0; i < numSelectLines; i++) {
+        const Status sel = simInputs().at(numDataInputs + i);
+        if (sel == Status::Unknown || sel == Status::Error) {
+            setOutputValue(sel);
+            return;
+        }
+    }
+
     int selectValue = 0;
     for (int i = 0; i < numSelectLines; i++) {
-        if (simInputs().at(numDataInputs + i)) {
+        if (simInputs().at(numDataInputs + i) == Status::Active) {
             selectValue |= (1 << i);
         }
     }

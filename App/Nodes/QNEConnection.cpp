@@ -32,8 +32,8 @@ QNEConnection::QNEConnection(QGraphicsItem *parent)
     setZValue(-1);
 
     updateTheme();
-    // Start in the Invalid visual state; the wire colour is updated once both ports are attached
-    setPen(QPen(m_invalidColor, 5));
+    // Start in the Unknown visual state; the wire colour is updated once both ports are attached
+    setPen(QPen(m_unknownColor, 3));
 }
 
 QNEConnection::~QNEConnection()
@@ -260,17 +260,14 @@ void QNEConnection::setStatus(const Status status)
 
     m_status = status;
 
-    // Invalid wires are drawn thicker (5 px) to draw attention to the problem;
-    // active/inactive wires are thinner (3 px) to reduce visual clutter during simulation
+    // Error wires are drawn thicker (5 px) to draw attention to the problem;
+    // other wires are thinner (3 px) to reduce visual clutter during simulation.
+    // Unknown (undriven) wires use a distinct gray from Error (red).
     switch (status) {
-    case Status::Invalid:  setPen(QPen(m_invalidColor,  5)); break;
+    case Status::Unknown:  setPen(QPen(m_unknownColor,  3)); break;
     case Status::Inactive: setPen(QPen(m_inactiveColor, 3)); break;
     case Status::Active:   setPen(QPen(m_activeColor,   3)); break;
-
-    default:
-        // Handle unexpected status values gracefully
-        setPen(QPen(m_invalidColor, 5));
-        break;
+    case Status::Error:    setPen(QPen(m_errorColor,    5)); break;
     }
 
     // Propagate to the destination port so its fill colour also reflects the signal state
@@ -282,9 +279,10 @@ void QNEConnection::setStatus(const Status status)
 void QNEConnection::updateTheme()
 {
     const ThemeAttributes theme = ThemeManager::attributes();
-    m_invalidColor = theme.m_connectionInvalid;
+    m_unknownColor = theme.m_connectionUnknown;
     m_inactiveColor = theme.m_connectionInactive;
     m_activeColor = theme.m_connectionActive;
+    m_errorColor = theme.m_connectionError;
     m_selectedColor = theme.m_connectionSelected;
     update();
 }

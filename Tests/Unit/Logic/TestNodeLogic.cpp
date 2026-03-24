@@ -40,13 +40,13 @@ void TestNodeLogic::testNodeChainPropagation()
     n1.updateLogic();
     n2.updateLogic();
     n3.updateLogic();
-    QCOMPARE(n3.outputValue(), true);
+    QCOMPARE(n3.outputValue(), Status::Active);
 
     m_inputs.at(0)->setOutputValue(false);
     n1.updateLogic();
     n2.updateLogic();
     n3.updateLogic();
-    QCOMPARE(n3.outputValue(), false);
+    QCOMPARE(n3.outputValue(), Status::Inactive);
 }
 
 void TestNodeLogic::testNodeFanOut()
@@ -67,15 +67,15 @@ void TestNodeLogic::testNodeFanOut()
     node.updateLogic();
     and1.updateLogic();
     and2.updateLogic();
-    QCOMPARE(and1.outputValue(), true);
-    QCOMPARE(and2.outputValue(), true);
+    QCOMPARE(and1.outputValue(), Status::Active);
+    QCOMPARE(and2.outputValue(), Status::Active);
 
     // Drive node LOW -> both AND gates go LOW
     m_inputs.at(0)->setOutputValue(false);
     node.updateLogic();
     and1.updateLogic();
     and2.updateLogic();
-    QCOMPARE(and1.outputValue(), false);
-    QCOMPARE(and2.outputValue(), false);
+    QCOMPARE(and1.outputValue(), Status::Inactive);
+    QCOMPARE(and2.outputValue(), Status::Inactive);
 }
 

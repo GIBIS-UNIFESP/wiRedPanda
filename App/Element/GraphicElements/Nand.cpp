@@ -3,8 +3,7 @@
 
 #include "App/Element/GraphicElements/Nand.h"
 
-#include <functional>
-
+#include "App/Core/StatusOps.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
@@ -48,10 +47,9 @@ Nand::Nand(QGraphicsItem *parent)
 
 void Nand::updateLogic()
 {
-    if (!updateInputs()) {
+    if (!simUpdateInputsAllowUnknown()) {
         return;
     }
-    const auto result = std::accumulate(simInputs().cbegin(), simInputs().cend(), true, std::bit_and<>());
-    setOutputValue(!result);
+    setOutputValue(StatusOps::statusNot(StatusOps::statusAndAll(simInputs())));
 }
 

@@ -193,24 +193,37 @@ void Demux::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
 void Demux::updateLogic()
 {
-    if (!updateInputs()) {
+    if (!simUpdateInputsAllowUnknown()) {
         return;
     }
-    const bool data = simInputs().at(0);
 
+    const Status data = simInputs().at(0);
+
+    // Calculate select lines from current output count
     int numSelectLines = 1;
     while ((1 << numSelectLines) < outputSize()) {
         numSelectLines++;
     }
 
+    // If any select line is Unknown/Error, all outputs are indeterminate
+    for (int i = 0; i < numSelectLines; i++) {
+        const Status sel = simInputs().at(1 + i);
+        if (sel == Status::Unknown || sel == Status::Error) {
+            for (int j = 0; j < outputSize(); j++) {
+                setOutputValue(j, sel);
+            }
+            return;
+        }
+    }
+
     int selectValue = 0;
     for (int i = 0; i < numSelectLines; i++) {
-        if (simInputs().at(1 + i)) {
+        if (simInputs().at(1 + i) == Status::Active) {
             selectValue |= (1 << i);
         }
     }
     for (int i = 0; i < outputSize(); i++) {
-        setOutputValue(i, (i == selectValue) && data);
+        setOutputValue(i, (i == selectValue) ? data : Status::Inactive);
     }
 }
 

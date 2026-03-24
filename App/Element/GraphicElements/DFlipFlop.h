@@ -43,7 +43,7 @@ public:
     void updateLogic() override;
 
 private:
-    bool m_lastClk = false;
-    bool m_lastValue = true;
+    Status m_simLastClk = Status::Inactive;
+    Status m_simLastValue = Status::Active;
 };
 

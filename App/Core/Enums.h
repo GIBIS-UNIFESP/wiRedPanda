@@ -20,7 +20,13 @@ public:
     Enums() = delete;
 
     /// Signal status on a port or connection.
-    enum class Status { Invalid = -1, Inactive = 0, Active = 1 };
+    ///
+    /// Four-state logic (inspired by VHDL std_logic):
+    ///   Unknown  — undriven / floating / not yet resolved (U)
+    ///   Inactive — logic low (0)
+    ///   Active   — logic high (1)
+    ///   Error    — bus conflict / indeterminate (X)
+    enum class Status { Unknown = -1, Inactive = 0, Active = 1, Error = 2 };
     Q_ENUM(Status)
 
     /// Numeric identifiers for every concrete element type.
