@@ -27,5 +27,6 @@ private:
     QJsonObject handleGetTabCount(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleExportImage(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleExportArduino(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleExportSystemVerilog(const QJsonObject &params, const QJsonValue &requestId);
 };
 
