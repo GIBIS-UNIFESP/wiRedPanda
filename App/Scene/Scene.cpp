@@ -16,6 +16,7 @@
 #include "App/Core/Common.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Core/Priorities.h"
+#include "App/Core/SentryHelpers.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
@@ -354,6 +355,7 @@ QList<QGraphicsItem *> Scene::itemsAt(const QPointF pos)
 
 void Scene::receiveCommand(QUndoCommand *cmd)
 {
+    sentryBreadcrumb("command", QStringLiteral("Command: %1").arg(cmd->text()));
     m_undoStack.push(cmd);
     update();
 }
@@ -634,6 +636,7 @@ void Scene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 
 void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
+    sentryBreadcrumb("ui", QStringLiteral("Drop event"));
     // --- New element drop from toolbox ---
     // Both MIME types carry the same payload; the newer format has a namespaced key
     if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")

@@ -14,6 +14,8 @@
 
 #ifdef HAVE_SENTRY
 #include <QScopeGuard>
+#include <QSettings>
+#include <QUuid>
 #endif
 
 #include "App/Core/Application.h"
@@ -39,12 +41,36 @@ int main(int argc, char *argv[])
     // to flush any queued events even if the app exits via an exception or exit().
     sentry_options_t *options = sentry_options_new();
     sentry_options_set_dsn(options, "https://719a4881adf6e678b198bf9aad6b4500@o4508704323469312.ingest.us.sentry.io/4508704326352896");
-    // This is also the default-path. For further information and recommendations:
-    // https://docs.sentry.io/platforms/native/configuration/options/#database-path
-    sentry_options_set_database_path(options, ".sentry-native");
+
+    // Use an absolute path so the crash database is always in the same place
+    // regardless of the working directory the app was launched from.
+    const auto dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/sentry-native";
+    sentry_options_set_database_path(options, dbPath.toStdString().c_str());
+
     sentry_options_set_release(options, "wiredpanda@" APP_VERSION);
     sentry_options_set_debug(options, 0);
+
+#ifdef QT_DEBUG
+    sentry_options_set_environment(options, "development");
+#else
+    sentry_options_set_environment(options, "production");
+#endif
+
     sentry_init(options);
+
+    // Anonymous user identification — persisted across sessions via QSettings
+    // so Sentry can count unique affected users and correlate issues.
+    auto userId = QSettings().value("sentry/userId").toString();
+    if (userId.isEmpty()) {
+        userId = QUuid::createUuid().toString(QUuid::WithoutBraces);
+        QSettings().setValue("sentry/userId", userId);
+    }
+    sentry_value_t user = sentry_value_new_object();
+    sentry_value_set_by_key(user, "id", sentry_value_new_string(userId.toStdString().c_str()));
+    sentry_set_user(user);
+
+    // Custom tags for filtering and triage
+    sentry_set_tag("qt.version", QT_VERSION_STR);
 
     // Make sure everything flushes
     auto sentryClose = qScopeGuard([] { sentry_close(); });

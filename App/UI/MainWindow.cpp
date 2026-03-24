@@ -35,6 +35,7 @@
 #include "App/CodeGen/SystemVerilogCodeGen.h"
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Core/UpdateChecker.h"
@@ -954,6 +955,7 @@ WorkSpace *MainWindow::currentTab() const
 
 void MainWindow::tabChanged(const int newTabIndex)
 {
+    sentryBreadcrumb("ui", QStringLiteral("Tab changed to index %1").arg(newTabIndex));
     disconnectTab(); // disconnect previously selected tab
     m_tabIndex = newTabIndex;
     // Hide the editor panel during the transition; connectTab() will restore it
@@ -1365,6 +1367,7 @@ void MainWindow::on_actionWaveform_triggered()
         return;
     }
 
+    sentryBreadcrumb("ui", QStringLiteral("Waveform dialog opened"));
     qCDebug(zero) << "BD fileName: " << m_currentTab->dolphinFileName();
     auto *bewavedDolphin = new BewavedDolphin(m_currentTab->scene(), true, this);
     bewavedDolphin->createWaveform(m_currentTab->dolphinFileName());

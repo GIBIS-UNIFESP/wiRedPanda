@@ -13,6 +13,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
@@ -67,6 +68,8 @@ QFileInfo WorkSpace::fileInfo()
 
 void WorkSpace::save(const QString &fileName)
 {
+    sentryBreadcrumb("file", QStringLiteral("Save: %1").arg(fileName));
+
     QString fileName_ = fileName.isEmpty() ? m_fileInfo.absoluteFilePath() : fileName;
 
     qCDebug(zero) << "FileName: " << fileName_;
@@ -169,6 +172,8 @@ void WorkSpace::save(QDataStream &stream)
 
 void WorkSpace::load(const QString &fileName)
 {
+    sentryBreadcrumb("file", QStringLiteral("Load: %1").arg(fileName));
+
     QFile file(fileName);
 
     if (!file.exists()) {
