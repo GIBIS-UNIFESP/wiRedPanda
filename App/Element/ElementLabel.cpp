@@ -12,20 +12,24 @@
 #include "App/Element/ElementFactory.h"
 #include "App/IO/Serialization.h"
 
-ElementLabel::ElementLabel(const QPixmap &pixmap, ElementType type, const QString &icFileName, QWidget *parent)
+ElementLabel::ElementLabel(const QPixmap &pixmap, ElementType type, const QString &icFileName, QWidget *parent, bool isEmbedded)
     : QFrame(parent)
     , m_elementType(type)
     , m_pixmap(pixmap)
     , m_icFileName(icFileName)
+    , m_isEmbedded(isEmbedded)
 {
     m_iconLabel.setPixmap(pixmap);
     m_iconLabel.setScaledContents(true);
     m_iconLabel.setFixedSize(64, 64);
 
-    // ICs are identified by their .panda file name rather than a translated string
-    // because each IC has a unique user-chosen name rather than a fixed element type name.
-    m_nameLabel.setText((type == ElementType::IC) ? QFileInfo(icFileName).baseName().toUpper()
-                                                  : ElementFactory::translatedName(type));
+    if (m_isEmbedded) {
+        m_nameLabel.setText(icFileName.toUpper());
+    } else if (type == ElementType::IC) {
+        m_nameLabel.setText(QFileInfo(icFileName).baseName().toUpper());
+    } else {
+        m_nameLabel.setText(ElementFactory::translatedName(type));
+    }
 
     auto *itemLayout = new QHBoxLayout();
     itemLayout->setSpacing(6);
@@ -73,6 +77,11 @@ QString ElementLabel::icFileName() const
     return m_icFileName;
 }
 
+bool ElementLabel::isEmbedded() const
+{
+    return m_isEmbedded;
+}
+
 void ElementLabel::startDrag()
 {
     // The hot spot is the icon's centre so the element appears centred under
@@ -83,7 +92,7 @@ void ElementLabel::startDrag()
     // Embed a full panda header so the drop target can version-check the data
     // using the same code path as file loading.
     Serialization::writePandaHeader(stream);
-    stream << offset << m_elementType << m_icFileName;
+    stream << offset << m_elementType << m_icFileName << m_isEmbedded << (m_isEmbedded ? m_icFileName : QString());
 
     auto *mimeData = new QMimeData();
     // Custom MIME type prevents accidental drops on foreign Qt applications
@@ -105,7 +114,7 @@ QMimeData *ElementLabel::mimeData()
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
-    stream << offset << m_elementType << m_icFileName;
+    stream << offset << m_elementType << m_icFileName << m_isEmbedded << (m_isEmbedded ? m_icFileName : QString());
 
     auto *mimeData = new QMimeData();
     mimeData->setData("application/x-wiredpanda-dragdrop", itemData);

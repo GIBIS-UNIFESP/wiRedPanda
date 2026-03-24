@@ -206,6 +206,14 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     }
     gridLayout_2->addWidget(comboBoxWirelessMode, 11, 1, 1, 1);
 
+    labelBlobName = new QLabel(groupBox);
+    labelBlobName->setObjectName("labelBlobName");
+    gridLayout_2->addWidget(labelBlobName, 13, 0, 1, 1);
+
+    lineEditBlobName = new QLineEdit(groupBox);
+    lineEditBlobName->setObjectName("lineEditBlobName");
+    gridLayout_2->addWidget(lineEditBlobName, 13, 1, 1, 1);
+
     gridLayout->addWidget(groupBox, 0, 0, 1, 1);
 
     retranslateUi(ElementEditor);
@@ -250,5 +258,6 @@ void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
     comboBoxWirelessMode->setItemText(0, QCoreApplication::translate("ElementEditor", "None"));
     comboBoxWirelessMode->setItemText(1, QCoreApplication::translate("ElementEditor", "Transmit (Tx)"));
     comboBoxWirelessMode->setItemText(2, QCoreApplication::translate("ElementEditor", "Receive (Rx)"));
+    labelBlobName->setText(QCoreApplication::translate("ElementEditor", "IC Name:"));
 }
 

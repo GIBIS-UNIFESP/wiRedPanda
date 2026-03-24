@@ -31,11 +31,16 @@ struct SelectionCapabilities {
     bool hasElements         = false;
     bool hasFrequency        = false;
     bool hasLabel            = false;
-    bool hasLatchedValue     = false;
     bool hasOnlyInputs       = false;
+    bool hasLatchedValue     = false;
     bool hasWirelessMode     = false;
     bool hasTrigger          = false;
     bool hasTruthTable       = false;
+
+    // --- Embedded IC flags ---
+
+    bool isFileBacked        = false;
+    bool isEmbedded          = false;
 
     // --- Mutability flags (derived from port count ranges across the selection) ---
 

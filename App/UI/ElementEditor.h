@@ -82,6 +82,15 @@ signals:
      */
     void sendCommand(QUndoCommand *cmd);
 
+    /// Emitted when the user requests editing an embedded IC sub-circuit.
+    void editSubcircuitRequested(const QString &blobName, int icElementId);
+
+    /// Emitted when the user requests embedding a file-backed IC.
+    void embedSubcircuitRequested();
+
+    /// Emitted when the user requests extracting an embedded IC to file.
+    void extractToFileRequested();
+
 private:
     Q_DISABLE_COPY(ElementEditor)
 

@@ -4,7 +4,6 @@
 #include "App/Element/IC.h"
 
 #include <QDir>
-#include <QFileInfo>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QSaveFile>
@@ -18,6 +17,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/ICDefinition.h"
+#include "App/Element/ICRegistry.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
@@ -25,6 +25,7 @@
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
+#include "App/UI/MainWindow.h"
 
 template<>
 struct ElementInfo<IC> {
@@ -43,7 +44,6 @@ struct ElementInfo<IC> {
         meta.translatedName = QT_TRANSLATE_NOOP("IC", "IC");
         meta.trContext = "IC";
         meta.defaultSkins = QStringList();
-        // IC has no logicCreator — it uses generateMap() instead
         return meta;
     }
 
@@ -60,8 +60,6 @@ IC::IC(QGraphicsItem *parent)
     // ICs display their label vertically alongside the chip body, matching the physical
     // convention of reading IC labels along the side of a physical DIP package
     m_label->setRotation(90);
-
-    // Hot-reload: when the .panda file backing this IC changes on disk (e.g. the user saved
 }
 
 IC::~IC()
@@ -74,9 +72,12 @@ void IC::save(QDataStream &stream) const
     GraphicElement::save(stream);
 
     QMap<QString, QVariant> map;
-    // Store only the base filename, not the full path, so that .panda files remain
-    // portable — the context directory is added back at load time
-    map.insert("fileName", QFileInfo(m_file).fileName());
+
+    if (isEmbeddedIC()) {
+        map.insert("name", m_blobName);
+    } else if (!m_file.isEmpty()) {
+        map.insert("name", QFileInfo(m_file).fileName());
+    }
 
     stream << map;
 }
@@ -106,8 +107,29 @@ void IC::load(QDataStream &stream, SerializationContext &context)
     if (VersionInfo::hasQMapFormat(context.version)) {
         QMap<QString, QVariant> map; stream >> map;
 
-        if (map.contains("fileName")) {
-            m_file = map.value("fileName").toString();
+        const QString name = map.contains("name")     ? map.value("name").toString()
+                           : map.contains("fileName") ? map.value("fileName").toString()
+                           : map.contains("blobName") ? map.value("blobName").toString()
+                                                      : QString();
+
+        if (name.isEmpty()) {
+            throw PANDACEPTION("IC load: no IC name present in serialized data");
+        }
+
+        // Resolve: try exact name first (embedded blob names may contain dots),
+        // then baseName (file-backed "chain_c.panda" with registry key "chain_c")
+        const QString baseName = QFileInfo(name).baseName();
+        const bool exactMatch = context.blobRegistry && context.blobRegistry->contains(name);
+        const bool baseMatch = !exactMatch && context.blobRegistry && context.blobRegistry->contains(baseName);
+
+        if (exactMatch) {
+            m_blobName = name;
+            loadFromBlob(context.blobRegistry->value(name), context.contextDir);
+        } else if (baseMatch) {
+            m_blobName = baseName;
+            loadFromBlob(context.blobRegistry->value(baseName), context.contextDir);
+        } else {
+            m_file = name;
 
             if (context.copyOperation.needed) {
                 copyFile(context.copyOperation);
@@ -120,6 +142,10 @@ void IC::load(QDataStream &stream, SerializationContext &context)
 
 void IC::copyFile(const CopyOperation &op)
 {
+    if (isEmbeddedIC()) {
+        return; // Embedded ICs don't have files to copy
+    }
+
     const QString srcPath = op.srcPath + "/" + m_file;
     const QString destPath = op.destPath + "/" + m_file;
 
@@ -166,22 +192,18 @@ void IC::loadOutputs()
     qCDebug(three) << "IC " << m_file << " -> Outputs. min: " << minOutputSize() << ", max: " << maxOutputSize() << ", current: " << outputSize() << ", m_outputs: " << m_outputPorts.size();
 }
 
-/// Files currently being loaded (cycle detection for circular IC references).
-static QSet<QString> s_loadingFiles;
-
 void IC::loadFile(const QString &fileName, const QString &contextDir)
 {
     qCDebug(zero) << "Reading IC.";
 
     // Reset all previously loaded state so a hot-reload starts from a clean slate
+    m_blobName.clear();
     m_icInputs.clear();
     m_icOutputs.clear();
     setInputSize(0);
     setOutputSize(0);
     qDeleteAll(m_icElements);
     m_icElements.clear();
-
-    // --- Resolve file path ---
 
     // Try the full path combined with contextDir first (handles relative paths
     // and same-OS absolute paths). If not found, fall back to just the filename
@@ -197,8 +219,36 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
         throw PANDACEPTION("%1 not found.", fileInfo.absoluteFilePath());
     }
 
+    // Delegate file I/O, cycle detection, migration to ICRegistry if available
+    if (auto *scene_ = qobject_cast<Scene *>(scene())) {
+        auto *reg = scene_->icRegistry();
+        const ICDefinition *def = reg->definition(fileInfo.absoluteFilePath(), fileInfo.absolutePath());
+        if (def && def->isValid()) {
+            loadFromDefinition(def, fileInfo.absolutePath());
+            m_file = fileInfo.absoluteFilePath();  // restore after loadFromBlob clears it
+            setToolTip(fileInfo.fileName());
+            if (label().isEmpty()) {
+                setLabel(fileInfo.baseName().toUpper());
+            }
+            qCDebug(zero) << "Finished reading IC (via ICRegistry).";
+            return;
+        }
+    }
+
+    m_file = fileInfo.absoluteFilePath();
+    setToolTip(fileInfo.fileName());
+
+    // Fallback: direct file load (IC not yet in a scene, e.g. during deserialization)
+    loadFileDirectly(fileInfo);
+
+    qCDebug(zero) << "Finished reading IC.";
+}
+
+void IC::loadFileDirectly(const QFileInfo &fileInfo)
+{
     // Cycle detection: if this file is already being loaded up the call stack,
     // a circular IC reference exists (A→B→A→…). Throw instead of stack-overflowing.
+    static QSet<QString> s_loadingFiles;
     const QString canonicalPath = fileInfo.canonicalFilePath();
     if (s_loadingFiles.contains(canonicalPath)) {
         throw PANDACEPTION("Circular IC reference detected: %1", canonicalPath);
@@ -206,51 +256,74 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
     s_loadingFiles.insert(canonicalPath);
     auto removeGuard = qScopeGuard([&] { s_loadingFiles.remove(canonicalPath); });
 
-    m_file = fileInfo.absoluteFilePath();
-    setToolTip(fileInfo.fileName());
-
-    // --- Deserialize sub-circuit elements ---
-
     QFile file(fileInfo.absoluteFilePath());
-
     if (!file.open(QIODevice::ReadOnly)) {
         throw PANDACEPTION("Error opening file: %1", file.errorString());
     }
 
     QDataStream stream(&file);
     const auto preamble = Serialization::readPreamble(stream);
-
-    // Read port metadata (introduced in V_4_5)
-    QMap<QString, QVariant> portMeta;
-    if (preamble.version >= Versions::V_4_5) {
-        stream >> portMeta;
-    }
+    auto fileRegistry = Serialization::deserializeBlobRegistry(preamble.metadata);
 
     QMap<quint64, QNEPort *> portMap;
     SerializationContext subCtx{portMap, preamble.version, fileInfo.absolutePath()};
+    subCtx.blobRegistry = fileRegistry.isEmpty() ? nullptr : &fileRegistry;
     const auto items = Serialization::deserialize(stream, subCtx);
     file.close(); // must be closed before QSaveFile can write on Windows (mandatory file locking)
 
-    // Migrate the IC file to the current format if it is outdated.
-    // This must happen here, before the element-processing loop below deletes
-    // the input/output proxy elements (loadInputElement/loadOutputElement call
-    // delete elm), so that items is still fully valid for re-serialization.
+    // Migrate if outdated
     const bool needsMigration = (preamble.version < AppVersion::current) && Application::migrationEnabled;
     if (needsMigration) {
         Serialization::createVersionedBackup(fileInfo.absoluteFilePath(), preamble.version);
 
-        // Serialization::serialize() assigns sequential local IDs internally before
-        // calling save(), then restores the originals.  Elements deserialized with
-        // id=-1 are therefore safe to re-serialize without any extra bookkeeping here.
+        QMap<QString, QVariant> migrationMeta;
+        {
+            QVector<QNEPort *> tmpInputs, tmpOutputs;
+            for (auto *item : items) {
+                if (item->type() != GraphicElement::Type) continue;
+                auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+                if (!elm) continue;
+                if (elm->elementGroup() == ElementGroup::Input) {
+                    for (auto *port : elm->outputs()) tmpInputs.append(port);
+                } else if (elm->elementGroup() == ElementGroup::Output) {
+                    for (auto *port : elm->inputs()) tmpOutputs.append(port);
+                }
+            }
+            sortPorts(tmpInputs);
+            sortPorts(tmpOutputs);
+
+            QStringList inLabels, outLabels;
+            for (auto *port : std::as_const(tmpInputs)) {
+                auto *elm = port->graphicElement();
+                QString lb = elm->label().isEmpty() ? ElementFactory::typeToText(elm->elementType()) : elm->label();
+                if (elm->outputSize() > 1 && !port->name().isEmpty()) lb += " " + port->name();
+                if (!elm->genericProperties().isEmpty()) lb += " [" + elm->genericProperties() + "]";
+                inLabels.append(lb);
+            }
+            for (auto *port : std::as_const(tmpOutputs)) {
+                auto *elm = port->graphicElement();
+                QString lb = elm->label().isEmpty() ? ElementFactory::typeToText(elm->elementType()) : elm->label();
+                if (elm->inputSize() > 1 && !port->name().isEmpty()) lb += " " + port->name();
+                if (!elm->genericProperties().isEmpty()) lb += " [" + elm->genericProperties() + "]";
+                outLabels.append(lb);
+            }
+
+            migrationMeta["inputCount"] = tmpInputs.size();
+            migrationMeta["outputCount"] = tmpOutputs.size();
+            migrationMeta["inputLabels"] = inLabels;
+            migrationMeta["outputLabels"] = outLabels;
+            Serialization::serializeBlobRegistry(fileRegistry, migrationMeta);
+        }
+
         QSaveFile saveFile(fileInfo.absoluteFilePath());
         if (!saveFile.open(QIODevice::WriteOnly)) {
             throw PANDACEPTION("IC migration: cannot open file for writing: %1", fileInfo.absoluteFilePath());
         }
         QDataStream outStream(&saveFile);
         Serialization::writePandaHeader(outStream);
-        outStream << QString();            // dolphin file name
-        outStream << QRectF();             // scene rect
-        outStream << QMap<QString, QVariant>();  // port metadata (new in V_4_5)
+        outStream << QString();
+        outStream << QRectF();
+        outStream << migrationMeta;
         Serialization::serialize(items, outStream);
         if (!saveFile.commit()) {
             throw PANDACEPTION("IC migration: failed to commit re-saved file: %1", fileInfo.absoluteFilePath());
@@ -259,11 +332,10 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
 
     processLoadedItems(items);
 
+    // Default label: uppercased filename without extension (e.g. "adder.panda" → "ADDER")
     if (label().isEmpty()) {
         setLabel(fileInfo.baseName().toUpper());
     }
-
-    qCDebug(zero) << "Finished reading IC.";
 }
 
 void IC::processLoadedItems(const QList<QGraphicsItem *> &items)
@@ -298,35 +370,52 @@ void IC::processLoadedItems(const QList<QGraphicsItem *> &items)
     loadOutputs();
 
     // --- Update visual representation ---
-    // Default label: uppercased filename without extension (e.g. "adder.panda" → "ADDER")
-    const qreal bottom = portsBoundingRect().united(QRectF(0, 0, 64, 64)).bottom();
     // Position label just below the IC body, which grows with port count
+    const qreal bottom = portsBoundingRect().united(QRectF(0, 0, 64, 64)).bottom();
     m_label->setPos(30, bottom + 5);
 
     generatePixmap();
 }
 
-void IC::loadFromDefinition(const ICDefinition *def, const QString &contextDir)
+void IC::loadFromBlob(const QByteArray &blob, const QString &contextDir)
 {
-    qCDebug(zero) << "Loading IC from definition.";
+    qCDebug(zero) << "Loading IC from blob.";
 
+    // Parse the blob before clearing state so a corrupt blob leaves the IC unchanged.
+    QByteArray data(blob);
+    QDataStream stream(&data, QIODevice::ReadOnly);
+
+    // Blob is a full .panda file
+    const auto preamble = Serialization::readPreamble(stream);
+    auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata);
+
+    QMap<quint64, QNEPort *> portMap;
+    SerializationContext subCtx{portMap, preamble.version, contextDir};
+    subCtx.blobRegistry = blobRegistry.isEmpty() ? nullptr : &blobRegistry;
+    const auto items = Serialization::deserialize(stream, subCtx);
+
+    // Parsing succeeded — now clear old state and apply
     m_icInputs.clear();
     m_icOutputs.clear();
     setInputSize(0);
     setOutputSize(0);
     qDeleteAll(m_icElements);
     m_icElements.clear();
-
-    m_definition = def;
-
-    QByteArray data(def->blobBytes());
-    QDataStream stream(&data, QIODevice::ReadOnly);
-
-    QMap<quint64, QNEPort *> portMap;
-    SerializationContext subCtx{portMap, AppVersion::current, contextDir};
-    const auto items = Serialization::deserialize(stream, subCtx);
+    m_file.clear();
 
     processLoadedItems(items);
+
+    if (!m_blobName.isEmpty()) {
+        setToolTip(m_blobName);
+    }
+
+    qCDebug(zero) << "Finished loading IC from blob.";
+}
+
+void IC::loadFromDefinition(const ICDefinition *def, const QString &contextDir)
+{
+    m_definition = def;
+    loadFromBlob(def->blobBytes(), contextDir);
 
     qCDebug(zero) << "Finished loading IC from definition.";
 }
@@ -340,9 +429,12 @@ void IC::generatePixmap()
 
     QPainter tmpPainter(&tempPixmap);
 
-    // IC body: mid-grey fill with darker border, styled like a physical DIP package
-    tmpPainter.setBrush(QColor(126, 126, 126));
-    tmpPainter.setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
+    const QColor bodyColor = isEmbeddedIC() ? QColor(90, 126, 160) : QColor(126, 126, 126);
+    const QColor outlineColor = isEmbeddedIC() ? QColor(58, 82, 110) : QColor(78, 78, 78);
+
+    // IC body: styled like a physical DIP package
+    tmpPainter.setBrush(bodyColor);
+    tmpPainter.setPen(QPen(QBrush(outlineColor), 0.5, Qt::SolidLine));
 
     // 7px inset on each side (14px total width reduction) so the port connector dots
     // visually overlap the border, matching the TruthTable and physical DIP appearance
@@ -361,8 +453,8 @@ void IC::generatePixmap()
     tmpPainter.drawPixmap(pandaOrigin, panda);
 
     // Draw a thin dark strip at the bottom edge to simulate the package shadow/bevel
-    tmpPainter.setBrush(QColor(78, 78, 78));
-    tmpPainter.setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
+    tmpPainter.setBrush(outlineColor);
+    tmpPainter.setPen(QPen(QBrush(outlineColor), 0.5, Qt::SolidLine));
 
     // Collapse the two-point rect to a 3px-tall strip flush with the bottom of the body
     QRectF shadowRect(finalRect.bottomLeft(), finalRect.bottomRight());
@@ -372,18 +464,25 @@ void IC::generatePixmap()
     // Draw the orientation notch (semicircle) at the top centre, matching the physical
     // DIP IC convention for pin-1 identification.
     // drawChord angle parameters are in 1/16th-degree units; -180*16 = lower half-circle.
-    // The 24×24 circle is offset left by (body_width/2 - 12) = 18px from the body's
-    // top-left corner, and raised 12px above the top edge so only the bottom half shows.
     QRectF topCenter = QRectF(finalRect.topLeft() + QPointF(18, -12), QSize(24, 24));
     tmpPainter.drawChord(topCenter, 0, -180 * 16);
 
     m_pixmap = tempPixmap;
+    update();
 }
 
 void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     event->accept();
-    Application::instance()->mainWindow()->loadPandaFile(m_file);
+
+    if (isEmbeddedIC()) {
+        if (auto *scene_ = qobject_cast<Scene *>(scene())) {
+            Application::instance()->mainWindow()->openICInTab(
+                m_blobName, id(), scene_->icRegistry()->blob(m_blobName));
+        }
+    } else if (!m_file.isEmpty()) {
+        Application::instance()->mainWindow()->loadPandaFile(m_file);
+    }
 }
 
 QRectF IC::boundingRect() const
@@ -483,11 +582,12 @@ bool IC::comparePorts(QNEPort *port1, QNEPort *port2)
     if (!elem1 || !elem2) {
         return false;
     }
-    QPointF p1 = elem1->pos();
-    QPointF p2 = elem2->pos();
 
     // Primary sort: top-to-bottom by parent element Y, then left-to-right by X.
     // This gives an intuitive pin order that matches the visual layout in the sub-circuit.
+    QPointF p1 = elem1->pos();
+    QPointF p2 = elem2->pos();
+
     if (p1 != p2) {
         return (p1.y() < p2.y()) || (qFuzzyCompare(p1.y(), p2.y()) && (p1.x() < p2.x()));
     }
@@ -549,7 +649,7 @@ void IC::loadOutputsLabels()
 
 void IC::initializeSimulation()
 {
-    m_simSortedElements.clear();
+    m_sortedInternalElements.clear();
     m_boundaryInputElements.clear();
     m_internalHasFeedback = false;
 
@@ -564,6 +664,7 @@ void IC::initializeSimulation()
 
     // Build connection graph from internal QNEConnections
     Simulation::buildConnectionGraph(m_icElements);
+    Simulation::connectWirelessElements(m_icElements);
 
     // Wire wireless Rx predecessors to matching Tx outputs within the IC.
     // The top-level Simulation::connectWirelessElements() only sees outer scene elements,
@@ -573,7 +674,8 @@ void IC::initializeSimulation()
     // Initialize nested ICs recursively
     for (auto *elm : std::as_const(m_icElements)) {
         if (elm->elementType() == ElementType::IC) {
-            static_cast<IC *>(elm)->initializeSimulation();
+            auto *ic = static_cast<IC *>(elm);
+            ic->initializeSimulation();
         }
     }
 
@@ -625,12 +727,11 @@ void IC::initializeSimulation()
 
     QHash<GraphicElement *, int> priorities;
     calculatePriorities(m_icElements, successors, priorities);
-
     const auto feedbackElements = findFeedbackNodes(m_icElements, successors);
     m_internalHasFeedback = !feedbackElements.isEmpty();
 
-    m_simSortedElements = m_icElements;
-    std::stable_sort(m_simSortedElements.begin(), m_simSortedElements.end(),
+    m_sortedInternalElements = m_icElements;
+    std::stable_sort(m_sortedInternalElements.begin(), m_sortedInternalElements.end(),
         [&priorities](const auto *a, const auto *b) {
             return priorities.value(const_cast<GraphicElement *>(a), -1)
                  > priorities.value(const_cast<GraphicElement *>(b), -1);
@@ -639,21 +740,22 @@ void IC::initializeSimulation()
 
 void IC::updateLogic()
 {
-    if (m_simSortedElements.isEmpty()) {
+    if (m_sortedInternalElements.isEmpty()) {
+        return;
+    }
+
+    // Permissive mode so ICs can propagate Unknown through their internal elements.
+    if (!simUpdateInputsAllowUnknown()) {
         return;
     }
 
     // Push external input values to boundary input nodes' GraphicElement outputs.
     // Boundary input nodes are Nodes whose input port is in m_icInputs.
     // We set their output value directly and skip them in the update loop.
-    // Permissive mode so ICs can propagate Unknown through their internal elements.
-    if (!simUpdateInputsAllowUnknown()) {
-        return;
-    }
-    for (int i = 0; i < static_cast<int>(simInputs().size()) && i < m_icInputs.size(); ++i) {
-        auto *internalElm = m_icInputs.at(i)->graphicElement();
-        if (internalElm) {
-            internalElm->setOutputValue(0, simInputs().at(i));
+    for (int i = 0; i < inputSize() && i < m_icInputs.size(); ++i) {
+        auto *boundaryElement = m_icInputs.at(i)->graphicElement();
+        if (boundaryElement) {
+            boundaryElement->setOutputValue(0, simInputs().at(i));
         }
     }
 
@@ -662,14 +764,14 @@ void IC::updateLogic()
     if (m_internalHasFeedback) {
         const int maxIterations = 10;
         for (int iteration = 0; iteration < maxIterations; ++iteration) {
-            for (auto *element : std::as_const(m_simSortedElements)) {
+            for (auto *element : std::as_const(m_sortedInternalElements)) {
                 if (element && !m_boundaryInputElements.contains(element)) {
                     element->clearOutputChanged();
                     element->updateLogic();
                 }
             }
             const bool converged = std::none_of(
-                m_simSortedElements.cbegin(), m_simSortedElements.cend(),
+                m_sortedInternalElements.cbegin(), m_sortedInternalElements.cend(),
                 [this](const auto *element) {
                     return element && !m_boundaryInputElements.contains(const_cast<GraphicElement *>(element))
                            && element->outputChanged();
@@ -679,18 +781,18 @@ void IC::updateLogic()
             }
         }
     } else {
-        for (auto *element : std::as_const(m_simSortedElements)) {
+        for (auto *element : std::as_const(m_sortedInternalElements)) {
             if (element && !m_boundaryInputElements.contains(element)) {
                 element->updateLogic();
             }
         }
     }
 
-    // Copy internal boundary outputs to IC external outputs
-    for (int i = 0; i < simOutputSize() && i < m_icOutputs.size(); ++i) {
-        auto *internalElm = m_icOutputs.at(i)->graphicElement();
-        if (internalElm) {
-            setOutputValue(i, internalElm->outputValue(0));
+    // Pull output values from boundary output nodes
+    for (int i = 0; i < outputSize() && i < m_icOutputs.size(); ++i) {
+        auto *boundaryElement = m_icOutputs.at(i)->graphicElement();
+        if (boundaryElement) {
+            setOutputValue(i, boundaryElement->outputValue(0));
         }
     }
 }
@@ -701,34 +803,36 @@ void IC::refresh()
 
 void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
 {
-    QFile destFile;
-
-    // Skip the copy if the destination already exists (e.g. two ICs reference the same file)
-    if (!QFile::exists(destPath.absoluteFilePath()) && !destFile.copy(srcPath.absoluteFilePath(), destPath.absoluteFilePath())) {
-        throw PANDACEPTION("Error copying file: %1", destFile.errorString());
+    if (!QFile::exists(destPath.absoluteFilePath())) {
+        QFile srcFile(srcPath.absoluteFilePath());
+        if (!srcFile.copy(destPath.absoluteFilePath())) {
+            throw PANDACEPTION("Error copying file: %1", srcFile.errorString());
+        }
     }
 
-    destFile.setFileName(destPath.absoluteFilePath());
-
-    if (!destFile.open(QIODevice::ReadOnly)) {
-        throw PANDACEPTION("Error opening file: %1", destFile.errorString());
+    // Read the metadata section to find file-backed IC dependencies,
+    // then recursively copy each one. No full deserialization needed.
+    QFile file(srcPath.absoluteFilePath());
+    if (!file.open(QIODevice::ReadOnly)) {
+        return;
     }
 
-    // Deserialize the copied file so that any nested ICs it references also get
-    // copied transitively into the destination directory
-    QDataStream stream(&destFile);
+    QDataStream stream(&file);
     const auto preamble = Serialization::readPreamble(stream);
-
-    // Read and discard port metadata (introduced in V_4_5)
-    if (preamble.version >= Versions::V_4_5) {
-        QMap<QString, QVariant> portMeta;
-        stream >> portMeta;
+    if (!VersionInfo::hasMetadata(preamble.version)) {
+        return;
     }
 
-    QMap<quint64, QNEPort *> portMap;
-    CopyOperation copyOp{srcPath.absolutePath(), destPath.absolutePath(), true};
-    SerializationContext context{portMap, preamble.version, destPath.absolutePath(), copyOp};
-    Serialization::deserialize(stream, context);
+    const auto &metadata = preamble.metadata;
+
+    const QStringList icFiles = metadata.value("fileBackedICs").toStringList();
+    for (const QString &icFile : icFiles) {
+        const QFileInfo icSrc(QDir(srcPath.absolutePath()), icFile);
+        const QFileInfo icDest(QDir(destPath.absolutePath()), icFile);
+        if (icSrc.exists()) {
+            copyFiles(icSrc, icDest);
+        }
+    }
 }
 
 void IC::loadFromDrop(const QString &fileName, const QString &contextDir)

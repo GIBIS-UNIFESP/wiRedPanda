@@ -8,6 +8,7 @@
 #pragma once
 
 #include "App/UI/ElementEditor.h"
+#include "App/UI/ICDropZone.h"
 #include "App/UI/TrashButton.h"
 
 // Specific Qt includes instead of monolithic QtWidgets
@@ -101,6 +102,7 @@ public:
     QAction *actionExportToSystemVerilog = nullptr;
     QAction *actionExportToPdf = nullptr;
     QAction *actionExportToImage = nullptr;
+    QAction *actionMakeSelfContained = nullptr;
 
     // Help / about actions
     QAction *actionAbout = nullptr;
@@ -158,13 +160,29 @@ public:
     // IC tab
     QWidget *ic = nullptr;
     QGridLayout *gridLayout_4 = nullptr;
+
+    // File-backed ICs section
+    QLabel *labelFileBasedICs = nullptr;
+    QHBoxLayout *horizontalLayout = nullptr;
+    QPushButton *pushButtonAddIC = nullptr;
+    TrashButton *pushButtonRemoveIC = nullptr;
+    QPushButton *pushButtonMakeSelfContained = nullptr;
+    ICDropZone *dropZoneFileBased = nullptr;
     QScrollArea *scrollArea_Box = nullptr;
     QWidget *scrollAreaWidgetContents_IC = nullptr;
     QVBoxLayout *verticalLayout_4 = nullptr;
     QSpacerItem *verticalSpacer_IC = nullptr;
-    QHBoxLayout *horizontalLayout = nullptr;
-    QPushButton *pushButtonAddIC = nullptr;
-    TrashButton *pushButtonRemoveIC = nullptr;
+
+    // Embedded ICs section
+    QLabel *labelEmbeddedICs = nullptr;
+    QHBoxLayout *horizontalLayoutEmbeddedIC = nullptr;
+    QPushButton *pushButtonAddEmbeddedIC = nullptr;
+    TrashButton *pushButtonRemoveEmbeddedIC = nullptr;
+    ICDropZone *dropZoneEmbedded = nullptr;
+    QScrollArea *scrollAreaEmbeddedIC = nullptr;
+    QWidget *scrollAreaWidgetContents_EmbeddedIC = nullptr;
+    QVBoxLayout *verticalLayout_EmbeddedIC = nullptr;
+    QSpacerItem *verticalSpacer_EmbeddedIC = nullptr;
 
     // Misc tab
     QWidget *misc = nullptr;

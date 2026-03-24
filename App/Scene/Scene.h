@@ -45,18 +45,14 @@ class Scene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    static constexpr int gridSize = 16; ///< Scene grid unit in pixels (elements snap to gridSize/2).
-
-    // --- Lifecycle ---
-
-    /// Constructs a Scene and initialises the undo stack and simulation.
-    explicit Scene(QObject *parent = nullptr);
-
     /// \brief Adds \a item to the scene and registers it in the per-scene ID registry.
     void addItem(QGraphicsItem *item);
 
     /// \brief Removes \a item from the scene and unregisters it from the per-scene ID registry.
     void removeItem(QGraphicsItem *item);
+
+    /// Tightens the scene rect to item bounds while preserving the viewport position.
+    void resizeScene();
 
     // --- Per-Scene Element Registry ---
 
@@ -83,10 +79,14 @@ public:
      */
     void updateItemId(ItemWithId *item, int newId);
 
-    // --- View / Display Management ---
+    static constexpr int gridSize = 16; ///< Scene grid unit in pixels (elements snap to gridSize/2).
 
-    /// Tightens the scene rect to item bounds while preserving the viewport position.
-    void resizeScene();
+    // --- Lifecycle ---
+
+    /// Constructs a Scene and initialises the undo stack and simulation.
+    explicit Scene(QObject *parent = nullptr);
+
+    // --- View / Display Management ---
 
     /// Returns the GraphicsView currently displaying this scene.
     GraphicsView *view() const;
@@ -218,11 +218,6 @@ public:
 
     /// Returns the simulation engine associated with this scene.
     Simulation *simulation();
-
-    // --- IC Registry ---
-
-    /// Returns the IC definition registry for this scene.
-    ICRegistry *icRegistry() { return &m_icRegistry; }
     /// Marks the simulation mapping as stale so it is rebuilt on the next tick.
     void setCircuitUpdateRequired();
 
@@ -234,6 +229,11 @@ public:
     void setContextDir(const QString &dir) { m_contextDir = dir; }
     /// Returns the context directory for \a item: from its Scene if available, else the global fallback.
     static QString resolveContextDir(const QGraphicsItem *item);
+
+    // --- IC Registry ---
+
+    /// Returns the IC definition registry for this scene.
+    ICRegistry *icRegistry() { return &m_icRegistry; }
 
     /// Creates a deserialization context with the scene's contextDir and blob registry.
     SerializationContext deserializationContext(QMap<quint64, QNEPort *> &portMap, const QVersionNumber &version);

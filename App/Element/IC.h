@@ -8,22 +8,21 @@
 #pragma once
 
 #include <QFileInfo>
-#include <QFileSystemWatcher>
 #include <QSet>
-
-class ICDefinition;
 
 #include "App/Element/GraphicElement.h"
 #include "App/IO/SerializationContext.h"
+
+class ICDefinition;
 
 /**
  * \class IC
  * \brief Graphic element representing an Integrated Circuit (sub-circuit) box.
  *
- * \details An IC element wraps an external .panda file, exposing its input and
- * output elements as ports on the IC box.  It monitors the file for changes via
- * QFileSystemWatcher and reloads automatically.  The internal simulation mapping
- * is built lazily via generateMap().
+ * \details An IC element wraps a sub-circuit, exposing its input and output
+ * elements as ports on the IC box.  File watching is handled by ICRegistry
+ * (centralized per-scene, one watcher per unique file path).  The internal
+ * simulation graph is built lazily via initializeSimulation().
  */
 class IC : public GraphicElement
 {
@@ -48,32 +47,37 @@ public:
      */
     static void copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath);
     /// Loads the IC circuit from \a fileName and rebuilds the logic mapping.
-    void loadFile(const QString &fileName, const QString &contextDir);
+    void loadFile(const QString &fileName, const QString &contextDir = {});
 
-    // --- Logic mapping ---
+    /// Loads the IC from in-memory blob bytes (full .panda file format).
+    void loadFromBlob(const QByteArray &blob, const QString &contextDir);
 
-    /// Initializes the internal simulation graph for this IC.
-    void initializeSimulation();
-
-    /// \reimp Updates IC outputs from its internal simulation graph.
-    void updateLogic() override;
-
-    void loadFromDrop(const QString &fileName, const QString &contextDir) override;
-
-    /// Loads the IC from a shared definition (deserializes blob bytes into per-instance elements).
+    /// Loads the IC from a shared definition (delegates to loadFromBlob).
     void loadFromDefinition(const ICDefinition *def, const QString &contextDir);
 
     /// Returns the current definition, or nullptr if not set.
     const ICDefinition *definition() const { return m_definition; }
 
-    void processLoadedItems(const QList<QGraphicsItem *> &items);
+    void loadFromDrop(const QString &fileName, const QString &contextDir) override;
 
     const QString &icFile() const { return m_file; }
+
+    /// Returns the blob name for embedded ICs, empty if file-backed.
+    const QString &blobName() const override { return m_blobName; }
+    void setBlobName(const QString &name) { m_blobName = name; }
+    bool isEmbeddedIC() const override { return !m_blobName.isEmpty(); }
+
     const QVector<GraphicElement *> &icElements() const { return m_icElements; }
     const QVector<QNEPort *> &icInputs() const { return m_icInputs; }
     const QVector<QNEPort *> &icOutputs() const { return m_icOutputs; }
 
     // --- Visual ---
+
+    /// \reimp Simulates the IC's internal circuit and propagates results.
+    void updateLogic() override;
+
+    /// Builds the internal simulation graph (connection graph + sort) for direct simulation.
+    void initializeSimulation();
 
     /// \reimp
     QRectF boundingRect() const override;
@@ -103,10 +107,12 @@ private:
 
     // --- File copy helper ---
 
+    void loadFileDirectly(const QFileInfo &fileInfo);
     void copyFile(const CopyOperation &op);
 
     // --- Loading helpers ---
 
+    void processLoadedItems(const QList<QGraphicsItem *> &items);
     void loadInputElement(GraphicElement *elm);
     void loadInputs();
     void loadInputsLabels();
@@ -120,16 +126,19 @@ private:
 
     // --- Members ---
 
-    QVector<GraphicElement *> m_simSortedElements;
-    QSet<GraphicElement *> m_boundaryInputElements;
-    bool m_internalHasFeedback = false;
     const ICDefinition *m_definition = nullptr;
-    QFileSystemWatcher m_fileWatcher;
     QString m_file;
+    QString m_blobName;
     QVector<GraphicElement *> m_icElements;
     QVector<QNEPort *> m_icInputs;
     QVector<QNEPort *> m_icOutputs;
     QVector<QString> m_icInputLabels;
     QVector<QString> m_icOutputLabels;
+
+    // --- Members: Direct simulation ---
+
+    QVector<GraphicElement *> m_sortedInternalElements;
+    QSet<GraphicElement *> m_boundaryInputElements;
+    bool m_internalHasFeedback = false;
 };
 

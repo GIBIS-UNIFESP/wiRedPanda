@@ -14,7 +14,6 @@
 ICDefinition ICDefinition::fromFile(const QString &filePath, const QString &contextDir)
 {
     Q_UNUSED(contextDir)
-
     ICDefinition def;
 
     QFile file(filePath);
@@ -22,26 +21,23 @@ ICDefinition ICDefinition::fromFile(const QString &filePath, const QString &cont
         return def;
     }
 
-    QDataStream stream(&file);
-    QVersionNumber version = Serialization::readPandaHeader(stream);
-    Serialization::loadDolphinFileName(stream, version);
-    Serialization::loadRect(stream, version);
+    // Read entire file into memory so QDataStream and byte slicing work on the same buffer
+    QByteArray fileData = file.readAll();
+    file.close();
 
-    if (version >= Versions::V_4_5) {
-        QMap<QString, QVariant> portMeta;
-        stream >> portMeta;
+    QDataStream stream(&fileData, QIODevice::ReadOnly);
+    const auto preamble = Serialization::readPreamble(stream);
 
-        def.m_inputCount = portMeta.value("inputCount").toInt();
-        def.m_outputCount = portMeta.value("outputCount").toInt();
+    def.m_inputCount = preamble.metadata.value("inputCount").toInt();
+    def.m_outputCount = preamble.metadata.value("outputCount").toInt();
 
-        const QStringList inLabels = portMeta.value("inputLabels").toStringList();
-        const QStringList outLabels = portMeta.value("outputLabels").toStringList();
-        def.m_inputLabels = QVector<QString>(inLabels.begin(), inLabels.end());
-        def.m_outputLabels = QVector<QString>(outLabels.begin(), outLabels.end());
-    }
+    const QStringList inLabels = preamble.metadata.value("inputLabels").toStringList();
+    const QStringList outLabels = preamble.metadata.value("outputLabels").toStringList();
+    def.m_inputLabels = QVector<QString>(inLabels.begin(), inLabels.end());
+    def.m_outputLabels = QVector<QString>(outLabels.begin(), outLabels.end());
 
-    // Read remaining bytes as blob (elements+connections)
-    def.m_blobBytes = file.readAll();
+    // Store the full .panda file as the blob
+    def.m_blobBytes = fileData;
     def.m_valid = !def.m_blobBytes.isEmpty();
 
     return def;
