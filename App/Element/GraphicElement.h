@@ -87,6 +87,21 @@ public:
      */
     virtual void updatePortsProperties();
 
+    /**
+     * \brief Returns the wireless routing mode for this element.
+     * \details Returns WirelessMode::None for all elements except Node, which overrides
+     * this to expose its configurable Tx/Rx mode.
+     * \return WirelessMode::None for all base elements.
+     */
+    virtual WirelessMode wirelessMode() const;
+
+    /**
+     * \brief Returns true if this element supports a configurable wireless routing mode.
+     * \details Returns false in the base class.  Node overrides this to return true.
+     * \return true when the element has a wirelessMode() that can be set.
+     */
+    virtual bool hasWirelessMode() const;
+
     // --- Element Type & Identity ---
 
     /// Returns the group this element belongs to.

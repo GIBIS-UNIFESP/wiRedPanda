@@ -285,6 +285,19 @@ QVector<GraphicElement *> Scene::sortByTopology(QVector<GraphicElement *> elemen
     return elements;
 }
 
+QHash<QString, QNEInputPort *> Scene::wirelessTxInputPorts(const QVector<GraphicElement *> &elements)
+{
+    QHash<QString, QNEInputPort *> txMap;
+    for (auto *elm : elements) {
+        if (elm->wirelessMode() == WirelessMode::Tx && !elm->label().isEmpty() && elm->inputPort(0)) {
+            if (!txMap.contains(elm->label())) {
+                txMap.insert(elm->label(), elm->inputPort(0));
+            }
+        }
+    }
+    return txMap;
+}
+
 const QVector<QNEConnection *> Scene::connections()
 {
     const auto items_ = items();
@@ -400,6 +413,11 @@ void Scene::resizeScene()
 QUndoStack *Scene::undoStack()
 {
     return &m_undoStack;
+}
+
+bool Scene::isConnectionAllowed(QNEOutputPort *startPort, QNEInputPort *endPort)
+{
+    return ConnectionManager::isConnectionAllowed(startPort, endPort);
 }
 
 void Scene::prevMainPropShortcut() { m_propertyShortcutHandler.prevMainProperty(); }

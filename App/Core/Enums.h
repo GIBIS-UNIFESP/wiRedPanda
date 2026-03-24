@@ -29,6 +29,14 @@ public:
     enum class Status { Unknown = -1, Inactive = 0, Active = 1, Error = 2 };
     Q_ENUM(Status)
 
+    /// Wireless routing mode for Node elements.
+    enum class WirelessMode {
+        None = 0, ///< Normal pass-through node (no wireless routing).
+        Tx = 1,   ///< Transmitter: broadcasts input signal to all Rx nodes sharing the same label.
+        Rx = 2,   ///< Receiver: receives signal from the Tx node that shares the same label.
+    };
+    Q_ENUM(WirelessMode)
+
     /// Numeric identifiers for every concrete element type.
     enum class ElementType { // last element is 33
         And = 5,          ///< AND gate.
@@ -98,6 +106,7 @@ public:
 using Status = Enums::Status;
 using ElementType = Enums::ElementType;
 using ElementGroup = Enums::ElementGroup;
+using WirelessMode = Enums::WirelessMode;
 
 /// Pre-increment operator; advances \a type to the next ElementType in sequence.
 ElementType &operator++(ElementType &type);

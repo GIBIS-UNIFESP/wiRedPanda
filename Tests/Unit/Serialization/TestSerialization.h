@@ -75,6 +75,12 @@ private slots:
     void testConnectionWithDeletedPorts();
     void testMalformedConnectionData();
 
+    // Wireless node serialization (4 tests)
+    void testWirelessTxNodePreservedInScene();
+    void testWirelessRxNodePreservedInScene();
+    void testWirelessPairCircuit();
+    void testWirelessNoneNodeInScene();
+
     // Versioned backup utility (Serialization::createVersionedBackup)
     void testVersionedBackupNamingPattern();    // backup name: basename.vX.Y.Z.ext
     void testVersionedBackupIsIdempotent();     // second call does not overwrite existing backup

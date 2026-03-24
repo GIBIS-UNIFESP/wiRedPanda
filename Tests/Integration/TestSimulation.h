@@ -37,6 +37,29 @@ private slots:
     void testSimulationGraphStability();
     void testCircuitWithFeedbackLoops();
 
+    // Wireless signal propagation
+    void testWirelessTxRxPropagation();
+    void testWirelessMultiRxFanOut();
+    void testWirelessOrphanedRx();
+    void testWirelessInsideIC();
+
+    // Wireless edge cases
+    void testWirelessDuplicateTxIgnored();
+    void testWirelessEmptyLabelIgnored();
+    void testWirelessLabelMismatchIsolation();
+    void testWirelessMultipleIndependentChannels();
+    void testWirelessTxUnconnectedInput();
+    void testWirelessLabelCaseSensitive();
+    void testWirelessNoneModeNodeDoesNotInterfere();
+    void testWirelessLabelSetAfterMode();
+    void testWirelessCascadeThroughWire();
+    void testWirelessRxFeedsCombinationalLogic();
+    void testWirelessOrphanedTxDoesNotCrash();
+    void testWirelessOrphanedRxWithPhysicalWire();
+    void testWirelessOverridesPhysicalWire();
+    void testWirelessFeedbackLoop();
+    void testWirelessUnicodeLabels();
+
     // Negative tests — verify graceful handling of degenerate circuit conditions
     void testUnconnectedRequiredInputGraceful();
     void testPartiallyConnectedCircuitIsolation();

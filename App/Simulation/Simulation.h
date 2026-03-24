@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include <QGraphicsItem>
 #include <QHash>
 #include <QObject>
@@ -82,6 +84,9 @@ public:
     // --- Static graph building (used by IC::initializeSimulation too) ---
 
     static void buildConnectionGraph(const QVector<GraphicElement *> &elements);
+    /// Overrides physical predecessors on Rx nodes with their matching Tx node.
+    /// Must be called after buildConnectionGraph() so wireless always wins, and before sort().
+    static void connectWirelessElements(const QVector<GraphicElement *> &elements);
 
 signals:
     /// Emitted (at most once per initialize()) when a feedback circuit fails to converge.
@@ -109,8 +114,12 @@ private:
 
     Scene *m_scene;
 
+    // --- Members: State flags ---
+
     bool m_initialized = false;
     bool m_convergenceWarned = false;
+
+    // --- Members: Direct simulation graph ---
 
     QVector<GraphicElement *> m_sortedElements;
     QHash<const GraphicElement *, int> m_simPriorities;

@@ -11,8 +11,10 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
+#include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
@@ -417,9 +419,49 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
         element->setSkin(useDefault, skinPath);
     }
 
+    // Wireless mode is only meaningful for Node elements; non-Nodes are silently ignored.
+    QList<QGraphicsItem *> wirelessConnsToDelete;
+    if (params.contains("wireless_mode")) {
+        if (auto *node = qobject_cast<Node *>(element)) {
+            int modeInt = params.value("wireless_mode").toInt();
+            if (modeInt < 0 || modeInt > 2) {
+                return createErrorResponse("Invalid wireless_mode. Must be 0 (None), 1 (Tx), or 2 (Rx)", requestId);
+            }
+            auto oldMode = static_cast<int>(node->wirelessMode());
+            auto newMode = static_cast<WirelessMode>(modeInt);
+
+            oldProperties["wireless_mode"] = oldMode;
+            newProperties["wireless_mode"] = modeInt;
+
+            // Collect connections on the port that will be hidden, so they can
+            // be deleted in an undo macro (same pattern as ElementEditor::apply).
+            QNEPort *port = (newMode == WirelessMode::Rx) ? static_cast<QNEPort *>(node->inputPort())
+                          : (newMode == WirelessMode::Tx) ? static_cast<QNEPort *>(node->outputPort())
+                          : nullptr;
+            if (port) {
+                for (auto *conn : port->connections()) {
+                    wirelessConnsToDelete.append(static_cast<QGraphicsItem *>(conn));
+                }
+            }
+
+            node->setWirelessMode(newMode);
+        }
+    }
+
     // Push an undo command so Ctrl+Z in the GUI can revert MCP-applied property changes.
+    // When wireless mode changes sever connections, group the property update and the
+    // delete into a single undo macro so both are undone together.
     if (!newProperties.isEmpty()) {
-        getCurrentScene()->receiveCommand(new UpdateCommand({element}, oldData, getCurrentScene()));
+        const bool needsMacro = !wirelessConnsToDelete.isEmpty();
+        auto *scene = getCurrentScene();
+        if (needsMacro) {
+            scene->undoStack()->beginMacro(QStringLiteral("Change wireless mode"));
+        }
+        scene->receiveCommand(new UpdateCommand({element}, oldData, scene));
+        if (needsMacro) {
+            scene->receiveCommand(new DeleteItemsCommand(wirelessConnsToDelete, scene));
+            scene->undoStack()->endMacro();
+        }
     }
 
     result["old_properties"] = oldProperties;
