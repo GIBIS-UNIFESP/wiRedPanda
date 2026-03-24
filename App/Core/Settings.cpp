@@ -125,7 +125,7 @@ void Settings::setLanguage(const QString &lang)
 Theme Settings::theme()
 {
     const int saved = value("theme").toInt();
-    if (saved >= 0 && saved <= static_cast<int>(Theme::Dark)) {
+    if (saved >= 0 && saved <= static_cast<int>(Theme::System)) {
         return static_cast<Theme>(saved);
     }
     return Theme::Light;

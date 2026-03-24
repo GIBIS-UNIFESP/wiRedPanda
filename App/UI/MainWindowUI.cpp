@@ -126,6 +126,9 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionDarkTheme = new QAction(MainWindow);
     actionDarkTheme->setObjectName("actionDarkTheme");
     actionDarkTheme->setCheckable(true);
+    actionSystemTheme = new QAction(MainWindow);
+    actionSystemTheme->setObjectName("actionSystemTheme");
+    actionSystemTheme->setCheckable(true);
     actionWaveform = new QAction(MainWindow);
     actionWaveform->setObjectName("actionWaveform");
     actionWaveform->setIcon(QIcon(":/Interface/Toolbar/dolphin_icon.svg"));
@@ -605,6 +608,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuView->addAction(menuTheme->menuAction());
     menuView->addAction(actionFullscreen);
     menuView->addAction(actionLabelsUnderIcons);
+    menuTheme->addAction(actionSystemTheme);
     menuTheme->addAction(actionLightTheme);
     menuTheme->addAction(actionDarkTheme);
     menuSimulation->addAction(actionPlay);
@@ -682,7 +686,8 @@ void MainWindowUi::retranslateUi()
     actionClearSelection->setText(QCoreApplication::translate("MainWindow", "Cl&ear selection"));
     actionClearSelection->setShortcut(QCoreApplication::translate("MainWindow", "Esc"));
     actionFastMode->setText(QCoreApplication::translate("MainWindow", "&Fast Mode"));
-    actionLightTheme->setText(QCoreApplication::translate("MainWindow", "&Panda Light"));
+    actionSystemTheme->setText(QCoreApplication::translate("MainWindow", "&System"));
+    actionLightTheme->setText(QCoreApplication::translate("MainWindow", "Panda &Light"));
     actionDarkTheme->setText(QCoreApplication::translate("MainWindow", "Panda &Dark"));
     actionWaveform->setText(QCoreApplication::translate("MainWindow", "&Waveform"));
     actionWaveform->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+W"));

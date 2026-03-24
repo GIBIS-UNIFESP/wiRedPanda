@@ -688,7 +688,7 @@ void ElementEditor::updateTheme()
 {
     // Tweak the group box border colour to match the active theme.
     // Light theme: rgb(216,216,216) — a light grey; Dark: rgb(66,66,66) — a dark grey.
-    const QString borderColor = (ThemeManager::theme() == Theme::Light) ? "216" : "66";
+    const QString borderColor = (ThemeManager::effectiveTheme() == Theme::Light) ? "216" : "66";
     const QString styleSheet =
             "QGroupBox {"
             "   border: 1px solid rgb(%1,%1,%1);"
