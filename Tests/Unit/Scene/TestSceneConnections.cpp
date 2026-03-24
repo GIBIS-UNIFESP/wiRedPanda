@@ -6,6 +6,7 @@
 #include <QTemporaryDir>
 
 #include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Scene.h"
 #include "Tests/Common/TestUtils.h"
@@ -337,5 +338,71 @@ void TestSceneConnections::testConnectionRemovalUpdatesCounters()
 
     // Count should decrease
     QCOMPARE(countAfterRemoval, countWithConnection - 1);
+}
+
+// ============================================================
+// Wireless Port Semantics Tests
+// ============================================================
+
+void TestSceneConnections::testWirelessRxPortIsNotRequired()
+{
+    // An Rx node's input port must have isRequired=false, so connecting
+    // a wire to it is never mandatory for the circuit to be valid.
+    Scene scene;
+
+    auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(nodeElm != nullptr);
+    scene.addItem(nodeElm);
+
+    auto *node = qobject_cast<Node *>(nodeElm);
+    QVERIFY(node != nullptr);
+
+    // Verify default state
+    QVERIFY(node->inputPort()->isRequired());
+
+    // Switch to Rx — port becomes optional
+    node->setWirelessMode(WirelessMode::Rx);
+    QVERIFY(!node->inputPort()->isRequired());
+
+    // A connection can still be made to the port (it's optional, not forbidden)
+    auto *src = ElementFactory::buildElement(ElementType::InputButton);
+    QVERIFY(src != nullptr);
+    scene.addItem(src);
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(src->outputPort(0));
+    conn->setEndPort(node->inputPort(0));
+    scene.addItem(conn);
+
+    QCOMPARE(node->inputPort(0)->connections().size(), 1);
+    QVERIFY(!node->inputPort()->isRequired());  // still optional after wiring
+}
+
+void TestSceneConnections::testWirelessNoneModeNodePortIsRequired()
+{
+    // A Node in None mode must behave like a plain pass-through: its input port
+    // is required and connections are tracked normally.
+    Scene scene;
+
+    auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(nodeElm != nullptr);
+    scene.addItem(nodeElm);
+
+    auto *node = qobject_cast<Node *>(nodeElm);
+    QVERIFY(node != nullptr);
+    QCOMPARE(node->wirelessMode(), WirelessMode::None);
+    QVERIFY(node->inputPort()->isRequired());
+
+    auto *src = ElementFactory::buildElement(ElementType::InputSwitch);
+    QVERIFY(src != nullptr);
+    scene.addItem(src);
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(src->outputPort(0));
+    conn->setEndPort(node->inputPort(0));
+    scene.addItem(conn);
+
+    QCOMPARE(node->inputPort(0)->connections().size(), 1);
+    QVERIFY(node->inputPort()->isRequired());  // required status unchanged by a connection
 }
 

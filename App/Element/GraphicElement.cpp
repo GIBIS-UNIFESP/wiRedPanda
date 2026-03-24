@@ -176,6 +176,16 @@ QNEOutputPort *GraphicElement::outputPort(const int index)
     return m_outputPorts.at(index);
 }
 
+WirelessMode GraphicElement::wirelessMode() const
+{
+    return WirelessMode::None;
+}
+
+bool GraphicElement::hasWirelessMode() const
+{
+    return false;
+}
+
 const QVector<QNEInputPort *> &GraphicElement::inputs() const
 {
     return m_inputPorts;
@@ -653,7 +663,8 @@ QList<PropertyDescriptor> GraphicElement::editableProperties() const
     if (hasAudioBox())   props.append({PropertyDescriptor::Type::AudioBox});
     if (hasTrigger())    props.append({PropertyDescriptor::Type::Trigger});
     if (hasTruthTable()) props.append({PropertyDescriptor::Type::TruthTable});
-    if (canChangeSkin()) props.append({PropertyDescriptor::Type::Skin});
+    if (canChangeSkin())    props.append({PropertyDescriptor::Type::Skin});
+    if (hasWirelessMode())  props.append({PropertyDescriptor::Type::WirelessModeSelector});
     return props;
 }
 

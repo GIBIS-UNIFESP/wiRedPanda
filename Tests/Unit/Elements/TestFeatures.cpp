@@ -40,8 +40,8 @@ void TestFeatures::testInputElementFeatures()
     bool hasLabel = input->hasLabel();
     bool hasColors = input->hasColors();
 
-    // Node element does not have label or colors
-    QVERIFY(!hasLabel);
+    // Node element has label (used as wireless channel name) but not colors
+    QVERIFY(hasLabel);
     QVERIFY(!hasColors);
 
     // Input should not have frequency or delay
@@ -117,10 +117,10 @@ void TestFeatures::testDelayFeature()
 
 void TestFeatures::testLabelFeature()
 {
-    // Node element does not have labels
+    // Node element supports labels (used as wireless channel name)
     auto node = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
     bool nodeHasLabel = node->hasLabel();
-    QVERIFY(!nodeHasLabel);
+    QVERIFY(nodeHasLabel);
 
     auto display = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Display7));
     bool displayHasLabel = display->hasLabel();
@@ -181,10 +181,10 @@ void TestFeatures::testMultipleElementsFeatures()
     QVERIFY(!notGate->hasFrequency());
     QVERIFY(!notGate->hasDelay());
 
-    // Node - no label
+    // Node - has label (for wireless channel name), no other special features
     auto node = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(node != nullptr);
-    QVERIFY(!node->hasLabel());
+    QVERIFY(node->hasLabel());
     QVERIFY(!node->hasAudio());
     QVERIFY(!node->hasColors());
     QVERIFY(!node->hasFrequency());

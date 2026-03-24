@@ -4,17 +4,20 @@
 #include "Tests/Integration/TestSimulation.h"
 
 #include "App/Core/Priorities.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Nand.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/Nor.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/SRLatch.h"
 #include "App/Element/GraphicElements/Xor.h"
+#include "App/Element/IC.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
@@ -789,6 +792,696 @@ void TestSimulation::testCircuitWithFeedbackLoops()
     QVERIFY2(feedbackResults[0][1], "SR Latch should be set at state 1");
     QVERIFY2(feedbackResults[0][2], "SR Latch should hold at state 2");
     QVERIFY2(!feedbackResults[0][3], "SR Latch should be reset again at state 3");
+}
+
+// ============================================================================
+// Wireless signal propagation
+// ============================================================================
+
+void TestSimulation::testWirelessTxRxPropagation()
+{
+    // A Tx/Rx pair on the same channel must propagate the signal wirelessly.
+    // Circuit: InputSwitch → Tx("SIG") ... Rx("SIG") → LED
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Led led;
+
+    tx->setLabel("SIG");
+    tx->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("SIG");
+    rx->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(&sw, tx, rx, &led);
+    builder.connect(&sw, 0, tx, 0);   // physical wire: switch → Tx input
+    builder.connect(rx, 0, &led, 0);  // physical wire: Rx output → LED
+
+    auto *sim = builder.initSimulation();
+
+    sw.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+
+    sw.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led), true);
+
+    sw.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+}
+
+void TestSimulation::testWirelessMultiRxFanOut()
+{
+    // 1 Tx broadcasting to 2 Rx nodes on the same channel.
+    // Circuit: InputSwitch → Tx("BUS") ... Rx1("BUS") → LED1
+    //                                  ... Rx2("BUS") → LED2
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx1 = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx2 = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Led led1, led2;
+
+    tx->setLabel("BUS");
+    tx->setWirelessMode(WirelessMode::Tx);
+    rx1->setLabel("BUS");
+    rx1->setWirelessMode(WirelessMode::Rx);
+    rx2->setLabel("BUS");
+    rx2->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(&sw, tx, rx1, rx2, &led1, &led2);
+    builder.connect(&sw, 0, tx, 0);
+    builder.connect(rx1, 0, &led1, 0);
+    builder.connect(rx2, 0, &led2, 0);
+
+    auto *sim = builder.initSimulation();
+
+    sw.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led1), false);
+    QCOMPARE(getInputStatus(&led2), false);
+
+    sw.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led1), true);
+    QCOMPARE(getInputStatus(&led2), true);
+
+    sw.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led1), false);
+    QCOMPARE(getInputStatus(&led2), false);
+}
+
+void TestSimulation::testWirelessOrphanedRx()
+{
+    // An Rx node with no matching Tx should output its default (Inactive) status.
+    // Circuit: Rx("ORPHAN") → LED  (no Tx with label "ORPHAN" exists)
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Led led;
+
+    rx->setLabel("ORPHAN");
+    rx->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(rx, &led);
+    builder.connect(rx, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+
+    sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+
+    // Multiple updates must remain stable.
+    sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+}
+
+void TestSimulation::testWirelessInsideIC()
+{
+    // Wireless Tx/Rx nodes inside an IC sub-circuit must propagate signals.
+    // The IC file (wireless_passthrough.panda) contains:
+    //   InputSwitch → Tx("W") ... Rx("W") → LED
+    // We load it as a file-based IC and verify the truth table through the IC ports.
+    const QString icFile = TestUtils::cpuComponentsDir() + "wireless_passthrough.panda";
+    QVERIFY2(QFile::exists(icFile), qPrintable("IC file not found: " + icFile));
+
+    WorkSpace ws;
+    auto *ic = new IC();
+
+    CircuitBuilder builder(ws.scene());
+    InputSwitch outerSw;
+    Led outerLed;
+
+    builder.add(&outerSw, ic, &outerLed);
+
+    try {
+        ic->loadFile(icFile, QFileInfo(icFile).absolutePath());
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("Failed to load IC file: %1").arg(e.what())));
+    }
+
+    QVERIFY2(ic->inputSize() > 0, qPrintable(QString("IC inputs=%1 outputs=%2")
+        .arg(ic->inputSize()).arg(ic->outputSize())));
+    QVERIFY2(ic->outputSize() > 0, "IC must expose at least one output port");
+
+    // Verify the IC internals contain wireless nodes
+    int txCount = 0, rxCount = 0;
+    for (auto *elm : ic->icElements()) {
+        if (elm->wirelessMode() == WirelessMode::Tx) ++txCount;
+        if (elm->wirelessMode() == WirelessMode::Rx) ++rxCount;
+    }
+    QCOMPARE(txCount, 1);
+    QCOMPARE(rxCount, 1);
+
+    builder.connect(&outerSw, 0, ic, 0);
+    builder.connect(ic, 0, &outerLed, 0);
+
+    auto *sim = builder.initSimulation();
+
+    outerSw.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&outerLed), false);
+
+    outerSw.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&outerLed), true);
+
+    outerSw.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&outerLed), false);
+}
+
+// ============================================================================
+// Wireless edge cases
+// ============================================================================
+
+void TestSimulation::testWirelessDuplicateTxIgnored()
+{
+    // Two Tx nodes with the same label — only one is registered, the other is
+    // silently ignored.  The test verifies: no crash, exactly one Tx drives the
+    // Rx, and the result is deterministic across multiple updates.
+    // Circuit: sw1 → Tx1("DUP")  sw2 → Tx2("DUP")  Rx("DUP") → LED
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw1, sw2;
+    auto *tx1 = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *tx2 = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx  = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Led led;
+
+    tx1->setLabel("DUP");
+    tx1->setWirelessMode(WirelessMode::Tx);
+    tx2->setLabel("DUP");
+    tx2->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("DUP");
+    rx->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(&sw1, &sw2, tx1, tx2, rx, &led);
+    builder.connect(&sw1, 0, tx1, 0);
+    builder.connect(&sw2, 0, tx2, 0);
+    builder.connect(rx, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+
+    // Both ON → LED must be ON regardless of which Tx won.
+    sw1.setOn(true); sw2.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led), true);
+
+    // Both OFF → LED must be OFF.
+    sw1.setOn(false); sw2.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+
+    // Exactly one Tx controls the Rx. Determine which one won and verify
+    // the other is indeed ignored.
+    sw1.setOn(true); sw2.setOn(false); sim->update();
+    const bool sw1Controls = getInputStatus(&led);
+
+    sw1.setOn(false); sw2.setOn(true); sim->update();
+    const bool sw2Controls = getInputStatus(&led);
+
+    // Exactly one switch must control the LED, not both.
+    QVERIFY2(sw1Controls != sw2Controls,
+             "Exactly one Tx must win — both or neither controlling the LED indicates a bug");
+
+    // Verify determinism: repeat and check the same result.
+    sw1.setOn(true); sw2.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), sw1Controls);
+}
+
+void TestSimulation::testWirelessEmptyLabelIgnored()
+{
+    // Tx and Rx nodes with empty labels must not connect to each other.
+    // Circuit: sw → Tx("")  Rx("") → LED
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Led led;
+
+    tx->setLabel("");
+    tx->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("");
+    rx->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(&sw, tx, rx, &led);
+    builder.connect(&sw, 0, tx, 0);
+    builder.connect(rx, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+
+    // Empty labels are skipped — Rx has no Tx match, LED stays inactive.
+    sw.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+
+    sw.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+}
+
+void TestSimulation::testWirelessLabelMismatchIsolation()
+{
+    // Tx("A") must NOT drive Rx("B") — different labels are different channels.
+    // Circuit: sw → Tx("A")  Rx("B") → LED
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Led led;
+
+    tx->setLabel("A");
+    tx->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("B");
+    rx->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(&sw, tx, rx, &led);
+    builder.connect(&sw, 0, tx, 0);
+    builder.connect(rx, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+
+    sw.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+
+    sw.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+}
+
+void TestSimulation::testWirelessMultipleIndependentChannels()
+{
+    // Two independent wireless channels must not cross-talk.
+    // Circuit: sw1 → Tx("CH_A") ... Rx("CH_A") → led1
+    //          sw2 → Tx("CH_B") ... Rx("CH_B") → led2
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw1, sw2;
+    auto *txA = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rxA = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *txB = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rxB = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Led led1, led2;
+
+    txA->setLabel("CH_A"); txA->setWirelessMode(WirelessMode::Tx);
+    rxA->setLabel("CH_A"); rxA->setWirelessMode(WirelessMode::Rx);
+    txB->setLabel("CH_B"); txB->setWirelessMode(WirelessMode::Tx);
+    rxB->setLabel("CH_B"); rxB->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(&sw1, &sw2, txA, rxA, txB, rxB, &led1, &led2);
+    builder.connect(&sw1, 0, txA, 0);
+    builder.connect(rxA, 0, &led1, 0);
+    builder.connect(&sw2, 0, txB, 0);
+    builder.connect(rxB, 0, &led2, 0);
+
+    auto *sim = builder.initSimulation();
+
+    // Both off
+    sw1.setOn(false); sw2.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led1), false);
+    QCOMPARE(getInputStatus(&led2), false);
+
+    // CH_A on, CH_B off — only led1 should light up
+    sw1.setOn(true); sw2.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led1), true);
+    QCOMPARE(getInputStatus(&led2), false);
+
+    // CH_A off, CH_B on — only led2 should light up
+    sw1.setOn(false); sw2.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led1), false);
+    QCOMPARE(getInputStatus(&led2), true);
+
+    // Both on
+    sw1.setOn(true); sw2.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led1), true);
+    QCOMPARE(getInputStatus(&led2), true);
+}
+
+void TestSimulation::testWirelessTxUnconnectedInput()
+{
+    // A Tx node with no physical wire on its input port propagates Unknown.
+    // The Rx must stay inactive (Unknown → false).
+    // Circuit: Tx("OPEN") (unconnected input) ... Rx("OPEN") → LED
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Led led;
+
+    tx->setLabel("OPEN");
+    tx->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("OPEN");
+    rx->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(tx, rx, &led);
+    // No wire driving Tx input — only connect Rx output → LED
+    builder.connect(rx, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+
+    sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+
+    // Must remain stable across updates.
+    sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+}
+
+void TestSimulation::testWirelessLabelCaseSensitive()
+{
+    // Labels are case-sensitive: Tx("CLK") must NOT drive Rx("clk").
+    // Circuit: sw → Tx("CLK") ... Rx("clk") → LED
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Led led;
+
+    tx->setLabel("CLK");
+    tx->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("clk");
+    rx->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(&sw, tx, rx, &led);
+    builder.connect(&sw, 0, tx, 0);
+    builder.connect(rx, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+
+    sw.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+
+    sw.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+}
+
+void TestSimulation::testWirelessNoneModeNodeDoesNotInterfere()
+{
+    // A plain Node (None mode) with label "SIG" must not participate in wireless
+    // routing, even when Tx("SIG") and Rx("SIG") exist alongside it.
+    // Circuit: sw → Tx("SIG") ... Rx("SIG") → LED
+    //          plainNode("SIG") with None mode — should be invisible to wireless.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    auto *tx   = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx   = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *none = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Led led;
+
+    tx->setLabel("SIG");   tx->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("SIG");   rx->setWirelessMode(WirelessMode::Rx);
+    none->setLabel("SIG"); // None mode — must not interfere
+
+    builder.add(&sw, tx, none, rx, &led);
+    builder.connect(&sw, 0, tx, 0);
+    builder.connect(rx, 0, &led, 0);
+    // none is added but not wired to anything relevant
+
+    auto *sim = builder.initSimulation();
+
+    sw.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led), true);
+
+    sw.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+}
+
+void TestSimulation::testWirelessLabelSetAfterMode()
+{
+    // Setting the label AFTER the wireless mode must still create a valid channel.
+    // Circuit: sw → Tx("LATE") ... Rx("LATE") → LED
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Led led;
+
+    // Set mode first, label second
+    tx->setWirelessMode(WirelessMode::Tx);
+    tx->setLabel("LATE");
+    rx->setWirelessMode(WirelessMode::Rx);
+    rx->setLabel("LATE");
+
+    builder.add(&sw, tx, rx, &led);
+    builder.connect(&sw, 0, tx, 0);
+    builder.connect(rx, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+
+    sw.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led), true);
+
+    sw.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+}
+
+void TestSimulation::testWirelessCascadeThroughWire()
+{
+    // Multi-hop: wireless → physical wire → wireless.
+    // Circuit: sw → Tx("A") ... Rx("A") → wire → Tx("B") ... Rx("B") → LED
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    auto *txA = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rxA = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *txB = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rxB = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Led led;
+
+    txA->setLabel("A"); txA->setWirelessMode(WirelessMode::Tx);
+    rxA->setLabel("A"); rxA->setWirelessMode(WirelessMode::Rx);
+    txB->setLabel("B"); txB->setWirelessMode(WirelessMode::Tx);
+    rxB->setLabel("B"); rxB->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(&sw, txA, rxA, txB, rxB, &led);
+    builder.connect(&sw, 0, txA, 0);     // physical: sw → TxA
+    builder.connect(rxA, 0, txB, 0);     // physical: RxA → TxB (bridge between channels)
+    builder.connect(rxB, 0, &led, 0);    // physical: RxB → LED
+
+    auto *sim = builder.initSimulation();
+
+    sw.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led), true);
+
+    sw.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+}
+
+void TestSimulation::testWirelessRxFeedsCombinationalLogic()
+{
+    // Wireless signal feeds into an AND gate alongside a physical switch.
+    // Circuit: sw1 → Tx("X") ... Rx("X") → AND ← sw2
+    //                                       AND → LED
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw1, sw2;
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    And andGate;
+    Led led;
+
+    tx->setLabel("X"); tx->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("X"); rx->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(&sw1, &sw2, tx, rx, &andGate, &led);
+    builder.connect(&sw1, 0, tx, 0);       // sw1 → Tx (wireless source)
+    builder.connect(rx, 0, &andGate, 0);   // Rx → AND input 0
+    builder.connect(&sw2, 0, &andGate, 1); // sw2 → AND input 1
+    builder.connect(&andGate, 0, &led, 0); // AND → LED
+
+    auto *sim = builder.initSimulation();
+
+    // 0 AND 0 = 0
+    sw1.setOn(false); sw2.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+
+    // 1 AND 0 = 0
+    sw1.setOn(true); sw2.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+
+    // 0 AND 1 = 0
+    sw1.setOn(false); sw2.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+
+    // 1 AND 1 = 1
+    sw1.setOn(true); sw2.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led), true);
+}
+
+void TestSimulation::testWirelessOrphanedTxDoesNotCrash()
+{
+    // A Tx node with no matching Rx must not crash and must not interfere with
+    // other circuits sharing the scene.
+    // Circuit: sw1 → Tx("DEAD_END")   (no Rx for "DEAD_END")
+    //          sw2 → AND ← sw3, AND → LED   (independent physical circuit)
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw1, sw2, sw3;
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    And andGate;
+    Led led;
+
+    tx->setLabel("DEAD_END");
+    tx->setWirelessMode(WirelessMode::Tx);
+
+    builder.add(&sw1, &sw2, &sw3, tx, &andGate, &led);
+    builder.connect(&sw1, 0, tx, 0);         // sw1 → Tx (signal goes nowhere)
+    builder.connect(&sw2, 0, &andGate, 0);
+    builder.connect(&sw3, 0, &andGate, 1);
+    builder.connect(&andGate, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+
+    // Independent circuit must still work.
+    sw2.setOn(true); sw3.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led), true);
+
+    sw2.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+}
+
+void TestSimulation::testWirelessOrphanedRxWithPhysicalWire()
+{
+    // An Rx node with a physical input wire (bypassing ConnectionManager via
+    // programmatic CircuitBuilder) but no matching Tx: the physical wire should
+    // work because connectWirelessElements() doesn't overwrite when no Tx matches.
+    // Circuit: sw → Rx("NO_TX") → LED   (physical wire only, no wireless Tx)
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Led led;
+
+    rx->setLabel("NO_TX");
+    rx->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(&sw, rx, &led);
+    builder.connect(&sw, 0, rx, 0);   // physical wire to Rx input (bypasses ConnectionManager)
+    builder.connect(rx, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+
+    sw.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led), true);
+
+    sw.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+}
+
+void TestSimulation::testWirelessOverridesPhysicalWire()
+{
+    // When Rx has both a physical wire AND a matching Tx, connectPredecessor()
+    // overwrites the physical wire with the wireless source.  The wireless
+    // signal must take precedence.
+    // Circuit: swPhys → Rx("CH") → LED     (physical wire on Rx input)
+    //          swWireless → Tx("CH")         (wireless source)
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch swPhys, swWireless;
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Led led;
+
+    tx->setLabel("CH"); tx->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("CH"); rx->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(&swPhys, &swWireless, tx, rx, &led);
+    builder.connect(&swPhys, 0, rx, 0);      // physical wire to Rx (bypasses ConnectionManager)
+    builder.connect(&swWireless, 0, tx, 0);  // wireless source
+    builder.connect(rx, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+
+    // Wireless ON, physical OFF → LED should be ON (wireless takes precedence).
+    swWireless.setOn(true); swPhys.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), true);
+
+    // Wireless OFF, physical ON → LED should be OFF (wireless takes precedence).
+    swWireless.setOn(false); swPhys.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
+}
+
+void TestSimulation::testWirelessFeedbackLoop()
+{
+    // A wireless feedback loop: Rx("FB") → NOT → Tx("FB").
+    // The successor graph has Tx→Rx (wireless) and Rx→NOT→Tx (physical),
+    // forming a cycle.  findFeedbackNodes() must detect it and the simulation
+    // must converge via iterative settling (NOT inverts, so the loop oscillates
+    // but settling stops after maxIterations).
+    // Circuit: sw → AND → Tx("FB") ... Rx("FB") → NOT → AND(input1)
+    //                                               NOT → LED
+    // The AND gate breaks the direct feedback: sw=OFF clamps it to 0.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    And andGate;
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Not notGate;
+    Led led;
+
+    tx->setLabel("FB"); tx->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("FB"); rx->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(&sw, &andGate, tx, rx, &notGate, &led);
+    builder.connect(&sw, 0, &andGate, 0);       // sw → AND input 0
+    builder.connect(&notGate, 0, &andGate, 1);  // NOT → AND input 1 (feedback)
+    builder.connect(&andGate, 0, tx, 0);         // AND → Tx
+    builder.connect(rx, 0, &notGate, 0);         // Rx → NOT
+    builder.connect(&notGate, 0, &led, 0);       // NOT → LED
+
+    auto *sim = builder.initSimulation();
+
+    // sw=OFF: AND output is 0 regardless of feedback → Tx broadcasts 0 →
+    // Rx receives 0 → NOT outputs 1 → LED=ON, AND(0,1)=0 → stable.
+    sw.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), true);
+
+    // Must remain stable across updates.
+    sim->update();
+    QCOMPARE(getInputStatus(&led), true);
+}
+
+void TestSimulation::testWirelessUnicodeLabels()
+{
+    // Unicode labels must work as wireless channel names — QHash<QString>
+    // performs exact comparison, so non-ASCII labels should match correctly.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    Led led;
+
+    tx->setLabel(QStringLiteral("信号")); tx->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel(QStringLiteral("信号")); rx->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(&sw, tx, rx, &led);
+    builder.connect(&sw, 0, tx, 0);
+    builder.connect(rx, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+
+    sw.setOn(true); sim->update();
+    QCOMPARE(getInputStatus(&led), true);
+
+    sw.setOn(false); sim->update();
+    QCOMPARE(getInputStatus(&led), false);
 }
 
 // ============================================================================

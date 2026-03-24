@@ -9,6 +9,7 @@
 
 #include <QElapsedTimer>
 #include <QGraphicsScene>
+#include <QHash>
 #include <QMap>
 #include <QMimeData>
 #include <QUndoCommand>
@@ -116,10 +117,21 @@ public:
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
     /// Returns \a elements sorted in topological dependency order (inputs first).
     static QVector<GraphicElement *> sortByTopology(QVector<GraphicElement *> elements);
+    /**
+     * \brief Returns a map from wireless channel label to the Tx node's input port.
+     * \details Scans \a elements for nodes in WirelessMode::Tx, keyed by label.
+     * If two Tx nodes share the same label the first one wins.  Used by codegens
+     * to resolve Rx node signals without duplicating the wireless scan.
+     */
+    static QHash<QString, QNEInputPort *> wirelessTxInputPorts(const QVector<GraphicElement *> &elements);
     /// Returns all visible (non-hidden) graphic elements in the scene.
     const QVector<GraphicElement *> visibleElements() const;
 
-    // --- Adding Items ---
+    /**
+     * \brief Returns \c true if a wire from \a startPort to \a endPort is permitted.
+     * \details Delegates to ConnectionManager::isConnectionAllowed().
+     */
+    static bool isConnectionAllowed(QNEOutputPort *startPort, QNEInputPort *endPort);
 
     // --- Connection Manager ---
 

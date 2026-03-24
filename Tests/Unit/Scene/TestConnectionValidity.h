@@ -23,6 +23,13 @@ private slots:
     void testInputPortWithMultipleConnections();
     void testOutputPortWithMultipleConnections();
 
+    // Wireless connection guard (5 tests)
+    void testIsConnectionAllowedRejectsRxPort();
+    void testIsConnectionAllowedRejectsTxOutputPort();
+    void testIsConnectionAllowedPermitsNonePort();
+    void testIsConnectionAllowedPermitsTxInputPort();
+    void testIsConnectionAllowedPermitsRxOutputPort();
+
 private:
     QTemporaryDir m_tempDir;
 };

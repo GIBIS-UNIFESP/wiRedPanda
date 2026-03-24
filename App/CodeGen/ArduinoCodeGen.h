@@ -17,6 +17,7 @@
 
 class GraphicElement;
 class IC;
+class QNEInputPort;
 class QNEPort;
 
 /**
@@ -160,6 +161,7 @@ private:
 
     QFile m_file;                              ///< Output file handle.
     QHash<QNEPort *, QString> m_varMap;        ///< Port → generated variable name mapping.
+    QHash<QString, QNEInputPort *> m_txInputPorts; ///< Wireless Tx label → input port mapping.
     QStringList m_availablePins;               ///< Remaining unassigned GPIO pin labels.
     QStringList m_declaredVariables;           ///< Names of already-declared variables (duplicate guard).
     QTextStream m_stream;                      ///< Text stream writing to m_file.

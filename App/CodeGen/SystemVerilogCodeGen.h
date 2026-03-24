@@ -19,6 +19,7 @@
 
 class GraphicElement;
 class IC;
+class QNEInputPort;
 class QNEPort;
 
 /**
@@ -166,6 +167,7 @@ private:
 
     QFile m_file;                              ///< Output file handle.
     QHash<QNEPort *, QString> m_varMap;        ///< Port → generated signal name mapping.
+    QHash<QString, QNEInputPort *> m_txInputPorts; ///< Wireless Tx label → input port mapping.
     QHash<QString, ICModuleInfo> m_icModules;  ///< IC source key → module metadata.
     QHash<IC *, QString> m_instanceNames;      ///< IC element → unique instance name.
     QStringList m_availablePins;               ///< Remaining unassigned top-level port names.

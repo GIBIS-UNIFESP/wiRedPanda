@@ -108,6 +108,14 @@ QString ArduinoCodeGen::otherPortNameImpl(QNEPort *port, QSet<QNEPort *> &visite
         if (!mapped.isEmpty()) {
             return mapped;
         }
+        // Wireless Rx: resolve via the Tx node's input (what drives the transmitter)
+        auto *elm = port->graphicElement();
+        if (elm && elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
+            auto *txInputPort = m_txInputPorts.value(elm->label(), nullptr);
+            if (txInputPort) {
+                return otherPortNameImpl(txInputPort, visited);
+            }
+        }
         return highLow(port->defaultValue());
     }
 
@@ -141,6 +149,8 @@ QString ArduinoCodeGen::otherPortNameImpl(QNEPort *port, QSet<QNEPort *> &visite
 void ArduinoCodeGen::generate()
 {
     try {
+        m_txInputPorts = Scene::wirelessTxInputPorts(m_elements);
+
         int requiredInputPins = 0;
         int requiredOutputPins = 0;
         for (auto *elm : m_elements) {

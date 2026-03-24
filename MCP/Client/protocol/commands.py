@@ -314,6 +314,9 @@ class SetElementPropertiesCommand(MCPCommand):
         locked: Optional[bool] = Field(default=None, description="Lock state for input elements")
         volume: Optional[float] = Field(default=None, description="Volume for audio elements")
         skin: Optional[str] = Field(default=None, description="Skin path or 'default'")
+        wireless_mode: Optional[Annotated[int, Field(ge=0, le=2)]] = Field(
+            default=None, description="Wireless mode: 0=None, 1=Tx, 2=Rx (Node elements only)"
+        )
 
         model_config = ConfigDict(extra="forbid")
 
