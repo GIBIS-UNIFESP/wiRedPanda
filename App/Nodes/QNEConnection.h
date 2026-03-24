@@ -26,7 +26,7 @@ class QNEPort;
  * \brief A bezier-curve wire connecting an output port to an input port in the scene.
  *
  * \details QNEConnection draws a smooth path between its start (output) and end (input)
- * ports.  It is coloured according to its logical status (active/inactive/invalid/selected)
+ * ports.  It is coloured according to its logical status (active/inactive/unknown/selected)
  * and can be highlighted when the cursor hovers over it.  Connections are serializable
  * and participate in the undo/redo system.
  */
@@ -65,7 +65,7 @@ public:
 
     // --- Status & Visualization ---
 
-    /// Returns the current connection status (valid, invalid, etc.).
+    /// Returns the current four-state signal status (Active/Inactive/Unknown/Error).
     Status status() const;
     /// Sets the connection status and triggers a visual refresh.
     void setStatus(const Status status);
@@ -114,7 +114,8 @@ private:
 
     QColor m_activeColor;
     QColor m_inactiveColor;
-    QColor m_invalidColor;
+    QColor m_unknownColor;
+    QColor m_errorColor;
     QColor m_selectedColor;
 
     // --- Members: Ports & positions ---
@@ -126,7 +127,7 @@ private:
 
     // --- Members: State ---
 
-    Status m_status = Status::Invalid;
+    Status m_status = Status::Unknown;
     bool m_highLight = false;
 };
 

@@ -39,7 +39,7 @@ void TestConnectionValidity::testConnectionStatusValid()
     scene.addItem(conn);
 
     // Connection should have a valid status
-    QVERIFY2(conn->status() != Status::Invalid, "and1→and2 connection should be valid after both ports are set");
+    QVERIFY2(conn->status() != Status::Unknown, "and1→and2 connection should be valid after both ports are set");
 }
 
 void TestConnectionValidity::testConnectionStatusInvalid()
@@ -51,7 +51,7 @@ void TestConnectionValidity::testConnectionStatusInvalid()
     scene.addItem(conn);
 
     // Connection with unset ports should be invalid
-    QCOMPARE(conn->status(), Status::Invalid);
+    QCOMPARE(conn->status(), Status::Unknown);
 }
 
 void TestConnectionValidity::testPortDeletionDeletesConnection()
@@ -106,8 +106,8 @@ void TestConnectionValidity::testMultipleConnectionsStatus()
     scene.addItem(conn2);
 
     // Both connections should be valid
-    QVERIFY2(conn1->status() != Status::Invalid, "conn1 (and1→and2) should be valid");
-    QVERIFY2(conn2->status() != Status::Invalid, "conn2 (and2→and3) should be valid");
+    QVERIFY2(conn1->status() != Status::Unknown, "conn1 (and1→and2) should be valid");
+    QVERIFY2(conn2->status() != Status::Unknown, "conn2 (and2→and3) should be valid");
 }
 
 void TestConnectionValidity::testPortValidityWithConnections()
@@ -178,8 +178,8 @@ void TestConnectionValidity::testInputPortWithMultipleConnections()
     scene.addItem(conn2);
 
     // Both connections should be valid
-    QVERIFY2(conn1->status() != Status::Invalid, "conn1 (and1→and3 input 0) should be valid");
-    QVERIFY2(conn2->status() != Status::Invalid, "conn2 (and2→and3 input 1) should be valid");
+    QVERIFY2(conn1->status() != Status::Unknown, "conn1 (and1→and3 input 0) should be valid");
+    QVERIFY2(conn2->status() != Status::Unknown, "conn2 (and2→and3 input 1) should be valid");
 }
 
 void TestConnectionValidity::testOutputPortWithMultipleConnections()
@@ -206,7 +206,7 @@ void TestConnectionValidity::testOutputPortWithMultipleConnections()
     scene.addItem(conn2);
 
     // Both connections should be valid
-    QVERIFY2(conn1->status() != Status::Invalid, "conn1 (and1→and2 input 0) should be valid");
-    QVERIFY2(conn2->status() != Status::Invalid, "conn2 (and1→and3 input 0) should be valid");
+    QVERIFY2(conn1->status() != Status::Unknown, "conn1 (and1→and2 input 0) should be valid");
+    QVERIFY2(conn2->status() != Status::Unknown, "conn2 (and1→and3 input 0) should be valid");
 }
 

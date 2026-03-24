@@ -50,6 +50,8 @@ TruthTable::TruthTable(QGraphicsItem *parent)
     : GraphicElement(ElementType::TruthTable, parent)
 {
     // 2048 bits = 256 rows × 8 output columns (max: 8 inputs × 8 outputs).
+    // Laid out as [row0_out0, row0_out1, ..., row0_out7, row1_out0, ...].
+    // All outputs default to 0 (all-false table).
     m_key.resize(2048);
     m_key.fill(0);
     TruthTable::updatePortsProperties();
@@ -212,13 +214,24 @@ void TruthTable::load(QDataStream &stream, SerializationContext &context)
 
 void TruthTable::updateLogic()
 {
-    if (!updateInputs()) {
+    if (!simUpdateInputsAllowUnknown()) {
         return;
     }
+
+    // If any input is Unknown/Error, the row cannot be determined
+    for (const auto s : simInputs()) {
+        if (s == Status::Unknown || s == Status::Error) {
+            for (int i = 0; i < outputSize(); ++i) {
+                setOutputValue(i, s);
+            }
+            return;
+        }
+    }
+
     for (int i = 0; i < outputSize(); ++i) {
         const auto pos = std::accumulate(simInputs().cbegin(), simInputs().cend(), QString(""),
-                                         [](QString acc, bool b) {
-                                             acc += (b == 1) ? '1' : '0';
+                                         [](QString acc, Status s) {
+                                             acc += (s == Status::Active) ? '1' : '0';
                                              return acc;
                                          }).toUInt(nullptr, 2);
         const bool result = m_key.at(static_cast<qsizetype>(256 * i) + static_cast<qsizetype>(pos));

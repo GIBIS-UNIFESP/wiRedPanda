@@ -108,6 +108,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Priorities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/StatusOps.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.h
@@ -347,6 +348,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestStatusOps.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestConnections.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestConnectionSerialization.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.cpp
@@ -489,6 +491,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogic.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestStatusOps.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestConnections.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestConnectionSerialization.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.h

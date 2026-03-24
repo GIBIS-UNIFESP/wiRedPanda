@@ -139,6 +139,7 @@
 #include "Tests/Unit/Logic/TestElementLogic.h"
 #include "Tests/Unit/Logic/TestElementLogicErrors.h"
 #include "Tests/Unit/Logic/TestNodeLogic.h"
+#include "Tests/Unit/Logic/TestStatusOps.h"
 // unit/nodes
 #include "Tests/Unit/Nodes/TestConnectionSerialization.h"
 #include "Tests/Unit/Nodes/TestConnections.h"
@@ -282,6 +283,7 @@ int main(int argc, char **argv)
         {"TestElementLogic", []() -> QObject * { return new TestElementLogic; }},
         {"TestElementLogicErrors", []() -> QObject * { return new TestElementLogicErrors; }},
         {"TestNodeLogic", []() -> QObject * { return new TestNodeLogic; }},
+        {"TestStatusOps", []() -> QObject * { return new TestStatusOps; }},
         {"TestConnectionSerialization", []() -> QObject * { return new TestConnectionSerialization; }},
         {"TestConnections", []() -> QObject * { return new TestConnections; }},
         {"TestConnectionValidity", []() -> QObject * { return new TestConnectionValidity; }},

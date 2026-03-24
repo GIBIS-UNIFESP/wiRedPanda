@@ -3,6 +3,7 @@
 
 #include "App/Element/GraphicElements/Not.h"
 
+#include "App/Core/StatusOps.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
@@ -46,9 +47,9 @@ Not::Not(QGraphicsItem *parent)
 
 void Not::updateLogic()
 {
-    if (!updateInputs()) {
+    if (!simUpdateInputsAllowUnknown()) {
         return;
     }
-    setOutputValue(!simInputs().at(0));
+    setOutputValue(StatusOps::statusNot(simInputs().at(0)));
 }
 

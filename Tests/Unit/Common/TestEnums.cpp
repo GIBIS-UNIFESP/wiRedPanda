@@ -274,13 +274,15 @@ void TestEnums::testStreamRoundTrip()
 void TestEnums::testStatusEnumValues()
 {
     // Test Status enum values
-    Status invalid = Status::Invalid;
+    Status unknown = Status::Unknown;
     Status inactive = Status::Inactive;
     Status active = Status::Active;
+    Status error = Status::Error;
 
-    QCOMPARE(static_cast<int>(invalid), -1);
+    QCOMPARE(static_cast<int>(unknown), -1);
     QCOMPARE(static_cast<int>(inactive), 0);
     QCOMPARE(static_cast<int>(active), 1);
+    QCOMPARE(static_cast<int>(error), 2);
 }
 
 void TestEnums::testStatusEnumToString()
@@ -288,17 +290,20 @@ void TestEnums::testStatusEnumToString()
     // Test Status enum has proper Q_ENUM support
     Status active = Status::Active;
     Status inactive = Status::Inactive;
-    Status invalid = Status::Invalid;
+    Status unknown = Status::Unknown;
+    Status error = Status::Error;
 
     // These should be convertible to strings via QVariant
     QVariant varActive = QVariant::fromValue(active);
     QVariant varInactive = QVariant::fromValue(inactive);
-    QVariant varInvalid = QVariant::fromValue(invalid);
+    QVariant varUnknown = QVariant::fromValue(unknown);
+    QVariant varError = QVariant::fromValue(error);
 
     // Verify they're not empty
     QVERIFY(!varActive.toString().isEmpty());
     QVERIFY(!varInactive.toString().isEmpty());
-    QVERIFY(!varInvalid.toString().isEmpty());
+    QVERIFY(!varUnknown.toString().isEmpty());
+    QVERIFY(!varError.toString().isEmpty());
 }
 
 // ============================================================

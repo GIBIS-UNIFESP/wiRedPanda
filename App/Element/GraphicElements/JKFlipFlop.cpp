@@ -85,35 +85,36 @@ void JKFlipFlop::updateTheme()
 
 void JKFlipFlop::updateLogic()
 {
-    if (!updateInputs()) {
+    if (!simUpdateInputs()) {
         return;
     }
-    bool q0 = outputValue(0);
-    bool q1 = outputValue(1);
-    const bool j = simInputs().at(0);
-    const bool clk = simInputs().at(1);
-    const bool k = simInputs().at(2);
-    const bool prst = simInputs().at(3);
-    const bool clr = simInputs().at(4);
+    Status q0 = simOutputs().at(0);
+    Status q1 = simOutputs().at(1);
+    const Status j = simInputs().at(0);
+    const Status clk = simInputs().at(1);
+    const Status k = simInputs().at(2);
+    const Status prst = simInputs().at(3);
+    const Status clr = simInputs().at(4);
 
-    if (clk && !m_lastClk) {
-        if (m_lastJ && m_lastK) {
+    if (clk == Status::Active && m_simLastClk == Status::Inactive) {
+        if (m_simLastJ == Status::Active && m_simLastK == Status::Active) {
             std::swap(q0, q1);
-        } else if (m_lastJ) {
-            q0 = true;
-            q1 = false;
-        } else if (m_lastK) {
-            q0 = false;
-            q1 = true;
+        } else if (m_simLastJ == Status::Active) {
+            q0 = Status::Active;
+            q1 = Status::Inactive;
+        } else if (m_simLastK == Status::Active) {
+            q0 = Status::Inactive;
+            q1 = Status::Active;
         }
     }
-    if (!prst || !clr) {
-        q0 = !prst;
-        q1 = !clr;
+
+    if (prst == Status::Inactive || clr == Status::Inactive) {
+        q0 = (prst == Status::Inactive) ? Status::Active : Status::Inactive;
+        q1 = (clr == Status::Inactive) ? Status::Active : Status::Inactive;
     }
-    m_lastClk = clk;
-    m_lastJ = j;
-    m_lastK = k;
+    m_simLastClk = clk;
+    m_simLastJ = j;
+    m_simLastK = k;
     setOutputValue(0, q0);
     setOutputValue(1, q1);
 }

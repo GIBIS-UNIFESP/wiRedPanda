@@ -3,8 +3,7 @@
 
 #include "App/Element/GraphicElements/And.h"
 
-#include <functional>
-
+#include "App/Core/StatusOps.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
@@ -50,10 +49,9 @@ And::And(QGraphicsItem *parent)
 
 void And::updateLogic()
 {
-    if (!updateInputs()) {
+    if (!simUpdateInputsAllowUnknown()) {
         return;
     }
-    const auto result = std::accumulate(simInputs().cbegin(), simInputs().cend(), true, std::bit_and<>());
-    setOutputValue(result);
+    setOutputValue(StatusOps::statusAndAll(simInputs()));
 }
 

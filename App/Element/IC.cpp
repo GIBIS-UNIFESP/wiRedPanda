@@ -602,7 +602,10 @@ void IC::updateLogic()
     // Push external input values to boundary input nodes' GraphicElement outputs.
     // Boundary input nodes are Nodes whose input port is in m_icInputs.
     // We set their output value directly and skip them in the update loop.
-    updateInputs();
+    // Permissive mode so ICs can propagate Unknown through their internal elements.
+    if (!simUpdateInputsAllowUnknown()) {
+        return;
+    }
     for (int i = 0; i < static_cast<int>(simInputs().size()) && i < m_icInputs.size(); ++i) {
         auto *internalElm = m_icInputs.at(i)->graphicElement();
         if (internalElm) {

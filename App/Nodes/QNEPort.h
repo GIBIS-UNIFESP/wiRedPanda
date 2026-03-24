@@ -55,7 +55,7 @@ public:
     /// Returns the default status applied when the port is unconnected.
     Status defaultValue() const;
 
-    /// Returns the current logical status (Active/Inactive/Invalid).
+    /// Returns the current logical status (Active/Inactive/Unknown/Error).
     Status status() const;
 
     /**
@@ -160,7 +160,7 @@ protected:
     QGraphicsTextItem *m_label = new QGraphicsTextItem(this); ///< Child text item displaying the port name label.
     QList<QNEConnection *> m_connections; // use smart pointers
     QString m_name;
-    Status m_defaultStatus = Status::Invalid;
+    Status m_defaultStatus = Status::Unknown;
     Status m_status = Status::Inactive;
     bool m_required = true;
     int m_index = 0;
