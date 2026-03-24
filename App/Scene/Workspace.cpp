@@ -14,11 +14,16 @@
 #include "App/Core/Common.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/IC.h"
+#include "App/Element/ICRegistry.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
+#include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Scene/Commands.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/Versions.h"
 
@@ -69,6 +74,54 @@ QFileInfo WorkSpace::fileInfo()
 void WorkSpace::save(const QString &fileName)
 {
     sentryBreadcrumb("file", QStringLiteral("Save: %1").arg(fileName));
+
+    if (m_isInlineIC) {
+        if (!m_parentWorkspace) {
+            qCWarning(zero) << "Inline IC tab: parent workspace was closed. Save is a no-op.";
+            return;
+        }
+
+        // Inline-IC tabs serialize to a blob and emit a signal instead of writing to disk.
+        const QString savedContextDir = m_scene.contextDir();
+        auto restoreCtx = qScopeGuard([&] { m_scene.setContextDir(savedContextDir); });
+        m_scene.setContextDir(m_parentContextDir);
+
+        // Embed any file-backed ICs so the blob is self-contained
+        for (auto *elm : m_scene.elements()) {
+            if (elm->elementType() == ElementType::IC && !elm->isEmbeddedIC()) {
+                auto *ic = static_cast<IC *>(elm);
+                const QString icFile = ic->icFile();
+                const QString baseName = QFileInfo(icFile).baseName();
+                if (!m_scene.icRegistry()->hasBlob(baseName)) {
+                    QFileInfo fi(QDir(m_parentContextDir), icFile);
+                    if (fi.exists()) {
+                        QFile f(fi.absoluteFilePath());
+                        if (f.open(QIODevice::ReadOnly)) {
+                            m_scene.icRegistry()->registerBlob(baseName, f.readAll());
+                        }
+                    }
+                }
+                ic->setBlobName(baseName);
+            }
+        }
+
+        // Serialize as a full .panda file (header + metadata + elements)
+        QByteArray blob;
+        QDataStream stream(&blob, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        stream << QString();   // dolphin
+        stream << QRectF();    // rect
+
+        QMap<QString, QVariant> metadata;
+        Serialization::serializeBlobRegistry(m_scene.icRegistry()->blobMap(), metadata);
+        stream << metadata;
+
+        Serialization::serialize(m_scene.items(), stream);
+
+        m_scene.undoStack()->setClean();
+        emit icBlobSaved(m_parentICElementId, blob);
+        return;
+    }
 
     QString fileName_ = fileName.isEmpty() ? m_fileInfo.absoluteFilePath() : fileName;
 
@@ -165,7 +218,61 @@ void WorkSpace::save(QDataStream &stream)
     // be opened automatically when the circuit is loaded.  Empty string means none.
     stream << m_dolphinFileName;
     stream << m_scene.sceneRect();
-    stream << QMap<QString, QVariant>();  // port metadata (used by IC sub-circuit files)
+
+    // Metadata section: port metadata for IC sub-circuits, blob registry for embedded ICs
+    QMap<QString, QVariant> metadata;
+
+    // Extract port metadata from Input/Output elements in the scene
+    {
+        int inputCount = 0, outputCount = 0;
+        QStringList inputLabels, outputLabels;
+        for (auto *elm : m_scene.elements()) {
+            if (elm->elementGroup() == ElementGroup::Input) {
+                for (int i = 0; i < elm->outputSize(); ++i) {
+                    ++inputCount;
+                    QString lb = elm->label().isEmpty() ? ElementFactory::translatedName(elm->elementType()) : elm->label();
+                    if (elm->outputSize() > 1 && !elm->outputPort(i)->name().isEmpty()) {
+                        lb += " " + elm->outputPort(i)->name();
+                    }
+                    inputLabels.append(lb);
+                }
+            } else if (elm->elementGroup() == ElementGroup::Output) {
+                for (int i = 0; i < elm->inputSize(); ++i) {
+                    ++outputCount;
+                    QString lb = elm->label().isEmpty() ? ElementFactory::translatedName(elm->elementType()) : elm->label();
+                    if (elm->inputSize() > 1 && !elm->inputPort(i)->name().isEmpty()) {
+                        lb += " " + elm->inputPort(i)->name();
+                    }
+                    outputLabels.append(lb);
+                }
+            }
+        }
+        if (inputCount > 0 || outputCount > 0) {
+            metadata["inputCount"] = inputCount;
+            metadata["outputCount"] = outputCount;
+            metadata["inputLabels"] = inputLabels;
+            metadata["outputLabels"] = outputLabels;
+        }
+    }
+
+    Serialization::serializeBlobRegistry(m_scene.icRegistry()->blobMap(), metadata);
+
+    // Collect unique file-backed IC filenames for copyFiles (Save As).
+    QStringList fileBackedICs;
+    for (auto *elm : m_scene.elements()) {
+        if (elm->elementType() == ElementType::IC && !elm->isEmbeddedIC()) {
+            const QString icFile = static_cast<IC *>(elm)->icFile();
+            if (!icFile.isEmpty() && !fileBackedICs.contains(QFileInfo(icFile).fileName())) {
+                fileBackedICs.append(QFileInfo(icFile).fileName());
+            }
+        }
+    }
+    if (!fileBackedICs.isEmpty()) {
+        metadata["fileBackedICs"] = fileBackedICs;
+    }
+
+    stream << metadata;
+
     Serialization::serialize(m_scene.items(), stream);
 }
 
@@ -242,23 +349,37 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
     // relative to the stored rect (e.g., old files with a different viewport origin).
     Serialization::loadRect(stream, version);
 
-    // Read port metadata (introduced in V_4_5). Top-level circuits have an empty map;
-    // IC sub-circuit files store input/output count and labels here.
-    if (version >= Versions::V_4_5) {
-        QMap<QString, QVariant> portMeta;
-        stream >> portMeta;
+    // Read metadata section (introduced in V_4_5). Contains port metadata for
+    // IC sub-circuits and blob registry for embedded ICs.
+    QMap<QString, QByteArray> blobRegistry;
+    if (VersionInfo::hasMetadata(version)) {
+        QMap<QString, QVariant> metadata;
+        stream >> metadata;
+        blobRegistry = Serialization::deserializeBlobRegistry(metadata);
     }
 
+    // Populate the scene's IC registry with embedded IC blobs
+    for (auto it = blobRegistry.cbegin(); it != blobRegistry.cend(); ++it) {
+        m_scene.icRegistry()->setBlob(it.key(), it.value());
+    }
+
+    QMap<quint64, QNEPort *> portMap;
     if (!contextDir.isEmpty()) {
         m_scene.setContextDir(contextDir);
     }
-    QMap<quint64, QNEPort *> portMap;
     auto context = m_scene.deserializationContext(portMap, version);
+    context.contextDir = contextDir;
     const auto items = Serialization::deserialize(stream, context);
     qCDebug(zero) << "Finished loading items.";
 
     for (auto *item : items) {
         m_scene.addItem(item);
+
+        // Track the highest element ID seen so that newly created elements
+        // will receive IDs that don't collide with those just loaded
+        if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
+            m_lastId = qMax(m_lastId, ge->id());
+        }
     }
 
     m_scene.setLastId(m_lastId);
@@ -306,6 +427,10 @@ void WorkSpace::setLastId(int newLastId)
 
 void WorkSpace::autosave()
 {
+    if (m_isInlineIC) {
+        return; // Inline IC tabs don't autosave to disk
+    }
+
     qCDebug(two) << "Starting autosave.";
     QStringList autosaves = Settings::autosaveFiles();
     qCDebug(three) << "All auto save file names before autosaving: " << autosaves;
@@ -386,14 +511,137 @@ void WorkSpace::setAutosaveFile()
     m_autosaveFile.setFileName(m_fileInfo.filePath());
 }
 
+void WorkSpace::createVersionedBackup(const QString &fileName, const QVersionNumber &version)
+{
+    Serialization::createVersionedBackup(fileName, version);
+}
+
+void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icElementId, const QString &parentContextDir)
+{
+    SimulationBlocker simulationBlocker(m_scene.simulation());
+
+    if (!parentContextDir.isEmpty()) {
+        m_scene.setContextDir(parentContextDir);
+    }
+
+    // Blob is a full .panda file
+    QByteArray blobData(blob);
+    QDataStream stream(&blobData, QIODevice::ReadOnly);
+    const auto preamble = Serialization::readPreamble(stream);
+
+    const auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata);
+    for (auto it = blobRegistry.cbegin(); it != blobRegistry.cend(); ++it) {
+        m_scene.icRegistry()->setBlob(it.key(), it.value());
+    }
+
+    QMap<quint64, QNEPort *> portMap;
+    auto context = m_scene.deserializationContext(portMap, preamble.version);
+    context.contextDir = parentContextDir;
+    const auto items = Serialization::deserialize(stream, context);
+
+    for (auto *item : items) {
+        m_scene.addItem(item);
+
+        if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
+            m_lastId = qMax(m_lastId, ge->id());
+        }
+    }
+
+    m_scene.setLastId(m_lastId);
+    m_scene.setSceneRect(m_scene.itemsBoundingRect());
+
+    // Set inline-IC mode after successful deserialization
+    m_isInlineIC = true;
+    m_parentWorkspace = parent;
+    m_parentICElementId = icElementId;
+    m_parentContextDir = parentContextDir;
+
+    // Derive blob name from the parent IC element
+    if (parent) {
+        if (auto *item = parent->scene()->itemById(icElementId)) {
+            if (auto *elm = dynamic_cast<GraphicElement *>(item)) {
+                m_inlineBlobName = elm->blobName();
+            }
+        }
+    }
+}
+
+void WorkSpace::onChildICBlobSaved(int icElementId, const QByteArray &blob)
+{
+    auto *item = m_scene.itemById(icElementId);
+    if (!item) {
+        return; // Orphaned child tab — IC was deleted or undone
+    }
+
+    auto *elm = dynamic_cast<GraphicElement *>(item);
+    if (!elm || !elm->isEmbeddedIC()) {
+        return;
+    }
+
+    const QString targetBlobName = elm->blobName();
+    const auto targets = m_scene.icRegistry()->findICsByBlobName(targetBlobName);
+    if (targets.isEmpty()) {
+        return;
+    }
+
+    const auto connections = UpdateBlobCommand::captureConnections(targets);
+
+    SimulationBlocker simulationBlocker(m_scene.simulation());
+
+    const QByteArray oldData = ICRegistry::captureSnapshot(targets);
+    QByteArray oldBlob = m_scene.icRegistry()->blob(targetBlobName);
+
+    // Update the registry and reload all targets
+    m_scene.icRegistry()->setBlob(targetBlobName, blob);
+    for (auto *target : targets) {
+        auto *ic = static_cast<IC *>(target);
+        ic->loadFromBlob(blob, m_scene.contextDir());
+    }
+
+    auto *cmd = new UpdateBlobCommand(targets, oldData, connections, &m_scene);
+    cmd->setOldBlob(oldBlob);
+    m_scene.undoStack()->push(cmd);
+}
+
+void WorkSpace::removeEmbeddedIC(const QString &blobName)
+{
+    QList<QGraphicsItem *> toDelete;
+
+    for (auto *item : m_scene.items()) {
+        if (item->type() != GraphicElement::Type) {
+            continue;
+        }
+        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        if (elm && elm->isEmbeddedIC() && elm->blobName() == blobName) {
+            toDelete.append(item);
+            // Also collect connections to this element
+            for (int i = 0; i < elm->inputSize(); ++i) {
+                for (auto *conn : elm->inputPort(i)->connections()) {
+                    if (!toDelete.contains(conn)) {
+                        toDelete.append(conn);
+                    }
+                }
+            }
+            for (int i = 0; i < elm->outputSize(); ++i) {
+                for (auto *conn : elm->outputPort(i)->connections()) {
+                    if (!toDelete.contains(conn)) {
+                        toDelete.append(conn);
+                    }
+                }
+            }
+        }
+    }
+
+    if (!toDelete.isEmpty()) {
+        m_scene.receiveCommand(new DeleteItemsCommand(toDelete, &m_scene));
+    }
+
+    m_scene.icRegistry()->removeBlob(blobName);
+}
+
 void WorkSpace::setCurrentFile(const QString &filePath)
 {
     m_fileInfo = QFileInfo(filePath);
     m_scene.setContextDir(m_fileInfo.absolutePath());
-}
-
-void WorkSpace::createVersionedBackup(const QString &fileName, const QVersionNumber &version)
-{
-    Serialization::createVersionedBackup(fileName, version);
 }
 

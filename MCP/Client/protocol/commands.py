@@ -274,6 +274,33 @@ class InstantiateIcCommand(MCPCommand):
         x: Annotated[float, Field(ge=-2147483648, le=2147483647, description="X coordinate")]
         y: Annotated[float, Field(ge=-2147483648, le=2147483647, description="Y coordinate")]
         label: Optional[str] = Field(default=None, description="Optional instance label")
+        inline: Optional[bool] = Field(default=False, description="Create as embedded IC")
+        blob_name: Optional[str] = Field(default=None, description="Custom blob name for inline mode")
+
+        model_config = ConfigDict(extra="forbid")
+
+    params: Parameters
+
+
+class EmbedIcCommand(MCPCommand):
+    """Model for embed_ic command"""
+
+    class Parameters(BaseModel):
+        element_id: Annotated[int, Field(gt=0)]
+        blob_name: Optional[str] = Field(default=None, description="Optional blob name override")
+
+        model_config = ConfigDict(extra="forbid")
+
+    params: Parameters
+
+
+class ExtractIcCommand(MCPCommand):
+    """Model for extract_ic command"""
+
+    class Parameters(BaseModel):
+        blob_name: Annotated[str, Field(min_length=1)]
+        file_name: Optional[str] = Field(default=None, description="Optional output file path")
+        overwrite: Optional[bool] = Field(default=False, description="Overwrite existing file")
 
         model_config = ConfigDict(extra="forbid")
 

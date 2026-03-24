@@ -135,6 +135,9 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionExportToImage = new QAction(MainWindow);
     actionExportToImage->setObjectName("actionExportToImage");
     actionExportToImage->setIcon(QIcon(":/Interface/Toolbar/png.svg"));
+
+    actionMakeSelfContained = new QAction(MainWindow);
+    actionMakeSelfContained->setObjectName("actionMakeSelfContained");
     actionFlipHorizontally = new QAction(MainWindow);
     actionFlipHorizontally->setObjectName("actionFlipHorizontally");
     actionFlipVertically = new QAction(MainWindow);
@@ -337,31 +340,26 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     gridLayout_4->setSpacing(6);
     gridLayout_4->setContentsMargins(11, 11, 11, 11);
     gridLayout_4->setObjectName("gridLayout_4");
-    scrollArea_Box = new QScrollArea(ic);
-    scrollArea_Box->setObjectName("scrollArea_Box");
-    scrollArea_Box->setFrameShape(QFrame::NoFrame);
-    scrollArea_Box->setWidgetResizable(true);
-    scrollAreaWidgetContents_IC = new QWidget();
-    scrollAreaWidgetContents_IC->setObjectName("scrollAreaWidgetContents_IC");
-    scrollAreaWidgetContents_IC->setGeometry(QRect(0, 0, 260, 552));
-    verticalLayout_4 = new QVBoxLayout(scrollAreaWidgetContents_IC);
-    verticalLayout_4->setSpacing(6);
-    verticalLayout_4->setContentsMargins(11, 11, 11, 11);
-    verticalLayout_4->setObjectName("verticalLayout_4");
-    verticalSpacer_IC = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-    verticalLayout_4->addItem(verticalSpacer_IC);
+    int icRow = 0;
 
-    scrollArea_Box->setWidget(scrollAreaWidgetContents_IC);
+    pushButtonMakeSelfContained = new QPushButton(ic);
+    pushButtonMakeSelfContained->setObjectName("pushButtonMakeSelfContained");
+    gridLayout_4->addWidget(pushButtonMakeSelfContained, icRow++, 0, 1, 1);
 
-    gridLayout_4->addWidget(scrollArea_Box, 1, 0, 1, 1);
+    // --- File-based ICs section ---
+    labelFileBasedICs = new QLabel(ic);
+    labelFileBasedICs->setObjectName("labelFileBasedICs");
+    QFont boldFont;
+    boldFont.setBold(true);
+    labelFileBasedICs->setFont(boldFont);
+    gridLayout_4->addWidget(labelFileBasedICs, icRow++, 0, 1, 1);
 
     horizontalLayout = new QHBoxLayout();
     horizontalLayout->setSpacing(6);
     horizontalLayout->setObjectName("horizontalLayout");
     pushButtonAddIC = new QPushButton(ic);
     pushButtonAddIC->setObjectName("pushButtonAddIC");
-
     horizontalLayout->addWidget(pushButtonAddIC);
 
     pushButtonRemoveIC = new TrashButton(ic);
@@ -372,10 +370,78 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     sizePolicy2.setHeightForWidth(pushButtonRemoveIC->sizePolicy().hasHeightForWidth());
     pushButtonRemoveIC->setSizePolicy(sizePolicy2);
     pushButtonRemoveIC->setIcon(QIcon(":/Interface/Toolbar/trashcan.svg"));
-
     horizontalLayout->addWidget(pushButtonRemoveIC);
 
-    gridLayout_4->addLayout(horizontalLayout, 0, 0, 1, 1);
+    gridLayout_4->addLayout(horizontalLayout, icRow++, 0, 1, 1);
+
+    dropZoneFileBased = new ICDropZone(ICDropZone::Section::FileBased, ic);
+    dropZoneFileBased->setObjectName("dropZoneFileBased");
+    auto *dropZoneFileBasedLayout = new QVBoxLayout(dropZoneFileBased);
+    dropZoneFileBasedLayout->setContentsMargins(0, 0, 0, 0);
+
+    scrollArea_Box = new QScrollArea(dropZoneFileBased);
+    scrollArea_Box->setObjectName("scrollArea_Box");
+    scrollArea_Box->setFrameShape(QFrame::NoFrame);
+    scrollArea_Box->setWidgetResizable(true);
+    scrollAreaWidgetContents_IC = new QWidget();
+    scrollAreaWidgetContents_IC->setObjectName("scrollAreaWidgetContents_IC");
+    verticalLayout_4 = new QVBoxLayout(scrollAreaWidgetContents_IC);
+    verticalLayout_4->setSpacing(6);
+    verticalLayout_4->setContentsMargins(11, 11, 11, 11);
+    verticalLayout_4->setObjectName("verticalLayout_4");
+    verticalSpacer_IC = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    verticalLayout_4->addItem(verticalSpacer_IC);
+    scrollArea_Box->setWidget(scrollAreaWidgetContents_IC);
+    dropZoneFileBasedLayout->addWidget(scrollArea_Box);
+
+    gridLayout_4->addWidget(dropZoneFileBased, icRow++, 0, 1, 1);
+
+    // --- Embedded ICs section ---
+    labelEmbeddedICs = new QLabel(ic);
+    labelEmbeddedICs->setObjectName("labelEmbeddedICs");
+    labelEmbeddedICs->setFont(boldFont);
+    gridLayout_4->addWidget(labelEmbeddedICs, icRow++, 0, 1, 1);
+
+    horizontalLayoutEmbeddedIC = new QHBoxLayout();
+    horizontalLayoutEmbeddedIC->setSpacing(6);
+    horizontalLayoutEmbeddedIC->setObjectName("horizontalLayoutEmbeddedIC");
+    pushButtonAddEmbeddedIC = new QPushButton(ic);
+    pushButtonAddEmbeddedIC->setObjectName("pushButtonAddEmbeddedIC");
+    horizontalLayoutEmbeddedIC->addWidget(pushButtonAddEmbeddedIC);
+
+    pushButtonRemoveEmbeddedIC = new TrashButton(ic);
+    pushButtonRemoveEmbeddedIC->setObjectName("pushButtonRemoveEmbeddedIC");
+    pushButtonRemoveEmbeddedIC->setSizePolicy(sizePolicy2);
+    pushButtonRemoveEmbeddedIC->setIcon(QIcon(":/Interface/Toolbar/trashcan.svg"));
+    horizontalLayoutEmbeddedIC->addWidget(pushButtonRemoveEmbeddedIC);
+
+    gridLayout_4->addLayout(horizontalLayoutEmbeddedIC, icRow++, 0, 1, 1);
+
+    dropZoneEmbedded = new ICDropZone(ICDropZone::Section::Embedded, ic);
+    dropZoneEmbedded->setObjectName("dropZoneEmbedded");
+    auto *dropZoneEmbeddedLayout = new QVBoxLayout(dropZoneEmbedded);
+    dropZoneEmbeddedLayout->setContentsMargins(0, 0, 0, 0);
+
+    scrollAreaEmbeddedIC = new QScrollArea(dropZoneEmbedded);
+    scrollAreaEmbeddedIC->setObjectName("scrollAreaEmbeddedIC");
+    scrollAreaEmbeddedIC->setFrameShape(QFrame::NoFrame);
+    scrollAreaEmbeddedIC->setWidgetResizable(true);
+    scrollAreaWidgetContents_EmbeddedIC = new QWidget();
+    scrollAreaWidgetContents_EmbeddedIC->setObjectName("scrollAreaWidgetContents_EmbeddedIC");
+    verticalLayout_EmbeddedIC = new QVBoxLayout(scrollAreaWidgetContents_EmbeddedIC);
+    verticalLayout_EmbeddedIC->setSpacing(6);
+    verticalLayout_EmbeddedIC->setContentsMargins(11, 11, 11, 11);
+    verticalLayout_EmbeddedIC->setObjectName("verticalLayout_EmbeddedIC");
+    verticalSpacer_EmbeddedIC = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    verticalLayout_EmbeddedIC->addItem(verticalSpacer_EmbeddedIC);
+    scrollAreaEmbeddedIC->setWidget(scrollAreaWidgetContents_EmbeddedIC);
+    dropZoneEmbeddedLayout->addWidget(scrollAreaEmbeddedIC);
+
+    gridLayout_4->addWidget(dropZoneEmbedded, icRow++, 0, 1, 1);
+
+    // Give both scroll areas equal stretch
+    gridLayout_4->setRowStretch(3, 1);
+    gridLayout_4->setRowStretch(6, 1);
 
     tabElements->addTab(ic, QIcon(":/Components/Logic/ic-panda.svg"), QString());
     misc = new QWidget();
@@ -572,6 +638,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuFile->addAction(actionExportToPdf);
     menuFile->addAction(actionExportToImage);
     menuFile->addSeparator();
+    menuFile->addAction(actionMakeSelfContained);
+    menuFile->addSeparator();
     menuFile->addAction(actionExit);
     menuFile->addSeparator();
     menuRecentFiles->addSeparator();
@@ -693,6 +761,7 @@ void MainWindowUi::retranslateUi()
     actionWaveform->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+W"));
     actionExportToImage->setText(QCoreApplication::translate("MainWindow", "Export to &Image"));
     actionExportToImage->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+E"));
+    actionMakeSelfContained->setText(QCoreApplication::translate("MainWindow", "Make file self-contained"));
     actionFlipHorizontally->setText(QCoreApplication::translate("MainWindow", "&Flip horizontally"));
     actionFlipHorizontally->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+H"));
     actionFlipVertically->setText(QCoreApplication::translate("MainWindow", "Flip &vertically"));
@@ -717,8 +786,13 @@ void MainWindowUi::retranslateUi()
     tabElements->setTabToolTip(tabElements->indexOf(combinational), QCoreApplication::translate("MainWindow", "Combinational"));
     tabElements->setTabText(tabElements->indexOf(memory), QString());
     tabElements->setTabToolTip(tabElements->indexOf(memory), QCoreApplication::translate("MainWindow", "Memory"));
+    labelFileBasedICs->setText(QCoreApplication::translate("MainWindow", "File-based ICs"));
     pushButtonAddIC->setText(QCoreApplication::translate("MainWindow", "Add IC files"));
     pushButtonRemoveIC->setText(QCoreApplication::translate("MainWindow", "Remove IC"));
+    pushButtonMakeSelfContained->setText(QCoreApplication::translate("MainWindow", "Make file self-contained"));
+    labelEmbeddedICs->setText(QCoreApplication::translate("MainWindow", "Embedded ICs"));
+    pushButtonAddEmbeddedIC->setText(QCoreApplication::translate("MainWindow", "Embed IC"));
+    pushButtonRemoveEmbeddedIC->setText(QCoreApplication::translate("MainWindow", "Remove IC"));
     tabElements->setTabText(tabElements->indexOf(ic), QString());
     tabElements->setTabToolTip(tabElements->indexOf(ic), QCoreApplication::translate("MainWindow", "Integrated Circuits"));
     tabElements->setTabText(tabElements->indexOf(misc), QString());

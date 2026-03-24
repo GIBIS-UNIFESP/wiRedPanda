@@ -13,7 +13,9 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
+#include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
+#include "App/Scene/Scene.h"
 #include "App/UI/MainWindowUI.h"
 
 ElementPalette::ElementPalette(MainWindowUi *ui, QObject *parent)
@@ -84,6 +86,47 @@ void ElementPalette::updateICList(const QFileInfo &currentFile)
     }
 
     m_ui->scrollAreaWidgetContents_IC->layout()->addItem(m_ui->verticalSpacer_IC);
+}
+
+void ElementPalette::updateEmbeddedICList(Scene *scene)
+{
+    // Remove existing embedded IC labels
+    const auto existingLabels = m_ui->scrollAreaWidgetContents_EmbeddedIC->findChildren<ElementLabel *>("label_embedded_ic");
+    for (auto *item : existingLabels) {
+        item->deleteLater();
+    }
+
+    const auto searchLabels = m_ui->scrollAreaWidgetContents_Search->findChildren<ElementLabel *>("label_embedded_ic");
+    for (auto *item : searchLabels) {
+        item->deleteLater();
+    }
+
+    if (!scene) {
+        return;
+    }
+
+    // Collect all blob names from the registry
+    QStringList seenBlobNames;
+    if (scene->icRegistry()) {
+        seenBlobNames = scene->icRegistry()->blobMap().keys();
+    }
+
+    // Remove spacer, add labels, restore spacer
+    m_ui->scrollAreaWidgetContents_EmbeddedIC->layout()->removeItem(m_ui->verticalSpacer_EmbeddedIC);
+
+    const QPixmap pixmap(":/Components/Logic/ic-panda-embedded.svg");
+
+    for (const QString &bn : std::as_const(seenBlobNames)) {
+        auto *item = new ElementLabel(pixmap, ElementType::IC, bn, m_ui->scrollAreaWidgetContents_EmbeddedIC, true);
+        item->setObjectName("label_embedded_ic");
+        m_ui->scrollAreaWidgetContents_EmbeddedIC->layout()->addWidget(item);
+
+        auto *item2 = new ElementLabel(pixmap, ElementType::IC, bn, m_ui->scrollAreaWidgetContents_Search, true);
+        item2->setObjectName("label_embedded_ic");
+        m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(item2);
+    }
+
+    m_ui->scrollAreaWidgetContents_EmbeddedIC->layout()->addItem(m_ui->verticalSpacer_EmbeddedIC);
 }
 
 void ElementPalette::retranslateLabels()

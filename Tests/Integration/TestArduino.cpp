@@ -31,11 +31,13 @@ QString TestArduino::s_cliCachePath;
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
+#include "App/Element/ICRegistry.h"
 #include "App/Core/Priorities.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
+#include "Tests/Common/ICTestHelpers.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
@@ -1743,6 +1745,52 @@ void TestArduino::testWirelessOrphanedRxCodegen()
 
     delete conn;
     qDeleteAll(elements);
+}
+
+void TestArduino::testEmbeddedICGeneration()
+{
+    // An embedded IC must generate correct Arduino code — the IC's internal logic
+    // should be inlined as a function, not produce an error or empty output.
+    std::unique_ptr<WorkSpace> ws = TestUtils::createWorkspace();
+
+    const QString fixtureDir = QString(QUOTE(CURRENTDIR)) + "/../Tests/Integration/IC/Components/";
+    ws->scene()->setContextDir(fixtureDir);
+    auto *reg = ws->scene()->icRegistry();
+
+    auto *ic = new IC();
+    auto *sw1 = new InputSwitch();
+    auto *sw2 = new InputSwitch();
+    auto *led = new Led();
+
+    CircuitBuilder builder(ws->scene());
+    builder.add(sw1, sw2, ic, led);
+
+    const QByteArray pandaBytes = ICTestHelpers::readFile(fixtureDir + "level2_half_adder.panda");
+    QVERIFY2(!pandaBytes.isEmpty(), "Fixture file level2_half_adder.panda must exist");
+    ICTestHelpers::embedIC(ic, pandaBytes, "embedded_adder", fixtureDir, reg);
+
+    QVERIFY(ic->isEmbeddedIC());
+    QVERIFY(ic->inputSize() > 0);
+    QVERIFY(ic->outputSize() > 0);
+
+    builder.connect(sw1, 0, ic, 0);
+    builder.connect(sw2, 0, ic, 1);
+    builder.connect(ic, 0, led, 0);
+    builder.initSimulation();
+
+    QVector<GraphicElement *> allElements;
+    for (auto *item : ws->scene()->items()) {
+        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item))
+            allElements.append(elm);
+    }
+
+    auto code = generateFromElements(allElements);
+    QVERIFY2(code.success, "Embedded IC Arduino generation should succeed");
+    QVERIFY2(!code.content.isEmpty(), "Generated Arduino code should not be empty");
+
+    // The generated code must contain a computeLogic function with assignments
+    QVERIFY2(code.content.contains("void computeLogic()"),
+             "Generated code must contain computeLogic()");
 }
 
 void TestArduino::testMuxDemuxIntegration()

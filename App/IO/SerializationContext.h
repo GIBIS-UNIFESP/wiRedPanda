@@ -43,5 +43,7 @@ struct SerializationContext {
     /// Sequential counter used as the element-local basis for port serialId fallback
     /// (V4.1.9–V4.3 files that lack the serialId key). Incremented once per element.
     int nextLocalId = 1;
+    /// Blob registry for resolving embedded IC blobNames during deserialization.
+    QMap<QString, QByteArray> *blobRegistry = nullptr;
 };
 

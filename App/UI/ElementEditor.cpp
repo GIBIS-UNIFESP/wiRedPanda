@@ -12,6 +12,7 @@
 #include <QImageReader>
 #include <QMessageBox>
 
+#include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
@@ -19,6 +20,8 @@
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
+#include "App/Element/IC.h"
+#include "App/Element/ICRegistry.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Commands.h"
@@ -27,6 +30,7 @@
 #include "App/UI/ElementEditorUI.h"
 #include "App/UI/ElementTabNavigator.h"
 #include "App/UI/LabeledSlider.h"
+#include "App/UI/MainWindow.h"
 #include "App/UI/SelectionCapabilities.h"
 
 ElementEditor::ElementEditor(QWidget *parent)
@@ -131,7 +135,20 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
         [this] { changeTriggerAction(); },
         [this] { updateElementSkin(); },
         [this] { m_isDefaultSkin = true; m_isUpdatingSkin = true; apply(); },
-        [this] { m_ui->doubleSpinBoxFrequency->setFocus(); }
+        [this] { m_ui->doubleSpinBoxFrequency->setFocus(); },
+        // IC sub-circuit actions
+        [this] {
+            if (m_elements.isEmpty()) return;
+            auto *elm = m_elements.first();
+            if (elm->isEmbeddedIC()) {
+                emit editSubcircuitRequested(elm->blobName(), elm->id());
+            } else if (elm->elementType() == ElementType::IC) {
+                auto *ic = static_cast<IC *>(elm);
+                Application::instance()->mainWindow()->loadPandaFile(ic->icFile());
+            }
+        },
+        [this] { emit embedSubcircuitRequested(); },
+        [this] { emit extractToFileRequested(); }
     );
 }
 
@@ -207,8 +224,12 @@ void ElementEditor::fillColorComboBox()
 void ElementEditor::retranslateUi()
 {
     m_ui->retranslateUi(this);
+    // Color names are translated strings; rebuild the combo box so current-language
+    // names are shown.
     fillColorComboBox();
 
+    // Refresh the editor with the current selection in case any visible text
+    // (e.g. "Many values") needs to be re-translated.
     if (m_scene) {
         selectionChanged();
     }
@@ -271,6 +292,8 @@ void ElementEditor::applyCapabilitiesToUi()
             m_ui->doubleSpinBoxFrequency->setSpecialValueText({});
             m_ui->doubleSpinBoxFrequency->setValue(static_cast<double>(firstElement->frequency()));
         } else {
+            // Lower the minimum to 0.0 so setValue(0.0) triggers the special
+            // value text "many frequencies" without violating the validator.
             m_ui->doubleSpinBoxFrequency->setMinimum(0.0);
             m_ui->doubleSpinBoxFrequency->setSpecialValueText(m_manyFreq);
             m_ui->doubleSpinBoxFrequency->setValue(0.0);
@@ -319,6 +342,8 @@ void ElementEditor::applyCapabilitiesToUi()
                 m_ui->comboBoxOutputSize->addItem(QString::number(n), n);
             }
         } else {
+            // For generic multi-output elements (e.g. Node) offer a curated set
+            // of common bus widths rather than every value in [min, max].
             for (int n : {2, 3, 4, 6, 8, 10, 12, 16}) {
                 m_ui->comboBoxOutputSize->addItem(QString::number(n), n);
             }
@@ -393,6 +418,17 @@ void ElementEditor::applyCapabilitiesToUi()
             QSignalBlocker blocker(m_ui->comboBoxWirelessMode);
             m_ui->comboBoxWirelessMode->setCurrentIndex(static_cast<int>(first->wirelessMode()));
         }
+    }
+
+    /* Blob name — embedded ICs only */
+    setSection(c.isEmbedded, m_ui->labelBlobName, m_ui->lineEditBlobName);
+    if (c.isEmbedded && !m_elements.isEmpty()) {
+        const auto *firstElm = m_elements.constFirst();
+        const bool sameBlobName = std::all_of(m_elements.cbegin(), m_elements.cend(), [&](GraphicElement *elm) {
+            return elm->blobName() == firstElm->blobName();
+        });
+        QSignalBlocker blocker(m_ui->lineEditBlobName);
+        m_ui->lineEditBlobName->setText(sameBlobName ? firstElement->blobName() : m_manyLabels);
     }
 }
 
@@ -496,21 +532,6 @@ void ElementEditor::apply()
         }
     }
 
-    QByteArray oldData;
-    QDataStream stream(&oldData, QIODevice::WriteOnly);
-    Serialization::writePandaHeader(stream);
-
-    for (auto *elm : std::as_const(m_elements)) {
-        elm->save(stream);
-        for (const auto &prop : elm->editableProperties()) {
-            applyProperty(elm, prop.type);
-        }
-    }
-
-    if (m_isUpdatingSkin) {
-        m_isUpdatingSkin = false;
-    }
-
     // Collect connections that will be severed by wireless mode changes.
     // setWirelessMode() hides the replaced port but does not delete connections
     // itself — that is handled here via DeleteItemsCommand so undo can restore them.
@@ -536,6 +557,34 @@ void ElementEditor::apply()
         }
     }
 
+    // Snapshot current state into oldData before modifying anything.
+    // UpdateCommand uses oldData for undo and captures the post-modification
+    // state internally as newData when it is constructed.
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+
+    for (auto *elm : std::as_const(m_elements)) {
+        elm->save(stream);
+        for (const auto &prop : elm->editableProperties()) {
+            applyProperty(elm, prop.type);
+        }
+    }
+
+    // Apply blob name rename via ICRegistry (updates registry key + all instances)
+    if (m_caps.isEmbedded && !m_elements.isEmpty()) {
+        const QString newBlobName = m_ui->lineEditBlobName->text().trimmed();
+        const QString oldBlobName = m_elements.first()->blobName();
+        if (!newBlobName.isEmpty() && newBlobName != oldBlobName) {
+            m_scene->icRegistry()->renameBlob(oldBlobName, newBlobName);
+        }
+    }
+
+    // Reset the one-shot skin update flag after applying to all elements.
+    if (m_isUpdatingSkin) {
+        m_isUpdatingSkin = false;
+    }
+
     // When wireless mode changes sever connections, group the property update
     // and the delete into a single undo macro so both are undone together.
     const bool needsMacro = !wirelessConnsToDelete.isEmpty();
@@ -543,7 +592,7 @@ void ElementEditor::apply()
         m_scene->undoStack()->beginMacro(tr("Change wireless mode"));
     }
 
-    emit sendCommand(new UpdateCommand(m_elements, oldData, m_scene));
+    m_scene->receiveCommand(new UpdateCommand(m_elements, oldData, m_scene));
 
     if (needsMacro) {
         m_scene->receiveCommand(new DeleteItemsCommand(wirelessConnsToDelete, m_scene));
@@ -589,10 +638,13 @@ void ElementEditor::outputValueChanged(const QString &value)
 
     for (auto *elm : std::as_const(m_elements)) {
         if (elm->elementType() == ElementType::InputRotary) {
+            // InputRotary carries a multi-bit integer value; keep it enabled
+            // (first arg true) and update the numeric output.
             if (auto *input = qobject_cast<InputRotary *>(elm)) {
                 input->setOn(true, newValue);
             }
         } else {
+            // Regular binary inputs treat any non-zero value as "on".
             if (auto *input = qobject_cast<GraphicElementInput *>(elm)) {
                 input->setOn(static_cast<bool>(newValue));
             }
@@ -633,11 +685,16 @@ void ElementEditor::truthTable()
         return;
     }
 
+    // Only a single TruthTable element is supported at a time.
+
     int nInputs = truthtable->inputSize();
     int nOutputs = truthtable->outputSize();
 
+    // --- Build / refresh table ---
     QStringList inputLabels;
+    // Columns: nInputs input columns (A, B, C, …) + nOutputs output columns (S0, S1, …).
     m_table->setColumnCount(nInputs + nOutputs);
+    // Rows: one per input combination — 2^nInputs.
     m_table->setRowCount(static_cast<int>(std::pow(2, nInputs)));
 
     for (int i = 0; i < nInputs; ++i) {
@@ -654,16 +711,19 @@ void ElementEditor::truthTable()
     for (int i = 0; i < std::pow(2, nInputs); ++i) {
         for (int j = 0; j < nInputs; ++j) {
             m_table->setColumnWidth(j, 14);
+            // Convert row index to binary string, zero-padded to nInputs digits.
             auto newItemValue = QString::number(i, 2);
 
             if (newItemValue.size() < nInputs) {
                 newItemValue = newItemValue.rightJustified(nInputs, '0');
             }
 
+            // Reuse existing items to avoid re-allocating on every refresh.
             if (m_table->item(i, j) == nullptr) {
                 auto *newItem = new QTableWidgetItem(newItemValue.at(j), QTableWidgetItem::Type);
                 newItem->setTextAlignment(Qt::AlignCenter);
                 m_table->setItem(i, j, newItem);
+                // Input columns are read-only; only output cells can be toggled.
                 m_table->item(i, j)->setFlags(Qt::ItemIsEnabled);
             }
 
@@ -673,6 +733,8 @@ void ElementEditor::truthTable()
         auto bitArray = truthtable->key();
 
         for (int z = 0; z < nOutputs; ++z) {
+            // The key QBitArray stores all outputs interleaved: output z at row i
+            // lives at index 256*z + i (256 rows max per output).
             const int output = bitArray.at(256 * z + i);
 
             if (m_table->item(i, nInputs + z) == nullptr) {
@@ -693,13 +755,17 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
 {
     if (m_elements.size() > 1) return;
 
+    // Input columns (< nInputs) are read-only; only output columns are editable.
     if (column < m_elements[0]->inputSize()) return;
 
+    // Toggle the cell text immediately for visual feedback before the command
+    // propagates through the undo stack.
     auto cellItem = m_table->item(row, column);
     cellItem->setText((cellItem->text() == "0") ? "1" : "0");
 
     auto truthtable = m_elements[0];
     const int nInputs = truthtable->inputSize();
+    // Compute the flat bit index using the same layout as truthTable(): 256*outputCol + row.
     const int positionToChange = 256 * (column - nInputs) + row;
 
     emit sendCommand(new ToggleTruthTableOutputCommand(truthtable, positionToChange, m_scene));
@@ -726,6 +792,8 @@ void ElementEditor::audioBox()
         return;
     }
 
+    // Mirror the skin-copy pattern: if the chosen file lives outside the project
+    // directory, copy it alongside the .panda file so the project is self-contained.
     QFileInfo fileInfo(filePath);
     QString audioPath = filePath;
     const QString ctxDir = m_scene ? m_scene->contextDir() : QString();
@@ -756,6 +824,8 @@ void ElementEditor::update()
 
 void ElementEditor::updateTheme()
 {
+    // Tweak the group box border colour to match the active theme.
+    // Light theme: rgb(216,216,216) — a light grey; Dark: rgb(66,66,66) — a dark grey.
     const QString borderColor = (ThemeManager::effectiveTheme() == Theme::Light) ? "216" : "66";
     const QString styleSheet =
             "QGroupBox {"

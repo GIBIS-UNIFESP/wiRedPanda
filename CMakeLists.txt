@@ -549,6 +549,7 @@ add_test(NAME TestFiles COMMAND test_wiredpanda TestFiles WORKING_DIRECTORY ${CM
 add_test(NAME TestGeometry COMMAND test_wiredpanda TestGeometry WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestGraphicelementAdvanced COMMAND test_wiredpanda TestGraphicelementAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestIC COMMAND test_wiredpanda TestIC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestICInline COMMAND test_wiredpanda TestICInline WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestIcons COMMAND test_wiredpanda TestIcons WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestInputElements COMMAND test_wiredpanda TestInputElements WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestInputRotary COMMAND test_wiredpanda TestInputRotary WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -655,50 +656,48 @@ add_test(NAME TestWorkspaceFileops COMMAND test_wiredpanda TestWorkspaceFileops 
 # Labels: unit (fast unit tests), integration (system/IC tests)
 
 # CPU Tests - Integration category (high complexity)
-foreach(TEST TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders
-        TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration
+foreach(TEST TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders 
+        TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration 
         TestCPUMemoryInterface TestCPUProgramCounter TestCPURegisterBank TestCPURegisters)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
 # Level Tests - Integration category (IC-level hierarchical tests)
-foreach(TEST TestLevel1DFlipFlop TestLevel1DLatch TestLevel1JKFlipFlop TestLevel1SRLatch
-        TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16
-        TestLevel2FullAdder1Bit TestLevel2HalfAdder TestLevel2MUX2To1 TestLevel2MUX4To1
-        TestLevel2MUX8To1 TestLevel2ParityChecker TestLevel2ParityGenerator
-        TestLevel2PriorityEncoder8To3 TestLevel2PriorityMUX3To1
-        TestLevel3ALUSelector5Way TestLevel3BCD7SegmentDecoder TestLevel3Comparator4Bit
-        TestLevel3Comparator4BitEquality TestLevel3Register1Bit
-        TestLevel4BinaryCounter4Bit TestLevel4BusMUX4Bit TestLevel4BusMUX8Bit
-        TestLevel4Comparator4Bit TestLevel4JohnsonCounter4Bit TestLevel4RAM4X1
-        TestLevel4RAM8X1 TestLevel4Register4Bit TestLevel4RingCounter4Bit
-        TestLevel4RippleALU4Bit TestLevel4RippleAdder4Bit TestLevel4ShiftRegisterPISO
-        TestLevel4ShiftRegisterSIPO
-        TestLevel5BarrelRotator TestLevel5BarrelShifter4Bit TestLevel5ClockGatedDecoder
-        TestLevel5Controller4Bit TestLevel5InstructionDecoder4Bit TestLevel5LoadableCounter4Bit
-        TestLevel5ModuloCounter4Bit TestLevel5ProgramCounter4Bit TestLevel5RegisterFile4X4
-        TestLevel5RegisterFile8X8 TestLevel6StackMemoryInterface TestLevel5UpDownCounter4Bit
-        TestLevel6ALU8Bit TestLevel6ProgramCounter8BitArithmetic TestLevel6RAM256X8
-        TestLevel6Register8Bit TestLevel6RegisterFile8X8 TestLevel6RippleAdder8Bit
-        TestLevel6StackPointer8Bit
-        TestLevel7ALU16Bit TestLevel7CPUProgramCounter8Bit TestLevel7DataForwardingUnit
-        TestLevel7ExecutionDatapath TestLevel7FlagRegister TestLevel7InstructionDecoder8Bit
-        TestLevel7InstructionMemoryInterface TestLevel7InstructionRegister8Bit
-        TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage
-        TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MultiCycleCPU8Bit
+foreach(TEST TestLevel1DFlipFlop TestLevel1DLatch TestLevel1JKFlipFlop TestLevel1SRLatch 
+        TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16 
+        TestLevel2FullAdder1Bit TestLevel2HalfAdder TestLevel2MUX2To1 TestLevel2MUX4To1 
+        TestLevel2MUX8To1 TestLevel2ParityChecker TestLevel2ParityGenerator 
+        TestLevel2PriorityEncoder8To3 TestLevel2PriorityMUX3To1 TestLevel3ALUSelector5Way 
+        TestLevel3BCD7SegmentDecoder TestLevel3Comparator4Bit TestLevel3Comparator4BitEquality 
+        TestLevel3Register1Bit TestLevel4BinaryCounter4Bit TestLevel4BusMUX4Bit 
+        TestLevel4BusMUX8Bit TestLevel4Comparator4Bit TestLevel4JohnsonCounter4Bit 
+        TestLevel4RAM4X1 TestLevel4RAM8X1 TestLevel4Register4Bit TestLevel4RingCounter4Bit 
+        TestLevel4RippleAdder4Bit TestLevel4RippleALU4Bit TestLevel4ShiftRegisterPISO 
+        TestLevel4ShiftRegisterSIPO TestLevel5BarrelRotator TestLevel5BarrelShifter4Bit 
+        TestLevel5ClockGatedDecoder TestLevel5Controller4Bit TestLevel5InstructionDecoder4Bit 
+        TestLevel5LoadableCounter4Bit TestLevel5ModuloCounter4Bit TestLevel5ProgramCounter4Bit 
+        TestLevel5RegisterFile4X4 TestLevel5RegisterFile8X8 TestLevel5UpDownCounter4Bit 
+        TestLevel6ALU8Bit TestLevel6ProgramCounter8BitArithmetic TestLevel6RAM256X8 
+        TestLevel6Register8Bit TestLevel6RegisterFile8X8 TestLevel6RippleAdder8Bit 
+        TestLevel6StackMemoryInterface TestLevel6StackPointer8Bit TestLevel7ALU16Bit 
+        TestLevel7CPUProgramCounter8Bit TestLevel7DataForwardingUnit TestLevel7ExecutionDatapath 
+        TestLevel7FlagRegister TestLevel7InstructionDecoder8Bit 
+        TestLevel7InstructionMemoryInterface TestLevel7InstructionRegister8Bit 
+        TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage 
+        TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MultiCycleCPU8Bit 
         TestLevel9SingleCycleCPU8Bit)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
 # IC-specific deep tests - Integration category
-foreach(TEST TestDecoder8To256 TestMemorySettlingTime TestRAMCell1Bit TestSequential
-        TestMUXDEMUXComprehensive)
+foreach(TEST TestDecoder8To256 TestMemorySettlingTime TestMUXDEMUXComprehensive TestRAMCell1Bit 
+        TestSequential)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
 # File and Simulation Tests - Integration category
-foreach(TEST TestArduino TestFeedback TestFiles TestIC TestSystemVerilogExport TestSimulation TestWorkspace
-        TestWorkspaceFileops)
+foreach(TEST TestArduino TestFeedback TestFiles TestIC TestICInline TestSimulation
+        TestSystemVerilogExport TestWorkspace TestWorkspaceFileops)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
@@ -711,13 +710,22 @@ foreach(TEST TestAudioBox TestBuzzer TestClock TestClocksAdvanced TestComponents
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
 
+# Factory and Core Element Tests - Unit category
+foreach(TEST TestElementFactory TestElementLogic TestElementLogicErrors TestNodeLogic 
+        TestStatusOps)
+    set_tests_properties(${TEST} PROPERTIES LABELS "unit")
+endforeach()
 
 # Connection and Scene Tests - Integration category
-foreach(TEST TestConnectionSerialization TestConnectionValidity TestConnections TestScene
+foreach(TEST TestConnections TestConnectionSerialization TestConnectionValidity TestScene 
         TestSceneConnections TestSceneState TestSceneUndoredo)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
+# Serialization and Command Tests - Integration category
+foreach(TEST TestDialogs TestSerialization TestSimulationBlocker)
+    set_tests_properties(${TEST} PROPERTIES LABELS "integration")
+endforeach()
 
 # Core Functionality Tests - Unit category
 foreach(TEST TestCommands TestCommon TestEnums TestPriorities TestRecentFiles TestSettings

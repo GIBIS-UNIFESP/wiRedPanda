@@ -15,6 +15,7 @@ class MainWindowUi;
 class QLayout;
 class QMimeData;
 class QSpacerItem;
+class Scene;
 
 /**
  * \class ElementPalette
@@ -58,6 +59,9 @@ public:
      *                    if this file does not exist.
      */
     void updateICList(const QFileInfo &currentFile);
+
+    /// Refreshes the embedded-IC section of the palette from the scene's blob registry.
+    void updateEmbeddedICList(Scene *scene);
 
     /// Calls updateName() on every ElementLabel in the palette (on language change).
     void retranslateLabels();

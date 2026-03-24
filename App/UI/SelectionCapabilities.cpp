@@ -20,8 +20,9 @@ SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &element
 
     // Start all flags true; AND-reduce over the selection below.
     c.hasAudioBox = c.hasAudio = c.hasColors = c.hasDelay = c.hasElements = true;
-    c.hasFrequency = c.hasLabel = c.hasLatchedValue = c.hasOnlyInputs = c.hasWirelessMode = c.hasTrigger = c.hasTruthTable = true;
+    c.hasFrequency = c.hasLabel = c.hasOnlyInputs = c.hasLatchedValue = c.hasWirelessMode = c.hasTrigger = c.hasTruthTable = true;
     c.canChangeSkin = c.canMorph = true;
+    c.isFileBacked = c.isEmbedded = (firstElement->elementType() == ElementType::IC);
     c.hasSameAudio = c.hasSameColors = c.hasSameDelay = c.hasSameFrequency = true;
     c.hasSameInputSize = c.hasSameLabel = c.hasSameOutputSize = true;
     c.hasSameOutputValue = c.hasSameTrigger = c.hasSameType = true;
@@ -66,6 +67,16 @@ SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &element
         c.hasSameTrigger &= (elm->trigger()      == firstElement->trigger());
         c.hasSameType    &= (elm->elementType()  == firstElement->elementType());
         c.hasSameAudio   &= (elm->audio()        == firstElement->audio());
+
+        // Embedded IC flags: AND-reduced so both are true only when ALL selected
+        // elements are ICs that are embedded or file-backed respectively.
+        if (elm->elementType() != ElementType::IC) {
+            c.isFileBacked = false;
+            c.isEmbedded = false;
+        } else {
+            c.isFileBacked &= !elm->isEmbeddedIC();
+            c.isEmbedded   &=  elm->isEmbeddedIC();
+        }
 
         // Static inputs (Vcc/Gnd) and regular inputs share morph compatibility
         // because they occupy the same pin role in a circuit.

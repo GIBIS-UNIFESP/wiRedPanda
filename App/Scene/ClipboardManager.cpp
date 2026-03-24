@@ -6,6 +6,8 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QDrag>
+#include <QIODevice>
+#include <QLoggingCategory>
 #include <QMimeData>
 #include <QPainter>
 
@@ -39,6 +41,24 @@ void ClipboardManager::copy()
     auto *mimeData = new QMimeData();
     mimeData->setData("application/x-wiredpanda-clipboard", itemData);
 
+    // Include only blobs used by the selected elements
+    auto *registry = m_scene->icRegistry();
+    QMap<QString, QByteArray> usedBlobs;
+    for (auto *elm : m_scene->selectedElements()) {
+        if (elm->isEmbeddedIC() && !elm->blobName().isEmpty()) {
+            const QString &name = elm->blobName();
+            if (!usedBlobs.contains(name) && registry->hasBlob(name)) {
+                usedBlobs[name] = registry->blob(name);
+            }
+        }
+    }
+    if (!usedBlobs.isEmpty()) {
+        QByteArray regBytes;
+        QDataStream regStream(&regBytes, QIODevice::WriteOnly);
+        regStream << usedBlobs;
+        mimeData->setData("application/x-wiredpanda-blobregistry", regBytes);
+    }
+
     QApplication::clipboard()->setMimeData(mimeData);
 }
 
@@ -49,6 +69,18 @@ void ClipboardManager::cut()
         return;
     }
 
+    // Collect used blobs before deleting elements
+    auto *registry = m_scene->icRegistry();
+    QMap<QString, QByteArray> usedBlobs;
+    for (auto *elm : m_scene->selectedElements()) {
+        if (elm->isEmbeddedIC() && !elm->blobName().isEmpty()) {
+            const QString &name = elm->blobName();
+            if (!usedBlobs.contains(name) && registry->hasBlob(name)) {
+                usedBlobs[name] = registry->blob(name);
+            }
+        }
+    }
+
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
@@ -57,12 +89,34 @@ void ClipboardManager::cut()
     auto *mimeData = new QMimeData();
     mimeData->setData("application/x-wiredpanda-clipboard", itemData);
 
+    if (!usedBlobs.isEmpty()) {
+        QByteArray regBytes;
+        QDataStream regStream(&regBytes, QIODevice::WriteOnly);
+        regStream << usedBlobs;
+        mimeData->setData("application/x-wiredpanda-blobregistry", regBytes);
+    }
+
     QApplication::clipboard()->setMimeData(mimeData);
 }
 
 void ClipboardManager::paste()
 {
     const auto *mimeData = QApplication::clipboard()->mimeData();
+
+    // Import blob registry from clipboard so cross-tab paste of embedded ICs works
+    if (mimeData->hasFormat("application/x-wiredpanda-blobregistry")) {
+        QByteArray regBytes = mimeData->data("application/x-wiredpanda-blobregistry");
+        QDataStream regStream(&regBytes, QIODevice::ReadOnly);
+        QMap<QString, QByteArray> clipboardBlobs;
+        regStream >> clipboardBlobs;
+
+        auto *registry = m_scene->icRegistry();
+        for (auto it = clipboardBlobs.cbegin(); it != clipboardBlobs.cend(); ++it) {
+            if (!registry->hasBlob(it.key())) {
+                registry->setBlob(it.key(), it.value());
+            }
+        }
+    }
 
     QByteArray itemData;
 

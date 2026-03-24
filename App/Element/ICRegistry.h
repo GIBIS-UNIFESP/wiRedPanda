@@ -11,6 +11,7 @@
 #include "App/Element/ICDefinition.h"
 
 class GraphicElement;
+class IC;
 class Scene;
 
 /**
@@ -43,6 +44,42 @@ public:
     /// Finds all IC elements in the scene that reference \a fileName.
     QList<GraphicElement *> findICsByFile(const QString &fileName) const;
 
+    // --- Embedded IC blob storage ---
+
+    bool hasBlob(const QString &name) const;
+    QByteArray blob(const QString &name) const;
+    void setBlob(const QString &name, const QByteArray &data);
+    void registerBlob(const QString &name, const QByteArray &data);
+    void removeBlob(const QString &name);
+    void renameBlob(const QString &oldName, const QString &newName);
+    const QMap<QString, QByteArray> &blobMap() const { return m_blobs; }
+    QMap<QString, QByteArray> &blobMapRef() { return m_blobs; }
+    void clearBlobs();
+
+    /// Finds all embedded IC elements with \a blobName.
+    QList<GraphicElement *> findICsByBlobName(const QString &blobName) const;
+
+    /// Initializes an embedded IC by looking up its blob in the registry.
+    bool initEmbeddedIC(IC *ic, const QString &blobName);
+
+    /// Returns \a baseName if available, or appends a numeric suffix to avoid collision.
+    QString uniqueBlobName(const QString &baseName) const;
+
+    // --- Batch operations (undo-aware) ---
+
+    /// Creates a new embedded IC from file bytes, registers the blob, and pushes an undo command.
+    IC *createEmbeddedIC(const QString &blobName, const QByteArray &fileBytes, const QString &contextDir);
+
+    int embedICsByFile(const QString &fileName, const QByteArray &fileBytes,
+                       const QString &blobName);
+
+    /// Writes the blob to disk and converts all embedded ICs with \a blobName to file-backed.
+    int extractToFile(const QString &blobName, const QString &filePath);
+
+    // --- Serialization helpers ---
+
+    static QByteArray captureSnapshot(const QList<GraphicElement *> &targets);
+
     // --- Cycle detection ---
 
     /// Returns true if \a canonicalPath is currently being loaded (circular reference).
@@ -61,8 +98,11 @@ private slots:
     void onFileChanged(const QString &filePath);
 
 private:
+    void makeBlobSelfContained(const QString &name, QSet<QString> &visited);
+
     Scene *m_scene;
     QMap<QString, ICDefinition> m_definitions;
+    QMap<QString, QByteArray> m_blobs;  // embedded IC blob storage
     QFileSystemWatcher m_fileWatcher;
     QSet<QString> m_loadingFiles;
 };

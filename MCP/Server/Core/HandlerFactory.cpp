@@ -176,5 +176,11 @@ void HandlerFactory::registerBuiltInHandlers()
     registerHandler("list_ics", "simulation", [](MainWindow *mainWindow, MCPValidator *validator) {
         return std::make_unique<SimulationHandler>(mainWindow, validator);
     });
+    registerHandler("embed_ic", "simulation", [](MainWindow *mainWindow, MCPValidator *validator) {
+        return std::make_unique<SimulationHandler>(mainWindow, validator);
+    });
+    registerHandler("extract_ic", "simulation", [](MainWindow *mainWindow, MCPValidator *validator) {
+        return std::make_unique<SimulationHandler>(mainWindow, validator);
+    });
 }
 

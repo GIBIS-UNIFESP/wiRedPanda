@@ -12,6 +12,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/TruthTable.h"
+#include "App/Element/ICRegistry.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Nodes/QNEConnection.h"
@@ -1066,5 +1067,178 @@ void ToggleTruthTableOutputCommand::undo()
 
     m_scene->setCircuitUpdateRequired();
     emit m_scene->truthTableElementChanged(truthtable);
+}
+
+// --- UpdateBlobCommand ---
+
+QList<UpdateBlobCommand::ConnectionInfo> UpdateBlobCommand::captureConnections(const QList<GraphicElement *> &targets)
+{
+    QList<ConnectionInfo> connections;
+    for (auto *target : targets) {
+        for (int i = 0; i < target->inputSize(); ++i) {
+            for (auto *conn : target->inputPort(i)->connections()) {
+                auto *otherPort = conn->startPort();
+                if (otherPort && otherPort->graphicElement()) {
+                    connections.append({conn->id(), target->id(), i, true,
+                                        otherPort->graphicElement()->id(), otherPort->index()});
+                }
+            }
+        }
+        for (int i = 0; i < target->outputSize(); ++i) {
+            for (auto *conn : target->outputPort(i)->connections()) {
+                auto *otherPort = conn->endPort();
+                if (otherPort && otherPort->graphicElement()) {
+                    connections.append({conn->id(), target->id(), i, false,
+                                        otherPort->graphicElement()->id(), otherPort->index()});
+                }
+            }
+        }
+    }
+    return connections;
+}
+
+// --- RegisterBlobCommand ---
+
+RegisterBlobCommand::RegisterBlobCommand(const QString &blobName, const QByteArray &data, Scene *scene, QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , m_blobName(blobName)
+    , m_data(data)
+    , m_scene(scene)
+{
+    setText(tr("Register blob \"%1\"").arg(blobName));
+}
+
+void RegisterBlobCommand::redo()
+{
+    m_scene->icRegistry()->registerBlob(m_blobName, m_data);
+}
+
+void RegisterBlobCommand::undo()
+{
+    m_scene->icRegistry()->removeBlob(m_blobName);
+}
+
+// --- UpdateBlobCommand ---
+
+UpdateBlobCommand::UpdateBlobCommand(const QList<GraphicElement *> &elements, const QByteArray &oldData,
+                                     const QList<ConnectionInfo> &connections, Scene *scene, QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , m_oldData(oldData)
+    , m_connections(connections)
+    , m_scene(scene)
+{
+    m_ids.reserve(elements.size());
+    QDataStream stream(&m_newData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+
+    for (auto *elm : elements) {
+        elm->save(stream);
+        m_ids.append(elm->id());
+    }
+
+    if (!elements.isEmpty()) {
+        m_blobName = elements.first()->blobName();
+        m_newBlob = m_scene->icRegistry()->blob(m_blobName);
+    }
+
+    setText(tr("Update %1 IC blobs").arg(elements.size()));
+}
+
+void UpdateBlobCommand::redo()
+{
+    qCDebug(zero) << text();
+    SimulationBlocker blocker(m_scene->simulation());
+    auto *reg = m_scene->icRegistry();
+
+    if (!m_blobName.isEmpty()) {
+        if (m_newBlob.isEmpty()) {
+            reg->removeBlob(m_blobName);
+        } else {
+            reg->setBlob(m_blobName, m_newBlob);
+        }
+    }
+    loadData(m_newData);
+    reconnectConnections();
+    m_scene->setCircuitUpdateRequired();
+}
+
+void UpdateBlobCommand::undo()
+{
+    qCDebug(zero) << text();
+    SimulationBlocker blocker(m_scene->simulation());
+    auto *reg = m_scene->icRegistry();
+
+    if (!m_blobName.isEmpty()) {
+        if (m_oldBlob.isEmpty()) {
+            reg->removeBlob(m_blobName);
+        } else {
+            reg->setBlob(m_blobName, m_oldBlob);
+        }
+    }
+    loadData(m_oldData);
+    reconnectConnections();
+    m_scene->setCircuitUpdateRequired();
+}
+
+void UpdateBlobCommand::loadData(QByteArray &itemData)
+{
+    const auto elements = CommandUtils::findElements(m_scene, m_ids);
+    if (elements.isEmpty()) {
+        return;
+    }
+
+    QDataStream stream(&itemData, QIODevice::ReadOnly);
+    QVersionNumber version = Serialization::readPandaHeader(stream);
+
+    QMap<quint64, QNEPort *> portMap;
+    auto context = m_scene->deserializationContext(portMap, version);
+
+    for (auto *elm : elements) {
+        elm->load(stream, context);
+        elm->setSelected(true);
+    }
+}
+
+void UpdateBlobCommand::reconnectConnections()
+{
+    for (const auto &ci : std::as_const(m_connections)) {
+        auto *elm = dynamic_cast<GraphicElement *>(m_scene->itemById(ci.elementId));
+        auto *otherElm = dynamic_cast<GraphicElement *>(m_scene->itemById(ci.otherElementId));
+        if (!elm || !otherElm) {
+            continue;
+        }
+
+        QNEInputPort *inPort = nullptr;
+        QNEOutputPort *outPort = nullptr;
+
+        if (ci.isInput) {
+            inPort = (ci.portIndex >= 0 && ci.portIndex < elm->inputSize()) ? elm->inputPort(ci.portIndex) : nullptr;
+            outPort = (ci.otherPortIndex >= 0 && ci.otherPortIndex < otherElm->outputSize()) ? otherElm->outputPort(ci.otherPortIndex) : nullptr;
+        } else {
+            outPort = (ci.portIndex >= 0 && ci.portIndex < elm->outputSize()) ? elm->outputPort(ci.portIndex) : nullptr;
+            inPort = (ci.otherPortIndex >= 0 && ci.otherPortIndex < otherElm->inputSize()) ? otherElm->inputPort(ci.otherPortIndex) : nullptr;
+        }
+
+        if (!inPort || !outPort) {
+            continue;
+        }
+
+        bool alreadyConnected = false;
+        for (auto *conn : inPort->connections()) {
+            if (conn->startPort() == outPort) {
+                alreadyConnected = true;
+                break;
+            }
+        }
+        if (alreadyConnected) {
+            continue;
+        }
+
+        auto *conn = new QNEConnection();
+        conn->setStartPort(outPort);
+        conn->setEndPort(inPort);
+        m_scene->updateItemId(conn, ci.connectionId);
+        m_scene->addItem(conn);
+    }
 }
 

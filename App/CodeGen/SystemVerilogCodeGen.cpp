@@ -16,6 +16,17 @@
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
 
+/// Returns a unique key identifying an IC for SystemVerilog code generation.
+/// Embedded ICs use "embedded:blobName"; file-backed ICs use their canonical file path.
+static QString icModuleKey(const IC *ic)
+{
+    if (ic->isEmbeddedIC()) {
+        return QStringLiteral("embedded:") + ic->blobName();
+    }
+    QString key = QFileInfo(ic->icFile()).canonicalFilePath();
+    return key.isEmpty() ? ic->icFile() : key;
+}
+
 SystemVerilogCodeGen::SystemVerilogCodeGen(const QString &fileName, const QVector<GraphicElement *> &elements)
     : m_file(fileName)
     , m_elements(elements)
@@ -202,10 +213,7 @@ void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &eleme
         if (!ic) continue;
 
         // Use canonical file path as key for identity
-        QString key = QFileInfo(ic->icFile()).canonicalFilePath();
-        if (key.isEmpty()) {
-            key = ic->icFile();
-        }
+        QString key = icModuleKey(ic);
 
         if (m_icModules.contains(key)) {
             continue;
@@ -216,7 +224,7 @@ void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &eleme
         info.prototypeIC = ic;
 
         // Derive module name from file basename
-        QString baseName = QFileInfo(ic->icFile()).baseName();
+        QString baseName = ic->isEmbeddedIC() ? ic->blobName() : QFileInfo(ic->icFile()).baseName();
         info.moduleName = removeForbiddenChars(stripAccents(baseName));
         if (isSystemVerilogReserved(info.moduleName)) {
             info.moduleName = "m_" + info.moduleName;
@@ -331,10 +339,7 @@ void SystemVerilogCodeGen::generateICModules()
                 auto *nestedIC = qobject_cast<IC *>(elm);
                 if (!nestedIC) continue;
 
-                QString nestedKey = QFileInfo(nestedIC->icFile()).canonicalFilePath();
-                if (nestedKey.isEmpty()) {
-                    nestedKey = nestedIC->icFile();
-                }
+                QString nestedKey = icModuleKey(nestedIC);
                 if (!m_icModules.value(nestedKey).generated) {
                     allDepsReady = false;
                     break;
@@ -378,7 +383,8 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     // Structural (gate-level) emission — fallback for unrecognized patterns
 
     // Emit module header
-    m_stream << "// Module for " << ic->label() << " (generated from " << QFileInfo(ic->icFile()).fileName() << ")" << Qt::endl;
+    const QString source = ic->isEmbeddedIC() ? ic->blobName() : QFileInfo(ic->icFile()).fileName();
+    m_stream << "// Module for " << ic->label() << " (generated from " << source << ")" << Qt::endl;
     m_stream << "module " << info.moduleName << " (" << Qt::endl;
 
     // Emit port list
@@ -801,10 +807,7 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
             if (!ic) continue;
 
             // Look up IC module info
-            QString key = QFileInfo(ic->icFile()).canonicalFilePath();
-            if (key.isEmpty()) {
-                key = ic->icFile();
-            }
+            QString key = icModuleKey(ic);
             const ICModuleInfo &info = m_icModules.value(key);
 
             // Generate unique instance name
@@ -1024,10 +1027,7 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
             if (!ic) continue;
 
             // Look up IC module info and instance name
-            QString key = QFileInfo(ic->icFile()).canonicalFilePath();
-            if (key.isEmpty()) {
-                key = ic->icFile();
-            }
+            QString key = icModuleKey(ic);
             const ICModuleInfo &info = m_icModules.value(key);
             QString instanceName = m_instanceNames.value(ic);
 
