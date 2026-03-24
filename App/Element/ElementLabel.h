@@ -30,10 +30,11 @@ public:
      * \brief Constructs an ElementLabel from a pixmap.
      * \param pixmap     Icon image.
      * \param type       Element type identifier.
-     * \param icFileName IC file path (empty for built-in elements).
+     * \param icFileName IC file path or blob name (for embedded ICs).
      * \param parent     Optional parent widget.
+     * \param isEmbedded True if this label represents an embedded IC.
      */
-    explicit ElementLabel(const QPixmap &pixmap, ElementType type, const QString &icFileName, QWidget *parent = nullptr);
+    explicit ElementLabel(const QPixmap &pixmap, ElementType type, const QString &icFileName, QWidget *parent = nullptr, bool isEmbedded = false);
 
     // --- Queries ---
 
@@ -42,6 +43,9 @@ public:
 
     /// Returns the IC file path, or an empty string for built-in elements.
     QString icFileName() const;
+
+    /// Returns true if this label represents an embedded IC.
+    bool isEmbedded() const;
 
     /// Returns the displayed element name.
     QString name() const;
@@ -77,5 +81,6 @@ private:
     QLabel m_nameLabel;
     QPixmap m_pixmap;
     QString m_icFileName;
+    bool m_isEmbedded = false;
 };
 

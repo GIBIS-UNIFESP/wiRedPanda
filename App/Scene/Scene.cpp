@@ -172,7 +172,9 @@ void Scene::unregisterItem(ItemWithId *item)
 
 SerializationContext Scene::deserializationContext(QMap<quint64, QNEPort *> &portMap, const QVersionNumber &version)
 {
-    return SerializationContext{portMap, version, contextDir()};
+    SerializationContext context{portMap, version, contextDir()};
+    context.blobRegistry = &m_icRegistry.blobMapRef();
+    return context;
 }
 
 void Scene::drawBackground(QPainter *painter, const QRectF &rect)
@@ -986,10 +988,22 @@ void Scene::addItem(QMimeData *mimeData)
     ElementType type;   stream >> type;
     QString icFileName; stream >> icFileName;
 
+    bool isEmbedded = false;
+    QString blobName;
+    if (!stream.atEnd()) { stream >> isEmbedded; }
+    if (!stream.atEnd()) { stream >> blobName; }
+
     auto *element = ElementFactory::buildElement(type);
     qCDebug(zero) << "Valid element.";
 
-    element->loadFromDrop(icFileName, contextDir());
+    if (isEmbedded && type == ElementType::IC) {
+        if (!m_icRegistry.initEmbeddedIC(static_cast<IC *>(element), blobName)) {
+            delete element;
+            return;
+        }
+    } else {
+        element->loadFromDrop(icFileName, contextDir());
+    }
 
     qCDebug(zero) << "Adding the element to the scene.";
     receiveCommand(new AddItemsCommand({element}, this));

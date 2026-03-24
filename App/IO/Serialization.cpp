@@ -298,7 +298,34 @@ Serialization::Preamble Serialization::readPreamble(QDataStream &stream)
     result.version = readPandaHeader(stream);
     loadDolphinFileName(stream, result.version);
     loadRect(stream, result.version);
+
+    if (VersionInfo::hasMetadata(result.version)) {
+        stream >> result.metadata;
+    }
     return result;
+}
+
+QMap<QString, QByteArray> Serialization::deserializeBlobRegistry(const QMap<QString, QVariant> &metadata)
+{
+    QMap<QString, QByteArray> result;
+    const QString key = metadata.contains("embeddedICs") ? QStringLiteral("embeddedICs")
+                                                        : QStringLiteral("blobRegistry");
+    if (metadata.contains(key)) {
+        QByteArray regBytes = metadata.value(key).toByteArray();
+        QDataStream regStream(&regBytes, QIODevice::ReadOnly);
+        regStream >> result;
+    }
+    return result;
+}
+
+void Serialization::serializeBlobRegistry(const QMap<QString, QByteArray> &blobs, QMap<QString, QVariant> &metadata)
+{
+    if (!blobs.isEmpty()) {
+        QByteArray regBytes;
+        QDataStream regStream(&regBytes, QIODevice::WriteOnly);
+        regStream << blobs;
+        metadata["embeddedICs"] = regBytes;
+    }
 }
 
 QString Serialization::typeName(const int type) {

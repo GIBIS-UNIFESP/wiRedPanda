@@ -423,3 +423,76 @@ private:
     int m_pos;
 };
 
+/**
+ * \class RegisterBlobCommand
+ * \brief Undo command that registers/unregisters a blob in the IC registry.
+ *
+ * \details Used with beginMacro/endMacro to pair blob registration with
+ * AddItemsCommand when creating new embedded ICs.
+ */
+class RegisterBlobCommand : public QUndoCommand
+{
+    Q_DECLARE_TR_FUNCTIONS(RegisterBlobCommand)
+
+public:
+    RegisterBlobCommand(const QString &blobName, const QByteArray &data, Scene *scene, QUndoCommand *parent = nullptr);
+
+    void redo() override;
+    void undo() override;
+
+private:
+    QString m_blobName;
+    QByteArray m_data;
+    Scene *m_scene;
+};
+
+/**
+ * \class UpdateBlobCommand
+ * \brief Undo command for embedded IC blob changes that may alter port counts.
+ *
+ * \details Captures connection topology before the change so connections to
+ * removed ports can be restored on undo. Swaps blob registry entries on undo/redo.
+ */
+class UpdateBlobCommand : public QUndoCommand
+{
+    Q_DECLARE_TR_FUNCTIONS(UpdateBlobCommand)
+
+public:
+    struct ConnectionInfo {
+        int connectionId;
+        int elementId;
+        int portIndex;
+        bool isInput;
+        int otherElementId;
+        int otherPortIndex;
+    };
+
+    explicit UpdateBlobCommand(const QList<GraphicElement *> &elements, const QByteArray &oldData,
+                               const QList<ConnectionInfo> &connections, Scene *scene, QUndoCommand *parent = nullptr);
+
+    /// Captures connection topology for all target elements before a blob operation.
+    static QList<ConnectionInfo> captureConnections(const QList<GraphicElement *> &targets);
+
+    /// Sets the old blob data for registry swap on undo.
+    void setOldBlob(const QByteArray &blob) { m_oldBlob = blob; }
+
+    /// Overrides the blob name (needed when elements are already file-backed at construction time).
+    void setBlobName(const QString &name) { m_blobName = name; }
+
+    void redo() override;
+    void undo() override;
+
+private:
+    void loadData(QByteArray &itemData);
+    void reconnectConnections();
+
+    QByteArray m_oldData;
+    QByteArray m_newData;
+    QByteArray m_oldBlob;
+    QByteArray m_newBlob;
+    QString m_blobName;
+    QList<int> m_ids;
+    QList<ConnectionInfo> m_connections;
+    Scene *m_scene;
+};
+

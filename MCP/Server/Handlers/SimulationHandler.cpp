@@ -7,11 +7,13 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QJsonArray>
+#include <QSaveFile>
 #include <QTextStream>
 
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/IC.h"
+#include "App/Element/ICRegistry.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
@@ -47,6 +49,10 @@ QJsonObject SimulationHandler::handleCommand(const QString &command, const QJson
         return handleInstantiateIC(params, requestId);
     } else if (command == "list_ics") {
         return handleListICs(params, requestId);
+    } else if (command == "embed_ic") {
+        return handleEmbedIC(params, requestId);
+    } else if (command == "extract_ic") {
+        return handleExtractIC(params, requestId);
     } else if (command == "undo") {
         return handleUndo(params, requestId);
     } else if (command == "redo") {
@@ -347,27 +353,54 @@ QJsonObject SimulationHandler::handleInstantiateIC(const QJsonObject &params, co
             return createErrorResponse(QString("IC file not found: %1").arg(icFileName), requestId);
         }
 
-        auto *ic = new IC();
+        auto ic = std::make_unique<IC>();
 
         const QString icDirectory = QFileInfo(fullPath).absolutePath();
+        const bool inlineMode = params.value("inline").toBool(false);
 
-        ic->loadFile(fullPath, icDirectory);
+        IC *icPtr = nullptr;
 
-        ic->setPos(x, y);
-        ic->setLabel(label);
+        if (inlineMode) {
+            QFile file(fullPath);
+            if (!file.open(QIODevice::ReadOnly)) {
+                return createErrorResponse(QString("Could not read IC file: %1").arg(file.errorString()), requestId);
+            }
+            QByteArray fileBytes = file.readAll();
+            file.close();
 
-        QList<QGraphicsItem *> items;
-        items.append(ic);
-        scene->receiveCommand(new AddItemsCommand(items, scene));
+            QString blobName = params.value("blob_name").toString();
+            if (blobName.isEmpty()) {
+                blobName = QFileInfo(fullPath).baseName();
+            }
+
+            auto *reg = scene->icRegistry();
+            if (reg->hasBlob(blobName)) {
+                return createErrorResponse(QString("Blob name collision: an embedded IC named '%1' already exists. "
+                                                   "Use blob_name parameter to specify a different name.").arg(blobName), requestId);
+            }
+
+            icPtr = reg->createEmbeddedIC(blobName, fileBytes, icDirectory);
+        } else {
+            icPtr = ic.release();
+            icPtr->loadFile(fullPath, icDirectory);
+            scene->receiveCommand(new AddItemsCommand({icPtr}, scene));
+        }
+
+        icPtr->setPos(x, y);
+        icPtr->setLabel(label);
 
         QJsonObject result;
-        result["element_id"] = ic->id();
+        result["element_id"] = icPtr->id();
         result["ic_name"] = icName;
         result["filename"] = icFileName;
         result["label"] = label;
         result["position"] = QJsonObject{{"x", x}, {"y", y}};
-        result["input_count"] = ic->inputSize();
-        result["output_count"] = ic->outputSize();
+        result["input_count"] = icPtr->inputSize();
+        result["output_count"] = icPtr->outputSize();
+        if (inlineMode) {
+            result["inline"] = true;
+            result["blob_name"] = icPtr->blobName();
+        }
         result["message"] = "IC instantiated successfully";
 
         return createSuccessResponse(result, requestId);
@@ -553,6 +586,143 @@ QJsonObject SimulationHandler::handleGetUndoStack(const QJsonObject &params, con
         return createErrorResponse(QString("Failed to get undo stack info: %1").arg(e.what()), requestId);
     } catch (...) {
         return createErrorResponse("Failed to get undo stack info: Unknown error", requestId);
+    }
+}
+
+QJsonObject SimulationHandler::handleEmbedIC(const QJsonObject &params, const QJsonValue &requestId)
+{
+    if (!validateParameters(params, {"element_id"})) {
+        return createErrorResponse("Missing required parameter: element_id", requestId);
+    }
+
+    Scene *scene = getCurrentScene();
+    if (!scene) {
+        return createErrorResponse("No active circuit scene available", requestId);
+    }
+
+    int elementId = params.value("element_id").toInt();
+    if (elementId <= 0) {
+        return createErrorResponse("element_id must be a positive integer", requestId);
+    }
+
+    try {
+        auto *item = scene->itemById(elementId);
+        if (!item) {
+            return createErrorResponse(QString("Element with ID %1 not found").arg(elementId), requestId);
+        }
+
+        auto *elm = dynamic_cast<GraphicElement *>(item);
+        if (!elm || elm->elementType() != ElementType::IC) {
+            return createErrorResponse("Element is not an IC", requestId);
+        }
+
+        auto *ic = static_cast<IC *>(elm);
+
+        if (ic->isEmbeddedIC()) {
+            return createErrorResponse("IC is already embedded", requestId);
+        }
+
+        if (ic->icFile().isEmpty()) {
+            return createErrorResponse("IC has no referenced file", requestId);
+        }
+
+        const QString contextDir = scene->contextDir();
+        if (contextDir.isEmpty()) {
+            return createErrorResponse("Project must be saved before embedding ICs", requestId);
+        }
+
+        const QString resolvedPath = QDir(contextDir).absoluteFilePath(ic->icFile());
+        QFile file(resolvedPath);
+        if (!file.open(QIODevice::ReadOnly)) {
+            return createErrorResponse(QString("Cannot read IC file: %1").arg(file.errorString()), requestId);
+        }
+        QByteArray fileBytes = file.readAll();
+        file.close();
+
+        QString blobName = params.value("blob_name").toString();
+        if (blobName.isEmpty()) {
+            blobName = QFileInfo(resolvedPath).baseName();
+        }
+
+        auto *reg = scene->icRegistry();
+        if (reg->hasBlob(blobName)) {
+            return createErrorResponse(QString("Blob name collision: an embedded IC named '%1' already exists").arg(blobName), requestId);
+        }
+
+        const int count = reg->embedICsByFile(ic->icFile(), fileBytes, blobName);
+
+        QJsonObject result;
+        result["blob_name"] = blobName;
+        result["converted_count"] = count;
+        result["input_count"] = ic->inputSize();
+        result["output_count"] = ic->outputSize();
+        result["blob_size"] = fileBytes.size();
+        result["message"] = QString("Embedded %1 IC(s) as '%2'").arg(count).arg(blobName);
+
+        return createSuccessResponse(result, requestId);
+
+    } catch (const std::exception &e) {
+        return createErrorResponse(QString("Failed to embed IC: %1").arg(e.what()), requestId);
+    } catch (...) {
+        return createErrorResponse("Failed to embed IC: Unknown error", requestId);
+    }
+}
+
+QJsonObject SimulationHandler::handleExtractIC(const QJsonObject &params, const QJsonValue &requestId)
+{
+    if (!validateParameters(params, {"blob_name"})) {
+        return createErrorResponse("Missing required parameter: blob_name", requestId);
+    }
+
+    Scene *scene = getCurrentScene();
+    if (!scene) {
+        return createErrorResponse("No active circuit scene available", requestId);
+    }
+
+    const QString contextDir = scene->contextDir();
+    if (contextDir.isEmpty()) {
+        return createErrorResponse("Project must be saved before extracting ICs", requestId);
+    }
+
+    const QString blobName = params.value("blob_name").toString();
+    if (blobName.isEmpty()) {
+        return createErrorResponse("blob_name must not be empty", requestId);
+    }
+
+    try {
+        auto *reg = scene->icRegistry();
+        if (!reg->hasBlob(blobName)) {
+            return createErrorResponse(QString("No embedded IC with blob name '%1' found").arg(blobName), requestId);
+        }
+
+        QString fileName = params.value("file_name").toString();
+        if (fileName.isEmpty()) {
+            fileName = QDir(contextDir).absoluteFilePath(blobName + ".panda");
+        } else if (QFileInfo(fileName).isRelative()) {
+            fileName = QDir(contextDir).absoluteFilePath(fileName);
+        }
+        if (!fileName.endsWith(".panda")) {
+            fileName.append(".panda");
+        }
+
+        if (QFile::exists(fileName) && !params.value("overwrite").toBool()) {
+            return createErrorResponse(QString("File '%1' already exists. Set overwrite=true to replace it.").arg(fileName), requestId);
+        }
+
+        const int count = reg->extractToFile(blobName, fileName);
+
+        QJsonObject result;
+        result["blob_name"] = blobName;
+        result["file_name"] = fileName;
+        result["converted_count"] = count;
+        result["message"] = QString("Extracted %1 IC(s) to '%2'").arg(count).arg(fileName);
+
+        return createSuccessResponse(result, requestId);
+
+    } catch (const std::exception &e) {
+        return createErrorResponse(QString("Failed to extract IC: %1").arg(e.what()), requestId);
+    } catch (...) {
+        return createErrorResponse("Failed to extract IC: Unknown error", requestId);
     }
 }
 

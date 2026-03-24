@@ -8,6 +8,7 @@
 #pragma once
 
 #include <QFileInfo>
+#include <QPointer>
 #include <QTemporaryFile>
 #include <QUndoStack>
 
@@ -61,6 +62,26 @@ public:
     /// Creates or replaces the autosave temporary file.
     void setAutosaveFile();
 
+    // --- Inline IC Tab ---
+
+    /// Loads a blob for editing in an inline tab.
+    void loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icElementId, const QString &parentContextDir);
+
+    /// Returns true if this workspace is editing an embedded IC blob (not a file).
+    bool isInlineIC() const { return m_isInlineIC; }
+
+    /// Returns the parent workspace (for inline IC tabs).
+    WorkSpace *parentWorkspace() const { return m_parentWorkspace; }
+
+    /// Returns the element ID of the IC in the parent scene being edited.
+    int parentICElementId() const { return m_parentICElementId; }
+
+    /// Returns the blob name being edited (for tab title).
+    const QString &inlineBlobName() const { return m_inlineBlobName; }
+
+    /// Removes all IC instances with the given blob name.
+    void removeEmbeddedIC(const QString &blobName);
+
     // --- Waveform Integration ---
 
     /// Returns the path of the associated BeWavedDolphin waveform file.
@@ -86,6 +107,13 @@ signals:
      */
     void fileChanged(const QFileInfo &fileInfo);
 
+    /// Emitted when an inline IC tab saves its blob (propagated to parent).
+    void icBlobSaved(int icElementId, const QByteArray &blob);
+
+public slots:
+    /// Receives a saved blob from a child inline tab.
+    void onChildICBlobSaved(int icElementId, const QByteArray &blob);
+
 private:
     // --- Internal methods ---
 
@@ -104,5 +132,12 @@ private:
     QString m_dolphinFileName;
     QTemporaryFile m_autosaveFile;
     int m_lastId = 0;
+
+    // Inline IC tab state
+    bool m_isInlineIC = false;
+    QPointer<WorkSpace> m_parentWorkspace;
+    int m_parentICElementId = -1;
+    QString m_parentContextDir;
+    QString m_inlineBlobName;
 };
 

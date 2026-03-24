@@ -38,7 +38,10 @@ void ElementContextMenu::exec(QPoint screenPos,
                               const std::function<void()> &onTriggerChange,
                               const std::function<void()> &onSkinChange,
                               const std::function<void()> &onSkinRevert,
-                              const std::function<void()> &onFrequencyFocus)
+                              const std::function<void()> &onFrequencyFocus,
+                              const std::function<void()> &onEditSubcircuit,
+                              const std::function<void()> &onEmbedSubcircuit,
+                              const std::function<void()> &onExtractToFile)
 {
     QMenu menu;
     const QString changeSkinText(QObject::tr("Change skin to ..."));
@@ -159,6 +162,21 @@ void ElementContextMenu::exec(QPoint screenPos,
         }
     }
 
+    // --- IC sub-circuit actions ---
+    const QString editSubcircuitText(QObject::tr("Edit sub-circuit"));
+    const QString embedSubcircuitText(QObject::tr("Embed sub-circuit"));
+    const QString extractToFileText(QObject::tr("Extract to file"));
+
+    if (onEditSubcircuit && (caps.isEmbedded || caps.isFileBacked)) {
+        menu.addAction(editSubcircuitText)->setData(editSubcircuitText);
+    }
+    if (onEmbedSubcircuit && caps.isFileBacked) {
+        menu.addAction(embedSubcircuitText)->setData(embedSubcircuitText);
+    }
+    if (onExtractToFile && caps.isEmbedded) {
+        menu.addAction(extractToFileText)->setData(extractToFileText);
+    }
+
     menu.addSeparator();
 
     if (caps.hasElements) {
@@ -185,6 +203,9 @@ void ElementContextMenu::exec(QPoint screenPos,
     if (actionText == changeSkinText)  { onSkinChange();   return; }
     if (actionText == revertSkinText)  { onSkinRevert();   return; }
     if (actionData == frequencyText)   { onFrequencyFocus(); return; }
+    if (actionData == editSubcircuitText)  { onEditSubcircuit(); return; }
+    if (actionData == embedSubcircuitText) { onEmbedSubcircuit(); return; }
+    if (actionData == extractToFileText)   { onExtractToFile(); return; }
 
     if (actionData == rotateLeftText) {
         sendCommand(new RotateCommand(elements, -90.0, scene));

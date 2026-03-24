@@ -15,12 +15,14 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QLabel>
 #include <QLocale>
 #include <QLoggingCategory>
 #include <QMessageBox>
 #include <QPixmapCache>
 #include <QPushButton>
+#include <QSaveFile>
 #include <QSaveFile>
 #include <QShortcut>
 #include <QTemporaryFile>
@@ -42,7 +44,9 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
 #include "App/Element/IC.h"
+#include "App/Element/ICRegistry.h"
 #include "App/IO/RecentFiles.h"
+#include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -264,6 +268,15 @@ void MainWindow::setupConnections()
     connect(m_ui->actionPlay,                  &QAction::toggled,         this,                &MainWindow::on_actionPlay_toggled);
     connect(m_ui->actionReloadFile,            &QAction::triggered,       this,                &MainWindow::on_actionReloadFile_triggered);
     connect(m_ui->actionRename,                &QAction::triggered,       m_ui->elementEditor, &ElementEditor::renameAction);
+
+    // ElementEditor IC sub-circuit actions
+    connect(m_ui->elementEditor, &ElementEditor::editSubcircuitRequested, this, [this](const QString &blobName, int icElementId) {
+        if (m_currentTab) {
+            openICInTab(blobName, icElementId, m_currentTab->scene()->icRegistry()->blob(blobName));
+        }
+    });
+    connect(m_ui->elementEditor, &ElementEditor::embedSubcircuitRequested, this, &MainWindow::embedSelectedIC);
+    connect(m_ui->elementEditor, &ElementEditor::extractToFileRequested, this, &MainWindow::extractSelectedIC);
     connect(m_ui->actionResetZoom,             &QAction::triggered,       this,                &MainWindow::on_actionResetZoom_triggered);
     connect(m_ui->actionRestart,               &QAction::triggered,       this,                &MainWindow::on_actionRestart_triggered);
     connect(m_ui->actionRotateLeft,            &QAction::triggered,       this,                &MainWindow::on_actionRotateLeft_triggered);
@@ -282,6 +295,41 @@ void MainWindow::setupConnections()
     connect(m_ui->pushButtonAddIC,             &QPushButton::clicked,     this,                &MainWindow::on_pushButtonAddIC_clicked);
     connect(m_ui->pushButtonRemoveIC,          &QPushButton::clicked,     this,                &MainWindow::on_pushButtonRemoveIC_clicked);
     connect(m_ui->pushButtonRemoveIC,          &TrashButton::removeICFile,this,                &MainWindow::removeICFile);
+    connect(m_ui->pushButtonMakeSelfContained, &QPushButton::clicked,     this,                &MainWindow::makeSelfContained);
+    connect(m_ui->actionMakeSelfContained,     &QAction::triggered,       this,                &MainWindow::makeSelfContained);
+
+    // ICDropZone cross-section drag-and-drop
+    connect(m_ui->dropZoneFileBased, &ICDropZone::extractByBlobNameRequested, this, &MainWindow::extractICByBlobName);
+    connect(m_ui->dropZoneEmbedded, &ICDropZone::embedByFileRequested, this, &MainWindow::embedICByFile);
+
+    // Embedded IC section buttons
+    connect(m_ui->pushButtonAddEmbeddedIC, &QPushButton::clicked, this, [this] {
+        if (!m_currentTab) return;
+        QString fileName = QFileDialog::getOpenFileName(this, tr("Select IC file to embed"), currentDir().absolutePath(), tr("Panda files (*.panda)"));
+        if (fileName.isEmpty()) return;
+
+        QFile file(fileName);
+        if (!file.open(QIODevice::ReadOnly)) {
+            QMessageBox::warning(this, tr("Error"), tr("Could not read file: %1").arg(file.errorString()));
+            return;
+        }
+        QByteArray fileBytes = file.readAll();
+        file.close();
+
+        auto *scene = m_currentTab->scene();
+        QString blobName = resolveUniqueBlobName(QFileInfo(fileName).baseName(), scene);
+        if (blobName.isEmpty()) return;
+
+        scene->receiveCommand(new RegisterBlobCommand(blobName, fileBytes, scene));
+        m_palette->updateEmbeddedICList(scene);
+    });
+    connect(m_ui->pushButtonRemoveEmbeddedIC, &QPushButton::clicked, this, &MainWindow::on_pushButtonRemoveIC_clicked);
+    connect(m_ui->pushButtonRemoveEmbeddedIC, &TrashButton::removeEmbeddedIC, this, [this](const QString &blobName) {
+        if (m_currentTab) {
+            m_currentTab->removeEmbeddedIC(blobName);
+            m_palette->updateEmbeddedICList(m_currentTab->scene());
+        }
+    });
 
     // These edit actions always delegate to the current tab's scene, so they
     // never need to be rewired on tab switch.
@@ -561,8 +609,55 @@ void MainWindow::loadPandaFile(const QString &fileName)
     createNewTab();
     qCDebug(zero) << "Loading in editor.";
     m_currentTab->load(fileName);
+    // Tighten the scene rect to the loaded items immediately so subsequent
+    // interactions (selection, drag release) don't cause a viewport jump.
+    m_currentTab->scene()->resizeScene();
     m_palette->updateICList(currentFile());
+    m_palette->updateEmbeddedICList(m_currentTab->scene());
     m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
+}
+
+void MainWindow::openICInTab(const QString &blobName, int icElementId, const QByteArray &blob)
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    // Check if this blob is already being edited in a tab
+    for (int i = 0; i < m_ui->tab->count(); ++i) {
+        auto *ws = qobject_cast<WorkSpace *>(m_ui->tab->widget(i));
+        if (ws && ws->isInlineIC() && ws->inlineBlobName() == blobName
+            && ws->parentWorkspace() == m_currentTab) {
+            m_ui->tab->setCurrentIndex(i);
+            return;
+        }
+    }
+
+    auto *parentWorkspace = m_currentTab;
+
+    createNewTab();
+
+    m_currentTab->loadFromBlob(blob, parentWorkspace, icElementId, parentWorkspace->scene()->contextDir());
+    // Tighten the scene rect to the loaded items immediately so subsequent
+    // interactions (selection, drag release) don't cause a viewport jump.
+    m_currentTab->scene()->resizeScene();
+
+    // Hide file-based IC section now that isInlineIC() is true
+    m_ui->labelFileBasedICs->setVisible(false);
+    m_ui->pushButtonAddIC->setVisible(false);
+    m_ui->pushButtonRemoveIC->setVisible(false);
+    m_ui->dropZoneFileBased->setVisible(false);
+    m_ui->pushButtonMakeSelfContained->setVisible(false);
+    m_ui->gridLayout_4->setRowStretch(3, 0);
+
+    // Set tab title
+    int tabIndex = m_ui->tab->indexOf(m_currentTab);
+    m_ui->tab->setTabText(tabIndex, "[" + blobName + "]");
+
+    m_palette->updateEmbeddedICList(m_currentTab->scene());
+
+    // Connect child tab's save signal to parent
+    connect(m_currentTab, &WorkSpace::icBlobSaved, parentWorkspace, &WorkSpace::onChildICBlobSaved);
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -917,6 +1012,16 @@ void MainWindow::connectTab()
     addUndoRedoMenu();
 
     m_palette->updateICList(currentFile());
+    m_palette->updateEmbeddedICList(m_currentTab->scene());
+
+    // File-based IC section is meaningless for inline IC tabs (no context directory)
+    const bool showFileBased = !m_currentTab->isInlineIC();
+    m_ui->labelFileBasedICs->setVisible(showFileBased);
+    m_ui->pushButtonAddIC->setVisible(showFileBased);
+    m_ui->pushButtonRemoveIC->setVisible(showFileBased);
+    m_ui->dropZoneFileBased->setVisible(showFileBased);
+    m_ui->pushButtonMakeSelfContained->setVisible(showFileBased);
+    m_ui->gridLayout_4->setRowStretch(3, showFileBased ? 1 : 0);
 
     qCDebug(zero) << "Connecting current tab to element editor menu in UI.";
     m_ui->elementEditor->setScene(m_currentTab->scene());
@@ -924,6 +1029,11 @@ void MainWindow::connectTab()
     connect(m_currentTab->view(),       &GraphicsView::zoomChanged, this,                  &MainWindow::zoomChanged);
     connect(m_currentTab->simulation(), &Simulation::simulationWarning, this, [this](const QString &msg) {
         m_ui->statusBar->showMessage(msg, 8000);
+    });
+    connect(m_currentTab->scene()->undoStack(), &QUndoStack::indexChanged, this, [this] {
+        if (m_currentTab) {
+            m_palette->updateEmbeddedICList(m_currentTab->scene());
+        }
     });
 
     connect(m_prevMainPropShortcut,  &QShortcut::activated, m_currentTab->scene(), &Scene::prevMainPropShortcut);
@@ -965,6 +1075,8 @@ void MainWindow::tabChanged(const int newTabIndex)
     if (newTabIndex == -1) {
         // All tabs were closed; reset state.
         m_currentTab = nullptr;
+        m_palette->updateICList(QFileInfo());
+        m_palette->updateEmbeddedICList(nullptr);
         return;
     }
 
@@ -1557,5 +1669,239 @@ void MainWindow::removeICFile(const QString &icFileName)
     m_palette->updateICList(currentFile());
     // Auto-save after removal so the scene no longer references the deleted file.
     on_actionSave_triggered();
+}
+
+QString MainWindow::resolveUniqueBlobName(const QString &initialName, Scene *scene)
+{
+    auto *reg = scene->icRegistry();
+    QString blobName = reg->uniqueBlobName(initialName.trimmed());
+
+    // If the auto-generated name differs from the initial, let the user confirm or override
+    if (blobName != initialName.trimmed()) {
+        bool ok = false;
+        blobName = QInputDialog::getText(this,
+            tr("Name Collision"),
+            tr("An embedded IC named \"%1\" already exists.\nSuggested name:").arg(initialName.trimmed()),
+            QLineEdit::Normal, blobName, &ok);
+        blobName = blobName.trimmed();
+        if (!ok || blobName.isEmpty()) {
+            return {};
+        }
+        // Re-check in case the user typed a name that also collides
+        if (reg->hasBlob(blobName)) {
+            blobName = reg->uniqueBlobName(blobName);
+        }
+    }
+    return blobName;
+}
+
+void MainWindow::embedSelectedIC()
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    auto *scene = m_currentTab->scene();
+    const auto selected = scene->selectedElements();
+    if (selected.isEmpty()) {
+        return;
+    }
+
+    if (selected.first()->elementType() != ElementType::IC) {
+        return;
+    }
+    auto *firstIC = static_cast<IC *>(selected.first());
+    if (firstIC->icFile().isEmpty()) {
+        return;
+    }
+
+    const QString contextDir = scene->contextDir();
+    if (contextDir.isEmpty()) {
+        QMessageBox::warning(this, tr("Error"), tr("Please save the project first so ICs can be resolved."));
+        return;
+    }
+
+    QString blobName = resolveUniqueBlobName(QFileInfo(firstIC->icFile()).baseName(), scene);
+    if (blobName.isEmpty()) {
+        return;
+    }
+
+    QFile file(QDir(contextDir).absoluteFilePath(firstIC->icFile()));
+    if (!file.open(QIODevice::ReadOnly)) {
+        QMessageBox::warning(this, tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
+        return;
+    }
+    QByteArray fileBytes = file.readAll();
+    file.close();
+
+    scene->icRegistry()->embedICsByFile(firstIC->icFile(), fileBytes, blobName);
+    m_palette->updateEmbeddedICList(scene);
+    m_ui->statusBar->showMessage(tr("IC embedded successfully."), 4000);
+}
+
+void MainWindow::extractSelectedIC()
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    auto *scene = m_currentTab->scene();
+    const auto selected = scene->selectedElements();
+    if (selected.isEmpty()) {
+        return;
+    }
+
+    if (selected.first()->elementType() != ElementType::IC) {
+        return;
+    }
+    auto *firstIC = static_cast<IC *>(selected.first());
+    if (!firstIC->isEmbeddedIC()) {
+        return;
+    }
+
+    const QString blobName = firstIC->blobName();
+    const QString suggestion = blobName.isEmpty() ? QString() : blobName + ".panda";
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Extract IC to file..."), suggestion, tr("Panda files (*.panda)"));
+    if (fileName.isEmpty()) {
+        return;
+    }
+    if (!fileName.endsWith(".panda")) {
+        fileName.append(".panda");
+    }
+
+    scene->icRegistry()->extractToFile(blobName, fileName);
+    m_palette->updateICList(currentFile());
+    m_palette->updateEmbeddedICList(scene);
+    m_ui->statusBar->showMessage(tr("IC extracted to %1").arg(fileName), 4000);
+}
+
+void MainWindow::embedICByFile(const QString &fileName)
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    auto *scene = m_currentTab->scene();
+    const QString contextDir = scene->contextDir();
+    if (contextDir.isEmpty()) {
+        QMessageBox::warning(this, tr("Error"), tr("Please save the project first so ICs can be resolved."));
+        return;
+    }
+
+    const QString absolutePath = QDir(contextDir).absoluteFilePath(fileName);
+    QFile file(absolutePath);
+    if (!file.open(QIODevice::ReadOnly)) {
+        QMessageBox::warning(this, tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
+        return;
+    }
+    QByteArray fileBytes = file.readAll();
+    file.close();
+
+    QString blobName = resolveUniqueBlobName(QFileInfo(absolutePath).baseName(), scene);
+    if (blobName.isEmpty()) {
+        return;
+    }
+
+    auto *reg = scene->icRegistry();
+    if (reg->embedICsByFile(absolutePath, fileBytes, blobName) == 0) {
+        // No existing instances — create a new embedded IC.
+        reg->createEmbeddedIC(blobName, fileBytes, QFileInfo(absolutePath).absolutePath());
+    }
+
+    m_palette->updateEmbeddedICList(scene);
+    m_ui->statusBar->showMessage(tr("IC embedded successfully."), 4000);
+}
+
+void MainWindow::extractICByBlobName(const QString &blobName)
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    auto *scene = m_currentTab->scene();
+    const QString contextDir = scene->contextDir();
+    if (contextDir.isEmpty()) {
+        QMessageBox::warning(this, tr("Error"), tr("Please save the project first."));
+        return;
+    }
+
+    // Find any embedded IC with this blobName to get the blob data
+    auto *reg = scene->icRegistry();
+    if (!reg->hasBlob(blobName)) {
+        return;
+    }
+
+    QString fileName = QDir(contextDir).absoluteFilePath(blobName + ".panda");
+
+    if (QFile::exists(fileName)) {
+        auto answer = QMessageBox::question(this,
+            tr("File Exists"),
+            tr("A file named \"%1\" already exists in the project directory.\nOverwrite it?").arg(blobName + ".panda"),
+            QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+        if (answer != QMessageBox::Yes) {
+            return;
+        }
+    }
+
+    reg->extractToFile(blobName, fileName);
+    m_palette->updateICList(currentFile());
+    m_palette->updateEmbeddedICList(scene);
+    m_ui->statusBar->showMessage(tr("IC extracted to %1").arg(fileName), 4000);
+}
+
+void MainWindow::makeSelfContained()
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    auto *scene = m_currentTab->scene();
+    const QString contextDir = scene->contextDir();
+    if (contextDir.isEmpty()) {
+        QMessageBox::warning(this, tr("Error"), tr("Please save the project first."));
+        return;
+    }
+
+    // Collect unique file paths from all file-backed ICs
+    QStringList uniqueFiles;
+    for (auto *elm : scene->elements()) {
+        if (elm->elementType() != ElementType::IC || elm->isEmbeddedIC()) {
+            continue;
+        }
+        const QString icFile = static_cast<IC *>(elm)->icFile();
+        if (!icFile.isEmpty() && !uniqueFiles.contains(icFile)) {
+            uniqueFiles.append(icFile);
+        }
+    }
+
+    if (uniqueFiles.isEmpty()) {
+        m_ui->statusBar->showMessage(tr("No file-based ICs to embed."), 4000);
+        return;
+    }
+
+    int totalEmbedded = 0;
+    auto *reg = scene->icRegistry();
+
+    for (const QString &icFile : std::as_const(uniqueFiles)) {
+        const QString fullPath = QDir(contextDir).absoluteFilePath(icFile);
+        QFile file(fullPath);
+        if (!file.open(QIODevice::ReadOnly)) {
+            QMessageBox::warning(this, tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
+            break;
+        }
+        QByteArray fileBytes = file.readAll();
+        file.close();
+
+        QString blobName = resolveUniqueBlobName(QFileInfo(icFile).baseName(), scene);
+        if (blobName.isEmpty()) {
+            break; // User cancelled
+        }
+
+        totalEmbedded += reg->embedICsByFile(fullPath, fileBytes, blobName);
+    }
+
+    m_palette->updateEmbeddedICList(scene);
+    m_ui->statusBar->showMessage(tr("Embedded %1 IC(s). Circuit is now self-contained.").arg(totalEmbedded), 4000);
 }
 
