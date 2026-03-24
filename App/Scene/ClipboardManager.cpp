@@ -10,6 +10,7 @@
 #include <QPainter>
 
 #include "App/Core/Common.h"
+#include "App/Core/SentryHelpers.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
@@ -83,6 +84,7 @@ void ClipboardManager::paste()
 void ClipboardManager::cloneDrag(const QPointF &mousePos)
 {
     auto *view = m_scene->view();
+    sentryBreadcrumb("ui", QStringLiteral("Clone drag started"));
     qCDebug(zero) << "Ctrl + Drag action triggered.";
     const auto selectedElements = m_scene->selectedElements();
 
