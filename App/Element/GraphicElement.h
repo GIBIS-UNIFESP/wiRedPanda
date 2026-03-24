@@ -276,8 +276,8 @@ public:
      */
     virtual void updateLogic();
 
-    /// Returns the simulation output value on port \a index.
-    bool outputValue(const int index = 0) const;
+    /// Returns the four-state signal value on simulation output port \a index.
+    Status outputValue(const int index = 0) const;
 
     /// Returns the simulation input value on port \a index.
     bool inputValue(const int index = 0) const;
@@ -286,10 +286,16 @@ public:
     int simOutputSize() const;
 
     /// Sets simulation output port \a index to \a value.
-    void setOutputValue(const int index, const bool value);
+    void setOutputValue(const int index, const Status value);
 
     /// Sets simulation output port 0 to \a value.
-    void setOutputValue(const bool value);
+    void setOutputValue(const Status value);
+
+    /// Convenience overload — converts \c bool to Active/Inactive for port \a index.
+    void setOutputValue(const int index, const bool value) { setOutputValue(index, value ? Status::Active : Status::Inactive); }
+
+    /// Convenience overload — converts \c bool to Active/Inactive for port 0.
+    void setOutputValue(const bool value) { setOutputValue(value ? Status::Active : Status::Inactive); }
 
     /// Connects simulation input \a inputIndex to output \a outputPort of \a source element.
     void connectPredecessor(const int inputIndex, GraphicElement *source, const int outputPort);
@@ -437,14 +443,33 @@ protected:
 
     // --- Direct Simulation Helpers ---
 
-    /// Snapshots predecessor outputs into the input cache. Returns false if any predecessor is null.
-    bool updateInputs();
+    /**
+     * \brief Snapshots each predecessor's output into the simulation input cache.
+     *
+     * If any predecessor output is Unknown or Error, all outputs are set to
+     * Unknown and the method returns \c false so that sequential elements
+     * (flip-flops, latches) can skip computation with incomplete data.
+     * Unconnected inputs (null predecessor) use the corresponding port's
+     * defaultStatus(), replacing the old global GND/VCC approach.
+     *
+     * \return \c true if all inputs are Active or Inactive (simulation can proceed).
+     */
+    bool simUpdateInputs();
+
+    /**
+     * \brief Like simUpdateInputs(), but allows Unknown/Error values through.
+     * \details Combinational gates use this so their domination rules
+     * (e.g. AND(0, X) = 0) can short-circuit even with unknown inputs.
+     * Only a truly unconnected input (null predecessor whose port default
+     * is Unknown) triggers an early all-outputs-Unknown return.
+     */
+    bool simUpdateInputsAllowUnknown();
 
     /// Read-only view of the cached simulation input values.
-    const QVector<bool> &simInputs() const { return m_simInputValues; }
+    const QVector<Status> &simInputs() const { return m_simInputValues; }
 
     /// Read-only view of the current simulation output values.
-    const QVector<bool> &simOutputs() const { return m_simOutputValues; }
+    const QVector<Status> &simOutputs() const { return m_simOutputValues; }
 
 private:
     // --- Port Management Helpers ---
@@ -520,14 +545,19 @@ private:
 
     // --- Members: Direct Simulation ---
 
-    struct SimPredecessor {
-        GraphicElement *element = nullptr;
-        int outputPort = 0;
+    /**
+     * \brief Describes a single simulation-graph edge: which element and output
+     * port feeds into one of this element's input slots.
+     * \details Used by simUpdateInputs() to traverse the simulation graph.
+     */
+    struct SimInputConnection {
+        GraphicElement *sourceElement = nullptr;
+        int sourceOutputIndex = 0;
     };
 
-    QVector<SimPredecessor> m_simPredecessors;
-    QVector<bool> m_simInputValues;
-    QVector<bool> m_simOutputValues;
+    QVector<SimInputConnection> m_simInputConnections;
+    QVector<Status> m_simInputValues;
+    QVector<Status> m_simOutputValues;
     bool m_simOutputChanged = false;
 
     // --- Members: Trigger & Label ---

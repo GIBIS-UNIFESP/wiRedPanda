@@ -239,6 +239,11 @@ void Led::setSkin(const bool useDefaultSkin, const QString &fileName)
 
 void Led::updateLogic()
 {
-    updateInputs();
+    if (!simUpdateInputs()) {
+        return;
+    }
+    for (int i = 0; i < simInputs().size(); ++i) {
+        setOutputValue(i, simInputs().at(i));
+    }
 }
 

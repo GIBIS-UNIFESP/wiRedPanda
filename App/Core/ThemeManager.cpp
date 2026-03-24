@@ -76,6 +76,7 @@ void ThemeAttributes::setTheme(const Theme theme)
 
         m_graphicElementLabelColor = QColor(Qt::black);
 
+        m_connectionUnknown = QColor(140, 140, 140);    // neutral gray — "nothing is driving this"
         m_connectionInactive = QColor(Qt::darkGreen);
         m_connectionActive = QColor(Qt::green);
         m_connectionSelected = m_selectionPen;
@@ -111,6 +112,7 @@ void ThemeAttributes::setTheme(const Theme theme)
 
         m_graphicElementLabelColor = QColor(Qt::white);
 
+        m_connectionUnknown = QColor(160, 160, 160, 255);    // light gray — "nothing is driving this"
         m_connectionInactive = QColor(65, 150, 130, 255);  // muted teal; visible on dark background without competing with active wires
         m_connectionActive = QColor(115, 255, 220, 255);    // bright cyan-green; clearly distinguishes an asserted wire
         m_connectionSelected = m_selectionPen;
@@ -169,16 +171,18 @@ void ThemeAttributes::setTheme(const Theme theme)
     // Port brushes mirror the wire colours for consistency so users can visually
     // correlate a wire's colour with the port it connects to.
     // Output ports use a distinct pink/red hue to visually distinguish them from input ports.
-    m_portInvalidBrush = m_connectionInvalid;
+    m_portUnknownBrush = m_connectionUnknown;
     m_portInactiveBrush = m_connectionInactive;
     m_portActiveBrush = m_connectionActive;
+    m_portErrorBrush = m_connectionError;
     m_portOutputBrush = QColor(243, 83, 105); // vivid rose-pink for output ports
 
     // Port pen colours are theme-invariant (always black/darkRed) because they are drawn
     // as outlines on top of the brush fill and need consistent contrast
-    m_portInvalidPen = QColor(Qt::red);
+    m_portUnknownPen = QColor(120, 120, 120);  // dark gray — distinct from error red
     m_portInactivePen = QColor(Qt::black);
     m_portActivePen = QColor(Qt::black);
+    m_portErrorPen = QColor(Qt::red);
     m_portOutputPen = QColor(Qt::darkRed);
 
     m_portHoverPort = QColor(Qt::yellow); // bright yellow on hover for high visibility regardless of theme

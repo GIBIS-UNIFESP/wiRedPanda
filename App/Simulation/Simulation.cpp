@@ -92,11 +92,11 @@ void Simulation::updatePort(QNEOutputPort *port)
 
     auto *element = port->graphicElement();
     if (!element) {
-        port->setStatus(Status::Invalid);
+        port->setStatus(Status::Unknown);
         return;
     }
 
-    port->setStatus(element->outputValue(port->index()) ? Status::Active : Status::Inactive);
+    port->setStatus(element->outputValue(port->index()));
 }
 
 void Simulation::updatePort(QNEInputPort *port)
