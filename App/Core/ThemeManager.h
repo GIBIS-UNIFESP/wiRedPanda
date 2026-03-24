@@ -14,7 +14,7 @@
 #include "App/Core/Application.h"
 
 /// Enumeration of available application themes.
-enum class Theme { Light, Dark };
+enum class Theme { Light, Dark, System };
 
 /**
  * \class ThemeAttributes
@@ -112,6 +112,9 @@ public:
     /// Switches the application to \a theme and emits themeChanged().
     static void setTheme(const Theme theme);
 
+    /// Returns the effective theme (Light or Dark), resolving System to the OS preference.
+    static Theme effectiveTheme();
+
 signals:
     // --- Signals ---
 
@@ -122,6 +125,13 @@ private:
     // --- Lifecycle ---
 
     explicit ThemeManager(QObject *parent = nullptr);
+
+    /// Resolves Theme::System to Light or Dark based on the OS color scheme.
+    /// Qt 6.5+: reads QStyleHints::colorScheme(). Qt < 6.5: palette lightness heuristic.
+    static Theme resolveSystemTheme();
+
+    /// Called when the OS color scheme changes (connected to QStyleHints::colorSchemeChanged on Qt 6.5+).
+    void onSystemColorSchemeChanged();
 
     // --- Members ---
 

@@ -3,13 +3,9 @@
 
 #include "App/Core/ThemeManager.h"
 
-#include <QDebug>
+#include <QStyleHints>
 
 #include "App/Core/Settings.h"
-
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
-#include <QStyleHints>
-#endif
 
 ThemeManager::ThemeManager(QObject *parent)
     : QObject(parent)
@@ -18,13 +14,36 @@ ThemeManager::ThemeManager(QObject *parent)
     // default-initialised value (Theme::Light, as defined in the header)
     m_theme = Settings::theme();
 
-    // Apply the theme immediately so colours are correct before any widgets are shown
-    m_attributes.setTheme(m_theme);
+    // Apply the theme immediately so colours are correct before any widgets are shown.
+    // Resolve System here directly — effectiveTheme() would re-enter instance() and deadlock
+    // because the static local is still being constructed.
+    const Theme effective = (m_theme == Theme::System) ? resolveSystemTheme() : m_theme;
+    m_attributes.setTheme(effective);
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    // Sync the initial color-scheme hint so native controls match the active theme.
+    if (auto *app = qApp) {
+        switch (m_theme) {
+        case Theme::Light:  app->styleHints()->setColorScheme(Qt::ColorScheme::Light);   break;
+        case Theme::Dark:   app->styleHints()->setColorScheme(Qt::ColorScheme::Dark);    break;
+        case Theme::System: app->styleHints()->setColorScheme(Qt::ColorScheme::Unknown); break;
+        }
+    }
+#endif
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
+    // Qt 6.5+ provides a built-in color-scheme change signal; use it so System
+    // theme reacts at runtime when the user toggles OS dark/light mode.
+    if (auto *app = qApp) {
+        connect(app->styleHints(), &QStyleHints::colorSchemeChanged,
+                this, [this](Qt::ColorScheme) { onSystemColorSchemeChanged(); });
+    }
+#endif
 }
 
 QString ThemeManager::themePath()
 {
-    return (ThemeManager::theme() == Theme::Light) ? "Light" : "Dark";
+    return (effectiveTheme() == Theme::Light) ? "Light" : "Dark";
 }
 
 Theme ThemeManager::theme()
@@ -32,11 +51,61 @@ Theme ThemeManager::theme()
     return instance().m_theme;
 }
 
+Theme ThemeManager::effectiveTheme()
+{
+    const Theme t = instance().m_theme;
+    return (t == Theme::System) ? resolveSystemTheme() : t;
+}
+
+Theme ThemeManager::resolveSystemTheme()
+{
+#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
+    // QStyleHints::colorScheme() returns the OS color scheme without relying on
+    // the application palette heuristic.
+    if (auto *app = qApp) {
+        return (app->styleHints()->colorScheme() == Qt::ColorScheme::Dark)
+                   ? Theme::Dark : Theme::Light;
+    }
+    return Theme::Light;
+#else
+    // Qt < 6.5: no built-in color-scheme API; use the platform palette window
+    // background lightness as a heuristic (dark background → dark mode).
+    if (auto *app = qApp) {
+        return (app->palette().color(QPalette::Window).lightness() < 128)
+                   ? Theme::Dark : Theme::Light;
+    }
+    return Theme::Light;
+#endif
+}
+
+void ThemeManager::onSystemColorSchemeChanged()
+{
+    if (m_theme == Theme::System) {
+        m_attributes.setTheme(resolveSystemTheme());
+        emit themeChanged();
+    }
+}
+
 void ThemeManager::setTheme(const Theme theme)
 {
+    const Theme effective = (theme == Theme::System) ? resolveSystemTheme() : theme;
+
     // Always refresh ThemeAttributes so palette and color constants are current,
     // even if the theme value itself hasn't changed (e.g. initial load).
-    instance().m_attributes.setTheme(theme);
+    instance().m_attributes.setTheme(effective);
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    // Inform Qt of the active color scheme so native controls use the right appearance.
+    // For System we clear the override (Unknown) so Qt tracks the OS setting;
+    // for explicit Light/Dark we lock it in.
+    if (auto *app = Application::instance()) {
+        switch (theme) {
+        case Theme::Light:  app->styleHints()->setColorScheme(Qt::ColorScheme::Light);   break;
+        case Theme::Dark:   app->styleHints()->setColorScheme(Qt::ColorScheme::Dark);    break;
+        case Theme::System: app->styleHints()->setColorScheme(Qt::ColorScheme::Unknown); break;
+        }
+    }
+#endif
 
     // Early-exit after refreshing attributes: don't re-emit themeChanged() or
     // re-write to settings when the theme is the same (avoids unnecessary repaints)
@@ -60,14 +129,6 @@ void ThemeAttributes::setTheme(const Theme theme)
 {
     switch (theme) {
     case Theme::Light: {
-        // Qt 6.8+ honours the color scheme hint at the platform level,
-        // enabling OS-native light/dark integration for system controls.
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
-        if (Application::instance()) {
-            Application::instance()->styleHints()->setColorScheme(Qt::ColorScheme::Light);
-        }
-#endif
-
         m_sceneBgBrush = QColor(255, 255, 230); // warm off-white (slight yellow tint); less eye-strain than pure white
         m_sceneBgDots = QColor(Qt::darkGray);
 
@@ -97,12 +158,6 @@ void ThemeAttributes::setTheme(const Theme theme)
     }
 
     case Theme::Dark: {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
-        if (Application::instance()) {
-            Application::instance()->styleHints()->setColorScheme(Qt::ColorScheme::Dark);
-        }
-#endif
-
         m_sceneBgBrush = QColor(64, 69, 82); // dark blue-grey slate; chosen to provide sufficient luminance
                                              // contrast against the light-grey dot grid overlay
         m_sceneBgDots = QColor(Qt::lightGray);
