@@ -39,6 +39,8 @@
 #include <QDoubleSpinBox>
 #include <QDrag>
 #include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
 #include <QElapsedTimer>
 #include <QEvent>
 #include <QFile>
@@ -62,6 +64,7 @@
 #include <QIODevice>
 #include <QIcon>
 #include <QImageReader>
+#include <QInputDialog>
 #include <QItemDelegate>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -98,6 +101,7 @@
 #include <QPixmapCache>
 #include <QPoint>
 #include <QPointF>
+#include <QPointer>
 #include <QPrinter>
 #include <QProcess>
 #include <QPushButton>

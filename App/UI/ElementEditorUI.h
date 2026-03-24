@@ -106,5 +106,9 @@ public:
     // Wireless mode (Node only)
     QLabel *labelWirelessMode = nullptr;
     QComboBox *comboBoxWirelessMode = nullptr;
+
+    // Blob name (embedded ICs only)
+    QLabel *labelBlobName = nullptr;
+    QLineEdit *lineEditBlobName = nullptr;
 };
 

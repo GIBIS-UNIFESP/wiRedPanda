@@ -97,6 +97,7 @@
 #include "Tests/Integration/TestFeedback.h"
 #include "Tests/Integration/TestFiles.h"
 #include "Tests/Integration/TestIc.h"
+#include "Tests/Integration/TestICInline.h"
 #include "Tests/Integration/TestSimulation.h"
 #include "Tests/Integration/TestSystemVerilogExport.h"
 #include "Tests/Integration/TestWorkspace.h"
@@ -249,6 +250,7 @@ int main(int argc, char **argv)
         {"TestFeedback", []() -> QObject * { return new TestFeedback; }},
         {"TestFiles", []() -> QObject * { return new TestFiles; }},
         {"TestIC", []() -> QObject * { return new TestIC; }},
+        {"TestICInline", []() -> QObject * { return new TestICInline; }},
         {"TestSimulation", []() -> QObject * { return new TestSimulation; }},
         {"TestSystemVerilogExport", []() -> QObject * { return new TestSystemVerilogExport; }},
         {"TestWorkspace", []() -> QObject * { return new TestWorkspace; }},

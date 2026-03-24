@@ -158,6 +158,14 @@ public:
     /// Returns \c true if this element type supports a user-editable label.
     bool hasLabel() const;
 
+    // --- Embedded IC ---
+
+    /// Returns true if this element is an embedded IC (not file-backed). Base returns false.
+    virtual bool isEmbeddedIC() const { return false; }
+
+    /// Returns the blob name for embedded ICs, empty string otherwise. Base returns empty.
+    virtual const QString &blobName() const { static const QString empty; return empty; }
+
     // --- Trigger Control ---
 
     /// Returns the keyboard shortcut that activates this element.

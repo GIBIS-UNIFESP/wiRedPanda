@@ -1357,6 +1357,15 @@
                 "label": {
                   "type": "string",
                   "description": "Optional instance label"
+                },
+                "inline": {
+                  "type": "boolean",
+                  "description": "Create as embedded IC (inline blob)",
+                  "default": false
+                },
+                "blob_name": {
+                  "type": "string",
+                  "description": "Custom blob name for inline mode (defaults to ic_name)"
                 }
               },
               "required": [
@@ -1419,6 +1428,47 @@
             "jsonrpc",
             "method"
           ],
+          "additionalProperties": false
+        },
+        "embed_ic": {
+          "type": "object",
+          "description": "Convert a file-backed IC to an embedded IC",
+          "properties": {
+            "jsonrpc": { "type": "string", "const": "2.0" },
+            "method": { "const": "embed_ic" },
+            "params": {
+              "type": "object",
+              "properties": {
+                "element_id": { "type": "integer", "description": "Element ID of the file-backed IC to embed" },
+                "blob_name": { "type": "string", "description": "Optional blob name override (defaults to file basename)" }
+              },
+              "required": ["element_id"],
+              "additionalProperties": false
+            },
+            "id": { "oneOf": [{ "type": "string" }, { "type": "number" }, { "type": "null" }] }
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+        "extract_ic": {
+          "type": "object",
+          "description": "Extract an embedded IC to a .panda file",
+          "properties": {
+            "jsonrpc": { "type": "string", "const": "2.0" },
+            "method": { "const": "extract_ic" },
+            "params": {
+              "type": "object",
+              "properties": {
+                "blob_name": { "type": "string", "description": "Blob name of the embedded IC to extract" },
+                "file_name": { "type": "string", "description": "Optional output file path" },
+                "overwrite": { "type": "boolean", "description": "Overwrite existing file", "default": false }
+              },
+              "required": ["blob_name"],
+              "additionalProperties": false
+            },
+            "id": { "oneOf": [{ "type": "string" }, { "type": "number" }, { "type": "null" }] }
+          },
+          "required": ["jsonrpc", "method"],
           "additionalProperties": false
         },
         "move_element": {
@@ -2313,6 +2363,12 @@
                       "type": "integer"
                     },
                     "message": {
+                      "type": "string"
+                    },
+                    "inline": {
+                      "type": "boolean"
+                    },
+                    "blob_name": {
                       "type": "string"
                     }
                   },

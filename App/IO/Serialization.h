@@ -97,13 +97,22 @@ public:
 
     // --- Panda Preamble ---
 
-    /// Result of reading a .panda file preamble (header + dolphin + rect).
+    /// Result of reading a .panda file preamble (header + dolphin + rect + metadata).
     struct Preamble {
         QVersionNumber version;
+        QMap<QString, QVariant> metadata;
     };
 
-    /// Reads the full .panda preamble: header, dolphin filename, and rect.
+    /// Reads the full .panda preamble: header, dolphin filename, rect, and metadata (V_4_5+).
     static Preamble readPreamble(QDataStream &stream);
+
+    // --- Embedded ICs ---
+
+    /// Extracts the embedded IC registry from a metadata map. Returns empty map if not present.
+    static QMap<QString, QByteArray> deserializeBlobRegistry(const QMap<QString, QVariant> &metadata);
+
+    /// Serializes embedded ICs into a metadata map (sets the "embeddedICs" key).
+    static void serializeBlobRegistry(const QMap<QString, QByteArray> &blobs, QMap<QString, QVariant> &metadata);
 
     // --- Magic Headers ---
 

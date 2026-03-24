@@ -68,5 +68,8 @@ inline bool hasDelayFix(const QVersionNumber &v) { return v >= Versions::V_4_3; 
 /// V4.4: Node wireless mode stored in file.
 inline bool hasWirelessMode(const QVersionNumber &v) { return v >= Versions::V_4_4; }
 
+/// V4.5: File-level metadata map and embedded IC blob registry.
+inline bool hasMetadata(const QVersionNumber &v) { return v >= Versions::V_4_5; }
+
 } // namespace VersionInfo
 

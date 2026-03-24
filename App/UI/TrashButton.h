@@ -32,6 +32,9 @@ signals:
     /// Removes the IC file \a icFileName from disk after user confirmation.
     void removeICFile(const QString &icFileName);
 
+    /// Removes all embedded IC instances with the given \a blobName from the scene.
+    void removeEmbeddedIC(const QString &blobName);
+
 protected:
     // --- Drag and Drop ---
 

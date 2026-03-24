@@ -74,6 +74,9 @@ public:
      */
     void loadPandaFile(const QString &fileName);
 
+    /// Opens an embedded IC blob for editing in a new tab.
+    void openICInTab(const QString &blobName, int icElementId, const QByteArray &blob);
+
     /**
      * \brief Prompts the user to save unsaved changes before closing.
      * \param multiple \c true when multiple tabs may be affected.
@@ -201,6 +204,12 @@ private:
     void updateRecentFileActions();
     void openRecentFile();
     void removeICFile(const QString &icFileName);
+    QString resolveUniqueBlobName(const QString &initialName, Scene *scene);
+    void embedSelectedIC();
+    void extractSelectedIC();
+    void makeSelfContained();
+    void embedICByFile(const QString &fileName);
+    void extractICByBlobName(const QString &blobName);
     void showUpdateDialog(const QString &latestVersion, const QUrl &releaseUrl);
 
     // --- Settings & Theme ---

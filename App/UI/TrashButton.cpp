@@ -31,24 +31,8 @@ void TrashButton::dropEvent(QDropEvent *event)
 {
     if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")
         || event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
-        // Require explicit confirmation before permanently deleting an IC file
-        QMessageBox msgBox;
-        msgBox.setParent(this);
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setText(tr("File will be deleted. Are you sure?"));
-        msgBox.setWindowModality(Qt::WindowModal);
-        // Default to "No" so an accidental drag does not cause data loss
-        msgBox.setDefaultButton(QMessageBox::No);
-
-        if (msgBox.exec() != QMessageBox::Yes) {
-            event->setAccepted(false);
-            return;
-        }
-
         QByteArray itemData;
 
-        // Prefer the newer MIME type but accept either; the second assignment wins
-        // if both formats are somehow present (shouldn't happen in practice)
         if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")) {
             itemData = event->mimeData()->data("wpanda/x-dnditemdata");
         }
@@ -57,8 +41,7 @@ void TrashButton::dropEvent(QDropEvent *event)
             itemData = event->mimeData()->data("application/x-wiredpanda-dragdrop");
         }
 
-        // Deserialise the drag payload to extract only the IC file name;
-        // offset and type are also present in the stream but not needed here
+        // Deserialise the drag payload to extract the IC file name and optional embedded fields
         QDataStream stream(&itemData, QIODevice::ReadOnly);
         Serialization::readPandaHeader(stream);
 
@@ -66,7 +49,33 @@ void TrashButton::dropEvent(QDropEvent *event)
         ElementType type;   stream >> type;
         QString icFileName; stream >> icFileName;
 
-        emit removeICFile(icFileName);
+        bool isEmbedded = false;
+        QString blobName;
+        if (!stream.atEnd()) { stream >> isEmbedded; }
+        if (!stream.atEnd()) { stream >> blobName; }
+
+        QMessageBox msgBox;
+        msgBox.setParent(this);
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setWindowModality(Qt::WindowModal);
+        msgBox.setDefaultButton(QMessageBox::No);
+
+        if (isEmbedded) {
+            msgBox.setText(tr("Remove all \"%1\" instances from the circuit?").arg(blobName));
+        } else {
+            msgBox.setText(tr("File will be deleted. Are you sure?"));
+        }
+
+        if (msgBox.exec() != QMessageBox::Yes) {
+            event->setAccepted(false);
+            return;
+        }
+
+        if (isEmbedded) {
+            emit removeEmbeddedIC(blobName);
+        } else {
+            emit removeICFile(icFileName);
+        }
     }
 }
 
