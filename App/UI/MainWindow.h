@@ -102,6 +102,12 @@ public:
     void exportToArduino(QString fileName);
 
     /**
+     * \brief Generates SystemVerilog code for the current circuit.
+     * \param fileName Output .sv file path.
+     */
+    void exportToSystemVerilog(QString fileName);
+
+    /**
      * \brief Saves the BeWavedDolphin waveform session to \a fileName.
      * \param fileName Output .dolphin file path.
      */
@@ -212,6 +218,7 @@ private:
     void on_actionAbout_triggered();
     void on_actionExit_triggered();
     void on_actionExportToArduino_triggered();
+    void on_actionExportToSystemVerilog_triggered();
     void on_actionExportToImage_triggered();
     void on_actionExportToPdf_triggered();
     void on_actionFastMode_triggered(const bool checked);
