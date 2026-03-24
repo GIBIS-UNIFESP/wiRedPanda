@@ -102,5 +102,9 @@ public:
     // Lock
     QLabel *labelLocked = nullptr;
     QCheckBox *checkBoxLocked = nullptr;
+
+    // Wireless mode (Node only)
+    QLabel *labelWirelessMode = nullptr;
+    QComboBox *comboBoxWirelessMode = nullptr;
 };
 

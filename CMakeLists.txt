@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 set(CMAKE_POLICY_VERSION_MINIMUM 3.16) # for nlohmann/json
-project(wiredpanda VERSION 4.3.0 LANGUAGES CXX)
+project(wiredpanda VERSION 4.4.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -636,6 +636,7 @@ add_test(NAME TestSystemVerilogExport COMMAND test_wiredpanda TestSystemVerilogE
 add_test(NAME TestThemeManager COMMAND test_wiredpanda TestThemeManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestTruthTable COMMAND test_wiredpanda TestTruthTable WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWaveform COMMAND test_wiredpanda TestWaveform WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestWirelessNode COMMAND test_wiredpanda TestWirelessNode WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWorkspace COMMAND test_wiredpanda TestWorkspace WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWorkspaceFileops COMMAND test_wiredpanda TestWorkspaceFileops WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
@@ -693,10 +694,11 @@ foreach(TEST TestArduino TestFeedback TestFiles TestIC TestSystemVerilogExport T
 endforeach()
 
 # Element and Component Unit Tests - Unit category
-foreach(TEST TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocksAdvanced
-        TestComponents TestDisplays TestElementLabel TestElementProperties TestFeatures
-        TestGeometry TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED
-        TestLogicGates TestMultiplexing TestSequentialLogic TestStatusOps TestTruthTable)
+foreach(TEST TestAudioBox TestBuzzer TestClock TestClocksAdvanced TestComponents TestDisplays
+        TestElementLabel TestElementProperties TestFeatures TestGeometry
+        TestGraphicelementAdvanced TestIcons TestInputElements TestInputRotary TestLED
+        TestLogicGates TestMultiplexing TestSequentialLogic TestTruthTable TestWaveform
+        TestWirelessNode)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
 

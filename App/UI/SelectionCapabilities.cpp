@@ -20,7 +20,7 @@ SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &element
 
     // Start all flags true; AND-reduce over the selection below.
     c.hasAudioBox = c.hasAudio = c.hasColors = c.hasDelay = c.hasElements = true;
-    c.hasFrequency = c.hasLabel = c.hasLatchedValue = c.hasOnlyInputs = c.hasTrigger = c.hasTruthTable = true;
+    c.hasFrequency = c.hasLabel = c.hasLatchedValue = c.hasOnlyInputs = c.hasWirelessMode = c.hasTrigger = c.hasTruthTable = true;
     c.canChangeSkin = c.canMorph = true;
     c.hasSameAudio = c.hasSameColors = c.hasSameDelay = c.hasSameFrequency = true;
     c.hasSameInputSize = c.hasSameLabel = c.hasSameOutputSize = true;
@@ -46,7 +46,8 @@ SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &element
         c.maximumInputs  = (std::min)(c.maximumInputs,  elm->maxInputSize());
         c.minimumOutputs = (std::max)(c.minimumOutputs, elm->minOutputSize());
         c.maximumOutputs = (std::min)(c.maximumOutputs, elm->maxOutputSize());
-        c.hasTrigger    &= elm->hasTrigger();
+        c.hasWirelessMode &= elm->hasWirelessMode();
+        c.hasTrigger      &= elm->hasTrigger();
 
         c.hasSameLabel      &= (elm->label()    == firstElement->label());
         c.hasSameColors     &= (elm->color()    == firstElement->color());

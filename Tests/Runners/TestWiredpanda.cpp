@@ -125,6 +125,7 @@
 #include "Tests/Unit/Elements/TestElementProperties.h"
 #include "Tests/Unit/Elements/TestFeatures.h"
 #include "Tests/Unit/Elements/TestGeometry.h"
+#include "Tests/Unit/Elements/TestWirelessNode.h"
 #include "Tests/Unit/Elements/TestGraphicelementAdvanced.h"
 #include "Tests/Unit/Elements/TestInputElements.h"
 #include "Tests/Unit/Elements/TestInputRotary.h"
@@ -271,6 +272,7 @@ int main(int argc, char **argv)
         {"TestElementProperties", []() -> QObject * { return new TestElementProperties; }},
         {"TestFeatures", []() -> QObject * { return new TestFeatures; }},
         {"TestGeometry", []() -> QObject * { return new TestGeometry; }},
+        {"TestWirelessNode", []() -> QObject * { return new TestWirelessNode; }},
         {"TestGraphicelementAdvanced", []() -> QObject * { return new TestGraphicelementAdvanced; }},
         {"TestInputElements", []() -> QObject * { return new TestInputElements; }},
         {"TestInputRotary", []() -> QObject * { return new TestInputRotary; }},

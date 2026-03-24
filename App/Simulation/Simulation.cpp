@@ -55,6 +55,7 @@ void Simulation::update()
         }
     }
 
+    // Phase 2: update all GraphicElements in topological order
     if (m_simHasFeedbackElements) {
         // Use iterative settling for circuits with feedback loops.
         updateWithIterativeSettling();
@@ -300,6 +301,7 @@ bool Simulation::initialize()
 
     // Build connection graph
     buildConnectionGraph(elements);
+    connectWirelessElements(elements);
 
     // Initialize IC internal simulation graphs
     for (auto *elm : std::as_const(elements)) {
@@ -316,6 +318,8 @@ bool Simulation::initialize()
     qCDebug(zero) << "Finished simulation layer.";
     return true;
 }
+
+// --- Simulation graph building ---
 
 void Simulation::buildConnectionGraph(const QVector<GraphicElement *> &elements)
 {
@@ -340,6 +344,37 @@ void Simulation::buildConnectionGraph(const QVector<GraphicElement *> &elements)
     }
 }
 
+void Simulation::connectWirelessElements(const QVector<GraphicElement *> &elements)
+{
+    // Build a map from channel label to the Tx node's GraphicElement.
+    // If two Tx nodes share the same label the first registered wins and a warning is emitted.
+    QHash<QString, GraphicElement *> txMap;
+    for (auto *elm : std::as_const(elements)) {
+        if (elm->wirelessMode() != WirelessMode::Tx || elm->label().isEmpty()) {
+            continue;
+        }
+        if (txMap.contains(elm->label())) {
+            qCWarning(zero) << "Duplicate wireless Tx label:" << elm->label() << "— second transmitter ignored.";
+        } else {
+            txMap.insert(elm->label(), elm);
+        }
+    }
+
+    // Wire each Rx node's input to the matching Tx node's output.
+    // connectPredecessor() overwrites whatever buildConnectionGraph() set,
+    // so the topological sort will see the true wireless dependency.
+    for (auto *elm : std::as_const(elements)) {
+        if (elm->wirelessMode() != WirelessMode::Rx || elm->label().isEmpty()) {
+            continue;
+        }
+        if (auto *txElement = txMap.value(elm->label(), nullptr)) {
+            elm->connectPredecessor(0, txElement, 0);
+        }
+        // No matching Tx: buildConnectionGraph() already wired this port to its default,
+        // so the element is valid and outputs its default status.
+    }
+}
+
 void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
 {
     QHash<GraphicElement *, QVector<GraphicElement *>> successors;
@@ -352,6 +387,30 @@ void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
                     if (successor && !successors[elm].contains(successor)) {
                         successors[elm].append(successor);
                     }
+                }
+            }
+        }
+    }
+
+    // Add wireless Tx→Rx edges to the successor graph.
+    // connectWirelessElements() already set predecessors for simulation input routing,
+    // but those don't create QNEConnection objects, so the connection-walking loop above
+    // doesn't see wireless dependencies.  We must add them explicitly here for correct
+    // topological ordering.
+    // NOTE: must match connectWirelessElements() — first Tx per label wins.
+    QHash<QString, GraphicElement *> txMap;
+    for (auto *elm : std::as_const(elements)) {
+        if (elm->wirelessMode() == WirelessMode::Tx && !elm->label().isEmpty()) {
+            if (!txMap.contains(elm->label())) {
+                txMap.insert(elm->label(), elm);
+            }
+        }
+    }
+    for (auto *elm : std::as_const(elements)) {
+        if (elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
+            if (auto *tx = txMap.value(elm->label(), nullptr)) {
+                if (!successors[tx].contains(elm)) {
+                    successors[tx].append(elm);
                 }
             }
         }

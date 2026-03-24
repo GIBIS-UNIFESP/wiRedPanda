@@ -30,7 +30,8 @@ struct PropertyDescriptor {
         AudioBox,    ///< AudioBox file selection dialog.
         Trigger,     ///< Keyboard trigger shortcut.
         TruthTable,  ///< Editable truth table dialog.
-        Skin,        ///< Custom pixmap skin selection.
+        Skin,         ///< Custom pixmap skin selection.
+        WirelessModeSelector, ///< Wireless routing mode (None / Tx / Rx) — Node elements only.
     };
 
     Type type; ///< Which property this descriptor represents.

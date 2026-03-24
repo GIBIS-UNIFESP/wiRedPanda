@@ -12,6 +12,7 @@
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/IC.h"
@@ -1222,6 +1223,118 @@ void TestSerialization::testMalformedConnectionData()
         // Acceptable to fail on malformed data
         QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain the malformed connection issue");
     }
+}
+
+// ============================================================
+// Wireless Node Serialization Tests
+// ============================================================
+
+void TestSerialization::testWirelessTxNodePreservedInScene()
+{
+    // A Node in Tx mode must survive a full Workspace save/load round-trip.
+    WorkSpace ws1;
+    auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(nodeElm != nullptr);
+    nodeElm->setLabel("CLK");
+    qobject_cast<Node *>(nodeElm)->setWirelessMode(WirelessMode::Tx);
+    ws1.scene()->addItem(nodeElm);
+
+    QByteArray data = saveToMemory(ws1);
+    QVERIFY(!data.isEmpty());
+
+    WorkSpace ws2;
+    loadFromMemory(ws2, data);
+
+    auto elements = ws2.scene()->elements();
+    QCOMPARE(elements.size(), 1);
+
+    auto *loaded = qobject_cast<Node *>(elements.first());
+    QVERIFY(loaded != nullptr);
+    QCOMPARE(loaded->wirelessMode(), WirelessMode::Tx);
+    QCOMPARE(loaded->label(), QStringLiteral("CLK"));
+    QVERIFY(loaded->inputPort()->isRequired());
+}
+
+void TestSerialization::testWirelessRxNodePreservedInScene()
+{
+    // A Node in Rx mode must survive a full Workspace save/load round-trip,
+    // including the isRequired=false state on its input port.
+    WorkSpace ws1;
+    auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(nodeElm != nullptr);
+    nodeElm->setLabel("DATA");
+    qobject_cast<Node *>(nodeElm)->setWirelessMode(WirelessMode::Rx);
+    ws1.scene()->addItem(nodeElm);
+
+    QByteArray data = saveToMemory(ws1);
+
+    WorkSpace ws2;
+    loadFromMemory(ws2, data);
+
+    auto *loaded = qobject_cast<Node *>(ws2.scene()->elements().first());
+    QVERIFY(loaded != nullptr);
+    QCOMPARE(loaded->wirelessMode(), WirelessMode::Rx);
+    QCOMPARE(loaded->label(), QStringLiteral("DATA"));
+    QVERIFY(!loaded->inputPort()->isRequired());
+}
+
+void TestSerialization::testWirelessPairCircuit()
+{
+    // A Tx+Rx pair with the same label must both survive the round-trip with
+    // their respective modes intact.
+    WorkSpace ws1;
+    Scene *scene1 = ws1.scene();
+
+    auto *txElm = ElementFactory::buildElement(ElementType::Node);
+    auto *rxElm = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(txElm && rxElm);
+    txElm->setLabel("SIG"); qobject_cast<Node *>(txElm)->setWirelessMode(WirelessMode::Tx);
+    rxElm->setLabel("SIG"); qobject_cast<Node *>(rxElm)->setWirelessMode(WirelessMode::Rx);
+    txElm->setPos(0, 0);
+    rxElm->setPos(200, 0);
+    scene1->addItem(txElm);
+    scene1->addItem(rxElm);
+
+    QByteArray data = saveToMemory(ws1);
+
+    WorkSpace ws2;
+    loadFromMemory(ws2, data);
+
+    const auto elements = ws2.scene()->elements();
+    QCOMPARE(elements.size(), 2);
+
+    int txCount = 0, rxCount = 0;
+    for (auto *elm : elements) {
+        auto *n = qobject_cast<Node *>(elm);
+        QVERIFY(n != nullptr);
+        QCOMPARE(n->label(), QStringLiteral("SIG"));
+        if (n->wirelessMode() == WirelessMode::Tx) { ++txCount; }
+        else if (n->wirelessMode() == WirelessMode::Rx) { ++rxCount; }
+    }
+    QCOMPARE(txCount, 1);
+    QCOMPARE(rxCount, 1);
+}
+
+void TestSerialization::testWirelessNoneNodeInScene()
+{
+    // A Node in None mode (default) must load back as None — verifies backward
+    // compatibility when no wirelessMode key is present in the serialized map.
+    WorkSpace ws1;
+    auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
+    QVERIFY(nodeElm != nullptr);
+    nodeElm->setLabel("PLAIN");
+    // wirelessMode intentionally left at None (default)
+    ws1.scene()->addItem(nodeElm);
+
+    QByteArray data = saveToMemory(ws1);
+
+    WorkSpace ws2;
+    loadFromMemory(ws2, data);
+
+    auto *loaded = qobject_cast<Node *>(ws2.scene()->elements().first());
+    QVERIFY(loaded != nullptr);
+    QCOMPARE(loaded->wirelessMode(), WirelessMode::None);
+    QVERIFY(loaded->inputPort()->isRequired());
 }
 
 // ============================================================================
