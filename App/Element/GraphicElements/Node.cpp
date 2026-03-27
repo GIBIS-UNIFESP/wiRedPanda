@@ -22,6 +22,7 @@ Node::Node(QGraphicsItem *parent)
     setPixmap(0);
 
     setCanChangeSkin(true);
+    setHasLabel(true);
     // The single input must always be connected; an undriven node would silently
     // propagate an undefined state to all downstream connections.
     inputPort()->setRequired(true);
