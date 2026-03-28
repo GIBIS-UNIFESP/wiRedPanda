@@ -990,7 +990,7 @@ void TestScene::testPropertyCycleFrequency()
     clock->setSelected(true);
 
     // Get initial frequency
-    float initialFreq = clock->frequency();
+    double initialFreq = clock->frequency();
     QVERIFY(initialFreq > 0);
 
     // Call next main property

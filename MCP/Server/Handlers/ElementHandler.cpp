@@ -325,11 +325,11 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
     }
 
     if (params.contains("frequency") && element->hasFrequency()) {
-        float oldFreq = element->frequency();
-        float newFreq = static_cast<float>(params.value("frequency").toDouble());
+        double oldFreq = element->frequency();
+        double newFreq = params.value("frequency").toDouble();
 
-        oldProperties["frequency"] = static_cast<double>(oldFreq);
-        newProperties["frequency"] = static_cast<double>(newFreq);
+        oldProperties["frequency"] = oldFreq;
+        newProperties["frequency"] = newFreq;
 
         element->setFrequency(newFreq);
     }

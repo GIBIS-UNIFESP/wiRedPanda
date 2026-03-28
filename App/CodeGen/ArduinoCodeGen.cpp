@@ -397,7 +397,7 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
                         break;
                     }
                     m_stream << "elapsedMillis " << varName2 << "_elapsed = 0;" << Qt::endl;
-                    m_stream << "int " << varName2 << "_interval = " << qMax(1, static_cast<int>(1000.0f / clk->frequency())) << ";" << Qt::endl;
+                    m_stream << "int " << varName2 << "_interval = " << qMax(1, static_cast<int>(1000.0 / clk->frequency())) << ";" << Qt::endl;
                 }
                 break;
             }

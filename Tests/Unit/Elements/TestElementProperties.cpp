@@ -368,7 +368,7 @@ void TestElementProperties::testFrequencyValidation()
     // Test 2: Negative frequency (invalid - rejected)
     // Clock uses 1s/(2*freq) which would be negative, triggering interval check
     // Expected behavior: rejected, value unchanged
-    float beforeNegative = clock.frequency();
+    double beforeNegative = clock.frequency();
     clock.setFrequency(-5.0f);
     QCOMPARE(clock.frequency(), beforeNegative);  // Unchanged by negative attempt
 
@@ -377,10 +377,10 @@ void TestElementProperties::testFrequencyValidation()
     QCOMPARE(clock.frequency(), 50.0f);
 
     // Test 4: Very high frequency (may succeed or be rejected based on timing precision)
-    float before = clock.frequency();
+    double before = clock.frequency();
     clock.setFrequency(1000000.0f);  // 1 MHz - may exceed timing precision
     // Either accepted or rejected (unchanged), but must be positive
-    QVERIFY(clock.frequency() > 0.0f);
+    QVERIFY(clock.frequency() > 0.0);
     // Verify that frequency is either unchanged or set to requested value
     // (High frequency may be rejected due to precision limits)
     if (clock.frequency() == before) {

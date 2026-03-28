@@ -59,11 +59,11 @@ void TestClocksAdvanced::testClockFrequencyEdgeCases()
 
     // Very low frequency
     clock->setFrequency(0.1f);
-    QVERIFY(std::abs(clock->frequency() - 0.1f) < 0.01f);  // Within 0.01 Hz tolerance
+    QVERIFY(std::abs(clock->frequency() - 0.1) < 0.01);  // Within 0.01 Hz tolerance
 
     // Very high frequency
     clock->setFrequency(10000.0f);
-    QVERIFY(std::abs(clock->frequency() - 10000.0f) < 10.0f);  // Within 10 Hz tolerance for large values
+    QVERIFY(std::abs(clock->frequency() - 10000.0) < 10.0);  // Within 10 Hz tolerance for large values
 }
 
 void TestClocksAdvanced::testClockTimingPrecision()
@@ -74,12 +74,12 @@ void TestClocksAdvanced::testClockTimingPrecision()
 
     // Set frequency and verify retrieval (allow small floating point variance)
     clock->setFrequency(33.33f);
-    float freq1 = clock->frequency();
-    QVERIFY(std::abs(freq1 - 33.33f) < 0.01f);  // Within 0.01 Hz tolerance
+    double freq1 = clock->frequency();
+    QVERIFY(std::abs(freq1 - 33.33) < 0.01);  // Within 0.01 Hz tolerance
 
     clock->setFrequency(66.67f);
-    float freq2 = clock->frequency();
-    QVERIFY(std::abs(freq2 - 66.67f) < 0.01f);  // Within 0.01 Hz tolerance
+    double freq2 = clock->frequency();
+    QVERIFY(std::abs(freq2 - 66.67) < 0.01);  // Within 0.01 Hz tolerance
 }
 
 void TestClocksAdvanced::testClockSilentRejectionForExtremeFrequencies()
