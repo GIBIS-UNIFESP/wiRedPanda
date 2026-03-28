@@ -71,5 +71,8 @@ inline bool hasWirelessMode(const QVersionNumber &v) { return v >= Versions::V_4
 /// V4.5: File-level metadata map and embedded IC blob registry.
 inline bool hasMetadata(const QVersionNumber &v) { return v >= Versions::V_4_5; }
 
+/// V4.6: Dolphin filename moved into metadata map; scene rect no longer stored.
+inline bool hasUnifiedMetadata(const QVersionNumber &v) { return v >= Versions::V_4_6; }
+
 } // namespace VersionInfo
 
