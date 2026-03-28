@@ -324,8 +324,6 @@ void IC::loadFileDirectly(const QFileInfo &fileInfo)
         }
         QDataStream outStream(&saveFile);
         Serialization::writePandaHeader(outStream);
-        outStream << QString();
-        outStream << QRectF();
         outStream << migrationMeta;
         Serialization::serialize(items, outStream);
         if (!saveFile.commit()) {

@@ -109,8 +109,6 @@ void WorkSpace::save(const QString &fileName)
         QByteArray blob;
         QDataStream stream(&blob, QIODevice::WriteOnly);
         Serialization::writePandaHeader(stream);
-        stream << QString();   // dolphin
-        stream << QRectF();    // rect
 
         QMap<QString, QVariant> metadata;
         Serialization::serializeBlobRegistry(m_scene.icRegistry()->blobMap(), metadata);
@@ -213,14 +211,12 @@ void WorkSpace::save(const QString &fileName)
 
 void WorkSpace::save(QDataStream &stream)
 {
-    // The dolphin filename is the path of the beWavedDolphin waveform file that is
-    // "associated" with this circuit; it is serialized here so the waveform tool can
-    // be opened automatically when the circuit is loaded.  Empty string means none.
-    stream << m_dolphinFileName;
-    stream << m_scene.sceneRect();
-
-    // Metadata section: port metadata for IC sub-circuits, blob registry for embedded ICs
+    // Metadata section: all file-level fields stored as key-value pairs.
     QMap<QString, QVariant> metadata;
+
+    if (!m_dolphinFileName.isEmpty()) {
+        metadata["dolphinFileName"] = m_dolphinFileName;
+    }
 
     // Extract port metadata from Input/Output elements in the scene
     {
@@ -341,22 +337,22 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
         }
     }
 
-    m_dolphinFileName = Serialization::loadDolphinFileName(stream, version);
+    // V4.6+ stores all file-level fields in the metadata map.
+    // Older versions wrote dolphinFileName and sceneRect positionally before the map.
+    QMap<QString, QVariant> metadata;
+    if (VersionInfo::hasUnifiedMetadata(version)) {
+        stream >> metadata;
+        m_dolphinFileName = metadata.value("dolphinFileName").toString();
+    } else {
+        m_dolphinFileName = Serialization::loadDolphinFileName(stream, version);
+        Serialization::loadRect(stream, version);
+        if (VersionInfo::hasMetadata(version)) {
+            stream >> metadata;
+        }
+    }
     qCDebug(zero) << "Dolphin name: " << m_dolphinFileName;
 
-    // loadRect reads (and discards) the stored scene rect; the actual rect is
-    // recomputed from items after they are added because items may have moved
-    // relative to the stored rect (e.g., old files with a different viewport origin).
-    Serialization::loadRect(stream, version);
-
-    // Read metadata section (introduced in V_4_5). Contains port metadata for
-    // IC sub-circuits and blob registry for embedded ICs.
-    QMap<QString, QByteArray> blobRegistry;
-    if (VersionInfo::hasMetadata(version)) {
-        QMap<QString, QVariant> metadata;
-        stream >> metadata;
-        blobRegistry = Serialization::deserializeBlobRegistry(metadata);
-    }
+    QMap<QString, QByteArray> blobRegistry = Serialization::deserializeBlobRegistry(metadata);
 
     // Populate the scene's IC registry with embedded IC blobs
     for (auto it = blobRegistry.cbegin(); it != blobRegistry.cend(); ++it) {

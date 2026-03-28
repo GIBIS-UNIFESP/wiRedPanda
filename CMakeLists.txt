@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 set(CMAKE_POLICY_VERSION_MINIMUM 3.16) # for nlohmann/json
-project(wiredpanda VERSION 4.5.0 LANGUAGES CXX)
+project(wiredpanda VERSION 4.6.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

@@ -388,8 +388,6 @@ void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visit
     QByteArray newBlob;
     QDataStream writeStream(&newBlob, QIODevice::WriteOnly);
     Serialization::writePandaHeader(writeStream);
-    writeStream << QString();   // dolphin
-    writeStream << QRectF();    // rect
     writeStream << metadata;
     writeStream.writeRawData(elements.constData(), elements.size());
 
