@@ -983,14 +983,14 @@ void TestScene::testPropertyCycleFrequency()
 
     // Add a Clock element
     auto *clock = ElementFactory::buildElement(ElementType::Clock);
-    clock->setFrequency(1.0f);
+    clock->setFrequency(1.0);
     scene->addItem(clock);
 
     // Select it
     clock->setSelected(true);
 
     // Get initial frequency
-    float initialFreq = clock->frequency();
+    double initialFreq = clock->frequency();
     QVERIFY(initialFreq > 0);
 
     // Call next main property

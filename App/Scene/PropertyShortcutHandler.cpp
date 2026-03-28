@@ -44,7 +44,7 @@ void PropertyShortcutHandler::prevMainProperty()
 
         case ElementType::Clock:
             if (element->hasFrequency())
-                element->setFrequency(element->frequency() - 0.5f);
+                element->setFrequency(element->frequency() - 0.5);
             break;
 
         case ElementType::Buzzer:
@@ -98,7 +98,7 @@ void PropertyShortcutHandler::nextMainProperty()
 
         case ElementType::Clock:
             if (element->hasFrequency())
-                element->setFrequency(element->frequency() + 0.5f);
+                element->setFrequency(element->frequency() + 0.5);
             break;
 
         case ElementType::Buzzer:
