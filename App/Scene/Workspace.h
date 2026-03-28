@@ -54,7 +54,7 @@ public:
     /// Loads a circuit from the file at \a fileName.
     void load(const QString &fileName);
     /// Loads a circuit from \a stream using the given format \a version and optional \a contextDir.
-    void load(QDataStream &stream, const QVersionNumber &version, const QString &contextDir = {});
+    void load(QDataStream &stream, const QVersionNumber &version, const QString &contextDir);
     /// Saves the current circuit to \a fileName.
     void save(const QString &fileName);
     /// Saves the current circuit to \a stream.

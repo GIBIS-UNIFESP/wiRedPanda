@@ -148,7 +148,7 @@ private:
     /// Emits `bool` declarations for auxiliary internal variables.
     void declareAuxVariables();
     /// Recursive helper: emits auxiliary variable declarations for \a elements.
-    void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox = false, const QString &icPrefix = {});
+    void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox, const QString &icPrefix);
     void declareInputs();
     /// Emits `pinMode(OUTPUT)` calls and variable declarations for circuit outputs.
     void declareOutputs();

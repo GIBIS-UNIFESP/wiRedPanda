@@ -45,7 +45,7 @@ void TestSerialization::loadFromMemory(WorkSpace &workspace, const QByteArray &d
 {
     QDataStream stream(data);
     QVersionNumber version = Serialization::readPandaHeader(stream);
-    workspace.load(stream, version);
+    workspace.load(stream, version, {});
 }
 
 void TestSerialization::verifyElementEquality(GraphicElement *original, GraphicElement *loaded)
@@ -431,7 +431,7 @@ void TestSerialization::testCorruptedStream()
     try {
         QDataStream stream(data);
         QVersionNumber version = Serialization::readPandaHeader(stream);
-        workspace2.load(stream, version);
+        workspace2.load(stream, version, {});
         // Check if stream detected error
         errorHandled = (stream.status() != QDataStream::Ok);
     } catch (const std::exception &) {

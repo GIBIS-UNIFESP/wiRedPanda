@@ -87,7 +87,7 @@ public:
      * \param isInput    \c true if the row is an input signal.
      * \param changeNext \c true to also update the subsequent cell's edge pixmap.
      */
-    void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = false);
+    void createElement(const int row, const int col, const int value, const bool isInput, const bool changeNext);
 
     /**
      * \brief Prepares the waveform from \a fileName (or blank if empty).
@@ -175,7 +175,7 @@ private:
     /// Restores original input element values after a simulation run.
     void restoreInputs();
     /// Sets a single cell at (\a row, \a col) to \a value with edge-update control.
-    void setCellValue(int row, int col, int value, bool isInput = true, bool changeNext = true);
+    void setCellValue(int row, int col, int value, bool isInput, bool changeNext);
     /// Adjusts the table view widget to \a width columns and \a height rows.
     void setTableViewSize(int width, int height);
     /// Slot: applies the current zoom scale to the waveform view.
