@@ -180,7 +180,7 @@ void BewavedDolphin::loadFromTerminal()
 
         for (int col = 0; col < cols; ++col) {
             const int value = wordList2.at(col).toInt();
-            createElement(row, col, value, true);
+            createElement(row, col, value, true, false);
         }
     }
 
@@ -296,7 +296,7 @@ void BewavedDolphin::on_tableView_cellDoubleClicked()
     for (auto &index : indexes) {
         int value = m_model->index(index.row(), index.column(), QModelIndex()).data().toInt();
         value = (value + 1) % 2;
-        createElement(index.row(), index.column(), value);
+        createElement(index.row(), index.column(), value, true, false);
     }
 
     run();
@@ -405,7 +405,7 @@ void BewavedDolphin::run()
             for (int port = 0; port < output->inputSize(); ++port) {
                 const int value = static_cast<int>(output->inputPort(port)->status());
                 // isInput=false → green output pixmaps; changeNext=false → caller will refresh
-                createElement(row, column, value, false);
+                createElement(row, column, value, false, false);
                 ++row;
             }
         }
@@ -622,7 +622,7 @@ void BewavedDolphin::on_actionSetTo0_triggered()
     const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
 
     for (const auto &item : itemList) {
-        setCellValue(item.row(), item.column(), 0);
+        setCellValue(item.row(), item.column(), 0, true, true);
     }
 
     m_edited = true;
@@ -636,7 +636,7 @@ void BewavedDolphin::on_actionSetTo1_triggered()
     const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
 
     for (const auto &item : itemList) {
-        setCellValue(item.row(), item.column(), 1);
+        setCellValue(item.row(), item.column(), 1, true, true);
     }
 
     m_edited = true;
@@ -651,7 +651,7 @@ void BewavedDolphin::on_actionInvert_triggered()
 
     for (const auto &item : itemList) {
         const int value = (m_model->index(item.row(), item.column(), QModelIndex()).data().toInt() + 1) % 2;
-        setCellValue(item.row(), item.column(), value);
+        setCellValue(item.row(), item.column(), value, true, true);
     }
 
     m_edited = true;
@@ -714,7 +714,7 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
 
     for (const auto &item : itemList) {
         const int value = ((item.column() - firstCol) % clockPeriod < halfClockPeriod ? 0 : 1);
-        setCellValue(item.row(), item.column(), value);
+        setCellValue(item.row(), item.column(), value, true, true);
     }
 
     m_edited = true;
@@ -739,7 +739,7 @@ void BewavedDolphin::on_actionCombinational_triggered()
 
     for (int row = 0; row < m_inputPorts; ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
-            setCellValue(row, col, (col % clockPeriod < halfClockPeriod ? 0 : 1));
+            setCellValue(row, col, (col % clockPeriod < halfClockPeriod ? 0 : 1), true, true);
         }
 
         // Double the period for each successive input bit; cap at max int-safe values
@@ -871,7 +871,7 @@ void BewavedDolphin::on_actionClear_triggered()
 {
     for (int row = 0; row < m_inputPorts; ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
-            setCellValue(row, col, 0);
+            setCellValue(row, col, 0, true, true);
         }
     }
 
@@ -1000,7 +1000,7 @@ void BewavedDolphin::paste(const QItemSelection &ranges, QDataStream &stream)
         // Silently drop cells that land outside the input rows or past the simulation length;
         // output rows are never editable
         if ((newRow < m_inputPorts) && (newCol < m_model->columnCount())) {
-            setCellValue(newRow, newCol, static_cast<int>(data_));
+            setCellValue(newRow, newCol, static_cast<int>(data_), true, true);
         }
     }
 
@@ -1208,7 +1208,7 @@ void BewavedDolphin::load(QDataStream &stream)
 
     for (int row = 0; row < loadedData.inputPorts; ++row) {
         for (int col = 0; col < loadedData.columns; ++col) {
-            setCellValue(row, col, loadedData.values[row * loadedData.columns + col], true);
+            setCellValue(row, col, loadedData.values[row * loadedData.columns + col], true, true);
         }
     }
 
@@ -1223,7 +1223,7 @@ void BewavedDolphin::load(QFile &file)
 
     for (int row = 0; row < loadedData.inputPorts; ++row) {
         for (int col = 0; col < loadedData.columns; ++col) {
-            setCellValue(row, col, loadedData.values[row * loadedData.columns + col], true);
+            setCellValue(row, col, loadedData.values[row * loadedData.columns + col], true, true);
         }
     }
 
@@ -1245,7 +1245,7 @@ void BewavedDolphin::on_actionShowNumbers_triggered()
     // Re-apply input cells through setCellValue so alignment roles are set for Number mode
     for (int row = 0; row < m_inputPorts; ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
-            setCellValue(row, col, m_model->index(row, col).data().toInt());
+            setCellValue(row, col, m_model->index(row, col).data().toInt(), true, true);
         }
     }
 
@@ -1261,7 +1261,7 @@ void BewavedDolphin::on_actionShowWaveforms_triggered()
     // for the current value sequence; output cells are refreshed by run() below
     for (int row = 0; row < m_inputPorts; ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
-            setCellValue(row, col, m_model->index(row, col).data().toInt());
+            setCellValue(row, col, m_model->index(row, col).data().toInt(), true, true);
         }
     }
 

@@ -125,7 +125,7 @@ private:
     void assignLogicOperator(GraphicElement *elm);
     void assignVariablesRec(const QVector<GraphicElement *> &elements);
     void declareAuxVariables();
-    void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox = false, const QString &icPrefix = {});
+    void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox, const QString &icPrefix);
     void declareInputs();
     void declareOutputs();
     void emitComputeLogicFunction();

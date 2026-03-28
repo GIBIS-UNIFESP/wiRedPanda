@@ -82,7 +82,7 @@ public:
      * \param multiple \c true when multiple tabs may be affected.
      * \return QMessageBox button code: Save, Discard, or Cancel.
      */
-    int confirmSave(const bool multiple = true);
+    int confirmSave(const bool multiple);
 
     /// Returns the QFileInfo of the currently active .panda file.
     QFileInfo currentFile() const;

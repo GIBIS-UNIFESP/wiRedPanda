@@ -87,7 +87,7 @@ public:
      * \param isInput    \c true if the row is an input signal.
      * \param changeNext \c true to also update the subsequent cell's edge pixmap.
      */
-    void createElement(const int row, const int col, const int value, const bool isInput = true, const bool changeNext = false);
+    void createElement(const int row, const int col, const int value, const bool isInput, const bool changeNext);
 
     /**
      * \brief Prepares the waveform from \a fileName (or blank if empty).
@@ -155,7 +155,7 @@ private:
     void paste(const QItemSelection &ranges, QDataStream &stream);
     void resizeScene();
     void restoreInputs();
-    void setCellValue(int row, int col, int value, bool isInput = true, bool changeNext = true);
+    void setCellValue(int row, int col, int value, bool isInput, bool changeNext);
     void setTableViewSize(int width, int height);
     void zoomChanged();
 

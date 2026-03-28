@@ -205,7 +205,7 @@ void TestElementProperties::testLabelPersistence()
     WorkSpace workspace2;
     QDataStream loadStream(&data, QIODevice::ReadOnly);
     const QVersionNumber version = Serialization::readPandaHeader(loadStream);
-    workspace2.load(loadStream, version);
+    workspace2.load(loadStream, version, {});
 
     // Verify label preserved
     const auto elements = workspace2.scene()->elements();
@@ -427,7 +427,7 @@ void TestElementProperties::testPropertiesSaveLoad()
     WorkSpace workspace2;
     QDataStream loadStream(&data, QIODevice::ReadOnly);
     const QVersionNumber version = Serialization::readPandaHeader(loadStream);
-    workspace2.load(loadStream, version);
+    workspace2.load(loadStream, version, {});
 
     auto elements = workspace2.scene()->elements();
     QCOMPARE(elements.size(), 3);

@@ -431,7 +431,7 @@ void ArduinoCodeGen::declareAuxVariables()
         }
     }
 
-    declareAuxVariablesRec(m_elements);
+    declareAuxVariablesRec(m_elements, false, {});
     m_stream << Qt::endl;
 }
 
