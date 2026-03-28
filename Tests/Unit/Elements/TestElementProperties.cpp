@@ -331,25 +331,25 @@ void TestElementProperties::testFrequencyProperty()
     QVERIFY(clock.hasFrequency());
 
     // Default frequency (usually 1 Hz)
-    QCOMPARE(clock.frequency(), 1.0f);
+    QCOMPARE(clock.frequency(), 1.0);
 
     // Set various frequencies
-    clock.setFrequency(10.0f);
-    QCOMPARE(clock.frequency(), 10.0f);
+    clock.setFrequency(10.0);
+    QCOMPARE(clock.frequency(), 10.0);
 
-    clock.setFrequency(100.0f);
-    QCOMPARE(clock.frequency(), 100.0f);
+    clock.setFrequency(100.0);
+    QCOMPARE(clock.frequency(), 100.0);
 
-    clock.setFrequency(0.5f);
-    QCOMPARE(clock.frequency(), 0.5f);
+    clock.setFrequency(0.5);
+    QCOMPARE(clock.frequency(), 0.5);
 
     // Test delay property
     QVERIFY(clock.hasDelay());
-    clock.setDelay(0.5f);
-    QCOMPARE(clock.delay(), 0.5f);
+    clock.setDelay(0.5);
+    QCOMPARE(clock.delay(), 0.5);
 
-    clock.setDelay(1.0f);
-    QCOMPARE(clock.delay(), 1.0f);
+    clock.setDelay(1.0);
+    QCOMPARE(clock.delay(), 1.0);
 }
 
 void TestElementProperties::testFrequencyValidation()
@@ -357,30 +357,30 @@ void TestElementProperties::testFrequencyValidation()
     Clock clock;
 
     // Set valid frequency baseline
-    clock.setFrequency(10.0f);
-    QCOMPARE(clock.frequency(), 10.0f);
+    clock.setFrequency(10.0);
+    QCOMPARE(clock.frequency(), 10.0);
 
     // Test 1: Zero frequency (invalid - rejected)
     // Clock uses 1s/(2*freq) for timing, so 1/(2*0) is undefined
-    clock.setFrequency(0.0f);
-    QCOMPARE(clock.frequency(), 10.0f);  // Should remain unchanged
+    clock.setFrequency(0.0);
+    QCOMPARE(clock.frequency(), 10.0);  // Should remain unchanged
 
     // Test 2: Negative frequency (invalid - rejected)
     // Clock uses 1s/(2*freq) which would be negative, triggering interval check
     // Expected behavior: rejected, value unchanged
-    float beforeNegative = clock.frequency();
-    clock.setFrequency(-5.0f);
+    double beforeNegative = clock.frequency();
+    clock.setFrequency(-5.0);
     QCOMPARE(clock.frequency(), beforeNegative);  // Unchanged by negative attempt
 
     // Test 3: Valid positive frequency
-    clock.setFrequency(50.0f);
-    QCOMPARE(clock.frequency(), 50.0f);
+    clock.setFrequency(50.0);
+    QCOMPARE(clock.frequency(), 50.0);
 
     // Test 4: Very high frequency (may succeed or be rejected based on timing precision)
-    float before = clock.frequency();
-    clock.setFrequency(1000000.0f);  // 1 MHz - may exceed timing precision
+    double before = clock.frequency();
+    clock.setFrequency(1000000.0);  // 1 MHz - may exceed timing precision
     // Either accepted or rejected (unchanged), but must be positive
-    QVERIFY(clock.frequency() > 0.0f);
+    QVERIFY(clock.frequency() > 0.0);
     // Verify that frequency is either unchanged or set to requested value
     // (High frequency may be rejected due to precision limits)
     if (clock.frequency() == before) {
@@ -388,7 +388,7 @@ void TestElementProperties::testFrequencyValidation()
         QCOMPARE(clock.frequency(), before);
     } else {
         // High frequency was accepted
-        QCOMPARE(clock.frequency(), 1000000.0f);
+        QCOMPARE(clock.frequency(), 1000000.0);
     }
 }
 
@@ -412,8 +412,8 @@ void TestElementProperties::testPropertiesSaveLoad()
     workspace1.scene()->addItem(led);
 
     auto *clock = new Clock();
-    clock->setFrequency(50.0f);
-    clock->setDelay(0.5f);
+    clock->setFrequency(50.0);
+    clock->setDelay(0.5);
     clock->setLabel("SavedClock");
     workspace1.scene()->addItem(clock);
 
@@ -461,8 +461,8 @@ void TestElementProperties::testPropertiesSaveLoad()
 
     // Verify Clock properties
     QVERIFY(loadedClock != nullptr);
-    QCOMPARE(loadedClock->frequency(), 50.0f);
-    QCOMPARE(loadedClock->delay(), 0.5f);
+    QCOMPARE(loadedClock->frequency(), 50.0);
+    QCOMPARE(loadedClock->delay(), 0.5);
     QCOMPARE(loadedClock->label(), QString("SavedClock"));
 }
 

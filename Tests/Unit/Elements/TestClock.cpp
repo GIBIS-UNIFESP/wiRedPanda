@@ -52,10 +52,10 @@ void TestClock::testConstructorInitialization()
     QVERIFY(!clock.isOn());
 
     // Verify default frequency is 1.0 Hz
-    QCOMPARE(clock.frequency(), 1.0f);
+    QCOMPARE(clock.frequency(), 1.0);
 
     // Verify default delay is 0.0
-    QCOMPARE(clock.delay(), 0.0f);
+    QCOMPARE(clock.delay(), 0.0);
 }
 
 // ============================================================================
@@ -67,7 +67,7 @@ void TestClock::testDefaultFrequency()
     Clock clock;
 
     // Default frequency should be 1.0 Hz
-    QCOMPARE(clock.frequency(), 1.0f);
+    QCOMPARE(clock.frequency(), 1.0);
 }
 
 void TestClock::testSetFrequency()
@@ -75,14 +75,14 @@ void TestClock::testSetFrequency()
     Clock clock;
 
     // Set various valid frequencies
-    clock.setFrequency(2.0f);
-    QCOMPARE(clock.frequency(), 2.0f);
+    clock.setFrequency(2.0);
+    QCOMPARE(clock.frequency(), 2.0);
 
-    clock.setFrequency(10.0f);
-    QCOMPARE(clock.frequency(), 10.0f);
+    clock.setFrequency(10.0);
+    QCOMPARE(clock.frequency(), 10.0);
 
-    clock.setFrequency(0.5f);
-    QCOMPARE(clock.frequency(), 0.5f);
+    clock.setFrequency(0.5);
+    QCOMPARE(clock.frequency(), 0.5);
 }
 
 void TestClock::testSetFrequencyZero()
@@ -90,12 +90,12 @@ void TestClock::testSetFrequencyZero()
     Clock clock;
 
     // Set initial frequency
-    clock.setFrequency(5.0f);
-    QCOMPARE(clock.frequency(), 5.0f);
+    clock.setFrequency(5.0);
+    QCOMPARE(clock.frequency(), 5.0);
 
     // Set to zero - should be rejected, frequency remains unchanged
-    clock.setFrequency(0.0f);
-    QCOMPARE(clock.frequency(), 5.0f);
+    clock.setFrequency(0.0);
+    QCOMPARE(clock.frequency(), 5.0);
 }
 
 void TestClock::testSetFrequencyNegative()
@@ -103,14 +103,14 @@ void TestClock::testSetFrequencyNegative()
     Clock clock;
 
     // Set initial frequency
-    clock.setFrequency(3.0f);
-    QCOMPARE(clock.frequency(), 3.0f);
+    clock.setFrequency(3.0);
+    QCOMPARE(clock.frequency(), 3.0);
 
     // Set to negative - should be rejected (interval = 1s / (2 * -2) = -250ms fails validation)
-    clock.setFrequency(-2.0f);
+    clock.setFrequency(-2.0);
 
     // Frequency should remain unchanged at 3.0 (setter rejects invalid value)
-    QCOMPARE(clock.frequency(), 3.0f);
+    QCOMPARE(clock.frequency(), 3.0);
 }
 
 void TestClock::testFrequencyPersistence()
@@ -118,17 +118,17 @@ void TestClock::testFrequencyPersistence()
     Clock clock;
 
     // Set multiple frequencies in sequence
-    clock.setFrequency(1.0f);
-    QCOMPARE(clock.frequency(), 1.0f);
+    clock.setFrequency(1.0);
+    QCOMPARE(clock.frequency(), 1.0);
 
-    clock.setFrequency(5.0f);
-    QCOMPARE(clock.frequency(), 5.0f);
+    clock.setFrequency(5.0);
+    QCOMPARE(clock.frequency(), 5.0);
 
-    clock.setFrequency(0.1f);
-    QCOMPARE(clock.frequency(), 0.1f);
+    clock.setFrequency(0.1);
+    QCOMPARE(clock.frequency(), 0.1);
 
     // Verify final frequency is correct
-    QCOMPARE(clock.frequency(), 0.1f);
+    QCOMPARE(clock.frequency(), 0.1);
 }
 
 void TestClock::testFrequencyHighValues()
@@ -136,14 +136,14 @@ void TestClock::testFrequencyHighValues()
     Clock clock;
 
     // Test high frequency values
-    clock.setFrequency(100.0f);
-    QCOMPARE(clock.frequency(), 100.0f);
+    clock.setFrequency(100.0);
+    QCOMPARE(clock.frequency(), 100.0);
 
-    clock.setFrequency(1000.0f);
-    QCOMPARE(clock.frequency(), 1000.0f);
+    clock.setFrequency(1000.0);
+    QCOMPARE(clock.frequency(), 1000.0);
 
-    clock.setFrequency(10000.0f);
-    QCOMPARE(clock.frequency(), 10000.0f);
+    clock.setFrequency(10000.0);
+    QCOMPARE(clock.frequency(), 10000.0);
 }
 
 // ============================================================================
@@ -155,7 +155,7 @@ void TestClock::testDefaultDelay()
     Clock clock;
 
     // Default delay should be 0.0
-    QCOMPARE(clock.delay(), 0.0f);
+    QCOMPARE(clock.delay(), 0.0);
 }
 
 void TestClock::testSetDelay()
@@ -163,14 +163,14 @@ void TestClock::testSetDelay()
     Clock clock;
 
     // Set various delays
-    clock.setDelay(1.0f);
-    QCOMPARE(clock.delay(), 1.0f);
+    clock.setDelay(1.0);
+    QCOMPARE(clock.delay(), 1.0);
 
-    clock.setDelay(5.5f);
-    QCOMPARE(clock.delay(), 5.5f);
+    clock.setDelay(5.5);
+    QCOMPARE(clock.delay(), 5.5);
 
-    clock.setDelay(0.1f);
-    QCOMPARE(clock.delay(), 0.1f);
+    clock.setDelay(0.1);
+    QCOMPARE(clock.delay(), 0.1);
 }
 
 void TestClock::testSetDelayNegative()
@@ -178,8 +178,8 @@ void TestClock::testSetDelayNegative()
     Clock clock;
 
     // Set negative delay - should be accepted
-    clock.setDelay(-1.0f);
-    QCOMPARE(clock.delay(), -1.0f);
+    clock.setDelay(-1.0);
+    QCOMPARE(clock.delay(), -1.0);
 
     // Negative delay is valid in simulation context
 }
@@ -189,17 +189,17 @@ void TestClock::testDelayPersistence()
     Clock clock;
 
     // Set multiple delays in sequence
-    clock.setDelay(0.5f);
-    QCOMPARE(clock.delay(), 0.5f);
+    clock.setDelay(0.5);
+    QCOMPARE(clock.delay(), 0.5);
 
-    clock.setDelay(2.0f);
-    QCOMPARE(clock.delay(), 2.0f);
+    clock.setDelay(2.0);
+    QCOMPARE(clock.delay(), 2.0);
 
-    clock.setDelay(0.0f);
-    QCOMPARE(clock.delay(), 0.0f);
+    clock.setDelay(0.0);
+    QCOMPARE(clock.delay(), 0.0);
 
     // Verify final delay is correct
-    QCOMPARE(clock.delay(), 0.0f);
+    QCOMPARE(clock.delay(), 0.0);
 }
 
 // ============================================================================
@@ -285,8 +285,8 @@ void TestClock::testResetClock()
 {
     Clock clock;
 
-    clock.setFrequency(1.0f);
-    clock.setDelay(0.5f);
+    clock.setFrequency(1.0);
+    clock.setDelay(0.5);
 
     // Get current time
     auto now = std::chrono::steady_clock::now();
@@ -302,7 +302,7 @@ void TestClock::testUpdateClock()
 {
     Clock clock;
 
-    clock.setFrequency(1.0f);
+    clock.setFrequency(1.0);
 
     // Get current time
     auto now = std::chrono::steady_clock::now();
@@ -329,8 +329,8 @@ void TestClock::testSaveFrequencyDelay()
 {
     Clock clock;
 
-    clock.setFrequency(5.0f);
-    clock.setDelay(1.5f);
+    clock.setFrequency(5.0);
+    clock.setDelay(1.5);
 
     // Save to stream
     QByteArray data;
@@ -355,7 +355,7 @@ void TestClock::testLoadVersionOld()
 
     // Create and save Clock with current code (QMap format)
     auto clock1 = std::make_unique<Clock>();
-    clock1->setFrequency(2.0f);
+    clock1->setFrequency(2.0);
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
@@ -371,15 +371,15 @@ void TestClock::testLoadVersionOld()
     clock2->load(loadStream, contextOld);
 
     // Due to format mismatch, frequency remains at default (setFrequency never called with valid value)
-    QCOMPARE(clock2->frequency(), 1.0f);
+    QCOMPARE(clock2->frequency(), 1.0);
 }
 
 void TestClock::testLoadVersionNew()
 {
     // Create and save Clock with both frequency and delay
     auto clock1 = std::make_unique<Clock>();
-    clock1->setFrequency(10.0f);
-    clock1->setDelay(2.0f);
+    clock1->setFrequency(10.0);
+    clock1->setDelay(2.0);
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
@@ -395,7 +395,7 @@ void TestClock::testLoadVersionNew()
     clock2->load(loadStream, contextNew);
 
     // Frequency should be loaded correctly
-    QCOMPARE(clock2->frequency(), 10.0f);
+    QCOMPARE(clock2->frequency(), 10.0);
 
     // Delay should NOT be loaded (discarded for version < 4.3), remains at default
     QCOMPARE(clock2->delay(), 0.0);
@@ -420,8 +420,8 @@ void TestClock::testLoadVersionVeryOld()
     clock->load(readStream, contextVeryOld);
 
     // Should not crash, frequency/delay remain at defaults
-    QCOMPARE(clock->frequency(), 1.0f);  // Default
-    QCOMPARE(clock->delay(), 0.0f);      // Default
+    QCOMPARE(clock->frequency(), 1.0);  // Default
+    QCOMPARE(clock->delay(), 0.0);      // Default
 }
 
 // ============================================================================
@@ -433,17 +433,17 @@ void TestClock::testGenericProperties()
     Clock clock;
 
     // Generic properties should return frequency in Hz format
-    clock.setFrequency(1.0f);
+    clock.setFrequency(1.0);
     QString props1 = clock.genericProperties();
     QVERIFY(props1.contains("Hz"));
     QVERIFY(props1.contains("1"));
 
-    clock.setFrequency(5.0f);
+    clock.setFrequency(5.0);
     QString props2 = clock.genericProperties();
     QVERIFY(props2.contains("Hz"));
     QVERIFY(props2.contains("5"));
 
-    clock.setFrequency(0.5f);
+    clock.setFrequency(0.5);
     QString props3 = clock.genericProperties();
     QVERIFY(props3.contains("Hz"));
 }

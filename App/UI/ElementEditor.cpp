@@ -294,7 +294,7 @@ void ElementEditor::applyCapabilitiesToUi()
             // the "many frequencies" placeholder text below.
             m_ui->doubleSpinBoxFrequency->setMinimum(0.1);
             m_ui->doubleSpinBoxFrequency->setSpecialValueText({});
-            m_ui->doubleSpinBoxFrequency->setValue(static_cast<double>(firstElement->frequency()));
+            m_ui->doubleSpinBoxFrequency->setValue(firstElement->frequency());
         } else {
             // Lower the minimum to 0.0 so setValue(0.0) triggers the special
             // value text "many frequencies" without violating the validator.
@@ -308,7 +308,7 @@ void ElementEditor::applyCapabilitiesToUi()
     setSection(c.hasDelay, m_ui->labelDelay, m_ui->sliderDelay);
     if (c.hasDelay) {
         // Convert delay value (fraction of period, -0.5 to 0.5) to slider value (-4 to 4).
-        m_ui->sliderDelay->setValue(c.hasSameDelay ? static_cast<int>(firstElement->delay() * 8.0f) : 0);
+        m_ui->sliderDelay->setValue(c.hasSameDelay ? static_cast<int>(firstElement->delay() * 8.0) : 0);
     }
 
     /* Input size */
@@ -456,12 +456,12 @@ void ElementEditor::applyProperty(GraphicElement *elm, PropertyDescriptor::Type 
         break;
     case PropertyDescriptor::Type::Frequency:
         if (m_ui->doubleSpinBoxFrequency->text() != m_manyFreq) {
-            elm->setFrequency(static_cast<float>(m_ui->doubleSpinBoxFrequency->value()));
+            elm->setFrequency(m_ui->doubleSpinBoxFrequency->value());
         }
         break;
     case PropertyDescriptor::Type::Delay: {
         // Convert slider value (-4 to 4) to phase delay (-0.5 to 0.5 as fraction of period).
-        const float delayFraction = static_cast<float>(m_ui->sliderDelay->value()) / 8.0f;
+        const double delayFraction = m_ui->sliderDelay->value() / 8.0;
         elm->setDelay(delayFraction);
         break;
     }

@@ -32,9 +32,9 @@ public:
     /// Returns \c true if the clock output is currently logic-high.
     bool isOn(const int port = 0) const override;
     /// Returns the clock frequency in Hz.
-    float frequency() const override;
+    double frequency() const override;
     /// Returns the clock phase delay as a fraction of the period [0, 1).
-    float delay() const override;
+    double delay() const override;
     /// Returns a summary string of the clock's current frequency and delay settings.
     QString genericProperties() override;
 
@@ -47,9 +47,9 @@ public:
     /// Sets the clock output to \a value on port \a port.
     void setOn(const bool value, const int port = 0) override;
     /// Sets the clock output frequency to \a freq Hz.
-    void setFrequency(const float freq) override;
+    void setFrequency(const double freq) override;
     /// Sets the clock phase delay to \a delay (fraction of period).
-    void setDelay(const float delay) override;
+    void setDelay(const double delay) override;
 
     // --- Simulation ---
 
