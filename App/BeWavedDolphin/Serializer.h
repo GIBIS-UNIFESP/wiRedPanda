@@ -31,8 +31,8 @@ namespace DolphinSerializer {
  * output rows but they are ignored on load for the same reason.
  */
 struct WaveformData {
-    int inputPorts = 0; //!< Number of input rows stored in \a values.
-    int columns    = 0; //!< Number of time-step columns.
+    int inputPorts = 0; ///< Number of input rows stored in \a values.
+    int columns    = 0; ///< Number of time-step columns.
     /// Cell values in row-major order (inputs only): index = row * columns + col.
     QVector<int> values;
 };

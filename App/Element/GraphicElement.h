@@ -216,10 +216,10 @@ public:
 
     // --- Frequency & Delay ---
 
-    /// virtual function overloaded by clock element. Other elements have frequency of 0.
+    /// Returns the clock frequency in Hz (overridden by Clock; returns 0 for other elements).
     virtual double frequency() const;
 
-    /// virtual function overloaded by clock element. Other elements have frequency of 0.
+    /// Returns the clock phase delay in seconds (overridden by Clock; returns 0 for other elements).
     virtual double delay() const;
 
     /// Returns \c true if this element type exposes a configurable clock frequency.
@@ -334,7 +334,7 @@ public:
 
     // --- Polymorphic Port Naming Interface ---
 
-    /// Polymorphic interface for port naming (replaces elementType() == IC checks)
+    /// Returns \c true if this element supports per-port custom names (e.g. IC elements).
     virtual bool canSetPortNames() const;
 
     /// Sets the name of input \a port to \a name (only for elements that support it).
@@ -389,7 +389,7 @@ public:
 
     // --- Theme ---
 
-    /// Updates the GraphicElement theme according to the dark/light wiRedPanda theme.
+    /// Updates the element's visual theme according to the current dark/light palette.
     virtual void updateTheme();
 
 protected:
@@ -455,10 +455,10 @@ protected:
     /// Path to all custom skins. Custom skin names are system file paths defined by the user.
     QStringList m_alternativeSkins;
 
-    /// input port vector
+    /// All input ports owned by this element (ordered by index).
     QVector<QNEInputPort *> m_inputPorts;
 
-    /// output port vector
+    /// All output ports owned by this element (ordered by index).
     QVector<QNEOutputPort *> m_outputPorts;
 
     /// Current pixmap displayed for this GraphicElement.
@@ -508,42 +508,58 @@ protected:
 private:
     // --- Port Management Helpers ---
 
-    /// adds an input port at the end of the input port vector.
+    /// Appends a new input port with optional \a name to the input port vector.
     void addInputPort(const QString &name = {});
 
-    /// adds an output port at the end of the output port vector.
+    /// Appends a new output port with optional \a name to the output port vector.
     void addOutputPort(const QString &name = {});
 
-    /// adds an input or output port at the end of the port vector.
+    /// Appends a new port with optional \a name; \a isOutput selects the port direction.
     void addPort(const QString &name, const bool isOutput);
 
+    /// Erases \a deletedPort's serial-ID entry from \a portMap during deserialization.
     static void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);
+    /// Removes input ports beyond \a inputSize_ (used when the loaded port count exceeds current limits).
     void removeSurplusInputs(const quint64 inputSize_, SerializationContext &context);
+    /// Removes output ports beyond \a outputSize_ (used when the loaded port count exceeds current limits).
     void removeSurplusOutputs(const quint64 outputSize_, SerializationContext &context);
 
     // --- Serialization Helpers ---
 
+    /// Deserializes element state from the V4.6+ binary format.
     void loadNewFormat(QDataStream &stream, SerializationContext &context);
+    /// Deserializes element state from pre-V4.6 binary formats.
     void loadOldFormat(QDataStream &stream, SerializationContext &context);
 
     // --- Position Loading ---
 
+    /// Reads and applies the element's scene position from \a stream.
     void loadPos(QDataStream &stream);
 
     // --- Port Loading ---
 
+    /// Reads a single input port at \a port index from \a stream.
     void loadInputPort(QDataStream &stream, SerializationContext &context, const int port);
+    /// Reads all input ports from \a stream.
     void loadInputPorts(QDataStream &stream, SerializationContext &context);
+    /// Reads a single output port at \a port index from \a stream.
     void loadOutputPort(QDataStream &stream, SerializationContext &context, const int port);
+    /// Reads all output ports from \a stream.
     void loadOutputPorts(QDataStream &stream, SerializationContext &context);
+    /// Reads and applies input/output port counts from \a stream, clamped to current constraints.
     void loadPortsSize(QDataStream &stream, const QVersionNumber &version);
 
     // --- Property Loading ---
 
+    /// Reads the element label from \a stream (format depends on \a version).
     void loadLabel(QDataStream &stream, const QVersionNumber &version);
+    /// Reads and applies a single skin path at index \a skin from \a stream.
     void loadPixmapSkinName(QDataStream &stream, const int skin, const QString &contextDir);
+    /// Reads and applies all skin paths from \a stream.
     void loadPixmapSkinNames(QDataStream &stream, SerializationContext &context);
+    /// Reads and applies the element rotation from \a stream.
     void loadRotation(QDataStream &stream, const QVersionNumber &version);
+    /// Reads and applies the keyboard trigger from \a stream.
     void loadTrigger(QDataStream &stream, const QVersionNumber &version);
 
     // --- Display & Interaction ---

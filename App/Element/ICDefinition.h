@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief Shared, immutable IC sub-circuit template with port metadata and cached pixmap.
+ */
+
 #pragma once
 
 #include <QPixmap>
@@ -22,21 +26,28 @@
 class ICDefinition
 {
 public:
+    /// Constructs an empty (invalid) definition.
     ICDefinition() = default;
 
-    /// Construct from a .panda file. Reads metadata from the port metadata
-    /// section (V_4_5+) without deserializing elements.
+    /**
+     * \brief Constructs a definition by reading metadata from a .panda file.
+     * \param filePath   Path to the .panda file.
+     * \param contextDir Directory used to resolve relative IC references inside the file.
+     * \return A valid ICDefinition on success, or an invalid one on failure.
+     */
     static ICDefinition fromFile(const QString &filePath, const QString &contextDir);
 
-    /// The full .panda file bytes (header + metadata + elements + connections).
+    /// Returns the full .panda file bytes (header + metadata + elements + connections).
     const QByteArray &blobBytes() const { return m_blobBytes; }
 
-    /// Port counts.
+    /// Returns the number of input ports.
     int inputCount() const { return m_inputCount; }
+    /// Returns the number of output ports.
     int outputCount() const { return m_outputCount; }
 
-    /// Port display labels (sorted by position, matching IC port order).
+    /// Returns input port display labels (sorted by position, matching IC port order).
     const QVector<QString> &inputLabels() const { return m_inputLabels; }
+    /// Returns output port display labels (sorted by position, matching IC port order).
     const QVector<QString> &outputLabels() const { return m_outputLabels; }
 
     /// Cached pixmap generated from port count. Lazy, thread-safe via mutable.
@@ -46,16 +57,17 @@ public:
     bool isValid() const { return m_valid; }
 
 private:
+    /// Renders and caches the IC pixmap from the current port count.
     void generatePixmap() const;
 
-    QByteArray m_blobBytes;
-    int m_inputCount = 0;
-    int m_outputCount = 0;
-    QVector<QString> m_inputLabels;
-    QVector<QString> m_outputLabels;
-    bool m_valid = false;
+    QByteArray m_blobBytes;            ///< Raw serialized .panda file content.
+    int m_inputCount = 0;              ///< Number of input ports in the sub-circuit.
+    int m_outputCount = 0;             ///< Number of output ports in the sub-circuit.
+    QVector<QString> m_inputLabels;    ///< Input port display labels.
+    QVector<QString> m_outputLabels;   ///< Output port display labels.
+    bool m_valid = false;              ///< True if the definition was successfully loaded.
 
-    mutable QPixmap m_pixmap;
-    mutable bool m_pixmapValid = false;
+    mutable QPixmap m_pixmap;          ///< Cached pixmap (lazy, generated on first access).
+    mutable bool m_pixmapValid = false; ///< True once m_pixmap has been generated.
 };
 

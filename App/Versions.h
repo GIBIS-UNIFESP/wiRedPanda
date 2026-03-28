@@ -1,10 +1,15 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief File-format version constants and application version accessor.
+ */
+
 #pragma once
 
 #include <QVersionNumber>
 
+/// Sentinel version constants for .panda file-format migrations.
 namespace Versions {
 
 inline const QVersionNumber V_1_1 = QVersionNumber(1, 1);
@@ -30,6 +35,7 @@ inline const QVersionNumber V_4_6 = QVersionNumber(4, 6);
 
 } // namespace Versions
 
+/// Application version derived from the CMake-defined APP_VERSION string.
 namespace AppVersion {
 
 inline const QVersionNumber current = QVersionNumber::fromString(APP_VERSION).normalized();

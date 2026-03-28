@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief IC definition registry with file watching, embedded blob storage, and cycle detection.
+ */
+
 #pragma once
 
 #include <QFileSystemWatcher>
@@ -46,14 +50,23 @@ public:
 
     // --- Embedded IC blob storage ---
 
+    /// Returns \c true if a blob named \a name is stored in the registry.
     bool hasBlob(const QString &name) const;
+    /// Returns the raw .panda bytes for the embedded IC named \a name.
     QByteArray blob(const QString &name) const;
+    /// Stores or replaces the blob \a data under \a name and invalidates the cached definition.
     void setBlob(const QString &name, const QByteArray &data);
+    /// Stores blob \a data under \a name without invalidating the definition cache.
     void registerBlob(const QString &name, const QByteArray &data);
+    /// Removes the blob named \a name from the registry.
     void removeBlob(const QString &name);
+    /// Renames a blob from \a oldName to \a newName, updating the cache key.
     void renameBlob(const QString &oldName, const QString &newName);
+    /// Returns a const reference to the full blob map (name → .panda bytes).
     const QMap<QString, QByteArray> &blobMap() const { return m_blobs; }
+    /// Returns a mutable reference to the blob map (used by serialization).
     QMap<QString, QByteArray> &blobMapRef() { return m_blobs; }
+    /// Removes all stored blobs.
     void clearBlobs();
 
     /// Finds all embedded IC elements with \a blobName.
@@ -70,6 +83,7 @@ public:
     /// Creates a new embedded IC from file bytes, registers the blob, and pushes an undo command.
     IC *createEmbeddedIC(const QString &blobName, const QByteArray &fileBytes, const QString &contextDir);
 
+    /// Converts all file-backed IC elements referencing \a fileName to embedded ICs using \a blobName.
     int embedICsByFile(const QString &fileName, const QByteArray &fileBytes,
                        const QString &blobName);
 
@@ -78,6 +92,7 @@ public:
 
     // --- Serialization helpers ---
 
+    /// Serializes \a targets into a self-contained .panda byte array (used for embedding).
     static QByteArray captureSnapshot(const QList<GraphicElement *> &targets);
 
     // --- Cycle detection ---
@@ -92,18 +107,21 @@ public:
     void endLoading(const QString &canonicalPath);
 
 signals:
+    /// Emitted when an IC definition file changes on disk and its cached definition is invalidated.
     void definitionChanged(const QString &filePath);
 
 private slots:
+    /// Handles QFileSystemWatcher notifications; invalidates the definition and reloads IC instances.
     void onFileChanged(const QString &filePath);
 
 private:
+    /// Recursively inlines all IC dependencies of blob \a name so it has no external file references.
     void makeBlobSelfContained(const QString &name, QSet<QString> &visited);
 
-    Scene *m_scene;
-    QMap<QString, ICDefinition> m_definitions;
-    QMap<QString, QByteArray> m_blobs;  // embedded IC blob storage
-    QFileSystemWatcher m_fileWatcher;
-    QSet<QString> m_loadingFiles;
+    Scene *m_scene;                          ///< Owning scene.
+    QMap<QString, ICDefinition> m_definitions; ///< Cached IC definitions keyed by canonical file path.
+    QMap<QString, QByteArray> m_blobs;       ///< Embedded IC blob storage (name → .panda bytes).
+    QFileSystemWatcher m_fileWatcher;        ///< Watches IC source files for external modifications.
+    QSet<QString> m_loadingFiles;            ///< Files currently being loaded (for cycle detection).
 };
 

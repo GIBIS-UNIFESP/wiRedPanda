@@ -33,7 +33,7 @@ public:
 
     // --- Result Access ---
 
-    /// Returns the clock frequency in Hz
+    /// Returns the clock frequency in Hz.
     int frequency();
 
 private:

@@ -1,6 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief Arduino sketch code generator: translates a circuit into an uploadable .ino file.
+ */
+
 #pragma once
 
 #include <QCoreApplication>
@@ -95,56 +99,102 @@ public:
 
     /// Generates the Arduino sketch and writes it to the output file.
     void generate();
+    /// Generates a testbench sketch that verifies the circuit against \a vectors.
     void generateTestbench(const QString &tbFileName, const QVector<TestVector> &vectors);
 
 private:
-    // --- Internal helpers ---
+    // --- String Utilities ---
 
+    /// Returns "HIGH" or "LOW" for Active/Inactive status values.
     static QString highLow(Status val);
+    /// Replaces accented characters with their ASCII equivalents.
     static QString stripAccents(const QString &input);
+    /// Strips characters that are illegal in C++ identifiers.
     static QString removeForbiddenChars(const QString &input);
+    /// Returns \c true if \a name collides with an Arduino built-in identifier.
     static bool isArduinoReserved(const QString &name);
 
+    // --- Board Selection ---
+
+    /// Returns a board configuration with at least \a requiredPins available GPIO pins.
     ArduinoBoardConfig selectBoard(int requiredPins);
+    /// Returns the list of known Arduino board configurations.
     QVector<ArduinoBoardConfig> getAvailableBoards();
+
+    // --- Signal Name Resolution ---
+
+    /// Builds a nested ternary expression for multiplexer select lines starting at \a startIndex.
     QString buildSelectExpression(GraphicElement *elm, int startIndex, int numSelectLines);
+    /// Returns the variable name of the signal driving \a port.
     QString otherPortName(QNEPort *port);
+    /// Recursive implementation of otherPortName() with cycle detection via \a visited.
     QString otherPortNameImpl(QNEPort *port, QSet<QNEPort *> &visited);
+
+    // --- Sequential Element Emission ---
+
+    /// Emits a generic flip-flop code block with preset/clear/normal branches.
     void emitFlipFlopBlock(GraphicElement *elm, const QString &typeName, const QString &firstOut,
                            const QString &secondOut, int clockInputIndex, int presetInputIndex,
                            int clearInputIndex, const std::function<void()> &normalLogic);
+    /// Emits D flip-flop logic for \a elm with output variable \a firstOut.
     void emitDFlipFlop(GraphicElement *elm, const QString &firstOut);
+    /// Emits D latch logic for \a elm.
     void emitDLatch(GraphicElement *elm, const QString &firstOut);
+    /// Emits JK flip-flop logic for \a elm.
     void emitJKFlipFlop(GraphicElement *elm, const QString &firstOut);
+    /// Emits SR flip-flop logic for \a elm.
     void emitSRFlipFlop(GraphicElement *elm, const QString &firstOut);
+    /// Emits T flip-flop logic for \a elm.
     void emitTFlipFlop(GraphicElement *elm, const QString &firstOut);
+    /// Emits SR latch logic for \a elm.
     void emitSRLatch(GraphicElement *elm, const QString &firstOut);
+
+    // --- Combinational Element Emission ---
+
+    /// Emits multiplexer logic for \a elm.
     void emitMux(GraphicElement *elm);
+    /// Emits demultiplexer logic for \a elm.
     void emitDemux(GraphicElement *elm);
+    /// Emits truth table lookup logic for \a elm.
     void emitTruthTable(GraphicElement *elm);
+    /// Emits a single combinational gate assignment for \a elm (AND, OR, NOT, etc.).
     void assignLogicOperator(GraphicElement *elm);
+
+    // --- Variable / Declaration Emission ---
+
+    /// Assigns variable names to all element ports in topological order.
     void assignVariablesRec(const QVector<GraphicElement *> &elements);
+    /// Emits `bool` declarations for auxiliary internal variables.
     void declareAuxVariables();
+    /// Recursive helper: emits auxiliary variable declarations for \a elements.
     void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox, const QString &icPrefix);
+    /// Emits `pinMode(INPUT)` calls and variable declarations for circuit inputs.
     void declareInputs();
+    /// Emits `pinMode(OUTPUT)` calls and variable declarations for circuit outputs.
     void declareOutputs();
+
+    // --- Top-Level Structure ---
+
+    /// Emits the `computeLogic()` function body containing all gate/flip-flop assignments.
     void emitComputeLogicFunction();
+    /// Emits the `loop()` function: reads inputs, calls computeLogic(), writes outputs.
     void loop();
+    /// Emits the `setup()` function: pin modes and serial initialization.
     void setup();
 
     // --- Members ---
 
-    QFile m_file;
-    QHash<QNEPort *, QString> m_varMap;
-    QHash<QString, QNEInputPort *> m_txInputPorts;
-    QStringList m_availablePins;
-    QStringList m_declaredVariables;
-    QTextStream m_stream;
-    QVector<MappedPin> m_inputMap;
-    QVector<MappedPin> m_outputMap;
-    const QVector<GraphicElement *> m_elements;
-    int m_globalCounter = 1;
-    IC *m_currentIC = nullptr;
-    ArduinoBoardConfig m_selectedBoard;
+    QFile m_file;                              ///< Output file handle.
+    QHash<QNEPort *, QString> m_varMap;        ///< Port → generated variable name mapping.
+    QHash<QString, QNEInputPort *> m_txInputPorts; ///< Wireless Tx label → input port mapping.
+    QStringList m_availablePins;               ///< Remaining unassigned GPIO pin labels.
+    QStringList m_declaredVariables;           ///< Names of already-declared variables (duplicate guard).
+    QTextStream m_stream;                      ///< Text stream writing to m_file.
+    QVector<MappedPin> m_inputMap;             ///< Final input pin mappings.
+    QVector<MappedPin> m_outputMap;            ///< Final output pin mappings.
+    const QVector<GraphicElement *> m_elements; ///< Topologically sorted circuit elements.
+    int m_globalCounter = 1;                   ///< Monotonic counter for unique variable names.
+    IC *m_currentIC = nullptr;                 ///< IC currently being flattened (null at top level).
+    ArduinoBoardConfig m_selectedBoard;        ///< Board configuration selected during generation.
 };
 

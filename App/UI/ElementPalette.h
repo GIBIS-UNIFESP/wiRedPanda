@@ -78,14 +78,19 @@ signals:
     void addElementRequested(QMimeData *mimeData);
 
 private slots:
+    /// Filters palette labels to match \a text and switches to the search tab if non-empty.
     void onSearchTextChanged(const QString &text);
+    /// Emits addElementRequested() with the MIME data of the first visible search result.
     void onSearchReturnPressed();
 
 private:
     // --- Helpers ---
 
+    /// Creates ElementLabel widgets for each element in \a names and appends them to \a layout.
     void populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout);
+    /// Loads category icons from the theme and applies them to the tab bar.
     void setupTabIcons();
+    /// Returns the tab index whose widget has the given QObject \a objectName, or -1.
     int  getTabIndex(const QString &objectName) const;
 
     // --- Members ---

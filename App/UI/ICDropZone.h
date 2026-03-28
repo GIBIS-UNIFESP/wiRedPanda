@@ -1,8 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/// \file
-/// \brief ICDropZone: drop target widget for cross-section IC palette drops.
+/** \file
+ * \brief ICDropZone: drop target widget for cross-section IC palette drops.
+ */
 
 #pragma once
 
@@ -21,8 +22,13 @@ class ICDropZone : public QWidget
     Q_OBJECT
 
 public:
-    enum class Section { FileBased, Embedded };
+    /// Identifies which IC palette section this zone belongs to.
+    enum class Section {
+        FileBased, ///< The file-backed IC section (accepts embedded drops for extraction).
+        Embedded,  ///< The embedded IC section (accepts file-backed drops for embedding).
+    };
 
+    /// Constructs a drop zone for the given palette \a section.
     explicit ICDropZone(Section section, QWidget *parent = nullptr);
 
 signals:
@@ -33,11 +39,14 @@ signals:
     void extractByBlobNameRequested(const QString &blobName);
 
 protected:
+    /// \reimp
     void dragEnterEvent(QDragEnterEvent *event) override;
+    /// \reimp
     void dragMoveEvent(QDragMoveEvent *event) override;
+    /// \reimp
     void dropEvent(QDropEvent *event) override;
 
 private:
-    Section m_section;
+    Section m_section; ///< Which palette section this zone represents.
 };
 

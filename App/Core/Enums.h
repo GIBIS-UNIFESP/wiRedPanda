@@ -30,59 +30,63 @@ public:
     Q_ENUM(Status)
 
     /// Wireless routing mode for Node elements.
-    enum class WirelessMode { None = 0, Tx = 1, Rx = 2 };
+    enum class WirelessMode {
+        None = 0, ///< Normal pass-through node (no wireless routing).
+        Tx = 1,   ///< Transmitter: broadcasts input signal to all Rx nodes sharing the same label.
+        Rx = 2,   ///< Receiver: receives signal from the Tx node that shares the same label.
+    };
     Q_ENUM(WirelessMode)
 
     /// Numeric identifiers for every concrete element type.
     enum class ElementType { // last element is 33
-        And = 5,
-        AudioBox = 31,
-        Buzzer = 26,
-        Clock = 9,
-        DFlipFlop = 17,
-        DLatch = 15,
-        Demux = 25,
-        Display14 = 27,
-        Display16 = 33,
-        Display7 = 14,
-        IC = 22,
-        InputButton = 1,
-        InputGnd = 13,
-        InputRotary = 21,
-        InputSwitch = 2,
-        InputVcc = 12,
-        JKFlipFlop = 18,
-        JKLatch = 16, // DEPRECATED: JKLatch element no longer exists, kept for backward compatibility
-        Led = 3,
-        Line = 29,
-        Mux = 24,
-        Nand = 7,
-        Node = 23,
-        Nor = 8,
-        Not = 4,
-        Or = 6,
-        SRFlipFlop = 19,
-        SRLatch = 32,
-        TFlipFlop = 20,
-        Text = 28,
-        TruthTable = 30,
-        Unknown = 0,
-        Xnor = 11,
-        Xor = 10,
+        And = 5,          ///< AND gate.
+        AudioBox = 31,    ///< Audio playback element.
+        Buzzer = 26,      ///< Buzzer output element.
+        Clock = 9,        ///< Clock signal generator with configurable frequency.
+        DFlipFlop = 17,   ///< D (data) flip-flop — edge-triggered.
+        DLatch = 15,      ///< D (data) latch — level-sensitive.
+        Demux = 25,       ///< Demultiplexer — routes one input to one of N outputs.
+        Display14 = 27,   ///< 14-segment alphanumeric display.
+        Display16 = 33,   ///< 16-segment alphanumeric display.
+        Display7 = 14,    ///< 7-segment numeric display.
+        IC = 22,          ///< Integrated circuit (sub-circuit loaded from a .panda file).
+        InputButton = 1,  ///< Momentary push-button input (active while pressed).
+        InputGnd = 13,    ///< Constant logic low (GND) source.
+        InputRotary = 21, ///< Rotary switch input with multiple positions.
+        InputSwitch = 2,  ///< Toggle switch input (latched on/off).
+        InputVcc = 12,    ///< Constant logic high (VCC) source.
+        JKFlipFlop = 18,  ///< JK flip-flop — edge-triggered.
+        JKLatch = 16,     ///< \deprecated JKLatch no longer exists; kept for backward compatibility.
+        Led = 3,          ///< LED output indicator.
+        Line = 29,        ///< Decorative line (no logical function).
+        Mux = 24,         ///< Multiplexer — selects one of N inputs to output.
+        Nand = 7,         ///< NAND gate.
+        Node = 23,        ///< Wire junction node (also used for wireless Tx/Rx).
+        Nor = 8,          ///< NOR gate.
+        Not = 4,          ///< NOT gate (inverter).
+        Or = 6,           ///< OR gate.
+        SRFlipFlop = 19,  ///< SR flip-flop — edge-triggered.
+        SRLatch = 32,     ///< SR latch — level-sensitive.
+        TFlipFlop = 20,   ///< T (toggle) flip-flop — edge-triggered.
+        Text = 28,        ///< Text annotation (no logical function).
+        TruthTable = 30,  ///< User-defined truth table element.
+        Unknown = 0,      ///< Placeholder for unrecognised or uninitialised types.
+        Xnor = 11,        ///< XNOR gate (exclusive NOR).
+        Xor = 10,         ///< XOR gate (exclusive OR).
     };
     Q_ENUM(ElementType)
 
     /// Logical grouping used to organise elements in the UI palette.
     enum class ElementGroup {
-        Gate = 4,
-        IC = 2,
-        Input = 3,
-        Memory = 5,
-        Mux = 7,
-        Other = 1,
-        Output = 6,
-        StaticInput = 8,
-        Unknown = 0,
+        Gate = 4,        ///< Combinational logic gates (AND, OR, NOT, etc.).
+        IC = 2,          ///< Integrated circuits (sub-circuit files).
+        Input = 3,       ///< User-interactive inputs (buttons, switches, rotary).
+        Memory = 5,      ///< Sequential elements (flip-flops, latches).
+        Mux = 7,         ///< Multiplexers and demultiplexers.
+        Other = 1,       ///< Miscellaneous elements (nodes, lines, text, truth tables).
+        Output = 6,      ///< Output indicators (LEDs, displays, buzzers).
+        StaticInput = 8, ///< Constant-value inputs (VCC, GND).
+        Unknown = 0,     ///< Placeholder for unrecognised groups.
     };
     Q_ENUM(ElementGroup)
 

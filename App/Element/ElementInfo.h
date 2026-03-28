@@ -1,17 +1,21 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/** \file
+ * \brief Self-registering element trait template and compile-time constraint validation.
+ */
+
 #pragma once
 
 #include "App/Core/Enums.h"
 #include "App/Element/ElementMetadata.h"
 
-/*!
- * @struct ElementConstraints
- * @brief Compile-time-validatable subset of ElementMetadata.
+/**
+ * \struct ElementConstraints
+ * \brief Compile-time-validatable subset of ElementMetadata.
  *
- * These constexpr-friendly constraints enable static validation of element
- * metadata at compile time. They must be convertible to ElementMetadata
+ * \details These constexpr-friendly constraints enable static validation of
+ * element metadata at compile time.  They are converted to ElementMetadata
  * via metadataFromConstraints().
  */
 struct ElementConstraints {
@@ -35,11 +39,10 @@ struct ElementConstraints {
     bool rotatable = true;
 };
 
-/*!
- * @fn validate
- * @brief Validate element constraints at compile time.
- *
- * @return true if constraints are valid, false otherwise
+/**
+ * \brief Validates element constraints at compile time.
+ * \param c Constraints to validate.
+ * \return \c true if \a c is well-formed (known type/group, consistent port sizes).
  */
 constexpr bool validate(const ElementConstraints &c)
 {
@@ -64,14 +67,14 @@ constexpr bool validate(const ElementConstraints &c)
     return true;
 }
 
-/*!
- * @fn metadataFromConstraints
- * @brief Convert ElementConstraints to ElementMetadata.
+/**
+ * \brief Converts ElementConstraints to an ElementMetadata with all constraint-derived fields set.
  *
- * Sets up all constraint-derived fields. Specializations must set:
- * - pixmapPath (callable)
- * - titleText, translatedName, trContext (string pointers)
- * - defaultSkins, alternativeSkins (skin lists)
+ * \details Specializations of ElementInfo<T>::metadata() call this first, then fill in
+ * the remaining display fields: \c pixmapPath, \c titleText, \c translatedName,
+ * \c trContext, \c defaultSkins, and \c alternativeSkins.
+ * \param c Source constraints.
+ * \return Partially populated ElementMetadata.
  */
 inline ElementMetadata metadataFromConstraints(const ElementConstraints &c)
 {
@@ -95,7 +98,7 @@ inline ElementMetadata metadataFromConstraints(const ElementConstraints &c)
     return meta;
 }
 
-/*!
+/**
  * \brief Self-registering element information trait.
  *
  * Specializations must define:

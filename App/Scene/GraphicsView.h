@@ -87,15 +87,15 @@ protected:
 
     // --- Members ---
 
-    bool m_redirectZoom = false;
-    int m_zoomLevel = 0;
+    bool m_redirectZoom = false; ///< When true, wheel events emit signals instead of zooming directly.
+    int m_zoomLevel = 0;        ///< Current zoom step (0 = 1:1, positive = zoomed in).
 
 private:
     // --- Members ---
 
-    bool m_pan = false;
-    bool m_space = false;
-    int m_panStartX = 0;
-    int m_panStartY = 0;
+    bool m_pan = false;    ///< True while the user is middle-click or space-drag panning.
+    bool m_space = false;  ///< True while the space bar is held (enables pan mode).
+    int m_panStartX = 0;   ///< Mouse X at the start of the current pan gesture.
+    int m_panStartY = 0;   ///< Mouse Y at the start of the current pan gesture.
 };
 
