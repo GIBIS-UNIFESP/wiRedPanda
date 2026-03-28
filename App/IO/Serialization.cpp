@@ -296,11 +296,15 @@ Serialization::Preamble Serialization::readPreamble(QDataStream &stream)
 {
     Preamble result;
     result.version = readPandaHeader(stream);
-    loadDolphinFileName(stream, result.version);
-    loadRect(stream, result.version);
 
-    if (VersionInfo::hasMetadata(result.version)) {
+    if (VersionInfo::hasUnifiedMetadata(result.version)) {
         stream >> result.metadata;
+    } else {
+        loadDolphinFileName(stream, result.version);
+        loadRect(stream, result.version);
+        if (VersionInfo::hasMetadata(result.version)) {
+            stream >> result.metadata;
+        }
     }
     return result;
 }

@@ -4885,9 +4885,7 @@ void TestICInline::testICDefinitionPortCountLabelMismatch()
     QByteArray tampered;
     QDataStream writeStream(&tampered, QIODevice::WriteOnly);
     Serialization::writePandaHeader(writeStream);
-    writeStream << QString();   // dolphin
-    writeStream << QRectF();    // sceneRect
-    writeStream << metadata;
+    writeStream << metadata;    // V4.6+: metadata immediately after header
     writeStream.writeRawData(elements.constData(), static_cast<int>(elements.size()));
 
     // Write to file and load as ICDefinition
