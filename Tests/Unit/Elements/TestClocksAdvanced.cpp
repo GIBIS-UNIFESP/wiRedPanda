@@ -39,12 +39,12 @@ void TestClocksAdvanced::testClockBehavior()
     QCOMPARE(TestUtils::getInputStatus(&led), true);
 
     // Verify frequency property works
-    clock.setFrequency(1000.0f);
-    QCOMPARE(clock.frequency(), 1000.0f);
+    clock.setFrequency(1000.0);
+    QCOMPARE(clock.frequency(), 1000.0);
 
     // Verify delay property works
-    clock.setDelay(0.5f);
-    QCOMPARE(clock.delay(), 0.5f);
+    clock.setDelay(0.5);
+    QCOMPARE(clock.delay(), 0.5);
 }
 
 // ============================================================
@@ -58,12 +58,12 @@ void TestClocksAdvanced::testClockFrequencyEdgeCases()
     QVERIFY(clock != nullptr);
 
     // Very low frequency
-    clock->setFrequency(0.1f);
-    QVERIFY(qFuzzyCompare(clock->frequency(), 0.1f));
+    clock->setFrequency(0.1);
+    QVERIFY(qFuzzyCompare(clock->frequency(), 0.1));
 
     // Very high frequency
-    clock->setFrequency(10000.0f);
-    QVERIFY(qFuzzyCompare(clock->frequency(), 10000.0f));
+    clock->setFrequency(10000.0);
+    QVERIFY(qFuzzyCompare(clock->frequency(), 10000.0));
 }
 
 void TestClocksAdvanced::testClockTimingPrecision()
@@ -73,11 +73,11 @@ void TestClocksAdvanced::testClockTimingPrecision()
     QVERIFY(clock != nullptr);
 
     // Set frequency and verify retrieval
-    clock->setFrequency(33.33f);
-    QVERIFY(qFuzzyCompare(clock->frequency(), 33.33f));
+    clock->setFrequency(33.33);
+    QVERIFY(qFuzzyCompare(clock->frequency(), 33.33));
 
-    clock->setFrequency(66.67f);
-    QVERIFY(qFuzzyCompare(clock->frequency(), 66.67f));
+    clock->setFrequency(66.67);
+    QVERIFY(qFuzzyCompare(clock->frequency(), 66.67));
 }
 
 void TestClocksAdvanced::testClockSilentRejectionForExtremeFrequencies()
@@ -88,24 +88,24 @@ void TestClocksAdvanced::testClockSilentRejectionForExtremeFrequencies()
     QVERIFY(clock != nullptr);
 
     // Set a valid initial frequency
-    clock->setFrequency(100.0f);
-    QCOMPARE(clock->frequency(), 100.0f);
+    clock->setFrequency(100.0);
+    QCOMPARE(clock->frequency(), 100.0);
 
     // Try to set an extremely high frequency (should be silently rejected)
     // The threshold depends on implementation, but frequencies above ~1MHz typically fail
     // because the interval calculation produces microseconds <= 0
-    clock->setFrequency(1e8f);  // 100 MHz - extremely high
+    clock->setFrequency(1e8);  // 100 MHz - extremely high
     // After silent rejection, frequency should remain unchanged
-    QCOMPARE(clock->frequency(), 100.0f);
+    QCOMPARE(clock->frequency(), 100.0);
 
     // Verify we can still set a valid frequency after the failed attempt
-    clock->setFrequency(50.0f);
-    QCOMPARE(clock->frequency(), 50.0f);
+    clock->setFrequency(50.0);
+    QCOMPARE(clock->frequency(), 50.0);
 
     // Test zero frequency rejection (also silently rejected)
-    clock->setFrequency(0.0f);
+    clock->setFrequency(0.0);
     // Frequency should remain at last valid value
-    QCOMPARE(clock->frequency(), 50.0f);
+    QCOMPARE(clock->frequency(), 50.0);
 }
 
 // ============================================================
@@ -122,11 +122,11 @@ void TestClocksAdvanced::testTwoClocksDifferentFrequencies()
     QVERIFY(clock2 != nullptr);
 
     // Set different frequencies
-    clock1->setFrequency(1.0f);   // 1 Hz
-    clock2->setFrequency(100.0f); // 100 Hz
+    clock1->setFrequency(1.0);   // 1 Hz
+    clock2->setFrequency(100.0); // 100 Hz
 
-    QCOMPARE(clock1->frequency(), 1.0f);
-    QCOMPARE(clock2->frequency(), 100.0f);
+    QCOMPARE(clock1->frequency(), 1.0);
+    QCOMPARE(clock2->frequency(), 100.0);
 
     // Verify they maintain independent frequencies
     QVERIFY(clock1->frequency() != clock2->frequency());
@@ -144,14 +144,14 @@ void TestClocksAdvanced::testThreeClocksConcurrentExecution()
     QVERIFY(clock3 != nullptr);
 
     // Set different frequencies
-    clock1->setFrequency(1.0f);
-    clock2->setFrequency(10.0f);
-    clock3->setFrequency(100.0f);
+    clock1->setFrequency(1.0);
+    clock2->setFrequency(10.0);
+    clock3->setFrequency(100.0);
 
     // All frequencies should be independently maintained
-    QCOMPARE(clock1->frequency(), 1.0f);
-    QCOMPARE(clock2->frequency(), 10.0f);
-    QCOMPARE(clock3->frequency(), 100.0f);
+    QCOMPARE(clock1->frequency(), 1.0);
+    QCOMPARE(clock2->frequency(), 10.0);
+    QCOMPARE(clock3->frequency(), 100.0);
 }
 
 void TestClocksAdvanced::testClockSynchronizationEdgeCases()
@@ -164,13 +164,13 @@ void TestClocksAdvanced::testClockSynchronizationEdgeCases()
     QVERIFY(clock2 != nullptr);
 
     // Set same frequency
-    clock1->setFrequency(50.0f);
-    clock2->setFrequency(50.0f);
+    clock1->setFrequency(50.0);
+    clock2->setFrequency(50.0);
 
     QCOMPARE(clock1->frequency(), clock2->frequency());
 
     // Modify one
-    clock1->setFrequency(60.0f);
+    clock1->setFrequency(60.0);
     QVERIFY(clock1->frequency() != clock2->frequency());
 }
 
@@ -184,10 +184,10 @@ void TestClocksAdvanced::testMultiClockPhaseRelationships()
     QVERIFY(clock2 != nullptr);
 
     // Set frequencies in ratio
-    clock1->setFrequency(100.0f);  // 100 Hz
-    clock2->setFrequency(50.0f);   // 50 Hz (half of clock1)
+    clock1->setFrequency(100.0);  // 100 Hz
+    clock2->setFrequency(50.0);   // 50 Hz (half of clock1)
 
     // Verify ratio is maintained
-    QCOMPARE(clock1->frequency() / clock2->frequency(), 2.0f);
+    QCOMPARE(clock1->frequency() / clock2->frequency(), 2.0);
 }
 

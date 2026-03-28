@@ -223,10 +223,10 @@ public:
     // --- Frequency & Delay ---
 
     /// Returns the clock frequency in Hz (overridden by Clock; returns 0 for other elements).
-    virtual float frequency() const;
+    virtual double frequency() const;
 
     /// Returns the clock phase delay in seconds (overridden by Clock; returns 0 for other elements).
-    virtual float delay() const;
+    virtual double delay() const;
 
     /// Returns \c true if this element type exposes a configurable clock frequency.
     bool hasFrequency() const;
@@ -235,10 +235,10 @@ public:
     bool hasDelay() const;
 
     /// Sets the clock frequency to \a freq (overridden by clock elements).
-    virtual void setFrequency(const float freq);
+    virtual void setFrequency(const double freq);
 
     /// Sets the clock phase delay to \a delay (overridden by clock elements).
-    virtual void setDelay(const float delay);
+    virtual void setDelay(const double delay);
 
     /**
      * \brief Returns the list of editable properties this element exposes in the ElementEditor.
@@ -312,7 +312,7 @@ public:
     bool inputValue(const int index = 0) const;
 
     /// Returns the number of simulation output slots.
-    int simOutputSize() const;
+    qsizetype simOutputSize() const;
 
     /// Sets simulation output port \a index to \a value.
     void setOutputValue(const int index, const Status value);

@@ -732,22 +732,22 @@ void GraphicElement::setOutputSize(const int size)
     }
 }
 
-float GraphicElement::frequency() const
+double GraphicElement::frequency() const
 {
     return 0.0;
 }
 
-void GraphicElement::setFrequency(const float freq)
+void GraphicElement::setFrequency(const double freq)
 {
     Q_UNUSED(freq)
 }
 
-float GraphicElement::delay() const
+double GraphicElement::delay() const
 {
     return 0.0;
 }
 
-void GraphicElement::setDelay(const float delay)
+void GraphicElement::setDelay(const double delay)
 {
     Q_UNUSED(delay)
 }
@@ -773,9 +773,9 @@ bool GraphicElement::inputValue(const int index) const
     return m_simInputValues.at(index) == Status::Active;
 }
 
-int GraphicElement::simOutputSize() const
+qsizetype GraphicElement::simOutputSize() const
 {
-    return static_cast<int>(m_simOutputValues.size());
+    return m_simOutputValues.size();
 }
 
 void GraphicElement::setOutputValue(const int index, const Status value)

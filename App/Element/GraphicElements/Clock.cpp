@@ -125,7 +125,7 @@ void Clock::load(QDataStream &stream, SerializationContext &context)
     if (!VersionInfo::hasQMapFormat(context.version)) {
         // v1.1–4.0 stored frequency as a bare float; locked state added in v3.1
         float freq; stream >> freq;
-        setFrequency(freq);
+        setFrequency(static_cast<double>(freq));
 
         if (VersionInfo::hasLockState(context.version)) {
             stream >> m_locked;
@@ -137,11 +137,11 @@ void Clock::load(QDataStream &stream, SerializationContext &context)
         QMap<QString, QVariant> map; stream >> map;
 
         if (map.contains("frequency")) {
-            setFrequency(map.value("frequency").toFloat());
+            setFrequency(map.value("frequency").toDouble());
         }
 
         if (map.contains("delay")) {
-            float delayValue = map.value("delay").toFloat();
+            double delayValue = map.value("delay").toDouble();
 
             if (!VersionInfo::hasDelayFix(context.version)) {
                 // Discard old delay data from versions < 4.3
@@ -157,12 +157,12 @@ void Clock::load(QDataStream &stream, SerializationContext &context)
     }
 }
 
-float Clock::frequency() const
+double Clock::frequency() const
 {
-    return static_cast<float>(m_frequency);
+    return m_frequency;
 }
 
-void Clock::setFrequency(const float freq)
+void Clock::setFrequency(const double freq)
 {
     if (qFuzzyIsNull(freq)) {
         return;
@@ -178,17 +178,17 @@ void Clock::setFrequency(const float freq)
     }
 
     m_interval = auxInterval;
-    m_frequency = static_cast<double>(freq);
+    m_frequency = freq;
 }
 
-float Clock::delay() const
+double Clock::delay() const
 {
-    return static_cast<float>(m_delay);
+    return m_delay;
 }
 
-void Clock::setDelay(const float delay)
+void Clock::setDelay(const double delay)
 {
-    m_delay = static_cast<double>(delay);
+    m_delay = delay;
 }
 
 void Clock::resetClock(std::chrono::steady_clock::time_point globalTime)
@@ -207,7 +207,7 @@ void Clock::resetClock(std::chrono::steady_clock::time_point globalTime)
 
 QString Clock::genericProperties()
 {
-    return QString::number(static_cast<double>(frequency())) + " Hz";
+    return QString::number(frequency()) + " Hz";
 }
 
 void Clock::setSkin(const bool defaultSkin, const QString &fileName)
