@@ -10,7 +10,6 @@
 
 // Qt includes
 
-#include <QAbstractItemView>
 #include <QAction>
 #include <QActionGroup>
 #include <QApplication>
@@ -54,6 +53,7 @@
 #include <QFontMetrics>
 #include <QFrame>
 #include <QGraphicsItem>
+#include <QGraphicsObject>
 #include <QGraphicsPathItem>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
@@ -64,12 +64,10 @@
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QHash>
-#include <QHeaderView>
 #include <QIODevice>
 #include <QIcon>
 #include <QImageReader>
 #include <QInputDialog>
-#include <QItemDelegate>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -128,7 +126,6 @@
 #include <QSpinBox>
 #include <QSplitter>
 #include <QStack>
-#include <QStandardItemModel>
 #include <QStandardPaths>
 #include <QStatusBar>
 #include <QString>
@@ -136,11 +133,9 @@
 #include <QStyle>
 #include <QStyleHints>
 #include <QStyleOptionGraphicsItem>
-#include <QStyleOptionViewItem>
 #include <QSvgGenerator>
 #include <QSvgRenderer>
 #include <QTabWidget>
-#include <QTableView>
 #include <QTableWidget>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
