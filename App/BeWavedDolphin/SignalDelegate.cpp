@@ -12,20 +12,67 @@ SignalDelegate::SignalDelegate(QObject *parent)
     loadPixmaps();
 }
 
+namespace {
+
+/// Creates a waveform pixmap for a single cell segment.
+/// \param isHigh   true for logic-high state, false for logic-low.
+/// \param hasEdge  true for rising/falling edge (adds vertical bar at left).
+/// \param color    signal color (green=#008000 for output, blue=#758EFF for input).
+QPixmap createWaveformPixmap(const bool isHigh, const bool hasEdge, const QColor &color)
+{
+    // Baseline size matching the original SVG-to-pixmap pipeline (100×30 viewBox → 100×38 px).
+    constexpr int kWidth  = 100;
+    constexpr int kHeight = 38;
+    constexpr qreal kYScale = static_cast<qreal>(kHeight) / 30.0;
+
+    QPixmap pixmap(kWidth, kHeight);
+    pixmap.fill(Qt::transparent);
+
+    QPainter painter(&pixmap);
+    painter.setRenderHint(QPainter::Antialiasing, false);
+
+    QColor shadow(color);
+    shadow.setAlphaF(0.5);
+
+    // Shadow fill below the signal line (half-opacity).
+    // ViewBox coordinates: high → y=12 h=18, falling → y=22 h=8, low → y=24 h=6.
+    if (isHigh) {
+        painter.fillRect(QRectF(0, 12.0 * kYScale, kWidth, 18.0 * kYScale), shadow);
+    } else if (hasEdge) {
+        painter.fillRect(QRectF(0, 22.0 * kYScale, kWidth, 8.0 * kYScale), shadow);
+    } else {
+        painter.fillRect(QRectF(0, 24.0 * kYScale, kWidth, 6.0 * kYScale), shadow);
+    }
+
+    // Horizontal signal line (viewBox h=4). High at y=8, low at y=20.
+    const qreal lineY = (isHigh ? 8.0 : 20.0) * kYScale;
+    painter.fillRect(QRectF(0, lineY, kWidth, 4.0 * kYScale), color);
+
+    // Vertical transition bar at the left edge (viewBox x=0, w=4, y=8, h=16).
+    if (hasEdge) {
+        painter.fillRect(QRectF(0, 8.0 * kYScale, 4.0, 16.0 * kYScale), color);
+    }
+
+    return pixmap;
+}
+
+} // anonymous namespace
+
 void SignalDelegate::loadPixmaps()
 {
-    // Pre-render waveform segment SVGs to pixmaps once at startup.
-    // Green = output rows, Blue = input rows. 100x38 is the baseline cell size;
-    // paint() stretches these pixmaps to fill the actual cell at render time.
-    m_lowGreen     = QPixmap(":/Interface/Dolphin/low_green.svg").scaled(100, 38);
-    m_highGreen    = QPixmap(":/Interface/Dolphin/high_green.svg").scaled(100, 38);
-    m_fallingGreen = QPixmap(":/Interface/Dolphin/falling_green.svg").scaled(100, 38);
-    m_risingGreen  = QPixmap(":/Interface/Dolphin/rising_green.svg").scaled(100, 38);
+    const QColor green(0x00, 0x80, 0x00);
+    const QColor blue(0x75, 0x8E, 0xFF);
 
-    m_lowBlue     = QPixmap(":/Interface/Dolphin/low_blue.svg").scaled(100, 38);
-    m_highBlue    = QPixmap(":/Interface/Dolphin/high_blue.svg").scaled(100, 38);
-    m_fallingBlue = QPixmap(":/Interface/Dolphin/falling_blue.svg").scaled(100, 38);
-    m_risingBlue  = QPixmap(":/Interface/Dolphin/rising_blue.svg").scaled(100, 38);
+    //                             isHigh  hasEdge  color
+    m_lowGreen     = createWaveformPixmap(false, false, green);
+    m_highGreen    = createWaveformPixmap(true,  false, green);
+    m_risingGreen  = createWaveformPixmap(true,  true,  green);
+    m_fallingGreen = createWaveformPixmap(false, true,  green);
+
+    m_lowBlue      = createWaveformPixmap(false, false, blue);
+    m_highBlue     = createWaveformPixmap(true,  false, blue);
+    m_risingBlue   = createWaveformPixmap(true,  true,  blue);
+    m_fallingBlue  = createWaveformPixmap(false, true,  blue);
 }
 
 QPixmap SignalDelegate::pixmapFor(const int value, const bool isInput, const bool hasPrev, const int prevValue) const
