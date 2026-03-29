@@ -16,6 +16,7 @@
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Workspace.h"
+#include "App/Versions.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestConnectionSerialization::initTestCase()
@@ -55,7 +56,7 @@ void TestConnectionSerialization::testLoadWithEmptyPortMapDirectRestore()
     auto conn2 = std::make_unique<QNEConnection>();
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> emptyPortMap;
-    SerializationContext context{emptyPortMap, QVersionNumber(), QString()};
+    SerializationContext context{emptyPortMap, AppVersion::current, QString()};
 
     conn2->load(loadStream, context);
 
@@ -115,7 +116,7 @@ void TestConnectionSerialization::testLoadWithPortMapIndirectRestore()
     // Create new connection and load with port map
     auto conn2 = std::make_unique<QNEConnection>();
     QDataStream loadStream(data);
-    SerializationContext context{portMap, QVersionNumber(), QString()};
+    SerializationContext context{portMap, AppVersion::current, QString()};
     conn2->load(loadStream, context);
 
     // Verify ports were correctly mapped
@@ -153,7 +154,7 @@ void TestConnectionSerialization::testLoadInvalidPortReferencesHandled()
     // Load with incomplete port map
     auto conn2 = std::make_unique<QNEConnection>();
     QDataStream loadStream(data);
-    SerializationContext context{portMap, QVersionNumber(), QString()};
+    SerializationContext context{portMap, AppVersion::current, QString()};
     conn2->load(loadStream, context);
 
     // With missing port reference, load() returns early, both ports remain null
@@ -206,7 +207,7 @@ void TestConnectionSerialization::testLoadPortTypeResolution()
     // Load connection
     auto conn2 = std::make_unique<QNEConnection>();
     QDataStream loadStream(data);
-    SerializationContext context{portMap, QVersionNumber(), QString()};
+    SerializationContext context{portMap, AppVersion::current, QString()};
     conn2->load(loadStream, context);
 
     // Verify ports are correctly identified despite being loaded from stream
@@ -265,7 +266,7 @@ void TestConnectionSerialization::testLoadMultipleConnectionsOnSamePorts()
     portMap[sw2OutSerial] = sw2->outputPort();
     portMap[andIn0Serial] = andGate->inputPort(0);
     portMap[andIn1Serial] = andGate->inputPort(1);
-    SerializationContext context{portMap, QVersionNumber(), QString()};
+    SerializationContext context{portMap, AppVersion::current, QString()};
 
     // Load both connections
     auto loadedConn1 = std::make_unique<QNEConnection>();
@@ -332,7 +333,7 @@ void TestConnectionSerialization::testSaveLoadRoundTripPreservesPorts()
     QMap<quint64, QNEPort *> portMap;
     portMap[andOutSerial] = outputPort;
     portMap[orInSerial] = inputPort;
-    SerializationContext context{portMap, QVersionNumber(), QString()};
+    SerializationContext context{portMap, AppVersion::current, QString()};
 
     auto conn2 = std::make_unique<QNEConnection>();
     {
@@ -383,7 +384,7 @@ void TestConnectionSerialization::testSaveLoadPreservesConnectionStatus()
     QMap<quint64, QNEPort *> portMap;
     portMap[swOutSerial] = sw->outputPort();
     portMap[ledInSerial] = led->inputPort();
-    SerializationContext context{portMap, QVersionNumber(), QString()};
+    SerializationContext context{portMap, AppVersion::current, QString()};
 
     auto conn2 = std::make_unique<QNEConnection>();
     {
@@ -450,7 +451,7 @@ void TestConnectionSerialization::testSaveLoadWithStatusPropagation()
     portMap[and1In0Serial] = and1->inputPort(0);
     portMap[and1OutSerial] = and1->outputPort();
     portMap[and2In0Serial] = and2->inputPort(0);
-    SerializationContext context{portMap, QVersionNumber(), QString()};
+    SerializationContext context{portMap, AppVersion::current, QString()};
 
     // Load connections
     auto loadedConn1 = std::make_unique<QNEConnection>();
