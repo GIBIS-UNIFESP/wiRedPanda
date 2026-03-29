@@ -267,7 +267,6 @@ void BewavedDolphinUi::retranslateUi(QMainWindow *BewavedDolphin)
     actionSetClockWave->setToolTip(QCoreApplication::translate("BewavedDolphin", "Set clock frequency"));
     actionSetClockWave->setShortcut(QCoreApplication::translate("BewavedDolphin", "Alt+W"));
     actionInvert->setText(QCoreApplication::translate("BewavedDolphin", "Invert"));
-    actionInvert->setShortcut(QCoreApplication::translate("BewavedDolphin", "Space"));
     actionMerge->setText(QCoreApplication::translate("BewavedDolphin", "Merge"));
     actionSplit->setText(QCoreApplication::translate("BewavedDolphin", "Split"));
     actionExportToPng->setText(QCoreApplication::translate("BewavedDolphin", "Export to PNG"));

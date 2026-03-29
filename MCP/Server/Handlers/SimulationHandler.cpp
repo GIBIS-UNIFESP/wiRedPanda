@@ -177,7 +177,7 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
 
         const auto inputs = bewavedDolphin->getInputElements();
         const auto outputs = bewavedDolphin->getOutputElements();
-        const auto model = bewavedDolphin->getModel();
+        const auto *grid = bewavedDolphin->getGrid();
 
         for (int row = 0; row < inputs.size(); ++row) {
             QJsonObject inputSignal;
@@ -186,7 +186,7 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
 
             QJsonArray values;
             for (int col = 0; col < duration; ++col) {
-                values.append(model->index(row, col).data().toInt());
+                values.append(grid->cellValue(row, col));
             }
             inputSignal["values"] = values;
             inputData.append(inputSignal);
@@ -200,7 +200,7 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
             QJsonArray values;
             int outputRowIndex = static_cast<int>(inputs.size()) + row;
             for (int col = 0; col < duration; ++col) {
-                values.append(model->index(outputRowIndex, col).data().toInt());
+                values.append(grid->cellValue(outputRowIndex, col));
             }
             outputSignal["values"] = values;
             outputData.append(outputSignal);
