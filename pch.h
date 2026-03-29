@@ -19,6 +19,7 @@
 #include <QAudioOutput>
 #include <QBitArray>
 #include <QBrush>
+#include <QBuffer>
 #include <QCheckBox>
 #include <QClipboard>
 #include <QCloseEvent>
@@ -57,6 +58,10 @@
 #include <QIODevice>
 #include <QImageReader>
 #include <QItemDelegate>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 #include <QKeyEvent>
 #include <QKeySequence>
 #include <QLabel>
@@ -100,9 +105,11 @@
 #include <QStandardPaths>
 #include <QStatusBar>
 #include <QString>
+#include <QStringList>
 #include <QStyle>
 #include <QStyleHints>
 #include <QStyleOptionGraphicsItem>
+#include <QSvgGenerator>
 #include <QSvgRenderer>
 #include <QTabWidget>
 #include <QTableView>
@@ -110,12 +117,14 @@
 #include <QTemporaryFile>
 #include <QTest>
 #include <QTextStream>
+#include <QThread>
 #include <QTimer>
 #include <QToolBar>
 #include <QTranslator>
 #include <QUndoCommand>
 #include <QUndoStack>
 #include <QVBoxLayout>
+#include <QVariant>
 #include <QVector>
 #include <QVersionNumber>
 #include <QWidget>
