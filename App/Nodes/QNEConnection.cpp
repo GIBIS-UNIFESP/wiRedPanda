@@ -110,22 +110,48 @@ void QNEConnection::updatePosFromPorts()
 
 void QNEConnection::updatePath()
 {
-    QPainterPath path;
+    QPainterPath p;
+    p.moveTo(m_startPos);
 
-    path.moveTo(m_startPos);
+    if (m_wireMode == WireMode::Orthogonal) {
+        for (const auto &wp : m_waypoints) {
+            p.lineTo(wp);
+        }
+        p.lineTo(m_endPos);
+    } else {
+        qreal dx = m_endPos.x() - m_startPos.x();
+        qreal dy = m_endPos.y() - m_startPos.y();
+        QPointF ctr1(m_startPos.x() + dx * 0.25, m_startPos.y() + dy * 0.1);
+        QPointF ctr2(m_startPos.x() + dx * 0.75, m_startPos.y() + dy * 0.9);
+        p.cubicTo(ctr1, ctr2, m_endPos);
+    }
 
-    qreal dx = m_endPos.x() - m_startPos.x();
-    qreal dy = m_endPos.y() - m_startPos.y();
+    setPath(p);
+}
 
-    // Cubic Bézier control points chosen so the wire leaves/arrives roughly horizontally
-    // (small Y fraction) and curves gently in the middle (0.25/0.75 X fraction).
-    // This gives an S-curve appearance typical of schematic wire routing tools.
-    QPointF ctr1(m_startPos.x() + dx * 0.25, m_startPos.y() + dy * 0.1);
-    QPointF ctr2(m_startPos.x() + dx * 0.75, m_startPos.y() + dy * 0.9);
+WireMode QNEConnection::wireMode() const
+{
+    return m_wireMode;
+}
 
-    path.cubicTo(ctr1, ctr2, m_endPos);
+void QNEConnection::setWireMode(WireMode mode)
+{
+    m_wireMode = mode;
+}
 
-    setPath(path);
+const QVector<QPointF> &QNEConnection::waypoints() const
+{
+    return m_waypoints;
+}
+
+void QNEConnection::setWaypoints(const QVector<QPointF> &waypoints)
+{
+    m_waypoints = waypoints;
+}
+
+void QNEConnection::clearWaypoints()
+{
+    m_waypoints.clear();
 }
 
 QNEOutputPort *QNEConnection::startPort() const
@@ -183,6 +209,15 @@ void QNEConnection::save(QDataStream &stream) const
     QMap<QString, QVariant> map;
     map.insert("startPortId", calculateSerialId(m_startPort));
     map.insert("endPortId", calculateSerialId(m_endPort));
+    map.insert("wireMode", static_cast<quint8>(m_wireMode));
+
+    if (!m_waypoints.isEmpty()) {
+        QByteArray wpBytes;
+        QDataStream wpStream(&wpBytes, QIODevice::WriteOnly);
+        wpStream << m_waypoints;
+        map.insert("waypoints", wpBytes);
+    }
+
     stream << map;
 }
 
@@ -201,6 +236,16 @@ void QNEConnection::load(QDataStream &stream, SerializationContext &context)
 
         id1 = map.value("startPortId").toULongLong();
         id2 = map.value("endPortId").toULongLong();
+
+        if (map.contains("wireMode")) {
+            m_wireMode = static_cast<WireMode>(map.value("wireMode").toUInt());
+        }
+
+        if (map.contains("waypoints")) {
+            QByteArray wpBytes = map.value("waypoints").toByteArray();
+            QDataStream wpStream(&wpBytes, QIODevice::ReadOnly);
+            wpStream >> m_waypoints;
+        }
     } else {
         stream >> id1;
         stream >> id2;
@@ -357,6 +402,13 @@ QRectF QNEConnection::boundingRect() const
     // Expand beyond the path's tight bounding box by 10 px on all sides to ensure
     // the thick selection outline and highlight halo are fully covered during repaints
     return path().boundingRect().adjusted(-10, -10, 10, 10);
+}
+
+QPainterPath QNEConnection::shape() const
+{
+    QPainterPathStroker stroker;
+    stroker.setWidth(10);
+    return stroker.createStroke(path());
 }
 
 bool QNEConnection::sceneEvent(QEvent *event)

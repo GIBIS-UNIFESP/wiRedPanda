@@ -48,6 +48,8 @@ public:
     static void setFastMode(bool enabled);
     static bool labelsUnderIcons();
     static void setLabelsUnderIcons(bool enabled);
+    static bool orthogonalWires();
+    static void setOrthogonalWires(bool enabled);
 
     // Language
     static QString language();

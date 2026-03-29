@@ -478,3 +478,337 @@ void TestConnectionSerialization::testSaveLoadWithStatusPropagation()
     QCOMPARE(loadedConn2->status(), and1->outputPort()->status());
 }
 
+// ============================================================================
+// Orthogonal Wire Tests
+// ============================================================================
+
+void TestConnectionSerialization::testOrthogonalWireModeDefaultIsBezier()
+{
+    auto conn = std::make_unique<QNEConnection>();
+    QCOMPARE(conn->wireMode(), WireMode::Bezier);
+    QVERIFY(conn->waypoints().isEmpty());
+}
+
+void TestConnectionSerialization::testOrthogonalUpdatePathLineSegments()
+{
+    auto conn = std::make_unique<QNEConnection>();
+    conn->setWireMode(WireMode::Orthogonal);
+    conn->setStartPos(QPointF(0, 0));
+    conn->setEndPos(QPointF(64, 32));
+    conn->setWaypoints({{64, 0}});
+    conn->updatePath();
+
+    const QPainterPath path = conn->path();
+    QCOMPARE(path.elementCount(), 3); // moveTo + 2 lineTo
+    QCOMPARE(path.elementAt(0).type, QPainterPath::MoveToElement);
+    QCOMPARE(path.elementAt(1).type, QPainterPath::LineToElement);
+    QCOMPARE(path.elementAt(2).type, QPainterPath::LineToElement);
+
+    // Verify coordinates
+    QCOMPARE(QPointF(path.elementAt(0).x, path.elementAt(0).y), QPointF(0, 0));
+    QCOMPARE(QPointF(path.elementAt(1).x, path.elementAt(1).y), QPointF(64, 0));
+    QCOMPARE(QPointF(path.elementAt(2).x, path.elementAt(2).y), QPointF(64, 32));
+}
+
+void TestConnectionSerialization::testOrthogonalSaveLoadRoundTrip()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto sw = std::make_unique<InputSwitch>();
+    auto led = std::make_unique<Led>();
+    scene->addItem(sw.get());
+    scene->addItem(led.get());
+
+    auto conn1 = std::make_unique<QNEConnection>();
+    conn1->setStartPort(sw->outputPort());
+    conn1->setEndPort(led->inputPort());
+    conn1->setWireMode(WireMode::Orthogonal);
+    conn1->setWaypoints({{100, 50}, {100, 80}, {200, 80}});
+
+    // Calculate serial IDs
+    quint64 swOutSerial = static_cast<quint64>(sw->id()) << 16 | static_cast<quint64>(sw->inputSize());
+    quint64 ledInSerial = static_cast<quint64>(led->id()) << 16 | 0;
+
+    // Save
+    QByteArray data;
+    {
+        QDataStream s(&data, QIODevice::WriteOnly);
+        conn1->save(s);
+    }
+
+    // Load
+    QMap<quint64, QNEPort *> portMap;
+    portMap[swOutSerial] = sw->outputPort();
+    portMap[ledInSerial] = led->inputPort();
+    SerializationContext context{portMap, AppVersion::current, QString()};
+
+    auto conn2 = std::make_unique<QNEConnection>();
+    {
+        QDataStream s(data);
+        conn2->load(s, context);
+    }
+
+    QCOMPARE(conn2->wireMode(), WireMode::Orthogonal);
+    QCOMPARE(conn2->waypoints().size(), 3);
+    QCOMPARE(conn2->waypoints().at(0), QPointF(100, 50));
+    QCOMPARE(conn2->waypoints().at(1), QPointF(100, 80));
+    QCOMPARE(conn2->waypoints().at(2), QPointF(200, 80));
+}
+
+void TestConnectionSerialization::testOrthogonalSaveLoadEmptyWaypoints()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto sw = std::make_unique<InputSwitch>();
+    auto led = std::make_unique<Led>();
+    scene->addItem(sw.get());
+    scene->addItem(led.get());
+
+    auto conn1 = std::make_unique<QNEConnection>();
+    conn1->setStartPort(sw->outputPort());
+    conn1->setEndPort(led->inputPort());
+    conn1->setWireMode(WireMode::Orthogonal);
+    // No waypoints set
+
+    quint64 swOutSerial = static_cast<quint64>(sw->id()) << 16 | static_cast<quint64>(sw->inputSize());
+    quint64 ledInSerial = static_cast<quint64>(led->id()) << 16 | 0;
+
+    QByteArray data;
+    {
+        QDataStream s(&data, QIODevice::WriteOnly);
+        conn1->save(s);
+    }
+
+    QMap<quint64, QNEPort *> portMap;
+    portMap[swOutSerial] = sw->outputPort();
+    portMap[ledInSerial] = led->inputPort();
+    SerializationContext context{portMap, AppVersion::current, QString()};
+
+    auto conn2 = std::make_unique<QNEConnection>();
+    {
+        QDataStream s(data);
+        conn2->load(s, context);
+    }
+
+    QCOMPARE(conn2->wireMode(), WireMode::Orthogonal);
+    QVERIFY(conn2->waypoints().isEmpty());
+}
+
+void TestConnectionSerialization::testBezierPathProducesCurves()
+{
+    auto conn = std::make_unique<QNEConnection>();
+    conn->setWireMode(WireMode::Bezier);
+    conn->setStartPos(QPointF(0, 0));
+    conn->setEndPos(QPointF(64, 32));
+    conn->updatePath();
+
+    const QPainterPath path = conn->path();
+    // Bezier path: moveTo + cubicTo (cubicTo produces 3 CurveToElement/CurveToDataElement entries)
+    QCOMPARE(path.elementAt(0).type, QPainterPath::MoveToElement);
+    QCOMPARE(path.elementAt(1).type, QPainterPath::CurveToElement);
+}
+
+void TestConnectionSerialization::testOldFormatLoadsAsBezier()
+{
+    // Simulate old format: two raw quint64 port IDs, no QMap
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto sw = std::make_unique<InputSwitch>();
+    auto led = std::make_unique<Led>();
+    scene->addItem(sw.get());
+    scene->addItem(led.get());
+
+    quint64 swOutSerial = static_cast<quint64>(sw->id()) << 16 | static_cast<quint64>(sw->inputSize());
+    quint64 ledInSerial = static_cast<quint64>(led->id()) << 16 | 0;
+
+    // Write old format (raw quint64 pairs)
+    QByteArray data;
+    {
+        QDataStream s(&data, QIODevice::WriteOnly);
+        s << swOutSerial;
+        s << ledInSerial;
+    }
+
+    QMap<quint64, QNEPort *> portMap;
+    portMap[swOutSerial] = sw->outputPort();
+    portMap[ledInSerial] = led->inputPort();
+    // Use pre-4.7 version to trigger old format path
+    SerializationContext context{portMap, Versions::V_4_6, QString()};
+
+    auto conn = std::make_unique<QNEConnection>();
+    {
+        QDataStream s(data);
+        conn->load(s, context);
+    }
+
+    QCOMPARE(conn->wireMode(), WireMode::Bezier);
+    QVERIFY(conn->waypoints().isEmpty());
+    QCOMPARE(conn->startPort(), sw->outputPort());
+    QCOMPARE(conn->endPort(), led->inputPort());
+}
+
+void TestConnectionSerialization::testMixedModesSerializeCorrectly()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto sw1 = std::make_unique<InputSwitch>();
+    auto sw2 = std::make_unique<InputSwitch>();
+    auto andGate = std::make_unique<And>();
+    scene->addItem(sw1.get());
+    scene->addItem(sw2.get());
+    scene->addItem(andGate.get());
+
+    // Bezier connection
+    auto bezierConn = std::make_unique<QNEConnection>();
+    bezierConn->setStartPort(sw1->outputPort());
+    bezierConn->setEndPort(andGate->inputPort(0));
+    bezierConn->setWireMode(WireMode::Bezier);
+
+    // Orthogonal connection with waypoints
+    auto orthoConn = std::make_unique<QNEConnection>();
+    orthoConn->setStartPort(sw2->outputPort());
+    orthoConn->setEndPort(andGate->inputPort(1));
+    orthoConn->setWireMode(WireMode::Orthogonal);
+    orthoConn->setWaypoints({{50, 100}, {50, 200}});
+
+    quint64 sw1OutSerial = static_cast<quint64>(sw1->id()) << 16 | static_cast<quint64>(sw1->inputSize());
+    quint64 sw2OutSerial = static_cast<quint64>(sw2->id()) << 16 | static_cast<quint64>(sw2->inputSize());
+    quint64 andIn0Serial = static_cast<quint64>(andGate->id()) << 16 | 0;
+    quint64 andIn1Serial = static_cast<quint64>(andGate->id()) << 16 | 1;
+
+    // Save both sequentially
+    QByteArray data;
+    {
+        QDataStream s(&data, QIODevice::WriteOnly);
+        bezierConn->save(s);
+        orthoConn->save(s);
+    }
+
+    // Load both
+    QMap<quint64, QNEPort *> portMap;
+    portMap[sw1OutSerial] = sw1->outputPort();
+    portMap[sw2OutSerial] = sw2->outputPort();
+    portMap[andIn0Serial] = andGate->inputPort(0);
+    portMap[andIn1Serial] = andGate->inputPort(1);
+    SerializationContext context{portMap, AppVersion::current, QString()};
+
+    auto loadedBezier = std::make_unique<QNEConnection>();
+    auto loadedOrtho = std::make_unique<QNEConnection>();
+    {
+        QDataStream s(data);
+        loadedBezier->load(s, context);
+        loadedOrtho->load(s, context);
+    }
+
+    QCOMPARE(loadedBezier->wireMode(), WireMode::Bezier);
+    QVERIFY(loadedBezier->waypoints().isEmpty());
+
+    QCOMPARE(loadedOrtho->wireMode(), WireMode::Orthogonal);
+    QCOMPARE(loadedOrtho->waypoints().size(), 2);
+    QCOMPARE(loadedOrtho->waypoints().at(0), QPointF(50, 100));
+    QCOMPARE(loadedOrtho->waypoints().at(1), QPointF(50, 200));
+}
+
+void TestConnectionSerialization::testWaypointsPreservedOnPortUpdate()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto sw = std::make_unique<InputSwitch>();
+    auto led = std::make_unique<Led>();
+    scene->addItem(sw.get());
+    scene->addItem(led.get());
+
+    auto conn = std::make_unique<QNEConnection>();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(led->inputPort());
+    conn->setWireMode(WireMode::Orthogonal);
+
+    const QVector<QPointF> waypoints = {{100, 50}, {100, 80}, {200, 80}};
+    conn->setWaypoints(waypoints);
+
+    // Simulate element movement: updatePosFromPorts re-syncs endpoints
+    sw->setPos(sw->pos() + QPointF(16, 0));
+    conn->updatePosFromPorts();
+
+    // Waypoints must remain unchanged (only endpoints adjust)
+    QCOMPARE(conn->waypoints(), waypoints);
+    QCOMPARE(conn->wireMode(), WireMode::Orthogonal);
+}
+
+void TestConnectionSerialization::testClearWaypoints()
+{
+    auto conn = std::make_unique<QNEConnection>();
+    conn->setWaypoints({{10, 20}, {30, 40}});
+    QCOMPARE(conn->waypoints().size(), 2);
+
+    conn->clearWaypoints();
+    QVERIFY(conn->waypoints().isEmpty());
+}
+
+void TestConnectionSerialization::testBezierModeIgnoresWaypoints()
+{
+    // Even if waypoints are set, Bezier mode should produce a curve, not line segments
+    auto conn = std::make_unique<QNEConnection>();
+    conn->setWireMode(WireMode::Bezier);
+    conn->setStartPos(QPointF(0, 0));
+    conn->setEndPos(QPointF(64, 32));
+    conn->setWaypoints({{32, 0}, {32, 32}});
+    conn->updatePath();
+
+    const QPainterPath path = conn->path();
+    QCOMPARE(path.elementAt(0).type, QPainterPath::MoveToElement);
+    QCOMPARE(path.elementAt(1).type, QPainterPath::CurveToElement);
+}
+
+void TestConnectionSerialization::testInvalidWireModeDefaultsToBezier()
+{
+    // Simulate a corrupt wireMode value in the QMap
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto sw = std::make_unique<InputSwitch>();
+    auto led = std::make_unique<Led>();
+    scene->addItem(sw.get());
+    scene->addItem(led.get());
+
+    quint64 swOutSerial = static_cast<quint64>(sw->id()) << 16 | static_cast<quint64>(sw->inputSize());
+    quint64 ledInSerial = static_cast<quint64>(led->id()) << 16 | 0;
+
+    // Manually build a QMap with an invalid wireMode value
+    QByteArray data;
+    {
+        QDataStream s(&data, QIODevice::WriteOnly);
+        QMap<QString, QVariant> map;
+        map.insert("startPortId", swOutSerial);
+        map.insert("endPortId", ledInSerial);
+        map.insert("wireMode", static_cast<quint8>(99)); // invalid
+        s << map;
+    }
+
+    QMap<quint64, QNEPort *> portMap;
+    portMap[swOutSerial] = sw->outputPort();
+    portMap[ledInSerial] = led->inputPort();
+    SerializationContext context{portMap, AppVersion::current, QString()};
+
+    auto conn = std::make_unique<QNEConnection>();
+    {
+        QDataStream s(data);
+        conn->load(s, context);
+    }
+
+    // Invalid value gets cast to WireMode(99), but the connection should still
+    // load and resolve ports. updatePath will take the Bezier branch since
+    // only WireMode::Orthogonal triggers line segments.
+    QVERIFY(conn->startPort() != nullptr);
+    QVERIFY(conn->endPort() != nullptr);
+
+    conn->updatePath();
+    const QPainterPath path = conn->path();
+    QCOMPARE(path.elementAt(1).type, QPainterPath::CurveToElement);
+}
+

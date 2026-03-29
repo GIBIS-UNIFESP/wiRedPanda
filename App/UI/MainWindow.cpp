@@ -168,6 +168,8 @@ void MainWindow::setupTheme()
     // Restore toolbar label style from previous session.
     m_ui->actionLabelsUnderIcons->setChecked(Settings::labelsUnderIcons());
     m_ui->mainToolBar->setToolButtonStyle(Settings::labelsUnderIcons() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
+
+    m_ui->actionOrthogonalWires->setChecked(Settings::orthogonalWires());
 }
 
 void MainWindow::setupRecentFiles()
@@ -262,6 +264,7 @@ void MainWindow::setupConnections()
     connect(m_ui->actionFullscreen,            &QAction::triggered,       this,                &MainWindow::on_actionFullscreen_triggered);
     connect(m_ui->actionGates,                 &QAction::triggered,       this,                &MainWindow::on_actionGates_triggered);
     connect(m_ui->actionLabelsUnderIcons,      &QAction::triggered,       this,                &MainWindow::on_actionLabelsUnderIcons_triggered);
+    connect(m_ui->actionOrthogonalWires,      &QAction::triggered,       this,                &MainWindow::on_actionOrthogonalWires_triggered);
     connect(m_ui->actionLightTheme,            &QAction::triggered,       this,                &MainWindow::on_actionLightTheme_triggered);
     connect(m_ui->actionMute,                  &QAction::triggered,       this,                &MainWindow::on_actionMute_triggered);
     connect(m_ui->actionNew,                   &QAction::triggered,       this,                &MainWindow::on_actionNew_triggered);
@@ -1581,6 +1584,11 @@ void MainWindow::on_actionLabelsUnderIcons_triggered(const bool checked)
 {
     m_ui->mainToolBar->setToolButtonStyle(checked ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
     Settings::setLabelsUnderIcons(checked);
+}
+
+void MainWindow::on_actionOrthogonalWires_triggered(const bool checked)
+{
+    Settings::setOrthogonalWires(checked);
 }
 
 bool MainWindow::event(QEvent *event)

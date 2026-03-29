@@ -8,6 +8,7 @@
 #pragma once
 
 #include <QPointF>
+#include <QVector>
 
 class GraphicElement;
 class QNEConnection;
@@ -96,6 +97,9 @@ private:
     void releaseHoverPort();
     [[nodiscard]] QNEPort *hoverPort();
 
+    void resetOrthogonalState();
+    static QPointF snapToGrid(const QPointF &pos);
+
     Scene *m_scene = nullptr;
 
     /// ID of the in-progress wire (looked up via Scene::itemById).
@@ -104,5 +108,11 @@ private:
     /// Hover-port tracking stored as element ID + port index so it survives undo/redo.
     int m_hoverPortElmId = 0;
     int m_hoverPortNumber = 0;
+
+    /// Orthogonal drag state.
+    enum class DragDirection { None, Horizontal, Vertical };
+    QVector<QPointF> m_dragWaypoints;
+    QPointF m_dragAnchor;
+    DragDirection m_dragDirection = DragDirection::None;
 };
 

@@ -23,5 +23,18 @@ private slots:
     void testSaveLoadRoundTripPreservesPorts();
     void testSaveLoadPreservesConnectionStatus();
     void testSaveLoadWithStatusPropagation();
+
+    // Orthogonal Wire Tests
+    void testOrthogonalWireModeDefaultIsBezier();
+    void testOrthogonalUpdatePathLineSegments();
+    void testOrthogonalSaveLoadRoundTrip();
+    void testOrthogonalSaveLoadEmptyWaypoints();
+    void testBezierPathProducesCurves();
+    void testOldFormatLoadsAsBezier();
+    void testMixedModesSerializeCorrectly();
+    void testWaypointsPreservedOnPortUpdate();
+    void testClearWaypoints();
+    void testBezierModeIgnoresWaypoints();
+    void testInvalidWireModeDefaultsToBezier();
 };
 

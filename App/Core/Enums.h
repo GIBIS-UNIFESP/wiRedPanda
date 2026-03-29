@@ -108,6 +108,13 @@ using ElementType = Enums::ElementType;
 using ElementGroup = Enums::ElementGroup;
 using WirelessMode = Enums::WirelessMode;
 
+/// Wire routing mode for connections.
+enum class WireMode : quint8 {
+    Bezier = 0,     ///< Smooth cubic Bézier curve (default).
+    Orthogonal = 1, ///< Grid-snapped horizontal/vertical line segments.
+};
+
+
 /// Pre-increment operator; advances \a type to the next ElementType in sequence.
 ElementType &operator++(ElementType &type);
 /// Deserializes an ElementType from \a stream into \a type.
