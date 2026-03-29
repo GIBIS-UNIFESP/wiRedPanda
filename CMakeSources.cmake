@@ -63,6 +63,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PropertyShortcutHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/VisibilityManager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/WireRouter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.cpp

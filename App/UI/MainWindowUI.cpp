@@ -157,6 +157,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionOrthogonalWires = new QAction(MainWindow);
     actionOrthogonalWires->setObjectName("actionOrthogonalWires");
     actionOrthogonalWires->setCheckable(true);
+    actionOrganizeWires = new QAction(MainWindow);
+    actionOrganizeWires->setObjectName("actionOrganizeWires");
     actionAboutThisVersion = new QAction(MainWindow);
     actionAboutThisVersion->setObjectName("actionAboutThisVersion");
     actionRestart = new QAction(MainWindow);
@@ -662,6 +664,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuEdit->addSeparator();
     menuEdit->addAction(actionSelectAll);
     menuEdit->addAction(actionClearSelection);
+    menuEdit->addSeparator();
+    menuEdit->addAction(actionOrganizeWires);
     menuHelp->addAction(actionAbout);
     menuHelp->addAction(actionAboutQt);
     menuHelp->addAction(actionAboutThisVersion);
@@ -776,6 +780,7 @@ void MainWindowUi::retranslateUi()
     actionMute->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+M"));
     actionLabelsUnderIcons->setText(QCoreApplication::translate("MainWindow", "Labels under icons"));
     actionOrthogonalWires->setText(QCoreApplication::translate("MainWindow", "Orthogonal wires"));
+    actionOrganizeWires->setText(QCoreApplication::translate("MainWindow", "Organize wires"));
     actionAboutThisVersion->setText(QCoreApplication::translate("MainWindow", "About this version"));
     actionRestart->setText(QCoreApplication::translate("MainWindow", "&Restart"));
     actionRestart->setToolTip(QCoreApplication::translate("MainWindow", "Restart simulation."));

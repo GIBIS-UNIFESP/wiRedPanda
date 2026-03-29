@@ -114,6 +114,8 @@ public:
     const QList<GraphicElement *> selectedElements() const;
     /// Returns all graphic elements in the scene.
     const QVector<GraphicElement *> elements() const;
+    /// Returns all connections in the scene.
+    const QVector<QNEConnection *> connections();
     /// Returns all graphic elements within \a rect.
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
     /// Returns \a elements sorted in topological dependency order (inputs first).
@@ -298,7 +300,6 @@ private:
     // --- Helpers ---
 
     QList<QGraphicsItem *> itemsAt(const QPointF pos);
-    const QVector<QNEConnection *> connections();
     void checkUpdateRequest();
     void contextMenu(const QPoint screenPos);
     void drawBackground(QPainter *painter, const QRectF &rect) override;

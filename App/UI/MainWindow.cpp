@@ -46,8 +46,10 @@
 #include "App/Element/IC.h"
 #include "App/Element/ICRegistry.h"
 #include "App/IO/RecentFiles.h"
+#include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
+#include "App/Scene/WireRouter.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationBlocker.h"
@@ -265,6 +267,7 @@ void MainWindow::setupConnections()
     connect(m_ui->actionGates,                 &QAction::triggered,       this,                &MainWindow::on_actionGates_triggered);
     connect(m_ui->actionLabelsUnderIcons,      &QAction::triggered,       this,                &MainWindow::on_actionLabelsUnderIcons_triggered);
     connect(m_ui->actionOrthogonalWires,      &QAction::triggered,       this,                &MainWindow::on_actionOrthogonalWires_triggered);
+    connect(m_ui->actionOrganizeWires,        &QAction::triggered,       this,                &MainWindow::on_actionOrganizeWires_triggered);
     connect(m_ui->actionLightTheme,            &QAction::triggered,       this,                &MainWindow::on_actionLightTheme_triggered);
     connect(m_ui->actionMute,                  &QAction::triggered,       this,                &MainWindow::on_actionMute_triggered);
     connect(m_ui->actionNew,                   &QAction::triggered,       this,                &MainWindow::on_actionNew_triggered);
@@ -1589,6 +1592,40 @@ void MainWindow::on_actionLabelsUnderIcons_triggered(const bool checked)
 void MainWindow::on_actionOrthogonalWires_triggered(const bool checked)
 {
     Settings::setOrthogonalWires(checked);
+}
+
+void MainWindow::on_actionOrganizeWires_triggered()
+{
+    if (!m_currentTab) {
+        return;
+    }
+
+    auto *scene = m_currentTab->scene();
+    WireRouter router(scene);
+    const auto routeResults = router.routeAll();
+
+    if (routeResults.isEmpty()) {
+        return;
+    }
+
+    // Build command entries with old state for undo
+    QVector<RouteWiresCommand::Entry> entries;
+    for (const auto &result : routeResults) {
+        auto *conn = CommandUtils::findConn(scene, result.connectionId);
+        if (!conn) {
+            continue;
+        }
+        RouteWiresCommand::Entry entry;
+        entry.connectionId = result.connectionId;
+        entry.oldWaypoints = conn->waypoints();
+        entry.newWaypoints = result.waypoints;
+        entry.oldMode = conn->wireMode();
+        entries.append(entry);
+    }
+
+    if (!entries.isEmpty()) {
+        scene->receiveCommand(new RouteWiresCommand(entries, scene));
+    }
 }
 
 bool MainWindow::event(QEvent *event)
