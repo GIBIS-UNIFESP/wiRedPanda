@@ -29,6 +29,10 @@
 #include <QCommandLineParser>
 #include <QCoreApplication>
 #include <QCursor>
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusReply>
+#include <QDBusVariant>
 #include <QDataStream>
 #include <QDate>
 #include <QDebug>
