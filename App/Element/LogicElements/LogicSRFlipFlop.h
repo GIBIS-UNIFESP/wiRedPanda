@@ -35,5 +35,7 @@ private:
     // --- Members ---
 
     bool m_lastClk = false;
+    bool m_lastS = false;
+    bool m_lastR = false;
 };
 

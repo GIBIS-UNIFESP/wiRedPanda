@@ -71,8 +71,13 @@ void Buzzer::setAudio(const QString &note)
     // Volume at 35% to avoid startling users; WAV files reside in Qt resources
     m_audio->setVolume(0.35f);
 
-    m_audio->setSource(QUrl::fromLocalFile(":/Components/Output/Audio/" + note + ".wav"));
+    m_audio->setSource(QUrl("qrc:/Components/Output/Audio/" + note + ".wav"));
     m_audio->setLoopCount(QSoundEffect::Infinite); // TODO: fix audio clipping when repeating
+
+    // If already playing, restart playback with the new note immediately
+    if (m_isPlaying) {
+        m_audio->play();
+    }
 }
 
 QString Buzzer::audio() const
@@ -80,8 +85,19 @@ QString Buzzer::audio() const
     return m_note;
 }
 
+bool Buzzer::isPlaying() const
+{
+    return m_isPlaying;
+}
+
+bool Buzzer::isMuted() const
+{
+    return m_muted;
+}
+
 void Buzzer::mute(const bool mute)
 {
+    m_muted = mute;
     if (!m_hasOutputDevice) {
         return;
     }

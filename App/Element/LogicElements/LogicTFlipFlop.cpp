@@ -29,10 +29,8 @@ void LogicTFlipFlop::updateLogic()
     if (clk && !m_lastClk) {
         if (m_lastValue) {
             // T=1 on previous cycle → toggle both complementary outputs.
-            // q0 is flipped first; q1 is then derived from the *already-flipped*
-            // q0, keeping Q and Q' complementary without a temporary variable.
             q0 = !q0;
-            q1 = !q0;
+            q1 = !q1;
         }
         // T=0 → hold
     }

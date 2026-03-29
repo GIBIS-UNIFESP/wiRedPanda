@@ -17,7 +17,10 @@ ThemeManager::ThemeManager(QObject *parent)
     // Load the persisted theme preference; if not set, m_theme keeps its
     // default-initialised value (Theme::Light, as defined in the header)
     if (Settings::contains("theme")) {
-        m_theme = static_cast<Theme>(Settings::value("theme").toInt());
+        const int saved = Settings::value("theme").toInt();
+        if (saved >= 0 && saved <= static_cast<int>(Theme::Dark)) {
+            m_theme = static_cast<Theme>(saved);
+        }
     }
 
     // Apply the theme immediately so colours are correct before any widgets are shown
