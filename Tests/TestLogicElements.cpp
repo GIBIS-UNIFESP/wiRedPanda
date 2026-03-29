@@ -347,9 +347,9 @@ void TestLogicElements::testLogicSRFlipFlop()
     elm.updateLogic();
 
     for (const auto &test : truthTable) {
-        switches.at(0)->setOutputValue(false);
+        switches.at(0)->setOutputValue(test.at(1));
         switches.at(1)->setOutputValue(test.at(0));
-        switches.at(2)->setOutputValue(false);
+        switches.at(2)->setOutputValue(test.at(3));
 
         elm.updateLogic();
 
