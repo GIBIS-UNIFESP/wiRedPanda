@@ -18,6 +18,7 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/SerializationContext.h"
+#include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
 
 static const int s_connectionMetatypeId = qRegisterMetaType<QNEConnection>();
@@ -178,33 +179,49 @@ void QNEConnection::save(QDataStream &stream) const
         return (elementId << 16) | (portIndex & 0xFFFF);
     };
 
-    stream << calculateSerialId(m_startPort);
-    stream << calculateSerialId(m_endPort);
+    QMap<QString, QVariant> map;
+    map.insert("startPortId", calculateSerialId(m_startPort));
+    map.insert("endPortId", calculateSerialId(m_endPort));
+    stream << map;
 }
 
 void QNEConnection::load(QDataStream &stream, SerializationContext &context)
 {
-    quint64 id1; stream >> id1;
-    quint64 id2; stream >> id2;
+    quint64 id1, id2;
 
-    // Check stream integrity after reading port IDs
-    if (stream.status() != QDataStream::Ok) {
-        throw PANDACEPTION("Stream error reading connection port IDs at offset %1",
-                          stream.device()->pos());
-    }
+    if (VersionInfo::hasConnectionQMap(context.version)) {
+        QMap<QString, QVariant> map;
+        stream >> map;
 
-    // For backwards compatibility with old files: if ID not found and oldPtrMap is provided, try the mapping
-    if (!context.portMap.contains(id1) && !context.oldPtrToSerialId.isEmpty()) {
-        quint64 newId = context.oldPtrToSerialId.value(id1, 0);
-        if (newId != 0) {
-            id1 = newId;
+        if (stream.status() != QDataStream::Ok) {
+            throw PANDACEPTION("Stream error reading connection map at offset %1",
+                              stream.device()->pos());
         }
-    }
 
-    if (!context.portMap.contains(id2) && !context.oldPtrToSerialId.isEmpty()) {
-        quint64 newId = context.oldPtrToSerialId.value(id2, 0);
-        if (newId != 0) {
-            id2 = newId;
+        id1 = map.value("startPortId").toULongLong();
+        id2 = map.value("endPortId").toULongLong();
+    } else {
+        stream >> id1;
+        stream >> id2;
+
+        if (stream.status() != QDataStream::Ok) {
+            throw PANDACEPTION("Stream error reading connection port IDs at offset %1",
+                              stream.device()->pos());
+        }
+
+        // For backwards compatibility with old files: if ID not found and oldPtrMap is provided, try the mapping
+        if (!context.portMap.contains(id1) && !context.oldPtrToSerialId.isEmpty()) {
+            quint64 newId = context.oldPtrToSerialId.value(id1, 0);
+            if (newId != 0) {
+                id1 = newId;
+            }
+        }
+
+        if (!context.portMap.contains(id2) && !context.oldPtrToSerialId.isEmpty()) {
+            quint64 newId = context.oldPtrToSerialId.value(id2, 0);
+            if (newId != 0) {
+                id2 = newId;
+            }
         }
     }
 
