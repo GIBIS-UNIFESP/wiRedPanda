@@ -26,6 +26,8 @@
 - Fixed IC loading failures caused by autosave corrupting file paths in other open tabs
 - Fixed macOS crash when using Truth Table elements (Qt 6)
 - Fixed crash on Select All with no open tab
+- Fixed null pointer safety across core components
+- Fixed null element editor and stale action list in menu insertion
 
 **IC components**
 
@@ -47,6 +49,7 @@
 
 - Fixed inconsistent behavior between runs
 - Fixed incorrect clock timing when resuming from pause
+- Fixed incorrect logic element behavior and hardened Arduino code generation
 
 **UI & editor**
 
@@ -83,12 +86,13 @@
 - **Direct port-to-logic linking**: Optimized connection architecture without intermediate successors
 - **Simulation priority extraction**: Priority calculation extracted into Priorities.h with Tarjan's SCC feedback detection
 - **Counter-based port IDs**: New port ID scheme with backwards compatibility for older file formats
-- **Memory safety**: Replaced raw ElementMapping pointer with unique_ptr in IC
+- **Memory safety**: Replaced raw ElementMapping pointer with unique_ptr in IC; comprehensive null pointer safety pass
+- **Headless mode detection**: Comprehensive display-less environment support for CI and server contexts
 
 ### 🔄 Refactoring
 
-- **Scene decomposition**: Extracted VisibilityManager, PropertyShortcutHandler, ClipboardManager, and ConnectionManager from Scene
-- **Serialization decomposition**: Split GraphicElement serialization into GraphicElementSerializer; extracted readPreamble; added named version predicates via VersionInfo.h
+- **Scene decomposition**: Extracted VisibilityManager, PropertyShortcutHandler, ClipboardManager, ConnectionManager, connectSceneAction, and drainPortConnections helpers from Scene
+- **Serialization decomposition**: Split GraphicElement serialization into GraphicElementSerializer; extracted readPreamble; added named version predicates via VersionInfo.h; decoupled ElementInfo.h from ElementFactory.h; added Scene::deserializationContext
 - **Module decomposition**: MainWindow, BeWavedDolphin, and ElementEditor refactored into single-responsibility components
 - **Settings modernization**: Replaced magic string keys with typed accessors
 - **Symmetric serialization**: Save and load paths now use matching serialization logic
@@ -96,6 +100,15 @@
 - **Namespace organization**: Command utilities now properly namespaced
 - **Safe casting**: Replaced qgraphicsitem_cast with appropriate alternatives for subclass casting
 - **Stream integrity checks**: Proper error detection for corrupted data streams
+- **Context directory management**: Centralized contextDir in Workspace::setCurrentFile(); moved from global to per-Scene property
+- **Application singleton**: Replaced qApp macro override with static Application::instance() method
+- **Version constants**: Replaced VERSION() macro with typed version constants
+- **Mode handling**: Clarified interactive vs non-interactive mode handling
+- **Header organization**: Reorganized all headers by relatedness instead of alphabetical order
+- **Dead code removal**: Removed unused serialization artifacts from QNEPort; removed obsolete Qt version checks below 5.15
+- **PCH optimization**: Removed project headers from PCH, keeping only stable external headers
+- **Build configuration**: Consolidated and optimized CMake/CTest configuration; modernized CMake syntax across all workflows
+- **Testing infrastructure**: Modernized with CTest integration; added test timeouts
 - **API cleanup**: Fixed type mismatches in frequency/delay and simOutputSize APIs; removed misleading default parameters from 5 APIs
 
 ### 📦 Build System
@@ -110,26 +123,30 @@
 - **RPATH support**: Custom Qt installation compatibility
 - **Resource library**: Extracted resources into separate CMake object library
 - **Standardized output**: Consistent binary output location across all generators
+- **Strict compiler warnings**: Enabled strict warnings and fixed all diagnostics
+- **System headers for dependencies**: External dependencies treated as system headers to suppress clazy warnings
+- **Build fixes**: Fixed PCH reuse condition for test executables; removed unused FORMS variable; excluded additional Qt library paths from coverage report
 
 ### 🧪 Testing
 
 - **137-class comprehensive test suite**: Hierarchical organization covering all major components including embedded ICs
 - **Parallel test execution**: Automatic CTest multi-threaded execution for faster feedback
 - **Backward compatibility regression suite**: Extensive .panda file format compatibility testing
-- **Coverage collection**: Improved lcov filtering and error handling with dark theme integration
+- **Coverage collection**: Improved lcov filtering and error handling with dark theme integration; removed redundant gcov step; added Qt framework filtering
 
 ### 🌐 Deployment & CI
 
 - **Qt 6.10.2 LTS upgrade**: Latest stable Qt version with improved performance
 - **Multi-stage Docker builds**: Optimized DevContainer with Docker Hub integration
-- **DevContainer Qt 6 upgrade**: Migrated from Qt 5.15 to Qt 6.10.2 with VS Code extensions
+- **DevContainer Qt 6 upgrade**: Migrated from Qt 5.15 to Qt 6.10.2 with VS Code recommended extensions and Qt tooling
 - **go-appimage deployment**: Replaced linuxdeployqt for improved AppImage generation
 - **AppImage desktop integration**: Proper .desktop file and icon installation, Wayland icon fix
 - **Windows 64-bit only**: Modernized Windows target to current standards with Ninja generator
-- **Security-hardened workflows**: Granular GitHub Actions permissions configuration
-- **Dependabot integration**: Automated GitHub Actions version management
+- **Security-hardened workflows**: Granular GitHub Actions permissions configuration; replaced pbeast/gha-setup-vsdevenv with seanmiddleditch/gha-setup-vsdevenv@v5
+- **Dependabot integration**: Automated GitHub Actions version management (actions/upload-artifact v4→v6, actions/checkout v5→v6, github/codeql-action v3→v4)
 - **Sentry integration**: Comprehensive crash reporting with user ID, breadcrumbs, tags, and deduplication
-- **CI improvements**: Actions v6 upgrades, Node.js 24 support, Linux no-unity/no-PCH build validation, verbose test output on Windows, mega unity build for symbol collision detection
+- **CI improvements**: Actions v6 upgrades, Node.js 24 support, Linux no-unity/no-PCH build validation, verbose test output on Windows, mega unity build for symbol collision detection, consolidated build workflow steps
+- **CI fixes**: Fixed aqtinstall version syntax; fixed Translation Management workflow caching error; fixed missing test output on Windows via QT_FORCE_STDERR_LOGGING; updated windows-qt preset to Visual Studio 2022 generator
 - **Legacy cleanup**: Removed unused installer directory and legacy build/packaging scripts
 
 ### 📚 Code Quality & Documentation
@@ -144,11 +161,14 @@
 - **Copyright headers**: Added to all source files with 2026 update
 - **Contributing guidelines**: Comprehensive documentation for external contributors
 - **Markdown linting**: Fixed formatting errors across all project markdown files
+- **Build documentation**: Completed build requirements in all README files
+- **Project management**: Migrated task management from TODO.md to GitHub project
 
 ### 📁 File Format
 
 - **v4.6.0 format**: Unified QMap-based metadata with embedded IC definitions
 - **Auto-migration**: Seamless upgrade from older formats with versioned backup files
+- **Example files**: Updated flip-flop examples with sensible switch defaults
 
 ### 🌍 Translations
 
