@@ -118,6 +118,7 @@
 #include <QStyle>
 #include <QStyleHints>
 #include <QStyleOptionGraphicsItem>
+#include <QStyleOptionViewItem>
 #include <QSvgGenerator>
 #include <QSvgRenderer>
 #include <QTabWidget>
@@ -138,6 +139,7 @@
 #include <QVariant>
 #include <QVector>
 #include <QVersionNumber>
+#include <QWheelEvent>
 #include <QWidget>
 #include <QtGlobal>
 #include <QtTest>
