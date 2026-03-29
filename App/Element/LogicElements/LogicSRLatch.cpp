@@ -25,17 +25,16 @@ void LogicSRLatch::updateLogic()
     // Level-sensitive SR latch — outputs update continuously while inputs are held.
     if (S && R) {
         // Forbidden state (S=R=1): both outputs forced to 0 (NOR-latch behaviour).
-        // !S == false when S is true, so q0=q1=false — both outputs go low.
-        q0 = !S;
-        q1 = !S;
+        q0 = false;
+        q1 = false;
     } else if (S) {
-        // Set: Q→1, Q'→0.  Expressed as !R (which is true since R=0) and R.
-        q0 = !R;
-        q1 = R;
+        // Set: Q→1, Q'→0.
+        q0 = true;
+        q1 = false;
     } else if (R) {
-        // Reset: Q→0, Q'→1.  Expressed as S (which is false since S=0) and !S.
-        q0 = S;
-        q1 = !S;
+        // Reset: Q→0, Q'→1.
+        q0 = false;
+        q1 = true;
     }
     // S=R=0 → hold; q0/q1 already retain the latched state.
 
