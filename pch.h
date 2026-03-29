@@ -149,6 +149,7 @@
 #include <QUndoCommand>
 #include <QUndoStack>
 #include <QUrl>
+#include <QUuid>
 #include <QVBoxLayout>
 #include <QVariant>
 #include <QVector>
