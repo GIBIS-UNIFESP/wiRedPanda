@@ -39,6 +39,7 @@
 #include <QDrag>
 #include <QDragEnterEvent>
 #include <QElapsedTimer>
+#include <QEvent>
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -87,6 +88,7 @@
 #include <QPen>
 #include <QPixmap>
 #include <QPixmapCache>
+#include <QPoint>
 #include <QPointF>
 #include <QPrinter>
 #include <QPushButton>
