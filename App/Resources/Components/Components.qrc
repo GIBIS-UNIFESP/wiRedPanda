@@ -33,14 +33,6 @@
         <file>Input/switchOn.svg</file>
 
         <!-- Output Components -->
-        <file>Output/Audio/A7.wav</file>
-        <file>Output/Audio/B7.wav</file>
-        <file>Output/Audio/C6.wav</file>
-        <file>Output/Audio/C7.wav</file>
-        <file>Output/Audio/D6.wav</file>
-        <file>Output/Audio/E6.wav</file>
-        <file>Output/Audio/F6.wav</file>
-        <file>Output/Audio/G6.wav</file>
         <file>Output/Audio/wiredpanda.wav</file>
         <file>Output/AudioBox/audioboxOff.svg</file>
         <file>Output/AudioBox/audioboxOn.svg</file>

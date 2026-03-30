@@ -151,6 +151,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/SRLatch.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Text.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/TFlipFlop.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/ToneGenerator.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/TruthTable.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xnor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.h
