@@ -709,9 +709,7 @@ void MorphCommand::transferConnections(const QList<GraphicElement *> &from, cons
             newElm->setRotation(oldElm->rotation());
         }
 
-        // Buzzer label is intentionally not preserved because the next/prev audio
-        // shortcut relies on a fresh default label to display the audio name
-        if (newElm->hasLabel() && oldElm->hasLabel() && (oldElm->elementType() != ElementType::Buzzer)) {
+        if (newElm->hasLabel() && oldElm->hasLabel()) {
             newElm->setLabel(oldElm->label());
         }
 
