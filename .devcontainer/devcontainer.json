@@ -3,7 +3,7 @@
     "name": "wiRedPanda Development Environment",
 
     // Use pre-built devcontainer image
-    "image": "darktorres/wiredpanda-devcontainer:ubuntu22.04",
+    "image": "darktorres/wiredpanda-devcontainer:ubuntu24.04",
 
     // Configure tool-specific properties
     "customizations": {
@@ -36,7 +36,7 @@
     },
 
     // Configure container user
-    "remoteUser": "developer",
+    "remoteUser": "ubuntu",
 
     // Enable debugging capabilities
     "runArgs": [

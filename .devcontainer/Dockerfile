@@ -1,13 +1,13 @@
 # Multi-stage build for wiRedPanda development environment
 # Stage 1: Builder - Full environment for Qt installation
-FROM ubuntu:22.04 AS builder
+FROM ubuntu:24.04 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl wget ca-certificates python3 python3-pip \
-    && pip3 install aqtinstall \
+    && pip3 install --break-system-packages aqtinstall \
     && mkdir -p /opt/Qt \
     && cd /opt/Qt \
     && aqt install-qt linux desktop 6.10.3 linux_gcc_64 \
@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && find /opt/Qt -name "*_debug*" -delete
 
 # Stage 2: Development runtime - Essential development environment
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 # Set UTF-8 locale to prevent Qt encoding warnings
@@ -64,29 +64,27 @@ ENV LD_LIBRARY_PATH="${QT_ROOT}/lib"
 ENV PKG_CONFIG_PATH="${QT_ROOT}/lib/pkgconfig"
 ENV CMAKE_PREFIX_PATH="${QT_ROOT}"
 
+# Configure default ubuntu user with zsh and passwordless sudo
+RUN usermod -s /bin/zsh ubuntu \
+    && usermod -aG sudo ubuntu \
+    && echo "ubuntu ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
 # Set up ccache
 RUN /usr/sbin/update-ccache-symlinks 2>/dev/null || true \
     && ccache --set-config=max_size=2G \
-    && mkdir -p /home/vscode/.ccache \
-    && chown -R 1000:1000 /home/vscode/.ccache
+    && mkdir -p /home/ubuntu/.ccache \
+    && chown -R ubuntu:ubuntu /home/ubuntu/.ccache
 
-# Configure container user with zsh and passwordless sudo
-RUN groupadd --gid 1000 developer \
-    && useradd --uid 1000 --gid developer --shell /bin/zsh --create-home developer \
-    && usermod -aG sudo developer \
-    && echo "developer:developer" | chpasswd \
-    && echo "developer ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
-# Install Oh My Zsh for developer user
-USER developer
+# Install Oh My Zsh for ubuntu user
+USER ubuntu
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
     && echo 'export PATH="/usr/lib/ccache:$PATH"' >> ~/.zshrc \
-    && echo 'export CCACHE_DIR="/home/vscode/.ccache"' >> ~/.zshrc
+    && echo 'export CCACHE_DIR="/home/ubuntu/.ccache"' >> ~/.zshrc
 USER root
 
 # Add ccache to PATH
 ENV PATH="/usr/lib/ccache:${PATH}"
-ENV CCACHE_DIR="/home/vscode/.ccache"
+ENV CCACHE_DIR="/home/ubuntu/.ccache"
 
 # Create workspace directory
 RUN mkdir -p /workspace
