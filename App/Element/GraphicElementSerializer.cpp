@@ -76,24 +76,8 @@ void GraphicElement::save(QDataStream &stream) const
     QList<QMap<QString, QVariant>> skinsMap;
 
     for (const auto &skinName : m_alternativeSkins) {
-        QFileInfo fileInfo(skinName);
-        QString skinName2 = skinName;
-
-        // When a custom skin lives outside the project directory, copy it alongside
-        // the .panda file so the project remains self-contained when moved or shared.
-        const QString contextDir = Scene::resolveContextDir(this);
-        if (!skinName.startsWith(":/") && !contextDir.isEmpty() && (fileInfo.absoluteDir() != QDir(contextDir))) {
-            const QString newFile = contextDir + "/" + fileInfo.fileName();
-            QFile::copy(skinName, newFile);
-            // Store only the bare filename; the project dir is prepended on load.
-            skinName2 = fileInfo.fileName();
-        }
-
-        // -------------------------------------------
-
         QMap<QString, QVariant> tempMap;
-        tempMap.insert("skinName", skinName2);
-
+        tempMap.insert("skinName", skinName.startsWith(":/") ? skinName : QFileInfo(skinName).fileName());
         skinsMap << tempMap;
     }
 

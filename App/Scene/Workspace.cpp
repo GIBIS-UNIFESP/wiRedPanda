@@ -19,6 +19,7 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICRegistry.h"
+#include "App/IO/FileUtils.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
@@ -151,6 +152,27 @@ void WorkSpace::save(const QString &fileName)
 
     if (!fileName_.endsWith(".panda")) {
         fileName_.append(".panda");
+    }
+
+    // Copy external file dependencies (skins, audio, IC sub-circuits, waveform)
+    // to the new directory before updating contextDir, so save() can store bare filenames.
+    const QString oldContextDir = m_scene.contextDir();
+    const QString newContextDir = QFileInfo(fileName_).absolutePath();
+    if (!oldContextDir.isEmpty() && oldContextDir != newContextDir) {
+        for (auto *elm : m_scene.elements()) {
+            for (const QString &file : elm->externalFiles()) {
+                FileUtils::copyToDir(file, newContextDir);
+                if (file.endsWith(".panda")) {
+                    FileUtils::copyPandaDeps(file, oldContextDir, newContextDir);
+                }
+            }
+        }
+
+        // Copy the associated BeWavedDolphin waveform file if present
+        if (!m_dolphinFileName.isEmpty()) {
+            const QString resolved = QDir(oldContextDir).absoluteFilePath(m_dolphinFileName);
+            FileUtils::copyToDir(resolved, newContextDir);
+        }
     }
 
     setCurrentFile(fileName_);

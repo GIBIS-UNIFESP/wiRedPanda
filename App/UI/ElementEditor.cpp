@@ -800,22 +800,8 @@ void ElementEditor::audioBox()
         return;
     }
 
-    // Mirror the skin-copy pattern: if the chosen file lives outside the project
-    // directory, copy it alongside the .panda file so the project is self-contained.
-    QFileInfo fileInfo(filePath);
-    QString audioPath = filePath;
-    const QString ctxDir = m_scene ? m_scene->contextDir() : QString();
-    if (!ctxDir.isEmpty() &&
-        (fileInfo.absoluteDir() != QDir(ctxDir))) {
-        const QString dest = ctxDir + "/" + fileInfo.fileName();
-        if (!QFile::exists(dest)) {
-            QFile::copy(filePath, dest);
-        }
-        audioPath = fileInfo.fileName();  // store only filename; resolved on load
-    }
-
-    audiobox->setAudio(audioPath);
-    m_ui->lineCurrentAudioBox->setText(fileInfo.fileName());
+    audiobox->setAudio(filePath);
+    m_ui->lineCurrentAudioBox->setText(QFileInfo(filePath).fileName());
 }
 
 void ElementEditor::defaultSkin()
