@@ -62,6 +62,12 @@ public:
     /// Constructs a graphic element of the given \a type, fetching all properties from the metadata registry.
     explicit GraphicElement(ElementType type, QGraphicsItem *parent = nullptr);
 
+    // --- External file dependencies ---
+
+    /// Returns the list of external (non-resource) file paths this element depends on.
+    /// Used by the save infrastructure to copy files into the project directory.
+    virtual QStringList externalFiles() const;
+
     // --- Serialization ---
 
     /// Saves the graphic element through a binary data stream.

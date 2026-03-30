@@ -49,6 +49,11 @@ public:
     /// Refreshes the visual appearance based on current state.
     void refresh() override;
 
+    // --- External file dependencies ---
+
+    /// \reimp Returns audio file path in addition to skins.
+    QStringList externalFiles() const override;
+
     // --- Serialization ---
 
     /// \reimp

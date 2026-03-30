@@ -190,20 +190,22 @@ void AudioBox::stop()
     m_isPlaying = false;
 }
 
+QStringList AudioBox::externalFiles() const
+{
+    QStringList result = GraphicElement::externalFiles();
+    const QString audioPath = m_audio.filePath();
+    if (!audioPath.isEmpty() && !audioPath.startsWith(":/")) {
+        result.append(audioPath);
+    }
+    return result;
+}
+
 void AudioBox::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
 
-    QString audioPath = m_audio.filePath();
-
-    // Store only the bare filename when the audio file lives inside the project
-    // directory, so the project remains portable across machines and platforms.
-    if (!audioPath.startsWith(":/")) {
-        QFileInfo info(audioPath);
-        if (info.absoluteDir() == QDir(Scene::resolveContextDir(this))) {
-            audioPath = info.fileName();
-        }
-    }
+    const QString &path = m_audio.filePath();
+    const QString audioPath = path.startsWith(":/") ? path : m_audio.fileName();
 
     QMap<QString, QVariant> map;
     map.insert("audiobox", audioPath);

@@ -100,6 +100,18 @@ QPixmap GraphicElement::pixmap() const
     return m_pixmap;
 }
 
+QStringList GraphicElement::externalFiles() const
+{
+    QStringList result;
+    for (int i = 0; i < m_alternativeSkins.size() && i < m_defaultSkins.size(); ++i) {
+        const QString &skin = m_alternativeSkins.at(i);
+        if (skin != m_defaultSkins.at(i) && !skin.startsWith(":/")) {
+            result.append(skin);
+        }
+    }
+    return result;
+}
+
 void GraphicElement::setPixmap(const int index)
 {
     setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(index) : m_alternativeSkins.at(index));

@@ -156,6 +156,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICDefinition.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRegistry.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PropertyDescriptor.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/IO/FileUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/SerializationContext.h
