@@ -1247,7 +1247,6 @@ void TestSequential::testTFlipFlopToggle()
     clockSwitch.setOn(false);
     tSwitch.setOn(false);
     simulation->update();
-    simulation->update();
 
     // Read initial Q state (should be inactive/0 by default)
     bool initialQ = getInputStatus(&ledQ);
@@ -1257,11 +1256,7 @@ void TestSequential::testTFlipFlopToggle()
     simulation->update();
 
     // Apply clock pulse (rising edge triggers state change)
-    clockSwitch.setOn(true);
-    simulation->update();
-    clockSwitch.setOn(false);
-    simulation->update();
-    simulation->update();
+    clockCycle(simulation, &clockSwitch);
 
     bool qAfterClock = getInputStatus(&ledQ);
     bool qNotAfterClock = getInputStatus(&ledQnot);
@@ -1328,16 +1323,11 @@ void TestSequential::testSRFlipFlopSetReset()
     clockSwitch.setOn(false);
     rSwitch.setOn(false);
     simulation->update();
-    simulation->update();
 
     // Pre-set to known state: Reset (R=1)
     rSwitch.setOn(true);
     simulation->update();
-    clockSwitch.setOn(true);
-    simulation->update();
-    clockSwitch.setOn(false);
-    simulation->update();
-    simulation->update();
+    clockCycle(simulation, &clockSwitch);
     rSwitch.setOn(false);  // Release reset for test
 
     // Now apply test inputs
@@ -1346,11 +1336,7 @@ void TestSequential::testSRFlipFlopSetReset()
     simulation->update();
 
     // Clock pulse to latch the state
-    clockSwitch.setOn(true);
-    simulation->update();
-    clockSwitch.setOn(false);
-    simulation->update();
-    simulation->update();
+    clockCycle(simulation, &clockSwitch);
 
     bool qResult = getInputStatus(&ledQ);
     bool qNotResult = getInputStatus(&ledQnot);

@@ -23,14 +23,14 @@
 #include "App/Element/GraphicElements/Xor.h"
 #include "Tests/Common/TestUtils.h"
 
-static void initTESrc(GraphicElement &elm) { elm.initSimulationVectors(0, 1); }
-static void initTEElm(GraphicElement &elm) { elm.initSimulationVectors(elm.inputSize(), elm.outputSize()); }
+using TestUtils::initSrc;
+using TestUtils::initElm;
 
 void TestElementLogic::init()
 {
     std::generate(m_inputs.begin(), m_inputs.end(), [] {
         auto *src = new InputVcc();
-        initTESrc(*src);
+        initSrc(*src);
         return src;
     });
 }
@@ -55,13 +55,13 @@ void TestElementLogic::testNode()
     QFETCH(bool, input);
     QFETCH(bool, expected);
 
-    Node elm; initTEElm(elm);
+    Node elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
 
     m_inputs.at(0)->setOutputValue(input);
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::testAnd_data()
@@ -82,7 +82,7 @@ void TestElementLogic::testAnd()
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    And elm; initTEElm(elm);
+    And elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -91,7 +91,7 @@ void TestElementLogic::testAnd()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::testOr_data()
@@ -112,7 +112,7 @@ void TestElementLogic::testOr()
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    Or elm; initTEElm(elm);
+    Or elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -121,12 +121,12 @@ void TestElementLogic::testOr()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::testSource()
 {
-    InputVcc elm; initTESrc(elm);
+    InputVcc elm; initSrc(elm);
     // InputVcc port has defaultStatus=Active, so initSimulationVectors sets output to Active.
     QCOMPARE(elm.outputValue(), Status::Active);
     elm.setOutputValue(false);
@@ -172,7 +172,7 @@ void TestElementLogic::testSourceMultiOutput()
 void TestElementLogic::testSink()
 {
     Led sink; sink.setInputSize(3); sink.initSimulationVectors(3, 3);
-    InputVcc in0, in1, in2; initTESrc(in0); initTESrc(in1); initTESrc(in2);
+    InputVcc in0, in1, in2; initSrc(in0); initSrc(in1); initSrc(in2);
 
     sink.connectPredecessor(0, &in0, 0);
     sink.connectPredecessor(1, &in1, 0);
@@ -198,7 +198,7 @@ void TestElementLogic::testSink()
 
     // Null predecessor on Led (optional ports) → defaults to Inactive
     Led sinkPartial; sinkPartial.setInputSize(2); sinkPartial.initSimulationVectors(2, 2);
-    InputVcc onlyInput; initTESrc(onlyInput);
+    InputVcc onlyInput; initSrc(onlyInput);
     sinkPartial.connectPredecessor(0, &onlyInput, 0);
     // port 1 left null — Led ports are optional, defaulting to Inactive
     onlyInput.setOutputValue(true);
@@ -231,7 +231,7 @@ void TestElementLogic::testMux()
     QFETCH(bool, sel);
     QFETCH(bool, expected);
 
-    Mux elm; initTEElm(elm);
+    Mux elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -242,7 +242,7 @@ void TestElementLogic::testMux()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::testDemux_data()
@@ -265,7 +265,7 @@ void TestElementLogic::testDemux()
     QFETCH(bool, out0);
     QFETCH(bool, out1);
 
-    Demux elm; initTEElm(elm);
+    Demux elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -274,8 +274,8 @@ void TestElementLogic::testDemux()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(0) == Status::Active, out0);
-    QCOMPARE(elm.outputValue(1) == Status::Active, out1);
+    QCOMPARE(elm.outputValue(0), out0 ? Status::Active : Status::Inactive);
+    QCOMPARE(elm.outputValue(1), out1 ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::testDFlipFlop_data()
@@ -307,7 +307,7 @@ void TestElementLogic::testDFlipFlop()
     QFETCH(bool, expectedQ);
     QFETCH(bool, expectedNotQ);
 
-    DFlipFlop elm; initTEElm(elm);
+    DFlipFlop elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -330,8 +330,8 @@ void TestElementLogic::testDFlipFlop()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(0) == Status::Active, expectedQ);
-    QCOMPARE(elm.outputValue(1) == Status::Active, expectedNotQ);
+    QCOMPARE(elm.outputValue(0), expectedQ ? Status::Active : Status::Inactive);
+    QCOMPARE(elm.outputValue(1), expectedNotQ ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::testDLatch_data()
@@ -356,7 +356,7 @@ void TestElementLogic::testDLatch()
     QFETCH(bool, prevState);
     QFETCH(bool, expectedQ);
 
-    DLatch elm; initTEElm(elm);
+    DLatch elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -368,8 +368,8 @@ void TestElementLogic::testDLatch()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(0) == Status::Active, expectedQ);
-    QCOMPARE(elm.outputValue(1) == Status::Active, !expectedQ);
+    QCOMPARE(elm.outputValue(0), expectedQ ? Status::Active : Status::Inactive);
+    QCOMPARE(elm.outputValue(1), expectedQ ? Status::Inactive : Status::Active);
 }
 
 void TestElementLogic::testJKFlipFlop_data()
@@ -411,7 +411,7 @@ void TestElementLogic::testJKFlipFlop()
     QFETCH(bool, expectedQ);
     QFETCH(bool, expectedNotQ);
 
-    JKFlipFlop elm; initTEElm(elm);
+    JKFlipFlop elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -439,8 +439,8 @@ void TestElementLogic::testJKFlipFlop()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(0) == Status::Active, expectedQ);
-    QCOMPARE(elm.outputValue(1) == Status::Active, expectedNotQ);
+    QCOMPARE(elm.outputValue(0), expectedQ ? Status::Active : Status::Inactive);
+    QCOMPARE(elm.outputValue(1), expectedNotQ ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::testSRFlipFlop_data()
@@ -497,7 +497,7 @@ void TestElementLogic::testSRFlipFlop()
     QFETCH(bool, expectedQ);
     QFETCH(bool, expectedNotQ);
 
-    SRFlipFlop elm; initTEElm(elm);
+    SRFlipFlop elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -527,8 +527,8 @@ void TestElementLogic::testSRFlipFlop()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(0) == Status::Active, expectedQ);
-    QCOMPARE(elm.outputValue(1) == Status::Active, expectedNotQ);
+    QCOMPARE(elm.outputValue(0), expectedQ ? Status::Active : Status::Inactive);
+    QCOMPARE(elm.outputValue(1), expectedNotQ ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::testTFlipFlop_data()
@@ -569,7 +569,7 @@ void TestElementLogic::testTFlipFlop()
     QFETCH(bool, expectedQ);
     QFETCH(bool, expectedNotQ);
 
-    TFlipFlop elm; initTEElm(elm);
+    TFlipFlop elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -594,8 +594,8 @@ void TestElementLogic::testTFlipFlop()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(0) == Status::Active, expectedQ);
-    QCOMPARE(elm.outputValue(1) == Status::Active, expectedNotQ);
+    QCOMPARE(elm.outputValue(0), expectedQ ? Status::Active : Status::Inactive);
+    QCOMPARE(elm.outputValue(1), expectedNotQ ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::testXnor_data()
@@ -616,7 +616,7 @@ void TestElementLogic::testXnor()
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    Xnor elm; initTEElm(elm);
+    Xnor elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -625,7 +625,7 @@ void TestElementLogic::testXnor()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::testNot_data()
@@ -642,14 +642,14 @@ void TestElementLogic::testNot()
     QFETCH(bool, input);
     QFETCH(bool, expected);
 
-    Not elm; initTEElm(elm);
+    Not elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
 
     m_inputs.at(0)->setOutputValue(input);
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 // Comprehensive circuit-context test: NOT gate alone in an isolated circuit
@@ -667,7 +667,7 @@ void TestElementLogic::testNotGateViaBuilder()
     QFETCH(bool, input);
     QFETCH(bool, expected);
 
-    Not notGate; initTEElm(notGate);
+    Not notGate; initElm(notGate);
     notGate.connectPredecessor(0, m_inputs.at(0), 0);
 
     m_inputs.at(0)->setOutputValue(input);
@@ -708,10 +708,10 @@ void TestElementLogic::testNotGateInAnd()
     Q_UNUSED(expectedNotInput0);  // Using for clarity in test data
     QFETCH(bool, expectedAndOutput);
 
-    Not invGate; initTEElm(invGate);
+    Not invGate; initElm(invGate);
     invGate.connectPredecessor(0, m_inputs.at(1), 0);
 
-    And andGate; initTEElm(andGate);
+    And andGate; initElm(andGate);
     andGate.connectPredecessor(0, m_inputs.at(0), 0);
     andGate.connectPredecessor(1, &invGate, 0);
 
@@ -719,10 +719,10 @@ void TestElementLogic::testNotGateInAnd()
     m_inputs.at(1)->setOutputValue(input1);
 
     invGate.updateLogic();
-    QCOMPARE(invGate.outputValue() == Status::Active, !input1);
+    QCOMPARE(invGate.outputValue(), input1 ? Status::Inactive : Status::Active);
 
     andGate.updateLogic();
-    QCOMPARE(andGate.outputValue() == Status::Active, expectedAndOutput);
+    QCOMPARE(andGate.outputValue(), expectedAndOutput ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::testNand_data()
@@ -743,7 +743,7 @@ void TestElementLogic::testNand()
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    Nand elm; initTEElm(elm);
+    Nand elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -752,7 +752,7 @@ void TestElementLogic::testNand()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::testNor_data()
@@ -773,7 +773,7 @@ void TestElementLogic::testNor()
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    Nor elm; initTEElm(elm);
+    Nor elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -782,7 +782,7 @@ void TestElementLogic::testNor()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::testXor_data()
@@ -803,7 +803,7 @@ void TestElementLogic::testXor()
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    Xor elm; initTEElm(elm);
+    Xor elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -812,7 +812,7 @@ void TestElementLogic::testXor()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::testSRLatch_data()
@@ -835,7 +835,7 @@ void TestElementLogic::testSRLatch()
     QFETCH(bool, prevState);
     QFETCH(bool, expectedQ);
 
-    SRLatch elm; initTEElm(elm);
+    SRLatch elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -847,8 +847,8 @@ void TestElementLogic::testSRLatch()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue(0) == Status::Active, expectedQ);
-    QCOMPARE(elm.outputValue(1) == Status::Active, !expectedQ);
+    QCOMPARE(elm.outputValue(0), expectedQ ? Status::Active : Status::Inactive);
+    QCOMPARE(elm.outputValue(1), expectedQ ? Status::Inactive : Status::Active);
 }
 
 void TestElementLogic::test3InputAnd_data()
@@ -876,7 +876,7 @@ void TestElementLogic::test3InputAnd()
     QFETCH(bool, input3);
     QFETCH(bool, expected);
 
-    And elm; elm.setInputSize(3); initTEElm(elm);
+    And elm; elm.setInputSize(3); initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -887,7 +887,7 @@ void TestElementLogic::test3InputAnd()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::test3InputOr_data()
@@ -915,7 +915,7 @@ void TestElementLogic::test3InputOr()
     QFETCH(bool, input3);
     QFETCH(bool, expected);
 
-    Or elm; elm.setInputSize(3); initTEElm(elm);
+    Or elm; elm.setInputSize(3); initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -926,7 +926,7 @@ void TestElementLogic::test3InputOr()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::test4InputAnd_data()
@@ -964,7 +964,7 @@ void TestElementLogic::test4InputAnd()
     QFETCH(bool, input4);
     QFETCH(bool, expected);
 
-    And elm; elm.setInputSize(4); initTEElm(elm);
+    And elm; elm.setInputSize(4); initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -977,7 +977,7 @@ void TestElementLogic::test4InputAnd()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::test4InputOr_data()
@@ -1015,7 +1015,7 @@ void TestElementLogic::test4InputOr()
     QFETCH(bool, input4);
     QFETCH(bool, expected);
 
-    Or elm; elm.setInputSize(4); initTEElm(elm);
+    Or elm; elm.setInputSize(4); initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -1028,7 +1028,7 @@ void TestElementLogic::test4InputOr()
 
     elm.updateLogic();
 
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::test3InputXor_data()
@@ -1057,7 +1057,7 @@ void TestElementLogic::test3InputXor()
     QFETCH(bool, expected);
 
     // Use 2-input XOR gates to simulate 3-input: (a XOR b) XOR c
-    Xor xor1, xor2; initTEElm(xor1); initTEElm(xor2);
+    Xor xor1, xor2; initElm(xor1); initElm(xor2);
     xor1.connectPredecessor(0, m_inputs.at(0), 0);
     xor1.connectPredecessor(1, m_inputs.at(1), 0);
     xor2.connectPredecessor(0, &xor1, 0);
@@ -1070,7 +1070,7 @@ void TestElementLogic::test3InputXor()
     xor1.updateLogic();
     xor2.updateLogic();
 
-    QCOMPARE(xor2.outputValue() == Status::Active, expected);
+    QCOMPARE(xor2.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::test3InputXnor_data()
@@ -1100,7 +1100,7 @@ void TestElementLogic::test3InputXnor()
     QFETCH(bool, expected);
 
     // Use 2-input XNOR gates to simulate 3-input: (a XNOR b) XNOR c
-    Xnor xnor1, xnor2; initTEElm(xnor1); initTEElm(xnor2);
+    Xnor xnor1, xnor2; initElm(xnor1); initElm(xnor2);
     xnor1.connectPredecessor(0, m_inputs.at(0), 0);
     xnor1.connectPredecessor(1, m_inputs.at(1), 0);
     xnor2.connectPredecessor(0, &xnor1, 0);
@@ -1113,7 +1113,7 @@ void TestElementLogic::test3InputXnor()
     xnor1.updateLogic();
     xnor2.updateLogic();
 
-    QCOMPARE(xnor2.outputValue() == Status::Active, expected);
+    QCOMPARE(xnor2.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 /**
@@ -1136,7 +1136,7 @@ void TestElementLogic::test5InputAnd()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    And elm; elm.setInputSize(5); initTEElm(elm);
+    And elm; elm.setInputSize(5); initElm(elm);
     for (int i = 0; i < 5; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1147,7 +1147,7 @@ void TestElementLogic::test5InputAnd()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 /**
@@ -1169,7 +1169,7 @@ void TestElementLogic::test5InputOr()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    Or elm; elm.setInputSize(5); initTEElm(elm);
+    Or elm; elm.setInputSize(5); initElm(elm);
     for (int i = 0; i < 5; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1180,7 +1180,7 @@ void TestElementLogic::test5InputOr()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 /**
@@ -1202,7 +1202,7 @@ void TestElementLogic::test5InputNand()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    Nand elm; elm.setInputSize(5); initTEElm(elm);
+    Nand elm; elm.setInputSize(5); initElm(elm);
     for (int i = 0; i < 5; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1213,7 +1213,7 @@ void TestElementLogic::test5InputNand()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 /**
@@ -1235,7 +1235,7 @@ void TestElementLogic::test5InputNor()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    Nor elm; elm.setInputSize(5); initTEElm(elm);
+    Nor elm; elm.setInputSize(5); initElm(elm);
     for (int i = 0; i < 5; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1246,7 +1246,7 @@ void TestElementLogic::test5InputNor()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 /**
@@ -1275,7 +1275,7 @@ void TestElementLogic::test8InputAnd()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    And elm; elm.setInputSize(8); initTEElm(elm);
+    And elm; elm.setInputSize(8); initElm(elm);
     for (int i = 0; i < 8; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1286,7 +1286,7 @@ void TestElementLogic::test8InputAnd()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 /**
@@ -1315,7 +1315,7 @@ void TestElementLogic::test8InputOr()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    Or elm; elm.setInputSize(8); initTEElm(elm);
+    Or elm; elm.setInputSize(8); initElm(elm);
     for (int i = 0; i < 8; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1326,7 +1326,7 @@ void TestElementLogic::test8InputOr()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 /**
@@ -1354,7 +1354,7 @@ void TestElementLogic::test8InputNand()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    Nand elm; elm.setInputSize(8); initTEElm(elm);
+    Nand elm; elm.setInputSize(8); initElm(elm);
     for (int i = 0; i < 8; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1365,7 +1365,7 @@ void TestElementLogic::test8InputNand()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 /**
@@ -1394,7 +1394,7 @@ void TestElementLogic::test8InputNor()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    Nor elm; elm.setInputSize(8); initTEElm(elm);
+    Nor elm; elm.setInputSize(8); initElm(elm);
     for (int i = 0; i < 8; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1405,7 +1405,7 @@ void TestElementLogic::test8InputNor()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 /**
@@ -1434,10 +1434,10 @@ void TestElementLogic::testFanOut()
     QFETCH(bool, expectedXor);
 
     // Single LogicSource drives 3 different gates (fan-out test)
-    InputVcc source; initTESrc(source);
-    And andGate; initTEElm(andGate);
-    Or orGate; initTEElm(orGate);
-    Xor xorGate; initTEElm(xorGate);
+    InputVcc source; initSrc(source);
+    And andGate; initElm(andGate);
+    Or orGate; initElm(orGate);
+    Xor xorGate; initElm(xorGate);
 
     // Connect same source to all three gates
     andGate.connectPredecessor(0, &source, 0);
@@ -1458,9 +1458,9 @@ void TestElementLogic::testFanOut()
     xorGate.updateLogic();
 
     // Verify all gates receive the same signal correctly
-    QCOMPARE(andGate.outputValue() == Status::Active, expectedAnd);
-    QCOMPARE(orGate.outputValue() == Status::Active, expectedOr);
-    QCOMPARE(xorGate.outputValue() == Status::Active, expectedXor);
+    QCOMPARE(andGate.outputValue(), expectedAnd ? Status::Active : Status::Inactive);
+    QCOMPARE(orGate.outputValue(), expectedOr ? Status::Active : Status::Inactive);
+    QCOMPARE(xorGate.outputValue(), expectedXor ? Status::Active : Status::Inactive);
 }
 
 /**
@@ -1486,7 +1486,7 @@ void TestElementLogic::test6InputAnd()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    And elm; elm.setInputSize(6); initTEElm(elm);
+    And elm; elm.setInputSize(6); initElm(elm);
     for (int i = 0; i < 6; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1497,6 +1497,6 @@ void TestElementLogic::test6InputAnd()
     }
 
     elm.updateLogic();
-    QCOMPARE(elm.outputValue() == Status::Active, expected);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 

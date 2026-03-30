@@ -1080,10 +1080,7 @@ inline std::unique_ptr<WorkSpace> buildRegisterBank8x8(InputSwitch* writeAddr[3]
     // Reset is active-high (1 = reset), so pulse 1 then set to 0
     reset->setOn(true);
     sim->update();
-    sim->update();
-    sim->update();
     reset->setOn(false);
-    sim->update();
     sim->update();
 
     return workspace;
