@@ -296,16 +296,24 @@ void ElementEditor::applyCapabilitiesToUi()
     /* Frequency */
     setSection(c.hasFrequency, m_ui->labelFrequency, m_ui->doubleSpinBoxFrequency);
     if (c.hasFrequency) {
+        // Buzzer uses audible tone range; Clock uses low oscillation range.
+        const bool isBuzzer = (c.hasSameType && c.elementType == ElementType::Buzzer);
+        const double minFreq = isBuzzer ? 20.0 : 0.1;
+        const double maxFreq = isBuzzer ? 20000.0 : 50.0;
+        const double step    = isBuzzer ? 10.0 : 0.1;
+        const int decimals   = isBuzzer ? 0 : 1;
+        const QString suffix = isBuzzer ? tr(" Hz") : tr(" Hz");
+
+        m_ui->doubleSpinBoxFrequency->setDecimals(decimals);
+        m_ui->doubleSpinBoxFrequency->setSingleStep(step);
+        m_ui->doubleSpinBoxFrequency->setMaximum(maxFreq);
+        m_ui->doubleSpinBoxFrequency->setSuffix(suffix);
+
         if (c.hasSameFrequency) {
-            // Minimum 0.1 Hz prevents a frequency of 0, which would mean the
-            // clock never toggles.  0.0 is only used as the sentinel value for
-            // the "many frequencies" placeholder text below.
-            m_ui->doubleSpinBoxFrequency->setMinimum(0.1);
+            m_ui->doubleSpinBoxFrequency->setMinimum(minFreq);
             m_ui->doubleSpinBoxFrequency->setSpecialValueText({});
             m_ui->doubleSpinBoxFrequency->setValue(firstElement->frequency());
         } else {
-            // Lower the minimum to 0.0 so setValue(0.0) triggers the special
-            // value text "many frequencies" without violating the validator.
             m_ui->doubleSpinBoxFrequency->setMinimum(0.0);
             m_ui->doubleSpinBoxFrequency->setSpecialValueText(m_manyFreq);
             m_ui->doubleSpinBoxFrequency->setValue(0.0);

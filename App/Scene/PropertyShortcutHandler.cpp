@@ -48,8 +48,8 @@ void PropertyShortcutHandler::prevMainProperty()
             break;
 
         case ElementType::Buzzer:
-            if (element->hasAudio())
-                element->setAudio(element->previousAudio());
+            if (element->hasFrequency())
+                element->setFrequency((std::max)(20.0, element->frequency() - 100.0));
             break;
 
         case ElementType::Display16:
@@ -102,8 +102,8 @@ void PropertyShortcutHandler::nextMainProperty()
             break;
 
         case ElementType::Buzzer:
-            if (element->hasAudio())
-                element->setAudio(element->nextAudio());
+            if (element->hasFrequency())
+                element->setFrequency((std::min)(20000.0, element->frequency() + 100.0));
             break;
 
         case ElementType::Display14:
