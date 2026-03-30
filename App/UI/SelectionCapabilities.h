@@ -36,6 +36,7 @@ struct SelectionCapabilities {
     bool hasWirelessMode     = false;
     bool hasTrigger          = false;
     bool hasTruthTable       = false;
+    bool hasVolume           = false;
 
     // --- Embedded IC flags ---
 
@@ -61,6 +62,7 @@ struct SelectionCapabilities {
     bool hasSameOutputValue  = false;
     bool hasSameTrigger      = false;
     bool hasSameType         = false;
+    bool hasSameVolume       = false;
 
     // --- Derived state ---
 

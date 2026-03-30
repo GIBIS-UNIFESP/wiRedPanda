@@ -25,6 +25,7 @@ struct ElementInfo<AudioBox> {
         .canChangeSkin = true,
         .hasAudioBox = true,
         .hasLabel = true,
+        .hasVolume = true,
     };
     static_assert(validate(constraints));
 
@@ -122,7 +123,7 @@ void AudioBox::setAudio(const QString &audioPath)
         ? QUrl("qrc" + path)
         : QUrl::fromLocalFile(path);
 
-    m_audioOutput->setVolume(0.5f);
+    m_audioOutput->setVolume(m_volume);
     m_player->setAudioOutput(m_audioOutput);
     m_player->setSource(mediaUrl);
     m_player->setLoops(QMediaPlayer::Infinite);
@@ -146,6 +147,19 @@ bool AudioBox::isPlaying() const
 bool AudioBox::isMuted() const
 {
     return m_muted;
+}
+
+float AudioBox::volume() const
+{
+    return m_volume;
+}
+
+void AudioBox::setVolume(float vol)
+{
+    m_volume = vol;
+    if (m_hasOutputDevice) {
+        m_audioOutput->setVolume(vol);
+    }
 }
 
 void AudioBox::mute(const bool mute)
@@ -210,6 +224,7 @@ void AudioBox::save(QDataStream &stream) const
 
     QMap<QString, QVariant> map;
     map.insert("audiobox", audioPath);
+    map.insert("volume", static_cast<double>(m_volume));
 
     stream << map;
 }
@@ -235,6 +250,9 @@ void AudioBox::load(QDataStream &stream, SerializationContext &context)
 
         if (map.contains("audiobox")) {
             setAudio(map.value("audiobox").toString());
+        }
+        if (map.contains("volume")) {
+            setVolume(map.value("volume").toFloat());
         }
     }
 }
