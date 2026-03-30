@@ -214,6 +214,22 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     lineEditBlobName->setObjectName("lineEditBlobName");
     gridLayout_2->addWidget(lineEditBlobName, 13, 1, 1, 1);
 
+    labelVolume = new QLabel(groupBox);
+    labelVolume->setObjectName("labelVolume");
+    gridLayout_2->addWidget(labelVolume, 14, 0, 1, 1);
+
+    sliderVolume = new QSlider(groupBox);
+    sliderVolume->setObjectName("sliderVolume");
+    sliderVolume->setOrientation(Qt::Horizontal);
+    sliderVolume->setMinimum(0);
+    sliderVolume->setMaximum(100);
+    sliderVolume->setValue(50);
+    sliderVolume->setSingleStep(5);
+    sliderVolume->setPageStep(10);
+    sliderVolume->setTickPosition(QSlider::TicksBelow);
+    sliderVolume->setTickInterval(25);
+    gridLayout_2->addWidget(sliderVolume, 14, 1, 1, 1);
+
     gridLayout->addWidget(groupBox, 0, 0, 1, 1);
 
     retranslateUi(ElementEditor);
@@ -259,5 +275,6 @@ void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
     comboBoxWirelessMode->setItemText(1, QCoreApplication::translate("ElementEditor", "Transmit (Tx)"));
     comboBoxWirelessMode->setItemText(2, QCoreApplication::translate("ElementEditor", "Receive (Rx)"));
     labelBlobName->setText(QCoreApplication::translate("ElementEditor", "IC Name:"));
+    labelVolume->setText(QCoreApplication::translate("ElementEditor", "Volume:"));
 }
 

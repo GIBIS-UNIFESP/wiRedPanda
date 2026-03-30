@@ -31,6 +31,7 @@ struct PropertyDescriptor {
         Trigger,     ///< Keyboard trigger shortcut.
         TruthTable,  ///< Editable truth table dialog.
         Skin,         ///< Custom pixmap skin selection.
+        Volume,       ///< Audio playback volume (AudioBox, Buzzer).
         WirelessModeSelector, ///< Wireless routing mode (None / Tx / Rx) — Node elements only.
     };
 

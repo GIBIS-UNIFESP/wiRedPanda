@@ -24,6 +24,7 @@ struct ElementInfo<Buzzer> {
         .canChangeSkin = true,
         .hasAudio = true,
         .hasLabel = true,
+        .hasVolume = true,
         .rotatable = false,
     };
     static_assert(validate(constraints));
@@ -63,7 +64,7 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     if (m_hasOutputDevice) {
         m_generator = new ToneGenerator(this);
         m_sink = new QAudioSink(ToneGenerator::format(), this);
-        m_sink->setVolume(0.35);
+        m_sink->setVolume(static_cast<qreal>(m_volume));
     }
 }
 
@@ -116,6 +117,19 @@ bool Buzzer::isMuted() const
     return m_muted;
 }
 
+float Buzzer::volume() const
+{
+    return m_volume;
+}
+
+void Buzzer::setVolume(float vol)
+{
+    m_volume = vol;
+    if (m_hasOutputDevice && !m_muted) {
+        m_sink->setVolume(static_cast<qreal>(vol));
+    }
+}
+
 void Buzzer::mute(const bool mute)
 {
     m_muted = mute;
@@ -123,7 +137,7 @@ void Buzzer::mute(const bool mute)
         return;
     }
 
-    m_sink->setVolume(mute ? 0.0 : 0.35);
+    m_sink->setVolume(mute ? 0.0 : static_cast<qreal>(m_volume));
 }
 
 void Buzzer::play()
@@ -178,6 +192,7 @@ void Buzzer::save(QDataStream &stream) const
 
     QMap<QString, QVariant> map;
     map.insert("note", audio());
+    map.insert("volume", static_cast<double>(m_volume));
 
     stream << map;
 }
@@ -203,6 +218,9 @@ void Buzzer::load(QDataStream &stream, SerializationContext &context)
 
         if (map.contains("note")) {
             setAudio(map.value("note").toString());
+        }
+        if (map.contains("volume")) {
+            setVolume(map.value("volume").toFloat());
         }
     }
 }

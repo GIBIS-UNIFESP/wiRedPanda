@@ -197,6 +197,15 @@ public:
     /// Returns \c true if this element type shows an audio selection box.
     bool hasAudioBox() const;
 
+    /// Returns \c true if this element type supports volume control.
+    bool hasVolume() const;
+
+    /// Returns the audio playback volume (0.0–1.0).
+    virtual float volume() const;
+
+    /// Sets the audio playback volume to \a vol (0.0–1.0).
+    virtual void setVolume(float vol);
+
     /// Returns the name of the next audio file in the element's audio list.
     QString nextAudio() const;
 

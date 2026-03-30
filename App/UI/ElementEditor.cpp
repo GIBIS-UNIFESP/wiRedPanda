@@ -59,6 +59,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_ui->comboBoxValue->installEventFilter(m_tabNavigator);
     m_ui->sliderDelay->installEventFilter(m_tabNavigator);
     m_ui->doubleSpinBoxFrequency->installEventFilter(m_tabNavigator);
+    m_ui->sliderVolume->installEventFilter(m_tabNavigator);
     m_ui->comboBoxWirelessMode->installEventFilter(m_tabNavigator);
     m_ui->lineEditElementLabel->installEventFilter(m_tabNavigator);
     m_ui->lineEditTrigger->installEventFilter(m_tabNavigator);
@@ -82,6 +83,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->comboBoxValue,          &QComboBox::currentTextChanged,                   this, &ElementEditor::outputValueChanged);
     connect(m_ui->sliderDelay,            qOverload<int>(&QSlider::valueChanged),           this, &ElementEditor::apply);
     connect(m_ui->doubleSpinBoxFrequency, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ElementEditor::apply);
+    connect(m_ui->sliderVolume,            qOverload<int>(&QSlider::valueChanged),           this, &ElementEditor::apply);
     connect(m_ui->comboBoxWirelessMode,   qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
     connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::apply);
     connect(m_ui->lineEditTrigger,        &QLineEdit::textChanged,                          this, &ElementEditor::triggerChanged);
@@ -283,6 +285,12 @@ void ElementEditor::applyCapabilitiesToUi()
     setSection(c.hasAudio, m_ui->labelAudio, m_ui->comboBoxAudio);
     if (prepareCombo(m_ui->comboBoxAudio, c.hasAudio, c.hasSameAudio, m_manyAudios)) {
         m_ui->comboBoxAudio->setCurrentText(firstElement->audio());
+    }
+
+    /* Volume */
+    setSection(c.hasVolume, m_ui->labelVolume, m_ui->sliderVolume);
+    if (c.hasVolume && c.hasSameVolume) {
+        m_ui->sliderVolume->setValue(static_cast<int>(firstElement->volume() * 100.0f));
     }
 
     /* Frequency */
@@ -488,6 +496,9 @@ void ElementEditor::applyProperty(GraphicElement *elm, PropertyDescriptor::Type 
                 node->setWirelessMode(static_cast<WirelessMode>(m_ui->comboBoxWirelessMode->currentIndex()));
             }
         }
+        break;
+    case PropertyDescriptor::Type::Volume:
+        elm->setVolume(static_cast<float>(m_ui->sliderVolume->value()) / 100.0f);
         break;
     case PropertyDescriptor::Type::AudioBox:
     case PropertyDescriptor::Type::TruthTable:
