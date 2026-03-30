@@ -57,7 +57,8 @@ Buzzer::Buzzer(QGraphicsItem *parent)
 
     // Check for audio hardware once at construction; subsequent audio calls are
     // guarded by m_hasOutputDevice to allow headless/CI operation without warnings.
-    m_hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
+    static const bool hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
+    m_hasOutputDevice = hasOutputDevice;
 
     if (m_hasOutputDevice) {
         m_audio = new QSoundEffect(this);
