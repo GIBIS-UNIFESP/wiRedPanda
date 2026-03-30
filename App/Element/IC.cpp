@@ -67,6 +67,15 @@ IC::~IC()
     qDeleteAll(m_icElements);
 }
 
+QStringList IC::externalFiles() const
+{
+    QStringList result;
+    if (!isEmbeddedIC() && !m_file.isEmpty()) {
+        result.append(m_file);
+    }
+    return result;
+}
+
 void IC::save(QDataStream &stream) const
 {
     GraphicElement::save(stream);
@@ -95,10 +104,6 @@ void IC::load(QDataStream &stream, SerializationContext &context)
         // Normalize backslashes first — QFileInfo::fileName() doesn't treat '\' as a
         // separator on Unix, so a Windows path like "C:\...\sub.panda" would be kept as-is.
         m_file = QFileInfo(QString(m_file).replace('\\', '/')).fileName();
-
-        if (context.copyOperation.needed) {
-            copyFile(context.copyOperation);
-        }
 
         loadFile(m_file, context.contextDir);
     }
@@ -130,29 +135,8 @@ void IC::load(QDataStream &stream, SerializationContext &context)
             loadFromBlob(context.blobRegistry->value(baseName), context.contextDir);
         } else {
             m_file = name;
-
-            if (context.copyOperation.needed) {
-                copyFile(context.copyOperation);
-            }
-
             loadFile(m_file, context.contextDir);
         }
-    }
-}
-
-void IC::copyFile(const CopyOperation &op)
-{
-    if (isEmbeddedIC()) {
-        return; // Embedded ICs don't have files to copy
-    }
-
-    const QString srcPath = op.srcPath + "/" + m_file;
-    const QString destPath = op.destPath + "/" + m_file;
-
-    QFile destFile;
-
-    if (!QFile::exists(destPath) && !destFile.copy(srcPath, destPath)) {
-        throw PANDACEPTION("Error copying file: %1", destFile.errorString());
     }
 }
 

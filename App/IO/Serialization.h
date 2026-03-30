@@ -41,7 +41,7 @@ public:
     /**
      * \brief Deserializes items from \a stream until the stream is exhausted.
      * \param stream Source data stream.
-     * \param context Per-load context (portMap, version, contextDir, copyOperation).
+     * \param context Per-load context (portMap, version, contextDir).
      * \return List of deserialized QGraphicsItems ready to be added to a scene.
      */
     static QList<QGraphicsItem *> deserialize(QDataStream &stream, SerializationContext &context);

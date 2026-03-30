@@ -3059,7 +3059,7 @@ void TestICInline::testLoadFileClearsInlineData()
 
 void TestICInline::testCopyFileGuardDuringPaste()
 {
-    // Deserializing an embedded IC with CopyOperation should NOT copy files.
+    // Deserializing an embedded IC should resolve via blob, not file path.
 
     QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
     QVERIFY(!blob.isEmpty());
@@ -3078,16 +3078,11 @@ void TestICInline::testCopyFileGuardDuringPaste()
         ic.save(stream);
     }
 
-    // Deserialize with CopyOperation pointing to non-existent dirs.
-    const QString fakeSrc = m_tempDir.filePath("nonexistent_src");
-    const QString fakeDst = m_tempDir.filePath("nonexistent_dst");
-
     std::unique_ptr<IC> ic2(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QMap<quint64, QNEPort *> portMap;
-        CopyOperation copyOp{fakeSrc, fakeDst, true};
-        SerializationContext ctx{portMap, AppVersion::current, m_fixtureDir, copyOp};
+        SerializationContext ctx{portMap, AppVersion::current, m_fixtureDir};
         ctx.blobRegistry = &registry;
         ic2->load(stream, ctx);
     }
@@ -3101,7 +3096,7 @@ void TestICInline::testCopyFileGuardDuringPaste()
 
 void TestICInline::testCopyPasteEmbeddedICRoundTrip()
 {
-    // Serialize embedded IC with CopyOperation and deserialize — all fields preserved.
+    // Serialize and deserialize an embedded IC — all fields preserved.
 
     QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
     QVERIFY(!blob.isEmpty());
@@ -3121,15 +3116,11 @@ void TestICInline::testCopyPasteEmbeddedICRoundTrip()
         original.save(stream);
     }
 
-    const QString pasteDst = m_tempDir.filePath("paste_dst");
-    QDir().mkpath(pasteDst);
-
     std::unique_ptr<IC> pasted(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QMap<quint64, QNEPort *> portMap;
-        CopyOperation copyOp{m_fixtureDir, pasteDst, true};
-        SerializationContext ctx{portMap, AppVersion::current, m_fixtureDir, copyOp};
+        SerializationContext ctx{portMap, AppVersion::current, m_fixtureDir};
         ctx.blobRegistry = &registry;
         pasted->load(stream, ctx);
     }

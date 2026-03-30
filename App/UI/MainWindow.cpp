@@ -727,13 +727,7 @@ void MainWindow::on_actionSaveAs_triggered()
         fileName.append(".panda");
     }
 
-    // IC sub-circuit files are stored alongside the main .panda file.
-    // Copy them to the new location so the saved copy is self-contained.
-    IC::copyFiles(currentFile(), QFileInfo(fileName));
-
-    // Open the new file in a fresh tab rather than just saving in-place so
-    // the tab title and m_currentFile update to reflect the new path.
-    loadPandaFile(fileName);
+    save(fileName);
 }
 
 void MainWindow::on_actionAbout_triggered()

@@ -86,6 +86,11 @@ public:
     /// \reimp
     void refresh() override;
 
+    // --- External file dependencies ---
+
+    /// \reimp Returns IC .panda file path for file-backed ICs.
+    QStringList externalFiles() const override;
+
     // --- Serialization ---
 
     /// \reimp
@@ -105,10 +110,7 @@ private:
     static bool comparePorts(QNEPort *port1, QNEPort *port2);
     static void sortPorts(QVector<QNEPort *> &map);
 
-    // --- File copy helper ---
-
     void loadFileDirectly(const QFileInfo &fileInfo);
-    void copyFile(const CopyOperation &op);
 
     // --- Loading helpers ---
 
