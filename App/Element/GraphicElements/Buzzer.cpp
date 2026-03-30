@@ -3,13 +3,13 @@
 
 #include "App/Element/GraphicElements/Buzzer.h"
 
-#include <QAudio>
 #include <QAudioDevice>
-#include <QDebug>
+#include <QAudioSink>
 #include <QMediaDevices>
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/Element/GraphicElements/ToneGenerator.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
@@ -61,7 +61,9 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     m_hasOutputDevice = hasOutputDevice;
 
     if (m_hasOutputDevice) {
-        m_audio = new QSoundEffect(this);
+        m_generator = new ToneGenerator(this);
+        m_sink = new QAudioSink(ToneGenerator::format(), this);
+        m_sink->setVolume(0.35);
     }
 }
 
@@ -83,23 +85,19 @@ void Buzzer::setAudio(const QString &note)
         return;
     }
 
-    // Store the note name (e.g. "C6") separately from the file path so it
-    // can be serialized and displayed in the properties panel
     m_note = note;
 
     if (!m_hasOutputDevice) {
         return;
     }
 
-    // Volume at 35% to avoid startling users; WAV files reside in Qt resources
-    m_audio->setVolume(0.35f);
+    m_generator->setFrequency(noteToFrequency(note));
 
-    m_audio->setSource(QUrl("qrc:/Components/Output/Audio/" + note + ".wav"));
-    m_audio->setLoopCount(QSoundEffect::Infinite); // TODO: fix audio clipping when repeating
-
-    // If already playing, restart playback with the new note immediately
+    // If already playing, restart so the new frequency takes effect immediately
     if (m_isPlaying) {
-        m_audio->play();
+        m_sink->stop();
+        m_generator->start();
+        m_sink->start(m_generator);
     }
 }
 
@@ -125,7 +123,7 @@ void Buzzer::mute(const bool mute)
         return;
     }
 
-    m_audio->setMuted(mute);
+    m_sink->setVolume(mute ? 0.0 : 0.35);
 }
 
 void Buzzer::play()
@@ -137,12 +135,12 @@ void Buzzer::play()
     setPixmap(1);
 
     if (m_hasOutputDevice) {
-        // Default to middle-C octave 6 if no note was configured
-        if (m_audio->source().isEmpty()) {
+        if (m_note.isEmpty()) {
             setAudio("C6");
         }
 
-        m_audio->play();
+        m_generator->start();
+        m_sink->start(m_generator);
     }
 
     m_isPlaying = true;
@@ -157,10 +155,21 @@ void Buzzer::stop()
     setPixmap(0);
 
     if (m_hasOutputDevice) {
-        m_audio->stop();
+        m_sink->stop();
+        m_generator->close();
     }
 
     m_isPlaying = false;
+}
+
+int Buzzer::noteToFrequency(const QString &note)
+{
+    static const QHash<QString, int> map = {
+        {"C6", 1047}, {"D6", 1175}, {"E6", 1319}, {"F6", 1397},
+        {"G6", 1568}, {"A7", 3520}, {"B7", 3951}, {"C7", 2093},
+    };
+
+    return map.value(note, 1047);
 }
 
 void Buzzer::save(QDataStream &stream) const
