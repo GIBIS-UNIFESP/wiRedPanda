@@ -1,6 +1,6 @@
 # wiRedPanda Development Container
 
-This directory contains the configuration for a streamlined containerized development environment for wiRedPanda using Ubuntu 22.04 LTS.
+This directory contains the configuration for a streamlined containerized development environment for wiRedPanda using Ubuntu 24.04 LTS.
 
 ## 🚀 Quick Start
 
@@ -103,7 +103,7 @@ The container is configured to run in **offscreen mode** automatically (via test
 - Clean build: `rm -rf build`
 
 ### Permission Issues
-- The container user (developer) should have UID 1000
+- The container user (ubuntu) should have UID 1000
 - If issues persist, rebuild container with correct UID mapping
 
 ## 🔄 Updating the Container
@@ -135,7 +135,7 @@ Add environment variables in the `containerEnv` section of `devcontainer.json`.
 
 ## 🔒 Security Notes
 
-- Container runs as non-root user `developer`
+- Container runs as non-root user `ubuntu`
 - Minimal package installation for reduced attack surface
 - No X11 forwarding required (offscreen mode)
 
