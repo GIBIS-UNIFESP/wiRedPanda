@@ -952,7 +952,7 @@ void ArduinoCodeGen::loop()
             auto *buzzer = qobject_cast<Buzzer *>(pin.m_elm);
             if (!buzzer) continue;
             const QString inputSignal = otherPortName(buzzer->inputPort(0));
-            const int frequency = Buzzer::noteToFrequency(buzzer->audio());
+            const int frequency = static_cast<int>(buzzer->frequency());
             m_stream << QString("    if (%1) {").arg(inputSignal) << Qt::endl;
             m_stream << QString("        tone(%1, %2);").arg(pin.m_varName).arg(frequency) << Qt::endl;
             m_stream << QString("    } else {") << Qt::endl;

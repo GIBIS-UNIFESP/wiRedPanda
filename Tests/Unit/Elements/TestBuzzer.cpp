@@ -28,98 +28,65 @@ void TestBuzzer::testConstructorInitialization()
 {
     Buzzer buzzer;
 
-    // Verify element type
     QCOMPARE(buzzer.elementType(), ElementType::Buzzer);
-
-    // Verify element group is Output
     QCOMPARE(buzzer.elementGroup(), ElementGroup::Output);
-
-    // Verify has one input port
     QCOMPARE(buzzer.inputSize(), 1);
-
-    // Verify has no output ports
     QCOMPARE(buzzer.outputSize(), 0);
-
-    // Verify has audio property
-    QVERIFY(buzzer.hasAudio());
-
-    // Verify has label
+    QVERIFY(buzzer.hasFrequency());
+    QVERIFY(buzzer.hasVolume());
     QVERIFY(buzzer.hasLabel());
-
-    // Verify cannot rotate
     QVERIFY(!buzzer.isRotatable());
-
-    // Verify can change skin
     QVERIFY(buzzer.canChangeSkin());
 }
 
 void TestBuzzer::testCopyConstructor()
 {
     Buzzer original;
-    original.setAudio("C6");
+    original.setFrequency(440.0);
     Buzzer copy(original);
     AudioElementTestHelpers::testCopyConstructor(original, copy);
 }
 
 // ============================================================================
-// Audio Accessor Tests
+// Frequency Tests
 // ============================================================================
 
-void TestBuzzer::testAudioNote()
+void TestBuzzer::testDefaultFrequency()
 {
     Buzzer buzzer;
-
-    // Set a note and verify it's stored
-    buzzer.setAudio("E6");
-    QCOMPARE(buzzer.audio(), QString("E6"));
+    QCOMPARE(buzzer.frequency(), 1047.0);
 }
 
-void TestBuzzer::testAudioNoteEmpty()
+void TestBuzzer::testFrequency()
 {
     Buzzer buzzer;
 
-    // Default constructed buzzer should have empty note
-    QCOMPARE(buzzer.audio(), QString{});
+    buzzer.setFrequency(440.0);
+    QCOMPARE(buzzer.frequency(), 440.0);
 }
 
-// ============================================================================
-// Audio Configuration Tests
-// ============================================================================
-
-void TestBuzzer::testSetAudioWithValidNote()
+void TestBuzzer::testSetFrequency()
 {
     Buzzer buzzer;
 
-    // Set audio with valid note name
+    buzzer.setFrequency(880.0);
+    QCOMPARE(buzzer.frequency(), 880.0);
+
+    buzzer.setFrequency(2000.0);
+    QCOMPARE(buzzer.frequency(), 2000.0);
+}
+
+void TestBuzzer::testSetAudioBackwardCompat()
+{
+    Buzzer buzzer;
+
+    // setAudio("C6") should set frequency to 1047
     buzzer.setAudio("C6");
+    QCOMPARE(buzzer.frequency(), 1047.0);
 
-    // Audio note should be set regardless of device availability
-    QCOMPARE(buzzer.audio(), QString("C6"));
-}
-
-void TestBuzzer::testSetAudioWithEmptyNote()
-{
-    Buzzer buzzer;
-
-    // Set audio with empty note - should return early without changing note
-    buzzer.setAudio("");
-
-    // Note should remain empty
-    QCOMPARE(buzzer.audio(), QString{});
-}
-
-void TestBuzzer::testAudioPersistence()
-{
-    Buzzer buzzer;
-
-    // Set audio multiple times and verify persistence
-    buzzer.setAudio("D5");
-    QString note1 = buzzer.audio();
-    QCOMPARE(note1, QString("D5"));
-
-    buzzer.setAudio("E6");
-    QString note2 = buzzer.audio();
-    QCOMPARE(note2, QString("E6"));
+    // setAudio("A7") should set frequency to 3520
+    buzzer.setAudio("A7");
+    QCOMPARE(buzzer.frequency(), 3520.0);
 }
 
 // ============================================================================
@@ -176,18 +143,15 @@ void TestBuzzer::testUnmute()
 // Serialization Tests
 // ============================================================================
 
-void TestBuzzer::testSaveNote()
+void TestBuzzer::testSaveFrequency()
 {
     Buzzer buzzer;
-    buzzer.setAudio("C6");
+    buzzer.setFrequency(440.0);
 
-    // Save to stream
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-
     buzzer.save(stream);
 
-    // Verify data was written
     QVERIFY(data.size() > 0);
 }
 
@@ -210,18 +174,17 @@ void TestBuzzer::testLoadVersionOld()
         QVersionNumber version = Serialization::readPandaHeader(stream);
         workspace.load(stream, version, fileInfo.absolutePath());
 
-        // Verify that buzzers loaded successfully from old format
         const auto elements = workspace.scene()->elements();
         bool foundBuzzer = false;
 
         for (GraphicElement *elem : elements) {
             if (elem->elementType() == ElementType::Buzzer) {
-                Buzzer *buzzer = dynamic_cast<Buzzer *>(elem);
+                auto *buzzer = dynamic_cast<Buzzer *>(elem);
                 if (buzzer) {
                     foundBuzzer = true;
-                    // Just verify that the buzzer loaded without errors
-                    // and is a valid Buzzer object
                     QVERIFY(buzzer->elementType() == ElementType::Buzzer);
+                    // Old files stored note names — verify they converted to valid frequencies
+                    QVERIFY(buzzer->frequency() > 0.0);
                 }
             }
         }
@@ -236,9 +199,9 @@ void TestBuzzer::testLoadVersionOld()
 
 void TestBuzzer::testLoadVersionNew()
 {
-    // Create buzzer and save it
+    // Create buzzer and save it with a custom frequency
     auto buzzer1 = std::make_unique<Buzzer>();
-    buzzer1->setAudio("E6");
+    buzzer1->setFrequency(440.0);
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
@@ -253,7 +216,6 @@ void TestBuzzer::testLoadVersionNew()
 
     buzzer2->load(loadStream, context);
 
-    // Audio note should be loaded
-    QCOMPARE(buzzer2->audio(), QString("E6"));
+    QCOMPARE(buzzer2->frequency(), 440.0);
 }
 

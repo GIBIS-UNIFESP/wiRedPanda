@@ -14,14 +14,11 @@ private slots:
     void testConstructorInitialization();
     void testCopyConstructor();
 
-    // Audio accessor tests
-    void testAudioNote();
-    void testAudioNoteEmpty();
-
-    // Audio configuration tests
-    void testSetAudioWithValidNote();
-    void testSetAudioWithEmptyNote();
-    void testAudioPersistence();
+    // Frequency tests
+    void testFrequency();
+    void testDefaultFrequency();
+    void testSetFrequency();
+    void testSetAudioBackwardCompat();
 
     // Playback control tests
     void testPlayStopTransition();
@@ -35,7 +32,7 @@ private slots:
     void testUnmute();
 
     // Serialization tests
-    void testSaveNote();
+    void testSaveFrequency();
     void testLoadVersionOld();
     void testLoadVersionNew();
 };

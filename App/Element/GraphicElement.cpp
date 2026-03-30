@@ -533,35 +533,6 @@ QString GraphicElement::nextColor() const
     return "White"; // Standard
 }
 
-// Audio note cycle (ascending): C6 D6 E6 F6 G6 A7 B7 C7 (wraps back to C6)
-// The jump from G6 to A7 is intentional — the note names follow the piano
-// naming scheme used in the buzzer audio assets
-QString GraphicElement::previousAudio() const
-{
-    if (audio() == "C6") return "C7";
-    if (audio() == "D6") return "C6";
-    if (audio() == "E6") return "D6";
-    if (audio() == "F6") return "E6";
-    if (audio() == "G6") return "F6";
-    if (audio() == "A7") return "G6";
-    if (audio() == "B7") return "A7";
-    if (audio() == "C7") return "B7";
-    return "C6";
-}
-
-QString GraphicElement::nextAudio() const
-{
-    if (audio() == "C6") return "D6";
-    if (audio() == "D6") return "E6";
-    if (audio() == "E6") return "F6";
-    if (audio() == "F6") return "G6";
-    if (audio() == "G6") return "A7";
-    if (audio() == "A7") return "B7";
-    if (audio() == "B7") return "C7";
-    if (audio() == "C7") return "C6";
-    return "C6";
-}
-
 void GraphicElement::updateTheme()
 {
     const ThemeAttributes theme = ThemeManager::attributes();

@@ -22,7 +22,7 @@ struct ElementInfo<Buzzer> {
         .minInputSize = 1,
         .maxInputSize = 1,
         .canChangeSkin = true,
-        .hasAudio = true,
+        .hasFrequency = true,
         .hasLabel = true,
         .hasVolume = true,
         .rotatable = false,
@@ -63,6 +63,7 @@ Buzzer::Buzzer(QGraphicsItem *parent)
 
     if (m_hasOutputDevice) {
         m_generator = new ToneGenerator(this);
+        m_generator->setFrequency(m_frequency);
         m_sink = new QAudioSink(ToneGenerator::format(), this);
         m_sink->setVolume(static_cast<qreal>(m_volume));
     }
@@ -80,19 +81,20 @@ void Buzzer::refresh()
     (inputValue == Status::Active) ? play() : stop();
 }
 
-void Buzzer::setAudio(const QString &note)
+double Buzzer::frequency() const
 {
-    if (note.isEmpty()) {
-        return;
-    }
+    return m_frequency;
+}
 
-    m_note = note;
+void Buzzer::setFrequency(double freq)
+{
+    m_frequency = freq;
 
     if (!m_hasOutputDevice) {
         return;
     }
 
-    m_generator->setFrequency(noteToFrequency(note));
+    m_generator->setFrequency(freq);
 
     // If already playing, restart so the new frequency takes effect immediately
     if (m_isPlaying) {
@@ -102,9 +104,13 @@ void Buzzer::setAudio(const QString &note)
     }
 }
 
-QString Buzzer::audio() const
+void Buzzer::setAudio(const QString &note)
 {
-    return m_note;
+    if (note.isEmpty()) {
+        return;
+    }
+
+    setFrequency(noteToFrequency(note));
 }
 
 bool Buzzer::isPlaying() const
@@ -149,10 +155,6 @@ void Buzzer::play()
     setPixmap(1);
 
     if (m_hasOutputDevice) {
-        if (m_note.isEmpty()) {
-            setAudio("C6");
-        }
-
         m_generator->start();
         m_sink->start(m_generator);
     }
@@ -191,7 +193,7 @@ void Buzzer::save(QDataStream &stream) const
     GraphicElement::save(stream);
 
     QMap<QString, QVariant> map;
-    map.insert("note", audio());
+    map.insert("frequency", m_frequency);
     map.insert("volume", static_cast<double>(m_volume));
 
     stream << map;
@@ -202,7 +204,6 @@ void Buzzer::load(QDataStream &stream, SerializationContext &context)
     GraphicElement::load(stream, context);
 
     if (!VersionInfo::hasAudio(context.version)) {
-        // Buzzer audio was added in v2.4; nothing to read for earlier files
         return;
     }
 
@@ -213,12 +214,16 @@ void Buzzer::load(QDataStream &stream, SerializationContext &context)
     }
 
     if (VersionInfo::hasQMapFormat(context.version)) {
-        // v4.1+ uses a key-value map for forward-compatible extensibility
         QMap<QString, QVariant> map; stream >> map;
 
-        if (map.contains("note")) {
+        // New format: frequency in Hz
+        if (map.contains("frequency")) {
+            setFrequency(map.value("frequency").toDouble());
+        } else if (map.contains("note")) {
+            // Old format: note name → convert to frequency
             setAudio(map.value("note").toString());
         }
+
         if (map.contains("volume")) {
             setVolume(map.value("volume").toFloat());
         }

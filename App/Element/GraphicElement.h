@@ -206,12 +206,6 @@ public:
     /// Sets the audio playback volume to \a vol (0.0–1.0).
     virtual void setVolume(float vol);
 
-    /// Returns the name of the next audio file in the element's audio list.
-    QString nextAudio() const;
-
-    /// Returns the name of the previous audio file in the element's audio list.
-    QString previousAudio() const;
-
     // --- Color Properties ---
 
     /// Returns the name of the color currently applied to this element.
