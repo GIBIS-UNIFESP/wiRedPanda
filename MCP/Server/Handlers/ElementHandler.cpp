@@ -207,6 +207,9 @@ QJsonObject ElementHandler::handleListElements(const QJsonObject &, const QJsonV
         if (element->hasAudio()) {
             elementObj["audio"] = element->audio();
         }
+        if (element->hasVolume()) {
+            elementObj["volume"] = static_cast<double>(element->volume());
+        }
         if (const auto *inputElm = qobject_cast<const GraphicElementInput *>(element)) {
             elementObj["locked"] = inputElm->isLocked();
         }
@@ -407,6 +410,16 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
 
             inputElm->setLocked(newLocked);
         }
+    }
+
+    if (params.contains("volume") && element->hasVolume()) {
+        float oldVolume = element->volume();
+        float newVolume = static_cast<float>(params.value("volume").toDouble());
+
+        oldProperties["volume"] = static_cast<double>(oldVolume);
+        newProperties["volume"] = static_cast<double>(newVolume);
+
+        element->setVolume(newVolume);
     }
 
     if (params.contains("skin") && element->canChangeSkin()) {

@@ -1769,6 +1769,12 @@
                   "type": "boolean",
                   "description": "Lock input element to prevent user interaction"
                 },
+                "volume": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "Volume level 0.0-1.0 (AudioBox, Buzzer)"
+                },
                 "skin": {
                   "type": "string",
                   "description": "Custom skin image path (empty string restores default)"

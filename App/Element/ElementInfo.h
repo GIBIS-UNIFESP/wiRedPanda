@@ -36,6 +36,7 @@ struct ElementConstraints {
     bool hasDelay = false;
     bool hasLabel = false;
     bool hasTruthTable = false;
+    bool hasVolume = false;
     bool rotatable = true;
 };
 
@@ -94,6 +95,7 @@ inline ElementMetadata metadataFromConstraints(const ElementConstraints &c)
     meta.hasDelay = c.hasDelay;
     meta.hasLabel = c.hasLabel;
     meta.hasTruthTable = c.hasTruthTable;
+    meta.hasVolume = c.hasVolume;
     meta.rotatable = c.rotatable;
     return meta;
 }

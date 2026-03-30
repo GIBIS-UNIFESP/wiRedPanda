@@ -22,6 +22,7 @@ class ElementPropertiesTests(MCPTestBase):
         tests = [
             self.test_delay_property,
             self.test_trigger_property,
+            self.test_volume_property,
             self.test_locked_property,
             self.test_skin_property,
             self.test_list_elements_extended,
@@ -90,6 +91,32 @@ class ElementPropertiesTests(MCPTestBase):
             return False
 
         self.infrastructure.output.success("trigger property works")
+        return True
+
+    async def test_volume_property(self) -> bool:
+        """Test setting volume on a Buzzer element."""
+        print("\n=== Volume Property Test ===")
+        self.set_test_context("test_volume_property")
+
+        await self.send_command("new_circuit", {})
+
+        buz_resp = await self.send_command("create_element", {"type": "Buzzer", "x": 100.0, "y": 100.0})
+        if not buz_resp.success or not buz_resp.result:
+            print("Failed to create Buzzer")
+            return False
+        buz_id = buz_resp.result["element_id"]
+
+        resp = await self.send_command("set_element_properties", {"element_id": buz_id, "volume": 0.75})
+        if not resp.success:
+            print(f"Failed to set volume: {resp.error}")
+            return False
+
+        new_props = resp.result.get("new_properties", {}) if resp.result else {}
+        if abs(new_props.get("volume", -1) - 0.75) > 0.01:
+            print(f"Volume not set correctly: {new_props}")
+            return False
+
+        self.infrastructure.output.success("volume property works")
         return True
 
     async def test_locked_property(self) -> bool:

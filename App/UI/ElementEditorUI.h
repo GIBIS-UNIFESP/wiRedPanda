@@ -92,6 +92,10 @@ public:
     // Truth table
     QPushButton *pushButtonTruthTable = nullptr;
 
+    // Volume
+    QLabel *labelVolume = nullptr;
+    QSlider *sliderVolume = nullptr;
+
     // Audio
     QLabel *labelAudioBox = nullptr;
     QLabel *labelAudio = nullptr;

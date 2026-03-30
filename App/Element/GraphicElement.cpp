@@ -664,6 +664,20 @@ bool GraphicElement::hasAudioBox() const
     return ElementMetadataRegistry::metadata(m_elementType).hasAudioBox;
 }
 
+bool GraphicElement::hasVolume() const
+{
+    return ElementMetadataRegistry::metadata(m_elementType).hasVolume;
+}
+
+float GraphicElement::volume() const
+{
+    return 0.0f;
+}
+
+void GraphicElement::setVolume(float)
+{
+}
+
 QList<PropertyDescriptor> GraphicElement::editableProperties() const
 {
     QList<PropertyDescriptor> props;
@@ -673,6 +687,7 @@ QList<PropertyDescriptor> GraphicElement::editableProperties() const
     if (hasDelay())      props.append({PropertyDescriptor::Type::Delay});
     if (hasAudio())      props.append({PropertyDescriptor::Type::Audio});
     if (hasAudioBox())   props.append({PropertyDescriptor::Type::AudioBox});
+    if (hasVolume())     props.append({PropertyDescriptor::Type::Volume});
     if (hasTrigger())    props.append({PropertyDescriptor::Type::Trigger});
     if (hasTruthTable()) props.append({PropertyDescriptor::Type::TruthTable});
     if (canChangeSkin())    props.append({PropertyDescriptor::Type::Skin});

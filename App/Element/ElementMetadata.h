@@ -58,6 +58,7 @@ struct ElementMetadata {
     bool hasDelay = false;      ///< True if the element exposes a configurable clock phase delay.
     bool hasLabel = false;      ///< True if the element supports a user-editable label.
     bool hasTruthTable = false; ///< True if the element has an editable truth table.
+    bool hasVolume = false;     ///< True if the element supports volume control.
     bool rotatable = true;      ///< True if the user can rotate this element.
 };
 

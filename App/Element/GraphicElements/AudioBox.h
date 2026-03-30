@@ -39,11 +39,15 @@ public:
     bool isPlaying() const;
     /// Returns \c true if audio output is muted.
     bool isMuted() const;
+    /// Returns the audio playback volume (0.0–1.0).
+    float volume() const override;
 
     // --- Playback Control ---
 
     /// Mutes or unmutes playback according to \a mute.
     void mute(const bool mute = true);
+    /// Sets the audio playback volume to \a vol (0.0–1.0).
+    void setVolume(float vol) override;
     /// Sets the audio source to \a audioPath and reloads the player.
     void setAudio(const QString &audioPath) override;
     /// Refreshes the visual appearance based on current state.
@@ -71,6 +75,7 @@ private:
     QFileInfo m_audio;
     QMediaPlayer *m_player = nullptr;
 
+    float m_volume = 0.5f;
     bool m_hasOutputDevice = false;
     bool m_isPlaying = false;
     bool m_muted = false;
