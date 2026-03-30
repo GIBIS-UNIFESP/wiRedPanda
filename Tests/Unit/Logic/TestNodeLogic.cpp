@@ -8,15 +8,16 @@
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/Node.h"
+#include "Tests/Common/TestUtils.h"
 
-static void initNodeSrc(GraphicElement &elm) { elm.initSimulationVectors(0, 1); }
-static void initNodeElm(GraphicElement &elm) { elm.initSimulationVectors(elm.inputSize(), elm.outputSize()); }
+using TestUtils::initSrc;
+using TestUtils::initElm;
 
 void TestNodeLogic::init()
 {
     std::generate(m_inputs.begin(), m_inputs.end(), [] {
         auto *src = new InputVcc();
-        initNodeSrc(*src);
+        initSrc(*src);
         return src;
     });
 }
@@ -31,7 +32,7 @@ void TestNodeLogic::testNodeChainPropagation()
 {
     // Three Nodes in series: input -> n1 -> n2 -> n3
     Node n1, n2, n3;
-    initNodeElm(n1); initNodeElm(n2); initNodeElm(n3);
+    initElm(n1); initElm(n2); initElm(n3);
     n1.connectPredecessor(0, m_inputs.at(0), 0);
     n2.connectPredecessor(0, &n1, 0);
     n3.connectPredecessor(0, &n2, 0);
@@ -53,7 +54,7 @@ void TestNodeLogic::testNodeFanOut()
 {
     Node node;
     And and1, and2;
-    initNodeElm(node); initNodeElm(and1); initNodeElm(and2);
+    initElm(node); initElm(and1); initElm(and2);
 
     node.connectPredecessor(0, m_inputs.at(0), 0);
     and1.connectPredecessor(0, &node, 0);
