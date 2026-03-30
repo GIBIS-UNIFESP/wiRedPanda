@@ -162,6 +162,9 @@ void clockCycle(Simulation *simulation, InputSwitch *clk)
     simulation->update();
 }
 
+void initSrc(GraphicElement &elm) { elm.initSimulationVectors(0, 1); }
+void initElm(GraphicElement &elm) { elm.initSimulationVectors(elm.inputSize(), elm.outputSize()); }
+
 void clockToggle(Simulation *simulation, InputSwitch *clk)
 {
     if (!simulation) {

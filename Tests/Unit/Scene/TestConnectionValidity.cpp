@@ -73,14 +73,15 @@ void TestConnectionValidity::testPortDeletionDeletesConnection()
     conn->setEndPort(inPort2);
     scene.addItem(conn);
 
-    // Remove the output element
+    QCOMPARE(TestUtils::countConnections(&scene), 1);
+
     // When and1 is deleted, its output port is deleted, which automatically
     // deletes the connection (see QNEOutputPort destructor)
     scene.removeItem(and1);
     delete and1;
 
-    // After port removal, connection is already deleted by the port destructor.
-    // No need to verify connection status as the connection no longer exists.
+    // Verify the connection was cleaned up by the port destructor
+    QCOMPARE(TestUtils::countConnections(&scene), 0);
 }
 
 void TestConnectionValidity::testMultipleConnectionsStatus()

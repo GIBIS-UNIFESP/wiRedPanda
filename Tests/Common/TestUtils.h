@@ -199,6 +199,16 @@ void clockCycle(Simulation *simulation, InputSwitch *clk);
  * @param clk Clock input switch to toggle
  */
 void clockToggle(Simulation *simulation, InputSwitch *clk);
+/**
+ * @brief Initialize a source element for direct-logic testing (0 inputs, 1 output)
+ */
+void initSrc(GraphicElement &elm);
+
+/**
+ * @brief Initialize an element for direct-logic testing using its own port counts
+ */
+void initElm(GraphicElement &elm);
+
 } // namespace TestUtils
 
 /**

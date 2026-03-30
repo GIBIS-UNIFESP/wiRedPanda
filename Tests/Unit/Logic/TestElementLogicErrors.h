@@ -20,7 +20,7 @@ private slots:
     void testUnconnectedGate();
     void testDeepCascading();
     void testInvalidOutputPortIndex();
-    void testConnectionCycles();
+    void testSelfLoopOscillation();
     void testInputValueBoundary();
     void testGateWithZeroInputs();
 

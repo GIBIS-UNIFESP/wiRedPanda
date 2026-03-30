@@ -95,12 +95,9 @@ void TestLevel3Register1Bit::test1BitRegister() {
     // Test 1: Reset to 0
     reset->setOn(true);             // Reset=TRUE → NOT gate inverts it → Clear=FALSE (active-low assert)
     sim->update();
-    int q_val = TestUtils::getInputStatus(q);
-    int notq_val = TestUtils::getInputStatus(notQ);
-
-    // It's possible the Q and NotQ LED connections are swapped
-    // Let's just verify one of them is 0 and the other is 1
-    QCOMPARE(q_val + notq_val, 1);  // One should be 1, one should be 0
+    // After reset: Q=0, NotQ=1
+    QCOMPARE(TestUtils::getInputStatus(q), false);
+    QCOMPARE(TestUtils::getInputStatus(notQ), true);
 
     // Test 2: Write 1 on clock edge
     reset->setOn(false);            // De-assert reset (false = not resetting)

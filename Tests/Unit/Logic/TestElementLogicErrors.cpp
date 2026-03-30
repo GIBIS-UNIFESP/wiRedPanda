@@ -9,9 +9,10 @@
 #include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
+#include "Tests/Common/TestUtils.h"
 
-static void initErrSrc(GraphicElement &elm) { elm.initSimulationVectors(0, 1); }
-static void initErrElm(GraphicElement &elm) { elm.initSimulationVectors(elm.inputSize(), elm.outputSize()); }
+using TestUtils::initSrc;
+using TestUtils::initElm;
 
 // ============================================================
 // Robustness Tests — Error Conditions and Boundary Behavior
@@ -22,7 +23,7 @@ void TestElementLogicErrors::testInvalidInputPortIndex()
     And gate;
     gate.setInputSize(4);
     InputVcc in0, in1, in2, in3;
-    initErrElm(gate); initErrSrc(in0); initErrSrc(in1); initErrSrc(in2); initErrSrc(in3);
+    initElm(gate); initSrc(in0); initSrc(in1); initSrc(in2); initSrc(in3);
 
     gate.connectPredecessor(0, &in0, 0);
     gate.connectPredecessor(1, &in1, 0);
@@ -34,18 +35,18 @@ void TestElementLogicErrors::testInvalidInputPortIndex()
     in2.setOutputValue(true);
     in3.setOutputValue(true);
     gate.updateLogic();
-    QCOMPARE(gate.outputValue() == Status::Active, true);
+    QCOMPARE(gate.outputValue(), Status::Active);
 
     in3.setOutputValue(false);
     gate.updateLogic();
-    QCOMPARE(gate.outputValue() == Status::Active, false);
+    QCOMPARE(gate.outputValue(), Status::Inactive);
 }
 
 void TestElementLogicErrors::testNullPredecessor()
 {
     And andGate;
     InputVcc input;
-    initErrElm(andGate); initErrSrc(input);
+    initElm(andGate); initSrc(input);
     andGate.connectPredecessor(0, &input, 0);
 
     input.setOutputValue(true);
@@ -57,7 +58,7 @@ void TestElementLogicErrors::testNullPredecessor()
     QCOMPARE(andGate.outputValue(), Status::Unknown);
 
     Or orGate;
-    initErrElm(orGate);
+    initElm(orGate);
     orGate.connectPredecessor(0, &input, 0);
 
     input.setOutputValue(true);
@@ -72,17 +73,17 @@ void TestElementLogicErrors::testNullPredecessor()
 void TestElementLogicErrors::testDisconnectedInput()
 {
     And andGate;
-    initErrElm(andGate);
+    initElm(andGate);
     andGate.updateLogic();
     QCOMPARE(andGate.outputValue(), Status::Unknown);
 
     Or orGate;
-    initErrElm(orGate);
+    initElm(orGate);
     orGate.updateLogic();
     QCOMPARE(orGate.outputValue(), Status::Unknown);
 
     Not notGate;
-    initErrElm(notGate);
+    initElm(notGate);
     notGate.updateLogic();
     QCOMPARE(notGate.outputValue(), Status::Unknown);
 }
@@ -91,7 +92,7 @@ void TestElementLogicErrors::testMultipleConnectionsSamePort()
 {
     And gate;
     InputVcc first, second, other;
-    initErrElm(gate); initErrSrc(first); initErrSrc(second); initErrSrc(other);
+    initElm(gate); initSrc(first); initSrc(second); initSrc(other);
 
     gate.connectPredecessor(0, &first, 0);
     gate.connectPredecessor(1, &other, 0);
@@ -102,22 +103,22 @@ void TestElementLogicErrors::testMultipleConnectionsSamePort()
     other.setOutputValue(true);
 
     gate.updateLogic();
-    QCOMPARE(gate.outputValue() == Status::Active, false);
+    QCOMPARE(gate.outputValue(), Status::Inactive);
 
     second.setOutputValue(true);
     gate.updateLogic();
-    QCOMPARE(gate.outputValue() == Status::Active, true);
+    QCOMPARE(gate.outputValue(), Status::Active);
 
     first.setOutputValue(false);
     gate.updateLogic();
-    QCOMPARE(gate.outputValue() == Status::Active, true);
+    QCOMPARE(gate.outputValue(), Status::Active);
 }
 
 void TestElementLogicErrors::testRapidStateChanges()
 {
     And andGate;
     InputVcc input1, input2;
-    initErrElm(andGate); initErrSrc(input1); initErrSrc(input2);
+    initElm(andGate); initSrc(input1); initSrc(input2);
 
     andGate.connectPredecessor(0, &input1, 0);
     andGate.connectPredecessor(1, &input2, 0);
@@ -127,19 +128,19 @@ void TestElementLogicErrors::testRapidStateChanges()
         input2.setOutputValue(i % 3 == 0);
         andGate.updateLogic();
         bool expected = (i % 2 == 0) && (i % 3 == 0);
-        QCOMPARE(andGate.outputValue() == Status::Active, expected);
+        QCOMPARE(andGate.outputValue(), expected ? Status::Active : Status::Inactive);
     }
 }
 
 void TestElementLogicErrors::testUnconnectedGate()
 {
     And gate;
-    initErrElm(gate);
+    initElm(gate);
     gate.updateLogic();
     QCOMPARE(gate.outputValue(), Status::Unknown);
 
     Not notGate;
-    initErrElm(notGate);
+    initElm(notGate);
     notGate.updateLogic();
     QCOMPARE(notGate.outputValue(), Status::Unknown);
 }
@@ -148,8 +149,8 @@ void TestElementLogicErrors::testDeepCascading()
 {
     InputVcc in1, in2, in3, in4;
     And stage1, stage2, stage3;
-    initErrSrc(in1); initErrSrc(in2); initErrSrc(in3); initErrSrc(in4);
-    initErrElm(stage1); initErrElm(stage2); initErrElm(stage3);
+    initSrc(in1); initSrc(in2); initSrc(in3); initSrc(in4);
+    initElm(stage1); initElm(stage2); initElm(stage3);
 
     stage1.connectPredecessor(0, &in1, 0);
     stage1.connectPredecessor(1, &in2, 0);
@@ -165,24 +166,24 @@ void TestElementLogicErrors::testDeepCascading()
     stage1.updateLogic();
     stage2.updateLogic();
     stage3.updateLogic();
-    QCOMPARE(stage3.outputValue() == Status::Active, true);
+    QCOMPARE(stage3.outputValue(), Status::Active);
 
     in1.setOutputValue(false);
     stage1.updateLogic();
     stage2.updateLogic();
     stage3.updateLogic();
-    QCOMPARE(stage1.outputValue() == Status::Active, false);
-    QCOMPARE(stage2.outputValue() == Status::Active, false);
-    QCOMPARE(stage3.outputValue() == Status::Active, false);
+    QCOMPARE(stage1.outputValue(), Status::Inactive);
+    QCOMPARE(stage2.outputValue(), Status::Inactive);
+    QCOMPARE(stage3.outputValue(), Status::Inactive);
 
     in1.setOutputValue(true);
     in3.setOutputValue(false);
     stage1.updateLogic();
     stage2.updateLogic();
     stage3.updateLogic();
-    QCOMPARE(stage1.outputValue() == Status::Active, true);
-    QCOMPARE(stage2.outputValue() == Status::Active, false);
-    QCOMPARE(stage3.outputValue() == Status::Active, false);
+    QCOMPARE(stage1.outputValue(), Status::Active);
+    QCOMPARE(stage2.outputValue(), Status::Inactive);
+    QCOMPARE(stage3.outputValue(), Status::Inactive);
 }
 
 void TestElementLogicErrors::testInvalidOutputPortIndex()
@@ -191,48 +192,48 @@ void TestElementLogicErrors::testInvalidOutputPortIndex()
     Or orGate;
     orGate.setInputSize(3);
     Not notGate;
-    initErrElm(andGate); initErrElm(orGate); initErrElm(notGate);
+    initElm(andGate); initElm(orGate); initElm(notGate);
 
     QCOMPARE(andGate.simOutputSize(), 1);
     QCOMPARE(orGate.simOutputSize(), 1);
     QCOMPARE(notGate.simOutputSize(), 1);
 
-    QCOMPARE(andGate.outputValue(0) == Status::Active, false);
-    QCOMPARE(orGate.outputValue(0) == Status::Active, false);
-    QCOMPARE(notGate.outputValue(0) == Status::Active, false);
+    QCOMPARE(andGate.outputValue(0), Status::Inactive);
+    QCOMPARE(orGate.outputValue(0), Status::Inactive);
+    QCOMPARE(notGate.outputValue(0), Status::Inactive);
 
     // Multi-output source
     InputVcc input;
     input.initSimulationVectors(0, 4);
     input.setOutputValue(0, Status::Active);
     QCOMPARE(input.simOutputSize(), 4);
-    QCOMPARE(input.outputValue(0) == Status::Active, true);
-    QCOMPARE(input.outputValue(3) == Status::Active, false);
+    QCOMPARE(input.outputValue(0), Status::Active);
+    QCOMPARE(input.outputValue(3), Status::Inactive);
 
     input.setOutputValue(1, true);
     input.setOutputValue(3, true);
-    QCOMPARE(input.outputValue(0) == Status::Active, true);
-    QCOMPARE(input.outputValue(1) == Status::Active, true);
-    QCOMPARE(input.outputValue(2) == Status::Active, false);
-    QCOMPARE(input.outputValue(3) == Status::Active, true);
+    QCOMPARE(input.outputValue(0), Status::Active);
+    QCOMPARE(input.outputValue(1), Status::Active);
+    QCOMPARE(input.outputValue(2), Status::Inactive);
+    QCOMPARE(input.outputValue(3), Status::Active);
 }
 
-void TestElementLogicErrors::testConnectionCycles()
+void TestElementLogicErrors::testSelfLoopOscillation()
 {
     Not notGate;
-    initErrElm(notGate);
+    initElm(notGate);
     notGate.connectPredecessor(0, &notGate, 0);
 
-    QCOMPARE(notGate.outputValue() == Status::Active, false);
+    QCOMPARE(notGate.outputValue(), Status::Inactive);
 
     notGate.updateLogic();
-    QCOMPARE(notGate.outputValue() == Status::Active, true);
+    QCOMPARE(notGate.outputValue(), Status::Active);
 
     notGate.updateLogic();
-    QCOMPARE(notGate.outputValue() == Status::Active, false);
+    QCOMPARE(notGate.outputValue(), Status::Inactive);
 
     notGate.updateLogic();
-    QCOMPARE(notGate.outputValue() == Status::Active, true);
+    QCOMPARE(notGate.outputValue(), Status::Active);
 }
 
 void TestElementLogicErrors::testInputValueBoundary()
@@ -240,7 +241,7 @@ void TestElementLogicErrors::testInputValueBoundary()
     And gate;
     gate.setInputSize(4);
     InputVcc in0, in1, in2, in3;
-    initErrElm(gate); initErrSrc(in0); initErrSrc(in1); initErrSrc(in2); initErrSrc(in3);
+    initElm(gate); initSrc(in0); initSrc(in1); initSrc(in2); initSrc(in3);
 
     gate.connectPredecessor(0, &in0, 0);
     gate.connectPredecessor(1, &in1, 0);
@@ -253,7 +254,7 @@ void TestElementLogicErrors::testInputValueBoundary()
         in2.setOutputValue((combo & 0x4) != 0);
         in3.setOutputValue((combo & 0x8) != 0);
         gate.updateLogic();
-        QCOMPARE(gate.outputValue() == Status::Active, combo == 15);
+        QCOMPARE(gate.outputValue(), (combo == 15) ? Status::Active : Status::Inactive);
     }
 }
 
@@ -263,13 +264,13 @@ void TestElementLogicErrors::testGateWithZeroInputs()
     andGate.setInputSize(0);
     andGate.initSimulationVectors(0, 1);
     andGate.updateLogic();
-    QCOMPARE(andGate.outputValue() == Status::Active, true);
+    QCOMPARE(andGate.outputValue(), Status::Active);
 
     Or orGate;
     orGate.setInputSize(0);
     orGate.initSimulationVectors(0, 1);
     orGate.updateLogic();
-    QCOMPARE(orGate.outputValue() == Status::Active, false);
+    QCOMPARE(orGate.outputValue(), Status::Inactive);
 }
 
 void TestElementLogicErrors::testInvalidPropagatesChain()
@@ -277,7 +278,7 @@ void TestElementLogicErrors::testInvalidPropagatesChain()
     And andGate;
     Not notGate;
     InputVcc input;
-    initErrElm(andGate); initErrElm(notGate); initErrSrc(input);
+    initElm(andGate); initElm(notGate); initSrc(input);
 
     andGate.connectPredecessor(0, &input, 0);
     // port 1 is left null → AND will produce Unknown
