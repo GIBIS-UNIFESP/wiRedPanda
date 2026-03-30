@@ -57,7 +57,8 @@ AudioBox::AudioBox(QGraphicsItem *parent)
 
     // Detect audio hardware at construction time; all subsequent audio calls are
     // guarded by m_hasOutputDevice so the element works silently in headless/CI environments.
-    m_hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
+    static const bool hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
+    m_hasOutputDevice = hasOutputDevice;
 
     if (m_hasOutputDevice) {
         m_player = new QMediaPlayer(this);
