@@ -20,11 +20,11 @@
 /// Embedded ICs use "embedded:blobName"; file-backed ICs use their canonical file path.
 static QString icModuleKey(const IC *ic)
 {
-    if (ic->isEmbeddedIC()) {
+    if (ic->isEmbedded()) {
         return QStringLiteral("embedded:") + ic->blobName();
     }
-    QString key = QFileInfo(ic->icFile()).canonicalFilePath();
-    return key.isEmpty() ? ic->icFile() : key;
+    QString key = QFileInfo(ic->file()).canonicalFilePath();
+    return key.isEmpty() ? ic->file() : key;
 }
 
 SystemVerilogCodeGen::SystemVerilogCodeGen(const QString &fileName, const QVector<GraphicElement *> &elements)
@@ -224,7 +224,7 @@ void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &eleme
         info.prototypeIC = ic;
 
         // Derive module name from file basename
-        QString baseName = ic->isEmbeddedIC() ? ic->blobName() : QFileInfo(ic->icFile()).baseName();
+        QString baseName = ic->isEmbedded() ? ic->blobName() : QFileInfo(ic->file()).baseName();
         info.moduleName = removeForbiddenChars(stripAccents(baseName));
         if (isSystemVerilogReserved(info.moduleName)) {
             info.moduleName = "m_" + info.moduleName;
@@ -276,7 +276,7 @@ void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &eleme
         m_icModules.insert(key, info);
 
         // Recurse into internal elements to discover nested IC types
-        collectICTypes(ic->icElements());
+        collectICTypes(ic->internalElements());
     }
 }
 
@@ -336,7 +336,7 @@ void SystemVerilogCodeGen::generateICModules()
 
             // Check if all nested IC types are already generated
             bool allDepsReady = true;
-            for (auto *elm : std::as_const(info.prototypeIC->icElements())) {
+            for (auto *elm : std::as_const(info.prototypeIC->internalElements())) {
                 if (elm->elementType() != ElementType::IC) {
                     continue;
                 }
@@ -387,7 +387,7 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     // Structural (gate-level) emission — fallback for unrecognized patterns
 
     // Emit module header
-    const QString source = ic->isEmbeddedIC() ? ic->blobName() : QFileInfo(ic->icFile()).fileName();
+    const QString source = ic->isEmbedded() ? ic->blobName() : QFileInfo(ic->file()).fileName();
     m_stream << "// Module for " << ic->label() << " (generated from " << source << ")" << Qt::endl;
     m_stream << "module " << info.moduleName << " (" << Qt::endl;
 
@@ -406,9 +406,9 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     // feeds internal logic, so map it to the module input name.
     // Also build a list of non-boundary elements for processing.
     QSet<GraphicElement *> boundaryNodes;
-    for (int i = 0; i < ic->icInputs().size(); ++i) {
-        // m_icInputs[i] is the Node's input port. Get the Node element.
-        auto *nodeElm = ic->icInputs()[i]->graphicElement();
+    for (int i = 0; i < ic->internalInputs().size(); ++i) {
+        // m_internalInputs[i] is the Node's input port. Get the Node element.
+        auto *nodeElm = ic->internalInputs()[i]->graphicElement();
         // The Node's output port is what internal elements connect to.
         m_varMap[nodeElm->outputPort(0)] = info.inputNames[i];
         boundaryNodes.insert(nodeElm);
@@ -416,15 +416,15 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
 
     // Map boundary output ports: the output Node's output port gets the output name.
     // The assign for these is emitted separately at end of module.
-    for (int i = 0; i < ic->icOutputs().size(); ++i) {
-        auto *nodeElm = ic->icOutputs()[i]->graphicElement();
+    for (int i = 0; i < ic->internalOutputs().size(); ++i) {
+        auto *nodeElm = ic->internalOutputs()[i]->graphicElement();
         m_varMap[nodeElm->outputPort(0)] = info.outputNames[i];
         boundaryNodes.insert(nodeElm);
     }
 
     // Build list of internal (non-boundary) elements
     QVector<GraphicElement *> internalElements;
-    for (auto *elm : std::as_const(ic->icElements())) {
+    for (auto *elm : std::as_const(ic->internalElements())) {
         if (!boundaryNodes.contains(elm)) {
             internalElements.append(elm);
         }
@@ -441,9 +441,9 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
 
     // Emit output assignments: trace what drives each IC output node
     m_stream << Qt::endl;
-    for (int i = 0; i < ic->icOutputs().size(); ++i) {
-        // m_icOutputs[i] is the Node's output port. Get the Node element.
-        auto *nodeElm = ic->icOutputs()[i]->graphicElement();
+    for (int i = 0; i < ic->internalOutputs().size(); ++i) {
+        // m_internalOutputs[i] is the Node's output port. Get the Node element.
+        auto *nodeElm = ic->internalOutputs()[i]->graphicElement();
         // The Node's input port receives from internal logic
         QString value = otherPortName(nodeElm->inputPort(0));
         m_stream << "assign " << info.outputNames[i] << " = " << value << ";" << Qt::endl;
@@ -830,7 +830,7 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
                 m_stream << "wire " << wireName << ";" << Qt::endl;
             }
 
-            // Do NOT recurse into ic->icElements() — the IC module handles its internals
+            // Do NOT recurse into ic->internalElements() — the IC module handles its internals
         } else {
             // [ISSUE-9] Skip top-level input elements — they're already declared as module ports.
             // IC-internal inputs won't have pre-existing map entries, so they proceed normally.

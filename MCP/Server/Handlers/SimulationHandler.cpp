@@ -618,11 +618,11 @@ QJsonObject SimulationHandler::handleEmbedIC(const QJsonObject &params, const QJ
 
         auto *ic = static_cast<IC *>(elm);
 
-        if (ic->isEmbeddedIC()) {
+        if (ic->isEmbedded()) {
             return createErrorResponse("IC is already embedded", requestId);
         }
 
-        if (ic->icFile().isEmpty()) {
+        if (ic->file().isEmpty()) {
             return createErrorResponse("IC has no referenced file", requestId);
         }
 
@@ -631,7 +631,7 @@ QJsonObject SimulationHandler::handleEmbedIC(const QJsonObject &params, const QJ
             return createErrorResponse("Project must be saved before embedding ICs", requestId);
         }
 
-        const QString resolvedPath = QDir(contextDir).absoluteFilePath(ic->icFile());
+        const QString resolvedPath = QDir(contextDir).absoluteFilePath(ic->file());
         QFile file(resolvedPath);
         if (!file.open(QIODevice::ReadOnly)) {
             return createErrorResponse(QString("Cannot read IC file: %1").arg(file.errorString()), requestId);
@@ -649,7 +649,7 @@ QJsonObject SimulationHandler::handleEmbedIC(const QJsonObject &params, const QJ
             return createErrorResponse(QString("Blob name collision: an embedded IC named '%1' already exists").arg(blobName), requestId);
         }
 
-        const int count = reg->embedICsByFile(ic->icFile(), fileBytes, blobName);
+        const int count = reg->embedICsByFile(ic->file(), fileBytes, blobName);
 
         QJsonObject result;
         result["blob_name"] = blobName;

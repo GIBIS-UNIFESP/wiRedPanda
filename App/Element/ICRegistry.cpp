@@ -64,7 +64,7 @@ QList<GraphicElement *> ICRegistry::findICsByFile(const QString &fileName) const
     for (auto *elm : m_scene->elements()) {
         if (elm->elementType() == ElementType::IC) {
             auto *ic = static_cast<IC *>(elm);
-            if (QFileInfo(ic->icFile()) == QFileInfo(fileName)) {
+            if (QFileInfo(ic->file()) == QFileInfo(fileName)) {
                 result.append(elm);
             }
         }
@@ -156,7 +156,7 @@ void ICRegistry::renameBlob(const QString &oldName, const QString &newName)
 
     // Update all IC instances referencing the old name
     for (auto *elm : m_scene->elements()) {
-        if (elm->isEmbeddedIC() && elm->blobName() == oldName) {
+        if (elm->isEmbedded() && elm->blobName() == oldName) {
             auto *ic = static_cast<IC *>(elm);
             ic->setBlobName(newName);
         }
@@ -172,7 +172,7 @@ QList<GraphicElement *> ICRegistry::findICsByBlobName(const QString &blobName) c
 {
     QList<GraphicElement *> result;
     for (auto *elm : m_scene->elements()) {
-        if (elm->isEmbeddedIC() && elm->blobName() == blobName) {
+        if (elm->isEmbedded() && elm->blobName() == blobName) {
             result.append(elm);
         }
     }

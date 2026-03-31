@@ -64,13 +64,13 @@ IC::IC(QGraphicsItem *parent)
 
 IC::~IC()
 {
-    qDeleteAll(m_icElements);
+    qDeleteAll(m_internalElements);
 }
 
 QStringList IC::externalFiles() const
 {
     QStringList result;
-    if (!isEmbeddedIC() && !m_file.isEmpty()) {
+    if (!isEmbedded() && !m_file.isEmpty()) {
         result.append(m_file);
     }
     return result;
@@ -82,7 +82,7 @@ void IC::save(QDataStream &stream) const
 
     QMap<QString, QVariant> map;
 
-    if (isEmbeddedIC()) {
+    if (isEmbedded()) {
         map.insert("name", m_blobName);
     } else if (!m_file.isEmpty()) {
         map.insert("name", QFileInfo(m_file).fileName());
@@ -144,19 +144,19 @@ void IC::loadInputs()
 {
     // Lock port count to exactly the number of inputs found in the sub-circuit file;
     // min == max == actual count prevents the user from adding/removing IC input ports
-    setMaxInputSize(static_cast<int>(m_icInputs.size()));
-    setMinInputSize(static_cast<int>(m_icInputs.size()));
-    setInputSize(static_cast<int>(m_icInputs.size()));
+    setMaxInputSize(static_cast<int>(m_internalInputs.size()));
+    setMinInputSize(static_cast<int>(m_internalInputs.size()));
+    setInputSize(static_cast<int>(m_internalInputs.size()));
     qCDebug(three) << "IC " << m_file << " -> Inputs. min: " << minInputSize() << ", max: " << maxInputSize() << ", current: " << inputSize() << ", m_inputs: " << m_inputPorts.size();
 
     // Mirror the required/default-status from the sub-circuit's input elements so that
     // unconnected optional inputs (e.g. enable lines) don't flag the IC as invalid
-    for (int inputIndex = 0; inputIndex < m_icInputs.size(); ++inputIndex) {
+    for (int inputIndex = 0; inputIndex < m_internalInputs.size(); ++inputIndex) {
         auto *inpPort = inputPort(inputIndex);
-        inpPort->setName(m_icInputLabels.at(inputIndex));
-        inpPort->setRequired(m_icInputs.at(inputIndex)->isRequired());
-        inpPort->setDefaultStatus(m_icInputs.at(inputIndex)->status());
-        inpPort->setStatus(m_icInputs.at(inputIndex)->status());
+        inpPort->setName(m_internalInputLabels.at(inputIndex));
+        inpPort->setRequired(m_internalInputs.at(inputIndex)->isRequired());
+        inpPort->setDefaultStatus(m_internalInputs.at(inputIndex)->status());
+        inpPort->setStatus(m_internalInputs.at(inputIndex)->status());
     }
 }
 
@@ -164,13 +164,13 @@ void IC::loadOutputs()
 {
     // Same port-count locking as loadInputs; outputs are always driven so
     // required/defaultStatus mirroring is not needed here
-    setMaxOutputSize(static_cast<int>(m_icOutputs.size()));
-    setMinOutputSize(static_cast<int>(m_icOutputs.size()));
-    setOutputSize(static_cast<int>(m_icOutputs.size()));
+    setMaxOutputSize(static_cast<int>(m_internalOutputs.size()));
+    setMinOutputSize(static_cast<int>(m_internalOutputs.size()));
+    setOutputSize(static_cast<int>(m_internalOutputs.size()));
 
-    for (int outputIndex = 0; outputIndex < m_icOutputs.size(); ++outputIndex) {
+    for (int outputIndex = 0; outputIndex < m_internalOutputs.size(); ++outputIndex) {
         auto *outPort = outputPort(outputIndex);
-        outPort->setName(m_icOutputLabels.at(outputIndex));
+        outPort->setName(m_internalOutputLabels.at(outputIndex));
     }
 
     qCDebug(three) << "IC " << m_file << " -> Outputs. min: " << minOutputSize() << ", max: " << maxOutputSize() << ", current: " << outputSize() << ", m_outputs: " << m_outputPorts.size();
@@ -182,12 +182,12 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
 
     // Reset all previously loaded state so a hot-reload starts from a clean slate
     m_blobName.clear();
-    m_icInputs.clear();
-    m_icOutputs.clear();
+    m_internalInputs.clear();
+    m_internalOutputs.clear();
     setInputSize(0);
     setOutputSize(0);
-    qDeleteAll(m_icElements);
-    m_icElements.clear();
+    qDeleteAll(m_internalElements);
+    m_internalElements.clear();
 
     // Try the full path combined with contextDir first (handles relative paths
     // and same-OS absolute paths). If not found, fall back to just the filename
@@ -336,16 +336,16 @@ void IC::processLoadedItems(const QList<QGraphicsItem *> &items)
         switch (elm->elementGroup()) {
         case ElementGroup::Input:  loadInputElement(elm);    break;
         case ElementGroup::Output: loadOutputElement(elm);   break;
-        default:                   m_icElements.append(elm); break;
+        default:                   m_internalElements.append(elm); break;
         }
     }
 
     // --- Build sorted, labelled port lists ---
-    m_icInputLabels = QVector<QString>(m_icInputs.size());
-    m_icOutputLabels = QVector<QString>(m_icOutputs.size());
+    m_internalInputLabels = QVector<QString>(m_internalInputs.size());
+    m_internalOutputLabels = QVector<QString>(m_internalOutputs.size());
     // Sort top-to-bottom by Y position so port order on the IC body matches visual layout
-    sortPorts(m_icInputs);
-    sortPorts(m_icOutputs);
+    sortPorts(m_internalInputs);
+    sortPorts(m_internalOutputs);
     loadInputsLabels();
     loadOutputsLabels();
     loadInputs();
@@ -377,12 +377,12 @@ void IC::loadFromBlob(const QByteArray &blob, const QString &contextDir)
     const auto items = Serialization::deserialize(stream, subCtx);
 
     // Parsing succeeded — now clear old state and apply
-    m_icInputs.clear();
-    m_icOutputs.clear();
+    m_internalInputs.clear();
+    m_internalOutputs.clear();
     setInputSize(0);
     setOutputSize(0);
-    qDeleteAll(m_icElements);
-    m_icElements.clear();
+    qDeleteAll(m_internalElements);
+    m_internalElements.clear();
     m_file.clear();
 
     processLoadedItems(items);
@@ -411,8 +411,8 @@ void IC::generatePixmap()
 
     QPainter tmpPainter(&tempPixmap);
 
-    const QColor bodyColor = isEmbeddedIC() ? QColor(90, 126, 160) : QColor(126, 126, 126);
-    const QColor outlineColor = isEmbeddedIC() ? QColor(58, 82, 110) : QColor(78, 78, 78);
+    const QColor bodyColor = isEmbedded() ? QColor(90, 126, 160) : QColor(126, 126, 126);
+    const QColor outlineColor = isEmbedded() ? QColor(58, 82, 110) : QColor(78, 78, 78);
 
     // IC body: styled like a physical DIP package
     tmpPainter.setBrush(bodyColor);
@@ -457,7 +457,7 @@ void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     event->accept();
 
-    if (isEmbeddedIC()) {
+    if (isEmbedded()) {
         if (auto *scene_ = qobject_cast<Scene *>(scene())) {
             Application::instance()->mainWindow()->openICInTab(
                 m_blobName, id(), scene_->icRegistry()->blob(m_blobName));
@@ -511,8 +511,8 @@ void IC::loadInputElement(GraphicElement *elm)
         nodeInput->setDefaultStatus(outputPort->status());
         nodeInput->setStatus(outputPort->status());
 
-        m_icInputs.append(nodeInput);
-        m_icElements.append(nodeElm);
+        m_internalInputs.append(nodeInput);
+        m_internalElements.append(nodeElm);
 
         // Re-route connections that previously started from the original input element
         // so they now originate from the proxy Node's output port
@@ -544,8 +544,8 @@ void IC::loadOutputElement(GraphicElement *elm)
             nodeOutput->setName(inputPort->name());
         }
 
-        m_icOutputs.append(nodeOutput);
-        m_icElements.append(nodeElm);
+        m_internalOutputs.append(nodeOutput);
+        m_internalElements.append(nodeElm);
 
         // Re-route connections that previously ended at the original output element
         // so they now terminate at the proxy Node's input port
@@ -589,8 +589,8 @@ void IC::sortPorts(QVector<QNEPort *> &map)
 
 void IC::loadInputsLabels()
 {
-    for (int portIndex = 0; portIndex < m_icInputs.size(); ++portIndex) {
-        auto *inputPort = m_icInputs.at(portIndex);
+    for (int portIndex = 0; portIndex < m_internalInputs.size(); ++portIndex) {
+        auto *inputPort = m_internalInputs.at(portIndex);
         auto *elm = inputPort->graphicElement();
         QString lb = elm->label();
 
@@ -605,14 +605,14 @@ void IC::loadInputsLabels()
             lb += " [" + elm->genericProperties() + "]";
         }
 
-        m_icInputLabels[portIndex] = lb;
+        m_internalInputLabels[portIndex] = lb;
     }
 }
 
 void IC::loadOutputsLabels()
 {
-    for (int portIndex = 0; portIndex < m_icOutputs.size(); ++portIndex) {
-        auto *outputPort = m_icOutputs.at(portIndex);
+    for (int portIndex = 0; portIndex < m_internalOutputs.size(); ++portIndex) {
+        auto *outputPort = m_internalOutputs.at(portIndex);
         auto *elm = outputPort->graphicElement();
         QString label = elm->label();
 
@@ -625,7 +625,7 @@ void IC::loadOutputsLabels()
             label += " [" + elm->genericProperties() + "]";
         }
 
-        m_icOutputLabels[portIndex] = label;
+        m_internalOutputLabels[portIndex] = label;
     }
 }
 
@@ -635,26 +635,26 @@ void IC::initializeSimulation()
     m_boundaryInputElements.clear();
     m_internalHasFeedback = false;
 
-    if (m_icElements.isEmpty()) {
+    if (m_internalElements.isEmpty()) {
         return;
     }
 
     // Initialize simulation vectors on all internal elements
-    for (auto *elm : std::as_const(m_icElements)) {
+    for (auto *elm : std::as_const(m_internalElements)) {
         elm->initSimulationVectors(elm->inputSize(), elm->outputSize());
     }
 
     // Build connection graph from internal QNEConnections
-    Simulation::buildConnectionGraph(m_icElements);
-    Simulation::connectWirelessElements(m_icElements);
+    Simulation::buildConnectionGraph(m_internalElements);
+    Simulation::connectWirelessElements(m_internalElements);
 
     // Wire wireless Rx predecessors to matching Tx outputs within the IC.
     // The top-level Simulation::connectWirelessElements() only sees outer scene elements,
     // so IC-internal wireless channels must be wired here.
-    Simulation::connectWirelessElements(m_icElements);
+    Simulation::connectWirelessElements(m_internalElements);
 
     // Initialize nested ICs recursively
-    for (auto *elm : std::as_const(m_icElements)) {
+    for (auto *elm : std::as_const(m_internalElements)) {
         if (elm->elementType() == ElementType::IC) {
             auto *ic = static_cast<IC *>(elm);
             ic->initializeSimulation();
@@ -662,7 +662,7 @@ void IC::initializeSimulation()
     }
 
     // Record boundary input elements (driven externally, should not run updateLogic)
-    for (auto *port : std::as_const(m_icInputs)) {
+    for (auto *port : std::as_const(m_internalInputs)) {
         if (auto *elm = port->graphicElement()) {
             m_boundaryInputElements.insert(elm);
         }
@@ -670,12 +670,12 @@ void IC::initializeSimulation()
 
     // Topological sort of internal elements
     QHash<GraphicElement *, QVector<GraphicElement *>> successors;
-    for (auto *elm : std::as_const(m_icElements)) {
+    for (auto *elm : std::as_const(m_internalElements)) {
         for (auto *outputPort : elm->outputs()) {
             for (auto *conn : outputPort->connections()) {
                 if (auto *endPort = conn->endPort()) {
                     auto *successor = endPort->graphicElement();
-                    if (successor && m_icElements.contains(successor)
+                    if (successor && m_internalElements.contains(successor)
                         && !successors[elm].contains(successor)) {
                         successors[elm].append(successor);
                     }
@@ -690,14 +690,14 @@ void IC::initializeSimulation()
     // doesn't see wireless dependencies.
     // NOTE: must match connectWirelessElements() — first Tx per label wins.
     QHash<QString, GraphicElement *> txMap;
-    for (auto *elm : std::as_const(m_icElements)) {
+    for (auto *elm : std::as_const(m_internalElements)) {
         if (elm->wirelessMode() == WirelessMode::Tx && !elm->label().isEmpty()) {
             if (!txMap.contains(elm->label())) {
                 txMap.insert(elm->label(), elm);
             }
         }
     }
-    for (auto *elm : std::as_const(m_icElements)) {
+    for (auto *elm : std::as_const(m_internalElements)) {
         if (elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
             if (auto *tx = txMap.value(elm->label(), nullptr)) {
                 if (!successors[tx].contains(elm)) {
@@ -708,11 +708,11 @@ void IC::initializeSimulation()
     }
 
     QHash<GraphicElement *, int> priorities;
-    calculatePriorities(m_icElements, successors, priorities);
-    const auto feedbackElements = findFeedbackNodes(m_icElements, successors);
+    calculatePriorities(m_internalElements, successors, priorities);
+    const auto feedbackElements = findFeedbackNodes(m_internalElements, successors);
     m_internalHasFeedback = !feedbackElements.isEmpty();
 
-    m_sortedInternalElements = m_icElements;
+    m_sortedInternalElements = m_internalElements;
     std::stable_sort(m_sortedInternalElements.begin(), m_sortedInternalElements.end(),
         [&priorities](const auto *a, const auto *b) {
             return priorities.value(const_cast<GraphicElement *>(a), -1)
@@ -732,10 +732,10 @@ void IC::updateLogic()
     }
 
     // Push external input values to boundary input nodes' GraphicElement outputs.
-    // Boundary input nodes are Nodes whose input port is in m_icInputs.
+    // Boundary input nodes are Nodes whose input port is in m_internalInputs.
     // We set their output value directly and skip them in the update loop.
-    for (int i = 0; i < inputSize() && i < m_icInputs.size(); ++i) {
-        auto *boundaryElement = m_icInputs.at(i)->graphicElement();
+    for (int i = 0; i < inputSize() && i < m_internalInputs.size(); ++i) {
+        auto *boundaryElement = m_internalInputs.at(i)->graphicElement();
         if (boundaryElement) {
             boundaryElement->setOutputValue(0, simInputs().at(i));
         }
@@ -771,8 +771,8 @@ void IC::updateLogic()
     }
 
     // Pull output values from boundary output nodes
-    for (int i = 0; i < outputSize() && i < m_icOutputs.size(); ++i) {
-        auto *boundaryElement = m_icOutputs.at(i)->graphicElement();
+    for (int i = 0; i < outputSize() && i < m_internalOutputs.size(); ++i) {
+        auto *boundaryElement = m_internalOutputs.at(i)->graphicElement();
         if (boundaryElement) {
             setOutputValue(i, boundaryElement->outputValue(0));
         }

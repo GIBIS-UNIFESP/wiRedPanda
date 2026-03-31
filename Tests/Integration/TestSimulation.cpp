@@ -928,7 +928,7 @@ void TestSimulation::testWirelessInsideIC()
 
     // Verify the IC internals contain wireless nodes
     int txCount = 0, rxCount = 0;
-    for (auto *elm : ic->icElements()) {
+    for (auto *elm : ic->internalElements()) {
         if (elm->wirelessMode() == WirelessMode::Tx) ++txCount;
         if (elm->wirelessMode() == WirelessMode::Rx) ++rxCount;
     }

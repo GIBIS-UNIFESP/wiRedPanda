@@ -76,8 +76,8 @@ SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &element
             c.isFileBacked = false;
             c.isEmbedded = false;
         } else {
-            c.isFileBacked &= !elm->isEmbeddedIC();
-            c.isEmbedded   &=  elm->isEmbeddedIC();
+            c.isFileBacked &= !elm->isEmbedded();
+            c.isEmbedded   &=  elm->isEmbedded();
         }
 
         // Static inputs (Vcc/Gnd) and regular inputs share morph compatibility

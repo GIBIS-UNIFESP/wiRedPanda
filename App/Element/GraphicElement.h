@@ -167,7 +167,7 @@ public:
     // --- Embedded IC ---
 
     /// Returns true if this element is an embedded IC (not file-backed). Base returns false.
-    virtual bool isEmbeddedIC() const { return false; }
+    virtual bool isEmbedded() const { return false; }
 
     /// Returns the blob name for embedded ICs, empty string otherwise. Base returns empty.
     virtual const QString &blobName() const { static const QString empty; return empty; }

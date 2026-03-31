@@ -1705,7 +1705,7 @@ void MainWindow::embedSelectedIC()
         return;
     }
     auto *firstIC = static_cast<IC *>(selected.first());
-    if (firstIC->icFile().isEmpty()) {
+    if (firstIC->file().isEmpty()) {
         return;
     }
 
@@ -1715,12 +1715,12 @@ void MainWindow::embedSelectedIC()
         return;
     }
 
-    QString blobName = resolveUniqueBlobName(QFileInfo(firstIC->icFile()).baseName(), scene);
+    QString blobName = resolveUniqueBlobName(QFileInfo(firstIC->file()).baseName(), scene);
     if (blobName.isEmpty()) {
         return;
     }
 
-    QFile file(QDir(contextDir).absoluteFilePath(firstIC->icFile()));
+    QFile file(QDir(contextDir).absoluteFilePath(firstIC->file()));
     if (!file.open(QIODevice::ReadOnly)) {
         QMessageBox::warning(this, tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
         return;
@@ -1728,7 +1728,7 @@ void MainWindow::embedSelectedIC()
     QByteArray fileBytes = file.readAll();
     file.close();
 
-    scene->icRegistry()->embedICsByFile(firstIC->icFile(), fileBytes, blobName);
+    scene->icRegistry()->embedICsByFile(firstIC->file(), fileBytes, blobName);
     m_palette->updateEmbeddedICList(scene);
     m_ui->statusBar->showMessage(tr("IC embedded successfully."), 4000);
 }
@@ -1749,7 +1749,7 @@ void MainWindow::extractSelectedIC()
         return;
     }
     auto *firstIC = static_cast<IC *>(selected.first());
-    if (!firstIC->isEmbeddedIC()) {
+    if (!firstIC->isEmbedded()) {
         return;
     }
 
@@ -1860,10 +1860,10 @@ void MainWindow::makeSelfContained()
     // Collect unique file paths from all file-backed ICs
     QStringList uniqueFiles;
     for (auto *elm : scene->elements()) {
-        if (elm->elementType() != ElementType::IC || elm->isEmbeddedIC()) {
+        if (elm->elementType() != ElementType::IC || elm->isEmbedded()) {
             continue;
         }
-        const QString icFile = static_cast<IC *>(elm)->icFile();
+        const QString icFile = static_cast<IC *>(elm)->file();
         if (!icFile.isEmpty() && !uniqueFiles.contains(icFile)) {
             uniqueFiles.append(icFile);
         }

@@ -45,7 +45,7 @@ void ClipboardManager::copy()
     auto *registry = m_scene->icRegistry();
     QMap<QString, QByteArray> usedBlobs;
     for (auto *elm : m_scene->selectedElements()) {
-        if (elm->isEmbeddedIC() && !elm->blobName().isEmpty()) {
+        if (elm->isEmbedded() && !elm->blobName().isEmpty()) {
             const QString &name = elm->blobName();
             if (!usedBlobs.contains(name) && registry->hasBlob(name)) {
                 usedBlobs[name] = registry->blob(name);
@@ -73,7 +73,7 @@ void ClipboardManager::cut()
     auto *registry = m_scene->icRegistry();
     QMap<QString, QByteArray> usedBlobs;
     for (auto *elm : m_scene->selectedElements()) {
-        if (elm->isEmbeddedIC() && !elm->blobName().isEmpty()) {
+        if (elm->isEmbedded() && !elm->blobName().isEmpty()) {
             const QString &name = elm->blobName();
             if (!usedBlobs.contains(name) && registry->hasBlob(name)) {
                 usedBlobs[name] = registry->blob(name);
