@@ -71,25 +71,6 @@ public:
     /// \reimp
     int getOutputIndexForPort(int portIndex) const override;
 
-    // --- Port naming ---
-
-    /// \reimp Returns \c true; IC port names are editable.
-    bool canSetPortNames() const override;
-
-    /**
-     * \brief Sets the name of input \a port to \a name.
-     * \param port Port index.
-     * \param name New port name.
-     */
-    void setInputPortName(int port, const QString &name) override;
-
-    /**
-     * \brief Sets the name of output \a port to \a name.
-     * \param port Port index.
-     * \param name New port name.
-     */
-    void setOutputPortName(int port, const QString &name) override;
-
     // --- Visual ---
 
     /// \reimp

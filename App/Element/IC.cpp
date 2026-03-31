@@ -558,22 +558,3 @@ QVector<std::shared_ptr<LogicElement>> IC::getLogicElementsForMapping()
     return generateMap();
 }
 
-bool IC::canSetPortNames() const
-{
-    return true;
-}
-
-void IC::setInputPortName(int port, const QString &name)
-{
-    if (port < m_icInputs.size()) {
-        m_icInputs.value(port)->setName(name);
-    }
-}
-
-void IC::setOutputPortName(int port, const QString &name)
-{
-    if (port < m_icOutputs.size()) {
-        m_icOutputs.value(port)->setName(name);
-    }
-}
-
