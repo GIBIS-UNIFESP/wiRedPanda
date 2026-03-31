@@ -146,6 +146,8 @@ public:
 
     /// Triggers a path update on all attached connections.
     void updateConnections();
+    void setSerialId(quint64 serialId);
+    quint64 serialId() const;
 
 protected:
     // --- Qt Event Handling ---
@@ -169,6 +171,7 @@ protected:
     int m_index = 0;
     int m_margin = 2;
     int m_radius = 5;
+    quint64 m_serialId = 0;
 
 private:
     QBrush currentBrush() const;

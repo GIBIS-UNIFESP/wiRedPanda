@@ -31,11 +31,14 @@ struct CopyOperation {
  * version     — file-format version read from the stream header.
  * copyOperation — non-empty when the load is part of a copy/paste that needs
  *                 to duplicate IC files into the destination directory.
+ * oldPtrToSerialId — maps old pointer IDs (from pre-serialId files) to new serial IDs
+ *                    for backward compatibility.
  */
 struct SerializationContext {
     QMap<quint64, QNEPort *> &portMap;
     QVersionNumber version;
     QString contextDir = {};
     CopyOperation copyOperation = {};
+    QMap<quint64, quint64> oldPtrToSerialId = {};
 };
 
