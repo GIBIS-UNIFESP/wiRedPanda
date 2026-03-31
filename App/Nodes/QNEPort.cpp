@@ -42,7 +42,7 @@ const QList<QNEConnection *> &QNEPort::connections() const
     return m_connections;
 }
 
-void QNEPort::connect(QNEConnection *conn)
+void QNEPort::attachConnection(QNEConnection *conn)
 {
     if (!conn) {
         return;
@@ -57,7 +57,7 @@ void QNEPort::connect(QNEConnection *conn)
     updateConnections();
 }
 
-void QNEPort::disconnect(QNEConnection *conn)
+void QNEPort::detachConnection(QNEConnection *conn)
 {
     m_connections.removeAll(conn);
 
