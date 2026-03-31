@@ -89,13 +89,13 @@ public:
     // --- Connection Management ---
 
     /// Registers \a conn as a connection attached to this port.
-    void connect(QNEConnection *conn);
+    void attachConnection(QNEConnection *conn);
 
     /**
      * \brief Removes \a conn from this port's connection list.
      * \param conn Wire to detach.
      */
-    void disconnect(QNEConnection *conn);
+    void detachConnection(QNEConnection *conn);
 
     /// Applies hover-enter visual feedback.
     void hoverEnter();

@@ -39,11 +39,11 @@ QNEConnection::QNEConnection(QGraphicsItem *parent)
 QNEConnection::~QNEConnection()
 {
     if (m_startPort) {
-        m_startPort->disconnect(this);
+        m_startPort->detachConnection(this);
     }
 
     if (m_endPort) {
-        m_endPort->disconnect(this);
+        m_endPort->detachConnection(this);
     }
 }
 
@@ -65,11 +65,11 @@ void QNEConnection::setStartPort(QNEOutputPort *port)
     // Detach from the previous port before attaching to the new one to avoid
     // dangling entries in the old port's connection list (e.g. during IC hot-reload)
     if (oldPort && (oldPort != port)) {
-        oldPort->disconnect(this);
+        oldPort->detachConnection(this);
     }
 
     if (port) {
-        port->connect(this);
+        port->attachConnection(this);
         setStartPos(port->scenePos());
         // Inherit the source port's signal status so the wire colour is correct immediately
         setStatus(port->status());
@@ -82,11 +82,11 @@ void QNEConnection::setEndPort(QNEInputPort *port)
     m_endPort = port;
 
     if (oldPort && (oldPort != port)) {
-        oldPort->disconnect(this);
+        oldPort->detachConnection(this);
     }
 
     if (port) {
-        port->connect(this);
+        port->attachConnection(this);
         setEndPos(port->scenePos());
         // Push the current wire status into the destination port so it displays correctly
         // even before the next simulation step
