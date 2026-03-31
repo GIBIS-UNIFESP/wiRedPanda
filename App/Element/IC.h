@@ -60,16 +60,16 @@ public:
 
     void loadFromDrop(const QString &fileName, const QString &contextDir) override;
 
-    const QString &icFile() const { return m_file; }
+    const QString &file() const { return m_file; }
 
     /// Returns the blob name for embedded ICs, empty if file-backed.
     const QString &blobName() const override { return m_blobName; }
     void setBlobName(const QString &name) { m_blobName = name; }
-    bool isEmbeddedIC() const override { return !m_blobName.isEmpty(); }
+    bool isEmbedded() const override { return !m_blobName.isEmpty(); }
 
-    const QVector<GraphicElement *> &icElements() const { return m_icElements; }
-    const QVector<QNEPort *> &icInputs() const { return m_icInputs; }
-    const QVector<QNEPort *> &icOutputs() const { return m_icOutputs; }
+    const QVector<GraphicElement *> &internalElements() const { return m_internalElements; }
+    const QVector<QNEPort *> &internalInputs() const { return m_internalInputs; }
+    const QVector<QNEPort *> &internalOutputs() const { return m_internalOutputs; }
 
     // --- Visual ---
 
@@ -131,11 +131,11 @@ private:
     const ICDefinition *m_definition = nullptr;
     QString m_file;
     QString m_blobName;
-    QVector<GraphicElement *> m_icElements;
-    QVector<QNEPort *> m_icInputs;
-    QVector<QNEPort *> m_icOutputs;
-    QVector<QString> m_icInputLabels;
-    QVector<QString> m_icOutputLabels;
+    QVector<GraphicElement *> m_internalElements;
+    QVector<QNEPort *> m_internalInputs;
+    QVector<QNEPort *> m_internalOutputs;
+    QVector<QString> m_internalInputLabels;
+    QVector<QString> m_internalOutputLabels;
 
     // --- Members: Direct simulation ---
 

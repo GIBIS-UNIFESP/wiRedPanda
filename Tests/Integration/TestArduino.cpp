@@ -159,7 +159,7 @@ IC *TestArduino::createICWithAndGate(const QString &label)
     ic->setOutputSize(1);
 
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    ic->m_icElements.append(andGate);
+    ic->m_internalElements.append(andGate);
 
     return ic;
 }
@@ -170,7 +170,7 @@ IC *TestArduino::createICContaining(IC *innerIC, const QString &label)
     outerIC->setLabel(label);
     outerIC->setInputSize(2);
     outerIC->setOutputSize(1);
-    outerIC->m_icElements.append(innerIC);
+    outerIC->m_internalElements.append(innerIC);
     return outerIC;
 }
 
@@ -1769,7 +1769,7 @@ void TestArduino::testEmbeddedICGeneration()
     QVERIFY2(!pandaBytes.isEmpty(), "Fixture file level2_half_adder.panda must exist");
     ICTestHelpers::embedIC(ic, pandaBytes, "embedded_adder", fixtureDir, reg);
 
-    QVERIFY(ic->isEmbeddedIC());
+    QVERIFY(ic->isEmbedded());
     QVERIFY(ic->inputSize() > 0);
     QVERIFY(ic->outputSize() > 0);
 
@@ -2149,7 +2149,7 @@ bool TestArduino::isCombinationalCircuit(const QVector<GraphicElement *> &elemen
         case ElementType::IC: {
             auto *ic = qobject_cast<IC *>(elm);
             // Conservatively treat ICs with no loaded sub-elements as non-combinational
-            if (!ic || ic->m_icElements.isEmpty() || !isCombinationalCircuit(ic->m_icElements)) {
+            if (!ic || ic->m_internalElements.isEmpty() || !isCombinationalCircuit(ic->m_internalElements)) {
                 return false;
             }
             break;

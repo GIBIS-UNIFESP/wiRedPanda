@@ -325,12 +325,12 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
                 }
             }
 
-            if (!ic->icElements().isEmpty()) {
+            if (!ic->internalElements().isEmpty()) {
                 const QString nestedPrefix = QString("%1_%2_").arg(removeForbiddenChars(ic->label()), QString::number(counter - 1));
-                declareAuxVariablesRec(ic->icElements(), true, nestedPrefix);
+                declareAuxVariablesRec(ic->internalElements(), true, nestedPrefix);
 
-                for (int i = 0; i < ic->icInputs().size(); ++i) {
-                    QNEPort *internalPort = ic->icInputs().at(i);
+                for (int i = 0; i < ic->internalInputs().size(); ++i) {
+                    QNEPort *internalPort = ic->internalInputs().at(i);
                     if (m_varMap.value(internalPort).isEmpty()) {
                         const QString portVarName = QString("aux_ic_input_%1_%2_%3").arg(removeForbiddenChars(ic->label()), QString::number(counter - 1), QString::number(i));
                         m_varMap[internalPort] = portVarName;
@@ -487,22 +487,22 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
 
             for (int i = 0; i < ic->inputSize(); ++i) {
                 QNEPort *externalPort = ic->inputPort(i);
-                QNEPort *internalPort = ic->icInputs().at(i);
+                QNEPort *internalPort = ic->internalInputs().at(i);
                 const QString externalValue = otherPortName(externalPort);
                 const QString internalVar = m_varMap.value(internalPort);
                 m_stream << "    " << internalVar << " = " << externalValue << ";" << Qt::endl;
             }
 
-            if (!ic->icElements().isEmpty()) {
+            if (!ic->internalElements().isEmpty()) {
                 IC *previousIC = m_currentIC;
                 m_currentIC = ic;
-                assignVariablesRec(Scene::sortByTopology(ic->icElements()));
+                assignVariablesRec(Scene::sortByTopology(ic->internalElements()));
                 m_currentIC = previousIC;
             }
 
             for (int i = 0; i < ic->outputSize(); ++i) {
                 QNEPort *externalPort = ic->outputPort(i);
-                QNEPort *internalPort = ic->icOutputs().at(i);
+                QNEPort *internalPort = ic->internalOutputs().at(i);
                 const QString internalValue = m_varMap.value(internalPort);
                 const QString externalVar = m_varMap.value(externalPort);
                 m_stream << "    " << externalVar << " = " << internalValue << ";" << Qt::endl;
@@ -866,8 +866,8 @@ void ArduinoCodeGen::assignLogicOperator(GraphicElement *elm)
                 QString varName = m_varMap.value(outputPort);
                 QString inputValue = otherPortName(inputPort);
                 if (inputValue.isEmpty() && m_currentIC) {
-                    for (int i = 0; i < m_currentIC->icInputs().size(); ++i) {
-                        if (m_currentIC->icInputs().at(i) == inputPort) {
+                    for (int i = 0; i < m_currentIC->internalInputs().size(); ++i) {
+                        if (m_currentIC->internalInputs().at(i) == inputPort) {
                             inputValue = m_varMap.value(inputPort);
                             break;
                         }

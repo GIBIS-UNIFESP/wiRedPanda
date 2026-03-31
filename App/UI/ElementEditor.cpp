@@ -142,11 +142,11 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
         [this] {
             if (m_elements.isEmpty()) return;
             auto *elm = m_elements.first();
-            if (elm->isEmbeddedIC()) {
+            if (elm->isEmbedded()) {
                 emit editSubcircuitRequested(elm->blobName(), elm->id());
             } else if (elm->elementType() == ElementType::IC) {
                 auto *ic = static_cast<IC *>(elm);
-                Application::instance()->mainWindow()->loadPandaFile(ic->icFile());
+                Application::instance()->mainWindow()->loadPandaFile(ic->file());
             }
         },
         [this] { emit embedSubcircuitRequested(); },
