@@ -345,11 +345,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         const quint64 ptr = input.value("ptr").toULongLong();
         const QString name = input.value("name").toString();
 
-        if (port < m_inputPorts.size()) {
-            if (canSetPortNames()) {
-                setInputPortName(port, name);
-            }
-        } else {
+        if (port >= m_inputPorts.size()) {
             addPort(name, false);
         }
 
@@ -376,11 +372,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, QMap<quint64, QNEPort *>
         const quint64 ptr = output.value("ptr").toULongLong();
         const QString name = output.value("name").toString();
 
-        if (port < m_outputPorts.size()) {
-            if (canSetPortNames()) {
-                setOutputPortName(port, name);
-            }
-        } else {
+        if (port >= m_outputPorts.size()) {
             addPort(name, true);
         }
 
@@ -523,11 +515,7 @@ void GraphicElement::loadInputPort(QDataStream &stream, QMap<quint64, QNEPort *>
     QString name; stream >> name;
     int flags;    stream >> flags;
 
-    if (port < m_inputPorts.size()) {
-        if (canSetPortNames()) {
-            setInputPortName(port, name);
-        }
-    } else {
+    if (port >= m_inputPorts.size()) {
         addPort(name, false);
     }
 
@@ -601,11 +589,7 @@ void GraphicElement::loadOutputPort(QDataStream &stream, QMap<quint64, QNEPort *
     QString name; stream >> name;
     int flags;    stream >> flags;
 
-    if (port < m_outputPorts.size()) {
-        if (canSetPortNames()) {
-            setOutputPortName(port, name);
-        }
-    } else {
+    if (port >= m_outputPorts.size()) {
         addPort(name, true);
     }
 
@@ -1287,23 +1271,6 @@ QVector<std::shared_ptr<LogicElement>> GraphicElement::getLogicElementsForMappin
     // Wrap the raw pointer in a non-owning shared_ptr (no-op deleter) so the logic mapping
     // infrastructure can handle base elements and ICs uniformly without double-freeing
     return {std::shared_ptr<LogicElement>(logic(), [](LogicElement*){})};
-}
-
-bool GraphicElement::canSetPortNames() const
-{
-    return false;
-}
-
-void GraphicElement::setInputPortName(int port, const QString &name)
-{
-    Q_UNUSED(port)
-    Q_UNUSED(name)
-}
-
-void GraphicElement::setOutputPortName(int port, const QString &name)
-{
-    Q_UNUSED(port)
-    Q_UNUSED(name)
 }
 
 void GraphicElement::setMinOutputSize(const int minOutputSize)

@@ -315,17 +315,6 @@ public:
      */
     virtual QVector<std::shared_ptr<LogicElement>> getLogicElementsForMapping();
 
-    // --- Polymorphic Port Naming Interface ---
-
-    /// Polymorphic interface for port naming (replaces elementType() == IC checks)
-    virtual bool canSetPortNames() const;
-
-    /// Sets the name of input \a port to \a name (only for elements that support it).
-    virtual void setInputPortName(int port, const QString &name);
-
-    /// Sets the name of output \a port to \a name (only for elements that support it).
-    virtual void setOutputPortName(int port, const QString &name);
-
     // --- Virtual Methods ---
 
     /// Returns a string encoding element-specific properties for serialization or display.
