@@ -103,8 +103,8 @@ void Scene::addItem(QGraphicsItem *item)
         if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
             elm && elm->elementType() == ElementType::IC) {
             auto *ic = static_cast<IC *>(elm);
-            if (!ic->icFile().isEmpty()) {
-                m_icRegistry.watchFile(ic->icFile());
+            if (!ic->file().isEmpty()) {
+                m_icRegistry.watchFile(ic->file());
             }
         }
     }

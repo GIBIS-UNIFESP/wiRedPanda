@@ -146,9 +146,9 @@ void TestICInline::testEmbedFromBlob()
     ic.setBlobName("simple_and");
     ic.loadFromBlob(blob, m_fixtureDir);
 
-    QVERIFY(ic.isEmbeddedIC());
+    QVERIFY(ic.isEmbedded());
     QCOMPARE(ic.blobName(), QString("simple_and"));
-    QVERIFY(ic.icFile().isEmpty());
+    QVERIFY(ic.file().isEmpty());
     QVERIFY(ic.inputSize() > 0);
     QVERIFY(ic.outputSize() > 0);
 }
@@ -169,7 +169,7 @@ void TestICInline::testEmbedPreservesSimulation()
     scene.addItem(ic);
 
     // Verify it has internal elements for simulation
-    QVERIFY(!ic->icElements().isEmpty());
+    QVERIFY(!ic->internalElements().isEmpty());
 }
 
 void TestICInline::testExtractToFile()
@@ -189,8 +189,8 @@ void TestICInline::testExtractToFile()
     IC ic;
     ic.loadFile(extractPath, m_fixtureDir);
 
-    QVERIFY(!ic.isEmbeddedIC());
-    QVERIFY(!ic.icFile().isEmpty());
+    QVERIFY(!ic.isEmbedded());
+    QVERIFY(!ic.file().isEmpty());
     QVERIFY(ic.inputSize() > 0);
     QVERIFY(ic.outputSize() > 0);
 }
@@ -251,7 +251,7 @@ void TestICInline::testSaveLoadWithEmbeddedIC()
     // Verify embedded IC survived the round-trip
     bool foundEmbedded = false;
     for (auto *elm : ws2.scene()->elements()) {
-        if (elm->isEmbeddedIC() && elm->blobName() == "my_and") {
+        if (elm->isEmbedded() && elm->blobName() == "my_and") {
             foundEmbedded = true;
             QVERIFY(elm->inputSize() > 0);
             QVERIFY(elm->outputSize() > 0);
@@ -358,29 +358,29 @@ void TestICInline::testUndoRedoEmbedExtract()
     ic->setPos(100, 100);
     ws.scene()->addItem(ic);
 
-    QVERIFY(!ic->isEmbeddedIC());
+    QVERIFY(!ic->isEmbedded());
 
     // Embed via ICRegistry (stores full .panda file bytes as the blob)
     auto *reg = ws.scene()->icRegistry();
-    reg->embedICsByFile(ic->icFile(), rawFileBytes, "undo_test");
+    reg->embedICsByFile(ic->file(), rawFileBytes, "undo_test");
 
     // After embed, IC should be embedded
     auto *embeddedIC = static_cast<IC *>(ws.scene()->elements().first());
-    QVERIFY(embeddedIC->isEmbeddedIC());
+    QVERIFY(embeddedIC->isEmbedded());
     QCOMPARE(embeddedIC->blobName(), QString("undo_test"));
 
     // Undo
     ws.scene()->undoStack()->undo();
 
     auto *undoneIC = static_cast<IC *>(ws.scene()->elements().first());
-    QVERIFY(!undoneIC->isEmbeddedIC());
-    QVERIFY(!undoneIC->icFile().isEmpty());
+    QVERIFY(!undoneIC->isEmbedded());
+    QVERIFY(!undoneIC->file().isEmpty());
 
     // Redo
     ws.scene()->undoStack()->redo();
 
     auto *redoneIC = static_cast<IC *>(ws.scene()->elements().first());
-    QVERIFY(redoneIC->isEmbeddedIC());
+    QVERIFY(redoneIC->isEmbedded());
     QCOMPARE(redoneIC->blobName(), QString("undo_test"));
 }
 
@@ -471,8 +471,8 @@ void TestICInline::testRegistryEmbedICsByFile()
     ic2->setPos(100, 0);
     ws.scene()->addItem(ic2);
 
-    QVERIFY(!ic1->isEmbeddedIC());
-    QVERIFY(!ic2->isEmbeddedIC());
+    QVERIFY(!ic1->isEmbedded());
+    QVERIFY(!ic2->isEmbedded());
 
     // Embed all instances (pass raw .panda bytes)
     auto *reg = ws.scene()->icRegistry();
@@ -481,7 +481,7 @@ void TestICInline::testRegistryEmbedICsByFile()
 
     // Both should now be embedded
     for (auto *elm : ws.scene()->elements()) {
-        QVERIFY(elm->isEmbeddedIC());
+        QVERIFY(elm->isEmbedded());
         QCOMPARE(elm->blobName(), QString("batch_and"));
     }
 }
@@ -544,7 +544,7 @@ void TestICInline::testLoadFromBlob()
 
     QCOMPARE(blobBacked.inputSize(), fileBacked.inputSize());
     QCOMPARE(blobBacked.outputSize(), fileBacked.outputSize());
-    QVERIFY(blobBacked.icFile().isEmpty());
+    QVERIFY(blobBacked.file().isEmpty());
 }
 
 void TestICInline::testFlattenBlobRecursive()
@@ -645,8 +645,8 @@ void TestICInline::testFlattenBlobMixedInlineFileBacked()
 
     // Verify internal IC elements include a file-backed child
     bool hasFileBackedChild = false;
-    for (auto *elm : ic.icElements()) {
-        if (elm->elementType() == ElementType::IC && !elm->isEmbeddedIC()) {
+    for (auto *elm : ic.internalElements()) {
+        if (elm->elementType() == ElementType::IC && !elm->isEmbedded()) {
             hasFileBackedChild = true;
             break;
         }
@@ -759,7 +759,7 @@ void TestICInline::testEmbedSimulatesCorrectly()
     builder.add(&swA, &swB, ic, &led);
     embedIC(ic, readFile(m_fixtureDir + "/simple_and.panda"), "simple_and", m_fixtureDir, reg);
 
-    QVERIFY(ic->isEmbeddedIC());
+    QVERIFY(ic->isEmbedded());
     QVERIFY(ic->inputSize() > 0);
     QVERIFY(ic->outputSize() > 0);
 
@@ -798,7 +798,7 @@ void TestICInline::testEmbedSimulatesMultiLevel()
     builder.add(&swA, &swB, ic, &led);
     embedIC(ic, readFile(m_fixtureDir + "/chain_a.panda"), "chain_a", m_fixtureDir, reg);
 
-    QVERIFY(ic->isEmbeddedIC());
+    QVERIFY(ic->isEmbedded());
     QVERIFY(ic->inputSize() > 0);
     QVERIFY(ic->outputSize() > 0);
 
@@ -840,17 +840,17 @@ void TestICInline::testEmbedExtractAtSceneLevel()
     ic->setPos(100, 100);
     ws.scene()->addItem(ic);
     int icId = ic->id();
-    QVERIFY(!ic->isEmbeddedIC());
-    QVERIFY(!ic->icFile().isEmpty());
+    QVERIFY(!ic->isEmbedded());
+    QVERIFY(!ic->file().isEmpty());
 
     // Embed via ICRegistry
-    reg->embedICsByFile(ic->icFile(), rawFileBytes, "embed_extract");
+    reg->embedICsByFile(ic->file(), rawFileBytes, "embed_extract");
 
     auto *embedded = dynamic_cast<IC *>(ws.scene()->itemById(icId));
     QVERIFY(embedded);
-    QVERIFY(embedded->isEmbeddedIC());
+    QVERIFY(embedded->isEmbedded());
     QCOMPARE(embedded->blobName(), QString("embed_extract"));
-    QVERIFY(embedded->icFile().isEmpty());
+    QVERIFY(embedded->file().isEmpty());
     QVERIFY(embedded->inputSize() > 0);
 
     // Extract: writes blob to disk and converts ICs to file-backed
@@ -859,23 +859,23 @@ void TestICInline::testEmbedExtractAtSceneLevel()
 
     auto *extracted = dynamic_cast<IC *>(ws.scene()->itemById(icId));
     QVERIFY(extracted);
-    QVERIFY(!extracted->isEmbeddedIC());
-    QVERIFY(extracted->icFile().contains("extracted_scene.panda"));
+    QVERIFY(!extracted->isEmbedded());
+    QVERIFY(extracted->file().contains("extracted_scene.panda"));
     QVERIFY(extracted->inputSize() > 0);
 
     // Undo extract → back to embedded
     ws.scene()->undoStack()->undo();
     auto *undoneExtract = dynamic_cast<IC *>(ws.scene()->itemById(icId));
     QVERIFY(undoneExtract);
-    QVERIFY(undoneExtract->isEmbeddedIC());
+    QVERIFY(undoneExtract->isEmbedded());
     QCOMPARE(undoneExtract->blobName(), QString("embed_extract"));
 
     // Undo embed → back to file-backed
     ws.scene()->undoStack()->undo();
     auto *undoneEmbed = dynamic_cast<IC *>(ws.scene()->itemById(icId));
     QVERIFY(undoneEmbed);
-    QVERIFY(!undoneEmbed->isEmbeddedIC());
-    QVERIFY(undoneEmbed->icFile().contains("simple_and.panda"));
+    QVERIFY(!undoneEmbed->isEmbedded());
+    QVERIFY(undoneEmbed->file().contains("simple_and.panda"));
 }
 
 void TestICInline::testEmbedExtractWithActiveConnections()
@@ -905,15 +905,15 @@ void TestICInline::testEmbedExtractWithActiveConnections()
     builder.connect(fileBacked, 0, &led, 0);
 
     QCOMPARE(TestUtils::countConnections(ws.scene()), 3);
-    QVERIFY(!fileBacked->isEmbeddedIC());
+    QVERIFY(!fileBacked->isEmbedded());
 
     int icId = fileBacked->id();
 
     // Embed
-    reg->embedICsByFile(fileBacked->icFile(), rawFileBytes, "connected_ic");
+    reg->embedICsByFile(fileBacked->file(), rawFileBytes, "connected_ic");
 
     // fileBacked was modified in place by embedICsByFile
-    QVERIFY(fileBacked->isEmbeddedIC());
+    QVERIFY(fileBacked->isEmbedded());
     QVERIFY(fileBacked->inputSize() > 0);
 
     // Connections should survive the embed (same port count)
@@ -926,7 +926,7 @@ void TestICInline::testEmbedExtractWithActiveConnections()
     // After extract, ICs are file-backed again
     auto *extractedIC = dynamic_cast<IC *>(ws.scene()->itemById(icId));
     QVERIFY(extractedIC);
-    QVERIFY(!extractedIC->isEmbeddedIC());
+    QVERIFY(!extractedIC->isEmbedded());
     QVERIFY(extractedIC->inputSize() > 0);
 
     // Connections should survive the extract
@@ -942,7 +942,7 @@ void TestICInline::testEmbedExtractWithActiveConnections()
 
     auto *original = dynamic_cast<IC *>(ws.scene()->itemById(icId));
     QVERIFY(original);
-    QVERIFY(!original->isEmbeddedIC());
+    QVERIFY(!original->isEmbedded());
 }
 
 void TestICInline::testLoadFromBlobNested()
@@ -961,7 +961,7 @@ void TestICInline::testLoadFromBlobNested()
 
     QVERIFY(ic.inputSize() > 0);
     QVERIFY(ic.outputSize() > 0);
-    QVERIFY(ic.icFile().isEmpty());
+    QVERIFY(ic.file().isEmpty());
 }
 
 // ===========================================================================
@@ -1003,7 +1003,7 @@ void TestICInline::testBlobNamePreservation()
 
     QCOMPARE(ic2->blobName(), QString("my_custom_name"));
     QCOMPARE(ic2->label(), QString("DISPLAY LABEL"));
-    QVERIFY(ic2->isEmbeddedIC());
+    QVERIFY(ic2->isEmbedded());
     QVERIFY(ic2->inputSize() > 0);
     QVERIFY(ic2->outputSize() > 0);
 }
@@ -1032,23 +1032,23 @@ void TestICInline::testSetBlobNameAlone()
     QCOMPARE(reg->blob("original_name"), dataBefore);
     QVERIFY(!reg->hasBlob("renamed"));
 
-    QVERIFY(ic.isEmbeddedIC());
+    QVERIFY(ic.isEmbedded());
 }
 
 void TestICInline::testSetBlobNameOnFileBacked()
 {
-    // setBlobName on a file-backed IC makes isEmbeddedIC() return true,
+    // setBlobName on a file-backed IC makes isEmbedded() return true,
     // but the IC retains its file path.
 
     IC ic;
     ic.loadFile(m_fixtureDir + "/simple_and.panda", m_fixtureDir);
-    QVERIFY(!ic.isEmbeddedIC());
+    QVERIFY(!ic.isEmbedded());
     QVERIFY(ic.blobName().isEmpty());
 
     ic.setBlobName("orphaned_name");
     QCOMPARE(ic.blobName(), QString("orphaned_name"));
-    QVERIFY(ic.isEmbeddedIC());
-    QVERIFY(!ic.icFile().isEmpty());
+    QVERIFY(ic.isEmbedded());
+    QVERIFY(!ic.file().isEmpty());
 }
 
 void TestICInline::testLabelIndependentFromBlobName()
@@ -1118,7 +1118,7 @@ void TestICInline::testBlobNameRenamePropagation()
     // Apply rename
     reg->setBlob("new_name", reg->blob("old_name"));
     for (auto *elm : std::as_const(targets)) {
-        if (elm->isEmbeddedIC()) {
+        if (elm->isEmbedded()) {
             static_cast<IC *>(elm)->setBlobName("new_name");
         }
     }
@@ -1169,7 +1169,7 @@ void TestICInline::testBlobNameCollisionDuringRename()
     // Renaming "type_alpha" → "type_beta" should detect collision
     bool collisionDetected = false;
     for (auto *elm : ws.scene()->elements()) {
-        if (elm->isEmbeddedIC() && elm->blobName() == "type_beta") {
+        if (elm->isEmbedded() && elm->blobName() == "type_beta") {
             collisionDetected = true;
             break;
         }
@@ -1179,7 +1179,7 @@ void TestICInline::testBlobNameCollisionDuringRename()
     // Renaming to a fresh name should NOT detect collision
     bool noCollision = true;
     for (auto *elm : ws.scene()->elements()) {
-        if (elm->isEmbeddedIC() && elm->blobName() == "fresh_name") {
+        if (elm->isEmbedded() && elm->blobName() == "fresh_name") {
             noCollision = false;
             break;
         }
@@ -1214,7 +1214,7 @@ void TestICInline::testBlobNameSpecialCharacters()
         IC ic;
         ic.setBlobName(name);
         ic.loadFromBlob(blob, m_fixtureDir);
-        QVERIFY2(ic.isEmbeddedIC(), qPrintable("Failed to embed with name: " + name));
+        QVERIFY2(ic.isEmbedded(), qPrintable("Failed to embed with name: " + name));
         QCOMPARE(ic.blobName(), name);
 
         QByteArray serialized;
@@ -1232,7 +1232,7 @@ void TestICInline::testBlobNameSpecialCharacters()
             loaded->load(stream, ctx);
         }
 
-        QVERIFY2(loaded->isEmbeddedIC(), qPrintable("Round-trip failed for name: " + name));
+        QVERIFY2(loaded->isEmbedded(), qPrintable("Round-trip failed for name: " + name));
         QCOMPARE(loaded->blobName(), name);
         QVERIFY(loaded->inputSize() > 0);
         QVERIFY(loaded->outputSize() > 0);
@@ -1448,7 +1448,7 @@ void TestICInline::testInlineSaveContextDirSwitch()
     QVERIFY(updatedIC);
     QVERIFY(updatedIC->inputSize() > 0);
     QVERIFY(updatedIC->outputSize() > 0);
-    QVERIFY(updatedIC->isEmbeddedIC());
+    QVERIFY(updatedIC->isEmbedded());
 }
 
 void TestICInline::testInlineTabSaveAfterModification()
@@ -1609,13 +1609,13 @@ void TestICInline::testNestedWorkspaceChainPropagation()
 
     auto *updatedGpIC = dynamic_cast<IC *>(grandparent.scene()->itemById(gpICId));
     QVERIFY(updatedGpIC);
-    QVERIFY(updatedGpIC->isEmbeddedIC());
+    QVERIFY(updatedGpIC->isEmbedded());
     QCOMPARE(updatedGpIC->blobName(), QString("level1"));
 }
 
 void TestICInline::testLoadFromBlobCleansUpConnections()
 {
-    // Loading the same blob twice should not leak — qDeleteAll(m_icElements)
+    // Loading the same blob twice should not leak — qDeleteAll(m_internalElements)
     // cleans up elements, their ports, and their connections.
 
     QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
@@ -1656,7 +1656,7 @@ void TestICInline::testLoadFromBlobPreservesBlob()
 
     QVERIFY(ic.inputSize() > 0);
     QVERIFY(ic.outputSize() > 0);
-    QVERIFY(ic.icFile().isEmpty());
+    QVERIFY(ic.file().isEmpty());
 }
 
 void TestICInline::testLoadFromBlobEmptyCircuit()
@@ -1730,12 +1730,12 @@ void TestICInline::testLoadV41MapDirectConstruct()
         loaded->load(stream, ctx);
     }
 
-    QVERIFY(loaded->isEmbeddedIC());
+    QVERIFY(loaded->isEmbedded());
     QCOMPARE(loaded->blobName(), QString("direct_test"));
     QCOMPARE(loaded->label(), QString("DIRECT"));
     QVERIFY(loaded->inputSize() > 0);
     QVERIFY(loaded->outputSize() > 0);
-    QVERIFY(loaded->icFile().isEmpty());
+    QVERIFY(loaded->file().isEmpty());
 }
 
 void TestICInline::testLoadMismatchNoFileName()
@@ -1770,7 +1770,7 @@ void TestICInline::testLoadMismatchNoFileName()
         QVERIFY2(threw, "No valid blobName or fileName should throw");
     }
 
-    QVERIFY(!loaded->isEmbeddedIC());
+    QVERIFY(!loaded->isEmbedded());
     QVERIFY(loaded->blobName().isEmpty());
 }
 
@@ -1784,17 +1784,17 @@ void TestICInline::testReEmbedWithDifferentBlob()
 
     IC ic;
     embedIC(&ic, readFile(m_fixtureDir + "/simple_and.panda"), "first", m_fixtureDir, reg);
-    QVERIFY(ic.isEmbeddedIC());
+    QVERIFY(ic.isEmbedded());
     QCOMPARE(ic.blobName(), QString("first"));
     int origInputs = ic.inputSize();
     QVERIFY(origInputs > 0);
 
     // Re-embed with chain_c (NOT gate — different port count)
     embedIC(&ic, readFile(m_fixtureDir + "/chain_c.panda"), "second", m_fixtureDir, reg);
-    QVERIFY(ic.isEmbeddedIC());
+    QVERIFY(ic.isEmbedded());
     QCOMPARE(ic.blobName(), QString("second"));
     QVERIFY(ic.inputSize() > 0);
-    QVERIFY(ic.icFile().isEmpty());
+    QVERIFY(ic.file().isEmpty());
 
     // And back to original
     embedIC(&ic, readFile(m_fixtureDir + "/simple_and.panda"), "first", m_fixtureDir, reg);
@@ -1902,7 +1902,7 @@ void TestICInline::testOnChildICBlobSavedNonEmbeddedTarget()
     fileBacked->setPos(100, 100);
     ws.scene()->addItem(fileBacked);
     int fileBackedId = fileBacked->id();
-    QVERIFY(!fileBacked->isEmbeddedIC());
+    QVERIFY(!fileBacked->isEmbedded());
 
     auto *sw = new InputSwitch();
     sw->setPos(200, 200);
@@ -2328,7 +2328,7 @@ void TestICInline::testMultipleDifferentEmbeddedTypes()
     bool foundAnd = false;
     bool foundNot = false;
     for (auto *elm : ws2.scene()->elements()) {
-        if (!elm->isEmbeddedIC()) continue;
+        if (!elm->isEmbedded()) continue;
         if (elm->blobName() == "my_and") {
             QCOMPARE(static_cast<IC *>(elm)->inputSize(), andInputs);
             foundAnd = true;
@@ -2371,7 +2371,7 @@ void TestICInline::testRemoveEmbeddedIC()
     auto countEmbedded = [&]() {
         int n = 0;
         for (auto *elm : ws.scene()->elements())
-            if (elm->isEmbeddedIC()) ++n;
+            if (elm->isEmbedded()) ++n;
         return n;
     };
 
@@ -2381,7 +2381,7 @@ void TestICInline::testRemoveEmbeddedIC()
 
     int remaining = 0;
     for (auto *elm : ws.scene()->elements()) {
-        if (elm->isEmbeddedIC()) {
+        if (elm->isEmbedded()) {
             ++remaining;
             QCOMPARE(elm->blobName(), QString("keep_this"));
         }
@@ -2461,7 +2461,7 @@ void TestICInline::testRemoveEmbeddedICMultipleInstances()
     auto countEmbedded = [&]() {
         int n = 0;
         for (auto *elm : ws.scene()->elements())
-            if (elm->isEmbeddedIC()) ++n;
+            if (elm->isEmbedded()) ++n;
         return n;
     };
 
@@ -2511,7 +2511,7 @@ void TestICInline::testRemoveEmbeddedICCrossConnections()
 
     int embeddedCount = 0;
     for (auto *elm : ws.scene()->elements()) {
-        if (elm->isEmbeddedIC()) {
+        if (elm->isEmbedded()) {
             QCOMPARE(elm->blobName(), QString("not_gate"));
             ++embeddedCount;
         }
@@ -2543,8 +2543,8 @@ void TestICInline::testMixedScene()
     embedded->setPos(200, 200);
     ws.scene()->addItem(embedded);
 
-    QVERIFY(!fileBacked->isEmbeddedIC());
-    QVERIFY(embedded->isEmbeddedIC());
+    QVERIFY(!fileBacked->isEmbedded());
+    QVERIFY(embedded->isEmbedded());
 
     const QString savePath = m_fixtureDir + "/mixed.panda";
     ws.save(savePath);
@@ -2556,14 +2556,14 @@ void TestICInline::testMixedScene()
     int embeddedCount = 0;
     for (auto *elm : ws2.scene()->elements()) {
         if (elm->elementType() != ElementType::IC) continue;
-        if (elm->isEmbeddedIC()) {
+        if (elm->isEmbedded()) {
             QCOMPARE(elm->blobName(), QString("embedded_and"));
-            QVERIFY(static_cast<IC *>(elm)->icFile().isEmpty());
+            QVERIFY(static_cast<IC *>(elm)->file().isEmpty());
             QVERIFY(elm->inputSize() > 0);
             ++embeddedCount;
         } else {
             auto *ic = static_cast<IC *>(elm);
-            QVERIFY(ic->icFile().contains("simple_and.panda"));
+            QVERIFY(ic->file().contains("simple_and.panda"));
             QVERIFY(elm->inputSize() > 0);
             ++fileBackedCount;
         }
@@ -2726,7 +2726,7 @@ void TestICInline::testSerializationMismatchFallback()
             loaded->load(stream, ctx);
         }
 
-        QVERIFY(loaded->isEmbeddedIC());
+        QVERIFY(loaded->isEmbedded());
         QCOMPARE(loaded->blobName(), QString("test_ic"));
         QVERIFY(loaded->inputSize() > 0);
         QVERIFY(loaded->outputSize() > 0);
@@ -2776,9 +2776,9 @@ void TestICInline::testSetInlineDataRollback()
     IC ic;
     ic.loadFile(m_fixtureDir + "/simple_and.panda", m_fixtureDir);
 
-    const QString origFile = ic.icFile();
+    const QString origFile = ic.file();
     QVERIFY(!origFile.isEmpty());
-    QVERIFY(!ic.isEmbeddedIC());
+    QVERIFY(!ic.isEmbedded());
     int origInputs = ic.inputSize();
     QVERIFY(origInputs > 0);
 
@@ -2792,8 +2792,8 @@ void TestICInline::testSetInlineDataRollback()
     QVERIFY(threw);
 
     // IC should be completely unchanged (never modified)
-    QCOMPARE(ic.icFile(), origFile);
-    QVERIFY(!ic.isEmbeddedIC());
+    QCOMPARE(ic.file(), origFile);
+    QVERIFY(!ic.isEmbedded());
     QVERIFY(ic.blobName().isEmpty());
     QCOMPARE(ic.inputSize(), origInputs);
 }
@@ -2849,7 +2849,7 @@ void TestICInline::testSetInlineDataRollbackFromEmbedded()
 
     IC ic;
     embedIC(&ic, readFile(m_fixtureDir + "/simple_and.panda"), "original_embed", m_fixtureDir, reg);
-    QVERIFY(ic.isEmbeddedIC());
+    QVERIFY(ic.isEmbedded());
     QCOMPARE(ic.blobName(), QString("original_embed"));
     int origInputs = ic.inputSize();
     QVERIFY(origInputs > 0);
@@ -2863,9 +2863,9 @@ void TestICInline::testSetInlineDataRollbackFromEmbedded()
     }
     QVERIFY(threw);
 
-    QVERIFY(ic.isEmbeddedIC());
+    QVERIFY(ic.isEmbedded());
     QCOMPARE(ic.blobName(), QString("original_embed"));
-    QVERIFY(ic.icFile().isEmpty());
+    QVERIFY(ic.file().isEmpty());
     QCOMPARE(ic.inputSize(), origInputs);
 }
 
@@ -2881,11 +2881,11 @@ void TestICInline::testSetInlineDataEmptyBlobName()
     ic.setBlobName("");
     ic.loadFromBlob(blob, m_fixtureDir);
 
-    QVERIFY(!ic.isEmbeddedIC());
+    QVERIFY(!ic.isEmbedded());
     QVERIFY(ic.blobName().isEmpty());
     QVERIFY(ic.inputSize() > 0);
     QVERIFY(ic.outputSize() > 0);
-    QVERIFY(ic.icFile().isEmpty());
+    QVERIFY(ic.file().isEmpty());
 }
 
 void TestICInline::testSetInlineDataEmptyBlobThrows()
@@ -2916,7 +2916,7 @@ void TestICInline::testSetInlineDataEmptyBlobNameRoundTripFails()
     ic.setBlobName("");
     ic.loadFromBlob(blob, m_fixtureDir);
 
-    QVERIFY(!ic.isEmbeddedIC());
+    QVERIFY(!ic.isEmbedded());
     QVERIFY(ic.blobName().isEmpty());
     QVERIFY(ic.inputSize() > 0);
 
@@ -2940,7 +2940,7 @@ void TestICInline::testSetInlineDataEmptyBlobNameRoundTripFails()
         QVERIFY2(threw, "Empty blobName with no fileName should fail round-trip");
     }
 
-    QVERIFY(!loaded->isEmbeddedIC());
+    QVERIFY(!loaded->isEmbedded());
     QVERIFY(loaded->blobName().isEmpty());
 }
 
@@ -2959,7 +2959,7 @@ void TestICInline::testSimulationRestartTimingDuringSetInlineData()
         IC ic;
         ic.setBlobName("standalone");
         ic.loadFromBlob(andBlob, m_fixtureDir);
-        QVERIFY(ic.isEmbeddedIC());
+        QVERIFY(ic.isEmbedded());
         QVERIFY(ic.inputSize() > 0);
 
         // Re-embed with different blob
@@ -2992,7 +2992,7 @@ void TestICInline::testSimulationRestartTimingDuringSetInlineData()
 
         // Re-embed during active simulation — should work
         embedIC(ic, readFile(m_fixtureDir + "/simple_and.panda"), "in_scene", m_fixtureDir, reg);
-        QVERIFY(ic->isEmbeddedIC());
+        QVERIFY(ic->isEmbedded());
         QVERIFY(ic->inputSize() > 0);
     }
 }
@@ -3018,7 +3018,7 @@ void TestICInline::testSaveLoadRoundTrip()
     ic->loadFromBlob(blob, m_fixtureDir);
     ic->setPos(200, 200);
     ws.scene()->addItem(ic);
-    QVERIFY(ic->isEmbeddedIC());
+    QVERIFY(ic->isEmbedded());
 
     const QString savePath = m_fixtureDir + "/roundtrip2.panda";
     ws.save(savePath);
@@ -3028,7 +3028,7 @@ void TestICInline::testSaveLoadRoundTrip()
 
     bool foundEmbedded = false;
     for (auto *elm : ws2.scene()->elements()) {
-        if (elm->isEmbeddedIC()) {
+        if (elm->isEmbedded()) {
             QCOMPARE(elm->blobName(), QString("simple_and"));
             QVERIFY(elm->inputSize() > 0);
             QVERIFY(elm->outputSize() > 0);
@@ -3048,13 +3048,13 @@ void TestICInline::testLoadFileClearsInlineData()
     IC ic;
     ic.setBlobName("test_blob");
     ic.loadFromBlob(blob, m_fixtureDir);
-    QVERIFY(ic.isEmbeddedIC());
+    QVERIFY(ic.isEmbedded());
     QCOMPARE(ic.blobName(), QString("test_blob"));
 
     ic.loadFile(m_fixtureDir + "/simple_and.panda", m_fixtureDir);
-    QVERIFY(!ic.isEmbeddedIC());
+    QVERIFY(!ic.isEmbedded());
     QVERIFY(ic.blobName().isEmpty());
-    QVERIFY(!ic.icFile().isEmpty());
+    QVERIFY(!ic.file().isEmpty());
 }
 
 void TestICInline::testCopyFileGuardDuringPaste()
@@ -3070,7 +3070,7 @@ void TestICInline::testCopyFileGuardDuringPaste()
     IC ic;
     ic.setBlobName("simple_and");
     ic.loadFromBlob(blob, m_fixtureDir);
-    QVERIFY(ic.isEmbeddedIC());
+    QVERIFY(ic.isEmbedded());
 
     QByteArray serialized;
     {
@@ -3087,11 +3087,11 @@ void TestICInline::testCopyFileGuardDuringPaste()
         ic2->load(stream, ctx);
     }
 
-    QVERIFY(ic2->isEmbeddedIC());
+    QVERIFY(ic2->isEmbedded());
     QCOMPARE(ic2->blobName(), QString("simple_and"));
     QVERIFY(ic2->inputSize() > 0);
     QVERIFY(ic2->outputSize() > 0);
-    QVERIFY(ic2->icFile().isEmpty());
+    QVERIFY(ic2->file().isEmpty());
 }
 
 void TestICInline::testCopyPasteEmbeddedICRoundTrip()
@@ -3108,7 +3108,7 @@ void TestICInline::testCopyPasteEmbeddedICRoundTrip()
     original.setBlobName("copy_test");
     original.loadFromBlob(blob, m_fixtureDir);
     original.setLabel("COPY_LABEL");
-    QVERIFY(original.isEmbeddedIC());
+    QVERIFY(original.isEmbedded());
 
     QByteArray serialized;
     {
@@ -3125,12 +3125,12 @@ void TestICInline::testCopyPasteEmbeddedICRoundTrip()
         pasted->load(stream, ctx);
     }
 
-    QVERIFY(pasted->isEmbeddedIC());
+    QVERIFY(pasted->isEmbedded());
     QCOMPARE(pasted->blobName(), QString("copy_test"));
     QCOMPARE(pasted->label(), QString("COPY_LABEL"));
     QVERIFY(pasted->inputSize() > 0);
     QVERIFY(pasted->outputSize() > 0);
-    QVERIFY(pasted->icFile().isEmpty());
+    QVERIFY(pasted->file().isEmpty());
 }
 
 void TestICInline::testFlipRotateEmbeddedIC()
@@ -3147,7 +3147,7 @@ void TestICInline::testFlipRotateEmbeddedIC()
     ws.scene()->addItem(ic);
     int icId = ic->id();
 
-    QVERIFY(ic->isEmbeddedIC());
+    QVERIFY(ic->isEmbedded());
     QCOMPARE(ic->rotation(), 0.0);
 
     // Flip horizontally
@@ -3155,7 +3155,7 @@ void TestICInline::testFlipRotateEmbeddedIC()
 
     auto *flipped = dynamic_cast<IC *>(ws.scene()->itemById(icId));
     QVERIFY(flipped);
-    QVERIFY(flipped->isEmbeddedIC());
+    QVERIFY(flipped->isEmbedded());
     QCOMPARE(flipped->blobName(), QString("flip_test"));
 
     // Rotate
@@ -3163,7 +3163,7 @@ void TestICInline::testFlipRotateEmbeddedIC()
 
     auto *rotated = dynamic_cast<IC *>(ws.scene()->itemById(icId));
     QVERIFY(rotated);
-    QVERIFY(rotated->isEmbeddedIC());
+    QVERIFY(rotated->isEmbedded());
 
     // Undo both
     ws.scene()->undoStack()->undo();
@@ -3171,7 +3171,7 @@ void TestICInline::testFlipRotateEmbeddedIC()
 
     auto *restored = dynamic_cast<IC *>(ws.scene()->itemById(icId));
     QVERIFY(restored);
-    QVERIFY(restored->isEmbeddedIC());
+    QVERIFY(restored->isEmbedded());
     QCOMPARE(restored->blobName(), QString("flip_test"));
     QVERIFY(restored->inputSize() > 0);
 
@@ -3181,7 +3181,7 @@ void TestICInline::testFlipRotateEmbeddedIC()
 
     auto *redone = dynamic_cast<IC *>(ws.scene()->itemById(icId));
     QVERIFY(redone);
-    QVERIFY(redone->isEmbeddedIC());
+    QVERIFY(redone->isEmbedded());
     QCOMPARE(redone->blobName(), QString("flip_test"));
 }
 
@@ -3409,7 +3409,7 @@ void TestICInline::testSceneDropEmbeddedICFromMime()
 
     int icCountAfter = 0;
     for (auto *elm : ws.scene()->elements())
-        if (elm->elementType() == ElementType::IC && elm->isEmbeddedIC()) ++icCountAfter;
+        if (elm->elementType() == ElementType::IC && elm->isEmbedded()) ++icCountAfter;
     QCOMPARE(icCountAfter, 2);
 }
 
@@ -3477,8 +3477,8 @@ void TestICInline::testSceneDropBackwardCompatibleMime()
     for (auto *elm : ws.scene()->elements()) {
         if (elm->elementType() == ElementType::IC) {
             auto *ic = static_cast<IC *>(elm);
-            QVERIFY2(!ic->isEmbeddedIC(), "Old MIME format should create file-backed IC");
-            QVERIFY(!ic->icFile().isEmpty());
+            QVERIFY2(!ic->isEmbedded(), "Old MIME format should create file-backed IC");
+            QVERIFY(!ic->file().isEmpty());
             QVERIFY(ic->inputSize() > 0);
             ++icCount;
         }
@@ -4020,8 +4020,8 @@ void TestICInline::testEmbedICByDropConversion()
 
     int id1 = ic1->id();
     int id2 = ic2->id();
-    QVERIFY(!ic1->isEmbeddedIC());
-    QVERIFY(!ic2->isEmbeddedIC());
+    QVERIFY(!ic1->isEmbedded());
+    QVERIFY(!ic2->isEmbedded());
 
     reg->embedICsByFile(filePath, rawFileBytes, "simple_and");
 
@@ -4029,8 +4029,8 @@ void TestICInline::testEmbedICByDropConversion()
     auto *e2 = dynamic_cast<IC *>(ws.scene()->itemById(id2));
     QVERIFY(e1);
     QVERIFY(e2);
-    QVERIFY(e1->isEmbeddedIC());
-    QVERIFY(e2->isEmbeddedIC());
+    QVERIFY(e1->isEmbedded());
+    QVERIFY(e2->isEmbedded());
     QCOMPARE(e1->blobName(), QString("simple_and"));
     QCOMPARE(e2->blobName(), QString("simple_and"));
 
@@ -4040,10 +4040,10 @@ void TestICInline::testEmbedICByDropConversion()
     e2 = dynamic_cast<IC *>(ws.scene()->itemById(id2));
     QVERIFY(e1);
     QVERIFY(e2);
-    QVERIFY(!e1->isEmbeddedIC());
-    QVERIFY(!e2->isEmbeddedIC());
-    QVERIFY(e1->icFile().contains("simple_and.panda"));
-    QVERIFY(e2->icFile().contains("simple_and.panda"));
+    QVERIFY(!e1->isEmbedded());
+    QVERIFY(!e2->isEmbedded());
+    QVERIFY(e1->file().contains("simple_and.panda"));
+    QVERIFY(e2->file().contains("simple_and.panda"));
 }
 
 void TestICInline::testEmbedICByDropCollisionAutoSuffix()
@@ -4075,13 +4075,13 @@ void TestICInline::testEmbedICByDropCollisionAutoSuffix()
 
     // Embed with the new name
     QByteArray rawBytes = readFile(m_fixtureDir + "/simple_and.panda");
-    reg->embedICsByFile(fileBacked->icFile(), rawBytes, "simple_and_2");
+    reg->embedICsByFile(fileBacked->file(), rawBytes, "simple_and_2");
 
     // Both embedded ICs should coexist with distinct blobNames
     int embeddedCount = 0;
     QStringList blobNames;
     for (auto *elm : ws.scene()->elements()) {
-        if (elm->isEmbeddedIC()) {
+        if (elm->isEmbedded()) {
             ++embeddedCount;
             blobNames.append(elm->blobName());
         }
@@ -4128,10 +4128,10 @@ void TestICInline::testExtractICByDropConversion()
     auto *e2 = dynamic_cast<IC *>(ws.scene()->itemById(id2));
     QVERIFY(e1);
     QVERIFY(e2);
-    QVERIFY(!e1->isEmbeddedIC());
-    QVERIFY(!e2->isEmbeddedIC());
-    QVERIFY(e1->icFile().contains("extract_me.panda"));
-    QVERIFY(e2->icFile().contains("extract_me.panda"));
+    QVERIFY(!e1->isEmbedded());
+    QVERIFY(!e2->isEmbedded());
+    QVERIFY(e1->file().contains("extract_me.panda"));
+    QVERIFY(e2->file().contains("extract_me.panda"));
 
     // Undo should restore embedded state
     ws.scene()->undoStack()->undo();
@@ -4139,8 +4139,8 @@ void TestICInline::testExtractICByDropConversion()
     e2 = dynamic_cast<IC *>(ws.scene()->itemById(id2));
     QVERIFY(e1);
     QVERIFY(e2);
-    QVERIFY(e1->isEmbeddedIC());
-    QVERIFY(e2->isEmbeddedIC());
+    QVERIFY(e1->isEmbedded());
+    QVERIFY(e2->isEmbedded());
     QCOMPARE(e1->blobName(), QString("extract_me"));
 
     QFile::remove(fileName);
@@ -4311,16 +4311,16 @@ void TestICInline::testLoadFromBlobClearsFileState()
 
     IC ic;
     ic.loadFile(m_fixtureDir + "/simple_and.panda", m_fixtureDir);
-    QVERIFY(!ic.icFile().isEmpty());
-    QVERIFY(!ic.isEmbeddedIC());
+    QVERIFY(!ic.file().isEmpty());
+    QVERIFY(!ic.isEmbedded());
     QVERIFY(ic.inputSize() > 0);
 
     // Transition to blob-backed
     ic.setBlobName("simple_and");
     ic.loadFromBlob(blob, m_fixtureDir);
 
-    QVERIFY(ic.icFile().isEmpty());
-    QVERIFY(ic.isEmbeddedIC());
+    QVERIFY(ic.file().isEmpty());
+    QVERIFY(ic.isEmbedded());
     QCOMPARE(ic.blobName(), QString("simple_and"));
     QVERIFY(ic.inputSize() > 0);
 }
@@ -4351,7 +4351,7 @@ void TestICInline::testRemoveEmbeddedICUndoLimitation()
     // IC should be gone from the scene
     bool found = false;
     for (auto *elm : scene->elements()) {
-        if (elm->isEmbeddedIC() && elm->blobName() == "remove_undo") {
+        if (elm->isEmbedded() && elm->blobName() == "remove_undo") {
             found = true;
         }
     }
@@ -4470,7 +4470,7 @@ void TestICInline::testOrphanBlobAfterDeleteAllInstances()
     // No embedded ICs in scene
     bool anyEmbedded = false;
     for (auto *elm : scene->elements()) {
-        if (elm->isEmbeddedIC()) anyEmbedded = true;
+        if (elm->isEmbedded()) anyEmbedded = true;
     }
     QVERIFY(!anyEmbedded);
 
@@ -4482,7 +4482,7 @@ void TestICInline::testOrphanBlobAfterDeleteAllInstances()
     auto *ic3 = new IC();
     embedIC(ic3, reg->blob("orphan_test"), "orphan_test", m_fixtureDir, reg);
     scene->addItem(ic3);
-    QVERIFY(ic3->isEmbeddedIC());
+    QVERIFY(ic3->isEmbedded());
     QVERIFY(ic3->inputSize() > 0);
 }
 
@@ -4523,7 +4523,7 @@ void TestICInline::testImportNestedBlobsViaRegisterBlob()
     ic->loadFromBlob(reg->blob("nested_and"), m_fixtureDir);
     scene->addItem(ic);
 
-    QVERIFY(ic->isEmbeddedIC());
+    QVERIFY(ic->isEmbedded());
     QVERIFY(ic->inputSize() > 0);
     QVERIFY(ic->outputSize() > 0);
 }
@@ -4827,7 +4827,7 @@ void TestICInline::testLoadICWithNullBlobRegistry()
     ic2->load(in, ctx);
 
     // Should have loaded as file-backed
-    QVERIFY(!ic2->isEmbeddedIC());
+    QVERIFY(!ic2->isEmbedded());
     QVERIFY(ic2->inputSize() > 0);
     QVERIFY(ic2->outputSize() > 0);
 }
@@ -4997,12 +4997,12 @@ void TestICInline::testUpdateBlobCommandUndoRestoresOldBlob()
 }
 
 // ============================================================================
-// Edge cases: isEmbeddedIC, port names, RegisterBlobCommand, IC::load
+// Edge cases: isEmbedded, port names, RegisterBlobCommand, IC::load
 // ============================================================================
 
 void TestICInline::testIsEmbeddedICWithStaleBlobName()
 {
-    // isEmbeddedIC() returns true whenever blobName is non-empty, even if the
+    // isEmbedded() returns true whenever blobName is non-empty, even if the
     // blob was removed from the registry.  Verify this is the actual behavior.
     QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
 
@@ -5014,14 +5014,14 @@ void TestICInline::testIsEmbeddedICWithStaleBlobName()
     embedIC(ic, blob, "stale_blob", m_fixtureDir, reg);
     scene.addItem(ic);
 
-    QVERIFY(ic->isEmbeddedIC());
+    QVERIFY(ic->isEmbedded());
 
     // Remove the blob — blobName is still set on the IC
     reg->removeBlob("stale_blob");
     QVERIFY(!reg->hasBlob("stale_blob"));
 
-    // isEmbeddedIC still returns true (checks blobName, not registry)
-    QVERIFY(ic->isEmbeddedIC());
+    // isEmbedded still returns true (checks blobName, not registry)
+    QVERIFY(ic->isEmbedded());
     QCOMPARE(ic->blobName(), QString("stale_blob"));
 }
 
@@ -5204,14 +5204,14 @@ void TestICInline::testClearBlobsLeavesICsStale()
     embedIC(ic, blob, "will_be_cleared", m_fixtureDir, reg);
     scene.addItem(ic);
 
-    QVERIFY(ic->isEmbeddedIC());
+    QVERIFY(ic->isEmbedded());
     QVERIFY(reg->hasBlob("will_be_cleared"));
 
     reg->clearBlobs();
 
     QVERIFY(!reg->hasBlob("will_be_cleared"));
     // IC still thinks it's embedded (blobName unchanged)
-    QVERIFY(ic->isEmbeddedIC());
+    QVERIFY(ic->isEmbedded());
     QCOMPARE(ic->blobName(), QString("will_be_cleared"));
 }
 

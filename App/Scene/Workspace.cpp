@@ -90,9 +90,9 @@ void WorkSpace::save(const QString &fileName)
 
         // Embed any file-backed ICs so the blob is self-contained
         for (auto *elm : m_scene.elements()) {
-            if (elm->elementType() == ElementType::IC && !elm->isEmbeddedIC()) {
+            if (elm->elementType() == ElementType::IC && !elm->isEmbedded()) {
                 auto *ic = static_cast<IC *>(elm);
-                const QString icFile = ic->icFile();
+                const QString icFile = ic->file();
                 const QString baseName = QFileInfo(icFile).baseName();
                 if (!m_scene.icRegistry()->hasBlob(baseName)) {
                     QFileInfo fi(QDir(m_parentContextDir), icFile);
@@ -281,8 +281,8 @@ void WorkSpace::save(QDataStream &stream)
     // Collect unique file-backed IC filenames for copyFiles (Save As).
     QStringList fileBackedICs;
     for (auto *elm : m_scene.elements()) {
-        if (elm->elementType() == ElementType::IC && !elm->isEmbeddedIC()) {
-            const QString icFile = static_cast<IC *>(elm)->icFile();
+        if (elm->elementType() == ElementType::IC && !elm->isEmbedded()) {
+            const QString icFile = static_cast<IC *>(elm)->file();
             if (!icFile.isEmpty() && !fileBackedICs.contains(QFileInfo(icFile).fileName())) {
                 fileBackedICs.append(QFileInfo(icFile).fileName());
             }
@@ -595,7 +595,7 @@ void WorkSpace::onChildICBlobSaved(int icElementId, const QByteArray &blob)
     }
 
     auto *elm = dynamic_cast<GraphicElement *>(item);
-    if (!elm || !elm->isEmbeddedIC()) {
+    if (!elm || !elm->isEmbedded()) {
         return;
     }
 
@@ -633,7 +633,7 @@ void WorkSpace::removeEmbeddedIC(const QString &blobName)
             continue;
         }
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-        if (elm && elm->isEmbeddedIC() && elm->blobName() == blobName) {
+        if (elm && elm->isEmbedded() && elm->blobName() == blobName) {
             toDelete.append(item);
             // Also collect connections to this element
             for (int i = 0; i < elm->inputSize(); ++i) {
