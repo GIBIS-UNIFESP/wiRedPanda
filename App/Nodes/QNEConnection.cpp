@@ -16,6 +16,7 @@
 
 #include "App/Core/Common.h"
 #include "App/Core/ThemeManager.h"
+#include "App/Element/GraphicElement.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Nodes/QNEPort.h"
 
@@ -156,19 +157,35 @@ double QNEConnection::angle()
 
 void QNEConnection::save(QDataStream &stream) const
 {
-    // Persist the raw pointer addresses as opaque 64-bit IDs.  They are meaningless
-    // as pointers after a reload but serve as unique tokens during the same session,
-    // and load() uses a portMap to translate them back to the correct QNEPort objects.
-    stream << reinterpret_cast<quint64>(m_startPort);
-    stream << reinterpret_cast<quint64>(m_endPort);
+    // Calculate and save port serial IDs deterministically
+    // Serial ID format: (elementId << 16) | portIndex
+    // For output ports: portIndex = inputSize + outputIndex
+
+    auto calculateSerialId = [](QNEPort *port) -> quint64 {
+        if (!port) return 0;
+
+        GraphicElement *elem = port->graphicElement();
+        if (!elem) return 0;
+
+        quint64 elementId = static_cast<quint64>(elem->id());
+        int portIndex = port->index();
+
+        // For output ports, offset by the number of input ports
+        if (port->isOutput()) {
+            portIndex += elem->inputSize();
+        }
+
+        return (elementId << 16) | (portIndex & 0xFFFF);
+    };
+
+    stream << calculateSerialId(m_startPort);
+    stream << calculateSerialId(m_endPort);
 }
 
 void QNEConnection::load(QDataStream &stream, SerializationContext &context)
 {
-    quint64 ptr1; stream >> ptr1;
-    quint64 ptr2; stream >> ptr2;
-
-    const auto &portMap = context.portMap;
+    quint64 id1; stream >> id1;
+    quint64 id2; stream >> id2;
 
     // Check stream integrity after reading port IDs
     if (stream.status() != QDataStream::Ok) {
@@ -176,71 +193,46 @@ void QNEConnection::load(QDataStream &stream, SerializationContext &context)
                           stream.device()->pos());
     }
 
-    if (portMap.isEmpty()) {
-        // No portMap means this is an in-process clipboard paste: the stored integers
-        // ARE still valid pointer addresses because no process restart occurred.
-        // Casting them back is safe here, but would be undefined behaviour after reload.
-        qCDebug(three) << "Empty port map.";
-        auto *port1 = reinterpret_cast<QNEPort *>(ptr1);
-        auto *port2 = reinterpret_cast<QNEPort *>(ptr2);
+    // For backwards compatibility with old files: if ID not found and oldPtrMap is provided, try the mapping
+    if (!context.portMap.contains(id1) && !context.oldPtrToSerialId.isEmpty()) {
+        quint64 newId = context.oldPtrToSerialId.value(id1, 0);
+        if (newId != 0) {
+            id1 = newId;
+        }
+    }
 
-        if (port1 && port2) {
-            if (port1->isInput() && port2->isOutput()) {
-                auto *outputPort = dynamic_cast<QNEOutputPort *>(port2);
-                auto *inputPort = dynamic_cast<QNEInputPort *>(port1);
-                if (outputPort && inputPort) {
-                    setStartPort(outputPort);
-                    setEndPort(inputPort);
-                }
-            } else if (port1->isOutput() && port2->isInput()) {
-                auto *outputPort = dynamic_cast<QNEOutputPort *>(port1);
-                auto *inputPort = dynamic_cast<QNEInputPort *>(port2);
-                if (outputPort && inputPort) {
-                    setStartPort(outputPort);
-                    setEndPort(inputPort);
-                }
+    if (!context.portMap.contains(id2) && !context.oldPtrToSerialId.isEmpty()) {
+        quint64 newId = context.oldPtrToSerialId.value(id2, 0);
+        if (newId != 0) {
+            id2 = newId;
+        }
+    }
+
+    if (!context.portMap.contains(id1) || !context.portMap.contains(id2)) {
+        return;
+    }
+
+    auto *port1 = context.portMap.value(id1);
+    auto *port2 = context.portMap.value(id2);
+
+    if (port1 && port2) {
+        if (port1->isInput() && port2->isOutput()) {
+            auto *outputPort = dynamic_cast<QNEOutputPort *>(port2);
+            auto *inputPort = dynamic_cast<QNEInputPort *>(port1);
+            if (outputPort && inputPort) {
+                setStartPort(outputPort);
+                setEndPort(inputPort);
+            }
+        } else if (port1->isOutput() && port2->isInput()) {
+            auto *outputPort = dynamic_cast<QNEOutputPort *>(port1);
+            auto *inputPort = dynamic_cast<QNEInputPort *>(port2);
+            if (outputPort && inputPort) {
+                setStartPort(outputPort);
+                setEndPort(inputPort);
             }
         }
     }
 
-    if (!portMap.isEmpty()) {
-        if (!portMap.contains(ptr1) || !portMap.contains(ptr2)) {
-            return;
-        }
-
-        qCDebug(three) << "Port map with elements: ptr1(" << ptr1 << "), ptr2(" << ptr2 << ")";
-        auto *port1 = portMap.value(ptr1);
-        auto *port2 = portMap.value(ptr2);
-        qCDebug(three) << "Before if 1.";
-
-        if (port1 && port2) {
-            qCDebug(three) << "Before if 2.";
-
-            if (port1->isInput() && port2->isOutput()) {
-                qCDebug(three) << "Setting start 1.";
-                auto *outputPort = dynamic_cast<QNEOutputPort *>(port2);
-                auto *inputPort = dynamic_cast<QNEInputPort *>(port1);
-                if (outputPort && inputPort) {
-                    setStartPort(outputPort);
-                    qCDebug(three) << "Setting end 1.";
-                    setEndPort(inputPort);
-                }
-            } else if (port1->isOutput() && port2->isInput()) {
-                qCDebug(three) << "Setting start 2.";
-                auto *outputPort = dynamic_cast<QNEOutputPort *>(port1);
-                auto *inputPort = dynamic_cast<QNEInputPort *>(port2);
-                if (outputPort && inputPort) {
-                    setStartPort(outputPort);
-                    qCDebug(three) << "Setting end 2.";
-                    setEndPort(inputPort);
-                }
-            }
-
-            qCDebug(three) << "After ifs.";
-        }
-    }
-
-    qCDebug(three) << "Updating pos from ports.";
     updatePosFromPorts();
 }
 

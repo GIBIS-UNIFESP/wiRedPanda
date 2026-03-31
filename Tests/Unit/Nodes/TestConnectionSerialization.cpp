@@ -29,9 +29,8 @@ void TestConnectionSerialization::initTestCase()
 
 void TestConnectionSerialization::testLoadWithEmptyPortMapDirectRestore()
 {
-    // Test loading connection with direct pointer restoration (empty port map)
-    // This occurs when loading from older file formats or direct memory restoration
-    // With empty portMap, load does raw reinterpret_cast<QNEPort *>(savedPointer)
+    // Test loading connection with empty port map yields no connection
+    // With the serial ID system, ports must be registered in portMap to be found
 
     WorkSpace workspace;
     auto *scene = workspace.scene();
@@ -63,10 +62,8 @@ void TestConnectionSerialization::testLoadWithEmptyPortMapDirectRestore()
     SerializationContext context{emptyPortMap, QVersionNumber(), QString()};
     conn2->load(loadStream, context);
 
-    // With empty portMap, saved pointers are directly restored (reinterpret_cast)
-    // Since gate objects are still in scope, raw pointers are still valid
-    QCOMPARE(conn2->startPort(), dynamic_cast<QNEOutputPort *>(outputPort));
-    QCOMPARE(conn2->endPort(), dynamic_cast<QNEInputPort *>(inputPort));
+    QVERIFY(conn2->startPort() == nullptr);
+    QVERIFY(conn2->endPort() == nullptr);
 }
 
 void TestConnectionSerialization::testLoadWithPortMapIndirectRestore()
@@ -95,9 +92,14 @@ void TestConnectionSerialization::testLoadWithPortMapIndirectRestore()
     QDataStream saveStream(&data, QIODevice::WriteOnly);
     conn1->save(saveStream);
 
-    // Get original port pointers for mapping
-    quint64 origOutputPtr = reinterpret_cast<quint64>(outputPort1);
-    quint64 origInputPtr = reinterpret_cast<quint64>(inputPort1);
+    // Calculate serial IDs for fresh ports (Phase 2b serial ID formula)
+    // For inputs: (elementId << 16) | portIndex
+    // For outputs: (elementId << 16) | (inputCount + portIndex)
+    quint64 origOutputSerial = static_cast<quint64>(andGate1->id()) << 16 | static_cast<quint64>(andGate1->inputSize());
+    quint64 origInputSerial = static_cast<quint64>(orGate1->id()) << 16 | 0;
+    // Assign these serial IDs to the ports before saving
+    outputPort1->setSerialId(origOutputSerial);
+    inputPort1->setSerialId(origInputSerial);
 
     // Create new elements (simulating new circuit load)
     auto andGate2 = std::make_unique<And>();
@@ -108,10 +110,10 @@ void TestConnectionSerialization::testLoadWithPortMapIndirectRestore()
     auto *outputPort2 = andGate2->outputPort();
     auto *inputPort2 = orGate2->inputPort(0);
 
-    // Create port map (original -> new)
+    // Create port map (original -> new, using serial IDs as keys)
     QMap<quint64, QNEPort *> portMap;
-    portMap[origOutputPtr] = outputPort2;
-    portMap[origInputPtr] = inputPort2;
+    portMap[origOutputSerial] = outputPort2;
+    portMap[origInputSerial] = inputPort2;
 
     // Create new connection and load with port map
     auto conn2 = std::make_unique<QNEConnection>();
@@ -188,15 +190,21 @@ void TestConnectionSerialization::testLoadPortTypeResolution()
     QVERIFY(conn1->startPort() == outputPort);
     QVERIFY(conn1->endPort() == inputPort);
 
+    // Calculate and assign serial IDs
+    quint64 outSerial = static_cast<quint64>(sw->id()) << 16 | static_cast<quint64>(sw->inputSize());
+    quint64 inSerial = static_cast<quint64>(led->id()) << 16 | 0;
+    outputPort->setSerialId(outSerial);
+    inputPort->setSerialId(inSerial);
+
     // Save connection
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
     conn1->save(saveStream);
 
-    // Create port map (keep same pointers for this test)
+    // Create port map (using calculated serial IDs)
     QMap<quint64, QNEPort *> portMap;
-    portMap[reinterpret_cast<quint64>(outputPort)] = outputPort;
-    portMap[reinterpret_cast<quint64>(inputPort)] = inputPort;
+    portMap[outSerial] = outputPort;
+    portMap[inSerial] = inputPort;
 
     // Load connection
     auto conn2 = std::make_unique<QNEConnection>();
@@ -233,6 +241,16 @@ void TestConnectionSerialization::testLoadMultipleConnectionsOnSamePorts()
     conn2->setStartPort(sw2->outputPort());
     conn2->setEndPort(andGate->inputPort(1));
 
+    // Calculate and assign serial IDs for all ports
+    quint64 sw1OutSerial = static_cast<quint64>(sw1->id()) << 16 | static_cast<quint64>(sw1->inputSize());
+    quint64 sw2OutSerial = static_cast<quint64>(sw2->id()) << 16 | static_cast<quint64>(sw2->inputSize());
+    quint64 andIn0Serial = static_cast<quint64>(andGate->id()) << 16 | 0;
+    quint64 andIn1Serial = static_cast<quint64>(andGate->id()) << 16 | 1;
+    sw1->outputPort()->setSerialId(sw1OutSerial);
+    sw2->outputPort()->setSerialId(sw2OutSerial);
+    andGate->inputPort(0)->setSerialId(andIn0Serial);
+    andGate->inputPort(1)->setSerialId(andIn1Serial);
+
     // Save both connections
     QByteArray data1, data2;
     {
@@ -244,12 +262,12 @@ void TestConnectionSerialization::testLoadMultipleConnectionsOnSamePorts()
         conn2->save(s);
     }
 
-    // Create port map
+    // Create port map (using calculated serial IDs)
     QMap<quint64, QNEPort *> portMap;
-    portMap[reinterpret_cast<quint64>(sw1->outputPort())] = sw1->outputPort();
-    portMap[reinterpret_cast<quint64>(sw2->outputPort())] = sw2->outputPort();
-    portMap[reinterpret_cast<quint64>(andGate->inputPort(0))] = andGate->inputPort(0);
-    portMap[reinterpret_cast<quint64>(andGate->inputPort(1))] = andGate->inputPort(1);
+    portMap[sw1OutSerial] = sw1->outputPort();
+    portMap[sw2OutSerial] = sw2->outputPort();
+    portMap[andIn0Serial] = andGate->inputPort(0);
+    portMap[andIn1Serial] = andGate->inputPort(1);
 
     // Load both connections
     SerializationContext context{portMap, QVersionNumber(), QString()};
@@ -301,6 +319,12 @@ void TestConnectionSerialization::testSaveLoadRoundTripPreservesPorts()
     QVERIFY(outputPort->connections().contains(conn1.get()));
     QVERIFY(inputPort->connections().contains(conn1.get()));
 
+    // Calculate and assign serial IDs
+    quint64 andOutSerial = static_cast<quint64>(andGate->id()) << 16 | static_cast<quint64>(andGate->inputSize());
+    quint64 orInSerial = static_cast<quint64>(orGate->id()) << 16 | 0;
+    outputPort->setSerialId(andOutSerial);
+    inputPort->setSerialId(orInSerial);
+
     // Save
     QByteArray data;
     {
@@ -310,8 +334,8 @@ void TestConnectionSerialization::testSaveLoadRoundTripPreservesPorts()
 
     // Load with port map
     QMap<quint64, QNEPort *> portMap;
-    portMap[reinterpret_cast<quint64>(outputPort)] = outputPort;
-    portMap[reinterpret_cast<quint64>(inputPort)] = inputPort;
+    portMap[andOutSerial] = outputPort;
+    portMap[orInSerial] = inputPort;
 
     SerializationContext context{portMap, QVersionNumber(), QString()};
 
@@ -347,6 +371,12 @@ void TestConnectionSerialization::testSaveLoadPreservesConnectionStatus()
     conn1->setStatus(Status::Active);
     QCOMPARE(conn1->status(), Status::Active);
 
+    // Calculate and assign serial IDs
+    quint64 swOutSerial = static_cast<quint64>(sw->id()) << 16 | static_cast<quint64>(sw->inputSize());
+    quint64 ledInSerial = static_cast<quint64>(led->id()) << 16 | 0;
+    sw->outputPort()->setSerialId(swOutSerial);
+    led->inputPort()->setSerialId(ledInSerial);
+
     // Save
     QByteArray data;
     {
@@ -356,8 +386,8 @@ void TestConnectionSerialization::testSaveLoadPreservesConnectionStatus()
 
     // Load
     QMap<quint64, QNEPort *> portMap;
-    portMap[reinterpret_cast<quint64>(sw->outputPort())] = sw->outputPort();
-    portMap[reinterpret_cast<quint64>(led->inputPort())] = led->inputPort();
+    portMap[swOutSerial] = sw->outputPort();
+    portMap[ledInSerial] = led->inputPort();
 
     SerializationContext context{portMap, QVersionNumber(), QString()};
 
@@ -399,6 +429,16 @@ void TestConnectionSerialization::testSaveLoadWithStatusPropagation()
     sw->setOn();
     QCOMPARE(sw->outputPort()->status(), Status::Active);
 
+    // Calculate and assign serial IDs for all ports
+    quint64 swOutSerial = static_cast<quint64>(sw->id()) << 16 | static_cast<quint64>(sw->inputSize());
+    quint64 and1In0Serial = static_cast<quint64>(and1->id()) << 16 | 0;
+    quint64 and1OutSerial = static_cast<quint64>(and1->id()) << 16 | static_cast<quint64>(and1->inputSize());
+    quint64 and2In0Serial = static_cast<quint64>(and2->id()) << 16 | 0;
+    sw->outputPort()->setSerialId(swOutSerial);
+    and1->inputPort(0)->setSerialId(and1In0Serial);
+    and1->outputPort()->setSerialId(and1OutSerial);
+    and2->inputPort(0)->setSerialId(and2In0Serial);
+
     // Save both connections
     QByteArray data1, data2;
     {
@@ -412,10 +452,10 @@ void TestConnectionSerialization::testSaveLoadWithStatusPropagation()
 
     // Create port map
     QMap<quint64, QNEPort *> portMap;
-    portMap[reinterpret_cast<quint64>(sw->outputPort())] = sw->outputPort();
-    portMap[reinterpret_cast<quint64>(and1->inputPort(0))] = and1->inputPort(0);
-    portMap[reinterpret_cast<quint64>(and1->outputPort())] = and1->outputPort();
-    portMap[reinterpret_cast<quint64>(and2->inputPort(0))] = and2->inputPort(0);
+    portMap[swOutSerial] = sw->outputPort();
+    portMap[and1In0Serial] = and1->inputPort(0);
+    portMap[and1OutSerial] = and1->outputPort();
+    portMap[and2In0Serial] = and2->inputPort(0);
 
     // Load connections
     SerializationContext context{portMap, QVersionNumber(), QString()};
