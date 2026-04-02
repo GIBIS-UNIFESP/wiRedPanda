@@ -1577,6 +1577,11 @@
                   "type": "string",
                   "description": "Skin path or 'default' for elements that support skins"
                 },
+                "skin_index": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "State index for multi-state element skins"
+                },
                 "wireless_mode": {
                   "type": "integer",
                   "minimum": 0,
@@ -1778,6 +1783,11 @@
                 "skin": {
                   "type": "string",
                   "description": "Custom skin image path (empty string restores default)"
+                },
+                "skin_index": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Skin slot index for multi-state elements (e.g. LED states). Use with 'skin' parameter."
                 }
               },
               "additionalProperties": false

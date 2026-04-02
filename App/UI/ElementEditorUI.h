@@ -86,6 +86,8 @@ public:
     QLineEdit *lineEditTrigger = nullptr;
 
     // Skin
+    QLabel *labelSkinState = nullptr;
+    QComboBox *comboBoxSkinState = nullptr;
     QPushButton *pushButtonChangeSkin = nullptr;
     QPushButton *pushButtonDefaultSkin = nullptr;
 

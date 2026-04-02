@@ -62,6 +62,8 @@ public:
 
     /// \reimp
     void setSkin(const bool defaultSkin, const QString &fileName) override;
+    /// \reimp
+    QList<QPair<int, QString>> skinStates() const override;
 
     // --- Serialization ---
 

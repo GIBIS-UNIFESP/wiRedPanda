@@ -222,3 +222,8 @@ void Clock::setSkin(const bool defaultSkin, const QString &fileName)
     setPixmap(static_cast<int>(m_isOn));
 }
 
+QList<QPair<int, QString>> Clock::skinStates() const
+{
+    return {{0, tr("Low")}, {1, tr("High")}};
+}
+

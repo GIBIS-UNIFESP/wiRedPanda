@@ -185,6 +185,28 @@ void ElementEditor::updateElementSkin()
     }
 
     qCDebug(zero) << "File name: " << fileName;
+
+    // If a specific skin state is selected in the combo box, use setSkinAt()
+    // to target that index directly instead of relying on the element's current state.
+    if (m_ui->comboBoxSkinState->isVisible() && m_ui->comboBoxSkinState->count() > 0) {
+        const int skinIndex = m_ui->comboBoxSkinState->currentData().toInt();
+
+        // Snapshot and apply via undo command
+        for (auto *elm : std::as_const(m_elements)) {
+            QByteArray oldData;
+            {
+                QDataStream stream(&oldData, QIODevice::WriteOnly);
+                Serialization::writePandaHeader(stream);
+                elm->save(stream);
+            }
+            elm->setSkinAt(skinIndex, fileName);
+            if (m_scene) {
+                m_scene->receiveCommand(new UpdateCommand({elm}, oldData, m_scene));
+            }
+        }
+        return;
+    }
+
     m_isUpdatingSkin = true;
     m_skinName = fileName;
     m_isDefaultSkin = false;
@@ -425,6 +447,24 @@ void ElementEditor::applyCapabilitiesToUi()
     /* Skin */
     m_ui->pushButtonChangeSkin->setVisible(c.canChangeSkin);
     m_ui->pushButtonDefaultSkin->setVisible(c.canChangeSkin);
+
+    // Populate the skin state selector for multi-state elements
+    if (c.canChangeSkin && m_elements.size() == 1) {
+        const auto states = m_elements[0]->skinStates();
+        const bool multiState = states.size() > 1;
+        m_ui->labelSkinState->setVisible(multiState);
+        m_ui->comboBoxSkinState->setVisible(multiState);
+        if (multiState) {
+            QSignalBlocker blocker(m_ui->comboBoxSkinState);
+            m_ui->comboBoxSkinState->clear();
+            for (const auto &[index, label] : states) {
+                m_ui->comboBoxSkinState->addItem(label, index);
+            }
+        }
+    } else {
+        m_ui->labelSkinState->setVisible(false);
+        m_ui->comboBoxSkinState->setVisible(false);
+    }
 
     /* Wireless mode — Node elements only */
     setSection(c.hasWirelessMode, m_ui->labelWirelessMode, m_ui->comboBoxWirelessMode);
