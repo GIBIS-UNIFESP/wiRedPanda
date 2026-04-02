@@ -69,6 +69,15 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     pushButtonTruthTable->setEnabled(true);
     horizontalLayout->addWidget(pushButtonTruthTable);
 
+    // Skin state selector (for multi-state elements like LEDs)
+    labelSkinState = new QLabel(groupBox);
+    labelSkinState->setObjectName("labelSkinState");
+    gridLayout_2->addWidget(labelSkinState, 12, 0, 1, 1);
+
+    comboBoxSkinState = new QComboBox(groupBox);
+    comboBoxSkinState->setObjectName("comboBoxSkinState");
+    gridLayout_2->addWidget(comboBoxSkinState, 12, 1, 1, 1);
+
     pushButtonChangeSkin = new QPushButton(groupBox);
     pushButtonChangeSkin->setObjectName("pushButtonChangeSkin");
     horizontalLayout->addWidget(pushButtonChangeSkin);
@@ -84,7 +93,7 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     pushButtonDefaultSkin->setIconSize(QSize(16, 16));
     horizontalLayout->addWidget(pushButtonDefaultSkin);
 
-    gridLayout_2->addLayout(horizontalLayout, 12, 0, 1, 2);
+    gridLayout_2->addLayout(horizontalLayout, 13, 0, 1, 2);
 
     lineEditTrigger = new QLineEdit(groupBox);
     lineEditTrigger->setObjectName("lineEditTrigger");
@@ -254,6 +263,7 @@ void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
     labelLabels->setText(QCoreApplication::translate("ElementEditor", "Label:"));
     labelTrigger->setText(QCoreApplication::translate("ElementEditor", "Trigger:"));
     pushButtonTruthTable->setText(QCoreApplication::translate("ElementEditor", "TruthTable"));
+    labelSkinState->setText(QCoreApplication::translate("ElementEditor", "Appearance:"));
     pushButtonChangeSkin->setText(QCoreApplication::translate("ElementEditor", "Change skin to ..."));
     pushButtonDefaultSkin->setToolTip(QCoreApplication::translate("ElementEditor", "Default"));
     pushButtonDefaultSkin->setText(QString());

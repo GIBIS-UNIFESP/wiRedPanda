@@ -237,6 +237,43 @@ void Led::setSkin(const bool useDefaultSkin, const QString &fileName)
     setPixmap(index);
 }
 
+QList<QPair<int, QString>> Led::skinStates() const
+{
+    QList<QPair<int, QString>> states;
+
+    switch (inputSize()) {
+    case 1:
+        states.append({m_colorIndex, tr("Off")});
+        states.append({m_colorIndex + 1, tr("On")});
+        break;
+
+    case 2:
+        states.append({18, tr("00 (off)")});
+        states.append({19, tr("01")});
+        states.append({20, tr("10")});
+        states.append({25, tr("11")});
+        break;
+
+    case 3:
+        for (int i = 0; i < 8; ++i) {
+            states.append({18 + i, QString("%1").arg(i, 3, 2, QLatin1Char('0'))});
+        }
+        break;
+
+    case 4:
+        for (int i = 0; i < 16; ++i) {
+            states.append({10 + i, QString("%1").arg(i, 4, 2, QLatin1Char('0'))});
+        }
+        break;
+
+    default:
+        states.append({0, tr("Default")});
+        break;
+    }
+
+    return states;
+}
+
 void Led::updateLogic()
 {
     if (!simUpdateInputs()) {

@@ -141,3 +141,8 @@ void InputButton::setSkin(const bool defaultSkin, const QString &fileName)
     setPixmap(static_cast<int>(m_isOn));
 }
 
+QList<QPair<int, QString>> InputButton::skinStates() const
+{
+    return {{0, tr("Released")}, {1, tr("Pressed")}};
+}
+
