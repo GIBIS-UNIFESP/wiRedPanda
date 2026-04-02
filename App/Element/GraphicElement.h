@@ -262,6 +262,20 @@ public:
      */
     virtual void setSkin(const bool defaultSkin, const QString &fileName);
 
+    /**
+     * \brief Sets a custom skin at a specific index in the skin list.
+     * \param index Skin list index.
+     * \param fileName File path of the custom skin image (empty restores default for that index).
+     */
+    void setSkinAt(const int index, const QString &fileName);
+
+    /**
+     * \brief Returns the list of editable skin states for this element.
+     * Each pair is (skin list index, human-readable state description).
+     * Override in subclasses with multi-state skins (e.g., Led).
+     */
+    virtual QList<QPair<int, QString>> skinStates() const;
+
     /// Loads and applies the pixmap located at \a pixmapPath.
     void setPixmap(const QString &pixmapPath);
 

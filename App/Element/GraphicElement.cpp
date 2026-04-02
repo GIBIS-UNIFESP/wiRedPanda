@@ -340,6 +340,28 @@ void GraphicElement::setSkin(const bool defaultSkin, const QString &fileName)
     setPixmap(0);
 }
 
+void GraphicElement::setSkinAt(const int index, const QString &fileName)
+{
+    if (index < 0 || index >= m_alternativeSkins.size()) {
+        return;
+    }
+
+    if (fileName.isEmpty()) {
+        m_alternativeSkins[index] = m_defaultSkins.at(index);
+    } else {
+        m_alternativeSkins[index] = fileName;
+    }
+
+    m_usingDefaultSkin = (m_alternativeSkins == m_defaultSkins);
+    setPixmap(index);
+}
+
+QList<QPair<int, QString>> GraphicElement::skinStates() const
+{
+    // Default: single skin at index 0
+    return {{0, tr("Default")}};
+}
+
 void GraphicElement::updatePortsProperties()
 {
     qCDebug(five) << "Updating port positions that belong to the IC.";

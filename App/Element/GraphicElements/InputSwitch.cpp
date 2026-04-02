@@ -143,3 +143,8 @@ void InputSwitch::setSkin(const bool defaultSkin, const QString &fileName)
     setPixmap(static_cast<int>(m_isOn));
 }
 
+QList<QPair<int, QString>> InputSwitch::skinStates() const
+{
+    return {{0, tr("Off")}, {1, tr("On")}};
+}
+

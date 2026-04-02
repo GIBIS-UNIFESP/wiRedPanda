@@ -425,11 +425,18 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
     if (params.contains("skin") && element->canChangeSkin()) {
         QString skinPath = params.value("skin").toString();
         bool useDefault = skinPath.isEmpty();
+        int skinIndex = params.contains("skin_index") ? params.value("skin_index").toInt() : -1;
 
         newProperties["skin"] = skinPath;
         newProperties["skin_default"] = useDefault;
 
-        element->setSkin(useDefault, skinPath);
+        if (skinIndex >= 0) {
+            // Set skin for a specific index directly (e.g., LED state)
+            element->setSkinAt(skinIndex, skinPath);
+            newProperties["skin_index"] = skinIndex;
+        } else {
+            element->setSkin(useDefault, skinPath);
+        }
     }
 
     // Wireless mode is only meaningful for Node elements; non-Nodes are silently ignored.

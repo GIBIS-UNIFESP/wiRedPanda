@@ -25,6 +25,7 @@ class ElementPropertiesTests(MCPTestBase):
             self.test_volume_property,
             self.test_locked_property,
             self.test_skin_property,
+            self.test_skin_index_property,
             self.test_list_elements_extended,
         ]
 
@@ -195,6 +196,37 @@ class ElementPropertiesTests(MCPTestBase):
             return False
 
         self.infrastructure.output.success("skin property works")
+        return True
+
+    async def test_skin_index_property(self) -> bool:
+        """Test setting a skin at a specific index on a multi-input LED."""
+        print("\n=== Skin Index Property Test ===")
+        self.set_test_context("test_skin_index_property")
+
+        await self.send_command("new_circuit", {})
+
+        led_resp = await self.send_command("create_element", {"type": "Led", "x": 100.0, "y": 100.0})
+        if not led_resp.success or not led_resp.result:
+            print("Failed to create Led")
+            return False
+        led_id = led_resp.result["element_id"]
+
+        # Set skin at index 1 (the "On" state for a 1-input white LED)
+        resp = await self.send_command("set_element_properties", {
+            "element_id": led_id,
+            "skin": ":/Components/Output/Led/GreenLed.svg",
+            "skin_index": 1
+        })
+        if not resp.success:
+            print(f"Failed to set skin at index: {resp.error}")
+            return False
+
+        new_props = resp.result.get("new_properties", {}) if resp.result else {}
+        if new_props.get("skin_index") != 1:
+            print(f"Skin index not set correctly: {new_props}")
+            return False
+
+        self.infrastructure.output.success("skin_index property works")
         return True
 
     async def test_list_elements_extended(self) -> bool:
