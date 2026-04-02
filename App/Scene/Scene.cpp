@@ -205,7 +205,14 @@ QGraphicsItem *Scene::itemAt(const QPointF pos)
         }
     }
 
-    // Return any custom item (UserType < type); ignores built-in Qt items
+    // Elements take priority over connections since they render above wires
+    for (auto *item : std::as_const(items_)) {
+        if (item->type() == GraphicElement::Type) {
+            return item;
+        }
+    }
+
+    // Return any remaining custom item (connections, etc.)
     for (auto *item : std::as_const(items_)) {
         if (item->type() > QGraphicsItem::UserType) {
             return item;
