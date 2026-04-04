@@ -6,7 +6,6 @@
 
 #include "App/Nodes/QNEConnection.h"
 
-#include <QBrush>
 #include <QDebug>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>

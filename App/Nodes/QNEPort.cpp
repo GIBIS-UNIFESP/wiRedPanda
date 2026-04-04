@@ -6,13 +6,8 @@
 
 #include "App/Nodes/QNEPort.h"
 
-#include <QCursor>
-#include <QDebug>
-#include <QFontMetrics>
-#include <QGraphicsScene>
 #include <QPen>
 
-#include "App/Core/Enums.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Nodes/QNEConnection.h"
@@ -209,11 +204,6 @@ void QNEPort::hoverEnter()
 QNEInputPort::QNEInputPort(QGraphicsItem *parent)
     : QNEPort(parent)
 {
-    // Place the label to the left of the port dot so it doesn't overlap the element body.
-    // m_margin = 2 px gap between the port dot edge and the label text.
-    m_label->setPos(-m_radius - m_margin - m_label->boundingRect().width(),
-                    -m_label->boundingRect().height() / 2);
-
     QNEInputPort::setStatus(defaultValue());
 }
 
@@ -290,11 +280,6 @@ void QNEInputPort::updateTheme()
 QNEOutputPort::QNEOutputPort(QGraphicsItem *parent)
     : QNEPort(parent)
 {
-    // Place the label to the right of the port dot, opposite to input ports,
-    // so labels read outward from the element body on both sides
-    m_label->setPos(m_radius + m_margin,
-                    -m_label->boundingRect().height() / 2);
-
     QNEOutputPort::updateTheme();
 }
 
