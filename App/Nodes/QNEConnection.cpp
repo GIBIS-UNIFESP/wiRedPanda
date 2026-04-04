@@ -14,6 +14,7 @@
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
 
+#include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
@@ -109,6 +110,13 @@ void QNEConnection::updatePosFromPorts()
 
 void QNEConnection::updatePath()
 {
+    // Skip expensive Bézier path construction when there is no visible rendering.
+    // In non-interactive (test/headless) mode, connection geometry is never painted,
+    // so building and comparing QPainterPaths is pure waste.
+    if (!Application::interactiveMode) {
+        return;
+    }
+
     QPainterPath path;
 
     path.moveTo(m_startPos);
