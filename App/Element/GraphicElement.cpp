@@ -25,6 +25,24 @@
 
 static const int s_graphicElementMetatypeId = qRegisterMetaType<GraphicElement>();
 
+/// Shared label font — constructed once to avoid repeated QFont creation and fontconfig lookups.
+static const QFont &labelFont()
+{
+    static const QFont font = [] {
+        QFont f("SansSerif");
+        f.setBold(true);
+        return f;
+    }();
+    return font;
+}
+
+/// Cache decoded pixmaps by resolved path so each image is loaded from disk only once.
+static QHash<QString, QPixmap> &pixmapCache()
+{
+    static QHash<QString, QPixmap> cache;
+    return cache;
+}
+
 GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
     : QGraphicsObject(parent)
     , m_elementType(type)
@@ -58,9 +76,8 @@ GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
 
     qCDebug(four) << "Setting attributes.";
     m_label->setVisible(metadata.hasLabel);
-    QFont font("SansSerif");
-    font.setBold(true);
-    m_label->setFont(font);
+    // Font is applied lazily in updateLabel() to avoid expensive text layout
+    // passes for elements that never display a label (e.g. IC sub-elements).
     // 64 px below origin keeps the label below the standard 64×64 element body
     m_label->setPos(0, 64);
     m_label->setParentItem(this);
@@ -145,7 +162,13 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
         }
     }
 
-    if (!m_pixmap.load(path)) {
+    auto &cache = pixmapCache();
+    auto it = cache.constFind(path);
+    if (it != cache.constEnd()) {
+        m_pixmap = *it;
+    } else if (m_pixmap.load(path)) {
+        cache.insert(path, m_pixmap);
+    } else {
         const QFileInfo info(path);
         const QString reason = !info.exists()
                                    ? tr("File does not exist")
@@ -510,15 +533,20 @@ void GraphicElement::updateLabel()
 
     // If a keyboard trigger is assigned, append it in parentheses so users can see
     // the shortcut directly on the canvas, e.g. "Clock (Space)"
-    if (!hasTrigger() || trigger().toString().isEmpty()) {
-        m_label->setPlainText(label);
-    } else {
+    if (hasTrigger() && !trigger().toString().isEmpty()) {
         if (!label.isEmpty()) {
             label += " ";
         }
-
-        m_label->setPlainText(label + QString("(%1)").arg(trigger().toString()));
+        label += QString("(%1)").arg(trigger().toString());
     }
+
+    // Apply the shared font on first use — deferred from the constructor to
+    // avoid an expensive QTextDocumentLayout pass for elements that never show a label.
+    if (!label.isEmpty() && m_label->font() != labelFont()) {
+        m_label->setFont(labelFont());
+    }
+
+    m_label->setPlainText(label);
 }
 
 void GraphicElement::setLabel(const QString &label)
