@@ -4,7 +4,10 @@
 #include "App/Simulation/Simulation.h"
 
 #include <QGraphicsView>
+#include <QGuiApplication>
+#include <QScreen>
 
+#include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Priorities.h"
 #include "App/Core/SentryHelpers.h"
@@ -25,6 +28,15 @@ Simulation::Simulation(Scene *scene)
     // human perception while keeping CPU load predictable.
     m_timer.setInterval(1ms);
     connect(&m_timer, &QTimer::timeout, this, &Simulation::update);
+
+    // Derive the visual refresh interval from the monitor's refresh rate so
+    // we match the display without wasting repaints.  Falls back to 60 Hz.
+    if (auto *screen = QGuiApplication::primaryScreen()) {
+        const qreal hz = screen->refreshRate();
+        if (hz > 0) {
+            m_visualTickInterval = qMax(1, static_cast<int>(1000.0 / hz));
+        }
+    }
 }
 
 void Simulation::update()
@@ -68,6 +80,16 @@ void Simulation::update()
             }
         }
     }
+
+    // Visual updates only need to run at display-refresh rate (~5 fps),
+    // not at simulation rate (1000 Hz).  Skip phases 3-4 on most ticks
+    // to avoid dirtying QGraphicsItems that will be overwritten before
+    // the next repaint.  In non-interactive (test) mode, always update
+    // so that tests see immediate visual state after each step.
+    if (Application::interactiveMode && ++m_visualTickCount < m_visualTickInterval) {
+        return;
+    }
+    m_visualTickCount = 0;
 
     // Phase 3: push computed logic values onto the wire (QNEOutputPort) visuals
     for (auto *connection : std::as_const(m_connections)) {
