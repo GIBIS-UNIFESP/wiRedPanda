@@ -64,40 +64,21 @@ struct ElementInfo<Display14> {
 Display14::Display14(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display14, parent)
 {
-    // Each of the 14 segments plus DP gets 5 color variants (White, Red, Green, Blue, Purple).
-    // Skin indices 1-15 map to segment SVGs in defaultSkins; skin[0] is the off background.
-    // Display7::convertAllColors() recolors the pre-rendered images pixel-by-pixel.
-    a  = QVector<QPixmap>(5, m_defaultSkins.at(1));
-    b  = QVector<QPixmap>(5, m_defaultSkins.at(2));
-    c  = QVector<QPixmap>(5, m_defaultSkins.at(3));
-    d  = QVector<QPixmap>(5, m_defaultSkins.at(4));
-    e  = QVector<QPixmap>(5, m_defaultSkins.at(5));
-    f  = QVector<QPixmap>(5, m_defaultSkins.at(6));
-    g1 = QVector<QPixmap>(5, m_defaultSkins.at(7));
-    g2 = QVector<QPixmap>(5, m_defaultSkins.at(8));
-    h  = QVector<QPixmap>(5, m_defaultSkins.at(9));
-    j  = QVector<QPixmap>(5, m_defaultSkins.at(10));
-    k  = QVector<QPixmap>(5, m_defaultSkins.at(11));
-    l  = QVector<QPixmap>(5, m_defaultSkins.at(12));
-    m  = QVector<QPixmap>(5, m_defaultSkins.at(13));
-    n  = QVector<QPixmap>(5, m_defaultSkins.at(14));
-    dp = QVector<QPixmap>(5, m_defaultSkins.at(15));
-
-    Display7::convertAllColors(a);
-    Display7::convertAllColors(b);
-    Display7::convertAllColors(c);
-    Display7::convertAllColors(d);
-    Display7::convertAllColors(e);
-    Display7::convertAllColors(f);
-    Display7::convertAllColors(g1);
-    Display7::convertAllColors(g2);
-    Display7::convertAllColors(h);
-    Display7::convertAllColors(j);
-    Display7::convertAllColors(k);
-    Display7::convertAllColors(l);
-    Display7::convertAllColors(m);
-    Display7::convertAllColors(n);
-    Display7::convertAllColors(dp);
+    a  = Display7::cachedSegmentColors(m_defaultSkins.at(1));
+    b  = Display7::cachedSegmentColors(m_defaultSkins.at(2));
+    c  = Display7::cachedSegmentColors(m_defaultSkins.at(3));
+    d  = Display7::cachedSegmentColors(m_defaultSkins.at(4));
+    e  = Display7::cachedSegmentColors(m_defaultSkins.at(5));
+    f  = Display7::cachedSegmentColors(m_defaultSkins.at(6));
+    g1 = Display7::cachedSegmentColors(m_defaultSkins.at(7));
+    g2 = Display7::cachedSegmentColors(m_defaultSkins.at(8));
+    h  = Display7::cachedSegmentColors(m_defaultSkins.at(9));
+    j  = Display7::cachedSegmentColors(m_defaultSkins.at(10));
+    k  = Display7::cachedSegmentColors(m_defaultSkins.at(11));
+    l  = Display7::cachedSegmentColors(m_defaultSkins.at(12));
+    m  = Display7::cachedSegmentColors(m_defaultSkins.at(13));
+    n  = Display7::cachedSegmentColors(m_defaultSkins.at(14));
+    dp = Display7::cachedSegmentColors(m_defaultSkins.at(15));
 
     Display14::updatePortsProperties();
 }

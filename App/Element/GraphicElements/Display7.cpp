@@ -3,6 +3,7 @@
 
 #include "App/Element/GraphicElements/Display7.h"
 
+#include <QHash>
 #include <QPainter>
 #include <QPixmap>
 
@@ -58,30 +59,31 @@ struct ElementInfo<Display7> {
 Display7::Display7(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display7, parent)
 {
-    qCDebug(three) << "Allocating pixmaps.";
-    // Each segment is stored as a vector of 5 color variants (White, Red, Green, Blue, Purple).
-    // They all start as copies of the default (white) SVG; convertAllColors() then recolors
-    // each copy in-place using pixel-level channel manipulation.
-    a =  QVector<QPixmap>(5, m_defaultSkins.at(1));
-    b =  QVector<QPixmap>(5, m_defaultSkins.at(2));
-    c =  QVector<QPixmap>(5, m_defaultSkins.at(3));
-    d =  QVector<QPixmap>(5, m_defaultSkins.at(4));
-    e =  QVector<QPixmap>(5, m_defaultSkins.at(5));
-    f =  QVector<QPixmap>(5, m_defaultSkins.at(6));
-    g =  QVector<QPixmap>(5, m_defaultSkins.at(7));
-    dp = QVector<QPixmap>(5, m_defaultSkins.at(8));
-
-    qCDebug(three) << "Converting segments to other colors.";
-    convertAllColors(a);
-    convertAllColors(b);
-    convertAllColors(c);
-    convertAllColors(d);
-    convertAllColors(e);
-    convertAllColors(f);
-    convertAllColors(g);
-    convertAllColors(dp);
+    a  = cachedSegmentColors(m_defaultSkins.at(1));
+    b  = cachedSegmentColors(m_defaultSkins.at(2));
+    c  = cachedSegmentColors(m_defaultSkins.at(3));
+    d  = cachedSegmentColors(m_defaultSkins.at(4));
+    e  = cachedSegmentColors(m_defaultSkins.at(5));
+    f  = cachedSegmentColors(m_defaultSkins.at(6));
+    g  = cachedSegmentColors(m_defaultSkins.at(7));
+    dp = cachedSegmentColors(m_defaultSkins.at(8));
 
     Display7::updatePortsProperties();
+}
+
+QVector<QPixmap> Display7::cachedSegmentColors(const QString &resourcePath)
+{
+    static QHash<QString, QVector<QPixmap>> cache;
+
+    auto it = cache.find(resourcePath);
+    if (it != cache.end()) {
+        return *it;
+    }
+
+    QVector<QPixmap> colors(5, QPixmap(resourcePath));
+    convertAllColors(colors);
+    cache.insert(resourcePath, colors);
+    return colors;
 }
 
 void Display7::convertAllColors(QVector<QPixmap> &pixmaps)
