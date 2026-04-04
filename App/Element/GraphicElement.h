@@ -478,7 +478,7 @@ protected:
 
     QColor m_selectionBrush; ///< Fill color used to draw the selection highlight rectangle.
     QColor m_selectionPen;   ///< Border color used to draw the selection highlight rectangle.
-    QGraphicsTextItem *m_label = new QGraphicsTextItem(this); ///< Child text item that displays the label and optional trigger shortcut.
+    QGraphicsSimpleTextItem *m_label = new QGraphicsSimpleTextItem(this); ///< Child text item that displays the label and optional trigger shortcut.
 
     // --- Members: Metadata ---
 

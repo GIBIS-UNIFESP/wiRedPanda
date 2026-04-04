@@ -81,7 +81,7 @@ GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
     // 64 px below origin keeps the label below the standard 64×64 element body
     m_label->setPos(0, 64);
     m_label->setParentItem(this);
-    m_label->setDefaultTextColor(Qt::black);
+    m_label->setBrush(Qt::black);
 
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
@@ -546,7 +546,7 @@ void GraphicElement::updateLabel()
         m_label->setFont(labelFont());
     }
 
-    m_label->setPlainText(label);
+    m_label->setText(label);
 }
 
 void GraphicElement::setLabel(const QString &label)
@@ -587,7 +587,7 @@ void GraphicElement::updateTheme()
 {
     const ThemeAttributes theme = ThemeManager::attributes();
 
-    m_label->setDefaultTextColor(theme.m_graphicElementLabelColor);
+    m_label->setBrush(theme.m_graphicElementLabelColor);
     m_selectionBrush = theme.m_selectionBrush;
     m_selectionPen = theme.m_selectionPen;
 
