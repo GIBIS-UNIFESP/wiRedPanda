@@ -45,7 +45,7 @@ public:
     // --- Element Access ---
 
     /// Returns the graphic element that owns this port.
-    GraphicElement *graphicElement() const;
+    GraphicElement *graphicElement() const { return m_graphicElement; }
 
     // --- Identity & Status ---
 
@@ -53,10 +53,10 @@ public:
     QString name() const;
 
     /// Returns the default status applied when the port is unconnected.
-    Status defaultValue() const;
+    Status defaultValue() const { return m_defaultStatus; }
 
     /// Returns the current logical status (Active/Inactive/Unknown/Error).
-    Status status() const;
+    Status status() const { return m_status; }
 
     /**
      * \brief Returns \c true if this port is connected to \a otherPort via any wire.
