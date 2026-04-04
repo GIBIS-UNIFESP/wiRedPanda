@@ -793,41 +793,9 @@ void GraphicElement::updateLogic()
     // Default no-op — decorative elements (Line, Text) have no simulation behaviour.
 }
 
-Status GraphicElement::outputValue(const int index) const
-{
-    if (index >= m_simOutputValues.size()) {
-        return Status::Unknown;
-    }
-    return m_simOutputValues.at(index);
-}
-
-bool GraphicElement::inputValue(const int index) const
-{
-    if (index >= m_simInputValues.size()) {
-        return false;
-    }
-    return m_simInputValues.at(index) == Status::Active;
-}
-
 qsizetype GraphicElement::simOutputSize() const
 {
     return m_simOutputValues.size();
-}
-
-void GraphicElement::setOutputValue(const int index, const Status value)
-{
-    if (index >= m_simOutputValues.size()) {
-        return;
-    }
-    if (m_simOutputValues[index] != value) {
-        m_simOutputChanged = true;
-    }
-    m_simOutputValues[index] = value;
-}
-
-void GraphicElement::setOutputValue(const Status value)
-{
-    setOutputValue(0, value);
 }
 
 void GraphicElement::connectPredecessor(const int inputIndex, GraphicElement *source, const int outputPort)
