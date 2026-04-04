@@ -119,6 +119,11 @@ private:
     bool m_initialized = false;
     bool m_convergenceWarned = false;
 
+    // --- Members: Visual refresh throttle ---
+
+    int m_visualTickCount = 0;
+    int m_visualTickInterval = 16; ///< Visual update every N simulation ticks (derived from monitor refresh rate, default ~60 fps).
+
     // --- Members: Direct simulation graph ---
 
     QVector<GraphicElement *> m_sortedElements;
