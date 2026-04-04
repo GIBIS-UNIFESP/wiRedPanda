@@ -39,6 +39,9 @@ public:
      */
     static void convertAllColors(QVector<QPixmap> &pixmaps);
 
+    /// Returns cached 5-color variants for the segment at \a resourcePath.
+    static QVector<QPixmap> cachedSegmentColors(const QString &resourcePath);
+
     // --- Color State ---
 
     /// Returns the current display color name.
