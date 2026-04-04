@@ -21,9 +21,10 @@ GraphicsView::GraphicsView(QWidget *parent)
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     setResizeAnchor(QGraphicsView::AnchorUnderMouse);
 
-    // BoundingRect mode repaints only the smallest enclosing rectangle of changed
-    // items; faster than FullViewport for circuits with many static elements
-    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+    // MinimalViewport mode repaints each dirty item's rect individually rather than
+    // merging them into one large bounding rect, reducing pixel fill when changed
+    // items are spread across the scene.
+    setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
 
     setCacheMode(QGraphicsView::CacheBackground);
 }
