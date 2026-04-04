@@ -20,6 +20,9 @@ void setupTestEnvironment()
 {
 #ifdef Q_OS_LINUX
     qputenv("QT_QPA_PLATFORM", "offscreen");
+    // Disable input method plugins — ibus daemon is single-threaded and serializes
+    // parallel test startup, causing 8 processes to take 4s instead of 0.06s.
+    qputenv("QT_IM_MODULES", "none");
 #endif
     registerTypes();
     Comment::setVerbosity(-1);
