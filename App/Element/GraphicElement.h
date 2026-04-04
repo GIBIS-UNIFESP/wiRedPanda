@@ -323,19 +323,32 @@ public:
     virtual void updateLogic();
 
     /// Returns the four-state signal value on simulation output port \a index.
-    Status outputValue(const int index = 0) const;
+    inline Status outputValue(const int index = 0) const
+    {
+        if (index >= m_simOutputValues.size()) { return Status::Unknown; }
+        return m_simOutputValues.at(index);
+    }
 
     /// Returns the simulation input value on port \a index.
-    bool inputValue(const int index = 0) const;
+    inline bool inputValue(const int index = 0) const
+    {
+        if (index >= m_simInputValues.size()) { return false; }
+        return m_simInputValues.at(index) == Status::Active;
+    }
 
     /// Returns the number of simulation output slots.
     qsizetype simOutputSize() const;
 
     /// Sets simulation output port \a index to \a value.
-    void setOutputValue(const int index, const Status value);
+    inline void setOutputValue(const int index, const Status value)
+    {
+        if (index >= m_simOutputValues.size()) { return; }
+        if (m_simOutputValues[index] != value) { m_simOutputChanged = true; }
+        m_simOutputValues[index] = value;
+    }
 
     /// Sets simulation output port 0 to \a value.
-    void setOutputValue(const Status value);
+    inline void setOutputValue(const Status value) { setOutputValue(0, value); }
 
     /// Convenience overload — converts \c bool to Active/Inactive for port \a index.
     void setOutputValue(const int index, const bool value) { setOutputValue(index, value ? Status::Active : Status::Inactive); }

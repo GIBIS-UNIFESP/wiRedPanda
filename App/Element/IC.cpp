@@ -713,6 +713,14 @@ void IC::initializeSimulation()
     m_internalHasFeedback = !feedbackElements.isEmpty();
 
     m_sortedInternalElements = m_internalElements;
+
+    // Remove boundary input elements so the hot loop in updateLogic()
+    // doesn't need a per-element QSet lookup on every simulation tick.
+    m_sortedInternalElements.erase(
+        std::remove_if(m_sortedInternalElements.begin(), m_sortedInternalElements.end(),
+            [this](auto *elm) { return m_boundaryInputElements.contains(elm); }),
+        m_sortedInternalElements.end());
+
     std::stable_sort(m_sortedInternalElements.begin(), m_sortedInternalElements.end(),
         [&priorities](const auto *a, const auto *b) {
             return priorities.value(const_cast<GraphicElement *>(a), -1)
@@ -741,32 +749,26 @@ void IC::updateLogic()
         }
     }
 
-    // Run internal elements in topological order, skipping boundary input nodes.
+    // Run internal elements in topological order.
+    // Boundary input nodes are already excluded from m_sortedInternalElements.
     // Use iterative settling if internal feedback loops exist (e.g., gate-level SR latches).
     if (m_internalHasFeedback) {
         const int maxIterations = 10;
         for (int iteration = 0; iteration < maxIterations; ++iteration) {
             for (auto *element : std::as_const(m_sortedInternalElements)) {
-                if (element && !m_boundaryInputElements.contains(element)) {
-                    element->clearOutputChanged();
-                    element->updateLogic();
-                }
+                element->clearOutputChanged();
+                element->updateLogic();
             }
             const bool converged = std::none_of(
                 m_sortedInternalElements.cbegin(), m_sortedInternalElements.cend(),
-                [this](const auto *element) {
-                    return element && !m_boundaryInputElements.contains(const_cast<GraphicElement *>(element))
-                           && element->outputChanged();
-                });
+                [](const auto *element) { return element->outputChanged(); });
             if (converged) {
                 break;
             }
         }
     } else {
         for (auto *element : std::as_const(m_sortedInternalElements)) {
-            if (element && !m_boundaryInputElements.contains(element)) {
-                element->updateLogic();
-            }
+            element->updateLogic();
         }
     }
 
