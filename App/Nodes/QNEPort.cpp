@@ -126,11 +126,6 @@ void QNEPort::setName(const QString &name)
     setToolTip(name);
 }
 
-Status QNEPort::defaultValue() const
-{
-    return m_defaultStatus;
-}
-
 void QNEPort::setDefaultStatus(const Status defaultStatus)
 {
     m_defaultStatus = defaultStatus;
@@ -174,16 +169,6 @@ void QNEPort::setSerialId(quint64 serialId)
 quint64 QNEPort::serialId() const
 {
     return m_serialId;
-}
-
-Status QNEPort::status() const
-{
-    return m_status;
-}
-
-GraphicElement *QNEPort::graphicElement() const
-{
-    return m_graphicElement;
 }
 
 void QNEPort::setGraphicElement(GraphicElement *graphicElement)
