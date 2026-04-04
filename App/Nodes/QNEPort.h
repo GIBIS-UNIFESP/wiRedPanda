@@ -157,14 +157,12 @@ protected:
 
     GraphicElement *m_graphicElement = nullptr;
     QBrush m_currentBrush;
-    QGraphicsTextItem *m_label = new QGraphicsTextItem(this); ///< Child text item displaying the port name label.
     QList<QNEConnection *> m_connections; // use smart pointers
     QString m_name;
     Status m_defaultStatus = Status::Unknown;
     Status m_status = Status::Inactive;
     bool m_required = true;
     int m_index = 0;
-    int m_margin = 2;
     int m_radius = 5;
     quint64 m_serialId = 0;
 
