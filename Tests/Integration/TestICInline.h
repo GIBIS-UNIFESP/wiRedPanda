@@ -201,6 +201,8 @@ private slots:
     void testUniqueBlobNameEmptyBase();
     void testBlobReturnsEmptyForMissingName();
     void testClearBlobsLeavesICsStale();
+    void testLoadFileNotFoundPreservesEmbeddedState();
+    void testExtractToFileUsesContextDir();
 
 private:
     QString fixturesSrcDir() const;

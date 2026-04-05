@@ -5103,3 +5103,77 @@ void TestICInline::testClearBlobsLeavesICsStale()
     QCOMPARE(ic->blobName(), QString("will_be_cleared"));
 }
 
+void TestICInline::testLoadFileNotFoundPreservesEmbeddedState()
+{
+    // loadFile() with a nonexistent file must throw without corrupting the IC.
+    // Previously m_blobName was cleared before the file check, leaving the IC
+    // in a broken state (not embedded, no file) that crashed the simulation.
+
+    Scene scene;
+    scene.setContextDir(m_fixtureDir);
+    auto *reg = scene.icRegistry();
+
+    IC ic;
+    const QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
+    embedIC(&ic, blob, "keep_me", m_fixtureDir, reg);
+    scene.addItem(&ic);
+
+    QVERIFY(ic.isEmbedded());
+    QCOMPARE(ic.blobName(), QString("keep_me"));
+    const int origInputs = ic.inputSize();
+    QVERIFY(origInputs > 0);
+
+    // Attempt to load a nonexistent file — must throw
+    bool threw = false;
+    try {
+        ic.loadFile("nonexistent.panda", m_fixtureDir);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+    QVERIFY(threw);
+
+    // IC must remain in its original embedded state
+    QVERIFY(ic.isEmbedded());
+    QCOMPARE(ic.blobName(), QString("keep_me"));
+    QCOMPARE(ic.inputSize(), origInputs);
+
+    scene.removeItem(&ic);
+}
+
+void TestICInline::testExtractToFileUsesContextDir()
+{
+    // extractToFile must write the file to the specified path (which callers
+    // should set to contextDir) and the resulting IC must be file-backed
+    // pointing at that location.
+
+    const QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
+    QVERIFY(!blob.isEmpty());
+
+    WorkSpace ws;
+    ws.scene()->setContextDir(m_fixtureDir);
+    auto *reg = ws.scene()->icRegistry();
+
+    auto *ic = new IC();
+    embedIC(ic, blob, "ctx_extract", m_fixtureDir, reg);
+    ic->setPos(100, 100);
+    ws.scene()->addItem(ic);
+    int icId = ic->id();
+    QVERIFY(ic->isEmbedded());
+
+    // Extract to contextDir — the correct behavior
+    const QString extractPath = QDir(m_fixtureDir).absoluteFilePath("ctx_extract.panda");
+    reg->extractToFile("ctx_extract", extractPath);
+
+    auto *extracted = dynamic_cast<IC *>(ws.scene()->itemById(icId));
+    QVERIFY(extracted);
+    QVERIFY(!extracted->isEmbedded());
+    QVERIFY(extracted->file().contains("ctx_extract.panda"));
+    QVERIFY(extracted->inputSize() > 0);
+
+    // The file must exist in contextDir
+    QVERIFY(QFile::exists(extractPath));
+
+    // Blob must be removed from registry
+    QVERIFY(!reg->hasBlob("ctx_extract"));
+}
+
