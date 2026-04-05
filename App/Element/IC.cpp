@@ -257,7 +257,6 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
     qCDebug(zero) << "Reading IC.";
 
     m_blobName.clear();
-    resetInternalState();
 
     // Try the full path combined with contextDir first (handles relative paths
     // and same-OS absolute paths). If not found, fall back to just the filename
@@ -289,10 +288,12 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
         }
     }
 
+    // Fallback: direct file load (IC not yet in a scene, e.g. during deserialization).
+    // Reset here rather than at the top — the ICRegistry path above handles its own
+    // reset inside loadFromBlob(), so resetting before it would be wasted work.
+    resetInternalState();
     m_file = fileInfo.absoluteFilePath();
     setToolTip(fileInfo.fileName());
-
-    // Fallback: direct file load (IC not yet in a scene, e.g. during deserialization)
     loadFileDirectly(fileInfo);
 
     qCDebug(zero) << "Finished reading IC.";
