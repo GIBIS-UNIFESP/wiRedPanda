@@ -57,6 +57,27 @@ void sortPorts(QVector<QNEPort *> &ports)
     std::stable_sort(ports.begin(), ports.end(), comparePorts);
 }
 
+void buildPortLabels(const QVector<QNEPort *> &ports, QVector<QString> &labels)
+{
+    for (int i = 0; i < ports.size(); ++i) {
+        auto *port = ports.at(i);
+        auto *elm = port->graphicElement();
+        QString lb = elm->label();
+
+        if (!port->name().isEmpty()) {
+            lb += " " + port->name();
+        }
+
+        // Append generic properties (e.g. clock frequency) in brackets so the IC pin tooltip
+        // carries enough context for the user to identify the signal without opening the sub-circuit
+        if (!elm->genericProperties().isEmpty()) {
+            lb += " [" + elm->genericProperties() + "]";
+        }
+
+        labels[i] = lb;
+    }
+}
+
 } // anonymous namespace
 
 template<>
@@ -580,27 +601,6 @@ void IC::loadBoundaryElement(GraphicElement *elm, const bool isInput)
     }
 
     delete elm;
-}
-
-void IC::buildPortLabels(const QVector<QNEPort *> &ports, QVector<QString> &labels)
-{
-    for (int i = 0; i < ports.size(); ++i) {
-        auto *port = ports.at(i);
-        auto *elm = port->graphicElement();
-        QString lb = elm->label();
-
-        if (!port->name().isEmpty()) {
-            lb += " " + port->name();
-        }
-
-        // Append generic properties (e.g. clock frequency) in brackets so the IC pin tooltip
-        // carries enough context for the user to identify the signal without opening the sub-circuit
-        if (!elm->genericProperties().isEmpty()) {
-            lb += " [" + elm->genericProperties() + "]";
-        }
-
-        labels[i] = lb;
-    }
 }
 
 IC::PortMetadata IC::buildPortMetadata(const QVector<GraphicElement *> &elements)
