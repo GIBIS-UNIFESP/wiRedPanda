@@ -55,7 +55,7 @@ public:
 
     // --- External file dependencies ---
 
-    /// \reimp Returns audio file path in addition to skins.
+    /// \reimp Returns audio file path in addition to appearances.
     QStringList externalFiles() const override;
 
     // --- Serialization ---

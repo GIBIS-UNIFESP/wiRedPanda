@@ -48,18 +48,18 @@ GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
     , m_elementType(type)
 {
     const auto &metadata = ElementMetadataRegistry::metadata(type);
-    m_defaultSkins = metadata.defaultSkins;
+    m_defaultAppearances = metadata.defaultAppearances;
     m_pixmapPath = metadata.pixmapPath();
 
     // For elements whose pixmapPath is theme-dependent (e.g. memory elements),
-    // defaultSkins may be left empty in the metadata to avoid evaluating the
+    // defaultAppearances may be left empty in the metadata to avoid evaluating the
     // theme path during static initialisation (before QApplication exists).
     // Populate it lazily here from the now-correct pixmapPath.
-    if (m_defaultSkins.isEmpty() && !m_pixmapPath.isEmpty()) {
-        m_defaultSkins = QStringList({m_pixmapPath});
+    if (m_defaultAppearances.isEmpty() && !m_pixmapPath.isEmpty()) {
+        m_defaultAppearances = QStringList({m_pixmapPath});
     }
 
-    m_alternativeSkins = metadata.alternativeSkins.isEmpty() ? m_defaultSkins : metadata.alternativeSkins;
+    m_alternativeAppearances = metadata.alternativeAppearances.isEmpty() ? m_defaultAppearances : metadata.alternativeAppearances;
     m_titleText = QCoreApplication::translate(metadata.trContext, metadata.titleText);
     m_translatedName = QCoreApplication::translate(metadata.trContext, metadata.translatedName);
     m_elementGroup = metadata.group;
@@ -97,7 +97,7 @@ GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
     // giving a large speedup for elements that don't redraw on every pan/zoom
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
-    if (!m_defaultSkins.isEmpty()) {
+    if (!m_defaultAppearances.isEmpty()) {
         setPixmap(0);
     }
 }
@@ -120,10 +120,10 @@ QPixmap GraphicElement::pixmap() const
 QStringList GraphicElement::externalFiles() const
 {
     QStringList result;
-    for (int i = 0; i < m_alternativeSkins.size() && i < m_defaultSkins.size(); ++i) {
-        const QString &skin = m_alternativeSkins.at(i);
-        if (skin != m_defaultSkins.at(i) && !skin.startsWith(":/")) {
-            result.append(skin);
+    for (int i = 0; i < m_alternativeAppearances.size() && i < m_defaultAppearances.size(); ++i) {
+        const QString &appearance = m_alternativeAppearances.at(i);
+        if (appearance != m_defaultAppearances.at(i) && !appearance.startsWith(":/")) {
+            result.append(appearance);
         }
     }
     return result;
@@ -131,7 +131,7 @@ QStringList GraphicElement::externalFiles() const
 
 void GraphicElement::setPixmap(const int index)
 {
-    setPixmap(m_usingDefaultSkin ? m_defaultSkins.at(index) : m_alternativeSkins.at(index));
+    setPixmap(m_usingDefaultAppearance ? m_defaultAppearances.at(index) : m_alternativeAppearances.at(index));
 }
 
 void GraphicElement::setPixmap(const QString &pixmapPath)
@@ -176,8 +176,8 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
                                          ? tr("File is not readable")
                                          : tr("Unknown reason");
 
-        // Load the default skin so the element remains renderable before the exception unwinds
-        m_pixmap.load(m_defaultSkins.constFirst());
+        // Load the default appearance so the element remains renderable before the exception unwinds
+        m_pixmap.load(m_defaultAppearances.constFirst());
         qCDebug(zero) << "Problem loading pixmapPath: " << path;
         throw PANDACEPTION("Couldn't load pixmap: %1 (%2)", path, reason);
     }
@@ -343,37 +343,37 @@ qreal GraphicElement::rotation() const
     return m_angle;
 }
 
-void GraphicElement::setSkin(const bool defaultSkin, const QString &fileName)
+void GraphicElement::setAppearance(const bool defaultAppearance, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_alternativeSkins = m_defaultSkins;
+    if (defaultAppearance) {
+        m_alternativeAppearances = m_defaultAppearances;
     } else {
-        m_alternativeSkins[0] = fileName;
+        m_alternativeAppearances[0] = fileName;
     }
 
-    m_usingDefaultSkin = defaultSkin;
+    m_usingDefaultAppearance = defaultAppearance;
     setPixmap(0);
 }
 
-void GraphicElement::setSkinAt(const int index, const QString &fileName)
+void GraphicElement::setAppearanceAt(const int index, const QString &fileName)
 {
-    if (index < 0 || index >= m_alternativeSkins.size()) {
+    if (index < 0 || index >= m_alternativeAppearances.size()) {
         return;
     }
 
     if (fileName.isEmpty()) {
-        m_alternativeSkins[index] = m_defaultSkins.at(index);
+        m_alternativeAppearances[index] = m_defaultAppearances.at(index);
     } else {
-        m_alternativeSkins[index] = fileName;
+        m_alternativeAppearances[index] = fileName;
     }
 
-    m_usingDefaultSkin = (m_alternativeSkins == m_defaultSkins);
+    m_usingDefaultAppearance = (m_alternativeAppearances == m_defaultAppearances);
     setPixmap(index);
 }
 
-QList<QPair<int, QString>> GraphicElement::skinStates() const
+QList<QPair<int, QString>> GraphicElement::appearanceStates() const
 {
-    // Default: single skin at index 0
+    // Default: single appearance at index 0
     return {{0, tr("Default")}};
 }
 
@@ -438,8 +438,8 @@ void GraphicElement::updatePortsProperties()
 
 void GraphicElement::refresh()
 {
-    // Reload skin index 0, which is the currently active skin for the element's
-    // present state (e.g. after a theme change or skin file replacement).
+    // Reload appearance index 0, which is the currently active appearance for the element's
+    // present state (e.g. after a theme change or appearance file replacement).
     setPixmap(0);
 }
 
@@ -703,14 +703,14 @@ QList<PropertyDescriptor> GraphicElement::editableProperties() const
     if (hasVolume())     props.append({PropertyDescriptor::Type::Volume});
     if (hasTrigger())    props.append({PropertyDescriptor::Type::Trigger});
     if (hasTruthTable()) props.append({PropertyDescriptor::Type::TruthTable});
-    if (canChangeSkin())    props.append({PropertyDescriptor::Type::Skin});
+    if (canChangeAppearance())    props.append({PropertyDescriptor::Type::Appearance});
     if (hasWirelessMode())  props.append({PropertyDescriptor::Type::WirelessModeSelector});
     return props;
 }
 
-bool GraphicElement::canChangeSkin() const
+bool GraphicElement::canChangeAppearance() const
 {
-    return ElementMetadataRegistry::metadata(m_elementType).canChangeSkin;
+    return ElementMetadataRegistry::metadata(m_elementType).canChangeAppearance;
 }
 
 bool GraphicElement::isRotatable() const

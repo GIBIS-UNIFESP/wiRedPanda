@@ -422,20 +422,20 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
         element->setVolume(newVolume);
     }
 
-    if (params.contains("skin") && element->canChangeSkin()) {
-        QString skinPath = params.value("skin").toString();
-        bool useDefault = skinPath.isEmpty();
-        int skinIndex = params.contains("skin_index") ? params.value("skin_index").toInt() : -1;
+    if (params.contains("appearance") && element->canChangeAppearance()) {
+        QString appearancePath = params.value("appearance").toString();
+        bool useDefault = appearancePath.isEmpty();
+        int appearanceIndex = params.contains("appearance_index") ? params.value("appearance_index").toInt() : -1;
 
-        newProperties["skin"] = skinPath;
-        newProperties["skin_default"] = useDefault;
+        newProperties["appearance"] = appearancePath;
+        newProperties["appearance_default"] = useDefault;
 
-        if (skinIndex >= 0) {
-            // Set skin for a specific index directly (e.g., LED state)
-            element->setSkinAt(skinIndex, skinPath);
-            newProperties["skin_index"] = skinIndex;
+        if (appearanceIndex >= 0) {
+            // Set appearance for a specific index directly (e.g., LED state)
+            element->setAppearanceAt(appearanceIndex, appearancePath);
+            newProperties["appearance_index"] = appearanceIndex;
         } else {
-            element->setSkin(useDefault, skinPath);
+            element->setAppearance(useDefault, appearancePath);
         }
     }
 

@@ -22,7 +22,7 @@ struct ElementInfo<AudioBox> {
         .group = ElementGroup::Output,
         .minInputSize = 1,
         .maxInputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
         .hasAudioBox = true,
         .hasLabel = true,
         .hasVolume = true,
@@ -36,7 +36,7 @@ struct ElementInfo<AudioBox> {
         meta.titleText = QT_TRANSLATE_NOOP("AudioBox", "Audio Box");
         meta.translatedName = QT_TRANSLATE_NOOP("AudioBox", "Audio Box");
         meta.trContext = "AudioBox";
-        meta.defaultSkins = QStringList({
+        meta.defaultAppearances = QStringList({
             ":/Components/Output/AudioBox/audioboxOff.svg",
             ":/Components/Output/AudioBox/audioboxOn.svg",
         });

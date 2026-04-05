@@ -16,7 +16,7 @@ struct ElementInfo<Or> {
         .maxInputSize = 8,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
     };
     static_assert(validate(constraints));
 
@@ -27,8 +27,8 @@ struct ElementInfo<Or> {
         meta.titleText = QT_TRANSLATE_NOOP("Or", "OR");
         meta.translatedName = QT_TRANSLATE_NOOP("Or", "Or");
         meta.trContext = "Or";
-        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-        meta.defaultSkins = QStringList({":/Components/Logic/or.svg"});
+        // Seed appearance lists from the constructor-supplied pixmap path (see And.cpp for details).
+        meta.defaultAppearances = QStringList({":/Components/Logic/or.svg"});
         return meta;
     }
 

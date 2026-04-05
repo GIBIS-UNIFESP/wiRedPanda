@@ -22,10 +22,10 @@ struct ElementInfo<Text> {
         meta.titleText = QT_TRANSLATE_NOOP("Text", "TEXT");
         meta.translatedName = QT_TRANSLATE_NOOP("Text", "Text");
         meta.trContext = "Text";
-        // Text has two built-in skins:
+        // Text has two built-in appearances:
         //   index 0 — transparent placeholder shown when the label is empty
         //   index 1 — solid background shown when the label has content
-        meta.defaultSkins = QStringList({
+        meta.defaultAppearances = QStringList({
             ":/Components/Misc/no_text.png",
             ":/Components/Misc/text.png",
         });

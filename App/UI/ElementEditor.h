@@ -26,7 +26,7 @@ class ElementTabNavigator;
  * \brief Widget for inspecting and editing the properties of selected circuit elements.
  *
  * \details The ElementEditor dynamically shows controls appropriate for the current
- * selection: label, color, frequency, input/output count, skin, trigger, audio, and
+ * selection: label, color, frequency, input/output count, appearance, trigger, audio, and
  * truth-table.  When multiple elements are selected it coalesces values, showing
  * placeholder text when values differ.  Property changes are pushed as QUndoCommands.
  */
@@ -67,8 +67,8 @@ public:
     void audioBox();
     /// Opens the truth table editor for the selected element(s).
     void truthTable();
-    /// Applies the chosen skin to the selected element(s).
-    void updateElementSkin();
+    /// Applies the chosen appearance to the selected element(s).
+    void updateElementAppearance();
 
     // --- Context Menu ---
 
@@ -104,8 +104,8 @@ private:
     void applyCapabilitiesToUi();
     /// Applies a single property \a type from the UI controls to \a elm.
     void applyProperty(GraphicElement *elm, PropertyDescriptor::Type type);
-    /// Restores the default skin on the selected elements.
-    void defaultSkin();
+    /// Restores the default appearance on the selected elements.
+    void defaultAppearance();
     /// Slot: the user changed the desired input count via the input spin box.
     void inputIndexChanged(const int index);
     /// Slot: the user toggled the input-count lock check box.
@@ -133,10 +133,10 @@ private:
     QList<GraphicElement *> m_elements;          ///< Currently selected elements being edited.
     SelectionCapabilities m_caps;                ///< Merged capability flags of the current selection.
 
-    // Skin state
-    QString m_skinName;              ///< File path of the active custom skin, if any.
-    bool m_isDefaultSkin  = true;    ///< True when the built-in default skin is active.
-    bool m_isUpdatingSkin = false;   ///< Guard flag to suppress recursive skin-change signals.
+    // Appearance state
+    QString m_appearanceName;              ///< File path of the active custom appearance, if any.
+    bool m_isDefaultAppearance  = true;    ///< True when the built-in default appearance is active.
+    bool m_isUpdatingAppearance = false;   ///< Guard flag to suppress recursive appearance-change signals.
 
     // Placeholder strings for multi-selection display
     QString m_manyAudios   = tr("<Many sounds>");

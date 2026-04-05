@@ -1573,14 +1573,14 @@
                   "type": "number",
                   "description": "Volume for audio elements"
                 },
-                "skin": {
+                "appearance": {
                   "type": "string",
-                  "description": "Skin path or 'default' for elements that support skins"
+                  "description": "Appearance path or 'default' for elements that support custom appearances"
                 },
-                "skin_index": {
+                "appearance_index": {
                   "type": "integer",
                   "minimum": 0,
-                  "description": "State index for multi-state element skins"
+                  "description": "State index for multi-state element appearances"
                 },
                 "wireless_mode": {
                   "type": "integer",
@@ -1780,14 +1780,14 @@
                   "maximum": 1,
                   "description": "Volume level 0.0-1.0 (AudioBox, Buzzer)"
                 },
-                "skin": {
+                "appearance": {
                   "type": "string",
-                  "description": "Custom skin image path (empty string restores default)"
+                  "description": "Custom appearance image path (empty string restores default)"
                 },
-                "skin_index": {
+                "appearance_index": {
                   "type": "integer",
                   "minimum": 0,
-                  "description": "Skin slot index for multi-state elements (e.g. LED states). Use with 'skin' parameter."
+                  "description": "Appearance slot index for multi-state elements (e.g. LED states). Use with 'appearance' parameter."
                 }
               },
               "additionalProperties": false

@@ -16,7 +16,7 @@ struct ElementInfo<And> {
         .maxInputSize = 8,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
     };
     static_assert(validate(constraints));
 
@@ -28,10 +28,10 @@ struct ElementInfo<And> {
         meta.translatedName = QT_TRANSLATE_NOOP("And", "And");
         meta.trContext = "And";
         // m_pixmapPath was set by the base-class constructor from the argument above.
-        // Seed both skin lists from it so that index 0 always points to the default art.
-        // m_alternativeSkins starts as a copy of m_defaultSkins; the user can replace
-        // entries in m_alternativeSkins without losing the originals in m_defaultSkins.
-        meta.defaultSkins = QStringList({":/Components/Logic/and.svg"});
+        // Seed both appearance lists from it so that index 0 always points to the default art.
+        // m_alternativeAppearances starts as a copy of m_defaultAppearances; the user can replace
+        // entries in m_alternativeAppearances without losing the originals in m_defaultAppearances.
+        meta.defaultAppearances = QStringList({":/Components/Logic/and.svg"});
         return meta;
     }
 

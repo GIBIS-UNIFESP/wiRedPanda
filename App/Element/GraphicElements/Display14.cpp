@@ -19,7 +19,7 @@ struct ElementInfo<Display14> {
         .group = ElementGroup::Output,
         .minInputSize = 15,
         .maxInputSize = 15,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
         .hasColors = true,
         .hasLabel = true,
         .rotatable = false,
@@ -33,7 +33,7 @@ struct ElementInfo<Display14> {
         meta.titleText = QT_TRANSLATE_NOOP("Display14", "14-SEGMENT DISPLAY");
         meta.translatedName = QT_TRANSLATE_NOOP("Display14", "14-Segment Display");
         meta.trContext = "Display14";
-        meta.defaultSkins = QStringList({
+        meta.defaultAppearances = QStringList({
             ":/Components/Output/Counter/counter_14_off.svg",
             ":/Components/Output/Counter/counter_a.svg",
             ":/Components/Output/Counter/counter_b.svg",
@@ -64,21 +64,21 @@ struct ElementInfo<Display14> {
 Display14::Display14(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display14, parent)
 {
-    a  = Display7::cachedSegmentColors(m_defaultSkins.at(1));
-    b  = Display7::cachedSegmentColors(m_defaultSkins.at(2));
-    c  = Display7::cachedSegmentColors(m_defaultSkins.at(3));
-    d  = Display7::cachedSegmentColors(m_defaultSkins.at(4));
-    e  = Display7::cachedSegmentColors(m_defaultSkins.at(5));
-    f  = Display7::cachedSegmentColors(m_defaultSkins.at(6));
-    g1 = Display7::cachedSegmentColors(m_defaultSkins.at(7));
-    g2 = Display7::cachedSegmentColors(m_defaultSkins.at(8));
-    h  = Display7::cachedSegmentColors(m_defaultSkins.at(9));
-    j  = Display7::cachedSegmentColors(m_defaultSkins.at(10));
-    k  = Display7::cachedSegmentColors(m_defaultSkins.at(11));
-    l  = Display7::cachedSegmentColors(m_defaultSkins.at(12));
-    m  = Display7::cachedSegmentColors(m_defaultSkins.at(13));
-    n  = Display7::cachedSegmentColors(m_defaultSkins.at(14));
-    dp = Display7::cachedSegmentColors(m_defaultSkins.at(15));
+    a  = Display7::cachedSegmentColors(m_defaultAppearances.at(1));
+    b  = Display7::cachedSegmentColors(m_defaultAppearances.at(2));
+    c  = Display7::cachedSegmentColors(m_defaultAppearances.at(3));
+    d  = Display7::cachedSegmentColors(m_defaultAppearances.at(4));
+    e  = Display7::cachedSegmentColors(m_defaultAppearances.at(5));
+    f  = Display7::cachedSegmentColors(m_defaultAppearances.at(6));
+    g1 = Display7::cachedSegmentColors(m_defaultAppearances.at(7));
+    g2 = Display7::cachedSegmentColors(m_defaultAppearances.at(8));
+    h  = Display7::cachedSegmentColors(m_defaultAppearances.at(9));
+    j  = Display7::cachedSegmentColors(m_defaultAppearances.at(10));
+    k  = Display7::cachedSegmentColors(m_defaultAppearances.at(11));
+    l  = Display7::cachedSegmentColors(m_defaultAppearances.at(12));
+    m  = Display7::cachedSegmentColors(m_defaultAppearances.at(13));
+    n  = Display7::cachedSegmentColors(m_defaultAppearances.at(14));
+    dp = Display7::cachedSegmentColors(m_defaultAppearances.at(15));
 
     Display14::updatePortsProperties();
 }

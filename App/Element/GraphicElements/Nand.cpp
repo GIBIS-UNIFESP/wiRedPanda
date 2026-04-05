@@ -16,7 +16,7 @@ struct ElementInfo<Nand> {
         .maxInputSize = 8,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
     };
     static_assert(validate(constraints));
 
@@ -27,8 +27,8 @@ struct ElementInfo<Nand> {
         meta.titleText = QT_TRANSLATE_NOOP("Nand", "NAND");
         meta.translatedName = QT_TRANSLATE_NOOP("Nand", "Nand");
         meta.trContext = "Nand";
-        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-        meta.defaultSkins = QStringList({":/Components/Logic/nand.svg"});
+        // Seed appearance lists from the constructor-supplied pixmap path (see And.cpp for details).
+        meta.defaultAppearances = QStringList({":/Components/Logic/nand.svg"});
         return meta;
     }
 

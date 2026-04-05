@@ -21,7 +21,7 @@ struct ElementInfo<Mux> {
         .maxInputSize = 11,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
     };
     static_assert(validate(constraints));
 
@@ -32,7 +32,7 @@ struct ElementInfo<Mux> {
         meta.titleText = QT_TRANSLATE_NOOP("Mux", "MULTIPLEXER");
         meta.translatedName = QT_TRANSLATE_NOOP("Mux", "Mux");
         meta.trContext = "Mux";
-        meta.defaultSkins = QStringList({":/Components/Logic/mux.svg"});
+        meta.defaultAppearances = QStringList({":/Components/Logic/mux.svg"});
         return meta;
     }
 

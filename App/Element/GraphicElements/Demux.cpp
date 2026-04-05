@@ -21,7 +21,7 @@ struct ElementInfo<Demux> {
         .maxInputSize = 4,
         .minOutputSize = 2,
         .maxOutputSize = 8,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
     };
     static_assert(validate(constraints));
 
@@ -32,7 +32,7 @@ struct ElementInfo<Demux> {
         meta.titleText = QT_TRANSLATE_NOOP("Demux", "DEMULTIPLEXER");
         meta.translatedName = QT_TRANSLATE_NOOP("Demux", "Demux");
         meta.trContext = "Demux";
-        meta.defaultSkins = QStringList({":/Components/Logic/demux.svg"});
+        meta.defaultAppearances = QStringList({":/Components/Logic/demux.svg"});
         return meta;
     }
 

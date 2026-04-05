@@ -16,7 +16,7 @@ struct ElementInfo<TFlipFlop> {
         .maxInputSize = 4,
         .minOutputSize = 2,
         .maxOutputSize = 2,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
     };
     static_assert(validate(constraints));
 

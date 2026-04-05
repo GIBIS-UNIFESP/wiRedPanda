@@ -8,7 +8,7 @@ covering properties added in the MCP feature parity update:
 - delay (Clock phase)
 - trigger (keyboard shortcut)
 - locked (input element lock)
-- skin (custom appearance)
+- appearance (custom appearance)
 - Enhanced list_elements response fields
 """
 
@@ -24,8 +24,8 @@ class ElementPropertiesTests(MCPTestBase):
             self.test_trigger_property,
             self.test_volume_property,
             self.test_locked_property,
-            self.test_skin_property,
-            self.test_skin_index_property,
+            self.test_appearance_property,
+            self.test_appearance_index_property,
             self.test_list_elements_extended,
         ]
 
@@ -158,10 +158,10 @@ class ElementPropertiesTests(MCPTestBase):
         self.infrastructure.output.success("locked property works")
         return True
 
-    async def test_skin_property(self) -> bool:
-        """Test setting and resetting a custom skin on an LED."""
-        print("\n=== Skin Property Test ===")
-        self.set_test_context("test_skin_property")
+    async def test_appearance_property(self) -> bool:
+        """Test setting and resetting a custom appearance on an LED."""
+        print("\n=== Appearance Property Test ===")
+        self.set_test_context("test_appearance_property")
 
         await self.send_command("new_circuit", {})
 
@@ -171,37 +171,37 @@ class ElementPropertiesTests(MCPTestBase):
             return False
         led_id = led_resp.result["element_id"]
 
-        # Set custom skin (using a built-in resource as test path)
+        # Set custom appearance (using a built-in resource as test path)
         resp = await self.send_command("set_element_properties", {
-            "element_id": led_id, "skin": ":/Components/Output/Led/RedLed.svg"
+            "element_id": led_id, "appearance": ":/Components/Output/Led/RedLed.svg"
         })
         if not resp.success:
-            print(f"Failed to set skin: {resp.error}")
+            print(f"Failed to set appearance: {resp.error}")
             return False
 
         new_props = resp.result.get("new_properties", {}) if resp.result else {}
-        if new_props.get("skin_default") is not False:
-            print(f"Skin not marked as custom: {new_props}")
+        if new_props.get("appearance_default") is not False:
+            print(f"Appearance not marked as custom: {new_props}")
             return False
 
         # Reset to default
-        resp = await self.send_command("set_element_properties", {"element_id": led_id, "skin": ""})
+        resp = await self.send_command("set_element_properties", {"element_id": led_id, "appearance": ""})
         if not resp.success:
-            print(f"Failed to reset skin: {resp.error}")
+            print(f"Failed to reset appearance: {resp.error}")
             return False
 
         new_props = resp.result.get("new_properties", {}) if resp.result else {}
-        if new_props.get("skin_default") is not True:
-            print(f"Skin not reset to default: {new_props}")
+        if new_props.get("appearance_default") is not True:
+            print(f"Appearance not reset to default: {new_props}")
             return False
 
-        self.infrastructure.output.success("skin property works")
+        self.infrastructure.output.success("appearance property works")
         return True
 
-    async def test_skin_index_property(self) -> bool:
-        """Test setting a skin at a specific index on a multi-input LED."""
-        print("\n=== Skin Index Property Test ===")
-        self.set_test_context("test_skin_index_property")
+    async def test_appearance_index_property(self) -> bool:
+        """Test setting an appearance at a specific index on a multi-input LED."""
+        print("\n=== Appearance Index Property Test ===")
+        self.set_test_context("test_appearance_index_property")
 
         await self.send_command("new_circuit", {})
 
@@ -211,22 +211,22 @@ class ElementPropertiesTests(MCPTestBase):
             return False
         led_id = led_resp.result["element_id"]
 
-        # Set skin at index 1 (the "On" state for a 1-input white LED)
+        # Set appearance at index 1 (the "On" state for a 1-input white LED)
         resp = await self.send_command("set_element_properties", {
             "element_id": led_id,
-            "skin": ":/Components/Output/Led/GreenLed.svg",
-            "skin_index": 1
+            "appearance": ":/Components/Output/Led/GreenLed.svg",
+            "appearance_index": 1
         })
         if not resp.success:
-            print(f"Failed to set skin at index: {resp.error}")
+            print(f"Failed to set appearance at index: {resp.error}")
             return False
 
         new_props = resp.result.get("new_properties", {}) if resp.result else {}
-        if new_props.get("skin_index") != 1:
-            print(f"Skin index not set correctly: {new_props}")
+        if new_props.get("appearance_index") != 1:
+            print(f"Appearance index not set correctly: {new_props}")
             return False
 
-        self.infrastructure.output.success("skin_index property works")
+        self.infrastructure.output.success("appearance_index property works")
         return True
 
     async def test_list_elements_extended(self) -> bool:

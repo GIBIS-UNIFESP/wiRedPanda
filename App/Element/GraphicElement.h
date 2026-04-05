@@ -38,7 +38,7 @@ class QWidget;
  *
  * Responsibilities handled here:
  * - Port management (input and output QNEPort children).
- * - Pixmap / skin rendering with default and user-defined skins.
+ * - Pixmap / appearance rendering with default and user-defined appearances.
  * - Serialization to / from a versioned QDataStream (save/load).
  * - Grid-snapping and wire-update callbacks via itemChange().
  * - Label and keyboard-trigger display.
@@ -250,36 +250,36 @@ public:
      */
     QList<PropertyDescriptor> editableProperties() const;
 
-    // --- Skin Management ---
+    // --- Appearance Management ---
 
-    /// Returns \c true if the user is allowed to choose a custom skin for this element.
-    bool canChangeSkin() const;
-
-    /**
-     * \brief Switches the element's skin.
-     * \param defaultSkin \c true to restore the built-in default skin.
-     * \param fileName    File path of the custom skin image (used when \a defaultSkin is \c false).
-     */
-    virtual void setSkin(const bool defaultSkin, const QString &fileName);
+    /// Returns \c true if the user is allowed to choose a custom appearance for this element.
+    bool canChangeAppearance() const;
 
     /**
-     * \brief Sets a custom skin at a specific index in the skin list.
-     * \param index Skin list index.
-     * \param fileName File path of the custom skin image (empty restores default for that index).
+     * \brief Switches the element's appearance.
+     * \param defaultAppearance \c true to restore the built-in default appearance.
+     * \param fileName    File path of the custom appearance image (used when \a defaultAppearance is \c false).
      */
-    void setSkinAt(const int index, const QString &fileName);
+    virtual void setAppearance(const bool defaultAppearance, const QString &fileName);
 
     /**
-     * \brief Returns the list of editable skin states for this element.
-     * Each pair is (skin list index, human-readable state description).
-     * Override in subclasses with multi-state skins (e.g., Led).
+     * \brief Sets a custom appearance at a specific index in the appearance list.
+     * \param index Appearance list index.
+     * \param fileName File path of the custom appearance image (empty restores default for that index).
      */
-    virtual QList<QPair<int, QString>> skinStates() const;
+    void setAppearanceAt(const int index, const QString &fileName);
+
+    /**
+     * \brief Returns the list of editable appearance states for this element.
+     * Each pair is (appearance list index, human-readable state description).
+     * Override in subclasses with multi-state appearances (e.g., Led).
+     */
+    virtual QList<QPair<int, QString>> appearanceStates() const;
 
     /// Loads and applies the pixmap located at \a pixmapPath.
     void setPixmap(const QString &pixmapPath);
 
-    /// Loads and applies the skin at position \a index in the skin list.
+    /// Loads and applies the appearance at position \a index in the appearance list.
     void setPixmap(const int index);
 
     // --- Truth Table ---
@@ -474,11 +474,11 @@ protected:
     /// Sets the minimum number of output ports to \a minOutputSize.
     void setMinOutputSize(const int minOutputSize);
 
-    /// Path to all default skins. The default skin is in a resource file.
-    QStringList m_defaultSkins;
+    /// Path to all default appearances. The default appearance is in a resource file.
+    QStringList m_defaultAppearances;
 
-    /// Path to all custom skins. Custom skin names are system file paths defined by the user.
-    QStringList m_alternativeSkins;
+    /// Path to all custom appearances. Custom appearance names are system file paths defined by the user.
+    QStringList m_alternativeAppearances;
 
     /// All input ports owned by this element (ordered by index).
     QVector<QNEInputPort *> m_inputPorts;
@@ -498,7 +498,7 @@ protected:
     QString m_pixmapPath;     ///< Resource or file path of the element's default pixmap (from metadata).
     QString m_titleText;      ///< Translated title text shown in UI panels (from metadata).
     QString m_translatedName; ///< Translated element name used as tooltip and port object name.
-    bool m_usingDefaultSkin = true; ///< True when the active skin matches the built-in default skins.
+    bool m_usingDefaultAppearance = true; ///< True when the active appearance matches the built-in default appearances.
 
     // --- Direct Simulation Helpers ---
 
@@ -578,10 +578,10 @@ private:
 
     /// Reads the element label from \a stream (format depends on \a version).
     void loadLabel(QDataStream &stream, const QVersionNumber &version);
-    /// Reads and applies a single skin path at index \a skin from \a stream.
-    void loadPixmapSkinName(QDataStream &stream, const int skin, const QString &contextDir);
-    /// Reads and applies all skin paths from \a stream.
-    void loadPixmapSkinNames(QDataStream &stream, SerializationContext &context);
+    /// Reads and applies a single appearance path at the given \a index from \a stream.
+    void loadPixmapAppearanceName(QDataStream &stream, const int index, const QString &contextDir);
+    /// Reads and applies all appearance paths from \a stream.
+    void loadPixmapAppearanceNames(QDataStream &stream, SerializationContext &context);
     /// Reads and applies the element rotation from \a stream.
     void loadRotation(QDataStream &stream, const QVersionNumber &version);
     /// Reads and applies the keyboard trigger from \a stream.

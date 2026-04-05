@@ -16,7 +16,7 @@ struct ElementInfo<Not> {
         .maxInputSize = 1,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
     };
     static_assert(validate(constraints));
 
@@ -27,8 +27,8 @@ struct ElementInfo<Not> {
         meta.titleText = QT_TRANSLATE_NOOP("Not", "NOT");
         meta.translatedName = QT_TRANSLATE_NOOP("Not", "Not");
         meta.trContext = "Not";
-        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-        meta.defaultSkins = QStringList({":/Components/Logic/not.svg"});
+        // Seed appearance lists from the constructor-supplied pixmap path (see And.cpp for details).
+        meta.defaultAppearances = QStringList({":/Components/Logic/not.svg"});
         return meta;
     }
 

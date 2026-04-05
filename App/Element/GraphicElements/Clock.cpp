@@ -20,7 +20,7 @@ struct ElementInfo<Clock> {
         .group = ElementGroup::Input,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
         .hasFrequency = true,
         .hasDelay = true,
         .hasLabel = true,
@@ -35,7 +35,7 @@ struct ElementInfo<Clock> {
         meta.titleText = QT_TRANSLATE_NOOP("Clock", "CLOCK SIGNAL");
         meta.translatedName = QT_TRANSLATE_NOOP("Clock", "Clock");
         meta.trContext = "Clock";
-        meta.defaultSkins = QStringList({
+        meta.defaultAppearances = QStringList({
             ":/Components/Input/clock0.svg",
             ":/Components/Input/clock1.svg",
         });
@@ -210,19 +210,19 @@ QString Clock::genericProperties()
     return QString::number(frequency()) + " Hz";
 }
 
-void Clock::setSkin(const bool defaultSkin, const QString &fileName)
+void Clock::setAppearance(const bool defaultAppearance, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_alternativeSkins = m_defaultSkins;
+    if (defaultAppearance) {
+        m_alternativeAppearances = m_defaultAppearances;
     } else {
-        m_alternativeSkins[static_cast<int>(m_isOn)] = fileName;
+        m_alternativeAppearances[static_cast<int>(m_isOn)] = fileName;
     }
 
-    m_usingDefaultSkin = defaultSkin;
+    m_usingDefaultAppearance = defaultAppearance;
     setPixmap(static_cast<int>(m_isOn));
 }
 
-QList<QPair<int, QString>> Clock::skinStates() const
+QList<QPair<int, QString>> Clock::appearanceStates() const
 {
     return {{0, tr("Low")}, {1, tr("High")}};
 }
