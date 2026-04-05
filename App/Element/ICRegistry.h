@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief IC definition registry with file watching, embedded blob storage, and cycle detection.
+ * \brief IC definition registry with file watching and embedded blob storage.
  */
 
 #pragma once
@@ -20,11 +20,11 @@ class Scene;
 
 /**
  * \class ICRegistry
- * \brief Manages IC definitions, file watching, and cycle detection.
+ * \brief Manages IC definitions, file watching, and embedded blob storage.
  *
  * \details Owned by Scene. Caches ICDefinition objects keyed by canonical file
  * path. Watches IC files for changes and reloads all IC instances referencing
- * a changed file. Provides cycle detection for circular IC references.
+ * a changed file.
  */
 class ICRegistry : public QObject
 {
@@ -95,17 +95,6 @@ public:
     /// Serializes \a targets into a self-contained .panda byte array (used for embedding).
     static QByteArray captureSnapshot(const QList<GraphicElement *> &targets);
 
-    // --- Cycle detection ---
-
-    /// Returns true if \a canonicalPath is currently being loaded (circular reference).
-    bool isLoading(const QString &canonicalPath) const;
-
-    /// Marks a file as currently loading. Returns false if already loading (cycle detected).
-    bool beginLoading(const QString &canonicalPath);
-
-    /// Removes a file from the loading set.
-    void endLoading(const QString &canonicalPath);
-
 signals:
     /// Emitted when an IC definition file changes on disk and its cached definition is invalidated.
     void definitionChanged(const QString &filePath);
@@ -125,6 +114,5 @@ private:
     QMap<QString, ICDefinition> m_definitions; ///< Cached IC definitions keyed by canonical file path.
     QMap<QString, QByteArray> m_blobs;       ///< Embedded IC blob storage (name → .panda bytes).
     QFileSystemWatcher m_fileWatcher;        ///< Watches IC source files for external modifications.
-    QSet<QString> m_loadingFiles;            ///< Files currently being loaded (for cycle detection).
 };
 

@@ -33,15 +33,8 @@ bool ICRegistry::has(const QString &filePath) const
 
 const ICDefinition *ICRegistry::definition(const QString &filePath, const QString &contextDir)
 {
-    // Cycle detection
-    if (m_loadingFiles.contains(filePath)) {
-        return nullptr;
-    }
-
     if (!m_definitions.contains(filePath)) {
-        m_loadingFiles.insert(filePath);
         m_definitions[filePath] = ICDefinition::fromFile(filePath, contextDir);
-        m_loadingFiles.remove(filePath);
     }
     return &m_definitions[filePath];
 }
@@ -70,25 +63,6 @@ QList<GraphicElement *> ICRegistry::findICsByFile(const QString &fileName) const
         }
     }
     return result;
-}
-
-bool ICRegistry::isLoading(const QString &canonicalPath) const
-{
-    return m_loadingFiles.contains(canonicalPath);
-}
-
-bool ICRegistry::beginLoading(const QString &canonicalPath)
-{
-    if (m_loadingFiles.contains(canonicalPath)) {
-        return false;
-    }
-    m_loadingFiles.insert(canonicalPath);
-    return true;
-}
-
-void ICRegistry::endLoading(const QString &canonicalPath)
-{
-    m_loadingFiles.remove(canonicalPath);
 }
 
 void ICRegistry::onFileChanged(const QString &filePath)
