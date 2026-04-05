@@ -13,8 +13,6 @@
 #include "App/Element/GraphicElement.h"
 #include "App/IO/SerializationContext.h"
 
-class ICDefinition;
-
 /**
  * \class IC
  * \brief Graphic element representing an Integrated Circuit (sub-circuit) box.
@@ -51,12 +49,6 @@ public:
 
     /// Loads the IC from in-memory blob bytes (full .panda file format).
     void loadFromBlob(const QByteArray &blob, const QString &contextDir);
-
-    /// Loads the IC from a shared definition (delegates to loadFromBlob).
-    void loadFromDefinition(const ICDefinition *def, const QString &contextDir);
-
-    /// Returns the current definition, or nullptr if not set.
-    const ICDefinition *definition() const { return m_definition; }
 
     void loadFromDrop(const QString &fileName, const QString &contextDir) override;
 
@@ -124,6 +116,7 @@ private:
     void migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &items,
                      const QVersionNumber &version, const QMap<QString, QByteArray> &fileRegistry);
     void resetInternalState();
+    void deserializeAndLoad(const QByteArray &bytes, const QString &contextDir);
 
     // --- Loading helpers ---
 
@@ -137,7 +130,6 @@ private:
 
     // --- Members ---
 
-    const ICDefinition *m_definition = nullptr;
     QString m_file;
     QString m_blobName;
     QVector<GraphicElement *> m_internalElements;

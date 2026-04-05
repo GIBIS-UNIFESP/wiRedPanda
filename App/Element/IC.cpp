@@ -15,7 +15,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/Element/ICDefinition.h"
 #include "App/Element/ICRegistry.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -293,18 +292,18 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
         throw PANDACEPTION("%1 not found.", fileInfo.absoluteFilePath());
     }
 
-    // Delegate file I/O, cycle detection, migration to ICRegistry if available
+    // Use cached file bytes from ICRegistry when available (avoids re-reading from disk)
     if (auto *scene_ = qobject_cast<Scene *>(scene())) {
         auto *reg = scene_->icRegistry();
-        const ICDefinition *def = reg->definition(fileInfo.absoluteFilePath());
-        if (def && def->isValid()) {
-            loadFromDefinition(def, fileInfo.absolutePath());
-            m_file = fileInfo.absoluteFilePath();  // restore after loadFromBlob clears it
+        const QByteArray &cached = reg->cachedFileBytes(fileInfo.absoluteFilePath());
+        if (!cached.isEmpty()) {
+            deserializeAndLoad(cached, fileInfo.absolutePath());
+            m_file = fileInfo.absoluteFilePath();
             setToolTip(fileInfo.fileName());
             if (label().isEmpty()) {
                 setLabel(fileInfo.baseName().toUpper());
             }
-            qCDebug(zero) << "Finished reading IC (via ICRegistry).";
+            qCDebug(zero) << "Finished reading IC (via cache).";
             return;
         }
     }
@@ -434,15 +433,12 @@ void IC::processLoadedItems(const QList<QGraphicsItem *> &items)
     generatePixmap();
 }
 
-void IC::loadFromBlob(const QByteArray &blob, const QString &contextDir)
+void IC::deserializeAndLoad(const QByteArray &bytes, const QString &contextDir)
 {
-    qCDebug(zero) << "Loading IC from blob.";
-
-    // Parse the blob before clearing state so a corrupt blob leaves the IC unchanged.
-    QByteArray data(blob);
+    // Parse the bytes before clearing state so a corrupt input leaves the IC unchanged.
+    QByteArray data(bytes);
     QDataStream stream(&data, QIODevice::ReadOnly);
 
-    // Blob is a full .panda file
     const auto preamble = Serialization::readPreamble(stream);
     auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata);
 
@@ -453,23 +449,21 @@ void IC::loadFromBlob(const QByteArray &blob, const QString &contextDir)
 
     // Parsing succeeded — now clear old state and apply
     resetInternalState();
-    m_file.clear(); // switching to blob-backed, no file association
-
     processLoadedItems(items);
+}
+
+void IC::loadFromBlob(const QByteArray &blob, const QString &contextDir)
+{
+    qCDebug(zero) << "Loading IC from blob.";
+
+    deserializeAndLoad(blob, contextDir);
+    m_file.clear(); // switching to blob-backed, no file association
 
     if (!m_blobName.isEmpty()) {
         setToolTip(m_blobName);
     }
 
     qCDebug(zero) << "Finished loading IC from blob.";
-}
-
-void IC::loadFromDefinition(const ICDefinition *def, const QString &contextDir)
-{
-    m_definition = def;
-    loadFromBlob(def->blobBytes(), contextDir);
-
-    qCDebug(zero) << "Finished loading IC from definition.";
 }
 
 void IC::generatePixmap()

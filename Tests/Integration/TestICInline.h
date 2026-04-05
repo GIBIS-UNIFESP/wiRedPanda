@@ -38,9 +38,6 @@ private slots:
     void testRegistryEmbedICsByFile();
     void testRegistryClearBlobs();
 
-    // ICDefinition
-    void testDefinitionFromFile();
-
     // --- Migrated: Batch 1 — Core load/embed/extract ---
 
     void testLoadFromBlob();
@@ -195,7 +192,6 @@ private slots:
     void testLoadICWithMissingBlobFallsBackToFile();
     void testLoadICWithNullBlobRegistry();
     void testSaveLoadOrphanBlobPreserved();
-    void testICDefinitionPortCountLabelMismatch();
     void testReconnectConnectionsSkipsDeletedElement();
     void testUpdateBlobCommandUndoRestoresOldBlob();
     void testIsEmbeddedICWithStaleBlobName();
