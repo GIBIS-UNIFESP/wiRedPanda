@@ -86,9 +86,11 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     endif()
 endif()
 
-find_program(MOLD_BIN mold)
-if(MOLD_BIN)
-    add_link_options(-fuse-ld=mold)
+if(NOT EMSCRIPTEN)
+    find_program(MOLD_BIN mold)
+    if(MOLD_BIN)
+        add_link_options(-fuse-ld=mold)
+    endif()
 endif()
 
 # Coverage support
@@ -160,6 +162,19 @@ endif()
 
 set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 
+# WebAssembly specific configuration — must come before FetchContent so that
+# third-party dependencies are also compiled with the required WASM flags.
+if(EMSCRIPTEN)
+    # Essential WASM flags
+    add_link_options(-sASYNCIFY -Os)
+
+    # Additional optimization flags recommended by Qt docs
+    add_compile_options(-Os -flto -pthread)
+    add_link_options(-flto)
+
+    message(STATUS "WebAssembly build detected - Adding ASYNCIFY and optimization flags")
+endif()
+
 # FetchContent for external dependencies
 include(FetchContent)
 
@@ -184,18 +199,6 @@ FetchContent_MakeAvailable(json-schema-validator)
 # Suppress warnings from json-schema-validator (third-party code)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(nlohmann_json_schema_validator PRIVATE -w)
-endif()
-
-# WebAssembly specific configuration
-if(EMSCRIPTEN)
-    # Essential WASM flags
-    add_link_options(-sASYNCIFY -Os)
-
-    # Additional optimization flags recommended by Qt docs
-    add_compile_options(-Os -flto)
-    add_link_options(-flto)
-
-    message(STATUS "WebAssembly build detected - Adding ASYNCIFY and optimization flags")
 endif()
 
 include(CMakeSources.cmake)
