@@ -110,9 +110,11 @@ void ICRegistry::setBlob(const QString &name, const QByteArray &data)
 
 void ICRegistry::registerBlob(const QString &name, const QByteArray &data)
 {
-    setBlob(name, data);
     QSet<QString> visited;
-    makeBlobSelfContained(name, visited);
+    QMap<QString, QByteArray> workingBlobs;
+    workingBlobs[name] = data;
+    makeBlobSelfContained(name, visited, workingBlobs);
+    m_blobs[name] = workingBlobs[name];
 }
 
 void ICRegistry::removeBlob(const QString &name)
@@ -285,7 +287,8 @@ void ICRegistry::rollbackElements(const QList<GraphicElement *> &elements, const
     }
 }
 
-void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visited)
+void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visited,
+                                       QMap<QString, QByteArray> &blobs)
 {
     if (visited.contains(name)) {
         qCWarning(zero) << "Circular blob reference detected:" << name << "— skipping.";
@@ -293,7 +296,7 @@ void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visit
     }
     visited.insert(name);
 
-    QByteArray blobData(m_blobs[name]);
+    QByteArray blobData(blobs[name]);
     QDataStream readStream(&blobData, QIODevice::ReadOnly);
     const auto preamble = Serialization::readPreamble(readStream);
 
@@ -307,12 +310,10 @@ void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visit
 
     // Recurse into already-embedded blobs to ensure they are self-contained
     for (auto it = embeddedICs.begin(); it != embeddedICs.end(); ++it) {
-        // Temporarily store in m_blobs so makeBlobSelfContained can operate on it
         const QString &depName = it.key();
-        m_blobs[depName] = it.value();
-        makeBlobSelfContained(depName, visited);
-        it.value() = m_blobs[depName];
-        m_blobs.remove(depName);
+        blobs[depName] = it.value();
+        makeBlobSelfContained(depName, visited, blobs);
+        it.value() = blobs[depName];
     }
 
     // Resolve file-backed IC dependencies from disk and embed them
@@ -339,10 +340,9 @@ void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visit
             file.close();
 
             // Recursively make the dep self-contained before embedding
-            m_blobs[baseName] = fileBytes;
-            makeBlobSelfContained(baseName, visited);
-            embeddedICs[baseName] = m_blobs[baseName];
-            m_blobs.remove(baseName);
+            blobs[baseName] = fileBytes;
+            makeBlobSelfContained(baseName, visited, blobs);
+            embeddedICs[baseName] = blobs[baseName];
         }
 
         metadata.remove("fileBackedICs");
@@ -364,7 +364,7 @@ void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visit
     writeStream << metadata;
     writeStream.writeRawData(elements.constData(), static_cast<int>(elements.size()));
 
-    m_blobs[name] = newBlob;
+    blobs[name] = newBlob;
 }
 
 QByteArray ICRegistry::captureSnapshot(const QList<GraphicElement *> &targets)
