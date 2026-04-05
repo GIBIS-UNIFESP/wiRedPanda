@@ -16,40 +16,22 @@
 #include "App/Core/Settings.h"
 
 #ifdef Q_OS_WASM
-/// Loads the Noto Sans font for the given language if it hasn't been loaded yet.
-static void loadFontForLanguage(const QString &language)
+static void loadAllFonts()
 {
-    // Map language codes to their required font resource paths.
-    // Languages using Latin, Cyrillic, or Greek scripts are covered by Qt's built-in font.
-    static const QMap<QString, QString> kFontMap = {
-        {"ar",      ":/Fonts/NotoSansArabic-Regular.ttf"},
-        {"fa",      ":/Fonts/NotoSansArabic-Regular.ttf"},
-        {"he",      ":/Fonts/NotoSansHebrew-Regular.ttf"},
-        {"hi",      ":/Fonts/NotoSansDevanagari-Regular.ttf"},
-        {"bn",      ":/Fonts/NotoSansBengali-Regular.ttf"},
-        {"th",      ":/Fonts/NotoSansThai-Regular.ttf"},
-        {"ja",      ":/Fonts/NotoSansSC-Regular.ttf"},
-        {"zh_Hans", ":/Fonts/NotoSansSC-Regular.ttf"},
-        {"zh_Hant", ":/Fonts/NotoSansSC-Regular.ttf"},
-        {"ko",      ":/Fonts/NotoSansKR-Regular.ttf"},
+    static const QStringList kFontPaths = {
+        ":/Fonts/NotoSansArabic-Regular.ttf",
+        ":/Fonts/NotoSansBengali-Regular.ttf",
+        ":/Fonts/NotoSansDevanagari-Regular.ttf",
+        ":/Fonts/NotoSansHebrew-Regular.ttf",
+        ":/Fonts/NotoSansKR-Regular.ttf",
+        ":/Fonts/NotoSansSC-Regular.ttf",
+        ":/Fonts/NotoSansThai-Regular.ttf",
     };
 
-    const QString fontPath = kFontMap.value(language);
-    if (fontPath.isEmpty()) {
-        return;
-    }
-
-    // Track already-loaded fonts to avoid redundant loads.
-    static QSet<QString> loadedFonts;
-    if (loadedFonts.contains(fontPath)) {
-        return;
-    }
-
-    if (QFontDatabase::addApplicationFont(fontPath) != -1) {
-        loadedFonts.insert(fontPath);
-        qDebug() << "Loaded WASM font:" << fontPath << "for language" << language;
-    } else {
-        qWarning() << "Failed to load WASM font:" << fontPath << "for language" << language;
+    for (const auto &path : kFontPaths) {
+        if (QFontDatabase::addApplicationFont(path) == -1) {
+            qWarning() << "Failed to load WASM font:" << path;
+        }
     }
 }
 #endif
@@ -57,6 +39,10 @@ static void loadFontForLanguage(const QString &language)
 LanguageManager::LanguageManager(QObject *parent)
     : QObject(parent)
 {
+#ifdef Q_OS_WASM
+    // Load all fonts upfront so the language menu can render native script names.
+    loadAllFonts();
+#endif
 }
 
 LanguageManager::~LanguageManager()
@@ -73,10 +59,6 @@ void LanguageManager::loadTranslation(const QString &language)
     }
 
     Settings::setLanguage(language);
-
-#ifdef Q_OS_WASM
-    loadFontForLanguage(language);
-#endif
 
     // Always recreate translators rather than re-loading; Qt does not guarantee
     // that calling load() on an existing translator re-emits languageChanged.
