@@ -195,35 +195,10 @@ void Simulation::start()
 
 void Simulation::updateWithIterativeSettling()
 {
-    // 10 passes is enough for any realistic SR/JK feedback depth; circuits that
-    // genuinely oscillate (e.g. a ring oscillator) won't converge and we log a
-    // warning on the last iteration rather than looping forever.
-    const int maxIterations = 10;
-
-    for (int iteration = 0; iteration < maxIterations; ++iteration) {
-        // Update all logic elements
-        for (auto *element : std::as_const(m_sortedElements)) {
-            if (element) {
-                element->clearOutputChanged();
-                element->updateLogic();
-            }
-        }
-
-        // Check for convergence: no element changed any output this pass.
-        const bool converged = std::none_of(m_sortedElements.cbegin(), m_sortedElements.cend(),
-            [](const auto *element) { return element && element->outputChanged(); });
-
-        if (converged) {
-            // Circuit has stabilized, no need for more iterations
-            break;
-        }
-
-        // If we're on the last iteration without convergence, warn the user once.
-        if (iteration == maxIterations - 1 && !m_convergenceWarned) {
-            m_convergenceWarned = true;
-            qDebug() << "Feedback circuit did not converge after" << maxIterations << "iterations";
-            emit simulationWarning(tr("Warning: feedback circuit did not converge — the circuit may be oscillating."));
-        }
+    if (!iterativeSettle(m_sortedElements) && !m_convergenceWarned) {
+        m_convergenceWarned = true;
+        qDebug() << "Feedback circuit did not converge after 10 iterations";
+        emit simulationWarning(tr("Warning: feedback circuit did not converge — the circuit may be oscillating."));
     }
 }
 
@@ -368,19 +343,7 @@ void Simulation::buildConnectionGraph(const QVector<GraphicElement *> &elements)
 
 void Simulation::connectWirelessElements(const QVector<GraphicElement *> &elements)
 {
-    // Build a map from channel label to the Tx node's GraphicElement.
-    // If two Tx nodes share the same label the first registered wins and a warning is emitted.
-    QHash<QString, GraphicElement *> txMap;
-    for (auto *elm : std::as_const(elements)) {
-        if (elm->wirelessMode() != WirelessMode::Tx || elm->label().isEmpty()) {
-            continue;
-        }
-        if (txMap.contains(elm->label())) {
-            qCWarning(zero) << "Duplicate wireless Tx label:" << elm->label() << "— second transmitter ignored.";
-        } else {
-            txMap.insert(elm->label(), elm);
-        }
-    }
+    const auto txMap = buildTxMap(elements);
 
     // Wire each Rx node's input to the matching Tx node's output.
     // connectPredecessor() overwrites whatever buildConnectionGraph() set,
@@ -392,15 +355,29 @@ void Simulation::connectWirelessElements(const QVector<GraphicElement *> &elemen
         if (auto *txElement = txMap.value(elm->label(), nullptr)) {
             elm->connectPredecessor(0, txElement, 0);
         }
-        // No matching Tx: buildConnectionGraph() already wired this port to its default,
-        // so the element is valid and outputs its default status.
     }
 }
 
-void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
+QHash<QString, GraphicElement *> Simulation::buildTxMap(const QVector<GraphicElement *> &elements)
+{
+    QHash<QString, GraphicElement *> txMap;
+    for (auto *elm : std::as_const(elements)) {
+        if (elm->wirelessMode() == WirelessMode::Tx && !elm->label().isEmpty()) {
+            if (!txMap.contains(elm->label())) {
+                txMap.insert(elm->label(), elm);
+            }
+        }
+    }
+    return txMap;
+}
+
+QHash<GraphicElement *, QVector<GraphicElement *>> Simulation::buildSuccessorGraph(
+    const QVector<GraphicElement *> &elements,
+    const QHash<QString, GraphicElement *> &txMap)
 {
     QHash<GraphicElement *, QVector<GraphicElement *>> successors;
 
+    // Build successor edges from physical connections
     for (auto *elm : std::as_const(elements)) {
         for (auto *outputPort : elm->outputs()) {
             for (auto *conn : outputPort->connections()) {
@@ -414,20 +391,11 @@ void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
         }
     }
 
-    // Add wireless Tx→Rx edges to the successor graph.
+    // Add wireless Tx→Rx edges.
     // connectWirelessElements() already set predecessors for simulation input routing,
     // but those don't create QNEConnection objects, so the connection-walking loop above
     // doesn't see wireless dependencies.  We must add them explicitly here for correct
     // topological ordering.
-    // NOTE: must match connectWirelessElements() — first Tx per label wins.
-    QHash<QString, GraphicElement *> txMap;
-    for (auto *elm : std::as_const(elements)) {
-        if (elm->wirelessMode() == WirelessMode::Tx && !elm->label().isEmpty()) {
-            if (!txMap.contains(elm->label())) {
-                txMap.insert(elm->label(), elm);
-            }
-        }
-    }
     for (auto *elm : std::as_const(elements)) {
         if (elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
             if (auto *tx = txMap.value(elm->label(), nullptr)) {
@@ -438,25 +406,62 @@ void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
         }
     }
 
+    return successors;
+}
+
+Simulation::SortResult Simulation::topologicalSort(
+    const QVector<GraphicElement *> &elements,
+    const QHash<GraphicElement *, QVector<GraphicElement *>> &successors)
+{
+    SortResult result;
+
     QVector<GraphicElement *> rawPtrs(elements);
-    QHash<GraphicElement *, int> priorities;
-    calculatePriorities(rawPtrs, successors, priorities);
-    const auto feedbackElements = findFeedbackNodes(rawPtrs, successors);
+    calculatePriorities(rawPtrs, successors, result.priorities);
+    result.feedbackNodes = findFeedbackNodes(rawPtrs, successors);
+
+    result.sorted = elements;
+    std::stable_sort(result.sorted.begin(), result.sorted.end(),
+        [&result](const auto *a, const auto *b) {
+            return result.priorities.value(const_cast<GraphicElement *>(a), -1)
+                 > result.priorities.value(const_cast<GraphicElement *>(b), -1);
+        });
+
+    return result;
+}
+
+bool Simulation::iterativeSettle(const QVector<GraphicElement *> &elements, const int maxIterations)
+{
+    for (int iteration = 0; iteration < maxIterations; ++iteration) {
+        for (auto *element : std::as_const(elements)) {
+            element->clearOutputChanged();
+            element->updateLogic();
+        }
+
+        const bool converged = std::none_of(elements.cbegin(), elements.cend(),
+            [](const auto *element) { return element->outputChanged(); });
+
+        if (converged) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
+{
+    const auto txMap = buildTxMap(elements);
+    const auto successors = buildSuccessorGraph(elements, txMap);
+    const auto result = topologicalSort(elements, successors);
 
     m_simPriorities.clear();
     m_simFeedbackNodes.clear();
     for (auto *elm : std::as_const(elements)) {
-        m_simPriorities[elm] = priorities.value(elm, -1);
-        if (feedbackElements.contains(elm)) {
+        m_simPriorities[elm] = result.priorities.value(elm, -1);
+        if (result.feedbackNodes.contains(elm)) {
             m_simFeedbackNodes.insert(elm);
         }
     }
     m_simHasFeedbackElements = !m_simFeedbackNodes.isEmpty();
-
-    m_sortedElements = elements;
-    std::stable_sort(m_sortedElements.begin(), m_sortedElements.end(),
-        [this](const auto *a, const auto *b) {
-            return m_simPriorities.value(a, -1) > m_simPriorities.value(b, -1);
-        });
+    m_sortedElements = result.sorted;
 }
 
