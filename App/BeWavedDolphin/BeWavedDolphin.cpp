@@ -1156,7 +1156,7 @@ void BewavedDolphin::load(const QString &fileName)
 
     if (!file.open(QIODevice::ReadOnly)) {
         qCDebug(zero) << "Could not open file in ReadOnly mode: " << file.errorString();
-        throw PANDACEPTION("Could not open file in ReadOnly mode: %1", file.errorString());
+        throw PANDACEPTION("Could not open file for reading: %1", file.errorString());
     }
 
     if (fileName.endsWith(".dolphin")) {
@@ -1318,15 +1318,15 @@ void BewavedDolphin::on_actionAbout_triggered()
 {
     QMessageBox::about(this,
         "beWavedDolphin",
-        tr("<p>beWavedDolphin is a waveform simulator for the wiRedPanda software developed by the Federal University of São Paulo."
-           " This project was created in order to help students learn about logic circuits.</p>"
+        tr("<p>beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo"
+           " to help students learn about logic circuits.</p>"
            "<p>Software version: %1</p>"
            "<p><strong>Creators:</strong></p>"
            "<ul>"
            "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
            "</ul>"
-           "<p> beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students</p>"
-           "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
+           "<p> beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.</p>"
+           "<p> Please file a report at our GitHub page if you find a bug or want to request a new feature.</p>"
            "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
             .arg(QApplication::applicationVersion()));
 }

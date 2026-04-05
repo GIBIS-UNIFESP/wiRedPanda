@@ -264,7 +264,7 @@ void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
     labelTrigger->setText(QCoreApplication::translate("ElementEditor", "Trigger:"));
     pushButtonTruthTable->setText(QCoreApplication::translate("ElementEditor", "Edit Truth Table"));
     labelAppearanceState->setText(QCoreApplication::translate("ElementEditor", "Appearance:"));
-    pushButtonChangeAppearance->setText(QCoreApplication::translate("ElementEditor", "Change skin to ..."));
+    pushButtonChangeAppearance->setText(QCoreApplication::translate("ElementEditor", "Change appearance to ..."));
     pushButtonDefaultAppearance->setToolTip(QCoreApplication::translate("ElementEditor", "Default"));
     pushButtonDefaultAppearance->setText(QString());
     labelValue->setText(QCoreApplication::translate("ElementEditor", "Value:"));

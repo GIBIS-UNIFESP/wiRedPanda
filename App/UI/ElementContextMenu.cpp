@@ -44,12 +44,12 @@ void ElementContextMenu::exec(QPoint screenPos,
                               const std::function<void()> &onExtractToFile)
 {
     QMenu menu;
-    const QString changeAppearanceText(QObject::tr("Change skin to ..."));
+    const QString changeAppearanceText(QObject::tr("Change appearance to ..."));
     const QString colorMenuText(QObject::tr("Change color to..."));
     const QString frequencyText(QObject::tr("Change frequency"));
     const QString morphMenuText(QObject::tr("Morph to..."));
     const QString renameText(QObject::tr("Rename"));
-    const QString revertAppearanceText(QObject::tr("Set skin to default"));
+    const QString revertAppearanceText(QObject::tr("Restore default appearance"));
     const QString rotateLeftText(QObject::tr("Rotate left"));
     const QString rotateRightText(QObject::tr("Rotate right"));
     const QString triggerText(QObject::tr("Change trigger"));
