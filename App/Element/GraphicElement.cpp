@@ -277,17 +277,9 @@ void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
 void GraphicElement::addPort(const QString &name, const bool isOutput)
 {
-    // Silently ignore the request rather than throwing; callers such as load()
-    // may attempt to add more ports than the current constraints allow when
-    // opening a file saved with looser constraints.
-    if (isOutput && (static_cast<quint64>(m_outputPorts.size()) >= m_maxOutputSize)) {
-        return;
-    }
-
-    if (!isOutput && (static_cast<quint64>(m_inputPorts.size()) >= m_maxInputSize)) {
-        return;
-    }
-
+    // No max-size guard here — setInputSize()/setOutputSize() already enforce
+    // min/max constraints before calling this method.  The serializer also
+    // calls addPort() and needs to create whatever ports the file contains.
     qCDebug(four) << "New port.";
     QNEPort *port = nullptr;
 
