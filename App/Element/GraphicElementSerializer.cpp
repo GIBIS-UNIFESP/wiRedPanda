@@ -28,10 +28,9 @@ void GraphicElement::save(QDataStream &stream) const
     map.insert("pos", pos());
     map.insert("rotation", rotation());
     map.insert("label", label());
-    map.insert("minInputSize", m_minInputSize);
-    map.insert("maxInputSize", m_maxInputSize);
-    map.insert("minOutputSize", m_minOutputSize);
-    map.insert("maxOutputSize", m_maxOutputSize);
+    // min/max port sizes are class metadata, not per-instance state.
+    // No longer written; old files that contain these keys are harmlessly
+    // ignored on load (the QMap is read as a whole, unused keys are skipped).
     map.insert("trigger", m_trigger);
     stream << map;
 
@@ -156,25 +155,8 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
         setLabel(map.value("label").toString());
     }
 
-    // -------------------------------------------
-
-    const quint64 minInputSize = map.value("minInputSize").toULongLong();
-    const quint64 maxInputSize = map.value("maxInputSize").toULongLong();
-    const quint64 minOutputSize = map.value("minOutputSize").toULongLong();
-    const quint64 maxOutputSize = map.value("maxOutputSize").toULongLong();
-
-    // Only update constraints when the element allows variable port counts OR when
-    // the saved value falls within the current allowed range.  Prevents a fixed-port
-    // element (min == max) from being silently corrupted by a stale saved value.
-    if ((m_minInputSize != m_maxInputSize) || (m_minInputSize <= maxInputSize)) {
-        m_minInputSize = minInputSize;
-        m_maxInputSize = maxInputSize;
-    }
-
-    if ((m_minOutputSize != m_maxOutputSize) || (m_minOutputSize <= maxOutputSize)) {
-        m_minOutputSize = minOutputSize;
-        m_maxOutputSize = maxOutputSize;
-    }
+    // min/max port sizes are class metadata — ignore any stale saved values.
+    // The actual port count is restored from the serialized port lists below.
 
     // -------------------------------------------
 
@@ -369,24 +351,9 @@ void GraphicElement::loadLabel(QDataStream &stream, const QVersionNumber &versio
 void GraphicElement::loadPortsSize(QDataStream &stream, const QVersionNumber &version)
 {
     if (VersionInfo::hasPortSizes(version)) {
-        quint64 minInputSize;  stream >> minInputSize;
-        quint64 maxInputSize;  stream >> maxInputSize;
-        quint64 minOutputSize; stream >> minOutputSize;
-        quint64 maxOutputSize; stream >> maxOutputSize;
-
-        // Only override the compiled-in constraints when the element has a variable port count
-        // (min != max) or the saved count is within the allowed range.  This prevents a fixed-port
-        // element from being corrupted by a stale value that was written before its constraints
-        // were tightened.
-        if ((m_minInputSize != m_maxInputSize) || (m_minInputSize <= maxInputSize)) {
-            m_minInputSize = minInputSize;
-            m_maxInputSize = maxInputSize;
-        }
-
-        if ((m_minOutputSize != m_maxOutputSize) || (m_minOutputSize <= maxOutputSize)) {
-            m_minOutputSize = minOutputSize;
-            m_maxOutputSize = maxOutputSize;
-        }
+        // Drain the 4 saved values to advance the stream position.
+        // min/max port sizes are class metadata — the compiled-in values are authoritative.
+        quint64 unused; stream >> unused; stream >> unused; stream >> unused; stream >> unused;
     }
 }
 

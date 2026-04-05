@@ -95,6 +95,24 @@ void IC::load(QDataStream &stream, SerializationContext &context)
 {
     GraphicElement::load(stream, context);
 
+    // Save the portMap keys for each port that GraphicElement::load() just
+    // registered.  Loading the sub-circuit below destroys and recreates all
+    // ports, so we must re-register the new ports under the original keys
+    // to keep the outer portMap valid for connection deserialization.
+    // Old format uses ptr values as keys; new format uses serialIds — we
+    // look up each port pointer in the portMap to find its key regardless.
+    QVector<quint64> savedInputKeys, savedOutputKeys;
+    for (const auto *port : std::as_const(m_inputPorts)) {
+        for (auto it = context.portMap.constBegin(); it != context.portMap.constEnd(); ++it) {
+            if (it.value() == port) { savedInputKeys.append(it.key()); break; }
+        }
+    }
+    for (const auto *port : std::as_const(m_outputPorts)) {
+        for (auto it = context.portMap.constBegin(); it != context.portMap.constEnd(); ++it) {
+            if (it.value() == port) { savedOutputKeys.append(it.key()); break; }
+        }
+    }
+
     // Old format (V_1_2 to V_4_1): IC file path was written as a plain QString
     if ((VersionInfo::hasLabels(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
         stream >> m_file;
@@ -137,6 +155,15 @@ void IC::load(QDataStream &stream, SerializationContext &context)
             m_file = name;
             loadFile(m_file, context.contextDir);
         }
+    }
+
+    // Re-register the new ports in the outer portMap under the original keys
+    // so that subsequent connection deserialization can find them.
+    for (int i = 0; i < qMin(savedInputKeys.size(), m_inputPorts.size()); ++i) {
+        context.portMap[savedInputKeys[i]] = m_inputPorts[i];
+    }
+    for (int i = 0; i < qMin(savedOutputKeys.size(), m_outputPorts.size()); ++i) {
+        context.portMap[savedOutputKeys[i]] = m_outputPorts[i];
     }
 }
 
