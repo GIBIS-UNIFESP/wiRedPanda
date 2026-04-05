@@ -69,29 +69,29 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     pushButtonTruthTable->setEnabled(true);
     horizontalLayout->addWidget(pushButtonTruthTable);
 
-    // Skin state selector (for multi-state elements like LEDs)
-    labelSkinState = new QLabel(groupBox);
-    labelSkinState->setObjectName("labelSkinState");
-    gridLayout_2->addWidget(labelSkinState, 12, 0, 1, 1);
+    // Appearance state selector (for multi-state elements like LEDs)
+    labelAppearanceState = new QLabel(groupBox);
+    labelAppearanceState->setObjectName("labelAppearanceState");
+    gridLayout_2->addWidget(labelAppearanceState, 12, 0, 1, 1);
 
-    comboBoxSkinState = new QComboBox(groupBox);
-    comboBoxSkinState->setObjectName("comboBoxSkinState");
-    gridLayout_2->addWidget(comboBoxSkinState, 12, 1, 1, 1);
+    comboBoxAppearanceState = new QComboBox(groupBox);
+    comboBoxAppearanceState->setObjectName("comboBoxAppearanceState");
+    gridLayout_2->addWidget(comboBoxAppearanceState, 12, 1, 1, 1);
 
-    pushButtonChangeSkin = new QPushButton(groupBox);
-    pushButtonChangeSkin->setObjectName("pushButtonChangeSkin");
-    horizontalLayout->addWidget(pushButtonChangeSkin);
+    pushButtonChangeAppearance = new QPushButton(groupBox);
+    pushButtonChangeAppearance->setObjectName("pushButtonChangeAppearance");
+    horizontalLayout->addWidget(pushButtonChangeAppearance);
 
-    pushButtonDefaultSkin = new QPushButton(groupBox);
-    pushButtonDefaultSkin->setObjectName("pushButtonDefaultSkin");
+    pushButtonDefaultAppearance = new QPushButton(groupBox);
+    pushButtonDefaultAppearance->setObjectName("pushButtonDefaultAppearance");
     QSizePolicy sizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
-    sizePolicy.setHeightForWidth(pushButtonDefaultSkin->sizePolicy().hasHeightForWidth());
-    pushButtonDefaultSkin->setSizePolicy(sizePolicy);
-    pushButtonDefaultSkin->setIcon(QIcon(":/Interface/Locale/default.svg"));
-    pushButtonDefaultSkin->setIconSize(QSize(16, 16));
-    horizontalLayout->addWidget(pushButtonDefaultSkin);
+    sizePolicy.setHeightForWidth(pushButtonDefaultAppearance->sizePolicy().hasHeightForWidth());
+    pushButtonDefaultAppearance->setSizePolicy(sizePolicy);
+    pushButtonDefaultAppearance->setIcon(QIcon(":/Interface/Locale/default.svg"));
+    pushButtonDefaultAppearance->setIconSize(QSize(16, 16));
+    horizontalLayout->addWidget(pushButtonDefaultAppearance);
 
     gridLayout_2->addLayout(horizontalLayout, 13, 0, 1, 2);
 
@@ -263,10 +263,10 @@ void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
     labelLabels->setText(QCoreApplication::translate("ElementEditor", "Label:"));
     labelTrigger->setText(QCoreApplication::translate("ElementEditor", "Trigger:"));
     pushButtonTruthTable->setText(QCoreApplication::translate("ElementEditor", "TruthTable"));
-    labelSkinState->setText(QCoreApplication::translate("ElementEditor", "Appearance:"));
-    pushButtonChangeSkin->setText(QCoreApplication::translate("ElementEditor", "Change skin to ..."));
-    pushButtonDefaultSkin->setToolTip(QCoreApplication::translate("ElementEditor", "Default"));
-    pushButtonDefaultSkin->setText(QString());
+    labelAppearanceState->setText(QCoreApplication::translate("ElementEditor", "Appearance:"));
+    pushButtonChangeAppearance->setText(QCoreApplication::translate("ElementEditor", "Change skin to ..."));
+    pushButtonDefaultAppearance->setToolTip(QCoreApplication::translate("ElementEditor", "Default"));
+    pushButtonDefaultAppearance->setText(QString());
     labelValue->setText(QCoreApplication::translate("ElementEditor", "Value:"));
     doubleSpinBoxFrequency->setSpecialValueText(QString());
     doubleSpinBoxFrequency->setSuffix(QCoreApplication::translate("ElementEditor", " Hz"));

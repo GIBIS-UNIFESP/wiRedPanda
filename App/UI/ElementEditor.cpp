@@ -88,8 +88,8 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::apply);
     connect(m_ui->lineEditTrigger,        &QLineEdit::textChanged,                          this, &ElementEditor::triggerChanged);
     connect(m_ui->pushButtonAudioBox,     &QPushButton::clicked,                            this, &ElementEditor::audioBox);
-    connect(m_ui->pushButtonChangeSkin,   &QPushButton::clicked,                            this, &ElementEditor::updateElementSkin);
-    connect(m_ui->pushButtonDefaultSkin,  &QPushButton::clicked,                            this, &ElementEditor::defaultSkin);
+    connect(m_ui->pushButtonChangeAppearance,   &QPushButton::clicked,                            this, &ElementEditor::updateElementAppearance);
+    connect(m_ui->pushButtonDefaultAppearance,  &QPushButton::clicked,                            this, &ElementEditor::defaultAppearance);
     connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::truthTable);
 }
 
@@ -135,8 +135,8 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
         [this](QUndoCommand *cmd) { emit sendCommand(cmd); },
         [this] { renameAction(); },
         [this] { changeTriggerAction(); },
-        [this] { updateElementSkin(); },
-        [this] { m_isDefaultSkin = true; m_isUpdatingSkin = true; apply(); },
+        [this] { updateElementAppearance(); },
+        [this] { m_isDefaultAppearance = true; m_isUpdatingAppearance = true; apply(); },
         [this] { m_ui->doubleSpinBoxFrequency->setFocus(); },
         // IC sub-circuit actions
         [this] {
@@ -166,7 +166,7 @@ void ElementEditor::changeTriggerAction()
     m_ui->lineEditTrigger->selectAll();
 }
 
-void ElementEditor::updateElementSkin()
+void ElementEditor::updateElementAppearance()
 {
     QFileDialog fileDialog;
     fileDialog.setObjectName(tr("Open File"));
@@ -186,10 +186,10 @@ void ElementEditor::updateElementSkin()
 
     qCDebug(zero) << "File name: " << fileName;
 
-    // If a specific skin state is selected in the combo box, use setSkinAt()
+    // If a specific appearance state is selected in the combo box, use setAppearanceAt()
     // to target that index directly instead of relying on the element's current state.
-    if (m_ui->comboBoxSkinState->isVisible() && m_ui->comboBoxSkinState->count() > 0) {
-        const int skinIndex = m_ui->comboBoxSkinState->currentData().toInt();
+    if (m_ui->comboBoxAppearanceState->isVisible() && m_ui->comboBoxAppearanceState->count() > 0) {
+        const int appearanceIndex = m_ui->comboBoxAppearanceState->currentData().toInt();
 
         // Snapshot and apply via undo command
         for (auto *elm : std::as_const(m_elements)) {
@@ -199,7 +199,7 @@ void ElementEditor::updateElementSkin()
                 Serialization::writePandaHeader(stream);
                 elm->save(stream);
             }
-            elm->setSkinAt(skinIndex, fileName);
+            elm->setAppearanceAt(appearanceIndex, fileName);
             if (m_scene) {
                 m_scene->receiveCommand(new UpdateCommand({elm}, oldData, m_scene));
             }
@@ -207,9 +207,9 @@ void ElementEditor::updateElementSkin()
         return;
     }
 
-    m_isUpdatingSkin = true;
-    m_skinName = fileName;
-    m_isDefaultSkin = false;
+    m_isUpdatingAppearance = true;
+    m_appearanceName = fileName;
+    m_isDefaultAppearance = false;
     apply();
 }
 
@@ -444,26 +444,26 @@ void ElementEditor::applyCapabilitiesToUi()
     m_ui->pushButtonTruthTable->setVisible(c.hasTruthTable);
     m_ui->pushButtonTruthTable->setEnabled(c.hasTruthTable);
 
-    /* Skin */
-    m_ui->pushButtonChangeSkin->setVisible(c.canChangeSkin);
-    m_ui->pushButtonDefaultSkin->setVisible(c.canChangeSkin);
+    /* Appearance */
+    m_ui->pushButtonChangeAppearance->setVisible(c.canChangeAppearance);
+    m_ui->pushButtonDefaultAppearance->setVisible(c.canChangeAppearance);
 
-    // Populate the skin state selector for multi-state elements
-    if (c.canChangeSkin && m_elements.size() == 1) {
-        const auto states = m_elements[0]->skinStates();
+    // Populate the appearance state selector for multi-state elements
+    if (c.canChangeAppearance && m_elements.size() == 1) {
+        const auto states = m_elements[0]->appearanceStates();
         const bool multiState = states.size() > 1;
-        m_ui->labelSkinState->setVisible(multiState);
-        m_ui->comboBoxSkinState->setVisible(multiState);
+        m_ui->labelAppearanceState->setVisible(multiState);
+        m_ui->comboBoxAppearanceState->setVisible(multiState);
         if (multiState) {
-            QSignalBlocker blocker(m_ui->comboBoxSkinState);
-            m_ui->comboBoxSkinState->clear();
+            QSignalBlocker blocker(m_ui->comboBoxAppearanceState);
+            m_ui->comboBoxAppearanceState->clear();
             for (const auto &[index, label] : states) {
-                m_ui->comboBoxSkinState->addItem(label, index);
+                m_ui->comboBoxAppearanceState->addItem(label, index);
             }
         }
     } else {
-        m_ui->labelSkinState->setVisible(false);
-        m_ui->comboBoxSkinState->setVisible(false);
+        m_ui->labelAppearanceState->setVisible(false);
+        m_ui->comboBoxAppearanceState->setVisible(false);
     }
 
     /* Wireless mode — Node elements only */
@@ -533,9 +533,9 @@ void ElementEditor::applyProperty(GraphicElement *elm, PropertyDescriptor::Type 
             elm->setTrigger(QKeySequence(m_ui->lineEditTrigger->text()));
         }
         break;
-    case PropertyDescriptor::Type::Skin:
-        if (m_isUpdatingSkin) {
-            elm->setSkin(m_isDefaultSkin, m_skinName);
+    case PropertyDescriptor::Type::Appearance:
+        if (m_isUpdatingAppearance) {
+            elm->setAppearance(m_isDefaultAppearance, m_appearanceName);
         }
         break;
     case PropertyDescriptor::Type::WirelessModeSelector:
@@ -645,9 +645,9 @@ void ElementEditor::apply()
         }
     }
 
-    // Reset the one-shot skin update flag after applying to all elements.
-    if (m_isUpdatingSkin) {
-        m_isUpdatingSkin = false;
+    // Reset the one-shot appearance update flag after applying to all elements.
+    if (m_isUpdatingAppearance) {
+        m_isUpdatingAppearance = false;
     }
 
     // When wireless mode changes sever connections, group the property update
@@ -863,12 +863,12 @@ void ElementEditor::audioBox()
     m_ui->lineCurrentAudioBox->setText(QFileInfo(filePath).fileName());
 }
 
-void ElementEditor::defaultSkin()
+void ElementEditor::defaultAppearance()
 {
     // Set flags before calling apply() so apply() sees them during the loop
-    // and passes true/empty to elm->setSkin() for each selected element.
-    m_isUpdatingSkin = true;
-    m_isDefaultSkin = true;
+    // and passes true/empty to elm->setAppearance() for each selected element.
+    m_isUpdatingAppearance = true;
+    m_isDefaultAppearance = true;
     apply();
 }
 

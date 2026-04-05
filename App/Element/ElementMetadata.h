@@ -42,14 +42,14 @@ struct ElementMetadata {
     quint64 minOutputSize = 0; ///< Minimum number of output ports.
     quint64 maxOutputSize = 0; ///< Maximum number of output ports.
 
-    // --- Skin configuration ---
+    // --- Appearance configuration ---
 
-    QStringList defaultSkins;     ///< Built-in skin resource paths.
-    QStringList alternativeSkins; ///< User-selectable alternative skin paths.
+    QStringList defaultAppearances;     ///< Built-in appearance resource paths.
+    QStringList alternativeAppearances; ///< User-selectable alternative appearance paths.
 
     // --- Feature flags ---
 
-    bool canChangeSkin = false; ///< True if the user can choose a custom skin.
+    bool canChangeAppearance = false; ///< True if the user can choose a custom appearance.
     bool hasColors = false;     ///< True if the element supports color selection.
     bool hasAudio = false;      ///< True if the element supports audio output.
     bool hasAudioBox = false;   ///< True if the element shows an audio selection box.

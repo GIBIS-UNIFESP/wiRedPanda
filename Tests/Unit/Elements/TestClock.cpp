@@ -45,8 +45,8 @@ void TestClock::testConstructorInitialization()
     // Verify cannot rotate
     QVERIFY(!clock.isRotatable());
 
-    // Verify can change skin
-    QVERIFY(clock.canChangeSkin());
+    // Verify can change appearance
+    QVERIFY(clock.canChangeAppearance());
 
     // Verify initial state is OFF
     QVERIFY(!clock.isOn());

@@ -36,20 +36,20 @@ void ElementContextMenu::exec(QPoint screenPos,
                               const std::function<void(QUndoCommand *)> &sendCommand,
                               const std::function<void()> &onRename,
                               const std::function<void()> &onTriggerChange,
-                              const std::function<void()> &onSkinChange,
-                              const std::function<void()> &onSkinRevert,
+                              const std::function<void()> &onAppearanceChange,
+                              const std::function<void()> &onAppearanceRevert,
                               const std::function<void()> &onFrequencyFocus,
                               const std::function<void()> &onEditSubcircuit,
                               const std::function<void()> &onEmbedSubcircuit,
                               const std::function<void()> &onExtractToFile)
 {
     QMenu menu;
-    const QString changeSkinText(QObject::tr("Change skin to ..."));
+    const QString changeAppearanceText(QObject::tr("Change skin to ..."));
     const QString colorMenuText(QObject::tr("Change color to..."));
     const QString frequencyText(QObject::tr("Change frequency"));
     const QString morphMenuText(QObject::tr("Morph to..."));
     const QString renameText(QObject::tr("Rename"));
-    const QString revertSkinText(QObject::tr("Set skin to default"));
+    const QString revertAppearanceText(QObject::tr("Set skin to default"));
     const QString rotateLeftText(QObject::tr("Rotate left"));
     const QString rotateRightText(QObject::tr("Rotate right"));
     const QString triggerText(QObject::tr("Change trigger"));
@@ -62,9 +62,9 @@ void ElementContextMenu::exec(QPoint screenPos,
         menu.addAction(QIcon(ElementFactory::pixmap(ElementType::InputButton)), triggerText)->setData(triggerText);
     }
 
-    if (caps.canChangeSkin) {
-        menu.addAction(changeSkinText);
-        menu.addAction(revertSkinText);
+    if (caps.canChangeAppearance) {
+        menu.addAction(changeAppearanceText);
+        menu.addAction(revertAppearanceText);
     }
 
     menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/rotateL.svg")), rotateLeftText)->setData(rotateLeftText);
@@ -200,8 +200,8 @@ void ElementContextMenu::exec(QPoint screenPos,
 
     if (actionData == renameText)      { onRename();       return; }
     if (actionData == triggerText)     { onTriggerChange(); return; }
-    if (actionText == changeSkinText)  { onSkinChange();   return; }
-    if (actionText == revertSkinText)  { onSkinRevert();   return; }
+    if (actionText == changeAppearanceText)  { onAppearanceChange();   return; }
+    if (actionText == revertAppearanceText)  { onAppearanceRevert();   return; }
     if (actionData == frequencyText)   { onFrequencyFocus(); return; }
     if (actionData == editSubcircuitText)  { onEditSubcircuit(); return; }
     if (actionData == embedSubcircuitText) { onEmbedSubcircuit(); return; }

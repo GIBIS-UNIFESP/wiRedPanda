@@ -401,7 +401,7 @@ void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
 
     // Skip past the GraphicElement base data to reach the AudioBox map.
     // GraphicElement::save writes: QMap (properties), QList<QMap> (inputs),
-    // QList<QMap> (outputs), QList<QMap> (skins). Then AudioBox::save adds its QMap.
+    // QList<QMap> (outputs), QList<QMap> (appearances). Then AudioBox::save adds its QMap.
     QDataStream loadStream(data);
     QMap<QString, QVariant> map;
     QList<QMap<QString, QVariant>> listMap;
@@ -409,7 +409,7 @@ void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
     loadStream >> map;      // GraphicElement's properties map
     loadStream >> listMap;  // input ports
     loadStream >> listMap;  // output ports
-    loadStream >> listMap;  // skins
+    loadStream >> listMap;  // appearances
     loadStream >> map;      // AudioBox's map
 
     QVERIFY2(map.contains("audiobox"), "Saved data should contain 'audiobox' key");

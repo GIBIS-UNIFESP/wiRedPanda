@@ -18,7 +18,7 @@ struct ElementInfo<InputButton> {
         .group = ElementGroup::Input,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
         .hasTrigger = true,
         .hasLabel = true,
         .rotatable = false,
@@ -32,7 +32,7 @@ struct ElementInfo<InputButton> {
         meta.titleText = QT_TRANSLATE_NOOP("InputButton", "PUSH BUTTON");
         meta.translatedName = QT_TRANSLATE_NOOP("InputButton", "Push Button");
         meta.trContext = "InputButton";
-        meta.defaultSkins = QStringList({
+        meta.defaultAppearances = QStringList({
             ":/Components/Input/buttonOff.svg",
             ":/Components/Input/buttonOn.svg",
         });
@@ -129,19 +129,19 @@ void InputButton::setOn(const bool value, const int port)
     outputPort()->setStatus(static_cast<Status>(m_isOn));
 }
 
-void InputButton::setSkin(const bool defaultSkin, const QString &fileName)
+void InputButton::setAppearance(const bool defaultAppearance, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_alternativeSkins = m_defaultSkins;
+    if (defaultAppearance) {
+        m_alternativeAppearances = m_defaultAppearances;
     } else {
-        m_alternativeSkins[static_cast<int>(m_isOn)] = fileName;
+        m_alternativeAppearances[static_cast<int>(m_isOn)] = fileName;
     }
 
-    m_usingDefaultSkin = defaultSkin;
+    m_usingDefaultAppearance = defaultAppearance;
     setPixmap(static_cast<int>(m_isOn));
 }
 
-QList<QPair<int, QString>> InputButton::skinStates() const
+QList<QPair<int, QString>> InputButton::appearanceStates() const
 {
     return {{0, tr("Released")}, {1, tr("Pressed")}};
 }

@@ -72,15 +72,15 @@ void GraphicElement::save(QDataStream &stream) const
 
     // -------------------------------------------
 
-    QList<QMap<QString, QVariant>> skinsMap;
+    QList<QMap<QString, QVariant>> appearancesMap;
 
-    for (const auto &skinName : m_alternativeSkins) {
+    for (const auto &appearance : m_alternativeAppearances) {
         QMap<QString, QVariant> tempMap;
-        tempMap.insert("skinName", skinName.startsWith(":/") ? skinName : QFileInfo(skinName).fileName());
-        skinsMap << tempMap;
+        tempMap.insert("skinName", appearance.startsWith(":/") ? appearance : QFileInfo(appearance).fileName());
+        appearancesMap << tempMap;
     }
 
-    stream << skinsMap;
+    stream << appearancesMap;
 
     // -------------------------------------------
 
@@ -128,7 +128,7 @@ void GraphicElement::loadOldFormat(QDataStream &stream, SerializationContext &co
     loadInputPorts(stream, context);
     loadOutputPorts(stream, context);
     /* <\Version2.7> */
-    loadPixmapSkinNames(stream, context);
+    loadPixmapAppearanceNames(stream, context);
 }
 
 // ========== New format (4.1+) ==========
@@ -274,7 +274,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
 
     // -------------------------------------------
 
-    QList<QMap<QString, QVariant>> skinsMap; stream >> skinsMap;
+    QList<QMap<QString, QVariant>> appearancesMap; stream >> appearancesMap;
 
     // Check stream integrity after reading skins map
     if (stream.status() != QDataStream::Ok) {
@@ -282,23 +282,23 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
                           stream.device()->pos());
     }
 
-    int skin = 0;
+    int index = 0;
 
-    for (const auto &skinName : std::as_const(skinsMap)) {
-        const QString name = skinName.value("skinName").toString();
+    for (const auto &entry : std::as_const(appearancesMap)) {
+        const QString name = entry.value("skinName").toString();
 
         if (!name.startsWith(":/")) {
-                m_alternativeSkins[skin] = name;
+                m_alternativeAppearances[index] = name;
         }
 
-        ++skin;
+        ++index;
     }
 
-    // If all alternative skin slots still match the defaults, the user never
-    // applied a custom skin — record that so the "Reset to default" action works.
-    m_usingDefaultSkin = std::equal(
-        m_defaultSkins.begin(), m_defaultSkins.end(),
-        m_alternativeSkins.begin(), m_alternativeSkins.end()
+    // If all alternative appearance slots still match the defaults, the user never
+    // applied a custom appearance — record that so the "Reset to default" action works.
+    m_usingDefaultAppearance = std::equal(
+        m_defaultAppearances.begin(), m_defaultAppearances.end(),
+        m_alternativeAppearances.begin(), m_alternativeAppearances.end()
         );
 
     refresh();
@@ -462,54 +462,54 @@ void GraphicElement::removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPo
     }
 }
 
-// ========== Skin loading ==========
+// ========== Appearance loading ==========
 
-void GraphicElement::loadPixmapSkinNames(QDataStream &stream, SerializationContext &context)
+void GraphicElement::loadPixmapAppearanceNames(QDataStream &stream, SerializationContext &context)
 {
 
-    if (VersionInfo::hasSkinNames(context.version)) {
+    if (VersionInfo::hasAppearanceNames(context.version)) {
         qCDebug(four) << tr("Loading pixmap skin names.");
         quint64 outputSize; stream >> outputSize;
 
         if (m_elementType == ElementType::IC) {
-            // IC paints itself procedurally and has no skin slots.
-            // Drain the saved skin names from old file formats to keep the stream position valid.
+            // IC paints itself procedurally and has no appearance slots.
+            // Drain the saved appearance names from old file formats to keep the stream position valid.
             for (quint64 i = 0; i < outputSize; ++i) {
                 QString discarded; stream >> discarded;
             }
             return;
         }
 
-        for (size_t skin = 0; skin < outputSize; ++skin) {
-            loadPixmapSkinName(stream, static_cast<int>(skin), context.contextDir);
+        for (size_t i = 0; i < outputSize; ++i) {
+            loadPixmapAppearanceName(stream, static_cast<int>(i), context.contextDir);
         }
 
-        m_usingDefaultSkin = std::equal(
-            m_defaultSkins.begin(), m_defaultSkins.end(),
-            m_alternativeSkins.begin(), m_alternativeSkins.end()
+        m_usingDefaultAppearance = std::equal(
+            m_defaultAppearances.begin(), m_defaultAppearances.end(),
+            m_alternativeAppearances.begin(), m_alternativeAppearances.end()
             );
 
         refresh();
     }
 }
 
-void GraphicElement::loadPixmapSkinName(QDataStream &stream, const int skin, const QString &contextDir)
+void GraphicElement::loadPixmapAppearanceName(QDataStream &stream, const int index, const QString &contextDir)
 {
     QString name; stream >> name;
 
-    if (skin >= m_alternativeSkins.size()) {
+    if (index >= m_alternativeAppearances.size()) {
         throw PANDACEPTION("Skin index %1 out of range (size=%2) for skin name \"%3\" — stream may be corrupt",
-                           QString::number(skin), QString::number(m_alternativeSkins.size()), name);
+                           QString::number(index), QString::number(m_alternativeAppearances.size()), name);
     }
 
-    // Only override the alternative skin if it is a filesystem path; resource
+    // Only override the alternative appearance if it is a filesystem path; resource
     // paths (":/...") are always available and should not be replaced by the
     // potentially missing saved path from an older project file.
     if (!name.startsWith(":/")) {
         if (!contextDir.isEmpty() && QDir::isRelativePath(name)) {
-            m_alternativeSkins[skin] = contextDir + "/" + name;
+            m_alternativeAppearances[index] = contextDir + "/" + name;
         } else {
-            m_alternativeSkins[skin] = name;
+            m_alternativeAppearances[index] = name;
         }
     }
 }

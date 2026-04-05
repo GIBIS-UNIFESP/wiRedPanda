@@ -19,7 +19,7 @@ struct ElementInfo<InputRotary> {
         .group = ElementGroup::Input,
         .minOutputSize = 2,
         .maxOutputSize = 16,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
         .hasTrigger = true,
         .hasLabel = true,
     };
@@ -32,7 +32,7 @@ struct ElementInfo<InputRotary> {
         meta.titleText = QT_TRANSLATE_NOOP("InputRotary", "ROTARY SWITCH");
         meta.translatedName = QT_TRANSLATE_NOOP("InputRotary", "Rotary Switch");
         meta.trContext = "InputRotary";
-        meta.defaultSkins = QStringList({
+        meta.defaultAppearances = QStringList({
             ":/Components/Input/rotary.svg",
             ":/Components/Input/rotary_arrow.svg",
         });
@@ -49,8 +49,8 @@ struct ElementInfo<InputRotary> {
 InputRotary::InputRotary(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::InputRotary, parent)
 {
-    m_rotary = m_defaultSkins.at(0);
-    m_arrow  = m_defaultSkins.at(1);
+    m_rotary = m_defaultAppearances.at(0);
+    m_arrow  = m_defaultAppearances.at(1);
 
     setLocked(false);
 
@@ -303,15 +303,15 @@ void InputRotary::load(QDataStream &stream, SerializationContext &context)
     setOn(true, m_currentPort);
 }
 
-void InputRotary::setSkin(const bool defaultSkin, const QString &fileName)
+void InputRotary::setAppearance(const bool defaultAppearance, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_alternativeSkins = m_defaultSkins;
+    if (defaultAppearance) {
+        m_alternativeAppearances = m_defaultAppearances;
     } else {
-        m_alternativeSkins[0] = fileName;
+        m_alternativeAppearances[0] = fileName;
     }
 
-    m_usingDefaultSkin = defaultSkin;
+    m_usingDefaultAppearance = defaultAppearance;
     setPixmap(0);
 }
 

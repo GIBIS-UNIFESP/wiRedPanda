@@ -43,7 +43,7 @@ struct ElementInfo<IC> {
         meta.titleText = QT_TRANSLATE_NOOP("IC", "INTEGRATED CIRCUIT");
         meta.translatedName = QT_TRANSLATE_NOOP("IC", "IC");
         meta.trContext = "IC";
-        meta.defaultSkins = QStringList();
+        meta.defaultAppearances = QStringList();
         return meta;
     }
 

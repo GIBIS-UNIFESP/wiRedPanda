@@ -41,9 +41,9 @@ public:
     /// Refreshes the visual appearance based on current state.
     void refresh() override;
     /// \reimp
-    void setSkin(const bool useDefaultSkin, const QString &fileName) override;
+    void setAppearance(const bool useDefaultAppearance, const QString &fileName) override;
     /// \reimp
-    QList<QPair<int, QString>> skinStates() const override;
+    QList<QPair<int, QString>> appearanceStates() const override;
 
     /// Propagates input values to matching outputs.
     void updateLogic() override;

@@ -18,7 +18,7 @@ struct ElementInfo<InputSwitch> {
         .group = ElementGroup::Input,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
         .hasTrigger = true,
         .hasLabel = true,
         .rotatable = false,
@@ -32,7 +32,7 @@ struct ElementInfo<InputSwitch> {
         meta.titleText = QT_TRANSLATE_NOOP("InputSwitch", "INPUT SWITCH");
         meta.translatedName = QT_TRANSLATE_NOOP("InputSwitch", "Input Switch");
         meta.trContext = "InputSwitch";
-        meta.defaultSkins = QStringList({
+        meta.defaultAppearances = QStringList({
             ":/Components/Input/switchOff.svg",
             ":/Components/Input/switchOn.svg",
         });
@@ -131,19 +131,19 @@ void InputSwitch::load(QDataStream &stream, SerializationContext &context)
     setOn(m_isOn);
 }
 
-void InputSwitch::setSkin(const bool defaultSkin, const QString &fileName)
+void InputSwitch::setAppearance(const bool defaultAppearance, const QString &fileName)
 {
-    if (defaultSkin) {
-        m_alternativeSkins = m_defaultSkins;
+    if (defaultAppearance) {
+        m_alternativeAppearances = m_defaultAppearances;
     } else {
-        m_alternativeSkins[static_cast<int>(m_isOn)] = fileName;
+        m_alternativeAppearances[static_cast<int>(m_isOn)] = fileName;
     }
 
-    m_usingDefaultSkin = defaultSkin;
+    m_usingDefaultAppearance = defaultAppearance;
     setPixmap(static_cast<int>(m_isOn));
 }
 
-QList<QPair<int, QString>> InputSwitch::skinStates() const
+QList<QPair<int, QString>> InputSwitch::appearanceStates() const
 {
     return {{0, tr("Off")}, {1, tr("On")}};
 }

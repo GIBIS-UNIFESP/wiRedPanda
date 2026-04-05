@@ -22,7 +22,7 @@ struct ElementInfo<TruthTable> {
         .maxInputSize = 8,
         .minOutputSize = 1,
         .maxOutputSize = 8,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
         .hasLabel = true,
         .hasTruthTable = true,
     };
@@ -35,7 +35,7 @@ struct ElementInfo<TruthTable> {
         meta.titleText = QT_TRANSLATE_NOOP("TruthTable", "TRUTH TABLE");
         meta.translatedName = QT_TRANSLATE_NOOP("TruthTable", "Truth Table");
         meta.trContext = "TruthTable";
-        meta.defaultSkins = QStringList({":/Components/Logic/truthtable-rotated.svg"});
+        meta.defaultAppearances = QStringList({":/Components/Logic/truthtable-rotated.svg"});
         return meta;
     }
 

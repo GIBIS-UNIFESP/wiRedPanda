@@ -13,7 +13,7 @@ struct ElementInfo<InputGnd> {
         .group = ElementGroup::StaticInput,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
         // Static inputs are not rotatable as a whole; instead their output port rotates
         // around the element centre so the wire attachment point tracks the correct position.
         .rotatable = false,
@@ -27,8 +27,8 @@ struct ElementInfo<InputGnd> {
         meta.titleText = QT_TRANSLATE_NOOP("InputGnd", "GROUND");
         meta.translatedName = QT_TRANSLATE_NOOP("InputGnd", "GND");
         meta.trContext = "InputGnd";
-        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-        meta.defaultSkins = QStringList({":/Components/Input/0.svg"});
+        // Seed appearance lists from the constructor-supplied pixmap path (see And.cpp for details).
+        meta.defaultAppearances = QStringList({":/Components/Input/0.svg"});
         return meta;
     }
 

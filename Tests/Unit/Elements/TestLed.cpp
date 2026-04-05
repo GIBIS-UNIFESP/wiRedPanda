@@ -45,8 +45,8 @@ void TestLED::testConstructorInitialization()
     // Verify cannot rotate
     QVERIFY(!led.isRotatable());
 
-    // Verify can change skin
-    QVERIFY(led.canChangeSkin());
+    // Verify can change appearance
+    QVERIFY(led.canChangeAppearance());
 }
 
 void TestLED::testPortConfiguration()

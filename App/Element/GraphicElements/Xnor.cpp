@@ -16,7 +16,7 @@ struct ElementInfo<Xnor> {
         .maxInputSize = 8,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
     };
     static_assert(validate(constraints));
 
@@ -27,8 +27,8 @@ struct ElementInfo<Xnor> {
         meta.titleText = QT_TRANSLATE_NOOP("Xnor", "XNOR");
         meta.translatedName = QT_TRANSLATE_NOOP("Xnor", "Xnor");
         meta.trContext = "Xnor";
-        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-        meta.defaultSkins = QStringList({":/Components/Logic/xnor.svg"});
+        // Seed appearance lists from the constructor-supplied pixmap path (see And.cpp for details).
+        meta.defaultAppearances = QStringList({":/Components/Logic/xnor.svg"});
         return meta;
     }
 

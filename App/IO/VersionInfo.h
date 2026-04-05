@@ -41,8 +41,8 @@ inline bool hasTrigger(const QVersionNumber &v) { return v >= Versions::V_1_9; }
 /// V2.4: Audio element support (Buzzer, AudioBox).
 inline bool hasAudio(const QVersionNumber &v) { return v >= Versions::V_2_4; }
 
-/// V2.7: Pixmap skin names stored in file.
-inline bool hasSkinNames(const QVersionNumber &v) { return v >= Versions::V_2_7; }
+/// V2.7: Pixmap appearance names stored in file.
+inline bool hasAppearanceNames(const QVersionNumber &v) { return v >= Versions::V_2_7; }
 
 /// V3.0: Dolphin waveform filename stored in file header.
 inline bool hasDolphinFilename(const QVersionNumber &v) { return v >= Versions::V_3_0; }

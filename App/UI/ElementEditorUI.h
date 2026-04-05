@@ -85,11 +85,11 @@ public:
     QLabel *labelTrigger = nullptr;
     QLineEdit *lineEditTrigger = nullptr;
 
-    // Skin
-    QLabel *labelSkinState = nullptr;
-    QComboBox *comboBoxSkinState = nullptr;
-    QPushButton *pushButtonChangeSkin = nullptr;
-    QPushButton *pushButtonDefaultSkin = nullptr;
+    // Appearance
+    QLabel *labelAppearanceState = nullptr;
+    QComboBox *comboBoxAppearanceState = nullptr;
+    QPushButton *pushButtonChangeAppearance = nullptr;
+    QPushButton *pushButtonDefaultAppearance = nullptr;
 
     // Truth table
     QPushButton *pushButtonTruthTable = nullptr;

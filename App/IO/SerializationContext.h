@@ -20,7 +20,7 @@ class QNEPort;
  *
  * \details
  * - \c contextDir — directory of the .panda file being loaded; used to resolve
- *   relative IC file paths and relative skin-file paths.
+ *   relative IC file paths and relative appearance-file paths.
  * - \c portMap — accumulated port-pointer map built during deserialization.
  * - \c version — file-format version read from the stream header.
  * - \c oldPtrToSerialId — maps old pointer IDs (from pre-serialId files) to new

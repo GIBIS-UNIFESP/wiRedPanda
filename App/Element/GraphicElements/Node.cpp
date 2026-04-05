@@ -26,7 +26,7 @@ struct ElementInfo<Node> {
         .maxInputSize = 1,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
         .hasLabel = true,
     };
     static_assert(validate(constraints));
@@ -38,7 +38,7 @@ struct ElementInfo<Node> {
         meta.titleText = QT_TRANSLATE_NOOP("Node", "NODE");
         meta.translatedName = QT_TRANSLATE_NOOP("Node", "Node");
         meta.trContext = "Node";
-        meta.defaultSkins = QStringList({":/Components/Logic/node.svg"});
+        meta.defaultAppearances = QStringList({":/Components/Logic/node.svg"});
         return meta;
     }
 

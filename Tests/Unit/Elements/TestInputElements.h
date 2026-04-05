@@ -21,7 +21,7 @@ private slots:
     void testInputSwitchLoadOldVersion();
     void testInputSwitchLoadNewVersion();
     void testInputSwitchLockingMechanism();
-    void testInputSwitchSkinChange();
+    void testInputSwitchAppearanceChange();
 
     // InputButton Tests
     void testInputButtonConstructor();
@@ -34,7 +34,7 @@ private slots:
     void testInputButtonLoadOldVersion();
     void testInputButtonLoadNewVersion();
     void testInputButtonLockingMechanism();
-    void testInputButtonSkinChange();
+    void testInputButtonAppearanceChange();
 
     // Basic InputButton test (migrated from testelements)
     void testInputButton();
@@ -43,11 +43,11 @@ private slots:
     void testInputSwitch();
 
     // Cross-platform path resolution
-    void testSkinWithRelativePath();
-    void testSkinWithSameOsAbsolutePath();
-    void testSkinWithForeignAbsolutePathForwardSlash();
-    void testSkinWithForeignAbsolutePathBackslash();
-    void testSkinWithForeignAbsolutePathMixedSlashes();
-    void testSkinWithNonExistentFileFallback();
+    void testAppearanceWithRelativePath();
+    void testAppearanceWithSameOsAbsolutePath();
+    void testAppearanceWithForeignAbsolutePathForwardSlash();
+    void testAppearanceWithForeignAbsolutePathBackslash();
+    void testAppearanceWithForeignAbsolutePathMixedSlashes();
+    void testAppearanceWithNonExistentFileFallback();
 };
 
