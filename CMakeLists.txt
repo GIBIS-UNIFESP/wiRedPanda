@@ -404,6 +404,27 @@ add_custom_command(TARGET wiredpanda POST_BUILD
     VERBATIM
 )
 
+# Copy WASM support files and patch the HTML shell
+if(EMSCRIPTEN)
+    set(WASM_RES_DIR "${CMAKE_SOURCE_DIR}/App/Resources/Wasm")
+    add_custom_command(TARGET wiredpanda POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+            "${WASM_RES_DIR}/coi-serviceworker.min.js"
+            "$<TARGET_FILE_DIR:wiredpanda>/coi-serviceworker.min.js"
+        COMMAND ${CMAKE_COMMAND} -E copy
+            "${WASM_RES_DIR}/favicon.ico"
+            "$<TARGET_FILE_DIR:wiredpanda>/favicon.ico"
+        COMMAND ${CMAKE_COMMAND} -E copy
+            "$<TARGET_FILE_DIR:wiredpanda>/wiredpanda.html"
+            "$<TARGET_FILE_DIR:wiredpanda>/index.html"
+        COMMAND ${CMAKE_COMMAND}
+            -DHTML_FILE=$<TARGET_FILE_DIR:wiredpanda>/index.html
+            -P "${WASM_RES_DIR}/patch_wasm_html.cmake"
+        COMMENT "Copying WASM support files and patching index.html"
+        VERBATIM
+    )
+endif()
+
 # Run windeployqt on Windows to copy Qt dependencies
 if(WIN32)
     find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS ${Qt${QT_VERSION_MAJOR}_DIR}/../../../bin)
