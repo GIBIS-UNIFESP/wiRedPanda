@@ -553,11 +553,11 @@ void MainWindow::aboutThisVersion()
            "This version includes automatic migration of older project files.\n"
            "When you open a project file older than the current version, it will be automatically "
            "upgraded to the current format and a versioned backup will be created.\n\n"
-           "To open projects containing ICs (or boxes), skins, and/or beWavedDolphin simulations, "
+           "To open projects containing ICs (or boxes), appearances, and/or beWavedDolphin simulations, "
            "their files must be in the same directory as the main project file.\n"
            "wiRedPanda %1 will automatically list all other .panda files located "
-           "in the same directory of the current project as ICs in the editor tab.\n"
-           "You have to save new projects before accessing ICs and skins, or running "
+           "in the same directory as the current project as ICs in the editor tab.\n"
+           "You have to save new projects before accessing ICs and appearances, or running "
            "beWavedDolphin simulations.").arg(APP_VERSION));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Ok);
@@ -775,8 +775,8 @@ void MainWindow::on_actionAbout_triggered()
     QMessageBox::about(
         this,
         "wiRedPanda",
-        tr("<p>wiRedPanda is a software developed by the students of the Federal University of São Paulo."
-           " This project was created in order to help students learn about logic circuits.</p>"
+        tr("<p>wiRedPanda is software developed by students of the Federal University of São Paulo"
+           " to help students learn about logic circuits.</p>"
            "<p>Software version: %1</p>"
            "<p><strong>Creators:</strong></p>"
            "<ul>"
@@ -786,7 +786,7 @@ void MainWindow::on_actionAbout_triggered()
            "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
            "</ul>"
            "<p> wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.</p>"
-           "<p> Please file a report at our GitHub page if bugs are found or if you wish for a new functionality to be implemented.</p>"
+           "<p> Please file a report at our GitHub page if you find a bug or want to request a new feature.</p>"
            "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
             .arg(QApplication::applicationVersion()));
 }
@@ -815,7 +815,7 @@ void MainWindow::on_actionShortcuts_and_Tips_triggered()
            "</ul>"
 
            "<h1>General Tips</h1>"
-           "<p>Double click in a wire to create a node</p>"
+           "<p>Double-click on a wire to create a node</p>"
         ));
 }
 
@@ -851,7 +851,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
         auto reply =
             QMessageBox::question(
                 this,
-                tr("Exit ") + QApplication::applicationName(),
+                tr("Exit") + " " + QApplication::applicationName(),
                 tr("Are you sure?"),
                 QMessageBox::Cancel | QMessageBox::Yes,
                 QMessageBox::Yes);
@@ -1729,7 +1729,7 @@ void MainWindow::on_pushButtonAddIC_clicked()
 
     const QStringList files = {selectedFile};
 
-    QMessageBox::information(this, tr("Info"), tr("Selected files (and their dependencies) will be copied to current file folder."));
+    QMessageBox::information(this, tr("Info"), tr("Selected files (and their dependencies) will be copied to the current project folder."));
 
     // Copy the chosen .panda file (and any ICs it depends on transitively)
     // into the project's directory so that relative paths work when reopened.

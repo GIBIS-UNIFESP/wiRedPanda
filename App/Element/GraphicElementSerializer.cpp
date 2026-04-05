@@ -282,9 +282,9 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
 
     QList<QMap<QString, QVariant>> appearancesMap; stream >> appearancesMap;
 
-    // Check stream integrity after reading skins map
+    // Check stream integrity after reading appearances map
     if (stream.status() != QDataStream::Ok) {
-        throw PANDACEPTION("Stream error reading skins at position %1",
+        throw PANDACEPTION("Stream error reading appearances at position %1",
                           stream.device()->pos());
     }
 
@@ -474,7 +474,7 @@ void GraphicElement::loadPixmapAppearanceNames(QDataStream &stream, Serializatio
 {
 
     if (VersionInfo::hasAppearanceNames(context.version)) {
-        qCDebug(four) << tr("Loading pixmap skin names.");
+        qCDebug(four) << tr("Loading pixmap appearance names.");
         quint64 outputSize; stream >> outputSize;
 
         if (m_elementType == ElementType::IC) {
@@ -504,7 +504,7 @@ void GraphicElement::loadPixmapAppearanceName(QDataStream &stream, const int ind
     QString name; stream >> name;
 
     if (index >= m_alternativeAppearances.size()) {
-        throw PANDACEPTION("Skin index %1 out of range (size=%2) for skin name \"%3\" — stream may be corrupt",
+        throw PANDACEPTION("Appearance index %1 out of range (size=%2) for appearance name \"%3\" — stream may be corrupt",
                            QString::number(index), QString::number(m_alternativeAppearances.size()), name);
     }
 
