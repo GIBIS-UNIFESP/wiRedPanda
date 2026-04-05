@@ -5,6 +5,7 @@
 
 #ifdef Q_OS_WASM
 #include <emscripten/emscripten.h>
+#include <emscripten/html5.h>
 #endif
 
 #include <QActionGroup>
@@ -63,6 +64,14 @@ void ensureSvgUsage() {
 }
 #endif
 
+#ifdef Q_OS_WASM
+const char *MainWindow::onBeforeUnload(int /*eventType*/, const void * /*reserved*/, void *userData)
+{
+    static_cast<MainWindow *>(userData)->updateSettings();
+    return nullptr;
+}
+#endif
+
 MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     : QMainWindow(parent)
     , m_ui(std::make_unique<MainWindowUi>())
@@ -77,6 +86,12 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     setupLanguage();
     setupGeometry();
     setupTheme();
+
+#ifdef Q_OS_WASM
+    // On WASM, closeEvent may not fire when the browser tab is closed.
+    // Register a beforeunload callback to persist window geometry.
+    emscripten_set_beforeunload_callback(this, &MainWindow::onBeforeUnload);
+#endif
 
     qCDebug(zero) << "Setting left side menus.";
     m_palette->populate();
