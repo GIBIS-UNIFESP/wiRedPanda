@@ -91,6 +91,9 @@ public:
 
     // --- ID Management ---
 
+    /// Returns true if the loaded file was saved by a newer version of wiRedPanda.
+    bool isFromNewerVersion() const;
+
     /// Returns the highest element ID assigned in this workspace.
     int lastId() const;
 
@@ -131,6 +134,7 @@ private:
     QFileInfo m_fileInfo;
     QString m_dolphinFileName;
     QTemporaryFile m_autosaveFile;
+    QVersionNumber m_loadedVersion;
     int m_lastId = 0;
 
     // Inline IC tab state
