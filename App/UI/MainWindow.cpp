@@ -46,6 +46,7 @@
 #include "App/Element/IC.h"
 #include "App/Element/ICRegistry.h"
 #include "App/IO/RecentFiles.h"
+#include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Workspace.h"
@@ -1671,7 +1672,7 @@ void MainWindow::on_pushButtonAddIC_clicked()
     // into the project's directory so that relative paths work when reopened.
     for (const auto &file : files) {
         QFileInfo destPath(currentDir().absolutePath() + "/" + QFileInfo(file).fileName());
-        IC::copyFiles(QFileInfo(file), destPath);
+        Serialization::copyPandaFile(QFileInfo(file), destPath);
     }
 
     m_palette->updateICList(currentFile());

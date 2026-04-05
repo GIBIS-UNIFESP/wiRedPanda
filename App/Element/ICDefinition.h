@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <QPixmap>
 #include <QString>
 #include <QVector>
 
@@ -50,24 +49,15 @@ public:
     /// Returns output port display labels (sorted by position, matching IC port order).
     const QVector<QString> &outputLabels() const { return m_outputLabels; }
 
-    /// Cached pixmap generated from port count. Lazy, thread-safe via mutable.
-    const QPixmap &pixmap() const;
-
     /// Returns true if this definition was successfully loaded.
     bool isValid() const { return m_valid; }
 
 private:
-    /// Renders and caches the IC pixmap from the current port count.
-    void generatePixmap() const;
-
     QByteArray m_blobBytes;            ///< Raw serialized .panda file content.
     int m_inputCount = 0;              ///< Number of input ports in the sub-circuit.
     int m_outputCount = 0;             ///< Number of output ports in the sub-circuit.
     QVector<QString> m_inputLabels;    ///< Input port display labels.
     QVector<QString> m_outputLabels;   ///< Output port display labels.
     bool m_valid = false;              ///< True if the definition was successfully loaded.
-
-    mutable QPixmap m_pixmap;          ///< Cached pixmap (lazy, generated on first access).
-    mutable bool m_pixmapValid = false; ///< True once m_pixmap has been generated.
 };
 

@@ -46,12 +46,6 @@ signals:
 
 public:
 
-    /**
-     * \brief Copies IC-related files from \a srcPath to \a destPath.
-     * \param srcPath  Source .panda file info.
-     * \param destPath Destination .panda file info.
-     */
-    static void copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath);
     /// Loads the IC circuit from \a fileName and rebuilds the logic mapping.
     void loadFile(const QString &fileName, const QString &contextDir = {});
 
@@ -125,8 +119,7 @@ private:
 
     void processLoadedItems(const QList<QGraphicsItem *> &items);
     void loadBoundaryElement(GraphicElement *elm, bool isInput);
-    void loadInputs();
-    void loadOutputs();
+    void loadBoundaryPorts(bool isInput);
     void buildPortLabels(const QVector<QNEPort *> &ports, QVector<QString> &labels);
 
     // --- Visual helpers ---

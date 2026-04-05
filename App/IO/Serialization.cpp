@@ -4,6 +4,7 @@
 #include "App/IO/Serialization.h"
 
 #include <QApplication>
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QIODevice>
@@ -342,5 +343,37 @@ QString Serialization::typeName(const int type) {
     };
 
     return typeMap.value(type, "UnknownType");
+}
+
+void Serialization::copyPandaFile(const QFileInfo &srcPath, const QFileInfo &destPath)
+{
+    if (!QFile::exists(destPath.absoluteFilePath())) {
+        QFile srcFile(srcPath.absoluteFilePath());
+        if (!srcFile.copy(destPath.absoluteFilePath())) {
+            throw PANDACEPTION("Error copying file: %1", srcFile.errorString());
+        }
+    }
+
+    // Read the metadata section to find file-backed IC dependencies,
+    // then recursively copy each one. No full deserialization needed.
+    QFile file(srcPath.absoluteFilePath());
+    if (!file.open(QIODevice::ReadOnly)) {
+        return;
+    }
+
+    QDataStream stream(&file);
+    const auto preamble = readPreamble(stream);
+    if (!VersionInfo::hasMetadata(preamble.version)) {
+        return;
+    }
+
+    const QStringList icFiles = preamble.metadata.value("fileBackedICs").toStringList();
+    for (const QString &icFile : icFiles) {
+        const QFileInfo icSrc(QDir(srcPath.absolutePath()), icFile);
+        const QFileInfo icDest(QDir(destPath.absolutePath()), icFile);
+        if (icSrc.exists()) {
+            copyPandaFile(icSrc, icDest);
+        }
+    }
 }
 
