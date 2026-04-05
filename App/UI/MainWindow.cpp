@@ -710,6 +710,9 @@ void MainWindow::on_actionSave_triggered()
         return;
     }
 
+#ifdef Q_OS_WASM
+    on_actionSaveAs_triggered();
+#else
     // TODO: if current file is autosave ask for filename
 
     // If the project has never been saved, fall through to a Save-As dialog.
@@ -728,6 +731,7 @@ void MainWindow::on_actionSave_triggered()
     }
 
     save(fileName);
+#endif
 }
 
 void MainWindow::on_actionSaveAs_triggered()
@@ -736,6 +740,23 @@ void MainWindow::on_actionSaveAs_triggered()
         return;
     }
 
+#ifdef Q_OS_WASM
+    // Save to a temporary file in the virtual FS, then offer it as a browser download.
+    const QString tmpPath = "/tmp/wiredpanda_save.panda";
+    save(tmpPath);
+
+    QFile file(tmpPath);
+    if (file.open(QIODevice::ReadOnly)) {
+        const QByteArray content = file.readAll();
+        file.close();
+
+        QString suggestedName = currentFile().fileName();
+        if (suggestedName.isEmpty()) {
+            suggestedName = "circuit.panda";
+        }
+        QFileDialog::saveFileContent(content, suggestedName);
+    }
+#else
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File as ..."), currentFile().absoluteFilePath(), tr("Panda files (*.panda)"));
 
     if (fileName.isEmpty()) {
@@ -747,6 +768,7 @@ void MainWindow::on_actionSaveAs_triggered()
     }
 
     save(fileName);
+#endif
 }
 
 void MainWindow::on_actionAbout_triggered()
