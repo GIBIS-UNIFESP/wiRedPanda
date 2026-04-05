@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/TestICInline.h"
 
+#include <memory>
+
 #include <QDataStream>
 #include <QDir>
 #include <QDragEnterEvent>
@@ -1319,7 +1321,7 @@ void TestICInline::testWorkspaceInlineSaveOrphanedParent()
     QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
     QVERIFY(!blob.isEmpty());
 
-    auto *parent = new WorkSpace();
+    auto parent = std::make_unique<WorkSpace>();
     SimulationBlocker parentBlocker(parent->simulation());
     parent->scene()->setContextDir(m_fixtureDir);
     auto *reg = parent->scene()->icRegistry();
@@ -1333,10 +1335,10 @@ void TestICInline::testWorkspaceInlineSaveOrphanedParent()
 
     WorkSpace child;
     SimulationBlocker childBlocker(child.simulation());
-    child.loadFromBlob(blob, parent, icId, m_fixtureDir);
+    child.loadFromBlob(blob, parent.get(), icId, m_fixtureDir);
     QVERIFY(child.isInlineIC());
 
-    delete parent;
+    parent.reset();
 
     QSignalSpy spy(&child, &WorkSpace::icBlobSaved);
     child.save({});
@@ -1818,14 +1820,14 @@ void TestICInline::testOnChildICBlobSavedOrphan()
     auto *reg = ws.scene()->icRegistry();
     reg->setBlob("simple_and", blob);
 
-    auto *ic = new IC();
+    auto ic = std::make_unique<IC>();
     ic->setBlobName("simple_and");
     ic->loadFromBlob(blob, m_fixtureDir);
-    ws.scene()->addItem(ic);
+    ws.scene()->addItem(ic.get());
     int icId = ic->id();
 
-    ws.scene()->removeItem(ic);
-    delete ic;
+    ws.scene()->removeItem(ic.get());
+    ic.reset();
 
     // These should be no-ops, not crash
     ws.onChildICBlobSaved(icId, blob);
@@ -3644,11 +3646,10 @@ void TestICInline::testICDropZoneMimeAcceptance()
         Serialization::writePandaHeader(stream);
         stream << QPoint(32, 32) << ElementType::IC << QString("test.panda") << false;
     }
-    auto *fileBasedMime = new QMimeData();
+    auto fileBasedMime = std::make_unique<QMimeData>();
     fileBasedMime->setData("application/x-wiredpanda-dragdrop", fileBasedData);
-    auto cleanupFB = qScopeGuard([fileBasedMime] { delete fileBasedMime; });
 
-    QDragEnterEvent enterFileBased(QPoint(10, 10), Qt::CopyAction, fileBasedMime, Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterFileBased(QPoint(10, 10), Qt::CopyAction, fileBasedMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&embeddedZone, &enterFileBased);
     QVERIFY2(enterFileBased.isAccepted(), "Embedded zone should accept file-based IC drops");
 
@@ -3658,21 +3659,20 @@ void TestICInline::testICDropZoneMimeAcceptance()
         Serialization::writePandaHeader(stream);
         stream << QPoint(32, 32) << ElementType::IC << QString("my_ic") << true;
     }
-    auto *embeddedMime = new QMimeData();
+    auto embeddedMime = std::make_unique<QMimeData>();
     embeddedMime->setData("application/x-wiredpanda-dragdrop", embeddedData);
-    auto cleanupEM = qScopeGuard([embeddedMime] { delete embeddedMime; });
 
-    QDragEnterEvent enterEmbedded(QPoint(10, 10), Qt::CopyAction, embeddedMime, Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterEmbedded(QPoint(10, 10), Qt::CopyAction, embeddedMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&embeddedZone, &enterEmbedded);
     QVERIFY2(!enterEmbedded.isAccepted(), "Embedded zone should reject embedded IC drops");
 
     ICDropZone fileZone(ICDropZone::Section::FileBased);
 
-    QDragEnterEvent enterEmbOnFile(QPoint(10, 10), Qt::CopyAction, embeddedMime, Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterEmbOnFile(QPoint(10, 10), Qt::CopyAction, embeddedMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&fileZone, &enterEmbOnFile);
     QVERIFY2(enterEmbOnFile.isAccepted(), "File-based zone should accept embedded IC drops");
 
-    QDragEnterEvent enterFileOnFile(QPoint(10, 10), Qt::CopyAction, fileBasedMime, Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterFileOnFile(QPoint(10, 10), Qt::CopyAction, fileBasedMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&fileZone, &enterFileOnFile);
     QVERIFY2(!enterFileOnFile.isAccepted(), "File-based zone should reject file-based IC drops");
 }
@@ -3689,16 +3689,15 @@ void TestICInline::testICDropZoneWiredInUI()
         Serialization::writePandaHeader(stream);
         stream << QPoint(32, 32) << ElementType::IC << QString("my_ic") << true << QString("my_ic");
     }
-    auto *embeddedMime = new QMimeData();
+    auto embeddedMime = std::make_unique<QMimeData>();
     embeddedMime->setData("application/x-wiredpanda-dragdrop", embeddedData);
-    auto cleanupEM = qScopeGuard([embeddedMime] { delete embeddedMime; });
 
     QSignalSpy extractSpy(&fileZone, &ICDropZone::extractByBlobNameRequested);
-    QDragEnterEvent enterEvent(QPoint(10, 10), Qt::CopyAction, embeddedMime, Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterEvent(QPoint(10, 10), Qt::CopyAction, embeddedMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&fileZone, &enterEvent);
     QVERIFY(enterEvent.isAccepted());
 
-    QDropEvent dropEvent(QPointF(10, 10), Qt::CopyAction, embeddedMime, Qt::LeftButton, Qt::NoModifier);
+    QDropEvent dropEvent(QPointF(10, 10), Qt::CopyAction, embeddedMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&fileZone, &dropEvent);
     QCOMPARE(extractSpy.count(), 1);
     QCOMPARE(extractSpy.at(0).at(0).toString(), QString("my_ic"));
@@ -3710,16 +3709,15 @@ void TestICInline::testICDropZoneWiredInUI()
         Serialization::writePandaHeader(stream);
         stream << QPoint(32, 32) << ElementType::IC << QString("test.panda") << false;
     }
-    auto *fileMime = new QMimeData();
+    auto fileMime = std::make_unique<QMimeData>();
     fileMime->setData("application/x-wiredpanda-dragdrop", fileData);
-    auto cleanupFM = qScopeGuard([fileMime] { delete fileMime; });
 
     QSignalSpy embedSpy(&embeddedZone, &ICDropZone::embedByFileRequested);
-    QDragEnterEvent enterEvent2(QPoint(10, 10), Qt::CopyAction, fileMime, Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterEvent2(QPoint(10, 10), Qt::CopyAction, fileMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&embeddedZone, &enterEvent2);
     QVERIFY(enterEvent2.isAccepted());
 
-    QDropEvent dropEvent2(QPointF(10, 10), Qt::CopyAction, fileMime, Qt::LeftButton, Qt::NoModifier);
+    QDropEvent dropEvent2(QPointF(10, 10), Qt::CopyAction, fileMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&embeddedZone, &dropEvent2);
     QCOMPARE(embedSpy.count(), 1);
     QCOMPARE(embedSpy.at(0).at(0).toString(), QString("test.panda"));
@@ -3738,15 +3736,14 @@ void TestICInline::testICDropZoneDropEventSignals()
             Serialization::writePandaHeader(stream);
             stream << QPoint(32, 32) << ElementType::IC << QString("my_circuit.panda") << false;
         }
-        auto *mime = new QMimeData();
+        auto mime = std::make_unique<QMimeData>();
         mime->setData("application/x-wiredpanda-dragdrop", itemData);
-        auto cleanup = qScopeGuard([mime] { delete mime; });
 
-        QDragEnterEvent dragEnter(QPoint(10, 10), Qt::CopyAction, mime, Qt::LeftButton, Qt::NoModifier);
+        QDragEnterEvent dragEnter(QPoint(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
         QCoreApplication::sendEvent(&embeddedZone, &dragEnter);
         QVERIFY(dragEnter.isAccepted());
 
-        QDropEvent drop(QPointF(10, 10), Qt::CopyAction, mime, Qt::LeftButton, Qt::NoModifier);
+        QDropEvent drop(QPointF(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
         QCoreApplication::sendEvent(&embeddedZone, &drop);
         QCOMPARE(embedSpy.count(), 1);
         QCOMPARE(embedSpy.at(0).at(0).toString(), QString("my_circuit.panda"));
@@ -3763,15 +3760,14 @@ void TestICInline::testICDropZoneDropEventSignals()
             Serialization::writePandaHeader(stream);
             stream << QPoint(32, 32) << ElementType::IC << QString("my_embedded") << true << QString("my_embedded");
         }
-        auto *mime = new QMimeData();
+        auto mime = std::make_unique<QMimeData>();
         mime->setData("application/x-wiredpanda-dragdrop", itemData);
-        auto cleanup = qScopeGuard([mime] { delete mime; });
 
-        QDragEnterEvent dragEnter(QPoint(10, 10), Qt::CopyAction, mime, Qt::LeftButton, Qt::NoModifier);
+        QDragEnterEvent dragEnter(QPoint(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
         QCoreApplication::sendEvent(&fileZone, &dragEnter);
         QVERIFY(dragEnter.isAccepted());
 
-        QDropEvent drop(QPointF(10, 10), Qt::CopyAction, mime, Qt::LeftButton, Qt::NoModifier);
+        QDropEvent drop(QPointF(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
         QCoreApplication::sendEvent(&fileZone, &drop);
         QCOMPARE(extractSpy.count(), 1);
         QCOMPARE(extractSpy.at(0).at(0).toString(), QString("my_embedded"));
@@ -3788,11 +3784,10 @@ void TestICInline::testICDropZoneDropEventSignals()
             Serialization::writePandaHeader(stream);
             stream << QPoint(32, 32) << ElementType::IC << QString("already_embedded") << true << QString("already_embedded");
         }
-        auto *mime = new QMimeData();
+        auto mime = std::make_unique<QMimeData>();
         mime->setData("application/x-wiredpanda-dragdrop", itemData);
-        auto cleanup = qScopeGuard([mime] { delete mime; });
 
-        QDragEnterEvent dragEnter(QPoint(10, 10), Qt::CopyAction, mime, Qt::LeftButton, Qt::NoModifier);
+        QDragEnterEvent dragEnter(QPoint(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
         QCoreApplication::sendEvent(&embeddedZone, &dragEnter);
         QVERIFY(!dragEnter.isAccepted());
 
@@ -3810,27 +3805,24 @@ void TestICInline::testTrashButtonDragAcceptance()
         Serialization::writePandaHeader(stream);
         stream << QPoint(32, 32) << ElementType::IC << QString("test.panda") << false;
     }
-    auto *currentMime = new QMimeData();
+    auto currentMime = std::make_unique<QMimeData>();
     currentMime->setData("application/x-wiredpanda-dragdrop", itemData);
-    auto cleanup1 = qScopeGuard([currentMime] { delete currentMime; });
 
-    QDragEnterEvent enterCurrent(QPoint(10, 10), Qt::CopyAction, currentMime, Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterCurrent(QPoint(10, 10), Qt::CopyAction, currentMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&button, &enterCurrent);
     QVERIFY2(enterCurrent.isAccepted(), "TrashButton should accept current MIME type");
 
-    auto *legacyMime = new QMimeData();
+    auto legacyMime = std::make_unique<QMimeData>();
     legacyMime->setData("wpanda/x-dnditemdata", itemData);
-    auto cleanup2 = qScopeGuard([legacyMime] { delete legacyMime; });
 
-    QDragEnterEvent enterLegacy(QPoint(10, 10), Qt::CopyAction, legacyMime, Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterLegacy(QPoint(10, 10), Qt::CopyAction, legacyMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&button, &enterLegacy);
     QVERIFY2(enterLegacy.isAccepted(), "TrashButton should accept legacy MIME type");
 
-    auto *textMime = new QMimeData();
+    auto textMime = std::make_unique<QMimeData>();
     textMime->setText("hello");
-    auto cleanup3 = qScopeGuard([textMime] { delete textMime; });
 
-    QDragEnterEvent enterText(QPoint(10, 10), Qt::CopyAction, textMime, Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterText(QPoint(10, 10), Qt::CopyAction, textMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&button, &enterText);
     QVERIFY2(!enterText.isAccepted(), "TrashButton should reject unrelated MIME types");
 }
@@ -4919,7 +4911,8 @@ void TestICInline::testReconnectConnectionsSkipsDeletedElement()
     ic->setPos(100, 100);
     ws.scene()->addItem(ic);
 
-    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto swOwner = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputSwitch));
+    auto *sw = swOwner.get();
     sw->setPos(0, 100);
     ws.scene()->addItem(sw);
 
@@ -4938,7 +4931,7 @@ void TestICInline::testReconnectConnectionsSkipsDeletedElement()
 
     // Delete the switch (source of connection) before undo
     ws.scene()->removeItem(sw);
-    delete sw;
+    swOwner.reset();
 
     // Create UpdateBlobCommand and try undo — must not crash
     auto *cmd = new UpdateBlobCommand(targets, oldData, connections, ws.scene());

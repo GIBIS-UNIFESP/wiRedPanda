@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/TestSystemVerilogExport.h"
 
+#include <memory>
+
 #include <QDir>
 #include <QFileInfo>
 #include <QProcess>
@@ -496,33 +498,33 @@ void TestSystemVerilogExport::testWirelessNodeGeneration()
     // A Tx and Rx node pair on the same channel. In SystemVerilog, node expressions
     // are inlined, so the Rx node's expression should resolve to the InputSwitch
     // signal rather than the default 1'b0.
-    auto *sw = new InputSwitch();
-    auto *txNode = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto sw = std::make_unique<InputSwitch>();
+    auto txNode = std::unique_ptr<Node>(qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node)));
     QVERIFY(txNode);
     txNode->setLabel("CLK");
     txNode->setWirelessMode(WirelessMode::Tx);
 
-    auto *rxNode = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto rxNode = std::unique_ptr<Node>(qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node)));
     QVERIFY(rxNode);
     rxNode->setLabel("CLK");
     rxNode->setWirelessMode(WirelessMode::Rx);
 
-    auto *led = new Led();
+    auto led = std::make_unique<Led>();
 
     // Physical wire: InputSwitch → Tx node, Rx node → LED
     auto *swOut = sw->outputPort(0);
     auto *txIn = txNode->inputPort(0);
-    auto *conn1 = new QNEConnection();
+    auto conn1 = std::make_unique<QNEConnection>();
     conn1->setStartPort(swOut);
     conn1->setEndPort(txIn);
 
     auto *rxOut = rxNode->outputPort(0);
     auto *ledIn = led->inputPort(0);
-    auto *conn2 = new QNEConnection();
+    auto conn2 = std::make_unique<QNEConnection>();
     conn2->setStartPort(rxOut);
     conn2->setEndPort(ledIn);
 
-    QVector<GraphicElement *> elements{sw, txNode, rxNode, led};
+    QVector<GraphicElement *> elements{sw.get(), txNode.get(), rxNode.get(), led.get()};
 
     QTemporaryDir tempDir;
     QVERIFY(tempDir.isValid());
@@ -553,30 +555,23 @@ void TestSystemVerilogExport::testWirelessNodeGeneration()
     QRegularExpression outputLow(R"(assign\s+\w+\s*=\s*1'b0;)");
     QVERIFY2(!outputLow.match(outputCode).hasMatch(),
              "Wireless Rx node should not result in 1'b0 in the LED output assignment");
-
-    delete conn1;
-    delete conn2;
-    delete sw;
-    delete txNode;
-    delete rxNode;
-    delete led;
 }
 
 void TestSystemVerilogExport::testWirelessOrphanedRxCodegen()
 {
     // An Rx node with no matching Tx must not crash SystemVerilog code generation.
-    auto *rxNode = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto rxNode = std::unique_ptr<Node>(qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node)));
     QVERIFY(rxNode);
     rxNode->setLabel("MISSING_TX");
     rxNode->setWirelessMode(WirelessMode::Rx);
 
-    auto *led = new Led();
+    auto led = std::make_unique<Led>();
 
-    auto *conn = new QNEConnection();
+    auto conn = std::make_unique<QNEConnection>();
     conn->setStartPort(rxNode->outputPort(0));
     conn->setEndPort(led->inputPort(0));
 
-    QVector<GraphicElement *> elements{rxNode, led};
+    QVector<GraphicElement *> elements{rxNode.get(), led.get()};
 
     QTemporaryDir tempDir;
     QVERIFY(tempDir.isValid());
@@ -594,10 +589,6 @@ void TestSystemVerilogExport::testWirelessOrphanedRxCodegen()
              "Generated SystemVerilog file should be readable");
     const QString content = file.readAll();
     QVERIFY2(!content.isEmpty(), "Generated SystemVerilog should not be empty");
-
-    delete conn;
-    delete rxNode;
-    delete led;
 }
 
 bool TestSystemVerilogExport::validateWithIverilog(const QString &verilogFile)

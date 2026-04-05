@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Scene/TestSceneState.h"
 
+#include <memory>
+
 #include <QTest>
 
 #include "App/Element/ElementFactory.h"
@@ -35,14 +37,14 @@ void TestSceneState::testSceneRectAfterRemoveElement()
 {
     Scene scene;
 
-    auto *elem = ElementFactory::buildElement(ElementType::Or);
+    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Or));
     elem->setPos(200, 200);
-    scene.addItem(elem);
+    scene.addItem(elem.get());
 
     QRectF rectWithElement = scene.sceneRect();
     QVERIFY(rectWithElement.width() > 0);
 
-    scene.removeItem(elem);
+    scene.removeItem(elem.get());
     QRectF rectAfterRemove = scene.sceneRect();
 
     // After removing element, scene rect should shrink (or stay same if minimum)
@@ -52,8 +54,6 @@ void TestSceneState::testSceneRectAfterRemoveElement()
     // Verify the rect actually changed or is properly reset
     QVERIFY(rectAfterRemove.width() <= rectWithElement.width() ||
             rectAfterRemove.isEmpty());
-
-    delete elem;
 }
 
 void TestSceneState::testResizeSceneExpandsBounds()
@@ -257,18 +257,17 @@ void TestSceneState::testEditedConnectionClears()
     QVERIFY(outPort != nullptr && inPort != nullptr);
 
     // Create a connection
-    auto *conn = new QNEConnection(nullptr);
+    auto conn = std::make_unique<QNEConnection>(nullptr);
     conn->setStartPort(dynamic_cast<QNEOutputPort *>(outPort));
     conn->setEndPort(dynamic_cast<QNEInputPort *>(inPort));
-    scene.addItem(conn);
-    QVERIFY(conn != nullptr);
+    scene.addItem(conn.get());
 
     // Verify connection exists in scene
     QList<QGraphicsItem *> connItems = scene.items();
     bool connectionFound = false;
     for (QGraphicsItem *item : std::as_const(connItems)) {
         auto *c = dynamic_cast<QNEConnection *>(item);
-        if (c == conn) {
+        if (c == conn.get()) {
             connectionFound = true;
             break;
         }
@@ -276,14 +275,13 @@ void TestSceneState::testEditedConnectionClears()
     QVERIFY2(connectionFound, "Connection should exist in scene");
 
     // Clear connection - remove it from scene
-    scene.removeItem(conn);
-    delete conn;
+    scene.removeItem(conn.get());
 
     // Verify connection is no longer in scene
     connItems = scene.items();
     for (QGraphicsItem *item : std::as_const(connItems)) {
         auto *c = dynamic_cast<QNEConnection *>(item);
-        QVERIFY2(c != conn, "Removed connection should not be in scene");
+        QVERIFY2(c != conn.get(), "Removed connection should not be in scene");
     }
 }
 
@@ -310,10 +308,10 @@ void TestSceneState::testActiveConnectionTracking()
     QNEPort *orPort = or1->inputPort(0);
 
     // Connect input to AND gate
-    auto *conn1 = new QNEConnection(nullptr);
+    auto conn1 = std::make_unique<QNEConnection>(nullptr);
     conn1->setStartPort(dynamic_cast<QNEOutputPort *>(inputPort));
     conn1->setEndPort(dynamic_cast<QNEInputPort *>(and1Port1));
-    scene.addItem(conn1);
+    scene.addItem(conn1.get());
 
     auto *conn2 = new QNEConnection(nullptr);
     conn2->setStartPort(dynamic_cast<QNEOutputPort *>(inputPort));
@@ -334,8 +332,8 @@ void TestSceneState::testActiveConnectionTracking()
     QVERIFY2(connectionCount >= 3, "Scene should track all created connections");
 
     // Remove a connection and verify it's no longer tracked
-    scene.removeItem(conn1);
-    delete conn1;
+    scene.removeItem(conn1.get());
+    conn1.reset();
 
     int connectionCountAfter = TestUtils::countConnections(&scene);
 
@@ -590,15 +588,13 @@ void TestSceneState::testElementCountAfterRemoval()
 {
     Scene scene;
 
-    auto *elem = ElementFactory::buildElement(ElementType::And);
-    scene.addItem(elem);
+    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    scene.addItem(elem.get());
     auto countWithElem = scene.items().size();
 
-    scene.removeItem(elem);
+    scene.removeItem(elem.get());
     auto countAfterRemove = scene.items().size();
     QVERIFY(countAfterRemove <= countWithElem);
-
-    delete elem;
 }
 
 void TestSceneState::testConnectionCountTracking()
@@ -714,20 +710,18 @@ void TestSceneState::testSceneRetainsSizeAfterClear()
 {
     Scene scene;
 
-    auto *elem = ElementFactory::buildElement(ElementType::And);
+    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
     elem->setPos(100, 100);
-    scene.addItem(elem);
+    scene.addItem(elem.get());
 
     QRectF rectBefore = scene.sceneRect();
 
-    scene.removeItem(elem);
+    scene.removeItem(elem.get());
     QRectF rectAfter = scene.sceneRect();
 
     // Scene should have valid bounds both before and after
     QVERIFY(rectBefore.isValid());
     QVERIFY(rectAfter.isValid() || rectAfter.isEmpty());
-
-    delete elem;
 }
 
 void TestSceneState::testElementPropertiesAfterMove()

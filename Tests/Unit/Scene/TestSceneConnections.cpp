@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Scene/TestSceneConnections.h"
 
+#include <memory>
+
 #include <QTemporaryDir>
 
 #include "App/Element/ElementFactory.h"
@@ -323,16 +325,16 @@ void TestSceneConnections::testConnectionRemovalUpdatesCounters()
     auto *input = gate2->inputPort(0);
 
     // Create and add connection
-    auto *connection = new QNEConnection(nullptr);
+    auto connection = std::make_unique<QNEConnection>(nullptr);
     connection->setStartPort(gate1->outputPort(0));
     connection->setEndPort(input);
-    scene.addItem(connection);
+    scene.addItem(connection.get());
 
     int countWithConnection = static_cast<int>(input->connections().size());
 
     // Remove connection
-    scene.removeItem(connection);
-    delete connection;
+    scene.removeItem(connection.get());
+    connection.reset();
 
     int countAfterRemoval = static_cast<int>(input->connections().size());
 

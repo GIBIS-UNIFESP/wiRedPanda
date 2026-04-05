@@ -4,6 +4,7 @@
 #include "Tests/Unit/Scene/TestScene.h"
 
 #include <cmath>
+#include <memory>
 
 #include <QClipboard>
 #include <QTest>
@@ -76,22 +77,22 @@ void TestScene::testRemoveElement()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *and1 = ElementFactory::buildElement(ElementType::And);
+    auto and1 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
     auto *and2 = ElementFactory::buildElement(ElementType::And);
     auto *or1 = ElementFactory::buildElement(ElementType::Or);
 
     QVERIFY2(and1 != nullptr && and2 != nullptr && or1 != nullptr,
         "Failed to create element(s) for testRemoveElement");
 
-    scene->addItem(and1);
+    scene->addItem(and1.get());
     scene->addItem(and2);
     scene->addItem(or1);
 
     QCOMPARE(scene->elements().size(), 3);
 
     // Remove one element
-    scene->removeItem(and1);
-    delete and1;
+    scene->removeItem(and1.get());
+    and1.reset();
 
     QCOMPARE(scene->elements().size(), 2);
 
