@@ -108,7 +108,9 @@ private:
     void rollbackElements(const QList<GraphicElement *> &elements, const QByteArray &snapshot);
 
     /// Recursively inlines all IC dependencies of blob \a name so it has no external file references.
-    void makeBlobSelfContained(const QString &name, QSet<QString> &visited);
+    /// Uses \a blobs as working storage instead of m_blobs to avoid corrupting state on failure.
+    void makeBlobSelfContained(const QString &name, QSet<QString> &visited,
+                               QMap<QString, QByteArray> &blobs);
 
     Scene *m_scene;                          ///< Owning scene.
     QMap<QString, ICDefinition> m_definitions; ///< Cached IC definitions keyed by canonical file path.
