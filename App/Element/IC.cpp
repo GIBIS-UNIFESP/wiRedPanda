@@ -98,16 +98,22 @@ void IC::load(QDataStream &stream, SerializationContext &context)
     // ports, so we must re-register the new ports under the original keys
     // to keep the outer portMap valid for connection deserialization.
     // Old format uses ptr values as keys; new format uses serialIds — we
-    // look up each port pointer in the portMap to find its key regardless.
+    // build a reverse map to find each port's key in O(1) instead of scanning.
+    QHash<QNEPort *, quint64> reversePortMap;
+    reversePortMap.reserve(context.portMap.size());
+    for (auto it = context.portMap.constBegin(); it != context.portMap.constEnd(); ++it) {
+        reversePortMap[it.value()] = it.key();
+    }
+
     QVector<quint64> savedInputKeys, savedOutputKeys;
-    for (const auto *port : std::as_const(m_inputPorts)) {
-        for (auto it = context.portMap.constBegin(); it != context.portMap.constEnd(); ++it) {
-            if (it.value() == port) { savedInputKeys.append(it.key()); break; }
+    for (auto *port : std::as_const(m_inputPorts)) {
+        if (auto it = reversePortMap.constFind(port); it != reversePortMap.constEnd()) {
+            savedInputKeys.append(it.value());
         }
     }
-    for (const auto *port : std::as_const(m_outputPorts)) {
-        for (auto it = context.portMap.constBegin(); it != context.portMap.constEnd(); ++it) {
-            if (it.value() == port) { savedOutputKeys.append(it.key()); break; }
+    for (auto *port : std::as_const(m_outputPorts)) {
+        if (auto it = reversePortMap.constFind(port); it != reversePortMap.constEnd()) {
+            savedOutputKeys.append(it.value());
         }
     }
 
@@ -165,40 +171,42 @@ void IC::load(QDataStream &stream, SerializationContext &context)
     }
 }
 
-void IC::loadInputs()
+void IC::loadBoundaryPorts(const bool isInput)
 {
-    // Lock port count to exactly the number of inputs found in the sub-circuit file;
-    // min == max == actual count prevents the user from adding/removing IC input ports
-    setMaxInputSize(static_cast<int>(m_internalInputs.size()));
-    setMinInputSize(static_cast<int>(m_internalInputs.size()));
-    setInputSize(static_cast<int>(m_internalInputs.size()));
-    qCDebug(three) << "IC " << m_file << " -> Inputs. min: " << minInputSize() << ", max: " << maxInputSize() << ", current: " << inputSize() << ", m_inputs: " << m_inputPorts.size();
+    const auto &internalPorts = isInput ? m_internalInputs : m_internalOutputs;
+    const auto &labels = isInput ? m_internalInputLabels : m_internalOutputLabels;
+    const int count = static_cast<int>(internalPorts.size());
 
-    // Mirror the required/default-status from the sub-circuit's input elements so that
-    // unconnected optional inputs (e.g. enable lines) don't flag the IC as invalid
-    for (int inputIndex = 0; inputIndex < m_internalInputs.size(); ++inputIndex) {
-        auto *inpPort = inputPort(inputIndex);
-        inpPort->setName(m_internalInputLabels.at(inputIndex));
-        inpPort->setRequired(m_internalInputs.at(inputIndex)->isRequired());
-        inpPort->setDefaultStatus(m_internalInputs.at(inputIndex)->status());
-        inpPort->setStatus(m_internalInputs.at(inputIndex)->status());
-    }
-}
-
-void IC::loadOutputs()
-{
-    // Same port-count locking as loadInputs; outputs are always driven so
-    // required/defaultStatus mirroring is not needed here
-    setMaxOutputSize(static_cast<int>(m_internalOutputs.size()));
-    setMinOutputSize(static_cast<int>(m_internalOutputs.size()));
-    setOutputSize(static_cast<int>(m_internalOutputs.size()));
-
-    for (int outputIndex = 0; outputIndex < m_internalOutputs.size(); ++outputIndex) {
-        auto *outPort = outputPort(outputIndex);
-        outPort->setName(m_internalOutputLabels.at(outputIndex));
+    // Lock port count to exactly the number found in the sub-circuit file;
+    // min == max == actual count prevents the user from adding/removing IC ports
+    if (isInput) {
+        setMaxInputSize(count);
+        setMinInputSize(count);
+        setInputSize(count);
+    } else {
+        setMaxOutputSize(count);
+        setMinOutputSize(count);
+        setOutputSize(count);
     }
 
-    qCDebug(three) << "IC " << m_file << " -> Outputs. min: " << minOutputSize() << ", max: " << maxOutputSize() << ", current: " << outputSize() << ", m_outputs: " << m_outputPorts.size();
+    for (int i = 0; i < count; ++i) {
+        if (isInput) {
+            auto *port = inputPort(i);
+            port->setName(labels.at(i));
+            // Mirror required/default-status from the sub-circuit's input elements so that
+            // unconnected optional inputs (e.g. enable lines) don't flag the IC as invalid
+            port->setRequired(internalPorts.at(i)->isRequired());
+            port->setDefaultStatus(internalPorts.at(i)->status());
+            port->setStatus(internalPorts.at(i)->status());
+        } else {
+            outputPort(i)->setName(labels.at(i));
+        }
+    }
+
+    qCDebug(three) << "IC" << m_file << "->" << (isInput ? "Inputs" : "Outputs")
+                    << "min:" << (isInput ? minInputSize() : minOutputSize())
+                    << "max:" << (isInput ? maxInputSize() : maxOutputSize())
+                    << "current:" << (isInput ? inputSize() : outputSize());
 }
 
 void IC::resetInternalState()
@@ -379,8 +387,8 @@ void IC::processLoadedItems(const QList<QGraphicsItem *> &items)
     sortPorts(m_internalOutputs);
     buildPortLabels(m_internalInputs, m_internalInputLabels);
     buildPortLabels(m_internalOutputs, m_internalOutputLabels);
-    loadInputs();
-    loadOutputs();
+    loadBoundaryPorts(true);
+    loadBoundaryPorts(false);
 
     // --- Update visual representation ---
     // Position label just below the IC body, which grows with port count
@@ -700,40 +708,6 @@ void IC::updateLogic()
 
 void IC::refresh()
 {
-}
-
-void IC::copyFiles(const QFileInfo &srcPath, const QFileInfo &destPath)
-{
-    if (!QFile::exists(destPath.absoluteFilePath())) {
-        QFile srcFile(srcPath.absoluteFilePath());
-        if (!srcFile.copy(destPath.absoluteFilePath())) {
-            throw PANDACEPTION("Error copying file: %1", srcFile.errorString());
-        }
-    }
-
-    // Read the metadata section to find file-backed IC dependencies,
-    // then recursively copy each one. No full deserialization needed.
-    QFile file(srcPath.absoluteFilePath());
-    if (!file.open(QIODevice::ReadOnly)) {
-        return;
-    }
-
-    QDataStream stream(&file);
-    const auto preamble = Serialization::readPreamble(stream);
-    if (!VersionInfo::hasMetadata(preamble.version)) {
-        return;
-    }
-
-    const auto &metadata = preamble.metadata;
-
-    const QStringList icFiles = metadata.value("fileBackedICs").toStringList();
-    for (const QString &icFile : icFiles) {
-        const QFileInfo icSrc(QDir(srcPath.absolutePath()), icFile);
-        const QFileInfo icDest(QDir(destPath.absolutePath()), icFile);
-        if (icSrc.exists()) {
-            copyFiles(icSrc, icDest);
-        }
-    }
 }
 
 void IC::loadFromDrop(const QString &fileName, const QString &contextDir)
