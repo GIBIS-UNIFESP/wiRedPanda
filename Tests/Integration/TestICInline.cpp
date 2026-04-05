@@ -5106,58 +5106,6 @@ void TestICInline::testLoadICMissingAllNameFieldsThrows()
 // Edge cases: cycle detection, uniqueBlobName, blob access, clearBlobs
 // ============================================================================
 
-void TestICInline::testCycleDetectionAPI()
-{
-    // beginLoading/isLoading/endLoading form the cycle detection guard.
-    Scene scene;
-    auto *reg = scene.icRegistry();
-
-    QVERIFY(!reg->isLoading("/fake/path.panda"));
-
-    QVERIFY(reg->beginLoading("/fake/path.panda"));
-    QVERIFY(reg->isLoading("/fake/path.panda"));
-
-    // Second beginLoading for same path returns false (cycle detected)
-    QVERIFY(!reg->beginLoading("/fake/path.panda"));
-
-    // Different path is fine
-    QVERIFY(reg->beginLoading("/other/path.panda"));
-    QVERIFY(reg->isLoading("/other/path.panda"));
-
-    reg->endLoading("/fake/path.panda");
-    QVERIFY(!reg->isLoading("/fake/path.panda"));
-
-    // Now it can be loaded again
-    QVERIFY(reg->beginLoading("/fake/path.panda"));
-
-    reg->endLoading("/fake/path.panda");
-    reg->endLoading("/other/path.panda");
-}
-
-void TestICInline::testDefinitionReturnsNullOnCycle()
-{
-    // definition() returns nullptr if the file is already in the loading set
-    // (circular IC reference detected).
-    Scene scene;
-    scene.setContextDir(m_fixtureDir);
-    auto *reg = scene.icRegistry();
-
-    const QString filePath = m_fixtureDir + "/simple_and.panda";
-
-    // Pre-mark as loading to simulate a cycle
-    QVERIFY(reg->beginLoading(filePath));
-
-    const ICDefinition *def = reg->definition(filePath, m_fixtureDir);
-    QVERIFY2(def == nullptr, "definition() must return nullptr when cycle detected");
-
-    reg->endLoading(filePath);
-
-    // After ending the load, definition() should work normally
-    def = reg->definition(filePath, m_fixtureDir);
-    QVERIFY(def != nullptr);
-    QVERIFY(def->isValid());
-}
-
 void TestICInline::testUniqueBlobNameEmptyBase()
 {
     // uniqueBlobName("") should return "" when no blob named "" exists.

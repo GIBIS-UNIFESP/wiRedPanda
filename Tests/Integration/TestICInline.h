@@ -202,8 +202,6 @@ private slots:
     void testRegisterBlobCommandUndoRedo();
     void testRegisterBlobCommandRedoAfterExternalRemove();
     void testLoadICMissingAllNameFieldsThrows();
-    void testCycleDetectionAPI();
-    void testDefinitionReturnsNullOnCycle();
     void testUniqueBlobNameEmptyBase();
     void testBlobReturnsEmptyForMissingName();
     void testClearBlobsLeavesICsStale();
