@@ -69,7 +69,7 @@ Simulation *WorkSpace::simulation()
 
 bool WorkSpace::isFromNewerVersion() const
 {
-    return !m_loadedVersion.isNull() && m_loadedVersion > AppVersion::current;
+    return !m_loadedVersion.isNull() && m_loadedVersion > FileVersion::current;
 }
 
 QFileInfo WorkSpace::fileInfo()
@@ -83,10 +83,10 @@ void WorkSpace::save(const QString &fileName)
 
     if (isFromNewerVersion()) {
         if (Application::interactiveMode) {
-            const QString message = tr("This file was saved with a newer version of wiRedPanda (%1).\n"
-                         "Saving with your current version (%2) could corrupt the file.\n\n"
+            const QString message = tr("This file was saved with a newer file format (version %1).\n"
+                         "Your wiRedPanda version (%2) supports file format %3.\n\n"
                          "Please update wiRedPanda to save changes to this file.")
-                          .arg(m_loadedVersion.toString(), AppVersion::current.toString());
+                          .arg(m_loadedVersion.toString(), AppVersion::current.toString(), FileVersion::current.toString());
             QMessageBox::warning(this, tr("Cannot save."), message);
         }
         return;
@@ -313,7 +313,7 @@ void WorkSpace::load(const QString &fileName)
     QVersionNumber version = Serialization::readPandaHeader(stream);
     m_loadedVersion = version;
 
-    bool needsMigration = (version < AppVersion::current) && Application::migrationEnabled;
+    bool needsMigration = (version < FileVersion::current) && Application::migrationEnabled;
     if (needsMigration) {
         createVersionedBackup(fileName, version);
     }
@@ -338,20 +338,20 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
     qCDebug(zero) << "Version: " << version;
 
     if (Application::interactiveMode) {
-        if (version > AppVersion::current) {
-            const QString progVersion = AppVersion::current.toString();
+        if (version > FileVersion::current) {
+            const QString fmtVersion = FileVersion::current.toString();
             const QString fileVersion = version.toString();
-            const QString message = tr("This file was saved with a newer version of wiRedPanda (%1).\n"
-                         "Your version (%2) cannot safely save this file without risking data loss.\n\n"
+            const QString message = tr("This file was saved with a newer file format (version %1).\n"
+                         "Your version supports file format %2.\n\n"
                          "The file will be opened but saving is blocked.\n"
                          "Please update wiRedPanda to edit and save this file.")
-                          .arg(fileVersion, progVersion);
+                          .arg(fileVersion, fmtVersion);
             QMessageBox::warning(this, tr("Newer version file."), message);
-        } else if (version < AppVersion::current) {
+        } else if (version < FileVersion::current) {
             const QString backupFileName = m_fileInfo.completeBaseName() + ".v" + version.toString() + "." + m_fileInfo.suffix();
             const QString message = tr("This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).\n"
                          "A backup of the original file has been created with name: %3")
-                         .arg(version.toString(), AppVersion::current.toString(), backupFileName);
+                         .arg(version.toString(), FileVersion::current.toString(), backupFileName);
             QMessageBox::information(this, tr("File upgraded."), message);
         }
     }

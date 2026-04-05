@@ -348,7 +348,7 @@ void IC::loadFileDirectly(const QFileInfo &fileInfo)
     const auto items = Serialization::deserialize(stream, subCtx);
     file.close(); // must be closed before QSaveFile can write on Windows (mandatory file locking)
 
-    if ((preamble.version < AppVersion::current) && Application::migrationEnabled) {
+    if ((preamble.version < FileVersion::current) && Application::migrationEnabled) {
         migrateFile(fileInfo, items, preamble.version, fileRegistry);
     }
 
