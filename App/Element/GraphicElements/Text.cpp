@@ -32,3 +32,8 @@ Text::Text(QGraphicsItem *parent)
     setHasLabel(true);
 }
 
+QRectF Text::boundingRect() const
+{
+    return GraphicElement::boundingRect().united(childrenBoundingRect());
+}
+

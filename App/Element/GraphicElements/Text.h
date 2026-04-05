@@ -22,6 +22,9 @@ class Text : public GraphicElement
 public:
     /// Constructs a Text element.
     explicit Text(QGraphicsItem *parent = nullptr);
+
+    /// Returns a bounding rect that includes the label text, not just the pixmap.
+    QRectF boundingRect() const override;
 };
 
 Q_DECLARE_METATYPE(Text)
