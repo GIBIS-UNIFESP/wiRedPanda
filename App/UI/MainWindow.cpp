@@ -205,6 +205,9 @@ void MainWindow::setupExamplesMenu()
 #ifdef Q_OS_LINUX
         qEnvironmentVariable("APPDIR") + "/usr/share/wiredpanda/Examples",  // AppImage
 #endif
+#ifdef Q_OS_WASM
+        QStringLiteral("/Examples"),                // WASM virtual filesystem (--preload-file)
+#endif
         QStringLiteral("Examples"),                 // CWD fallback (development)
     };
 
