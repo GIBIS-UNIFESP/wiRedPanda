@@ -46,3 +46,8 @@ Text::Text(QGraphicsItem *parent)
 {
 }
 
+QRectF Text::boundingRect() const
+{
+    return GraphicElement::boundingRect().united(childrenBoundingRect());
+}
+
