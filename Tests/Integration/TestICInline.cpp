@@ -985,7 +985,7 @@ void TestICInline::testBlobNamePreservation()
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QMap<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, AppVersion::current, m_fixtureDir};
+        SerializationContext ctx{portMap, FileVersion::current, m_fixtureDir};
         ctx.blobRegistry = &registry;
         ic2->load(stream, ctx);
     }
@@ -1216,7 +1216,7 @@ void TestICInline::testBlobNameSpecialCharacters()
         {
             QDataStream stream(&serialized, QIODevice::ReadOnly);
             QMap<quint64, QNEPort *> portMap;
-            SerializationContext ctx{portMap, AppVersion::current, m_fixtureDir};
+            SerializationContext ctx{portMap, FileVersion::current, m_fixtureDir};
             ctx.blobRegistry = &registry;
             loaded->load(stream, ctx);
         }
@@ -1714,7 +1714,7 @@ void TestICInline::testLoadV41MapDirectConstruct()
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QMap<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, AppVersion::current, m_fixtureDir};
+        SerializationContext ctx{portMap, FileVersion::current, m_fixtureDir};
         ctx.blobRegistry = &registry;
         loaded->load(stream, ctx);
     }
@@ -1749,7 +1749,7 @@ void TestICInline::testLoadMismatchNoFileName()
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QMap<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, AppVersion::current, m_fixtureDir};
+        SerializationContext ctx{portMap, FileVersion::current, m_fixtureDir};
         bool threw = false;
         try {
             loaded->load(stream, ctx);
@@ -2654,7 +2654,7 @@ void TestICInline::testSerializationMismatchFallback()
         {
             QDataStream stream(&serialized, QIODevice::ReadOnly);
             QMap<quint64, QNEPort *> portMap;
-            SerializationContext ctx{portMap, AppVersion::current, m_fixtureDir};
+            SerializationContext ctx{portMap, FileVersion::current, m_fixtureDir};
             try {
                 loaded->load(stream, ctx);
             } catch (const Pandaception &) {
@@ -2683,7 +2683,7 @@ void TestICInline::testSerializationMismatchFallback()
         {
             QDataStream stream(&serialized, QIODevice::ReadOnly);
             QMap<quint64, QNEPort *> portMap;
-            SerializationContext ctx{portMap, AppVersion::current, m_fixtureDir};
+            SerializationContext ctx{portMap, FileVersion::current, m_fixtureDir};
             try {
                 loaded->load(stream, ctx);
             } catch (const Pandaception &) {
@@ -2710,7 +2710,7 @@ void TestICInline::testSerializationMismatchFallback()
         {
             QDataStream stream(&embeddedData, QIODevice::ReadOnly);
             QMap<quint64, QNEPort *> portMap;
-            SerializationContext ctx{portMap, AppVersion::current, m_fixtureDir};
+            SerializationContext ctx{portMap, FileVersion::current, m_fixtureDir};
             ctx.blobRegistry = &registry;
             loaded->load(stream, ctx);
         }
@@ -2744,7 +2744,7 @@ void TestICInline::testSerializationMismatchFallbackCase2State()
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QMap<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, AppVersion::current, m_fixtureDir};
+        SerializationContext ctx{portMap, FileVersion::current, m_fixtureDir};
         bool threw = false;
         try {
             loaded->load(stream, ctx);
@@ -2919,7 +2919,7 @@ void TestICInline::testSetInlineDataEmptyBlobNameRoundTripFails()
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QMap<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, AppVersion::current, m_fixtureDir};
+        SerializationContext ctx{portMap, FileVersion::current, m_fixtureDir};
         bool threw = false;
         try {
             loaded->load(stream, ctx);
@@ -3071,7 +3071,7 @@ void TestICInline::testCopyFileGuardDuringPaste()
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QMap<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, AppVersion::current, m_fixtureDir};
+        SerializationContext ctx{portMap, FileVersion::current, m_fixtureDir};
         ctx.blobRegistry = &registry;
         ic2->load(stream, ctx);
     }
@@ -3109,7 +3109,7 @@ void TestICInline::testCopyPasteEmbeddedICRoundTrip()
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QMap<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, AppVersion::current, m_fixtureDir};
+        SerializationContext ctx{portMap, FileVersion::current, m_fixtureDir};
         ctx.blobRegistry = &registry;
         pasted->load(stream, ctx);
     }
