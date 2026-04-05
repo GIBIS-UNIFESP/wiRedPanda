@@ -4,6 +4,12 @@
 
 set -e
 
+# Fail fast if lcov is not installed
+if ! command -v lcov &> /dev/null; then
+    echo "❌ lcov is not installed. Install it with: sudo apt-get install lcov"
+    exit 1
+fi
+
 echo "🔍 Building with coverage enabled..."
 cmake --preset coverage
 cmake --build --preset coverage
@@ -12,11 +18,6 @@ echo "🧪 Running tests with coverage collection..."
 ctest --preset coverage
 
 echo "📄 Generating HTML coverage report..."
-# Install lcov if not available
-if ! command -v lcov &> /dev/null; then
-    echo "Installing lcov..."
-    sudo apt-get update && sudo apt-get install -y lcov
-fi
 
 # Generate lcov info file directly with filtering
 cd build
