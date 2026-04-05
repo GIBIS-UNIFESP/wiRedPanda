@@ -12,8 +12,6 @@
 #include <QObject>
 #include <QSet>
 
-#include "App/Element/ICDefinition.h"
-
 class GraphicElement;
 class IC;
 class Scene;
@@ -33,8 +31,8 @@ class ICRegistry : public QObject
 public:
     explicit ICRegistry(Scene *scene);
 
-    /// Returns the cached definition, or loads it from disk. Returns nullptr on failure.
-    const ICDefinition *definition(const QString &filePath);
+    /// Returns cached file bytes, reading from disk on first access. Returns empty on failure.
+    const QByteArray &cachedFileBytes(const QString &filePath);
 
     /// Invalidates a cached definition (e.g., after file change).
     void invalidate(const QString &filePath);
@@ -110,7 +108,7 @@ private:
                                QMap<QString, QByteArray> &blobs);
 
     Scene *m_scene;                          ///< Owning scene.
-    QMap<QString, ICDefinition> m_definitions; ///< Cached IC definitions keyed by canonical file path.
+    QMap<QString, QByteArray> m_fileCache;   ///< Cached file reads for file-backed ICs (path → bytes).
     QMap<QString, QByteArray> m_blobs;       ///< Embedded IC blob storage (name → .panda bytes).
     QFileSystemWatcher m_fileWatcher;        ///< Watches IC source files for external modifications.
 };

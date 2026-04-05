@@ -25,17 +25,20 @@ ICRegistry::ICRegistry(Scene *scene)
             this, &ICRegistry::onFileChanged);
 }
 
-const ICDefinition *ICRegistry::definition(const QString &filePath)
+const QByteArray &ICRegistry::cachedFileBytes(const QString &filePath)
 {
-    if (!m_definitions.contains(filePath)) {
-        m_definitions[filePath] = ICDefinition::fromFile(filePath);
+    if (!m_fileCache.contains(filePath)) {
+        QFile file(filePath);
+        if (file.open(QIODevice::ReadOnly)) {
+            m_fileCache[filePath] = file.readAll();
+        }
     }
-    return &m_definitions[filePath];
+    return m_fileCache[filePath];
 }
 
 void ICRegistry::invalidate(const QString &filePath)
 {
-    m_definitions.remove(filePath);
+    m_fileCache.remove(filePath);
 }
 
 void ICRegistry::watchFile(const QString &filePath)
