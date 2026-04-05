@@ -276,8 +276,6 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
 {
     qCDebug(zero) << "Reading IC.";
 
-    m_blobName.clear();
-
     // Try the full path combined with contextDir first (handles relative paths
     // and same-OS absolute paths). If not found, fall back to just the filename
     // resolved against contextDir — this handles cross-platform absolute paths
@@ -291,6 +289,10 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
     if (!fileInfo.exists() || !fileInfo.isFile()) {
         throw PANDACEPTION("%1 not found.", fileInfo.absoluteFilePath());
     }
+
+    // Clear blob name only after validation so the IC remains consistent if
+    // the file is not found and an exception is thrown above.
+    m_blobName.clear();
 
     // Use cached file bytes from ICRegistry when available (avoids re-reading from disk)
     if (auto *scene_ = qobject_cast<Scene *>(scene())) {
