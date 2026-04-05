@@ -258,6 +258,11 @@ private:
     void on_pushButtonAddIC_clicked();
     void on_pushButtonRemoveIC_clicked();
 
+#ifdef Q_OS_WASM
+    /// Emscripten beforeunload callback — saves window geometry before the browser tab closes.
+    static const char *onBeforeUnload(int eventType, const void *reserved, void *userData);
+#endif
+
     // --- Constructor Setup ---
 
     /// Initialises language/translation: detects system locale, loads .qm file, populates the Language menu.
