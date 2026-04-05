@@ -1707,8 +1707,8 @@ void TestArduino::testWirelessNodeGeneration()
     auto *led = new Led();
 
     // Physical wire: InputSwitch → Tx node, Rx node → LED
-    auto *conn1 = createConnection(sw, 0, txNode, 0);
-    auto *conn2 = createConnection(rxNode, 0, led, 0);
+    auto conn1 = std::unique_ptr<QNEConnection>(createConnection(sw, 0, txNode, 0));
+    auto conn2 = std::unique_ptr<QNEConnection>(createConnection(rxNode, 0, led, 0));
 
     QVector<GraphicElement *> elements{sw, txNode, rxNode, led};
     auto code = generateFromElements(elements);
@@ -1721,8 +1721,8 @@ void TestArduino::testWirelessNodeGeneration()
     QVERIFY2(!nodeAssignLow.match(code.content).hasMatch(),
              "Wireless Rx node should not produce LOW assignment in computeLogic");
 
-    delete conn1;
-    delete conn2;
+    conn1.reset();
+    conn2.reset();
     qDeleteAll(elements);
 }
 
@@ -1737,13 +1737,13 @@ void TestArduino::testWirelessOrphanedRxCodegen()
 
     auto *led = new Led();
 
-    auto *conn = createConnection(rxNode, 0, led, 0);
+    auto conn = std::unique_ptr<QNEConnection>(createConnection(rxNode, 0, led, 0));
 
     QVector<GraphicElement *> elements{rxNode, led};
     auto code = generateFromElements(elements);
     QVERIFY2(code.success, "Orphaned Rx codegen should succeed without crash");
 
-    delete conn;
+    conn.reset();
     qDeleteAll(elements);
 }
 

@@ -60,9 +60,9 @@ void TestConnectionValidity::testPortDeletionDeletesConnection()
     Scene scene;
 
     // Create two AND gates
-    auto *and1 = ElementFactory::buildElement(ElementType::And);
+    auto and1 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
     auto *and2 = ElementFactory::buildElement(ElementType::And);
-    scene.addItem(and1);
+    scene.addItem(and1.get());
     scene.addItem(and2);
 
     // Create a connection
@@ -77,8 +77,8 @@ void TestConnectionValidity::testPortDeletionDeletesConnection()
 
     // When and1 is deleted, its output port is deleted, which automatically
     // deletes the connection (see QNEOutputPort destructor)
-    scene.removeItem(and1);
-    delete and1;
+    scene.removeItem(and1.get());
+    and1.reset();
 
     // Verify the connection was cleaned up by the port destructor
     QCOMPARE(TestUtils::countConnections(&scene), 0);
