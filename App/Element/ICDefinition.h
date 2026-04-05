@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief Shared, immutable IC sub-circuit template with port metadata and cached pixmap.
+ * \brief Shared, immutable IC sub-circuit template with port metadata.
  */
 
 #pragma once
