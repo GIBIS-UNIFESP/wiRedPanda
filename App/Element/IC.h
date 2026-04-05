@@ -71,6 +71,19 @@ public:
     const QVector<QNEPort *> &internalInputs() const { return m_internalInputs; }
     const QVector<QNEPort *> &internalOutputs() const { return m_internalOutputs; }
 
+    // --- Port metadata ---
+
+    /// Port count and label metadata extracted from Input/Output elements.
+    struct PortMetadata {
+        int inputCount = 0;
+        int outputCount = 0;
+        QStringList inputLabels;
+        QStringList outputLabels;
+    };
+
+    /// Scans \a elements for Input/Output groups, sorts by Y/X position, and builds labels.
+    static PortMetadata buildPortMetadata(const QVector<GraphicElement *> &elements);
+
     // --- Visual ---
 
     /// \reimp Simulates the IC's internal circuit and propagates results.
@@ -107,9 +120,6 @@ protected:
 private:
     // --- Utility methods ---
 
-    static bool comparePorts(QNEPort *port1, QNEPort *port2);
-    static void sortPorts(QVector<QNEPort *> &map);
-
     void loadFileDirectly(const QFileInfo &fileInfo);
     void migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &items,
                      const QVersionNumber &version, const QMap<QString, QByteArray> &fileRegistry);
@@ -120,7 +130,7 @@ private:
     void processLoadedItems(const QList<QGraphicsItem *> &items);
     void loadBoundaryElement(GraphicElement *elm, bool isInput);
     void loadBoundaryPorts(bool isInput, const QVector<QString> &labels);
-    void buildPortLabels(const QVector<QNEPort *> &ports, QVector<QString> &labels);
+    static void buildPortLabels(const QVector<QNEPort *> &ports, QVector<QString> &labels);
 
     // --- Visual helpers ---
 

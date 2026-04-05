@@ -25,6 +25,40 @@
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 
+namespace {
+
+bool comparePorts(QNEPort *port1, QNEPort *port2)
+{
+    auto *elem1 = port1->graphicElement();
+    auto *elem2 = port2->graphicElement();
+    if (!elem1 || !elem2) {
+        return false;
+    }
+
+    // Primary sort: top-to-bottom by parent element Y, then left-to-right by X.
+    // This gives an intuitive pin order that matches the visual layout in the sub-circuit.
+    QPointF p1 = elem1->pos();
+    QPointF p2 = elem2->pos();
+
+    if (p1 != p2) {
+        return (p1.y() < p2.y()) || (qFuzzyCompare(p1.y(), p2.y()) && (p1.x() < p2.x()));
+    }
+
+    // Secondary sort: when two ports share the same parent element position, sort by
+    // the port's own local coordinates (left-to-right, top-to-bottom)
+    p1 = port1->pos();
+    p2 = port2->pos();
+
+    return (p1.x() < p2.x()) || (qFuzzyCompare(p1.x(), p2.x()) && (p1.y() < p2.y()));
+}
+
+void sortPorts(QVector<QNEPort *> &ports)
+{
+    std::stable_sort(ports.begin(), ports.end(), comparePorts);
+}
+
+} // anonymous namespace
+
 template<>
 struct ElementInfo<IC> {
     static constexpr ElementConstraints constraints{
@@ -308,41 +342,21 @@ void IC::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &it
     Serialization::createVersionedBackup(fileInfo.absoluteFilePath(), version);
 
     // Build port metadata for the migrated file header
-    QVector<QNEPort *> tmpInputs, tmpOutputs;
+    QVector<GraphicElement *> elements;
     for (auto *item : items) {
-        if (item->type() != GraphicElement::Type) {
-            continue;
-        }
-        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-        if (!elm) {
-            continue;
-        }
-        if (elm->elementGroup() == ElementGroup::Input) {
-            for (auto *port : elm->outputs()) { tmpInputs.append(port); }
-        } else if (elm->elementGroup() == ElementGroup::Output) {
-            for (auto *port : elm->inputs()) { tmpOutputs.append(port); }
+        if (item->type() == GraphicElement::Type) {
+            if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
+                elements.append(elm);
+            }
         }
     }
-    sortPorts(tmpInputs);
-    sortPorts(tmpOutputs);
-
-    auto buildLabel = [](QNEPort *port, int multiPortCount) {
-        auto *elm = port->graphicElement();
-        QString lb = elm->label().isEmpty() ? ElementFactory::typeToText(elm->elementType()) : elm->label();
-        if (multiPortCount > 1 && !port->name().isEmpty()) { lb += " " + port->name(); }
-        if (!elm->genericProperties().isEmpty()) { lb += " [" + elm->genericProperties() + "]"; }
-        return lb;
-    };
-
-    QStringList inLabels, outLabels;
-    for (auto *port : std::as_const(tmpInputs)) { inLabels.append(buildLabel(port, port->graphicElement()->outputSize())); }
-    for (auto *port : std::as_const(tmpOutputs)) { outLabels.append(buildLabel(port, port->graphicElement()->inputSize())); }
+    const auto portMeta = buildPortMetadata(elements);
 
     QMap<QString, QVariant> migrationMeta;
-    migrationMeta["inputCount"] = tmpInputs.size();
-    migrationMeta["outputCount"] = tmpOutputs.size();
-    migrationMeta["inputLabels"] = inLabels;
-    migrationMeta["outputLabels"] = outLabels;
+    migrationMeta["inputCount"] = portMeta.inputCount;
+    migrationMeta["outputCount"] = portMeta.outputCount;
+    migrationMeta["inputLabels"] = portMeta.inputLabels;
+    migrationMeta["outputLabels"] = portMeta.outputLabels;
     Serialization::serializeBlobRegistry(fileRegistry, migrationMeta);
 
     QSaveFile saveFile(fileInfo.absoluteFilePath());
@@ -567,36 +581,6 @@ void IC::loadBoundaryElement(GraphicElement *elm, const bool isInput)
     delete elm;
 }
 
-bool IC::comparePorts(QNEPort *port1, QNEPort *port2)
-{
-    auto *elem1 = port1->graphicElement();
-    auto *elem2 = port2->graphicElement();
-    if (!elem1 || !elem2) {
-        return false;
-    }
-
-    // Primary sort: top-to-bottom by parent element Y, then left-to-right by X.
-    // This gives an intuitive pin order that matches the visual layout in the sub-circuit.
-    QPointF p1 = elem1->pos();
-    QPointF p2 = elem2->pos();
-
-    if (p1 != p2) {
-        return (p1.y() < p2.y()) || (qFuzzyCompare(p1.y(), p2.y()) && (p1.x() < p2.x()));
-    }
-
-    // Secondary sort: when two ports share the same parent element position, sort by
-    // the port's own local coordinates (left-to-right, top-to-bottom)
-    p1 = port1->pos();
-    p2 = port2->pos();
-
-    return (p1.x() < p2.x()) || (qFuzzyCompare(p1.x(), p2.x()) && (p1.y() < p2.y()));
-}
-
-void IC::sortPorts(QVector<QNEPort *> &map)
-{
-    std::stable_sort(map.begin(), map.end(), comparePorts);
-}
-
 void IC::buildPortLabels(const QVector<QNEPort *> &ports, QVector<QString> &labels)
 {
     for (int i = 0; i < ports.size(); ++i) {
@@ -616,6 +600,36 @@ void IC::buildPortLabels(const QVector<QNEPort *> &ports, QVector<QString> &labe
 
         labels[i] = lb;
     }
+}
+
+IC::PortMetadata IC::buildPortMetadata(const QVector<GraphicElement *> &elements)
+{
+    PortMetadata meta;
+    QVector<QNEPort *> inputPorts, outputPorts;
+
+    for (auto *elm : elements) {
+        if (elm->elementGroup() == ElementGroup::Input) {
+            for (auto *port : elm->outputs()) { inputPorts.append(port); }
+        } else if (elm->elementGroup() == ElementGroup::Output) {
+            for (auto *port : elm->inputs()) { outputPorts.append(port); }
+        }
+    }
+
+    sortPorts(inputPorts);
+    sortPorts(outputPorts);
+
+    meta.inputCount = static_cast<int>(inputPorts.size());
+    meta.outputCount = static_cast<int>(outputPorts.size());
+
+    QVector<QString> inLabels(inputPorts.size());
+    QVector<QString> outLabels(outputPorts.size());
+    buildPortLabels(inputPorts, inLabels);
+    buildPortLabels(outputPorts, outLabels);
+
+    meta.inputLabels = QStringList(inLabels.begin(), inLabels.end());
+    meta.outputLabels = QStringList(outLabels.begin(), outLabels.end());
+
+    return meta;
 }
 
 void IC::initializeSimulation()
