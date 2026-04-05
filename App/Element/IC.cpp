@@ -171,10 +171,9 @@ void IC::load(QDataStream &stream, SerializationContext &context)
     }
 }
 
-void IC::loadBoundaryPorts(const bool isInput)
+void IC::loadBoundaryPorts(const bool isInput, const QVector<QString> &labels)
 {
     const auto &internalPorts = isInput ? m_internalInputs : m_internalOutputs;
-    const auto &labels = isInput ? m_internalInputLabels : m_internalOutputLabels;
     const int count = static_cast<int>(internalPorts.size());
 
     // Lock port count to exactly the number found in the sub-circuit file;
@@ -371,7 +370,7 @@ void IC::processLoadedItems(const QList<QGraphicsItem *> &items)
             continue;
         }
 
-    // Input/Output elements become the IC's external ports; everything else is internal logic
+        // Input/Output elements become the IC's external ports; everything else is internal logic
         switch (elm->elementGroup()) {
         case ElementGroup::Input:  loadBoundaryElement(elm, true);  break;
         case ElementGroup::Output: loadBoundaryElement(elm, false); break;
@@ -380,15 +379,16 @@ void IC::processLoadedItems(const QList<QGraphicsItem *> &items)
     }
 
     // --- Build sorted, labelled port lists ---
-    m_internalInputLabels = QVector<QString>(m_internalInputs.size());
-    m_internalOutputLabels = QVector<QString>(m_internalOutputs.size());
     // Sort top-to-bottom by Y position so port order on the IC body matches visual layout
     sortPorts(m_internalInputs);
     sortPorts(m_internalOutputs);
-    buildPortLabels(m_internalInputs, m_internalInputLabels);
-    buildPortLabels(m_internalOutputs, m_internalOutputLabels);
-    loadBoundaryPorts(true);
-    loadBoundaryPorts(false);
+
+    QVector<QString> inputLabels(m_internalInputs.size());
+    QVector<QString> outputLabels(m_internalOutputs.size());
+    buildPortLabels(m_internalInputs, inputLabels);
+    buildPortLabels(m_internalOutputs, outputLabels);
+    loadBoundaryPorts(true, inputLabels);
+    loadBoundaryPorts(false, outputLabels);
 
     // --- Update visual representation ---
     // Position label just below the IC body, which grows with port count

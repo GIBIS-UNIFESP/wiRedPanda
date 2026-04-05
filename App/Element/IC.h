@@ -119,7 +119,7 @@ private:
 
     void processLoadedItems(const QList<QGraphicsItem *> &items);
     void loadBoundaryElement(GraphicElement *elm, bool isInput);
-    void loadBoundaryPorts(bool isInput);
+    void loadBoundaryPorts(bool isInput, const QVector<QString> &labels);
     void buildPortLabels(const QVector<QNEPort *> &ports, QVector<QString> &labels);
 
     // --- Visual helpers ---
@@ -134,8 +134,6 @@ private:
     QVector<GraphicElement *> m_internalElements;
     QVector<QNEPort *> m_internalInputs;
     QVector<QNEPort *> m_internalOutputs;
-    QVector<QString> m_internalInputLabels;
-    QVector<QString> m_internalOutputLabels;
 
     // --- Members: Direct simulation ---
 

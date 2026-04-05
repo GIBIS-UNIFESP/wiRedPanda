@@ -115,6 +115,9 @@ private slots:
     void onFileChanged(const QString &filePath);
 
 private:
+    /// Restores \a elements from a previously captured \a snapshot (used for atomic rollback).
+    void rollbackElements(const QList<GraphicElement *> &elements, const QByteArray &snapshot);
+
     /// Recursively inlines all IC dependencies of blob \a name so it has no external file references.
     void makeBlobSelfContained(const QString &name, QSet<QString> &visited);
 
