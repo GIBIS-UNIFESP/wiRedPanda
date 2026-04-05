@@ -386,6 +386,13 @@ endif()
 link_wiredpanda_whole_archive(wiredpanda)
 target_link_libraries(wiredpanda PRIVATE wiredpanda_resources)
 
+# Preload example files into Emscripten's virtual filesystem
+if(EMSCRIPTEN)
+    target_link_options(wiredpanda PRIVATE
+        "SHELL:--preload-file ${CMAKE_SOURCE_DIR}/Examples@/Examples"
+    )
+endif()
+
 # Copy JSON schema to executable directory after build
 add_custom_command(TARGET wiredpanda POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
