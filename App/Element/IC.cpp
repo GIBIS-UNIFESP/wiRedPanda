@@ -13,7 +13,6 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
-#include "App/Core/Priorities.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/ICDefinition.h"
@@ -25,7 +24,6 @@
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
-#include "App/UI/MainWindow.h"
 
 template<>
 struct ElementInfo<IC> {
@@ -203,18 +201,22 @@ void IC::loadOutputs()
     qCDebug(three) << "IC " << m_file << " -> Outputs. min: " << minOutputSize() << ", max: " << maxOutputSize() << ", current: " << outputSize() << ", m_outputs: " << m_outputPorts.size();
 }
 
-void IC::loadFile(const QString &fileName, const QString &contextDir)
+void IC::resetInternalState()
 {
-    qCDebug(zero) << "Reading IC.";
-
-    // Reset all previously loaded state so a hot-reload starts from a clean slate
-    m_blobName.clear();
     m_internalInputs.clear();
     m_internalOutputs.clear();
     setInputSize(0);
     setOutputSize(0);
     qDeleteAll(m_internalElements);
     m_internalElements.clear();
+}
+
+void IC::loadFile(const QString &fileName, const QString &contextDir)
+{
+    qCDebug(zero) << "Reading IC.";
+
+    m_blobName.clear();
+    resetInternalState();
 
     // Try the full path combined with contextDir first (handles relative paths
     // and same-OS absolute paths). If not found, fall back to just the filename
@@ -282,68 +284,70 @@ void IC::loadFileDirectly(const QFileInfo &fileInfo)
     const auto items = Serialization::deserialize(stream, subCtx);
     file.close(); // must be closed before QSaveFile can write on Windows (mandatory file locking)
 
-    // Migrate if outdated
-    const bool needsMigration = (preamble.version < AppVersion::current) && Application::migrationEnabled;
-    if (needsMigration) {
-        Serialization::createVersionedBackup(fileInfo.absoluteFilePath(), preamble.version);
-
-        QMap<QString, QVariant> migrationMeta;
-        {
-            QVector<QNEPort *> tmpInputs, tmpOutputs;
-            for (auto *item : items) {
-                if (item->type() != GraphicElement::Type) continue;
-                auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-                if (!elm) continue;
-                if (elm->elementGroup() == ElementGroup::Input) {
-                    for (auto *port : elm->outputs()) tmpInputs.append(port);
-                } else if (elm->elementGroup() == ElementGroup::Output) {
-                    for (auto *port : elm->inputs()) tmpOutputs.append(port);
-                }
-            }
-            sortPorts(tmpInputs);
-            sortPorts(tmpOutputs);
-
-            QStringList inLabels, outLabels;
-            for (auto *port : std::as_const(tmpInputs)) {
-                auto *elm = port->graphicElement();
-                QString lb = elm->label().isEmpty() ? ElementFactory::typeToText(elm->elementType()) : elm->label();
-                if (elm->outputSize() > 1 && !port->name().isEmpty()) lb += " " + port->name();
-                if (!elm->genericProperties().isEmpty()) lb += " [" + elm->genericProperties() + "]";
-                inLabels.append(lb);
-            }
-            for (auto *port : std::as_const(tmpOutputs)) {
-                auto *elm = port->graphicElement();
-                QString lb = elm->label().isEmpty() ? ElementFactory::typeToText(elm->elementType()) : elm->label();
-                if (elm->inputSize() > 1 && !port->name().isEmpty()) lb += " " + port->name();
-                if (!elm->genericProperties().isEmpty()) lb += " [" + elm->genericProperties() + "]";
-                outLabels.append(lb);
-            }
-
-            migrationMeta["inputCount"] = tmpInputs.size();
-            migrationMeta["outputCount"] = tmpOutputs.size();
-            migrationMeta["inputLabels"] = inLabels;
-            migrationMeta["outputLabels"] = outLabels;
-            Serialization::serializeBlobRegistry(fileRegistry, migrationMeta);
-        }
-
-        QSaveFile saveFile(fileInfo.absoluteFilePath());
-        if (!saveFile.open(QIODevice::WriteOnly)) {
-            throw PANDACEPTION("IC migration: cannot open file for writing: %1", fileInfo.absoluteFilePath());
-        }
-        QDataStream outStream(&saveFile);
-        Serialization::writePandaHeader(outStream);
-        outStream << migrationMeta;
-        Serialization::serialize(items, outStream);
-        if (!saveFile.commit()) {
-            throw PANDACEPTION("IC migration: failed to commit re-saved file: %1", fileInfo.absoluteFilePath());
-        }
+    if ((preamble.version < AppVersion::current) && Application::migrationEnabled) {
+        migrateFile(fileInfo, items, preamble.version, fileRegistry);
     }
 
     processLoadedItems(items);
 
-    // Default label: uppercased filename without extension (e.g. "adder.panda" → "ADDER")
     if (label().isEmpty()) {
         setLabel(fileInfo.baseName().toUpper());
+    }
+}
+
+void IC::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &items,
+                     const QVersionNumber &version, const QMap<QString, QByteArray> &fileRegistry)
+{
+    Serialization::createVersionedBackup(fileInfo.absoluteFilePath(), version);
+
+    // Build port metadata for the migrated file header
+    QVector<QNEPort *> tmpInputs, tmpOutputs;
+    for (auto *item : items) {
+        if (item->type() != GraphicElement::Type) {
+            continue;
+        }
+        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        if (!elm) {
+            continue;
+        }
+        if (elm->elementGroup() == ElementGroup::Input) {
+            for (auto *port : elm->outputs()) { tmpInputs.append(port); }
+        } else if (elm->elementGroup() == ElementGroup::Output) {
+            for (auto *port : elm->inputs()) { tmpOutputs.append(port); }
+        }
+    }
+    sortPorts(tmpInputs);
+    sortPorts(tmpOutputs);
+
+    auto buildLabel = [](QNEPort *port, int multiPortCount) {
+        auto *elm = port->graphicElement();
+        QString lb = elm->label().isEmpty() ? ElementFactory::typeToText(elm->elementType()) : elm->label();
+        if (multiPortCount > 1 && !port->name().isEmpty()) { lb += " " + port->name(); }
+        if (!elm->genericProperties().isEmpty()) { lb += " [" + elm->genericProperties() + "]"; }
+        return lb;
+    };
+
+    QStringList inLabels, outLabels;
+    for (auto *port : std::as_const(tmpInputs)) { inLabels.append(buildLabel(port, port->graphicElement()->outputSize())); }
+    for (auto *port : std::as_const(tmpOutputs)) { outLabels.append(buildLabel(port, port->graphicElement()->inputSize())); }
+
+    QMap<QString, QVariant> migrationMeta;
+    migrationMeta["inputCount"] = tmpInputs.size();
+    migrationMeta["outputCount"] = tmpOutputs.size();
+    migrationMeta["inputLabels"] = inLabels;
+    migrationMeta["outputLabels"] = outLabels;
+    Serialization::serializeBlobRegistry(fileRegistry, migrationMeta);
+
+    QSaveFile saveFile(fileInfo.absoluteFilePath());
+    if (!saveFile.open(QIODevice::WriteOnly)) {
+        throw PANDACEPTION("IC migration: cannot open file for writing: %1", fileInfo.absoluteFilePath());
+    }
+    QDataStream outStream(&saveFile);
+    Serialization::writePandaHeader(outStream);
+    outStream << migrationMeta;
+    Serialization::serialize(items, outStream);
+    if (!saveFile.commit()) {
+        throw PANDACEPTION("IC migration: failed to commit re-saved file: %1", fileInfo.absoluteFilePath());
     }
 }
 
@@ -361,9 +365,9 @@ void IC::processLoadedItems(const QList<QGraphicsItem *> &items)
 
     // Input/Output elements become the IC's external ports; everything else is internal logic
         switch (elm->elementGroup()) {
-        case ElementGroup::Input:  loadInputElement(elm);    break;
-        case ElementGroup::Output: loadOutputElement(elm);   break;
-        default:                   m_internalElements.append(elm); break;
+        case ElementGroup::Input:  loadBoundaryElement(elm, true);  break;
+        case ElementGroup::Output: loadBoundaryElement(elm, false); break;
+        default:                   m_internalElements.append(elm);  break;
         }
     }
 
@@ -373,8 +377,8 @@ void IC::processLoadedItems(const QList<QGraphicsItem *> &items)
     // Sort top-to-bottom by Y position so port order on the IC body matches visual layout
     sortPorts(m_internalInputs);
     sortPorts(m_internalOutputs);
-    loadInputsLabels();
-    loadOutputsLabels();
+    buildPortLabels(m_internalInputs, m_internalInputLabels);
+    buildPortLabels(m_internalOutputs, m_internalOutputLabels);
     loadInputs();
     loadOutputs();
 
@@ -404,13 +408,8 @@ void IC::loadFromBlob(const QByteArray &blob, const QString &contextDir)
     const auto items = Serialization::deserialize(stream, subCtx);
 
     // Parsing succeeded — now clear old state and apply
-    m_internalInputs.clear();
-    m_internalOutputs.clear();
-    setInputSize(0);
-    setOutputSize(0);
-    qDeleteAll(m_internalElements);
-    m_internalElements.clear();
-    m_file.clear();
+    resetInternalState();
+    m_file.clear(); // switching to blob-backed, no file association
 
     processLoadedItems(items);
 
@@ -483,15 +482,7 @@ void IC::generatePixmap()
 void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     event->accept();
-
-    if (isEmbedded()) {
-        if (auto *scene_ = qobject_cast<Scene *>(scene())) {
-            Application::instance()->mainWindow()->openICInTab(
-                m_blobName, id(), scene_->icRegistry()->blob(m_blobName));
-        }
-    } else if (!m_file.isEmpty()) {
-        Application::instance()->mainWindow()->loadPandaFile(m_file);
-    }
+    emit requestOpenSubCircuit(id(), m_blobName, m_file);
 }
 
 QRectF IC::boundingRect() const
@@ -515,70 +506,54 @@ void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidge
     painter->drawPixmap(boundingRect().topLeft(), pixmap());
 }
 
-void IC::loadInputElement(GraphicElement *elm)
+void IC::loadBoundaryElement(GraphicElement *elm, const bool isInput)
 {
-    // Each output port of an input element (Switch, Button, Clock, …) becomes one
-    // external input pin on the IC.  A proxy Node element is inserted as a bridge:
-    //   [IC external input] → Node.input → Node.output → [internal sub-circuit wires]
-    // This lets the parent circuit drive the Node's input, which in turn propagates into
-    // the sub-circuit without exposing the original input element.
-    for (auto *outputPort : elm->outputs()) {
+    // Each port of a boundary element (input or output) becomes one external pin on the IC.
+    // A proxy Node element is inserted as a bridge between the IC's external port and the
+    // internal sub-circuit wiring.
+    //
+    // Input elements:  [IC external input] → Node.input → Node.output → [internal wires]
+    // Output elements: [internal wires] → Node.input → Node.output → [IC external output]
+    const int portCount = isInput ? elm->outputSize() : elm->inputSize();
+
+    for (int p = 0; p < portCount; ++p) {
         auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
         nodeElm->setPos(elm->pos());
-        nodeElm->setLabel(elm->label().isEmpty() ?
-                              ElementFactory::typeToText(elm->elementType())
-                            : elm->label());
+        nodeElm->setLabel(elm->label().isEmpty()
+                              ? ElementFactory::typeToText(elm->elementType())
+                              : elm->label());
 
-        auto *nodeInput = nodeElm->inputPort();
-        if (elm->outputSize() > 1) {
-            nodeInput->setName(outputPort->name());
+        if (isInput) {
+            auto *srcPort = elm->outputPort(p);
+            auto *nodeInput = nodeElm->inputPort();
+            if (portCount > 1) {
+                nodeInput->setName(srcPort->name());
+            }
+            nodeInput->setRequired(elm->elementType() == ElementType::Clock);
+            nodeInput->setDefaultStatus(srcPort->status());
+            nodeInput->setStatus(srcPort->status());
+            m_internalInputs.append(nodeInput);
+
+            // Re-route connections from original output to proxy Node's output
+            const auto conns = srcPort->connections();
+            for (auto *conn : conns) {
+                conn->setStartPort(nodeElm->outputPort());
+            }
+        } else {
+            auto *srcPort = elm->inputPort(p);
+            auto *nodeOutput = nodeElm->outputPort();
+            if (portCount > 1) {
+                nodeOutput->setName(srcPort->name());
+            }
+            m_internalOutputs.append(nodeOutput);
+
+            // Re-route connections from original input to proxy Node's input
+            for (auto *conn : srcPort->connections()) {
+                conn->setEndPort(nodeElm->inputPort());
+            }
         }
-        // Clock inputs are required (the IC won't function without a clock signal)
-        nodeInput->setRequired(elm->elementType() == ElementType::Clock);
-        nodeInput->setDefaultStatus(outputPort->status());
-        nodeInput->setStatus(outputPort->status());
 
-        m_internalInputs.append(nodeInput);
         m_internalElements.append(nodeElm);
-
-        // Re-route connections that previously started from the original input element
-        // so they now originate from the proxy Node's output port
-        const auto conns = outputPort->connections();
-
-        for (auto *conn : conns) {
-            conn->setStartPort(nodeElm->outputPort());
-        }
-    }
-
-    // The original input element is no longer needed — the Node proxy replaces it
-    delete elm;
-}
-
-void IC::loadOutputElement(GraphicElement *elm)
-{
-    // Mirror of loadInputElement: each input port of an output element (LED, Display, …) becomes
-    // one external output pin on the IC, again bridged through a proxy Node element:
-    //   [internal sub-circuit wires] → Node.input → Node.output → [IC external output]
-    for (auto *inputPort : elm->inputs()) {
-        auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
-        nodeElm->setPos(elm->pos());
-        nodeElm->setLabel(elm->label().isEmpty() ?
-                              ElementFactory::typeToText(elm->elementType())
-                            : elm->label());
-
-        auto *nodeOutput = nodeElm->outputPort();
-        if (elm->inputSize() > 1) {
-            nodeOutput->setName(inputPort->name());
-        }
-
-        m_internalOutputs.append(nodeOutput);
-        m_internalElements.append(nodeElm);
-
-        // Re-route connections that previously ended at the original output element
-        // so they now terminate at the proxy Node's input port
-        for (auto *conn : inputPort->connections()) {
-            conn->setEndPort(nodeElm->inputPort());
-        }
     }
 
     delete elm;
@@ -614,16 +589,15 @@ void IC::sortPorts(QVector<QNEPort *> &map)
     std::stable_sort(map.begin(), map.end(), comparePorts);
 }
 
-void IC::loadInputsLabels()
+void IC::buildPortLabels(const QVector<QNEPort *> &ports, QVector<QString> &labels)
 {
-    for (int portIndex = 0; portIndex < m_internalInputs.size(); ++portIndex) {
-        auto *inputPort = m_internalInputs.at(portIndex);
-        auto *elm = inputPort->graphicElement();
+    for (int i = 0; i < ports.size(); ++i) {
+        auto *port = ports.at(i);
+        auto *elm = port->graphicElement();
         QString lb = elm->label();
 
-        if (!inputPort->name().isEmpty()) {
-            lb += " ";
-            lb += inputPort->name();
+        if (!port->name().isEmpty()) {
+            lb += " " + port->name();
         }
 
         // Append generic properties (e.g. clock frequency) in brackets so the IC pin tooltip
@@ -632,27 +606,7 @@ void IC::loadInputsLabels()
             lb += " [" + elm->genericProperties() + "]";
         }
 
-        m_internalInputLabels[portIndex] = lb;
-    }
-}
-
-void IC::loadOutputsLabels()
-{
-    for (int portIndex = 0; portIndex < m_internalOutputs.size(); ++portIndex) {
-        auto *outputPort = m_internalOutputs.at(portIndex);
-        auto *elm = outputPort->graphicElement();
-        QString label = elm->label();
-
-        if (!outputPort->name().isEmpty()) {
-            label += " ";
-            label += outputPort->name();
-        }
-
-        if (!elm->genericProperties().isEmpty()) {
-            label += " [" + elm->genericProperties() + "]";
-        }
-
-        m_internalOutputLabels[portIndex] = label;
+        labels[i] = lb;
     }
 }
 
@@ -671,20 +625,14 @@ void IC::initializeSimulation()
         elm->initSimulationVectors(elm->inputSize(), elm->outputSize());
     }
 
-    // Build connection graph from internal QNEConnections
+    // Build connection graph and wire wireless Tx→Rx
     Simulation::buildConnectionGraph(m_internalElements);
-    Simulation::connectWirelessElements(m_internalElements);
-
-    // Wire wireless Rx predecessors to matching Tx outputs within the IC.
-    // The top-level Simulation::connectWirelessElements() only sees outer scene elements,
-    // so IC-internal wireless channels must be wired here.
     Simulation::connectWirelessElements(m_internalElements);
 
     // Initialize nested ICs recursively
     for (auto *elm : std::as_const(m_internalElements)) {
         if (elm->elementType() == ElementType::IC) {
-            auto *ic = static_cast<IC *>(elm);
-            ic->initializeSimulation();
+            static_cast<IC *>(elm)->initializeSimulation();
         }
     }
 
@@ -695,64 +643,19 @@ void IC::initializeSimulation()
         }
     }
 
-    // Topological sort of internal elements
-    QHash<GraphicElement *, QVector<GraphicElement *>> successors;
-    for (auto *elm : std::as_const(m_internalElements)) {
-        for (auto *outputPort : elm->outputs()) {
-            for (auto *conn : outputPort->connections()) {
-                if (auto *endPort = conn->endPort()) {
-                    auto *successor = endPort->graphicElement();
-                    if (successor && m_internalElements.contains(successor)
-                        && !successors[elm].contains(successor)) {
-                        successors[elm].append(successor);
-                    }
-                }
-            }
-        }
-    }
-
-    // Add wireless Tx→Rx edges to the successor graph.
-    // connectWirelessElements() above set predecessors for simulation input routing,
-    // but those don't create QNEConnection objects, so the connection-walking loop above
-    // doesn't see wireless dependencies.
-    // NOTE: must match connectWirelessElements() — first Tx per label wins.
-    QHash<QString, GraphicElement *> txMap;
-    for (auto *elm : std::as_const(m_internalElements)) {
-        if (elm->wirelessMode() == WirelessMode::Tx && !elm->label().isEmpty()) {
-            if (!txMap.contains(elm->label())) {
-                txMap.insert(elm->label(), elm);
-            }
-        }
-    }
-    for (auto *elm : std::as_const(m_internalElements)) {
-        if (elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
-            if (auto *tx = txMap.value(elm->label(), nullptr)) {
-                if (!successors[tx].contains(elm)) {
-                    successors[tx].append(elm);
-                }
-            }
-        }
-    }
-
-    QHash<GraphicElement *, int> priorities;
-    calculatePriorities(m_internalElements, successors, priorities);
-    const auto feedbackElements = findFeedbackNodes(m_internalElements, successors);
-    m_internalHasFeedback = !feedbackElements.isEmpty();
-
-    m_sortedInternalElements = m_internalElements;
+    // Topological sort with feedback detection using shared helpers
+    const auto txMap = Simulation::buildTxMap(m_internalElements);
+    const auto successors = Simulation::buildSuccessorGraph(m_internalElements, txMap);
+    const auto result = Simulation::topologicalSort(m_internalElements, successors);
+    m_internalHasFeedback = !result.feedbackNodes.isEmpty();
 
     // Remove boundary input elements so the hot loop in updateLogic()
     // doesn't need a per-element QSet lookup on every simulation tick.
+    m_sortedInternalElements = result.sorted;
     m_sortedInternalElements.erase(
         std::remove_if(m_sortedInternalElements.begin(), m_sortedInternalElements.end(),
             [this](auto *elm) { return m_boundaryInputElements.contains(elm); }),
         m_sortedInternalElements.end());
-
-    std::stable_sort(m_sortedInternalElements.begin(), m_sortedInternalElements.end(),
-        [&priorities](const auto *a, const auto *b) {
-            return priorities.value(const_cast<GraphicElement *>(a), -1)
-                 > priorities.value(const_cast<GraphicElement *>(b), -1);
-        });
 }
 
 void IC::updateLogic()
@@ -778,21 +681,8 @@ void IC::updateLogic()
 
     // Run internal elements in topological order.
     // Boundary input nodes are already excluded from m_sortedInternalElements.
-    // Use iterative settling if internal feedback loops exist (e.g., gate-level SR latches).
     if (m_internalHasFeedback) {
-        const int maxIterations = 10;
-        for (int iteration = 0; iteration < maxIterations; ++iteration) {
-            for (auto *element : std::as_const(m_sortedInternalElements)) {
-                element->clearOutputChanged();
-                element->updateLogic();
-            }
-            const bool converged = std::none_of(
-                m_sortedInternalElements.cbegin(), m_sortedInternalElements.cend(),
-                [](const auto *element) { return element->outputChanged(); });
-            if (converged) {
-                break;
-            }
-        }
+        Simulation::iterativeSettle(m_sortedInternalElements);
     } else {
         for (auto *element : std::as_const(m_sortedInternalElements)) {
             element->updateLogic();
