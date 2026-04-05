@@ -769,8 +769,8 @@ void TestWorkspace::testAutosaveDeletedOnExplicitSave()
         // Verify file was actually created
         QFileInfo fileInfo(saveFile);
         QVERIFY2(fileInfo.exists(), "Expected autosave file should exist");
-    } catch (const Pandaception &) {
-        QFAIL("Failed to save file");
+    } catch (const Pandaception &e) {
+        QFAIL(qPrintable(QString("Failed to save file: %1").arg(e.what())));
     }
 }
 
@@ -800,8 +800,8 @@ void TestWorkspace::testAutosaveRemovedFromSettingsOnSave()
 
         // Autosave count should be same or less after explicit save
         QVERIFY2(autosavesAfter.count() <= countBefore, "Autosave count should not increase when autosave is disabled");
-    } catch (const Pandaception &) {
-        QFAIL("Failed to save file");
+    } catch (const Pandaception &e) {
+        QFAIL(qPrintable(QString("Failed to save file: %1").arg(e.what())));
     }
 }
 
@@ -828,8 +828,8 @@ void TestWorkspace::testRecoveredFileRemovedFromSettings()
         // Save as recovery file
         try {
             workspace.save(recoveryFile);
-        } catch (const Pandaception &) {
-            QFAIL("Failed to save recovery file");
+        } catch (const Pandaception &e) {
+            QFAIL(qPrintable(QString("Failed to save recovery file: %1").arg(e.what())));
         }
     }
 
@@ -853,8 +853,8 @@ void TestWorkspace::testRecoveredFileRemovedFromSettings()
             QVERIFY2(currentFile.absolutePath() == newFileInfo.absolutePath() ||
                     currentFile.fileName() == newFileInfo.fileName(),
                     "WorkSpace should have the newly saved file as current file");
-        } catch (const Pandaception &) {
-            QFAIL("Failed to load and save recovery file");
+        } catch (const Pandaception &e) {
+            QFAIL(qPrintable(QString("Failed to load and save recovery file: %1").arg(e.what())));
         }
     }
 }
@@ -884,8 +884,8 @@ void TestWorkspace::testAutosaveCleanupAfterSaveAs()
 
         workspace.save(file2);
         QVERIFY2(scene->undoStack()->isClean(), "Undo stack should be in clean state");
-    } catch (const Pandaception &) {
-        QFAIL("Failed to save files");
+    } catch (const Pandaception &e) {
+        QFAIL(qPrintable(QString("Failed to save files: %1").arg(e.what())));
     }
 }
 
@@ -909,8 +909,8 @@ void TestWorkspace::testAutosaveListCorrectAfterCleanup()
         QStringList autosaves = Settings::autosaveFiles();
         // Should not contain the saved file
         QVERIFY2(!autosaves.contains(saveFile), "Deleted autosave file should be removed from list");
-    } catch (const Pandaception &) {
-        QFAIL("Failed to save file");
+    } catch (const Pandaception &e) {
+        QFAIL(qPrintable(QString("Failed to save file: %1").arg(e.what())));
     }
 }
 
@@ -938,8 +938,8 @@ void TestWorkspace::testMultipleAutosavesCleanedUp()
         // Both should be cleaned
         QVERIFY(ws1.scene()->undoStack()->isClean());
         QVERIFY(ws2.scene()->undoStack()->isClean());
-    } catch (const Pandaception &) {
-        QFAIL("Failed to save files");
+    } catch (const Pandaception &e) {
+        QFAIL(qPrintable(QString("Failed to save files: %1").arg(e.what())));
     }
 }
 
@@ -981,8 +981,8 @@ void TestWorkspace::testAutosaveCleanupWithEmptySettings()
         // Verify settings are properly maintained
         QVERIFY2(workspace.fileInfo().filePath() == saveFile,
                 "Saved file should become the workspace's current file");
-    } catch (const Pandaception &) {
-        QFAIL("Failed to save file");
+    } catch (const Pandaception &e) {
+        QFAIL(qPrintable(QString("Failed to save file: %1").arg(e.what())));
     }
 }
 
@@ -1039,8 +1039,8 @@ void TestWorkspace::testSaveDoesNotDuplicateExtension()
         QString doubleExtFile = tempDir.filePath("test.panda.panda");
         QFileInfo doubleInfo(doubleExtFile);
         QVERIFY2(!doubleInfo.exists(), "Duplicate extension file should not be created");
-    } catch (const Pandaception &) {
-        QFAIL("Failed to save file");
+    } catch (const Pandaception &e) {
+        QFAIL(qPrintable(QString("Failed to save file: %1").arg(e.what())));
     }
 }
 
@@ -1102,8 +1102,8 @@ void TestWorkspace::testSaveEmptyCircuit()
         QFileInfo fileInfo(saveFile);
         QVERIFY2(fileInfo.exists(), "Expected autosave file should exist");
         QVERIFY2(fileInfo.size() > 0, "Autosave file should contain data"); // Should have at least header
-    } catch (const Pandaception &) {
-        QFAIL("Failed to save empty circuit");
+    } catch (const Pandaception &e) {
+        QFAIL(qPrintable(QString("Failed to save empty circuit: %1").arg(e.what())));
     }
 }
 

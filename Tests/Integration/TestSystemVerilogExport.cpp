@@ -531,8 +531,8 @@ void TestSystemVerilogExport::testWirelessNodeGeneration()
     SystemVerilogCodeGen generator(verilogPath, elements);
     try {
         generator.generate();
-    } catch (...) {
-        QFAIL("SystemVerilog generation threw an exception for wireless circuit");
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("SystemVerilog generation threw an exception for wireless circuit: %1").arg(e.what())));
     }
 
     QFile file(verilogPath);
@@ -585,8 +585,8 @@ void TestSystemVerilogExport::testWirelessOrphanedRxCodegen()
     SystemVerilogCodeGen generator(verilogPath, elements);
     try {
         generator.generate();
-    } catch (...) {
-        QFAIL("SystemVerilog generation threw an exception for orphaned Rx circuit");
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("SystemVerilog generation threw an exception for orphaned Rx circuit: %1").arg(e.what())));
     }
 
     QFile file(verilogPath);

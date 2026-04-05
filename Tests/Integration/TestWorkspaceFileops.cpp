@@ -587,9 +587,9 @@ void TestWorkspaceFileops::testMigrationEnabledCreatesBackup()
     WorkSpace ws;
     try {
         ws.load(path);
-    } catch (...) {
+    } catch (const std::exception &e) {
         Application::migrationEnabled = false;
-        QFAIL("load() must not throw for a valid (empty) old-format file");
+        QFAIL(qPrintable(QString("load() must not throw for a valid (empty) old-format file: %1").arg(e.what())));
     }
     Application::migrationEnabled = false;
 
@@ -618,9 +618,9 @@ void TestWorkspaceFileops::testMigrationUpdatesFileVersion()
     WorkSpace ws;
     try {
         ws.load(path);
-    } catch (...) {
+    } catch (const std::exception &e) {
         Application::migrationEnabled = false;
-        QFAIL("load() must not throw for a valid (empty) old-format file");
+        QFAIL(qPrintable(QString("load() must not throw for a valid (empty) old-format file: %1").arg(e.what())));
     }
     Application::migrationEnabled = false;
 
@@ -661,9 +661,9 @@ void TestWorkspaceFileops::testMigrationCurrentVersionSkips()
     WorkSpace ws2;
     try {
         ws2.load(path);
-    } catch (...) {
+    } catch (const std::exception &e) {
         Application::migrationEnabled = false;
-        QFAIL("load() must not throw for a current-format file");
+        QFAIL(qPrintable(QString("load() must not throw for a current-format file: %1").arg(e.what())));
     }
     Application::migrationEnabled = false;
 

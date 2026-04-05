@@ -1914,8 +1914,8 @@ void TestArduino::testOutputPinExhaustion()
         QString errorMsg = e.what();
         QVERIFY2(errorMsg.contains("output", Qt::CaseInsensitive), "Error message should mention output");
         QVERIFY2(errorMsg.contains("pins", Qt::CaseInsensitive), "Error message should mention pins");
-    } catch (const std::exception &) {
-        QFAIL("Caught wrong exception type");
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("Caught wrong exception type: %1").arg(e.what())));
     } catch (...) {
         QFAIL("Caught unknown exception");
     }
@@ -1950,8 +1950,8 @@ void TestArduino::testUnsupportedElementTypes()
 
             QVERIFY2(content.contains("if"), "Mux code should contain if statements");
             QVERIFY2(content.contains("Multiplexer"), "Mux code should contain multiplexer comment");
-        } catch (...) {
-            QFAIL("Mux element should now be supported and generate without exception");
+        } catch (const std::exception &e) {
+            QFAIL(qPrintable(QString("Mux element should now be supported and generate without exception: %1").arg(e.what())));
         }
 
         qDeleteAll(elements);
@@ -1980,8 +1980,8 @@ void TestArduino::testUnsupportedElementTypes()
 
             QVERIFY2(content.contains("if"), "Demux code should contain if statements");
             QVERIFY2(content.contains("Demultiplexer"), "Demux code should contain demultiplexer comment");
-        } catch (...) {
-            QFAIL("Demux element should now be supported and generate without exception");
+        } catch (const std::exception &e) {
+            QFAIL(qPrintable(QString("Demux element should now be supported and generate without exception: %1").arg(e.what())));
         }
 
         qDeleteAll(elements);
@@ -2010,8 +2010,8 @@ void TestArduino::testUnsupportedElementTypes()
 
             QVERIFY2(content.contains("if"), "TruthTable code should contain if statements");
             QVERIFY2(content.contains("TruthTable"), "TruthTable code should contain TruthTable comment");
-        } catch (...) {
-            QFAIL("TruthTable element should now be supported and generate without exception");
+        } catch (const std::exception &e) {
+            QFAIL(qPrintable(QString("TruthTable element should now be supported and generate without exception: %1").arg(e.what())));
         }
 
         qDeleteAll(elements);
