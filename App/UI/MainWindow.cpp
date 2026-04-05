@@ -484,7 +484,7 @@ void MainWindow::save(const QString &fileName)
     }
 
     m_currentTab->save(fileName);
-    m_palette->updateICList(currentFile());
+    m_palette->updateICList(icListFile());
     m_ui->statusBar->showMessage(tr("File saved successfully."), 4000);
 }
 
@@ -629,7 +629,7 @@ void MainWindow::loadPandaFile(const QString &fileName)
     // Tighten the scene rect to the loaded items immediately so subsequent
     // interactions (selection, drag release) don't cause a viewport jump.
     m_currentTab->scene()->resizeScene();
-    m_palette->updateICList(currentFile());
+    m_palette->updateICList(icListFile());
     m_palette->updateEmbeddedICList(m_currentTab->scene());
     m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
 }
@@ -659,18 +659,16 @@ void MainWindow::openICInTab(const QString &blobName, int icElementId, const QBy
     // interactions (selection, drag release) don't cause a viewport jump.
     m_currentTab->scene()->resizeScene();
 
-    // Hide file-based IC section now that isInlineIC() is true
-    m_ui->labelFileBasedICs->setVisible(false);
+    // Hide management buttons for inline tabs (they use currentFile/currentDir which are empty)
     m_ui->pushButtonAddIC->setVisible(false);
     m_ui->pushButtonRemoveIC->setVisible(false);
-    m_ui->dropZoneFileBased->setVisible(false);
     m_ui->pushButtonMakeSelfContained->setVisible(false);
-    m_ui->gridLayout_4->setRowStretch(3, 0);
 
     // Set tab title
     int tabIndex = m_ui->tab->indexOf(m_currentTab);
     m_ui->tab->setTabText(tabIndex, "[" + blobName + "]");
 
+    m_palette->updateICList(icListFile());
     m_palette->updateEmbeddedICList(m_currentTab->scene());
 
     // Connect child tab's save signal to parent
@@ -924,6 +922,14 @@ QDir MainWindow::currentDir() const
     return m_currentTab ? m_currentTab->fileInfo().absoluteDir() : QDir();
 }
 
+QFileInfo MainWindow::icListFile() const
+{
+    if (m_currentTab && m_currentTab->isInlineIC() && m_currentTab->parentWorkspace()) {
+        return m_currentTab->parentWorkspace()->fileInfo();
+    }
+    return currentFile();
+}
+
 void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 {
     if (!m_currentTab) {
@@ -1044,17 +1050,14 @@ void MainWindow::connectTab()
     qCDebug(zero) << "Connecting undo and redo functions to UI menu.";
     addUndoRedoMenu();
 
-    m_palette->updateICList(currentFile());
+    m_palette->updateICList(icListFile());
     m_palette->updateEmbeddedICList(m_currentTab->scene());
 
-    // File-based IC section is meaningless for inline IC tabs (no context directory)
-    const bool showFileBased = !m_currentTab->isInlineIC();
-    m_ui->labelFileBasedICs->setVisible(showFileBased);
-    m_ui->pushButtonAddIC->setVisible(showFileBased);
-    m_ui->pushButtonRemoveIC->setVisible(showFileBased);
-    m_ui->dropZoneFileBased->setVisible(showFileBased);
-    m_ui->pushButtonMakeSelfContained->setVisible(showFileBased);
-    m_ui->gridLayout_4->setRowStretch(3, showFileBased ? 1 : 0);
+    // Hide management buttons for inline IC tabs (they use currentFile/currentDir which are empty)
+    const bool isInline = m_currentTab->isInlineIC();
+    m_ui->pushButtonAddIC->setVisible(!isInline);
+    m_ui->pushButtonRemoveIC->setVisible(!isInline);
+    m_ui->pushButtonMakeSelfContained->setVisible(!isInline);
 
     qCDebug(zero) << "Connecting current tab to element editor menu in UI.";
     m_ui->elementEditor->setScene(m_currentTab->scene());
@@ -1674,7 +1677,7 @@ void MainWindow::on_pushButtonAddIC_clicked()
         Serialization::copyPandaFile(QFileInfo(file), destPath);
     }
 
-    m_palette->updateICList(currentFile());
+    m_palette->updateICList(icListFile());
 }
 
 void MainWindow::on_pushButtonRemoveIC_clicked()
@@ -1708,7 +1711,7 @@ void MainWindow::removeICFile(const QString &icFileName)
         throw PANDACEPTION("Error removing file: %1", file.errorString());
     }
 
-    m_palette->updateICList(currentFile());
+    m_palette->updateICList(icListFile());
     // Auto-save after removal so the scene no longer references the deleted file.
     on_actionSave_triggered();
 }
@@ -1802,18 +1805,26 @@ void MainWindow::extractSelectedIC()
     }
 
     const QString blobName = firstIC->blobName();
-    const QString suggestion = blobName.isEmpty() ? QString() : blobName + ".panda";
-
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Extract IC to file..."), suggestion, tr("Panda files (*.panda)"));
-    if (fileName.isEmpty()) {
+    const QString contextDir = scene->contextDir();
+    if (contextDir.isEmpty()) {
+        QMessageBox::warning(this, tr("Error"), tr("Please save the project first."));
         return;
     }
-    if (!fileName.endsWith(".panda")) {
-        fileName.append(".panda");
+
+    QString fileName = QDir(contextDir).absoluteFilePath(blobName + ".panda");
+
+    if (QFile::exists(fileName)) {
+        auto answer = QMessageBox::question(this,
+            tr("File Exists"),
+            tr("A file named \"%1\" already exists in the project directory.\nOverwrite it?").arg(blobName + ".panda"),
+            QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+        if (answer != QMessageBox::Yes) {
+            return;
+        }
     }
 
     scene->icRegistry()->extractToFile(blobName, fileName);
-    m_palette->updateICList(currentFile());
+    m_palette->updateICList(icListFile());
     m_palette->updateEmbeddedICList(scene);
     m_ui->statusBar->showMessage(tr("IC extracted to %1").arg(fileName), 4000);
 }
@@ -1887,7 +1898,7 @@ void MainWindow::extractICByBlobName(const QString &blobName)
     }
 
     reg->extractToFile(blobName, fileName);
-    m_palette->updateICList(currentFile());
+    m_palette->updateICList(icListFile());
     m_palette->updateEmbeddedICList(scene);
     m_ui->statusBar->showMessage(tr("IC extracted to %1").arg(fileName), 4000);
 }

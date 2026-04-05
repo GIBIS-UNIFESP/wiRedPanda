@@ -193,6 +193,10 @@ private:
     void disconnectTab();
     void connectTab();
 
+    /// Returns the file info to use for populating the file-based IC palette.
+    /// For inline IC tabs this returns the parent workspace's file info.
+    QFileInfo icListFile() const;
+
     /// Connects \a action to \a method on the current tab's scene (guarded by m_currentTab check).
     void connectSceneAction(QAction *action, void (Scene::*method)());
 
