@@ -139,6 +139,19 @@ ColorScheme SystemThemeDetector::queryPlatform()
     return ColorScheme::Unknown;
 }
 
+#elif defined(Q_OS_WASM)
+
+#include <emscripten.h>
+
+ColorScheme SystemThemeDetector::queryPlatform()
+{
+    // Query the browser's prefers-color-scheme media query.
+    const bool dark = EM_ASM_INT({
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 1 : 0;
+    });
+    return dark ? ColorScheme::Dark : ColorScheme::Light;
+}
+
 #else
 
 ColorScheme SystemThemeDetector::queryPlatform()
@@ -159,6 +172,19 @@ ColorScheme SystemThemeDetector::queryPlatform()
 // setupListeners() + eventFilter — live-change monitoring
 // ---------------------------------------------------------------------------
 
+#ifdef Q_OS_WASM
+#include <emscripten/bind.h>
+
+static void wasmColorSchemeChanged(int isDark)
+{
+    SystemThemeDetector::instance().handleChange(isDark ? ColorScheme::Dark : ColorScheme::Light);
+}
+
+EMSCRIPTEN_BINDINGS(theme_detector) {
+    emscripten::function("_wpanda_onColorSchemeChanged", &wasmColorSchemeChanged);
+}
+#endif
+
 void SystemThemeDetector::setupListeners()
 {
 #ifdef HAVE_QTDBUS
@@ -173,6 +199,16 @@ void SystemThemeDetector::setupListeners()
             this,
             SLOT(onDbusSettingChanged(QString,QString,QDBusVariant)));
     }
+#endif
+
+#ifdef Q_OS_WASM
+    // Listen for browser theme changes via matchMedia.
+    EM_ASM({
+        var mq = window.matchMedia('(prefers-color-scheme: dark)');
+        mq.addEventListener('change', function(e) {
+            Module._wpanda_onColorSchemeChanged(e.matches ? 1 : 0);
+        });
+    });
 #endif
 
     // Install an event filter on QApplication to catch palette changes.

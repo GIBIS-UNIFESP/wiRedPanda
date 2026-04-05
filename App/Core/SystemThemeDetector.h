@@ -44,6 +44,9 @@ public:
     /// Convenience: true when the OS is in dark mode.
     static bool isDark();
 
+    /// Called by platform listeners when the scheme changes.
+    void handleChange(ColorScheme newScheme);
+
 signals:
     void colorSchemeChanged(ColorScheme scheme);
 
@@ -55,9 +58,6 @@ private:
 
     /// Sets up platform-specific change listeners.
     void setupListeners();
-
-    /// Called by platform listeners when the scheme changes.
-    void handleChange(ColorScheme newScheme);
 
     /// Catches QEvent::ApplicationPaletteChange for live theme monitoring.
     bool eventFilter(QObject *obj, QEvent *event) override;
