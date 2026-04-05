@@ -35,8 +35,8 @@ void TestInputElements::testInputSwitchConstructor()
     QCOMPARE(inputSwitch.inputSize(), 0);
     QCOMPARE(inputSwitch.outputSize(), 1);
 
-    // Verify can change skin
-    QVERIFY(inputSwitch.canChangeSkin());
+    // Verify can change appearance
+    QVERIFY(inputSwitch.canChangeAppearance());
 
     // Verify has label
     QVERIFY(inputSwitch.hasLabel());
@@ -212,15 +212,15 @@ void TestInputElements::testInputSwitchLockingMechanism()
     QVERIFY(!inputSwitch.isOn());
 }
 
-void TestInputElements::testInputSwitchSkinChange()
+void TestInputElements::testInputSwitchAppearanceChange()
 {
     InputSwitch inputSwitch;
 
     // Switch is OFF initially
     inputSwitch.setOn(false);
 
-    // Reset to default skin (should not crash)
-    inputSwitch.setSkin(true, "");
+    // Reset to default appearance (should not crash)
+    inputSwitch.setAppearance(true, "");
 
     // Verify state is preserved
     QVERIFY(!inputSwitch.isOn());
@@ -229,8 +229,8 @@ void TestInputElements::testInputSwitchSkinChange()
     inputSwitch.setOn(true);
     QVERIFY(inputSwitch.isOn());
 
-    // Reset to default skin again
-    inputSwitch.setSkin(true, "");
+    // Reset to default appearance again
+    inputSwitch.setAppearance(true, "");
 
     // Verify state still ON
     QVERIFY(inputSwitch.isOn());
@@ -254,8 +254,8 @@ void TestInputElements::testInputButtonConstructor()
     QCOMPARE(inputButton.inputSize(), 0);
     QCOMPARE(inputButton.outputSize(), 1);
 
-    // Verify can change skin
-    QVERIFY(inputButton.canChangeSkin());
+    // Verify can change appearance
+    QVERIFY(inputButton.canChangeAppearance());
 
     // Verify has label
     QVERIFY(inputButton.hasLabel());
@@ -426,15 +426,15 @@ void TestInputElements::testInputButtonLockingMechanism()
     QVERIFY(inputButton.isOn());
 }
 
-void TestInputElements::testInputButtonSkinChange()
+void TestInputElements::testInputButtonAppearanceChange()
 {
     InputButton inputButton;
 
     // Button is OFF initially
     inputButton.setOff();
 
-    // Reset to default skin (should not crash)
-    inputButton.setSkin(true, "");
+    // Reset to default appearance (should not crash)
+    inputButton.setAppearance(true, "");
 
     // Verify state is preserved
     QVERIFY(!inputButton.isOn());
@@ -443,8 +443,8 @@ void TestInputElements::testInputButtonSkinChange()
     inputButton.setOn();
     QVERIFY(inputButton.isOn());
 
-    // Reset to default skin again
-    inputButton.setSkin(true, "");
+    // Reset to default appearance again
+    inputButton.setAppearance(true, "");
 
     // Verify state still ON
     QVERIFY(inputButton.isOn());
@@ -494,14 +494,14 @@ void TestInputElements::testInputSwitch()
     QCOMPARE(elm.outputPort()->status(), Status::Inactive);
 }
 
-void TestInputElements::testSkinWithRelativePath()
+void TestInputElements::testAppearanceWithRelativePath()
 {
     // Bare filename resolved against scene's contextDir
     QTemporaryDir tempDir;
     QVERIFY(tempDir.isValid());
 
-    const QString skinFileName = "custom_skin.svg";
-    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
+    const QString appearanceFileName = "custom_appearance.svg";
+    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + appearanceFileName));
 
     WorkSpace workspace;
     workspace.scene()->setContextDir(tempDir.path());
@@ -511,23 +511,23 @@ void TestInputElements::testSkinWithRelativePath()
 
     bool threw = false;
     try {
-        inputSwitch->setSkin(false, skinFileName);
+        inputSwitch->setAppearance(false, appearanceFileName);
     } catch (const Pandaception &) {
         threw = true;
     }
 
-    QVERIFY2(!threw, "setSkin should resolve relative filename against contextDir");
+    QVERIFY2(!threw, "setAppearance should resolve relative filename against contextDir");
 }
 
-void TestInputElements::testSkinWithSameOsAbsolutePath()
+void TestInputElements::testAppearanceWithSameOsAbsolutePath()
 {
     // Absolute path on the current OS — resolved directly
     QTemporaryDir tempDir;
     QVERIFY(tempDir.isValid());
 
-    const QString skinFileName = "custom_skin.svg";
-    const QString skinFullPath = tempDir.path() + "/" + skinFileName;
-    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", skinFullPath));
+    const QString appearanceFileName = "custom_appearance.svg";
+    const QString appearanceFullPath = tempDir.path() + "/" + appearanceFileName;
+    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", appearanceFullPath));
 
     WorkSpace workspace;
     workspace.scene()->setContextDir("/some/unrelated/directory");
@@ -537,22 +537,22 @@ void TestInputElements::testSkinWithSameOsAbsolutePath()
 
     bool threw = false;
     try {
-        inputSwitch->setSkin(false, skinFullPath);
+        inputSwitch->setAppearance(false, appearanceFullPath);
     } catch (const Pandaception &) {
         threw = true;
     }
 
-    QVERIFY2(!threw, "setSkin should resolve same-OS absolute path directly");
+    QVERIFY2(!threw, "setAppearance should resolve same-OS absolute path directly");
 }
 
-void TestInputElements::testSkinWithForeignAbsolutePathForwardSlash()
+void TestInputElements::testAppearanceWithForeignAbsolutePathForwardSlash()
 {
     // Windows-style path with forward slashes on Linux
     QTemporaryDir tempDir;
     QVERIFY(tempDir.isValid());
 
-    const QString skinFileName = "custom_skin.svg";
-    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
+    const QString appearanceFileName = "custom_appearance.svg";
+    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + appearanceFileName));
 
     WorkSpace workspace;
     workspace.scene()->setContextDir(tempDir.path());
@@ -562,22 +562,22 @@ void TestInputElements::testSkinWithForeignAbsolutePathForwardSlash()
 
     bool threw = false;
     try {
-        inputSwitch->setSkin(false, "C:/Users/alice/project/" + skinFileName);
+        inputSwitch->setAppearance(false, "C:/Users/alice/project/" + appearanceFileName);
     } catch (const Pandaception &) {
         threw = true;
     }
 
-    QVERIFY2(!threw, "setSkin should resolve foreign path with forward slashes via filename fallback");
+    QVERIFY2(!threw, "setAppearance should resolve foreign path with forward slashes via filename fallback");
 }
 
-void TestInputElements::testSkinWithForeignAbsolutePathBackslash()
+void TestInputElements::testAppearanceWithForeignAbsolutePathBackslash()
 {
     // Windows-style path with backslashes on Linux
     QTemporaryDir tempDir;
     QVERIFY(tempDir.isValid());
 
-    const QString skinFileName = "custom_skin.svg";
-    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
+    const QString appearanceFileName = "custom_appearance.svg";
+    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + appearanceFileName));
 
     WorkSpace workspace;
     workspace.scene()->setContextDir(tempDir.path());
@@ -587,22 +587,22 @@ void TestInputElements::testSkinWithForeignAbsolutePathBackslash()
 
     bool threw = false;
     try {
-        inputSwitch->setSkin(false, "C:\\Users\\alice\\project\\" + skinFileName);
+        inputSwitch->setAppearance(false, "C:\\Users\\alice\\project\\" + appearanceFileName);
     } catch (const Pandaception &) {
         threw = true;
     }
 
-    QVERIFY2(!threw, "setSkin should resolve foreign path with backslashes via filename fallback");
+    QVERIFY2(!threw, "setAppearance should resolve foreign path with backslashes via filename fallback");
 }
 
-void TestInputElements::testSkinWithForeignAbsolutePathMixedSlashes()
+void TestInputElements::testAppearanceWithForeignAbsolutePathMixedSlashes()
 {
     // Windows-style path with mixed forward and backslashes
     QTemporaryDir tempDir;
     QVERIFY(tempDir.isValid());
 
-    const QString skinFileName = "custom_skin.svg";
-    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + skinFileName));
+    const QString appearanceFileName = "custom_appearance.svg";
+    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + appearanceFileName));
 
     WorkSpace workspace;
     workspace.scene()->setContextDir(tempDir.path());
@@ -612,15 +612,15 @@ void TestInputElements::testSkinWithForeignAbsolutePathMixedSlashes()
 
     bool threw = false;
     try {
-        inputSwitch->setSkin(false, "C:\\Users/alice\\project/" + skinFileName);
+        inputSwitch->setAppearance(false, "C:\\Users/alice\\project/" + appearanceFileName);
     } catch (const Pandaception &) {
         threw = true;
     }
 
-    QVERIFY2(!threw, "setSkin should resolve foreign path with mixed slashes via filename fallback");
+    QVERIFY2(!threw, "setAppearance should resolve foreign path with mixed slashes via filename fallback");
 }
 
-void TestInputElements::testSkinWithNonExistentFileFallback()
+void TestInputElements::testAppearanceWithNonExistentFileFallback()
 {
     // Both full path and filename fallback fail — should throw Pandaception
     WorkSpace workspace;
@@ -631,11 +631,11 @@ void TestInputElements::testSkinWithNonExistentFileFallback()
 
     bool threw = false;
     try {
-        inputSwitch->setSkin(false, "C:\\Users\\alice\\project\\nonexistent_skin_12345.svg");
+        inputSwitch->setAppearance(false, "C:\\Users\\alice\\project\\nonexistent_appearance_12345.svg");
     } catch (const Pandaception &) {
         threw = true;
     }
 
-    QVERIFY2(threw, "setSkin should throw when neither full path nor filename fallback resolves");
+    QVERIFY2(threw, "setAppearance should throw when neither full path nor filename fallback resolves");
 }
 

@@ -14,7 +14,7 @@ struct ElementInfo<InputVcc> {
         .group = ElementGroup::StaticInput,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
         // Static inputs are not rotatable as a whole (see InputGND.cpp for explanation).
         .rotatable = false,
     };
@@ -27,8 +27,8 @@ struct ElementInfo<InputVcc> {
         meta.titleText = QT_TRANSLATE_NOOP("InputVcc", "VCC");
         meta.translatedName = QT_TRANSLATE_NOOP("InputVcc", "VCC");
         meta.trContext = "InputVcc";
-        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-        meta.defaultSkins = QStringList({":/Components/Input/1.svg"});
+        // Seed appearance lists from the constructor-supplied pixmap path (see And.cpp for details).
+        meta.defaultAppearances = QStringList({":/Components/Input/1.svg"});
         return meta;
     }
 

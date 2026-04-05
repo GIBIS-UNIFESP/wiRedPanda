@@ -60,8 +60,8 @@ public:
     /// Refreshes the arrow direction and port positions.
     void refresh() override;
 
-    /// Applies custom skin images for the rotary body and arrow.
-    void setSkin(const bool defaultSkin, const QString &fileName) override;
+    /// Applies custom appearance images for the rotary body and arrow.
+    void setAppearance(const bool defaultAppearance, const QString &fileName) override;
 
     /// Recalculates port positions based on the current output count.
     void updatePortsProperties() override;

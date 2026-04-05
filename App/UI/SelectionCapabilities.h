@@ -45,7 +45,7 @@ struct SelectionCapabilities {
 
     // --- Mutability flags (derived from port count ranges across the selection) ---
 
-    bool canChangeSkin       = false;
+    bool canChangeAppearance       = false;
     bool canChangeInputSize  = false;
     bool canChangeOutputSize = false;
     bool canMorph            = false;

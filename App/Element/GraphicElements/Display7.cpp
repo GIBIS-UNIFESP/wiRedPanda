@@ -21,7 +21,7 @@ struct ElementInfo<Display7> {
         .group = ElementGroup::Output,
         .minInputSize = 8,
         .maxInputSize = 8,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
         .hasColors = true,
         .hasLabel = true,
         .rotatable = false,
@@ -35,7 +35,7 @@ struct ElementInfo<Display7> {
         meta.titleText = QT_TRANSLATE_NOOP("Display7", "7-SEGMENT DISPLAY");
         meta.translatedName = QT_TRANSLATE_NOOP("Display7", "7-Segment Display");
         meta.trContext = "Display7";
-        meta.defaultSkins = QStringList({
+        meta.defaultAppearances = QStringList({
             ":/Components/Output/Counter/counter_off.svg",
             ":/Components/Output/Counter/counter_a.svg",
             ":/Components/Output/Counter/counter_b.svg",
@@ -59,14 +59,14 @@ struct ElementInfo<Display7> {
 Display7::Display7(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display7, parent)
 {
-    a  = cachedSegmentColors(m_defaultSkins.at(1));
-    b  = cachedSegmentColors(m_defaultSkins.at(2));
-    c  = cachedSegmentColors(m_defaultSkins.at(3));
-    d  = cachedSegmentColors(m_defaultSkins.at(4));
-    e  = cachedSegmentColors(m_defaultSkins.at(5));
-    f  = cachedSegmentColors(m_defaultSkins.at(6));
-    g  = cachedSegmentColors(m_defaultSkins.at(7));
-    dp = cachedSegmentColors(m_defaultSkins.at(8));
+    a  = cachedSegmentColors(m_defaultAppearances.at(1));
+    b  = cachedSegmentColors(m_defaultAppearances.at(2));
+    c  = cachedSegmentColors(m_defaultAppearances.at(3));
+    d  = cachedSegmentColors(m_defaultAppearances.at(4));
+    e  = cachedSegmentColors(m_defaultAppearances.at(5));
+    f  = cachedSegmentColors(m_defaultAppearances.at(6));
+    g  = cachedSegmentColors(m_defaultAppearances.at(7));
+    dp = cachedSegmentColors(m_defaultAppearances.at(8));
 
     Display7::updatePortsProperties();
 }

@@ -11,7 +11,7 @@ struct ElementInfo<Line> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Line,
         .group = ElementGroup::Other,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
         // Label is enabled so users can attach a description string directly to the line.
         .hasLabel = true,
     };
@@ -24,8 +24,8 @@ struct ElementInfo<Line> {
         meta.titleText = QT_TRANSLATE_NOOP("Line", "LINE");
         meta.translatedName = QT_TRANSLATE_NOOP("Line", "Line");
         meta.trContext = "Line";
-        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-        meta.defaultSkins = QStringList({":/Components/Misc/line.svg"});
+        // Seed appearance lists from the constructor-supplied pixmap path (see And.cpp for details).
+        meta.defaultAppearances = QStringList({":/Components/Misc/line.svg"});
         // Line is decorative and excluded from simulation.
         return meta;
     }

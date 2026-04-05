@@ -16,7 +16,7 @@ struct ElementInfo<JKFlipFlop> {
         .maxInputSize = 5,
         .minOutputSize = 2,
         .maxOutputSize = 2,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
     };
     static_assert(validate(constraints));
 

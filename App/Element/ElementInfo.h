@@ -27,7 +27,7 @@ struct ElementConstraints {
     quint64 minOutputSize = 0;
     quint64 maxOutputSize = 0;
 
-    bool canChangeSkin = false;
+    bool canChangeAppearance = false;
     bool hasColors = false;
     bool hasAudio = false;
     bool hasAudioBox = false;
@@ -73,7 +73,7 @@ constexpr bool validate(const ElementConstraints &c)
  *
  * \details Specializations of ElementInfo<T>::metadata() call this first, then fill in
  * the remaining display fields: \c pixmapPath, \c titleText, \c translatedName,
- * \c trContext, \c defaultSkins, and \c alternativeSkins.
+ * \c trContext, \c defaultAppearances, and \c alternativeAppearances.
  * \param c Source constraints.
  * \return Partially populated ElementMetadata.
  */
@@ -86,7 +86,7 @@ inline ElementMetadata metadataFromConstraints(const ElementConstraints &c)
     meta.maxInputSize = c.maxInputSize;
     meta.minOutputSize = c.minOutputSize;
     meta.maxOutputSize = c.maxOutputSize;
-    meta.canChangeSkin = c.canChangeSkin;
+    meta.canChangeAppearance = c.canChangeAppearance;
     meta.hasColors = c.hasColors;
     meta.hasAudio = c.hasAudio;
     meta.hasAudioBox = c.hasAudioBox;
@@ -119,7 +119,7 @@ inline ElementMetadata metadataFromConstraints(const ElementConstraints &c)
  *         .group = ElementGroup::Gate,
  *         .minInputSize = 2,  .maxInputSize = 8,
  *         .minOutputSize = 1, .maxOutputSize = 1,
- *         .canChangeSkin = true,
+ *         .canChangeAppearance = true,
  *     };
  *     static_assert(validate(constraints));
  *
@@ -129,7 +129,7 @@ inline ElementMetadata metadataFromConstraints(const ElementConstraints &c)
  *         meta.titleText = QT_TRANSLATE_NOOP("And", "AND");
  *         meta.translatedName = QT_TRANSLATE_NOOP("And", "And");
  *         meta.trContext = "And";
- *         meta.defaultSkins = {":/path.svg"};
+ *         meta.defaultAppearances = {":/path.svg"};
  *         return meta;
  *     }
  *

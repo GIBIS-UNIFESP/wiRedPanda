@@ -46,10 +46,10 @@ public:
      */
     void setOn(const bool value, const int port = 0) override;
 
-    /// Applies a custom skin image to reflect the pressed/released state.
-    void setSkin(const bool defaultSkin, const QString &fileName) override;
+    /// Applies a custom appearance image to reflect the pressed/released state.
+    void setAppearance(const bool defaultAppearance, const QString &fileName) override;
     /// \reimp
-    QList<QPair<int, QString>> skinStates() const override;
+    QList<QPair<int, QString>> appearanceStates() const override;
 
     // --- Serialization ---
 

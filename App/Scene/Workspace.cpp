@@ -168,7 +168,7 @@ void WorkSpace::save(const QString &fileName)
         fileName_.append(".panda");
     }
 
-    // Copy external file dependencies (skins, audio, IC sub-circuits, waveform)
+    // Copy external file dependencies (appearances, audio, IC sub-circuits, waveform)
     // to the new directory before updating contextDir, so save() can store bare filenames.
     const QString oldContextDir = m_scene.contextDir();
     const QString newContextDir = QFileInfo(fileName_).absolutePath();

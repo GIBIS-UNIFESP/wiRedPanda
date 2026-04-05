@@ -18,7 +18,7 @@ struct ElementInfo<Led> {
         .group = ElementGroup::Output,
         .minInputSize = 1,
         .maxInputSize = 4,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
         .hasColors = true,
         .hasLabel = true,
         .rotatable = false,
@@ -32,7 +32,7 @@ struct ElementInfo<Led> {
         meta.titleText = QT_TRANSLATE_NOOP("Led", "LED");
         meta.translatedName = QT_TRANSLATE_NOOP("Led", "LED");
         meta.trContext = "Led";
-        meta.defaultSkins = QStringList({
+        meta.defaultAppearances = QStringList({
             // Single input values:
             ":/Components/Output/Led/LedOff.svg",        // 0
             ":/Components/Output/Led/WhiteLed.svg",      // 1
@@ -76,13 +76,13 @@ struct ElementInfo<Led> {
 Led::Led(QGraphicsItem *parent)
     : GraphicElement(ElementType::Led, parent)
 {
-    // The skin list is indexed by colorIndex(). For a 1-input LED the index is
+    // The appearance list is indexed by colorIndex(). For a 1-input LED the index is
     // m_colorIndex + input_value, where m_colorIndex is set by setColor() to the
     // base offset for the chosen color (0=White, 2=Red, 4=Green, 6=Blue, 8=Purple).
     // Even indices are the Off state; odd indices are the On state.
     // Indices 10-25 cover multi-input (2/3/4-bit) color palettes (see comment below).
-    m_defaultSkins = ElementMetadataRegistry::metadata(ElementType::Led).defaultSkins;
-    m_alternativeSkins = m_defaultSkins;
+    m_defaultAppearances = ElementMetadataRegistry::metadata(ElementType::Led).defaultAppearances;
+    m_alternativeAppearances = m_defaultAppearances;
     setPixmap(0);
 
     setHasColors(true);
@@ -129,7 +129,7 @@ int Led::colorIndex()
 
     int index2 = 0;
 
-    // Map the encoded value to a skin list index depending on how many inputs
+    // Map the encoded value to an appearance list index depending on how many inputs
     // the LED has. Multi-input LEDs use a fixed color palette (indices 10-25);
     // single-input LEDs offset by m_colorIndex to pick the user-selected color.
     // For 2-input, index 3 (both on) maps to index 25 (white "on") rather than
@@ -157,7 +157,7 @@ void Led::setColor(const QString &color)
 {
     m_color = color;
 
-    // m_colorIndex is the base offset into the single-input skin list.
+    // m_colorIndex is the base offset into the single-input appearance list.
     // Each color occupies two consecutive entries: [base]=Off, [base+1]=On.
     if (color == "White")  { m_colorIndex = 0; }
     if (color == "Red")    { m_colorIndex = 2; }
@@ -221,23 +221,23 @@ void Led::updatePortsProperties()
     GraphicElement::updatePortsProperties();
 }
 
-void Led::setSkin(const bool useDefaultSkin, const QString &fileName)
+void Led::setAppearance(const bool useDefaultAppearance, const QString &fileName)
 {
     const int index = colorIndex();
 
-    if (useDefaultSkin) {
-        m_alternativeSkins = m_defaultSkins;
+    if (useDefaultAppearance) {
+        m_alternativeAppearances = m_defaultAppearances;
     } else {
-        // Replace only the skin for the currently active color/state, so other
+        // Replace only the appearance for the currently active color/state, so other
         // color states continue to use their default images.
-        m_alternativeSkins[index] = fileName;
+        m_alternativeAppearances[index] = fileName;
     }
 
-    m_usingDefaultSkin = useDefaultSkin;
+    m_usingDefaultAppearance = useDefaultAppearance;
     setPixmap(index);
 }
 
-QList<QPair<int, QString>> Led::skinStates() const
+QList<QPair<int, QString>> Led::appearanceStates() const
 {
     QList<QPair<int, QString>> states;
 

@@ -16,7 +16,7 @@ struct ElementInfo<Xor> {
         .maxInputSize = 8,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
     };
     static_assert(validate(constraints));
 
@@ -27,8 +27,8 @@ struct ElementInfo<Xor> {
         meta.titleText = QT_TRANSLATE_NOOP("Xor", "XOR");
         meta.translatedName = QT_TRANSLATE_NOOP("Xor", "Xor");
         meta.trContext = "Xor";
-        // Seed skin lists from the constructor-supplied pixmap path (see And.cpp for details).
-        meta.defaultSkins = QStringList({":/Components/Logic/xor.svg"});
+        // Seed appearance lists from the constructor-supplied pixmap path (see And.cpp for details).
+        meta.defaultAppearances = QStringList({":/Components/Logic/xor.svg"});
         return meta;
     }
 

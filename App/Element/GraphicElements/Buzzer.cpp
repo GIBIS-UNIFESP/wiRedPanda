@@ -21,7 +21,7 @@ struct ElementInfo<Buzzer> {
         .group = ElementGroup::Output,
         .minInputSize = 1,
         .maxInputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
         .hasFrequency = true,
         .hasLabel = true,
         .hasVolume = true,
@@ -36,7 +36,7 @@ struct ElementInfo<Buzzer> {
         meta.titleText = QT_TRANSLATE_NOOP("Buzzer", "BUZZER");
         meta.translatedName = QT_TRANSLATE_NOOP("Buzzer", "Buzzer");
         meta.trContext = "Buzzer";
-        meta.defaultSkins = QStringList({
+        meta.defaultAppearances = QStringList({
             ":/Components/Output/Buzzer/BuzzerOff.svg",
             ":/Components/Output/Buzzer/BuzzerOn.svg",
         });

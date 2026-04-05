@@ -21,7 +21,7 @@ SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &element
     // Start all flags true; AND-reduce over the selection below.
     c.hasAudioBox = c.hasAudio = c.hasColors = c.hasDelay = c.hasElements = true;
     c.hasFrequency = c.hasLabel = c.hasOnlyInputs = c.hasLatchedValue = c.hasWirelessMode = c.hasTrigger = c.hasTruthTable = c.hasVolume = true;
-    c.canChangeSkin = c.canMorph = true;
+    c.canChangeAppearance = c.canMorph = true;
     c.isFileBacked = c.isEmbedded = (firstElement->elementType() == ElementType::IC);
     c.hasSameAudio = c.hasSameColors = c.hasSameDelay = c.hasSameFrequency = c.hasSameVolume = true;
     c.hasSameInputSize = c.hasSameLabel = c.hasSameOutputSize = true;
@@ -37,7 +37,7 @@ SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &element
 
         c.hasTruthTable &= elm->hasTruthTable();
         c.hasLabel      &= elm->hasLabel();
-        c.canChangeSkin &= elm->canChangeSkin();
+        c.canChangeAppearance &= elm->canChangeAppearance();
         c.hasColors     &= elm->hasColors();
         c.hasAudio      &= elm->hasAudio();
         c.hasAudioBox   &= elm->hasAudioBox();

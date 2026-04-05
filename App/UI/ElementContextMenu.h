@@ -40,8 +40,8 @@ namespace ElementContextMenu {
  * \param sendCommand      Callback that pushes a command onto the undo stack.
  * \param onRename         Callback for the Rename action (focuses the label field).
  * \param onTriggerChange  Callback for the Change Trigger action (focuses the trigger field).
- * \param onSkinChange     Callback for the Change Skin action (opens a file dialog).
- * \param onSkinRevert     Callback for the Set Skin to Default action.
+ * \param onAppearanceChange     Callback for the Change Appearance action (opens a file dialog).
+ * \param onAppearanceRevert     Callback for the Set Appearance to Default action.
  * \param onFrequencyFocus Callback for the Change Frequency action (focuses the spinbox).
  * \param onEditSubcircuit Callback for the Edit Subcircuit action (opens the IC editor).
  * \param onEmbedSubcircuit Callback for the Embed Subcircuit action (inlines the IC into the parent circuit).
@@ -56,8 +56,8 @@ void exec(QPoint screenPos,
           const std::function<void(QUndoCommand *)> &sendCommand,
           const std::function<void()> &onRename,
           const std::function<void()> &onTriggerChange,
-          const std::function<void()> &onSkinChange,
-          const std::function<void()> &onSkinRevert,
+          const std::function<void()> &onAppearanceChange,
+          const std::function<void()> &onAppearanceRevert,
           const std::function<void()> &onFrequencyFocus,
           const std::function<void()> &onEditSubcircuit = {},
           const std::function<void()> &onEmbedSubcircuit = {},

@@ -169,7 +169,7 @@ private:
 
 /**
  * \class UpdateCommand
- * \brief Undo command for property changes (label, color, frequency, skin, etc.).
+ * \brief Undo command for property changes (label, color, frequency, appearance, etc.).
  *
  * \details Captures the pre-change state in \a oldData; the post-change state
  * is serialized from the elements at construction time.
