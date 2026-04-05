@@ -513,7 +513,7 @@ void TestICInline::testRegistryClearBlobs()
 void TestICInline::testDefinitionFromFile()
 {
     const QString path = m_fixtureDir + "/simple_and.panda";
-    ICDefinition def = ICDefinition::fromFile(path, m_fixtureDir);
+    ICDefinition def = ICDefinition::fromFile(path);
 
     QVERIFY(def.isValid());
     QVERIFY(!def.blobBytes().isEmpty());
@@ -4888,7 +4888,7 @@ void TestICInline::testICDefinitionPortCountLabelMismatch()
         f.write(tampered);
     }
 
-    ICDefinition def = ICDefinition::fromFile(tamperedPath, m_fixtureDir);
+    ICDefinition def = ICDefinition::fromFile(tamperedPath);
 
     QVERIFY(def.isValid());
     QCOMPARE(def.inputCount(), 5);
