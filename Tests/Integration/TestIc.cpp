@@ -205,8 +205,8 @@ void TestIC::testICSaveLoad()
 
     try {
         workspace1.save(tempPath);
-    } catch (...) {
-        QFAIL("WorkSpace::save() should not throw exception");
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("WorkSpace::save() should not throw exception: %1").arg(e.what())));
         return;
     }
 
@@ -842,9 +842,9 @@ void TestIC::testICFileMigrationCreatesBackup()
     IC ic;
     try {
         ic.loadFile(subName, tempDir.path());
-    } catch (...) {
+    } catch (const std::exception &e) {
         Application::migrationEnabled = false;
-        QFAIL("IC::loadFile should not throw on a valid old-format file");
+        QFAIL(qPrintable(QString("IC::loadFile should not throw on a valid old-format file: %1").arg(e.what())));
     }
     Application::migrationEnabled = false;
 
@@ -875,9 +875,9 @@ void TestIC::testICFileMigrationUpdatesSubcircuitVersion()
     IC ic;
     try {
         ic.loadFile(subName, tempDir.path());
-    } catch (...) {
+    } catch (const std::exception &e) {
         Application::migrationEnabled = false;
-        QFAIL("IC::loadFile should not throw on a valid old-format file");
+        QFAIL(qPrintable(QString("IC::loadFile should not throw on a valid old-format file: %1").arg(e.what())));
     }
     Application::migrationEnabled = false;
 
@@ -917,8 +917,8 @@ void TestIC::testICFileMigrationDisabledSkips()
     IC ic;
     try {
         ic.loadFile(subName, tempDir.path());
-    } catch (...) {
-        QFAIL("IC::loadFile should not throw on a valid old-format file");
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("IC::loadFile should not throw on a valid old-format file: %1").arg(e.what())));
     }
 
     // No backup file must exist
