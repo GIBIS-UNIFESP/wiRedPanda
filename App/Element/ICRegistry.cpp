@@ -243,14 +243,7 @@ int ICRegistry::embedICsByFile(const QString &fileName, const QByteArray &fileBy
             updated.append(elm);
         }
     } catch (...) {
-        // Roll back already-updated elements from the oldData snapshot
-        QDataStream rollback(&const_cast<QByteArray &>(oldData), QIODevice::ReadOnly);
-        const auto version = Serialization::readPandaHeader(rollback);
-        QMap<quint64, QNEPort *> portMap;
-        auto ctx = m_scene->deserializationContext(portMap, version);
-        for (auto *elm : std::as_const(updated)) {
-            elm->load(rollback, ctx);
-        }
+        rollbackElements(updated, oldData);
         removeBlob(blobName);
         throw;
     }
@@ -293,13 +286,7 @@ int ICRegistry::extractToFile(const QString &blobName, const QString &filePath)
             updated.append(elm);
         }
     } catch (...) {
-        QDataStream rollback(&const_cast<QByteArray &>(oldData), QIODevice::ReadOnly);
-        const auto version = Serialization::readPandaHeader(rollback);
-        QMap<quint64, QNEPort *> portMap;
-        auto ctx = m_scene->deserializationContext(portMap, version);
-        for (auto *elm : std::as_const(updated)) {
-            elm->load(rollback, ctx);
-        }
+        rollbackElements(updated, oldData);
         throw;
     }
 
@@ -310,6 +297,18 @@ int ICRegistry::extractToFile(const QString &blobName, const QString &filePath)
     cmd->setBlobName(blobName);
     m_scene->undoStack()->push(cmd);
     return static_cast<int>(targets.size());
+}
+
+void ICRegistry::rollbackElements(const QList<GraphicElement *> &elements, const QByteArray &snapshot)
+{
+    QByteArray data(snapshot);
+    QDataStream stream(&data, QIODevice::ReadOnly);
+    const auto version = Serialization::readPandaHeader(stream);
+    QMap<quint64, QNEPort *> portMap;
+    auto ctx = m_scene->deserializationContext(portMap, version);
+    for (auto *elm : elements) {
+        elm->load(stream, ctx);
+    }
 }
 
 void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visited)
