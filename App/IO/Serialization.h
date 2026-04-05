@@ -8,6 +8,7 @@
 #pragma once
 
 #include <QCoreApplication>
+#include <QFileInfo>
 #include <QMap>
 #include <QString>
 #include <QVersionNumber>
@@ -113,6 +114,15 @@ public:
 
     /// Serializes embedded ICs into a metadata map (sets the "embeddedICs" key).
     static void serializeBlobRegistry(const QMap<QString, QByteArray> &blobs, QMap<QString, QVariant> &metadata);
+
+    // --- File Utilities ---
+
+    /**
+     * \brief Copies a .panda file and its file-backed IC dependencies to \a destPath.
+     * \param srcPath  Source .panda file info.
+     * \param destPath Destination .panda file info.
+     */
+    static void copyPandaFile(const QFileInfo &srcPath, const QFileInfo &destPath);
 
     // --- Magic Headers ---
 
