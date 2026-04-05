@@ -15,7 +15,6 @@
 #include "App/IO/VersionInfo.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
-#include "App/Simulation/SimulationBlocker.h"
 #include "App/Versions.h"
 
 ICRegistry::ICRegistry(Scene *scene)
@@ -24,11 +23,6 @@ ICRegistry::ICRegistry(Scene *scene)
 {
     connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged,
             this, &ICRegistry::onFileChanged);
-}
-
-bool ICRegistry::has(const QString &filePath) const
-{
-    return m_definitions.contains(filePath);
 }
 
 const ICDefinition *ICRegistry::definition(const QString &filePath)
@@ -53,11 +47,12 @@ void ICRegistry::watchFile(const QString &filePath)
 
 QList<GraphicElement *> ICRegistry::findICsByFile(const QString &fileName) const
 {
+    const QFileInfo target(fileName);
     QList<GraphicElement *> result;
     for (auto *elm : m_scene->elements()) {
         if (elm->elementType() == ElementType::IC) {
             auto *ic = static_cast<IC *>(elm);
-            if (QFileInfo(ic->file()) == QFileInfo(fileName)) {
+            if (QFileInfo(ic->file()) == target) {
                 result.append(elm);
             }
         }

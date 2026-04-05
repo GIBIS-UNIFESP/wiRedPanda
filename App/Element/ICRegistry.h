@@ -33,9 +33,6 @@ class ICRegistry : public QObject
 public:
     explicit ICRegistry(Scene *scene);
 
-    /// Returns true if a definition for \a filePath is cached.
-    bool has(const QString &filePath) const;
-
     /// Returns the cached definition, or loads it from disk. Returns nullptr on failure.
     const ICDefinition *definition(const QString &filePath);
 
