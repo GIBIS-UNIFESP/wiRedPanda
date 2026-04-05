@@ -135,7 +135,7 @@ private:
 
     // --- Members ---
 
-    Theme m_theme = Theme::Light;
+    Theme m_theme = Theme::System;
     ThemeAttributes m_attributes;
 };
 
