@@ -8,11 +8,17 @@
 QSettings *Settings::settingsInstance()
 {
     if (!Settings::settings) {
+#ifdef Q_OS_WASM
+        // On WebAssembly, NativeFormat maps directly to browser localStorage,
+        // providing persistent storage across sessions without filesystem sync.
+        Settings::settings = new QSettings(QSettings::NativeFormat, QSettings::UserScope, "GIBIS-UNIFESP", "wiRedPanda");
+#else
         // IniFormat produces a human-readable text file rather than the platform registry
         // (Windows) or plist (macOS), making it easy to inspect and version-control settings.
         // UserScope stores the file in the user's home/config directory so that multiple
         // system users don't share the same preference file.
         Settings::settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "GIBIS-UNIFESP", "wiRedPanda");
+#endif
     }
     return Settings::settings;
 }
