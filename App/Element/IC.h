@@ -130,7 +130,6 @@ private:
     void processLoadedItems(const QList<QGraphicsItem *> &items);
     void loadBoundaryElement(GraphicElement *elm, bool isInput);
     void loadBoundaryPorts(bool isInput, const QVector<QString> &labels);
-    static void buildPortLabels(const QVector<QNEPort *> &ports, QVector<QString> &labels);
 
     // --- Visual helpers ---
 
