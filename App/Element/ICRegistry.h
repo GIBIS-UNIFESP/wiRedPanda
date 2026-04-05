@@ -37,7 +37,7 @@ public:
     bool has(const QString &filePath) const;
 
     /// Returns the cached definition, or loads it from disk. Returns nullptr on failure.
-    const ICDefinition *definition(const QString &filePath, const QString &contextDir);
+    const ICDefinition *definition(const QString &filePath);
 
     /// Invalidates a cached definition (e.g., after file change).
     void invalidate(const QString &filePath);
