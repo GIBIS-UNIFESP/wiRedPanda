@@ -1,0 +1,12 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/Fonts">
+        <file>NotoSansArabic-Regular.ttf</file>
+        <file>NotoSansBengali-Regular.ttf</file>
+        <file>NotoSansDevanagari-Regular.ttf</file>
+        <file>NotoSansHebrew-Regular.ttf</file>
+        <file>NotoSansKR-Regular.ttf</file>
+        <file>NotoSansSC-Regular.ttf</file>
+        <file>NotoSansThai-Regular.ttf</file>
+    </qresource>
+</RCC>

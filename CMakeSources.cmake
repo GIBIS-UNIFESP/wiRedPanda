@@ -217,6 +217,12 @@ set(RESOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Translations/Translations.qrc
 )
 
+if(EMSCRIPTEN)
+    list(APPEND RESOURCES
+        ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Fonts/Fonts.qrc
+    )
+endif()
+
 set(TEST_UTILS_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TestUtils.cpp
 )
