@@ -123,6 +123,7 @@ jobs:
                  appimage/usr/lib \
                  appimage/usr/share/applications \
                  appimage/usr/share/icons/hicolor/scalable/apps \
+                 appimage/usr/share/icons/hicolor/256x256/apps \
                  appimage/usr/share/wiredpanda
 
         cp build/wiredpanda appimage/usr/bin/
@@ -134,9 +135,8 @@ jobs:
         cp App/Resources/Freedesktop/wiredpanda.desktop appimage/usr/share/applications/wiredpanda.desktop
         sed -i "s/@VERSION@/$VERSION/g;s/@PROJECT_VERSION@/$VERSION/g" appimage/usr/share/applications/wiredpanda.desktop
 
-        # Only the SVG is placed here; go-appimage converts it to a proper 256x256
-        # PNG for .DirIcon. wpanda.png in Logos/ is only 64x64 and must not be used.
         cp App/Resources/Assets/Logos/wpanda.svg appimage/usr/share/icons/hicolor/scalable/apps/wpanda.svg
+        cp App/Resources/Assets/Logos/wpanda-256x256.png appimage/usr/share/icons/hicolor/256x256/apps/wpanda.png
 
         wget -q "https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous \
           -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)" \
@@ -260,6 +260,15 @@ jobs:
           echo "✓ Examples directory present with $EXAMPLE_COUNT files"
         else
           echo "Warning: Examples directory missing"
+        fi
+
+        # Verify .DirIcon is a valid PNG (not SVG) so file managers show the app icon
+        if file squashfs-root/.DirIcon | grep -q "PNG image"; then
+          echo "✓ .DirIcon is a valid PNG"
+        else
+          echo "Error: .DirIcon is not a PNG — file manager will show a generic icon"
+          file squashfs-root/.DirIcon
+          exit 1
         fi
 
         echo "AppImage build quality validation completed successfully"
