@@ -368,9 +368,7 @@ void MainWindow::connectSceneAction(QAction *action, void (Scene::*method)())
     });
 }
 
-MainWindow::~MainWindow()
-{
-}
+MainWindow::~MainWindow() = default;
 
 void MainWindow::loadAutosaveFiles()
 {
