@@ -88,13 +88,11 @@ void TestElementFactory::testMetadataLogicCreator()
     };
 
     for (const auto type : typesToTest) {
-        auto *graphicElem = ElementFactory::buildElement(type);
+        auto graphicElem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(type));
         QVERIFY2(graphicElem != nullptr, qPrintable(QString("Failed to build graphic element: %1").arg(ElementFactory::typeToText(type))));
 
         const auto &meta = ElementMetadataRegistry::metadata(type);
         QVERIFY2(meta.type == type, "Metadata type should match requested type");
-
-        delete graphicElem;
     }
 }
 
@@ -165,24 +163,23 @@ void TestElementFactory::testTypeToTextBidirectional()
 void TestElementFactory::testItemRegistry()
 {
     Scene scene;
-    auto *elem = ElementFactory::buildElement(ElementType::And);
+    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(elem != nullptr);
 
     // Before adding to scene, ID is -1 (unassigned)
     QCOMPARE(elem->id(), -1);
 
-    scene.addItem(elem);
+    scene.addItem(elem.get());
     const int id = elem->id();
     QVERIFY2(id > 0, "Element ID should be positive after adding to scene");
 
     // Verify scene registry contains item
     QVERIFY2(scene.contains(id), qPrintable(QString("Registry missing ID: %1").arg(id)));
-    QCOMPARE(scene.itemById(id), elem);
+    QCOMPARE(scene.itemById(id), elem.get());
 
     // Remove and verify
-    scene.removeItem(elem);
+    scene.removeItem(elem.get());
     QVERIFY2(!scene.contains(id), "Item should be removed from registry after removal from scene");
-    delete elem;
 }
 
 void TestElementFactory::testUniqueIdAssignment()
@@ -273,15 +270,11 @@ void TestElementFactory::testSceneCounterIndependence()
     }
 
     // scene1 counter is at 5; scene2 counter is still at 0
-    auto *elm2 = ElementFactory::buildElement(ElementType::Or);
-    scene2.addItem(elm2);
+    auto elm2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Or));
+    scene2.addItem(elm2.get());
 
     // scene2 should start its own counter from 1, not from 6
     QCOMPARE(elm2->id(), 1);
-
-    // Cleanup
-    qDeleteAll(s1elements);
-    delete elm2;
 }
 
 void TestElementFactory::testMetadataRegistry()

@@ -5,6 +5,7 @@
 
 #include <cstdio>
 #include <functional>
+#include <memory>
 #include <vector>
 
 #include <QObject>
@@ -41,7 +42,7 @@ inline int runTestSuite(int argc, char **argv, const std::vector<TestEntry> &tes
     // Global -functions: list all test functions across all classes as ClassName::method()
     if (argc == 2 && QString(argv[1]) == "-functions") {
         for (const auto &entry : tests) {
-            QObject *t = entry.create();
+            auto t = std::unique_ptr<QObject>(entry.create());
             const QMetaObject *mo = t->metaObject();
             for (int i = mo->methodOffset(); i < mo->methodCount(); ++i) {
                 const QMetaMethod m = mo->method(i);
@@ -53,7 +54,6 @@ inline int runTestSuite(int argc, char **argv, const std::vector<TestEntry> &tes
                     continue;
                 printf("%s::%s\n", entry.name, sig.constData());
             }
-            delete t;
         }
         return 0;
     }
@@ -63,11 +63,9 @@ inline int runTestSuite(int argc, char **argv, const std::vector<TestEntry> &tes
         const QString className = argv[1];
         for (const auto &entry : tests) {
             if (className == entry.name) {
-                QObject *t = entry.create();
+                auto t = std::unique_ptr<QObject>(entry.create());
                 // Pass remaining args (after class name) to QTest
-                const int result = QTest::qExec(t, argc - 1, argv + 1);
-                delete t;
-                return result;
+                return QTest::qExec(t.get(), argc - 1, argv + 1);
             }
         }
 
@@ -85,9 +83,8 @@ inline int runTestSuite(int argc, char **argv, const std::vector<TestEntry> &tes
     // No class filter: run all classes in registration order
     int status = 0;
     for (const auto &entry : tests) {
-        QObject *t = entry.create();
-        status |= QTest::qExec(t, argc, argv);
-        delete t;
+        auto t = std::unique_ptr<QObject>(entry.create());
+        status |= QTest::qExec(t.get(), argc, argv);
     }
     return status;
 }
