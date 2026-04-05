@@ -31,10 +31,10 @@ bool ICRegistry::has(const QString &filePath) const
     return m_definitions.contains(filePath);
 }
 
-const ICDefinition *ICRegistry::definition(const QString &filePath, const QString &contextDir)
+const ICDefinition *ICRegistry::definition(const QString &filePath)
 {
     if (!m_definitions.contains(filePath)) {
-        m_definitions[filePath] = ICDefinition::fromFile(filePath, contextDir);
+        m_definitions[filePath] = ICDefinition::fromFile(filePath);
     }
     return &m_definitions[filePath];
 }

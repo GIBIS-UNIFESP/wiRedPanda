@@ -30,11 +30,10 @@ public:
 
     /**
      * \brief Constructs a definition by reading metadata from a .panda file.
-     * \param filePath   Path to the .panda file.
-     * \param contextDir Directory used to resolve relative IC references inside the file.
+     * \param filePath Path to the .panda file.
      * \return A valid ICDefinition on success, or an invalid one on failure.
      */
-    static ICDefinition fromFile(const QString &filePath, const QString &contextDir);
+    static ICDefinition fromFile(const QString &filePath);
 
     /// Returns the full .panda file bytes (header + metadata + elements + connections).
     const QByteArray &blobBytes() const { return m_blobBytes; }

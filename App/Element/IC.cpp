@@ -296,7 +296,7 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
     // Delegate file I/O, cycle detection, migration to ICRegistry if available
     if (auto *scene_ = qobject_cast<Scene *>(scene())) {
         auto *reg = scene_->icRegistry();
-        const ICDefinition *def = reg->definition(fileInfo.absoluteFilePath(), fileInfo.absolutePath());
+        const ICDefinition *def = reg->definition(fileInfo.absoluteFilePath());
         if (def && def->isValid()) {
             loadFromDefinition(def, fileInfo.absolutePath());
             m_file = fileInfo.absoluteFilePath();  // restore after loadFromBlob clears it

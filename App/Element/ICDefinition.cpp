@@ -8,9 +8,8 @@
 
 #include "App/IO/Serialization.h"
 
-ICDefinition ICDefinition::fromFile(const QString &filePath, const QString &contextDir)
+ICDefinition ICDefinition::fromFile(const QString &filePath)
 {
-    Q_UNUSED(contextDir)
     ICDefinition def;
 
     QFile file(filePath);
