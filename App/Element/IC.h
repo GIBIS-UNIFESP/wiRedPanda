@@ -40,6 +40,12 @@ public:
     /// Copy-constructs by delegating to the parent item constructor.
     IC(const IC &other) : IC(other.parentItem()) {}
 
+signals:
+    /// Emitted on double-click to request opening the sub-circuit in a new tab.
+    void requestOpenSubCircuit(int elementId, const QString &blobName, const QString &filePath);
+
+public:
+
     /**
      * \brief Copies IC-related files from \a srcPath to \a destPath.
      * \param srcPath  Source .panda file info.
@@ -111,16 +117,17 @@ private:
     static void sortPorts(QVector<QNEPort *> &map);
 
     void loadFileDirectly(const QFileInfo &fileInfo);
+    void migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &items,
+                     const QVersionNumber &version, const QMap<QString, QByteArray> &fileRegistry);
+    void resetInternalState();
 
     // --- Loading helpers ---
 
     void processLoadedItems(const QList<QGraphicsItem *> &items);
-    void loadInputElement(GraphicElement *elm);
+    void loadBoundaryElement(GraphicElement *elm, bool isInput);
     void loadInputs();
-    void loadInputsLabels();
-    void loadOutputElement(GraphicElement *elm);
     void loadOutputs();
-    void loadOutputsLabels();
+    void buildPortLabels(const QVector<QNEPort *> &ports, QVector<QString> &labels);
 
     // --- Visual helpers ---
 

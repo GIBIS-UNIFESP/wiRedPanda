@@ -272,6 +272,9 @@ signals:
      */
     void truthTableElementChanged(GraphicElement *element);
 
+    /// Emitted when an IC element is double-clicked to request opening its sub-circuit.
+    void icOpenRequested(int elementId, const QString &blobName, const QString &filePath);
+
 protected:
     // --- Qt event overrides ---
 

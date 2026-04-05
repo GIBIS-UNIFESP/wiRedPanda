@@ -1075,6 +1075,15 @@ void MainWindow::connectTab()
     connect(m_nextSecndPropShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::nextSecndPropShortcut);
     connect(m_changePrevElmShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::prevElm);
     connect(m_changeNextElmShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::nextElm);
+    connect(m_currentTab->scene(), &Scene::icOpenRequested, this, [this](int elementId, const QString &blobName, const QString &filePath) {
+        if (!blobName.isEmpty()) {
+            if (m_currentTab) {
+                openICInTab(blobName, elementId, m_currentTab->scene()->icRegistry()->blob(blobName));
+            }
+        } else if (!filePath.isEmpty()) {
+            loadPandaFile(filePath);
+        }
+    });
 
     if (m_ui->actionPlay->isChecked()) {
         qCDebug(zero) << "Restarting simulation.";

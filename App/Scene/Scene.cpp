@@ -98,7 +98,7 @@ void Scene::addItem(QGraphicsItem *item)
         registerItem(iwid);
     }
 
-    // Register file-backed ICs for file watching
+    // Register IC-specific hooks
     if (item->type() == GraphicElement::Type) {
         if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
             elm && elm->elementType() == ElementType::IC) {
@@ -106,6 +106,7 @@ void Scene::addItem(QGraphicsItem *item)
             if (!ic->file().isEmpty()) {
                 m_icRegistry.watchFile(ic->file());
             }
+            connect(ic, &IC::requestOpenSubCircuit, this, &Scene::icOpenRequested);
         }
     }
 }

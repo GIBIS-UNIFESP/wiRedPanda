@@ -88,6 +88,29 @@ public:
     /// Must be called after buildConnectionGraph() so wireless always wins, and before sort().
     static void connectWirelessElements(const QVector<GraphicElement *> &elements);
 
+    /// Builds a label→element map for wireless Tx nodes. First Tx per label wins.
+    static QHash<QString, GraphicElement *> buildTxMap(const QVector<GraphicElement *> &elements);
+
+    /// Builds a successor adjacency list from connection graph + wireless Tx→Rx edges.
+    static QHash<GraphicElement *, QVector<GraphicElement *>> buildSuccessorGraph(
+        const QVector<GraphicElement *> &elements,
+        const QHash<QString, GraphicElement *> &txMap);
+
+    /// Result of topological sort with feedback detection.
+    struct SortResult {
+        QVector<GraphicElement *> sorted;                ///< Elements in priority order (highest first).
+        QHash<GraphicElement *, int> priorities;          ///< Priority per element.
+        QSet<GraphicElement *> feedbackNodes;             ///< Elements in feedback loops.
+    };
+
+    /// Topologically sorts elements using the successor graph, detects feedback loops.
+    static SortResult topologicalSort(const QVector<GraphicElement *> &elements,
+                                      const QHash<GraphicElement *, QVector<GraphicElement *>> &successors);
+
+    /// Runs updateLogic() iteratively on \a elements until outputs converge or \a maxIterations is reached.
+    /// \return \c true if the circuit converged.
+    static bool iterativeSettle(const QVector<GraphicElement *> &elements, int maxIterations = 10);
+
 signals:
     /// Emitted (at most once per initialize()) when a feedback circuit fails to converge.
     void simulationWarning(const QString &message);
