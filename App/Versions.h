@@ -36,6 +36,14 @@ inline const QVersionNumber V_4_7 = QVersionNumber(4, 7);
 
 } // namespace Versions
 
+/// File-format version, independent of the application release version.
+/// Only incremented when the on-disk binary format actually changes.
+namespace FileVersion {
+
+inline const QVersionNumber current = Versions::V_4_7;
+
+} // namespace FileVersion
+
 /// Application version derived from the CMake-defined APP_VERSION string.
 namespace AppVersion {
 

@@ -20,7 +20,7 @@ void Serialization::writePandaHeader(QDataStream &stream)
 {
     stream.setVersion(QDataStream::Qt_5_12);
     stream << MAGIC_HEADER_CIRCUIT;
-    stream << AppVersion::current;
+    stream << FileVersion::current;
 }
 
 QVersionNumber Serialization::readPandaHeader(QDataStream &stream)
@@ -78,7 +78,7 @@ void Serialization::writeDolphinHeader(QDataStream &stream)
 {
     stream.setVersion(QDataStream::Qt_5_12);
     stream << MAGIC_HEADER_WAVEFORM;
-    stream << AppVersion::current;
+    stream << FileVersion::current;
 }
 
 void Serialization::readDolphinHeader(QDataStream &stream)
