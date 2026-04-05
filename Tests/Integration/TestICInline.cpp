@@ -25,7 +25,6 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Element/ICDefinition.h"
 #include "App/Element/ICRegistry.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -510,18 +509,6 @@ void TestICInline::testRegistryClearBlobs()
     QVERIFY(reg->blobMapRef().isEmpty());
 }
 
-void TestICInline::testDefinitionFromFile()
-{
-    const QString path = m_fixtureDir + "/simple_and.panda";
-    ICDefinition def = ICDefinition::fromFile(path);
-
-    QVERIFY(def.isValid());
-    QVERIFY(!def.blobBytes().isEmpty());
-    // Note: port metadata in the metadata section is only populated when IC::loadFile
-    // migrates the file. Files migrated via Workspace have empty metadata.
-    // The blob bytes are always valid regardless.
-}
-
 // ===========================================================================
 // Migrated: Batch 1 — Core load/embed/extract
 // ===========================================================================
@@ -536,7 +523,7 @@ void TestICInline::testLoadFromBlob()
     QVERIFY(fileBacked.inputSize() > 0);
     QVERIFY(fileBacked.outputSize() > 0);
 
-    // Blob-backed via ICDefinition
+    // Blob-backed
     QByteArray blob = readFile(path);
     QVERIFY(!blob.isEmpty());
 
@@ -4854,46 +4841,6 @@ void TestICInline::testSaveLoadOrphanBlobPreserved()
     QVERIFY2(ws2.scene()->icRegistry()->hasBlob("orphan_blob"),
              "Orphan blob should survive save/load round-trip");
     QCOMPARE(ws2.scene()->icRegistry()->blob("orphan_blob"), blob);
-}
-
-void TestICInline::testICDefinitionPortCountLabelMismatch()
-{
-    // ICDefinition::fromFile() reads inputCount and inputLabels independently.
-    // If the metadata is inconsistent (more ports than labels), the definition
-    // must still be valid and not crash.
-    QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
-    QVERIFY(!blob.isEmpty());
-
-    // Parse the blob, tamper the metadata, and write it back
-    QDataStream readStream(&blob, QIODevice::ReadOnly);
-    auto preamble = Serialization::readPreamble(readStream);
-    const QByteArray elements = blob.mid(readStream.device()->pos());
-
-    // Set inputCount to 5 but only provide 2 labels
-    auto metadata = preamble.metadata;
-    metadata["inputCount"] = 5;
-    metadata["inputLabels"] = QStringList{"A", "B"};
-
-    QByteArray tampered;
-    QDataStream writeStream(&tampered, QIODevice::WriteOnly);
-    Serialization::writePandaHeader(writeStream);
-    writeStream << metadata;    // V4.6+: metadata immediately after header
-    writeStream.writeRawData(elements.constData(), static_cast<int>(elements.size()));
-
-    // Write to file and load as ICDefinition
-    const QString tamperedPath = m_fixtureDir + "/tampered_ic.panda";
-    {
-        QFile f(tamperedPath);
-        QVERIFY(f.open(QIODevice::WriteOnly));
-        f.write(tampered);
-    }
-
-    ICDefinition def = ICDefinition::fromFile(tamperedPath);
-
-    QVERIFY(def.isValid());
-    QCOMPARE(def.inputCount(), 5);
-    // Labels vector should have only 2 entries (from metadata), not 5
-    QCOMPARE(def.inputLabels().size(), 2);
 }
 
 void TestICInline::testReconnectConnectionsSkipsDeletedElement()
