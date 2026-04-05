@@ -8,8 +8,51 @@
 #include <QResource>
 #include <QTranslator>
 
+#ifdef Q_OS_WASM
+#include <QFontDatabase>
+#endif
+
 #include "App/Core/Application.h"
 #include "App/Core/Settings.h"
+
+#ifdef Q_OS_WASM
+/// Loads the Noto Sans font for the given language if it hasn't been loaded yet.
+static void loadFontForLanguage(const QString &language)
+{
+    // Map language codes to their required font resource paths.
+    // Languages using Latin, Cyrillic, or Greek scripts are covered by Qt's built-in font.
+    static const QMap<QString, QString> kFontMap = {
+        {"ar",      ":/Fonts/NotoSansArabic-Regular.ttf"},
+        {"fa",      ":/Fonts/NotoSansArabic-Regular.ttf"},
+        {"he",      ":/Fonts/NotoSansHebrew-Regular.ttf"},
+        {"hi",      ":/Fonts/NotoSansDevanagari-Regular.ttf"},
+        {"bn",      ":/Fonts/NotoSansBengali-Regular.ttf"},
+        {"th",      ":/Fonts/NotoSansThai-Regular.ttf"},
+        {"ja",      ":/Fonts/NotoSansSC-Regular.ttf"},
+        {"zh_Hans", ":/Fonts/NotoSansSC-Regular.ttf"},
+        {"zh_Hant", ":/Fonts/NotoSansSC-Regular.ttf"},
+        {"ko",      ":/Fonts/NotoSansKR-Regular.ttf"},
+    };
+
+    const QString fontPath = kFontMap.value(language);
+    if (fontPath.isEmpty()) {
+        return;
+    }
+
+    // Track already-loaded fonts to avoid redundant loads.
+    static QSet<QString> loadedFonts;
+    if (loadedFonts.contains(fontPath)) {
+        return;
+    }
+
+    if (QFontDatabase::addApplicationFont(fontPath) != -1) {
+        loadedFonts.insert(fontPath);
+        qDebug() << "Loaded WASM font:" << fontPath << "for language" << language;
+    } else {
+        qWarning() << "Failed to load WASM font:" << fontPath << "for language" << language;
+    }
+}
+#endif
 
 LanguageManager::LanguageManager(QObject *parent)
     : QObject(parent)
@@ -30,6 +73,10 @@ void LanguageManager::loadTranslation(const QString &language)
     }
 
     Settings::setLanguage(language);
+
+#ifdef Q_OS_WASM
+    loadFontForLanguage(language);
+#endif
 
     // Always recreate translators rather than re-loading; Qt does not guarantee
     // that calling load() on an existing translator re-emits languageChanged.
