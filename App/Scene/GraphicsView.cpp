@@ -117,6 +117,7 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *event)
 void GraphicsView::wheelEvent(QWheelEvent *event)
 {
     const int zoomDirection = event->angleDelta().y();
+    bool zoomed = false;
 
     // When zoom is redirected (e.g., when a scroll-sensitive widget has focus),
     // emit signals instead of zooming so the parent can decide what to do
@@ -126,18 +127,22 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
         } else {
             zoomIn();
         }
+        zoomed = true;
     } else if (zoomDirection < 0 && canZoomOut()) {
         if (m_redirectZoom) {
             emit scaleOut();
         } else {
             zoomOut();
         }
+        zoomed = true;
     }
 
     // AnchorUnderMouse handles the scale transform, but scroll bars may shift after
     // the scale is applied; centerOn() corrects any residual drift so the scene point
     // that was under the cursor before the wheel event remains under it afterwards.
-    centerOn(mapToScene(event->position().toPoint()));
+    if (zoomed) {
+        centerOn(mapToScene(event->position().toPoint()));
+    }
 
     event->accept();
 }
