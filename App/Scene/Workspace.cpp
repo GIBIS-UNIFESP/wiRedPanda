@@ -15,7 +15,6 @@
 #include "App/Core/Common.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
-#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICRegistry.h"
@@ -259,37 +258,14 @@ void WorkSpace::save(QDataStream &stream)
         metadata["dolphinFileName"] = m_dolphinFileName;
     }
 
-    // Extract port metadata from Input/Output elements in the scene
-    {
-        int inputCount = 0, outputCount = 0;
-        QStringList inputLabels, outputLabels;
-        for (auto *elm : m_scene.elements()) {
-            if (elm->elementGroup() == ElementGroup::Input) {
-                for (int i = 0; i < elm->outputSize(); ++i) {
-                    ++inputCount;
-                    QString lb = elm->label().isEmpty() ? ElementFactory::translatedName(elm->elementType()) : elm->label();
-                    if (elm->outputSize() > 1 && !elm->outputPort(i)->name().isEmpty()) {
-                        lb += " " + elm->outputPort(i)->name();
-                    }
-                    inputLabels.append(lb);
-                }
-            } else if (elm->elementGroup() == ElementGroup::Output) {
-                for (int i = 0; i < elm->inputSize(); ++i) {
-                    ++outputCount;
-                    QString lb = elm->label().isEmpty() ? ElementFactory::translatedName(elm->elementType()) : elm->label();
-                    if (elm->inputSize() > 1 && !elm->inputPort(i)->name().isEmpty()) {
-                        lb += " " + elm->inputPort(i)->name();
-                    }
-                    outputLabels.append(lb);
-                }
-            }
-        }
-        if (inputCount > 0 || outputCount > 0) {
-            metadata["inputCount"] = inputCount;
-            metadata["outputCount"] = outputCount;
-            metadata["inputLabels"] = inputLabels;
-            metadata["outputLabels"] = outputLabels;
-        }
+    // Extract port metadata from Input/Output elements in the scene,
+    // sorted by Y/X position to match IC runtime port order.
+    const auto portMeta = IC::buildPortMetadata(m_scene.elements());
+    if (portMeta.inputCount > 0 || portMeta.outputCount > 0) {
+        metadata["inputCount"] = portMeta.inputCount;
+        metadata["outputCount"] = portMeta.outputCount;
+        metadata["inputLabels"] = portMeta.inputLabels;
+        metadata["outputLabels"] = portMeta.outputLabels;
     }
 
     Serialization::serializeBlobRegistry(m_scene.icRegistry()->blobMap(), metadata);
