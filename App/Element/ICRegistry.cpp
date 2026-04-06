@@ -128,12 +128,18 @@ void ICRegistry::renameBlob(const QString &oldName, const QString &newName)
 
     m_blobs[newName] = m_blobs.take(oldName);
 
-    // Update all IC instances referencing the old name
+    // Update all IC instances on the scene referencing the old name
     for (auto *elm : m_scene->elements()) {
         if (elm->isEmbedded() && elm->blobName() == oldName) {
             auto *ic = static_cast<IC *>(elm);
             ic->setBlobName(newName);
         }
+    }
+
+    // Update embedded IC references inside other blobs' metadata so that parent
+    // blobs that contain the renamed blob as a nested dependency stay consistent.
+    for (auto it = m_blobs.begin(); it != m_blobs.end(); ++it) {
+        renameBlobReference(it.value(), oldName, newName);
     }
 }
 
@@ -217,7 +223,7 @@ int ICRegistry::embedICsByFile(const QString &fileName, const QByteArray &fileBy
             updated.append(elm);
         }
     } catch (...) {
-        rollbackElements(updated, oldData);
+        rollbackElements(updated, oldData, m_scene);
         removeBlob(blobName);
         throw;
     }
@@ -260,7 +266,7 @@ int ICRegistry::extractToFile(const QString &blobName, const QString &filePath)
             updated.append(elm);
         }
     } catch (...) {
-        rollbackElements(updated, oldData);
+        rollbackElements(updated, oldData, m_scene);
         throw;
     }
 
@@ -273,13 +279,14 @@ int ICRegistry::extractToFile(const QString &blobName, const QString &filePath)
     return static_cast<int>(targets.size());
 }
 
-void ICRegistry::rollbackElements(const QList<GraphicElement *> &elements, const QByteArray &snapshot)
+void ICRegistry::rollbackElements(const QList<GraphicElement *> &elements, const QByteArray &snapshot,
+                                   Scene *scene)
 {
     QByteArray data(snapshot);
     QDataStream stream(&data, QIODevice::ReadOnly);
     const auto version = Serialization::readPandaHeader(stream);
     QMap<quint64, QNEPort *> portMap;
-    auto ctx = m_scene->deserializationContext(portMap, version);
+    auto ctx = scene->deserializationContext(portMap, version);
     for (auto *elm : elements) {
         elm->load(stream, ctx);
     }
@@ -327,6 +334,8 @@ void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visit
 
             QFileInfo fi(QDir(contextDir), fileName);
             if (!fi.exists()) {
+                qCWarning(zero) << "makeBlobSelfContained: dependency" << fileName
+                                << "not found for blob" << name << "— skipping.";
                 continue;
             }
 
@@ -363,6 +372,37 @@ void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visit
     writeStream.writeRawData(elements.constData(), static_cast<int>(elements.size()));
 
     blobs[name] = newBlob;
+}
+
+void ICRegistry::renameBlobReference(QByteArray &blobData, const QString &oldName, const QString &newName)
+{
+    QDataStream readStream(&blobData, QIODevice::ReadOnly);
+    const auto preamble = Serialization::readPreamble(readStream);
+
+    if (!VersionInfo::hasMetadata(preamble.version)) {
+        return;
+    }
+
+    auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata);
+    if (!embeddedICs.contains(oldName)) {
+        return;
+    }
+
+    // Rename the key in the embedded IC map
+    embeddedICs[newName] = embeddedICs.take(oldName);
+
+    // Re-serialize the blob with updated metadata
+    const QByteArray elements = blobData.mid(readStream.device()->pos());
+    auto metadata = preamble.metadata;
+    Serialization::serializeBlobRegistry(embeddedICs, metadata);
+
+    QByteArray newBlob;
+    QDataStream writeStream(&newBlob, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(writeStream);
+    writeStream << metadata;
+    writeStream.writeRawData(elements.constData(), static_cast<int>(elements.size()));
+
+    blobData = newBlob;
 }
 
 QByteArray ICRegistry::captureSnapshot(const QList<GraphicElement *> &targets)

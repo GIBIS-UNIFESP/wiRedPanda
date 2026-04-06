@@ -5177,3 +5177,146 @@ void TestICInline::testExtractToFileUsesContextDir()
     QVERIFY(!reg->hasBlob("ctx_extract"));
 }
 
+// ============================================================================
+// Edge cases: rollback, rename, and missing deps
+// ============================================================================
+
+void TestICInline::testChildBlobSavedPartialFailureRollback()
+{
+    // onChildICBlobSaved with a blob that fails partway through multiple targets
+    // must roll back all already-updated ICs and restore the original blob in the
+    // registry, leaving the scene in a consistent state.
+
+    QByteArray andBlob = readFile(m_fixtureDir + "/simple_and.panda");
+    QVERIFY(!andBlob.isEmpty());
+
+    WorkSpace ws;
+    ws.scene()->setContextDir(m_fixtureDir);
+    auto *reg = ws.scene()->icRegistry();
+    reg->setBlob("partial_test", andBlob);
+
+    QList<int> ids;
+    for (int i = 0; i < 3; ++i) {
+        auto *ic = new IC();
+        ic->setBlobName("partial_test");
+        ic->loadFromBlob(andBlob, m_fixtureDir);
+        ic->setPos(i * 100, 100);
+        ic->setLabel(QString("IC_%1").arg(i));
+        ws.scene()->addItem(ic);
+        ids.append(ic->id());
+    }
+
+    const int origInputs = static_cast<IC *>(ws.scene()->itemById(ids.at(0)))->inputSize();
+    const int stackBefore = ws.scene()->undoStack()->index();
+
+    // Use corrupt blob — triggers exception during loadFromBlob
+    QByteArray corruptBlob("corrupt");
+    bool threw = false;
+    try {
+        ws.onChildICBlobSaved(ids.at(0), corruptBlob);
+    } catch (...) {
+        threw = true;
+    }
+
+    // Exception must have been thrown (corrupt blob can't be parsed)
+    QVERIFY2(threw, "onChildICBlobSaved should throw on corrupt blob");
+
+    // No undo command pushed
+    QCOMPARE(ws.scene()->undoStack()->index(), stackBefore);
+
+    // All 3 ICs should be unchanged
+    for (int i = 0; i < 3; ++i) {
+        auto *ic = dynamic_cast<IC *>(ws.scene()->itemById(ids.at(i)));
+        QVERIFY2(ic, qPrintable(QString("IC %1 not found after rollback").arg(i)));
+        QCOMPARE(ic->inputSize(), origInputs);
+        QCOMPARE(ic->blobName(), QString("partial_test"));
+        QCOMPARE(ic->label(), QString("IC_%1").arg(i));
+    }
+
+    // Registry should have the original blob restored, not the corrupt one
+    QVERIFY(reg->hasBlob("partial_test"));
+    QCOMPARE(reg->blob("partial_test"), andBlob);
+}
+
+void TestICInline::testRenameBlobUpdatesNestedMetadata()
+{
+    // When renaming a blob, parent blobs that contain it as a nested dependency
+    // must have their internal metadata updated to reference the new name.
+
+    WorkSpace ws;
+    ws.scene()->setContextDir(m_fixtureDir);
+    auto *reg = ws.scene()->icRegistry();
+
+    // nested_and.panda references simple_and.panda. registerBlob flattens it.
+    QByteArray nestedBlob = readFile(m_fixtureDir + "/nested_and.panda");
+    QVERIFY(!nestedBlob.isEmpty());
+
+    reg->registerBlob("nested_and", nestedBlob);
+
+    // Verify simple_and is embedded inside nested_and
+    {
+        QByteArray blob = reg->blob("nested_and");
+        QDataStream stream(&blob, QIODevice::ReadOnly);
+        auto preamble = Serialization::readPreamble(stream);
+        auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata);
+        QVERIFY2(embeddedICs.contains("simple_and"),
+                 "simple_and should be inside nested_and before rename");
+    }
+
+    // Also add simple_and as a sibling blob so renameBlob can find it
+    QByteArray simpleBlob = readFile(m_fixtureDir + "/simple_and.panda");
+    reg->setBlob("simple_and", simpleBlob);
+
+    // Rename simple_and → renamed_and
+    reg->renameBlob("simple_and", "renamed_and");
+
+    // nested_and's internal metadata should now reference renamed_and, not simple_and
+    QByteArray updatedParent = reg->blob("nested_and");
+    QDataStream stream(&updatedParent, QIODevice::ReadOnly);
+    auto preamble = Serialization::readPreamble(stream);
+    auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata);
+
+    QVERIFY2(!embeddedICs.contains("simple_and"),
+             "simple_and should no longer appear in nested_and after rename");
+    QVERIFY2(embeddedICs.contains("renamed_and"),
+             "renamed_and should replace simple_and in nested_and after rename");
+}
+
+void TestICInline::testRegisterBlobMissingFileDepWarns()
+{
+    // registerBlob with a blob that references a non-existent file dependency
+    // should warn but not crash, and the resulting blob should still be loadable
+    // (minus the missing dependency).
+
+    // chain_b references chain_c. Delete chain_c so it can't be found.
+    QFile::remove(m_fixtureDir + "/chain_c.panda");
+    auto restoreFixture = qScopeGuard([this] { copyFixture("chain_c.panda"); });
+
+    WorkSpace ws;
+    ws.scene()->setContextDir(m_fixtureDir);
+    auto *reg = ws.scene()->icRegistry();
+
+    QByteArray chainB = readFile(m_fixtureDir + "/chain_b.panda");
+    QVERIFY(!chainB.isEmpty());
+
+    // Should not throw — missing dep is skipped with a warning
+    reg->registerBlob("chain_b", chainB);
+
+    // The blob should be stored
+    QVERIFY(reg->hasBlob("chain_b"));
+
+    // The fileBackedICs metadata should be removed (flattening attempted),
+    // but chain_c won't be in the embedded ICs since the file was missing.
+    QByteArray stored = reg->blob("chain_b");
+    QDataStream stream(&stored, QIODevice::ReadOnly);
+    auto preamble = Serialization::readPreamble(stream);
+    auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata);
+
+    QVERIFY2(!embeddedICs.contains("chain_c"),
+             "chain_c should not be embedded since its file was missing");
+
+    // fileBackedICs should have been removed from metadata
+    QVERIFY2(!preamble.metadata.contains("fileBackedICs"),
+             "fileBackedICs metadata should be removed after flattening attempt");
+}
+
