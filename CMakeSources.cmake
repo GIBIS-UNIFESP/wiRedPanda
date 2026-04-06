@@ -73,6 +73,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/FileDialogProvider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICDropZone.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LanguageManager.cpp
@@ -180,6 +181,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/FileDialogProvider.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICDropZone.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LanguageManager.h
@@ -225,6 +227,7 @@ set(TEST_UTILS_SOURCES
 
 set(TEST_UTILS_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ICTestHelpers.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubFileDialogProvider.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TestUtils.h
 )
 
@@ -324,15 +327,18 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/Logic/TestMuxDemuxComprehensive.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestArduino.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFeedback.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFileDialogProvider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestIc.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestICInline.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestMainWindowGui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSystemVerilogExport.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspaceFileops.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Resources/TestIcons.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Runners/TestWiredpanda.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/System/TestBewavedDolphinGui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/System/TestWaveform.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Commands/TestCommands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestCommon.cpp
@@ -468,15 +474,18 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/Logic/TestMuxDemuxComprehensive.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestArduino.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFeedback.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFileDialogProvider.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestIc.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestICInline.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestMainWindowGui.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSystemVerilogExport.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspace.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspaceFileops.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Resources/TestIcons.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Runners/RunnerUtils.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/System/TestBewavedDolphinGui.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/System/TestWaveform.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Commands/TestCommands.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestCommon.h

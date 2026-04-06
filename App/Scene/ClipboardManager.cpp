@@ -103,6 +103,10 @@ void ClipboardManager::paste()
 {
     const auto *mimeData = QApplication::clipboard()->mimeData();
 
+    if (!mimeData) {
+        return;
+    }
+
     // Import blob registry from clipboard so cross-tab paste of embedded ICs works
     if (mimeData->hasFormat("application/x-wiredpanda-blobregistry")) {
         QByteArray regBytes = mimeData->data("application/x-wiredpanda-blobregistry");

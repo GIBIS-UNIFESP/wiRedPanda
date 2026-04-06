@@ -3,7 +3,6 @@
 
 #include "App/Scene/Workspace.h"
 
-#include <QFileDialog>
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QSaveFile>
@@ -26,6 +25,7 @@
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Commands.h"
 #include "App/Simulation/SimulationBlocker.h"
+#include "App/UI/FileDialogProvider.h"
 #include "App/Versions.h"
 
 WorkSpace::WorkSpace(QWidget *parent)
@@ -155,7 +155,7 @@ void WorkSpace::save(const QString &fileName)
 
         if (m_fileInfo.fileName().isEmpty()) {
             const QString path = fileName.isEmpty() ? m_fileInfo.absolutePath() : QFileInfo(fileName).absolutePath();
-            fileName_ = QFileDialog::getSaveFileName(this, tr("Save File"), path, tr("Panda files (*.panda)"));
+            fileName_ = FileDialogs::provider()->getSaveFileName(this, tr("Save File"), path, tr("Panda files (*.panda)")).fileName;
         }
     }
 
