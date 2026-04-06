@@ -497,9 +497,21 @@ void WorkSpace::autosave()
         qCDebug(three) << "Setting current file to random file.";
     } else {
         // Existing project: write autosave next to the real file so it's easy to find
-        // in case of crash recovery
-        qCDebug(three) << "Autosave path set to the current file's directory, if there is one.";
-        path.setPath(m_fileInfo.absolutePath());
+        // in case of crash recovery — unless the directory is read-only (e.g. AppImage).
+        const QFileInfo dirInfo(m_fileInfo.absolutePath());
+
+        if (dirInfo.isWritable()) {
+            qCDebug(three) << "Autosave path set to the current file's directory.";
+            path.setPath(m_fileInfo.absolutePath());
+        } else {
+            qCDebug(three) << "File directory is read-only, using global autosave directory.";
+            path.setPath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/autosaves");
+
+            if (!path.exists()) {
+                path.mkpath(path.absolutePath());
+            }
+        }
+
         qCDebug(three) << "Autosavepath: " << path.absolutePath();
         m_autosaveFile.setFileTemplate(path.absoluteFilePath("." + m_fileInfo.baseName() + ".XXXXXX.panda"));
         qCDebug(three) << "Setting current file to: " << m_fileInfo.absoluteFilePath();
