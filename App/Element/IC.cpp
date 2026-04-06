@@ -116,6 +116,7 @@ IC::IC(QGraphicsItem *parent)
 
 IC::~IC()
 {
+    qDeleteAll(m_internalConnections);
     qDeleteAll(m_internalElements);
 }
 
@@ -268,6 +269,8 @@ void IC::resetInternalState()
     m_internalOutputs.clear();
     setInputSize(0);
     setOutputSize(0);
+    qDeleteAll(m_internalConnections);
+    m_internalConnections.clear();
     qDeleteAll(m_internalElements);
     m_internalElements.clear();
 }
@@ -398,7 +401,8 @@ void IC::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &it
 void IC::processLoadedItems(const QList<QGraphicsItem *> &items)
 {
     for (auto *item : items) {
-        if (item->type() != GraphicElement::Type) {
+        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
+            m_internalConnections.append(conn);
             continue;
         }
 
