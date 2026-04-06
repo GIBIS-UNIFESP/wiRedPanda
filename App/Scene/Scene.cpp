@@ -981,7 +981,9 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void Scene::addItem(QMimeData *mimeData)
 {
-    QByteArray itemData = mimeData->data("wpanda/x-dnditemdata");
+    QByteArray itemData = mimeData->hasFormat("application/x-wiredpanda-dragdrop")
+        ? mimeData->data("application/x-wiredpanda-dragdrop")
+        : mimeData->data("wpanda/x-dnditemdata");
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     Serialization::readPandaHeader(stream);
 

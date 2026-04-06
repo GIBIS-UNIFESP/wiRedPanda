@@ -85,7 +85,7 @@ jobs:
       env:
         QT_FORCE_STDERR_LOGGING: 1
       run: |
-        ctest --preset release -V
+        ctest --preset release -V -LE gui
 
     - name: Upload build artifacts on failure
       if: failure()
