@@ -842,10 +842,13 @@ void FlipCommand::redo()
 
         elm->setPos(pos);
 
-        // Adding 180° to the element's own rotation flips the pixmap direction
-        // to match the mirrored position (works because flip is an involution)
+        // Toggle the element's mirror flag for the appropriate axis.
+        // This applies a QTransform-based scale(-1) around the pixmap centre,
+        // producing a true single-axis reflection (unlike rotation, which
+        // flips both axes at once). Toggling is an involution, so undo == redo.
         if (elm->isRotatable()) {
-            elm->setRotation(elm->rotation() + 180);
+            (m_axis == 0) ? elm->setFlippedX(!elm->isFlippedX())
+                          : elm->setFlippedY(!elm->isFlippedY());
         }
     }
 

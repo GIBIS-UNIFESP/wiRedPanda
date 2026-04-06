@@ -1232,8 +1232,7 @@ void TestSceneUndoredo::testRedoBeyondEnd()
 
 void TestSceneUndoredo::testFlipRotationChanges()
 {
-    // Documents the FIXME in Commands.cpp:644 — both axis=0 and axis=1 add +180°
-    // to rotation for rotatable elements (AND gate is rotatable)
+    // Flip toggles the mirror flag on rotatable elements (no rotation change)
     Scene scene;
 
     auto *elm1 = ElementFactory::buildElement(ElementType::And);
@@ -1245,27 +1244,29 @@ void TestSceneUndoredo::testFlipRotationChanges()
     const int id1 = elm1->id();
     const int id2 = elm2->id();
 
-    auto getRotation = [&](int id) {
-        return dynamic_cast<GraphicElement *>(scene.itemById(id))->rotation();
+    auto getElm = [&](int id) {
+        return dynamic_cast<GraphicElement *>(scene.itemById(id));
     };
 
-    QCOMPARE(getRotation(id1), 0.0);
-    QCOMPARE(getRotation(id2), 0.0);
+    QVERIFY(!getElm(id1)->isFlippedX());
+    QVERIFY(!getElm(id2)->isFlippedX());
 
-    // Horizontal flip (axis=0): positions swap AND rotation += 180 (rotatable elements)
+    // Horizontal flip (axis=0): positions swap AND flippedX toggled
     scene.undoStack()->push(new FlipCommand({elm1, elm2}, 0, &scene));
-    QCOMPARE(getRotation(id1), 180.0);
-    QCOMPARE(getRotation(id2), 180.0);
+    QVERIFY(getElm(id1)->isFlippedX());
+    QVERIFY(getElm(id2)->isFlippedX());
+    QCOMPARE(getElm(id1)->rotation(), 0.0);
 
-    // Undo calls redo() again → rotation += 180 more = 360; GraphicElement normalizes 360 → 0
+    // Undo toggles flippedX back to false
     scene.undoStack()->undo();
-    QCOMPARE(getRotation(id1), 0.0);   // fmod(360, 360) == 0
-    QCOMPARE(getRotation(id2), 0.0);
+    QVERIFY(!getElm(id1)->isFlippedX());
+    QVERIFY(!getElm(id2)->isFlippedX());
 
-    // Now test vertical flip (axis=1) — FIXME: also adds +180° (same code path as axis=0)
+    // Vertical flip (axis=1): mirrors Y positions AND flippedY toggled
     scene.undoStack()->push(new FlipCommand({elm1, elm2}, 1, &scene));
-    QCOMPARE(getRotation(id1), 180.0); // 0 + 180
-    QCOMPARE(getRotation(id2), 180.0);
+    QVERIFY(getElm(id1)->isFlippedY());
+    QVERIFY(getElm(id2)->isFlippedY());
+    QVERIFY(!getElm(id1)->isFlippedX());
 }
 
 void TestSceneUndoredo::testFlipNonRotatableElement()
@@ -1311,7 +1312,7 @@ void TestSceneUndoredo::testFlipNonRotatableElement()
 
 void TestSceneUndoredo::testFlipSingleElementPositionUnchanged()
 {
-    // Single rotatable element: minX==maxX → position formula = identity, but rotation still += 180
+    // Single rotatable element: minX==maxX → position formula = identity, but flip flag toggles
     Scene scene;
 
     auto *elm = ElementFactory::buildElement(ElementType::And);
@@ -1321,7 +1322,7 @@ void TestSceneUndoredo::testFlipSingleElementPositionUnchanged()
     const QPointF originalPos = elm->pos();
 
     QVERIFY(elm->isRotatable());
-    QCOMPARE(elm->rotation(), 0.0);
+    QVERIFY(!elm->isFlippedX());
 
     // Push flip (axis=0, single element): minX = maxX = pos.x()
     // Formula: x_new = minX + (maxX - x) = x + (x - x) = x  → position unchanged
@@ -1329,13 +1330,12 @@ void TestSceneUndoredo::testFlipSingleElementPositionUnchanged()
 
     auto *e = dynamic_cast<GraphicElement *>(scene.itemById(id));
     QCOMPARE(e->pos(), originalPos);    // position unchanged (degenerate case)
-    QCOMPARE(e->rotation(), 180.0);    // but rotation changes
+    QVERIFY(e->isFlippedX());           // but flip flag toggles
 
-    // undo() calls redo() → position still unchanged, rotation += 180 again = 360
-    // GraphicElement::setRotation normalizes via fmod(360, 360) → 0
+    // undo() calls redo() → position still unchanged, flippedX toggled back
     scene.undoStack()->undo();
     QCOMPARE(e->pos(), originalPos);
-    QCOMPARE(e->rotation(), 0.0);     // 360 normalized to 0 by GraphicElement::setRotation
+    QVERIFY(!e->isFlippedX());
 }
 
 // ─── Additional RotateCommand edge cases ─────────────────────────────────
