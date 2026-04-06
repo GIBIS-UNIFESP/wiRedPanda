@@ -1,0 +1,20 @@
+diff --git a/src/plugins/platforms/wayland/qwaylandwindow.cpp b/src/plugins/platforms/wayland/qwaylandwindow.cpp
+index 7a83eb2d..d1b1c07e 100644
+--- a/src/plugins/platforms/wayland/qwaylandwindow.cpp
++++ b/src/plugins/platforms/wayland/qwaylandwindow.cpp
+@@ -612,6 +612,15 @@ void QWaylandWindow::sendExposeEvent(const QRect &rect)
+     if (sQtTestMode) {
+         mExposeEventNeedsAttachedBuffer = true;
+     }
++
++    // Drag icon surfaces (QShapedPixmapWindow) need asynchronous expose delivery.
++    // Compositors expect the icon buffer to be committed after wl_data_device.start_drag(),
++    // not before. Asynchronous delivery defers the paint/commit to the event loop,
++    // matching the behavior of Qt 6.9 and earlier.
++    if (window()->inherits("QShapedPixmapWindow")) {
++        QWindowSystemInterface::handleExposeEvent(window(), rect);
++        return;
++    }
+     QWindowSystemInterface::handleExposeEvent<QWindowSystemInterface::SynchronousDelivery>(window(), rect);
+ 
+     /**
