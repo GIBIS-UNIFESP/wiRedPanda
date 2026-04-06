@@ -622,11 +622,21 @@ void WorkSpace::onChildICBlobSaved(int icElementId, const QByteArray &blob)
     const QByteArray oldData = ICRegistry::captureSnapshot(targets);
     QByteArray oldBlob = m_scene.icRegistry()->blob(targetBlobName);
 
-    // Update the registry and reload all targets
+    // Update the registry and reload all targets atomically: if any loadFromBlob
+    // throws, roll back every element that was already updated so we don't push a
+    // partial undo command (mirrors the pattern in ICRegistry::embedICsByFile).
     m_scene.icRegistry()->setBlob(targetBlobName, blob);
-    for (auto *target : targets) {
-        auto *ic = static_cast<IC *>(target);
-        ic->loadFromBlob(blob, m_scene.contextDir());
+    QList<GraphicElement *> updated;
+    try {
+        for (auto *target : targets) {
+            auto *ic = static_cast<IC *>(target);
+            ic->loadFromBlob(blob, m_scene.contextDir());
+            updated.append(target);
+        }
+    } catch (...) {
+        ICRegistry::rollbackElements(updated, oldData, &m_scene);
+        m_scene.icRegistry()->setBlob(targetBlobName, oldBlob);
+        throw;
     }
 
     auto *cmd = new UpdateBlobCommand(targets, oldData, connections, &m_scene);
