@@ -13,6 +13,8 @@
 #include "App/Element/GraphicElement.h"
 #include "App/IO/SerializationContext.h"
 
+class QNEConnection;
+
 /**
  * \class IC
  * \brief Graphic element representing an Integrated Circuit (sub-circuit) box.
@@ -133,6 +135,7 @@ private:
     QString m_file;
     QString m_blobName;
     QVector<GraphicElement *> m_internalElements;
+    QVector<QNEConnection *> m_internalConnections;
     QVector<QNEPort *> m_internalInputs;
     QVector<QNEPort *> m_internalOutputs;
 
