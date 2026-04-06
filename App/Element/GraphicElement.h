@@ -301,6 +301,20 @@ public:
     /// Rotates all ports by \a angle degrees around the element centre.
     void rotatePorts(const qreal angle);
 
+    // --- Flip / Mirror ---
+
+    /// Returns \c true if this element is mirrored along the X axis (horizontal flip).
+    bool isFlippedX() const { return m_flippedX; }
+
+    /// Returns \c true if this element is mirrored along the Y axis (vertical flip).
+    bool isFlippedY() const { return m_flippedY; }
+
+    /// Sets the horizontal mirror state and updates the item transform.
+    void setFlippedX(bool flipped);
+
+    /// Sets the vertical mirror state and updates the item transform.
+    void setFlippedY(bool flipped);
+
     // --- Geometric Properties ---
 
     /// Returns the centre point of the element's pixmap in local coordinates.
@@ -531,6 +545,11 @@ protected:
     const QVector<Status> &simOutputs() const { return m_simOutputValues; }
 
 private:
+    // --- Flip Transform ---
+
+    /// Recomputes the QGraphicsItem transform from the current flip flags.
+    void applyFlipTransform();
+
     // --- Port Management Helpers ---
 
     /// Appends a new input port with optional \a name to the input port vector.
@@ -630,6 +649,8 @@ private:
 
     bool m_hasColors = false;
     bool m_selected = false;
+    bool m_flippedX = false;
+    bool m_flippedY = false;
     qreal m_angle = 0;
 
     // --- Members: Context Directory ---

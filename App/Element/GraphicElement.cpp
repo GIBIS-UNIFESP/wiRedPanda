@@ -343,6 +343,33 @@ qreal GraphicElement::rotation() const
     return m_angle;
 }
 
+void GraphicElement::setFlippedX(const bool flipped)
+{
+    m_flippedX = flipped;
+    applyFlipTransform();
+}
+
+void GraphicElement::setFlippedY(const bool flipped)
+{
+    m_flippedY = flipped;
+    applyFlipTransform();
+}
+
+void GraphicElement::applyFlipTransform()
+{
+    if (!m_flippedX && !m_flippedY) {
+        setTransform(QTransform());
+        return;
+    }
+
+    const auto center = pixmapCenter();
+    QTransform t;
+    t.translate(center.x(), center.y());
+    t.scale(m_flippedX ? -1 : 1, m_flippedY ? -1 : 1);
+    t.translate(-center.x(), -center.y());
+    setTransform(t);
+}
+
 void GraphicElement::setAppearance(const bool defaultAppearance, const QString &fileName)
 {
     if (defaultAppearance) {

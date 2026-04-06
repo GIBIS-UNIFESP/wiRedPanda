@@ -338,7 +338,7 @@ public:
     /**
      * \brief Constructs the flip command.
      * \param items  Elements to flip.
-     * \param axis   0 = horizontal axis (vertical flip), 1 = vertical axis (horizontal flip).
+     * \param axis   0 = horizontal flip (mirror left-right), 1 = vertical flip (mirror top-bottom).
      * \param scene  Target scene.
      * \param parent Optional parent undo command.
      */
