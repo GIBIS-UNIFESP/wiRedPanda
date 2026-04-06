@@ -32,6 +32,8 @@ void GraphicElement::save(QDataStream &stream) const
     // No longer written; old files that contain these keys are harmlessly
     // ignored on load (the QMap is read as a whole, unused keys are skipped).
     map.insert("trigger", m_trigger);
+    if (m_flippedX) { map.insert("flippedX", true); }
+    if (m_flippedY) { map.insert("flippedY", true); }
     stream << map;
 
     // -------------------------------------------
@@ -102,6 +104,7 @@ void GraphicElement::load(QDataStream &stream, SerializationContext &context)
     // Apply the deserialized angle after ports are positioned so any non-rotatable element
     // can apply its own rotatePorts() path correctly
     setRotation(m_angle);
+    applyFlipTransform();
 
     qCDebug(four) << "Finished loading element.";
 }
@@ -163,6 +166,9 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
     if (map.contains("trigger")) {
         setTrigger(map.value("trigger").toString());
     }
+
+    m_flippedX = map.value("flippedX", false).toBool();
+    m_flippedY = map.value("flippedY", false).toBool();
 
     // -------------------------------------------
 

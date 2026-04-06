@@ -71,9 +71,9 @@ private slots:
     void testRedoBeyondEnd();
 
     // Additional FlipCommand edge cases
-    void testFlipRotationChanges();           // rotation += 180 regardless of axis (documents FIXME bug)
-    void testFlipNonRotatableElement();        // Led/InputSwitch: position flips, rotation stays 0
-    void testFlipSingleElementPositionUnchanged(); // min==max → position unchanged, rotation changes
+    void testFlipRotationChanges();           // flip toggles mirror flag, rotation unchanged
+    void testFlipNonRotatableElement();        // Led/InputSwitch: position flips, flip flags untouched
+    void testFlipSingleElementPositionUnchanged(); // min==max → position unchanged, flip flag toggles
 
     // Additional RotateCommand edge cases
     void testRotateMultipleElementsPositionsChange(); // collective center pivot
