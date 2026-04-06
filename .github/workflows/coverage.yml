@@ -41,7 +41,7 @@ jobs:
     - name: Test
       timeout-minutes: 10
       run: |
-        ctest --preset coverage -V
+        ctest --preset coverage -V -LE gui
 
     - name: Upload coverage data
       run: |

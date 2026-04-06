@@ -545,6 +545,7 @@ endif()
 
 add_test(NAME TestArduino COMMAND test_wiredpanda TestArduino WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestAudioBox COMMAND test_wiredpanda TestAudioBox WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestBewavedDolphinGui COMMAND test_wiredpanda TestBewavedDolphinGui WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestBuzzer COMMAND test_wiredpanda TestBuzzer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCPUAlu COMMAND test_wiredpanda TestCPUAlu WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCPUBranch COMMAND test_wiredpanda TestCPUBranch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -576,6 +577,7 @@ add_test(NAME TestElementProperties COMMAND test_wiredpanda TestElementPropertie
 add_test(NAME TestEnums COMMAND test_wiredpanda TestEnums WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFeatures COMMAND test_wiredpanda TestFeatures WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFeedback COMMAND test_wiredpanda TestFeedback WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestFileDialogProvider COMMAND test_wiredpanda TestFileDialogProvider WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFiles COMMAND test_wiredpanda TestFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestGeometry COMMAND test_wiredpanda TestGeometry WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestGraphicelementAdvanced COMMAND test_wiredpanda TestGraphicelementAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -585,6 +587,7 @@ add_test(NAME TestIcons COMMAND test_wiredpanda TestIcons WORKING_DIRECTORY ${CM
 add_test(NAME TestInputElements COMMAND test_wiredpanda TestInputElements WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestInputRotary COMMAND test_wiredpanda TestInputRotary WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLED COMMAND test_wiredpanda TestLED WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestMainWindowGui COMMAND test_wiredpanda TestMainWindowGui WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel1DFlipFlop COMMAND test_wiredpanda TestLevel1DFlipFlop WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel1DLatch COMMAND test_wiredpanda TestLevel1DLatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel1JKFlipFlop COMMAND test_wiredpanda TestLevel1JKFlipFlop WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -727,13 +730,13 @@ foreach(TEST TestDecoder8To256 TestMemorySettlingTime TestMUXDEMUXComprehensive 
 endforeach()
 
 # File and Simulation Tests - Integration category
-foreach(TEST TestArduino TestFeedback TestFiles TestIC TestICInline TestSimulation
-        TestSystemVerilogExport TestWorkspace TestWorkspaceFileops)
+foreach(TEST TestArduino TestFeedback TestFiles TestIC TestICInline
+        TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
 # Element and Component Unit Tests - Unit category
-foreach(TEST TestAudioBox TestBuzzer TestClock TestClocksAdvanced TestComponents TestDisplays
+foreach(TEST TestBewavedDolphinGui TestAudioBox TestBuzzer TestClock TestClocksAdvanced TestComponents TestDisplays
         TestElementLabel TestElementProperties TestFeatures TestGeometry
         TestGraphicelementAdvanced TestIcons TestInputElements TestInputRotary TestLED
         TestLogicGates TestMultiplexing TestSequentialLogic TestTruthTable TestWaveform
@@ -765,6 +768,60 @@ endforeach()
 foreach(TEST TestCommands TestCommon TestEnums TestPriorities TestRecentFiles TestSettings
         TestThemeManager)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
+endforeach()
+
+# GUI tests run sequentially after all other tests complete
+set(GUI_TESTS TestFileDialogProvider TestMainWindowGui TestBewavedDolphinGui)
+set(ALL_TESTS
+    TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders
+    TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration
+    TestCPUMemoryInterface TestCPUProgramCounter TestCPURegisterBank TestCPURegisters
+    TestLevel1DFlipFlop TestLevel1DLatch TestLevel1JKFlipFlop TestLevel1SRLatch
+    TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16
+    TestLevel2FullAdder1Bit TestLevel2HalfAdder TestLevel2MUX2To1 TestLevel2MUX4To1
+    TestLevel2MUX8To1 TestLevel2ParityChecker TestLevel2ParityGenerator
+    TestLevel2PriorityEncoder8To3 TestLevel2PriorityMUX3To1
+    TestLevel3ALUSelector5Way TestLevel3BCD7SegmentDecoder TestLevel3Comparator4Bit
+    TestLevel3Comparator4BitEquality TestLevel3Register1Bit
+    TestLevel4BinaryCounter4Bit TestLevel4BusMUX4Bit TestLevel4BusMUX8Bit
+    TestLevel4Comparator4Bit TestLevel4JohnsonCounter4Bit TestLevel4RAM4X1
+    TestLevel4RAM8X1 TestLevel4Register4Bit TestLevel4RingCounter4Bit
+    TestLevel4RippleALU4Bit TestLevel4RippleAdder4Bit TestLevel4ShiftRegisterPISO
+    TestLevel4ShiftRegisterSIPO
+    TestLevel5BarrelRotator TestLevel5BarrelShifter4Bit TestLevel5ClockGatedDecoder
+    TestLevel5Controller4Bit TestLevel5InstructionDecoder4Bit TestLevel5LoadableCounter4Bit
+    TestLevel5ModuloCounter4Bit TestLevel5ProgramCounter4Bit TestLevel5RegisterFile4X4
+    TestLevel5RegisterFile8X8 TestLevel6StackMemoryInterface TestLevel5UpDownCounter4Bit
+    TestLevel6ALU8Bit TestLevel6ProgramCounter8BitArithmetic TestLevel6RAM256X8
+    TestLevel6Register8Bit TestLevel6RegisterFile8X8 TestLevel6RippleAdder8Bit
+    TestLevel6StackPointer8Bit
+    TestLevel7ALU16Bit TestLevel7CPUProgramCounter8Bit TestLevel7DataForwardingUnit
+    TestLevel7ExecutionDatapath TestLevel7FlagRegister TestLevel7InstructionDecoder8Bit
+    TestLevel7InstructionMemoryInterface TestLevel7InstructionRegister8Bit
+    TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage
+    TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MultiCycleCPU8Bit
+    TestLevel9SingleCycleCPU8Bit
+    TestDecoder8To256 TestMemorySettlingTime TestRAMCell1Bit TestSequential
+    TestMUXDEMUXComprehensive
+    TestArduino TestFeedback TestFiles TestIC TestICInline
+    TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops
+    TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocksAdvanced
+    TestComponents TestDisplays TestElementLabel TestElementProperties TestFeatures
+    TestGeometry TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED
+    TestLogicGates TestMultiplexing TestSequentialLogic TestTruthTable TestWirelessNode
+    TestElementFactory TestElementLogic TestElementLogicErrors TestNodeLogic TestStatusOps
+    TestConnectionSerialization TestConnectionValidity TestConnections TestScene
+    TestSceneConnections TestSceneState TestSceneUndoredo
+    TestSerialization TestSimulationBlocker TestDialogs
+    TestCommands TestCommon TestEnums TestPriorities TestRecentFiles TestSettings TestThemeManager)
+foreach(TEST ${ALL_TESTS})
+    set_tests_properties(${TEST} PROPERTIES FIXTURES_SETUP "non_gui_complete")
+endforeach()
+foreach(TEST ${GUI_TESTS})
+    set_tests_properties(${TEST} PROPERTIES
+        LABELS "gui"
+        FIXTURES_REQUIRED "non_gui_complete"
+        RESOURCE_LOCK "gui_display")
 endforeach()
 
 # ========= DOCUMENTATION ===================================

@@ -10,7 +10,6 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QCloseEvent>
-#include <QFileDialog>
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QMimeData>
@@ -29,6 +28,7 @@
 #include "App/IO/Serialization.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/UI/ClockDialog.h"
+#include "App/UI/FileDialogProvider.h"
 #include "App/UI/LengthDialog.h"
 #include "App/UI/MainWindow.h"
 
@@ -1023,25 +1023,13 @@ void BewavedDolphin::on_actionSaveAs_triggered()
 {
     const QString path = m_mainWindow->currentFile().absolutePath();
 
-    QFileDialog fileDialog;
-    fileDialog.setObjectName(tr("Save File as..."));
-
     // List the format that matches the current file first so it is the default selection
     const QString fileFilter = m_currentFile.fileName().endsWith(".csv") ?
                 tr("CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)")
               : tr("Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)");
 
-    fileDialog.setNameFilter(fileFilter);
-    fileDialog.setAcceptMode(QFileDialog::AcceptSave);
-    fileDialog.setDirectory(path);
-    fileDialog.setFileMode(QFileDialog::AnyFile);
-
-    if (fileDialog.exec() == QDialog::Rejected) {
-        return;
-    }
-
-    const auto files = fileDialog.selectedFiles();
-    QString fileName = files.constFirst();
+    const auto result = FileDialogs::provider()->getSaveFileName(this, tr("Save File as..."), path, fileFilter);
+    QString fileName = result.fileName;
 
     if (fileName.isEmpty()) {
         return;
@@ -1050,7 +1038,7 @@ void BewavedDolphin::on_actionSaveAs_triggered()
     // Append the correct extension when the user types a bare name without one,
     // inferring the format from whichever filter was active in the dialog
     if (!fileName.endsWith(".dolphin") && !fileName.endsWith(".csv")) {
-        if (fileDialog.selectedNameFilter().contains("dolphin")) {
+        if (result.selectedFilter.contains("dolphin")) {
             fileName.append(".dolphin");
         } else {
             fileName.append(".csv");
@@ -1138,18 +1126,9 @@ void BewavedDolphin::on_actionLoad_triggered()
 
     const QString homeDir(m_mainWindow->currentDir().absolutePath());
 
-    QFileDialog fileDialog;
-    fileDialog.setObjectName(tr("Open File"));
-    fileDialog.setFileMode(QFileDialog::ExistingFile);
-    fileDialog.setNameFilter(tr("All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)"));
-    fileDialog.setDirectory(homeDir);
-
-    if (fileDialog.exec() == QDialog::Rejected) {
-        return;
-    }
-
-    const auto files = fileDialog.selectedFiles();
-    const QString fileName = files.constFirst();
+    const QString fileName = FileDialogs::provider()->getOpenFileName(
+        this, tr("Open File"), homeDir,
+        tr("All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)"));
 
     if (fileName.isEmpty()) {
         return;
@@ -1271,7 +1250,7 @@ void BewavedDolphin::on_actionShowWaveforms_triggered()
 
 void BewavedDolphin::on_actionExportToPng_triggered()
 {
-    QString pngFile = QFileDialog::getSaveFileName(this, tr("Export to Image"), m_currentFile.absolutePath(), tr("PNG files (*.png)"));
+    QString pngFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to Image"), m_currentFile.absolutePath(), tr("PNG files (*.png)")).fileName;
 
     if (pngFile.isEmpty()) {
         return;
@@ -1302,7 +1281,7 @@ bool BewavedDolphin::exportWaveformToPng(const QString &filename)
 
 void BewavedDolphin::on_actionExportToPdf_triggered()
 {
-    QString pdfFile = QFileDialog::getSaveFileName(this, tr("Export to PDF"), m_currentFile.absolutePath(), tr("PDF files (*.pdf)"));
+    QString pdfFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to PDF"), m_currentFile.absolutePath(), tr("PDF files (*.pdf)")).fileName;
 
     if (pdfFile.isEmpty()) {
         return;

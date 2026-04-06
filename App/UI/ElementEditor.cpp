@@ -8,7 +8,6 @@
 #include <QDebug>
 #include <QDir>
 #include <QFile>
-#include <QFileDialog>
 #include <QImageReader>
 #include <QMessageBox>
 
@@ -29,6 +28,7 @@
 #include "App/UI/ElementContextMenu.h"
 #include "App/UI/ElementEditorUI.h"
 #include "App/UI/ElementTabNavigator.h"
+#include "App/UI/FileDialogProvider.h"
 #include "App/UI/LabeledSlider.h"
 #include "App/UI/MainWindow.h"
 #include "App/UI/SelectionCapabilities.h"
@@ -168,17 +168,8 @@ void ElementEditor::changeTriggerAction()
 
 void ElementEditor::updateElementAppearance()
 {
-    QFileDialog fileDialog;
-    fileDialog.setObjectName(tr("Open File"));
-    fileDialog.setFileMode(QFileDialog::ExistingFile);
-    fileDialog.setNameFilter(tr("Images") + " (*." + QImageReader::supportedImageFormats().join(" *.") + ")");
-
-    if (fileDialog.exec() == QDialog::Rejected) {
-        return;
-    }
-
-    const auto files = fileDialog.selectedFiles();
-    QString fileName = files.constFirst();
+    const QString imageFilter = tr("Images") + " (*." + QImageReader::supportedImageFormats().join(" *.") + ")";
+    const QString fileName = FileDialogs::provider()->getOpenFileName(this, tr("Open File"), QString(), imageFilter);
 
     if (fileName.isEmpty()) {
         return;
@@ -852,7 +843,7 @@ void ElementEditor::audioBox()
         return;
     }
 
-    const QString filePath = QFileDialog::getOpenFileName(this, tr("Select any audio"),
+    const QString filePath = FileDialogs::provider()->getOpenFileName(this, tr("Select any audio"),
                                                     QString(), tr("Audio (*.mp3 *.mp4 *.wav *.ogg)"));
 
     if (filePath.isEmpty()) {

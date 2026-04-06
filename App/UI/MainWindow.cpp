@@ -15,7 +15,6 @@
 #include <QDesktopServices>
 #include <QDialog>
 #include <QDialogButtonBox>
-#include <QFileDialog>
 #include <QInputDialog>
 #include <QLabel>
 #include <QLocale>
@@ -55,6 +54,7 @@
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/UI/CircuitExporter.h"
 #include "App/UI/ElementPalette.h"
+#include "App/UI/FileDialogProvider.h"
 #include "App/UI/LanguageManager.h"
 #include "App/UI/MainWindowUI.h"
 #include "App/Versions.h"
@@ -324,7 +324,7 @@ void MainWindow::setupConnections()
     // Embedded IC section buttons
     connect(m_ui->pushButtonAddEmbeddedIC, &QPushButton::clicked, this, [this] {
         if (!m_currentTab) return;
-        QString fileName = QFileDialog::getOpenFileName(this, tr("Select IC file to embed"), currentDir().absolutePath(), tr("Panda files (*.panda)"));
+        QString fileName = FileDialogs::provider()->getOpenFileName(this, tr("Select IC file to embed"), currentDir().absolutePath(), tr("Panda files (*.panda)"));
         if (fileName.isEmpty()) return;
 
         QFile file(fileName);
@@ -691,7 +691,7 @@ void MainWindow::on_actionOpen_triggered()
     QFileDialog::getOpenFileContent("Panda files (*.panda)", fileContentReady);
 #else
     const QString path = currentFile().exists() ? "" : "./Examples";
-    const QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), path, tr("Panda files (*.panda)"));
+    const QString fileName = FileDialogs::provider()->getOpenFileName(this, tr("Open File"), path, tr("Panda files (*.panda)"));
 
     if (fileName.isEmpty()) {
         return;
@@ -716,7 +716,7 @@ void MainWindow::on_actionSave_triggered()
     QString fileName = currentFile().absoluteFilePath();
 
     if (fileName.isEmpty()) {
-        fileName = QFileDialog::getSaveFileName(this, tr("Save File as ..."), "", tr("Panda files (*.panda)"));
+        fileName = FileDialogs::provider()->getSaveFileName(this, tr("Save File as ..."), QString(), tr("Panda files (*.panda)")).fileName;
 
         if (fileName.isEmpty()) {
             return;
@@ -754,7 +754,7 @@ void MainWindow::on_actionSaveAs_triggered()
         QFileDialog::saveFileContent(content, suggestedName);
     }
 #else
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File as ..."), currentFile().absoluteFilePath(), tr("Panda files (*.panda)"));
+    QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Save File as ..."), currentFile().absoluteFilePath(), tr("Panda files (*.panda)")).fileName;
 
     if (fileName.isEmpty()) {
         return;
@@ -1247,7 +1247,7 @@ void MainWindow::on_actionExportToArduino_triggered()
         path = currentFile().absolutePath();
     }
 
-    const QString fileName = QFileDialog::getSaveFileName(this, tr("Generate Arduino Code"), path, tr("Arduino file (*.ino)"));
+    const QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Generate Arduino Code"), path, tr("Arduino file (*.ino)")).fileName;
 
     if (!fileName.isEmpty()) {
         exportToArduino(fileName);
@@ -1266,7 +1266,7 @@ void MainWindow::on_actionExportToSystemVerilog_triggered()
         path = currentFile().absolutePath();
     }
 
-    const QString fileName = QFileDialog::getSaveFileName(this, tr("Generate SystemVerilog Code"), path, tr("SystemVerilog file (*.sv)"));
+    const QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Generate SystemVerilog Code"), path, tr("SystemVerilog file (*.sv)")).fileName;
 
     if (!fileName.isEmpty()) {
         exportToSystemVerilog(fileName);
@@ -1367,7 +1367,7 @@ void MainWindow::on_actionExportToPdf_triggered()
     m_currentTab->scene()->clearSelection();
 
     const QString path    = currentFile().exists() ? currentFile().absolutePath() : QString();
-    QString pdfFile = QFileDialog::getSaveFileName(this, tr("Export to PDF"), path, tr("PDF files (*.pdf)"));
+    QString pdfFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to PDF"), path, tr("PDF files (*.pdf)")).fileName;
 
     if (pdfFile.isEmpty()) {
         return;
@@ -1392,7 +1392,7 @@ void MainWindow::on_actionExportToImage_triggered()
     m_currentTab->scene()->clearSelection();
 
     const QString path    = currentFile().exists() ? currentFile().absolutePath() : QString();
-    QString pngFile = QFileDialog::getSaveFileName(this, tr("Export to Image"), path, tr("PNG files (*.png)"));
+    QString pngFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to Image"), path, tr("PNG files (*.png)")).fileName;
 
     if (pngFile.isEmpty()) {
         return;
@@ -1653,20 +1653,13 @@ void MainWindow::on_pushButtonAddIC_clicked()
         throw PANDACEPTION("Save file first.");
     }
 
-    QFileDialog fileDialog;
-    fileDialog.setObjectName(tr("Open File"));
-    fileDialog.setFileMode(QFileDialog::ExistingFile);
-    fileDialog.setNameFilter(tr("Panda (*.panda)"));
+    const QString selectedFile = FileDialogs::provider()->getOpenFileName(this, tr("Open File"), QString(), tr("Panda (*.panda)"));
 
-    if (fileDialog.exec() == QDialog::Rejected) {
+    if (selectedFile.isEmpty()) {
         return;
     }
 
-    const auto files = fileDialog.selectedFiles();
-
-    if (files.isEmpty()) {
-        return;
-    }
+    const QStringList files = {selectedFile};
 
     QMessageBox::information(this, tr("Info"), tr("Selected files (and their dependencies) will be copied to current file folder."));
 
@@ -1811,16 +1804,15 @@ void MainWindow::extractSelectedIC()
         return;
     }
 
-    QString fileName = QDir(contextDir).absoluteFilePath(blobName + ".panda");
+    const QString suggestion = QDir(contextDir).absoluteFilePath(blobName + ".panda");
+    QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Extract IC to file..."), suggestion, tr("Panda files (*.panda)")).fileName;
 
-    if (QFile::exists(fileName)) {
-        auto answer = QMessageBox::question(this,
-            tr("File Exists"),
-            tr("A file named \"%1\" already exists in the project directory.\nOverwrite it?").arg(blobName + ".panda"),
-            QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
-        if (answer != QMessageBox::Yes) {
-            return;
-        }
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    if (!fileName.endsWith(".panda")) {
+        fileName.append(".panda");
     }
 
     scene->icRegistry()->extractToFile(blobName, fileName);
@@ -1885,16 +1877,15 @@ void MainWindow::extractICByBlobName(const QString &blobName)
         return;
     }
 
-    QString fileName = QDir(contextDir).absoluteFilePath(blobName + ".panda");
+    const QString suggestion = QDir(contextDir).absoluteFilePath(blobName + ".panda");
+    QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Extract IC to file..."), suggestion, tr("Panda files (*.panda)")).fileName;
 
-    if (QFile::exists(fileName)) {
-        auto answer = QMessageBox::question(this,
-            tr("File Exists"),
-            tr("A file named \"%1\" already exists in the project directory.\nOverwrite it?").arg(blobName + ".panda"),
-            QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
-        if (answer != QMessageBox::Yes) {
-            return;
-        }
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    if (!fileName.endsWith(".panda")) {
+        fileName.append(".panda");
     }
 
     reg->extractToFile(blobName, fileName);

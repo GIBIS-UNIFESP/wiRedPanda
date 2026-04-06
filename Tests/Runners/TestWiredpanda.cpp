@@ -95,9 +95,11 @@
 // integration
 #include "Tests/Integration/TestArduino.h"
 #include "Tests/Integration/TestFeedback.h"
+#include "Tests/Integration/TestFileDialogProvider.h"
 #include "Tests/Integration/TestFiles.h"
 #include "Tests/Integration/TestIc.h"
 #include "Tests/Integration/TestICInline.h"
+#include "Tests/Integration/TestMainWindowGui.h"
 #include "Tests/Integration/TestSimulation.h"
 #include "Tests/Integration/TestSystemVerilogExport.h"
 #include "Tests/Integration/TestWorkspace.h"
@@ -105,6 +107,7 @@
 // resources
 #include "Tests/Resources/TestIcons.h"
 // system
+#include "Tests/System/TestBewavedDolphinGui.h"
 #include "Tests/System/TestWaveform.h"
 // unit/commands
 #include "Tests/Unit/Commands/TestCommands.h"
@@ -248,15 +251,18 @@ int main(int argc, char **argv)
         {"TestMUXDEMUXComprehensive", []() -> QObject * { return new TestMUXDEMUXComprehensive; }},
         {"TestArduino", []() -> QObject * { return new TestArduino; }},
         {"TestFeedback", []() -> QObject * { return new TestFeedback; }},
+        {"TestFileDialogProvider", []() -> QObject * { return new TestFileDialogProvider; }},
         {"TestFiles", []() -> QObject * { return new TestFiles; }},
         {"TestIC", []() -> QObject * { return new TestIC; }},
         {"TestICInline", []() -> QObject * { return new TestICInline; }},
+        {"TestMainWindowGui", []() -> QObject * { return new TestMainWindowGui; }},
         {"TestSimulation", []() -> QObject * { return new TestSimulation; }},
         {"TestSystemVerilogExport", []() -> QObject * { return new TestSystemVerilogExport; }},
         {"TestWorkspace", []() -> QObject * { return new TestWorkspace; }},
         {"TestWorkspaceFileops", []() -> QObject * { return new TestWorkspaceFileops; }},
         {"TestIcons", []() -> QObject * { return new TestIcons; }},
         {"TestWaveform", []() -> QObject * { return new TestWaveform; }},
+        {"TestBewavedDolphinGui", []() -> QObject * { return new TestBewavedDolphinGui; }},
         {"TestCommands", []() -> QObject * { return new TestCommands; }},
         {"TestCommon", []() -> QObject * { return new TestCommon; }},
         {"TestEnums", []() -> QObject * { return new TestEnums; }},
