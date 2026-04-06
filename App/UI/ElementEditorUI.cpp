@@ -59,15 +59,10 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     labelTrigger->setObjectName("labelTrigger");
     gridLayout_2->addWidget(labelTrigger, 10, 0, 1, 1);
 
-    horizontalLayout = new QHBoxLayout();
-    horizontalLayout->setSpacing(6);
-    horizontalLayout->setObjectName("horizontalLayout");
-    horizontalLayout->setSizeConstraint(QLayout::SetNoConstraint);
-
     pushButtonTruthTable = new QPushButton(groupBox);
     pushButtonTruthTable->setObjectName("pushButtonTruthTable");
     pushButtonTruthTable->setEnabled(true);
-    horizontalLayout->addWidget(pushButtonTruthTable);
+    gridLayout_2->addWidget(pushButtonTruthTable, 11, 0, 1, 2);
 
     // Appearance state selector (for multi-state elements like LEDs)
     labelAppearanceState = new QLabel(groupBox);
@@ -77,6 +72,11 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     comboBoxAppearanceState = new QComboBox(groupBox);
     comboBoxAppearanceState->setObjectName("comboBoxAppearanceState");
     gridLayout_2->addWidget(comboBoxAppearanceState, 12, 1, 1, 1);
+
+    horizontalLayout = new QHBoxLayout();
+    horizontalLayout->setSpacing(6);
+    horizontalLayout->setObjectName("horizontalLayout");
+    horizontalLayout->setSizeConstraint(QLayout::SetNoConstraint);
 
     pushButtonChangeAppearance = new QPushButton(groupBox);
     pushButtonChangeAppearance->setObjectName("pushButtonChangeAppearance");
@@ -262,7 +262,7 @@ void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
     checkBoxLocked->setText(QString());
     labelLabels->setText(QCoreApplication::translate("ElementEditor", "Label:"));
     labelTrigger->setText(QCoreApplication::translate("ElementEditor", "Trigger:"));
-    pushButtonTruthTable->setText(QCoreApplication::translate("ElementEditor", "TruthTable"));
+    pushButtonTruthTable->setText(QCoreApplication::translate("ElementEditor", "Edit Truth Table"));
     labelAppearanceState->setText(QCoreApplication::translate("ElementEditor", "Appearance:"));
     pushButtonChangeAppearance->setText(QCoreApplication::translate("ElementEditor", "Change skin to ..."));
     pushButtonDefaultAppearance->setToolTip(QCoreApplication::translate("ElementEditor", "Default"));
