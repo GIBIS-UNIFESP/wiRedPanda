@@ -204,6 +204,12 @@ private slots:
     void testLoadFileNotFoundPreservesEmbeddedState();
     void testExtractToFileUsesContextDir();
 
+    // --- Edge cases: rollback, rename, and missing deps ---
+
+    void testChildBlobSavedPartialFailureRollback();
+    void testRenameBlobUpdatesNestedMetadata();
+    void testRegisterBlobMissingFileDepWarns();
+
 private:
     QString fixturesSrcDir() const;
     bool copyFixture(const QString &name);

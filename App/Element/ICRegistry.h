@@ -90,6 +90,10 @@ public:
     /// Serializes \a targets into a self-contained .panda byte array (used for embedding).
     static QByteArray captureSnapshot(const QList<GraphicElement *> &targets);
 
+    /// Restores \a elements from a previously captured \a snapshot (used for atomic rollback).
+    static void rollbackElements(const QList<GraphicElement *> &elements, const QByteArray &snapshot,
+                                 Scene *scene);
+
 signals:
     /// Emitted when an IC definition file changes on disk and its cached definition is invalidated.
     void definitionChanged(const QString &filePath);
@@ -99,13 +103,13 @@ private slots:
     void onFileChanged(const QString &filePath);
 
 private:
-    /// Restores \a elements from a previously captured \a snapshot (used for atomic rollback).
-    void rollbackElements(const QList<GraphicElement *> &elements, const QByteArray &snapshot);
-
     /// Recursively inlines all IC dependencies of blob \a name so it has no external file references.
     /// Uses \a blobs as working storage instead of m_blobs to avoid corrupting state on failure.
     void makeBlobSelfContained(const QString &name, QSet<QString> &visited,
                                QMap<QString, QByteArray> &blobs);
+
+    /// Renames a nested blob reference from \a oldName to \a newName inside \a blobData's metadata.
+    static void renameBlobReference(QByteArray &blobData, const QString &oldName, const QString &newName);
 
     Scene *m_scene;                          ///< Owning scene.
     QMap<QString, QByteArray> m_fileCache;   ///< Cached file reads for file-backed ICs (path → bytes).
