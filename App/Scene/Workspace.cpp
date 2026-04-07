@@ -99,9 +99,7 @@ void WorkSpace::save(const QString &fileName)
         }
 
         // Inline-IC tabs serialize to a blob and emit a signal instead of writing to disk.
-        const QString savedContextDir = m_scene.contextDir();
-        auto restoreCtx = qScopeGuard([&] { m_scene.setContextDir(savedContextDir); });
-        m_scene.setContextDir(m_parentContextDir);
+        const QString contextDir = m_scene.contextDir();
 
         // Embed any file-backed ICs so the blob is self-contained
         for (auto *elm : m_scene.elements()) {
@@ -110,7 +108,7 @@ void WorkSpace::save(const QString &fileName)
                 const QString icFile = ic->file();
                 const QString baseName = QFileInfo(icFile).baseName();
                 if (!m_scene.icRegistry()->hasBlob(baseName)) {
-                    QFileInfo fi(QDir(m_parentContextDir), icFile);
+                    QFileInfo fi(QDir(contextDir), icFile);
                     if (fi.exists()) {
                         QFile f(fi.absoluteFilePath());
                         if (f.open(QIODevice::ReadOnly)) {
@@ -585,7 +583,6 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
     m_isInlineIC = true;
     m_parentWorkspace = parent;
     m_parentICElementId = icElementId;
-    m_parentContextDir = parentContextDir;
     if (parent) {
         m_fileInfo = parent->fileInfo();
     }
