@@ -586,6 +586,9 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
     m_parentWorkspace = parent;
     m_parentICElementId = icElementId;
     m_parentContextDir = parentContextDir;
+    if (parent) {
+        m_fileInfo = parent->fileInfo();
+    }
 
     // Derive blob name from the parent IC element
     if (parent) {
