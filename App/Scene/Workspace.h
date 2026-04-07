@@ -141,7 +141,6 @@ private:
     bool m_isInlineIC = false;
     QPointer<WorkSpace> m_parentWorkspace;
     int m_parentICElementId = -1;
-    QString m_parentContextDir;
     QString m_inlineBlobName;
 };
 
