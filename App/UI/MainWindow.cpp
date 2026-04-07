@@ -706,6 +706,12 @@ void MainWindow::on_actionSave_triggered()
         return;
     }
 
+    // Inline IC tabs serialize to a blob and emit to parent — no file dialog needed.
+    if (m_currentTab->isInlineIC()) {
+        save(QString());
+        return;
+    }
+
 #ifdef Q_OS_WASM
     on_actionSaveAs_triggered();
 #else
@@ -923,38 +929,62 @@ QDir MainWindow::currentDir() const
 
 QFileInfo MainWindow::icListFile() const
 {
-    if (m_currentTab && m_currentTab->isInlineIC() && m_currentTab->parentWorkspace()) {
-        return m_currentTab->parentWorkspace()->fileInfo();
+    // Walk up the parent workspace chain to find the root file on disk.
+    // Inline IC workspaces have no file of their own.
+    auto *ws = m_currentTab;
+    while (ws && ws->isInlineIC() && ws->parentWorkspace()) {
+        ws = ws->parentWorkspace();
+    }
+    if (ws) {
+        return ws->fileInfo();
     }
     return currentFile();
 }
 
 void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 {
-    if (!m_currentTab) {
+    // Find the tab belonging to the workspace that emitted the signal.
+    // The sender may differ from m_currentTab (e.g. a parent workspace emitting
+    // fileChanged while an inline IC child tab is active).
+    auto *senderWs = qobject_cast<WorkSpace *>(sender());
+    if (!senderWs) {
+        senderWs = m_currentTab;
+    }
+    if (!senderWs) {
         return;
     }
 
-    QString text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
+    const int tabIndex = m_ui->tab->indexOf(senderWs);
+    if (tabIndex < 0) {
+        return;
+    }
+
+    // Inline IC tabs use "[blobName]" as title — never the parent filename.
+    QString text;
+    if (senderWs->isInlineIC()) {
+        text = "[" + senderWs->inlineBlobName() + "]";
+    } else {
+        text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
+    }
 
     // Append an asterisk to the tab title to indicate unsaved changes,
     // following the common editor convention.
-    if (m_currentTab) {
-        auto *scene = m_currentTab->scene();
-        if (scene) {
-            auto *undoStack = scene->undoStack();
-            if (undoStack && !undoStack->isClean()) {
-                text += "*";
-            }
+    auto *scene = senderWs->scene();
+    if (scene) {
+        auto *undoStack = scene->undoStack();
+        if (undoStack && !undoStack->isClean()) {
+            text += "*";
         }
     }
 
-    m_ui->tab->setTabText(m_tabIndex, text);
-    // Full path in the tooltip so users can distinguish files with the same name.
-    m_ui->tab->setTabToolTip(m_tabIndex, fileInfo.absoluteFilePath());
+    m_ui->tab->setTabText(tabIndex, text);
 
-    qCDebug(zero) << "Adding file to recent files.";
-    emit addRecentFile(fileInfo.absoluteFilePath());
+    // Only update tooltip and recent files for file-backed tabs.
+    if (!senderWs->isInlineIC()) {
+        m_ui->tab->setTabToolTip(tabIndex, fileInfo.absoluteFilePath());
+        qCDebug(zero) << "Adding file to recent files.";
+        emit addRecentFile(fileInfo.absoluteFilePath());
+    }
 }
 
 void MainWindow::on_actionSelectAll_triggered()
@@ -1039,6 +1069,7 @@ void MainWindow::disconnectTab()
     disconnect(m_nextSecndPropShortcut, nullptr, m_currentTab->scene(), nullptr);
     disconnect(m_changePrevElmShortcut, nullptr, m_currentTab->scene(), nullptr);
     disconnect(m_changeNextElmShortcut, nullptr, m_currentTab->scene(), nullptr);
+    disconnect(m_currentTab->scene(), &Scene::icOpenRequested, this, nullptr);
 
     qCDebug(zero) << "Removing undo and redo actions from UI menu.";
     removeUndoRedoMenu();
@@ -1425,9 +1456,13 @@ void MainWindow::retranslateUi()
         if (!undoStack) {
             continue;
         }
-        auto fileInfo = workspace->fileInfo();
-
-        QString text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
+        QString text;
+        if (workspace->isInlineIC()) {
+            text = "[" + workspace->inlineBlobName() + "]";
+        } else {
+            auto fileInfo = workspace->fileInfo();
+            text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
+        }
 
         if (!undoStack->isClean()) {
             text += "*";

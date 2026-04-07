@@ -210,6 +210,11 @@ private slots:
     void testRenameBlobUpdatesNestedMetadata();
     void testRegisterBlobMissingFileDepWarns();
 
+    // --- Inline IC save with file-based IC conversion ---
+
+    void testInlineSaveConvertsFileBackedToEmbedded();
+    void testNestedInlineSaveAndReopen();
+
 private:
     QString fixturesSrcDir() const;
     bool copyFixture(const QString &name);

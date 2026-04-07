@@ -115,6 +115,12 @@ private slots:
     void testEmbeddedICSaveReloadRoundTrip();
     void testEmbeddedICCopyPastePreservesState();
 
+    // --- Inline IC tab operations ---
+
+    void testInlineICDropSaveCloseReopen();
+    void testInlineICSaveNoFileDialog();
+    void testInlineICSaveMarksRootDirty();
+
     // --- Edge cases & missing coverage ---
 
     void testClearSelectionViaEscape();

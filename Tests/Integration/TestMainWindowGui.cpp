@@ -1662,6 +1662,186 @@ void TestMainWindowGui::testEmbeddedICCopyPastePreservesState()
 }
 
 // ===========================================================================
+// Inline IC tab operations
+// ===========================================================================
+
+void TestMainWindowGui::testInlineICDropSaveCloseReopen()
+{
+    // Reproduces the user-reported bug:
+    // 1. Open a project with an embedded IC
+    // 2. Double-click the IC → opens inline tab (via connectTab/openICInTab)
+    // 3. Drop a file-based IC into the inline tab
+    // 4. Save (Ctrl+S) → file-based IC should be converted to embedded
+    // 5. Close the inline tab
+    // 6. Re-open the same IC → should NOT give "Invalid file format"
+    //
+    // The bug was caused by stale icOpenRequested connections accumulating
+    // because disconnectTab() didn't disconnect them. This test exercises
+    // the full MainWindow tab lifecycle that unit-level WorkSpace tests miss.
+
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *tabs = findTabs(window.get());
+    auto *scene = window->currentTab()->scene();
+    scene->setContextDir(m_fixtureDir);
+
+    // Step 1: Place an embedded IC in the root scene.
+    // Use a second fixture as the "file-based IC to drop later".
+    auto *embeddedIC = placeEmbeddedIC(scene, m_fixtureDir, "parent_ic");
+    const int embeddedICId = embeddedIC->id();
+    QByteArray blob = scene->icRegistry()->blob("parent_ic");
+    QVERIFY(!blob.isEmpty());
+
+    // Create a second fixture file to act as a file-based IC we will drop.
+    const QString dropFile = m_fixtureDir + "/drop_target.panda";
+    MainWindowGuiHelpers::createMWFixture(dropFile);
+
+    const int rootTabIndex = tabs->currentIndex();
+    auto *rootTab = window->currentTab();
+
+    // Step 2: Open the embedded IC in an inline tab.
+    window->openICInTab("parent_ic", embeddedICId, blob);
+    QCOMPARE(tabs->count(), 2);
+    auto *inlineTab = window->currentTab();
+    QVERIFY(inlineTab->isInlineIC());
+
+    // Step 3: Drop a file-based IC into the inline tab's scene.
+    auto *droppedIC = new IC();
+    droppedIC->loadFile(dropFile, m_fixtureDir);
+    droppedIC->setPos(200, 200);
+    inlineTab->scene()->addItem(droppedIC);
+    QVERIFY2(!droppedIC->isEmbedded(), "Dropped IC should be file-backed before save");
+    QVERIFY(droppedIC->inputSize() > 0);
+
+    // Step 4: Save via Ctrl+S — should NOT open a file dialog.
+    ScopedFileDialogStub guard;
+    QTest::keyClick(window.get(), Qt::Key_S, Qt::ControlModifier);
+    QCOMPARE(guard.stub.saveCallCount, 0);
+    QCOMPARE(guard.stub.openCallCount, 0);
+
+    // The dropped IC should now be embedded.
+    QVERIFY2(droppedIC->isEmbedded(), "IC should be embedded after inline save");
+    QCOMPARE(droppedIC->blobName(), QString("drop_target"));
+
+    // Inline tab title must stay "[parent_ic]", not change to the parent filename.
+    QCOMPARE(tabs->tabText(tabs->indexOf(inlineTab)), QString("[parent_ic]"));
+
+    // The parent tab should be marked dirty (asterisk) because onChildICBlobSaved
+    // pushed an UpdateBlobCommand to the root scene's undo stack.
+    const QString rootTitle = tabs->tabText(rootTabIndex);
+    QVERIFY2(rootTitle.endsWith("*"), qPrintable("Root tab should be dirty: " + rootTitle));
+
+    // The parent's registry should have been updated.
+    QByteArray updatedBlob = rootTab->scene()->icRegistry()->blob("parent_ic");
+    QVERIFY2(!updatedBlob.isEmpty(), "Root registry should have updated parent_ic blob");
+
+    // Step 5: Close the inline tab.
+    const int inlineTabIndex = tabs->indexOf(inlineTab);
+    tabs->setCurrentIndex(inlineTabIndex);
+    // Process deferred delete events from tab close
+    inlineTab->deleteLater();
+    tabs->removeTab(inlineTabIndex);
+    QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+    QCoreApplication::processEvents();
+
+    // Switch back to root tab.
+    tabs->setCurrentIndex(rootTabIndex);
+    QCOMPARE(window->currentTab(), rootTab);
+
+    // Step 6: Re-open the same embedded IC — should NOT throw "Invalid file format".
+    updatedBlob = rootTab->scene()->icRegistry()->blob("parent_ic");
+    QVERIFY(!updatedBlob.isEmpty());
+
+    bool reopenOK = false;
+    try {
+        window->openICInTab("parent_ic", embeddedICId, updatedBlob);
+        reopenOK = true;
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("Reopen threw: %1").arg(e.what())));
+    }
+    QVERIFY(reopenOK);
+    QCOMPARE(tabs->count(), 2);
+
+    auto *reopenedTab = window->currentTab();
+    QVERIFY(reopenedTab->isInlineIC());
+
+    // The drop_target IC should be present and embedded in the reopened tab.
+    bool foundDropped = false;
+    for (auto *elm : reopenedTab->scene()->elements()) {
+        if (elm->isEmbedded() && elm->blobName() == "drop_target") {
+            foundDropped = true;
+            QVERIFY(elm->inputSize() > 0);
+        }
+    }
+    QVERIFY2(foundDropped, "Reopened inline tab should contain the embedded drop_target IC");
+
+    QFile::remove(dropFile);
+}
+
+void TestMainWindowGui::testInlineICSaveNoFileDialog()
+{
+    // Verifies that Ctrl+S on an inline IC tab does NOT open a file dialog.
+    // Before the fix, on_actionSave_triggered checked currentFile() which is
+    // empty for inline tabs, causing it to show a Save-As dialog.
+
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    scene->setContextDir(m_fixtureDir);
+
+    auto *ic = placeEmbeddedIC(scene, m_fixtureDir, "no_dialog_test");
+    QByteArray blob = scene->icRegistry()->blob("no_dialog_test");
+
+    // Open inline tab
+    window->openICInTab("no_dialog_test", ic->id(), blob);
+    QVERIFY(window->currentTab()->isInlineIC());
+
+    // Add an element so there's something to save
+    window->currentTab()->scene()->addItem(new And());
+
+    // Save — stub should NOT be called
+    ScopedFileDialogStub guard;
+    QTest::keyClick(window.get(), Qt::Key_S, Qt::ControlModifier);
+
+    QCOMPARE(guard.stub.saveCallCount, 0);
+    QCOMPARE(guard.stub.openCallCount, 0);
+}
+
+void TestMainWindowGui::testInlineICSaveMarksRootDirty()
+{
+    // When an inline IC tab saves, onChildICBlobSaved pushes an
+    // UpdateBlobCommand to the root scene's undo stack, which should
+    // mark the root tab as dirty (not clean).
+
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *rootScene = window->currentTab()->scene();
+    rootScene->setContextDir(m_fixtureDir);
+
+    auto *ic = placeEmbeddedIC(rootScene, m_fixtureDir, "dirty_test");
+    QByteArray blob = rootScene->icRegistry()->blob("dirty_test");
+
+    // Save root so its undo stack is clean
+    const QString rootPath = m_fixtureDir + "/dirty_root.panda";
+    window->save(rootPath);
+    QVERIFY(rootScene->undoStack()->isClean());
+
+    // Open inline tab
+    window->openICInTab("dirty_test", ic->id(), blob);
+    QVERIFY(window->currentTab()->isInlineIC());
+
+    // Add an element and save inline tab
+    window->currentTab()->scene()->addItem(new Led());
+
+    ScopedFileDialogStub guard;
+    QTest::keyClick(window.get(), Qt::Key_S, Qt::ControlModifier);
+    QCOMPARE(guard.stub.saveCallCount, 0);
+
+    // Root tab's undo stack should now be dirty
+    QVERIFY2(!rootScene->undoStack()->isClean(),
+             "Root undo stack should be dirty after inline IC child save");
+
+    QFile::remove(rootPath);
+}
+
+// ===========================================================================
 // Edge cases & missing coverage
 // ===========================================================================
 
