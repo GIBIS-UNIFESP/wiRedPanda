@@ -117,6 +117,7 @@ void WorkSpace::save(const QString &fileName)
                     }
                 }
                 ic->setBlobName(baseName);
+                ic->loadFromBlob(m_scene.icRegistry()->blob(baseName), contextDir);
             }
         }
 
@@ -583,9 +584,6 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
     m_isInlineIC = true;
     m_parentWorkspace = parent;
     m_parentICElementId = icElementId;
-    if (parent) {
-        m_fileInfo = parent->fileInfo();
-    }
 
     // Derive blob name from the parent IC element
     if (parent) {
