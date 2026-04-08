@@ -43,5 +43,9 @@ private slots:
 
     // Generic properties tests
     void testGenericProperties();
+
+    // Appearance tests
+    void testAppearanceStates();
+    void testSetAppearanceDefault();
 };
 

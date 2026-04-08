@@ -109,6 +109,9 @@
 // system
 #include "Tests/System/TestBewavedDolphinGui.h"
 #include "Tests/System/TestWaveform.h"
+// unit/codegen
+#include "Tests/Unit/CodeGen/TestArduinoCodeGenUnit.h"
+#include "Tests/Unit/CodeGen/TestSystemVerilogCodeGenUnit.h"
 // unit/commands
 #include "Tests/Unit/Commands/TestCommands.h"
 // unit/common
@@ -118,8 +121,17 @@
 #include "Tests/Unit/Common/TestRecentFiles.h"
 #include "Tests/Unit/Common/TestSettings.h"
 #include "Tests/Unit/Common/TestThemeManager.h"
+// unit/core
+#include "Tests/Unit/Core/TestApplication.h"
+#include "Tests/Unit/Core/TestSettings.h"
+#include "Tests/Unit/Core/TestUpdateChecker.h"
 // unit/elements
 #include "Tests/Unit/Elements/TestAudioBox.h"
+#include "Tests/Unit/Elements/TestDemux.h"
+#include "Tests/Unit/Elements/TestDisplay.h"
+#include "Tests/Unit/Elements/TestDisplay7.h"
+#include "Tests/Unit/Elements/TestGraphicElement.h"
+#include "Tests/Unit/Elements/TestIC.h"
 #include "Tests/Unit/Elements/TestBuzzer.h"
 #include "Tests/Unit/Elements/TestClock.h"
 #include "Tests/Unit/Elements/TestClocksAdvanced.h"
@@ -129,15 +141,17 @@
 #include "Tests/Unit/Elements/TestElementProperties.h"
 #include "Tests/Unit/Elements/TestFeatures.h"
 #include "Tests/Unit/Elements/TestGeometry.h"
-#include "Tests/Unit/Elements/TestWirelessNode.h"
 #include "Tests/Unit/Elements/TestGraphicelementAdvanced.h"
+#include "Tests/Unit/Elements/TestICRegistry.h"
 #include "Tests/Unit/Elements/TestInputElements.h"
+#include "Tests/Unit/Elements/TestMux.h"
 #include "Tests/Unit/Elements/TestInputRotary.h"
 #include "Tests/Unit/Elements/TestLed.h"
 #include "Tests/Unit/Elements/TestLogicGates.h"
 #include "Tests/Unit/Elements/TestMultiplexing.h"
 #include "Tests/Unit/Elements/TestSequentialLogic.h"
 #include "Tests/Unit/Elements/TestTruthTable.h"
+#include "Tests/Unit/Elements/TestWirelessNode.h"
 // unit/factory
 #include "Tests/Unit/Factory/TestElementFactory.h"
 // unit/logic
@@ -148,18 +162,40 @@
 // unit/nodes
 #include "Tests/Unit/Nodes/TestConnectionSerialization.h"
 #include "Tests/Unit/Nodes/TestConnections.h"
+#include "Tests/Unit/Nodes/TestQNEConnection.h"
+#include "Tests/Unit/Nodes/TestQNEPort.h"
 // unit/scene
+#include "Tests/Unit/Scene/TestConnectionManager.h"
 #include "Tests/Unit/Scene/TestConnectionValidity.h"
+#include "Tests/Unit/Scene/TestGraphicsView.h"
+#include "Tests/Unit/Scene/TestPropertyShortcutHandler.h"
 #include "Tests/Unit/Scene/TestScene.h"
 #include "Tests/Unit/Scene/TestSceneConnections.h"
 #include "Tests/Unit/Scene/TestSceneState.h"
 #include "Tests/Unit/Scene/TestSceneUndoredo.h"
+#include "Tests/Unit/Scene/TestWorkspace.h"
 // unit/serialization
+#include "Tests/Unit/Serialization/TestDolphinSerializer.h"
+#include "Tests/Unit/Serialization/TestFileUtils.h"
+#include "Tests/Unit/Serialization/TestRecentFiles.h"
 #include "Tests/Unit/Serialization/TestSerialization.h"
 // unit/simulation
+#include "Tests/Unit/Simulation/TestSimulation.h"
 #include "Tests/Unit/Simulation/TestSimulationBlocker.h"
 // unit/ui
+#include "Tests/Unit/Ui/TestCircuitExporter.h"
 #include "Tests/Unit/Ui/TestDialogs.h"
+#include "Tests/Unit/Ui/TestElementContextMenu.h"
+#include "Tests/Unit/Ui/TestElementEditor.h"
+#include "Tests/Unit/Ui/TestElementPalette.h"
+#include "Tests/Unit/Ui/TestElementTabNavigator.h"
+#include "Tests/Unit/Ui/TestFileDialogProvider.h"
+#include "Tests/Unit/Ui/TestICDropZone.h"
+#include "Tests/Unit/Ui/TestLabeledSlider.h"
+#include "Tests/Unit/Ui/TestLanguageManager.h"
+#include "Tests/Unit/Ui/TestLengthDialog.h"
+#include "Tests/Unit/Ui/TestSelectionCapabilities.h"
+#include "Tests/Unit/Ui/TestTrashButton.h"
 
 int main(int argc, char **argv)
 {
@@ -263,6 +299,8 @@ int main(int argc, char **argv)
         {"TestIcons", []() -> QObject * { return new TestIcons; }},
         {"TestWaveform", []() -> QObject * { return new TestWaveform; }},
         {"TestBewavedDolphinGui", []() -> QObject * { return new TestBewavedDolphinGui; }},
+        {"TestArduinoCodeGenUnit", []() -> QObject * { return new TestArduinoCodeGenUnit; }},
+        {"TestSystemVerilogCodeGenUnit", []() -> QObject * { return new TestSystemVerilogCodeGenUnit; }},
         {"TestCommands", []() -> QObject * { return new TestCommands; }},
         {"TestCommon", []() -> QObject * { return new TestCommon; }},
         {"TestEnums", []() -> QObject * { return new TestEnums; }},
@@ -270,14 +308,25 @@ int main(int argc, char **argv)
         {"TestRecentFiles", []() -> QObject * { return new TestRecentFiles; }},
         {"TestSettings", []() -> QObject * { return new TestSettings; }},
         {"TestThemeManager", []() -> QObject * { return new TestThemeManager; }},
+        {"TestCoreSettings", []() -> QObject * { return new TestCoreSettings; }},
+        {"TestUpdateChecker", []() -> QObject * { return new TestUpdateChecker; }},
+        {"TestApplication", []() -> QObject * { return new TestApplication; }},
         {"TestAudioBox", []() -> QObject * { return new TestAudioBox; }},
         {"TestBuzzer", []() -> QObject * { return new TestBuzzer; }},
+        {"TestDemux", []() -> QObject * { return new TestDemux; }},
+        {"TestDisplay", []() -> QObject * { return new TestDisplay; }},
+        {"TestDisplay7", []() -> QObject * { return new TestDisplay7; }},
+        {"TestGraphicElement", []() -> QObject * { return new TestGraphicElement; }},
+        {"TestICUnit", []() -> QObject * { return new TestICUnit; }},
         {"TestClock", []() -> QObject * { return new TestClock; }},
         {"TestClocksAdvanced", []() -> QObject * { return new TestClocksAdvanced; }},
         {"TestComponents", []() -> QObject * { return new TestComponents; }},
         {"TestDisplays", []() -> QObject * { return new TestDisplays; }},
+        {"TestElementContextMenu", []() -> QObject * { return new TestElementContextMenu; }},
+        {"TestElementEditor", []() -> QObject * { return new TestElementEditor; }},
         {"TestElementLabel", []() -> QObject * { return new TestElementLabel; }},
         {"TestElementProperties", []() -> QObject * { return new TestElementProperties; }},
+        {"TestElementTabNavigator", []() -> QObject * { return new TestElementTabNavigator; }},
         {"TestFeatures", []() -> QObject * { return new TestFeatures; }},
         {"TestGeometry", []() -> QObject * { return new TestGeometry; }},
         {"TestWirelessNode", []() -> QObject * { return new TestWirelessNode; }},
@@ -287,8 +336,10 @@ int main(int argc, char **argv)
         {"TestLED", []() -> QObject * { return new TestLED; }},
         {"TestLogicGates", []() -> QObject * { return new TestLogicGates; }},
         {"TestMultiplexing", []() -> QObject * { return new TestMultiplexing; }},
+        {"TestMux", []() -> QObject * { return new TestMux; }},
         {"TestSequentialLogic", []() -> QObject * { return new TestSequentialLogic; }},
         {"TestTruthTable", []() -> QObject * { return new TestTruthTable; }},
+        {"TestICRegistry", []() -> QObject * { return new TestICRegistry; }},
         {"TestElementFactory", []() -> QObject * { return new TestElementFactory; }},
         {"TestElementLogic", []() -> QObject * { return new TestElementLogic; }},
         {"TestElementLogicErrors", []() -> QObject * { return new TestElementLogicErrors; }},
@@ -296,14 +347,33 @@ int main(int argc, char **argv)
         {"TestStatusOps", []() -> QObject * { return new TestStatusOps; }},
         {"TestConnectionSerialization", []() -> QObject * { return new TestConnectionSerialization; }},
         {"TestConnections", []() -> QObject * { return new TestConnections; }},
+        {"TestConnectionManager", []() -> QObject * { return new TestConnectionManager; }},
         {"TestConnectionValidity", []() -> QObject * { return new TestConnectionValidity; }},
+        {"TestGraphicsView", []() -> QObject * { return new TestGraphicsView; }},
         {"TestScene", []() -> QObject * { return new TestScene; }},
         {"TestSceneConnections", []() -> QObject * { return new TestSceneConnections; }},
         {"TestSceneState", []() -> QObject * { return new TestSceneState; }},
         {"TestSceneUndoredo", []() -> QObject * { return new TestSceneUndoredo; }},
+        {"TestPropertyShortcutHandler", []() -> QObject * { return new TestPropertyShortcutHandler; }},
+        {"TestWorkspaceUnit", []() -> QObject * { return new TestWorkspaceUnit; }},
+        {"TestDolphinSerializer", []() -> QObject * { return new TestDolphinSerializer; }},
+        {"TestFileUtils", []() -> QObject * { return new TestFileUtils; }},
+        {"TestRecentFilesUnit", []() -> QObject * { return new TestRecentFilesUnit; }},
         {"TestSerialization", []() -> QObject * { return new TestSerialization; }},
+        {"TestQNEConnection", []() -> QObject * { return new TestQNEConnection; }},
+        {"TestQNEPort", []() -> QObject * { return new TestQNEPort; }},
+        {"TestSimulationUnit", []() -> QObject * { return new TestSimulationUnit; }},
         {"TestSimulationBlocker", []() -> QObject * { return new TestSimulationBlocker; }},
+        {"TestCircuitExporter", []() -> QObject * { return new TestCircuitExporter; }},
         {"TestDialogs", []() -> QObject * { return new TestDialogs; }},
+        {"TestElementPalette", []() -> QObject * { return new TestElementPalette; }},
+        {"TestFileDialogProviderUnit", []() -> QObject * { return new TestFileDialogProviderUnit; }},
+        {"TestICDropZone", []() -> QObject * { return new TestICDropZone; }},
+        {"TestLabeledSlider", []() -> QObject * { return new TestLabeledSlider; }},
+        {"TestLanguageManager", []() -> QObject * { return new TestLanguageManager; }},
+        {"TestLengthDialog", []() -> QObject * { return new TestLengthDialog; }},
+        {"TestSelectionCapabilities", []() -> QObject * { return new TestSelectionCapabilities; }},
+        {"TestTrashButton", []() -> QObject * { return new TestTrashButton; }},
     });
 }
 
