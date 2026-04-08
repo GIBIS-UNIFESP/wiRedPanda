@@ -213,6 +213,87 @@ void TestEnums::testGateTypeCycling()
     QCOMPARE(current, ElementType::And);
 }
 
+void TestEnums::testFlipFlopCycling()
+{
+    // DFlipFlop ↔ TFlipFlop
+    QCOMPARE(Enums::nextElmType(ElementType::DFlipFlop), ElementType::TFlipFlop);
+    QCOMPARE(Enums::nextElmType(ElementType::TFlipFlop), ElementType::DFlipFlop);
+    QCOMPARE(Enums::prevElmType(ElementType::DFlipFlop), ElementType::TFlipFlop);
+    QCOMPARE(Enums::prevElmType(ElementType::TFlipFlop), ElementType::DFlipFlop);
+
+    // JKFlipFlop ↔ SRFlipFlop
+    QCOMPARE(Enums::nextElmType(ElementType::JKFlipFlop), ElementType::SRFlipFlop);
+    QCOMPARE(Enums::nextElmType(ElementType::SRFlipFlop), ElementType::JKFlipFlop);
+    QCOMPARE(Enums::prevElmType(ElementType::JKFlipFlop), ElementType::SRFlipFlop);
+    QCOMPARE(Enums::prevElmType(ElementType::SRFlipFlop), ElementType::JKFlipFlop);
+}
+
+void TestEnums::testOutputCycling()
+{
+    // Led → Buzzer → AudioBox → Led
+    QCOMPARE(Enums::nextElmType(ElementType::Led), ElementType::Buzzer);
+    QCOMPARE(Enums::nextElmType(ElementType::Buzzer), ElementType::AudioBox);
+    QCOMPARE(Enums::nextElmType(ElementType::AudioBox), ElementType::Led);
+
+    // Reverse: Led → AudioBox → Buzzer → Led
+    QCOMPARE(Enums::prevElmType(ElementType::Led), ElementType::AudioBox);
+    QCOMPARE(Enums::prevElmType(ElementType::AudioBox), ElementType::Buzzer);
+    QCOMPARE(Enums::prevElmType(ElementType::Buzzer), ElementType::Led);
+}
+
+void TestEnums::testInputCycling()
+{
+    // Full input cycle: InputVcc → InputGnd → InputButton → InputSwitch → InputRotary → Clock → InputVcc
+    ElementType current = ElementType::InputVcc;
+    current = Enums::nextElmType(current);
+    QCOMPARE(current, ElementType::InputGnd);
+    current = Enums::nextElmType(current);
+    QCOMPARE(current, ElementType::InputButton);
+    current = Enums::nextElmType(current);
+    QCOMPARE(current, ElementType::InputSwitch);
+    current = Enums::nextElmType(current);
+    QCOMPARE(current, ElementType::InputRotary);
+    current = Enums::nextElmType(current);
+    QCOMPARE(current, ElementType::Clock);
+    current = Enums::nextElmType(current);
+    QCOMPARE(current, ElementType::InputVcc);
+
+    // Reverse cycle
+    current = ElementType::InputVcc;
+    current = Enums::prevElmType(current);
+    QCOMPARE(current, ElementType::Clock);
+    current = Enums::prevElmType(current);
+    QCOMPARE(current, ElementType::InputRotary);
+    current = Enums::prevElmType(current);
+    QCOMPARE(current, ElementType::InputSwitch);
+    current = Enums::prevElmType(current);
+    QCOMPARE(current, ElementType::InputButton);
+    current = Enums::prevElmType(current);
+    QCOMPARE(current, ElementType::InputGnd);
+    current = Enums::prevElmType(current);
+    QCOMPARE(current, ElementType::InputVcc);
+}
+
+void TestEnums::testNotNodeCycling()
+{
+    QCOMPARE(Enums::nextElmType(ElementType::Not), ElementType::Node);
+    QCOMPARE(Enums::nextElmType(ElementType::Node), ElementType::Not);
+    QCOMPARE(Enums::prevElmType(ElementType::Not), ElementType::Node);
+    QCOMPARE(Enums::prevElmType(ElementType::Node), ElementType::Not);
+}
+
+void TestEnums::testUnknownTypeReturnsUnknown()
+{
+    // Types not in any cycle group return Unknown
+    QCOMPARE(Enums::nextElmType(ElementType::Mux), ElementType::Unknown);
+    QCOMPARE(Enums::nextElmType(ElementType::Demux), ElementType::Unknown);
+    QCOMPARE(Enums::nextElmType(ElementType::IC), ElementType::Unknown);
+    QCOMPARE(Enums::nextElmType(ElementType::Unknown), ElementType::Unknown);
+    QCOMPARE(Enums::prevElmType(ElementType::Mux), ElementType::Unknown);
+    QCOMPARE(Enums::prevElmType(ElementType::Demux), ElementType::Unknown);
+    QCOMPARE(Enums::prevElmType(ElementType::Unknown), ElementType::Unknown);
+}
+
 // ============================================================
 // Stream Operations Tests (3 tests)
 // ============================================================

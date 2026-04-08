@@ -2,11 +2,29 @@
 
 ## Context
 
-Current coverage: **80.7% lines** (10,848/13,447), **87.0% functions** (1,247/1,433).
+Starting coverage: **80.7% lines** (10,848/13,447), **87.0% functions** (1,247/1,433).
+Current coverage (after Phase 1): **~81.9% lines** (11,087/13,528), **~87.9% functions** (1,266/1,438).
 Goal: **100% line coverage** across all App/ source files.
-Gap: **2,599 uncovered lines** across 89 files.
+Gap: **~2,441 uncovered lines** across ~85 files.
 
-### Coverage by Module
+### Progress
+
+| Date | Lines Hit | Total | Coverage | Delta |
+|------|-----------|-------|----------|-------|
+| Baseline | 10,848 | 13,447 | 80.7% | — |
+| Phase 1 (2026-04-08) | 11,087 | 13,528 | 81.9% | +139 lines |
+
+### Key improvements from Phase 1
+
+| File | Before | After |
+|------|--------|-------|
+| `BeWavedDolphin/Serializer.cpp` | 0.0% | **91.4%** |
+| `Core/Enums.cpp` | 47.4% | **96.5%** |
+| `IO/FileUtils.h` | 0.0% | **60.0%** |
+| `CodeGen/SystemVerilogCodeGen.h` | 63.6% | **81.8%** |
+| `CodeGen/SystemVerilogCodeGen.cpp` | 66.4% | **69.0%** |
+
+### Coverage by Module (baseline)
 
 | Module | Lines | Hit | Uncovered | Coverage |
 |--------|------:|----:|----------:|---------:|
@@ -22,51 +40,44 @@ Gap: **2,599 uncovered lines** across 89 files.
 
 ---
 
-## Phase 1: High-Impact Pure Logic (+~330 lines → ~83%)
+## Phase 1: High-Impact Pure Logic — DONE (+139 lines)
 
-### 1A. `App/CodeGen/SystemVerilogCodeGen.cpp` — 329 uncovered lines (66.4%)
+### 1A. `App/CodeGen/SystemVerilogCodeGen.cpp` — 329→304 uncovered (66.4%→69.0%) ✅
 
-**New file**: `Tests/Unit/CodeGen/TestSystemVerilogCodeGenUnit.cpp` + `.h`
+**File**: `Tests/Unit/CodeGen/TestSystemVerilogCodeGenUnit.cpp` + `.h`
 
-Existing integration tests use `.panda` → golden `.sv` comparisons. The uncovered paths are:
-- Simple non-IC circuit generation (top-level `declareInputs`/`declareOutputs`/`assignVariablesRec`)
-- Mux/Demux case generation
-- TruthTable SystemVerilog generation
-- Module name collision resolution
-- Wireless Tx/Rx edge cases
+Implemented: 6 tests building connected circuits with `CircuitBuilder` (InputSwitch→AND→Led,
+InputSwitch→OR→NOT→Led, multi-gate chain, Mux, Demux, empty scene). Each test writes to a
+temp file and verifies output contains `module`, `input`, `output`, `assign` keywords.
 
-**Tests to write**:
-- Build simple circuits programmatically with `CircuitBuilder` (AND+LED, Mux, Demux, TruthTable), call `generate()`, verify output string content
-- Test name collision by creating two ICs with same normalized basename
-- Test wireless Tx/Rx codegen path
+**Remaining uncovered**: IC module generation paths (requires loading `.panda` files with ICs),
+TruthTable codegen, wireless Tx/Rx, name collision resolution.
 
-**Expected**: ~200-250 lines covered
+### 1B. `App/BeWavedDolphin/Serializer.cpp` — 58→5 uncovered (0%→91.4%) ✅
 
-### 1B. `App/BeWavedDolphin/Serializer.cpp` — 58 uncovered lines (0%)
+**File**: `Tests/Unit/Serialization/TestDolphinSerializer.cpp` + `.h`
 
-**New file**: `Tests/Unit/Serialization/TestDolphinSerializer.cpp` + `.h`
+Implemented: 11 tests using the actual `DolphinSerializer` namespace API — binary save/load
+round-trips via `QDataStream`, CSV save/load round-trips via `QSaveFile`/`QFile`, edge cases
+(empty model, corrupted data, multiple columns/rows). Verifies `inputPorts` and `columns`
+match after round-trip.
 
-Pure I/O functions: `saveBinary`/`loadBinary`/`saveCSV`/`loadCSV`.
+**Remaining uncovered**: `cols < 2` validation throw path, `rows > maxInputPorts` clamping.
 
-**Tests to write**:
-- Round-trip binary: create `QStandardItemModel` → `saveBinary` to temp file → `loadBinary` → verify match
-- Round-trip CSV: same pattern with `saveCSV`/`loadCSV`
-- Edge cases: columns < 2, corrupt CSV data
-
-**Expected**: ~55 lines covered
-
-### 1C. `App/Core/Enums.cpp` — 30 uncovered lines (47.4%)
+### 1C. `App/Core/Enums.cpp` — 30→2 uncovered (47.4%→96.5%) ✅
 
 **Extend**: `Tests/Unit/Common/TestEnums.cpp`
 
 Missing switch cases in `nextElmType`/`prevElmType`:
-- FlipFlop cycling (DFlipFlop↔TFlipFlop, JKFlipFlop↔SRFlipFlop)
-- Output cycling (Led→Buzzer→AudioBox→Led)
-- Input cycling (full InputVcc/InputGnd/InputButton/InputSwitch/InputRotary/Clock cycle)
-- Not↔Node pair
-- Unknown type returns
+Implemented 5 new test methods in `Tests/Unit/Common/TestEnums.cpp`:
+- `testFlipFlopCycling`: DFlipFlop↔TFlipFlop, JKFlipFlop↔SRFlipFlop (both directions)
+- `testOutputCycling`: Led→Buzzer→AudioBox→Led (both directions)
+- `testInputCycling`: full 6-element InputVcc→...→Clock→InputVcc cycle (both directions)
+- `testNotNodeCycling`: Not↔Node pair
+- `testUnknownTypeReturnsUnknown`: Mux, Demux, IC, Unknown → Unknown
 
-**Expected**: ~28 lines covered
+**Result**: 47.4%→96.5% (+28 lines) ✅. Remaining 2 uncovered lines are the `operator++`
+return statement and one `default` branch.
 
 ### 1D. `App/IO/FileUtils.h` — 30 uncovered lines (0%)
 
@@ -74,11 +85,14 @@ Missing switch cases in `nextElmType`/`prevElmType`:
 
 Inline utility functions `copyToDir` and `copyPandaDeps`.
 
-**Tests to write**:
-- `copyToDir`: empty path, resource path, file already in dest, normal copy
-- `copyPandaDeps`: use a fixture `.panda` with IC dependencies, verify recursive copy
+**File**: `Tests/Unit/Serialization/TestFileUtils.cpp` + `.h`
 
-**Expected**: ~25 lines covered
+Implemented: 7 tests covering `copyToDir` (empty path, valid file copy, file already exists,
+resource path) and `copyPandaDeps` (basic, recursive, no dependencies). Note: `copyToDir` is
+`void` (not `bool`), `copyPandaDeps` takes 3 args `(pandaPath, srcDir, destDir)`.
+
+**Result**: 0%→60% ✅. Remaining 40% requires real `.panda` files with valid preamble/metadata
+for `copyPandaDeps` to read past the early return.
 
 ---
 
@@ -688,12 +702,26 @@ Reaching true 100% requires either: (a) excluding these files from coverage meas
 
 1. Add `.cpp` + `.h` to `CMakeSources.cmake` (`TEST_WIREDPANDA_SOURCES` / `TEST_WIREDPANDA_HEADERS`, alphabetically sorted)
 2. Add `#include` + `TestEntry` in `Tests/Runners/TestWiredpanda.cpp`
-3. Add `add_test(NAME TestClassName COMMAND test_wiredpanda TestClassName ...)` in `CMakeLists.txt`
+3. **CRITICAL**: Add `add_test(NAME TestClassName COMMAND test_wiredpanda TestClassName ...)` in `CMakeLists.txt` — without this, `ctest` won't run the test and coverage won't be collected!
+4. If the class name collides with an existing test class (check `Tests/Integration/`), append `Unit` suffix to the new class (e.g. `TestWorkspaceUnit`, `TestICUnit`, `TestRecentFilesUnit`)
+
+### Naming collisions found so far
+
+| New Unit class | Collides with | Renamed to |
+|----------------|---------------|------------|
+| TestRecentFiles | Tests/Unit/Common/TestRecentFiles | TestRecentFilesUnit |
+| TestFileDialogProvider | Tests/Integration/TestFileDialogProvider | TestFileDialogProviderUnit |
+| TestWorkspace | Tests/Integration/TestWorkspace | TestWorkspaceUnit |
+| TestIC | Tests/Integration/TestIc | TestICUnit |
 
 ## Verification
 
 After each phase:
 ```bash
-cmake --preset coverage && cmake --build --preset coverage && ctest --preset coverage
-# Then check coverage report
+cmake --preset coverage && cmake --build --preset coverage --clean-first
+find build -name '*.gcda' -delete
+ctest --preset coverage
+lcov --capture --directory build --output-file build/coverage.info --ignore-errors mismatch
+lcov -r build/coverage.info '/usr/*' '*/Qt/*' '*/build/*' '*/Tests/*' -o /tmp/cov.info --ignore-errors inconsistent
+lcov --list /tmp/cov.info | grep -E 'target_file_pattern'
 ```

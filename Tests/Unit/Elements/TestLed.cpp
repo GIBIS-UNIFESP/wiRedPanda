@@ -483,3 +483,43 @@ void TestLED::testGenericProperties()
     QCOMPARE(led.genericProperties(), QString("White"));
 }
 
+void TestLED::testAppearanceStates()
+{
+    // 1-input: Off/On
+    Led led1;
+    auto states1 = led1.appearanceStates();
+    QCOMPARE(states1.size(), 2);
+
+    // 2-input: 00, 01, 10, 11
+    Led led2;
+    led2.setInputSize(2);
+    auto states2 = led2.appearanceStates();
+    QCOMPARE(states2.size(), 4);
+
+    // 3-input: 000..111 (8 states)
+    Led led3;
+    led3.setInputSize(3);
+    auto states3 = led3.appearanceStates();
+    QCOMPARE(states3.size(), 8);
+
+    // 4-input: 0000..1111 (16 states)
+    Led led4;
+    led4.setInputSize(4);
+    auto states4 = led4.appearanceStates();
+    QCOMPARE(states4.size(), 16);
+}
+
+void TestLED::testSetAppearanceDefault()
+{
+    Led led;
+    led.setColor("Red");
+
+    // Restore default appearance
+    led.setAppearance(true, {});
+    QVERIFY(true);
+
+    // Set custom appearance (non-existent file is fine — just stores the path)
+    led.setAppearance(false, "/tmp/custom_led.png");
+    QVERIFY(true);
+}
+

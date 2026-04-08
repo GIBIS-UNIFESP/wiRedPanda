@@ -22,11 +22,16 @@ private slots:
     void testElementTypeIncrement();
     void testElementTypeEdgeCases();
 
-    // Element Type Cycling (4 tests)
+    // Element Type Cycling
     void testNextElementTypeCycling();
     void testPrevElementTypeCycling();
     void testNextPrevSymmetry();
     void testGateTypeCycling();
+    void testFlipFlopCycling();
+    void testOutputCycling();
+    void testInputCycling();
+    void testNotNodeCycling();
+    void testUnknownTypeReturnsUnknown();
 
     // Stream Operations (3 tests)
     void testQDataStreamSerialization();
