@@ -367,7 +367,10 @@ void MainWindow::connectSceneAction(QAction *action, void (Scene::*method)())
     });
 }
 
-MainWindow::~MainWindow() = default;
+MainWindow::~MainWindow()
+{
+    disconnectTab();
+}
 
 void MainWindow::loadAutosaveFiles()
 {
@@ -1070,6 +1073,7 @@ void MainWindow::disconnectTab()
     disconnect(m_changePrevElmShortcut, nullptr, m_currentTab->scene(), nullptr);
     disconnect(m_changeNextElmShortcut, nullptr, m_currentTab->scene(), nullptr);
     disconnect(m_currentTab->scene(), &Scene::icOpenRequested, this, nullptr);
+    disconnect(m_currentTab->scene()->undoStack(), &QUndoStack::indexChanged, this, nullptr);
 
     qCDebug(zero) << "Removing undo and redo actions from UI menu.";
     removeUndoRedoMenu();
