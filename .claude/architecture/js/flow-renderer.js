@@ -125,7 +125,7 @@ function renderFlow(flowId) {
       { selector: '.key', style: { 'border-color': '#d29922', 'border-width': 2.5 }},
       { selector: '.error', style: {
         'border-color': '#da3633', 'border-width': 2,
-        'background-color': 'rgba(218, 54, 51, 0.08)', 'color': '#f85149', 'font-size': 10,
+        'background-color': '#da3633', 'background-opacity': 0.08, 'color': '#f85149', 'font-size': 10,
       }},
       { selector: '.end', style: { 'border-color': '#3fb950', 'border-width': 2.5 }},
       // Drillable nodes: double border + glow
