@@ -146,16 +146,6 @@ flowRegistry['bwd_export'] = {
       ]
 };
 
-flowRegistry['bwd_mod'] = {
-  title: 'BeWavedDolphin',
-  nodes: [
-    ['f0', 'Waveform Pipeline', 'key', '', 'bwd_pipeline']
-  ],
-  edges: [
-
-  ]
-};
-
 flowRegistry['bwd_pipeline'] = {
   title: 'Waveform Pipeline',
   nodes: [
