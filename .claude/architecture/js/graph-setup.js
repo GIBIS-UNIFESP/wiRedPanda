@@ -7,7 +7,7 @@ for (const [mod, info] of Object.entries(modules)) {
   cyNodes.push({ data: { id: `mod_${mod}`, label: info.label, nodeType: 'module', module: mod }, classes: 'module' });
 }
 for (const n of nodes) {
-  const hasDrill = !!drilldowns[n.module];
+  const hasDrill = !!flowIdForNode(n.id, n.module);
   cyNodes.push({ data: { id: n.id, label: n.label, desc: n.desc, module: n.module, parent: `mod_${n.module}`, nodeType: 'class', hasDrill }, classes: 'classNode' });
 }
 for (let i = 0; i < edges.length; i++) {
