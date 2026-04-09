@@ -7,6 +7,13 @@ function hexAlpha(hex, alpha) {
   const b = parseInt(hex.slice(5,7), 16);
   return 'rgba(' + r + ',' + g + ',' + b + ',' + (alpha/255).toFixed(2) + ')';
 }
+// Measure text width using a hidden canvas (replaces deprecated width/height: 'label')
+const _measureCanvas = document.createElement('canvas').getContext('2d');
+function measureLabel(label, fontSize) {
+  _measureCanvas.font = fontSize + 'px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif';
+  return _measureCanvas.measureText(label).width;
+}
+
 // ── Build Cytoscape ──────────────────────────────────────────
 const cyNodes = [];
 const cyEdges = [];
@@ -38,7 +45,10 @@ const cy = cytoscape({
       selector: `#mod_${mod}`, style: { 'border-color': hexAlpha(info.color, 0x88), 'color': info.color }
     })),
     { selector: '.classNode', style: {
-      'shape': 'round-rectangle', 'width': 'label', 'height': 'label', 'padding': '6px',
+      'shape': 'round-rectangle',
+      'width': function(ele) { return measureLabel(ele.data('label'), 10) + 14; },
+      'height': 24,
+      'padding': '0px',
       'background-color': '#21262d', 'border-width': 1.5, 'border-color': '#30363d',
       'label': 'data(label)', 'font-size': 10, 'color': '#e6edf3',
       'text-valign': 'center', 'text-halign': 'center', 'text-wrap': 'wrap', 'text-max-width': 100,
