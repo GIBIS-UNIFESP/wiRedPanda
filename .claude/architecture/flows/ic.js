@@ -1,0 +1,270 @@
+// Flow definitions: ic
+flowRegistry['ic_ops'] = {
+  title: 'IC Element \u2014 Inline IC Interactions',
+  nodes: [
+    ['f0', '\u2460 Open Sub-Circuit', 'key', '', 'ic_u2460_open_subcircuit'],
+    ['f1', '\u2461 Embed (file \u2192 inline)', 'key', '', 'ic_u2461_embed_file_u2192_inline'],
+    ['f2', '\u2462 Extract (inline \u2192 file)', 'key', '', 'ic_u2462_extract_inline_u2192_file']
+  ],
+  edges: [
+    ['f0', 'f1'],
+    ['f1', 'f2']
+  ]
+};
+
+flowRegistry['ic_u2460_open_subcircuit'] = {
+  title: '\u2460 Open Sub-Circuit',
+  nodes: [
+        ['start',       'IC::mouseDoubleClickEvent()',          'start',    'User double-clicks an IC box on the canvas'],
+        ['emit',        'emit requestOpenSubCircuit\n(id, blobName, filePath)', 'step', 'Signal carries IC element ID, blob name (if embedded), file path (if file-backed)'],
+        ['relay',       'Scene::icOpenRequested\nsignal relay', 'step',     'Scene forwards the signal; MainWindow picks it up in connectTab()'],
+        ['d_blob',      'blobName\nempty?',                     'decision', ''],
+        ['d_file',      'filePath\nempty?',                     'decision', ''],
+        ['dead',        'No-op\n(neither blob nor file)',       'error',    'IC element has no source data \u2014 nothing to open'],
+        ['open_file',   'loadPandaFile(filePath)',              'end',      'Opens the .panda file as a normal file tab (not inline)'],
+        ['d_tab',       'm_currentTab\nnull?',                  'decision', ''],
+        ['no_tab',      'return',                               'error',    'No active workspace tab'],
+        ['fetch',       'Fetch blob bytes\nfrom ICRegistry',    'step',     'icRegistry->blob(blobName)'],
+        ['open_ic',     'openICInTab(\nblobName, elementId, blob)', 'key',  'Core function for opening inline IC tabs'],
+        ['d_open',      'Tab already\nopen for this\nblob+parent?', 'decision', 'Scan all tabs: isInlineIC && blobName match && parentWorkspace match'],
+        ['switch_tab',  'Switch to\nexisting tab',             'end',      'tab->setCurrentIndex(i)'],
+        ['create',      'createNewTab()',                       'step',     ''],
+        ['load',        'loadFromBlob(blob,\nparent, elemId, dir)', 'key',  'Deserializes blob into new inline IC scene \u2014 see Workspace drilldown'],
+        ['resize',      'scene->resizeScene()',                 'step',     'Tighten scene rect so viewport doesn\u2019t jump on first interaction'],
+        ['ui_cfg',      'Configure inline tab UI:\ntitle "[blobName]"\nhide IC mgmt buttons', 'step', 'pushButtonAddIC, RemoveIC, MakeSelfContained all hidden'],
+        ['connect',     'connect icBlobSaved \u2192\nparent::onChildICBlobSaved', 'end', 'Ctrl+S in child tab propagates blob updates back to parent'],
+      ],
+  edges: [
+        ['start',     'emit'],
+        ['emit',      'relay'],
+        ['relay',     'd_blob'],
+        ['d_blob',    'd_tab',      'No \u2014 embedded'],
+        ['d_blob',    'd_file',     'Yes \u2014 no blob'],
+        ['d_file',    'dead',       'Yes'],
+        ['d_file',    'open_file',  'No'],
+        ['d_tab',     'no_tab',     'Yes'],
+        ['d_tab',     'fetch',      'No'],
+        ['fetch',     'open_ic'],
+        ['open_ic',   'd_open'],
+        ['d_open',    'switch_tab', 'Yes'],
+        ['d_open',    'create',     'No'],
+        ['create',    'load'],
+        ['load',      'resize'],
+        ['resize',    'ui_cfg'],
+        ['ui_cfg',    'connect'],
+      ]
+};
+
+flowRegistry['ic_u2461_embed_file_u2192_inline'] = {
+  title: '\u2461 Embed (file \u2192 inline)',
+  nodes: [
+        ['start',     'User triggers embed',                    'start',    'ElementEditor "Embed" button, or ICDropZone drag file\u2192embedded'],
+        ['fn',        'embedSelectedIC()',                       'step',     ''],
+        ['d_sel',     'Valid selection?\n(IC, file-backed)',     'decision', 'selected not empty, elementType == IC, file() not empty (not already embedded)'],
+        ['r_sel',     'return',                                  'error',    'Silent \u2014 no selection / wrong type / already embedded'],
+        ['d_ctx',     'contextDir\nempty?',                      'decision', 'Project must be saved to disk so IC file paths can resolve'],
+        ['w_ctx',     'Warning dialog:\n"Save project first"',  'error',    ''],
+        ['resolve',   'resolveUniqueBlobName\n(baseName, scene)', 'key',    'uniqueBlobName() auto-suffix; QInputDialog if collision; re-check after user edit'],
+        ['d_name',    'blobName\nempty?',                        'decision', 'User cancelled the name dialog'],
+        ['r_name',    'return',                                  'error',    ''],
+        ['fopen',     'QFile::open(ReadOnly)\non contextDir/file()', 'step', ''],
+        ['d_read',    'File\nreadable?',                         'decision', ''],
+        ['w_read',    'Warning dialog:\n"Could not read IC file"', 'error', ''],
+        ['read',      'fileBytes = file.readAll()',              'step',     ''],
+        ['embed',     'ICRegistry::embedICsByFile\n(filePath, fileBytes, blobName)', 'key', 'Atomic: find targets, registerBlob, loadFromBlob each, UpdateBlobCommand. See ICRegistry drilldown.'],
+        ['pal',       'palette\u2192updateEmbeddedICList',       'step',     ''],
+        ['done',      'statusBar:\n"IC embedded successfully"',  'end',      ''],
+      ],
+  edges: [
+        ['start',   'fn'],
+        ['fn',      'd_sel'],
+        ['d_sel',   'r_sel',    'No'],
+        ['d_sel',   'd_ctx',    'Yes'],
+        ['d_ctx',   'w_ctx',    'Yes'],
+        ['d_ctx',   'resolve',  'No'],
+        ['resolve', 'd_name'],
+        ['d_name',  'r_name',   'Yes'],
+        ['d_name',  'fopen',    'No'],
+        ['fopen',   'd_read'],
+        ['d_read',  'w_read',   'No'],
+        ['d_read',  'read',     'Yes'],
+        ['read',    'embed'],
+        ['embed',   'pal'],
+        ['pal',     'done'],
+      ]
+};
+
+flowRegistry['ic_u2462_extract_inline_u2192_file'] = {
+  title: '\u2462 Extract (inline \u2192 file)',
+  nodes: [
+        ['start',     'User triggers extract',                  'start',    'ElementEditor "Extract" button, or ICDropZone drag embedded\u2192file-based'],
+        ['fn',        'extractSelectedIC()',                      'step',     ''],
+        ['d_sel',     'Valid selection?\n(IC, embedded)',         'decision', 'selected not empty, elementType == IC, isEmbedded() == true'],
+        ['r_sel',     'return',                                  'error',    'Silent \u2014 no selection / wrong type / not embedded'],
+        ['d_ctx',     'contextDir\nempty?',                      'decision', ''],
+        ['w_ctx',     'Warning dialog:\n"Save project first"',  'error',    ''],
+        ['dlg',       'FileDialog::getSaveFileName\nsuggests blobName.panda', 'step', ''],
+        ['d_file',    'fileName\nempty?',                        'decision', 'User cancelled the save dialog'],
+        ['r_file',    'return',                                  'error',    ''],
+        ['suffix',    'Append ".panda"\nif missing',             'step',     ''],
+        ['extract',   'ICRegistry::extractToFile\n(blobName, fileName)', 'key', 'Atomic write to disk, convert instances, removeBlob. See ICRegistry drilldown. May throw PANDACEPTION.'],
+        ['pal',       'palette\u2192updateICList +\nupdateEmbeddedICList', 'step', ''],
+        ['done',      'statusBar:\n"IC extracted to <file>"',    'end',      ''],
+      ],
+  edges: [
+        ['start',   'fn'],
+        ['fn',      'd_sel'],
+        ['d_sel',   'r_sel',    'No'],
+        ['d_sel',   'd_ctx',    'Yes'],
+        ['d_ctx',   'w_ctx',    'Yes'],
+        ['d_ctx',   'dlg',      'No'],
+        ['dlg',     'd_file'],
+        ['d_file',  'r_file',   'Yes'],
+        ['d_file',  'suffix',   'No'],
+        ['suffix',  'extract'],
+        ['extract', 'pal'],
+        ['pal',     'done'],
+      ]
+};
+
+flowRegistry['ic_registry_ops'] = {
+  title: 'ICRegistry \u2014 Blob Management Operations',
+  nodes: [
+    ['f0', '\u2460 embedICsByFile', 'key', '', 'ic_registry_u2460_embedicsbyfile'],
+    ['f1', '\u2461 extractToFile', 'key', '', 'ic_registry_u2461_extracttofile'],
+    ['f2', '\u2462 makeBlobSelfContained', 'key', '', 'ic_registry_u2462_makeblobselfcontained']
+  ],
+  edges: [
+    ['f0', 'f1'],
+    ['f1', 'f2']
+  ]
+};
+
+flowRegistry['ic_registry_u2460_embedicsbyfile'] = {
+  title: '\u2460 embedICsByFile',
+  nodes: [
+        ['start',      'embedICsByFile\n(fileName, fileBytes, blobName)', 'start', 'Called by: embedSelectedIC, embedICByFile, makeSelfContained'],
+        ['find',       'findICsByFile(fileName)\n\u2192 targets',        'step',  'Scans all scene elements for ICs whose file() matches'],
+        ['d_empty',    'targets\nempty?',                                 'decision', ''],
+        ['ret0',       'return 0',                                        'error',    'No live instances on canvas. Caller may call createEmbeddedIC() instead.'],
+        ['snap_conn',  'captureConnections(targets)',                     'step',  'Snapshot every external QNEConnection attached to targets\u2019 ports'],
+        ['snap_data',  'captureSnapshot(targets)',                        'step',  'Serialize all target ICs to QByteArray for undo rollback'],
+        ['reg',        'registerBlob\n(blobName, fileBytes)',             'key',   'm_blobs[blobName] = fileBytes'],
+        ['loop',       'For each IC target:\nsetBlobName(blobName)\nloadFromBlob(bytes, dir)', 'key', 'Marks as embedded (clears m_file), deserializes blob, rebuilds ports, generates pixmap'],
+        ['d_ex',       'Exception\nthrown?',                              'decision', 'Any loadFromBlob failure in the loop'],
+        ['rollback',   'rollbackElements(updated, oldData)\nremoveBlob(blobName)\nre-throw', 'error', 'Restores already-mutated elements from snapshot, removes the blob, propagates exception'],
+        ['cmd',        'new UpdateBlobCommand\n\u2192 undoStack->push',   'end',   'Undo: restore file-backed state from snapshot + rewire connections. Redo: re-apply embedded.'],
+        ['retN',       'return targets.size()',                            'end',   ''],
+      ],
+  edges: [
+        ['start',     'find'],
+        ['find',      'd_empty'],
+        ['d_empty',   'ret0',      'Yes'],
+        ['d_empty',   'snap_conn', 'No'],
+        ['snap_conn', 'snap_data'],
+        ['snap_data', 'reg'],
+        ['reg',       'loop'],
+        ['loop',      'd_ex'],
+        ['d_ex',      'rollback',  'Yes'],
+        ['d_ex',      'cmd',       'No'],
+        ['cmd',       'retN'],
+      ]
+};
+
+flowRegistry['ic_registry_u2461_extracttofile'] = {
+  title: '\u2461 extractToFile',
+  nodes: [
+        ['start',     'extractToFile\n(blobName, filePath)',              'start', 'Called by: extractSelectedIC, extractICByBlobName'],
+        ['sf_open',   'QSaveFile::open(WriteOnly)',                       'step',  ''],
+        ['d_open',    'Open\nsucceeded?',                                 'decision', ''],
+        ['ex_open',   'throw PANDACEPTION\n"Could not open file"',       'error', 'Propagates to caller \u2192 typically shows error dialog'],
+        ['write',     'saveFile.write(\nblob(blobName))',                 'step',  ''],
+        ['commit',    'saveFile.commit()',                                 'step',  'Atomic rename: temp file \u2192 final path (no partial writes)'],
+        ['d_commit',  'Commit\nsucceeded?',                               'decision', ''],
+        ['ex_commit', 'throw PANDACEPTION\n"Could not save file"',       'error', ''],
+        ['find',      'findICsByBlobName(blobName)\n\u2192 targets',     'step',  ''],
+        ['d_empty',   'targets\nempty?',                                  'decision', ''],
+        ['ret0',      'return 0',                                         'error',    'Blob written to disk but no live IC instances to convert'],
+        ['snap',      'captureConnections +\ncaptureSnapshot +\noldBlob = blob(blobName)', 'step', 'Full undo state captured before mutation'],
+        ['loop',      'For each IC target:\nic->loadFile(filePath, dir)', 'key',   'Clears m_blobName, sets m_file, reloads ports from file'],
+        ['d_ex',      'Exception\nthrown?',                               'decision', ''],
+        ['rollback',  'rollbackElements(updated, oldData)\nre-throw',    'error', 'Note: disk file is NOT deleted \u2014 it stays on disk even on rollback'],
+        ['rm_blob',   'removeBlob(blobName)',                              'step',  'Free memory: m_blobs.remove(blobName)'],
+        ['cmd',       'UpdateBlobCommand\n(setOldBlob, setBlobName)\n\u2192 undoStack->push', 'end', 'Undo: re-register blob + restore embedded state. Redo: re-extract + remove blob.'],
+        ['retN',      'return targets.size()',                             'end',   ''],
+      ],
+  edges: [
+        ['start',     'sf_open'],
+        ['sf_open',   'd_open'],
+        ['d_open',    'ex_open',   'No'],
+        ['d_open',    'write',     'Yes'],
+        ['write',     'commit'],
+        ['commit',    'd_commit'],
+        ['d_commit',  'ex_commit', 'No'],
+        ['d_commit',  'find',      'Yes'],
+        ['find',      'd_empty'],
+        ['d_empty',   'ret0',      'Yes'],
+        ['d_empty',   'snap',      'No'],
+        ['snap',      'loop'],
+        ['loop',      'd_ex'],
+        ['d_ex',      'rollback',  'Yes'],
+        ['d_ex',      'rm_blob',   'No'],
+        ['rm_blob',   'cmd'],
+        ['cmd',       'retN'],
+      ]
+};
+
+flowRegistry['ic_registry_u2462_makeblobselfcontained'] = {
+  title: '\u2462 makeBlobSelfContained',
+  nodes: [
+        ['start',    'makeBlobSelfContained\n(name, visited, blobs)',     'start', 'Recursively resolves all file dependencies into embedded blobs'],
+        ['d_vis',    'visited\ncontains(name)?',                          'decision', 'Circular-reference guard'],
+        ['circ',     'qCWarning:\n"Circular blob ref"\nreturn',          'error',   'Breaks the cycle to prevent infinite recursion'],
+        ['insert',   'visited.insert(name)',                              'step',    ''],
+        ['preamble', 'readPreamble from\nblobs[name]',                   'step',    'Parse blob as .panda file: header \u2192 version \u2192 metadata'],
+        ['d_meta',   'Version supports\nmetadata?',                       'decision', 'VersionInfo::hasMetadata(version)'],
+        ['ret_old',  'return\n(legacy format)',                           'error',    'Nothing to embed in blobs without metadata'],
+        ['deser',    'deserializeBlobRegistry\n\u2192 embeddedICs map',   'step',    'Already-embedded sub-blobs in this blob\u2019s metadata'],
+        ['phase1',   'Phase 1: Recurse into\nexisting embedded sub-blobs\nmakeBlobSelfContained(dep, ...)', 'key', 'For each dep: blobs[dep] = value, recurse, pick up changes'],
+        ['d_fbic',   'metadata has\n"fileBackedICs"?',                    'decision', 'List of relative paths to .panda files this blob depends on'],
+        ['ret_sc',   'return\n(already self-contained)',                  'end',     'No file dependencies found'],
+        ['phase2',   'Phase 2: For each fileName\nin fileBackedICs list', 'key',     ''],
+        ['d_dup',    'Already\nembedded?',                                'decision', 'embeddedICs already has this baseName?'],
+        ['skip',     'skip\n(continue)',                                  'step',    ''],
+        ['d_exist',  'File exists\nat contextDir?',                       'decision', ''],
+        ['w_miss',   'qCWarning:\n"dependency not found"\nskip',         'error',    ''],
+        ['d_rfile',  'File\nreadable?',                                   'decision', ''],
+        ['skip2',    'skip',                                               'error',    ''],
+        ['readf',    'Read file bytes\nblobs[baseName] = bytes',          'step',    ''],
+        ['recurse',  'makeBlobSelfContained\n(baseName, visited, blobs)', 'key',     'Recursive call ensures the dependency is also self-contained'],
+        ['add_emb',  'embeddedICs[baseName]\n= blobs[baseName]',         'step',    ''],
+        ['rm_key',   'metadata.remove\n("fileBackedICs")',               'step',    'All file deps now embedded'],
+        ['reser',    'Re-serialize blob:\nwritePandaHeader +\nupdated metadata +\noriginal element bytes', 'end', 'blobs[name] = newBlob (updated in-place)'],
+      ],
+  edges: [
+        ['start',   'd_vis'],
+        ['d_vis',   'circ',     'Yes'],
+        ['d_vis',   'insert',   'No'],
+        ['insert',  'preamble'],
+        ['preamble','d_meta'],
+        ['d_meta',  'ret_old',  'No'],
+        ['d_meta',  'deser',    'Yes'],
+        ['deser',   'phase1'],
+        ['phase1',  'd_fbic'],
+        ['d_fbic',  'ret_sc',   'No'],
+        ['d_fbic',  'phase2',   'Yes'],
+        ['phase2',  'd_dup'],
+        ['d_dup',   'skip',     'Yes'],
+        ['d_dup',   'd_exist',  'No'],
+        ['d_exist', 'w_miss',   'No'],
+        ['d_exist', 'd_rfile',  'Yes'],
+        ['d_rfile', 'skip2',    'No'],
+        ['d_rfile', 'readf',    'Yes'],
+        ['readf',   'recurse'],
+        ['recurse', 'add_emb'],
+        ['add_emb', 'rm_key'],
+        ['skip',    'rm_key'],
+        ['rm_key',  'reser'],
+      ]
+};
+
