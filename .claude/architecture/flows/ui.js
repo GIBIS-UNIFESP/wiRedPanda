@@ -107,16 +107,6 @@ flowRegistry['ui_palette_drag'] = {
       ]
 };
 
-flowRegistry['ui_menu_ops'] = {
-  title: 'ElementContextMenu \u2014 Right-Click Actions',
-  nodes: [
-    ['f0', 'Menu Dispatch', 'key', '', 'ui_menu_dispatch']
-  ],
-  edges: [
-
-  ]
-};
-
 flowRegistry['ui_menu_dispatch'] = {
   title: 'Menu Dispatch',
   nodes: [
@@ -153,16 +143,6 @@ flowRegistry['ui_menu_dispatch'] = {
       ]
 };
 
-flowRegistry['ui_theme_ops'] = {
-  title: 'ThemeManager \u2014 Theme System',
-  nodes: [
-    ['f0', 'setTheme()', 'key', '', 'ui_theme']
-  ],
-  edges: [
-
-  ]
-};
-
 flowRegistry['ui_theme'] = {
   title: 'setTheme()',
   nodes: [
@@ -194,16 +174,6 @@ flowRegistry['ui_theme'] = {
         ['d_same',  'persist',  'No'],
         ['persist', 'emit'],
       ]
-};
-
-flowRegistry['ui_mod'] = {
-  title: 'UI Layer',
-  nodes: [
-    ['f0', 'Layout & Panels', 'key', '', 'ui_layout']
-  ],
-  edges: [
-
-  ]
 };
 
 flowRegistry['ui_layout'] = {
@@ -241,16 +211,6 @@ flowRegistry['ui_layout'] = {
         ['mw', 'theme',    'service'],
         ['mw', 'updchk',   'service'],
       ]
-};
-
-flowRegistry['core_mod'] = {
-  title: 'Core Module',
-  nodes: [
-    ['f0', 'Application & Services', 'key', '', 'core_services']
-  ],
-  edges: [
-
-  ]
 };
 
 flowRegistry['core_services'] = {

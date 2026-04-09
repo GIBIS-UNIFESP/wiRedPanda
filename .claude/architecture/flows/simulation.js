@@ -111,16 +111,6 @@ flowRegistry['sim_settle'] = {
       ]
 };
 
-flowRegistry['sim_mod'] = {
-  title: 'Simulation Engine',
-  nodes: [
-    ['f0', 'Simulation Cycle', 'key', '', 'sim_cycle']
-  ],
-  edges: [
-
-  ]
-};
-
 flowRegistry['sim_cycle'] = {
   title: 'Simulation Cycle',
   nodes: [
