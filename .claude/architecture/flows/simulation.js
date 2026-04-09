@@ -1,19 +1,23 @@
 // Flow definitions: simulation
-flowRegistry['simulation_ops'] = {
-  title: 'Simulation \u2014 Engine Internals',
+flowRegistry['sim_ops'] = {
+  title: 'Simulation \u2014 Engine',
   nodes: [
-    ['f0', '\u2460 initialize()', 'key', '', 'simulation_u2460_initialize'],
-    ['f1', '\u2461 topologicalSort', 'key', '', 'simulation_u2461_topologicalsort'],
-    ['f2', '\u2462 iterativeSettle', 'key', '', 'simulation_u2462_iterativesettle']
+    ['root',   'Simulation Engine',                  'start', '1ms QTimer, 4-phase update, topological sort'],
+    ['cycle',  'Update Cycle\n(~1000x/sec)',         'key',  'Clocks \u2192 Inputs \u2192 Logic \u2192 Visual refresh', 'sim_cycle'],
+    ['init',   'initialize()\n(Lazy, on first tick)', 'key', 'Collect items, build graph, topo sort', 'sim_init'],
+    ['topo',   'topologicalSort\n(Kahn\u2019s algorithm)', 'key', 'Assigns priorities, detects feedback', 'sim_topo_sort'],
+    ['settle', 'iterativeSettle\n(Feedback loops)',    'key', 'Loop up to 10x until converged', 'sim_settle'],
   ],
   edges: [
-    ['f0', 'f1'],
-    ['f1', 'f2']
+    ['root',   'cycle'],
+    ['cycle',  'init'],
+    ['init',   'topo'],
+    ['cycle',  'settle'],
   ]
 };
 
-flowRegistry['simulation_u2460_initialize'] = {
-  title: '\u2460 initialize()',
+flowRegistry['sim_init'] = {
+  title: 'initialize()',
   nodes: [
         ['start',   'initialize()',                          'start',    'Called lazily on first update() tick after restart'],
         ['d_scene', 'm_scene null?',                        'decision', ''],
@@ -30,7 +34,7 @@ flowRegistry['simulation_u2460_initialize'] = {
         ['build_c', 'buildConnectionGraph\n(elements)',      'step',    'Walk input ports \u2192 find source via QNEConnection \u2192 connectPredecessor()'],
         ['wireless','connectWirelessElements\n(elements)',   'step',    'Build Tx label\u2192element map, override Rx predecessors'],
         ['ic_init', 'IC::initializeSimulation()\nfor each IC','step',   'Recursively build sub-circuit sim graphs'],
-        ['sort',    'sortSimElements(elements)',              'key',     'Topological sort + feedback detection'],
+        ['sort',    'sortSimElements(elements)',              'key',     'Topological sort + feedback detection', 'sim_topo_sort'],
         ['done',    'm_initialized = true\nreturn true',     'end',      ''],
       ],
   edges: [
@@ -53,8 +57,8 @@ flowRegistry['simulation_u2460_initialize'] = {
       ]
 };
 
-flowRegistry['simulation_u2461_topologicalsort'] = {
-  title: '\u2461 topologicalSort',
+flowRegistry['sim_topo_sort'] = {
+  title: 'topologicalSort',
   nodes: [
         ['start',   'sortSimElements(elements)',             'start',    ''],
         ['tx',      'buildTxMap(elements)',                   'step',     'Map wireless Tx labels to elements'],
@@ -83,8 +87,8 @@ flowRegistry['simulation_u2461_topologicalsort'] = {
       ]
 };
 
-flowRegistry['simulation_u2462_iterativesettle'] = {
-  title: '\u2462 iterativeSettle',
+flowRegistry['sim_settle'] = {
+  title: 'iterativeSettle',
   nodes: [
         ['start',   'iterativeSettle\n(elements, maxIter=10)','start',  'Called when feedback loops detected'],
         ['loop',    'iteration = 0\nto maxIter-1',           'key',     ''],
@@ -107,17 +111,17 @@ flowRegistry['simulation_u2462_iterativesettle'] = {
       ]
 };
 
-flowRegistry['simulation_mod'] = {
+flowRegistry['sim_mod'] = {
   title: 'Simulation Engine',
   nodes: [
-    ['f0', 'Simulation Cycle', 'key', '', 'simulation_simulation_cycle']
+    ['f0', 'Simulation Cycle', 'key', '', 'sim_cycle']
   ],
   edges: [
 
   ]
 };
 
-flowRegistry['simulation_simulation_cycle'] = {
+flowRegistry['sim_cycle'] = {
   title: 'Simulation Cycle',
   nodes: [
         ['start',      'Simulation::start()',                      'start',    ''],

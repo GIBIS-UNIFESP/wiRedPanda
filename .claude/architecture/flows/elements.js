@@ -1,21 +1,31 @@
 // Flow definitions: elements
-flowRegistry['graphic_elem_ops'] = {
-  title: 'GraphicElement \u2014 Element Lifecycle',
+flowRegistry['ge_ops'] = {
+  title: 'GraphicElement \u2014 Element System',
   nodes: [
-    ['f0', '\u2460 save()', 'key', '', 'graphic_elem_u2460_save'],
-    ['f1', '\u2461 load()', 'key', '', 'graphic_elem_u2461_load'],
-    ['f2', '\u2462 updateLogic()', 'key', '', 'graphic_elem_u2462_updatelogic'],
-    ['f3', '\u2463 Port Management', 'key', '', 'graphic_elem_u2463_port_management']
+    ['root',    'Element System',                    'start', ''],
+    ['factory', 'ElementFactory\nbuildElement(type)', 'key', 'Lookup creator lambda in m_creatorMap', 'ef_build'],
+    ['base',    'GraphicElement\n(Base Class)',       'key', 'QGraphicsObject + ItemWithId: ports, pixmap, label, theme'],
+    ['save',    'save(QDataStream)',                   'key', 'Type \u2192 pos \u2192 rotation \u2192 ports \u2192 props', 'ge_save'],
+    ['load',    'load(QDataStream, ctx)',              'key', 'Version-aware, registers ports in portMap', 'ge_load'],
+    ['logic',   'updateLogic()',                       'key', 'Simulation cycle: snap inputs \u2192 compute \u2192 set outputs', 'ge_logic'],
+    ['ports',   'Port Management\n(setInputSize/OutputSize)', 'key', 'Add/remove ports, redistribute vertically', 'ge_ports'],
+    ['editor',  'ElementEditor\n(Property Panel)',    'key', 'Edit props \u2192 UpdateCommand', 'editor_apply'],
+    ['reg',     'Static Registration\n(ElementMetadata)', 'key', 'Auto-registers 40+ types at startup', 'ef_registration'],
   ],
   edges: [
-    ['f0', 'f1'],
-    ['f1', 'f2'],
-    ['f2', 'f3']
+    ['root',    'factory'],
+    ['factory', 'base'],
+    ['base',    'save'],
+    ['base',    'load'],
+    ['base',    'logic'],
+    ['base',    'ports'],
+    ['base',    'editor'],
+    ['factory', 'reg'],
   ]
 };
 
-flowRegistry['graphic_elem_u2460_save'] = {
-  title: '\u2460 save()',
+flowRegistry['ge_save'] = {
+  title: 'save()',
   nodes: [
         ['start',  'GraphicElement::save\n(QDataStream)',   'start',   ''],
         ['type',   'Write element type',                    'step',    ''],
@@ -33,8 +43,8 @@ flowRegistry['graphic_elem_u2460_save'] = {
       ]
 };
 
-flowRegistry['graphic_elem_u2461_load'] = {
-  title: '\u2461 load()',
+flowRegistry['ge_load'] = {
+  title: 'load()',
   nodes: [
         ['start',  'GraphicElement::load\n(stream, context)', 'start', ''],
         ['pos',    'Read position +\nrotation + flip',       'step',   ''],
@@ -52,8 +62,8 @@ flowRegistry['graphic_elem_u2461_load'] = {
       ]
 };
 
-flowRegistry['graphic_elem_u2462_updatelogic'] = {
-  title: '\u2462 updateLogic()',
+flowRegistry['ge_logic'] = {
+  title: 'updateLogic()',
   nodes: [
         ['start',  'Called by Simulation\nin topological order', 'start', ''],
         ['snap',   'simUpdateInputs()',                     'key',     'Copy predecessor outputs into m_simInputValues[]'],
@@ -67,8 +77,8 @@ flowRegistry['graphic_elem_u2462_updatelogic'] = {
       ]
 };
 
-flowRegistry['graphic_elem_u2463_port_management'] = {
-  title: '\u2463 Port Management',
+flowRegistry['ge_ports'] = {
+  title: 'Port Management',
   nodes: [
         ['start',   'setInputSize(size) or\nsetOutputSize(size)', 'start', ''],
         ['d_range', 'size within\nmin..max?',               'decision',''],
@@ -89,19 +99,19 @@ flowRegistry['graphic_elem_u2463_port_management'] = {
       ]
 };
 
-flowRegistry['elem_factory_ops'] = {
+flowRegistry['ef_ops'] = {
   title: 'ElementFactory \u2014 Element Creation',
   nodes: [
-    ['f0', '\u2460 buildElement()', 'key', '', 'elem_factory_u2460_buildelement'],
-    ['f1', '\u2461 Static Registration', 'key', '', 'elem_factory_u2461_static_registration']
+    ['f0', 'buildElement()', 'key', '', 'ef_build'],
+    ['f1', 'Static Registration', 'key', '', 'ef_registration']
   ],
   edges: [
     ['f0', 'f1']
   ]
 };
 
-flowRegistry['elem_factory_u2460_buildelement'] = {
-  title: '\u2460 buildElement()',
+flowRegistry['ef_build'] = {
+  title: 'buildElement()',
   nodes: [
         ['start',   'buildElement(type)',                   'start',    ''],
         ['d_unk',   'type ==\nUnknown?',                    'decision', ''],
@@ -121,8 +131,8 @@ flowRegistry['elem_factory_u2460_buildelement'] = {
       ]
 };
 
-flowRegistry['elem_factory_u2461_static_registration'] = {
-  title: '\u2461 Static Registration',
+flowRegistry['ef_registration'] = {
+  title: 'Static Registration',
   nodes: [
         ['start',   'Program startup\n(static init)',       'start',    ''],
         ['meta',    'ElementMetadata<T>\nconstructor',      'step',     'For each element type (AND, OR, DFlipFlop, etc.)'],
@@ -138,19 +148,19 @@ flowRegistry['elem_factory_u2461_static_registration'] = {
       ]
 };
 
-flowRegistry['elem_editor_ops'] = {
+flowRegistry['editor_ops'] = {
   title: 'ElementEditor \u2014 Property Panel',
   nodes: [
-    ['f0', '\u2460 Property Editing', 'key', '', 'elem_editor_u2460_property_editing'],
-    ['f1', '\u2461 Selection Changed', 'key', '', 'elem_editor_u2461_selection_changed']
+    ['f0', 'Property Editing', 'key', '', 'editor_apply'],
+    ['f1', 'Selection Changed', 'key', '', 'editor_selection']
   ],
   edges: [
     ['f0', 'f1']
   ]
 };
 
-flowRegistry['elem_editor_u2460_property_editing'] = {
-  title: '\u2460 Property Editing',
+flowRegistry['editor_apply'] = {
+  title: 'Property Editing',
   nodes: [
         ['start',  'User edits property\nin right sidebar',  'start',   ''],
         ['apply',  'apply()',                                 'key',     ''],
@@ -168,8 +178,8 @@ flowRegistry['elem_editor_u2460_property_editing'] = {
       ]
 };
 
-flowRegistry['elem_editor_u2461_selection_changed'] = {
-  title: '\u2461 Selection Changed',
+flowRegistry['editor_selection'] = {
+  title: 'Selection Changed',
   nodes: [
         ['start',  'Scene selection changes',               'start',    ''],
         ['fn',     'selectionChanged()',                     'key',     ''],
@@ -196,9 +206,9 @@ flowRegistry['elem_editor_u2461_selection_changed'] = {
 flowRegistry['element_mod'] = {
   title: 'Element System',
   nodes: [
-    ['f0', 'Factory & Hierarchy', 'key', '', 'element_factory__hierarchy'],
-    ['f1', 'Simulation Interface', 'key', '', 'element_simulation_interface'],
-    ['f2', 'Serialization', 'key', '', 'element_serialization']
+    ['f0', 'Factory & Hierarchy', 'key', '', 'element_hierarchy'],
+    ['f1', 'Simulation Interface', 'key', '', 'element_sim_iface'],
+    ['f2', 'Serialization', 'key', '', 'element_serial']
   ],
   edges: [
     ['f0', 'f1'],
@@ -206,7 +216,7 @@ flowRegistry['element_mod'] = {
   ]
 };
 
-flowRegistry['element_factory__hierarchy'] = {
+flowRegistry['element_hierarchy'] = {
   title: 'Factory & Hierarchy',
   nodes: [
         ['factory',  'ElementFactory::\nbuildElement(type)',     'start',    'Lookup in m_creatorMap'],
@@ -231,7 +241,7 @@ flowRegistry['element_factory__hierarchy'] = {
       ]
 };
 
-flowRegistry['element_simulation_interface'] = {
+flowRegistry['element_sim_iface'] = {
   title: 'Simulation Interface',
   nodes: [
         ['data',     'Direct Simulation Data',                   'start',    'm_simInputConnections[], m_simInputValues[], m_simOutputValues[], connectPredecessor()'],
@@ -246,7 +256,7 @@ flowRegistry['element_simulation_interface'] = {
       ]
 };
 
-flowRegistry['element_serialization'] = {
+flowRegistry['element_serial'] = {
   title: 'Serialization',
   nodes: [
         ['save',     'save(QDataStream)',                        'start',    'Type \u2192 position \u2192 rotation \u2192 ports \u2192 label \u2192 trigger \u2192 appearances'],
@@ -258,14 +268,14 @@ flowRegistry['element_serialization'] = {
 flowRegistry['components_mod'] = {
   title: 'Logic Components',
   nodes: [
-    ['f0', 'Component Registry', 'key', '', 'components_component_registry']
+    ['f0', 'Component Registry', 'key', '', 'components_registry']
   ],
   edges: [
 
   ]
 };
 
-flowRegistry['components_component_registry'] = {
+flowRegistry['components_registry'] = {
   title: 'Component Registry',
   nodes: [
         ['meta',     'ElementMetadata\n(auto-generated)',        'start',    'Registers into ElementFactory at static init time'],
