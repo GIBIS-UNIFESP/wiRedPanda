@@ -270,652 +270,457 @@ const nodeDrilldowns = {};
 drilldowns['Simulation'] = {
   title: 'Simulation Engine',
   subtitle: 'Hybrid synchronous cycle-based with event-driven clocks',
-  html: `
-    <div class="flowchart">
-      <div class="flow-node start"><h4>Simulation::start()</h4></div>
-      <div class="flow-arrow">↓<span class="label">QTimer fires every 1ms</span></div>
-
-      <div class="flow-node key"><h4>update()</h4><p>Main simulation loop — called ~1000x/sec</p></div>
-      <div class="flow-arrow">↓</div>
-
-      <div class="flow-node decision"><h4>m_initialized?</h4><p>Lazy init: rebuild sim graph on first tick after restart</p></div>
-
-      <div class="flow-branch">
-        <div>
-          <div class="branch-label no">No → initialize()</div>
-          <div class="flow-node">
-            <h4>Collect scene items</h4>
-            <p>Sort by (Y, X) for deterministic ordering<br>
-            Categorize into: <code>m_clocks</code>, <code>m_inputs</code>, <code>m_outputs</code>, <code>m_connections</code></p>
-          </div>
-          <div class="flow-arrow">↓</div>
-          <div class="flow-node">
-            <h4>initSimulationVectors()</h4>
-            <p>Allocate input/output value arrays on each element</p>
-          </div>
-          <div class="flow-arrow">↓</div>
-          <div class="flow-node">
-            <h4>buildConnectionGraph()</h4>
-            <p>Walk each element's input ports → find source element via QNEConnection → call <code>connectPredecessor()</code></p>
-          </div>
-          <div class="flow-arrow">↓</div>
-          <div class="flow-node">
-            <h4>connectWirelessElements()</h4>
-            <p>Build Tx label→element map, override Rx predecessors</p>
-          </div>
-          <div class="flow-arrow">↓</div>
-          <div class="flow-node">
-            <h4>IC::initializeSimulation()</h4>
-            <p>Recursively build sub-circuit sim graphs for each IC element</p>
-          </div>
-          <div class="flow-arrow">↓</div>
-          <div class="flow-node key">
-            <h4>sortSimElements()</h4>
-            <p>Build successor graph → <code>topologicalSort()</code><br>
-            Assigns priority per element (highest first)<br>
-            Detects feedback loops → marks <code>m_simFeedbackNodes</code></p>
-          </div>
-        </div>
-        <div>
-          <div class="branch-label yes">Yes → run phases</div>
-          <div class="flow-group">
-            <div class="flow-group-label">Phase 0 — Clocks (event-driven)</div>
-            <div class="flow-node">
-              <h4>clock→updateClock(globalTime)</h4>
-              <p>Check wall clock elapsed vs interval<br>If exceeded → toggle output</p>
-            </div>
-          </div>
-          <div class="flow-arrow">↓</div>
-          <div class="flow-group">
-            <div class="flow-group-label">Phase 1 — Inputs</div>
-            <div class="flow-node">
-              <h4>input→updateOutputs()</h4>
-              <p>Push switch/button/rotary state to sim output slots</p>
-            </div>
-          </div>
-          <div class="flow-arrow">↓</div>
-          <div class="flow-group">
-            <div class="flow-group-label">Phase 2 — Logic</div>
-            <div class="flow-node decision">
-              <h4>Has feedback loops?</h4>
-            </div>
-            <div class="flow-branch">
-              <div>
-                <div class="branch-label no">No feedback</div>
-                <div class="flow-node">
-                  <h4>Single pass</h4>
-                  <p><code>element→updateLogic()</code><br>in topological order (highest priority first)</p>
-                </div>
-              </div>
-              <div>
-                <div class="branch-label yes">Has feedback</div>
-                <div class="flow-node warn">
-                  <h4>iterativeSettle()</h4>
-                  <p>Loop up to 10x:<br>
-                  1. <code>clearOutputChanged()</code><br>
-                  2. <code>updateLogic()</code> on all elements<br>
-                  3. Check if any output changed<br>
-                  If converged → break<br>
-                  If not → emit warning</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="flow-arrow">↓</div>
-          <div class="flow-group">
-            <div class="flow-group-label">Phase 3-4 — Visual refresh (throttled to monitor Hz)</div>
-            <div class="flow-node">
-              <h4>Skip if m_visualTickCount &lt; m_visualTickInterval</h4>
-              <p>Only repaint at ~60fps, not 1000 Hz</p>
-            </div>
-            <div class="flow-arrow">↓</div>
-            <div class="flow-parallel">
-              <div class="flow-node phase">
-                <h4>Phase 3: updatePort(output)</h4>
-                <p>Push logic values onto wire visuals</p>
-              </div>
-              <div class="flow-node phase">
-                <h4>Phase 4: updatePort(input)</h4>
-                <p>Refresh LED/display/buzzer visuals</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>`
+  flows: [
+    { name: 'Simulation Cycle',
+      nodes: [
+        ['start',      'Simulation::start()',                      'start',    ''],
+        ['timer',      'QTimer fires\nevery 1ms',                 'step',     ''],
+        ['update',     'update()\n~1000x/sec',                    'key',      'Main simulation loop'],
+        ['d_init',     'm_initialized?',                           'decision', 'Lazy init: rebuild sim graph on first tick after restart'],
+        ['collect',    'Collect scene items\nsort by (Y, X)',      'step',     'Deterministic ordering. Categorize: m_clocks, m_inputs, m_outputs, m_connections'],
+        ['init_vec',   'initSimulationVectors()',                  'step',     'Allocate input/output value arrays on each element'],
+        ['build_conn', 'buildConnectionGraph()',                   'step',     'Walk each element input port \u2192 find source via QNEConnection \u2192 connectPredecessor()'],
+        ['wireless',   'connectWirelessElements()',                'step',     'Build Tx label\u2192element map, override Rx predecessors'],
+        ['ic_init',    'IC::initializeSimulation()',               'step',     'Recursively build sub-circuit sim graphs for each IC element'],
+        ['sort',       'sortSimElements()',                        'key',      'Build successor graph \u2192 topologicalSort(). Assigns priority per element. Detects feedback \u2192 m_simFeedbackNodes'],
+        ['p0',         'Phase 0: Clocks\nclock\u2192updateClock(t)', 'step',  'Check wall clock elapsed vs interval; if exceeded \u2192 toggle output'],
+        ['p1',         'Phase 1: Inputs\ninput\u2192updateOutputs()', 'step', 'Push switch/button/rotary state to sim output slots'],
+        ['d_fb',       'Has feedback\nloops?',                     'decision', ''],
+        ['single',     'Single pass:\nupdateLogic()\nin topo order', 'step', 'Highest priority first'],
+        ['settle',     'iterativeSettle()\nloop up to 10x',       'error',    '1. clearOutputChanged() 2. updateLogic() on all 3. Check if any changed. Converged \u2192 break. Not \u2192 emit warning'],
+        ['d_tick',     'Visual tick\ndue?',                        'decision', 'Skip if m_visualTickCount < m_visualTickInterval (throttle to ~60fps)'],
+        ['skip_vis',   'Skip repaint',                             'step',     ''],
+        ['p3',         'Phase 3:\nupdatePort(output)',             'end',      'Push logic values onto wire visuals'],
+        ['p4',         'Phase 4:\nupdatePort(input)',              'end',      'Refresh LED/display/buzzer visuals'],
+        ['wait',       'Wait for\nnext tick (1ms)',                'step',     ''],
+      ],
+      edges: [
+        ['start',      'timer'],
+        ['timer',      'update'],
+        ['update',     'd_init'],
+        ['d_init',     'collect',    'No \u2014 initialize()'],
+        ['d_init',     'p0',         'Yes \u2014 run phases'],
+        ['collect',    'init_vec'],
+        ['init_vec',   'build_conn'],
+        ['build_conn', 'wireless'],
+        ['wireless',   'ic_init'],
+        ['ic_init',    'sort'],
+        ['sort',       'p0'],
+        ['p0',         'p1'],
+        ['p1',         'd_fb'],
+        ['d_fb',       'single',     'No'],
+        ['d_fb',       'settle',     'Yes'],
+        ['single',     'd_tick'],
+        ['settle',     'd_tick'],
+        ['d_tick',     'skip_vis',   'No'],
+        ['d_tick',     'p3',         'Yes'],
+        ['p3',         'p4'],
+        ['skip_vis',   'wait'],
+        ['p4',         'wait'],
+      ]
+    },
+  ]
 };
 
 drilldowns['Scene'] = {
   title: 'Scene',
   subtitle: 'Main circuit editing environment (QGraphicsScene)',
-  html: `
-    <div class="flowchart">
-      <div class="flow-node start"><h4>Scene constructed</h4></div>
-      <div class="flow-arrow">↓<span class="label">owns</span></div>
-
-      <div class="flow-parallel">
-        <div class="flow-node"><h4>QUndoStack</h4><p>Undo/Redo via QUndoCommand subclasses</p></div>
-        <div class="flow-node" style="border-color:#d29922"><h4>Simulation</h4><p>1ms timer, topological sim</p></div>
-        <div class="flow-node"><h4>ICRegistry</h4><p>Caches IC definitions, file watching</p></div>
-        <div class="flow-node"><h4>Element Registry</h4><p>Map&lt;int, ItemWithId*&gt; for ID lookup</p></div>
-      </div>
-      <div class="flow-arrow">↓<span class="label">delegates to managers</span></div>
-      <div class="flow-parallel">
-        <div class="flow-node"><h4>ConnectionManager</h4><p>Wire creation, validation, hover feedback</p></div>
-        <div class="flow-node"><h4>ClipboardManager</h4><p>Copy/Cut/Paste, clone-drag serialization</p></div>
-        <div class="flow-node"><h4>VisibilityManager</h4><p>Show/Hide gates and wires</p></div>
-        <div class="flow-node"><h4>PropertyShortcutHandler</h4><p>Keyboard shortcuts for cycling element properties</p></div>
-      </div>
-
-      <div class="flow-arrow" style="padding:16px 0">↓<span class="label">user interactions</span></div>
-
-      <div class="flow-group">
-        <div class="flow-group-label">Mouse Events</div>
-        <div class="flow-parallel">
-          <div class="flow-node"><h4>mousePress</h4><p>Start selection box, start dragging element, start wire</p></div>
-          <div class="flow-node"><h4>mouseMove</h4><p>Update drag position, extend wire/selection</p></div>
-          <div class="flow-node"><h4>mouseRelease</h4><p>Commit MoveCommand, finish wire, commit selection</p></div>
-          <div class="flow-node"><h4>doubleClick</h4><p>Open IC sub-circuit, toggle input</p></div>
-        </div>
-      </div>
-
-      <div class="flow-arrow">↓<span class="label">generates</span></div>
-
-      <div class="flow-group">
-        <div class="flow-group-label">Undo Commands (QUndoCommand subclasses)</div>
-        <div class="flow-parallel">
-          <div class="flow-node"><h4>AddItems</h4><p>Drop/paste elements</p></div>
-          <div class="flow-node"><h4>DeleteItems</h4><p>Delete selection</p></div>
-          <div class="flow-node"><h4>Move</h4><p>Drag elements</p></div>
-          <div class="flow-node"><h4>Rotate / Flip</h4><p>Transform elements</p></div>
-        </div>
-        <div style="height:8px"></div>
-        <div class="flow-parallel">
-          <div class="flow-node"><h4>Update</h4><p>Property changes (label, color, freq)</p></div>
-          <div class="flow-node"><h4>Split</h4><p>Insert node into wire</p></div>
-          <div class="flow-node"><h4>Morph</h4><p>Change element type</p></div>
-          <div class="flow-node"><h4>ChangeInputSize</h4><p>Add/remove ports</p></div>
-        </div>
-      </div>
-
-      <div class="flow-arrow">↓<span class="label">triggers</span></div>
-      <div class="flow-node key"><h4>setCircuitUpdateRequired()</h4><p>Marks simulation as stale → <code>m_initialized = false</code><br>Next timer tick rebuilds sim graph</p></div>
-    </div>`
+  flows: [
+    { name: 'Ownership & Managers',
+      nodes: [
+        ['scene',    'Scene constructed',       'start',    ''],
+        ['undo',     'QUndoStack',              'step',     'Undo/Redo via QUndoCommand subclasses'],
+        ['sim',      'Simulation',              'key',      '1ms timer, topological sim'],
+        ['icreg',    'ICRegistry',              'step',     'Caches IC definitions, file watching'],
+        ['elemreg',  'Element Registry',        'step',     'Map<int, ItemWithId*> for ID lookup'],
+        ['connmgr',  'ConnectionManager',       'step',     'Wire creation, validation, hover feedback'],
+        ['clipmgr',  'ClipboardManager',        'step',     'Copy/Cut/Paste, clone-drag serialization'],
+        ['vismgr',   'VisibilityManager',       'step',     'Show/Hide gates and wires'],
+        ['propmgr',  'PropertyShortcutHandler', 'step',     'Keyboard shortcuts for cycling element properties'],
+      ],
+      edges: [
+        ['scene', 'undo',    'owns'],
+        ['scene', 'sim',     'owns'],
+        ['scene', 'icreg',   'owns'],
+        ['scene', 'elemreg', 'owns'],
+        ['scene', 'connmgr', 'delegates'],
+        ['scene', 'clipmgr', 'delegates'],
+        ['scene', 'vismgr',  'delegates'],
+        ['scene', 'propmgr', 'delegates'],
+      ]
+    },
+    { name: 'Mouse Interactions',
+      nodes: [
+        ['press',    'mousePressEvent',         'start',    'Start selection box, start dragging element, start wire'],
+        ['move',     'mouseMoveEvent',          'step',     'Update drag position, extend wire/selection'],
+        ['release',  'mouseReleaseEvent',       'step',     'Commit MoveCommand, finish wire, commit selection'],
+        ['dblclick', 'mouseDoubleClickEvent',   'step',     'Open IC sub-circuit, toggle input'],
+        ['add',      'AddItems',                'step',     'Drop/paste elements'],
+        ['del',      'DeleteItems',             'step',     'Delete selection'],
+        ['mv',       'Move',                    'step',     'Drag elements'],
+        ['rot',      'Rotate / Flip',           'step',     'Transform elements'],
+        ['upd',      'Update',                  'step',     'Property changes (label, color, freq)'],
+        ['split',    'Split',                   'step',     'Insert node into wire'],
+        ['morph',    'Morph',                   'step',     'Change element type'],
+        ['chgsz',    'ChangeInputSize',         'step',     'Add/remove ports'],
+        ['stale',    'setCircuitUpdateRequired()', 'key',   'Marks simulation as stale \u2192 m_initialized = false. Next timer tick rebuilds sim graph.'],
+      ],
+      edges: [
+        ['press',    'move'],
+        ['move',     'release'],
+        ['release',  'add'],
+        ['release',  'mv'],
+        ['dblclick', 'add'],
+        ['press',    'del'],
+        ['release',  'rot'],
+        ['release',  'upd'],
+        ['release',  'split'],
+        ['release',  'morph'],
+        ['release',  'chgsz'],
+        ['add',      'stale'],
+        ['del',      'stale'],
+        ['mv',       'stale'],
+        ['rot',      'stale'],
+        ['upd',      'stale'],
+        ['split',    'stale'],
+        ['morph',    'stale'],
+        ['chgsz',    'stale'],
+      ]
+    },
+  ]
 };
 
 drilldowns['Element'] = {
   title: 'Element System',
   subtitle: 'GraphicElement hierarchy and factory',
-  html: `
-    <div class="flowchart">
-      <div class="flow-node start"><h4>ElementFactory::buildElement(type)</h4></div>
-      <div class="flow-arrow">↓<span class="label">lookup in m_creatorMap</span></div>
-
-      <div class="flow-node">
-        <h4>ElementMetadata</h4>
-        <p>Auto-generated registrations bind <code>ElementType</code> → creator lambda<br>
-        Each element type registered at static init time</p>
-      </div>
-      <div class="flow-arrow">↓<span class="label">creates</span></div>
-
-      <div class="flow-node key" style="border-color:#da3633">
-        <h4>GraphicElement (base class)</h4>
-        <p>QGraphicsObject + ItemWithId<br>
-        Manages: ports, pixmap, serialization, grid-snap, label, theme</p>
-      </div>
-      <div class="flow-arrow">↓<span class="label">polymorphic subtypes</span></div>
-
-      <div class="flow-parallel">
-        <div class="flow-node" style="border-color:#f0883e"><h4>Gates</h4><p>AND, OR, NOT, NAND, NOR, XOR, XNOR, Buffer<br><code>updateLogic()</code> = boolean op on inputs</p></div>
-        <div class="flow-node" style="border-color:#f0883e"><h4>Memory</h4><p>DFlipFlop, JKFlipFlop, SRFlipFlop, TFlipFlop, DLatch, SRLatch<br><code>updateLogic()</code> = edge-triggered state machine</p></div>
-        <div class="flow-node" style="border-color:#f0883e"><h4>Inputs</h4><p>Button, Switch, Rotary, Clock<br><code>updateOutputs()</code> = push user/clock state</p></div>
-      </div>
-      <div style="height:8px"></div>
-      <div class="flow-parallel">
-        <div class="flow-node" style="border-color:#f0883e"><h4>Outputs</h4><p>LED, Display, 7-Seg, Buzzer<br><code>refresh()</code> = update visual from port status</p></div>
-        <div class="flow-node" style="border-color:#f0883e"><h4>Mux</h4><p>Multiplexer, Demux<br><code>updateLogic()</code> = route selected input</p></div>
-        <div class="flow-node" style="border-color:#da3633"><h4>IC</h4><p>Sub-circuit wrapper<br><code>updateLogic()</code> = run internal sim graph</p></div>
-      </div>
-
-      <div class="flow-arrow" style="padding:16px 0">↓</div>
-
-      <div class="flow-group">
-        <div class="flow-group-label">Simulation Interface on each element</div>
-        <div class="flow-node">
-          <h4>Direct Simulation Data</h4>
-          <p><code>m_simInputConnections[]</code> — predecessor element + output index per input<br>
-          <code>m_simInputValues[]</code> — cached input Status values<br>
-          <code>m_simOutputValues[]</code> — computed output Status values<br>
-          <code>connectPredecessor()</code> — wires sim graph edges</p>
-        </div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-node phase">
-          <h4>updateLogic() cycle</h4>
-          <p>1. <code>simUpdateInputs()</code> — snapshot predecessors' outputs into input cache<br>
-          2. Compute element-specific logic (AND, flip-flop, etc.)<br>
-          3. <code>setOutputValue()</code> — write results + set change flag</p>
-        </div>
-      </div>
-
-      <div class="flow-arrow" style="padding:16px 0">↓</div>
-
-      <div class="flow-group">
-        <div class="flow-group-label">Serialization</div>
-        <div class="flow-parallel">
-          <div class="flow-node"><h4>save(QDataStream)</h4><p>Type → position → rotation → ports → label → trigger → appearances</p></div>
-          <div class="flow-node"><h4>load(QDataStream, ctx)</h4><p>Version-aware: V4.6+ new format vs legacy<br>Rebuilds ports from stream, clamps to constraints</p></div>
-        </div>
-      </div>
-    </div>`
+  flows: [
+    { name: 'Factory & Hierarchy',
+      nodes: [
+        ['factory',  'ElementFactory::\nbuildElement(type)',     'start',    'Lookup in m_creatorMap'],
+        ['meta',     'ElementMetadata',                         'step',     'Auto-generated registrations bind ElementType \u2192 creator lambda. Each type registered at static init.'],
+        ['base',     'GraphicElement\n(base class)',            'key',      'QGraphicsObject + ItemWithId. Manages: ports, pixmap, serialization, grid-snap, label, theme.'],
+        ['gates',    'Gates',                                   'step',     'AND, OR, NOT, NAND, NOR, XOR, XNOR, Buffer. updateLogic() = boolean op on inputs'],
+        ['memory',   'Memory',                                  'step',     'DFlipFlop, JKFlipFlop, SRFlipFlop, TFlipFlop, DLatch, SRLatch. updateLogic() = edge-triggered state machine'],
+        ['inputs',   'Inputs',                                  'step',     'Button, Switch, Rotary, Clock. updateOutputs() = push user/clock state'],
+        ['outputs',  'Outputs',                                 'step',     'LED, Display, 7-Seg, Buzzer. refresh() = update visual from port status'],
+        ['mux',      'Mux / Demux',                             'step',     'Multiplexer, Demultiplexer. updateLogic() = route selected input'],
+        ['ic_elem',  'IC',                                      'key',      'Sub-circuit wrapper. updateLogic() = run internal sim graph'],
+      ],
+      edges: [
+        ['factory', 'meta',    'lookup'],
+        ['meta',    'base',    'creates'],
+        ['base',    'gates',   'subtype'],
+        ['base',    'memory',  'subtype'],
+        ['base',    'inputs',  'subtype'],
+        ['base',    'outputs', 'subtype'],
+        ['base',    'mux',     'subtype'],
+        ['base',    'ic_elem', 'subtype'],
+      ]
+    },
+    { name: 'Simulation Interface',
+      nodes: [
+        ['data',     'Direct Simulation Data',                   'start',    'm_simInputConnections[], m_simInputValues[], m_simOutputValues[], connectPredecessor()'],
+        ['snap',     'simUpdateInputs()',                        'step',     'Snapshot predecessors\u2019 outputs into input cache'],
+        ['compute',  'Compute element-specific\nlogic (AND, FF, ...)', 'key', ''],
+        ['output',   'setOutputValue()',                         'end',      'Write results + set change flag'],
+      ],
+      edges: [
+        ['data',    'snap'],
+        ['snap',    'compute'],
+        ['compute', 'output'],
+      ]
+    },
+    { name: 'Serialization',
+      nodes: [
+        ['save',     'save(QDataStream)',                        'start',    'Type \u2192 position \u2192 rotation \u2192 ports \u2192 label \u2192 trigger \u2192 appearances'],
+        ['load',     'load(QDataStream, ctx)',                   'key',      'Version-aware: V4.6+ new format vs legacy. Rebuilds ports from stream, clamps to constraints.'],
+      ],
+      edges: []
+    },
+  ]
 };
 
 drilldowns['IO'] = {
   title: 'IO / Serialization',
   subtitle: 'File format: versioned binary QDataStream',
-  html: `
-    <div class="flowchart">
-      <div class="flow-group">
-        <div class="flow-group-label">Save flow</div>
-        <div class="flow-node start"><h4>Workspace::save(fileName)</h4></div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-node"><h4>writePandaHeader(stream)</h4><p>Magic: <code>0x57504346</code> ("WPCF") + version number</p></div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-node"><h4>Write dolphin filename + viewport rect</h4></div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-node"><h4>Write metadata (V4.5+)</h4><p>Includes embedded IC blob registry</p></div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-node key"><h4>Serialization::serialize(items, stream)</h4><p>For each item: write type tag → element.save() or connection.save()</p></div>
-      </div>
-
-      <div class="flow-arrow" style="padding:20px 0">⬇</div>
-
-      <div class="flow-group">
-        <div class="flow-group-label">Load flow</div>
-        <div class="flow-node start"><h4>Workspace::load(fileName)</h4></div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-node"><h4>readPandaHeader(stream)</h4>
-          <p>Detect format: magic header (modern) vs "wiRedPanda X.Y" string (legacy) vs headerless (V4.1)</p>
-        </div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-node"><h4>readPreamble()</h4><p>Header + dolphin filename + rect + metadata</p></div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-node"><h4>deserializeBlobRegistry()</h4><p>Extract embedded IC blobs from metadata</p></div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-node key">
-          <h4>Serialization::deserialize(stream, context)</h4>
-          <p>Loop until stream exhausted:<br>
-          1. Read type tag<br>
-          2. <code>ElementFactory::buildElement(type)</code><br>
-          3. <code>element→load(stream, context)</code> — fills ports, label, position<br>
-          4. Or <code>QNEConnection→load()</code> — reconnects via portMap</p>
-        </div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-node"><h4>Add items to Scene</h4><p>Register IDs, restore connections, trigger simulation rebuild</p></div>
-      </div>
-
-      <div class="flow-arrow" style="padding:20px 0">⬇</div>
-
-      <div class="flow-group">
-        <div class="flow-group-label">SerializationContext</div>
-        <div class="flow-node">
-          <h4>Per-load state</h4>
-          <p><code>portMap</code> — serial ID → QNEPort* (for reconnecting wires)<br>
-          <code>version</code> — file format version (controls load branches)<br>
-          <code>contextDir</code> — directory of .panda file (for IC path resolution)<br>
-          <code>blobRegistry</code> — embedded IC data blobs</p>
-        </div>
-      </div>
-    </div>`
+  flows: [
+    { name: 'Save Flow',
+      nodes: [
+        ['start',    'Workspace::save(fileName)',                'start',    ''],
+        ['header',   'writePandaHeader(stream)',                 'step',     'Magic: 0x57504346 ("WPCF") + version number'],
+        ['dolphin',  'Write dolphin filename\n+ viewport rect', 'step',     ''],
+        ['metadata', 'Write metadata (V4.5+)',                   'step',     'Includes embedded IC blob registry'],
+        ['ser',      'Serialization::serialize\n(items, stream)', 'key',    'For each item: write type tag \u2192 element.save() or connection.save()'],
+      ],
+      edges: [
+        ['start',    'header'],
+        ['header',   'dolphin'],
+        ['dolphin',  'metadata'],
+        ['metadata', 'ser'],
+      ]
+    },
+    { name: 'Load Flow',
+      nodes: [
+        ['start',    'Workspace::load(fileName)',                'start',    ''],
+        ['header',   'readPandaHeader(stream)',                  'step',     'Detect format: magic header (modern) vs "wiRedPanda X.Y" string (legacy) vs headerless (V4.1)'],
+        ['preamble', 'readPreamble()',                           'step',     'Header + dolphin filename + rect + metadata'],
+        ['blobs',    'deserializeBlobRegistry()',                 'step',     'Extract embedded IC blobs from metadata'],
+        ['deser',    'Serialization::deserialize\n(stream, context)', 'key', 'Loop: read type tag \u2192 buildElement(type) \u2192 element.load(stream, ctx). Or QNEConnection.load() \u2192 reconnect via portMap.'],
+        ['add',      'Add items to Scene',                       'end',     'Register IDs, restore connections, trigger simulation rebuild'],
+      ],
+      edges: [
+        ['start',    'header'],
+        ['header',   'preamble'],
+        ['preamble', 'blobs'],
+        ['blobs',    'deser'],
+        ['deser',    'add'],
+      ]
+    },
+    { name: 'SerializationContext',
+      nodes: [
+        ['ctx',      'Per-load state',                           'key',     'portMap: serial ID \u2192 QNEPort*. version: file format version. contextDir: .panda file directory. blobRegistry: embedded IC blobs.'],
+      ],
+      edges: []
+    },
+  ]
 };
 
 drilldowns['UI'] = {
   title: 'UI Layer',
   subtitle: 'MainWindow and its panels',
-  html: `
-    <div class="flowchart">
-      <div class="flow-node start"><h4>MainWindow</h4></div>
-      <div class="flow-arrow">↓<span class="label">composes</span></div>
-
-      <div class="flow-parallel">
-        <div class="flow-node" style="border-color:#f778ba">
-          <h4>ElementPalette (left sidebar)</h4>
-          <p>ElementTabNavigator tabs<br>
-          Populates from ElementFactory<br>
-          Drag elements onto Scene</p>
-        </div>
-        <div class="flow-node" style="border-color:#3fb950">
-          <h4>Workspace (central, tabbed)</h4>
-          <p>GraphicsView → Scene<br>
-          One Workspace per open circuit<br>
-          Tab bar for multiple files + inline ICs</p>
-        </div>
-        <div class="flow-node" style="border-color:#f778ba">
-          <h4>ElementEditor (right sidebar)</h4>
-          <p>Property panel for selected element<br>
-          Uses PropertyDescriptor list<br>
-          Generates UpdateCommand on change</p>
-        </div>
-      </div>
-
-      <div class="flow-arrow">↓<span class="label">toolbar actions</span></div>
-
-      <div class="flow-parallel">
-        <div class="flow-node"><h4>File Ops</h4><p>New / Open / Save / SaveAs<br>RecentFiles menu<br>FileUtils dialogs</p></div>
-        <div class="flow-node"><h4>Sim Controls</h4><p>Play / Pause / Reset<br>SimulationBlocker for modal ops</p></div>
-        <div class="flow-node"><h4>Edit Ops</h4><p>Undo / Redo / Copy / Cut / Paste<br>Rotate / Flip / Delete<br>SelectionCapabilities</p></div>
-        <div class="flow-node"><h4>Export</h4><p>CircuitExporter (PNG/PDF)<br>ArduinoCodeGen<br>SystemVerilogCodeGen</p></div>
-      </div>
-
-      <div class="flow-arrow">↓<span class="label">opens</span></div>
-
-      <div class="flow-parallel">
-        <div class="flow-node" style="border-color:#7ee787"><h4>BeWavedDolphin</h4><p>Waveform editor window</p></div>
-        <div class="flow-node"><h4>ClockDialog</h4><p>Configure clock frequency</p></div>
-        <div class="flow-node"><h4>LengthDialog</h4><p>Set simulation length</p></div>
-        <div class="flow-node"><h4>ICDropZone</h4><p>Drag & drop .panda files</p></div>
-      </div>
-
-      <div class="flow-arrow" style="padding:16px 0">↓</div>
-
-      <div class="flow-group">
-        <div class="flow-group-label">Global Services</div>
-        <div class="flow-parallel">
-          <div class="flow-node"><h4>LanguageManager</h4><p>i18n translations, locale switching</p></div>
-          <div class="flow-node"><h4>ThemeManager</h4><p>Dark/Light themes, icon sets<br>SystemThemeDetector for OS detection</p></div>
-          <div class="flow-node"><h4>UpdateChecker</h4><p>GitHub release API check</p></div>
-        </div>
-      </div>
-    </div>`
+  flows: [
+    { name: 'Layout & Panels',
+      nodes: [
+        ['mw',       'MainWindow',              'start',    ''],
+        ['palette',  'ElementPalette\n(left sidebar)', 'step', 'ElementTabNavigator tabs. Populates from ElementFactory. Drag elements onto Scene.'],
+        ['ws',       'Workspace\n(central, tabbed)', 'key',  'GraphicsView \u2192 Scene. One Workspace per open circuit. Tab bar for multiple files + inline ICs.'],
+        ['editor',   'ElementEditor\n(right sidebar)', 'step', 'Property panel for selected element. PropertyDescriptor list. Generates UpdateCommand on change.'],
+        ['file',     'File Ops',                'step',     'New / Open / Save / SaveAs. RecentFiles menu. FileUtils dialogs.'],
+        ['sim',      'Sim Controls',            'step',     'Play / Pause / Reset. SimulationBlocker for modal ops.'],
+        ['edit',     'Edit Ops',                'step',     'Undo / Redo / Copy / Cut / Paste. Rotate / Flip / Delete. SelectionCapabilities.'],
+        ['export',   'Export',                  'step',     'CircuitExporter (PNG/PDF). ArduinoCodeGen. SystemVerilogCodeGen.'],
+        ['bwd',      'BeWavedDolphin',          'step',     'Waveform editor window'],
+        ['clock',    'ClockDialog',             'step',     'Configure clock frequency'],
+        ['length',   'LengthDialog',            'step',     'Set simulation length'],
+        ['dropzone', 'ICDropZone',              'step',     'Drag & drop .panda files'],
+        ['lang',     'LanguageManager',         'step',     'i18n translations, locale switching'],
+        ['theme',    'ThemeManager',            'step',     'Dark/Light themes, icon sets. SystemThemeDetector for OS detection.'],
+        ['updchk',   'UpdateChecker',           'step',     'GitHub release API check'],
+      ],
+      edges: [
+        ['mw', 'palette',  'composes'],
+        ['mw', 'ws',       'composes'],
+        ['mw', 'editor',   'composes'],
+        ['mw', 'file',     'toolbar'],
+        ['mw', 'sim',      'toolbar'],
+        ['mw', 'edit',     'toolbar'],
+        ['mw', 'export',   'toolbar'],
+        ['mw', 'bwd',      'opens'],
+        ['mw', 'clock',    'opens'],
+        ['mw', 'length',   'opens'],
+        ['mw', 'dropzone', 'opens'],
+        ['mw', 'lang',     'service'],
+        ['mw', 'theme',    'service'],
+        ['mw', 'updchk',   'service'],
+      ]
+    },
+  ]
 };
 
 drilldowns['BeWavedDolphin'] = {
   title: 'BeWavedDolphin',
   subtitle: 'Waveform editor for digital signal analysis',
-  html: `
-    <div class="flowchart">
-      <div class="flow-node start"><h4>MainWindow opens BeWavedDolphin(scene)</h4></div>
-      <div class="flow-arrow">↓</div>
-
-      <div class="flow-node"><h4>loadElements()</h4><p>Collect Input/Output GraphicElements from circuit scene</p></div>
-      <div class="flow-arrow">↓</div>
-      <div class="flow-node"><h4>createWaveform()</h4><p>Build table: rows = I/O signals, columns = time steps (default 32)</p></div>
-      <div class="flow-arrow">↓</div>
-
-      <div class="flow-node key">
-        <h4>SignalModel (QStandardItemModel)</h4>
-        <p>Rows: input signals (editable) + output signals (read-only)<br>
-        Columns: simulation time steps<br>
-        Cells: 0/1 values with waveform pixmaps</p>
-      </div>
-      <div class="flow-arrow">↓<span class="label">user edits input cells</span></div>
-
-      <div class="flow-node" style="border-color:#3fb950">
-        <h4>run()</h4>
-        <p>For each time step column:<br>
-        1. Set circuit inputs to column values<br>
-        2. <code>simulation→update()</code> — run one sim cycle<br>
-        3. Read circuit outputs → fill output row cells</p>
-      </div>
-      <div class="flow-arrow">↓</div>
-
-      <div class="flow-parallel">
-        <div class="flow-node"><h4>SignalDelegate</h4><p>Custom cell rendering:<br>waveform lines or numeric values</p></div>
-        <div class="flow-node"><h4>WaveformView</h4><p>QGraphicsView display<br>Zoom, pan, fit-to-screen</p></div>
-      </div>
-
-      <div class="flow-arrow" style="padding:16px 0">↓<span class="label">file I/O</span></div>
-
-      <div class="flow-group">
-        <div class="flow-group-label">.dolphin file format</div>
-        <div class="flow-parallel">
-          <div class="flow-node"><h4>Save</h4><p>Magic: <code>0x57505746</code> ("WPWF")<br>Binary QDataStream of table data</p></div>
-          <div class="flow-node"><h4>Load</h4><p>Validate header → fill SignalModel<br>Check signal count matches current circuit</p></div>
-          <div class="flow-node"><h4>Export</h4><p>PNG / PDF / plain text</p></div>
-        </div>
-      </div>
-    </div>`
+  flows: [
+    { name: 'Waveform Pipeline',
+      nodes: [
+        ['start',    'MainWindow opens\nBeWavedDolphin(scene)',  'start',    ''],
+        ['load',     'loadElements()',                           'step',     'Collect Input/Output GraphicElements from circuit scene'],
+        ['create',   'createWaveform()',                         'step',     'Build table: rows = I/O signals, columns = time steps (default 32)'],
+        ['model',    'SignalModel\n(QStandardItemModel)',        'key',      'Rows: input signals (editable) + output signals (read-only). Columns: simulation time steps. Cells: 0/1 values.'],
+        ['run',      'run()',                                    'key',      'For each time step: 1. Set circuit inputs to column values 2. simulation\u2192update() 3. Read outputs \u2192 fill cells'],
+        ['delegate', 'SignalDelegate',                           'step',     'Custom cell rendering: waveform lines or numeric values'],
+        ['view',     'WaveformView',                             'step',     'QGraphicsView display. Zoom, pan, fit-to-screen.'],
+        ['save',     'Save .dolphin',                            'step',     'Magic: 0x57505746 ("WPWF"). Binary QDataStream of table data.'],
+        ['load_d',   'Load .dolphin',                            'step',     'Validate header \u2192 fill SignalModel. Check signal count matches current circuit.'],
+        ['exp',      'Export',                                   'end',      'PNG / PDF / plain text'],
+      ],
+      edges: [
+        ['start',    'load'],
+        ['load',     'create'],
+        ['create',   'model'],
+        ['model',    'run'],
+        ['run',      'delegate'],
+        ['run',      'view'],
+        ['model',    'save'],
+        ['model',    'load_d'],
+        ['model',    'exp'],
+      ]
+    },
+  ]
 };
 
 drilldowns['Nodes'] = {
   title: 'Nodes (Wiring)',
   subtitle: 'Ports and connections between elements',
-  html: `
-    <div class="flowchart">
-      <div class="flow-parallel">
-        <div class="flow-node" style="border-color:#a371f7">
-          <h4>QNEPort (base)</h4>
-          <p>QGraphicsItem on element edge<br>
-          Holds: connections list, status, index, default value<br>
-          Visual: colored circle showing signal state</p>
-        </div>
-      </div>
-      <div class="flow-arrow">↓<span class="label">two subtypes</span></div>
-
-      <div class="flow-parallel">
-        <div class="flow-node">
-          <h4>QNEInputPort</h4>
-          <p>Left side of element<br>
-          Accepts one incoming connection<br>
-          Has <code>defaultValue()</code> for unconnected state</p>
-        </div>
-        <div class="flow-node">
-          <h4>QNEOutputPort</h4>
-          <p>Right side of element<br>
-          Can have multiple outgoing connections<br>
-          Status set by element's <code>setOutputValue()</code></p>
-        </div>
-      </div>
-
-      <div class="flow-arrow" style="padding:16px 0">↓<span class="label">linked by</span></div>
-
-      <div class="flow-node key" style="border-color:#a371f7">
-        <h4>QNEConnection</h4>
-        <p>QGraphicsItem: bezier curve wire between two ports<br>
-        <code>startPort()</code> → QNEOutputPort (source)<br>
-        <code>endPort()</code> → QNEInputPort (destination)<br>
-        Visual: updates path on port position change, highlight on selection</p>
-      </div>
-
-      <div class="flow-arrow" style="padding:16px 0">↓<span class="label">creation flow</span></div>
-
-      <div class="flow-group">
-        <div class="flow-group-label">Wire Creation (ConnectionManager)</div>
-        <div class="flow-node"><h4>1. User drags from output port</h4><p>ConnectionManager creates temporary QNEConnection</p></div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-node"><h4>2. Hover over input port</h4><p><code>isConnectionAllowed()</code> validates: not self-loop, compatible types, not already connected</p></div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-node"><h4>3. Release on input port</h4><p>Wrap in AddItemsCommand → push to undo stack → mark sim stale</p></div>
-      </div>
-
-      <div class="flow-arrow" style="padding:16px 0">↓<span class="label">in simulation</span></div>
-
-      <div class="flow-node">
-        <h4>Simulation role</h4>
-        <p>Connections don't compute — they propagate:<br>
-        <code>updatePort(outputPort)</code> copies element output → port status<br>
-        <code>updatePort(inputPort)</code> copies connected output port status → input port<br>
-        The actual sim graph bypasses connections entirely using <code>connectPredecessor()</code></p>
-      </div>
-    </div>`
+  flows: [
+    { name: 'Port & Connection System',
+      nodes: [
+        ['port',     'QNEPort (base)',                           'start',    'QGraphicsItem on element edge. Holds: connections list, status, index, default value. Visual: colored circle.'],
+        ['inp',      'QNEInputPort',                             'step',     'Left side of element. Accepts one incoming connection. Has defaultValue() for unconnected state.'],
+        ['outp',     'QNEOutputPort',                            'step',     'Right side of element. Can have multiple outgoing connections. Status set by setOutputValue().'],
+        ['conn',     'QNEConnection',                            'key',      'QGraphicsItem: bezier curve wire. startPort() \u2192 output, endPort() \u2192 input. Updates path on port move.'],
+      ],
+      edges: [
+        ['port', 'inp',  'subtype'],
+        ['port', 'outp', 'subtype'],
+        ['inp',  'conn', 'linked by'],
+        ['outp', 'conn', 'linked by'],
+      ]
+    },
+    { name: 'Wire Creation',
+      nodes: [
+        ['drag',     'User drags from\noutput port',             'start',    'ConnectionManager creates temporary QNEConnection'],
+        ['hover',    'Hover over input port',                    'step',     'isConnectionAllowed() validates: not self-loop, compatible types, not already connected'],
+        ['d_ok',     'Connection\nallowed?',                     'decision', ''],
+        ['reject',   'Reject\n(visual feedback)',                'error',    ''],
+        ['release',  'Release on input port',                    'step',     ''],
+        ['cmd',      'AddItemsCommand\n\u2192 undo stack',      'key',      'Push to undo stack \u2192 mark sim stale'],
+      ],
+      edges: [
+        ['drag',    'hover'],
+        ['hover',   'd_ok'],
+        ['d_ok',    'reject',  'No'],
+        ['d_ok',    'release', 'Yes'],
+        ['release', 'cmd'],
+      ]
+    },
+    { name: 'Simulation Role',
+      nodes: [
+        ['note',     'Connections propagate,\nthey don\u2019t compute', 'key', ''],
+        ['up_out',   'updatePort(outputPort)',                   'step',     'Copy element output \u2192 port status'],
+        ['up_inp',   'updatePort(inputPort)',                    'step',     'Copy connected output port status \u2192 input port'],
+        ['bypass',   'Sim graph bypasses\nconnections entirely', 'end',     'Uses connectPredecessor() for direct element-to-element links'],
+      ],
+      edges: [
+        ['note',   'up_out'],
+        ['up_out', 'up_inp'],
+        ['up_inp', 'bypass'],
+      ]
+    },
+  ]
 };
 
 drilldowns['CodeGen'] = {
   title: 'Code Generation',
   subtitle: 'Export circuits as Arduino C++ or SystemVerilog',
-  html: `
-    <div class="flowchart">
-      <div class="flow-node start"><h4>MainWindow → Export menu</h4></div>
-      <div class="flow-arrow">↓</div>
-
-      <div class="flow-parallel">
-        <div>
-          <div class="flow-node" style="border-color:#ffa657">
-            <h4>ArduinoCodeGen</h4>
-            <p>Reads Scene elements in topological order<br>
-            Maps each GraphicElement to Arduino digital I/O<br>
-            Generates <code>setup()</code> + <code>loop()</code> functions</p>
-          </div>
-        </div>
-        <div>
-          <div class="flow-node" style="border-color:#ffa657">
-            <h4>SystemVerilogCodeGen</h4>
-            <p>Reads Scene elements + connections<br>
-            Maps to Verilog <code>module</code> with <code>wire</code>/<code>reg</code> declarations<br>
-            IC sub-circuits become sub-module instantiations</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="flow-arrow">↓<span class="label">shared pipeline</span></div>
-
-      <div class="flow-node">
-        <h4>1. Collect elements from Scene</h4>
-        <p><code>scene→elements()</code> + <code>sortByTopology()</code></p>
-      </div>
-      <div class="flow-arrow">↓</div>
-      <div class="flow-node">
-        <h4>2. Resolve wireless channels</h4>
-        <p><code>wirelessTxInputPorts()</code> maps Rx labels to Tx port signals</p>
-      </div>
-      <div class="flow-arrow">↓</div>
-      <div class="flow-node">
-        <h4>3. Map element types to target language constructs</h4>
-        <p>AND → <code>&amp;</code> operator, DFlipFlop → sequential block, IC → sub-module, etc.</p>
-      </div>
-      <div class="flow-arrow">↓</div>
-      <div class="flow-node"><h4>4. Write to file / clipboard</h4></div>
-    </div>`
+  flows: [
+    { name: 'Export Pipeline',
+      nodes: [
+        ['start',    'MainWindow \u2192\nExport menu',          'start',    ''],
+        ['arduino',  'ArduinoCodeGen',                           'step',     'Reads Scene elements in topological order. Maps each to Arduino digital I/O. Generates setup() + loop().'],
+        ['verilog',  'SystemVerilogCodeGen',                     'step',     'Reads Scene elements + connections. Maps to module with wire/reg. IC sub-circuits become sub-module instantiations.'],
+        ['collect',  '1. Collect elements\nfrom Scene',          'step',     'scene\u2192elements() + sortByTopology()'],
+        ['wireless', '2. Resolve wireless\nchannels',            'step',     'wirelessTxInputPorts() maps Rx labels to Tx port signals'],
+        ['map',      '3. Map element types to\ntarget language', 'key',     'AND \u2192 & operator, DFlipFlop \u2192 sequential block, IC \u2192 sub-module'],
+        ['write',    '4. Write to\nfile / clipboard',            'end',      ''],
+      ],
+      edges: [
+        ['start',    'arduino'],
+        ['start',    'verilog'],
+        ['arduino',  'collect'],
+        ['verilog',  'collect'],
+        ['collect',  'wireless'],
+        ['wireless', 'map'],
+        ['map',      'write'],
+      ]
+    },
+  ]
 };
 
 drilldowns['Core'] = {
   title: 'Core Module',
   subtitle: 'Application infrastructure and shared utilities',
-  html: `
-    <div class="flowchart">
-      <div class="flow-node start"><h4>Application (singleton)</h4></div>
-      <div class="flow-arrow">↓<span class="label">manages</span></div>
-
-      <div class="flow-parallel">
-        <div class="flow-node">
-          <h4>Settings</h4>
-          <p>QSettings wrapper<br>Persistent user preferences<br>Recent files, theme choice, language</p>
-        </div>
-        <div class="flow-node">
-          <h4>ThemeManager</h4>
-          <p>Dark/Light palettes<br>Icon set switching<br>← SystemThemeDetector (OS query)</p>
-        </div>
-        <div class="flow-node">
-          <h4>SentryHelpers</h4>
-          <p>Crash reporting<br>Breadcrumbs for debugging<br>→ Sentry SDK (Crashpad/Breakpad)</p>
-        </div>
-        <div class="flow-node">
-          <h4>UpdateChecker</h4>
-          <p>GitHub release API<br>Notifies user of new versions</p>
-        </div>
-      </div>
-
-      <div class="flow-arrow" style="padding:16px 0">↓<span class="label">shared types</span></div>
-
-      <div class="flow-parallel">
-        <div class="flow-node">
-          <h4>Enums</h4>
-          <p><code>ElementType</code> — 40+ element types<br>
-          <code>ElementGroup</code> — Gate, IC, Input, Memory, Mux, Output, StaticInput, Other<br>
-          <code>Status</code> — Active, Inactive, Unknown, Error</p>
-        </div>
-        <div class="flow-node">
-          <h4>ItemWithId</h4>
-          <p>Base class: stable numeric ID<br>Used by GraphicElement + QNEConnection<br>
-          IDs are scene-scoped, managed by Scene registry</p>
-        </div>
-        <div class="flow-node">
-          <h4>Common</h4>
-          <p>Shared helpers, logging categories<br><code>PANDACEPTION</code> macro for fatal errors</p>
-        </div>
-      </div>
-
-      <div class="flow-arrow" style="padding:16px 0">↓</div>
-
-      <div class="flow-parallel">
-        <div class="flow-node">
-          <h4>Priorities</h4>
-          <p>Constants for topological sort ordering</p>
-        </div>
-        <div class="flow-node">
-          <h4>StatusOps</h4>
-          <p>Tristate logic operations<br>AND/OR/NOT with Unknown handling</p>
-        </div>
-      </div>
-    </div>`
+  flows: [
+    { name: 'Application & Services',
+      nodes: [
+        ['app',      'Application\n(singleton)',                 'start',    ''],
+        ['settings', 'Settings',                                 'step',     'QSettings wrapper. Persistent user prefs: recent files, theme, language.'],
+        ['theme',    'ThemeManager',                             'step',     'Dark/Light palettes. Icon set switching. \u2190 SystemThemeDetector (OS query).'],
+        ['sentry',   'SentryHelpers',                            'step',     'Crash reporting. Breadcrumbs for debugging. \u2192 Sentry SDK (Crashpad/Breakpad).'],
+        ['updchk',   'UpdateChecker',                            'step',     'GitHub release API. Notifies user of new versions.'],
+        ['enums',    'Enums',                                    'step',     'ElementType (40+), ElementGroup, Status (Active/Inactive/Unknown/Error)'],
+        ['itemid',   'ItemWithId',                               'step',     'Base class: stable numeric ID. Used by GraphicElement + QNEConnection. Scene-scoped.'],
+        ['common',   'Common',                                   'step',     'Shared helpers, logging categories, PANDACEPTION macro'],
+        ['prio',     'Priorities',                               'step',     'Constants for topological sort ordering'],
+        ['statops',  'StatusOps',                                'step',     'Tristate logic: AND/OR/NOT with Unknown handling'],
+      ],
+      edges: [
+        ['app',     'settings', 'manages'],
+        ['app',     'theme',    'manages'],
+        ['app',     'sentry',   'manages'],
+        ['app',     'updchk',   'manages'],
+        ['app',     'enums',    'shared types'],
+        ['app',     'itemid',   'shared types'],
+        ['app',     'common',   'shared types'],
+        ['enums',   'prio'],
+        ['enums',   'statops'],
+      ]
+    },
+  ]
 };
 
 drilldowns['Components'] = {
   title: 'Logic Components',
   subtitle: 'Element groups registered via ElementMetadata',
-  html: `
-    <div class="flowchart">
-      <div class="flow-node start"><h4>ElementMetadata (auto-generated registrations)</h4></div>
-      <div class="flow-arrow">↓<span class="label">registers into ElementFactory</span></div>
-
-      <div class="flow-group">
-        <div class="flow-group-label">ElementGroup::Gate — Combinational Logic</div>
-        <div class="flow-parallel">
-          <div class="flow-node"><h4>AND / NAND</h4><p><code>std::bit_and</code> / negate</p></div>
-          <div class="flow-node"><h4>OR / NOR</h4><p><code>std::bit_or</code> / negate</p></div>
-          <div class="flow-node"><h4>XOR / XNOR</h4><p>Parity check / negate</p></div>
-          <div class="flow-node"><h4>NOT / Buffer</h4><p>Invert / pass-through</p></div>
-        </div>
-      </div>
-
-      <div class="flow-group">
-        <div class="flow-group-label">ElementGroup::Memory — Sequential Logic</div>
-        <div class="flow-parallel">
-          <div class="flow-node"><h4>DFlipFlop</h4><p>Data on rising edge</p></div>
-          <div class="flow-node"><h4>JKFlipFlop</h4><p>J-K on rising edge</p></div>
-          <div class="flow-node"><h4>SRFlipFlop</h4><p>Set-Reset on edge</p></div>
-          <div class="flow-node"><h4>TFlipFlop</h4><p>Toggle on rising edge</p></div>
-        </div>
-        <div style="height:8px"></div>
-        <div class="flow-parallel">
-          <div class="flow-node"><h4>DLatch</h4><p>Level-sensitive D</p></div>
-          <div class="flow-node"><h4>SRLatch</h4><p>Level-sensitive SR</p></div>
-        </div>
-      </div>
-
-      <div class="flow-group">
-        <div class="flow-group-label">ElementGroup::Input — User Interaction</div>
-        <div class="flow-parallel">
-          <div class="flow-node"><h4>Button</h4><p>Momentary press</p></div>
-          <div class="flow-node"><h4>Switch</h4><p>Toggle on/off</p></div>
-          <div class="flow-node"><h4>Rotary</h4><p>Multi-position selector</p></div>
-          <div class="flow-node"><h4>Clock</h4><p>Event-driven oscillator</p></div>
-        </div>
-      </div>
-
-      <div class="flow-group">
-        <div class="flow-group-label">ElementGroup::Output — Display</div>
-        <div class="flow-parallel">
-          <div class="flow-node"><h4>LED</h4><p>On/Off indicator (colored)</p></div>
-          <div class="flow-node"><h4>7-Segment Display</h4><p>Numeric digit</p></div>
-          <div class="flow-node"><h4>Buzzer</h4><p>Audio output</p></div>
-        </div>
-      </div>
-
-      <div class="flow-parallel">
-        <div class="flow-group" style="flex:1">
-          <div class="flow-group-label">Mux</div>
-          <div class="flow-node"><h4>Multiplexer / Demux</h4><p>Route by select line</p></div>
-        </div>
-        <div class="flow-group" style="flex:1">
-          <div class="flow-group-label">StaticInput</div>
-          <div class="flow-node"><h4>VCC / GND</h4><p>Constant 1 / 0</p></div>
-        </div>
-        <div class="flow-group" style="flex:1">
-          <div class="flow-group-label">Other</div>
-          <div class="flow-node"><h4>Node / Line / Text / TruthTable</h4></div>
-        </div>
-      </div>
-    </div>`
+  flows: [
+    { name: 'Component Registry',
+      nodes: [
+        ['meta',     'ElementMetadata\n(auto-generated)',        'start',    'Registers into ElementFactory at static init time'],
+        ['and',      'AND / NAND',                               'step',     'std::bit_and / negate'],
+        ['or',       'OR / NOR',                                 'step',     'std::bit_or / negate'],
+        ['xor',      'XOR / XNOR',                              'step',     'Parity check / negate'],
+        ['not',      'NOT / Buffer',                             'step',     'Invert / pass-through'],
+        ['dff',      'DFlipFlop',                                'step',     'Data on rising edge'],
+        ['jkff',     'JKFlipFlop',                               'step',     'J-K on rising edge'],
+        ['srff',     'SRFlipFlop',                               'step',     'Set-Reset on edge'],
+        ['tff',      'TFlipFlop',                                'step',     'Toggle on rising edge'],
+        ['dlatch',   'DLatch',                                   'step',     'Level-sensitive D'],
+        ['srlatch',  'SRLatch',                                  'step',     'Level-sensitive SR'],
+        ['button',   'Button',                                   'step',     'Momentary press'],
+        ['switch',   'Switch',                                   'step',     'Toggle on/off'],
+        ['rotary',   'Rotary',                                   'step',     'Multi-position selector'],
+        ['clock',    'Clock',                                    'step',     'Event-driven oscillator'],
+        ['led',      'LED',                                      'step',     'On/Off indicator (colored)'],
+        ['seg7',     '7-Segment Display',                        'step',     'Numeric digit'],
+        ['buzzer',   'Buzzer',                                   'step',     'Audio output'],
+        ['mux',      'Multiplexer / Demux',                     'step',     'Route by select line'],
+        ['vcc',      'VCC / GND',                                'step',     'Constant 1 / 0'],
+        ['other',    'Node / Line /\nText / TruthTable',        'step',     ''],
+      ],
+      edges: [
+        ['meta', 'and',    'Gate'],
+        ['meta', 'or',     'Gate'],
+        ['meta', 'xor',    'Gate'],
+        ['meta', 'not',    'Gate'],
+        ['meta', 'dff',    'Memory'],
+        ['meta', 'jkff',   'Memory'],
+        ['meta', 'srff',   'Memory'],
+        ['meta', 'tff',    'Memory'],
+        ['meta', 'dlatch', 'Memory'],
+        ['meta', 'srlatch','Memory'],
+        ['meta', 'button', 'Input'],
+        ['meta', 'switch', 'Input'],
+        ['meta', 'rotary', 'Input'],
+        ['meta', 'clock',  'Input'],
+        ['meta', 'led',    'Output'],
+        ['meta', 'seg7',   'Output'],
+        ['meta', 'buzzer', 'Output'],
+        ['meta', 'mux',    'Mux'],
+        ['meta', 'vcc',    'Static'],
+        ['meta', 'other',  'Other'],
+      ]
+    },
+  ]
 };
 
 // ── Per-node drill-down content (inline IC feature) ─────────────────────────
@@ -1905,8 +1710,36 @@ window.openDrilldown = function(mod) {
   const color = modules[mod]?.color || '#8b949e';
   document.getElementById('drill-title').innerHTML = `${dd.title} <span>— ${dd.subtitle}</span>`;
   document.getElementById('drill-title').style.color = color;
-  document.getElementById('drill-content').innerHTML = dd.html;
-  document.getElementById('drilldown').classList.add('visible');
+
+  if (dd.flows) {
+    // Cytoscape-based flowchart
+    const content = document.getElementById('drill-content');
+    content.innerHTML = `
+      <div id="flow-hint"><kbd>Click</kbd> node for details \u00a0 <kbd>Scroll</kbd> zoom \u00a0 <kbd>Drag</kbd> pan</div>
+      <div id="flow-tabs"></div>
+      <div id="flow-info"></div>
+      <div id="flow-cy" style="width:100%;height:calc(100vh - 180px);min-height:400px;"></div>
+    `;
+    const tabsEl = document.getElementById('flow-tabs');
+    dd.flows.forEach((flow, i) => {
+      const btn = document.createElement('button');
+      btn.textContent = flow.name;
+      btn.className = 'flow-tab' + (i === 0 ? ' active' : '');
+      btn.onclick = () => {
+        tabsEl.querySelectorAll('.flow-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('flow-info').style.display = 'none';
+        renderFlowChart('flow-cy', flow, color);
+      };
+      tabsEl.appendChild(btn);
+    });
+    document.getElementById('drilldown').classList.add('visible');
+    setTimeout(() => renderFlowChart('flow-cy', dd.flows[0], color), 60);
+  } else {
+    // Legacy HTML drilldown
+    document.getElementById('drill-content').innerHTML = dd.html;
+    document.getElementById('drilldown').classList.add('visible');
+  }
 };
 
 let flowCy = null;
