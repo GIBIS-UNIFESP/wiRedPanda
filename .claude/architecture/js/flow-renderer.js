@@ -97,11 +97,21 @@ function renderFlow(flowId) {
     elements,
     style: [
       { selector: 'node', style: {
-        'shape': 'round-rectangle', 'width': 'label', 'height': 'label', 'padding': '10px',
+        'shape': 'round-rectangle', 'padding': '10px',
+        'width': function(ele) {
+          var lines = ele.data('label').split('\n');
+          var maxW = 0;
+          for (var i = 0; i < lines.length; i++) { maxW = Math.max(maxW, measureLabel(lines[i], 11)); }
+          return Math.min(Math.max(maxW + 24, 60), 220);
+        },
+        'height': function(ele) {
+          var lines = ele.data('label').split('\n');
+          return Math.max(lines.length * 16 + 20, 36);
+        },
         'background-color': '#161b22', 'border-width': 2, 'border-color': '#30363d',
         'label': 'data(label)', 'font-size': 11, 'color': '#c9d1d9',
         'text-valign': 'center', 'text-halign': 'center',
-        'text-wrap': 'wrap', 'text-max-width': 180,
+        'text-wrap': 'wrap', 'text-max-width': 200,
       }},
       { selector: '.start', style: {
         'background-color': '#238636', 'border-color': '#2ea043',
