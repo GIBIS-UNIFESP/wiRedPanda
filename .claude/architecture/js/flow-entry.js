@@ -73,6 +73,10 @@ const nodeFlowMap = {
   'update_check': 'core_services',
   'status_ops': 'core_services',
   'main': 'overview',
+  'test_unit': 'test_unit_ops',
+  'test_integ': 'test_integ_ops',
+  'test_system': 'test_system_ops',
+  'test_compat': 'test_compat_ops',
 };
 
 function flowIdForNode(nodeId, moduleName) {
