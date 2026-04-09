@@ -1,23 +1,25 @@
 // Flow definitions: scene
 flowRegistry['scene_ops'] = {
-  title: 'Scene \u2014 Circuit Editing Operations',
+  title: 'Scene \u2014 Circuit Editing',
   nodes: [
-    ['f0', '\u2460 Copy / Cut / Paste', 'key', '', 'scene_u2460_copy__cut__paste'],
-    ['f1', '\u2461 Delete Selected', 'key', '', 'scene_u2461_delete_selected'],
-    ['f2', '\u2462 Rotate / Flip', 'key', '', 'scene_u2462_rotate__flip'],
-    ['f3', '\u2463 Drop Element', 'key', '', 'scene_u2463_drop_element'],
-    ['f4', '\u2464 Mouse Events', 'key', '', 'scene_u2464_mouse_events']
+    ['root',    'Scene',                             'start', 'QGraphicsScene: owns elements, wires, undo stack'],
+    ['mouse',   'Mouse Events\n(press/move/release)','key',  'Selection, dragging, wire drawing', 'scene_mouse'],
+    ['clip',    'Clipboard\n(Copy/Cut/Paste)',       'key',  'Serialize to QMimeData, deserialize on paste', 'scene_clipboard'],
+    ['del',     'Delete Selected',                    'key',  'DeleteItemsCommand \u2192 undo stack', 'scene_delete'],
+    ['xform',   'Rotate / Flip',                      'key',  'RotateCommand / FlipCommand', 'scene_transform'],
+    ['drop',    'Drop Element\nfrom Palette',         'key', 'dropEvent: buildElement + AddItemsCommand', 'scene_drop'],
   ],
   edges: [
-    ['f0', 'f1'],
-    ['f1', 'f2'],
-    ['f2', 'f3'],
-    ['f3', 'f4']
+    ['root',  'mouse'],
+    ['root',  'clip'],
+    ['root',  'del'],
+    ['root',  'xform'],
+    ['root',  'drop'],
   ]
 };
 
-flowRegistry['scene_u2460_copy__cut__paste'] = {
-  title: '\u2460 Copy / Cut / Paste',
+flowRegistry['scene_clipboard'] = {
+  title: 'Copy / Cut / Paste',
   nodes: [
         ['copy',     'Scene::copyAction()',               'start',    ''],
         ['cm_copy',  'ClipboardManager::copy()',          'key',      ''],
@@ -66,15 +68,15 @@ flowRegistry['scene_u2460_copy__cut__paste'] = {
       ]
 };
 
-flowRegistry['scene_u2461_delete_selected'] = {
-  title: '\u2461 Delete Selected',
+flowRegistry['scene_delete'] = {
+  title: 'Delete Selected',
   nodes: [
         ['start',  'Scene::deleteAction()',                'start',    ''],
         ['sel',    'selectedItems()',                       'step',     ''],
         ['d_empty','empty?',                               'decision', ''],
         ['r_emp',  'return',                               'error',    ''],
         ['clear',  'clearSelection()',                      'step',     ''],
-        ['cmd',    'DeleteItemsCommand\n\u2192 undoStack', 'key',      ''],
+        ['cmd',    'DeleteItemsCommand\n\u2192 undoStack', 'key',      '', 'cmd_delete'],
         ['restart','simulation.restart()',                  'end',      'Rebuild sim graph without deleted elements'],
       ],
   edges: [
@@ -87,8 +89,8 @@ flowRegistry['scene_u2461_delete_selected'] = {
       ]
 };
 
-flowRegistry['scene_u2462_rotate__flip'] = {
-  title: '\u2462 Rotate / Flip',
+flowRegistry['scene_transform'] = {
+  title: 'Rotate / Flip',
   nodes: [
         ['rot_r',   'rotateRight()',                       'start',    'rotate(90)'],
         ['rot_l',   'rotateLeft()',                        'start',    'rotate(-90)'],
@@ -115,8 +117,8 @@ flowRegistry['scene_u2462_rotate__flip'] = {
       ]
 };
 
-flowRegistry['scene_u2463_drop_element'] = {
-  title: '\u2463 Drop Element',
+flowRegistry['scene_drop'] = {
+  title: 'Drop Element',
   nodes: [
         ['start',   'Scene::dropEvent(event)',             'start',    'Element dragged from palette or Ctrl+drag clone'],
         ['d_fmt',   'Mime format?',                        'decision', ''],
@@ -124,11 +126,11 @@ flowRegistry['scene_u2463_drop_element'] = {
         ['clone',    'Clone drag (Ctrl+drag)',             'step',     'Read: offset, centroid from stream'],
         ['build',    'ElementFactory::\nbuildElement(type)','key',     ''],
         ['drop_load','loadFromDrop\n(icFileName, contextDir)','step', ''],
-        ['add_cmd',  'AddItemsCommand\n\u2192 undoStack',  'key',     ''],
+        ['add_cmd',  'AddItemsCommand\n\u2192 undoStack',  'key',     '', 'cmd_add'],
         ['pos',      'setPos(event\u2192scenePos - offset)','step',    ''],
         ['select',   'clearSelection()\nelement.setSelected(true)','end',''],
         ['deser_c',  'Deserialize items\nfrom clone stream','key',     ''],
-        ['add_cmd2', 'AddItemsCommand\n\u2192 undoStack',  'step',    ''],
+        ['add_cmd2', 'AddItemsCommand\n\u2192 undoStack',  'step',    '', 'cmd_add'],
         ['repos',    'Reposition items\nby offset from mouse','step', ''],
         ['resize',   'resizeScene()',                       'end',     ''],
       ],
@@ -148,8 +150,8 @@ flowRegistry['scene_u2463_drop_element'] = {
       ]
 };
 
-flowRegistry['scene_u2464_mouse_events'] = {
-  title: '\u2464 Mouse Events',
+flowRegistry['scene_mouse'] = {
+  title: 'Mouse Events',
   nodes: [
         ['press',   'mousePressEvent()',                   'start',    ''],
         ['hover',   'connectionManager\n.updateHover(pos)', 'step',   ''],
@@ -175,7 +177,7 @@ flowRegistry['scene_u2464_mouse_events'] = {
         ['upd_rect','Update selection rect\nsetSelectionArea()','step',''],
         ['release', 'mouseReleaseEvent()',                  'key',     ''],
         ['d_moved', 'Elements\nmoved?',                    'decision', ''],
-        ['mov_cmd', 'MoveCommand\n\u2192 undoStack',       'end',     ''],
+        ['mov_cmd', 'MoveCommand\n\u2192 undoStack',       'end',     '', 'cmd_move'],
         ['no_move', 'No-op\n(click without drag)',         'step',    ''],
         ['d_wire',  'Has edited\nconnection?',             'decision', ''],
         ['try_c2',  'tryComplete(pos)',                     'end',     ''],
@@ -216,15 +218,15 @@ flowRegistry['scene_u2464_mouse_events'] = {
 flowRegistry['scene_mod'] = {
   title: 'Scene',
   nodes: [
-    ['f0', 'Ownership & Managers', 'key', '', 'scene_ownership__managers'],
-    ['f1', 'Mouse Interactions', 'key', '', 'scene_mouse_interactions']
+    ['f0', 'Ownership & Managers', 'key', '', 'scene_ownership'],
+    ['f1', 'Mouse Interactions', 'key', '', 'scene_mouse_old']
   ],
   edges: [
     ['f0', 'f1']
   ]
 };
 
-flowRegistry['scene_ownership__managers'] = {
+flowRegistry['scene_ownership'] = {
   title: 'Ownership & Managers',
   nodes: [
         ['scene',    'Scene constructed',       'start',    ''],
@@ -249,7 +251,7 @@ flowRegistry['scene_ownership__managers'] = {
       ]
 };
 
-flowRegistry['scene_mouse_interactions'] = {
+flowRegistry['scene_mouse_old'] = {
   title: 'Mouse Interactions',
   nodes: [
         ['press',    'mousePressEvent',         'start',    'Start selection box, start dragging element, start wire'],

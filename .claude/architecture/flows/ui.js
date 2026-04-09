@@ -1,17 +1,17 @@
 // Flow definitions: ui
-flowRegistry['gfx_view_ops'] = {
+flowRegistry['ui_view_ops'] = {
   title: 'GraphicsView \u2014 Viewport Controls',
   nodes: [
-    ['f0', '\u2460 Zoom', 'key', '', 'gfx_view_u2460_zoom'],
-    ['f1', '\u2461 Context Menu', 'key', '', 'gfx_view_u2461_context_menu']
+    ['f0', 'Zoom', 'key', '', 'ui_zoom'],
+    ['f1', 'Context Menu', 'key', '', 'ui_ctx_menu']
   ],
   edges: [
     ['f0', 'f1']
   ]
 };
 
-flowRegistry['gfx_view_u2460_zoom'] = {
-  title: '\u2460 Zoom',
+flowRegistry['ui_zoom'] = {
+  title: 'Zoom',
   nodes: [
         ['zoom_in', 'zoomIn()',                               'start',   'Ctrl+='],
         ['scale_in','scale(1.25, 1.25)\n++m_zoomLevel',      'step',    ''],
@@ -33,8 +33,8 @@ flowRegistry['gfx_view_u2460_zoom'] = {
       ]
 };
 
-flowRegistry['gfx_view_u2461_context_menu'] = {
-  title: '\u2461 Context Menu',
+flowRegistry['ui_ctx_menu'] = {
+  title: 'Context Menu',
   nodes: [
         ['start',   'Right-click on canvas',                  'start',   ''],
         ['press',   'mousePressEvent\n(RightButton)',         'step',    ''],
@@ -54,19 +54,19 @@ flowRegistry['gfx_view_u2461_context_menu'] = {
       ]
 };
 
-flowRegistry['elem_palette_ops'] = {
+flowRegistry['ui_palette_ops'] = {
   title: 'ElementPalette \u2014 Component Sidebar',
   nodes: [
-    ['f0', '\u2460 Populate', 'key', '', 'elem_palette_u2460_populate'],
-    ['f1', '\u2461 Drag to Create', 'key', '', 'elem_palette_u2461_drag_to_create']
+    ['f0', 'Populate', 'key', '', 'ui_palette'],
+    ['f1', 'Drag to Create', 'key', '', 'ui_palette_drag']
   ],
   edges: [
     ['f0', 'f1']
   ]
 };
 
-flowRegistry['elem_palette_u2460_populate'] = {
-  title: '\u2460 Populate',
+flowRegistry['ui_palette'] = {
+  title: 'Populate',
   nodes: [
         ['start',   'ElementPalette::populate()',             'start',   ''],
         ['icons',   'setupTabIcons()',                        'step',    ''],
@@ -88,8 +88,8 @@ flowRegistry['elem_palette_u2460_populate'] = {
       ]
 };
 
-flowRegistry['elem_palette_u2461_drag_to_create'] = {
-  title: '\u2461 Drag to Create',
+flowRegistry['ui_palette_drag'] = {
+  title: 'Drag to Create',
   nodes: [
         ['start',   'User drags ElementLabel',                'start',   ''],
         ['mime',    'Create QMimeData with\ntype + icFileName + offset','key',''],
@@ -107,18 +107,18 @@ flowRegistry['elem_palette_u2461_drag_to_create'] = {
       ]
 };
 
-flowRegistry['elem_ctx_menu_ops'] = {
+flowRegistry['ui_menu_ops'] = {
   title: 'ElementContextMenu \u2014 Right-Click Actions',
   nodes: [
-    ['f0', '\u2460 Menu Dispatch', 'key', '', 'elem_ctx_menu_u2460_menu_dispatch']
+    ['f0', 'Menu Dispatch', 'key', '', 'ui_menu_dispatch']
   ],
   edges: [
 
   ]
 };
 
-flowRegistry['elem_ctx_menu_u2460_menu_dispatch'] = {
-  title: '\u2460 Menu Dispatch',
+flowRegistry['ui_menu_dispatch'] = {
+  title: 'Menu Dispatch',
   nodes: [
         ['start',   'ElementContextMenu::exec()',             'start',   ''],
         ['build',   'Build QMenu from\nelement capabilities', 'key',     ''],
@@ -153,18 +153,18 @@ flowRegistry['elem_ctx_menu_u2460_menu_dispatch'] = {
       ]
 };
 
-flowRegistry['theme_mgr_ops'] = {
+flowRegistry['ui_theme_ops'] = {
   title: 'ThemeManager \u2014 Theme System',
   nodes: [
-    ['f0', '\u2460 setTheme()', 'key', '', 'theme_mgr_u2460_settheme']
+    ['f0', 'setTheme()', 'key', '', 'ui_theme']
   ],
   edges: [
 
   ]
 };
 
-flowRegistry['theme_mgr_u2460_settheme'] = {
-  title: '\u2460 setTheme()',
+flowRegistry['ui_theme'] = {
+  title: 'setTheme()',
   nodes: [
         ['start',   'ThemeManager::setTheme(theme)',          'start',   'Light / Dark / System'],
         ['d_sys',   'theme ==\nSystem?',                      'decision',''],
@@ -199,14 +199,14 @@ flowRegistry['theme_mgr_u2460_settheme'] = {
 flowRegistry['ui_mod'] = {
   title: 'UI Layer',
   nodes: [
-    ['f0', 'Layout & Panels', 'key', '', 'ui_layout__panels']
+    ['f0', 'Layout & Panels', 'key', '', 'ui_layout']
   ],
   edges: [
 
   ]
 };
 
-flowRegistry['ui_layout__panels'] = {
+flowRegistry['ui_layout'] = {
   title: 'Layout & Panels',
   nodes: [
         ['mw',       'MainWindow',              'start',    ''],
@@ -246,14 +246,14 @@ flowRegistry['ui_layout__panels'] = {
 flowRegistry['core_mod'] = {
   title: 'Core Module',
   nodes: [
-    ['f0', 'Application & Services', 'key', '', 'core_application__services']
+    ['f0', 'Application & Services', 'key', '', 'core_services']
   ],
   edges: [
 
   ]
 };
 
-flowRegistry['core_application__services'] = {
+flowRegistry['core_services'] = {
   title: 'Application & Services',
   nodes: [
         ['app',      'Application\n(singleton)',                 'start',    ''],
