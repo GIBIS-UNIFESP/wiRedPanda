@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>wiRedPanda — Architecture</title>
+<script src="https://unpkg.com/cytoscape@3.28.1/dist/cytoscape.min.js"></script>
+<script src="https://unpkg.com/layout-base@2.0.1/layout-base.js"></script>
+<script src="https://unpkg.com/cose-base@2.2.0/cose-base.js"></script>
+<script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
+<script src="https://unpkg.com/dagre@0.8.5/dist/dagre.min.js"></script>
+<script src="https://unpkg.com/cytoscape-dagre@2.5.0/cytoscape-dagre.js"></script>
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/drilldown.css">
+</head>
+<body>
+
+<div id="topbar">
+  <h1>wiRedPanda <span>Architecture</span></h1>
+  <input id="search" type="text" placeholder="Search classes... ( / )" autocomplete="off">
+  <div class="filters" id="filters"></div>
+  <div id="stats"></div>
+</div>
+
+<div id="cy"></div>
+<div id="info"></div>
+
+<div id="help-hint">
+  <kbd>Scroll</kbd> Zoom &nbsp; <kbd>Drag</kbd> Pan &nbsp; <kbd>Click</kbd> inspect &nbsp;
+  <kbd>Double-click</kbd> drill down &nbsp; <kbd>Esc</kbd> reset &nbsp; <kbd>/</kbd> search
+</div>
+
+<!-- Drill-down overlay -->
+<div id="drilldown">
+  <div id="drill-header">
+    <button id="drill-back">← Back</button>
+    <div id="breadcrumbs"></div>
+  </div>
+  <div id="drill-content">
+    <div id="flow-hint"><kbd>Click</kbd> node for details &nbsp; <kbd>Double-click</kbd> drill deeper &nbsp; <kbd>Scroll</kbd> zoom &nbsp; <kbd>Drag</kbd> pan &nbsp; <kbd>Esc</kbd> back</div>
+    <div id="flow-info"></div>
+    <div id="flow-cy" style="width:100%;height:calc(100vh - 150px);min-height:400px;"></div>
+  </div>
+</div>
+
+<!-- Data -->
+<script src="js/graph-data.js"></script>
+<script src="js/flow-registry.js"></script>
+
+<!-- Flow definitions -->
+<script src="flows/overview.js"></script>
+<script src="flows/mainwindow.js"></script>
+<script src="flows/workspace.js"></script>
+<script src="flows/scene.js"></script>
+<script src="flows/commands.js"></script>
+<script src="flows/connections.js"></script>
+<script src="flows/elements.js"></script>
+<script src="flows/simulation.js"></script>
+<script src="flows/serialization.js"></script>
+<script src="flows/ic.js"></script>
+<script src="flows/bwd.js"></script>
+<script src="flows/codegen.js"></script>
+<script src="flows/ui.js"></script>
+
+<!-- Rendering engines -->
+<script src="js/flow-renderer.js"></script>
+<script src="js/flow-entry.js"></script>
+<script src="js/graph-setup.js"></script>
+
+</body>
+</html>
