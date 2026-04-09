@@ -1,21 +1,35 @@
 // Flow definitions: commands
-flowRegistry['commands_ops'] = {
+flowRegistry['cmd_ops'] = {
   title: 'Commands \u2014 Undo/Redo System',
   nodes: [
-    ['f0', '\u2460 AddItemsCommand', 'key', '', 'commands_u2460_additemscommand'],
-    ['f1', '\u2461 DeleteItemsCommand', 'key', '', 'commands_u2461_deleteitemscommand'],
-    ['f2', '\u2462 MoveCommand', 'key', '', 'commands_u2462_movecommand'],
-    ['f3', '\u2463 UpdateCommand', 'key', '', 'commands_u2463_updatecommand']
+    ['root',  'QUndoStack',                          'start', '10 QUndoCommand subclasses'],
+    ['add',   'AddItemsCommand',                     'key',   'redo: loadItems, undo: saveItems + deleteItems', 'cmd_add'],
+    ['del',   'DeleteItemsCommand',                  'key',   'redo: deleteItems, undo: loadItems', 'cmd_delete'],
+    ['move',  'MoveCommand',                         'key',   'Swap old/new positions', 'cmd_move'],
+    ['update','UpdateCommand',                       'key',   'Swap old/new serialized state', 'cmd_update'],
+    ['rotate','RotateCommand',                       'step',  'Centroid rotation with 2D transform'],
+    ['flip',  'FlipCommand',                         'step',  'Flip is involution: undo = redo'],
+    ['morph', 'MorphCommand',                        'step',  'Change element type in-place'],
+    ['split', 'SplitCommand',                        'step',  'Insert Node into wire'],
+    ['blob',  'UpdateBlobCommand',                   'step',  'IC embed/extract with rollback'],
+    ['regblob','RegisterBlobCommand',                'step',  'Add/remove blob in ICRegistry'],
   ],
   edges: [
-    ['f0', 'f1'],
-    ['f1', 'f2'],
-    ['f2', 'f3']
+    ['root',  'add'],
+    ['root',  'del'],
+    ['root',  'move'],
+    ['root',  'update'],
+    ['root',  'rotate'],
+    ['root',  'flip'],
+    ['root',  'morph'],
+    ['root',  'split'],
+    ['root',  'blob'],
+    ['root',  'regblob'],
   ]
 };
 
-flowRegistry['commands_u2460_additemscommand'] = {
-  title: '\u2460 AddItemsCommand',
+flowRegistry['cmd_add'] = {
+  title: 'AddItemsCommand',
   nodes: [
         ['ctor',    'Constructor(items, scene)',            'start',    ''],
         ['block',   'SimulationBlocker',                    'step',     ''],
@@ -47,8 +61,8 @@ flowRegistry['commands_u2460_additemscommand'] = {
       ]
 };
 
-flowRegistry['commands_u2461_deleteitemscommand'] = {
-  title: '\u2461 DeleteItemsCommand',
+flowRegistry['cmd_delete'] = {
+  title: 'DeleteItemsCommand',
   nodes: [
         ['ctor',    'Constructor(items, scene)',            'start',    'Mirror of AddItems: redo deletes, undo restores'],
         ['redo',    'redo()',                                'key',     ''],
@@ -75,8 +89,8 @@ flowRegistry['commands_u2461_deleteitemscommand'] = {
       ]
 };
 
-flowRegistry['commands_u2462_movecommand'] = {
-  title: '\u2462 MoveCommand',
+flowRegistry['cmd_move'] = {
+  title: 'MoveCommand',
   nodes: [
         ['ctor',    'Constructor\n(elements, oldPositions)', 'start',  'Captures old + new positions + element IDs'],
         ['undo',    'undo()',                                'key',     ''],
@@ -98,8 +112,8 @@ flowRegistry['commands_u2462_movecommand'] = {
       ]
 };
 
-flowRegistry['commands_u2463_updatecommand'] = {
-  title: '\u2463 UpdateCommand',
+flowRegistry['cmd_update'] = {
+  title: 'UpdateCommand',
   nodes: [
         ['ctor',    'Constructor\n(elements, oldData)',     'start',    'Saves old + new serialized state'],
         ['c_save',  'writePandaHeader +\nelement.save()\nfor each \u2192 m_newData', 'step', ''],

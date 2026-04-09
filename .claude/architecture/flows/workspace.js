@@ -1,25 +1,31 @@
 // Flow definitions: workspace
-flowRegistry['workspace_ops'] = {
-  title: 'Workspace \u2014 Inline IC Tab Lifecycle',
+flowRegistry['ws_ops'] = {
+  title: 'Workspace \u2014 Per-Tab Environment',
   nodes: [
-    ['f0', '\u2460 loadFromBlob', 'key', '', 'workspace_u2460_loadfromblob'],
-    ['f1', '\u2461 Save (inline IC tab)', 'key', '', 'workspace_u2461_save_inline_ic_tab'],
-    ['f2', '\u2462 onChildICBlobSaved', 'key', '', 'workspace_u2462_onchildicblobsaved'],
-    ['f3', '\u2463 save() to Disk', 'key', '', 'workspace_u2463_save_to_disk'],
-    ['f4', '\u2464 load() from File', 'key', '', 'workspace_u2464_load_from_file'],
-    ['f5', '\u2465 autosave()', 'key', '', 'workspace_u2465_autosave']
+    ['root',    'Workspace',                         'start', 'One per open circuit tab: Scene + View + Simulation'],
+    ['file_io', 'File I/O',                          'step',  ''],
+    ['save',    'Save to Disk',                      'key',   'QSaveFile atomic write, autosave cleanup', 'ws_save_disk'],
+    ['load',    'Load from File',                    'key',   'readPandaHeader, migration, deserialize', 'ws_load_file'],
+    ['autosave','Autosave',                          'key',   'Periodic temp file, Settings registry', 'ws_autosave'],
+    ['inline',  'Inline IC Tab',                     'step',  ''],
+    ['blob_l',  'Load from Blob',                    'key',   'Deserialize embedded IC into child tab', 'ws_load_blob'],
+    ['blob_s',  'Save as Blob',                      'key',   'Serialize \u2192 emit icBlobSaved to parent', 'ws_save_inline'],
+    ['child',   'Receive Child\nBlob Update',       'key',   'onChildICBlobSaved: atomic reload all instances', 'ws_child_blob'],
   ],
   edges: [
-    ['f0', 'f1'],
-    ['f1', 'f2'],
-    ['f2', 'f3'],
-    ['f3', 'f4'],
-    ['f4', 'f5']
+    ['root',    'file_io'],
+    ['root',    'inline'],
+    ['file_io', 'save'],
+    ['file_io', 'load'],
+    ['file_io', 'autosave'],
+    ['inline',  'blob_l'],
+    ['inline',  'blob_s'],
+    ['blob_s',  'child'],
   ]
 };
 
-flowRegistry['workspace_u2460_loadfromblob'] = {
-  title: '\u2460 loadFromBlob',
+flowRegistry['ws_load_blob'] = {
+  title: 'loadFromBlob',
   nodes: [
         ['start',   'loadFromBlob(blob, parent,\nicElementId, parentContextDir)', 'start', 'Called from MainWindow::openICInTab after createNewTab()'],
         ['block',   'SimulationBlocker\n(pause simulation)',              'step',  'RAII guard: pauses simulation, resumes on scope exit'],
@@ -56,8 +62,8 @@ flowRegistry['workspace_u2460_loadfromblob'] = {
       ]
 };
 
-flowRegistry['workspace_u2461_save_inline_ic_tab'] = {
-  title: '\u2461 Save (inline IC tab)',
+flowRegistry['ws_save_inline'] = {
+  title: 'Save (inline IC tab)',
   nodes: [
         ['start',     'WorkSpace::save()\nCtrl+S in inline IC tab',       'start', ''],
         ['d_ver',     'isFromNewerVersion?',                               'decision', 'File was loaded from a newer wiRedPanda version'],
@@ -99,8 +105,8 @@ flowRegistry['workspace_u2461_save_inline_ic_tab'] = {
       ]
 };
 
-flowRegistry['workspace_u2462_onchildicblobsaved'] = {
-  title: '\u2462 onChildICBlobSaved',
+flowRegistry['ws_child_blob'] = {
+  title: 'onChildICBlobSaved',
   nodes: [
         ['start',    'onChildICBlobSaved\n(icElementId, blob)',            'start', 'Triggered when child inline IC tab emits icBlobSaved'],
         ['find',     'scene->itemById(icElementId)',                       'step',  ''],
@@ -140,8 +146,8 @@ flowRegistry['workspace_u2462_onchildicblobsaved'] = {
       ]
 };
 
-flowRegistry['workspace_u2463_save_to_disk'] = {
-  title: '\u2463 save() to Disk',
+flowRegistry['ws_save_disk'] = {
+  title: 'save() to Disk',
   nodes: [
         ['start',    'WorkSpace::save(fileName)\n(normal file path)',  'start', 'Not the inline IC path \u2014 this is save-to-disk'],
         ['d_ver',    'isFromNewerVersion?',                             'decision',''],
@@ -157,7 +163,7 @@ flowRegistry['workspace_u2463_save_to_disk'] = {
         ['d_open',   'Open\nsucceeded?',                                'decision',''],
         ['ex_open',  'throw PANDACEPTION\n"Error opening file"',       'error',  ''],
         ['rect',     'Tighten scene rect\n(itemsBounds + viewport)',    'step',   'Avoids viewport jump on element selection'],
-        ['header',   'writePandaHeader(stream)',                        'step',   ''],
+        ['header',   'writePandaHeader(stream)',                        'step',   '', 'ser_header'],
         ['save_s',   'save(stream)',                                    'key',    'Writes metadata (dolphin, port metadata, blob registry, fileBackedICs) then serialize(items)'],
         ['d_commit', 'saveFile.commit()\nsucceeded?',                   'decision','Atomic rename: temp \u2192 final'],
         ['ex_comm',  'throw PANDACEPTION\n"Could not save file"',      'error',  ''],
@@ -190,8 +196,8 @@ flowRegistry['workspace_u2463_save_to_disk'] = {
       ]
 };
 
-flowRegistry['workspace_u2464_load_from_file'] = {
-  title: '\u2464 load() from File',
+flowRegistry['ws_load_file'] = {
+  title: 'load() from File',
   nodes: [
         ['start',    'WorkSpace::load(fileName)',                       'start', ''],
         ['d_exist',  'File exists?',                                    'decision',''],
@@ -199,7 +205,7 @@ flowRegistry['workspace_u2464_load_from_file'] = {
         ['set_file', 'setCurrentFile(fileName)',                        'step',   ''],
         ['d_open',   'File readable?',                                  'decision',''],
         ['ex_open',  'throw PANDACEPTION\n"Could not open file"',      'error',  ''],
-        ['header',   'readPandaHeader(stream)\n\u2192 version',        'key',    ''],
+        ['header',   'readPandaHeader(stream)\n\u2192 version',        'key',    '', 'ser_header'],
         ['d_migrate','version < current\n&& migration enabled?',       'decision',''],
         ['backup',   'createVersionedBackup\n(fileName, version)',     'step',   'Save copy as .vX.Y.panda before upgrading'],
         ['load_s',   'load(stream, version, dir)',                      'key',    'Inner method with SimulationBlocker'],
@@ -251,8 +257,8 @@ flowRegistry['workspace_u2464_load_from_file'] = {
       ]
 };
 
-flowRegistry['workspace_u2465_autosave'] = {
-  title: '\u2465 autosave()',
+flowRegistry['ws_autosave'] = {
+  title: 'autosave()',
   nodes: [
         ['start',    'WorkSpace::autosave()',                          'start', 'Called periodically by QTimer'],
         ['d_inline', 'm_isInlineIC?',                                  'decision','Inline IC tabs don\u2019t autosave to disk'],

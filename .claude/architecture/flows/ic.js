@@ -1,19 +1,29 @@
 // Flow definitions: ic
 flowRegistry['ic_ops'] = {
-  title: 'IC Element \u2014 Inline IC Interactions',
+  title: 'IC \u2014 Integrated Circuits',
   nodes: [
-    ['f0', '\u2460 Open Sub-Circuit', 'key', '', 'ic_u2460_open_subcircuit'],
-    ['f1', '\u2461 Embed (file \u2192 inline)', 'key', '', 'ic_u2461_embed_file_u2192_inline'],
-    ['f2', '\u2462 Extract (inline \u2192 file)', 'key', '', 'ic_u2462_extract_inline_u2192_file']
+    ['root',    'IC System',                          'start', 'Sub-circuit wrapper: file-backed or embedded'],
+    ['open',    'Open Sub-Circuit\n(Double-Click)',    'key', 'Embedded: inline tab. File-backed: file tab.', 'ic_open_sub'],
+    ['embed',   'Embed\n(File \u2192 Inline)',        'key', 'Read file, registerBlob, convert instances', 'ic_embed'],
+    ['extract', 'Extract\n(Inline \u2192 File)',      'key', 'Write blob to disk, convert instances back', 'ic_extract'],
+    ['registry','ICRegistry\n(Blob Management)',       'step', ''],
+    ['reg_emb', 'embedICsByFile()',                     'key', 'Atomic: find targets, registerBlob, loadFromBlob', 'icreg_embed'],
+    ['reg_ext', 'extractToFile()',                      'key', 'Atomic: QSaveFile, loadFile, removeBlob', 'icreg_extract'],
+    ['reg_sc',  'makeBlobSelfContained()',              'key', 'Recursive: embed all file deps into blob', 'icreg_self_contained'],
   ],
   edges: [
-    ['f0', 'f1'],
-    ['f1', 'f2']
+    ['root',     'open'],
+    ['root',     'embed'],
+    ['root',     'extract'],
+    ['root',     'registry'],
+    ['embed',    'reg_emb'],
+    ['extract',  'reg_ext'],
+    ['registry', 'reg_sc'],
   ]
 };
 
-flowRegistry['ic_u2460_open_subcircuit'] = {
-  title: '\u2460 Open Sub-Circuit',
+flowRegistry['ic_open_sub'] = {
+  title: 'Open Sub-Circuit',
   nodes: [
         ['start',       'IC::mouseDoubleClickEvent()',          'start',    'User double-clicks an IC box on the canvas'],
         ['emit',        'emit requestOpenSubCircuit\n(id, blobName, filePath)', 'step', 'Signal carries IC element ID, blob name (if embedded), file path (if file-backed)'],
@@ -55,8 +65,8 @@ flowRegistry['ic_u2460_open_subcircuit'] = {
       ]
 };
 
-flowRegistry['ic_u2461_embed_file_u2192_inline'] = {
-  title: '\u2461 Embed (file \u2192 inline)',
+flowRegistry['ic_embed'] = {
+  title: 'Embed (file \u2192 inline)',
   nodes: [
         ['start',     'User triggers embed',                    'start',    'ElementEditor "Embed" button, or ICDropZone drag file\u2192embedded'],
         ['fn',        'embedSelectedIC()',                       'step',     ''],
@@ -94,8 +104,8 @@ flowRegistry['ic_u2461_embed_file_u2192_inline'] = {
       ]
 };
 
-flowRegistry['ic_u2462_extract_inline_u2192_file'] = {
-  title: '\u2462 Extract (inline \u2192 file)',
+flowRegistry['ic_extract'] = {
+  title: 'Extract (inline \u2192 file)',
   nodes: [
         ['start',     'User triggers extract',                  'start',    'ElementEditor "Extract" button, or ICDropZone drag embedded\u2192file-based'],
         ['fn',        'extractSelectedIC()',                      'step',     ''],
@@ -127,12 +137,12 @@ flowRegistry['ic_u2462_extract_inline_u2192_file'] = {
       ]
 };
 
-flowRegistry['ic_registry_ops'] = {
+flowRegistry['icreg_ops'] = {
   title: 'ICRegistry \u2014 Blob Management Operations',
   nodes: [
-    ['f0', '\u2460 embedICsByFile', 'key', '', 'ic_registry_u2460_embedicsbyfile'],
-    ['f1', '\u2461 extractToFile', 'key', '', 'ic_registry_u2461_extracttofile'],
-    ['f2', '\u2462 makeBlobSelfContained', 'key', '', 'ic_registry_u2462_makeblobselfcontained']
+    ['f0', 'embedICsByFile', 'key', '', 'icreg_embed'],
+    ['f1', 'extractToFile', 'key', '', 'icreg_extract'],
+    ['f2', 'makeBlobSelfContained', 'key', '', 'icreg_self_contained']
   ],
   edges: [
     ['f0', 'f1'],
@@ -140,8 +150,8 @@ flowRegistry['ic_registry_ops'] = {
   ]
 };
 
-flowRegistry['ic_registry_u2460_embedicsbyfile'] = {
-  title: '\u2460 embedICsByFile',
+flowRegistry['icreg_embed'] = {
+  title: 'embedICsByFile',
   nodes: [
         ['start',      'embedICsByFile\n(fileName, fileBytes, blobName)', 'start', 'Called by: embedSelectedIC, embedICByFile, makeSelfContained'],
         ['find',       'findICsByFile(fileName)\n\u2192 targets',        'step',  'Scans all scene elements for ICs whose file() matches'],
@@ -171,8 +181,8 @@ flowRegistry['ic_registry_u2460_embedicsbyfile'] = {
       ]
 };
 
-flowRegistry['ic_registry_u2461_extracttofile'] = {
-  title: '\u2461 extractToFile',
+flowRegistry['icreg_extract'] = {
+  title: 'extractToFile',
   nodes: [
         ['start',     'extractToFile\n(blobName, filePath)',              'start', 'Called by: extractSelectedIC, extractICByBlobName'],
         ['sf_open',   'QSaveFile::open(WriteOnly)',                       'step',  ''],
@@ -214,8 +224,8 @@ flowRegistry['ic_registry_u2461_extracttofile'] = {
       ]
 };
 
-flowRegistry['ic_registry_u2462_makeblobselfcontained'] = {
-  title: '\u2462 makeBlobSelfContained',
+flowRegistry['icreg_self_contained'] = {
+  title: 'makeBlobSelfContained',
   nodes: [
         ['start',    'makeBlobSelfContained\n(name, visited, blobs)',     'start', 'Recursively resolves all file dependencies into embedded blobs'],
         ['d_vis',    'visited\ncontains(name)?',                          'decision', 'Circular-reference guard'],
