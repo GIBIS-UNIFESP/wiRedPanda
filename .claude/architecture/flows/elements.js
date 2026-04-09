@@ -265,16 +265,6 @@ flowRegistry['element_serial'] = {
   edges: []
 };
 
-flowRegistry['components_mod'] = {
-  title: 'Logic Components',
-  nodes: [
-    ['f0', 'Component Registry', 'key', '', 'components_registry']
-  ],
-  edges: [
-
-  ]
-};
-
 flowRegistry['components_registry'] = {
   title: 'Component Registry',
   nodes: [
