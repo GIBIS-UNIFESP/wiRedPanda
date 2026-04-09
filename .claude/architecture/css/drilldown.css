@@ -1,0 +1,50 @@
+/* Drill-down overlay */
+#drilldown {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: #0d1117;
+}
+#drilldown.visible { display: flex; flex-direction: column; }
+#drill-header {
+  background: #161b22; border-bottom: 1px solid #30363d;
+  padding: 10px 20px; display: flex; align-items: center; gap: 12px;
+  flex-wrap: wrap; min-height: 48px;
+}
+#drill-back {
+  padding: 5px 14px; border-radius: 6px; background: #21262d; color: #c9d1d9;
+  font-size: 12px; cursor: pointer; border: 1px solid #30363d; transition: background 0.15s;
+  flex-shrink: 0;
+}
+#drill-back:hover { background: #30363d; }
+#drill-content { flex: 1; overflow: auto; padding: 16px 24px; }
+
+/* Breadcrumbs */
+#breadcrumbs {
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+  font-size: 13px; color: #7d8590;
+}
+.crumb {
+  color: #58a6ff; cursor: pointer; padding: 2px 6px; border-radius: 4px;
+  transition: background 0.15s;
+}
+.crumb:hover { background: #58a6ff22; text-decoration: underline; }
+.crumb-sep { color: #484f58; margin: 0 2px; }
+.crumb-current { color: #e6edf3; font-weight: 500; }
+
+/* Flow graph container */
+#flow-cy {
+  width: 100%; border-radius: 8px; border: 1px solid #30363d; background: #0d1117;
+}
+#flow-info {
+  display: none; background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+  padding: 10px 14px; font-size: 12px; line-height: 1.5; color: #8b949e;
+  margin-bottom: 10px; max-width: 700px;
+}
+#flow-info strong { color: #e6edf3; }
+#flow-hint {
+  font-size: 11px; color: #484f58; margin-bottom: 8px;
+}
+#flow-hint kbd {
+  background: #21262d; border: 1px solid #30363d; border-radius: 3px;
+  padding: 1px 5px; font-size: 10px; color: #8b949e;
+}
+
