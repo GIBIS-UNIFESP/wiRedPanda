@@ -115,7 +115,7 @@ function renderFlow(flowId) {
       { selector: '.key', style: { 'border-color': '#d29922', 'border-width': 2.5 }},
       { selector: '.error', style: {
         'border-color': '#da3633', 'border-width': 2,
-        'background-color': '#da363315', 'color': '#f85149', 'font-size': 10,
+        'background-color': 'rgba(218, 54, 51, 0.08)', 'color': '#f85149', 'font-size': 10,
       }},
       { selector: '.end', style: { 'border-color': '#3fb950', 'border-width': 2.5 }},
       // Drillable nodes: double border + glow
@@ -132,10 +132,10 @@ function renderFlow(flowId) {
         'text-background-padding': '3px', 'text-rotation': 'autorotate',
       }},
       { selector: 'edge[label *= "Yes"]', style: {
-        'line-color': '#3fb95077', 'target-arrow-color': '#3fb950', 'color': '#3fb950',
+        'line-color': 'rgba(63, 185, 80, 0.47)', 'target-arrow-color': '#3fb950', 'color': '#3fb950',
       }},
       { selector: 'edge[label *= "No"]', style: {
-        'line-color': '#da363377', 'target-arrow-color': '#da3633', 'color': '#f85149',
+        'line-color': 'rgba(218, 54, 51, 0.47)', 'target-arrow-color': '#da3633', 'color': '#f85149',
       }},
       { selector: '.fc-highlight', style: { 'border-width': 3.5, 'z-index': 999 }},
       { selector: '.fc-fade', style: { 'opacity': 0.25 }},
