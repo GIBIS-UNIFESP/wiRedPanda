@@ -11,7 +11,7 @@ flowRegistry['cmd_ops'] = {
     ['flip',  'FlipCommand',                         'step',  'Flip is involution: undo = redo'],
     ['morph', 'MorphCommand',                        'step',  'Change element type in-place'],
     ['split', 'SplitCommand',                        'step',  'Insert Node into wire'],
-    ['blob',  'UpdateBlobCommand',                   'step',  'IC embed/extract with rollback'],
+    ['blob', 'UpdateBlobCommand', 'step', 'IC embed/extract with rollback', 'cmd_update'],
     ['regblob','RegisterBlobCommand',                'step',  'Add/remove blob in ICRegistry'],
   ],
   edges: [
@@ -116,10 +116,10 @@ flowRegistry['cmd_update'] = {
   title: 'UpdateCommand',
   nodes: [
         ['ctor',    'Constructor\n(elements, oldData)',     'start',    'Saves old + new serialized state'],
-        ['c_save',  'writePandaHeader +\nelement.save()\nfor each \u2192 m_newData', 'step', ''],
+        ['c_save', 'writePandaHeader +\nelement.save()\nfor each \u2192 m_newData', 'step', '', 'ser_header'],
         ['undo',    'undo()',                                'key',     ''],
         ['u_load',  'loadData(m_oldData)',                  'step',     ''],
-        ['u_find',  'findElements \u2192\nreadPandaHeader \u2192\nelement.load() for each', 'step', ''],
+        ['u_find', 'findElements \u2192\nreadPandaHeader \u2192\nelement.load() for each', 'step', '', 'ser_header'],
         ['u_stale', 'setCircuitUpdateRequired()',           'end',      ''],
         ['redo',    'redo()',                                'key',     ''],
         ['r_load',  'loadData(m_newData)',                  'step',     ''],

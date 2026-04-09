@@ -20,7 +20,7 @@ flowRegistry['bwd_open'] = {
   title: 'Open Editor',
   nodes: [
         ['start',   'MainWindow \u2192\non_actionWaveform',  'start',   ''],
-        ['create',  'new BewavedDolphin\n(scene, true, this)','step',   ''],
+        ['create', 'new BewavedDolphin\n(scene, true, this)', 'step', '', 'bwd_ops'],
         ['wave',    'createWaveform(dolphinFile)',            'key',     ''],
         ['load_e',  'loadElements()',                         'step',    'Collect Input/Output elements from circuit scene'],
         ['d_empty', 'elements\nempty?',                      'decision',''],
@@ -54,7 +54,7 @@ flowRegistry['bwd_run'] = {
         ['block',   'SimulationBlocker\npause simulation',   'step',    ''],
         ['loop',    'For column = 0\nto columnCount-1',       'key',     ''],
         ['set_in',  'Set circuit inputs\nfrom column values', 'step',    'For each input element/port: setOn(value)'],
-        ['update',  'simulation->update()',                   'step',    'Run one sim cycle'],
+        ['update', 'simulation->update()', 'step', 'Run one sim cycle', 'sim_cycle'],
         ['read_out','Read circuit outputs\n\u2192 fill output cells','step','For each output port: status \u2192 createElement()'],
         ['next',    'Next column',                            'step',    ''],
         ['restore', 'restoreInputs()',                        'end',     ''],
@@ -92,7 +92,7 @@ flowRegistry['bwd_save_load'] = {
         ['dol',     '.dolphin:\nreadDolphinHeader \u2192\nload(stream)','step',''],
         ['csv',     '.csv:\nload(file) as CSV',                'step',    ''],
         ['ex_fmt',  'throw PANDACEPTION\n"Format not supported"','error', ''],
-        ['done_l',  'setWindowTitle\n"beWavedDolphin [file]"','end',     ''],
+        ['done_l', 'setWindowTitle\n"beWavedDolphin [file]"', 'end', '', 'bwd_ops'],
       ],
   edges: [
         ['save_s',  'd_file'],
