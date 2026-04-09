@@ -36,7 +36,7 @@ flowRegistry['conn_create'] = {
         ['d_valid', 'isConnectionAllowed\n(start, end)?',   'decision',''],
         ['reject',  'deleteEditedConnection()',             'error',   'Connection not allowed'],
         ['wire',    'setStartPort + setEndPort',            'step',    ''],
-        ['cmd',     'AddItemsCommand\n\u2192 undoStack',    'end',    ''],
+        ['cmd', 'AddItemsCommand\n\u2192 undoStack', 'end', '', 'cmd_add'],
       ],
   edges: [
         ['start_o', 'new_c'],
@@ -121,11 +121,11 @@ flowRegistry['nodes_wire'] = {
   title: 'Wire Creation',
   nodes: [
         ['drag',     'User drags from\noutput port',             'start',    'ConnectionManager creates temporary QNEConnection'],
-        ['hover',    'Hover over input port',                    'step',     'isConnectionAllowed() validates: not self-loop, compatible types, not already connected'],
+        ['hover', 'Hover over input port', 'step', 'isConnectionAllowed() validates: not self-loop, compatible types, not already connected', 'conn_validate'],
         ['d_ok',     'Connection\nallowed?',                     'decision', ''],
         ['reject',   'Reject\n(visual feedback)',                'error',    ''],
         ['release',  'Release on input port',                    'step',     ''],
-        ['cmd',      'AddItemsCommand\n\u2192 undo stack',      'key',      'Push to undo stack \u2192 mark sim stale'],
+        ['cmd', 'AddItemsCommand\n\u2192 undo stack', 'key', 'Push to undo stack \u2192 mark sim stale', 'cmd_add'],
       ],
   edges: [
         ['drag',    'hover'],
