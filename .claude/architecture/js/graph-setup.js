@@ -38,7 +38,7 @@ const cy = cytoscape({
       selector: `#mod_${mod}`, style: { 'border-color': hexAlpha(info.color, 0x88), 'color': info.color }
     })),
     { selector: '.classNode', style: {
-      'shape': 'round-rectangle', 'padding': '6px',
+      'shape': 'round-rectangle', 'width': 'label', 'height': 'label', 'padding': '6px',
       'background-color': '#21262d', 'border-width': 1.5, 'border-color': '#30363d',
       'label': 'data(label)', 'font-size': 10, 'color': '#e6edf3',
       'text-valign': 'center', 'text-halign': 'center', 'text-wrap': 'wrap', 'text-max-width': 100,
