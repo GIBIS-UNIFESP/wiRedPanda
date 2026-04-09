@@ -1,4 +1,12 @@
 // Main Cytoscape graph: setup, layout, interactions, search
+
+// Convert hex color + alpha (0-255) to rgba() string for Cytoscape
+function hexAlpha(hex, alpha) {
+  const r = parseInt(hex.slice(1,3), 16);
+  const g = parseInt(hex.slice(3,5), 16);
+  const b = parseInt(hex.slice(5,7), 16);
+  return 'rgba(' + r + ',' + g + ',' + b + ',' + (alpha/255).toFixed(2) + ')';
+}
 // ── Build Cytoscape ──────────────────────────────────────────
 const cyNodes = [];
 const cyEdges = [];
@@ -18,7 +26,7 @@ for (let i = 0; i < edges.length; i++) {
 const cy = cytoscape({
   container: document.getElementById('cy'),
   elements: { nodes: cyNodes, edges: cyEdges },
-  wheelSensitivity: 0.3, minZoom: 0.08, maxZoom: 3,
+  minZoom: 0.08, maxZoom: 3,
   style: [
     { selector: '.module', style: {
       'shape': 'round-rectangle', 'background-color': '#161b22', 'border-width': 2,
@@ -27,17 +35,17 @@ const cy = cytoscape({
       'text-margin-y': 2, 'compound-sizing-wrt-labels': 'include',
     }},
     ...Object.entries(modules).map(([mod, info]) => ({
-      selector: `#mod_${mod}`, style: { 'border-color': info.color + '88', 'color': info.color }
+      selector: `#mod_${mod}`, style: { 'border-color': hexAlpha(info.color, 0x88), 'color': info.color }
     })),
     { selector: '.classNode', style: {
-      'shape': 'round-rectangle', 'width': 'label', 'height': 'label', 'padding': '6px',
+      'shape': 'round-rectangle', 'width': 120, 'height': 30, 'padding': '6px',
       'background-color': '#21262d', 'border-width': 1.5, 'border-color': '#30363d',
       'label': 'data(label)', 'font-size': 10, 'color': '#e6edf3',
       'text-valign': 'center', 'text-halign': 'center', 'text-wrap': 'wrap', 'text-max-width': 100,
       'transition-property': 'background-color, border-color, border-width, opacity', 'transition-duration': '0.2s',
     }},
     ...Object.entries(modules).map(([mod, info]) => ({
-      selector: `.classNode[module="${mod}"]`, style: { 'border-color': info.color + '99' }
+      selector: `.classNode[module="${mod}"]`, style: { 'border-color': hexAlpha(info.color, 0x99) }
     })),
     ...['graphic_elem', 'scene', 'simulation', 'mainwindow', 'main'].map(id => ({
       selector: `#${id}`, style: { 'border-width': 2.5, 'font-weight': 'bold', 'font-size': 11 }
@@ -49,23 +57,23 @@ const cy = cytoscape({
       'text-background-color': '#0d1117', 'text-background-opacity': 0.9, 'text-background-padding': '2px',
       'transition-property': 'opacity, line-color, width', 'transition-duration': '0.2s',
     }},
-    { selector: '.ownership', style: { 'line-color': '#3fb95088', 'target-arrow-color': '#3fb95088' }},
-    { selector: '.element', style: { 'line-color': '#da363388', 'target-arrow-color': '#da363388' }},
-    { selector: '.wiring', style: { 'line-color': '#a371f788', 'target-arrow-color': '#a371f788' }},
-    { selector: '.simulation', style: { 'line-color': '#d2992288', 'target-arrow-color': '#d2992288' }},
-    { selector: '.io', style: { 'line-color': '#79c0ff88', 'target-arrow-color': '#79c0ff88' }},
-    { selector: '.ui', style: { 'line-color': '#f778ba88', 'target-arrow-color': '#f778ba88' }},
-    { selector: '.bwd', style: { 'line-color': '#7ee78788', 'target-arrow-color': '#7ee78788' }},
-    { selector: '.codegen', style: { 'line-color': '#ffa65788', 'target-arrow-color': '#ffa65788' }},
-    { selector: '.core', style: { 'line-color': '#58a6ff88', 'target-arrow-color': '#58a6ff88' }},
-    { selector: '.component', style: { 'line-color': '#f0883e88', 'target-arrow-color': '#f0883e88', 'line-style': 'dashed' }},
-    { selector: '.test', style: { 'line-color': '#8b949e66', 'target-arrow-color': '#8b949e66', 'line-style': 'dotted' }},
-    { selector: '.external', style: { 'line-color': '#484f5866', 'target-arrow-color': '#484f5866', 'line-style': 'dotted' }},
-    { selector: '.inherit', style: { 'line-color': '#da363366', 'target-arrow-color': '#da363366', 'target-arrow-shape': 'triangle', 'line-style': 'dashed' }},
+    { selector: '.ownership', style: { 'line-color': 'rgba(63, 185, 80, 0.53)', 'target-arrow-color': 'rgba(63, 185, 80, 0.53)' }},
+    { selector: '.element', style: { 'line-color': 'rgba(218, 54, 51, 0.53)', 'target-arrow-color': 'rgba(218, 54, 51, 0.53)' }},
+    { selector: '.wiring', style: { 'line-color': 'rgba(163, 113, 247, 0.53)', 'target-arrow-color': 'rgba(163, 113, 247, 0.53)' }},
+    { selector: '.simulation', style: { 'line-color': 'rgba(210, 153, 34, 0.53)', 'target-arrow-color': 'rgba(210, 153, 34, 0.53)' }},
+    { selector: '.io', style: { 'line-color': 'rgba(121, 192, 255, 0.53)', 'target-arrow-color': 'rgba(121, 192, 255, 0.53)' }},
+    { selector: '.ui', style: { 'line-color': 'rgba(247, 120, 186, 0.53)', 'target-arrow-color': 'rgba(247, 120, 186, 0.53)' }},
+    { selector: '.bwd', style: { 'line-color': 'rgba(126, 231, 135, 0.53)', 'target-arrow-color': 'rgba(126, 231, 135, 0.53)' }},
+    { selector: '.codegen', style: { 'line-color': 'rgba(255, 166, 87, 0.53)', 'target-arrow-color': 'rgba(255, 166, 87, 0.53)' }},
+    { selector: '.core', style: { 'line-color': 'rgba(88, 166, 255, 0.53)', 'target-arrow-color': 'rgba(88, 166, 255, 0.53)' }},
+    { selector: '.component', style: { 'line-color': 'rgba(240, 136, 62, 0.53)', 'target-arrow-color': 'rgba(240, 136, 62, 0.53)', 'line-style': 'dashed' }},
+    { selector: '.test', style: { 'line-color': 'rgba(139, 148, 158, 0.4)', 'target-arrow-color': 'rgba(139, 148, 158, 0.4)', 'line-style': 'dotted' }},
+    { selector: '.external', style: { 'line-color': 'rgba(72, 79, 88, 0.4)', 'target-arrow-color': 'rgba(72, 79, 88, 0.4)', 'line-style': 'dotted' }},
+    { selector: '.inherit', style: { 'line-color': 'rgba(218, 54, 51, 0.4)', 'target-arrow-color': 'rgba(218, 54, 51, 0.4)', 'target-arrow-shape': 'triangle', 'line-style': 'dashed' }},
     { selector: '.highlighted', style: { 'opacity': 1, 'border-width': 3, 'z-index': 999 }},
     { selector: '.highlighted-edge', style: { 'opacity': 1, 'width': 2.5, 'z-index': 998 }},
     { selector: '.faded', style: { 'opacity': 0.08 }},
-    { selector: '.search-match', style: { 'border-color': '#ffa657', 'border-width': 3, 'background-color': '#ffa65733', 'z-index': 999 }},
+    { selector: '.search-match', style: { 'border-color': '#ffa657', 'border-width': 3, 'background-color': 'rgba(255, 166, 87, 0.2)', 'z-index': 999 }},
   ],
   layout: { name: 'preset' }, // positions set below
 });
