@@ -15,7 +15,7 @@
   flex-shrink: 0;
 }
 #drill-back:hover { background: #30363d; }
-#drill-content { flex: 1; overflow: auto; padding: 16px 24px; }
+#drill-content { flex: 1; overflow: auto; padding: 16px 24px; position: relative; }
 
 /* Breadcrumbs */
 #breadcrumbs {
@@ -35,9 +35,10 @@
   width: 100%; border-radius: 8px; border: 1px solid #30363d; background: #0d1117;
 }
 #flow-info {
-  display: none; background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+  display: none; background: #161b22ee; backdrop-filter: blur(8px);
+  border: 1px solid #30363d; border-radius: 8px;
   padding: 10px 14px; font-size: 12px; line-height: 1.5; color: #8b949e;
-  margin-bottom: 10px; max-width: 700px;
+  max-width: 360px; position: absolute; bottom: 16px; right: 16px; z-index: 10;
 }
 #flow-info strong { color: #e6edf3; }
 #flow-hint {
