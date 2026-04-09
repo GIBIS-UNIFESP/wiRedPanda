@@ -33,7 +33,7 @@ for (let i = 0; i < edges.length; i++) {
 const cy = cytoscape({
   container: document.getElementById('cy'),
   elements: { nodes: cyNodes, edges: cyEdges },
-  minZoom: 0.08, maxZoom: 3,
+  minZoom: 0.08, maxZoom: 3, wheelSensitivity: 0.3,
   style: [
     { selector: '.module', style: {
       'shape': 'round-rectangle', 'background-color': '#161b22', 'border-width': 2,

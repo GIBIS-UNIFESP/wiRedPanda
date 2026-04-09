@@ -151,7 +151,7 @@ function renderFlow(flowId) {
       edgeSep: 20,
       ranker: 'longest-path',
     },
-    minZoom: 0.2, maxZoom: 2.5,
+    minZoom: 0.2, maxZoom: 2.5, wheelSensitivity: 0.3,
   });
 
   // Single click: show description + highlight neighbourhood
