@@ -1,14 +1,4 @@
 // Flow definitions: codegen
-flowRegistry['cg_arduino_ops'] = {
-  title: 'ArduinoCodeGen \u2014 Arduino Export',
-  nodes: [
-    ['f0', 'generate()', 'key', '', 'cg_arduino']
-  ],
-  edges: [
-
-  ]
-};
-
 flowRegistry['cg_arduino'] = {
   title: 'generate()',
   nodes: [
@@ -34,16 +24,6 @@ flowRegistry['cg_arduino'] = {
         ['loop',    'helpers'],
         ['helpers', 'close'],
       ]
-};
-
-flowRegistry['cg_verilog_ops'] = {
-  title: 'SystemVerilogCodeGen \u2014 HDL Export',
-  nodes: [
-    ['f0', 'generate()', 'key', '', 'cg_verilog']
-  ],
-  edges: [
-
-  ]
 };
 
 flowRegistry['cg_verilog'] = {
@@ -75,16 +55,6 @@ flowRegistry['cg_verilog'] = {
         ['seq',     'fb'],
         ['fb',      'end_mod'],
       ]
-};
-
-flowRegistry['cg_mod'] = {
-  title: 'Code Generation',
-  nodes: [
-    ['f0', 'Export Pipeline', 'key', '', 'cg_pipeline']
-  ],
-  edges: [
-
-  ]
 };
 
 flowRegistry['cg_pipeline'] = {
