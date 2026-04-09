@@ -32,18 +32,12 @@ function goBack() {
 }
 
 function goToBreadcrumb(index) {
-  // Pop history to the given index
-  while (flowHistory.length > index) {
-    flowHistory.pop();
-  }
-  if (flowHistory.length === 0 && index === 0) {
-    // User clicked the first crumb — nothing in history, just re-render current root
-    return;
-  }
-  const target = flowHistory.pop();
-  if (target) {
-    openFlow(target.flowId);
-  }
+  // Breadcrumb[index] corresponds to flowHistory[index].
+  // Navigate to that flow and keep history up to (but not including) it.
+  const target = flowHistory[index];
+  if (!target) return;
+  flowHistory = flowHistory.slice(0, index);
+  openFlow(target.flowId);
 }
 
 function closeOverlay() {
@@ -122,16 +116,15 @@ function renderFlow(flowId) {
         'border-color': '#a371f7', 'border-width': 2.5,
         'padding': '16px', 'text-max-width': 140, 'font-size': 10,
       }},
-      { selector: '.key', style: { 'border-color': '#d29922', 'border-width': 2.5 }},
+      { selector: '.key', style: {}},
       { selector: '.error', style: {
         'border-color': '#da3633', 'border-width': 2,
         'background-color': '#da3633', 'background-opacity': 0.08, 'color': '#f85149', 'font-size': 10,
       }},
       { selector: '.end', style: { 'border-color': '#3fb950', 'border-width': 2.5 }},
-      // Drillable nodes: double border + glow
+      // Drillable nodes: gold border (clickable)
       { selector: '.drillable', style: {
-        'border-style': 'double', 'border-width': 5,
-        'underlay-color': '#58a6ff', 'underlay-padding': 3, 'underlay-opacity': 0.08,
+        'border-color': '#d29922', 'border-width': 2.5,
       }},
       { selector: 'edge', style: {
         'width': 1.5, 'line-color': '#484f58', 'target-arrow-color': '#484f58',
