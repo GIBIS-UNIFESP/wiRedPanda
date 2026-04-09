@@ -1,39 +1,48 @@
 // Flow definitions: mainwindow
-flowRegistry['mainwindow_ops'] = {
-  title: 'MainWindow \u2014 IC Management UI',
+flowRegistry['mw_ops'] = {
+  title: 'MainWindow \u2014 Operations',
   nodes: [
-    ['f0', '\u2460 Make Self-Contained', 'key', '', 'mainwindow_u2460_make_selfcontained'],
-    ['f1', '\u2461 Embed via DropZone', 'key', '', 'mainwindow_u2461_embed_via_dropzone'],
-    ['f2', '\u2462 Extract via DropZone', 'key', '', 'mainwindow_u2462_extract_via_dropzone'],
-    ['f3', '\u2463 Add Embedded IC', 'key', '', 'mainwindow_u2463_add_embedded_ic'],
-    ['f4', '\u2464 Remove Embedded IC', 'key', '', 'mainwindow_u2464_remove_embedded_ic'],
-    ['f5', '\u2466 New File', 'key', '', 'mainwindow_u2466_new_file'],
-    ['f6', '\u2467 Open File', 'key', '', 'mainwindow_u2467_open_file'],
-    ['f7', '\u2468 Save', 'key', '', 'mainwindow_u2468_save'],
-    ['f8', '\u2469 Save As', 'key', '', 'mainwindow_u2469_save_as'],
-    ['f9', '\u246a Reload File', 'key', '', 'mainwindow_u246a_reload_file'],
-    ['f10', '\u246b Tab Management', 'key', '', 'mainwindow_u246b_tab_management'],
-    ['f11', '\u246c Simulation Controls', 'key', '', 'mainwindow_u246c_simulation_controls'],
-    ['f12', '\u246d Open BeWavedDolphin', 'key', '', 'mainwindow_u246d_open_bewaveddolphin']
+    ['root',  'MainWindow',                     'start', 'Top-level window: menus, toolbars, tab bar'],
+    // File operations
+    ['file',  'File Operations',                'step',  ''],
+    ['new',   'New',                             'key',   'Ctrl+N: create empty tab',        'mw_new_file'],
+    ['open',  'Open',                            'key',   'Ctrl+O: file dialog \u2192 load', 'mw_open_file'],
+    ['save',  'Save',                            'key',   'Ctrl+S: save to disk or blob',    'mw_save'],
+    ['saveas','Save As',                         'key',   'File dialog \u2192 new path',      'mw_save_as'],
+    ['reload','Reload',                          'key',   'Close + reopen from disk',         'mw_reload'],
+    // Tab management
+    ['tabs',  'Tab Management',                  'key',   'Create / close / switch tabs',     'mw_tabs'],
+    // Simulation
+    ['sim',   'Simulation\nControls',            'key',   'Play/Pause/Restart',               'mw_sim_controls'],
+    // Tools
+    ['tools', 'Tools',                           'step',  ''],
+    ['bwd',   'Open\nBeWavedDolphin',            'key',   'Ctrl+W: waveform editor',          'mw_open_bwd'],
+    // IC management
+    ['icmgmt','IC Management',                   'step',  ''],
+    ['selfco','Make\nSelf-Contained',            'key',   'Embed all file-backed ICs',        'mw_self_contained'],
+    ['embed', 'Embed /\nExtract IC',             'key',   'DropZone or element editor',       'mw_embed_dz'],
+    ['addic', 'Add / Remove\nEmbedded IC',       'key',  'Palette + button / trash button',   'mw_add_embedded'],
   ],
   edges: [
-    ['f0', 'f1'],
-    ['f1', 'f2'],
-    ['f2', 'f3'],
-    ['f3', 'f4'],
-    ['f4', 'f5'],
-    ['f5', 'f6'],
-    ['f6', 'f7'],
-    ['f7', 'f8'],
-    ['f8', 'f9'],
-    ['f9', 'f10'],
-    ['f10', 'f11'],
-    ['f11', 'f12']
+    ['root',  'file'],
+    ['root',  'tabs'],
+    ['root',  'sim'],
+    ['root',  'tools'],
+    ['root',  'icmgmt'],
+    ['file',  'new'],
+    ['file',  'open'],
+    ['file',  'save'],
+    ['file',  'saveas'],
+    ['file',  'reload'],
+    ['tools', 'bwd'],
+    ['icmgmt','selfco'],
+    ['icmgmt','embed'],
+    ['icmgmt','addic'],
   ]
 };
 
-flowRegistry['mainwindow_u2460_make_selfcontained'] = {
-  title: '\u2460 Make Self-Contained',
+flowRegistry['mw_self_contained'] = {
+  title: 'Make Self-Contained',
   nodes: [
         ['start',    'makeSelfContained()',                                'start', 'File menu \u2192 "Make file self-contained", or IC panel button'],
         ['d_tab',    'm_currentTab\nnull?',                                'decision', ''],
@@ -77,8 +86,8 @@ flowRegistry['mainwindow_u2460_make_selfcontained'] = {
       ]
 };
 
-flowRegistry['mainwindow_u2461_embed_via_dropzone'] = {
-  title: '\u2461 Embed via DropZone',
+flowRegistry['mw_embed_dz'] = {
+  title: 'Embed via DropZone',
   nodes: [
         ['start',   'ICDropZone:\ndrag file-based \u2192 embedded zone',  'start', 'embedByFileRequested(fileName)'],
         ['fn',      'embedICByFile(fileName)',                             'step',  ''],
@@ -123,8 +132,8 @@ flowRegistry['mainwindow_u2461_embed_via_dropzone'] = {
       ]
 };
 
-flowRegistry['mainwindow_u2462_extract_via_dropzone'] = {
-  title: '\u2462 Extract via DropZone',
+flowRegistry['mw_extract_dz'] = {
+  title: 'Extract via DropZone',
   nodes: [
         ['start',   'ICDropZone:\ndrag embedded \u2192 file-based zone',  'start', 'extractByBlobNameRequested(blobName)'],
         ['fn',      'extractICByBlobName\n(blobName)',                     'step',  ''],
@@ -160,8 +169,8 @@ flowRegistry['mainwindow_u2462_extract_via_dropzone'] = {
       ]
 };
 
-flowRegistry['mainwindow_u2463_add_embedded_ic'] = {
-  title: '\u2463 Add Embedded IC',
+flowRegistry['mw_add_embedded'] = {
+  title: 'Add Embedded IC',
   nodes: [
         ['start',   '"+" button in\nEmbedded ICs palette',                 'start', 'pushButtonAddEmbeddedIC clicked'],
         ['d_tab',   'm_currentTab\nnull?',                                 'decision', ''],
@@ -197,8 +206,8 @@ flowRegistry['mainwindow_u2463_add_embedded_ic'] = {
       ]
 };
 
-flowRegistry['mainwindow_u2464_remove_embedded_ic'] = {
-  title: '\u2464 Remove Embedded IC',
+flowRegistry['mw_remove_embedded'] = {
+  title: 'Remove Embedded IC',
   nodes: [
         ['start',   'Trash button in\nEmbedded ICs palette',              'start', 'TrashButton::removeEmbeddedIC(blobName)'],
         ['d_tab',   'm_currentTab\nnull?',                                 'decision', ''],
@@ -225,8 +234,8 @@ flowRegistry['mainwindow_u2464_remove_embedded_ic'] = {
       ]
 };
 
-flowRegistry['mainwindow_u2466_new_file'] = {
-  title: '\u2466 New File',
+flowRegistry['mw_new_file'] = {
+  title: 'New File',
   nodes: [
         ['start',   'User: File \u2192 New\nor Ctrl+N',           'start',  ''],
         ['fn',      'on_actionNew_triggered()',                     'step',   ''],
@@ -248,8 +257,8 @@ flowRegistry['mainwindow_u2466_new_file'] = {
       ]
 };
 
-flowRegistry['mainwindow_u2467_open_file'] = {
-  title: '\u2467 Open File',
+flowRegistry['mw_open_file'] = {
+  title: 'Open File',
   nodes: [
         ['start',   'User: File \u2192 Open\nor Ctrl+O',          'start',  ''],
         ['dlg',     'FileDialog::getOpenFileName',                  'step',   'Suggests ./Examples if no file is currently open'],
@@ -257,7 +266,7 @@ flowRegistry['mainwindow_u2467_open_file'] = {
         ['r_empty', 'return',                                       'error',  ''],
         ['load',    'loadPandaFile(fileName)',                       'key',    ''],
         ['create',  'createNewTab()',                                'step',   'New WorkSpace + tab'],
-        ['ws_load', 'm_currentTab->load(fileName)',                 'step',   'Delegates to WorkSpace::load()'],
+        ['ws_load', 'm_currentTab->load(fileName)',                 'step',   'Delegates to WorkSpace::load()', 'ws_load_file'],
         ['resize',  'scene->resizeScene()',                          'step',   'Tighten scene rect to loaded items'],
         ['pal',     'updateICList + updateEmbeddedICList',           'step',   ''],
         ['done',    'statusBar:\n"File loaded successfully"',        'end',    ''],
@@ -275,8 +284,8 @@ flowRegistry['mainwindow_u2467_open_file'] = {
       ]
 };
 
-flowRegistry['mainwindow_u2468_save'] = {
-  title: '\u2468 Save',
+flowRegistry['mw_save'] = {
+  title: 'Save',
   nodes: [
         ['start',   'User: File \u2192 Save\nor Ctrl+S',          'start',  ''],
         ['d_tab',   'm_currentTab\nnull?',                          'decision',''],
@@ -289,7 +298,7 @@ flowRegistry['mainwindow_u2468_save'] = {
         ['d_dlg',   'fileName\nempty?',                             'decision','User cancelled'],
         ['r_dlg',   'return',                                       'error',  ''],
         ['suffix',  'Append ".panda"\nif missing',                  'step',   ''],
-        ['save',    'save(fileName)',                                'key',    'MainWindow::save() \u2192 m_currentTab->save(fileName)'],
+        ['save',    'save(fileName)',                                'key',    'MainWindow::save() \u2192 m_currentTab->save(fileName)', 'ws_save_disk'],
         ['pal',     'updateICList',                                  'step',   ''],
         ['done',    'statusBar:\n"File saved successfully"',         'end',    ''],
       ],
@@ -311,8 +320,8 @@ flowRegistry['mainwindow_u2468_save'] = {
       ]
 };
 
-flowRegistry['mainwindow_u2469_save_as'] = {
-  title: '\u2469 Save As',
+flowRegistry['mw_save_as'] = {
+  title: 'Save As',
   nodes: [
         ['start',   'User: File \u2192 Save As',                   'start',  ''],
         ['d_tab',   'm_currentTab\nnull?',                          'decision',''],
@@ -336,8 +345,8 @@ flowRegistry['mainwindow_u2469_save_as'] = {
       ]
 };
 
-flowRegistry['mainwindow_u246a_reload_file'] = {
-  title: '\u246a Reload File',
+flowRegistry['mw_reload'] = {
+  title: 'Reload File',
   nodes: [
         ['start',   'User: File \u2192 Reload',                    'start',  ''],
         ['d_ok',    'currentFile exists\n&& m_currentTab?',        'decision',''],
@@ -355,8 +364,8 @@ flowRegistry['mainwindow_u246a_reload_file'] = {
       ]
 };
 
-flowRegistry['mainwindow_u246b_tab_management'] = {
-  title: '\u246b Tab Management',
+flowRegistry['mw_tabs'] = {
+  title: 'Tab Management',
   nodes: [
         ['create',    'createNewTab()',                              'start',  ''],
         ['ws',        'new WorkSpace(this)',                         'step',   'Scene + View + Simulation'],
@@ -412,8 +421,8 @@ flowRegistry['mainwindow_u246b_tab_management'] = {
       ]
 };
 
-flowRegistry['mainwindow_u246c_simulation_controls'] = {
-  title: '\u246c Simulation Controls',
+flowRegistry['mw_sim_controls'] = {
+  title: 'Simulation Controls',
   nodes: [
         ['play',     'User: Play/Pause\ntoggle button',            'start',  'Action is checkable; toggled(bool) signal drives start/stop'],
         ['d_tab',    'm_currentTab\nnull?',                         'decision',''],
@@ -438,8 +447,8 @@ flowRegistry['mainwindow_u246c_simulation_controls'] = {
       ]
 };
 
-flowRegistry['mainwindow_u246d_open_bewaveddolphin'] = {
-  title: '\u246d Open BeWavedDolphin',
+flowRegistry['mw_open_bwd'] = {
+  title: 'Open BeWavedDolphin',
   nodes: [
         ['start',   'User: Tools \u2192 Waveform\nor Ctrl+W',     'start',  ''],
         ['d_tab',   'm_currentTab\nnull?',                          'decision',''],

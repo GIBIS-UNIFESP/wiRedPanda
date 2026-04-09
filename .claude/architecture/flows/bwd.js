@@ -2,20 +2,22 @@
 flowRegistry['bwd_ops'] = {
   title: 'BeWavedDolphin \u2014 Waveform Editor',
   nodes: [
-    ['f0', '\u2460 Open Editor', 'key', '', 'bwd_u2460_open_editor'],
-    ['f1', '\u2461 Run Simulation', 'key', '', 'bwd_u2461_run_simulation'],
-    ['f2', '\u2462 Save / Load .dolphin', 'key', '', 'bwd_u2462_save__load_dolphin'],
-    ['f3', '\u2463 Export', 'key', '', 'bwd_u2463_export']
+    ['root',   'BeWavedDolphin',                      'start', ''],
+    ['open',   'Open Editor\n(loadElements + table)',  'key', 'Collect I/O from circuit, build SignalModel', 'bwd_open'],
+    ['run',    'Run Simulation\n(per-timestep loop)',   'key', 'Set inputs \u2192 sim.update() \u2192 read outputs', 'bwd_run'],
+    ['save',   'Save / Load\n(.dolphin / .csv)',        'key', 'Binary or CSV format', 'bwd_save_load'],
+    ['export', 'Export\n(PNG / PDF)',                    'key', 'Render scene to image or printer', 'bwd_export'],
   ],
   edges: [
-    ['f0', 'f1'],
-    ['f1', 'f2'],
-    ['f2', 'f3']
+    ['root', 'open'],
+    ['open', 'run'],
+    ['root', 'save'],
+    ['root', 'export'],
   ]
 };
 
-flowRegistry['bwd_u2460_open_editor'] = {
-  title: '\u2460 Open Editor',
+flowRegistry['bwd_open'] = {
+  title: 'Open Editor',
   nodes: [
         ['start',   'MainWindow \u2192\non_actionWaveform',  'start',   ''],
         ['create',  'new BewavedDolphin\n(scene, true, this)','step',   ''],
@@ -45,8 +47,8 @@ flowRegistry['bwd_u2460_open_editor'] = {
       ]
 };
 
-flowRegistry['bwd_u2461_run_simulation'] = {
-  title: '\u2461 Run Simulation',
+flowRegistry['bwd_run'] = {
+  title: 'Run Simulation',
   nodes: [
         ['start',   'run()',                                  'start',   ''],
         ['block',   'SimulationBlocker\npause simulation',   'step',    ''],
@@ -69,8 +71,8 @@ flowRegistry['bwd_u2461_run_simulation'] = {
       ]
 };
 
-flowRegistry['bwd_u2462_save__load_dolphin'] = {
-  title: '\u2462 Save / Load .dolphin',
+flowRegistry['bwd_save_load'] = {
+  title: 'Save / Load .dolphin',
   nodes: [
         ['save_s',  'on_actionSave_triggered()',              'start',   ''],
         ['d_file',  'currentFile\nempty?',                   'decision', ''],
@@ -115,8 +117,8 @@ flowRegistry['bwd_u2462_save__load_dolphin'] = {
       ]
 };
 
-flowRegistry['bwd_u2463_export'] = {
-  title: '\u2463 Export',
+flowRegistry['bwd_export'] = {
+  title: 'Export',
   nodes: [
         ['start',   'Export menu action',                      'start',   ''],
         ['d_fmt',   'Format?',                                 'decision', ''],
@@ -144,17 +146,17 @@ flowRegistry['bwd_u2463_export'] = {
       ]
 };
 
-flowRegistry['bewaveddolphin_mod'] = {
+flowRegistry['bwd_mod'] = {
   title: 'BeWavedDolphin',
   nodes: [
-    ['f0', 'Waveform Pipeline', 'key', '', 'bewaveddolphin_waveform_pipeline']
+    ['f0', 'Waveform Pipeline', 'key', '', 'bwd_pipeline']
   ],
   edges: [
 
   ]
 };
 
-flowRegistry['bewaveddolphin_waveform_pipeline'] = {
+flowRegistry['bwd_pipeline'] = {
   title: 'Waveform Pipeline',
   nodes: [
         ['start',    'MainWindow opens\nBeWavedDolphin(scene)',  'start',    ''],

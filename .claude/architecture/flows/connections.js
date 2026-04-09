@@ -1,17 +1,25 @@
 // Flow definitions: connections
-flowRegistry['conn_mgr_ops'] = {
-  title: 'ConnectionManager \u2014 Wire Operations',
+flowRegistry['conn_ops'] = {
+  title: 'Connections \u2014 Wiring System',
   nodes: [
-    ['f0', '\u2460 Wire Creation', 'key', '', 'conn_mgr_u2460_wire_creation'],
-    ['f1', '\u2461 Connection Validation', 'key', '', 'conn_mgr_u2461_connection_validation']
+    ['root',    'Wiring System',                     'start', ''],
+    ['ports',   'QNEPort\n(Input / Output)',         'step',  'QGraphicsItem on element edge, colored by signal status'],
+    ['conn',    'QNEConnection\n(Wire)',              'step', 'Bezier curve between ports, updates path on move'],
+    ['create',  'Wire Creation\n(ConnectionManager)', 'key', 'Drag from port \u2192 validate \u2192 complete', 'conn_create'],
+    ['validate','Connection\nValidation',             'key', '5 checks: null, self-loop, duplicate, Rx, Tx', 'conn_validate'],
+    ['sim_role','Simulation Role',                     'step', 'Connections propagate, don\u2019t compute. Sim graph uses connectPredecessor() directly.'],
   ],
   edges: [
-    ['f0', 'f1']
+    ['root',     'ports'],
+    ['root',     'conn'],
+    ['root',     'create'],
+    ['create',   'validate'],
+    ['conn',     'sim_role'],
   ]
 };
 
-flowRegistry['conn_mgr_u2460_wire_creation'] = {
-  title: '\u2460 Wire Creation',
+flowRegistry['conn_create'] = {
+  title: 'Wire Creation',
   nodes: [
         ['start_o', 'startFromOutput(port)',               'start',    'User clicks an output port'],
         ['new_c',   'new QNEConnection()',                  'step',    ''],
@@ -49,8 +57,8 @@ flowRegistry['conn_mgr_u2460_wire_creation'] = {
       ]
 };
 
-flowRegistry['conn_mgr_u2461_connection_validation'] = {
-  title: '\u2461 Connection Validation',
+flowRegistry['conn_validate'] = {
+  title: 'Connection Validation',
   nodes: [
         ['start',   'isConnectionAllowed\n(startPort, endPort)', 'start', ''],
         ['d_null',  'Either port\nnull?',                   'decision',''],
@@ -83,9 +91,9 @@ flowRegistry['conn_mgr_u2461_connection_validation'] = {
 flowRegistry['nodes_mod'] = {
   title: 'Nodes (Wiring)',
   nodes: [
-    ['f0', 'Port & Connection System', 'key', '', 'nodes_port__connection_system'],
-    ['f1', 'Wire Creation', 'key', '', 'nodes_wire_creation'],
-    ['f2', 'Simulation Role', 'key', '', 'nodes_simulation_role']
+    ['f0', 'Port & Connection System', 'key', '', 'nodes_ports'],
+    ['f1', 'Wire Creation', 'key', '', 'nodes_wire'],
+    ['f2', 'Simulation Role', 'key', '', 'nodes_sim_role']
   ],
   edges: [
     ['f0', 'f1'],
@@ -93,7 +101,7 @@ flowRegistry['nodes_mod'] = {
   ]
 };
 
-flowRegistry['nodes_port__connection_system'] = {
+flowRegistry['nodes_ports'] = {
   title: 'Port & Connection System',
   nodes: [
         ['port',     'QNEPort (base)',                           'start',    'QGraphicsItem on element edge. Holds: connections list, status, index, default value. Visual: colored circle.'],
@@ -109,7 +117,7 @@ flowRegistry['nodes_port__connection_system'] = {
       ]
 };
 
-flowRegistry['nodes_wire_creation'] = {
+flowRegistry['nodes_wire'] = {
   title: 'Wire Creation',
   nodes: [
         ['drag',     'User drags from\noutput port',             'start',    'ConnectionManager creates temporary QNEConnection'],
@@ -128,7 +136,7 @@ flowRegistry['nodes_wire_creation'] = {
       ]
 };
 
-flowRegistry['nodes_simulation_role'] = {
+flowRegistry['nodes_sim_role'] = {
   title: 'Simulation Role',
   nodes: [
         ['note',     'Connections propagate,\nthey don\u2019t compute', 'key', ''],

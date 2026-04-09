@@ -1,16 +1,16 @@
 // Flow definitions: codegen
-flowRegistry['arduino_gen_ops'] = {
+flowRegistry['cg_arduino_ops'] = {
   title: 'ArduinoCodeGen \u2014 Arduino Export',
   nodes: [
-    ['f0', '\u2460 generate()', 'key', '', 'arduino_gen_u2460_generate']
+    ['f0', 'generate()', 'key', '', 'cg_arduino']
   ],
   edges: [
 
   ]
 };
 
-flowRegistry['arduino_gen_u2460_generate'] = {
-  title: '\u2460 generate()',
+flowRegistry['cg_arduino'] = {
+  title: 'generate()',
   nodes: [
         ['start',   'generate()',                             'start',   ''],
         ['open',    'Open output file\nfor writing',         'step',    ''],
@@ -36,18 +36,18 @@ flowRegistry['arduino_gen_u2460_generate'] = {
       ]
 };
 
-flowRegistry['sv_gen_ops'] = {
+flowRegistry['cg_verilog_ops'] = {
   title: 'SystemVerilogCodeGen \u2014 HDL Export',
   nodes: [
-    ['f0', '\u2460 generate()', 'key', '', 'sv_gen_u2460_generate']
+    ['f0', 'generate()', 'key', '', 'cg_verilog']
   ],
   edges: [
 
   ]
 };
 
-flowRegistry['sv_gen_u2460_generate'] = {
-  title: '\u2460 generate()',
+flowRegistry['cg_verilog'] = {
+  title: 'generate()',
   nodes: [
         ['start',   'generate()',                             'start',   ''],
         ['open',    'Open output file',                      'step',    ''],
@@ -77,17 +77,17 @@ flowRegistry['sv_gen_u2460_generate'] = {
       ]
 };
 
-flowRegistry['codegen_mod'] = {
+flowRegistry['cg_mod'] = {
   title: 'Code Generation',
   nodes: [
-    ['f0', 'Export Pipeline', 'key', '', 'codegen_export_pipeline']
+    ['f0', 'Export Pipeline', 'key', '', 'cg_pipeline']
   ],
   edges: [
 
   ]
 };
 
-flowRegistry['codegen_export_pipeline'] = {
+flowRegistry['cg_pipeline'] = {
   title: 'Export Pipeline',
   nodes: [
         ['start',    'MainWindow \u2192\nExport menu',          'start',    ''],

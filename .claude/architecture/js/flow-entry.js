@@ -1,15 +1,89 @@
 // Entry points: connect main architecture graph to flow registry
 
 // Map from architecture graph node ID to flow registry entry
+const nodeFlowMap = {
+  'mainwindow': 'mw_ops',
+  'workspace': 'ws_ops',
+  'scene': 'scene_ops',
+  'commands': 'cmd_ops',
+  'conn_mgr': 'conn_ops',
+  'graphic_elem': 'ge_ops',
+  'elem_factory': 'ef_ops',
+  'elem_editor': 'editor_ops',
+  'simulation': 'sim_ops',
+  'serialization': 'ser_ops',
+  'ic': 'ic_ops',
+  'ic_registry': 'icreg_ops',
+  'bwd': 'bwd_ops',
+  'arduino_gen': 'cg_arduino_ops',
+  'sv_gen': 'cg_verilog_ops',
+  'gfx_view': 'ui_view_ops',
+  'elem_palette': 'ui_palette_ops',
+  'elem_ctx_menu': 'ui_menu_ops',
+  'theme_mgr': 'ui_theme_ops',
+  'clipboard': 'scene_clipboard',
+  'vis_mgr': 'scene_ops',
+  'prop_shortcut': 'scene_ops',
+  'sim_blocker': 'sim_ops',
+  'qne_port': 'nodes_mod',
+  'qne_conn': 'conn_ops',
+  'graphic_input': 'ge_ops',
+  'ic_def': 'ic_ops',
+  'elem_info': 'ef_ops',
+  'elem_metadata': 'ef_registration',
+  'elem_label': 'ge_ops',
+  'prop_desc': 'editor_ops',
+  'serial_ctx': 'io_context',
+  'file_utils': 'ser_ops',
+  'recent_files': 'mw_ops',
+  'version_info': 'ser_header',
+  'mainwindow_ui': 'mw_ops',
+  'elem_editor_ui': 'editor_ops',
+  'tab_nav': 'ui_palette_ops',
+  'sel_caps': 'scene_ops',
+  'clock_dlg': 'mw_ops',
+  'length_dlg': 'mw_ops',
+  'circuit_exp': 'mw_ops',
+  'ic_dropzone': 'mw_embed_dz',
+  'lang_mgr': 'ui_ops',
+  'trash_btn': 'mw_remove_embedded',
+  'labeled_slider': 'ui_ops',
+  'bwd_ui': 'bwd_ops',
+  'bwd_serial': 'bwd_save_load',
+  'bwd_model': 'bwd_run',
+  'bwd_delegate': 'bwd_ops',
+  'bwd_waveform': 'bwd_ops',
+  'grp_gate': 'components_registry',
+  'grp_input': 'components_registry',
+  'grp_output': 'components_registry',
+  'grp_memory': 'components_registry',
+  'grp_mux': 'components_registry',
+  'grp_static': 'components_registry',
+  'grp_other': 'components_registry',
+  'grp_ic': 'ic_ops',
+  'application': 'core_mod',
+  'settings': 'core_services',
+  'common': 'core_mod',
+  'enums': 'core_mod',
+  'theme_mgr': 'ui_theme',
+  'sys_theme': 'ui_theme',
+  'item_with_id': 'core_mod',
+  'priorities': 'sim_topo_sort',
+  'sentry': 'core_services',
+  'update_check': 'core_services',
+  'status_ops': 'core_mod',
+  'main': 'overview',
+};
+
 function flowIdForNode(nodeId, moduleName) {
-  if (flowRegistry[nodeId + '_ops']) return nodeId + '_ops';
-  if (flowRegistry[moduleName.toLowerCase() + '_mod']) return moduleName.toLowerCase() + '_mod';
+  if (nodeFlowMap[nodeId]) return nodeFlowMap[nodeId];
+  const modKey = moduleName.toLowerCase() + '_mod';
+  if (flowRegistry[modKey]) return modKey;
   return null;
 }
 
 // Called from graph-setup.js after cy is created
 function setupFlowEntryPoints(cy) {
-  // Double-click class node -> open its flow
   cy.on('dbltap', '.classNode', function(e) {
     const nodeId = e.target.id();
     const mod = e.target.data('module');
@@ -20,7 +94,6 @@ function setupFlowEntryPoints(cy) {
     }
   });
 
-  // Double-click module compound -> open module flow
   cy.on('dbltap', '.module', function(e) {
     const mod = e.target.data('module');
     const fid = flowIdForNode('', mod);
@@ -31,7 +104,6 @@ function setupFlowEntryPoints(cy) {
   });
 }
 
-// Build drill button HTML for the info panel
 function drillButtonHtml(nodeId, moduleName) {
   const fid = flowIdForNode(nodeId, moduleName);
   if (!fid) return '';

@@ -1,19 +1,24 @@
 // Flow definitions: serialization
-flowRegistry['serialization_ops'] = {
-  title: 'Serialization \u2014 File Format Engine',
+flowRegistry['ser_ops'] = {
+  title: 'Serialization \u2014 File Format',
   nodes: [
-    ['f0', '\u2460 serialize()', 'key', '', 'serialization_u2460_serialize'],
-    ['f1', '\u2461 deserialize()', 'key', '', 'serialization_u2461_deserialize'],
-    ['f2', '\u2462 readPandaHeader', 'key', '', 'serialization_u2462_readpandaheader']
+    ['root',     'Serialization Engine',               'start', 'Versioned binary QDataStream format'],
+    ['header',   'readPandaHeader\n(Format Detection)', 'key', 'Magic 0x57504346 vs legacy string vs headerless V4.1', 'ser_header'],
+    ['serialize','serialize()\n(Write Items)',          'key', 'Temp IDs \u2192 write elements \u2192 write connections', 'ser_serialize'],
+    ['deserialize','deserialize()\n(Read Items)',      'key', 'Loop: type tag \u2192 buildElement \u2192 load \u2192 portMap', 'ser_deserialize'],
+    ['context',  'SerializationContext',                'step', 'portMap, version, contextDir, blobRegistry'],
   ],
   edges: [
-    ['f0', 'f1'],
-    ['f1', 'f2']
+    ['root',      'header'],
+    ['root',      'serialize'],
+    ['root',      'deserialize'],
+    ['deserialize','context'],
+    ['header',     'context'],
   ]
 };
 
-flowRegistry['serialization_u2460_serialize'] = {
-  title: '\u2460 serialize()',
+flowRegistry['ser_serialize'] = {
+  title: 'serialize()',
   nodes: [
         ['start',   'serialize(items, stream)',              'start',    ''],
         ['ids',     'Assign temp IDs to\nunsaved elements (id \u2264 0)','step','localId = max existing ID; increment per element'],
@@ -31,8 +36,8 @@ flowRegistry['serialization_u2460_serialize'] = {
       ]
 };
 
-flowRegistry['serialization_u2461_deserialize'] = {
-  title: '\u2461 deserialize()',
+flowRegistry['ser_deserialize'] = {
+  title: 'deserialize()',
   nodes: [
         ['start',   'deserialize(stream, context)',          'start',    ''],
         ['loop',    'while !stream.atEnd()',                  'key',      ''],
@@ -62,8 +67,8 @@ flowRegistry['serialization_u2461_deserialize'] = {
       ]
 };
 
-flowRegistry['serialization_u2462_readpandaheader'] = {
-  title: '\u2462 readPandaHeader',
+flowRegistry['ser_header'] = {
+  title: 'readPandaHeader',
   nodes: [
         ['start',   'readPandaHeader(stream)',               'start',    'Detects file format: modern, legacy string, or headerless'],
         ['ver_qt',  'stream.setVersion(Qt_5_12)',            'step',     ''],
@@ -108,9 +113,9 @@ flowRegistry['serialization_u2462_readpandaheader'] = {
 flowRegistry['io_mod'] = {
   title: 'IO / Serialization',
   nodes: [
-    ['f0', 'Save Flow', 'key', '', 'io_save_flow'],
-    ['f1', 'Load Flow', 'key', '', 'io_load_flow'],
-    ['f2', 'SerializationContext', 'key', '', 'io_serializationcontext']
+    ['f0', 'Save Flow', 'key', '', 'io_save'],
+    ['f1', 'Load Flow', 'key', '', 'io_load'],
+    ['f2', 'SerializationContext', 'key', '', 'io_context']
   ],
   edges: [
     ['f0', 'f1'],
@@ -118,7 +123,7 @@ flowRegistry['io_mod'] = {
   ]
 };
 
-flowRegistry['io_save_flow'] = {
+flowRegistry['io_save'] = {
   title: 'Save Flow',
   nodes: [
         ['start',    'Workspace::save(fileName)',                'start',    ''],
@@ -135,7 +140,7 @@ flowRegistry['io_save_flow'] = {
       ]
 };
 
-flowRegistry['io_load_flow'] = {
+flowRegistry['io_load'] = {
   title: 'Load Flow',
   nodes: [
         ['start',    'Workspace::load(fileName)',                'start',    ''],
@@ -154,7 +159,7 @@ flowRegistry['io_load_flow'] = {
       ]
 };
 
-flowRegistry['io_serializationcontext'] = {
+flowRegistry['io_context'] = {
   title: 'SerializationContext',
   nodes: [
         ['ctx',      'Per-load state',                           'key',     'portMap: serial ID \u2192 QNEPort*. version: file format version. contextDir: .panda file directory. blobRegistry: embedded IC blobs.'],
