@@ -40,6 +40,14 @@ public:
     /// Forces a repaint of the element.
     void update();
 
+    /// \reimp — opens the truth table editor on double-click.
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
+
+signals:
+    /// Emitted on double-click to request opening the truth table editor.
+    void requestOpenTruthTableEditor();
+
+public:
     /// Looks up the current input pattern in the truth table and drives outputs.
     void updateLogic() override;
 
