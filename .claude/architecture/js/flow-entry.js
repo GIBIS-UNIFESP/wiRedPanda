@@ -86,26 +86,11 @@ function flowIdForNode(nodeId, moduleName) {
   return null;
 }
 
-// Called from graph-setup.js after cy is created
-function setupFlowEntryPoints(cy) {
-  cy.on('dbltap', '.classNode', function(e) {
-    const nodeId = e.target.id();
-    const mod = e.target.data('module');
-    const fid = flowIdForNode(nodeId, mod);
-    if (fid) {
-      flowHistory = [];
-      openFlow(fid);
-    }
-  });
-
-  cy.on('dbltap', '.module', function(e) {
-    const mod = e.target.data('module');
-    const fid = flowIdForNode('', mod);
-    if (fid) {
-      flowHistory = [];
-      openFlow(fid);
-    }
-  });
+// Called from graph-view.js after SVG canvas is created
+// Events are wired directly in graph-view.js on SVG node elements,
+// so this is a no-op now. Kept for compatibility.
+function setupFlowEntryPoints() {
+  // Node double-click → openFlow is handled directly in graph-view.js
 }
 
 function drillButtonHtml(nodeId, moduleName) {
