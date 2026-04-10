@@ -275,6 +275,9 @@ signals:
     /// Emitted when an IC element is double-clicked to request opening its sub-circuit.
     void icOpenRequested(int elementId, const QString &blobName, const QString &filePath);
 
+    /// Emitted when a TruthTable element is double-clicked to request opening its editor.
+    void openTruthTableRequested();
+
 protected:
     // --- Qt event overrides ---
 

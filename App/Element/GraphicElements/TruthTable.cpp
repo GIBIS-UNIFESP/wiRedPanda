@@ -3,6 +3,7 @@
 
 #include "App/Element/GraphicElements/TruthTable.h"
 
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
 #include "App/Core/Common.h"
@@ -178,6 +179,12 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     }
 
     painter->drawPixmap(boundingRect().topLeft(), pixmap());
+}
+
+void TruthTable::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    event->accept();
+    emit requestOpenTruthTableEditor();
 }
 
 QBitArray &TruthTable::key()

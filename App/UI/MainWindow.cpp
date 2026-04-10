@@ -1073,6 +1073,7 @@ void MainWindow::disconnectTab()
     disconnect(m_changePrevElmShortcut, nullptr, m_currentTab->scene(), nullptr);
     disconnect(m_changeNextElmShortcut, nullptr, m_currentTab->scene(), nullptr);
     disconnect(m_currentTab->scene(), &Scene::icOpenRequested, this, nullptr);
+    disconnect(m_currentTab->scene(), &Scene::openTruthTableRequested, this, nullptr);
     disconnect(m_currentTab->scene()->undoStack(), &QUndoStack::indexChanged, this, nullptr);
 
     qCDebug(zero) << "Removing undo and redo actions from UI menu.";
@@ -1112,6 +1113,9 @@ void MainWindow::connectTab()
     connect(m_nextSecndPropShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::nextSecndPropShortcut);
     connect(m_changePrevElmShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::prevElm);
     connect(m_changeNextElmShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::nextElm);
+    connect(m_currentTab->scene(), &Scene::openTruthTableRequested, this, [this] {
+        m_ui->elementEditor->truthTable();
+    });
     connect(m_currentTab->scene(), &Scene::icOpenRequested, this, [this](int elementId, const QString &blobName, const QString &filePath) {
         if (!blobName.isEmpty()) {
             if (m_currentTab) {
