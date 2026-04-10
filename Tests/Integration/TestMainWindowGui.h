@@ -179,6 +179,12 @@ private slots:
     void testElementColorChange();
     void testElementInputCountChange();
 
+    // --- Embedded IC: embedICByFile / extractICByBlobName ---
+
+    void testEmbedICByFileNoInstances();
+    void testEmbedICByFileWithInstances();
+    void testExtractICByBlobNameEndToEnd();
+
 private:
     QTemporaryDir m_tempDir;
     QString m_fixtureDir;

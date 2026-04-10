@@ -27,6 +27,7 @@
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICRegistry.h"
+#include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Commands.h"
@@ -2719,5 +2720,136 @@ void TestMainWindowGui::testElementInputCountChange()
     QCoreApplication::processEvents();
 
     QVERIFY(andGate->inputSize() != initialInputs);
+}
+
+// ===========================================================================
+// Embedded IC: embedICByFile / extractICByBlobName
+// ===========================================================================
+
+static QByteArray makeICDropMime(ElementType type, const QString &icFileName,
+                                 bool isEmbedded, const QString &blobName = {})
+{
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    stream << QPoint(32, 32) << type << icFileName << isEmbedded
+           << (isEmbedded ? blobName : QString());
+    return data;
+}
+
+static void simulateDrop(QWidget *dropZone, const QByteArray &mimePayload)
+{
+    QMimeData mime;
+    mime.setData("application/x-wiredpanda-dragdrop", mimePayload);
+
+    QDragEnterEvent enterEv(QPoint(10, 10), Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier);
+    QCoreApplication::sendEvent(dropZone, &enterEv);
+
+    QDropEvent dropEv(QPointF(10, 10), Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier);
+    QCoreApplication::sendEvent(dropZone, &dropEv);
+}
+
+void TestMainWindowGui::testEmbedICByFileNoInstances()
+{
+    // When a file-based IC is dragged to the embedded palette zone and no instances
+    // of that file exist in the scene, embedICByFile must register the blob
+    // (RegisterBlobCommand) without adding any IC element to the scene.
+
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    scene->setContextDir(m_fixtureDir);
+
+    auto *dropZone = window->findChild<QWidget *>("dropZoneEmbedded");
+    QVERIFY2(dropZone, "dropZoneEmbedded widget not found");
+
+    const int elementsBefore = static_cast<int>(scene->elements().size());
+
+    simulateDrop(dropZone, makeICDropMime(ElementType::IC, "test_circuit.panda", false));
+
+    QCOMPARE(scene->elements().size(), elementsBefore); // no IC instantiated
+    QVERIFY(scene->icRegistry()->hasBlob("test_circuit"));
+    QVERIFY(scene->undoStack()->canUndo());
+
+    scene->undoStack()->undo();
+    QVERIFY(!scene->icRegistry()->hasBlob("test_circuit"));
+    QCOMPARE(scene->elements().size(), elementsBefore);
+}
+
+void TestMainWindowGui::testEmbedICByFileWithInstances()
+{
+    // When file-backed ICs referencing the file already exist in the scene,
+    // a drop on the embedded palette zone must convert them to embedded without
+    // adding extra elements.
+
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    scene->setContextDir(m_fixtureDir);
+
+    auto *dropZone = window->findChild<QWidget *>("dropZoneEmbedded");
+    QVERIFY2(dropZone, "dropZoneEmbedded widget not found");
+
+    auto *ic1 = new IC();
+    ic1->loadFile("test_circuit.panda", m_fixtureDir);
+    ic1->setPos(100, 100);
+    scene->addItem(ic1);
+
+    auto *ic2 = new IC();
+    ic2->loadFile("test_circuit.panda", m_fixtureDir);
+    ic2->setPos(200, 100);
+    scene->addItem(ic2);
+
+    const int elementsBefore = static_cast<int>(scene->elements().size());
+    QVERIFY(!ic1->isEmbedded());
+    QVERIFY(!ic2->isEmbedded());
+
+    simulateDrop(dropZone, makeICDropMime(ElementType::IC, "test_circuit.panda", false));
+
+    QCOMPARE(scene->elements().size(), elementsBefore); // conversion, not addition
+    QVERIFY(ic1->isEmbedded());
+    QVERIFY(ic2->isEmbedded());
+    QVERIFY(scene->icRegistry()->hasBlob("test_circuit"));
+
+    scene->undoStack()->undo();
+    QVERIFY(!ic1->isEmbedded());
+    QVERIFY(!ic2->isEmbedded());
+    QVERIFY(!scene->icRegistry()->hasBlob("test_circuit"));
+}
+
+void TestMainWindowGui::testExtractICByBlobNameEndToEnd()
+{
+    // Dragging an embedded IC to the file-based palette zone must write the blob
+    // to the dialog-chosen path, remove it from the registry, and convert the IC
+    // to file-backed. Undo must reinstate the embedded state.
+
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    scene->setContextDir(m_fixtureDir);
+
+    auto *dropZone = window->findChild<QWidget *>("dropZoneFileBased");
+    QVERIFY2(dropZone, "dropZoneFileBased widget not found");
+
+    auto *ic = placeEmbeddedIC(scene, m_fixtureDir, "extract_test");
+    QVERIFY(ic->isEmbedded());
+    QVERIFY(scene->icRegistry()->hasBlob("extract_test"));
+
+    const QString outPath = m_fixtureDir + "/extracted_output.panda";
+    QFile::remove(outPath);
+
+    ScopedFileDialogStub guard;
+    guard.stub.saveResult = {outPath, "Panda files (*.panda)"};
+
+    simulateDrop(dropZone, makeICDropMime(ElementType::IC, "extract_test", true, "extract_test"));
+
+    QVERIFY2(QFile::exists(outPath), "Extracted file should exist on disk");
+    QVERIFY2(QFile(outPath).size() > 0, "Extracted file should be non-empty");
+    QVERIFY(!scene->icRegistry()->hasBlob("extract_test"));
+    QVERIFY(!ic->isEmbedded());
+    QVERIFY2(ic->file().contains("extracted_output"), "IC file path should point to extracted file");
+
+    scene->undoStack()->undo();
+    QVERIFY(ic->isEmbedded());
+    QVERIFY(scene->icRegistry()->hasBlob("extract_test"));
+
+    QFile::remove(outPath);
 }
 

@@ -10,6 +10,7 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QFile>
+#include <QGraphicsSceneDragDropEvent>
 #include <QMimeData>
 #include <QRegularExpression>
 #include <QSaveFile>
@@ -3732,6 +3733,7 @@ void TestICInline::testICDropZoneDropEventSignals()
 
         QDropEvent drop(QPointF(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
         QCoreApplication::sendEvent(&embeddedZone, &drop);
+        QVERIFY(drop.isAccepted());
         QCOMPARE(embedSpy.count(), 1);
         QCOMPARE(embedSpy.at(0).at(0).toString(), QString("my_circuit.panda"));
     }
@@ -3756,6 +3758,7 @@ void TestICInline::testICDropZoneDropEventSignals()
 
         QDropEvent drop(QPointF(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
         QCoreApplication::sendEvent(&fileZone, &drop);
+        QVERIFY(drop.isAccepted());
         QCOMPARE(extractSpy.count(), 1);
         QCOMPARE(extractSpy.at(0).at(0).toString(), QString("my_embedded"));
     }
@@ -5680,5 +5683,140 @@ void TestICInline::testNestedInlineSaveAndReopen()
         }
     }
     QVERIFY2(foundCounter, "Reopened workspace should contain embedded counter IC");
+}
+
+// ---------------------------------------------------------------------------
+// Scene::dropEvent — direct drag path (separate from addItem / enter-key path)
+// ---------------------------------------------------------------------------
+
+static QByteArray makeICDragMime(ElementType type, const QString &icFileName,
+                                 bool isEmbedded, const QString &blobName = {})
+{
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    stream << QPoint(32, 32) << type << icFileName << isEmbedded
+           << (isEmbedded ? blobName : QString());
+    return data;
+}
+
+static void sendSceneDrop(Scene *scene, const QMimeData *mime)
+{
+    QGraphicsSceneDragDropEvent ev(QEvent::GraphicsSceneDrop);
+    ev.setMimeData(mime);
+    ev.setScenePos({50, 50});
+    ev.setScreenPos({50, 50});
+    ev.setButtons(Qt::LeftButton);
+    ev.setDropAction(Qt::CopyAction);
+    ev.setProposedAction(Qt::CopyAction);
+    ev.setPossibleActions(Qt::CopyAction);
+    QCoreApplication::sendEvent(scene, &ev);
+}
+
+void TestICInline::testSceneDropEventEmbeddedIC()
+{
+    // Scene::dropEvent (the real drag path) must route embedded IC MIME through
+    // ICRegistry::initEmbeddedIC, not IC::loadFile.  Uses the new MIME key.
+
+    QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
+    QVERIFY(!blob.isEmpty());
+
+    WorkSpace ws;
+    ws.scene()->setContextDir(m_fixtureDir);
+    ws.scene()->icRegistry()->setBlob("drop_event_test", blob);
+
+    const int countBefore = static_cast<int>(ws.scene()->elements().size());
+
+    QMimeData mime;
+    mime.setData("application/x-wiredpanda-dragdrop",
+                 makeICDragMime(ElementType::IC, "drop_event_test", true, "drop_event_test"));
+    sendSceneDrop(ws.scene(), &mime);
+
+    QCOMPARE(ws.scene()->elements().size(), countBefore + 1);
+
+    IC *addedIC = nullptr;
+    for (auto *elm : ws.scene()->elements()) {
+        if (elm->elementType() == ElementType::IC && elm->isEmbedded()) {
+            addedIC = static_cast<IC *>(elm);
+        }
+    }
+    QVERIFY(addedIC != nullptr);
+    QCOMPARE(addedIC->blobName(), QString("drop_event_test"));
+}
+
+void TestICInline::testSceneDropEventFileBacked()
+{
+    // Scene::dropEvent with a file-backed IC MIME must resolve the file via
+    // contextDir and create a non-embedded IC.
+
+    WorkSpace ws;
+    ws.scene()->setContextDir(m_fixtureDir);
+
+    const int countBefore = static_cast<int>(ws.scene()->elements().size());
+
+    QMimeData mime;
+    mime.setData("application/x-wiredpanda-dragdrop",
+                 makeICDragMime(ElementType::IC, "simple_and.panda", false));
+    sendSceneDrop(ws.scene(), &mime);
+
+    QCOMPARE(ws.scene()->elements().size(), countBefore + 1);
+
+    IC *addedIC = nullptr;
+    for (auto *elm : ws.scene()->elements()) {
+        if (elm->elementType() == ElementType::IC && !elm->isEmbedded()) {
+            addedIC = static_cast<IC *>(elm);
+        }
+    }
+    QVERIFY(addedIC != nullptr);
+    QVERIFY2(addedIC->file().contains("simple_and"), "File-backed IC file path should contain fixture name");
+}
+
+void TestICInline::testSceneDropEventEmbeddedMissingBlob()
+{
+    // When the blob for an embedded IC is not in the registry,
+    // Scene::dropEvent must not add any element to the scene.
+
+    WorkSpace ws;
+    ws.scene()->setContextDir(m_fixtureDir);
+
+    const int countBefore = static_cast<int>(ws.scene()->elements().size());
+
+    QMimeData mime;
+    mime.setData("application/x-wiredpanda-dragdrop",
+                 makeICDragMime(ElementType::IC, "no_such_blob", true, "no_such_blob"));
+    sendSceneDrop(ws.scene(), &mime);
+
+    QCOMPARE(ws.scene()->elements().size(), countBefore);
+}
+
+void TestICInline::testSceneDropEventLegacyMimeKey()
+{
+    // The legacy "wpanda/x-dnditemdata" MIME key must work through
+    // Scene::dropEvent just as the modern key does.
+
+    QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
+    QVERIFY(!blob.isEmpty());
+
+    WorkSpace ws;
+    ws.scene()->setContextDir(m_fixtureDir);
+    ws.scene()->icRegistry()->setBlob("legacy_drop_test", blob);
+
+    const int countBefore = static_cast<int>(ws.scene()->elements().size());
+
+    QMimeData mime;
+    mime.setData("wpanda/x-dnditemdata",
+                 makeICDragMime(ElementType::IC, "legacy_drop_test", true, "legacy_drop_test"));
+    sendSceneDrop(ws.scene(), &mime);
+
+    QCOMPARE(ws.scene()->elements().size(), countBefore + 1);
+
+    IC *addedIC = nullptr;
+    for (auto *elm : ws.scene()->elements()) {
+        if (elm->elementType() == ElementType::IC && elm->isEmbedded()) {
+            addedIC = static_cast<IC *>(elm);
+        }
+    }
+    QVERIFY(addedIC != nullptr);
+    QCOMPARE(addedIC->blobName(), QString("legacy_drop_test"));
 }
 
