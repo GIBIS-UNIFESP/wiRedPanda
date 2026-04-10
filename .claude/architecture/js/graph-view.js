@@ -1,4 +1,4 @@
-// Main architecture graph — SVG replacement for graph-setup.js
+// Main architecture graph — SVG + manual compact layout
 
 // ── Color helpers ────────────────────────────────────────────
 function hexAlpha(hex, alpha) {
@@ -17,7 +17,7 @@ const nodeSizes = {};     // id → {w, h}
 const modulePositions = {}; // mod → {x, y, w, h}
 
 for (const n of nodes) {
-  n.hasDrill = !!flowIdForNode(n.id, n.module);
+  n.hasDrill = !!flowIdForNode(n.id);
   nodeMap[n.id] = n;
   if (!moduleNodes[n.module]) moduleNodes[n.module] = [];
   moduleNodes[n.module].push(n.id);
@@ -34,7 +34,7 @@ const svgModuleEls = {};  // mod → <g> element
 // ── Create SVG canvas ────────────────────────────────────────
 const canvas = createSvgCanvas(document.getElementById('cy'));
 
-// Edge type colors (matching old Cytoscape styles)
+// Edge type colors
 const edgeColors = {
   ownership: 'rgba(63, 185, 80, 0.53)',
   element: 'rgba(218, 54, 51, 0.53)',
@@ -150,14 +150,13 @@ function renderGraph() {
     }
 
     g._rect = rect;
-    g._text = text;
     nodeLayer.appendChild(g);
 
     // Click handler
     g.addEventListener('click', (e) => { e.stopPropagation(); highlightNode(n.id); });
     g.addEventListener('dblclick', (e) => {
       e.stopPropagation();
-      const fid = flowIdForNode(n.id, n.module);
+      const fid = flowIdForNode(n.id);
       if (fid) { flowHistory = []; openFlow(fid); }
     });
   }
@@ -298,13 +297,12 @@ function runCompactLayout() {
 
   applyPositions();
 
-  // Fit to view
-  const finalRects = [];
-  for (const id of Object.keys(nodePositions)) {
+  // Fit to view (recompute bounds after stretch)
+  const fitRects = Object.keys(nodePositions).map(id => {
     const p = nodePositions[id], s = nodeSizes[id] || { w: 80, h: 24 };
-    finalRects.push({ x: p.x, y: p.y, w: s.w, h: s.h });
-  }
-  canvas.fit(computeBounds(finalRects), 60);
+    return { x: p.x, y: p.y, w: s.w, h: s.h };
+  });
+  canvas.fit(computeBounds(fitRects), 60);
 }
 
 function applyPositions() {
@@ -370,12 +368,7 @@ renderGraph();
 runCompactLayout();
 
 // ── Highlight / selection ────────────────────────────────────
-let highlightActive = false;
-let selectedNodeId = null;
-
 function highlightNode(id) {
-  highlightActive = true;
-  selectedNodeId = id;
 
   // Find neighborhood
   const neighbors = new Set([id]);
@@ -387,10 +380,7 @@ function highlightNode(id) {
   // Fade all, un-fade neighborhood
   for (const [nid, g] of Object.entries(svgNodeEls)) {
     g.style.opacity = neighbors.has(nid) ? '1' : '0.08';
-    if (nid === id) {
-      g._rect.setAttribute('stroke-width', '3');
-      g._rect.style.filter = '';
-    } else if (neighbors.has(nid)) {
+    if (nid === id || neighbors.has(nid)) {
       g._rect.setAttribute('stroke-width', '3');
     } else {
       g._rect.setAttribute('stroke-width', keyNodes.has(nid) ? '2.5' : '1.5');
@@ -418,8 +408,6 @@ function highlightNode(id) {
 }
 
 function resetHighlight() {
-  highlightActive = false;
-  selectedNodeId = null;
   for (const [nid, g] of Object.entries(svgNodeEls)) {
     g.style.opacity = '';
     g._rect.setAttribute('stroke-width', keyNodes.has(nid) ? '2.5' : '1.5');
@@ -469,7 +457,7 @@ function showInfo(id) {
     return `<div class="deps">${dir}: ${unique.map(n => `<span onclick="focusNode('${n.id}')">${n.label}</span>`).join(', ')}</div>`;
   };
 
-  const drillBtn = drillButtonHtml(id, n.module);
+  const drillBtn = drillButtonHtml(id);
 
   info.innerHTML = `
     <h3>${n.label}</h3>
@@ -604,7 +592,6 @@ document.getElementById('stats').textContent =
   `${nodes.length} classes · ${edges.length} connections · ${Object.keys(flowRegistry).length} drill-downs`;
 
 // ── Wire entry points and restore state ──────────────────────
-setupFlowEntryPoints(null); // pass null — flow-entry.js adapted for SVG
 document.getElementById('drill-back').addEventListener('click', goBack);
 restoreFromHash();
 
