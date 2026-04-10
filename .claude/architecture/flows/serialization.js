@@ -2,11 +2,11 @@
 flowRegistry['ser_ops'] = {
   title: 'Serialization \u2014 File Format',
   nodes: [
-    ['root',     'Serialization Engine',               'start', 'Versioned binary QDataStream format'],
-    ['header',   'readPandaHeader\n(Format Detection)', 'key', 'Magic 0x57504346 vs legacy string vs headerless V4.1', 'ser_header'],
-    ['serialize','serialize()\n(Write Items)',          'key', 'Temp IDs \u2192 write elements \u2192 write connections', 'ser_serialize'],
-    ['deserialize','deserialize()\n(Read Items)',      'key', 'Loop: type tag \u2192 buildElement \u2192 load \u2192 portMap', 'ser_deserialize'],
-    ['context',  'SerializationContext',                'step', 'portMap, version, contextDir, blobRegistry'],
+    ['root',     'Serialization Engine',               'start', 'Versioned binary format'],
+    ['header',   'Read File Header\n(Format Detection)', 'key', 'Magic header vs legacy string vs headerless', 'ser_header'],
+    ['serialize','Serialize\n(Write Items)',            'key', 'Assign temp IDs \u2192 write elements \u2192 write connections', 'ser_serialize'],
+    ['deserialize','Deserialize\n(Read Items)',        'key', 'Loop: type tag \u2192 build element \u2192 load \u2192 register ports', 'ser_deserialize'],
+    ['context',  'Serialization Context',              'step', 'Port map, version, working directory, blob registry'],
   ],
   edges: [
     ['root',      'header'],
@@ -18,14 +18,14 @@ flowRegistry['ser_ops'] = {
 };
 
 flowRegistry['ser_serialize'] = {
-  title: 'serialize()',
+  title: 'Serialize (Write Items)',
   nodes: [
-        ['start',   'serialize(items, stream)',              'start',    ''],
-        ['ids',     'Assign temp IDs to\nunsaved elements (id \u2264 0)','step','localId = max existing ID; increment per element'],
-        ['guard',   'qScopeGuard:\nauto-restore original IDs','step',   'IDs restored on scope exit even if exception'],
-        ['elms', 'Write all GraphicElements:\ntype tag + elementType\n+ element.save()', 'key', '', 'ge_save'],
-        ['conns',   'Write all QNEConnections:\ntype tag + conn.save()','key', ''],
-        ['done',    'return',                                'end',      'Scope guard restores temp IDs'],
+        ['start',   'Serialize items\nto stream',                  'start',    ''],
+        ['ids',     'Assign temp IDs\nto unsaved elements',        'step','Auto-incremented local IDs'],
+        ['guard',   'Set up auto-restore\nfor original IDs',       'step',   'IDs restored on scope exit even if exception'],
+        ['elms', 'Write all elements:\ntype tag + element data', 'key', '', 'ge_save'],
+        ['conns',   'Write all connections:\ntype tag + wire data', 'key', ''],
+        ['done',    'Done\n(IDs auto-restored)',                    'end',      ''],
       ],
   edges: [
         ['start', 'ids'],
@@ -37,19 +37,19 @@ flowRegistry['ser_serialize'] = {
 };
 
 flowRegistry['ser_deserialize'] = {
-  title: 'deserialize()',
+  title: 'Deserialize (Read Items)',
   nodes: [
-        ['start',   'deserialize(stream, context)',          'start',    ''],
-        ['loop',    'while !stream.atEnd()',                  'key',      ''],
-        ['read_t',  'stream >> type tag',                    'step',     ''],
-        ['d_status','stream.status()\n== Ok?',               'decision', ''],
-        ['ex_s',    'throw PANDACEPTION\n"stream error"',    'error',    ''],
-        ['d_type',  'type?',                                 'decision', ''],
-        ['elm', 'GraphicElement:\nread elmType \u2192\nbuildElement \u2192\nelm.load(stream, ctx)', 'key', '', 'ge_load'],
-        ['conn', 'QNEConnection:\nnew conn \u2192\nconn.load(stream, ctx)', 'key', '', 'ge_load'],
-        ['ex_type', 'throw PANDACEPTION\n"Invalid type"',    'error',    'Unknown type tag in stream'],
-        ['append',  'itemList.append(item)',                  'step',     ''],
-        ['done',    'return itemList',                        'end',      ''],
+        ['start',   'Deserialize items\nfrom stream',              'start',    ''],
+        ['loop',    'While stream\nhas data',                       'key',      ''],
+        ['read_t',  'Read type tag',                                'step',     ''],
+        ['d_status','Stream\nvalid?',                               'decision', ''],
+        ['ex_s',    'Error:\n"Stream error"',                      'error',    ''],
+        ['d_type',  'Item type?',                                   'decision', ''],
+        ['elm', 'Element:\nread type \u2192 build \u2192 load', 'key', '', 'ge_load'],
+        ['conn', 'Connection:\ncreate \u2192 load', 'key', '', 'ge_load'],
+        ['ex_type', 'Error:\n"Invalid type tag"',                  'error',    ''],
+        ['append',  'Add to item list',                             'step',     ''],
+        ['done',    'Return item list',                             'end',      ''],
       ],
   edges: [
         ['start',   'loop'],
@@ -57,8 +57,8 @@ flowRegistry['ser_deserialize'] = {
         ['read_t',  'd_status'],
         ['d_status','ex_s',      'No'],
         ['d_status','d_type',    'Yes'],
-        ['d_type',  'elm',       'GraphicElement'],
-        ['d_type',  'conn',      'QNEConnection'],
+        ['d_type',  'elm',       'Element'],
+        ['d_type',  'conn',      'Connection'],
         ['d_type',  'ex_type',   'unknown'],
         ['elm',     'append'],
         ['conn',    'append'],
@@ -68,26 +68,26 @@ flowRegistry['ser_deserialize'] = {
 };
 
 flowRegistry['ser_header'] = {
-  title: 'readPandaHeader',
+  title: 'Read File Header',
   nodes: [
-        ['start',   'readPandaHeader(stream)',               'start',    'Detects file format: modern, legacy string, or headerless'],
-        ['ver_qt',  'stream.setVersion(Qt_5_12)',            'step',     ''],
-        ['save_p',  'Save stream position',                  'step',     ''],
-        ['read_m',  'Read 4 bytes as quint32',               'step',     ''],
-        ['d_magic', 'Matches\nMAGIC_HEADER?',                'decision', '0x57504346 ("WPCF")'],
-        ['mod_ver', 'Read QVersionNumber\n\u2192 version',   'end',      'Modern format (V4.5+)'],
-        ['rewind1', 'Seek back to saved pos',                'step',     ''],
-        ['read_s',  'Read QString appName',                  'step',     ''],
-        ['d_empty', 'appName\nempty?',                       'decision', ''],
-        ['rewind2', 'Seek back to saved pos',                'step',     ''],
-        ['read_pt', 'Read QPointF center',                   'step',     ''],
-        ['d_null',  'center\nisNull?',                       'decision', ''],
-        ['ex_inv',  'throw PANDACEPTION\n"Invalid file format"','error', ''],
-        ['rewind3', 'Seek back to saved pos',                'step',     ''],
-        ['v41',     'version = 4.1\n(last headerless release)','end',    ''],
-        ['d_wp',    'Starts with\n"wiRedPanda"?',            'decision', ''],
-        ['parse',   'Parse version from\n"wiRedPanda X.Y" string','end', 'Legacy string header (V4.2\u20134.4)'],
-        ['ex_inv2', 'throw PANDACEPTION\n"Invalid file format"','error', ''],
+        ['start',   'Read file header',                         'start',    'Detects format: modern, legacy string, or headerless'],
+        ['ver_qt',  'Set stream version',                       'step',     ''],
+        ['save_p',  'Save stream position',                     'step',     ''],
+        ['read_m',  'Read 4-byte\nmagic number',                'step',     ''],
+        ['d_magic', 'Matches\nmagic header?',                   'decision', '"WPCF" = modern format'],
+        ['mod_ver', 'Read version number',                      'end',      'Modern format (V4.5+)'],
+        ['rewind1', 'Seek back to\nsaved position',             'step',     ''],
+        ['read_s',  'Read app name string',                     'step',     ''],
+        ['d_empty', 'String\nempty?',                           'decision', ''],
+        ['rewind2', 'Seek back to\nsaved position',             'step',     ''],
+        ['read_pt', 'Read center point',                        'step',     ''],
+        ['d_null',  'Center\nis null?',                         'decision', ''],
+        ['ex_inv',  'Error:\n"Invalid file format"',            'error', ''],
+        ['rewind3', 'Seek back to\nsaved position',             'step',     ''],
+        ['v41',     'Version = 4.1\n(last headerless release)', 'end',    ''],
+        ['d_wp',    'Starts with\n"wiRedPanda"?',               'decision', ''],
+        ['parse',   'Parse version from\nlegacy header string', 'end', 'Legacy string header (V4.2\u20134.4)'],
+        ['ex_inv2', 'Error:\n"Invalid file format"',            'error', ''],
       ],
   edges: [
         ['start',   'ver_qt'],
@@ -115,7 +115,7 @@ flowRegistry['io_mod'] = {
   nodes: [
     ['f0', 'Save Flow', 'key', '', 'io_save'],
     ['f1', 'Load Flow', 'key', '', 'io_load'],
-    ['f2', 'SerializationContext', 'key', '', 'io_context']
+    ['f2', 'Serialization Context', 'key', '', 'io_context']
   ],
   edges: [
     ['f0', 'f1'],
@@ -126,11 +126,11 @@ flowRegistry['io_mod'] = {
 flowRegistry['io_save'] = {
   title: 'Save Flow',
   nodes: [
-        ['start',    'Workspace::save(fileName)',                'start',    ''],
-        ['header', 'writePandaHeader(stream)', 'step', 'Magic: 0x57504346 ("WPCF") + version number', 'ser_header'],
-        ['dolphin',  'Write dolphin filename\n+ viewport rect', 'step',     ''],
-        ['metadata', 'Write metadata (V4.5+)',                   'step',     'Includes embedded IC blob registry'],
-        ['ser', 'Serialization::serialize\n(items, stream)', 'key', 'For each item: write type tag \u2192 element.save() or connection.save()', 'ser_serialize'],
+        ['start',    'Workspace save',                           'start',    ''],
+        ['header', 'Write file header', 'step', 'Magic "WPCF" + version number', 'ser_header'],
+        ['dolphin',  'Write waveform filename\n+ viewport rect', 'step',     ''],
+        ['metadata', 'Write metadata (V4.5+)',                    'step',     'Includes embedded IC blob registry'],
+        ['ser', 'Serialize all items', 'key', 'For each item: write type tag \u2192 element or connection data', 'ser_serialize'],
       ],
   edges: [
         ['start',    'header'],
@@ -143,12 +143,12 @@ flowRegistry['io_save'] = {
 flowRegistry['io_load'] = {
   title: 'Load Flow',
   nodes: [
-        ['start',    'Workspace::load(fileName)',                'start',    ''],
-        ['header', 'readPandaHeader(stream)', 'step', 'Detect format: magic header (modern) vs "wiRedPanda X.Y" string (legacy) vs headerless (V4.1)', 'ser_header'],
-        ['preamble', 'readPreamble()',                           'step',     'Header + dolphin filename + rect + metadata'],
-        ['blobs',    'deserializeBlobRegistry()',                 'step',     'Extract embedded IC blobs from metadata'],
-        ['deser', 'Serialization::deserialize\n(stream, context)', 'key', 'Loop: read type tag \u2192 buildElement(type) \u2192 element.load(stream, ctx). Or QNEConnection.load() \u2192 reconnect via portMap.', 'ser_deserialize'],
-        ['add',      'Add items to Scene',                       'end',     'Register IDs, restore connections, trigger simulation rebuild'],
+        ['start',    'Workspace load',                           'start',    ''],
+        ['header', 'Read file header', 'step', 'Detect format: magic header (modern) vs string (legacy) vs headerless (V4.1)', 'ser_header'],
+        ['preamble', 'Read preamble:\nheader + waveform +\nrect + metadata', 'step', ''],
+        ['blobs',    'Extract embedded IC\nblobs from metadata', 'step',     ''],
+        ['deser', 'Deserialize all items', 'key', 'Loop: read type tag \u2192 build element \u2192 load. Or load connection \u2192 reconnect via port map.', 'ser_deserialize'],
+        ['add',      'Add items to scene',                       'end',     'Register IDs, restore connections, trigger simulation rebuild'],
       ],
   edges: [
         ['start',    'header'],
@@ -160,10 +160,9 @@ flowRegistry['io_load'] = {
 };
 
 flowRegistry['io_context'] = {
-  title: 'SerializationContext',
+  title: 'Serialization Context',
   nodes: [
-        ['ctx',      'Per-load state',                           'key',     'portMap: serial ID \u2192 QNEPort*. version: file format version. contextDir: .panda file directory. blobRegistry: embedded IC blobs.'],
+        ['ctx',      'Per-load state',                           'key',     'Port map: serial ID \u2192 port. Version: file format version. Working directory. Blob registry: embedded IC blobs.'],
       ],
   edges: []
 };
-
