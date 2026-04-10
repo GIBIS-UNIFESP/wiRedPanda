@@ -54,7 +54,7 @@ flowRegistry['bwd_run'] = {
         ['block',   'Pause circuit\nsimulation',                 'step',    ''],
         ['loop',    'For each\ntimestep column',                  'key',     ''],
         ['set_in',  'Set circuit inputs\nfrom column values',    'step',    ''],
-        ['update', 'Run one sim cycle', 'step', '', 'sim_cycle'],
+        ['update', 'Run one sim cycle', 'step', '', 'sim_ops'],
         ['read_out','Read circuit outputs\n\u2192 fill output cells','step',''],
         ['next',    'Next column',                                'step',    ''],
         ['restore', 'Restore original\ninput values',             'end',     ''],
