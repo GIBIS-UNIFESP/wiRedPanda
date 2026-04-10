@@ -196,9 +196,22 @@ void Simulation::start()
 
     m_timer.start();
     if (m_scene) {
-        m_scene->mute(false);
+        m_scene->mute(m_userMuted);
     }
     qCDebug(zero) << "Simulation started.";
+}
+
+void Simulation::setUserMuted(const bool muted)
+{
+    m_userMuted = muted;
+    if (m_scene) {
+        m_scene->mute(muted);
+    }
+}
+
+bool Simulation::isUserMuted() const
+{
+    return m_userMuted;
 }
 
 void Simulation::updateWithIterativeSettling()

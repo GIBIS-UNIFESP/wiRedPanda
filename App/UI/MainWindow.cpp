@@ -1136,6 +1136,11 @@ void MainWindow::connectTab()
     m_ui->actionZoomIn->setEnabled(m_currentTab->view()->canZoomIn());
     m_ui->actionZoomOut->setEnabled(m_currentTab->view()->canZoomOut());
 
+    // Synchronise the mute button state to the newly visible tab's mute intent.
+    const bool muted = m_currentTab->simulation()->isUserMuted();
+    m_ui->actionMute->setChecked(muted);
+    m_ui->actionMute->setText(muted ? tr("Unmute") : tr("Mute"));
+
 }
 
 WorkSpace *MainWindow::currentTab() const
@@ -1644,7 +1649,7 @@ void MainWindow::on_actionMute_triggered(const bool checked)
         return;
     }
 
-    m_currentTab->scene()->mute(checked);
+    m_currentTab->simulation()->setUserMuted(checked);
     m_ui->actionMute->setText(checked ? tr("Unmute") : tr("Mute"));
 }
 
