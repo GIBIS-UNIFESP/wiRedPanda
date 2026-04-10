@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>wiRedPanda Architecture — JointJS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jointjs/3.7.7/joint.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jointjs/3.7.7/joint.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0d1117; color: #c9d1d9; font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; overflow: hidden; height: 100vh; }
+#header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: #161b22ee; backdrop-filter: blur(12px); border-bottom: 1px solid #30363d; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
+#header h1 { font-size: 15px; font-weight: 600; color: #e6edf3; white-space: nowrap; }
+#header h1 span { color: #7d8590; font-weight: 400; }
+#header em { color: #58a6ff; font-style: normal; font-size: 12px; }
+#back-btn { padding: 5px 14px; border-radius: 6px; background: #21262d; color: #c9d1d9; font-size: 12px; cursor: pointer; border: 1px solid #30363d; display: none; }
+#back-btn:hover { background: #30363d; }
+#breadcrumbs { display: flex; align-items: center; gap: 4px; font-size: 13px; }
+.crumb { color: #58a6ff; cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+.crumb:hover { background: #58a6ff22; text-decoration: underline; }
+.crumb-sep { color: #484f58; }
+.crumb-current { color: #e6edf3; font-weight: 500; }
+#paper-wrap { position: absolute; top: 48px; bottom: 0; left: 0; right: 0; overflow: hidden; }
+#info { position: fixed; bottom: 16px; right: 16px; z-index: 100; background: #161b22ee; backdrop-filter: blur(12px); border: 1px solid #30363d; border-radius: 10px; padding: 14px 18px; max-width: 340px; font-size: 13px; line-height: 1.5; display: none; }
+#info h3 { font-size: 14px; color: #e6edf3; margin-bottom: 4px; }
+#info .desc { color: #8b949e; }
+#info .drill { color: #58a6ff; font-size: 12px; margin-top: 6px; font-style: italic; }
+#hint { position: fixed; bottom: 12px; left: 16px; font-size: 11px; color: #484f58; z-index: 100; }
+#hint kbd { background: #21262d; border: 1px solid #30363d; border-radius: 3px; padding: 1px 5px; font-size: 10px; color: #8b949e; }
+.joint-paper { background: #0d1117 !important; }
+</style>
+</head>
+<body>
+<div id="header">
+  <h1>wiRedPanda <span>Architecture</span></h1> <em>JointJS</em>
+  <button id="back-btn" onclick="goBack()">&#8592; Back</button>
+  <div id="breadcrumbs"></div>
+</div>
+<div id="paper-wrap"></div>
+<div id="info"></div>
+<div id="hint">
+  <kbd>Click</kbd> inspect &nbsp;<kbd>Dbl-click</kbd> drill &nbsp;<kbd>Scroll</kbd> zoom &nbsp;
+  <kbd>Drag bg</kbd> pan &nbsp;<kbd>Drag node</kbd> move &nbsp;<kbd>Ctrl+click edge</kbd> add vertex &nbsp;<kbd>Esc</kbd> back
+</div>
+
+<script>
+/* ── Flow data ───────────────────────────────────────────────── */
+const flows = {
+  overview: {
+    title: 'wiRedPanda \u2014 Application Overview',
+    nodes: [
+      { id: 'entry', label: 'Main.cpp\nApplication Startup', type: 'start', desc: 'Program entry, Qt event loop, creates MainWindow' },
+      { id: 'mw', label: 'MainWindow\n(Tab Management)', type: 'key', desc: 'Menus, toolbars, tab bar hosting WorkSpaces', drill: 'mw_ops' },
+      { id: 'ws', label: 'Workspace\n(Per-Tab Circuit)', type: 'key', desc: 'Scene + GraphicsView + Simulation per tab' },
+      { id: 'scene', label: 'Scene\n(Circuit Canvas)', type: 'key', desc: 'QGraphicsScene: elements, wires, undo stack', drill: 'scene_ops' },
+      { id: 'sim', label: 'Simulation\n(1ms Cycle)', type: 'key', desc: 'Topological sort, 4-phase update loop', drill: 'sim_ops' },
+      { id: 'serial', label: 'Serialization\n(.panda I/O)', type: 'key', desc: 'Versioned binary QDataStream format' },
+      { id: 'elem', label: 'Elements\n(GraphicElement)', type: 'key', desc: 'Gates, memory, I/O, factory, properties' },
+      { id: 'conn', label: 'Wiring\n(Ports + Connections)', type: 'key', desc: 'QNEPort, QNEConnection, ConnectionManager' },
+      { id: 'ic', label: 'IC / Inline IC\n(Sub-Circuits)', type: 'key', desc: 'File-backed + embedded sub-circuits' },
+      { id: 'cmd', label: 'Undo/Redo\n(Commands)', type: 'key', desc: 'QUndoStack: Add, Delete, Move, Update' },
+      { id: 'bwd', label: 'BeWavedDolphin\n(Waveforms)', type: 'key', desc: 'Signal editor, simulation runner, export' },
+      { id: 'cg', label: 'Code Generation\n(Arduino / SV)', type: 'key', desc: 'Export circuits as C++ or HDL' },
+      { id: 'ui', label: 'UI Utilities\n(Theme, Palette)', type: 'key', desc: 'Theme switching, element palette, zoom' },
+    ],
+    edges: [
+      { source: 'entry', target: 'mw' },
+      { source: 'mw', target: 'ws' },
+      { source: 'ws', target: 'scene' },
+      { source: 'ws', target: 'sim' },
+      { source: 'scene', target: 'elem' },
+      { source: 'scene', target: 'conn' },
+      { source: 'scene', target: 'cmd' },
+      { source: 'elem', target: 'ic' },
+      { source: 'ws', target: 'serial' },
+      { source: 'mw', target: 'bwd' },
+      { source: 'mw', target: 'cg' },
+      { source: 'mw', target: 'ui' },
+    ]
+  },
+  sim_ops: {
+    title: 'Simulation Engine',
+    nodes: [
+      { id: 'start', label: 'Simulation\nConstructor', type: 'start', desc: 'Creates QTimer with 1ms interval' },
+      { id: 'timer', label: 'QTimer fires\n(every 1ms)', type: 'step', desc: 'Fixed simulation step' },
+      { id: 'topo', label: 'Topological Sort\n(if dirty)', type: 'decision', desc: 'Re-sort elements when circuit changes' },
+      { id: 'phase1', label: 'Phase 1:\nupdateOutputs()', type: 'step', desc: 'Update input element outputs' },
+      { id: 'phase2', label: 'Phase 2:\nupdateLogic()', type: 'step', desc: 'Update all logic elements' },
+      { id: 'phase3', label: 'Phase 3:\nupdatePort()', type: 'step', desc: 'Propagate signals through connections' },
+      { id: 'phase4', label: 'Phase 4:\nupdateOutputs()', type: 'step', desc: 'Update output element displays' },
+      { id: 'settle', label: 'Settle check\n(feedback loops)', type: 'decision', desc: 'Repeat if feedback signals changed' },
+      { id: 'done', label: 'Cycle\nComplete', type: 'end', desc: 'Wait for next timer tick' },
+    ],
+    edges: [
+      { source: 'start', target: 'timer' },
+      { source: 'timer', target: 'topo' },
+      { source: 'topo', target: 'phase1', label: 'Sorted' },
+      { source: 'phase1', target: 'phase2' },
+      { source: 'phase2', target: 'phase3' },
+      { source: 'phase3', target: 'phase4' },
+      { source: 'phase4', target: 'settle' },
+      { source: 'settle', target: 'phase1', label: 'Changed' },
+      { source: 'settle', target: 'done', label: 'Stable' },
+    ]
+  },
+  mw_ops: {
+    title: 'MainWindow Operations',
+    nodes: [
+      { id: 'init', label: 'MainWindow\nconstructor', type: 'start', desc: 'Sets up UI, menus, toolbars' },
+      { id: 'ui', label: 'Build UI\n(MainWindowUI)', type: 'step', desc: 'Creates layout, menu bar, status bar' },
+      { id: 'workspace', label: 'Create first\nWorkspace tab', type: 'step', desc: 'Empty circuit ready to edit' },
+      { id: 'connect', label: 'Connect signals\n& slots', type: 'step', desc: 'Wire up menu actions, toolbar buttons' },
+      { id: 'open', label: 'Open file', type: 'key', desc: 'File > Open or drag & drop' },
+      { id: 'save', label: 'Save file', type: 'key', desc: 'File > Save / Save As' },
+      { id: 'newtab', label: 'New tab', type: 'key', desc: 'Creates a new Workspace' },
+      { id: 'export', label: 'Export', type: 'key', desc: 'PNG, PDF, Arduino, SystemVerilog' },
+    ],
+    edges: [
+      { source: 'init', target: 'ui' },
+      { source: 'ui', target: 'workspace' },
+      { source: 'workspace', target: 'connect' },
+      { source: 'connect', target: 'open' },
+      { source: 'connect', target: 'save' },
+      { source: 'connect', target: 'newtab' },
+      { source: 'connect', target: 'export' },
+    ]
+  },
+  scene_ops: {
+    title: 'Scene Operations',
+    nodes: [
+      { id: 'scene', label: 'Scene\n(QGraphicsScene)', type: 'start', desc: 'Owns all circuit elements' },
+      { id: 'add', label: 'Add Element\n(drop/paste)', type: 'key', desc: 'Drag from palette or paste from clipboard' },
+      { id: 'wire', label: 'Create Wire\n(port click)', type: 'key', desc: 'Click port, drag to target port' },
+      { id: 'select', label: 'Selection\n(click/rubber)', type: 'key', desc: 'Click or rubber-band select' },
+      { id: 'undo', label: 'Undo/Redo\n(Ctrl+Z)', type: 'key', desc: 'QUndoStack command pattern' },
+      { id: 'del', label: 'Delete\n(Del key)', type: 'key', desc: 'Remove selected elements and wires' },
+      { id: 'sim', label: 'Simulation\nUpdate', type: 'step', desc: 'Scene drives simulation after changes' },
+    ],
+    edges: [
+      { source: 'scene', target: 'add' },
+      { source: 'scene', target: 'wire' },
+      { source: 'scene', target: 'select' },
+      { source: 'scene', target: 'undo' },
+      { source: 'scene', target: 'del' },
+      { source: 'add', target: 'sim' },
+      { source: 'wire', target: 'sim' },
+      { source: 'del', target: 'sim' },
+    ]
+  },
+};
+
+/* ── State ────────────────────────────────────────────────────── */
+let currentFlowId = null, flowHistory = [], graph, paper;
+
+/* ── Tree layout (BFS) ────────────────────────────────────────── */
+function treeLayout(flow) {
+  const adj = {}, indeg = {};
+  flow.nodes.forEach(n => { adj[n.id] = []; indeg[n.id] = 0; });
+  flow.edges.forEach(e => { adj[e.source].push(e.target); indeg[e.target]++; });
+  const roots = flow.nodes.filter(n => indeg[n.id] === 0).map(n => n.id);
+  if (!roots.length) roots.push(flow.nodes[0].id);
+  const level = {}, visited = new Set();
+  const queue = roots.map(id => [id, 0]);
+  while (queue.length) {
+    const [id, lvl] = queue.shift();
+    if (visited.has(id)) continue;
+    visited.add(id); level[id] = lvl;
+    (adj[id] || []).forEach(t => { if (!visited.has(t)) queue.push([t, lvl + 1]); });
+  }
+  flow.nodes.forEach(n => { if (level[n.id] === undefined) level[n.id] = 0; });
+  const byLevel = {};
+  flow.nodes.forEach(n => { const l = level[n.id]; (byLevel[l] = byLevel[l] || []).push(n); });
+  const positions = {};
+  const gapX = 200, gapY = 100;
+  Object.entries(byLevel).forEach(([l, nodes]) => {
+    const totalW = nodes.length * gapX;
+    nodes.forEach((n, i) => {
+      positions[n.id] = { x: i * gapX - totalW / 2 + gapX / 2 + 400, y: parseInt(l) * gapY + 60 };
+    });
+  });
+  return positions;
+}
+
+/* ── Node sizing ──────────────────────────────────────────────── */
+function nodeSize(n) {
+  const lines = n.label.split('\n');
+  const w = Math.max(...lines.map(l => l.length * 8.5)) + 36;
+  const h = lines.length * 18 + 22;
+  return { w: Math.max(w, 100), h: Math.max(h, 44) };
+}
+
+/* ── Render a flow ────────────────────────────────────────────── */
+function renderFlow(flowId) {
+  const flow = flows[flowId];
+  if (!flow) return;
+  graph.clear();
+  const positions = treeLayout(flow);
+  const cells = {};
+
+  // Create nodes
+  flow.nodes.forEach(n => {
+    const pos = positions[n.id];
+    const sz = nodeSize(n);
+    const isDiamond = n.type === 'decision';
+    let cell;
+
+    if (isDiamond) {
+      cell = new joint.shapes.standard.Polygon({
+        position: { x: pos.x - sz.w / 2, y: pos.y - sz.h / 2 },
+        size: { width: sz.w + 30, height: sz.h + 30 },
+        attrs: {
+          body: { refPoints: '0.5,0 1,0.5 0.5,1 0,0.5', fill: '#0d1117', stroke: '#a371f7', strokeWidth: 2.5 },
+          label: { text: n.label, fill: '#c9d1d9', fontSize: 11, fontFamily: '-apple-system, sans-serif', textWrap: { width: sz.w - 20 } }
+        }
+      });
+    } else {
+      let fill = '#161b22', stroke = '#30363d', fontColor = '#c9d1d9', sw = 2;
+      if (n.type === 'start') { fill = '#238636'; stroke = '#2ea043'; fontColor = '#fff'; }
+      if (n.type === 'end') { stroke = '#3fb950'; sw = 2.5; }
+      if (n.drill) { stroke = '#d29922'; sw = 2.5; }
+      cell = new joint.shapes.standard.Rectangle({
+        position: { x: pos.x - sz.w / 2, y: pos.y - sz.h / 2 },
+        size: { width: sz.w, height: sz.h },
+        attrs: {
+          body: { fill: fill, stroke: stroke, strokeWidth: sw, rx: 8, ry: 8 },
+          label: { text: n.label, fill: fontColor, fontSize: 12, fontFamily: '-apple-system, sans-serif' }
+        }
+      });
+    }
+    cell.set('nodeData', n);
+    cell.set('drill', n.drill || null);
+    graph.addCell(cell);
+    cells[n.id] = cell;
+  });
+
+  // Create edges
+  flow.edges.forEach((e, i) => {
+    const src = cells[e.source], tgt = cells[e.target];
+    if (!src || !tgt) return;
+    let edgeColor = '#484f58';
+    if (e.label === 'Changed' || e.label === 'Yes' || e.label === 'Sorted') edgeColor = 'rgba(63,185,80,0.7)';
+    if (e.label === 'No' || e.label === 'Stable') edgeColor = 'rgba(218,54,51,0.7)';
+    const link = new joint.shapes.standard.Link({
+      source: { id: src.id },
+      target: { id: tgt.id },
+      router: { name: 'orthogonal' },
+      connector: { name: 'rounded' },
+      attrs: {
+        line: {
+          stroke: edgeColor, strokeWidth: 1.5,
+          targetMarker: { type: 'path', d: 'M 10 -5 0 0 10 5 Z', fill: edgeColor, stroke: edgeColor }
+        }
+      }
+    });
+    // Add vertices for back-edges (feedback loops) to route them around
+    const srcLevel = positions[e.source] ? positions[e.source].y : 0;
+    const tgtLevel = positions[e.target] ? positions[e.target].y : 0;
+    if (tgtLevel < srcLevel) {
+      const rightX = Math.max(positions[e.source].x, positions[e.target].x) + 140;
+      link.vertices([
+        { x: rightX, y: positions[e.source].y },
+        { x: rightX, y: positions[e.target].y }
+      ]);
+    }
+    if (e.label) {
+      link.appendLabel({
+        attrs: {
+          text: { text: e.label, fill: edgeColor === '#484f58' ? '#7d8590' : edgeColor, fontSize: 11, fontFamily: '-apple-system, sans-serif' },
+          rect: { fill: '#0d1117', fillOpacity: 0.9, rx: 3, ry: 3 }
+        },
+        position: { distance: 0.5, offset: 0 }
+      });
+    }
+    graph.addCell(link);
+  });
+
+  paper.scaleContentToFit({ padding: 60, maxScale: 1.5 });
+}
+
+/* ── Navigation ───────────────────────────────────────────────── */
+function openFlow(id) {
+  currentFlowId = id;
+  renderFlow(id);
+  updateBreadcrumbs();
+}
+
+function drillInto(id) {
+  if (!flows[id]) return;
+  flowHistory.push({ id: currentFlowId, title: flows[currentFlowId].title });
+  openFlow(id);
+}
+
+function goBack() {
+  if (flowHistory.length) {
+    const prev = flowHistory.pop();
+    openFlow(prev.id);
+  }
+}
+
+function updateBreadcrumbs() {
+  const bc = document.getElementById('breadcrumbs');
+  const btn = document.getElementById('back-btn');
+  btn.style.display = flowHistory.length ? 'block' : 'none';
+  let html = '';
+  flowHistory.forEach((h, i) => {
+    html += '<span class="crumb" onclick="goToBreadcrumb(' + i + ')">' + h.title + '</span>';
+    html += '<span class="crumb-sep">\u203a</span>';
+  });
+  html += '<span class="crumb-current">' + flows[currentFlowId].title + '</span>';
+  bc.innerHTML = html;
+}
+
+function goToBreadcrumb(i) {
+  const target = flowHistory[i];
+  flowHistory = flowHistory.slice(0, i);
+  openFlow(target.id);
+}
+
+/* ── Info panel ───────────────────────────────────────────────── */
+function showInfo(cell) {
+  const n = cell.get('nodeData');
+  if (!n) return;
+  const info = document.getElementById('info');
+  let html = '<h3>' + n.label.replace(/\n/g, ' ') + '</h3>';
+  html += '<div class="desc">' + (n.desc || '') + '</div>';
+  if (n.drill) html += '<div class="drill">Double-click to drill into \u2192 ' + flows[n.drill].title + '</div>';
+  info.innerHTML = html;
+  info.style.display = 'block';
+}
+
+/* ── Init ─────────────────────────────────────────────────────── */
+(function init() {
+  graph = new joint.dia.Graph();
+  const wrap = document.getElementById('paper-wrap');
+  paper = new joint.dia.Paper({
+    el: wrap,
+    model: graph,
+    width: wrap.clientWidth,
+    height: wrap.clientHeight,
+    background: { color: '#0d1117' },
+    gridSize: 1,
+    interactive: function(cellView) {
+      if (cellView.model.isLink()) {
+        return { vertexAdd: true, vertexMove: true, vertexRemove: true, labelMove: false };
+      }
+      return true;
+    },
+    defaultRouter: { name: 'orthogonal' },
+    defaultConnector: { name: 'rounded' },
+  });
+
+  // Zoom (mouse wheel)
+  wrap.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    var s = paper.scale().sx;
+    var delta = e.deltaY > 0 ? -0.08 : 0.08;
+    var ns = Math.max(0.15, Math.min(3, s + delta));
+    paper.scale(ns, ns);
+  }, { passive: false });
+
+  // Pan (drag background)
+  var panning = false, px, py;
+  paper.on('blank:pointerdown', function(evt) {
+    panning = true; px = evt.clientX; py = evt.clientY;
+  });
+  document.addEventListener('mousemove', function(e) {
+    if (!panning) return;
+    var t = paper.translate();
+    paper.translate(t.tx + e.clientX - px, t.ty + e.clientY - py);
+    px = e.clientX; py = e.clientY;
+  });
+  document.addEventListener('mouseup', function() { panning = false; });
+
+  // Click node → info
+  paper.on('element:pointerclick', function(view) { showInfo(view.model); });
+
+  // Double-click node → drill
+  paper.on('element:pointerdblclick', function(view) {
+    var drill = view.model.get('drill');
+    if (drill && flows[drill]) drillInto(drill);
+  });
+
+  // Click background → dismiss info
+  paper.on('blank:pointerclick', function() {
+    document.getElementById('info').style.display = 'none';
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { if (flowHistory.length) goBack(); else document.getElementById('info').style.display = 'none'; }
+  });
+
+  // Resize
+  window.addEventListener('resize', function() {
+    paper.setDimensions(wrap.clientWidth, wrap.clientHeight);
+  });
+
+  openFlow('overview');
+})();
+</script>
+</body>
+</html>
