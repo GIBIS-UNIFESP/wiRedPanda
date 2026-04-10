@@ -81,8 +81,10 @@ void ICDropZone::dropEvent(QDropEvent *event)
 
     if (m_section == Section::Embedded && !isEmbedded) {
         emit embedByFileRequested(icFileName);
+        event->acceptProposedAction();
     } else if (m_section == Section::FileBased && isEmbedded) {
         emit extractByBlobNameRequested(blobName);
+        event->acceptProposedAction();
     }
 }
 

@@ -215,6 +215,13 @@ private slots:
     void testInlineSaveConvertsFileBackedToEmbedded();
     void testNestedInlineSaveAndReopen();
 
+    // --- Scene::dropEvent path (distinct from addItem / enter-key path) ---
+
+    void testSceneDropEventEmbeddedIC();
+    void testSceneDropEventFileBacked();
+    void testSceneDropEventEmbeddedMissingBlob();
+    void testSceneDropEventLegacyMimeKey();
+
 private:
     QString fixturesSrcDir() const;
     bool copyFixture(const QString &name);
