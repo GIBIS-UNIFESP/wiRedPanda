@@ -77,7 +77,7 @@ flowRegistry['scene_delete'] = {
         ['r_emp',  'Abort',                                'error',    ''],
         ['clear',  'Clear selection',                       'step',     ''],
         ['cmd',    'Push delete command\nto undo stack',    'key',      '', 'cmd_delete'],
-        ['restart', 'Restart simulation', 'end', 'Rebuild sim graph without deleted elements', 'sim_cycle'],
+        ['restart', 'Restart simulation', 'end', 'Rebuild sim graph without deleted elements', 'sim_ops'],
       ],
   edges: [
         ['start',  'sel'],
