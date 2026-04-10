@@ -1898,8 +1898,8 @@ void MainWindow::embedICByFile(const QString &fileName)
 
     auto *reg = scene->icRegistry();
     if (reg->embedICsByFile(absolutePath, fileBytes, blobName) == 0) {
-        // No existing instances — create a new embedded IC.
-        reg->createEmbeddedIC(blobName, fileBytes, QFileInfo(absolutePath).absolutePath());
+        // No existing instances — register the blob only; don't add to scene.
+        scene->receiveCommand(new RegisterBlobCommand(blobName, fileBytes, scene));
     }
 
     m_palette->updateEmbeddedICList(scene);
