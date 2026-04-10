@@ -27,16 +27,14 @@ flowRegistry['ge_ops'] = {
 flowRegistry['ge_save'] = {
   title: 'Save Element',
   nodes: [
-        ['start',  'Save element\nto stream',                  'start',   ''],
-        ['type',   'Write element type',                        'step',    ''],
+        ['start',  'Save element\nto stream',                  'start',   'Type tag written by Serialization layer, not here'],
         ['pos',    'Write position,\nrotation, flip',           'step',    ''],
         ['ports',  'Write input/output\nport counts',           'step',    ''],
         ['props',  'Write element-specific\nproperties',        'key',     'Label, color, frequency, delay, trigger, appearances'],
         ['pids',   'Write port serial IDs\nfor reconnection',   'end',    '(elementId << 16) | portIndex'],
       ],
   edges: [
-        ['start', 'type'],
-        ['type',  'pos'],
+        ['start', 'pos'],
         ['pos',   'ports'],
         ['ports', 'props'],
         ['props', 'pids'],
@@ -82,7 +80,7 @@ flowRegistry['ge_ports'] = {
   nodes: [
         ['start',   'Set input or\noutput size',                'start', ''],
         ['d_range', 'Size within\nmin..max?',                   'decision',''],
-        ['r_range', 'Abort\n(out of range)',                    'error',   ''],
+        ['r_range', 'Silently ignored\n(out of range)',              'end',   ''],
         ['d_grow',  'Growing or\nshrinking?',                   'decision',''],
         ['add',     'Add ports\nin loop',                       'step', ''],
         ['shrink',  'Remove excess ports',                      'step', ''],
