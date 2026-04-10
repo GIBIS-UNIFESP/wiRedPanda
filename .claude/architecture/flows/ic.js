@@ -41,7 +41,7 @@ flowRegistry['ic_open_sub'] = {
         ['create',      'Create new tab',                               'step',     ''],
         ['load', 'Load from blob', 'key', 'Deserializes blob into new inline IC scene', 'ws_load_blob'],
         ['resize',      'Resize scene',                                 'step',     'Tighten scene rect for viewport'],
-        ['ui_cfg', 'Configure inline tab UI:\nset title, hide\nIC management buttons', 'step', '', 'icreg_self_contained'],
+        ['ui_cfg', 'Configure inline tab UI:\nset title, hide\nIC management buttons', 'step', ''],
         ['connect', 'Connect save signal\nto parent workspace', 'end', 'Ctrl+S in child tab propagates blob updates back to parent', 'ws_child_blob'],
       ],
   edges: [

@@ -33,7 +33,7 @@ const nodeFlowMap = {
   'elem_metadata': 'element_hierarchy',
   'elem_label': 'ge_ops',
   'prop_desc': 'editor_apply',
-  'serial_ctx': 'io_context',
+  'serial_ctx': 'ser_deserialize',
   'file_utils': 'ser_ops',
   'recent_files': 'mw_ops',
   'version_info': 'ser_header',

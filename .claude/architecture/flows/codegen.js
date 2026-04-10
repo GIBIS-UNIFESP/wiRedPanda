@@ -57,24 +57,3 @@ flowRegistry['cg_verilog'] = {
       ]
 };
 
-flowRegistry['cg_pipeline'] = {
-  title: 'Export Pipeline',
-  nodes: [
-        ['start',    'MainWindow \u2192\nExport menu',          'start',    ''],
-        ['arduino',  'Arduino Code Generator',                   'step',     'Maps circuit to Arduino digital I/O. Generates setup() + loop().'],
-        ['verilog',  'SystemVerilog Generator',                  'step',     'Maps circuit to module with wire/reg. IC sub-circuits become sub-module instantiations.'],
-        ['collect',  '1. Collect elements\nfrom scene',          'step',     'Sort by topology'],
-        ['wireless', '2. Resolve wireless\nchannels',            'step',     'Map Rx labels to Tx port signals'],
-        ['map',      '3. Map element types\nto target language', 'key',     'AND \u2192 & operator, DFlipFlop \u2192 sequential block, IC \u2192 sub-module'],
-        ['write',    '4. Write to\nfile / clipboard',            'end',      ''],
-      ],
-  edges: [
-        ['start',    'arduino'],
-        ['start',    'verilog'],
-        ['arduino',  'collect'],
-        ['verilog',  'collect'],
-        ['collect',  'wireless'],
-        ['wireless', 'map'],
-        ['map',      'write'],
-      ]
-};

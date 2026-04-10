@@ -206,29 +206,6 @@ flowRegistry['element_hierarchy'] = {
       ]
 };
 
-flowRegistry['element_sim_iface'] = {
-  title: 'Simulation Interface',
-  nodes: [
-        ['data',     'Direct Simulation Data',                   'start',    'Input connections, input values, output values, predecessor linking'],
-        ['snap',     'Snapshot inputs\nfrom predecessors',       'step',     ''],
-        ['compute',  'Compute element-specific\nlogic (AND, FF, ...)', 'key', ''],
-        ['output',   'Set output values\nand change flag',       'end',      ''],
-      ],
-  edges: [
-        ['data',    'snap'],
-        ['snap',    'compute'],
-        ['compute', 'output'],
-      ]
-};
-
-flowRegistry['element_serial'] = {
-  title: 'Serialization',
-  nodes: [
-        ['save',     'Save to stream',                          'start',    'Type \u2192 position \u2192 rotation \u2192 ports \u2192 label \u2192 trigger \u2192 appearances'],
-        ['load',     'Load from stream',                        'key',      'Version-aware: new format vs legacy. Rebuilds ports from stream, clamps to constraints.'],
-      ],
-  edges: []
-};
 
 flowRegistry['components_registry'] = {
   title: 'Component Registry',

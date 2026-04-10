@@ -434,7 +434,7 @@ flowRegistry['mw_open_bwd'] = {
         ['r_tab',   'Abort',                                        'error',  ''],
         ['create', 'Create waveform editor\nlinked to circuit', 'key', '', 'bwd_ops'],
         ['wave',    'Load or create\nwaveform data',                'step',   'Loads existing .dolphin file if available, or creates blank waveform'],
-        ['show', 'Show editor window', 'end', '', 'bwd_ops'],
+        ['show', 'Show editor window',                        'end',   ''],
       ],
   edges: [
         ['start',  'd_tab'],
