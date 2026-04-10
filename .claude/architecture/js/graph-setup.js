@@ -91,6 +91,7 @@ const cy = cytoscape({
 // ── Manual compact layout — no fcose, no empty space ──────────
 
 function runCompactLayout() {
+  const container = document.getElementById('cy');
   const cellW = 105;
   const cellH = 34;
   const modGap = 18;
@@ -143,6 +144,19 @@ function runCompactLayout() {
         x: mp.x + col * cellW + cellW / 2,
         y: mp.y + row * cellH + cellH / 2 + 16,
       });
+    });
+  }
+
+  // Stretch spacing to fill viewport (node sizes unchanged)
+  const bb = cy.elements().boundingBox();
+  const viewAspect = (container ? container.clientHeight : 800) / (container ? container.clientWidth : 1100);
+  const layoutAspect = bb.h / bb.w;
+  if (layoutAspect < viewAspect) {
+    const stretch = viewAspect / layoutAspect;
+    const centerY = (bb.y1 + bb.y2) / 2;
+    cy.nodes('.classNode').forEach(n => {
+      const pos = n.position();
+      n.position({ x: pos.x, y: centerY + (pos.y - centerY) * stretch });
     });
   }
 
@@ -294,3 +308,10 @@ setupFlowEntryPoints(cy);
 document.getElementById('drill-back').addEventListener('click', goBack);
 
 restoreFromHash();
+
+// ── Responsive relayout on resize ───────────────────────────
+let _resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(_resizeTimer);
+  _resizeTimer = setTimeout(() => { runCompactLayout(); }, 200);
+});
