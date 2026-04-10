@@ -19,6 +19,85 @@ Replace Cytoscape.js with a custom SVG renderer. 1:1 functional replacement — 
 |---------|------|-----|
 | dagre@0.8.5 | ~30KB | Layout algorithm for flow views. No replacement needed. |
 
+## Coverage Analysis (2026-04-09)
+
+Instrumented the unminified `cytoscape.umd.js` with a method-level probe. After exercising all features (click, double-click, search, filter, zoom, pan, drill down, inline expand, collapse, breadcrumbs, keyboard shortcuts), ran `coverageReport()`.
+
+### Summary
+
+- **174 methods called** out of hundreds available in Cytoscape
+- Top 10 methods by call count are all internal machinery (style cascade, compound bounds, dirty checks) — millions of calls each
+- Only **~35 methods are called from our code** — the other 139 are Cytoscape calling itself internally
+
+### Methods Called From Our Code
+
+**graph-setup.js (main graph):**
+
+| Method | Purpose |
+|--------|---------|
+| `cytoscape()` | Constructor |
+| `cy.getElementById()` | Find node by ID |
+| `cy.nodes()`, `cy.edges()`, `cy.elements()`, `cy.$()` | Query elements |
+| `cy.on()` | Bind click/double-click events |
+| `cy.fit()`, `cy.animate()` | Viewport control |
+| `cy.ready()` | Init callback |
+| `collection.position()` | Get/set node positions |
+| `collection.data()` | Read node data (label, desc, module) |
+| `collection.addClass()`, `collection.removeClass()` | Visual state (faded, highlighted, search-match) |
+| `collection.style()` | Show/hide modules (display: none/element) |
+| `collection.filter()`, `collection.visible()` | Filter nodes |
+| `collection.children()`, `collection.connectedEdges()` | Module children, connected edges |
+| `collection.neighborhood()`, `collection.incomers()`, `collection.outgoers()` | Dependency traversal |
+| `collection.id()`, `collection.parent()` | Identity |
+| `collection.boundingBox()` | Measurement for viewport stretch |
+| `collection.sort()` | Sort by edge count |
+
+**flow-renderer.js (flow view):**
+
+| Method | Purpose |
+|--------|---------|
+| `cytoscape()` | Constructor with dagre layout |
+| `cy.add()` | Add inline expansion elements |
+| `collection.remove()` | Remove elements on collapse |
+| `collection.layout()` | Run dagre on sub-flow subset |
+| `collection.animate()` | Shift nodes during expand/collapse |
+| `collection.merge()` | Build collection from IDs |
+| `collection.isNode()` | Type check during expansion |
+| `collection.not()` | Set difference for fade effect |
+| `collection.map()` | Iteration |
+| `cy.destroy()` | Cleanup on flow change |
+
+### Internal Methods (called by Cytoscape, not by us)
+
+The top 20 by call count — all internal overhead:
+
+| Method | Calls | Purpose |
+|--------|-------|---------|
+| `collection.cy` | 7,072,223 | Internal: get parent graph reference |
+| `cy.styleEnabled` | 6,571,366 | Internal: check if styles active |
+| `collection.cleanStyle` | 3,022,910 | Internal: style cascade |
+| `collection.pstyle` | 2,997,030 | Internal: parsed style lookup |
+| `collection.group` | 1,543,535 | Internal: node vs edge check |
+| `cy.style` | 1,510,609 | Internal: style object access |
+| `collection.isNode` | 950,035 | Internal: type check (also used by us, 51 times) |
+| `collection.isParent` | 632,179 | Internal: compound node check |
+| `collection.isEdge` | 565,925 | Internal: type check |
+| `cy.hasCompoundNodes` | 515,648 | Internal: compound mode check |
+| `collection.updateCompoundBounds` | 450,748 | Internal: recalc module boundaries |
+| `collection.position` | 402,131 | Internal: position reads (also used by us) |
+| `collection.id` | 370,588 | Internal: ID reads (also used by us) |
+| `cy.batching` | 365,051 | Internal: batch mode check |
+| `collection.target` | 326,610 | Internal: edge target resolution |
+| `collection.source` | 282,481 | Internal: edge source resolution |
+| `collection.padding` | 259,620 | Internal: compound padding calc |
+| `collection.spawn` | 258,069 | Internal: create sub-collections |
+| `collection.hasClass` | 253,481 | Internal: class checks for styling |
+| `collection.filter` | 241,674 | Internal: style selector matching |
+
+### Conclusion
+
+We call ~35 methods. Cytoscape runs 174 methods and makes ~30 million internal calls to service those 35. The style cascade alone (`cleanStyle` + `pstyle` + `styleEnabled`) accounts for 12.5 million calls — all to maintain a CSS-like style system we could replace with direct SVG attribute setting.
+
 ## New Files
 
 ### `js/svg-engine.js` (~120 lines)
