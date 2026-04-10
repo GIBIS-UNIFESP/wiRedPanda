@@ -38,7 +38,7 @@ static constexpr int    kMaxScenePixels     = 4000;  ///<  Scene size limit befo
 static constexpr double kZoomStep           = 1.25;  ///<  Multiplicative factor per zoom step.
 
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)
-    : QMainWindow(parent)
+    : QMainWindow(nullptr)
     , m_ui(std::make_unique<BewavedDolphinUi>())
     , m_mainWindow(parent)
     , m_externalScene(scene)
