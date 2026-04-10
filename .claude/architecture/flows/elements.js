@@ -99,17 +99,6 @@ flowRegistry['ge_ports'] = {
       ]
 };
 
-flowRegistry['ef_ops'] = {
-  title: 'ElementFactory \u2014 Element Creation',
-  nodes: [
-    ['f0', 'Build Element', 'key', '', 'ef_build'],
-    ['f1', 'Static Registration', 'key', '', 'ef_registration']
-  ],
-  edges: [
-    ['f0', 'f1']
-  ]
-};
-
 flowRegistry['ef_build'] = {
   title: 'Build Element',
   nodes: [
@@ -146,17 +135,6 @@ flowRegistry['ef_registration'] = {
         ['info',  'reg'],
         ['reg',   'ready'],
       ]
-};
-
-flowRegistry['editor_ops'] = {
-  title: 'ElementEditor \u2014 Property Panel',
-  nodes: [
-    ['f0', 'Property Editing', 'key', '', 'editor_apply'],
-    ['f1', 'Selection Changed', 'key', '', 'editor_selection']
-  ],
-  edges: [
-    ['f0', 'f1']
-  ]
 };
 
 flowRegistry['editor_apply'] = {
@@ -201,19 +179,6 @@ flowRegistry['editor_selection'] = {
         ['merge',  'load'],
         ['load',   'show'],
       ]
-};
-
-flowRegistry['element_mod'] = {
-  title: 'Element System',
-  nodes: [
-    ['f0', 'Factory & Hierarchy', 'key', '', 'element_hierarchy'],
-    ['f1', 'Simulation Interface', 'key', '', 'element_sim_iface'],
-    ['f2', 'Serialization', 'key', '', 'element_serial']
-  ],
-  edges: [
-    ['f0', 'f1'],
-    ['f1', 'f2']
-  ]
 };
 
 flowRegistry['element_hierarchy'] = {

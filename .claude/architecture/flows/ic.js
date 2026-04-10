@@ -137,19 +137,6 @@ flowRegistry['ic_extract'] = {
       ]
 };
 
-flowRegistry['icreg_ops'] = {
-  title: 'ICRegistry \u2014 Blob Management Operations',
-  nodes: [
-    ['f0', 'Embed ICs by File', 'key', '', 'icreg_embed'],
-    ['f1', 'Extract to File', 'key', '', 'icreg_extract'],
-    ['f2', 'Make Self-Contained', 'key', '', 'icreg_self_contained']
-  ],
-  edges: [
-    ['f0', 'f1'],
-    ['f1', 'f2']
-  ]
-};
-
 flowRegistry['icreg_embed'] = {
   title: 'Embed ICs by File',
   nodes: [
