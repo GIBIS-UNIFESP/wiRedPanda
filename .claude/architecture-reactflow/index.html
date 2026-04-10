@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>wiRedPanda Architecture — React Flow</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xyflow/react@12/dist/style.css">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0d1117; color: #c9d1d9; font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; height: 100vh; overflow: hidden; }
+
+/* React Flow dark theme overrides */
+.react-flow { background: #0d1117 !important; }
+.react-flow__attribution { display: none; }
+.react-flow__controls { background: #161b22; border: 1px solid #30363d; border-radius: 8px; }
+.react-flow__controls-button { background: #161b22; border-bottom: 1px solid #30363d; fill: #c9d1d9; }
+.react-flow__controls-button:hover { background: #21262d; }
+.react-flow__minimap { background: #161b22 !important; border: 1px solid #30363d; border-radius: 8px; }
+
+/* Custom nodes */
+.rf-node { padding: 10px 16px; border-radius: 8px; font-size: 12px; text-align: center; white-space: pre-line; line-height: 1.4; min-width: 100px; border: 2px solid #30363d; background: #161b22; color: #c9d1d9; cursor: pointer; }
+.rf-node.start { background: #238636; border-color: #2ea043; color: #fff; font-weight: 600; }
+.rf-node.key { border-color: #30363d; }
+.rf-node.drillable { border-color: #d29922; border-width: 2.5px; }
+.rf-node.decision { background: #0d1117; border-color: #a371f7; border-width: 2.5px; transform: rotate(45deg); padding: 18px; }
+.rf-node.decision .label { transform: rotate(-45deg); display: block; font-size: 10px; }
+.rf-node.end { border-color: #3fb950; border-width: 2.5px; }
+
+/* Header */
+#header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: #161b22ee; backdrop-filter: blur(12px); border-bottom: 1px solid #30363d; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
+#header h1 { font-size: 15px; font-weight: 600; color: #e6edf3; white-space: nowrap; }
+#header h1 span { color: #7d8590; font-weight: 400; }
+#header em { color: #58a6ff; font-style: normal; font-size: 12px; }
+#back-btn { padding: 5px 14px; border-radius: 6px; background: #21262d; color: #c9d1d9; font-size: 12px; cursor: pointer; border: 1px solid #30363d; display: none; }
+#back-btn:hover { background: #30363d; }
+#breadcrumbs { display: flex; align-items: center; gap: 4px; font-size: 13px; }
+.crumb { color: #58a6ff; cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+.crumb:hover { background: #58a6ff22; text-decoration: underline; }
+.crumb-sep { color: #484f58; }
+.crumb-current { color: #e6edf3; font-weight: 500; }
+
+/* Info panel */
+#info-panel { position: fixed; bottom: 16px; right: 16px; z-index: 100; background: #161b22ee; backdrop-filter: blur(12px); border: 1px solid #30363d; border-radius: 10px; padding: 14px 18px; max-width: 340px; font-size: 13px; line-height: 1.5; display: none; }
+#info-panel h3 { font-size: 14px; color: #e6edf3; margin-bottom: 4px; }
+#info-panel .desc { color: #8b949e; }
+#info-panel .drill { color: #58a6ff; font-size: 12px; margin-top: 6px; font-style: italic; }
+
+/* Graph container */
+#graph { position: absolute; top: 48px; bottom: 0; left: 0; right: 0; }
+
+/* Hint */
+#hint { position: fixed; bottom: 12px; left: 16px; font-size: 11px; color: #484f58; z-index: 100; }
+#hint kbd { background: #21262d; border: 1px solid #30363d; border-radius: 3px; padding: 1px 5px; font-size: 10px; color: #8b949e; }
+</style>
+
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+    "htm": "https://esm.sh/htm@3.1.1"
+  }
+}
+</script>
+</head>
+<body>
+
+<div id="header">
+  <h1>wiRedPanda <span>Architecture</span></h1> <em>React Flow</em>
+  <button id="back-btn">&#8592; Back</button>
+  <div id="breadcrumbs"></div>
+</div>
+<div id="graph"></div>
+<div id="info-panel"></div>
+<div id="hint">
+  <kbd>Click</kbd> inspect &nbsp;<kbd>Dbl-click</kbd> drill &nbsp;<kbd>Scroll</kbd> zoom &nbsp;
+  <kbd>Drag bg</kbd> pan &nbsp;<kbd>Esc</kbd> back
+</div>
+
+<script type="module">
+import React, { createElement as h, useState, useCallback, useEffect, useMemo } from 'react';
+import { createRoot } from 'react-dom/client';
+import htm from 'htm';
+const html = htm.bind(h);
+
+/* Dynamic import of React Flow (externalizes react so it uses our import-map copy) */
+const {
+  ReactFlow, Background, Controls, MiniMap,
+  Handle, Position, MarkerType,
+  useNodesState, useEdgesState
+} = await import('https://esm.sh/@xyflow/react@12?external=react,react-dom,react/jsx-runtime');
+
+/* Also load dagre for layout */
+const dagre = (await import('https://esm.sh/@dagrejs/dagre@1.1.4')).default;
+
+/* ── Flow data ───────────────────────────────────────────────── */
+const flows = {
+  overview: {
+    title: 'wiRedPanda \u2014 Application Overview',
+    nodes: [
+      { id: 'entry', label: 'Main.cpp\nApplication Startup', type: 'start', desc: 'Program entry, Qt event loop, creates MainWindow' },
+      { id: 'mw', label: 'MainWindow\n(Tab Management)', type: 'key', desc: 'Menus, toolbars, tab bar hosting WorkSpaces', drill: 'mw_ops' },
+      { id: 'ws', label: 'Workspace\n(Per-Tab Circuit)', type: 'key', desc: 'Scene + GraphicsView + Simulation per tab' },
+      { id: 'scene', label: 'Scene\n(Circuit Canvas)', type: 'key', desc: 'QGraphicsScene: elements, wires, undo stack', drill: 'scene_ops' },
+      { id: 'sim', label: 'Simulation\n(1ms Cycle)', type: 'key', desc: 'Topological sort, 4-phase update loop', drill: 'sim_ops' },
+      { id: 'serial', label: 'Serialization\n(.panda I/O)', type: 'key', desc: 'Versioned binary QDataStream format' },
+      { id: 'elem', label: 'Elements\n(GraphicElement)', type: 'key', desc: 'Gates, memory, I/O, factory, properties' },
+      { id: 'conn', label: 'Wiring\n(Ports + Connections)', type: 'key', desc: 'QNEPort, QNEConnection, ConnectionManager' },
+      { id: 'ic', label: 'IC / Inline IC\n(Sub-Circuits)', type: 'key', desc: 'File-backed + embedded sub-circuits' },
+      { id: 'cmd', label: 'Undo/Redo\n(Commands)', type: 'key', desc: 'QUndoStack: Add, Delete, Move, Update' },
+      { id: 'bwd', label: 'BeWavedDolphin\n(Waveforms)', type: 'key', desc: 'Signal editor, simulation runner, export' },
+      { id: 'cg', label: 'Code Generation\n(Arduino / SV)', type: 'key', desc: 'Export circuits as C++ or HDL' },
+      { id: 'ui', label: 'UI Utilities\n(Theme, Palette)', type: 'key', desc: 'Theme switching, element palette, zoom' },
+    ],
+    edges: [
+      { source: 'entry', target: 'mw' }, { source: 'mw', target: 'ws' },
+      { source: 'ws', target: 'scene' }, { source: 'ws', target: 'sim' },
+      { source: 'scene', target: 'elem' }, { source: 'scene', target: 'conn' },
+      { source: 'scene', target: 'cmd' }, { source: 'elem', target: 'ic' },
+      { source: 'ws', target: 'serial' }, { source: 'mw', target: 'bwd' },
+      { source: 'mw', target: 'cg' }, { source: 'mw', target: 'ui' },
+    ]
+  },
+  sim_ops: {
+    title: 'Simulation Engine',
+    nodes: [
+      { id: 'start', label: 'Simulation\nConstructor', type: 'start', desc: 'Creates QTimer with 1ms interval' },
+      { id: 'timer', label: 'QTimer fires\n(every 1ms)', type: 'step', desc: 'Fixed simulation step' },
+      { id: 'topo', label: 'Topological Sort\n(if dirty)', type: 'decision', desc: 'Re-sort elements when circuit changes' },
+      { id: 'phase1', label: 'Phase 1:\nupdateOutputs()', type: 'step', desc: 'Update input element outputs' },
+      { id: 'phase2', label: 'Phase 2:\nupdateLogic()', type: 'step', desc: 'Update all logic elements' },
+      { id: 'phase3', label: 'Phase 3:\nupdatePort()', type: 'step', desc: 'Propagate signals through connections' },
+      { id: 'phase4', label: 'Phase 4:\nupdateOutputs()', type: 'step', desc: 'Update output element displays' },
+      { id: 'settle', label: 'Settle check\n(feedback loops)', type: 'decision', desc: 'Repeat if feedback signals changed' },
+      { id: 'done', label: 'Cycle\nComplete', type: 'end', desc: 'Wait for next timer tick' },
+    ],
+    edges: [
+      { source: 'start', target: 'timer' }, { source: 'timer', target: 'topo' },
+      { source: 'topo', target: 'phase1', label: 'Sorted' },
+      { source: 'phase1', target: 'phase2' }, { source: 'phase2', target: 'phase3' },
+      { source: 'phase3', target: 'phase4' }, { source: 'phase4', target: 'settle' },
+      { source: 'settle', target: 'phase1', label: 'Changed' },
+      { source: 'settle', target: 'done', label: 'Stable' },
+    ]
+  },
+  mw_ops: {
+    title: 'MainWindow Operations',
+    nodes: [
+      { id: 'init', label: 'MainWindow\nconstructor', type: 'start', desc: 'Sets up UI, menus, toolbars' },
+      { id: 'ui', label: 'Build UI\n(MainWindowUI)', type: 'step', desc: 'Creates layout, menu bar, status bar' },
+      { id: 'workspace', label: 'Create first\nWorkspace tab', type: 'step', desc: 'Empty circuit ready to edit' },
+      { id: 'connect', label: 'Connect signals\n& slots', type: 'step', desc: 'Wire up menu actions, toolbar buttons' },
+      { id: 'open', label: 'Open file', type: 'key', desc: 'File > Open or drag & drop' },
+      { id: 'save', label: 'Save file', type: 'key', desc: 'File > Save / Save As' },
+      { id: 'newtab', label: 'New tab', type: 'key', desc: 'Creates a new Workspace' },
+      { id: 'export', label: 'Export', type: 'key', desc: 'PNG, PDF, Arduino, SystemVerilog' },
+    ],
+    edges: [
+      { source: 'init', target: 'ui' }, { source: 'ui', target: 'workspace' },
+      { source: 'workspace', target: 'connect' }, { source: 'connect', target: 'open' },
+      { source: 'connect', target: 'save' }, { source: 'connect', target: 'newtab' },
+      { source: 'connect', target: 'export' },
+    ]
+  },
+  scene_ops: {
+    title: 'Scene Operations',
+    nodes: [
+      { id: 'scene', label: 'Scene\n(QGraphicsScene)', type: 'start', desc: 'Owns all circuit elements' },
+      { id: 'add', label: 'Add Element\n(drop/paste)', type: 'key', desc: 'Drag from palette or paste from clipboard' },
+      { id: 'wire', label: 'Create Wire\n(port click)', type: 'key', desc: 'Click port, drag to target port' },
+      { id: 'select', label: 'Selection\n(click/rubber)', type: 'key', desc: 'Click or rubber-band select' },
+      { id: 'undo', label: 'Undo/Redo\n(Ctrl+Z)', type: 'key', desc: 'QUndoStack command pattern' },
+      { id: 'del', label: 'Delete\n(Del key)', type: 'key', desc: 'Remove selected elements and wires' },
+      { id: 'sim', label: 'Simulation\nUpdate', type: 'step', desc: 'Scene drives simulation after changes' },
+    ],
+    edges: [
+      { source: 'scene', target: 'add' }, { source: 'scene', target: 'wire' },
+      { source: 'scene', target: 'select' }, { source: 'scene', target: 'undo' },
+      { source: 'scene', target: 'del' }, { source: 'add', target: 'sim' },
+      { source: 'wire', target: 'sim' }, { source: 'del', target: 'sim' },
+    ]
+  },
+};
+
+/* ── Dagre layout ─────────────────────────────────────────────── */
+function getLayoutedElements(flowData) {
+  const g = new dagre.graphlib.Graph();
+  g.setDefaultEdgeLabel(() => ({}));
+  g.setGraph({ rankdir: 'TB', nodesep: 60, ranksep: 80 });
+
+  const nodeW = 160, nodeH = 60;
+  flowData.nodes.forEach(n => g.setNode(n.id, { width: n.type === 'decision' ? 140 : nodeW, height: n.type === 'decision' ? 100 : nodeH }));
+  flowData.edges.forEach(e => g.setEdge(e.source, e.target));
+  dagre.layout(g);
+
+  const rfNodes = flowData.nodes.map(n => {
+    const { x, y } = g.node(n.id);
+    const w = n.type === 'decision' ? 140 : nodeW;
+    const h = n.type === 'decision' ? 100 : nodeH;
+    return {
+      id: n.id,
+      type: 'custom',
+      position: { x: x - w / 2, y: y - h / 2 },
+      data: { label: n.label, nodeType: n.type, desc: n.desc, drill: n.drill || null },
+    };
+  });
+
+  const rfEdges = flowData.edges.map((e, i) => {
+    let color = '#484f58';
+    if (e.label === 'Changed' || e.label === 'Sorted' || e.label === 'Yes') color = 'rgba(63,185,80,0.7)';
+    if (e.label === 'Stable' || e.label === 'No') color = 'rgba(218,54,51,0.7)';
+    return {
+      id: 'e' + i,
+      source: e.source,
+      target: e.target,
+      type: 'smoothstep',
+      animated: false,
+      label: e.label || '',
+      labelStyle: { fill: color === '#484f58' ? '#7d8590' : color, fontSize: 11 },
+      labelBgStyle: { fill: '#0d1117', fillOpacity: 0.9 },
+      labelBgPadding: [6, 3],
+      markerEnd: { type: MarkerType.ArrowClosed, color: color, width: 16, height: 16 },
+      style: { stroke: color, strokeWidth: 1.5 },
+    };
+  });
+
+  return { nodes: rfNodes, edges: rfEdges };
+}
+
+/* ── Custom Node ──────────────────────────────────────────────── */
+function CustomNode({ data }) {
+  const t = data.nodeType || 'step';
+  const cls = 'rf-node ' + t + (data.drill ? ' drillable' : '');
+  if (t === 'decision') {
+    return html`<div className=${cls}>
+      <${Handle} type="target" position=${Position.Top} style=${{ background: '#a371f7', top: -3 }} />
+      <span className="label">${data.label}</span>
+      <${Handle} type="source" position=${Position.Bottom} style=${{ background: '#a371f7', bottom: -3 }} />
+    </div>`;
+  }
+  return html`<div className=${cls}>
+    <${Handle} type="target" position=${Position.Top} style=${{ background: '#30363d', top: -3 }} />
+    <span>${data.label}</span>
+    <${Handle} type="source" position=${Position.Bottom} style=${{ background: '#30363d', bottom: -3 }} />
+  </div>`;
+}
+
+const nodeTypes = { custom: CustomNode };
+
+/* ── App ──────────────────────────────────────────────────────── */
+function App() {
+  const [flowId, setFlowId] = useState('overview');
+  const [history, setHistory] = useState([]);
+  const [selected, setSelected] = useState(null);
+
+  const layout = useMemo(() => getLayoutedElements(flows[flowId]), [flowId]);
+  const [nodes, setNodes, onNodesChange] = useNodesState(layout.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(layout.edges);
+
+  useEffect(() => {
+    const l = getLayoutedElements(flows[flowId]);
+    setNodes(l.nodes);
+    setEdges(l.edges);
+    setSelected(null);
+  }, [flowId]);
+
+  const openFlow = useCallback((id) => setFlowId(id), []);
+
+  const drillInto = useCallback((id) => {
+    if (!flows[id]) return;
+    setHistory(h => [...h, { id: flowId, title: flows[flowId].title }]);
+    openFlow(id);
+  }, [flowId]);
+
+  const goBack = useCallback(() => {
+    setHistory(h => {
+      if (!h.length) return h;
+      const prev = h[h.length - 1];
+      openFlow(prev.id);
+      return h.slice(0, -1);
+    });
+  }, []);
+
+  const goToBreadcrumb = useCallback((i) => {
+    setHistory(h => {
+      const target = h[i];
+      openFlow(target.id);
+      return h.slice(0, i);
+    });
+  }, []);
+
+  const onNodeClick = useCallback((e, node) => {
+    setSelected(node.data);
+  }, []);
+
+  const onNodeDoubleClick = useCallback((e, node) => {
+    if (node.data.drill && flows[node.data.drill]) drillInto(node.data.drill);
+  }, [flowId]);
+
+  const onPaneClick = useCallback(() => setSelected(null), []);
+
+  // Update header (outside React)
+  useEffect(() => {
+    const bc = document.getElementById('breadcrumbs');
+    const btn = document.getElementById('back-btn');
+    btn.style.display = history.length ? 'block' : 'none';
+    btn.onclick = goBack;
+    let bcHtml = '';
+    history.forEach((h, i) => {
+      bcHtml += '<span class="crumb" data-i="' + i + '">' + h.title + '</span><span class="crumb-sep">\u203a</span>';
+    });
+    bcHtml += '<span class="crumb-current">' + flows[flowId].title + '</span>';
+    bc.innerHTML = bcHtml;
+    bc.querySelectorAll('.crumb').forEach(el => {
+      el.addEventListener('click', () => goToBreadcrumb(parseInt(el.dataset.i)));
+    });
+  }, [flowId, history]);
+
+  // Update info panel (outside React)
+  useEffect(() => {
+    const panel = document.getElementById('info-panel');
+    if (!selected) { panel.style.display = 'none'; return; }
+    let html = '<h3>' + selected.label.replace(/\n/g, ' ') + '</h3>';
+    html += '<div class="desc">' + (selected.desc || '') + '</div>';
+    if (selected.drill) html += '<div class="drill">Double-click to drill into \u2192 ' + flows[selected.drill].title + '</div>';
+    panel.innerHTML = html;
+    panel.style.display = 'block';
+  }, [selected]);
+
+  // Keyboard
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === 'Escape') { if (history.length) goBack(); else setSelected(null); }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [history]);
+
+  return html`<${ReactFlow}
+    nodes=${nodes} edges=${edges}
+    onNodesChange=${onNodesChange} onEdgesChange=${onEdgesChange}
+    onNodeClick=${onNodeClick} onNodeDoubleClick=${onNodeDoubleClick}
+    onPaneClick=${onPaneClick}
+    nodeTypes=${nodeTypes}
+    fitView fitViewOptions=${{ padding: 0.3 }}
+    minZoom=${0.2} maxZoom=${2.5}
+    proOptions=${{ hideAttribution: true }}
+    style=${{ background: '#0d1117' }}
+  >
+    <${Background} color="#21262d" gap=${20} />
+    <${Controls} position="bottom-left" style=${{ marginBottom: '40px' }} />
+    <${MiniMap} nodeColor=${(n) => n.data?.nodeType === 'start' ? '#238636' : n.data?.drill ? '#d29922' : '#30363d'} maskColor="rgba(13,17,23,0.7)" style=${{ background: '#161b22' }} />
+  </${ReactFlow}>`;
+}
+
+/* ── Mount ────────────────────────────────────────────────────── */
+createRoot(document.getElementById('graph')).render(html`<${App} />`);
+</script>
+</body>
+</html>
