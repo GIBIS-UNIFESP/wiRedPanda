@@ -27,6 +27,7 @@
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/IO/Serialization.h"
 #include "App/Simulation/SimulationBlocker.h"
+#include "App/Simulation/SimulationThrottleDisabler.h"
 #include "App/UI/ClockDialog.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LengthDialog.h"
@@ -374,6 +375,10 @@ void BewavedDolphin::run()
     // Block the live simulation timer while we drive the circuit manually column by column
     qCDebug(zero) << "Creating class to pause main window simulator while creating waveform.";
     SimulationBlocker simulationBlocker(m_simulation);
+    // Disable the visual refresh throttle so phases 3–4 (port-status updates) run on every
+    // update() call. Without this, output port statuses are stale for most columns and the
+    // waveform shows incorrect values.
+    SimulationThrottleDisabler throttleDisabler(m_simulation);
 
     // --- Step through each time column and compute circuit outputs ---
     for (int column = 0; column < m_model->columnCount(); ++column) {
