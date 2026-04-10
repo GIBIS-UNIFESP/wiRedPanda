@@ -8,7 +8,7 @@ function svgEl(tag, attrs) {
   return el;
 }
 
-// Canvas-based text measurement (shared with old graph-setup.js)
+// Canvas-based text measurement
 const _measureCtx = document.createElement('canvas').getContext('2d');
 function measureText(text, fontSize) {
   _measureCtx.font = fontSize + 'px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif';
@@ -134,12 +134,9 @@ function createSvgCanvas(container) {
     requestAnimationFrame(step);
   }
 
-  function getViewBox() { return { ...vb }; }
-  function setViewBox(newVb) { vb = { ...newVb }; applyViewBox(); }
-
   function destroy() { container.innerHTML = ''; }
 
-  return { svg, defs, root, fit, animateFit, getViewBox, setViewBox, destroy, applyViewBox };
+  return { svg, defs, root, fit, animateFit, destroy };
 }
 
 // Add an arrow marker to defs
