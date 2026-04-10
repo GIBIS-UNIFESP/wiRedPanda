@@ -59,6 +59,12 @@ public:
     /// Stops the simulation timer.
     void stop();
 
+    /// Sets whether the user has explicitly muted audio; persists across stop/start cycles.
+    void setUserMuted(bool muted);
+
+    /// Returns \c true if the user has explicitly muted audio.
+    bool isUserMuted() const;
+
     /// Stops and immediately restarts the simulation.
     void restart();
 
@@ -146,6 +152,7 @@ private:
 
     bool m_initialized = false;
     bool m_convergenceWarned = false;
+    bool m_userMuted = false;
 
     // --- Members: Visual refresh throttle ---
 
