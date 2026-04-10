@@ -2,17 +2,17 @@
 flowRegistry['cmd_ops'] = {
   title: 'Commands \u2014 Undo/Redo System',
   nodes: [
-    ['root',  'QUndoStack',                          'start', '10 QUndoCommand subclasses'],
-    ['add',   'AddItemsCommand',                     'key',   'redo: loadItems, undo: saveItems + deleteItems', 'cmd_add'],
-    ['del',   'DeleteItemsCommand',                  'key',   'redo: deleteItems, undo: loadItems', 'cmd_delete'],
-    ['move',  'MoveCommand',                         'key',   'Swap old/new positions', 'cmd_move'],
-    ['update','UpdateCommand',                       'key',   'Swap old/new serialized state', 'cmd_update'],
-    ['rotate','RotateCommand',                       'step',  'Centroid rotation with 2D transform'],
-    ['flip',  'FlipCommand',                         'step',  'Flip is involution: undo = redo'],
-    ['morph', 'MorphCommand',                        'step',  'Change element type in-place'],
-    ['split', 'SplitCommand',                        'step',  'Insert Node into wire'],
-    ['blob', 'UpdateBlobCommand', 'step', 'IC embed/extract with rollback', 'cmd_update'],
-    ['regblob','RegisterBlobCommand',                'step',  'Add/remove blob in ICRegistry'],
+    ['root',  'Undo Stack',                          'start', '10 command subclasses'],
+    ['add',   'Add Items',                           'key',   'redo: load items, undo: save + delete items', 'cmd_add'],
+    ['del',   'Delete Items',                        'key',   'redo: delete items, undo: load items', 'cmd_delete'],
+    ['move',  'Move',                                'key',   'Swap old/new positions', 'cmd_move'],
+    ['update','Update',                              'key',   'Swap old/new serialized state', 'cmd_update'],
+    ['rotate','Rotate',                              'step',  'Centroid rotation with 2D transform'],
+    ['flip',  'Flip',                                'step',  'Flip is involution: undo = redo'],
+    ['morph', 'Morph',                               'step',  'Change element type in-place'],
+    ['split', 'Split',                               'step',  'Insert Node into wire'],
+    ['blob', 'Update Blob', 'step', 'IC embed/extract with rollback', 'cmd_update'],
+    ['regblob','Register Blob',                      'step',  'Add/remove blob in IC Registry'],
   ],
   edges: [
     ['root',  'add'],
@@ -29,22 +29,22 @@ flowRegistry['cmd_ops'] = {
 };
 
 flowRegistry['cmd_add'] = {
-  title: 'AddItemsCommand',
+  title: 'Add Items Command',
   nodes: [
-        ['ctor',    'Constructor(items, scene)',            'start',    ''],
-        ['block',   'SimulationBlocker',                    'step',     ''],
-        ['add',     'CommandUtils::addItems\n(scene, items)','step',   ''],
-        ['save',    'loadList \u2192 save IDs\n+ other IDs','step',    ''],
-        ['undo',    'undo()',                                'key',     ''],
-        ['u_block', 'SimulationBlocker',                    'step',     ''],
-        ['u_find',  'findItems(scene, m_ids)',              'step',     ''],
-        ['u_save',  'saveItems \u2192 m_itemData',          'step',    'Serialize current state for redo'],
-        ['u_del',   'deleteItems(scene, items)',            'step',     ''],
-        ['u_stale', 'setCircuitUpdateRequired()',           'end',      ''],
-        ['redo',    'redo()',                                'key',     ''],
-        ['r_block', 'SimulationBlocker',                    'step',     ''],
-        ['r_load',  'loadItems(scene,\nm_itemData, ids)',   'step',    'Deserialize from saved bytes'],
-        ['r_stale', 'setCircuitUpdateRequired()',           'end',      ''],
+        ['ctor',    'Construct\n(items, scene)',               'start',    ''],
+        ['block',   'Pause Simulation',                         'step',     ''],
+        ['add',     'Add items to scene',                       'step',    ''],
+        ['save',    'Save item IDs',                            'step',    ''],
+        ['undo',    'Undo',                                     'key',     ''],
+        ['u_block', 'Pause Simulation',                         'step',     ''],
+        ['u_find',  'Find items by ID',                         'step',     ''],
+        ['u_save',  'Save current state\nfor redo',             'step',    'Serialize current state'],
+        ['u_del',   'Delete items\nfrom scene',                 'step',     ''],
+        ['u_stale', 'Mark circuit\nfor rebuild',                'end',      ''],
+        ['redo',    'Redo',                                     'key',     ''],
+        ['r_block', 'Pause Simulation',                         'step',     ''],
+        ['r_load',  'Restore items\nfrom saved state',          'step',    'Deserialize from saved bytes'],
+        ['r_stale', 'Mark circuit\nfor rebuild',                'end',      ''],
       ],
   edges: [
         ['ctor',    'block'],
@@ -62,19 +62,19 @@ flowRegistry['cmd_add'] = {
 };
 
 flowRegistry['cmd_delete'] = {
-  title: 'DeleteItemsCommand',
+  title: 'Delete Items Command',
   nodes: [
-        ['ctor',    'Constructor(items, scene)',            'start',    'Mirror of AddItems: redo deletes, undo restores'],
-        ['redo',    'redo()',                                'key',     ''],
-        ['r_block', 'SimulationBlocker',                    'step',     ''],
-        ['r_find',  'findItems(scene, m_ids)',              'step',     ''],
-        ['r_save',  'saveItems \u2192 m_itemData',          'step',    ''],
-        ['r_del',   'deleteItems(scene, items)',            'step',     ''],
-        ['r_stale', 'setCircuitUpdateRequired()',           'end',      ''],
-        ['undo',    'undo()',                                'key',     ''],
-        ['u_block', 'SimulationBlocker',                    'step',     ''],
-        ['u_load',  'loadItems(scene,\nm_itemData, ids)',   'step',    ''],
-        ['u_stale', 'setCircuitUpdateRequired()',           'end',      ''],
+        ['ctor',    'Construct\n(items, scene)',               'start',    'Mirror of Add Items: redo deletes, undo restores'],
+        ['redo',    'Redo',                                     'key',     ''],
+        ['r_block', 'Pause Simulation',                         'step',     ''],
+        ['r_find',  'Find items by ID',                         'step',     ''],
+        ['r_save',  'Save current state',                       'step',    ''],
+        ['r_del',   'Delete items\nfrom scene',                 'step',     ''],
+        ['r_stale', 'Mark circuit\nfor rebuild',                'end',      ''],
+        ['undo',    'Undo',                                     'key',     ''],
+        ['u_block', 'Pause Simulation',                         'step',     ''],
+        ['u_load',  'Restore items\nfrom saved state',          'step',    ''],
+        ['u_stale', 'Mark circuit\nfor rebuild',                'end',      ''],
       ],
   edges: [
         ['ctor',    'redo'],
@@ -90,17 +90,17 @@ flowRegistry['cmd_delete'] = {
 };
 
 flowRegistry['cmd_move'] = {
-  title: 'MoveCommand',
+  title: 'Move Command',
   nodes: [
-        ['ctor',    'Constructor\n(elements, oldPositions)', 'start',  'Captures old + new positions + element IDs'],
-        ['undo',    'undo()',                                'key',     ''],
-        ['u_find',  'findElements(scene, ids)',             'step',     ''],
-        ['u_set',   'setPos(m_oldPositions[i])\nfor each element', 'step', ''],
-        ['u_auto',  'setAutosaveRequired()',                'end',      ''],
-        ['redo',    'redo()',                                'key',     ''],
-        ['r_find',  'findElements(scene, ids)',             'step',     ''],
-        ['r_set',   'setPos(m_newPositions[i])\nfor each element', 'step', ''],
-        ['r_auto',  'setAutosaveRequired()',                'end',      ''],
+        ['ctor',    'Construct\n(elements, old positions)', 'start',  'Captures old + new positions + element IDs'],
+        ['undo',    'Undo',                                     'key',     ''],
+        ['u_find',  'Find elements by ID',                      'step',     ''],
+        ['u_set',   'Restore old positions',                    'step',    ''],
+        ['u_auto',  'Mark for autosave',                        'end',      ''],
+        ['redo',    'Redo',                                     'key',     ''],
+        ['r_find',  'Find elements by ID',                      'step',     ''],
+        ['r_set',   'Apply new positions',                      'step',    ''],
+        ['r_auto',  'Mark for autosave',                        'end',      ''],
       ],
   edges: [
         ['undo',   'u_find'],
@@ -113,17 +113,17 @@ flowRegistry['cmd_move'] = {
 };
 
 flowRegistry['cmd_update'] = {
-  title: 'UpdateCommand',
+  title: 'Update Command',
   nodes: [
-        ['ctor',    'Constructor\n(elements, oldData)',     'start',    'Saves old + new serialized state'],
-        ['c_save', 'writePandaHeader +\nelement.save()\nfor each \u2192 m_newData', 'step', '', 'ser_header'],
-        ['undo',    'undo()',                                'key',     ''],
-        ['u_load',  'loadData(m_oldData)',                  'step',     ''],
-        ['u_find', 'findElements \u2192\nreadPandaHeader \u2192\nelement.load() for each', 'step', '', 'ser_header'],
-        ['u_stale', 'setCircuitUpdateRequired()',           'end',      ''],
-        ['redo',    'redo()',                                'key',     ''],
-        ['r_load',  'loadData(m_newData)',                  'step',     ''],
-        ['r_stale', 'setCircuitUpdateRequired()',           'end',      ''],
+        ['ctor',    'Construct\n(elements, old state)',        'start',    'Saves old + new serialized state'],
+        ['c_save', 'Serialize current state\nas new data', 'step', '', 'ser_header'],
+        ['undo',    'Undo',                                     'key',     ''],
+        ['u_load',  'Load old state',                           'step',     ''],
+        ['u_find', 'Find elements,\nread header,\nrestore each', 'step', '', 'ser_header'],
+        ['u_stale', 'Mark circuit\nfor rebuild',                'end',      ''],
+        ['redo',    'Redo',                                     'key',     ''],
+        ['r_load',  'Load new state',                           'step',     ''],
+        ['r_stale', 'Mark circuit\nfor rebuild',                'end',      ''],
       ],
   edges: [
         ['ctor',    'c_save'],
@@ -134,4 +134,3 @@ flowRegistry['cmd_update'] = {
         ['r_load',  'r_stale'],
       ]
 };
-
