@@ -91,7 +91,7 @@ flowRegistry['test_unit_ops'] = {
     ['cmd',      'Commands\nTestCommands',                 'step',  'All 10 undo command subclasses: add, delete, move, update, morph, split, flip, rotate, paste, trigger', 'cmd_ops'],
     ['common',   'Common\n6 classes',                      'key',   'TestCommon, TestEnums, TestPriorities, TestRecentFiles, TestSettings, TestThemeManager', 'test_unit_common'],
     ['elements', 'Elements\n18 classes',                   'key',   'Gates, displays, clocks, inputs, geometry, labels, properties, sequential logic, mux, truth table, wireless', 'test_unit_elements'],
-    ['factory',  'Factory\nTestElementFactory',            'step',  'Create by type string, metadata registration, round-trip', 'ef_ops'],
+    ['factory',  'Factory\nTestElementFactory',            'step',  'Create by type string, metadata registration, round-trip', 'ef_build'],
     ['logic',    'Logic\n4 classes',                       'key',   'Element logic, error cases, node logic, status ops', 'test_unit_logic'],
     ['nodes',    'Nodes\n2 classes',                       'step',  'TestConnections, TestConnectionSerialization', 'conn_ops'],
     ['scene',    'Scene\n5 classes',                       'key',   'TestScene, TestSceneState, TestSceneConnections, TestSceneUndoredo, TestConnectionValidity', 'test_unit_scene'],
