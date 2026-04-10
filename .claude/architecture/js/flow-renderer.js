@@ -206,22 +206,29 @@ function renderFlow(flowId) {
   flowCy.ready(() => flowCy.fit(undefined, 40));
 }
 
-// ── URL hash persistence ────────────────────────────────────
+// ── URL hash persistence + browser history ──────────────────
+let _suppressPush = false;
+
 function updateHash() {
-  if (!currentFlowId) {
-    history.replaceState(null, '', window.location.pathname + window.location.search);
-    return;
+  const hash = currentFlowId
+    ? '#' + flowHistory.map(h => h.flowId).concat(currentFlowId).join('/')
+    : '';
+  const url = hash || (window.location.pathname + window.location.search);
+  if (_suppressPush) {
+    history.replaceState(null, '', url);
+  } else {
+    history.pushState(null, '', url);
   }
-  const parts = flowHistory.map(h => h.flowId);
-  parts.push(currentFlowId);
-  history.replaceState(null, '', '#' + parts.join('/'));
 }
 
 function restoreFromHash() {
   const hash = window.location.hash.slice(1);
-  if (!hash) return;
+  if (!hash) {
+    if (currentFlowId) closeOverlaySilent();
+    return;
+  }
   const parts = hash.split('/').filter(Boolean);
-  if (parts.length === 0) return;
+  if (parts.length === 0) { if (currentFlowId) closeOverlaySilent(); return; }
   for (const id of parts) {
     if (!flowRegistry[id]) return;
   }
@@ -230,5 +237,16 @@ function restoreFromHash() {
     const flow = flowRegistry[parts[i]];
     flowHistory.push({ flowId: parts[i], title: flow ? flow.title : parts[i] });
   }
+  _suppressPush = true;
   openFlow(parts[parts.length - 1]);
+  _suppressPush = false;
 }
+
+function closeOverlaySilent() {
+  document.getElementById('drilldown').classList.remove('visible');
+  if (flowCy) { flowCy.destroy(); flowCy = null; }
+  flowHistory = [];
+  currentFlowId = null;
+}
+
+window.addEventListener('popstate', () => { restoreFromHash(); });
