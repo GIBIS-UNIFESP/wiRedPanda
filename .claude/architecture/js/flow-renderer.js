@@ -156,6 +156,10 @@ function renderFlow(flowId) {
         'segment-weights': [0],
         'segment-distances': [30],
       }},
+      { selector: '.expanded', style: {
+        'border-color': '#58a6ff', 'border-width': 3, 'border-style': 'dashed',
+        'background-color': 'rgba(88, 166, 255, 0.08)',
+      }},
       { selector: '.fc-highlight', style: { 'border-width': 3.5, 'z-index': 999 }},
       { selector: '.fc-fade', style: { 'opacity': 0.25 }},
     ],
@@ -187,11 +191,11 @@ function renderFlow(flowId) {
     info.style.display = 'block';
   });
 
-  // Double click: drill into sub-flow
+  // Double click: expand sub-flow inline
   flowCy.on('dbltap', 'node', function(e) {
     const drill = e.target.data('drillTarget');
     if (drill && flowRegistry[drill]) {
-      drillInto(drill);
+      expandInline(e.target.id());
     }
   });
 
@@ -204,6 +208,136 @@ function renderFlow(flowId) {
   });
 
   flowCy.ready(() => flowCy.fit(undefined, 40));
+}
+
+// ── Inline expansion ────────────────────────────────────────
+const _expansions = {};  // nodeId → { addedIds, removedEdges }
+
+function expandInline(nodeId) {
+  if (!flowCy) return;
+
+  // Toggle: collapse if already expanded
+  if (_expansions[nodeId]) { collapseInline(nodeId); return; }
+
+  const node = flowCy.getElementById(nodeId);
+  if (!node.length) return;
+
+  const drillTarget = node.data('drillTarget');
+  const flow = flowRegistry[drillTarget];
+  if (!flow) return;
+
+  const pfx = nodeId + '__';
+
+  // Save and remove outgoing edges (incoming stay on the original node)
+  const removedEdges = [];
+  node.outgoers('edge').forEach(e => {
+    removedEdges.push({ id: e.id(), src: e.source().id(), tgt: e.target().id(), label: e.data('label') || '' });
+  });
+  flowCy.remove(node.outgoers('edge'));
+
+  // Find start and terminal nodes in sub-flow
+  const intSources = new Set(flow.edges.map(e => e[0]));
+  const starts = flow.nodes.filter(n => n[2] === 'start').map(n => pfx + n[0]);
+  const ends = flow.nodes.filter(n => !intSources.has(n[0])).map(n => pfx + n[0]);
+
+  const addedIds = [];
+  const toAdd = [];
+
+  // Add sub-flow nodes
+  for (const n of flow.nodes) {
+    const id = pfx + n[0];
+    const hasDrill = !!(n[4]);
+    toAdd.push({
+      group: 'nodes',
+      data: { id, label: n[1], nodeType: n[2] || 'step', desc: n[3] || '', drillTarget: n[4] || '' },
+      classes: (n[2] || 'step') + (hasDrill ? ' drillable' : '')
+    });
+    addedIds.push(id);
+  }
+
+  // Add sub-flow internal edges
+  for (let i = 0; i < flow.edges.length; i++) {
+    const e = flow.edges[i];
+    const id = pfx + 'e' + i;
+    toAdd.push({ group: 'edges', data: { id, source: pfx + e[0], target: pfx + e[1], label: e[2] || '' } });
+    addedIds.push(id);
+  }
+
+  // Bridge: original node → sub-flow start nodes
+  let ei = flow.edges.length;
+  for (const s of starts) {
+    const id = pfx + 'e' + (ei++);
+    toAdd.push({ group: 'edges', data: { id, source: nodeId, target: s, label: '' } });
+    addedIds.push(id);
+  }
+
+  // Bridge: sub-flow end nodes → original node's former outgoing targets
+  for (const re of removedEdges) {
+    for (const en of ends) {
+      const id = pfx + 'e' + (ei++);
+      toAdd.push({ group: 'edges', data: { id, source: en, target: re.tgt, label: re.label } });
+      addedIds.push(id);
+    }
+  }
+
+  // Add sub-flow elements to the real graph (initially at origin)
+  flowCy.add(toAdd);
+
+  // Layout only the sub-flow nodes using the real rendered sizes
+  const subNodes = addedIds.filter(id => flowCy.getElementById(id).isNode());
+  const subEls = flowCy.collection();
+  for (const id of addedIds) {
+    subEls.merge(flowCy.getElementById(id));
+  }
+  subEls.layout({ name: 'dagre', rankDir: 'TB', nodeSep: 50, rankSep: 55, edgeSep: 20, ranker: 'longest-path', fit: false }).run();
+
+  // Measure sub-flow bounding box and reposition below expanded node
+  const subBB = subEls.nodes().boundingBox();
+  const nodePos = node.position();
+  const offsetX = nodePos.x - (subBB.x1 + subBB.w / 2);
+  const offsetY = nodePos.y + 60 - subBB.y1;
+  const subHeight = subBB.h + 60;
+  subEls.nodes().forEach(n => {
+    const p = n.position();
+    n.position({ x: p.x + offsetX, y: p.y + offsetY });
+  });
+
+  // Shift all existing nodes below the expanded node down
+  const threshold = nodePos.y + 20;
+  flowCy.nodes().forEach(n => {
+    if (n.id() !== nodeId && !addedIds.includes(n.id()) && n.position().y > threshold) {
+      n.animate({ position: { x: n.position().x, y: n.position().y + subHeight } }, { duration: 300 });
+    }
+  });
+
+  node.addClass('expanded');
+  _expansions[nodeId] = { addedIds, removedEdges, subHeight, threshold };
+}
+
+function collapseInline(nodeId) {
+  if (!flowCy || !_expansions[nodeId]) return;
+  const { addedIds, removedEdges, subHeight, threshold } = _expansions[nodeId];
+
+  // Remove all added elements
+  for (const id of addedIds) {
+    const el = flowCy.getElementById(id);
+    if (el.length) el.remove();
+  }
+
+  // Restore original outgoing edges
+  for (const re of removedEdges) {
+    flowCy.add({ group: 'edges', data: { id: re.id, source: re.src, target: re.tgt, label: re.label } });
+  }
+
+  // Shift nodes back up
+  flowCy.nodes().forEach(n => {
+    if (n.id() !== nodeId && n.position().y > threshold + subHeight / 2) {
+      n.animate({ position: { x: n.position().x, y: n.position().y - subHeight } }, { duration: 300 });
+    }
+  });
+
+  flowCy.getElementById(nodeId).removeClass('expanded');
+  delete _expansions[nodeId];
 }
 
 // ── URL hash persistence + browser history ──────────────────
