@@ -4,13 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>wiRedPanda — Architecture</title>
-<script src="https://unpkg.com/cytoscape@3.28.1/dist/cytoscape.umd.js"></script>
-<script src="js/coverage-probe.js"></script>
-<script src="https://unpkg.com/layout-base@2.0.1/layout-base.js"></script>
-<script src="https://unpkg.com/cose-base@2.2.0/cose-base.js"></script>
-<script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
 <script src="https://unpkg.com/dagre@0.8.5/dist/dagre.min.js"></script>
-<script src="https://unpkg.com/cytoscape-dagre@2.5.0/cytoscape-dagre.js"></script>
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/drilldown.css">
 </head>
@@ -64,10 +58,11 @@
 <script src="flows/ui.js"></script>
 <script src="flows/tests.js"></script>
 
-<!-- Rendering engines -->
-<script src="js/flow-renderer.js"></script>
+<!-- SVG rendering engine -->
+<script src="js/svg-engine.js"></script>
+<script src="js/flow-view.js"></script>
 <script src="js/flow-entry.js"></script>
-<script src="js/graph-setup.js"></script>
+<script src="js/graph-view.js"></script>
 
 </body>
 </html>
