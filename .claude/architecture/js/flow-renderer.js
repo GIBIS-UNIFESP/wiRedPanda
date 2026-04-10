@@ -13,6 +13,7 @@ function openFlow(flowId) {
   currentFlowId = flowId;
   updateBreadcrumbs();
   renderFlow(flowId);
+  updateHash();
 }
 
 function drillInto(flowId) {
@@ -45,6 +46,7 @@ function closeOverlay() {
   if (flowCy) { flowCy.destroy(); flowCy = null; }
   flowHistory = [];
   currentFlowId = null;
+  updateHash();
 }
 
 function updateBreadcrumbs() {
@@ -140,6 +142,20 @@ function renderFlow(flowId) {
       { selector: 'edge[label *= "No"]', style: {
         'line-color': 'rgba(218, 54, 51, 0.47)', 'target-arrow-color': '#da3633', 'color': '#f85149',
       }},
+      { selector: '.seg-left', style: {
+        'curve-style': 'segments',
+        'edge-distances': 'endpoints',
+        'source-endpoint': '-50% 0%',
+        'segment-weights': [0],
+        'segment-distances': [-30],
+      }},
+      { selector: '.seg-right', style: {
+        'curve-style': 'segments',
+        'edge-distances': 'endpoints',
+        'source-endpoint': '50% 0%',
+        'segment-weights': [0],
+        'segment-distances': [30],
+      }},
       { selector: '.fc-highlight', style: { 'border-width': 3.5, 'z-index': 999 }},
       { selector: '.fc-fade', style: { 'opacity': 0.25 }},
     ],
@@ -188,4 +204,31 @@ function renderFlow(flowId) {
   });
 
   flowCy.ready(() => flowCy.fit(undefined, 40));
+}
+
+// ── URL hash persistence ────────────────────────────────────
+function updateHash() {
+  if (!currentFlowId) {
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+    return;
+  }
+  const parts = flowHistory.map(h => h.flowId);
+  parts.push(currentFlowId);
+  history.replaceState(null, '', '#' + parts.join('/'));
+}
+
+function restoreFromHash() {
+  const hash = window.location.hash.slice(1);
+  if (!hash) return;
+  const parts = hash.split('/').filter(Boolean);
+  if (parts.length === 0) return;
+  for (const id of parts) {
+    if (!flowRegistry[id]) return;
+  }
+  flowHistory = [];
+  for (let i = 0; i < parts.length - 1; i++) {
+    const flow = flowRegistry[parts[i]];
+    flowHistory.push({ flowId: parts[i], title: flow ? flow.title : parts[i] });
+  }
+  openFlow(parts[parts.length - 1]);
 }
