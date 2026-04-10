@@ -39,6 +39,14 @@ Simulation::Simulation(Scene *scene)
     }
 }
 
+void Simulation::setVisualThrottleEnabled(bool enabled)
+{
+    m_visualThrottleEnabled = enabled;
+    if (enabled) {
+        m_visualTickCount = 0; // start fresh so throttle resumes cleanly
+    }
+}
+
 void Simulation::update()
 {
     // Lazily build the simulation layer on the first tick after a restart so
@@ -86,7 +94,7 @@ void Simulation::update()
     // to avoid dirtying QGraphicsItems that will be overwritten before
     // the next repaint.  In non-interactive (test) mode, always update
     // so that tests see immediate visual state after each step.
-    if (Application::interactiveMode && ++m_visualTickCount < m_visualTickInterval) {
+    if (m_visualThrottleEnabled && Application::interactiveMode && ++m_visualTickCount < m_visualTickInterval) {
         return;
     }
     m_visualTickCount = 0;
