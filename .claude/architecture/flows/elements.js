@@ -64,7 +64,7 @@ flowRegistry['ge_logic'] = {
   title: 'Update Logic',
   nodes: [
         ['start',  'Called by simulation\nin topological order', 'start', ''],
-        ['snap',   'Snapshot inputs\nfrom predecessors',        'key',     'Copy predecessor outputs into input value array'],
+        ['snap',   'Snapshot inputs\nfrom predecessors',        'key',     'Copy predecessor outputs into input values. Unconnected inputs use port default value.'],
         ['compute','Element-specific logic\n(AND, FF, etc.)',   'key',    'Polymorphic: each subclass overrides'],
         ['output', 'Set output values\nand change flag',        'end',     ''],
       ],
