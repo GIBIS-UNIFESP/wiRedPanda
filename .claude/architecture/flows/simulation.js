@@ -104,8 +104,8 @@ flowRegistry['sim_settle'] = {
         ['loop',   'clear'],
         ['clear',  'update'],
         ['update', 'd_conv'],
-        ['d_conv', 'conv',    'No (settled)'],
-        ['d_conv', 'next',    'Yes (changed)'],
+        ['d_conv', 'conv',    'No (settled)',  'seg-left'],
+        ['d_conv', 'next',    'Yes (changed)', 'seg-right'],
         ['next',   'loop'],
         ['loop',   'fail'],
       ]
