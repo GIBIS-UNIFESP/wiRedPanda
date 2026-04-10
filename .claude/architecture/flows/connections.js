@@ -88,19 +88,6 @@ flowRegistry['conn_validate'] = {
       ]
 };
 
-flowRegistry['nodes_mod'] = {
-  title: 'Nodes (Wiring)',
-  nodes: [
-    ['f0', 'Port & Connection System', 'key', '', 'nodes_ports'],
-    ['f1', 'Wire Creation', 'key', '', 'nodes_wire'],
-    ['f2', 'Simulation Role', 'key', '', 'nodes_sim_role']
-  ],
-  edges: [
-    ['f0', 'f1'],
-    ['f1', 'f2']
-  ]
-};
-
 flowRegistry['nodes_ports'] = {
   title: 'Port & Connection System',
   nodes: [

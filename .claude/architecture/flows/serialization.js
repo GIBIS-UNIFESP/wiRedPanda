@@ -121,28 +121,6 @@ flowRegistry['ser_header'] = {
       ]
 };
 
-flowRegistry['io_mod'] = {
-  title: 'IO / Serialization',
-  nodes: [
-    ['f0', 'Save', 'key', '', 'ser_serialize'],
-    ['f1', 'Load', 'key', '', 'ser_deserialize'],
-  ],
-  edges: [
-    ['f0', 'f1'],
-  ]
-};
-
-flowRegistry['io_save'] = {
-  title: 'Save Flow',
-  nodes: [
-        ['start',    'Workspace save',                           'start',    ''],
-        ['save', 'Serialize to stream', 'key', '', 'ser_serialize'],
-      ],
-  edges: [
-        ['start',    'save'],
-      ]
-};
-
 flowRegistry['io_load'] = {
   title: 'Load Flow',
   nodes: [
