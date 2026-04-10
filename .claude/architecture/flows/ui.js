@@ -1,15 +1,4 @@
 // Flow definitions: ui
-flowRegistry['ui_view_ops'] = {
-  title: 'GraphicsView \u2014 Viewport Controls',
-  nodes: [
-    ['f0', 'Zoom', 'key', '', 'ui_zoom'],
-    ['f1', 'Context Menu', 'key', '', 'ui_ctx_menu']
-  ],
-  edges: [
-    ['f0', 'f1']
-  ]
-};
-
 flowRegistry['ui_zoom'] = {
   title: 'Zoom',
   nodes: [
@@ -52,17 +41,6 @@ flowRegistry['ui_ctx_menu'] = {
         ['d_act',  'no_act',  'No'],
         ['d_act',  'do_act',  'Yes'],
       ]
-};
-
-flowRegistry['ui_palette_ops'] = {
-  title: 'ElementPalette \u2014 Component Sidebar',
-  nodes: [
-    ['f0', 'Populate', 'key', '', 'ui_palette'],
-    ['f1', 'Drag to Create', 'key', '', 'ui_palette_drag']
-  ],
-  edges: [
-    ['f0', 'f1']
-  ]
 };
 
 flowRegistry['ui_palette'] = {

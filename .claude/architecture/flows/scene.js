@@ -215,17 +215,6 @@ flowRegistry['scene_mouse'] = {
       ]
 };
 
-flowRegistry['scene_mod'] = {
-  title: 'Scene',
-  nodes: [
-    ['f0', 'Ownership & Managers', 'key', '', 'scene_ownership'],
-    ['f1', 'Mouse Interactions', 'key', '', 'scene_mouse_old']
-  ],
-  edges: [
-    ['f0', 'f1']
-  ]
-};
-
 flowRegistry['scene_ownership'] = {
   title: 'Ownership & Managers',
   nodes: [
