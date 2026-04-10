@@ -60,7 +60,9 @@ body { background: #0d1117; color: #c9d1d9; font-family: -apple-system, 'Segoe U
     "react-dom": "https://esm.sh/react-dom@18.3.1",
     "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
     "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
-    "htm": "https://esm.sh/htm@3.1.1"
+    "@xyflow/react": "https://esm.sh/@xyflow/react@12.6.2?external=react,react-dom",
+    "htm": "https://esm.sh/htm@3.1.1",
+    "dagre": "https://esm.sh/@dagrejs/dagre@1.1.4"
   }
 }
 </script>
@@ -82,18 +84,14 @@ body { background: #0d1117; color: #c9d1d9; font-family: -apple-system, 'Segoe U
 <script type="module">
 import React, { createElement as h, useState, useCallback, useEffect, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
-import htm from 'htm';
-const html = htm.bind(h);
-
-/* Dynamic import of React Flow (externalizes react so it uses our import-map copy) */
-const {
+import {
   ReactFlow, Background, Controls, MiniMap,
   Handle, Position, MarkerType,
   useNodesState, useEdgesState
-} = await import('https://esm.sh/@xyflow/react@12?external=react,react-dom,react/jsx-runtime');
-
-/* Also load dagre for layout */
-const dagre = (await import('https://esm.sh/@dagrejs/dagre@1.1.4')).default;
+} from '@xyflow/react';
+import htm from 'htm';
+import dagre from 'dagre';
+const html = htm.bind(h);
 
 /* ── Flow data ───────────────────────────────────────────────── */
 const flows = {
