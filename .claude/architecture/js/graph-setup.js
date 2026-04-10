@@ -292,3 +292,5 @@ cy.ready(() => cy.fit(undefined, 60));
 setupFlowEntryPoints(cy);
 
 document.getElementById('drill-back').addEventListener('click', goBack);
+
+restoreFromHash();
