@@ -4,13 +4,13 @@ Comparison of documentation toolchains for the wiRedPanda codebase (fully Doxyge
 
 ## Quick Comparison
 
-| Tool | Setup Time | Visual Quality | Maintenance | Narrative Docs | C++/Qt Support |
-|------|-----------|----------------|-------------|----------------|----------------|
-| Doxygen + awesome-css | ~10 min | Good | Near zero | Basic | Excellent |
-| Sphinx + Breathe | Hours | Great | Medium | Excellent | Good |
-| Doxygen + m.css | ~1 hr | Great | Low-medium | Basic | Excellent |
-| MkDocs Material | Hours | Best | Higher risk | Excellent | Maturing |
-| Plain Doxygen | ~5 min | Poor | Zero | Basic | Excellent |
+| Tool | Setup Time | Visual Quality | Maintenance | Narrative Docs | C++/Qt Support | Risk |
+|------|-----------|----------------|-------------|----------------|----------------|------|
+| Doxygen + awesome-css | ~10 min | Good | Near zero | Basic | Excellent | None |
+| Sphinx + Breathe | Hours | Great | Medium | Excellent | Good | Low |
+| Doxygen + m.css | ~1 hr | Great | Low-medium | Basic | Excellent | Medium |
+| MkDocs Material | Hours | Best | Higher risk | Excellent | Maturing | **Dead project** |
+| Plain Doxygen | ~5 min | Poor | Zero | Basic | Excellent | None |
 
 ---
 
@@ -45,6 +45,12 @@ A drop-in CSS theme for standard Doxygen HTML output. Transforms the default Dox
 - Limited theme customization beyond CSS overrides.
 - No cross-project linking or external content aggregation.
 
+### Build Test Results (2026-04-09)
+
+- Built successfully with zero errors against the full wiRedPanda codebase.
+- Output: 50 MB in `build/docs/html-awesome/`.
+- No patches or workarounds required.
+
 ### Best For
 
 Projects that need clean API reference documentation from existing Doxygen comments with minimal effort. Ideal when the primary audience is developers reading class/function docs.
@@ -77,6 +83,7 @@ A two-stage pipeline: Doxygen generates XML from C++ comments, Breathe bridges t
 - Extensive plugin ecosystem (search, versioning, internationalization).
 - Read the Docs free hosting with automatic builds from Git.
 - Widely recognized in open-source — users know how to navigate Sphinx sites.
+- **Stable project with long track record** — no maintainership drama.
 
 ### Weaknesses
 
@@ -87,6 +94,13 @@ A two-stage pipeline: Doxygen generates XML from C++ comments, Breathe bridges t
 - Exhale auto-generation can produce noisy page hierarchies for large codebases.
 - Python environment dependency adds CI complexity.
 - More configuration surface area — more things can break on upgrades.
+- **RST syntax is widely disliked** — MyST-parser (Markdown for Sphinx) is a workaround but adds another dependency.
+
+### Build Test Results (2026-04-09)
+
+- Built successfully with 116 warnings (mostly cosmetic Exhale directory-parent issues).
+- Output: 78 MB in `build/docs/sphinx/_build/` (largest of all options).
+- Used Furo theme. No patches required.
 
 ### Best For
 
@@ -114,20 +128,32 @@ A Doxygen XML postprocessor written in Python that generates clean, minimalist H
 - Lightweight output — small HTML/CSS footprint.
 - Handles C++ well, including templates and namespaces.
 - Search functionality built in.
+- **Smallest output size** of all options tested (3.0 MB).
 
 ### Weaknesses
 
 - Smaller community than doxygen-awesome-css or Sphinx.
 - Maintained but with less frequent updates.
-- Tighter coupling to specific Doxygen XML format — Doxygen version upgrades can break output.
+- **Tighter coupling to specific Doxygen XML format — Doxygen version upgrades can break output.**
 - Fewer theme variants or customization hooks.
 - Python dependency for the postprocessor.
 - Limited narrative documentation support (similar to plain Doxygen).
 - Qt-specific constructs (Q_OBJECT, signals/slots) may need manual attention.
 
+### Build Test Results (2026-04-09)
+
+- **Required 4 patches to work with Doxygen 1.16.1:**
+  1. `latex2svg.py` — libgs search path missing `/usr/lib/x86_64-linux-gnu/`.
+  2. `doxygen.py` — `extract_metadata()` filter did not include `interface` compound kind (early return skipped interface XML files entirely).
+  3. `doxygen.py` — `parse_xml()` private-struct filter did not include `interface`.
+  4. `doxygen.py` — two `compound.kind` assignment sites needed `interface` → `class` normalization.
+- After patches: built successfully with warnings only (parameter description mismatches, programlisting fallbacks).
+- Output: 3.0 MB in `build/docs/html-mcss/`.
+- **Confirms the document's warning about Doxygen version coupling** — this is a real maintenance risk.
+
 ### Best For
 
-Projects that want a very clean, minimalist documentation site and don't mind a smaller ecosystem. Good for library/engine projects with technically sophisticated audiences.
+Projects that want a very clean, minimalist documentation site and don't mind a smaller ecosystem. Good for library/engine projects with technically sophisticated audiences. **Not recommended if you upgrade Doxygen regularly.**
 
 ---
 
@@ -167,9 +193,62 @@ MkDocs is a Markdown-based static site generator. The mkdocstrings plugin with i
 - Auto-generating full API reference pages requires more manual configuration than Exhale.
 - Breaking changes more likely as the C++ handler evolves.
 
+### Build Test Results (2026-04-09)
+
+- Built successfully (hand-written content only, no auto-generated API from Doxygen XML since the C++ handler is too immature to wire up automatically).
+- Output: 2.7 MB in `build/docs/mkdocs-output/`.
+- MkDocs Material 9.7.6 displays a warning about MkDocs 2.0 incompatibility on every build.
+
+### MkDocs Project Status: Dead (as of 2026-04-09)
+
+**Do not adopt MkDocs for new projects.** The project has collapsed due to maintainership drama, and the ecosystem is fragmenting into incompatible successors.
+
+#### Timeline of Collapse
+
+Source: ["The Slow Collapse of MkDocs"](https://fpgmaas.com/blog/collapse-of-mkdocs/) by Florian Maas (Mar 22, 2026) and [Reddit discussion](https://www.reddit.com/r/Python/comments/1s0gfyb/the_slow_collapse_of_mkdocs/) (470 upvotes, ~80 comments).
+
+- **2014**: @lovelydinosaur created MkDocs, went inactive shortly after.
+- **2016-2021**: @waylan maintained MkDocs as sole maintainer.
+- **2020**: @oprypin joined, friction with @waylan over contribution acceptance.
+- **May 2021**: @oprypin publicly accused @waylan of gatekeeping; @waylan stepped down.
+- **Jun 2021**: @oprypin became primary maintainer with @squidfunk (Material) and @ultrabug.
+- **Mar 2024**: @oprypin unilaterally removed @squidfunk from the MkDocs org. @lovelydinosaur reinstated @squidfunk and stripped @oprypin's ownership.
+- **Apr 2024**: @oprypin stepped down. Released v1.6.0, helped with v1.6.1 (Aug 2024). Community rally fizzled — only 2 people attended a scheduled call.
+- **Aug 2024**: MkDocs 1.6.1 released. **Last meaningful release.**
+- **Jul 2025**: Plugin author @facelessuser opened "Is this project abandoned?" discussion. Bug fix PRs sat unreviewed for months.
+- **Jan 2026**: @lovelydinosaur announced MkDocs 2.0 — **a private rewrite that removes the entire plugin system**, the feature that made MkDocs successful. Community reaction was overwhelmingly negative. @twardoch: "Before MkDocs Material, MkDocs was a toy. The version 2 announcements suggest MkDocs is going back to its roots—becoming a toy again."
+- **Feb 2026**: Material for MkDocs published a detailed analysis of v2 incompatibilities. MkDocs 2.0 repository moved to encode/ org with contributing guidelines explicitly discouraging issues or PRs.
+- **Mar 9, 2026**: @oprypin seized PyPI access (still had credentials from maintainer days), locked out @lovelydinosaur. Backed down within 6 hours. @lovelydinosaur: "What the actual fuck? I'm the author and license holder."
+- **Mar 15, 2026**: @oprypin launched ProperDocs — a drop-in MkDocs 1.x replacement.
+- **Nov 2025-present**: @squidfunk's team put Material for MkDocs in maintenance mode and launched Zensical, a ground-up rewrite.
+
+#### Competing Successors
+
+| Project | Author | Approach | GitHub Stars |
+|---------|--------|----------|--------------|
+| **Zensical** | @squidfunk + @pawamoy | Ground-up rewrite, reads mkdocs.yml natively, 5x faster builds | ~3,700 |
+| **ProperDocs** | @oprypin | Drop-in MkDocs 1.x fork, existing plugins work unchanged | ~21 |
+| **MaterialX** | @jaywhj | Continuation of Material for MkDocs theme | Growing |
+
+#### Community Sentiment (Reddit, Mar 2026)
+
+- **Zensical is the clear community favorite** — multiple commenters report successful migrations. u/galateax (6-year MkDocs admin): "Squidfunk/Martin, Alex, and pawamoy/Timotheé have proven they're trustworthy members of the open-source community."
+- **Same author (@lovelydinosaur) also abandoned HTTPX** — pattern of creating popular projects, going inactive, then returning with incompatible rewrites.
+- u/pydry: "mkdocs + material is hands down the best markdown-to-html documentation generator out there" — but acknowledges it's now dead.
+- u/UUDDLRLRBadAlchemy: "if you were considering MkDocs for code documentation, the people you'd have put your trust in are the ones who built Zensical."
+- u/-techno_viking-: "Behaving like they did in this mkdocs drama in a paid job setting would've meant getting written up, getting fired and possible legal action."
+
+#### Other Alternatives Mentioned by the Community
+
+- **Docusaurus** (React-based, used by Meta): well-documented, good built-in features, React component support.
+- **Astro/Starlight**: modern JS-based SSG with a clean default docs theme.
+- **Quarto**: science-oriented, supports embedded executable code fragments.
+- **Great Docs by Posit**: new entrant leveraging Quarto, reportedly well-maintained.
+- **MyST-parser for Sphinx**: Markdown syntax for Sphinx, avoiding RST pain.
+
 ### Best For
 
-Projects that prioritize visual polish and Markdown-based workflows, and are willing to accept some risk from newer tooling. Excellent if the team already uses MkDocs for other projects.
+~~Projects that prioritize visual polish and Markdown-based workflows.~~ **No longer recommended for any new project.** If you want the Material look, evaluate Zensical instead — but note it has no C++ documentation story yet and is too new to rely on for a C++/Qt project.
 
 ---
 
@@ -198,9 +277,30 @@ Standard Doxygen HTML output with no additional themes or tooling.
 - Navigation can be difficult in large projects.
 - Generates very large HTML output with inline styles.
 
+### Build Test Results (2026-04-09)
+
+- Built successfully with zero errors.
+- Output: 51 MB in `build/docs/html/`.
+
 ### Best For
 
 Internal developer documentation where functionality matters more than aesthetics. Also useful as a baseline to verify Doxygen comment coverage before adding a theme.
+
+---
+
+## Build Test Summary (2026-04-09)
+
+All five options were built against the full wiRedPanda codebase (App/ + MCP/Server/).
+
+| # | Tool | Output Path | Size | Errors | Patches Needed |
+|---|------|-------------|------|--------|----------------|
+| 1 | Plain Doxygen | `build/docs/html/` | 51 MB | 0 | 0 |
+| 2 | Doxygen + awesome-css | `build/docs/html-awesome/` | 50 MB | 0 | 0 |
+| 3 | Sphinx + Breathe + Exhale | `build/docs/sphinx/_build/` | 78 MB | 116 warnings | 0 |
+| 4 | Doxygen + m.css | `build/docs/html-mcss/` | 3.0 MB | 0 (after patches) | 4 |
+| 5 | MkDocs + Material | `build/docs/mkdocs-output/` | 2.7 MB | 0 (hand-written only) | 0 |
+
+Open any with: `xdg-open <output-path>/index.html`
 
 ---
 
@@ -219,8 +319,12 @@ All options above produce static HTML and can be deployed to:
 
 For wiRedPanda specifically:
 
-1. **Start with Doxygen + doxygen-awesome-css** — minimal effort, immediate results from existing comments, and a GitHub Action can automate deployment to GitHub Pages.
+1. **Start with Doxygen + doxygen-awesome-css** — minimal effort, immediate results from existing comments, zero maintenance risk, and a GitHub Action can automate deployment to GitHub Pages. Built and tested successfully with no issues.
 
-2. **Upgrade to Sphinx/Breathe later** if there's a need for tutorials, user guides, or contributor documentation alongside the API reference.
+2. **Upgrade to Sphinx + Breathe later** if there's a need for tutorials, user guides, or contributor documentation alongside the API reference. Use MyST-parser to avoid RST syntax pain.
+
+3. **Avoid MkDocs** — the project is dead and fragmenting. Zensical (the successor) has no C++ documentation support and is too new to bet on.
+
+4. **Avoid m.css** unless you are willing to patch it on every Doxygen upgrade. The output is the cleanest of all options, but the maintenance burden is real.
 
 The incremental approach avoids over-engineering the docs infrastructure while still producing a professional result from day one.
