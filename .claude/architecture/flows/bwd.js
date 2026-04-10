@@ -20,7 +20,7 @@ flowRegistry['bwd_open'] = {
   title: 'Open Editor',
   nodes: [
         ['start',   'Open waveform editor',                     'start',   ''],
-        ['create', 'Create editor\nlinked to circuit', 'step', '', 'bwd_ops'],
+        ['create', 'Create editor\nlinked to circuit',             'step',    ''],
         ['wave',    'Load or create\nwaveform data',             'key',     ''],
         ['load_e',  'Collect I/O elements\nfrom circuit',        'step',    ''],
         ['d_empty', 'Circuit has\nelements?',                    'decision',''],
@@ -146,29 +146,3 @@ flowRegistry['bwd_export'] = {
       ]
 };
 
-flowRegistry['bwd_pipeline'] = {
-  title: 'Waveform Pipeline',
-  nodes: [
-        ['start',    'MainWindow opens\nwaveform editor',           'start',    ''],
-        ['load',     'Collect I/O elements\nfrom circuit',           'step',     ''],
-        ['create',   'Build waveform table:\nrows = I/O signals,\ncols = timesteps',  'step', ''],
-        ['model',    'Signal Model',                                 'key',      'Rows: input signals (editable) + output signals (read-only). Columns: simulation time steps. Cells: 0/1 values.'],
-        ['run',      'Run simulation',                               'key',      'For each time step: 1. Set circuit inputs 2. Run sim cycle 3. Read outputs \u2192 fill cells'],
-        ['delegate', 'Signal Delegate',                              'step',     'Custom cell rendering: waveform lines or numeric values'],
-        ['view',     'Waveform View',                                'step',     'Display widget. Zoom, pan, fit-to-screen.'],
-        ['save',     'Save .dolphin',                                'step',     'Binary format with header and table data'],
-        ['load_d',   'Load .dolphin',                                'step',     'Validate header \u2192 fill signal model. Check signal count matches circuit.'],
-        ['exp',      'Export',                                       'end',      'PNG / PDF / plain text'],
-      ],
-  edges: [
-        ['start',    'load'],
-        ['load',     'create'],
-        ['create',   'model'],
-        ['model',    'run'],
-        ['run',      'delegate'],
-        ['run',      'view'],
-        ['model',    'save'],
-        ['model',    'load_d'],
-        ['model',    'exp'],
-      ]
-};

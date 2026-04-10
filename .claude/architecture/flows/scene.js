@@ -25,7 +25,7 @@ flowRegistry['scene_clipboard'] = {
         ['cm_copy',  'Clipboard: copy',                   'key',      ''],
         ['d_sel',    'Selection\nempty?',                  'decision', ''],
         ['clear_cb', 'Clear clipboard',                   'error',    ''],
-        ['ser', 'Serialize selected items\nwith centroid offset', 'step', '', 'ser_header'],
+        ['ser', 'Serialize selected items\nwith centroid offset', 'step', '', 'ser_serialize'],
         ['blobs',    'Collect embedded IC\nblobs used by selection', 'step',    ''],
         ['set_mime', 'Store in clipboard',                'end',      ''],
         ['cut',      'Cut action',                        'start',    ''],
@@ -42,7 +42,7 @@ flowRegistry['scene_clipboard'] = {
         ['imp_blob', 'Import blobs into\nIC Registry (skip dupes)','step',''],
         ['d_fmt',    'Valid clipboard\nformat?',           'decision', ''],
         ['r_fmt',    'Abort\n(wrong format)',              'error',    ''],
-        ['deser', 'Deserialize, add items,\nreposition at mouse', 'key', 'Clear selection, compute offset from centroid, push add command', 'ser_header'],
+        ['deser', 'Deserialize, add items,\nreposition at mouse', 'key', 'Clear selection, compute offset from centroid, push add command', 'ser_deserialize'],
       ],
   edges: [
         ['copy',     'cm_copy'],
@@ -240,42 +240,3 @@ flowRegistry['scene_ownership'] = {
       ]
 };
 
-flowRegistry['scene_mouse_old'] = {
-  title: 'Mouse Interactions',
-  nodes: [
-        ['press',    'Mouse press',             'start',    'Start selection box, start dragging, start wire'],
-        ['move',     'Mouse move',              'step',     'Update drag position, extend wire/selection'],
-        ['release', 'Mouse release', 'step', 'Commit move, finish wire, commit selection', 'cmd_move'],
-        ['dblclick', 'Double-click',            'step',     'Open IC sub-circuit, toggle input'],
-        ['add',      'Add Items',               'step',     'Drop/paste elements'],
-        ['del',      'Delete Items',            'step',     'Delete selection'],
-        ['mv',       'Move',                    'step',     'Drag elements'],
-        ['rot',      'Rotate / Flip',           'step',     'Transform elements'],
-        ['upd',      'Update',                  'step',     'Property changes (label, color, freq)'],
-        ['split',    'Split',                   'step',     'Insert node into wire'],
-        ['morph',    'Morph',                   'step',     'Change element type'],
-        ['chgsz',    'Change Input Size',       'step',     'Add/remove ports'],
-        ['stale',    'Mark circuit for rebuild', 'key',     'Simulation graph is stale. Next timer tick rebuilds it.'],
-      ],
-  edges: [
-        ['press',    'move'],
-        ['move',     'release'],
-        ['release',  'add'],
-        ['release',  'mv'],
-        ['dblclick', 'add'],
-        ['press',    'del'],
-        ['release',  'rot'],
-        ['release',  'upd'],
-        ['release',  'split'],
-        ['release',  'morph'],
-        ['release',  'chgsz'],
-        ['add',      'stale'],
-        ['del',      'stale'],
-        ['mv',       'stale'],
-        ['rot',      'stale'],
-        ['upd',      'stale'],
-        ['split',    'stale'],
-        ['morph',    'stale'],
-        ['chgsz',    'stale'],
-      ]
-};

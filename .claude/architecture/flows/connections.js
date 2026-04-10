@@ -104,36 +104,3 @@ flowRegistry['nodes_ports'] = {
       ]
 };
 
-flowRegistry['nodes_wire'] = {
-  title: 'Wire Creation',
-  nodes: [
-        ['drag',     'User drags from\noutput port',             'start',    'Connection manager creates temporary wire'],
-        ['hover', 'Hover over input port', 'step', 'Validates: not self-loop, compatible types, not already connected', 'conn_validate'],
-        ['d_ok',     'Connection\nallowed?',                     'decision', ''],
-        ['reject',   'Reject\n(visual feedback)',                'error',    ''],
-        ['release',  'Release on input port',                    'step',     ''],
-        ['cmd', 'Push add command\nto undo stack', 'key', '', 'cmd_add'],
-      ],
-  edges: [
-        ['drag',    'hover'],
-        ['hover',   'd_ok'],
-        ['d_ok',    'reject',  'No'],
-        ['d_ok',    'release', 'Yes'],
-        ['release', 'cmd'],
-      ]
-};
-
-flowRegistry['nodes_sim_role'] = {
-  title: 'Simulation Role',
-  nodes: [
-        ['note',     'Connections propagate,\nthey don\u2019t compute', 'key', ''],
-        ['up_out',   'Update output port:\ncopy element output\nto port status', 'step', ''],
-        ['up_inp',   'Update input port:\ncopy connected output\nstatus to input', 'step', ''],
-        ['bypass',   'Sim graph bypasses\nwires entirely',       'end',     'Uses direct element-to-element links'],
-      ],
-  edges: [
-        ['note',   'up_out'],
-        ['up_out', 'up_inp'],
-        ['up_inp', 'bypass'],
-      ]
-};
