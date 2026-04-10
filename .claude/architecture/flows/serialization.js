@@ -121,23 +121,3 @@ flowRegistry['ser_header'] = {
       ]
 };
 
-flowRegistry['io_load'] = {
-  title: 'Load Flow',
-  nodes: [
-        ['start',    'Workspace load',                           'start',    ''],
-        ['load', 'Deserialize from stream', 'key', '', 'ser_deserialize'],
-        ['add',      'Add items to scene',                       'end',     'Register IDs, restore connections, trigger simulation rebuild'],
-      ],
-  edges: [
-        ['start',    'load'],
-        ['load',     'add'],
-      ]
-};
-
-flowRegistry['io_context'] = {
-  title: 'Serialization Context',
-  nodes: [
-        ['ctx',      'Per-load state',                           'key',     'Port map: serial ID \u2192 port. Version: file format version. Working directory. Blob registry: embedded IC blobs.'],
-      ],
-  edges: []
-};
