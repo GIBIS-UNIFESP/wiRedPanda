@@ -6,12 +6,13 @@ flowRegistry['sim_ops'] = {
     ['timer',  'Timer fires\nevery 1ms',             'step',  ''],
     ['d_init', 'Initialized?',                        'decision', 'Lazy: rebuild sim graph on first tick after restart'],
     ['init',   'Initialize',                           'key', 'Collect items, build graph, topological sort', 'sim_init'],
-    ['p0',     'Phase 0: Clocks',                     'step',  'Check elapsed time, toggle if needed'],
-    ['p1',     'Phase 1: Inputs',                     'step',  'Push switch/button/rotary state'],
-    ['p2',     'Phase 2: Logic',                      'key',   'Run all element logic in topological order', 'ge_logic'],
+    ['p0',     'Phase 0: Clocks',                     'key',   'Check elapsed time, toggle if needed', 'sim_p0'],
+    ['p1',     'Phase 1: Inputs',                     'key',   'Push switch/button/rotary state', 'sim_p1'],
+    ['p2',     'Phase 2: Logic',                      'key',   'Run all element logic in topological order', 'sim_p2'],
     ['d_fb',   'Has feedback\nloops?',                'decision', ''],
     ['settle', 'Iterative Settle',                    'key', 'Loop up to 10x until converged', 'sim_settle'],
-    ['p3',     'Phase 3\u20134: Visuals',             'step',  'Update output + input port visuals'],
+    ['p3',     'Phase 3: Wire\nVisuals',              'key',   'Push logic values onto wires', 'sim_p3'],
+    ['p4',     'Phase 4: Output\nVisuals',            'key',   'Refresh LEDs, displays, buzzers', 'sim_p4'],
     ['wait',   'Wait for\nnext tick',                 'end',   ''],
   ],
   edges: [
@@ -26,7 +27,8 @@ flowRegistry['sim_ops'] = {
     ['d_fb',   'settle', 'Yes'],
     ['d_fb',   'p3',     'No'],
     ['settle', 'p3'],
-    ['p3',     'wait'],
+    ['p3',     'p4'],
+    ['p4',     'wait'],
   ]
 };
 
@@ -123,5 +125,129 @@ flowRegistry['sim_settle'] = {
         ['next',   'loop'],
         ['loop',   'fail'],
       ]
+};
+
+flowRegistry['sim_p0'] = {
+  title: 'Phase 0 \u2014 Clocks',
+  nodes: [
+    ['start',  'Phase 0: Update Clocks',               'start', 'First phase of each simulation tick'],
+    ['loop',   'For each clock element',                'key',   ''],
+    ['time',   'Check wall-clock\nelapsed time',        'step',  'Compare current time against clock\u2019s configured interval'],
+    ['d_due',  'Interval\nelapsed?',                    'decision', ''],
+    ['skip',   'No change\n(keep current state)',       'step',   ''],
+    ['toggle', 'Toggle output\n(high \u2194 low)',      'key',   'Flip the clock\u2019s output value'],
+    ['reset',  'Reset elapsed\ntime counter',           'step',  ''],
+    ['next',   'Next clock',                            'step',   ''],
+    ['done',   'All clocks updated',                    'end',   ''],
+  ],
+  edges: [
+    ['start',  'loop'],
+    ['loop',   'time'],
+    ['time',   'd_due'],
+    ['d_due',  'skip',   'No'],
+    ['d_due',  'toggle', 'Yes'],
+    ['toggle', 'reset'],
+    ['skip',   'next'],
+    ['reset',  'next'],
+    ['next',   'loop'],
+    ['loop',   'done'],
+  ]
+};
+
+flowRegistry['sim_p1'] = {
+  title: 'Phase 1 \u2014 Inputs',
+  nodes: [
+    ['start',  'Phase 1: Update Inputs',               'start', 'Propagate user-controlled input states'],
+    ['loop',   'For each input element',                'key',   'Buttons, switches, rotary knobs'],
+    ['read',   'Read current\nUI state',                'step',  'Is the button pressed? Switch toggled? Rotary position?'],
+    ['push',   'Push state to\nsimulation outputs',     'key',   'Write the input\u2019s value to its output port(s)'],
+    ['next',   'Next input',                            'step',   ''],
+    ['done',   'All inputs updated',                    'end',   ''],
+  ],
+  edges: [
+    ['start', 'loop'],
+    ['loop',  'read'],
+    ['read',  'push'],
+    ['push',  'next'],
+    ['next',  'loop'],
+    ['loop',  'done'],
+  ]
+};
+
+flowRegistry['sim_p2'] = {
+  title: 'Phase 2 \u2014 Logic',
+  nodes: [
+    ['start',  'Phase 2: Update Logic',                'start', 'Core computation phase'],
+    ['d_fb',   'Has feedback\nloops?',                  'decision', 'Detected during initialization'],
+    ['single', 'Single pass\nin topological order',     'key',   'No feedback: each element computed once, inputs guaranteed ready'],
+    ['settle', 'Iterative settle\n(up to 10 passes)',   'key',   'Feedback: repeat until outputs converge', 'sim_settle'],
+    ['loop',   'For each element\n(highest priority first)', 'key', ''],
+    ['snap',   'Snapshot inputs\nfrom predecessors',    'step', 'Copy predecessor output values into input array', 'ge_logic'],
+    ['compute','Compute element logic\n(AND, FF, etc.)','step', 'Each element type overrides this with its own boolean/sequential logic'],
+    ['output', 'Set output values\nand change flag',    'step',  ''],
+    ['next',   'Next element',                          'step',   ''],
+    ['done',   'All logic updated',                     'end',   ''],
+  ],
+  edges: [
+    ['start',   'd_fb'],
+    ['d_fb',    'single',  'No'],
+    ['d_fb',    'settle',  'Yes'],
+    ['single',  'loop'],
+    ['settle',  'loop'],
+    ['loop',    'snap'],
+    ['snap',    'compute'],
+    ['compute', 'output'],
+    ['output',  'next'],
+    ['next',    'loop'],
+    ['loop',    'done'],
+  ]
+};
+
+flowRegistry['sim_p3'] = {
+  title: 'Phase 3 \u2014 Wire Visuals',
+  nodes: [
+    ['start',  'Phase 3: Update\nWire Visuals',        'start', 'Push computed values onto visual wires'],
+    ['d_tick', 'Visual tick\ndue?',                     'decision', 'Throttle repaints to ~60fps'],
+    ['skip',   'Skip repaint',                          'end',   'Logic still ran, just skip visual update'],
+    ['loop',   'For each connection',                   'key',   ''],
+    ['read',   'Read element\u2019s\noutput value',     'step',  'Get the computed logic value from the element'],
+    ['set',    'Set output port\nstatus + color',       'step',  'Wire turns green (active), red (inactive), or gray (undefined)'],
+    ['next',   'Next connection',                       'step',   ''],
+    ['done',   'All wires updated',                     'end',   ''],
+  ],
+  edges: [
+    ['start', 'd_tick'],
+    ['d_tick', 'skip',  'No'],
+    ['d_tick', 'loop',  'Yes'],
+    ['loop',  'read'],
+    ['read',  'set'],
+    ['set',   'next'],
+    ['next',  'loop'],
+    ['loop',  'done'],
+  ]
+};
+
+flowRegistry['sim_p4'] = {
+  title: 'Phase 4 \u2014 Output Visuals',
+  nodes: [
+    ['start',  'Phase 4: Update\nOutput Visuals',      'start', 'Refresh output element displays'],
+    ['loop',   'For each output element',               'key',   'LEDs, 7-segment displays, buzzers'],
+    ['ports',  'For each input port\non the element',   'step',  'Output elements read values from their input ports'],
+    ['read',   'Read connected\nwire status',           'step',  'Get the value from the connected output port'],
+    ['set',    'Set input port status',                 'step',  'Port color updates to reflect signal state'],
+    ['refresh','Element refreshes\nits visual',         'key',   'LED changes color, display shows digit, buzzer toggles sound'],
+    ['next',   'Next output element',                   'step',   ''],
+    ['done',   'All outputs updated',                   'end',   ''],
+  ],
+  edges: [
+    ['start',   'loop'],
+    ['loop',    'ports'],
+    ['ports',   'read'],
+    ['read',    'set'],
+    ['set',     'refresh'],
+    ['refresh', 'next'],
+    ['next',    'loop'],
+    ['loop',    'done'],
+  ]
 };
 
