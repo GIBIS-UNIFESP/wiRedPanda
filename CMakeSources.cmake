@@ -65,6 +65,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.cpp
@@ -173,6 +174,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.h

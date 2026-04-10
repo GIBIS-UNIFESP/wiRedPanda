@@ -81,6 +81,11 @@ public:
     /// Executes one simulation step (used by tests to advance the simulation manually).
     void update();
 
+    /// Enables or disables the visual refresh throttle.
+    /// When disabled, phases 3–4 run on every update() call regardless of tick count.
+    /// \sa SimulationThrottleDisabler
+    void setVisualThrottleEnabled(bool enabled);
+
     // --- Static graph building (used by IC::initializeSimulation too) ---
 
     static void buildConnectionGraph(const QVector<GraphicElement *> &elements);
@@ -145,7 +150,8 @@ private:
     // --- Members: Visual refresh throttle ---
 
     int m_visualTickCount = 0;
-    int m_visualTickInterval = 16; ///< Visual update every N simulation ticks (derived from monitor refresh rate, default ~60 fps).
+    int m_visualTickInterval = 16;    ///< Visual update every N simulation ticks (derived from monitor refresh rate, default ~60 fps).
+    bool m_visualThrottleEnabled = true; ///< When false, phases 3–4 always run (used by SimulationThrottleDisabler).
 
     // --- Members: Direct simulation graph ---
 
