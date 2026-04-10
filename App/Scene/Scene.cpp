@@ -698,6 +698,11 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         ElementType type;   stream >> type;
         QString icFileName; stream >> icFileName;
 
+        bool isEmbedded = false;
+        QString blobName;
+        if (!stream.atEnd()) { stream >> isEmbedded; }
+        if (!stream.atEnd()) { stream >> blobName; }
+
         // Subtract the drag offset so the element lands under the original grab point
         QPointF pos = event->scenePos() - offset;
         qCDebug(zero) << type << " at position: " << pos.x() << ", " << pos.y() << ", label: " << icFileName;
@@ -705,7 +710,14 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         auto *element = ElementFactory::buildElement(type);
         qCDebug(zero) << "Valid element.";
 
-        element->loadFromDrop(icFileName, contextDir());
+        if (isEmbedded && type == ElementType::IC) {
+            if (!m_icRegistry.initEmbeddedIC(static_cast<IC *>(element), blobName)) {
+                delete element;
+                return;
+            }
+        } else {
+            element->loadFromDrop(icFileName, contextDir());
+        }
 
         qCDebug(zero) << "Adding the element to the scene.";
         receiveCommand(new AddItemsCommand({element}, this));
