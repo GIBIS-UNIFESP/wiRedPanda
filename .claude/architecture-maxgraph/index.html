@@ -44,7 +44,7 @@ body { background: #0d1117; color: #c9d1d9; font-family: -apple-system, 'Segoe U
 
 <script type="module">
 import {
-  Graph, InternalEvent, RubberBandHandler, constants, Point, CellStyle,
+  Graph, InternalEvent, RubberBandHandler, constants, Point,
   Perimeter, DomHelpers, Client, PanningHandler
 } from 'https://esm.sh/@maxgraph/core@0.14';
 
@@ -189,7 +189,8 @@ function renderFlow(flowId) {
 
   // Enable panning
   graph.setPanning(true);
-  graph.panningHandler.useLeftButtonForPanning = false; // right-button pan
+  const pHandler = new PanningHandler(graph);
+  pHandler.useLeftButtonForPanning = false; // right-button pan
 
   // Enable mouse wheel zoom
   InternalEvent.addMouseWheelListener((evt, up) => {
