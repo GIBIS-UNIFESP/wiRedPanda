@@ -1,4 +1,4 @@
-// Flow view — SVG + dagre replacement for flow-renderer.js
+// Flow view — SVG + dagre layout
 
 let flowCanvas = null;
 let flowHistory = [];
@@ -22,13 +22,6 @@ function openFlow(flowId) {
   updateBreadcrumbs();
   renderFlow(flowId);
   updateHash();
-}
-
-function drillInto(flowId) {
-  if (!currentFlowId) return;
-  const current = flowRegistry[currentFlowId];
-  flowHistory.push({ flowId: currentFlowId, title: current ? current.title : currentFlowId });
-  openFlow(flowId);
 }
 
 function goBack() {
@@ -258,32 +251,16 @@ function renderFlowEdge(e, parent) {
   if (e.label && e.label.includes('Yes')) { color = 'rgba(63, 185, 80, 0.47)'; arrowId = 'flow-arrow-yes'; }
   if (e.label && e.label.includes('No')) { color = 'rgba(218, 54, 51, 0.47)'; arrowId = 'flow-arrow-no'; }
 
-  // Shorten path to stop at node border
-  const sourceNode = _flowNodes[e.source];
+  // Shorten path to stop before node border
   const targetNode = _flowNodes[e.target];
   const pts = [...e.points];
 
   if (targetNode && pts.length >= 2) {
     const last = pts[pts.length - 1];
     const prev = pts[pts.length - 2];
-    const tcx = targetNode.x + targetNode.w / 2;
-    const tcy = targetNode.y + targetNode.h / 2;
-
-    if (targetNode.type === 'decision') {
-      // Shorten to diamond border
-      const dx = targetNode.w / 2 + 8, dy = targetNode.h / 2 + 8;
-      const dist = Math.abs(last.x - tcx) / dx + Math.abs(last.y - tcy) / dy;
-      if (dist > 0) {
-        const shrink = 12;
-        const angle = Math.atan2(last.y - prev.y, last.x - prev.x);
-        pts[pts.length - 1] = { x: last.x - Math.cos(angle) * shrink, y: last.y - Math.sin(angle) * shrink };
-      }
-    } else {
-      // Shorten straight to rect border
-      const shrink = 8;
-      const angle = Math.atan2(last.y - prev.y, last.x - prev.x);
-      pts[pts.length - 1] = { x: last.x - Math.cos(angle) * shrink, y: last.y - Math.sin(angle) * shrink };
-    }
+    const shrink = targetNode.type === 'decision' ? 12 : 8;
+    const angle = Math.atan2(last.y - prev.y, last.x - prev.x);
+    pts[pts.length - 1] = { x: last.x - Math.cos(angle) * shrink, y: last.y - Math.sin(angle) * shrink };
   }
 
   const path = svgEl('path', {
@@ -382,12 +359,10 @@ function expandInline(nodeId) {
 
   // Save and hide outgoing edges
   const removedEdges = [];
-  const removedEdgeIndices = [];
   for (let i = _flowEdges.length - 1; i >= 0; i--) {
     const e = _flowEdges[i];
     if (e.source === nodeId) {
       removedEdges.push({ source: e.source, target: e.target, label: e.label, index: e.index });
-      removedEdgeIndices.push(i);
       // Hide the edge visually
       const ref = _flowEdgeEls[e.index];
       if (ref) {
@@ -519,7 +494,6 @@ function expandInline(nodeId) {
     subEdges,
     bridgeEdges,
     removedEdges,
-    removedEdgeIndices,
     subHeight,
     threshold
   };
@@ -548,20 +522,6 @@ function collapseInline(nodeId) {
   for (const [id, fn] of Object.entries(_flowNodes)) {
     if (id !== nodeId && fn.y > exp.threshold + exp.subHeight / 2) {
       fn.y -= exp.subHeight;
-    }
-  }
-
-  // Restore removed edges visibility (and update points)
-  for (const re of exp.removedEdges) {
-    const existing = _flowEdges.find(e => e.index === re.index);
-    if (existing) {
-      const sn = _flowNodes[existing.source], tn = _flowNodes[existing.target];
-      if (sn && tn) {
-        existing.points = [
-          { x: sn.x + sn.w / 2, y: sn.y + sn.h },
-          { x: tn.x + tn.w / 2, y: tn.y }
-        ];
-      }
     }
   }
 

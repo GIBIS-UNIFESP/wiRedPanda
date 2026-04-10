@@ -65,7 +65,6 @@ const nodeFlowMap = {
   'settings': 'core_services',
   'common': 'core_services',
   'enums': 'core_services',
-  'theme_mgr': 'ui_theme',
   'sys_theme': 'ui_theme',
   'item_with_id': 'core_services',
   'priorities': 'sim_topo_sort',
@@ -79,22 +78,12 @@ const nodeFlowMap = {
   'test_compat': 'test_compat_ops',
 };
 
-function flowIdForNode(nodeId, moduleName) {
-  if (nodeFlowMap[nodeId]) return nodeFlowMap[nodeId];
-  const modKey = moduleName.toLowerCase() + '_mod';
-  if (flowRegistry[modKey]) return modKey;
-  return null;
+function flowIdForNode(nodeId) {
+  return nodeFlowMap[nodeId] || null;
 }
 
-// Called from graph-view.js after SVG canvas is created
-// Events are wired directly in graph-view.js on SVG node elements,
-// so this is a no-op now. Kept for compatibility.
-function setupFlowEntryPoints() {
-  // Node double-click → openFlow is handled directly in graph-view.js
-}
-
-function drillButtonHtml(nodeId, moduleName) {
-  const fid = flowIdForNode(nodeId, moduleName);
+function drillButtonHtml(nodeId) {
+  const fid = flowIdForNode(nodeId);
   if (!fid) return '';
   const flow = flowRegistry[fid];
   const label = flow ? flow.title : fid;
