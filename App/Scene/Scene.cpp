@@ -22,6 +22,7 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/Buzzer.h"
+#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -98,15 +99,21 @@ void Scene::addItem(QGraphicsItem *item)
         registerItem(iwid);
     }
 
-    // Register IC-specific hooks
+    // Register element-type-specific hooks
     if (item->type() == GraphicElement::Type) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
-            elm && elm->elementType() == ElementType::IC) {
+        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        if (!elm) {
+            return;
+        }
+        if (elm->elementType() == ElementType::IC) {
             auto *ic = static_cast<IC *>(elm);
             if (!ic->file().isEmpty()) {
                 m_icRegistry.watchFile(ic->file());
             }
             connect(ic, &IC::requestOpenSubCircuit, this, &Scene::icOpenRequested);
+        } else if (elm->elementType() == ElementType::TruthTable) {
+            auto *tt = static_cast<TruthTable *>(elm);
+            connect(tt, &TruthTable::requestOpenTruthTableEditor, this, &Scene::openTruthTableRequested);
         }
     }
 }
