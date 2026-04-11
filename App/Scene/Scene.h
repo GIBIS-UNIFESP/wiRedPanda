@@ -248,6 +248,11 @@ public:
     /// Propagates the current theme to all elements and connections.
     void updateTheme();
 
+    // --- Retranslation ---
+
+    /// Updates undo/redo action text to reflect the current UI language.
+    void retranslateUi();
+
     // --- Event Filter ---
 
     /// \reimp
@@ -307,6 +312,8 @@ private:
     const QVector<QNEConnection *> connections();
     void checkUpdateRequest();
     void contextMenu(const QPoint screenPos);
+    void updateUndoText(const QString &text);
+    void updateRedoText(const QString &text);
     void drawBackground(QPainter *painter, const QRectF &rect) override;
     void rotate(const int angle);
     void setDots(const QPen &dots);
