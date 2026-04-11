@@ -177,38 +177,50 @@ int main(int argc, char *argv[])
         const QString desktopDst = appsDir + "/wiredpanda.desktop";
 
         if (!appImagePath.isEmpty() && !appDir.isEmpty()) {
-            // Re-register whenever the AppImage path has changed or the entry is missing.
-            bool needsUpdate = !QFile::exists(desktopDst);
-            if (!needsUpdate) {
-                QFile f(desktopDst);
-                if (f.open(QIODevice::ReadOnly))
-                    needsUpdate = !QString::fromUtf8(f.readAll()).contains(appImagePath);
-            }
-
-            if (needsUpdate) {
+            // Build the desired desktop file content: take the bundled template and
+            // patch in the current AppImage path.  Comparing this against whatever is
+            // installed detects both a changed path and any stale content from an older
+            // release in one step.
+            QString desiredDesktop;
+            {
                 QFile src(appDir + "/usr/share/applications/wiredpanda.desktop");
                 if (src.open(QIODevice::ReadOnly)) {
-                    QString content = QString::fromUtf8(src.readAll());
-                    content.replace(QRegularExpression("^Exec=.*$", QRegularExpression::MultilineOption),
-                                    "Exec=\"" + appImagePath + "\" %F");
+                    desiredDesktop = QString::fromUtf8(src.readAll());
+                    desiredDesktop.replace(QRegularExpression("^Exec=.*$", QRegularExpression::MultilineOption),
+                                           "Exec=\"" + appImagePath + "\" %F");
+                }
+            }
+
+            if (!desiredDesktop.isEmpty()) {
+                bool needsUpdate = true;
+                {
+                    QFile installed(desktopDst);
+                    if (installed.open(QIODevice::ReadOnly))
+                        needsUpdate = (QString::fromUtf8(installed.readAll()) != desiredDesktop);
+                }
+                if (needsUpdate) {
                     QDir().mkpath(appsDir);
                     QFile dst(desktopDst);
                     if (dst.open(QIODevice::WriteOnly | QIODevice::Truncate))
-                        dst.write(content.toUtf8());
+                        dst.write(desiredDesktop.toUtf8());
                 }
+            }
 
-                const QString iconsDir = localShare + "/icons/hicolor/scalable/apps";
-                QDir().mkpath(iconsDir);
-                const QString iconDst = iconsDir + "/wpanda.svg";
-                QFile::remove(iconDst);
+            // Install icons whenever they are absent — independently of whether the
+            // desktop entry needed updating.  Previous versions only installed the SVG,
+            // so users running the same AppImage path would never get the PNG installed
+            // because needsUpdate was false on every subsequent launch.
+            const QString iconsDir = localShare + "/icons/hicolor/scalable/apps";
+            QDir().mkpath(iconsDir);
+            const QString iconDst = iconsDir + "/wpanda.svg";
+            if (!QFile::exists(iconDst))
                 QFile::copy(appDir + "/usr/share/icons/hicolor/scalable/apps/wpanda.svg", iconDst);
 
-                const QString icons256Dir = localShare + "/icons/hicolor/256x256/apps";
-                QDir().mkpath(icons256Dir);
-                const QString icon256Dst = icons256Dir + "/wpanda.png";
-                QFile::remove(icon256Dst);
+            const QString icons256Dir = localShare + "/icons/hicolor/256x256/apps";
+            QDir().mkpath(icons256Dir);
+            const QString icon256Dst = icons256Dir + "/wpanda.png";
+            if (!QFile::exists(icon256Dst))
                 QFile::copy(appDir + "/usr/share/icons/hicolor/256x256/apps/wpanda.png", icon256Dst);
-            }
         } else if (QFile::exists(desktopDst)) {
             // Not running as AppImage — remove stale self-registered desktop entry
             // left by a previous AppImage run, so it doesn't shadow the system-wide
