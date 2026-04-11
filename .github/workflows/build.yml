@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        qt: [6.2.4, 6.8.3, 6.10.3]
+        qt: [6.2.4, 6.8.3, 6.11.0]
         cmake_args: ['']
         include:
           - os: ubuntu-latest
@@ -60,7 +60,7 @@ jobs:
       with:
         version: ${{ matrix.qt }}
         cache: true
-        aqtversion: ==3.*
+        aqtversion: ' @ git+https://github.com/miurahr/aqtinstall@master'
         modules: qtmultimedia qtimageformats
 
     - name: ccache

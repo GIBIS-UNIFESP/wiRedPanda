@@ -40,15 +40,15 @@ from unofficial installers such as [aqtinstall](https://github.com/miurahr/aqtin
 from community-maintained repositories or
 [built from source](https://wiki.qt.io/Building_Qt_6_from_Git).
 
-Here's how one could use aqtinstall to install Qt 6.10.3 on a Debian-based distro.
+Here's how one could use aqtinstall to install Qt 6.11.0 on a Debian-based distro.
 
 ```bash
 sudo apt-get update
 sudo apt-get install libgl1-mesa-dev libxcb-xinerama0 libpulse-dev git python3 python3-pip python3-venv -y
 python3 -m venv ~/venv
 ~/venv/bin/pip install aqtinstall==3.*
-~/venv/bin/aqt install-qt linux desktop 6.10.3 --outputdir ~/Qt
-PATH=~/Qt/6.10.3/gcc_64/bin:$PATH
+~/venv/bin/aqt install-qt linux desktop 6.11.0 --outputdir ~/Qt
+PATH=~/Qt/6.11.0/gcc_64/bin:$PATH
 export PATH
 ```
 

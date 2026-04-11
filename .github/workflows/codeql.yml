@@ -32,9 +32,9 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: 6.10.3
+        version: 6.11.0
         cache: true
-        aqtversion: ==3.*
+        aqtversion: ' @ git+https://github.com/miurahr/aqtinstall@master'
         modules: qtmultimedia qtimageformats
 
     - name: ccache
