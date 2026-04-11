@@ -148,7 +148,13 @@ int main(int argc, char *argv[])
     // Fusion style provides a consistent cross-platform look and is required for
     // the custom theme colours defined in ThemeManager to render correctly on all OSes
     app.setStyle("Fusion");
-    app.setWindowIcon(QIcon(":/Interface/Toolbar/wpanda.svg"));
+    // Build the window icon from pre-rasterised PNGs so it is always available
+    // on the taskbar (SVG rendering requires a plugin that may not be loaded yet
+    // at this early startup point, causing a null icon on KDE Wayland / Steam Deck).
+    QIcon appIcon;
+    appIcon.addPixmap(QPixmap(":/Assets/Icons/64x64/wpanda.png"));
+    appIcon.addPixmap(QPixmap(":/Assets/Icons/128x128/wpanda.png"));
+    app.setWindowIcon(appIcon);
 
     // Self-registering element metadata (static initialisers in each element's
     // .cpp) may trigger ThemeManager construction before QApplication exists.
@@ -196,6 +202,12 @@ int main(int argc, char *argv[])
                 const QString iconDst = iconsDir + "/wpanda.svg";
                 QFile::remove(iconDst);
                 QFile::copy(appDir + "/usr/share/icons/hicolor/scalable/apps/wpanda.svg", iconDst);
+
+                const QString icons256Dir = localShare + "/icons/hicolor/256x256/apps";
+                QDir().mkpath(icons256Dir);
+                const QString icon256Dst = icons256Dir + "/wpanda.png";
+                QFile::remove(icon256Dst);
+                QFile::copy(appDir + "/usr/share/icons/hicolor/256x256/apps/wpanda.png", icon256Dst);
             }
         } else if (QFile::exists(desktopDst)) {
             // Not running as AppImage — remove stale self-registered desktop entry
