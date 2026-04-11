@@ -56,13 +56,21 @@ Scene::Scene(QObject *parent)
     m_selectionRect.setFlag(QGraphicsItem::ItemIsSelectable, false);
     addItem(&m_selectionRect);
 
-    m_undoAction = undoStack()->createUndoAction(this, tr("&Undo"));
+    m_undoAction = new QAction(tr("&Undo"), this);
+    m_undoAction->setEnabled(false);
     m_undoAction->setIcon(QIcon(":/Interface/Toolbar/undo.svg"));
     m_undoAction->setShortcut(QKeySequence::Undo);
+    connect(&m_undoStack, &QUndoStack::canUndoChanged, m_undoAction, &QAction::setEnabled);
+    connect(&m_undoStack, &QUndoStack::undoTextChanged, this, &Scene::updateUndoText);
+    connect(m_undoAction, &QAction::triggered, &m_undoStack, &QUndoStack::undo);
 
-    m_redoAction = undoStack()->createRedoAction(this, tr("&Redo"));
+    m_redoAction = new QAction(tr("&Redo"), this);
+    m_redoAction->setEnabled(false);
     m_redoAction->setIcon(QIcon(":/Interface/Toolbar/redo.svg"));
     m_redoAction->setShortcut(QKeySequence::Redo);
+    connect(&m_undoStack, &QUndoStack::canRedoChanged, m_redoAction, &QAction::setEnabled);
+    connect(&m_undoStack, &QUndoStack::redoTextChanged, this, &Scene::updateRedoText);
+    connect(m_redoAction, &QAction::triggered, &m_undoStack, &QUndoStack::redo);
 
     // Used to throttle expensive operations during drag (e.g., ensureVisible)
     m_timer.start();
@@ -526,6 +534,24 @@ QAction *Scene::undoAction() const
 QAction *Scene::redoAction() const
 {
     return m_redoAction;
+}
+
+void Scene::retranslateUi()
+{
+    updateUndoText(m_undoStack.undoText());
+    updateRedoText(m_undoStack.redoText());
+}
+
+void Scene::updateUndoText(const QString &text)
+{
+    const QString prefix = tr("&Undo");
+    m_undoAction->setText(text.isEmpty() ? prefix : prefix + QLatin1Char(' ') + text);
+}
+
+void Scene::updateRedoText(const QString &text)
+{
+    const QString prefix = tr("&Redo");
+    m_redoAction->setText(text.isEmpty() ? prefix : prefix + QLatin1Char(' ') + text);
 }
 
 void Scene::contextMenu(const QPoint screenPos)
