@@ -1484,6 +1484,8 @@ void MainWindow::retranslateUi()
 
         m_ui->tab->setTabText(index, text);
 
+        scene->retranslateUi();
+
         for (auto *elm : workspace->scene()->elements()) {
             elm->retranslate();
         }
