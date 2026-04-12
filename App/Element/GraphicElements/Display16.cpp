@@ -150,12 +150,7 @@ void Display16::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 void Display16::setColor(const QString &color)
 {
     m_color = color;
-
-    if (color == "White")  { m_colorNumber = 0; }
-    if (color == "Red")    { m_colorNumber = 1; }
-    if (color == "Green")  { m_colorNumber = 2; }
-    if (color == "Blue")   { m_colorNumber = 3; }
-    if (color == "Purple") { m_colorNumber = 4; }
+    m_colorNumber = colorNameToIndex(color);
 }
 
 QString Display16::color() const

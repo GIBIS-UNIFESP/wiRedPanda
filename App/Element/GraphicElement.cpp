@@ -669,6 +669,16 @@ QString GraphicElement::color() const
     return {};
 }
 
+int GraphicElement::colorNameToIndex(const QString &color)
+{
+    if (color == "White")  { return 0; }
+    if (color == "Red")    { return 1; }
+    if (color == "Green")  { return 2; }
+    if (color == "Blue")   { return 3; }
+    if (color == "Purple") { return 4; }
+    return 0;
+}
+
 void GraphicElement::setAudio(const QString &audio)
 {
     Q_UNUSED(audio)

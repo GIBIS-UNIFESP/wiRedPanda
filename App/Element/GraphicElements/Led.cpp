@@ -159,11 +159,7 @@ void Led::setColor(const QString &color)
 
     // m_colorIndex is the base offset into the single-input appearance list.
     // Each color occupies two consecutive entries: [base]=Off, [base+1]=On.
-    if (color == "White")  { m_colorIndex = 0; }
-    if (color == "Red")    { m_colorIndex = 2; }
-    if (color == "Green")  { m_colorIndex = 4; }
-    if (color == "Blue")   { m_colorIndex = 6; }
-    if (color == "Purple") { m_colorIndex = 8; }
+    m_colorIndex = 2 * colorNameToIndex(color);
 }
 
 QString Led::color() const
