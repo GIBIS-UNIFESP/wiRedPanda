@@ -135,21 +135,9 @@ QJsonObject ElementHandler::handleDeleteElement(const QJsonObject &params, const
     }
 
     QString errorMsg;
-    if (!validatePositiveInteger(params.value("element_id"), "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    int elementId = params.value("element_id").toInt();
-
-    if (!validateElementId(elementId, "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    auto *item = getCurrentScene()->itemById(elementId);
-
-    auto *element = dynamic_cast<GraphicElement *>(item);
+    auto *element = getValidatedElement(params, "element_id", errorMsg);
     if (!element) {
-        return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);
+        return createErrorResponse(errorMsg, requestId);
     }
 
     Scene *scene = getCurrentScene();
@@ -230,32 +218,20 @@ QJsonObject ElementHandler::handleMoveElement(const QJsonObject &params, const Q
     }
 
     QString errorMsg;
-    if (!validatePositiveInteger(params.value("element_id"), "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
     if (!validateNumeric(params.value("x"), "x", errorMsg)) {
         return createErrorResponse(errorMsg, requestId);
     }
-
     if (!validateNumeric(params.value("y"), "y", errorMsg)) {
         return createErrorResponse(errorMsg, requestId);
     }
 
-    int elementId = params.value("element_id").toInt();
     const int snap = Scene::gridSize / 2;
     const int x = qRound(params.value("x").toDouble() / snap) * snap;
     const int y = qRound(params.value("y").toDouble() / snap) * snap;
 
-    if (!validateElementId(elementId, "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    auto *item = getCurrentScene()->itemById(elementId);
-
-    auto *element = dynamic_cast<GraphicElement *>(item);
+    auto *element = getValidatedElement(params, "element_id", errorMsg);
     if (!element) {
-        return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);
+        return createErrorResponse(errorMsg, requestId);
     }
 
     Scene *scene = getCurrentScene();
@@ -295,21 +271,9 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
     }
 
     QString errorMsg;
-    if (!validatePositiveInteger(params.value("element_id"), "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    int elementId = params.value("element_id").toInt();
-
-    if (!validateElementId(elementId, "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    auto *item = getCurrentScene()->itemById(elementId);
-
-    auto *element = dynamic_cast<GraphicElement *>(item);
+    auto *element = getValidatedElement(params, "element_id", errorMsg);
     if (!element) {
-        return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);
+        return createErrorResponse(errorMsg, requestId);
     }
 
     // Reject structural changes before any mutation — these require dedicated commands.
@@ -497,23 +461,11 @@ QJsonObject ElementHandler::handleSetInputValue(const QJsonObject &params, const
     }
 
     QString errorMsg;
-    if (!validatePositiveInteger(params.value("element_id"), "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    int elementId = params.value("element_id").toInt();
-    bool value = params.value("value").toBool();
-
-    if (!validateElementId(elementId, "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    auto *item = getCurrentScene()->itemById(elementId);
-
-    auto *element = dynamic_cast<GraphicElement *>(item);
+    auto *element = getValidatedElement(params, "element_id", errorMsg);
     if (!element) {
-        return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);
+        return createErrorResponse(errorMsg, requestId);
     }
+    const bool value = params.value("value").toBool();
 
     auto *inputElement = dynamic_cast<GraphicElementInput *>(element);
     if (inputElement) {
@@ -537,21 +489,9 @@ QJsonObject ElementHandler::handleGetOutputValue(const QJsonObject &params, cons
     }
 
     QString errorMsg;
-    if (!validatePositiveInteger(params.value("element_id"), "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    int elementId = params.value("element_id").toInt();
-
-    if (!validateElementId(elementId, "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    auto *item = getCurrentScene()->itemById(elementId);
-
-    auto *element = dynamic_cast<GraphicElement *>(item);
+    auto *element = getValidatedElement(params, "element_id", errorMsg);
     if (!element) {
-        return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);
+        return createErrorResponse(errorMsg, requestId);
     }
 
     // Optional port index (defaults to 0).
@@ -596,29 +536,18 @@ QJsonObject ElementHandler::handleRotateElement(const QJsonObject &params, const
     }
 
     QString errorMsg;
-    if (!validatePositiveInteger(params.value("element_id"), "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
     if (!validateNumeric(params.value("angle"), "angle", errorMsg)) {
         return createErrorResponse(errorMsg, requestId);
     }
-
-    int elementId = params.value("element_id").toInt();
     int angle = params.value("angle").toInt();
 
-    if (!validateElementId(elementId, "element_id", errorMsg)) {
+    auto *element = getValidatedElement(params, "element_id", errorMsg);
+    if (!element) {
         return createErrorResponse(errorMsg, requestId);
     }
 
-    auto *item = getCurrentScene()->itemById(elementId);
-    auto *element = dynamic_cast<GraphicElement *>(item);
-    if (!element) {
-        return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);
-    }
-
     if (!element->isRotatable()) {
-        return createErrorResponse(QString("Element %1 is not rotatable").arg(elementId), requestId);
+        return createErrorResponse(QString("Element %1 is not rotatable").arg(element->id()), requestId);
     }
 
     Scene *scene = getCurrentScene();
@@ -638,7 +567,7 @@ QJsonObject ElementHandler::handleRotateElement(const QJsonObject &params, const
     }
 
     QJsonObject result;
-    result["element_id"] = elementId;
+    result["element_id"] = element->id();
     result["angle"] = angle;
 
     return createSuccessResponse(result, requestId);
@@ -651,29 +580,17 @@ QJsonObject ElementHandler::handleFlipElement(const QJsonObject &params, const Q
     }
 
     QString errorMsg;
-    if (!validatePositiveInteger(params.value("element_id"), "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
     if (!validateNonNegativeInteger(params.value("axis"), "axis", errorMsg)) {
         return createErrorResponse(errorMsg, requestId);
     }
-
-    int elementId = params.value("element_id").toInt();
-    int axis = params.value("axis").toInt();
-
+    const int axis = params.value("axis").toInt();
     if (axis != 0 && axis != 1) {
         return createErrorResponse("axis must be 0 (horizontal) or 1 (vertical)", requestId);
     }
 
-    if (!validateElementId(elementId, "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    auto *item = getCurrentScene()->itemById(elementId);
-    auto *element = dynamic_cast<GraphicElement *>(item);
+    auto *element = getValidatedElement(params, "element_id", errorMsg);
     if (!element) {
-        return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);
+        return createErrorResponse(errorMsg, requestId);
     }
 
     Scene *scene = getCurrentScene();
@@ -690,7 +607,7 @@ QJsonObject ElementHandler::handleFlipElement(const QJsonObject &params, const Q
     }
 
     QJsonObject result;
-    result["element_id"] = elementId;
+    result["element_id"] = element->id();
     result["axis"] = (axis == 0 ? "horizontal" : "vertical");
 
     return createSuccessResponse(result, requestId);
@@ -720,25 +637,14 @@ QJsonObject ElementHandler::handleChangeInputSize(const QJsonObject &params, con
     }
 
     QString errorMsg;
-    if (!validatePositiveInteger(params.value("element_id"), "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
     if (!validatePositiveInteger(params.value("size"), "size", errorMsg)) {
         return createErrorResponse(errorMsg, requestId);
     }
+    const int newSize = params.value("size").toInt();
 
-    int elementId = params.value("element_id").toInt();
-    int newSize = params.value("size").toInt();
-
-    if (!validateElementId(elementId, "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    auto *item = getCurrentScene()->itemById(elementId);
-    auto *element = dynamic_cast<GraphicElement *>(item);
+    auto *element = getValidatedElement(params, "element_id", errorMsg);
     if (!element) {
-        return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);
+        return createErrorResponse(errorMsg, requestId);
     }
 
     if (newSize < element->minInputSize() || newSize > element->maxInputSize()) {
@@ -760,7 +666,7 @@ QJsonObject ElementHandler::handleChangeInputSize(const QJsonObject &params, con
     }
 
     QJsonObject result;
-    result["element_id"] = elementId;
+    result["element_id"] = element->id();
     result["new_size"] = newSize;
 
     return createSuccessResponse(result, requestId);
@@ -773,25 +679,14 @@ QJsonObject ElementHandler::handleChangeOutputSize(const QJsonObject &params, co
     }
 
     QString errorMsg;
-    if (!validatePositiveInteger(params.value("element_id"), "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
     if (!validatePositiveInteger(params.value("size"), "size", errorMsg)) {
         return createErrorResponse(errorMsg, requestId);
     }
+    const int newSize = params.value("size").toInt();
 
-    int elementId = params.value("element_id").toInt();
-    int newSize = params.value("size").toInt();
-
-    if (!validateElementId(elementId, "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    auto *item = getCurrentScene()->itemById(elementId);
-    auto *element = dynamic_cast<GraphicElement *>(item);
+    auto *element = getValidatedElement(params, "element_id", errorMsg);
     if (!element) {
-        return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);
+        return createErrorResponse(errorMsg, requestId);
     }
 
     if (newSize < element->minOutputSize() || newSize > element->maxOutputSize()) {
@@ -813,7 +708,7 @@ QJsonObject ElementHandler::handleChangeOutputSize(const QJsonObject &params, co
     }
 
     QJsonObject result;
-    result["element_id"] = elementId;
+    result["element_id"] = element->id();
     result["new_size"] = newSize;
 
     return createSuccessResponse(result, requestId);
@@ -826,34 +721,19 @@ QJsonObject ElementHandler::handleToggleTruthTableOutput(const QJsonObject &para
     }
 
     QString errorMsg;
-    if (!validatePositiveInteger(params.value("element_id"), "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
     if (!validateNonNegativeInteger(params.value("position"), "position", errorMsg)) {
         return createErrorResponse(errorMsg, requestId);
     }
+    const int position = params.value("position").toInt();
 
-    int elementId = params.value("element_id").toInt();
-    int position = params.value("position").toInt();
-
-    if (!validateElementId(elementId, "element_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    auto *item = getCurrentScene()->itemById(elementId);
-    if (!item) {
-        return createErrorResponse(QString("Item %1 not found").arg(elementId), requestId);
-    }
-
-    auto *element = dynamic_cast<GraphicElement *>(item);
+    auto *element = getValidatedElement(params, "element_id", errorMsg);
     if (!element) {
-        return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId), requestId);
+        return createErrorResponse(errorMsg, requestId);
     }
 
     auto *truthTable = dynamic_cast<TruthTable *>(element);
     if (!truthTable) {
-        return createErrorResponse(QString("Element %1 is not a TruthTable").arg(elementId), requestId);
+        return createErrorResponse(QString("Element %1 is not a TruthTable").arg(element->id()), requestId);
     }
 
     Scene *scene = getCurrentScene();
@@ -871,7 +751,7 @@ QJsonObject ElementHandler::handleToggleTruthTableOutput(const QJsonObject &para
     }
 
     QJsonObject result;
-    result["element_id"] = elementId;
+    result["element_id"] = element->id();
     result["position"] = position;
 
     return createSuccessResponse(result, requestId);
