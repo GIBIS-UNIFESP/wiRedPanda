@@ -40,7 +40,6 @@ class MCPInfrastructure:
         self.enable_validation = enable_validation
         self.verbose = verbose
         self.mcp_gui = mcp_gui
-        self.validation_warnings = 0
         self.output = MCPOutput(verbose=verbose)
         self._request_id_counter = 1
         self._stderr_drain_task: Optional[asyncio.Task] = None
