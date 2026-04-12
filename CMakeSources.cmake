@@ -113,6 +113,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Common.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Enums.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/MimeTypes.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Priorities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/SentryHelpers.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.h

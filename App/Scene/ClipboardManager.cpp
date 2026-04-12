@@ -12,6 +12,7 @@
 #include <QPainter>
 
 #include "App/Core/Common.h"
+#include "App/Core/MimeTypes.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
@@ -39,7 +40,7 @@ void ClipboardManager::copy()
     serializeItems(m_scene->selectedItems(), stream);
 
     auto *mimeData = new QMimeData();
-    mimeData->setData("application/x-wiredpanda-clipboard", itemData);
+    mimeData->setData(MimeType::Clipboard, itemData);
 
     // Include only blobs used by the selected elements
     auto *registry = m_scene->icRegistry();
@@ -56,7 +57,7 @@ void ClipboardManager::copy()
         QByteArray regBytes;
         QDataStream regStream(&regBytes, QIODevice::WriteOnly);
         regStream << usedBlobs;
-        mimeData->setData("application/x-wiredpanda-blobregistry", regBytes);
+        mimeData->setData(MimeType::BlobRegistry, regBytes);
     }
 
     QApplication::clipboard()->setMimeData(mimeData);
@@ -87,13 +88,13 @@ void ClipboardManager::cut()
     serializeAndDelete(m_scene->selectedItems(), stream);
 
     auto *mimeData = new QMimeData();
-    mimeData->setData("application/x-wiredpanda-clipboard", itemData);
+    mimeData->setData(MimeType::Clipboard, itemData);
 
     if (!usedBlobs.isEmpty()) {
         QByteArray regBytes;
         QDataStream regStream(&regBytes, QIODevice::WriteOnly);
         regStream << usedBlobs;
-        mimeData->setData("application/x-wiredpanda-blobregistry", regBytes);
+        mimeData->setData(MimeType::BlobRegistry, regBytes);
     }
 
     QApplication::clipboard()->setMimeData(mimeData);
@@ -108,8 +109,8 @@ void ClipboardManager::paste()
     }
 
     // Import blob registry from clipboard so cross-tab paste of embedded ICs works
-    if (mimeData->hasFormat("application/x-wiredpanda-blobregistry")) {
-        QByteArray regBytes = mimeData->data("application/x-wiredpanda-blobregistry");
+    if (mimeData->hasFormat(MimeType::BlobRegistry)) {
+        QByteArray regBytes = mimeData->data(MimeType::BlobRegistry);
         QDataStream regStream(&regBytes, QIODevice::ReadOnly);
         QMap<QString, QByteArray> clipboardBlobs;
         regStream >> clipboardBlobs;
@@ -124,12 +125,12 @@ void ClipboardManager::paste()
 
     QByteArray itemData;
 
-    if (mimeData->hasFormat("wpanda/copydata")) {
-        itemData = mimeData->data("wpanda/copydata");
+    if (mimeData->hasFormat(MimeType::ClipboardLegacy)) {
+        itemData = mimeData->data(MimeType::ClipboardLegacy);
     }
 
-    if (mimeData->hasFormat("application/x-wiredpanda-clipboard")) {
-        itemData = mimeData->data("application/x-wiredpanda-clipboard");
+    if (mimeData->hasFormat(MimeType::Clipboard)) {
+        itemData = mimeData->data(MimeType::Clipboard);
     }
 
     if (!itemData.isEmpty()) {
@@ -197,7 +198,7 @@ void ClipboardManager::cloneDrag(const QPointF &mousePos)
     serializeItems(m_scene->selectedItems(), stream);
 
     auto *mimeData = new QMimeData();
-    mimeData->setData("application/x-wiredpanda-cloneDrag", itemData);
+    mimeData->setData(MimeType::CloneDrag, itemData);
 
     auto *drag = new QDrag(m_scene);
     drag->setMimeData(mimeData);
