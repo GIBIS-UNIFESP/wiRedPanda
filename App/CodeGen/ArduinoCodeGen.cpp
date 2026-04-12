@@ -36,17 +36,7 @@ QString ArduinoCodeGen::highLow(const Status val)
 
 QString ArduinoCodeGen::removeForbiddenChars(const QString &input)
 {
-    QString result = CodeGenUtils::stripAccents(input).toLower().trimmed().replace(' ', '_').replace('-', '_');
-    static const QRegularExpression re("\\W");
-    result.remove(re);
-
-    if (result.isEmpty()) {
-        result = "_unnamed";
-    } else if (result[0].isDigit()) {
-        result.prepend('_');
-    }
-
-    return result;
+    return CodeGenUtils::removeForbiddenChars(input, true);
 }
 
 bool ArduinoCodeGen::isArduinoReserved(const QString &name)
