@@ -14,6 +14,7 @@
 
 #include "App/UI/MainWindow.h"
 #include "MCP/Server/Core/MCPValidator.h"
+#include "MCP/Server/Handlers/BaseHandler.h"
 #include "MCP/Server/Handlers/ConnectionHandler.h"
 #include "MCP/Server/Handlers/ElementHandler.h"
 #include "MCP/Server/Handlers/FileHandler.h"
@@ -61,6 +62,33 @@ MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
     , m_connectionHandler(std::make_unique<ConnectionHandler>(mainWindow, m_validator.get()))
     , m_simulationHandler(std::make_unique<SimulationHandler>(mainWindow, m_validator.get()))
 {
+    // Build the method → handler dispatch map
+    const auto addRoutes = [&](BaseHandler *handler, const QStringList &methods) {
+        for (const auto &method : methods) {
+            m_dispatchMap.insert(method, handler);
+        }
+    };
+    addRoutes(m_serverInfoHandler.get(), {"get_server_info"});
+    addRoutes(m_fileHandler.get(), {
+        "load_circuit", "save_circuit", "new_circuit", "close_circuit",
+        "get_tab_count", "export_image"
+    });
+    addRoutes(m_elementHandler.get(), {
+        "create_element", "delete_element", "list_elements", "move_element",
+        "set_element_properties", "set_input_value", "get_output_value",
+        "rotate_element", "flip_element", "update_element",
+        "change_input_size", "change_output_size",
+        "toggle_truth_table_output", "morph_element"
+    });
+    addRoutes(m_connectionHandler.get(), {
+        "connect_elements", "disconnect_elements", "list_connections", "split_connection"
+    });
+    addRoutes(m_simulationHandler.get(), {
+        "simulation_control", "create_waveform", "export_waveform",
+        "create_ic", "instantiate_ic", "list_ics",
+        "undo", "redo", "get_undo_stack"
+    });
+
     // Set up event-driven stdin reading
     connect(m_stdinReader, &StdinReader::dataReceived, this, &MCPProcessor::processIncomingData);
 }
@@ -143,34 +171,8 @@ void MCPProcessor::processCommand(const QString &line)
     QJsonObject response;
 
     try {
-        // Server info commands
-        if (method == "get_server_info") {
-            response = m_serverInfoHandler->handleCommand(method, params, requestId);
-        }
-        // File operation commands
-        else if (method == "load_circuit" || method == "save_circuit" || method == "new_circuit" ||
-                 method == "close_circuit" || method == "get_tab_count" || method == "export_image") {
-            response = m_fileHandler->handleCommand(method, params, requestId);
-        }
-        // Element operation commands
-        else if (method == "create_element" || method == "delete_element" || method == "list_elements" ||
-                 method == "move_element" || method == "set_element_properties" ||
-                 method == "set_input_value" || method == "get_output_value" ||
-                 method == "rotate_element" || method == "flip_element" || method == "update_element" ||
-                 method == "change_input_size" || method == "change_output_size" ||
-                 method == "toggle_truth_table_output" || method == "morph_element") {
-            response = m_elementHandler->handleCommand(method, params, requestId);
-        }
-        // Connection operation commands
-        else if (method == "connect_elements" || method == "disconnect_elements" || method == "list_connections" ||
-                 method == "split_connection") {
-            response = m_connectionHandler->handleCommand(method, params, requestId);
-        }
-        // Simulation operation commands
-        else if (method == "simulation_control" || method == "create_waveform" || method == "export_waveform" ||
-                 method == "create_ic" || method == "instantiate_ic" || method == "list_ics" ||
-                 method == "undo" || method == "redo" || method == "get_undo_stack") {
-            response = m_simulationHandler->handleCommand(method, params, requestId);
+        if (auto *handler = m_dispatchMap.value(method)) {
+            response = handler->handleCommand(method, params, requestId);
         } else {
             response = m_serverInfoHandler->createErrorResponse(QString("Unknown method: %1").arg(method), requestId);
         }
