@@ -145,15 +145,10 @@ QJsonObject ElementHandler::handleDeleteElement(const QJsonObject &params, const
         return createErrorResponse("No active circuit scene available", requestId);
     }
 
-    try {
+    return tryCommand([&] {
         scene->receiveCommand(new DeleteItemsCommand({element}, scene));
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to delete element: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Failed to delete element: Unknown exception", requestId);
-    }
-
-    return createSuccessResponse(QJsonObject(), requestId);
+        return createSuccessResponse(QJsonObject(), requestId);
+    }, "delete element", requestId);
 }
 
 QJsonObject ElementHandler::handleListElements(const QJsonObject &, const QJsonValue &requestId)
@@ -558,19 +553,13 @@ QJsonObject ElementHandler::handleRotateElement(const QJsonObject &params, const
     // Normalize angle to 0-360
     angle = ((angle % 360) + 360) % 360;
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         scene->receiveCommand(new RotateCommand({element}, angle, scene));
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to rotate element: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Failed to rotate element: Unknown exception", requestId);
-    }
-
-    QJsonObject result;
-    result["element_id"] = element->id();
-    result["angle"] = angle;
-
-    return createSuccessResponse(result, requestId);
+        QJsonObject result;
+        result["element_id"] = element->id();
+        result["angle"] = angle;
+        return createSuccessResponse(result, requestId);
+    }, "rotate element", requestId);
 }
 
 QJsonObject ElementHandler::handleFlipElement(const QJsonObject &params, const QJsonValue &requestId)
@@ -598,19 +587,13 @@ QJsonObject ElementHandler::handleFlipElement(const QJsonObject &params, const Q
         return createErrorResponse("No active circuit scene available", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         scene->receiveCommand(new FlipCommand({element}, axis, scene));
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to flip element: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Failed to flip element: Unknown exception", requestId);
-    }
-
-    QJsonObject result;
-    result["element_id"] = element->id();
-    result["axis"] = (axis == 0 ? "horizontal" : "vertical");
-
-    return createSuccessResponse(result, requestId);
+        QJsonObject result;
+        result["element_id"] = element->id();
+        result["axis"] = (axis == 0 ? "horizontal" : "vertical");
+        return createSuccessResponse(result, requestId);
+    }, "flip element", requestId);
 }
 
 QJsonObject ElementHandler::handleUpdateElement(const QJsonObject &params, const QJsonValue &requestId)
@@ -657,19 +640,13 @@ QJsonObject ElementHandler::handleChangeInputSize(const QJsonObject &params, con
         return createErrorResponse("No active circuit scene available", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         scene->receiveCommand(new ChangePortSizeCommand({element}, newSize, scene, true));
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to change input size: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Failed to change input size: Unknown exception", requestId);
-    }
-
-    QJsonObject result;
-    result["element_id"] = element->id();
-    result["new_size"] = newSize;
-
-    return createSuccessResponse(result, requestId);
+        QJsonObject result;
+        result["element_id"] = element->id();
+        result["new_size"] = newSize;
+        return createSuccessResponse(result, requestId);
+    }, "change input size", requestId);
 }
 
 QJsonObject ElementHandler::handleChangeOutputSize(const QJsonObject &params, const QJsonValue &requestId)
@@ -699,19 +676,13 @@ QJsonObject ElementHandler::handleChangeOutputSize(const QJsonObject &params, co
         return createErrorResponse("No active circuit scene available", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         scene->receiveCommand(new ChangePortSizeCommand({element}, newSize, scene, false));
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to change output size: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Failed to change output size: Unknown exception", requestId);
-    }
-
-    QJsonObject result;
-    result["element_id"] = element->id();
-    result["new_size"] = newSize;
-
-    return createSuccessResponse(result, requestId);
+        QJsonObject result;
+        result["element_id"] = element->id();
+        result["new_size"] = newSize;
+        return createSuccessResponse(result, requestId);
+    }, "change output size", requestId);
 }
 
 QJsonObject ElementHandler::handleToggleTruthTableOutput(const QJsonObject &params, const QJsonValue &requestId)
@@ -741,20 +712,14 @@ QJsonObject ElementHandler::handleToggleTruthTableOutput(const QJsonObject &para
         return createErrorResponse("No active circuit scene available", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         // ToggleTruthTableOutputCommand flips one cell in the truth table's output column.
         scene->receiveCommand(new ToggleTruthTableOutputCommand(truthTable, position, scene));
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to toggle truth table output: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Failed to toggle truth table output: Unknown exception", requestId);
-    }
-
-    QJsonObject result;
-    result["element_id"] = element->id();
-    result["position"] = position;
-
-    return createSuccessResponse(result, requestId);
+        QJsonObject result;
+        result["element_id"] = element->id();
+        result["position"] = position;
+        return createSuccessResponse(result, requestId);
+    }, "toggle truth table output", requestId);
 }
 
 QJsonObject ElementHandler::handleMorphElement(const QJsonObject &params, const QJsonValue &requestId)
@@ -818,20 +783,14 @@ QJsonObject ElementHandler::handleMorphElement(const QJsonObject &params, const 
         morphedIds.append(element->id());
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         scene->receiveCommand(new MorphCommand(elementsToMorph, targetType, scene));
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to morph elements: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Failed to morph elements: Unknown exception", requestId);
-    }
-
-    // MorphCommand preserves element IDs via updateItemId(), so the morphed
-    // elements keep their original IDs.
-    QJsonObject result;
-    result["morphed_elements"] = morphedIds;
-    result["target_type"] = typeStr;
-
-    return createSuccessResponse(result, requestId);
+        // MorphCommand preserves element IDs via updateItemId(), so the morphed
+        // elements keep their original IDs.
+        QJsonObject result;
+        result["morphed_elements"] = morphedIds;
+        result["target_type"] = typeStr;
+        return createSuccessResponse(result, requestId);
+    }, "morph elements", requestId);
 }
 
