@@ -60,12 +60,10 @@ QJsonObject FileHandler::handleLoadCircuit(const QJsonObject &params, const QJso
         return createErrorResponse("No main window available", requestId);
     }
 
-    try {
+    return tryCommand([&] {
         m_mainWindow->loadPandaFile(filename);
         return createSuccessResponse(QJsonObject(), requestId);
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to load circuit: %1").arg(e.what()), requestId);
-    }
+    }, "load circuit", requestId);
 }
 
 QJsonObject FileHandler::handleSaveCircuit(const QJsonObject &params, const QJsonValue &requestId)
@@ -89,12 +87,10 @@ QJsonObject FileHandler::handleSaveCircuit(const QJsonObject &params, const QJso
         return createErrorResponse("No main window available", requestId);
     }
 
-    try {
+    return tryCommand([&] {
         m_mainWindow->save(filename);
         return createSuccessResponse(QJsonObject(), requestId);
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to save circuit: %1").arg(e.what()), requestId);
-    }
+    }, "save circuit", requestId);
 }
 
 QJsonObject FileHandler::handleNewCircuit(const QJsonObject &, const QJsonValue &requestId)
@@ -103,7 +99,7 @@ QJsonObject FileHandler::handleNewCircuit(const QJsonObject &, const QJsonValue 
         return createErrorResponse("No main window available", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         m_mainWindow->createNewTab();
 
         Scene *scene = getCurrentScene();
@@ -112,9 +108,7 @@ QJsonObject FileHandler::handleNewCircuit(const QJsonObject &, const QJsonValue 
         }
 
         return createSuccessResponse(QJsonObject(), requestId);
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to create new circuit: %1").arg(e.what()), requestId);
-    }
+    }, "create new circuit", requestId);
 }
 
 QJsonObject FileHandler::handleCloseCircuit(const QJsonObject &, const QJsonValue &requestId)
@@ -123,7 +117,7 @@ QJsonObject FileHandler::handleCloseCircuit(const QJsonObject &, const QJsonValu
         return createErrorResponse("No main window available", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         QTabWidget *tabWidget = m_mainWindow->findChild<QTabWidget *>("tab");
         if (!tabWidget) {
             return createErrorResponse("Tab widget not found", requestId);
@@ -147,9 +141,7 @@ QJsonObject FileHandler::handleCloseCircuit(const QJsonObject &, const QJsonValu
         }
 
         return createSuccessResponse(QJsonObject(), requestId);
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to close circuit: %1").arg(e.what()), requestId);
-    }
+    }, "close circuit", requestId);
 }
 
 QJsonObject FileHandler::handleGetTabCount(const QJsonObject &, const QJsonValue &requestId)
@@ -158,7 +150,7 @@ QJsonObject FileHandler::handleGetTabCount(const QJsonObject &, const QJsonValue
         return createErrorResponse("No main window available", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         QTabWidget *tabWidget = m_mainWindow->findChild<QTabWidget *>("tab");
         if (!tabWidget) {
             return createErrorResponse("Tab widget not found", requestId);
@@ -168,9 +160,7 @@ QJsonObject FileHandler::handleGetTabCount(const QJsonObject &, const QJsonValue
         result["tab_count"] = tabWidget->count();
 
         return createSuccessResponse(result, requestId);
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to get tab count: %1").arg(e.what()), requestId);
-    }
+    }, "get tab count", requestId);
 }
 
 QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJsonValue &requestId)
@@ -201,7 +191,7 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
         return createErrorResponse("Unsupported format. Use 'png', 'svg', or 'pdf'", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         QRectF sceneRect = scene->itemsBoundingRect();
         if (sceneRect.isEmpty()) {
             return createErrorResponse("Scene is empty - nothing to export", requestId);
@@ -244,10 +234,7 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
         result["size"] = QString("%1x%2").arg(sceneRect.width()).arg(sceneRect.height());
 
         return createSuccessResponse(result, requestId);
-
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to export image: %1").arg(e.what()), requestId);
-    }
+    }, "export image", requestId);
 }
 
 QJsonObject FileHandler::handleExportArduino(const QJsonObject &params, const QJsonValue &requestId)
@@ -267,7 +254,7 @@ QJsonObject FileHandler::handleExportArduino(const QJsonObject &params, const QJ
         return createErrorResponse("No main window available", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         m_mainWindow->exportToArduino(filename);
 
         QJsonObject result;
@@ -275,9 +262,7 @@ QJsonObject FileHandler::handleExportArduino(const QJsonObject &params, const QJ
         result["format"] = "arduino";
 
         return createSuccessResponse(result, requestId);
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to export Arduino code: %1").arg(e.what()), requestId);
-    }
+    }, "export Arduino code", requestId);
 }
 
 QJsonObject FileHandler::handleExportSystemVerilog(const QJsonObject &params, const QJsonValue &requestId)
@@ -297,7 +282,7 @@ QJsonObject FileHandler::handleExportSystemVerilog(const QJsonObject &params, co
         return createErrorResponse("No main window available", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         m_mainWindow->exportToSystemVerilog(filename);
 
         QJsonObject result;
@@ -305,8 +290,6 @@ QJsonObject FileHandler::handleExportSystemVerilog(const QJsonObject &params, co
         result["format"] = "systemverilog";
 
         return createSuccessResponse(result, requestId);
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to export SystemVerilog code: %1").arg(e.what()), requestId);
-    }
+    }, "export SystemVerilog code", requestId);
 }
 

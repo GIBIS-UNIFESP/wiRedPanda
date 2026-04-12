@@ -173,14 +173,10 @@ QJsonObject ConnectionHandler::handleDisconnectElements(const QJsonObject &param
 
         if ((elem1 == sourceElement && elem2 == targetElement) ||
             (elem1 == targetElement && elem2 == sourceElement)) {
-            try {
+            return tryCommand([&] {
                 scene->receiveCommand(new DeleteItemsCommand({connection}, scene));
-            } catch (const std::exception &e) {
-                return createErrorResponse(QString("Failed to disconnect elements: %1").arg(e.what()), requestId);
-            } catch (...) {
-                return createErrorResponse("Failed to disconnect elements: Unknown exception", requestId);
-            }
-            return createSuccessResponse(QJsonObject(), requestId);
+                return createSuccessResponse(QJsonObject(), requestId);
+            }, "disconnect elements", requestId);
         }
     }
 
@@ -306,12 +302,10 @@ QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, 
         return createErrorResponse("Connection not found between specified source and target", requestId);
     }
 
-    try {
+    return tryCommand([&] {
         // Create and execute the SplitCommand
         scene->receiveCommand(new SplitCommand(connectionToSplit, QPointF(x, y), scene));
         return createSuccessResponse(QJsonObject(), requestId);
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Split operation failed: %1").arg(e.what()), requestId);
-    }
+    }, "split connection", requestId);
 }
 
