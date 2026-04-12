@@ -175,30 +175,21 @@ class MCPCircuitBuilder:
                         continue
 
             # Handle clock transition
-            if clock_edge == "rising":
-                # Low to High transition
-                resp = await self.infrastructure.send_command(
-                    "set_input_value", {"element_id": clock_id, "value": False}
+            _two_phase = {"rising": (False, True), "falling": (True, False)}
+            if clock_edge in _two_phase:
+                first_val, second_val = _two_phase[clock_edge]
+                await self.infrastructure.send_command(
+                    "set_input_value", {"element_id": clock_id, "value": first_val}
                 )
                 await asyncio.sleep(0.05)
-                resp = await self.infrastructure.send_command(
-                    "set_input_value", {"element_id": clock_id, "value": True}
-                )
-                await asyncio.sleep(0.1)
-            elif clock_edge == "falling":
-                # High to Low transition
-                resp = await self.infrastructure.send_command(
-                    "set_input_value", {"element_id": clock_id, "value": True}
-                )
-                await asyncio.sleep(0.05)
-                resp = await self.infrastructure.send_command(
-                    "set_input_value", {"element_id": clock_id, "value": False}
+                await self.infrastructure.send_command(
+                    "set_input_value", {"element_id": clock_id, "value": second_val}
                 )
                 await asyncio.sleep(0.1)
             elif clock_edge == "level":
                 # Level sensitive (for latches)
                 clock_value = transition.get("clock_level", True)
-                resp = await self.infrastructure.send_command(
+                await self.infrastructure.send_command(
                     "set_input_value", {"element_id": clock_id, "value": clock_value}
                 )
                 await asyncio.sleep(0.1)
