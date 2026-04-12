@@ -219,7 +219,7 @@ void TestCommands::testChangeInputSizeCommand()
 
     // Change to 4 inputs
     QList<GraphicElement *> elements{andGate};
-    scene->receiveCommand(new ChangeInputSizeCommand(elements, 4, scene));
+    scene->receiveCommand(new ChangePortSizeCommand(elements, 4, scene, true));
 
     QCOMPARE(andGate->inputSize(), 4);
 
@@ -358,7 +358,7 @@ void TestCommands::testChangeOutputSizeCommand()
 
     // Change to 4 outputs
     QList<GraphicElement *> elements{truthTable};
-    scene->receiveCommand(new ChangeOutputSizeCommand(elements, 4, scene));
+    scene->receiveCommand(new ChangePortSizeCommand(elements, 4, scene, false));
 
     QCOMPARE(truthTable->outputSize(), 4);
 

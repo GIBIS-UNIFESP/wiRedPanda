@@ -31,15 +31,15 @@ void PropertyShortcutHandler::prevMainProperty()
         case ElementType::Led:
         case ElementType::TruthTable:
             if (element->inputSize() > element->minInputSize())
-                m_scene->receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element},
-                                                                   element->inputSize() - 1, m_scene));
+                m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
+                                                                  element->inputSize() - 1, m_scene, true));
             break;
 
         // Input ports
         case ElementType::InputRotary:
             if (element->outputSize() > element->minOutputSize())
-                m_scene->receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
-                                                                    element->outputSize() - 1, m_scene));
+                m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
+                                                                  element->outputSize() - 1, m_scene, false));
             break;
 
         case ElementType::Clock:
@@ -85,15 +85,15 @@ void PropertyShortcutHandler::nextMainProperty()
         case ElementType::Led:
         case ElementType::TruthTable:
             if (element->inputSize() < element->maxInputSize())
-                m_scene->receiveCommand(new ChangeInputSizeCommand(QList<GraphicElement *>{element},
-                                                                   element->inputSize() + 1, m_scene));
+                m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
+                                                                  element->inputSize() + 1, m_scene, true));
             break;
 
         // Input ports
         case ElementType::InputRotary:
             if (element->outputSize() < element->maxOutputSize())
-                m_scene->receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
-                                                                    element->outputSize() + 1, m_scene));
+                m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
+                                                                  element->outputSize() + 1, m_scene, false));
             break;
 
         case ElementType::Clock:
@@ -127,8 +127,8 @@ void PropertyShortcutHandler::prevSecondaryProperty()
         switch (element->elementType()) {
         case ElementType::TruthTable:
             if (element->outputSize() > element->minOutputSize())
-                m_scene->receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
-                                                                    element->outputSize() - 1, m_scene));
+                m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
+                                                                  element->outputSize() - 1, m_scene, false));
             break;
 
         case ElementType::Led:
@@ -151,8 +151,8 @@ void PropertyShortcutHandler::nextSecondaryProperty()
         switch (element->elementType()) {
         case ElementType::TruthTable:
             if (element->outputSize() < element->maxOutputSize())
-                m_scene->receiveCommand(new ChangeOutputSizeCommand(QList<GraphicElement *>{element},
-                                                                    element->outputSize() + 1, m_scene));
+                m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
+                                                                  element->outputSize() + 1, m_scene, false));
             break;
 
         case ElementType::Led:

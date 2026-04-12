@@ -41,15 +41,15 @@ private slots:
     void testMorphPreservesLabel();
     void testMorphPreservesConnections();
 
-    // ChangeInputSizeCommand
+    // ChangePortSizeCommand
     void testIncreaseInputSize();
     void testDecreaseInputSizeRemovesConnection();
 
-    // ChangeInputSizeCommand edge cases
+    // ChangePortSizeCommand edge cases
     void testDecreaseInputSizeMultipleConnections();
     void testDecreaseInputSizeRestoresConnectionWithOriginalId();
 
-    // ChangeOutputSizeCommand
+    // ChangePortSizeCommand
     void testChangeOutputSizeUndoRedo();
     void testChangeOutputSizeMultipleElements();
     void testDecreaseOutputSizeRestoresConnectionWithOriginalId();

@@ -855,10 +855,11 @@ void FlipCommand::redo()
     m_scene->setAutosaveRequired();
 }
 
-ChangeInputSizeCommand::ChangeInputSizeCommand(const QList<GraphicElement *> &elements, const int newInputSize, Scene *scene, QUndoCommand *parent)
+ChangePortSizeCommand::ChangePortSizeCommand(const QList<GraphicElement *> &elements, const int newPortSize, Scene *scene, const bool isInput, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_scene(scene)
-    , m_newInputSize(newInputSize)
+    , m_newPortSize(newPortSize)
+    , m_isInput(isInput)
 {
     m_ids.reserve(elements.size());
 
@@ -866,102 +867,11 @@ ChangeInputSizeCommand::ChangeInputSizeCommand(const QList<GraphicElement *> &el
         m_ids.append(elm->id());
     }
 
-    setText(tr("Change input size to %1").arg(newInputSize));
+    setText(isInput ? tr("Change input size to %1").arg(newPortSize)
+                    : tr("Change output size to %1").arg(newPortSize));
 }
 
-void ChangeInputSizeCommand::redo()
-{
-    qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_scene, m_ids);
-
-    // --- Snapshot current state before shrinking ---
-    // Save element state and the state of any elements on the other end of
-    // connections that will be severed, so undo() can fully restore them
-    QList<GraphicElement *> serializationOrder;
-    serializationOrder.reserve(elements.size());
-    m_oldData.clear();
-
-    QDataStream stream(&m_oldData, QIODevice::WriteOnly);
-    Serialization::writePandaHeader(stream);
-
-    for (auto *elm : elements) {
-        elm->save(stream);
-        serializationOrder.append(elm);
-
-        // Save the upstream elements whose wires will be cut (ports >= newInputSize)
-        for (int port = m_newInputSize; port < elm->inputSize(); ++port) {
-            for (auto *conn : elm->inputPort(port)->connections()) {
-                auto *outputPort = conn->startPort();
-                outputPort->graphicElement()->save(stream);
-                serializationOrder.append(outputPort->graphicElement());
-            }
-        }
-    }
-
-    for (auto *elm : elements) {
-        CommandUtils::drainPortConnections(elm, m_newInputSize, elm->inputSize(), true, stream, m_scene);
-        elm->setInputSize(m_newInputSize);
-    }
-
-    // Record the serialization order (by ID) so undo() can reload in the same sequence
-    m_order.clear();
-
-    for (auto *elm : serializationOrder) {
-        m_order.append(elm->id());
-    }
-
-    m_scene->setCircuitUpdateRequired();
-}
-
-void ChangeInputSizeCommand::undo()
-{
-    qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_scene, m_ids);
-    const auto serializationOrder = CommandUtils::findElements(m_scene, m_order);
-
-    QDataStream stream(&m_oldData, QIODevice::ReadOnly);
-    QVersionNumber version = Serialization::readPandaHeader(stream);
-
-    QMap<quint64, QNEPort *> portMap;
-    auto context = m_scene->deserializationContext(portMap, version);
-
-    // Restore element and upstream element state first (expands port count back),
-    // then reconstruct the connection objects that were severed during redo()
-    for (auto *elm : serializationOrder) {
-        elm->load(stream, context);
-    }
-
-    for (auto *elm : elements) {
-        int connCount; stream >> connCount;
-        for (int i = 0; i < connCount; ++i) {
-            int connId; stream >> connId;
-            auto *conn = new QNEConnection();
-            conn->load(stream, context);
-            m_scene->updateItemId(conn, connId);
-            m_scene->addItem(conn);
-        }
-
-        elm->setSelected(true);
-    }
-
-    m_scene->setCircuitUpdateRequired();
-}
-
-ChangeOutputSizeCommand::ChangeOutputSizeCommand(const QList<GraphicElement *> &elements, const int newOutputSize, Scene *scene, QUndoCommand *parent)
-    : QUndoCommand(parent)
-    , m_scene(scene)
-    , m_newOutputSize(newOutputSize)
-{
-    m_ids.reserve(elements.size());
-
-    for (auto *elm : elements) {
-        m_ids.append(elm->id());
-    }
-
-    setText(tr("Change output size to %1").arg(newOutputSize));
-}
-
-void ChangeOutputSizeCommand::redo()
+void ChangePortSizeCommand::redo()
 {
     qCDebug(zero) << text();
     const auto elements = CommandUtils::findElements(m_scene, m_ids);
@@ -977,19 +887,26 @@ void ChangeOutputSizeCommand::redo()
         elm->save(stream);
         serializationOrder.append(elm);
 
-        for (int port = m_newOutputSize; port < elm->outputSize(); ++port) {
-            for (auto *conn : elm->outputPort(port)->connections()) {
-                auto *inputPort = conn->endPort();
-                inputPort->graphicElement()->save(stream);
-                serializationOrder.append(inputPort->graphicElement());
+        const int oldSize = m_isInput ? elm->inputSize() : elm->outputSize();
+
+        for (int port = m_newPortSize; port < oldSize; ++port) {
+            QNEPort *nport = m_isInput ? static_cast<QNEPort *>(elm->inputPort(port)) : elm->outputPort(port);
+            for (auto *conn : nport->connections()) {
+                QNEPort *otherPort = m_isInput ? static_cast<QNEPort *>(conn->startPort()) : conn->endPort();
+                otherPort->graphicElement()->save(stream);
+                serializationOrder.append(otherPort->graphicElement());
             }
         }
     }
 
     for (auto *elm : elements) {
-        CommandUtils::drainPortConnections(elm, m_newOutputSize, elm->outputSize(), false, stream, m_scene);
-        elm->setOutputSize(m_newOutputSize);
-        elm->setSelected(true);
+        CommandUtils::drainPortConnections(elm, m_newPortSize, m_isInput ? elm->inputSize() : elm->outputSize(), m_isInput, stream, m_scene);
+        if (m_isInput) {
+            elm->setInputSize(m_newPortSize);
+        } else {
+            elm->setOutputSize(m_newPortSize);
+            elm->setSelected(true);
+        }
     }
 
     m_order.clear();
@@ -1001,7 +918,7 @@ void ChangeOutputSizeCommand::redo()
     m_scene->setCircuitUpdateRequired();
 }
 
-void ChangeOutputSizeCommand::undo()
+void ChangePortSizeCommand::undo()
 {
     qCDebug(zero) << text();
     const auto elements = CommandUtils::findElements(m_scene, m_ids);
