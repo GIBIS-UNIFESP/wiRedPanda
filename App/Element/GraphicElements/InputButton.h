@@ -33,21 +33,15 @@ public:
 
     // --- State Setters ---
 
-    /// Drives all output ports logic-low.
+    /// Drives all output ports logic-low (releases the button).
     void setOff() override;
 
     /// Presses the button (logic-1).
     void setOn() override;
 
-    /**
-     * \brief Sets the button to \a value.
-     * \param value New state.
-     * \param port  Port index (unused, always 0).
-     */
-    void setOn(const bool value, const int port = 0) override;
+    // Bring the base setOn(bool, int) overload into scope (hidden by setOn() above).
+    using GraphicElementInput::setOn;
 
-    /// Applies a custom appearance image to reflect the pressed/released state.
-    void setAppearance(const bool defaultAppearance, const QString &fileName) override;
     /// \reimp
     QList<QPair<int, QString>> appearanceStates() const override;
 
@@ -65,10 +59,5 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     /// \reimp
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-
-private:
-    // --- Members ---
-
-    bool m_isOn = false;
 };
 

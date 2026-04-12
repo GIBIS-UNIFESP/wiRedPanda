@@ -16,6 +16,9 @@
  * \details Extends GraphicElement with the concept of an on/off state that can be
  * toggled by the user or the simulation engine.  Derived classes implement
  * isOn(), setOn(), and setOff() to expose their specific input behaviour.
+ *
+ * The concrete setOn(bool, int) and setAppearance(bool, QString) implementations
+ * shared by InputSwitch, InputButton, and Clock live here to avoid repetition.
  */
 class GraphicElementInput : public GraphicElement
 {
@@ -52,10 +55,23 @@ public:
 
     /**
      * \brief Sets output \a port to \a value.
+     *
+     * Default implementation stores \a value in m_isOn, updates the pixmap
+     * (index 0 = off, 1 = on), and drives the output port status.
+     * Override when the element has more than one output port or non-standard
+     * pixmap indexing (e.g. InputRotary).
+     *
      * \param value New logic value.
-     * \param port  Port index (default 0).
+     * \param port  Port index (default 0, unused by this base implementation).
      */
-    virtual void setOn(const bool value, const int port = 0) = 0;
+    virtual void setOn(const bool value, const int port = 0);
+
+    /// Applies a custom appearance image indexed by the current on/off state.
+    ///
+    /// Default implementation updates \a m_alternativeAppearances at the slot
+    /// corresponding to m_isOn (index 0 = off, 1 = on).  Override when the
+    /// element uses a different slot scheme (e.g. InputRotary always uses slot 0).
+    void setAppearance(const bool defaultAppearance, const QString &fileName) override;
 
     /**
      * \brief Locks or unlocks user interaction on this element.
@@ -71,6 +87,7 @@ public:
 protected:
     // --- Members ---
 
+    bool m_isOn = false;
     bool m_locked = false;
 };
 

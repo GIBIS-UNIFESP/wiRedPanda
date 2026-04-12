@@ -17,6 +17,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElement.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementInput.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioOutputElement.cpp
