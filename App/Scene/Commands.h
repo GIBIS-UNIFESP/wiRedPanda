@@ -298,6 +298,16 @@ private:
     void transferConnections(const QList<GraphicElement *> &from, const QList<GraphicElement *> &to,
                              QList<DeletedConnectionInfo> *deleted = nullptr);
 
+    /**
+     * \brief Transfers wires on all ports of one direction between two elements.
+     * \param oldElm  Source element whose ports are being drained.
+     * \param newElm  Target element that receives the migrated connections.
+     * \param isInput True to migrate input ports; false for output ports.
+     * \param deleted If non-null, records connections deleted because the port no longer exists.
+     */
+    void transferPortConnections(GraphicElement *oldElm, GraphicElement *newElm,
+                                 bool isInput, QList<DeletedConnectionInfo> *deleted);
+
     // --- Members ---
     ElementType m_newType;
     QList<ElementType> m_types;
