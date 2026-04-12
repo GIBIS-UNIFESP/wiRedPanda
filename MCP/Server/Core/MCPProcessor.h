@@ -6,6 +6,7 @@
 #include <memory>
 
 #include <QBuffer>
+#include <QHash>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QObject>
@@ -13,6 +14,7 @@
 #include <QThread>
 #include <QTimer>
 
+class BaseHandler;
 class ConnectionHandler;
 class ElementHandler;
 class FileHandler;
@@ -84,5 +86,8 @@ private:
     std::unique_ptr<ElementHandler> m_elementHandler;
     std::unique_ptr<ConnectionHandler> m_connectionHandler;
     std::unique_ptr<SimulationHandler> m_simulationHandler;
+
+    /// Maps each MCP method name to the handler responsible for it.
+    QHash<QString, BaseHandler *> m_dispatchMap;
 };
 
