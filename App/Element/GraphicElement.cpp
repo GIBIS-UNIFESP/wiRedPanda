@@ -860,7 +860,7 @@ void GraphicElement::initSimulationVectors(const int inputCount, const int outpu
     m_simOutputChanged = false;
 }
 
-bool GraphicElement::simUpdateInputs()
+bool GraphicElement::simUpdateInputsImpl(const bool allowUnknown)
 {
     for (int index = 0; index < m_simInputConnections.size(); ++index) {
         auto *pred = m_simInputConnections.at(index).sourceElement;
@@ -871,7 +871,12 @@ bool GraphicElement::simUpdateInputs()
             // Unconnected input: use port's default status (replaces global GND/VCC).
             val = (index < m_inputPorts.size()) ? m_inputPorts.at(index)->defaultValue() : Status::Unknown;
         }
-        if (val == Status::Unknown || val == Status::Error) {
+
+        // allowUnknown: only fail for truly unconnected inputs that return Unknown.
+        // !allowUnknown: fail for any Unknown or Error value.
+        const bool shouldFail = allowUnknown ? (val == Status::Unknown && !pred)
+                                             : (val == Status::Unknown || val == Status::Error);
+        if (shouldFail) {
             for (auto &out : m_simOutputValues) {
                 if (out != Status::Unknown) {
                     m_simOutputChanged = true;
@@ -885,30 +890,14 @@ bool GraphicElement::simUpdateInputs()
     return true;
 }
 
+bool GraphicElement::simUpdateInputs()
+{
+    return simUpdateInputsImpl(false);
+}
+
 bool GraphicElement::simUpdateInputsAllowUnknown()
 {
-    for (int index = 0; index < m_simInputConnections.size(); ++index) {
-        auto *pred = m_simInputConnections.at(index).sourceElement;
-        Status val;
-        if (pred) {
-            val = pred->outputValue(m_simInputConnections.at(index).sourceOutputIndex);
-        } else {
-            // Unconnected input: use port's default status (replaces global GND/VCC).
-            val = (index < m_inputPorts.size()) ? m_inputPorts.at(index)->defaultValue() : Status::Unknown;
-        }
-        // Only fail if the input is truly unconnected (null predecessor) and returned Unknown.
-        if (val == Status::Unknown && !pred) {
-            for (auto &out : m_simOutputValues) {
-                if (out != Status::Unknown) {
-                    m_simOutputChanged = true;
-                }
-                out = Status::Unknown;
-            }
-            return false;
-        }
-        m_simInputValues[index] = val;
-    }
-    return true;
+    return simUpdateInputsImpl(true);
 }
 
 int GraphicElement::minOutputSize() const
