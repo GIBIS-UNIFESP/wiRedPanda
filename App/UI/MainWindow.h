@@ -18,6 +18,7 @@
 
 class ElementLabel;
 class ElementPalette;
+class IC;
 class LanguageManager;
 class QShortcut;
 class RecentFiles;
@@ -204,6 +205,10 @@ private:
 
     /// Appends \a extension (e.g. ".panda") to \a fileName if not already present.
     static void ensureFileExtension(QString &fileName, const QString &extension);
+
+    /// Returns the first selected IC element, or nullptr if none is selected or
+    /// if there is no current tab or the first selected element is not an IC.
+    IC *getSelectedIC() const;
 
     bool hasModifiedFiles();
     void loadAutosaveFiles();

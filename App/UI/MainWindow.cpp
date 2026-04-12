@@ -889,6 +889,24 @@ void MainWindow::ensureFileExtension(QString &fileName, const QString &extension
     }
 }
 
+IC *MainWindow::getSelectedIC() const
+{
+    if (!m_currentTab) {
+        return nullptr;
+    }
+
+    const auto selected = m_currentTab->scene()->selectedElements();
+    if (selected.isEmpty()) {
+        return nullptr;
+    }
+
+    if (selected.first()->elementType() != ElementType::IC) {
+        return nullptr;
+    }
+
+    return static_cast<IC *>(selected.first());
+}
+
 bool MainWindow::hasModifiedFiles()
 {
     const QStringList autosaves = Settings::autosaveFiles();
@@ -1783,23 +1801,12 @@ QString MainWindow::resolveUniqueBlobName(const QString &initialName, Scene *sce
 
 void MainWindow::embedSelectedIC()
 {
-    if (!m_currentTab) {
+    auto *firstIC = getSelectedIC();
+    if (!firstIC || firstIC->file().isEmpty()) {
         return;
     }
 
     auto *scene = m_currentTab->scene();
-    const auto selected = scene->selectedElements();
-    if (selected.isEmpty()) {
-        return;
-    }
-
-    if (selected.first()->elementType() != ElementType::IC) {
-        return;
-    }
-    auto *firstIC = static_cast<IC *>(selected.first());
-    if (firstIC->file().isEmpty()) {
-        return;
-    }
 
     const QString contextDir = scene->contextDir();
     if (contextDir.isEmpty()) {
@@ -1827,24 +1834,12 @@ void MainWindow::embedSelectedIC()
 
 void MainWindow::extractSelectedIC()
 {
-    if (!m_currentTab) {
+    auto *firstIC = getSelectedIC();
+    if (!firstIC || !firstIC->isEmbedded()) {
         return;
     }
 
     auto *scene = m_currentTab->scene();
-    const auto selected = scene->selectedElements();
-    if (selected.isEmpty()) {
-        return;
-    }
-
-    if (selected.first()->elementType() != ElementType::IC) {
-        return;
-    }
-    auto *firstIC = static_cast<IC *>(selected.first());
-    if (!firstIC->isEmbedded()) {
-        return;
-    }
-
     const QString blobName = firstIC->blobName();
     const QString contextDir = scene->contextDir();
     if (contextDir.isEmpty()) {
