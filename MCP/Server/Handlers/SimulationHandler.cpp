@@ -87,7 +87,7 @@ QJsonObject SimulationHandler::handleSimulationControl(const QJsonObject &params
         return createErrorResponse("No simulation available", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         if (action == "start") {
             simulation->start();
         } else if (action == "stop") {
@@ -99,13 +99,8 @@ QJsonObject SimulationHandler::handleSimulationControl(const QJsonObject &params
         } else {
             return createErrorResponse(QString("Invalid action: %1").arg(action), requestId);
         }
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Simulation control failed: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Simulation control failed: Unknown exception", requestId);
-    }
-
-    return createSuccessResponse(QJsonObject(), requestId);
+        return createSuccessResponse(QJsonObject(), requestId);
+    }, "control simulation", requestId);
 }
 
 QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, const QJsonValue &requestId)
@@ -122,7 +117,7 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
         return createErrorResponse("Duration must be between 1 and 1024", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         if (m_persistentDolphin) {
             m_persistentDolphin->deleteLater();
             m_persistentDolphin = nullptr;
@@ -218,12 +213,7 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
         result["status"] = "ready";
 
         return createSuccessResponse(result, requestId);
-
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Waveform creation failed: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Waveform creation failed: Unknown error", requestId);
-    }
+    }, "create waveform", requestId);
 }
 
 QJsonObject SimulationHandler::handleExportWaveform(const QJsonObject &params, const QJsonValue &requestId)
@@ -243,7 +233,7 @@ QJsonObject SimulationHandler::handleExportWaveform(const QJsonObject &params, c
         return createErrorResponse("No waveform data available. Call create_waveform first.", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         QJsonObject result;
         result["filename"] = filename;
         result["format"] = format;
@@ -265,12 +255,7 @@ QJsonObject SimulationHandler::handleExportWaveform(const QJsonObject &params, c
 
         result["exported"] = true;
         return createSuccessResponse(result, requestId);
-
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Waveform export failed: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Waveform export failed: Unknown error", requestId);
-    }
+    }, "export waveform", requestId);
 }
 
 QJsonObject SimulationHandler::handleCreateIC(const QJsonObject &params, const QJsonValue &requestId)
@@ -291,7 +276,7 @@ QJsonObject SimulationHandler::handleCreateIC(const QJsonObject &params, const Q
         return createErrorResponse("IC name cannot be empty", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         QString icFileName = name + ".panda";
         QString fullPath = m_mainWindow->currentDir().absoluteFilePath(icFileName);
 
@@ -320,12 +305,7 @@ QJsonObject SimulationHandler::handleCreateIC(const QJsonObject &params, const Q
         result["message"] = "IC created successfully from current circuit";
 
         return createSuccessResponse(result, requestId);
-
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("IC creation failed: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("IC creation failed: Unknown error", requestId);
-    }
+    }, "create IC", requestId);
 }
 
 QJsonObject SimulationHandler::handleInstantiateIC(const QJsonObject &params, const QJsonValue &requestId)
@@ -345,7 +325,7 @@ QJsonObject SimulationHandler::handleInstantiateIC(const QJsonObject &params, co
     int y = qRound(params.value("y").toDouble() / snap) * snap;
     QString label = params.value("label").toString(icName);
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         QString icFileName = icName + ".panda";
         QString fullPath = m_mainWindow->currentDir().absoluteFilePath(icFileName);
 
@@ -404,17 +384,12 @@ QJsonObject SimulationHandler::handleInstantiateIC(const QJsonObject &params, co
         result["message"] = "IC instantiated successfully";
 
         return createSuccessResponse(result, requestId);
-
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("IC instantiation failed: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("IC instantiation failed: Unknown error", requestId);
-    }
+    }, "instantiate IC", requestId);
 }
 
 QJsonObject SimulationHandler::handleListICs(const QJsonObject &, const QJsonValue &requestId)
 {
-    try {
+    return tryCommand([&]() -> QJsonObject {
         QJsonArray icsArray;
 
         QDir currentDir(m_mainWindow->currentDir());
@@ -469,12 +444,7 @@ QJsonObject SimulationHandler::handleListICs(const QJsonObject &, const QJsonVal
         result["count"] = icsArray.size();
 
         return createSuccessResponse(result, requestId);
-
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to list ICs: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Failed to list ICs: Unknown error", requestId);
-    }
+    }, "list ICs", requestId);
 }
 
 QJsonObject SimulationHandler::handleUndo(const QJsonObject &params, const QJsonValue &requestId)
@@ -490,7 +460,7 @@ QJsonObject SimulationHandler::handleUndo(const QJsonObject &params, const QJson
         return createErrorResponse("Undo stack not available", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         if (!undoStack->canUndo()) {
             QJsonObject result;
             result["success"] = false;
@@ -509,12 +479,7 @@ QJsonObject SimulationHandler::handleUndo(const QJsonObject &params, const QJson
         result["redo_text"] = undoStack->redoText();
 
         return createSuccessResponse(result, requestId);
-
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Undo failed: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Undo failed: Unknown error", requestId);
-    }
+    }, "undo", requestId);
 }
 
 QJsonObject SimulationHandler::handleRedo(const QJsonObject &params, const QJsonValue &requestId)
@@ -530,7 +495,7 @@ QJsonObject SimulationHandler::handleRedo(const QJsonObject &params, const QJson
         return createErrorResponse("Undo stack not available", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         if (!undoStack->canRedo()) {
             QJsonObject result;
             result["success"] = false;
@@ -549,12 +514,7 @@ QJsonObject SimulationHandler::handleRedo(const QJsonObject &params, const QJson
         result["redo_text"] = undoStack->redoText();
 
         return createSuccessResponse(result, requestId);
-
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Redo failed: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Redo failed: Unknown error", requestId);
-    }
+    }, "redo", requestId);
 }
 
 QJsonObject SimulationHandler::handleGetUndoStack(const QJsonObject &params, const QJsonValue &requestId)
@@ -570,7 +530,7 @@ QJsonObject SimulationHandler::handleGetUndoStack(const QJsonObject &params, con
         return createErrorResponse("Undo stack not available", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         QJsonObject result;
         result["can_undo"] = undoStack->canUndo();
         result["can_redo"] = undoStack->canRedo();
@@ -581,12 +541,7 @@ QJsonObject SimulationHandler::handleGetUndoStack(const QJsonObject &params, con
         result["undo_index"] = undoStack->index();
 
         return createSuccessResponse(result, requestId);
-
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to get undo stack info: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Failed to get undo stack info: Unknown error", requestId);
-    }
+    }, "get undo stack info", requestId);
 }
 
 QJsonObject SimulationHandler::handleEmbedIC(const QJsonObject &params, const QJsonValue &requestId)
@@ -605,7 +560,7 @@ QJsonObject SimulationHandler::handleEmbedIC(const QJsonObject &params, const QJ
         return createErrorResponse("element_id must be a positive integer", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         auto *item = scene->itemById(elementId);
         if (!item) {
             return createErrorResponse(QString("Element with ID %1 not found").arg(elementId), requestId);
@@ -660,12 +615,7 @@ QJsonObject SimulationHandler::handleEmbedIC(const QJsonObject &params, const QJ
         result["message"] = QString("Embedded %1 IC(s) as '%2'").arg(count).arg(blobName);
 
         return createSuccessResponse(result, requestId);
-
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to embed IC: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Failed to embed IC: Unknown error", requestId);
-    }
+    }, "embed IC", requestId);
 }
 
 QJsonObject SimulationHandler::handleExtractIC(const QJsonObject &params, const QJsonValue &requestId)
@@ -689,7 +639,7 @@ QJsonObject SimulationHandler::handleExtractIC(const QJsonObject &params, const 
         return createErrorResponse("blob_name must not be empty", requestId);
     }
 
-    try {
+    return tryCommand([&]() -> QJsonObject {
         auto *reg = scene->icRegistry();
         if (!reg->hasBlob(blobName)) {
             return createErrorResponse(QString("No embedded IC with blob name '%1' found").arg(blobName), requestId);
@@ -718,11 +668,6 @@ QJsonObject SimulationHandler::handleExtractIC(const QJsonObject &params, const 
         result["message"] = QString("Extracted %1 IC(s) to '%2'").arg(count).arg(fileName);
 
         return createSuccessResponse(result, requestId);
-
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to extract IC: %1").arg(e.what()), requestId);
-    } catch (...) {
-        return createErrorResponse("Failed to extract IC: Unknown error", requestId);
-    }
+    }, "extract IC", requestId);
 }
 

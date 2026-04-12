@@ -42,6 +42,24 @@ public:
     void sendResponse(const QJsonObject &response);
 
     /**
+     * \brief Wraps \a fn in a try/catch, returning an error response on exception.
+     * \details Calls \a fn() inside a try block. On `std::exception` or unknown exception,
+     * returns `createErrorResponse("Failed to \<action\>: ...")`. Use this to eliminate
+     * repetitive try/catch boilerplate in handler methods.
+     */
+    template<typename Fn>
+    QJsonObject tryCommand(Fn &&fn, const QString &action, const QJsonValue &requestId = QJsonValue())
+    {
+        try {
+            return std::forward<Fn>(fn)();
+        } catch (const std::exception &e) {
+            return createErrorResponse(QString("Failed to %1: %2").arg(action, e.what()), requestId);
+        } catch (...) {
+            return createErrorResponse(QString("Failed to %1: Unknown exception").arg(action), requestId);
+        }
+    }
+
+    /**
      * \brief Validates \a paramName in \a params, looks up the element, and returns it.
      * \details Combines validatePositiveInteger() + validateElementId() + itemById() +
      * dynamic_cast in one call. On failure sets \a errorMsg and returns nullptr.
