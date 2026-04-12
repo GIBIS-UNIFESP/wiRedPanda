@@ -92,51 +92,20 @@ class MCPCircuitBuilder:
             input_values = row["inputs"]
             expected_outputs = row["outputs"]
 
-            # Apply inputs
-            for j, input_id in enumerate(inputs):
-                if j < len(input_values):
-                    resp = await self.infrastructure.send_command(
-                        "set_input_value",
-                        {
-                            "element_id": input_id,
-                            "value": input_values[j],
-                        },
-                    )
-                    if not resp.success:
-                        print(f"❌ {test_name} row {i}: Failed to set input {j}")
-                        all_passed = False
-                        continue
+            if not await self._apply_input_values(inputs, input_values, f"{test_name} row {i}"):
+                all_passed = False
 
             # Enhanced propagation handling for complex circuits
             await asyncio.sleep(0.1)  # Longer delay for complex circuits
 
             # Force multiple simulation updates for complex propagation
-            resp = await self.infrastructure.send_command("simulation_control", {"action": "update"})
+            await self.infrastructure.send_command("simulation_control", {"action": "update"})
 
-            # Check outputs
-            for j, output_id in enumerate(outputs):
-                if j >= len(expected_outputs):
-                    continue
-
-                resp = await self.infrastructure.send_command("get_output_value", {"element_id": output_id})
-                if not (resp.success and resp.result):
-                    print(f"❌ {test_name} row {i}: Failed to get output {j}")
-                    all_passed = False
-                    continue
-
-                actual_value = resp.result.get("value")
-                expected_value = expected_outputs[j]
-                input_str = ", ".join(str(v) for v in input_values)
-
-                if actual_value != expected_value:
-                    print(
-                        f"❌ {test_name} row {i}: inputs=[{input_str}] output{j} expected {expected_value}, got {actual_value}"
-                    )
-                    all_passed = False
-                else:
-                    self.infrastructure.output.success(
-                        f"✅ {test_name} row {i}: inputs=[{input_str}] output{j}={actual_value}"
-                    )
+            input_str = ", ".join(str(v) for v in input_values)
+            if not await self._check_output_values(
+                outputs, expected_outputs, f"{test_name} row {i} inputs=[{input_str}]"
+            ):
+                all_passed = False
 
         return all_passed
 
@@ -159,20 +128,8 @@ class MCPCircuitBuilder:
 
             print(f"Transition {i}: {transition.get('description', '')}")
 
-            # Set input values
-            for j, input_id in enumerate(inputs):
-                if j < len(input_values):
-                    resp = await self.infrastructure.send_command(
-                        "set_input_value",
-                        {
-                            "element_id": input_id,
-                            "value": input_values[j],
-                        },
-                    )
-                    if not resp.success:
-                        print(f"❌ {test_name} step {i}: Failed to set input {j}")
-                        all_passed = False
-                        continue
+            if not await self._apply_input_values(inputs, input_values, f"{test_name} step {i}"):
+                all_passed = False
 
             # Handle clock transition
             _two_phase = {"rising": (False, True), "falling": (True, False)}
@@ -199,28 +156,11 @@ class MCPCircuitBuilder:
             # Exactly matches BewavedDolphin quadruple update hack (hardcoded 4 cycles)
             resp = await self.infrastructure.send_command("simulation_control", {"action": "update"})
 
-            # Check outputs
-            transition_passed = True
-            for j, output_id in enumerate(outputs):
-                if j >= len(expected_outputs):
-                    continue
-
-                resp = await self.infrastructure.send_command("get_output_value", {"element_id": output_id})
-                if not (resp.success and resp.result):
-                    print(f"❌ Failed to get output {j}")
-                    transition_passed = False
-                    all_passed = False
-                    continue
-
-                actual_value = resp.result.get("value")
-                expected_value = expected_outputs[j]
-
-                if actual_value != expected_value:
-                    print(f"❌ Output {j}: expected {expected_value}, got {actual_value}")
-                    transition_passed = False
-                    all_passed = False
-                else:
-                    self.infrastructure.output.success(f"✅ Output {j}: {actual_value}")
+            transition_passed = await self._check_output_values(
+                outputs, expected_outputs, f"Transition {i}"
+            )
+            if not transition_passed:
+                all_passed = False
 
             if transition_passed:
                 self.infrastructure.output.success(f"✅ Transition {i} passed")
@@ -228,3 +168,41 @@ class MCPCircuitBuilder:
                 print(f"❌ Transition {i} failed")
 
         return all_passed
+
+    async def _apply_input_values(
+        self, inputs: List[int], input_values: List[Any], label: str
+    ) -> bool:
+        """Set each input element to its value; returns False if any command fails."""
+        success = True
+        for j, input_id in enumerate(inputs):
+            if j < len(input_values):
+                resp = await self.infrastructure.send_command(
+                    "set_input_value", {"element_id": input_id, "value": input_values[j]}
+                )
+                if not resp.success:
+                    print(f"❌ {label}: Failed to set input {j}")
+                    success = False
+        return success
+
+    async def _check_output_values(
+        self, outputs: List[int], expected_outputs: List[Any], label: str = ""
+    ) -> bool:
+        """Check each output against expected; returns False on any mismatch or fetch error."""
+        passed = True
+        prefix = f"{label}: " if label else ""
+        for j, output_id in enumerate(outputs):
+            if j >= len(expected_outputs):
+                continue
+            resp = await self.infrastructure.send_command("get_output_value", {"element_id": output_id})
+            if not (resp.success and resp.result):
+                print(f"❌ {prefix}Failed to get output {j}")
+                passed = False
+                continue
+            actual_value = resp.result.get("value")
+            expected_value = expected_outputs[j]
+            if actual_value != expected_value:
+                print(f"❌ {prefix}output{j} expected {expected_value}, got {actual_value}")
+                passed = False
+            else:
+                self.infrastructure.output.success(f"✅ {prefix}output{j}={actual_value}")
+        return passed
