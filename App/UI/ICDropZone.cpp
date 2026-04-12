@@ -3,6 +3,8 @@
 
 #include "App/UI/ICDropZone.h"
 
+#include <optional>
+
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
 #include <QMimeData>
@@ -10,6 +12,39 @@
 #include "App/Core/Enums.h"
 #include "App/Core/MimeTypes.h"
 #include "App/IO/Serialization.h"
+
+namespace {
+
+struct DragPayload {
+    QPoint offset;
+    ElementType type;
+    QString icFileName;
+    bool isEmbedded = false;
+    QString blobName;
+};
+
+std::optional<DragPayload> extractDragPayload(const QMimeData *mimeData)
+{
+    QByteArray itemData;
+    if (mimeData->hasFormat(MimeType::DragDrop)) {
+        itemData = mimeData->data(MimeType::DragDrop);
+    } else if (mimeData->hasFormat(MimeType::DragDropLegacy)) {
+        itemData = mimeData->data(MimeType::DragDropLegacy);
+    } else {
+        return std::nullopt;
+    }
+
+    QDataStream stream(&itemData, QIODevice::ReadOnly);
+    Serialization::readPandaHeader(stream);
+
+    DragPayload payload;
+    stream >> payload.offset >> payload.type >> payload.icFileName;
+    if (!stream.atEnd()) { stream >> payload.isEmbedded; }
+    if (!stream.atEnd()) { stream >> payload.blobName; }
+    return payload;
+}
+
+} // namespace
 
 ICDropZone::ICDropZone(Section section, QWidget *parent)
     : QWidget(parent)
@@ -20,33 +55,13 @@ ICDropZone::ICDropZone(Section section, QWidget *parent)
 
 void ICDropZone::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (!event->mimeData()->hasFormat(MimeType::DragDropLegacy)
-        && !event->mimeData()->hasFormat(MimeType::DragDrop)) {
-        return;
-    }
-
-    QByteArray itemData;
-    if (event->mimeData()->hasFormat(MimeType::DragDrop)) {
-        itemData = event->mimeData()->data(MimeType::DragDrop);
-    } else {
-        itemData = event->mimeData()->data(MimeType::DragDropLegacy);
-    }
-
-    QDataStream stream(&itemData, QIODevice::ReadOnly);
-    Serialization::readPandaHeader(stream);
-
-    QPoint offset;
-    ElementType type;
-    QString icFileName;
-    stream >> offset >> type >> icFileName;
-
-    bool isEmbedded = false;
-    if (!stream.atEnd()) { stream >> isEmbedded; }
+    auto payload = extractDragPayload(event->mimeData());
+    if (!payload) return;
 
     // Only accept opposite-type drops
-    if (m_section == Section::Embedded && !isEmbedded) {
+    if (m_section == Section::Embedded && !payload->isEmbedded) {
         event->acceptProposedAction(); // File-based dropped onto embedded section
-    } else if (m_section == Section::FileBased && isEmbedded) {
+    } else if (m_section == Section::FileBased && payload->isEmbedded) {
         event->acceptProposedAction(); // Embedded dropped onto file-based section
     }
 }
@@ -58,33 +73,14 @@ void ICDropZone::dragMoveEvent(QDragMoveEvent *event)
 
 void ICDropZone::dropEvent(QDropEvent *event)
 {
-    QByteArray itemData;
-    if (event->mimeData()->hasFormat(MimeType::DragDrop)) {
-        itemData = event->mimeData()->data(MimeType::DragDrop);
-    } else if (event->mimeData()->hasFormat(MimeType::DragDropLegacy)) {
-        itemData = event->mimeData()->data(MimeType::DragDropLegacy);
-    } else {
-        return;
-    }
+    auto payload = extractDragPayload(event->mimeData());
+    if (!payload) return;
 
-    QDataStream stream(&itemData, QIODevice::ReadOnly);
-    Serialization::readPandaHeader(stream);
-
-    QPoint offset;
-    ElementType type;
-    QString icFileName;
-    stream >> offset >> type >> icFileName;
-
-    bool isEmbedded = false;
-    QString blobName;
-    if (!stream.atEnd()) { stream >> isEmbedded; }
-    if (!stream.atEnd()) { stream >> blobName; }
-
-    if (m_section == Section::Embedded && !isEmbedded) {
-        emit embedByFileRequested(icFileName);
+    if (m_section == Section::Embedded && !payload->isEmbedded) {
+        emit embedByFileRequested(payload->icFileName);
         event->acceptProposedAction();
-    } else if (m_section == Section::FileBased && isEmbedded) {
-        emit extractByBlobNameRequested(blobName);
+    } else if (m_section == Section::FileBased && payload->isEmbedded) {
+        emit extractByBlobNameRequested(payload->blobName);
         event->acceptProposedAction();
     }
 }
