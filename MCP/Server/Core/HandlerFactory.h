@@ -117,6 +117,17 @@ private:
     HandlerFactory(const HandlerFactory &) = delete;
     HandlerFactory &operator=(const HandlerFactory &) = delete;
 
+    /// Registers every command in \a commands under \a category using a shared HandlerType creator.
+    template<typename HandlerType>
+    void registerHandlerGroup(const QString &category, const QStringList &commands)
+    {
+        for (const QString &command : commands) {
+            registerHandler(command, category, [](MainWindow *mainWindow, MCPValidator *validator) {
+                return std::make_unique<HandlerType>(mainWindow, validator);
+            });
+        }
+    }
+
     struct HandlerInfo
     {
         QString category;
