@@ -621,47 +621,33 @@ bool BewavedDolphin::exportToPng(const QString &filename)
     }
 }
 
-void BewavedDolphin::on_actionSetTo0_triggered()
+void BewavedDolphin::applyToSelectedCells(const std::function<int(int)> &valueFn)
 {
-    qCDebug(zero) << "Pressed 0.";
     const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
-
     for (const auto &item : itemList) {
-        setCellValue(item.row(), item.column(), 0, true, true);
+        setCellValue(item.row(), item.column(), valueFn(item.data().toInt()), true, true);
     }
-
     m_edited = true;
     qCDebug(zero) << "Running simulation.";
     run();
+}
+
+void BewavedDolphin::on_actionSetTo0_triggered()
+{
+    qCDebug(zero) << "Pressed 0.";
+    applyToSelectedCells([](int) { return 0; });
 }
 
 void BewavedDolphin::on_actionSetTo1_triggered()
 {
     qCDebug(zero) << "Pressed 1.";
-    const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
-
-    for (const auto &item : itemList) {
-        setCellValue(item.row(), item.column(), 1, true, true);
-    }
-
-    m_edited = true;
-    qCDebug(zero) << "Running simulation.";
-    run();
+    applyToSelectedCells([](int) { return 1; });
 }
 
 void BewavedDolphin::on_actionInvert_triggered()
 {
     qCDebug(zero) << "Pressed Not.";
-    const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
-
-    for (const auto &item : itemList) {
-        const int value = (m_model->index(item.row(), item.column(), QModelIndex()).data().toInt() + 1) % 2;
-        setCellValue(item.row(), item.column(), value, true, true);
-    }
-
-    m_edited = true;
-    qCDebug(zero) << "Running simulation.";
-    run();
+    applyToSelectedCells([](int v) { return (v + 1) % 2; });
 }
 
 int BewavedDolphin::sectionFirstColumn(const QItemSelection &ranges)
@@ -810,43 +796,34 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
     }
 }
 
+void BewavedDolphin::adjustColumnWidths(const std::function<int(int)> &widthFn)
+{
+    for (int col = 0; col < m_signalTableView->model()->columnCount(); ++col) {
+        m_signalTableView->setColumnWidth(col, widthFn(m_signalTableView->columnWidth(col)));
+    }
+    resizeScene();
+    zoomChanged();
+}
+
 void BewavedDolphin::on_actionZoomOut_triggered()
 {
     m_view.zoomOut();
-
     // Shrink column widths to match the reduced scene scale so pixmaps still tile correctly
-    for (int col = 0; col < m_signalTableView->model()->columnCount(); ++col) {
-        m_signalTableView->setColumnWidth(col, static_cast<int>(m_signalTableView->columnWidth(col) / m_scale));
-    }
-
-    resizeScene();
-    zoomChanged();
+    adjustColumnWidths([this](int w) { return static_cast<int>(w / m_scale); });
 }
 
 void BewavedDolphin::on_actionZoomIn_triggered()
 {
     m_view.zoomIn();
-
     // Grow column widths proportionally so waveform segments remain at their natural aspect ratio
-    for (int col = 0; col < m_signalTableView->model()->columnCount(); ++col) {
-        m_signalTableView->setColumnWidth(col, static_cast<int>(m_signalTableView->columnWidth(col) * m_scale));
-    }
-
-    resizeScene();
-    zoomChanged();
+    adjustColumnWidths([this](int w) { return static_cast<int>(w * m_scale); });
 }
 
 void BewavedDolphin::on_actionResetZoom_triggered()
 {
     m_view.resetZoom();
     m_scale = kZoomStep;
-
-    for (int col = 0; col < m_signalTableView->model()->columnCount(); ++col) {
-        m_signalTableView->setColumnWidth(col, kDefaultColumnWidth);
-    }
-
-    resizeScene();
-    zoomChanged();
+    adjustColumnWidths([](int) { return kDefaultColumnWidth; });
 }
 
 void BewavedDolphin::zoomChanged()
