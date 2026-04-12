@@ -960,16 +960,8 @@ void ToggleTruthTableOutputCommand::redo()
 
 void ToggleTruthTableOutputCommand::undo()
 {
-    qCDebug(zero) << text();
-
-    auto *truthtable = qobject_cast<TruthTable *>(CommandUtils::findElm(m_scene, m_id));
-
-    if (!truthtable) throw PANDACEPTION("Could not find truthtable element!");
-
-    truthtable->key().toggleBit(m_pos);
-
-    m_scene->setCircuitUpdateRequired();
-    emit m_scene->truthTableElementChanged(truthtable);
+    // toggleBit is self-inverse: undo == redo
+    redo();
 }
 
 // --- UpdateBlobCommand ---
