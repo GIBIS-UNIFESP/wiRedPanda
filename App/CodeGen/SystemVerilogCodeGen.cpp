@@ -67,17 +67,7 @@ QString SystemVerilogCodeGen::highLow(const Status val)
 // [QUALITY-14] Ensures result is a valid SystemVerilog identifier (starts with letter/underscore, non-empty)
 QString SystemVerilogCodeGen::removeForbiddenChars(const QString &input)
 {
-    QString result = input.toLower().trimmed().replace(' ', '_').replace('-', '_');
-    static const QRegularExpression re("\\W");
-    result.remove(re);
-
-    if (result.isEmpty()) {
-        result = "_unnamed";
-    } else if (result[0].isDigit()) {
-        result.prepend('_');
-    }
-
-    return result;
+    return CodeGenUtils::removeForbiddenChars(input);
 }
 
 // [BUG-1] Check whether a string is a simple SystemVerilog identifier (no operators/expressions)
