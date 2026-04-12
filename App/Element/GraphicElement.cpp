@@ -760,20 +760,37 @@ int GraphicElement::inputSize() const
     return static_cast<int>(m_inputPorts.size());
 }
 
-void GraphicElement::setInputSize(const int size)
+void GraphicElement::setPortSize(const int size, const bool isInput)
 {
-    if ((size >= minInputSize()) && (size <= maxInputSize())) {
+    const int minSize = isInput ? minInputSize() : minOutputSize();
+    const int maxSize = isInput ? maxInputSize() : maxOutputSize();
+
+    if ((size < minSize) || (size > maxSize)) {
+        return;
+    }
+
+    if (isInput) {
         if (size > inputSize()) {
-            while (size > inputSize()) {
-                addInputPort();
-            }
+            while (size > inputSize()) { addInputPort(); }
         } else {
             qDeleteAll(m_inputPorts.begin() + size, m_inputPorts.end());
             m_inputPorts.resize(size);
         }
-
-        updatePortsProperties();
+    } else {
+        if (size > outputSize()) {
+            while (size > outputSize()) { addOutputPort(); }
+        } else {
+            qDeleteAll(m_outputPorts.begin() + size, m_outputPorts.end());
+            m_outputPorts.resize(size);
+        }
     }
+
+    updatePortsProperties();
+}
+
+void GraphicElement::setInputSize(const int size)
+{
+    setPortSize(size, true);
 }
 
 int GraphicElement::outputSize() const
@@ -783,18 +800,7 @@ int GraphicElement::outputSize() const
 
 void GraphicElement::setOutputSize(const int size)
 {
-    if ((size >= minOutputSize()) && (size <= maxOutputSize())) {
-        if (size > outputSize()) {
-            while (size > outputSize()) {
-                addOutputPort();
-            }
-        } else {
-            qDeleteAll(m_outputPorts.begin() + size, m_outputPorts.end());
-            m_outputPorts.resize(size);
-        }
-
-        updatePortsProperties();
-    }
+    setPortSize(size, false);
 }
 
 double GraphicElement::frequency() const

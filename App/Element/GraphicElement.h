@@ -564,6 +564,9 @@ private:
     /// Appends a new port with optional \a name; \a isOutput selects the port direction.
     void addPort(const QString &name, const bool isOutput);
 
+    /// Shared implementation for setInputSize() and setOutputSize().
+    void setPortSize(const int size, const bool isInput);
+
     /// Erases \a deletedPort's serial-ID entry from \a portMap during deserialization.
     static void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);
     /// Removes input ports beyond \a inputSize_ (used when the loaded port count exceeds current limits).
