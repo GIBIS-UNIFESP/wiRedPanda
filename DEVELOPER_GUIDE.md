@@ -870,8 +870,7 @@ All user operations are `QUndoCommand` subclasses:
 | `FlipCommand`                    | Flip horizontally or vertically                      |
 | `UpdateCommand`                  | Change element properties (label, color, frequency)  |
 | `MorphCommand`                   | Change element type while preserving connections     |
-| `ChangeInputSizeCommand`         | Add/remove input ports                               |
-| `ChangeOutputSizeCommand`        | Add/remove output ports                              |
+| `ChangePortSizeCommand`          | Add/remove input or output ports                     |
 | `SplitCommand`                   | Insert a junction node into a wire                   |
 | `ToggleTruthTableOutputCommand`  | Toggle a truth table output bit                      |
 | `RegisterBlobCommand`            | Register a new blob resource                         |

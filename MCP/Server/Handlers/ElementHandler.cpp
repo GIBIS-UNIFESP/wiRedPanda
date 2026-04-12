@@ -752,7 +752,7 @@ QJsonObject ElementHandler::handleChangeInputSize(const QJsonObject &params, con
     }
 
     try {
-        scene->receiveCommand(new ChangeInputSizeCommand({element}, newSize, scene));
+        scene->receiveCommand(new ChangePortSizeCommand({element}, newSize, scene, true));
     } catch (const std::exception &e) {
         return createErrorResponse(QString("Failed to change input size: %1").arg(e.what()), requestId);
     } catch (...) {
@@ -805,7 +805,7 @@ QJsonObject ElementHandler::handleChangeOutputSize(const QJsonObject &params, co
     }
 
     try {
-        scene->receiveCommand(new ChangeOutputSizeCommand({element}, newSize, scene));
+        scene->receiveCommand(new ChangePortSizeCommand({element}, newSize, scene, false));
     } catch (const std::exception &e) {
         return createErrorResponse(QString("Failed to change output size: %1").arg(e.what()), requestId);
     } catch (...) {
