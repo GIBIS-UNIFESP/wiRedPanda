@@ -58,29 +58,10 @@ class CircuitConnectionTests(MCPTestBase):
 
         # Create new circuit
         # Create minimal elements for error testing
-        resp1 = await self.send_command(
-            "create_element",
-            {
-                "type": "InputButton",
-                "x": 100,
-                "y": 100,
-                "label": "ErrorInput",
-            },
-        )
-        input_id = await self.validate_element_creation_response(resp1, "Create input for error testing")
+        input_id = await self.create_element_checked("InputButton", 100, 100, "Create input for error testing", label="ErrorInput")
         if input_id is None:
             all_passed = False
-
-        resp2 = await self.send_command(
-            "create_element",
-            {
-                "type": "And",
-                "x": 300,
-                "y": 100,
-                "label": "ErrorGate",
-            },
-        )
-        gate_id = await self.validate_element_creation_response(resp2, "Create gate for error testing")
+        gate_id = await self.create_element_checked("And", 300, 100, "Create gate for error testing", label="ErrorGate")
         if gate_id is None:
             all_passed = False
 
@@ -123,42 +104,13 @@ class CircuitConnectionTests(MCPTestBase):
 
         # Create new circuit
         # Create elements for connection
-        resp1 = await self.send_command(
-            "create_element",
-            {
-                "type": "InputButton",
-                "x": 100,
-                "y": 100,
-                "label": "BasicInput",
-            },
-        )
-        input_id = await self.validate_element_creation_response(resp1, "Create input for basic connection")
+        input_id = await self.create_element_checked("InputButton", 100, 100, "Create input for basic connection", label="BasicInput")
         if input_id is None:
             all_passed = False
-
-        resp2 = await self.send_command(
-            "create_element",
-            {
-                "type": "And",
-                "x": 300,
-                "y": 100,
-                "label": "BasicGate",
-            },
-        )
-        gate_id = await self.validate_element_creation_response(resp2, "Create gate for basic connection")
+        gate_id = await self.create_element_checked("And", 300, 100, "Create gate for basic connection", label="BasicGate")
         if gate_id is None:
             all_passed = False
-
-        resp3 = await self.send_command(
-            "create_element",
-            {
-                "type": "Led",
-                "x": 500,
-                "y": 100,
-                "label": "BasicOutput",
-            },
-        )
-        output_id = await self.validate_element_creation_response(resp3, "Create output for basic connection")
+        output_id = await self.create_element_checked("Led", 500, 100, "Create output for basic connection", label="BasicOutput")
         if output_id is None:
             all_passed = False
 
@@ -227,29 +179,10 @@ class CircuitConnectionTests(MCPTestBase):
 
         # Create new circuit
         # Create valid elements for error testing
-        resp1 = await self.send_command(
-            "create_element",
-            {
-                "type": "InputButton",
-                "x": 100,
-                "y": 100,
-                "label": "ValidInput",
-            },
-        )
-        input_id = await self.validate_element_creation_response(resp1, "Create valid input for error tests")
+        input_id = await self.create_element_checked("InputButton", 100, 100, "Create valid input for error tests", label="ValidInput")
         if input_id is None:
             all_passed = False
-
-        resp2 = await self.send_command(
-            "create_element",
-            {
-                "type": "And",
-                "x": 300,
-                "y": 100,
-                "label": "ValidGate",
-            },
-        )
-        gate_id = await self.validate_element_creation_response(resp2, "Create valid gate for error tests")
+        gate_id = await self.create_element_checked("And", 300, 100, "Create valid gate for error tests", label="ValidGate")
         if gate_id is None:
             all_passed = False
 
@@ -328,46 +261,19 @@ class CircuitConnectionTests(MCPTestBase):
         all_passed &= await self.assert_success(resp, "Create new circuit for label test")
 
         # Create an InputButton (output port has no explicit name, will test with index)
-        resp1 = await self.send_command(
-            "create_element",
-            {
-                "type": "InputButton",
-                "x": 100,
-                "y": 200,
-                "label": "ClockInput",
-            },
-        )
-        clock_input_id = await self.validate_element_creation_response(resp1, "Create clock input")
+        clock_input_id = await self.create_element_checked("InputButton", 100, 200, "Create clock input", label="ClockInput")
         if clock_input_id is None:
             all_passed = False
 
         # Create a JK Flip-Flop which has named ports:
         # Inputs: "J" (0), "Clock" (1), "K" (2), "~Preset" (3), "~Clear" (4)
         # Outputs: "Q" (0), "~Q" (1)
-        resp2 = await self.send_command(
-            "create_element",
-            {
-                "type": "JKFlipFlop",
-                "x": 300,
-                "y": 200,
-                "label": "JK_FF",
-            },
-        )
-        jkff_id = await self.validate_element_creation_response(resp2, "Create JK Flip-Flop")
+        jkff_id = await self.create_element_checked("JKFlipFlop", 300, 200, "Create JK Flip-Flop", label="JK_FF")
         if jkff_id is None:
             all_passed = False
 
         # Create a LED to connect to the Q output
-        resp3 = await self.send_command(
-            "create_element",
-            {
-                "type": "Led",
-                "x": 500,
-                "y": 200,
-                "label": "Q_Output",
-            },
-        )
-        led_id = await self.validate_element_creation_response(resp3, "Create LED output")
+        led_id = await self.create_element_checked("Led", 500, 200, "Create LED output", label="Q_Output")
         if led_id is None:
             all_passed = False
 
@@ -418,16 +324,7 @@ class CircuitConnectionTests(MCPTestBase):
 
         # Test 3: Connect using labels on both ends
         # Create another input for J port
-        resp4 = await self.send_command(
-            "create_element",
-            {
-                "type": "InputButton",
-                "x": 100,
-                "y": 100,
-                "label": "J_Input",
-            },
-        )
-        j_input_id = await self.validate_element_creation_response(resp4, "Create J input")
+        j_input_id = await self.create_element_checked("InputButton", 100, 100, "Create J input", label="J_Input")
         if j_input_id is None:
             all_passed = False
             return all_passed
@@ -468,16 +365,7 @@ class CircuitConnectionTests(MCPTestBase):
         all_passed &= await self.assert_failure(resp, "Connection with invalid source port label")
 
         # Test 6: Connect to ~Q output using label with special character
-        resp5 = await self.send_command(
-            "create_element",
-            {
-                "type": "Led",
-                "x": 500,
-                "y": 300,
-                "label": "NotQ_Output",
-            },
-        )
-        notq_led_id = await self.validate_element_creation_response(resp5, "Create ~Q LED output")
+        notq_led_id = await self.create_element_checked("Led", 500, 300, "Create ~Q LED output", label="NotQ_Output")
         if notq_led_id is None:
             all_passed = False
             return all_passed

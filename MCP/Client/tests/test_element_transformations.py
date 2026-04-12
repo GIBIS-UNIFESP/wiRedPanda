@@ -52,10 +52,7 @@ class ElementTransformationTests(MCPTestBase):
         all_passed: bool = True
 
         # Create an AND gate to rotate
-        resp = await self.send_command(
-            "create_element", {"type": "And", "x": 200, "y": 200, "label": "RotateTest"}
-        )
-        elem_id = await self.validate_element_creation_response(resp, "Create element for rotation")
+        elem_id = await self.create_element_checked("And", 200, 200, "Create element for rotation", label="RotateTest")
         if elem_id is None:
             return False
 
@@ -118,17 +115,10 @@ class ElementTransformationTests(MCPTestBase):
         all_passed: bool = True
 
         # Create element and connect it to verify connections survive flip
-        resp = await self.send_command(
-            "create_element", {"type": "And", "x": 200, "y": 200, "label": "FlipTest"}
-        )
-        gate_id = await self.validate_element_creation_response(resp, "Create gate for flip")
+        gate_id = await self.create_element_checked("And", 200, 200, "Create gate for flip", label="FlipTest")
         if gate_id is None:
             return False
-
-        resp = await self.send_command(
-            "create_element", {"type": "InputButton", "x": 100, "y": 200, "label": "FlipInput"}
-        )
-        input_id = await self.validate_element_creation_response(resp, "Create input for flip")
+        input_id = await self.create_element_checked("InputButton", 100, 200, "Create input for flip", label="FlipInput")
         if input_id is None:
             return False
 
@@ -191,10 +181,7 @@ class ElementTransformationTests(MCPTestBase):
         all_passed: bool = True
 
         # Create an AND gate to morph
-        resp = await self.send_command(
-            "create_element", {"type": "And", "x": 200, "y": 200, "label": "MorphTest"}
-        )
-        and_id = await self.validate_element_creation_response(resp, "Create AND for morph")
+        and_id = await self.create_element_checked("And", 200, 200, "Create AND for morph", label="MorphTest")
         if and_id is None:
             return False
 
@@ -235,10 +222,7 @@ class ElementTransformationTests(MCPTestBase):
 
         # Test morph with invalid target type
         # Create a fresh element first
-        resp = await self.send_command(
-            "create_element", {"type": "Not", "x": 300, "y": 200, "label": "MorphInvalid"}
-        )
-        not_id = await self.validate_element_creation_response(resp, "Create NOT for invalid morph")
+        not_id = await self.create_element_checked("Not", 300, 200, "Create NOT for invalid morph", label="MorphInvalid")
         if not_id is not None:
             resp = await self.send_command(
                 "morph_element", {"element_ids": [not_id], "target_type": "NonExistentType"}
@@ -266,18 +250,12 @@ class ElementTransformationTests(MCPTestBase):
         all_passed: bool = True
 
         # Create a Display14 (15 inputs: 14 segments + decimal point, ports 0-14)
-        resp = await self.send_command(
-            "create_element", {"type": "Display14", "x": 300, "y": 200, "label": "Disp14"}
-        )
-        disp14_id = await self.validate_element_creation_response(resp, "Create Display14")
+        disp14_id = await self.create_element_checked("Display14", 300, 200, "Create Display14", label="Disp14")
         if disp14_id is None:
             return False
 
         # Create an InputSwitch to drive the last port of the Display14
-        resp = await self.send_command(
-            "create_element", {"type": "InputSwitch", "x": 100, "y": 200, "label": "Sw"}
-        )
-        sw_id = await self.validate_element_creation_response(resp, "Create InputSwitch")
+        sw_id = await self.create_element_checked("InputSwitch", 100, 200, "Create InputSwitch", label="Sw")
         if sw_id is None:
             return False
 
@@ -349,10 +327,7 @@ class ElementTransformationTests(MCPTestBase):
         all_passed: bool = True
 
         # AND gate: minInput=2, maxInput=8
-        resp = await self.send_command(
-            "create_element", {"type": "And", "x": 200, "y": 200, "label": "InputSizeTest"}
-        )
-        and_id = await self.validate_element_creation_response(resp, "Create AND for input resize")
+        and_id = await self.create_element_checked("And", 200, 200, "Create AND for input resize", label="InputSizeTest")
         if and_id is None:
             return False
 
@@ -383,10 +358,7 @@ class ElementTransformationTests(MCPTestBase):
         all_passed &= await self.assert_success(resp, "Change AND inputs to 2 (min)")
 
         # Test with Demux (minInput=2, maxInput=4)
-        resp = await self.send_command(
-            "create_element", {"type": "Demux", "x": 400, "y": 200, "label": "DemuxResize"}
-        )
-        demux_id = await self.validate_element_creation_response(resp, "Create Demux for input resize")
+        demux_id = await self.create_element_checked("Demux", 400, 200, "Create Demux for input resize", label="DemuxResize")
         if demux_id is not None:
             resp = await self.send_command(
                 "change_input_size", {"element_id": demux_id, "size": 3}
@@ -404,10 +376,7 @@ class ElementTransformationTests(MCPTestBase):
         all_passed: bool = True
 
         # Demux: minOutput=2, maxOutput=8, default output=2
-        resp = await self.send_command(
-            "create_element", {"type": "Demux", "x": 200, "y": 200, "label": "OutputSizeTest"}
-        )
-        demux_id = await self.validate_element_creation_response(resp, "Create Demux for output resize")
+        demux_id = await self.create_element_checked("Demux", 200, 200, "Create Demux for output resize", label="OutputSizeTest")
         if demux_id is None:
             return False
 
@@ -448,10 +417,7 @@ class ElementTransformationTests(MCPTestBase):
         all_passed: bool = True
 
         # Create a TruthTable element
-        resp = await self.send_command(
-            "create_element", {"type": "TruthTable", "x": 200, "y": 200, "label": "TTTest"}
-        )
-        tt_id = await self.validate_element_creation_response(resp, "Create TruthTable")
+        tt_id = await self.create_element_checked("TruthTable", 200, 200, "Create TruthTable", label="TTTest")
         if tt_id is None:
             return False
 
@@ -476,10 +442,7 @@ class ElementTransformationTests(MCPTestBase):
         all_passed &= await self.assert_success(resp, "Toggle truth table position 1")
 
         # Test toggle on non-TruthTable element (should fail or handle gracefully)
-        resp = await self.send_command(
-            "create_element", {"type": "And", "x": 400, "y": 200, "label": "NotTT"}
-        )
-        and_id = await self.validate_element_creation_response(resp, "Create AND for TT toggle test")
+        and_id = await self.create_element_checked("And", 400, 200, "Create AND for TT toggle test", label="NotTT")
         if and_id is not None:
             resp = await self.send_command(
                 "toggle_truth_table_output", {"element_id": and_id, "position": 0}

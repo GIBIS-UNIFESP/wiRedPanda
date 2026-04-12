@@ -78,10 +78,7 @@ class NegativeCaseTests(MCPTestBase):
         all_passed: bool = True
 
         # Create an element to morph
-        resp = await self.send_command(
-            "create_element", {"type": "And", "x": 200, "y": 200, "label": "MorphErr"}
-        )
-        and_id = await self.validate_element_creation_response(resp, "Create AND for morph errors")
+        and_id = await self.create_element_checked("And", 200, 200, "Create AND for morph errors", label="MorphErr")
         if and_id is None:
             return False
 
@@ -126,10 +123,7 @@ class NegativeCaseTests(MCPTestBase):
         all_passed: bool = True
 
         # AND gate: minInput=2, maxInput=8
-        resp = await self.send_command(
-            "create_element", {"type": "And", "x": 200, "y": 200, "label": "SizeBoundary"}
-        )
-        and_id = await self.validate_element_creation_response(resp, "Create AND for boundary test")
+        and_id = await self.create_element_checked("And", 200, 200, "Create AND for boundary test", label="SizeBoundary")
         if and_id is None:
             return False
 
@@ -213,15 +207,8 @@ class NegativeCaseTests(MCPTestBase):
         all_passed &= await self.assert_failure(resp, "Split with nonexistent elements")
 
         # Create elements but no connection between them
-        resp = await self.send_command(
-            "create_element", {"type": "InputButton", "x": 100, "y": 200, "label": "SplitErrIn"}
-        )
-        in_id = await self.validate_element_creation_response(resp, "Create input for split error")
-
-        resp = await self.send_command(
-            "create_element", {"type": "Led", "x": 400, "y": 200, "label": "SplitErrOut"}
-        )
-        out_id = await self.validate_element_creation_response(resp, "Create output for split error")
+        in_id = await self.create_element_checked("InputButton", 100, 200, "Create input for split error", label="SplitErrIn")
+        out_id = await self.create_element_checked("Led", 400, 200, "Create output for split error", label="SplitErrOut")
 
         if in_id is not None and out_id is not None:
             resp = await self.send_command(
@@ -247,15 +234,8 @@ class NegativeCaseTests(MCPTestBase):
 
         all_passed: bool = True
 
-        resp = await self.send_command(
-            "create_element", {"type": "And", "x": 200, "y": 200, "label": "ConnErr"}
-        )
-        and_id = await self.validate_element_creation_response(resp, "Create AND for connect errors")
-
-        resp = await self.send_command(
-            "create_element", {"type": "Led", "x": 400, "y": 200, "label": "ConnErrOut"}
-        )
-        led_id = await self.validate_element_creation_response(resp, "Create LED for connect errors")
+        and_id = await self.create_element_checked("And", 200, 200, "Create AND for connect errors", label="ConnErr")
+        led_id = await self.create_element_checked("Led", 400, 200, "Create LED for connect errors", label="ConnErrOut")
 
         if and_id is None or led_id is None:
             return False
@@ -291,10 +271,7 @@ class NegativeCaseTests(MCPTestBase):
 
         all_passed: bool = True
 
-        resp = await self.send_command(
-            "create_element", {"type": "And", "x": 200, "y": 200, "label": "UndoRotate"}
-        )
-        elem_id = await self.validate_element_creation_response(resp, "Create element for undo rotate")
+        elem_id = await self.create_element_checked("And", 200, 200, "Create element for undo rotate", label="UndoRotate")
         if elem_id is None:
             return False
 
@@ -333,10 +310,7 @@ class NegativeCaseTests(MCPTestBase):
 
         all_passed: bool = True
 
-        resp = await self.send_command(
-            "create_element", {"type": "And", "x": 200, "y": 200, "label": "UndoMorph"}
-        )
-        and_id = await self.validate_element_creation_response(resp, "Create AND for undo morph")
+        and_id = await self.create_element_checked("And", 200, 200, "Create AND for undo morph", label="UndoMorph")
         if and_id is None:
             return False
 
@@ -384,10 +358,7 @@ class NegativeCaseTests(MCPTestBase):
 
         all_passed: bool = True
 
-        resp = await self.send_command(
-            "create_element", {"type": "And", "x": 200, "y": 200, "label": "UndoResize"}
-        )
-        and_id = await self.validate_element_creation_response(resp, "Create AND for undo resize")
+        and_id = await self.create_element_checked("And", 200, 200, "Create AND for undo resize", label="UndoResize")
         if and_id is None:
             return False
 
@@ -427,17 +398,10 @@ class NegativeCaseTests(MCPTestBase):
         all_passed: bool = True
 
         # Create input -> output with a wire
-        resp = await self.send_command(
-            "create_element", {"type": "InputButton", "x": 100, "y": 200, "label": "UndoSplitIn"}
-        )
-        input_id = await self.validate_element_creation_response(resp, "Create input for undo split")
+        input_id = await self.create_element_checked("InputButton", 100, 200, "Create input for undo split", label="UndoSplitIn")
         if input_id is None:
             return False
-
-        resp = await self.send_command(
-            "create_element", {"type": "Led", "x": 400, "y": 200, "label": "UndoSplitOut"}
-        )
-        output_id = await self.validate_element_creation_response(resp, "Create output for undo split")
+        output_id = await self.create_element_checked("Led", 400, 200, "Create output for undo split", label="UndoSplitOut")
         if output_id is None:
             return False
 
@@ -504,10 +468,7 @@ class NegativeCaseTests(MCPTestBase):
 
         all_passed: bool = True
 
-        resp = await self.send_command(
-            "create_element", {"type": "And", "x": 200, "y": 200, "label": "OriginalLabel"}
-        )
-        elem_id = await self.validate_element_creation_response(resp, "Create And for undo test")
+        elem_id = await self.create_element_checked("And", 200, 200, "Create And for undo test", label="OriginalLabel")
         if elem_id is None:
             return False
 
@@ -565,10 +526,7 @@ class NegativeCaseTests(MCPTestBase):
         all_passed: bool = True
 
         # Create an element
-        resp = await self.send_command(
-            "create_element", {"type": "InputButton", "x": 200, "y": 200, "label": "UpdateTest"}
-        )
-        elem_id = await self.validate_element_creation_response(resp, "Create element for update")
+        elem_id = await self.create_element_checked("InputButton", 200, 200, "Create element for update", label="UpdateTest")
         if elem_id is None:
             return False
 

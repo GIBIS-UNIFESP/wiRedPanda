@@ -46,8 +46,7 @@ class WirelessNodeTests(MCPTestBase):
         """Setting wireless_mode=0 (None) on a Node succeeds and reports correct old/new values"""
         print("\n=== Wireless Mode None Test ===")
 
-        resp = await self.send_command("create_element", {"type": "Node", "x": 100, "y": 100})
-        node_id = await self.validate_element_creation_response(resp, "Create Node")
+        node_id = await self.create_element_checked("Node", 100, 100, "Create Node")
         if node_id is None:
             return False
 
@@ -78,8 +77,7 @@ class WirelessNodeTests(MCPTestBase):
         """Setting wireless_mode=1 (Tx) on a Node succeeds"""
         print("\n=== Wireless Mode Tx Test ===")
 
-        resp = await self.send_command("create_element", {"type": "Node", "x": 200, "y": 100, "label": "CLK"})
-        node_id = await self.validate_element_creation_response(resp, "Create Node")
+        node_id = await self.create_element_checked("Node", 200, 100, "Create Node", label="CLK")
         if node_id is None:
             return False
 
@@ -107,8 +105,7 @@ class WirelessNodeTests(MCPTestBase):
         """Setting wireless_mode=2 (Rx) on a Node succeeds"""
         print("\n=== Wireless Mode Rx Test ===")
 
-        resp = await self.send_command("create_element", {"type": "Node", "x": 300, "y": 100, "label": "CLK"})
-        node_id = await self.validate_element_creation_response(resp, "Create Node")
+        node_id = await self.create_element_checked("Node", 300, 100, "Create Node", label="CLK")
         if node_id is None:
             return False
 
@@ -132,8 +129,7 @@ class WirelessNodeTests(MCPTestBase):
         """wireless_mode on a non-Node element (e.g. And gate) is silently ignored"""
         print("\n=== Wireless Mode Ignored on Non-Node Test ===")
 
-        resp = await self.send_command("create_element", {"type": "And", "x": 400, "y": 100})
-        and_id = await self.validate_element_creation_response(resp, "Create And gate")
+        and_id = await self.create_element_checked("And", 400, 100, "Create And gate")
         if and_id is None:
             return False
 
@@ -159,8 +155,7 @@ class WirelessNodeTests(MCPTestBase):
         """wireless_mode values outside 0-2 are rejected with an error"""
         print("\n=== Wireless Mode Invalid Value Test ===")
 
-        resp = await self.send_command("create_element", {"type": "Node", "x": 500, "y": 100})
-        node_id = await self.validate_element_creation_response(resp, "Create Node")
+        node_id = await self.create_element_checked("Node", 500, 100, "Create Node")
         if node_id is None:
             return False
 
@@ -179,13 +174,10 @@ class WirelessNodeTests(MCPTestBase):
         print("\n=== Wireless Signal Propagation Test ===")
 
         # InputSwitch → Tx Node  (label "DATA")
-        resp = await self.send_command("create_element", {"type": "InputSwitch", "x": 48, "y": 200})
-        sw_id = await self.validate_element_creation_response(resp, "Create InputSwitch")
+        sw_id = await self.create_element_checked("InputSwitch", 48, 200, "Create InputSwitch")
         if sw_id is None:
             return False
-
-        resp = await self.send_command("create_element", {"type": "Node", "x": 128, "y": 200, "label": "DATA"})
-        tx_id = await self.validate_element_creation_response(resp, "Create Tx Node")
+        tx_id = await self.create_element_checked("Node", 128, 200, "Create Tx Node", label="DATA")
         if tx_id is None:
             return False
 
@@ -202,8 +194,7 @@ class WirelessNodeTests(MCPTestBase):
             return False
 
         # Rx Node (label "DATA") → LED
-        resp = await self.send_command("create_element", {"type": "Node", "x": 256, "y": 200, "label": "DATA"})
-        rx_id = await self.validate_element_creation_response(resp, "Create Rx Node")
+        rx_id = await self.create_element_checked("Node", 256, 200, "Create Rx Node", label="DATA")
         if rx_id is None:
             return False
 
@@ -213,8 +204,7 @@ class WirelessNodeTests(MCPTestBase):
         if not await self.assert_success(resp, "Set Rx mode on Rx node"):
             return False
 
-        resp = await self.send_command("create_element", {"type": "Led", "x": 336, "y": 200})
-        led_id = await self.validate_element_creation_response(resp, "Create LED")
+        led_id = await self.create_element_checked("Led", 336, 200, "Create LED")
         if led_id is None:
             return False
 
