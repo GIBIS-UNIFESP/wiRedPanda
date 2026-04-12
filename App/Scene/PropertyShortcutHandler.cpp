@@ -3,6 +3,8 @@
 
 #include "App/Scene/PropertyShortcutHandler.h"
 
+#include <algorithm>
+
 #include "App/Core/Enums.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/Commands.h"
@@ -13,11 +15,12 @@ PropertyShortcutHandler::PropertyShortcutHandler(Scene *scene)
 {
 }
 
-void PropertyShortcutHandler::prevMainProperty()
+void PropertyShortcutHandler::adjustMainProperty(int dir)
 {
-    // Keyboard shortcut to decrement the "primary" configurable property of each
-    // selected element: input count for logic gates, output count for rotary inputs,
-    // clock frequency (step 0.5 Hz), buzzer audio, or display color
+    // dir = -1 for prev, +1 for next
+    // Cycles the "primary" configurable property of each selected element:
+    // input count for logic gates, output count for rotary inputs,
+    // clock frequency (0.5 Hz step), buzzer frequency (100 Hz step), or display color.
     for (auto *element : m_scene->selectedElements()) {
         switch (element->elementType()) {
         // Logic Elements
@@ -29,34 +32,41 @@ void PropertyShortcutHandler::prevMainProperty()
         case ElementType::Xnor:
         // Output and truthtable
         case ElementType::Led:
-        case ElementType::TruthTable:
-            if (element->inputSize() > element->minInputSize())
+        case ElementType::TruthTable: {
+            const int newSize = element->inputSize() + dir;
+            if (newSize >= element->minInputSize() && newSize <= element->maxInputSize())
                 m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
-                                                                  element->inputSize() - 1, m_scene, true));
+                                                                  newSize, m_scene, true));
             break;
-
+        }
         // Input ports
-        case ElementType::InputRotary:
-            if (element->outputSize() > element->minOutputSize())
+        case ElementType::InputRotary: {
+            const int newSize = element->outputSize() + dir;
+            if (newSize >= element->minOutputSize() && newSize <= element->maxOutputSize())
                 m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
-                                                                  element->outputSize() - 1, m_scene, false));
+                                                                  newSize, m_scene, false));
             break;
-
+        }
         case ElementType::Clock:
             if (element->hasFrequency())
-                element->setFrequency(element->frequency() - 0.5);
+                element->setFrequency(element->frequency() + dir * 0.5);
             break;
 
         case ElementType::Buzzer:
             if (element->hasFrequency())
-                element->setFrequency((std::max)(20.0, element->frequency() - 100.0));
+                element->setFrequency(std::clamp(element->frequency() + dir * 100.0, 20.0, 20000.0));
             break;
 
         case ElementType::Display16:
+            // Only previous-color is handled for Display16 (no next-color cycling)
+            if (dir < 0 && element->hasColors())
+                element->setColor(element->previousColor());
+            break;
+
         case ElementType::Display14:
         case ElementType::Display7:
             if (element->hasColors())
-                element->setColor(element->previousColor());
+                element->setColor(dir < 0 ? element->previousColor() : element->nextColor());
             break;
 
         default: // Not implemented
@@ -69,50 +79,34 @@ void PropertyShortcutHandler::prevMainProperty()
     }
 }
 
+void PropertyShortcutHandler::prevMainProperty()
+{
+    adjustMainProperty(-1);
+}
+
 void PropertyShortcutHandler::nextMainProperty()
 {
-    // Mirror of prevMainProperty() — increments the same per-type primary property
+    adjustMainProperty(1);
+}
+
+void PropertyShortcutHandler::adjustSecondaryProperty(int dir)
+{
+    // dir = -1 for prev, +1 for next
     for (auto *element : m_scene->selectedElements()) {
         switch (element->elementType()) {
-        // Logic Elements
-        case ElementType::And:
-        case ElementType::Or:
-        case ElementType::Nand:
-        case ElementType::Nor:
-        case ElementType::Xor:
-        case ElementType::Xnor:
-        // Output and truthtable
+        case ElementType::TruthTable: {
+            const int newSize = element->outputSize() + dir;
+            if (newSize >= element->minOutputSize() && newSize <= element->maxOutputSize())
+                m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
+                                                                  newSize, m_scene, false));
+            break;
+        }
         case ElementType::Led:
-        case ElementType::TruthTable:
-            if (element->inputSize() < element->maxInputSize())
-                m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
-                                                                  element->inputSize() + 1, m_scene, true));
-            break;
-
-        // Input ports
-        case ElementType::InputRotary:
-            if (element->outputSize() < element->maxOutputSize())
-                m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
-                                                                  element->outputSize() + 1, m_scene, false));
-            break;
-
-        case ElementType::Clock:
-            if (element->hasFrequency())
-                element->setFrequency(element->frequency() + 0.5);
-            break;
-
-        case ElementType::Buzzer:
-            if (element->hasFrequency())
-                element->setFrequency((std::min)(20000.0, element->frequency() + 100.0));
-            break;
-
-        case ElementType::Display14:
-        case ElementType::Display7:
             if (element->hasColors())
-                element->setColor(element->nextColor());
+                element->setColor(dir < 0 ? element->previousColor() : element->nextColor());
             break;
 
-        default: // Not implemented
+        default:
             break;
         }
 
@@ -123,50 +117,12 @@ void PropertyShortcutHandler::nextMainProperty()
 
 void PropertyShortcutHandler::prevSecondaryProperty()
 {
-    for (auto *element : m_scene->selectedElements()) {
-        switch (element->elementType()) {
-        case ElementType::TruthTable:
-            if (element->outputSize() > element->minOutputSize())
-                m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
-                                                                  element->outputSize() - 1, m_scene, false));
-            break;
-
-        case ElementType::Led:
-            if (element->hasColors())
-                element->setColor(element->previousColor());
-            break;
-
-        default:
-            break;
-        }
-
-        element->setSelected(false);
-        element->setSelected(true);
-    }
+    adjustSecondaryProperty(-1);
 }
 
 void PropertyShortcutHandler::nextSecondaryProperty()
 {
-    for (auto *element : m_scene->selectedElements()) {
-        switch (element->elementType()) {
-        case ElementType::TruthTable:
-            if (element->outputSize() < element->maxOutputSize())
-                m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
-                                                                  element->outputSize() + 1, m_scene, false));
-            break;
-
-        case ElementType::Led:
-            if (element->hasColors())
-                element->setColor(element->nextColor());
-            break;
-
-        default:
-            break;
-        }
-
-        element->setSelected(false);
-        element->setSelected(true);
-    }
+    adjustSecondaryProperty(1);
 }
 
 void PropertyShortcutHandler::nextElement()
