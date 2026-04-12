@@ -40,19 +40,6 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
         return createErrorResponse("Missing required parameters: source_id, target_id", requestId);
     }
 
-    // Check that we have at least one way to specify each port
-    bool hasSourcePort = params.contains("source_port");
-    bool hasSourceLabel = params.contains("source_port_label");
-    bool hasTargetPort = params.contains("target_port");
-    bool hasTargetLabel = params.contains("target_port_label");
-
-    if (!hasSourcePort && !hasSourceLabel) {
-        return createErrorResponse("Missing source port: provide either 'source_port' (index) or 'source_port_label' (name)", requestId);
-    }
-    if (!hasTargetPort && !hasTargetLabel) {
-        return createErrorResponse("Missing target port: provide either 'target_port' (index) or 'target_port_label' (name)", requestId);
-    }
-
     QString errorMsg;
     auto *sourceElement = getValidatedElement(params, "source_id", errorMsg);
     if (!sourceElement) {
@@ -63,44 +50,14 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
         return createErrorResponse(errorMsg, requestId);
     }
 
-    // Resolve source port (prefer label if provided)
     int sourcePort = -1;
-    if (hasSourceLabel) {
-        if (!validateNonEmptyString(params.value("source_port_label"), "source_port_label", errorMsg)) {
-            return createErrorResponse(errorMsg, requestId);
-        }
-        QString label = params.value("source_port_label").toString();
-        if (!getOutputPortByLabel(sourceElement, label, sourcePort, errorMsg)) {
-            return createErrorResponse(errorMsg, requestId);
-        }
-    } else {
-        if (!validateNonNegativeInteger(params.value("source_port"), "source_port", errorMsg)) {
-            return createErrorResponse(errorMsg, requestId);
-        }
-        sourcePort = params.value("source_port").toInt();
-        if (!validatePortRange(sourceElement, sourcePort, true, "source_port", errorMsg)) {
-            return createErrorResponse(errorMsg, requestId);
-        }
+    if (!resolvePort(params, "source", sourceElement, true, sourcePort, errorMsg)) {
+        return createErrorResponse(errorMsg, requestId);
     }
 
-    // Resolve target port (prefer label if provided)
     int targetPort = -1;
-    if (hasTargetLabel) {
-        if (!validateNonEmptyString(params.value("target_port_label"), "target_port_label", errorMsg)) {
-            return createErrorResponse(errorMsg, requestId);
-        }
-        QString label = params.value("target_port_label").toString();
-        if (!getInputPortByLabel(targetElement, label, targetPort, errorMsg)) {
-            return createErrorResponse(errorMsg, requestId);
-        }
-    } else {
-        if (!validateNonNegativeInteger(params.value("target_port"), "target_port", errorMsg)) {
-            return createErrorResponse(errorMsg, requestId);
-        }
-        targetPort = params.value("target_port").toInt();
-        if (!validatePortRange(targetElement, targetPort, false, "target_port", errorMsg)) {
-            return createErrorResponse(errorMsg, requestId);
-        }
+    if (!resolvePort(params, "target", targetElement, false, targetPort, errorMsg)) {
+        return createErrorResponse(errorMsg, requestId);
     }
 
     QNEPort *outputPort = sourceElement->outputPort(sourcePort);
@@ -307,5 +264,34 @@ QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, 
         scene->receiveCommand(new SplitCommand(connectionToSplit, QPointF(x, y), scene));
         return createSuccessResponse(QJsonObject(), requestId);
     }, "split connection", requestId);
+}
+
+bool ConnectionHandler::resolvePort(const QJsonObject &params, const QString &prefix,
+                                     GraphicElement *element, bool isOutput,
+                                     int &portIndex, QString &errorMsg)
+{
+    const QString labelParam = prefix + "_port_label";
+    const QString indexParam = prefix + "_port";
+
+    if (!params.contains(labelParam) && !params.contains(indexParam)) {
+        errorMsg = QString("Missing %1 port: provide either '%2' (index) or '%3' (name)")
+                   .arg(prefix, indexParam, labelParam);
+        return false;
+    }
+
+    if (params.contains(labelParam)) {
+        if (!validateNonEmptyString(params.value(labelParam), labelParam, errorMsg)) {
+            return false;
+        }
+        const QString label = params.value(labelParam).toString();
+        return isOutput ? getOutputPortByLabel(element, label, portIndex, errorMsg)
+                        : getInputPortByLabel(element, label, portIndex, errorMsg);
+    }
+
+    if (!validateNonNegativeInteger(params.value(indexParam), indexParam, errorMsg)) {
+        return false;
+    }
+    portIndex = params.value(indexParam).toInt();
+    return validatePortRange(element, portIndex, isOutput, indexParam, errorMsg);
 }
 

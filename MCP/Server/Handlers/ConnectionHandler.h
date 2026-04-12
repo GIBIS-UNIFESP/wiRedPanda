@@ -24,5 +24,15 @@ private:
     QJsonObject handleDisconnectElements(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleListConnections(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleSplitConnection(const QJsonObject &params, const QJsonValue &requestId);
+
+    /**
+     * \brief Resolves a port index for the element at \a prefix + "_id".
+     * \details Accepts either a label (\a prefix + "_port_label") or an integer index
+     * (\a prefix + "_port"). Sets \a portIndex on success, \a errorMsg on failure.
+     * \param isOutput true when resolving an output port (source side), false for input (target side).
+     */
+    bool resolvePort(const QJsonObject &params, const QString &prefix,
+                     GraphicElement *element, bool isOutput,
+                     int &portIndex, QString &errorMsg);
 };
 
