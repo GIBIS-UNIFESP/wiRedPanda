@@ -57,19 +57,24 @@ void QNEConnection::setEndPos(const QPointF point)
     m_endPos = point;
 }
 
+void QNEConnection::changePortAttachment(QNEPort *oldPort, QNEPort *newPort)
+{
+    // Detach from the previous port before attaching to the new one to avoid
+    // dangling entries in the old port's connection list (e.g. during IC hot-reload)
+    if (oldPort && (oldPort != newPort)) {
+        oldPort->detachConnection(this);
+    }
+    if (newPort) {
+        newPort->attachConnection(this);
+    }
+}
+
 void QNEConnection::setStartPort(QNEOutputPort *port)
 {
     auto *oldPort = m_startPort;
     m_startPort = port;
-
-    // Detach from the previous port before attaching to the new one to avoid
-    // dangling entries in the old port's connection list (e.g. during IC hot-reload)
-    if (oldPort && (oldPort != port)) {
-        oldPort->detachConnection(this);
-    }
-
+    changePortAttachment(oldPort, port);
     if (port) {
-        port->attachConnection(this);
         setStartPos(port->scenePos());
         // Inherit the source port's signal status so the wire colour is correct immediately
         setStatus(port->status());
@@ -80,13 +85,8 @@ void QNEConnection::setEndPort(QNEInputPort *port)
 {
     auto *oldPort = m_endPort;
     m_endPort = port;
-
-    if (oldPort && (oldPort != port)) {
-        oldPort->detachConnection(this);
-    }
-
+    changePortAttachment(oldPort, port);
     if (port) {
-        port->attachConnection(this);
         setEndPos(port->scenePos());
         // Push the current wire status into the destination port so it displays correctly
         // even before the next simulation step
