@@ -728,49 +728,8 @@ void MorphCommand::transferConnections(const QList<GraphicElement *> &from, cons
         // internally detach from oldElm and attach to newElm, so the list shrinks.
         // When the new element has fewer ports (e.g. Display14→Display7), connections
         // on the removed ports are deleted to avoid leaving dangling wires in the scene.
-        for (int port = 0; port < oldElm->inputSize(); ++port) {
-            while (!oldElm->inputPort(port)->connections().isEmpty()) {
-                if (auto *conn = oldElm->inputPort(port)->connections().constFirst(); conn && (conn->endPort() == oldElm->inputPort(port))) {
-                    auto *newPort = newElm->inputPort(port);
-                    if (newPort) {
-                        conn->setEndPort(newPort);
-                        conn->setHighLight(false);
-                    } else {
-                        // Port no longer exists on the morphed element — record before deleting
-                        if (deleted && conn->startPort() && conn->startPort()->graphicElement()) {
-                            auto *otherElm = conn->startPort()->graphicElement();
-                            deleted->append({conn->id(), oldElm->id(), port, true, otherElm->id(), conn->startPort()->index()});
-                        }
-                        conn->setStartPort(nullptr);
-                        conn->setEndPort(nullptr);
-                        m_scene->removeItem(conn);
-                        delete conn;
-                    }
-                }
-            }
-        }
-
-        for (int port = 0; port < oldElm->outputSize(); ++port) {
-            while (!oldElm->outputPort(port)->connections().isEmpty()) {
-                if (auto *conn = oldElm->outputPort(port)->connections().constFirst(); conn && (conn->startPort() == oldElm->outputPort(port))) {
-                    auto *newPort = newElm->outputPort(port);
-                    if (newPort) {
-                        conn->setStartPort(newPort);
-                        conn->setHighLight(false);
-                    } else {
-                        // Port no longer exists on the morphed element — record before deleting
-                        if (deleted && conn->endPort() && conn->endPort()->graphicElement()) {
-                            auto *otherElm = conn->endPort()->graphicElement();
-                            deleted->append({conn->id(), oldElm->id(), port, false, otherElm->id(), conn->endPort()->index()});
-                        }
-                        conn->setStartPort(nullptr);
-                        conn->setEndPort(nullptr);
-                        m_scene->removeItem(conn);
-                        delete conn;
-                    }
-                }
-            }
-        }
+        transferPortConnections(oldElm, newElm, true, deleted);
+        transferPortConnections(oldElm, newElm, false, deleted);
 
         // Reuse the old element's ID on the new element so that any external
         // references (e.g. undo commands) remain valid after the morph
@@ -781,6 +740,44 @@ void MorphCommand::transferConnections(const QList<GraphicElement *> &from, cons
         m_scene->updateItemId(newElm, oldId);
         m_scene->addItem(newElm);
         newElm->updatePortsProperties();
+    }
+}
+
+void MorphCommand::transferPortConnections(GraphicElement *oldElm, GraphicElement *newElm,
+                                           bool isInput, QList<DeletedConnectionInfo> *deleted)
+{
+    const int portCount = isInput ? oldElm->inputSize() : oldElm->outputSize();
+    for (int port = 0; port < portCount; ++port) {
+        QNEPort *oldPort = isInput ? static_cast<QNEPort *>(oldElm->inputPort(port))
+                                   : static_cast<QNEPort *>(oldElm->outputPort(port));
+        while (!oldPort->connections().isEmpty()) {
+            auto *conn = oldPort->connections().constFirst();
+            if (!conn) { break; }
+            const bool ownsSide = isInput ? (conn->endPort() == oldElm->inputPort(port))
+                                          : (conn->startPort() == oldElm->outputPort(port));
+            if (!ownsSide) { break; }
+            QNEPort *newPort = isInput ? static_cast<QNEPort *>(newElm->inputPort(port))
+                                       : static_cast<QNEPort *>(newElm->outputPort(port));
+            if (newPort) {
+                if (isInput) {
+                    conn->setEndPort(static_cast<QNEInputPort *>(newPort));
+                } else {
+                    conn->setStartPort(static_cast<QNEOutputPort *>(newPort));
+                }
+                conn->setHighLight(false);
+            } else {
+                // Port no longer exists on the morphed element — record before deleting
+                QNEPort *otherPort = isInput ? static_cast<QNEPort *>(conn->startPort())
+                                             : static_cast<QNEPort *>(conn->endPort());
+                if (deleted && otherPort && otherPort->graphicElement()) {
+                    deleted->append({conn->id(), oldElm->id(), port, isInput, otherPort->graphicElement()->id(), otherPort->index()});
+                }
+                conn->setStartPort(nullptr);
+                conn->setEndPort(nullptr);
+                m_scene->removeItem(conn);
+                delete conn;
+            }
+        }
     }
 }
 
