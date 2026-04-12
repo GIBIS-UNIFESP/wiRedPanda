@@ -8,6 +8,7 @@
 #include <QMimeData>
 
 #include "App/Core/Enums.h"
+#include "App/Core/MimeTypes.h"
 #include "App/IO/Serialization.h"
 
 ICDropZone::ICDropZone(Section section, QWidget *parent)
@@ -19,16 +20,16 @@ ICDropZone::ICDropZone(Section section, QWidget *parent)
 
 void ICDropZone::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (!event->mimeData()->hasFormat("wpanda/x-dnditemdata")
-        && !event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
+    if (!event->mimeData()->hasFormat(MimeType::DragDropLegacy)
+        && !event->mimeData()->hasFormat(MimeType::DragDrop)) {
         return;
     }
 
     QByteArray itemData;
-    if (event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
-        itemData = event->mimeData()->data("application/x-wiredpanda-dragdrop");
+    if (event->mimeData()->hasFormat(MimeType::DragDrop)) {
+        itemData = event->mimeData()->data(MimeType::DragDrop);
     } else {
-        itemData = event->mimeData()->data("wpanda/x-dnditemdata");
+        itemData = event->mimeData()->data(MimeType::DragDropLegacy);
     }
 
     QDataStream stream(&itemData, QIODevice::ReadOnly);
@@ -58,10 +59,10 @@ void ICDropZone::dragMoveEvent(QDragMoveEvent *event)
 void ICDropZone::dropEvent(QDropEvent *event)
 {
     QByteArray itemData;
-    if (event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
-        itemData = event->mimeData()->data("application/x-wiredpanda-dragdrop");
-    } else if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")) {
-        itemData = event->mimeData()->data("wpanda/x-dnditemdata");
+    if (event->mimeData()->hasFormat(MimeType::DragDrop)) {
+        itemData = event->mimeData()->data(MimeType::DragDrop);
+    } else if (event->mimeData()->hasFormat(MimeType::DragDropLegacy)) {
+        itemData = event->mimeData()->data(MimeType::DragDropLegacy);
     } else {
         return;
     }

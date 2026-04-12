@@ -9,6 +9,7 @@
 #include <QMimeData>
 #include <QMouseEvent>
 
+#include "App/Core/MimeTypes.h"
 #include "App/Element/ElementFactory.h"
 #include "App/IO/Serialization.h"
 
@@ -106,7 +107,7 @@ QMimeData *ElementLabel::mimeData()
     stream << offset << m_elementType << m_icFileName << m_isEmbedded << (m_isEmbedded ? m_icFileName : QString());
 
     auto *mimeData = new QMimeData();
-    mimeData->setData("application/x-wiredpanda-dragdrop", itemData);
+    mimeData->setData(MimeType::DragDrop, itemData);
 
     return mimeData;
 }

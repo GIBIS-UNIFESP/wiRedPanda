@@ -9,6 +9,7 @@
 #include <QVersionNumber>
 
 #include "App/Core/Enums.h"
+#include "App/Core/MimeTypes.h"
 #include "App/IO/Serialization.h"
 
 TrashButton::TrashButton(QWidget *parent)
@@ -19,26 +20,26 @@ TrashButton::TrashButton(QWidget *parent)
 
 void TrashButton::dragEnterEvent(QDragEnterEvent *event)
 {
-    // Accept both the legacy MIME type ("wpanda/x-dnditemdata") and the current one
-    // so that IC files dragged from either old or new element panels are accepted
-    if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")
-        || event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
+    // Accept both the legacy MIME type and the current one so that IC files
+    // dragged from either old or new element panels are accepted
+    if (event->mimeData()->hasFormat(MimeType::DragDropLegacy)
+        || event->mimeData()->hasFormat(MimeType::DragDrop)) {
         event->acceptProposedAction();
     }
 }
 
 void TrashButton::dropEvent(QDropEvent *event)
 {
-    if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")
-        || event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
+    if (event->mimeData()->hasFormat(MimeType::DragDropLegacy)
+        || event->mimeData()->hasFormat(MimeType::DragDrop)) {
         QByteArray itemData;
 
-        if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")) {
-            itemData = event->mimeData()->data("wpanda/x-dnditemdata");
+        if (event->mimeData()->hasFormat(MimeType::DragDropLegacy)) {
+            itemData = event->mimeData()->data(MimeType::DragDropLegacy);
         }
 
-        if (event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
-            itemData = event->mimeData()->data("application/x-wiredpanda-dragdrop");
+        if (event->mimeData()->hasFormat(MimeType::DragDrop)) {
+            itemData = event->mimeData()->data(MimeType::DragDrop);
         }
 
         // Deserialise the drag payload to extract the IC file name and optional embedded fields

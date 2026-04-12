@@ -15,6 +15,7 @@
 
 #include "App/Core/Common.h"
 #include "App/Core/ItemWithId.h"
+#include "App/Core/MimeTypes.h"
 #include "App/Core/Priorities.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/ThemeManager.h"
@@ -573,7 +574,7 @@ void Scene::contextMenu(const QPoint screenPos)
         auto *pasteAction = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/paste.svg")), tr("Paste"));
         const auto *mimeData = QApplication::clipboard()->mimeData();
 
-        if (mimeData->hasFormat("wpanda/copydata")) {
+        if (mimeData->hasFormat(MimeType::ClipboardLegacy)) {
             connect(pasteAction, &QAction::triggered, this, &Scene::pasteAction);
         } else {
             pasteAction->setEnabled(false);
@@ -673,10 +674,10 @@ void Scene::flipVertically()
 bool Scene::isSupportedDropFormat(const QMimeData *mimeData)
 {
     const auto &formats = mimeData->formats();
-    return formats.contains("wpanda/x-dnditemdata")
-           || formats.contains("wpanda/ctrlDragData")
-           || formats.contains("application/x-wiredpanda-dragdrop")
-           || formats.contains("application/x-wiredpanda-cloneDrag");
+    return formats.contains(MimeType::DragDropLegacy)
+           || formats.contains(MimeType::CloneDragLegacy)
+           || formats.contains(MimeType::DragDrop)
+           || formats.contains(MimeType::CloneDrag);
 }
 
 void Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
@@ -704,12 +705,12 @@ void Scene::handleNewElementDrop(QGraphicsSceneDragDropEvent *event)
     // Both MIME types carry the same payload; the newer format has a namespaced key
     QByteArray itemData;
 
-    if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")) {
-        itemData = event->mimeData()->data("wpanda/x-dnditemdata");
+    if (event->mimeData()->hasFormat(MimeType::DragDropLegacy)) {
+        itemData = event->mimeData()->data(MimeType::DragDropLegacy);
     }
 
-    if (event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
-        itemData = event->mimeData()->data("application/x-wiredpanda-dragdrop");
+    if (event->mimeData()->hasFormat(MimeType::DragDrop)) {
+        itemData = event->mimeData()->data(MimeType::DragDrop);
     }
 
     QDataStream stream(&itemData, QIODevice::ReadOnly);
@@ -757,12 +758,12 @@ void Scene::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
 {
     QByteArray itemData;
 
-    if (event->mimeData()->hasFormat("wpanda/ctrlDragData")) {
-        itemData = event->mimeData()->data("wpanda/ctrlDragData");
+    if (event->mimeData()->hasFormat(MimeType::CloneDragLegacy)) {
+        itemData = event->mimeData()->data(MimeType::CloneDragLegacy);
     }
 
-    if (event->mimeData()->hasFormat("application/x-wiredpanda-cloneDrag")) {
-        itemData = event->mimeData()->data("application/x-wiredpanda-cloneDrag");
+    if (event->mimeData()->hasFormat(MimeType::CloneDrag)) {
+        itemData = event->mimeData()->data(MimeType::CloneDrag);
     }
 
     QDataStream stream(&itemData, QIODevice::ReadOnly);
@@ -794,13 +795,13 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
     sentryBreadcrumb("ui", QStringLiteral("Drop event"));
 
-    if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")
-        || event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
+    if (event->mimeData()->hasFormat(MimeType::DragDropLegacy)
+        || event->mimeData()->hasFormat(MimeType::DragDrop)) {
         handleNewElementDrop(event);
     }
 
-    if (event->mimeData()->hasFormat("wpanda/ctrlDragData")
-        || event->mimeData()->hasFormat("application/x-wiredpanda-cloneDrag")) {
+    if (event->mimeData()->hasFormat(MimeType::CloneDragLegacy)
+        || event->mimeData()->hasFormat(MimeType::CloneDrag)) {
         handleCloneDrag(event);
     }
 
@@ -1034,9 +1035,9 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void Scene::addItem(QMimeData *mimeData)
 {
-    QByteArray itemData = mimeData->hasFormat("application/x-wiredpanda-dragdrop")
-        ? mimeData->data("application/x-wiredpanda-dragdrop")
-        : mimeData->data("wpanda/x-dnditemdata");
+    QByteArray itemData = mimeData->hasFormat(MimeType::DragDrop)
+        ? mimeData->data(MimeType::DragDrop)
+        : mimeData->data(MimeType::DragDropLegacy);
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     Serialization::readPandaHeader(stream);
 
