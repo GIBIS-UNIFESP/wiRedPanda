@@ -9,7 +9,6 @@
 #include "App/Element/ElementInfo.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Nodes/QNEPort.h"
 
 template<>
 struct ElementInfo<InputSwitch> {
@@ -71,15 +70,6 @@ void InputSwitch::setOn()
     InputSwitch::setOn(!isOn());
 }
 
-void InputSwitch::setOn(const bool value, const int port)
-{
-    Q_UNUSED(port)
-    m_isOn = value;
-    // Pixmap index 0 = switch-off SVG, index 1 = switch-on SVG (matches bool→int cast)
-    setPixmap(static_cast<int>(m_isOn));
-    outputPort()->setStatus(static_cast<Status>(m_isOn));
-}
-
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!m_locked && (event->button() == Qt::LeftButton)) {
@@ -129,18 +119,6 @@ void InputSwitch::load(QDataStream &stream, SerializationContext &context)
 
     // Apply the loaded on/off state to port and pixmap
     setOn(m_isOn);
-}
-
-void InputSwitch::setAppearance(const bool defaultAppearance, const QString &fileName)
-{
-    if (defaultAppearance) {
-        m_alternativeAppearances = m_defaultAppearances;
-    } else {
-        m_alternativeAppearances[static_cast<int>(m_isOn)] = fileName;
-    }
-
-    m_usingDefaultAppearance = defaultAppearance;
-    setPixmap(static_cast<int>(m_isOn));
 }
 
 QList<QPair<int, QString>> InputSwitch::appearanceStates() const

@@ -9,7 +9,6 @@
 #include "App/Element/ElementInfo.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Nodes/QNEPort.h"
 
 template<>
 struct ElementInfo<InputButton> {
@@ -118,27 +117,6 @@ void InputButton::setOff()
 void InputButton::setOn()
 {
     InputButton::setOn(true);
-}
-
-void InputButton::setOn(const bool value, const int port)
-{
-    Q_UNUSED(port)
-    m_isOn = value;
-    // Pixmap index 0 = button-off SVG, index 1 = button-on SVG (matches bool→int cast)
-    setPixmap(static_cast<int>(m_isOn));
-    outputPort()->setStatus(static_cast<Status>(m_isOn));
-}
-
-void InputButton::setAppearance(const bool defaultAppearance, const QString &fileName)
-{
-    if (defaultAppearance) {
-        m_alternativeAppearances = m_defaultAppearances;
-    } else {
-        m_alternativeAppearances[static_cast<int>(m_isOn)] = fileName;
-    }
-
-    m_usingDefaultAppearance = defaultAppearance;
-    setPixmap(static_cast<int>(m_isOn));
 }
 
 QList<QPair<int, QString>> InputButton::appearanceStates() const

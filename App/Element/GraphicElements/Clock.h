@@ -44,8 +44,10 @@ public:
     void setOn() override;
     /// Drives all output ports logic-low.
     void setOff() override;
-    /// Sets the clock output to \a value on port \a port.
-    void setOn(const bool value, const int port = 0) override;
+
+    // Bring the base setOn(bool, int) overload into scope (hidden by setOn() above).
+    using GraphicElementInput::setOn;
+
     /// Sets the clock output frequency to \a freq Hz.
     void setFrequency(const double freq) override;
     /// Sets the clock phase delay to \a delay (fraction of period).
@@ -61,8 +63,6 @@ public:
     // --- Visual ---
 
     /// \reimp
-    void setAppearance(const bool defaultAppearance, const QString &fileName) override;
-    /// \reimp
     QList<QPair<int, QString>> appearanceStates() const override;
 
     // --- Serialization ---
@@ -75,7 +75,6 @@ public:
 private:
     // --- Members ---
 
-    bool m_isOn = false;
     double m_delay = 0;
     double m_frequency = 0;
     std::chrono::microseconds m_interval;
