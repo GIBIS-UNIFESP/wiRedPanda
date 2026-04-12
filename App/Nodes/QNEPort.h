@@ -153,6 +153,14 @@ protected:
     /// Refreshes port colours from the current ThemeManager palette. Pure virtual.
     virtual void updateTheme() = 0;
 
+    /**
+     * \brief Drains all attached connections, breaking back-references before deletion.
+     * \param isInput True if this is an input port (sets endPort to nullptr); false for output.
+     * \details Called from the QNEInputPort and QNEOutputPort destructors to avoid
+     * re-entrant disconnect() calls into a partially destroyed port.
+     */
+    void drainConnections(bool isInput);
+
     // --- Members ---
 
     GraphicElement *m_graphicElement = nullptr;

@@ -186,6 +186,20 @@ void QNEPort::hoverEnter()
     setBrush(QBrush(ThemeManager::attributes().m_portHoverPort));
 }
 
+void QNEPort::drainConnections(bool isInput)
+{
+    while (!m_connections.isEmpty()) {
+        auto *conn = m_connections.constLast();
+        m_connections.removeAll(conn);
+        if (isInput) {
+            conn->setEndPort(nullptr);
+        } else {
+            conn->setStartPort(nullptr);
+        }
+        delete conn;
+    }
+}
+
 QNEInputPort::QNEInputPort(QGraphicsItem *parent)
     : QNEPort(parent)
 {
@@ -197,12 +211,7 @@ QNEInputPort::~QNEInputPort()
     // An input port owns (and must clean up) all connections that terminate here.
     // Manually remove from the list before deleting to prevent the connection destructor
     // from calling disconnect() back into a partially destroyed port.
-    while (!m_connections.isEmpty()) {
-        auto *conn = m_connections.constLast();
-        m_connections.removeAll(conn);
-        conn->setEndPort(nullptr);
-        delete conn;
-    }
+    drainConnections(true);
 }
 
 void QNEInputPort::setStatus(const Status status)
@@ -272,12 +281,7 @@ QNEOutputPort::~QNEOutputPort()
 {
     // Mirror of QNEInputPort destructor: output port also owns the connections that originate
     // here and must break the back-reference before deletion to avoid re-entrant disconnect()
-    while (!m_connections.isEmpty()) {
-        auto *conn = m_connections.constLast();
-        m_connections.removeAll(conn);
-        conn->setStartPort(nullptr);
-        delete conn;
-    }
+    drainConnections(false);
 }
 
 void QNEOutputPort::setStatus(const Status status)
