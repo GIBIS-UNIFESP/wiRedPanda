@@ -221,6 +221,24 @@ bool BaseHandler::validatePortRange(GraphicElement *element, int portIndex, bool
     return true;
 }
 
+GraphicElement *BaseHandler::getValidatedElement(const QJsonObject &params, const QString &paramName, QString &errorMsg)
+{
+    if (!validatePositiveInteger(params.value(paramName), paramName, errorMsg)) {
+        return nullptr;
+    }
+    const int elementId = params.value(paramName).toInt();
+    if (!validateElementId(elementId, paramName, errorMsg)) {
+        return nullptr;
+    }
+    auto *item = getCurrentScene()->itemById(elementId);
+    auto *element = dynamic_cast<GraphicElement *>(item);
+    if (!element) {
+        errorMsg = QString("Item %1 is not a graphic element").arg(elementId);
+        return nullptr;
+    }
+    return element;
+}
+
 bool BaseHandler::getInputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg)
 {
     if (!element) {

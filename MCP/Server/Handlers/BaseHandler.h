@@ -41,6 +41,14 @@ public:
     bool validatePositiveInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg);
     void sendResponse(const QJsonObject &response);
 
+    /**
+     * \brief Validates \a paramName in \a params, looks up the element, and returns it.
+     * \details Combines validatePositiveInteger() + validateElementId() + itemById() +
+     * dynamic_cast in one call. On failure sets \a errorMsg and returns nullptr.
+     * Typical use: `auto *e = getValidatedElement(params, "element_id", errorMsg); if (!e) return createErrorResponse(errorMsg, requestId);`
+     */
+    GraphicElement *getValidatedElement(const QJsonObject &params, const QString &paramName, QString &errorMsg);
+
     // Port lookup by label (similar to CircuitBuilder in testutils.cpp)
     bool getInputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg);
     bool getOutputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg);

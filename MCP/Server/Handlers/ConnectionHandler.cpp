@@ -54,34 +54,13 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
     }
 
     QString errorMsg;
-
-    if (!validatePositiveInteger(params.value("source_id"), "source_id", errorMsg)) {
+    auto *sourceElement = getValidatedElement(params, "source_id", errorMsg);
+    if (!sourceElement) {
         return createErrorResponse(errorMsg, requestId);
     }
-
-    if (!validatePositiveInteger(params.value("target_id"), "target_id", errorMsg)) {
+    auto *targetElement = getValidatedElement(params, "target_id", errorMsg);
+    if (!targetElement) {
         return createErrorResponse(errorMsg, requestId);
-    }
-
-    int sourceId = params.value("source_id").toInt();
-    int targetId = params.value("target_id").toInt();
-
-    if (!validateElementId(sourceId, "source_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    if (!validateElementId(targetId, "target_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    auto *sourceItem = getCurrentScene()->itemById(sourceId);
-    auto *targetItem = getCurrentScene()->itemById(targetId);
-
-    auto *sourceElement = dynamic_cast<GraphicElement *>(sourceItem);
-    auto *targetElement = dynamic_cast<GraphicElement *>(targetItem);
-
-    if (!sourceElement || !targetElement) {
-        return createErrorResponse("Source or target is not a graphic element", requestId);
     }
 
     // Resolve source port (prefer label if provided)
@@ -161,33 +140,13 @@ QJsonObject ConnectionHandler::handleDisconnectElements(const QJsonObject &param
     }
 
     QString errorMsg;
-    if (!validatePositiveInteger(params.value("source_id"), "source_id", errorMsg)) {
+    auto *sourceElement = getValidatedElement(params, "source_id", errorMsg);
+    if (!sourceElement) {
         return createErrorResponse(errorMsg, requestId);
     }
-
-    if (!validatePositiveInteger(params.value("target_id"), "target_id", errorMsg)) {
+    auto *targetElement = getValidatedElement(params, "target_id", errorMsg);
+    if (!targetElement) {
         return createErrorResponse(errorMsg, requestId);
-    }
-
-    int sourceId = params.value("source_id").toInt();
-    int targetId = params.value("target_id").toInt();
-
-    if (!validateElementId(sourceId, "source_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    if (!validateElementId(targetId, "target_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    auto *sourceItem = getCurrentScene()->itemById(sourceId);
-    auto *targetItem = getCurrentScene()->itemById(targetId);
-
-    auto *sourceElement = dynamic_cast<GraphicElement *>(sourceItem);
-    auto *targetElement = dynamic_cast<GraphicElement *>(targetItem);
-
-    if (!sourceElement || !targetElement) {
-        return createErrorResponse("Source or target is not a graphic element", requestId);
     }
 
     Scene *scene = getCurrentScene();
@@ -225,7 +184,7 @@ QJsonObject ConnectionHandler::handleDisconnectElements(const QJsonObject &param
         }
     }
 
-    return createErrorResponse(QString("No connection found between elements %1 and %2").arg(sourceId).arg(targetId), requestId);
+    return createErrorResponse(QString("No connection found between elements %1 and %2").arg(sourceElement->id()).arg(targetElement->id()), requestId);
 }
 
 QJsonObject ConnectionHandler::handleListConnections(const QJsonObject &, const QJsonValue &requestId)
@@ -281,42 +240,30 @@ QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, 
 
     QString errorMsg;
 
-    if (!validatePositiveInteger(params.value("source_id"), "source_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
-    if (!validatePositiveInteger(params.value("target_id"), "target_id", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
-    }
-
     if (!validateNonNegativeInteger(params.value("source_port"), "source_port", errorMsg)) {
         return createErrorResponse(errorMsg, requestId);
     }
-
     if (!validateNonNegativeInteger(params.value("target_port"), "target_port", errorMsg)) {
         return createErrorResponse(errorMsg, requestId);
     }
-
     if (!validateNumeric(params.value("x"), "x", errorMsg)) {
         return createErrorResponse(errorMsg, requestId);
     }
-
     if (!validateNumeric(params.value("y"), "y", errorMsg)) {
         return createErrorResponse(errorMsg, requestId);
     }
 
-    int sourceId = params.value("source_id").toInt();
-    int targetId = params.value("target_id").toInt();
-    int sourcePort = params.value("source_port").toInt();
-    int targetPort = params.value("target_port").toInt();
-    double x = params.value("x").toDouble();
-    double y = params.value("y").toDouble();
+    const int sourcePort = params.value("source_port").toInt();
+    const int targetPort = params.value("target_port").toInt();
+    const double x = params.value("x").toDouble();
+    const double y = params.value("y").toDouble();
 
-    if (!validateElementId(sourceId, "source_id", errorMsg)) {
+    auto *sourceElement = getValidatedElement(params, "source_id", errorMsg);
+    if (!sourceElement) {
         return createErrorResponse(errorMsg, requestId);
     }
-
-    if (!validateElementId(targetId, "target_id", errorMsg)) {
+    auto *targetElement = getValidatedElement(params, "target_id", errorMsg);
+    if (!targetElement) {
         return createErrorResponse(errorMsg, requestId);
     }
 
@@ -348,7 +295,7 @@ QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, 
         }
 
         // Check if this connection matches source->target
-        if (elem1->id() == sourceId && elem2->id() == targetId &&
+        if (elem1 == sourceElement && elem2 == targetElement &&
             port1->index() == sourcePort && port2->index() == targetPort) {
             connectionToSplit = connection;
             break;
