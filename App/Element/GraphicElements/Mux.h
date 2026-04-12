@@ -39,5 +39,12 @@ public:
 
 private:
     void generatePixmap();
+
+    /**
+     * \brief Returns the minimum select-line count for a Mux with \a totalInputs ports.
+     * \details Finds the smallest k such that 2^k >= totalInputs - k, so that
+     * every data input (totalInputs - k of them) can be addressed by the k select lines.
+     */
+    static int calculateSelectLines(int totalInputs);
 };
 
