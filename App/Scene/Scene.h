@@ -311,6 +311,11 @@ private:
     /// Returns \c true if \a mimeData contains any recognised wiRedPanda drop format.
     static bool isSupportedDropFormat(const QMimeData *mimeData);
 
+    /// Handles a new-element drop from the toolbox palette.
+    void handleNewElementDrop(QGraphicsSceneDragDropEvent *event);
+    /// Handles a clone drag (Ctrl+drag of an existing selection).
+    void handleCloneDrag(QGraphicsSceneDragDropEvent *event);
+
     QList<QGraphicsItem *> itemsAt(const QPointF pos);
     const QVector<QNEConnection *> connections();
     void checkUpdateRequest();
