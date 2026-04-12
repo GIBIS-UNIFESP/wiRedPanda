@@ -130,6 +130,9 @@ public:
     /// Returns a const reference to the vector of all output ports.
     const QVector<QNEOutputPort *> &outputs() const;
 
+    /// Returns a combined list of all input and output ports as QNEPort pointers.
+    QVector<QNEPort *> allPorts() const;
+
     /// Returns the current number of input ports.
     int inputSize() const;
 
