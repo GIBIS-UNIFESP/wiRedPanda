@@ -110,6 +110,9 @@ protected:
     bool sceneEvent(QEvent *event) override;
 
 private:
+    /// Detaches \a oldPort and attaches \a newPort to this connection (base-pointer version).
+    void changePortAttachment(QNEPort *oldPort, QNEPort *newPort);
+
     // --- Members: Theme colors ---
 
     QColor m_activeColor;
