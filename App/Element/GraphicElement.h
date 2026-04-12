@@ -217,6 +217,9 @@ public:
     /// Returns \c true if this element type supports color selection.
     bool hasColors() const;
 
+    /// Maps a color name ("White","Red","Green","Blue","Purple") to indices 0–4.
+    static int colorNameToIndex(const QString &color);
+
     /// Returns the name of the next color in the element's color list.
     QString nextColor() const;
 
