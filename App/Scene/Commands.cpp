@@ -250,6 +250,21 @@ void drainPortConnections(GraphicElement *elm, int fromPort, int toPort,
 
 }  // namespace CommandUtils
 
+ElementsCommand::ElementsCommand(const QList<GraphicElement *> &elements, Scene *scene, QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , m_scene(scene)
+{
+    m_ids.reserve(elements.size());
+    for (auto *elm : elements) {
+        m_ids.append(elm->id());
+    }
+}
+
+QList<GraphicElement *> ElementsCommand::elements() const
+{
+    return CommandUtils::findElements(m_scene, m_ids);
+}
+
 AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &items, Scene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_scene(scene)
@@ -315,25 +330,22 @@ void DeleteItemsCommand::redo()
 }
 
 RotateCommand::RotateCommand(const QList<GraphicElement *> &items, const int angle, Scene *scene, QUndoCommand *parent)
-    : QUndoCommand(parent)
+    : ElementsCommand(items, scene, parent)
     , m_angle(angle)
-    , m_scene(scene)
 {
     setText(tr("Rotate %1 degrees").arg(m_angle));
-    m_ids.reserve(items.size());
     m_positions.reserve(items.size());
 
     for (auto *item : items) {
         m_positions.append(item->pos());
         item->setPos(item->pos());
-        m_ids.append(item->id());
+
     }
 }
 
 void RotateCommand::undo()
 {
-    qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_scene, m_ids);
+    const auto elements = this->elements();
 
     for (int i = 0; i < elements.size(); ++i) {
         auto *elm = elements.at(i);
@@ -348,8 +360,7 @@ void RotateCommand::undo()
 
 void RotateCommand::redo()
 {
-    qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_scene, m_ids);
+    const auto elements = this->elements();
     double cx = 0;
     double cy = 0;
     int sz = 0;
@@ -381,15 +392,12 @@ void RotateCommand::redo()
 }
 
 MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &oldPositions, Scene *scene, QUndoCommand *parent)
-    : QUndoCommand(parent)
+    : ElementsCommand(list, scene, parent)
     , m_oldPositions(oldPositions)
-    , m_scene(scene)
 {
     m_newPositions.reserve(list.size());
-    m_ids.reserve(list.size());
 
     for (auto *elm : list) {
-        m_ids.append(elm->id());
         m_newPositions.append(elm->pos());
     }
 
@@ -398,8 +406,7 @@ MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPoint
 
 void MoveCommand::undo()
 {
-    qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_scene, m_ids);
+    const auto elements = this->elements();
 
     for (int i = 0; i < elements.size(); ++i) {
         elements.at(i)->setPos(m_oldPositions.at(i));
@@ -410,8 +417,7 @@ void MoveCommand::undo()
 
 void MoveCommand::redo()
 {
-    qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_scene, m_ids);
+    const auto elements = this->elements();
 
     for (int i = 0; i < elements.size(); ++i) {
         elements.at(i)->setPos(m_newPositions.at(i));
@@ -421,21 +427,18 @@ void MoveCommand::redo()
 }
 
 UpdateCommand::UpdateCommand(const QList<GraphicElement *> &elements, const QByteArray &oldData, Scene *scene, QUndoCommand *parent)
-    : QUndoCommand(parent)
+    : ElementsCommand(elements, scene, parent)
     // oldData must be captured by the caller *before* applying the change, so that
     // undo() can restore the previous state; the constructor cannot capture it here
     // because the change has already been applied by the time construction runs.
     , m_oldData(oldData)
-    , m_scene(scene)
 {
-    m_ids.reserve(elements.size());
     QDataStream stream(&m_newData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
 
     // Snapshot the current (post-change) state as the "new" data used by redo()
     for (auto *elm : elements) {
         elm->save(stream);
-        m_ids.append(elm->id());
     }
 
     setText(tr("Update %1 elements").arg(elements.size()));
@@ -457,7 +460,7 @@ void UpdateCommand::redo()
 
 void UpdateCommand::loadData(QByteArray &itemData)
 {
-    const auto elements = CommandUtils::findElements(m_scene, m_ids);
+    const auto elements = this->elements();
 
     if (elements.isEmpty()) {
         return;
@@ -610,17 +613,14 @@ void SplitCommand::undo()
 }
 
 MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType type, Scene *scene, QUndoCommand *parent)
-    : QUndoCommand(parent)
+    : ElementsCommand(elements, scene, parent)
     , m_newType(type)
-    , m_scene(scene)
 {
-    m_ids.reserve(elements.size());
     m_types.reserve(elements.size());
 
     for (auto *oldElm : elements) {
         // Store both the ID and the original type so undo() can rebuild the old element
         // with the correct type and then re-assign the same ID via updateItemId()
-        m_ids.append(oldElm->id());
         m_types.append(oldElm->elementType());
     }
 
@@ -629,8 +629,7 @@ MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType 
 
 void MorphCommand::undo()
 {
-    qCDebug(zero) << text();
-    auto newElms = CommandUtils::findElements(m_scene, m_ids);
+    auto newElms = elements();
     decltype(newElms) oldElms;
     oldElms.reserve(m_ids.size());
 
@@ -669,8 +668,7 @@ void MorphCommand::undo()
 
 void MorphCommand::redo()
 {
-    qCDebug(zero) << text();
-    auto oldElms = CommandUtils::findElements(m_scene, m_ids);
+    auto oldElms = elements();
     decltype(oldElms) newElms;
     newElms.reserve(m_ids.size());
 
@@ -788,8 +786,7 @@ void MorphCommand::transferConnections(const QList<GraphicElement *> &from, cons
 
 // FIXME: verticalFlip is rotating on the horizontal axis too
 FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, Scene *scene, QUndoCommand *parent)
-    : QUndoCommand(parent)
-    , m_scene(scene)
+    : ElementsCommand(items, scene, parent)
     , m_axis(axis)
 {
     if (items.isEmpty()) {
@@ -797,7 +794,6 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
     }
 
     setText(tr("Flip %1 elements in axis %2").arg(items.size(), axis));
-    m_ids.reserve(items.size());
     m_positions.reserve(items.size());
 
     // Compute the bounding box of all selected elements so redo() can mirror
@@ -809,7 +805,6 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
 
     for (auto *item : items) {
         m_positions.append(item->pos());
-        m_ids.append(item->id());
         xmin = qMin(xmin, item->pos().rx());
         ymin = qMin(ymin, item->pos().ry());
         xmax = qMax(xmax, item->pos().rx());
@@ -830,8 +825,7 @@ void FlipCommand::undo()
 
 void FlipCommand::redo()
 {
-    qCDebug(zero) << text();
-    for (auto *elm : CommandUtils::findElements(m_scene, m_ids)) {
+    for (auto *elm : elements()) {
         auto pos = elm->pos();
 
         // axis == 0: mirror across the vertical axis (flip horizontally)
@@ -856,25 +850,17 @@ void FlipCommand::redo()
 }
 
 ChangePortSizeCommand::ChangePortSizeCommand(const QList<GraphicElement *> &elements, const int newPortSize, Scene *scene, const bool isInput, QUndoCommand *parent)
-    : QUndoCommand(parent)
-    , m_scene(scene)
+    : ElementsCommand(elements, scene, parent)
     , m_newPortSize(newPortSize)
     , m_isInput(isInput)
 {
-    m_ids.reserve(elements.size());
-
-    for (auto *elm : elements) {
-        m_ids.append(elm->id());
-    }
-
     setText(isInput ? tr("Change input size to %1").arg(newPortSize)
                     : tr("Change output size to %1").arg(newPortSize));
 }
 
 void ChangePortSizeCommand::redo()
 {
-    qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_scene, m_ids);
+    const auto elements = this->elements();
 
     QList<GraphicElement *> serializationOrder;
     serializationOrder.reserve(elements.size());
@@ -920,8 +906,7 @@ void ChangePortSizeCommand::redo()
 
 void ChangePortSizeCommand::undo()
 {
-    qCDebug(zero) << text();
-    const auto elements = CommandUtils::findElements(m_scene, m_ids);
+    const auto elements = this->elements();
     const auto serializationOrder = CommandUtils::findElements(m_scene, m_order);
 
     QDataStream stream(&m_oldData, QIODevice::ReadOnly);
@@ -1040,18 +1025,15 @@ void RegisterBlobCommand::undo()
 
 UpdateBlobCommand::UpdateBlobCommand(const QList<GraphicElement *> &elements, const QByteArray &oldData,
                                      const QList<ConnectionInfo> &connections, Scene *scene, QUndoCommand *parent)
-    : QUndoCommand(parent)
+    : ElementsCommand(elements, scene, parent)
     , m_oldData(oldData)
     , m_connections(connections)
-    , m_scene(scene)
 {
-    m_ids.reserve(elements.size());
     QDataStream stream(&m_newData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
 
     for (auto *elm : elements) {
         elm->save(stream);
-        m_ids.append(elm->id());
     }
 
     if (!elements.isEmpty()) {
@@ -1100,7 +1082,7 @@ void UpdateBlobCommand::undo()
 
 void UpdateBlobCommand::loadData(QByteArray &itemData)
 {
-    const auto elements = CommandUtils::findElements(m_scene, m_ids);
+    const auto elements = this->elements();
     if (elements.isEmpty()) {
         return;
     }
