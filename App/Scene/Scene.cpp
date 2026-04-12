@@ -670,14 +670,18 @@ void Scene::flipVertically()
     }
 }
 
+bool Scene::isSupportedDropFormat(const QMimeData *mimeData)
+{
+    const auto &formats = mimeData->formats();
+    return formats.contains("wpanda/x-dnditemdata")
+           || formats.contains("wpanda/ctrlDragData")
+           || formats.contains("application/x-wiredpanda-dragdrop")
+           || formats.contains("application/x-wiredpanda-cloneDrag");
+}
+
 void Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
-    const auto formats = event->mimeData()->formats();
-
-    if (formats.contains("wpanda/x-dnditemdata")
-        || formats.contains("wpanda/ctrlDragData")
-        || formats.contains("application/x-wiredpanda-dragdrop")
-        || formats.contains("application/x-wiredpanda-cloneDrag")) {
+    if (isSupportedDropFormat(event->mimeData())) {
         event->accept();
         return;
     }
@@ -687,12 +691,7 @@ void Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 
 void Scene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
-    const auto formats = event->mimeData()->formats();
-
-    if (formats.contains("wpanda/x-dnditemdata")
-        || formats.contains("wpanda/ctrlDragData")
-        || formats.contains("application/x-wiredpanda-dragdrop")
-        || formats.contains("application/x-wiredpanda-cloneDrag")) {
+    if (isSupportedDropFormat(event->mimeData())) {
         event->accept();
         return;
     }
