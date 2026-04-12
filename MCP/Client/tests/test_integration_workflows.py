@@ -49,27 +49,8 @@ class IntegrationWorkflowTests(MCPTestBase):
         all_passed: bool = True
 
         # Create a simple 2-element circuit (input and output)
-        input_resp = await self.send_command(
-            "create_element",
-            {
-                "type": "InputButton",
-                "x": 100,
-                "y": 100,
-                "label": "INPUT",
-            },
-        )
-        input_id = await self.validate_element_creation_response(input_resp, "Create input")
-
-        output_resp = await self.send_command(
-            "create_element",
-            {
-                "type": "Led",
-                "x": 300,
-                "y": 100,
-                "label": "OUTPUT",
-            },
-        )
-        output_id = await self.validate_element_creation_response(output_resp, "Create output")
+        input_id = await self.create_element_checked("InputButton", 100, 100, "Create input", label="INPUT")
+        output_id = await self.create_element_checked("Led", 300, 100, "Create output", label="OUTPUT")
 
         # Early return if element creation failed
         if not input_id or not output_id:

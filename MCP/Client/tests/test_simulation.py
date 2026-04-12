@@ -58,27 +58,7 @@ class SimulationTests(MCPTestBase):
         all_passed: bool = True
 
         # Create circuit with simulation# Create simple testable circuit
-        resp1 = await self.send_command(
-            "create_element",
-            {
-                "type": "InputButton",
-                "x": 100,
-                "y": 100,
-                "label": "SimInput",
-            },
-        )
-        input_id = await self.validate_element_creation_response(resp1, "Create input for simulation")
-
-        resp2 = await self.send_command(
-            "create_element",
-            {
-                "type": "Led",
-                "x": 300,
-                "y": 100,
-                "label": "SimOutput",
-            },
-        )
-        output_id = await self.validate_element_creation_response(resp2, "Create output for simulation")
+        input_id, output_id = await self.create_simple_circuit("test_simulation_control")
 
         # Early return if element creation failed
         if not input_id or not output_id:
@@ -163,28 +143,7 @@ class SimulationTests(MCPTestBase):
         all_passed: bool = True
 
         # Create simple circuit for simulation testing
-        # Create minimal elements for simulation
-        resp1 = await self.send_command(
-            "create_element",
-            {
-                "type": "InputButton",
-                "x": 100,
-                "y": 100,
-                "label": "ControlInput",
-            },
-        )
-        input_id = await self.validate_element_creation_response(resp1, "Create input for simulation control")
-
-        resp2 = await self.send_command(
-            "create_element",
-            {
-                "type": "Led",
-                "x": 300,
-                "y": 100,
-                "label": "ControlOutput",
-            },
-        )
-        output_id = await self.validate_element_creation_response(resp2, "Create output for simulation control")
+        input_id, output_id = await self.create_simple_circuit("test_simulation_start_stop_operations")
 
         if input_id and output_id:
             # Connect elements for meaningful simulation
@@ -244,28 +203,7 @@ class SimulationTests(MCPTestBase):
         all_passed: bool = True
 
         # Create circuit for input/output testing
-        # Create elements for meaningful input/output testing
-        resp1 = await self.send_command(
-            "create_element",
-            {
-                "type": "InputButton",
-                "x": 100,
-                "y": 100,
-                "label": "IOTestInput",
-            },
-        )
-        input_id = await self.validate_element_creation_response(resp1, "Create input for I/O operations")
-
-        resp2 = await self.send_command(
-            "create_element",
-            {
-                "type": "Led",
-                "x": 300,
-                "y": 100,
-                "label": "IOTestOutput",
-            },
-        )
-        output_id = await self.validate_element_creation_response(resp2, "Create output for I/O operations")
+        input_id, output_id = await self.create_simple_circuit("test_simulation_input_output_operations")
 
         if input_id and output_id:
             # Connect elements for signal propagation testing

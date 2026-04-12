@@ -45,17 +45,10 @@ class AdvancedConnectionTests(MCPTestBase):
         all_passed: bool = True
 
         # Create input -> output with a wire between them
-        resp = await self.send_command(
-            "create_element", {"type": "InputButton", "x": 100, "y": 200, "label": "SplitIn"}
-        )
-        input_id = await self.validate_element_creation_response(resp, "Create input for split")
+        input_id = await self.create_element_checked("InputButton", 100, 200, "Create input for split", label="SplitIn")
         if input_id is None:
             return False
-
-        resp = await self.send_command(
-            "create_element", {"type": "Led", "x": 400, "y": 200, "label": "SplitOut"}
-        )
-        output_id = await self.validate_element_creation_response(resp, "Create output for split")
+        output_id = await self.create_element_checked("Led", 400, 200, "Create output for split", label="SplitOut")
         if output_id is None:
             return False
 

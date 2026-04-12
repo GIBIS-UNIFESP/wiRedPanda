@@ -129,16 +129,7 @@ class PerformanceTimingTests(MCPTestBase):
 
         # Setup with some elements# Create a few elements to list
         for i in range(3):
-            resp = await self.send_command(
-                "create_element",
-                {
-                    "type": "And",
-                    "x": i * 100,
-                    "y": 100,
-                    "label": f"ListTest{i}",
-                },
-            )
-            element_id = await self.validate_element_creation_response(resp, f"Create element {i} for list timing")
+            element_id = await self.create_element_checked("And", i * 100, 100, f"Create element {i} for list timing", label=f"ListTest{i}")
             if element_id is None:
                 all_passed = False
 
@@ -167,30 +158,8 @@ class PerformanceTimingTests(MCPTestBase):
 
         # Setup
         # Create elements for simulation
-        resp = await self.send_command(
-            "create_element",
-            {
-                "type": "InputButton",
-                "x": 100,
-                "y": 100,
-                "label": "SimInput",
-            },
-        )
-        element_id = await self.validate_element_creation_response(resp, "Create input for simulation timing")
-        if element_id is None:
-            all_passed = False
-
-        resp = await self.send_command(
-            "create_element",
-            {
-                "type": "Led",
-                "x": 200,
-                "y": 100,
-                "label": "SimOutput",
-            },
-        )
-        element_id = await self.validate_element_creation_response(resp, "Create output for simulation timing")
-        if element_id is None:
+        input_elem_id, output_elem_id = await self.create_simple_circuit("test_performance_simulation_start_timing")
+        if input_elem_id is None or output_elem_id is None:
             all_passed = False
 
         # Test simulation startup timing
@@ -218,16 +187,7 @@ class PerformanceTimingTests(MCPTestBase):
 
         # Setup# Create some elements to list
         for i in range(3):
-            resp = await self.send_command(
-                "create_element",
-                {
-                    "type": "And",
-                    "x": i * 100,
-                    "y": 100,
-                    "label": f"RapidTest{i}",
-                },
-            )
-            element_id = await self.validate_element_creation_response(resp, f"Create element {i} for rapid fire test")
+            element_id = await self.create_element_checked("And", i * 100, 100, f"Create element {i} for rapid fire test", label=f"RapidTest{i}")
             if element_id is None:
                 all_passed = False
 
