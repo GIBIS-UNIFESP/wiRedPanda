@@ -19,6 +19,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElement.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioOutputElement.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Buzzer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Clock.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Demux.cpp
@@ -125,6 +126,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementInput.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioOutputElement.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Buzzer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Clock.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Demux.h

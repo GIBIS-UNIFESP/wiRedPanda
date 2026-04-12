@@ -6,9 +6,7 @@
 
 #pragma once
 
-#include <QVersionNumber>
-
-#include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElements/AudioOutputElement.h"
 
 class QAudioSink;
 class ToneGenerator;
@@ -17,7 +15,7 @@ class ToneGenerator;
 ///
 /// Uses a sine-wave ToneGenerator fed to QAudioSink for seamless,
 /// glitch-free playback at any user-chosen frequency.
-class Buzzer : public GraphicElement
+class Buzzer : public AudioOutputElement
 {
     Q_OBJECT
 
@@ -30,27 +28,15 @@ public:
 
     // --- State Queries ---
 
-    /// Returns \c true if the buzzer sound is currently playing.
-    bool isPlaying() const;
-    /// Returns \c true if audio output is muted.
-    bool isMuted() const;
-    /// Returns the audio playback volume (0.0–1.0).
-    float volume() const override;
     /// Returns the tone frequency in Hz.
     double frequency() const override;
 
     // --- Playback Control ---
 
-    /// Mutes or unmutes playback according to \a mute.
-    void mute(const bool mute = true);
-    /// Sets the audio playback volume to \a vol (0.0–1.0).
-    void setVolume(float vol) override;
     /// Sets the tone frequency in Hz.
     void setFrequency(double freq) override;
     /// Sets the tone by note name (e.g. "C6") for backward compatibility.
     void setAudio(const QString &note) override;
-    /// Refreshes the visual appearance based on current state.
-    void refresh() override;
 
     // --- Serialization ---
 
@@ -62,18 +48,17 @@ public:
     /// Maps a note name (e.g. "C6") to its frequency in Hz. Returns 1047 for unknown notes.
     static int noteToFrequency(const QString &note);
 
+protected:
+    // --- AudioOutputElement hooks ---
+
+    void startAudio() override;
+    void stopAudio() override;
+    void applyVolume() override;
+    void applyMute() override;
+
 private:
-    // --- Internal methods ---
-
-    void play();
-    void stop();
-
     QAudioSink *m_sink = nullptr;
     ToneGenerator *m_generator = nullptr;
     double m_frequency = 1047.0;
-    float m_volume = 0.35f;
-    bool m_isPlaying = false;
-    bool m_hasOutputDevice = false;
-    bool m_muted = false;
 };
 
