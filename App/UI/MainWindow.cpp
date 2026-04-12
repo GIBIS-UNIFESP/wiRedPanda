@@ -662,9 +662,7 @@ void MainWindow::openICInTab(const QString &blobName, int icElementId, const QBy
     m_currentTab->scene()->resizeScene();
 
     // Hide management buttons for inline tabs (they use currentFile/currentDir which are empty)
-    m_ui->pushButtonAddIC->setVisible(false);
-    m_ui->pushButtonRemoveIC->setVisible(false);
-    m_ui->pushButtonMakeSelfContained->setVisible(false);
+    setICButtonsVisible(false);
 
     // Set tab title
     int tabIndex = m_ui->tab->indexOf(m_currentTab);
@@ -907,6 +905,13 @@ IC *MainWindow::getSelectedIC() const
     return static_cast<IC *>(selected.first());
 }
 
+void MainWindow::setICButtonsVisible(bool visible)
+{
+    m_ui->pushButtonAddIC->setVisible(visible);
+    m_ui->pushButtonRemoveIC->setVisible(visible);
+    m_ui->pushButtonMakeSelfContained->setVisible(visible);
+}
+
 bool MainWindow::hasModifiedFiles()
 {
     const QStringList autosaves = Settings::autosaveFiles();
@@ -1110,10 +1115,7 @@ void MainWindow::connectTab()
     m_palette->updateEmbeddedICList(m_currentTab->scene());
 
     // Hide management buttons for inline IC tabs (they use currentFile/currentDir which are empty)
-    const bool isInline = m_currentTab->isInlineIC();
-    m_ui->pushButtonAddIC->setVisible(!isInline);
-    m_ui->pushButtonRemoveIC->setVisible(!isInline);
-    m_ui->pushButtonMakeSelfContained->setVisible(!isInline);
+    setICButtonsVisible(!m_currentTab->isInlineIC());
 
     qCDebug(zero) << "Connecting current tab to element editor menu in UI.";
     m_ui->elementEditor->setScene(m_currentTab->scene());

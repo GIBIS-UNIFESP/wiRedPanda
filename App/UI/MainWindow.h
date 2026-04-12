@@ -210,6 +210,9 @@ private:
     /// if there is no current tab or the first selected element is not an IC.
     IC *getSelectedIC() const;
 
+    /// Shows or hides the IC management buttons (Add, Remove, MakeSelfContained).
+    void setICButtonsVisible(bool visible);
+
     bool hasModifiedFiles();
     void loadAutosaveFiles();
     void createRecentFileActions();
