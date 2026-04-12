@@ -7,6 +7,7 @@
 
 #include <QRegularExpression>
 
+#include "App/CodeGen/CodeGenUtils.h"
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Buzzer.h"
@@ -33,17 +34,9 @@ QString ArduinoCodeGen::highLow(const Status val)
     return (val == Status::Active) ? "HIGH" : "LOW";
 }
 
-QString ArduinoCodeGen::stripAccents(const QString &input)
-{
-    QString normalized = input.normalized(QString::NormalizationForm_D);
-    // Remove combining marks (diacritics)
-    static const QRegularExpression diacriticMarks("[\\p{Mn}]");
-    return normalized.remove(diacriticMarks);
-}
-
 QString ArduinoCodeGen::removeForbiddenChars(const QString &input)
 {
-    QString result = stripAccents(input).toLower().trimmed().replace(' ', '_').replace('-', '_');
+    QString result = CodeGenUtils::stripAccents(input).toLower().trimmed().replace(' ', '_').replace('-', '_');
     static const QRegularExpression re("\\W");
     result.remove(re);
 

@@ -102,8 +102,6 @@ private:
     static QString highLow(Status val);
     /// Strips characters that are illegal in SystemVerilog identifiers.
     static QString removeForbiddenChars(const QString &input);
-    /// Replaces accented characters with their ASCII equivalents.
-    static QString stripAccents(const QString &input);
     /// Returns \c true if \a expr is already a simple identifier (no operators).
     static bool isSimpleIdentifier(const QString &expr);
 

@@ -105,6 +105,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveformView.h
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/ArduinoCodeGen.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/CodeGenUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/SystemVerilogCodeGen.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Common.h
