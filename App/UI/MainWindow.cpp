@@ -730,9 +730,7 @@ void MainWindow::on_actionSave_triggered()
             return;
         }
 
-        if (!fileName.endsWith(".panda")) {
-            fileName.append(".panda");
-        }
+        ensureFileExtension(fileName, ".panda");
     }
 
     save(fileName);
@@ -768,9 +766,7 @@ void MainWindow::on_actionSaveAs_triggered()
         return;
     }
 
-    if (!fileName.endsWith(".panda")) {
-        fileName.append(".panda");
-    }
+    ensureFileExtension(fileName, ".panda");
 
     save(fileName);
 #endif
@@ -884,6 +880,13 @@ void MainWindow::updateSettings()
     Settings::setMainWindowState(saveState());
     Settings::setSplitterGeometry(m_ui->splitter->saveGeometry());
     Settings::setSplitterState(m_ui->splitter->saveState());
+}
+
+void MainWindow::ensureFileExtension(QString &fileName, const QString &extension)
+{
+    if (!fileName.endsWith(extension)) {
+        fileName.append(extension);
+    }
 }
 
 bool MainWindow::hasModifiedFiles()
@@ -1220,9 +1223,7 @@ void MainWindow::exportToArduino(QString fileName)
     // the simulation timer and the code generator reading element state.
     SimulationBlocker simulationBlocker(m_currentTab->simulation());
 
-    if (!fileName.endsWith(".ino")) {
-        fileName.append(".ino");
-    }
+    ensureFileExtension(fileName, ".ino");
 
     ArduinoCodeGen arduino(QDir::home().absoluteFilePath(fileName), elements);
     arduino.generate();
@@ -1249,9 +1250,7 @@ void MainWindow::exportToSystemVerilog(QString fileName)
 
     SimulationBlocker simulationBlocker(m_currentTab->simulation());
 
-    if (!fileName.endsWith(".sv")) {
-        fileName.append(".sv");
-    }
+    ensureFileExtension(fileName, ".sv");
 
     SystemVerilogCodeGen verilog(QDir::home().absoluteFilePath(fileName), elements);
     verilog.generate();
@@ -1860,9 +1859,7 @@ void MainWindow::extractSelectedIC()
         return;
     }
 
-    if (!fileName.endsWith(".panda")) {
-        fileName.append(".panda");
-    }
+    ensureFileExtension(fileName, ".panda");
 
     scene->icRegistry()->extractToFile(blobName, fileName);
     m_palette->updateICList(icListFile());
@@ -1933,9 +1930,7 @@ void MainWindow::extractICByBlobName(const QString &blobName)
         return;
     }
 
-    if (!fileName.endsWith(".panda")) {
-        fileName.append(".panda");
-    }
+    ensureFileExtension(fileName, ".panda");
 
     reg->extractToFile(blobName, fileName);
     m_palette->updateICList(icListFile());
