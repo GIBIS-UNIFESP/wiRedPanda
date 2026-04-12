@@ -71,14 +71,9 @@ class MCPCircuitBuilder:
                     "source_id": source_id,
                     "target_id": target_id,
                 }
-                if "source_port" in conn_spec:
-                    params["source_port"] = conn_spec["source_port"]
-                if "source_port_label" in conn_spec:
-                    params["source_port_label"] = conn_spec["source_port_label"]
-                if "target_port" in conn_spec:
-                    params["target_port"] = conn_spec["target_port"]
-                if "target_port_label" in conn_spec:
-                    params["target_port_label"] = conn_spec["target_port_label"]
+                for key in ("source_port", "source_port_label", "target_port", "target_port_label"):
+                    if key in conn_spec:
+                        params[key] = conn_spec[key]
 
                 resp = await self.infrastructure.send_command("connect_elements", params)
                 await self.validation.assert_success(resp, f"Connect {conn_spec['source']} -> {conn_spec['target']}")
