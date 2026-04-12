@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 
 #include <QFileInfo>
@@ -176,6 +177,10 @@ private:
     void restoreInputs();
     /// Sets a single cell at (\a row, \a col) to \a value with edge-update control.
     void setCellValue(int row, int col, int value, bool isInput, bool changeNext);
+    /// Applies \a valueFn to every selected cell, marks the waveform edited, and re-runs.
+    void applyToSelectedCells(const std::function<int(int)> &valueFn);
+    /// Applies \a widthFn to every column width, then resizes the scene and updates zoom state.
+    void adjustColumnWidths(const std::function<int(int)> &widthFn);
     /// Adjusts the table view widget to \a width columns and \a height rows.
     void setTableViewSize(int width, int height);
     /// Slot: applies the current zoom scale to the waveform view.
