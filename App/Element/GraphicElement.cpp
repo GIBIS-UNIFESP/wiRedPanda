@@ -226,6 +226,15 @@ const QVector<QNEInputPort *> &GraphicElement::inputs() const
     return m_inputPorts;
 }
 
+QVector<QNEPort *> GraphicElement::allPorts() const
+{
+    QVector<QNEPort *> result;
+    result.reserve(m_inputPorts.size() + m_outputPorts.size());
+    for (auto *p : m_inputPorts)  { result.append(p); }
+    for (auto *p : m_outputPorts) { result.append(p); }
+    return result;
+}
+
 void GraphicElement::setInputs(const QVector<QNEInputPort *> &inputs)
 {
     m_inputPorts = inputs;
@@ -325,13 +334,7 @@ void GraphicElement::setRotation(const qreal angle)
 
 void GraphicElement::rotatePorts(const qreal angle)
 {
-    for (auto *port : std::as_const(m_inputPorts)) {
-        port->setTransformOriginPoint(mapToItem(port, pixmapCenter()));
-        port->setRotation(angle);
-        port->updateConnections();
-    }
-
-    for (auto *port : std::as_const(m_outputPorts)) {
+    for (auto *port : allPorts()) {
         port->setTransformOriginPoint(mapToItem(port, pixmapCenter()));
         port->setRotation(angle);
         port->updateConnections();
@@ -491,11 +494,7 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
     // Any geometric change (move, rotate, shear) requires redrawing all connected wires
     if ((change == ItemScenePositionHasChanged) || (change == ItemRotationHasChanged) || (change == ItemTransformHasChanged)) {
         qCDebug(four) << "Moves wires.";
-        for (auto *port : std::as_const(m_outputPorts)) {
-            port->updateConnections();
-        }
-
-        for (auto *port : std::as_const(m_inputPorts)) {
+        for (auto *port : allPorts()) {
             port->updateConnections();
         }
     }
@@ -942,19 +941,7 @@ void GraphicElement::setMinOutputSize(const int minOutputSize)
 
 void GraphicElement::highlight(const bool isSelected)
 {
-    // Collect all ports (both input and output) into a single list to avoid duplicating
-    // the inner loop
-    QVector<QNEPort *> ports;
-
-    for (auto *port : std::as_const(m_inputPorts)) {
-        ports << port;
-    }
-
-    for (auto *port : std::as_const(m_outputPorts)) {
-        ports << port;
-    }
-
-    for (auto *port : std::as_const(ports)) {
+    for (auto *port : allPorts()) {
         for (auto *connection : port->connections()) {
             // Skip connections already in the desired highlight state to avoid
             // triggering unnecessary repaints
