@@ -33,21 +33,15 @@ public:
 
     // --- State Setters ---
 
-    /// Drives all output ports logic-low.
+    /// Drives all output ports logic-low (toggles; see implementation).
     void setOff() override;
 
-    /// Sets the switch to the on (logic-1) state.
+    /// Sets the switch to the on (logic-1) state (toggles; see implementation).
     void setOn() override;
 
-    /**
-     * \brief Sets the switch to \a value on port \a port.
-     * \param value New state.
-     * \param port  Port index (unused, always 0).
-     */
-    void setOn(const bool value, const int port = 0) override;
+    // Bring the base setOn(bool, int) overload into scope (hidden by setOn() above).
+    using GraphicElementInput::setOn;
 
-    /// Applies a custom appearance image to reflect the on/off state.
-    void setAppearance(const bool defaultAppearance, const QString &fileName) override;
     /// \reimp
     QList<QPair<int, QString>> appearanceStates() const override;
 
@@ -63,10 +57,5 @@ protected:
 
     /// \reimp
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-
-private:
-    // --- Members ---
-
-    bool m_isOn = false;
 };
 

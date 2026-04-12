@@ -9,7 +9,6 @@
 #include "App/Element/ElementInfo.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Nodes/QNEPort.h"
 
 using namespace std::chrono_literals;
 
@@ -90,15 +89,6 @@ void Clock::setOff()
 void Clock::setOn()
 {
     Clock::setOn(true);
-}
-
-void Clock::setOn(const bool value, const int port)
-{
-    Q_UNUSED(port)
-    m_isOn = value;
-    // Pixmap index 0 = clock-low SVG, index 1 = clock-high SVG (matches bool→int cast)
-    setPixmap(static_cast<int>(m_isOn));
-    outputPort()->setStatus(static_cast<Status>(m_isOn));
 }
 
 void Clock::save(QDataStream &stream) const
@@ -208,18 +198,6 @@ void Clock::resetClock(std::chrono::steady_clock::time_point globalTime)
 QString Clock::genericProperties()
 {
     return QString::number(frequency()) + " Hz";
-}
-
-void Clock::setAppearance(const bool defaultAppearance, const QString &fileName)
-{
-    if (defaultAppearance) {
-        m_alternativeAppearances = m_defaultAppearances;
-    } else {
-        m_alternativeAppearances[static_cast<int>(m_isOn)] = fileName;
-    }
-
-    m_usingDefaultAppearance = defaultAppearance;
-    setPixmap(static_cast<int>(m_isOn));
 }
 
 QList<QPair<int, QString>> Clock::appearanceStates() const
