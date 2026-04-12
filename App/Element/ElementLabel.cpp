@@ -87,20 +87,9 @@ void ElementLabel::startDrag()
     // The hot spot is the icon's centre so the element appears centred under
     // the cursor when dropped onto the scene.
     QPoint offset = m_iconLabel.pixmap(Qt::ReturnByValue).rect().center();
-    QByteArray itemData;
-    QDataStream stream(&itemData, QIODevice::WriteOnly);
-    // Embed a full panda header so the drop target can version-check the data
-    // using the same code path as file loading.
-    Serialization::writePandaHeader(stream);
-    stream << offset << m_elementType << m_icFileName << m_isEmbedded << (m_isEmbedded ? m_icFileName : QString());
-
-    auto *mimeData = new QMimeData();
-    // Custom MIME type prevents accidental drops on foreign Qt applications
-    // that happen to accept generic drag-and-drop data.
-    mimeData->setData("application/x-wiredpanda-dragdrop", itemData);
 
     auto *drag = new QDrag(parent());
-    drag->setMimeData(mimeData);
+    drag->setMimeData(mimeData());
     drag->setPixmap(pixmap());
     drag->setHotSpot(offset);
     // CopyAction for both proposed and allowed: placing an element on the scene
