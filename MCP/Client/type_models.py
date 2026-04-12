@@ -7,9 +7,8 @@ Specific type definitions to replace Any types with proper typing.
 These models represent common data structures used throughout the MCP system.
 """
 
-from typing import Annotated, Any, Dict, Generic, List, Optional, Protocol, TypeVar, runtime_checkable
+from typing import Annotated, Any, Dict, List, Optional, Protocol, runtime_checkable
 
-from beartype import beartype
 from pydantic import BaseModel, ConfigDict, Field
 
 # ==================== CIRCUIT SPECIFICATION TYPES ====================
@@ -40,38 +39,6 @@ class CircuitConnection(BaseModel):
     source_port_label: Annotated[Optional[str], Field(min_length=1, description="Source port label")] = None
     target_port: Annotated[Optional[int], Field(ge=0, description="Target port index")] = None
     target_port_label: Annotated[Optional[str], Field(min_length=1, description="Target port label")] = None
-
-    model_config = ConfigDict(extra="forbid", frozen=True)
-
-
-class CircuitSpecification(BaseModel):
-    """Complete circuit specification with elements and connections"""
-
-    elements: List[CircuitElement] = Field(description="List of circuit elements")
-    connections: List[CircuitConnection] = Field(description="List of connections")
-
-    model_config = ConfigDict(extra="forbid")
-
-
-# ==================== TEST DATA TYPES ====================
-
-
-class TruthTableEntry(BaseModel):
-    """Single entry in a truth table test"""
-
-    inputs: List[bool] = Field(description="Input values for this test case")
-    outputs: List[bool] = Field(description="Expected output values")
-
-    model_config = ConfigDict(extra="forbid", frozen=True)
-
-
-class StateTableEntry(BaseModel):
-    """Single entry in a sequential logic state table test"""
-
-    inputs: List[bool] = Field(description="Input values for this test case")
-    clock_edge: str = Field(description="Clock edge type: 'rising', 'falling', or 'none'")
-    expected_outputs: List[bool] = Field(description="Expected output values after clock")
-    description: Optional[str] = Field(default=None, description="Test case description")
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -210,24 +177,3 @@ class TabCountResult(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
 
-# ==================== HELPER FUNCTIONS ====================
-
-
-@beartype
-def create_circuit_spec(elements: List[Dict[str, Any]], connections: List[Dict[str, Any]]) -> CircuitSpecification:
-    """Create a typed circuit specification from raw dictionaries"""
-    typed_elements = [CircuitElement(**elem) for elem in elements]
-    typed_connections = [CircuitConnection(**conn) for conn in connections]
-    return CircuitSpecification(elements=typed_elements, connections=typed_connections)
-
-
-@beartype
-def create_truth_table(test_cases: List[Dict[str, Any]]) -> List[TruthTableEntry]:
-    """Create typed truth table from raw test case data"""
-    return [TruthTableEntry(**case) for case in test_cases]
-
-
-@beartype
-def create_state_table(test_cases: List[Dict[str, Any]]) -> List[StateTableEntry]:
-    """Create typed state table from raw test case data"""
-    return [StateTableEntry(**case) for case in test_cases]
