@@ -663,7 +663,7 @@ void ElementEditor::inputIndexChanged(const int index)
     }
 
     if (m_caps.canChangeInputSize && (m_ui->comboBoxInputSize->currentText() != m_manyIS)) {
-        emit sendCommand(new ChangeInputSizeCommand(m_elements, m_ui->comboBoxInputSize->currentData().toInt(), m_scene));
+        emit sendCommand(new ChangePortSizeCommand(m_elements, m_ui->comboBoxInputSize->currentData().toInt(), m_scene, true));
     }
 
     qCDebug(zero) << "Input size changed to " << index;
@@ -677,7 +677,7 @@ void ElementEditor::outputIndexChanged(const int index)
     }
 
     if (m_caps.canChangeOutputSize && (m_ui->comboBoxOutputSize->currentText() != m_manyOS)) {
-        emit sendCommand(new ChangeOutputSizeCommand(m_elements, m_ui->comboBoxOutputSize->currentData().toInt(), m_scene));
+        emit sendCommand(new ChangePortSizeCommand(m_elements, m_ui->comboBoxOutputSize->currentData().toInt(), m_scene, false));
     }
 
     qCDebug(zero) << "Output size changed to " << index;

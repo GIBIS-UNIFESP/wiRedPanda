@@ -481,7 +481,7 @@ void TestSceneUndoredo::testMorphPreservesConnections()
     QVERIFY(!restored->outputPort(0)->connections().isEmpty());
 }
 
-// ─── ChangeInputSizeCommand ───────────────────────────────────────────────
+// ─── ChangePortSizeCommand ───────────────────────────────────────────────
 
 void TestSceneUndoredo::testIncreaseInputSize()
 {
@@ -492,7 +492,7 @@ void TestSceneUndoredo::testIncreaseInputSize()
     const int id = andGate->id();
     QCOMPARE(andGate->inputSize(), 2);
 
-    scene.undoStack()->push(new ChangeInputSizeCommand({andGate}, 3, &scene));
+    scene.undoStack()->push(new ChangePortSizeCommand({andGate}, 3, &scene, true));
 
     QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id))->inputSize(), 3);
 
@@ -526,7 +526,7 @@ void TestSceneUndoredo::testDecreaseInputSizeRemovesConnection()
     QVERIFY(!andGate->inputPort(2)->connections().isEmpty());
 
     // Reduce from 3 to 2 inputs via command → removes connection from port 2
-    scene.undoStack()->push(new ChangeInputSizeCommand({andGate}, 2, &scene));
+    scene.undoStack()->push(new ChangePortSizeCommand({andGate}, 2, &scene, true));
 
     auto *elm = dynamic_cast<GraphicElement *>(scene.itemById(andId));
     QCOMPARE(elm->inputSize(), 2);
@@ -574,7 +574,7 @@ void TestSceneUndoredo::testDecreaseInputSizeMultipleConnections()
     QVERIFY(!andGate->inputPort(3)->connections().isEmpty());
 
     // Reduce from 4 to 2 — removes both connections
-    scene.undoStack()->push(new ChangeInputSizeCommand({andGate}, 2, &scene));
+    scene.undoStack()->push(new ChangePortSizeCommand({andGate}, 2, &scene, true));
 
     auto *elm = dynamic_cast<GraphicElement *>(scene.itemById(andId));
     QCOMPARE(elm->inputSize(), 2);
@@ -594,7 +594,7 @@ void TestSceneUndoredo::testDecreaseInputSizeMultipleConnections()
 
 void TestSceneUndoredo::testDecreaseInputSizeRestoresConnectionWithOriginalId()
 {
-    // Connections severed by ChangeInputSizeCommand must be restored with their
+    // Connections severed by ChangePortSizeCommand must be restored with their
     // original scene ID on undo, so that other undo commands (e.g.
     // DeleteItemsCommand) that stored that ID can still find them.
     Scene scene;
@@ -623,7 +623,7 @@ void TestSceneUndoredo::testDecreaseInputSizeRestoresConnectionWithOriginalId()
     QCOMPARE(countSceneConnections(), 1);
 
     // Reduce to 2 inputs — connection on port 2 is severed
-    scene.undoStack()->push(new ChangeInputSizeCommand({andGate}, 2, &scene));
+    scene.undoStack()->push(new ChangePortSizeCommand({andGate}, 2, &scene, true));
     QVERIFY(scene.itemById(originalConnId) == nullptr);
     QCOMPARE(countSceneConnections(), 0);
 
@@ -648,7 +648,7 @@ void TestSceneUndoredo::testDecreaseInputSizeRestoresConnectionWithOriginalId()
     QCOMPARE(countSceneConnections(), 1);
 }
 
-// ─── ChangeOutputSizeCommand ──────────────────────────────────────────────
+// ─── ChangePortSizeCommand ──────────────────────────────────────────────
 
 void TestSceneUndoredo::testChangeOutputSizeUndoRedo()
 {
@@ -666,7 +666,7 @@ void TestSceneUndoredo::testChangeOutputSizeUndoRedo()
     QCOMPARE(demux->outputSize(), 4);
 
     // Reduce from 4 to 2 via command
-    scene.undoStack()->push(new ChangeOutputSizeCommand({demux}, 2, &scene));
+    scene.undoStack()->push(new ChangePortSizeCommand({demux}, 2, &scene, false));
 
     QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id))->outputSize(), 2);
 
@@ -704,7 +704,7 @@ void TestSceneUndoredo::testChangeOutputSizeMultipleElements()
     QVERIFY(demux2->outputPort(2)->connections().isEmpty());
 
     // Reduce both from 4 to 2 — demux1 loses 1 connection, demux2 loses 0
-    scene.undoStack()->push(new ChangeOutputSizeCommand({demux1, demux2}, 2, &scene));
+    scene.undoStack()->push(new ChangePortSizeCommand({demux1, demux2}, 2, &scene, false));
 
     QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id1))->outputSize(), 2);
     QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id2))->outputSize(), 2);
@@ -725,7 +725,7 @@ void TestSceneUndoredo::testChangeOutputSizeMultipleElements()
 
 void TestSceneUndoredo::testDecreaseOutputSizeRestoresConnectionWithOriginalId()
 {
-    // Same as the input-size ID test but for ChangeOutputSizeCommand.
+    // Same as the input-size ID test but for ChangePortSizeCommand.
     Scene scene;
 
     auto *demux = ElementFactory::buildElement(ElementType::Demux);
@@ -752,7 +752,7 @@ void TestSceneUndoredo::testDecreaseOutputSizeRestoresConnectionWithOriginalId()
     QCOMPARE(countSceneConnections(), 1);
 
     // Reduce to 2 outputs — connection on port 2 is severed
-    scene.undoStack()->push(new ChangeOutputSizeCommand({demux}, 2, &scene));
+    scene.undoStack()->push(new ChangePortSizeCommand({demux}, 2, &scene, false));
     QVERIFY(scene.itemById(originalConnId) == nullptr);
     QCOMPARE(countSceneConnections(), 0);
 

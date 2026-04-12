@@ -294,27 +294,28 @@ private:
 };
 
 /**
- * \class ChangeInputSizeCommand
- * \brief Undo command that changes the number of input ports on selected elements.
+ * \class ChangePortSizeCommand
+ * \brief Undo command that changes the number of input or output ports on selected elements.
  */
-class ChangeInputSizeCommand : public QUndoCommand
+class ChangePortSizeCommand : public QUndoCommand
 {
-    Q_DECLARE_TR_FUNCTIONS(ChangeInputSizeCommand)
+    Q_DECLARE_TR_FUNCTIONS(ChangePortSizeCommand)
 
 public:
     /**
      * \brief Constructs the command.
-     * \param elements     Elements whose input count will change.
-     * \param newInputSize Desired number of input ports.
-     * \param scene        Target scene.
-     * \param parent       Optional parent undo command.
+     * \param elements    Elements whose port count will change.
+     * \param newPortSize Desired number of ports.
+     * \param scene       Target scene.
+     * \param isInput     If \c true, adjusts input ports; otherwise adjusts output ports.
+     * \param parent      Optional parent undo command.
      */
-    explicit ChangeInputSizeCommand(const QList<GraphicElement *> &elements, const int newInputSize, Scene *scene, QUndoCommand *parent = nullptr);
+    explicit ChangePortSizeCommand(const QList<GraphicElement *> &elements, const int newPortSize, Scene *scene, const bool isInput, QUndoCommand *parent = nullptr);
 
-    /// Applies the new input port count.
+    /// Applies the new port count.
     void redo() override;
 
-    /// Restores the old input port count and connections.
+    /// Restores the old port count and connections.
     void undo() override;
 
 private:
@@ -323,7 +324,8 @@ private:
     QList<int> m_ids;
     QList<int> m_order;
     Scene *m_scene;
-    int m_newInputSize;
+    int m_newPortSize;
+    bool m_isInput;
 };
 
 /**
@@ -358,39 +360,6 @@ private:
     QPointF m_minPos;
     Scene *m_scene;
     int m_axis;
-};
-
-/**
- * \class ChangeOutputSizeCommand
- * \brief Undo command that changes the number of output ports on selected elements.
- */
-class ChangeOutputSizeCommand : public QUndoCommand
-{
-    Q_DECLARE_TR_FUNCTIONS(ChangeOutputSizeCommand)
-
-public:
-    /**
-     * \brief Constructs the command.
-     * \param elements      Elements whose output count will change.
-     * \param newOutputSize Desired number of output ports.
-     * \param scene         Target scene.
-     * \param parent        Optional parent undo command.
-     */
-    explicit ChangeOutputSizeCommand(const QList<GraphicElement *> &elements, const int newOutputSize, Scene *scene, QUndoCommand *parent = nullptr);
-
-    /// Applies the new output port count.
-    void redo() override;
-
-    /// Restores the old output port count and connections.
-    void undo() override;
-
-private:
-    // --- Members ---
-    QByteArray m_oldData;
-    QList<int> m_ids;
-    QList<int> m_order;
-    Scene *m_scene;
-    int m_newOutputSize;
 };
 
 /**
