@@ -98,89 +98,28 @@ int HandlerFactory::getRegisteredCommandCount() const
 
 void HandlerFactory::registerBuiltInHandlers()
 {
-    // Server info commands
-    registerHandler("get_server_info", "server", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<ServerInfoHandler>(mainWindow, validator);
+    registerHandlerGroup<ServerInfoHandler>("server", {
+        "get_server_info"
     });
 
-    // File operation commands
-    registerHandler("load_circuit", "file", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<FileHandler>(mainWindow, validator);
-    });
-    registerHandler("save_circuit", "file", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<FileHandler>(mainWindow, validator);
-    });
-    registerHandler("new_circuit", "file", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<FileHandler>(mainWindow, validator);
-    });
-    registerHandler("close_circuit", "file", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<FileHandler>(mainWindow, validator);
-    });
-    registerHandler("get_tab_count", "file", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<FileHandler>(mainWindow, validator);
-    });
-    registerHandler("export_image", "file", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<FileHandler>(mainWindow, validator);
+    registerHandlerGroup<FileHandler>("file", {
+        "load_circuit", "save_circuit", "new_circuit", "close_circuit",
+        "get_tab_count", "export_image"
     });
 
-    // Element operation commands
-    registerHandler("create_element", "element", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<ElementHandler>(mainWindow, validator);
-    });
-    registerHandler("delete_element", "element", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<ElementHandler>(mainWindow, validator);
-    });
-    registerHandler("list_elements", "element", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<ElementHandler>(mainWindow, validator);
-    });
-    registerHandler("move_element", "element", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<ElementHandler>(mainWindow, validator);
-    });
-    registerHandler("set_element_properties", "element", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<ElementHandler>(mainWindow, validator);
-    });
-    registerHandler("set_input_value", "element", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<ElementHandler>(mainWindow, validator);
-    });
-    registerHandler("get_output_value", "element", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<ElementHandler>(mainWindow, validator);
+    registerHandlerGroup<ElementHandler>("element", {
+        "create_element", "delete_element", "list_elements", "move_element",
+        "set_element_properties", "set_input_value", "get_output_value"
     });
 
-    // Connection operation commands
-    registerHandler("connect_elements", "connection", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<ConnectionHandler>(mainWindow, validator);
-    });
-    registerHandler("disconnect_elements", "connection", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<ConnectionHandler>(mainWindow, validator);
-    });
-    registerHandler("list_connections", "connection", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<ConnectionHandler>(mainWindow, validator);
+    registerHandlerGroup<ConnectionHandler>("connection", {
+        "connect_elements", "disconnect_elements", "list_connections"
     });
 
-    // Simulation operation commands
-    registerHandler("simulation_control", "simulation", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<SimulationHandler>(mainWindow, validator);
-    });
-    registerHandler("create_waveform", "simulation", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<SimulationHandler>(mainWindow, validator);
-    });
-    registerHandler("export_waveform", "simulation", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<SimulationHandler>(mainWindow, validator);
-    });
-    registerHandler("create_ic", "simulation", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<SimulationHandler>(mainWindow, validator);
-    });
-    registerHandler("instantiate_ic", "simulation", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<SimulationHandler>(mainWindow, validator);
-    });
-    registerHandler("list_ics", "simulation", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<SimulationHandler>(mainWindow, validator);
-    });
-    registerHandler("embed_ic", "simulation", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<SimulationHandler>(mainWindow, validator);
-    });
-    registerHandler("extract_ic", "simulation", [](MainWindow *mainWindow, MCPValidator *validator) {
-        return std::make_unique<SimulationHandler>(mainWindow, validator);
+    registerHandlerGroup<SimulationHandler>("simulation", {
+        "simulation_control", "create_waveform", "export_waveform",
+        "create_ic", "instantiate_ic", "list_ics",
+        "embed_ic", "extract_ic"
     });
 }
 
