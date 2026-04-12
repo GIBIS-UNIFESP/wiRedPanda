@@ -550,6 +550,15 @@ protected:
     /// Read-only view of the current simulation output values.
     const QVector<Status> &simOutputs() const { return m_simOutputValues; }
 
+    /**
+     * \brief Decodes \a count select-line statuses from simInputs() into a binary index.
+     * \param offset  Index of the first select-line input in simInputs().
+     * \param count   Number of select lines to read.
+     * \return An integer where bit i is 1 if simInputs()[offset+i] == Active.
+     * \details Used by Mux and Demux to convert select-line signals into a data-port index.
+     */
+    int decodeSelectValue(int offset, int count) const;
+
 private:
     // --- Flip Transform ---
 

@@ -65,10 +65,7 @@ void Demux::setOutputSize(const int size)
     }
 
     // Calculate required input ports: 1 data + log2(size) select lines
-    int numSelectLines = 1;
-    while ((1 << numSelectLines) < size) {
-        numSelectLines++;
-    }
+    const int numSelectLines = calculateSelectLines(size);
     int requiredInputs = 1 + numSelectLines;
 
     // Update output size FIRST to ensure outputSize() reflects new value
@@ -84,10 +81,7 @@ void Demux::setOutputSize(const int size)
 void Demux::updatePortsProperties()
 {
     // Determine number of select lines based on number of outputs
-    int numSelectLines = 1;
-    while ((1 << numSelectLines) < outputSize()) {
-        numSelectLines++;
-    }
+    const int numSelectLines = calculateSelectLines(outputSize());
 
     const int step = Scene::gridSize / 2; // 8
 
@@ -191,10 +185,7 @@ void Demux::updateLogic()
     const Status data = simInputs().at(0);
 
     // Calculate select lines from current output count
-    int numSelectLines = 1;
-    while ((1 << numSelectLines) < outputSize()) {
-        numSelectLines++;
-    }
+    const int numSelectLines = calculateSelectLines(outputSize());
 
     // If any select line is Unknown/Error, all outputs are indeterminate
     for (int i = 0; i < numSelectLines; i++) {
@@ -207,14 +198,18 @@ void Demux::updateLogic()
         }
     }
 
-    int selectValue = 0;
-    for (int i = 0; i < numSelectLines; i++) {
-        if (simInputs().at(1 + i) == Status::Active) {
-            selectValue |= (1 << i);
-        }
-    }
+    const int selectValue = decodeSelectValue(1, numSelectLines);
     for (int i = 0; i < outputSize(); i++) {
         setOutputValue(i, (i == selectValue) ? data : Status::Inactive);
     }
+}
+
+int Demux::calculateSelectLines(int dataCount)
+{
+    int k = 1;
+    while ((1 << k) < dataCount) {
+        k++;
+    }
+    return k;
 }
 

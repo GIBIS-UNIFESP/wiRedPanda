@@ -52,14 +52,7 @@ Mux::Mux(QGraphicsItem *parent)
 void Mux::updatePortsProperties()
 {
     // Determine number of select lines based on total input size
-    int numSelectLines = 1;
-    while (true) {
-        int numDataInputs = inputSize() - numSelectLines;
-        if ((1 << numSelectLines) >= numDataInputs) {
-            break;
-        }
-        numSelectLines++;
-    }
+    const int numSelectLines = calculateSelectLines(inputSize());
     int numDataInputs = inputSize() - numSelectLines;
 
     const int step = Scene::gridSize / 2; // 8
@@ -158,16 +151,8 @@ void Mux::updateLogic()
     }
 
     // Calculate select lines from current input count
-    int numSelectLines = 1;
-    int numDataInputs;
-    while (true) {
-        numDataInputs = inputSize() - numSelectLines;
-        if ((1 << numSelectLines) >= numDataInputs) {
-            break;
-        }
-        numSelectLines++;
-    }
-    numDataInputs = inputSize() - numSelectLines;
+    const int numSelectLines = calculateSelectLines(inputSize());
+    int numDataInputs = inputSize() - numSelectLines;
 
     // If any select line is Unknown/Error, the output is indeterminate
     for (int i = 0; i < numSelectLines; i++) {
@@ -178,12 +163,16 @@ void Mux::updateLogic()
         }
     }
 
-    int selectValue = 0;
-    for (int i = 0; i < numSelectLines; i++) {
-        if (simInputs().at(numDataInputs + i) == Status::Active) {
-            selectValue |= (1 << i);
-        }
-    }
+    const int selectValue = decodeSelectValue(numDataInputs, numSelectLines);
     setOutputValue(simInputs().at(selectValue));
+}
+
+int Mux::calculateSelectLines(int totalInputs)
+{
+    int k = 1;
+    while ((1 << k) < totalInputs - k) {
+        k++;
+    }
+    return k;
 }
 

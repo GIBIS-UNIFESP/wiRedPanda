@@ -45,5 +45,11 @@ private:
 
     // Prevent direct input size setting - inputs are derived from output size
     void setInputSize(const int size) override;
+
+    /**
+     * \brief Returns the minimum select-line count to address \a dataCount outputs.
+     * \details Finds the smallest k such that 2^k >= dataCount.
+     */
+    static int calculateSelectLines(int dataCount);
 };
 

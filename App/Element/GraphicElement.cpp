@@ -899,6 +899,17 @@ bool GraphicElement::simUpdateInputsAllowUnknown()
     return simUpdateInputsImpl(true);
 }
 
+int GraphicElement::decodeSelectValue(int offset, int count) const
+{
+    int selectValue = 0;
+    for (int i = 0; i < count; i++) {
+        if (m_simInputValues.at(offset + i) == Status::Active) {
+            selectValue |= (1 << i);
+        }
+    }
+    return selectValue;
+}
+
 int GraphicElement::minOutputSize() const
 {
     return static_cast<int>(m_minOutputSize);
