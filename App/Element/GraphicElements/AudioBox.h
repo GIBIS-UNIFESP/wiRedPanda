@@ -11,7 +11,7 @@
 #include <QFileInfo>
 #include <QMediaPlayer>
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElements/AudioOutputElement.h"
 
 /**
  * \class AudioBox
@@ -20,7 +20,7 @@
  * \details Uses QMediaPlayer to play arbitrary audio files (MP3, WAV, OGG, etc.).
  * Supports looping and can be globally muted.
  */
-class AudioBox : public GraphicElement
+class AudioBox : public AudioOutputElement
 {
     Q_OBJECT
 
@@ -35,23 +35,11 @@ public:
 
     /// Returns the file path of the currently loaded audio file.
     QString audio() const override;
-    /// Returns \c true if audio is currently playing.
-    bool isPlaying() const;
-    /// Returns \c true if audio output is muted.
-    bool isMuted() const;
-    /// Returns the audio playback volume (0.0–1.0).
-    float volume() const override;
 
     // --- Playback Control ---
 
-    /// Mutes or unmutes playback according to \a mute.
-    void mute(const bool mute = true);
-    /// Sets the audio playback volume to \a vol (0.0–1.0).
-    void setVolume(float vol) override;
     /// Sets the audio source to \a audioPath and reloads the player.
     void setAudio(const QString &audioPath) override;
-    /// Refreshes the visual appearance based on current state.
-    void refresh() override;
 
     // --- External file dependencies ---
 
@@ -65,19 +53,17 @@ public:
     /// \reimp
     void save(QDataStream &stream) const override;
 
+protected:
+    // --- AudioOutputElement hooks ---
+
+    void startAudio() override;
+    void stopAudio() override;
+    void applyVolume() override;
+    void applyMute() override;
+
 private:
-    // --- Internal methods ---
-
-    void play();
-    void stop();
-
     QAudioOutput *m_audioOutput = nullptr;
     QFileInfo m_audio;
     QMediaPlayer *m_player = nullptr;
-
-    float m_volume = 0.5f;
-    bool m_hasOutputDevice = false;
-    bool m_isPlaying = false;
-    bool m_muted = false;
 };
 

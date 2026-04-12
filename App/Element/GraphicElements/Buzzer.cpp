@@ -3,16 +3,13 @@
 
 #include "App/Element/GraphicElements/Buzzer.h"
 
-#include <QAudioDevice>
 #include <QAudioSink>
-#include <QMediaDevices>
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/GraphicElements/ToneGenerator.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Nodes/QNEPort.h"
 
 template<>
 struct ElementInfo<Buzzer> {
@@ -51,15 +48,10 @@ struct ElementInfo<Buzzer> {
 };
 
 Buzzer::Buzzer(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Buzzer, parent)
+    : AudioOutputElement(ElementType::Buzzer, parent)
 {
-    // 64,34: label sits to the right of the 64×64 body, vertically centred
-    m_label->setPos(64, 34);
-
-    // Check for audio hardware once at construction; subsequent audio calls are
-    // guarded by m_hasOutputDevice to allow headless/CI operation without warnings.
-    static const bool hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
-    m_hasOutputDevice = hasOutputDevice;
+    // Buzzer default volume is lower than AudioBox to avoid harsh tones
+    m_volume = 0.35f;
 
     if (m_hasOutputDevice) {
         m_generator = new ToneGenerator(this);
@@ -67,18 +59,6 @@ Buzzer::Buzzer(QGraphicsItem *parent)
         m_sink = new QAudioSink(ToneGenerator::format(), this);
         m_sink->setVolume(static_cast<qreal>(m_volume));
     }
-}
-
-void Buzzer::refresh()
-{
-    if (!isValid()) {
-        stop();
-        return;
-    }
-
-    const Status inputValue = m_inputPorts.constFirst()->status();
-
-    (inputValue == Status::Active) ? play() : stop();
 }
 
 double Buzzer::frequency() const
@@ -113,69 +93,28 @@ void Buzzer::setAudio(const QString &note)
     setFrequency(noteToFrequency(note));
 }
 
-bool Buzzer::isPlaying() const
+void Buzzer::startAudio()
 {
-    return m_isPlaying;
+    m_generator->start();
+    m_sink->start(m_generator);
 }
 
-bool Buzzer::isMuted() const
+void Buzzer::stopAudio()
 {
-    return m_muted;
+    m_sink->stop();
+    m_generator->close();
 }
 
-float Buzzer::volume() const
+void Buzzer::applyVolume()
 {
-    return m_volume;
-}
-
-void Buzzer::setVolume(float vol)
-{
-    m_volume = vol;
-    if (m_hasOutputDevice && !m_muted) {
-        m_sink->setVolume(static_cast<qreal>(vol));
+    if (!m_muted) {
+        m_sink->setVolume(static_cast<qreal>(m_volume));
     }
 }
 
-void Buzzer::mute(const bool mute)
+void Buzzer::applyMute()
 {
-    m_muted = mute;
-    if (!m_hasOutputDevice) {
-        return;
-    }
-
-    m_sink->setVolume(mute ? 0.0 : static_cast<qreal>(m_volume));
-}
-
-void Buzzer::play()
-{
-    if (m_isPlaying) {
-        return;
-    }
-
-    setPixmap(1);
-
-    if (m_hasOutputDevice) {
-        m_generator->start();
-        m_sink->start(m_generator);
-    }
-
-    m_isPlaying = true;
-}
-
-void Buzzer::stop()
-{
-    if (!m_isPlaying) {
-        return;
-    }
-
-    setPixmap(0);
-
-    if (m_hasOutputDevice) {
-        m_sink->stop();
-        m_generator->close();
-    }
-
-    m_isPlaying = false;
+    m_sink->setVolume(m_muted ? 0.0 : static_cast<qreal>(m_volume));
 }
 
 int Buzzer::noteToFrequency(const QString &note)

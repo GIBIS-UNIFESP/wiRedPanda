@@ -3,9 +3,7 @@
 
 #include "App/Element/GraphicElements/AudioBox.h"
 
-#include <QAudioDevice>
 #include <QDir>
-#include <QMediaDevices>
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
@@ -51,34 +49,14 @@ struct ElementInfo<AudioBox> {
 };
 
 AudioBox::AudioBox(QGraphicsItem *parent)
-    : GraphicElement(ElementType::AudioBox, parent)
+    : AudioOutputElement(ElementType::AudioBox, parent)
 {
-    // 64,34: label sits to the right of the 64×64 body, vertically centred
-    m_label->setPos(64, 34);
-
-    // Detect audio hardware at construction time; all subsequent audio calls are
-    // guarded by m_hasOutputDevice so the element works silently in headless/CI environments.
-    static const bool hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
-    m_hasOutputDevice = hasOutputDevice;
-
     if (m_hasOutputDevice) {
         m_player = new QMediaPlayer(this);
         m_audioOutput = new QAudioOutput(this);
     }
 
     setAudio(":/Components/Output/Audio/wiredpanda.wav");
-}
-
-void AudioBox::refresh()
-{
-    if (!isValid()) {
-        stop();
-        return;
-    }
-
-    const Status inputValue = m_inputPorts.constFirst()->status();
-
-    (inputValue == Status::Active) ? play() : stop();
 }
 
 void AudioBox::setAudio(const QString &audioPath)
@@ -139,70 +117,27 @@ QString AudioBox::audio() const
     return m_audio.filePath();
 }
 
-bool AudioBox::isPlaying() const
+void AudioBox::startAudio()
 {
-    return m_isPlaying;
+    if (m_player->source().isEmpty()) {
+        setAudio(":/Components/Output/Audio/wiredpanda.wav");
+    }
+    m_player->play();
 }
 
-bool AudioBox::isMuted() const
+void AudioBox::stopAudio()
 {
-    return m_muted;
+    m_player->stop();
 }
 
-float AudioBox::volume() const
+void AudioBox::applyVolume()
 {
-    return m_volume;
+    m_audioOutput->setVolume(m_volume);
 }
 
-void AudioBox::setVolume(float vol)
+void AudioBox::applyMute()
 {
-    m_volume = vol;
-    if (m_hasOutputDevice) {
-        m_audioOutput->setVolume(vol);
-    }
-}
-
-void AudioBox::mute(const bool mute)
-{
-    m_muted = mute;
-    if (!m_hasOutputDevice) {
-        return;
-    }
-
-    m_audioOutput->setMuted(mute);
-}
-
-void AudioBox::play()
-{
-    if (m_isPlaying) {
-        return;
-    }
-
-    setPixmap(1);
-
-    if (m_hasOutputDevice) {
-        if (m_player->source().isEmpty()) {
-            setAudio(":/Components/Output/Audio/wiredpanda.wav");
-        }
-        m_player->play();
-    }
-
-    m_isPlaying = true;
-}
-
-void AudioBox::stop()
-{
-    if (!m_isPlaying) {
-        return;
-    }
-
-    setPixmap(0);
-
-    if (m_hasOutputDevice) {
-        m_player->stop();
-    }
-
-    m_isPlaying = false;
+    m_audioOutput->setMuted(m_muted);
 }
 
 QStringList AudioBox::externalFiles() const
