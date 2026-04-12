@@ -202,6 +202,9 @@ private:
 
     // --- File Helpers ---
 
+    /// Appends \a extension (e.g. ".panda") to \a fileName if not already present.
+    static void ensureFileExtension(QString &fileName, const QString &extension);
+
     bool hasModifiedFiles();
     void loadAutosaveFiles();
     void createRecentFileActions();
