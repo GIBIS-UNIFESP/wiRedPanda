@@ -281,21 +281,22 @@ bool BaseHandler::getOutputPortByLabel(GraphicElement *element, const QString &l
     return false;
 }
 
-QString BaseHandler::getAvailableInputPorts(GraphicElement *element)
+QString BaseHandler::getAvailablePorts(GraphicElement *element, bool isOutput)
 {
     if (!element) {
         return "(element is null)";
     }
 
-    QStringList ports;
-    int inputCount = element->inputSize();
+    const int count = isOutput ? element->outputSize() : element->inputSize();
 
-    if (inputCount == 0) {
-        return "(no input ports)";
+    if (count == 0) {
+        return isOutput ? "(no output ports)" : "(no input ports)";
     }
 
-    for (int i = 0; i < inputCount; ++i) {
-        auto *port = element->inputPort(i);
+    QStringList ports;
+    for (int i = 0; i < count; ++i) {
+        auto *port = isOutput ? static_cast<QNEPort *>(element->outputPort(i))
+                              : static_cast<QNEPort *>(element->inputPort(i));
         if (port) {
             QString portName = port->name().isEmpty() ? "(unnamed)" : port->name();
             ports.append(QString("[%1] %2").arg(i).arg(portName));
@@ -307,29 +308,13 @@ QString BaseHandler::getAvailableInputPorts(GraphicElement *element)
     return ports.join(", ");
 }
 
+QString BaseHandler::getAvailableInputPorts(GraphicElement *element)
+{
+    return getAvailablePorts(element, false);
+}
+
 QString BaseHandler::getAvailableOutputPorts(GraphicElement *element)
 {
-    if (!element) {
-        return "(element is null)";
-    }
-
-    QStringList ports;
-    int outputCount = element->outputSize();
-
-    if (outputCount == 0) {
-        return "(no output ports)";
-    }
-
-    for (int i = 0; i < outputCount; ++i) {
-        auto *port = element->outputPort(i);
-        if (port) {
-            QString portName = port->name().isEmpty() ? "(unnamed)" : port->name();
-            ports.append(QString("[%1] %2").arg(i).arg(portName));
-        } else {
-            ports.append(QString("[%1] (null)").arg(i));
-        }
-    }
-
-    return ports.join(", ");
+    return getAvailablePorts(element, true);
 }
 
