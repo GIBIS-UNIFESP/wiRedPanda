@@ -74,6 +74,7 @@ public:
     QString getAvailableOutputPorts(GraphicElement *element);
 
 protected:
+    QString getAvailablePorts(GraphicElement *element, bool isOutput);
     // Shared resources
     MainWindow *m_mainWindow;
     MCPValidator *m_validator;
