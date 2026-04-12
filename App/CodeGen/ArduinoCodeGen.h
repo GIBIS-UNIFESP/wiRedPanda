@@ -106,8 +106,6 @@ private:
 
     /// Returns "HIGH" or "LOW" for Active/Inactive status values.
     static QString highLow(Status val);
-    /// Replaces accented characters with their ASCII equivalents.
-    static QString stripAccents(const QString &input);
     /// Strips characters that are illegal in C++ identifiers.
     static QString removeForbiddenChars(const QString &input);
     /// Returns \c true if \a name collides with an Arduino built-in identifier.
