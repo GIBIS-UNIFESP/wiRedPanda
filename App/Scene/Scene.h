@@ -308,6 +308,9 @@ protected:
 private:
     // --- Helpers ---
 
+    /// Returns \c true if \a mimeData contains any recognised wiRedPanda drop format.
+    static bool isSupportedDropFormat(const QMimeData *mimeData);
+
     QList<QGraphicsItem *> itemsAt(const QPointF pos);
     const QVector<QNEConnection *> connections();
     void checkUpdateRequest();
