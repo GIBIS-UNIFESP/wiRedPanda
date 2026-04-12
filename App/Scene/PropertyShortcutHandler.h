@@ -36,5 +36,10 @@ public:
 
 private:
     Scene *m_scene = nullptr;
+
+    /// Shared implementation for prev/nextMainProperty(); \a dir is -1 (prev) or +1 (next).
+    void adjustMainProperty(int dir);
+    /// Shared implementation for prev/nextSecondaryProperty(); \a dir is -1 or +1.
+    void adjustSecondaryProperty(int dir);
 };
 
