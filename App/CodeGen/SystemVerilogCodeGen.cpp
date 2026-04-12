@@ -7,6 +7,7 @@
 #include <QRegularExpression>
 #include <QSet>
 
+#include "App/CodeGen/CodeGenUtils.h"
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Clock.h"
@@ -77,14 +78,6 @@ QString SystemVerilogCodeGen::removeForbiddenChars(const QString &input)
     }
 
     return result;
-}
-
-QString SystemVerilogCodeGen::stripAccents(const QString &input)
-{
-    QString normalized = input.normalized(QString::NormalizationForm_D);
-    // Remove combining marks (diacritics)
-    static const QRegularExpression diacriticMarks("[\\p{Mn}]");
-    return normalized.remove(diacriticMarks);
 }
 
 // [BUG-1] Check whether a string is a simple SystemVerilog identifier (no operators/expressions)
@@ -225,7 +218,7 @@ void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &eleme
 
         // Derive module name from file basename
         QString baseName = ic->isEmbedded() ? ic->blobName() : QFileInfo(ic->file()).baseName();
-        info.moduleName = removeForbiddenChars(stripAccents(baseName));
+        info.moduleName = removeForbiddenChars(CodeGenUtils::stripAccents(baseName));
         if (isSystemVerilogReserved(info.moduleName)) {
             info.moduleName = "m_" + info.moduleName;
         }
@@ -234,7 +227,7 @@ void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &eleme
         QSet<QString> usedNames;
         for (int i = 0; i < ic->inputSize(); ++i) {
             QString portLabel = ic->inputPort(i)->name();
-            QString portName = removeForbiddenChars(stripAccents(portLabel));
+            QString portName = removeForbiddenChars(CodeGenUtils::stripAccents(portLabel));
             if (portName.isEmpty() || portName == "_unnamed") {
                 portName = QString("in_%1").arg(i);
             }
@@ -255,7 +248,7 @@ void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &eleme
         // Build output port names
         for (int i = 0; i < ic->outputSize(); ++i) {
             QString portLabel = ic->outputPort(i)->name();
-            QString portName = removeForbiddenChars(stripAccents(portLabel));
+            QString portName = removeForbiddenChars(CodeGenUtils::stripAccents(portLabel));
             if (portName.isEmpty() || portName == "_unnamed") {
                 portName = QString("out_%1").arg(i);
             }
@@ -742,7 +735,7 @@ void SystemVerilogCodeGen::declareInputs()
                 varName += "_" + label;
             }
 
-            varName = stripAccents(varName);
+            varName = CodeGenUtils::stripAccents(varName);
             varName = removeForbiddenChars(varName);
 
             currentOutput++;
@@ -791,7 +784,7 @@ void SystemVerilogCodeGen::declareOutputs()
                 if (!port->name().isEmpty()) {
                     varName = QString("%1_%2").arg(varName, port->name());
                 }
-                varName = stripAccents(varName);
+                varName = CodeGenUtils::stripAccents(varName);
                 varName = removeForbiddenChars(varName);
                 if (currentOutput < totalOutputs) {
                     m_stream << QString("output %1,").arg(varName) << Qt::endl;
@@ -857,7 +850,7 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
                 continue;
             }
 
-            QString varName = QString("aux_%1_%2").arg(removeForbiddenChars(stripAccents(elm->objectName()))).arg(m_globalCounter++);
+            QString varName = QString("aux_%1_%2").arg(removeForbiddenChars(CodeGenUtils::stripAccents(elm->objectName()))).arg(m_globalCounter++);
             const auto outputs = elm->outputs();
 
             // Track which ports were already pre-mapped (e.g., IC module boundary ports)
@@ -895,7 +888,7 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
                     portName.append(QString("_%1").arg(portCounter++));
 
                     if (!port->name().isEmpty()) {
-                        portName.append(QString("_%1").arg(removeForbiddenChars(stripAccents(port->name()))));
+                        portName.append(QString("_%1").arg(removeForbiddenChars(CodeGenUtils::stripAccents(port->name()))));
                     }
 
                     m_varMap[port] = portName;
