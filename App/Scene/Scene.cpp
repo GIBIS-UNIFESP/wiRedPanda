@@ -699,100 +699,109 @@ void Scene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
     QGraphicsScene::dragMoveEvent(event);
 }
 
+void Scene::handleNewElementDrop(QGraphicsSceneDragDropEvent *event)
+{
+    // Both MIME types carry the same payload; the newer format has a namespaced key
+    QByteArray itemData;
+
+    if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")) {
+        itemData = event->mimeData()->data("wpanda/x-dnditemdata");
+    }
+
+    if (event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
+        itemData = event->mimeData()->data("application/x-wiredpanda-dragdrop");
+    }
+
+    QDataStream stream(&itemData, QIODevice::ReadOnly);
+    Serialization::readPandaHeader(stream);
+
+    QPoint offset;      stream >> offset;
+    ElementType type;   stream >> type;
+    QString icFileName; stream >> icFileName;
+
+    bool isEmbedded = false;
+    QString blobName;
+    if (!stream.atEnd()) { stream >> isEmbedded; }
+    if (!stream.atEnd()) { stream >> blobName; }
+
+    // Subtract the drag offset so the element lands under the original grab point
+    QPointF pos = event->scenePos() - offset;
+    qCDebug(zero) << type << " at position: " << pos.x() << ", " << pos.y() << ", label: " << icFileName;
+
+    auto *element = ElementFactory::buildElement(type);
+    qCDebug(zero) << "Valid element.";
+
+    if (isEmbedded && type == ElementType::IC) {
+        if (!m_icRegistry.initEmbeddedIC(static_cast<IC *>(element), blobName)) {
+            delete element;
+            return;
+        }
+    } else {
+        element->loadFromDrop(icFileName, contextDir());
+    }
+
+    qCDebug(zero) << "Adding the element to the scene.";
+    receiveCommand(new AddItemsCommand({element}, this));
+
+    qCDebug(zero) << "Cleaning the selection.";
+    clearSelection();
+
+    qCDebug(zero) << "Setting created element as selected.";
+    element->setSelected(true);
+
+    qCDebug(zero) << "Adjusting the position of the element.";
+    element->setPos(pos);
+}
+
+void Scene::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
+{
+    QByteArray itemData;
+
+    if (event->mimeData()->hasFormat("wpanda/ctrlDragData")) {
+        itemData = event->mimeData()->data("wpanda/ctrlDragData");
+    }
+
+    if (event->mimeData()->hasFormat("application/x-wiredpanda-cloneDrag")) {
+        itemData = event->mimeData()->data("application/x-wiredpanda-cloneDrag");
+    }
+
+    QDataStream stream(&itemData, QIODevice::ReadOnly);
+    QVersionNumber version = Serialization::readPandaHeader(stream);
+
+    // offset = mouse position at drag-start; recompute drop offset from current position
+    QPointF offset; stream >> offset;
+    QPointF ctr;    stream >> ctr;
+    offset = event->scenePos() - offset;
+
+    QMap<quint64, QNEPort *> portMap;
+    auto context = deserializationContext(portMap, version);
+    const auto itemList = Serialization::deserialize(stream, context);
+
+    receiveCommand(new AddItemsCommand(itemList, this));
+    clearSelection();
+
+    for (auto *item : itemList) {
+        if (item->type() == GraphicElement::Type) {
+            item->setPos((item->pos() + offset));
+            item->setSelected(true);
+        }
+    }
+
+    resizeScene();
+}
+
 void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
     sentryBreadcrumb("ui", QStringLiteral("Drop event"));
-    // --- New element drop from toolbox ---
-    // Both MIME types carry the same payload; the newer format has a namespaced key
+
     if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")
         || event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
-        QByteArray itemData;
-
-        if (event->mimeData()->hasFormat("wpanda/x-dnditemdata")) {
-            itemData = event->mimeData()->data("wpanda/x-dnditemdata");
-        }
-
-        if (event->mimeData()->hasFormat("application/x-wiredpanda-dragdrop")) {
-            itemData = event->mimeData()->data("application/x-wiredpanda-dragdrop");
-        }
-
-        QDataStream stream(&itemData, QIODevice::ReadOnly);
-        Serialization::readPandaHeader(stream);
-
-        QPoint offset;      stream >> offset;
-        ElementType type;   stream >> type;
-        QString icFileName; stream >> icFileName;
-
-        bool isEmbedded = false;
-        QString blobName;
-        if (!stream.atEnd()) { stream >> isEmbedded; }
-        if (!stream.atEnd()) { stream >> blobName; }
-
-        // Subtract the drag offset so the element lands under the original grab point
-        QPointF pos = event->scenePos() - offset;
-        qCDebug(zero) << type << " at position: " << pos.x() << ", " << pos.y() << ", label: " << icFileName;
-
-        auto *element = ElementFactory::buildElement(type);
-        qCDebug(zero) << "Valid element.";
-
-        if (isEmbedded && type == ElementType::IC) {
-            if (!m_icRegistry.initEmbeddedIC(static_cast<IC *>(element), blobName)) {
-                delete element;
-                return;
-            }
-        } else {
-            element->loadFromDrop(icFileName, contextDir());
-        }
-
-        qCDebug(zero) << "Adding the element to the scene.";
-        receiveCommand(new AddItemsCommand({element}, this));
-
-        qCDebug(zero) << "Cleaning the selection.";
-        clearSelection();
-
-        qCDebug(zero) << "Setting created element as selected.";
-        element->setSelected(true);
-
-        qCDebug(zero) << "Adjusting the position of the element.";
-        element->setPos(pos);
+        handleNewElementDrop(event);
     }
 
-    // --- Clone drag (Ctrl+drag of existing selection) ---
     if (event->mimeData()->hasFormat("wpanda/ctrlDragData")
         || event->mimeData()->hasFormat("application/x-wiredpanda-cloneDrag")) {
-        QByteArray itemData;
-
-        if (event->mimeData()->hasFormat("wpanda/ctrlDragData")) {
-            itemData = event->mimeData()->data("wpanda/ctrlDragData");
-        }
-
-        if (event->mimeData()->hasFormat("application/x-wiredpanda-cloneDrag")) {
-            itemData = event->mimeData()->data("application/x-wiredpanda-cloneDrag");
-        }
-
-        QDataStream stream(&itemData, QIODevice::ReadOnly);
-        QVersionNumber version = Serialization::readPandaHeader(stream);
-
-        // offset = mouse position at drag-start; recompute drop offset from current position
-        QPointF offset; stream >> offset;
-        QPointF ctr;    stream >> ctr;
-        offset = event->scenePos() - offset;
-
-        QMap<quint64, QNEPort *> portMap;
-        auto context = deserializationContext(portMap, version);
-        const auto itemList = Serialization::deserialize(stream, context);
-
-        receiveCommand(new AddItemsCommand(itemList, this));
-        clearSelection();
-
-        for (auto *item : itemList) {
-            if (item->type() == GraphicElement::Type) {
-                item->setPos((item->pos() + offset));
-                item->setSelected(true);
-            }
-        }
-
-        resizeScene();
+        handleCloneDrag(event);
     }
 
     QGraphicsScene::dropEvent(event);
