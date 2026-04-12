@@ -40,6 +40,26 @@ namespace CommandUtils {
 }
 
 /**
+ * \class ElementsCommand
+ * \brief Intermediate base for commands that operate on a fixed list of GraphicElements.
+ *
+ * \details Stores the scene pointer and the stable element IDs captured at construction time,
+ * and exposes an elements() accessor that resolves them back to live pointers at undo/redo time.
+ * Eliminates the repeated m_ids + m_scene + findElements() boilerplate across command subclasses.
+ */
+class ElementsCommand : public QUndoCommand
+{
+protected:
+    explicit ElementsCommand(const QList<GraphicElement *> &elements, Scene *scene, QUndoCommand *parent = nullptr);
+
+    /// Returns the live element pointers for this command's targets, looked up by stored ID.
+    QList<GraphicElement *> elements() const;
+
+    Scene *m_scene;
+    QList<int> m_ids;
+};
+
+/**
  * \class AddItemsCommand
  * \brief Undo command that adds a list of graphic elements to the scene.
  */
@@ -105,7 +125,7 @@ private:
  * \class RotateCommand
  * \brief Undo command that rotates a list of elements by a fixed angle.
  */
-class RotateCommand : public QUndoCommand
+class RotateCommand : public ElementsCommand
 {
     Q_DECLARE_TR_FUNCTIONS(RotateCommand)
 
@@ -130,15 +150,13 @@ private:
     int m_angle;
 
     QList<QPointF> m_positions;
-    QList<int> m_ids;
-    Scene *m_scene;
 };
 
 /**
  * \class MoveCommand
  * \brief Undo command that records a drag-move of a set of elements.
  */
-class MoveCommand : public QUndoCommand
+class MoveCommand : public ElementsCommand
 {
     Q_DECLARE_TR_FUNCTIONS(MoveCommand)
 
@@ -162,9 +180,6 @@ private:
     // --- Members ---
     QList<QPointF> m_newPositions;
     QList<QPointF> m_oldPositions;
-    QPointF m_offset;
-    QList<int> m_ids;
-    Scene *m_scene;
 };
 
 /**
@@ -174,7 +189,7 @@ private:
  * \details Captures the pre-change state in \a oldData; the post-change state
  * is serialized from the elements at construction time.
  */
-class UpdateCommand : public QUndoCommand
+class UpdateCommand : public ElementsCommand
 {
     Q_DECLARE_TR_FUNCTIONS(UpdateCommand)
 
@@ -201,8 +216,6 @@ private:
     // --- Members ---
     QByteArray m_newData;
     QByteArray m_oldData;
-    QList<int> m_ids;
-    Scene *m_scene;
 };
 
 /**
@@ -245,7 +258,7 @@ private:
  * \class MorphCommand
  * \brief Undo command that changes the type of selected elements while preserving connections.
  */
-class MorphCommand : public QUndoCommand
+class MorphCommand : public ElementsCommand
 {
     Q_DECLARE_TR_FUNCTIONS(MorphCommand)
 
@@ -288,8 +301,6 @@ private:
     // --- Members ---
     ElementType m_newType;
     QList<ElementType> m_types;
-    QList<int> m_ids;
-    Scene *m_scene;
     QList<DeletedConnectionInfo> m_deletedConnections; ///< Connections deleted during the last redo(); restored on undo().
 };
 
@@ -297,7 +308,7 @@ private:
  * \class ChangePortSizeCommand
  * \brief Undo command that changes the number of input or output ports on selected elements.
  */
-class ChangePortSizeCommand : public QUndoCommand
+class ChangePortSizeCommand : public ElementsCommand
 {
     Q_DECLARE_TR_FUNCTIONS(ChangePortSizeCommand)
 
@@ -321,9 +332,7 @@ public:
 private:
     // --- Members ---
     QByteArray m_oldData;
-    QList<int> m_ids;
     QList<int> m_order;
-    Scene *m_scene;
     int m_newPortSize;
     bool m_isInput;
 };
@@ -332,7 +341,7 @@ private:
  * \class FlipCommand
  * \brief Undo command that flips a selection of elements along a horizontal or vertical axis.
  */
-class FlipCommand : public QUndoCommand
+class FlipCommand : public ElementsCommand
 {
     Q_DECLARE_TR_FUNCTIONS(FlipCommand)
 
@@ -355,10 +364,8 @@ public:
 private:
     // --- Members ---
     QList<QPointF> m_positions;
-    QList<int> m_ids;
     QPointF m_maxPos;
     QPointF m_minPos;
-    Scene *m_scene;
     int m_axis;
 };
 
@@ -422,7 +429,7 @@ private:
  * \details Captures connection topology before the change so connections to
  * removed ports can be restored on undo. Swaps blob registry entries on undo/redo.
  */
-class UpdateBlobCommand : public QUndoCommand
+class UpdateBlobCommand : public ElementsCommand
 {
     Q_DECLARE_TR_FUNCTIONS(UpdateBlobCommand)
 
@@ -460,8 +467,6 @@ private:
     QByteArray m_oldBlob;
     QByteArray m_newBlob;
     QString m_blobName;
-    QList<int> m_ids;
     QList<ConnectionInfo> m_connections;
-    Scene *m_scene;
 };
 
