@@ -61,29 +61,10 @@ class ElementOperationTests(MCPTestBase):
 
         # Create new circuit first
         # Test basic element workflow: create -> verify -> interact
-        resp = await self.send_command(
-            "create_element",
-            {
-                "type": "InputButton",
-                "x": 100,
-                "y": 100,
-                "label": "WorkflowInput",
-            },
-        )
-        input_id = await self.validate_element_creation_response(resp, "Create workflow input element")
+        input_id = await self.create_element_checked("InputButton", 100, 100, "Create workflow input element", label="WorkflowInput")
         if input_id is None:
             all_passed = False
-
-        resp = await self.send_command(
-            "create_element",
-            {
-                "type": "Led",
-                "x": 200,
-                "y": 100,
-                "label": "WorkflowOutput",
-            },
-        )
-        output_id = await self.validate_element_creation_response(resp, "Create workflow output element")
+        output_id = await self.create_element_checked("Led", 200, 100, "Create workflow output element", label="WorkflowOutput")
         if output_id is None:
             all_passed = False
 
@@ -109,16 +90,7 @@ class ElementOperationTests(MCPTestBase):
 
         for i, elem_type in enumerate(valid_element_types):
             x, y = 100 + i * 150, 100
-            resp = await self.send_command(
-                "create_element",
-                {
-                    "type": elem_type,
-                    "x": x,
-                    "y": y,
-                    "label": f"Test{elem_type}",
-                },
-            )
-            element_id = await self.validate_element_creation_response(resp, f"Create {elem_type} element")
+            element_id = await self.create_element_checked(elem_type, x, y, f"Create {elem_type} element", label=f"Test{elem_type}")
             if element_id is not None:
                 created_elements.append(element_id)
             else:
@@ -145,16 +117,7 @@ class ElementOperationTests(MCPTestBase):
 
         for i, elem_type in enumerate(test_elements):
             x, y = 100 + i * 100, 100
-            resp = await self.send_command(
-                "create_element",
-                {
-                    "type": elem_type,
-                    "x": x,
-                    "y": y,
-                    "label": f"List{elem_type}",
-                },
-            )
-            element_id = await self.validate_element_creation_response(resp, f"Create {elem_type} for listing")
+            element_id = await self.create_element_checked(elem_type, x, y, f"Create {elem_type} for listing", label=f"List{elem_type}")
             if element_id is not None:
                 created_elements.append(element_id)
             else:
@@ -212,16 +175,7 @@ class ElementOperationTests(MCPTestBase):
 
         for i, elem_type in enumerate(test_elements):
             x, y = 100 + i * 100, 100
-            resp = await self.send_command(
-                "create_element",
-                {
-                    "type": elem_type,
-                    "x": x,
-                    "y": y,
-                    "label": f"Delete{elem_type}",
-                },
-            )
-            element_id = await self.validate_element_creation_response(resp, f"Create {elem_type} for deletion")
+            element_id = await self.create_element_checked(elem_type, x, y, f"Create {elem_type} for deletion", label=f"Delete{elem_type}")
             if element_id is not None:
                 created_elements.append(element_id)
             else:
@@ -286,15 +240,8 @@ class ElementOperationTests(MCPTestBase):
 
         try:
             # Create elements for management testing
-            elem1_id = await self.validate_element_creation_response(
-                await self.send_command("create_element", {"type": "And", "x": 100.0, "y": 100.0, "label": "TestAnd1"}),
-                "create element for management",
-            )
-
-            elem2_id = await self.validate_element_creation_response(
-                await self.send_command("create_element", {"type": "Or", "x": 200.0, "y": 100.0, "label": "TestOr1"}),
-                "create element for management",
-            )
+            elem1_id = await self.create_element_checked("And", 100.0, 100.0, "create element for management", label="TestAnd1")
+            elem2_id = await self.create_element_checked("Or", 200.0, 100.0, "create element for management", label="TestOr1")
 
             # Early return if elements couldn't be created
             if not elem1_id or not elem2_id:

@@ -10,7 +10,7 @@ Provides common functionality for all test categories.
 import asyncio
 import sys
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, cast
 
 from beartype import beartype
 from mcp_models import MCPResponse
@@ -109,6 +109,27 @@ class MCPTestBase(ABC):
         if await self.assert_success(response, test_name):
             return await self.get_response_result(response)
         return None
+
+    async def create_element_checked(
+        self,
+        elem_type: str,
+        x: float,
+        y: float,
+        test_name: str,
+        label: str = "",
+    ) -> Optional[int]:
+        """Create an element and return its ID, or None on failure."""
+        params: Dict[str, Any] = {"type": elem_type, "x": x, "y": y}
+        if label:
+            params["label"] = label
+        resp = await self.send_command("create_element", params)
+        return await self.validate_element_creation_response(resp, test_name)
+
+    async def create_simple_circuit(self, test_name: str) -> Tuple[Optional[int], Optional[int]]:
+        """Create an InputButton at (100,100) and Led at (300,100), return (input_id, output_id)."""
+        input_id = await self.create_element_checked("InputButton", 100, 100, f"{test_name}: Create input")
+        output_id = await self.create_element_checked("Led", 300, 100, f"{test_name}: Create output")
+        return input_id, output_id
 
     async def validate_truth_table(
         self, inputs: List[int], outputs: List[int], truth_table: List[Dict[str, Any]], test_name: str

@@ -89,16 +89,7 @@ class PerformanceTests(MCPTestBase):
 
         # Create elements in sequence and verify they maintain order
         for i in range(5):
-            resp = await self.send_command(
-                "create_element",
-                {
-                    "type": "And",
-                    "x": i * 100,
-                    "y": 100,
-                    "label": f"Order{i}",
-                },
-            )
-            element_id = await self.validate_element_creation_response(resp, f"Sequential create {i}")
+            element_id = await self.create_element_checked("And", i * 100, 100, f"Sequential create {i}", label=f"Order{i}")
             if element_id:
                 element_ids.append(element_id)
 
@@ -275,28 +266,8 @@ class PerformanceTests(MCPTestBase):
             proc = psutil.Process(self.process.pid)
 
             # Setup circuit for simulation testing
-            # Create some elements for simulation
-            resp = await self.send_command(
-                "create_element",
-                {
-                    "type": "InputButton",
-                    "x": 100,
-                    "y": 100,
-                    "label": "MemTestInput",
-                },
-            )
-            await self.validate_element_creation_response(resp, "Create input for simulation memory test")
-
-            resp = await self.send_command(
-                "create_element",
-                {
-                    "type": "Led",
-                    "x": 200,
-                    "y": 100,
-                    "label": "MemTestOutput",
-                },
-            )
-            await self.validate_element_creation_response(resp, "Create output for simulation memory test")
+            await self.create_element_checked("InputButton", 100, 100, "Create input for simulation memory test", label="MemTestInput")
+            await self.create_element_checked("Led", 200, 100, "Create output for simulation memory test", label="MemTestOutput")
 
             # Test repeated simulation start/stop
             print("Testing simulation memory usage...")

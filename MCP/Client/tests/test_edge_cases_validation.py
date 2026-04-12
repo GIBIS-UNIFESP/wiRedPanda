@@ -81,16 +81,7 @@ class EdgeCasesValidationTests(MCPTestBase):
                 all_passed = False
 
         # Test: Single element circuit should have 1 element
-        input_resp = await self.send_command(
-            "create_element",
-            {
-                "type": "InputButton",
-                "x": 100,
-                "y": 100,
-                "label": "SINGLE_INPUT",
-            },
-        )
-        input_id = await self.validate_element_creation_response(input_resp, "Create single element")
+        input_id = await self.create_element_checked("InputButton", 100, 100, "Create single element", label="SINGLE_INPUT")
         if input_id is None:
             all_passed = False
 
@@ -109,16 +100,7 @@ class EdgeCasesValidationTests(MCPTestBase):
                     all_passed = False
 
         # Test: Dual element circuit should have 2 elements
-        output_resp = await self.send_command(
-            "create_element",
-            {
-                "type": "Led",
-                "x": 300,
-                "y": 100,
-                "label": "DUAL_OUTPUT",
-            },
-        )
-        output_id = await self.validate_element_creation_response(output_resp, "Create second element")
+        output_id = await self.create_element_checked("Led", 300, 100, "Create second element", label="DUAL_OUTPUT")
         if output_id is None:
             all_passed = False
 
@@ -156,29 +138,10 @@ class EdgeCasesValidationTests(MCPTestBase):
                         all_passed = False
 
         # Test: Multi-element types validation
-        logic_resp = await self.send_command(
-            "create_element",
-            {
-                "type": "And",
-                "x": 200,
-                "y": 200,
-                "label": "LOGIC_GATE",
-            },
-        )
-        logic_id = await self.validate_element_creation_response(logic_resp, "Create logic gate")
+        logic_id = await self.create_element_checked("And", 200, 200, "Create logic gate", label="LOGIC_GATE")
         if logic_id is None:
             all_passed = False
-
-        switch_resp = await self.send_command(
-            "create_element",
-            {
-                "type": "InputSwitch",
-                "x": 50,
-                "y": 200,
-                "label": "SWITCH_INPUT",
-            },
-        )
-        switch_id = await self.validate_element_creation_response(switch_resp, "Create switch input")
+        switch_id = await self.create_element_checked("InputSwitch", 50, 200, "Create switch input", label="SWITCH_INPUT")
         if switch_id is None:
             all_passed = False
 
@@ -208,33 +171,15 @@ class EdgeCasesValidationTests(MCPTestBase):
         all_passed: bool = True
 
         # Test extreme negative coordinates (near INT_MIN)
-        resp = await self.send_command(
-            "create_element",
-            {
-                "type": "And",
-                "x": -2147483600,
-                "y": -2147483600,
-                "label": "ExtremeNegative",
-            },
-        )
-        extreme_neg_id = await self.validate_element_creation_response(
-            resp, "Create element with extreme negative coordinates"
+        extreme_neg_id = await self.create_element_checked(
+            "And", -2147483600, -2147483600, "Create element with extreme negative coordinates", label="ExtremeNegative"
         )
         if extreme_neg_id is None:
             all_passed = False
 
         # Test extreme positive coordinates (near INT_MAX)
-        resp = await self.send_command(
-            "create_element",
-            {
-                "type": "Or",
-                "x": 2147483600,
-                "y": 2147483600,
-                "label": "ExtremePositive",
-            },
-        )
-        extreme_pos_id = await self.validate_element_creation_response(
-            resp, "Create element with extreme positive coordinates"
+        extreme_pos_id = await self.create_element_checked(
+            "Or", 2147483600, 2147483600, "Create element with extreme positive coordinates", label="ExtremePositive"
         )
         if extreme_pos_id is None:
             all_passed = False
@@ -255,47 +200,22 @@ class EdgeCasesValidationTests(MCPTestBase):
         all_passed: bool = True
 
         # Test empty label
-        resp = await self.send_command(
-            "create_element",
-            {
-                "type": "Not",
-                "x": 200,
-                "y": 200,
-                "label": "",
-            },
-        )
-        empty_label_id = await self.validate_element_creation_response(resp, "Create element with empty label")
+        empty_label_id = await self.create_element_checked("Not", 200, 200, "Create element with empty label")
         if empty_label_id is None:
             all_passed = False
 
         # Test special character label
-        resp = await self.send_command(
-            "create_element",
-            {
-                "type": "Led",
-                "x": 300,
-                "y": 300,
-                "label": "Special!@#$%^&*()Chars",
-            },
-        )
-        special_char_id = await self.validate_element_creation_response(
-            resp, "Create element with special character label"
+        special_char_id = await self.create_element_checked(
+            "Led", 300, 300, "Create element with special character label", label="Special!@#$%^&*()Chars"
         )
         if special_char_id is None:
             all_passed = False
 
         # Test very long label
         long_label = "VeryLongLabel" * 20  # 260 characters
-        resp = await self.send_command(
-            "create_element",
-            {
-                "type": "InputButton",
-                "x": 400,
-                "y": 400,
-                "label": long_label,
-            },
+        long_label_id = await self.create_element_checked(
+            "InputButton", 400, 400, "Create element with very long label", label=long_label
         )
-        long_label_id = await self.validate_element_creation_response(resp, "Create element with very long label")
         if long_label_id is None:
             all_passed = False
 
@@ -316,27 +236,8 @@ class EdgeCasesValidationTests(MCPTestBase):
 
         # Setup
         # Create elements for port testing
-        resp = await self.send_command(
-            "create_element",
-            {
-                "type": "And",
-                "x": 100,
-                "y": 100,
-                "label": "Source",
-            },
-        )
-        source_id = await self.validate_element_creation_response(resp, "Create source element for port test")
-
-        resp = await self.send_command(
-            "create_element",
-            {
-                "type": "Or",
-                "x": 200,
-                "y": 100,
-                "label": "Target",
-            },
-        )
-        target_id = await self.validate_element_creation_response(resp, "Create target element for port test")
+        source_id = await self.create_element_checked("And", 100, 100, "Create source element for port test", label="Source")
+        target_id = await self.create_element_checked("Or", 200, 100, "Create target element for port test", label="Target")
 
         # Early return if element creation failed
         if not source_id or not target_id:
@@ -421,16 +322,7 @@ class EdgeCasesValidationTests(MCPTestBase):
 
         # Setup
         # Test floating point coordinates (should be handled gracefully)
-        resp = await self.send_command(
-            "create_element",
-            {
-                "type": "Or",
-                "x": 100.5,
-                "y": 200.7,
-                "label": "FloatCoords",
-            },
-        )
-        element_id = await self.validate_element_creation_response(resp, "Create element with float coordinates")
+        element_id = await self.create_element_checked("Or", 100.5, 200.7, "Create element with float coordinates", label="FloatCoords")
         if element_id:
             self.infrastructure.output.success("✅ Float coordinates accepted and element created")
             all_passed &= True

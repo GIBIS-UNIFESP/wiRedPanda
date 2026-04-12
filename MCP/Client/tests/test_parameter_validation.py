@@ -158,28 +158,11 @@ class ParameterValidationTests(MCPTestBase):
             # Create a simple circuit for IC creation
             # Create elements for IC using proper ElementGroup types
             # InputButton belongs to ElementGroup::Input (required for IC interface)
-            input_id = await self.validate_element_creation_response(
-                await self.send_command(
-                    "create_element", {"type": "InputButton", "x": 100.0, "y": 100.0, "label": "IC_Input"}
-                ),
-                "create IC input",
-            )
-
+            input_id = await self.create_element_checked("InputButton", 100.0, 100.0, "create IC input", label="IC_Input")
             # Create a simple buffer logic
-            buffer_id = await self.validate_element_creation_response(
-                await self.send_command(
-                    "create_element", {"type": "Not", "x": 200.0, "y": 100.0, "label": "IC_Buffer"}
-                ),
-                "create IC logic gate",
-            )
-
+            buffer_id = await self.create_element_checked("Not", 200.0, 100.0, "create IC logic gate", label="IC_Buffer")
             # Led belongs to ElementGroup::Output (required for IC interface)
-            output_id = await self.validate_element_creation_response(
-                await self.send_command(
-                    "create_element", {"type": "Led", "x": 300.0, "y": 100.0, "label": "IC_Output"}
-                ),
-                "create IC output",
-            )
+            output_id = await self.create_element_checked("Led", 300.0, 100.0, "create IC output", label="IC_Output")
 
             # Early return if element creation failed
             if not input_id or not buffer_id or not output_id:
