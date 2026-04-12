@@ -6,7 +6,7 @@ Test Fixtures for MCP Test Suite
 Circuit specifications, truth tables, and test data for MCP tests.
 """
 
-from type_models import CircuitSpecification, create_circuit_spec
+from typing import Any, Dict
 
 # ==================== BASIC LOGIC GATE CIRCUITS ====================
 # Basic logic gate circuit definitions
@@ -311,7 +311,7 @@ ELEMENT_TYPES_TO_TEST = [
 # Functions to generate large circuit specifications
 
 
-def create_not_chain_circuit(chain_length: int) -> CircuitSpecification:
+def create_not_chain_circuit(chain_length: int) -> Dict[str, Any]:
     """Generate a circuit with a chain of NOT gates
 
     Args:
@@ -381,6 +381,6 @@ def create_not_chain_circuit(chain_length: int) -> CircuitSpecification:
         }
     )
 
-    return create_circuit_spec(elements, connections)
+    return {"elements": elements, "connections": connections}
 
 
