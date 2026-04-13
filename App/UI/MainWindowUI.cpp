@@ -755,8 +755,8 @@ void MainWindowUi::retranslateUi()
     actionClearSelection->setShortcut(QCoreApplication::translate("MainWindow", "Esc"));
     actionFastMode->setText(QCoreApplication::translate("MainWindow", "&Fast Mode"));
     actionSystemTheme->setText(QCoreApplication::translate("MainWindow", "&System"));
-    actionLightTheme->setText(QCoreApplication::translate("MainWindow", "Panda &Light"));
-    actionDarkTheme->setText(QCoreApplication::translate("MainWindow", "Panda &Dark"));
+    actionLightTheme->setText(QCoreApplication::translate("MainWindow", "&Light"));
+    actionDarkTheme->setText(QCoreApplication::translate("MainWindow", "&Dark"));
     actionWaveform->setText(QCoreApplication::translate("MainWindow", "&Waveform"));
     actionWaveform->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+W"));
     actionExportToImage->setText(QCoreApplication::translate("MainWindow", "Export to &Image"));
