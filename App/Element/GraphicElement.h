@@ -349,13 +349,6 @@ public:
         return m_simOutputValues.at(index);
     }
 
-    /// Returns the simulation input value on port \a index.
-    inline bool inputValue(const int index = 0) const
-    {
-        if (index >= m_simInputValues.size()) { return false; }
-        return m_simInputValues.at(index) == Status::Active;
-    }
-
     /// Returns the number of simulation output slots.
     qsizetype simOutputSize() const;
 
@@ -431,6 +424,12 @@ public:
 
     /// Sets the object name of all ports to \a name for identification.
     void setPortName(const QString &name);
+
+    /// Read-only view of the cached simulation input values.
+    const QVector<Status> &simInputs() const { return m_simInputValues; }
+
+    /// Read-only view of the current simulation output values.
+    const QVector<Status> &simOutputs() const { return m_simOutputValues; }
 
     // --- Theme ---
 
@@ -544,11 +543,6 @@ protected:
      */
     bool simUpdateInputsAllowUnknown();
 
-    /// Read-only view of the cached simulation input values.
-    const QVector<Status> &simInputs() const { return m_simInputValues; }
-
-    /// Read-only view of the current simulation output values.
-    const QVector<Status> &simOutputs() const { return m_simOutputValues; }
 
     /**
      * \brief Decodes \a count select-line statuses from simInputs() into a binary index.

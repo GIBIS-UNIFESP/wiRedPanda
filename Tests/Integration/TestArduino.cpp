@@ -2257,7 +2257,7 @@ QVector<ArduinoCodeGen::TestVector> TestArduino::generateTruthTable(
         }
         entry.outputs.resize(outputs.size());
         for (int k = 0; k < outputs.size(); ++k) {
-            entry.outputs[k] = outputs[k].elm->inputValue(outputs[k].portIndex);
+            entry.outputs[k] = outputs[k].elm->simInputs().at(outputs[k].portIndex) == Status::Active;
         }
         table.append(entry);
     }
