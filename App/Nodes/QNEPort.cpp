@@ -294,6 +294,7 @@ void QNEOutputPort::setStatus(const Status status)
     }
 
     m_status = status;
+    updateTheme();
 
     // Fan-out: broadcast the new signal status to every wire leaving this output port;
     // each wire in turn propagates it to the input port at its far end
@@ -322,8 +323,15 @@ bool QNEOutputPort::isValid() const
 void QNEOutputPort::updateTheme()
 {
     const auto theme = ThemeManager::attributes();
-    setPen(theme.m_portOutputPen);
-    setCurrentBrush(theme.m_portOutputBrush);
+    setPen(theme.m_portOutputPen);  // always darkRed — marks this as an output port
+
+    switch (m_status) {
+    case Status::Unknown:  setCurrentBrush(theme.m_portUnknownBrush);  break;
+    case Status::Inactive: setCurrentBrush(theme.m_portInactiveBrush); break;
+    case Status::Active:   setCurrentBrush(theme.m_portActiveBrush);   break;
+    case Status::Error:    setCurrentBrush(theme.m_portErrorBrush);    break;
+    }
+
     update();
 }
 

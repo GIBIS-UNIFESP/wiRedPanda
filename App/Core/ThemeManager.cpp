@@ -230,7 +230,6 @@ void ThemeAttributes::setTheme(const Theme theme)
     m_portInactiveBrush = m_connectionInactive;
     m_portActiveBrush = m_connectionActive;
     m_portErrorBrush = m_connectionError;
-    m_portOutputBrush = QColor(243, 83, 105); // vivid rose-pink for output ports
 
     // Port pen colours are theme-invariant (always black/darkRed) because they are drawn
     // as outlines on top of the brush fill and need consistent contrast

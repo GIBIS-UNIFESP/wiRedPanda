@@ -60,7 +60,6 @@ public:
     QColor m_portInactiveBrush;
     QColor m_portActiveBrush;
     QColor m_portErrorBrush;
-    QColor m_portOutputBrush;
 
     // --- Members: Port Pen Colors ---
 
