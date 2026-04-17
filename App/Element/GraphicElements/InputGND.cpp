@@ -42,5 +42,8 @@ struct ElementInfo<InputGnd> {
 InputGnd::InputGnd(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputGnd, parent)
 {
+    // GND always outputs logic LOW; set the port default so both the visual
+    // wire colour and the simulation output vector are correct from the start.
+    m_outputPorts.constFirst()->setDefaultStatus(Status::Inactive);
 }
 
