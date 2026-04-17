@@ -504,6 +504,7 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
         // Propagate selection highlight to all connected wires so users see which
         // signals are attached to the selected element
         highlight(m_selected);
+        update();
     }
 
     return QGraphicsItem::itemChange(change, value);

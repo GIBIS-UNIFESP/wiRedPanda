@@ -179,11 +179,13 @@ void QNEPort::setGraphicElement(GraphicElement *graphicElement)
 void QNEPort::hoverLeave()
 {
     setBrush(currentBrush());
+    update();
 }
 
 void QNEPort::hoverEnter()
 {
     setBrush(QBrush(ThemeManager::attributes().m_portHoverPort));
+    update();
 }
 
 void QNEPort::drainConnections(bool isInput)
@@ -248,6 +250,8 @@ void QNEInputPort::setStatus(const Status status)
         break;
     }
     }
+
+    update();
 }
 
 bool QNEInputPort::isInput() const
@@ -321,5 +325,6 @@ void QNEOutputPort::updateTheme()
     const auto theme = ThemeManager::attributes();
     setPen(theme.m_portOutputPen);
     setCurrentBrush(theme.m_portOutputBrush);
+    update();
 }
 

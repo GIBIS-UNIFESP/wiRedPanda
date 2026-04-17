@@ -292,6 +292,8 @@ void QNEConnection::setStatus(const Status status)
     case Status::Error:    setPen(QPen(m_errorColor,    5)); break;
     }
 
+    update();
+
     // Propagate to the destination port so its fill colour also reflects the signal state
     if (endPort()) {
         endPort()->setStatus(status);
