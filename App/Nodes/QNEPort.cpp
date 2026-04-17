@@ -156,9 +156,6 @@ bool QNEPort::isRequired() const
 void QNEPort::setRequired(const bool required)
 {
     m_required = required;
-    // Required ports default to Unknown when unconnected so the element (and its downstream
-    // chain) immediately shows an error rather than silently using a zero/low default
-    setDefaultStatus(required ? Status::Unknown : Status::Inactive);
 }
 
 void QNEPort::setSerialId(quint64 serialId)
