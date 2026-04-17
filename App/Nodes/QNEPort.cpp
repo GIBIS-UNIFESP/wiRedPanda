@@ -323,13 +323,24 @@ bool QNEOutputPort::isValid() const
 void QNEOutputPort::updateTheme()
 {
     const auto theme = ThemeManager::attributes();
-    setPen(theme.m_portOutputPen);  // always darkRed — marks this as an output port
 
     switch (m_status) {
-    case Status::Unknown:  setCurrentBrush(theme.m_portUnknownBrush);  break;
-    case Status::Inactive: setCurrentBrush(theme.m_portInactiveBrush); break;
-    case Status::Active:   setCurrentBrush(theme.m_portActiveBrush);   break;
-    case Status::Error:    setCurrentBrush(theme.m_portErrorBrush);    break;
+    case Status::Unknown:
+        setPen(theme.m_portUnknownPen);
+        setCurrentBrush(theme.m_portUnknownBrush);
+        break;
+    case Status::Inactive:
+        setPen(theme.m_portInactivePen);
+        setCurrentBrush(theme.m_portInactiveBrush);
+        break;
+    case Status::Active:
+        setPen(theme.m_portActivePen);
+        setCurrentBrush(theme.m_portActiveBrush);
+        break;
+    case Status::Error:
+        setPen(theme.m_portErrorPen);
+        setCurrentBrush(theme.m_portErrorBrush);
+        break;
     }
 
     update();

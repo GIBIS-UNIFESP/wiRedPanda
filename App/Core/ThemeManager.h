@@ -67,7 +67,6 @@ public:
     QColor m_portInactivePen;
     QColor m_portActivePen;
     QColor m_portErrorPen;
-    QColor m_portOutputPen;
 
     // --- Members: Port Hover ---
 

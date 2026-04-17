@@ -237,7 +237,6 @@ void ThemeAttributes::setTheme(const Theme theme)
     m_portInactivePen = QColor(Qt::black);
     m_portActivePen = QColor(Qt::black);
     m_portErrorPen = QColor(Qt::red);
-    m_portOutputPen = QColor(Qt::darkRed);
 
     m_portHoverPort = QColor(Qt::yellow); // bright yellow on hover for high visibility regardless of theme
 }
