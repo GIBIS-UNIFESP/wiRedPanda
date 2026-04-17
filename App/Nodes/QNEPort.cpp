@@ -82,10 +82,10 @@ void QNEPort::updateConnections()
         conn->updatePosFromPorts();
     }
 
-    // A port that violates its validity constraints (e.g. required but unconnected) must
-    // show the unknown status regardless of any incoming signal
+    // A port that violates its validity constraints (e.g. required but unconnected,
+    // or multi-driver) must show Error so the wiring problem is clearly visible
     if (!isValid()) {
-        setStatus(Status::Unknown);
+        setStatus(Status::Error);
         return;
     }
 
@@ -225,9 +225,10 @@ void QNEInputPort::setStatus(const Status status)
         return;
     }
 
-    // If the port itself is invalid (e.g. required but unconnected), clamp to Unknown
-    // regardless of whatever signal status is being pushed in from a connected wire
-    m_status = QNEInputPort::isValid() ? status : Status::Unknown;
+    // If the port is invalid due to multiple drivers (bus conflict), emit Error so the
+    // user sees a clear red signal instead of a silent gray Unknown.
+    // Required-but-unconnected ports also become Error to make missing connections visible.
+    m_status = QNEInputPort::isValid() ? status : Status::Error;
 
     const auto theme = ThemeManager::attributes();
 

@@ -631,10 +631,10 @@ bool GraphicElement::isValid()
         // Propagate invalid status downstream so the visual chain shows where validity breaks
         for (auto *output : std::as_const(m_outputPorts)) {
             for (auto *conn : output->connections()) {
-                conn->setStatus(Status::Unknown);
+                conn->setStatus(Status::Error);
 
                 if (auto *port = conn->otherPort(output)) {
-                    port->setStatus(Status::Unknown);
+                    port->setStatus(Status::Error);
                 }
             }
         }
@@ -867,8 +867,12 @@ bool GraphicElement::simUpdateInputsImpl(const bool allowUnknown)
         if (pred) {
             val = pred->outputValue(m_simInputConnections.at(index).sourceOutputIndex);
         } else {
-            // Unconnected input: use port's default status (replaces global GND/VCC).
-            val = (index < m_inputPorts.size()) ? m_inputPorts.at(index)->defaultValue() : Status::Unknown;
+            if (index < m_inputPorts.size() && m_inputPorts.at(index)->connections().size() > 1) {
+                val = Status::Error;  // multi-driver bus conflict
+            } else {
+                // Unconnected input: use port's default status (replaces global GND/VCC).
+                val = (index < m_inputPorts.size()) ? m_inputPorts.at(index)->defaultValue() : Status::Unknown;
+            }
         }
 
         // allowUnknown: only fail for truly unconnected inputs that return Unknown.
