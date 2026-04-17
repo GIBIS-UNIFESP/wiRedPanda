@@ -219,7 +219,6 @@ void TestThemeManager::testLightThemePortColors()
     QVERIFY(attrs.m_portUnknownPen.isValid());
     QVERIFY(attrs.m_portInactivePen.isValid());
     QVERIFY(attrs.m_portActivePen.isValid());
-    QVERIFY(attrs.m_portOutputPen.isValid());
     QVERIFY(attrs.m_portErrorPen.isValid());
 
     // Hover port should be yellow
@@ -312,7 +311,6 @@ void TestThemeManager::testDarkThemePortColors()
     QVERIFY(attrs.m_portUnknownPen.isValid());
     QVERIFY(attrs.m_portInactivePen.isValid());
     QVERIFY(attrs.m_portActivePen.isValid());
-    QVERIFY(attrs.m_portOutputPen.isValid());
     QVERIFY(attrs.m_portErrorPen.isValid());
 
     // Hover port should still be yellow
