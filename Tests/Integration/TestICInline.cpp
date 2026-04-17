@@ -5349,25 +5349,12 @@ void TestICInline::testInlineSaveConvertsFileBackedToEmbedded()
     parentScene->addItem(parentIC);
     const int parentICId = parentIC->id();
 
-    qDebug() << "Step 1: Parent workspace has embedded IC 'chain_c' with id" << parentICId;
-    qDebug() << "  Parent contextDir:" << parentScene->contextDir();
-    qDebug() << "  Parent IC isEmbedded:" << parentIC->isEmbedded()
-             << "blobName:" << parentIC->blobName()
-             << "inputs:" << parentIC->inputSize()
-             << "outputs:" << parentIC->outputSize();
-
     // --- Step 2: Open chain_c in a child workspace (simulating inline IC tab) ---
     WorkSpace childWs;
     const QByteArray chainCBlob = parentReg->blob("chain_c");
     QVERIFY2(!chainCBlob.isEmpty(), "chain_c blob should exist in parent registry");
 
     childWs.loadFromBlob(chainCBlob, &parentWs, parentICId, parentScene->contextDir());
-
-    qDebug() << "Step 2: Child workspace loaded from blob";
-    qDebug() << "  Child isInlineIC:" << childWs.isInlineIC();
-    qDebug() << "  Child contextDir:" << childWs.scene()->contextDir();
-    qDebug() << "  Child element count:" << childWs.scene()->elements().size();
-    qDebug() << "  Child blob registry size:" << childWs.scene()->icRegistry()->blobMap().size();
 
     // Connect icBlobSaved to parent (simulating what MainWindow does)
     connect(&childWs, &WorkSpace::icBlobSaved, &parentWs, &WorkSpace::onChildICBlobSaved);
@@ -5380,36 +5367,18 @@ void TestICInline::testInlineSaveConvertsFileBackedToEmbedded()
     childWs.scene()->addItem(droppedIC);
     const int droppedICId = droppedIC->id();
 
-    qDebug() << "Step 3: Dropped file-based IC";
-    qDebug() << "  Dropped IC isEmbedded:" << droppedIC->isEmbedded()
-             << "file:" << droppedIC->file()
-             << "blobName:" << droppedIC->blobName()
-             << "inputs:" << droppedIC->inputSize()
-             << "outputs:" << droppedIC->outputSize();
-
     QVERIFY2(!droppedIC->isEmbedded(), "Dropped IC should be file-backed before save");
     QVERIFY(droppedIC->inputSize() > 0);
 
     // --- Step 4: Save the child workspace (triggers inline save path) ---
-    qDebug() << "Step 4: Saving child workspace...";
-    qDebug() << "  Child blob registry before save:" << childWs.scene()->icRegistry()->blobMap().keys();
-
     QSignalSpy saveSpy(&childWs, &WorkSpace::icBlobSaved);
     childWs.save("");
 
-    qDebug() << "  icBlobSaved signal emitted:" << saveSpy.count() << "times";
     QCOMPARE(saveSpy.count(), 1);
 
     // --- Step 5: Verify the dropped IC was converted to embedded ---
     auto *savedIC = dynamic_cast<IC *>(childWs.scene()->itemById(droppedICId));
     QVERIFY2(savedIC, "Dropped IC should still exist after save");
-
-    qDebug() << "Step 5: After save";
-    qDebug() << "  Saved IC isEmbedded:" << savedIC->isEmbedded()
-             << "blobName:" << savedIC->blobName()
-             << "file:" << savedIC->file()
-             << "inputs:" << savedIC->inputSize();
-    qDebug() << "  Child blob registry after save:" << childWs.scene()->icRegistry()->blobMap().keys();
 
     QVERIFY2(savedIC->isEmbedded(), "IC should be embedded after inline save");
     QCOMPARE(savedIC->blobName(), QString("simple_and"));
@@ -5424,7 +5393,6 @@ void TestICInline::testInlineSaveConvertsFileBackedToEmbedded()
 
     // --- Step 6: Verify the saved blob is valid and re-loadable ---
     const QByteArray savedBlob = saveSpy.at(0).at(1).toByteArray();
-    qDebug() << "Step 6: Verifying saved blob (" << savedBlob.size() << "bytes)";
 
     // Parse the blob header — this is where "invalid format" would throw
     {
@@ -5436,49 +5404,31 @@ void TestICInline::testInlineSaveConvertsFileBackedToEmbedded()
             parsedOK = true;
             auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata);
 
-            qDebug() << "  Blob version:" << preamble.version;
-            qDebug() << "  Blob embedded ICs:" << embeddedICs.keys();
-            qDebug() << "  Blob metadata keys:" << preamble.metadata.keys();
-
             QVERIFY2(embeddedICs.contains("simple_and"),
                      "simple_and should be embedded in the saved blob");
-        } catch (const std::exception &e) {
-            qDebug() << "  PARSE ERROR:" << e.what();
+        } catch (const std::exception &) {
         }
         QVERIFY2(parsedOK, "Saved blob should have a valid panda header");
     }
 
     // --- Step 7: Verify parent received the blob and updated its registry ---
-    qDebug() << "Step 7: Checking parent state after child save";
-    qDebug() << "  Parent blob registry:" << parentReg->blobMap().keys();
-
     const QByteArray updatedChainC = parentReg->blob("chain_c");
     QVERIFY2(!updatedChainC.isEmpty(), "Parent should have updated chain_c blob");
 
     // --- Step 8: Simulate closing and reopening the tab ---
-    // Load a new workspace from the parent's updated chain_c blob
-    qDebug() << "Step 8: Reopening chain_c from parent blob (" << updatedChainC.size() << "bytes)";
-
     WorkSpace reopenedWs;
     bool reopenOK = false;
     try {
         reopenedWs.loadFromBlob(updatedChainC, &parentWs, parentICId, parentScene->contextDir());
         reopenOK = true;
-    } catch (const std::exception &e) {
-        qDebug() << "  REOPEN ERROR:" << e.what();
+    } catch (const std::exception &) {
     }
     QVERIFY2(reopenOK, "Reopened workspace should load without 'invalid format' error");
-
-    qDebug() << "  Reopened element count:" << reopenedWs.scene()->elements().size();
-    qDebug() << "  Reopened blob registry:" << reopenedWs.scene()->icRegistry()->blobMap().keys();
 
     // The reopened workspace should contain the simple_and IC as embedded
     bool foundEmbeddedIC = false;
     for (auto *elm : reopenedWs.scene()->elements()) {
         if (elm->elementType() == ElementType::IC && elm->isEmbedded()) {
-            qDebug() << "  Found embedded IC:" << elm->blobName()
-                     << "inputs:" << elm->inputSize()
-                     << "outputs:" << elm->outputSize();
             if (elm->blobName() == "simple_and") {
                 foundEmbeddedIC = true;
             }
@@ -5504,19 +5454,11 @@ void TestICInline::testNestedInlineSaveAndReopen()
     rootWs.load(exDir + "nested.panda");
     auto *rootScene = rootWs.scene();
 
-    qDebug() << "=== Step 1: Root loaded nested.panda ===";
-    qDebug() << "  Root contextDir:" << rootScene->contextDir();
-    qDebug() << "  Root elements:" << rootScene->elements().size();
-    qDebug() << "  Root blob registry:" << rootScene->icRegistry()->blobMap().keys();
-
     // Find chain_b IC in root scene
     IC *chainBIC = nullptr;
     for (auto *elm : rootScene->elements()) {
         if (elm->elementType() == ElementType::IC) {
             auto *ic = static_cast<IC *>(elm);
-            qDebug() << "  Root IC:" << ic->blobName() << "file:" << ic->file()
-                     << "isEmbedded:" << ic->isEmbedded()
-                     << "inputs:" << ic->inputSize() << "outputs:" << ic->outputSize();
             if (!chainBIC) chainBIC = ic;
         }
     }
@@ -5542,17 +5484,11 @@ void TestICInline::testNestedInlineSaveAndReopen()
     level1Ws.loadFromBlob(chainBBlob, &rootWs, chainBICId, rootScene->contextDir());
     connect(&level1Ws, &WorkSpace::icBlobSaved, &rootWs, &WorkSpace::onChildICBlobSaved);
 
-    qDebug() << "=== Step 2: Level-1 (chain_b) opened ===";
-    qDebug() << "  Level-1 elements:" << level1Ws.scene()->elements().size();
-    qDebug() << "  Level-1 blob registry:" << level1Ws.scene()->icRegistry()->blobMap().keys();
-
     // Find chain_c IC inside level-1
     IC *chainCIC = nullptr;
     for (auto *elm : level1Ws.scene()->elements()) {
         if (elm->elementType() == ElementType::IC) {
             auto *ic = static_cast<IC *>(elm);
-            qDebug() << "  Level-1 IC:" << ic->blobName() << "file:" << ic->file()
-                     << "isEmbedded:" << ic->isEmbedded();
             if (!chainCIC) chainCIC = ic;
         }
     }
@@ -5573,17 +5509,11 @@ void TestICInline::testNestedInlineSaveAndReopen()
         chainCBlob = level1Ws.scene()->icRegistry()->blob(chainCBlobName);
     }
     QVERIFY(!chainCBlob.isEmpty());
-    qDebug() << "  chain_c blob size:" << chainCBlob.size();
 
     // --- Step 3: Open chain_c in level-2 workspace ---
     WorkSpace level2Ws;
     level2Ws.loadFromBlob(chainCBlob, &level1Ws, chainCICId, level1Ws.scene()->contextDir());
     connect(&level2Ws, &WorkSpace::icBlobSaved, &level1Ws, &WorkSpace::onChildICBlobSaved);
-
-    qDebug() << "=== Step 3: Level-2 (chain_c) opened ===";
-    qDebug() << "  Level-2 elements:" << level2Ws.scene()->elements().size();
-    qDebug() << "  Level-2 contextDir:" << level2Ws.scene()->contextDir();
-    qDebug() << "  Level-2 blob registry:" << level2Ws.scene()->icRegistry()->blobMap().keys();
 
     // --- Step 4: Drop counter.panda (file-based) into level-2 ---
     const QString counterFile = exDir + "counter.panda";
@@ -5594,65 +5524,41 @@ void TestICInline::testNestedInlineSaveAndReopen()
     counterIC->setPos(200, 200);
     level2Ws.scene()->addItem(counterIC);
 
-    qDebug() << "=== Step 4: Dropped counter.panda ===";
-    qDebug() << "  Counter isEmbedded:" << counterIC->isEmbedded()
-             << "file:" << counterIC->file()
-             << "inputs:" << counterIC->inputSize()
-             << "outputs:" << counterIC->outputSize();
-
     QVERIFY2(!counterIC->isEmbedded(), "Counter should be file-backed before save");
     QVERIFY(counterIC->inputSize() > 0);
 
     // --- Step 5: Save level-2 ---
-    qDebug() << "=== Step 5: Saving level-2 ===";
     QSignalSpy spy2(&level2Ws, &WorkSpace::icBlobSaved);
     level2Ws.save("");
     QCOMPARE(spy2.count(), 1);
 
-    qDebug() << "  Counter after save — isEmbedded:" << counterIC->isEmbedded()
-             << "blobName:" << counterIC->blobName()
-             << "file:" << counterIC->file();
-    qDebug() << "  Level-2 blob registry after save:" << level2Ws.scene()->icRegistry()->blobMap().keys();
-
     // Verify the saved blob is valid
     const QByteArray savedBlob = spy2.at(0).at(1).toByteArray();
-    qDebug() << "  Saved blob size:" << savedBlob.size();
     {
         QByteArray copy(savedBlob);
         QDataStream s(&copy, QIODevice::ReadOnly);
         try {
             auto p = Serialization::readPreamble(s);
             auto ics = Serialization::deserializeBlobRegistry(p.metadata);
-            qDebug() << "  Saved blob embedded ICs:" << ics.keys();
-            qDebug() << "  Saved blob metadata keys:" << p.metadata.keys();
+            Q_UNUSED(ics)
         } catch (const std::exception &e) {
-            qDebug() << "  ERROR parsing saved blob:" << e.what();
             QFAIL(qPrintable(QString("Saved blob should be valid: %1").arg(e.what())));
         }
     }
 
     // Verify level-1 received and stored the blob
-    qDebug() << "  Level-1 blob registry after save:" << level1Ws.scene()->icRegistry()->blobMap().keys();
     const QByteArray updatedChainC = level1Ws.scene()->icRegistry()->blob(chainCBlobName);
     QVERIFY2(!updatedChainC.isEmpty(), "Level-1 should have updated chain_c blob");
-    qDebug() << "  Updated chain_c blob in level-1:" << updatedChainC.size() << "bytes";
 
     // --- Step 6: Close level-2 and reopen from level-1's blob ---
-    qDebug() << "=== Step 6: Reopening level-2 from level-1's blob ===";
-
-    // Parse the blob before loading to see what's in it
     {
         QByteArray copy(updatedChainC);
         QDataStream s(&copy, QIODevice::ReadOnly);
         try {
             auto p = Serialization::readPreamble(s);
             auto ics = Serialization::deserializeBlobRegistry(p.metadata);
-            qDebug() << "  chain_c blob version:" << p.version;
-            qDebug() << "  chain_c blob embedded ICs:" << ics.keys();
-            qDebug() << "  chain_c blob metadata keys:" << p.metadata.keys();
-            qDebug() << "  Remaining bytes after preamble:" << (copy.size() - s.device()->pos());
-        } catch (const std::exception &e) {
-            qDebug() << "  ERROR parsing chain_c blob before reopen:" << e.what();
+            Q_UNUSED(ics)
+        } catch (const std::exception &) {
         }
     }
 
@@ -5661,22 +5567,14 @@ void TestICInline::testNestedInlineSaveAndReopen()
     try {
         reopenedWs.loadFromBlob(updatedChainC, &level1Ws, chainCICId, level1Ws.scene()->contextDir());
         reopenOK = true;
-    } catch (const std::exception &e) {
-        qDebug() << "  REOPEN ERROR:" << e.what();
+    } catch (const std::exception &) {
     }
     QVERIFY2(reopenOK, "Reopening chain_c should not throw 'invalid format'");
-
-    qDebug() << "  Reopened elements:" << reopenedWs.scene()->elements().size();
-    qDebug() << "  Reopened blob registry:" << reopenedWs.scene()->icRegistry()->blobMap().keys();
 
     // Verify counter IC is present and embedded
     bool foundCounter = false;
     for (auto *elm : reopenedWs.scene()->elements()) {
         if (elm->elementType() == ElementType::IC) {
-            qDebug() << "  Reopened IC:" << elm->blobName()
-                     << "isEmbedded:" << elm->isEmbedded()
-                     << "inputs:" << elm->inputSize()
-                     << "outputs:" << elm->outputSize();
             if (elm->blobName() == "counter") {
                 foundCounter = true;
             }
