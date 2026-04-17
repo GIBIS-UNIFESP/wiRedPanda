@@ -201,12 +201,12 @@ jobs:
         APPIMAGE_EXTRACT_AND_RUN=1 VERSION=$VERSION \
           ./appimagetool appimage
 
-        mv wiRedPanda-*-x86_64.AppImage wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage
+        mv wiRedPanda-*-x86_64.AppImage wiRedPanda-$VERSION-Linux-Qt${{ matrix.qt }}.AppImage
 
     - name: Validate Ubuntu Release Artifacts
       if: runner.os == 'Linux'
       run: |
-        APPIMAGE_FILE="wiRedPanda-$VERSION-Ubuntu-Qt${{ matrix.qt }}.AppImage"
+        APPIMAGE_FILE="wiRedPanda-$VERSION-Linux-Qt${{ matrix.qt }}.AppImage"
 
         if [ ! -f "$APPIMAGE_FILE" ]; then
           echo "Error: AppImage not found"
