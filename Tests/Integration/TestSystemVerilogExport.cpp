@@ -482,7 +482,7 @@ static QVector<SeqTestStep> collectGenericSequentialVectors(
 void TestSystemVerilogExport::initTestCase()
 {
 #ifndef Q_OS_LINUX
-    QSKIP("SystemVerilog export tests require iverilog/yosys/verilator (Linux CI only)");
+    QSKIP("SystemVerilog export tests require iverilog/yosys/verilator (Linux only)");
 #else
     TestUtils::setupTestEnvironment();
 #endif
