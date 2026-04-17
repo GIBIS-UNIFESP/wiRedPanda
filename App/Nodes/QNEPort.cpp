@@ -205,7 +205,7 @@ void QNEPort::drainConnections(bool isInput)
 QNEInputPort::QNEInputPort(QGraphicsItem *parent)
     : QNEPort(parent)
 {
-    QNEInputPort::setStatus(defaultValue());
+    QNEInputPort::updateTheme();
 }
 
 QNEInputPort::~QNEInputPort()
@@ -227,6 +227,28 @@ void QNEInputPort::setStatus(const Status status)
     // Required-but-unconnected ports also become Error to make missing connections visible.
     m_status = QNEInputPort::isValid() ? status : Status::Error;
 
+    updateTheme();
+}
+
+bool QNEInputPort::isInput() const
+{
+    return true;
+}
+
+bool QNEInputPort::isOutput() const
+{
+    return false;
+}
+
+bool QNEInputPort::isValid() const
+{
+    // Valid states: unconnected and optional (default value is safe to use), OR
+    // exactly one connection (multi-driver wiring is not allowed in this simulation model)
+    return m_connections.isEmpty() ? !isRequired() : (m_connections.size() == 1);
+}
+
+void QNEInputPort::updateTheme()
+{
     const auto theme = ThemeManager::attributes();
 
     switch (m_status) {
@@ -253,27 +275,6 @@ void QNEInputPort::setStatus(const Status status)
     }
 
     update();
-}
-
-bool QNEInputPort::isInput() const
-{
-    return true;
-}
-
-bool QNEInputPort::isOutput() const
-{
-    return false;
-}
-
-bool QNEInputPort::isValid() const
-{
-    // Valid states: unconnected and optional (default value is safe to use), OR
-    // exactly one connection (multi-driver wiring is not allowed in this simulation model)
-    return m_connections.isEmpty() ? !isRequired() : (m_connections.size() == 1);
-}
-
-void QNEInputPort::updateTheme()
-{
 }
 
 QNEOutputPort::QNEOutputPort(QGraphicsItem *parent)
@@ -316,9 +317,9 @@ bool QNEOutputPort::isOutput() const
 
 bool QNEOutputPort::isValid() const
 {
-    // An output port is valid as long as its driving logic element is valid;
-    // it has no connectivity constraints (fan-out is unrestricted)
-    return (m_status != Status::Unknown && m_status != Status::Error);
+    // Output ports have unrestricted fan-out and no connectivity constraints;
+    // simulation status is set by the engine, not by connectivity logic
+    return true;
 }
 
 void QNEOutputPort::updateTheme()

@@ -168,7 +168,7 @@ protected:
     QList<QNEConnection *> m_connections; // use smart pointers
     QString m_name;
     Status m_defaultStatus = Status::Unknown;
-    Status m_status = Status::Inactive;
+    Status m_status = Status::Unknown;
     bool m_required = true;
     int m_index = 0;
     int m_radius = 5;
