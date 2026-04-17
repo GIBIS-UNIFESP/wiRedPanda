@@ -210,8 +210,8 @@ void Led::updatePortsProperties()
 
     for (auto *port : std::as_const(m_inputPorts)) {
         port->setName(QString::number(m_inputPorts.indexOf(port) + 1));
-        // All inputs are optional — an unconnected port is treated as Inactive (0)
         port->setRequired(false);
+        port->setDefaultStatus(Status::Inactive);
     }
 
     GraphicElement::updatePortsProperties();
