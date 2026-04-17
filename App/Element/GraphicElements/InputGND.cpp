@@ -5,6 +5,7 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/Nodes/QNEPort.h"
 
 template<>
 struct ElementInfo<InputGnd> {
