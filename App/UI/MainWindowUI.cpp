@@ -768,7 +768,7 @@ void MainWindowUi::retranslateUi()
     actionFullscreen->setText(QCoreApplication::translate("MainWindow", "F&ullscreen"));
     actionFullscreen->setShortcut(QCoreApplication::translate("MainWindow", "F11"));
     actionMute->setText(QCoreApplication::translate("MainWindow", "Mute"));
-    actionMute->setStatusTip(QCoreApplication::translate("MainWindow", "Mutes and unmutes circuit buzzers"));
+    actionMute->setStatusTip(QCoreApplication::translate("MainWindow", "Mute/unmute circuit buzzers"));
     actionMute->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+M"));
     actionLabelsUnderIcons->setText(QCoreApplication::translate("MainWindow", "Labels under icons"));
     actionAboutThisVersion->setText(QCoreApplication::translate("MainWindow", "About this version"));
