@@ -104,10 +104,13 @@ void Simulation::update()
     }
     m_visualTickCount = 0;
 
-    // Phase 3: push computed logic values onto the wire (QNEOutputPort) visuals
-    for (auto *connection : std::as_const(m_connections)) {
-        if (connection) {
-            updatePort(connection->startPort());
+    // Phase 3: push computed logic values onto all output port visuals.
+    // Iterating elements (not connections) ensures unconnected output ports
+    // (e.g. -Q of a flip-flop with no wire attached) are also updated.
+    // setStatus() fans out through any attached connections automatically.
+    for (auto *element : std::as_const(m_sortedElements)) {
+        for (auto *outputPort : element->outputs()) {
+            updatePort(outputPort);
         }
     }
 
