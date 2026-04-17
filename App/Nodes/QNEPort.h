@@ -136,6 +136,7 @@ public:
     /**
      * \brief Marks whether a wire to this port is mandatory.
      * \param required \c true if a connection is required for valid simulation.
+     * \note Does not affect the port's default status — call setDefaultStatus() separately.
      */
     void setRequired(const bool required);
 
