@@ -93,6 +93,14 @@ void QNEPort::updateConnections()
     // rather than staying at whatever status it last had
     if (m_connections.empty() && isInput()) {
         setStatus(defaultValue());
+        return;
+    }
+
+    // Re-sync from the connection so the port colour is correct after recovering
+    // from a temporarily invalid state (e.g. a second wire was added then removed).
+    // The simulation won't re-push an unchanged signal, so we pull it here.
+    if (isInput() && m_connections.size() == 1) {
+        setStatus(m_connections.constFirst()->status());
     }
 }
 
