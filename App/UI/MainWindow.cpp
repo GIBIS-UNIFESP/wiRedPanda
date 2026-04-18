@@ -15,15 +15,23 @@
 #include <QDesktopServices>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
 #include <QInputDialog>
 #include <QLabel>
 #include <QLocale>
 #include <QLoggingCategory>
 #include <QMessageBox>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QPixmapCache>
+#include <QProgressDialog>
 #include <QPushButton>
 #include <QSaveFile>
 #include <QShortcut>
+#include <QStandardPaths>
 #include <QTemporaryFile>
 #include <QVBoxLayout>
 
@@ -504,7 +512,7 @@ void MainWindow::show()
     }
 }
 
-void MainWindow::showUpdateDialog(const QString &latestVersion, const QUrl &releaseUrl)
+void MainWindow::showUpdateDialog(const QString &latestVersion, const QUrl &downloadUrl, const QUrl &releaseUrl)
 {
     QDialog dialog(this);
     dialog.setWindowTitle(tr("Update Available"));
@@ -512,10 +520,15 @@ void MainWindow::showUpdateDialog(const QString &latestVersion, const QUrl &rele
 
     auto *layout = new QVBoxLayout(&dialog);
 
+    const bool hasDirectDownload = downloadUrl.isValid() && !downloadUrl.isEmpty();
     auto *label = new QLabel(
-        tr("<b>wiRedPanda %1 is available.</b><br><br>"
-           "You are currently running version %2.<br>"
-           "Visit the release page to download the new version.")
+        (hasDirectDownload
+             ? tr("<b>wiRedPanda %1 is available.</b><br><br>"
+                  "You are currently running version %2.<br>"
+                  "Click <b>Download</b> to save the new version to your computer.")
+             : tr("<b>wiRedPanda %1 is available.</b><br><br>"
+                  "You are currently running version %2.<br>"
+                  "Visit the release page to download the new version."))
             .arg(latestVersion, APP_VERSION),
         &dialog);
     label->setTextFormat(Qt::RichText);
@@ -527,18 +540,81 @@ void MainWindow::showUpdateDialog(const QString &latestVersion, const QUrl &rele
 
     auto *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, &dialog);
     auto *downloadButton = buttonBox->addButton(tr("Download"), QDialogButtonBox::AcceptRole);
-    connect(downloadButton, &QPushButton::clicked, &dialog, [&releaseUrl, &dialog] {
-        QDesktopServices::openUrl(releaseUrl);
-        dialog.accept();
-    });
+    connect(downloadButton, &QPushButton::clicked, &dialog, [&dialog] { dialog.accept(); });
     connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
     layout->addWidget(buttonBox);
 
-    dialog.exec();
+    const bool accepted = dialog.exec() == QDialog::Accepted;
 
     if (skipCheckBox->isChecked()) {
         Settings::setUpdateCheckSkippedVersion(latestVersion);
     }
+
+    if (accepted) {
+        if (hasDirectDownload) {
+            downloadUpdate(latestVersion, downloadUrl);
+        } else {
+            QDesktopServices::openUrl(releaseUrl);
+        }
+    }
+}
+
+void MainWindow::downloadUpdate(const QString &latestVersion, const QUrl &url)
+{
+    const QString fileName = url.fileName();
+    const QString savePath = QDir(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)).filePath(fileName);
+
+    auto *progress = new QProgressDialog(tr("Downloading wiRedPanda %1…").arg(latestVersion), tr("Cancel"), 0, 100, this);
+    progress->setWindowTitle(tr("Downloading Update"));
+    progress->setWindowModality(Qt::WindowModal);
+    progress->setMinimumDuration(0);
+    progress->setValue(0);
+
+    auto *network = new QNetworkAccessManager(this);
+    QNetworkRequest request(url);
+    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
+    QNetworkReply *reply = network->get(request);
+
+    connect(reply, &QNetworkReply::downloadProgress, progress, [progress](qint64 received, qint64 total) {
+        if (total > 0) {
+            progress->setValue(static_cast<int>(received * 100 / total));
+        }
+    });
+
+    connect(progress, &QProgressDialog::canceled, reply, &QNetworkReply::abort);
+
+    connect(reply, &QNetworkReply::finished, this, [this, reply, progress, savePath] {
+        progress->close();
+        progress->deleteLater();
+
+        if (reply->error() != QNetworkReply::NoError) {
+            if (reply->error() != QNetworkReply::OperationCanceledError) {
+                QMessageBox::warning(this, tr("Download Failed"), tr("Could not download the update:\n%1").arg(reply->errorString()));
+            }
+            reply->deleteLater();
+            return;
+        }
+
+        QFile file(savePath);
+        if (!file.open(QIODevice::WriteOnly)) {
+            QMessageBox::warning(this, tr("Download Failed"), tr("Could not save the file:\n%1").arg(savePath));
+            reply->deleteLater();
+            return;
+        }
+        file.write(reply->readAll());
+        file.close();
+        reply->deleteLater();
+
+#if defined(Q_OS_LINUX)
+        file.setPermissions(file.permissions() | QFileDevice::ExeOwner | QFileDevice::ExeGroup | QFileDevice::ExeOther);
+        QMessageBox::information(this, tr("Download Complete"),
+            tr("wiRedPanda has been downloaded to:\n%1\n\nYou can run it directly as an AppImage.").arg(savePath));
+#elif defined(Q_OS_MACOS)
+        QDesktopServices::openUrl(QUrl::fromLocalFile(savePath));
+#else
+        QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(savePath).absolutePath()));
+#endif
+    });
 }
 
 void MainWindow::aboutThisVersion()
