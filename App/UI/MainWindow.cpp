@@ -555,7 +555,11 @@ void MainWindow::showUpdateDialog(const QString &latestVersion, const QUrl &down
             downloadUpdate(latestVersion, downloadUrl);
         } else {
             QDesktopServices::openUrl(releaseUrl);
+            Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
         }
+    } else {
+        /// User closed dialog without taking action — still record the check
+        Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
     }
 }
 
@@ -605,15 +609,9 @@ void MainWindow::downloadUpdate(const QString &latestVersion, const QUrl &url)
         file.close();
         reply->deleteLater();
 
-#if defined(Q_OS_LINUX)
-        file.setPermissions(file.permissions() | QFileDevice::ExeOwner | QFileDevice::ExeGroup | QFileDevice::ExeOther);
+        Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
         QMessageBox::information(this, tr("Download Complete"),
-            tr("wiRedPanda has been downloaded to:\n%1\n\nYou can run it directly as an AppImage.").arg(savePath));
-#elif defined(Q_OS_MACOS)
-        QDesktopServices::openUrl(QUrl::fromLocalFile(savePath));
-#else
-        QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(savePath).absolutePath()));
-#endif
+            tr("wiRedPanda has been downloaded to:\n%1").arg(savePath));
     });
 }
 

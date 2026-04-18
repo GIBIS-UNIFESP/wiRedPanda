@@ -46,10 +46,6 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
         return;
     }
 
-    // Record the check date only on a successful response so a network error
-    // allows a retry on the next application launch.
-    Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
-
     const QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
     if (doc.isNull() || !doc.isObject()) {
         return;
@@ -76,7 +72,7 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
 #elif defined(Q_OS_MACOS)
         const bool match = name.contains("macOS") && name.endsWith(".dmg");
 #elif defined(Q_OS_LINUX)
-        const bool match = name.contains("Linux") && name.endsWith(".AppImage");
+        const bool match = name.endsWith(".AppImage");
 #else
         const bool match = false;
 #endif
