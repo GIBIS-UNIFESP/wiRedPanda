@@ -37,5 +37,10 @@ private slots:
     void testDarkThemeSceneColors();
     void testDarkThemeConnectionColors();
     void testDarkThemePortColors();
+
+    // Palette Switching Tests (3 tests)
+    void testDarkToLightPaletteSwitching();
+    void testLightToDarkPaletteSwitching();
+    void testRepeatedThemeSwitching();
 };
 

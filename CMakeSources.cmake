@@ -97,6 +97,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/MCPUtilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ServerInfoHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/SimulationHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ThemeHandler.cpp
 )
 
 set(HEADERS
@@ -210,6 +211,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/MCPUtilities.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ServerInfoHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/SimulationHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ThemeHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Interfaces/ICommand.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Interfaces/IResponse.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Interfaces/IValidator.h

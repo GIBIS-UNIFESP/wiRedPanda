@@ -73,9 +73,6 @@ public:
     // --- Members: Port Hover ---
 
     QColor m_portHoverPort;
-
-private:
-    QPalette const m_defaultPalette = qApp->palette();
 };
 
 /**

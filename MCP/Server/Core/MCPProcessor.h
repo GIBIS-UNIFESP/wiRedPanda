@@ -22,6 +22,7 @@ class MCPValidator;
 class MainWindow;
 class ServerInfoHandler;
 class SimulationHandler;
+class ThemeHandler;
 
 /**
  * \class StdinReader
@@ -86,6 +87,7 @@ private:
     std::unique_ptr<ElementHandler> m_elementHandler;
     std::unique_ptr<ConnectionHandler> m_connectionHandler;
     std::unique_ptr<SimulationHandler> m_simulationHandler;
+    std::unique_ptr<ThemeHandler> m_themeHandler;
 
     /// Maps each MCP method name to the handler responsible for it.
     QHash<QString, BaseHandler *> m_dispatchMap;

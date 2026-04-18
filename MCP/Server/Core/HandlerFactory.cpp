@@ -8,6 +8,7 @@
 #include "MCP/Server/Handlers/FileHandler.h"
 #include "MCP/Server/Handlers/ServerInfoHandler.h"
 #include "MCP/Server/Handlers/SimulationHandler.h"
+#include "MCP/Server/Handlers/ThemeHandler.h"
 
 HandlerFactory HandlerFactory::s_instance;
 
@@ -120,6 +121,10 @@ void HandlerFactory::registerBuiltInHandlers()
         "simulation_control", "create_waveform", "export_waveform",
         "create_ic", "instantiate_ic", "list_ics",
         "embed_ic", "extract_ic"
+    });
+
+    registerHandlerGroup<ThemeHandler>("theme", {
+        "get_theme", "set_theme", "get_effective_theme"
     });
 }
 
