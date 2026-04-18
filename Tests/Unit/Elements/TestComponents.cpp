@@ -54,7 +54,7 @@ void TestComponents::testICData(IC *ic)
 
     QCOMPARE(ic->inputPort(0)->status(), Status::Active);
     QCOMPARE(ic->inputPort(1)->status(), Status::Active);
-    QCOMPARE(ic->inputPort(2)->status(), Status::Unknown);
+    QCOMPARE(ic->inputPort(2)->status(), Status::Error);
     QCOMPARE(ic->inputPort(3)->status(), Status::Active);
     QCOMPARE(ic->inputPort(4)->status(), Status::Active);
 }

@@ -437,14 +437,14 @@ void TestConnections::testInvalidPortStatus()
 
     QCOMPARE(andGate->inputPort(0)->status(), Status::Active);
 
-    // Second connection - should force Unknown (multiple connections to input)
+    // Second connection - invalid (multiple connections to input)
     auto conn2 = std::make_unique<QNEConnection>();
     conn2->setStartPort(sw2->outputPort());
     conn2->setEndPort(andGate->inputPort(0));
     scene->addItem(conn2.get());
 
-    // Port validation fails, status forced to Unknown
-    QCOMPARE(andGate->inputPort(0)->status(), Status::Unknown);
+    // Port validation fails, status forced to Error
+    QCOMPARE(andGate->inputPort(0)->status(), Status::Error);
 }
 
 // ============================================================================
