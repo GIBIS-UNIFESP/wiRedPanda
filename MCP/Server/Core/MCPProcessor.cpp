@@ -20,6 +20,7 @@
 #include "MCP/Server/Handlers/FileHandler.h"
 #include "MCP/Server/Handlers/ServerInfoHandler.h"
 #include "MCP/Server/Handlers/SimulationHandler.h"
+#include "MCP/Server/Handlers/ThemeHandler.h"
 
 #ifdef _WIN32
 #define fileno _fileno
@@ -61,6 +62,7 @@ MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
     , m_elementHandler(std::make_unique<ElementHandler>(mainWindow, m_validator.get()))
     , m_connectionHandler(std::make_unique<ConnectionHandler>(mainWindow, m_validator.get()))
     , m_simulationHandler(std::make_unique<SimulationHandler>(mainWindow, m_validator.get()))
+    , m_themeHandler(std::make_unique<ThemeHandler>(mainWindow, m_validator.get()))
 {
     // Build the method → handler dispatch map
     const auto addRoutes = [&](BaseHandler *handler, const QStringList &methods) {
@@ -87,6 +89,9 @@ MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
         "simulation_control", "create_waveform", "export_waveform",
         "create_ic", "instantiate_ic", "list_ics",
         "undo", "redo", "get_undo_stack"
+    });
+    addRoutes(m_themeHandler.get(), {
+        "get_theme", "set_theme", "get_effective_theme"
     });
 
     // Set up event-driven stdin reading

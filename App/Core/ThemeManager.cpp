@@ -3,6 +3,7 @@
 
 #include "App/Core/ThemeManager.h"
 
+#include <QCoreApplication>
 #include <QStyleHints>
 
 #include "App/Core/Settings.h"
@@ -18,18 +19,24 @@ ThemeManager::ThemeManager(QObject *parent)
     // Resolve System here directly — effectiveTheme() would re-enter instance() and deadlock
     // because the static local is still being constructed.
     const Theme effective = (m_theme == Theme::System) ? resolveSystemTheme() : m_theme;
-    m_attributes.setTheme(effective);
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
-    // Sync the initial color-scheme hint so native controls match the active theme.
+    // Set color scheme BEFORE applying the palette: setColorScheme() controls what
+    // QApplication::style()->standardPalette() returns on Windows/Qt 6.8+.
+    // Calling it after would cause the Light theme to read a dark standardPalette().
+    // System theme: leave m_requestedColorScheme as Unknown so the platform reads the
+    // OS color scheme naturally. Setting it to Dark/Light explicitly would block runtime
+    // OS theme-change events from propagating through QGtk3Theme::colorScheme().
     if (auto *app = qApp) {
         switch (m_theme) {
-        case Theme::Light:  app->styleHints()->setColorScheme(Qt::ColorScheme::Light);   break;
-        case Theme::Dark:   app->styleHints()->setColorScheme(Qt::ColorScheme::Dark);    break;
-        case Theme::System: app->styleHints()->setColorScheme(Qt::ColorScheme::Unknown); break;
+        case Theme::Light:  app->styleHints()->setColorScheme(Qt::ColorScheme::Light);  break;
+        case Theme::Dark:   app->styleHints()->setColorScheme(Qt::ColorScheme::Dark);   break;
+        case Theme::System: break; // leave Unknown — platform reads OS setting directly
         }
     }
 #endif
+
+    m_attributes.setTheme(effective);
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
     // Qt 6.5+ provides a built-in color-scheme change signal; use it so System
@@ -60,16 +67,11 @@ Theme ThemeManager::effectiveTheme()
 Theme ThemeManager::resolveSystemTheme()
 {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
-    // QStyleHints::colorScheme() returns the OS color scheme without relying on
-    // the application palette heuristic.
     if (auto *app = qApp) {
-        return (app->styleHints()->colorScheme() == Qt::ColorScheme::Dark)
-                   ? Theme::Dark : Theme::Light;
+        return (app->styleHints()->colorScheme() == Qt::ColorScheme::Dark) ? Theme::Dark : Theme::Light;
     }
     return Theme::Light;
 #else
-    // Qt < 6.5: no built-in color-scheme API; use the platform palette window
-    // background lightness as a heuristic (dark background → dark mode).
     if (auto *app = qApp) {
         return (app->palette().color(QPalette::Window).lightness() < 128)
                    ? Theme::Dark : Theme::Light;
@@ -88,24 +90,48 @@ void ThemeManager::onSystemColorSchemeChanged()
 
 void ThemeManager::setTheme(const Theme theme)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    // For System theme, clear the explicit color scheme override first so the platform
+    // re-reads the OS setting. Qt 6.9.3's requestColorScheme() posts a QWindowSystemInterface
+    // event but doesn't flush it — QStyleHints::colorScheme() would return a stale cached
+    // value until the event loop runs. Flushing here replicates the fix that Qt 6.10.0
+    // added directly inside requestColorScheme().
+    if (theme == Theme::System) {
+        if (auto *app = Application::instance()) {
+            app->styleHints()->setColorScheme(Qt::ColorScheme::Unknown);
+            // Flush the pending QWindowSystemInterface::handleThemeChange() event so
+            // QStyleHintsPrivate::m_colorScheme is updated before we call resolveSystemTheme().
+            // Qt 6.10.0 fixed this inside requestColorScheme() itself (commit 2fe9eed3fdd5,
+            // "QGnomeTheme, QGtk3Theme: Refactor and Simplify DBus Interactions", 2025-05-30)
+            // by adding QWindowSystemInterface::sendWindowSystemEvents(QEventLoop::AllEvents).
+            // On Qt 6.9.x the flush is absent, leaving the cache stale until the event loop runs.
+            QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+        }
+    }
+#endif
+
     const Theme effective = (theme == Theme::System) ? resolveSystemTheme() : theme;
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    // Set color scheme BEFORE applying the palette: on Windows/Qt 6.8+,
+    // setColorScheme() controls what QApplication::style()->standardPalette() returns.
+    // Calling it after would cause the Light theme to read a dark standardPalette().
+    // System theme: m_requestedColorScheme is already Unknown from the block above —
+    // leave it there. Re-setting it to Dark/Light would break runtime OS theme-change
+    // detection (QGtk3Theme::colorScheme() would return the explicit value, ignoring
+    // any subsequent OS toggle).
+    if (auto *app = Application::instance()) {
+        switch (theme) {
+        case Theme::Light:  app->styleHints()->setColorScheme(Qt::ColorScheme::Light);  break;
+        case Theme::Dark:   app->styleHints()->setColorScheme(Qt::ColorScheme::Dark);   break;
+        case Theme::System: break; // already Unknown — platform reads OS setting directly
+        }
+    }
+#endif
 
     // Always refresh ThemeAttributes so palette and color constants are current,
     // even if the theme value itself hasn't changed (e.g. initial load).
     instance().m_attributes.setTheme(effective);
-
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
-    // Inform Qt of the active color scheme so native controls use the right appearance.
-    // For System we clear the override (Unknown) so Qt tracks the OS setting;
-    // for explicit Light/Dark we lock it in.
-    if (auto *app = Application::instance()) {
-        switch (theme) {
-        case Theme::Light:  app->styleHints()->setColorScheme(Qt::ColorScheme::Light);   break;
-        case Theme::Dark:   app->styleHints()->setColorScheme(Qt::ColorScheme::Dark);    break;
-        case Theme::System: app->styleHints()->setColorScheme(Qt::ColorScheme::Unknown); break;
-        }
-    }
-#endif
 
     // Early-exit after refreshing attributes: don't re-emit themeChanged() or
     // re-write to settings when the theme is the same (avoids unnecessary repaints)
@@ -143,11 +169,25 @@ void ThemeAttributes::setTheme(const Theme theme)
         m_connectionSelected = m_selectionPen;
 
 #ifndef Q_OS_MAC
-        // Start from the platform default palette so that unset roles (e.g. scroll bars,
-        // dialog backgrounds) keep their native appearance; only override AlternateBase
-        // to give table/list rows a subtle banding colour
-        QPalette lightPalette = m_defaultPalette;
+        // Build light palette from scratch, independent of the current system
+        // theme state. This ensures Light theme works correctly even when the
+        // system is in dark mode.
+        QPalette lightPalette;
+        lightPalette.setColor(QPalette::Window, Qt::white);
+        lightPalette.setColor(QPalette::WindowText, Qt::black);
+        lightPalette.setColor(QPalette::Base, Qt::white);
         lightPalette.setColor(QPalette::AlternateBase, QColor(233, 231, 227)); // light grey for alternating rows
+        lightPalette.setColor(QPalette::ToolTipBase, Qt::white);
+        lightPalette.setColor(QPalette::ToolTipText, Qt::black);
+        lightPalette.setColor(QPalette::Text, Qt::black);
+        lightPalette.setColor(QPalette::Button, Qt::white);
+        lightPalette.setColor(QPalette::ButtonText, Qt::black);
+        lightPalette.setColor(QPalette::BrightText, Qt::red);
+        lightPalette.setColor(QPalette::Link, QColor(0, 0, 255));
+        lightPalette.setColor(QPalette::Highlight, QColor(0, 120, 215)); // light blue selection
+        lightPalette.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(128, 128, 128));
+        lightPalette.setColor(QPalette::Disabled, QPalette::Base, QColor(240, 240, 240));
+        lightPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(128, 128, 128));
 
         if (Application::instance()) {
             Application::instance()->setPalette(lightPalette);

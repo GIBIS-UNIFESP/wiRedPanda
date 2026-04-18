@@ -336,3 +336,82 @@ void TestThemeManager::testDarkThemePortColors()
     QVERIFY(attrs.m_portOutputBrush.red() > attrs.m_portOutputBrush.green());  // More red than green
 }
 
+// ============================================================
+// Palette Switching Tests (3 tests)
+// ============================================================
+
+void TestThemeManager::testDarkToLightPaletteSwitching()
+{
+#if defined(Q_OS_MAC) && QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
+    QSKIP("macOS + Qt < 6.8: setColorScheme() unavailable, palette does not change on theme switch");
+#endif
+    // Start with Dark theme
+    ThemeManager::setTheme(Theme::Dark);
+    QCOMPARE(ThemeManager::theme(), Theme::Dark);
+
+    // Get dark palette state
+    QColor darkWindowColor = qApp->palette().color(QPalette::Window);
+
+    // Switch to Light
+    ThemeManager::setTheme(Theme::Light);
+    QCOMPARE(ThemeManager::theme(), Theme::Light);
+
+    // Get light palette state
+    QColor lightWindowColor = qApp->palette().color(QPalette::Window);
+
+    // Light window should be lighter than dark window
+    // (higher luminance value - sum of RGB components)
+    int darkLuminance = darkWindowColor.red() + darkWindowColor.green() + darkWindowColor.blue();
+    int lightLuminance = lightWindowColor.red() + lightWindowColor.green() + lightWindowColor.blue();
+
+    QVERIFY(lightLuminance > darkLuminance);
+}
+
+void TestThemeManager::testLightToDarkPaletteSwitching()
+{
+#if defined(Q_OS_MAC) && QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
+    QSKIP("macOS + Qt < 6.8: setColorScheme() unavailable, palette does not change on theme switch");
+#endif
+    // Start with Light theme
+    ThemeManager::setTheme(Theme::Light);
+    QCOMPARE(ThemeManager::theme(), Theme::Light);
+
+    // Get light palette state
+    QColor lightWindowColor = qApp->palette().color(QPalette::Window);
+
+    // Switch to Dark
+    ThemeManager::setTheme(Theme::Dark);
+    QCOMPARE(ThemeManager::theme(), Theme::Dark);
+
+    // Get dark palette state
+    QColor darkWindowColor = qApp->palette().color(QPalette::Window);
+
+    // Dark window should be darker than light window
+    int lightLuminance = lightWindowColor.red() + lightWindowColor.green() + lightWindowColor.blue();
+    int darkLuminance = darkWindowColor.red() + darkWindowColor.green() + darkWindowColor.blue();
+
+    QVERIFY(darkLuminance < lightLuminance);
+}
+
+void TestThemeManager::testRepeatedThemeSwitching()
+{
+#if defined(Q_OS_MAC) && QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
+    QSKIP("macOS + Qt < 6.8: setColorScheme() unavailable, palette does not change on theme switch");
+#endif
+    // Repeatedly switch themes and verify palette consistency
+    for (int i = 0; i < 3; ++i) {
+        // Switch to Dark
+        ThemeManager::setTheme(Theme::Dark);
+        QColor darkWindow = qApp->palette().color(QPalette::Window);
+        int darkLuminance = darkWindow.red() + darkWindow.green() + darkWindow.blue();
+
+        // Switch to Light
+        ThemeManager::setTheme(Theme::Light);
+        QColor lightWindow = qApp->palette().color(QPalette::Window);
+        int lightLuminance = lightWindow.red() + lightWindow.green() + lightWindow.blue();
+
+        // Light should always be lighter than Dark
+        QVERIFY(lightLuminance > darkLuminance);
+    }
+}
+

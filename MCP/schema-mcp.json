@@ -2012,6 +2012,119 @@
             "method"
           ],
           "additionalProperties": false
+        },
+        "get_theme": {
+          "type": "object",
+          "description": "Get the current application theme",
+          "properties": {
+            "jsonrpc": {
+              "type": "string",
+              "const": "2.0"
+            },
+            "method": {
+              "const": "get_theme"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false
+            },
+            "id": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method"
+          ],
+          "additionalProperties": false
+        },
+        "set_theme": {
+          "type": "object",
+          "description": "Set the application theme",
+          "properties": {
+            "jsonrpc": {
+              "type": "string",
+              "const": "2.0"
+            },
+            "method": {
+              "const": "set_theme"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "theme": {
+                  "type": "string",
+                  "enum": ["light", "dark", "system"],
+                  "description": "Theme to set: 'light', 'dark', or 'system'"
+                }
+              },
+              "required": ["theme"],
+              "additionalProperties": false
+            },
+            "id": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method"
+          ],
+          "additionalProperties": false
+        },
+        "get_effective_theme": {
+          "type": "object",
+          "description": "Get the effective application theme (system resolves to light or dark)",
+          "properties": {
+            "jsonrpc": {
+              "type": "string",
+              "const": "2.0"
+            },
+            "method": {
+              "const": "get_effective_theme"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false
+            },
+            "id": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method"
+          ],
+          "additionalProperties": false
         }
       }
     },
@@ -2725,6 +2838,75 @@
                     "morphed_elements",
                     "target_type"
                   ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "get_theme_response": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/CommandResponse"
+            },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "theme": {
+                      "type": "string",
+                      "enum": ["light", "dark", "system"],
+                      "description": "Current theme"
+                    }
+                  },
+                  "required": ["theme"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "set_theme_response": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/CommandResponse"
+            },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "theme": {
+                      "type": "string",
+                      "enum": ["light", "dark", "system"],
+                      "description": "Theme that was set"
+                    }
+                  },
+                  "required": ["theme"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "get_effective_theme_response": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/CommandResponse"
+            },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "effective_theme": {
+                      "type": "string",
+                      "enum": ["light", "dark"],
+                      "description": "Resolved theme; 'system' always maps to 'light' or 'dark'"
+                    }
+                  },
+                  "required": ["effective_theme"],
                   "additionalProperties": false
                 }
               }
