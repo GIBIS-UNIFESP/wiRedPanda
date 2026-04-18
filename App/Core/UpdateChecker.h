@@ -39,9 +39,10 @@ signals:
     /**
      * \brief Emitted when a newer release is available and has not been suppressed.
      * \param latestVersion Human-readable version string, e.g. "4.5.0".
-     * \param releaseUrl    Direct link to the GitHub release page.
+     * \param downloadUrl   Direct URL to the platform binary asset, or empty if none matched.
+     * \param releaseUrl    Fallback link to the GitHub release page.
      */
-    void updateAvailable(const QString &latestVersion, const QUrl &releaseUrl);
+    void updateAvailable(const QString &latestVersion, const QUrl &downloadUrl, const QUrl &releaseUrl);
 
 private:
     void onReplyFinished(class QNetworkReply *reply);

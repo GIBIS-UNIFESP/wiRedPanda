@@ -4,6 +4,7 @@
 #include "App/Core/UpdateChecker.h"
 
 #include <QDate>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkReply>
@@ -65,7 +66,27 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
         return;
     }
 
+    QUrl downloadUrl;
+    const QJsonArray assets = doc.object().value("assets").toArray();
+    for (const QJsonValue &assetVal : assets) {
+        const QJsonObject asset = assetVal.toObject();
+        const QString name = asset.value("name").toString();
+#if defined(Q_OS_WIN)
+        const bool match = name.contains("Windows") && name.endsWith(".zip");
+#elif defined(Q_OS_MACOS)
+        const bool match = name.contains("macOS") && name.endsWith(".dmg");
+#elif defined(Q_OS_LINUX)
+        const bool match = name.contains("Linux") && name.endsWith(".AppImage");
+#else
+        const bool match = false;
+#endif
+        if (match) {
+            downloadUrl = QUrl(asset.value("browser_download_url").toString());
+            break;
+        }
+    }
+
     const QUrl releaseUrl = QUrl(doc.object().value("html_url").toString());
-    emit updateAvailable(latest.toString(), releaseUrl);
+    emit updateAvailable(latest.toString(), downloadUrl, releaseUrl);
 }
 
