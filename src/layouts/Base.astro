@@ -41,6 +41,22 @@ const origin = Astro.site?.origin ?? '';
     ))}
     <ViewTransitions />
     <title>Panda | {pageTitle}</title>
+    <script is:inline>
+      (function() {
+        // Fallback for custom events if DNT is active
+        window.umami = window.umami || { track: function() {} };
+        var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+        if (dnt !== "1" && dnt !== "yes") {
+          var script = document.createElement('script');
+          script.defer = true;
+          script.src = 'https://cloud.umami.is/script.js';
+          script.setAttribute('data-website-id', '8cf1c01a-4505-4de2-a5ea-0facfe5a71dd');
+          document.head.appendChild(script);
+        } else {
+          console.info("Analytics disabled to respect Do Not Track preference.");
+        }
+      })();
+    </script>
     <!-- Preserve theme across view transitions -->
     <script is:inline>
       document.addEventListener('astro:before-swap', function(ev) {

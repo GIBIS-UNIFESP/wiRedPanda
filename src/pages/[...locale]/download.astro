@@ -212,6 +212,17 @@ const clientTranslations = {
   } else {
     fetchLatestRelease();
   }
+
+  // Setup analytics tracking for direct downloads
+  const trackDownload = (platform) => {
+    if (typeof window !== 'undefined' && window.umami) {
+      window.umami.track('Download', { platform: platform });
+    }
+  };
+
+  windowsLinkEl?.addEventListener('click', () => trackDownload('Windows'));
+  linuxLinkEl?.addEventListener('click', () => trackDownload('Linux'));
+  macosLinkEl?.addEventListener('click', () => trackDownload('macOS'));
 </script>
 
 <style>

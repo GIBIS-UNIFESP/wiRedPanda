@@ -16,6 +16,22 @@ SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
     <title>wiredpanda</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- Analytics (Umami) with DNT respect -->
+    <script>
+      (function() {
+        window.umami = window.umami || { track: function() {} };
+        var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+        if (dnt !== "1" && dnt !== "yes") {
+          var script = document.createElement('script');
+          script.defer = true;
+          script.src = 'https://cloud.umami.is/script.js';
+          script.setAttribute('data-website-id', 'YOUR_UMAMI_WEBSITE_ID_HERE'); // TODO: Replace with your Umami Website ID
+          document.head.appendChild(script);
+        } else {
+          console.info("Analytics disabled to respect Do Not Track preference.");
+        }
+      })();
+    </script>
     <style>
       /* Make the html body cover the entire (visual) viewport with no scroll bars. */
       html, body { padding: 0; margin: 0; overflow: hidden; height: 100% }
@@ -51,11 +67,23 @@ SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
                 showUi(spinner);
                 status.innerHTML = 'Loading...';
 
+                let wasmStartTime = 0;
+
                 const instance = await qtLoad({
                     qt: {
-                        onLoaded: () => showUi(screen),
+                        onLoaded: () => {
+                            showUi(screen);
+                            if (window.umami) {
+                                window.umami.track('WASM Demo Start');
+                                wasmStartTime = Date.now();
+                            }
+                        },
                         onExit: exitData =>
                         {
+                            if (window.umami && wasmStartTime > 0) {
+                                const durationSec = Math.round((Date.now() - wasmStartTime) / 1000);
+                                window.umami.track('WASM Demo Exit', { duration_seconds: durationSec, exit_code: exitData.code });
+                            }
                             status.innerHTML = 'Application exit';
                             status.innerHTML +=
                                 exitData.code !== undefined ? ` with code ${exitData.code}` : '';
@@ -66,6 +94,15 @@ SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
                         entryFunction: window.wiredpanda_entry,
                         containerElements: [screen],
                         
+                    }
+                });
+
+                // Track session if user closes the tab directly
+                window.addEventListener('beforeunload', () => {
+                    if (window.umami && wasmStartTime > 0) {
+                        const durationSec = Math.round((Date.now() - wasmStartTime) / 1000);
+                        // Send beacon-like request before unloads
+                        window.umami.track('WASM Demo Session', { duration_seconds: durationSec });
                     }
                 });
             } catch (e) {

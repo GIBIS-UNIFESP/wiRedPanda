@@ -24,6 +24,7 @@ const { platform, platformName, installCommand } = Astro.props;
       type="button"
       class="copy-btn flex-shrink-0 px-3 py-2.5 border-l border-gray-200 dark:border-brand-blue/20 text-gray-400 dark:text-gray-500 hover:text-brand-light-blue dark:hover:text-brand-light-blue hover:bg-gray-200/50 dark:hover:bg-white/5 transition-colors duration-150"
       data-command={installCommand}
+      data-platform={platformName}
       aria-label={`Copy ${platformName} install command`}
     >
       <svg class="copy-icon w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -41,7 +42,13 @@ const { platform, platformName, installCommand } = Astro.props;
     document.querySelectorAll('.copy-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const command = (btn as HTMLElement).dataset.command;
+        const platform = (btn as HTMLElement).dataset.platform;
         if (!command) return;
+
+        // Track copy command event with Umami
+        if (typeof window !== 'undefined' && (window as any).umami) {
+          (window as any).umami.track('Copy Install Command', { platform: platform });
+        }
 
         navigator.clipboard.writeText(command).then(() => {
           const copyIcon = btn.querySelector('.copy-icon');
