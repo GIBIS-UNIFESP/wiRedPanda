@@ -943,6 +943,18 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+    // Guard against re-entrant calls. When ensureVisible() scrolls the viewport,
+    // Qt synchronously calls scrollContentsBy() → replayLastMouseEvent() →
+    // mouseMoveEvent() before ensureVisible() returns. At a viewport corner,
+    // scrolling to satisfy the H-margin violates the V-margin, so the replay
+    // triggers another ensureVisible() that does the opposite, oscillating
+    // until a stack overflow. Dropping the re-entrant call breaks the loop.
+    if (m_handlingMouseMove) {
+        return;
+    }
+    m_handlingMouseMove = true;
+    const auto resetFlag = qScopeGuard([this] { m_handlingMouseMove = false; });
+
     m_mousePos = event->scenePos();
     m_connectionManager.updateHover(m_mousePos);
 
