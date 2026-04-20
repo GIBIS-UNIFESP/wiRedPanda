@@ -362,6 +362,7 @@ private:
     QList<QPointF> m_oldPositions;
     bool m_draggingElement = false;
     bool m_markingSelectionBox = false;
+    bool m_handlingMouseMove = false;
 
     // Context directory (directory of the .panda file owning this scene)
     QString m_contextDir;
