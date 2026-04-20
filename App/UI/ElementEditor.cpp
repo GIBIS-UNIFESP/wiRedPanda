@@ -13,6 +13,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/SentryHelpers.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/AudioBox.h"
@@ -168,6 +169,7 @@ void ElementEditor::changeTriggerAction()
 
 void ElementEditor::updateElementAppearance()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Element appearance dialog"));
     const QString imageFilter = tr("Images") + " (*." + QImageReader::supportedImageFormats().join(" *.") + ")";
     const QString fileName = FileDialogs::provider()->getOpenFileName(this, tr("Open File"), QString(), imageFilter);
 
@@ -548,6 +550,7 @@ void ElementEditor::applyProperty(GraphicElement *elm, PropertyDescriptor::Type 
 
 void ElementEditor::apply()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Element properties applied"));
     qCDebug(three) << "Apply.";
 
     if (m_elements.isEmpty() || !isEnabled()) {
@@ -658,6 +661,7 @@ void ElementEditor::apply()
 
 void ElementEditor::inputIndexChanged(const int index)
 {
+    sentryBreadcrumb("ui", QStringLiteral("Input count: %1").arg(index));
     if (m_elements.isEmpty() || !isEnabled()) {
         return;
     }
@@ -672,6 +676,7 @@ void ElementEditor::inputIndexChanged(const int index)
 
 void ElementEditor::outputIndexChanged(const int index)
 {
+    sentryBreadcrumb("ui", QStringLiteral("Output count: %1").arg(index));
     if (m_elements.isEmpty() || !isEnabled()) {
         return;
     }
@@ -728,12 +733,14 @@ void ElementEditor::inputLocked(const bool value)
 
 void ElementEditor::triggerChanged(const QString &cmd)
 {
+    sentryBreadcrumb("ui", QStringLiteral("Trigger key: %1").arg(cmd));
     m_ui->lineEditTrigger->setText(cmd.toUpper());
     apply();
 }
 
 void ElementEditor::truthTable()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Truth table editor"));
     if (!m_caps.hasTruthTable) return;
 
     // Only a single TruthTable element is supported at a time.
@@ -838,6 +845,7 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
 
 void ElementEditor::audioBox()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Audio file dialog"));
     auto *audiobox = qobject_cast<AudioBox *>(m_elements[0]);
     if (!audiobox) {
         return;
@@ -856,6 +864,7 @@ void ElementEditor::audioBox()
 
 void ElementEditor::defaultAppearance()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Element appearance reset"));
     // Set flags before calling apply() so apply() sees them during the loop
     // and passes true/empty to elm->setAppearance() for each selected element.
     m_isUpdatingAppearance = true;

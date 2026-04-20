@@ -3,6 +3,8 @@
 
 #include "App/Scene/GraphicsView.h"
 
+#include "App/Core/SentryHelpers.h"
+
 #include <QApplication>
 #include <QDebug>
 #include <QKeyEvent>
@@ -168,6 +170,7 @@ void GraphicsView::zoomIn()
     // returns to exactly the original scale without floating-point drift
     scale(1.25, 1.25);
     ++m_zoomLevel;
+    sentryBreadcrumb("ui", QStringLiteral("Zoom in: level %1").arg(m_zoomLevel));
     emit zoomChanged();
 }
 
@@ -175,6 +178,7 @@ void GraphicsView::zoomOut()
 {
     scale(0.8, 0.8);
     m_zoomLevel--;
+    sentryBreadcrumb("ui", QStringLiteral("Zoom out: level %1").arg(m_zoomLevel));
     emit zoomChanged();
 }
 
@@ -182,6 +186,7 @@ void GraphicsView::resetZoom()
 {
     resetTransform();
     m_zoomLevel = 0;
+    sentryBreadcrumb("ui", QStringLiteral("Zoom reset"));
     emit zoomChanged();
 }
 

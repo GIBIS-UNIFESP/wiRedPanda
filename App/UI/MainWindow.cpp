@@ -428,6 +428,7 @@ void MainWindow::createNewTab()
 
     qCDebug(zero) << "Adding tab. #tabs: " << m_ui->tab->count() << ", current tab: " << m_tabIndex;
     m_ui->tab->addTab(workspace, tr("New Project"));
+    sentryBreadcrumb("ui", QStringLiteral("Tab opened"));
 
     qCDebug(zero) << "Selecting the newly created tab.";
     m_ui->tab->setCurrentIndex(m_ui->tab->count() - 1);
@@ -673,11 +674,13 @@ int MainWindow::confirmSave(const bool multiple)
 
 void MainWindow::on_actionNew_triggered()
 {
+    sentryBreadcrumb("ui", QStringLiteral("New project"));
     createNewTab();
 }
 
 void MainWindow::on_actionWires_triggered(const bool checked)
 {
+    sentryBreadcrumb("ui", QStringLiteral("Wires: %1").arg(checked));
     if (m_currentTab) {
         m_currentTab->scene()->showWires(checked);
     }
@@ -685,6 +688,7 @@ void MainWindow::on_actionWires_triggered(const bool checked)
 
 void MainWindow::on_actionRotateRight_triggered()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Rotate right"));
     if (m_currentTab) {
         m_currentTab->scene()->rotateRight();
     }
@@ -692,6 +696,7 @@ void MainWindow::on_actionRotateRight_triggered()
 
 void MainWindow::on_actionRotateLeft_triggered()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Rotate left"));
     if (m_currentTab) {
         m_currentTab->scene()->rotateLeft();
     }
@@ -751,6 +756,7 @@ void MainWindow::openICInTab(const QString &blobName, int icElementId, const QBy
 
 void MainWindow::on_actionOpen_triggered()
 {
+    sentryBreadcrumb("file", QStringLiteral("Open file dialog"));
 #ifdef Q_OS_WASM
     auto fileContentReady = [this](const QString &fileName, const QByteArray &fileContent) {
         if (!fileName.isEmpty()) {
@@ -777,6 +783,7 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_actionSave_triggered()
 {
+    sentryBreadcrumb("file", QStringLiteral("Save"));
     if (!m_currentTab) {
         return;
     }
@@ -811,6 +818,7 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionSaveAs_triggered()
 {
+    sentryBreadcrumb("file", QStringLiteral("Save as"));
     if (!m_currentTab) {
         return;
     }
@@ -1092,6 +1100,7 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 
 void MainWindow::on_actionSelectAll_triggered()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Select all"));
     if (!m_currentTab) {
         return;
     }
@@ -1140,6 +1149,7 @@ bool MainWindow::closeTab(const int tabIndex)
 
     qCDebug(zero) << "Deleting tab.";
     m_currentTab->deleteLater();
+    sentryBreadcrumb("ui", QStringLiteral("Tab closed"));
     m_ui->tab->removeTab(tabIndex);
 
     qCDebug(zero) << "Closed tab " << tabIndex << ", #tabs: " << m_ui->tab->count() << ", current tab: " << m_tabIndex;
@@ -1273,6 +1283,7 @@ void MainWindow::tabChanged(const int newTabIndex)
 
 void MainWindow::on_actionReloadFile_triggered()
 {
+    sentryBreadcrumb("file", QStringLiteral("Reload file"));
     if (!currentFile().exists() || !m_currentTab) {
         return;
     }
@@ -1285,6 +1296,7 @@ void MainWindow::on_actionReloadFile_triggered()
 
 void MainWindow::on_actionGates_triggered(const bool checked)
 {
+    sentryBreadcrumb("ui", QStringLiteral("Gates: %1").arg(checked));
     if (!m_currentTab) {
         return;
     }
@@ -1373,6 +1385,7 @@ void MainWindow::exportToWaveFormTerminal()
 
 void MainWindow::on_actionExportToArduino_triggered()
 {
+    sentryBreadcrumb("export", QStringLiteral("Export to Arduino"));
     if (!m_currentTab) {
         return;
     }
@@ -1392,6 +1405,7 @@ void MainWindow::on_actionExportToArduino_triggered()
 
 void MainWindow::on_actionExportToSystemVerilog_triggered()
 {
+    sentryBreadcrumb("export", QStringLiteral("Export to SystemVerilog"));
     if (!m_currentTab) {
         return;
     }
@@ -1411,6 +1425,7 @@ void MainWindow::on_actionExportToSystemVerilog_triggered()
 
 void MainWindow::on_actionZoomIn_triggered() const
 {
+    sentryBreadcrumb("ui", QStringLiteral("Zoom in"));
     if (!m_currentTab) {
         return;
     }
@@ -1420,6 +1435,7 @@ void MainWindow::on_actionZoomIn_triggered() const
 
 void MainWindow::on_actionZoomOut_triggered() const
 {
+    sentryBreadcrumb("ui", QStringLiteral("Zoom out"));
     if (!m_currentTab) {
         return;
     }
@@ -1429,6 +1445,7 @@ void MainWindow::on_actionZoomOut_triggered() const
 
 void MainWindow::on_actionResetZoom_triggered() const
 {
+    sentryBreadcrumb("ui", QStringLiteral("Zoom reset"));
     if (!m_currentTab) {
         return;
     }
@@ -1475,6 +1492,7 @@ void MainWindow::updateRecentFileActions()
 void MainWindow::openRecentFile()
 {
     if (auto *action = qobject_cast<QAction *>(sender())) {
+        sentryBreadcrumb("file", QStringLiteral("Open recent file"));
         loadPandaFile(action->data().toString());
     }
 }
@@ -1495,6 +1513,7 @@ void MainWindow::createRecentFileActions()
 
 void MainWindow::on_actionExportToPdf_triggered()
 {
+    sentryBreadcrumb("export", QStringLiteral("Export to PDF"));
     if (!m_currentTab) {
         return;
     }
@@ -1520,6 +1539,7 @@ void MainWindow::on_actionExportToPdf_triggered()
 
 void MainWindow::on_actionExportToImage_triggered()
 {
+    sentryBreadcrumb("export", QStringLiteral("Export to image"));
     if (!m_currentTab) {
         return;
     }
@@ -1617,6 +1637,7 @@ void MainWindow::populateLanguageMenu()
 
 void MainWindow::on_actionPlay_toggled(const bool checked)
 {
+    sentryBreadcrumb("simulation", QStringLiteral("Play toggled: %1").arg(checked));
     if (!m_currentTab) {
         return;
     }
@@ -1629,6 +1650,7 @@ void MainWindow::on_actionPlay_toggled(const bool checked)
 
 void MainWindow::on_actionRestart_triggered()
 {
+    sentryBreadcrumb("simulation", QStringLiteral("Simulation restart"));
     if (!m_currentTab) {
         return;
     }
@@ -1656,6 +1678,7 @@ void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLa
 
 void MainWindow::on_actionFastMode_triggered(const bool checked)
 {
+    sentryBreadcrumb("ui", QStringLiteral("Fast mode: %1").arg(checked));
     setFastMode(checked);
     Settings::setFastMode(checked);
 }
@@ -1675,16 +1698,19 @@ void MainWindow::on_actionWaveform_triggered()
 
 void MainWindow::on_actionLightTheme_triggered()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Theme: light"));
     ThemeManager::setTheme(Theme::Light);
 }
 
 void MainWindow::on_actionDarkTheme_triggered()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Theme: dark"));
     ThemeManager::setTheme(Theme::Dark);
 }
 
 void MainWindow::on_actionSystemTheme_triggered()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Theme: system"));
     ThemeManager::setTheme(Theme::System);
 }
 
@@ -1702,6 +1728,7 @@ void MainWindow::updateTheme()
 
 void MainWindow::on_actionFlipHorizontally_triggered()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Flip horizontal"));
     if (!m_currentTab) {
         return;
     }
@@ -1711,6 +1738,7 @@ void MainWindow::on_actionFlipHorizontally_triggered()
 
 void MainWindow::on_actionFlipVertically_triggered()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Flip vertical"));
     if (!m_currentTab) {
         return;
     }
@@ -1738,11 +1766,13 @@ void MainWindow::setDolphinFileName(const QString &fileName)
 
 void MainWindow::on_actionFullscreen_triggered()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Fullscreen toggled"));
     isFullScreen() ? showNormal() : showFullScreen();
 }
 
 void MainWindow::on_actionMute_triggered(const bool checked)
 {
+    sentryBreadcrumb("ui", QStringLiteral("Mute toggled"));
     if (!m_currentTab) {
         return;
     }
@@ -1753,6 +1783,7 @@ void MainWindow::on_actionMute_triggered(const bool checked)
 
 void MainWindow::on_actionLabelsUnderIcons_triggered(const bool checked)
 {
+    sentryBreadcrumb("ui", QStringLiteral("Labels under icons: %1").arg(checked));
     m_ui->mainToolBar->setToolButtonStyle(checked ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
     Settings::setLabelsUnderIcons(checked);
 }
@@ -1785,6 +1816,7 @@ bool MainWindow::event(QEvent *event)
 
 void MainWindow::on_pushButtonAddIC_clicked()
 {
+    sentryBreadcrumb("ic", QStringLiteral("Add IC"));
     if (!m_currentTab) {
         return;
     }
@@ -1817,6 +1849,7 @@ void MainWindow::on_pushButtonAddIC_clicked()
 
 void MainWindow::on_pushButtonRemoveIC_clicked()
 {
+    sentryBreadcrumb("ic", QStringLiteral("Remove IC"));
     QMessageBox::information(this, tr("Info"), tr("Drag here to remove."));
 }
 
@@ -1877,6 +1910,7 @@ QString MainWindow::resolveUniqueBlobName(const QString &initialName, Scene *sce
 
 void MainWindow::embedSelectedIC()
 {
+    sentryBreadcrumb("ic", QStringLiteral("Embed IC"));
     auto *firstIC = getSelectedIC();
     if (!firstIC || firstIC->file().isEmpty()) {
         return;
@@ -1910,6 +1944,7 @@ void MainWindow::embedSelectedIC()
 
 void MainWindow::extractSelectedIC()
 {
+    sentryBreadcrumb("ic", QStringLiteral("Extract IC"));
     auto *firstIC = getSelectedIC();
     if (!firstIC || !firstIC->isEmbedded()) {
         return;
@@ -2011,6 +2046,7 @@ void MainWindow::extractICByBlobName(const QString &blobName)
 
 void MainWindow::makeSelfContained()
 {
+    sentryBreadcrumb("ic", QStringLiteral("Make self-contained"));
     if (!m_currentTab) {
         return;
     }

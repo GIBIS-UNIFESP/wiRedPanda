@@ -20,6 +20,7 @@
 #include "App/BeWavedDolphin/Serializer.h"
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
@@ -634,18 +635,21 @@ void BewavedDolphin::applyToSelectedCells(const std::function<int(int)> &valueFn
 
 void BewavedDolphin::on_actionSetTo0_triggered()
 {
+    sentryBreadcrumb("waveform", QStringLiteral("Set cells to 0"));
     qCDebug(zero) << "Pressed 0.";
     applyToSelectedCells([](int) { return 0; });
 }
 
 void BewavedDolphin::on_actionSetTo1_triggered()
 {
+    sentryBreadcrumb("waveform", QStringLiteral("Set cells to 1"));
     qCDebug(zero) << "Pressed 1.";
     applyToSelectedCells([](int) { return 1; });
 }
 
 void BewavedDolphin::on_actionInvert_triggered()
 {
+    sentryBreadcrumb("waveform", QStringLiteral("Invert cells"));
     qCDebug(zero) << "Pressed Not.";
     applyToSelectedCells([](int v) { return (v + 1) % 2; });
 }
@@ -678,6 +682,7 @@ int BewavedDolphin::sectionFirstRow(const QItemSelection &ranges)
 
 void BewavedDolphin::on_actionSetClockWave_triggered()
 {
+    sentryBreadcrumb("waveform", QStringLiteral("Set clock wave"));
     qCDebug(zero) << "Getting first column.";
     const auto ranges = m_signalTableView->selectionModel()->selection();
 
@@ -715,6 +720,7 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
 
 void BewavedDolphin::on_actionCombinational_triggered()
 {
+    sentryBreadcrumb("waveform", QStringLiteral("Combinational mode"));
     // Ensure the table is at least as long as the full truth table (2^n columns)
     const int truthTableSize = static_cast<int>((std::min)(static_cast<double>(kMaxSimLength), std::pow(2, m_inputPorts)));
 
@@ -745,6 +751,7 @@ void BewavedDolphin::on_actionCombinational_triggered()
 
 void BewavedDolphin::on_actionSetLength_triggered()
 {
+    sentryBreadcrumb("waveform", QStringLiteral("Set length dialog"));
     qCDebug(zero) << "Setting the simulation length.";
     const int currentLength = m_length > 0 ? m_length : m_model->columnCount();
     LengthDialog dialog(currentLength, this);
@@ -807,6 +814,7 @@ void BewavedDolphin::adjustColumnWidths(const std::function<int(int)> &widthFn)
 
 void BewavedDolphin::on_actionZoomOut_triggered()
 {
+    sentryBreadcrumb("waveform", QStringLiteral("Zoom out"));
     m_view.zoomOut();
     // Shrink column widths to match the reduced scene scale so pixmaps still tile correctly
     adjustColumnWidths([this](int w) { return static_cast<int>(w / m_scale); });
@@ -814,6 +822,7 @@ void BewavedDolphin::on_actionZoomOut_triggered()
 
 void BewavedDolphin::on_actionZoomIn_triggered()
 {
+    sentryBreadcrumb("waveform", QStringLiteral("Zoom in"));
     m_view.zoomIn();
     // Grow column widths proportionally so waveform segments remain at their natural aspect ratio
     adjustColumnWidths([this](int w) { return static_cast<int>(w * m_scale); });
@@ -821,6 +830,7 @@ void BewavedDolphin::on_actionZoomIn_triggered()
 
 void BewavedDolphin::on_actionResetZoom_triggered()
 {
+    sentryBreadcrumb("waveform", QStringLiteral("Zoom reset"));
     m_view.resetZoom();
     m_scale = kZoomStep;
     adjustColumnWidths([](int) { return kDefaultColumnWidth; });
@@ -834,6 +844,7 @@ void BewavedDolphin::zoomChanged()
 
 void BewavedDolphin::on_actionFitScreen_triggered()
 {
+    sentryBreadcrumb("waveform", QStringLiteral("Fit screen"));
     // First undo the current scale transform so the measurements below are in logical pixels
     m_view.scale(1.0 / m_scale, 1.0 / m_scale);
     // Compute the scale needed to fit all columns and all rows within the current view
@@ -851,6 +862,7 @@ void BewavedDolphin::on_actionFitScreen_triggered()
 
 void BewavedDolphin::on_actionClear_triggered()
 {
+    sentryBreadcrumb("waveform", QStringLiteral("Clear input"));
     for (int row = 0; row < m_inputPorts; ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
             setCellValue(row, col, 0, true, true);
@@ -864,6 +876,7 @@ void BewavedDolphin::on_actionClear_triggered()
 
 void BewavedDolphin::on_actionAutoCrop_triggered()
 {
+    sentryBreadcrumb("waveform", QStringLiteral("Auto crop"));
     // Crop (or extend) the simulation to exactly the full truth table size for the
     // current number of input elements, then re-run to refresh output rows
     setLength(static_cast<int>(std::pow(2, m_inputs.length())), true);
@@ -871,6 +884,7 @@ void BewavedDolphin::on_actionAutoCrop_triggered()
 
 void BewavedDolphin::on_actionCopy_triggered()
 {
+    sentryBreadcrumb("clipboard", QStringLiteral("Waveform copy"));
     const auto ranges = m_signalTableView->selectionModel()->selection();
 
     if (ranges.isEmpty()) {
@@ -910,6 +924,7 @@ void BewavedDolphin::copy(const QItemSelection &ranges, QDataStream &stream)
 
 void BewavedDolphin::on_actionCut_triggered()
 {
+    sentryBreadcrumb("clipboard", QStringLiteral("Waveform cut"));
     const auto ranges = m_signalTableView->selectionModel()->selection();
 
     if (ranges.isEmpty()) {
@@ -938,6 +953,7 @@ void BewavedDolphin::cut(const QItemSelection &ranges, QDataStream &stream)
 
 void BewavedDolphin::on_actionPaste_triggered()
 {
+    sentryBreadcrumb("clipboard", QStringLiteral("Waveform paste"));
     const auto ranges = m_signalTableView->selectionModel()->selection();
 
     if (ranges.isEmpty()) {
@@ -991,6 +1007,7 @@ void BewavedDolphin::paste(const QItemSelection &ranges, QDataStream &stream)
 
 void BewavedDolphin::on_actionSave_triggered()
 {
+    sentryBreadcrumb("file", QStringLiteral("Waveform save"));
     if (m_currentFile.fileName().isEmpty()) {
         on_actionSaveAs_triggered();
         return;
@@ -1003,6 +1020,7 @@ void BewavedDolphin::on_actionSave_triggered()
 
 void BewavedDolphin::on_actionSaveAs_triggered()
 {
+    sentryBreadcrumb("file", QStringLiteral("Waveform save as"));
     const QString path = m_mainWindow->currentFile().absolutePath();
 
     // List the format that matches the current file first so it is the default selection
@@ -1092,6 +1110,7 @@ void BewavedDolphin::associateToWiRedPanda(const QString &fileName)
 
 void BewavedDolphin::on_actionLoad_triggered()
 {
+    sentryBreadcrumb("file", QStringLiteral("Waveform load dialog"));
     QDir defaultDirectory;
 
     // Prefer the last-used dolphin file's directory; fall back to the main window's
@@ -1193,6 +1212,7 @@ void BewavedDolphin::load(QFile &file)
 
 void BewavedDolphin::on_actionShowNumbers_triggered()
 {
+    sentryBreadcrumb("waveform", QStringLiteral("Show numbers"));
     m_type = PlotType::Number;
 
     // Clear the DecorationRole pixmaps that the Line mode sets; if left, the delegate
@@ -1216,6 +1236,7 @@ void BewavedDolphin::on_actionShowNumbers_triggered()
 
 void BewavedDolphin::on_actionShowWaveforms_triggered()
 {
+    sentryBreadcrumb("waveform", QStringLiteral("Show waveforms"));
     m_type = PlotType::Line;
 
     // Re-create all input cells so they receive the correct rising/falling pixmaps
@@ -1232,6 +1253,7 @@ void BewavedDolphin::on_actionShowWaveforms_triggered()
 
 void BewavedDolphin::on_actionExportToPng_triggered()
 {
+    sentryBreadcrumb("export", QStringLiteral("Waveform export PNG"));
     QString pngFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to Image"), m_currentFile.absolutePath(), tr("PNG files (*.png)")).fileName;
 
     if (pngFile.isEmpty()) {
@@ -1263,6 +1285,7 @@ bool BewavedDolphin::exportWaveformToPng(const QString &filename)
 
 void BewavedDolphin::on_actionExportToPdf_triggered()
 {
+    sentryBreadcrumb("export", QStringLiteral("Waveform export PDF"));
     QString pdfFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to PDF"), m_currentFile.absolutePath(), tr("PDF files (*.pdf)")).fileName;
 
     if (pdfFile.isEmpty()) {
