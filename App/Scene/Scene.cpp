@@ -586,21 +586,25 @@ void Scene::contextMenu(const QPoint screenPos)
 
 void Scene::copyAction()
 {
+    sentryBreadcrumb("clipboard", QStringLiteral("Copy"));
     m_clipboardManager.copy();
 }
 
 void Scene::cutAction()
 {
+    sentryBreadcrumb("clipboard", QStringLiteral("Cut"));
     m_clipboardManager.cut();
 }
 
 void Scene::pasteAction()
 {
+    sentryBreadcrumb("clipboard", QStringLiteral("Paste"));
     m_clipboardManager.paste();
 }
 
 void Scene::deleteAction()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Delete"));
     const auto selectedItems_ = selectedItems();
     // Clear selection before the command so that the scene's selectedItems()
     // list is empty during the command's redo() — avoids double-processing
@@ -624,11 +628,13 @@ void Scene::selectAll()
 
 void Scene::rotateRight()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Rotate right"));
     rotate(90);
 }
 
 void Scene::rotateLeft()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Rotate left"));
     rotate(-90);
 }
 
@@ -655,6 +661,7 @@ void Scene::mute(const bool mute)
 
 void Scene::flipHorizontally()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Flip horizontal"));
     const auto elements_ = selectedElements();
 
     if (!elements_.isEmpty()) {
@@ -664,6 +671,7 @@ void Scene::flipHorizontally()
 
 void Scene::flipVertically()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Flip vertical"));
     const auto elements_ = selectedElements();
 
     if (!elements_.isEmpty()) {
@@ -890,6 +898,9 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
 
             m_draggingElement = ((item->type() == GraphicElement::Type) && !selectedElements_.isEmpty());
+            if (m_draggingElement) {
+                sentryBreadcrumb("ui", QStringLiteral("Drag started: %1 element(s)").arg(selectedElements_.size()));
+            }
 
             // Snapshot positions now; MoveCommand compares these against release-time positions
             m_movedElements.clear();
@@ -1007,6 +1018,7 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
             }
         }
 
+        sentryBreadcrumb("ui", moved ? QStringLiteral("Drag ended: moved") : QStringLiteral("Drag ended: no move"));
         m_draggingElement = false;
         m_movedElements.clear();
 

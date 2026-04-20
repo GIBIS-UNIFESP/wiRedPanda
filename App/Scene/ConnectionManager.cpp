@@ -5,6 +5,7 @@
 
 #include <QGraphicsView>
 
+#include "App/Core/SentryHelpers.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
@@ -21,6 +22,7 @@ ConnectionManager::ConnectionManager(Scene *scene)
 
 void ConnectionManager::startFromOutput(QNEOutputPort *startPort)
 {
+    sentryBreadcrumb("ui", QStringLiteral("Wire started"));
     auto *connection = new QNEConnection();
     connection->setStartPort(startPort);
     connection->setEndPos(m_scene->mousePos());
@@ -72,6 +74,7 @@ void ConnectionManager::tryComplete(const QPointF &scenePos)
     if (isConnectionAllowed(startPort, endPort)) {
         connection->setStartPort(startPort);
         connection->setEndPort(endPort);
+        sentryBreadcrumb("ui", QStringLiteral("Wire connected"));
         m_scene->receiveCommand(new AddItemsCommand({connection}, m_scene));
         setEditedConnection(nullptr);
     } else {
@@ -81,6 +84,7 @@ void ConnectionManager::tryComplete(const QPointF &scenePos)
 
 void ConnectionManager::cancel()
 {
+    sentryBreadcrumb("ui", QStringLiteral("Wire cancelled"));
     if (editedConnection()) {
         deleteEditedConnection();
     }
@@ -88,6 +92,7 @@ void ConnectionManager::cancel()
 
 void ConnectionManager::detach(QNEInputPort *endPort)
 {
+    sentryBreadcrumb("ui", QStringLiteral("Wire detached"));
     const auto connections = endPort->connections();
     if (connections.isEmpty()) {
         return;
