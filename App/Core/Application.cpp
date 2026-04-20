@@ -77,17 +77,20 @@ bool Application::notify(QObject *receiver, QEvent *event)
 
         if (shouldSendToSentry(sentryMessage)) {
             sentry_value_t event_ = sentry_value_new_event();
+            sentry_value_set_by_key(event_, "level", sentry_value_new_string("warning"));
+
             sentry_value_t exc = sentry_value_new_exception("Exception", sentryMessage.toStdString().c_str());
 
-            // Include the throw-site location so Sentry shows where the
-            // exception originated rather than the catch block.
+            sentry_value_t mechanism = sentry_value_new_object();
+            sentry_value_set_by_key(mechanism, "type", sentry_value_new_string("generic"));
+            sentry_value_set_by_key(mechanism, "handled", sentry_value_new_bool(1));
             if (throwFile) {
-                sentry_value_t mechanism = sentry_value_new_object();
-                sentry_value_set_by_key(mechanism, "type", sentry_value_new_string("generic"));
+                // Include the throw-site location so Sentry shows where the
+                // exception originated rather than the catch block.
                 sentry_value_set_by_key(mechanism, "description",
                     sentry_value_new_string(QStringLiteral("%1:%2").arg(throwFile).arg(throwLine).toStdString().c_str()));
-                sentry_value_set_by_key(exc, "mechanism", mechanism);
             }
+            sentry_value_set_by_key(exc, "mechanism", mechanism);
 
             sentry_value_set_stacktrace(exc, NULL, 0);
             sentry_event_add_exception(event_, exc);
