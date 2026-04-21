@@ -707,6 +707,7 @@ add_test(NAME TestQNEPort COMMAND test_wiredpanda TestQNEPort WORKING_DIRECTORY 
 add_test(NAME TestRecentFilesUnit COMMAND test_wiredpanda TestRecentFilesUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSelectionCapabilities COMMAND test_wiredpanda TestSelectionCapabilities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulationUnit COMMAND test_wiredpanda TestSimulationUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDanglingPointer COMMAND test_wiredpanda TestDanglingPointer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSystemVerilogCodeGenUnit COMMAND test_wiredpanda TestSystemVerilogCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestTrashButton COMMAND test_wiredpanda TestTrashButton WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestUpdateChecker COMMAND test_wiredpanda TestUpdateChecker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -791,6 +792,12 @@ foreach(TEST TestDialogs TestSerialization TestSimulationBlocker)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
+# Dangling-pointer regression tests (WIREDPANDA-H2 cluster). These are
+# designed to fail on the current tree and to pass once the corresponding
+# fixes in App/Element/IC.{h,cpp} and App/Simulation/Simulation.{h,cpp}
+# land. See .claude/SENTRY_CRASH_ANALYSIS_WIREDPANDA-H2.md.
+set_tests_properties(TestDanglingPointer PROPERTIES LABELS "unit;regression")
+
 # Core Functionality Tests - Unit category
 foreach(TEST TestCommands TestCommon TestEnums TestPriorities TestRecentFiles TestSettings
         TestThemeManager)
@@ -840,6 +847,7 @@ set(ALL_TESTS
     TestConnectionSerialization TestConnectionValidity TestConnections TestScene
     TestSceneConnections TestSceneState TestSceneUndoredo
     TestSerialization TestSimulationBlocker TestDialogs
+    TestDanglingPointer
     TestCommands TestCommon TestEnums TestPriorities TestRecentFiles TestSettings TestThemeManager)
 foreach(TEST ${ALL_TESTS})
     set_tests_properties(${TEST} PROPERTIES FIXTURES_SETUP "non_gui_complete")

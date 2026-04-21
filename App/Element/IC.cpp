@@ -269,6 +269,13 @@ void IC::resetInternalState()
     m_internalOutputs.clear();
     setInputSize(0);
     setOutputSize(0);
+    // Clear derived simulation state BEFORE freeing the elements those
+    // vectors reference. If we freed first, a simulation tick between the
+    // free and the clear (via Application::notify + QMessageBox spinning
+    // a nested event loop) would dereference dangling pointers.
+    m_sortedInternalElements.clear();
+    m_boundaryInputElements.clear();
+    m_internalHasFeedback = false;
     qDeleteAll(m_internalConnections);
     m_internalConnections.clear();
     qDeleteAll(m_internalElements);
@@ -314,12 +321,12 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
     }
 
     // Fallback: direct file load (IC not yet in a scene, e.g. during deserialization).
-    // Reset here rather than at the top — the ICRegistry path above handles its own
-    // reset inside loadFromBlob(), so resetting before it would be wasted work.
-    resetInternalState();
+    // loadFileDirectly() mirrors deserializeAndLoad()'s parse-first, reset-after shape:
+    // a failed parse (corrupt file, missing dependency, circular reference) propagates
+    // without ever leaving m_sortedInternalElements pointing at freed elements.
+    loadFileDirectly(fileInfo);
     m_file = fileInfo.absoluteFilePath();
     setToolTip(fileInfo.fileName());
-    loadFileDirectly(fileInfo);
 
     qCDebug(zero) << "Finished reading IC.";
 }
@@ -355,6 +362,11 @@ void IC::loadFileDirectly(const QFileInfo &fileInfo)
         migrateFile(fileInfo, items, preamble.version, fileRegistry);
     }
 
+    // Parsing (and migration, if triggered) succeeded — only now is it safe to
+    // clear the old internal state and apply the freshly-parsed items. If any
+    // step above had thrown, resetInternalState() would never have run and the
+    // IC's previous internal graph would remain intact.
+    resetInternalState();
     processLoadedItems(items);
 
     if (label().isEmpty()) {
@@ -708,7 +720,9 @@ void IC::updateLogic()
         Simulation::iterativeSettle(m_sortedInternalElements);
     } else {
         for (auto *element : std::as_const(m_sortedInternalElements)) {
-            element->updateLogic();
+            if (element) {
+                element->updateLogic();
+            }
         }
     }
 

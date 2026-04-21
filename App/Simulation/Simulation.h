@@ -39,6 +39,8 @@ class Simulation : public QObject
 {
     Q_OBJECT
 
+    friend class TestDanglingPointer;
+
 public:
     // --- Lifecycle ---
 
@@ -65,7 +67,12 @@ public:
     /// Returns \c true if the user has explicitly muted audio.
     bool isUserMuted() const;
 
-    /// Stops and immediately restarts the simulation.
+    /// Invalidates the cached simulation topology: clears m_initialized
+    /// and the hot-path element/connection vectors so no stale reference
+    /// can be dereferenced on subsequent ticks. The next update() call
+    /// re-runs initialize(). The QTimer's run state (running/stopped) is
+    /// preserved — callers who also want to pause should use
+    /// SimulationBlocker.
     void restart();
 
     /// Returns \c true if the simulation timer is currently running.

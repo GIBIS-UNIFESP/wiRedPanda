@@ -180,6 +180,7 @@
 #include "Tests/Unit/Serialization/TestRecentFiles.h"
 #include "Tests/Unit/Serialization/TestSerialization.h"
 // unit/simulation
+#include "Tests/Unit/Simulation/TestDanglingPointer.h"
 #include "Tests/Unit/Simulation/TestSimulation.h"
 #include "Tests/Unit/Simulation/TestSimulationBlocker.h"
 // unit/ui
@@ -364,6 +365,7 @@ int main(int argc, char **argv)
         {"TestQNEPort", []() -> QObject * { return new TestQNEPort; }},
         {"TestSimulationUnit", []() -> QObject * { return new TestSimulationUnit; }},
         {"TestSimulationBlocker", []() -> QObject * { return new TestSimulationBlocker; }},
+        {"TestDanglingPointer", []() -> QObject * { return new TestDanglingPointer; }},
         {"TestCircuitExporter", []() -> QObject * { return new TestCircuitExporter; }},
         {"TestDialogs", []() -> QObject * { return new TestDialogs; }},
         {"TestElementPalette", []() -> QObject * { return new TestElementPalette; }},
