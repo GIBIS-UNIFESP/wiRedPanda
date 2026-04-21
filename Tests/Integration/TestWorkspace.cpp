@@ -19,26 +19,6 @@
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
-// Helper function to wait for autosave file to be written
-static bool waitForFileExists(const QString &filePath, int maxWaitMs = 1000)
-{
-    int elapsed = 0;
-    const int checkInterval = 25;
-
-    while (elapsed < maxWaitMs) {
-        QCoreApplication::processEvents();
-
-        if (QFile::exists(filePath)) {
-            return true;
-        }
-
-        QTest::qWait(checkInterval);
-        elapsed += checkInterval;
-    }
-
-    return QFile::exists(filePath);
-}
-
 void TestWorkspace::initTestCase()
 {
     // Initialize test environment
@@ -107,31 +87,22 @@ void TestWorkspace::testAutosaveSkippedWhenClean()
 
 void TestWorkspace::testAutosaveUpdatesSettings()
 {
-    // Create a temporary directory for the test
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    // Clear settings before test to ensure clean state
     Settings::setAutosaveFiles({});
 
     WorkSpace workspace;
     Scene *scene = workspace.scene();
 
-    // Get initial autosave list
     QStringList autosaveBefore = Settings::autosaveFiles();
 
-    // Add element to trigger autosave via undo stack
     QList<QGraphicsItem *> items;
     auto *led = ElementFactory::buildElement(ElementType::Led);
     items.append(led);
     AddItemsCommand *cmd = new AddItemsCommand(items, scene);
     scene->undoStack()->push(cmd);
 
-    // Process events to allow async signals
-    QCoreApplication::processEvents();
-    QTest::qWait(50);
-
-    // Verify autosave was recorded in settings
     QStringList autosaveAfter = Settings::autosaveFiles();
     QVERIFY2(autosaveAfter.count() > autosaveBefore.count(),
             "Adding element should trigger autosave and update settings");
@@ -156,10 +127,6 @@ void TestWorkspace::testAutosaveAfterElementAdd()
 
     // Verify undo stack is dirty
     QVERIFY2(!undoStack->isClean(), "Undo stack should be dirty after circuit change");
-
-    // Process events to allow async autosave signals to fire
-    QCoreApplication::processEvents();
-    QTest::qWait(50);
 
     // After autosave should have been triggered, Settings should have autosave entry
     QStringList autosaves = Settings::autosaveFiles();
@@ -250,8 +217,6 @@ void TestWorkspace::testMultipleAutosavesUpdateSettings()
         items.append(led);
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
-        QCoreApplication::processEvents();
-        QTest::qWait(50);
     }
 
     QStringList autosavedAfterFirst = Settings::autosaveFiles();
@@ -268,8 +233,6 @@ void TestWorkspace::testMultipleAutosavesUpdateSettings()
         items.append(and1);
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
-        QCoreApplication::processEvents();
-        QTest::qWait(50);
     }
 
     // Verify Settings tracks multiple autosaves - should have increased after second workspace
@@ -409,10 +372,6 @@ void TestWorkspace::testAutosaveFileRandomSuffixGeneration()
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
 
-        // Process events to allow signals to be delivered
-        QCoreApplication::processEvents();
-        QTest::qWait(50);
-
         QStringList autosaves = Settings::autosaveFiles();
         QVERIFY2(!autosaves.isEmpty(), "First workspace should create autosave file in settings");
 
@@ -421,8 +380,7 @@ void TestWorkspace::testAutosaveFileRandomSuffixGeneration()
         QVERIFY2(autosave1.endsWith(".panda"),
                 qPrintable(QString("Autosave should have .panda extension: %1").arg(autosave1)));
 
-        // Verify file exists and has content (wait for async writes)
-        QVERIFY2(waitForFileExists(autosave1),
+        QVERIFY2(QFile::exists(autosave1),
                 qPrintable(QString("First autosave file should exist: %1").arg(autosave1)));
         QFileInfo info(autosave1);
         QVERIFY2(info.size() > 100, qPrintable(QString("Autosave should have content (%1 bytes)").arg(info.size())));
@@ -443,10 +401,6 @@ void TestWorkspace::testAutosaveFileRandomSuffixGeneration()
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
 
-        // Process events to allow signals
-        QCoreApplication::processEvents();
-        QTest::qWait(50);
-
         QStringList autosaves = Settings::autosaveFiles();
         QVERIFY2(autosaves.count() >= 1, "Second workspace should have autosave files");
 
@@ -456,7 +410,7 @@ void TestWorkspace::testAutosaveFileRandomSuffixGeneration()
         QVERIFY2(autosave2.endsWith(".panda"),
                 qPrintable(QString("Autosave should have .panda extension: %1").arg(autosave2)));
 
-        QVERIFY2(waitForFileExists(autosave2),
+        QVERIFY2(QFile::exists(autosave2),
                 qPrintable(QString("Second autosave file should exist: %1").arg(autosave2)));
     }
 
@@ -494,10 +448,6 @@ void TestWorkspace::testAutosavePathCreatedIfNotExists()
 
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
-
-        // Process events to allow signals to be delivered
-        QCoreApplication::processEvents();
-        QTest::qWait(50);
 
         // Verify autosave was triggered (check BEFORE workspace destruction)
         QStringList autosaves = Settings::autosaveFiles();
@@ -539,10 +489,6 @@ void TestWorkspace::testAutosaveFileExtensionCorrect()
 
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
-
-        // Process events to allow signals to be delivered
-        QCoreApplication::processEvents();
-        QTest::qWait(50);
 
         // Verify autosave was triggered (check BEFORE workspace destruction)
         QStringList autosaves = Settings::autosaveFiles();
@@ -630,17 +576,13 @@ void TestWorkspace::testAutosaveInAppDataForNewProject()
     AddItemsCommand *cmd = new AddItemsCommand(items, scene);
     scene->undoStack()->push(cmd);
 
-    QCoreApplication::processEvents();
-    QTest::qWait(50);
-
     // For new (unsaved) project, autosave should be in AppData/autosaves or similar location
     // The path should NOT be in the currentDir for a new project
     QStringList autosaves = Settings::autosaveFiles();
     QVERIFY2(!autosaves.isEmpty(), "New project should create autosave file");
 
-    // Verify autosave file exists (wait for async writes)
     QString autosavePath = autosaves.first();
-    QVERIFY2(waitForFileExists(autosavePath),
+    QVERIFY2(QFile::exists(autosavePath),
             qPrintable(QString("Autosave file should exist: %1").arg(autosavePath)));
 }
 
@@ -724,15 +666,12 @@ void TestWorkspace::testAutosaveFilePermissions()
     AddItemsCommand *cmd = new AddItemsCommand(items, scene);
     scene->undoStack()->push(cmd);
 
-    QCoreApplication::processEvents();
-    QTest::qWait(50);
-
     // Check autosave file permissions
     QStringList autosaves = Settings::autosaveFiles();
     QVERIFY2(!autosaves.isEmpty(), "Workspace should create autosave file");
 
     QString autosavePath = autosaves.first();
-    QVERIFY2(waitForFileExists(autosavePath),
+    QVERIFY2(QFile::exists(autosavePath),
             qPrintable(QString("Autosave file should exist: %1").arg(autosavePath)));
 
     // Verify file is readable
@@ -961,9 +900,6 @@ void TestWorkspace::testAutosaveCleanupWithEmptySettings()
     items.append(led);
     AddItemsCommand *cmd = new AddItemsCommand(items, scene);
     scene->undoStack()->push(cmd);
-
-    QCoreApplication::processEvents();
-    QTest::qWait(50);
 
     QStringList autosavesBefore = Settings::autosaveFiles();
 
