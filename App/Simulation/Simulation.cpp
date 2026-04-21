@@ -152,9 +152,19 @@ void Simulation::updatePort(QNEInputPort *port)
 
 void Simulation::restart()
 {
-    // Clearing the flag causes the next update() call to rebuild the entire
-    // simulation graph, effectively resetting all logic state to its default.
+    // Invalidate the cached topology. Clearing the flag alone is not
+    // enough: update() iterates m_sortedElements/m_connections/m_clocks/
+    // m_inputs/m_outputs before a re-initialize can run (for instance when
+    // Application::notify() spins a QMessageBox nested event loop), and
+    // any entry that refers to an element we've already freed faults on
+    // its vtable read. Drop every reference so the next tick's
+    // initialize() can rebuild them cleanly.
     m_initialized = false;
+    m_sortedElements.clear();
+    m_connections.clear();
+    m_clocks.clear();
+    m_inputs.clear();
+    m_outputs.clear();
 }
 
 bool Simulation::isRunning()
@@ -454,12 +464,15 @@ bool Simulation::iterativeSettle(const QVector<GraphicElement *> &elements, cons
 {
     for (int iteration = 0; iteration < maxIterations; ++iteration) {
         for (auto *element : std::as_const(elements)) {
+            if (!element) {
+                continue;
+            }
             element->clearOutputChanged();
             element->updateLogic();
         }
 
         const bool converged = std::none_of(elements.cbegin(), elements.cend(),
-            [](const auto *element) { return element->outputChanged(); });
+            [](const auto *element) { return element && element->outputChanged(); });
 
         if (converged) {
             return true;

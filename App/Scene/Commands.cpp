@@ -447,6 +447,10 @@ UpdateCommand::UpdateCommand(const QList<GraphicElement *> &elements, const QByt
 void UpdateCommand::undo()
 {
     qCDebug(zero) << text();
+    // elm->load() can free and replace an IC's internal graph; a simulation
+    // tick firing between that free and setCircuitUpdateRequired()'s rebuild
+    // (via Application::notify + QMessageBox nested event loop) would fault.
+    SimulationBlocker blocker(m_scene->simulation());
     loadData(m_oldData);
     m_scene->setCircuitUpdateRequired();
 }
@@ -454,6 +458,7 @@ void UpdateCommand::undo()
 void UpdateCommand::redo()
 {
     qCDebug(zero) << text();
+    SimulationBlocker blocker(m_scene->simulation());
     loadData(m_newData);
     m_scene->setCircuitUpdateRequired();
 }
@@ -540,6 +545,9 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
 void SplitCommand::redo()
 {
     qCDebug(zero) << text();
+    // Allocating and rewiring QNEConnections while Simulation::m_connections
+    // is still mid-iterate on the old topology faults on the dangling entry.
+    SimulationBlocker blocker(m_scene->simulation());
     auto *conn1 = CommandUtils::findConn(m_scene, m_c1Id);
     auto *conn2 = CommandUtils::findConn(m_scene, m_c2Id);
     auto *node = CommandUtils::findElm(m_scene, m_nodeId);
@@ -587,6 +595,8 @@ void SplitCommand::redo()
 void SplitCommand::undo()
 {
     qCDebug(zero) << text();
+    // delete conn2 / delete node below must not race with the simulation tick.
+    SimulationBlocker blocker(m_scene->simulation());
     auto *conn1 = CommandUtils::findConn(m_scene, m_c1Id);
     auto *conn2 = CommandUtils::findConn(m_scene, m_c2Id);
     auto *node = CommandUtils::findElm(m_scene, m_nodeId);
@@ -629,6 +639,10 @@ MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType 
 
 void MorphCommand::undo()
 {
+    // transferConnections() deletes the current elements; a sim tick on
+    // the torn state between delete and setCircuitUpdateRequired() faults.
+    SimulationBlocker blocker(m_scene->simulation());
+
     auto newElms = elements();
     decltype(newElms) oldElms;
     oldElms.reserve(m_ids.size());
@@ -668,6 +682,8 @@ void MorphCommand::undo()
 
 void MorphCommand::redo()
 {
+    SimulationBlocker blocker(m_scene->simulation());
+
     auto oldElms = elements();
     decltype(oldElms) newElms;
     newElms.reserve(m_ids.size());
@@ -857,6 +873,11 @@ ChangePortSizeCommand::ChangePortSizeCommand(const QList<GraphicElement *> &elem
 
 void ChangePortSizeCommand::redo()
 {
+    // drainPortConnections() deletes QNEConnections for removed ports; a
+    // simulation tick between that delete and setCircuitUpdateRequired()
+    // would see those freed connections in Simulation::m_connections.
+    SimulationBlocker blocker(m_scene->simulation());
+
     const auto elements = this->elements();
 
     QList<GraphicElement *> serializationOrder;
@@ -903,6 +924,8 @@ void ChangePortSizeCommand::redo()
 
 void ChangePortSizeCommand::undo()
 {
+    SimulationBlocker blocker(m_scene->simulation());
+
     const auto elements = this->elements();
     const auto serializationOrder = CommandUtils::findElements(m_scene, m_order);
 

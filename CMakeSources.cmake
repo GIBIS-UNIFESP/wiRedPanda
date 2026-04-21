@@ -409,6 +409,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestFileUtils.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestRecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSerialization.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestCircuitExporter.cpp
@@ -591,6 +592,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestFileUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestRecentFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSerialization.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestCircuitExporter.h

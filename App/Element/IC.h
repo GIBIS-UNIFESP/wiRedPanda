@@ -30,6 +30,7 @@ class IC : public GraphicElement
 
     friend class TestArduino;
     friend class TestIC;
+    friend class TestDanglingPointer;
 
 public:
     /// Constructs an IC element without loading a file.

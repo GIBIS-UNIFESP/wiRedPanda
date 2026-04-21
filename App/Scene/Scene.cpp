@@ -246,8 +246,14 @@ void Scene::setCircuitUpdateRequired()
 
     update();
 
-    // Re-initialize topological sort and simulation graph after any structural change
-    m_simulation.initialize();
+    // Re-initialize topological sort and simulation graph after any structural change.
+    // If initialize() bails (e.g. the scene dropped to just the border rect), it left
+    // the hot-path vectors empty but didn't touch m_initialized — bring the flag into
+    // sync so the next tick treats the scene as uninitialised rather than trusting a
+    // stale "already done" marker against empty vectors.
+    if (!m_simulation.initialize()) {
+        m_simulation.restart();
+    }
 
     m_autosaveRequired = true;
 }

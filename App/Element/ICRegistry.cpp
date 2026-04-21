@@ -15,6 +15,8 @@
 #include "App/IO/VersionInfo.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
+#include "App/Simulation/Simulation.h"
+#include "App/Simulation/SimulationBlocker.h"
 #include "App/Versions.h"
 
 ICRegistry::ICRegistry(Scene *scene)
@@ -77,14 +79,22 @@ void ICRegistry::onFileChanged(const QString &filePath)
 
     // Reload all IC instances referencing this file
     const auto targets = findICsByFile(filePath);
-    for (auto *elm : targets) {
-        auto *ic = static_cast<IC *>(elm);
-        ic->loadFile(filePath);
+    if (targets.isEmpty()) {
+        emit definitionChanged(filePath);
+        return;
     }
 
-    if (!targets.isEmpty()) {
-        m_scene->simulation()->restart();
+    // Stop the simulation for the entire reload. Between freeing each IC's
+    // old internal graph and rebuilding it, the scene's sorted vectors hold
+    // dangling pointers; ticking on that state would fault. The explicit
+    // setCircuitUpdateRequired() at the end drives a full scene re-init —
+    // stricter than restart(), which used to leave IC::m_sortedInternalElements
+    // untouched until the next tick happened to rebuild it.
+    SimulationBlocker blocker(m_scene->simulation());
+    for (auto *elm : targets) {
+        static_cast<IC *>(elm)->loadFile(filePath);
     }
+    m_scene->setCircuitUpdateRequired();
 
     emit definitionChanged(filePath);
 }
