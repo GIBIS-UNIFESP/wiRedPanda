@@ -78,7 +78,7 @@ def collect_panda_files():
 def remove_versioned_backups():
     """Remove .v*.panda backup files created by auto-migration."""
     import re
-    pattern = re.compile(r"\.v\d+\.\d+\.panda$")
+    pattern = re.compile(r"\.v\d+(\.\d+)*\.panda$")
     removed = 0
     for d in PANDA_DIRS:
         if not d.is_dir():

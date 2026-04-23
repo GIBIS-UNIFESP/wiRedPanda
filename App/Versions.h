@@ -33,6 +33,7 @@ inline const QVersionNumber V_4_4 = QVersionNumber(4, 4);
 inline const QVersionNumber V_4_5 = QVersionNumber(4, 5);
 inline const QVersionNumber V_4_6 = QVersionNumber(4, 6);
 inline const QVersionNumber V_4_7 = QVersionNumber(4, 7);
+inline const QVersionNumber V_5_0 = QVersionNumber(5, 0);
 
 } // namespace Versions
 
@@ -40,7 +41,7 @@ inline const QVersionNumber V_4_7 = QVersionNumber(4, 7);
 /// Only incremented when the on-disk binary format actually changes.
 namespace FileVersion {
 
-inline const QVersionNumber current = Versions::V_4_7;
+inline const QVersionNumber current = Versions::V_5_0;
 
 } // namespace FileVersion
 
