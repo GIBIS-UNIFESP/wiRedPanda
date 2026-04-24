@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  Ubuntu-Qt6_9_0-Code_Coverage:
+  Ubuntu-Qt6_9_3-Code_Coverage:
     permissions:
       contents: read
     runs-on: ubuntu-latest
