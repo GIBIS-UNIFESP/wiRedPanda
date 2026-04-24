@@ -207,8 +207,8 @@ Add `using namespace Qt::StringLiterals;` at the top of Settings.cpp for `u"..."
 
 ---
 
-## Phase 2 — Internationalization: Qt Linguist → KI18n
-**KDE Frameworks**: `KF6::I18n`
+## Phase 2 — Internationalization: Qt Linguist → KI18n ✅
+**KDE Frameworks**: `KF6::I18n` (`find_package(KF6I18n REQUIRED)`, target `KF6::I18n`)
 **Risk**: Medium — touches every translatable string, but mechanical
 
 ### Goal
@@ -216,47 +216,110 @@ Replace Qt's `tr()` with KDE's `i18n()` family for better plural forms, context 
 and integration with KDE's translation infrastructure (Weblate/Phabricator).
 
 ### Critical files
-- `App/UI/LanguageManager.h` (69 lines)
-- `App/UI/LanguageManager.cpp`
-- Every `.cpp` file using `tr()` — project-wide change (~187 files)
-- `App/Resources/Translations.qrc`
+- `pch.h` — i18n() compat shim for non-KDE builds
+- `App/Core/Common.h` — PANDACEPTION macros
+- `App/Main.cpp` — setApplicationDomain
+- `App/UI/LanguageManager.cpp` — KDE locale path
+- 27 App/ source files with `tr()` calls
 
-### Changes
+### CMake
 
-**Macro replacement** (global search-replace, then manual review of plurals):
-```cpp
-tr("Save File")           → i18n("Save File")
-tr("%1 items").arg(n)     → i18np("1 item", "%1 items", n)   // plural-aware
-tr("Context", "text")     → i18nc("Context", "text")          // disambiguated
-```
-
-**`App/UI/LanguageManager.cpp`**
-Remove `QTranslator` loading logic. KI18n handles locale detection automatically via
-`KLocalizedString::setApplicationDomain("wiredpanda")` called once at startup.
-
-**`App/Main.cpp`**
-```cpp
-KLocalizedString::setApplicationDomain("wiredpanda");
-```
-
-**Translation files**: Migrate from Qt `.ts`/`.qm` format to GNU Gettext `.po`/`.mo`.
-ECM provides `ecm_create_qm_loader()` for the transition period if needed.
-
-**`CMakeLists.txt`**
 ```cmake
-find_package(KF6 COMPONENTS I18n REQUIRED)
-ki18n_install(po)
+find_package(KF6I18n REQUIRED)   # not "KF6 COMPONENTS I18n"
+target_link_libraries(wiredpanda_lib PUBLIC KF6::I18n)
+# Also add PCH reuse to test_utils and memory_helpers — they include headers
+# that call i18n() in member initializers (e.g. ElementEditor.h)
+target_precompile_headers(test_utils     REUSE_FROM wiredpanda_lib)
+target_precompile_headers(memory_helpers REUSE_FROM wiredpanda_lib)
 ```
+
+### pch.h — compat shim
+
+Include `<KLocalizedString>` under `USE_KDE_FRAMEWORKS`; define a compat template for
+non-KDE builds so the source files compile without `#ifdef` at every call site:
+
+```cpp
+#ifdef USE_KDE_FRAMEWORKS
+#  include <KLocalizedString>
+#else
+template<typename... Args>
+[[nodiscard]] inline QString i18n(const char *text, const Args &... args)
+{
+    QString s = QCoreApplication::translate("", text);
+    if constexpr (sizeof...(args) > 0) {
+        (..., (s = s.arg(args)));
+    }
+    return s;
+}
+#endif
+```
+
+The compat template uses `QCoreApplication::translate("", text)` with empty context —
+translations that rely on class context won't resolve in non-KDE builds on this branch.
+This is acceptable: the porting branch's `debug` preset is for development, not translation testing.
+
+### String replacement
+
+Global sed replaces both `ClassName::tr(` and bare `tr(` with `i18n(`:
+```bash
+find App/ -name "*.cpp" -o -name "*.h" | grep -v "Common\.h\|LanguageManager" \
+  | xargs sed -i 's/[A-Za-z_][A-Za-z0-9_]*::tr(/i18n(/g; s/\btr(/i18n(/g'
+```
+
+Then absorb `.arg()` chains into inline arguments (`i18n("text %1").arg(x)` →
+`i18n("text %1", x)`). A Python script handles nested parentheses in arguments:
+`i18n("text %1 %2", a.method(), b->method())`.
+
+The `PANDACEPTION` variadic macro in `Common.h` is updated separately:
+```cpp
+#ifdef USE_KDE_FRAMEWORKS
+#  define PANDACEPTION(msg, ...) \
+     Pandaception(i18n(msg __VA_OPT__(, __VA_ARGS__)), ...)
+#else
+#  define PANDACEPTION(msg, ...) \
+     Pandaception(tr(msg) __VA_OPT__(.arg(__VA_ARGS__)), ...)
+#endif
+```
+
+### App/Main.cpp
+
+```cpp
+#ifdef USE_KDE_FRAMEWORKS
+KLocalizedString::setApplicationDomain("wiredpanda");
+#endif
+```
+Call immediately after `app.setApplicationName()`.
+
+### LanguageManager.cpp
+
+KDE path calls `KLocalizedString::setLanguages({language})` instead of loading QTranslator.
+The QTranslator path is preserved behind `#ifndef USE_KDE_FRAMEWORKS` for non-KDE builds.
+
+**Translation files** (.po/.mo) are **not yet ported** — `KLocalizedString::setLanguages()`
+is wired up but has no catalogs to load yet. Translations display in English on the KDE
+build until `.po` files are generated from the existing `.ts` files.
+
+### kde preset — Qt version conflict
+
+The system KDE libraries (Ubuntu packages) are compiled against Qt 6.10. If the project
+normally uses a private Qt installation (e.g. 6.9.x via `CMAKE_PREFIX_PATH` in the
+environment), those versions are ABI-incompatible at runtime.
+
+**Fix**: in `CMakePresets.json`, the `kde` preset:
+1. Uses `build-kde/` as its own separate `binaryDir` (never shares with `build/`)
+2. Explicitly sets `Qt6_DIR`, `Qt6Core_DIR`, etc. to the system Qt cmake paths
+3. Sets `CMAKE_BUILD_RPATH` to `/usr/lib/x86_64-linux-gnu` to prepend system Qt libs
+   first in RUNPATH, ensuring Qt 6.10 resolves before any private Qt in the environment
 
 ### Benefits gained
-- Proper plural rules for all 39 supported languages (Qt's plural support is limited)
+- Proper plural rules for all 39 supported languages
 - Context strings eliminate ambiguous single-word translations
-- Integration with KDE's community translation workflow
+- Infrastructure in place for KDE's community translation workflow (.po files pending)
 
 ### Verification
-- Switch language in Settings → all UI strings translate correctly
-- Test a plural-heavy string with n=0, 1, 2 in a language with complex plural rules (Polish/Russian)
-- `ctest --preset debug`
+- `ctest --preset kde` — all 176 tests pass
+- `ctest --preset debug` — all 176 tests pass (QCoreApplication::translate path)
+- Both presets build independently without corrupting each other's cmake cache
 
 ---
 

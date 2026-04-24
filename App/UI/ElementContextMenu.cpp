@@ -44,15 +44,15 @@ void ElementContextMenu::exec(QPoint screenPos,
                               const std::function<void()> &onExtractToFile)
 {
     QMenu menu;
-    const QString changeAppearanceText(QObject::tr("Change appearance to ..."));
-    const QString colorMenuText(QObject::tr("Change color to..."));
-    const QString frequencyText(QObject::tr("Change frequency"));
-    const QString morphMenuText(QObject::tr("Morph to..."));
-    const QString renameText(QObject::tr("Rename"));
-    const QString revertAppearanceText(QObject::tr("Restore default appearance"));
-    const QString rotateLeftText(QObject::tr("Rotate left"));
-    const QString rotateRightText(QObject::tr("Rotate right"));
-    const QString triggerText(QObject::tr("Change trigger"));
+    const QString changeAppearanceText(i18n("Change appearance to ..."));
+    const QString colorMenuText(i18n("Change color to..."));
+    const QString frequencyText(i18n("Change frequency"));
+    const QString morphMenuText(i18n("Morph to..."));
+    const QString renameText(i18n("Rename"));
+    const QString revertAppearanceText(i18n("Restore default appearance"));
+    const QString rotateLeftText(i18n("Rotate left"));
+    const QString rotateRightText(i18n("Rotate right"));
+    const QString triggerText(i18n("Change trigger"));
 
     if (caps.hasLabel) {
         menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/rename.svg")), renameText)->setData(renameText);
@@ -163,9 +163,9 @@ void ElementContextMenu::exec(QPoint screenPos,
     }
 
     // --- IC sub-circuit actions ---
-    const QString editSubcircuitText(QObject::tr("Edit sub-circuit"));
-    const QString embedSubcircuitText(QObject::tr("Embed sub-circuit"));
-    const QString extractToFileText(QObject::tr("Extract to file"));
+    const QString editSubcircuitText(i18n("Edit sub-circuit"));
+    const QString embedSubcircuitText(i18n("Embed sub-circuit"));
+    const QString extractToFileText(i18n("Extract to file"));
 
     if (onEditSubcircuit && (caps.isEmbedded || caps.isFileBacked)) {
         menu.addAction(editSubcircuitText)->setData(editSubcircuitText);
@@ -180,13 +180,13 @@ void ElementContextMenu::exec(QPoint screenPos,
     menu.addSeparator();
 
     if (caps.hasElements) {
-        QAction *copyAction = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/copy.svg")), QObject::tr("Copy"));
-        QAction *cutAction  = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/cut.svg")),  QObject::tr("Cut"));
+        QAction *copyAction = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/copy.svg")), i18n("Copy"));
+        QAction *cutAction  = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/cut.svg")),  i18n("Cut"));
         QObject::connect(copyAction, &QAction::triggered, scene, &Scene::copyAction);
         QObject::connect(cutAction,  &QAction::triggered, scene, &Scene::cutAction);
     }
 
-    QAction *deleteAction = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/delete.svg")), QObject::tr("Delete"));
+    QAction *deleteAction = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/delete.svg")), i18n("Delete"));
     QObject::connect(deleteAction, &QAction::triggered, scene, &Scene::deleteAction);
 
     QAction *action = menu.exec(screenPos);
@@ -229,7 +229,7 @@ void ElementContextMenu::exec(QPoint screenPos,
         return;
     }
 
-    if ((actionText == QObject::tr("Copy")) || (actionText == QObject::tr("Cut")) || (actionText == QObject::tr("Delete"))) {
+    if ((actionText == i18n("Copy")) || (actionText == i18n("Cut")) || (actionText == i18n("Delete"))) {
         return;
     }
 

@@ -62,9 +62,9 @@ void TrashButton::dropEvent(QDropEvent *event)
         msgBox.setDefaultButton(QMessageBox::No);
 
         if (isEmbedded) {
-            msgBox.setText(tr("Remove all \"%1\" instances from the circuit?").arg(blobName));
+            msgBox.setText(i18n("Remove all \"%1\" instances from the circuit?", blobName));
         } else {
-            msgBox.setText(tr("File will be deleted. Are you sure?"));
+            msgBox.setText(i18n("File will be deleted. Are you sure?"));
         }
 
         if (msgBox.exec() != QMessageBox::Yes) {

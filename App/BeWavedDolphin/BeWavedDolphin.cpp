@@ -56,7 +56,7 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     setAttribute(Qt::WA_DeleteOnClose);
     // Modal so the user cannot interact with the main circuit while the waveform is open
     setWindowModality(Qt::WindowModal);
-    setWindowTitle(tr("beWavedDolphin Simulator"));
+    setWindowTitle(i18n("beWavedDolphin Simulator"));
 
     resize(800, 500);
 
@@ -120,7 +120,7 @@ void BewavedDolphin::createWaveform(const QString &fileName)
 
     if (fileName.isEmpty()) {
         // No saved waveform — start with all-zero inputs and run once to populate outputs
-        setWindowTitle(tr("beWavedDolphin Simulator"));
+        setWindowTitle(i18n("beWavedDolphin Simulator"));
         run();
     } else {
         // Resolve the file relative to the main window's working directory so that
@@ -128,7 +128,7 @@ void BewavedDolphin::createWaveform(const QString &fileName)
         QFileInfo fileInfo(m_mainWindow->currentDir(), QFileInfo(fileName).fileName());
 
         if (!fileInfo.exists()) {
-            m_ui->statusbar->showMessage(tr("File \"%1\" does not exist!").arg(fileName), 4000);
+            m_ui->statusbar->showMessage(i18n("File \"%1\" does not exist!", fileName), 4000);
             return;
         }
 
@@ -497,8 +497,8 @@ bool BewavedDolphin::checkSave()
     auto reply =
             QMessageBox::question(
                 this,
-                tr("wiRedPanda - beWavedDolphin"),
-                tr("Save simulation before closing?"),
+                i18n("wiRedPanda - beWavedDolphin"),
+                i18n("Save simulation before closing?"),
                 QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 
     switch (reply) {
@@ -1014,7 +1014,7 @@ void BewavedDolphin::on_actionSave_triggered()
     }
 
     save(m_currentFile.absoluteFilePath());
-    m_ui->statusbar->showMessage(tr("Saved file successfully."), 4000);
+    m_ui->statusbar->showMessage(i18n("Saved file successfully."), 4000);
     m_edited = false;
 }
 
@@ -1025,10 +1025,10 @@ void BewavedDolphin::on_actionSaveAs_triggered()
 
     // List the format that matches the current file first so it is the default selection
     const QString fileFilter = m_currentFile.fileName().endsWith(".csv") ?
-                tr("CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)")
-              : tr("Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)");
+                i18n("CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)")
+              : i18n("Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)");
 
-    const auto result = FileDialogs::provider()->getSaveFileName(this, tr("Save File as..."), path, fileFilter);
+    const auto result = FileDialogs::provider()->getSaveFileName(this, i18n("Save File as..."), path, fileFilter);
     QString fileName = result.fileName;
 
     if (fileName.isEmpty()) {
@@ -1048,8 +1048,8 @@ void BewavedDolphin::on_actionSaveAs_triggered()
     save(fileName);
     m_currentFile = QFileInfo(fileName);
     associateToWiRedPanda(fileName);
-    setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
-    m_ui->statusbar->showMessage(tr("Saved file successfully."), 4000);
+    setWindowTitle(i18n("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
+    m_ui->statusbar->showMessage(i18n("Saved file successfully."), 4000);
     m_edited = false;
 }
 
@@ -1097,8 +1097,8 @@ void BewavedDolphin::associateToWiRedPanda(const QString &fileName)
         const auto reply =
             QMessageBox::question(
                 this,
-                tr("wiRedPanda - beWavedDolphin"),
-                tr("Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?"),
+                i18n("wiRedPanda - beWavedDolphin"),
+                i18n("Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?"),
                 QMessageBox::Yes | QMessageBox::No);
 
         if (reply == QMessageBox::Yes) {
@@ -1128,8 +1128,8 @@ void BewavedDolphin::on_actionLoad_triggered()
     const QString homeDir(m_mainWindow->currentDir().absolutePath());
 
     const QString fileName = FileDialogs::provider()->getOpenFileName(
-        this, tr("Open File"), homeDir,
-        tr("All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)"));
+        this, i18n("Open File"), homeDir,
+        i18n("All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)"));
 
     if (fileName.isEmpty()) {
         return;
@@ -1137,7 +1137,7 @@ void BewavedDolphin::on_actionLoad_triggered()
 
     load(fileName);
     m_edited = false;
-    m_ui->statusbar->showMessage(tr("File loaded successfully."), 4000);
+    m_ui->statusbar->showMessage(i18n("File loaded successfully."), 4000);
 }
 
 void BewavedDolphin::load(const QString &fileName)
@@ -1177,7 +1177,7 @@ void BewavedDolphin::load(const QString &fileName)
     qCDebug(zero) << "Closing file.";
     file.close();
     associateToWiRedPanda(fileName);
-    setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
+    setWindowTitle(i18n("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
 }
 
 void BewavedDolphin::load(QDataStream &stream)
@@ -1254,7 +1254,7 @@ void BewavedDolphin::on_actionShowWaveforms_triggered()
 void BewavedDolphin::on_actionExportToPng_triggered()
 {
     sentryBreadcrumb("export", QStringLiteral("Waveform export PNG"));
-    QString pngFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to Image"), m_currentFile.absolutePath(), tr("PNG files (*.png)")).fileName;
+    QString pngFile = FileDialogs::provider()->getSaveFileName(this, i18n("Export to Image"), m_currentFile.absolutePath(), i18n("PNG files (*.png)")).fileName;
 
     if (pngFile.isEmpty()) {
         return;
@@ -1286,7 +1286,7 @@ bool BewavedDolphin::exportWaveformToPng(const QString &filename)
 void BewavedDolphin::on_actionExportToPdf_triggered()
 {
     sentryBreadcrumb("export", QStringLiteral("Waveform export PDF"));
-    QString pdfFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to PDF"), m_currentFile.absolutePath(), tr("PDF files (*.pdf)")).fileName;
+    QString pdfFile = FileDialogs::provider()->getSaveFileName(this, i18n("Export to PDF"), m_currentFile.absolutePath(), i18n("PDF files (*.pdf)")).fileName;
 
     if (pdfFile.isEmpty()) {
         return;
@@ -1318,7 +1318,7 @@ void BewavedDolphin::on_actionAbout_triggered()
 {
     QMessageBox::about(this,
         "beWavedDolphin",
-        tr("<p>beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo"
+        i18n("<p>beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo"
            " to help students learn about logic circuits.</p>"
            "<p>Software version: %1</p>"
            "<p><strong>Creators:</strong></p>"

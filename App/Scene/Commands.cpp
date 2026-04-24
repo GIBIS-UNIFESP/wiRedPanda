@@ -278,7 +278,7 @@ AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &items, Scene *sce
     // The second addItems call handles any wires discovered via port traversal.
     const auto items_ = CommandUtils::loadList(items, m_ids, m_otherIds);
     CommandUtils::addItems(m_scene, items_);
-    setText(tr("Add %1 elements").arg(items_.size()));
+    setText(i18n("Add %1 elements", items_.size()));
 }
 
 void AddItemsCommand::undo()
@@ -308,7 +308,7 @@ DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scen
     // Deletion happens in redo() so that QUndoStack::push() triggers the first delete,
     // keeping the constructor side-effect-free for safe exception handling.
     const auto items_ = CommandUtils::loadList(items, m_ids, m_otherIds);
-    setText(tr("Delete %1 elements").arg(items_.size()));
+    setText(i18n("Delete %1 elements", items_.size()));
 }
 
 void DeleteItemsCommand::undo()
@@ -333,7 +333,7 @@ RotateCommand::RotateCommand(const QList<GraphicElement *> &items, const int ang
     : ElementsCommand(items, scene, parent)
     , m_angle(angle)
 {
-    setText(tr("Rotate %1 degrees").arg(m_angle));
+    setText(i18n("Rotate %1 degrees", m_angle));
     m_positions.reserve(items.size());
 
     for (auto *item : items) {
@@ -401,7 +401,7 @@ MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPoint
         m_newPositions.append(elm->pos());
     }
 
-    setText(tr("Move elements"));
+    setText(i18n("Move elements"));
 }
 
 void MoveCommand::undo()
@@ -441,7 +441,7 @@ UpdateCommand::UpdateCommand(const QList<GraphicElement *> &elements, const QByt
         elm->save(stream);
     }
 
-    setText(tr("Update %1 elements").arg(elements.size()));
+    setText(i18n("Update %1 elements", elements.size()));
 }
 
 void UpdateCommand::undo()
@@ -539,7 +539,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     m_scene->removeItem(node);
     delete node;
 
-    setText(tr("Wire split"));
+    setText(i18n("Wire split"));
 }
 
 void SplitCommand::redo()
@@ -634,7 +634,7 @@ MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType 
         m_types.append(oldElm->elementType());
     }
 
-    setText(tr("Morph %1 elements to %2").arg(elements.size()).arg(elements.constFirst()->objectName()));
+    setText(i18n("Morph %1 elements to %2", elements.size(), elements.constFirst()->objectName()));
 }
 
 void MorphCommand::undo()
@@ -806,7 +806,7 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
         return;
     }
 
-    setText(tr("Flip %1 elements in axis %2").arg(items.size(), axis));
+    setText(i18n("Flip %1 elements in axis %2", items.size(), axis));
     m_positions.reserve(items.size());
 
     // Compute the bounding box of all selected elements so redo() can mirror
@@ -867,8 +867,8 @@ ChangePortSizeCommand::ChangePortSizeCommand(const QList<GraphicElement *> &elem
     , m_newPortSize(newPortSize)
     , m_isInput(isInput)
 {
-    setText(isInput ? tr("Change input size to %1").arg(newPortSize)
-                    : tr("Change output size to %1").arg(newPortSize));
+    setText(isInput ? i18n("Change input size to %1", newPortSize)
+                    : i18n("Change output size to %1", newPortSize));
 }
 
 void ChangePortSizeCommand::redo()
@@ -961,7 +961,7 @@ ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(GraphicElement *ele
 {
     m_id = element->id();
     m_scene = scene;
-    setText(tr("Toggle TruthTable Output at position: %1").arg(m_pos));
+    setText(i18n("Toggle TruthTable Output at position: %1", m_pos));
 }
 
 void ToggleTruthTableOutputCommand::redo()
@@ -1020,7 +1020,7 @@ RegisterBlobCommand::RegisterBlobCommand(const QString &blobName, const QByteArr
     , m_data(data)
     , m_scene(scene)
 {
-    setText(tr("Register blob \"%1\"").arg(blobName));
+    setText(i18n("Register blob \"%1\"", blobName));
 }
 
 void RegisterBlobCommand::redo()
@@ -1053,7 +1053,7 @@ UpdateBlobCommand::UpdateBlobCommand(const QList<GraphicElement *> &elements, co
         m_newBlob = m_scene->icRegistry()->blob(m_blobName);
     }
 
-    setText(tr("Update %1 IC blobs").arg(elements.size()));
+    setText(i18n("Update %1 IC blobs", elements.size()));
 }
 
 void UpdateBlobCommand::redo()

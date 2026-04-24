@@ -202,6 +202,6 @@ QString Clock::genericProperties()
 
 QList<QPair<int, QString>> Clock::appearanceStates() const
 {
-    return {{0, tr("Low")}, {1, tr("High")}};
+    return {{0, i18n("Low")}, {1, i18n("High")}};
 }
 

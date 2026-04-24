@@ -99,23 +99,23 @@ void Display16::updatePortsProperties()
     // The port order follows the standard 16-segment naming convention
     // (A1/A2 = top, B/C = right verticals, D1/D2 = bottom, E/F = left verticals,
     //  G1/G2 = middle, H/J/K/L/M/N = diagonals and center verticals).
-    inputPort( 0)->setPos( 0,  -8);    inputPort( 0)->setName("G1 (" + tr("middle left horizontal")  + ")");
-    inputPort( 1)->setPos( 0,   8);    inputPort( 1)->setName("F ("  + tr("upper left vertical")     + ")");
-    inputPort( 2)->setPos( 0,  24);    inputPort( 2)->setName("E ("  + tr("lower left vertical")     + ")");
-    inputPort( 3)->setPos( 0,  40);    inputPort( 3)->setName("D1 (" + tr("bottom left horizontal")  + ")");
-    inputPort( 4)->setPos( 0,  56);    inputPort( 4)->setName("D2 (" + tr("bottom right horizontal") + ")");
-    inputPort( 5)->setPos(64,  -8);    inputPort( 5)->setName("A1 (" + tr("top left horizontal")     + ")");
-    inputPort( 6)->setPos(64,   8);    inputPort( 6)->setName("A2 (" + tr("top right horizontal")    + ")");
-    inputPort( 7)->setPos(64,  24);    inputPort( 7)->setName("B ("  + tr("upper right vertical")    + ")");
-    inputPort( 8)->setPos(64,  40);    inputPort( 8)->setName("DP (" + tr("dot")                     + ")");
-    inputPort( 9)->setPos(64,  56);    inputPort( 9)->setName("C ("  + tr("lower right vertical")    + ")");
-    inputPort(10)->setPos( 0,  72);    inputPort(10)->setName("G2 (" + tr("middle right horizontal") + ")");
-    inputPort(11)->setPos( 0,  88);    inputPort(11)->setName("H ("  + tr("upper left diagonal")     + ")");
-    inputPort(12)->setPos( 0, 104);    inputPort(12)->setName("J ("  + tr("upper center vertical")   + ")");
-    inputPort(13)->setPos(64,  72);    inputPort(13)->setName("K ("  + tr("upper right diagonal")    + ")");
-    inputPort(14)->setPos(64,  88);    inputPort(14)->setName("L ("  + tr("lower right diagonal")    + ")");
-    inputPort(15)->setPos(64, 104);    inputPort(15)->setName("M ("  + tr("lower center vertical")   + ")");
-    inputPort(16)->setPos(64, 120);    inputPort(16)->setName("N ("  + tr("lower left vertical")     + ")");
+    inputPort( 0)->setPos( 0,  -8);    inputPort( 0)->setName("G1 (" + i18n("middle left horizontal")  + ")");
+    inputPort( 1)->setPos( 0,   8);    inputPort( 1)->setName("F ("  + i18n("upper left vertical")     + ")");
+    inputPort( 2)->setPos( 0,  24);    inputPort( 2)->setName("E ("  + i18n("lower left vertical")     + ")");
+    inputPort( 3)->setPos( 0,  40);    inputPort( 3)->setName("D1 (" + i18n("bottom left horizontal")  + ")");
+    inputPort( 4)->setPos( 0,  56);    inputPort( 4)->setName("D2 (" + i18n("bottom right horizontal") + ")");
+    inputPort( 5)->setPos(64,  -8);    inputPort( 5)->setName("A1 (" + i18n("top left horizontal")     + ")");
+    inputPort( 6)->setPos(64,   8);    inputPort( 6)->setName("A2 (" + i18n("top right horizontal")    + ")");
+    inputPort( 7)->setPos(64,  24);    inputPort( 7)->setName("B ("  + i18n("upper right vertical")    + ")");
+    inputPort( 8)->setPos(64,  40);    inputPort( 8)->setName("DP (" + i18n("dot")                     + ")");
+    inputPort( 9)->setPos(64,  56);    inputPort( 9)->setName("C ("  + i18n("lower right vertical")    + ")");
+    inputPort(10)->setPos( 0,  72);    inputPort(10)->setName("G2 (" + i18n("middle right horizontal") + ")");
+    inputPort(11)->setPos( 0,  88);    inputPort(11)->setName("H ("  + i18n("upper left diagonal")     + ")");
+    inputPort(12)->setPos( 0, 104);    inputPort(12)->setName("J ("  + i18n("upper center vertical")   + ")");
+    inputPort(13)->setPos(64,  72);    inputPort(13)->setName("K ("  + i18n("upper right diagonal")    + ")");
+    inputPort(14)->setPos(64,  88);    inputPort(14)->setName("L ("  + i18n("lower right diagonal")    + ")");
+    inputPort(15)->setPos(64, 104);    inputPort(15)->setName("M ("  + i18n("lower center vertical")   + ")");
+    inputPort(16)->setPos(64, 120);    inputPort(16)->setName("N ("  + i18n("lower left vertical")     + ")");
 
     for (auto *port : std::as_const(m_inputPorts)) {
         port->setRequired(false);

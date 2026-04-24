@@ -160,5 +160,23 @@
 #include <QtGlobal>
 #include <QtTest>
 
+// KDE i18n / non-KDE compat shim
+#ifdef USE_KDE_FRAMEWORKS
+#  include <KLocalizedString>
+#else
+// Bridge: i18n(text, args...) on non-KDE builds.
+// Falls back to QCoreApplication::translate with empty context; .qm translations
+// that rely on class context won't resolve, but this is acceptable on the porting branch.
+template<typename... Args>
+[[nodiscard]] inline QString i18n(const char *text, const Args &... args)
+{
+    QString s = QCoreApplication::translate("", text);
+    if constexpr (sizeof...(args) > 0) {
+        (..., (s = s.arg(args)));
+    }
+    return s;
+}
+#endif
+
 #endif
 

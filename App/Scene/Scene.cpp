@@ -57,7 +57,7 @@ Scene::Scene(QObject *parent)
     m_selectionRect.setFlag(QGraphicsItem::ItemIsSelectable, false);
     addItem(&m_selectionRect);
 
-    m_undoAction = new QAction(tr("&Undo"), this);
+    m_undoAction = new QAction(i18n("&Undo"), this);
     m_undoAction->setEnabled(false);
     m_undoAction->setIcon(QIcon(":/Interface/Toolbar/undo.svg"));
     m_undoAction->setShortcut(QKeySequence::Undo);
@@ -65,7 +65,7 @@ Scene::Scene(QObject *parent)
     connect(&m_undoStack, &QUndoStack::undoTextChanged, this, &Scene::updateUndoText);
     connect(m_undoAction, &QAction::triggered, &m_undoStack, &QUndoStack::undo);
 
-    m_redoAction = new QAction(tr("&Redo"), this);
+    m_redoAction = new QAction(i18n("&Redo"), this);
     m_redoAction->setEnabled(false);
     m_redoAction->setIcon(QIcon(":/Interface/Toolbar/redo.svg"));
     m_redoAction->setShortcut(QKeySequence::Redo);
@@ -551,13 +551,13 @@ void Scene::retranslateUi()
 
 void Scene::updateUndoText(const QString &text)
 {
-    const QString prefix = tr("&Undo");
+    const QString prefix = i18n("&Undo");
     m_undoAction->setText(text.isEmpty() ? prefix : prefix + QLatin1Char(' ') + text);
 }
 
 void Scene::updateRedoText(const QString &text)
 {
-    const QString prefix = tr("&Redo");
+    const QString prefix = i18n("&Redo");
     m_redoAction->setText(text.isEmpty() ? prefix : prefix + QLatin1Char(' ') + text);
 }
 
@@ -577,7 +577,7 @@ void Scene::contextMenu(const QPoint screenPos)
     } else {
         // Right-click on empty canvas: show a minimal paste-only context menu
         QMenu menu;
-        auto *pasteAction = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/paste.svg")), tr("Paste"));
+        auto *pasteAction = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/paste.svg")), i18n("Paste"));
         const auto *mimeData = QApplication::clipboard()->mimeData();
 
         if (mimeData->hasFormat(MimeType::ClipboardLegacy)) {

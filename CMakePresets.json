@@ -130,10 +130,22 @@
         {
             "name": "kde",
             "displayName": "KDE Frameworks",
-            "description": "Debug build with KDE Frameworks integration enabled",
+            "description": "Debug build with KDE Frameworks integration enabled (uses system Qt)",
             "inherits": "debug",
+            "binaryDir": "build-kde",
             "cacheVariables": {
-                "USE_KDE_FRAMEWORKS": "ON"
+                "USE_KDE_FRAMEWORKS": "ON",
+                "CMAKE_BUILD_RPATH": "/usr/lib/x86_64-linux-gnu",
+                "Qt6_DIR": {"type": "PATH", "value": "/usr/lib/x86_64-linux-gnu/cmake/Qt6"},
+                "Qt6Core_DIR": {"type": "PATH", "value": "/usr/lib/x86_64-linux-gnu/cmake/Qt6Core"},
+                "Qt6Gui_DIR": {"type": "PATH", "value": "/usr/lib/x86_64-linux-gnu/cmake/Qt6Gui"},
+                "Qt6Network_DIR": {"type": "PATH", "value": "/usr/lib/x86_64-linux-gnu/cmake/Qt6Network"},
+                "Qt6PrintSupport_DIR": {"type": "PATH", "value": "/usr/lib/x86_64-linux-gnu/cmake/Qt6PrintSupport"},
+                "Qt6Multimedia_DIR": {"type": "PATH", "value": "/usr/lib/x86_64-linux-gnu/cmake/Qt6Multimedia"},
+                "Qt6Widgets_DIR": {"type": "PATH", "value": "/usr/lib/x86_64-linux-gnu/cmake/Qt6Widgets"},
+                "Qt6Svg_DIR": {"type": "PATH", "value": "/usr/lib/x86_64-linux-gnu/cmake/Qt6Svg"},
+                "Qt6Test_DIR": {"type": "PATH", "value": "/usr/lib/x86_64-linux-gnu/cmake/Qt6Test"},
+                "Qt6LinguistTools_DIR": {"type": "PATH", "value": "/usr/lib/x86_64-linux-gnu/cmake/Qt6LinguistTools"}
             }
         }
     ],

@@ -83,11 +83,11 @@ void WorkSpace::save(const QString &fileName)
 
     if (isFromNewerVersion()) {
         if (Application::interactiveMode) {
-            const QString message = tr("This file was saved with a newer file format (version %1).\n"
+            const QString message = i18n("This file was saved with a newer file format (version %1).\n"
                          "Your wiRedPanda version (%2) supports file format %3.\n\n"
                          "Please update wiRedPanda to save changes to this file.")
                           .arg(m_loadedVersion.toString(), AppVersion::current.toString(), FileVersion::current.toString());
-            QMessageBox::warning(this, tr("Cannot save."), message);
+            QMessageBox::warning(this, i18n("Cannot save."), message);
         }
         return;
     }
@@ -154,7 +154,7 @@ void WorkSpace::save(const QString &fileName)
 
         if (m_fileInfo.fileName().isEmpty()) {
             const QString path = fileName.isEmpty() ? m_fileInfo.absolutePath() : QFileInfo(fileName).absolutePath();
-            fileName_ = FileDialogs::provider()->getSaveFileName(this, tr("Save File"), path, tr("Panda files (*.panda)")).fileName;
+            fileName_ = FileDialogs::provider()->getSaveFileName(this, i18n("Save File"), path, i18n("Panda files (*.panda)")).fileName;
         }
     }
 
@@ -340,18 +340,18 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
         if (version > FileVersion::current) {
             const QString fmtVersion = FileVersion::current.toString();
             const QString fileVersion = version.toString();
-            const QString message = tr("This file was saved with a newer file format (version %1).\n"
+            const QString message = i18n("This file was saved with a newer file format (version %1).\n"
                          "Your version supports file format %2.\n\n"
                          "The file will be opened but saving is blocked.\n"
                          "Please update wiRedPanda to edit and save this file.")
                           .arg(fileVersion, fmtVersion);
-            QMessageBox::warning(this, tr("Newer version file."), message);
+            QMessageBox::warning(this, i18n("Newer version file."), message);
         } else if (version < FileVersion::current) {
             const QString backupFileName = m_fileInfo.completeBaseName() + ".v" + version.toString() + "." + m_fileInfo.suffix();
-            const QString message = tr("This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).\n"
+            const QString message = i18n("This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).\n"
                          "A backup of the original file has been created with name: %3")
                          .arg(version.toString(), FileVersion::current.toString(), backupFileName);
-            QMessageBox::information(this, tr("File upgraded."), message);
+            QMessageBox::information(this, i18n("File upgraded."), message);
         }
     }
 

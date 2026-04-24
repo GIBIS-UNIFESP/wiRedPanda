@@ -200,7 +200,7 @@ IC *ICRegistry::createEmbeddedIC(const QString &blobName, const QByteArray &file
     auto *ic = new IC();
     ic->setBlobName(blobName);
 
-    m_scene->undoStack()->beginMacro(QCoreApplication::tr("Add embedded IC"));
+    m_scene->undoStack()->beginMacro(i18n("Add embedded IC"));
     m_scene->receiveCommand(new RegisterBlobCommand(blobName, fileBytes, m_scene));
     ic->loadFromBlob(fileBytes, contextDir);
     m_scene->receiveCommand(new AddItemsCommand({ic}, m_scene));
