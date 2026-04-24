@@ -275,7 +275,7 @@ file(GLOB QM_FILES \"${CMAKE_SOURCE_DIR}/App/Resources/Translations/*.qm\")
 list(SORT QM_FILES)
 
 # Start QRC content
-set(QRC_CONTENT \"<RCC>\\n    <qresource prefix=\\\"/translations\\\">\\n\")
+set(QRC_CONTENT \"<RCC>\\n    <qresource prefix=\\\"/Translations\\\">\\n\")
 
 # Add each .qm file
 foreach(qm_file \${QM_FILES})
