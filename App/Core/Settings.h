@@ -2,14 +2,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief Typed wrappers around QSettings for all application preferences.
+ * \brief Typed wrappers around the settings backend for all application preferences.
  */
 
 #pragma once
 
 #include <QByteArray>
-#include <QSettings>
 #include <QStringList>
+
+#ifdef USE_KDE_FRAMEWORKS
+#include <KConfigGroup>
+#include <KSharedConfig>
+#else
+#include <QSettings>
+#endif
 
 #include "App/Core/ThemeManager.h"
 
@@ -76,12 +82,13 @@ public:
     static void setUpdateCheckSkippedVersion(const QString &version);
 
 private:
+#ifdef USE_KDE_FRAMEWORKS
+    static KConfigGroup groupFor(const QString &groupPath);
+#else
     static QVariant value(const QString &key);
     static void setValue(const QString &key, const QVariant &value);
     static QSettings *settingsInstance();
-
-    // --- Members ---
-
     inline static QSettings *settings = nullptr;
+#endif
 };
 

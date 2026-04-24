@@ -118,8 +118,8 @@ Most frameworks (KConfig, KI18n, KWidgetsAddons, etc.) need no guard and work on
 
 ---
 
-## Phase 1 — Settings: QSettings → KConfig
-**KDE Frameworks**: `KF6::Config`, `KF6::ConfigCore`
+## Phase 1 — Settings: QSettings → KConfig ✅
+**KDE Frameworks**: `KF6::ConfigCore`
 **Risk**: Low — fully encapsulated behind the existing `Settings` wrapper class
 
 ### Goal
@@ -127,49 +127,83 @@ Replace the QSettings backend with KConfig while keeping the `Settings` public A
 All 12 callers of `Settings::*()` require zero changes.
 
 ### Critical files
-- `App/Core/Settings.h` (87 lines) — public API, unchanged
-- `App/Core/Settings.cpp` (206 lines) — implementation replaced
+- `App/Core/Settings.h` — public API unchanged; include and private member swapped under `#ifdef`
+- `App/Core/Settings.cpp` — implementation replaced
 
-### Changes
+### CMake
 
-**`App/Core/Settings.cpp`**
+```cmake
+find_package(KF6Config REQUIRED)          # not "KF6 COMPONENTS Config" — KF6 uses per-module packages
+add_compile_definitions(USE_KDE_FRAMEWORKS)
+# after include(CMakeSources.cmake):
+target_link_libraries(wiredpanda_lib PUBLIC KF6::ConfigCore)
+```
 
-Replace the private `QSettings` instance with `KSharedConfig` + `KConfigGroup`:
+Note: the target is `KF6::ConfigCore` (not `KF6::Config`). `KF6::ConfigGui` adds Qt Gui
+dependencies and is only needed for color scheme / GUI config widgets.
+
+### Settings.h
+
+Swap includes under `#ifdef USE_KDE_FRAMEWORKS`:
 
 ```cpp
-// Before
-static QSettings &instance() {
-    static QSettings s(QSettings::IniFormat, QSettings::UserScope,
-                       "GIBIS-UNIFESP", "wiRedPanda");
-    return s;
-}
-
-// After (non-WASM)
-#ifndef Q_OS_WASM
-static KConfigGroup group(const QString &name) {
-    return KSharedConfig::openConfig()->group(name);
-}
+#ifdef USE_KDE_FRAMEWORKS
+#include <KConfigGroup>
+#include <KSharedConfig>
+#else
+#include <QSettings>
 #endif
 ```
 
-Each accessor migrates from `settings.value(key, default)` to `cfg.readEntry(key, default)`.
-Group structure maps naturally: `mainWindow/geometry` → group("mainWindow").readEntry("geometry").
+Move `QSettings *settings` and `settingsInstance()` behind `#ifndef USE_KDE_FRAMEWORKS`.
+Add `static KConfigGroup groupFor(const QString &groupPath)` for the KDE path.
 
-**`.kcfg` schema file** (new, optional but recommended)
-`App/Resources/wiredpanda.kcfg` — declares all settings with types and defaults.
-Enables KConfigXT code generation for compile-time-checked settings access in the future.
+### Settings.cpp
 
-**WASM fallback**: `Q_OS_WASM` block retains existing QSettings/localStorage path unchanged.
+Add a `groupFor()` helper that splits slash-separated group paths into nested `KConfigGroup` calls:
+
+```cpp
+KConfigGroup Settings::groupFor(const QString &groupPath)
+{
+    const QStringList parts = groupPath.split(u'/');
+    KConfigGroup g = KSharedConfig::openConfig()->group(parts.constFirst());
+    for (int i = 1; i < parts.size(); ++i) {
+        g = g.group(parts.at(i));
+    }
+    return g;
+}
+```
+
+Each typed accessor uses KConfig's typed `readEntry`/`writeEntry` overloads directly
+inside `#ifdef USE_KDE_FRAMEWORKS` blocks. **Do not use the `QVariant` overload for
+`QByteArray` fields** (window geometry) — KConfig's QVariant round-trip does not preserve
+binary QByteArray content. Use `readEntry(key, QByteArray{})` and `writeEntry(key, ba)`
+typed overloads instead.
+
+Root-level QSettings keys (`fastMode`, `language`, `theme`, etc.) that have no group
+in QSettings map to the `[General]` group in KConfig (`groupFor(u"General"_s)`).
+
+Group mapping:
+- `"MainWindow/geometry"` → `groupFor(u"MainWindow"_s).readEntry(u"geometry"_s, QByteArray{})`
+- `"MainWindow/splitter/geometry"` → `groupFor(u"MainWindow/splitter"_s).readEntry(...)`
+- `"fastMode"` → `groupFor(u"General"_s).readEntry(u"fastMode"_s, false)`
+- `"updateCheck/lastCheckDate"` → `groupFor(u"updateCheck"_s).readEntry(...)`
+
+`setHideV4Warning(false)` uses `g.deleteEntry(key)` instead of `QSettings::remove()`.
+
+Add `using namespace Qt::StringLiterals;` at the top of Settings.cpp for `u"..."_s` literals.
+
+**WASM fallback**: the `#else` branches retain the existing QSettings/localStorage path unchanged.
 
 ### Benefits gained
-- Typed `.kcfg` schema with declared defaults — no more scattered magic strings
+- Typed `readEntry`/`writeEntry` with declared defaults — no scattered magic strings
 - Built-in config migration via `KConfigGroup::moveValuesTo()`
 - Works identically on Windows, macOS, Linux
 
 ### Verification
 - All existing settings persist across restarts
-- `~/.config/wiRedPandarc` (Linux) or `%APPDATA%\wiRedPanda\wiRedPandarc` (Windows) created
-- Run full test suite: `ctest --preset debug`
+- `ctest --preset kde` — all 176 tests pass
+- `ctest --preset debug` — all 176 tests pass (QSettings path unaffected)
 
 ---
 
