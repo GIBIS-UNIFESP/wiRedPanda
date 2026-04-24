@@ -59,8 +59,7 @@
       "description": "Valid export formats for circuit images",
       "enum": [
         "png",
-        "svg",
-        "pdf"
+        "svg"
       ]
     },
     "WaveformExportFormat": {
@@ -561,8 +560,7 @@
                 },
                 "source_port": {
                   "type": "integer",
-                  "minimum": 0,
-                  "maximum": 63
+                  "minimum": 0
                 },
                 "target_id": {
                   "type": "integer",
@@ -570,8 +568,7 @@
                 },
                 "target_port": {
                   "type": "integer",
-                  "minimum": 0,
-                  "maximum": 63
+                  "minimum": 0
                 },
                 "x": {
                   "type": "number"
@@ -858,6 +855,10 @@
                 "element_id": {
                   "type": "integer",
                   "minimum": 1
+                },
+                "port": {
+                  "type": "integer",
+                  "minimum": 0
                 }
               },
               "required": [
@@ -1167,6 +1168,94 @@
           ],
           "additionalProperties": false
         },
+        "export_arduino": {
+          "type": "object",
+          "description": "Export circuit as Arduino code",
+          "properties": {
+            "jsonrpc": {
+              "type": "string",
+              "const": "2.0"
+            },
+            "method": {
+              "const": "export_arduino"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "filename": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "filename"
+              ],
+              "additionalProperties": false
+            },
+            "id": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method"
+          ],
+          "additionalProperties": false
+        },
+        "export_systemverilog": {
+          "type": "object",
+          "description": "Export circuit as SystemVerilog code",
+          "properties": {
+            "jsonrpc": {
+              "type": "string",
+              "const": "2.0"
+            },
+            "method": {
+              "const": "export_systemverilog"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "filename": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "filename"
+              ],
+              "additionalProperties": false
+            },
+            "id": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method"
+          ],
+          "additionalProperties": false
+        },
         "create_waveform": {
           "type": "object",
           "description": "Create waveform analysis for the current circuit",
@@ -1181,19 +1270,11 @@
             "params": {
               "type": "object",
               "properties": {
-                "elements": {
-                  "type": "array",
-                  "items": {
-                    "type": "integer",
-                    "minimum": 1
-                  },
-                  "description": "Optional list of element IDs to analyze"
-                },
                 "duration": {
                   "type": "integer",
                   "minimum": 1,
                   "maximum": 1024,
-                  "default": 64,
+                  "default": 32,
                   "description": "Number of simulation steps"
                 },
                 "input_patterns": {
@@ -1439,7 +1520,7 @@
             "params": {
               "type": "object",
               "properties": {
-                "element_id": { "type": "integer", "description": "Element ID of the file-backed IC to embed" },
+                "element_id": { "type": "integer", "minimum": 1, "description": "Element ID of the file-backed IC to embed" },
                 "blob_name": { "type": "string", "description": "Optional blob name override (defaults to file basename)" }
               },
               "required": ["element_id"],
@@ -1737,14 +1818,6 @@
                 "label": {
                   "type": "string",
                   "description": "Element label"
-                },
-                "input_size": {
-                  "type": "integer",
-                  "description": "Number of input ports"
-                },
-                "output_size": {
-                  "type": "integer",
-                  "description": "Number of output ports"
                 },
                 "color": {
                   "type": "string",
@@ -2303,9 +2376,6 @@
                       "type": "string"
                     },
                     "status": {
-                      "type": "string"
-                    },
-                    "warning": {
                       "type": "string"
                     },
                     "waveform_data": {
@@ -2907,6 +2977,252 @@
                     }
                   },
                   "required": ["effective_theme"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "close_circuit_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            { "properties": { "result": { "type": "object", "additionalProperties": false } } }
+          ]
+        },
+        "connect_elements_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            { "properties": { "result": { "type": "object", "additionalProperties": false } } }
+          ]
+        },
+        "delete_element_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            { "properties": { "result": { "type": "object", "additionalProperties": false } } }
+          ]
+        },
+        "disconnect_elements_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            { "properties": { "result": { "type": "object", "additionalProperties": false } } }
+          ]
+        },
+        "load_circuit_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            { "properties": { "result": { "type": "object", "additionalProperties": false } } }
+          ]
+        },
+        "new_circuit_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            { "properties": { "result": { "type": "object", "additionalProperties": false } } }
+          ]
+        },
+        "save_circuit_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            { "properties": { "result": { "type": "object", "additionalProperties": false } } }
+          ]
+        },
+        "set_input_value_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            { "properties": { "result": { "type": "object", "additionalProperties": false } } }
+          ]
+        },
+        "simulation_control_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            { "properties": { "result": { "type": "object", "additionalProperties": false } } }
+          ]
+        },
+        "split_connection_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            { "properties": { "result": { "type": "object", "additionalProperties": false } } }
+          ]
+        },
+        "export_arduino_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "exported_file": { "type": "string" },
+                    "format": { "type": "string", "const": "arduino" }
+                  },
+                  "required": ["exported_file", "format"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "export_systemverilog_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "exported_file": { "type": "string" },
+                    "format": { "type": "string", "const": "systemverilog" }
+                  },
+                  "required": ["exported_file", "format"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "get_tab_count_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "tab_count": { "type": "integer", "minimum": 0 }
+                  },
+                  "required": ["tab_count"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "get_server_info_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "server_name": { "type": "string" },
+                    "version": { "type": "string" },
+                    "protocol_version": { "type": "string" },
+                    "status": { "type": "string" },
+                    "capabilities": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    }
+                  },
+                  "required": ["server_name", "version", "protocol_version", "status", "capabilities"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "embed_ic_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "blob_name": { "type": "string" },
+                    "converted_count": { "type": "integer", "minimum": 0 },
+                    "input_count": { "type": "integer", "minimum": 0 },
+                    "output_count": { "type": "integer", "minimum": 0 },
+                    "blob_size": { "type": "integer", "minimum": 0 },
+                    "message": { "type": "string" }
+                  },
+                  "required": ["blob_name", "converted_count", "input_count", "output_count", "blob_size", "message"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "extract_ic_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "blob_name": { "type": "string" },
+                    "file_name": { "type": "string" },
+                    "converted_count": { "type": "integer", "minimum": 0 },
+                    "message": { "type": "string" }
+                  },
+                  "required": ["blob_name", "file_name", "converted_count", "message"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "undo_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "can_undo": { "type": "boolean", "description": "Only present on success" },
+                    "can_redo": { "type": "boolean", "description": "Only present on success" },
+                    "undo_text": { "type": "string", "description": "Only present on success" },
+                    "redo_text": { "type": "string", "description": "Only present on success" }
+                  },
+                  "required": ["success", "message"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "redo_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "can_undo": { "type": "boolean", "description": "Only present on success" },
+                    "can_redo": { "type": "boolean", "description": "Only present on success" },
+                    "undo_text": { "type": "string", "description": "Only present on success" },
+                    "redo_text": { "type": "string", "description": "Only present on success" }
+                  },
+                  "required": ["success", "message"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "get_undo_stack_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "can_undo": { "type": "boolean" },
+                    "can_redo": { "type": "boolean" },
+                    "undo_text": { "type": "string" },
+                    "redo_text": { "type": "string" },
+                    "undo_limit": { "type": "integer", "minimum": 0 },
+                    "undo_count": { "type": "integer", "minimum": 0 },
+                    "undo_index": { "type": "integer", "minimum": 0 }
+                  },
+                  "required": ["can_undo", "can_redo", "undo_text", "redo_text", "undo_limit", "undo_count", "undo_index"],
                   "additionalProperties": false
                 }
               }
