@@ -13,6 +13,23 @@ set(CMAKE_BUILD_RPATH_USE_ORIGIN TRUE)
 # Generate compilation database for clazy and clang-tools
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# KDE Frameworks integration (opt-in, disabled on WASM)
+option(USE_KDE_FRAMEWORKS "Enable KDE Frameworks integration" OFF)
+
+if(USE_KDE_FRAMEWORKS AND NOT EMSCRIPTEN)
+    find_package(ECM REQUIRED NO_MODULE)
+    list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+    include(KDEInstallDirs)
+    include(KDECMakeSettings NO_POLICY_SCOPE)
+    include(KDECompilerSettings NO_POLICY_SCOPE)
+    # This project uses exceptions; re-enable them via the ECM-provided function
+    # which cleanly removes -fno-exceptions from CMAKE_CXX_FLAGS and adds -fexceptions
+    kde_enable_exceptions()
+    message(STATUS "KDE Frameworks integration enabled (ECM ${ECM_VERSION})")
+else()
+    message(STATUS "KDE Frameworks integration disabled")
+endif()
+
 # Enable conforming preprocessor for MSVC to support __VA_OPT__
 if(MSVC)
     add_compile_options(/Zc:preprocessor)
@@ -200,6 +217,12 @@ FetchContent_MakeAvailable(json-schema-validator)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(nlohmann_json_schema_validator PRIVATE -w)
 endif()
+# KDECompilerSettings enables hidden visibility globally; this library has no visibility
+# annotations so its symbols must remain default-visible for the linker to resolve them
+set_target_properties(nlohmann_json_schema_validator PROPERTIES
+    CXX_VISIBILITY_PRESET default
+    VISIBILITY_INLINES_HIDDEN OFF
+)
 
 include(CMakeSources.cmake)
 

@@ -126,6 +126,15 @@
                 "lhs": "${hostSystemName}",
                 "rhs": "Darwin"
             }
+        },
+        {
+            "name": "kde",
+            "displayName": "KDE Frameworks",
+            "description": "Debug build with KDE Frameworks integration enabled",
+            "inherits": "debug",
+            "cacheVariables": {
+                "USE_KDE_FRAMEWORKS": "ON"
+            }
         }
     ],
     "buildPresets": [
@@ -183,6 +192,11 @@
             "name": "sentry-breakpad",
             "displayName": "Build with Sentry Breakpad",
             "configurePreset": "sentry-breakpad"
+        },
+        {
+            "name": "kde",
+            "displayName": "Build KDE Frameworks",
+            "configurePreset": "kde"
         }
     ],
     "testPresets": [
@@ -254,6 +268,12 @@
             "name": "sentry-breakpad",
             "displayName": "Test with Sentry Breakpad",
             "configurePreset": "sentry-breakpad",
+            "inherits": "base"
+        },
+        {
+            "name": "kde",
+            "displayName": "Test KDE Frameworks",
+            "configurePreset": "kde",
             "inherits": "base"
         }
     ]
