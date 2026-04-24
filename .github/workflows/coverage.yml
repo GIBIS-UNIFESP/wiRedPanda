@@ -43,13 +43,18 @@ jobs:
       run: |
         ctest --preset coverage -V -LE gui
 
-    - name: Upload coverage data
+    - name: Generate gcov reports
       run: |
         cd build
         gcov -abcfu $(find . -name "*.gcno")
-        curl -Os https://uploader.codecov.io/latest/linux/codecov
-        chmod +x ./codecov
-        ./codecov
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v6
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: build
+        fail_ci_if_error: true
+        verbose: true
 
     - name: Upload build artifacts on failure
       if: failure()
