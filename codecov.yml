@@ -1,0 +1,49 @@
+codecov:
+  max_report_age: off
+  require_ci_to_pass: true
+
+coverage:
+  precision: 1
+  round: nearest
+  range: "60...90"
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+    patch:
+      default:
+        target: 80%
+        threshold: 0%
+
+component_management:
+  default_rules:
+    statuses:
+      - type: project
+        target: auto
+        threshold: 1%
+  individual_components:
+    - component_id: app
+      name: App
+      paths:
+        - App/**
+    - component_id: tests
+      name: Tests
+      paths:
+        - Tests/**
+
+ignore:
+  - "**/moc_*.cpp"
+  - "**/qrc_*.cpp"
+  - "**/ui_*.h"
+  - "**/*_autogen/**"
+  - "build/**"
+  - "MCP/**"
+  - "third-party/**"
+  - "App/Resources/**"
+  - ".devcontainer/**"
+
+comment:
+  layout: "header, diff, components, files"
+  behavior: default
+  require_changes: false
