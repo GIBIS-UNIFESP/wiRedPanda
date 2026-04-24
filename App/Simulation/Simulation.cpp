@@ -229,7 +229,7 @@ void Simulation::updateWithIterativeSettling()
     if (!iterativeSettle(m_sortedElements) && !m_convergenceWarned) {
         m_convergenceWarned = true;
         qDebug() << "Feedback circuit did not converge after 10 iterations";
-        emit simulationWarning(tr("Warning: feedback circuit did not converge — the circuit may be oscillating."));
+        emit simulationWarning(i18n("Warning: feedback circuit did not converge — the circuit may be oscillating."));
     }
 }
 

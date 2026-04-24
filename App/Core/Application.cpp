@@ -57,7 +57,7 @@ bool Application::notify(QObject *receiver, QEvent *event)
         done = QApplication::notify(receiver, event);
     } catch (const std::exception &e) {
         if (Application::interactiveMode) {
-            QMessageBox::critical(mainWindow(), tr("Error!"), e.what());
+            QMessageBox::critical(mainWindow(), i18n("Error!"), e.what());
         }
 #ifdef HAVE_SENTRY
         // Pandaception carries a separate English message for Sentry so that

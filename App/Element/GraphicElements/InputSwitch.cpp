@@ -123,6 +123,6 @@ void InputSwitch::load(QDataStream &stream, SerializationContext &context)
 
 QList<QPair<int, QString>> InputSwitch::appearanceStates() const
 {
-    return {{0, tr("Off")}, {1, tr("On")}};
+    return {{0, i18n("Off")}, {1, i18n("On")}};
 }
 

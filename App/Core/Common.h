@@ -83,11 +83,16 @@ private:
     int m_line = 0; ///< Source line at throw site.
 };
 
-// Main macro for class contexts that can use tr() - uses __VA_OPT__ for optional arguments
-#define PANDACEPTION(msg, ...) \
+// Main macro for translatable exceptions
+#ifdef USE_KDE_FRAMEWORKS
+#  define PANDACEPTION(msg, ...) \
+    Pandaception(i18n(msg __VA_OPT__(, __VA_ARGS__)), QString(msg) __VA_OPT__(.arg(__VA_ARGS__)), __FILE__, __LINE__)
+#  define PANDACEPTION_WITH_CONTEXT(context, msg, ...) \
+    Pandaception(i18nc(context, msg __VA_OPT__(, __VA_ARGS__)), QString(msg) __VA_OPT__(.arg(__VA_ARGS__)), __FILE__, __LINE__)
+#else
+#  define PANDACEPTION(msg, ...) \
     Pandaception(tr(msg) __VA_OPT__(.arg(__VA_ARGS__)), QString(msg) __VA_OPT__(.arg(__VA_ARGS__)), __FILE__, __LINE__)
-
-// Special macro for non-class contexts - uses __VA_OPT__ for optional arguments
-#define PANDACEPTION_WITH_CONTEXT(context, msg, ...) \
+#  define PANDACEPTION_WITH_CONTEXT(context, msg, ...) \
     Pandaception(QCoreApplication::translate(context, msg) __VA_OPT__(.arg(__VA_ARGS__)), QString(msg) __VA_OPT__(.arg(__VA_ARGS__)), __FILE__, __LINE__)
+#endif
 

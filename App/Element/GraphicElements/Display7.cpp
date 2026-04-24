@@ -132,14 +132,14 @@ void Display7::updatePortsProperties()
     // Ports on the left side (x=0) correspond to the left segments (G, F, E, D);
     // ports on the right side (x=64) correspond to the right segments and DP (A, B, DP, C).
     // This matches the physical pin layout used by common 7-segment display ICs.
-    if (auto *port = inputPort(0)) { port->setPos( 0,  8); port->setName("G (" +  tr("middle")      + ")"); }
-    if (auto *port = inputPort(1)) { port->setPos( 0, 24); port->setName("F (" +  tr("upper left")  + ")"); }
-    if (auto *port = inputPort(2)) { port->setPos( 0, 40); port->setName("E (" +  tr("lower left")  + ")"); }
-    if (auto *port = inputPort(3)) { port->setPos( 0, 56); port->setName("D (" +  tr("bottom")      + ")"); }
-    if (auto *port = inputPort(4)) { port->setPos(64,  8); port->setName("A (" +  tr("top")         + ")"); }
-    if (auto *port = inputPort(5)) { port->setPos(64, 24); port->setName("B (" +  tr("upper right") + ")"); }
-    if (auto *port = inputPort(6)) { port->setPos(64, 40); port->setName("DP (" + tr("dot")         + ")"); }
-    if (auto *port = inputPort(7)) { port->setPos(64, 56); port->setName("C (" +  tr("lower right") + ")"); }
+    if (auto *port = inputPort(0)) { port->setPos( 0,  8); port->setName("G (" +  i18n("middle")      + ")"); }
+    if (auto *port = inputPort(1)) { port->setPos( 0, 24); port->setName("F (" +  i18n("upper left")  + ")"); }
+    if (auto *port = inputPort(2)) { port->setPos( 0, 40); port->setName("E (" +  i18n("lower left")  + ")"); }
+    if (auto *port = inputPort(3)) { port->setPos( 0, 56); port->setName("D (" +  i18n("bottom")      + ")"); }
+    if (auto *port = inputPort(4)) { port->setPos(64,  8); port->setName("A (" +  i18n("top")         + ")"); }
+    if (auto *port = inputPort(5)) { port->setPos(64, 24); port->setName("B (" +  i18n("upper right") + ")"); }
+    if (auto *port = inputPort(6)) { port->setPos(64, 40); port->setName("DP (" + i18n("dot")         + ")"); }
+    if (auto *port = inputPort(7)) { port->setPos(64, 56); port->setName("C (" +  i18n("lower right") + ")"); }
 
     for (auto *in : std::as_const(m_inputPorts)) {
         // Segments are individually driven; leaving a pin unconnected turns that segment off

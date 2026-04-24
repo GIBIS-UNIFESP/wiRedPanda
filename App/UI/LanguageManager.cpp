@@ -60,6 +60,20 @@ void LanguageManager::loadTranslation(const QString &language)
 
     Settings::setLanguage(language);
 
+#ifdef USE_KDE_FRAMEWORKS
+    // KI18n handles locale detection automatically via .mo catalogs.
+    // setLanguages() overrides the system locale for the application domain;
+    // passing an empty list restores system-default behaviour for "en".
+    // Note: .po/.mo catalogs are not yet ported — translations pending Phase 2 completion.
+    if (language == "en") {
+        KLocalizedString::setLanguages({});
+    } else {
+        KLocalizedString::setLanguages({language});
+    }
+    emit translationChanged();
+    return;
+#endif
+
     // Always recreate translators rather than re-loading; Qt does not guarantee
     // that calling load() on an existing translator re-emits languageChanged.
     Application::instance()->removeTranslator(m_pandaTranslator);

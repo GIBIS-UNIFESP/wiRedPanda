@@ -474,7 +474,7 @@ void GraphicElement::loadPixmapAppearanceNames(QDataStream &stream, Serializatio
 {
 
     if (VersionInfo::hasAppearanceNames(context.version)) {
-        qCDebug(four) << tr("Loading pixmap appearance names.");
+        qCDebug(four) << i18n("Loading pixmap appearance names.");
         quint64 outputSize; stream >> outputSize;
 
         if (m_elementType == ElementType::IC) {

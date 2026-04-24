@@ -331,12 +331,12 @@ void MainWindow::setupConnections()
     // Embedded IC section buttons
     connect(m_ui->pushButtonAddEmbeddedIC, &QPushButton::clicked, this, [this] {
         if (!m_currentTab) return;
-        QString fileName = FileDialogs::provider()->getOpenFileName(this, tr("Select IC file to embed"), currentDir().absolutePath(), tr("Panda files (*.panda)"));
+        QString fileName = FileDialogs::provider()->getOpenFileName(this, i18n("Select IC file to embed"), currentDir().absolutePath(), i18n("Panda files (*.panda)"));
         if (fileName.isEmpty()) return;
 
         QFile file(fileName);
         if (!file.open(QIODevice::ReadOnly)) {
-            QMessageBox::warning(this, tr("Error"), tr("Could not read file: %1").arg(file.errorString()));
+            QMessageBox::warning(this, i18n("Error"), i18n("Could not read file: %1", file.errorString()));
             return;
         }
         QByteArray fileBytes = file.readAll();
@@ -399,7 +399,7 @@ void MainWindow::loadAutosaveFiles()
             loadPandaFile(*it);
         } catch (const std::exception &e) {
             if (Application::interactiveMode) {
-                QMessageBox::critical(nullptr, tr("Error!"), e.what());
+                QMessageBox::critical(nullptr, i18n("Error!"), e.what());
             }
             qCDebug(zero) << "Removing autosave file that is corrupted.";
             it = autosaves.erase(it);
@@ -427,7 +427,7 @@ void MainWindow::createNewTab()
     workspace->scene()->updateTheme();
 
     qCDebug(zero) << "Adding tab. #tabs: " << m_ui->tab->count() << ", current tab: " << m_tabIndex;
-    m_ui->tab->addTab(workspace, tr("New Project"));
+    m_ui->tab->addTab(workspace, i18n("New Project"));
     sentryBreadcrumb("ui", QStringLiteral("Tab opened"));
 
     qCDebug(zero) << "Selecting the newly created tab.";
@@ -496,7 +496,7 @@ void MainWindow::save(const QString &fileName)
 
     m_currentTab->save(fileName);
     m_palette->updateICList(icListFile());
-    m_ui->statusBar->showMessage(tr("File saved successfully."), 4000);
+    m_ui->statusBar->showMessage(i18n("File saved successfully."), 4000);
 }
 
 void MainWindow::show()
@@ -516,7 +516,7 @@ void MainWindow::show()
 void MainWindow::showUpdateDialog(const QString &latestVersion, const QUrl &downloadUrl, const QUrl &releaseUrl)
 {
     QDialog dialog(this);
-    dialog.setWindowTitle(tr("Update Available"));
+    dialog.setWindowTitle(i18n("Update Available"));
     dialog.setWindowModality(Qt::WindowModal);
 
     auto *layout = new QVBoxLayout(&dialog);
@@ -524,10 +524,10 @@ void MainWindow::showUpdateDialog(const QString &latestVersion, const QUrl &down
     const bool hasDirectDownload = downloadUrl.isValid() && !downloadUrl.isEmpty();
     auto *label = new QLabel(
         (hasDirectDownload
-             ? tr("<b>wiRedPanda %1 is available.</b><br><br>"
+             ? i18n("<b>wiRedPanda %1 is available.</b><br><br>"
                   "You are currently running version %2.<br>"
                   "Click <b>Download</b> to save the new version to your computer.")
-             : tr("<b>wiRedPanda %1 is available.</b><br><br>"
+             : i18n("<b>wiRedPanda %1 is available.</b><br><br>"
                   "You are currently running version %2.<br>"
                   "Visit the release page to download the new version."))
             .arg(latestVersion, APP_VERSION),
@@ -536,11 +536,11 @@ void MainWindow::showUpdateDialog(const QString &latestVersion, const QUrl &down
     label->setWordWrap(true);
     layout->addWidget(label);
 
-    auto *skipCheckBox = new QCheckBox(tr("Don't notify me about this version again"), &dialog);
+    auto *skipCheckBox = new QCheckBox(i18n("Don't notify me about this version again"), &dialog);
     layout->addWidget(skipCheckBox);
 
     auto *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, &dialog);
-    auto *downloadButton = buttonBox->addButton(tr("Download"), QDialogButtonBox::AcceptRole);
+    auto *downloadButton = buttonBox->addButton(i18n("Download"), QDialogButtonBox::AcceptRole);
     connect(downloadButton, &QPushButton::clicked, &dialog, [&dialog] { dialog.accept(); });
     connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
     layout->addWidget(buttonBox);
@@ -569,8 +569,8 @@ void MainWindow::downloadUpdate(const QString &latestVersion, const QUrl &url)
     const QString fileName = url.fileName();
     const QString savePath = QDir(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)).filePath(fileName);
 
-    auto *progress = new QProgressDialog(tr("Downloading wiRedPanda %1…").arg(latestVersion), tr("Cancel"), 0, 100, this);
-    progress->setWindowTitle(tr("Downloading Update"));
+    auto *progress = new QProgressDialog(i18n("Downloading wiRedPanda %1…", latestVersion), i18n("Cancel"), 0, 100, this);
+    progress->setWindowTitle(i18n("Downloading Update"));
     progress->setWindowModality(Qt::WindowModal);
     progress->setMinimumDuration(0);
     progress->setValue(0);
@@ -594,7 +594,7 @@ void MainWindow::downloadUpdate(const QString &latestVersion, const QUrl &url)
 
         if (reply->error() != QNetworkReply::NoError) {
             if (reply->error() != QNetworkReply::OperationCanceledError) {
-                QMessageBox::warning(this, tr("Download Failed"), tr("Could not download the update:\n%1").arg(reply->errorString()));
+                QMessageBox::warning(this, i18n("Download Failed"), i18n("Could not download the update:\n%1", reply->errorString()));
             }
             reply->deleteLater();
             return;
@@ -602,7 +602,7 @@ void MainWindow::downloadUpdate(const QString &latestVersion, const QUrl &url)
 
         QFile file(savePath);
         if (!file.open(QIODevice::WriteOnly)) {
-            QMessageBox::warning(this, tr("Download Failed"), tr("Could not save the file:\n%1").arg(savePath));
+            QMessageBox::warning(this, i18n("Download Failed"), i18n("Could not save the file:\n%1", savePath));
             reply->deleteLater();
             return;
         }
@@ -611,8 +611,8 @@ void MainWindow::downloadUpdate(const QString &latestVersion, const QUrl &url)
         reply->deleteLater();
 
         Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
-        QMessageBox::information(this, tr("Download Complete"),
-            tr("wiRedPanda has been downloaded to:\n%1").arg(savePath));
+        QMessageBox::information(this, i18n("Download Complete"),
+            i18n("wiRedPanda has been downloaded to:\n%1", savePath));
     });
 }
 
@@ -624,7 +624,7 @@ void MainWindow::aboutThisVersion()
     msgBox.setIcon(QMessageBox::Icon::Information);
     msgBox.setWindowTitle("wiRedPanda " APP_VERSION);
     msgBox.setText(
-        tr("wiRedPanda %1\n\n"
+        i18n("wiRedPanda %1\n\n"
            "This version includes automatic migration of older project files.\n"
            "When you open a project file older than the current version, it will be automatically "
            "upgraded to the current format and a versioned backup will be created.\n\n"
@@ -645,7 +645,7 @@ int MainWindow::closeTabAnyway()
     QMessageBox msgBox;
     msgBox.setParent(this);
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    msgBox.setText(tr("File not saved. Close tab anyway?"));
+    msgBox.setText(i18n("File not saved. Close tab anyway?"));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::No);
     return msgBox.exec();
@@ -664,9 +664,9 @@ int MainWindow::confirmSave(const bool multiple)
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
     }
 
-    const QString fileName = currentFile().fileName().isEmpty() ? tr("New Project") : currentFile().fileName();
+    const QString fileName = currentFile().fileName().isEmpty() ? i18n("New Project") : currentFile().fileName();
 
-    msgBox.setText(fileName + tr(" has been modified.\nDo you want to save your changes?"));
+    msgBox.setText(fileName + i18n(" has been modified.\nDo you want to save your changes?"));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Yes);
     return msgBox.exec();
@@ -712,7 +712,7 @@ void MainWindow::loadPandaFile(const QString &fileName)
     m_currentTab->scene()->resizeScene();
     m_palette->updateICList(icListFile());
     m_palette->updateEmbeddedICList(m_currentTab->scene());
-    m_ui->statusBar->showMessage(tr("File loaded successfully."), 4000);
+    m_ui->statusBar->showMessage(i18n("File loaded successfully."), 4000);
 }
 
 void MainWindow::openICInTab(const QString &blobName, int icElementId, const QByteArray &blob)
@@ -771,7 +771,7 @@ void MainWindow::on_actionOpen_triggered()
     QFileDialog::getOpenFileContent("Panda files (*.panda)", fileContentReady);
 #else
     const QString path = currentFile().exists() ? "" : "./Examples";
-    const QString fileName = FileDialogs::provider()->getOpenFileName(this, tr("Open File"), path, tr("Panda files (*.panda)"));
+    const QString fileName = FileDialogs::provider()->getOpenFileName(this, i18n("Open File"), path, i18n("Panda files (*.panda)"));
 
     if (fileName.isEmpty()) {
         return;
@@ -803,7 +803,7 @@ void MainWindow::on_actionSave_triggered()
     QString fileName = currentFile().absoluteFilePath();
 
     if (fileName.isEmpty()) {
-        fileName = FileDialogs::provider()->getSaveFileName(this, tr("Save File as ..."), QString(), tr("Panda files (*.panda)")).fileName;
+        fileName = FileDialogs::provider()->getSaveFileName(this, i18n("Save File as ..."), QString(), i18n("Panda files (*.panda)")).fileName;
 
         if (fileName.isEmpty()) {
             return;
@@ -840,7 +840,7 @@ void MainWindow::on_actionSaveAs_triggered()
         QFileDialog::saveFileContent(content, suggestedName);
     }
 #else
-    QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Save File as ..."), currentFile().absoluteFilePath(), tr("Panda files (*.panda)")).fileName;
+    QString fileName = FileDialogs::provider()->getSaveFileName(this, i18n("Save File as ..."), currentFile().absoluteFilePath(), i18n("Panda files (*.panda)")).fileName;
 
     if (fileName.isEmpty()) {
         return;
@@ -857,7 +857,7 @@ void MainWindow::on_actionAbout_triggered()
     QMessageBox::about(
         this,
         "wiRedPanda",
-        tr("<p>wiRedPanda is software developed by students of the Federal University of São Paulo"
+        i18n("<p>wiRedPanda is software developed by students of the Federal University of São Paulo"
            " to help students learn about logic circuits.</p>"
            "<p>Software version: %1</p>"
            "<p><strong>Creators:</strong></p>"
@@ -876,8 +876,8 @@ void MainWindow::on_actionAbout_triggered()
 void MainWindow::on_actionShortcuts_and_Tips_triggered()
 {
     QMessageBox::information(this,
-        tr("Shortcuts and Tips"),
-        tr("<h1>Canvas Shortcuts</h1>"
+        i18n("Shortcuts and Tips"),
+        i18n("<h1>Canvas Shortcuts</h1>"
            "<ul style=\"list-style:none;\">"
            "<li> Ctrl+= : Zoom in </li>"
            "<li> Ctrl+- : Zoom out </li>"
@@ -933,8 +933,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
         auto reply =
             QMessageBox::question(
                 this,
-                tr("Exit") + " " + QApplication::applicationName(),
-                tr("Are you sure?"),
+                i18n("Exit") + " " + QApplication::applicationName(),
+                i18n("Are you sure?"),
                 QMessageBox::Cancel | QMessageBox::Yes,
                 QMessageBox::Yes);
 
@@ -1075,7 +1075,7 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
     if (senderWs->isInlineIC()) {
         text = "[" + senderWs->inlineBlobName() + "]";
     } else {
-        text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
+        text = fileInfo.exists() ? fileInfo.fileName() : i18n("New Project");
     }
 
     // Append an asterisk to the tab title to indicate unsaved changes,
@@ -1137,7 +1137,7 @@ bool MainWindow::closeTab(const int tabIndex)
             try {
                 save();
             } catch (const std::exception &e) {
-                QMessageBox::critical(this, tr("Error"), e.what());
+                QMessageBox::critical(this, i18n("Error"), e.what());
 
                 // If saving failed ask whether to discard and close anyway.
                 if (closeTabAnyway() == QMessageBox::No) {
@@ -1249,7 +1249,7 @@ void MainWindow::connectTab()
     // Synchronise the mute button state to the newly visible tab's mute intent.
     const bool muted = m_currentTab->simulation()->isUserMuted();
     m_ui->actionMute->setChecked(muted);
-    m_ui->actionMute->setText(muted ? tr("Unmute") : tr("Mute"));
+    m_ui->actionMute->setText(muted ? i18n("Unmute") : i18n("Mute"));
 
 }
 
@@ -1333,7 +1333,7 @@ void MainWindow::exportToArduino(QString fileName)
 
     ArduinoCodeGen arduino(QDir::home().absoluteFilePath(fileName), elements);
     arduino.generate();
-    m_ui->statusBar->showMessage(tr("Arduino code successfully generated."), 4000);
+    m_ui->statusBar->showMessage(i18n("Arduino code successfully generated."), 4000);
 
     qCDebug(zero) << "Arduino code successfully generated.";
 }
@@ -1360,7 +1360,7 @@ void MainWindow::exportToSystemVerilog(QString fileName)
 
     SystemVerilogCodeGen verilog(QDir::home().absoluteFilePath(fileName), elements);
     verilog.generate();
-    m_ui->statusBar->showMessage(tr("SystemVerilog code successfully generated."), 4000);
+    m_ui->statusBar->showMessage(i18n("SystemVerilog code successfully generated."), 4000);
 
     qCDebug(zero) << "SystemVerilog code successfully generated.";
 }
@@ -1396,7 +1396,7 @@ void MainWindow::on_actionExportToArduino_triggered()
         path = currentFile().absolutePath();
     }
 
-    const QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Generate Arduino Code"), path, tr("Arduino file (*.ino)")).fileName;
+    const QString fileName = FileDialogs::provider()->getSaveFileName(this, i18n("Generate Arduino Code"), path, i18n("Arduino file (*.ino)")).fileName;
 
     if (!fileName.isEmpty()) {
         exportToArduino(fileName);
@@ -1416,7 +1416,7 @@ void MainWindow::on_actionExportToSystemVerilog_triggered()
         path = currentFile().absolutePath();
     }
 
-    const QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Generate SystemVerilog Code"), path, tr("SystemVerilog file (*.sv)")).fileName;
+    const QString fileName = FileDialogs::provider()->getSaveFileName(this, i18n("Generate SystemVerilog Code"), path, i18n("SystemVerilog file (*.sv)")).fileName;
 
     if (!fileName.isEmpty()) {
         exportToSystemVerilog(fileName);
@@ -1522,7 +1522,7 @@ void MainWindow::on_actionExportToPdf_triggered()
     m_currentTab->scene()->clearSelection();
 
     const QString path    = currentFile().exists() ? currentFile().absolutePath() : QString();
-    QString pdfFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to PDF"), path, tr("PDF files (*.pdf)")).fileName;
+    QString pdfFile = FileDialogs::provider()->getSaveFileName(this, i18n("Export to PDF"), path, i18n("PDF files (*.pdf)")).fileName;
 
     if (pdfFile.isEmpty()) {
         return;
@@ -1533,7 +1533,7 @@ void MainWindow::on_actionExportToPdf_triggered()
     }
 
     CircuitExporter::renderToPdf(m_currentTab->scene(), pdfFile);
-    m_ui->statusBar->showMessage(tr("Exported file successfully."), 4000);
+    m_ui->statusBar->showMessage(i18n("Exported file successfully."), 4000);
     QDesktopServices::openUrl(QUrl::fromLocalFile(pdfFile));
 }
 
@@ -1548,7 +1548,7 @@ void MainWindow::on_actionExportToImage_triggered()
     m_currentTab->scene()->clearSelection();
 
     const QString path    = currentFile().exists() ? currentFile().absolutePath() : QString();
-    QString pngFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to Image"), path, tr("PNG files (*.png)")).fileName;
+    QString pngFile = FileDialogs::provider()->getSaveFileName(this, i18n("Export to Image"), path, i18n("PNG files (*.png)")).fileName;
 
     if (pngFile.isEmpty()) {
         return;
@@ -1559,7 +1559,7 @@ void MainWindow::on_actionExportToImage_triggered()
     }
 
     CircuitExporter::renderToImage(m_currentTab->scene(), pngFile);
-    m_ui->statusBar->showMessage(tr("Exported file successfully."), 4000);
+    m_ui->statusBar->showMessage(i18n("Exported file successfully."), 4000);
     QDesktopServices::openUrl(QUrl::fromLocalFile(pngFile));
 }
 
@@ -1587,7 +1587,7 @@ void MainWindow::retranslateUi()
             text = "[" + workspace->inlineBlobName() + "]";
         } else {
             auto fileInfo = workspace->fileInfo();
-            text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
+            text = fileInfo.exists() ? fileInfo.fileName() : i18n("New Project");
         }
 
         if (!undoStack->isClean()) {
@@ -1778,7 +1778,7 @@ void MainWindow::on_actionMute_triggered(const bool checked)
     }
 
     m_currentTab->simulation()->setUserMuted(checked);
-    m_ui->actionMute->setText(checked ? tr("Unmute") : tr("Mute"));
+    m_ui->actionMute->setText(checked ? i18n("Unmute") : i18n("Mute"));
 }
 
 void MainWindow::on_actionLabelsUnderIcons_triggered(const bool checked)
@@ -1827,7 +1827,7 @@ void MainWindow::on_pushButtonAddIC_clicked()
         throw PANDACEPTION("Save file first.");
     }
 
-    const QString selectedFile = FileDialogs::provider()->getOpenFileName(this, tr("Open File"), QString(), tr("Panda (*.panda)"));
+    const QString selectedFile = FileDialogs::provider()->getOpenFileName(this, i18n("Open File"), QString(), i18n("Panda (*.panda)"));
 
     if (selectedFile.isEmpty()) {
         return;
@@ -1835,7 +1835,7 @@ void MainWindow::on_pushButtonAddIC_clicked()
 
     const QStringList files = {selectedFile};
 
-    QMessageBox::information(this, tr("Info"), tr("Selected files (and their dependencies) will be copied to the current project folder."));
+    QMessageBox::information(this, i18n("Info"), i18n("Selected files (and their dependencies) will be copied to the current project folder."));
 
     // Copy the chosen .panda file (and any ICs it depends on transitively)
     // into the project's directory so that relative paths work when reopened.
@@ -1850,7 +1850,7 @@ void MainWindow::on_pushButtonAddIC_clicked()
 void MainWindow::on_pushButtonRemoveIC_clicked()
 {
     sentryBreadcrumb("ic", QStringLiteral("Remove IC"));
-    QMessageBox::information(this, tr("Info"), tr("Drag here to remove."));
+    QMessageBox::information(this, i18n("Info"), i18n("Drag here to remove."));
 }
 
 void MainWindow::removeICFile(const QString &icFileName)
@@ -1893,8 +1893,8 @@ QString MainWindow::resolveUniqueBlobName(const QString &initialName, Scene *sce
     if (blobName != initialName.trimmed()) {
         bool ok = false;
         blobName = QInputDialog::getText(this,
-            tr("Name Collision"),
-            tr("An embedded IC named \"%1\" already exists.\nSuggested name:").arg(initialName.trimmed()),
+            i18n("Name Collision"),
+            i18n("An embedded IC named \"%1\" already exists.\nSuggested name:", initialName.trimmed()),
             QLineEdit::Normal, blobName, &ok);
         blobName = blobName.trimmed();
         if (!ok || blobName.isEmpty()) {
@@ -1920,7 +1920,7 @@ void MainWindow::embedSelectedIC()
 
     const QString contextDir = scene->contextDir();
     if (contextDir.isEmpty()) {
-        QMessageBox::warning(this, tr("Error"), tr("Please save the project first so ICs can be resolved."));
+        QMessageBox::warning(this, i18n("Error"), i18n("Please save the project first so ICs can be resolved."));
         return;
     }
 
@@ -1931,7 +1931,7 @@ void MainWindow::embedSelectedIC()
 
     QFile file(QDir(contextDir).absoluteFilePath(firstIC->file()));
     if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(this, tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
+        QMessageBox::warning(this, i18n("Error"), i18n("Could not read IC file: %1", file.errorString()));
         return;
     }
     QByteArray fileBytes = file.readAll();
@@ -1939,7 +1939,7 @@ void MainWindow::embedSelectedIC()
 
     scene->icRegistry()->embedICsByFile(firstIC->file(), fileBytes, blobName);
     m_palette->updateEmbeddedICList(scene);
-    m_ui->statusBar->showMessage(tr("IC embedded successfully."), 4000);
+    m_ui->statusBar->showMessage(i18n("IC embedded successfully."), 4000);
 }
 
 void MainWindow::extractSelectedIC()
@@ -1954,12 +1954,12 @@ void MainWindow::extractSelectedIC()
     const QString blobName = firstIC->blobName();
     const QString contextDir = scene->contextDir();
     if (contextDir.isEmpty()) {
-        QMessageBox::warning(this, tr("Error"), tr("Please save the project first."));
+        QMessageBox::warning(this, i18n("Error"), i18n("Please save the project first."));
         return;
     }
 
     const QString suggestion = QDir(contextDir).absoluteFilePath(blobName + ".panda");
-    QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Extract IC to file..."), suggestion, tr("Panda files (*.panda)")).fileName;
+    QString fileName = FileDialogs::provider()->getSaveFileName(this, i18n("Extract IC to file..."), suggestion, i18n("Panda files (*.panda)")).fileName;
 
     if (fileName.isEmpty()) {
         return;
@@ -1970,7 +1970,7 @@ void MainWindow::extractSelectedIC()
     scene->icRegistry()->extractToFile(blobName, fileName);
     m_palette->updateICList(icListFile());
     m_palette->updateEmbeddedICList(scene);
-    m_ui->statusBar->showMessage(tr("IC extracted to %1").arg(fileName), 4000);
+    m_ui->statusBar->showMessage(i18n("IC extracted to %1", fileName), 4000);
 }
 
 void MainWindow::embedICByFile(const QString &fileName)
@@ -1982,14 +1982,14 @@ void MainWindow::embedICByFile(const QString &fileName)
     auto *scene = m_currentTab->scene();
     const QString contextDir = scene->contextDir();
     if (contextDir.isEmpty()) {
-        QMessageBox::warning(this, tr("Error"), tr("Please save the project first so ICs can be resolved."));
+        QMessageBox::warning(this, i18n("Error"), i18n("Please save the project first so ICs can be resolved."));
         return;
     }
 
     const QString absolutePath = QDir(contextDir).absoluteFilePath(fileName);
     QFile file(absolutePath);
     if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(this, tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
+        QMessageBox::warning(this, i18n("Error"), i18n("Could not read IC file: %1", file.errorString()));
         return;
     }
     QByteArray fileBytes = file.readAll();
@@ -2007,7 +2007,7 @@ void MainWindow::embedICByFile(const QString &fileName)
     }
 
     m_palette->updateEmbeddedICList(scene);
-    m_ui->statusBar->showMessage(tr("IC embedded successfully."), 4000);
+    m_ui->statusBar->showMessage(i18n("IC embedded successfully."), 4000);
 }
 
 void MainWindow::extractICByBlobName(const QString &blobName)
@@ -2019,7 +2019,7 @@ void MainWindow::extractICByBlobName(const QString &blobName)
     auto *scene = m_currentTab->scene();
     const QString contextDir = scene->contextDir();
     if (contextDir.isEmpty()) {
-        QMessageBox::warning(this, tr("Error"), tr("Please save the project first."));
+        QMessageBox::warning(this, i18n("Error"), i18n("Please save the project first."));
         return;
     }
 
@@ -2030,7 +2030,7 @@ void MainWindow::extractICByBlobName(const QString &blobName)
     }
 
     const QString suggestion = QDir(contextDir).absoluteFilePath(blobName + ".panda");
-    QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Extract IC to file..."), suggestion, tr("Panda files (*.panda)")).fileName;
+    QString fileName = FileDialogs::provider()->getSaveFileName(this, i18n("Extract IC to file..."), suggestion, i18n("Panda files (*.panda)")).fileName;
 
     if (fileName.isEmpty()) {
         return;
@@ -2041,7 +2041,7 @@ void MainWindow::extractICByBlobName(const QString &blobName)
     reg->extractToFile(blobName, fileName);
     m_palette->updateICList(icListFile());
     m_palette->updateEmbeddedICList(scene);
-    m_ui->statusBar->showMessage(tr("IC extracted to %1").arg(fileName), 4000);
+    m_ui->statusBar->showMessage(i18n("IC extracted to %1", fileName), 4000);
 }
 
 void MainWindow::makeSelfContained()
@@ -2054,7 +2054,7 @@ void MainWindow::makeSelfContained()
     auto *scene = m_currentTab->scene();
     const QString contextDir = scene->contextDir();
     if (contextDir.isEmpty()) {
-        QMessageBox::warning(this, tr("Error"), tr("Please save the project first."));
+        QMessageBox::warning(this, i18n("Error"), i18n("Please save the project first."));
         return;
     }
 
@@ -2071,7 +2071,7 @@ void MainWindow::makeSelfContained()
     }
 
     if (uniqueFiles.isEmpty()) {
-        m_ui->statusBar->showMessage(tr("No file-based ICs to embed."), 4000);
+        m_ui->statusBar->showMessage(i18n("No file-based ICs to embed."), 4000);
         return;
     }
 
@@ -2082,7 +2082,7 @@ void MainWindow::makeSelfContained()
         const QString fullPath = QDir(contextDir).absoluteFilePath(icFile);
         QFile file(fullPath);
         if (!file.open(QIODevice::ReadOnly)) {
-            QMessageBox::warning(this, tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
+            QMessageBox::warning(this, i18n("Error"), i18n("Could not read IC file: %1", file.errorString()));
             break;
         }
         QByteArray fileBytes = file.readAll();
@@ -2097,6 +2097,6 @@ void MainWindow::makeSelfContained()
     }
 
     m_palette->updateEmbeddedICList(scene);
-    m_ui->statusBar->showMessage(tr("Embedded %1 IC(s). Circuit is now self-contained.").arg(totalEmbedded), 4000);
+    m_ui->statusBar->showMessage(i18n("Embedded %1 IC(s). Circuit is now self-contained.", totalEmbedded), 4000);
 }
 

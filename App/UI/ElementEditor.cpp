@@ -68,7 +68,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     // panel so it doesn't push other properties off-screen for large tables.
     m_tableBox = new QDialog(this);
     m_tableBox->setWindowFlags(Qt::Window);
-    m_tableBox->setWindowTitle(tr("Truth Table"));
+    m_tableBox->setWindowTitle(i18n("Truth Table"));
     m_tableBox->setModal(true);
     auto *tableLayout = new QGridLayout(m_tableBox);
     m_table = new QTableWidget(this);
@@ -170,8 +170,8 @@ void ElementEditor::changeTriggerAction()
 void ElementEditor::updateElementAppearance()
 {
     sentryBreadcrumb("ui", QStringLiteral("Element appearance dialog"));
-    const QString imageFilter = tr("Images") + " (*." + QImageReader::supportedImageFormats().join(" *.") + ")";
-    const QString fileName = FileDialogs::provider()->getOpenFileName(this, tr("Open File"), QString(), imageFilter);
+    const QString imageFilter = i18n("Images") + " (*." + QImageReader::supportedImageFormats().join(" *.") + ")";
+    const QString fileName = FileDialogs::provider()->getOpenFileName(this, i18n("Open File"), QString(), imageFilter);
 
     if (fileName.isEmpty()) {
         return;
@@ -235,11 +235,11 @@ void ElementEditor::fillColorComboBox()
     m_ui->comboBoxColor->clear();
     // item data stores the untranslated English colour name used internally
     // by GraphicElement::setColor(); item text is the translated display name.
-    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/WhiteLed.svg")),  tr("White"),  "White");
-    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/RedLed.svg")),    tr("Red"),    "Red");
-    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/GreenLed.svg")),  tr("Green"),  "Green");
-    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/BlueLed.svg")),   tr("Blue"),   "Blue");
-    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/PurpleLed.svg")), tr("Purple"), "Purple");
+    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/WhiteLed.svg")),  i18n("White"),  "White");
+    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/RedLed.svg")),    i18n("Red"),    "Red");
+    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/GreenLed.svg")),  i18n("Green"),  "Green");
+    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/BlueLed.svg")),   i18n("Blue"),   "Blue");
+    m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/PurpleLed.svg")), i18n("Purple"), "Purple");
 }
 
 void ElementEditor::retranslateUi()
@@ -317,7 +317,7 @@ void ElementEditor::applyCapabilitiesToUi()
         const double maxFreq = isBuzzer ? 20000.0 : 50.0;
         const double step    = isBuzzer ? 10.0 : 0.1;
         const int decimals   = isBuzzer ? 0 : 1;
-        const QString suffix = isBuzzer ? tr(" Hz") : tr(" Hz");
+        const QString suffix = isBuzzer ? i18n(" Hz") : i18n(" Hz");
 
         m_ui->doubleSpinBoxFrequency->setDecimals(decimals);
         m_ui->doubleSpinBoxFrequency->setSingleStep(step);
@@ -581,8 +581,8 @@ void ElementEditor::apply()
                 if (!otherNode || otherNode->wirelessMode() != WirelessMode::Tx) continue;
                 if (otherNode->label() == candidateLabel) {
                     QMessageBox::warning(this,
-                        tr("Duplicate Wireless Channel"),
-                        tr("A Tx node with label \"%1\" already exists.\n"
+                        i18n("Duplicate Wireless Channel"),
+                        i18n("A Tx node with label \"%1\" already exists.\n"
                            "Each wireless channel must have a unique label.").arg(candidateLabel));
                     update();
                     return;
@@ -648,7 +648,7 @@ void ElementEditor::apply()
     // and the delete into a single undo macro so both are undone together.
     const bool needsMacro = !wirelessConnsToDelete.isEmpty();
     if (needsMacro) {
-        m_scene->undoStack()->beginMacro(tr("Change wireless mode"));
+        m_scene->undoStack()->beginMacro(i18n("Change wireless mode"));
     }
 
     m_scene->receiveCommand(new UpdateCommand(m_elements, oldData, m_scene));
@@ -851,8 +851,8 @@ void ElementEditor::audioBox()
         return;
     }
 
-    const QString filePath = FileDialogs::provider()->getOpenFileName(this, tr("Select any audio"),
-                                                    QString(), tr("Audio (*.mp3 *.mp4 *.wav *.ogg)"));
+    const QString filePath = FileDialogs::provider()->getOpenFileName(this, i18n("Select any audio"),
+                                                    QString(), i18n("Audio (*.mp3 *.mp4 *.wav *.ogg)"));
 
     if (filePath.isEmpty()) {
         return;

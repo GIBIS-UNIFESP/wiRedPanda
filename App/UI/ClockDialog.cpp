@@ -14,7 +14,7 @@ ClockDialog::ClockDialog(const int currentFrequency, QWidget *parent)
     // Pre-populate with the last used frequency so the user doesn't have to re-enter it
     m_ui->frequencySpinBox->setValue(currentFrequency);
 
-    setWindowTitle(tr("Clock Frequency Selection"));
+    setWindowTitle(i18n("Clock Frequency Selection"));
 
     connect(m_ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(m_ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);

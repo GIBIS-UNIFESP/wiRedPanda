@@ -171,10 +171,10 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
     } else {
         const QFileInfo info(path);
         const QString reason = !info.exists()
-                                   ? tr("File does not exist")
+                                   ? i18n("File does not exist")
                                    : !info.isReadable()
-                                         ? tr("File is not readable")
-                                         : tr("Unknown reason");
+                                         ? i18n("File is not readable")
+                                         : i18n("Unknown reason");
 
         // Load the default appearance so the element remains renderable before the exception unwinds
         m_pixmap.load(m_defaultAppearances.constFirst());
@@ -404,7 +404,7 @@ void GraphicElement::setAppearanceAt(const int index, const QString &fileName)
 QList<QPair<int, QString>> GraphicElement::appearanceStates() const
 {
     // Default: single appearance at index 0
-    return {{0, tr("Default")}};
+    return {{0, i18n("Default")}};
 }
 
 void GraphicElement::updatePortsProperties()

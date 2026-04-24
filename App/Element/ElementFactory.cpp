@@ -35,7 +35,7 @@ QString ElementFactory::typeToTitleText(const ElementType type)
     qCDebug(four) << type;
 
     if (type == ElementType::Unknown) {
-        return tr("MULTIPLE TYPES");
+        return i18n("MULTIPLE TYPES");
     }
 
     const auto &meta = ElementMetadataRegistry::metadata(type);
@@ -45,7 +45,7 @@ QString ElementFactory::typeToTitleText(const ElementType type)
 QString ElementFactory::translatedName(const ElementType type)
 {
     if (type == ElementType::Unknown) {
-        return tr("Unknown");
+        return i18n("Unknown");
     }
 
     const auto &meta = ElementMetadataRegistry::metadata(type);

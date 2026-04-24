@@ -145,6 +145,9 @@ int main(int argc, char *argv[])
     app.setApplicationName("wiRedPanda");
     app.setApplicationVersion(APP_VERSION);
     app.setDesktopFileName("wiredpanda");
+#ifdef USE_KDE_FRAMEWORKS
+    KLocalizedString::setApplicationDomain("wiredpanda");
+#endif
     // Fusion style provides a consistent cross-platform look and is required for
     // the custom theme colours defined in ThemeManager to render correctly on all OSes
     app.setStyle("Fusion");
@@ -371,7 +374,7 @@ int main(int argc, char *argv[])
         }
     } catch (const std::exception &e) {
         if (Application::interactiveMode) {
-            QMessageBox::critical(nullptr, QObject::tr("Error!"), e.what());
+            QMessageBox::critical(nullptr, i18n("Error!"), e.what());
         }
         exit(1);
     }

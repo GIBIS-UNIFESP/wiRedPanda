@@ -239,15 +239,15 @@ QList<QPair<int, QString>> Led::appearanceStates() const
 
     switch (inputSize()) {
     case 1:
-        states.append({m_colorIndex, tr("Off")});
-        states.append({m_colorIndex + 1, tr("On")});
+        states.append({m_colorIndex, i18n("Off")});
+        states.append({m_colorIndex + 1, i18n("On")});
         break;
 
     case 2:
-        states.append({18, tr("00 (off)")});
-        states.append({19, tr("01")});
-        states.append({20, tr("10")});
-        states.append({25, tr("11")});
+        states.append({18, i18n("00 (off)")});
+        states.append({19, i18n("01")});
+        states.append({20, i18n("10")});
+        states.append({25, i18n("11")});
         break;
 
     case 3:
@@ -263,7 +263,7 @@ QList<QPair<int, QString>> Led::appearanceStates() const
         break;
 
     default:
-        states.append({0, tr("Default")});
+        states.append({0, i18n("Default")});
         break;
     }
 
