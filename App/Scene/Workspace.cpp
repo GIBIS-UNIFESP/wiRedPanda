@@ -68,6 +68,13 @@ WorkSpace::WorkSpace(QWidget *parent)
     connect(&m_autosaveDebounceTimer, &QTimer::timeout, this, &WorkSpace::autosave);
     connect(&m_scene, &Scene::circuitHasChanged, &m_autosaveDebounceTimer, qOverload<>(&QTimer::start));
 
+    /// Refresh the parent's tab title (which shows "*" while dirty) whenever
+    /// the undo stack's clean state flips — needed for inline-IC saves that
+    /// push UpdateBlobCommand to a non-current parent workspace.
+    connect(m_scene.undoStack(), &QUndoStack::cleanChanged, this, [this](bool /*clean*/) {
+        emit fileChanged(m_fileInfo);
+    });
+
     setAutosaveFileName();
 
     m_scene.setLastId(m_lastId);
@@ -75,6 +82,14 @@ WorkSpace::WorkSpace(QWidget *parent)
 
 WorkSpace::~WorkSpace()
 {
+    /// Block signals for the rest of this object's lifetime — including member
+    /// destruction below, where m_scene's QUndoStack emits cleanChanged on
+    /// teardown. Without this, the cleanChanged → fileChanged chain would
+    /// reach a parent MainWindow whose destructor has already begun.
+    /// (RAII QSignalBlocker won't do: it releases when this body returns,
+    /// before m_scene is destroyed.)
+    blockSignals(true);
+
     /// Mirror the pre-debounce QTemporaryFile semantics: a clean Workspace
     /// destruction discards its autosave so it isn't recovered next launch.
     /// (On a real crash the destructor doesn't run, so the recovery file remains.)
