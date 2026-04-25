@@ -345,8 +345,21 @@ QString Serialization::typeName(const int type) {
     return typeMap.value(type, "UnknownType");
 }
 
-void Serialization::copyPandaFile(const QFileInfo &srcPath, const QFileInfo &destPath)
+void Serialization::copyPandaFile(const QFileInfo &srcPath, const QFileInfo &destPath,
+                                  QSet<QString> *visited)
 {
+    QSet<QString> ownedVisited;
+    if (!visited) {
+        visited = &ownedVisited;
+    }
+    const QString canonical = srcPath.canonicalFilePath();
+    if (!canonical.isEmpty()) {
+        if (visited->contains(canonical)) {
+            return;
+        }
+        visited->insert(canonical);
+    }
+
     if (!QFile::exists(destPath.absoluteFilePath())) {
         QFile srcFile(srcPath.absoluteFilePath());
         if (!srcFile.copy(destPath.absoluteFilePath())) {
@@ -372,7 +385,7 @@ void Serialization::copyPandaFile(const QFileInfo &srcPath, const QFileInfo &des
         const QFileInfo icSrc(QDir(srcPath.absolutePath()), icFile);
         const QFileInfo icDest(QDir(destPath.absolutePath()), icFile);
         if (icSrc.exists()) {
-            copyPandaFile(icSrc, icDest);
+            copyPandaFile(icSrc, icDest, visited);
         }
     }
 }

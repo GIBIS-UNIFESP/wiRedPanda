@@ -6,6 +6,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QSet>
 #include <QString>
 #include <QStringList>
 
@@ -39,8 +40,21 @@ inline void copyToDir(const QString &srcPath, const QString &destDir)
 
 /// Recursively copies .panda IC dependencies from \a srcDir to \a destDir
 /// by reading the fileBackedICs metadata key from the given \a pandaPath.
-inline void copyPandaDeps(const QString &pandaPath, const QString &srcDir, const QString &destDir)
+/// \a visited tracks already-processed canonical paths to break circular
+/// fileBackedICs metadata (A→B→A); the root caller passes nothing.
+inline void copyPandaDeps(const QString &pandaPath, const QString &srcDir, const QString &destDir,
+                          QSet<QString> *visited = nullptr)
 {
+    QSet<QString> ownedVisited;
+    if (!visited) {
+        visited = &ownedVisited;
+    }
+    const QString canonical = QFileInfo(pandaPath).canonicalFilePath();
+    if (canonical.isEmpty() || visited->contains(canonical)) {
+        return;
+    }
+    visited->insert(canonical);
+
     QFile file(pandaPath);
     if (!file.open(QIODevice::ReadOnly)) {
         return;
@@ -62,7 +76,7 @@ inline void copyPandaDeps(const QString &pandaPath, const QString &srcDir, const
         }
 
         if (icSrc.exists()) {
-            copyPandaDeps(icSrc.absoluteFilePath(), srcDir, destDir);
+            copyPandaDeps(icSrc.absoluteFilePath(), srcDir, destDir, visited);
         }
     }
 }

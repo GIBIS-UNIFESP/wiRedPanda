@@ -22,5 +22,8 @@ private slots:
     void testCopyPandaDepsBasic();
     void testCopyPandaDepsRecursive();
     void testCopyPandaDepsNoDependencies();
+
+    // Regression: D16 — circular fileBackedICs metadata must not infinite-recurse
+    void testCopyPandaDepsTerminatesOnCircularMetadata();
 };
 
