@@ -43,13 +43,22 @@ WorkSpace::WorkSpace(QWidget *parent)
     // via panning, even when zoomed in very close
     connect(&m_view, &GraphicsView::zoomChanged, &m_scene, &Scene::resizeScene);
 
-    // Trigger autosave on every change; autosave() checks the undo stack cleanliness
-    // before actually writing to disk
-    connect(&m_scene, &Scene::circuitHasChanged, this, &WorkSpace::autosave);
+    // Coalesce bursts of changes into one autosave write — a multi-element
+    // paste, drag-rotate, or rapid typing in a label otherwise spams the
+    // disk and widens the window for partial-write corruption.
+    m_autosaveDebounceTimer.setSingleShot(true);
+    m_autosaveDebounceTimer.setInterval(500);
+    connect(&m_autosaveDebounceTimer, &QTimer::timeout, this, &WorkSpace::autosave);
+    connect(&m_scene, &Scene::circuitHasChanged, &m_autosaveDebounceTimer, qOverload<>(&QTimer::start));
 
     setAutosaveFileName();
 
     m_scene.setLastId(m_lastId);
+}
+
+WorkSpace::~WorkSpace()
+{
+    flushPendingAutosave();
 }
 
 Scene *WorkSpace::scene()
@@ -80,6 +89,10 @@ QFileInfo WorkSpace::fileInfo()
 void WorkSpace::save(const QString &fileName)
 {
     sentryBreadcrumb("file", QStringLiteral("Save: %1").arg(fileName));
+
+    // The user save supersedes any pending autosave; cancel it so the timer
+    // doesn't fire after we've removed the autosave file and re-create it.
+    m_autosaveDebounceTimer.stop();
 
     if (isFromNewerVersion()) {
         if (Application::interactiveMode) {
@@ -541,6 +554,14 @@ void WorkSpace::autosave()
 void WorkSpace::setAutosaveFile()
 {
     m_autosaveFileName = m_fileInfo.filePath();
+}
+
+void WorkSpace::flushPendingAutosave()
+{
+    if (m_autosaveDebounceTimer.isActive()) {
+        m_autosaveDebounceTimer.stop();
+        autosave();
+    }
 }
 
 void WorkSpace::createVersionedBackup(const QString &fileName, const QVersionNumber &version)

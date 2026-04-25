@@ -53,6 +53,9 @@ private slots:
     void testSaveToInvalidPathThrows();
     void testSaveEmptyCircuit();
 
+    // Regression: B3 — flushPendingAutosave runs the deferred autosave
+    void testFlushPendingAutosaveRunsImmediatelyB3();
+
     // Regression: B2 — autosave truncates on shrink (no leftover-tail garbage)
     void testAutosaveTruncatesOnShrinkB2();
 

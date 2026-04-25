@@ -102,6 +102,7 @@ void TestWorkspace::testAutosaveUpdatesSettings()
     items.append(led);
     AddItemsCommand *cmd = new AddItemsCommand(items, scene);
     scene->undoStack()->push(cmd);
+    workspace.flushPendingAutosave();
 
     QStringList autosaveAfter = Settings::autosaveFiles();
     QVERIFY2(autosaveAfter.count() > autosaveBefore.count(),
@@ -124,6 +125,7 @@ void TestWorkspace::testAutosaveAfterElementAdd()
     QList<QGraphicsItem *> items;
     items.append(ElementFactory::buildElement(ElementType::Led));
     undoStack->push(new AddItemsCommand(items, scene));
+    workspace.flushPendingAutosave();
 
     // Verify undo stack is dirty
     QVERIFY2(!undoStack->isClean(), "Undo stack should be dirty after circuit change");
@@ -371,6 +373,7 @@ void TestWorkspace::testAutosaveFileRandomSuffixGeneration()
         // Use proper command that triggers circuit update
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
+        workspace1.flushPendingAutosave();
 
         QStringList autosaves = Settings::autosaveFiles();
         QVERIFY2(!autosaves.isEmpty(), "First workspace should create autosave file in settings");
@@ -400,6 +403,7 @@ void TestWorkspace::testAutosaveFileRandomSuffixGeneration()
         // Use proper command that triggers circuit update
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
+        workspace2.flushPendingAutosave();
 
         QStringList autosaves = Settings::autosaveFiles();
         QVERIFY2(autosaves.count() >= 1, "Second workspace should have autosave files");
@@ -448,6 +452,7 @@ void TestWorkspace::testAutosavePathCreatedIfNotExists()
 
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
+        workspace.flushPendingAutosave();
 
         // Verify autosave was triggered (check BEFORE workspace destruction)
         QStringList autosaves = Settings::autosaveFiles();
@@ -489,6 +494,7 @@ void TestWorkspace::testAutosaveFileExtensionCorrect()
 
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
+        workspace.flushPendingAutosave();
 
         // Verify autosave was triggered (check BEFORE workspace destruction)
         QStringList autosaves = Settings::autosaveFiles();
@@ -575,6 +581,7 @@ void TestWorkspace::testAutosaveInAppDataForNewProject()
     items.append(led);
     AddItemsCommand *cmd = new AddItemsCommand(items, scene);
     scene->undoStack()->push(cmd);
+    workspace.flushPendingAutosave();
 
     // For new (unsaved) project, autosave should be in AppData/autosaves or similar location
     // The path should NOT be in the currentDir for a new project
@@ -665,6 +672,7 @@ void TestWorkspace::testAutosaveFilePermissions()
     items.append(led);
     AddItemsCommand *cmd = new AddItemsCommand(items, scene);
     scene->undoStack()->push(cmd);
+    workspace.flushPendingAutosave();
 
     // Check autosave file permissions
     QStringList autosaves = Settings::autosaveFiles();
@@ -1091,5 +1099,30 @@ void TestWorkspace::testAutosaveTruncatesOnShrinkB2()
              qPrintable(QString("Shrunk autosave (%1 bytes) must be smaller than "
                                 "the prior write (%2 bytes) — pre-fix QTemporaryFile "
                                 "left the trailing tail in place.").arg(sizeSmall).arg(sizeBig)));
+}
+
+void TestWorkspace::testFlushPendingAutosaveRunsImmediatelyB3()
+{
+    // The 500ms autosave debounce delays writes; flushPendingAutosave runs
+    // the deferred handler synchronously. The B3 commit added it both for
+    // tests and so the destructor and explicit Save flows don't drop a
+    // pending autosave on the floor.
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    Settings::setAutosaveFiles({});
+
+    WorkSpace ws;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    QList<QGraphicsItem *> items{led};
+    ws.scene()->undoStack()->push(new AddItemsCommand(items, ws.scene()));
+
+    // The push fires Scene::circuitHasChanged immediately, which only
+    // schedules the debounce timer — Settings should not have updated yet.
+    QCOMPARE(Settings::autosaveFiles().count(), 0);
+
+    ws.flushPendingAutosave();
+
+    // Now the autosave write happened.
+    QVERIFY(Settings::autosaveFiles().count() >= 1);
 }
 
