@@ -187,6 +187,7 @@ private slots:
 
     // --- Sentry triage regressions ---
 
+    void testRotateFlipZoomBreadcrumbsB23();
     void testLoadPandaFileClosesOrphanedTabB11();
     void testRemoveICFileIsUndoableA14();
 
