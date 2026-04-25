@@ -762,18 +762,34 @@ the FileDialog half of 5c, and Phase 9.
 
 ---
 
-## Phase 11 — Purpose: Circuit Sharing
-**KDE Frameworks**: `KF6::Purpose`
+## Phase 11 — Purpose: Circuit Sharing ✅
+**KDE Frameworks**: `KF6::PurposeWidgets` (`find_package(KF6Purpose REQUIRED)`,
+target `KF6::PurposeWidgets` — pulls in `KF6::Purpose` transitively)
+**Files modified**:
+- `App/UI/MainWindow.cpp` — `setupKdeActions()` registers a `wiredpanda_share`
+  action (icon: `document-share`) with a `Purpose::Menu` attached via
+  `QAction::setMenu()`. The menu's `aboutToShow` slot refreshes the
+  `AlternativesModel`'s `inputData` with the active tab's file URL plus the
+  `application/x-wpanda` mime type, then calls `reload()` so the listed
+  plugins reflect the current circuit. Plugin type is fixed to `Export`.
+- `App/UI/MainWindow.cpp::setCurrentFile()` toggles the share action's enabled
+  state to follow `fileInfo.exists()` — the submenu only makes sense once the
+  circuit is on disk; it stays disabled for unsaved tabs.
+- `App/Resources/KDE/wiredpandaui.rc` — `<Action name="wiredpanda_share"/>`
+  inserted into the File menu just before `wiredpanda_make_self_contained`,
+  next to the existing export entries.
+- `CMakeLists.txt` — `find_package(KF6Purpose REQUIRED)` and
+  `KF6::PurposeWidgets` linked into `wiredpanda_lib`.
 
-Add a "Share" toolbar action that lets users send `.panda` files via email, Nextcloud,
-Telegram, or any Purpose-registered handler:
-```cpp
-auto *shareMenu = new Purpose::Menu(this);
-shareMenu->model()->setInputData(QJsonObject{
-    {"url",      QUrl::fromLocalFile(currentFile).toString()},
-    {"mimeType", "application/x-wiredpanda"}
-});
-```
+The mime type matches what `wiredpanda-mime.xml` already advertises
+(`application/x-wpanda` is the primary; `application/x-wiredpanda` is the
+secondary alias). No Purpose-specific plugin is needed on the client side —
+end users get whatever Purpose Export plugins they have installed (KMail,
+Bluetooth, NextCloud, Telegram, etc.).
+
+### Verification
+- `ctest --preset kde` — all 176 tests pass
+- `ctest --preset debug` — all 175 tests pass (non-KDE path unchanged)
 
 ---
 
