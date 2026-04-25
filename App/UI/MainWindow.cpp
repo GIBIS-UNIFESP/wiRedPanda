@@ -72,6 +72,7 @@
 #ifdef USE_KDE_FRAMEWORKS
 #include <KActionCollection>
 #include <KConfigGroup>
+#include <KNSWidgets/Dialog>
 #include <KNotification>
 #include <KRecentFilesAction>
 #include <KSharedConfig>
@@ -211,6 +212,12 @@ void MainWindow::setupKdeActions()
             loadPandaFile(url.toLocalFile());
         },
         actionCollection());
+
+    // Phase 8: KNewStuff "Download Circuits" entry. The action lives only on the
+    // KDE path; non-KDE builds skip it entirely.
+    auto *downloadAction = addAction(u"wiredpanda_download_circuits"_s, u"actionDownloadCircuits"_s,
+        i18n("&Download Circuits…"), {}, {}, u"get-hot-new-stuff"_s);
+    connect(downloadAction, &QAction::triggered, this, &MainWindow::downloadCircuits);
 
     // ── Custom actions (created as window children, registered in collection) ───
 
@@ -849,6 +856,29 @@ void MainWindow::showUpdateDialog(const QString &latestVersion, const QUrl &down
     }
 #endif
 }
+
+#ifdef USE_KDE_FRAMEWORKS
+void MainWindow::downloadCircuits()
+{
+    auto *dialog = new KNSWidgets::Dialog(u"wiredpanda.knsrc"_s, this);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    connect(dialog, &QDialog::finished, this, [this, dialog](int) {
+        const auto entries = dialog->changedEntries();
+        for (const auto &entry : entries) {
+            if (entry.status() != KNSCore::Entry::Installed) {
+                continue;
+            }
+            const auto installedFiles = entry.installedFiles();
+            for (const auto &file : installedFiles) {
+                if (file.endsWith(u".panda"_s, Qt::CaseInsensitive)) {
+                    loadPandaFile(file);
+                }
+            }
+        }
+    });
+    dialog->open();
+}
+#endif
 
 void MainWindow::downloadUpdate(const QString &latestVersion, const QUrl &url)
 {

@@ -297,6 +297,8 @@ private:
 #ifdef USE_KDE_FRAMEWORKS
     /// Creates KDE actions via KActionCollection, calls setupGUI(), and wires up dynamic menus.
     void setupKdeActions();
+    /// Opens the KNewStuff dialog and loads any newly downloaded .panda circuits.
+    void downloadCircuits();
 #endif
 
     /// Initialises language/translation: detects system locale, loads .qm file, populates the Language menu.
