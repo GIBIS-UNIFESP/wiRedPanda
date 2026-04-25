@@ -793,11 +793,42 @@ Bluetooth, NextCloud, Telegram, etc.).
 
 ---
 
-## Phase 12 — KParts: Dolphin/Okular Integration
+## Phase 12 — KParts: Dolphin/Okular Integration ⏭️ SKIPPED
 **KDE Frameworks**: `KF6::Parts`
 
-Expose a read-only `KPart` so `.panda` files render as circuit previews inside Dolphin
-(file manager) and Okular (document viewer) without opening the full application.
+The roadmap proposed a read-only `KPart` to render `.panda` previews inside
+Dolphin and Okular. The premise turns out to be technically inaccurate — the
+named integration targets don't actually load KParts:
+
+- **Dolphin previews** are rendered by `ThumbCreator` plugins (in
+  `libkf6kio-dev`). Dolphin used to embed KParts in its Information Panel
+  years ago but moved away from that.
+- **Okular** loads document plugins through its own `Okular::Generator` API.
+  KParts is the host-app embedding interface used by Okular's container, not
+  the plugin format Okular itself accepts.
+- **Konqueror** is the main remaining host that does load KParts. Modern
+  usage is minimal, so the user-visible benefit of a KPart is small.
+
+Implementation cost is also significant relative to the payoff:
+
+- New shared library plugin target (`wiredpanda_part`)
+- `KParts::ReadOnlyPart` subclass + JSON service-metadata file + install rules
+- Refactoring `Scene` / `WorkSpace` so a read-only viewer can construct a
+  GraphicsView from a `.panda` without dragging in `MainWindow`'s tab system,
+  undo stacks, IC registry plumbing, etc.
+- Roughly 200–300 lines of new plugin scaffolding for a code path with very
+  limited reach.
+
+Skipping yields no user-visible regression. Same shape of skip as Phase 6b,
+9, and 10 — the roadmap's premise didn't hold up under closer inspection.
+
+### Future Phase 13 candidate — Dolphin thumbnails via ThumbCreator
+If Dolphin file-manager previews are the actual goal, the right vehicle is a
+`ThumbCreator` plugin (single class, no scene-loading refactor) — substantially
+smaller than a KPart and lands the integration where most users actually look:
+the Dolphin icon view. This would render a static PNG thumbnail of the
+circuit and ship under `${KDE_INSTALL_PLUGINDIR}/kf6/thumbcreator/`.
+Not started; left as a discrete follow-up.
 
 ---
 
