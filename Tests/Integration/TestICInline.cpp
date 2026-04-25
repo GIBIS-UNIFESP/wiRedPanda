@@ -4349,6 +4349,43 @@ void TestICInline::testRemoveEmbeddedICUndoRestoresBlob()
     QVERIFY2(restored, "Undo restores the IC instance");
 }
 
+void TestICInline::testSceneAddItemMimeDataThrowCleansUp()
+{
+    // Pre-fix the addItem(QMimeData*) drop handler allocated the element via
+    // new and called loadFromDrop, which can throw on a missing IC file. The
+    // raw element pointer leaked, and mimeData->deleteLater (at the bottom of
+    // the function) was unreachable. The unique_ptr + qScopeGuard rewrite
+    // fixes both — verify here that on a forced throw:
+    //   1. the throw still propagates,
+    //   2. no orphan element ends up on the scene,
+    //   3. the QMimeData object is queued for deferred deletion.
+    WorkSpace ws;
+    ws.scene()->setContextDir(m_fixtureDir);
+
+    const int elementsBefore = static_cast<int>(ws.scene()->elements().size());
+
+    QByteArray itemData;
+    {
+        QDataStream stream(&itemData, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        stream << QPoint(0, 0) << ElementType::IC
+               << QString("does_not_exist.panda") << false << QString();
+    }
+
+    auto *mimeData = new QMimeData();
+    mimeData->setData("application/x-wiredpanda-dragdrop", itemData);
+    QPointer<QMimeData> mimeWatcher(mimeData);
+
+    QVERIFY_EXCEPTION_THROWN(ws.scene()->addItem(mimeData), std::exception);
+
+    QCOMPARE(static_cast<int>(ws.scene()->elements().size()), elementsBefore);
+
+    // qScopeGuard fires deleteLater on stack unwind — process the queue and
+    // confirm the QMimeData was reclaimed.
+    QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+    QVERIFY2(mimeWatcher.isNull(), "mimeData should be deleted via the scope guard");
+}
+
 void TestICInline::testBlobRegistryMergeConflictSkipsExisting()
 {
     // ClipboardManager::paste() uses skip-if-exists semantics:
