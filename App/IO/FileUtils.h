@@ -10,6 +10,7 @@
 #include <QString>
 #include <QStringList>
 
+#include "App/Core/Common.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/VersionInfo.h"
 
@@ -34,7 +35,11 @@ inline void copyToDir(const QString &srcPath, const QString &destDir)
 
     const QString dest = destDir + "/" + srcInfo.fileName();
     if (!QFile::exists(dest)) {
-        QFile::copy(srcPath, dest);
+        QFile srcFile(srcPath);
+        if (!srcFile.copy(dest)) {
+            throw PANDACEPTION_WITH_CONTEXT("FileUtils", "Could not copy %1 to %2: %3",
+                                            srcPath, dest, srcFile.errorString());
+        }
     }
 }
 
@@ -72,7 +77,13 @@ inline void copyPandaDeps(const QString &pandaPath, const QString &srcDir, const
         const QFileInfo icDest(QDir(destDir), icFile);
 
         if (icSrc.exists() && !QFile::exists(icDest.absoluteFilePath())) {
-            QFile::copy(icSrc.absoluteFilePath(), icDest.absoluteFilePath());
+            QFile srcFile(icSrc.absoluteFilePath());
+            if (!srcFile.copy(icDest.absoluteFilePath())) {
+                throw PANDACEPTION_WITH_CONTEXT("FileUtils",
+                                                "Could not copy %1 to %2: %3",
+                                                icSrc.absoluteFilePath(), icDest.absoluteFilePath(),
+                                                srcFile.errorString());
+            }
         }
 
         if (icSrc.exists()) {
