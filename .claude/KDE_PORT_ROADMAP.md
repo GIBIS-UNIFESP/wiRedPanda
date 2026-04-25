@@ -661,11 +661,7 @@ purely additive on Linux. The roadmap suggested calling
 
 ---
 
-## Phase 8 — Enhanced Features (Optional / Future)
-
-These are independent features that can be adopted in any order after Phase 4 is complete.
-
-### 8a — KNewStuff: Circuit Marketplace
+## Phase 8 — KNewStuff: Circuit Marketplace
 **KDE Frameworks**: `KF6::NewStuff`
 
 Allow users to download/share circuits and IC libraries from a hosted GHNS (Get Hot New Stuff) store.
@@ -677,13 +673,17 @@ dlg->open();
 connect(dlg, &KNSWidgets::Dialog::accepted, this, &MainWindow::loadDownloadedCircuits);
 ```
 
-### 8b — KPlotting: Waveform Viewer
+---
+
+## Phase 9 — KPlotting: Waveform Viewer
 **KDE Frameworks**: `KF6::Plotting`
 
 Replace the custom `BeWavedDolphin` waveform rendering (QStandardItemModel + custom delegate)
 with KPlotting's lightweight plot widget. Reduces ~400 lines of custom painting code.
 
-### 8c — ThreadWeaver: Parallel Simulation
+---
+
+## Phase 10 — ThreadWeaver: Parallel Simulation
 **KDE Frameworks**: `KF6::ThreadWeaver`
 
 Break the fixed 1ms `QTimer`-driven simulation loop into a ThreadWeaver job graph.
@@ -691,7 +691,9 @@ Each topological layer of the circuit becomes a parallel job, enabling multi-cor
 of large circuits. The `Simulation.cpp` architecture is well-suited for this — topological
 ordering already exists; parallelism is the only missing piece.
 
-### 8d — Purpose: Circuit Sharing
+---
+
+## Phase 11 — Purpose: Circuit Sharing
 **KDE Frameworks**: `KF6::Purpose`
 
 Add a "Share" toolbar action that lets users send `.panda` files via email, Nextcloud,
@@ -704,7 +706,9 @@ shareMenu->model()->setInputData(QJsonObject{
 });
 ```
 
-### 8e — KParts: Dolphin/Okular Integration
+---
+
+## Phase 12 — KParts: Dolphin/Okular Integration
 **KDE Frameworks**: `KF6::Parts`
 
 Expose a read-only `KPart` so `.panda` files render as circuit previews inside Dolphin
@@ -724,7 +728,11 @@ Phase 0 (ECM)
     └── Phase 2 (KI18n)                  ← independent, can run parallel to Phase 1
     └── Phase 6 (Theming)               ← independent after Phase 0
     └── Phase 7 (KCrash/KNotifications) ← independent after Phase 3
-    └── Phase 8a–e                       ← independent, after Phase 4
+    └── Phase 8 (KNewStuff)             ← independent, after Phase 4
+    └── Phase 9 (KPlotting)             ← independent, after Phase 4
+    └── Phase 10 (ThreadWeaver)         ← independent, after Phase 4
+    └── Phase 11 (Purpose)              ← independent, after Phase 4
+    └── Phase 12 (KParts)               ← independent, after Phase 4
 ```
 
 ---
