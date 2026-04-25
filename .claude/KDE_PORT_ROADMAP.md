@@ -517,19 +517,25 @@ builds fall back to QMessageBox. Multi-button dialogs (Save/Discard/Cancel,
 Yes/YesToAll/No/NoToAll/Cancel) and `about` / `aboutQt` keep QMessageBox
 since KMessageBox has no direct equivalent.
 
-### 5b — Global Shortcuts: KGlobalAccel — SKIPPED ⏭️
+### 5b — Global Shortcuts: KGlobalAccel ✅
+**KDE Frameworks**: `KF6::GlobalAccel` (no extra dependency — pulled in via Keys flag)
 
-**Reason for skip**: KGlobalAccel uses `KGlobalAccel::self()` which connects to
-the KDE shortcut daemon (kglobalaccel5/6) via D-Bus. We deliberately removed
-`KXmlGuiWindow::Keys` from `setupGUI()` flags in Phase 4 because it triggered
-the same D-Bus path and indefinitely hung headless tests on dialog timeouts.
-Re-introducing KGlobalAccel would re-introduce the same hang.
+Re-enabled `KXmlGuiWindow::Keys` flag by switching `setupGUI()` to
+`KXmlGuiWindow::Default` (= `Create | StatusBar | ToolBar | Save | Keys`)
+in both `MainWindow` and `BewavedDolphin`.
 
-Global shortcuts (work even when the application isn't focused) are also a
-poor fit for an editor like wiRedPanda; users expect window-level shortcuts.
-Application-level shortcuts via `KActionCollection::setDefaultShortcut()`
-already support runtime customization through KShortcutsEditor (deferable to a
-future "Configure Shortcuts" menu item).
+**Investigation correction**: A previous note claimed the `Keys` flag hung
+headless tests via D-Bus. That was wrong. The actual hangs in Phase 4 came
+entirely from `checkAmbiguousShortcuts()` opening a `KMessageBox::information`
+modal dialog because of the KCommandBar (`Ctrl+Alt+I`) and KHelpMenu (`F1`)
+shortcut conflicts — both already fixed in Phase 4 via `setCommandBarEnabled(false)`
+and `setHelpMenuEnabled(false)`.
+
+A standalone test (`/tmp/kga_test`) confirms KGlobalAccel handles a missing
+`org.kde.kglobalaccel` D-Bus service gracefully: `setShortcut()` returns in
+~40 ms after one D-Bus auto-activation timeout, prints a stderr error, and
+moves on. No hang. With the daemon present (KDE Plasma session), shortcuts
+become user-rebindable via System Settings → Shortcuts.
 
 ### 5c — File Dialogs / Recent Files — DEFERRED 📋
 

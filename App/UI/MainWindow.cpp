@@ -305,10 +305,7 @@ void MainWindow::setupKdeActions()
     setHelpMenuEnabled(false);
 
     // ── Load XML GUI and let KXmlGuiWindow build menus/toolbars ─────────────
-    // Exclude Keys (KGlobalAccel/D-Bus global shortcuts) — it blocks in headless environments.
-    // Shortcuts still work locally via KActionCollection::setDefaultShortcut().
-    setupGUI(KXmlGuiWindow::Create | KXmlGuiWindow::StatusBar | KXmlGuiWindow::ToolBar | KXmlGuiWindow::Save,
-             u":/wiredpanda/wiredpandaui.rc"_s);
+    setupGUI(KXmlGuiWindow::Default, u":/wiredpanda/wiredpandaui.rc"_s);
 
     // ── Post-setupGUI: grab KDE-created menus and assign to m_ui pointers ───
     for (QAction *a : menuBar()->actions()) {
