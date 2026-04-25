@@ -31,6 +31,7 @@ private slots:
     // MoveCommand
     void testMoveSingleElement();
     void testMoveMultipleElements();
+    void testMidDragDeleteDoesNotCrash(); // regression: WIREDPANDA-H9 / WIREDPANDA-EV
 
     // FlipCommand
     void testFlipHorizontalUndoRedo();

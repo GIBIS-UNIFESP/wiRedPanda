@@ -327,6 +327,45 @@ void TestSceneUndoredo::testMoveMultipleElements()
     QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id2))->pos(), new2);
 }
 
+void TestSceneUndoredo::testMidDragDeleteDoesNotCrash()
+{
+    // Without the QPointer-based drag snapshot, mouseReleaseEvent dereferenced
+    // a GraphicElement that had been deleted by a Delete shortcut fired between
+    // press and release, causing a fatal access violation.
+    Scene scene;
+
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    elm->setPos(0, 0);
+    scene.addItem(elm);
+    elm->setSelected(true);
+    const QPointF pressPos = elm->scenePos();
+
+    // Begin the drag — this populates Scene's internal snapshot with a
+    // pointer (QPointer) to elm.
+    QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
+    pressEvent.setScenePos(pressPos);
+    pressEvent.setButton(Qt::LeftButton);
+    pressEvent.setButtons(Qt::LeftButton);
+    QCoreApplication::sendEvent(&scene, &pressEvent);
+
+    // Mid-drag: delete elm via the same path Scene::deleteAction takes.
+    QList<QGraphicsItem *> toDelete{elm};
+    scene.undoStack()->push(new DeleteItemsCommand(toDelete, &scene));
+    QCOMPARE(scene.elements().size(), 0);
+
+    // Release the mouse. With the fix, the QPointer is null and the release
+    // path skips the dead element. Without the fix, this dereferences freed
+    // memory and crashes.
+    QGraphicsSceneMouseEvent releaseEvent(QEvent::GraphicsSceneMouseRelease);
+    releaseEvent.setScenePos(pressPos);
+    releaseEvent.setButton(Qt::LeftButton);
+    releaseEvent.setButtons(Qt::NoButton);
+    QCoreApplication::sendEvent(&scene, &releaseEvent);
+
+    // No spurious MoveCommand was pushed — only the DeleteItemsCommand remains.
+    QCOMPARE(scene.undoStack()->count(), 1);
+}
+
 // ─── FlipCommand ──────────────────────────────────────────────────────────
 
 void TestSceneUndoredo::testFlipHorizontalUndoRedo()
