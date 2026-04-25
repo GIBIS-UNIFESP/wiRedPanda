@@ -10,6 +10,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
+#include <QShortcut>
 #include <QSlider>
 #include <QTabWidget>
 #include <QTest>
@@ -2858,6 +2859,34 @@ void TestMainWindowGui::testExtractICByBlobNameEndToEnd()
 // ===========================================================================
 // Sentry triage regressions
 // ===========================================================================
+
+void TestMainWindowGui::testSetupShortcutsRegistersOnceD18()
+{
+    // Pre-fix the constructor called setupShortcuts() twice, leaking the
+    // first batch's seven QShortcut objects and registering [, ], {, }, <, >
+    // under two QShortcut children each.
+    std::unique_ptr<MainWindow> window(createMW());
+
+    const QList<QKeySequence> bracketKeys = {
+        QKeySequence("["),
+        QKeySequence("]"),
+        QKeySequence("{"),
+        QKeySequence("}"),
+        QKeySequence("<"),
+        QKeySequence(">"),
+    };
+
+    const auto shortcuts = window->findChildren<QShortcut *>();
+    for (const auto &key : bracketKeys) {
+        int matches = 0;
+        for (auto *sc : shortcuts) {
+            if (sc->key() == key) {
+                ++matches;
+            }
+        }
+        QCOMPARE(matches, 1);
+    }
+}
 
 void TestMainWindowGui::testAddICDisabledWhenUnsavedC9()
 {
