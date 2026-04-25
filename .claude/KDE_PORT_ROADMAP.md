@@ -499,67 +499,50 @@ setupGUI(Default, "wiredpandaui.rc");
 ---
 
 ## Phase 5 — Dialogs & File Handling
-**KDE Frameworks**: `KF6::WidgetsAddons`, `KF6::KIO`, `KF6::JobWidgets`
 
-### 5a — Message Dialogs: QMessageBox → KMessageBox
-**Files**: All files with `#include <QMessageBox>` (~14 call sites across 6 files)
+### 5a — Message Dialogs: QMessageBox → KMessageBox ✅
+**KDE Frameworks**: `KF6::WidgetsAddons`
+**Files modified** — wrapper + ~25 call-site replacements:
+- New `App/UI/MessageDialog.h` — thin namespace wrapper around QMessageBox/KMessageBox
+- `App/Main.cpp`, `App/Core/Application.cpp`, `App/Scene/Workspace.cpp`,
+  `App/UI/ElementEditor.cpp`, `App/UI/MainWindow.cpp`,
+  `App/BeWavedDolphin/BeWavedDolphin.cpp` — call sites
+- `Tests/Unit/Ui/TestDialogs.cpp`, `Tests/Integration/TestMainWindowGui.cpp` —
+  test fixtures updated to poll for the modal dialog (KMessageBox defers show
+  past `singleShot(0)`)
 
-```cpp
-// Before
-QMessageBox::warning(this, tr("Warning"), tr("File not found"));
+The wrapper exposes `MessageDialog::error / information / warning / questionYesNo`
+with `(parent, text, title)` signature. KDE builds use KMessageBox; non-KDE
+builds fall back to QMessageBox. Multi-button dialogs (Save/Discard/Cancel,
+Yes/YesToAll/No/NoToAll/Cancel) and `about` / `aboutQt` keep QMessageBox
+since KMessageBox has no direct equivalent.
 
-// After
-KMessageBox::sorry(this, i18n("File not found"));
-```
+### 5b — Global Shortcuts: KGlobalAccel — SKIPPED ⏭️
 
-Mapping:
-- `QMessageBox::warning` → `KMessageBox::sorry` or `KMessageBox::error`
-- `QMessageBox::question` → `KMessageBox::questionTwoActions`
-- `QMessageBox::information` → `KMessageBox::information`
-- `QMessageBox::critical` → `KMessageBox::error`
+**Reason for skip**: KGlobalAccel uses `KGlobalAccel::self()` which connects to
+the KDE shortcut daemon (kglobalaccel5/6) via D-Bus. We deliberately removed
+`KXmlGuiWindow::Keys` from `setupGUI()` flags in Phase 4 because it triggered
+the same D-Bus path and indefinitely hung headless tests on dialog timeouts.
+Re-introducing KGlobalAccel would re-introduce the same hang.
 
-### 5b — Global Shortcuts: KGlobalAccel
-**KDE Frameworks**: `KF6::GlobalAccel`
-**Files**: `App/UI/MainWindow.cpp` (all `actionCollection()->setDefaultShortcut()` calls)
+Global shortcuts (work even when the application isn't focused) are also a
+poor fit for an editor like wiRedPanda; users expect window-level shortcuts.
+Application-level shortcuts via `KActionCollection::setDefaultShortcut()`
+already support runtime customization through KShortcutsEditor (deferable to a
+future "Configure Shortcuts" menu item).
 
-After Phase 4 (KActionCollection), wire global shortcuts:
-```cpp
-KGlobalAccel::setGlobalShortcut(actionSimulationPlay, QKeySequence(Qt::CTRL | Qt::Key_F5));
-```
+### 5c — File Dialogs / Recent Files — DEFERRED 📋
 
-Users can rebind via **System Settings → Shortcuts → wiRedPanda**.
-
-### 5c — File Dialogs: KIO::FileDialog + KRecentFilesAction
-**Files**: `App/UI/FileDialogProvider.cpp`, `App/IO/RecentFiles.h/cpp`, `App/UI/MainWindowUI.cpp`
-
-**`FileDialogProvider`** — replace `RealFileDialogProvider` implementation:
-```cpp
-// Before
-QString path = QFileDialog::getOpenFileName(parent, caption, dir, filter);
-
-// After
-QString path = KFileDialog::getOpenFileName(KUrl(dir), filter, parent, caption);
-// or with KIO:
-auto *dialog = new KOpenFileDialog(parent);
-dialog->setMimeTypeFilters({"application/x-wiredpanda", "image/png"});
-```
-
-**`RecentFiles`** — replace the hand-rolled MRU list with `KRecentFilesAction`:
-```cpp
-// Remove RecentFiles.h/cpp entirely.
-// In MainWindow:
-auto *recentFiles = new KRecentFilesAction(i18n("Open &Recent"), actionCollection());
-actionCollection()->addAction("file_open_recent", recentFiles);
-connect(recentFiles, &KRecentFilesAction::urlSelected, this, &MainWindow::openUrl);
-recentFiles->loadEntries(KSharedConfig::openConfig()->group("RecentFiles"));
-```
-
-This also removes the `QFileSystemWatcher` used to detect deleted files — KIO handles this.
-
-### Verification
-- Open/save dialogs work on all platforms
-- Recent files menu populates and opens files correctly
-- File-not-found entries are removed automatically
+**Reason for deferral**:
+- **QFileDialog**: When wiRedPanda runs on KDE Plasma, the
+  `kdeplatformfiledialog` plugin already replaces `QFileDialog` with
+  `KFileWidget` transparently. The visible result is identical to a direct
+  `KFileDialog` call. Replacing `RealFileDialogProvider` adds boilerplate
+  without user-visible change.
+- **KRecentFilesAction**: Removing `App/IO/RecentFiles.{h,cpp}` and the
+  `QFileSystemWatcher`-based MRU is a substantial refactor (touches
+  `MainWindow::setupRecentFiles`, `Settings::recentFiles`, persistence
+  format). Tracked as a separate future task.
 
 ---
 

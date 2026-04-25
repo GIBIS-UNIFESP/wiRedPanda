@@ -4,7 +4,6 @@
 #include "App/Scene/Workspace.h"
 
 #include <QHBoxLayout>
-#include <QMessageBox>
 #include <QSaveFile>
 #include <QScrollBar>
 #include <QStandardPaths>
@@ -26,6 +25,7 @@
 #include "App/Scene/Commands.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/UI/FileDialogProvider.h"
+#include "App/UI/MessageDialog.h"
 #include "App/Versions.h"
 
 WorkSpace::WorkSpace(QWidget *parent)
@@ -87,7 +87,7 @@ void WorkSpace::save(const QString &fileName)
                          "Your wiRedPanda version (%2) supports file format %3.\n\n"
                          "Please update wiRedPanda to save changes to this file.")
                           .arg(m_loadedVersion.toString(), AppVersion::current.toString(), FileVersion::current.toString());
-            QMessageBox::warning(this, i18n("Cannot save."), message);
+            MessageDialog::warning(this, message, i18n("Cannot save."));
         }
         return;
     }
@@ -345,13 +345,13 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
                          "The file will be opened but saving is blocked.\n"
                          "Please update wiRedPanda to edit and save this file.")
                           .arg(fileVersion, fmtVersion);
-            QMessageBox::warning(this, i18n("Newer version file."), message);
+            MessageDialog::warning(this, message, i18n("Newer version file."));
         } else if (version < FileVersion::current) {
             const QString backupFileName = m_fileInfo.completeBaseName() + ".v" + version.toString() + "." + m_fileInfo.suffix();
             const QString message = i18n("This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).\n"
                          "A backup of the original file has been created with name: %3")
                          .arg(version.toString(), FileVersion::current.toString(), backupFileName);
-            QMessageBox::information(this, i18n("File upgraded."), message);
+            MessageDialog::information(this, message, i18n("File upgraded."));
         }
     }
 

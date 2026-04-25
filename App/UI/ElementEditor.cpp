@@ -9,7 +9,6 @@
 #include <QDir>
 #include <QFile>
 #include <QImageReader>
-#include <QMessageBox>
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
@@ -32,6 +31,7 @@
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LabeledSlider.h"
 #include "App/UI/MainWindow.h"
+#include "App/UI/MessageDialog.h"
 #include "App/UI/SelectionCapabilities.h"
 
 ElementEditor::ElementEditor(QWidget *parent)
@@ -580,10 +580,10 @@ void ElementEditor::apply()
                 auto *otherNode = qobject_cast<Node *>(other);
                 if (!otherNode || otherNode->wirelessMode() != WirelessMode::Tx) continue;
                 if (otherNode->label() == candidateLabel) {
-                    QMessageBox::warning(this,
-                        i18n("Duplicate Wireless Channel"),
+                    MessageDialog::warning(this,
                         i18n("A Tx node with label \"%1\" already exists.\n"
-                           "Each wireless channel must have a unique label.").arg(candidateLabel));
+                           "Each wireless channel must have a unique label.").arg(candidateLabel),
+                        i18n("Duplicate Wireless Channel"));
                     update();
                     return;
                 }

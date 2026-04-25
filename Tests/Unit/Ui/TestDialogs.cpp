@@ -201,13 +201,20 @@ struct EditorFixture {
     }
 
     // Schedule auto-close of the next modal dialog so tests don't block.
+    // Polls because some dialog libraries (e.g. KMessageBox) defer the show
+    // past a singleShot(0) tick — a single retry isn't enough.
     static void dismissNextDialog()
     {
-        QTimer::singleShot(0, [] {
+        auto *t = new QTimer;
+        t->setInterval(10);
+        QObject::connect(t, &QTimer::timeout, [t] {
             if (auto *w = QApplication::activeModalWidget()) {
                 w->close();
+                t->stop();
+                t->deleteLater();
             }
         });
+        t->start();
     }
 };
 
