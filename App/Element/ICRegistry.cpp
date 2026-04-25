@@ -84,17 +84,37 @@ void ICRegistry::onFileChanged(const QString &filePath)
         return;
     }
 
+    // Capture pre-reload state so the undo command can restore both the
+    // ICs' element data and the scene wires that touch their ports.
+    // Without this the wires get cascade-deleted by setInputSize/setOutputSize
+    // inside loadFile and Cluster D throws on the next undo lookup.
+    const auto connections = UpdateBlobCommand::captureConnections(targets);
+    const QByteArray oldData = captureSnapshot(targets);
+
     // Stop the simulation for the entire reload. Between freeing each IC's
     // old internal graph and rebuilding it, the scene's sorted vectors hold
-    // dangling pointers; ticking on that state would fault. The explicit
-    // setCircuitUpdateRequired() at the end drives a full scene re-init —
-    // stricter than restart(), which used to leave IC::m_sortedInternalElements
-    // untouched until the next tick happened to rebuild it.
-    SimulationBlocker blocker(m_scene->simulation());
-    for (auto *elm : targets) {
-        static_cast<IC *>(elm)->loadFile(filePath);
+    // dangling pointers; ticking on that state would fault. Roll back any
+    // partial mutation if loadFile throws so we don't push a half-applied
+    // undo command.
+    QList<GraphicElement *> updated;
+    {
+        SimulationBlocker blocker(m_scene->simulation());
+        try {
+            for (auto *elm : targets) {
+                static_cast<IC *>(elm)->loadFile(filePath);
+                updated.append(elm);
+            }
+        } catch (...) {
+            rollbackElements(updated, oldData, m_scene);
+            m_scene->setCircuitUpdateRequired();
+            emit definitionChanged(filePath);
+            throw;
+        }
+        m_scene->setCircuitUpdateRequired();
     }
-    m_scene->setCircuitUpdateRequired();
+
+    auto *cmd = new UpdateBlobCommand(targets, oldData, connections, m_scene);
+    m_scene->undoStack()->push(cmd);
 
     emit definitionChanged(filePath);
 }

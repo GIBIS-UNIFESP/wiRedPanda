@@ -5780,3 +5780,39 @@ void TestICInline::testInlineSavePreservesWiresA15()
     QVERIFY2(wireSurvives(), "Wire from switch to file-backed sub-IC must survive inline save");
 }
 
+void TestICInline::testOnFileChangedPushesUndoCommandC5()
+{
+    // Pre-fix ICRegistry::onFileChanged called IC::loadFile directly with no
+    // command on the undo stack — every subsequent undo throw the Cluster D
+    // defensive net because the recorded item IDs no longer matched the
+    // freshly-rebuilt IC. Now the handler captures connections + element
+    // snapshot and pushes an UpdateBlobCommand, mirroring embedICsByFile.
+    const QString icPath = m_fixtureDir + "/c5_target.panda";
+    QVERIFY(QFile::copy(m_fixtureDir + "/simple_and.panda", icPath));
+
+    WorkSpace ws;
+    ws.scene()->setContextDir(m_fixtureDir);
+    auto *reg = ws.scene()->icRegistry();
+
+    auto *ic = new IC();
+    ic->loadFile(icPath, m_fixtureDir);
+    ws.scene()->addItem(ic);
+
+    auto *undoStack = ws.scene()->undoStack();
+    const int stackBefore = undoStack->count();
+
+    QVERIFY(QMetaObject::invokeMethod(reg, "onFileChanged",
+                                      Qt::DirectConnection, Q_ARG(QString, icPath)));
+
+    // The handler must have pushed exactly one UpdateBlobCommand.
+    QCOMPARE(undoStack->count(), stackBefore + 1);
+
+    // Undo must succeed and walk back the stack — the regression is that this
+    // path used to leave findItems-based undo commands looking up stale IDs.
+    undoStack->undo();
+    QCOMPARE(undoStack->index(), stackBefore);
+    QCOMPARE(static_cast<int>(ws.scene()->elements().size()), 1);
+
+    QFile::remove(icPath);
+}
+
