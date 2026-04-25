@@ -310,6 +310,8 @@ void BewavedDolphin::on_tableView_selectionChanged()
 
     const auto indexes = m_signalTableView->selectionModel()->selectedIndexes();
 
+    m_ui->actionSetClockWave->setEnabled(!indexes.isEmpty());
+
     // Highlight the corresponding input element in the circuit editor when the user
     // selects a waveform row, giving visual feedback about which signal they are editing.
     // Output rows (index >= m_inputs.size()) have no element to highlight.

@@ -2859,6 +2859,33 @@ void TestMainWindowGui::testExtractICByBlobNameEndToEnd()
 // Sentry triage regressions
 // ===========================================================================
 
+void TestMainWindowGui::testAddICDisabledWhenUnsavedC9()
+{
+    // The Add IC button needs a saved-project directory to copy the chosen
+    // .panda into. Pre-fix it was always clickable and the click threw
+    // "Save file first." straight into a modal error.
+    std::unique_ptr<MainWindow> window(createMW());
+
+    auto *addBtn = window->findChild<QPushButton *>("pushButtonAddIC");
+    QVERIFY(addBtn);
+
+    // Fresh tab — fileInfo is not readable, so Add IC is gated off.
+    QVERIFY(!window->currentTab()->fileInfo().isReadable());
+    QVERIFY(!addBtn->isEnabled());
+
+    // Saving the project flips the precondition; the button must enable.
+    StubFileDialogProvider stub;
+    stub.saveResult = {m_fixtureDir + "/c9_proj.panda", "Panda files (*.panda)"};
+    auto *prevProvider = FileDialogs::setProvider(&stub);
+
+    window->currentTab()->save({});
+    QVERIFY(window->currentTab()->fileInfo().isReadable());
+
+    QVERIFY(addBtn->isEnabled());
+
+    FileDialogs::setProvider(prevProvider);
+}
+
 void TestMainWindowGui::testRotateFlipZoomBreadcrumbsB23()
 {
     // The behavior change is "MainWindow's Rotate/Flip/Zoom slots stop

@@ -213,6 +213,9 @@ private:
     /// Shows or hides the IC management buttons (Add, Remove, MakeSelfContained).
     void setICButtonsVisible(bool visible);
 
+    /// Updates the enabled state of Add IC based on current tab's saved-file status.
+    void refreshICButtonsEnabled();
+
     bool hasModifiedFiles();
     void loadAutosaveFiles();
     void createRecentFileActions();
