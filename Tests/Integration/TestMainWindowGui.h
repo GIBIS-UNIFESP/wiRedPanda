@@ -190,6 +190,7 @@ private slots:
 
     // --- Sentry triage regressions ---
 
+    void testAddICDisabledWhenUnsavedC9();
     void testRotateFlipZoomBreadcrumbsB23();
     void testRemoveICFileIsUndoableA14();
 
