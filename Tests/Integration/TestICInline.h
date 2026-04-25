@@ -168,7 +168,7 @@ private slots:
 
     // --- Migrated: Batch 11 — Blob registry and orphan cleanup ---
 
-    void testRemoveEmbeddedICUndoLimitation();
+    void testRemoveEmbeddedICUndoRestoresBlob();
     void testBlobRegistryMergeConflictSkipsExisting();
     void testUniqueNameCollision();
     void testOrphanBlobAfterDeleteAllInstances();
