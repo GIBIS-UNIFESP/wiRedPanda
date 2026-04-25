@@ -730,13 +730,35 @@ FileDialog half of Phase 5c.
 
 ---
 
-## Phase 10 — ThreadWeaver: Parallel Simulation
+## Phase 10 — ThreadWeaver: Parallel Simulation ⏭️ SKIPPED
 **KDE Frameworks**: `KF6::ThreadWeaver`
 
-Break the fixed 1ms `QTimer`-driven simulation loop into a ThreadWeaver job graph.
-Each topological layer of the circuit becomes a parallel job, enabling multi-core simulation
-of large circuits. The `Simulation.cpp` architecture is well-suited for this — topological
-ordering already exists; parallelism is the only missing piece.
+The roadmap proposed splitting the topologically-ordered element list into a
+ThreadWeaver job graph so independent elements at the same depth run in
+parallel. Mechanically possible — the topological sort already exists — but
+the actual workload is far too small to amortize threading overhead:
+
+- Each `GraphicElement::updateLogic()` is a tiny boolean op. `LogicAnd` is
+  `std::accumulate(inputs, true, std::bit_and<>())`; nanoseconds per element.
+  Even 1000 elements sequentially complete in roughly 10 µs.
+- ThreadWeaver per-job overhead (heap-allocated `QObject` jobs, mutexes,
+  cross-thread signalling) is on the order of microseconds per job. With
+  per-element work in the nanosecond range, sync cost dominates and
+  parallelization makes the loop **slower** by 1–2 orders of magnitude.
+- The simulator targets educational circuits (typically 10–100 elements) at
+  a 1 ms tick. The sequential update is so cheap that the per-tick budget is
+  never close to saturated — there is no bottleneck to parallelize.
+- `updateLogic()` walks the element/port/predecessor pointer graph; making it
+  concurrent-safe would require adding mutexes to per-element state, which
+  would also slow the sequential path.
+- ThreadWeaver isn't available on WASM (and we don't want to require it on
+  the non-KDE desktop path either), so we'd be maintaining two parallel
+  implementations for a feature that loses on every benchmark.
+- Feedback handling (`iterativeSettle()`) is a fixed-point loop; the
+  per-iteration convergence barrier dominates any intra-iteration parallelism.
+
+Skipping yields no user-visible regression. Same shape of skip as Phase 6b,
+the FileDialog half of 5c, and Phase 9.
 
 ---
 
