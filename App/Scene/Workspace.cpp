@@ -12,6 +12,23 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+
+namespace {
+
+/// Returns true for QFileDevice errors that map to "target is locked / not
+/// writable" — the conditions where re-prompting the user for a different
+/// path lets them recover instead of staring at a modal error. QSaveFile in
+/// particular reports WriteError (not PermissionsError) when an existing
+/// file is read-only.
+bool isReadOnlyFailure(QFileDevice::FileError error)
+{
+    return error == QFileDevice::PermissionsError
+        || error == QFileDevice::OpenError
+        || error == QFileDevice::WriteError;
+}
+
+} // namespace
+
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElement.h"
@@ -212,7 +229,7 @@ void WorkSpace::save(const QString &fileName)
     QSaveFile saveFile(fileName_);
 
     if (!saveFile.open(QIODevice::WriteOnly)) {
-        if (Application::interactiveMode && saveFile.error() == QFileDevice::PermissionsError) {
+        if (Application::interactiveMode && isReadOnlyFailure(saveFile.error())) {
             // OneDrive lock, ZIP-extracted folder, network drive, write-protected
             // attribute. Re-prompt for a writable location instead of throwing
             // the user into a stuck "Acesso negado" dialog with no way out.
@@ -254,7 +271,7 @@ void WorkSpace::save(const QString &fileName)
     save(stream);
 
     if (!saveFile.commit()) {
-        if (Application::interactiveMode && saveFile.error() == QFileDevice::PermissionsError) {
+        if (Application::interactiveMode && isReadOnlyFailure(saveFile.error())) {
             const QString newPath = FileDialogs::provider()->getSaveFileName(
                 this, tr("Save File (original location is read-only)"),
                 QFileInfo(fileName_).fileName(),
