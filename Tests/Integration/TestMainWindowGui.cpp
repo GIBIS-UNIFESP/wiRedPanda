@@ -2859,6 +2859,57 @@ void TestMainWindowGui::testExtractICByBlobNameEndToEnd()
 // Sentry triage regressions
 // ===========================================================================
 
+void TestMainWindowGui::testRotateFlipZoomBreadcrumbsB23()
+{
+    // The behavior change is "MainWindow's Rotate/Flip/Zoom slots stop
+    // emitting their own sentryBreadcrumb because Scene/View already do".
+    // sentryBreadcrumb is a no-op without HAVE_SENTRY linked, so we verify
+    // the regression at the source level: the seven affected slots must not
+    // contain a sentryBreadcrumb call any more.
+    // CURRENTDIR is defined at compile time as ${CMAKE_CURRENT_SOURCE_DIR}/Tests
+    const QString sourcePath = QString(QUOTE(CURRENTDIR)) + "/../App/UI/MainWindow.cpp";
+    QFile src(sourcePath);
+    QVERIFY2(src.open(QIODevice::ReadOnly),
+             qPrintable(QString("Cannot open %1").arg(src.fileName())));
+    const QString source = QString::fromUtf8(src.readAll());
+    src.close();
+
+    const QStringList slotsThatLostBreadcrumbs = {
+        "MainWindow::on_actionRotateRight_triggered",
+        "MainWindow::on_actionRotateLeft_triggered",
+        "MainWindow::on_actionFlipHorizontally_triggered",
+        "MainWindow::on_actionFlipVertically_triggered",
+        "MainWindow::on_actionZoomIn_triggered",
+        "MainWindow::on_actionZoomOut_triggered",
+        "MainWindow::on_actionResetZoom_triggered",
+    };
+
+    for (const QString &slotName : slotsThatLostBreadcrumbs) {
+        const qsizetype start = source.indexOf(slotName);
+        QVERIFY2(start >= 0, qPrintable("Could not find " + slotName));
+
+        // Walk to the opening brace then balance to the closing brace.
+        const qsizetype openBrace = source.indexOf('{', start);
+        QVERIFY(openBrace > start);
+        int depth = 0;
+        qsizetype closeBrace = -1;
+        for (qsizetype i = openBrace; i < source.size(); ++i) {
+            if (source[i] == '{') ++depth;
+            else if (source[i] == '}') {
+                --depth;
+                if (depth == 0) { closeBrace = i; break; }
+            }
+        }
+        QVERIFY(closeBrace > openBrace);
+        const QString body = source.mid(openBrace, closeBrace - openBrace + 1);
+
+        QVERIFY2(!body.contains("sentryBreadcrumb"),
+                 qPrintable(slotName + " still emits sentryBreadcrumb — Scene/View "
+                            "already emits a richer breadcrumb for the same action; "
+                            "MainWindow's emit duplicates it and pollutes the buffer."));
+    }
+}
+
 void TestMainWindowGui::testLoadPandaFileClosesOrphanedTabB11()
 {
     // Pre-fix loadPandaFile created a tab unconditionally, then called load().

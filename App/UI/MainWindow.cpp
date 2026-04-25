@@ -688,7 +688,6 @@ void MainWindow::on_actionWires_triggered(const bool checked)
 
 void MainWindow::on_actionRotateRight_triggered()
 {
-    sentryBreadcrumb("ui", QStringLiteral("Rotate right"));
     if (m_currentTab) {
         m_currentTab->scene()->rotateRight();
     }
@@ -696,7 +695,6 @@ void MainWindow::on_actionRotateRight_triggered()
 
 void MainWindow::on_actionRotateLeft_triggered()
 {
-    sentryBreadcrumb("ui", QStringLiteral("Rotate left"));
     if (m_currentTab) {
         m_currentTab->scene()->rotateLeft();
     }
@@ -1434,7 +1432,6 @@ void MainWindow::on_actionExportToSystemVerilog_triggered()
 
 void MainWindow::on_actionZoomIn_triggered() const
 {
-    sentryBreadcrumb("ui", QStringLiteral("Zoom in"));
     if (!m_currentTab) {
         return;
     }
@@ -1444,7 +1441,6 @@ void MainWindow::on_actionZoomIn_triggered() const
 
 void MainWindow::on_actionZoomOut_triggered() const
 {
-    sentryBreadcrumb("ui", QStringLiteral("Zoom out"));
     if (!m_currentTab) {
         return;
     }
@@ -1454,7 +1450,6 @@ void MainWindow::on_actionZoomOut_triggered() const
 
 void MainWindow::on_actionResetZoom_triggered() const
 {
-    sentryBreadcrumb("ui", QStringLiteral("Zoom reset"));
     if (!m_currentTab) {
         return;
     }
@@ -1737,7 +1732,6 @@ void MainWindow::updateTheme()
 
 void MainWindow::on_actionFlipHorizontally_triggered()
 {
-    sentryBreadcrumb("ui", QStringLiteral("Flip horizontal"));
     if (!m_currentTab) {
         return;
     }
@@ -1747,7 +1741,6 @@ void MainWindow::on_actionFlipHorizontally_triggered()
 
 void MainWindow::on_actionFlipVertically_triggered()
 {
-    sentryBreadcrumb("ui", QStringLiteral("Flip vertical"));
     if (!m_currentTab) {
         return;
     }
