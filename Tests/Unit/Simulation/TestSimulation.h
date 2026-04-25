@@ -16,5 +16,8 @@ private slots:
     void testAddRemoveClockDuringSimulation();
     void testFeedbackLoopDetection();
     void testElementRemovalMidSimulation();
+
+    // Regression: B22 — Simulation::start/stop must not emit Sentry breadcrumbs
+    void testSimulationStartStopNoBreadcrumbsB22();
 };
 
