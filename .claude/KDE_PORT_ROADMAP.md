@@ -570,51 +570,61 @@ zero benefit when the platform plugin already routes through it).
 ---
 
 ## Phase 6 — Theming: KColorScheme + KSvg + KIconThemes
-**KDE Frameworks**: `KF6::ColorScheme`, `KF6::Svg`, `KF6::IconThemes`
 
-### 6a — Color Scheme: KColorScheme → replace ThemeManager
-**Files**: `App/Core/ThemeManager.h/cpp`
+### 6a — Color Scheme: KColorScheme → integrate into ThemeManager ✅
+**KDE Frameworks**: `KF6::ColorScheme` (`find_package(KF6ColorScheme REQUIRED)`)
+**Files modified**:
+- `App/Core/ThemeManager.cpp` — KDE-only `Theme::System` branch in
+  `ThemeAttributes::setTheme()` queries `KColorScheme(View)` and
+  `KColorScheme(Selection)` for scene background, foreground, selection,
+  semantic connection states (Inactive/Neutral/Positive/Negative/Link foregrounds),
+  port output (LinkText), and port hover (decoration HoverColor).
+- `themePath()` and `effectiveTheme()` derive Light/Dark from
+  `KColorScheme(View).background().lightness()` for KDE+System mode so
+  resource-path lookups (`:/Components/Memory/{Light,Dark}/...`) still pick
+  the right variant.
+- `setTheme()` and the constructor pass `Theme::System` through unresolved on
+  KDE so `ThemeAttributes` can route to the KColorScheme path; on non-KDE
+  builds, System still resolves to Light/Dark up-front (unchanged).
+- `onSystemColorSchemeChanged()` re-queries KColorScheme when in System mode.
 
-```cpp
-// Current: manual light/dark palette construction
-// After: query KColorScheme for semantic color tokens
-KColorScheme scheme(QPalette::Active, KColorScheme::View);
-QColor background = scheme.background().color();
-QColor foreground = scheme.foreground().color();
-QColor highlight  = scheme.decoration(KColorScheme::HoverColor).color();
-```
+`Theme::Light` and `Theme::Dark` keep their hardcoded palette and scene colors
+so users still get a deterministic look when explicitly choosing one. With
+`Theme::System` (the default), the canvas now blends with the user's
+KDE/Plasma color scheme — palette is left untouched (Plasma owns it) and
+scene colors come from KColorScheme tokens.
 
-The app automatically follows the OS/KDE global color scheme. The manual "Light/Dark" toggle
-in Settings can become "Follow System" by default with override option.
+### 6b — SVG Icons: KSvg ⏭️ SKIPPED
+The roadmap proposed re-coloring 196 component SVGs at runtime via KSvg. In
+practice the project only ships dual variants for 8 memory components
+(`Components/Memory/{Light,Dark}/`); the remaining ~183 SVGs are intentionally
+multi-coloured (red/green ports, yellow LEDs, etc.) and don't fit KSvg's
+stylesheet-based monochrome re-colouring model without redesigning each asset.
+Skipping yields no user-visible regression and avoids a substantial pixel-art
+refactor with unclear payoff.
 
-### 6b — SVG Icons: KSvg
-**Files**: All files loading SVG icons from resources (toolbar icons, component icons)
-
-KSvg enables stylesheet-based re-coloring of SVGs, so the 196 bundled SVG component icons
-automatically adapt to the active color scheme without maintaining separate light/dark variants.
-
-```cpp
-// Before: QIcon(":/Components/and-gate.svg")  — static color
-// After:
-KSvg::SvgIcon icon(":/Components/and-gate.svg");
-icon.setColor(KColorScheme(QPalette::Active).foreground().color());
-```
-
-### 6c — Icon Themes: KIconThemes
-**Files**: `App/UI/MainWindowUI.cpp` (toolbar icon assignments)
-
-Replace hardcoded resource paths with theme-aware icon names where Breeze provides equivalents:
-```cpp
-// Before: QIcon(":/Interface/Toolbar/file-new.svg")
-// After:  QIcon::fromTheme("document-new")
-```
-
-Keep resource fallback for custom icons (circuit component SVGs) that have no theme equivalent.
+### 6c — Icon Themes: theme-named icons via QIcon::fromTheme ✅
+**KDE Frameworks**: `KF6::IconThemes` (`find_package(KF6IconThemes REQUIRED)` —
+links the runtime icon engine; bundled-resource fallbacks remain in place)
+**Files modified**:
+- `App/UI/MainWindow.cpp` — `setupKdeActions()`'s `addAction` lambda gained
+  an optional `themeName` parameter that resolves to
+  `QIcon::fromTheme(themeName, QIcon(fallbackPath))`. Applied to: reload
+  (`view-refresh`), delete (`edit-delete`), rename (`edit-rename`), rotate
+  left/right (`object-rotate-left/right`), flip h/v (`object-flip-horizontal/vertical`),
+  clear selection (`edit-clear`), reset zoom (`zoom-original`), restart
+  (`media-playback-stop`), about (`help-about`).
+- `App/BeWavedDolphin/BeWavedDolphin.cpp` — same lambda extended; applied to
+  clear (`edit-clear-all`), fit screen (`zoom-fit-best`), reset zoom
+  (`zoom-original`), about (`help-about`).
+- KStandardAction (Phase 4) already wires Breeze icons for new/open/save/save-as/quit/cut/copy/paste/select-all/zoom-in/zoom-out, so those needed no change.
+- Two-state toggle icons (Play/Pause, Mute/Unmute) keep bundled SVGs because
+  `QIcon::On`/`QIcon::Off` states can't be resolved from two separate theme
+  names within a single `QIcon`.
 
 ### Verification
-- Switch OS to dark mode → app follows automatically
-- Component SVGs render with correct foreground color
-- Standard toolbar icons use Breeze theme on Linux, fallback SVGs on Windows/macOS
+- `ctest --preset kde` — all 176 tests pass
+- `ctest --preset debug` — all 175 tests pass (non-KDE path unchanged)
 
 ---
 

@@ -131,10 +131,16 @@ void BewavedDolphin::setupKdeActions()
     // collection key. Set the legacy objectName AFTER addAction() to preserve findChild() compat.
     auto addAction = [this](const QString &kdeName, const QString &legacyName,
                              const QString &text, const QString &iconPath,
-                             const QKeySequence &shortcut = {}) -> QAction * {
+                             const QKeySequence &shortcut = {},
+                             const QString &themeName = {}) -> QAction * {
         auto *a = new QAction(this);
         a->setText(text);
-        if (!iconPath.isEmpty()) a->setIcon(QIcon(iconPath));
+        // Phase 6c: prefer the freedesktop/Breeze theme icon, fall back to bundled SVG.
+        if (!themeName.isEmpty()) {
+            a->setIcon(QIcon::fromTheme(themeName, QIcon(iconPath)));
+        } else if (!iconPath.isEmpty()) {
+            a->setIcon(QIcon(iconPath));
+        }
         actionCollection()->addAction(kdeName, a);          // sets objectName = kdeName
         a->setObjectName(legacyName);                       // override AFTER to preserve findChild
         if (!shortcut.isEmpty()) actionCollection()->setDefaultShortcut(a, shortcut);
@@ -165,7 +171,7 @@ void BewavedDolphin::setupKdeActions()
 
     m_ui->actionExportToPdf  = addAction(u"dolphin_export_pdf"_s,      u"actionExportToPdf"_s,   i18n("Export to PDF"),       u":/Interface/Dolphin/pdf.svg"_s,       QKeySequence(Qt::CTRL | Qt::Key_P));
     m_ui->actionExportToPng  = addAction(u"dolphin_export_png"_s,      u"actionExportToPng"_s,   i18n("Export to PNG"),       {},                                     QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_P));
-    m_ui->actionClear        = addAction(u"dolphin_clear"_s,           u"actionClear"_s,         i18n("Clear"),               u":/Interface/Dolphin/reloadFile.svg"_s, QKeySequence(Qt::ALT | Qt::Key_X));
+    m_ui->actionClear        = addAction(u"dolphin_clear"_s,           u"actionClear"_s,         i18n("Clear"),               u":/Interface/Dolphin/reloadFile.svg"_s, QKeySequence(Qt::ALT | Qt::Key_X), u"edit-clear-all"_s);
     m_ui->actionInvert       = addAction(u"dolphin_invert"_s,          u"actionInvert"_s,        i18n("Invert"),              {},                                     QKeySequence(Qt::Key_Space));
     m_ui->actionSetTo0       = addAction(u"dolphin_set0"_s,            u"actionSetTo0"_s,        i18n("Set to 0"),            {},                                     QKeySequence(Qt::Key_0));
     m_ui->actionSetTo1       = addAction(u"dolphin_set1"_s,            u"actionSetTo1"_s,        i18n("Set to 1"),            {},                                     QKeySequence(Qt::Key_1));
@@ -180,9 +186,9 @@ void BewavedDolphin::setupKdeActions()
     m_ui->actionCombinational= addAction(u"dolphin_combinational"_s,   u"actionCombinational"_s, i18n("Combinational"),       {},                                     QKeySequence(Qt::ALT | Qt::Key_C));
     m_ui->actionShowNumbers  = addAction(u"dolphin_show_numbers"_s,    u"actionShowNumbers"_s,   i18n("Show Numbers"),        {});
     m_ui->actionShowWaveforms= addAction(u"dolphin_show_waveforms"_s,  u"actionShowWaveforms"_s, i18n("Show Waveforms"),      {});
-    m_ui->actionFitScreen    = addAction(u"dolphin_fit_screen"_s,      u"actionFitScreen"_s,     i18n("Fit to screen"),       u":/Interface/Dolphin/zoomRange.svg"_s,  QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_R));
-    m_ui->actionResetZoom    = addAction(u"dolphin_reset_zoom"_s,      u"actionResetZoom"_s,     i18n("Reset Zoom"),          u":/Interface/Dolphin/zoomReset.svg"_s,  QKeySequence(Qt::CTRL | Qt::Key_Home));
-    m_ui->actionAbout        = addAction(u"dolphin_about"_s,           u"actionAbout"_s,         i18n("About"),               u":/Interface/Dolphin/help.svg"_s);
+    m_ui->actionFitScreen    = addAction(u"dolphin_fit_screen"_s,      u"actionFitScreen"_s,     i18n("Fit to screen"),       u":/Interface/Dolphin/zoomRange.svg"_s,  QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_R), u"zoom-fit-best"_s);
+    m_ui->actionResetZoom    = addAction(u"dolphin_reset_zoom"_s,      u"actionResetZoom"_s,     i18n("Reset Zoom"),          u":/Interface/Dolphin/zoomReset.svg"_s,  QKeySequence(Qt::CTRL | Qt::Key_Home), u"zoom-original"_s);
+    m_ui->actionAbout        = addAction(u"dolphin_about"_s,           u"actionAbout"_s,         i18n("About"),               u":/Interface/Dolphin/help.svg"_s,       {}, u"help-about"_s);
     m_ui->actionAboutQt      = addAction(u"dolphin_about_qt"_s,        u"actionAboutQt"_s,       i18n("About Qt"),            {});
 
     // BewavedDolphin has no Ctrl+Alt+I or F1 conflict, but disable the auto
