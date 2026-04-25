@@ -795,6 +795,61 @@ With fixes #21, #22, #23 applied: **2-3 breadcrumbs per user action** (just the 
 | # | Fix | Closes | Effort |
 |---|---|---:|---|
 | 23 | **Delete duplicate MainWindow breadcrumbs** for Rotate, Flip, Zoom actions (7 sites) | 1 redundant breadcrumb per affected user action | ~7 lines |
+| 24 | **Re-prompt with Save-As dialog on permission-denied save** (instead of just throwing) | EZ/13/G5/GV/GN/GT/G4/FK/GQ family + better UX vs. just `shouldSendToSentry` allowlist | ~15 lines per call site |
+
+### Detail — actionable #24 — graceful save-failure recovery
+
+**Problem**: When a user does `Ctrl+S` and the target location is read-only (OneDrive locking, ZIP-extracted folder, network drive, Windows write-protect attribute), `WorkSpace::save` throws → `Application::notify` catches → modal message box "Could not save file: Acesso negado" → user is left to figure out where to save instead. Lucas's repeated 5-event pattern across releases is exactly this.
+
+**Why option (1) below is preferred**:
+- The autosave path (Workspace.cpp:502-512) already has read-only-aware fallback (writes to `QStandardPaths::AppDataLocation/autosaves/`). User-initiated saves should be similarly aware.
+- Re-prompting with Save-As keeps the user in control of file location. Silently redirecting (option 2) is surprising — user can't find their file later.
+- This actually **solves** the user problem; the `shouldSendToSentry` allowlist (#10) merely **hides it from Sentry**.
+
+**Three considered options**:
+1. ✅ **Re-prompt** with Save-As dialog on `QFileDevice::PermissionsError`. User picks writable location. Recurse `save(newPath)`.
+2. ⚠️ **Silent redirect** to `Documents/wiredpanda/<filename>.panda` with status-bar notice. Lower friction but surprising.
+3. ❌ **Status quo + allowlist (#10)**: throw remains, dialog remains; only Sentry stops getting events.
+
+**Implementation sketch (option 1)**, applied at `WorkSpace::save` around Workspace.cpp:225-227:
+
+```cpp
+if (!saveFile.commit()) {
+    if (Application::interactiveMode &&
+        saveFile.error() == QFileDevice::PermissionsError) {
+        // Re-prompt with Save-As instead of failing hard.
+        const QString newPath = FileDialogs::provider()->getSaveFileName(
+            this, tr("Save File (original location is read-only)"),
+            QFileInfo(fileName_).fileName(),
+            tr("Panda files (*.panda)"));
+        if (newPath.isEmpty()) {
+            return;  // user cancelled
+        }
+        save(newPath);  // recurse with new path
+        return;
+    }
+    throw PANDACEPTION("Could not save file: %1", saveFile.errorString());
+}
+```
+
+**Same shape applies to other permission-denied throw sites**:
+- **`Serialization::copyPandaFile`** copy failure during Save-As external file copy (covered by #17 — copy-failure propagation hardening).
+- **`MainWindow::removeICFile`** at MainWindow.cpp:1879 (`QFile::remove` on locked .panda). Should show *"Couldn't delete; the file may be in use"* with a Retry option instead of throwing.
+- **`Workspace.cpp:197`** open-for-write failure — same recovery shape.
+
+**Sentry event reduction**: this fix interacts with #10 (allowlist). Once #24 is in place, the only `Acesso negado` events still reaching Sentry would be ones where the user cancels the Save-As re-prompt (which is correctly user-driven and shouldn't be reported). After #24, #10 becomes mostly redundant for the filesystem-cluster IDs — the noise stops at the source. Keep #10 only for environmental events that genuinely have no UX recovery path (e.g., qFatal from Qt platform plugin init, F1/G2).
+
+**Affected Sentry IDs (rough mapping)**:
+| ID | Lifetime events | Throw site | Fixed by #24? |
+|---|---:|---|:-:|
+| EZ, 13, G5 | 302 | Serialization.cpp:353 (Save-As file copy) | partial — see #17 |
+| GV, GN, GT, G4, FK, GQ | 24 | Workspace.cpp:226 (`QSaveFile::commit`) | ✅ yes |
+| F3 | 2 | Workspace.cpp:197 (`QSaveFile::open`) | ✅ yes |
+| FR | 2 | MainWindow.cpp:1879 (`QFile::remove`) | partial — needs Retry dialog |
+
+Total: **~330 lifetime events** across these IDs. Real fix instead of suppression.
+
+
 
 ### Summary (round 14)
 - **1 more forensic-quality finding**. Together with #21 and #22, would multiply the effective breadcrumb capacity by ~3x.
@@ -820,6 +875,28 @@ After 14 rounds of static analysis, the well is genuinely dry. Findings break do
 6. Implement autosave QSaveFile + debounce (#2/#3 — ~15 lines)
 
 That bundle is ~55 lines of code change and would close 4 STILL-VULNERABLE crash bugs + ~691+192 events worth of noise + 3x improvement in forensic data quality. Highest-ROI release wiRedPanda has had on the Sentry-crash front.
+
+---
+
+## Round 15 — final dry-well confirmation
+
+Audited the new auto-migration code (commit `4a7e5e30e`) and `VersionInfo.h`:
+- **Auto-migration in `WorkSpace::load`** (Workspace.cpp:311-327): proper sequence is `createVersionedBackup` → load → re-save in new format. `QSaveFile` provides atomicity. If backup creation fails (read-only dir, disk full), throws BEFORE loading — file remains untouched in old format. If save fails (read-only dir), file is unchanged on disk (QSaveFile commit semantics) but tab is left in partial state — inherits the empty-tab-leak issue from actionable item #11.
+- **`VersionInfo.h`**: 21 named predicates, all single-line `>=` comparisons (additive features only). No range-check boundary bugs possible.
+- **5.0.1 "Acesso negado" event** (WIREDPANDA-GV, 2026-04-24 14:23) checked: stack confirms it's a normal `Ctrl+S` save attempting to write to a read-only volume — NOT migration-induced. Same environmental issue as previous releases.
+
+### Genuinely no new findings. Static analysis is exhausted.
+
+Across 15 rounds of investigation:
+- **Initial round**: 82 Sentry IDs categorized, 10 actionable items identified
+- **Rounds 2-14**: 13 additional actionable items found via deeper code-path traversal, exception-safety audit, breadcrumb forensics, release-status mapping, heavy-user analysis
+- **Round 15**: confirmed no new findings; auto-migration and version predicates are clean
+
+**Final actionable count: 23 items** — see the final tier-ordered list above.
+
+Beyond this point, further investigation requires runtime tools (sanitizers, debugger sessions on user machines, Sentry session replay if available) — not static code reading. The 3 issues marked "needs runtime tools" (FP, G1/GP/FH/EW, GW/EM/EN) are the only ones that would benefit, and they're already on the actionable list as Tier-E "needs runtime tools".
+
+**Strong recommendation**: stop investigating. Implement.
 
 ---
 
