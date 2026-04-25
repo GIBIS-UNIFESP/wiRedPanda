@@ -31,6 +31,9 @@
 
 #ifdef USE_KDE_FRAMEWORKS
 #include <KAboutData>
+#if defined(Q_OS_LINUX)
+#include <KCrash>
+#endif
 using namespace Qt::StringLiterals;
 #endif
 
@@ -171,6 +174,13 @@ int main(int argc, char *argv[])
         // setApplicationData calls KLocalizedString::setApplicationDomain(componentName)
         // so the explicit call below is redundant but kept for clarity.
         KLocalizedString::setApplicationDomain("wiredpanda");
+
+#if defined(Q_OS_LINUX)
+        // Phase 7a: register KCrash so DrKonqi can present a familiar crash dialog
+        // alongside Sentry's Crashpad. Must run after KAboutData::setApplicationData()
+        // so DrKonqi knows the application's identity.
+        KCrash::initialize();
+#endif
     }
 #endif
     // Fusion style provides a consistent cross-platform look and is required for

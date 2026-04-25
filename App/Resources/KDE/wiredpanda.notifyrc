@@ -1,0 +1,11 @@
+[Global]
+IconName=wiredpanda
+Name=wiRedPanda
+Comment=Educational digital logic circuit simulator
+
+[Event/updateAvailable]
+Name=Update Available
+Comment=A new version of wiRedPanda is available
+IconName=system-software-update
+Action=Popup
+Flags=persistent

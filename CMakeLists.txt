@@ -32,6 +32,10 @@ if(USE_KDE_FRAMEWORKS AND NOT EMSCRIPTEN)
     find_package(KF6WidgetsAddons REQUIRED)  # Phase 5a (KMessageBox)
     find_package(KF6ColorScheme REQUIRED)    # Phase 6a (KColorScheme)
     find_package(KF6IconThemes REQUIRED)     # Phase 6c (icon theme integration)
+    if(UNIX AND NOT APPLE)
+        find_package(KF6Crash REQUIRED)      # Phase 7a (DrKonqi crash handler — Linux only)
+    endif()
+    find_package(KF6Notifications REQUIRED)  # Phase 7b (KNotification update prompt)
     add_compile_definitions(USE_KDE_FRAMEWORKS)
     message(STATUS "KDE Frameworks integration enabled (ECM ${ECM_VERSION})")
 else()
@@ -381,7 +385,10 @@ endfunction()
 add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS})
 target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS} nlohmann_json::nlohmann_json nlohmann_json_schema_validator)
 if(USE_KDE_FRAMEWORKS AND NOT EMSCRIPTEN)
-    target_link_libraries(wiredpanda_lib PUBLIC KF6::ConfigCore KF6::I18n KF6::CoreAddons KF6::XmlGui KF6::WidgetsAddons KF6::ColorScheme KF6::IconThemes)
+    target_link_libraries(wiredpanda_lib PUBLIC KF6::ConfigCore KF6::I18n KF6::CoreAddons KF6::XmlGui KF6::WidgetsAddons KF6::ColorScheme KF6::IconThemes KF6::Notifications)
+    if(UNIX AND NOT APPLE)
+        target_link_libraries(wiredpanda_lib PUBLIC KF6::Crash)
+    endif()
 endif()
 
 # Treat external dependencies as system headers to suppress clazy warnings
@@ -531,6 +538,15 @@ foreach(SIZE ${ICON_SIZES})
         COMPONENT icons
     )
 endforeach()
+
+# Phase 7b: install KNotification rc so KNotification can resolve the
+# updateAvailable event ID and apply per-event flags / icons.
+if(USE_KDE_FRAMEWORKS AND NOT EMSCRIPTEN)
+    install(FILES App/Resources/KDE/wiredpanda.notifyrc
+        DESTINATION ${KDE_INSTALL_KNOTIFYRCDIR}
+        COMPONENT desktop
+    )
+endif()
 
 # ========= TESTS ===================================
 
