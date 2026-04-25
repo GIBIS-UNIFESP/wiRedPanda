@@ -213,38 +213,38 @@ void TestWorkspace::testMultipleAutosavesUpdateSettings()
     // Clear settings before test
     Settings::setAutosaveFiles({});
 
-    // Create first workspace and trigger autosave with actual element
+    // Workspace destruction discards its own autosave entry (mirroring the
+    // pre-debounce QTemporaryFile semantics), so check Settings while each
+    // workspace is still alive.
+    WorkSpace workspace1;
     {
-        WorkSpace workspace1;
         Scene *scene = workspace1.scene();
         QList<QGraphicsItem *> items;
         auto *led = ElementFactory::buildElement(ElementType::Led);
         items.append(led);
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
+        workspace1.flushPendingAutosave();
     }
 
     QStringList autosavedAfterFirst = Settings::autosaveFiles();
-    // After first workspace with element, autosaves should be recorded
     QVERIFY2(autosavedAfterFirst.count() > 0,
             "Settings should record autosave files after circuit changes");
 
-    // Create second workspace and trigger autosave with actual element
+    WorkSpace workspace2;
     {
-        WorkSpace workspace2;
         Scene *scene = workspace2.scene();
         QList<QGraphicsItem *> items;
         auto *and1 = ElementFactory::buildElement(ElementType::And);
         items.append(and1);
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
+        workspace2.flushPendingAutosave();
     }
 
-    // Verify Settings tracks multiple autosaves - should have increased after second workspace
     QStringList autosaves = Settings::autosaveFiles();
-    // Settings should have recorded autosaves (at least one)
-    QVERIFY2(autosaves.count() > 0,
-            "Settings should record at least one autosave file");
+    QVERIFY2(autosaves.count() >= 2,
+            "Settings should record at least two autosave files (one per workspace)");
 }
 
 // ============================================================
