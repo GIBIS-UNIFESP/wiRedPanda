@@ -78,6 +78,9 @@
 #include <KSharedConfig>
 #include <KStandardAction>
 #include <KToolBar>
+#include <Purpose/AlternativesModel>
+#include <Purpose/Menu>
+#include <QJsonArray>
 using namespace Qt::StringLiterals;
 #endif
 
@@ -218,6 +221,28 @@ void MainWindow::setupKdeActions()
     auto *downloadAction = addAction(u"wiredpanda_download_circuits"_s, u"actionDownloadCircuits"_s,
         i18n("&Download Circuits…"), {}, {}, u"get-hot-new-stuff"_s);
     connect(downloadAction, &QAction::triggered, this, &MainWindow::downloadCircuits);
+
+    // Phase 11: Purpose "Share" submenu. The Purpose::Menu is populated by
+    // installed Export plugins (email, Telegram, Bluetooth, etc.) and is
+    // refreshed every time it opens so the URL points at the active tab.
+    auto *shareAction = addAction(u"wiredpanda_share"_s, u"actionShare"_s,
+        i18n("&Share"), {}, {}, u"document-share"_s);
+    auto *purposeMenu = new Purpose::Menu(this);
+    purposeMenu->model()->setPluginType(u"Export"_s);
+    shareAction->setMenu(purposeMenu);
+    shareAction->setEnabled(false);  // no file open at startup; setCurrentFile() flips this
+    connect(purposeMenu, &QMenu::aboutToShow, this, [this, purposeMenu] {
+        const QString filePath = currentFile().absoluteFilePath();
+        if (filePath.isEmpty() || !QFileInfo::exists(filePath)) {
+            purposeMenu->model()->setInputData({});
+            return;
+        }
+        purposeMenu->model()->setInputData(QJsonObject{
+            {u"urls"_s,     QJsonArray{QUrl::fromLocalFile(filePath).toString()}},
+            {u"mimeType"_s, u"application/x-wpanda"_s},
+        });
+        purposeMenu->reload();
+    });
 
     // ── Custom actions (created as window children, registered in collection) ───
 
@@ -1413,6 +1438,14 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
         qCDebug(zero) << "Adding file to recent files.";
         emit addRecentFile(fileInfo.absoluteFilePath());
     }
+
+#ifdef USE_KDE_FRAMEWORKS
+    // Phase 11: the Share submenu only makes sense once the circuit is on disk;
+    // otherwise Purpose plugins have nothing to attach.
+    if (auto *shareAction = actionCollection()->action(u"wiredpanda_share"_s)) {
+        shareAction->setEnabled(fileInfo.exists());
+    }
+#endif
 }
 
 void MainWindow::on_actionSelectAll_triggered()
