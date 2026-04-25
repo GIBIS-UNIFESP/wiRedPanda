@@ -1859,18 +1859,16 @@ void MainWindow::removeICFile(const QString &icFileName)
         return;
     }
 
-    // Stop simulation so IC elements aren't updated while we're deleting them.
-    SimulationBlocker blocker(m_currentTab->simulation());
-
-    auto elements = m_currentTab->scene()->elements();
-
-    // Iterate in reverse so that removing items doesn't invalidate subsequent
-    // iterators (the list is a copy, but the scene's internal container may shift).
-    for (auto it = elements.rbegin(); it != elements.rend(); ++it) {
-        if ((*it)->elementType() == ElementType::IC && (*it)->label().append(".panda").toLower() == icFileName) {
-            m_currentTab->scene()->removeItem(*it);
-            delete *it;
+    QList<QGraphicsItem *> toDelete;
+    for (auto *element : m_currentTab->scene()->elements()) {
+        if (element->elementType() == ElementType::IC && element->label().append(".panda").toLower() == icFileName) {
+            toDelete.append(element);
         }
+    }
+
+    if (!toDelete.isEmpty()) {
+        m_currentTab->scene()->receiveCommand(new DeleteItemsCommand(toDelete, m_currentTab->scene()));
+        m_currentTab->simulation()->restart();
     }
 
     QFile file(currentDir().absolutePath() + "/" + icFileName);

@@ -16,6 +16,7 @@
 #include <QTimer>
 #include <QWheelEvent>
 
+#include "App/Core/Application.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElements/And.h"
@@ -39,6 +40,7 @@
 #include "App/UI/ElementPalette.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/MainWindow.h"
+#include "App/UI/TrashButton.h"
 #include "Tests/Common/ICTestHelpers.h"
 #include "Tests/Common/StubFileDialogProvider.h"
 #include "Tests/Common/TestUtils.h"
@@ -2851,5 +2853,77 @@ void TestMainWindowGui::testExtractICByBlobNameEndToEnd()
     QVERIFY(scene->icRegistry()->hasBlob("extract_test"));
 
     QFile::remove(outPath);
+}
+
+// ===========================================================================
+// Sentry triage regressions
+// ===========================================================================
+
+void TestMainWindowGui::testRemoveICFileIsUndoableA14()
+{
+    // Pre-fix removeICFile freed each matching IC via removeItem + delete and
+    // never touched the undo stack — undo couldn't bring the IC back, and the
+    // freed pointer stayed in m_sortedElements until the next sim tick faulted
+    // on it (the H2-shape escape #1 from the triage). The fix routes through
+    // DeleteItemsCommand + simulation->restart() so undo works and m_sortedElements
+    // is rebuilt cleanly.
+    QTemporaryDir tmp;
+    QVERIFY(tmp.isValid());
+    const QString projPath = tmp.path() + "/proj.panda";
+    const QString icPath = tmp.path() + "/sub.panda";
+    createMWFixture(projPath);
+    createMWFixture(icPath);
+
+    StubFileDialogProvider stub;
+    stub.openResult = projPath;
+    stub.saveResult = {projPath, "Panda files (*.panda)"};
+    auto *prevProvider = FileDialogs::setProvider(&stub);
+    const bool prevInteractive = Application::interactiveMode;
+    Application::interactiveMode = false;
+
+    std::unique_ptr<MainWindow> window(createMW());
+    window->loadPandaFile(projPath);
+
+    auto *scene = window->currentTab()->scene();
+    auto *ic = new IC();
+    ic->loadFile(icPath, tmp.path());
+    ic->setLabel("sub");  // label + ".panda" must equal the icFileName arg
+    scene->addItem(ic);
+
+    auto countMatchingICs = [&]() {
+        int n = 0;
+        for (auto *elm : scene->elements()) {
+            if (elm->elementType() == ElementType::IC
+                && elm->label().append(".panda").toLower() == "sub.panda") {
+                ++n;
+            }
+        }
+        return n;
+    };
+
+    auto *undoStack = scene->undoStack();
+    const int stackBefore = undoStack->count();
+
+    QCOMPARE(countMatchingICs(), 1);
+
+    // removeICFile is private; the user-facing trigger is the TrashButton
+    // (pushButtonRemoveIC) emitting its removeICFile signal. Find the
+    // button and emit the signal directly to drive the same code path.
+    auto *trashBtn = window->findChild<TrashButton *>("pushButtonRemoveIC");
+    QVERIFY(trashBtn);
+    emit trashBtn->removeICFile("sub.panda");
+
+    QCOMPARE(countMatchingICs(), 0);
+    QVERIFY2(!QFile::exists(icPath), "removeICFile must delete the .panda file");
+
+    // The load-bearing regression: the IC removal went through the undo
+    // stack — pre-fix it was a bare removeItem + delete with no command
+    // pushed. The file-restoration on undo is out of scope (the .panda was
+    // deleted by QFile::remove and isn't part of the undo command).
+    QVERIFY2(undoStack->count() > stackBefore,
+             "removeICFile must push a DeleteItemsCommand on the undo stack");
+
+    Application::interactiveMode = prevInteractive;
+    FileDialogs::setProvider(prevProvider);
 }
 
