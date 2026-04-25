@@ -113,6 +113,24 @@ void TestFileUtils::testCopyPandaDepsNoDependencies()
     QVERIFY(true); // no crash
 }
 
+void TestFileUtils::testCopyToDirThrowsOnFailure()
+{
+    // Pre-fix QFile::copy's bool return was discarded; a failed copy left the
+    // .panda referencing missing external files with no signal to the user.
+    QTemporaryDir sourceDir;
+    QVERIFY(sourceDir.isValid());
+
+    const QString sourceFile = sourceDir.path() + "/payload.txt";
+    QFile f(sourceFile);
+    QVERIFY(f.open(QIODevice::WriteOnly));
+    f.write("data");
+    f.close();
+
+    // Destination directory does not exist — QFile::copy returns false.
+    const QString badDest = sourceDir.path() + "/no/such/subdirectory";
+    QVERIFY_EXCEPTION_THROWN(FileUtils::copyToDir(sourceFile, badDest), std::exception);
+}
+
 namespace {
 // Writes a minimal .panda file with only the header + a metadata map containing
 // a single fileBackedICs entry. Just enough for copyPandaDeps to traverse.
