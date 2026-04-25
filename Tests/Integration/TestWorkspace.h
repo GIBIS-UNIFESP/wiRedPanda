@@ -53,6 +53,9 @@ private slots:
     void testSaveToInvalidPathThrows();
     void testSaveEmptyCircuit();
 
+    // Regression: B2 — autosave truncates on shrink (no leftover-tail garbage)
+    void testAutosaveTruncatesOnShrinkB2();
+
 private:
     QTemporaryDir m_tempDir;
 };

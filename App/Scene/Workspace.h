@@ -9,7 +9,6 @@
 
 #include <QFileInfo>
 #include <QPointer>
-#include <QTemporaryFile>
 #include <QUndoStack>
 
 #include "App/Scene/GraphicsView.h"
@@ -133,7 +132,7 @@ private:
     Scene m_scene;
     QFileInfo m_fileInfo;
     QString m_dolphinFileName;
-    QTemporaryFile m_autosaveFile;
+    QString m_autosaveFileName;
     QVersionNumber m_loadedVersion;
     int m_lastId = 0;
 
