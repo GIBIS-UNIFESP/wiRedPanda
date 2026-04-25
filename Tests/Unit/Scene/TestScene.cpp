@@ -9,6 +9,7 @@
 #include <QClipboard>
 #include <QTest>
 
+#include "App/Core/ItemWithId.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/And.h"
@@ -1425,4 +1426,42 @@ void TestScene::testSortDisconnectedComponents()
     // SW1 (isolated) can appear anywhere, but should be present
     QVERIFY2(sw1Index >= 0, "SW1 (isolated) should be in sorted list");
 }
+
+void TestScene::testForgetItemIdC7()
+{
+    // Pre-fix UpdateBlobCommand::reconnectConnections silently dropped
+    // connections whose port disappeared on a blob shrink, leaving the
+    // QNEConnection's m_elementRegistry entry pointing at memory Qt's
+    // parent-child cascade had already freed. The new helper drops the
+    // entry by ID so subsequent itemById lookups return nullptr instead
+    // of a dangling pointer.
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(led);
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(led->inputPort());
+    scene->addItem(conn);
+
+    const int connId = conn->id();
+    QVERIFY(connId >= 0);
+    QCOMPARE(scene->itemById(connId), conn);
+
+    // Drop the registry entry without touching the item.
+    scene->forgetItemId(connId);
+    QVERIFY(scene->itemById(connId) == nullptr);
+
+    // Lookup of a never-registered ID is a no-op.
+    scene->forgetItemId(99999);
+    QVERIFY(scene->itemById(99999) == nullptr);
+
+    // Sibling registrations untouched.
+    QCOMPARE(scene->itemById(sw->id()), static_cast<ItemWithId *>(sw));
+    QCOMPARE(scene->itemById(led->id()), static_cast<ItemWithId *>(led));
+}
+
 

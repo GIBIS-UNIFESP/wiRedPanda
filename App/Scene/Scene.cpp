@@ -171,6 +171,11 @@ void Scene::updateItemId(ItemWithId *item, const int newId)
     setLastId(newId);
 }
 
+void Scene::forgetItemId(const int id)
+{
+    m_elementRegistry.remove(id);
+}
+
 void Scene::registerItem(ItemWithId *item)
 {
     if (!item) {

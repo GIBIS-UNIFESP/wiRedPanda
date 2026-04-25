@@ -1132,6 +1132,15 @@ void UpdateBlobCommand::reconnectConnections()
         }
 
         if (!inPort || !outPort) {
+            // Port shrunk: the QNEConnection that occupied this slot was
+            // cascade-deleted by Qt when the IC's port was destroyed, but
+            // QGraphicsScene's non-virtual removeItem skipped our override
+            // and the m_elementRegistry entry still points at freed memory.
+            // Drop the stale ID so an earlier command's itemById lookup
+            // returns nullptr instead of the Cluster D throw or, worse,
+            // a use-after-free. Undo restores the IC's port count and
+            // recreates the connection with the original ID below.
+            m_scene->forgetItemId(ci.connectionId);
             continue;
         }
 
