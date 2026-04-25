@@ -5718,3 +5718,65 @@ void TestICInline::testSceneDropEventLegacyMimeKey()
     QCOMPARE(addedIC->blobName(), QString("legacy_drop_test"));
 }
 
+void TestICInline::testInlineSavePreservesWiresA15()
+{
+    // Pre-fix the inline-IC save loop called loadFromBlob on every file-backed
+    // sub-IC to "convert" it to embedded. loadFromBlob destroys and rebuilds
+    // the IC's child ports, which Qt cascade-deletes the QNEConnections
+    // attached to those ports — silently dropping every scene wire connected
+    // to the file-backed sub-IC. The fix skips the loadFromBlob call so the
+    // ports survive and the wires stay attached.
+    WorkSpace parentWs;
+    parentWs.scene()->setContextDir(m_fixtureDir);
+
+    QByteArray chainCBytes = readFile(m_fixtureDir + "/chain_c.panda");
+    QVERIFY(!chainCBytes.isEmpty());
+
+    auto *parentIC = new IC();
+    embedIC(parentIC, chainCBytes, "chain_c", m_fixtureDir, parentWs.scene()->icRegistry());
+    parentIC->setPos(100, 100);
+    parentWs.scene()->addItem(parentIC);
+    const int parentICId = parentIC->id();
+
+    WorkSpace childWs;
+    childWs.loadFromBlob(parentWs.scene()->icRegistry()->blob("chain_c"),
+                         &parentWs, parentICId, parentWs.scene()->contextDir());
+    connect(&childWs, &WorkSpace::icBlobSaved, &parentWs, &WorkSpace::onChildICBlobSaved);
+
+    // Drop a file-backed sub-IC into the child scene and wire it to a switch.
+    auto *droppedIC = new IC();
+    droppedIC->loadFile(m_fixtureDir + "/simple_and.panda", m_fixtureDir);
+    droppedIC->setPos(200, 200);
+    childWs.scene()->addItem(droppedIC);
+    QVERIFY(droppedIC->inputSize() > 0);
+
+    auto *sw = new InputSwitch();
+    sw->setPos(0, 200);
+    childWs.scene()->addItem(sw);
+
+    auto *wire = new QNEConnection();
+    wire->setStartPort(sw->outputPort());
+    wire->setEndPort(droppedIC->inputPort(0));
+    childWs.scene()->addItem(wire);
+
+    auto wireSurvives = [&]() {
+        for (auto *item : childWs.scene()->items()) {
+            if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
+                if (conn->startPort() && conn->endPort()
+                    && conn->startPort()->graphicElement() == sw
+                    && conn->endPort()->graphicElement() == droppedIC) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    QVERIFY2(wireSurvives(), "Wire setup precondition: pre-save lookup must find the wire");
+
+    // Save — pre-fix this loop's loadFromBlob cascade-deleted the wire.
+    childWs.save("");
+
+    QVERIFY2(wireSurvives(), "Wire from switch to file-backed sub-IC must survive inline save");
+}
+
