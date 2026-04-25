@@ -116,8 +116,13 @@ void WorkSpace::save(const QString &fileName)
                         }
                     }
                 }
+                // Switch the IC to blob-backed for serialization; do NOT call
+                // loadFromBlob. The IC already has its internal state loaded
+                // from the same file we just registered as a blob, so a reload
+                // would only destroy and rebuild ports — which cascade-deletes
+                // every scene wire connected to the IC (silent data loss) and
+                // races the simulation tick when play is running (H2-shape crash).
                 ic->setBlobName(baseName);
-                ic->loadFromBlob(m_scene.icRegistry()->blob(baseName), contextDir);
             }
         }
 

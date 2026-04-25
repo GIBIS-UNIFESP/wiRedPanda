@@ -222,6 +222,9 @@ private slots:
     void testSceneDropEventEmbeddedMissingBlob();
     void testSceneDropEventLegacyMimeKey();
 
+    // Regression: A15 — inline-IC save must preserve wires touching file-backed sub-ICs
+    void testInlineSavePreservesWiresA15();
+
 private:
     QString fixturesSrcDir() const;
     bool copyFixture(const QString &name);
