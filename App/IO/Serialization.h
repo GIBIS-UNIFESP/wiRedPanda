@@ -10,6 +10,7 @@
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QMap>
+#include <QSet>
 #include <QString>
 #include <QVersionNumber>
 
@@ -121,8 +122,10 @@ public:
      * \brief Copies a .panda file and its file-backed IC dependencies to \a destPath.
      * \param srcPath  Source .panda file info.
      * \param destPath Destination .panda file info.
+     * \param visited  Internal recursion guard; root callers leave this null.
      */
-    static void copyPandaFile(const QFileInfo &srcPath, const QFileInfo &destPath);
+    static void copyPandaFile(const QFileInfo &srcPath, const QFileInfo &destPath,
+                              QSet<QString> *visited = nullptr);
 
     // --- Magic Headers ---
 

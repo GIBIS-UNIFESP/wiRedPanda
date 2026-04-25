@@ -3,10 +3,13 @@
 
 #include "Tests/Unit/Serialization/TestFileUtils.h"
 
+#include <QDataStream>
 #include <QFile>
+#include <QRectF>
 #include <QTemporaryDir>
 
 #include "App/IO/FileUtils.h"
+#include "App/IO/Serialization.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestFileUtils::testCopyToDirEmptyPath()
