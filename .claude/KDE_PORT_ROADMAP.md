@@ -323,42 +323,70 @@ environment), those versions are ABI-incompatible at runtime.
 
 ---
 
-## Phase 3 — Application Identity: KAboutData
-**KDE Frameworks**: `KF6::CoreAddons` (KAboutData, KAboutPerson)
+## Phase 3 — Application Identity: KAboutData ✅
+**KDE Frameworks**: `KF6::CoreAddons` (`find_package(KF6CoreAddons REQUIRED)`, target `KF6::CoreAddons`)
 **Risk**: Low
 
 ### Goal
 Register proper application metadata used by KCrash, KNotifications, and the About dialog.
 
 ### Critical files
-- `App/Main.cpp` (380 lines)
-- `App/Core/Application.h` / `App/Core/Application.cpp`
+- `App/Main.cpp` — KAboutData construction inside `#ifdef USE_KDE_FRAMEWORKS`
 
-### Changes
+### CMake
 
-**`App/Main.cpp`**
-```cpp
-KAboutData about(
-    "wiredpanda",                          // component name
-    i18n("wiRedPanda"),                    // display name
-    PROJECT_VERSION,                       // version string
-    i18n("Digital logic simulator"),       // short description
-    KAboutLicense::GPL_V3,
-    i18n("© 2020–2025 GIBIS-UNIFESP"),
-    QString(),
-    "https://github.com/GIBIS-UNIFESP/wiRedPanda"
-);
-about.addAuthor(i18n("Fábio Cappabianco"), i18n("Lead Developer"), "...");
-KAboutData::setApplicationData(about);
+```cmake
+find_package(KF6CoreAddons REQUIRED)
+target_link_libraries(wiredpanda_lib PUBLIC KF6::CoreAddons)
 ```
 
-The existing `Application` class can keep `QApplication` as base for now;
-`KAboutData` does not require `KApplication`.
+### Main.cpp
+
+Add `#include <KAboutData>` and `using namespace Qt::StringLiterals;` inside a
+`#ifdef USE_KDE_FRAMEWORKS` guard at the top of Main.cpp (not in pch.h — Main.cpp
+is compiled separately as the `wiredpanda` executable, not as part of `wiredpanda_lib`).
+
+```cpp
+#ifdef USE_KDE_FRAMEWORKS
+{
+    KAboutData about(
+        u"wiredpanda"_s,
+        i18n("wiRedPanda"),
+        QString::fromLatin1(APP_VERSION),   // APP_VERSION is a narrow literal — use fromLatin1
+        i18n("Educational digital logic circuit simulator"),
+        KAboutLicense::GPL_V3,
+        i18n("© 2015–2026 GIBIS-UNIFESP and the wiRedPanda contributors"),
+        QString(),
+        u"https://github.com/GIBIS-UNIFESP/wiRedPanda"_s
+    );
+    about.addAuthor(i18n("Fábio Augusto Menocci Cappabianco"), i18n("Lead Developer"), u"fcappabianco@gmail.com"_s);
+    about.addAuthor(i18n("Rodrigo Torres"),                    i18n("Developer"),      u"torres.dark@gmail.com"_s);
+    about.addAuthor(i18n("Davi Morales"),                      i18n("Developer"),      u"davimmorales@gmail.com"_s);
+    about.addAuthor(i18n("Lucas Santana Lellis"),               i18n("Developer"),      u"lucaslellis777@gmail.com"_s);
+    about.addAuthor(i18n("Vinícius Rodrigues Miguel"),         i18n("Developer"),      u"lemao.vrm07@hotmail.com"_s);
+    KAboutData::setApplicationData(about);
+    // setApplicationData calls KLocalizedString::setApplicationDomain(componentName)
+    // internally; the explicit call is retained for clarity.
+    KLocalizedString::setApplicationDomain("wiredpanda");
+}
+#endif
+```
+
+Place immediately after `app.setDesktopFileName()`. The existing `app.setOrganizationName()`,
+`app.setApplicationName()` etc. calls are kept — `KAboutData::setApplicationData()` overrides
+`applicationName` (to lowercase "wiredpanda") and `applicationVersion`, which is fine.
+
+Note: do **not** use `u"" APP_VERSION ""_s` — adjacent string literal concatenation between
+UTF-16 (`u""`) and narrow (`APP_VERSION`) literals is ill-formed. Use `QString::fromLatin1(APP_VERSION)`.
 
 ### Benefits gained
-- Feeds automatically into KCrash (Phase 6) and KNotifications (Phase 5)
+- Feeds automatically into KCrash (Phase 7) and KNotifications (Phase 7)
 - About dialog available for free via `KAboutData::applicationData()`
 - Application registered with the KDE session
+
+### Verification
+- `ctest --preset kde` — all 176 tests pass
+- `ctest --preset debug` — all 176 tests pass (non-KDE path unaffected)
 
 ---
 

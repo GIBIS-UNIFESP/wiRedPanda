@@ -29,6 +29,11 @@
 #include "MCP/Server/Core/MCPProcessor.h"
 #endif
 
+#ifdef USE_KDE_FRAMEWORKS
+#include <KAboutData>
+using namespace Qt::StringLiterals;
+#endif
+
 #ifdef HAVE_SENTRY
 #include "thirdparty/sentry/include/sentry.h"
 #endif
@@ -146,7 +151,27 @@ int main(int argc, char *argv[])
     app.setApplicationVersion(APP_VERSION);
     app.setDesktopFileName("wiredpanda");
 #ifdef USE_KDE_FRAMEWORKS
-    KLocalizedString::setApplicationDomain("wiredpanda");
+    {
+        KAboutData about(
+            u"wiredpanda"_s,
+            i18n("wiRedPanda"),
+            QString::fromLatin1(APP_VERSION),
+            i18n("Educational digital logic circuit simulator"),
+            KAboutLicense::GPL_V3,
+            i18n("© 2015–2026 GIBIS-UNIFESP and the wiRedPanda contributors"),
+            QString(),
+            u"https://github.com/GIBIS-UNIFESP/wiRedPanda"_s
+        );
+        about.addAuthor(i18n("Fábio Augusto Menocci Cappabianco"), i18n("Lead Developer"),    u"fcappabianco@gmail.com"_s);
+        about.addAuthor(i18n("Rodrigo Torres"),                     i18n("Developer"),         u"torres.dark@gmail.com"_s);
+        about.addAuthor(i18n("Davi Morales"),                       i18n("Developer"),         u"davimmorales@gmail.com"_s);
+        about.addAuthor(i18n("Lucas Santana Lellis"),                i18n("Developer"),         u"lucaslellis777@gmail.com"_s);
+        about.addAuthor(i18n("Vinícius Rodrigues Miguel"),          i18n("Developer"),         u"lemao.vrm07@hotmail.com"_s);
+        KAboutData::setApplicationData(about);
+        // setApplicationData calls KLocalizedString::setApplicationDomain(componentName)
+        // so the explicit call below is redundant but kept for clarity.
+        KLocalizedString::setApplicationDomain("wiredpanda");
+    }
 #endif
     // Fusion style provides a consistent cross-platform look and is required for
     // the custom theme colours defined in ThemeManager to render correctly on all OSes
