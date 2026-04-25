@@ -1043,3 +1043,53 @@ void TestWorkspace::testSaveEmptyCircuit()
     }
 }
 
+void TestWorkspace::testAutosaveTruncatesOnShrinkB2()
+{
+    // Pre-fix the autosave was a QTemporaryFile opened ReadWrite without
+    // Truncate. A circuit that shrank between writes left the previous
+    // run's trailing bytes intact, and Serialization::deserialize either
+    // parsed them as a "valid" element or threw the corruption signature
+    // (D2/CR/FJ). QSaveFile commits via atomic rename and truncates as
+    // part of the rename, so a shrunk circuit must produce a strictly
+    // smaller autosave file.
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    Settings::setAutosaveFiles({});
+
+    WorkSpace ws;
+
+    // Big circuit — many elements. Capture the autosave size after the write.
+    QList<QGraphicsItem *> bigItems;
+    for (int i = 0; i < 25; ++i) {
+        bigItems.append(ElementFactory::buildElement(ElementType::Led));
+    }
+    ws.scene()->undoStack()->push(new AddItemsCommand(bigItems, ws.scene()));
+    ws.flushPendingAutosave();
+
+    const QStringList autosavesBig = Settings::autosaveFiles();
+    QVERIFY(!autosavesBig.isEmpty());
+    const QString autosavePath = autosavesBig.first();
+    const qint64 sizeBig = QFileInfo(autosavePath).size();
+    QVERIFY(sizeBig > 0);
+
+    // Drop most of the elements to shrink the serialized payload.
+    QList<QGraphicsItem *> toRemove;
+    int kept = 0;
+    for (auto *elm : ws.scene()->elements()) {
+        if (kept >= 2) {
+            toRemove.append(elm);
+        } else {
+            ++kept;
+        }
+    }
+    QVERIFY(!toRemove.isEmpty());
+    ws.scene()->undoStack()->push(new DeleteItemsCommand(toRemove, ws.scene()));
+    ws.flushPendingAutosave();
+
+    const qint64 sizeSmall = QFileInfo(autosavePath).size();
+    QVERIFY2(sizeSmall < sizeBig,
+             qPrintable(QString("Shrunk autosave (%1 bytes) must be smaller than "
+                                "the prior write (%2 bytes) — pre-fix QTemporaryFile "
+                                "left the trailing tail in place.").arg(sizeSmall).arg(sizeBig)));
+}
+
