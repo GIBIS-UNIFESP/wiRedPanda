@@ -101,7 +101,9 @@ void Simulation::update()
 
     // Phase 3: push computed logic values onto the wire (QNEOutputPort) visuals
     for (auto *connection : std::as_const(m_connections)) {
-        updatePort(connection->startPort());
+        if (connection) {
+            updatePort(connection->startPort());
+        }
     }
 
     // Phase 4: refresh output element visuals (LEDs, buzzers, etc.) using their input ports

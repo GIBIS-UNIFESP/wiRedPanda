@@ -12,6 +12,8 @@
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
+#include "App/Simulation/Simulation.h"
+#include "App/Simulation/SimulationBlocker.h"
 
 ConnectionManager::ConnectionManager(Scene *scene)
     : m_scene(scene)
@@ -215,6 +217,12 @@ void ConnectionManager::setEditedConnection(QNEConnection *connection)
 void ConnectionManager::deleteEditedConnection()
 {
     if (auto *connection = editedConnection()) {
+        // Pause the simulation timer for the duration of the delete: if a
+        // re-initialize ever ran while this in-progress wire was on the
+        // scene, it would now sit in Simulation::m_connections, and freeing
+        // it without invalidating that vector would leave a dangling entry
+        // for the next tick to dereference. Matches the H2 cluster fix.
+        SimulationBlocker blocker(m_scene->simulation());
         m_scene->removeItem(connection);
         delete connection;
     }
