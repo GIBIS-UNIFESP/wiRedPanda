@@ -717,11 +717,22 @@ void WorkSpace::removeEmbeddedIC(const QString &blobName)
         }
     }
 
+    const bool hasBlob = m_scene.icRegistry()->hasBlob(blobName);
+    if (toDelete.isEmpty() && !hasBlob) {
+        return;
+    }
+
+    // Pair the IC deletion with blob removal in a single macro so undo
+    // restores both — eagerly removing the blob outside the command would
+    // leave restored ICs pointing at a registry entry that no longer exists.
+    m_scene.undoStack()->beginMacro(tr("Remove embedded IC \"%1\"").arg(blobName));
     if (!toDelete.isEmpty()) {
         m_scene.receiveCommand(new DeleteItemsCommand(toDelete, &m_scene));
     }
-
-    m_scene.icRegistry()->removeBlob(blobName);
+    if (hasBlob) {
+        m_scene.receiveCommand(new RemoveBlobCommand(blobName, &m_scene));
+    }
+    m_scene.undoStack()->endMacro();
 }
 
 void WorkSpace::setCurrentFile(const QString &filePath)

@@ -2378,9 +2378,6 @@ void TestICInline::testRemoveEmbeddedIC()
     }
     QCOMPARE(remaining, 1);
 
-    // Note: removeEmbeddedIC currently removes the blob from the registry
-    // immediately (not as part of the undo command). This means undo cannot
-    // fully restore the embedded ICs. This is a known limitation.
     QVERIFY(!reg->hasBlob("to_remove"));
     QVERIFY(reg->hasBlob("keep_this"));
 }
@@ -4311,10 +4308,11 @@ void TestICInline::testLoadFromBlobClearsFileState()
 // Edge cases: registry and undo
 // ===========================================================================
 
-void TestICInline::testRemoveEmbeddedICUndoLimitation()
+void TestICInline::testRemoveEmbeddedICUndoRestoresBlob()
 {
-    // removeEmbeddedIC removes the blob from the registry immediately
-    // (not as part of the undo command). This test documents the limitation.
+    // removeEmbeddedIC pairs the IC deletion with a RemoveBlobCommand inside
+    // an undo macro, so undo restores both the IC instances AND the blob
+    // they reference.
     WorkSpace ws;
     auto *scene = ws.scene();
     scene->setContextDir(m_fixtureDir);
@@ -4327,10 +4325,8 @@ void TestICInline::testRemoveEmbeddedICUndoLimitation()
     scene->addItem(ic);
     QVERIFY(reg->hasBlob("remove_undo"));
 
-    // Remove via workspace method
     ws.removeEmbeddedIC("remove_undo");
 
-    // IC should be gone from the scene
     bool found = false;
     for (auto *elm : scene->elements()) {
         if (elm->isEmbedded() && elm->blobName() == "remove_undo") {
@@ -4338,19 +4334,19 @@ void TestICInline::testRemoveEmbeddedICUndoLimitation()
         }
     }
     QVERIFY2(!found, "IC should be deleted after removeEmbeddedIC");
+    QVERIFY2(!reg->hasBlob("remove_undo"), "Blob removed by RemoveBlobCommand redo");
 
-    // Blob is removed from registry immediately
-    QVERIFY2(!reg->hasBlob("remove_undo"),
-             "Blob removed immediately by removeEmbeddedIC (known limitation)");
+    scene->undoStack()->undo();
+    QVERIFY2(reg->hasBlob("remove_undo"), "Undo restores the blob");
+    QCOMPARE(reg->blob("remove_undo"), blob);
 
-    // Undo restores the IC elements via DeleteItemsCommand, but the blob
-    // was removed eagerly from the registry. The restored IC elements may
-    // lack blob data. This documents the known limitation.
-    scene->undoAction();
-    // The IC element itself may or may not be restored by undo, but blob data is lost.
-    // We just verify no crash and the blob remains missing.
-    QVERIFY2(!reg->hasBlob("remove_undo"),
-             "Blob is NOT restored by undo (known limitation — blob was removed eagerly)");
+    bool restored = false;
+    for (auto *elm : scene->elements()) {
+        if (elm->isEmbedded() && elm->blobName() == "remove_undo") {
+            restored = true;
+        }
+    }
+    QVERIFY2(restored, "Undo restores the IC instance");
 }
 
 void TestICInline::testBlobRegistryMergeConflictSkipsExisting()
