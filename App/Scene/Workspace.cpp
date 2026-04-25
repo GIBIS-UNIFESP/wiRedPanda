@@ -75,10 +75,17 @@ WorkSpace::WorkSpace(QWidget *parent)
 
 WorkSpace::~WorkSpace()
 {
-    /// Block signals so the autosave's fileChanged emission can't reach a parent
-    /// MainWindow whose destructor has already begun (would assert in Qt).
-    const QSignalBlocker blocker(this);
-    flushPendingAutosave();
+    /// Mirror the pre-debounce QTemporaryFile semantics: a clean Workspace
+    /// destruction discards its autosave so it isn't recovered next launch.
+    /// (On a real crash the destructor doesn't run, so the recovery file remains.)
+    m_autosaveDebounceTimer.stop();
+    if (!m_autosaveFileName.isEmpty()) {
+        QStringList autosaves = Settings::autosaveFiles();
+        autosaves.removeAll(m_autosaveFileName);
+        Settings::setAutosaveFiles(autosaves);
+        QFile::remove(m_autosaveFileName);
+        m_autosaveFileName.clear();
+    }
 }
 
 Scene *WorkSpace::scene()
