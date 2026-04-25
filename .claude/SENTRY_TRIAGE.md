@@ -366,11 +366,12 @@ Confirmed during the audit; recorded so a future investigation doesn't re-derive
 
 ### Tier A — biggest user impact, smallest effort
 
-#### A1. Pixmap throw → debug log
+#### A1. Pixmap throw → debug log — **SKIPPED**
 **File:** `App/Element/GraphicElement.cpp:182`
 **Closes:** ~691 lifetime events (F8, FF, FG, GY, H3, FM, FB, H4)
 **Effort:** 1 line
 **Change:** Replace `throw PANDACEPTION(...)` with `qCDebug(zero) << ...`. Line 180 already loads default appearance — no functional change.
+**Status:** Skipped — keep the user-visible message-box on missing pixmaps.
 
 #### A14. `removeICFile` → `DeleteItemsCommand`
 **File:** `App/UI/MainWindow.cpp:1856-1885`
@@ -536,10 +537,10 @@ These cannot be resolved by static analysis. Sanitizer / debugger / Sentry sessi
 
 ## Recommended 5.0.2 release bundle
 
-~55 lines of code change, would close 4 STILL-VULNERABLE crash bugs + ~691+192 events worth of noise + ~3x improvement in forensic data quality.
+~55 lines of code change, would close 4 STILL-VULNERABLE crash bugs + ~192 events worth of noise + ~3x improvement in forensic data quality.
 
 1. The 2 pending master commits (`1e62afc91` + `e574b384c`) — already done, just needs a release.
-2. **A1** — pixmap throw → debug log (1 line, ~691 events)
+2. ~~**A1** — pixmap throw → debug log~~ — **SKIPPED**
 3. **A14** — `removeICFile` crash (~10 lines)
 4. **A15** — inline-IC save data-loss + crash (~5 lines)
 5. **B2 + B3** — autosave atomicity + debounce (~15 lines)
