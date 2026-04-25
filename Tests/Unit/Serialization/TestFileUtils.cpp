@@ -3,10 +3,13 @@
 
 #include "Tests/Unit/Serialization/TestFileUtils.h"
 
+#include <QDataStream>
 #include <QFile>
+#include <QRectF>
 #include <QTemporaryDir>
 
 #include "App/IO/FileUtils.h"
+#include "App/IO/Serialization.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestFileUtils::testCopyToDirEmptyPath()
@@ -108,5 +111,42 @@ void TestFileUtils::testCopyPandaDepsNoDependencies()
 
     FileUtils::copyPandaDeps(sourcePanda, sourceDir.path(), destDir.path());
     QVERIFY(true); // no crash
+}
+
+namespace {
+// Writes a minimal .panda file with only the header + a metadata map containing
+// a single fileBackedICs entry. Just enough for copyPandaDeps to traverse.
+void writePandaWithFileBackedIC(const QString &path, const QString &referencedIC)
+{
+    QFile out(path);
+    QVERIFY(out.open(QIODevice::WriteOnly));
+    QDataStream stream(&out);
+    Serialization::writePandaHeader(stream);
+
+    QMap<QString, QVariant> metadata;
+    metadata["dolphinFileName"] = QString();
+    metadata["sceneRect"] = QRectF();
+    metadata["fileBackedICs"] = QStringList{referencedIC};
+    stream << metadata;
+}
+} // namespace
+
+void TestFileUtils::testCopyPandaDepsTerminatesOnCircularMetadata()
+{
+    // Hand-craft two .panda files that reference each other in their
+    // fileBackedICs metadata. Pre-fix copyPandaDeps would infinite-recurse
+    // until stack overflow; the visited-set guard short-circuits the cycle.
+    QTemporaryDir sourceDir;
+    QTemporaryDir destDir;
+    QVERIFY(sourceDir.isValid() && destDir.isValid());
+
+    const QString aPath = sourceDir.path() + "/a.panda";
+    const QString bPath = sourceDir.path() + "/b.panda";
+    writePandaWithFileBackedIC(aPath, "b.panda");
+    writePandaWithFileBackedIC(bPath, "a.panda");
+
+    // Should return promptly — if it doesn't terminate the test runner kills us.
+    FileUtils::copyPandaDeps(aPath, sourceDir.path(), destDir.path());
+    QVERIFY(true);
 }
 
