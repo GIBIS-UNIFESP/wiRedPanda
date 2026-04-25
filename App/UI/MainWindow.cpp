@@ -706,7 +706,16 @@ void MainWindow::loadPandaFile(const QString &fileName)
 {
     createNewTab();
     qCDebug(zero) << "Loading in editor.";
-    m_currentTab->load(fileName);
+    try {
+        m_currentTab->load(fileName);
+    } catch (...) {
+        // Drop the half-populated tab so we don't leak an empty workspace
+        // into the tab bar. Clear the undo stack first so closeTab doesn't
+        // prompt the user to save the partial load.
+        m_currentTab->scene()->undoStack()->clear();
+        closeTab(m_tabIndex);
+        throw;
+    }
     // Tighten the scene rect to the loaded items immediately so subsequent
     // interactions (selection, drag release) don't cause a viewport jump.
     m_currentTab->scene()->resizeScene();
