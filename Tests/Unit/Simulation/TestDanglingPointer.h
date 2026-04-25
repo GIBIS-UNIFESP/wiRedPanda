@@ -52,10 +52,22 @@ private slots:
     /// reentrancy the production crash relies on.
     void bug6_topologyCommandsMustUseSimulationBlocker();
 
+    /// Hardening — ConnectionManager::deleteEditedConnection performs a
+    /// bare delete on the in-progress wire. If a re-initialize has run
+    /// while the wire is on the scene, that pointer ends up in
+    /// Simulation::m_connections and the bare delete leaves it dangling.
+    /// Source-level check, same shape as bug6.
+    void hardening_deleteEditedConnectionMustUseSimulationBlocker();
+
     // --- Crash-triggering tests (process dies pre-fix) ---------------
 
     /// Bug 8 — iterativeSettle() iterates without null checks.
     void bug8_iterativeSettleMustTolerateNullEntry();
+
+    /// Hardening — Simulation::update() Phase 3 dereferences m_connections
+    /// entries without a null guard, unlike the four other phases. Inject
+    /// a null and call update() to verify the new guard.
+    void hardening_phase3MustTolerateNullConnection();
 
     /// Bug 2 — IC::updateLogic() dereferences m_sortedInternalElements
     /// entries without a null guard.
