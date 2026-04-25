@@ -64,6 +64,11 @@ public:
     /// without triggering any QMessageBox dialogs.
     inline static bool migrationEnabled = true;
 
+    /// Returns true if \a message matches any deny pattern that should be
+    /// dropped before being sent to Sentry. Always compiled (independent of
+    /// HAVE_SENTRY) so the deny-list policy is unit-testable.
+    static bool isSentryDenyMessage(const QString &message);
+
 private:
     Q_DISABLE_COPY(Application)
 
