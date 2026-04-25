@@ -75,6 +75,9 @@ WorkSpace::WorkSpace(QWidget *parent)
 
 WorkSpace::~WorkSpace()
 {
+    /// Block signals so the autosave's fileChanged emission can't reach a parent
+    /// MainWindow whose destructor has already begun (would assert in Qt).
+    const QSignalBlocker blocker(this);
     flushPendingAutosave();
 }
 
