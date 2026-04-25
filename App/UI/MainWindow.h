@@ -28,8 +28,12 @@ class ElementPalette;
 class IC;
 class LanguageManager;
 class QShortcut;
-class RecentFiles;
 class WorkSpace;
+#ifdef USE_KDE_FRAMEWORKS
+class KRecentFilesAction;
+#else
+class RecentFiles;
+#endif
 
 /**
  * \class MainWindow
@@ -222,9 +226,11 @@ private:
 
     bool hasModifiedFiles();
     void loadAutosaveFiles();
+#ifndef USE_KDE_FRAMEWORKS
     void createRecentFileActions();
     void updateRecentFileActions();
     void openRecentFile();
+#endif
     void removeICFile(const QString &icFileName);
     QString resolveUniqueBlobName(const QString &initialName, Scene *scene);
     void embedSelectedIC();
@@ -299,7 +305,9 @@ private:
     void setupGeometry();
     /// Creates the theme action group, connects ThemeManager, applies fast-mode / label-under-icons state.
     void setupTheme();
-    /// Constructs RecentFiles and wires its update signals.
+    /// Constructs the recent-files mechanism and wires its update signals.
+    /// KDE builds use KRecentFilesAction; non-KDE builds use the local
+    /// RecentFiles + manual menu population.
     void setupRecentFiles();
     /// Populates the Examples menu from the Examples/ directory.
     void setupExamplesMenu();
@@ -314,7 +322,11 @@ private:
 
     ElementPalette  *m_palette         = nullptr;
     LanguageManager *m_languageManager = nullptr;
+#ifdef USE_KDE_FRAMEWORKS
+    KRecentFilesAction *m_recentFilesAction = nullptr;
+#else
     RecentFiles     *m_recentFiles     = nullptr;
+#endif
 
     WorkSpace *m_currentTab = nullptr;
     int m_tabIndex = -1;

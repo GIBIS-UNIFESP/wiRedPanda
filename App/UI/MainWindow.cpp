@@ -52,7 +52,9 @@
 #include "App/Element/ElementLabel.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICRegistry.h"
+#ifndef USE_KDE_FRAMEWORKS
 #include "App/IO/RecentFiles.h"
+#endif
 #include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
@@ -69,6 +71,9 @@
 
 #ifdef USE_KDE_FRAMEWORKS
 #include <KActionCollection>
+#include <KConfigGroup>
+#include <KRecentFilesAction>
+#include <KSharedConfig>
 #include <KStandardAction>
 #include <KToolBar>
 using namespace Qt::StringLiterals;
@@ -189,6 +194,17 @@ void MainWindow::setupKdeActions()
     m_ui->actionZoomIn    = stdAction(KStandardAction::zoomIn(   static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionZoomIn"_s,    u"view_zoom_in"_s);
     m_ui->actionZoomOut   = stdAction(KStandardAction::zoomOut(  static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionZoomOut"_s,   u"view_zoom_out"_s);
 
+    // Recent files action — must exist in the collection before setupGUI() so
+    // wiredpandaui.rc's <Action name="file_open_recent"/> resolves. Persisted
+    // entries are loaded and the addRecentFile signal wired in setupRecentFiles().
+    m_recentFilesAction = KStandardAction::openRecent(
+        this,
+        [this](const QUrl &url) {
+            sentryBreadcrumb("file", QStringLiteral("Open recent file"));
+            loadPandaFile(url.toLocalFile());
+        },
+        actionCollection());
+
     // ── Custom actions (created as window children, registered in collection) ───
 
     m_ui->actionReloadFile = addAction(u"wiredpanda_reload_file"_s, u"actionReloadFile"_s, i18n("Re&load File"),
@@ -278,10 +294,8 @@ void MainWindow::setupKdeActions()
 
     // ── Dynamic menus (populated at runtime) ────────────────────────────────
     // Set objectName on each so tests using findChild<QMenu*>("menuXxx") work.
-    m_ui->menuRecentFiles  = new QMenu(i18n("&Recent files:"), this);
-    m_ui->menuRecentFiles->setObjectName(u"menuRecentFiles"_s);
-    m_ui->menuRecentFiles->setEnabled(false);
-    m_ui->menuRecentFiles->setIcon(QIcon(u":/Interface/Toolbar/recentFiles.svg"_s));
+    // menuRecentFiles is owned by KRecentFilesAction (built lazily); we point
+    // m_ui->menuRecentFiles at it after setupGUI() runs, below.
     m_ui->menuTheme        = new QMenu(i18n("&Theme"), this);
     m_ui->menuTheme->setObjectName(u"menuTheme"_s);
     m_ui->menuTheme->addAction(m_ui->actionSystemTheme);
@@ -319,11 +333,20 @@ void MainWindow::setupKdeActions()
         else if (name == u"help"_s)  m_ui->menuHelp       = m;
     }
 
-    // Insert recent files submenu into the File menu (after Open, before save)
+    // Recent-files submenu is inserted automatically by setupGUI() because
+    // wiredpandaui.rc references the "file_open_recent" action; just add a
+    // separator after it and expose the menu pointer for findChild() tests.
     if (m_ui->menuFile) {
         QAction *saveAction = actionCollection()->action(u"file_save"_s);
-        m_ui->menuFile->insertMenu(saveAction, m_ui->menuRecentFiles);
         m_ui->menuFile->insertSeparator(saveAction);
+    }
+    // KRecentFilesAction owns its auto-built menu (a QMenu with no QObject
+    // parent), so findChild() on the window can't reach it. Expose it on
+    // m_ui->menuRecentFiles for code that already holds the pointer; tests
+    // should fetch it via actionCollection()->action("file_open_recent").
+    if (auto *recentMenu = m_recentFilesAction->menu()) {
+        recentMenu->setObjectName(u"menuRecentFiles"_s);
+        m_ui->menuRecentFiles = recentMenu;
     }
 
     // Add dynamic menus to the menu bar (before Help)
@@ -396,10 +419,22 @@ void MainWindow::setupTheme()
 
 void MainWindow::setupRecentFiles()
 {
+#ifdef USE_KDE_FRAMEWORKS
+    // m_recentFilesAction was created in setupKdeActions() before setupGUI()
+    // so the rc file's "file_open_recent" reference resolved. Here we just
+    // load persisted entries and wire the addRecentFile signal.
+    m_recentFilesAction->loadEntries(KSharedConfig::openConfig()->group(u"RecentFiles"_s));
+    connect(this, &MainWindow::addRecentFile, this, [this](const QString &path) {
+        // KRecentFilesAction silently drops URLs under QDir::tempPath().
+        m_recentFilesAction->addUrl(QUrl::fromLocalFile(path), QFileInfo(path).fileName());
+        m_recentFilesAction->saveEntries(KSharedConfig::openConfig()->group(u"RecentFiles"_s));
+    });
+#else
     m_recentFiles = new RecentFiles(this);
     connect(this,          &MainWindow::addRecentFile,         m_recentFiles, &RecentFiles::addRecentFile);
     connect(m_recentFiles, &RecentFiles::recentFilesUpdated,   this,          &MainWindow::updateRecentFileActions);
     createRecentFileActions();
+#endif
 }
 
 void MainWindow::setupExamplesMenu()
@@ -1665,6 +1700,7 @@ void MainWindow::zoomChanged()
     m_ui->actionZoomOut->setEnabled(m_currentTab->view()->canZoomOut());
 }
 
+#ifndef USE_KDE_FRAMEWORKS
 void MainWindow::updateRecentFileActions()
 {
     const auto files = m_recentFiles->recentFiles();
@@ -1712,6 +1748,7 @@ void MainWindow::createRecentFileActions()
 
     updateRecentFileActions();
 }
+#endif // USE_KDE_FRAMEWORKS
 
 void MainWindow::on_actionExportToPdf_triggered()
 {

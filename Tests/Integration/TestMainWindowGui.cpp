@@ -33,6 +33,10 @@
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
+
+#ifdef USE_KDE_FRAMEWORKS
+#include <KActionCollection>
+#endif
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "App/UI/ElementEditor.h"
@@ -836,11 +840,20 @@ void TestMainWindowGui::testOpenRecentFile()
 
     {
         std::unique_ptr<MainWindow> window(createMW());
+#ifdef USE_KDE_FRAMEWORKS
+        // KDE: KRecentFilesAction's auto-built menu has no QObject parent, so
+        // it's unreachable via findChild. Fetch it through the action collection.
+        // Note: KRecentFilesAction::addUrl rejects URLs under QDir::tempPath()
+        // by design, so the saved fixture file (in a QTemporaryDir) won't show
+        // up in the menu. We still verify the action is wired and the menu exists.
+        auto *openRecent = window->actionCollection()->action(QStringLiteral("file_open_recent"));
+        QVERIFY2(openRecent, "file_open_recent action not found");
+        auto *menuRecentFiles = openRecent->menu();
+        QVERIFY2(menuRecentFiles, "Recent files menu not found");
+        // Skip the load-via-trigger check on KDE — temp paths are filtered.
+#else
         auto *menuRecentFiles = window->findChild<QMenu *>("menuRecentFiles");
         QVERIFY2(menuRecentFiles, "Recent files menu not found");
-
-        // Recent files list may be empty if QSettings doesn't persist between test
-        // MainWindow instances. Verify the menu exists and is accessible regardless.
         QVERIFY(menuRecentFiles->menuAction()->isEnabled());
         if (!menuRecentFiles->actions().isEmpty()) {
             auto *recentAction = menuRecentFiles->actions().first();
@@ -848,6 +861,7 @@ void TestMainWindowGui::testOpenRecentFile()
             recentAction->trigger();
             QVERIFY(!window->currentTab()->scene()->elements().isEmpty());
         }
+#endif
     }
 
     QFile::remove(savePath);
