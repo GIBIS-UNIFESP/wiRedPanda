@@ -155,6 +155,10 @@ int main(int argc, char *argv[])
     app.setDesktopFileName("wiredpanda");
 #ifdef USE_KDE_FRAMEWORKS
     {
+        // Set the translation domain BEFORE constructing KAboutData — the
+        // i18n() arguments below are evaluated at the call site, so without a
+        // domain in place every literal here logs "Domain is not set".
+        KLocalizedString::setApplicationDomain("wiredpanda");
         KAboutData about(
             u"wiredpanda"_s,
             i18n("wiRedPanda"),
@@ -171,9 +175,6 @@ int main(int argc, char *argv[])
         about.addAuthor(i18n("Lucas Santana Lellis"),                i18n("Developer"),         u"lucaslellis777@gmail.com"_s);
         about.addAuthor(i18n("Vinícius Rodrigues Miguel"),          i18n("Developer"),         u"lemao.vrm07@hotmail.com"_s);
         KAboutData::setApplicationData(about);
-        // setApplicationData calls KLocalizedString::setApplicationDomain(componentName)
-        // so the explicit call below is redundant but kept for clarity.
-        KLocalizedString::setApplicationDomain("wiredpanda");
 
 #if defined(Q_OS_LINUX)
         // Phase 7a: register KCrash so DrKonqi can present a familiar crash dialog
