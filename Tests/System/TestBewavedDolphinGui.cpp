@@ -798,3 +798,29 @@ void TestBewavedDolphinGui::testMergeSplitDisabled()
     QVERIFY(!splitAction->isEnabled());
 }
 
+void TestBewavedDolphinGui::testSetClockWaveDisabledWithoutSelectionC9()
+{
+    // Pre-fix actionSetClockWave was always enabled and the handler threw
+    // "No cells selected." straight into a modal error. Now the action is
+    // gated on a non-empty selection and toggled by the table's
+    // selectionChanged slot.
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+
+    auto *action = dolphin->findChild<QAction *>("actionSetClockWave");
+    QVERIFY2(action, "actionSetClockWave not found");
+
+    // Initial state with no selection — disabled.
+    QVERIFY(!action->isEnabled());
+
+    // Select a row, action becomes enabled.
+    selectCells(dolphin.get(), 0, 0, 0, 3);
+    QVERIFY(action->isEnabled());
+
+    // Clear the selection, action returns to disabled.
+    auto *tv = findTableView(dolphin.get());
+    QVERIFY(tv);
+    tv->selectionModel()->clearSelection();
+    QVERIFY(!action->isEnabled());
+}
+

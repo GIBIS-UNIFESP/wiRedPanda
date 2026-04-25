@@ -1001,6 +1001,15 @@ void MainWindow::setICButtonsVisible(bool visible)
     m_ui->pushButtonMakeSelfContained->setVisible(visible);
 }
 
+void MainWindow::refreshICButtonsEnabled()
+{
+    // Add IC needs a real project directory to copy the chosen .panda into;
+    // gating click-ability on a saved file avoids the "Save file first."
+    // throw → modal-error UX dead end.
+    const bool hasFile = m_currentTab && m_currentTab->fileInfo().isReadable();
+    m_ui->pushButtonAddIC->setEnabled(hasFile);
+}
+
 bool MainWindow::hasModifiedFiles()
 {
     const QStringList autosaves = Settings::autosaveFiles();
@@ -1102,6 +1111,10 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
         m_ui->tab->setTabToolTip(tabIndex, fileInfo.absoluteFilePath());
         qCDebug(zero) << "Adding file to recent files.";
         emit addRecentFile(fileInfo.absoluteFilePath());
+    }
+
+    if (senderWs == m_currentTab) {
+        refreshICButtonsEnabled();
     }
 }
 
@@ -1207,6 +1220,7 @@ void MainWindow::connectTab()
 
     // Hide management buttons for inline IC tabs (they use currentFile/currentDir which are empty)
     setICButtonsVisible(!m_currentTab->isInlineIC());
+    refreshICButtonsEnabled();
 
     qCDebug(zero) << "Connecting current tab to element editor menu in UI.";
     m_ui->elementEditor->setScene(m_currentTab->scene());

@@ -65,6 +65,8 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     actionSetClockWave = new QAction(BewavedDolphin);
     actionSetClockWave->setObjectName("actionSetClockWave");
     actionSetClockWave->setIcon(QIcon(":/Components/Input/clock1.svg"));
+    // Gated on a non-empty selection — kept in sync by on_tableView_selectionChanged.
+    actionSetClockWave->setEnabled(false);
 
     actionInvert = new QAction(BewavedDolphin);
     actionInvert->setObjectName("actionInvert");

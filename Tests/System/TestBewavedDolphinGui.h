@@ -78,6 +78,9 @@ private slots:
     void testExitAction();
     void testMergeSplitDisabled();
 
+    // Regression: C9 — actionSetClockWave gated on a non-empty selection
+    void testSetClockWaveDisabledWithoutSelectionC9();
+
 private:
     QTemporaryDir m_tempDir;
 };
