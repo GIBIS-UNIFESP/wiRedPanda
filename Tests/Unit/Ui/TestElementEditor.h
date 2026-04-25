@@ -19,5 +19,8 @@ private slots:
     void testSetCurrentElementsGate();
     void testSetCurrentElementsLed();
     void testFillColorComboBox();
+
+    // Regression: B21 — combo-box rebuild must not push spurious port-size commands
+    void testSelectionDoesNotPushPortSizeCommandB21();
 };
 
