@@ -133,9 +133,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     qCDebug(zero) << "Adding examples to menu";
     setupExamplesMenu();
-
-    // Scene-level shortcuts require m_currentTab (set by createNewTab above).
-    setupShortcuts();
 }
 
 void MainWindow::setupLanguage()
