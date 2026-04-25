@@ -698,11 +698,35 @@ a server-side setup; the client implementation is complete.
 
 ---
 
-## Phase 9 — KPlotting: Waveform Viewer
+## Phase 9 — KPlotting: Waveform Viewer ⏭️ SKIPPED
 **KDE Frameworks**: `KF6::Plotting`
 
-Replace the custom `BeWavedDolphin` waveform rendering (QStandardItemModel + custom delegate)
-with KPlotting's lightweight plot widget. Reduces ~400 lines of custom painting code.
+The roadmap proposed replacing the BeWavedDolphin renderer with KPlot, claiming
+this would drop ~400 lines of custom painting code. On closer look the swap
+doesn't fit the data model:
+
+- The actual "custom painting" is `SignalDelegate.cpp` — **68 lines**, not 400 —
+  blitting one of 8 pre-loaded pixmaps (low / high / rising / falling × blue /
+  green) per cell. The 1429 lines in `BeWavedDolphin.cpp` are **editing** logic
+  (cell selection, range copy/paste, clock-wave generation, combinational table
+  generation, set-to-0/1, invert, auto-crop) and none of that touches the
+  rendering layer.
+- The waveform surface is a `QTableView` + `QStandardItemModel` of discrete 0/1
+  timesteps embedded in a `QGraphicsScene` for uniform zoom. KPlot is built for
+  continuous line/scatter plots over numeric axes — replacing the table loses
+  cell-level click/select, range copy/paste, and the free vertical/horizontal
+  header labels, all of which are core to the editing workflow.
+- KPlot has no built-in step-style digital waveform rendering, so a port would
+  add custom `KPlotObject` subclasses to recover what the 68-line delegate
+  already does.
+- The renderer is shared across all platforms; bolting a KPlot path on top
+  would mean maintaining two parallel implementations (KPlot for KDE desktop,
+  the existing pixmap delegate for WASM and non-KDE), with no user-visible
+  win on either side.
+
+Skipping yields no user-visible regression and avoids a substantial refactor
+with no clear payoff. Same shape of skip as Phase 6b (KSvg) and the
+FileDialog half of Phase 5c.
 
 ---
 
