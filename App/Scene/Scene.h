@@ -12,6 +12,7 @@
 #include <QHash>
 #include <QMap>
 #include <QMimeData>
+#include <QPointer>
 #include <QUndoCommand>
 #include <QVersionNumber>
 
@@ -358,8 +359,11 @@ private:
     QElapsedTimer m_timer;
     QPointF m_mousePos;
     QPointF m_selectionStartPoint;
-    QList<GraphicElement *> m_movedElements;
-    QList<QPointF> m_oldPositions;
+    /// Drag-state snapshot: each entry pairs an element with its press-time
+    /// position. QPointer auto-clears if the element is destroyed mid-drag
+    /// (e.g. user presses Delete while holding the mouse), preventing a
+    /// dangling-pointer dereference in mouseReleaseEvent.
+    QList<QPair<QPointer<GraphicElement>, QPointF>> m_dragSnapshot;
     bool m_draggingElement = false;
     bool m_markingSelectionBox = false;
     bool m_handlingMouseMove = false;
