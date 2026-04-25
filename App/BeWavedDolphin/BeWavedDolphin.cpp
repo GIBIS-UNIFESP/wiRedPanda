@@ -185,8 +185,12 @@ void BewavedDolphin::setupKdeActions()
     m_ui->actionAbout        = addAction(u"dolphin_about"_s,           u"actionAbout"_s,         i18n("About"),               u":/Interface/Dolphin/help.svg"_s);
     m_ui->actionAboutQt      = addAction(u"dolphin_about_qt"_s,        u"actionAboutQt"_s,       i18n("About Qt"),            {});
 
-    setupGUI(KXmlGuiWindow::Create | KXmlGuiWindow::StatusBar | KXmlGuiWindow::ToolBar | KXmlGuiWindow::Save,
-             u":/wiredpanda/bewaveddolphinui.rc"_s);
+    // BewavedDolphin has no Ctrl+Alt+I or F1 conflict, but disable the auto
+    // command bar / help menu for consistency with MainWindow.
+    setCommandBarEnabled(false);
+    setHelpMenuEnabled(false);
+
+    setupGUI(KXmlGuiWindow::Default, u":/wiredpanda/bewaveddolphinui.rc"_s);
 
     // Grab toolbar and status bar
     m_ui->mainToolBar = qobject_cast<QToolBar *>(toolBar(u"mainToolBar"_s));
