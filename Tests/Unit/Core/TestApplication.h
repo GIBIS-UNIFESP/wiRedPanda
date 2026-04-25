@@ -14,5 +14,9 @@ private slots:
 
     void testApplicationNotify();
     void testExceptionHandling();
+
+    // Regression: C10 — sentry deny-list filters known-noise patterns
+    void testIsSentryDenyMessageMatchesClusterD();
+    void testIsSentryDenyMessageDoesNotFilterUnknown();
 };
 
