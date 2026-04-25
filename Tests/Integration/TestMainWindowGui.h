@@ -185,6 +185,10 @@ private slots:
     void testEmbedICByFileWithInstances();
     void testExtractICByBlobNameEndToEnd();
 
+    // --- Sentry triage regressions ---
+
+    void testRemoveICFileIsUndoableA14();
+
 private:
     QTemporaryDir m_tempDir;
     QString m_fixtureDir;
