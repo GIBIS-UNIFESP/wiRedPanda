@@ -212,6 +212,19 @@ void WorkSpace::save(const QString &fileName)
     QSaveFile saveFile(fileName_);
 
     if (!saveFile.open(QIODevice::WriteOnly)) {
+        if (Application::interactiveMode && saveFile.error() == QFileDevice::PermissionsError) {
+            // OneDrive lock, ZIP-extracted folder, network drive, write-protected
+            // attribute. Re-prompt for a writable location instead of throwing
+            // the user into a stuck "Acesso negado" dialog with no way out.
+            const QString newPath = FileDialogs::provider()->getSaveFileName(
+                this, tr("Save File (original location is read-only)"),
+                QFileInfo(fileName_).fileName(),
+                tr("Panda files (*.panda)")).fileName;
+            if (!newPath.isEmpty()) {
+                save(newPath);
+            }
+            return;
+        }
         throw PANDACEPTION("Error opening file: %1", saveFile.errorString());
     }
 
@@ -241,6 +254,16 @@ void WorkSpace::save(const QString &fileName)
     save(stream);
 
     if (!saveFile.commit()) {
+        if (Application::interactiveMode && saveFile.error() == QFileDevice::PermissionsError) {
+            const QString newPath = FileDialogs::provider()->getSaveFileName(
+                this, tr("Save File (original location is read-only)"),
+                QFileInfo(fileName_).fileName(),
+                tr("Panda files (*.panda)")).fileName;
+            if (!newPath.isEmpty()) {
+                save(newPath);
+            }
+            return;
+        }
         throw PANDACEPTION("Could not save file: %1", saveFile.errorString());
     }
 
