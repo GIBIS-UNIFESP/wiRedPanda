@@ -52,6 +52,8 @@ public:
     void retranslateUi();
 
     // --- Actions ---
+    // In the KDE path these are populated by MainWindow::setupKdeActions()
+    // via KActionCollection; in the non-KDE path setupUi() creates them directly.
 
     // File actions
     QAction *actionNew = nullptr;
@@ -209,23 +211,28 @@ public:
     ElementEditor *elementEditor = nullptr;
 
     // --- Toolbars & Status ---
+    // In the KDE path these are assigned from KXmlGuiWindow accessors after setupGUI().
 
-    QToolBar *mainToolBar = nullptr;
-    QStatusBar *statusBar = nullptr;
+    QToolBar  *mainToolBar = nullptr;
+    QStatusBar *statusBar  = nullptr;
 
     // --- Menu Bar & Menus ---
+    // Static menus (file/edit/view/simulation/help) come from setupGUI() in the KDE path
+    // and from setupUi() in the non-KDE path.
+    // Dynamic menus (recentFiles/examples/language/translation/theme) are created by
+    // MainWindow::setupKdeActions() in both paths (non-KDE setupUi also creates them).
 
-    QMenuBar *menuBar = nullptr;
-    QMenu *menuFile = nullptr;
-    QMenu *menuRecentFiles = nullptr;
-    QMenu *menuEdit = nullptr;
-    QMenu *menuView = nullptr;
-    QMenu *menuTheme = nullptr;
-    QMenu *menuLanguage = nullptr;
-    QMenu *menuTranslation = nullptr;
-    QMenu *menuSimulation = nullptr;
-    QMenu *menuExamples = nullptr;
-    QMenu *menuHelp = nullptr;
+    QMenuBar *menuBar        = nullptr;
+    QMenu *menuFile          = nullptr;
+    QMenu *menuRecentFiles   = nullptr;
+    QMenu *menuEdit          = nullptr;
+    QMenu *menuView          = nullptr;
+    QMenu *menuTheme         = nullptr;
+    QMenu *menuLanguage      = nullptr;
+    QMenu *menuTranslation   = nullptr;
+    QMenu *menuSimulation    = nullptr;
+    QMenu *menuExamples      = nullptr;
+    QMenu *menuHelp          = nullptr;
 
 };
 

@@ -28,6 +28,7 @@ if(USE_KDE_FRAMEWORKS AND NOT EMSCRIPTEN)
     find_package(KF6Config REQUIRED)       # Phase 1
     find_package(KF6I18n REQUIRED)         # Phase 2
     find_package(KF6CoreAddons REQUIRED)   # Phase 3
+    find_package(KF6XmlGui REQUIRED)       # Phase 4
     add_compile_definitions(USE_KDE_FRAMEWORKS)
     message(STATUS "KDE Frameworks integration enabled (ECM ${ECM_VERSION})")
 else()
@@ -377,7 +378,7 @@ endfunction()
 add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS})
 target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS} nlohmann_json::nlohmann_json nlohmann_json_schema_validator)
 if(USE_KDE_FRAMEWORKS AND NOT EMSCRIPTEN)
-    target_link_libraries(wiredpanda_lib PUBLIC KF6::ConfigCore KF6::I18n KF6::CoreAddons)
+    target_link_libraries(wiredpanda_lib PUBLIC KF6::ConfigCore KF6::I18n KF6::CoreAddons KF6::XmlGui)
 endif()
 
 # Treat external dependencies as system headers to suppress clazy warnings

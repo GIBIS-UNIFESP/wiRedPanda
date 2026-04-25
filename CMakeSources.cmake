@@ -221,6 +221,7 @@ set(RESOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Assets/Assets.qrc
     ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Components/Components.qrc
     ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Interface/Interface.qrc
+    ${CMAKE_CURRENT_LIST_DIR}/App/Resources/KDE/KDE.qrc
     ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Translations/Translations.qrc
 )
 
