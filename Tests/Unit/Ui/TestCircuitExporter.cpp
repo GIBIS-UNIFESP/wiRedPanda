@@ -20,3 +20,12 @@ void TestCircuitExporter::testExporterCreation()
     QVERIFY(true);
 }
 
+void TestCircuitExporter::testRenderToImageThrowsOnInvalidPath()
+{
+    // Path lives under a directory that doesn't exist — pixmap.save returns false
+    // and pre-fix that failure was silently swallowed. The throw is the regression.
+    WorkSpace workspace;
+    const QString path = "/nonexistent/directory/that/does/not/exist/img.png";
+    QVERIFY_EXCEPTION_THROWN(CircuitExporter::renderToImage(workspace.scene(), path), std::exception);
+}
+
