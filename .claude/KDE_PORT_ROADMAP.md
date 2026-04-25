@@ -877,3 +877,69 @@ During the transition, maintain `USE_KDE_FRAMEWORKS=OFF` as the default. CI buil
 
 Flip the default to `ON` after Phase 5 is complete and all desktop platforms verified.
 WASM build always uses `USE_KDE_FRAMEWORKS=OFF`.
+
+---
+
+## Publishing under KDE
+
+"Published in KDE" means two distinct things with very different bars.
+
+### 1. Listed on store.kde.org (low bar — days)
+A content listing on the KDE Store (Pling-backed). Required:
+- Account on store.kde.org
+- Project page with screenshots + description
+- Upload AppImage / Flatpak / source tarball
+- Optionally a GHNS feed so the **Phase 8 Download-Circuits dialog** populates
+  with content. The committed `wiredpanda.knsrc` points at
+  `autoconfig.kde.org/ocs/providers.xml` — that's where the
+  `Categories=wiRedPanda Circuits` entry gets registered against the live
+  Pling project.
+
+This doesn't make wiRedPanda "a KDE app" — it's hosted content. But it lights
+up Phase 8 immediately.
+
+### 2. Adopted as an official KDE project (high bar — months)
+The route is the **KDE Incubator** process.
+
+**Technical prerequisites (mostly already satisfied by this branch):**
+- ✅ License compatibility — GPL-3.0-or-later is accepted
+- ✅ Builds with KDE Frameworks (Phases 0–11)
+- ✅ KAboutData / `.desktop` file / mime types (Phase 3, existing assets)
+- ✅ KI18n translation infrastructure (Phase 2 — `.po` catalogs not yet
+  generated from the existing `.ts` files)
+- ⚠️ CI must pass on `invent.kde.org`. Currently on GitHub Actions; would need
+  a `.gitlab-ci.yml` mirroring the existing matrix.
+- ⚠️ Translations should move to KDE's l10n workflow
+  (Lokalize / Weblate via `scripty`).
+
+**Process prerequisites (the actual hard part — non-technical):**
+- Sponsor / proposal post to `kde-community@kde.org` and `kde-devel@kde.org`
+- Approval by the **KDE e.V. board + sysadmins**
+- Repository **moves** from `github.com/GIBIS-UNIFESP/wiRedPanda` to
+  `invent.kde.org/education/wiredpanda` (or similar group)
+- Active maintainership commitment + alignment with the KDE Manifesto
+- Following the KDE Gear release cadence (soft freeze → translation freeze →
+  release every ~4 months) once accepted
+- Bug tracking moves to `bugs.kde.org`
+- Adoption of the KDE Frameworks release-dependency policy (target the
+  current KF6 stable; no system-version pinning)
+
+**Items still missing for incubator approval:**
+- A formal proposal / sponsor
+- Decision from GIBIS-UNIFESP about whether they want to relinquish
+  `github.com` hosting (the repo, not just the project's existence there)
+- `.po` catalogs generated from the existing `.ts` translations
+- Replicated CI on `invent.kde.org`
+
+### Practical takeaway
+
+- **Goal: make Phase 8 work end-to-end** → register on store.kde.org. Quick.
+- **Goal: rename to `org.kde.wiredpanda`** → community process, not a code
+  change. The technical port is mostly done; what's left is governance
+  (UNIFESP decision), a community proposal, and the translation/CI migration.
+
+Most projects in a similar position (university-originated, GPL,
+well-maintained) end up doing **both**: listed on store.kde.org for
+distribution **+** a Flathub presence under the project's own ID (not
+`org.kde.*`), without going through full KDE incubation. That keeps
+maintainership where it is while still being discoverable to KDE users.
