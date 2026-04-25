@@ -4,9 +4,9 @@
 #include "App/Core/Application.h"
 
 #include <QElapsedTimer>
-#include <QMessageBox>
 
 #include "App/Core/Common.h"
+#include "App/UI/MessageDialog.h"
 
 #ifdef HAVE_SENTRY
 #include "thirdparty/sentry/include/sentry.h"
@@ -57,7 +57,7 @@ bool Application::notify(QObject *receiver, QEvent *event)
         done = QApplication::notify(receiver, event);
     } catch (const std::exception &e) {
         if (Application::interactiveMode) {
-            QMessageBox::critical(mainWindow(), i18n("Error!"), e.what());
+            MessageDialog::error(mainWindow(), e.what(), i18n("Error!"));
         }
 #ifdef HAVE_SENTRY
         // Pandaception carries a separate English message for Sentry so that

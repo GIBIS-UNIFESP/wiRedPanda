@@ -197,6 +197,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MessageDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Versions.h

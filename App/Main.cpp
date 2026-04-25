@@ -8,7 +8,6 @@
 #include <QCommandLineParser>
 #include <QDir>
 #include <QFile>
-#include <QMessageBox>
 #include <QRegularExpression>
 #include <QStandardPaths>
 
@@ -24,6 +23,7 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
+#include "App/UI/MessageDialog.h"
 
 #ifdef ENABLE_MCP_SERVER
 #include "MCP/Server/Core/MCPProcessor.h"
@@ -399,7 +399,7 @@ int main(int argc, char *argv[])
         }
     } catch (const std::exception &e) {
         if (Application::interactiveMode) {
-            QMessageBox::critical(nullptr, i18n("Error!"), e.what());
+            MessageDialog::error(nullptr, e.what(), i18n("Error!"));
         }
         exit(1);
     }

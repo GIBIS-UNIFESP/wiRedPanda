@@ -33,6 +33,7 @@
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LengthDialog.h"
 #include "App/UI/MainWindow.h"
+#include "App/UI/MessageDialog.h"
 
 #ifdef USE_KDE_FRAMEWORKS
 #include <KActionCollection>
@@ -1179,14 +1180,9 @@ void BewavedDolphin::associateToWiRedPanda(const QString &fileName)
     // Only prompt when the file is new (not already linked) and we are in interactive mode;
     // non-interactive (command-line / test) sessions skip the dialog entirely
     if ((m_mainWindow->dolphinFileName() != fileName) && Application::interactiveMode) {
-        const auto reply =
-            QMessageBox::question(
-                this,
-                i18n("wiRedPanda - beWavedDolphin"),
+        if (MessageDialog::questionYesNo(this,
                 i18n("Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?"),
-                QMessageBox::Yes | QMessageBox::No);
-
-        if (reply == QMessageBox::Yes) {
+                i18n("wiRedPanda - beWavedDolphin"))) {
             m_mainWindow->setDolphinFileName(fileName);
             m_mainWindow->save();
         }

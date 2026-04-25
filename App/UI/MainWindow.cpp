@@ -64,6 +64,7 @@
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LanguageManager.h"
 #include "App/UI/MainWindowUI.h"
+#include "App/UI/MessageDialog.h"
 #include "App/Versions.h"
 
 #ifdef USE_KDE_FRAMEWORKS
@@ -539,7 +540,7 @@ void MainWindow::setupConnections()
 
         QFile file(fileName);
         if (!file.open(QIODevice::ReadOnly)) {
-            QMessageBox::warning(this, i18n("Error"), i18n("Could not read file: %1", file.errorString()));
+            MessageDialog::warning(this, i18n("Could not read file: %1", file.errorString()), i18n("Error"));
             return;
         }
         QByteArray fileBytes = file.readAll();
@@ -602,7 +603,7 @@ void MainWindow::loadAutosaveFiles()
             loadPandaFile(*it);
         } catch (const std::exception &e) {
             if (Application::interactiveMode) {
-                QMessageBox::critical(nullptr, i18n("Error!"), e.what());
+                MessageDialog::error(nullptr, e.what(), i18n("Error!"));
             }
             qCDebug(zero) << "Removing autosave file that is corrupted.";
             it = autosaves.erase(it);
@@ -797,7 +798,7 @@ void MainWindow::downloadUpdate(const QString &latestVersion, const QUrl &url)
 
         if (reply->error() != QNetworkReply::NoError) {
             if (reply->error() != QNetworkReply::OperationCanceledError) {
-                QMessageBox::warning(this, i18n("Download Failed"), i18n("Could not download the update:\n%1", reply->errorString()));
+                MessageDialog::warning(this, i18n("Could not download the update:\n%1", reply->errorString()), i18n("Download Failed"));
             }
             reply->deleteLater();
             return;
@@ -805,7 +806,7 @@ void MainWindow::downloadUpdate(const QString &latestVersion, const QUrl &url)
 
         QFile file(savePath);
         if (!file.open(QIODevice::WriteOnly)) {
-            QMessageBox::warning(this, i18n("Download Failed"), i18n("Could not save the file:\n%1", savePath));
+            MessageDialog::warning(this, i18n("Could not save the file:\n%1", savePath), i18n("Download Failed"));
             reply->deleteLater();
             return;
         }
@@ -814,8 +815,9 @@ void MainWindow::downloadUpdate(const QString &latestVersion, const QUrl &url)
         reply->deleteLater();
 
         Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
-        QMessageBox::information(this, i18n("Download Complete"),
-            i18n("wiRedPanda has been downloaded to:\n%1", savePath));
+        MessageDialog::information(this,
+            i18n("wiRedPanda has been downloaded to:\n%1", savePath),
+            i18n("Download Complete"));
     });
 }
 
@@ -1078,8 +1080,7 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::on_actionShortcuts_and_Tips_triggered()
 {
-    QMessageBox::information(this,
-        i18n("Shortcuts and Tips"),
+    MessageDialog::information(this,
         i18n("<h1>Canvas Shortcuts</h1>"
            "<ul style=\"list-style:none;\">"
            "<li> Ctrl+= : Zoom in </li>"
@@ -1101,7 +1102,8 @@ void MainWindow::on_actionShortcuts_and_Tips_triggered()
 
            "<h1>General Tips</h1>"
            "<p>Double-click on a wire to create a node</p>"
-        ));
+        ),
+        i18n("Shortcuts and Tips"));
 }
 
 void MainWindow::on_actionAboutQt_triggered()
@@ -1340,7 +1342,7 @@ bool MainWindow::closeTab(const int tabIndex)
             try {
                 save();
             } catch (const std::exception &e) {
-                QMessageBox::critical(this, i18n("Error"), e.what());
+                MessageDialog::error(this, e.what(), i18n("Error"));
 
                 // If saving failed ask whether to discard and close anyway.
                 if (closeTabAnyway() == QMessageBox::No) {
@@ -2038,7 +2040,7 @@ void MainWindow::on_pushButtonAddIC_clicked()
 
     const QStringList files = {selectedFile};
 
-    QMessageBox::information(this, i18n("Info"), i18n("Selected files (and their dependencies) will be copied to the current project folder."));
+    MessageDialog::information(this, i18n("Selected files (and their dependencies) will be copied to the current project folder."), i18n("Info"));
 
     // Copy the chosen .panda file (and any ICs it depends on transitively)
     // into the project's directory so that relative paths work when reopened.
@@ -2053,7 +2055,7 @@ void MainWindow::on_pushButtonAddIC_clicked()
 void MainWindow::on_pushButtonRemoveIC_clicked()
 {
     sentryBreadcrumb("ic", QStringLiteral("Remove IC"));
-    QMessageBox::information(this, i18n("Info"), i18n("Drag here to remove."));
+    MessageDialog::information(this, i18n("Drag here to remove."), i18n("Info"));
 }
 
 void MainWindow::removeICFile(const QString &icFileName)
@@ -2123,7 +2125,7 @@ void MainWindow::embedSelectedIC()
 
     const QString contextDir = scene->contextDir();
     if (contextDir.isEmpty()) {
-        QMessageBox::warning(this, i18n("Error"), i18n("Please save the project first so ICs can be resolved."));
+        MessageDialog::warning(this, i18n("Please save the project first so ICs can be resolved."), i18n("Error"));
         return;
     }
 
@@ -2134,7 +2136,7 @@ void MainWindow::embedSelectedIC()
 
     QFile file(QDir(contextDir).absoluteFilePath(firstIC->file()));
     if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(this, i18n("Error"), i18n("Could not read IC file: %1", file.errorString()));
+        MessageDialog::warning(this, i18n("Could not read IC file: %1", file.errorString()), i18n("Error"));
         return;
     }
     QByteArray fileBytes = file.readAll();
@@ -2157,7 +2159,7 @@ void MainWindow::extractSelectedIC()
     const QString blobName = firstIC->blobName();
     const QString contextDir = scene->contextDir();
     if (contextDir.isEmpty()) {
-        QMessageBox::warning(this, i18n("Error"), i18n("Please save the project first."));
+        MessageDialog::warning(this, i18n("Please save the project first."), i18n("Error"));
         return;
     }
 
@@ -2185,14 +2187,14 @@ void MainWindow::embedICByFile(const QString &fileName)
     auto *scene = m_currentTab->scene();
     const QString contextDir = scene->contextDir();
     if (contextDir.isEmpty()) {
-        QMessageBox::warning(this, i18n("Error"), i18n("Please save the project first so ICs can be resolved."));
+        MessageDialog::warning(this, i18n("Please save the project first so ICs can be resolved."), i18n("Error"));
         return;
     }
 
     const QString absolutePath = QDir(contextDir).absoluteFilePath(fileName);
     QFile file(absolutePath);
     if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(this, i18n("Error"), i18n("Could not read IC file: %1", file.errorString()));
+        MessageDialog::warning(this, i18n("Could not read IC file: %1", file.errorString()), i18n("Error"));
         return;
     }
     QByteArray fileBytes = file.readAll();
@@ -2222,7 +2224,7 @@ void MainWindow::extractICByBlobName(const QString &blobName)
     auto *scene = m_currentTab->scene();
     const QString contextDir = scene->contextDir();
     if (contextDir.isEmpty()) {
-        QMessageBox::warning(this, i18n("Error"), i18n("Please save the project first."));
+        MessageDialog::warning(this, i18n("Please save the project first."), i18n("Error"));
         return;
     }
 
@@ -2257,7 +2259,7 @@ void MainWindow::makeSelfContained()
     auto *scene = m_currentTab->scene();
     const QString contextDir = scene->contextDir();
     if (contextDir.isEmpty()) {
-        QMessageBox::warning(this, i18n("Error"), i18n("Please save the project first."));
+        MessageDialog::warning(this, i18n("Please save the project first."), i18n("Error"));
         return;
     }
 
@@ -2285,7 +2287,7 @@ void MainWindow::makeSelfContained()
         const QString fullPath = QDir(contextDir).absoluteFilePath(icFile);
         QFile file(fullPath);
         if (!file.open(QIODevice::ReadOnly)) {
-            QMessageBox::warning(this, i18n("Error"), i18n("Could not read IC file: %1", file.errorString()));
+            MessageDialog::warning(this, i18n("Could not read IC file: %1", file.errorString()), i18n("Error"));
             break;
         }
         QByteArray fileBytes = file.readAll();

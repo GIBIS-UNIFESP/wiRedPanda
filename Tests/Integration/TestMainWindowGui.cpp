@@ -122,16 +122,28 @@ static void wheelZoom(GraphicsView *view, int delta)
     QApplication::sendEvent(view->viewport(), &wheel);
 }
 
-/// Schedules auto-close of the next visible QMessageBox that appears.
+/// Schedules auto-close of the next modal message dialog (QMessageBox or
+/// KMessageBox) that appears. Polls because some dialog libraries defer the
+/// show past a singleShot(0) tick.
 static void autoCloseNextMessageBox()
 {
-    QTimer::singleShot(0, [] {
-        if (auto *w = QApplication::activeModalWidget()) {
-            if (auto *msgBox = qobject_cast<QMessageBox *>(w)) {
-                msgBox->accept();
-            }
+    auto *t = new QTimer;
+    t->setInterval(10);
+    QObject::connect(t, &QTimer::timeout, [t] {
+        auto *w = QApplication::activeModalWidget();
+        if (!w) return;
+        if (auto *msgBox = qobject_cast<QMessageBox *>(w)) {
+            msgBox->accept();
+        } else if (auto *dialog = qobject_cast<QDialog *>(w)) {
+            // KMessageBox creates a plain QDialog with a QDialogButtonBox.
+            dialog->accept();
+        } else {
+            return; // wait for a real modal dialog
         }
+        t->stop();
+        t->deleteLater();
     });
+    t->start();
 }
 
 } // namespace MainWindowGuiHelpers
