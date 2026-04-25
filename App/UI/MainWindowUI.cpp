@@ -24,6 +24,9 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     // On macOS, merging the title bar and toolbar saves vertical space.
     MainWindow->setUnifiedTitleAndToolBarOnMac(true);
 
+#ifndef USE_KDE_FRAMEWORKS
+    // In the KDE path actions are created by MainWindow::setupKdeActions()
+    // via KActionCollection. setupGUI() then builds menus/toolbars from the .rc.
     actionOpen = new QAction(MainWindow);
     actionOpen->setObjectName("actionOpen");
     actionOpen->setIcon(QIcon(":/Interface/Toolbar/folder.svg"));
@@ -169,6 +172,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionReportTranslationError = new QAction(MainWindow);
     actionReportTranslationError->setObjectName("actionReportTranslationError");
     actionReportTranslationError->setIcon(QIcon(":/Interface/Toolbar/help.svg"));
+#endif // USE_KDE_FRAMEWORKS (action creation block)
+
     centralWidget = new QWidget(MainWindow);
     centralWidget->setObjectName("centralWidget");
     gridLayout_8 = new QGridLayout(centralWidget);
@@ -556,6 +561,9 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     gridLayout_8->addWidget(splitter, 0, 0, 1, 1);
 
     MainWindow->setCentralWidget(centralWidget);
+
+#ifndef USE_KDE_FRAMEWORKS
+    // In the KDE path toolbar/menubar/menus are built by setupGUI() from the .rc file.
     mainToolBar = new QToolBar(MainWindow);
     mainToolBar->setObjectName("mainToolBar");
     mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
@@ -688,16 +696,18 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
 
     retranslateUi();
 
+    QMetaObject::connectSlotsByName(MainWindow);
+#endif // USE_KDE_FRAMEWORKS (toolbar/menubar block)
+
     tabElements->setCurrentIndex(0);
     // -1 means no tab is active yet; the first call to createNewTab() will
     // add a tab and tabChanged(0) will be emitted to set up all connections.
     tab->setCurrentIndex(-1);
-
-    QMetaObject::connectSlotsByName(MainWindow);
 }
 
 void MainWindowUi::retranslateUi()
 {
+#ifndef USE_KDE_FRAMEWORKS
     actionOpen->setText(QCoreApplication::translate("MainWindow", "&Open..."));
     actionOpen->setToolTip(QCoreApplication::translate("MainWindow", "Open"));
     actionOpen->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+O"));
@@ -778,6 +788,8 @@ void MainWindowUi::retranslateUi()
     actionShortcutsAndTips->setText(QCoreApplication::translate("MainWindow", "Shortcuts and Tips"));
     actionReportTranslationError->setText(QCoreApplication::translate("MainWindow", "Report Translation Error"));
     actionReportTranslationError->setToolTip(QCoreApplication::translate("MainWindow", "Report translation errors or help improve translations on Weblate"));
+#endif // action texts
+
     tabElements->setTabText(tabElements->indexOf(io), QString());
     tabElements->setTabToolTip(tabElements->indexOf(io), QCoreApplication::translate("MainWindow", "Inputs/Outputs"));
     tabElements->setTabText(tabElements->indexOf(gates), QString());
@@ -799,6 +811,7 @@ void MainWindowUi::retranslateUi()
     tabElements->setTabToolTip(tabElements->indexOf(misc), QCoreApplication::translate("MainWindow", "Miscellaneous"));
     tabElements->setTabText(tabElements->indexOf(search), QString());
     label->setText(QCoreApplication::translate("MainWindow", "Search:"));
+#ifndef USE_KDE_FRAMEWORKS
     menuFile->setTitle(QCoreApplication::translate("MainWindow", "&File"));
     menuRecentFiles->setTitle(QCoreApplication::translate("MainWindow", "&Recent files:"));
     menuEdit->setTitle(QCoreApplication::translate("MainWindow", "&Edit"));
@@ -809,5 +822,6 @@ void MainWindowUi::retranslateUi()
     menuLanguage->setTitle(QCoreApplication::translate("MainWindow", "&Language"));
     menuSimulation->setTitle(QCoreApplication::translate("MainWindow", "Sim&ulation"));
     menuExamples->setTitle(QCoreApplication::translate("MainWindow", "Examples"));
+#endif
 }
 

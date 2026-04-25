@@ -34,13 +34,20 @@
 #include "App/UI/LengthDialog.h"
 #include "App/UI/MainWindow.h"
 
+#ifdef USE_KDE_FRAMEWORKS
+#include <KActionCollection>
+#include <KStandardAction>
+#include <KToolBar>
+using namespace Qt::StringLiterals;
+#endif
+
 static constexpr int    kDefaultColumnWidth = 49;    ///<  Per-column pixel width at reset zoom.
 static constexpr int    kMaxSimLength       = 2048;  ///<  Maximum allowed simulation length.
 static constexpr int    kMaxScenePixels     = 4000;  ///<  Scene size limit before forced zoom reset.
 static constexpr double kZoomStep           = 1.25;  ///<  Multiplicative factor per zoom step.
 
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)
-    : QMainWindow(nullptr)
+    : BewavedDolphinBase(nullptr)
     , m_ui(std::make_unique<BewavedDolphinUi>())
     , m_mainWindow(parent)
     , m_externalScene(scene)
@@ -49,6 +56,9 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     , m_askConnection(askConnection)
 {
     m_ui->setupUi(this);
+#ifdef USE_KDE_FRAMEWORKS
+    setupKdeActions();
+#endif
     m_ui->retranslateUi(this);
 
     // WA_DeleteOnClose ensures the window is freed when closed without the caller
@@ -108,6 +118,81 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     connect(m_ui->actionZoomOut,       &QAction::triggered,            this, &BewavedDolphin::on_actionZoomOut_triggered);
     connect(m_ui->actionAutoCrop,      &QAction::triggered,            this, &BewavedDolphin::on_actionAutoCrop_triggered);
 }
+
+#ifdef USE_KDE_FRAMEWORKS
+void BewavedDolphin::setupKdeActions()
+{
+    // Suppress "domain not set" warnings in tests — KAboutData sets this in main() for the
+    // real app, but test binaries don't call main(), so set it explicitly here as a fallback.
+    KLocalizedString::setApplicationDomain("wiredpanda");
+
+    // KActionCollection::addAction() always overwrites the action's objectName with the
+    // collection key. Set the legacy objectName AFTER addAction() to preserve findChild() compat.
+    auto addAction = [this](const QString &kdeName, const QString &legacyName,
+                             const QString &text, const QString &iconPath,
+                             const QKeySequence &shortcut = {}) -> QAction * {
+        auto *a = new QAction(this);
+        a->setText(text);
+        if (!iconPath.isEmpty()) a->setIcon(QIcon(iconPath));
+        actionCollection()->addAction(kdeName, a);          // sets objectName = kdeName
+        a->setObjectName(legacyName);                       // override AFTER to preserve findChild
+        if (!shortcut.isEmpty()) actionCollection()->setDefaultShortcut(a, shortcut);
+        return a;
+    };
+
+    auto stdAction = [this](QAction *a, const QString &legacyName, const QString &collectionName) {
+        a->setParent(this);
+        actionCollection()->addAction(collectionName, a);   // sets objectName = collectionName
+        a->setObjectName(legacyName);                       // override AFTER
+        return a;
+    };
+
+    // Create standard actions without callbacks — the constructor's connect() block
+    // (which runs for both KDE and non-KDE paths) handles all signal-slot wiring.
+    // Passing callbacks here would cause double-connections.
+    using Obj = QObject *;
+    using Slot = const char *;
+    m_ui->actionLoad   = stdAction(KStandardAction::open(  static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionLoad"_s,   u"file_open"_s);
+    m_ui->actionSave   = stdAction(KStandardAction::save(  static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionSave"_s,   u"file_save"_s);
+    m_ui->actionSaveAs = stdAction(KStandardAction::saveAs(static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionSaveAs"_s, u"file_save_as"_s);
+    m_ui->actionExit   = stdAction(KStandardAction::quit(  static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionExit"_s,   u"file_quit"_s);
+    m_ui->actionCopy   = stdAction(KStandardAction::copy(  static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionCopy"_s,   u"edit_copy"_s);
+    m_ui->actionCut    = stdAction(KStandardAction::cut(   static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionCut"_s,    u"edit_cut"_s);
+    m_ui->actionPaste  = stdAction(KStandardAction::paste( static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionPaste"_s,  u"edit_paste"_s);
+    m_ui->actionZoomIn = stdAction(KStandardAction::zoomIn(static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionZoomIn"_s, u"view_zoom_in"_s);
+    m_ui->actionZoomOut= stdAction(KStandardAction::zoomOut(static_cast<Obj>(nullptr),static_cast<Slot>(nullptr), nullptr), u"actionZoomOut"_s,u"view_zoom_out"_s);
+
+    m_ui->actionExportToPdf  = addAction(u"dolphin_export_pdf"_s,      u"actionExportToPdf"_s,   i18n("Export to PDF"),       u":/Interface/Dolphin/pdf.svg"_s,       QKeySequence(Qt::CTRL | Qt::Key_P));
+    m_ui->actionExportToPng  = addAction(u"dolphin_export_png"_s,      u"actionExportToPng"_s,   i18n("Export to PNG"),       {},                                     QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_P));
+    m_ui->actionClear        = addAction(u"dolphin_clear"_s,           u"actionClear"_s,         i18n("Clear"),               u":/Interface/Dolphin/reloadFile.svg"_s, QKeySequence(Qt::ALT | Qt::Key_X));
+    m_ui->actionInvert       = addAction(u"dolphin_invert"_s,          u"actionInvert"_s,        i18n("Invert"),              {},                                     QKeySequence(Qt::Key_Space));
+    m_ui->actionSetTo0       = addAction(u"dolphin_set0"_s,            u"actionSetTo0"_s,        i18n("Set to 0"),            {},                                     QKeySequence(Qt::Key_0));
+    m_ui->actionSetTo1       = addAction(u"dolphin_set1"_s,            u"actionSetTo1"_s,        i18n("Set to 1"),            {},                                     QKeySequence(Qt::Key_1));
+    m_ui->actionSetClockWave = addAction(u"dolphin_clock"_s,           u"actionSetClockWave"_s,  i18n("Set clock frequency"), {},                                     QKeySequence(Qt::ALT | Qt::Key_W));
+    m_ui->actionSetLength    = addAction(u"dolphin_set_length"_s,      u"actionSetLength"_s,     i18n("Set Length"),          {},                                     QKeySequence(Qt::ALT | Qt::Key_L));
+    // Merge/Split reserved for future multi-bit bus feature — always disabled
+    m_ui->actionMerge = addAction(u"dolphin_merge"_s, u"actionMerge"_s, i18n("Merge"), {});
+    m_ui->actionMerge->setEnabled(false);
+    m_ui->actionSplit = addAction(u"dolphin_split"_s, u"actionSplit"_s, i18n("Split"), {});
+    m_ui->actionSplit->setEnabled(false);
+    m_ui->actionAutoCrop     = addAction(u"dolphin_auto_crop"_s,       u"actionAutoCrop"_s,      i18n("AutoCrop"),            u":/Interface/Dolphin/autoCrop.svg"_s,   QKeySequence(Qt::CTRL | Qt::Key_A));
+    m_ui->actionCombinational= addAction(u"dolphin_combinational"_s,   u"actionCombinational"_s, i18n("Combinational"),       {},                                     QKeySequence(Qt::ALT | Qt::Key_C));
+    m_ui->actionShowNumbers  = addAction(u"dolphin_show_numbers"_s,    u"actionShowNumbers"_s,   i18n("Show Numbers"),        {});
+    m_ui->actionShowWaveforms= addAction(u"dolphin_show_waveforms"_s,  u"actionShowWaveforms"_s, i18n("Show Waveforms"),      {});
+    m_ui->actionFitScreen    = addAction(u"dolphin_fit_screen"_s,      u"actionFitScreen"_s,     i18n("Fit to screen"),       u":/Interface/Dolphin/zoomRange.svg"_s,  QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_R));
+    m_ui->actionResetZoom    = addAction(u"dolphin_reset_zoom"_s,      u"actionResetZoom"_s,     i18n("Reset Zoom"),          u":/Interface/Dolphin/zoomReset.svg"_s,  QKeySequence(Qt::CTRL | Qt::Key_Home));
+    m_ui->actionAbout        = addAction(u"dolphin_about"_s,           u"actionAbout"_s,         i18n("About"),               u":/Interface/Dolphin/help.svg"_s);
+    m_ui->actionAboutQt      = addAction(u"dolphin_about_qt"_s,        u"actionAboutQt"_s,       i18n("About Qt"),            {});
+
+    setupGUI(KXmlGuiWindow::Create | KXmlGuiWindow::StatusBar | KXmlGuiWindow::ToolBar | KXmlGuiWindow::Save,
+             u":/wiredpanda/bewaveddolphinui.rc"_s);
+
+    // Grab toolbar and status bar
+    m_ui->mainToolBar = qobject_cast<QToolBar *>(toolBar(u"mainToolBar"_s));
+    m_ui->statusbar   = statusBar();
+
+}
+#endif // USE_KDE_FRAMEWORKS
 
 BewavedDolphin::~BewavedDolphin()
 {

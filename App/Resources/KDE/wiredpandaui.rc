@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gui SYSTEM "kpartgui.dtd">
+<gui name="wiredpanda" version="1">
+  <MenuBar>
+    <Menu name="file"><text>&amp;File</text>
+      <Action name="file_new"/>
+      <Action name="file_open"/>
+      <Separator/>
+      <Action name="wiredpanda_reload_file"/>
+      <Separator/>
+      <Action name="file_save"/>
+      <Action name="file_save_as"/>
+      <Action name="wiredpanda_export_arduino"/>
+      <Action name="wiredpanda_export_systemverilog"/>
+      <Action name="wiredpanda_export_pdf"/>
+      <Action name="wiredpanda_export_image"/>
+      <Separator/>
+      <Action name="wiredpanda_make_self_contained"/>
+      <Separator/>
+      <Action name="file_quit"/>
+    </Menu>
+    <Menu name="edit"><text>&amp;Edit</text>
+      <Separator/>
+      <Action name="edit_cut"/>
+      <Action name="edit_copy"/>
+      <Action name="edit_paste"/>
+      <Action name="wiredpanda_delete"/>
+      <Separator/>
+      <Action name="wiredpanda_rename"/>
+      <Action name="wiredpanda_change_trigger"/>
+      <Separator/>
+      <Action name="wiredpanda_rotate_left"/>
+      <Action name="wiredpanda_rotate_right"/>
+      <Action name="wiredpanda_flip_h"/>
+      <Action name="wiredpanda_flip_v"/>
+      <Separator/>
+      <Action name="edit_select_all"/>
+      <Action name="wiredpanda_clear_selection"/>
+    </Menu>
+    <Menu name="view"><text>&amp;View</text>
+      <Action name="view_zoom_in"/>
+      <Action name="view_zoom_out"/>
+      <Action name="wiredpanda_reset_zoom"/>
+      <Separator/>
+      <Action name="wiredpanda_wires"/>
+      <Action name="wiredpanda_gates"/>
+      <Separator/>
+      <Action name="wiredpanda_fast_mode"/>
+      <Separator/>
+      <Menu name="theme"><text>&amp;Theme</text>
+        <Action name="wiredpanda_theme_system"/>
+        <Action name="wiredpanda_theme_light"/>
+        <Action name="wiredpanda_theme_dark"/>
+      </Menu>
+      <Action name="wiredpanda_fullscreen"/>
+      <Action name="wiredpanda_labels_under_icons"/>
+    </Menu>
+    <Menu name="simulation"><text>Sim&amp;ulation</text>
+      <Action name="wiredpanda_play"/>
+      <Action name="wiredpanda_restart"/>
+      <Action name="wiredpanda_waveform"/>
+      <Action name="wiredpanda_mute"/>
+      <Separator/>
+      <Action name="wiredpanda_background_simulation"/>
+    </Menu>
+    <Menu name="help"><text>&amp;Help</text>
+      <Action name="wiredpanda_about"/>
+      <Action name="wiredpanda_about_qt"/>
+      <Action name="wiredpanda_about_this_version"/>
+      <Action name="wiredpanda_shortcuts_tips"/>
+    </Menu>
+  </MenuBar>
+  <ToolBar name="mainToolBar"><text>Main Toolbar</text>
+    <Action name="file_new"/>
+    <Action name="file_open"/>
+    <Action name="file_save"/>
+    <Separator/>
+    <Action name="wiredpanda_rotate_left"/>
+    <Action name="wiredpanda_rotate_right"/>
+    <Action name="edit_cut"/>
+    <Action name="edit_copy"/>
+    <Action name="edit_paste"/>
+    <Action name="wiredpanda_delete"/>
+    <Separator/>
+    <Action name="view_zoom_in"/>
+    <Action name="view_zoom_out"/>
+    <Action name="wiredpanda_reset_zoom"/>
+    <Separator/>
+    <Action name="wiredpanda_play"/>
+    <Action name="wiredpanda_restart"/>
+    <Action name="wiredpanda_waveform"/>
+  </ToolBar>
+</gui>

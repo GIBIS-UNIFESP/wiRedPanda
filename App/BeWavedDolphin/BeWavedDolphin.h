@@ -11,9 +11,16 @@
 #include <memory>
 
 #include <QFileInfo>
-#include <QMainWindow>
 #include <QStandardItemModel>
 #include <QTableView>
+
+#ifdef USE_KDE_FRAMEWORKS
+#include <KXmlGuiWindow>
+using BewavedDolphinBase = KXmlGuiWindow;
+#else
+#include <QMainWindow>
+using BewavedDolphinBase = QMainWindow;
+#endif
 
 #include "App/BeWavedDolphin/BeWavedDolphinUI.h"
 #include "App/BeWavedDolphin/SignalDelegate.h"
@@ -36,7 +43,7 @@ class QSaveFile;
  *
  * A subset of methods is also accessible via the MCP server for automated testing.
  */
-class BewavedDolphin : public QMainWindow
+class BewavedDolphin : public BewavedDolphinBase
 {
     Q_OBJECT
 
@@ -130,6 +137,10 @@ protected:
 
 private:
     Q_DISABLE_COPY(BewavedDolphin)
+
+#ifdef USE_KDE_FRAMEWORKS
+    void setupKdeActions();
+#endif
 
     // --- File I/O ---
 

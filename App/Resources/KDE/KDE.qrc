@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/wiredpanda">
+        <file>wiredpandaui.rc</file>
+        <file>bewaveddolphinui.rc</file>
+    </qresource>
+</RCC>

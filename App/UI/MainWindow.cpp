@@ -66,6 +66,13 @@
 #include "App/UI/MainWindowUI.h"
 #include "App/Versions.h"
 
+#ifdef USE_KDE_FRAMEWORKS
+#include <KActionCollection>
+#include <KStandardAction>
+#include <KToolBar>
+using namespace Qt::StringLiterals;
+#endif
+
 #ifdef Q_OS_MAC
 void ensureSvgUsage() {
     QSvgRenderer dummy; // for macdeployqt to add libqsvg.dylib
@@ -81,12 +88,16 @@ const char *MainWindow::onBeforeUnload(int /*eventType*/, const void * /*reserve
 #endif
 
 MainWindow::MainWindow(const QString &fileName, QWidget *parent)
-    : QMainWindow(parent)
+    : MainWindowBase(parent)
     , m_ui(std::make_unique<MainWindowUi>())
 {
     qCDebug(zero) << "wiRedPanda Version = " APP_VERSION " OR " << AppVersion::current;
     m_ui->setupUi(this);
     qCDebug(zero) << "Settings fileName: " << Settings::fileName();
+
+#ifdef USE_KDE_FRAMEWORKS
+    setupKdeActions();
+#endif
 
     // Must be created before setupLanguage/setupTheme since both may call palette methods.
     m_palette = new ElementPalette(m_ui.get(), this);
@@ -133,10 +144,202 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     qCDebug(zero) << "Adding examples to menu";
     setupExamplesMenu();
-
-    // Scene-level shortcuts require m_currentTab (set by createNewTab above).
-    setupShortcuts();
 }
+
+#ifdef USE_KDE_FRAMEWORKS
+void MainWindow::setupKdeActions()
+{
+    // Suppress "domain not set" warnings in test environments
+    KLocalizedString::setApplicationDomain("wiredpanda");
+
+    // KActionCollection::addAction() overwrites objectName with the collection key.
+    // Set the legacy objectName AFTER addAction() so findChild("actionXxx") still works.
+    auto addAction = [this](const QString &kdeName, const QString &legacyName,
+                             const QString &text, const QString &iconPath,
+                             const QKeySequence &shortcut = {}) -> QAction * {
+        auto *a = new QAction(this);
+        a->setText(text);
+        if (!iconPath.isEmpty()) a->setIcon(QIcon(iconPath));
+        actionCollection()->addAction(kdeName, a);
+        a->setObjectName(legacyName);                       // override AFTER collection add
+        if (!shortcut.isEmpty()) actionCollection()->setDefaultShortcut(a, shortcut);
+        return a;
+    };
+
+    auto stdAction = [this](QAction *a, const QString &legacyName, const QString &collectionName) {
+        a->setParent(this);
+        actionCollection()->addAction(collectionName, a);
+        a->setObjectName(legacyName);                       // override AFTER collection add
+        return a;
+    };
+
+    // Standard actions without callbacks — setupConnections() wires all signals for both paths
+    using Obj  = QObject *;
+    using Slot = const char *;
+    m_ui->actionNew       = stdAction(KStandardAction::openNew(  static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionNew"_s,       u"file_new"_s);
+    m_ui->actionOpen      = stdAction(KStandardAction::open(     static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionOpen"_s,      u"file_open"_s);
+    m_ui->actionSave      = stdAction(KStandardAction::save(     static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionSave"_s,      u"file_save"_s);
+    m_ui->actionSaveAs    = stdAction(KStandardAction::saveAs(   static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionSaveAs"_s,    u"file_save_as"_s);
+    m_ui->actionExit      = stdAction(KStandardAction::quit(     static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionExit"_s,      u"file_quit"_s);
+    m_ui->actionCut       = stdAction(KStandardAction::cut(      static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionCut"_s,       u"edit_cut"_s);
+    m_ui->actionCopy      = stdAction(KStandardAction::copy(     static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionCopy"_s,      u"edit_copy"_s);
+    m_ui->actionPaste     = stdAction(KStandardAction::paste(    static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionPaste"_s,     u"edit_paste"_s);
+    m_ui->actionSelectAll = stdAction(KStandardAction::selectAll(static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionSelectAll"_s, u"edit_select_all"_s);
+    m_ui->actionZoomIn    = stdAction(KStandardAction::zoomIn(   static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionZoomIn"_s,    u"view_zoom_in"_s);
+    m_ui->actionZoomOut   = stdAction(KStandardAction::zoomOut(  static_cast<Obj>(nullptr), static_cast<Slot>(nullptr), nullptr), u"actionZoomOut"_s,   u"view_zoom_out"_s);
+
+    // ── Custom actions (created as window children, registered in collection) ───
+
+    m_ui->actionReloadFile = addAction(u"wiredpanda_reload_file"_s, u"actionReloadFile"_s, i18n("Re&load File"),
+        u":/Interface/Toolbar/reloadFile.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_F5));
+    m_ui->actionDelete = addAction(u"wiredpanda_delete"_s, u"actionDelete"_s, i18n("&Delete"),
+        u":/Interface/Toolbar/delete.svg"_s, QKeySequence::Delete);
+    m_ui->actionRename = addAction(u"wiredpanda_rename"_s, u"actionRename"_s, i18n("&Rename"),
+        u":/Interface/Toolbar/rename.svg"_s, QKeySequence(Qt::Key_F2));
+    m_ui->actionChangeTrigger = addAction(u"wiredpanda_change_trigger"_s, u"actionChangeTrigger"_s, i18n("Cha&nge Trigger"),
+        u":/Components/Input/buttonOff.svg"_s, QKeySequence(Qt::Key_F3));
+    m_ui->actionRotateRight = addAction(u"wiredpanda_rotate_right"_s, u"actionRotateRight"_s, i18n("R&otate right"),
+        u":/Interface/Toolbar/rotateR.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_R));
+    m_ui->actionRotateLeft = addAction(u"wiredpanda_rotate_left"_s, u"actionRotateLeft"_s, i18n("Rotate &left"),
+        u":/Interface/Toolbar/rotateL.svg"_s, QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_R));
+    m_ui->actionFlipHorizontally = addAction(u"wiredpanda_flip_h"_s, u"actionFlipHorizontally"_s, i18n("&Flip horizontally"),
+        {}, QKeySequence(Qt::CTRL | Qt::Key_H));
+    m_ui->actionFlipVertically = addAction(u"wiredpanda_flip_v"_s, u"actionFlipVertically"_s, i18n("Flip &vertically"), {});
+    m_ui->actionClearSelection = addAction(u"wiredpanda_clear_selection"_s, u"actionClearSelection"_s, i18n("Cl&ear selection"),
+        u":/Interface/Toolbar/clearSelection.svg"_s, QKeySequence(Qt::Key_Escape));
+    m_ui->actionResetZoom = addAction(u"wiredpanda_reset_zoom"_s, u"actionResetZoom"_s, i18n("&Reset Zoom"),
+        u":/Interface/Toolbar/zoomReset.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_0));
+    m_ui->actionFastMode = addAction(u"wiredpanda_fast_mode"_s, u"actionFastMode"_s, i18n("&Fast Mode"),
+        u":/Interface/Toolbar/fast.svg"_s);
+    m_ui->actionFastMode->setCheckable(true);
+    m_ui->actionGates = addAction(u"wiredpanda_gates"_s, u"actionGates"_s, i18n("&Gates"),
+        u":/Components/Logic/nor.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_2));
+    m_ui->actionGates->setCheckable(true);
+    m_ui->actionGates->setChecked(true);
+    m_ui->actionWires = addAction(u"wiredpanda_wires"_s, u"actionWires"_s, i18n("&Wires"),
+        u":/Interface/Toolbar/wires.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_1));
+    m_ui->actionWires->setCheckable(true);
+    m_ui->actionWires->setChecked(true);
+    m_ui->actionFullscreen = addAction(u"wiredpanda_fullscreen"_s, u"actionFullscreen"_s, i18n("F&ullscreen"),
+        {}, QKeySequence(Qt::Key_F11));
+    m_ui->actionLabelsUnderIcons = addAction(u"wiredpanda_labels_under_icons"_s, u"actionLabelsUnderIcons"_s, i18n("Labels under icons"), {});
+    m_ui->actionLabelsUnderIcons->setCheckable(true);
+    m_ui->actionLightTheme = addAction(u"wiredpanda_theme_light"_s, u"actionLightTheme"_s, i18n("&Light"), {});
+    m_ui->actionLightTheme->setCheckable(true);
+    m_ui->actionLightTheme->setChecked(true);
+    m_ui->actionDarkTheme = addAction(u"wiredpanda_theme_dark"_s, u"actionDarkTheme"_s, i18n("&Dark"), {});
+    m_ui->actionDarkTheme->setCheckable(true);
+    m_ui->actionSystemTheme = addAction(u"wiredpanda_theme_system"_s, u"actionSystemTheme"_s, i18n("&System"), {});
+    m_ui->actionSystemTheme->setCheckable(true);
+    m_ui->actionPlay = addAction(u"wiredpanda_play"_s, u"actionPlay"_s, i18n("&Play/Pause"),
+        u":/Interface/Toolbar/play.svg"_s, QKeySequence(Qt::Key_F5));
+    m_ui->actionPlay->setCheckable(true);
+    {
+        QIcon playIcon(u":/Interface/Toolbar/play.svg"_s);
+        playIcon.addFile(u":/Interface/Toolbar/pause.svg"_s, QSize(), QIcon::Normal, QIcon::On);
+        m_ui->actionPlay->setIcon(playIcon);
+    }
+    m_ui->actionRestart = addAction(u"wiredpanda_restart"_s, u"actionRestart"_s, i18n("&Restart"),
+        u":/Interface/Toolbar/reset.svg"_s);
+    m_ui->actionWaveform = addAction(u"wiredpanda_waveform"_s, u"actionWaveform"_s, i18n("&Waveform"),
+        u":/Interface/Toolbar/dolphin_icon.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_W));
+    m_ui->actionMute = addAction(u"wiredpanda_mute"_s, u"actionMute"_s, i18n("Mute"),
+        u":/Components/Output/Buzzer/BuzzerOff.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_M));
+    m_ui->actionMute->setCheckable(true);
+    {
+        QIcon muteIcon(u":/Components/Output/Buzzer/BuzzerOff.svg"_s);
+        muteIcon.addFile(u":/Interface/Toolbar/mute.svg"_s, QSize(), QIcon::Normal, QIcon::On);
+        m_ui->actionMute->setIcon(muteIcon);
+    }
+    m_ui->actionBackground_Simulation = addAction(u"wiredpanda_background_simulation"_s,
+        u"actionBackground_Simulation"_s, i18n("Background Simulation"), u":/Interface/Toolbar/reset.svg"_s);
+    m_ui->actionBackground_Simulation->setCheckable(true);
+    m_ui->actionExportToArduino = addAction(u"wiredpanda_export_arduino"_s, u"actionExportToArduino"_s,
+        i18n("E&xport to Arduino"), u":/Interface/Toolbar/arduino.svg"_s, QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_I));
+    m_ui->actionExportToSystemVerilog = addAction(u"wiredpanda_export_systemverilog"_s, u"actionExportToSystemVerilog"_s,
+        i18n("Export to &SystemVerilog"), u":/Interface/Toolbar/verilog.svg"_s, QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_O));
+    m_ui->actionExportToPdf = addAction(u"wiredpanda_export_pdf"_s, u"actionExportToPdf"_s,
+        i18n("Export to &PDF"), u":/Interface/Toolbar/pdf.svg"_s, QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_P));
+    m_ui->actionExportToImage = addAction(u"wiredpanda_export_image"_s, u"actionExportToImage"_s,
+        i18n("Export to &Image"), u":/Interface/Toolbar/png.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_E));
+    m_ui->actionMakeSelfContained = addAction(u"wiredpanda_make_self_contained"_s, u"actionMakeSelfContained"_s,
+        i18n("Make file self-contained"), {});
+    m_ui->actionAbout = addAction(u"wiredpanda_about"_s, u"actionAbout"_s,
+        i18n("&About"), u":/Interface/Toolbar/help.svg"_s, QKeySequence(Qt::Key_F1));
+    m_ui->actionAboutQt = addAction(u"wiredpanda_about_qt"_s, u"actionAboutQt"_s,
+        i18n("About &Qt"), u":/Interface/Toolbar/helpQt.svg"_s);
+    m_ui->actionAboutThisVersion = addAction(u"wiredpanda_about_this_version"_s, u"actionAboutThisVersion"_s,
+        i18n("About this version"), {});
+    m_ui->actionShortcutsAndTips = addAction(u"wiredpanda_shortcuts_tips"_s, u"actionShortcutsAndTips"_s,
+        i18n("Shortcuts and Tips"), {});
+    m_ui->actionReportTranslationError = addAction(u"wiredpanda_report_translation"_s, u"actionReportTranslationError"_s,
+        i18n("Report Translation Error"), u":/Interface/Toolbar/help.svg"_s);
+
+    // ── Dynamic menus (populated at runtime) ────────────────────────────────
+    // Set objectName on each so tests using findChild<QMenu*>("menuXxx") work.
+    m_ui->menuRecentFiles  = new QMenu(i18n("&Recent files:"), this);
+    m_ui->menuRecentFiles->setObjectName(u"menuRecentFiles"_s);
+    m_ui->menuRecentFiles->setEnabled(false);
+    m_ui->menuRecentFiles->setIcon(QIcon(u":/Interface/Toolbar/recentFiles.svg"_s));
+    m_ui->menuTheme        = new QMenu(i18n("&Theme"), this);
+    m_ui->menuTheme->setObjectName(u"menuTheme"_s);
+    m_ui->menuTheme->addAction(m_ui->actionSystemTheme);
+    m_ui->menuTheme->addAction(m_ui->actionLightTheme);
+    m_ui->menuTheme->addAction(m_ui->actionDarkTheme);
+    m_ui->menuExamples     = new QMenu(i18n("Examples"), this);
+    m_ui->menuExamples->setObjectName(u"menuExamples"_s);
+    m_ui->menuLanguage     = new QMenu(i18n("&Language"), this);
+    m_ui->menuLanguage->setObjectName(u"menuLanguage"_s);
+    m_ui->menuTranslation  = new QMenu(i18n("&Help Translate"), this);
+    m_ui->menuTranslation->setObjectName(u"menuTranslation"_s);
+    m_ui->menuTranslation->addAction(m_ui->actionReportTranslationError);
+
+    // KXmlGuiWindow auto-injects two action sets that clash with wiRedPanda's
+    // shortcuts; both would trigger checkAmbiguousShortcuts() in createGUI() to
+    // pop a modal KMessageBox that hangs headless tests.
+    //   - KCommandBar  (open_kcommand_bar): Ctrl+Alt+I  vs  Export-to-Arduino
+    //   - KHelpMenu    (help_contents):     F1          vs  About
+    // wiRedPanda owns its own Help menu, so disable both.
+    setCommandBarEnabled(false);
+    setHelpMenuEnabled(false);
+
+    // ── Load XML GUI and let KXmlGuiWindow build menus/toolbars ─────────────
+    // Exclude Keys (KGlobalAccel/D-Bus global shortcuts) — it blocks in headless environments.
+    // Shortcuts still work locally via KActionCollection::setDefaultShortcut().
+    setupGUI(KXmlGuiWindow::Create | KXmlGuiWindow::StatusBar | KXmlGuiWindow::ToolBar | KXmlGuiWindow::Save,
+             u":/wiredpanda/wiredpandaui.rc"_s);
+
+    // ── Post-setupGUI: grab KDE-created menus and assign to m_ui pointers ───
+    for (QAction *a : menuBar()->actions()) {
+        QMenu *m = a->menu();
+        if (!m) continue;
+        const QString name = m->objectName();
+        if (name == u"file"_s)       m_ui->menuFile       = m;
+        else if (name == u"edit"_s)  m_ui->menuEdit       = m;
+        else if (name == u"view"_s)  m_ui->menuView       = m;
+        else if (name == u"simulation"_s) m_ui->menuSimulation = m;
+        else if (name == u"help"_s)  m_ui->menuHelp       = m;
+    }
+
+    // Insert recent files submenu into the File menu (after Open, before save)
+    if (m_ui->menuFile) {
+        QAction *saveAction = actionCollection()->action(u"file_save"_s);
+        m_ui->menuFile->insertMenu(saveAction, m_ui->menuRecentFiles);
+        m_ui->menuFile->insertSeparator(saveAction);
+    }
+
+    // Add dynamic menus to the menu bar (before Help)
+    QAction *helpMenuAction = m_ui->menuHelp ? m_ui->menuHelp->menuAction() : nullptr;
+    menuBar()->insertMenu(helpMenuAction, m_ui->menuExamples);
+    menuBar()->insertMenu(helpMenuAction, m_ui->menuLanguage);
+    menuBar()->insertMenu(helpMenuAction, m_ui->menuTranslation);
+
+    // Grab toolbar and status bar pointers so existing code can use them
+    // KToolBar inherits QToolBar; explicit cast needed due to Qt's strict pointer rules
+    m_ui->mainToolBar = qobject_cast<QToolBar *>(toolBar(u"mainToolBar"_s));
+    m_ui->statusBar   = statusBar();
+}
+#endif // USE_KDE_FRAMEWORKS
 
 void MainWindow::setupLanguage()
 {
