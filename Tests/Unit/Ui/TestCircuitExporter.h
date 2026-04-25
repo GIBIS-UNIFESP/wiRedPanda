@@ -13,5 +13,8 @@ class TestCircuitExporter : public QObject
 private slots:
 
     void testExporterCreation();
+
+    // Regression: D19 — renderToImage must throw on save failure
+    void testRenderToImageThrowsOnInvalidPath();
 };
 

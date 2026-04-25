@@ -46,13 +46,17 @@ void renderToImage(Scene *scene, const QString &filePath)
     QPixmap pixmap(rect.size().toSize());
 
     QPainter painter;
-    painter.begin(&pixmap);
+    if (!painter.begin(&pixmap)) {
+        throw PANDACEPTION_WITH_CONTEXT("CircuitExporter", "Could not begin painting circuit image.");
+    }
     // Antialiasing enabled here; the PDF path relies on the printer's high DPI instead.
     painter.setRenderHint(QPainter::Antialiasing);
     scene->render(&painter, QRectF(), rect);
     painter.end();
 
-    pixmap.save(filePath);
+    if (!pixmap.save(filePath)) {
+        throw PANDACEPTION_WITH_CONTEXT("CircuitExporter", "Could not save image to %1.", filePath);
+    }
 }
 
 } // namespace CircuitExporter
