@@ -162,10 +162,16 @@ void MainWindow::setupKdeActions()
     // Set the legacy objectName AFTER addAction() so findChild("actionXxx") still works.
     auto addAction = [this](const QString &kdeName, const QString &legacyName,
                              const QString &text, const QString &iconPath,
-                             const QKeySequence &shortcut = {}) -> QAction * {
+                             const QKeySequence &shortcut = {},
+                             const QString &themeName = {}) -> QAction * {
         auto *a = new QAction(this);
         a->setText(text);
-        if (!iconPath.isEmpty()) a->setIcon(QIcon(iconPath));
+        // Phase 6c: prefer the freedesktop/Breeze theme icon, fall back to bundled SVG.
+        if (!themeName.isEmpty()) {
+            a->setIcon(QIcon::fromTheme(themeName, QIcon(iconPath)));
+        } else if (!iconPath.isEmpty()) {
+            a->setIcon(QIcon(iconPath));
+        }
         actionCollection()->addAction(kdeName, a);
         a->setObjectName(legacyName);                       // override AFTER collection add
         if (!shortcut.isEmpty()) actionCollection()->setDefaultShortcut(a, shortcut);
@@ -208,24 +214,25 @@ void MainWindow::setupKdeActions()
     // ── Custom actions (created as window children, registered in collection) ───
 
     m_ui->actionReloadFile = addAction(u"wiredpanda_reload_file"_s, u"actionReloadFile"_s, i18n("Re&load File"),
-        u":/Interface/Toolbar/reloadFile.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_F5));
+        u":/Interface/Toolbar/reloadFile.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_F5), u"view-refresh"_s);
     m_ui->actionDelete = addAction(u"wiredpanda_delete"_s, u"actionDelete"_s, i18n("&Delete"),
-        u":/Interface/Toolbar/delete.svg"_s, QKeySequence::Delete);
+        u":/Interface/Toolbar/delete.svg"_s, QKeySequence::Delete, u"edit-delete"_s);
     m_ui->actionRename = addAction(u"wiredpanda_rename"_s, u"actionRename"_s, i18n("&Rename"),
-        u":/Interface/Toolbar/rename.svg"_s, QKeySequence(Qt::Key_F2));
+        u":/Interface/Toolbar/rename.svg"_s, QKeySequence(Qt::Key_F2), u"edit-rename"_s);
     m_ui->actionChangeTrigger = addAction(u"wiredpanda_change_trigger"_s, u"actionChangeTrigger"_s, i18n("Cha&nge Trigger"),
         u":/Components/Input/buttonOff.svg"_s, QKeySequence(Qt::Key_F3));
     m_ui->actionRotateRight = addAction(u"wiredpanda_rotate_right"_s, u"actionRotateRight"_s, i18n("R&otate right"),
-        u":/Interface/Toolbar/rotateR.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_R));
+        u":/Interface/Toolbar/rotateR.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_R), u"object-rotate-right"_s);
     m_ui->actionRotateLeft = addAction(u"wiredpanda_rotate_left"_s, u"actionRotateLeft"_s, i18n("Rotate &left"),
-        u":/Interface/Toolbar/rotateL.svg"_s, QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_R));
+        u":/Interface/Toolbar/rotateL.svg"_s, QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_R), u"object-rotate-left"_s);
     m_ui->actionFlipHorizontally = addAction(u"wiredpanda_flip_h"_s, u"actionFlipHorizontally"_s, i18n("&Flip horizontally"),
-        {}, QKeySequence(Qt::CTRL | Qt::Key_H));
-    m_ui->actionFlipVertically = addAction(u"wiredpanda_flip_v"_s, u"actionFlipVertically"_s, i18n("Flip &vertically"), {});
+        {}, QKeySequence(Qt::CTRL | Qt::Key_H), u"object-flip-horizontal"_s);
+    m_ui->actionFlipVertically = addAction(u"wiredpanda_flip_v"_s, u"actionFlipVertically"_s, i18n("Flip &vertically"),
+        {}, {}, u"object-flip-vertical"_s);
     m_ui->actionClearSelection = addAction(u"wiredpanda_clear_selection"_s, u"actionClearSelection"_s, i18n("Cl&ear selection"),
-        u":/Interface/Toolbar/clearSelection.svg"_s, QKeySequence(Qt::Key_Escape));
+        u":/Interface/Toolbar/clearSelection.svg"_s, QKeySequence(Qt::Key_Escape), u"edit-clear"_s);
     m_ui->actionResetZoom = addAction(u"wiredpanda_reset_zoom"_s, u"actionResetZoom"_s, i18n("&Reset Zoom"),
-        u":/Interface/Toolbar/zoomReset.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_0));
+        u":/Interface/Toolbar/zoomReset.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_0), u"zoom-original"_s);
     m_ui->actionFastMode = addAction(u"wiredpanda_fast_mode"_s, u"actionFastMode"_s, i18n("&Fast Mode"),
         u":/Interface/Toolbar/fast.svg"_s);
     m_ui->actionFastMode->setCheckable(true);
@@ -252,18 +259,22 @@ void MainWindow::setupKdeActions()
         u":/Interface/Toolbar/play.svg"_s, QKeySequence(Qt::Key_F5));
     m_ui->actionPlay->setCheckable(true);
     {
+        // Two-state icon (off=play, on=pause). Theme icons can't be combined in
+        // one QIcon under different states, so keep the bundled SVGs here.
         QIcon playIcon(u":/Interface/Toolbar/play.svg"_s);
         playIcon.addFile(u":/Interface/Toolbar/pause.svg"_s, QSize(), QIcon::Normal, QIcon::On);
         m_ui->actionPlay->setIcon(playIcon);
     }
     m_ui->actionRestart = addAction(u"wiredpanda_restart"_s, u"actionRestart"_s, i18n("&Restart"),
-        u":/Interface/Toolbar/reset.svg"_s);
+        u":/Interface/Toolbar/reset.svg"_s, {}, u"media-playback-stop"_s);
     m_ui->actionWaveform = addAction(u"wiredpanda_waveform"_s, u"actionWaveform"_s, i18n("&Waveform"),
         u":/Interface/Toolbar/dolphin_icon.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_W));
     m_ui->actionMute = addAction(u"wiredpanda_mute"_s, u"actionMute"_s, i18n("Mute"),
         u":/Components/Output/Buzzer/BuzzerOff.svg"_s, QKeySequence(Qt::CTRL | Qt::Key_M));
     m_ui->actionMute->setCheckable(true);
     {
+        // Two-state icon (off=buzzer, on=muted). Theme icons can't be combined in
+        // one QIcon under different states, so keep the bundled SVGs here.
         QIcon muteIcon(u":/Components/Output/Buzzer/BuzzerOff.svg"_s);
         muteIcon.addFile(u":/Interface/Toolbar/mute.svg"_s, QSize(), QIcon::Normal, QIcon::On);
         m_ui->actionMute->setIcon(muteIcon);
@@ -282,7 +293,7 @@ void MainWindow::setupKdeActions()
     m_ui->actionMakeSelfContained = addAction(u"wiredpanda_make_self_contained"_s, u"actionMakeSelfContained"_s,
         i18n("Make file self-contained"), {});
     m_ui->actionAbout = addAction(u"wiredpanda_about"_s, u"actionAbout"_s,
-        i18n("&About"), u":/Interface/Toolbar/help.svg"_s, QKeySequence(Qt::Key_F1));
+        i18n("&About"), u":/Interface/Toolbar/help.svg"_s, QKeySequence(Qt::Key_F1), u"help-about"_s);
     m_ui->actionAboutQt = addAction(u"wiredpanda_about_qt"_s, u"actionAboutQt"_s,
         i18n("About &Qt"), u":/Interface/Toolbar/helpQt.svg"_s);
     m_ui->actionAboutThisVersion = addAction(u"wiredpanda_about_this_version"_s, u"actionAboutThisVersion"_s,

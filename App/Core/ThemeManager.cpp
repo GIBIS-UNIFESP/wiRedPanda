@@ -8,6 +8,12 @@
 
 #include "App/Core/Settings.h"
 
+#ifdef USE_KDE_FRAMEWORKS
+#include <KColorScheme>
+#endif
+
+using namespace Qt::StringLiterals;
+
 ThemeManager::ThemeManager(QObject *parent)
     : QObject(parent)
 {
@@ -18,7 +24,12 @@ ThemeManager::ThemeManager(QObject *parent)
     // Apply the theme immediately so colours are correct before any widgets are shown.
     // Resolve System here directly — effectiveTheme() would re-enter instance() and deadlock
     // because the static local is still being constructed.
+    // KDE: pass Theme::System through unresolved so ThemeAttributes can query KColorScheme.
+#ifdef USE_KDE_FRAMEWORKS
+    const Theme effective = m_theme;
+#else
     const Theme effective = (m_theme == Theme::System) ? resolveSystemTheme() : m_theme;
+#endif
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
     // Set color scheme BEFORE applying the palette: setColorScheme() controls what
@@ -50,7 +61,13 @@ ThemeManager::ThemeManager(QObject *parent)
 
 QString ThemeManager::themePath()
 {
-    return (effectiveTheme() == Theme::Light) ? "Light" : "Dark";
+#ifdef USE_KDE_FRAMEWORKS
+    if (instance().m_theme == Theme::System) {
+        const KColorScheme view(QPalette::Active, KColorScheme::View);
+        return (view.background().color().lightness() < 128) ? u"Dark"_s : u"Light"_s;
+    }
+#endif
+    return (effectiveTheme() == Theme::Light) ? u"Light"_s : u"Dark"_s;
 }
 
 Theme ThemeManager::theme()
@@ -61,7 +78,15 @@ Theme ThemeManager::theme()
 Theme ThemeManager::effectiveTheme()
 {
     const Theme t = instance().m_theme;
-    return (t == Theme::System) ? resolveSystemTheme() : t;
+    if (t != Theme::System) {
+        return t;
+    }
+#ifdef USE_KDE_FRAMEWORKS
+    const KColorScheme view(QPalette::Active, KColorScheme::View);
+    return (view.background().color().lightness() < 128) ? Theme::Dark : Theme::Light;
+#else
+    return resolveSystemTheme();
+#endif
 }
 
 Theme ThemeManager::resolveSystemTheme()
@@ -83,7 +108,12 @@ Theme ThemeManager::resolveSystemTheme()
 void ThemeManager::onSystemColorSchemeChanged()
 {
     if (m_theme == Theme::System) {
+#ifdef USE_KDE_FRAMEWORKS
+        // Pass Theme::System through so KColorScheme re-queries the live palette.
+        m_attributes.setTheme(Theme::System);
+#else
         m_attributes.setTheme(resolveSystemTheme());
+#endif
         emit themeChanged();
     }
 }
@@ -110,7 +140,13 @@ void ThemeManager::setTheme(const Theme theme)
     }
 #endif
 
+    // KDE: pass Theme::System through unresolved so ThemeAttributes::setTheme can route
+    // it to the KColorScheme path. On non-KDE builds, resolve to Light/Dark up-front.
+#ifdef USE_KDE_FRAMEWORKS
+    const Theme effective = theme;
+#else
     const Theme effective = (theme == Theme::System) ? resolveSystemTheme() : theme;
+#endif
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
     // Set color scheme BEFORE applying the palette: on Windows/Qt 6.8+,
@@ -153,6 +189,47 @@ ThemeAttributes ThemeManager::attributes()
 
 void ThemeAttributes::setTheme(const Theme theme)
 {
+#ifdef USE_KDE_FRAMEWORKS
+    if (theme == Theme::System) {
+        // Derive scene colors from KColorScheme so the canvas blends with the
+        // user's KDE/Plasma color scheme. The Qt palette is left untouched —
+        // Plasma owns it. Light/Dark explicit overrides keep the hardcoded values
+        // below so users still get a deterministic look when they pick one.
+        const KColorScheme view(QPalette::Active, KColorScheme::View);
+        const KColorScheme selection(QPalette::Active, KColorScheme::Selection);
+
+        m_sceneBgBrush = view.background().color();
+        m_sceneBgDots = view.foreground(KColorScheme::InactiveText).color();
+
+        const QColor selBg = selection.background().color();
+        m_selectionBrush = QColor(selBg.red(), selBg.green(), selBg.blue(), 80);
+        m_selectionPen = selBg;
+
+        m_graphicElementLabelColor = view.foreground().color();
+
+        m_connectionUnknown  = view.foreground(KColorScheme::InactiveText).color();
+        m_connectionInactive = view.foreground(KColorScheme::NeutralText).color();
+        m_connectionActive   = view.foreground(KColorScheme::PositiveText).color();
+        m_connectionError    = view.foreground(KColorScheme::NegativeText).color();
+        m_connectionSelected = m_selectionPen;
+
+        m_portUnknownBrush  = m_connectionUnknown;
+        m_portInactiveBrush = m_connectionInactive;
+        m_portActiveBrush   = m_connectionActive;
+        m_portErrorBrush    = m_connectionError;
+        m_portOutputBrush   = view.foreground(KColorScheme::LinkText).color();
+
+        m_portUnknownPen  = view.foreground(KColorScheme::InactiveText).color();
+        m_portInactivePen = view.foreground().color();
+        m_portActivePen   = view.foreground().color();
+        m_portErrorPen    = view.foreground(KColorScheme::NegativeText).color();
+        m_portOutputPen   = m_portOutputBrush.darker();
+
+        m_portHoverPort = view.decoration(KColorScheme::HoverColor).color();
+        return;
+    }
+#endif
+
     switch (theme) {
     case Theme::Light: {
         m_sceneBgBrush = QColor(255, 255, 230); // warm off-white (slight yellow tint); less eye-strain than pure white
