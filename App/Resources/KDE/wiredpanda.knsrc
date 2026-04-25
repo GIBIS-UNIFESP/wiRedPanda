@@ -1,0 +1,8 @@
+[KNewStuff3]
+Name=wiRedPanda Circuits
+ProvidersUrl=https://autoconfig.kde.org/ocs/providers.xml
+Categories=wiRedPanda Circuits
+TargetDir=wiredpanda/circuits
+Uncompress=archive
+StandardResource=data
+ContentWarning=Files downloaded from the internet may contain unintended logic. Only open circuits from sources you trust.

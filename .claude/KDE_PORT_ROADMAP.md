@@ -661,17 +661,40 @@ purely additive on Linux. The roadmap suggested calling
 
 ---
 
-## Phase 8 — KNewStuff: Circuit Marketplace
-**KDE Frameworks**: `KF6::NewStuff`
+## Phase 8 — KNewStuff: Circuit Marketplace ✅
+**KDE Frameworks**: `KF6::NewStuffWidgets` (`find_package(KF6NewStuff REQUIRED)`,
+target `KF6::NewStuffWidgets` — pulls in `KF6::NewStuffCore` transitively)
+**Files modified**:
+- `App/UI/MainWindow.cpp` — `setupKdeActions()` registers a
+  `wiredpanda_download_circuits` action (icon: `get-hot-new-stuff`) wired to
+  `MainWindow::downloadCircuits()`. The handler creates a `KNSWidgets::Dialog`
+  with `wiredpanda.knsrc`, opens it non-modally, and on close iterates
+  `changedEntries()`, opening each newly installed `.panda` file via
+  `loadPandaFile()`.
+- `App/UI/MainWindow.h` — added `void downloadCircuits()` declaration inside the
+  existing `#ifdef USE_KDE_FRAMEWORKS` block.
+- `App/Resources/KDE/wiredpandaui.rc` — `<Action name="wiredpanda_download_circuits"/>`
+  inserted into the File menu after `file_open_recent` so it appears alongside
+  the other open-circuit entries.
+- `App/Resources/KDE/wiredpanda.knsrc` (NEW) — GHNS config pointing at
+  `https://autoconfig.kde.org/ocs/providers.xml` with `Categories=wiRedPanda Circuits`,
+  `TargetDir=wiredpanda/circuits`, `Uncompress=archive`, and a content warning so
+  users know to trust their sources before opening downloaded circuits.
+- `CMakeLists.txt` — `find_package(KF6NewStuff REQUIRED)` and
+  `KF6::NewStuffWidgets` linked into `wiredpanda_lib`. Install rule added for
+  `wiredpanda.knsrc` under `${KDE_INSTALL_KNSRCDIR}` so `KNSWidgets::Dialog` can
+  resolve the file by short name.
 
-Allow users to download/share circuits and IC libraries from a hosted GHNS (Get Hot New Stuff) store.
-Requires setting up a `wiredpanda.knsrc` config and a server endpoint (Pling Store or self-hosted).
+### Server endpoint — pending
+The action is wired and the dialog opens cleanly, but no Pling Store project
+exists yet for wiRedPanda. Until a project is registered (or a self-hosted
+GHNS endpoint is configured) and the `Categories` field is updated to match
+the live category name, the dialog will display zero entries. This is purely
+a server-side setup; the client implementation is complete.
 
-```cpp
-auto *dlg = new KNSWidgets::Dialog("wiredpanda.knsrc", this);
-dlg->open();
-connect(dlg, &KNSWidgets::Dialog::accepted, this, &MainWindow::loadDownloadedCircuits);
-```
+### Verification
+- `ctest --preset kde` — all 176 tests pass
+- `ctest --preset debug` — all 175 tests pass (non-KDE path unchanged)
 
 ---
 

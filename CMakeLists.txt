@@ -36,6 +36,7 @@ if(USE_KDE_FRAMEWORKS AND NOT EMSCRIPTEN)
         find_package(KF6Crash REQUIRED)      # Phase 7a (DrKonqi crash handler — Linux only)
     endif()
     find_package(KF6Notifications REQUIRED)  # Phase 7b (KNotification update prompt)
+    find_package(KF6NewStuff REQUIRED)       # Phase 8 (GHNS circuit marketplace)
     add_compile_definitions(USE_KDE_FRAMEWORKS)
     message(STATUS "KDE Frameworks integration enabled (ECM ${ECM_VERSION})")
 else()
@@ -385,7 +386,7 @@ endfunction()
 add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS})
 target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS} nlohmann_json::nlohmann_json nlohmann_json_schema_validator)
 if(USE_KDE_FRAMEWORKS AND NOT EMSCRIPTEN)
-    target_link_libraries(wiredpanda_lib PUBLIC KF6::ConfigCore KF6::I18n KF6::CoreAddons KF6::XmlGui KF6::WidgetsAddons KF6::ColorScheme KF6::IconThemes KF6::Notifications)
+    target_link_libraries(wiredpanda_lib PUBLIC KF6::ConfigCore KF6::I18n KF6::CoreAddons KF6::XmlGui KF6::WidgetsAddons KF6::ColorScheme KF6::IconThemes KF6::Notifications KF6::NewStuffWidgets)
     if(UNIX AND NOT APPLE)
         target_link_libraries(wiredpanda_lib PUBLIC KF6::Crash)
     endif()
@@ -544,6 +545,12 @@ endforeach()
 if(USE_KDE_FRAMEWORKS AND NOT EMSCRIPTEN)
     install(FILES App/Resources/KDE/wiredpanda.notifyrc
         DESTINATION ${KDE_INSTALL_KNOTIFYRCDIR}
+        COMPONENT desktop
+    )
+    # Phase 8: install KNewStuff config so KNSWidgets::Dialog can locate it via
+    # config-relative lookup. The standard KDE search path is share/knsrcfiles.
+    install(FILES App/Resources/KDE/wiredpanda.knsrc
+        DESTINATION ${KDE_INSTALL_KNSRCDIR}
         COMPONENT desktop
     )
 endif()
