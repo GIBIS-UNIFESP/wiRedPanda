@@ -537,18 +537,35 @@ A standalone test (`/tmp/kga_test`) confirms KGlobalAccel handles a missing
 moves on. No hang. With the daemon present (KDE Plasma session), shortcuts
 become user-rebindable via System Settings → Shortcuts.
 
-### 5c — File Dialogs / Recent Files — DEFERRED 📋
+### 5c — Recent Files: KRecentFilesAction ✅
+**KDE Frameworks**: `KF6::ConfigWidgets` (already pulled in transitively via XmlGui)
 
-**Reason for deferral**:
-- **QFileDialog**: When wiRedPanda runs on KDE Plasma, the
-  `kdeplatformfiledialog` plugin already replaces `QFileDialog` with
-  `KFileWidget` transparently. The visible result is identical to a direct
-  `KFileDialog` call. Replacing `RealFileDialogProvider` adds boilerplate
-  without user-visible change.
-- **KRecentFilesAction**: Removing `App/IO/RecentFiles.{h,cpp}` and the
-  `QFileSystemWatcher`-based MRU is a substantial refactor (touches
-  `MainWindow::setupRecentFiles`, `Settings::recentFiles`, persistence
-  format). Tracked as a separate future task.
+KDE builds use `KStandardAction::openRecent` returning a `KRecentFilesAction`.
+The action is added to the action collection before `setupGUI()` so the
+`<Action name="file_open_recent"/>` reference in `wiredpandaui.rc` resolves
+into the File menu automatically. URLs persist via `KSharedConfig::openConfig()`
+under group `RecentFiles`. `loadEntries`/`saveEntries` happen on startup and
+on each new file save (via the existing `addRecentFile` signal).
+
+Non-KDE builds keep the existing `App/IO/RecentFiles` + manual menu population
+under `#ifndef USE_KDE_FRAMEWORKS`. The `m_ui->menuRecentFiles` pointer holds
+either the KRecentFilesAction's auto-built menu (KDE) or the manually-populated
+QMenu (non-KDE).
+
+**Behavioral note**: `KRecentFilesAction::addUrl` silently drops URLs under
+`QDir::tempPath()`. Tests that exercised the recent-files plumbing via a
+`QTemporaryDir` fixture were updated: KDE path verifies the action is wired
+and the menu exists; non-KDE path keeps the full save → reload-via-menu check.
+
+### 5c (FileDialog part) — SKIPPED ⏭️
+
+**Reason for skip**: When wiRedPanda runs on KDE Plasma, the
+`kdeplatformfiledialog` plugin already replaces `QFileDialog` with KIO's
+`KFileWidget` transparently. KF6 itself dropped the standalone `KFileDialog`
+class — the recommended approach is `QFileDialog` + the platform plugin.
+Replacing `RealFileDialogProvider` would add boilerplate without user-visible
+change (and pulling in `KIOFileWidgets` adds a substantial dependency for
+zero benefit when the platform plugin already routes through it).
 
 ---
 
