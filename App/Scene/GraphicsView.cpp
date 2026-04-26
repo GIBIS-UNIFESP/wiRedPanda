@@ -3,12 +3,12 @@
 
 #include "App/Scene/GraphicsView.h"
 
-#include "App/Core/SentryHelpers.h"
-
 #include <QApplication>
 #include <QDebug>
 #include <QKeyEvent>
 #include <QScrollBar>
+
+#include "App/Core/SentryHelpers.h"
 
 GraphicsView::GraphicsView(QWidget *parent)
     : QGraphicsView(parent)

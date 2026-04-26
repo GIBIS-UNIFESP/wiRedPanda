@@ -543,7 +543,6 @@ protected:
      */
     bool simUpdateInputsAllowUnknown();
 
-
     /**
      * \brief Decodes \a count select-line statuses from simInputs() into a binary index.
      * \param offset  Index of the first select-line input in simInputs().

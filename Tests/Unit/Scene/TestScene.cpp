@@ -1464,4 +1464,3 @@ void TestScene::testForgetItemIdC7()
     QCOMPARE(scene->itemById(led->id()), static_cast<ItemWithId *>(led));
 }
 
-
