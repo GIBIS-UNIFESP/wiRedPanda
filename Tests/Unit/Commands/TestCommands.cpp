@@ -404,6 +404,63 @@ void TestCommands::testMorphCommand()
     QCOMPARE(scene->elements().first()->elementType(), ElementType::Or);
 }
 
+void TestCommands::testSplitCommandRedoThrowsBeforeAllocation()
+{
+    // Pre-fix SplitCommand::redo allocated conn2 + node BEFORE checking that
+    // the upstream items still existed. When the check failed, those two
+    // freshly-allocated objects were leaked. Reordering the check to run
+    // first means redo throws without ever calling new.
+    //
+    // The throw is exercised by calling SplitCommand::redo() directly rather
+    // than via QUndoStack::redo(): on macOS arm64, Qt's precompiled framework
+    // lacks the compact-unwind metadata for C++ exception propagation through
+    // QUndoStack::redo(), so any throw inside it calls std::terminate before
+    // the catch block in the test can execute.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    sw->setPos(0, 0);
+    led->setPos(200, 0);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{sw, led}, scene));
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(led->inputPort());
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
+
+    // Drive redo/undo directly on a stack-allocated command — never goes
+    // through QUndoStack so the exception propagates safely on all platforms.
+    SplitCommand cmd(conn, QPointF(100, 0), scene);
+    cmd.redo();
+    QCOMPARE(scene->elements().size(), 3);
+
+    cmd.undo();
+    QCOMPARE(scene->elements().size(), 2);
+
+    // Make the upstream lookup fail. forgetItemId drops the registry entry
+    // so findElm(m_elm1Id) returns nullptr without freeing sw itself.
+    scene->forgetItemId(sw->id());
+
+    const int elementsBefore = scene->elements().size();
+    const int connectionsBefore = TestUtils::countConnections(scene);
+
+    bool threw = false;
+    try {
+        cmd.redo();
+    } catch (const std::exception &) {
+        threw = true;
+    }
+    QVERIFY2(threw, "SplitCommand::redo() must throw when upstream item lookup fails");
+
+    // No conn2 / node should have been added — they're never allocated on the
+    // throw path now, and even on the old path they were leaked rather than
+    // attached, so scene counts staying flat is the load-bearing invariant.
+    QCOMPARE(scene->elements().size(), elementsBefore);
+    QCOMPARE(TestUtils::countConnections(scene), connectionsBefore);
+}
+
 void TestCommands::testSplitCommand()
 {
     WorkSpace workspace;

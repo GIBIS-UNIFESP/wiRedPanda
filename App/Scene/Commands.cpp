@@ -549,10 +549,16 @@ void SplitCommand::redo()
     // is still mid-iterate on the old topology faults on the dangling entry.
     SimulationBlocker blocker(m_scene->simulation());
     auto *conn1 = CommandUtils::findConn(m_scene, m_c1Id);
-    auto *conn2 = CommandUtils::findConn(m_scene, m_c2Id);
-    auto *node = CommandUtils::findElm(m_scene, m_nodeId);
     auto *elm1 = CommandUtils::findElm(m_scene, m_elm1Id);
     auto *elm2 = CommandUtils::findElm(m_scene, m_elm2Id);
+
+    // Throw before any heap allocation so the throw-path can't leak.
+    if (!conn1 || !elm1 || !elm2) {
+        throw PANDACEPTION("Error trying to redo %1", text());
+    }
+
+    auto *conn2 = CommandUtils::findConn(m_scene, m_c2Id);
+    auto *node = CommandUtils::findElm(m_scene, m_nodeId);
 
     // After undo(), conn2 and node were deleted; recreate them with the same
     // stable IDs so subsequent redo() calls find them correctly via findConn/findElm
@@ -564,10 +570,6 @@ void SplitCommand::redo()
     if (!node) {
         node = ElementFactory::buildElement(ElementType::Node);
         m_scene->updateItemId(node, m_nodeId);
-    }
-
-    if (!conn1 || !conn2 || !elm1 || !elm2 || !node) {
-        throw PANDACEPTION("Error trying to redo %1", text());
     }
 
     node->setPos(m_nodePos);
