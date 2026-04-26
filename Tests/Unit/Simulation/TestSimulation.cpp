@@ -14,7 +14,7 @@ void TestSimulationUnit::testSimulationWithNoElements()
     WorkSpace workspace;
     Simulation sim(workspace.scene());
 
-    QVERIFY(&sim != nullptr);
+    QVERIFY(!sim.isRunning()); // starts stopped
 }
 
 void TestSimulationUnit::testAddRemoveClockDuringSimulation()
