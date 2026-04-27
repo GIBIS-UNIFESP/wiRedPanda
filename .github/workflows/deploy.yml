@@ -305,7 +305,7 @@ jobs:
         sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
 
     - name: Publish Ubuntu
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       if: runner.os == 'Linux'
       with:
         fail_on_unmatched_files: true
@@ -462,7 +462,7 @@ jobs:
 
     - name: Publish Windows
       if: runner.os == 'Windows'
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         fail_on_unmatched_files: true
         files: 'build/*.zip'
@@ -749,7 +749,7 @@ jobs:
 
     - name: Publish macOS
       if: runner.os == 'macOS'
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         fail_on_unmatched_files: true
         files: 'build/*.dmg'
