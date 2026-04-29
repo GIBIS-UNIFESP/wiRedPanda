@@ -431,6 +431,19 @@ public:
     /// Read-only view of the current simulation output values.
     const QVector<Status> &simOutputs() const { return m_simOutputValues; }
 
+    // --- Temporal Simulation ---
+
+    /// Initialises the circular delay buffer with \a delayTicks rows, each sized to
+    /// the current input count.  Call when temporal simulation is enabled.
+    void initDelayBuffer(int delayTicks);
+
+    /// Clears the delay buffer (call when temporal simulation is disabled).
+    void clearDelayBuffer();
+
+    /// Process-wide flag: when true, simUpdateInputsImpl() reads from the delay
+    /// buffer instead of directly from predecessor outputs.
+    static bool s_temporalSimulationOn;
+
     // --- Theme ---
 
     /// Updates the element's visual theme according to the current dark/light palette.
@@ -652,6 +665,14 @@ private:
     QVector<Status> m_simInputValues;
     QVector<Status> m_simOutputValues;
     bool m_simOutputChanged = false;
+
+    // --- Members: Temporal Simulation (propagation delay) ---
+
+    /// Circular delay buffer: each row holds one simulation tick's input snapshot.
+    QVector<QVector<Status>> m_inputBuffer;
+
+    /// Index of the oldest (to-be-read) row in the circular buffer.
+    int m_bufferHead = 0;
 
     // --- Members: Trigger & Label ---
 

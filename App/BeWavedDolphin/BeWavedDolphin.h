@@ -239,5 +239,33 @@ private:
     int m_clockPeriod              = 0;               ///< Period used by "Set Clock Wave" (0 = auto).
     int m_inputPorts               = 0;               ///< Number of input ports in the circuit.
     int m_length                   = 32;              ///< Number of simulation time-step columns.
+
+    // --- Temporal Simulation ---
+
+    bool m_isTemporalSimulation    = false;  ///< When true, run() collects 8 timed samples per column.
+    int m_lastValue                = -1;     ///< Last waveform state for edge detection across columns.
+
+    /// Composes a 64×38 waveform pixmap from \a waveparts (8 boolean samples).
+    /// \a previousWaveEnd is the last state of the previous column (−1 = unknown).
+    QPixmap composeWaveParts(const QVector<bool> &waveparts, int previousWaveEnd);
+
+    /// Plots \a composedWaveForm into the table cell at (\a row, \a col) and
+    /// sets the cell display text to \a hex.
+    void createTemporalSimulationElement(int row, int col, const QPixmap &composedWaveForm, const QString &hex);
+
+    /// Converts an 8-element boolean vector to an uppercase hex string.
+    QString convertBinaryToHex(const QVector<bool> &binaryVector) const;
+
+    /// Converts a hex string to its integer value (returns 0 on failure).
+    int convertHexToInt(const QString &hexString) const;
+
+    /// Converts a hex string to a boolean vector (MSB first).
+    QVector<bool> convertHexToBinaryVector(const QString &hexString) const;
+
+    /// Pre-scaled (8×38) waveform segment pixmaps for temporal simulation cells.
+    QPixmap m_smallHighGreen;
+    QPixmap m_smallLowGreen;
+    QPixmap m_smallRisingGreen;
+    QPixmap m_smallFallingGreen;
 };
 

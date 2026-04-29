@@ -861,7 +861,50 @@ void GraphicElement::initSimulationVectors(const int inputCount, const int outpu
 
 bool GraphicElement::simUpdateInputsImpl(const bool allowUnknown)
 {
-    for (int index = 0; index < m_simInputConnections.size(); ++index) {
+    const int n = m_simInputConnections.size();
+
+    // --- Temporal simulation: read live inputs into the buffer, then expose
+    //     the oldest buffered row to updateLogic() via m_simInputValues. ---
+    if (s_temporalSimulationOn && !m_inputBuffer.isEmpty()) {
+        // Write current live inputs into the head row.
+        auto &headRow = m_inputBuffer[m_bufferHead];
+        for (int index = 0; index < n; ++index) {
+            auto *pred = m_simInputConnections.at(index).sourceElement;
+            Status val;
+            if (pred) {
+                val = pred->outputValue(m_simInputConnections.at(index).sourceOutputIndex);
+            } else {
+                if (index < m_inputPorts.size() && m_inputPorts.at(index)->connections().size() > 1) {
+                    val = Status::Error;
+                } else {
+                    val = (index < m_inputPorts.size()) ? m_inputPorts.at(index)->defaultValue() : Status::Unknown;
+                }
+            }
+            headRow[index] = val;
+        }
+
+        // The tail (oldest) row is what updateLogic() will see.
+        const int tail = (m_bufferHead + 1) % m_inputBuffer.size();
+        const auto &tailRow = m_inputBuffer[tail];
+        for (int index = 0; index < n && index < m_simInputValues.size(); ++index) {
+            const Status val = tailRow.at(index);
+            const bool shouldFail = allowUnknown ? (val == Status::Unknown && !m_simInputConnections.at(index).sourceElement)
+                                                 : (val == Status::Unknown || val == Status::Error);
+            if (shouldFail) {
+                for (auto &out : m_simOutputValues) {
+                    if (out != Status::Unknown) m_simOutputChanged = true;
+                    out = Status::Unknown;
+                }
+                return false;
+            }
+            m_simInputValues[index] = val;
+        }
+        m_bufferHead = tail; // advance: head becomes the next write slot
+        return true;
+    }
+
+    // --- Normal (non-temporal) path ---
+    for (int index = 0; index < n; ++index) {
         auto *pred = m_simInputConnections.at(index).sourceElement;
         Status val;
         if (pred) {
@@ -982,4 +1025,26 @@ void GraphicElement::loadFromDrop(const QString &fileName, const QString &contex
     Q_UNUSED(fileName)
     Q_UNUSED(contextDir)
 }
+
+// --- Temporal Simulation ---
+
+bool GraphicElement::s_temporalSimulationOn = false;
+
+void GraphicElement::initDelayBuffer(const int delayTicks)
+{
+    if (delayTicks <= 0 || m_simInputValues.isEmpty()) {
+        m_inputBuffer.clear();
+        return;
+    }
+    // +1 rows: one for writing (head), delayTicks for delay depth.
+    m_inputBuffer.assign(delayTicks + 1, QVector<Status>(m_simInputValues.size(), Status::Unknown));
+    m_bufferHead = 0;
+}
+
+void GraphicElement::clearDelayBuffer()
+{
+    m_inputBuffer.clear();
+    m_bufferHead = 0;
+}
+
 

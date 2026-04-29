@@ -78,6 +78,21 @@ public:
     /// Returns \c true if the simulation timer is currently running.
     bool isRunning();
 
+    // --- Temporal Simulation ---
+
+    /// Returns \c true when propagation-delay (temporal) simulation is active.
+    bool isTemporalSimulation() const { return m_isTemporalSimulation; }
+
+    /// Enables or disables temporal simulation.  When enabling, initialises
+    /// per-element delay buffers sized to each element's input count.
+    void setTemporalSimulation(bool on);
+
+    /// Returns the delay depth used for each element's input buffer (in ticks).
+    int temporalDelay() const { return m_temporalDelay; }
+
+    /// Sets the global delay depth and re-initialises buffers if temporal sim is active.
+    void setTemporalDelay(int ticks);
+
     /// Returns \c true if \a element is part of a combinational feedback loop.
     bool isInFeedbackLoop(const GraphicElement *element) const;
 
@@ -173,5 +188,13 @@ private:
     QHash<const GraphicElement *, int> m_simPriorities;
     QSet<const GraphicElement *> m_simFeedbackNodes;
     bool m_simHasFeedbackElements = false;
+
+    // --- Members: Temporal simulation ---
+
+    bool m_isTemporalSimulation = false;
+    int m_temporalDelay = 4; ///< Default delay depth in simulation ticks.
+
+    /// Initialises (or clears) the delay buffer for every element in the scene.
+    void initAllDelayBuffers();
 };
 

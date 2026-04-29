@@ -224,6 +224,38 @@ bool Simulation::isUserMuted() const
     return m_userMuted;
 }
 
+// --- Temporal Simulation ---
+
+void Simulation::setTemporalSimulation(const bool on)
+{
+    m_isTemporalSimulation = on;
+    GraphicElement::s_temporalSimulationOn = on;
+    initAllDelayBuffers();
+}
+
+void Simulation::setTemporalDelay(const int ticks)
+{
+    m_temporalDelay = qMax(1, ticks);
+    if (m_isTemporalSimulation) {
+        initAllDelayBuffers();
+    }
+}
+
+void Simulation::initAllDelayBuffers()
+{
+    if (!m_scene) {
+        return;
+    }
+    const auto elements = m_scene->elements();
+    for (auto *elm : elements) {
+        if (m_isTemporalSimulation) {
+            elm->initDelayBuffer(m_temporalDelay);
+        } else {
+            elm->clearDelayBuffer();
+        }
+    }
+}
+
 void Simulation::updateWithIterativeSettling()
 {
     if (!iterativeSettle(m_sortedElements) && !m_convergenceWarned) {
