@@ -34,6 +34,11 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     actionCombinational->setObjectName("actionCombinational");
     actionCombinational->setIcon(QIcon(":/Interface/Toolbar/wavyIcon.svg"));
 
+    actionTemporalSimulation = new QAction(BewavedDolphin);
+    actionTemporalSimulation->setObjectName("actionTemporalSimulation");
+    actionTemporalSimulation->setCheckable(true);
+    actionTemporalSimulation->setIcon(QIcon(":/Interface/Dolphin/high_green.svg"));
+
     actionExportToPdf = new QAction(BewavedDolphin);
     actionExportToPdf->setObjectName("actionExportToPdf");
     actionExportToPdf->setIcon(QIcon(":/Interface/Dolphin/pdf.svg"));
@@ -181,6 +186,7 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     mainToolBar->addSeparator();
     mainToolBar->addAction(actionClear);
     mainToolBar->addAction(actionCombinational);
+    mainToolBar->addAction(actionTemporalSimulation);
     mainToolBar->addSeparator();
     mainToolBar->addAction(actionSetTo0);
     mainToolBar->addAction(actionSetTo1);
@@ -215,6 +221,7 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     menuEdit->addSeparator();
     menuEdit->addAction(actionClear);
     menuEdit->addAction(actionCombinational);
+    menuEdit->addAction(actionTemporalSimulation);
     menuEdit->addAction(actionSetTo0);
     menuEdit->addAction(actionSetTo1);
     menuEdit->addAction(actionInvert);
@@ -249,6 +256,9 @@ void BewavedDolphinUi::retranslateUi(QMainWindow *BewavedDolphin)
     actionExit->setShortcut(QCoreApplication::translate("BewavedDolphin", "Ctrl+W"));
     actionCombinational->setText(QCoreApplication::translate("BewavedDolphin", "Combinational"));
     actionCombinational->setShortcut(QCoreApplication::translate("BewavedDolphin", "Alt+C"));
+    actionTemporalSimulation->setText(QCoreApplication::translate("BewavedDolphin", "Temporal Simulation"));
+    actionTemporalSimulation->setToolTip(QCoreApplication::translate("BewavedDolphin", "Toggle propagation-delay simulation (shows 8 time samples per column)"));
+    actionTemporalSimulation->setShortcut(QCoreApplication::translate("BewavedDolphin", "Alt+T"));
     actionExportToPdf->setText(QCoreApplication::translate("BewavedDolphin", "Export to PDF"));
     actionExportToPdf->setShortcut(QCoreApplication::translate("BewavedDolphin", "Ctrl+P"));
     actionSave->setText(QCoreApplication::translate("BewavedDolphin", "Save"));

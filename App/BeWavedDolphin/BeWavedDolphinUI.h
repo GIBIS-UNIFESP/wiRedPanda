@@ -66,6 +66,7 @@ public:
     QAction *actionSetClockWave = nullptr;
     QAction *actionSetLength = nullptr;
     QAction *actionCombinational = nullptr;
+    QAction *actionTemporalSimulation = nullptr;
     QAction *actionAutoCrop = nullptr;
     QAction *actionMerge = nullptr;
     QAction *actionSplit = nullptr;

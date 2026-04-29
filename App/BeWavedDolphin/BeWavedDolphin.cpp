@@ -94,8 +94,9 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
     connect(m_ui->actionAbout,         &QAction::triggered,            this, &BewavedDolphin::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,       &QAction::triggered,            this, &BewavedDolphin::on_actionAboutQt_triggered);
     connect(m_ui->actionClear,         &QAction::triggered,            this, &BewavedDolphin::on_actionClear_triggered);
-    connect(m_ui->actionCombinational, &QAction::triggered,            this, &BewavedDolphin::on_actionCombinational_triggered);
-    connect(m_ui->actionCopy,          &QAction::triggered,            this, &BewavedDolphin::on_actionCopy_triggered);
+    connect(m_ui->actionCombinational,       &QAction::triggered,  this, &BewavedDolphin::on_actionCombinational_triggered);
+    connect(m_ui->actionTemporalSimulation,  &QAction::toggled,    this, &BewavedDolphin::on_actionTemporalSimulation_toggled);
+    connect(m_ui->actionCopy,                &QAction::triggered,  this, &BewavedDolphin::on_actionCopy_triggered);
     connect(m_ui->actionCut,           &QAction::triggered,            this, &BewavedDolphin::on_actionCut_triggered);
     connect(m_ui->actionExit,          &QAction::triggered,            this, &BewavedDolphin::on_actionExit_triggered);
     connect(m_ui->actionExportToPdf,   &QAction::triggered,            this, &BewavedDolphin::on_actionExportToPdf_triggered);
@@ -1368,6 +1369,16 @@ void BewavedDolphin::on_actionAbout_triggered()
            "<p> Please file a report at our GitHub page if you find a bug or want to request a new feature.</p>"
            "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
             .arg(QApplication::applicationVersion()));
+}
+
+void BewavedDolphin::on_actionTemporalSimulation_toggled(const bool checked)
+{
+    sentryBreadcrumb("waveform", QStringLiteral("Temporal simulation %1").arg(checked ? "on" : "off"));
+    m_isTemporalSimulation = checked;
+    m_ui->actionTemporalSimulation->setChecked(checked);
+    if (m_simulation) {
+        m_simulation->setTemporalSimulation(checked);
+    }
 }
 
 void BewavedDolphin::on_actionAboutQt_triggered()

@@ -193,6 +193,7 @@ private:
     void on_actionAutoCrop_triggered();          ///< Removes trailing zero-valued columns.
     void on_actionClear_triggered();             ///< Sets all selected input cells to 0.
     void on_actionCombinational_triggered();     ///< Generates all combinational input patterns.
+    void on_actionTemporalSimulation_toggled(bool checked); ///< Enables/disables propagation-delay simulation.
     void on_actionCopy_triggered();              ///< Copies selected cells to the clipboard.
     void on_actionCut_triggered();               ///< Cuts selected cells to the clipboard.
     void on_actionExit_triggered();              ///< Closes the waveform editor.
