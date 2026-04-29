@@ -1941,8 +1941,8 @@ Svaki bežični kanal mora imati jedinstvenu oznaku.</translation>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1252"/>
-        <location filename="../../UI/MainWindow.cpp" line="1781"/>
+        <location filename="../../UI/MainWindow.cpp" line="1306"/>
+        <location filename="../../UI/MainWindow.cpp" line="1835"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>Utišaj</translation>
@@ -1978,7 +1978,7 @@ Svaki bežični kanal mora imati jedinstvenu oznaku.</translation>
         <translation>Simulacija u pozadini</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="879"/>
+        <location filename="../../UI/MainWindow.cpp" line="933"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>Prečaci i savjeti</translation>
@@ -2001,8 +2001,8 @@ Svaki bežični kanal mora imati jedinstvenu oznaku.</translation>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="430"/>
         <location filename="../../UI/MainWindow.cpp" line="667"/>
-        <location filename="../../UI/MainWindow.cpp" line="1078"/>
-        <location filename="../../UI/MainWindow.cpp" line="1590"/>
+        <location filename="../../UI/MainWindow.cpp" line="1132"/>
+        <location filename="../../UI/MainWindow.cpp" line="1644"/>
         <source>New Project</source>
         <translation>Novi projekt</translation>
     </message>
@@ -2024,23 +2024,23 @@ Do you want to save your changes?</source>
 Želite li spremiti promjene?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="715"/>
+        <location filename="../../UI/MainWindow.cpp" line="726"/>
         <source>File loaded successfully.</source>
         <translation>Datoteka je uspješno učitana.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="774"/>
-        <location filename="../../UI/MainWindow.cpp" line="1830"/>
+        <location filename="../../UI/MainWindow.cpp" line="785"/>
+        <location filename="../../UI/MainWindow.cpp" line="1884"/>
         <source>Open File</source>
         <translation>Otvori datoteku</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="334"/>
-        <location filename="../../UI/MainWindow.cpp" line="774"/>
-        <location filename="../../UI/MainWindow.cpp" line="806"/>
-        <location filename="../../UI/MainWindow.cpp" line="843"/>
-        <location filename="../../UI/MainWindow.cpp" line="1962"/>
-        <location filename="../../UI/MainWindow.cpp" line="2033"/>
+        <location filename="../../UI/MainWindow.cpp" line="785"/>
+        <location filename="../../UI/MainWindow.cpp" line="817"/>
+        <location filename="../../UI/MainWindow.cpp" line="869"/>
+        <location filename="../../UI/MainWindow.cpp" line="2016"/>
+        <location filename="../../UI/MainWindow.cpp" line="2087"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda datoteke (*.panda)</translation>
     </message>
@@ -2094,27 +2094,27 @@ wiRedPanda %1 automatski će prikazati sve ostale .panda datoteke u istom direkt
 Morate spremiti nove projekte prije pristupa IC-ovima i izgledima ili pokretanja beWavedDolphin simulacija.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="806"/>
-        <location filename="../../UI/MainWindow.cpp" line="843"/>
+        <location filename="../../UI/MainWindow.cpp" line="817"/>
+        <location filename="../../UI/MainWindow.cpp" line="869"/>
         <source>Save File as ...</source>
         <translation>Spremi datoteku kao ...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="937"/>
+        <location filename="../../UI/MainWindow.cpp" line="991"/>
         <source>Are you sure?</source>
         <translation>Jeste li sigurni?</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="339"/>
-        <location filename="../../UI/MainWindow.cpp" line="1140"/>
-        <location filename="../../UI/MainWindow.cpp" line="1923"/>
-        <location filename="../../UI/MainWindow.cpp" line="1934"/>
-        <location filename="../../UI/MainWindow.cpp" line="1957"/>
-        <location filename="../../UI/MainWindow.cpp" line="1985"/>
-        <location filename="../../UI/MainWindow.cpp" line="1992"/>
-        <location filename="../../UI/MainWindow.cpp" line="2022"/>
-        <location filename="../../UI/MainWindow.cpp" line="2057"/>
-        <location filename="../../UI/MainWindow.cpp" line="2085"/>
+        <location filename="../../UI/MainWindow.cpp" line="1194"/>
+        <location filename="../../UI/MainWindow.cpp" line="1977"/>
+        <location filename="../../UI/MainWindow.cpp" line="1988"/>
+        <location filename="../../UI/MainWindow.cpp" line="2011"/>
+        <location filename="../../UI/MainWindow.cpp" line="2039"/>
+        <location filename="../../UI/MainWindow.cpp" line="2046"/>
+        <location filename="../../UI/MainWindow.cpp" line="2076"/>
+        <location filename="../../UI/MainWindow.cpp" line="2111"/>
+        <location filename="../../UI/MainWindow.cpp" line="2139"/>
         <source>Error</source>
         <translation>Greška</translation>
     </message>
@@ -2171,183 +2171,201 @@ Morate spremiti nove projekte prije pristupa IC-ovima i izgledima ili pokretanja
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1319"/>
-        <location filename="../../UI/MainWindow.cpp" line="1348"/>
-        <location filename="../../UI/MainWindow.cpp" line="1371"/>
+        <location filename="../../UI/MainWindow.cpp" line="829"/>
+        <location filename="../../UI/MainWindow.cpp" line="880"/>
+        <source>File Conflict</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="830"/>
+        <location filename="../../UI/MainWindow.cpp" line="881"/>
+        <source>The file &quot;%1&quot; is already open in another tab.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="833"/>
+        <location filename="../../UI/MainWindow.cpp" line="884"/>
+        <source>Switch to Tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="1373"/>
+        <location filename="../../UI/MainWindow.cpp" line="1402"/>
+        <location filename="../../UI/MainWindow.cpp" line="1425"/>
         <source>Missing file name.</source>
         <translation>Nedostaje naziv datoteke.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1325"/>
-        <location filename="../../UI/MainWindow.cpp" line="1354"/>
+        <location filename="../../UI/MainWindow.cpp" line="1379"/>
+        <location filename="../../UI/MainWindow.cpp" line="1408"/>
         <source>The .panda file is empty.</source>
         <translation>.panda datoteka je prazna.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1336"/>
+        <location filename="../../UI/MainWindow.cpp" line="1390"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino kod je uspješno generiran.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1363"/>
+        <location filename="../../UI/MainWindow.cpp" line="1417"/>
         <source>SystemVerilog code successfully generated.</source>
         <translation>SystemVerilog kod uspješno generiran.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1399"/>
+        <location filename="../../UI/MainWindow.cpp" line="1453"/>
         <source>Generate Arduino Code</source>
         <translation>Generiraj Arduino kod</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1399"/>
+        <location filename="../../UI/MainWindow.cpp" line="1453"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino datoteka (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1419"/>
+        <location filename="../../UI/MainWindow.cpp" line="1473"/>
         <source>Generate SystemVerilog Code</source>
         <translation>Generiraj SystemVerilog kod</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1419"/>
+        <location filename="../../UI/MainWindow.cpp" line="1473"/>
         <source>SystemVerilog file (*.sv)</source>
         <translation>SystemVerilog datoteka (*.sv)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1525"/>
+        <location filename="../../UI/MainWindow.cpp" line="1579"/>
         <source>Export to PDF</source>
         <translation>Izvezi u PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1525"/>
+        <location filename="../../UI/MainWindow.cpp" line="1579"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF datoteke (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1838"/>
+        <location filename="../../UI/MainWindow.cpp" line="1892"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
         <translation>Odabrane datoteke (i njihove ovisnosti) bit će kopirane u trenutnu mapu projekta.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1896"/>
+        <location filename="../../UI/MainWindow.cpp" line="1950"/>
         <source>Name Collision</source>
         <translation>Sukob naziva</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1897"/>
+        <location filename="../../UI/MainWindow.cpp" line="1951"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
         <translation>Ugrađeni IC s imenom &quot;%1&quot; već postoji.
 Predloženi naziv:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1923"/>
-        <location filename="../../UI/MainWindow.cpp" line="1985"/>
+        <location filename="../../UI/MainWindow.cpp" line="1977"/>
+        <location filename="../../UI/MainWindow.cpp" line="2039"/>
         <source>Please save the project first so ICs can be resolved.</source>
         <translation>Molimo prvo spremite projekt kako bi se IC-ovi mogli pronaći.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1934"/>
-        <location filename="../../UI/MainWindow.cpp" line="1992"/>
-        <location filename="../../UI/MainWindow.cpp" line="2085"/>
+        <location filename="../../UI/MainWindow.cpp" line="1988"/>
+        <location filename="../../UI/MainWindow.cpp" line="2046"/>
+        <location filename="../../UI/MainWindow.cpp" line="2139"/>
         <source>Could not read IC file: %1</source>
         <translation>IC datoteka se ne može pročitati: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1942"/>
-        <location filename="../../UI/MainWindow.cpp" line="2010"/>
+        <location filename="../../UI/MainWindow.cpp" line="1996"/>
+        <location filename="../../UI/MainWindow.cpp" line="2064"/>
         <source>IC embedded successfully.</source>
         <translation>IC je uspješno ugrađen.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1962"/>
-        <location filename="../../UI/MainWindow.cpp" line="2033"/>
+        <location filename="../../UI/MainWindow.cpp" line="2016"/>
+        <location filename="../../UI/MainWindow.cpp" line="2087"/>
         <source>Extract IC to file...</source>
         <translation>Izdvoji IC u datoteku...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
-        <location filename="../../UI/MainWindow.cpp" line="2044"/>
+        <location filename="../../UI/MainWindow.cpp" line="2027"/>
+        <location filename="../../UI/MainWindow.cpp" line="2098"/>
         <source>IC extracted to %1</source>
         <translation>IC izdvojen u %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1957"/>
-        <location filename="../../UI/MainWindow.cpp" line="2022"/>
-        <location filename="../../UI/MainWindow.cpp" line="2057"/>
+        <location filename="../../UI/MainWindow.cpp" line="2011"/>
+        <location filename="../../UI/MainWindow.cpp" line="2076"/>
+        <location filename="../../UI/MainWindow.cpp" line="2111"/>
         <source>Please save the project first.</source>
         <translation>Molimo prvo spremite projekt.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2074"/>
+        <location filename="../../UI/MainWindow.cpp" line="2128"/>
         <source>No file-based ICs to embed.</source>
         <translation>Nema IC-ova temeljenih na datotekama za ugradnju.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2100"/>
+        <location filename="../../UI/MainWindow.cpp" line="2154"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>Ugrađeno %1 IC-ova. Sklop je sada samostalan.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1536"/>
-        <location filename="../../UI/MainWindow.cpp" line="1562"/>
+        <location filename="../../UI/MainWindow.cpp" line="1590"/>
+        <location filename="../../UI/MainWindow.cpp" line="1616"/>
         <source>Exported file successfully.</source>
         <translation>Datoteka je uspješno izvezena.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="860"/>
+        <location filename="../../UI/MainWindow.cpp" line="914"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda je softver razvijen od strane studenata Federalnog sveučilišta u São Paulu kako bi pomogao studentima u učenju o logičkim sklopovima.&lt;/p&gt;&lt;p&gt;Verzija softvera: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Tvorci:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda trenutno održavaju Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves i Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Molimo prijavite na našoj GitHub stranici ako pronađete grešku ili želite zatražiti novu značajku.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Posjetite našu web stranicu!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="880"/>
+        <location filename="../../UI/MainWindow.cpp" line="934"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Prečaci platna&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Povećaj &lt;/li&gt;&lt;li&gt; Ctrl+- : Smanji &lt;/li&gt;&lt;li&gt; Ctrl+1 : Sakrij/Prikaži žice &lt;/li&gt;&lt;li&gt; Ctrl+2 : Sakrij/Prikaži vrata &lt;/li&gt;&lt;li&gt; Ctrl+F : Traži elemente &lt;/li&gt;&lt;li&gt; Ctrl+W : Otvori beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Spremi projekt &lt;/li&gt;&lt;li&gt; Ctrl+Q : Izađi iz wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Pokreni/Pauziraj simulaciju &lt;/li&gt;&lt;li&gt; [ : Prethodno primarno svojstvo elementa &lt;/li&gt;&lt;li&gt; ] : Sljedeće primarno svojstvo elementa &lt;/li&gt;&lt;li&gt; { : Prethodno sekundarno svojstvo elementa &lt;/li&gt;&lt;li&gt; } : Sljedeće sekundarno svojstvo elementa &lt;/li&gt;&lt;li&gt; &amp;lt; : Pretvori u prethodni element &lt;/li&gt;&lt;li&gt; &amp;gt; : Pretvori u sljedeći element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Opći savjeti&lt;/h1&gt;&lt;p&gt;Dvaput kliknite na žicu za stvaranje čvora&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="936"/>
+        <location filename="../../UI/MainWindow.cpp" line="990"/>
         <source>Exit</source>
         <translation>Izlaz</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1551"/>
+        <location filename="../../UI/MainWindow.cpp" line="1605"/>
         <source>Export to Image</source>
         <translation>Izvezi u sliku</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1551"/>
+        <location filename="../../UI/MainWindow.cpp" line="1605"/>
         <source>PNG files (*.png)</source>
         <translation>PNG datoteke (*.png)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1252"/>
-        <location filename="../../UI/MainWindow.cpp" line="1781"/>
+        <location filename="../../UI/MainWindow.cpp" line="1306"/>
+        <location filename="../../UI/MainWindow.cpp" line="1835"/>
         <source>Unmute</source>
         <translation>Uključi zvuk</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1827"/>
+        <location filename="../../UI/MainWindow.cpp" line="1881"/>
         <source>Save file first.</source>
         <translation>Prvo spremi datoteku.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1830"/>
+        <location filename="../../UI/MainWindow.cpp" line="1884"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1838"/>
-        <location filename="../../UI/MainWindow.cpp" line="1853"/>
+        <location filename="../../UI/MainWindow.cpp" line="1892"/>
+        <location filename="../../UI/MainWindow.cpp" line="1907"/>
         <source>Info</source>
         <translation>Informacije</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1853"/>
+        <location filename="../../UI/MainWindow.cpp" line="1907"/>
         <source>Drag here to remove.</source>
         <translation>Povuci ovdje za uklanjanje.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1879"/>
+        <location filename="../../UI/MainWindow.cpp" line="1933"/>
         <source>Error removing file: %1</source>
         <translation>Greška pri uklanjanju datoteke: %1</translation>
     </message>
