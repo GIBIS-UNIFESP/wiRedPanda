@@ -1956,8 +1956,8 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1252"/>
-        <location filename="../../UI/MainWindow.cpp" line="1781"/>
+        <location filename="../../UI/MainWindow.cpp" line="1306"/>
+        <location filename="../../UI/MainWindow.cpp" line="1835"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>Tắt tiếng</translation>
@@ -1988,7 +1988,7 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
         <translation>Khởi động lại mô phỏng.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="879"/>
+        <location filename="../../UI/MainWindow.cpp" line="933"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>Phím tắt và mẹo</translation>
@@ -2001,8 +2001,8 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="430"/>
         <location filename="../../UI/MainWindow.cpp" line="667"/>
-        <location filename="../../UI/MainWindow.cpp" line="1078"/>
-        <location filename="../../UI/MainWindow.cpp" line="1590"/>
+        <location filename="../../UI/MainWindow.cpp" line="1132"/>
+        <location filename="../../UI/MainWindow.cpp" line="1644"/>
         <source>New Project</source>
         <translation>Dự án mới</translation>
     </message>
@@ -2024,23 +2024,23 @@ Do you want to save your changes?</source>
 Bạn có muốn lưu thay đổi không?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="715"/>
+        <location filename="../../UI/MainWindow.cpp" line="726"/>
         <source>File loaded successfully.</source>
         <translation>Tải tệp thành công.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="774"/>
-        <location filename="../../UI/MainWindow.cpp" line="1830"/>
+        <location filename="../../UI/MainWindow.cpp" line="785"/>
+        <location filename="../../UI/MainWindow.cpp" line="1884"/>
         <source>Open File</source>
         <translation>Mở tệp</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="334"/>
-        <location filename="../../UI/MainWindow.cpp" line="774"/>
-        <location filename="../../UI/MainWindow.cpp" line="806"/>
-        <location filename="../../UI/MainWindow.cpp" line="843"/>
-        <location filename="../../UI/MainWindow.cpp" line="1962"/>
-        <location filename="../../UI/MainWindow.cpp" line="2033"/>
+        <location filename="../../UI/MainWindow.cpp" line="785"/>
+        <location filename="../../UI/MainWindow.cpp" line="817"/>
+        <location filename="../../UI/MainWindow.cpp" line="869"/>
+        <location filename="../../UI/MainWindow.cpp" line="2016"/>
+        <location filename="../../UI/MainWindow.cpp" line="2087"/>
         <source>Panda files (*.panda)</source>
         <translation>Tệp Panda (*.panda)</translation>
     </message>
@@ -2146,208 +2146,226 @@ wiRedPanda %1 sẽ tự động liệt kê tất cả các tệp .panda khác tr
 Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện, hoặc chạy mô phỏng beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="806"/>
-        <location filename="../../UI/MainWindow.cpp" line="843"/>
+        <location filename="../../UI/MainWindow.cpp" line="817"/>
+        <location filename="../../UI/MainWindow.cpp" line="869"/>
         <source>Save File as ...</source>
         <translation>Lưu tệp thành ...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="937"/>
+        <location filename="../../UI/MainWindow.cpp" line="829"/>
+        <location filename="../../UI/MainWindow.cpp" line="880"/>
+        <source>File Conflict</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="830"/>
+        <location filename="../../UI/MainWindow.cpp" line="881"/>
+        <source>The file &quot;%1&quot; is already open in another tab.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="833"/>
+        <location filename="../../UI/MainWindow.cpp" line="884"/>
+        <source>Switch to Tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="991"/>
         <source>Are you sure?</source>
         <translation>Bạn có chắc chắn?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1838"/>
+        <location filename="../../UI/MainWindow.cpp" line="1892"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
         <translation>Các tệp đã chọn (và các phụ thuộc của chúng) sẽ được sao chép vào thư mục dự án hiện tại.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1896"/>
+        <location filename="../../UI/MainWindow.cpp" line="1950"/>
         <source>Name Collision</source>
         <translation>Trùng tên</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1897"/>
+        <location filename="../../UI/MainWindow.cpp" line="1951"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
         <translation>IC nhúng có tên &quot;%1&quot; đã tồn tại.
 Tên gợi ý:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1923"/>
-        <location filename="../../UI/MainWindow.cpp" line="1985"/>
+        <location filename="../../UI/MainWindow.cpp" line="1977"/>
+        <location filename="../../UI/MainWindow.cpp" line="2039"/>
         <source>Please save the project first so ICs can be resolved.</source>
         <translation>Vui lòng lưu dự án trước để có thể tìm thấy IC.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1934"/>
-        <location filename="../../UI/MainWindow.cpp" line="1992"/>
-        <location filename="../../UI/MainWindow.cpp" line="2085"/>
+        <location filename="../../UI/MainWindow.cpp" line="1988"/>
+        <location filename="../../UI/MainWindow.cpp" line="2046"/>
+        <location filename="../../UI/MainWindow.cpp" line="2139"/>
         <source>Could not read IC file: %1</source>
         <translation>Không thể đọc tệp IC: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1942"/>
-        <location filename="../../UI/MainWindow.cpp" line="2010"/>
+        <location filename="../../UI/MainWindow.cpp" line="1996"/>
+        <location filename="../../UI/MainWindow.cpp" line="2064"/>
         <source>IC embedded successfully.</source>
         <translation>Nhúng IC thành công.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1962"/>
-        <location filename="../../UI/MainWindow.cpp" line="2033"/>
+        <location filename="../../UI/MainWindow.cpp" line="2016"/>
+        <location filename="../../UI/MainWindow.cpp" line="2087"/>
         <source>Extract IC to file...</source>
         <translation>Trích xuất IC ra tệp...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
-        <location filename="../../UI/MainWindow.cpp" line="2044"/>
+        <location filename="../../UI/MainWindow.cpp" line="2027"/>
+        <location filename="../../UI/MainWindow.cpp" line="2098"/>
         <source>IC extracted to %1</source>
         <translation>IC đã được trích xuất ra %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1957"/>
-        <location filename="../../UI/MainWindow.cpp" line="2022"/>
-        <location filename="../../UI/MainWindow.cpp" line="2057"/>
+        <location filename="../../UI/MainWindow.cpp" line="2011"/>
+        <location filename="../../UI/MainWindow.cpp" line="2076"/>
+        <location filename="../../UI/MainWindow.cpp" line="2111"/>
         <source>Please save the project first.</source>
         <translation>Vui lòng lưu dự án trước.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2074"/>
+        <location filename="../../UI/MainWindow.cpp" line="2128"/>
         <source>No file-based ICs to embed.</source>
         <translation>Không có IC dựa trên tệp để nhúng.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2100"/>
+        <location filename="../../UI/MainWindow.cpp" line="2154"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>Đã nhúng %1 IC. Mạch hiện tự chứa.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="339"/>
-        <location filename="../../UI/MainWindow.cpp" line="1140"/>
-        <location filename="../../UI/MainWindow.cpp" line="1923"/>
-        <location filename="../../UI/MainWindow.cpp" line="1934"/>
-        <location filename="../../UI/MainWindow.cpp" line="1957"/>
-        <location filename="../../UI/MainWindow.cpp" line="1985"/>
-        <location filename="../../UI/MainWindow.cpp" line="1992"/>
-        <location filename="../../UI/MainWindow.cpp" line="2022"/>
-        <location filename="../../UI/MainWindow.cpp" line="2057"/>
-        <location filename="../../UI/MainWindow.cpp" line="2085"/>
+        <location filename="../../UI/MainWindow.cpp" line="1194"/>
+        <location filename="../../UI/MainWindow.cpp" line="1977"/>
+        <location filename="../../UI/MainWindow.cpp" line="1988"/>
+        <location filename="../../UI/MainWindow.cpp" line="2011"/>
+        <location filename="../../UI/MainWindow.cpp" line="2039"/>
+        <location filename="../../UI/MainWindow.cpp" line="2046"/>
+        <location filename="../../UI/MainWindow.cpp" line="2076"/>
+        <location filename="../../UI/MainWindow.cpp" line="2111"/>
+        <location filename="../../UI/MainWindow.cpp" line="2139"/>
         <source>Error</source>
         <translation>Lỗi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="860"/>
+        <location filename="../../UI/MainWindow.cpp" line="914"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda là phần mềm được phát triển bởi sinh viên Đại học Liên bang São Paulo để giúp sinh viên học về mạch logic.&lt;/p&gt;&lt;p&gt;Phiên bản phần mềm: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Người tạo:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda hiện được duy trì bởi Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves và Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Vui lòng gửi báo cáo trên trang GitHub của chúng tôi nếu bạn tìm thấy lỗi hoặc muốn yêu cầu tính năng mới.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Truy cập trang web của chúng tôi!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="880"/>
+        <location filename="../../UI/MainWindow.cpp" line="934"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Phím tắt Canvas&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Phóng to &lt;/li&gt;&lt;li&gt; Ctrl+- : Thu nhỏ &lt;/li&gt;&lt;li&gt; Ctrl+1 : Ẩn/Hiện dây &lt;/li&gt;&lt;li&gt; Ctrl+2 : Ẩn/Hiện cổng &lt;/li&gt;&lt;li&gt; Ctrl+F : Tìm phần tử &lt;/li&gt;&lt;li&gt; Ctrl+W : Mở beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Lưu dự án &lt;/li&gt;&lt;li&gt; Ctrl+Q : Thoát wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Bắt đầu/Tạm dừng mô phỏng &lt;/li&gt;&lt;li&gt; [ : Thuộc tính chính trước của phần tử &lt;/li&gt;&lt;li&gt; ] : Thuộc tính chính tiếp theo của phần tử &lt;/li&gt;&lt;li&gt; { : Thuộc tính phụ trước của phần tử &lt;/li&gt;&lt;li&gt; } : Thuộc tính phụ tiếp theo của phần tử &lt;/li&gt;&lt;li&gt; &amp;lt; : Chuyển đổi sang phần tử trước &lt;/li&gt;&lt;li&gt; &amp;gt; : Chuyển đổi sang phần tử tiếp theo &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Mẹo chung&lt;/h1&gt;&lt;p&gt;Nhấp đúp vào dây để tạo nút&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="936"/>
+        <location filename="../../UI/MainWindow.cpp" line="990"/>
         <source>Exit</source>
         <translation>Thoát</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1319"/>
-        <location filename="../../UI/MainWindow.cpp" line="1348"/>
-        <location filename="../../UI/MainWindow.cpp" line="1371"/>
+        <location filename="../../UI/MainWindow.cpp" line="1373"/>
+        <location filename="../../UI/MainWindow.cpp" line="1402"/>
+        <location filename="../../UI/MainWindow.cpp" line="1425"/>
         <source>Missing file name.</source>
         <translation>Thiếu tên tệp.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1325"/>
-        <location filename="../../UI/MainWindow.cpp" line="1354"/>
+        <location filename="../../UI/MainWindow.cpp" line="1379"/>
+        <location filename="../../UI/MainWindow.cpp" line="1408"/>
         <source>The .panda file is empty.</source>
         <translation>Tệp .panda trống.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1336"/>
+        <location filename="../../UI/MainWindow.cpp" line="1390"/>
         <source>Arduino code successfully generated.</source>
         <translation>Mã Arduino đã được tạo thành công.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1363"/>
+        <location filename="../../UI/MainWindow.cpp" line="1417"/>
         <source>SystemVerilog code successfully generated.</source>
         <translation>Mã SystemVerilog đã được tạo thành công.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1399"/>
+        <location filename="../../UI/MainWindow.cpp" line="1453"/>
         <source>Generate Arduino Code</source>
         <translation>Tạo mã Arduino</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1399"/>
+        <location filename="../../UI/MainWindow.cpp" line="1453"/>
         <source>Arduino file (*.ino)</source>
         <translation>Tệp Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1419"/>
+        <location filename="../../UI/MainWindow.cpp" line="1473"/>
         <source>Generate SystemVerilog Code</source>
         <translation>Tạo mã SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1419"/>
+        <location filename="../../UI/MainWindow.cpp" line="1473"/>
         <source>SystemVerilog file (*.sv)</source>
         <translation>Tệp SystemVerilog (*.sv)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1525"/>
+        <location filename="../../UI/MainWindow.cpp" line="1579"/>
         <source>Export to PDF</source>
         <translation>Xuất ra PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1525"/>
+        <location filename="../../UI/MainWindow.cpp" line="1579"/>
         <source>PDF files (*.pdf)</source>
         <translation>Tệp PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1536"/>
-        <location filename="../../UI/MainWindow.cpp" line="1562"/>
+        <location filename="../../UI/MainWindow.cpp" line="1590"/>
+        <location filename="../../UI/MainWindow.cpp" line="1616"/>
         <source>Exported file successfully.</source>
         <translation>Xuất tệp thành công.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1551"/>
+        <location filename="../../UI/MainWindow.cpp" line="1605"/>
         <source>Export to Image</source>
         <translation>Xuất ra hình ảnh</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1551"/>
+        <location filename="../../UI/MainWindow.cpp" line="1605"/>
         <source>PNG files (*.png)</source>
         <translation>Tệp PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1252"/>
-        <location filename="../../UI/MainWindow.cpp" line="1781"/>
+        <location filename="../../UI/MainWindow.cpp" line="1306"/>
+        <location filename="../../UI/MainWindow.cpp" line="1835"/>
         <source>Unmute</source>
         <translation>Bật tiếng</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1827"/>
+        <location filename="../../UI/MainWindow.cpp" line="1881"/>
         <source>Save file first.</source>
         <translation>Lưu tệp trước.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1830"/>
+        <location filename="../../UI/MainWindow.cpp" line="1884"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1838"/>
-        <location filename="../../UI/MainWindow.cpp" line="1853"/>
+        <location filename="../../UI/MainWindow.cpp" line="1892"/>
+        <location filename="../../UI/MainWindow.cpp" line="1907"/>
         <source>Info</source>
         <translation>Thông tin</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1853"/>
+        <location filename="../../UI/MainWindow.cpp" line="1907"/>
         <source>Drag here to remove.</source>
         <translation>Kéo vào đây để xóa.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1879"/>
+        <location filename="../../UI/MainWindow.cpp" line="1933"/>
         <source>Error removing file: %1</source>
         <translation>Lỗi khi xóa tệp: %1</translation>
     </message>
