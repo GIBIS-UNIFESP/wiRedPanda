@@ -321,7 +321,10 @@ private:
 
     QTimer m_simTimeTimer; ///< Periodic timer to update the simulation time label.
 
-<<<<<<< HEAD
+    QDockWidget *m_waveformDock = nullptr;
+    WaveformLabelWidget *m_labelWidget = nullptr;
+    TemporalWaveformWidget *m_waveformWidget = nullptr;
+
     // Scene-level shortcuts created once in setupShortcuts(), reconnected on tab switch.
     QShortcut *m_prevMainPropShortcut  = nullptr;
     QShortcut *m_nextMainPropShortcut  = nullptr;
@@ -329,10 +332,5 @@ private:
     QShortcut *m_nextSecndPropShortcut = nullptr;
     QShortcut *m_changePrevElmShortcut = nullptr;
     QShortcut *m_changeNextElmShortcut = nullptr;
-=======
-    QDockWidget *m_waveformDock = nullptr;
-    WaveformLabelWidget *m_labelWidget = nullptr;
-    TemporalWaveformWidget *m_waveformWidget = nullptr;
->>>>>>> e382dc1d3 (feat: add temporal waveform dock with Watch All / Clear / zoom controls)
 };
 

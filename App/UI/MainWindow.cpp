@@ -1877,7 +1877,7 @@ void MainWindow::watchAllSignals()
     // Watch all elements that have logic and output ports.
     // Skip VCC/GND (static constants) and decorative elements (no logic).
     for (auto *elm : m_currentTab->scene()->elements()) {
-        if (!elm || !elm->logic()) {
+        if (!elm || elm->outputSize() == 0) {
             continue;
         }
         // Skip VCC and GND — they never change.
@@ -1887,11 +1887,11 @@ void MainWindow::watchAllSignals()
         const QString name = elm->label().isEmpty()
                                  ? ElementFactory::translatedName(elm->elementType())
                                  : elm->label();
-        for (int port = 0; port < elm->logic()->outputSize(); ++port) {
-            const QString portSuffix = (elm->logic()->outputSize() > 1)
+        for (int port = 0; port < elm->outputSize(); ++port) {
+            const QString portSuffix = (elm->outputSize() > 1)
                                            ? QString(" [%1]").arg(port)
                                            : QString();
-            recorder.watchSignal(name + portSuffix, elm->logic(), port);
+            recorder.watchSignal(name + portSuffix, elm, port);
         }
     }
 

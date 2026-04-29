@@ -12,9 +12,9 @@
 #include <QVector>
 
 #include "App/Core/Enums.h"
+#include "App/Element/GraphicElement.h"
 #include "App/Simulation/SimTime.h"
 
-class LogicElement;
 
 /**
  * \struct SignalTrace
@@ -23,7 +23,7 @@ class LogicElement;
 struct SignalTrace
 {
     QString name;                                  ///< Display name (e.g., "AND_0 [out 0]").
-    LogicElement *logic = nullptr;                 ///< Element being watched.
+    GraphicElement *logic = nullptr;                 ///< Element being watched.
     int portIndex = 0;                             ///< Output port index on the element.
     QVector<QPair<SimTime, Status>> transitions;   ///< Chronological (time, value) pairs.
 
@@ -67,7 +67,7 @@ public:
 
     /// Adds a signal to the watch list.
     /// \return Index of the new trace.
-    int watchSignal(const QString &name, LogicElement *logic, int portIndex)
+    int watchSignal(const QString &name, GraphicElement *logic, int portIndex)
     {
         int idx = m_traces.size();
         m_traces.append({name, logic, portIndex, {}});
