@@ -1,5 +1,12 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.27)
 set(CMAKE_POLICY_VERSION_MINIMUM 3.16) # for nlohmann/json
+
+# CMP0156 (3.27+): de-duplicate libraries on the link line using the new
+# algorithm. NEW collapses transitive PUBLIC links of the same archive (e.g.
+# wiredpanda_lib reaching test_wiredpanda via test_utils AND memory_helpers AND
+# the WHOLE_ARCHIVE genex) into a single reference, which kills the macOS
+# "ld: warning: ignoring duplicate libraries" noise.
+cmake_policy(SET CMP0156 NEW)
 project(wiredpanda VERSION 5.0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -329,20 +336,16 @@ foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CONFIG_UPPER} ${CMAKE_BINARY_DIR})
 endforeach()
 
-# Link a target against wiredpanda_lib with --whole-archive to prevent the
-# linker from discarding element .o files whose only external symbols are
-# static-initialization registrations (ElementInfo<T>::registered).
+# Link a target against wiredpanda_lib with whole-archive semantics so the
+# linker keeps element .o files whose only external symbols are static-
+# initialization registrations (ElementInfo<T>::registered).
+# The LINK_LIBRARY:WHOLE_ARCHIVE genex (CMake 3.24+) handles the per-platform
+# flag (-Wl,--whole-archive on GNU ld, -force_load on Apple ld64, /WHOLEARCHIVE:
+# on MSVC link.exe) and, unlike the previous hand-rolled version, doesn't add
+# the archive to the link line twice.
 function(link_wiredpanda_whole_archive target)
-    if(MSVC)
-        target_link_libraries(${target} PRIVATE wiredpanda_lib)
-        target_link_options(${target} PRIVATE /WHOLEARCHIVE:wiredpanda_lib)
-    elseif(APPLE)
-        target_link_libraries(${target} PRIVATE wiredpanda_lib)
-        target_link_options(${target} PRIVATE "LINKER:-force_load,$<TARGET_FILE:wiredpanda_lib>")
-    else()
-        target_link_libraries(${target} PRIVATE
-            -Wl,--whole-archive wiredpanda_lib -Wl,--no-whole-archive)
-    endif()
+    target_link_libraries(${target} PRIVATE
+        "$<LINK_LIBRARY:WHOLE_ARCHIVE,wiredpanda_lib>")
 endfunction()
 
 # ========= LIB ===================================
