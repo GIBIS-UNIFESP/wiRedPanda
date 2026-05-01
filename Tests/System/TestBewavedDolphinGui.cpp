@@ -722,7 +722,7 @@ void TestBewavedDolphinGui::testAboutDialog()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    QTimer::singleShot(0, [&dolphin] {
+    QTimer::singleShot(0, [] {
         if (auto *w = QApplication::activeModalWidget()) w->close();
     });
 
@@ -736,7 +736,7 @@ void TestBewavedDolphinGui::testAboutQtDialog()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    QTimer::singleShot(0, [&dolphin] {
+    QTimer::singleShot(0, [] {
         if (auto *w = QApplication::activeModalWidget()) w->close();
     });
 

@@ -13,8 +13,7 @@ void TestSimulationUnit::testSimulationWithNoElements()
     // Test: Simulation handles empty scene gracefully
     WorkSpace workspace;
     Simulation sim(workspace.scene());
-
-    QVERIFY(&sim != nullptr);
+    Q_UNUSED(sim)
 }
 
 void TestSimulationUnit::testAddRemoveClockDuringSimulation()
