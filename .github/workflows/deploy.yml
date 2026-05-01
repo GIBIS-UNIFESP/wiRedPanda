@@ -15,8 +15,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        qt: [6.9.3]
+        # qt_host / qt_arch are passed verbatim to install-qt-action.
+        # Values verified locally with `aqt list-qt <host> desktop --arch 6.9.3`.
+        include:
+          - { os: ubuntu-latest,        qt: 6.9.3, arch: x86_64, qt_host: linux,         qt_arch: linux_gcc_64         }
+          - { os: ubuntu-24.04-arm,     qt: 6.9.3, arch: arm64,  qt_host: linux_arm64,   qt_arch: linux_gcc_arm64      }
+          - { os: windows-latest,       qt: 6.9.3, arch: x86_64, qt_host: windows,       qt_arch: win64_msvc2022_64    }
+          - { os: windows-11-arm,       qt: 6.9.3, arch: arm64,  qt_host: windows_arm64, qt_arch: win64_msvc2022_arm64 }
+          # CMakeLists.txt forces CMAKE_OSX_ARCHITECTURES="x86_64;arm64" so a
+          # single macOS job produces a universal DMG that runs on both archs;
+          # no per-arch matrix entry is needed.
+          - { os: macos-26,             qt: 6.9.3, arch: universal, qt_host: mac,        qt_arch: clang_64             }
 
 # =================================
 
@@ -85,11 +94,13 @@ jobs:
         cache: true
         aqtversion: ==3.*
         modules: qtmultimedia qtimageformats debug_info
+        host: ${{ matrix.qt_host }}
+        arch: ${{ matrix.qt_arch }}
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1
       with:
-        key: ${{ matrix.os }}-${{ matrix.qt }}
+        key: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.qt }}
 
 # =================================
 
@@ -119,6 +130,11 @@ jobs:
     - name: go-appimage
       if: runner.os == 'Linux'
       run: |
+        # uname -m gives "x86_64" or "aarch64"; used for the appimagetool
+        # download, the libtiff symlink path, and the AppImage filename
+        # produced by appimagetool.
+        ARCH_TRIPLE=$(uname -m)
+
         mkdir -p appimage/usr/bin \
                  appimage/usr/lib \
                  appimage/usr/share/applications \
@@ -139,7 +155,7 @@ jobs:
         cp App/Resources/Assets/Logos/wpanda-256x256.png appimage/usr/share/icons/hicolor/256x256/apps/wpanda.png
 
         wget -q "https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous \
-          -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)" \
+          -O - | grep "appimagetool-.*-${ARCH_TRIPLE}.AppImage" | head -n 1 | cut -d '"' -f 2)" \
           -O appimagetool
         chmod +x appimagetool
 
@@ -169,7 +185,8 @@ jobs:
 
         # Ubuntu 24.04 ships libtiff.so.6 (t64 transition); Qt plugins built against .so.5.
         # Symlink so go-appimage can find and bundle it.
-        sudo ln -sf /usr/lib/x86_64-linux-gnu/libtiff.so.6 /usr/lib/x86_64-linux-gnu/libtiff.so.5
+        LIBDIR=/usr/lib/${ARCH_TRIPLE}-linux-gnu
+        sudo ln -sf $LIBDIR/libtiff.so.6 $LIBDIR/libtiff.so.5
 
         # Deploy: bundle all dependencies (including glibc) and patch RPATHs.
         # go-appimage uses patchelf internally to set $ORIGIN-relative RPATHs
@@ -201,12 +218,12 @@ jobs:
         APPIMAGE_EXTRACT_AND_RUN=1 VERSION=$VERSION \
           ./appimagetool appimage
 
-        mv wiRedPanda-*-x86_64.AppImage wiRedPanda-$VERSION-Linux-Qt${{ matrix.qt }}.AppImage
+        mv wiRedPanda-*-${ARCH_TRIPLE}.AppImage wiRedPanda-$VERSION-Linux-${{ matrix.arch }}-Qt${{ matrix.qt }}.AppImage
 
     - name: Validate Ubuntu Release Artifacts
       if: runner.os == 'Linux'
       run: |
-        APPIMAGE_FILE="wiRedPanda-$VERSION-Linux-Qt${{ matrix.qt }}.AppImage"
+        APPIMAGE_FILE="wiRedPanda-$VERSION-Linux-${{ matrix.arch }}-Qt${{ matrix.qt }}.AppImage"
 
         if [ ! -f "$APPIMAGE_FILE" ]; then
           echo "Error: AppImage not found"
@@ -316,6 +333,8 @@ jobs:
     - name: Setup Windows MSVC Toolchain
       if: runner.os == 'Windows'
       uses: seanmiddleditch/gha-setup-vsdevenv@v5
+      with:
+        arch: ${{ matrix.arch == 'arm64' && 'arm64' || 'x64' }}
 
     - name: Compile Windows Sentry SDK
       if: runner.os == 'Windows'
@@ -360,13 +379,13 @@ jobs:
 
         # Create the ZIP from the clean directory
         cd ..
-        Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath wiRedPanda-$env:VERSION-Windows-Qt${{ matrix.qt }}-Portable.zip
+        Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath wiRedPanda-$env:VERSION-Windows-${{ matrix.arch }}-Qt${{ matrix.qt }}-Portable.zip
 
     - name: Validate Windows Release Artifacts
       if: runner.os == 'Windows'
       run: |
         # Verify ZIP file exists
-        if (!(Test-Path "build/wiRedPanda-$env:VERSION-Windows-Qt${{ matrix.qt }}-Portable.zip")) {
+        if (!(Test-Path "build/wiRedPanda-$env:VERSION-Windows-${{ matrix.arch }}-Qt${{ matrix.qt }}-Portable.zip")) {
           Write-Error "Error: Windows ZIP file not found"
           exit 1
         }
