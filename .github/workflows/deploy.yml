@@ -18,9 +18,9 @@ jobs:
         # qt_host / qt_arch are passed verbatim to install-qt-action.
         # Values verified locally with `aqt list-qt <host> desktop --arch 6.9.3`.
         include:
-          - { os: ubuntu-latest,        qt: 6.9.3, arch: x86_64, qt_host: linux,         qt_arch: linux_gcc_64         }
+          - { os: ubuntu-24.04,         qt: 6.9.3, arch: x86_64, qt_host: linux,         qt_arch: linux_gcc_64         }
           - { os: ubuntu-24.04-arm,     qt: 6.9.3, arch: arm64,  qt_host: linux_arm64,   qt_arch: linux_gcc_arm64      }
-          - { os: windows-latest,       qt: 6.9.3, arch: x86_64, qt_host: windows,       qt_arch: win64_msvc2022_64    }
+          - { os: windows-2025-vs2026,  qt: 6.9.3, arch: x86_64, qt_host: windows,       qt_arch: win64_msvc2022_64    }
           - { os: windows-11-arm,       qt: 6.9.3, arch: arm64,  qt_host: windows_arm64, qt_arch: win64_msvc2022_arm64 }
           # CMakeLists.txt forces CMAKE_OSX_ARCHITECTURES="x86_64;arm64" so a
           # single macOS job produces a universal DMG that runs on both archs;
