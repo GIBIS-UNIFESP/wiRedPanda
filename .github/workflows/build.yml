@@ -32,6 +32,10 @@ jobs:
           - os: ubuntu-24.04
             qt: '6.9.3'
             cmake_args: '-DUNITY_BUILD_BATCH_SIZE=1000'
+          # Native ARM coverage at the latest Qt only — older Qts test
+          # version compatibility, not architecture.
+          - { os: ubuntu-24.04-arm, qt: '6.9.3', cmake_args: '', qt_host: linux_arm64,   qt_arch: linux_gcc_arm64      }
+          - { os: windows-11-arm,   qt: '6.9.3', cmake_args: '', qt_host: windows_arm64, qt_arch: win64_msvc2022_arm64 }
 
 # =================================
 
@@ -63,6 +67,8 @@ jobs:
         cache: true
         aqtversion: ==3.*
         modules: qtmultimedia qtimageformats
+        host: ${{ matrix.qt_host }}
+        arch: ${{ matrix.qt_arch }}
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1
@@ -72,6 +78,8 @@ jobs:
     - name: Setup Windows MSVC Toolchain
       if: runner.os == 'Windows'
       uses: seanmiddleditch/gha-setup-vsdevenv@v5
+      with:
+        arch: ${{ matrix.os == 'windows-11-arm' && 'arm64' || 'x64' }}
 
 # =================================
 
