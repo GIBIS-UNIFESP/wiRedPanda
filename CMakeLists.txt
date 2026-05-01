@@ -788,7 +788,7 @@ endforeach()
 set_tests_properties(TestScene TestSceneUndoredo PROPERTIES RESOURCE_LOCK clipboard)
 
 # Serialization and Command Tests - Integration category
-foreach(TEST TestDialogs TestSerialization TestSimulationBlocker)
+foreach(TEST TestSerialization TestSimulationBlocker)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
@@ -805,7 +805,7 @@ foreach(TEST TestCommands TestCommon TestEnums TestPriorities TestRecentFiles Te
 endforeach()
 
 # GUI tests run sequentially after all other tests complete
-set(GUI_TESTS TestFileDialogProvider TestMainWindowGui TestBewavedDolphinGui)
+set(GUI_TESTS TestDialogs TestFileDialogProvider TestMainWindowGui TestBewavedDolphinGui)
 set(ALL_TESTS
     TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders
     TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration
@@ -846,7 +846,7 @@ set(ALL_TESTS
     TestElementFactory TestElementLogic TestElementLogicErrors TestNodeLogic TestStatusOps
     TestConnectionSerialization TestConnectionValidity TestConnections TestScene
     TestSceneConnections TestSceneState TestSceneUndoredo
-    TestSerialization TestSimulationBlocker TestDialogs
+    TestSerialization TestSimulationBlocker
     TestDanglingPointer
     TestCommands TestCommon TestEnums TestPriorities TestRecentFiles TestSettings TestThemeManager)
 foreach(TEST ${ALL_TESTS})
