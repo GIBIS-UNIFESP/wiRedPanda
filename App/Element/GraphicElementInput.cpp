@@ -11,7 +11,9 @@ void GraphicElementInput::setOn(const bool value, const int port)
     m_isOn = value;
     // Pixmap index 0 = off SVG, index 1 = on SVG (matches bool → int cast)
     setPixmap(static_cast<int>(m_isOn));
-    outputPort()->setStatus(static_cast<Status>(m_isOn));
+    if (auto *out = outputPort()) {
+        out->setStatus(static_cast<Status>(m_isOn));
+    }
 }
 
 void GraphicElementInput::setAppearance(const bool defaultAppearance, const QString &fileName)

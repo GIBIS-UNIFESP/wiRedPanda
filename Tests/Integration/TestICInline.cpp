@@ -2144,6 +2144,7 @@ void TestICInline::testOnChildICBlobSavedAllOrNothing()
     for (int i = 0; i < 5; ++i) {
         auto *ic = dynamic_cast<IC *>(ws.scene()->itemById(ids.at(i)));
         QVERIFY2(ic, qPrintable(QString("IC %1 not found after propagation").arg(i)));
+        if (!ic) return;
         QCOMPARE(ic->blobName(), QString("atomic_test"));
         QCOMPARE(ic->label(), QString("IC_%1").arg(i));
     }
@@ -4215,6 +4216,7 @@ void TestICInline::testMultiCycleUndoRedoPropagation()
         ws.scene()->undoStack()->redo();
         elm = dynamic_cast<IC *>(ws.scene()->itemById(icId));
         QVERIFY2(elm, qPrintable(QString("IC not found after redo cycle %1").arg(cycle)));
+        if (!elm) return;
         QCOMPARE(elm->blobName(), QString("cycle_test"));
         QCOMPARE(elm->label(), QString("MY_IC"));
         QCOMPARE(elm->pos(), QPointF(200, 200));
@@ -5379,6 +5381,7 @@ void TestICInline::testInlineSaveConvertsFileBackedToEmbedded()
     // --- Step 5: Verify the dropped IC was converted to embedded ---
     auto *savedIC = dynamic_cast<IC *>(childWs.scene()->itemById(droppedICId));
     QVERIFY2(savedIC, "Dropped IC should still exist after save");
+    if (!savedIC) return;
 
     QVERIFY2(savedIC->isEmbedded(), "IC should be embedded after inline save");
     QCOMPARE(savedIC->blobName(), QString("simple_and"));
@@ -5463,6 +5466,7 @@ void TestICInline::testNestedInlineSaveAndReopen()
         }
     }
     QVERIFY2(chainBIC, "nested.panda should contain at least one IC");
+    if (!chainBIC) return;
     const int chainBICId = chainBIC->id();
 
     // Get chain_b blob for opening inline tab

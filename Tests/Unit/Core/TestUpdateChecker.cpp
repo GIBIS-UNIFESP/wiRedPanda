@@ -10,9 +10,7 @@ void TestUpdateChecker::testUpdateAvailable()
 {
     // Test: UpdateChecker can detect when update is available
     UpdateChecker checker;
-
-    // Create checker object - should not crash
-    QVERIFY(&checker != nullptr);
+    Q_UNUSED(checker)
 }
 
 void TestUpdateChecker::testNoUpdate()
