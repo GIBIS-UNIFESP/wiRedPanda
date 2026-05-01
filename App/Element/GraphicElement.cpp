@@ -29,7 +29,7 @@ static const int s_graphicElementMetatypeId = qRegisterMetaType<GraphicElement>(
 static const QFont &labelFont()
 {
     static const QFont font = [] {
-        QFont f("SansSerif");
+        QFont f("Sans Serif");
         f.setBold(true);
         return f;
     }();
