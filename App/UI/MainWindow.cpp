@@ -486,7 +486,9 @@ void MainWindow::setFastMode(const bool fastMode)
 
 void MainWindow::on_actionExit_triggered()
 {
-    close();
+    Application::guardedSlot(this, [this] {
+        close();
+    });
 }
 
 void MainWindow::save(const QString &fileName)
@@ -675,30 +677,38 @@ int MainWindow::confirmSave(const bool multiple)
 
 void MainWindow::on_actionNew_triggered()
 {
-    sentryBreadcrumb("ui", QStringLiteral("New project"));
-    createNewTab();
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("ui", QStringLiteral("New project"));
+        createNewTab();
+    });
 }
 
 void MainWindow::on_actionWires_triggered(const bool checked)
 {
-    sentryBreadcrumb("ui", QStringLiteral("Wires: %1").arg(checked));
-    if (m_currentTab) {
-        m_currentTab->scene()->showWires(checked);
-    }
+    Application::guardedSlot(this, [this, checked] {
+        sentryBreadcrumb("ui", QStringLiteral("Wires: %1").arg(checked));
+        if (m_currentTab) {
+            m_currentTab->scene()->showWires(checked);
+        }
+    });
 }
 
 void MainWindow::on_actionRotateRight_triggered()
 {
-    if (m_currentTab) {
-        m_currentTab->scene()->rotateRight();
-    }
+    Application::guardedSlot(this, [this] {
+        if (m_currentTab) {
+            m_currentTab->scene()->rotateRight();
+        }
+    });
 }
 
 void MainWindow::on_actionRotateLeft_triggered()
 {
-    if (m_currentTab) {
-        m_currentTab->scene()->rotateLeft();
-    }
+    Application::guardedSlot(this, [this] {
+        if (m_currentTab) {
+            m_currentTab->scene()->rotateLeft();
+        }
+    });
 }
 
 void MainWindow::loadPandaFile(const QString &fileName)
@@ -775,130 +785,136 @@ void MainWindow::openICInTab(const QString &blobName, int icElementId, const QBy
 
 void MainWindow::on_actionOpen_triggered()
 {
-    sentryBreadcrumb("file", QStringLiteral("Open file dialog"));
-#ifdef Q_OS_WASM
-    auto fileContentReady = [this](const QString &fileName, const QByteArray &fileContent) {
-        if (!fileName.isEmpty()) {
-            // Write file content to a temporary file
-            QFile file(fileName);
-            file.open(QIODevice::WriteOnly);
-            file.write(fileContent);
-            file.close();
-            loadPandaFile(fileName);
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("file", QStringLiteral("Open file dialog"));
+    #ifdef Q_OS_WASM
+        auto fileContentReady = [this](const QString &fileName, const QByteArray &fileContent) {
+            if (!fileName.isEmpty()) {
+                // Write file content to a temporary file
+                QFile file(fileName);
+                file.open(QIODevice::WriteOnly);
+                file.write(fileContent);
+                file.close();
+                loadPandaFile(fileName);
+            }
+        };
+        QFileDialog::getOpenFileContent("Panda files (*.panda)", fileContentReady);
+    #else
+        const QString path = currentFile().exists() ? "" : "./Examples";
+        const QString fileName = FileDialogs::provider()->getOpenFileName(this, tr("Open File"), path, tr("Panda files (*.panda)"));
+
+        if (fileName.isEmpty()) {
+            return;
         }
-    };
-    QFileDialog::getOpenFileContent("Panda files (*.panda)", fileContentReady);
-#else
-    const QString path = currentFile().exists() ? "" : "./Examples";
-    const QString fileName = FileDialogs::provider()->getOpenFileName(this, tr("Open File"), path, tr("Panda files (*.panda)"));
 
-    if (fileName.isEmpty()) {
-        return;
-    }
-
-    loadPandaFile(fileName);
-#endif
+        loadPandaFile(fileName);
+    #endif
+    });
 }
 
 void MainWindow::on_actionSave_triggered()
 {
-    sentryBreadcrumb("file", QStringLiteral("Save"));
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("file", QStringLiteral("Save"));
+        if (!m_currentTab) {
+            return;
+        }
 
-    // Inline IC tabs serialize to a blob and emit to parent — no file dialog needed.
-    if (m_currentTab->isInlineIC()) {
-        save(QString());
-        return;
-    }
+        // Inline IC tabs serialize to a blob and emit to parent — no file dialog needed.
+        if (m_currentTab->isInlineIC()) {
+            save(QString());
+            return;
+        }
 
-#ifdef Q_OS_WASM
-    on_actionSaveAs_triggered();
-#else
-    // TODO: if current file is autosave ask for filename
+    #ifdef Q_OS_WASM
+        on_actionSaveAs_triggered();
+    #else
+        // TODO: if current file is autosave ask for filename
 
-    // If the project has never been saved, fall through to a Save-As dialog.
-    QString fileName = currentFile().absoluteFilePath();
+        // If the project has never been saved, fall through to a Save-As dialog.
+        QString fileName = currentFile().absoluteFilePath();
 
-    if (fileName.isEmpty()) {
-        fileName = FileDialogs::provider()->getSaveFileName(this, tr("Save File as ..."), QString(), tr("Panda files (*.panda)")).fileName;
+        if (fileName.isEmpty()) {
+            fileName = FileDialogs::provider()->getSaveFileName(this, tr("Save File as ..."), QString(), tr("Panda files (*.panda)")).fileName;
+
+            if (fileName.isEmpty()) {
+                return;
+            }
+
+            ensureFileExtension(fileName, ".panda");
+        }
+
+        const int conflictTab = findTabWithFile(fileName);
+        if (conflictTab != -1) {
+            QMessageBox msgBox(QMessageBox::Warning,
+                               tr("File Conflict"),
+                               tr("The file \"%1\" is already open in another tab.").arg(QFileInfo(fileName).fileName()),
+                               QMessageBox::Ok,
+                               this);
+            QPushButton *switchBtn = msgBox.addButton(tr("Switch to Tab"), QMessageBox::ActionRole);
+            msgBox.exec();
+            if (msgBox.clickedButton() == switchBtn) {
+                m_ui->tab->setCurrentIndex(conflictTab);
+            }
+            return;
+        }
+
+        save(fileName);
+    #endif
+    });
+}
+
+void MainWindow::on_actionSaveAs_triggered()
+{
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("file", QStringLiteral("Save as"));
+        if (!m_currentTab) {
+            return;
+        }
+
+    #ifdef Q_OS_WASM
+        // Save to a temporary file in the virtual FS, then offer it as a browser download.
+        const QString tmpPath = "/tmp/wiredpanda_save.panda";
+        save(tmpPath);
+
+        QFile file(tmpPath);
+        if (file.open(QIODevice::ReadOnly)) {
+            const QByteArray content = file.readAll();
+            file.close();
+
+            QString suggestedName = currentFile().fileName();
+            if (suggestedName.isEmpty()) {
+                suggestedName = "circuit.panda";
+            }
+            QFileDialog::saveFileContent(content, suggestedName);
+        }
+    #else
+        QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Save File as ..."), currentFile().absoluteFilePath(), tr("Panda files (*.panda)")).fileName;
 
         if (fileName.isEmpty()) {
             return;
         }
 
         ensureFileExtension(fileName, ".panda");
-    }
 
-    const int conflictTab = findTabWithFile(fileName);
-    if (conflictTab != -1) {
-        QMessageBox msgBox(QMessageBox::Warning,
-                           tr("File Conflict"),
-                           tr("The file \"%1\" is already open in another tab.").arg(QFileInfo(fileName).fileName()),
-                           QMessageBox::Ok,
-                           this);
-        QPushButton *switchBtn = msgBox.addButton(tr("Switch to Tab"), QMessageBox::ActionRole);
-        msgBox.exec();
-        if (msgBox.clickedButton() == switchBtn) {
-            m_ui->tab->setCurrentIndex(conflictTab);
+        const int conflictTab = findTabWithFile(fileName);
+        if (conflictTab != -1) {
+            QMessageBox msgBox(QMessageBox::Warning,
+                               tr("File Conflict"),
+                               tr("The file \"%1\" is already open in another tab.").arg(QFileInfo(fileName).fileName()),
+                               QMessageBox::Ok,
+                               this);
+            QPushButton *switchBtn = msgBox.addButton(tr("Switch to Tab"), QMessageBox::ActionRole);
+            msgBox.exec();
+            if (msgBox.clickedButton() == switchBtn) {
+                m_ui->tab->setCurrentIndex(conflictTab);
+            }
+            return;
         }
-        return;
-    }
 
-    save(fileName);
-#endif
-}
-
-void MainWindow::on_actionSaveAs_triggered()
-{
-    sentryBreadcrumb("file", QStringLiteral("Save as"));
-    if (!m_currentTab) {
-        return;
-    }
-
-#ifdef Q_OS_WASM
-    // Save to a temporary file in the virtual FS, then offer it as a browser download.
-    const QString tmpPath = "/tmp/wiredpanda_save.panda";
-    save(tmpPath);
-
-    QFile file(tmpPath);
-    if (file.open(QIODevice::ReadOnly)) {
-        const QByteArray content = file.readAll();
-        file.close();
-
-        QString suggestedName = currentFile().fileName();
-        if (suggestedName.isEmpty()) {
-            suggestedName = "circuit.panda";
-        }
-        QFileDialog::saveFileContent(content, suggestedName);
-    }
-#else
-    QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Save File as ..."), currentFile().absoluteFilePath(), tr("Panda files (*.panda)")).fileName;
-
-    if (fileName.isEmpty()) {
-        return;
-    }
-
-    ensureFileExtension(fileName, ".panda");
-
-    const int conflictTab = findTabWithFile(fileName);
-    if (conflictTab != -1) {
-        QMessageBox msgBox(QMessageBox::Warning,
-                           tr("File Conflict"),
-                           tr("The file \"%1\" is already open in another tab.").arg(QFileInfo(fileName).fileName()),
-                           QMessageBox::Ok,
-                           this);
-        QPushButton *switchBtn = msgBox.addButton(tr("Switch to Tab"), QMessageBox::ActionRole);
-        msgBox.exec();
-        if (msgBox.clickedButton() == switchBtn) {
-            m_ui->tab->setCurrentIndex(conflictTab);
-        }
-        return;
-    }
-
-    save(fileName);
-#endif
+        save(fileName);
+    #endif
+    });
 }
 
 int MainWindow::findTabWithFile(const QString &fileName) const
@@ -916,61 +932,69 @@ int MainWindow::findTabWithFile(const QString &fileName) const
 
 void MainWindow::on_actionAbout_triggered()
 {
-    QMessageBox::about(
-        this,
-        "wiRedPanda",
-        tr("<p>wiRedPanda is software developed by students of the Federal University of São Paulo"
-           " to help students learn about logic circuits.</p>"
-           "<p>Software version: %1</p>"
-           "<p><strong>Creators:</strong></p>"
-           "<ul>"
-           "<li> Davi Morales </li>"
-           "<li> Lucas Lellis </li>"
-           "<li> Rodrigo Torres </li>"
-           "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
-           "</ul>"
-           "<p> wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.</p>"
-           "<p> Please file a report at our GitHub page if you find a bug or want to request a new feature.</p>"
-           "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
-            .arg(QApplication::applicationVersion()));
+    Application::guardedSlot(this, [this] {
+        QMessageBox::about(
+            this,
+            "wiRedPanda",
+            tr("<p>wiRedPanda is software developed by students of the Federal University of São Paulo"
+               " to help students learn about logic circuits.</p>"
+               "<p>Software version: %1</p>"
+               "<p><strong>Creators:</strong></p>"
+               "<ul>"
+               "<li> Davi Morales </li>"
+               "<li> Lucas Lellis </li>"
+               "<li> Rodrigo Torres </li>"
+               "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
+               "</ul>"
+               "<p> wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.</p>"
+               "<p> Please file a report at our GitHub page if you find a bug or want to request a new feature.</p>"
+               "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
+                .arg(QApplication::applicationVersion()));
+    });
 }
 
 void MainWindow::on_actionShortcuts_and_Tips_triggered()
 {
-    QMessageBox::information(this,
-        tr("Shortcuts and Tips"),
-        tr("<h1>Canvas Shortcuts</h1>"
-           "<ul style=\"list-style:none;\">"
-           "<li> Ctrl+= : Zoom in </li>"
-           "<li> Ctrl+- : Zoom out </li>"
-           "<li> Ctrl+1 : Hide/Show wires </li>"
-           "<li> Ctrl+2 : Hide/Show gates </li>"
-           "<li> Ctrl+F : Search elements </li>"
-           "<li> Ctrl+W : Open beWaveDolphin </li>"
-           "<li> Ctrl+S : Save project </li>"
-           "<li> Ctrl+Q : Exit wiRedPanda </li>"
-           "<li> F5 : Start/Pause simulation </li>"
-           "<li> [ : Previous primary element property </li>"
-           "<li> ] : Next primary element property </li>"
-           "<li> { : Previous secondary element property </li>"
-           "<li> } : Next secondary element property </li>"
-           "<li> &lt; : Morph to previous element </li>"
-           "<li> &gt; : Morph to next element </li>"
-           "</ul>"
+    Application::guardedSlot(this, [this] {
+        QMessageBox::information(this,
+            tr("Shortcuts and Tips"),
+            tr("<h1>Canvas Shortcuts</h1>"
+               "<ul style=\"list-style:none;\">"
+               "<li> Ctrl+= : Zoom in </li>"
+               "<li> Ctrl+- : Zoom out </li>"
+               "<li> Ctrl+1 : Hide/Show wires </li>"
+               "<li> Ctrl+2 : Hide/Show gates </li>"
+               "<li> Ctrl+F : Search elements </li>"
+               "<li> Ctrl+W : Open beWaveDolphin </li>"
+               "<li> Ctrl+S : Save project </li>"
+               "<li> Ctrl+Q : Exit wiRedPanda </li>"
+               "<li> F5 : Start/Pause simulation </li>"
+               "<li> [ : Previous primary element property </li>"
+               "<li> ] : Next primary element property </li>"
+               "<li> { : Previous secondary element property </li>"
+               "<li> } : Next secondary element property </li>"
+               "<li> &lt; : Morph to previous element </li>"
+               "<li> &gt; : Morph to next element </li>"
+               "</ul>"
 
-           "<h1>General Tips</h1>"
-           "<p>Double-click on a wire to create a node</p>"
-        ));
+               "<h1>General Tips</h1>"
+               "<p>Double-click on a wire to create a node</p>"
+            ));
+    });
 }
 
 void MainWindow::on_actionAboutQt_triggered()
 {
-    QMessageBox::aboutQt(this);
+    Application::guardedSlot(this, [this] {
+        QMessageBox::aboutQt(this);
+    });
 }
 
 void MainWindow::on_actionReportTranslationError_triggered()
 {
-    QDesktopServices::openUrl(QUrl("https://hosted.weblate.org/projects/wiredpanda/wiredpanda"));
+    Application::guardedSlot(this, [this] {
+        QDesktopServices::openUrl(QUrl("https://hosted.weblate.org/projects/wiredpanda/wiredpanda"));
+    });
 }
 
 bool MainWindow::closeFiles()
@@ -1175,12 +1199,14 @@ void MainWindow::setCurrentFile(const QFileInfo &fileInfo)
 
 void MainWindow::on_actionSelectAll_triggered()
 {
-    sentryBreadcrumb("ui", QStringLiteral("Select all"));
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("ui", QStringLiteral("Select all"));
+        if (!m_currentTab) {
+            return;
+        }
 
-    m_currentTab->scene()->selectAll();
+        m_currentTab->scene()->selectAll();
+    });
 }
 
 bool MainWindow::closeTab(const int tabIndex)
@@ -1364,30 +1390,34 @@ void MainWindow::tabChanged(const int newTabIndex)
 
 void MainWindow::on_actionReloadFile_triggered()
 {
-    sentryBreadcrumb("file", QStringLiteral("Reload file"));
-    if (!currentFile().exists() || !m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("file", QStringLiteral("Reload file"));
+        if (!currentFile().exists() || !m_currentTab) {
+            return;
+        }
 
-    const QString file = currentFile().absoluteFilePath();
+        const QString file = currentFile().absoluteFilePath();
 
-    closeTab(m_tabIndex);
-    loadPandaFile(file);
+        closeTab(m_tabIndex);
+        loadPandaFile(file);
+    });
 }
 
 void MainWindow::on_actionGates_triggered(const bool checked)
 {
-    sentryBreadcrumb("ui", QStringLiteral("Gates: %1").arg(checked));
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this, checked] {
+        sentryBreadcrumb("ui", QStringLiteral("Gates: %1").arg(checked));
+        if (!m_currentTab) {
+            return;
+        }
 
-    // Wire visibility depends on gates being visible: if gates are hidden, wires
-    // make no sense and should be hidden too.  Re-enable the wire toggle only when
-    // gates are shown so the user can't end up with floating wires.
-    m_ui->actionWires->setEnabled(checked);
-    m_currentTab->scene()->showWires(checked ? m_ui->actionWires->isChecked() : checked);
-    m_currentTab->scene()->showGates(checked);
+        // Wire visibility depends on gates being visible: if gates are hidden, wires
+        // make no sense and should be hidden too.  Re-enable the wire toggle only when
+        // gates are shown so the user can't end up with floating wires.
+        m_ui->actionWires->setEnabled(checked);
+        m_currentTab->scene()->showWires(checked ? m_ui->actionWires->isChecked() : checked);
+        m_currentTab->scene()->showGates(checked);
+    });
 }
 
 void MainWindow::exportToArduino(QString fileName)
@@ -1466,69 +1496,79 @@ void MainWindow::exportToWaveFormTerminal()
 
 void MainWindow::on_actionExportToArduino_triggered()
 {
-    sentryBreadcrumb("export", QStringLiteral("Export to Arduino"));
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("export", QStringLiteral("Export to Arduino"));
+        if (!m_currentTab) {
+            return;
+        }
 
-    QString path;
+        QString path;
 
-    if (currentFile().exists()) {
-        path = currentFile().absolutePath();
-    }
+        if (currentFile().exists()) {
+            path = currentFile().absolutePath();
+        }
 
-    const QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Generate Arduino Code"), path, tr("Arduino file (*.ino)")).fileName;
+        const QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Generate Arduino Code"), path, tr("Arduino file (*.ino)")).fileName;
 
-    if (!fileName.isEmpty()) {
-        exportToArduino(fileName);
-    }
+        if (!fileName.isEmpty()) {
+            exportToArduino(fileName);
+        }
+    });
 }
 
 void MainWindow::on_actionExportToSystemVerilog_triggered()
 {
-    sentryBreadcrumb("export", QStringLiteral("Export to SystemVerilog"));
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("export", QStringLiteral("Export to SystemVerilog"));
+        if (!m_currentTab) {
+            return;
+        }
 
-    QString path;
+        QString path;
 
-    if (currentFile().exists()) {
-        path = currentFile().absolutePath();
-    }
+        if (currentFile().exists()) {
+            path = currentFile().absolutePath();
+        }
 
-    const QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Generate SystemVerilog Code"), path, tr("SystemVerilog file (*.sv)")).fileName;
+        const QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Generate SystemVerilog Code"), path, tr("SystemVerilog file (*.sv)")).fileName;
 
-    if (!fileName.isEmpty()) {
-        exportToSystemVerilog(fileName);
-    }
+        if (!fileName.isEmpty()) {
+            exportToSystemVerilog(fileName);
+        }
+    });
 }
 
 void MainWindow::on_actionZoomIn_triggered() const
 {
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        if (!m_currentTab) {
+            return;
+        }
 
-    m_currentTab->view()->zoomIn();
+        m_currentTab->view()->zoomIn();
+    });
 }
 
 void MainWindow::on_actionZoomOut_triggered() const
 {
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        if (!m_currentTab) {
+            return;
+        }
 
-    m_currentTab->view()->zoomOut();
+        m_currentTab->view()->zoomOut();
+    });
 }
 
 void MainWindow::on_actionResetZoom_triggered() const
 {
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        if (!m_currentTab) {
+            return;
+        }
 
-    m_currentTab->view()->resetZoom();
+        m_currentTab->view()->resetZoom();
+    });
 }
 
 void MainWindow::zoomChanged()
@@ -1591,54 +1631,58 @@ void MainWindow::createRecentFileActions()
 
 void MainWindow::on_actionExportToPdf_triggered()
 {
-    sentryBreadcrumb("export", QStringLiteral("Export to PDF"));
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("export", QStringLiteral("Export to PDF"));
+        if (!m_currentTab) {
+            return;
+        }
 
-    // De-select elements so their selection handles don't appear in the export.
-    m_currentTab->scene()->clearSelection();
+        // De-select elements so their selection handles don't appear in the export.
+        m_currentTab->scene()->clearSelection();
 
-    const QString path    = currentFile().exists() ? currentFile().absolutePath() : QString();
-    QString pdfFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to PDF"), path, tr("PDF files (*.pdf)")).fileName;
+        const QString path    = currentFile().exists() ? currentFile().absolutePath() : QString();
+        QString pdfFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to PDF"), path, tr("PDF files (*.pdf)")).fileName;
 
-    if (pdfFile.isEmpty()) {
-        return;
-    }
+        if (pdfFile.isEmpty()) {
+            return;
+        }
 
-    if (!pdfFile.endsWith(".pdf", Qt::CaseInsensitive)) {
-        pdfFile.append(".pdf");
-    }
+        if (!pdfFile.endsWith(".pdf", Qt::CaseInsensitive)) {
+            pdfFile.append(".pdf");
+        }
 
-    CircuitExporter::renderToPdf(m_currentTab->scene(), pdfFile);
-    m_ui->statusBar->showMessage(tr("Exported file successfully."), 4000);
-    QDesktopServices::openUrl(QUrl::fromLocalFile(pdfFile));
+        CircuitExporter::renderToPdf(m_currentTab->scene(), pdfFile);
+        m_ui->statusBar->showMessage(tr("Exported file successfully."), 4000);
+        QDesktopServices::openUrl(QUrl::fromLocalFile(pdfFile));
+    });
 }
 
 void MainWindow::on_actionExportToImage_triggered()
 {
-    sentryBreadcrumb("export", QStringLiteral("Export to image"));
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("export", QStringLiteral("Export to image"));
+        if (!m_currentTab) {
+            return;
+        }
 
-    // De-select elements so their selection handles don't appear in the export.
-    m_currentTab->scene()->clearSelection();
+        // De-select elements so their selection handles don't appear in the export.
+        m_currentTab->scene()->clearSelection();
 
-    const QString path    = currentFile().exists() ? currentFile().absolutePath() : QString();
-    QString pngFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to Image"), path, tr("PNG files (*.png)")).fileName;
+        const QString path    = currentFile().exists() ? currentFile().absolutePath() : QString();
+        QString pngFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to Image"), path, tr("PNG files (*.png)")).fileName;
 
-    if (pngFile.isEmpty()) {
-        return;
-    }
+        if (pngFile.isEmpty()) {
+            return;
+        }
 
-    if (!pngFile.endsWith(".png", Qt::CaseInsensitive)) {
-        pngFile.append(".png");
-    }
+        if (!pngFile.endsWith(".png", Qt::CaseInsensitive)) {
+            pngFile.append(".png");
+        }
 
-    CircuitExporter::renderToImage(m_currentTab->scene(), pngFile);
-    m_ui->statusBar->showMessage(tr("Exported file successfully."), 4000);
-    QDesktopServices::openUrl(QUrl::fromLocalFile(pngFile));
+        CircuitExporter::renderToImage(m_currentTab->scene(), pngFile);
+        m_ui->statusBar->showMessage(tr("Exported file successfully."), 4000);
+        QDesktopServices::openUrl(QUrl::fromLocalFile(pngFile));
+    });
 }
 
 void MainWindow::retranslateUi()
@@ -1728,12 +1772,14 @@ void MainWindow::on_actionPlay_toggled(const bool checked)
 
 void MainWindow::on_actionRestart_triggered()
 {
-    sentryBreadcrumb("simulation", QStringLiteral("Simulation restart"));
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("simulation", QStringLiteral("Simulation restart"));
+        if (!m_currentTab) {
+            return;
+        }
 
-    m_currentTab->simulation()->restart();
+        m_currentTab->simulation()->restart();
+    });
 }
 
 void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout)
@@ -1756,40 +1802,50 @@ void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLa
 
 void MainWindow::on_actionFastMode_triggered(const bool checked)
 {
-    sentryBreadcrumb("ui", QStringLiteral("Fast mode: %1").arg(checked));
-    setFastMode(checked);
-    Settings::setFastMode(checked);
+    Application::guardedSlot(this, [this, checked] {
+        sentryBreadcrumb("ui", QStringLiteral("Fast mode: %1").arg(checked));
+        setFastMode(checked);
+        Settings::setFastMode(checked);
+    });
 }
 
 void MainWindow::on_actionWaveform_triggered()
 {
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        if (!m_currentTab) {
+            return;
+        }
 
-    sentryBreadcrumb("ui", QStringLiteral("Waveform dialog opened"));
-    qCDebug(zero) << "BD fileName: " << m_currentTab->dolphinFileName();
-    auto *bewavedDolphin = new BewavedDolphin(m_currentTab->scene(), true, this);
-    bewavedDolphin->createWaveform(m_currentTab->dolphinFileName());
-    bewavedDolphin->show();
+        sentryBreadcrumb("ui", QStringLiteral("Waveform dialog opened"));
+        qCDebug(zero) << "BD fileName: " << m_currentTab->dolphinFileName();
+        auto *bewavedDolphin = new BewavedDolphin(m_currentTab->scene(), true, this);
+        bewavedDolphin->createWaveform(m_currentTab->dolphinFileName());
+        bewavedDolphin->show();
+    });
 }
 
 void MainWindow::on_actionLightTheme_triggered()
 {
-    sentryBreadcrumb("ui", QStringLiteral("Theme: light"));
-    ThemeManager::setTheme(Theme::Light);
+    Application::guardedSlot(qApp, [] {
+        sentryBreadcrumb("ui", QStringLiteral("Theme: light"));
+        ThemeManager::setTheme(Theme::Light);
+    });
 }
 
 void MainWindow::on_actionDarkTheme_triggered()
 {
-    sentryBreadcrumb("ui", QStringLiteral("Theme: dark"));
-    ThemeManager::setTheme(Theme::Dark);
+    Application::guardedSlot(qApp, [] {
+        sentryBreadcrumb("ui", QStringLiteral("Theme: dark"));
+        ThemeManager::setTheme(Theme::Dark);
+    });
 }
 
 void MainWindow::on_actionSystemTheme_triggered()
 {
-    sentryBreadcrumb("ui", QStringLiteral("Theme: system"));
-    ThemeManager::setTheme(Theme::System);
+    Application::guardedSlot(qApp, [] {
+        sentryBreadcrumb("ui", QStringLiteral("Theme: system"));
+        ThemeManager::setTheme(Theme::System);
+    });
 }
 
 void MainWindow::updateTheme()
@@ -1806,20 +1862,24 @@ void MainWindow::updateTheme()
 
 void MainWindow::on_actionFlipHorizontally_triggered()
 {
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        if (!m_currentTab) {
+            return;
+        }
 
-    m_currentTab->scene()->flipHorizontally();
+        m_currentTab->scene()->flipHorizontally();
+    });
 }
 
 void MainWindow::on_actionFlipVertically_triggered()
 {
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        if (!m_currentTab) {
+            return;
+        }
 
-    m_currentTab->scene()->flipVertically();
+        m_currentTab->scene()->flipVertically();
+    });
 }
 
 QString MainWindow::dolphinFileName()
@@ -1842,26 +1902,32 @@ void MainWindow::setDolphinFileName(const QString &fileName)
 
 void MainWindow::on_actionFullscreen_triggered()
 {
-    sentryBreadcrumb("ui", QStringLiteral("Fullscreen toggled"));
-    isFullScreen() ? showNormal() : showFullScreen();
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("ui", QStringLiteral("Fullscreen toggled"));
+        isFullScreen() ? showNormal() : showFullScreen();
+    });
 }
 
 void MainWindow::on_actionMute_triggered(const bool checked)
 {
-    sentryBreadcrumb("ui", QStringLiteral("Mute toggled"));
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this, checked] {
+        sentryBreadcrumb("ui", QStringLiteral("Mute toggled"));
+        if (!m_currentTab) {
+            return;
+        }
 
-    m_currentTab->simulation()->setUserMuted(checked);
-    m_ui->actionMute->setText(checked ? tr("Unmute") : tr("Mute"));
+        m_currentTab->simulation()->setUserMuted(checked);
+        m_ui->actionMute->setText(checked ? tr("Unmute") : tr("Mute"));
+    });
 }
 
 void MainWindow::on_actionLabelsUnderIcons_triggered(const bool checked)
 {
-    sentryBreadcrumb("ui", QStringLiteral("Labels under icons: %1").arg(checked));
-    m_ui->mainToolBar->setToolButtonStyle(checked ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
-    Settings::setLabelsUnderIcons(checked);
+    Application::guardedSlot(this, [this, checked] {
+        sentryBreadcrumb("ui", QStringLiteral("Labels under icons: %1").arg(checked));
+        m_ui->mainToolBar->setToolButtonStyle(checked ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
+        Settings::setLabelsUnderIcons(checked);
+    });
 }
 
 bool MainWindow::event(QEvent *event)
@@ -1892,41 +1958,45 @@ bool MainWindow::event(QEvent *event)
 
 void MainWindow::on_pushButtonAddIC_clicked()
 {
-    sentryBreadcrumb("ic", QStringLiteral("Add IC"));
-    if (!m_currentTab) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("ic", QStringLiteral("Add IC"));
+        if (!m_currentTab) {
+            return;
+        }
 
-    // The IC list is directory-relative.  If the project hasn't been saved yet
-    // we don't have a directory to copy into, so require a save first.
-    if (!m_currentTab->fileInfo().isReadable()) {
-        throw PANDACEPTION("Save file first.");
-    }
+        // The IC list is directory-relative.  If the project hasn't been saved yet
+        // we don't have a directory to copy into, so require a save first.
+        if (!m_currentTab->fileInfo().isReadable()) {
+            throw PANDACEPTION("Save file first.");
+        }
 
-    const QString selectedFile = FileDialogs::provider()->getOpenFileName(this, tr("Open File"), QString(), tr("Panda (*.panda)"));
+        const QString selectedFile = FileDialogs::provider()->getOpenFileName(this, tr("Open File"), QString(), tr("Panda (*.panda)"));
 
-    if (selectedFile.isEmpty()) {
-        return;
-    }
+        if (selectedFile.isEmpty()) {
+            return;
+        }
 
-    const QStringList files = {selectedFile};
+        const QStringList files = {selectedFile};
 
-    QMessageBox::information(this, tr("Info"), tr("Selected files (and their dependencies) will be copied to the current project folder."));
+        QMessageBox::information(this, tr("Info"), tr("Selected files (and their dependencies) will be copied to the current project folder."));
 
-    // Copy the chosen .panda file (and any ICs it depends on transitively)
-    // into the project's directory so that relative paths work when reopened.
-    for (const auto &file : files) {
-        QFileInfo destPath(currentDir().absolutePath() + "/" + QFileInfo(file).fileName());
-        Serialization::copyPandaFile(QFileInfo(file), destPath);
-    }
+        // Copy the chosen .panda file (and any ICs it depends on transitively)
+        // into the project's directory so that relative paths work when reopened.
+        for (const auto &file : files) {
+            QFileInfo destPath(currentDir().absolutePath() + "/" + QFileInfo(file).fileName());
+            Serialization::copyPandaFile(QFileInfo(file), destPath);
+        }
 
-    m_palette->updateICList(icListFile());
+        m_palette->updateICList(icListFile());
+    });
 }
 
 void MainWindow::on_pushButtonRemoveIC_clicked()
 {
-    sentryBreadcrumb("ic", QStringLiteral("Remove IC"));
-    QMessageBox::information(this, tr("Info"), tr("Drag here to remove."));
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("ic", QStringLiteral("Remove IC"));
+        QMessageBox::information(this, tr("Info"), tr("Drag here to remove."));
+    });
 }
 
 void MainWindow::removeICFile(const QString &icFileName)

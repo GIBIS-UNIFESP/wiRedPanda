@@ -482,7 +482,9 @@ void BewavedDolphin::setTableViewSize(const int width, const int height)
 
 void BewavedDolphin::on_actionExit_triggered()
 {
-    close();
+    Application::guardedSlot(this, [this] {
+        close();
+    });
 }
 
 void BewavedDolphin::closeEvent(QCloseEvent *event)
@@ -637,23 +639,29 @@ void BewavedDolphin::applyToSelectedCells(const std::function<int(int)> &valueFn
 
 void BewavedDolphin::on_actionSetTo0_triggered()
 {
-    sentryBreadcrumb("waveform", QStringLiteral("Set cells to 0"));
-    qCDebug(zero) << "Pressed 0.";
-    applyToSelectedCells([](int) { return 0; });
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("waveform", QStringLiteral("Set cells to 0"));
+        qCDebug(zero) << "Pressed 0.";
+        applyToSelectedCells([](int) { return 0; });
+    });
 }
 
 void BewavedDolphin::on_actionSetTo1_triggered()
 {
-    sentryBreadcrumb("waveform", QStringLiteral("Set cells to 1"));
-    qCDebug(zero) << "Pressed 1.";
-    applyToSelectedCells([](int) { return 1; });
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("waveform", QStringLiteral("Set cells to 1"));
+        qCDebug(zero) << "Pressed 1.";
+        applyToSelectedCells([](int) { return 1; });
+    });
 }
 
 void BewavedDolphin::on_actionInvert_triggered()
 {
-    sentryBreadcrumb("waveform", QStringLiteral("Invert cells"));
-    qCDebug(zero) << "Pressed Not.";
-    applyToSelectedCells([](int v) { return (v + 1) % 2; });
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("waveform", QStringLiteral("Invert cells"));
+        qCDebug(zero) << "Pressed Not.";
+        applyToSelectedCells([](int v) { return (v + 1) % 2; });
+    });
 }
 
 int BewavedDolphin::sectionFirstColumn(const QItemSelection &ranges)
@@ -684,86 +692,92 @@ int BewavedDolphin::sectionFirstRow(const QItemSelection &ranges)
 
 void BewavedDolphin::on_actionSetClockWave_triggered()
 {
-    sentryBreadcrumb("waveform", QStringLiteral("Set clock wave"));
-    qCDebug(zero) << "Getting first column.";
-    const auto ranges = m_signalTableView->selectionModel()->selection();
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("waveform", QStringLiteral("Set clock wave"));
+        qCDebug(zero) << "Getting first column.";
+        const auto ranges = m_signalTableView->selectionModel()->selection();
 
-    if (ranges.isEmpty()) {
-        throw PANDACEPTION("No cells selected.");
-    }
+        if (ranges.isEmpty()) {
+            throw PANDACEPTION("No cells selected.");
+        }
 
-    // Anchor the clock phase to the leftmost selected column so the waveform
-    // starts at 0 regardless of where in the timeline the selection begins
-    const int firstCol = sectionFirstColumn(ranges);
+        // Anchor the clock phase to the leftmost selected column so the waveform
+        // starts at 0 regardless of where in the timeline the selection begins
+        const int firstCol = sectionFirstColumn(ranges);
 
-    qCDebug(zero) << "Setting the signal according to its column and clock period.";
-    ClockDialog dialog(m_clockPeriod, this);
-    const int clockPeriod = dialog.frequency();
+        qCDebug(zero) << "Setting the signal according to its column and clock period.";
+        ClockDialog dialog(m_clockPeriod, this);
+        const int clockPeriod = dialog.frequency();
 
-    if (clockPeriod < 0) {
-        return;
-    }
+        if (clockPeriod < 0) {
+            return;
+        }
 
-    m_clockPeriod = clockPeriod;
+        m_clockPeriod = clockPeriod;
 
-    // First half of each period is LOW, second half is HIGH (50% duty cycle)
-    const int halfClockPeriod = clockPeriod / 2;
-    const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
+        // First half of each period is LOW, second half is HIGH (50% duty cycle)
+        const int halfClockPeriod = clockPeriod / 2;
+        const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
 
-    for (const auto &item : itemList) {
-        const int value = ((item.column() - firstCol) % clockPeriod < halfClockPeriod ? 0 : 1);
-        setCellValue(item.row(), item.column(), value, true, true);
-    }
+        for (const auto &item : itemList) {
+            const int value = ((item.column() - firstCol) % clockPeriod < halfClockPeriod ? 0 : 1);
+            setCellValue(item.row(), item.column(), value, true, true);
+        }
 
-    m_edited = true;
-    qCDebug(zero) << "Running simulation.";
-    run();
+        m_edited = true;
+        qCDebug(zero) << "Running simulation.";
+        run();
+    });
 }
 
 void BewavedDolphin::on_actionCombinational_triggered()
 {
-    sentryBreadcrumb("waveform", QStringLiteral("Combinational mode"));
-    // Ensure the table is at least as long as the full truth table (2^n columns)
-    const int truthTableSize = static_cast<int>((std::min)(static_cast<double>(kMaxSimLength), std::pow(2, m_inputPorts)));
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("waveform", QStringLiteral("Combinational mode"));
+        // Ensure the table is at least as long as the full truth table (2^n columns)
+        const int truthTableSize = static_cast<int>((std::min)(static_cast<double>(kMaxSimLength), std::pow(2, m_inputPorts)));
 
-    if (m_length < truthTableSize) {
-        setLength(truthTableSize, false);
-    }
-
-    // Generate Gray-code-like input patterns: row 0 toggles every 1 column (period=2),
-    // row 1 every 2 columns (period=4), etc. Together they enumerate all input combinations.
-    qCDebug(zero) << "Setting the signal according to its columns and clock period.";
-    int halfClockPeriod = 1;
-    int clockPeriod     = 2;
-
-    for (int row = 0; row < m_inputPorts; ++row) {
-        for (int col = 0; col < m_model->columnCount(); ++col) {
-            setCellValue(row, col, (col % clockPeriod < halfClockPeriod ? 0 : 1), true, true);
+        if (m_length < truthTableSize) {
+            setLength(truthTableSize, false);
         }
 
-        // Double the period for each successive input bit; cap at max int-safe values
-        halfClockPeriod = (std::min)(clockPeriod, 524288);
-        clockPeriod     = (std::min)(2 * clockPeriod, 1048576);
-    }
+        // Generate Gray-code-like input patterns: row 0 toggles every 1 column (period=2),
+        // row 1 every 2 columns (period=4), etc. Together they enumerate all input combinations.
+        qCDebug(zero) << "Setting the signal according to its columns and clock period.";
+        int halfClockPeriod = 1;
+        int clockPeriod     = 2;
 
-    m_edited = true;
-    qCDebug(zero) << "Running simulation.";
-    run();
+        for (int row = 0; row < m_inputPorts; ++row) {
+            for (int col = 0; col < m_model->columnCount(); ++col) {
+                setCellValue(row, col, (col % clockPeriod < halfClockPeriod ? 0 : 1), true, true);
+            }
+
+            // Double the period for each successive input bit; cap at max int-safe values
+            halfClockPeriod = (std::min)(clockPeriod, 524288);
+            clockPeriod     = (std::min)(2 * clockPeriod, 1048576);
+        }
+
+        m_edited = true;
+        qCDebug(zero) << "Running simulation.";
+        run();
+    });
 }
 
 void BewavedDolphin::on_actionSetLength_triggered()
 {
-    sentryBreadcrumb("waveform", QStringLiteral("Set length dialog"));
-    qCDebug(zero) << "Setting the simulation length.";
-    const int currentLength = m_length > 0 ? m_length : m_model->columnCount();
-    LengthDialog dialog(currentLength, this);
-    const int simLength = dialog.length();
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("waveform", QStringLiteral("Set length dialog"));
+        qCDebug(zero) << "Setting the simulation length.";
+        const int currentLength = m_length > 0 ? m_length : m_model->columnCount();
+        LengthDialog dialog(currentLength, this);
+        const int simLength = dialog.length();
 
-    if (simLength < 0) {
-        return;
-    }
+        if (simLength < 0) {
+            return;
+        }
 
-    setLength(simLength, true);
+        setLength(simLength, true);
+    });
 }
 
 void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
@@ -816,26 +830,32 @@ void BewavedDolphin::adjustColumnWidths(const std::function<int(int)> &widthFn)
 
 void BewavedDolphin::on_actionZoomOut_triggered()
 {
-    sentryBreadcrumb("waveform", QStringLiteral("Zoom out"));
-    m_view.zoomOut();
-    // Shrink column widths to match the reduced scene scale so pixmaps still tile correctly
-    adjustColumnWidths([this](int w) { return static_cast<int>(w / m_scale); });
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("waveform", QStringLiteral("Zoom out"));
+        m_view.zoomOut();
+        // Shrink column widths to match the reduced scene scale so pixmaps still tile correctly
+        adjustColumnWidths([this](int w) { return static_cast<int>(w / m_scale); });
+    });
 }
 
 void BewavedDolphin::on_actionZoomIn_triggered()
 {
-    sentryBreadcrumb("waveform", QStringLiteral("Zoom in"));
-    m_view.zoomIn();
-    // Grow column widths proportionally so waveform segments remain at their natural aspect ratio
-    adjustColumnWidths([this](int w) { return static_cast<int>(w * m_scale); });
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("waveform", QStringLiteral("Zoom in"));
+        m_view.zoomIn();
+        // Grow column widths proportionally so waveform segments remain at their natural aspect ratio
+        adjustColumnWidths([this](int w) { return static_cast<int>(w * m_scale); });
+    });
 }
 
 void BewavedDolphin::on_actionResetZoom_triggered()
 {
-    sentryBreadcrumb("waveform", QStringLiteral("Zoom reset"));
-    m_view.resetZoom();
-    m_scale = kZoomStep;
-    adjustColumnWidths([](int) { return kDefaultColumnWidth; });
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("waveform", QStringLiteral("Zoom reset"));
+        m_view.resetZoom();
+        m_scale = kZoomStep;
+        adjustColumnWidths([](int) { return kDefaultColumnWidth; });
+    });
 }
 
 void BewavedDolphin::zoomChanged()
@@ -846,64 +866,72 @@ void BewavedDolphin::zoomChanged()
 
 void BewavedDolphin::on_actionFitScreen_triggered()
 {
-    sentryBreadcrumb("waveform", QStringLiteral("Fit screen"));
-    // First undo the current scale transform so the measurements below are in logical pixels
-    m_view.scale(1.0 / m_scale, 1.0 / m_scale);
-    // Compute the scale needed to fit all columns and all rows within the current view
-    const double wScale = static_cast<double>(m_view.width()) / (m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0));
-    const double hScale = static_cast<double>(m_view.height()) / (m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10);
-    // Use the smaller scale so neither axis overflows the view
-    m_scale = (std::min)(wScale, hScale);
-    m_view.scale(1.0 * m_scale, 1.0 * m_scale);
-    // FitScreen sets an arbitrary transform, so reset the discrete level to 0
-    // so canZoomIn/Out limits are correct for subsequent zoom actions
-    m_view.resetZoom();
-    resizeScene();
-    zoomChanged();
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("waveform", QStringLiteral("Fit screen"));
+        // First undo the current scale transform so the measurements below are in logical pixels
+        m_view.scale(1.0 / m_scale, 1.0 / m_scale);
+        // Compute the scale needed to fit all columns and all rows within the current view
+        const double wScale = static_cast<double>(m_view.width()) / (m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0));
+        const double hScale = static_cast<double>(m_view.height()) / (m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10);
+        // Use the smaller scale so neither axis overflows the view
+        m_scale = (std::min)(wScale, hScale);
+        m_view.scale(1.0 * m_scale, 1.0 * m_scale);
+        // FitScreen sets an arbitrary transform, so reset the discrete level to 0
+        // so canZoomIn/Out limits are correct for subsequent zoom actions
+        m_view.resetZoom();
+        resizeScene();
+        zoomChanged();
+    });
 }
 
 void BewavedDolphin::on_actionClear_triggered()
 {
-    sentryBreadcrumb("waveform", QStringLiteral("Clear input"));
-    for (int row = 0; row < m_inputPorts; ++row) {
-        for (int col = 0; col < m_model->columnCount(); ++col) {
-            setCellValue(row, col, 0, true, true);
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("waveform", QStringLiteral("Clear input"));
+        for (int row = 0; row < m_inputPorts; ++row) {
+            for (int col = 0; col < m_model->columnCount(); ++col) {
+                setCellValue(row, col, 0, true, true);
+            }
         }
-    }
 
-    m_edited = true;
-    qCDebug(zero) << "Running simulation.";
-    run();
+        m_edited = true;
+        qCDebug(zero) << "Running simulation.";
+        run();
+    });
 }
 
 void BewavedDolphin::on_actionAutoCrop_triggered()
 {
-    sentryBreadcrumb("waveform", QStringLiteral("Auto crop"));
-    // Crop (or extend) the simulation to exactly the full truth table size for the
-    // current number of input elements, then re-run to refresh output rows
-    setLength(static_cast<int>(std::pow(2, m_inputs.length())), true);
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("waveform", QStringLiteral("Auto crop"));
+        // Crop (or extend) the simulation to exactly the full truth table size for the
+        // current number of input elements, then re-run to refresh output rows
+        setLength(static_cast<int>(std::pow(2, m_inputs.length())), true);
+    });
 }
 
 void BewavedDolphin::on_actionCopy_triggered()
 {
-    sentryBreadcrumb("clipboard", QStringLiteral("Waveform copy"));
-    const auto ranges = m_signalTableView->selectionModel()->selection();
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("clipboard", QStringLiteral("Waveform copy"));
+        const auto ranges = m_signalTableView->selectionModel()->selection();
 
-    if (ranges.isEmpty()) {
-        QApplication::clipboard()->clear();
-        return;
-    }
+        if (ranges.isEmpty()) {
+            QApplication::clipboard()->clear();
+            return;
+        }
 
-    // Serialise using a versioned header so paste can verify format compatibility
-    QByteArray itemData;
-    QDataStream stream(&itemData, QIODevice::WriteOnly);
-    Serialization::writeDolphinHeader(stream);
-    copy(ranges, stream);
+        // Serialise using a versioned header so paste can verify format compatibility
+        QByteArray itemData;
+        QDataStream stream(&itemData, QIODevice::WriteOnly);
+        Serialization::writeDolphinHeader(stream);
+        copy(ranges, stream);
 
-    auto *mimeData = new QMimeData();
-    mimeData->setData("application/x-bewaveddolphin-waveform", itemData);
+        auto *mimeData = new QMimeData();
+        mimeData->setData("application/x-bewaveddolphin-waveform", itemData);
 
-    QApplication::clipboard()->setMimeData(mimeData);
+        QApplication::clipboard()->setMimeData(mimeData);
+    });
 }
 
 void BewavedDolphin::copy(const QItemSelection &ranges, QDataStream &stream)
@@ -926,25 +954,27 @@ void BewavedDolphin::copy(const QItemSelection &ranges, QDataStream &stream)
 
 void BewavedDolphin::on_actionCut_triggered()
 {
-    sentryBreadcrumb("clipboard", QStringLiteral("Waveform cut"));
-    const auto ranges = m_signalTableView->selectionModel()->selection();
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("clipboard", QStringLiteral("Waveform cut"));
+        const auto ranges = m_signalTableView->selectionModel()->selection();
 
-    if (ranges.isEmpty()) {
-        QApplication::clipboard()->clear();
-        return;
-    }
+        if (ranges.isEmpty()) {
+            QApplication::clipboard()->clear();
+            return;
+        }
 
-    QByteArray itemData;
-    QDataStream stream(&itemData, QIODevice::WriteOnly);
-    Serialization::writeDolphinHeader(stream);
-    cut(ranges, stream);
+        QByteArray itemData;
+        QDataStream stream(&itemData, QIODevice::WriteOnly);
+        Serialization::writeDolphinHeader(stream);
+        cut(ranges, stream);
 
-    auto *mimeData = new QMimeData();
-    mimeData->setData("application/x-bewaveddolphin-waveform", itemData);
+        auto *mimeData = new QMimeData();
+        mimeData->setData("application/x-bewaveddolphin-waveform", itemData);
 
-    QApplication::clipboard()->setMimeData(mimeData);
+        QApplication::clipboard()->setMimeData(mimeData);
 
-    m_edited = true;
+        m_edited = true;
+    });
 }
 
 void BewavedDolphin::cut(const QItemSelection &ranges, QDataStream &stream)
@@ -955,32 +985,34 @@ void BewavedDolphin::cut(const QItemSelection &ranges, QDataStream &stream)
 
 void BewavedDolphin::on_actionPaste_triggered()
 {
-    sentryBreadcrumb("clipboard", QStringLiteral("Waveform paste"));
-    const auto ranges = m_signalTableView->selectionModel()->selection();
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("clipboard", QStringLiteral("Waveform paste"));
+        const auto ranges = m_signalTableView->selectionModel()->selection();
 
-    if (ranges.isEmpty()) {
-        return;
-    }
+        if (ranges.isEmpty()) {
+            return;
+        }
 
-    const auto *mimeData = QApplication::clipboard()->mimeData();
-    QByteArray itemData;
+        const auto *mimeData = QApplication::clipboard()->mimeData();
+        QByteArray itemData;
 
-    // Support both the legacy "bdolphin/copydata" MIME type and the current one,
-    // so files or clipboard data from older versions of the app can still be pasted
-    if (mimeData->hasFormat("bdolphin/copydata")) {
-        itemData = mimeData->data("bdolphin/copydata");
-    }
+        // Support both the legacy "bdolphin/copydata" MIME type and the current one,
+        // so files or clipboard data from older versions of the app can still be pasted
+        if (mimeData->hasFormat("bdolphin/copydata")) {
+            itemData = mimeData->data("bdolphin/copydata");
+        }
 
-    if (mimeData->hasFormat("application/x-bewaveddolphin-waveform")) {
-        itemData = mimeData->data("application/x-bewaveddolphin-waveform");
-    }
+        if (mimeData->hasFormat("application/x-bewaveddolphin-waveform")) {
+            itemData = mimeData->data("application/x-bewaveddolphin-waveform");
+        }
 
-    if (!itemData.isEmpty()) {
-        QDataStream stream(&itemData, QIODevice::ReadOnly);
-        Serialization::readDolphinHeader(stream);
-        paste(ranges, stream);
-        m_edited = true;
-    }
+        if (!itemData.isEmpty()) {
+            QDataStream stream(&itemData, QIODevice::ReadOnly);
+            Serialization::readDolphinHeader(stream);
+            paste(ranges, stream);
+            m_edited = true;
+        }
+    });
 }
 
 void BewavedDolphin::paste(const QItemSelection &ranges, QDataStream &stream)
@@ -1009,50 +1041,54 @@ void BewavedDolphin::paste(const QItemSelection &ranges, QDataStream &stream)
 
 void BewavedDolphin::on_actionSave_triggered()
 {
-    sentryBreadcrumb("file", QStringLiteral("Waveform save"));
-    if (m_currentFile.fileName().isEmpty()) {
-        on_actionSaveAs_triggered();
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("file", QStringLiteral("Waveform save"));
+        if (m_currentFile.fileName().isEmpty()) {
+            on_actionSaveAs_triggered();
+            return;
+        }
 
-    save(m_currentFile.absoluteFilePath());
-    m_ui->statusbar->showMessage(tr("Saved file successfully."), 4000);
-    m_edited = false;
+        save(m_currentFile.absoluteFilePath());
+        m_ui->statusbar->showMessage(tr("Saved file successfully."), 4000);
+        m_edited = false;
+    });
 }
 
 void BewavedDolphin::on_actionSaveAs_triggered()
 {
-    sentryBreadcrumb("file", QStringLiteral("Waveform save as"));
-    const QString path = m_mainWindow->currentFile().absolutePath();
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("file", QStringLiteral("Waveform save as"));
+        const QString path = m_mainWindow->currentFile().absolutePath();
 
-    // List the format that matches the current file first so it is the default selection
-    const QString fileFilter = m_currentFile.fileName().endsWith(".csv") ?
-                tr("CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)")
-              : tr("Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)");
+        // List the format that matches the current file first so it is the default selection
+        const QString fileFilter = m_currentFile.fileName().endsWith(".csv") ?
+                    tr("CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)")
+                  : tr("Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)");
 
-    const auto result = FileDialogs::provider()->getSaveFileName(this, tr("Save File as..."), path, fileFilter);
-    QString fileName = result.fileName;
+        const auto result = FileDialogs::provider()->getSaveFileName(this, tr("Save File as..."), path, fileFilter);
+        QString fileName = result.fileName;
 
-    if (fileName.isEmpty()) {
-        return;
-    }
-
-    // Append the correct extension when the user types a bare name without one,
-    // inferring the format from whichever filter was active in the dialog
-    if (!fileName.endsWith(".dolphin") && !fileName.endsWith(".csv")) {
-        if (result.selectedFilter.contains("dolphin")) {
-            fileName.append(".dolphin");
-        } else {
-            fileName.append(".csv");
+        if (fileName.isEmpty()) {
+            return;
         }
-    }
 
-    save(fileName);
-    m_currentFile = QFileInfo(fileName);
-    associateToWiRedPanda(fileName);
-    setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
-    m_ui->statusbar->showMessage(tr("Saved file successfully."), 4000);
-    m_edited = false;
+        // Append the correct extension when the user types a bare name without one,
+        // inferring the format from whichever filter was active in the dialog
+        if (!fileName.endsWith(".dolphin") && !fileName.endsWith(".csv")) {
+            if (result.selectedFilter.contains("dolphin")) {
+                fileName.append(".dolphin");
+            } else {
+                fileName.append(".csv");
+            }
+        }
+
+        save(fileName);
+        m_currentFile = QFileInfo(fileName);
+        associateToWiRedPanda(fileName);
+        setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
+        m_ui->statusbar->showMessage(tr("Saved file successfully."), 4000);
+        m_edited = false;
+    });
 }
 
 void BewavedDolphin::save(const QString &fileName)
@@ -1112,34 +1148,36 @@ void BewavedDolphin::associateToWiRedPanda(const QString &fileName)
 
 void BewavedDolphin::on_actionLoad_triggered()
 {
-    sentryBreadcrumb("file", QStringLiteral("Waveform load dialog"));
-    QDir defaultDirectory;
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("file", QStringLiteral("Waveform load dialog"));
+        QDir defaultDirectory;
 
-    // Prefer the last-used dolphin file's directory; fall back to the main window's
-    // working directory, and finally to the home directory
-    if (m_currentFile.exists()) {
-        defaultDirectory.setPath(m_currentFile.absolutePath());
-    } else {
-        if (m_mainWindow->currentFile().exists()) {
-            m_mainWindow->currentFile().dir();
+        // Prefer the last-used dolphin file's directory; fall back to the main window's
+        // working directory, and finally to the home directory
+        if (m_currentFile.exists()) {
+            defaultDirectory.setPath(m_currentFile.absolutePath());
         } else {
-            defaultDirectory.setPath(QDir::homePath());
+            if (m_mainWindow->currentFile().exists()) {
+                m_mainWindow->currentFile().dir();
+            } else {
+                defaultDirectory.setPath(QDir::homePath());
+            }
         }
-    }
 
-    const QString homeDir(m_mainWindow->currentDir().absolutePath());
+        const QString homeDir(m_mainWindow->currentDir().absolutePath());
 
-    const QString fileName = FileDialogs::provider()->getOpenFileName(
-        this, tr("Open File"), homeDir,
-        tr("All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)"));
+        const QString fileName = FileDialogs::provider()->getOpenFileName(
+            this, tr("Open File"), homeDir,
+            tr("All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)"));
 
-    if (fileName.isEmpty()) {
-        return;
-    }
+        if (fileName.isEmpty()) {
+            return;
+        }
 
-    load(fileName);
-    m_edited = false;
-    m_ui->statusbar->showMessage(tr("File loaded successfully."), 4000);
+        load(fileName);
+        m_edited = false;
+        m_ui->statusbar->showMessage(tr("File loaded successfully."), 4000);
+    });
 }
 
 void BewavedDolphin::load(const QString &fileName)
@@ -1214,59 +1252,65 @@ void BewavedDolphin::load(QFile &file)
 
 void BewavedDolphin::on_actionShowNumbers_triggered()
 {
-    sentryBreadcrumb("waveform", QStringLiteral("Show numbers"));
-    m_type = PlotType::Number;
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("waveform", QStringLiteral("Show numbers"));
+        m_type = PlotType::Number;
 
-    // Clear the DecorationRole pixmaps that the Line mode sets; if left, the delegate
-    // would paint the waveform image on top of the numeric text
-    for (int row = 0; row < m_model->rowCount(); ++row) {
-        for (int col = 0; col < m_model->columnCount(); ++col) {
-            m_model->setData(m_model->index(row, col), QVariant(), Qt::DecorationRole);
+        // Clear the DecorationRole pixmaps that the Line mode sets; if left, the delegate
+        // would paint the waveform image on top of the numeric text
+        for (int row = 0; row < m_model->rowCount(); ++row) {
+            for (int col = 0; col < m_model->columnCount(); ++col) {
+                m_model->setData(m_model->index(row, col), QVariant(), Qt::DecorationRole);
+            }
         }
-    }
 
-    // Re-apply input cells through setCellValue so alignment roles are set for Number mode
-    for (int row = 0; row < m_inputPorts; ++row) {
-        for (int col = 0; col < m_model->columnCount(); ++col) {
-            setCellValue(row, col, m_model->index(row, col).data().toInt(), true, true);
+        // Re-apply input cells through setCellValue so alignment roles are set for Number mode
+        for (int row = 0; row < m_inputPorts; ++row) {
+            for (int col = 0; col < m_model->columnCount(); ++col) {
+                setCellValue(row, col, m_model->index(row, col).data().toInt(), true, true);
+            }
         }
-    }
 
-    qCDebug(zero) << "Running simulation.";
-    run();
+        qCDebug(zero) << "Running simulation.";
+        run();
+    });
 }
 
 void BewavedDolphin::on_actionShowWaveforms_triggered()
 {
-    sentryBreadcrumb("waveform", QStringLiteral("Show waveforms"));
-    m_type = PlotType::Line;
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("waveform", QStringLiteral("Show waveforms"));
+        m_type = PlotType::Line;
 
-    // Re-create all input cells so they receive the correct rising/falling pixmaps
-    // for the current value sequence; output cells are refreshed by run() below
-    for (int row = 0; row < m_inputPorts; ++row) {
-        for (int col = 0; col < m_model->columnCount(); ++col) {
-            setCellValue(row, col, m_model->index(row, col).data().toInt(), true, true);
+        // Re-create all input cells so they receive the correct rising/falling pixmaps
+        // for the current value sequence; output cells are refreshed by run() below
+        for (int row = 0; row < m_inputPorts; ++row) {
+            for (int col = 0; col < m_model->columnCount(); ++col) {
+                setCellValue(row, col, m_model->index(row, col).data().toInt(), true, true);
+            }
         }
-    }
 
-    qCDebug(zero) << "Running simulation.";
-    run();
+        qCDebug(zero) << "Running simulation.";
+        run();
+    });
 }
 
 void BewavedDolphin::on_actionExportToPng_triggered()
 {
-    sentryBreadcrumb("export", QStringLiteral("Waveform export PNG"));
-    QString pngFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to Image"), m_currentFile.absolutePath(), tr("PNG files (*.png)")).fileName;
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("export", QStringLiteral("Waveform export PNG"));
+        QString pngFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to Image"), m_currentFile.absolutePath(), tr("PNG files (*.png)")).fileName;
 
-    if (pngFile.isEmpty()) {
-        return;
-    }
+        if (pngFile.isEmpty()) {
+            return;
+        }
 
-    if (!pngFile.endsWith(".png", Qt::CaseInsensitive)) {
-        pngFile.append(".png");
-    }
+        if (!pngFile.endsWith(".png", Qt::CaseInsensitive)) {
+            pngFile.append(".png");
+        }
 
-    exportWaveformToPng(pngFile);
+        exportWaveformToPng(pngFile);
+    });
 }
 
 bool BewavedDolphin::exportWaveformToPng(const QString &filename)
@@ -1287,54 +1331,60 @@ bool BewavedDolphin::exportWaveformToPng(const QString &filename)
 
 void BewavedDolphin::on_actionExportToPdf_triggered()
 {
-    sentryBreadcrumb("export", QStringLiteral("Waveform export PDF"));
-    QString pdfFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to PDF"), m_currentFile.absolutePath(), tr("PDF files (*.pdf)")).fileName;
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("export", QStringLiteral("Waveform export PDF"));
+        QString pdfFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to PDF"), m_currentFile.absolutePath(), tr("PDF files (*.pdf)")).fileName;
 
-    if (pdfFile.isEmpty()) {
-        return;
-    }
+        if (pdfFile.isEmpty()) {
+            return;
+        }
 
-    if (!pdfFile.endsWith(".pdf", Qt::CaseInsensitive)) {
-        pdfFile.append(".pdf");
-    }
+        if (!pdfFile.endsWith(".pdf", Qt::CaseInsensitive)) {
+            pdfFile.append(".pdf");
+        }
 
-    // Landscape A4 fits a reasonably long waveform without excessive scaling
-    QPrinter printer(QPrinter::HighResolution);
-    printer.setPageSize(QPageSize(QPageSize::A4));
-    printer.setPageOrientation(QPageLayout::Orientation::Landscape);
-    printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setOutputFileName(pdfFile);
+        // Landscape A4 fits a reasonably long waveform without excessive scaling
+        QPrinter printer(QPrinter::HighResolution);
+        printer.setPageSize(QPageSize(QPageSize::A4));
+        printer.setPageOrientation(QPageLayout::Orientation::Landscape);
+        printer.setOutputFormat(QPrinter::PdfFormat);
+        printer.setOutputFileName(pdfFile);
 
-    QPainter painter;
+        QPainter painter;
 
-    if (!painter.begin(&printer)) {
-        throw PANDACEPTION("Could not print this circuit to PDF.");
-    }
+        if (!painter.begin(&printer)) {
+            throw PANDACEPTION("Could not print this circuit to PDF.");
+        }
 
-    // Expand the source rect by 64px on each side to add a small margin around the waveform
-    m_scene->render(&painter, QRectF(), m_scene->sceneRect().adjusted(-64, -64, 64, 64));
-    painter.end();
+        // Expand the source rect by 64px on each side to add a small margin around the waveform
+        m_scene->render(&painter, QRectF(), m_scene->sceneRect().adjusted(-64, -64, 64, 64));
+        painter.end();
+    });
 }
 
 void BewavedDolphin::on_actionAbout_triggered()
 {
-    QMessageBox::about(this,
-        "beWavedDolphin",
-        tr("<p>beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo"
-           " to help students learn about logic circuits.</p>"
-           "<p>Software version: %1</p>"
-           "<p><strong>Creators:</strong></p>"
-           "<ul>"
-           "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
-           "</ul>"
-           "<p> beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.</p>"
-           "<p> Please file a report at our GitHub page if you find a bug or want to request a new feature.</p>"
-           "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
-            .arg(QApplication::applicationVersion()));
+    Application::guardedSlot(this, [this] {
+        QMessageBox::about(this,
+            "beWavedDolphin",
+            tr("<p>beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo"
+               " to help students learn about logic circuits.</p>"
+               "<p>Software version: %1</p>"
+               "<p><strong>Creators:</strong></p>"
+               "<ul>"
+               "<li> Prof. Fábio Cappabianco, Ph.D. </li>"
+               "</ul>"
+               "<p> beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.</p>"
+               "<p> Please file a report at our GitHub page if you find a bug or want to request a new feature.</p>"
+               "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
+                .arg(QApplication::applicationVersion()));
+    });
 }
 
 void BewavedDolphin::on_actionAboutQt_triggered()
 {
-    QMessageBox::aboutQt(this);
+    Application::guardedSlot(this, [this] {
+        QMessageBox::aboutQt(this);
+    });
 }
 

@@ -83,58 +83,89 @@ Application *Application::instance()
 
 bool Application::notify(QObject *receiver, QEvent *event)
 {
-    // Overriding notify() is the only reliable way to catch exceptions thrown inside
-    // Qt event handlers, because Qt does not propagate C++ exceptions through its own
-    // event dispatch loop — they would terminate the program with std::terminate() instead.
+    // Defence-in-depth backstop for exceptions escaping Qt event handlers on
+    // Linux/Windows.  This catch is structurally UNREACHABLE on macOS for
+    // exceptions thrown from queued slots (Qt 6.11 Exception Safety doc +
+    // QTBUG-15197) — slots that may throw must wrap their body in
+    // Application::guardedSlot.  See .claude/SENTRY_TRIAGE.md §A25.
     bool done = false;
-
     try {
         done = QApplication::notify(receiver, event);
     } catch (const std::exception &e) {
-        if (Application::interactiveMode) {
-            QMessageBox::critical(mainWindow(), tr("Error!"), e.what());
+        handleException(makeExceptionInfo(e), receiver);
+    }
+    return done;
+}
+
+ExceptionInfo Application::makeExceptionInfo(const std::exception &e)
+{
+    ExceptionInfo info;
+    info.what = QString::fromUtf8(e.what());
+    if (const auto *pandaEx = dynamic_cast<const Pandaception *>(&e)) {
+        info.englishMessage = pandaEx->englishMessage();
+        const char *f = pandaEx->file();
+        info.file = f ? QString::fromUtf8(f) : QString();
+        info.line = pandaEx->line();
+    } else {
+        info.englishMessage = info.what;
+    }
+    return info;
+}
+
+void Application::handleException(const ExceptionInfo &info, const QObject *context)
+{
+    if (Application::interactiveMode) {
+        // Prefer the slot's `this` as the dialog parent (falls back to the
+        // Application-stored main window only if context isn't a widget).
+        // See guardedSlot's call site for context.
+        const QWidget *parent = qobject_cast<const QWidget *>(context);
+        if (!parent) {
+            auto *self = Application::instance();
+            parent = self ? self->mainWindow() : nullptr;
         }
-#ifdef HAVE_SENTRY
-        // Pandaception carries a separate English message for Sentry so that
-        // crash reports are readable even when the UI is shown in another locale.
-        // It also stores the throw-site file/line for accurate stack location.
-        QString sentryMessage;
-        const char *throwFile = nullptr;
-        int throwLine = 0;
 
-        if (const auto *pandaEx = dynamic_cast<const Pandaception*>(&e)) {
-            sentryMessage = pandaEx->englishMessage();
-            throwFile = pandaEx->file();
-            throwLine = pandaEx->line();
-        } else {
-            sentryMessage = QString::fromStdString(e.what());
-        }
-
-        if (shouldSendToSentry(sentryMessage)) {
-            sentry_value_t event_ = sentry_value_new_event();
-            sentry_value_set_by_key(event_, "level", sentry_value_new_string("warning"));
-
-            sentry_value_t exc = sentry_value_new_exception("Exception", sentryMessage.toStdString().c_str());
-
-            sentry_value_t mechanism = sentry_value_new_object();
-            sentry_value_set_by_key(mechanism, "type", sentry_value_new_string("generic"));
-            sentry_value_set_by_key(mechanism, "handled", sentry_value_new_bool(1));
-            if (throwFile) {
-                // Include the throw-site location so Sentry shows where the
-                // exception originated rather than the catch block.
-                sentry_value_set_by_key(mechanism, "description",
-                    sentry_value_new_string(QStringLiteral("%1:%2").arg(throwFile).arg(throwLine).toStdString().c_str()));
-            }
-            sentry_value_set_by_key(exc, "mechanism", mechanism);
-
-            sentry_value_set_stacktrace(exc, NULL, 0);
-            sentry_event_add_exception(event_, exc);
-            sentry_capture_event(event_);
-        }
-#endif
+        // Use show() (non-modal) instead of QMessageBox::critical() (modal
+        // exec()).  On macOS the modal exec() does not pump Qt timer events
+        // reliably from inside Qt's notify dispatch — the polling auto-
+        // dismiss in tests gets blocked indefinitely (run 25285904950 +
+        // earlier diagnostic runs all showed 300 s hangs).  Non-modal
+        // show() lets handleException return immediately; the dialog stays
+        // visible, the user clicks OK, and WA_DeleteOnClose cleans up.
+        // Slightly less intrusive UX than modal too.
+        auto *box = new QMessageBox(QMessageBox::Critical, tr("Error!"),
+                                    info.what, QMessageBox::Ok,
+                                    const_cast<QWidget *>(parent));
+        box->setAttribute(Qt::WA_DeleteOnClose);
+        box->show();
     }
 
-    return done;
+#ifdef HAVE_SENTRY
+    if (!shouldSendToSentry(info.englishMessage)) {
+        return;
+    }
+
+    sentry_value_t event_ = sentry_value_new_event();
+    sentry_value_set_by_key(event_, "level", sentry_value_new_string("warning"));
+
+    sentry_value_t exc = sentry_value_new_exception(
+        "Exception", info.englishMessage.toStdString().c_str());
+
+    sentry_value_t mechanism = sentry_value_new_object();
+    sentry_value_set_by_key(mechanism, "type", sentry_value_new_string("generic"));
+    sentry_value_set_by_key(mechanism, "handled", sentry_value_new_bool(1));
+    if (!info.file.isEmpty()) {
+        // Include the throw-site location so Sentry shows where the
+        // exception originated rather than the catch block.
+        sentry_value_set_by_key(mechanism, "description",
+            sentry_value_new_string(
+                QStringLiteral("%1:%2").arg(info.file).arg(info.line).toStdString().c_str()));
+    }
+    sentry_value_set_by_key(exc, "mechanism", mechanism);
+
+    sentry_value_set_stacktrace(exc, NULL, 0);
+    sentry_event_add_exception(event_, exc);
+    sentry_capture_event(event_);
+#endif
 }
 
 MainWindow *Application::mainWindow() const
