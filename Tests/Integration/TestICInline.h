@@ -169,6 +169,9 @@ private slots:
     // --- Migrated: Batch 11 — Blob registry and orphan cleanup ---
 
     void testRemoveEmbeddedICUndoRestoresBlob();
+
+    // Regression: D12 — drop handler must not orphan element/mimeData on throw
+    void testSceneAddItemMimeDataThrowCleansUp();
     void testBlobRegistryMergeConflictSkipsExisting();
     void testUniqueNameCollision();
     void testOrphanBlobAfterDeleteAllInstances();

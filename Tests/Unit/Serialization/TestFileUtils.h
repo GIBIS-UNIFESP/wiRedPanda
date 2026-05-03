@@ -22,5 +22,11 @@ private slots:
     void testCopyPandaDepsBasic();
     void testCopyPandaDepsRecursive();
     void testCopyPandaDepsNoDependencies();
+
+    // Regression: D17 — copy failures must throw
+    void testCopyToDirThrowsOnFailure();
+
+    // Regression: D16 — circular fileBackedICs metadata must not infinite-recurse
+    void testCopyPandaDepsTerminatesOnCircularMetadata();
 };
 
