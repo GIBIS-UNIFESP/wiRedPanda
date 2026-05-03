@@ -53,6 +53,12 @@ private slots:
     void testSaveToInvalidPathThrows();
     void testSaveEmptyCircuit();
 
+    // Regression: B24 — save reprompts via Save-As on PermissionsError
+    void testSaveRepromptsOnPermissionsErrorB24();
+
+    // Regression: B11 — loadPandaFile closes orphan tab on throw (covered by
+    //   TestMainWindowGui — see testLoadPandaFileClosesOrphanedTabB11 there).
+
     // Regression: B3 — flushPendingAutosave runs the deferred autosave
     void testFlushPendingAutosaveRunsImmediatelyB3();
 

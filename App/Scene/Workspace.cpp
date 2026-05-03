@@ -12,6 +12,23 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+
+namespace {
+
+/// Returns true for QFileDevice errors that map to "target is locked / not
+/// writable" — the conditions where re-prompting the user for a different
+/// path lets them recover instead of staring at a modal error. QSaveFile in
+/// particular reports WriteError (not PermissionsError) when an existing
+/// file is read-only.
+bool isReadOnlyFailure(QFileDevice::FileError error)
+{
+    return error == QFileDevice::PermissionsError
+        || error == QFileDevice::OpenError
+        || error == QFileDevice::WriteError;
+}
+
+} // namespace
+
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElement.h"
@@ -51,6 +68,13 @@ WorkSpace::WorkSpace(QWidget *parent)
     connect(&m_autosaveDebounceTimer, &QTimer::timeout, this, &WorkSpace::autosave);
     connect(&m_scene, &Scene::circuitHasChanged, &m_autosaveDebounceTimer, qOverload<>(&QTimer::start));
 
+    /// Refresh the parent's tab title (which shows "*" while dirty) whenever
+    /// the undo stack's clean state flips — needed for inline-IC saves that
+    /// push UpdateBlobCommand to a non-current parent workspace.
+    connect(m_scene.undoStack(), &QUndoStack::cleanChanged, this, [this](bool /*clean*/) {
+        emit fileChanged(m_fileInfo);
+    });
+
     setAutosaveFileName();
 
     m_scene.setLastId(m_lastId);
@@ -58,6 +82,14 @@ WorkSpace::WorkSpace(QWidget *parent)
 
 WorkSpace::~WorkSpace()
 {
+    /// Block signals for the rest of this object's lifetime — including member
+    /// destruction below, where m_scene's QUndoStack emits cleanChanged on
+    /// teardown. Without this, the cleanChanged → fileChanged chain would
+    /// reach a parent MainWindow whose destructor has already begun.
+    /// (RAII QSignalBlocker won't do: it releases when this body returns,
+    /// before m_scene is destroyed.)
+    blockSignals(true);
+
     /// Mirror the pre-debounce QTemporaryFile semantics: a clean Workspace
     /// destruction discards its autosave so it isn't recovered next launch.
     /// (On a real crash the destructor doesn't run, so the recovery file remains.)
@@ -222,6 +254,19 @@ void WorkSpace::save(const QString &fileName)
     QSaveFile saveFile(fileName_);
 
     if (!saveFile.open(QIODevice::WriteOnly)) {
+        if (Application::interactiveMode && isReadOnlyFailure(saveFile.error())) {
+            // OneDrive lock, ZIP-extracted folder, network drive, write-protected
+            // attribute. Re-prompt for a writable location instead of throwing
+            // the user into a stuck "Acesso negado" dialog with no way out.
+            const QString newPath = FileDialogs::provider()->getSaveFileName(
+                this, tr("Save File (original location is read-only)"),
+                QFileInfo(fileName_).fileName(),
+                tr("Panda files (*.panda)")).fileName;
+            if (!newPath.isEmpty()) {
+                save(newPath);
+            }
+            return;
+        }
         throw PANDACEPTION("Error opening file: %1", saveFile.errorString());
     }
 
@@ -251,6 +296,16 @@ void WorkSpace::save(const QString &fileName)
     save(stream);
 
     if (!saveFile.commit()) {
+        if (Application::interactiveMode && isReadOnlyFailure(saveFile.error())) {
+            const QString newPath = FileDialogs::provider()->getSaveFileName(
+                this, tr("Save File (original location is read-only)"),
+                QFileInfo(fileName_).fileName(),
+                tr("Panda files (*.panda)")).fileName;
+            if (!newPath.isEmpty()) {
+                save(newPath);
+            }
+            return;
+        }
         throw PANDACEPTION("Could not save file: %1", saveFile.errorString());
     }
 
