@@ -10,6 +10,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
+#include <QShortcut>
 #include <QSlider>
 #include <QTabWidget>
 #include <QTest>
@@ -2941,6 +2942,34 @@ void TestMainWindowGui::testExtractICByBlobNameEndToEnd()
 // Sentry triage regressions
 // ===========================================================================
 
+void TestMainWindowGui::testSetupShortcutsRegistersOnceD18()
+{
+    // Pre-fix the constructor called setupShortcuts() twice, leaking the
+    // first batch's seven QShortcut objects and registering [, ], {, }, <, >
+    // under two QShortcut children each.
+    std::unique_ptr<MainWindow> window(createMW());
+
+    const QList<QKeySequence> bracketKeys = {
+        QKeySequence("["),
+        QKeySequence("]"),
+        QKeySequence("{"),
+        QKeySequence("}"),
+        QKeySequence("<"),
+        QKeySequence(">"),
+    };
+
+    const auto shortcuts = window->findChildren<QShortcut *>();
+    for (const auto &key : bracketKeys) {
+        int matches = 0;
+        for (auto *sc : shortcuts) {
+            if (sc->key() == key) {
+                ++matches;
+            }
+        }
+        QCOMPARE(matches, 1);
+    }
+}
+
 void TestMainWindowGui::testAddICDisabledWhenUnsavedC9()
 {
     // The Add IC button needs a saved-project directory to copy the chosen
@@ -3017,6 +3046,36 @@ void TestMainWindowGui::testRotateFlipZoomBreadcrumbsB23()
                             "already emits a richer breadcrumb for the same action; "
                             "MainWindow's emit duplicates it and pollutes the buffer."));
     }
+}
+
+void TestMainWindowGui::testLoadPandaFileClosesOrphanedTabB11()
+{
+    // Pre-fix loadPandaFile created a tab unconditionally, then called load().
+    // When load threw (corrupt file, missing IC dep, garbage trailing tail
+    // from the autosave bug) the empty tab stayed in the tab bar — three bad
+    // autosaves at startup left three orphan empty tabs. The try/catch +
+    // closeTab in B11 keeps the tab count flat across a failed load.
+    QTemporaryDir tmp;
+    QVERIFY(tmp.isValid());
+    // A non-existent file is the simplest path that makes WorkSpace::load
+    // throw — it covers the bug class (load throws AFTER the tab is added)
+    // without depending on the parser's exact failure mode for malformed bytes.
+    const QString badPath = tmp.path() + "/missing.panda";
+
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *tabs = findTabs(window.get());
+    QVERIFY(tabs);
+    const int countBefore = tabs->count();
+
+    bool threw = false;
+    try {
+        window->loadPandaFile(badPath);
+    } catch (const std::exception &) {
+        threw = true;
+    }
+
+    QVERIFY2(threw, "Expected loadPandaFile to propagate the parse failure");
+    QCOMPARE(tabs->count(), countBefore);
 }
 
 void TestMainWindowGui::testRemoveICFileIsUndoableA14()
