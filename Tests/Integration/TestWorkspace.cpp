@@ -10,6 +10,7 @@
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 
+#include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Settings.h"
 #include "App/Element/ElementFactory.h"
@@ -17,6 +18,8 @@
 #include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Workspace.h"
+#include "App/UI/FileDialogProvider.h"
+#include "Tests/Common/StubFileDialogProvider.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestWorkspace::initTestCase()
@@ -1124,5 +1127,62 @@ void TestWorkspace::testFlushPendingAutosaveRunsImmediatelyB3()
 
     // Now the autosave write happened.
     QVERIFY(Settings::autosaveFiles().count() >= 1);
+}
+
+void TestWorkspace::testSaveRepromptsOnPermissionsErrorB24()
+{
+    // Pre-fix Ctrl+S to a read-only path threw straight into a modal "Acesso
+    // negado" dialog with no way out. Now save() catches QFileDevice::
+    // PermissionsError, prompts the user via FileDialogs::provider() for a
+    // new path, and recurses with that path.
+    QTemporaryDir lockedDir;
+    QTemporaryDir writableDir;
+    QVERIFY(lockedDir.isValid() && writableDir.isValid());
+
+    const QString readOnlyPath = lockedDir.path() + "/locked.panda";
+    const QString writablePath = writableDir.path() + "/recovered.panda";
+
+    // Pre-create the target file as read-only AND drop write on the directory
+    // — QSaveFile uses a sibling temp file in the same dir on commit, so just
+    // making the file unwritable isn't enough; the dir must be locked too.
+    {
+        QFile f(readOnlyPath);
+        QVERIFY(f.open(QIODevice::WriteOnly));
+        f.write("seed");
+    }
+    QFile::setPermissions(readOnlyPath, QFileDevice::ReadOwner);
+    QFile::setPermissions(lockedDir.path(),
+        QFileDevice::ReadOwner | QFileDevice::ExeOwner);
+
+    StubFileDialogProvider stub;
+    stub.saveResult = {writablePath, "Panda files (*.panda)"};
+    auto *prevProvider = FileDialogs::setProvider(&stub);
+    const bool prevInteractive = Application::interactiveMode;
+    Application::interactiveMode = true;
+
+    // Sanity: confirm QSaveFile actually fails to open the read-only target
+    // on this system before exercising the production recovery path.
+    {
+        QSaveFile probe(readOnlyPath);
+        QVERIFY(!probe.open(QIODevice::WriteOnly));
+    }
+
+    {
+        WorkSpace workspace;
+        auto *led = ElementFactory::buildElement(ElementType::Led);
+        workspace.scene()->addItem(led);
+        workspace.save(readOnlyPath);
+    }
+
+    Application::interactiveMode = prevInteractive;
+    FileDialogs::setProvider(prevProvider);
+    QFile::setPermissions(lockedDir.path(),
+        QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
+    QFile::setPermissions(readOnlyPath,
+        QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+
+    QCOMPARE(stub.saveCallCount, 1);
+    QVERIFY2(QFile::exists(writablePath),
+             qPrintable("Save should have been redirected to " + writablePath));
 }
 
