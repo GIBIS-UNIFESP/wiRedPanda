@@ -908,13 +908,14 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 sentryBreadcrumb("ui", QStringLiteral("Drag started: %1 element(s)").arg(selectedElements_.size()));
             }
 
-            // Snapshot positions now; MoveCommand compares these against release-time positions
-            m_movedElements.clear();
-            m_oldPositions.clear();
+            // Snapshot positions now; MoveCommand compares these against release-time positions.
+            // QPointer in m_dragSnapshot lets entries auto-clear if the element is destroyed
+            // before release (e.g. Delete shortcut while mid-drag — see WIREDPANDA-H9).
+            m_dragSnapshot.clear();
+            m_dragSnapshot.reserve(selectedElements_.size());
 
             for (auto *element : std::as_const(selectedElements_)) {
-                m_movedElements.append(element);
-                m_oldPositions.append(element->pos());
+                m_dragSnapshot.append({element, element->pos()});
             }
         }
 
@@ -1012,21 +1013,38 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     if (m_draggingElement && (event->button() == Qt::LeftButton)) {
         bool moved = false;
 
-        if (!m_movedElements.empty()) {
-            // Only push a MoveCommand if at least one element actually changed position;
-            // avoids polluting the undo stack with no-op moves (e.g., click without drag)
-            moved = std::any_of(m_movedElements.cbegin(), m_movedElements.cend(), [this](auto *elm) {
-                return (elm->pos() != m_oldPositions.at(m_movedElements.indexOf(elm)));
-            });
+        if (!m_dragSnapshot.empty()) {
+            // Filter out elements destroyed mid-drag (their QPointers are now null).
+            // Without this, dereferencing a freed element below crashes the app.
+            QList<GraphicElement *> liveElements;
+            QList<QPointF> liveOldPositions;
+            liveElements.reserve(m_dragSnapshot.size());
+            liveOldPositions.reserve(m_dragSnapshot.size());
+
+            for (const auto &[ptr, oldPos] : std::as_const(m_dragSnapshot)) {
+                if (ptr) {
+                    liveElements.append(ptr.data());
+                    liveOldPositions.append(oldPos);
+                }
+            }
+
+            // Only push a MoveCommand if at least one surviving element actually changed
+            // position; avoids polluting the undo stack with no-op moves (click without drag).
+            for (int i = 0; i < liveElements.size(); ++i) {
+                if (liveElements.at(i)->pos() != liveOldPositions.at(i)) {
+                    moved = true;
+                    break;
+                }
+            }
 
             if (moved) {
-                receiveCommand(new MoveCommand(m_movedElements, m_oldPositions, this));
+                receiveCommand(new MoveCommand(liveElements, liveOldPositions, this));
             }
         }
 
         sentryBreadcrumb("ui", moved ? QStringLiteral("Drag ended: moved") : QStringLiteral("Drag ended: no move"));
         m_draggingElement = false;
-        m_movedElements.clear();
+        m_dragSnapshot.clear();
 
         // Only tighten scene rect after an actual drag; a click-without-move
         // should not trigger a rect change that could shift the viewport.
