@@ -271,6 +271,47 @@ void TestDanglingPointer::bug6_topologyCommandsMustUseSimulationBlocker()
                             .arg(missingBlocker.join("\n  - "))));
 }
 
+// Hardening — ConnectionManager::deleteEditedConnection deletes the
+// in-progress wire without a SimulationBlocker. Source-level check
+// mirroring bug6's approach.
+void TestDanglingPointer::hardening_deleteEditedConnectionMustUseSimulationBlocker()
+{
+    const QString path =
+        QString(QUOTE(CURRENTDIR)) + "/../App/Scene/ConnectionManager.cpp";
+    QFile src(path);
+    QVERIFY2(src.open(QIODevice::ReadOnly),
+             qPrintable(QString("Cannot open %1").arg(src.fileName())));
+    const QString source = QString::fromUtf8(src.readAll());
+    src.close();
+
+    QRegularExpression rx(
+        QStringLiteral("\\bConnectionManager::deleteEditedConnection\\s*\\([^)]*\\)\\s*\\{"));
+    const auto match = rx.match(source);
+    QVERIFY2(match.hasMatch(),
+             "Could not locate ConnectionManager::deleteEditedConnection definition.");
+
+    const qsizetype bodyStart = match.capturedEnd() - 1;
+    int depth = 0;
+    qsizetype bodyEnd = -1;
+    for (qsizetype i = bodyStart; i < source.size(); ++i) {
+        const QChar c = source.at(i);
+        if (c == '{') ++depth;
+        else if (c == '}') {
+            --depth;
+            if (depth == 0) { bodyEnd = i; break; }
+        }
+    }
+    QVERIFY2(bodyEnd > bodyStart,
+             "Could not find end of ConnectionManager::deleteEditedConnection body.");
+    const QString body = source.mid(bodyStart, bodyEnd - bodyStart + 1);
+
+    QVERIFY2(body.contains("SimulationBlocker"),
+             "ConnectionManager::deleteEditedConnection must open a "
+             "SimulationBlocker around the removeItem/delete pair so the "
+             "1 ms simulation timer cannot tick on a freed connection if "
+             "the in-progress wire ever ended up in Simulation::m_connections.");
+}
+
 // ==========================================================================
 // Crash-triggering tests — these SIGSEGV pre-fix. Kept at the end so they
 // don't prevent the assertion tests above from reporting.
@@ -283,6 +324,29 @@ void TestDanglingPointer::bug8_iterativeSettleMustTolerateNullEntry()
     entries.append(nullptr);
     // Return value is meaningless for a null input; the point is survival.
     (void)Simulation::iterativeSettle(entries, 1);
+    QVERIFY(true);
+}
+
+// Hardening — Simulation::update() Phase 3 walks m_connections and reads
+// connection->startPort() with no null guard, unlike Phases 1, 2, and 4.
+// Inject a null and tick the simulation; without the guard this dereferences
+// nullptr and SIGSEGVs.
+void TestDanglingPointer::hardening_phase3MustTolerateNullConnection()
+{
+    WorkSpace ws;
+    auto *sim = ws.scene()->simulation();
+    auto *ic = loadInitializedIC(ws);
+    QVERIFY2(ic, "jkflipflop.panda not found in examples — fixture missing");
+    QVERIFY(sim->m_initialized);
+
+    // Phase 3 only runs when the visual throttle lets through; force-disable
+    // so update() actually walks m_connections this tick instead of skipping
+    // straight back to Phase 2.
+    sim->setVisualThrottleEnabled(false);
+
+    sim->m_connections.append(nullptr);
+
+    sim->update();
     QVERIFY(true);
 }
 
