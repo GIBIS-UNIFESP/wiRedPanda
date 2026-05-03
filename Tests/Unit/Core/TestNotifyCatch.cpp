@@ -17,9 +17,8 @@ namespace {
 
 constexpr int kEventLoopTimeoutMs = 2000;
 
-/// Polls for any visible QMessageBox and dismisses it. Used to keep the
-/// dialog-variant test from hanging on a modal critical box opened from
-/// inside Application::notify's catch handler.
+/// Polls for any visible QMessageBox and dismisses it.  Used by the dialog
+/// variant so the test does not block waiting for user input.
 void startMessageBoxAutoDismiss(QTimer &timer)
 {
     timer.setInterval(50);
@@ -48,20 +47,25 @@ void TestNotifyCatch::cleanupTestCase()
     Application::interactiveMode = m_savedInteractiveMode;
 }
 
-void TestNotifyCatch::postedSlotThrowIsCaught()
+void TestNotifyCatch::guardedSlotCatchesPostedSlotThrow()
 {
     Application::interactiveMode = false;
 
     int slotEntries = 0;
     QAction action;
     QObject::connect(&action, &QAction::triggered, [&slotEntries]() {
-        ++slotEntries;
-        throw PANDACEPTION("notify-catch test throw (no dialog)");
+        Application::guardedSlot(qApp, [&slotEntries] {
+            ++slotEntries;
+            throw PANDACEPTION("notify-catch test throw (no dialog)");
+        });
     });
 
     // Mimic the WIREDPANDA-HQ dispatch path: post a QMetaCall event that
-    // invokes the slot via QApplication::notify. On macOS this is delivered
-    // through QCocoaEventDispatcherPrivate::postedEventsSourceCallback.
+    // invokes the slot via QApplication::notify.  On macOS this is delivered
+    // through QCocoaEventDispatcherPrivate::postedEventsSourceCallback —
+    // historically the path where Application::notify's catch silently
+    // failed.  guardedSlot keeps the catch inside the slot frame so it works
+    // on every platform (see .claude/SENTRY_TRIAGE.md §A25).
     QMetaObject::invokeMethod(&action, "trigger", Qt::QueuedConnection);
 
     QEventLoop loop;
@@ -69,11 +73,11 @@ void TestNotifyCatch::postedSlotThrowIsCaught()
     loop.exec();
 
     // Reaching this assertion means: the slot ran (the throw fired) AND the
-    // exception was caught by Application::notify (process did not abort).
+    // exception was caught (process did not abort).
     QCOMPARE(slotEntries, 1);
 }
 
-void TestNotifyCatch::postedSlotThrowIsCaughtWithDialog()
+void TestNotifyCatch::guardedSlotCatchesPostedSlotThrowWithDialog()
 {
     Application::interactiveMode = true;
 
@@ -83,8 +87,10 @@ void TestNotifyCatch::postedSlotThrowIsCaughtWithDialog()
     int slotEntries = 0;
     QAction action;
     QObject::connect(&action, &QAction::triggered, [&slotEntries]() {
-        ++slotEntries;
-        throw PANDACEPTION("notify-catch test throw (with dialog)");
+        Application::guardedSlot(qApp, [&slotEntries] {
+            ++slotEntries;
+            throw PANDACEPTION("notify-catch test throw (with dialog)");
+        });
     });
 
     QMetaObject::invokeMethod(&action, "trigger", Qt::QueuedConnection);

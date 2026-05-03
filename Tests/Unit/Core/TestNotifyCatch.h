@@ -8,18 +8,20 @@
 
 /**
  * \class TestNotifyCatch
- * \brief Verifies that exceptions thrown from slots invoked through the
- *        platform event dispatcher's posted-events callback propagate to
- *        Application::notify's try/catch.
+ * \brief Verifies that Application::guardedSlot catches exceptions thrown from
+ *        slots invoked through the platform event dispatcher's posted-events
+ *        callback.
  *
- * \details Regression cover for WIREDPANDA-HQ on macOS arm64, where a
- * PANDACEPTION thrown from BewavedDolphin::loadElements() escaped
- * Application::notify and produced a SIGABRT minidump. On macOS the slot
- * was invoked via QCocoaEventDispatcherPrivate::postedEventsSourceCallback;
- * these tests reproduce that dispatch path with a posted QMetaCall.
- *
- * If the catch is broken on a platform, the test process aborts and CTest
- * reports the failure — that is the diagnostic signal we want.
+ * \details Regression cover for WIREDPANDA-HQ.  Originally written against
+ * Application::notify's try/catch, which was the historical centralised catch
+ * site — but Qt 6.11 Exception Safety doc and the ~14 y old QTBUG-15197
+ * established that this catch is structurally unreachable on macOS for queued
+ * slot dispatch.  The fix moved the catch into the slot frame via
+ * `Application::guardedSlot(this, [this] { … })`, which sits below Qt's macOS
+ * unwind boundary.  These tests assert the new contract: a slot that wraps
+ * its body in guardedSlot returns cleanly when its body throws and the
+ * caught exception is reported via Application::handleException.  See
+ * `.claude/SENTRY_TRIAGE.md` §A25 for the full investigation.
  */
 class TestNotifyCatch : public QObject
 {
@@ -29,15 +31,15 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
 
-    /// Pure catch test: throw from a posted-event slot, no dialog involved.
-    /// Isolates whether Application::notify's catch fires at all on the platform.
-    void postedSlotThrowIsCaught();
+    /// Pure catch test: throw from a posted-event slot wrapped in
+    /// Application::guardedSlot, no dialog involved.  Asserts that the slot
+    /// returns and the test process does not abort.
+    void guardedSlotCatchesPostedSlotThrow();
 
-    /// Same dispatch path, but with interactiveMode=true so the catch handler
-    /// also calls QMessageBox::critical (auto-dismissed). Tests whether the
-    /// dialog from inside the catch — invoked while still inside a CFRunLoop
-    /// source callback on macOS — is itself the killer (hypothesis A).
-    void postedSlotThrowIsCaughtWithDialog();
+    /// Same dispatch path with interactiveMode=true so handleException builds
+    /// and shows a QMessageBox.  Auto-dismissed by a polling timer; non-modal
+    /// show() returns immediately (modal exec() hangs on macOS — see A25).
+    void guardedSlotCatchesPostedSlotThrowWithDialog();
 
 private:
     bool m_savedInteractiveMode = true;
