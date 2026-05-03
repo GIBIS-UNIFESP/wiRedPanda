@@ -343,51 +343,62 @@ void ElementEditor::applyCapabilitiesToUi()
     }
 
     /* Input size */
-    m_ui->comboBoxInputSize->clear();
-    setSection(c.canChangeInputSize, m_ui->labelInputs, m_ui->comboBoxInputSize);
-    if (c.canChangeInputSize && c.hasSameType && c.elementType == ElementType::Mux) {
-        // For Mux, the user picks the number of data inputs (2–8); select lines
-        // are computed as ceil(log2(dataInputs)) and added internally.  The item
-        // display text shows data inputs while the item data carries the total.
-        for (int dataInputs = 2; dataInputs <= 8; ++dataInputs) {
-            int selectLines = 1;
-            while ((1 << selectLines) < dataInputs) { ++selectLines; }
-            const int totalInputs = dataInputs + selectLines;
-            if (totalInputs >= c.minimumInputs && totalInputs <= c.maximumInputs) {
-                m_ui->comboBoxInputSize->addItem(QString::number(dataInputs), totalInputs);
+    {
+        // Block signals while rebuilding so the synthetic addItem/setCurrentIndex
+        // calls don't fire inputIndexChanged — that slot would push spurious
+        // ChangePortSizeCommands and (more importantly here) flood the Sentry
+        // breadcrumb buffer with "Input count: -1 / 0" entries that crowd out
+        // the user's real actions.
+        QSignalBlocker blocker(m_ui->comboBoxInputSize);
+        m_ui->comboBoxInputSize->clear();
+        setSection(c.canChangeInputSize, m_ui->labelInputs, m_ui->comboBoxInputSize);
+        if (c.canChangeInputSize && c.hasSameType && c.elementType == ElementType::Mux) {
+            // For Mux, the user picks the number of data inputs (2–8); select lines
+            // are computed as ceil(log2(dataInputs)) and added internally.  The item
+            // display text shows data inputs while the item data carries the total.
+            for (int dataInputs = 2; dataInputs <= 8; ++dataInputs) {
+                int selectLines = 1;
+                while ((1 << selectLines) < dataInputs) { ++selectLines; }
+                const int totalInputs = dataInputs + selectLines;
+                if (totalInputs >= c.minimumInputs && totalInputs <= c.maximumInputs) {
+                    m_ui->comboBoxInputSize->addItem(QString::number(dataInputs), totalInputs);
+                }
+            }
+        } else {
+            for (int port = c.minimumInputs; port <= c.maximumInputs; ++port) {
+                m_ui->comboBoxInputSize->addItem(QString::number(port), port);
             }
         }
-    } else {
-        for (int port = c.minimumInputs; port <= c.maximumInputs; ++port) {
-            m_ui->comboBoxInputSize->addItem(QString::number(port), port);
+        if (prepareCombo(m_ui->comboBoxInputSize, c.canChangeInputSize, c.hasSameInputSize, m_manyIS)) {
+            const int idx = m_ui->comboBoxInputSize->findData(firstElement->inputSize());
+            if (idx >= 0) { m_ui->comboBoxInputSize->setCurrentIndex(idx); }
         }
-    }
-    if (prepareCombo(m_ui->comboBoxInputSize, c.canChangeInputSize, c.hasSameInputSize, m_manyIS)) {
-        const int idx = m_ui->comboBoxInputSize->findData(firstElement->inputSize());
-        if (idx >= 0) { m_ui->comboBoxInputSize->setCurrentIndex(idx); }
     }
 
     /* Output size */
-    m_ui->comboBoxOutputSize->clear();
-    setSection(c.canChangeOutputSize, m_ui->labelOutputs, m_ui->comboBoxOutputSize);
-    if (c.canChangeOutputSize) {
-        if (c.hasSameType && c.elementType == ElementType::Demux) {
-            // Demux: show 2-8 output options, mirroring Mux's 2-8 data inputs.
-            for (int n = c.minimumOutputs; n <= c.maximumOutputs; ++n) {
-                m_ui->comboBoxOutputSize->addItem(QString::number(n), n);
-            }
-        } else {
-            // For generic multi-output elements (e.g. Node) offer a curated set
-            // of common bus widths rather than every value in [min, max].
-            for (int n : {2, 3, 4, 6, 8, 10, 12, 16}) {
-                m_ui->comboBoxOutputSize->addItem(QString::number(n), n);
+    {
+        QSignalBlocker blocker(m_ui->comboBoxOutputSize);
+        m_ui->comboBoxOutputSize->clear();
+        setSection(c.canChangeOutputSize, m_ui->labelOutputs, m_ui->comboBoxOutputSize);
+        if (c.canChangeOutputSize) {
+            if (c.hasSameType && c.elementType == ElementType::Demux) {
+                // Demux: show 2-8 output options, mirroring Mux's 2-8 data inputs.
+                for (int n = c.minimumOutputs; n <= c.maximumOutputs; ++n) {
+                    m_ui->comboBoxOutputSize->addItem(QString::number(n), n);
+                }
+            } else {
+                // For generic multi-output elements (e.g. Node) offer a curated set
+                // of common bus widths rather than every value in [min, max].
+                for (int n : {2, 3, 4, 6, 8, 10, 12, 16}) {
+                    m_ui->comboBoxOutputSize->addItem(QString::number(n), n);
+                }
             }
         }
-    }
-    if (prepareCombo(m_ui->comboBoxOutputSize, c.canChangeOutputSize && !c.hasTruthTable,
-                     c.hasSameOutputSize, m_manyOS)) {
-        const int idx = m_ui->comboBoxOutputSize->findData(firstElement->outputSize());
-        if (idx >= 0) { m_ui->comboBoxOutputSize->setCurrentIndex(idx); }
+        if (prepareCombo(m_ui->comboBoxOutputSize, c.canChangeOutputSize && !c.hasTruthTable,
+                         c.hasSameOutputSize, m_manyOS)) {
+            const int idx = m_ui->comboBoxOutputSize->findData(firstElement->outputSize());
+            if (idx >= 0) { m_ui->comboBoxOutputSize->setCurrentIndex(idx); }
+        }
     }
 
     /* Output value (hidden for momentary inputs like InputButton) */
@@ -661,10 +672,10 @@ void ElementEditor::apply()
 
 void ElementEditor::inputIndexChanged(const int index)
 {
-    sentryBreadcrumb("ui", QStringLiteral("Input count: %1").arg(index));
     if (m_elements.isEmpty() || !isEnabled()) {
         return;
     }
+    sentryBreadcrumb("ui", QStringLiteral("Input count: %1").arg(index));
 
     if (m_caps.canChangeInputSize && (m_ui->comboBoxInputSize->currentText() != m_manyIS)) {
         emit sendCommand(new ChangePortSizeCommand(m_elements, m_ui->comboBoxInputSize->currentData().toInt(), m_scene, true));
@@ -676,10 +687,10 @@ void ElementEditor::inputIndexChanged(const int index)
 
 void ElementEditor::outputIndexChanged(const int index)
 {
-    sentryBreadcrumb("ui", QStringLiteral("Output count: %1").arg(index));
     if (m_elements.isEmpty() || !isEnabled()) {
         return;
     }
+    sentryBreadcrumb("ui", QStringLiteral("Output count: %1").arg(index));
 
     if (m_caps.canChangeOutputSize && (m_ui->comboBoxOutputSize->currentText() != m_manyOS)) {
         emit sendCommand(new ChangePortSizeCommand(m_elements, m_ui->comboBoxOutputSize->currentData().toInt(), m_scene, false));

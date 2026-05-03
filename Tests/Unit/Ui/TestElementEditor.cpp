@@ -89,3 +89,31 @@ void TestElementEditor::testFillColorComboBox()
     QVERIFY(true);
 }
 
+void TestElementEditor::testSelectionDoesNotPushPortSizeCommandB21()
+{
+    // Pre-fix the input/output combo-box rebuild in setCurrentElements ran
+    // without QSignalBlocker, so the synthetic setCurrentIndex inside the
+    // rebuild fired inputIndexChanged → ChangePortSizeCommand each time the
+    // user selected an element. The QSignalBlocker added in B21 silences
+    // the rebuild signal storm; a fresh selection must therefore leave the
+    // undo stack untouched.
+    WorkSpace workspace;
+    auto *andGate = new And();
+    workspace.scene()->addItem(andGate);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+
+    auto *undoStack = workspace.scene()->undoStack();
+    const int countBefore = undoStack->count();
+
+    // Cycle selection a few times to give the combo-box rebuild several
+    // chances to misfire.
+    for (int i = 0; i < 3; ++i) {
+        workspace.scene()->clearSelection();
+        andGate->setSelected(true);
+    }
+
+    QCOMPARE(undoStack->count(), countBefore);
+}
+
