@@ -102,6 +102,7 @@ void TestWorkspace::testAutosaveUpdatesSettings()
     items.append(led);
     AddItemsCommand *cmd = new AddItemsCommand(items, scene);
     scene->undoStack()->push(cmd);
+    workspace.flushPendingAutosave();
 
     QStringList autosaveAfter = Settings::autosaveFiles();
     QVERIFY2(autosaveAfter.count() > autosaveBefore.count(),
@@ -124,6 +125,7 @@ void TestWorkspace::testAutosaveAfterElementAdd()
     QList<QGraphicsItem *> items;
     items.append(ElementFactory::buildElement(ElementType::Led));
     undoStack->push(new AddItemsCommand(items, scene));
+    workspace.flushPendingAutosave();
 
     // Verify undo stack is dirty
     QVERIFY2(!undoStack->isClean(), "Undo stack should be dirty after circuit change");
@@ -208,38 +210,38 @@ void TestWorkspace::testMultipleAutosavesUpdateSettings()
     // Clear settings before test
     Settings::setAutosaveFiles({});
 
-    // Create first workspace and trigger autosave with actual element
+    // Workspace destruction discards its own autosave entry (mirroring the
+    // pre-debounce QTemporaryFile semantics), so check Settings while each
+    // workspace is still alive.
+    WorkSpace workspace1;
     {
-        WorkSpace workspace1;
         Scene *scene = workspace1.scene();
         QList<QGraphicsItem *> items;
         auto *led = ElementFactory::buildElement(ElementType::Led);
         items.append(led);
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
+        workspace1.flushPendingAutosave();
     }
 
     QStringList autosavedAfterFirst = Settings::autosaveFiles();
-    // After first workspace with element, autosaves should be recorded
     QVERIFY2(autosavedAfterFirst.count() > 0,
             "Settings should record autosave files after circuit changes");
 
-    // Create second workspace and trigger autosave with actual element
+    WorkSpace workspace2;
     {
-        WorkSpace workspace2;
         Scene *scene = workspace2.scene();
         QList<QGraphicsItem *> items;
         auto *and1 = ElementFactory::buildElement(ElementType::And);
         items.append(and1);
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
+        workspace2.flushPendingAutosave();
     }
 
-    // Verify Settings tracks multiple autosaves - should have increased after second workspace
     QStringList autosaves = Settings::autosaveFiles();
-    // Settings should have recorded autosaves (at least one)
-    QVERIFY2(autosaves.count() > 0,
-            "Settings should record at least one autosave file");
+    QVERIFY2(autosaves.count() >= 2,
+            "Settings should record at least two autosave files (one per workspace)");
 }
 
 // ============================================================
@@ -371,6 +373,7 @@ void TestWorkspace::testAutosaveFileRandomSuffixGeneration()
         // Use proper command that triggers circuit update
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
+        workspace1.flushPendingAutosave();
 
         QStringList autosaves = Settings::autosaveFiles();
         QVERIFY2(!autosaves.isEmpty(), "First workspace should create autosave file in settings");
@@ -400,6 +403,7 @@ void TestWorkspace::testAutosaveFileRandomSuffixGeneration()
         // Use proper command that triggers circuit update
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
+        workspace2.flushPendingAutosave();
 
         QStringList autosaves = Settings::autosaveFiles();
         QVERIFY2(autosaves.count() >= 1, "Second workspace should have autosave files");
@@ -448,6 +452,7 @@ void TestWorkspace::testAutosavePathCreatedIfNotExists()
 
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
+        workspace.flushPendingAutosave();
 
         // Verify autosave was triggered (check BEFORE workspace destruction)
         QStringList autosaves = Settings::autosaveFiles();
@@ -489,6 +494,7 @@ void TestWorkspace::testAutosaveFileExtensionCorrect()
 
         AddItemsCommand *cmd = new AddItemsCommand(items, scene);
         scene->undoStack()->push(cmd);
+        workspace.flushPendingAutosave();
 
         // Verify autosave was triggered (check BEFORE workspace destruction)
         QStringList autosaves = Settings::autosaveFiles();
@@ -575,6 +581,7 @@ void TestWorkspace::testAutosaveInAppDataForNewProject()
     items.append(led);
     AddItemsCommand *cmd = new AddItemsCommand(items, scene);
     scene->undoStack()->push(cmd);
+    workspace.flushPendingAutosave();
 
     // For new (unsaved) project, autosave should be in AppData/autosaves or similar location
     // The path should NOT be in the currentDir for a new project
@@ -665,6 +672,7 @@ void TestWorkspace::testAutosaveFilePermissions()
     items.append(led);
     AddItemsCommand *cmd = new AddItemsCommand(items, scene);
     scene->undoStack()->push(cmd);
+    workspace.flushPendingAutosave();
 
     // Check autosave file permissions
     QStringList autosaves = Settings::autosaveFiles();
@@ -1041,5 +1049,80 @@ void TestWorkspace::testSaveEmptyCircuit()
     } catch (const Pandaception &e) {
         QFAIL(qPrintable(QString("Failed to save empty circuit: %1").arg(e.what())));
     }
+}
+
+void TestWorkspace::testAutosaveTruncatesOnShrinkB2()
+{
+    // Pre-fix the autosave was a QTemporaryFile opened ReadWrite without
+    // Truncate. A circuit that shrank between writes left the previous
+    // run's trailing bytes intact, and Serialization::deserialize either
+    // parsed them as a "valid" element or threw the corruption signature
+    // (D2/CR/FJ). QSaveFile commits via atomic rename and truncates as
+    // part of the rename, so a shrunk circuit must produce a strictly
+    // smaller autosave file.
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    Settings::setAutosaveFiles({});
+
+    WorkSpace ws;
+
+    // Big circuit — many elements. Capture the autosave size after the write.
+    QList<QGraphicsItem *> bigItems;
+    for (int i = 0; i < 25; ++i) {
+        bigItems.append(ElementFactory::buildElement(ElementType::Led));
+    }
+    ws.scene()->undoStack()->push(new AddItemsCommand(bigItems, ws.scene()));
+    ws.flushPendingAutosave();
+
+    const QStringList autosavesBig = Settings::autosaveFiles();
+    QVERIFY(!autosavesBig.isEmpty());
+    const QString autosavePath = autosavesBig.first();
+    const qint64 sizeBig = QFileInfo(autosavePath).size();
+    QVERIFY(sizeBig > 0);
+
+    // Drop most of the elements to shrink the serialized payload.
+    QList<QGraphicsItem *> toRemove;
+    int kept = 0;
+    for (auto *elm : ws.scene()->elements()) {
+        if (kept >= 2) {
+            toRemove.append(elm);
+        } else {
+            ++kept;
+        }
+    }
+    QVERIFY(!toRemove.isEmpty());
+    ws.scene()->undoStack()->push(new DeleteItemsCommand(toRemove, ws.scene()));
+    ws.flushPendingAutosave();
+
+    const qint64 sizeSmall = QFileInfo(autosavePath).size();
+    QVERIFY2(sizeSmall < sizeBig,
+             qPrintable(QString("Shrunk autosave (%1 bytes) must be smaller than "
+                                "the prior write (%2 bytes) — pre-fix QTemporaryFile "
+                                "left the trailing tail in place.").arg(sizeSmall).arg(sizeBig)));
+}
+
+void TestWorkspace::testFlushPendingAutosaveRunsImmediatelyB3()
+{
+    // The 500ms autosave debounce delays writes; flushPendingAutosave runs
+    // the deferred handler synchronously. The B3 commit added it both for
+    // tests and so the destructor and explicit Save flows don't drop a
+    // pending autosave on the floor.
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    Settings::setAutosaveFiles({});
+
+    WorkSpace ws;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    QList<QGraphicsItem *> items{led};
+    ws.scene()->undoStack()->push(new AddItemsCommand(items, ws.scene()));
+
+    // The push fires Scene::circuitHasChanged immediately, which only
+    // schedules the debounce timer — Settings should not have updated yet.
+    QCOMPARE(Settings::autosaveFiles().count(), 0);
+
+    ws.flushPendingAutosave();
+
+    // Now the autosave write happened.
+    QVERIFY(Settings::autosaveFiles().count() >= 1);
 }
 
