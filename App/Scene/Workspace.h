@@ -9,7 +9,7 @@
 
 #include <QFileInfo>
 #include <QPointer>
-#include <QTemporaryFile>
+#include <QTimer>
 #include <QUndoStack>
 
 #include "App/Scene/GraphicsView.h"
@@ -37,6 +37,9 @@ public:
     /// Constructs the workspace with optional \a parent widget.
     explicit WorkSpace(QWidget *parent = nullptr);
 
+    /// Flushes any pending debounced autosave on destruction.
+    ~WorkSpace() override;
+
     // --- Component Access ---
 
     /// Returns the GraphicsView embedded in this workspace.
@@ -61,6 +64,9 @@ public:
     void save(QDataStream &stream);
     /// Creates or replaces the autosave temporary file.
     void setAutosaveFile();
+
+    /// Forces any pending debounced autosave to run synchronously.
+    void flushPendingAutosave();
 
     // --- Inline IC Tab ---
 
@@ -133,7 +139,8 @@ private:
     Scene m_scene;
     QFileInfo m_fileInfo;
     QString m_dolphinFileName;
-    QTemporaryFile m_autosaveFile;
+    QString m_autosaveFileName;
+    QTimer m_autosaveDebounceTimer;
     QVersionNumber m_loadedVersion;
     int m_lastId = 0;
 

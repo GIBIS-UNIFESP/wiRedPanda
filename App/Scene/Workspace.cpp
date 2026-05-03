@@ -8,7 +8,7 @@
 #include <QSaveFile>
 #include <QScrollBar>
 #include <QStandardPaths>
-#include <QTemporaryFile>
+#include <QUuid>
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
@@ -43,13 +43,32 @@ WorkSpace::WorkSpace(QWidget *parent)
     // via panning, even when zoomed in very close
     connect(&m_view, &GraphicsView::zoomChanged, &m_scene, &Scene::resizeScene);
 
-    // Trigger autosave on every change; autosave() checks the undo stack cleanliness
-    // before actually writing to disk
-    connect(&m_scene, &Scene::circuitHasChanged, this, &WorkSpace::autosave);
+    // Coalesce bursts of changes into one autosave write — a multi-element
+    // paste, drag-rotate, or rapid typing in a label otherwise spams the
+    // disk and widens the window for partial-write corruption.
+    m_autosaveDebounceTimer.setSingleShot(true);
+    m_autosaveDebounceTimer.setInterval(500);
+    connect(&m_autosaveDebounceTimer, &QTimer::timeout, this, &WorkSpace::autosave);
+    connect(&m_scene, &Scene::circuitHasChanged, &m_autosaveDebounceTimer, qOverload<>(&QTimer::start));
 
     setAutosaveFileName();
 
     m_scene.setLastId(m_lastId);
+}
+
+WorkSpace::~WorkSpace()
+{
+    /// Mirror the pre-debounce QTemporaryFile semantics: a clean Workspace
+    /// destruction discards its autosave so it isn't recovered next launch.
+    /// (On a real crash the destructor doesn't run, so the recovery file remains.)
+    m_autosaveDebounceTimer.stop();
+    if (!m_autosaveFileName.isEmpty()) {
+        QStringList autosaves = Settings::autosaveFiles();
+        autosaves.removeAll(m_autosaveFileName);
+        Settings::setAutosaveFiles(autosaves);
+        QFile::remove(m_autosaveFileName);
+        m_autosaveFileName.clear();
+    }
 }
 
 Scene *WorkSpace::scene()
@@ -80,6 +99,10 @@ QFileInfo WorkSpace::fileInfo()
 void WorkSpace::save(const QString &fileName)
 {
     sentryBreadcrumb("file", QStringLiteral("Save: %1").arg(fileName));
+
+    // The user save supersedes any pending autosave; cancel it so the timer
+    // doesn't fire after we've removed the autosave file and re-create it.
+    m_autosaveDebounceTimer.stop();
 
     if (isFromNewerVersion()) {
         if (Application::interactiveMode) {
@@ -242,11 +265,12 @@ void WorkSpace::save(const QString &fileName)
         qCDebug(zero) << "All auto save file names after removing recovered: " << autosaves;
     }
 
-    if (m_autosaveFile.exists()) {
+    if (!m_autosaveFileName.isEmpty() && QFile::exists(m_autosaveFileName)) {
         qCDebug(zero) << "Remove autosave from settings and delete it.";
-        autosaves.removeAll(m_autosaveFile.fileName());
+        autosaves.removeAll(m_autosaveFileName);
         Settings::setAutosaveFiles(autosaves);
-        m_autosaveFile.remove();
+        QFile::remove(m_autosaveFileName);
+        m_autosaveFileName.clear();
         qCDebug(zero) << "All auto save file names after removing autosave: " << autosaves;
     }
 
@@ -420,18 +444,13 @@ QString WorkSpace::dolphinFileName()
 
 void WorkSpace::setAutosaveFileName()
 {
-    qCDebug(zero) << "Defining autosave path.";
+    // Eagerly ensure the global autosaves directory exists; the actual filename
+    // is computed lazily inside autosave() when the workspace first turns dirty.
     QDir autosavePath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/autosaves");
-
     if (!autosavePath.exists()) {
         autosavePath.mkpath(autosavePath.absolutePath());
     }
-
-    qCDebug(zero) << "Autosavepath: " << autosavePath.absolutePath();
-    // The leading dot makes the autosave file hidden on Unix; XXXXXX is replaced
-    // by QTemporaryFile with a unique suffix to prevent collisions between workspaces
-    m_autosaveFile.setFileTemplate(autosavePath.absoluteFilePath(".XXXXXX.panda"));
-    qCDebug(zero) << "Setting current file to random file.";
+    m_autosaveFileName.clear();
 }
 
 int WorkSpace::lastId() const
@@ -458,82 +477,83 @@ void WorkSpace::autosave()
     QStringList autosaves = Settings::autosaveFiles();
     qCDebug(three) << "All auto save file names before autosaving: " << autosaves;
 
-    qCDebug(zero) << "Checking if autosave file exists and if it contains current project file. If so, remove autosave file from it.";
-
-    // Remove the stale autosave entry from the registry before creating the new one;
-    // this prevents the registry from growing unboundedly on each autosave cycle
-    if (!m_autosaveFile.fileName().isEmpty() && autosaves.contains(m_autosaveFile.fileName())) {
-        qCDebug(three) << "Removing current autosave file name.";
-        autosaves.removeAll(m_autosaveFile.fileName());
-        Settings::setAutosaveFiles(autosaves);
-    }
-
-    qCDebug(zero) << "All auto save file names after possibly removing autosave: " << autosaves;
-    qCDebug(zero) << "If autosave exists and undo stack is clean, remove it.";
     auto *undoStack = m_scene.undoStack();
     qCDebug(zero) << "Undo stack element: " << undoStack->index() << " of " << undoStack->count();
 
     // If the undo stack is clean the project has no unsaved changes, so there's
-    // nothing to protect; delete any leftover autosave file and bail out
+    // nothing to protect; delete any leftover autosave file and bail out.
     if (undoStack->isClean()) {
         qCDebug(three) << "Undo stack is clean.";
-        m_autosaveFile.remove();
+        if (!m_autosaveFileName.isEmpty()) {
+            autosaves.removeAll(m_autosaveFileName);
+            Settings::setAutosaveFiles(autosaves);
+            QFile::remove(m_autosaveFileName);
+            m_autosaveFileName.clear();
+        }
         emit fileChanged(m_fileInfo);
-
         return;
     }
 
     qCDebug(three) << "Undo is !clean. Must set autosave file.";
 
+    // Choose the directory to write into, mirroring the pre-existing policy:
+    // unsaved projects go to the global autosaves dir, saved projects go next
+    // to their .panda file unless that directory is read-only.
     QDir path;
-
     if (m_fileInfo.fileName().isEmpty()) {
-        // Unsaved new project: write autosave to the global autosave directory
-        qCDebug(three) << "Default value not set yet.";
         path.setPath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/autosaves");
-
-        if (!path.exists()) {
-            path.mkpath(path.absolutePath());
-        }
-
-        qCDebug(three) << "Autosavepath: " << path.absolutePath();
-        m_autosaveFile.setFileTemplate(path.absoluteFilePath(".XXXXXX.panda"));
-        qCDebug(three) << "Setting current file to random file.";
     } else {
-        // Existing project: write autosave next to the real file so it's easy to find
-        // in case of crash recovery — unless the directory is read-only (e.g. AppImage).
         const QFileInfo dirInfo(m_fileInfo.absolutePath());
-
         if (dirInfo.isWritable()) {
-            qCDebug(three) << "Autosave path set to the current file's directory.";
             path.setPath(m_fileInfo.absolutePath());
         } else {
-            qCDebug(three) << "File directory is read-only, using global autosave directory.";
             path.setPath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/autosaves");
-
-            if (!path.exists()) {
-                path.mkpath(path.absolutePath());
-            }
         }
+    }
+    if (!path.exists()) {
+        path.mkpath(path.absolutePath());
+    }
+    qCDebug(three) << "Autosavepath: " << path.absolutePath();
 
-        qCDebug(three) << "Autosavepath: " << path.absolutePath();
-        m_autosaveFile.setFileTemplate(path.absoluteFilePath("." + m_fileInfo.baseName() + ".XXXXXX.panda"));
-        qCDebug(three) << "Setting current file to: " << m_fileInfo.absoluteFilePath();
+    // Reuse a stable filename across writes so QSaveFile can replace the same
+    // target atomically. If the project's directory has changed (Save As to a
+    // new path), drop the old autosave file in the previous location first.
+    const QString prefix = m_fileInfo.fileName().isEmpty() ? QStringLiteral(".") : "." + m_fileInfo.baseName() + ".";
+    if (!m_autosaveFileName.isEmpty() && QFileInfo(m_autosaveFileName).absolutePath() != path.absolutePath()) {
+        autosaves.removeAll(m_autosaveFileName);
+        QFile::remove(m_autosaveFileName);
+        m_autosaveFileName.clear();
+    }
+    if (m_autosaveFileName.isEmpty()) {
+        const QString tag = QUuid::createUuid().toString(QUuid::Id128);
+        m_autosaveFileName = path.absoluteFilePath(prefix + tag + ".panda");
     }
 
-    if (!m_autosaveFile.open()) {
-        throw PANDACEPTION("Error opening autosave file: %1", m_autosaveFile.errorString());
+    // Drop the previous registry entry before writing so we don't double-list it.
+    if (autosaves.contains(m_autosaveFileName)) {
+        autosaves.removeAll(m_autosaveFileName);
+        Settings::setAutosaveFiles(autosaves);
     }
-
-    QString autosaveFileName = m_autosaveFile.fileName();
 
     qCDebug(three) << "Writing to autosave file.";
-    QDataStream stream(&m_autosaveFile);
+    // QSaveFile writes to a sibling temp file and atomically renames on commit,
+    // truncating any prior contents. Both partial-write corruption (process
+    // killed mid-write) and shrink-leftover-tail corruption (new circuit
+    // shorter than the previous autosave) are eliminated.
+    QSaveFile autosaveFile(m_autosaveFileName);
+    if (!autosaveFile.open(QIODevice::WriteOnly)) {
+        throw PANDACEPTION("Error opening autosave file: %1", autosaveFile.errorString());
+    }
+
+    QDataStream stream(&autosaveFile);
     Serialization::writePandaHeader(stream);
     save(stream);
-    m_autosaveFile.close();
 
-    autosaves.append(autosaveFileName);
+    if (!autosaveFile.commit()) {
+        throw PANDACEPTION("Could not commit autosave file: %1", autosaveFile.errorString());
+    }
+
+    autosaves.append(m_autosaveFileName);
     Settings::setAutosaveFiles(autosaves);
 
     qCDebug(three) << "All auto save file names after adding autosave: " << autosaves;
@@ -543,7 +563,15 @@ void WorkSpace::autosave()
 
 void WorkSpace::setAutosaveFile()
 {
-    m_autosaveFile.setFileName(m_fileInfo.filePath());
+    m_autosaveFileName = m_fileInfo.filePath();
+}
+
+void WorkSpace::flushPendingAutosave()
+{
+    if (m_autosaveDebounceTimer.isActive()) {
+        m_autosaveDebounceTimer.stop();
+        autosave();
+    }
 }
 
 void WorkSpace::createVersionedBackup(const QString &fileName, const QVersionNumber &version)
