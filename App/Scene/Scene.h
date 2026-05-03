@@ -80,6 +80,13 @@ public:
      */
     void updateItemId(ItemWithId *item, int newId);
 
+    /// Drops a stale registry entry by ID without dereferencing the item.
+    /// Needed when Qt's parent-child cascade destroys an item: it removes
+    /// the item from QGraphicsScene via the non-virtual base removeItem,
+    /// bypassing our override and leaving the m_elementRegistry entry
+    /// pointing at freed memory.
+    void forgetItemId(int id);
+
     static constexpr int gridSize = 16; ///< Scene grid unit in pixels (elements snap to gridSize/2).
 
     // --- Lifecycle ---
