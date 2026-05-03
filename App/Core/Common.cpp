@@ -46,6 +46,10 @@ Pandaception::Pandaception(const QString &translatedMessage, const QString &engl
 {
 }
 
+// Key function — see header for rationale.  Must remain out-of-line and
+// non-inline so the Itanium ABI emits Pandaception's typeinfo here only.
+Pandaception::~Pandaception() = default;
+
 QString Pandaception::englishMessage() const
 {
     return m_englishMessage;

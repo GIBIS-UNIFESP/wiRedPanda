@@ -66,6 +66,17 @@ public:
     explicit Pandaception(const QString &translatedMessage, const QString &englishMessage,
                           const char *file = nullptr, int line = 0);
 
+    /// Out-of-line virtual destructor acts as the class's key function so the
+    /// Itanium C++ ABI emits the typeinfo and vtable in exactly one TU
+    /// (Common.cpp) with strong external linkage.  Without this, every TU
+    /// that throws PANDACEPTION emits its own weak typeinfo, and on macOS
+    /// ld64 can leave per-TU hidden copies un-coalesced — breaking
+    /// `catch (const std::exception &)` in Application::notify because the
+    /// throw and catch sites end up with different `type_info*` pointers
+    /// (libc++abi requires pointer equality, unlike libstdc++ which falls
+    /// back to typeinfo-name strcmp).  See .claude/SENTRY_TRIAGE.md §A25.
+    ~Pandaception() override;
+
     // --- Message access ---
 
     /// Returns the English (non-translated) message for logging and crash reports.
