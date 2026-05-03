@@ -168,7 +168,7 @@ private slots:
 
     // --- Migrated: Batch 11 — Blob registry and orphan cleanup ---
 
-    void testRemoveEmbeddedICUndoLimitation();
+    void testRemoveEmbeddedICUndoRestoresBlob();
     void testBlobRegistryMergeConflictSkipsExisting();
     void testUniqueNameCollision();
     void testOrphanBlobAfterDeleteAllInstances();
@@ -221,6 +221,12 @@ private slots:
     void testSceneDropEventFileBacked();
     void testSceneDropEventEmbeddedMissingBlob();
     void testSceneDropEventLegacyMimeKey();
+
+    // Regression: A15 — inline-IC save must preserve wires touching file-backed sub-ICs
+    void testInlineSavePreservesWiresA15();
+
+    // Regression: C5 — onFileChanged must push UpdateBlobCommand for undo
+    void testOnFileChangedPushesUndoCommandC5();
 
 private:
     QString fixturesSrcDir() const;

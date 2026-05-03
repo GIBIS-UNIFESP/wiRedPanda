@@ -116,8 +116,13 @@ void WorkSpace::save(const QString &fileName)
                         }
                     }
                 }
+                // Switch the IC to blob-backed for serialization; do NOT call
+                // loadFromBlob. The IC already has its internal state loaded
+                // from the same file we just registered as a blob, so a reload
+                // would only destroy and rebuild ports — which cascade-deletes
+                // every scene wire connected to the IC (silent data loss) and
+                // races the simulation tick when play is running (H2-shape crash).
                 ic->setBlobName(baseName);
-                ic->loadFromBlob(m_scene.icRegistry()->blob(baseName), contextDir);
             }
         }
 
@@ -671,11 +676,22 @@ void WorkSpace::removeEmbeddedIC(const QString &blobName)
         }
     }
 
+    const bool hasBlob = m_scene.icRegistry()->hasBlob(blobName);
+    if (toDelete.isEmpty() && !hasBlob) {
+        return;
+    }
+
+    // Pair the IC deletion with blob removal in a single macro so undo
+    // restores both — eagerly removing the blob outside the command would
+    // leave restored ICs pointing at a registry entry that no longer exists.
+    m_scene.undoStack()->beginMacro(tr("Remove embedded IC \"%1\"").arg(blobName));
     if (!toDelete.isEmpty()) {
         m_scene.receiveCommand(new DeleteItemsCommand(toDelete, &m_scene));
     }
-
-    m_scene.icRegistry()->removeBlob(blobName);
+    if (hasBlob) {
+        m_scene.receiveCommand(new RemoveBlobCommand(blobName, &m_scene));
+    }
+    m_scene.undoStack()->endMacro();
 }
 
 void WorkSpace::setCurrentFile(const QString &filePath)

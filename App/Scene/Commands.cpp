@@ -1033,6 +1033,29 @@ void RegisterBlobCommand::undo()
     m_scene->icRegistry()->removeBlob(m_blobName);
 }
 
+// --- RemoveBlobCommand ---
+
+RemoveBlobCommand::RemoveBlobCommand(const QString &blobName, Scene *scene, QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , m_blobName(blobName)
+    // Snapshot the blob bytes at construction so undo can restore them even
+    // if the registry has been mutated in the meantime.
+    , m_data(scene->icRegistry()->blob(blobName))
+    , m_scene(scene)
+{
+    setText(tr("Remove blob \"%1\"").arg(blobName));
+}
+
+void RemoveBlobCommand::redo()
+{
+    m_scene->icRegistry()->removeBlob(m_blobName);
+}
+
+void RemoveBlobCommand::undo()
+{
+    m_scene->icRegistry()->setBlob(m_blobName, m_data);
+}
+
 // --- UpdateBlobCommand ---
 
 UpdateBlobCommand::UpdateBlobCommand(const QList<GraphicElement *> &elements, const QByteArray &oldData,
@@ -1132,6 +1155,15 @@ void UpdateBlobCommand::reconnectConnections()
         }
 
         if (!inPort || !outPort) {
+            // Port shrunk: the QNEConnection that occupied this slot was
+            // cascade-deleted by Qt when the IC's port was destroyed, but
+            // QGraphicsScene's non-virtual removeItem skipped our override
+            // and the m_elementRegistry entry still points at freed memory.
+            // Drop the stale ID so an earlier command's itemById lookup
+            // returns nullptr instead of the Cluster D throw or, worse,
+            // a use-after-free. Undo restores the IC's port count and
+            // recreates the connection with the original ID below.
+            m_scene->forgetItemId(ci.connectionId);
             continue;
         }
 
