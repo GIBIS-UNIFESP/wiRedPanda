@@ -123,6 +123,7 @@
 #include "Tests/Unit/Common/TestThemeManager.h"
 // unit/core
 #include "Tests/Unit/Core/TestApplication.h"
+#include "Tests/Unit/Core/TestNotifyCatch.h"
 #include "Tests/Unit/Core/TestSettings.h"
 #include "Tests/Unit/Core/TestUpdateChecker.h"
 // unit/elements
@@ -312,6 +313,7 @@ int main(int argc, char **argv)
         {"TestCoreSettings", []() -> QObject * { return new TestCoreSettings; }},
         {"TestUpdateChecker", []() -> QObject * { return new TestUpdateChecker; }},
         {"TestApplication", []() -> QObject * { return new TestApplication; }},
+        {"TestNotifyCatch", []() -> QObject * { return new TestNotifyCatch; }},
         {"TestAudioBox", []() -> QObject * { return new TestAudioBox; }},
         {"TestBuzzer", []() -> QObject * { return new TestBuzzer; }},
         {"TestDemux", []() -> QObject * { return new TestDemux; }},

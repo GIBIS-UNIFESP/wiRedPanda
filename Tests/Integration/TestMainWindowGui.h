@@ -195,6 +195,7 @@ private slots:
     void testRotateFlipZoomBreadcrumbsB23();
     void testLoadPandaFileClosesOrphanedTabB11();
     void testRemoveICFileIsUndoableA14();
+    void testWaveformOnEmptySceneShowsWarningHQ();
 
 private:
     QTemporaryDir m_tempDir;

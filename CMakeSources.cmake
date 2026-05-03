@@ -361,6 +361,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestSettings.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestThemeManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestApplication.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestNotifyCatch.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestSettings.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestUpdateChecker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestAudioBox.cpp
@@ -543,6 +544,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestSettings.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestThemeManager.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestApplication.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestNotifyCatch.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestSettings.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestUpdateChecker.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestAudioBox.h
