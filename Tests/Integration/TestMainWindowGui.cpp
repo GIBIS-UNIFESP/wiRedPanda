@@ -3146,3 +3146,66 @@ void TestMainWindowGui::testRemoveICFileIsUndoableA14()
     FileDialogs::setProvider(prevProvider);
 }
 
+void TestMainWindowGui::testWaveformOnEmptySceneShowsWarningHQ()
+{
+    // Regression for WIREDPANDA-HQ on macOS arm64.
+    //
+    // Pre-fix: triggering actionWaveform on an empty scene drove
+    // BewavedDolphin::loadElements() to throw PANDACEPTION. On macOS arm64
+    // the exception escaped Application::notify and the process aborted with
+    // SIGABRT (captured as a Sentry minidump). The fix at
+    // MainWindow::on_actionWaveform_triggered pre-checks the empty case and
+    // shows a warning dialog instead of letting the throw escape.
+    //
+    // This GUI variant exercises the exact user path. The trigger is posted
+    // via Qt::QueuedConnection so the slot is invoked through the platform
+    // event dispatcher — on macOS that is QCocoaEventDispatcherPrivate
+    // ::postedEventsSourceCallback, the same dispatch frame as the original
+    // crash. A direct action->trigger() would call the slot synchronously
+    // and bypass Application::notify entirely.
+    //
+    // The non-GUI catch infrastructure is verified separately by
+    // TestNotifyCatch; this test exercises the path with a real MainWindow.
+    const bool prevInteractive = Application::interactiveMode;
+    Application::interactiveMode = true;
+
+    std::unique_ptr<MainWindow> window(createMW());
+
+    QVERIFY2(window->currentTab()->scene()->elements().isEmpty(),
+             "Fresh tab must have an empty scene to reproduce WIREDPANDA-HQ");
+
+    // Poll-and-dismiss any QMessageBox that appears: either the pre-check
+    // warning (with the fix) or the critical dialog Application::notify
+    // shows from inside its catch (without the fix). A singleShot(0) won't
+    // work — it fires before the queued action trigger runs, so it sees no
+    // dialog and we hang on QDialog::exec.
+    QTimer dismissTimer;
+    dismissTimer.setInterval(50);
+    QObject::connect(&dismissTimer, &QTimer::timeout, []() {
+        const auto widgets = QApplication::topLevelWidgets();
+        for (QWidget *w : widgets) {
+            if (auto *box = qobject_cast<QMessageBox *>(w)) {
+                if (box->isVisible()) {
+                    box->done(QMessageBox::Ok);
+                }
+            }
+        }
+    });
+    dismissTimer.start();
+
+    auto *action = window->findChild<QAction *>("actionWaveform");
+    QVERIFY(action);
+    QMetaObject::invokeMethod(action, "trigger", Qt::QueuedConnection);
+    QTest::qWait(500);
+
+    dismissTimer.stop();
+
+    // Reaching this line means: no abort. Either the pre-check fired (fix
+    // present) or Application::notify caught the escaping PANDACEPTION
+    // (without the fix). On macOS, a SIGABRT here is the WIREDPANDA-HQ
+    // signature.
+    QVERIFY(window->isVisible());
+
+    Application::interactiveMode = prevInteractive;
+}
+

@@ -717,6 +717,7 @@ add_test(NAME TestMemorySettlingTime COMMAND test_wiredpanda TestMemorySettlingT
 add_test(NAME TestMUXDEMUXComprehensive COMMAND test_wiredpanda TestMUXDEMUXComprehensive WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMultiplexing COMMAND test_wiredpanda TestMultiplexing WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestNodeLogic COMMAND test_wiredpanda TestNodeLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestNotifyCatch COMMAND test_wiredpanda TestNotifyCatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPriorities COMMAND test_wiredpanda TestPriorities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRAMCell1Bit COMMAND test_wiredpanda TestRAMCell1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRecentFiles COMMAND test_wiredpanda TestRecentFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -863,7 +864,7 @@ endforeach()
 set_tests_properties(TestDanglingPointer PROPERTIES LABELS "unit;regression")
 
 # Core Functionality Tests - Unit category
-foreach(TEST TestCommands TestCommon TestEnums TestPriorities TestRecentFiles TestSettings
+foreach(TEST TestCommands TestCommon TestEnums TestNotifyCatch TestPriorities TestRecentFiles TestSettings
         TestThemeManager)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
@@ -912,7 +913,7 @@ set(ALL_TESTS
     TestSceneConnections TestSceneState TestSceneUndoredo
     TestSerialization TestSimulationBlocker
     TestDanglingPointer
-    TestCommands TestCommon TestEnums TestPriorities TestRecentFiles TestSettings TestThemeManager)
+    TestCommands TestCommon TestEnums TestNotifyCatch TestPriorities TestRecentFiles TestSettings TestThemeManager)
 foreach(TEST ${ALL_TESTS})
     set_tests_properties(${TEST} PROPERTIES FIXTURES_SETUP "non_gui_complete")
 endforeach()
