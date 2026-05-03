@@ -10,7 +10,8 @@ void TestUpdateChecker::testUpdateAvailable()
 {
     // Test: UpdateChecker can detect when update is available
     UpdateChecker checker;
-    Q_UNUSED(checker)
+
+    // Create checker object - should not crash (construction reaching here is the assertion)
 }
 
 void TestUpdateChecker::testNoUpdate()
