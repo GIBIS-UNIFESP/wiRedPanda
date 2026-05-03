@@ -443,7 +443,7 @@ void TestCommands::testSplitCommandRedoThrowsBeforeAllocation()
     // so findElm(m_elm1Id) returns nullptr without freeing sw itself.
     scene->forgetItemId(sw->id());
 
-    const int elementsBefore = scene->elements().size();
+    const auto elementsBefore = scene->elements().size();
     const int connectionsBefore = TestUtils::countConnections(scene);
 
     bool threw = false;
