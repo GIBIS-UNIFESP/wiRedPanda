@@ -21,8 +21,11 @@
 #include <QVector>
 
 #include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICRegistry.h"
+#include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -442,5 +445,39 @@ void TestDanglingPointer::integration_simulationTickAfterResetMustNotCrash()
 
     ws.scene()->simulation()->update();
     QVERIFY(true);
+}
+
+// WIREDPANDA-HC — when an element is destroyed out-of-band (no command,
+// no removeItem on attached wires first), Qt's ~QGraphicsItem cascade fires
+// drainConnections on each child port. Pre-fix, drainConnections issued a
+// bare `delete conn` that bypassed Scene::removeItem, leaving a stale
+// m_elementRegistry entry pointing at freed memory — the upstream
+// necessary condition for the FH/EW/G1/GP/HC paint-time _purecall family.
+void TestDanglingPointer::hcDrainConnectionsMustCleanRegistry()
+{
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(led);
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(led->inputPort());
+    scene->addItem(conn);
+
+    const int connId = conn->id();
+    QCOMPARE(scene->itemById(connId), conn);
+
+    // Out-of-band destruction: removeItem on the element only, then delete.
+    // Cascade reaches ~QNEOutputPort → drainConnections, which deletes the
+    // wire still in m_connections.
+    scene->removeItem(sw);
+    delete sw;
+
+    // Post-fix: drainConnections routed the delete through Scene::removeItem,
+    // so the registry entry is gone.
+    QVERIFY(scene->itemById(connId) == nullptr);
 }
 

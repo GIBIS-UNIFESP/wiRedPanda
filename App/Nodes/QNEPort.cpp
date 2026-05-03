@@ -11,6 +11,7 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Nodes/QNEConnection.h"
+#include "App/Scene/Scene.h"
 
 static const int s_inputPortMetatypeId = qRegisterMetaType<QNEInputPort>();
 static const int s_outputPortMetatypeId = qRegisterMetaType<QNEOutputPort>();
@@ -200,6 +201,14 @@ void QNEPort::drainConnections(bool isInput)
             conn->setEndPort(nullptr);
         } else {
             conn->setStartPort(nullptr);
+        }
+        // Route through Scene::removeItem so m_elementRegistry is cleaned up
+        // before delete.  Qt's ~QGraphicsItem cascade dispatches to the
+        // non-virtual QGraphicsScene::removeItem, which would skip our
+        // override and leave a stale itemById entry pointing at freed memory
+        // — same family as db565817c (WIREDPANDA-HC).
+        if (auto *scene = qobject_cast<Scene *>(conn->scene())) {
+            scene->removeItem(conn);
         }
         delete conn;
     }

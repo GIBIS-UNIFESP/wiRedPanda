@@ -1464,3 +1464,53 @@ void TestScene::testForgetItemIdC7()
     QCOMPARE(scene->itemById(led->id()), static_cast<ItemWithId *>(led));
 }
 
+void TestScene::testDrainConnectionsCleansRegistryHC()
+{
+    // Reproduces the registry-leak path suspected of causing WIREDPANDA-HC
+    // (paint-time _purecall in QGraphicsItem::boundingRect, same family as
+    // FH/EW/G1/GP).
+    //
+    // QNEPort::drainConnections (called from ~QNEInputPort/~QNEOutputPort
+    // during cascade-destruction of a deleted element) issues a bare
+    // `delete conn` without going through Scene::removeItem. Qt's
+    // ~QGraphicsItem then dispatches to the non-virtual
+    // QGraphicsScene::removeItem, which removes the connection from the
+    // BSP but skips our override — leaving m_elementRegistry pointing at
+    // freed memory. A subsequent itemById/iter that hits the stale entry
+    // dereferences a destructed object → _purecall during paint.
+    //
+    // This is the same pattern db565817c fixed for
+    // UpdateBlobCommand::reconnectConnections, scoped to that one call
+    // site.  drainConnections needs the same treatment.
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(led);
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(led->inputPort());
+    scene->addItem(conn);
+
+    const int connId = conn->id();
+    QVERIFY(connId >= 0);
+    QCOMPARE(scene->itemById(connId), conn);
+
+    // Trigger drainConnections by destroying sw out-of-band — i.e. without
+    // first deleting attached wires.  This mirrors the non-command paths
+    // that existed in 5.0.1 (pre-0e5399d83 removeICFile, pre-78fc0882d
+    // inline-IC save reload, pre-515d7a97f onFileChanged) where ports
+    // could reach ~QNEPort with a non-empty m_connections list.
+    scene->removeItem(sw);
+    delete sw;
+    // ~InputSwitch → ~GraphicElement → ~QGraphicsItem cascades into
+    // ~QNEOutputPort → drainConnections(false) → `delete conn` (bare).
+
+    // Expectation (post-fix): drainConnections routed the delete through
+    // Scene::removeItem, so the registry no longer points at freed memory.
+    // Pre-fix this assertion fails and proves the WIREDPANDA-HC hypothesis.
+    QVERIFY(scene->itemById(connId) == nullptr);
+}
+

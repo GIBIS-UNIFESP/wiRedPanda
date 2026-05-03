@@ -83,5 +83,13 @@ private slots:
     /// only affects this last slot. Covers the concrete path that
     /// Simulation.cpp:87's `element->updateLogic()` took in production.
     void integration_simulationTickAfterResetMustNotCrash();
+
+    /// WIREDPANDA-HC — QNEPort::drainConnections issued a bare
+    /// `delete conn` during cascade-destruction. Qt's ~QGraphicsItem
+    /// then dispatched to the non-virtual QGraphicsScene::removeItem,
+    /// bypassing Scene::removeItem and leaving m_elementRegistry pointing
+    /// at freed memory — the upstream necessary condition for the
+    /// FH/EW/G1/GP/HC paint-time _purecall family.
+    void hcDrainConnectionsMustCleanRegistry();
 };
 

@@ -618,6 +618,10 @@ void WorkSpace::autosave()
 
 void WorkSpace::setAutosaveFile()
 {
+    // Crash-recovery flow: a recovered autosave is being treated as if it
+    // came from the original .panda file, so the next autosave write should
+    // overwrite the project file directly rather than spawning a new
+    // hidden temp file next to it. Surprising semantically but intentional.
     m_autosaveFileName = m_fileInfo.filePath();
 }
 
