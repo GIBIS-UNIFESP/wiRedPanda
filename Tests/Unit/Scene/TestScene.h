@@ -85,5 +85,8 @@ private slots:
 
     // Regression: C7 — forgetItemId drops registry entry without delete
     void testForgetItemIdC7();
+
+    // Regression: WIREDPANDA-HC — drainConnections must clean the registry
+    void testDrainConnectionsCleansRegistryHC();
 };
 

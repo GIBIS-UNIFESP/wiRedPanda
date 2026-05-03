@@ -623,8 +623,9 @@ void Scene::deleteAction()
 
     if (!selectedItems_.isEmpty()) {
         receiveCommand(new DeleteItemsCommand(selectedItems_, this));
-        // Restart the simulation so it doesn't reference any deleted element pointers
-        m_simulation.restart();
+        // No explicit Simulation::restart() needed: DeleteItemsCommand::redo
+        // calls setCircuitUpdateRequired() which already drives a full
+        // initialize()/restart() cycle once the deletion completes.
     }
 }
 
