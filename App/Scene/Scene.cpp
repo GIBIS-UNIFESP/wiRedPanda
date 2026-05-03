@@ -748,29 +748,31 @@ void Scene::handleNewElementDrop(QGraphicsSceneDragDropEvent *event)
     QPointF pos = event->scenePos() - offset;
     qCDebug(zero) << type << " at position: " << pos.x() << ", " << pos.y() << ", label: " << icFileName;
 
-    auto *element = ElementFactory::buildElement(type);
+    std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(type));
     qCDebug(zero) << "Valid element.";
 
     if (isEmbedded && type == ElementType::IC) {
-        if (!m_icRegistry.initEmbeddedIC(static_cast<IC *>(element), blobName)) {
-            delete element;
+        if (!m_icRegistry.initEmbeddedIC(static_cast<IC *>(element.get()), blobName)) {
             return;
         }
     } else {
+        // loadFromDrop can throw on malformed files; unique_ptr keeps the
+        // freshly-allocated element from leaking when it does.
         element->loadFromDrop(icFileName, contextDir());
     }
 
     qCDebug(zero) << "Adding the element to the scene.";
-    receiveCommand(new AddItemsCommand({element}, this));
+    auto *raw = element.release();
+    receiveCommand(new AddItemsCommand({raw}, this));
 
     qCDebug(zero) << "Cleaning the selection.";
     clearSelection();
 
     qCDebug(zero) << "Setting created element as selected.";
-    element->setSelected(true);
+    raw->setSelected(true);
 
     qCDebug(zero) << "Adjusting the position of the element.";
-    element->setPos(pos);
+    raw->setPos(pos);
 }
 
 void Scene::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
@@ -1103,12 +1105,16 @@ void Scene::addItem(QMimeData *mimeData)
     if (!stream.atEnd()) { stream >> isEmbedded; }
     if (!stream.atEnd()) { stream >> blobName; }
 
-    auto *element = ElementFactory::buildElement(type);
+    std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(type));
     qCDebug(zero) << "Valid element.";
 
+    // RAII for mimeData too — the original deleteLater at the bottom is
+    // unreachable if loadFromDrop throws, so the QMimeData would leak alongside
+    // the half-built element.
+    auto mimeGuard = qScopeGuard([mimeData]() { mimeData->deleteLater(); });
+
     if (isEmbedded && type == ElementType::IC) {
-        if (!m_icRegistry.initEmbeddedIC(static_cast<IC *>(element), blobName)) {
-            delete element;
+        if (!m_icRegistry.initEmbeddedIC(static_cast<IC *>(element.get()), blobName)) {
             return;
         }
     } else {
@@ -1116,14 +1122,13 @@ void Scene::addItem(QMimeData *mimeData)
     }
 
     qCDebug(zero) << "Adding the element to the scene.";
-    receiveCommand(new AddItemsCommand({element}, this));
+    auto *raw = element.release();
+    receiveCommand(new AddItemsCommand({raw}, this));
 
     qCDebug(zero) << "Cleaning the selection.";
     clearSelection();
 
     qCDebug(zero) << "Setting created element as selected.";
-    element->setSelected(true);
-
-    mimeData->deleteLater();
+    raw->setSelected(true);
 }
 

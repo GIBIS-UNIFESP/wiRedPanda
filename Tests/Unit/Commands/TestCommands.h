@@ -34,5 +34,8 @@ private slots:
     void testUndoEmptyStack();
     void testRedoEmptyStack();
     void testUndoLimit();
+
+    // Regression: D13 — SplitCommand::redo must throw before allocating
+    void testSplitCommandRedoThrowsBeforeAllocation();
 };
 
