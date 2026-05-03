@@ -190,8 +190,10 @@ private slots:
 
     // --- Sentry triage regressions ---
 
+    void testSetupShortcutsRegistersOnceD18();
     void testAddICDisabledWhenUnsavedC9();
     void testRotateFlipZoomBreadcrumbsB23();
+    void testLoadPandaFileClosesOrphanedTabB11();
     void testRemoveICFileIsUndoableA14();
 
 private:
