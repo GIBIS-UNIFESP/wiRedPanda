@@ -14,5 +14,8 @@ private slots:
 
     void testAvailableLanguages();
     void testSetLanguage();
+    void testQtTranslationsPathExists();
+    void testQtTranslationFilesExist();
+    void testQtTranslatorIsLoadable();
 };
 
