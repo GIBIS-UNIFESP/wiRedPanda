@@ -4,6 +4,7 @@
 #include "App/UI/LanguageManager.h"
 
 #include <QDir>
+#include <QLibraryInfo>
 #include <QLocale>
 #include <QResource>
 #include <QTranslator>
@@ -77,7 +78,6 @@ void LanguageManager::loadTranslation(const QString &language)
     }
 
     const QString pandaFile = QString(":/Translations/wpanda_%1.qm").arg(language);
-    const QString qtFile    = QString(":/Translations/qt_%1.qm").arg(language);
 
     if (QResource(pandaFile).isValid()) {
         m_pandaTranslator = new QTranslator(this);
@@ -91,14 +91,13 @@ void LanguageManager::loadTranslation(const QString &language)
         }
     }
 
-    if (QResource(qtFile).isValid()) {
-        m_qtTranslator = new QTranslator(this);
-
-        if (!m_qtTranslator->load(qtFile) || !Application::instance()->installTranslator(m_qtTranslator)) {
-            qWarning() << "Failed to load Qt translation for" << language << ", continuing without Qt translation";
-            delete m_qtTranslator;
-            m_qtTranslator = nullptr;
-        }
+    m_qtTranslator = new QTranslator(this);
+    const QString qtBase  = QStringLiteral("qt_") + language;
+    const bool    qtFound = m_qtTranslator->load(qtBase, QLibraryInfo::path(QLibraryInfo::TranslationsPath));
+    if (!qtFound || !Application::instance()->installTranslator(m_qtTranslator)) {
+        qWarning() << "Failed to load Qt translation for" << language << ", continuing without Qt translation";
+        delete m_qtTranslator;
+        m_qtTranslator = nullptr;
     }
 
     emit translationChanged();
