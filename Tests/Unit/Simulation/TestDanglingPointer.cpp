@@ -379,3 +379,4 @@ void TestDanglingPointer::integration_simulationTickAfterResetMustNotCrash()
     ws.scene()->simulation()->update();
     QVERIFY(true);
 }
+

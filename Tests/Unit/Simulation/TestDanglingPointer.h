@@ -72,3 +72,4 @@ private slots:
     /// Simulation.cpp:87's `element->updateLogic()` took in production.
     void integration_simulationTickAfterResetMustNotCrash();
 };
+

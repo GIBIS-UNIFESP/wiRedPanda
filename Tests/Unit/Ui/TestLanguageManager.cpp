@@ -3,13 +3,13 @@
 
 #include "Tests/Unit/Ui/TestLanguageManager.h"
 
-#include "App/UI/LanguageManager.h"
-#include "Tests/Common/TestUtils.h"
-
 #include <QDir>
 #include <QFile>
 #include <QLibraryInfo>
 #include <QTranslator>
+
+#include "App/UI/LanguageManager.h"
+#include "Tests/Common/TestUtils.h"
 
 void TestLanguageManager::testAvailableLanguages()
 {
