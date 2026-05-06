@@ -4,6 +4,7 @@
         {
             "name": "base",
             "hidden": true,
+            "description": "Ninja is required: multi-config generators (Visual Studio) are not supported",
             "generator": "Ninja",
             "binaryDir": "build/${presetName}"
         },
@@ -154,10 +155,7 @@
             "displayName": "Sentry with Crashpad",
             "description": "RelWithDebInfo build with Sentry crashpad backend",
             "inherits": "relwithdebinfo",
-            "binaryDir": "build-sentry-crashpad",
-            "cacheVariables": {
-                "SENTRY_BACKEND": "crashpad"
-            }
+            "binaryDir": "build-sentry-crashpad"
         },
         {
             "name": "sentry-breakpad",
@@ -166,7 +164,6 @@
             "inherits": "relwithdebinfo",
             "binaryDir": "build-sentry-breakpad",
             "cacheVariables": {
-                "SENTRY_BACKEND": "breakpad",
                 "CMAKE_OSX_ARCHITECTURES": "x86_64;arm64"
             },
             "condition": {
