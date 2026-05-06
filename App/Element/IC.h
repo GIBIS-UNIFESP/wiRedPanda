@@ -8,11 +8,13 @@
 #pragma once
 
 #include <QFileInfo>
+#include <QPixmap>
 #include <QSet>
 
 #include "App/Element/GraphicElement.h"
 #include "App/IO/SerializationContext.h"
 
+class QGraphicsSceneHoverEvent;
 class QNEConnection;
 
 /**
@@ -66,6 +68,12 @@ public:
     const QVector<QNEPort *> &internalInputs() const { return m_internalInputs; }
     const QVector<QNEPort *> &internalOutputs() const { return m_internalOutputs; }
 
+    /// Returns the cached preview pixmap of the designed circuit.
+    /// The snapshot is taken once during load (before boundary elements are
+    /// substituted with proxy Nodes), so the preview reflects what the user
+    /// actually placed — buttons, switches, LEDs — not the simulation graph.
+    const QPixmap &previewPixmap() const { return m_previewPixmap; }
+
     // --- Port metadata ---
 
     /// Port count and label metadata extracted from Input/Output elements.
@@ -112,6 +120,16 @@ protected:
     /// \reimp Opens the IC sub-circuit for editing on double-click.
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
+    /// \reimp Schedules a floating preview of the internal circuit after a short hover delay.
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+
+    /// \reimp Updates the pending preview position so the popup appears near
+    /// the current cursor when the show delay elapses, not at the entry point.
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
+
+    /// \reimp Dismisses the floating preview with a short delay.
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+
 private:
     // --- Utility methods ---
 
@@ -130,6 +148,7 @@ private:
     // --- Visual helpers ---
 
     void generatePixmap();
+    void generatePreviewPixmap(const QList<QGraphicsItem *> &items);
 
     // --- Members ---
 
@@ -145,5 +164,9 @@ private:
     QVector<GraphicElement *> m_sortedInternalElements;
     QSet<GraphicElement *> m_boundaryInputElements;
     bool m_internalHasFeedback = false;
+
+    // --- Members: Hover preview ---
+
+    QPixmap m_previewPixmap;           ///< Snapshot of the designed circuit, rendered at load time.
 };
 

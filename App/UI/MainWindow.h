@@ -11,6 +11,7 @@
 
 #include <QDir>
 #include <QMainWindow>
+#include <QPointer>
 #include <QSpacerItem>
 #include <QUrl>
 
@@ -19,6 +20,7 @@
 class ElementLabel;
 class ElementPalette;
 class IC;
+class ICPreviewPopup;
 class LanguageManager;
 class QShortcut;
 class RecentFiles;
@@ -49,6 +51,10 @@ public:
 
     /// Shows the window and initializes child widget state.
     void show();
+
+    /// Returns the shared IC-hover preview popup.  Owned by this MainWindow as
+    /// a Qt child; auto-nulls (via QPointer) if destroyed before this window.
+    ICPreviewPopup *icPreviewPopup() const;
 
     // --- Tab Management ---
 
@@ -303,6 +309,10 @@ private:
     ElementPalette  *m_palette         = nullptr;
     LanguageManager *m_languageManager = nullptr;
     RecentFiles     *m_recentFiles     = nullptr;
+
+    /// Shared IC-hover preview, parented to this MainWindow.
+    /// QPointer so accesses during teardown are safe regardless of child-destruction order.
+    QPointer<ICPreviewPopup> m_icPreviewPopup;
 
     WorkSpace *m_currentTab = nullptr;
     int m_tabIndex = -1;
