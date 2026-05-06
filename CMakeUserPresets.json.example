@@ -1,0 +1,15 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "local-qt",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_PREFIX_PATH": "C:/Qt/6.9.0/mingw_64"
+            }
+        },
+        { "name": "debug-local",          "displayName": "Debug (local Qt)",          "inherits": ["local-qt", "debug"] },
+        { "name": "release-local",        "displayName": "Release (local Qt)",        "inherits": ["local-qt", "release"] },
+        { "name": "relwithdebinfo-local", "displayName": "RelWithDebInfo (local Qt)", "inherits": ["local-qt", "relwithdebinfo"] }
+    ]
+}
