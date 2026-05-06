@@ -1244,42 +1244,42 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="96"/>
+        <location filename="../../Element/IC.cpp" line="110"/>
         <source>IC</source>
         <translation>Piiri</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="95"/>
+        <location filename="../../Element/IC.cpp" line="109"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>INTEGROITU PIIRI</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="198"/>
+        <location filename="../../Element/IC.cpp" line="222"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>IC-lataus: IC-nimeä ei ole sarjallistetuissa tiedoissa</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="300"/>
+        <location filename="../../Element/IC.cpp" line="324"/>
         <source>%1 not found.</source>
         <translation>%1 ei löytynyt.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="341"/>
+        <location filename="../../Element/IC.cpp" line="365"/>
         <source>Circular IC reference detected: %1</source>
         <translation>Kehäviittaus IC:hen havaittu: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="348"/>
+        <location filename="../../Element/IC.cpp" line="372"/>
         <source>Error opening file: %1</source>
         <translation>Virhe avattaessa tiedostoa: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="402"/>
+        <location filename="../../Element/IC.cpp" line="426"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>IC-siirto: tiedostoa ei voi avata kirjoittamista varten: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="409"/>
+        <location filename="../../Element/IC.cpp" line="433"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC-siirto: uudelleen tallennetun tiedoston viimeistely epäonnistui: %1</translation>
     </message>
@@ -1941,8 +1941,8 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1306"/>
-        <location filename="../../UI/MainWindow.cpp" line="1835"/>
+        <location filename="../../UI/MainWindow.cpp" line="1310"/>
+        <location filename="../../UI/MainWindow.cpp" line="1844"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>Vaimenna</translation>
@@ -1978,7 +1978,7 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
         <translation>Taustasimulatio</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="933"/>
+        <location filename="../../UI/MainWindow.cpp" line="937"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>Pikanäppäimet ja vinkit</translation>
@@ -1994,88 +1994,88 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
         <translation>Ilmoita käännösvirheistä tai auta parantamaan käännöksiä Weblatessa</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="402"/>
+        <location filename="../../UI/MainWindow.cpp" line="406"/>
         <source>Error!</source>
         <translation>Virhe!</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="430"/>
-        <location filename="../../UI/MainWindow.cpp" line="667"/>
-        <location filename="../../UI/MainWindow.cpp" line="1132"/>
-        <location filename="../../UI/MainWindow.cpp" line="1644"/>
+        <location filename="../../UI/MainWindow.cpp" line="434"/>
+        <location filename="../../UI/MainWindow.cpp" line="671"/>
+        <location filename="../../UI/MainWindow.cpp" line="1136"/>
+        <location filename="../../UI/MainWindow.cpp" line="1653"/>
         <source>New Project</source>
         <translation>Uusi projekti</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="499"/>
+        <location filename="../../UI/MainWindow.cpp" line="503"/>
         <source>File saved successfully.</source>
         <translation>Tiedosto tallennettu onnistuneesti.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="648"/>
+        <location filename="../../UI/MainWindow.cpp" line="652"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Tiedostoa ei tallennettu. Sulje välilehti silti?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="669"/>
+        <location filename="../../UI/MainWindow.cpp" line="673"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> on muokattu.
 Haluatko tallentaa muutokset?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="726"/>
+        <location filename="../../UI/MainWindow.cpp" line="730"/>
         <source>File loaded successfully.</source>
         <translation>Tiedosto ladattu onnistuneesti.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="785"/>
-        <location filename="../../UI/MainWindow.cpp" line="1884"/>
+        <location filename="../../UI/MainWindow.cpp" line="789"/>
+        <location filename="../../UI/MainWindow.cpp" line="1893"/>
         <source>Open File</source>
         <translation>Avaa tiedosto</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="334"/>
-        <location filename="../../UI/MainWindow.cpp" line="785"/>
-        <location filename="../../UI/MainWindow.cpp" line="817"/>
-        <location filename="../../UI/MainWindow.cpp" line="869"/>
-        <location filename="../../UI/MainWindow.cpp" line="2016"/>
-        <location filename="../../UI/MainWindow.cpp" line="2087"/>
+        <location filename="../../UI/MainWindow.cpp" line="338"/>
+        <location filename="../../UI/MainWindow.cpp" line="789"/>
+        <location filename="../../UI/MainWindow.cpp" line="821"/>
+        <location filename="../../UI/MainWindow.cpp" line="873"/>
+        <location filename="../../UI/MainWindow.cpp" line="2025"/>
+        <location filename="../../UI/MainWindow.cpp" line="2096"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda-tiedostot (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="334"/>
+        <location filename="../../UI/MainWindow.cpp" line="338"/>
         <source>Select IC file to embed</source>
         <translation>Valitse upotettava IC-tiedosto</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="339"/>
+        <location filename="../../UI/MainWindow.cpp" line="343"/>
         <source>Could not read file: %1</source>
         <translation>Tiedostoa ei voitu lukea: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="519"/>
+        <location filename="../../UI/MainWindow.cpp" line="523"/>
         <source>Update Available</source>
         <translation>Päivitys saatavilla</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="530"/>
+        <location filename="../../UI/MainWindow.cpp" line="534"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;wiRedPanda %1 on saatavilla.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Käytät tällä hetkellä versiota %2.&lt;br&gt;Siirry julkaisusivulle ladataksesi uuden version.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="539"/>
+        <location filename="../../UI/MainWindow.cpp" line="543"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>Älä ilmoita tästä versiosta uudelleen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="543"/>
+        <location filename="../../UI/MainWindow.cpp" line="547"/>
         <source>Download</source>
         <translation>Lataa</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="627"/>
+        <location filename="../../UI/MainWindow.cpp" line="631"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2094,278 +2094,278 @@ wiRedPanda %1 listaa automaattisesti kaikki muut .panda-tiedostot nykyisen proje
 Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWavedDolphin-simulaatioiden suorittamista.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="817"/>
-        <location filename="../../UI/MainWindow.cpp" line="869"/>
+        <location filename="../../UI/MainWindow.cpp" line="821"/>
+        <location filename="../../UI/MainWindow.cpp" line="873"/>
         <source>Save File as ...</source>
         <translation>Tallenna tiedosto nimellä ...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="991"/>
+        <location filename="../../UI/MainWindow.cpp" line="995"/>
         <source>Are you sure?</source>
         <translation>Oletko varma?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="339"/>
-        <location filename="../../UI/MainWindow.cpp" line="1194"/>
-        <location filename="../../UI/MainWindow.cpp" line="1977"/>
-        <location filename="../../UI/MainWindow.cpp" line="1988"/>
-        <location filename="../../UI/MainWindow.cpp" line="2011"/>
-        <location filename="../../UI/MainWindow.cpp" line="2039"/>
-        <location filename="../../UI/MainWindow.cpp" line="2046"/>
-        <location filename="../../UI/MainWindow.cpp" line="2076"/>
-        <location filename="../../UI/MainWindow.cpp" line="2111"/>
-        <location filename="../../UI/MainWindow.cpp" line="2139"/>
+        <location filename="../../UI/MainWindow.cpp" line="343"/>
+        <location filename="../../UI/MainWindow.cpp" line="1198"/>
+        <location filename="../../UI/MainWindow.cpp" line="1986"/>
+        <location filename="../../UI/MainWindow.cpp" line="1997"/>
+        <location filename="../../UI/MainWindow.cpp" line="2020"/>
+        <location filename="../../UI/MainWindow.cpp" line="2048"/>
+        <location filename="../../UI/MainWindow.cpp" line="2055"/>
+        <location filename="../../UI/MainWindow.cpp" line="2085"/>
+        <location filename="../../UI/MainWindow.cpp" line="2120"/>
+        <location filename="../../UI/MainWindow.cpp" line="2148"/>
         <source>Error</source>
         <translation>Virhe</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="527"/>
+        <location filename="../../UI/MainWindow.cpp" line="531"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;wiRedPanda %1 on saatavilla.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Käytät tällä hetkellä versiota %2.&lt;br&gt;Napsauta &lt;b&gt;Lataa&lt;/b&gt; tallentaaksesi uuden version.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="572"/>
+        <location filename="../../UI/MainWindow.cpp" line="576"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>Ladataan wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="572"/>
+        <location filename="../../UI/MainWindow.cpp" line="576"/>
         <source>Cancel</source>
         <translation>Peruuta</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="573"/>
+        <location filename="../../UI/MainWindow.cpp" line="577"/>
         <source>Downloading Update</source>
         <translation>Ladataan päivitystä</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="597"/>
-        <location filename="../../UI/MainWindow.cpp" line="605"/>
+        <location filename="../../UI/MainWindow.cpp" line="601"/>
+        <location filename="../../UI/MainWindow.cpp" line="609"/>
         <source>Download Failed</source>
         <translation>Lataus epäonnistui</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="597"/>
+        <location filename="../../UI/MainWindow.cpp" line="601"/>
         <source>Could not download the update:
 %1</source>
         <translation>Päivityksen lataaminen epäonnistui:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="605"/>
+        <location filename="../../UI/MainWindow.cpp" line="609"/>
         <source>Could not save the file:
 %1</source>
         <translation>Tiedoston tallentaminen epäonnistui:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="614"/>
+        <location filename="../../UI/MainWindow.cpp" line="618"/>
         <source>Download Complete</source>
         <translation>Lataus valmis</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="615"/>
+        <location filename="../../UI/MainWindow.cpp" line="619"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda on ladattu kohteeseen:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="829"/>
-        <location filename="../../UI/MainWindow.cpp" line="880"/>
+        <location filename="../../UI/MainWindow.cpp" line="833"/>
+        <location filename="../../UI/MainWindow.cpp" line="884"/>
         <source>File Conflict</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="830"/>
-        <location filename="../../UI/MainWindow.cpp" line="881"/>
+        <location filename="../../UI/MainWindow.cpp" line="834"/>
+        <location filename="../../UI/MainWindow.cpp" line="885"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="833"/>
-        <location filename="../../UI/MainWindow.cpp" line="884"/>
+        <location filename="../../UI/MainWindow.cpp" line="837"/>
+        <location filename="../../UI/MainWindow.cpp" line="888"/>
         <source>Switch to Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1373"/>
-        <location filename="../../UI/MainWindow.cpp" line="1402"/>
-        <location filename="../../UI/MainWindow.cpp" line="1425"/>
+        <location filename="../../UI/MainWindow.cpp" line="1382"/>
+        <location filename="../../UI/MainWindow.cpp" line="1411"/>
+        <location filename="../../UI/MainWindow.cpp" line="1434"/>
         <source>Missing file name.</source>
         <translation>Tiedostonimi puuttuu.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1379"/>
-        <location filename="../../UI/MainWindow.cpp" line="1408"/>
+        <location filename="../../UI/MainWindow.cpp" line="1388"/>
+        <location filename="../../UI/MainWindow.cpp" line="1417"/>
         <source>The .panda file is empty.</source>
         <translation>.panda-tiedosto on tyhjä.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1390"/>
+        <location filename="../../UI/MainWindow.cpp" line="1399"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino-koodi generoitu onnistuneesti.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1417"/>
+        <location filename="../../UI/MainWindow.cpp" line="1426"/>
         <source>SystemVerilog code successfully generated.</source>
         <translation>SystemVerilog-koodi luotu onnistuneesti.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1453"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
         <source>Generate Arduino Code</source>
         <translation>Generoi Arduino-koodi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1453"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino-tiedosto (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1473"/>
+        <location filename="../../UI/MainWindow.cpp" line="1482"/>
         <source>Generate SystemVerilog Code</source>
         <translation>Luo SystemVerilog-koodi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1473"/>
+        <location filename="../../UI/MainWindow.cpp" line="1482"/>
         <source>SystemVerilog file (*.sv)</source>
         <translation>SystemVerilog-tiedosto (*.sv)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1579"/>
+        <location filename="../../UI/MainWindow.cpp" line="1588"/>
         <source>Export to PDF</source>
         <translation>Vie PDF:ksi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1579"/>
+        <location filename="../../UI/MainWindow.cpp" line="1588"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF-tiedostot (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1892"/>
+        <location filename="../../UI/MainWindow.cpp" line="1901"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
         <translation>Valitut tiedostot (ja niiden riippuvuudet) kopioidaan nykyiseen projektikansioon.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1950"/>
+        <location filename="../../UI/MainWindow.cpp" line="1959"/>
         <source>Name Collision</source>
         <translation>Nimitörmäys</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1951"/>
+        <location filename="../../UI/MainWindow.cpp" line="1960"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
         <translation>Upotettu IC nimellä &quot;%1&quot; on jo olemassa.
 Ehdotettu nimi:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1977"/>
-        <location filename="../../UI/MainWindow.cpp" line="2039"/>
+        <location filename="../../UI/MainWindow.cpp" line="1986"/>
+        <location filename="../../UI/MainWindow.cpp" line="2048"/>
         <source>Please save the project first so ICs can be resolved.</source>
         <translation>Tallenna projekti ensin, jotta IC:t voidaan selvittää.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1988"/>
-        <location filename="../../UI/MainWindow.cpp" line="2046"/>
-        <location filename="../../UI/MainWindow.cpp" line="2139"/>
+        <location filename="../../UI/MainWindow.cpp" line="1997"/>
+        <location filename="../../UI/MainWindow.cpp" line="2055"/>
+        <location filename="../../UI/MainWindow.cpp" line="2148"/>
         <source>Could not read IC file: %1</source>
         <translation>IC-tiedostoa ei voitu lukea: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1996"/>
-        <location filename="../../UI/MainWindow.cpp" line="2064"/>
+        <location filename="../../UI/MainWindow.cpp" line="2005"/>
+        <location filename="../../UI/MainWindow.cpp" line="2073"/>
         <source>IC embedded successfully.</source>
         <translation>IC upotettu onnistuneesti.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2016"/>
-        <location filename="../../UI/MainWindow.cpp" line="2087"/>
+        <location filename="../../UI/MainWindow.cpp" line="2025"/>
+        <location filename="../../UI/MainWindow.cpp" line="2096"/>
         <source>Extract IC to file...</source>
         <translation>Pura IC tiedostoon...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2027"/>
-        <location filename="../../UI/MainWindow.cpp" line="2098"/>
+        <location filename="../../UI/MainWindow.cpp" line="2036"/>
+        <location filename="../../UI/MainWindow.cpp" line="2107"/>
         <source>IC extracted to %1</source>
         <translation>IC purettu kohteeseen %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2011"/>
-        <location filename="../../UI/MainWindow.cpp" line="2076"/>
-        <location filename="../../UI/MainWindow.cpp" line="2111"/>
+        <location filename="../../UI/MainWindow.cpp" line="2020"/>
+        <location filename="../../UI/MainWindow.cpp" line="2085"/>
+        <location filename="../../UI/MainWindow.cpp" line="2120"/>
         <source>Please save the project first.</source>
         <translation>Tallenna projekti ensin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2128"/>
+        <location filename="../../UI/MainWindow.cpp" line="2137"/>
         <source>No file-based ICs to embed.</source>
         <translation>Ei tiedostopohjaisia IC:itä upotettavaksi.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2154"/>
+        <location filename="../../UI/MainWindow.cpp" line="2163"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>%1 IC upotettu. Piiri on nyt itsenäinen.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1590"/>
-        <location filename="../../UI/MainWindow.cpp" line="1616"/>
+        <location filename="../../UI/MainWindow.cpp" line="1599"/>
+        <location filename="../../UI/MainWindow.cpp" line="1625"/>
         <source>Exported file successfully.</source>
         <translation>Tiedosto viety onnistuneesti.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="914"/>
+        <location filename="../../UI/MainWindow.cpp" line="918"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda on São Paulon liittovaltion yliopiston opiskelijoiden kehittämä ohjelmisto, joka auttaa opiskelijoita oppimaan logiikkapiireistä.&lt;/p&gt;&lt;p&gt;Ohjelmistoversio: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Tekijät:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPandaa ylläpitävät tällä hetkellä Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves ja Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Ilmoita virheistä tai pyydä uusia ominaisuuksia GitHub-sivullamme.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Vieraile verkkosivuillamme!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="934"/>
+        <location filename="../../UI/MainWindow.cpp" line="938"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Piirtoalueen pikanäppäimet&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Lähennä &lt;/li&gt;&lt;li&gt; Ctrl+- : Loitonna &lt;/li&gt;&lt;li&gt; Ctrl+1 : Piilota/Näytä johdot &lt;/li&gt;&lt;li&gt; Ctrl+2 : Piilota/Näytä portit &lt;/li&gt;&lt;li&gt; Ctrl+F : Etsi elementtejä &lt;/li&gt;&lt;li&gt; Ctrl+W : Avaa beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Tallenna projekti &lt;/li&gt;&lt;li&gt; Ctrl+Q : Poistu wiRedPandasta &lt;/li&gt;&lt;li&gt; F5 : Käynnistä/Pysäytä simulaatio &lt;/li&gt;&lt;li&gt; [ : Edellinen ensisijainen elementin ominaisuus &lt;/li&gt;&lt;li&gt; ] : Seuraava ensisijainen elementin ominaisuus &lt;/li&gt;&lt;li&gt; { : Edellinen toissijainen elementin ominaisuus &lt;/li&gt;&lt;li&gt; } : Seuraava toissijainen elementin ominaisuus &lt;/li&gt;&lt;li&gt; &amp;lt; : Muunna edelliseksi elementiksi &lt;/li&gt;&lt;li&gt; &amp;gt; : Muunna seuraavaksi elementiksi &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Yleisiä vinkkejä&lt;/h1&gt;&lt;p&gt;Kaksoisnapsauta johtoa luodaksesi solmun&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="990"/>
+        <location filename="../../UI/MainWindow.cpp" line="994"/>
         <source>Exit</source>
         <translation>Poistu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1605"/>
+        <location filename="../../UI/MainWindow.cpp" line="1614"/>
         <source>Export to Image</source>
         <translation>Vie kuvaksi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1605"/>
+        <location filename="../../UI/MainWindow.cpp" line="1614"/>
         <source>PNG files (*.png)</source>
         <translation>PNG-tiedostot (*.png)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1306"/>
-        <location filename="../../UI/MainWindow.cpp" line="1835"/>
+        <location filename="../../UI/MainWindow.cpp" line="1310"/>
+        <location filename="../../UI/MainWindow.cpp" line="1844"/>
         <source>Unmute</source>
         <translation>Poista vaimennus</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1881"/>
+        <location filename="../../UI/MainWindow.cpp" line="1890"/>
         <source>Save file first.</source>
         <translation>Tallenna tiedosto ensin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1884"/>
+        <location filename="../../UI/MainWindow.cpp" line="1893"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1892"/>
-        <location filename="../../UI/MainWindow.cpp" line="1907"/>
+        <location filename="../../UI/MainWindow.cpp" line="1901"/>
+        <location filename="../../UI/MainWindow.cpp" line="1916"/>
         <source>Info</source>
         <translation>Tiedot</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1907"/>
+        <location filename="../../UI/MainWindow.cpp" line="1916"/>
         <source>Drag here to remove.</source>
         <translation>Vedä tähän poistaaksesi.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1933"/>
+        <location filename="../../UI/MainWindow.cpp" line="1942"/>
         <source>Error removing file: %1</source>
         <translation>Virhe poistettaessa tiedostoa: %1</translation>
     </message>
