@@ -67,7 +67,7 @@ compile_commands.json
 CTestTestfile.cmake
 _deps/
 *.cmake
-!cmake/*.cmake
+!cmake/**/*.cmake
 
 # IDE and editors
 .idea/

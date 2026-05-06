@@ -381,15 +381,21 @@ else()
     message(STATUS "Precompiled headers (PCH) disabled")
 endif()
 
-find_path(SENTRY_INCLUDE_DIR NAMES sentry.h PATHS thirdparty/sentry/include)
+find_path(SENTRY_INCLUDE_DIR NAMES sentry.h
+    PATHS "${CMAKE_SOURCE_DIR}/thirdparty/sentry/include"
+    NO_DEFAULT_PATH)
+find_library(SENTRY_LIBRARY NAMES sentry
+    PATHS "${CMAKE_SOURCE_DIR}/thirdparty/sentry/lib"
+    NO_DEFAULT_PATH)
 
-if (SENTRY_INCLUDE_DIR)
+if(SENTRY_INCLUDE_DIR AND SENTRY_LIBRARY)
     message(STATUS "Sentry found: Enabling HAVE_SENTRY")
-    add_definitions(-DHAVE_SENTRY)
-
-    include_directories(${SENTRY_INCLUDE_DIR})
-    link_directories(thirdparty/sentry/lib)
-    target_link_libraries(wiredpanda_lib PUBLIC sentry)
+    add_library(sentry::sentry UNKNOWN IMPORTED)
+    set_target_properties(sentry::sentry PROPERTIES
+        IMPORTED_LOCATION "${SENTRY_LIBRARY}"
+        INTERFACE_INCLUDE_DIRECTORIES "${SENTRY_INCLUDE_DIR}")
+    target_compile_definitions(wiredpanda_lib PUBLIC HAVE_SENTRY)
+    target_link_libraries(wiredpanda_lib PUBLIC sentry::sentry)
 endif()
 
 # ========= APP ===================================
@@ -471,11 +477,16 @@ endif()
 # qt_add_translations(MERGE_QT_TRANSLATIONS), so no separate translations
 # directory is needed in the deploy folder.
 if(WIN32)
-    find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS ${Qt${QT_VERSION_MAJOR}_DIR}/../../../bin)
+    if(TARGET Qt6::windeployqt)
+        get_target_property(WINDEPLOYQT_EXECUTABLE Qt6::windeployqt IMPORTED_LOCATION)
+    else()
+        find_program(WINDEPLOYQT_EXECUTABLE windeployqt
+            HINTS "${Qt6_DIR}/../../../bin")
+    endif()
 
     if(WINDEPLOYQT_EXECUTABLE)
         add_custom_command(TARGET wiredpanda POST_BUILD
-            COMMAND ${WINDEPLOYQT_EXECUTABLE} --verbose 2 --no-translations --no-system-d3d-compiler --no-opengl-sw --no-compiler-runtime $<TARGET_FILE:wiredpanda>
+            COMMAND "${WINDEPLOYQT_EXECUTABLE}" --verbose 2 --no-translations --no-system-d3d-compiler --no-opengl-sw --no-compiler-runtime $<TARGET_FILE:wiredpanda>
             COMMENT "Deploying Qt libraries with windeployqt"
             VERBATIM
         )
