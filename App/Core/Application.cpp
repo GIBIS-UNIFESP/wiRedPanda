@@ -120,8 +120,8 @@ void Application::handleException(const ExceptionInfo &info, const QObject *cont
         // See guardedSlot's call site for context.
         const QWidget *parent = qobject_cast<const QWidget *>(context);
         if (!parent) {
-            auto *self = Application::instance();
-            parent = self ? self->mainWindow() : nullptr;
+            auto *app = Application::instance();
+            parent = app ? app->mainWindow() : nullptr;
         }
 
         // Use show() (non-modal) instead of QMessageBox::critical() (modal
