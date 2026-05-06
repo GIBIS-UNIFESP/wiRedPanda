@@ -1244,42 +1244,42 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="96"/>
+        <location filename="../../Element/IC.cpp" line="110"/>
         <source>IC</source>
         <translation>مدار یکپارچه</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="95"/>
+        <location filename="../../Element/IC.cpp" line="109"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>مدار یکپارچه</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="198"/>
+        <location filename="../../Element/IC.cpp" line="222"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>بارگذاری IC: نام IC در داده‌های سریالی موجود نیست</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="300"/>
+        <location filename="../../Element/IC.cpp" line="324"/>
         <source>%1 not found.</source>
         <translation>%1 یافت نشد.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="341"/>
+        <location filename="../../Element/IC.cpp" line="365"/>
         <source>Circular IC reference detected: %1</source>
         <translation>ارجاع دوری IC شناسایی شد: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="348"/>
+        <location filename="../../Element/IC.cpp" line="372"/>
         <source>Error opening file: %1</source>
         <translation>خطا در باز کردن فایل: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="402"/>
+        <location filename="../../Element/IC.cpp" line="426"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>مهاجرت IC: فایل برای نوشتن باز نشد: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="409"/>
+        <location filename="../../Element/IC.cpp" line="433"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>مهاجرت IC: ذخیره مجدد فایل ناموفق بود: %1</translation>
     </message>
@@ -1941,8 +1941,8 @@ Each wireless channel must have a unique label.</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1306"/>
-        <location filename="../../UI/MainWindow.cpp" line="1835"/>
+        <location filename="../../UI/MainWindow.cpp" line="1310"/>
+        <location filename="../../UI/MainWindow.cpp" line="1844"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>بی‌صدا</translation>
@@ -1978,7 +1978,7 @@ Each wireless channel must have a unique label.</source>
         <translation>شبیه‌سازی پس‌زمینه</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="933"/>
+        <location filename="../../UI/MainWindow.cpp" line="937"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>میانبرها و نکات</translation>
@@ -1994,88 +1994,88 @@ Each wireless channel must have a unique label.</source>
         <translation>خطاهای ترجمه را گزارش دهید یا در بهبود ترجمه‌ها در Weblate کمک کنید</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="402"/>
+        <location filename="../../UI/MainWindow.cpp" line="406"/>
         <source>Error!</source>
         <translation>خطا!</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="430"/>
-        <location filename="../../UI/MainWindow.cpp" line="667"/>
-        <location filename="../../UI/MainWindow.cpp" line="1132"/>
-        <location filename="../../UI/MainWindow.cpp" line="1644"/>
+        <location filename="../../UI/MainWindow.cpp" line="434"/>
+        <location filename="../../UI/MainWindow.cpp" line="671"/>
+        <location filename="../../UI/MainWindow.cpp" line="1136"/>
+        <location filename="../../UI/MainWindow.cpp" line="1653"/>
         <source>New Project</source>
         <translation>پروژه جدید</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="499"/>
+        <location filename="../../UI/MainWindow.cpp" line="503"/>
         <source>File saved successfully.</source>
         <translation>فایل با موفقیت ذخیره شد.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="648"/>
+        <location filename="../../UI/MainWindow.cpp" line="652"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>فایل ذخیره نشد. با وجود این زبانه بسته شود؟</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="669"/>
+        <location filename="../../UI/MainWindow.cpp" line="673"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> تغییر کرده است.
 آیا می‌خواهید تغییرات را ذخیره کنید؟</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="726"/>
+        <location filename="../../UI/MainWindow.cpp" line="730"/>
         <source>File loaded successfully.</source>
         <translation>فایل با موفقیت بارگذاری شد.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="785"/>
-        <location filename="../../UI/MainWindow.cpp" line="1884"/>
+        <location filename="../../UI/MainWindow.cpp" line="789"/>
+        <location filename="../../UI/MainWindow.cpp" line="1893"/>
         <source>Open File</source>
         <translation>باز کردن فایل</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="334"/>
-        <location filename="../../UI/MainWindow.cpp" line="785"/>
-        <location filename="../../UI/MainWindow.cpp" line="817"/>
-        <location filename="../../UI/MainWindow.cpp" line="869"/>
-        <location filename="../../UI/MainWindow.cpp" line="2016"/>
-        <location filename="../../UI/MainWindow.cpp" line="2087"/>
+        <location filename="../../UI/MainWindow.cpp" line="338"/>
+        <location filename="../../UI/MainWindow.cpp" line="789"/>
+        <location filename="../../UI/MainWindow.cpp" line="821"/>
+        <location filename="../../UI/MainWindow.cpp" line="873"/>
+        <location filename="../../UI/MainWindow.cpp" line="2025"/>
+        <location filename="../../UI/MainWindow.cpp" line="2096"/>
         <source>Panda files (*.panda)</source>
         <translation>فایل‌های Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="334"/>
+        <location filename="../../UI/MainWindow.cpp" line="338"/>
         <source>Select IC file to embed</source>
         <translation>فایل IC را برای جاسازی انتخاب کنید</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="339"/>
+        <location filename="../../UI/MainWindow.cpp" line="343"/>
         <source>Could not read file: %1</source>
         <translation>فایل خوانده نشد: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="519"/>
+        <location filename="../../UI/MainWindow.cpp" line="523"/>
         <source>Update Available</source>
         <translation>به‌روزرسانی موجود است</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="530"/>
+        <location filename="../../UI/MainWindow.cpp" line="534"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;wiRedPanda %1 موجود است.&lt;/b&gt;&lt;br&gt;&lt;br&gt;شما در حال حاضر نسخه %2 را اجرا می‌کنید.&lt;br&gt;برای دانلود نسخه جدید به صفحه انتشار مراجعه کنید.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="539"/>
+        <location filename="../../UI/MainWindow.cpp" line="543"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>دیگر درباره این نسخه اطلاع نده</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="543"/>
+        <location filename="../../UI/MainWindow.cpp" line="547"/>
         <source>Download</source>
         <translation>دانلود</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="627"/>
+        <location filename="../../UI/MainWindow.cpp" line="631"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2094,278 +2094,278 @@ wiRedPanda %1 به طور خودکار تمام فایل‌های .panda دیگ�
 باید پروژه‌های جدید را قبل از دسترسی به IC و ظاهر یا اجرای شبیه‌سازی beWavedDolphin ذخیره کنید.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="817"/>
-        <location filename="../../UI/MainWindow.cpp" line="869"/>
+        <location filename="../../UI/MainWindow.cpp" line="821"/>
+        <location filename="../../UI/MainWindow.cpp" line="873"/>
         <source>Save File as ...</source>
         <translation>ذخیره فایل به نام ...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="991"/>
+        <location filename="../../UI/MainWindow.cpp" line="995"/>
         <source>Are you sure?</source>
         <translation>آیا مطمئن هستید؟</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="339"/>
-        <location filename="../../UI/MainWindow.cpp" line="1194"/>
-        <location filename="../../UI/MainWindow.cpp" line="1977"/>
-        <location filename="../../UI/MainWindow.cpp" line="1988"/>
-        <location filename="../../UI/MainWindow.cpp" line="2011"/>
-        <location filename="../../UI/MainWindow.cpp" line="2039"/>
-        <location filename="../../UI/MainWindow.cpp" line="2046"/>
-        <location filename="../../UI/MainWindow.cpp" line="2076"/>
-        <location filename="../../UI/MainWindow.cpp" line="2111"/>
-        <location filename="../../UI/MainWindow.cpp" line="2139"/>
+        <location filename="../../UI/MainWindow.cpp" line="343"/>
+        <location filename="../../UI/MainWindow.cpp" line="1198"/>
+        <location filename="../../UI/MainWindow.cpp" line="1986"/>
+        <location filename="../../UI/MainWindow.cpp" line="1997"/>
+        <location filename="../../UI/MainWindow.cpp" line="2020"/>
+        <location filename="../../UI/MainWindow.cpp" line="2048"/>
+        <location filename="../../UI/MainWindow.cpp" line="2055"/>
+        <location filename="../../UI/MainWindow.cpp" line="2085"/>
+        <location filename="../../UI/MainWindow.cpp" line="2120"/>
+        <location filename="../../UI/MainWindow.cpp" line="2148"/>
         <source>Error</source>
         <translation>خطا</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="527"/>
+        <location filename="../../UI/MainWindow.cpp" line="531"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;wiRedPanda %1 موجود است.&lt;/b&gt;&lt;br&gt;&lt;br&gt;شما در حال اجرای نسخه %2 هستید.&lt;br&gt;برای ذخیره نسخه جدید روی &lt;b&gt;دانلود&lt;/b&gt; کلیک کنید.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="572"/>
+        <location filename="../../UI/MainWindow.cpp" line="576"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>در حال دانلود wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="572"/>
+        <location filename="../../UI/MainWindow.cpp" line="576"/>
         <source>Cancel</source>
         <translation>لغو</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="573"/>
+        <location filename="../../UI/MainWindow.cpp" line="577"/>
         <source>Downloading Update</source>
         <translation>در حال دانلود به‌روزرسانی</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="597"/>
-        <location filename="../../UI/MainWindow.cpp" line="605"/>
+        <location filename="../../UI/MainWindow.cpp" line="601"/>
+        <location filename="../../UI/MainWindow.cpp" line="609"/>
         <source>Download Failed</source>
         <translation>دانلود ناموفق</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="597"/>
+        <location filename="../../UI/MainWindow.cpp" line="601"/>
         <source>Could not download the update:
 %1</source>
         <translation>امکان دانلود به‌روزرسانی وجود ندارد:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="605"/>
+        <location filename="../../UI/MainWindow.cpp" line="609"/>
         <source>Could not save the file:
 %1</source>
         <translation>امکان ذخیره فایل وجود ندارد:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="614"/>
+        <location filename="../../UI/MainWindow.cpp" line="618"/>
         <source>Download Complete</source>
         <translation>دانلود کامل شد</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="615"/>
+        <location filename="../../UI/MainWindow.cpp" line="619"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda در اینجا دانلود شد:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="829"/>
-        <location filename="../../UI/MainWindow.cpp" line="880"/>
+        <location filename="../../UI/MainWindow.cpp" line="833"/>
+        <location filename="../../UI/MainWindow.cpp" line="884"/>
         <source>File Conflict</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="830"/>
-        <location filename="../../UI/MainWindow.cpp" line="881"/>
+        <location filename="../../UI/MainWindow.cpp" line="834"/>
+        <location filename="../../UI/MainWindow.cpp" line="885"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="833"/>
-        <location filename="../../UI/MainWindow.cpp" line="884"/>
+        <location filename="../../UI/MainWindow.cpp" line="837"/>
+        <location filename="../../UI/MainWindow.cpp" line="888"/>
         <source>Switch to Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1373"/>
-        <location filename="../../UI/MainWindow.cpp" line="1402"/>
-        <location filename="../../UI/MainWindow.cpp" line="1425"/>
+        <location filename="../../UI/MainWindow.cpp" line="1382"/>
+        <location filename="../../UI/MainWindow.cpp" line="1411"/>
+        <location filename="../../UI/MainWindow.cpp" line="1434"/>
         <source>Missing file name.</source>
         <translation>نام فایل موجود نیست.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1379"/>
-        <location filename="../../UI/MainWindow.cpp" line="1408"/>
+        <location filename="../../UI/MainWindow.cpp" line="1388"/>
+        <location filename="../../UI/MainWindow.cpp" line="1417"/>
         <source>The .panda file is empty.</source>
         <translation>فایل .panda خالی است.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1390"/>
+        <location filename="../../UI/MainWindow.cpp" line="1399"/>
         <source>Arduino code successfully generated.</source>
         <translation>کد Arduino با موفقیت تولید شد.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1417"/>
+        <location filename="../../UI/MainWindow.cpp" line="1426"/>
         <source>SystemVerilog code successfully generated.</source>
         <translation>کد SystemVerilog با موفقیت تولید شد.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1453"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
         <source>Generate Arduino Code</source>
         <translation>تولید کد Arduino</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1453"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
         <source>Arduino file (*.ino)</source>
         <translation>فایل Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1473"/>
+        <location filename="../../UI/MainWindow.cpp" line="1482"/>
         <source>Generate SystemVerilog Code</source>
         <translation>تولید کد SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1473"/>
+        <location filename="../../UI/MainWindow.cpp" line="1482"/>
         <source>SystemVerilog file (*.sv)</source>
         <translation>فایل SystemVerilog (*.sv)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1579"/>
+        <location filename="../../UI/MainWindow.cpp" line="1588"/>
         <source>Export to PDF</source>
         <translation>صادرات به PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1579"/>
+        <location filename="../../UI/MainWindow.cpp" line="1588"/>
         <source>PDF files (*.pdf)</source>
         <translation>فایل‌های PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1892"/>
+        <location filename="../../UI/MainWindow.cpp" line="1901"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
         <translation>فایل‌های انتخاب‌شده (و وابستگی‌هایشان) به پوشه پروژه فعلی کپی خواهند شد.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1950"/>
+        <location filename="../../UI/MainWindow.cpp" line="1959"/>
         <source>Name Collision</source>
         <translation>تداخل نام</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1951"/>
+        <location filename="../../UI/MainWindow.cpp" line="1960"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
         <translation>IC جاسازی‌شده‌ای با نام &quot;%1&quot; از قبل وجود دارد.
 نام پیشنهادی:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1977"/>
-        <location filename="../../UI/MainWindow.cpp" line="2039"/>
+        <location filename="../../UI/MainWindow.cpp" line="1986"/>
+        <location filename="../../UI/MainWindow.cpp" line="2048"/>
         <source>Please save the project first so ICs can be resolved.</source>
         <translation>لطفاً ابتدا پروژه را ذخیره کنید تا IC ها قابل حل باشند.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1988"/>
-        <location filename="../../UI/MainWindow.cpp" line="2046"/>
-        <location filename="../../UI/MainWindow.cpp" line="2139"/>
+        <location filename="../../UI/MainWindow.cpp" line="1997"/>
+        <location filename="../../UI/MainWindow.cpp" line="2055"/>
+        <location filename="../../UI/MainWindow.cpp" line="2148"/>
         <source>Could not read IC file: %1</source>
         <translation>فایل IC خوانده نشد: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1996"/>
-        <location filename="../../UI/MainWindow.cpp" line="2064"/>
+        <location filename="../../UI/MainWindow.cpp" line="2005"/>
+        <location filename="../../UI/MainWindow.cpp" line="2073"/>
         <source>IC embedded successfully.</source>
         <translation>IC با موفقیت جاسازی شد.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2016"/>
-        <location filename="../../UI/MainWindow.cpp" line="2087"/>
+        <location filename="../../UI/MainWindow.cpp" line="2025"/>
+        <location filename="../../UI/MainWindow.cpp" line="2096"/>
         <source>Extract IC to file...</source>
         <translation>استخراج IC به فایل...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2027"/>
-        <location filename="../../UI/MainWindow.cpp" line="2098"/>
+        <location filename="../../UI/MainWindow.cpp" line="2036"/>
+        <location filename="../../UI/MainWindow.cpp" line="2107"/>
         <source>IC extracted to %1</source>
         <translation>IC به %1 استخراج شد</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2011"/>
-        <location filename="../../UI/MainWindow.cpp" line="2076"/>
-        <location filename="../../UI/MainWindow.cpp" line="2111"/>
+        <location filename="../../UI/MainWindow.cpp" line="2020"/>
+        <location filename="../../UI/MainWindow.cpp" line="2085"/>
+        <location filename="../../UI/MainWindow.cpp" line="2120"/>
         <source>Please save the project first.</source>
         <translation>لطفاً ابتدا پروژه را ذخیره کنید.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2128"/>
+        <location filename="../../UI/MainWindow.cpp" line="2137"/>
         <source>No file-based ICs to embed.</source>
         <translation>هیچ IC مبتنی بر فایلی برای جاسازی وجود ندارد.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2154"/>
+        <location filename="../../UI/MainWindow.cpp" line="2163"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>%1 IC جاسازی شد. مدار اکنون مستقل است.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1590"/>
-        <location filename="../../UI/MainWindow.cpp" line="1616"/>
+        <location filename="../../UI/MainWindow.cpp" line="1599"/>
+        <location filename="../../UI/MainWindow.cpp" line="1625"/>
         <source>Exported file successfully.</source>
         <translation>فایل با موفقیت صادر شد.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="914"/>
+        <location filename="../../UI/MainWindow.cpp" line="918"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda نرم‌افزاری است که توسط دانشجویان دانشگاه فدرال سائوپائولو برای کمک به دانشجویان در یادگیری مدارهای منطقی توسعه داده شده است.&lt;/p&gt;&lt;p&gt;نسخه نرم‌افزار: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;سازندگان:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda در حال حاضر توسط Prof. Fábio Cappabianco, Ph.D.، João Pedro M. Oliveira، Matheus R. Esteves و Maycon A. Santana نگهداری می‌شود.&lt;/p&gt;&lt;p&gt; لطفاً اگر باگی پیدا کردید یا می‌خواهید ویژگی جدیدی درخواست دهید، در صفحه GitHub ما گزارش دهید.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;از وب‌سایت ما دیدن کنید!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="934"/>
+        <location filename="../../UI/MainWindow.cpp" line="938"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;میانبرهای بوم&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : بزرگ‌نمایی &lt;/li&gt;&lt;li&gt; Ctrl+- : کوچک‌نمایی &lt;/li&gt;&lt;li&gt; Ctrl+1 : نمایش/پنهان سیم‌ها &lt;/li&gt;&lt;li&gt; Ctrl+2 : نمایش/پنهان گیت‌ها &lt;/li&gt;&lt;li&gt; Ctrl+F : جستجوی المان‌ها &lt;/li&gt;&lt;li&gt; Ctrl+W : باز کردن beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : ذخیره پروژه &lt;/li&gt;&lt;li&gt; Ctrl+Q : خروج از wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : شروع/توقف شبیه‌سازی &lt;/li&gt;&lt;li&gt; [ : ویژگی اصلی قبلی المان &lt;/li&gt;&lt;li&gt; ] : ویژگی اصلی بعدی المان &lt;/li&gt;&lt;li&gt; { : ویژگی فرعی قبلی المان &lt;/li&gt;&lt;li&gt; } : ویژگی فرعی بعدی المان &lt;/li&gt;&lt;li&gt; &amp;lt; : تبدیل به المان قبلی &lt;/li&gt;&lt;li&gt; &amp;gt; : تبدیل به المان بعدی &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;نکات عمومی&lt;/h1&gt;&lt;p&gt;برای ایجاد گره روی سیم دوبار کلیک کنید&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="990"/>
+        <location filename="../../UI/MainWindow.cpp" line="994"/>
         <source>Exit</source>
         <translation>خروج</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1605"/>
+        <location filename="../../UI/MainWindow.cpp" line="1614"/>
         <source>Export to Image</source>
         <translation>صادرات به تصویر</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1605"/>
+        <location filename="../../UI/MainWindow.cpp" line="1614"/>
         <source>PNG files (*.png)</source>
         <translation>فایل‌های PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1306"/>
-        <location filename="../../UI/MainWindow.cpp" line="1835"/>
+        <location filename="../../UI/MainWindow.cpp" line="1310"/>
+        <location filename="../../UI/MainWindow.cpp" line="1844"/>
         <source>Unmute</source>
         <translation>برگرداندن صدا</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1881"/>
+        <location filename="../../UI/MainWindow.cpp" line="1890"/>
         <source>Save file first.</source>
         <translation>ابتدا فایل را ذخیره کنید.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1884"/>
+        <location filename="../../UI/MainWindow.cpp" line="1893"/>
         <source>Panda (*.panda)</source>
         <translation>پاندا (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1892"/>
-        <location filename="../../UI/MainWindow.cpp" line="1907"/>
+        <location filename="../../UI/MainWindow.cpp" line="1901"/>
+        <location filename="../../UI/MainWindow.cpp" line="1916"/>
         <source>Info</source>
         <translation>اطلاعات</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1907"/>
+        <location filename="../../UI/MainWindow.cpp" line="1916"/>
         <source>Drag here to remove.</source>
         <translation>برای حذف به اینجا بکشید.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1933"/>
+        <location filename="../../UI/MainWindow.cpp" line="1942"/>
         <source>Error removing file: %1</source>
         <translation>خطا در حذف فایل: %1</translation>
     </message>
