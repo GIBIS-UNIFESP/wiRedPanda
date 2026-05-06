@@ -52,6 +52,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRegistry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
@@ -161,6 +162,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xnor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRegistry.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PropertyDescriptor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/FileUtils.h

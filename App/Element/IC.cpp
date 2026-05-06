@@ -4,6 +4,7 @@
 #include "App/Element/IC.h"
 
 #include <QDir>
+#include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QSaveFile>
@@ -15,6 +16,7 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/Element/ICPreviewPopup.h"
 #include "App/Element/ICRegistry.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -23,8 +25,20 @@
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
+#include "App/UI/MainWindow.h"
 
 namespace {
+
+// Returns the shared IC preview popup, or nullptr if the chain isn't fully
+// alive (e.g. during early init or late teardown).  The popup is created
+// eagerly by MainWindow's constructor; null returns are exclusively a
+// teardown-safety concern.
+ICPreviewPopup *icPreviewPopup()
+{
+    auto *app = Application::instance();
+    auto *mw  = app ? app->mainWindow() : nullptr;
+    return mw ? mw->icPreviewPopup() : nullptr;
+}
 
 bool comparePorts(QNEPort *port1, QNEPort *port2)
 {
@@ -112,10 +126,20 @@ IC::IC(QGraphicsItem *parent)
     // ICs display their label vertically alongside the chip body, matching the physical
     // convention of reading IC labels along the side of a physical DIP package
     m_label->setRotation(90);
+
+    // Enable hover events so the preview popup can be shown/hidden
+    setAcceptHoverEvents(true);
 }
 
 IC::~IC()
 {
+    // If this IC is destroyed while the shared popup is pending or showing it,
+    // cancel immediately — m_pendingIC is a QPointer so it auto-nulls, but the
+    // popup could still be visible with stale content.
+    if (auto *popup = icPreviewPopup(); popup && popup->pendingIC() == this) {
+        popup->cancelHide();
+        popup->hide();
+    }
     qDeleteAll(m_internalConnections);
     qDeleteAll(m_internalElements);
 }
@@ -412,6 +436,12 @@ void IC::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &it
 
 void IC::processLoadedItems(const QList<QGraphicsItem *> &items)
 {
+    // Snapshot the preview now, while the original Input/Output elements (buttons,
+    // switches, LEDs, …) are still alive in `items`.  loadBoundaryElement() below
+    // replaces each of them with a proxy Node, so a later render would only see
+    // the simulation graph.
+    generatePreviewPixmap(items);
+
     for (auto *item : items) {
         if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
             m_internalConnections.append(conn);
@@ -537,8 +567,105 @@ void IC::generatePixmap()
 
 void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
+    // Hide the preview popup immediately on double-click so it doesn't overlap the sub-circuit tab
+    if (auto *popup = icPreviewPopup()) {
+        popup->cancelHide();
+        popup->hide();
+    }
     event->accept();
     emit requestOpenSubCircuit(id(), m_blobName, m_file);
+}
+
+// --- Hover preview ---
+
+void IC::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    if (auto *popup = icPreviewPopup()) {
+        popup->showForIC(this, event->screenPos());
+    }
+}
+
+void IC::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
+    if (auto *popup = icPreviewPopup()) {
+        popup->updatePendingPos(event->screenPos());
+    }
+}
+
+void IC::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    Q_UNUSED(event)
+    if (auto *popup = icPreviewPopup()) {
+        popup->scheduleHide();
+    }
+}
+
+void IC::generatePreviewPixmap(const QList<QGraphicsItem *> &items)
+{
+    // Split the freshly-deserialized items into elements and connections.  The
+    // boundary Input/Output elements are still in their designed form here; the
+    // substitution to proxy Nodes happens later in processLoadedItems().
+    QVector<GraphicElement *> elements;
+    QVector<QNEConnection *> connections;
+    elements.reserve(items.size());
+    connections.reserve(items.size());
+    for (auto *item : items) {
+        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
+            connections.append(conn);
+        } else if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
+            elements.append(elm);
+        }
+    }
+
+    // Skip for empty or very large circuits.
+    if (elements.isEmpty() || elements.size() > ICPreviewPopup::MaxElementCount) {
+        m_previewPixmap = QPixmap();
+        return;
+    }
+
+    // Temporarily borrow the items into a throwaway scene so QGraphicsScene::render()
+    // can be used without disturbing the real scene.  The scope guard guarantees
+    // cleanup even if render() throws.
+    QGraphicsScene tempScene;
+    tempScene.setBackgroundBrush(QColor(42, 42, 42));
+
+    auto cleanup = qScopeGuard([&] {
+        for (auto *elm  : std::as_const(elements))    { tempScene.removeItem(elm);  }
+        for (auto *conn : std::as_const(connections)) { tempScene.removeItem(conn); }
+    });
+
+    for (auto *elm : std::as_const(elements)) {
+        tempScene.addItem(elm);
+    }
+    for (auto *conn : std::as_const(connections)) {
+        tempScene.addItem(conn);
+    }
+
+    // Compute the bounding rect with some padding
+    const QRectF sourceRect = tempScene.itemsBoundingRect().adjusted(-16, -16, 16, 16);
+
+    // Scale to fit within max preview dimensions while preserving aspect ratio
+    QSize targetSize = sourceRect.size().toSize();
+    targetSize.scale(ICPreviewPopup::MaxWidth, ICPreviewPopup::MaxHeight, Qt::KeepAspectRatio);
+
+    if (targetSize.isEmpty()) {
+        m_previewPixmap = QPixmap();
+        return;
+    }
+
+    // QPixmap(QSize) is uninitialised; tempScene.render() paints the background
+    // brush over the source→target affine, but subpixel rounding can leave a
+    // 1-pixel sliver unpainted at the right/bottom edge, exposing whatever was
+    // in memory (commonly white on Windows).  Fill explicitly to avoid that.
+    QPixmap preview(targetSize);
+    preview.fill(QColor(42, 42, 42));
+
+    QPainter painter(&preview);
+    painter.setRenderHint(QPainter::Antialiasing);
+    tempScene.render(&painter, QRectF(), sourceRect);
+    painter.end();
+
+    m_previewPixmap = preview;
 }
 
 QRectF IC::boundingRect() const

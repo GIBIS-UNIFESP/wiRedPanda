@@ -51,6 +51,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
 #include "App/Element/IC.h"
+#include "App/Element/ICPreviewPopup.h"
 #include "App/Element/ICRegistry.h"
 #include "App/IO/RecentFiles.h"
 #include "App/IO/Serialization.h"
@@ -90,6 +91,9 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     // Must be created before setupLanguage/setupTheme since both may call palette methods.
     m_palette = new ElementPalette(m_ui.get(), this);
+
+    // Shared IC-hover preview, owned by this MainWindow as a Qt child.
+    m_icPreviewPopup = new ICPreviewPopup(this);
 
     setupLanguage();
     setupGeometry();
@@ -1310,6 +1314,11 @@ void MainWindow::connectTab()
 WorkSpace *MainWindow::currentTab() const
 {
     return m_currentTab;
+}
+
+ICPreviewPopup *MainWindow::icPreviewPopup() const
+{
+    return m_icPreviewPopup;
 }
 
 void MainWindow::tabChanged(const int newTabIndex)
