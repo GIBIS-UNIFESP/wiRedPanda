@@ -479,6 +479,27 @@ if(WIN32)
     else()
         message(WARNING "windeployqt not found - Qt libraries will not be automatically deployed")
     endif()
+
+    # Copy Qt base translations so QLibraryInfo::TranslationsPath resolves correctly.
+    # windeployqt places Qt DLLs in the build dir, so Qt looks for translations
+    # relative to the DLLs — in <build>/translations/ — not the Qt installation.
+    find_package(Python3 QUIET COMPONENTS Interpreter)
+    if(Python3_FOUND)
+        cmake_path(GET Qt6_DIR PARENT_PATH _qt_cmake_dir)
+        cmake_path(GET _qt_cmake_dir PARENT_PATH _qt_cmake_dir)
+        cmake_path(GET _qt_cmake_dir PARENT_PATH _qt_prefix)
+        set(_qt_translations_src "${_qt_prefix}/translations")
+        if(IS_DIRECTORY "${_qt_translations_src}")
+            add_custom_command(TARGET wiredpanda POST_BUILD
+                COMMAND ${Python3_EXECUTABLE}
+                    "${CMAKE_SOURCE_DIR}/Scripts/copy_qt_translations.py"
+                    "${_qt_translations_src}"
+                    "$<TARGET_FILE_DIR:wiredpanda>/translations"
+                COMMENT "Copying Qt translations to build directory"
+                VERBATIM
+            )
+        endif()
+    endif()
 endif()
 
 # Ensure translations are compiled before building the main executable
