@@ -92,7 +92,7 @@ void LanguageManager::loadTranslation(const QString &language)
     }
 
     m_qtTranslator = new QTranslator(this);
-    const QString qtBase  = QStringLiteral("qt_") + language;
+    const QString qtBase  = QStringLiteral("qtbase_") + language;
     const bool    qtFound = m_qtTranslator->load(qtBase, QLibraryInfo::path(QLibraryInfo::TranslationsPath));
     if (!qtFound || !Application::instance()->installTranslator(m_qtTranslator)) {
         qWarning() << "Failed to load Qt translation for" << language << ", continuing without Qt translation";
