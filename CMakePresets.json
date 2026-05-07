@@ -30,6 +30,7 @@
         },
         {
             "name": "relwithdebinfo",
+			"hidden": true,
             "displayName": "RelWithDebInfo",
             "description": "Release build with debug information (used for deployment)",
             "inherits": "base",
@@ -186,6 +187,7 @@
         },
         {
             "name": "relwithdebinfo",
+            "hidden": true,
             "displayName": "Build RelWithDebInfo",
             "configurePreset": "relwithdebinfo"
         },
@@ -296,6 +298,7 @@
         },
         {
             "name": "relwithdebinfo",
+            "hidden": true,
             "displayName": "Test RelWithDebInfo",
             "configurePreset": "relwithdebinfo",
             "inherits": "base"
