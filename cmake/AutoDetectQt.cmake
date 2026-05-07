@@ -1,23 +1,31 @@
 # cmake/AutoDetectQt.cmake
 #
-# Auto-detects a Qt 6 installation and sets CMAKE_PREFIX_PATH when none of the
-# standard discovery mechanisms have been provided by the caller.
+# Auto-detects a Qt 6 installation and appends its prefix to CMAKE_PREFIX_PATH
+# when none of the standard discovery mechanisms have been provided.
 #
 # Resolution order (first match wins):
-#   1. CMAKE_PREFIX_PATH already set (command-line, preset, cached prior run)
-#   2. Qt6_DIR / QTDIR / Qt6_ROOT environment variables
-#   3. Scan well-known roots for Qt6Config.cmake, prefer the platform variant
+#   1. _QT_AUTO_PREFIX already cached from a prior configure run
+#   2. CMAKE_PREFIX_PATH / Qt6_DIR already set (command-line, preset, kit)
+#   3. Qt6_DIR / QTDIR / Qt6_ROOT environment variables
+#   4. Scan well-known roots for Qt6Config.cmake, prefer the platform variant
 #      that matches the active compiler, fall back to any available platform
 #
-# The detected path is written to the CMake cache so re-runs skip the scan.
-# Override at any time with -DCMAKE_PREFIX_PATH=<path>.
+# The detected path is stored in the INTERNAL cache variable _QT_AUTO_PREFIX
+# so re-runs skip the scan entirely.  Override at any time with:
+#   cmake -DCMAKE_PREFIX_PATH=<path/to/Qt/6.x/platform>
 
-# 1. Already configured — nothing to do.
+# 1. Re-use result from a prior configure run.
+if(DEFINED _QT_AUTO_PREFIX)
+    list(APPEND CMAKE_PREFIX_PATH "${_QT_AUTO_PREFIX}")
+    return()
+endif()
+
+# 2. Already configured externally — nothing to do.
 if(CMAKE_PREFIX_PATH OR Qt6_DIR)
     return()
 endif()
 
-# 2. Environment variables.
+# 3. Environment variables.
 foreach(_envvar Qt6_DIR QTDIR Qt6_ROOT)
     if(DEFINED ENV{${_envvar}})
         list(APPEND CMAKE_PREFIX_PATH "$ENV{${_envvar}}")
@@ -26,7 +34,7 @@ foreach(_envvar Qt6_DIR QTDIR Qt6_ROOT)
     endif()
 endforeach()
 
-# 3. Scan common installation roots.
+# 4. Scan common installation roots for Qt6Config.cmake.
 
 set(_search_roots)
 if(WIN32)
@@ -51,6 +59,9 @@ else()
 endif()
 
 if(NOT _search_roots)
+    message(STATUS "Qt6 auto-detect: no well-known Qt install root found")
+    message(STATUS "  If Qt is installed elsewhere, copy CMakeUserPresets.json.example to")
+    message(STATUS "  CMakeUserPresets.json and set CMAKE_PREFIX_PATH to your Qt install")
     return()
 endif()
 
@@ -70,6 +81,9 @@ foreach(_root ${_search_roots})
 endforeach()
 
 if(NOT _all_prefixes)
+    message(STATUS "Qt6 auto-detect: no Qt6Config.cmake found under ${_search_roots}")
+    message(STATUS "  If Qt is installed elsewhere, copy CMakeUserPresets.json.example to")
+    message(STATUS "  CMakeUserPresets.json and set CMAKE_PREFIX_PATH to your Qt install")
     return()
 endif()
 
@@ -104,7 +118,10 @@ endif()
 list(SORT _candidates COMPARE NATURAL ORDER DESCENDING)
 list(GET _candidates 0 _qt_prefix)
 
-set(CMAKE_PREFIX_PATH "${_qt_prefix}" CACHE PATH
-    "Qt installation prefix (auto-detected; set explicitly to override)")
+# Append to CMAKE_PREFIX_PATH as a normal variable so find_package sees it
+# in this configure run, and cache the result separately for re-run stability.
+list(APPEND CMAKE_PREFIX_PATH "${_qt_prefix}")
+set(_QT_AUTO_PREFIX "${_qt_prefix}" CACHE INTERNAL "Auto-detected Qt prefix")
+
 message(STATUS "Qt6 auto-detected: ${_qt_prefix}")
 message(STATUS "  Override: cmake -DCMAKE_PREFIX_PATH=<path/to/Qt/6.x/platform> ...")
