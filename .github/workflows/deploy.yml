@@ -489,7 +489,7 @@ jobs:
         ./sentry-cli.exe login --auth-token $env:SENTRY_AUTH_TOKEN
         ./sentry-cli.exe releases new wiredpanda@$env:VERSION -p wiredpanda
         ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda build-sentry-crashpad/
-        ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda D:/a/wiRedPanda/Qt/
+        ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda $env:QT_ROOT_DIR
         ./sentry-cli.exe releases set-commits --auto wiredpanda@$env:VERSION --log-level=debug
 
     - name: Publish Windows
