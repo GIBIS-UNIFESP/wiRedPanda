@@ -74,7 +74,7 @@ jobs:
 
     - name: Setup Windows MSVC Toolchain
       if: runner.os == 'Windows'
-      uses: seanmiddleditch/gha-setup-vsdevenv@v5
+      uses: TheMrMilchmann/setup-msvc-dev@v4.0.0
       with:
         arch: ${{ matrix.os == 'windows-11-arm' && 'arm64' || 'x64' }}
 
