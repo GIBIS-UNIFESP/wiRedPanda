@@ -20,6 +20,9 @@ jobs:
     strategy:
       fail-fast: false
 
+    env:
+      CCACHE_SLOPPINESS: pch_defines,time_macros,include_file_ctime,include_file_mtime
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v6

@@ -156,15 +156,20 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL Clang OR CMAKE_CXX_COMPILER_ID STREQUAL GNU)
     endif()
 endif()
 
-if(NOT MSVC)
-    find_program(CCACHE_BIN ccache)
-    if(CCACHE_BIN)
-        set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_BIN})
-        set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_BIN})
-        message(STATUS "Compiler cache (ccache) enabled")
-    else()
-        message(STATUS "Compiler cache (ccache) not found")
+find_program(CCACHE_BIN ccache)
+if(CCACHE_BIN)
+    set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_BIN})
+    set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_BIN})
+    if(MSVC)
+        # MSVC's default /Zi writes external .pdb files that ccache can't track,
+        # so any RelWithDebInfo/Debug compile is uncacheable. /Z7 embeds debug
+        # info in each .obj instead, making the object cacheable. Release builds
+        # have no debug info either way.
+        set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
     endif()
+    message(STATUS "Compiler cache (ccache) enabled")
+else()
+    message(STATUS "Compiler cache (ccache) not found")
 endif()
 
 set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")

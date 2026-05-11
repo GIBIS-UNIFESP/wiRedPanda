@@ -31,6 +31,9 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
+    env:
+      CCACHE_SLOPPINESS: pch_defines,time_macros,include_file_ctime,include_file_mtime
+
     steps:
     - name: Install Ubuntu dependencies
       if: runner.os == 'Linux'

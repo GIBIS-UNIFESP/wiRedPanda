@@ -40,6 +40,12 @@ jobs:
     name: ${{ matrix.os }} Qt${{ matrix.qt }}${{ contains(matrix.cmake_args, 'ENABLE_UNITY=OFF') && ' (no unity/PCH)' || contains(matrix.cmake_args, 'BATCH_SIZE=1000') && ' (mega unity)' || '' }}
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
 
+    env:
+      # pch_defines: allow PCH compiles to be cacheable (defines from the PCH itself don't change the hash).
+      # time_macros: ignore __DATE__ / __TIME__ / __TIMESTAMP__ so unity-built TUs hash deterministically.
+      # include_file_{c,m}time: ignore stat times on generated headers (MOC, qrc, unity .cxx files).
+      CCACHE_SLOPPINESS: pch_defines,time_macros,include_file_ctime,include_file_mtime
+
     steps:
     - uses: actions/checkout@v6
       with:
