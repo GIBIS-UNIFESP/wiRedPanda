@@ -3,12 +3,15 @@
 
 #include "Tests/System/TestBewavedDolphinGui.h"
 
+#include <cmath>
+
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
 #include <QDialog>
 #include <QFile>
 #include <QGraphicsProxyWidget>
+#include <QHeaderView>
 #include <QItemSelectionModel>
 #include <QStandardItemModel>
 #include <QTableView>
@@ -822,5 +825,101 @@ void TestBewavedDolphinGui::testSetClockWaveDisabledWithoutSelectionC9()
     QVERIFY(tv);
     tv->selectionModel()->clearSelection();
     QVERIFY(!action->isEnabled());
+}
+
+void TestBewavedDolphinGui::testZoomScaleTrackingA26()
+{
+    // A26: m_scale must mirror the view's accumulated scale transform.  Before
+    // the fix m_scale was initialised to kZoomStep (1.25) while the view's
+    // transform was identity, so 1.0/m_scale in FitScreen applied a spurious
+    // 0.8x on the first call.  Discrete zoom in/out re-flows the columns; it
+    // does NOT call m_view.scale(), so m_scale stays at 1.0 through them and
+    // setTableViewSize keeps sizing the inner table to fill the central widget.
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+
+    // Initial m_scale must match the view's identity transform (1.0, not 1.25).
+    QCOMPARE(dolphin->m_scale, 1.0);
+    QCOMPARE(dolphin->m_view.transform().m11(), 1.0);
+
+    auto *zoomIn = dolphin->findChild<QAction *>("actionZoomIn");
+    auto *zoomOut = dolphin->findChild<QAction *>("actionZoomOut");
+    auto *resetZoom = dolphin->findChild<QAction *>("actionResetZoom");
+    QVERIFY(zoomIn && zoomOut && resetZoom);
+
+    // Discrete zoom must NOT touch m_scale or the view transform — otherwise
+    // setTableViewSize divides the central-widget width by m_scale and the
+    // inner table detaches from the outer frame (the visual regression A26
+    // re-introduced when m_scale was multiplied on every zoom).
+    zoomIn->trigger();
+    QCOMPARE(dolphin->m_scale, 1.0);
+    QCOMPARE(dolphin->m_view.transform().m11(), 1.0);
+    zoomIn->trigger();
+    zoomIn->trigger();
+    QCOMPARE(dolphin->m_scale, 1.0);
+    QCOMPARE(dolphin->m_view.transform().m11(), 1.0);
+
+    zoomOut->trigger();
+    zoomOut->trigger();
+    QCOMPARE(dolphin->m_scale, 1.0);
+    QCOMPARE(dolphin->m_view.transform().m11(), 1.0);
+
+    resetZoom->trigger();
+    QCOMPARE(dolphin->m_scale, 1.0);
+    QCOMPARE(dolphin->m_view.transform().m11(), 1.0);
+}
+
+void TestBewavedDolphinGui::testFitScreenClampsAndGuardsA26()
+{
+    // A26 part 2: FitScreen must (a) not crash on degenerate geometry where
+    // hLen or vLen is <= 0 (would produce +inf when used as a divisor and
+    // trip Qt's CreateDIBSection qFatal on Windows — WIREDPANDA-HW), and (b)
+    // clamp the computed scale to a sane range so a pathological table size
+    // can't request an extreme backing-store transform.
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+
+    auto *fitScreen = dolphin->findChild<QAction *>("actionFitScreen");
+    QVERIFY(fitScreen);
+
+    // Happy path: m_scale stays finite and inside the clamp window [0.05, 20.0]
+    // regardless of the offscreen QPA's viewport quirks.
+    fitScreen->trigger();
+    QVERIFY(std::isfinite(dolphin->m_scale));
+    QVERIFY(dolphin->m_scale >= 0.05);
+    QVERIFY(dolphin->m_scale <= 20.0);
+
+    // FitScreen sets m_view.scale(m_scale, m_scale); WaveformView::resetZoom
+    // only resets m_zoomLevel, leaving the transform intact.  So the view's
+    // accumulated scale must equal m_scale.  Pre-fix the initial m_scale=1.25
+    // / view=1.0 mismatch left view.transform() at 0.8 * m_scale.
+    QCOMPARE(dolphin->m_view.transform().m11(), dolphin->m_scale);
+
+    // Repeating FitScreen with the same geometry must be idempotent — no
+    // (0.8)^N drift the doc described under the unfixed m_scale tracking.
+    const double scaleAfterFirst = dolphin->m_scale;
+    fitScreen->trigger();
+    QCOMPARE(dolphin->m_scale, scaleAfterFirst);
+    QCOMPARE(dolphin->m_view.transform().m11(), dolphin->m_scale);
+
+    // Degenerate geometry: hide every column and row so hLen / vLen collapse
+    // to <= 0.  Pre-guard this would divide by zero and produce +inf; the
+    // guard makes FitScreen a no-op that leaves the prior m_scale intact.
+    auto *table = dolphin->m_signalTableView;
+    QVERIFY(table);
+    auto *model = dolphin->getModel();
+    QVERIFY(model);
+    for (int col = 0; col < model->columnCount(); ++col) {
+        table->setColumnHidden(col, true);
+    }
+    table->verticalHeader()->hide();
+    for (int row = 0; row < model->rowCount(); ++row) {
+        table->setRowHidden(row, true);
+    }
+
+    const double scaleBeforeBadFit = dolphin->m_scale;
+    fitScreen->trigger();
+    QCOMPARE(dolphin->m_scale, scaleBeforeBadFit);
+    QVERIFY(std::isfinite(dolphin->m_scale));
 }
 

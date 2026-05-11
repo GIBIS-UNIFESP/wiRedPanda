@@ -81,6 +81,11 @@ private slots:
     // Regression: C9 — actionSetClockWave gated on a non-empty selection
     void testSetClockWaveDisabledWithoutSelectionC9();
 
+    // Regression: A26 — m_scale must track the view's transform and FitScreen must
+    // not crash on degenerate geometry or produce extreme scale factors.
+    void testZoomScaleTrackingA26();
+    void testFitScreenClampsAndGuardsA26();
+
 private:
     QTemporaryDir m_tempDir;
 };
