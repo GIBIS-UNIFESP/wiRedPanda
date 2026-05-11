@@ -32,9 +32,40 @@ class TestConfig:
         self.long_timeout = 900  # 15 minutes for performance tests
 
     def _find_wiredpanda_executable(self) -> Optional[Path]:
-        """Find the WiredPanda executable relative to the mcp directory"""
-        # Look for the executable in ../build/Release/
-        build_dir = self.base_dir.parent / "build" / "Release"
+        """Find the WiredPanda executable produced by any of the CMake presets.
+
+        Searches each known per-preset binary directory in priority order so the
+        same client works whether the user built via `cmake --preset release`
+        (build-release/), the legacy single-`build/` layout (build/, optionally
+        with a multi-config Release/ subdir on Windows), or one of the other
+        named presets.
+        """
+        # Each preset gets its own binary dir — see CMakePresets.json
+        # ("chore(presets): give release / sentry / macos presets their own
+        # build dirs").  Probe in priority order: explicit Release first, then
+        # the historical layouts MCP previously assumed.
+        # base_dir is MCP/Client/ (parent of MCP/Client/tests/), so the
+        # project root is two levels up — *not* one as the original code
+        # assumed (the docstring is stale from when this file lived at
+        # MCP/tests/test_config.py).
+        project_root = self.base_dir.parent.parent
+
+        # All preset binaryDirs from CMakePresets.json, in priority order
+        # (most-likely first).  Windows multi-config may put the binary under
+        # a Release/ or RelWithDebInfo/ subdir of the parent build dir.
+        roots = [
+            project_root / "build-release",
+            project_root / "build-sentry-crashpad",
+            project_root / "build-sentry-breakpad",
+            project_root / "build-relwithdebinfo",
+            project_root / "build-macos-universal",
+            project_root / "build",
+        ]
+        candidate_build_dirs = []
+        for root in roots:
+            candidate_build_dirs.append(root)
+            candidate_build_dirs.append(root / "Release")
+            candidate_build_dirs.append(root / "RelWithDebInfo")
 
         # Check for different possible executable names
         possible_names = [
@@ -44,10 +75,11 @@ class TestConfig:
             "wiRedPanda",  # Alternative Linux/macOS name
         ]
 
-        for name in possible_names:
-            exe_path = build_dir / name
-            if exe_path.exists():
-                return exe_path
+        for build_dir in candidate_build_dirs:
+            for name in possible_names:
+                exe_path = build_dir / name
+                if exe_path.exists():
+                    return exe_path
 
         return None
 
