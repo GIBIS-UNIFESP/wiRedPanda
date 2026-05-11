@@ -39,6 +39,7 @@ class QSaveFile;
 class BewavedDolphin : public QMainWindow
 {
     Q_OBJECT
+    friend class TestBewavedDolphinGui;
 
 public:
     /**
@@ -234,8 +235,7 @@ private:
     Simulation *m_simulation       = nullptr;         ///< Simulation engine used for waveform runs.
     bool m_edited                  = false;           ///< True if the waveform has unsaved changes.
     const bool m_askConnection;                       ///< If true, prompt to link to a .dolphin file on open.
-    const double m_scaleFactor     = 0.8;             ///< Multiplier per zoom-out step.
-    double m_scale                 = 1.25;            ///< Current zoom scale factor.
+    double m_scale                 = 1.0;             ///< Mirrors the view's accumulated scale transform (only FitScreen changes it; discrete zoom in/out re-flow columns instead).
     int m_clockPeriod              = 0;               ///< Period used by "Set Clock Wave" (0 = auto).
     int m_inputPorts               = 0;               ///< Number of input ports in the circuit.
     int m_length                   = 32;              ///< Number of simulation time-step columns.

@@ -3,6 +3,7 @@
 
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
 
+#include <algorithm>
 #include <cmath>
 #include <iostream>
 
@@ -473,11 +474,10 @@ void BewavedDolphin::resizeScene()
 
 void BewavedDolphin::setTableViewSize(const int width, const int height)
 {
-    // Divide by (m_scale * m_scaleFactor) so that when the scene applies its m_scale transform,
-    // the resulting visible widget fills the central widget at ~80% of available space,
-    // leaving room for the vertical header and a small margin
-    m_signalTableView->resize(static_cast<int>(width  / (m_scale * m_scaleFactor)),
-                              static_cast<int>(height / (m_scale * m_scaleFactor)));
+    // Size the inner table view inversely to m_scale so that, after the view's
+    // scale transform is reapplied, the table fills the central widget.
+    m_signalTableView->resize(static_cast<int>(width  / m_scale),
+                              static_cast<int>(height / m_scale));
 }
 
 void BewavedDolphin::on_actionExit_triggered()
@@ -832,9 +832,11 @@ void BewavedDolphin::on_actionZoomOut_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Zoom out"));
+        // WaveformView::zoomOut only bumps a discrete level counter; the visual
+        // zoom comes from widening/narrowing the columns below. The view's
+        // scale transform stays at identity, so m_scale stays at 1.0 too.
         m_view.zoomOut();
-        // Shrink column widths to match the reduced scene scale so pixmaps still tile correctly
-        adjustColumnWidths([this](int w) { return static_cast<int>(w / m_scale); });
+        adjustColumnWidths([](int w) { return static_cast<int>(w / kZoomStep); });
     });
 }
 
@@ -842,9 +844,10 @@ void BewavedDolphin::on_actionZoomIn_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Zoom in"));
+        // See on_actionZoomOut_triggered: m_scale tracks m_view.scale() only,
+        // and discrete zoom does not call scale().
         m_view.zoomIn();
-        // Grow column widths proportionally so waveform segments remain at their natural aspect ratio
-        adjustColumnWidths([this](int w) { return static_cast<int>(w * m_scale); });
+        adjustColumnWidths([](int w) { return static_cast<int>(w * kZoomStep); });
     });
 }
 
@@ -853,7 +856,7 @@ void BewavedDolphin::on_actionResetZoom_triggered()
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Zoom reset"));
         m_view.resetZoom();
-        m_scale = kZoomStep;
+        m_scale = 1.0;
         adjustColumnWidths([](int) { return kDefaultColumnWidth; });
     });
 }
@@ -868,13 +871,20 @@ void BewavedDolphin::on_actionFitScreen_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Fit screen"));
+        const int hLen = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
+        const int vLen = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10;
+        // Bail out on degenerate geometry: a zero divisor would yield infinity,
+        // which Qt's backing-store sizing turns into a qFatal on Windows (WIREDPANDA-HW).
+        if (hLen <= 0 || vLen <= 0) {
+            return;
+        }
         // First undo the current scale transform so the measurements below are in logical pixels
         m_view.scale(1.0 / m_scale, 1.0 / m_scale);
-        // Compute the scale needed to fit all columns and all rows within the current view
-        const double wScale = static_cast<double>(m_view.width()) / (m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0));
-        const double hScale = static_cast<double>(m_view.height()) / (m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10);
-        // Use the smaller scale so neither axis overflows the view
-        m_scale = (std::min)(wScale, hScale);
+        const double wScale = static_cast<double>(m_view.width()) / hLen;
+        const double hScale = static_cast<double>(m_view.height()) / vLen;
+        // Clamp the fit factor so pathological inputs can't request an extreme
+        // backing-store size; bounds chosen to cover any realistic waveform.
+        m_scale = std::clamp((std::min)(wScale, hScale), 0.05, 20.0);
         m_view.scale(1.0 * m_scale, 1.0 * m_scale);
         // FitScreen sets an arbitrary transform, so reset the discrete level to 0
         // so canZoomIn/Out limits are correct for subsequent zoom actions
