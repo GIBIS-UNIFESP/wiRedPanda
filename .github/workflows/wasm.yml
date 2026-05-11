@@ -15,6 +15,9 @@ jobs:
       actions: write   # needed to trigger site deployment
     runs-on: ubuntu-24.04
 
+    env:
+      CCACHE_SLOPPINESS: pch_defines,time_macros,include_file_ctime,include_file_mtime
+
     steps:
     - uses: actions/checkout@v6
       with:
