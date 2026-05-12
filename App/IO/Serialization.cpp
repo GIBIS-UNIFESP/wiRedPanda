@@ -182,6 +182,10 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
     // to directly casting the stored integer back to a pointer — only safe during
     // the same process session (e.g., clipboard paste with in-process copy/paste).
     QList<QGraphicsItem *> itemList;
+    // Exception safety: if any throw escapes the loop, qDeleteAll cleans up every
+    // item already constructed. Callers expect ownership transfer on success only —
+    // dismissing the guard at the end of the happy path hands the items to them.
+    auto cleanupGuard = qScopeGuard([&itemList]() { qDeleteAll(itemList); });
 
     while (!stream.atEnd()) {
         int type; stream >> type;
@@ -204,6 +208,8 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
                                    stream.device()->pos(), static_cast<int>(stream.status()));
             }
 
+            // Append before load() so cleanupGuard owns the element if load throws
+            // (e.g. nested IC whose backing file is missing).
             auto *elm = ElementFactory::buildElement(elmType);
             itemList.append(elm);
             elm->load(stream, context);
@@ -220,6 +226,9 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
         case QNEConnection::Type: {
             qCDebug(three) << "Building connection.";
             auto *conn = new QNEConnection();
+            // Same as the element case: append first so a throw in conn->load() can't
+            // strand the freshly allocated connection.
+            itemList.append(conn);
 
             qCDebug(three) << "Loading connection.";
             conn->load(stream, context);
@@ -229,9 +238,6 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
                 throw PANDACEPTION("Stream error loading connection at position %1: status %2",
                                    stream.device()->pos(), static_cast<int>(stream.status()));
             }
-
-            qCDebug(three) << "Appending connection.";
-            itemList.append(conn);
             break;
         }
 
@@ -241,6 +247,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
     }
 
     qCDebug(zero) << "Finished deserializing.";
+    cleanupGuard.dismiss();
     return itemList;
 }
 

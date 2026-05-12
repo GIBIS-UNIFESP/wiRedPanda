@@ -296,6 +296,8 @@ void TestArduino::testBasicCircuitGeneration()
     QVERIFY2(content.contains("void loop()"), "Generated code should contain void loop() function");
     QVERIFY2(content.contains("digitalWrite") || content.contains("digitalRead"),
         "Generated code should contain digitalWrite or digitalRead calls");
+
+    qDeleteAll(elements);
 }
 
 void TestArduino::testEmptyCircuit()
@@ -657,6 +659,8 @@ void TestArduino::testOutputElementHandling()
     // Should have output handling
     QVERIFY2(content.contains("digitalWrite"), "Generated code should contain digitalWrite calls");
     QVERIFY2(content.contains("pinMode"), "Generated code should contain pinMode calls");
+
+    qDeleteAll(elements);
 }
 
 void TestArduino::testComplexCircuit()
