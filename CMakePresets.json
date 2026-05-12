@@ -42,6 +42,7 @@
             "displayName": "Coverage",
             "description": "Debug build with code coverage instrumentation",
             "inherits": "debug",
+            "binaryDir": "build-coverage",
             "cacheVariables": {
                 "ENABLE_COVERAGE": "ON",
                 "ENABLE_UNITY": "OFF",
@@ -53,6 +54,7 @@
             "displayName": "Address Sanitizer",
             "description": "Debug build with Address Sanitizer for memory error detection",
             "inherits": "debug",
+            "binaryDir": "build-asan",
             "cacheVariables": {
                 "ENABLE_ADDRESS_SANITIZER": "ON",
                 "ENABLE_PCH": "OFF",
@@ -64,6 +66,7 @@
             "displayName": "Thread Sanitizer",
             "description": "Debug build with Thread Sanitizer for race condition detection",
             "inherits": "debug",
+            "binaryDir": "build-tsan",
             "cacheVariables": {
                 "ENABLE_THREAD_SANITIZER": "ON",
                 "ENABLE_PCH": "OFF",
@@ -75,6 +78,7 @@
             "displayName": "Memory Sanitizer (Clang)",
             "description": "Debug build with Memory Sanitizer for uninitialized memory detection (Clang only)",
             "inherits": "debug",
+            "binaryDir": "build-msan",
             "cacheVariables": {
                 "ENABLE_MEMORY_SANITIZER": "ON",
                 "ENABLE_PCH": "OFF",
@@ -86,6 +90,7 @@
             "displayName": "UB Sanitizer",
             "description": "Debug build with Undefined Behavior Sanitizer",
             "inherits": "debug",
+            "binaryDir": "build-ubsan",
             "cacheVariables": {
                 "ENABLE_UB_SANITIZER": "ON",
                 "ENABLE_PCH": "OFF",

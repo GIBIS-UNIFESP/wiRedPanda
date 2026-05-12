@@ -104,9 +104,9 @@ jobs:
       with:
         name: build-logs-${{ matrix.os }}-${{ matrix.qt }}${{ contains(matrix.cmake_args, 'ENABLE_UNITY=OFF') && '-no-unity' || contains(matrix.cmake_args, 'BATCH_SIZE=1000') && '-mega-unity' || '' }}
         path: |
-          build/CMakeCache.txt
-          build/CMakeFiles/CMakeOutput.log
-          build/CMakeFiles/CMakeError.log
+          build-release/CMakeCache.txt
+          build-release/CMakeFiles/CMakeOutput.log
+          build-release/CMakeFiles/CMakeError.log
         retention-days: 7
 
     - name: MCP Integration Test
