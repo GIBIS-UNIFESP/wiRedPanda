@@ -71,23 +71,23 @@
 <context>
     <name>AudioBox</name>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="34"/>
         <location filename="../../Element/GraphicElements/AudioBox.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="36"/>
         <source>Audio Box</source>
         <translation>กล่องเสียง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="86"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="87"/>
         <source>File does not exist</source>
         <translation>ไฟล์ไม่มีอยู่</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="87"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="88"/>
         <source>File is not readable</source>
         <translation>ไฟล์ไม่สามารถอ่านได้</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="89"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
         <translation>ไม่สามารถโหลดเสียงได้: %1 (%2)</translation>
     </message>
@@ -530,12 +530,12 @@
 <context>
     <name>Buzzer</name>
     <message>
-        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="35"/>
         <source>Buzzer</source>
         <translation>บัซเซอร์</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="34"/>
         <source>BUZZER</source>
         <translation>บัซเซอร์</translation>
     </message>
@@ -556,22 +556,22 @@
 <context>
     <name>Clock</name>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="38"/>
         <source>Clock</source>
         <translation>นาฬิกา</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="205"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="214"/>
         <source>Low</source>
         <translation>ต่ำ</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="205"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="214"/>
         <source>High</source>
         <translation>สูง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="37"/>
         <source>CLOCK SIGNAL</source>
         <translation>สัญญาณนาฬิกา</translation>
     </message>
@@ -654,87 +654,87 @@
 <context>
     <name>Display14</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="34"/>
         <source>14-SEGMENT DISPLAY</source>
         <translation>จอแสดงผล 14 เซกเมนต์</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="35"/>
         <source>14-Segment Display</source>
         <translation>จอแสดงผล 14 ส่วน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="96"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="97"/>
         <source>middle left horizontal</source>
         <translation>แนวนอนซ้ายกลาง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="97"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="98"/>
         <source>upper left vertical</source>
         <translation>แนวตั้งซ้ายบน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="98"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="99"/>
         <source>lower left vertical</source>
         <translation>แนวตั้งซ้ายล่าง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="101"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="102"/>
         <source>upper right vertical</source>
         <translation>แนวตั้งขวาบน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="103"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="104"/>
         <source>lower right vertical</source>
         <translation>แนวตั้งขวาล่าง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="104"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="105"/>
         <source>middle right horizontal</source>
         <translation>แนวนอนขวากลาง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="105"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="106"/>
         <source>upper left diagonal</source>
         <translation>แนวทแยงซ้ายบน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="106"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="107"/>
         <source>upper center vertical</source>
         <translation>แนวตั้งกลางบน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="107"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="108"/>
         <source>upper right diagonal</source>
         <translation>แนวทแยงขวาบน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="108"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="109"/>
         <source>lower right diagonal</source>
         <translation>แนวทแยงขวาล่าง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="109"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="110"/>
         <source>lower center vertical</source>
         <translation>แนวตั้งกลางล่าง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="110"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="111"/>
         <source>lower left diagonal</source>
         <translation>แนวทแยงซ้ายล่าง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="99"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="100"/>
         <source>bottom</source>
         <translation>ล่าง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="100"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="101"/>
         <source>top</source>
         <translation>บน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="102"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="103"/>
         <source>dot</source>
         <translation>จุด</translation>
     </message>
@@ -742,93 +742,93 @@
 <context>
     <name>Display16</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="34"/>
         <source>16-SEGMENT DISPLAY</source>
         <translation>จอแสดงผล 16 เซกเมนต์</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="35"/>
         <source>16-Segment Display</source>
         <translation>จอแสดงผล 16 ส่วน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="102"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="103"/>
         <source>middle left horizontal</source>
         <translation>แนวนอนซ้ายกลาง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="103"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="104"/>
         <source>upper left vertical</source>
         <translation>แนวตั้งซ้ายบน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="104"/>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower left vertical</source>
         <translation>แนวตั้งซ้ายล่าง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="106"/>
         <source>bottom left horizontal</source>
         <translation>แนวนอนซ้ายล่าง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="106"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="107"/>
         <source>bottom right horizontal</source>
         <translation>แนวนอนขวาล่าง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="107"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="108"/>
         <source>top left horizontal</source>
         <translation>แนวนอนซ้ายบน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="108"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="109"/>
         <source>top right horizontal</source>
         <translation>แนวนอนขวาบน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="109"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="110"/>
         <source>upper right vertical</source>
         <translation>แนวตั้งขวาบน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="112"/>
         <source>lower right vertical</source>
         <translation>แนวตั้งขวาล่าง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="112"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="113"/>
         <source>middle right horizontal</source>
         <translation>แนวนอนขวากลาง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="113"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="114"/>
         <source>upper left diagonal</source>
         <translation>แนวทแยงซ้ายบน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="114"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="115"/>
         <source>upper center vertical</source>
         <translation>แนวตั้งกลางบน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="115"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="116"/>
         <source>upper right diagonal</source>
         <translation>แนวทแยงขวาบน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="116"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="117"/>
         <source>lower right diagonal</source>
         <translation>แนวทแยงขวาล่าง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="117"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower center vertical</source>
         <translation>แนวตั้งกลางล่าง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="110"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
         <source>dot</source>
         <translation>จุด</translation>
     </message>
@@ -836,52 +836,52 @@
 <context>
     <name>Display7</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="36"/>
         <source>7-SEGMENT DISPLAY</source>
         <translation>จอแสดงผล 7 เซกเมนต์</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="36"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="37"/>
         <source>7-Segment Display</source>
         <translation>จอแสดงผล 7 ส่วน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="135"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="136"/>
         <source>middle</source>
         <translation>กลาง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="136"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="137"/>
         <source>upper left</source>
         <translation>ซ้ายบน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="137"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="138"/>
         <source>lower left</source>
         <translation>ซ้ายล่าง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="138"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="139"/>
         <source>bottom</source>
         <translation>ล่าง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="139"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
         <source>top</source>
         <translation>บน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
         <source>upper right</source>
         <translation>ขวาบน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
         <source>dot</source>
         <translation>จุด</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
         <source>lower right</source>
         <translation>ขวาล่าง</translation>
     </message>
@@ -1211,32 +1211,27 @@ Each wireless channel must have a unique label.</source>
         <translation>ค่าเริ่มต้น</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="145"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
         <translation>ข้อผิดพลาดสตรีมขณะอ่านคุณสมบัติอิลิเมนต์ที่ตำแหน่ง %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="179"/>
-        <source>Stream error reading input ports at position %1</source>
-        <translation>ข้อผิดพลาดสตรีมขณะอ่านพอร์ตอินพุตที่ตำแหน่ง %1</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="233"/>
-        <source>Stream error reading output ports at position %1</source>
-        <translation>ข้อผิดพลาดสตรีมขณะอ่านพอร์ตเอาต์พุตที่ตำแหน่ง %1</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="287"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>ข้อผิดพลาดสตรีมขณะอ่านสกินที่ตำแหน่ง %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="477"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
+        <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
         <source>Loading pixmap appearance names.</source>
         <translation>กำลังโหลดชื่อสกิน pixmap</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="507"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>ดัชนีสกิน %1 อยู่นอกช่วง (ขนาด=%2) สำหรับชื่อสกิน &quot;%3&quot; — สตรีมอาจเสียหาย</translation>
     </message>
@@ -1259,29 +1254,34 @@ Each wireless channel must have a unique label.</source>
         <translation>โหลด IC: ไม่มีชื่อ IC ในข้อมูลที่ซีเรียลไลซ์</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="324"/>
+        <location filename="../../Element/IC.cpp" line="347"/>
         <source>%1 not found.</source>
         <translation>ไม่พบ %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="365"/>
+        <location filename="../../Element/IC.cpp" line="388"/>
         <source>Circular IC reference detected: %1</source>
         <translation>ตรวจพบการอ้างอิง IC แบบวงกลม: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="372"/>
+        <location filename="../../Element/IC.cpp" line="395"/>
         <source>Error opening file: %1</source>
         <translation>ข้อผิดพลาดในการเปิดไฟล์: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="426"/>
+        <location filename="../../Element/IC.cpp" line="449"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>การย้าย IC: ไม่สามารถเปิดไฟล์เพื่อเขียนได้: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="433"/>
+        <location filename="../../Element/IC.cpp" line="456"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>การย้าย IC: ไม่สามารถยืนยันไฟล์ที่บันทึกใหม่ได้: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/IC.cpp" line="515"/>
+        <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1300,22 +1300,22 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>InputButton</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="31"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="32"/>
         <source>PUSH BUTTON</source>
         <translation>ปุ่มกด</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="32"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="33"/>
         <source>Push Button</source>
         <translation>ปุ่มกด</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="124"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
         <source>Released</source>
         <translation>ปล่อย</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="124"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
         <source>Pressed</source>
         <translation>กด</translation>
     </message>
@@ -1336,12 +1336,12 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>InputRotary</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="34"/>
         <source>Rotary Switch</source>
         <translation>สวิตช์หมุน</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="32"/>
+        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="33"/>
         <source>ROTARY SWITCH</source>
         <translation>สวิตช์หมุน</translation>
     </message>
@@ -1349,22 +1349,22 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>InputSwitch</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="32"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="33"/>
         <source>Input Switch</source>
         <translation>สวิตช์อินพุต</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="126"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="127"/>
         <source>Off</source>
         <translation>ปิด</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="126"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="127"/>
         <source>On</source>
         <translation>เปิด</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="31"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="32"/>
         <source>INPUT SWITCH</source>
         <translation>สวิตช์อินพุต</translation>
     </message>
@@ -1394,43 +1394,43 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>Led</name>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="32"/>
         <location filename="../../Element/GraphicElements/Led.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="34"/>
         <source>LED</source>
         <translation>แอลอีดี</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="242"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="243"/>
         <source>Off</source>
         <translation>ปิด</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="243"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="244"/>
         <source>On</source>
         <translation>เปิด</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="247"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="248"/>
         <source>00 (off)</source>
         <translation>00 (ปิด)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="248"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
         <source>01</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="250"/>
         <source>10</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="250"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="251"/>
         <source>11</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="266"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="267"/>
         <source>Default</source>
         <translation>ค่าเริ่มต้น</translation>
     </message>
@@ -2415,12 +2415,12 @@ Suggested name:</source>
 <context>
     <name>Node</name>
     <message>
-        <location filename="../../Element/GraphicElements/Node.cpp" line="39"/>
+        <location filename="../../Element/GraphicElements/Node.cpp" line="40"/>
         <source>Node</source>
         <translation>โนด</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Node.cpp" line="38"/>
+        <location filename="../../Element/GraphicElements/Node.cpp" line="39"/>
         <source>NODE</source>
         <translation>โนด</translation>
     </message>
@@ -2625,18 +2625,18 @@ Suggested name:</source>
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="559"/>
+        <location filename="../../Scene/Scene.cpp" line="566"/>
         <source>&amp;Undo</source>
         <translation>&amp;เลิกทำ</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="565"/>
+        <location filename="../../Scene/Scene.cpp" line="572"/>
         <source>&amp;Redo</source>
         <translation>&amp;ทำซ้ำ</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="585"/>
+        <location filename="../../Scene/Scene.cpp" line="592"/>
         <source>Paste</source>
         <translation>วาง</translation>
     </message>
@@ -2644,44 +2644,68 @@ Suggested name:</source>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="59"/>
-        <location filename="../../IO/Serialization.cpp" line="70"/>
-        <location filename="../../IO/Serialization.cpp" line="104"/>
+        <location filename="../../IO/Serialization.cpp" line="271"/>
+        <source>Stream error reading metadata map count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
+        <source>Metadata map count %1 implausible given remaining stream bytes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="291"/>
+        <source>Stream error reading blob map count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
+        <source>Blob map count %1 implausible given remaining stream bytes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="347"/>
+        <location filename="../../IO/Serialization.cpp" line="357"/>
+        <location filename="../../IO/Serialization.cpp" line="361"/>
+        <location filename="../../IO/Serialization.cpp" line="396"/>
+        <location filename="../../IO/Serialization.cpp" line="400"/>
+        <location filename="../../IO/Serialization.cpp" line="404"/>
+        <location filename="../../IO/Serialization.cpp" line="410"/>
         <source>Invalid file format.</source>
         <translation>รูปแบบไฟล์ไม่ถูกต้อง</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="191"/>
+        <location filename="../../IO/Serialization.cpp" line="518"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>ข้อผิดพลาดสตรีมขณะอ่านแท็กประเภทที่ตำแหน่ง %1: สถานะ %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="203"/>
+        <location filename="../../IO/Serialization.cpp" line="530"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>ข้อผิดพลาดสตรีมขณะอ่านประเภทอิลิเมนต์ที่ตำแหน่ง %1: สถานะ %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="213"/>
+        <location filename="../../IO/Serialization.cpp" line="542"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>ข้อผิดพลาดสตรีมขณะโหลดอิลิเมนต์ที่ตำแหน่ง %1: สถานะ %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="229"/>
+        <location filename="../../IO/Serialization.cpp" line="561"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>ข้อผิดพลาดสตรีมขณะโหลดการเชื่อมต่อที่ตำแหน่ง %1: สถานะ %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="239"/>
+        <location filename="../../IO/Serialization.cpp" line="568"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>ประเภทไม่ถูกต้อง ข้อมูลอาจเสียหาย</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="291"/>
+        <location filename="../../IO/Serialization.cpp" line="621"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>ไม่สามารถสร้างสำเนาสำรองแบบมีเวอร์ชันได้: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="366"/>
+        <location filename="../../IO/Serialization.cpp" line="701"/>
         <source>Error copying file: %1</source>
         <translation>เกิดข้อผิดพลาดในการคัดลอกไฟล์: %1</translation>
     </message>
@@ -2689,7 +2713,7 @@ Suggested name:</source>
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="231"/>
+        <location filename="../../Simulation/Simulation.cpp" line="243"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>คำเตือน: วงจรป้อนกลับไม่ลู่เข้า — วงจรอาจกำลังแกว่ง</translation>
     </message>
@@ -2795,12 +2819,12 @@ Suggested name:</source>
 <context>
     <name>TruthTable</name>
     <message>
-        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="36"/>
+        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="37"/>
         <source>TRUTH TABLE</source>
         <translation>ตารางความจริง</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="37"/>
+        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="38"/>
         <source>Truth Table</source>
         <translation>ตารางความจริง</translation>
     </message>

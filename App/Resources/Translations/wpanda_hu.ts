@@ -71,23 +71,23 @@
 <context>
     <name>AudioBox</name>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="34"/>
         <location filename="../../Element/GraphicElements/AudioBox.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="36"/>
         <source>Audio Box</source>
         <translation>Hangdoboz</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="86"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="87"/>
         <source>File does not exist</source>
         <translation>A fájl nem létezik</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="87"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="88"/>
         <source>File is not readable</source>
         <translation>A fájl nem olvasható</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="89"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
         <translation>A hang nem tölthető be: %1 (%2)</translation>
     </message>
@@ -530,12 +530,12 @@
 <context>
     <name>Buzzer</name>
     <message>
-        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="35"/>
         <source>Buzzer</source>
         <translation>Csengő</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="34"/>
         <source>BUZZER</source>
         <translation>CSENGŐ</translation>
     </message>
@@ -556,22 +556,22 @@
 <context>
     <name>Clock</name>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="38"/>
         <source>Clock</source>
         <translation>Órajel</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="205"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="214"/>
         <source>Low</source>
         <translation>Alacsony</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="205"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="214"/>
         <source>High</source>
         <translation>Magas</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="37"/>
         <source>CLOCK SIGNAL</source>
         <translation>ÓRAJEL</translation>
     </message>
@@ -654,87 +654,87 @@
 <context>
     <name>Display14</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="34"/>
         <source>14-SEGMENT DISPLAY</source>
         <translation>14-SZEGMENSES KIJELZŐ</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="35"/>
         <source>14-Segment Display</source>
         <translation>14-szegmenses kijelző</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="96"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="97"/>
         <source>middle left horizontal</source>
         <translation>középső bal vízszintes</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="97"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="98"/>
         <source>upper left vertical</source>
         <translation>felső bal függőleges</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="98"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="99"/>
         <source>lower left vertical</source>
         <translation>alsó bal függőleges</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="101"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="102"/>
         <source>upper right vertical</source>
         <translation>felső jobb függőleges</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="103"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="104"/>
         <source>lower right vertical</source>
         <translation>alsó jobb függőleges</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="104"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="105"/>
         <source>middle right horizontal</source>
         <translation>középső jobb vízszintes</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="105"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="106"/>
         <source>upper left diagonal</source>
         <translation>felső bal átló</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="106"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="107"/>
         <source>upper center vertical</source>
         <translation>felső középső függőleges</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="107"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="108"/>
         <source>upper right diagonal</source>
         <translation>felső jobb átló</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="108"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="109"/>
         <source>lower right diagonal</source>
         <translation>alsó jobb átló</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="109"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="110"/>
         <source>lower center vertical</source>
         <translation>alsó középső függőleges</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="110"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="111"/>
         <source>lower left diagonal</source>
         <translation>alsó bal átló</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="99"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="100"/>
         <source>bottom</source>
         <translation>alsó</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="100"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="101"/>
         <source>top</source>
         <translation>felső</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="102"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="103"/>
         <source>dot</source>
         <translation>pont</translation>
     </message>
@@ -742,93 +742,93 @@
 <context>
     <name>Display16</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="34"/>
         <source>16-SEGMENT DISPLAY</source>
         <translation>16-SZEGMENSES KIJELZŐ</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="35"/>
         <source>16-Segment Display</source>
         <translation>16-szegmenses kijelző</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="102"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="103"/>
         <source>middle left horizontal</source>
         <translation>középső bal vízszintes</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="103"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="104"/>
         <source>upper left vertical</source>
         <translation>felső bal függőleges</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="104"/>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower left vertical</source>
         <translation>alsó bal függőleges</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="106"/>
         <source>bottom left horizontal</source>
         <translation>alsó bal vízszintes</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="106"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="107"/>
         <source>bottom right horizontal</source>
         <translation>alsó jobb vízszintes</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="107"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="108"/>
         <source>top left horizontal</source>
         <translation>felső bal vízszintes</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="108"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="109"/>
         <source>top right horizontal</source>
         <translation>felső jobb vízszintes</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="109"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="110"/>
         <source>upper right vertical</source>
         <translation>felső jobb függőleges</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="112"/>
         <source>lower right vertical</source>
         <translation>alsó jobb függőleges</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="112"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="113"/>
         <source>middle right horizontal</source>
         <translation>középső jobb vízszintes</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="113"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="114"/>
         <source>upper left diagonal</source>
         <translation>felső bal átló</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="114"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="115"/>
         <source>upper center vertical</source>
         <translation>felső középső függőleges</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="115"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="116"/>
         <source>upper right diagonal</source>
         <translation>felső jobb átló</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="116"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="117"/>
         <source>lower right diagonal</source>
         <translation>alsó jobb átló</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="117"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower center vertical</source>
         <translation>alsó középső függőleges</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="110"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
         <source>dot</source>
         <translation>pont</translation>
     </message>
@@ -836,52 +836,52 @@
 <context>
     <name>Display7</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="36"/>
         <source>7-SEGMENT DISPLAY</source>
         <translation>7-SZEGMENSES KIJELZŐ</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="36"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="37"/>
         <source>7-Segment Display</source>
         <translation>7-szegmenses kijelző</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="135"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="136"/>
         <source>middle</source>
         <translation>középső</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="136"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="137"/>
         <source>upper left</source>
         <translation>felső bal</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="137"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="138"/>
         <source>lower left</source>
         <translation>alsó bal</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="138"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="139"/>
         <source>bottom</source>
         <translation>alsó</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="139"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
         <source>top</source>
         <translation>felső</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
         <source>upper right</source>
         <translation>felső jobb</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
         <source>dot</source>
         <translation>pont</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
         <source>lower right</source>
         <translation>alsó jobb</translation>
     </message>
@@ -1211,32 +1211,27 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
         <translation>Alapértelmezett</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="145"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
         <translation>Folyamhiba az elem tulajdonságainak olvasásakor a(z) %1 pozícióban</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="179"/>
-        <source>Stream error reading input ports at position %1</source>
-        <translation>Folyamhiba a bemeneti portok olvasásakor a(z) %1 pozícióban</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="233"/>
-        <source>Stream error reading output ports at position %1</source>
-        <translation>Folyamhiba a kimeneti portok olvasásakor a(z) %1 pozícióban</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="287"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>Folyamhiba a megjelenések olvasásakor a(z) %1 pozícióban</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="477"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
+        <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
         <source>Loading pixmap appearance names.</source>
         <translation>Pixmap külső nevek betöltése.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="507"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>Megjelenés index %1 tartományon kívül (méret=%2) a(z) &quot;%3&quot; megjelenésnévnél — a folyam sérült lehet</translation>
     </message>
@@ -1259,29 +1254,34 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
         <translation>IC betöltés: nincs IC-név a szerializált adatokban</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="324"/>
+        <location filename="../../Element/IC.cpp" line="347"/>
         <source>%1 not found.</source>
         <translation>%1 nem található.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="365"/>
+        <location filename="../../Element/IC.cpp" line="388"/>
         <source>Circular IC reference detected: %1</source>
         <translation>Körkörös IC-hivatkozás észlelve: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="372"/>
+        <location filename="../../Element/IC.cpp" line="395"/>
         <source>Error opening file: %1</source>
         <translation>Hiba a fájl megnyitásakor: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="426"/>
+        <location filename="../../Element/IC.cpp" line="449"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>IC migráció: a fájl nem nyitható meg írásra: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="433"/>
+        <location filename="../../Element/IC.cpp" line="456"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC migráció: az újramentett fájl véglegesítése sikertelen: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/IC.cpp" line="515"/>
+        <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1300,22 +1300,22 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
 <context>
     <name>InputButton</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="31"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="32"/>
         <source>PUSH BUTTON</source>
         <translation>NYOMÓGOMB</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="32"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="33"/>
         <source>Push Button</source>
         <translation>Nyomógomb</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="124"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
         <source>Released</source>
         <translation>Felengedve</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="124"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
         <source>Pressed</source>
         <translation>Lenyomva</translation>
     </message>
@@ -1336,12 +1336,12 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
 <context>
     <name>InputRotary</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="34"/>
         <source>Rotary Switch</source>
         <translation>Forgatókapcsoló</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="32"/>
+        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="33"/>
         <source>ROTARY SWITCH</source>
         <translation>FORGATÓKAPCSOLÓ</translation>
     </message>
@@ -1349,22 +1349,22 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
 <context>
     <name>InputSwitch</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="32"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="33"/>
         <source>Input Switch</source>
         <translation>Bemeneti kapcsoló</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="126"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="127"/>
         <source>Off</source>
         <translation>Ki</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="126"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="127"/>
         <source>On</source>
         <translation>Be</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="31"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="32"/>
         <source>INPUT SWITCH</source>
         <translation>BEMENETI KAPCSOLÓ</translation>
     </message>
@@ -1394,43 +1394,43 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
 <context>
     <name>Led</name>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="32"/>
         <location filename="../../Element/GraphicElements/Led.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="34"/>
         <source>LED</source>
         <translation>LED</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="242"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="243"/>
         <source>Off</source>
         <translation>Ki</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="243"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="244"/>
         <source>On</source>
         <translation>Be</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="247"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="248"/>
         <source>00 (off)</source>
         <translation>00 (ki)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="248"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
         <source>01</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="250"/>
         <source>10</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="250"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="251"/>
         <source>11</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="266"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="267"/>
         <source>Default</source>
         <translation>Alapértelmezett</translation>
     </message>
@@ -2415,12 +2415,12 @@ Javasolt név:</translation>
 <context>
     <name>Node</name>
     <message>
-        <location filename="../../Element/GraphicElements/Node.cpp" line="39"/>
+        <location filename="../../Element/GraphicElements/Node.cpp" line="40"/>
         <source>Node</source>
         <translation>Csomópont</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Node.cpp" line="38"/>
+        <location filename="../../Element/GraphicElements/Node.cpp" line="39"/>
         <source>NODE</source>
         <translation>CSOMÓPONT</translation>
     </message>
@@ -2625,18 +2625,18 @@ Javasolt név:</translation>
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="559"/>
+        <location filename="../../Scene/Scene.cpp" line="566"/>
         <source>&amp;Undo</source>
         <translation>&amp;Visszavonás</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="565"/>
+        <location filename="../../Scene/Scene.cpp" line="572"/>
         <source>&amp;Redo</source>
         <translation>&amp;Ismétlés</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="585"/>
+        <location filename="../../Scene/Scene.cpp" line="592"/>
         <source>Paste</source>
         <translation>Beillesztés</translation>
     </message>
@@ -2644,44 +2644,68 @@ Javasolt név:</translation>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="59"/>
-        <location filename="../../IO/Serialization.cpp" line="70"/>
-        <location filename="../../IO/Serialization.cpp" line="104"/>
+        <location filename="../../IO/Serialization.cpp" line="271"/>
+        <source>Stream error reading metadata map count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
+        <source>Metadata map count %1 implausible given remaining stream bytes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="291"/>
+        <source>Stream error reading blob map count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
+        <source>Blob map count %1 implausible given remaining stream bytes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="347"/>
+        <location filename="../../IO/Serialization.cpp" line="357"/>
+        <location filename="../../IO/Serialization.cpp" line="361"/>
+        <location filename="../../IO/Serialization.cpp" line="396"/>
+        <location filename="../../IO/Serialization.cpp" line="400"/>
+        <location filename="../../IO/Serialization.cpp" line="404"/>
+        <location filename="../../IO/Serialization.cpp" line="410"/>
         <source>Invalid file format.</source>
         <translation>Érvénytelen fájlformátum.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="191"/>
+        <location filename="../../IO/Serialization.cpp" line="518"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>Folyamhiba a típuscímke olvasásakor a(z) %1 pozícióban: állapot %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="203"/>
+        <location filename="../../IO/Serialization.cpp" line="530"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>Folyamhiba az elemtípus olvasásakor a(z) %1 pozícióban: állapot %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="213"/>
+        <location filename="../../IO/Serialization.cpp" line="542"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>Folyamhiba az elem betöltésekor a(z) %1 pozícióban: állapot %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="229"/>
+        <location filename="../../IO/Serialization.cpp" line="561"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Folyamhiba a kapcsolat betöltésekor a(z) %1 pozícióban: állapot %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="239"/>
+        <location filename="../../IO/Serialization.cpp" line="568"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Érvénytelen típus. Az adatok valószínűleg sérültek.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="291"/>
+        <location filename="../../IO/Serialization.cpp" line="621"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>A verziókezelő biztonsági másolat létrehozása sikertelen: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="366"/>
+        <location filename="../../IO/Serialization.cpp" line="701"/>
         <source>Error copying file: %1</source>
         <translation>Hiba a fájl másolásakor: %1</translation>
     </message>
@@ -2689,7 +2713,7 @@ Javasolt név:</translation>
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="231"/>
+        <location filename="../../Simulation/Simulation.cpp" line="243"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Figyelmeztetés: a visszacsatolt áramkör nem konvergált — az áramkör oszcillálhat.</translation>
     </message>
@@ -2795,12 +2819,12 @@ Javasolt név:</translation>
 <context>
     <name>TruthTable</name>
     <message>
-        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="36"/>
+        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="37"/>
         <source>TRUTH TABLE</source>
         <translation>IGAZSÁGTÁBLA</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="37"/>
+        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="38"/>
         <source>Truth Table</source>
         <translation>Igazságtáblázat</translation>
     </message>
