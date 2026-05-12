@@ -32,7 +32,6 @@
 
 #include <cstddef>
 #include <cstdint>
-
 #include <fuzzer/FuzzedDataProvider.h>
 
 #include <QApplication>
@@ -91,7 +90,6 @@ constexpr ElementType kAddTypes[] = {
     ElementType::Not,
     ElementType::Clock,
 };
-
 
 void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
 {
@@ -421,3 +419,4 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     return 0;
 }
+

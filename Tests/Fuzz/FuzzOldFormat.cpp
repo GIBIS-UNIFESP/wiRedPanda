@@ -26,7 +26,6 @@
 
 #include <cstddef>
 #include <cstdint>
-
 #include <fuzzer/FuzzedDataProvider.h>
 
 #include <QApplication>
@@ -370,3 +369,4 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     return 0;
 }
+

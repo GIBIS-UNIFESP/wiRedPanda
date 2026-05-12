@@ -34,9 +34,9 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
+#include "App/Element/GraphicElement.h"
 #include "App/Element/ICRegistry.h"
 #include "App/IO/Serialization.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -169,3 +169,4 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     return 0;
 }
+

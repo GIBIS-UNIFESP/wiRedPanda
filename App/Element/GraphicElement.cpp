@@ -13,6 +13,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QStyleOptionGraphicsItem>
+#include <QThread>
 
 #include "App/Core/Common.h"
 #include "App/Core/ThemeManager.h"
