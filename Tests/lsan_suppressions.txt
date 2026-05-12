@@ -1,0 +1,29 @@
+# LeakSanitizer suppressions for wiRedPanda tests.
+#
+# Format: leak:<substring matched against any frame in the leak's stack>
+# https://github.com/google/sanitizers/wiki/AddressSanitizerLeakSanitizer#suppressions
+#
+# Only third-party libraries belong here.  Application leaks must be fixed,
+# not suppressed.
+
+# Qt Multimedia / PulseAudio: pa_context_get_source_info_by_index leaks an
+# 88-byte allocation per process when audio sinks are enumerated.  Surfaces
+# in TestBuzzer because it exercises Qt's audio output path; not under our
+# control.
+leak:libpulse.so
+leak:libQt6Multimedia.so
+
+# Fontconfig / libexpat: per-process leaks during QApplication font database
+# initialization (FcInit + XML font config parsing).  Surface under the
+# libFuzzer harness which constructs a real QApplication; not under our
+# control.
+leak:libfontconfig.so
+leak:libexpat.so
+leak:QFontconfigDatabase
+
+# libdrm / libavutil: per-process leaks during ffmpeg's hardware-acceleration
+# probing (drmGetVersion calloc/strdup) when AudioBox initializes the audio
+# path under Qt Multimedia.  Surfaces in fuzz_structured / fuzz_old_format;
+# not under our control.
+leak:libdrm.so
+leak:libavutil.so
