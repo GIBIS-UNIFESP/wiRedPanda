@@ -8,11 +8,39 @@ on:
     branches-ignore:
       - master
       - wasm
+    paths-ignore:
+      - "**/*.md"
+      - LICENSE
+      - .github/codeql/**
+      - .github/dependabot.yml
+      - .github/workflows/codeql.yml
+      - .github/workflows/coverage.yml
+      - .github/workflows/deploy.yml
+      - .github/workflows/sanitizers.yml
+      - .github/workflows/translate.yml
+      - .github/workflows/wasm.yml
+      - Resources/Translations/**
+      - Scripts/**
+      - Tests/Fuzz/**
 
   pull_request:
     branches:
       - master
     types: [opened, synchronize, reopened]
+    paths-ignore:
+      - "**/*.md"
+      - LICENSE
+      - .github/codeql/**
+      - .github/dependabot.yml
+      - .github/workflows/codeql.yml
+      - .github/workflows/coverage.yml
+      - .github/workflows/deploy.yml
+      - .github/workflows/sanitizers.yml
+      - .github/workflows/translate.yml
+      - .github/workflows/wasm.yml
+      - Resources/Translations/**
+      - Scripts/**
+      - Tests/Fuzz/**
 
 jobs:
   build:
