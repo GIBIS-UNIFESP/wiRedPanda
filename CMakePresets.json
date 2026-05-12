@@ -278,6 +278,9 @@
             },
             "output": {
                 "outputOnFailure": true
+            },
+            "environment": {
+                "LSAN_OPTIONS": "suppressions=${sourceDir}/Tests/lsan_suppressions.txt"
             }
         },
         {

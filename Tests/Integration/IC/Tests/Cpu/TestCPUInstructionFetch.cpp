@@ -33,20 +33,12 @@ void TestCPUInstructionFetch::testInstructionFetch()
     QFETCH(int, cyclesPerFetch);
     // This is an integration test combining PC + Memory + IR
     QVector<InputSwitch *> pcLoadVal;
-    QVector<InputSwitch *> memAddr;
-    QVector<InputSwitch *> memDataIn;
     QVector<Led *> pcOut;
-    QVector<Led *> irOut;
-    QVector<Led *> memDataOut;
     InputSwitch *pcLoad, *pcInc, *pcReset, *pcEnable;
     InputSwitch *clock;
     for (int i = 0; i < 8; i++) {
         pcLoadVal.append(new InputSwitch());
-        memAddr.append(new InputSwitch());
-        memDataIn.append(new InputSwitch());
         pcOut.append(new Led());
-        irOut.append(new Led());
-        memDataOut.append(new Led());
     }
     pcLoad = new InputSwitch();
     pcInc = new InputSwitch();

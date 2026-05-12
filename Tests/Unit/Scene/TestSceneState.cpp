@@ -545,22 +545,27 @@ void TestSceneState::testUpdateBlockingDuringTransaction()
 void TestSceneState::testSceneCleanupAfterLoad()
 {
     Scene scene;
+    const auto initialItemCount = scene.items().size();
 
-    // Add elements
+    // Add elements (track them so we can free only what we allocated;
+    // scene.items() also returns the stack-allocated m_selectionRect, which
+    // must not be deleted)
+    QVector<GraphicElement *> added;
     for (int i = 0; i < 3; ++i) {
         auto *elem = ElementFactory::buildElement(ElementType::And);
         elem->setPos(i * 100, 0);
         scene.addItem(elem);
+        added.append(elem);
     }
 
-    // Remove all items
-    QList<QGraphicsItem *> items = scene.items();
-    for (auto item : std::as_const(items)) {
-        scene.removeItem(item);
+    // Remove and delete only the heap-allocated items we added
+    for (auto *elem : added) {
+        scene.removeItem(elem);
+        delete elem;
     }
 
-    // Scene should be clean
-    QCOMPARE(scene.items().size(), 0);
+    // Scene should be back to its initial item count (the persistent selection rect)
+    QCOMPARE(scene.items().size(), initialItemCount);
 }
 
 // ============================================================================
