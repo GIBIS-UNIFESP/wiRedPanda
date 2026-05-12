@@ -340,7 +340,7 @@ void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visit
     }
 
     auto metadata = preamble.metadata;
-    auto embeddedICs = Serialization::deserializeBlobRegistry(metadata);
+    auto embeddedICs = Serialization::deserializeBlobRegistry(metadata, preamble.version);
     bool modified = false;
 
     // Recurse into already-embedded blobs to ensure they are self-contained
@@ -413,7 +413,7 @@ void ICRegistry::renameBlobReference(QByteArray &blobData, const QString &oldNam
         return;
     }
 
-    auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata);
+    auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
     if (!embeddedICs.contains(oldName)) {
         return;
     }

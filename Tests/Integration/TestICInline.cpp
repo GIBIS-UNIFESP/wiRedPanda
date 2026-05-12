@@ -4530,7 +4530,7 @@ void TestICInline::testImportNestedBlobsViaRegisterBlob()
     QByteArray selfContainedBlob = reg->blob("nested_and");
     QDataStream stream(&selfContainedBlob, QIODevice::ReadOnly);
     auto preamble = Serialization::readPreamble(stream);
-    auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata);
+    auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
     QVERIFY2(embeddedICs.contains("simple_and"),
              "simple_and should be embedded inside nested_and's blob");
 
@@ -4723,7 +4723,7 @@ void TestICInline::testBlobRegistryEmptyRoundTrip()
     QVERIFY(!metadata.contains("embeddedICs"));
 
     // Deserializing metadata without the key must return an empty map
-    auto result = Serialization::deserializeBlobRegistry(metadata);
+    auto result = Serialization::deserializeBlobRegistry(metadata, FileVersion::current);
     QVERIFY(result.isEmpty());
 }
 
@@ -4746,7 +4746,7 @@ void TestICInline::testRegisterBlobFlattensDeeplyNested()
     QByteArray selfContained = reg->blob("chain_a");
     QDataStream stream(&selfContained, QIODevice::ReadOnly);
     auto preamble = Serialization::readPreamble(stream);
-    auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata);
+    auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
     // chain_a references chain_b (directly embedded at top level).
     QVERIFY2(embeddedICs.contains("chain_b"),
@@ -4759,7 +4759,7 @@ void TestICInline::testRegisterBlobFlattensDeeplyNested()
 
     QDataStream streamB(&chainBBlob, QIODevice::ReadOnly);
     auto preambleB = Serialization::readPreamble(streamB);
-    auto innerICs = Serialization::deserializeBlobRegistry(preambleB.metadata);
+    auto innerICs = Serialization::deserializeBlobRegistry(preambleB.metadata, preambleB.version);
 
     QVERIFY2(innerICs.contains("chain_c"),
              "chain_c should be recursively embedded inside chain_b's blob");
@@ -5296,7 +5296,7 @@ void TestICInline::testRenameBlobUpdatesNestedMetadata()
         QByteArray blob = reg->blob("nested_and");
         QDataStream stream(&blob, QIODevice::ReadOnly);
         auto preamble = Serialization::readPreamble(stream);
-        auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata);
+        auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
         QVERIFY2(embeddedICs.contains("simple_and"),
                  "simple_and should be inside nested_and before rename");
     }
@@ -5312,7 +5312,7 @@ void TestICInline::testRenameBlobUpdatesNestedMetadata()
     QByteArray updatedParent = reg->blob("nested_and");
     QDataStream stream(&updatedParent, QIODevice::ReadOnly);
     auto preamble = Serialization::readPreamble(stream);
-    auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata);
+    auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
     QVERIFY2(!embeddedICs.contains("simple_and"),
              "simple_and should no longer appear in nested_and after rename");
@@ -5348,7 +5348,7 @@ void TestICInline::testRegisterBlobMissingFileDepWarns()
     QByteArray stored = reg->blob("chain_b");
     QDataStream stream(&stored, QIODevice::ReadOnly);
     auto preamble = Serialization::readPreamble(stream);
-    auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata);
+    auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
     QVERIFY2(!embeddedICs.contains("chain_c"),
              "chain_c should not be embedded since its file was missing");
@@ -5438,7 +5438,7 @@ void TestICInline::testInlineSaveConvertsFileBackedToEmbedded()
         try {
             auto preamble = Serialization::readPreamble(stream);
             parsedOK = true;
-            auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata);
+            auto embeddedICs = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
             QVERIFY2(embeddedICs.contains("simple_and"),
                      "simple_and should be embedded in the saved blob");
@@ -5576,7 +5576,7 @@ void TestICInline::testNestedInlineSaveAndReopen()
         QDataStream s(&copy, QIODevice::ReadOnly);
         try {
             auto p = Serialization::readPreamble(s);
-            auto ics = Serialization::deserializeBlobRegistry(p.metadata);
+            auto ics = Serialization::deserializeBlobRegistry(p.metadata, p.version);
             Q_UNUSED(ics)
         } catch (const std::exception &e) {
             QFAIL(qPrintable(QString("Saved blob should be valid: %1").arg(e.what())));
@@ -5593,7 +5593,7 @@ void TestICInline::testNestedInlineSaveAndReopen()
         QDataStream s(&copy, QIODevice::ReadOnly);
         try {
             auto p = Serialization::readPreamble(s);
-            auto ics = Serialization::deserializeBlobRegistry(p.metadata);
+            auto ics = Serialization::deserializeBlobRegistry(p.metadata, p.version);
             Q_UNUSED(ics)
         } catch (const std::exception &) {
         }

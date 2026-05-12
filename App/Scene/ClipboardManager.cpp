@@ -54,10 +54,18 @@ void ClipboardManager::copy()
         }
     }
     if (!usedBlobs.isEmpty()) {
+        // Unversioned copy for backward compatibility with older app versions.
         QByteArray regBytes;
         QDataStream regStream(&regBytes, QIODevice::WriteOnly);
         regStream << usedBlobs;
         mimeData->setData(MimeType::BlobRegistry, regBytes);
+
+        // Versioned copy (Qt_5_12) for newer app versions — preferred on paste.
+        QByteArray regBytesV2;
+        QDataStream regStreamV2(&regBytesV2, QIODevice::WriteOnly);
+        regStreamV2.setVersion(QDataStream::Qt_5_12);
+        regStreamV2 << usedBlobs;
+        mimeData->setData(MimeType::BlobRegistryV2, regBytesV2);
     }
 
     QApplication::clipboard()->setMimeData(mimeData);
@@ -91,10 +99,18 @@ void ClipboardManager::cut()
     mimeData->setData(MimeType::Clipboard, itemData);
 
     if (!usedBlobs.isEmpty()) {
+        // Unversioned copy for backward compatibility with older app versions.
         QByteArray regBytes;
         QDataStream regStream(&regBytes, QIODevice::WriteOnly);
         regStream << usedBlobs;
         mimeData->setData(MimeType::BlobRegistry, regBytes);
+
+        // Versioned copy (Qt_5_12) for newer app versions — preferred on paste.
+        QByteArray regBytesV2;
+        QDataStream regStreamV2(&regBytesV2, QIODevice::WriteOnly);
+        regStreamV2.setVersion(QDataStream::Qt_5_12);
+        regStreamV2 << usedBlobs;
+        mimeData->setData(MimeType::BlobRegistryV2, regBytesV2);
     }
 
     QApplication::clipboard()->setMimeData(mimeData);
@@ -108,13 +124,21 @@ void ClipboardManager::paste()
         return;
     }
 
-    // Import blob registry from clipboard so cross-tab paste of embedded ICs works
-    if (mimeData->hasFormat(MimeType::BlobRegistry)) {
+    // Import blob registry from clipboard so cross-tab paste of embedded ICs works.
+    // Prefer BlobRegistryV2 (explicit Qt_5_12 version); fall back to the legacy
+    // unversioned BlobRegistry produced by older app versions.
+    QMap<QString, QByteArray> clipboardBlobs;
+    if (mimeData->hasFormat(MimeType::BlobRegistryV2)) {
+        QByteArray regBytes = mimeData->data(MimeType::BlobRegistryV2);
+        QDataStream regStream(&regBytes, QIODevice::ReadOnly);
+        regStream.setVersion(QDataStream::Qt_5_12);
+        try { clipboardBlobs = Serialization::readBoundedBlobMap(regStream); } catch (...) {}
+    } else if (mimeData->hasFormat(MimeType::BlobRegistry)) {
         QByteArray regBytes = mimeData->data(MimeType::BlobRegistry);
         QDataStream regStream(&regBytes, QIODevice::ReadOnly);
-        QMap<QString, QByteArray> clipboardBlobs;
-        regStream >> clipboardBlobs;
-
+        try { clipboardBlobs = Serialization::readBoundedBlobMap(regStream); } catch (...) {}
+    }
+    if (!clipboardBlobs.isEmpty()) {
         auto *registry = m_scene->icRegistry();
         for (auto it = clipboardBlobs.cbegin(); it != clipboardBlobs.cend(); ++it) {
             if (!registry->hasBlob(it.key())) {

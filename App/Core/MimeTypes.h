@@ -24,7 +24,12 @@ constexpr const char *Clipboard       = "application/x-wiredpanda-clipboard";
 /// Legacy clipboard MIME type retained for backward compatibility.
 constexpr const char *ClipboardLegacy = "wpanda/copydata";
 
-/// MIME type for the embedded IC blob registry bundled alongside clipboard data.
+/// Legacy blob registry MIME type (no explicit QDataStream version — kept for
+/// reading clipboard data produced by older app versions).
 constexpr const char *BlobRegistry    = "application/x-wiredpanda-blobregistry";
+/// Versioned blob registry MIME type (QDataStream::Qt_5_12 encoding).
+/// New app versions write this alongside BlobRegistry so that older apps can
+/// still read the unversioned copy, while newer apps prefer this one.
+constexpr const char *BlobRegistryV2  = "application/x-wiredpanda-blobregistry-v2";
 } // namespace MimeType
 
