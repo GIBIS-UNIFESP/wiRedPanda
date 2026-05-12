@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Migrate all .panda files to the current format via MCP load/save commands.
 
 Usage:
@@ -11,11 +13,26 @@ Starts the app in headless MCP mode, loads each .panda file, saves it back
 import asyncio
 import json
 import os
+import re
+import shutil
+import struct
+import subprocess
 import sys
 from pathlib import Path
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+def find_repo_root():
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            capture_output=True, text=True, check=True
+        )
+        return Path(result.stdout.strip())
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return Path(__file__).resolve().parent.parent
+
+
+PROJECT_ROOT = find_repo_root()
 BINARY = sys.argv[1] if len(sys.argv) > 1 else str(PROJECT_ROOT / "build" / "wiredpanda")
 
 # Directories containing .panda files to migrate
@@ -32,7 +49,6 @@ COMPAT_DIR = PROJECT_ROOT / "Tests" / "BackwardCompatibility"
 
 def read_panda_version(filepath):
     """Read the version from a .panda file header (QDataStream format)."""
-    import struct
     with open(filepath, "rb") as fh:
         data = fh.read(50)
     # Magic (4 bytes), then QVersionNumber: segment count (int32) + segments (int32 each)
@@ -60,7 +76,6 @@ def snapshot_examples():
         print(f"Backward compatibility snapshot {dest.name}/ already exists, skipping.")
         return
 
-    import shutil
     dest.mkdir(parents=True)
     for f in examples:
         shutil.copy2(f, dest / f.name)
@@ -77,7 +92,6 @@ def collect_panda_files():
 
 def remove_versioned_backups():
     """Remove .v*.panda backup files created by auto-migration."""
-    import re
     pattern = re.compile(r"\.v\d+(\.\d+)*\.panda$")
     removed = 0
     for d in PANDA_DIRS:
