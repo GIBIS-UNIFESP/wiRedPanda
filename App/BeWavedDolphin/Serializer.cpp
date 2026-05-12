@@ -31,6 +31,9 @@ WaveformData loadBinary(QDataStream &stream, const int maxInputPorts)
     qint64 rows; stream >> rows;
     qint64 cols; stream >> cols;
 
+    if (rows < 0) {
+        throw PANDACEPTION_WITH_CONTEXT("DolphinSerializer", "Invalid number of rows.");
+    }
     if (rows > maxInputPorts) {
         rows = maxInputPorts;
     }
@@ -88,6 +91,9 @@ WaveformData loadCSV(QFile &file, const int maxInputPorts)
     int       rows = wordList.at(0).toInt();
     const int cols = wordList.at(1).toInt();
 
+    if (rows < 0) {
+        throw PANDACEPTION_WITH_CONTEXT("DolphinSerializer", "Invalid number of rows.");
+    }
     if (rows > maxInputPorts) {
         rows = maxInputPorts;
     }
