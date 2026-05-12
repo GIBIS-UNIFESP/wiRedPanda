@@ -45,7 +45,7 @@ WaveformData loadBinary(QDataStream &stream, const int maxInputPorts)
     WaveformData data;
     data.inputPorts = static_cast<int>(rows);
     data.columns    = static_cast<int>(cols);
-    data.values.resize(data.inputPorts * data.columns);
+    data.values.resize(static_cast<qsizetype>(data.inputPorts) * data.columns);
 
     // Binary format is col-major; normalize to row-major for the caller
     for (int col = 0; col < data.columns; ++col) {
@@ -103,17 +103,17 @@ WaveformData loadCSV(QFile &file, const int maxInputPorts)
     }
 
     // Validate before indexing to avoid out-of-bounds access on corrupt files
-    const int expectedSize = 2 + rows * cols;
+    const qsizetype expectedSize = 2 + static_cast<qsizetype>(rows) * cols;
     if (wordList.size() < expectedSize) {
         throw PANDACEPTION_WITH_CONTEXT("DolphinSerializer",
             "Invalid CSV format: expected %1 elements, got %2.",
-            expectedSize, static_cast<int>(wordList.size()));
+            expectedSize, wordList.size());
     }
 
     WaveformData data;
     data.inputPorts = rows;
     data.columns    = cols;
-    data.values.resize(rows * cols);
+    data.values.resize(static_cast<qsizetype>(rows) * cols);
 
     // CSV values are stored row-major: index = 2 + row*cols + col
     for (int row = 0; row < rows; ++row) {

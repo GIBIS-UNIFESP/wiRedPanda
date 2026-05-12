@@ -223,7 +223,8 @@ void Scene::drawBackground(QPainter *painter, const QRectF &rect)
     painter->setPen(m_dots);
 
     QVector<QPoint> points;
-    points.reserve(((right - left) / gridSize + 1) * ((bottom - top) / gridSize + 1));
+    points.reserve(static_cast<qsizetype>((right - left) / gridSize + 1)
+                 * ((bottom - top) / gridSize + 1));
 
     for (int x = left; x <= right; x += gridSize) {
         for (int y = top; y <= bottom; y += gridSize) {
