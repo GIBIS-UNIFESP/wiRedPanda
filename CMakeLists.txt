@@ -145,7 +145,12 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL Clang OR CMAKE_CXX_COMPILER_ID STREQUAL GNU)
     endif()
 
     if(ENABLE_UB_SANITIZER)
-        if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
+        # The fuzzer build deliberately uses the conservative UBSan flag set
+        # even on Clang.  The strict implicit-conversion / integer checks fire
+        # inside Qt headers (e.g. QArrayDataPointer pointer arithmetic during
+        # static element registration) before any wiRedPanda code runs and
+        # would mask real findings under the libFuzzer driver.
+        if(CMAKE_CXX_COMPILER_ID STREQUAL Clang AND NOT ENABLE_FUZZER)
             add_compile_options(-fsanitize=undefined,implicit-integer-truncation,implicit-integer-arithmetic-value-change,implicit-conversion,integer,nullability)
             add_link_options(-fsanitize=undefined,implicit-integer-truncation,implicit-integer-arithmetic-value-change,implicit-conversion,integer,nullability)
         else()
@@ -601,6 +606,68 @@ if(ENABLE_UNITY)
         UNITY_BUILD ON
         UNITY_BUILD_BATCH_SIZE ${UNITY_BUILD_BATCH_SIZE}
     )
+endif()
+
+# ---- libFuzzer harness for the .panda deserializer ----
+# Clang-only.  Driven by `-fsanitize=fuzzer` plus ASan + UBSan.  Built only
+# when ENABLE_FUZZER=ON (see the `fuzzer` CMake preset).  Not registered as a
+# CTest target — libFuzzer drives its own input loop.
+if(ENABLE_FUZZER)
+    if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        message(FATAL_ERROR "ENABLE_FUZZER=ON requires Clang (got ${CMAKE_CXX_COMPILER_ID}). "
+                            "Re-run cmake with -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang.")
+    endif()
+
+    # Helper macro: apply common fuzzer build settings to a harness target.
+    macro(add_fuzzer_harness target source)
+        add_executable(${target} ${source})
+        link_wiredpanda_whole_archive(${target})
+        target_link_libraries(${target} PRIVATE wiredpanda_resources)
+        # libFuzzer + ASan + UBSan.  ENABLE_ADDRESS_SANITIZER / ENABLE_UB_SANITIZER
+        # apply globally via the project-level options; we only add the fuzzer
+        # entry-point flag here.
+        target_compile_options(${target} PRIVATE -fsanitize=fuzzer-no-link)
+        target_link_options(${target} PRIVATE -fsanitize=fuzzer)
+        set_target_properties(${target} PROPERTIES UNITY_BUILD OFF)
+    endmacro()
+
+    # Harness 1: raw .panda file (full WorkSpace::load path) + custom mutator
+    add_fuzzer_harness(fuzz_deserialize Tests/Fuzz/FuzzDeserialize.cpp)
+
+    # Harness 2: IC blob (IC::deserializeAndLoad directly, skipping outer wrapper)
+    add_fuzzer_harness(fuzz_ic_blob Tests/Fuzz/FuzzICBlob.cpp)
+
+    # Harness 3: structure-aware (FuzzedDataProvider builds valid .panda structure)
+    add_fuzzer_harness(fuzz_structured Tests/Fuzz/FuzzStructured.cpp)
+
+    # Harness 4: beWavedDolphin waveform format (.dolphin files)
+    add_fuzzer_harness(fuzz_waveform Tests/Fuzz/FuzzWaveform.cpp)
+
+    # Harness 5: clipboard paste (BlobRegistry MIME + panda clipboard stream)
+    add_fuzzer_harness(fuzz_clipboard Tests/Fuzz/FuzzClipboard.cpp)
+
+    # Harness 6: pre-4.1 flat binary format (GraphicElement::loadOldFormat)
+    add_fuzzer_harness(fuzz_old_format Tests/Fuzz/FuzzOldFormat.cpp)
+
+    # Harness 7: ICRegistry blob management (setBlob, initEmbeddedIC, etc.)
+    add_fuzzer_harness(fuzz_ic_registry Tests/Fuzz/FuzzICRegistry.cpp)
+
+    # Harness 8: Code generation (Arduino + SystemVerilog exporters, 0% coverage)
+    add_fuzzer_harness(fuzz_codegen Tests/Fuzz/FuzzCodeGen.cpp)
+
+    # Harness 9: Save/load round-trip (exercises Serialization::serialize + element save())
+    add_fuzzer_harness(fuzz_round_trip Tests/Fuzz/FuzzRoundTrip.cpp)
+
+    # Harness 10: File-backed IC loading (IC::loadFromFile / IC::loadFileDirectly)
+    add_fuzzer_harness(fuzz_ic_file Tests/Fuzz/FuzzICFile.cpp)
+
+    # Harness 11: Serialization::copyPandaFile() and readPreamble() (Save As path)
+    add_fuzzer_harness(fuzz_copy_panda Tests/Fuzz/FuzzCopyPanda.cpp)
+
+    # Harness 12: Undo/redo command system (Commands.cpp — entirely dark without this)
+    add_fuzzer_harness(fuzz_undo Tests/Fuzz/FuzzUndo.cpp)
+
+    message(STATUS "Fuzzer harnesses enabled: fuzz_deserialize fuzz_ic_blob fuzz_structured fuzz_waveform fuzz_clipboard fuzz_old_format fuzz_ic_registry fuzz_codegen fuzz_round_trip fuzz_ic_file fuzz_copy_panda fuzz_undo")
 endif()
 
 add_test(NAME TestArduino COMMAND test_wiredpanda TestArduino WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
