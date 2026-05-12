@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QSaveFile>
+#include <QThread>
 
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"

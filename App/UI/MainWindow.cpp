@@ -3,6 +3,8 @@
 
 #include "App/UI/MainWindow.h"
 
+#include <algorithm>
+
 #ifdef Q_OS_WASM
 #include <emscripten/emscripten.h>
 #include <emscripten/html5.h>
@@ -31,6 +33,7 @@
 #include <QPushButton>
 #include <QSaveFile>
 #include <QShortcut>
+#include <QSslError>
 #include <QStandardPaths>
 #include <QTemporaryFile>
 #include <QVBoxLayout>

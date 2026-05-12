@@ -3,6 +3,9 @@
 
 #include "App/IO/Serialization.h"
 
+#include <array>
+#include <limits>
+
 #include <QApplication>
 #include <QBitArray>
 #include <QDir>
@@ -15,9 +18,6 @@
 #include <QSysInfo>
 #include <QtEndian>
 #include <QVariant>
-
-#include <array>
-#include <limits>
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
