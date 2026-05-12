@@ -28,5 +28,9 @@ private slots:
     void testEmptyModelBinary();
     void testEmptyModelCSV();
     void testCorruptedDataHandling();
+
+    // Regression: D20 — negative row count must throw, not UB-resize
+    void testLoadBinaryRejectsNegativeRows();
+    void testLoadCSVRejectsNegativeRows();
 };
 

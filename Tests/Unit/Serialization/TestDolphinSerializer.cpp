@@ -169,3 +169,32 @@ void TestDolphinSerializer::testCorruptedDataHandling()
     Q_UNUSED(caught);
 }
 
+void TestDolphinSerializer::testLoadBinaryRejectsNegativeRows()
+{
+    // Hand-craft a binary payload with rows = -1, cols = 5.
+    // Pre-fix: data.values.resize(rows * cols) with negative argument was UB.
+    QByteArray payload;
+    {
+        QDataStream stream(&payload, QIODevice::WriteOnly);
+        stream << static_cast<qint64>(-1);
+        stream << static_cast<qint64>(5);
+    }
+    QDataStream stream(&payload, QIODevice::ReadOnly);
+    QVERIFY_EXCEPTION_THROWN(DolphinSerializer::loadBinary(stream, 8), std::exception);
+}
+
+void TestDolphinSerializer::testLoadCSVRejectsNegativeRows()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.path() + "/negative_rows.csv";
+    {
+        QFile out(path);
+        QVERIFY(out.open(QIODevice::WriteOnly));
+        out.write("-1,5,\n");
+    }
+    QFile in(path);
+    QVERIFY(in.open(QIODevice::ReadOnly));
+    QVERIFY_EXCEPTION_THROWN(DolphinSerializer::loadCSV(in, 8), std::exception);
+}
+
