@@ -640,7 +640,8 @@ Serialization::Preamble Serialization::readPreamble(QDataStream &stream)
     return result;
 }
 
-QMap<QString, QByteArray> Serialization::deserializeBlobRegistry(const QMap<QString, QVariant> &metadata)
+QMap<QString, QByteArray> Serialization::deserializeBlobRegistry(const QMap<QString, QVariant> &metadata,
+                                                                  const QVersionNumber &fileVersion)
 {
     QMap<QString, QByteArray> result;
     const QString key = metadata.contains("embeddedICs") ? QStringLiteral("embeddedICs")
@@ -648,6 +649,9 @@ QMap<QString, QByteArray> Serialization::deserializeBlobRegistry(const QMap<QStr
     if (metadata.contains(key)) {
         QByteArray regBytes = metadata.value(key).toByteArray();
         QDataStream regStream(&regBytes, QIODevice::ReadOnly);
+        if (VersionInfo::hasVersionedBlobRegistry(fileVersion))
+            regStream.setVersion(QDataStream::Qt_5_12);
+        // Pre-V_5_0 files: no setVersion — use Qt default matching the build that wrote them.
         regStream >> result;
     }
     return result;
@@ -658,6 +662,7 @@ void Serialization::serializeBlobRegistry(const QMap<QString, QByteArray> &blobs
     if (!blobs.isEmpty()) {
         QByteArray regBytes;
         QDataStream regStream(&regBytes, QIODevice::WriteOnly);
+        regStream.setVersion(QDataStream::Qt_5_12);
         regStream << blobs;
         metadata["embeddedICs"] = regBytes;
     }

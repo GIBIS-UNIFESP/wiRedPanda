@@ -139,8 +139,19 @@ public:
 
     // --- Embedded ICs ---
 
-    /// Extracts the embedded IC registry from a metadata map. Returns empty map if not present.
-    static QMap<QString, QByteArray> deserializeBlobRegistry(const QMap<QString, QVariant> &metadata);
+    /**
+     * \brief Extracts the embedded IC registry from a metadata map.
+     *
+     * \param metadata   The file-level metadata map.
+     * \param fileVersion The version of the .panda file the metadata was read from.
+     *                   Used to select the correct QDataStream encoding for the blob:
+     *                   files < V_5_0 used an unversioned stream (Qt default at build time);
+     *                   files >= V_5_0 use an explicit Qt_5_12-versioned stream.
+     *
+     * Returns an empty map if no blob registry key is present.
+     */
+    static QMap<QString, QByteArray> deserializeBlobRegistry(const QMap<QString, QVariant> &metadata,
+                                                              const QVersionNumber &fileVersion);
 
     /// Serializes embedded ICs into a metadata map (sets the "embeddedICs" key).
     static void serializeBlobRegistry(const QMap<QString, QByteArray> &blobs, QMap<QString, QVariant> &metadata);

@@ -454,7 +454,7 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
     }
     qCDebug(zero) << "Dolphin name: " << m_dolphinFileName;
 
-    QMap<QString, QByteArray> blobRegistry = Serialization::deserializeBlobRegistry(metadata);
+    QMap<QString, QByteArray> blobRegistry = Serialization::deserializeBlobRegistry(metadata, version);
 
     // Populate the scene's IC registry with embedded IC blobs
     for (auto it = blobRegistry.cbegin(); it != blobRegistry.cend(); ++it) {
@@ -651,7 +651,7 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
     QDataStream stream(&blobData, QIODevice::ReadOnly);
     const auto preamble = Serialization::readPreamble(stream);
 
-    const auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata);
+    const auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
     for (auto it = blobRegistry.cbegin(); it != blobRegistry.cend(); ++it) {
         m_scene.icRegistry()->setBlob(it.key(), it.value());
     }

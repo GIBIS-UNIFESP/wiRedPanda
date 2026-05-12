@@ -77,5 +77,10 @@ inline bool hasUnifiedMetadata(const QVersionNumber &v) { return v >= Versions::
 /// V4.7: QNEConnection uses QMap-based serialization format.
 inline bool hasConnectionQMap(const QVersionNumber &v) { return v >= Versions::V_4_7; }
 
+/// V5.1: Embedded IC blob registry serialized with explicit QDataStream::Qt_5_12 version.
+/// Files before this used an unversioned QDataStream whose encoding depended on the
+/// Qt default at build time (changed from UTF-16 to UTF-8 in Qt 6.6).
+inline bool hasVersionedBlobRegistry(const QVersionNumber &v) { return v >= Versions::V_5_1; }
+
 } // namespace VersionInfo
 

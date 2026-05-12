@@ -397,7 +397,7 @@ void IC::loadFileDirectly(const QFileInfo &fileInfo)
 
     QDataStream stream(&file);
     const auto preamble = Serialization::readPreamble(stream);
-    auto fileRegistry = Serialization::deserializeBlobRegistry(preamble.metadata);
+    auto fileRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
     QMap<quint64, QNEPort *> portMap;
     SerializationContext subCtx{portMap, preamble.version, fileInfo.absolutePath()};
@@ -524,7 +524,7 @@ void IC::deserializeAndLoad(const QByteArray &bytes, const QString &contextDir)
     QDataStream stream(&data, QIODevice::ReadOnly);
 
     const auto preamble = Serialization::readPreamble(stream);
-    auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata);
+    auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
     QMap<quint64, QNEPort *> portMap;
     SerializationContext subCtx{portMap, preamble.version, contextDir};
