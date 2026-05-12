@@ -1,0 +1,83 @@
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Sanitizers
+
+on:
+  push:
+    branches-ignore:
+      - master
+      - wasm
+
+  pull_request:
+    branches:
+      - master
+    types: [opened, synchronize, reopened]
+
+jobs:
+  sanitize:
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        sanitizer: [asan, ubsan]
+
+    runs-on: ubuntu-latest
+    name: Ubuntu Qt6.9.3 (${{ matrix.sanitizer }})
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+
+    env:
+      # pch_defines: allow PCH compiles to be cacheable (defines from the PCH itself don't change the hash).
+      # time_macros: ignore __DATE__ / __TIME__ / __TIMESTAMP__ so unity-built TUs hash deterministically.
+      # include_file_{c,m}time: ignore stat times on generated headers (MOC, qrc, unity .cxx files).
+      CCACHE_SLOPPINESS: pch_defines,time_macros,include_file_ctime,include_file_mtime
+
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: 6.9.3
+        cache: true
+        aqtversion: ==3.*
+        modules: qtmultimedia qtimageformats
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@main
+      with:
+        key: ${{ matrix.sanitizer }}-ubuntu-6.9.3
+
+    - name: Build
+      run: |
+        cmake --preset ${{ matrix.sanitizer }}
+        cmake --build --preset ${{ matrix.sanitizer }}
+
+    - name: Test
+      timeout-minutes: 15
+      env:
+        QT_FORCE_STDERR_LOGGING: 1
+        ASAN_OPTIONS: abort_on_error=1:halt_on_error=1
+        # LSan suppresses third-party leaks (PulseAudio via Qt Multimedia, etc.)
+        # so real application leaks still surface.  Application leaks must be
+        # fixed, not added to the suppression list.
+        LSAN_OPTIONS: suppressions=${{ github.workspace }}/Tests/lsan_suppressions.txt
+        UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+      run: |
+        ctest --preset ${{ matrix.sanitizer }} -V -LE gui
+
+    - name: Upload build artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ matrix.sanitizer }}-build-logs
+        path: |
+          build-${{ matrix.sanitizer }}/CMakeCache.txt
+          build-${{ matrix.sanitizer }}/CMakeFiles/CMakeOutput.log
+          build-${{ matrix.sanitizer }}/CMakeFiles/CMakeError.log
+          build-${{ matrix.sanitizer }}/Testing/Temporary/LastTest.log
+        retention-days: 7
