@@ -443,13 +443,13 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
     // Older versions wrote dolphinFileName and sceneRect positionally before the map.
     QMap<QString, QVariant> metadata;
     if (VersionInfo::hasUnifiedMetadata(version)) {
-        stream >> metadata;
+        metadata = Serialization::readBoundedMetadata(stream);
         m_dolphinFileName = metadata.value("dolphinFileName").toString();
     } else {
         m_dolphinFileName = Serialization::loadDolphinFileName(stream, version);
         Serialization::loadRect(stream, version);
         if (VersionInfo::hasMetadata(version)) {
-            stream >> metadata;
+            metadata = Serialization::readBoundedMetadata(stream);
         }
     }
     qCDebug(zero) << "Dolphin name: " << m_dolphinFileName;

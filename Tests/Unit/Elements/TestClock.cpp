@@ -4,6 +4,7 @@
 #include "Tests/Unit/Elements/TestClock.h"
 
 #include <chrono>
+#include <limits>
 #include <memory>
 
 #include <QDataStream>
@@ -162,15 +163,27 @@ void TestClock::testSetDelay()
 {
     Clock clock;
 
-    // Set various delays
+    // In-range values pass through verbatim.
     clock.setDelay(1.0);
     QCOMPARE(clock.delay(), 1.0);
 
-    clock.setDelay(5.5);
-    QCOMPARE(clock.delay(), 5.5);
-
     clock.setDelay(0.1);
     QCOMPARE(clock.delay(), 0.1);
+
+    // Out-of-range finite values clamp to the documented [-1, 1] range.
+    clock.setDelay(5.5);
+    QCOMPARE(clock.delay(), 1.0);
+
+    clock.setDelay(-3.0);
+    QCOMPARE(clock.delay(), -1.0);
+
+    // Non-finite values are rejected and leave m_delay unchanged.
+    clock.setDelay(0.25);
+    clock.setDelay(std::numeric_limits<double>::infinity());
+    QCOMPARE(clock.delay(), 0.25);
+
+    clock.setDelay(std::numeric_limits<double>::quiet_NaN());
+    QCOMPARE(clock.delay(), 0.25);
 }
 
 void TestClock::testSetDelayNegative()
@@ -192,8 +205,8 @@ void TestClock::testDelayPersistence()
     clock.setDelay(0.5);
     QCOMPARE(clock.delay(), 0.5);
 
-    clock.setDelay(2.0);
-    QCOMPARE(clock.delay(), 2.0);
+    clock.setDelay(1.0);
+    QCOMPARE(clock.delay(), 1.0);
 
     clock.setDelay(0.0);
     QCOMPARE(clock.delay(), 0.0);
@@ -361,17 +374,21 @@ void TestClock::testLoadVersionOld()
     QDataStream saveStream(&data, QIODevice::WriteOnly);
     clock1->save(saveStream);
 
-    // Load with old version (1.1 - 4.0) - will attempt to deserialize QMap as old format fields
+    // Load with old version (1.1 - 4.0) — format mismatch: save wrote QMap but
+    // loadOldFormat reads positional fields.  readBoundedString rejects the map
+    // count bytes as an oversized string length → PANDACEPTION is the expected result.
     auto clock2 = std::make_unique<Clock>();
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
-    // This doesn't crash despite format mismatch (graceful degradation)
     SerializationContext contextOld{portMap, QVersionNumber(3, 0), {}};
-    clock2->load(loadStream, contextOld);
-
-    // Due to format mismatch, frequency remains at default (setFrequency never called with valid value)
-    QCOMPARE(clock2->frequency(), 1.0);
+    bool threw = false;
+    try {
+        clock2->load(loadStream, contextOld);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+    QVERIFY(threw); // format mismatch now throws rather than silently reading garbage
 }
 
 void TestClock::testLoadVersionNew()

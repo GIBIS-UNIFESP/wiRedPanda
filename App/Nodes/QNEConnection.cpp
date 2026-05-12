@@ -17,6 +17,7 @@
 #include "App/Core/Common.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
+#include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
@@ -197,8 +198,7 @@ void QNEConnection::load(QDataStream &stream, SerializationContext &context)
     quint64 id1, id2;
 
     if (VersionInfo::hasConnectionQMap(context.version)) {
-        QMap<QString, QVariant> map;
-        stream >> map;
+        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
         if (stream.status() != QDataStream::Ok) {
             throw PANDACEPTION("Stream error reading connection map at offset %1",

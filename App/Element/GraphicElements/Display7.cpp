@@ -10,6 +10,7 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
@@ -205,12 +206,13 @@ void Display7::load(QDataStream &stream, SerializationContext &context)
         QVector<int> order{2, 1, 4, 5, 0, 7, 3, 6};
         QVector<QNEInputPort *> aux = inputs();
 
-        for (int i = 0; i < aux.size(); ++i) {
-            aux[order[i]] = m_inputPorts.value(i);
+        if (aux.size() == order.size()) {
+            for (int i = 0; i < aux.size(); ++i) {
+                aux[order[i]] = m_inputPorts.value(i);
+            }
+            setInputs(aux);
+            updatePortsProperties();
         }
-
-        setInputs(aux);
-        updatePortsProperties();
     }
 
     if (!VersionInfo::hasDisplay7ExtColor(context.version)) {
@@ -220,23 +222,24 @@ void Display7::load(QDataStream &stream, SerializationContext &context)
         QVector<int> order{2, 5, 4, 0, 7, 3, 6, 1};
         QVector<QNEInputPort *> aux = inputs();
 
-        for (int i = 0; i < aux.size(); ++i) {
-            aux[order[i]] = m_inputPorts.value(i);
+        if (aux.size() == order.size()) {
+            for (int i = 0; i < aux.size(); ++i) {
+                aux[order[i]] = m_inputPorts.value(i);
+            }
+            setInputs(aux);
+            updatePortsProperties();
         }
-
-        setInputs(aux);
-        updatePortsProperties();
     }
 
     if ((VersionInfo::hasLockState(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
         // v3.1–4.0 stored color as a bare QString
-        QString color_; stream >> color_;
+        const QString color_ = Serialization::readBoundedString(stream);
         setColor(color_);
     }
 
     if (VersionInfo::hasQMapFormat(context.version)) {
         // v4.1+ uses a key-value map
-        QMap<QString, QVariant> map; stream >> map;
+        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
         if (map.contains("color")) {
             setColor(map.value("color").toString());

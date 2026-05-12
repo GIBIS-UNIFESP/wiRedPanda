@@ -3,10 +3,13 @@
 
 #include "App/Element/GraphicElements/Clock.h"
 
+#include <algorithm>
 #include <chrono>
+#include <cmath>
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 
@@ -124,7 +127,7 @@ void Clock::load(QDataStream &stream, SerializationContext &context)
 
     if (VersionInfo::hasQMapFormat(context.version)) {
         // v4.1+ uses a key-value map so new properties can be added without breaking old files
-        QMap<QString, QVariant> map; stream >> map;
+        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
         if (map.contains("frequency")) {
             setFrequency(map.value("frequency").toDouble());
@@ -154,7 +157,7 @@ double Clock::frequency() const
 
 void Clock::setFrequency(const double freq)
 {
-    if (qFuzzyIsNull(freq)) {
+    if (!std::isfinite(freq) || qFuzzyIsNull(freq)) {
         return;
     }
 
@@ -178,7 +181,13 @@ double Clock::delay() const
 
 void Clock::setDelay(const double delay)
 {
-    m_delay = delay;
+    if (!std::isfinite(delay)) {
+        return;
+    }
+    // m_delay is documented as a fraction of the period in [-1, 1].  Out-of-range
+    // finite values would multiply with fullPeriod.count() in resetClock() to a
+    // magnitude beyond microseconds::rep, which is UB on the cast (UBSan-trapped).
+    m_delay = std::clamp(delay, -1.0, 1.0);
 }
 
 void Clock::resetClock(std::chrono::steady_clock::time_point globalTime)

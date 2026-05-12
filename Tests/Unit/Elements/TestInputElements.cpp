@@ -162,13 +162,18 @@ void TestInputElements::testInputSwitchLoadOldVersion()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
-    // For versions < 4.1, load reads isOn and potentially locked from stream
-    // The test verifies the load mechanism doesn't crash and loads a valid element
+    // For versions < 4.1, loadOldFormat reads positional fields.  The saved data
+    // is in QMap format, so readBoundedString rejects the map-count bytes as an
+    // oversized string → PANDACEPTION is the expected result of this format mismatch.
     SerializationContext context{portMap, QVersionNumber(3, 0), {}};
-    inputSwitch2->load(loadStream, context);
-
-    // Verify the element is in a valid state after loading
-    QVERIFY2(inputSwitch2->outputSize() >= 1, "InputSwitch must have at least 1 output after load");
+    bool threw = false;
+    try {
+        inputSwitch2->load(loadStream, context);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+    QVERIFY(threw); // format mismatch now throws rather than silently reading garbage
+    // Element type is always set by the constructor, not the stream
     QVERIFY2(inputSwitch2->elementType() == ElementType::InputSwitch, "Element type should be preserved");
 }
 
@@ -373,12 +378,16 @@ void TestInputElements::testInputButtonLoadOldVersion()
 
     QDataStream loadStream(data);
     QMap<quint64, QNEPort *> portMap;
+    // Save wrote QMap format; loadOldFormat reads positional fields → format mismatch.
+    // readBoundedString rejects the map-count bytes as an oversized string → throws.
     SerializationContext context{portMap, QVersionNumber(3, 5), {}};
-
-    inputButton2->load(loadStream, context);
-
-    // Verify the element is in a valid state after loading
-    QVERIFY2(inputButton2->outputSize() >= 1, "InputButton must have at least 1 output after load");
+    bool threw = false;
+    try {
+        inputButton2->load(loadStream, context);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+    QVERIFY(threw); // format mismatch now throws rather than silently reading garbage
     QVERIFY2(inputButton2->elementType() == ElementType::InputButton, "Element type should be preserved");
 }
 

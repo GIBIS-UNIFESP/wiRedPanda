@@ -7,6 +7,7 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
@@ -183,13 +184,13 @@ void Led::load(QDataStream &stream, SerializationContext &context)
 
     if ((VersionInfo::hasClock(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
         // v1.1–4.0 stored color as a bare QString
-        QString color_; stream >> color_;
+        const QString color_ = Serialization::readBoundedString(stream);
         setColor(color_);
     }
 
     if (VersionInfo::hasQMapFormat(context.version)) {
         // v4.1+ uses a key-value map
-        QMap<QString, QVariant> map; stream >> map;
+        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
         if (map.contains("color")) {
             setColor(map.value("color").toString());
