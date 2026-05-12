@@ -48,14 +48,14 @@ jobs:
 
     - name: Generate gcov reports
       run: |
-        cd build
+        cd build-coverage
         gcov -abcfu $(find . -name "*.gcno")
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v6
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        directory: build
+        directory: build-coverage
         fail_ci_if_error: true
         verbose: true
 
@@ -65,7 +65,7 @@ jobs:
       with:
         name: coverage-build-logs
         path: |
-          build/CMakeCache.txt
-          build/CMakeFiles/CMakeOutput.log
-          build/CMakeFiles/CMakeError.log
+          build-coverage/CMakeCache.txt
+          build-coverage/CMakeFiles/CMakeOutput.log
+          build-coverage/CMakeFiles/CMakeError.log
         retention-days: 7
