@@ -129,7 +129,7 @@ void TestIC::testICNestedMultiLevel()
     QVector<IC *> loadedICs;
     const auto items = scene->items();
     for (auto *item : std::as_const(items)) {
-        if (auto *ic = qgraphicsitem_cast<IC *>(item)) {
+        if (auto *ic = dynamic_cast<IC *>(item)) {
             loadedICs.append(ic);
         }
     }
@@ -238,7 +238,7 @@ void TestIC::testICSaveLoad()
     IC *ic2 = nullptr;
     const auto items2 = workspace2.scene()->items();
     for (auto *item : std::as_const(items2)) {
-        if (auto *ic = qgraphicsitem_cast<IC *>(item)) {
+        if (auto *ic = dynamic_cast<IC *>(item)) {
             ic2 = ic;
             break;
         }

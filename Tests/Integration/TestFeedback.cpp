@@ -212,7 +212,7 @@ void TestFeedback::testConflictingFeedbackSignals()
     auto elements = scene->elements();
     for (auto *elem : elements) {
         if (elem->elementType() == ElementType::InputSwitch) {
-            auto *sw = qgraphicsitem_cast<InputSwitch *>(elem);
+            auto *sw = dynamic_cast<InputSwitch *>(elem);
             if (sw) {
                 sw->setOn(true);
             }

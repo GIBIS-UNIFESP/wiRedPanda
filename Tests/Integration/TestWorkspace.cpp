@@ -348,7 +348,7 @@ void TestWorkspace::testAutosaveFileNameFormatSavedProject()
     int ledCount = 0;
     const auto items = loadedScene->items();
     for (auto *item : std::as_const(items)) {
-        if (qgraphicsitem_cast<Led *>(item)) {
+        if (dynamic_cast<Led *>(item)) {
             ledCount++;
         }
     }

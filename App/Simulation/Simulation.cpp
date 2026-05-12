@@ -55,6 +55,12 @@ void Simulation::update()
         return;
     }
 
+    // Bug 5 invariant: the H2 cluster fix established that m_initialized=true
+    // implies the topology vectors reflect the current scene. Any future change
+    // that touches m_initialized without rebuilding the vectors trips here in
+    // debug/asan/ubsan builds — much earlier than a tick-time crash.
+    Q_ASSERT(m_initialized);
+
     // Clock elements are the only truly time-driven components; all other logic
     // is combinational and responds immediately to their values.
     if (m_timer.isActive()) {
@@ -166,6 +172,12 @@ void Simulation::restart()
     m_clocks.clear();
     m_inputs.clear();
     m_outputs.clear();
+    // Bug 4 postcondition: any future cached state added to Simulation must be
+    // cleared above. This assert documents the invariant for future maintainers
+    // and trips immediately if a new vector is forgotten.
+    Q_ASSERT(!m_initialized);
+    Q_ASSERT(m_sortedElements.isEmpty() && m_connections.isEmpty()
+          && m_clocks.isEmpty() && m_inputs.isEmpty() && m_outputs.isEmpty());
 }
 
 bool Simulation::isRunning()
