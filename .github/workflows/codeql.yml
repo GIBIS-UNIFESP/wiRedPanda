@@ -7,10 +7,32 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - Examples/**
+      - Resources/Translations/**
+      - Tests/BackwardCompatibility/**
+      - Tests/Fuzz/regressions/**
+      - "**/*.md"
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - Examples/**
+      - Resources/Translations/**
+      - Tests/BackwardCompatibility/**
+      - Tests/Fuzz/regressions/**
+      - "**/*.md"
+  schedule:
+    # Weekly run picks up newly-published queries against the current tree.
+    - cron: '0 6 * * 1'
+
+concurrency:
+  group: codeql-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analyze:
-    name: Analyze
+    name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-24.04
     permissions:
       actions: read
@@ -19,6 +41,79 @@ jobs:
 
     strategy:
       fail-fast: false
+      matrix:
+        include:
+          - language: cpp
+            build-mode: manual
+            config: ./.github/codeql/codeql-config-cpp.yml
+          - language: python
+            build-mode: none
+            config: ./.github/codeql/codeql-config-python.yml
+          - language: actions
+            build-mode: none
+            config: ./.github/codeql/codeql-config-actions.yml
+
+    env:
+      CCACHE_SLOPPINESS: pch_defines,time_macros,include_file_ctime,include_file_mtime
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v4
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+        config-file: ${{ matrix.config }}
+
+    - name: Install Qt
+      if: matrix.language == 'cpp'
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: 6.9.3
+        cache: true
+        aqtversion: ==3.*
+        modules: qtmultimedia qtimageformats
+
+    - name: ccache
+      if: matrix.language == 'cpp'
+      uses: hendrikmuhs/ccache-action@main
+      with:
+        key: codeql-${{ runner.os }}
+
+    - name: Build
+      if: matrix.language == 'cpp'
+      run: |
+        cmake --preset release
+        cmake --build --preset release
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v4
+      with:
+        category: "/language:${{ matrix.language }}"
+
+    - name: Upload build artifacts on failure
+      if: failure() && matrix.language == 'cpp'
+      uses: actions/upload-artifact@v7
+      with:
+        name: codeql-build-logs
+        path: |
+          build-release/CMakeCache.txt
+          build-release/CMakeFiles/CMakeOutput.log
+          build-release/CMakeFiles/CMakeError.log
+        retention-days: 7
+
+  experimental:
+    name: Analyze (cpp experimental)
+    # Experimental queries are lower-precision and can be noisy; run only on
+    # schedule so they surface drift without gating PRs.
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
     env:
       CCACHE_SLOPPINESS: pch_defines,time_macros,include_file_ctime,include_file_mtime
@@ -31,6 +126,8 @@ jobs:
       uses: github/codeql-action/init@v4
       with:
         languages: cpp
+        build-mode: manual
+        config-file: ./.github/codeql/codeql-config-cpp-experimental.yml
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
@@ -43,28 +140,14 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@main
       with:
-        key: codeql-${{ runner.os }}
+        key: codeql-experimental-${{ runner.os }}
 
     - name: Build
       run: |
         cmake --preset release
         cmake --build --preset release
 
-    - name: Test
-      timeout-minutes: 10
-      run: |
-        ctest --preset release -V -LE gui
-
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
-
-    - name: Upload build artifacts on failure
-      if: failure()
-      uses: actions/upload-artifact@v7
       with:
-        name: codeql-build-logs
-        path: |
-          build-release/CMakeCache.txt
-          build-release/CMakeFiles/CMakeOutput.log
-          build-release/CMakeFiles/CMakeError.log
-        retention-days: 7
+        category: "/language:cpp-experimental"

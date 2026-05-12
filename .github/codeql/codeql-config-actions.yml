@@ -1,0 +1,9 @@
+# Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: "wiRedPanda CodeQL — GitHub Actions"
+
+# The actions analyzer has a single security-focused suite; no
+# security-and-quality tier exists yet (GA since 2024).
+queries:
+  - uses: security-extended

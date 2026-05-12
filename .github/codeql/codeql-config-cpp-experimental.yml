@@ -1,0 +1,17 @@
+# Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: "wiRedPanda CodeQL — C++ experimental"
+
+# Experimental queries surface novel patterns (tainted integer overflow,
+# allocator misuse, more aggressive UB detection) at lower precision than
+# the stable suites.  Run scheduled-only so noisy findings don't gate PRs.
+queries:
+  - uses: security-experimental
+
+paths-ignore:
+  - Examples
+  - Resources/Translations
+  - Tests/BackwardCompatibility
+  - Tests/Fuzz/regressions
+  - "**/*.md"

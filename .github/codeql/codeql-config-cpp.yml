@@ -1,0 +1,17 @@
+# Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: "wiRedPanda CodeQL — C++"
+
+# security-and-quality is a strict superset of security-extended.  Adds
+# correctness rules (uninitialized vars, missing returns, double-free,
+# leak-on-throw) and maintainability checks on top of the security suite.
+queries:
+  - uses: security-and-quality
+
+paths-ignore:
+  - Examples
+  - Resources/Translations
+  - Tests/BackwardCompatibility
+  - Tests/Fuzz/regressions
+  - "**/*.md"
