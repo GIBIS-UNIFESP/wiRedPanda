@@ -1,0 +1,16 @@
+# Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: "wiRedPanda CodeQL — Python"
+
+queries:
+  - uses: security-and-quality
+
+# MCP client vendors a virtualenv and Python's bytecode cache; both are
+# build/runtime artifacts, not first-party source we ship.
+paths-ignore:
+  - "**/.venv/**"
+  - "**/venv/**"
+  - "**/__pycache__/**"
+  - "**/site-packages/**"
+  - "**/*.pyc"
