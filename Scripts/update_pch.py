@@ -1,84 +1,102 @@
 #!/usr/bin/env python3
-"""
-Script to analyze Qt includes used in the codebase and update the PCH file.
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""Analyze Qt includes used in the codebase and update the PCH file.
+
 Finds all Qt includes used and adds missing ones, removes unused ones.
+
+Usage:
+    python3 Scripts/update_pch.py [root_dir]
+
+If root_dir is not provided, uses the git repository root.
 """
 
 import re
-import os
-from pathlib import Path
+import subprocess
+import sys
 from collections import defaultdict
+from pathlib import Path
 
-def find_source_files(root_dir):
+
+SOURCE_EXTENSIONS = {".cpp", ".h", ".hpp", ".cc", ".cxx"}
+EXCLUDE_DIRS = {".git", ".venv", ".github", ".vscode", ".idea", "_deps", "cmake", "Scripts"}
+
+
+def find_repo_root():
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            capture_output=True, text=True, check=True
+        )
+        return Path(result.stdout.strip())
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return Path(__file__).resolve().parent.parent
+
+
+def should_exclude_dir(dirname):
+    if dirname in EXCLUDE_DIRS:
+        return True
+    if dirname.startswith("."):
+        return True
+    if dirname.lower().startswith("build"):
+        return True
+    return False
+
+
+def find_source_files(root):
     """Find all C++ source and header files (excluding pch.h)."""
-    extensions = {'.cpp', '.h', '.hpp', '.cc', '.cxx'}
-    source_files = []
+    files = []
+    for ext in SOURCE_EXTENSIONS:
+        files.extend(root.glob(f"**/*{ext}"))
 
-    for root, dirs, files in os.walk(root_dir):
-        # Skip build directories and external deps
-        dirs[:] = [d for d in dirs if d not in {'build', 'build_no', '.git', '.github', 'cmake', '_deps', '.vscode'}]
+    return [
+        f for f in files
+        if f.name != "pch.h"
+        and not any(should_exclude_dir(part) for part in f.relative_to(root).parts)
+    ]
 
-        for file in files:
-            if Path(file).suffix in extensions and file != 'pch.h':  # Don't scan the PCH itself
-                source_files.append(os.path.join(root, file))
 
-    return source_files
-
-def extract_qt_includes(file_path):
+def extract_qt_includes(filepath):
     """Extract all Qt includes from a file."""
     qt_includes = set()
 
     try:
-        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-            content = f.read()
-
-            # Find all #include <Q...> patterns (but not module-based paths like QtCore/)
-            pattern = r'#include\s+<(Q[^/\n>]+)>'
-            matches = re.findall(pattern, content)
-
-            for match in matches:
-                qt_includes.add(f'<{match}>')
-
+        content = filepath.read_text(encoding="utf-8", errors="ignore")
+        # Find all #include <Q...> patterns (but not module-based paths like QtCore/)
+        for match in re.findall(r"#include\s+<(Q[^/\n>]+)>", content):
+            qt_includes.add(f"<{match}>")
     except Exception as e:
-        print(f"Warning: Could not read {file_path}: {e}")
+        print(f"Warning: Could not read {filepath}: {e}")
 
     return qt_includes
+
 
 def get_pch_includes(pch_path):
     """Extract current Qt includes from PCH file."""
     qt_includes = set()
 
     try:
-        with open(pch_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-
-            # Find all #include <Q...> lines
-            pattern = r'#include\s+(<Q[^>]+>)'
-            matches = re.findall(pattern, content)
-
-            for match in matches:
-                qt_includes.add(match)
-
+        content = pch_path.read_text(encoding="utf-8")
+        for match in re.findall(r"#include\s+(<Q[^>]+>)", content):
+            qt_includes.add(match)
     except Exception as e:
         print(f"Error reading PCH: {e}")
 
     return qt_includes
 
+
 def update_pch_file(pch_path, used_includes):
     """Update the PCH file with the correct includes."""
-
-    # Read the current PCH
-    with open(pch_path, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
+    lines = pch_path.read_text(encoding="utf-8").splitlines(keepends=True)
 
     # Find the Qt includes section
     start_idx = None
     end_idx = None
 
     for i, line in enumerate(lines):
-        if '// Qt includes' in line:
+        if "// Qt includes" in line:
             start_idx = i
-        elif start_idx is not None and '#endif' in line:
+        elif start_idx is not None and "#endif" in line:
             end_idx = i
             break
 
@@ -89,47 +107,46 @@ def update_pch_file(pch_path, used_includes):
     if end_idx is None:
         end_idx = len(lines)
 
-    # Sort includes for consistency
     sorted_includes = sorted(used_includes)
 
-    # Build new content: keep header, add new includes, keep footer
-    new_lines = lines[:start_idx + 1]  # Keep everything up to and including "// Qt includes"
-    new_lines.append('\n')
-
+    new_lines = lines[:start_idx + 1]
+    new_lines.append("\n")
     for include in sorted_includes:
-        new_lines.append(f'#include {include}\n')
+        new_lines.append(f"#include {include}\n")
+    new_lines.append("\n")
+    new_lines.extend(lines[end_idx:])
 
-    new_lines.append('\n')
-    new_lines.extend(lines[end_idx:])  # Add the #endif and beyond
-
-    # Write back
-    with open(pch_path, 'w', encoding='utf-8') as f:
-        f.writelines(new_lines)
-
+    pch_path.write_text("".join(new_lines), encoding="utf-8")
     return True
 
+
 def main():
-    root_dir = '/home/torres/wiredpanda'
-    pch_path = os.path.join(root_dir, 'pch.h')
+    root = Path(sys.argv[1]) if len(sys.argv) > 1 else find_repo_root()
+
+    if not root.exists():
+        print(f"Error: root directory {root} does not exist", file=sys.stderr)
+        sys.exit(1)
+
+    pch_path = root / "pch.h"
+    if not pch_path.exists():
+        print(f"Error: PCH file not found at {pch_path}", file=sys.stderr)
+        sys.exit(1)
 
     print("Scanning source files for Qt includes (excluding pch.h)...")
-    source_files = find_source_files(root_dir)
+    source_files = find_source_files(root)
     print(f"Found {len(source_files)} source files")
 
-    # Collect all Qt includes used
     all_includes = set()
     file_includes = defaultdict(set)
 
-    for file_path in source_files:
-        includes = extract_qt_includes(file_path)
+    for filepath in source_files:
+        includes = extract_qt_includes(filepath)
         if includes:
-            file_includes[file_path] = includes
+            file_includes[filepath] = includes
             all_includes.update(includes)
 
-    # Get current PCH includes
     current_pch = get_pch_includes(pch_path)
 
-    # Analyze differences
     missing = all_includes - current_pch
     unused = current_pch - all_includes
 
@@ -148,14 +165,12 @@ def main():
             print(f"  {include}")
 
     if not missing and not unused:
-        print("\nPCH is already up to date!")
+        print("\nPCH is already up to date.")
         return
 
-    # Update the PCH
     if update_pch_file(pch_path, all_includes):
-        print(f"\n✓ PCH updated successfully!")
+        print(f"\nPCH updated successfully.")
         print(f"  Total includes: {len(all_includes)}")
-
         if missing:
             print(f"  Added: {len(missing)}")
         if unused:
@@ -163,5 +178,6 @@ def main():
     else:
         print("Failed to update PCH")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

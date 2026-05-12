@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
 """
 Fix C++ include ordering violations in the wiRedPanda project.
 
@@ -22,8 +24,6 @@ Usage:
     python3 Scripts/fix_includes.py [root_dir] [OPTIONS]
 
 Options:
-    --check         Only report violations, don't fix them
-    --fix           Fix violations (default)
     --verbose       Show detailed output per file
     --force         Reprocess all files even if unchanged
 
@@ -58,7 +58,7 @@ def find_repo_root():
         return Path(__file__).parent.parent
 
 
-EXCLUDE_DIRS = {"build", ".venv", ".git", "Scripts"}
+EXCLUDE_DIRS = {".git", ".venv", ".github", ".vscode", ".idea", "_deps", "Scripts"}
 EXCLUDE_FILES: set = set()
 
 
@@ -386,7 +386,7 @@ def format_includes_from_entries(entries: List[IncludeEntry], is_cpp, filepath):
     return result
 
 
-def fix_file(filepath, verbose=False, force=False, check_only=False):
+def fix_file(filepath, verbose=False, force=False):
     """Fix includes in a single file."""
     try:
         with open(filepath, "r", encoding="utf-8") as f:
@@ -416,14 +416,6 @@ def fix_file(filepath, verbose=False, force=False, check_only=False):
     # Trailing blocks (code split out from mixed #ifdef) also count as a violation
     if trailing_blocks:
         violations.append("Mixed #ifdef block (includes + code) needs splitting")
-
-    if check_only:
-        if violations:
-            print(f"{filepath.relative_to(Path.cwd())}:")
-            for violation in violations:
-                print(f"  - {violation}")
-            return True
-        return False
 
     if not violations and not force:
         return False
@@ -477,15 +469,12 @@ def main():
     root = None
     verbose = False
     force = False
-    check_only = False
 
     for arg in sys.argv[1:]:
         if arg == "--verbose":
             verbose = True
         elif arg == "--force":
             force = True
-        elif arg == "--check":
-            check_only = True
         elif not arg.startswith("--"):
             root = Path(arg)
 
@@ -496,14 +485,11 @@ def main():
         print(f"Error: root directory {root} does not exist")
         sys.exit(1)
 
-    if check_only:
-        print(f"Checking include ordering in {root}...\n")
+    print(f"Fixing include ordering in {root}...")
+    if force:
+        print("(Force mode: reprocessing all files)\n")
     else:
-        print(f"Fixing include ordering in {root}...")
-        if force:
-            print("(Force mode: reprocessing all files)\n")
-        else:
-            print()
+        print()
 
     cpp_files = []
     for ext in ["*.cpp", "*.h"]:
@@ -517,17 +503,14 @@ def main():
 
     processed_count = 0
     for filepath in cpp_files:
-        if fix_file(filepath, verbose=verbose, force=force, check_only=check_only):
-            if not verbose and not check_only:
+        if fix_file(filepath, verbose=verbose, force=force):
+            if not verbose:
                 print(f"Fixed: {filepath.relative_to(root)}")
             processed_count += 1
 
     print(f"\n--- Summary ---")
     print(f"Files checked:    {len(cpp_files)}")
-    if check_only:
-        print(f"Files with issues: {processed_count}")
-    else:
-        print(f"Files processed:  {processed_count}")
+    print(f"Files processed:  {processed_count}")
 
 
 if __name__ == "__main__":
