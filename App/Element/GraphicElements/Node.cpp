@@ -11,6 +11,7 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEConnection.h"
@@ -191,7 +192,7 @@ void Node::load(QDataStream &stream, SerializationContext &context)
     }
 
     QMap<QString, QVariant> map;
-    stream >> map;
+    map = Serialization::readBoundedMetadata(stream);
 
     // Clamp out-of-range values (e.g. corrupted file) to None.
     const int raw = map.value("wirelessMode", 0).toInt();

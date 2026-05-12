@@ -8,6 +8,7 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
@@ -175,13 +176,13 @@ void AudioBox::load(QDataStream &stream, SerializationContext &context)
 
     if (!VersionInfo::hasQMapFormat(context.version)) {
         // v2.4–4.0 stored the path as a bare QString
-        QString audio; stream >> audio;
+        const QString audio = Serialization::readBoundedString(stream);
         setAudio(audio);
     }
 
     if (VersionInfo::hasQMapFormat(context.version)) {
         // v4.1+ uses a key-value map for forward-compatible extensibility
-        QMap<QString, QVariant> map; stream >> map;
+        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
         if (map.contains("audiobox")) {
             setAudio(map.value("audiobox").toString());

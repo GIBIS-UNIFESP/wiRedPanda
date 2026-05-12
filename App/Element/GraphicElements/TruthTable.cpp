@@ -9,6 +9,7 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
@@ -211,7 +212,7 @@ void TruthTable::load(QDataStream &stream, SerializationContext &context)
 
     if (VersionInfo::hasTruthTableData(context.version)) {
         // Truth-table key (the output bit-array) was first serialized in v4.2
-        QMap<QString, QVariant> map; stream >> map;
+        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
         if (map.contains("key")) {
             setkey(map.value("key").toBitArray());

@@ -7,6 +7,7 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 
@@ -106,7 +107,7 @@ void InputSwitch::load(QDataStream &stream, SerializationContext &context)
 
     if (VersionInfo::hasQMapFormat(context.version)) {
         // v4.1+ uses a key-value map
-        QMap<QString, QVariant> map; stream >> map;
+        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
         if (map.contains("isOn")) {
             m_isOn = map.value("isOn").toBool();

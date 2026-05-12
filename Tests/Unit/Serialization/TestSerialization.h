@@ -87,6 +87,12 @@ private slots:
     void testVersionedBackupPreservesOriginal();// original file content unchanged after backup
     void testVersionedBackupMultiVersions();    // different versions produce different backup files
 
+    // libFuzzer regression fixtures (Tests/Fuzz/regressions/) — malformed
+    // .panda inputs that must throw cleanly under ASan, never crash.
+    void testFuzzRegressionCleanupUAF();
+    void testFuzzRegressionICBlobShrink();
+    void testFuzzRegressionUnboundedPortList();
+
 private:
     // Helper methods
     QByteArray saveToMemory(WorkSpace &workspace);

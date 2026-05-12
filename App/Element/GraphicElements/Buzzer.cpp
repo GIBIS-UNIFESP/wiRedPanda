@@ -8,6 +8,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/GraphicElements/ToneGenerator.h"
+#include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 
@@ -148,12 +149,12 @@ void Buzzer::load(QDataStream &stream, SerializationContext &context)
 
     if (!VersionInfo::hasQMapFormat(context.version)) {
         // v2.4–4.0 stored the note name as a bare QString
-        QString note; stream >> note;
+        const QString note = Serialization::readBoundedString(stream);
         setAudio(note);
     }
 
     if (VersionInfo::hasQMapFormat(context.version)) {
-        QMap<QString, QVariant> map; stream >> map;
+        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
         // New format: frequency in Hz
         if (map.contains("frequency")) {

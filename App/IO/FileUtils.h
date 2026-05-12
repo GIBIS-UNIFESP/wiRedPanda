@@ -66,7 +66,12 @@ inline void copyPandaDeps(const QString &pandaPath, const QString &srcDir, const
     }
 
     QDataStream stream(&file);
-    const auto preamble = Serialization::readPreamble(stream);
+    Serialization::Preamble preamble;
+    try {
+        preamble = Serialization::readPreamble(stream);
+    } catch (...) {
+        return; // Corrupt or non-panda file — nothing to recurse into
+    }
     if (!VersionInfo::hasMetadata(preamble.version)) {
         return;
     }

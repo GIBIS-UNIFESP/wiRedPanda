@@ -1438,3 +1438,73 @@ void TestSerialization::testVersionedBackupMultiVersions()
     QCOMPARE(f42.readAll(), content42);
 }
 
+// ============================================================================
+// libFuzzer Regressions
+// ============================================================================
+// Each fixture is a malformed .panda byte stream that previously crashed the
+// deserializer (heap-use-after-free, double-free, ...).  The contract under
+// the fix: load() must throw cleanly or succeed — never abort.  Under ASan,
+// any reintroduced UAF aborts the test process, which is the test failure.
+
+void TestSerialization::testFuzzRegressionCleanupUAF()
+{
+    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugA_cleanup_uaf.bin");
+    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
+    const QByteArray data = fixture.readAll();
+
+    WorkSpace workspace;
+    bool threw = false;
+    try {
+        loadFromMemory(workspace, data);
+    } catch (...) {
+        threw = true;
+    }
+    // Crash artifacts always trigger a mid-loop throw inside Serialization::
+    // deserialize(); the qScopeGuard cleanup must run and tear down the
+    // partially-constructed item list without double-freeing connections.
+    QVERIFY2(threw, "Crash fixture must throw — if it loaded successfully, the fixture is no longer a regression for this bug");
+}
+
+void TestSerialization::testFuzzRegressionICBlobShrink()
+{
+    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugB_ic_blob_shrink.bin");
+    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
+    const QByteArray data = fixture.readAll();
+
+    // Fuzzed input declares more outer ports on an IC than its embedded
+    // blob exposes.  IC::loadFromBlob shrinks the port count via
+    // setInputSize/setOutputSize, freeing the surplus ports.  Without the
+    // portMap eviction in IC::load(), the outer connection load reads
+    // the dangling pointer → UAF.  Under ASan, a UAF aborts before we
+    // reach the QVERIFY below; the test passes only if the load either
+    // succeeds or throws cleanly.
+    WorkSpace workspace;
+    try {
+        loadFromMemory(workspace, data);
+    } catch (...) {
+    }
+    QVERIFY2(true, "Reaching here means no ASan abort — fix is in place");
+}
+
+void TestSerialization::testFuzzRegressionUnboundedPortList()
+{
+    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugC_unbounded_portlist.bin");
+    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
+    const QByteArray data = fixture.readAll();
+
+    // Fuzzed input claims an enormous port count in the input/output port
+    // list header.  QDataStream's container operator>> would reserve()
+    // billions of entries before any application-level validation, OOM-ing
+    // the process.  The pre-allocation count guard in
+    // GraphicElementSerializer::readPortList must reject the count and
+    // throw PANDACEPTION before allocation.
+    WorkSpace workspace;
+    bool threw = false;
+    try {
+        loadFromMemory(workspace, data);
+    } catch (...) {
+        threw = true;
+    }
+    QVERIFY2(threw, "Implausible port count must be rejected, not allocated");
+}
+

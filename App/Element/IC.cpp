@@ -198,7 +198,7 @@ void IC::load(QDataStream &stream, SerializationContext &context)
 
     // Old format (V_1_2 to V_4_1): IC file path was written as a plain QString
     if ((VersionInfo::hasLabels(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
-        stream >> m_file;
+        m_file = Serialization::readBoundedString(stream);
 
         // Old files may have stored absolute paths from the original machine; keep only the
         // filename so we can resolve it relative to the current context directory.
@@ -211,7 +211,7 @@ void IC::load(QDataStream &stream, SerializationContext &context)
 
     // New format (V_4_1+): IC data stored in a QMap for extensibility
     if (VersionInfo::hasQMapFormat(context.version)) {
-        QMap<QString, QVariant> map; stream >> map;
+        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
         const QString name = map.contains("name")     ? map.value("name").toString()
                            : map.contains("fileName") ? map.value("fileName").toString()
@@ -242,11 +242,25 @@ void IC::load(QDataStream &stream, SerializationContext &context)
 
     // Re-register the new ports in the outer portMap under the original keys
     // so that subsequent connection deserialization can find them.
-    for (int i = 0; i < qMin(savedInputKeys.size(), m_inputPorts.size()); ++i) {
-        context.portMap[savedInputKeys[i]] = m_inputPorts[i];
+    //
+    // When the embedded sub-circuit declares fewer ports than the outer
+    // element header did (malformed/fuzzed input), the leftover keys still
+    // resolved to ports that loadFromBlob() destroyed in setPortSize().
+    // Evict those stale entries so a later QNEConnection::load() cannot
+    // dereference the freed pointer.  Surfaced by libFuzzer.
+    for (int i = 0; i < savedInputKeys.size(); ++i) {
+        if (i < m_inputPorts.size()) {
+            context.portMap[savedInputKeys[i]] = m_inputPorts[i];
+        } else {
+            context.portMap.remove(savedInputKeys[i]);
+        }
     }
-    for (int i = 0; i < qMin(savedOutputKeys.size(), m_outputPorts.size()); ++i) {
-        context.portMap[savedOutputKeys[i]] = m_outputPorts[i];
+    for (int i = 0; i < savedOutputKeys.size(); ++i) {
+        if (i < m_outputPorts.size()) {
+            context.portMap[savedOutputKeys[i]] = m_outputPorts[i];
+        } else {
+            context.portMap.remove(savedOutputKeys[i]);
+        }
     }
 }
 
@@ -490,8 +504,21 @@ void IC::processLoadedItems(const QList<QGraphicsItem *> &items)
     generatePixmap();
 }
 
+// Maximum nesting depth for IC-within-IC blob loading.
+// Each level deserializes a full panda stream; deep nesting exhausts the call stack.
+static constexpr int kMaxICNestingDepth = 16;
+static thread_local int s_icLoadDepth = 0;
+
 void IC::deserializeAndLoad(const QByteArray &bytes, const QString &contextDir)
 {
+    if (s_icLoadDepth >= kMaxICNestingDepth) {
+        throw PANDACEPTION("IC nesting depth limit (%1) exceeded — blob may be maliciously crafted",
+                           QString::number(kMaxICNestingDepth));
+    }
+
+    ++s_icLoadDepth;
+    const auto depthGuard = qScopeGuard([] { --s_icLoadDepth; });
+
     // Parse the bytes before clearing state so a corrupt input leaves the IC unchanged.
     QByteArray data(bytes);
     QDataStream stream(&data, QIODevice::ReadOnly);
@@ -746,6 +773,22 @@ void IC::loadBoundaryElement(GraphicElement *elm, const bool isInput)
         }
 
         m_internalElements.append(nodeElm);
+    }
+
+    // Detach any connections still attached to elm's ports before deleting it.
+    // In a valid circuit all connections were re-routed above, so these lists
+    // are empty.  In a fuzz-corrupted blob, extra ports may have connections that
+    // were not re-routed; drainConnections() in the port destructor would free
+    // them while their pointers are still live in the items list passed to
+    // processLoadedItems(), causing a heap-use-after-free.  Calling setEndPort /
+    // setStartPort(nullptr) detaches cleanly without deleting the connection.
+    for (int p = 0; p < elm->inputSize(); ++p) {
+        const auto conns = elm->inputPort(p)->connections();
+        for (auto *c : conns) { c->setEndPort(nullptr); }
+    }
+    for (int p = 0; p < elm->outputSize(); ++p) {
+        const auto conns = elm->outputPort(p)->connections();
+        for (auto *c : conns) { c->setStartPort(nullptr); }
     }
 
     delete elm;

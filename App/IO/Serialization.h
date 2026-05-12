@@ -69,6 +69,35 @@ public:
     static QVersionNumber readPandaHeader(QDataStream &stream);
 
     /**
+     * \brief Reads the file-level metadata \c QMap<QString,QVariant> from \a stream
+     *        without calling \c QList::reserve() with a stream-controlled count.
+     *
+     * \details Qt's built-in \c operator>> for \c QList (used internally by
+     * \c QStringList and any other list-valued \c QVariant) calls \c reserve(n)
+     * before reading a single element, so a fuzz-controlled \c n causes an
+     * immediate multi-GB allocation.  This function intercepts the \c QVariant
+     * type tag and dispatches to bounded readers for each supported type
+     * (\c QString, \c QStringList, \c QByteArray, and scalar types); unknown
+     * types throw \c PANDACEPTION so the caller rejects the file cleanly.
+     */
+    static QMap<QString, QVariant> readBoundedMetadata(QDataStream &stream);
+
+    /**
+     * \brief Reads a QString from \a stream, refusing to allocate more bytes than
+     *        remain in the stream (prevents OOM on fuzz-controlled length fields).
+     */
+    static QString readBoundedString(QDataStream &stream);
+
+    /**
+     * \brief Reads a \c QMap<QString,QByteArray> from \a stream with bounds checking.
+     *
+     * Used by the clipboard paste path to safely deserialise the IC blob registry
+     * without allowing a fuzz-controlled entry count to cause OOM via
+     * \c QDataStream::operator>>(QMap<QString,QByteArray>&).
+     */
+    static QMap<QString, QByteArray> readBoundedBlobMap(QDataStream &stream);
+
+    /**
      * \brief Reads and validates the BeWavedDolphin waveform file header.
      * \param stream Source data stream positioned at the start of the file.
      */
