@@ -173,5 +173,12 @@ Deploy/
 !Tests/**/*.panda
 .verilog_test_output/
 
+# libFuzzer artifacts dropped in the working directory by fuzz_deserialize
+crash-*
+oom-*
+leak-*
+timeout-*
+slow-unit-*
+
 # MCP (Model Context Protocol)
 MCP/Client/temp/
