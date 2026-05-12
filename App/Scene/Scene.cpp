@@ -181,6 +181,10 @@ void Scene::registerItem(ItemWithId *item)
     if (!item) {
         return;
     }
+    // HC invariant: an id must map to exactly one live item — never to a stale pointer
+    // left behind by a missed unregisterItem (the WIREDPANDA-HC family upstream condition)
+    Q_ASSERT(!m_elementRegistry.contains(item->id())
+          || m_elementRegistry.value(item->id()) == item);
     m_elementRegistry[item->id()] = item;
 }
 
@@ -190,6 +194,8 @@ void Scene::unregisterItem(ItemWithId *item)
         return;
     }
     m_elementRegistry.remove(item->id());
+    // HC postcondition: after unregister, the registry must not still resolve this id
+    Q_ASSERT(!m_elementRegistry.contains(item->id()));
 }
 
 SerializationContext Scene::deserializationContext(QMap<quint64, QNEPort *> &portMap, const QVersionNumber &version)

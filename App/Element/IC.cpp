@@ -304,6 +304,15 @@ void IC::resetInternalState()
     m_internalConnections.clear();
     qDeleteAll(m_internalElements);
     m_internalElements.clear();
+    // Bug 1 / Bug 3 postcondition: every owned vector must be cleared atomically
+    // with its parent. If a future change adds a new internal vector and forgets
+    // to clear it here, this assert trips immediately.
+    Q_ASSERT(m_internalElements.isEmpty());
+    Q_ASSERT(m_sortedInternalElements.isEmpty());
+    Q_ASSERT(m_internalConnections.isEmpty());
+    Q_ASSERT(m_internalInputs.isEmpty());
+    Q_ASSERT(m_internalOutputs.isEmpty());
+    Q_ASSERT(m_boundaryInputElements.isEmpty());
 }
 
 void IC::loadFile(const QString &fileName, const QString &contextDir)

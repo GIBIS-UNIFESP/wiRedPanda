@@ -495,7 +495,7 @@ void TestInputRotary::testInputRotary()
     QVERIFY(rotary != nullptr);
 
     // Check that it's an InputRotary
-    auto *inputRotary = qgraphicsitem_cast<InputRotary *>(rotary.get());
+    auto *inputRotary = dynamic_cast<InputRotary *>(rotary.get());
     QVERIFY(inputRotary != nullptr);
 
     // Test initial state (should start at position 0)
