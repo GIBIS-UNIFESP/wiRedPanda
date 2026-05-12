@@ -71,23 +71,23 @@
 <context>
     <name>AudioBox</name>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="34"/>
         <location filename="../../Element/GraphicElements/AudioBox.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="36"/>
         <source>Audio Box</source>
         <translation>오디오 박스</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="86"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="87"/>
         <source>File does not exist</source>
         <translation>파일이 존재하지 않습니다</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="87"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="88"/>
         <source>File is not readable</source>
         <translation>파일을 읽을 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="89"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
         <translation>오디오를 로드할 수 없습니다: %1 (%2)</translation>
     </message>
@@ -530,12 +530,12 @@
 <context>
     <name>Buzzer</name>
     <message>
-        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="35"/>
         <source>Buzzer</source>
         <translation>버저</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="34"/>
         <source>BUZZER</source>
         <translation>버저</translation>
     </message>
@@ -556,22 +556,22 @@
 <context>
     <name>Clock</name>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="38"/>
         <source>Clock</source>
         <translation>클록</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="205"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="214"/>
         <source>Low</source>
         <translation>로우</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="205"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="214"/>
         <source>High</source>
         <translation>하이</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="37"/>
         <source>CLOCK SIGNAL</source>
         <translation>클록 신호</translation>
     </message>
@@ -654,87 +654,87 @@
 <context>
     <name>Display14</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="34"/>
         <source>14-SEGMENT DISPLAY</source>
         <translation>14-세그먼트 디스플레이</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="35"/>
         <source>14-Segment Display</source>
         <translation>14-세그먼트 디스플레이</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="96"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="97"/>
         <source>middle left horizontal</source>
         <translation>중앙 좌측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="97"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="98"/>
         <source>upper left vertical</source>
         <translation>상단 좌측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="98"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="99"/>
         <source>lower left vertical</source>
         <translation>하단 좌측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="101"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="102"/>
         <source>upper right vertical</source>
         <translation>상단 우측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="103"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="104"/>
         <source>lower right vertical</source>
         <translation>하단 우측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="104"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="105"/>
         <source>middle right horizontal</source>
         <translation>중앙 우측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="105"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="106"/>
         <source>upper left diagonal</source>
         <translation>상단 좌측 대각선</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="106"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="107"/>
         <source>upper center vertical</source>
         <translation>상단 중앙 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="107"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="108"/>
         <source>upper right diagonal</source>
         <translation>상단 우측 대각선</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="108"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="109"/>
         <source>lower right diagonal</source>
         <translation>하단 우측 대각선</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="109"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="110"/>
         <source>lower center vertical</source>
         <translation>하단 중앙 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="110"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="111"/>
         <source>lower left diagonal</source>
         <translation>하단 좌측 대각선</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="99"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="100"/>
         <source>bottom</source>
         <translation>하단</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="100"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="101"/>
         <source>top</source>
         <translation>상단</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="102"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="103"/>
         <source>dot</source>
         <translation>점</translation>
     </message>
@@ -742,93 +742,93 @@
 <context>
     <name>Display16</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="34"/>
         <source>16-SEGMENT DISPLAY</source>
         <translation>16-세그먼트 디스플레이</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="35"/>
         <source>16-Segment Display</source>
         <translation>16-세그먼트 디스플레이</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="102"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="103"/>
         <source>middle left horizontal</source>
         <translation>중앙 좌측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="103"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="104"/>
         <source>upper left vertical</source>
         <translation>상단 좌측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="104"/>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower left vertical</source>
         <translation>하단 좌측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="106"/>
         <source>bottom left horizontal</source>
         <translation>하단 좌측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="106"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="107"/>
         <source>bottom right horizontal</source>
         <translation>하단 우측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="107"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="108"/>
         <source>top left horizontal</source>
         <translation>상단 좌측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="108"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="109"/>
         <source>top right horizontal</source>
         <translation>상단 우측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="109"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="110"/>
         <source>upper right vertical</source>
         <translation>상단 우측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="110"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
         <source>dot</source>
         <translation>점</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="112"/>
         <source>lower right vertical</source>
         <translation>하단 우측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="112"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="113"/>
         <source>middle right horizontal</source>
         <translation>중앙 우측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="113"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="114"/>
         <source>upper left diagonal</source>
         <translation>상단 좌측 대각선</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="114"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="115"/>
         <source>upper center vertical</source>
         <translation>상단 중앙 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="115"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="116"/>
         <source>upper right diagonal</source>
         <translation>상단 우측 대각선</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="116"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="117"/>
         <source>lower right diagonal</source>
         <translation>하단 우측 대각선</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="117"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower center vertical</source>
         <translation>하단 중앙 수직</translation>
     </message>
@@ -836,52 +836,52 @@
 <context>
     <name>Display7</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="36"/>
         <source>7-SEGMENT DISPLAY</source>
         <translation>7-세그먼트 디스플레이</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="36"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="37"/>
         <source>7-Segment Display</source>
         <translation>7-세그먼트 디스플레이</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="135"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="136"/>
         <source>middle</source>
         <translation>중앙</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="136"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="137"/>
         <source>upper left</source>
         <translation>상단 왼쪽</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="137"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="138"/>
         <source>lower left</source>
         <translation>하단 왼쪽</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="138"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="139"/>
         <source>bottom</source>
         <translation>하단</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="139"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
         <source>top</source>
         <translation>상단</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
         <source>upper right</source>
         <translation>상단 오른쪽</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
         <source>dot</source>
         <translation>점</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
         <source>lower right</source>
         <translation>하단 오른쪽</translation>
     </message>
@@ -1211,32 +1211,27 @@ Each wireless channel must have a unique label.</source>
         <translation>기본값</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="145"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
         <translation>위치 %1에서 요소 속성 읽기 중 스트림 오류</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="179"/>
-        <source>Stream error reading input ports at position %1</source>
-        <translation>위치 %1에서 입력 포트 읽기 중 스트림 오류</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="233"/>
-        <source>Stream error reading output ports at position %1</source>
-        <translation>위치 %1에서 출력 포트 읽기 중 스트림 오류</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="287"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>위치 %1에서 스킨 읽기 중 스트림 오류</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="477"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
+        <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
         <source>Loading pixmap appearance names.</source>
         <translation>픽스맵 스킨 이름 로드 중.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="507"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>스킨 인덱스 %1이 범위를 벗어남 (크기=%2) 스킨 이름 &quot;%3&quot; — 스트림이 손상되었을 수 있습니다</translation>
     </message>
@@ -1259,29 +1254,34 @@ Each wireless channel must have a unique label.</source>
         <translation>IC 로드: 직렬화된 데이터에 IC 이름이 없습니다</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="324"/>
+        <location filename="../../Element/IC.cpp" line="347"/>
         <source>%1 not found.</source>
         <translation>%1을(를) 찾을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="365"/>
+        <location filename="../../Element/IC.cpp" line="388"/>
         <source>Circular IC reference detected: %1</source>
         <translation>순환 IC 참조가 감지되었습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="372"/>
+        <location filename="../../Element/IC.cpp" line="395"/>
         <source>Error opening file: %1</source>
         <translation>파일 열기 오류: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="426"/>
+        <location filename="../../Element/IC.cpp" line="449"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>IC 마이그레이션: 파일을 쓰기용으로 열 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="433"/>
+        <location filename="../../Element/IC.cpp" line="456"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC 마이그레이션: 다시 저장한 파일을 커밋하지 못했습니다: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/IC.cpp" line="515"/>
+        <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1300,22 +1300,22 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>InputButton</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="31"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="32"/>
         <source>PUSH BUTTON</source>
         <translation>푸시 버튼</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="32"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="33"/>
         <source>Push Button</source>
         <translation>푸시 버튼</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="124"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
         <source>Released</source>
         <translation>놓음</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="124"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
         <source>Pressed</source>
         <translation>누름</translation>
     </message>
@@ -1336,12 +1336,12 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>InputRotary</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="34"/>
         <source>Rotary Switch</source>
         <translation>로터리 스위치</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="32"/>
+        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="33"/>
         <source>ROTARY SWITCH</source>
         <translation>로터리 스위치</translation>
     </message>
@@ -1349,22 +1349,22 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>InputSwitch</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="32"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="33"/>
         <source>Input Switch</source>
         <translation>입력 스위치</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="126"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="127"/>
         <source>Off</source>
         <translation>꺼짐</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="126"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="127"/>
         <source>On</source>
         <translation>켜짐</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="31"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="32"/>
         <source>INPUT SWITCH</source>
         <translation>입력 스위치</translation>
     </message>
@@ -1394,43 +1394,43 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>Led</name>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="32"/>
         <location filename="../../Element/GraphicElements/Led.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="34"/>
         <source>LED</source>
         <translation>LED</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="242"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="243"/>
         <source>Off</source>
         <translation>꺼짐</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="243"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="244"/>
         <source>On</source>
         <translation>켜짐</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="247"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="248"/>
         <source>00 (off)</source>
         <translation>00 (꺼짐)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="248"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
         <source>01</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="250"/>
         <source>10</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="250"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="251"/>
         <source>11</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="266"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="267"/>
         <source>Default</source>
         <translation>기본값</translation>
     </message>
@@ -2415,12 +2415,12 @@ Suggested name:</source>
 <context>
     <name>Node</name>
     <message>
-        <location filename="../../Element/GraphicElements/Node.cpp" line="39"/>
+        <location filename="../../Element/GraphicElements/Node.cpp" line="40"/>
         <source>Node</source>
         <translation>노드</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Node.cpp" line="38"/>
+        <location filename="../../Element/GraphicElements/Node.cpp" line="39"/>
         <source>NODE</source>
         <translation>노드</translation>
     </message>
@@ -2625,18 +2625,18 @@ Suggested name:</source>
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="559"/>
+        <location filename="../../Scene/Scene.cpp" line="566"/>
         <source>&amp;Undo</source>
         <translation>실행 취소(&amp;U)</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="565"/>
+        <location filename="../../Scene/Scene.cpp" line="572"/>
         <source>&amp;Redo</source>
         <translation>다시 실행(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="585"/>
+        <location filename="../../Scene/Scene.cpp" line="592"/>
         <source>Paste</source>
         <translation>붙여넣기</translation>
     </message>
@@ -2644,44 +2644,68 @@ Suggested name:</source>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="59"/>
-        <location filename="../../IO/Serialization.cpp" line="70"/>
-        <location filename="../../IO/Serialization.cpp" line="104"/>
+        <location filename="../../IO/Serialization.cpp" line="271"/>
+        <source>Stream error reading metadata map count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
+        <source>Metadata map count %1 implausible given remaining stream bytes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="291"/>
+        <source>Stream error reading blob map count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
+        <source>Blob map count %1 implausible given remaining stream bytes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="347"/>
+        <location filename="../../IO/Serialization.cpp" line="357"/>
+        <location filename="../../IO/Serialization.cpp" line="361"/>
+        <location filename="../../IO/Serialization.cpp" line="396"/>
+        <location filename="../../IO/Serialization.cpp" line="400"/>
+        <location filename="../../IO/Serialization.cpp" line="404"/>
+        <location filename="../../IO/Serialization.cpp" line="410"/>
         <source>Invalid file format.</source>
         <translation>잘못된 파일 형식입니다.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="191"/>
+        <location filename="../../IO/Serialization.cpp" line="518"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>위치 %1에서 유형 태그 읽기 중 스트림 오류: 상태 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="203"/>
+        <location filename="../../IO/Serialization.cpp" line="530"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>위치 %1에서 요소 유형 읽기 중 스트림 오류: 상태 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="213"/>
+        <location filename="../../IO/Serialization.cpp" line="542"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>위치 %1에서 요소 로드 중 스트림 오류: 상태 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="229"/>
+        <location filename="../../IO/Serialization.cpp" line="561"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>위치 %1에서 연결 로드 중 스트림 오류: 상태 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="239"/>
+        <location filename="../../IO/Serialization.cpp" line="568"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>잘못된 유형입니다. 데이터가 손상되었을 가능성이 있습니다.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="291"/>
+        <location filename="../../IO/Serialization.cpp" line="621"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>버전 백업 생성에 실패했습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="366"/>
+        <location filename="../../IO/Serialization.cpp" line="701"/>
         <source>Error copying file: %1</source>
         <translation>파일 복사 오류: %1</translation>
     </message>
@@ -2689,7 +2713,7 @@ Suggested name:</source>
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="231"/>
+        <location filename="../../Simulation/Simulation.cpp" line="243"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>경고: 피드백 회로가 수렴하지 않았습니다 — 회로가 진동하고 있을 수 있습니다.</translation>
     </message>
@@ -2795,12 +2819,12 @@ Suggested name:</source>
 <context>
     <name>TruthTable</name>
     <message>
-        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="36"/>
+        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="37"/>
         <source>TRUTH TABLE</source>
         <translation>진리표</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="37"/>
+        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="38"/>
         <source>Truth Table</source>
         <translation>진리표</translation>
     </message>
