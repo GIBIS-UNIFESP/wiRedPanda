@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="60"/>
+        <location filename="../../Core/Application.cpp" line="135"/>
         <source>Error!</source>
         <translation>Fel!</translation>
     </message>
@@ -95,434 +95,434 @@
 <context>
     <name>BewavedDolphin</name>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="243"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="245"/>
         <source>MainWindow</source>
         <translation>Huvudfönster</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="297"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="299"/>
         <source>toolBar</source>
         <translation>verktygsfält</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="298"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="300"/>
         <source>File</source>
         <translation>Arkiv</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="299"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="301"/>
         <source>Help</source>
         <translation>Hjälp</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="300"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="302"/>
         <source>Edit</source>
         <translation>Redigera</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="301"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="303"/>
         <source>View</source>
         <translation>Visa</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="244"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="246"/>
         <source>About</source>
         <translation>Om</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="245"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="247"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="246"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="248"/>
         <source>Load</source>
         <translation>Ladda</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="247"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="249"/>
         <source>Ctrl+L</source>
         <translation>Ctrl+L</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="248"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="250"/>
         <source>Exit</source>
         <translation>Avsluta</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="249"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="251"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="250"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="252"/>
         <source>Combinational</source>
         <translation>Kombinatorisk</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="251"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="253"/>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1289"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="252"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="254"/>
         <source>Export to PDF</source>
         <translation>Exportera till PDF</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="253"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="255"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="254"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="256"/>
         <source>Save</source>
         <translation>Spara</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="255"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="257"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="256"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="258"/>
         <source>Save As...</source>
         <translation>Spara som...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="257"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="259"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="258"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="260"/>
         <source>Copy</source>
         <translation>Kopiera</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="259"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="261"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="260"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="262"/>
         <source>Paste</source>
         <translation>Klistra in</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="261"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="263"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="262"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="264"/>
         <source>Set to 0</source>
         <translation>Sätt till 0</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="263"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="265"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="265"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="267"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="270"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="272"/>
         <source>Space</source>
         <translation>Mellanslag</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="283"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="284"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="285"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="286"/>
         <source>Fit to screen</source>
         <translation>Anpassa till skärm</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="292"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="294"/>
         <source>Show Numbers</source>
         <translation>Visa nummer</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="293"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="295"/>
         <source>Show Waveforms</source>
         <translation>Visa vågformer</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="294"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="295"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="296"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="297"/>
         <source>AutoCrop</source>
         <translation>Automatisk beskärning</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="296"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="298"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="264"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="266"/>
         <source>Set to 1</source>
         <translation>Sätt till 1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="266"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="267"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="268"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="269"/>
         <source>Set clock frequency</source>
         <translation>Sätt klockfrekvens</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="268"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="270"/>
         <source>Alt+W</source>
         <translation>Alt+W</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="269"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="271"/>
         <source>Invert</source>
         <translation>Invertera</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="271"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="273"/>
         <source>Merge</source>
         <translation>Sammanfoga</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="272"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="274"/>
         <source>Split</source>
         <translation>Dela</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="273"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="275"/>
         <source>Export to PNG</source>
         <translation>Exportera till PNG</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="274"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="276"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="275"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="277"/>
         <source>Set Length</source>
         <translation>Ställ in längd</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="276"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="278"/>
         <source>Alt+L</source>
         <translation>Alt+L</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="277"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="279"/>
         <source>About Qt</source>
         <translation>Om Qt</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="278"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="280"/>
         <source>Ctrl+Shift+H</source>
         <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="279"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="281"/>
         <source>Zoom In</source>
         <translation>Zooma in</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="280"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="282"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="281"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="283"/>
         <source>Zoom Out</source>
         <translation>Zooma ut</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="282"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="284"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="285"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="287"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="286"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="288"/>
         <source>Reset Zoom</source>
         <translation>Återställ zoom</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="287"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="289"/>
         <source>Ctrl+Home</source>
         <translation>Ctrl+Home</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="288"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="290"/>
         <source>Clear</source>
         <translation>Rensa</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="289"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="291"/>
         <source>Alt+X</source>
         <translation>Alt+X</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="290"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="292"/>
         <source>Cut</source>
         <translation>Klipp ut</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="291"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="293"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="59"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="123"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1051"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="60"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="124"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1098"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1230"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin Simulator</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="213"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
         <translation>Kretsen är tom. Lägg till ingångs- och utgångselement för att generera en vågform.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="243"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
         <translation>Kretsen har inga ingångs- eller utgångselement. Lägg till minst en ingång (t.ex. Switch) och en utgång (t.ex. LED) för att generera en vågform.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="247"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
         <translation>Kretsen har inga ingångselement. Lägg till minst en ingång (t.ex. Switch, Button eller Clock) för att generera en vågform.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="251"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
         <translation>Kretsen har inga utgångselement. Lägg till minst en utgång (t.ex. LED eller Display) för att generera en vågform.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="500"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1100"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1148"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="501"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="505"/>
         <source>Save simulation before closing?</source>
         <translation>Spara simulering innan stängning?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1101"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1149"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Vill du länka denna beWavedDolphin-fil till din nuvarande wiRedPanda-fil och spara den?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1031"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
         <source>Save File as...</source>
         <translation>Spara fil som...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1028"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1075"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>CSV-filer (*.csv);;Dolphin-filer (*.dolphin);;Alla filer som stöds (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1029"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1076"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Dolphin-filer (*.dolphin);;CSV-filer (*.csv);;Alla filer som stöds (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1017"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1052"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1062"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1099"/>
         <source>Saved file successfully.</source>
         <translation>Filen sparades framgångsrikt.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="158"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="170"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="180"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
         <source></source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="465"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
         <translation>Vågformen skulle bli för stor! Återställer zoom.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="690"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
         <translation>Inga celler valda.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1063"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
         <translation>Fel vid öppning av fil: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1077"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
         <translation>Fel vid sparande av fil: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1131"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
         <source>Open File</source>
         <translation>Öppna fil</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1181"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Alla filer som stöds (*.dolphin *.csv);;Dolphin-filer (*.dolphin);;CSV-filer (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1140"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1189"/>
         <source>File loaded successfully.</source>
         <translation>Fil laddad framgångsrikt.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1155"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
         <translation>Kunde inte öppna filen för läsning: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1321"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin är en vågformssimulator för wiRedPanda, utvecklad av det federala universitetet i São Paulo för att hjälpa studenter att lära sig om logiska kretsar.&lt;/p&gt;&lt;p&gt;Programvaruversion: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Skapare:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin underhålls för närvarande av Prof. Fábio Cappabianco, Ph.D. och hans studenter.&lt;/p&gt;&lt;p&gt; Vänligen skicka en rapport på vår GitHub-sida om du hittar en bugg eller vill begära en ny funktion.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Besök vår webbplats!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1174"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>Format stöds inte. Kunde inte öppna fil: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1257"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
         <source>Export to Image</source>
         <translation>Exportera till bild</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1257"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
         <source>PNG files (*.png)</source>
         <translation>PNG-filer (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1289"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF-filer (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1309"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Kunde inte skriva ut denna krets till PDF.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="131"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1148"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Filen &quot;%1&quot; finns inte!</translation>
     </message>
@@ -543,12 +543,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="870"/>
+        <location filename="../../Scene/Commands.cpp" line="872"/>
         <source>Change input size to %1</source>
         <translation>Ändra ingångsstorlek till %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="871"/>
+        <location filename="../../Scene/Commands.cpp" line="873"/>
         <source>Change output size to %1</source>
         <translation>Ändra utgångsstorlek till %1</translation>
     </message>
@@ -1076,29 +1076,29 @@
         <translation>Lila</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="584"/>
+        <location filename="../../UI/ElementEditor.cpp" line="595"/>
         <source>Duplicate Wireless Channel</source>
         <translation>Duplicerad trådlös kanal</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="585"/>
+        <location filename="../../UI/ElementEditor.cpp" line="596"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>En Tx-nod med etikett &quot;%1&quot; finns redan.
 Varje trådlös kanal måste ha en unik etikett.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="651"/>
+        <location filename="../../UI/ElementEditor.cpp" line="662"/>
         <source>Change wireless mode</source>
         <translation>Ändra trådlöst läge</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="854"/>
+        <location filename="../../UI/ElementEditor.cpp" line="865"/>
         <source>Select any audio</source>
         <translation>Välj valfritt ljud</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="855"/>
+        <location filename="../../UI/ElementEditor.cpp" line="866"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>Ljud (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
@@ -1178,7 +1178,7 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="809"/>
+        <location filename="../../Scene/Commands.cpp" line="811"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Vänd %1 element i axel %2</translation>
     </message>
@@ -1287,12 +1287,12 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="251"/>
+        <location filename="../../Element/ICRegistry.cpp" line="271"/>
         <source>Could not open file: %1</source>
         <translation>Kunde inte öppna fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="255"/>
+        <location filename="../../Element/ICRegistry.cpp" line="275"/>
         <source>Could not save file: %1</source>
         <translation>Kunde inte spara fil: %1</translation>
     </message>
@@ -1941,8 +1941,8 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1310"/>
-        <location filename="../../UI/MainWindow.cpp" line="1844"/>
+        <location filename="../../UI/MainWindow.cpp" line="1354"/>
+        <location filename="../../UI/MainWindow.cpp" line="1920"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>Tysta</translation>
@@ -1978,7 +1978,7 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
         <translation>Bakgrundssimulering</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="937"/>
+        <location filename="../../UI/MainWindow.cpp" line="960"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>Genvägar och tips</translation>
@@ -1994,88 +1994,88 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
         <translation>Rapportera översättningsfel eller hjälp till att förbättra översättningar på Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="406"/>
+        <location filename="../../UI/MainWindow.cpp" line="403"/>
         <source>Error!</source>
         <translation>Fel!</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="434"/>
-        <location filename="../../UI/MainWindow.cpp" line="671"/>
-        <location filename="../../UI/MainWindow.cpp" line="1136"/>
-        <location filename="../../UI/MainWindow.cpp" line="1653"/>
+        <location filename="../../UI/MainWindow.cpp" line="431"/>
+        <location filename="../../UI/MainWindow.cpp" line="670"/>
+        <location filename="../../UI/MainWindow.cpp" line="1173"/>
+        <location filename="../../UI/MainWindow.cpp" line="1712"/>
         <source>New Project</source>
         <translation>Nytt projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="503"/>
+        <location filename="../../UI/MainWindow.cpp" line="502"/>
         <source>File saved successfully.</source>
         <translation>Fil sparad framgångsrikt.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="652"/>
+        <location filename="../../UI/MainWindow.cpp" line="651"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Filen inte sparad. Stäng fliken ändå?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="673"/>
+        <location filename="../../UI/MainWindow.cpp" line="672"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> har ändrats.
 Vill du spara dina ändringar?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="730"/>
+        <location filename="../../UI/MainWindow.cpp" line="744"/>
         <source>File loaded successfully.</source>
         <translation>Fil laddad framgångsrikt.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="789"/>
-        <location filename="../../UI/MainWindow.cpp" line="1893"/>
+        <location filename="../../UI/MainWindow.cpp" line="804"/>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Open File</source>
         <translation>Öppna fil</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="338"/>
-        <location filename="../../UI/MainWindow.cpp" line="789"/>
-        <location filename="../../UI/MainWindow.cpp" line="821"/>
-        <location filename="../../UI/MainWindow.cpp" line="873"/>
-        <location filename="../../UI/MainWindow.cpp" line="2025"/>
-        <location filename="../../UI/MainWindow.cpp" line="2096"/>
+        <location filename="../../UI/MainWindow.cpp" line="335"/>
+        <location filename="../../UI/MainWindow.cpp" line="804"/>
+        <location filename="../../UI/MainWindow.cpp" line="838"/>
+        <location filename="../../UI/MainWindow.cpp" line="892"/>
+        <location filename="../../UI/MainWindow.cpp" line="2106"/>
+        <location filename="../../UI/MainWindow.cpp" line="2177"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda-filer (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="338"/>
+        <location filename="../../UI/MainWindow.cpp" line="335"/>
         <source>Select IC file to embed</source>
         <translation>Välj IC-fil att bädda in</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="343"/>
+        <location filename="../../UI/MainWindow.cpp" line="340"/>
         <source>Could not read file: %1</source>
         <translation>Kunde inte läsa filen: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="523"/>
+        <location filename="../../UI/MainWindow.cpp" line="522"/>
         <source>Update Available</source>
         <translation>Uppdatering tillgänglig</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="534"/>
+        <location filename="../../UI/MainWindow.cpp" line="533"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;wiRedPanda %1 är tillgänglig.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Du kör för närvarande version %2.&lt;br&gt;Besök releasesidan för att ladda ner den nya versionen.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="543"/>
+        <location filename="../../UI/MainWindow.cpp" line="542"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>Meddela mig inte om denna version igen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="547"/>
+        <location filename="../../UI/MainWindow.cpp" line="546"/>
         <source>Download</source>
         <translation>Ladda ner</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="631"/>
+        <location filename="../../UI/MainWindow.cpp" line="630"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2094,278 +2094,278 @@ wiRedPanda %1 kommer automatiskt att lista alla andra .panda-filer i samma katal
 Du måste spara nya projekt innan du kan komma åt IC:ar och utseenden eller köra beWavedDolphin-simuleringar.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="821"/>
-        <location filename="../../UI/MainWindow.cpp" line="873"/>
+        <location filename="../../UI/MainWindow.cpp" line="838"/>
+        <location filename="../../UI/MainWindow.cpp" line="892"/>
         <source>Save File as ...</source>
         <translation>Spara fil som ...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="995"/>
+        <location filename="../../UI/MainWindow.cpp" line="1023"/>
         <source>Are you sure?</source>
         <translation>Är du säker?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="343"/>
-        <location filename="../../UI/MainWindow.cpp" line="1198"/>
-        <location filename="../../UI/MainWindow.cpp" line="1986"/>
-        <location filename="../../UI/MainWindow.cpp" line="1997"/>
-        <location filename="../../UI/MainWindow.cpp" line="2020"/>
-        <location filename="../../UI/MainWindow.cpp" line="2048"/>
-        <location filename="../../UI/MainWindow.cpp" line="2055"/>
-        <location filename="../../UI/MainWindow.cpp" line="2085"/>
-        <location filename="../../UI/MainWindow.cpp" line="2120"/>
-        <location filename="../../UI/MainWindow.cpp" line="2148"/>
+        <location filename="../../UI/MainWindow.cpp" line="340"/>
+        <location filename="../../UI/MainWindow.cpp" line="1241"/>
+        <location filename="../../UI/MainWindow.cpp" line="2067"/>
+        <location filename="../../UI/MainWindow.cpp" line="2078"/>
+        <location filename="../../UI/MainWindow.cpp" line="2101"/>
+        <location filename="../../UI/MainWindow.cpp" line="2129"/>
+        <location filename="../../UI/MainWindow.cpp" line="2136"/>
+        <location filename="../../UI/MainWindow.cpp" line="2166"/>
+        <location filename="../../UI/MainWindow.cpp" line="2201"/>
+        <location filename="../../UI/MainWindow.cpp" line="2229"/>
         <source>Error</source>
         <translation>Fel</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="531"/>
+        <location filename="../../UI/MainWindow.cpp" line="530"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;wiRedPanda %1 är tillgänglig.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Du kör för närvarande version %2.&lt;br&gt;Klicka på &lt;b&gt;Ladda ner&lt;/b&gt; för att spara den nya versionen.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="576"/>
+        <location filename="../../UI/MainWindow.cpp" line="575"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>Laddar ner wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="576"/>
+        <location filename="../../UI/MainWindow.cpp" line="575"/>
         <source>Cancel</source>
         <translation>Avbryt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="577"/>
+        <location filename="../../UI/MainWindow.cpp" line="576"/>
         <source>Downloading Update</source>
         <translation>Laddar ner uppdatering</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="601"/>
-        <location filename="../../UI/MainWindow.cpp" line="609"/>
+        <location filename="../../UI/MainWindow.cpp" line="600"/>
+        <location filename="../../UI/MainWindow.cpp" line="608"/>
         <source>Download Failed</source>
         <translation>Nedladdning misslyckades</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="601"/>
+        <location filename="../../UI/MainWindow.cpp" line="600"/>
         <source>Could not download the update:
 %1</source>
         <translation>Det gick inte att ladda ner uppdateringen:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="609"/>
+        <location filename="../../UI/MainWindow.cpp" line="608"/>
         <source>Could not save the file:
 %1</source>
         <translation>Det gick inte att spara filen:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="618"/>
+        <location filename="../../UI/MainWindow.cpp" line="617"/>
         <source>Download Complete</source>
         <translation>Nedladdning klar</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="619"/>
+        <location filename="../../UI/MainWindow.cpp" line="618"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda har laddats ner till:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="833"/>
-        <location filename="../../UI/MainWindow.cpp" line="884"/>
+        <location filename="../../UI/MainWindow.cpp" line="850"/>
+        <location filename="../../UI/MainWindow.cpp" line="903"/>
         <source>File Conflict</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="834"/>
-        <location filename="../../UI/MainWindow.cpp" line="885"/>
+        <location filename="../../UI/MainWindow.cpp" line="851"/>
+        <location filename="../../UI/MainWindow.cpp" line="904"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="837"/>
-        <location filename="../../UI/MainWindow.cpp" line="888"/>
+        <location filename="../../UI/MainWindow.cpp" line="854"/>
+        <location filename="../../UI/MainWindow.cpp" line="907"/>
         <source>Switch to Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1382"/>
-        <location filename="../../UI/MainWindow.cpp" line="1411"/>
-        <location filename="../../UI/MainWindow.cpp" line="1434"/>
+        <location filename="../../UI/MainWindow.cpp" line="1430"/>
+        <location filename="../../UI/MainWindow.cpp" line="1459"/>
+        <location filename="../../UI/MainWindow.cpp" line="1482"/>
         <source>Missing file name.</source>
         <translation>Filnamn saknas.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1388"/>
-        <location filename="../../UI/MainWindow.cpp" line="1417"/>
+        <location filename="../../UI/MainWindow.cpp" line="1436"/>
+        <location filename="../../UI/MainWindow.cpp" line="1465"/>
         <source>The .panda file is empty.</source>
         <translation>.panda-filen är tom.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1399"/>
+        <location filename="../../UI/MainWindow.cpp" line="1447"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino-kod genererad framgångsrikt.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1426"/>
+        <location filename="../../UI/MainWindow.cpp" line="1474"/>
         <source>SystemVerilog code successfully generated.</source>
         <translation>SystemVerilog-kod genererades framgångsrikt.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1511"/>
         <source>Generate Arduino Code</source>
         <translation>Generera Arduino-kod</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1511"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino-fil (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1482"/>
+        <location filename="../../UI/MainWindow.cpp" line="1533"/>
         <source>Generate SystemVerilog Code</source>
         <translation>Generera SystemVerilog-kod</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1482"/>
+        <location filename="../../UI/MainWindow.cpp" line="1533"/>
         <source>SystemVerilog file (*.sv)</source>
         <translation>SystemVerilog-fil (*.sv)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1588"/>
+        <location filename="../../UI/MainWindow.cpp" line="1644"/>
         <source>Export to PDF</source>
         <translation>Exportera till PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1588"/>
+        <location filename="../../UI/MainWindow.cpp" line="1644"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF-filer (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1901"/>
+        <location filename="../../UI/MainWindow.cpp" line="1981"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
         <translation>Valda filer (och deras beroenden) kommer att kopieras till den aktuella projektmappen.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1959"/>
+        <location filename="../../UI/MainWindow.cpp" line="2040"/>
         <source>Name Collision</source>
         <translation>Namnkollision</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1960"/>
+        <location filename="../../UI/MainWindow.cpp" line="2041"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
         <translation>En inbäddad IC med namnet &quot;%1&quot; finns redan.
 Föreslaget namn:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1986"/>
-        <location filename="../../UI/MainWindow.cpp" line="2048"/>
+        <location filename="../../UI/MainWindow.cpp" line="2067"/>
+        <location filename="../../UI/MainWindow.cpp" line="2129"/>
         <source>Please save the project first so ICs can be resolved.</source>
         <translation>Spara projektet först så att IC:er kan hittas.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1997"/>
-        <location filename="../../UI/MainWindow.cpp" line="2055"/>
-        <location filename="../../UI/MainWindow.cpp" line="2148"/>
+        <location filename="../../UI/MainWindow.cpp" line="2078"/>
+        <location filename="../../UI/MainWindow.cpp" line="2136"/>
+        <location filename="../../UI/MainWindow.cpp" line="2229"/>
         <source>Could not read IC file: %1</source>
         <translation>Kunde inte läsa IC-filen: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2005"/>
-        <location filename="../../UI/MainWindow.cpp" line="2073"/>
+        <location filename="../../UI/MainWindow.cpp" line="2086"/>
+        <location filename="../../UI/MainWindow.cpp" line="2154"/>
         <source>IC embedded successfully.</source>
         <translation>IC inbäddad framgångsrikt.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2025"/>
-        <location filename="../../UI/MainWindow.cpp" line="2096"/>
+        <location filename="../../UI/MainWindow.cpp" line="2106"/>
+        <location filename="../../UI/MainWindow.cpp" line="2177"/>
         <source>Extract IC to file...</source>
         <translation>Extrahera IC till fil...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2036"/>
-        <location filename="../../UI/MainWindow.cpp" line="2107"/>
+        <location filename="../../UI/MainWindow.cpp" line="2117"/>
+        <location filename="../../UI/MainWindow.cpp" line="2188"/>
         <source>IC extracted to %1</source>
         <translation>IC extraherad till %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2020"/>
-        <location filename="../../UI/MainWindow.cpp" line="2085"/>
-        <location filename="../../UI/MainWindow.cpp" line="2120"/>
+        <location filename="../../UI/MainWindow.cpp" line="2101"/>
+        <location filename="../../UI/MainWindow.cpp" line="2166"/>
+        <location filename="../../UI/MainWindow.cpp" line="2201"/>
         <source>Please save the project first.</source>
         <translation>Spara projektet först.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2137"/>
+        <location filename="../../UI/MainWindow.cpp" line="2218"/>
         <source>No file-based ICs to embed.</source>
         <translation>Inga filbaserade IC:er att bädda in.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2163"/>
+        <location filename="../../UI/MainWindow.cpp" line="2244"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>%1 IC inbäddade. Kretsen är nu fristående.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1599"/>
-        <location filename="../../UI/MainWindow.cpp" line="1625"/>
+        <location filename="../../UI/MainWindow.cpp" line="1655"/>
+        <location filename="../../UI/MainWindow.cpp" line="1683"/>
         <source>Exported file successfully.</source>
         <translation>Fil exporterad framgångsrikt.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="918"/>
+        <location filename="../../UI/MainWindow.cpp" line="939"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda är programvara utvecklad av studenter vid det federala universitetet i São Paulo för att hjälpa studenter att lära sig om logiska kretsar.&lt;/p&gt;&lt;p&gt;Programvaruversion: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Skapare:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda underhålls för närvarande av Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves och Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Vänligen skicka en rapport på vår GitHub-sida om du hittar en bugg eller vill begära en ny funktion.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Besök vår webbplats!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="938"/>
+        <location filename="../../UI/MainWindow.cpp" line="961"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Arbetsytans genvägar&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zooma in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zooma ut &lt;/li&gt;&lt;li&gt; Ctrl+1 : Dölj/Visa ledningar &lt;/li&gt;&lt;li&gt; Ctrl+2 : Dölj/Visa grindar &lt;/li&gt;&lt;li&gt; Ctrl+F : Sök element &lt;/li&gt;&lt;li&gt; Ctrl+W : Öppna beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Spara projekt &lt;/li&gt;&lt;li&gt; Ctrl+Q : Avsluta wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Starta/Pausa simulering &lt;/li&gt;&lt;li&gt; [ : Föregående primär elementegenskap &lt;/li&gt;&lt;li&gt; ] : Nästa primär elementegenskap &lt;/li&gt;&lt;li&gt; { : Föregående sekundär elementegenskap &lt;/li&gt;&lt;li&gt; } : Nästa sekundär elementegenskap &lt;/li&gt;&lt;li&gt; &amp;lt; : Omvandla till föregående element &lt;/li&gt;&lt;li&gt; &amp;gt; : Omvandla till nästa element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Allmänna tips&lt;/h1&gt;&lt;p&gt;Dubbelklicka på en ledning för att skapa en nod&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="994"/>
+        <location filename="../../UI/MainWindow.cpp" line="1022"/>
         <source>Exit</source>
         <translation>Avsluta</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1614"/>
+        <location filename="../../UI/MainWindow.cpp" line="1672"/>
         <source>Export to Image</source>
         <translation>Exportera till bild</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1614"/>
+        <location filename="../../UI/MainWindow.cpp" line="1672"/>
         <source>PNG files (*.png)</source>
         <translation>PNG-filer (*.png)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1310"/>
-        <location filename="../../UI/MainWindow.cpp" line="1844"/>
+        <location filename="../../UI/MainWindow.cpp" line="1354"/>
+        <location filename="../../UI/MainWindow.cpp" line="1920"/>
         <source>Unmute</source>
         <translation>Aktivera ljud</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1890"/>
+        <location filename="../../UI/MainWindow.cpp" line="1970"/>
         <source>Save file first.</source>
         <translation>Spara filen först.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1893"/>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1901"/>
-        <location filename="../../UI/MainWindow.cpp" line="1916"/>
+        <location filename="../../UI/MainWindow.cpp" line="1981"/>
+        <location filename="../../UI/MainWindow.cpp" line="1998"/>
         <source>Info</source>
         <translation>Information</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1916"/>
+        <location filename="../../UI/MainWindow.cpp" line="1998"/>
         <source>Drag here to remove.</source>
         <translation>Dra hit för att ta bort.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1942"/>
+        <location filename="../../UI/MainWindow.cpp" line="2023"/>
         <source>Error removing file: %1</source>
         <translation>Fel vid borttagning av fil: %1</translation>
     </message>
@@ -2373,7 +2373,7 @@ Föreslaget namn:</translation>
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="637"/>
+        <location filename="../../Scene/Commands.cpp" line="639"/>
         <source>Morph %1 elements to %2</source>
         <translation>Förvandla %1 element till %2</translation>
     </message>
@@ -2467,7 +2467,7 @@ Föreslaget namn:</translation>
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="203"/>
+        <location filename="../../Element/ICRegistry.cpp" line="223"/>
         <source>Add embedded IC</source>
         <translation>Lägg till inbäddad IC</translation>
     </message>
@@ -2574,9 +2574,17 @@ Föreslaget namn:</translation>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1023"/>
+        <location filename="../../Scene/Commands.cpp" line="1025"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Registrera blob &quot;%1&quot;</translation>
+    </message>
+</context>
+<context>
+    <name>RemoveBlobCommand</name>
+    <message>
+        <location filename="../../Scene/Commands.cpp" line="1048"/>
+        <source>Remove blob &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2617,18 +2625,18 @@ Föreslaget namn:</translation>
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="554"/>
+        <location filename="../../Scene/Scene.cpp" line="559"/>
         <source>&amp;Undo</source>
         <translation>&amp;Ångra</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="560"/>
+        <location filename="../../Scene/Scene.cpp" line="565"/>
         <source>&amp;Redo</source>
         <translation>&amp;Gör om</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="580"/>
+        <location filename="../../Scene/Scene.cpp" line="585"/>
         <source>Paste</source>
         <translation>Klistra in</translation>
     </message>
@@ -2673,7 +2681,7 @@ Föreslaget namn:</translation>
         <translation>Kunde inte skapa versionssäkerhetskopia: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="353"/>
+        <location filename="../../IO/Serialization.cpp" line="366"/>
         <source>Error copying file: %1</source>
         <translation>Fel vid kopiering av fil: %1</translation>
     </message>
@@ -2681,7 +2689,7 @@ Föreslaget namn:</translation>
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="232"/>
+        <location filename="../../Simulation/Simulation.cpp" line="231"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Varning: återkopplingskretsen konvergerade inte — kretsen kan oscillera.</translation>
     </message>
@@ -2704,17 +2712,17 @@ Föreslaget namn:</translation>
         <translation>Ledningsdelning</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="570"/>
+        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
         <translation>Fel vid försök att göra om %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="578"/>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Fel: endPort är null i SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="607"/>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
         <translation>Fel vid försök att ångra %1</translation>
     </message>
@@ -2761,12 +2769,12 @@ Föreslaget namn:</translation>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="964"/>
+        <location filename="../../Scene/Commands.cpp" line="966"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Växla Sanningstabell-utdata vid position: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="973"/>
+        <location filename="../../Scene/Commands.cpp" line="975"/>
         <source>Could not find truthtable element!</source>
         <translation>Kunde inte hitta sanningstabell-element!</translation>
     </message>
@@ -2800,7 +2808,7 @@ Föreslaget namn:</translation>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1056"/>
+        <location filename="../../Scene/Commands.cpp" line="1081"/>
         <source>Update %1 IC blobs</source>
         <translation>Uppdatera %1 IC-blobbar</translation>
     </message>
@@ -2816,7 +2824,7 @@ Föreslaget namn:</translation>
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="86"/>
+        <location filename="../../Scene/Workspace.cpp" line="141"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -2827,42 +2835,50 @@ Din wiRedPanda-version (%2) stöder filformat %3.
 Uppdatera wiRedPanda för att spara ändringar i denna fil.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="90"/>
+        <location filename="../../Scene/Workspace.cpp" line="145"/>
         <source>Cannot save.</source>
         <translation>Kan inte spara.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="157"/>
+        <location filename="../../Scene/Workspace.cpp" line="217"/>
         <source>Save File</source>
         <translation>Spara fil</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="157"/>
+        <location filename="../../Scene/Workspace.cpp" line="217"/>
+        <location filename="../../Scene/Workspace.cpp" line="264"/>
+        <location filename="../../Scene/Workspace.cpp" line="303"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda-filer (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="197"/>
+        <location filename="../../Scene/Workspace.cpp" line="262"/>
+        <location filename="../../Scene/Workspace.cpp" line="301"/>
+        <source>Save File (original location is read-only)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
         <translation>Fel vid öppning av fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="226"/>
+        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
         <translation>Kunde inte spara fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="299"/>
+        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
         <translation>Denna fil finns inte: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="308"/>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
         <translation>Kunde inte öppna fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="343"/>
+        <location filename="../../Scene/Workspace.cpp" line="427"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -2875,26 +2891,36 @@ Filen kommer att öppnas men sparande är blockerat.
 Uppdatera wiRedPanda för att redigera och spara denna fil.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="348"/>
+        <location filename="../../Scene/Workspace.cpp" line="432"/>
         <source>Newer version file.</source>
         <translation>Nyare version av fil.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="351"/>
+        <location filename="../../Scene/Workspace.cpp" line="435"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Denna fil är i ett äldre format (version %1) och kommer att uppgraderas automatiskt till det aktuella formatet (version %2).
 En säkerhetskopia av originalfilen har skapats med namnet: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="354"/>
+        <location filename="../../Scene/Workspace.cpp" line="438"/>
         <source>File upgraded.</source>
         <translation>Filen uppgraderades.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="520"/>
+        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
         <translation>Fel vid öppning av autospar-fil: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Scene/Workspace.cpp" line="608"/>
+        <source>Could not commit autosave file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Scene/Workspace.cpp" line="774"/>
+        <source>Remove embedded IC &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

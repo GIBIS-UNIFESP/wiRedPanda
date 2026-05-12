@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="60"/>
+        <location filename="../../Core/Application.cpp" line="135"/>
         <source>Error!</source>
         <translation>Hiba!</translation>
     </message>
@@ -95,434 +95,434 @@
 <context>
     <name>BewavedDolphin</name>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="243"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="245"/>
         <source>MainWindow</source>
         <translation>Főablak</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="297"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="299"/>
         <source>toolBar</source>
         <translation>Eszköztár</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="298"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="300"/>
         <source>File</source>
         <translation>Fájl</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="299"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="301"/>
         <source>Help</source>
         <translation>Súgó</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="300"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="302"/>
         <source>Edit</source>
         <translation>Szerkesztés</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="301"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="303"/>
         <source>View</source>
         <translation>Nézet</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="244"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="246"/>
         <source>About</source>
         <translation>Névjegy</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="245"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="247"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="246"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="248"/>
         <source>Load</source>
         <translation>Betöltés</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="247"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="249"/>
         <source>Ctrl+L</source>
         <translation>Ctrl+L</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="248"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="250"/>
         <source>Exit</source>
         <translation>Kilépés</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="249"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="251"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="250"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="252"/>
         <source>Combinational</source>
         <translation>Kombinációs</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="251"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="253"/>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1289"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="252"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="254"/>
         <source>Export to PDF</source>
         <translation>Exportálás PDF-be</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="253"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="255"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="254"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="256"/>
         <source>Save</source>
         <translation>Mentés</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="255"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="257"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="256"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="258"/>
         <source>Save As...</source>
         <translation>Mentés másként...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="257"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="259"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="258"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="260"/>
         <source>Copy</source>
         <translation>Másolás</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="259"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="261"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="260"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="262"/>
         <source>Paste</source>
         <translation>Beillesztés</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="261"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="263"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="262"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="264"/>
         <source>Set to 0</source>
         <translation>Beállítás 0-ra</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="263"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="265"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="265"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="267"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="270"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="272"/>
         <source>Space</source>
         <translation>Szóköz</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="283"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="284"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="285"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="286"/>
         <source>Fit to screen</source>
         <translation>Ablakhoz igazítás</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="292"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="294"/>
         <source>Show Numbers</source>
         <translation>Számok megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="293"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="295"/>
         <source>Show Waveforms</source>
         <translation>Hullámformák megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="294"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="295"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="296"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="297"/>
         <source>AutoCrop</source>
         <translation>Automatikus levágás</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="296"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="298"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="264"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="266"/>
         <source>Set to 1</source>
         <translation>Beállítás 1-re</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="266"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="267"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="268"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="269"/>
         <source>Set clock frequency</source>
         <translation>Órajel frekvencia beállítása</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="268"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="270"/>
         <source>Alt+W</source>
         <translation>Alt+W</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="269"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="271"/>
         <source>Invert</source>
         <translation>Inverz</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="271"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="273"/>
         <source>Merge</source>
         <translation>Egyesítés</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="272"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="274"/>
         <source>Split</source>
         <translation>Szétválasztás</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="273"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="275"/>
         <source>Export to PNG</source>
         <translation>Exportálás PNG-be</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="274"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="276"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="275"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="277"/>
         <source>Set Length</source>
         <translation>Hossz beállítása</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="276"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="278"/>
         <source>Alt+L</source>
         <translation>Alt+L</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="277"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="279"/>
         <source>About Qt</source>
         <translation>Qt névjegy</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="278"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="280"/>
         <source>Ctrl+Shift+H</source>
         <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="279"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="281"/>
         <source>Zoom In</source>
         <translation>Nagyítás</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="280"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="282"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="281"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="283"/>
         <source>Zoom Out</source>
         <translation>Kicsinyítés</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="282"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="284"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="285"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="287"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="286"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="288"/>
         <source>Reset Zoom</source>
         <translation>Nagyítás visszaállítása</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="287"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="289"/>
         <source>Ctrl+Home</source>
         <translation>Ctrl+Home</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="288"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="290"/>
         <source>Clear</source>
         <translation>Törlés</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="289"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="291"/>
         <source>Alt+X</source>
         <translation>Alt+X</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="290"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="292"/>
         <source>Cut</source>
         <translation>Kivágás</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="291"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="293"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="59"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="123"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1051"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="60"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="124"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1098"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1230"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin Szimulátor</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="213"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
         <translation>Az áramkör üres. Adjon hozzá bemeneti és kimeneti elemeket a hullámforma generálásához.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="243"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
         <translation>Az áramkörnek nincs bemeneti vagy kimeneti eleme. Adjon hozzá legalább egy bemenetet (pl. Switch) és egy kimenetet (pl. LED) a hullámforma generálásához.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="247"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
         <translation>Az áramkörnek nincs bemeneti eleme. Adjon hozzá legalább egy bemenetet (pl. Switch, Button vagy Clock) a hullámforma generálásához.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="251"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
         <translation>Az áramkörnek nincs kimeneti eleme. Adjon hozzá legalább egy kimenetet (pl. LED vagy Display) a hullámforma generálásához.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="500"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1100"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1148"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="501"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="505"/>
         <source>Save simulation before closing?</source>
         <translation>Menti a szimulációt bezárás előtt?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1101"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1149"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Szeretné összekapcsolni ezt a beWavedDolphin fájlt a jelenlegi wiRedPanda fájljával és menteni?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1031"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
         <source>Save File as...</source>
         <translation>Fájl mentése másként...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1028"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1075"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>CSV fájlok (*.csv);;Dolphin fájlok (*.dolphin);;Minden támogatott fájl (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1029"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1076"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Dolphin fájlok (*.dolphin);;CSV fájlok (*.csv);;Minden támogatott fájl (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1017"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1052"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1062"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1099"/>
         <source>Saved file successfully.</source>
         <translation>Fájl sikeresen elmentve.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="158"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="170"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="180"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
         <source></source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="465"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
         <translation>A hullámforma túl nagy lenne! Zoom visszaállítása.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="690"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
         <translation>Nincsenek kiválasztott cellák.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1063"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
         <translation>Hiba a fájl megnyitásakor: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1077"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
         <translation>Hiba a fájl mentésekor: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1131"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
         <source>Open File</source>
         <translation>Fájl megnyitása</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1181"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Minden támogatott fájl (*.dolphin *.csv);;Dolphin fájlok (*.dolphin);;CSV fájlok (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1140"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1189"/>
         <source>File loaded successfully.</source>
         <translation>Fájl sikeresen betöltve.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1155"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
         <translation>A fájl nem nyitható meg olvasásra: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1321"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;A beWavedDolphin egy hullámforma-szimulátor a wiRedPanda szoftverhez, amelyet a São Paulo-i Szövetségi Egyetem fejlesztett ki, hogy segítse a hallgatókat a logikai áramkörök tanulásában.&lt;/p&gt;&lt;p&gt;Szoftver verzió: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Alkotók:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; A beWavedDolphint jelenleg Prof. Fábio Cappabianco, Ph.D. és hallgatói tartják karban.&lt;/p&gt;&lt;p&gt; Kérjük, küldjön jelentést a GitHub oldalunkon, ha hibát talál vagy új funkciót szeretne kérni.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Látogasson el weboldalunkra!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1174"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>A formátum nem támogatott. Nem sikerült megnyitni a fájlt: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1257"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
         <source>Export to Image</source>
         <translation>Exportálás képpé</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1257"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
         <source>PNG files (*.png)</source>
         <translation>PNG fájlok (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1289"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF fájlok (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1309"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Nem sikerült kinyomtatni ezt az áramkört PDF-be.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="131"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1148"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>A &quot;%1&quot; fájl nem létezik!</translation>
     </message>
@@ -543,12 +543,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="870"/>
+        <location filename="../../Scene/Commands.cpp" line="872"/>
         <source>Change input size to %1</source>
         <translation>Bemenet méretének megváltoztatása %1-re</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="871"/>
+        <location filename="../../Scene/Commands.cpp" line="873"/>
         <source>Change output size to %1</source>
         <translation>Kimenet méretének megváltoztatása %1-re</translation>
     </message>
@@ -1076,29 +1076,29 @@
         <translation>Lila</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="584"/>
+        <location filename="../../UI/ElementEditor.cpp" line="595"/>
         <source>Duplicate Wireless Channel</source>
         <translation>Duplikált vezeték nélküli csatorna</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="585"/>
+        <location filename="../../UI/ElementEditor.cpp" line="596"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>Egy &quot;%1&quot; címkéjű Tx csomópont már létezik.
 Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="651"/>
+        <location filename="../../UI/ElementEditor.cpp" line="662"/>
         <source>Change wireless mode</source>
         <translation>Vezeték nélküli mód változtatása</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="854"/>
+        <location filename="../../UI/ElementEditor.cpp" line="865"/>
         <source>Select any audio</source>
         <translation>Hangfájl kiválasztása</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="855"/>
+        <location filename="../../UI/ElementEditor.cpp" line="866"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>Hangfájlok (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
@@ -1178,7 +1178,7 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="809"/>
+        <location filename="../../Scene/Commands.cpp" line="811"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>%1 elem tükrözése %2 tengely mentén</translation>
     </message>
@@ -1287,12 +1287,12 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="251"/>
+        <location filename="../../Element/ICRegistry.cpp" line="271"/>
         <source>Could not open file: %1</source>
         <translation>Nem sikerült megnyitni a fájlt: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="255"/>
+        <location filename="../../Element/ICRegistry.cpp" line="275"/>
         <source>Could not save file: %1</source>
         <translation>Nem sikerült menteni a fájlt: %1</translation>
     </message>
@@ -1941,8 +1941,8 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1310"/>
-        <location filename="../../UI/MainWindow.cpp" line="1844"/>
+        <location filename="../../UI/MainWindow.cpp" line="1354"/>
+        <location filename="../../UI/MainWindow.cpp" line="1920"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>Némítás</translation>
@@ -1978,7 +1978,7 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
         <translation>Háttér szimuláció</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="937"/>
+        <location filename="../../UI/MainWindow.cpp" line="960"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>Gyorsbillentyűk és tippek</translation>
@@ -1994,88 +1994,88 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
         <translation>Fordítási hibák jelentése vagy segítség a fordítások javításában a Weblate-en</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="406"/>
+        <location filename="../../UI/MainWindow.cpp" line="403"/>
         <source>Error!</source>
         <translation>Hiba!</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="434"/>
-        <location filename="../../UI/MainWindow.cpp" line="671"/>
-        <location filename="../../UI/MainWindow.cpp" line="1136"/>
-        <location filename="../../UI/MainWindow.cpp" line="1653"/>
+        <location filename="../../UI/MainWindow.cpp" line="431"/>
+        <location filename="../../UI/MainWindow.cpp" line="670"/>
+        <location filename="../../UI/MainWindow.cpp" line="1173"/>
+        <location filename="../../UI/MainWindow.cpp" line="1712"/>
         <source>New Project</source>
         <translation>Új projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="503"/>
+        <location filename="../../UI/MainWindow.cpp" line="502"/>
         <source>File saved successfully.</source>
         <translation>Fájl sikeresen mentve.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="652"/>
+        <location filename="../../UI/MainWindow.cpp" line="651"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>A fájl nincs mentve. Bezárja a fület?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="673"/>
+        <location filename="../../UI/MainWindow.cpp" line="672"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> módosult.
 Menti a változtatásokat?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="730"/>
+        <location filename="../../UI/MainWindow.cpp" line="744"/>
         <source>File loaded successfully.</source>
         <translation>Fájl sikeresen betöltve.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="789"/>
-        <location filename="../../UI/MainWindow.cpp" line="1893"/>
+        <location filename="../../UI/MainWindow.cpp" line="804"/>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Open File</source>
         <translation>Fájl megnyitása</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="338"/>
-        <location filename="../../UI/MainWindow.cpp" line="789"/>
-        <location filename="../../UI/MainWindow.cpp" line="821"/>
-        <location filename="../../UI/MainWindow.cpp" line="873"/>
-        <location filename="../../UI/MainWindow.cpp" line="2025"/>
-        <location filename="../../UI/MainWindow.cpp" line="2096"/>
+        <location filename="../../UI/MainWindow.cpp" line="335"/>
+        <location filename="../../UI/MainWindow.cpp" line="804"/>
+        <location filename="../../UI/MainWindow.cpp" line="838"/>
+        <location filename="../../UI/MainWindow.cpp" line="892"/>
+        <location filename="../../UI/MainWindow.cpp" line="2106"/>
+        <location filename="../../UI/MainWindow.cpp" line="2177"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda fájlok (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="338"/>
+        <location filename="../../UI/MainWindow.cpp" line="335"/>
         <source>Select IC file to embed</source>
         <translation>Válassza ki a beágyazandó IC-fájlt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="343"/>
+        <location filename="../../UI/MainWindow.cpp" line="340"/>
         <source>Could not read file: %1</source>
         <translation>A fájl nem olvasható: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="523"/>
+        <location filename="../../UI/MainWindow.cpp" line="522"/>
         <source>Update Available</source>
         <translation>Frissítés elérhető</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="534"/>
+        <location filename="../../UI/MainWindow.cpp" line="533"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;A wiRedPanda %1 elérhető.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Jelenleg a(z) %2 verziót futtatja.&lt;br&gt;Látogasson el a kiadási oldalra az új verzió letöltéséhez.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="543"/>
+        <location filename="../../UI/MainWindow.cpp" line="542"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>Ne értesítsen erről a verzióról többé</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="547"/>
+        <location filename="../../UI/MainWindow.cpp" line="546"/>
         <source>Download</source>
         <translation>Letöltés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="631"/>
+        <location filename="../../UI/MainWindow.cpp" line="630"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2094,278 +2094,278 @@ wiRedPanda %1 automatikusan felsorolja az összes többi .panda fájlt az aktuá
 Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelenésekhez, vagy futtatná a beWavedDolphin szimulációkat.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="821"/>
-        <location filename="../../UI/MainWindow.cpp" line="873"/>
+        <location filename="../../UI/MainWindow.cpp" line="838"/>
+        <location filename="../../UI/MainWindow.cpp" line="892"/>
         <source>Save File as ...</source>
         <translation>Fájl mentése másként...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="995"/>
+        <location filename="../../UI/MainWindow.cpp" line="1023"/>
         <source>Are you sure?</source>
         <translation>Biztos benne?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="343"/>
-        <location filename="../../UI/MainWindow.cpp" line="1198"/>
-        <location filename="../../UI/MainWindow.cpp" line="1986"/>
-        <location filename="../../UI/MainWindow.cpp" line="1997"/>
-        <location filename="../../UI/MainWindow.cpp" line="2020"/>
-        <location filename="../../UI/MainWindow.cpp" line="2048"/>
-        <location filename="../../UI/MainWindow.cpp" line="2055"/>
-        <location filename="../../UI/MainWindow.cpp" line="2085"/>
-        <location filename="../../UI/MainWindow.cpp" line="2120"/>
-        <location filename="../../UI/MainWindow.cpp" line="2148"/>
+        <location filename="../../UI/MainWindow.cpp" line="340"/>
+        <location filename="../../UI/MainWindow.cpp" line="1241"/>
+        <location filename="../../UI/MainWindow.cpp" line="2067"/>
+        <location filename="../../UI/MainWindow.cpp" line="2078"/>
+        <location filename="../../UI/MainWindow.cpp" line="2101"/>
+        <location filename="../../UI/MainWindow.cpp" line="2129"/>
+        <location filename="../../UI/MainWindow.cpp" line="2136"/>
+        <location filename="../../UI/MainWindow.cpp" line="2166"/>
+        <location filename="../../UI/MainWindow.cpp" line="2201"/>
+        <location filename="../../UI/MainWindow.cpp" line="2229"/>
         <source>Error</source>
         <translation>Hiba</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="531"/>
+        <location filename="../../UI/MainWindow.cpp" line="530"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;A wiRedPanda %1 elérhető.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Jelenleg a %2-es verziót futtatja.&lt;br&gt;Kattintson a &lt;b&gt;Letöltés&lt;/b&gt; gombra az új verzió mentéséhez.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="576"/>
+        <location filename="../../UI/MainWindow.cpp" line="575"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>wiRedPanda %1 letöltése…</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="576"/>
+        <location filename="../../UI/MainWindow.cpp" line="575"/>
         <source>Cancel</source>
         <translation>Mégse</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="577"/>
+        <location filename="../../UI/MainWindow.cpp" line="576"/>
         <source>Downloading Update</source>
         <translation>Frissítés letöltése</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="601"/>
-        <location filename="../../UI/MainWindow.cpp" line="609"/>
+        <location filename="../../UI/MainWindow.cpp" line="600"/>
+        <location filename="../../UI/MainWindow.cpp" line="608"/>
         <source>Download Failed</source>
         <translation>Letöltés sikertelen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="601"/>
+        <location filename="../../UI/MainWindow.cpp" line="600"/>
         <source>Could not download the update:
 %1</source>
         <translation>Nem sikerült letölteni a frissítést:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="609"/>
+        <location filename="../../UI/MainWindow.cpp" line="608"/>
         <source>Could not save the file:
 %1</source>
         <translation>Nem sikerült menteni a fájlt:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="618"/>
+        <location filename="../../UI/MainWindow.cpp" line="617"/>
         <source>Download Complete</source>
         <translation>Letöltés befejezve</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="619"/>
+        <location filename="../../UI/MainWindow.cpp" line="618"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>A wiRedPanda ide lett letöltve:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="833"/>
-        <location filename="../../UI/MainWindow.cpp" line="884"/>
+        <location filename="../../UI/MainWindow.cpp" line="850"/>
+        <location filename="../../UI/MainWindow.cpp" line="903"/>
         <source>File Conflict</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="834"/>
-        <location filename="../../UI/MainWindow.cpp" line="885"/>
+        <location filename="../../UI/MainWindow.cpp" line="851"/>
+        <location filename="../../UI/MainWindow.cpp" line="904"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="837"/>
-        <location filename="../../UI/MainWindow.cpp" line="888"/>
+        <location filename="../../UI/MainWindow.cpp" line="854"/>
+        <location filename="../../UI/MainWindow.cpp" line="907"/>
         <source>Switch to Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1382"/>
-        <location filename="../../UI/MainWindow.cpp" line="1411"/>
-        <location filename="../../UI/MainWindow.cpp" line="1434"/>
+        <location filename="../../UI/MainWindow.cpp" line="1430"/>
+        <location filename="../../UI/MainWindow.cpp" line="1459"/>
+        <location filename="../../UI/MainWindow.cpp" line="1482"/>
         <source>Missing file name.</source>
         <translation>Hiányzó fájlnév.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1388"/>
-        <location filename="../../UI/MainWindow.cpp" line="1417"/>
+        <location filename="../../UI/MainWindow.cpp" line="1436"/>
+        <location filename="../../UI/MainWindow.cpp" line="1465"/>
         <source>The .panda file is empty.</source>
         <translation>A .panda fájl üres.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1399"/>
+        <location filename="../../UI/MainWindow.cpp" line="1447"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino kód sikeresen generálva.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1426"/>
+        <location filename="../../UI/MainWindow.cpp" line="1474"/>
         <source>SystemVerilog code successfully generated.</source>
         <translation>SystemVerilog kód sikeresen generálva.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1511"/>
         <source>Generate Arduino Code</source>
         <translation>Arduino kód generálása</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1511"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino fájl (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1482"/>
+        <location filename="../../UI/MainWindow.cpp" line="1533"/>
         <source>Generate SystemVerilog Code</source>
         <translation>SystemVerilog kód generálása</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1482"/>
+        <location filename="../../UI/MainWindow.cpp" line="1533"/>
         <source>SystemVerilog file (*.sv)</source>
         <translation>SystemVerilog fájl (*.sv)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1588"/>
+        <location filename="../../UI/MainWindow.cpp" line="1644"/>
         <source>Export to PDF</source>
         <translation>PDF exportálás</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1588"/>
+        <location filename="../../UI/MainWindow.cpp" line="1644"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF fájlok (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1901"/>
+        <location filename="../../UI/MainWindow.cpp" line="1981"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
         <translation>A kiválasztott fájlok (és függőségeik) az aktuális projektmappába lesznek másolva.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1959"/>
+        <location filename="../../UI/MainWindow.cpp" line="2040"/>
         <source>Name Collision</source>
         <translation>Névütközés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1960"/>
+        <location filename="../../UI/MainWindow.cpp" line="2041"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
         <translation>Egy &quot;%1&quot; nevű beágyazott IC már létezik.
 Javasolt név:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1986"/>
-        <location filename="../../UI/MainWindow.cpp" line="2048"/>
+        <location filename="../../UI/MainWindow.cpp" line="2067"/>
+        <location filename="../../UI/MainWindow.cpp" line="2129"/>
         <source>Please save the project first so ICs can be resolved.</source>
         <translation>Kérjük, először mentse el a projektet, hogy az IC-k feloldhatók legyenek.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1997"/>
-        <location filename="../../UI/MainWindow.cpp" line="2055"/>
-        <location filename="../../UI/MainWindow.cpp" line="2148"/>
+        <location filename="../../UI/MainWindow.cpp" line="2078"/>
+        <location filename="../../UI/MainWindow.cpp" line="2136"/>
+        <location filename="../../UI/MainWindow.cpp" line="2229"/>
         <source>Could not read IC file: %1</source>
         <translation>Az IC-fájl nem olvasható: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2005"/>
-        <location filename="../../UI/MainWindow.cpp" line="2073"/>
+        <location filename="../../UI/MainWindow.cpp" line="2086"/>
+        <location filename="../../UI/MainWindow.cpp" line="2154"/>
         <source>IC embedded successfully.</source>
         <translation>IC sikeresen beágyazva.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2025"/>
-        <location filename="../../UI/MainWindow.cpp" line="2096"/>
+        <location filename="../../UI/MainWindow.cpp" line="2106"/>
+        <location filename="../../UI/MainWindow.cpp" line="2177"/>
         <source>Extract IC to file...</source>
         <translation>IC kicsomagolása fájlba...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2036"/>
-        <location filename="../../UI/MainWindow.cpp" line="2107"/>
+        <location filename="../../UI/MainWindow.cpp" line="2117"/>
+        <location filename="../../UI/MainWindow.cpp" line="2188"/>
         <source>IC extracted to %1</source>
         <translation>IC kicsomagolva ide: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2020"/>
-        <location filename="../../UI/MainWindow.cpp" line="2085"/>
-        <location filename="../../UI/MainWindow.cpp" line="2120"/>
+        <location filename="../../UI/MainWindow.cpp" line="2101"/>
+        <location filename="../../UI/MainWindow.cpp" line="2166"/>
+        <location filename="../../UI/MainWindow.cpp" line="2201"/>
         <source>Please save the project first.</source>
         <translation>Kérjük, először mentse el a projektet.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2137"/>
+        <location filename="../../UI/MainWindow.cpp" line="2218"/>
         <source>No file-based ICs to embed.</source>
         <translation>Nincs fájlalapú IC a beágyazáshoz.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2163"/>
+        <location filename="../../UI/MainWindow.cpp" line="2244"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>%1 IC beágyazva. Az áramkör mostantól önálló.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1599"/>
-        <location filename="../../UI/MainWindow.cpp" line="1625"/>
+        <location filename="../../UI/MainWindow.cpp" line="1655"/>
+        <location filename="../../UI/MainWindow.cpp" line="1683"/>
         <source>Exported file successfully.</source>
         <translation>Fájl sikeresen exportálva.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="918"/>
+        <location filename="../../UI/MainWindow.cpp" line="939"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;A wiRedPanda a São Paulo-i Szövetségi Egyetem hallgatói által fejlesztett szoftver, amely segíti a hallgatókat a logikai áramkörök tanulásában.&lt;/p&gt;&lt;p&gt;Szoftver verzió: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Alkotók:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; A wiRedPandát jelenleg Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves és Maycon A. Santana tartja karban.&lt;/p&gt;&lt;p&gt; Kérjük, küldjön jelentést a GitHub oldalunkon, ha hibát talál vagy új funkciót szeretne kérni.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Látogasson el weboldalunkra!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="938"/>
+        <location filename="../../UI/MainWindow.cpp" line="961"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Vászon gyorsbillentyűk&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Nagyítás &lt;/li&gt;&lt;li&gt; Ctrl+- : Kicsinyítés &lt;/li&gt;&lt;li&gt; Ctrl+1 : Vezetékek elrejtése/megjelenítése &lt;/li&gt;&lt;li&gt; Ctrl+2 : Kapuk elrejtése/megjelenítése &lt;/li&gt;&lt;li&gt; Ctrl+F : Elemek keresése &lt;/li&gt;&lt;li&gt; Ctrl+W : beWaveDolphin megnyitása &lt;/li&gt;&lt;li&gt; Ctrl+S : Projekt mentése &lt;/li&gt;&lt;li&gt; Ctrl+Q : Kilépés a wiRedPandából &lt;/li&gt;&lt;li&gt; F5 : Szimuláció indítása/szüneteltetése &lt;/li&gt;&lt;li&gt; [ : Előző elsődleges elem tulajdonság &lt;/li&gt;&lt;li&gt; ] : Következő elsődleges elem tulajdonság &lt;/li&gt;&lt;li&gt; { : Előző másodlagos elem tulajdonság &lt;/li&gt;&lt;li&gt; } : Következő másodlagos elem tulajdonság &lt;/li&gt;&lt;li&gt; &amp;lt; : Átalakítás előző elemre &lt;/li&gt;&lt;li&gt; &amp;gt; : Átalakítás következő elemre &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Általános tippek&lt;/h1&gt;&lt;p&gt;Dupla kattintás egy vezetéken csomópont létrehozásához&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="994"/>
+        <location filename="../../UI/MainWindow.cpp" line="1022"/>
         <source>Exit</source>
         <translation>Kilépés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1614"/>
+        <location filename="../../UI/MainWindow.cpp" line="1672"/>
         <source>Export to Image</source>
         <translation>Exportálás képpé</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1614"/>
+        <location filename="../../UI/MainWindow.cpp" line="1672"/>
         <source>PNG files (*.png)</source>
         <translation>PNG fájlok (*.png)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1310"/>
-        <location filename="../../UI/MainWindow.cpp" line="1844"/>
+        <location filename="../../UI/MainWindow.cpp" line="1354"/>
+        <location filename="../../UI/MainWindow.cpp" line="1920"/>
         <source>Unmute</source>
         <translation>Hang feloldása</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1890"/>
+        <location filename="../../UI/MainWindow.cpp" line="1970"/>
         <source>Save file first.</source>
         <translation>Először mentse el a fájlt.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1893"/>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1901"/>
-        <location filename="../../UI/MainWindow.cpp" line="1916"/>
+        <location filename="../../UI/MainWindow.cpp" line="1981"/>
+        <location filename="../../UI/MainWindow.cpp" line="1998"/>
         <source>Info</source>
         <translation>Infó</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1916"/>
+        <location filename="../../UI/MainWindow.cpp" line="1998"/>
         <source>Drag here to remove.</source>
         <translation>Húzza ide az eltávolításhoz.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1942"/>
+        <location filename="../../UI/MainWindow.cpp" line="2023"/>
         <source>Error removing file: %1</source>
         <translation>Hiba a fájl törlésekor: %1</translation>
     </message>
@@ -2373,7 +2373,7 @@ Javasolt név:</translation>
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="637"/>
+        <location filename="../../Scene/Commands.cpp" line="639"/>
         <source>Morph %1 elements to %2</source>
         <translation>%1 elem átalakítása %2-re</translation>
     </message>
@@ -2467,7 +2467,7 @@ Javasolt név:</translation>
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="203"/>
+        <location filename="../../Element/ICRegistry.cpp" line="223"/>
         <source>Add embedded IC</source>
         <translation>Beágyazott IC hozzáadása</translation>
     </message>
@@ -2574,9 +2574,17 @@ Javasolt név:</translation>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1023"/>
+        <location filename="../../Scene/Commands.cpp" line="1025"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Blob regisztrálása: &quot;%1&quot;</translation>
+    </message>
+</context>
+<context>
+    <name>RemoveBlobCommand</name>
+    <message>
+        <location filename="../../Scene/Commands.cpp" line="1048"/>
+        <source>Remove blob &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2617,18 +2625,18 @@ Javasolt név:</translation>
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="554"/>
+        <location filename="../../Scene/Scene.cpp" line="559"/>
         <source>&amp;Undo</source>
         <translation>&amp;Visszavonás</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="560"/>
+        <location filename="../../Scene/Scene.cpp" line="565"/>
         <source>&amp;Redo</source>
         <translation>&amp;Ismétlés</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="580"/>
+        <location filename="../../Scene/Scene.cpp" line="585"/>
         <source>Paste</source>
         <translation>Beillesztés</translation>
     </message>
@@ -2673,7 +2681,7 @@ Javasolt név:</translation>
         <translation>A verziókezelő biztonsági másolat létrehozása sikertelen: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="353"/>
+        <location filename="../../IO/Serialization.cpp" line="366"/>
         <source>Error copying file: %1</source>
         <translation>Hiba a fájl másolásakor: %1</translation>
     </message>
@@ -2681,7 +2689,7 @@ Javasolt név:</translation>
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="232"/>
+        <location filename="../../Simulation/Simulation.cpp" line="231"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Figyelmeztetés: a visszacsatolt áramkör nem konvergált — az áramkör oszcillálhat.</translation>
     </message>
@@ -2704,17 +2712,17 @@ Javasolt név:</translation>
         <translation>Vezeték szétválasztása</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="570"/>
+        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
         <translation>Hiba a(z) %1 újbóli végrehajtása közben</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="578"/>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Hiba: az endPort null a SplitCommand::redo() függvényben</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="607"/>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
         <translation>Hiba a(z) %1 visszavonása közben</translation>
     </message>
@@ -2761,12 +2769,12 @@ Javasolt név:</translation>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="964"/>
+        <location filename="../../Scene/Commands.cpp" line="966"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Igazságtábla kimenet váltása a(z) %1 pozícióban</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="973"/>
+        <location filename="../../Scene/Commands.cpp" line="975"/>
         <source>Could not find truthtable element!</source>
         <translation>Nem sikerült megtalálni az igazságtábla elemet!</translation>
     </message>
@@ -2800,7 +2808,7 @@ Javasolt név:</translation>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1056"/>
+        <location filename="../../Scene/Commands.cpp" line="1081"/>
         <source>Update %1 IC blobs</source>
         <translation>%1 IC blob frissítése</translation>
     </message>
@@ -2816,7 +2824,7 @@ Javasolt név:</translation>
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="86"/>
+        <location filename="../../Scene/Workspace.cpp" line="141"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -2827,42 +2835,50 @@ Az Ön wiRedPanda verziója (%2) a(z) %3 fájlformátumot támogatja.
 Kérjük, frissítse a wiRedPanda alkalmazást a fájl módosításainak mentéséhez.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="90"/>
+        <location filename="../../Scene/Workspace.cpp" line="145"/>
         <source>Cannot save.</source>
         <translation>Nem lehet menteni.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="157"/>
+        <location filename="../../Scene/Workspace.cpp" line="217"/>
         <source>Save File</source>
         <translation>Fájl mentése</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="157"/>
+        <location filename="../../Scene/Workspace.cpp" line="217"/>
+        <location filename="../../Scene/Workspace.cpp" line="264"/>
+        <location filename="../../Scene/Workspace.cpp" line="303"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda fájlok (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="197"/>
+        <location filename="../../Scene/Workspace.cpp" line="262"/>
+        <location filename="../../Scene/Workspace.cpp" line="301"/>
+        <source>Save File (original location is read-only)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
         <translation>Hiba a fájl megnyitásakor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="226"/>
+        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
         <translation>Nem sikerült menteni a fájlt: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="299"/>
+        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
         <translation>Ez a fájl nem létezik: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="308"/>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
         <translation>Nem sikerült megnyitni a fájlt: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="343"/>
+        <location filename="../../Scene/Workspace.cpp" line="427"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -2875,26 +2891,36 @@ A fájl megnyílik, de a mentés le van tiltva.
 Kérjük, frissítse a wiRedPanda alkalmazást a fájl szerkesztéséhez és mentéséhez.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="348"/>
+        <location filename="../../Scene/Workspace.cpp" line="432"/>
         <source>Newer version file.</source>
         <translation>Újabb verziójú fájl.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="351"/>
+        <location filename="../../Scene/Workspace.cpp" line="435"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Ez a fájl régebbi formátumban van (verzió %1), és automatikusan frissítésre kerül az aktuális formátumra (verzió %2).
 Az eredeti fájlról biztonsági másolat készült a következő néven: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="354"/>
+        <location filename="../../Scene/Workspace.cpp" line="438"/>
         <source>File upgraded.</source>
         <translation>Fájl frissítve.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="520"/>
+        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
         <translation>Hiba az automatikus mentés fájl megnyitásakor: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Scene/Workspace.cpp" line="608"/>
+        <source>Could not commit autosave file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Scene/Workspace.cpp" line="774"/>
+        <source>Remove embedded IC &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
