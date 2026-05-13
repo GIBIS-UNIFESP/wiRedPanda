@@ -15,7 +15,7 @@
 
 #include "Tests/Common/TestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 
 // ============================================================
 // Helper: Single-Stage 6-bit Decoder
@@ -226,7 +226,7 @@ void TestMemorySettlingTime::testDecoderSettlingTime_singlestage()
     sim->update();
 
     // Verify correct output is active
-    QCOMPARE(getInputStatus(&outputs[addressValue]), true);
+    QCOMPARE(inputStatus(&outputs[addressValue]), true);
 }
 
 void TestMemorySettlingTime::testDecoderSettlingTime_cascaded_data()
@@ -273,7 +273,7 @@ void TestMemorySettlingTime::testDecoderSettlingTime_cascaded()
         sim->update();
         settlingTime++;
 
-        bool currentValue = getInputStatus(&outputs[checkValue]);
+        bool currentValue = inputStatus(&outputs[checkValue]);
 
         if (currentValue && lastValue) {
             break;
@@ -285,7 +285,7 @@ void TestMemorySettlingTime::testDecoderSettlingTime_cascaded()
     // Verify settling time is within expected range: at least settling, but reasonable limit
     QVERIFY2(settlingTime >= 1, qPrintable(QString("Cascaded settling too fast: %1 cycles").arg(settlingTime)));
     QVERIFY2(settlingTime <= 100, qPrintable(QString("Cascaded settling too slow: %1 cycles").arg(settlingTime)));
-    QCOMPARE(getInputStatus(&outputs[checkValue]), true);
+    QCOMPARE(inputStatus(&outputs[checkValue]), true);
 }
 
 void TestMemorySettlingTime::testReadMuxSettlingTime_data()
@@ -331,7 +331,7 @@ void TestMemorySettlingTime::testReadMuxSettlingTime()
         for (int i = 0; i < 50; i++) {
             sim_ss->update();
             ss_time++;
-            if (getInputStatus(&out_ss[testAddr])) break;
+            if (inputStatus(&out_ss[testAddr])) break;
         }
 
         // Measure cascaded
@@ -346,14 +346,14 @@ void TestMemorySettlingTime::testReadMuxSettlingTime()
         for (int i = 0; i < 50; i++) {
             sim_cas->update();
             cas_time++;
-            if (getInputStatus(&out_cas[testAddr])) break;
+            if (inputStatus(&out_cas[testAddr])) break;
         }
 
         // Cascaded settling should be >= single-stage
         // Note: In zero-delay simulation, both settle equally; in real hardware, cascaded is slower
         // Both should be stable
-        QVERIFY(getInputStatus(&out_ss[testAddr]));
-        QVERIFY(getInputStatus(&out_cas[testAddr]));
+        QVERIFY(inputStatus(&out_ss[testAddr]));
+        QVERIFY(inputStatus(&out_cas[testAddr]));
         QCOMPARE(cas_time >= ss_time, true);
     }
 }
@@ -396,7 +396,7 @@ void TestMemorySettlingTime::testSettlingTimeBenchmarkSummary()
         for (int i = 0; i < 50; i++) {
             sim_ss->update();
             ss_time++;
-            if (getInputStatus(&out_ss[addr])) break;
+            if (inputStatus(&out_ss[addr])) break;
         }
 
         // Cascaded measurement
@@ -411,7 +411,7 @@ void TestMemorySettlingTime::testSettlingTimeBenchmarkSummary()
         for (int i = 0; i < 50; i++) {
             sim_cas->update();
             cas_time++;
-            if (getInputStatus(&out_cas[addr])) break;
+            if (inputStatus(&out_cas[addr])) break;
         }
 
         ss_total += ss_time;

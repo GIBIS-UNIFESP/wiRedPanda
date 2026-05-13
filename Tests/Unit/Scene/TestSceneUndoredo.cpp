@@ -2137,6 +2137,6 @@ void TestSceneUndoredo::testDeleteUndoSimulationCorrectness()
         swA->setOn(row.first.first);
         swB->setOn(row.first.second);
         sim->update();
-        QCOMPARE(TestUtils::getInputStatus(led), row.second);
+        QCOMPARE(TestUtils::inputStatus(led), row.second);
     }
 }

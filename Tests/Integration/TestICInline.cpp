@@ -767,7 +767,7 @@ void TestICInline::testEmbedSimulatesCorrectly()
         swA.setOn(truthTable[i][0]);
         swB.setOn(truthTable[i][1]);
         sim->update();
-        QCOMPARE(TestUtils::getInputStatus(&led), expectedXOR[i]);
+        QCOMPARE(TestUtils::inputStatus(&led), expectedXOR[i]);
     }
 }
 
@@ -807,7 +807,7 @@ void TestICInline::testEmbedSimulatesMultiLevel()
         swA.setOn(truthTable[i][0]);
         swB.setOn(truthTable[i][1]);
         sim->update();
-        QCOMPARE(TestUtils::getInputStatus(&led), expectedNAND[i]);
+        QCOMPARE(TestUtils::inputStatus(&led), expectedNAND[i]);
     }
 }
 
@@ -2603,7 +2603,7 @@ void TestICInline::testPortCountChangeConnectionCleanup()
     int connAfter = TestUtils::countConnections(ws.scene());
 
     // All surviving connections should be valid
-    auto conns = TestUtils::getConnections(ws.scene());
+    auto conns = TestUtils::sceneConnections(ws.scene());
     for (auto *conn : conns) {
         QVERIFY(conn->startPort());
         QVERIFY(conn->endPort());
@@ -2613,7 +2613,7 @@ void TestICInline::testPortCountChangeConnectionCleanup()
     ws.scene()->undoStack()->undo();
     QCOMPARE(TestUtils::countConnections(ws.scene()), 3);
 
-    auto restoredConns = TestUtils::getConnections(ws.scene());
+    auto restoredConns = TestUtils::sceneConnections(ws.scene());
     for (auto *conn : restoredConns) {
         QVERIFY(conn->startPort());
         QVERIFY(conn->endPort());

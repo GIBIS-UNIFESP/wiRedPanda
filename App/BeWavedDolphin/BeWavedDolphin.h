@@ -110,16 +110,16 @@ public:
     // --- MCP Accessors ---
 
     /// Returns the underlying table model (MCP access).
-    QStandardItemModel* getModel() const { return m_model; }
+    QStandardItemModel* model() const { return m_model; }
 
     /// Returns the output element vector (MCP access).
-    const QVector<GraphicElement *>& getOutputElements() const { return m_outputs; }
+    const QVector<GraphicElement *>& outputElements() const { return m_outputs; }
 
     /// Returns the input element vector (MCP access).
-    const QVector<GraphicElementInput *>& getInputElements() const { return m_inputs; }
+    const QVector<GraphicElementInput *>& inputElements() const { return m_inputs; }
 
     /// Returns the current simulation length (number of columns).
-    int getLength() const { return m_length; }
+    int length() const { return m_length; }
 
 protected:
     // --- Qt event overrides ---

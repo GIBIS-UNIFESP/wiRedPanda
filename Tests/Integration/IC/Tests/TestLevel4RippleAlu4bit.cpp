@@ -11,7 +11,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 void TestLevel4RippleALU4Bit::initTestCase()
@@ -101,7 +101,7 @@ void TestLevel4RippleALU4Bit::testAluAdd()
     // Read result bits from circuit
     int result = 0;
     for (int i = 0; i < 4; ++i) {
-        if (getInputStatus(&ledResult[i])) {
+        if (inputStatus(&ledResult[i])) {
             result |= (1 << i);
         }
     }
@@ -191,7 +191,7 @@ void TestLevel4RippleALU4Bit::testAluAnd()
     // Read result bits from circuit
     int result = 0;
     for (int i = 0; i < 4; ++i) {
-        if (getInputStatus(&ledResult[i])) {
+        if (inputStatus(&ledResult[i])) {
             result |= (1 << i);
         }
     }
@@ -281,7 +281,7 @@ void TestLevel4RippleALU4Bit::testAluOr()
     // Read result bits from circuit
     int result = 0;
     for (int i = 0; i < 4; ++i) {
-        if (getInputStatus(&ledResult[i])) {
+        if (inputStatus(&ledResult[i])) {
             result |= (1 << i);
         }
     }
@@ -372,7 +372,7 @@ void TestLevel4RippleALU4Bit::testAluSub()
     // Read result bits from circuit
     int result = 0;
     for (int i = 0; i < 4; ++i) {
-        if (getInputStatus(&ledResult[i])) {
+        if (inputStatus(&ledResult[i])) {
             result |= (1 << i);
         }
     }
@@ -486,7 +486,7 @@ void TestLevel4RippleALU4Bit::testAluFlags()
     // Read result bits from circuit
     int result = 0;
     for (int i = 0; i < 4; ++i) {
-        if (getInputStatus(&ledResult[i])) {
+        if (inputStatus(&ledResult[i])) {
             result |= (1 << i);
         }
     }

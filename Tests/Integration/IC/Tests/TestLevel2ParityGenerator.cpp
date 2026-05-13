@@ -9,7 +9,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct ParityGeneratorFixture {
@@ -108,5 +108,5 @@ void TestLevel2ParityGenerator::testParityGenerator()
     }
     f.sim->update();
 
-    QCOMPARE(getInputStatus(f.parityOutput), expectedParity);
+    QCOMPARE(inputStatus(f.parityOutput), expectedParity);
 }

@@ -58,7 +58,7 @@ public:
 
     // Schema management
     bool isSchemaLoaded() const;
-    QString getSchemaPath() const;
+    QString schemaPath() const;
 
     // Utility methods
     static json qjsonToNlohmann(const QJsonObject &qjson);

@@ -9,7 +9,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Mux2to1Fixture {
@@ -107,5 +107,5 @@ void TestLevel2MUX2To1::testMux2to1()
     f.select->setOn(selectValue);
     f.sim->update();
 
-    QCOMPARE(getInputStatus(f.output), expectedOutput);
+    QCOMPARE(inputStatus(f.output), expectedOutput);
 }

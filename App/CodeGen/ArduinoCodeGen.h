@@ -116,7 +116,7 @@ private:
     /// Returns a board configuration with at least \a requiredPins available GPIO pins.
     ArduinoBoardConfig selectBoard(int requiredPins);
     /// Returns the list of known Arduino board configurations.
-    QVector<ArduinoBoardConfig> getAvailableBoards();
+    QVector<ArduinoBoardConfig> availableBoards() const;
 
     // --- Signal Name Resolution ---
 

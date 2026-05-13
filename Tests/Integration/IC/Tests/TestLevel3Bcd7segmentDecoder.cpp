@@ -9,7 +9,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Bcd7segFixture {
@@ -126,7 +126,7 @@ void TestLevel3BCD7SegmentDecoder::testBCD7SegmentDecoder()
 
     int actualSegmentPattern = 0;
     for (int i = 0; i < 7; ++i) {
-        if (getInputStatus(f.segmentOutputs[i])) {
+        if (inputStatus(f.segmentOutputs[i])) {
             actualSegmentPattern |= (1 << i);
         }
     }

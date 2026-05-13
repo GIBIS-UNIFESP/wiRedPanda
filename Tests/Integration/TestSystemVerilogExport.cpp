@@ -121,7 +121,7 @@ static QVector<int> readOutputs(const QVector<Led *> &leds)
     QVector<int> result;
     result.reserve(leds.size());
     for (auto *led : leds) {
-        result.append(TestUtils::getInputStatus(led, 0) ? 1 : 0);
+        result.append(TestUtils::inputStatus(led, 0) ? 1 : 0);
     }
     return result;
 }
@@ -925,7 +925,7 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
             auto collectOutputBits = [&]() {
                 QVector<int> bits(numOutputs);
                 for (int o = 0; o < numOutputs; ++o) {
-                    bits[o] = TestUtils::getInputStatus(leds[o], 0) ? 1 : 0;
+                    bits[o] = TestUtils::inputStatus(leds[o], 0) ? 1 : 0;
                 }
                 return bits;
             };

@@ -13,7 +13,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
@@ -156,10 +156,10 @@ void TestLevel6RegisterFile8X8::testRegisterFile()
     // Read outputs from both ports
     int readValue1 = 0, readValue2 = 0;
     for (int i = 0; i < 8; ++i) {
-        if (getInputStatus(f.readData1[i])) {
+        if (inputStatus(f.readData1[i])) {
             readValue1 |= (1 << i);
         }
-        if (getInputStatus(f.readData2[i])) {
+        if (inputStatus(f.readData2[i])) {
             readValue2 |= (1 << i);
         }
     }

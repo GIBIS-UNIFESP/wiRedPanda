@@ -6,7 +6,7 @@
 #include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
 
 using TestUtils::clockCycle;
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using TestUtils::readMultiBitOutput;
 
 // ============================================================
@@ -91,31 +91,31 @@ void TestCPUControlUnit::testControlUnitFlagWrite()
     // Verify starting at state 0 (FETCH), flagWrite should be 0
     int currentState = readMultiBitOutput(state);
     QCOMPARE(currentState, 0);  // FETCH
-    QCOMPARE(TestUtils::getInputStatus(flagWrite, 0), false);
+    QCOMPARE(TestUtils::inputStatus(flagWrite, 0), false);
     // Transition to state 1 (DECODE)
     TestUtils::clockCycle(sim, clock);  // Complete clock cycle (HIGH→settle→LOW→settle)
     sim->update();
     currentState = readMultiBitOutput(state);
     QCOMPARE(currentState, 1);  // DECODE
-    QCOMPARE(TestUtils::getInputStatus(flagWrite, 0), false);
+    QCOMPARE(TestUtils::inputStatus(flagWrite, 0), false);
     // Transition to state 2 (EXECUTE) - flagWrite should be asserted
     TestUtils::clockCycle(sim, clock);  // Complete clock cycle (HIGH→settle→LOW→settle)
     sim->update();
     currentState = readMultiBitOutput(state);
     QCOMPARE(currentState, 2);  // EXECUTE
-    QCOMPARE(TestUtils::getInputStatus(flagWrite, 0), true);  // FlagWrite asserted!
+    QCOMPARE(TestUtils::inputStatus(flagWrite, 0), true);  // FlagWrite asserted!
     // Transition to state 3 (WRITEBACK) - flagWrite should be de-asserted
     TestUtils::clockCycle(sim, clock);  // Complete clock cycle (HIGH→settle→LOW→settle)
     sim->update();
     currentState = readMultiBitOutput(state);
     QCOMPARE(currentState, 3);  // WRITEBACK
-    QCOMPARE(TestUtils::getInputStatus(flagWrite, 0), false);
+    QCOMPARE(TestUtils::inputStatus(flagWrite, 0), false);
     // Transition to state 4 (HALT) - flagWrite should remain 0
     TestUtils::clockCycle(sim, clock);  // Complete clock cycle (HIGH→settle→LOW→settle)
     sim->update();
     currentState = readMultiBitOutput(state);
     QCOMPARE(currentState, 4);  // HALT
-    QCOMPARE(TestUtils::getInputStatus(flagWrite, 0), false);
+    QCOMPARE(TestUtils::inputStatus(flagWrite, 0), false);
 }
 
 void TestCPUControlUnit::testControlUnit_data()

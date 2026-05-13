@@ -11,7 +11,7 @@
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Mux8to1Fixture {
@@ -105,5 +105,5 @@ void TestLevel2MUX8To1::testMultiplexer8to1()
     f.sim->update();
 
     bool expectedOutput = f.inputs[selectValue]->isOn();
-    QCOMPARE(getInputStatus(f.output), expectedOutput);
+    QCOMPARE(inputStatus(f.output), expectedOutput);
 }

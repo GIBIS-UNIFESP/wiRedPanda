@@ -14,7 +14,7 @@
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Comparator4bitEqualityFixture {
@@ -107,5 +107,5 @@ void TestLevel3Comparator4BitEquality::testComparator4BitEquality()
     }
     f.sim->update();
 
-    QCOMPARE(getInputStatus(f.ledEqual), expectedEqual);
+    QCOMPARE(inputStatus(f.ledEqual), expectedEqual);
 }

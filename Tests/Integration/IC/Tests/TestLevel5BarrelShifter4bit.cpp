@@ -11,7 +11,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct BarrelShifter4bitFixture {
@@ -127,7 +127,7 @@ void TestLevel5BarrelShifter4Bit::testBarrelShifter()
 
     int result = 0;
     for (int i = 0; i < 4; ++i) {
-        if (getInputStatus(f.ledOut[i])) {
+        if (inputStatus(f.ledOut[i])) {
             result |= (1 << i);
         }
     }

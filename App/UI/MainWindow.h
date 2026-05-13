@@ -214,7 +214,7 @@ private:
 
     /// Returns the first selected IC element, or nullptr if none is selected or
     /// if there is no current tab or the first selected element is not an IC.
-    IC *getSelectedIC() const;
+    IC *selectedIC() const;
 
     /// Shows or hides the IC management buttons (Add, Remove, MakeSelfContained).
     void setICButtonsVisible(bool visible);

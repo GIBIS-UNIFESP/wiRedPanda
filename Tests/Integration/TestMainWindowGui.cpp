@@ -398,7 +398,7 @@ void TestMainWindowGui::testRestartSimulation()
     auto *sim = builder.initSimulation();
     sw->setOn(true);
     sim->update();
-    QCOMPARE(TestUtils::getInputStatus(led), true);
+    QCOMPARE(TestUtils::inputStatus(led), true);
 
     auto *action = window->findChild<QAction *>("actionRestart");
     QVERIFY2(action, "actionRestart not found");
@@ -1282,12 +1282,12 @@ void TestMainWindowGui::testEmbeddedICSimulationAfterDeleteUndo()
     swA->setOn(false);
     swB->setOn(false);
     sim->update();
-    bool outputOff = TestUtils::getInputStatus(led);
+    bool outputOff = TestUtils::inputStatus(led);
 
     // Also test with inputs ON to verify IC is actually processing signals
     swA->setOn(true);
     sim->update();
-    bool outputOn = TestUtils::getInputStatus(led);
+    bool outputOn = TestUtils::inputStatus(led);
 
     // Delete IC, undo, re-simulate
     clickElement(view, ic);
@@ -1298,12 +1298,12 @@ void TestMainWindowGui::testEmbeddedICSimulationAfterDeleteUndo()
     swA->setOn(false);
     swB->setOn(false);
     sim->update();
-    QCOMPARE(TestUtils::getInputStatus(led), outputOff);
+    QCOMPARE(TestUtils::inputStatus(led), outputOff);
 
     // Verify with inputs ON — IC must be functionally processing signals
     swA->setOn(true);
     sim->update();
-    QCOMPARE(TestUtils::getInputStatus(led), outputOn);
+    QCOMPARE(TestUtils::inputStatus(led), outputOn);
 }
 
 void TestMainWindowGui::testEmbeddedICMultipleTypesDeleteOne()
@@ -2103,7 +2103,7 @@ void TestMainWindowGui::testWireCreationViaMouse()
     auto *sim = builder.initSimulation();
     sw->setOn(true);
     sim->update();
-    QCOMPARE(TestUtils::getInputStatus(led), true);
+    QCOMPARE(TestUtils::inputStatus(led), true);
 }
 
 void TestMainWindowGui::testRubberBandSelection()
@@ -2225,7 +2225,7 @@ void TestMainWindowGui::testToggleInputDuringSimulation()
     sim->update();
 
     // LED should be off initially
-    QCOMPARE(TestUtils::getInputStatus(led), false);
+    QCOMPARE(TestUtils::inputStatus(led), false);
 
     // Click the switch to toggle it
     clickElement(view, sw);
@@ -2235,7 +2235,7 @@ void TestMainWindowGui::testToggleInputDuringSimulation()
 
     // After toggling, LED state depends on whether click toggles the switch.
     // InputSwitch toggles on click, so LED should now be on.
-    QCOMPARE(TestUtils::getInputStatus(led), true);
+    QCOMPARE(TestUtils::inputStatus(led), true);
 }
 
 void TestMainWindowGui::testInputButtonMomentary()
@@ -2256,17 +2256,17 @@ void TestMainWindowGui::testInputButtonMomentary()
     sim->update();
 
     // Button is off initially
-    QCOMPARE(TestUtils::getInputStatus(led), false);
+    QCOMPARE(TestUtils::inputStatus(led), false);
 
     // Simulate key press (button has default trigger key)
     button->setOn(true);
     sim->update();
-    QCOMPARE(TestUtils::getInputStatus(led), true);
+    QCOMPARE(TestUtils::inputStatus(led), true);
 
     // Release — button is momentary, should return to 0
     button->setOn(false);
     sim->update();
-    QCOMPARE(TestUtils::getInputStatus(led), false);
+    QCOMPARE(TestUtils::inputStatus(led), false);
 }
 
 void TestMainWindowGui::testRapidSimulationToggle()

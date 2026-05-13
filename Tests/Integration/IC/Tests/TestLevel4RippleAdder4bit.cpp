@@ -13,7 +13,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct RippleAdder4bitFixture {
@@ -58,7 +58,7 @@ struct RippleAdder4bitFixture {
     {
         int result = 0;
         for (int i = 0; i < 4; ++i) {
-            result |= (getInputStatus(ledSum[i]) ? 1 : 0) << i;
+            result |= (inputStatus(ledSum[i]) ? 1 : 0) << i;
         }
         return result;
     }
@@ -123,7 +123,7 @@ void TestLevel4RippleAdder4Bit::testAdder4Bit()
     f.sim->update();
 
     QCOMPARE(f.readSum(), expectedSum);
-    QCOMPARE(getInputStatus(f.ledCarryOut), expectedCarryOut);
+    QCOMPARE(inputStatus(f.ledCarryOut), expectedCarryOut);
 }
 
 void TestLevel4RippleAdder4Bit::testRippleCarry_data()
@@ -162,5 +162,5 @@ void TestLevel4RippleAdder4Bit::testRippleCarry()
     f.sim->update();
 
     QCOMPARE(f.readSum(), expectedSum);
-    QCOMPARE(getInputStatus(f.ledCarryOut), expectedCarryOut);
+    QCOMPARE(inputStatus(f.ledCarryOut), expectedCarryOut);
 }

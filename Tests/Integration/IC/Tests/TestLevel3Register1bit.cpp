@@ -96,8 +96,8 @@ void TestLevel3Register1Bit::test1BitRegister() {
     reset->setOn(true);             // Reset=TRUE → NOT gate inverts it → Clear=FALSE (active-low assert)
     sim->update();
     // After reset: Q=0, NotQ=1
-    QCOMPARE(TestUtils::getInputStatus(q), false);
-    QCOMPARE(TestUtils::getInputStatus(notQ), true);
+    QCOMPARE(TestUtils::inputStatus(q), false);
+    QCOMPARE(TestUtils::inputStatus(notQ), true);
 
     // Test 2: Write 1 on clock edge
     reset->setOn(false);            // De-assert reset (false = not resetting)
@@ -108,8 +108,8 @@ void TestLevel3Register1Bit::test1BitRegister() {
     // Pulse clock
     clockCycle(sim, clock);
 
-    QCOMPARE(TestUtils::getInputStatus(q), 1);
-    QCOMPARE(TestUtils::getInputStatus(notQ), 0);
+    QCOMPARE(TestUtils::inputStatus(q), 1);
+    QCOMPARE(TestUtils::inputStatus(notQ), 0);
 
     // Test 3: Hold value when WriteEnable=0
     data->setOn(false);             // Change data to 0
@@ -117,8 +117,8 @@ void TestLevel3Register1Bit::test1BitRegister() {
     writeEnable->setOn(false);      // Disable writing (hold)
 
     sim->update();
-    int q_after_hold = TestUtils::getInputStatus(q);
-    int notq_after_hold = TestUtils::getInputStatus(notQ);
+    int q_after_hold = TestUtils::inputStatus(q);
+    int notq_after_hold = TestUtils::inputStatus(notQ);
 
     // IMPORTANT: Hold should preserve value - Q should STILL be 1, not change
     QCOMPARE(q_after_hold, 1);  // Verify hold preserves Q value
@@ -126,8 +126,8 @@ void TestLevel3Register1Bit::test1BitRegister() {
 
     clockCycle(sim, clock);
 
-    QCOMPARE(TestUtils::getInputStatus(q), 1);
-    QCOMPARE(TestUtils::getInputStatus(notQ), 0);
+    QCOMPARE(TestUtils::inputStatus(q), 1);
+    QCOMPARE(TestUtils::inputStatus(notQ), 0);
 
     // Test 4: Write 0 on clock edge
     data->setOn(false);             // Set data = 0
@@ -136,8 +136,8 @@ void TestLevel3Register1Bit::test1BitRegister() {
 
     clockCycle(sim, clock);
 
-    QCOMPARE(TestUtils::getInputStatus(q), 0);
-    QCOMPARE(TestUtils::getInputStatus(notQ), 1);
+    QCOMPARE(TestUtils::inputStatus(q), 0);
+    QCOMPARE(TestUtils::inputStatus(notQ), 1);
 
     // Test 5: Reset overrides everything
     data->setOn(true);
@@ -148,8 +148,8 @@ void TestLevel3Register1Bit::test1BitRegister() {
 
     sim->update();
 
-    QCOMPARE(TestUtils::getInputStatus(q), 0);
-    QCOMPARE(TestUtils::getInputStatus(notQ), 1);
+    QCOMPARE(TestUtils::inputStatus(q), 0);
+    QCOMPARE(TestUtils::inputStatus(notQ), 1);
 
     // Test 5b: De-assert reset and see what happens
     reset->setOn(false);
@@ -170,7 +170,7 @@ void TestLevel3Register1Bit::test1BitRegister() {
 
     clockCycle(sim, clock);
 
-    QCOMPARE(TestUtils::getInputStatus(q), 1);  // Verify write after reset actually worked
+    QCOMPARE(TestUtils::inputStatus(q), 1);  // Verify write after reset actually worked
 }
 
 /**

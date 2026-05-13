@@ -93,7 +93,7 @@ static void selectCells(BewavedDolphin *dolphin, int startRow, int startCol, int
 {
     auto *tv = findTableView(dolphin);
     QVERIFY2(tv, "QTableView not found in BewavedDolphin");
-    auto *model = dolphin->getModel();
+    auto *model = dolphin->model();
     QVERIFY2(model, "Model is null in BewavedDolphin");
     auto *selModel = tv->selectionModel();
     QVERIFY2(selModel, "Selection model is null");
@@ -126,9 +126,9 @@ void TestBewavedDolphinGui::testCreateBlankWaveform()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    QVERIFY(dolphin->getModel() != nullptr);
-    QVERIFY(dolphin->getLength() > 0);
-    QCOMPARE(dolphin->getLength(), 32); // default length
+    QVERIFY(dolphin->model() != nullptr);
+    QVERIFY(dolphin->length() > 0);
+    QCOMPARE(dolphin->length(), 32); // default length
 }
 
 void TestBewavedDolphinGui::testCreateWaveformInputOutputCounts()
@@ -137,11 +137,11 @@ void TestBewavedDolphinGui::testCreateWaveformInputOutputCounts()
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
     // AND circuit has 2 inputs and 1 output
-    QCOMPARE(static_cast<int>(dolphin->getInputElements().size()), 2);
-    QCOMPARE(static_cast<int>(dolphin->getOutputElements().size()), 1);
+    QCOMPARE(static_cast<int>(dolphin->inputElements().size()), 2);
+    QCOMPARE(static_cast<int>(dolphin->outputElements().size()), 1);
 
     // Model rows = inputs + outputs
-    auto *model = dolphin->getModel();
+    auto *model = dolphin->model();
     QCOMPARE(model->rowCount(), 3); // 2 inputs + 1 output
 }
 
@@ -154,7 +154,7 @@ void TestBewavedDolphinGui::testSetCellValue()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    auto *model = dolphin->getModel();
+    auto *model = dolphin->model();
     QVERIFY(model);
 
     // Set input 0, column 0 to 1
@@ -171,8 +171,8 @@ void TestBewavedDolphinGui::testRunSimulationFillsOutputs()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    auto *model = dolphin->getModel();
-    int outputRow = static_cast<int>(dolphin->getInputElements().size()); // first output row
+    auto *model = dolphin->model();
+    int outputRow = static_cast<int>(dolphin->inputElements().size()); // first output row
 
     // Set both inputs to 1 at column 5
     dolphin->createElement(0, 5, 1, true, false);
@@ -194,16 +194,16 @@ void TestBewavedDolphinGui::testSetLengthChangesColumns()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    QCOMPARE(dolphin->getLength(), 32);
+    QCOMPARE(dolphin->length(), 32);
 
     dolphin->setLength(16, false);
-    QCOMPARE(dolphin->getLength(), 16);
+    QCOMPARE(dolphin->length(), 16);
 
-    auto *model = dolphin->getModel();
+    auto *model = dolphin->model();
     QCOMPARE(model->columnCount(), 16);
 
     dolphin->setLength(64, false);
-    QCOMPARE(dolphin->getLength(), 64);
+    QCOMPARE(dolphin->length(), 64);
     QCOMPARE(model->columnCount(), 64);
 }
 
@@ -212,8 +212,8 @@ void TestBewavedDolphinGui::testCombinationalMode()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    auto *model = dolphin->getModel();
-    int inputCount = static_cast<int>(dolphin->getInputElements().size());
+    auto *model = dolphin->model();
+    int inputCount = static_cast<int>(dolphin->inputElements().size());
     int outputRow = inputCount;
 
     // Trigger combinational mode via action
@@ -222,7 +222,7 @@ void TestBewavedDolphinGui::testCombinationalMode()
     action->trigger();
 
     // After combinational mode, length should be at least 2^inputs = 4
-    QVERIFY(dolphin->getLength() >= 4);
+    QVERIFY(dolphin->length() >= 4);
 
     // The truth table should be filled: check column 3 (both inputs = 1 → AND = 1)
     // In combinational mode, column index is the binary input value
@@ -266,7 +266,7 @@ void TestBewavedDolphinGui::testClearAction()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    auto *model = dolphin->getModel();
+    auto *model = dolphin->model();
 
     // Set some input cells to 1
     dolphin->createElement(0, 0, 1, true, false);
@@ -293,13 +293,13 @@ void TestBewavedDolphinGui::testAutoCropAction()
 
     // AND circuit has 2 inputs → truth table size = 2^2 = 4
     dolphin->setLength(32, false);
-    QCOMPARE(dolphin->getLength(), 32);
+    QCOMPARE(dolphin->length(), 32);
 
     auto *action = dolphin->findChild<QAction *>("actionAutoCrop");
     QVERIFY(action);
     action->trigger();
 
-    QCOMPARE(dolphin->getLength(), 4);
+    QCOMPARE(dolphin->length(), 4);
 }
 
 // ===========================================================================
@@ -310,7 +310,7 @@ void TestBewavedDolphinGui::testSetTo0WithSelection()
 {
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
-    auto *model = dolphin->getModel();
+    auto *model = dolphin->model();
 
     // Set cells to 1 first
     dolphin->createElement(0, 0, 1, true, false);
@@ -331,7 +331,7 @@ void TestBewavedDolphinGui::testSetTo1WithSelection()
 {
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
-    auto *model = dolphin->getModel();
+    auto *model = dolphin->model();
 
     QCOMPARE(model->index(0, 0).data().toInt(), 0);
 
@@ -349,7 +349,7 @@ void TestBewavedDolphinGui::testInvertWithSelection()
 {
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
-    auto *model = dolphin->getModel();
+    auto *model = dolphin->model();
 
     dolphin->createElement(0, 0, 0, true, false);
     dolphin->createElement(0, 1, 1, true, false);
@@ -371,7 +371,7 @@ void TestBewavedDolphinGui::testCopyPasteWithSelection()
 {
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
-    auto *model = dolphin->getModel();
+    auto *model = dolphin->model();
 
     dolphin->createElement(0, 0, 1, true, false);
     dolphin->createElement(0, 1, 0, true, false);
@@ -400,7 +400,7 @@ void TestBewavedDolphinGui::testSetClockWaveWithSelection()
 {
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
-    auto *model = dolphin->getModel();
+    auto *model = dolphin->model();
 
     // Select row 0, cols 0-7
     selectCells(dolphin.get(), 0, 0, 0, 7);
@@ -500,7 +500,7 @@ void TestBewavedDolphinGui::testDoubleClickToggle()
 {
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
-    auto *model = dolphin->getModel();
+    auto *model = dolphin->model();
 
     // Set cell (0,0) to 0
     dolphin->createElement(0, 0, 0, true, false);
@@ -577,7 +577,7 @@ void TestBewavedDolphinGui::testCutWithSelection()
 {
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
-    auto *model = dolphin->getModel();
+    auto *model = dolphin->model();
 
     // Set cells to a known pattern
     dolphin->createElement(0, 0, 1, true, false);
@@ -673,9 +673,9 @@ void TestBewavedDolphinGui::testOutputRowsIgnoreSetValue()
 {
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
-    auto *model = dolphin->getModel();
+    auto *model = dolphin->model();
 
-    int outputRow = static_cast<int>(dolphin->getInputElements().size());
+    int outputRow = static_cast<int>(dolphin->inputElements().size());
 
     // Run simulation to populate outputs
     dolphin->run();
@@ -693,7 +693,7 @@ void TestBewavedDolphinGui::testPasteAtBoundary()
 {
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
-    auto *model = dolphin->getModel();
+    auto *model = dolphin->model();
 
     dolphin->setLength(8, false);
 
@@ -907,7 +907,7 @@ void TestBewavedDolphinGui::testFitScreenClampsAndGuardsA26()
     // guard makes FitScreen a no-op that leaves the prior m_scale intact.
     auto *table = dolphin->m_signalTableView;
     QVERIFY(table);
-    auto *model = dolphin->getModel();
+    auto *model = dolphin->model();
     QVERIFY(model);
     for (int col = 0; col < model->columnCount(); ++col) {
         table->setColumnHidden(col, true);

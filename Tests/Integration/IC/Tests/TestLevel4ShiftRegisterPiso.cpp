@@ -14,7 +14,7 @@
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
 using TestUtils::clockCycle;
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct ShiftRegisterPisoFixture {
@@ -120,7 +120,7 @@ void TestLevel4ShiftRegisterPISO::testShiftRegisterPISO()
     f.sim->update();
 
     for (int bitPos = 0; bitPos < expectedSerialOutput.size(); ++bitPos) {
-        bool currentBit = getInputStatus(f.serialOut);
+        bool currentBit = inputStatus(f.serialOut);
         QCOMPARE(currentBit, expectedSerialOutput[bitPos]);
         clockCycle(f.sim, f.clk);
     }

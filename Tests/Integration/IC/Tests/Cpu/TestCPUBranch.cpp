@@ -6,7 +6,7 @@
 #include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
 
 using TestUtils::clockCycle;
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using TestUtils::readMultiBitOutput;
 
 // ============================================================
@@ -80,7 +80,7 @@ void TestCPUBranch::testBranchCondition()
         zeroFlag->setOn(test.zero);
         negativeFlag->setOn(test.negative);
         sim->update();
-        bool result = TestUtils::getInputStatus(pcLoad, 0);
+        bool result = TestUtils::inputStatus(pcLoad, 0);
         QCOMPARE(result, test.expected);
     }
 }
@@ -170,8 +170,8 @@ void TestCPUBranch::testBranchIntegration()
     flag_write->setOn(false);
     // Verify flags were stored correctly
     sim_flags->update();
-    QCOMPARE(getInputStatus(flag_zero_out, 0), zeroFlag);
-    QCOMPARE(getInputStatus(flag_negative_out, 0), negativeFlag);
+    QCOMPARE(inputStatus(flag_zero_out, 0), zeroFlag);
+    QCOMPARE(inputStatus(flag_negative_out, 0), negativeFlag);
     // === Set Opcode on Decoder ===
     for (int i = 0; i < 4; i++) {
         opcode_bits[i]->setOn((opcode >> i) & 1);
@@ -180,23 +180,23 @@ void TestCPUBranch::testBranchIntegration()
     // Verify decoder output (one-hot encoding)
     int decoder_value = 0;
     for (int i = 0; i < 16; i++) {
-        if (getInputStatus(decoder_out[i], 0)) {
+        if (inputStatus(decoder_out[i], 0)) {
             decoder_value |= (1 << i);
         }
     }
     QCOMPARE(decoder_value, 1 << opcode);
     // === Connect Decoder Output and Flags to Branch Evaluator ===
     // (Manual wiring since separate simulations)
-    branch_decoder_jmp->setOn(getInputStatus(decoder_out[ISA_JMP], 0));
-    branch_decoder_beq->setOn(getInputStatus(decoder_out[ISA_BEQ], 0));
-    branch_decoder_bne->setOn(getInputStatus(decoder_out[ISA_BNE], 0));
-    branch_decoder_blt->setOn(getInputStatus(decoder_out[ISA_BLT], 0));
-    branch_decoder_bge->setOn(getInputStatus(decoder_out[ISA_BGE], 0));
-    branch_zero_flag->setOn(getInputStatus(flag_zero_out, 0));
-    branch_negative_flag->setOn(getInputStatus(flag_negative_out, 0));
+    branch_decoder_jmp->setOn(inputStatus(decoder_out[ISA_JMP], 0));
+    branch_decoder_beq->setOn(inputStatus(decoder_out[ISA_BEQ], 0));
+    branch_decoder_bne->setOn(inputStatus(decoder_out[ISA_BNE], 0));
+    branch_decoder_blt->setOn(inputStatus(decoder_out[ISA_BLT], 0));
+    branch_decoder_bge->setOn(inputStatus(decoder_out[ISA_BGE], 0));
+    branch_zero_flag->setOn(inputStatus(flag_zero_out, 0));
+    branch_negative_flag->setOn(inputStatus(flag_negative_out, 0));
     sim_branch->update();
     // === Verify Branch Decision ===
-    bool branchTaken = getInputStatus(branch_pc_load, 0);
+    bool branchTaken = inputStatus(branch_pc_load, 0);
     QCOMPARE(branchTaken, shouldBranch);
     // === Execute Branch if Taken ===
     if (shouldBranch) {

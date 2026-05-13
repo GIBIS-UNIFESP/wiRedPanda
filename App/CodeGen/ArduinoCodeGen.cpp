@@ -734,7 +734,7 @@ void ArduinoCodeGen::emitTruthTable(GraphicElement *elm)
     m_stream << QString("    //End TruthTable") << Qt::endl;
 }
 
-QVector<ArduinoBoardConfig> ArduinoCodeGen::getAvailableBoards()
+QVector<ArduinoBoardConfig> ArduinoCodeGen::availableBoards() const
 {
     static const QVector<ArduinoBoardConfig> boards = []() {
         QVector<ArduinoBoardConfig> b;
@@ -778,7 +778,7 @@ QVector<ArduinoBoardConfig> ArduinoCodeGen::getAvailableBoards()
 
 ArduinoBoardConfig ArduinoCodeGen::selectBoard(int requiredPins)
 {
-    const auto boards = getAvailableBoards();
+    const auto boards = availableBoards();
     for (const auto &board : boards) {
         if (board.maxPins() >= requiredPins) {
             return board;

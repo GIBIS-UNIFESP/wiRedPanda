@@ -1058,7 +1058,7 @@ void MainWindow::ensureFileExtension(QString &fileName, const QString &extension
     }
 }
 
-IC *MainWindow::getSelectedIC() const
+IC *MainWindow::selectedIC() const
 {
     if (!m_currentTab) {
         return nullptr;
@@ -2058,7 +2058,7 @@ QString MainWindow::resolveUniqueBlobName(const QString &initialName, Scene *sce
 void MainWindow::embedSelectedIC()
 {
     sentryBreadcrumb("ic", QStringLiteral("Embed IC"));
-    auto *firstIC = getSelectedIC();
+    auto *firstIC = selectedIC();
     if (!firstIC || firstIC->file().isEmpty()) {
         return;
     }
@@ -2092,7 +2092,7 @@ void MainWindow::embedSelectedIC()
 void MainWindow::extractSelectedIC()
 {
     sentryBreadcrumb("ic", QStringLiteral("Extract IC"));
-    auto *firstIC = getSelectedIC();
+    auto *firstIC = selectedIC();
     if (!firstIC || !firstIC->isEmbedded()) {
         return;
     }

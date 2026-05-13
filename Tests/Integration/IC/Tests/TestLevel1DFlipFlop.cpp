@@ -9,7 +9,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct DFlipFlopFixture {
@@ -97,40 +97,40 @@ void TestLevel1DFlipFlop::testDFlipFlopSequential()
     f.sim->update();
     f.clockIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q=0 after reset pulse
+    QCOMPARE(inputStatus(f.ledQ), false);  // Q=0 after reset pulse
 
     // Step 2: Set D=1 while Clock=0 -> Q should not change yet
     f.dataIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q still 0 (clock low)
+    QCOMPARE(inputStatus(f.ledQ), false);  // Q still 0 (clock low)
 
     // Step 3: Pulse clock high -> Q should capture D=1
     f.clockIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);   // Q=1 after clock rising edge
+    QCOMPARE(inputStatus(f.ledQ), true);   // Q=1 after clock rising edge
 
     // Step 4: Set D=0 while Clock=1 -> Q should hold at 1
     f.dataIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);   // Q held at 1 (clock still high)
+    QCOMPARE(inputStatus(f.ledQ), true);   // Q held at 1 (clock still high)
 
     // Step 5: Clock goes low -> Q should still hold at 1
     f.clockIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);   // Q held at 1
+    QCOMPARE(inputStatus(f.ledQ), true);   // Q held at 1
 
     // Step 6: D=0 while Clock=0 -> no change yet
     // (already set in step 4)
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);   // Q still 1
+    QCOMPARE(inputStatus(f.ledQ), true);   // Q still 1
 
     // Step 7: Clock rises again -> Q captures D=0
     f.clockIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q=0 after clock rising edge
+    QCOMPARE(inputStatus(f.ledQ), false);  // Q=0 after clock rising edge
 
     // Step 8: Clock low -> Q holds at 0
     f.clockIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q held at 0
+    QCOMPARE(inputStatus(f.ledQ), false);  // Q held at 0
 }

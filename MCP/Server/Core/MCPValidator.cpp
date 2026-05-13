@@ -69,7 +69,7 @@ bool MCPValidator::isSchemaLoaded() const
     return m_schemaLoaded;
 }
 
-QString MCPValidator::getSchemaPath() const
+QString MCPValidator::schemaPath() const
 {
     return m_schemaPath;
 }
