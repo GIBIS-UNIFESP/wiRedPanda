@@ -153,7 +153,7 @@ int Scene::lastId() const
 
 void Scene::setLastId(const int newLastId)
 {
-    m_lastId = qMax(m_lastId, newLastId);
+    m_lastId = (std::max)(m_lastId, newLastId);
 }
 
 int Scene::nextId()

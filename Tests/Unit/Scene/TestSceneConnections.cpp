@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Scene/TestSceneConnections.h"
 
+#include <algorithm>
 #include <memory>
 
 #include <QTemporaryDir>
@@ -176,7 +177,7 @@ void TestSceneConnections::testConnectionWithMultiplePorts()
     scene.addItem(orGate);
 
     // Connect multiple ports
-    for (int i = 0; i < qMin(andGate->inputs().size(), orGate->inputs().size()); ++i) {
+    for (int i = 0; i < (std::min)(andGate->inputs().size(), orGate->inputs().size()); ++i) {
         auto *conn = new QNEConnection(nullptr);
         conn->setStartPort(andGate->outputPort(0));
         conn->setEndPort(orGate->inputPort(i));

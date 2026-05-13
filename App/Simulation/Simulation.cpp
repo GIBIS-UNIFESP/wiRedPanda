@@ -37,7 +37,7 @@ Simulation::Simulation(Scene *scene)
     if (auto *screen = QGuiApplication::primaryScreen()) {
         const qreal hz = screen->refreshRate();
         if (hz > 0) {
-            m_visualTickInterval = qMax(1, static_cast<int>(1000.0 / hz));
+            m_visualTickInterval = (std::max)(1, static_cast<int>(1000.0 / hz));
         }
     }
 }
