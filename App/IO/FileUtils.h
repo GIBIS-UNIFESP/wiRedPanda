@@ -65,6 +65,39 @@ inline void copyPandaDeps(const QString &pandaPath, const QString &srcDir, const
         return;
     }
 
+    // Probe magic header (same strategy as I-008 / readPandaHeader): reject
+    // non-panda content without touching the live stream so readPreamble's
+    // status check remains reliable.
+    const QByteArray magicBuf = file.peek(sizeof(quint32));
+    if (magicBuf.size() < static_cast<int>(sizeof(quint32))) {
+        return;
+    }
+    QDataStream magicProbe(magicBuf);
+    magicProbe.setVersion(QDataStream::Qt_5_12);
+    quint32 magic = 0;
+    magicProbe >> magic;
+
+    if (magic != Serialization::MAGIC_HEADER_CIRCUIT) {
+        // May be a legacy "wiRedPanda X.Y" file: the leading 4 bytes encode the
+        // byte-length of the QString. Accept only plausible lengths.
+        static constexpr quint32 MaxLegacyHeaderBytes = 128;
+        if (magic == 0xFFFFFFFFu || magic > MaxLegacyHeaderBytes) {
+            return;
+        }
+        const int totalLen = static_cast<int>(sizeof(quint32) + magic);
+        const QByteArray strBuf = file.peek(totalLen);
+        if (strBuf.size() < totalLen) {
+            return;
+        }
+        QDataStream strProbe(strBuf);
+        strProbe.setVersion(QDataStream::Qt_5_12);
+        QString appName;
+        strProbe >> appName;
+        if (!appName.startsWith("wiRedPanda", Qt::CaseInsensitive)) {
+            return;
+        }
+    }
+
     QDataStream stream(&file);
     Serialization::Preamble preamble;
     try {
