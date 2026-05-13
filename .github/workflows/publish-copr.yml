@@ -1,0 +1,42 @@
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Trigger COPR build
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+# Enable by setting repository variable PUBLISH_COPR_ENABLED=true and
+# adding the COPR_WEBHOOK_URL secret (rebuild webhook URL from the
+# project's Integrations page on copr.fedorainfracloud.org).
+#
+# COPR's SCM source rebuilds whatever Packaging/copr/wiredpanda.spec says on the
+# ref it's configured to watch — this webhook does not (and, unlike the AUR/Scoop/
+# Chocolatey/Snap publishers, should not: those patch a local checkout and push the
+# result to a *separate* downstream repo, whereas COPR watches this repo's own ref
+# directly, so "self-patching" here would mean the workflow committing a version
+# bump back to the primary repository). So the spec's Version:/Release:/%changelog
+# must be bumped by hand as part of the same commit that bumps CMakeLists.txt's
+# PROJECT_VERSION for each release. The guard below fails loudly instead of
+# silently rebuilding a stale version if that step gets missed.
+
+jobs:
+  trigger:
+    if: vars.PUBLISH_COPR_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Verify spec version matches the release tag
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          SPEC_VERSION=$(awk -F'[[:space:]]+' '/^Version:/ { print $2; exit }' Packaging/copr/wiredpanda.spec)
+          if [ "$SPEC_VERSION" != "$VERSION" ]; then
+            echo "::error file=Packaging/copr/wiredpanda.spec::Version: is $SPEC_VERSION, but the release tag is $VERSION. Bump Packaging/copr/wiredpanda.spec (Version, Release, %changelog) alongside CMakeLists.txt's PROJECT_VERSION before releasing, or COPR will keep rebuilding the stale version." >&2
+            exit 1
+          fi
+
+      - name: POST to COPR webhook
+        run: curl -fSs -X POST "${{ secrets.COPR_WEBHOOK_URL }}"
