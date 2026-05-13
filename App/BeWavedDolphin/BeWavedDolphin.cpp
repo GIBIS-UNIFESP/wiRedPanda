@@ -1068,14 +1068,17 @@ void BewavedDolphin::on_actionSaveAs_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("file", QStringLiteral("Waveform save as"));
-        const QString path = m_mainWindow->currentFile().absolutePath();
 
         // List the format that matches the current file first so it is the default selection
         const QString fileFilter = m_currentFile.fileName().endsWith(".csv") ?
                     tr("CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)")
                   : tr("Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)");
 
-        const auto result = FileDialogs::provider()->getSaveFileName(this, tr("Save File as..."), path, fileFilter);
+        const QString initialPath = m_currentFile.fileName().isEmpty()
+                                        ? m_mainWindow->currentFile().absolutePath()
+                                        : m_currentFile.absoluteFilePath();
+
+        const auto result = FileDialogs::provider()->getSaveFileName(this, tr("Save File as..."), initialPath, fileFilter);
         QString fileName = result.fileName;
 
         if (fileName.isEmpty()) {
