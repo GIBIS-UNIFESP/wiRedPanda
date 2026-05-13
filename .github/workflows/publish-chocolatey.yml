@@ -1,0 +1,61 @@
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Publish to Chocolatey
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+# Enable by setting repository variable PUBLISH_CHOCO_ENABLED=true and
+# adding the CHOCO_API_KEY secret (API key from
+# https://community.chocolatey.org/account).
+
+jobs:
+  publish:
+    if: vars.PUBLISH_CHOCO_ENABLED == 'true'
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Extract version
+        run: |
+          $version = "${env:GITHUB_REF}" -replace '^refs/tags/',''
+          "VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Compute ZIP SHA256 (x86_64 + arm64)
+        run: |
+          $base = "https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/$env:VERSION"
+          Invoke-WebRequest -Uri "$base/wiRedPanda-$env:VERSION-Windows-x86_64-Qt6.9.3-Portable.zip" -OutFile zip64.zip
+          Invoke-WebRequest -Uri "$base/wiRedPanda-$env:VERSION-Windows-arm64-Qt6.9.3-Portable.zip" -OutFile ziparm.zip
+          $sha64 = (Get-FileHash zip64.zip -Algorithm SHA256).Hash.ToLower()
+          $shaArm = (Get-FileHash ziparm.zip -Algorithm SHA256).Hash.ToLower()
+          "SHA64=$sha64"  >> $env:GITHUB_ENV
+          "SHAARM=$shaArm" >> $env:GITHUB_ENV
+
+      - name: Patch nuspec version
+        run: |
+          $path = "Packaging/chocolatey/wiredpanda.nuspec"
+          (Get-Content $path) -replace '<version>[^<]+</version>', "<version>$env:VERSION</version>" |
+            Set-Content $path
+
+      - name: Patch install script version and checksums
+        run: |
+          $path = "Packaging/chocolatey/tools/chocolateyinstall.ps1"
+          (Get-Content $path) `
+            -replace "(\`$version\s+=\s+')[^']+(')", "`${1}$env:VERSION`${2}" `
+            -replace "(checksum64\s+=\s+')[^']+(')", "`${1}$env:SHA64`${2}" `
+            -replace "(checksumArm64\s+=\s+')[^']+(')", "`${1}$env:SHAARM`${2}" |
+            Set-Content $path
+
+      - name: Pack and push
+        env:
+          CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
+        working-directory: Packaging/chocolatey
+        run: |
+          choco pack
+          choco push "wiredpanda.$env:VERSION.nupkg" --source https://push.chocolatey.org/ --api-key $env:CHOCO_API_KEY

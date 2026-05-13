@@ -1,0 +1,40 @@
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Publish to Homebrew Cask
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+# Enable by setting repository variable PUBLISH_CASK_ENABLED=true and
+# adding the HOMEBREW_GITHUB_API_TOKEN secret (GH PAT with public_repo
+# scope, used by brew bump-cask-pr to fork Homebrew/homebrew-cask and
+# open the PR).
+
+jobs:
+  publish:
+    if: vars.PUBLISH_CASK_ENABLED == 'true'
+    runs-on: macos-latest
+    steps:
+      - name: Extract version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> "$GITHUB_ENV"
+
+      - name: Compute DMG SHA256
+        run: |
+          URL="https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/${VERSION}/wiRedPanda-${VERSION}-macOS-Qt6.9.3.dmg"
+          SHA=$(curl -fsSL "$URL" | shasum -a 256 | awk '{print $1}')
+          echo "DMG_URL=$URL" >> "$GITHUB_ENV"
+          echo "DMG_SHA=$SHA" >> "$GITHUB_ENV"
+
+      - name: Open bump-cask-pr against Homebrew/homebrew-cask
+        env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
+        run: |
+          brew bump-cask-pr wiredpanda \
+            --version "${VERSION}" \
+            --sha256 "${DMG_SHA}" \
+            --url "${DMG_URL}" \
+            --no-audit \
+            --no-style

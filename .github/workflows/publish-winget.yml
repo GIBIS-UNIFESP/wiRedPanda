@@ -1,0 +1,25 @@
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Publish to WinGet
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+# Enable by setting repository variable PUBLISH_WINGET_ENABLED=true and
+# adding the WINGET_TOKEN secret (GH PAT with public_repo scope, used by
+# the action to fork microsoft/winget-pkgs and open the PR).
+
+jobs:
+  publish:
+    if: vars.PUBLISH_WINGET_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release to WinGet
+        uses: vedantmgoyal9/winget-releaser@v2
+        with:
+          identifier: GIBIS-UNIFESP.wiRedPanda
+          installers-regex: 'Windows-(x86_64|arm64)-Qt6\.9\.3-Portable\.zip$'
+          token: ${{ secrets.WINGET_TOKEN }}
