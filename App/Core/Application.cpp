@@ -7,6 +7,7 @@
 
 #include <QElapsedTimer>
 #include <QMessageBox>
+#include <QMutex>
 
 #include "App/Core/Common.h"
 
@@ -44,9 +45,11 @@ bool shouldSendToSentry(const QString &message)
         return false;
     }
 
+    static QMutex mutex;
     static QString lastMessage;
     static QElapsedTimer timer;
 
+    QMutexLocker lock(&mutex);
     constexpr qint64 cooldownMs = 5000;
 
     if (message == lastMessage && timer.isValid() && timer.elapsed() < cooldownMs) {

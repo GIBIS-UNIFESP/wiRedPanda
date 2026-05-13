@@ -25,7 +25,8 @@ ICRegistry::ICRegistry(Scene *scene)
     , m_scene(scene)
 {
     connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged,
-            this, &ICRegistry::onFileChanged);
+            this, &ICRegistry::onFileChanged,
+            Qt::QueuedConnection);
 }
 
 const QByteArray &ICRegistry::cachedFileBytes(const QString &filePath)

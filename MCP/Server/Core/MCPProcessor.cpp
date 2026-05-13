@@ -97,8 +97,8 @@ MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
         "get_theme", "set_theme", "get_effective_theme"
     });
 
-    // Set up event-driven stdin reading
-    connect(m_stdinReader.get(), &StdinReader::dataReceived, this, &MCPProcessor::processIncomingData);
+    // Set up event-driven stdin reading; signal crosses thread boundary → must be queued
+    connect(m_stdinReader.get(), &StdinReader::dataReceived, this, &MCPProcessor::processIncomingData, Qt::QueuedConnection);
 }
 
 MCPProcessor::~MCPProcessor()

@@ -23,7 +23,7 @@ RecentFiles::RecentFiles(QObject *parent)
             m_files.removeAll(filePath);
             emit recentFilesUpdated();
         }
-    });
+    }, Qt::QueuedConnection);
 }
 
 void RecentFiles::addRecentFile(const QString &filePath)

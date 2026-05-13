@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <memory>
 
 #include <QBuffer>
@@ -46,7 +47,7 @@ signals:
     void dataReceived(const QString &line);
 
 private:
-    volatile bool m_stopRequested = false;
+    std::atomic<bool> m_stopRequested{false};
 };
 
 /**
