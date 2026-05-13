@@ -268,7 +268,7 @@ void ClipboardManager::deserializeAndAdd(QDataStream &stream, const QVersionNumb
 
     QPointF center; stream >> center;
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     auto context = m_scene->deserializationContext(portMap, version);
     const auto itemList = Serialization::deserialize(stream, context);
     // Shift pasted elements so their centroid lands at the cursor position,

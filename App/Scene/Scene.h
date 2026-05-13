@@ -244,7 +244,7 @@ public:
     ICRegistry *icRegistry() { return &m_icRegistry; }
 
     /// Creates a deserialization context with the scene's contextDir and blob registry.
-    SerializationContext deserializationContext(QMap<quint64, QNEPort *> &portMap, const QVersionNumber &version);
+    SerializationContext deserializationContext(QHash<quint64, QNEPort *> &portMap, const QVersionNumber &version);
 
     // --- Autosave ---
 
@@ -355,7 +355,7 @@ private:
 
     // Per-scene element registry (must be declared before m_selectionRect so it is
     // initialized before the Scene constructor calls addItem(&m_selectionRect))
-    QMap<int, ItemWithId *> m_elementRegistry;
+    QHash<int, ItemWithId *> m_elementRegistry;
     int m_lastId = 0;
 
     // Rendering

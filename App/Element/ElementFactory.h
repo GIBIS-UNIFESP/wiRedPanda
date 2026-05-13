@@ -9,7 +9,7 @@
 
 #include <functional>
 
-#include <QMap>
+#include <QHash>
 
 #include "App/Core/Enums.h"
 
@@ -67,5 +67,5 @@ public:
     static QPixmap pixmap(const ElementType type);
 
 private:
-    QMap<ElementType, std::function<GraphicElement *()>> m_creatorMap;
+    QHash<ElementType, std::function<GraphicElement *()>> m_creatorMap;
 };

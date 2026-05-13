@@ -196,7 +196,7 @@ void Scene::unregisterItem(ItemWithId *item)
     Q_ASSERT(!m_elementRegistry.contains(item->id()));
 }
 
-SerializationContext Scene::deserializationContext(QMap<quint64, QNEPort *> &portMap, const QVersionNumber &version)
+SerializationContext Scene::deserializationContext(QHash<quint64, QNEPort *> &portMap, const QVersionNumber &version)
 {
     SerializationContext context{portMap, version, contextDir()};
     context.blobRegistry = &m_icRegistry.blobMapRef();
@@ -801,7 +801,7 @@ void Scene::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
     QPointF ctr;    stream >> ctr;
     offset = event->scenePos() - offset;
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     auto context = deserializationContext(portMap, version);
     const auto itemList = Serialization::deserialize(stream, context);
 

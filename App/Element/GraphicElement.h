@@ -578,7 +578,7 @@ private:
     void setPortSize(const int size, const bool isInput);
 
     /// Erases \a deletedPort's serial-ID entry from \a portMap during deserialization.
-    static void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);
+    static void removePortFromMap(QNEPort *deletedPort, QHash<quint64, QNEPort *> &portMap);
 
     /// Shared implementation for simUpdateInputs() and simUpdateInputsAllowUnknown().
     bool simUpdateInputsImpl(const bool allowUnknown);

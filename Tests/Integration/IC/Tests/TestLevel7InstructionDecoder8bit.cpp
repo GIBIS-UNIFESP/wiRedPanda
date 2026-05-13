@@ -5,7 +5,7 @@
 
 #include <QFile>
 #include <QFileInfo>
-#include <QMap>
+#include <QHash>
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -22,7 +22,7 @@ struct InstrDecoder8bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     QVector<InputSwitch *> instrInputs;
-    QMap<int, Led *> opOutputs;
+    QHash<int, Led *> opOutputs;
     Simulation *sim = nullptr;
 
     bool build()
