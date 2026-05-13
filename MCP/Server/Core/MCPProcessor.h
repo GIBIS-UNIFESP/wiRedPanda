@@ -79,7 +79,7 @@ private:
     std::unique_ptr<MCPValidator> m_validator;
     QTextStream m_stdin;
     QTextStream m_stdout;
-    StdinReader *m_stdinReader;
+    std::unique_ptr<StdinReader> m_stdinReader;
 
     // Specialized handlers for different command domains
     std::unique_ptr<ServerInfoHandler> m_serverInfoHandler;

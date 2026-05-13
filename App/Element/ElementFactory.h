@@ -38,6 +38,9 @@ public:
     // --- Element creation ---
 
     /// Constructs and returns a new graphic element of the given \a type.
+    /// \note The caller takes ownership of the returned pointer. Typically
+    ///       the element is immediately added to a QGraphicsScene (which
+    ///       takes ownership) or appended to an IC's internal element list.
     static GraphicElement *buildElement(const ElementType type);
 
     /// Returns \c true if a creator function is registered for \a type.

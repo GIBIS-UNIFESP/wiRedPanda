@@ -29,10 +29,8 @@ SimulationHandler::SimulationHandler(MainWindow *mainWindow, MCPValidator *valid
 
 SimulationHandler::~SimulationHandler()
 {
-    if (m_persistentDolphin) {
-        m_persistentDolphin->deleteLater();
-        m_persistentDolphin = nullptr;
-    }
+    delete m_persistentDolphin;
+    m_persistentDolphin = nullptr;
 }
 
 QJsonObject SimulationHandler::handleCommand(const QString &command, const QJsonObject &params, const QJsonValue &requestId)

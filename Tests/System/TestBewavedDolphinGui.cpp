@@ -58,12 +58,10 @@ static std::unique_ptr<WorkSpace> createAndCircuit()
 }
 
 /// Creates a BewavedDolphin on the given workspace's scene with a blank waveform.
-/// The caller must ensure ws outlives the returned pointer.
-/// Note: BewavedDolphin has WA_DeleteOnClose, so don't close it manually — let it
-/// leak in tests (the test process will clean up).
+/// Callers should wrap the returned pointer in std::unique_ptr — all test methods do this.
+/// WA_DeleteOnClose is disabled so the unique_ptr's delete, not a close-event, drives cleanup.
 static BewavedDolphin *createDolphin(WorkSpace *ws)
 {
-    // Prevent WA_DeleteOnClose from deleting during test — we manage lifetime ourselves
     auto *dolphin = new BewavedDolphin(ws->scene(), false);
     dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
     dolphin->createWaveform("");

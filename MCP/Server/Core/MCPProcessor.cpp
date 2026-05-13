@@ -57,7 +57,7 @@ MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
     , m_validator(std::make_unique<MCPValidator>(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath("schema-mcp.json")))
     , m_stdin(stdin)
     , m_stdout(stdout)
-    , m_stdinReader(new StdinReader(this))
+    , m_stdinReader(std::make_unique<StdinReader>())
     , m_serverInfoHandler(std::make_unique<ServerInfoHandler>(mainWindow, m_validator.get()))
     , m_fileHandler(std::make_unique<FileHandler>(mainWindow, m_validator.get()))
     , m_elementHandler(std::make_unique<ElementHandler>(mainWindow, m_validator.get()))
@@ -98,7 +98,7 @@ MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
     });
 
     // Set up event-driven stdin reading
-    connect(m_stdinReader, &StdinReader::dataReceived, this, &MCPProcessor::processIncomingData);
+    connect(m_stdinReader.get(), &StdinReader::dataReceived, this, &MCPProcessor::processIncomingData);
 }
 
 MCPProcessor::~MCPProcessor()
@@ -115,10 +115,9 @@ void MCPProcessor::startProcessing()
 
 void MCPProcessor::stopProcessing()
 {
-    if (m_stdinReader->isRunning()) {
+    if (m_stdinReader && m_stdinReader->isRunning()) {
         m_stdinReader->requestStop();
         if (!m_stdinReader->wait(3000)) {
-            // Force terminate if graceful shutdown fails
             m_stdinReader->terminate();
             m_stdinReader->wait(1000);
         }
