@@ -141,7 +141,11 @@ private:
 
     // --- Loading helpers ---
 
-    void processLoadedItems(const QList<QGraphicsItem *> &items);
+    /// Transfers ownership of \a items into m_internalElements / m_internalConnections,
+    /// deleting boundary Input/Output elements after their ports are proxied.  Removes
+    /// each pointer from \a items as ownership transfers so the caller's qScopeGuard
+    /// only deletes still-owned items on throw (no double-free).
+    void processLoadedItems(QList<QGraphicsItem *> &items);
     void loadBoundaryElement(GraphicElement *elm, bool isInput);
     void loadBoundaryPorts(bool isInput, const QVector<QString> &labels);
 
