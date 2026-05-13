@@ -4,6 +4,10 @@
 
 Portable ZIP (Windows), AppImage (Linux), DMG (macOS). All three are manual-download artifacts; users redownload to update.
 
+## Rollout status
+
+Packaging manifests for all 11 `planned` channels live under `Packaging/`. Nine of them — every channel except Nix and Flathub — additionally have a matching publish workflow under `.github/workflows/publish-*.yml`, gated by a per-channel repository variable (`PUBLISH_<CHANNEL>_ENABLED=true`) and dormant until the variable plus the channel's secret are set. Nix and Flathub have no publish workflow by design: each is a one-time upstream PR (into `nixpkgs` / `flathub/flathub`), and once merged the upstream bot (`nixpkgs-update`, `flatpak-external-data-checker`) maintains it independently of this repo. Activating any channel requires the corresponding publisher account / repo / GPG key, which is human-only work.
+
 ## Comparison
 
 ### Windows
