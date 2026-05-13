@@ -423,6 +423,11 @@
         <translation>Ar norite susieti šį beWavedDolphin failą su dabartiniu wiRedPanda failu ir jį išsaugoti?</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
+        <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;beWavedDolphin yra bangų formų simuliatorius, skirtas wiRedPanda, sukurtas San Paulo federaliniame universitete, kad padėtų studentams mokytis apie logines grandines.&lt;/p&gt;&lt;p&gt;Programinės įrangos versija: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Kūrėjai:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin šiuo metu prižiūri Prof. Fábio Cappabianco, Ph.D. ir jo studentai.&lt;/p&gt;&lt;p&gt; Prašome pranešti mūsų GitHub puslapyje, jei radote klaidą ar norite paprašyti naujos funkcijos.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Aplankykite mūsų svetainę!&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
         <source>Save File as...</source>
         <translation>Išsaugoti failą kaip...</translation>
@@ -489,11 +494,6 @@
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
         <translation>Nepavyko atidaryti failo skaitymui: %1</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
-        <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;beWavedDolphin yra bangų formų simuliatorius, skirtas wiRedPanda, sukurtas San Paulo federaliniame universitete, kad padėtų studentams mokytis apie logines grandines.&lt;/p&gt;&lt;p&gt;Programinės įrangos versija: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Kūrėjai:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin šiuo metu prižiūri Prof. Fábio Cappabianco, Ph.D. ir jo studentai.&lt;/p&gt;&lt;p&gt; Prašome pranešti mūsų GitHub puslapyje, jei radote klaidą ar norite paprašyti naujos funkcijos.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Aplankykite mūsų svetainę!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
@@ -1186,27 +1186,27 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="174"/>
+        <location filename="../../Element/GraphicElement.cpp" line="175"/>
         <source>File does not exist</source>
         <translation>Failas neegzistuoja</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="176"/>
+        <location filename="../../Element/GraphicElement.cpp" line="177"/>
         <source>File is not readable</source>
         <translation>Failas neskaitomas</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="177"/>
+        <location filename="../../Element/GraphicElement.cpp" line="178"/>
         <source>Unknown reason</source>
         <translation>Nežinoma priežastis</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="182"/>
+        <location filename="../../Element/GraphicElement.cpp" line="183"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>Nepavyko įkelti pixmap: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="407"/>
+        <location filename="../../Element/GraphicElement.cpp" line="408"/>
         <source>Default</source>
         <translation>Numatytasis</translation>
     </message>
@@ -1223,7 +1223,7 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>Išvaizdos indeksas %1 ne diapazone (dydis=%2) — srautas gali būti sugadintas</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1281,18 +1281,18 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
     <message>
         <location filename="../../Element/IC.cpp" line="515"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="unfinished"></translation>
+        <translation>Viršyta IC įdėjimo gylio riba (%1) — blob gali būti suformuotas piktavališkai</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="271"/>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
         <translation>Nepavyko atidaryti failo: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="275"/>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
         <translation>Nepavyko išsaugoti failo: %1</translation>
     </message>
@@ -1941,8 +1941,8 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1354"/>
-        <location filename="../../UI/MainWindow.cpp" line="1920"/>
+        <location filename="../../UI/MainWindow.cpp" line="1357"/>
+        <location filename="../../UI/MainWindow.cpp" line="1923"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>Nutildyti</translation>
@@ -1978,7 +1978,7 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
         <translation>Fono simuliacija</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="960"/>
+        <location filename="../../UI/MainWindow.cpp" line="963"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>Trumpiniai ir patarimai</translation>
@@ -1994,88 +1994,88 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
         <translation>Pranešti apie vertimo klaidas arba padėti tobulinti vertimus Weblate platformoje</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="403"/>
+        <location filename="../../UI/MainWindow.cpp" line="406"/>
         <source>Error!</source>
         <translation>Klaida!</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="431"/>
-        <location filename="../../UI/MainWindow.cpp" line="670"/>
-        <location filename="../../UI/MainWindow.cpp" line="1173"/>
-        <location filename="../../UI/MainWindow.cpp" line="1712"/>
+        <location filename="../../UI/MainWindow.cpp" line="434"/>
+        <location filename="../../UI/MainWindow.cpp" line="673"/>
+        <location filename="../../UI/MainWindow.cpp" line="1176"/>
+        <location filename="../../UI/MainWindow.cpp" line="1715"/>
         <source>New Project</source>
         <translation>Naujas projektas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="502"/>
+        <location filename="../../UI/MainWindow.cpp" line="505"/>
         <source>File saved successfully.</source>
         <translation>Failas sėkmingai išsaugotas.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="651"/>
+        <location filename="../../UI/MainWindow.cpp" line="654"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Failas neišsaugotas. Vis tiek uždaryti skirtuką?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="672"/>
+        <location filename="../../UI/MainWindow.cpp" line="675"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> buvo pakeistas.
 Ar norite išsaugoti pakeitimus?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="744"/>
+        <location filename="../../UI/MainWindow.cpp" line="747"/>
         <source>File loaded successfully.</source>
         <translation>Failas sėkmingai įkeltas.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="804"/>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
+        <location filename="../../UI/MainWindow.cpp" line="807"/>
+        <location filename="../../UI/MainWindow.cpp" line="1976"/>
         <source>Open File</source>
         <translation>Atidaryti failą</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="335"/>
-        <location filename="../../UI/MainWindow.cpp" line="804"/>
-        <location filename="../../UI/MainWindow.cpp" line="838"/>
-        <location filename="../../UI/MainWindow.cpp" line="892"/>
-        <location filename="../../UI/MainWindow.cpp" line="2106"/>
-        <location filename="../../UI/MainWindow.cpp" line="2177"/>
+        <location filename="../../UI/MainWindow.cpp" line="338"/>
+        <location filename="../../UI/MainWindow.cpp" line="807"/>
+        <location filename="../../UI/MainWindow.cpp" line="841"/>
+        <location filename="../../UI/MainWindow.cpp" line="895"/>
+        <location filename="../../UI/MainWindow.cpp" line="2109"/>
+        <location filename="../../UI/MainWindow.cpp" line="2180"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda failai (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="335"/>
+        <location filename="../../UI/MainWindow.cpp" line="338"/>
         <source>Select IC file to embed</source>
         <translation>Pasirinkite IC failą įterpimui</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="340"/>
+        <location filename="../../UI/MainWindow.cpp" line="343"/>
         <source>Could not read file: %1</source>
         <translation>Nepavyko perskaityti failo: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="522"/>
+        <location filename="../../UI/MainWindow.cpp" line="525"/>
         <source>Update Available</source>
         <translation>Yra atnaujinimas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="533"/>
+        <location filename="../../UI/MainWindow.cpp" line="536"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;wiRedPanda %1 yra prieinama.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Šiuo metu naudojate versiją %2.&lt;br&gt;Aplankykite leidimų puslapį, kad atsisiųstumėte naują versiją.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="542"/>
+        <location filename="../../UI/MainWindow.cpp" line="545"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>Nebepranešti apie šią versiją</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="546"/>
+        <location filename="../../UI/MainWindow.cpp" line="549"/>
         <source>Download</source>
         <translation>Atsisiųsti</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="630"/>
+        <location filename="../../UI/MainWindow.cpp" line="633"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2094,278 +2094,278 @@ wiRedPanda %1 automatiškai pateiks visus kitus .panda failus, esančius tame pa
 Prieš pasiekiant IC ir išvaizdas arba paleidžiant beWavedDolphin simuliacijas, turite išsaugoti naujus projektus.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="838"/>
-        <location filename="../../UI/MainWindow.cpp" line="892"/>
+        <location filename="../../UI/MainWindow.cpp" line="841"/>
+        <location filename="../../UI/MainWindow.cpp" line="895"/>
         <source>Save File as ...</source>
         <translation>Išsaugoti failą kaip ...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1023"/>
+        <location filename="../../UI/MainWindow.cpp" line="942"/>
+        <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;wiRedPanda yra programinė įranga, sukurta San Paulo federalinio universiteto studentų, kad padėtų studentams mokytis apie logines grandines.&lt;/p&gt;&lt;p&gt;Programinės įrangos versija: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Kūrėjai:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda šiuo metu prižiūri Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves ir Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Prašome pranešti mūsų GitHub puslapyje, jei radote klaidą ar norite paprašyti naujos funkcijos.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Aplankykite mūsų svetainę!&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="1026"/>
         <source>Are you sure?</source>
         <translation>Ar tikrai?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="340"/>
-        <location filename="../../UI/MainWindow.cpp" line="1241"/>
-        <location filename="../../UI/MainWindow.cpp" line="2067"/>
-        <location filename="../../UI/MainWindow.cpp" line="2078"/>
-        <location filename="../../UI/MainWindow.cpp" line="2101"/>
-        <location filename="../../UI/MainWindow.cpp" line="2129"/>
-        <location filename="../../UI/MainWindow.cpp" line="2136"/>
-        <location filename="../../UI/MainWindow.cpp" line="2166"/>
-        <location filename="../../UI/MainWindow.cpp" line="2201"/>
-        <location filename="../../UI/MainWindow.cpp" line="2229"/>
+        <location filename="../../UI/MainWindow.cpp" line="343"/>
+        <location filename="../../UI/MainWindow.cpp" line="1244"/>
+        <location filename="../../UI/MainWindow.cpp" line="2070"/>
+        <location filename="../../UI/MainWindow.cpp" line="2081"/>
+        <location filename="../../UI/MainWindow.cpp" line="2104"/>
+        <location filename="../../UI/MainWindow.cpp" line="2132"/>
+        <location filename="../../UI/MainWindow.cpp" line="2139"/>
+        <location filename="../../UI/MainWindow.cpp" line="2169"/>
+        <location filename="../../UI/MainWindow.cpp" line="2204"/>
+        <location filename="../../UI/MainWindow.cpp" line="2232"/>
         <source>Error</source>
         <translation>Klaida</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="530"/>
+        <location filename="../../UI/MainWindow.cpp" line="533"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;wiRedPanda %1 yra pasiekiamas.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Šiuo metu naudojate versiją %2.&lt;br&gt;Spustelėkite &lt;b&gt;Atsisiųsti&lt;/b&gt;, kad išsaugotumėte naują versiją.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="575"/>
+        <location filename="../../UI/MainWindow.cpp" line="578"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>Atsisiunčiama wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="575"/>
+        <location filename="../../UI/MainWindow.cpp" line="578"/>
         <source>Cancel</source>
         <translation>Atšaukti</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="576"/>
+        <location filename="../../UI/MainWindow.cpp" line="579"/>
         <source>Downloading Update</source>
         <translation>Atsisiunčiamas atnaujinimas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="600"/>
-        <location filename="../../UI/MainWindow.cpp" line="608"/>
+        <location filename="../../UI/MainWindow.cpp" line="603"/>
+        <location filename="../../UI/MainWindow.cpp" line="611"/>
         <source>Download Failed</source>
         <translation>Atsisiuntimas nepavyko</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="600"/>
+        <location filename="../../UI/MainWindow.cpp" line="603"/>
         <source>Could not download the update:
 %1</source>
         <translation>Nepavyko atsisiųsti atnaujinimo:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="608"/>
+        <location filename="../../UI/MainWindow.cpp" line="611"/>
         <source>Could not save the file:
 %1</source>
         <translation>Nepavyko išsaugoti failo:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="617"/>
+        <location filename="../../UI/MainWindow.cpp" line="620"/>
         <source>Download Complete</source>
         <translation>Atsisiuntimas baigtas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="618"/>
+        <location filename="../../UI/MainWindow.cpp" line="621"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda atsisiųstas į:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="850"/>
-        <location filename="../../UI/MainWindow.cpp" line="903"/>
+        <location filename="../../UI/MainWindow.cpp" line="853"/>
+        <location filename="../../UI/MainWindow.cpp" line="906"/>
         <source>File Conflict</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="851"/>
-        <location filename="../../UI/MainWindow.cpp" line="904"/>
-        <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>Failo konfliktas</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="854"/>
         <location filename="../../UI/MainWindow.cpp" line="907"/>
-        <source>Switch to Tab</source>
-        <translation type="unfinished"></translation>
+        <source>The file &quot;%1&quot; is already open in another tab.</source>
+        <translation>Failas „%1“ jau atidarytas kitoje kortelėje.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1430"/>
-        <location filename="../../UI/MainWindow.cpp" line="1459"/>
-        <location filename="../../UI/MainWindow.cpp" line="1482"/>
+        <location filename="../../UI/MainWindow.cpp" line="857"/>
+        <location filename="../../UI/MainWindow.cpp" line="910"/>
+        <source>Switch to Tab</source>
+        <translation>Pereiti į kortelę</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
         <translation>Trūksta failo pavadinimo.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1436"/>
-        <location filename="../../UI/MainWindow.cpp" line="1465"/>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
         <translation>.panda failas tuščias.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1447"/>
+        <location filename="../../UI/MainWindow.cpp" line="1450"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino kodas sėkmingai sugeneruotas.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1474"/>
+        <location filename="../../UI/MainWindow.cpp" line="1477"/>
         <source>SystemVerilog code successfully generated.</source>
         <translation>SystemVerilog kodas sėkmingai sugeneruotas.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1511"/>
+        <location filename="../../UI/MainWindow.cpp" line="1514"/>
         <source>Generate Arduino Code</source>
         <translation>Generuoti Arduino kodą</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1511"/>
+        <location filename="../../UI/MainWindow.cpp" line="1514"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino failas (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1533"/>
+        <location filename="../../UI/MainWindow.cpp" line="1536"/>
         <source>Generate SystemVerilog Code</source>
         <translation>Generuoti SystemVerilog kodą</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1533"/>
+        <location filename="../../UI/MainWindow.cpp" line="1536"/>
         <source>SystemVerilog file (*.sv)</source>
         <translation>SystemVerilog failas (*.sv)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1644"/>
+        <location filename="../../UI/MainWindow.cpp" line="1647"/>
         <source>Export to PDF</source>
         <translation>Eksportuoti į PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1644"/>
+        <location filename="../../UI/MainWindow.cpp" line="1647"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF failai (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1981"/>
+        <location filename="../../UI/MainWindow.cpp" line="1984"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
         <translation>Pasirinkti failai (ir jų priklausomybės) bus nukopijuoti į dabartinį projekto aplanką.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2040"/>
+        <location filename="../../UI/MainWindow.cpp" line="2043"/>
         <source>Name Collision</source>
         <translation>Pavadinimų konfliktas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2041"/>
+        <location filename="../../UI/MainWindow.cpp" line="2044"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
         <translation>Įterptas IC pavadinimu &quot;%1&quot; jau egzistuoja.
 Siūlomas pavadinimas:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2067"/>
-        <location filename="../../UI/MainWindow.cpp" line="2129"/>
+        <location filename="../../UI/MainWindow.cpp" line="2070"/>
+        <location filename="../../UI/MainWindow.cpp" line="2132"/>
         <source>Please save the project first so ICs can be resolved.</source>
         <translation>Pirmiausia išsaugokite projektą, kad IC galėtų būti rasti.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2078"/>
-        <location filename="../../UI/MainWindow.cpp" line="2136"/>
-        <location filename="../../UI/MainWindow.cpp" line="2229"/>
+        <location filename="../../UI/MainWindow.cpp" line="2081"/>
+        <location filename="../../UI/MainWindow.cpp" line="2139"/>
+        <location filename="../../UI/MainWindow.cpp" line="2232"/>
         <source>Could not read IC file: %1</source>
         <translation>Nepavyko perskaityti IC failo: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2086"/>
-        <location filename="../../UI/MainWindow.cpp" line="2154"/>
+        <location filename="../../UI/MainWindow.cpp" line="2089"/>
+        <location filename="../../UI/MainWindow.cpp" line="2157"/>
         <source>IC embedded successfully.</source>
         <translation>IC sėkmingai įterptas.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2106"/>
-        <location filename="../../UI/MainWindow.cpp" line="2177"/>
+        <location filename="../../UI/MainWindow.cpp" line="2109"/>
+        <location filename="../../UI/MainWindow.cpp" line="2180"/>
         <source>Extract IC to file...</source>
         <translation>Išskleisti IC į failą...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2117"/>
-        <location filename="../../UI/MainWindow.cpp" line="2188"/>
+        <location filename="../../UI/MainWindow.cpp" line="2120"/>
+        <location filename="../../UI/MainWindow.cpp" line="2191"/>
         <source>IC extracted to %1</source>
         <translation>IC išskleistas į %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2101"/>
-        <location filename="../../UI/MainWindow.cpp" line="2166"/>
-        <location filename="../../UI/MainWindow.cpp" line="2201"/>
+        <location filename="../../UI/MainWindow.cpp" line="2104"/>
+        <location filename="../../UI/MainWindow.cpp" line="2169"/>
+        <location filename="../../UI/MainWindow.cpp" line="2204"/>
         <source>Please save the project first.</source>
         <translation>Pirmiausia išsaugokite projektą.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2218"/>
+        <location filename="../../UI/MainWindow.cpp" line="2221"/>
         <source>No file-based ICs to embed.</source>
         <translation>Nėra failais pagrįstų IC įterpimui.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2244"/>
+        <location filename="../../UI/MainWindow.cpp" line="2247"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>Įterpta %1 IC. Grandinė dabar yra savarankiška.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1655"/>
-        <location filename="../../UI/MainWindow.cpp" line="1683"/>
+        <location filename="../../UI/MainWindow.cpp" line="1658"/>
+        <location filename="../../UI/MainWindow.cpp" line="1686"/>
         <source>Exported file successfully.</source>
         <translation>Failas sėkmingai eksportuotas.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="939"/>
-        <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;wiRedPanda yra programinė įranga, sukurta San Paulo federalinio universiteto studentų, kad padėtų studentams mokytis apie logines grandines.&lt;/p&gt;&lt;p&gt;Programinės įrangos versija: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Kūrėjai:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda šiuo metu prižiūri Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves ir Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Prašome pranešti mūsų GitHub puslapyje, jei radote klaidą ar norite paprašyti naujos funkcijos.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Aplankykite mūsų svetainę!&lt;/a&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="961"/>
+        <location filename="../../UI/MainWindow.cpp" line="964"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Drobės spartieji klavišai&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Priartinti &lt;/li&gt;&lt;li&gt; Ctrl+- : Nutolinti &lt;/li&gt;&lt;li&gt; Ctrl+1 : Slėpti/Rodyti laidus &lt;/li&gt;&lt;li&gt; Ctrl+2 : Slėpti/Rodyti elementus &lt;/li&gt;&lt;li&gt; Ctrl+F : Ieškoti elementų &lt;/li&gt;&lt;li&gt; Ctrl+W : Atidaryti beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Išsaugoti projektą &lt;/li&gt;&lt;li&gt; Ctrl+Q : Išeiti iš wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Paleisti/Pristabdyti simuliaciją &lt;/li&gt;&lt;li&gt; [ : Ankstesnė pirminė elemento savybė &lt;/li&gt;&lt;li&gt; ] : Kita pirminė elemento savybė &lt;/li&gt;&lt;li&gt; { : Ankstesnė antrinė elemento savybė &lt;/li&gt;&lt;li&gt; } : Kita antrinė elemento savybė &lt;/li&gt;&lt;li&gt; &amp;lt; : Konvertuoti į ankstesnį elementą &lt;/li&gt;&lt;li&gt; &amp;gt; : Konvertuoti į kitą elementą &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Bendri patarimai&lt;/h1&gt;&lt;p&gt;Dukart spustelėkite laidą, kad sukurtumėte mazgą&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1022"/>
+        <location filename="../../UI/MainWindow.cpp" line="1025"/>
         <source>Exit</source>
         <translation>Išeiti</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1672"/>
+        <location filename="../../UI/MainWindow.cpp" line="1675"/>
         <source>Export to Image</source>
         <translation>Eksportuoti į paveikslėlį</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1672"/>
+        <location filename="../../UI/MainWindow.cpp" line="1675"/>
         <source>PNG files (*.png)</source>
         <translation>PNG failai (*.png)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1354"/>
-        <location filename="../../UI/MainWindow.cpp" line="1920"/>
+        <location filename="../../UI/MainWindow.cpp" line="1357"/>
+        <location filename="../../UI/MainWindow.cpp" line="1923"/>
         <source>Unmute</source>
         <translation>Atitildyti</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1970"/>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
         <translation>Pirmiausia išsaugokite failą.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
+        <location filename="../../UI/MainWindow.cpp" line="1976"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1981"/>
-        <location filename="../../UI/MainWindow.cpp" line="1998"/>
+        <location filename="../../UI/MainWindow.cpp" line="1984"/>
+        <location filename="../../UI/MainWindow.cpp" line="2001"/>
         <source>Info</source>
         <translation>Informacija</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1998"/>
+        <location filename="../../UI/MainWindow.cpp" line="2001"/>
         <source>Drag here to remove.</source>
         <translation>Nuvilkite čia, kad pašalintumėte.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2023"/>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
         <translation>Klaida šalinant failą: %1</translation>
     </message>
@@ -2467,7 +2467,7 @@ Siūlomas pavadinimas:</translation>
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="223"/>
+        <location filename="../../Element/ICRegistry.cpp" line="224"/>
         <source>Add embedded IC</source>
         <translation>Pridėti įterptą IC</translation>
     </message>
@@ -2488,7 +2488,7 @@ Siūlomas pavadinimas:</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="374"/>
+        <location filename="../../Main.cpp" line="407"/>
         <source>Error!</source>
         <translation>Klaida!</translation>
     </message>
@@ -2584,7 +2584,7 @@ Siūlomas pavadinimas:</translation>
     <message>
         <location filename="../../Scene/Commands.cpp" line="1048"/>
         <source>Remove blob &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Pašalinti blob „%1“</translation>
     </message>
 </context>
 <context>
@@ -2646,22 +2646,22 @@ Siūlomas pavadinimas:</translation>
     <message>
         <location filename="../../IO/Serialization.cpp" line="271"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="unfinished"></translation>
+        <translation>Srauto klaida skaitant metaduomenų kiekį</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>Metaduomenų kiekis %1 nepatikimas, palyginti su likusiais srauto baitais</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="291"/>
         <source>Stream error reading blob map count</source>
-        <translation type="unfinished"></translation>
+        <translation>Srauto klaida skaitant blob kiekį</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>Blob kiekis %1 nepatikimas, palyginti su likusiais srauto baitais</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="347"/>
@@ -2879,7 +2879,7 @@ Atnaujinkite wiRedPanda, kad galėtumėte išsaugoti pakeitimus šiame faile.</t
         <location filename="../../Scene/Workspace.cpp" line="262"/>
         <location filename="../../Scene/Workspace.cpp" line="301"/>
         <source>Save File (original location is read-only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Įrašyti failą (pradinė vieta tik skaitymui)</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="270"/>
@@ -2939,12 +2939,12 @@ Originalaus failo atsarginė kopija sukurta pavadinimu: %3</translation>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko patvirtinti automatinio įrašymo failo: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Pašalinti įterptą IC „%1“</translation>
     </message>
 </context>
 <context>
@@ -2976,62 +2976,62 @@ Originalaus failo atsarginė kopija sukurta pavadinimu: %3</translation>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="238"/>
+        <location filename="../../Main.cpp" line="271"/>
         <source>Circuit file to open.</source>
         <translation>Grandinės failas atidarymui.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="242"/>
+        <location filename="../../Main.cpp" line="275"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>Išsamumo lygis nuo 0 iki 5, pagal nutylėjimą išjungtas.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="243"/>
+        <location filename="../../Main.cpp" line="276"/>
         <source>verbosity level</source>
         <translation>išsamumo lygis</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="248"/>
+        <location filename="../../Main.cpp" line="281"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>Eksportuoja grandinę į &lt;arduino-failas&gt;.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="260"/>
+        <location filename="../../Main.cpp" line="293"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>Eksportuoja grandinę į bangų formos teksto failą, skaitant įėjimą iš terminalo.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="265"/>
+        <location filename="../../Main.cpp" line="298"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>Naudojant su -c/--terminal, blokuoja vykdymą, jei grandinėje yra Tiesos lentelių.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="271"/>
+        <location filename="../../Main.cpp" line="304"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>Paleisti MCP (Model Context Protocol) režimu programiniam valdymui.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="276"/>
+        <location filename="../../Main.cpp" line="309"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>Paleisti MCP režimą su matomu GUI langu.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="334"/>
+        <location filename="../../Main.cpp" line="367"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Klaida: Grandinėje yra Tiesos lentelės elementų.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="249"/>
+        <location filename="../../Main.cpp" line="282"/>
         <source>arduino file</source>
         <translation>arduino failas</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="254"/>
+        <location filename="../../Main.cpp" line="287"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>Eksportuoja grandinę į bangų formos teksto failą.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="255"/>
+        <location filename="../../Main.cpp" line="288"/>
         <source>waveform input text file</source>
         <translation>bangų formos įėjimo teksto failas</translation>
     </message>

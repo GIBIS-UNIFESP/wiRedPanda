@@ -423,6 +423,11 @@
         <translation>আপনি কি এই beWavedDolphin ফাইলটি আপনার বর্তমান wiRedPanda ফাইলের সাথে লিঙ্ক করে সংরক্ষণ করতে চান?</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
+        <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;beWavedDolphin হল wiRedPanda-র জন্য একটি তরঙ্গরূপ সিমুলেটর, যা সাও পাওলোর ফেডারেল বিশ্ববিদ্যালয় দ্বারা শিক্ষার্থীদের লজিক সার্কিট শিখতে সাহায্য করার জন্য তৈরি করা হয়েছে।&lt;/p&gt;&lt;p&gt;সফ্টওয়্যার সংস্করণ: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;নির্মাতা:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin বর্তমানে Prof. Fábio Cappabianco, Ph.D. এবং তার শিক্ষার্থীদের দ্বারা পরিচালিত হচ্ছে।&lt;/p&gt;&lt;p&gt; আপনি যদি কোনো বাগ খুঁজে পান বা নতুন বৈশিষ্ট্য অনুরোধ করতে চান তাহলে অনুগ্রহ করে আমাদের GitHub পৃষ্ঠায় রিপোর্ট করুন।&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;আমাদের ওয়েবসাইট দেখুন!&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
         <source>Save File as...</source>
         <translation>ফাইল সংরক্ষণ করুন...</translation>
@@ -489,11 +494,6 @@
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
         <translation>পড়ার জন্য ফাইল খোলা যায়নি: %1</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
-        <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;beWavedDolphin হল wiRedPanda-র জন্য একটি তরঙ্গরূপ সিমুলেটর, যা সাও পাওলোর ফেডারেল বিশ্ববিদ্যালয় দ্বারা শিক্ষার্থীদের লজিক সার্কিট শিখতে সাহায্য করার জন্য তৈরি করা হয়েছে।&lt;/p&gt;&lt;p&gt;সফ্টওয়্যার সংস্করণ: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;নির্মাতা:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin বর্তমানে Prof. Fábio Cappabianco, Ph.D. এবং তার শিক্ষার্থীদের দ্বারা পরিচালিত হচ্ছে।&lt;/p&gt;&lt;p&gt; আপনি যদি কোনো বাগ খুঁজে পান বা নতুন বৈশিষ্ট্য অনুরোধ করতে চান তাহলে অনুগ্রহ করে আমাদের GitHub পৃষ্ঠায় রিপোর্ট করুন।&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;আমাদের ওয়েবসাইট দেখুন!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
@@ -1186,27 +1186,27 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="174"/>
+        <location filename="../../Element/GraphicElement.cpp" line="175"/>
         <source>File does not exist</source>
         <translation>ফাইল বিদ্যমান নেই</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="176"/>
+        <location filename="../../Element/GraphicElement.cpp" line="177"/>
         <source>File is not readable</source>
         <translation>ফাইল পড়া যায়না</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="177"/>
+        <location filename="../../Element/GraphicElement.cpp" line="178"/>
         <source>Unknown reason</source>
         <translation>অজানা কারণ</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="182"/>
+        <location filename="../../Element/GraphicElement.cpp" line="183"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>পিক্সম্যাপ লোড করা যায়নি: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="407"/>
+        <location filename="../../Element/GraphicElement.cpp" line="408"/>
         <source>Default</source>
         <translation>ডিফল্ট</translation>
     </message>
@@ -1223,7 +1223,7 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>উপস্থিতি সূচক %1 পরিসরের বাইরে (আকার=%2) — স্ট্রিম দূষিত হতে পারে</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1281,18 +1281,18 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../Element/IC.cpp" line="515"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="unfinished"></translation>
+        <translation>IC নেস্টিং গভীরতার সীমা (%1) অতিক্রান্ত — blob ক্ষতিকরভাবে তৈরি হতে পারে</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="271"/>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
         <translation>ফাইল খোলা যায়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="275"/>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
         <translation>ফাইল সংরক্ষণ করা যায়নি: %1</translation>
     </message>
@@ -1941,8 +1941,8 @@ Each wireless channel must have a unique label.</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1354"/>
-        <location filename="../../UI/MainWindow.cpp" line="1920"/>
+        <location filename="../../UI/MainWindow.cpp" line="1357"/>
+        <location filename="../../UI/MainWindow.cpp" line="1923"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>নিরব</translation>
@@ -1978,7 +1978,7 @@ Each wireless channel must have a unique label.</source>
         <translation>পটভূমি সিমুলেশন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="960"/>
+        <location filename="../../UI/MainWindow.cpp" line="963"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>শর্টকাট এবং টিপস</translation>
@@ -1994,88 +1994,88 @@ Each wireless channel must have a unique label.</source>
         <translation>অনুবাদ ত্রুটি রিপোর্ট করুন বা Weblate-এ অনুবাদ উন্নত করতে সাহায্য করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="403"/>
+        <location filename="../../UI/MainWindow.cpp" line="406"/>
         <source>Error!</source>
         <translation>ত্রুটি!</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="431"/>
-        <location filename="../../UI/MainWindow.cpp" line="670"/>
-        <location filename="../../UI/MainWindow.cpp" line="1173"/>
-        <location filename="../../UI/MainWindow.cpp" line="1712"/>
+        <location filename="../../UI/MainWindow.cpp" line="434"/>
+        <location filename="../../UI/MainWindow.cpp" line="673"/>
+        <location filename="../../UI/MainWindow.cpp" line="1176"/>
+        <location filename="../../UI/MainWindow.cpp" line="1715"/>
         <source>New Project</source>
         <translation>নতুন প্রকল্প</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="502"/>
+        <location filename="../../UI/MainWindow.cpp" line="505"/>
         <source>File saved successfully.</source>
         <translation>ফাইল সফলভাবে সংরক্ষিত হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="651"/>
+        <location filename="../../UI/MainWindow.cpp" line="654"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>ফাইল সংরক্ষিত হয়নি। তবুও ট্যাব বন্ধ করবেন?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="672"/>
+        <location filename="../../UI/MainWindow.cpp" line="675"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> পরিবর্তিত হয়েছে।
 আপনি কি আপনার পরিবর্তনগুলি সংরক্ষণ করতে চান?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="744"/>
+        <location filename="../../UI/MainWindow.cpp" line="747"/>
         <source>File loaded successfully.</source>
         <translation>ফাইল সফলভাবে লোড হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="804"/>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
+        <location filename="../../UI/MainWindow.cpp" line="807"/>
+        <location filename="../../UI/MainWindow.cpp" line="1976"/>
         <source>Open File</source>
         <translation>ফাইল খুলুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="335"/>
-        <location filename="../../UI/MainWindow.cpp" line="804"/>
-        <location filename="../../UI/MainWindow.cpp" line="838"/>
-        <location filename="../../UI/MainWindow.cpp" line="892"/>
-        <location filename="../../UI/MainWindow.cpp" line="2106"/>
-        <location filename="../../UI/MainWindow.cpp" line="2177"/>
+        <location filename="../../UI/MainWindow.cpp" line="338"/>
+        <location filename="../../UI/MainWindow.cpp" line="807"/>
+        <location filename="../../UI/MainWindow.cpp" line="841"/>
+        <location filename="../../UI/MainWindow.cpp" line="895"/>
+        <location filename="../../UI/MainWindow.cpp" line="2109"/>
+        <location filename="../../UI/MainWindow.cpp" line="2180"/>
         <source>Panda files (*.panda)</source>
         <translation>প্যান্ডা ফাইল (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="335"/>
+        <location filename="../../UI/MainWindow.cpp" line="338"/>
         <source>Select IC file to embed</source>
         <translation>এম্বেড করতে IC ফাইল নির্বাচন করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="340"/>
+        <location filename="../../UI/MainWindow.cpp" line="343"/>
         <source>Could not read file: %1</source>
         <translation>ফাইল পড়া যায়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="522"/>
+        <location filename="../../UI/MainWindow.cpp" line="525"/>
         <source>Update Available</source>
         <translation>আপডেট উপলব্ধ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="533"/>
+        <location filename="../../UI/MainWindow.cpp" line="536"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;wiRedPanda %1 উপলব্ধ।&lt;/b&gt;&lt;br&gt;&lt;br&gt;আপনি বর্তমানে সংস্করণ %2 চালাচ্ছেন।&lt;br&gt;নতুন সংস্করণ ডাউনলোড করতে রিলিজ পেজে যান।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="542"/>
+        <location filename="../../UI/MainWindow.cpp" line="545"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>এই সংস্করণ সম্পর্কে আবার জানাবেন না</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="546"/>
+        <location filename="../../UI/MainWindow.cpp" line="549"/>
         <source>Download</source>
         <translation>ডাউনলোড</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="630"/>
+        <location filename="../../UI/MainWindow.cpp" line="633"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2094,278 +2094,278 @@ wiRedPanda %1 বর্তমান প্রকল্পের একই ডি
 IC এবং চেহারা অ্যাক্সেস করতে বা beWavedDolphin সিমুলেশন চালাতে আপনাকে নতুন প্রকল্প সংরক্ষণ করতে হবে।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="838"/>
-        <location filename="../../UI/MainWindow.cpp" line="892"/>
+        <location filename="../../UI/MainWindow.cpp" line="841"/>
+        <location filename="../../UI/MainWindow.cpp" line="895"/>
         <source>Save File as ...</source>
         <translation>ফাইল নামে সংরক্ষণ করুন...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1023"/>
+        <location filename="../../UI/MainWindow.cpp" line="942"/>
+        <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;wiRedPanda হল সাও পাওলোর ফেডারেল বিশ্ববিদ্যালয়ের শিক্ষার্থীদের দ্বারা তৈরি সফ্টওয়্যার, যা শিক্ষার্থীদের লজিক সার্কিট শিখতে সাহায্য করে।&lt;/p&gt;&lt;p&gt;সফ্টওয়্যার সংস্করণ: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;নির্মাতা:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda বর্তমানে Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves এবং Maycon A. Santana দ্বারা পরিচালিত হচ্ছে।&lt;/p&gt;&lt;p&gt; আপনি যদি কোনো বাগ খুঁজে পান বা নতুন বৈশিষ্ট্য অনুরোধ করতে চান তাহলে অনুগ্রহ করে আমাদের GitHub পৃষ্ঠায় রিপোর্ট করুন।&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;আমাদের ওয়েবসাইট দেখুন!&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="1026"/>
         <source>Are you sure?</source>
         <translation>আপনি কি নিশ্চিত?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="340"/>
-        <location filename="../../UI/MainWindow.cpp" line="1241"/>
-        <location filename="../../UI/MainWindow.cpp" line="2067"/>
-        <location filename="../../UI/MainWindow.cpp" line="2078"/>
-        <location filename="../../UI/MainWindow.cpp" line="2101"/>
-        <location filename="../../UI/MainWindow.cpp" line="2129"/>
-        <location filename="../../UI/MainWindow.cpp" line="2136"/>
-        <location filename="../../UI/MainWindow.cpp" line="2166"/>
-        <location filename="../../UI/MainWindow.cpp" line="2201"/>
-        <location filename="../../UI/MainWindow.cpp" line="2229"/>
+        <location filename="../../UI/MainWindow.cpp" line="343"/>
+        <location filename="../../UI/MainWindow.cpp" line="1244"/>
+        <location filename="../../UI/MainWindow.cpp" line="2070"/>
+        <location filename="../../UI/MainWindow.cpp" line="2081"/>
+        <location filename="../../UI/MainWindow.cpp" line="2104"/>
+        <location filename="../../UI/MainWindow.cpp" line="2132"/>
+        <location filename="../../UI/MainWindow.cpp" line="2139"/>
+        <location filename="../../UI/MainWindow.cpp" line="2169"/>
+        <location filename="../../UI/MainWindow.cpp" line="2204"/>
+        <location filename="../../UI/MainWindow.cpp" line="2232"/>
         <source>Error</source>
         <translation>ত্রুটি</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="530"/>
+        <location filename="../../UI/MainWindow.cpp" line="533"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;wiRedPanda %1 উপলব্ধ।&lt;/b&gt;&lt;br&gt;&lt;br&gt;আপনি বর্তমানে সংস্করণ %2 চালাচ্ছেন।&lt;br&gt;নতুন সংস্করণ সংরক্ষণ করতে &lt;b&gt;ডাউনলোড&lt;/b&gt; ক্লিক করুন।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="575"/>
+        <location filename="../../UI/MainWindow.cpp" line="578"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>wiRedPanda %1 ডাউনলোড হচ্ছে…</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="575"/>
+        <location filename="../../UI/MainWindow.cpp" line="578"/>
         <source>Cancel</source>
         <translation>বাতিল</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="576"/>
+        <location filename="../../UI/MainWindow.cpp" line="579"/>
         <source>Downloading Update</source>
         <translation>আপডেট ডাউনলোড হচ্ছে</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="600"/>
-        <location filename="../../UI/MainWindow.cpp" line="608"/>
+        <location filename="../../UI/MainWindow.cpp" line="603"/>
+        <location filename="../../UI/MainWindow.cpp" line="611"/>
         <source>Download Failed</source>
         <translation>ডাউনলোড ব্যর্থ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="600"/>
+        <location filename="../../UI/MainWindow.cpp" line="603"/>
         <source>Could not download the update:
 %1</source>
         <translation>আপডেট ডাউনলোড করা যায়নি:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="608"/>
+        <location filename="../../UI/MainWindow.cpp" line="611"/>
         <source>Could not save the file:
 %1</source>
         <translation>ফাইল সংরক্ষণ করা যায়নি:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="617"/>
+        <location filename="../../UI/MainWindow.cpp" line="620"/>
         <source>Download Complete</source>
         <translation>ডাউনলোড সম্পূর্ণ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="618"/>
+        <location filename="../../UI/MainWindow.cpp" line="621"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda এখানে ডাউনলোড হয়েছে:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="850"/>
-        <location filename="../../UI/MainWindow.cpp" line="903"/>
+        <location filename="../../UI/MainWindow.cpp" line="853"/>
+        <location filename="../../UI/MainWindow.cpp" line="906"/>
         <source>File Conflict</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="851"/>
-        <location filename="../../UI/MainWindow.cpp" line="904"/>
-        <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>ফাইল সংঘাত</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="854"/>
         <location filename="../../UI/MainWindow.cpp" line="907"/>
-        <source>Switch to Tab</source>
-        <translation type="unfinished"></translation>
+        <source>The file &quot;%1&quot; is already open in another tab.</source>
+        <translation>&quot;%1&quot; ফাইলটি ইতিমধ্যে অন্য ট্যাবে খোলা রয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1430"/>
-        <location filename="../../UI/MainWindow.cpp" line="1459"/>
-        <location filename="../../UI/MainWindow.cpp" line="1482"/>
+        <location filename="../../UI/MainWindow.cpp" line="857"/>
+        <location filename="../../UI/MainWindow.cpp" line="910"/>
+        <source>Switch to Tab</source>
+        <translation>ট্যাবে যান</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
         <translation>ফাইলের নাম নেই।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1436"/>
-        <location filename="../../UI/MainWindow.cpp" line="1465"/>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
         <translation>.panda ফাইলটি খালি।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1447"/>
+        <location filename="../../UI/MainWindow.cpp" line="1450"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino কোড সফলভাবে তৈরি হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1474"/>
+        <location filename="../../UI/MainWindow.cpp" line="1477"/>
         <source>SystemVerilog code successfully generated.</source>
         <translation>SystemVerilog কোড সফলভাবে তৈরি হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1511"/>
+        <location filename="../../UI/MainWindow.cpp" line="1514"/>
         <source>Generate Arduino Code</source>
         <translation>Arduino কোড তৈরি করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1511"/>
+        <location filename="../../UI/MainWindow.cpp" line="1514"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino ফাইল (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1533"/>
+        <location filename="../../UI/MainWindow.cpp" line="1536"/>
         <source>Generate SystemVerilog Code</source>
         <translation>SystemVerilog কোড তৈরি করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1533"/>
+        <location filename="../../UI/MainWindow.cpp" line="1536"/>
         <source>SystemVerilog file (*.sv)</source>
         <translation>SystemVerilog ফাইল (*.sv)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1644"/>
+        <location filename="../../UI/MainWindow.cpp" line="1647"/>
         <source>Export to PDF</source>
         <translation>PDF এ রপ্তানি করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1644"/>
+        <location filename="../../UI/MainWindow.cpp" line="1647"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF ফাইল (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1981"/>
+        <location filename="../../UI/MainWindow.cpp" line="1984"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
         <translation>নির্বাচিত ফাইলগুলি (এবং তাদের নির্ভরতা) বর্তমান প্রকল্প ফোল্ডারে অনুলিপি করা হবে।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2040"/>
+        <location filename="../../UI/MainWindow.cpp" line="2043"/>
         <source>Name Collision</source>
         <translation>নাম সংঘর্ষ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2041"/>
+        <location filename="../../UI/MainWindow.cpp" line="2044"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
         <translation>&quot;%1&quot; নামের একটি এম্বেডেড IC ইতিমধ্যে বিদ্যমান।
 প্রস্তাবিত নাম:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2067"/>
-        <location filename="../../UI/MainWindow.cpp" line="2129"/>
+        <location filename="../../UI/MainWindow.cpp" line="2070"/>
+        <location filename="../../UI/MainWindow.cpp" line="2132"/>
         <source>Please save the project first so ICs can be resolved.</source>
         <translation>অনুগ্রহ করে প্রথমে প্রকল্পটি সংরক্ষণ করুন যাতে IC সমাধান করা যায়।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2078"/>
-        <location filename="../../UI/MainWindow.cpp" line="2136"/>
-        <location filename="../../UI/MainWindow.cpp" line="2229"/>
+        <location filename="../../UI/MainWindow.cpp" line="2081"/>
+        <location filename="../../UI/MainWindow.cpp" line="2139"/>
+        <location filename="../../UI/MainWindow.cpp" line="2232"/>
         <source>Could not read IC file: %1</source>
         <translation>IC ফাইল পড়া যায়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2086"/>
-        <location filename="../../UI/MainWindow.cpp" line="2154"/>
+        <location filename="../../UI/MainWindow.cpp" line="2089"/>
+        <location filename="../../UI/MainWindow.cpp" line="2157"/>
         <source>IC embedded successfully.</source>
         <translation>IC সফলভাবে এম্বেড করা হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2106"/>
-        <location filename="../../UI/MainWindow.cpp" line="2177"/>
+        <location filename="../../UI/MainWindow.cpp" line="2109"/>
+        <location filename="../../UI/MainWindow.cpp" line="2180"/>
         <source>Extract IC to file...</source>
         <translation>IC ফাইলে এক্সট্রাক্ট করুন...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2117"/>
-        <location filename="../../UI/MainWindow.cpp" line="2188"/>
+        <location filename="../../UI/MainWindow.cpp" line="2120"/>
+        <location filename="../../UI/MainWindow.cpp" line="2191"/>
         <source>IC extracted to %1</source>
         <translation>%1-এ IC এক্সট্রাক্ট করা হয়েছে</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2101"/>
-        <location filename="../../UI/MainWindow.cpp" line="2166"/>
-        <location filename="../../UI/MainWindow.cpp" line="2201"/>
+        <location filename="../../UI/MainWindow.cpp" line="2104"/>
+        <location filename="../../UI/MainWindow.cpp" line="2169"/>
+        <location filename="../../UI/MainWindow.cpp" line="2204"/>
         <source>Please save the project first.</source>
         <translation>অনুগ্রহ করে প্রথমে প্রকল্পটি সংরক্ষণ করুন।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2218"/>
+        <location filename="../../UI/MainWindow.cpp" line="2221"/>
         <source>No file-based ICs to embed.</source>
         <translation>এম্বেড করার জন্য কোনো ফাইল-ভিত্তিক IC নেই।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2244"/>
+        <location filename="../../UI/MainWindow.cpp" line="2247"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>%1টি IC এম্বেড করা হয়েছে। সার্কিট এখন স্বয়ংসম্পূর্ণ।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1655"/>
-        <location filename="../../UI/MainWindow.cpp" line="1683"/>
+        <location filename="../../UI/MainWindow.cpp" line="1658"/>
+        <location filename="../../UI/MainWindow.cpp" line="1686"/>
         <source>Exported file successfully.</source>
         <translation>ফাইল সফলভাবে রপ্তানি হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="939"/>
-        <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;wiRedPanda হল সাও পাওলোর ফেডারেল বিশ্ববিদ্যালয়ের শিক্ষার্থীদের দ্বারা তৈরি সফ্টওয়্যার, যা শিক্ষার্থীদের লজিক সার্কিট শিখতে সাহায্য করে।&lt;/p&gt;&lt;p&gt;সফ্টওয়্যার সংস্করণ: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;নির্মাতা:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda বর্তমানে Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves এবং Maycon A. Santana দ্বারা পরিচালিত হচ্ছে।&lt;/p&gt;&lt;p&gt; আপনি যদি কোনো বাগ খুঁজে পান বা নতুন বৈশিষ্ট্য অনুরোধ করতে চান তাহলে অনুগ্রহ করে আমাদের GitHub পৃষ্ঠায় রিপোর্ট করুন।&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;আমাদের ওয়েবসাইট দেখুন!&lt;/a&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="961"/>
+        <location filename="../../UI/MainWindow.cpp" line="964"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;ক্যানভাস শর্টকাট&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : জুম ইন &lt;/li&gt;&lt;li&gt; Ctrl+- : জুম আউট &lt;/li&gt;&lt;li&gt; Ctrl+1 : তার লুকান/দেখান &lt;/li&gt;&lt;li&gt; Ctrl+2 : গেট লুকান/দেখান &lt;/li&gt;&lt;li&gt; Ctrl+F : উপাদান খুঁজুন &lt;/li&gt;&lt;li&gt; Ctrl+W : beWaveDolphin খুলুন &lt;/li&gt;&lt;li&gt; Ctrl+S : প্রকল্প সংরক্ষণ &lt;/li&gt;&lt;li&gt; Ctrl+Q : wiRedPanda বন্ধ করুন &lt;/li&gt;&lt;li&gt; F5 : সিমুলেশন শুরু/বিরতি &lt;/li&gt;&lt;li&gt; [ : পূর্ববর্তী প্রাথমিক উপাদান বৈশিষ্ট্য &lt;/li&gt;&lt;li&gt; ] : পরবর্তী প্রাথমিক উপাদান বৈশিষ্ট্য &lt;/li&gt;&lt;li&gt; { : পূর্ববর্তী গৌণ উপাদান বৈশিষ্ট্য &lt;/li&gt;&lt;li&gt; } : পরবর্তী গৌণ উপাদান বৈশিষ্ট্য &lt;/li&gt;&lt;li&gt; &amp;lt; : পূর্ববর্তী উপাদানে রূপান্তর &lt;/li&gt;&lt;li&gt; &amp;gt; : পরবর্তী উপাদানে রূপান্তর &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;সাধারণ টিপস&lt;/h1&gt;&lt;p&gt;একটি নোড তৈরি করতে তারে ডাবল-ক্লিক করুন&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1022"/>
+        <location filename="../../UI/MainWindow.cpp" line="1025"/>
         <source>Exit</source>
         <translation>প্রস্থান</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1672"/>
+        <location filename="../../UI/MainWindow.cpp" line="1675"/>
         <source>Export to Image</source>
         <translation>ছবিতে রপ্তানি করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1672"/>
+        <location filename="../../UI/MainWindow.cpp" line="1675"/>
         <source>PNG files (*.png)</source>
         <translation>PNG ফাইল (*.png)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1354"/>
-        <location filename="../../UI/MainWindow.cpp" line="1920"/>
+        <location filename="../../UI/MainWindow.cpp" line="1357"/>
+        <location filename="../../UI/MainWindow.cpp" line="1923"/>
         <source>Unmute</source>
         <translation>শব্দ চালু</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1970"/>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
         <translation>প্রথমে ফাইল সংরক্ষণ করুন।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
+        <location filename="../../UI/MainWindow.cpp" line="1976"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1981"/>
-        <location filename="../../UI/MainWindow.cpp" line="1998"/>
+        <location filename="../../UI/MainWindow.cpp" line="1984"/>
+        <location filename="../../UI/MainWindow.cpp" line="2001"/>
         <source>Info</source>
         <translation>তথ্য</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1998"/>
+        <location filename="../../UI/MainWindow.cpp" line="2001"/>
         <source>Drag here to remove.</source>
         <translation>সরানোর জন্য এখানে টেনে আনুন।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2023"/>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
         <translation>ফাইল মুছে ফেলতে ত্রুটি: %1</translation>
     </message>
@@ -2467,7 +2467,7 @@ Suggested name:</source>
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="223"/>
+        <location filename="../../Element/ICRegistry.cpp" line="224"/>
         <source>Add embedded IC</source>
         <translation>এম্বেডেড IC যোগ করুন</translation>
     </message>
@@ -2488,7 +2488,7 @@ Suggested name:</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="374"/>
+        <location filename="../../Main.cpp" line="407"/>
         <source>Error!</source>
         <translation>ত্রুটি!</translation>
     </message>
@@ -2584,7 +2584,7 @@ Suggested name:</source>
     <message>
         <location filename="../../Scene/Commands.cpp" line="1048"/>
         <source>Remove blob &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>blob &quot;%1&quot; সরান</translation>
     </message>
 </context>
 <context>
@@ -2646,22 +2646,22 @@ Suggested name:</source>
     <message>
         <location filename="../../IO/Serialization.cpp" line="271"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="unfinished"></translation>
+        <translation>মেটাডেটা গণনা পড়ার সময় স্ট্রিম ত্রুটি</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>অবশিষ্ট স্ট্রিম বাইটের তুলনায় মেটাডেটা গণনা %1 অসম্ভাব্য</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="291"/>
         <source>Stream error reading blob map count</source>
-        <translation type="unfinished"></translation>
+        <translation>blob গণনা পড়ার সময় স্ট্রিম ত্রুটি</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>অবশিষ্ট স্ট্রিম বাইটের তুলনায় blob গণনা %1 অসম্ভাব্য</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="347"/>
@@ -2879,7 +2879,7 @@ Please update wiRedPanda to save changes to this file.</source>
         <location filename="../../Scene/Workspace.cpp" line="262"/>
         <location filename="../../Scene/Workspace.cpp" line="301"/>
         <source>Save File (original location is read-only)</source>
-        <translation type="unfinished"></translation>
+        <translation>ফাইল সংরক্ষণ করুন (মূল অবস্থান কেবল পঠনযোগ্য)</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="270"/>
@@ -2939,12 +2939,12 @@ A backup of the original file has been created with name: %3</source>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>স্বয়ংক্রিয় সংরক্ষণ ফাইল চূড়ান্ত করা যায়নি: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>অন্তর্ভুক্ত IC &quot;%1&quot; সরান</translation>
     </message>
 </context>
 <context>
@@ -2976,62 +2976,62 @@ A backup of the original file has been created with name: %3</source>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="238"/>
+        <location filename="../../Main.cpp" line="271"/>
         <source>Circuit file to open.</source>
         <translation>খুলতে সার্কিট ফাইল।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="242"/>
+        <location filename="../../Main.cpp" line="275"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>ভার্বোসিটি স্তর 0 থেকে 5, ডিফল্টভাবে নিষ্ক্রিয়।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="243"/>
+        <location filename="../../Main.cpp" line="276"/>
         <source>verbosity level</source>
         <translation>ভার্বোসিটি স্তর</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="248"/>
+        <location filename="../../Main.cpp" line="281"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>সার্কিট &lt;arduino-file&gt; এ রপ্তানি করে।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="260"/>
+        <location filename="../../Main.cpp" line="293"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>টার্মিনাল থেকে ইনপুট পড়ে সার্কিটটি তরঙ্গরূপ টেক্সট ফাইলে রপ্তানি করে।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="265"/>
+        <location filename="../../Main.cpp" line="298"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>-c/--terminal এর সাথে ব্যবহার করলে, সার্কিটে সত্যতালিকা থাকলে নিষ্পাদন ব্লক করুন।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="271"/>
+        <location filename="../../Main.cpp" line="304"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>প্রোগ্রামেটিক নিয়ন্ত্রণের জন্য MCP (Model Context Protocol) মোডে চালান।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="276"/>
+        <location filename="../../Main.cpp" line="309"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>দৃশ্যমান GUI উইন্ডো সহ MCP মোড চালান।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="334"/>
+        <location filename="../../Main.cpp" line="367"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>ত্রুটি: সার্কিটে সত্যতালিকা উপাদান রয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="249"/>
+        <location filename="../../Main.cpp" line="282"/>
         <source>arduino file</source>
         <translation>arduino ফাইল</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="254"/>
+        <location filename="../../Main.cpp" line="287"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>সার্কিটটি তরঙ্গরূপ টেক্সট ফাইলে রপ্তানি করে।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="255"/>
+        <location filename="../../Main.cpp" line="288"/>
         <source>waveform input text file</source>
         <translation>তরঙ্গরূপ ইনপুট টেক্সট ফাইল</translation>
     </message>
