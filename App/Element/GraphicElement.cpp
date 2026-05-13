@@ -38,6 +38,7 @@ static const QFont &labelFont()
 /// Cache decoded pixmaps by resolved path so each image is loaded from disk only once.
 static QHash<QString, QPixmap> &pixmapCache()
 {
+    Q_ASSERT(QCoreApplication::instance()->thread() == QThread::currentThread());
     static QHash<QString, QPixmap> cache;
     return cache;
 }

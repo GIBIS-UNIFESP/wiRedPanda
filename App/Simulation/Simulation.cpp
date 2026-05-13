@@ -3,9 +3,13 @@
 
 #include "App/Simulation/Simulation.h"
 
+#include <algorithm>
+
+#include <QCoreApplication>
 #include <QGraphicsView>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QThread>
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
