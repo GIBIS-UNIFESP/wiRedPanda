@@ -1,0 +1,26 @@
+Source: wiredpanda
+Section: education
+Priority: optional
+Maintainer: Rodrigo Torres <torres.dark@gmail.com>
+Build-Depends: debhelper-compat (= 13),
+               cmake (>= 3.16),
+               ninja-build,
+               qt6-base-dev,
+               qt6-multimedia-dev,
+               qt6-tools-dev,
+               libqt6svg6-dev
+Standards-Version: 4.6.2
+Homepage: https://github.com/GIBIS-UNIFESP/wiRedPanda
+Rules-Requires-Root: no
+
+Package: wiredpanda
+Architecture: amd64 arm64
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         hicolor-icon-theme
+Description: Logic circuit simulator focused on education
+ wiRedPanda is free software designed to help students learn about
+ logic circuits and simulate them in an easy and friendly way.
+ .
+ Features include real-time logic simulation, a user-friendly interface,
+ and support for exporting circuits as images or PDFs.
