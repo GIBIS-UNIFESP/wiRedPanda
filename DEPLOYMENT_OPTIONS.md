@@ -4,6 +4,10 @@
 
 Portable ZIP (Windows), AppImage (Linux), DMG (macOS). All three are manual-download artifacts; users redownload to update.
 
+## Rollout status
+
+Packaging manifests for all 11 `planned` channels live under `Packaging/`, and the matching publish workflows under `.github/workflows/publish-*.yml`. Each workflow is gated by a per-channel repository variable (`PUBLISH_<CHANNEL>_ENABLED=true`) and stays dormant until the variable plus the channel's secret are set. Activating a channel requires the corresponding publisher account / repo / GPG key, which is human-only work.
+
 ## Comparison
 
 ### Windows
