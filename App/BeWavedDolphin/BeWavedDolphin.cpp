@@ -734,12 +734,8 @@ void BewavedDolphin::on_actionCombinational_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Combinational mode"));
-        // Ensure the table is at least as long as the full truth table (2^n columns)
         const int truthTableSize = static_cast<int>((std::min)(static_cast<double>(kMaxSimLength), std::pow(2, m_inputPorts)));
-
-        if (m_length < truthTableSize) {
-            setLength(truthTableSize, false);
-        }
+        setLength(truthTableSize, false);
 
         // Generate Gray-code-like input patterns: row 0 toggles every 1 column (period=2),
         // row 1 every 2 columns (period=4), etc. Together they enumerate all input combinations.
