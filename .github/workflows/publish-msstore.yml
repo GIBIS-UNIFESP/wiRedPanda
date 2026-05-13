@@ -1,0 +1,113 @@
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Build MSIX bundle and upload to release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+# Enable by setting repository variable PUBLISH_MSSTORE_ENABLED=true.
+# Optionally override the publisher CN by setting the STORE_PUBLISHER_CN
+# repository variable to match your Partner Center publisher ID
+# (defaults to "CN=GIBIS-UNIFESP"; must match exactly for Store accept).
+#
+# This workflow only builds and attaches the .msixbundle to the GitHub
+# release. Submission to the Microsoft Store is currently manual via
+# Partner Center for the first release; automation via the Store
+# Submission API can be added once Partner Center is set up.
+
+jobs:
+  bundle:
+    if: vars.PUBLISH_MSSTORE_ENABLED == 'true'
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Extract version
+        run: |
+          $version = "${env:GITHUB_REF}" -replace '^refs/tags/',''
+          "VERSION=$version"   >> $env:GITHUB_ENV
+          "MSIX_VERSION=$version.0" >> $env:GITHUB_ENV
+
+      - name: Resolve publisher CN
+        run: |
+          $cn = if ("${{ vars.STORE_PUBLISHER_CN }}") { "${{ vars.STORE_PUBLISHER_CN }}" } else { "CN=GIBIS-UNIFESP" }
+          "PUBLISHER_CN=$cn" >> $env:GITHUB_ENV
+
+      - name: Locate Windows SDK tools (makeappx)
+        run: |
+          $sdkRoot = (Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Directory |
+            Where-Object { $_.Name -match '^10\.' } | Sort-Object Name -Descending | Select-Object -First 1).FullName
+          $makeappx = Join-Path $sdkRoot "x64\makeappx.exe"
+          if (-not (Test-Path $makeappx)) { throw "makeappx.exe not found under $sdkRoot" }
+          "MAKEAPPX=$makeappx" >> $env:GITHUB_ENV
+
+      - name: Install ImageMagick
+        run: choco install imagemagick.tool -y --no-progress
+
+      - name: Generate tile assets
+        run: |
+          $src = "App/Resources/Assets/Logos/wpanda-256x256.png"
+          $assets = "Packaging/msix/Assets"
+          New-Item -ItemType Directory -Force -Path $assets | Out-Null
+
+          # Square tiles: simple downscale, transparent background preserved.
+          magick $src -resize 50x50   "$assets/StoreLogo.png"
+          magick $src -resize 44x44   "$assets/Square44x44Logo.png"
+          magick $src -resize 150x150 "$assets/Square150x150Logo.png"
+
+          # Wide tile + splash: pad to target aspect with transparent canvas.
+          magick $src -resize 150x150 -background none -gravity center -extent 310x150 "$assets/Wide310x150Logo.png"
+          magick $src -resize 300x300 -background none -gravity center -extent 620x300 "$assets/SplashScreen.png"
+
+      - name: Build per-arch MSIX
+        run: |
+          $mkappx = $env:MAKEAPPX
+          $sdkBin = Split-Path $mkappx -Parent
+          $env:Path = "$sdkBin;$env:Path"
+          New-Item -ItemType Directory -Force -Path msix-out | Out-Null
+
+          foreach ($arch in @(@{zip='x86_64'; msix='x64'}, @{zip='arm64'; msix='arm64'})) {
+            $zipName = "wiRedPanda-$env:VERSION-Windows-$($arch.zip)-Qt6.9.3-Portable.zip"
+            $stage   = "stage-$($arch.msix)"
+            New-Item -ItemType Directory -Force -Path $stage | Out-Null
+
+            gh release download "$env:VERSION" --repo "$env:GITHUB_REPOSITORY" --pattern $zipName
+            Expand-Archive -Path $zipName -DestinationPath "$stage" -Force
+
+            # The portable ZIP extracts to wiredpanda-$VERSION/, flatten it.
+            $inner = Get-ChildItem "$stage" -Directory | Select-Object -First 1
+            Get-ChildItem $inner.FullName -Recurse | Move-Item -Destination $stage -Force
+            Remove-Item $inner.FullName -Recurse -Force
+
+            Copy-Item -Recurse Packaging/msix/Assets "$stage/Assets"
+
+            # Render AppxManifest for this arch.
+            (Get-Content Packaging/msix/AppxManifest.xml) `
+              -replace '^(\s*)Version="[\d.]+"', "`$1Version=`"$env:MSIX_VERSION`"" `
+              -replace 'ProcessorArchitecture="__ARCH__"', "ProcessorArchitecture=`"$($arch.msix)`"" `
+              -replace 'Publisher="CN=[^"]+"', "Publisher=`"$env:PUBLISHER_CN`"" |
+              Set-Content "$stage/AppxManifest.xml"
+
+            & $mkappx pack /d $stage /p "msix-out/wiredpanda-$env:VERSION-$($arch.msix).msix" /o
+            if ($LASTEXITCODE -ne 0) { throw "makeappx pack failed for $($arch.msix)" }
+          }
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bundle MSIXes
+        run: |
+          $mkappx = $env:MAKEAPPX
+          & $mkappx bundle /d msix-out /p "wiRedPanda-$env:VERSION-Windows.msixbundle" /bv $env:MSIX_VERSION /o
+          if ($LASTEXITCODE -ne 0) { throw "makeappx bundle failed" }
+
+      - name: Upload bundle to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "$env:VERSION" "wiRedPanda-$env:VERSION-Windows.msixbundle" --repo "$env:GITHUB_REPOSITORY" --clobber
