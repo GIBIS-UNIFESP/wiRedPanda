@@ -291,15 +291,17 @@ void TestBewavedDolphinGui::testAutoCropAction()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    // AND circuit has 2 inputs → truth table size = 2^2 = 4
+    // AND circuit has 2 inputs — set some non-zero input values so autocrop
+    // has something to trim to (all-zero trims to 1 column).
     dolphin->setLength(32, false);
     QCOMPARE(dolphin->getLength(), 32);
+    dolphin->createElement(0, 3, 1, true, false); // set input 0, col 3 to 1
 
     auto *action = dolphin->findChild<QAction *>("actionAutoCrop");
     QVERIFY(action);
     action->trigger();
 
-    QCOMPARE(dolphin->getLength(), 4);
+    QCOMPARE(dolphin->getLength(), 4); // trims to col 3 + 1
 }
 
 // ===========================================================================
