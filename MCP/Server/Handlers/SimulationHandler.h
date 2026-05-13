@@ -16,6 +16,8 @@ class BewavedDolphin;
  */
 class SimulationHandler : public BaseHandler
 {
+    Q_DISABLE_COPY_MOVE(SimulationHandler)
+
 public:
     explicit SimulationHandler(MainWindow *mainWindow, MCPValidator *validator);
     ~SimulationHandler();

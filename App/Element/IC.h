@@ -40,8 +40,10 @@ public:
 
     ~IC() override;
 
-    /// Copy-constructs by delegating to the parent item constructor.
-    IC(const IC &other) : IC(other.parentItem()) {}
+    IC(const IC &) = delete;
+    IC(IC &&) = delete;
+    IC &operator=(const IC &) = delete;
+    IC &operator=(IC &&) = delete;
 
 signals:
     /// Emitted on double-click to request opening the sub-circuit in a new tab.

@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include <QBitArray>
 #include <QGraphicsItem>
 #include <QKeySequence>
@@ -49,6 +51,7 @@ class QWidget;
 class GraphicElement : public QGraphicsObject, public ItemWithId
 {
     Q_OBJECT
+    Q_DISABLE_COPY_MOVE(GraphicElement)
 public:
     // --- Type Info ---
 
@@ -61,6 +64,8 @@ public:
 
     /// Constructs a graphic element of the given \a type, fetching all properties from the metadata registry.
     explicit GraphicElement(ElementType type, QGraphicsItem *parent = nullptr);
+
+    virtual ~GraphicElement() = default;
 
     // --- External file dependencies ---
 
@@ -680,8 +685,6 @@ private:
     quint64 m_minOutputSize = 0;
     quint64 m_maxOutputSize = 0;
 };
-
-Q_DECLARE_METATYPE(GraphicElement)
 
 /// Stream insertion operator that serializes \a item to \a stream via GraphicElement::save().
 QDataStream &operator<<(QDataStream &stream, const GraphicElement *item);
