@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>wiredpanda</id>
+    <version>5.0.1</version>
+    <title>wiRedPanda</title>
+    <authors>GIBIS-UNIFESP and the wiRedPanda contributors</authors>
+    <projectUrl>https://github.com/GIBIS-UNIFESP/wiRedPanda</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/GIBIS-UNIFESP/wiRedPanda/master/App/Resources/Assets/Logos/wpanda-256x256.png</iconUrl>
+    <licenseUrl>https://github.com/GIBIS-UNIFESP/wiRedPanda/blob/master/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/GIBIS-UNIFESP/wiRedPanda</projectSourceUrl>
+    <packageSourceUrl>https://github.com/GIBIS-UNIFESP/wiRedPanda/tree/master/Packaging/chocolatey</packageSourceUrl>
+    <bugTrackerUrl>https://github.com/GIBIS-UNIFESP/wiRedPanda/issues</bugTrackerUrl>
+    <docsUrl>https://github.com/GIBIS-UNIFESP/wiRedPanda</docsUrl>
+    <tags>logic-circuit simulator education electronics digital qt foss cross-platform</tags>
+    <summary>Logic circuit simulator focused on education</summary>
+    <description>wiRedPanda is free software designed to help students learn about logic circuits and simulate them in an easy and friendly way. Features include real-time logic simulation, a user-friendly interface, and support for exporting circuits as images or PDFs.</description>
+    <copyright>Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors</copyright>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
