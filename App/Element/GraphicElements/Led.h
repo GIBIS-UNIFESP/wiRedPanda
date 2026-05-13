@@ -43,7 +43,7 @@ public:
     /// \reimp
     void setAppearance(const bool useDefaultAppearance, const QString &fileName) override;
     /// \reimp
-    QList<QPair<int, QString>> appearanceStates() const override;
+    QList<std::pair<int, QString>> appearanceStates() const override;
 
     /// Propagates input values to matching outputs.
     void updateLogic() override;

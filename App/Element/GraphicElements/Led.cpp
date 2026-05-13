@@ -234,9 +234,9 @@ void Led::setAppearance(const bool useDefaultAppearance, const QString &fileName
     setPixmap(index);
 }
 
-QList<QPair<int, QString>> Led::appearanceStates() const
+QList<std::pair<int, QString>> Led::appearanceStates() const
 {
-    QList<QPair<int, QString>> states;
+    QList<std::pair<int, QString>> states;
 
     switch (inputSize()) {
     case 1:

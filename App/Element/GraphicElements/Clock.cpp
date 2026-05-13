@@ -209,7 +209,7 @@ QString Clock::genericProperties()
     return QString::number(frequency()) + " Hz";
 }
 
-QList<QPair<int, QString>> Clock::appearanceStates() const
+QList<std::pair<int, QString>> Clock::appearanceStates() const
 {
     return {{0, tr("Low")}, {1, tr("High")}};
 }

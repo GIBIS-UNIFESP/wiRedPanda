@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include <QElapsedTimer>
 #include <QGraphicsScene>
 #include <QHash>
@@ -370,7 +372,7 @@ private:
     /// position. QPointer auto-clears if the element is destroyed mid-drag
     /// (e.g. user presses Delete while holding the mouse), preventing a
     /// dangling-pointer dereference in mouseReleaseEvent.
-    QList<QPair<QPointer<GraphicElement>, QPointF>> m_dragSnapshot;
+    QList<std::pair<QPointer<GraphicElement>, QPointF>> m_dragSnapshot;
     bool m_draggingElement = false;
     bool m_markingSelectionBox = false;
     bool m_handlingMouseMove = false;

@@ -474,7 +474,7 @@ void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &
     //
     // Temp IDs start above the highest positive ID already present in items so
     // they cannot collide with any valid ID in the list.
-    QList<QPair<GraphicElement *, int>> savedIds;
+    QList<std::pair<GraphicElement *, int>> savedIds;
     int localId = 0;
     for (auto *item : items) {
         if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
