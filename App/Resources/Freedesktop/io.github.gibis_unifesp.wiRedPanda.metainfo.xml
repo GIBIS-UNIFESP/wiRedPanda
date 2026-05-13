@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+ SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<component type="desktop-application">
+  <id>io.github.gibis_unifesp.wiRedPanda</id>
+
+  <name>wiRedPanda</name>
+  <summary>Learn digital logic with a visual circuit simulator</summary>
+
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <description>
+    <p>
+      wiRedPanda is free software designed to help students learn about logic
+      circuits and simulate them in an easy and friendly way.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Works on Windows, macOS and Linux</li>
+      <li>Real-time logic simulation</li>
+      <li>User-friendly interface</li>
+      <li>Intuitive and easy to use</li>
+      <li>Export your work as an image or a PDF</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">wiredpanda.desktop</launchable>
+
+  <url type="homepage">https://github.com/GIBIS-UNIFESP/wiRedPanda</url>
+  <url type="bugtracker">https://github.com/GIBIS-UNIFESP/wiRedPanda/issues</url>
+  <url type="vcs-browser">https://github.com/GIBIS-UNIFESP/wiRedPanda</url>
+  <url type="translate">https://hosted.weblate.org/engage/wiredpanda/</url>
+
+  <developer id="org.gibis-unifesp">
+    <name>GIBIS-UNIFESP and the wiRedPanda contributors</name>
+  </developer>
+
+  <categories>
+    <category>Education</category>
+    <category>Science</category>
+    <category>Electronics</category>
+  </categories>
+
+  <keywords>
+    <keyword>logic</keyword>
+    <keyword>circuit</keyword>
+    <keyword>education</keyword>
+    <keyword>simulator</keyword>
+    <keyword>digital</keyword>
+  </keywords>
+
+  <provides>
+    <mediatype>application/x-wpanda</mediatype>
+    <mediatype>application/x-wiredpanda</mediatype>
+  </provides>
+
+  <content_rating type="oars-1.1"/>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://gibis-unifesp.github.io/wiRedPanda/demo.gif</image>
+      <caption>Main window demonstrating circuit construction and simulation</caption>
+    </screenshot>
+  </screenshots>
+
+  <releases>
+    <release version="5.1.3" date="2026-06-24"/>
+    <release version="5.1.2" date="2026-05-23"/>
+    <release version="5.1.1" date="2026-05-20"/>
+    <release version="5.1.0" date="2026-05-16"/>
+    <release version="5.0.1" date="2026-04-24"/>
+    <release version="5.0.0" date="2026-04-23"/>
+  </releases>
+</component>
+
