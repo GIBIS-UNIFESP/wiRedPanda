@@ -1,0 +1,28 @@
+# Maintainer: Rodrigo Torres <torres.dark@gmail.com>
+pkgname=wiredpanda
+pkgver=5.0.1
+pkgrel=1
+pkgdesc="Logic circuit simulator focused on education"
+arch=('x86_64' 'aarch64')
+url="https://github.com/GIBIS-UNIFESP/wiRedPanda"
+license=('GPL-3.0-or-later')
+depends=('qt6-base' 'qt6-svg' 'qt6-multimedia' 'qt6-imageformats' 'hicolor-icon-theme')
+makedepends=('cmake' 'ninja' 'qt6-tools')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cd "wiRedPanda-$pkgver"
+    cmake -B build -G Ninja \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr
+    cmake --build build
+}
+
+package() {
+    cd "wiRedPanda-$pkgver"
+
+    DESTDIR="$pkgdir" cmake --install build
+
+    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

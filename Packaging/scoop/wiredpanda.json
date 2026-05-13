@@ -1,0 +1,37 @@
+{
+    "version": "5.0.1",
+    "description": "Logic circuit simulator focused on education",
+    "homepage": "https://github.com/GIBIS-UNIFESP/wiRedPanda",
+    "license": "GPL-3.0-or-later",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/5.0.1/wiRedPanda-5.0.1-Windows-x86_64-Qt6.9.3-Portable.zip",
+            "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+            "extract_dir": "wiredpanda-5.0.1"
+        },
+        "arm64": {
+            "url": "https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/5.0.1/wiRedPanda-5.0.1-Windows-arm64-Qt6.9.3-Portable.zip",
+            "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+            "extract_dir": "wiredpanda-5.0.1"
+        }
+    },
+    "bin": "wiredpanda.exe",
+    "shortcuts": [
+        ["wiredpanda.exe", "wiRedPanda"]
+    ],
+    "checkver": {
+        "github": "https://github.com/GIBIS-UNIFESP/wiRedPanda"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/$version/wiRedPanda-$version-Windows-x86_64-Qt6.9.3-Portable.zip",
+                "extract_dir": "wiredpanda-$version"
+            },
+            "arm64": {
+                "url": "https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/$version/wiRedPanda-$version-Windows-arm64-Qt6.9.3-Portable.zip",
+                "extract_dir": "wiredpanda-$version"
+            }
+        }
+    }
+}
