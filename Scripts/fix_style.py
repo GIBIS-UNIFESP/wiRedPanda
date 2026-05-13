@@ -2,26 +2,18 @@
 # Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 """
-Fix C++ include ordering violations in the wiRedPanda project.
+Fix C++ source style across the wiRedPanda project.
 
-Correct order:
-1. Related header (for .cpp files) - "quotes"
-2. [blank line]
-3. C/C++ Standard Library headers alphabetically sorted <...> not starting with Q
-4. [blank line]
-5. Qt/Third-party headers alphabetically sorted (<Q...>, <nlohmann/...>, etc.)
-6. [blank line]
-7. Project-local headers alphabetically sorted "..."
-
-For .h files: groups 3, 5, 7 only (no related header).
-
-Handles #ifdef blocks by:
-- Extracting includes from within #ifdef...#endif blocks
-- Separating mixed-type includes into different conditional blocks
-- Reordering all includes while preserving conditional compilation directives
+Runs three passes per .cpp/.h file:
+1. Include ordering — related header, then stdlib, then Qt/third-party, then
+   project-local, alphabetised within each group, separated by blank lines.
+   Handles #ifdef blocks by extracting their includes and splitting mixed
+   blocks into per-condition wrappers.
+2. Blank-line collapse — replace any run of 3+ consecutive newlines with 2.
+3. Trailing blank line — ensure each file ends with exactly two newline bytes.
 
 Usage:
-    python3 Scripts/fix_includes.py [root_dir] [OPTIONS]
+    python3 Scripts/fix_style.py [root_dir] [OPTIONS]
 
 Options:
     --verbose       Show detailed output per file
@@ -386,7 +378,7 @@ def format_includes_from_entries(entries: List[IncludeEntry], is_cpp, filepath):
     return result
 
 
-def fix_file(filepath, verbose=False, force=False):
+def fix_includes_in_file(filepath, verbose=False, force=False):
     """Fix includes in a single file."""
     try:
         with open(filepath, "r", encoding="utf-8") as f:
@@ -465,6 +457,41 @@ def fix_file(filepath, verbose=False, force=False):
         return False
 
 
+def fix_blank_lines_in_file(filepath):
+    """Collapse runs of 3+ newlines to 2, and ensure file ends with exactly \\n\\n."""
+    try:
+        data = filepath.read_bytes()
+    except Exception as e:
+        print(f"Error reading {filepath}: {e}")
+        return False
+
+    if not data:
+        return False
+
+    new_data = re.sub(rb"\n\n\n+", b"\n\n", data)
+    new_data = new_data.rstrip(b"\n") + b"\n\n"
+
+    if new_data == data:
+        return False
+
+    try:
+        filepath.write_bytes(new_data)
+        return True
+    except Exception as e:
+        print(f"Error writing {filepath}: {e}")
+        return False
+
+
+def fix_file(filepath, verbose=False, force=False):
+    """Run all style passes on a single file. Returns True if anything changed."""
+    changed = False
+    if fix_includes_in_file(filepath, verbose=verbose, force=force):
+        changed = True
+    if fix_blank_lines_in_file(filepath):
+        changed = True
+    return changed
+
+
 def main():
     root = None
     verbose = False
@@ -485,7 +512,7 @@ def main():
         print(f"Error: root directory {root} does not exist")
         sys.exit(1)
 
-    print(f"Fixing include ordering in {root}...")
+    print(f"Fixing C++ style in {root}...")
     if force:
         print("(Force mode: reprocessing all files)\n")
     else:
