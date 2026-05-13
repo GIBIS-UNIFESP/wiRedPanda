@@ -1,0 +1,24 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+%:
+	dh $@ --buildsystem=cmake+ninja
+
+override_dh_auto_configure:
+	dh_auto_configure -- -DCMAKE_BUILD_TYPE=Release
+
+override_dh_auto_install:
+	dh_auto_install
+	# CMakeLists installs the binary, .desktop, and icons at 26x26..128x128.
+	# Add the assets it doesn't cover.
+	install -Dm644 App/Resources/Freedesktop/wiredpanda-mime.xml \
+		debian/wiredpanda/usr/share/mime/packages/wiredpanda-mime.xml
+	install -Dm644 App/Resources/Freedesktop/io.github.gibis_unifesp.wiRedPanda.metainfo.xml \
+		debian/wiredpanda/usr/share/metainfo/io.github.gibis_unifesp.wiRedPanda.metainfo.xml
+	install -Dm644 App/Resources/Assets/Logos/wpanda.svg \
+		debian/wiredpanda/usr/share/icons/hicolor/scalable/apps/wpanda.svg
+	install -Dm644 App/Resources/Assets/Logos/wpanda-256x256.png \
+		debian/wiredpanda/usr/share/icons/hicolor/256x256/apps/wpanda.png
+	mkdir -p debian/wiredpanda/usr/share/wiredpanda
+	cp -r Examples debian/wiredpanda/usr/share/wiredpanda/
