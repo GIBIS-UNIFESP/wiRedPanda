@@ -46,8 +46,10 @@ public:
 
     // --- Element Access ---
 
-    /// Returns the graphic element that owns this port.
-    GraphicElement *graphicElement() const { return m_graphicElement; }
+    /// Returns a mutable pointer to the graphic element that owns this port.
+    GraphicElement *graphicElement() { return m_graphicElement; }
+    /// Returns a read-only pointer to the graphic element that owns this port.
+    const GraphicElement *graphicElement() const { return m_graphicElement; }
 
     // --- Identity & Status ---
 

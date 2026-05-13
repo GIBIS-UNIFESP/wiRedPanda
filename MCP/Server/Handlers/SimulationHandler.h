@@ -19,7 +19,7 @@ class SimulationHandler : public BaseHandler
     Q_DISABLE_COPY_MOVE(SimulationHandler)
 
 public:
-    explicit SimulationHandler(MainWindow *mainWindow, MCPValidator *validator);
+    explicit SimulationHandler(MainWindow *mainWindow, const MCPValidator *validator);
     ~SimulationHandler();
 
     QJsonObject handleCommand(const QString &command, const QJsonObject &params, const QJsonValue &requestId) override;

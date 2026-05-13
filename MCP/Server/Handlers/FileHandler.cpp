@@ -17,7 +17,7 @@
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
 
-FileHandler::FileHandler(MainWindow *mainWindow, MCPValidator *validator)
+FileHandler::FileHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
 {
 }

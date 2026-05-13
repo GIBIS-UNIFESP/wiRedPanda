@@ -46,6 +46,8 @@ public:
     GraphicsView *view();
     /// Returns the Scene embedded in this workspace.
     Scene *scene();
+    /// Returns the Scene embedded in this workspace (const overload).
+    const Scene *scene() const;
 
     /// Returns the embedded Simulation.
     Simulation *simulation();

@@ -160,7 +160,7 @@ public:
     // --- Hit-testing ---
 
     /// Returns the topmost item at \a pos, prioritising ports over elements.
-    QGraphicsItem *itemAt(QPointF pos);
+    QGraphicsItem *itemAt(QPointF pos) const;
 
     /// Returns the last known mouse position in scene coordinates.
     [[nodiscard]] QPointF mousePos() const { return m_mousePos; }
@@ -324,8 +324,8 @@ private:
     /// Handles a clone drag (Ctrl+drag of an existing selection).
     void handleCloneDrag(QGraphicsSceneDragDropEvent *event);
 
-    QList<QGraphicsItem *> itemsAt(const QPointF pos);
-    const QVector<QNEConnection *> connections();
+    QList<QGraphicsItem *> itemsAt(const QPointF pos) const;
+    const QVector<QNEConnection *> connections() const;
     void checkUpdateRequest();
     void contextMenu(const QPoint screenPos);
     void updateUndoText(const QString &text);

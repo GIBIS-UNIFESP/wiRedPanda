@@ -110,7 +110,7 @@ public:
     // --- MCP Accessors ---
 
     /// Returns the underlying table model (MCP access).
-    QStandardItemModel* model() const { return m_model; }
+    const QStandardItemModel* model() const { return m_model; }
 
     /// Returns the output element vector (MCP access).
     const QVector<GraphicElement *>& outputElements() const { return m_outputs; }

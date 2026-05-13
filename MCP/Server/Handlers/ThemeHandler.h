@@ -9,7 +9,7 @@
 class ThemeHandler : public BaseHandler
 {
 public:
-    explicit ThemeHandler(MainWindow *mainWindow, MCPValidator *validator);
+    explicit ThemeHandler(MainWindow *mainWindow, const MCPValidator *validator);
 
     QJsonObject handleCommand(const QString &command, const QJsonObject &params, const QJsonValue &requestId) override;
 

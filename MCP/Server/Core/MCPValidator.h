@@ -65,8 +65,8 @@ public:
     static QJsonObject nlohmannToQJson(const json &nlohmannJson);
 
     // Schema introspection (used by describe_command)
-    json findCommandSchema(const QString &commandName);
-    json findResponseSchema(const QString &commandName);
+    json findCommandSchema(const QString &commandName) const;
+    json findResponseSchema(const QString &commandName) const;
 
 private:
     // Internal validation methods

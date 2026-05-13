@@ -80,7 +80,7 @@ QString categoryFor(const QString &commandName)
 }
 } // namespace
 
-ServerInfoHandler::ServerInfoHandler(MainWindow *mainWindow, MCPValidator *validator)
+ServerInfoHandler::ServerInfoHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
 {
 }

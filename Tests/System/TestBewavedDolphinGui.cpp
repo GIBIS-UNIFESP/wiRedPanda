@@ -905,7 +905,7 @@ void TestBewavedDolphinGui::testFitScreenClampsAndGuardsA26()
     // guard makes FitScreen a no-op that leaves the prior m_scale intact.
     auto *table = dolphin->m_signalTableView;
     QVERIFY(table);
-    auto *model = dolphin->model();
+    const auto *model = dolphin->model();
     QVERIFY(model);
     for (int col = 0; col < model->columnCount(); ++col) {
         table->setColumnHidden(col, true);

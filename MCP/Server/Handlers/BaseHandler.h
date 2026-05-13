@@ -23,7 +23,7 @@ class GraphicElement;
 class BaseHandler
 {
 public:
-    explicit BaseHandler(MainWindow *mainWindow, MCPValidator *validator);
+    explicit BaseHandler(MainWindow *mainWindow, const MCPValidator *validator);
     virtual ~BaseHandler() = default;
 
     // Pure virtual method for handling commands - each handler implements this
@@ -32,16 +32,17 @@ public:
     // Public utility methods available to all classes
     QJsonObject createErrorResponse(const QString &error,
                                     const QJsonValue &requestId = QJsonValue(),
-                                    int code = JsonRpcError::InternalError);
-    QJsonObject createSuccessResponse(const QJsonObject &result = {}, const QJsonValue &requestId = QJsonValue());
+                                    int code = JsonRpcError::InternalError) const;
+    QJsonObject createSuccessResponse(const QJsonObject &result = {}, const QJsonValue &requestId = QJsonValue()) const;
     Scene *currentScene();
-    bool validateElementId(int elementId, const QString &paramName, QString &errorMsg);
-    bool validateNonEmptyString(const QJsonValue &value, const QString &paramName, QString &errorMsg);
-    bool validateNonNegativeInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg);
-    bool validateNumeric(const QJsonValue &value, const QString &paramName, QString &errorMsg);
-    bool validateParameters(const QJsonObject &params, const QStringList &required);
-    bool validatePortRange(GraphicElement *element, int portIndex, bool isOutput, const QString &paramName, QString &errorMsg);
-    bool validatePositiveInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg);
+    const Scene *currentScene() const;
+    bool validateElementId(int elementId, const QString &paramName, QString &errorMsg) const;
+    bool validateNonEmptyString(const QJsonValue &value, const QString &paramName, QString &errorMsg) const;
+    bool validateNonNegativeInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg) const;
+    bool validateNumeric(const QJsonValue &value, const QString &paramName, QString &errorMsg) const;
+    bool validateParameters(const QJsonObject &params, const QStringList &required) const;
+    bool validatePortRange(GraphicElement *element, int portIndex, bool isOutput, const QString &paramName, QString &errorMsg) const;
+    bool validatePositiveInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg) const;
 
     /**
      * \brief Wraps \a fn in a try/catch, returning an error response on exception.
@@ -72,14 +73,14 @@ public:
     GraphicElement *validatedElement(const QJsonObject &params, const QString &paramName, QString &errorMsg);
 
     // Port lookup by label (similar to CircuitBuilder in testutils.cpp)
-    bool inputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg);
-    bool outputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg);
-    QString availableInputPorts(GraphicElement *element);
-    QString availableOutputPorts(GraphicElement *element);
+    bool inputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg) const;
+    bool outputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg) const;
+    QString availableInputPorts(GraphicElement *element) const;
+    QString availableOutputPorts(GraphicElement *element) const;
 
 protected:
-    QString availablePorts(GraphicElement *element, bool isOutput);
+    QString availablePorts(GraphicElement *element, bool isOutput) const;
     // Shared resources
     MainWindow *m_mainWindow;
-    MCPValidator *m_validator;
+    const MCPValidator *m_validator;
 };

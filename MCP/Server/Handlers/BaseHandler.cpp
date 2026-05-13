@@ -14,13 +14,13 @@
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
 
-BaseHandler::BaseHandler(MainWindow *mainWindow, MCPValidator *validator)
+BaseHandler::BaseHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : m_mainWindow(mainWindow)
     , m_validator(validator)
 {
 }
 
-QJsonObject BaseHandler::createSuccessResponse(const QJsonObject &result, const QJsonValue &requestId)
+QJsonObject BaseHandler::createSuccessResponse(const QJsonObject &result, const QJsonValue &requestId) const
 {
     QJsonObject response;
     response["jsonrpc"] = "2.0";
@@ -31,7 +31,7 @@ QJsonObject BaseHandler::createSuccessResponse(const QJsonObject &result, const 
     return response;
 }
 
-QJsonObject BaseHandler::createErrorResponse(const QString &error, const QJsonValue &requestId, int code)
+QJsonObject BaseHandler::createErrorResponse(const QString &error, const QJsonValue &requestId, int code) const
 {
     QJsonObject response;
     response["jsonrpc"] = "2.0";
@@ -47,7 +47,7 @@ QJsonObject BaseHandler::createErrorResponse(const QString &error, const QJsonVa
     return response;
 }
 
-bool BaseHandler::validateParameters(const QJsonObject &params, const QStringList &required)
+bool BaseHandler::validateParameters(const QJsonObject &params, const QStringList &required) const
 {
     for (const QString &param : required) {
         if (!params.contains(param)) {
@@ -71,7 +71,21 @@ Scene *BaseHandler::currentScene()
     return workspace->scene();
 }
 
-bool BaseHandler::validatePositiveInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg)
+const Scene *BaseHandler::currentScene() const
+{
+    if (!m_mainWindow) {
+        return nullptr;
+    }
+
+    const WorkSpace *workspace = m_mainWindow->currentTab();
+    if (!workspace) {
+        return nullptr;
+    }
+
+    return workspace->scene();
+}
+
+bool BaseHandler::validatePositiveInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg) const
 {
     if (!value.isDouble()) {
         errorMsg = QString("Parameter '%1' must be an integer").arg(paramName);
@@ -87,7 +101,7 @@ bool BaseHandler::validatePositiveInteger(const QJsonValue &value, const QString
     return true;
 }
 
-bool BaseHandler::validateNonNegativeInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg)
+bool BaseHandler::validateNonNegativeInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg) const
 {
     if (!value.isDouble()) {
         errorMsg = QString("Parameter '%1' must be an integer").arg(paramName);
@@ -103,7 +117,7 @@ bool BaseHandler::validateNonNegativeInteger(const QJsonValue &value, const QStr
     return true;
 }
 
-bool BaseHandler::validateNonEmptyString(const QJsonValue &value, const QString &paramName, QString &errorMsg)
+bool BaseHandler::validateNonEmptyString(const QJsonValue &value, const QString &paramName, QString &errorMsg) const
 {
     if (!value.isString()) {
         errorMsg = QString("Parameter '%1' must be a string").arg(paramName);
@@ -119,14 +133,14 @@ bool BaseHandler::validateNonEmptyString(const QJsonValue &value, const QString 
     return true;
 }
 
-bool BaseHandler::validateElementId(int elementId, const QString &paramName, QString &errorMsg)
+bool BaseHandler::validateElementId(int elementId, const QString &paramName, QString &errorMsg) const
 {
     if (elementId <= 0) {
         errorMsg = QString("Parameter '%1' must be a positive integer (got %2)").arg(paramName).arg(elementId);
         return false;
     }
 
-    Scene *scene = currentScene();
+    const Scene *scene = currentScene();
     if (!scene) {
         errorMsg = "No active circuit scene available";
         return false;
@@ -141,7 +155,7 @@ bool BaseHandler::validateElementId(int elementId, const QString &paramName, QSt
     return true;
 }
 
-bool BaseHandler::validateNumeric(const QJsonValue &value, const QString &paramName, QString &errorMsg)
+bool BaseHandler::validateNumeric(const QJsonValue &value, const QString &paramName, QString &errorMsg) const
 {
     if (!value.isDouble()) {
         errorMsg = QString("Parameter '%1' must be a numeric value").arg(paramName);
@@ -157,7 +171,7 @@ bool BaseHandler::validateNumeric(const QJsonValue &value, const QString &paramN
     return true;
 }
 
-bool BaseHandler::validatePortRange(GraphicElement *element, int portIndex, bool isOutput, const QString &paramName, QString &errorMsg)
+bool BaseHandler::validatePortRange(GraphicElement *element, int portIndex, bool isOutput, const QString &paramName, QString &errorMsg) const
 {
     if (!element) {
         errorMsg = QString("Invalid element for port validation");
@@ -203,7 +217,7 @@ GraphicElement *BaseHandler::validatedElement(const QJsonObject &params, const Q
     return element;
 }
 
-bool BaseHandler::inputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg)
+bool BaseHandler::inputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg) const
 {
     if (!element) {
         errorMsg = "Element is null";
@@ -224,7 +238,7 @@ bool BaseHandler::inputPortByLabel(GraphicElement *element, const QString &label
     return false;
 }
 
-bool BaseHandler::outputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg)
+bool BaseHandler::outputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg) const
 {
     if (!element) {
         errorMsg = "Element is null";
@@ -245,7 +259,7 @@ bool BaseHandler::outputPortByLabel(GraphicElement *element, const QString &labe
     return false;
 }
 
-QString BaseHandler::availablePorts(GraphicElement *element, bool isOutput)
+QString BaseHandler::availablePorts(GraphicElement *element, bool isOutput) const
 {
     if (!element) {
         return "(element is null)";
@@ -272,12 +286,12 @@ QString BaseHandler::availablePorts(GraphicElement *element, bool isOutput)
     return ports.join(", ");
 }
 
-QString BaseHandler::availableInputPorts(GraphicElement *element)
+QString BaseHandler::availableInputPorts(GraphicElement *element) const
 {
     return availablePorts(element, false);
 }
 
-QString BaseHandler::availableOutputPorts(GraphicElement *element)
+QString BaseHandler::availableOutputPorts(GraphicElement *element) const
 {
     return availablePorts(element, true);
 }

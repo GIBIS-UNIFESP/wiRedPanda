@@ -108,6 +108,11 @@ Scene *WorkSpace::scene()
     return &m_scene;
 }
 
+const Scene *WorkSpace::scene() const
+{
+    return &m_scene;
+}
+
 GraphicsView *WorkSpace::view()
 {
     return &m_view;
