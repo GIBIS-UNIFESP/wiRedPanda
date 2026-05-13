@@ -1,0 +1,21 @@
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Trigger COPR build
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+# Enable by setting repository variable PUBLISH_COPR_ENABLED=true and
+# adding the COPR_WEBHOOK_URL secret (rebuild webhook URL from the
+# project's Integrations page on copr.fedorainfracloud.org).
+
+jobs:
+  trigger:
+    if: vars.PUBLISH_COPR_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: POST to COPR webhook
+        run: curl -fSs -X POST "${{ secrets.COPR_WEBHOOK_URL }}"

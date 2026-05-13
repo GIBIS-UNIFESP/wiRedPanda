@@ -1,0 +1,69 @@
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Publish to Scoop bucket
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+# Enable by setting repository variable PUBLISH_SCOOP_ENABLED=true and
+# adding the SCOOP_BUCKET_DEPLOY_KEY secret (SSH private key with push
+# access to GIBIS-UNIFESP/scoop-wiredpanda).
+
+jobs:
+  publish:
+    if: vars.PUBLISH_SCOOP_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Extract version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> "$GITHUB_ENV"
+
+      - name: Download Windows release ZIPs and compute hashes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download "$VERSION" \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern "wiRedPanda-${VERSION}-Windows-*-Qt6.9.3-Portable.zip"
+
+          X64_HASH=$(sha256sum "wiRedPanda-${VERSION}-Windows-x86_64-Qt6.9.3-Portable.zip" | awk '{print $1}')
+          ARM64_HASH=$(sha256sum "wiRedPanda-${VERSION}-Windows-arm64-Qt6.9.3-Portable.zip" | awk '{print $1}')
+          echo "X64_HASH=$X64_HASH" >> "$GITHUB_ENV"
+          echo "ARM64_HASH=$ARM64_HASH" >> "$GITHUB_ENV"
+
+      - name: Checkout Scoop bucket
+        uses: actions/checkout@v6
+        with:
+          repository: GIBIS-UNIFESP/scoop-wiredpanda
+          ssh-key: ${{ secrets.SCOOP_BUCKET_DEPLOY_KEY }}
+          path: scoop-bucket
+
+      - name: Render manifest into bucket
+        run: |
+          mkdir -p scoop-bucket/bucket
+          jq --arg v "$VERSION" --arg h64 "$X64_HASH" --arg ha64 "$ARM64_HASH" '
+            .version = $v
+            | .architecture."64bit".url = "https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/\($v)/wiRedPanda-\($v)-Windows-x86_64-Qt6.9.3-Portable.zip"
+            | .architecture."64bit".hash = $h64
+            | .architecture."64bit".extract_dir = "wiredpanda-\($v)"
+            | .architecture.arm64.url = "https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/\($v)/wiRedPanda-\($v)-Windows-arm64-Qt6.9.3-Portable.zip"
+            | .architecture.arm64.hash = $ha64
+            | .architecture.arm64.extract_dir = "wiredpanda-\($v)"
+          ' Packaging/scoop/wiredpanda.json > scoop-bucket/bucket/wiredpanda.json
+
+      - name: Commit and push to bucket
+        working-directory: scoop-bucket
+        run: |
+          git config user.name "wiRedPanda Release Bot"
+          git config user.email "torres.dark@gmail.com"
+          git add bucket/wiredpanda.json
+          if git diff --staged --quiet; then
+            echo "No manifest changes to push"
+            exit 0
+          fi
+          git commit -m "wiredpanda: update to $VERSION"
+          git push
