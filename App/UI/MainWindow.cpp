@@ -582,8 +582,13 @@ void MainWindow::downloadUpdate(const QString &latestVersion, const QUrl &url)
     progress->setValue(0);
 
     auto *network = new QNetworkAccessManager(this);
+    connect(network, &QNetworkAccessManager::sslErrors, this, [](QNetworkReply *reply, const QList<QSslError> &errors) {
+        qWarning() << "MainWindow::downloadUpdate: SSL errors, aborting reply:" << errors;
+        reply->abort();
+    });
     QNetworkRequest request(url);
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
+    request.setTransferTimeout(60000);
     QNetworkReply *reply = network->get(request);
 
     connect(reply, &QNetworkReply::downloadProgress, progress, [progress](qint64 received, qint64 total) {
@@ -612,7 +617,12 @@ void MainWindow::downloadUpdate(const QString &latestVersion, const QUrl &url)
             reply->deleteLater();
             return;
         }
-        file.write(reply->readAll());
+        const QByteArray payload = reply->readAll();
+        if (file.write(payload) != payload.size()) {
+            QMessageBox::warning(this, tr("Download Failed"), tr("Could not write the file:\n%1").arg(savePath));
+            reply->deleteLater();
+            return;
+        }
         file.close();
         reply->deleteLater();
 
@@ -795,8 +805,13 @@ void MainWindow::on_actionOpen_triggered()
             if (!fileName.isEmpty()) {
                 // Write file content to a temporary file
                 QFile file(fileName);
-                file.open(QIODevice::WriteOnly);
-                file.write(fileContent);
+                if (!file.open(QIODevice::WriteOnly)) {
+                    return;
+                }
+                if (file.write(fileContent) != fileContent.size()) {
+                    file.close();
+                    return;
+                }
                 file.close();
                 loadPandaFile(fileName);
             }
@@ -951,7 +966,7 @@ void MainWindow::on_actionAbout_triggered()
                "</ul>"
                "<p> wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.</p>"
                "<p> Please file a report at our GitHub page if you find a bug or want to request a new feature.</p>"
-               "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
+               "<p><a href=\"https://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
                 .arg(QApplication::applicationVersion()));
     });
 }
@@ -1587,7 +1602,7 @@ void MainWindow::zoomChanged()
 void MainWindow::updateRecentFileActions()
 {
     const auto files = m_recentFiles->recentFiles();
-    const int numRecentFiles = static_cast<int>(qMin(files.size(), RecentFiles::maxFiles));
+    const int numRecentFiles = static_cast<int>((std::min)(files.size(), static_cast<qsizetype>(RecentFiles::maxFiles)));
 
     if (numRecentFiles > 0) {
         m_ui->menuRecentFiles->setEnabled(true);

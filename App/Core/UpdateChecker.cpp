@@ -4,11 +4,13 @@
 #include "App/Core/UpdateChecker.h"
 
 #include <QDate>
+#include <QDebug>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QSslError>
 #include <QVersionNumber>
 
 #include "App/Core/Settings.h"
@@ -19,6 +21,10 @@ static constexpr auto k_apiUrl = "https://api.github.com/repos/gibis-unifesp/wir
 UpdateChecker::UpdateChecker(QObject *parent)
     : QObject(parent)
 {
+    connect(&m_network, &QNetworkAccessManager::sslErrors, this, [](QNetworkReply *reply, const QList<QSslError> &errors) {
+        qWarning() << "UpdateChecker: SSL errors, aborting reply:" << errors;
+        reply->abort();
+    });
 }
 
 void UpdateChecker::checkForUpdates()
@@ -29,12 +35,26 @@ void UpdateChecker::checkForUpdates()
         return;
     }
 
-    QNetworkRequest request{QUrl(k_apiUrl)};
+    QNetworkRequest request = QNetworkRequest{QUrl(k_apiUrl)};
     request.setHeader(QNetworkRequest::UserAgentHeader, "wiRedPanda/" APP_VERSION);
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
                          QNetworkRequest::NoLessSafeRedirectPolicy);
+    request.setTransferTimeout(10000);
 
     QNetworkReply *reply = m_network.get(request);
+    // Hard-cap the reply buffer at 1 MiB + 1 byte: when full, Qt stops reading
+    // from the socket and TCP backpressure prevents the remote from sending
+    // more. The +1 ensures the paired downloadProgress threshold (`> 1 MiB`)
+    // can fire before the buffer is exhausted.
+    reply->setReadBufferSize(1024 * 1024 + 1);
+    // Belt-and-suspenders with setReadBufferSize: setReadBufferSize bounds the
+    // buffer; this aborts the reply when the threshold is reached so the
+    // connection is torn down rather than left stalled by TCP backpressure.
+    connect(reply, &QNetworkReply::downloadProgress, this, [reply](qint64 received, qint64) {
+        if (received > 1024 * 1024) {
+            reply->abort();
+        }
+    });
     connect(reply, &QNetworkReply::finished, this, [this, reply] { onReplyFinished(reply); });
 }
 
@@ -43,6 +63,8 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
     reply->deleteLater();
 
     if (reply->error() != QNetworkReply::NoError) {
+        // Includes OperationCanceledError when downloadProgress aborts an
+        // oversized reply — no further action needed.
         return;
     }
 
