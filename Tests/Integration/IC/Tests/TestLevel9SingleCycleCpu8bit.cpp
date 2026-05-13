@@ -19,7 +19,7 @@ using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
 /// ALU operation codes
-enum ALUOp { ADD = 0, SUB = 1, AND = 2, OR = 3, XOR = 4, NOT = 5, SHL = 6, SHR = 7 };
+enum ALUOp : int { ADD = 0, SUB = 1, AND = 2, OR = 3, XOR = 4, NOT = 5, SHL = 6, SHR = 7 };
 
 /// Encode an 8-bit ALU instruction: ALUOp in bits [5:3], regAddr in bits [2:0].
 /// Bit 7 = 0, bit 6 = 0 for ALU/register operations.

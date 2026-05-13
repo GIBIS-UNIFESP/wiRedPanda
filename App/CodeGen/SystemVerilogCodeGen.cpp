@@ -656,7 +656,36 @@ bool SystemVerilogCodeGen::emitBehavioralICModule(ICModuleInfo &info)
         break;
     }
 
-    default:
+    // Non-sequential element types: not emitted as sequential modules.
+    // Explicit list keeps -Wswitch active for future ElementType additions.
+    case ElementType::And:
+    case ElementType::AudioBox:
+    case ElementType::Buzzer:
+    case ElementType::Clock:
+    case ElementType::Demux:
+    case ElementType::Display7:
+    case ElementType::Display14:
+    case ElementType::Display16:
+    case ElementType::IC:
+    case ElementType::InputButton:
+    case ElementType::InputGnd:
+    case ElementType::InputRotary:
+    case ElementType::InputSwitch:
+    case ElementType::InputVcc:
+    case ElementType::JKLatch:
+    case ElementType::Led:
+    case ElementType::Line:
+    case ElementType::Mux:
+    case ElementType::Nand:
+    case ElementType::Node:
+    case ElementType::Nor:
+    case ElementType::Not:
+    case ElementType::Or:
+    case ElementType::Text:
+    case ElementType::TruthTable:
+    case ElementType::Unknown:
+    case ElementType::Xnor:
+    case ElementType::Xor:
         return false;
     }
 
@@ -1399,7 +1428,36 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
                 break;
             }
 
-            default:
+            // Combinational gates are handled by the if-branch above and can never
+            // reach this else-branch; list them explicitly so -Wswitch catches
+            // any future ElementType additions that lack a handler here.
+            case ElementType::And:
+            case ElementType::Nand:
+            case ElementType::Node:
+            case ElementType::Nor:
+            case ElementType::Not:
+            case ElementType::Or:
+            case ElementType::Xnor:
+            case ElementType::Xor:
+            // Unsupported types — explicit list so -Wswitch fires when a new
+            // ElementType is added to the enum without a code-gen handler.
+            case ElementType::AudioBox:
+            case ElementType::Buzzer:
+            case ElementType::Clock:
+            case ElementType::Display7:
+            case ElementType::Display14:
+            case ElementType::Display16:
+            case ElementType::IC:
+            case ElementType::InputButton:
+            case ElementType::InputGnd:
+            case ElementType::InputRotary:
+            case ElementType::InputSwitch:
+            case ElementType::InputVcc:
+            case ElementType::JKLatch:
+            case ElementType::Led:
+            case ElementType::Line:
+            case ElementType::Text:
+            case ElementType::Unknown:
                 throw PANDACEPTION("Element type not supported: %1", elm->objectName());
             }
         }
@@ -1434,7 +1492,34 @@ QString SystemVerilogCodeGen::generateLogicExpressionImpl(GraphicElement *elm, Q
         return "~" + inner;
     }
     case ElementType::Node: return otherPortNameImpl(elm->inputPort(0), visited);
-    default: return "";
+    // Non-logic elements: return empty string (caller must not invoke this for them).
+    case ElementType::AudioBox:
+    case ElementType::Buzzer:
+    case ElementType::Clock:
+    case ElementType::DFlipFlop:
+    case ElementType::DLatch:
+    case ElementType::Demux:
+    case ElementType::Display7:
+    case ElementType::Display14:
+    case ElementType::Display16:
+    case ElementType::IC:
+    case ElementType::InputButton:
+    case ElementType::InputGnd:
+    case ElementType::InputRotary:
+    case ElementType::InputSwitch:
+    case ElementType::InputVcc:
+    case ElementType::JKFlipFlop:
+    case ElementType::JKLatch:
+    case ElementType::Led:
+    case ElementType::Line:
+    case ElementType::Mux:
+    case ElementType::SRFlipFlop:
+    case ElementType::SRLatch:
+    case ElementType::TFlipFlop:
+    case ElementType::Text:
+    case ElementType::TruthTable:
+    case ElementType::Unknown:
+        return "";
     }
 
     QString expr;
