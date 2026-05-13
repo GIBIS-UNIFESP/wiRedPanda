@@ -6,14 +6,11 @@
 #include <atomic>
 #include <memory>
 
-#include <QBuffer>
 #include <QHash>
-#include <QJsonDocument>
 #include <QJsonObject>
 #include <QObject>
 #include <QTextStream>
 #include <QThread>
-#include <QTimer>
 
 class BaseHandler;
 class ConnectionHandler;
@@ -78,7 +75,6 @@ private:
 
     MainWindow *m_mainWindow;
     std::unique_ptr<MCPValidator> m_validator;
-    QTextStream m_stdin;
     QTextStream m_stdout;
     std::unique_ptr<StdinReader> m_stdinReader;
 
