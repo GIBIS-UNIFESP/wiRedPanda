@@ -11,6 +11,7 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include "App/Core/Common.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/SerializationContext.h"
@@ -193,7 +194,7 @@ void TestInputElements::testInputSwitchLoadNewVersion()
 
     QDataStream loadStream(data);
     QHash<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, QVersionNumber(4, 1), {}};
+    SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
 
     inputSwitch2->load(loadStream, context);
 
@@ -407,7 +408,7 @@ void TestInputElements::testInputButtonLoadNewVersion()
 
     QDataStream loadStream(data);
     QHash<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, QVersionNumber(4, 1), {}};
+    SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
 
     inputButton2->load(loadStream, context);
 

@@ -381,20 +381,20 @@ private:
     QString m_contextDir;
 
     // IC definition registry (caches definitions, manages file watching)
-    ICRegistry m_icRegistry{this};
+    ICRegistry m_icRegistry = ICRegistry(this);
 
     // Autosave
     bool m_autosaveRequired = false;
 
     // Connection editing (delegated to ConnectionManager)
-    ConnectionManager m_connectionManager{this};
+    ConnectionManager m_connectionManager = ConnectionManager(this);
 
     // Clipboard operations (delegated to ClipboardManager)
-    ClipboardManager m_clipboardManager{this};
+    ClipboardManager m_clipboardManager = ClipboardManager(this);
 
     // Property shortcut dispatch (delegated to PropertyShortcutHandler)
-    PropertyShortcutHandler m_propertyShortcutHandler{this};
+    PropertyShortcutHandler m_propertyShortcutHandler = PropertyShortcutHandler(this);
 
     // Visibility control (delegated to VisibilityManager)
-    VisibilityManager m_visibilityManager{this};
+    VisibilityManager m_visibilityManager = VisibilityManager(this);
 };

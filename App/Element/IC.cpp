@@ -405,7 +405,7 @@ void IC::loadFileDirectly(const QFileInfo &fileInfo)
     auto fileRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
     QHash<quint64, QNEPort *> portMap;
-    SerializationContext subCtx{portMap, preamble.version, fileInfo.absolutePath()};
+    SerializationContext subCtx = {portMap, preamble.version, fileInfo.absolutePath()};
     subCtx.blobRegistry = fileRegistry.isEmpty() ? nullptr : &fileRegistry;
     QList<QGraphicsItem *> items = Serialization::deserialize(stream, subCtx);
     file.close(); // must be closed before QSaveFile can write on Windows (mandatory file locking)
@@ -561,7 +561,7 @@ void IC::deserializeAndLoad(const QByteArray &bytes, const QString &contextDir)
     auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
     QHash<quint64, QNEPort *> portMap;
-    SerializationContext subCtx{portMap, preamble.version, contextDir};
+    SerializationContext subCtx = {portMap, preamble.version, contextDir};
     subCtx.blobRegistry = blobRegistry.isEmpty() ? nullptr : &blobRegistry;
     QList<QGraphicsItem *> items = Serialization::deserialize(stream, subCtx);
     // processLoadedItems drains `items` as ownership transfers, so on throw the

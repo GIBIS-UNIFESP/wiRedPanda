@@ -773,7 +773,7 @@ void TestSequential::testFsmExtendedSequences()
     QVector<int> stateTrace;
     stateTrace.append(currentState);
 
-    for (int cycle = 0; cycle < triggerSequence.length(); ++cycle) {
+    for (int cycle = 0; cycle < triggerSequence.size(); ++cycle) {
         bool triggerValue = triggerSequence[cycle];
 
         triggerSwitch->setOn(triggerValue);
@@ -859,7 +859,7 @@ void TestSequential::testFsmQnotComplementarity()
         violationDetails.append("Initial state: Q_not not complement of Q");
     }
 
-    for (int cycle = 0; cycle < triggerSequence.length(); ++cycle) {
+    for (int cycle = 0; cycle < triggerSequence.size(); ++cycle) {
         bool triggerValue = triggerSequence[cycle];
         triggerSwitch->setOn(triggerValue);
 

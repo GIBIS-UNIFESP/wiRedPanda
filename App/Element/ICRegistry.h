@@ -59,7 +59,10 @@ public:
     void renameBlob(const QString &oldName, const QString &newName);
     /// Returns a const reference to the full blob map (name → .panda bytes).
     const QMap<QString, QByteArray> &blobMap() const { return m_blobs; }
-    /// Returns a mutable reference to the blob map (used by serialization).
+    /// Returns a mutable reference to the blob map for bulk serialization.
+    /// \warning Prefer \c setBlob() for individual updates — it triggers cache
+    /// invalidation. Use \c blobMapRef() only when the whole map is being
+    /// replaced atomically (e.g., during deserialization of a .panda file).
     QMap<QString, QByteArray> &blobMapRef() { return m_blobs; }
     /// Removes all stored blobs.
     void clearBlobs();

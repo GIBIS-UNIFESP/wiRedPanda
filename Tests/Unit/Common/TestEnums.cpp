@@ -96,7 +96,7 @@ void TestEnums::testTypeToTitleText()
     // Test type to title text conversion
     QString titleAnd = ElementFactory::typeToTitleText(ElementType::And);
     QVERIFY(!titleAnd.isEmpty());
-    QVERIFY(titleAnd.length() > 0);
+    QVERIFY(titleAnd.size() > 0);
 
     // Unknown type should return "MULTIPLE TYPES"
     QString unknownTitle = ElementFactory::typeToTitleText(ElementType::Unknown);

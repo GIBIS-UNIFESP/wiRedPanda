@@ -212,7 +212,7 @@ void TestBuzzer::testLoadVersionNew()
 
     QDataStream loadStream(data);
     QHash<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, FormatRev::current, {}};
+    SerializationContext context = {portMap, FormatRev::current, {}};
 
     buzzer2->load(loadStream, context);
 

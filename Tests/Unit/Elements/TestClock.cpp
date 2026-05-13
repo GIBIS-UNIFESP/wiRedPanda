@@ -10,6 +10,7 @@
 #include <QDataStream>
 #include <QTest>
 
+#include "App/Core/Common.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/IO/SerializationContext.h"
 #include "Tests/Common/TestUtils.h"
@@ -407,7 +408,7 @@ void TestClock::testLoadVersionNew()
 
     QDataStream loadStream(data);
     QHash<quint64, QNEPort *> portMap;
-    SerializationContext contextNew{portMap, QVersionNumber(4, 1), {}};
+    SerializationContext contextNew = {portMap, QVersionNumber(4, 1), {}};
 
     clock2->load(loadStream, contextNew);
 
@@ -432,7 +433,7 @@ void TestClock::testLoadVersionVeryOld()
 
     QDataStream readStream(data);
     QHash<quint64, QNEPort *> portMap;
-    SerializationContext contextVeryOld{portMap, QVersionNumber(1, 0), {}};
+    SerializationContext contextVeryOld = {portMap, QVersionNumber(1, 0), {}};
 
     clock->load(readStream, contextVeryOld);
 
