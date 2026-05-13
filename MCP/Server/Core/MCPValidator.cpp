@@ -4,6 +4,7 @@
 #include "MCP/Server/Core/MCPValidator.h"
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QJsonArray>
@@ -250,6 +251,11 @@ json MCPValidator::qjsonToNlohmann(const QJsonObject &qjson)
 QJsonObject MCPValidator::nlohmannToQJson(const json &nlohmannJson)
 {
     std::string jsonString = nlohmannJson.dump();
-    QJsonDocument doc = QJsonDocument::fromJson(QByteArray::fromStdString(jsonString));
+    QJsonParseError parseError;
+    QJsonDocument doc = QJsonDocument::fromJson(QByteArray::fromStdString(jsonString), &parseError);
+    if (parseError.error != QJsonParseError::NoError || doc.isNull()) {
+        qWarning() << "nlohmannToQJson: failed to parse JSON:" << parseError.errorString();
+        return {};
+    }
     return doc.object();
 }

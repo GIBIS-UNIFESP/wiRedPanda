@@ -97,6 +97,10 @@ MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
         "get_theme", "set_theme", "get_effective_theme"
     });
 
+    if (!m_validator->isSchemaLoaded()) {
+        qWarning() << "MCP schema not loaded — all requests will be rejected";
+    }
+
     // Set up event-driven stdin reading; signal crosses thread boundary → must be queued
     connect(m_stdinReader.get(), &StdinReader::dataReceived, this, &MCPProcessor::processIncomingData, Qt::QueuedConnection);
 }

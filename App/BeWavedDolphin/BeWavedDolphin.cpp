@@ -162,6 +162,10 @@ void BewavedDolphin::loadFromTerminal()
     int rows = wordList.at(0).toInt();
     const int cols = wordList.at(1).toInt();
 
+    if (rows <= 0) {
+        throw PANDACEPTION("Invalid waveform data: row count must be positive.");
+    }
+
     // Clamp rows to the number of actual input ports to avoid out-of-bounds writes
     if (rows > m_inputPorts) {
         rows = m_inputPorts;
@@ -266,11 +270,23 @@ void BewavedDolphin::loadNewTable()
     qCDebug(zero) << "Num iter = " << m_length;
 
     // Rows = total signals (inputs + outputs); columns = simulation length in time steps
+    auto *oldModel = m_model;
     m_model = new SignalModel(static_cast<int>(inputLabels.size() + outputLabels.size()), m_length, this);
     m_signalTableView->setModel(m_model);
+    delete oldModel;
 
     // Input rows come first, then output rows — the split point is inputLabels.size()
     m_model->setVerticalHeaderLabels(inputLabels + outputLabels);
+
+    // Pre-populate every cell so QStandardItemModel::item() never returns nullptr.
+    // Input cells are overwritten by on_actionClear_triggered(); output cells by run().
+    // This prevents null-deref in print(), saveToTxt(), and the serialiser if they
+    // are called before run() has had a chance to fill the output rows.
+    for (int row = 0; row < m_model->rowCount(); ++row) {
+        for (int col = 0; col < m_model->columnCount(); ++col) {
+            m_model->setData(m_model->index(row, col), 0, Qt::DisplayRole);
+        }
+    }
 
     m_signalTableView->setAlternatingRowColors(true);
     m_signalTableView->setShowGrid(false);
@@ -296,7 +312,7 @@ void BewavedDolphin::on_tableView_cellDoubleClicked()
     const auto indexes = m_signalTableView->selectionModel()->selectedIndexes();
 
     // Toggle each selected cell between 0 and 1, then re-simulate
-    for (auto &index : indexes) {
+    for (const auto &index : indexes) {
         int value = m_model->index(index.row(), index.column(), QModelIndex()).data().toInt();
         value = (value + 1) % 2;
         createElement(index.row(), index.column(), value, true, false);
@@ -316,7 +332,7 @@ void BewavedDolphin::on_tableView_selectionChanged()
     // Highlight the corresponding input element in the circuit editor when the user
     // selects a waveform row, giving visual feedback about which signal they are editing.
     // Output rows (index >= m_inputs.size()) have no element to highlight.
-    for (auto &index : indexes) {
+    for (const auto &index : indexes) {
         if (index.row() < m_inputs.size()) {
             m_inputs.at(index.row())->setSelected(true);
         }
@@ -376,6 +392,14 @@ void BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLa
 
 void BewavedDolphin::run()
 {
+    // Both m_simulation and m_model must be valid before entering run().
+    // prepare() sets m_simulation; loadNewTable() sets m_model. If either
+    // failed (e.g. the external scene has no simulation, or loadNewTable()
+    // threw), calling run() is a no-op.
+    if (!m_simulation || !m_model) {
+        return;
+    }
+
     // Block the live simulation timer while we drive the circuit manually column by column
     qCDebug(zero) << "Creating class to pause main window simulator while creating waveform.";
     SimulationBlocker simulationBlocker(m_simulation);
@@ -561,6 +585,9 @@ void BewavedDolphin::show()
 
 void BewavedDolphin::print()
 {
+    if (!m_model) {
+        return;
+    }
     // Outputs in the same CSV format used by loadFromTerminal() / save(QSaveFile &),
     // allowing round-trip scripted use without a GUI
     std::cout << m_model->rowCount() << ",";
@@ -568,7 +595,8 @@ void BewavedDolphin::print()
 
     for (int row = 0; row < m_model->rowCount(); ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
-            std::cout << m_model->item(row, col)->text().toStdString() << ",";
+            const auto *cell = m_model->item(row, col);
+            std::cout << (cell ? cell->text().toStdString() : std::string("0")) << ",";
         }
 
         std::cout << "\n";
@@ -577,6 +605,10 @@ void BewavedDolphin::print()
 
 void BewavedDolphin::saveToTxt(QTextStream &stream)
 {
+    if (!m_model) {
+        return;
+    }
+
     // Force combinational mode so the truth table covers all 2^n input combinations
     on_actionCombinational_triggered();
 
@@ -587,22 +619,24 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
     // Write input rows first, then output rows, each followed by its signal label
     for (int row = 0; row < m_inputs.size(); ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
-            stream << m_model->item(row, col)->text();
+            const auto *cell = m_model->item(row, col);
+            stream << (cell ? cell->text() : QStringLiteral("0"));
         }
 
-        QString label = m_model->verticalHeaderItem(row)->text();
-        stream << " : \"" << label << "\"\n";
+        const auto *hdr = m_model->verticalHeaderItem(row);
+        stream << " : \"" << (hdr ? hdr->text() : QString()) << "\"\n";
     }
 
     stream << "\n";
 
     for (int row = static_cast<int>(m_inputs.size()); row < m_model->rowCount(); ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
-            stream << m_model->item(row, col)->text();
+            const auto *cell = m_model->item(row, col);
+            stream << (cell ? cell->text() : QStringLiteral("0"));
         }
 
-        QString label = m_model->verticalHeaderItem(row)->text();
-        stream << " : \"" << label << "\"\n";
+        const auto *hdr = m_model->verticalHeaderItem(row);
+        stream << " : \"" << (hdr ? hdr->text() : QString()) << "\"\n";
     }
 }
 
@@ -916,7 +950,7 @@ void BewavedDolphin::on_actionAutoCrop_triggered()
         sentryBreadcrumb("waveform", QStringLiteral("Auto crop"));
         // Crop (or extend) the simulation to exactly the full truth table size for the
         // current number of input elements, then re-run to refresh output rows
-        setLength(static_cast<int>(std::pow(2, m_inputs.length())), true);
+        setLength(static_cast<int>(std::pow(2, m_inputs.size())), true);
     });
 }
 
@@ -1386,7 +1420,7 @@ void BewavedDolphin::on_actionAbout_triggered()
                "</ul>"
                "<p> beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.</p>"
                "<p> Please file a report at our GitHub page if you find a bug or want to request a new feature.</p>"
-               "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
+               "<p><a href=\"https://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
                 .arg(QApplication::applicationVersion()));
     });
 }

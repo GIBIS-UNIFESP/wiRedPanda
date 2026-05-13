@@ -130,11 +130,19 @@ void Clock::load(QDataStream &stream, SerializationContext &context)
         QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
         if (map.contains("frequency")) {
-            setFrequency(map.value("frequency").toDouble());
+            bool ok;
+            const double freq = map.value("frequency").toDouble(&ok);
+            if (ok) {
+                setFrequency(freq);
+            }
         }
 
         if (map.contains("delay")) {
-            double delayValue = map.value("delay").toDouble();
+            bool ok;
+            double delayValue = map.value("delay").toDouble(&ok);
+            if (!ok) {
+                delayValue = 0.0;
+            }
 
             if (!VersionInfo::hasDelayFix(context.version)) {
                 // Discard old delay data from versions < 4.3

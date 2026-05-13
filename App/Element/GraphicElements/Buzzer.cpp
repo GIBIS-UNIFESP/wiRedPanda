@@ -158,14 +158,22 @@ void Buzzer::load(QDataStream &stream, SerializationContext &context)
 
         // New format: frequency in Hz
         if (map.contains("frequency")) {
-            setFrequency(map.value("frequency").toDouble());
+            bool ok;
+            const double freq = map.value("frequency").toDouble(&ok);
+            if (ok) {
+                setFrequency(freq);
+            }
         } else if (map.contains("note")) {
             // Old format: note name → convert to frequency
             setAudio(map.value("note").toString());
         }
 
         if (map.contains("volume")) {
-            setVolume(map.value("volume").toFloat());
+            bool ok;
+            const float vol = map.value("volume").toFloat(&ok);
+            if (ok) {
+                setVolume(vol);
+            }
         }
     }
 }
